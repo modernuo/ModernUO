@@ -8,10 +8,7 @@ namespace Server.Targets
   {
     private object m_Object;
 
-    public MoveTarget(object o) : base(-1, true, TargetFlags.None)
-    {
-      m_Object = o;
-    }
+    public MoveTarget(object o) : base(-1, true, TargetFlags.None) => m_Object = o;
 
     protected override void OnTarget(Mobile from, object o)
     {

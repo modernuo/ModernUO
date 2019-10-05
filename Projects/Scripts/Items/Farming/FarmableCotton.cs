@@ -11,20 +11,11 @@ namespace Server.Items
     {
     }
 
-    public static int GetCropID()
-    {
-      return Utility.Random(3153, 4);
-    }
+    public static int GetCropID() => Utility.Random(3153, 4);
 
-    public override Item GetCropObject()
-    {
-      return new Cotton();
-    }
+    public override Item GetCropObject() => new Cotton();
 
-    public override int GetPickedID()
-    {
-      return 3254;
-    }
+    public override int GetPickedID() => 3254;
 
     public override void Serialize(GenericWriter writer)
     {

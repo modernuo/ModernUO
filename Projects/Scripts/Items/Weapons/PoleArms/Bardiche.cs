@@ -4,10 +4,7 @@ namespace Server.Items
   public class Bardiche : BasePoleArm
   {
     [Constructible]
-    public Bardiche() : base(0xF4D)
-    {
-      Weight = 7.0;
-    }
+    public Bardiche() : base(0xF4D) => Weight = 7.0;
 
     public Bardiche(Serial serial) : base(serial)
     {

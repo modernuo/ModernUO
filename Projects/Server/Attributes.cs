@@ -47,10 +47,7 @@ namespace Server
   [AttributeUsage(AttributeTargets.Method)]
   public class CallPriorityAttribute : Attribute
   {
-    public CallPriorityAttribute(int priority)
-    {
-      Priority = priority;
-    }
+    public CallPriorityAttribute(int priority) => Priority = priority;
 
     public int Priority{ get; set; }
   }
@@ -97,10 +94,7 @@ namespace Server
   [AttributeUsage(AttributeTargets.Class)]
   public class TypeAliasAttribute : Attribute
   {
-    public TypeAliasAttribute(params string[] aliases)
-    {
-      Aliases = aliases;
-    }
+    public TypeAliasAttribute(params string[] aliases) => Aliases = aliases;
 
     public string[] Aliases{ get; }
   }
@@ -113,10 +107,7 @@ namespace Server
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum)]
   public class CustomEnumAttribute : Attribute
   {
-    public CustomEnumAttribute(string[] names)
-    {
-      Names = names;
-    }
+    public CustomEnumAttribute(string[] names) => Names = names;
 
     public string[] Names{ get; }
   }
@@ -129,10 +120,7 @@ namespace Server
     {
     }
 
-    public ConstructibleAttribute(AccessLevel accessLevel)
-    {
-      AccessLevel = accessLevel;
-    }
+    public ConstructibleAttribute(AccessLevel accessLevel) => AccessLevel = accessLevel;
 
     public AccessLevel AccessLevel{ get; set; }
   }

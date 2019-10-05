@@ -300,12 +300,9 @@ namespace Server.Misc
 
 		public IHSFlags Flags { get; set; }
 
-		public string GetRandomSyllable()
-		{
-			return Syllables[Utility.Random( Syllables.Length )];
-		}
+		public string GetRandomSyllable() => Syllables[Utility.Random( Syllables.Length )];
 
-		public string ConstructWord( int syllableCount )
+    public string ConstructWord( int syllableCount )
 		{
 			string[] syllables = new string[syllableCount];
 

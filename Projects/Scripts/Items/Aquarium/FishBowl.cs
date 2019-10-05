@@ -136,9 +136,8 @@ namespace Server.Items
       private FishBowl m_Bowl;
 
       public RemoveCreature(FishBowl bowl) : base(6242, 3) // Remove creature
-      {
-        m_Bowl = bowl;
-      }
+        =>
+          m_Bowl = bowl;
 
       public override void OnClick()
       {

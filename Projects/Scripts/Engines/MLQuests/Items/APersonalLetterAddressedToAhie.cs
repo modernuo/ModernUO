@@ -5,10 +5,7 @@ namespace Server.Items
   public class APersonalLetterAddressedToAhie : TransientItem
   {
     [Constructible]
-    public APersonalLetterAddressedToAhie() : base(0x14ED, TimeSpan.FromMinutes(30))
-    {
-      LootType = LootType.Blessed;
-    }
+    public APersonalLetterAddressedToAhie() : base(0x14ED, TimeSpan.FromMinutes(30)) => LootType = LootType.Blessed;
 
     public APersonalLetterAddressedToAhie(Serial serial) : base(serial)
     {

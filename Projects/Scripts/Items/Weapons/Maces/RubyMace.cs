@@ -3,10 +3,7 @@ namespace Server.Items
   public class RubyMace : DiamondMace
   {
     [Constructible]
-    public RubyMace()
-    {
-      Attributes.WeaponDamage = 5;
-    }
+    public RubyMace() => Attributes.WeaponDamage = 5;
 
     public RubyMace(Serial serial) : base(serial)
     {

@@ -3,10 +3,7 @@ namespace Server.Items
   public class PlateHiroSode : BaseArmor
   {
     [Constructible]
-    public PlateHiroSode() : base(0x2780)
-    {
-      Weight = 3.0;
-    }
+    public PlateHiroSode() : base(0x2780) => Weight = 3.0;
 
     public PlateHiroSode(Serial serial) : base(serial)
     {

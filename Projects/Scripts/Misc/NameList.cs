@@ -43,12 +43,9 @@ namespace Server
 			return n;
 		}
 
-		public static string RandomName( string type )
-		{
-			return GetNameList( type )?.GetRandomName() ?? "";
-		}
+		public static string RandomName( string type ) => GetNameList( type )?.GetRandomName() ?? "";
 
-		private static Dictionary<string, NameList> m_Table;
+    private static Dictionary<string, NameList> m_Table;
 
 		static NameList()
 		{

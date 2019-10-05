@@ -3,10 +3,7 @@ namespace Server.Items
   public class MetalKiteShield : BaseShield, IDyable
   {
     [Constructible]
-    public MetalKiteShield() : base(0x1B74)
-    {
-      Weight = 7.0;
-    }
+    public MetalKiteShield() : base(0x1B74) => Weight = 7.0;
 
     public MetalKiteShield(Serial serial) : base(serial)
     {

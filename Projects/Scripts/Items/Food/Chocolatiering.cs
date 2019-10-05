@@ -4,10 +4,8 @@ namespace Server.Items
   {
     [Constructible]
     public CocoaLiquor()
-      : base(0x103F)
-    {
+      : base(0x103F) =>
       Hue = 0x46A;
-    }
 
     public CocoaLiquor(Serial serial)
       : base(serial)
@@ -70,10 +68,8 @@ namespace Server.Items
   {
     [Constructible]
     public CocoaButter()
-      : base(0x1044)
-    {
+      : base(0x1044) =>
       Hue = 0x457;
-    }
 
     public CocoaButter(Serial serial)
       : base(serial)

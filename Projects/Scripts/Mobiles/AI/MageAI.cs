@@ -76,10 +76,7 @@ namespace Server.Mobiles
       return base.Think();
     }
 
-    public virtual double ScaleBySkill(double v, SkillName skill)
-    {
-      return v * m_Mobile.Skills[skill].Value / 100;
-    }
+    public virtual double ScaleBySkill(double v, SkillName skill) => v * m_Mobile.Skills[skill].Value / 100;
 
     public override bool DoActionWander()
     {
@@ -252,10 +249,7 @@ namespace Server.Mobiles
       return false;
     }
 
-    public virtual Spell GetRandomDamageSpell()
-    {
-      return UseNecromancy() ? GetRandomDamageSpellNecro() : GetRandomDamageSpellMage();
-    }
+    public virtual Spell GetRandomDamageSpell() => UseNecromancy() ? GetRandomDamageSpellNecro() : GetRandomDamageSpellMage();
 
     public virtual Spell GetRandomDamageSpellNecro()
     {
@@ -308,10 +302,7 @@ namespace Server.Mobiles
       }
     }
 
-    public virtual Spell GetRandomCurseSpell()
-    {
-      return UseNecromancy() ? GetRandomCurseSpellNecro() : GetRandomCurseSpellMage();
-    }
+    public virtual Spell GetRandomCurseSpell() => UseNecromancy() ? GetRandomCurseSpellNecro() : GetRandomCurseSpellMage();
 
     public virtual Spell GetRandomCurseSpellNecro()
     {
@@ -947,11 +938,9 @@ namespace Server.Mobiles
       return null;
     }
 
-    public bool CanDispel(Mobile m)
-    {
-      return m is BaseCreature creature && creature.Summoned && m_Mobile.CanBeHarmful(creature, false) &&
-             !creature.IsAnimatedDead;
-    }
+    public bool CanDispel(Mobile m) =>
+      m is BaseCreature creature && creature.Summoned && m_Mobile.CanBeHarmful(creature, false) &&
+      !creature.IsAnimatedDead;
 
     private bool ProcessTarget()
     {

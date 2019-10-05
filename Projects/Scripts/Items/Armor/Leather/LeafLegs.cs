@@ -4,10 +4,7 @@ namespace Server.Items
   public class LeafLegs : BaseArmor
   {
     [Constructible]
-    public LeafLegs() : base(0x2FC9)
-    {
-      Weight = 2.0;
-    }
+    public LeafLegs() : base(0x2FC9) => Weight = 2.0;
 
     public LeafLegs(Serial serial) : base(serial)
     {

@@ -24,10 +24,7 @@ namespace Server.Factions
     {
     }
 
-    public override int GetShoeHue()
-    {
-      return 0;
-    }
+    public override int GetShoeHue() => 0;
 
     public override void InitOutfit()
     {
@@ -51,15 +48,9 @@ namespace Server.Factions
     {
     }
 
-    public override bool OnBuyItems(Mobile buyer, List<BuyItemResponse> list)
-    {
-      return false;
-    }
+    public override bool OnBuyItems(Mobile buyer, List<BuyItemResponse> list) => false;
 
-    public override bool OnSellItems(Mobile seller, List<SellItemResponse> list)
-    {
-      return false;
-    }
+    public override bool OnSellItems(Mobile seller, List<SellItemResponse> list) => false;
 
     public override void Serialize(GenericWriter writer)
     {

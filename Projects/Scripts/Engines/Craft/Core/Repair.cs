@@ -37,21 +37,11 @@ namespace Server.Engines.Craft
         m_Deed = deed;
       }
 
-      private int GetWeakenChance(Mobile mob, SkillName skill, int curHits, int maxHits)
-      {
-        // 40% - (1% per hp lost) - (1% per 10 craft skill)
-        return 40 + (maxHits - curHits) - (int)((m_Deed?.SkillLevel ?? mob.Skills[skill].Value) / 10);
-      }
+      private int GetWeakenChance(Mobile mob, SkillName skill, int curHits, int maxHits) => 40 + (maxHits - curHits) - (int)((m_Deed?.SkillLevel ?? mob.Skills[skill].Value) / 10);
 
-      private bool CheckWeaken(Mobile mob, SkillName skill, int curHits, int maxHits)
-      {
-        return GetWeakenChance(mob, skill, curHits, maxHits) > Utility.Random(100);
-      }
+      private bool CheckWeaken(Mobile mob, SkillName skill, int curHits, int maxHits) => GetWeakenChance(mob, skill, curHits, maxHits) > Utility.Random(100);
 
-      private int GetRepairDifficulty(int curHits, int maxHits)
-      {
-        return (maxHits - curHits) * 1250 / Math.Max(maxHits, 1) - 250;
-      }
+      private int GetRepairDifficulty(int curHits, int maxHits) => (maxHits - curHits) * 1250 / Math.Max(maxHits, 1) - 250;
 
       private bool CheckRepairDifficulty(Mobile mob, SkillName skill, int curHits, int maxHits)
       {

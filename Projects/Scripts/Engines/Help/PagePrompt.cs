@@ -6,10 +6,7 @@ namespace Server.Engines.Help
   {
     private PageType m_Type;
 
-    public PagePrompt(PageType type)
-    {
-      m_Type = type;
-    }
+    public PagePrompt(PageType type) => m_Type = type;
 
     public override void OnCancel(Mobile from)
     {

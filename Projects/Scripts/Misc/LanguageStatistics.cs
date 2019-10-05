@@ -189,60 +189,58 @@ namespace Server.Misc
     {
       Dictionary<string, InternationalCodeCounter> ht = new Dictionary<string, InternationalCodeCounter>();
 
-      using (StreamWriter writer = new StreamWriter("languages.txt"))
-      {
-        if (CountAccounts)
-          foreach (Account acc in Accounts.GetAccounts())
-            for (int i = 0; i < acc.Length; i++)
-            {
-              Mobile mob = acc[i];
+      using StreamWriter writer = new StreamWriter("languages.txt");
+      if (CountAccounts)
+        foreach (Account acc in Accounts.GetAccounts())
+          for (int i = 0; i < acc.Length; i++)
+          {
+            Mobile mob = acc[i];
 
-              string lang = mob?.Language;
+            string lang = mob?.Language;
 
-              if (lang == null)
-                continue;
+            if (lang == null)
+              continue;
 
-              lang = lang.ToUpper();
+            lang = lang.ToUpper();
 
-              if (ht.TryGetValue(lang, out InternationalCodeCounter codes))
-                codes.Increase();
-              else
-                ht[lang] = new InternationalCodeCounter(lang);
+            if (ht.TryGetValue(lang, out InternationalCodeCounter codes))
+              codes.Increase();
+            else
+              ht[lang] = new InternationalCodeCounter(lang);
 
-              break;
-            }
-        else
-          foreach (Mobile mob in World.Mobiles.Values)
-            if (mob.Player)
-            {
-              string lang = mob.Language;
+            break;
+          }
+      else
+        foreach (Mobile mob in World.Mobiles.Values)
+          if (mob.Player)
+          {
+            string lang = mob.Language;
 
-              if (lang == null)
-                continue;
+            if (lang == null)
+              continue;
 
-              lang = lang.ToUpper();
+            lang = lang.ToUpper();
 
-              if (ht.TryGetValue(lang, out InternationalCodeCounter codes))
-                codes.Increase();
-              else
-                ht[lang] = new InternationalCodeCounter(lang);
-            }
+            if (ht.TryGetValue(lang, out InternationalCodeCounter codes))
+              codes.Increase();
+            else
+              ht[lang] = new InternationalCodeCounter(lang);
+          }
 
-        writer.WriteLine(
-          $"Language statistics. Numbers show how many {(CountAccounts ? "accounts" : "playermobile")} use the specified language.");
-        writer.WriteLine(
-          "====================================================================================================");
-        writer.WriteLine();
+      writer.WriteLine(
+        $"Language statistics. Numbers show how many {(CountAccounts ? "accounts" : "playermobile")} use the specified language.");
+      writer.WriteLine(
+        "====================================================================================================");
+      writer.WriteLine();
 
-        // sort the list
-        List<InternationalCodeCounter> list = new List<InternationalCodeCounter>(ht.Values);
-        list.Sort(InternationalCodeComparer.Instance);
+      // sort the list
+      List<InternationalCodeCounter> list = new List<InternationalCodeCounter>(ht.Values);
+      list.Sort(InternationalCodeComparer.Instance);
 
-        foreach (InternationalCodeCounter c in list)
-          writer.WriteLine($"{GetFormattedInfo(c.Code)}‎ : {c.Count}");
+      foreach (InternationalCodeCounter c in list)
+        writer.WriteLine($"{GetFormattedInfo(c.Code)}‎ : {c.Count}");
 
-        e.Mobile.SendMessage("Languages list generated.");
-      }
+      e.Mobile.SendMessage("Languages list generated.");
     }
 
     private struct InternationalCode
@@ -260,10 +258,8 @@ namespace Server.Misc
       public string Country_LocalName{ get; }
 
       public InternationalCode(string code, string language, string country) : this(code, language, country, null,
-        null)
-      {
+        null) =>
         m_HasLocalInfo = false;
-      }
 
       public InternationalCode(string code, string language, string country, string language_localname,
         string country_localname)

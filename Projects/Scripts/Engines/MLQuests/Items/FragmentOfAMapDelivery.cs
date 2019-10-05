@@ -3,10 +3,7 @@ namespace Server.Items
   public class FragmentOfAMapDelivery : Item
   {
     [Constructible]
-    public FragmentOfAMapDelivery() : base(0x14ED)
-    {
-      LootType = LootType.Blessed;
-    }
+    public FragmentOfAMapDelivery() : base(0x14ED) => LootType = LootType.Blessed;
 
     public FragmentOfAMapDelivery(Serial serial) : base(serial)
     {

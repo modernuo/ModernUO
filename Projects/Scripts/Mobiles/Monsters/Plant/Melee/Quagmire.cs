@@ -51,10 +51,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.Average);
     }
 
-    public override int GetAngerSound()
-    {
-      return 353;
-    }
+    public override int GetAngerSound() => 353;
 
     public override void Serialize(GenericWriter writer)
     {

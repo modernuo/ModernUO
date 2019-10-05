@@ -4,10 +4,7 @@ namespace Server.Items
   public class LeafGloves : BaseArmor, IArcaneEquip
   {
     [Constructible]
-    public LeafGloves() : base(0x2FC6)
-    {
-      Weight = 2.0;
-    }
+    public LeafGloves() : base(0x2FC6) => Weight = 2.0;
 
     public LeafGloves(Serial serial) : base(serial)
     {

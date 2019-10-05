@@ -27,10 +27,7 @@ namespace Server.Factions
     private FactionDefinition m_Definition;
     public int ZeroRankOffset;
 
-    public Faction()
-    {
-      State = new FactionState(this);
-    }
+    public Faction() => State = new FactionState(this);
 
     public StrongholdRegion StrongholdRegion{ get; set; }
 
@@ -88,10 +85,7 @@ namespace Server.Factions
 
     public static List<Faction> Factions => Reflector.Factions;
 
-    public int CompareTo(Faction f)
-    {
-      return m_Definition.Sort - (f?.m_Definition.Sort ?? 0);
-    }
+    public int CompareTo(Faction f) => m_Definition.Sort - (f?.m_Definition.Sort ?? 0);
 
     public void Broadcast(string text)
     {
@@ -505,10 +499,7 @@ namespace Server.Factions
       return mob.AccessLevel >= AccessLevel.GameMaster || mob == Commander;
     }
 
-    public override string ToString()
-    {
-      return m_Definition.FriendlyName;
-    }
+    public override string ToString() => m_Definition.FriendlyName;
 
     public static bool CheckLeaveTimer(Mobile mob)
     {
@@ -1160,10 +1151,7 @@ namespace Server.Factions
     {
       private Faction m_Faction;
 
-      public BroadcastPrompt(Faction faction)
-      {
-        m_Faction = faction;
-      }
+      public BroadcastPrompt(Faction faction) => m_Faction = faction;
 
       public override void OnResponse(Mobile from, string text)
       {
@@ -1184,10 +1172,7 @@ namespace Server.Factions
       public Timer m_Timer;
     }
 
-    public static bool InSkillLoss(Mobile mob)
-    {
-      return m_SkillLoss.ContainsKey(mob);
-    }
+    public static bool InSkillLoss(Mobile mob) => m_SkillLoss.ContainsKey(mob);
 
     public static void ApplySkillLoss(Mobile mob)
     {

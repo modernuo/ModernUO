@@ -9,10 +9,7 @@ namespace Server.Items
   {
     private List<Mobile> m_Users = new List<Mobile>();
 
-    public BaseConflagrationPotion(PotionEffect effect) : base(0xF06, effect)
-    {
-      Hue = 0x489;
-    }
+    public BaseConflagrationPotion(PotionEffect effect) : base(0xF06, effect) => Hue = 0x489;
 
     public BaseConflagrationPotion(Serial serial) : base(serial)
     {
@@ -92,10 +89,7 @@ namespace Server.Items
 
     private class ThrowTarget : Target
     {
-      public ThrowTarget(BaseConflagrationPotion potion) : base(12, true, TargetFlags.None)
-      {
-        Potion = potion;
-      }
+      public ThrowTarget(BaseConflagrationPotion potion) : base(12, true, TargetFlags.None) => Potion = potion;
 
       public BaseConflagrationPotion Potion{ get; }
 
@@ -164,10 +158,7 @@ namespace Server.Items
         m_Timer?.Stop();
       }
 
-      public int GetDamage()
-      {
-        return Utility.RandomMinMax(m_MinDamage, m_MaxDamage);
-      }
+      public int GetDamage() => Utility.RandomMinMax(m_MinDamage, m_MaxDamage);
 
       private void SetDamage(int min, int max)
       {

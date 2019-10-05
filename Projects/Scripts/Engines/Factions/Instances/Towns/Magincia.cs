@@ -2,8 +2,7 @@ namespace Server.Factions
 {
   public class Magincia : Town
   {
-    public Magincia()
-    {
+    public Magincia() =>
       Definition =
         new TownDefinition(
           7,
@@ -19,6 +18,5 @@ namespace Server.Factions
           new TextDefinition(1041393, "Corrupted Faction Town Sigil of Magincia"),
           new Point3D(3714, 2235, 20),
           new Point3D(3712, 2230, 20));
-    }
   }
 }

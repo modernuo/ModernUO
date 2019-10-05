@@ -3,10 +3,7 @@ namespace Server.Items
   public class ExecutionersCap : Item
   {
     [Constructible]
-    public ExecutionersCap() : base(0xF83)
-    {
-      Weight = 1.0;
-    }
+    public ExecutionersCap() : base(0xF83) => Weight = 1.0;
 
     public ExecutionersCap(Serial serial) : base(serial)
     {

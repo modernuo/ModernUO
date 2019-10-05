@@ -8,10 +8,7 @@ namespace Server.Items
   {
     private Timer m_Timer;
 
-    public DisturbingPortraitComponent() : base(0x2A5D)
-    {
-      m_Timer = Timer.DelayCall(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), Change);
-    }
+    public DisturbingPortraitComponent() : base(0x2A5D) => m_Timer = Timer.DelayCall(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), Change);
 
     public DisturbingPortraitComponent(Serial serial) : base(serial)
     {
@@ -92,10 +89,7 @@ namespace Server.Items
   public class DisturbingPortraitDeed : BaseAddonDeed
   {
     [Constructible]
-    public DisturbingPortraitDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public DisturbingPortraitDeed() => LootType = LootType.Blessed;
 
     public DisturbingPortraitDeed(Serial serial) : base(serial)
     {

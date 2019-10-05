@@ -53,10 +53,7 @@ namespace Server.Items
       return false;
     }
 
-    public override bool IsAccessibleTo(Mobile check)
-    {
-      return IsChildOf(check) && Trade?.Valid == true && base.IsAccessibleTo(check);
-    }
+    public override bool IsAccessibleTo(Mobile check) => IsChildOf(check) && Trade?.Valid == true && base.IsAccessibleTo(check);
 
     public override void OnItemAdded(Item item)
     {
@@ -96,12 +93,10 @@ namespace Server.Items
       Trade.Update();
     }
 
-    public override bool IsChildVisibleTo(Mobile m, Item child)
-    {
-      return child is VirtualCheck
+    public override bool IsChildVisibleTo(Mobile m, Item child) =>
+      child is VirtualCheck
         ? AccountGold.Enabled && m.NetState?.NewSecureTrading != true
         : base.IsChildVisibleTo(m, child);
-    }
 
     public override void Serialize(GenericWriter writer)
     {

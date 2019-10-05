@@ -114,10 +114,7 @@ namespace Server.Items
   {
     private int m_LabelNumber;
 
-    public LocalizedContainerComponent(int itemID, int labelNumber) : base(itemID)
-    {
-      m_LabelNumber = labelNumber;
-    }
+    public LocalizedContainerComponent(int itemID, int labelNumber) : base(itemID) => m_LabelNumber = labelNumber;
 
     public LocalizedContainerComponent(Serial serial) : base(serial)
     {

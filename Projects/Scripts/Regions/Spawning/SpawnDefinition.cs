@@ -186,10 +186,7 @@ namespace Server.Regions
       return mobile;
     }
 
-    protected virtual Mobile CreateMobile()
-    {
-      return (Mobile)Activator.CreateInstance(Type);
-    }
+    protected virtual Mobile CreateMobile() => (Mobile)Activator.CreateInstance(Type);
   }
 
   public class SpawnItem : SpawnType
@@ -242,10 +239,7 @@ namespace Server.Regions
       return item;
     }
 
-    protected virtual Item CreateItem()
-    {
-      return (Item)Activator.CreateInstance(Type);
-    }
+    protected virtual Item CreateItem() => (Item)Activator.CreateInstance(Type);
   }
 
   public class SpawnTreasureChest : SpawnItem
@@ -265,10 +259,7 @@ namespace Server.Regions
       m_Height = TileData.ItemTable[ItemID & TileData.MaxItemValue].Height;
     }
 
-    protected override Item CreateItem()
-    {
-      return new BaseTreasureChest(ItemID, Level);
-    }
+    protected override Item CreateItem() => new BaseTreasureChest(ItemID, Level);
   }
 
   public class SpawnGroupElement

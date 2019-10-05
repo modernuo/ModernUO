@@ -101,36 +101,7 @@ namespace Server.Mobiles
     }
 
     //Attempt to restock with item, (return true if restock successful)
-    public bool Restock(Item item, int amount)
-    {
-      return false;
-      /*if ( item.GetType() == m_Type )
-      {
-        if ( item is BaseWeapon )
-        {
-          BaseWeapon weapon = (BaseWeapon)item;
-
-          if ( weapon.Quality == WeaponQuality.Low || weapon.Quality == WeaponQuality.Exceptional || (int)weapon.DurabilityLevel > 0 || (int)weapon.DamageLevel > 0 || (int)weapon.AccuracyLevel > 0 )
-            return false;
-        }
-
-        if ( item is BaseArmor )
-        {
-          BaseArmor armor = (BaseArmor)item;
-
-          if ( armor.Quality == ArmorQuality.Low || armor.Quality == ArmorQuality.Exceptional || (int)armor.Durability > 0 || (int)armor.ProtectionLevel > 0 )
-            return false;
-        }
-
-        m_Amount += amount;
-
-        return true;
-      }
-      else
-      {
-        return false;
-      }*/
-    }
+    public bool Restock(Item item, int amount) => false;
 
     public void OnRestock()
     {
@@ -172,10 +143,7 @@ namespace Server.Mobiles
       m_Amount = MaxAmount;
     }
 
-    private bool IsDeleted(IEntity obj)
-    {
-      return obj.Deleted;
-    }
+    private bool IsDeleted(IEntity obj) => obj.Deleted;
 
     public void DeleteDisplayEntity()
     {

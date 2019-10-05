@@ -4,10 +4,7 @@ namespace Server.Items
   public class BladedStaff : BaseSpear
   {
     [Constructible]
-    public BladedStaff() : base(0x26BD)
-    {
-      Weight = 4.0;
-    }
+    public BladedStaff() : base(0x26BD) => Weight = 4.0;
 
     public BladedStaff(Serial serial) : base(serial)
     {

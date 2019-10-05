@@ -3,10 +3,7 @@ namespace Server.Items
   public class EmeraldMace : DiamondMace
   {
     [Constructible]
-    public EmeraldMace()
-    {
-      WeaponAttributes.ResistPoisonBonus = 5;
-    }
+    public EmeraldMace() => WeaponAttributes.ResistPoisonBonus = 5;
 
     public EmeraldMace(Serial serial) : base(serial)
     {

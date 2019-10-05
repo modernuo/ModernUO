@@ -4,10 +4,7 @@ namespace Server.Items
   public class FemaleLeafChest : BaseArmor
   {
     [Constructible]
-    public FemaleLeafChest() : base(0x2FCB)
-    {
-      Weight = 2.0;
-    }
+    public FemaleLeafChest() : base(0x2FCB) => Weight = 2.0;
 
     public FemaleLeafChest(Serial serial) : base(serial)
     {

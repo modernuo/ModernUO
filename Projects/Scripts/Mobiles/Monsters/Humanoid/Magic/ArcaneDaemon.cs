@@ -50,10 +50,7 @@ namespace Server.Mobiles
 
     public override Poison PoisonImmune => Poison.Deadly;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.ConcussionBlow;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.ConcussionBlow;
 
     public override void GenerateLoot()
     {

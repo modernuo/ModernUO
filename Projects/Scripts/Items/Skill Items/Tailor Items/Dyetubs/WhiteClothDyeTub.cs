@@ -3,10 +3,7 @@ namespace Server.Items /* High seas, loot from merchant ship's hold, also a "unc
   public class WhiteClothDyeTub : DyeTub
   {
     [Constructible]
-    public WhiteClothDyeTub()
-    {
-      DyedHue = Hue = 0x9C2;
-    }
+    public WhiteClothDyeTub() => DyedHue = Hue = 0x9C2;
 
     public WhiteClothDyeTub(Serial serial)
       : base(serial)

@@ -20,10 +20,7 @@ namespace Server.Items
     };
 
     [Constructible]
-    public TaxidermyKit() : base(0x1EBA)
-    {
-      Weight = 1.0;
-    }
+    public TaxidermyKit() : base(0x1EBA) => Weight = 1.0;
 
     public TaxidermyKit(Serial serial) : base(serial)
     {
@@ -86,10 +83,7 @@ namespace Server.Items
     {
       private TaxidermyKit m_Kit;
 
-      public CorpseTarget(TaxidermyKit kit) : base(3, false, TargetFlags.None)
-      {
-        m_Kit = kit;
-      }
+      public CorpseTarget(TaxidermyKit kit) : base(3, false, TargetFlags.None) => m_Kit = kit;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

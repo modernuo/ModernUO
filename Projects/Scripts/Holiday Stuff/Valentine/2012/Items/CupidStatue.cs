@@ -5,10 +5,8 @@ namespace Server.Items
   {
     [Constructible]
     public CupidStatue()
-      : base(0x4F7D)
-    {
+      : base(0x4F7D) =>
       LootType = LootType.Blessed;
-    }
 
     public CupidStatue(Serial serial)
       : base(serial)

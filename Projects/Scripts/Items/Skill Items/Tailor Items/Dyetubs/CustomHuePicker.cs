@@ -124,10 +124,7 @@ namespace Server.Items
       RenderCategories();
     }
 
-    private int GetRadioID(int group, int index)
-    {
-      return index * m_Definition.Groups.Length + group;
-    }
+    private int GetRadioID(int group, int index) => index * m_Definition.Groups.Length + group;
 
     private void RenderBackground()
     {

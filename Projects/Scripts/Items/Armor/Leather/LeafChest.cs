@@ -4,10 +4,7 @@ namespace Server.Items
   public class LeafChest : BaseArmor
   {
     [Constructible]
-    public LeafChest() : base(0x2FC5)
-    {
-      Weight = 2.0;
-    }
+    public LeafChest() : base(0x2FC5) => Weight = 2.0;
 
     public LeafChest(Serial serial) : base(serial)
     {

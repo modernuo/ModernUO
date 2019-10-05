@@ -3,10 +3,7 @@
   // Base class for escorts providing the AwardHumanInNeed option
   public class BaseEscort : MLQuest
   {
-    public BaseEscort()
-    {
-      CompletionNotice = CompletionNoticeShort;
-    }
+    public BaseEscort() => CompletionNotice = CompletionNoticeShort;
 
     public virtual bool AwardHumanInNeed => true;
 

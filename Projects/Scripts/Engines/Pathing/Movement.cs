@@ -264,10 +264,7 @@ namespace Server.Movement
       return moveIsOk;
     }
 
-    public bool CheckMovement(Mobile m, Direction d, out int newZ)
-    {
-      return CheckMovement(m, m.Map, m.Location, d, out newZ);
-    }
+    public bool CheckMovement(Mobile m, Direction d, out int newZ) => CheckMovement(m, m.Map, m.Location, d, out newZ);
 
     public static void Configure()
     {
@@ -499,11 +496,9 @@ namespace Server.Movement
       return moveIsOk;
     }
 
-    private bool CanMoveOver(Mobile m, Mobile t)
-    {
-      return !t.Alive || !m.Alive || t.IsDeadBondedPet || m.IsDeadBondedPet ||
-             t.Hidden && t.AccessLevel > AccessLevel.Player;
-    }
+    private bool CanMoveOver(Mobile m, Mobile t) =>
+      !t.Alive || !m.Alive || t.IsDeadBondedPet || m.IsDeadBondedPet ||
+      t.Hidden && t.AccessLevel > AccessLevel.Player;
 
     private void GetStartZ(Mobile m, Map map, Point3D loc, List<Item> itemList, out int zLow, out int zTop)
     {

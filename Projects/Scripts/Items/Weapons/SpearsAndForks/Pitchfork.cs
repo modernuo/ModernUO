@@ -4,10 +4,7 @@ namespace Server.Items
   public class Pitchfork : BaseSpear
   {
     [Constructible]
-    public Pitchfork() : base(0xE87)
-    {
-      Weight = 11.0;
-    }
+    public Pitchfork() : base(0xE87) => Weight = 11.0;
 
     public Pitchfork(Serial serial) : base(serial)
     {

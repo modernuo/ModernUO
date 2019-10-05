@@ -3,10 +3,7 @@ namespace Server.Items
   public class RangersShortbow : MagicalShortbow
   {
     [Constructible]
-    public RangersShortbow()
-    {
-      Attributes.WeaponSpeed = 5;
-    }
+    public RangersShortbow() => Attributes.WeaponSpeed = 5;
 
     public RangersShortbow(Serial serial) : base(serial)
     {

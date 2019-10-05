@@ -6,10 +6,7 @@ namespace Server.Engines.MLQuests.Rewards
 {
   public abstract class BaseReward
   {
-    public BaseReward(TextDefinition name)
-    {
-      Name = name;
-    }
+    public BaseReward(TextDefinition name) => Name = name;
 
     public TextDefinition Name{ get; set; }
 

@@ -88,10 +88,7 @@ namespace Server
 
     private LootPackEntry[] m_Entries;
 
-    public LootPack(LootPackEntry[] entries)
-    {
-      m_Entries = entries;
-    }
+    public LootPack(LootPackEntry[] entries) => m_Entries = entries;
 
     public static int GetLuckChance(Mobile killer, Mobile victim)
     {
@@ -133,10 +130,7 @@ namespace Server
       return GetLuckChance(highest.m_Mobile, dead);
     }
 
-    public static bool CheckLuck(int chance)
-    {
-      return chance > Utility.Random(10000);
-    }
+    public static bool CheckLuck(int chance) => chance > Utility.Random(10000);
 
     public void Generate(Mobile from, Container cont, bool spawning, int luckChance)
     {
@@ -592,10 +586,7 @@ namespace Server
 
     #region Mondain's Legacy
 
-    private static bool IsMondain(Mobile m)
-    {
-      return MondainsLegacy.IsMLRegion(m.Region);
-    }
+    private static bool IsMondain(Mobile m) => MondainsLegacy.IsMLRegion(m.Region);
 
     #endregion
 

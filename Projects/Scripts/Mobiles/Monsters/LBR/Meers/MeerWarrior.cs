@@ -65,15 +65,9 @@ namespace Server.Mobiles
       base.OnDamage(amount, from, willKill);
     }
 
-    public override int GetHurtSound()
-    {
-      return 0x156;
-    }
+    public override int GetHurtSound() => 0x156;
 
-    public override int GetDeathSound()
-    {
-      return 0x15C;
-    }
+    public override int GetDeathSound() => 0x15C;
 
     public override void Serialize(GenericWriter writer)
     {

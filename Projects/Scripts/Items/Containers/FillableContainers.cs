@@ -12,10 +12,8 @@ namespace Server.Items
     protected Timer m_RespawnTimer;
 
     public FillableContainer(int itemID)
-      : base(itemID)
-    {
+      : base(itemID) =>
       Movable = false;
-    }
 
     public FillableContainer(Serial serial)
       : base(serial)
@@ -271,10 +269,8 @@ namespace Server.Items
   {
     [Constructible]
     public LibraryBookcase()
-      : base(0xA97)
-    {
+      : base(0xA97) =>
       Weight = 1.0;
-    }
 
     public LibraryBookcase(Serial serial)
       : base(serial)
@@ -284,10 +280,7 @@ namespace Server.Items
     public override bool IsLockable => false;
     public override int SpawnThreshold => 5;
 
-    protected override int GetSpawnCount()
-    {
-      return 5 - GetItemsCount();
-    }
+    protected override int GetSpawnCount() => 5 - GetItemsCount();
 
     public override void AcquireContent()
     {
@@ -323,10 +316,8 @@ namespace Server.Items
   {
     [Constructible]
     public FillableLargeCrate()
-      : base(0xE3D)
-    {
+      : base(0xE3D) =>
       Weight = 1.0;
-    }
 
     public FillableLargeCrate(Serial serial)
       : base(serial)
@@ -353,10 +344,8 @@ namespace Server.Items
   {
     [Constructible]
     public FillableSmallCrate()
-      : base(0x9A9)
-    {
+      : base(0x9A9) =>
       Weight = 1.0;
-    }
 
     public FillableSmallCrate(Serial serial)
       : base(serial)
@@ -383,10 +372,8 @@ namespace Server.Items
   {
     [Constructible]
     public FillableWoodenBox()
-      : base(0x9AA)
-    {
+      : base(0x9AA) =>
       Weight = 4.0;
-    }
 
     public FillableWoodenBox(Serial serial)
       : base(serial)
@@ -631,10 +618,8 @@ namespace Server.Items
     }
 
     public FillableBvrge(int weight, Type type, BeverageType content)
-      : base(weight, type)
-    {
+      : base(weight, type) =>
       Content = content;
-    }
 
     public BeverageType Content{ get; }
 

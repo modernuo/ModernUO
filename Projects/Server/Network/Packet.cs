@@ -156,11 +156,9 @@ namespace Server.Network
 
               try
               {
-                using (StreamWriter op = new StreamWriter("net_opt.log", true))
-                {
-                  op.WriteLine("Redundant compile for packet {0}, use Acquire() and Release()", GetType());
-                  op.WriteLine(new StackTrace());
-                }
+                using StreamWriter op = new StreamWriter("net_opt.log", true);
+                op.WriteLine("Redundant compile for packet {0}, use Acquire() and Release()", GetType());
+                op.WriteLine(new StackTrace());
               }
               catch
               {
@@ -215,12 +213,10 @@ namespace Server.Network
         {
           Console.WriteLine("Warning: Compression buffer overflowed on packet 0x{0:X2} ('{1}') (length={2})",
             PacketID, GetType().Name, length);
-          using (StreamWriter op = new StreamWriter("compression_overflow.log", true))
-          {
-            op.WriteLine("{0} Warning: Compression buffer overflowed on packet 0x{1:X2} ('{2}') (length={3})",
-              DateTime.UtcNow, PacketID, GetType().Name, length);
-            op.WriteLine(new StackTrace());
-          }
+          using StreamWriter op = new StreamWriter("compression_overflow.log", true);
+          op.WriteLine("{0} Warning: Compression buffer overflowed on packet 0x{1:X2} ('{2}') (length={3})",
+            DateTime.UtcNow, PacketID, GetType().Name, length);
+          op.WriteLine(new StackTrace());
         }
         else
         {

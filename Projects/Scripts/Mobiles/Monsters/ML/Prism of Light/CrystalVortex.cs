@@ -68,15 +68,9 @@ namespace Server.Mobiles
     }
     */
 
-    public override int GetAngerSound()
-    {
-      return 0x15;
-    }
+    public override int GetAngerSound() => 0x15;
 
-    public override int GetAttackSound()
-    {
-      return 0x28;
-    }
+    public override int GetAttackSound() => 0x28;
 
     public override void Serialize(GenericWriter writer)
     {

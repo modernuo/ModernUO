@@ -18,10 +18,7 @@ namespace Server.Mobiles
     };
 
     [Constructible]
-    public SeekerOfAdventure()
-    {
-      Title = "the seeker of adventure";
-    }
+    public SeekerOfAdventure() => Title = "the seeker of adventure";
 
     public SeekerOfAdventure(Serial serial) : base(serial)
     {

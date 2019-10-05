@@ -68,10 +68,7 @@ namespace Server.Gumps
       set => Delta(ref m_GumpID, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return $"{{ gumppictiled {m_X} {m_Y} {m_Width} {m_Height} {m_GumpID} }}";
-    }
+    public override string Compile(NetState ns) => $"{{ gumppictiled {m_X} {m_Y} {m_Width} {m_Height} {m_GumpID} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

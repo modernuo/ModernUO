@@ -913,10 +913,7 @@ namespace Server.Items
         flags |= toSet;
     }
 
-    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet)
-    {
-      return (flags & toGet) != 0;
-    }
+    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
     public override void Serialize(GenericWriter writer)
     {
@@ -1459,10 +1456,7 @@ namespace Server.Items
       base.OnRemoved(parent);
     }
 
-    private string GetNameString()
-    {
-      return Name ?? $"#{LabelNumber}";
-    }
+    private string GetNameString() => Name ?? $"#{LabelNumber}";
 
     public override void AddNameProperty(ObjectPropertyList list)
     {

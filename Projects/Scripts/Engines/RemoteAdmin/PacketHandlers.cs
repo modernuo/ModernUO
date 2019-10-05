@@ -102,12 +102,10 @@ namespace Server.RemoteAdmin
       }
     }
 
-    private static bool CanAccessAccount(IAccount beholder, IAccount beheld)
-    {
-      return beholder.AccessLevel == AccessLevel.Owner ||
-             beheld.AccessLevel <
-             beholder.AccessLevel; // Cannot see accounts of equal or greater access level unless Owner
-    }
+    private static bool CanAccessAccount(IAccount beholder, IAccount beheld) =>
+      beholder.AccessLevel == AccessLevel.Owner ||
+      beheld.AccessLevel <
+      beholder.AccessLevel;
 
     private static void RemoveAccount(NetState state, PacketReader pvSrc)
     {

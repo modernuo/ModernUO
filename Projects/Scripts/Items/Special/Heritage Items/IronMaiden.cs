@@ -98,10 +98,7 @@ namespace Server.Items
   public class IronMaidenDeed : BaseAddonDeed
   {
     [Constructible]
-    public IronMaidenDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public IronMaidenDeed() => LootType = LootType.Blessed;
 
     public IronMaidenDeed(Serial serial) : base(serial)
     {

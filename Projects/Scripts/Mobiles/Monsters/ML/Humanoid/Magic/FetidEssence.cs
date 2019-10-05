@@ -52,30 +52,15 @@ namespace Server.Mobiles
       AddLoot(LootPack.FilthyRich);
     }
 
-    public override int GetAngerSound()
-    {
-      return 0x56d;
-    }
+    public override int GetAngerSound() => 0x56d;
 
-    public override int GetIdleSound()
-    {
-      return 0x56b;
-    }
+    public override int GetIdleSound() => 0x56b;
 
-    public override int GetAttackSound()
-    {
-      return 0x56c;
-    }
+    public override int GetAttackSound() => 0x56c;
 
-    public override int GetHurtSound()
-    {
-      return 0x56c;
-    }
+    public override int GetHurtSound() => 0x56c;
 
-    public override int GetDeathSound()
-    {
-      return 0x56e;
-    }
+    public override int GetDeathSound() => 0x56e;
 
     public override void Serialize(GenericWriter writer)
     {

@@ -3,10 +3,7 @@ namespace Server.Items
   public class StuddedDo : BaseArmor
   {
     [Constructible]
-    public StuddedDo() : base(0x27C7)
-    {
-      Weight = 8.0;
-    }
+    public StuddedDo() : base(0x27C7) => Weight = 8.0;
 
     public StuddedDo(Serial serial) : base(serial)
     {

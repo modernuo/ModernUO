@@ -4,10 +4,7 @@ namespace Server.Items
   public class GnarledStaff : BaseStaff
   {
     [Constructible]
-    public GnarledStaff() : base(0x13F8)
-    {
-      Weight = 3.0;
-    }
+    public GnarledStaff() : base(0x13F8) => Weight = 3.0;
 
     public GnarledStaff(Serial serial) : base(serial)
     {

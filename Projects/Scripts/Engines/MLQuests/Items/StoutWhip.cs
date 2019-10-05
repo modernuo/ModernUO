@@ -3,10 +3,7 @@ namespace Server.Items
   public class StoutWhip : Item
   {
     [Constructible]
-    public StoutWhip() : base(0x166F)
-    {
-      LootType = LootType.Blessed;
-    }
+    public StoutWhip() : base(0x166F) => LootType = LootType.Blessed;
 
     public StoutWhip(Serial serial) : base(serial)
     {

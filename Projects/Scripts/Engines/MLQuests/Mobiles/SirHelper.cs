@@ -40,10 +40,7 @@ namespace Server.Engines.MLQuests.Mobiles
     {
     }
 
-    public override bool GetGender()
-    {
-      return false; // male
-    }
+    public override bool GetGender() => false;
 
     public override void CheckMorph()
     {

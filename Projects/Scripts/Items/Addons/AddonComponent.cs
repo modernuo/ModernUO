@@ -61,10 +61,7 @@ namespace Server.Items
     private int m_LabelNumber;
 
     [Constructible]
-    public LocalizedAddonComponent(int itemID, int labelNumber) : base(itemID)
-    {
-      m_LabelNumber = labelNumber;
-    }
+    public LocalizedAddonComponent(int itemID, int labelNumber) : base(itemID) => m_LabelNumber = labelNumber;
 
     public LocalizedAddonComponent(Serial serial) : base(serial)
     {

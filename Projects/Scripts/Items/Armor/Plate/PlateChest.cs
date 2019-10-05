@@ -4,10 +4,7 @@ namespace Server.Items
   public class PlateChest : BaseArmor
   {
     [Constructible]
-    public PlateChest() : base(0x1415)
-    {
-      Weight = 10.0;
-    }
+    public PlateChest() : base(0x1415) => Weight = 10.0;
 
     public PlateChest(Serial serial) : base(serial)
     {

@@ -149,25 +149,13 @@ namespace Server.Mobiles
       base.OnGotMeleeAttack(attacker);
     }
 
-    public override int GetIdleSound()
-    {
-      return 0x1BF;
-    }
+    public override int GetIdleSound() => 0x1BF;
 
-    public override int GetAttackSound()
-    {
-      return 0x1C0;
-    }
+    public override int GetAttackSound() => 0x1C0;
 
-    public override int GetHurtSound()
-    {
-      return 0x1C1;
-    }
+    public override int GetHurtSound() => 0x1C1;
 
-    public override int GetDeathSound()
-    {
-      return 0x1C2;
-    }
+    public override int GetDeathSound() => 0x1C2;
 
     public override void Serialize(GenericWriter writer)
     {

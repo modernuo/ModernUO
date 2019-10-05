@@ -152,10 +152,7 @@ namespace Server.Items
         house.Visits++;
     }
 
-    public override bool UseLocks()
-    {
-      return FindHouse()?.IsAosRules != true;
-    }
+    public override bool UseLocks() => FindHouse()?.IsAosRules != true;
 
     public override void Use(Mobile from)
     {

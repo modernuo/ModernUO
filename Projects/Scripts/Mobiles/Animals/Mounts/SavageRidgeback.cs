@@ -48,15 +48,9 @@ namespace Server.Mobiles
     public override HideType HideType => HideType.Spined;
     public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
-    public override bool OverrideBondingReqs()
-    {
-      return true;
-    }
+    public override bool OverrideBondingReqs() => true;
 
-    public override double GetControlChance(Mobile m, bool useBaseSkill = false)
-    {
-      return 1.0;
-    }
+    public override double GetControlChance(Mobile m, bool useBaseSkill = false) => 1.0;
 
     public override void Serialize(GenericWriter writer)
     {

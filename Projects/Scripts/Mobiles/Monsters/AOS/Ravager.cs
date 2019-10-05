@@ -44,10 +44,7 @@ namespace Server.Mobiles
 
     public override string DefaultName => "a ravager";
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return Utility.RandomBool() ? WeaponAbility.Dismount : WeaponAbility.CrushingBlow;
-    }
+    public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.Dismount : WeaponAbility.CrushingBlow;
 
     public override void GenerateLoot()
     {

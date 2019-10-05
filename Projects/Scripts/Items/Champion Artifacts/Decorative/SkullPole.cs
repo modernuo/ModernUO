@@ -3,10 +3,7 @@ namespace Server.Items
   public class SkullPole : Item
   {
     [Constructible]
-    public SkullPole() : base(0x2204)
-    {
-      Weight = 5;
-    }
+    public SkullPole() : base(0x2204) => Weight = 5;
 
     public SkullPole(Serial serial) : base(serial)
     {

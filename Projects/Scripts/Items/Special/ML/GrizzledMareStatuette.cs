@@ -6,10 +6,7 @@ namespace Server.Items
   public class GrizzledMareStatuette : BaseImprisonedMobile
   {
     [Constructible]
-    public GrizzledMareStatuette() : base(0x2617)
-    {
-      Weight = 1.0;
-    }
+    public GrizzledMareStatuette() : base(0x2617) => Weight = 1.0;
 
     public GrizzledMareStatuette(Serial serial) : base(serial)
     {

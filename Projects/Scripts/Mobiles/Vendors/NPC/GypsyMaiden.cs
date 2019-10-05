@@ -18,10 +18,7 @@ namespace Server.Mobiles
 
     protected override List<SBInfo> SBInfos => m_SBInfos;
 
-    public override bool GetGender()
-    {
-      return true; // always female
-    }
+    public override bool GetGender() => true;
 
     public override void InitSBInfo()
     {

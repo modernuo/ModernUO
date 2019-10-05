@@ -24,10 +24,7 @@ namespace Server.Ethics
 
     protected PlayerCollection m_Players;
 
-    public Ethic()
-    {
-      m_Players = new PlayerCollection();
-    }
+    public Ethic() => m_Players = new PlayerCollection();
 
     public EthicDefinition Definition => m_Definition;
 
@@ -84,10 +81,7 @@ namespace Server.Ethics
       return false;
     }
 
-    public static bool IsImbued(Item item)
-    {
-      return IsImbued(item, false);
-    }
+    public static bool IsImbued(Item item) => IsImbued(item, false);
 
     public static bool IsImbued(Item item, bool recurse)
     {
@@ -166,15 +160,9 @@ namespace Server.Ethics
       }
     }
 
-    public static Ethic Find(Mobile mob)
-    {
-      return Find(mob, false, false);
-    }
+    public static Ethic Find(Mobile mob) => Find(mob, false, false);
 
-    public static Ethic Find(Mobile mob, bool inherit)
-    {
-      return Find(mob, inherit, false);
-    }
+    public static Ethic Find(Mobile mob, bool inherit) => Find(mob, inherit, false);
 
     public static Ethic Find(Mobile mob, bool inherit, bool allegiance)
     {

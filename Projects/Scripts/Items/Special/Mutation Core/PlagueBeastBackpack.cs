@@ -16,10 +16,7 @@ namespace Server.Items
       0x2B, 0x42, 0x54, 0x60
     };
 
-    public PlagueBeastBackpack() : base(0x261B)
-    {
-      Layer = Layer.Backpack;
-    }
+    public PlagueBeastBackpack() : base(0x261B) => Layer = Layer.Backpack;
 
     public PlagueBeastBackpack(Serial serial) : base(serial)
     {

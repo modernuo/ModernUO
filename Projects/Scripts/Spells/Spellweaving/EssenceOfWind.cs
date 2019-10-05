@@ -61,20 +61,11 @@ namespace Server.Spells.Spellweaving
       FinishSequence();
     }
 
-    public static int GetFCMalus(Mobile m)
-    {
-      return m_Table.TryGetValue(m, out EssenceOfWindInfo info) ? info.FCMalus : 0;
-    }
+    public static int GetFCMalus(Mobile m) => m_Table.TryGetValue(m, out EssenceOfWindInfo info) ? info.FCMalus : 0;
 
-    public static int GetSSIMalus(Mobile m)
-    {
-      return m_Table.TryGetValue(m, out EssenceOfWindInfo info) ? info.SSIMalus : 0;
-    }
+    public static int GetSSIMalus(Mobile m) => m_Table.TryGetValue(m, out EssenceOfWindInfo info) ? info.SSIMalus : 0;
 
-    public static bool IsDebuffed(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool IsDebuffed(Mobile m) => m_Table.ContainsKey(m);
 
     public static void StopDebuffing(Mobile m, bool message)
     {
@@ -107,10 +98,7 @@ namespace Server.Spells.Spellweaving
     {
       private Mobile m_Mobile;
 
-      public ExpireTimer(Mobile m, TimeSpan delay) : base(delay)
-      {
-        m_Mobile = m;
-      }
+      public ExpireTimer(Mobile m, TimeSpan delay) : base(delay) => m_Mobile = m;
 
       protected override void OnTick()
       {

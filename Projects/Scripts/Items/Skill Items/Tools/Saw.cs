@@ -6,16 +6,10 @@ namespace Server.Items
   public class Saw : BaseTool
   {
     [Constructible]
-    public Saw() : base(0x1034)
-    {
-      Weight = 2.0;
-    }
+    public Saw() : base(0x1034) => Weight = 2.0;
 
     [Constructible]
-    public Saw(int uses) : base(uses, 0x1034)
-    {
-      Weight = 2.0;
-    }
+    public Saw(int uses) : base(uses, 0x1034) => Weight = 2.0;
 
     public Saw(Serial serial) : base(serial)
     {

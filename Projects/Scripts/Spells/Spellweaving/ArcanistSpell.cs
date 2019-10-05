@@ -30,15 +30,9 @@ namespace Server.Spells.Spellweaving
       return focus?.Deleted != false ? 0 : focus.StrengthBonus;
     }
 
-    public static ArcaneFocus FindArcaneFocus(Mobile from)
-    {
-      return from.Holding as ArcaneFocus ?? from.Backpack?.FindItemByType<ArcaneFocus>();
-    }
+    public static ArcaneFocus FindArcaneFocus(Mobile from) => from.Holding as ArcaneFocus ?? from.Backpack?.FindItemByType<ArcaneFocus>();
 
-    public static bool CheckExpansion(Mobile from)
-    {
-      return !(from is PlayerMobile) || from.NetState?.SupportsExpansion(Expansion.ML) == true;
-    }
+    public static bool CheckExpansion(Mobile from) => !(from is PlayerMobile) || from.NetState?.SupportsExpansion(Expansion.ML) == true;
 
     public override bool CheckCast()
     {
@@ -91,10 +85,7 @@ namespace Server.Spells.Spellweaving
       max = RequiredSkill + 37.5;
     }
 
-    public override int GetMana()
-    {
-      return RequiredMana;
-    }
+    public override int GetMana() => RequiredMana;
 
     public override void DoFizzle()
     {

@@ -3,10 +3,7 @@ namespace Server.Items
   public class TrueRadiantScimitar : RadiantScimitar
   {
     [Constructible]
-    public TrueRadiantScimitar()
-    {
-      Attributes.NightSight = 1;
-    }
+    public TrueRadiantScimitar() => Attributes.NightSight = 1;
 
     public TrueRadiantScimitar(Serial serial) : base(serial)
     {

@@ -128,10 +128,7 @@ namespace Server.Items
   public class AppleTreeDeed : BaseAddonDeed
   {
     [Constructible]
-    public AppleTreeDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public AppleTreeDeed() => LootType = LootType.Blessed;
 
     public AppleTreeDeed(Serial serial) : base(serial)
     {
@@ -189,10 +186,7 @@ namespace Server.Items
   public class PeachTreeDeed : BaseAddonDeed
   {
     [Constructible]
-    public PeachTreeDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public PeachTreeDeed() => LootType = LootType.Blessed;
 
     public PeachTreeDeed(Serial serial) : base(serial)
     {

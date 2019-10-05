@@ -74,10 +74,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.Gems, 8);
     }
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.BleedAttack;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 
     public override void Serialize(GenericWriter writer)
     {

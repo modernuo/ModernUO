@@ -43,9 +43,6 @@ namespace Server.Network
       return taskCompletion.Task;
     }
 
-    public T Dequeue()
-    {
-      return m_Queue.Take();
-    }
+    public T Dequeue() => m_Queue.Take();
   }
 }

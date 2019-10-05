@@ -45,10 +45,7 @@ namespace Server.Mobiles
 
     public override string DefaultName => "a chaos daemon";
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.CrushingBlow;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.CrushingBlow;
 
     public override void GenerateLoot()
     {

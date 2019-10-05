@@ -38,10 +38,7 @@ namespace Server.Regions
         e.Mobile.Location = house.BanLocation;
     }
 
-    public override bool AllowHousing(Mobile from, Point3D p)
-    {
-      return false;
-    }
+    public override bool AllowHousing(Mobile from, Point3D p) => false;
 
     private static Rectangle3D[] GetArea(BaseHouse house)
     {
@@ -71,10 +68,7 @@ namespace Server.Regions
       return true;
     }
 
-    public override bool CheckAccessibility(Item item, Mobile from)
-    {
-      return House.CheckAccessibility(item, from);
-    }
+    public override bool CheckAccessibility(Item item, Mobile from) => House.CheckAccessibility(item, from);
 
     // Use OnLocationChanged instead of OnEnter because it can be that we enter a house region even though we're not actually inside the house
     public override void OnLocationChanged(Mobile m, Point3D oldLocation)

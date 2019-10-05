@@ -216,20 +216,11 @@ namespace Server.Factions
       }
     }
 
-    public bool IsCandidate(Mobile mob)
-    {
-      return FindCandidate(mob) != null;
-    }
+    public bool IsCandidate(Mobile mob) => FindCandidate(mob) != null;
 
-    public bool CanVote(Mobile mob)
-    {
-      return CurrentState == ElectionState.Election && !HasVoted(mob);
-    }
+    public bool CanVote(Mobile mob) => CurrentState == ElectionState.Election && !HasVoted(mob);
 
-    public bool HasVoted(Mobile mob)
-    {
-      return FindVoter(mob) != null;
-    }
+    public bool HasVoted(Mobile mob) => FindVoter(mob) != null;
 
     public Candidate FindCandidate(Mobile mob)
     {

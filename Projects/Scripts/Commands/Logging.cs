@@ -81,10 +81,8 @@ namespace Server.Commands
         AppendPath(ref path, from.AccessLevel.ToString());
         path = Path.Combine(path, $"{name}.log");
 
-        using (StreamWriter sw = new StreamWriter(path, true))
-        {
-          sw.WriteLine("{0}: {1}: {2}", DateTime.UtcNow, from.NetState, text);
-        }
+        using StreamWriter sw = new StreamWriter(path, true);
+        sw.WriteLine("{0}: {1}: {2}", DateTime.UtcNow, @from.NetState, text);
       }
       catch
       {

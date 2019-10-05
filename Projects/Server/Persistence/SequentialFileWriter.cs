@@ -108,15 +108,9 @@ namespace Server
       base.Dispose(disposing);
     }
 
-    public override int Read(byte[] buffer, int offset, int count)
-    {
-      throw new InvalidOperationException();
-    }
+    public override int Read(byte[] buffer, int offset, int count) => throw new InvalidOperationException();
 
-    public override long Seek(long offset, SeekOrigin origin)
-    {
-      throw new InvalidOperationException();
-    }
+    public override long Seek(long offset, SeekOrigin origin) => throw new InvalidOperationException();
 
     public override void SetLength(long value)
     {

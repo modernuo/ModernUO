@@ -3,10 +3,7 @@ namespace Server.Items
   public class Lute : BaseInstrument
   {
     [Constructible]
-    public Lute() : base(0xEB3, 0x4C, 0x4D)
-    {
-      Weight = 5.0;
-    }
+    public Lute() : base(0xEB3, 0x4C, 0x4D) => Weight = 5.0;
 
     public Lute(Serial serial) : base(serial)
     {

@@ -146,10 +146,7 @@ namespace Server.Multis
     {
       private BaseBoatDeed m_Deed;
 
-      public InternalTarget(BaseBoatDeed deed) : base(deed.MultiID, deed.Offset)
-      {
-        m_Deed = deed;
-      }
+      public InternalTarget(BaseBoatDeed deed) : base(deed.MultiID, deed.Offset) => m_Deed = deed;
 
       protected override void OnTarget(Mobile from, object o)
       {

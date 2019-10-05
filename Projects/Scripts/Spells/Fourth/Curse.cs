@@ -35,10 +35,7 @@ namespace Server.Spells.Fourth
       m.UpdateResistances();
     }
 
-    public static bool UnderEffect(Mobile m)
-    {
-      return m_UnderEffect.Contains(m);
-    }
+    public static bool UnderEffect(Mobile m) => m_UnderEffect.Contains(m);
 
     public void Target(Mobile m)
     {

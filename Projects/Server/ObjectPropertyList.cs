@@ -151,10 +151,7 @@ namespace Server
       Add(number, string.Format(format, args));
     }
 
-    private int GetStringNumber()
-    {
-      return m_StringNumbers[m_Strings++ % m_StringNumbers.Length];
-    }
+    private int GetStringNumber() => m_StringNumbers[m_Strings++ % m_StringNumbers.Length];
 
     public void Add(string text)
     {

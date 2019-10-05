@@ -3,10 +3,7 @@ namespace Server.Items
   public class EmptyWoodenBowl : Item
   {
     [Constructible]
-    public EmptyWoodenBowl() : base(0x15F8)
-    {
-      Weight = 1.0;
-    }
+    public EmptyWoodenBowl() : base(0x15F8) => Weight = 1.0;
 
     public EmptyWoodenBowl(Serial serial) : base(serial)
     {
@@ -30,10 +27,7 @@ namespace Server.Items
   public class EmptyPewterBowl : Item
   {
     [Constructible]
-    public EmptyPewterBowl() : base(0x15FD)
-    {
-      Weight = 1.0;
-    }
+    public EmptyPewterBowl() : base(0x15FD) => Weight = 1.0;
 
     public EmptyPewterBowl(Serial serial) : base(serial)
     {
@@ -400,10 +394,7 @@ namespace Server.Items
   public class EmptyWoodenTub : Item
   {
     [Constructible]
-    public EmptyWoodenTub() : base(0x1605)
-    {
-      Weight = 2.0;
-    }
+    public EmptyWoodenTub() : base(0x1605) => Weight = 2.0;
 
     public EmptyWoodenTub(Serial serial) : base(serial)
     {
@@ -428,10 +419,7 @@ namespace Server.Items
   public class EmptyPewterTub : Item
   {
     [Constructible]
-    public EmptyPewterTub() : base(0x1603)
-    {
-      Weight = 2.0;
-    }
+    public EmptyPewterTub() : base(0x1603) => Weight = 2.0;
 
     public EmptyPewterTub(Serial serial) : base(serial)
     {

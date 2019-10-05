@@ -6,16 +6,10 @@ namespace Server.Items
   public class FletcherTools : BaseTool
   {
     [Constructible]
-    public FletcherTools() : base(0x1022)
-    {
-      Weight = 2.0;
-    }
+    public FletcherTools() : base(0x1022) => Weight = 2.0;
 
     [Constructible]
-    public FletcherTools(int uses) : base(uses, 0x1022)
-    {
-      Weight = 2.0;
-    }
+    public FletcherTools(int uses) : base(uses, 0x1022) => Weight = 2.0;
 
     public FletcherTools(Serial serial) : base(serial)
     {

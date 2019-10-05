@@ -189,10 +189,7 @@ namespace Server.Engines.Quests.Hag
 
   public class FindZeefzorpulObjective : QuestObjective
   {
-    public FindZeefzorpulObjective(Point3D impLocation)
-    {
-      ImpLocation = impLocation;
-    }
+    public FindZeefzorpulObjective(Point3D impLocation) => ImpLocation = impLocation;
 
     public FindZeefzorpulObjective()
     {

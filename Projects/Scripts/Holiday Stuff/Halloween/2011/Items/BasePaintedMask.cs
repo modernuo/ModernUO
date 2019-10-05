@@ -35,13 +35,7 @@ namespace Server.Items.Holiday
     {
     }
 
-    public override string DefaultName
-    {
-      get
-      {
-        return m_Staffer != null ? $"{MaskName} hand painted by {m_Staffer}" : MaskName;
-      }
-    }
+    public override string DefaultName => m_Staffer != null ? $"{MaskName} hand painted by {m_Staffer}" : MaskName;
 
     public virtual string MaskName => "A Mask";
 

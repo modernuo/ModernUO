@@ -19,10 +19,7 @@ namespace Server.Engines.Chat
       m_Voices = new List<ChatUser>();
     }
 
-    public Channel(string name, string password) : this(name)
-    {
-      m_Password = password;
-    }
+    public Channel(string name, string password) : this(name) => m_Password = password;
 
     public string Name
     {
@@ -73,35 +70,17 @@ namespace Server.Engines.Chat
 
     public static List<Channel> Channels{ get; } = new List<Channel>();
 
-    public bool Contains(ChatUser user)
-    {
-      return m_Users.Contains(user);
-    }
+    public bool Contains(ChatUser user) => m_Users.Contains(user);
 
-    public bool IsBanned(ChatUser user)
-    {
-      return m_Banned.Contains(user);
-    }
+    public bool IsBanned(ChatUser user) => m_Banned.Contains(user);
 
-    public bool CanTalk(ChatUser user)
-    {
-      return !m_VoiceRestricted || m_Voices.Contains(user) || m_Moderators.Contains(user);
-    }
+    public bool CanTalk(ChatUser user) => !m_VoiceRestricted || m_Voices.Contains(user) || m_Moderators.Contains(user);
 
-    public bool IsModerator(ChatUser user)
-    {
-      return m_Moderators.Contains(user);
-    }
+    public bool IsModerator(ChatUser user) => m_Moderators.Contains(user);
 
-    public bool IsVoiced(ChatUser user)
-    {
-      return m_Voices.Contains(user);
-    }
+    public bool IsVoiced(ChatUser user) => m_Voices.Contains(user);
 
-    public bool ValidatePassword(string password)
-    {
-      return m_Password == null || Insensitive.Equals(m_Password, password);
-    }
+    public bool ValidatePassword(string password) => m_Password == null || Insensitive.Equals(m_Password, password);
 
     public bool ValidateModerator(ChatUser user)
     {

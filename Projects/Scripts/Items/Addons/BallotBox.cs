@@ -67,10 +67,7 @@ namespace Server.Items
       return house?.IsOwner(from) == true;
     }
 
-    public bool HasVoted(Mobile from)
-    {
-      return Yes.Contains(from) || No.Contains(from);
-    }
+    public bool HasVoted(Mobile from) => Yes.Contains(from) || No.Contains(from);
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {
@@ -271,10 +268,7 @@ namespace Server.Items
     {
       private BallotBox m_Box;
 
-      public TopicPrompt(BallotBox box)
-      {
-        m_Box = box;
-      }
+      public TopicPrompt(BallotBox box) => m_Box = box;
 
       public override void OnResponse(Mobile from, string text)
       {

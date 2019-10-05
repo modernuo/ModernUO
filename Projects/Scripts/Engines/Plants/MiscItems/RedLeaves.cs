@@ -50,10 +50,7 @@ namespace Server.Items
     {
       private RedLeaves m_RedLeaves;
 
-      public InternalTarget(RedLeaves redLeaves) : base(3, false, TargetFlags.None)
-      {
-        m_RedLeaves = redLeaves;
-      }
+      public InternalTarget(RedLeaves redLeaves) : base(3, false, TargetFlags.None) => m_RedLeaves = redLeaves;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

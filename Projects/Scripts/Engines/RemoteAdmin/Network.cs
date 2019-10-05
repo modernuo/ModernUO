@@ -197,10 +197,7 @@ namespace Server.RemoteAdmin
       }
     }
 
-    public static bool IsAuth(NetState state)
-    {
-      return m_Auth.Contains(state);
-    }
+    public static bool IsAuth(NetState state) => m_Auth.Contains(state);
 
     private static void CleanUp()
     {

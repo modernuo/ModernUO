@@ -131,10 +131,7 @@ namespace Server.Engines.MLQuests.Definitions
 
       public override bool ShowDetailed => false;
 
-      public override bool CheckItem(Item item)
-      {
-        return item is Pitcher pitcher && pitcher.Content == BeverageType.Water && pitcher.Quantity > 0;
-      }
+      public override bool CheckItem(Item item) => item is Pitcher pitcher && pitcher.Content == BeverageType.Water && pitcher.Quantity > 0;
     }
   }
 
@@ -413,20 +410,11 @@ namespace Server.Engines.MLQuests.Definitions
     {
     }
 
-    public override int GetAttackSound()
-    {
-      return 0x82;
-    }
+    public override int GetAttackSound() => 0x82;
 
-    public override int GetHurtSound()
-    {
-      return 0x83;
-    }
+    public override int GetHurtSound() => 0x83;
 
-    public override int GetDeathSound()
-    {
-      return 0x84;
-    }
+    public override int GetDeathSound() => 0x84;
 
     public override void Serialize(GenericWriter writer)
     {
@@ -446,10 +434,7 @@ namespace Server.Engines.MLQuests.Definitions
   public class BravehornsMate : Hind
   {
     [Constructible]
-    public BravehornsMate()
-    {
-      Tamable = false;
-    }
+    public BravehornsMate() => Tamable = false;
 
     public BravehornsMate(Serial serial)
       : base(serial)

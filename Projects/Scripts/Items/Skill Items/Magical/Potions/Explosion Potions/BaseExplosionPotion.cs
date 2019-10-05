@@ -221,10 +221,7 @@ namespace Server.Items
 
     private class ThrowTarget : Target
     {
-      public ThrowTarget(BaseExplosionPotion potion) : base(12, true, TargetFlags.None)
-      {
-        Potion = potion;
-      }
+      public ThrowTarget(BaseExplosionPotion potion) : base(12, true, TargetFlags.None) => Potion = potion;
 
       public BaseExplosionPotion Potion{ get; }
 

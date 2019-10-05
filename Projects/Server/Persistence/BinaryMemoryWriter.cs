@@ -28,10 +28,8 @@ namespace Server
     private MemoryStream stream;
 
     public BinaryMemoryWriter()
-      : base(new MemoryStream(512), true)
-    {
+      : base(new MemoryStream(512), true) =>
       stream = UnderlyingStream as MemoryStream;
-    }
 
     protected override int BufferSize => 512;
 

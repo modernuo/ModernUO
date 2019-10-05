@@ -3,10 +3,7 @@ namespace Server.Items
   public class PlateSuneate : BaseArmor
   {
     [Constructible]
-    public PlateSuneate() : base(0x2788)
-    {
-      Weight = 7.0;
-    }
+    public PlateSuneate() : base(0x2788) => Weight = 7.0;
 
     public PlateSuneate(Serial serial) : base(serial)
     {

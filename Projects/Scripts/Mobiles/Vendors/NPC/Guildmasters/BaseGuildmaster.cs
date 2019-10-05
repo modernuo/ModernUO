@@ -7,10 +7,7 @@ namespace Server.Mobiles
 {
   public abstract class BaseGuildmaster : BaseVendor
   {
-    public BaseGuildmaster(string title) : base(title)
-    {
-      Title = $"the {title} {(Female ? "guildmistress" : "guildmaster")}";
-    }
+    public BaseGuildmaster(string title) : base(title) => Title = $"the {title} {(Female ? "guildmistress" : "guildmaster")}";
 
     public BaseGuildmaster(Serial serial) : base(serial)
     {
@@ -33,10 +30,7 @@ namespace Server.Mobiles
     {
     }
 
-    public virtual bool CheckCustomReqs(PlayerMobile pm)
-    {
-      return true;
-    }
+    public virtual bool CheckCustomReqs(PlayerMobile pm) => true;
 
     public virtual void SayGuildTo(Mobile m)
     {

@@ -3,10 +3,7 @@ namespace Server.Items
   public class LeatherHiroSode : BaseArmor
   {
     [Constructible]
-    public LeatherHiroSode() : base(0x277E)
-    {
-      Weight = 1.0;
-    }
+    public LeatherHiroSode() : base(0x277E) => Weight = 1.0;
 
     public LeatherHiroSode(Serial serial) : base(serial)
     {

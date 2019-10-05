@@ -29,10 +29,7 @@ namespace Server.Items
   public class BodySash : BaseMiddleTorso
   {
     [Constructible]
-    public BodySash(int hue = 0) : base(0x1541, hue)
-    {
-      Weight = 1.0;
-    }
+    public BodySash(int hue = 0) : base(0x1541, hue) => Weight = 1.0;
 
     public BodySash(Serial serial) : base(serial)
     {
@@ -57,10 +54,7 @@ namespace Server.Items
   public class FullApron : BaseMiddleTorso
   {
     [Constructible]
-    public FullApron(int hue = 0) : base(0x153d, hue)
-    {
-      Weight = 4.0;
-    }
+    public FullApron(int hue = 0) : base(0x153d, hue) => Weight = 4.0;
 
     public FullApron(Serial serial) : base(serial)
     {
@@ -85,10 +79,7 @@ namespace Server.Items
   public class Doublet : BaseMiddleTorso
   {
     [Constructible]
-    public Doublet(int hue = 0) : base(0x1F7B, hue)
-    {
-      Weight = 2.0;
-    }
+    public Doublet(int hue = 0) : base(0x1F7B, hue) => Weight = 2.0;
 
     public Doublet(Serial serial) : base(serial)
     {
@@ -113,10 +104,7 @@ namespace Server.Items
   public class Surcoat : BaseMiddleTorso
   {
     [Constructible]
-    public Surcoat(int hue = 0) : base(0x1FFD, hue)
-    {
-      Weight = 6.0;
-    }
+    public Surcoat(int hue = 0) : base(0x1FFD, hue) => Weight = 6.0;
 
     public Surcoat(Serial serial) : base(serial)
     {
@@ -144,10 +132,7 @@ namespace Server.Items
   public class Tunic : BaseMiddleTorso
   {
     [Constructible]
-    public Tunic(int hue = 0) : base(0x1FA1, hue)
-    {
-      Weight = 5.0;
-    }
+    public Tunic(int hue = 0) : base(0x1FA1, hue) => Weight = 5.0;
 
     public Tunic(Serial serial) : base(serial)
     {
@@ -172,10 +157,7 @@ namespace Server.Items
   public class FormalShirt : BaseMiddleTorso
   {
     [Constructible]
-    public FormalShirt(int hue = 0) : base(0x2310, hue)
-    {
-      Weight = 1.0;
-    }
+    public FormalShirt(int hue = 0) : base(0x2310, hue) => Weight = 1.0;
 
     public FormalShirt(Serial serial) : base(serial)
     {
@@ -203,10 +185,7 @@ namespace Server.Items
   public class JesterSuit : BaseMiddleTorso
   {
     [Constructible]
-    public JesterSuit(int hue = 0) : base(0x1F9F, hue)
-    {
-      Weight = 4.0;
-    }
+    public JesterSuit(int hue = 0) : base(0x1F9F, hue) => Weight = 4.0;
 
     public JesterSuit(Serial serial) : base(serial)
     {
@@ -231,10 +210,7 @@ namespace Server.Items
   public class JinBaori : BaseMiddleTorso
   {
     [Constructible]
-    public JinBaori(int hue = 0) : base(0x27A1, hue)
-    {
-      Weight = 3.0;
-    }
+    public JinBaori(int hue = 0) : base(0x27A1, hue) => Weight = 3.0;
 
     public JinBaori(Serial serial) : base(serial)
     {

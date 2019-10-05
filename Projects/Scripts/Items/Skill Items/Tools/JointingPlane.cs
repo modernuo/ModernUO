@@ -6,16 +6,10 @@ namespace Server.Items
   public class JointingPlane : BaseTool
   {
     [Constructible]
-    public JointingPlane() : base(0x1030)
-    {
-      Weight = 2.0;
-    }
+    public JointingPlane() : base(0x1030) => Weight = 2.0;
 
     [Constructible]
-    public JointingPlane(int uses) : base(uses, 0x1030)
-    {
-      Weight = 2.0;
-    }
+    public JointingPlane(int uses) : base(uses, 0x1030) => Weight = 2.0;
 
     public JointingPlane(Serial serial) : base(serial)
     {

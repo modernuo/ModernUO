@@ -90,10 +90,7 @@ namespace Server
 
     }
 
-    public bool Check(Point3D loc, Point3D goal, int range)
-    {
-      return Utility.InRange(loc, goal, range) && (range > 1 || Math.Abs(loc.Z - goal.Z) < 16);
-    }
+    public bool Check(Point3D loc, Point3D goal, int range) => Utility.InRange(loc, goal, range) && (range > 1 || Math.Abs(loc.Z - goal.Z) < 16);
 
     public bool Follow(bool run, int range)
     {

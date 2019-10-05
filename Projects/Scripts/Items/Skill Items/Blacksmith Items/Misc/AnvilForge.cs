@@ -7,10 +7,7 @@ namespace Server.Items
   public class Anvil : Item
   {
     [Constructible]
-    public Anvil() : base(0xFAF)
-    {
-      Movable = false;
-    }
+    public Anvil() : base(0xFAF) => Movable = false;
 
     public Anvil(Serial serial) : base(serial)
     {
@@ -35,10 +32,7 @@ namespace Server.Items
   public class Forge : Item
   {
     [Constructible]
-    public Forge() : base(0xFB1)
-    {
-      Movable = false;
-    }
+    public Forge() : base(0xFB1) => Movable = false;
 
     public Forge(Serial serial) : base(serial)
     {

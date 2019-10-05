@@ -124,15 +124,9 @@ namespace Server.Spells.Chivalry
       max = RequiredSkill + 50.0;
     }
 
-    public override int GetMana()
-    {
-      return 0;
-    }
+    public override int GetMana() => 0;
 
-    public int ComputePowerValue(int div)
-    {
-      return ComputePowerValue(Caster, div);
-    }
+    public int ComputePowerValue(int div) => ComputePowerValue(Caster, div);
 
     public static int ComputePowerValue(Mobile from, int div)
     {

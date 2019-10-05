@@ -15,10 +15,8 @@ namespace Server.Engines.ConPVP
 
     [Constructible]
     public CTFBoard()
-      : base(7774)
-    {
+      : base(7774) =>
       Movable = false;
-    }
 
     public CTFBoard(Serial serial)
       : base(serial)
@@ -181,15 +179,9 @@ namespace Server.Engines.ConPVP
       AddButton(314, height - 42, 247, 248, 1);
     }
 
-    public string Center(string text)
-    {
-      return $"<CENTER>{text}</CENTER>";
-    }
+    public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
-    public string Color(string text, int color)
-    {
-      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
+    public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
     private void AddBorderedText(int x, int y, int width, int height, string text, int color, int borderColor)
     {
@@ -223,10 +215,8 @@ namespace Server.Engines.ConPVP
 
     [Constructible]
     public CTFFlag()
-      : base(5643)
-    {
+      : base(5643) =>
       Movable = false;
-    }
 
     public CTFFlag(Serial serial)
       : base(serial)
@@ -684,10 +674,7 @@ namespace Server.Engines.ConPVP
       op.Write(Origin);
     }
 
-    public override string ToString()
-    {
-      return "...";
-    }
+    public override string ToString() => "...";
   }
 
   public sealed class CTFController : EventController
@@ -742,15 +729,9 @@ namespace Server.Engines.ConPVP
 
     public override string Title => "CTF";
 
-    public override string GetTeamName(int teamID)
-    {
-      return TeamInfo[teamID % TeamInfo.Length].Name;
-    }
+    public override string GetTeamName(int teamID) => TeamInfo[teamID % TeamInfo.Length].Name;
 
-    public override EventGame Construct(DuelContext context)
-    {
-      return new CTFGame(this, context);
-    }
+    public override EventGame Construct(DuelContext context) => new CTFGame(this, context);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -809,10 +790,7 @@ namespace Server.Engines.ConPVP
   {
     private Timer m_FinishTimer;
 
-    public CTFGame(CTFController controller, DuelContext context) : base(context)
-    {
-      Controller = controller;
-    }
+    public CTFGame(CTFController controller, DuelContext context) : base(context) => Controller = controller;
 
     public CTFController Controller{ get; }
 

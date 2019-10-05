@@ -374,45 +374,21 @@ namespace Server.Items
       return SpellbookType.Invalid;
     }
 
-    public static Spellbook FindRegular(Mobile from)
-    {
-      return Find(from, -1, SpellbookType.Regular);
-    }
+    public static Spellbook FindRegular(Mobile from) => Find(from, -1, SpellbookType.Regular);
 
-    public static Spellbook FindNecromancer(Mobile from)
-    {
-      return Find(from, -1, SpellbookType.Necromancer);
-    }
+    public static Spellbook FindNecromancer(Mobile from) => Find(from, -1, SpellbookType.Necromancer);
 
-    public static Spellbook FindPaladin(Mobile from)
-    {
-      return Find(from, -1, SpellbookType.Paladin);
-    }
+    public static Spellbook FindPaladin(Mobile from) => Find(from, -1, SpellbookType.Paladin);
 
-    public static Spellbook FindSamurai(Mobile from)
-    {
-      return Find(from, -1, SpellbookType.Samurai);
-    }
+    public static Spellbook FindSamurai(Mobile from) => Find(from, -1, SpellbookType.Samurai);
 
-    public static Spellbook FindNinja(Mobile from)
-    {
-      return Find(from, -1, SpellbookType.Ninja);
-    }
+    public static Spellbook FindNinja(Mobile from) => Find(from, -1, SpellbookType.Ninja);
 
-    public static Spellbook FindArcanist(Mobile from)
-    {
-      return Find(from, -1, SpellbookType.Arcanist);
-    }
+    public static Spellbook FindArcanist(Mobile from) => Find(from, -1, SpellbookType.Arcanist);
 
-    public static Spellbook FindMystic(Mobile from)
-    {
-      return Find(from, -1, SpellbookType.Mystic);
-    }
+    public static Spellbook FindMystic(Mobile from) => Find(from, -1, SpellbookType.Mystic);
 
-    public static Spellbook Find(Mobile from, int spellID)
-    {
-      return Find(from, spellID, GetTypeForSpell(spellID));
-    }
+    public static Spellbook Find(Mobile from, int spellID) => Find(from, spellID, GetTypeForSpell(spellID));
 
     public static Spellbook Find(Mobile from, int spellID, SpellbookType type)
     {
@@ -485,15 +461,9 @@ namespace Server.Items
       return list;
     }
 
-    public static Spellbook FindEquippedSpellbook(Mobile from)
-    {
-      return from.FindItemOnLayer(Layer.OneHanded) as Spellbook;
-    }
+    public static Spellbook FindEquippedSpellbook(Mobile from) => from.FindItemOnLayer(Layer.OneHanded) as Spellbook;
 
-    public static bool ValidateSpellbook(Spellbook book, int spellID, SpellbookType type)
-    {
-      return book.SpellbookType == type && (spellID == -1 || book.HasSpell(spellID));
-    }
+    public static bool ValidateSpellbook(Spellbook book, int spellID, SpellbookType type) => book.SpellbookType == type && (spellID == -1 || book.HasSpell(spellID));
 
     public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
     {
@@ -512,10 +482,7 @@ namespace Server.Items
       return base.CanEquip(from);
     }
 
-    public override bool AllowEquippedCast(Mobile from)
-    {
-      return true;
-    }
+    public override bool AllowEquippedCast(Mobile from) => true;
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {

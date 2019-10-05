@@ -228,20 +228,14 @@ namespace Server.Network
         m_6017Handlers[packetID] = new PacketHandler(packetID, length, ingame, onReceive);
     }
 
-    public static PacketHandler GetHandler(int packetID)
-    {
-      return Handlers[packetID];
-    }
+    public static PacketHandler GetHandler(int packetID) => Handlers[packetID];
 
     public static void Register6017(int packetID, int length, bool ingame, OnPacketReceive onReceive)
     {
       m_6017Handlers[packetID] = new PacketHandler(packetID, length, ingame, onReceive);
     }
 
-    public static PacketHandler Get6017Handler(int packetID)
-    {
-      return m_6017Handlers[packetID];
-    }
+    public static PacketHandler Get6017Handler(int packetID) => m_6017Handlers[packetID];
 
     public static void RegisterExtended(int packetID, bool ingame, OnPacketReceive onReceive)
     {

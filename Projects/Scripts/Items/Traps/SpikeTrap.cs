@@ -84,10 +84,7 @@ namespace Server.Items
       return 0;
     }
 
-    public static int GetExtendedID(SpikeTrapType type)
-    {
-      return GetBaseID(type) + GetExtendedOffset(type);
-    }
+    public static int GetExtendedID(SpikeTrapType type) => GetBaseID(type) + GetExtendedOffset(type);
 
     public static int GetExtendedOffset(SpikeTrapType type)
     {

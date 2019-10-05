@@ -12,10 +12,7 @@ namespace Server.Items
     private bool m_Exceptional;
     private CraftResource m_Resource;
 
-    public DragonBardingDeed() : base(0x14F0)
-    {
-      Weight = 1.0;
-    }
+    public DragonBardingDeed() : base(0x14F0) => Weight = 1.0;
 
     public DragonBardingDeed(Serial serial) : base(serial)
     {

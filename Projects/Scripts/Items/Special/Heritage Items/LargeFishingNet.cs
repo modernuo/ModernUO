@@ -60,10 +60,7 @@ namespace Server.Items
   public class LargeFishingNetDeed : BaseAddonDeed
   {
     [Constructible]
-    public LargeFishingNetDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public LargeFishingNetDeed() => LootType = LootType.Blessed;
 
     public LargeFishingNetDeed(Serial serial) : base(serial)
     {

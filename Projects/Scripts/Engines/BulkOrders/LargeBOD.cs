@@ -28,10 +28,8 @@ namespace Server.Engines.BulkOrders
 		public override int LabelNumber => 1045151; // a bulk order deed
 
 		public LargeBOD(int hue, int amountMax, bool requireExeptional, BulkMaterialType material, LargeBulkEntry[] entries) :
-      base(hue, amountMax, requireExeptional, material)
-		{
-			m_Entries = entries;
-		}
+      base(hue, amountMax, requireExeptional, material) =>
+      m_Entries = entries;
 
     public LargeBOD()
     {

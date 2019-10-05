@@ -78,10 +78,7 @@ namespace Server.Mobiles
     public override bool ShowFameTitle => false;
     public override bool ClickTitle => false;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.DoubleStrike;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.DoubleStrike;
 
     public override void GenerateLoot()
     {

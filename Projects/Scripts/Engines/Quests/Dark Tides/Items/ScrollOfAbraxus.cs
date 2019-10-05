@@ -6,10 +6,7 @@ namespace Server.Engines.Quests.Necro
   public class ScrollOfAbraxus : QuestItem
   {
     [Constructible]
-    public ScrollOfAbraxus() : base(0x227B)
-    {
-      Weight = 1.0;
-    }
+    public ScrollOfAbraxus() : base(0x227B) => Weight = 1.0;
 
     public ScrollOfAbraxus(Serial serial) : base(serial)
     {
@@ -17,12 +14,7 @@ namespace Server.Engines.Quests.Necro
 
     public override int LabelNumber => 1028827; // Scroll of Abraxus
 
-    public override bool CanDrop(PlayerMobile player)
-    {
-      return !(player.Quest is DarkTidesQuest);
-
-      //return !( qs.IsObjectiveInProgress( typeof( RetrieveAbraxusScrollObjective ) ) || qs.IsObjectiveInProgress( typeof( ReadAbraxusScrollObjective ) ) );
-    }
+    public override bool CanDrop(PlayerMobile player) => !(player.Quest is DarkTidesQuest);
 
     public override void OnAdded(IEntity parent)
     {

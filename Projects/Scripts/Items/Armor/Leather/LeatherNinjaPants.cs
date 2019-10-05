@@ -3,10 +3,7 @@ namespace Server.Items
   public class LeatherNinjaPants : BaseArmor
   {
     [Constructible]
-    public LeatherNinjaPants() : base(0x2791)
-    {
-      Weight = 3.0;
-    }
+    public LeatherNinjaPants() : base(0x2791) => Weight = 3.0;
 
     public LeatherNinjaPants(Serial serial) : base(serial)
     {

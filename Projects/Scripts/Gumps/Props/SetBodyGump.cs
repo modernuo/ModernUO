@@ -96,15 +96,9 @@ namespace Server.Gumps
       }
     }
 
-    public string Center(string text)
-    {
-      return $"<CENTER>{text}</CENTER>";
-    }
+    public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
-    public string Color(string text, int color)
-    {
-      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
+    public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
     public void AddTypeButton(int x, int y, int buttonID, string text, ModelBodyType type)
     {

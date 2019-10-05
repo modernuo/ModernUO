@@ -4,10 +4,7 @@ namespace Server.Items
   public class Lance : BaseSword
   {
     [Constructible]
-    public Lance() : base(0x26C0)
-    {
-      Weight = 12.0;
-    }
+    public Lance() : base(0x26C0) => Weight = 12.0;
 
     public Lance(Serial serial) : base(serial)
     {

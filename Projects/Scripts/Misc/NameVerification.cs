@@ -116,11 +116,9 @@ namespace Server.Misc
     }
 
     public static bool Validate(string name, int minLength, int maxLength, bool allowLetters, bool allowDigits,
-      bool noExceptionsAtStart, int maxExceptions, char[] exceptions)
-    {
-      return Validate(name, minLength, maxLength, allowLetters, allowDigits, noExceptionsAtStart, maxExceptions,
+      bool noExceptionsAtStart, int maxExceptions, char[] exceptions) =>
+      Validate(name, minLength, maxLength, allowLetters, allowDigits, noExceptionsAtStart, maxExceptions,
         exceptions, Disallowed, StartDisallowed);
-    }
 
     public static bool Validate(string name, int minLength, int maxLength, bool allowLetters, bool allowDigits,
       bool noExceptionsAtStart, int maxExceptions, char[] exceptions, string[] disallowed, string[] startDisallowed)

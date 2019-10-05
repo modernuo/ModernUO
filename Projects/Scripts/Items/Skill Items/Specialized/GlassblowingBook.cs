@@ -5,10 +5,7 @@ namespace Server.Items
   public class GlassblowingBook : Item
   {
     [Constructible]
-    public GlassblowingBook() : base(0xFF4)
-    {
-      Weight = 1.0;
-    }
+    public GlassblowingBook() : base(0xFF4) => Weight = 1.0;
 
     public GlassblowingBook(Serial serial) : base(serial)
     {

@@ -6,16 +6,10 @@ namespace Server.Items
   public class SledgeHammer : BaseTool
   {
     [Constructible]
-    public SledgeHammer() : base(0xFB5)
-    {
-      Layer = Layer.OneHanded;
-    }
+    public SledgeHammer() : base(0xFB5) => Layer = Layer.OneHanded;
 
     [Constructible]
-    public SledgeHammer(int uses) : base(uses, 0xFB5)
-    {
-      Layer = Layer.OneHanded;
-    }
+    public SledgeHammer(int uses) : base(uses, 0xFB5) => Layer = Layer.OneHanded;
 
     public SledgeHammer(Serial serial) : base(serial)
     {

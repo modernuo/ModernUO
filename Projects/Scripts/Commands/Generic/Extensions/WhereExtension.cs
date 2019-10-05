@@ -31,9 +31,6 @@ namespace Server.Commands.Generic
       Conditional = ObjectConditional.ParseDirect(from, arguments, offset, size);
     }
 
-    public override bool IsValid(object obj)
-    {
-      return Conditional.CheckCondition(obj);
-    }
+    public override bool IsValid(object obj) => Conditional.CheckCondition(obj);
   }
 }

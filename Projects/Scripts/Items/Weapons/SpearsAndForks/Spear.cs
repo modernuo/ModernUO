@@ -4,10 +4,7 @@ namespace Server.Items
   public class Spear : BaseSpear
   {
     [Constructible]
-    public Spear() : base(0xF62)
-    {
-      Weight = 7.0;
-    }
+    public Spear() : base(0xF62) => Weight = 7.0;
 
     public Spear(Serial serial) : base(serial)
     {

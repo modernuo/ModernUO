@@ -3,10 +3,7 @@ namespace Server.Items
   public class SpiritBottle : Item
   {
     [Constructible]
-    public SpiritBottle() : base(0xEFB)
-    {
-      LootType = LootType.Blessed;
-    }
+    public SpiritBottle() : base(0xEFB) => LootType = LootType.Blessed;
 
     public SpiritBottle(Serial serial) : base(serial)
     {

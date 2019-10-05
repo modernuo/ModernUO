@@ -3,10 +3,7 @@ namespace Server.Items
   public class SamaritanRobe : Robe
   {
     [Constructible]
-    public SamaritanRobe()
-    {
-      Hue = 0x2a3;
-    }
+    public SamaritanRobe() => Hue = 0x2a3;
 
     public SamaritanRobe(Serial serial) : base(serial)
     {

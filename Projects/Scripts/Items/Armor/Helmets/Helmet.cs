@@ -3,10 +3,7 @@ namespace Server.Items
   public class Helmet : BaseArmor
   {
     [Constructible]
-    public Helmet() : base(0x140A)
-    {
-      Weight = 5.0;
-    }
+    public Helmet() : base(0x140A) => Weight = 5.0;
 
     public Helmet(Serial serial) : base(serial)
     {

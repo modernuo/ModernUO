@@ -202,10 +202,7 @@ namespace Server.Engines.MLQuests
       return quest != null && IsDoingQuest(quest);
     }
 
-    public bool IsDoingQuest(MLQuest quest)
-    {
-      return FindInstance(quest) != null;
-    }
+    public bool IsDoingQuest(MLQuest quest) => FindInstance(quest) != null;
 
     public void Serialize(GenericWriter writer)
     {
@@ -230,10 +227,7 @@ namespace Server.Engines.MLQuests
       writer.WriteEncodedInt((int)m_Flags);
     }
 
-    public bool GetFlag(MLQuestFlag flag)
-    {
-      return (m_Flags & flag) != 0;
-    }
+    public bool GetFlag(MLQuestFlag flag) => (m_Flags & flag) != 0;
 
     public void SetFlag(MLQuestFlag flag, bool value)
     {

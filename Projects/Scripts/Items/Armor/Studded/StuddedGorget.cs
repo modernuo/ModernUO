@@ -3,10 +3,7 @@ namespace Server.Items
   public class StuddedGorget : BaseArmor
   {
     [Constructible]
-    public StuddedGorget() : base(0x13D6)
-    {
-      Weight = 1.0;
-    }
+    public StuddedGorget() : base(0x13D6) => Weight = 1.0;
 
     public StuddedGorget(Serial serial) : base(serial)
     {

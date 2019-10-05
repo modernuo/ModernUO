@@ -41,29 +41,27 @@ namespace Server
     {
       if (File.Exists("Data/bodyTable.cfg"))
       {
-        using (StreamReader ip = new StreamReader("Data/bodyTable.cfg"))
+        using StreamReader ip = new StreamReader("Data/bodyTable.cfg");
+        m_Types = new BodyType[0x1000];
+
+        string line;
+
+        while ((line = ip.ReadLine()) != null)
         {
-          m_Types = new BodyType[0x1000];
+          if (line.Length == 0 || line.StartsWith("#"))
+            continue;
 
-          string line;
+          string[] split = line.Split('\t');
 
-          while ((line = ip.ReadLine()) != null)
+          if (int.TryParse(split[0], out int bodyID) && Enum.TryParse(split[1], true, out BodyType type) && bodyID >= 0 &&
+              bodyID < m_Types.Length)
           {
-            if (line.Length == 0 || line.StartsWith("#"))
-              continue;
-
-            string[] split = line.Split('\t');
-
-            if (int.TryParse(split[0], out int bodyID) && Enum.TryParse(split[1], true, out BodyType type) && bodyID >= 0 &&
-                bodyID < m_Types.Length)
-            {
-              m_Types[bodyID] = type;
-            }
-            else
-            {
-              Console.WriteLine("Warning: Invalid bodyTable entry:");
-              Console.WriteLine(line);
-            }
+            m_Types[bodyID] = type;
+          }
+          else
+          {
+            Console.WriteLine("Warning: Invalid bodyTable entry:");
+            Console.WriteLine(line);
           }
         }
       }
@@ -75,10 +73,7 @@ namespace Server
       }
     }
 
-    public Body(int bodyID)
-    {
-      BodyID = bodyID;
-    }
+    public Body(int bodyID) => BodyID = bodyID;
 
     public BodyType Type => BodyID >= 0 && BodyID < m_Types.Length ? m_Types[BodyID] : BodyType.Empty;
 
@@ -148,59 +143,26 @@ namespace Server
 
     public int BodyID{ get; }
 
-    public static implicit operator int(Body a)
-    {
-      return a.BodyID;
-    }
+    public static implicit operator int(Body a) => a.BodyID;
 
-    public static implicit operator Body(int a)
-    {
-      return new Body(a);
-    }
+    public static implicit operator Body(int a) => new Body(a);
 
-    public override string ToString()
-    {
-      return $"0x{BodyID:X}";
-    }
+    public override string ToString() => $"0x{BodyID:X}";
 
-    public override int GetHashCode()
-    {
-      return BodyID.GetHashCode();
-    }
+    public override int GetHashCode() => BodyID.GetHashCode();
 
-    public override bool Equals(object o)
-    {
-      return o is Body b && b.BodyID == BodyID;
-    }
+    public override bool Equals(object o) => o is Body b && b.BodyID == BodyID;
 
-    public static bool operator ==(Body l, Body r)
-    {
-      return l.BodyID == r.BodyID;
-    }
+    public static bool operator ==(Body l, Body r) => l.BodyID == r.BodyID;
 
-    public static bool operator !=(Body l, Body r)
-    {
-      return l.BodyID != r.BodyID;
-    }
+    public static bool operator !=(Body l, Body r) => l.BodyID != r.BodyID;
 
-    public static bool operator >(Body l, Body r)
-    {
-      return l.BodyID > r.BodyID;
-    }
+    public static bool operator >(Body l, Body r) => l.BodyID > r.BodyID;
 
-    public static bool operator >=(Body l, Body r)
-    {
-      return l.BodyID >= r.BodyID;
-    }
+    public static bool operator >=(Body l, Body r) => l.BodyID >= r.BodyID;
 
-    public static bool operator <(Body l, Body r)
-    {
-      return l.BodyID < r.BodyID;
-    }
+    public static bool operator <(Body l, Body r) => l.BodyID < r.BodyID;
 
-    public static bool operator <=(Body l, Body r)
-    {
-      return l.BodyID <= r.BodyID;
-    }
+    public static bool operator <=(Body l, Body r) => l.BodyID <= r.BodyID;
   }
 }

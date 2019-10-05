@@ -2,8 +2,7 @@ namespace Server.Factions
 {
   public class Vesper : Town
   {
-    public Vesper()
-    {
+    public Vesper() =>
       Definition =
         new TownDefinition(
           5,
@@ -19,6 +18,5 @@ namespace Server.Factions
           new TextDefinition(1041391, "Corrupted Faction Town Sigil of Vesper"),
           new Point3D(2982, 818, 0),
           new Point3D(2985, 821, 0));
-    }
   }
 }

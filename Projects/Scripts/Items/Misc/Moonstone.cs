@@ -106,10 +106,7 @@ namespace Server.Items
       }
     }
 
-    public Map GetTargetMap()
-    {
-      return m_Type == MoonstoneType.Felucca ? Map.Felucca : Map.Trammel;
-    }
+    public Map GetTargetMap() => m_Type == MoonstoneType.Felucca ? Map.Felucca : Map.Trammel;
 
     public override void Serialize(GenericWriter writer)
     {

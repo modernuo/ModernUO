@@ -3,10 +3,7 @@ namespace Server.Items
   public class LeatherMempo : BaseArmor
   {
     [Constructible]
-    public LeatherMempo() : base(0x277A)
-    {
-      Weight = 2.0;
-    }
+    public LeatherMempo() : base(0x277A) => Weight = 2.0;
 
     public LeatherMempo(Serial serial) : base(serial)
     {

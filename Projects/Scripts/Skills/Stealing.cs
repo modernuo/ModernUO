@@ -23,15 +23,9 @@ namespace Server.SkillHandlers
       SkillInfo.Table[33].Callback = OnUse;
     }
 
-    public static bool IsInGuild(Mobile m)
-    {
-      return m is PlayerMobile mobile && mobile.NpcGuild == NpcGuild.ThievesGuild;
-    }
+    public static bool IsInGuild(Mobile m) => m is PlayerMobile mobile && mobile.NpcGuild == NpcGuild.ThievesGuild;
 
-    public static bool IsInnocentTo(Mobile from, Mobile to)
-    {
-      return Notoriety.Compute(from, to) == Notoriety.Innocent;
-    }
+    public static bool IsInnocentTo(Mobile from, Mobile to) => Notoriety.Compute(from, to) == Notoriety.Innocent;
 
     public static bool IsEmptyHanded(Mobile from)
     {

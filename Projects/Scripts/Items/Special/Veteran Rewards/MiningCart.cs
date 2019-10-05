@@ -337,10 +337,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public MiningCartDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public MiningCartDeed() => LootType = LootType.Blessed;
 
     public MiningCartDeed(Serial serial) : base(serial)
     {

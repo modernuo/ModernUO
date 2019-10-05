@@ -5,10 +5,7 @@ namespace Server.Items
   public class WoodenBench : Item
   {
     [Constructible]
-    public WoodenBench() : base(0xB2D)
-    {
-      Weight = 6;
-    }
+    public WoodenBench() : base(0xB2D) => Weight = 6;
 
     public WoodenBench(Serial serial) : base(serial)
     {

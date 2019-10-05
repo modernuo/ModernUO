@@ -65,10 +65,7 @@ namespace Server.Items
     {
       private Dough m_Item;
 
-      public InternalTarget(Dough item) : base(1, false, TargetFlags.None)
-      {
-        m_Item = item;
-      }
+      public InternalTarget(Dough item) : base(1, false, TargetFlags.None) => m_Item = item;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -156,10 +153,7 @@ namespace Server.Items
     {
       private SweetDough m_Item;
 
-      public InternalTarget(SweetDough item) : base(1, false, TargetFlags.None)
-      {
-        m_Item = item;
-      }
+      public InternalTarget(SweetDough item) : base(1, false, TargetFlags.None) => m_Item = item;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -255,10 +249,7 @@ namespace Server.Items
     {
       private JarHoney m_Item;
 
-      public InternalTarget(JarHoney item) : base(1, false, TargetFlags.None)
-      {
-        m_Item = item;
-      }
+      public InternalTarget(JarHoney item) : base(1, false, TargetFlags.None) => m_Item = item;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -287,10 +278,7 @@ namespace Server.Items
   public class BowlFlour : Item
   {
     [Constructible]
-    public BowlFlour() : base(0xa1e)
-    {
-      Weight = 1.0;
-    }
+    public BowlFlour() : base(0xa1e) => Weight = 1.0;
 
     public BowlFlour(Serial serial) : base(serial)
     {
@@ -315,10 +303,7 @@ namespace Server.Items
   public class WoodenBowl : Item
   {
     [Constructible]
-    public WoodenBowl() : base(0x15f8)
-    {
-      Weight = 1.0;
-    }
+    public WoodenBowl() : base(0x15f8) => Weight = 1.0;
 
     public WoodenBowl(Serial serial) : base(serial)
     {
@@ -564,10 +549,7 @@ namespace Server.Items
   public class Eggshells : Item
   {
     [Constructible]
-    public Eggshells() : base(0x9b4)
-    {
-      Weight = 0.5;
-    }
+    public Eggshells() : base(0x9b4) => Weight = 0.5;
 
     public Eggshells(Serial serial) : base(serial)
     {

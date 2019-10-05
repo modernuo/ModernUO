@@ -3,10 +3,7 @@ namespace Server.Items
   public class DarkglowPotion : BasePoisonPotion
   {
     [Constructible]
-    public DarkglowPotion() : base(PotionEffect.Darkglow)
-    {
-      Hue = 0x96;
-    }
+    public DarkglowPotion() : base(PotionEffect.Darkglow) => Hue = 0x96;
 
     public DarkglowPotion(Serial serial) : base(serial)
     {

@@ -399,10 +399,7 @@ namespace Server.Items
     {
       private BraceletOfBinding m_Bracelet;
 
-      public BindTarget(BraceletOfBinding bracelet) : base(-1, false, TargetFlags.None)
-      {
-        m_Bracelet = bracelet;
-      }
+      public BindTarget(BraceletOfBinding bracelet) : base(-1, false, TargetFlags.None) => m_Bracelet = bracelet;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -443,10 +440,7 @@ namespace Server.Items
     {
       private BraceletOfBinding m_Bracelet;
 
-      public InscribePrompt(BraceletOfBinding bracelet)
-      {
-        m_Bracelet = bracelet;
-      }
+      public InscribePrompt(BraceletOfBinding bracelet) => m_Bracelet = bracelet;
 
       public override void OnResponse(Mobile from, string text)
       {

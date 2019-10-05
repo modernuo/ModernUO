@@ -38,10 +38,7 @@ namespace Server.Multis
 
     public bool GettingProperties{ get; private set; }
 
-    public string GetName()
-    {
-      return Name ?? "An Unnamed House";
-    }
+    public string GetName() => Name ?? "An Unnamed House";
 
     public override void OnAfterDelete()
     {
@@ -228,10 +225,7 @@ namespace Server.Multis
     {
       private HouseSign m_Sign;
 
-      public VendorsEntry(HouseSign sign) : base(6211)
-      {
-        m_Sign = sign;
-      }
+      public VendorsEntry(HouseSign sign) : base(6211) => m_Sign = sign;
 
       public override void OnClick()
       {
@@ -253,10 +247,7 @@ namespace Server.Multis
     {
       private HouseSign m_Sign;
 
-      public ReclaimVendorInventoryEntry(HouseSign sign) : base(6213)
-      {
-        m_Sign = sign;
-      }
+      public ReclaimVendorInventoryEntry(HouseSign sign) : base(6213) => m_Sign = sign;
 
       public override void OnClick()
       {

@@ -24,10 +24,7 @@ namespace Server.Network
   {
     private PacketReader m_Reader;
 
-    public EncodedReader(PacketReader reader)
-    {
-      m_Reader = reader;
-    }
+    public EncodedReader(PacketReader reader) => m_Reader = reader;
 
     public void Trace(NetState state)
     {

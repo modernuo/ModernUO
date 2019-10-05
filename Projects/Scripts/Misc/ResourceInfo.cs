@@ -462,12 +462,9 @@ namespace Server.Items
 		/// <summary>
 		/// Returns true if '<paramref name="resource"/>' is None, Iron, RegularLeather or RegularWood. False if otherwise.
 		/// </summary>
-		public static bool IsStandard( CraftResource resource )
-		{
-			return ( resource == CraftResource.None || resource == CraftResource.Iron || resource == CraftResource.RegularLeather || resource == CraftResource.RegularWood );
-		}
+		public static bool IsStandard( CraftResource resource ) => ( resource == CraftResource.None || resource == CraftResource.Iron || resource == CraftResource.RegularLeather || resource == CraftResource.RegularWood );
 
-		private static Dictionary<Type, CraftResource> m_TypeTable;
+    private static Dictionary<Type, CraftResource> m_TypeTable;
 
 		/// <summary>
 		/// Registers that '<paramref name="resourceType"/>' uses '<paramref name="resource"/>' so that it can later be queried by <see cref="CraftResources.GetFromType"/>

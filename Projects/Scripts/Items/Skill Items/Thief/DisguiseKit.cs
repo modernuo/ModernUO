@@ -14,10 +14,7 @@ namespace Server.Items
   public class DisguiseKit : Item
   {
     [Constructible]
-    public DisguiseKit() : base(0xE05)
-    {
-      Weight = 1.0;
-    }
+    public DisguiseKit() : base(0xE05) => Weight = 1.0;
 
     public DisguiseKit(Serial serial) : base(serial)
     {
@@ -269,10 +266,7 @@ namespace Server.Items
       t?.Start();
     }
 
-    public static bool IsDisguised(Mobile m)
-    {
-      return Timers.ContainsKey(m);
-    }
+    public static bool IsDisguised(Mobile m) => Timers.ContainsKey(m);
 
     public static void StopTimer(Mobile m)
     {
@@ -296,10 +290,7 @@ namespace Server.Items
       }
     }
 
-    public static TimeSpan TimeRemaining(Mobile m)
-    {
-      return Timers.TryGetValue(m, out Timer t) ? t.Next - DateTime.UtcNow : TimeSpan.Zero;
-    }
+    public static TimeSpan TimeRemaining(Mobile m) => Timers.TryGetValue(m, out Timer t) ? t.Next - DateTime.UtcNow : TimeSpan.Zero;
 
     private class InternalTimer : Timer
     {

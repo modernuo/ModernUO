@@ -157,16 +157,10 @@ namespace Server.Items
   public class HintItem : WarningItem
   {
     [Constructible]
-    public HintItem(int itemID, int range, int warning, int hint) : base(itemID, range, warning)
-    {
-      HintNumber = hint;
-    }
+    public HintItem(int itemID, int range, int warning, int hint) : base(itemID, range, warning) => HintNumber = hint;
 
     [Constructible]
-    public HintItem(int itemID, int range, string warning, string hint) : base(itemID, range, warning)
-    {
-      HintString = hint;
-    }
+    public HintItem(int itemID, int range, string warning, string hint) : base(itemID, range, warning) => HintString = hint;
 
     public HintItem(Serial serial) : base(serial)
     {

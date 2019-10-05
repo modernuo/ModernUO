@@ -55,15 +55,9 @@ namespace Server.Items
     private static int[] m_Possible = new int[MaxProperties];
     private CraftResource m_Resource;
 
-    public BaseRunicTool(CraftResource resource, int itemID) : base(itemID)
-    {
-      m_Resource = resource;
-    }
+    public BaseRunicTool(CraftResource resource, int itemID) : base(itemID) => m_Resource = resource;
 
-    public BaseRunicTool(CraftResource resource, int uses, int itemID) : base(uses, itemID)
-    {
-      m_Resource = resource;
-    }
+    public BaseRunicTool(CraftResource resource, int uses, int itemID) : base(uses, itemID) => m_Resource = resource;
 
     public BaseRunicTool(Serial serial) : base(serial)
     {

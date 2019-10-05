@@ -90,15 +90,9 @@ namespace Server.Mobiles
     [CommandProperty(AccessLevel.GameMaster)]
     public Mobile Landlord => House?.Owner;
 
-    public override bool IsOwner(Mobile m)
-    {
-      return m == Owner || m.AccessLevel >= AccessLevel.GameMaster || Core.ML && AccountHandler.CheckAccount(m, Owner);
-    }
+    public override bool IsOwner(Mobile m) => m == Owner || m.AccessLevel >= AccessLevel.GameMaster || Core.ML && AccountHandler.CheckAccount(m, Owner);
 
-    public bool IsLandlord(Mobile m)
-    {
-      return House?.IsOwner(m) == true;
-    }
+    public bool IsLandlord(Mobile m) => House?.IsOwner(m) == true;
 
     public void ComputeRentalExpireDelay(out int days, out int hours)
     {
@@ -215,10 +209,7 @@ namespace Server.Mobiles
     {
       private RentedVendor m_Vendor;
 
-      public ContractOptionsEntry(RentedVendor vendor) : base(6209)
-      {
-        m_Vendor = vendor;
-      }
+      public ContractOptionsEntry(RentedVendor vendor) : base(6209) => m_Vendor = vendor;
 
       public override void OnClick()
       {
@@ -248,10 +239,7 @@ namespace Server.Mobiles
     {
       private RentedVendor m_Vendor;
 
-      public CollectRentEntry(RentedVendor vendor) : base(6212)
-      {
-        m_Vendor = vendor;
-      }
+      public CollectRentEntry(RentedVendor vendor) : base(6212) => m_Vendor = vendor;
 
       public override void OnClick()
       {
@@ -279,10 +267,7 @@ namespace Server.Mobiles
     {
       private RentedVendor m_Vendor;
 
-      public TerminateContractEntry(RentedVendor vendor) : base(6218)
-      {
-        m_Vendor = vendor;
-      }
+      public TerminateContractEntry(RentedVendor vendor) : base(6218) => m_Vendor = vendor;
 
       public override void OnClick()
       {
@@ -301,10 +286,7 @@ namespace Server.Mobiles
     {
       private RentedVendor m_Vendor;
 
-      public RefundOfferPrompt(RentedVendor vendor)
-      {
-        m_Vendor = vendor;
-      }
+      public RefundOfferPrompt(RentedVendor vendor) => m_Vendor = vendor;
 
       public override void OnResponse(Mobile from, string text)
       {

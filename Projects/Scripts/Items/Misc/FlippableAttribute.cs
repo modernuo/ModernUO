@@ -55,10 +55,7 @@ namespace Server.Items
   [AttributeUsage(AttributeTargets.Class)]
   public class FlippableAttribute : Attribute
   {
-    public FlippableAttribute(params int[] itemIDs)
-    {
-      ItemIDs = itemIDs;
-    }
+    public FlippableAttribute(params int[] itemIDs) => ItemIDs = itemIDs;
 
     public int[] ItemIDs{ get; }
 

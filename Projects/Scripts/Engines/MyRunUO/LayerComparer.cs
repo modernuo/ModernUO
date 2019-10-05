@@ -62,10 +62,7 @@ namespace Server.Engines.MyRunUO
       return TranslationTable[(int)bLayer] - TranslationTable[(int)aLayer];
     }
 
-    public static bool IsValid(Item item)
-    {
-      return TranslationTable[(int)item.Layer] > 0;
-    }
+    public static bool IsValid(Item item) => TranslationTable[(int)item.Layer] > 0;
 
     public Layer Fix(int itemID, Layer oldLayer)
     {

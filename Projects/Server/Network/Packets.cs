@@ -665,10 +665,7 @@ namespace Server.Network
       m_Stream.Write((byte)(dead ? 0 : 2));
     }
 
-    public static Packet Instantiate(bool dead)
-    {
-      return dead ? Dead : Alive;
-    }
+    public static Packet Instantiate(bool dead) => dead ? Dead : Alive;
   }
 
   public sealed class SpeedControl : Packet
@@ -1988,10 +1985,7 @@ namespace Server.Network
       //m_Stream.Fill();
     }
 
-    public static Packet Instantiate(bool mode)
-    {
-      return mode ? InWarMode : InPeaceMode;
-    }
+    public static Packet Instantiate(bool mode) => mode ? InWarMode : InPeaceMode;
   }
 
   public sealed class Swing : Packet
@@ -2352,10 +2346,7 @@ namespace Server.Network
     private int m_StringCount;
     private PacketWriter m_Strings;
 
-    static DisplayGumpPacked()
-    {
-      m_Buffer[0] = (byte)' ';
-    }
+    static DisplayGumpPacked() => m_Buffer[0] = (byte)' ';
 
     public DisplayGumpPacked(Gump gump)
       : base(0xDD)
@@ -2737,10 +2728,7 @@ namespace Server.Network
       m_Stream.Write(playSound);
     }
 
-    public static SeasonChange Instantiate(int season)
-    {
-      return Instantiate(season, true);
-    }
+    public static SeasonChange Instantiate(int season) => Instantiate(season, true);
 
     public static SeasonChange Instantiate(int season, bool playSound)
     {
@@ -2790,10 +2778,7 @@ namespace Server.Network
 
     public static FeatureFlags Value{ get; set; }
 
-    public static SupportedFeatures Instantiate(NetState ns)
-    {
-      return new SupportedFeatures(ns);
-    }
+    public static SupportedFeatures Instantiate(NetState ns) => new SupportedFeatures(ns);
   }
 
   public static class AttributeNormalizer

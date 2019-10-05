@@ -126,10 +126,7 @@ namespace Server.Spells
       return true;
     }
 
-    public virtual bool OnCastInTown(Region r)
-    {
-      return Info.AllowTown;
-    }
+    public virtual bool OnCastInTown(Region r) => Info.AllowTown;
 
     public void StartDelayedDamageContext(Mobile m, Timer t)
     {
@@ -162,10 +159,7 @@ namespace Server.Spells
       return GetNewAosDamage(bonus, dice, sides, false);
     }
 
-    public virtual int GetNewAosDamage(int bonus, int dice, int sides, bool playerVsPlayer)
-    {
-      return GetNewAosDamage(bonus, dice, sides, playerVsPlayer, 1.0);
-    }
+    public virtual int GetNewAosDamage(int bonus, int dice, int sides, bool playerVsPlayer) => GetNewAosDamage(bonus, dice, sides, playerVsPlayer, 1.0);
 
     public virtual int GetNewAosDamage(int bonus, int dice, int sides, bool playerVsPlayer, double scalar)
     {
@@ -225,40 +219,15 @@ namespace Server.Spells
       return false;
     }
 
-    public virtual double GetInscribeSkill(Mobile m)
-    {
-      // There is no chance to gain
-      // m.CheckSkill( SkillName.Inscribe, 0.0, 120.0 );
+    public virtual double GetInscribeSkill(Mobile m) => m.Skills.Inscribe.Value;
 
-      return m.Skills.Inscribe.Value;
-    }
+    public virtual int GetInscribeFixed(Mobile m) => m.Skills.Inscribe.Fixed;
 
-    public virtual int GetInscribeFixed(Mobile m)
-    {
-      // There is no chance to gain
-      // m.CheckSkill( SkillName.Inscribe, 0.0, 120.0 );
+    public virtual int GetDamageFixed(Mobile m) => m.Skills[DamageSkill].Fixed;
 
-      return m.Skills.Inscribe.Fixed;
-    }
+    public virtual double GetDamageSkill(Mobile m) => m.Skills[DamageSkill].Value;
 
-    public virtual int GetDamageFixed(Mobile m)
-    {
-      //m.CheckSkill( DamageSkill, 0.0, m.Skills[DamageSkill].Cap );
-
-      return m.Skills[DamageSkill].Fixed;
-    }
-
-    public virtual double GetDamageSkill(Mobile m)
-    {
-      //m.CheckSkill( DamageSkill, 0.0, m.Skills[DamageSkill].Cap );
-
-      return m.Skills[DamageSkill].Value;
-    }
-
-    public virtual double GetResistSkill(Mobile m)
-    {
-      return m.Skills.MagicResist.Value;
-    }
+    public virtual double GetResistSkill(Mobile m) => m.Skills.MagicResist.Value;
 
     public virtual double GetDamageScalar(Mobile target)
     {
@@ -359,10 +328,7 @@ namespace Server.Spells
       }
     }
 
-    public virtual bool CheckDisturb(DisturbType type, bool firstCircle, bool resistable)
-    {
-      return !(resistable && Scroll is BaseWand);
-    }
+    public virtual bool CheckDisturb(DisturbType type, bool firstCircle, bool resistable) => !(resistable && Scroll is BaseWand);
 
     public void Disturb(DisturbType type, bool firstCircle = true, bool resistable = false)
     {
@@ -417,10 +383,7 @@ namespace Server.Spells
         Caster.SendLocalizedMessage(500641); // Your concentration is disturbed, thus ruining thy spell.
     }
 
-    public virtual bool CheckCast()
-    {
-      return true;
-    }
+    public virtual bool CheckCast() => true;
 
     public virtual void SayMantra()
     {
@@ -665,10 +628,7 @@ namespace Server.Spells
         Caster.Spell = null;
     }
 
-    public virtual int ComputeKarmaAward()
-    {
-      return 0;
-    }
+    public virtual int ComputeKarmaAward() => 0;
 
     public virtual bool CheckSequence()
     {
@@ -762,10 +722,7 @@ namespace Server.Spells
       return false;
     }
 
-    public bool CheckBSequence(Mobile target)
-    {
-      return CheckBSequence(target, false);
-    }
+    public bool CheckBSequence(Mobile target) => CheckBSequence(target, false);
 
     public bool CheckBSequence(Mobile target, bool allowDead)
     {

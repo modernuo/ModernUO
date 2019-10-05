@@ -108,10 +108,7 @@ namespace Server.Factions
     private BaseFactionGuard m_Guard;
     private DateTime m_ReleaseTarget;
 
-    public FactionGuardAI(BaseFactionGuard guard) : base(guard)
-    {
-      m_Guard = guard;
-    }
+    public FactionGuardAI(BaseFactionGuard guard) : base(guard) => m_Guard = guard;
 
     public bool IsDamaged => m_Guard.Hits < m_Guard.HitsMax;
 
@@ -142,10 +139,7 @@ namespace Server.Factions
       }
     }
 
-    public bool IsAllowed(GuardAI flag)
-    {
-      return (m_Guard.GuardAI & flag) == flag;
-    }
+    public bool IsAllowed(GuardAI flag) => (m_Guard.GuardAI & flag) == flag;
 
     public bool DequipWeapon()
     {
@@ -343,11 +337,9 @@ namespace Server.Factions
       return null;
     }
 
-    public bool CanDispel(Mobile m)
-    {
-      return m is BaseCreature creature && creature.Summoned && m_Mobile.CanBeHarmful(creature, false) &&
-             !creature.IsAnimatedDead;
-    }
+    public bool CanDispel(Mobile m) =>
+      m is BaseCreature creature && creature.Summoned && m_Mobile.CanBeHarmful(creature, false) &&
+      !creature.IsAnimatedDead;
 
     public void RunTo(Mobile m)
     {

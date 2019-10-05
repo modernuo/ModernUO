@@ -121,18 +121,13 @@ namespace Server.Misc
 
 		public int MoveAngleY { get; set; }
 
-		public static bool CheckIntersection( Rectangle2D r1, Rectangle2D r2 )
-		{
-			return r1.X < r2.X + r2.Width && r2.X < r1.X + r1.Width && r1.Y < r2.Y + r2.Height && r2.Y < r1.Y + r1.Height;
-		}
+		public static bool CheckIntersection( Rectangle2D r1, Rectangle2D r2 ) => r1.X < r2.X + r2.Width && r2.X < r1.X + r1.Width && r1.Y < r2.Y + r2.Height && r2.Y < r1.Y + r1.Height;
 
-		public static bool CheckContains( Rectangle2D big, Rectangle2D small )
-		{
-			return small.X >= big.X && small.Y >= big.Y && small.X + small.Width <= big.X + big.Width
-			       && small.Y + small.Height <= big.Y + big.Height;
-		}
+    public static bool CheckContains( Rectangle2D big, Rectangle2D small ) =>
+      small.X >= big.X && small.Y >= big.Y && small.X + small.Width <= big.X + big.Width
+      && small.Y + small.Height <= big.Y + big.Height;
 
-		public virtual bool IntersectsWith( Rectangle2D area )
+    public virtual bool IntersectsWith( Rectangle2D area )
 		{
 			for ( int i = 0; i < Area.Length; ++i )
 			{

@@ -32,20 +32,11 @@ namespace Server.Multis
       LoadMultis("Data/Components/stairs.txt", "MultiNorth", "MultiEast", "MultiSouth", "MultiWest");
     }
 
-    public bool IsItemValid(int itemID)
-    {
-      return itemID > 0 && itemID < m_ItemTable.Length && CheckValidity(m_ItemTable[itemID]);
-    }
+    public bool IsItemValid(int itemID) => itemID > 0 && itemID < m_ItemTable.Length && CheckValidity(m_ItemTable[itemID]);
 
-    public bool IsMultiValid(int multiID)
-    {
-      return multiID > 0 && multiID < m_MultiTable.Length && CheckValidity(m_MultiTable[multiID]);
-    }
+    public bool IsMultiValid(int multiID) => multiID > 0 && multiID < m_MultiTable.Length && CheckValidity(m_MultiTable[multiID]);
 
-    public bool CheckValidity(int val)
-    {
-      return val != -1 && (val == 0 || ((int)ExpansionInfo.CoreExpansion.CustomHousingFlag & val) != 0);
-    }
+    public bool CheckValidity(int val) => val != -1 && (val == 0 || ((int)ExpansionInfo.CoreExpansion.CustomHousingFlag & val) != 0);
 
     private int[] CreateTable(int length)
     {
@@ -103,48 +94,46 @@ namespace Server.Multis
 
     public Spreadsheet(string path)
     {
-      using (StreamReader ip = new StreamReader(path))
-      {
-        string[] types = ReadLine(ip);
-        string[] names = ReadLine(ip);
+      using StreamReader ip = new StreamReader(path);
+      string[] types = ReadLine(ip);
+      string[] names = ReadLine(ip);
 
-        m_Columns = new ColumnInfo[types.Length];
+      m_Columns = new ColumnInfo[types.Length];
+
+      for (int i = 0; i < m_Columns.Length; ++i)
+        m_Columns[i] = new ColumnInfo(i, types[i], names[i]);
+
+      List<DataRecord> records = new List<DataRecord>();
+
+      string[] values;
+
+      while ((values = ReadLine(ip)) != null)
+      {
+        object[] data = new object[m_Columns.Length];
 
         for (int i = 0; i < m_Columns.Length; ++i)
-          m_Columns[i] = new ColumnInfo(i, types[i], names[i]);
-
-        List<DataRecord> records = new List<DataRecord>();
-
-        string[] values;
-
-        while ((values = ReadLine(ip)) != null)
         {
-          object[] data = new object[m_Columns.Length];
+          ColumnInfo ci = m_Columns[i];
 
-          for (int i = 0; i < m_Columns.Length; ++i)
+          switch (ci.m_Type)
           {
-            ColumnInfo ci = m_Columns[i];
-
-            switch (ci.m_Type)
+            case "int":
             {
-              case "int":
-              {
-                data[i] = Utility.ToInt32(values[ci.m_DataIndex]);
-                break;
-              }
-              case "string":
-              {
-                data[i] = values[ci.m_DataIndex];
-                break;
-              }
+              data[i] = Utility.ToInt32(values[ci.m_DataIndex]);
+              break;
+            }
+            case "string":
+            {
+              data[i] = values[ci.m_DataIndex];
+              break;
             }
           }
-
-          records.Add(new DataRecord(this, data));
         }
 
-        Records = records.ToArray();
+        records.Add(new DataRecord(this, data));
       }
+
+      Records = records.ToArray();
     }
 
     public DataRecord[] Records{ get; }
@@ -204,24 +193,12 @@ namespace Server.Multis
 
     public object this[int id] => id < 0 ? null : Data[id];
 
-    public int GetInt32(string name)
-    {
-      return GetInt32(this[name]);
-    }
+    public int GetInt32(string name) => GetInt32(this[name]);
 
-    public int GetInt32(int id)
-    {
-      return GetInt32(this[id]);
-    }
+    public int GetInt32(int id) => GetInt32(this[id]);
 
-    public int GetInt32(object obj)
-    {
-      return Convert.ToInt32(obj);
-    }
+    public int GetInt32(object obj) => Convert.ToInt32(obj);
 
-    public string GetString(string name)
-    {
-      return this[name] as string;
-    }
+    public string GetString(string name) => this[name] as string;
   }
 }

@@ -43,10 +43,8 @@ namespace Server.Items
   {
     [Constructible]
     public PottedPlantDeed()
-      : base(0x14F0)
-    {
+      : base(0x14F0) =>
       LootType = LootType.Blessed;
-    }
 
     public PottedPlantDeed(Serial serial)
       : base(serial)

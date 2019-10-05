@@ -81,10 +81,7 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public int CompareTo(TourneyParticipant p)
-    {
-      return p.TotalLadderXP - TotalLadderXP;
-    }
+    public int CompareTo(TourneyParticipant p) => p.TotalLadderXP - TotalLadderXP;
 
     public void AddLog(string text)
     {

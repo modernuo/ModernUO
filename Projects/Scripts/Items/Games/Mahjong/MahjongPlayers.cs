@@ -89,10 +89,7 @@ namespace Server.Engines.Mahjong
       return IsInGamePlayer(index);
     }
 
-    public bool IsSpectator(Mobile mobile)
-    {
-      return m_Spectators.Contains(mobile);
-    }
+    public bool IsSpectator(Mobile mobile) => m_Spectators.Contains(mobile);
 
     public int GetScore(int index)
     {

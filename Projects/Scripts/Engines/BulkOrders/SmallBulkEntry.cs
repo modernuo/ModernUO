@@ -43,48 +43,43 @@ namespace Server.Engines.BulkOrders
 			return entries;
 		}
 
-		public static SmallBulkEntry[] LoadEntries( string type, string name )
-		{
-			return LoadEntries($"Data/Bulk Orders/{type}/{name}.cfg");
-		}
+		public static SmallBulkEntry[] LoadEntries( string type, string name ) => LoadEntries($"Data/Bulk Orders/{type}/{name}.cfg");
 
-		public static SmallBulkEntry[] LoadEntries( string path )
+    public static SmallBulkEntry[] LoadEntries( string path )
 		{
 			path = Path.Combine( Core.BaseDirectory, path );
 
 			List<SmallBulkEntry> list = new List<SmallBulkEntry>();
 
 			if ( File.Exists( path ) )
-			{
-				using ( StreamReader ip = new StreamReader( path ) )
-				{
-					string line;
+      {
+        using StreamReader ip = new StreamReader( path );
+        string line;
 
-					while ( (line = ip.ReadLine()) != null )
-					{
-						if ( line.Length == 0 || line.StartsWith( "#" ) )
-							continue;
+        while ( (line = ip.ReadLine()) != null )
+        {
+          if ( line.Length == 0 || line.StartsWith( "#" ) )
+            continue;
 
-						try
-						{
-							string[] split = line.Split( '\t' );
+          try
+          {
+            string[] split = line.Split( '\t' );
 
-							if ( split.Length >= 2 )
-							{
-								Type type = AssemblyHandler.FindTypeByName( split[0] );
-								int graphic = Utility.ToInt32( split[split.Length - 1] );
-
-								if ( type != null && graphic > 0 )
-									list.Add( new SmallBulkEntry( type, graphic < 0x4000 ? 1020000 + graphic : 1078872 + graphic, graphic ) );
-							}
-						}
-            catch
+            if ( split.Length >= 2 )
             {
-              // ignored
+              Type type = AssemblyHandler.FindTypeByName( split[0] );
+              int graphic = Utility.ToInt32( split[split.Length - 1] );
+
+              if ( type != null && graphic > 0 )
+                list.Add( new SmallBulkEntry( type, graphic < 0x4000 ? 1020000 + graphic : 1078872 + graphic, graphic ) );
             }
           }
-				}
-			}
+          catch
+          {
+            // ignored
+          }
+        }
+      }
 
 			return list.ToArray();
 		}

@@ -78,10 +78,7 @@ namespace Server.Engines.Quests.Zento
 
   public class ThirdKillObjective : QuestObjective
   {
-    public ThirdKillObjective(int startingProgress)
-    {
-      CurProgress = startingProgress;
-    }
+    public ThirdKillObjective(int startingProgress) => CurProgress = startingProgress;
 
     public ThirdKillObjective()
     {

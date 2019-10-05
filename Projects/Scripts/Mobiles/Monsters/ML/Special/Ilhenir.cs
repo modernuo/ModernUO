@@ -189,30 +189,15 @@ namespace Server.Mobiles
       base.OnDamage(amount, from, willKill);
     }
 
-    public override int GetAngerSound()
-    {
-      return 0x581;
-    }
+    public override int GetAngerSound() => 0x581;
 
-    public override int GetIdleSound()
-    {
-      return 0x582;
-    }
+    public override int GetIdleSound() => 0x582;
 
-    public override int GetAttackSound()
-    {
-      return 0x580;
-    }
+    public override int GetAttackSound() => 0x580;
 
-    public override int GetHurtSound()
-    {
-      return 0x583;
-    }
+    public override int GetHurtSound() => 0x583;
 
-    public override int GetDeathSound()
-    {
-      return 0x584;
-    }
+    public override int GetDeathSound() => 0x584;
 
     public override void Serialize(GenericWriter writer)
     {
@@ -247,10 +232,7 @@ namespace Server.Mobiles
       from.Send(SpeedControl.Disable);
     }
 
-    public static bool UnderCacophonicAttack(Mobile from)
-    {
-      return m_Table.Contains(from);
-    }
+    public static bool UnderCacophonicAttack(Mobile from) => m_Table.Contains(from);
 
     public virtual void DropOoze()
     {
@@ -282,15 +264,9 @@ namespace Server.Mobiles
       }
     }
 
-    private int RandomPoint(int mid)
-    {
-      return mid + Utility.RandomMinMax(-2, 2);
-    }
+    private int RandomPoint(int mid) => mid + Utility.RandomMinMax(-2, 2);
 
-    public virtual Point3D GetSpawnPosition(int range)
-    {
-      return GetSpawnPosition(Location, Map, range);
-    }
+    public virtual Point3D GetSpawnPosition(int range) => GetSpawnPosition(Location, Map, range);
 
     public virtual Point3D GetSpawnPosition(Point3D from, Map map, int range)
     {

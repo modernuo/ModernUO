@@ -67,9 +67,6 @@ namespace Server.Factions
       }
     }
 
-    private static bool CheckExistance(Point3D loc, Map facet, Type type)
-    {
-      return facet.GetItemsInRange(loc, 0).Any(type.IsInstanceOfType);
-    }
+    private static bool CheckExistance(Point3D loc, Map facet, Type type) => facet.GetItemsInRange(loc, 0).Any(type.IsInstanceOfType);
   }
 }

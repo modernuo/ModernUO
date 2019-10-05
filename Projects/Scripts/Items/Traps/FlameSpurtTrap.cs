@@ -10,10 +10,7 @@ namespace Server.Items
     private Timer m_Timer;
 
     [Constructible]
-    public FlameSpurtTrap() : base(0x1B71)
-    {
-      Visible = false;
-    }
+    public FlameSpurtTrap() : base(0x1B71) => Visible = false;
 
     public FlameSpurtTrap(Serial serial) : base(serial)
     {

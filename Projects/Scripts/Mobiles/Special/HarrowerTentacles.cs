@@ -71,30 +71,15 @@ namespace Server.Mobiles
       reflect = true;
     }
 
-    public override int GetIdleSound()
-    {
-      return 0x101;
-    }
+    public override int GetIdleSound() => 0x101;
 
-    public override int GetAngerSound()
-    {
-      return 0x5E;
-    }
+    public override int GetAngerSound() => 0x5E;
 
-    public override int GetDeathSound()
-    {
-      return 0x1C2;
-    }
+    public override int GetDeathSound() => 0x1C2;
 
-    public override int GetAttackSound()
-    {
-      return -1; // unknown
-    }
+    public override int GetAttackSound() => -1;
 
-    public override int GetHurtSound()
-    {
-      return 0x289;
-    }
+    public override int GetHurtSound() => 0x289;
 
     public override void GenerateLoot()
     {

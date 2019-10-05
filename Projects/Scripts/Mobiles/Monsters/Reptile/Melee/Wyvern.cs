@@ -65,30 +65,15 @@ namespace Server.Mobiles
       AddLoot(LootPack.MedScrolls);
     }
 
-    public override int GetAttackSound()
-    {
-      return 713;
-    }
+    public override int GetAttackSound() => 713;
 
-    public override int GetAngerSound()
-    {
-      return 718;
-    }
+    public override int GetAngerSound() => 718;
 
-    public override int GetDeathSound()
-    {
-      return 716;
-    }
+    public override int GetDeathSound() => 716;
 
-    public override int GetHurtSound()
-    {
-      return 721;
-    }
+    public override int GetHurtSound() => 721;
 
-    public override int GetIdleSound()
-    {
-      return 725;
-    }
+    public override int GetIdleSound() => 725;
 
     public override void Serialize(GenericWriter writer)
     {

@@ -277,10 +277,7 @@ namespace Server.Mobiles
       return result;
     }
 
-    public virtual bool DoMountAbility(int damage, Mobile attacker)
-    {
-      return false;
-    }
+    public virtual bool DoMountAbility(int damage, Mobile attacker) => false;
   }
 
   public class MountItem : Item, IMountItem

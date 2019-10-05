@@ -6,10 +6,7 @@ namespace Server.Items
   {
     private ClothingBlessDeed m_Deed;
 
-    public ClothingBlessTarget(ClothingBlessDeed deed) : base(1, false, TargetFlags.None)
-    {
-      m_Deed = deed;
-    }
+    public ClothingBlessTarget(ClothingBlessDeed deed) : base(1, false, TargetFlags.None) => m_Deed = deed;
 
     protected override void OnTarget(Mobile from, object target) // Override the protected OnTarget() for our feature
     {

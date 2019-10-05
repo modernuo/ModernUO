@@ -422,10 +422,7 @@ namespace Server.Engines.MLQuests
       Quest.OnPlayerDeath(this);
     }
 
-    private bool GetFlag(MLQuestInstanceFlags flag)
-    {
-      return (m_Flags & flag) != 0;
-    }
+    private bool GetFlag(MLQuestInstanceFlags flag) => (m_Flags & flag) != 0;
 
     private void SetFlag(MLQuestInstanceFlags flag, bool value)
     {

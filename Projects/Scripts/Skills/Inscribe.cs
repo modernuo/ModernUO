@@ -108,10 +108,7 @@ namespace Server.SkillHandlers
     {
       private BaseBook m_BookSrc;
 
-      public InternalTargetDst(BaseBook bookSrc) : base(3, false, TargetFlags.None)
-      {
-        m_BookSrc = bookSrc;
-      }
+      public InternalTargetDst(BaseBook bookSrc) : base(3, false, TargetFlags.None) => m_BookSrc = bookSrc;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

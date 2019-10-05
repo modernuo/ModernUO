@@ -56,10 +56,7 @@ namespace Server.Items
     {
       private Lockpick m_Item;
 
-      public InternalTarget(Lockpick item) : base(1, false, TargetFlags.None)
-      {
-        m_Item = item;
-      }
+      public InternalTarget(Lockpick item) : base(1, false, TargetFlags.None) => m_Item = item;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

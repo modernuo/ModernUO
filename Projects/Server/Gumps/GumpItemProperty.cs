@@ -27,10 +27,7 @@ namespace Server.Gumps
     private static byte[] m_LayoutName = Gump.StringToBuffer("itemproperty");
     private uint m_Serial;
 
-    public GumpItemProperty(uint serial)
-    {
-      m_Serial = serial;
-    }
+    public GumpItemProperty(uint serial) => m_Serial = serial;
 
     public uint Serial
     {
@@ -38,10 +35,7 @@ namespace Server.Gumps
       set => Delta(ref m_Serial, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return $"{{ itemproperty {m_Serial} }}";
-    }
+    public override string Compile(NetState ns) => $"{{ itemproperty {m_Serial} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

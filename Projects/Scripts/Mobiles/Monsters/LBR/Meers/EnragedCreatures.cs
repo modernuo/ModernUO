@@ -4,10 +4,7 @@ namespace Server.Mobiles
 {
   public class EnragedRabbit : BaseEnraged
   {
-    public EnragedRabbit(Mobile summoner) : base(summoner)
-    {
-      Body = 0xcd;
-    }
+    public EnragedRabbit(Mobile summoner) : base(summoner) => Body = 0xcd;
 
     public EnragedRabbit(Serial serial) : base(serial)
     {
@@ -16,20 +13,11 @@ namespace Server.Mobiles
     public override string CorpseName => "a hare corpse";
     public override string DefaultName => "a rabbit";
 
-    public override int GetAttackSound()
-    {
-      return 0xC9;
-    }
+    public override int GetAttackSound() => 0xC9;
 
-    public override int GetHurtSound()
-    {
-      return 0xCA;
-    }
+    public override int GetHurtSound() => 0xCA;
 
-    public override int GetDeathSound()
-    {
-      return 0xCB;
-    }
+    public override int GetDeathSound() => 0xCB;
 
     public override void Serialize(GenericWriter writer)
     {
@@ -46,10 +34,7 @@ namespace Server.Mobiles
 
   public class EnragedHart : BaseEnraged
   {
-    public EnragedHart(Mobile summoner) : base(summoner)
-    {
-      Body = 0xea;
-    }
+    public EnragedHart(Mobile summoner) : base(summoner) => Body = 0xea;
 
     public EnragedHart(Serial serial) : base(serial)
     {
@@ -58,20 +43,11 @@ namespace Server.Mobiles
     public override string CorpseName => "a deer corpse";
     public override string DefaultName => "a great hart";
 
-    public override int GetAttackSound()
-    {
-      return 0x82;
-    }
+    public override int GetAttackSound() => 0x82;
 
-    public override int GetHurtSound()
-    {
-      return 0x83;
-    }
+    public override int GetHurtSound() => 0x83;
 
-    public override int GetDeathSound()
-    {
-      return 0x84;
-    }
+    public override int GetDeathSound() => 0x84;
 
     public override void Serialize(GenericWriter writer)
     {
@@ -88,10 +64,7 @@ namespace Server.Mobiles
 
   public class EnragedHind : BaseEnraged
   {
-    public EnragedHind(Mobile summoner) : base(summoner)
-    {
-      Body = 0xed;
-    }
+    public EnragedHind(Mobile summoner) : base(summoner) => Body = 0xed;
 
     public EnragedHind(Serial serial) : base(serial)
     {
@@ -100,20 +73,11 @@ namespace Server.Mobiles
     public override string CorpseName => "a deer corpse";
     public override string DefaultName => "a hind";
 
-    public override int GetAttackSound()
-    {
-      return 0x82;
-    }
+    public override int GetAttackSound() => 0x82;
 
-    public override int GetHurtSound()
-    {
-      return 0x83;
-    }
+    public override int GetHurtSound() => 0x83;
 
-    public override int GetDeathSound()
-    {
-      return 0x84;
-    }
+    public override int GetDeathSound() => 0x84;
 
     public override void Serialize(GenericWriter writer)
     {

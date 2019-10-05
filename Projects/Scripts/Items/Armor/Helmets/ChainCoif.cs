@@ -4,10 +4,7 @@ namespace Server.Items
   public class ChainCoif : BaseArmor
   {
     [Constructible]
-    public ChainCoif() : base(0x13BB)
-    {
-      Weight = 1.0;
-    }
+    public ChainCoif() : base(0x13BB) => Weight = 1.0;
 
     public ChainCoif(Serial serial) : base(serial)
     {

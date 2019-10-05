@@ -64,12 +64,9 @@ namespace Server.Mobiles
 			return price;
 		}
 
-		public int GetBuyPriceFor( Item item )
-		{
-			return (int)( 1.90 * GetSellPriceFor( item ) );
-		}
+		public int GetBuyPriceFor( Item item ) => (int)( 1.90 * GetSellPriceFor( item ) );
 
-		public Type[] Types
+    public Type[] Types
 		{
 			get
 			{
@@ -112,9 +109,6 @@ namespace Server.Mobiles
 			return IsInList( item.GetType() );
 		}
 
-		public bool IsInList( Type type )
-		{
-			return m_Table.ContainsKey( type );
-		}
-	}
+		public bool IsInList( Type type ) => m_Table.ContainsKey( type );
+  }
 }

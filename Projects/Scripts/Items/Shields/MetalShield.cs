@@ -3,10 +3,7 @@ namespace Server.Items
   public class MetalShield : BaseShield
   {
     [Constructible]
-    public MetalShield() : base(0x1B7B)
-    {
-      Weight = 6.0;
-    }
+    public MetalShield() : base(0x1B7B) => Weight = 6.0;
 
     public MetalShield(Serial serial) : base(serial)
     {

@@ -10,10 +10,7 @@ namespace Server.Engines.Quests
     {
     }
 
-    public QuestCallbackEntry(int number, int range, QuestCallback callback) : base(number, range)
-    {
-      m_Callback = callback;
-    }
+    public QuestCallbackEntry(int number, int range, QuestCallback callback) : base(number, range) => m_Callback = callback;
 
     public override void OnClick()
     {

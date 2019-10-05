@@ -84,10 +84,7 @@ namespace Server.Mobiles
     public override bool Unprovokable => true;
     public override bool Uncalmable => true;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.Dismount;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
     public virtual void PackResources(int amount)
     {
@@ -158,30 +155,15 @@ namespace Server.Mobiles
         AddLoot(LootPack.AosSuperBoss, 5); // Need to verify
     }
 
-    public override int GetAngerSound()
-    {
-      return 0x597;
-    }
+    public override int GetAngerSound() => 0x597;
 
-    public override int GetIdleSound()
-    {
-      return 0x596;
-    }
+    public override int GetIdleSound() => 0x596;
 
-    public override int GetAttackSound()
-    {
-      return 0x599;
-    }
+    public override int GetAttackSound() => 0x599;
 
-    public override int GetHurtSound()
-    {
-      return 0x59a;
-    }
+    public override int GetHurtSound() => 0x59a;
 
-    public override int GetDeathSound()
-    {
-      return 0x59c;
-    }
+    public override int GetDeathSound() => 0x59c;
 
     public override void OnGaveMeleeAttack(Mobile defender)
     {

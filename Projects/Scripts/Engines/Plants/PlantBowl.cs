@@ -48,10 +48,7 @@ namespace Server.Engines.Plants
     };
 
     [Constructible]
-    public PlantBowl() : base(0x15FD)
-    {
-      Weight = 1.0;
-    }
+    public PlantBowl() : base(0x15FD) => Weight = 1.0;
 
     public PlantBowl(Serial serial) : base(serial)
     {
@@ -110,10 +107,7 @@ namespace Server.Engines.Plants
     {
       private PlantBowl m_PlantBowl;
 
-      public InternalTarget(PlantBowl plantBowl) : base(3, true, TargetFlags.None)
-      {
-        m_PlantBowl = plantBowl;
-      }
+      public InternalTarget(PlantBowl plantBowl) : base(3, true, TargetFlags.None) => m_PlantBowl = plantBowl;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

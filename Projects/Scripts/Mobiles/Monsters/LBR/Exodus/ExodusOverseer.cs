@@ -66,30 +66,15 @@ namespace Server.Mobiles
       AddLoot(LootPack.Rich);
     }
 
-    public override int GetIdleSound()
-    {
-      return 0xFD;
-    }
+    public override int GetIdleSound() => 0xFD;
 
-    public override int GetAngerSound()
-    {
-      return 0x26C;
-    }
+    public override int GetAngerSound() => 0x26C;
 
-    public override int GetDeathSound()
-    {
-      return 0x211;
-    }
+    public override int GetDeathSound() => 0x211;
 
-    public override int GetAttackSound()
-    {
-      return 0x23B;
-    }
+    public override int GetAttackSound() => 0x23B;
 
-    public override int GetHurtSound()
-    {
-      return 0x140;
-    }
+    public override int GetHurtSound() => 0x140;
 
     public override void AlterMeleeDamageFrom(Mobile from, ref int damage)
     {

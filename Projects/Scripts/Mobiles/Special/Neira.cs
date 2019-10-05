@@ -209,10 +209,7 @@ namespace Server.Mobiles
     {
       private VirtualMountItem m_Item;
 
-      public VirtualMount(VirtualMountItem item)
-      {
-        m_Item = item;
-      }
+      public VirtualMount(VirtualMountItem item) => m_Item = item;
 
       Mobile IMount.Rider
       {
@@ -241,10 +238,8 @@ namespace Server.Mobiles
       }
 
       public VirtualMountItem(Serial serial)
-        : base(serial)
-      {
+        : base(serial) =>
         m_Mount = new VirtualMount(this);
-      }
 
       public Mobile Rider{ get; private set; }
 

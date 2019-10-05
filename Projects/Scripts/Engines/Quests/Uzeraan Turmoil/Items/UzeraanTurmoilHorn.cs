@@ -15,10 +15,7 @@ namespace Server.Engines.Quests.Haven
     {
     }
 
-    public override bool ValidateUse(Mobile from)
-    {
-      return from is PlayerMobile pm && pm.Quest is UzeraanTurmoilQuest;
-    }
+    public override bool ValidateUse(Mobile from) => from is PlayerMobile pm && pm.Quest is UzeraanTurmoilQuest;
 
     public override void Serialize(GenericWriter writer)
     {

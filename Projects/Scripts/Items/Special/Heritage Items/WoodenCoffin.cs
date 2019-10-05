@@ -75,10 +75,7 @@ namespace Server.Items
     private bool m_East;
 
     [Constructible]
-    public WoodenCoffinDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public WoodenCoffinDeed() => LootType = LootType.Blessed;
 
     public WoodenCoffinDeed(Serial serial) : base(serial)
     {

@@ -136,10 +136,7 @@ namespace Server
       Values[index] = value;
     }
 
-    public override string ToString()
-    {
-      return "...";
-    }
+    public override string ToString() => "...";
 
     public static void Serialize(GenericWriter writer, VirtueInfo info)
     {

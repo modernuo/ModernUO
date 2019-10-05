@@ -6,10 +6,8 @@ namespace Server.Items
   {
     [Constructible]
     public EnhancedBandage(int amount = 1)
-      : base(amount)
-    {
+      : base(amount) =>
       Hue = 0x8A5;
-    }
 
     public EnhancedBandage(Serial serial)
       : base(serial)
@@ -20,10 +18,7 @@ namespace Server.Items
 
     public override int LabelNumber => 1152441; // enhanced bandage
 
-    public override bool Dye(Mobile from, DyeTub sender)
-    {
-      return false;
-    }
+    public override bool Dye(Mobile from, DyeTub sender) => false;
 
     public override void AddNameProperties(ObjectPropertyList list)
     {
@@ -88,10 +83,7 @@ namespace Server.Items
       }
     }
 
-    public override bool OnDragLift(Mobile from)
-    {
-      return false;
-    }
+    public override bool OnDragLift(Mobile from) => false;
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {

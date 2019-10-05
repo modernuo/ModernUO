@@ -3,10 +3,7 @@ namespace Server.Items
   public class PeppercornFishsteak : FishSteak
   {
     [Constructible]
-    public PeppercornFishsteak()
-    {
-      Hue = 0x222;
-    }
+    public PeppercornFishsteak() => Hue = 0x222;
 
     public PeppercornFishsteak(Serial serial) : base(serial)
     {

@@ -350,25 +350,13 @@ namespace Server.Mobiles
         m_Mount.IsDonationItem && RewardSystem.GetRewardLevel(m_Rider) < 3 ? 7.5 + (Core.AOS ? 3.0 : 2.0) :
         Core.AOS ? 3.0 : 2.0);
 
-      public override TimeSpan GetCastRecovery()
-      {
-        return TimeSpan.Zero;
-      }
+      public override TimeSpan GetCastRecovery() => TimeSpan.Zero;
 
-      public override int GetMana()
-      {
-        return 0;
-      }
+      public override int GetMana() => 0;
 
-      public override bool ConsumeReagents()
-      {
-        return true;
-      }
+      public override bool ConsumeReagents() => true;
 
-      public override bool CheckFizzle()
-      {
-        return true;
-      }
+      public override bool CheckFizzle() => true;
 
       public void Stop()
       {

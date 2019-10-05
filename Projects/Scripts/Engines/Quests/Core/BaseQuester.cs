@@ -9,10 +9,7 @@ namespace Server.Engines.Quests
   {
     private BaseQuester m_Quester;
 
-    public TalkEntry(BaseQuester quester) : base(quester.TalkNumber)
-    {
-      m_Quester = quester;
-    }
+    public TalkEntry(BaseQuester quester) : base(quester.TalkNumber) => m_Quester = quester;
 
     public override void OnClick()
     {
@@ -52,20 +49,11 @@ namespace Server.Engines.Quests
 
     public abstract void OnTalk(PlayerMobile player, bool contextMenu);
 
-    public virtual bool CanTalkTo(PlayerMobile to)
-    {
-      return true;
-    }
+    public virtual bool CanTalkTo(PlayerMobile to) => true;
 
-    public virtual int GetAutoTalkRange(PlayerMobile m)
-    {
-      return -1;
-    }
+    public virtual int GetAutoTalkRange(PlayerMobile m) => -1;
 
-    public override bool CanBeDamaged()
-    {
-      return false;
-    }
+    public override bool CanBeDamaged() => false;
 
     protected Item SetHue(Item item, int hue)
     {

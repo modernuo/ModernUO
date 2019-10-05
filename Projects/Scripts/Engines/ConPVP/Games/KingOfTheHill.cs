@@ -463,15 +463,9 @@ namespace Server.Engines.ConPVP
       AddButton(314, height - 42, 247, 248, 1);
     }
 
-    public string Center(string text)
-    {
-      return $"<CENTER>{text}</CENTER>";
-    }
+    public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
-    public string Color(string text, int color)
-    {
-      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
+    public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
     private void AddBorderedText(int x, int y, int width, int height, string text, int color, int borderColor)
     {
@@ -650,10 +644,7 @@ namespace Server.Engines.ConPVP
       op.WriteEncodedInt(Color);
     }
 
-    public override string ToString()
-    {
-      return TeamName != null ? $"({Name}) ..." : "...";
-    }
+    public override string ToString() => TeamName != null ? $"({Name}) ..." : "...";
   }
 
   public sealed class KHController : EventController
@@ -745,15 +736,9 @@ namespace Server.Engines.ConPVP
 
     public override string Title => "King of the Hill";
 
-    public override string GetTeamName(int teamID)
-    {
-      return TeamInfo[teamID % TeamInfo.Length].Name;
-    }
+    public override string GetTeamName(int teamID) => TeamInfo[teamID % TeamInfo.Length].Name;
 
-    public override EventGame Construct(DuelContext context)
-    {
-      return new KHGame(this, context);
-    }
+    public override EventGame Construct(DuelContext context) => new KHGame(this, context);
 
     public void RemoveBoard(KHBoard b)
     {
@@ -824,10 +809,7 @@ namespace Server.Engines.ConPVP
   {
     private Timer m_FinishTimer;
 
-    public KHGame(KHController controller, DuelContext context) : base(context)
-    {
-      Controller = controller;
-    }
+    public KHGame(KHController controller, DuelContext context) : base(context) => Controller = controller;
 
     public KHController Controller{ get; }
 
@@ -895,10 +877,7 @@ namespace Server.Engines.ConPVP
       return pm.DuelContext.Participants.IndexOf(pm.DuelPlayer.Participant);
     }
 
-    public int GetColor(Mobile mob)
-    {
-      return GetTeamInfo(mob)?.Color ?? -1;
-    }
+    public int GetColor(Mobile mob) => GetTeamInfo(mob)?.Color ?? -1;
 
     private void ApplyHues(Participant p, int hueOverride)
     {

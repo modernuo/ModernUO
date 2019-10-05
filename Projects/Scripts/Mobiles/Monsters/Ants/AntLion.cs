@@ -76,30 +76,15 @@ namespace Server.Mobiles
     public override string CorpseName => "an ant lion corpse";
     public override string DefaultName => "an ant lion";
 
-    public override int GetAngerSound()
-    {
-      return 0x5A;
-    }
+    public override int GetAngerSound() => 0x5A;
 
-    public override int GetIdleSound()
-    {
-      return 0x5A;
-    }
+    public override int GetIdleSound() => 0x5A;
 
-    public override int GetAttackSound()
-    {
-      return 0x164;
-    }
+    public override int GetAttackSound() => 0x164;
 
-    public override int GetHurtSound()
-    {
-      return 0x187;
-    }
+    public override int GetHurtSound() => 0x187;
 
-    public override int GetDeathSound()
-    {
-      return 0x1BA;
-    }
+    public override int GetDeathSound() => 0x1BA;
 
     public override void GenerateLoot()
     {

@@ -65,17 +65,13 @@ namespace Server.Guilds
       }
     }
 
-    public static bool IsLeader(Mobile m, Guild g)
-    {
-      return !(m.Deleted || g.Disbanded || !(m is PlayerMobile) ||
-               m.AccessLevel < AccessLevel.GameMaster && g.Leader != m);
-    }
+    public static bool IsLeader(Mobile m, Guild g) =>
+      !(m.Deleted || g.Disbanded || !(m is PlayerMobile) ||
+        m.AccessLevel < AccessLevel.GameMaster && g.Leader != m);
 
-    public static bool IsMember(Mobile m, Guild g)
-    {
-      return !(m.Deleted || g.Disbanded || !(m is PlayerMobile) ||
-               m.AccessLevel < AccessLevel.GameMaster && !g.IsMember(m));
-    }
+    public static bool IsMember(Mobile m, Guild g) =>
+      !(m.Deleted || g.Disbanded || !(m is PlayerMobile) ||
+        m.AccessLevel < AccessLevel.GameMaster && !g.IsMember(m));
 
     public static bool CheckProfanity(string s, int maxLength = 50)
     {
@@ -123,9 +119,6 @@ namespace Server.Guilds
         AddHtml(x, y, width, height, text.String, back, scroll);
     }
 
-    public static string Color(string text, int color)
-    {
-      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
+    public static string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
   }
 }

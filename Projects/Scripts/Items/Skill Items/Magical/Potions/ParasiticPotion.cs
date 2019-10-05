@@ -3,10 +3,7 @@ namespace Server.Items
   public class ParasiticPotion : BasePoisonPotion
   {
     [Constructible]
-    public ParasiticPotion() : base(PotionEffect.Parasitic)
-    {
-      Hue = 0x17C;
-    }
+    public ParasiticPotion() : base(PotionEffect.Parasitic) => Hue = 0x17C;
 
     public ParasiticPotion(Serial serial) : base(serial)
     {

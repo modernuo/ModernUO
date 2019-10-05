@@ -3,10 +3,7 @@ namespace Server.Engines.Quests.Hag
   public class MoonfireBrew : Item
   {
     [Constructible]
-    public MoonfireBrew() : base(0xF04)
-    {
-      Weight = 1.0;
-    }
+    public MoonfireBrew() : base(0xF04) => Weight = 1.0;
 
     public MoonfireBrew(Serial serial) : base(serial)
     {

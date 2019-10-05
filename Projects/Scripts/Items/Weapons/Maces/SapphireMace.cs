@@ -3,10 +3,7 @@ namespace Server.Items
   public class SapphireMace : DiamondMace
   {
     [Constructible]
-    public SapphireMace()
-    {
-      WeaponAttributes.ResistEnergyBonus = 5;
-    }
+    public SapphireMace() => WeaponAttributes.ResistEnergyBonus = 5;
 
     public SapphireMace(Serial serial) : base(serial)
     {

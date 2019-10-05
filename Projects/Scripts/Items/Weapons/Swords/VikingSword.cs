@@ -4,10 +4,7 @@ namespace Server.Items
   public class VikingSword : BaseSword
   {
     [Constructible]
-    public VikingSword() : base(0x13B9)
-    {
-      Weight = 6.0;
-    }
+    public VikingSword() : base(0x13B9) => Weight = 6.0;
 
     public VikingSword(Serial serial) : base(serial)
     {

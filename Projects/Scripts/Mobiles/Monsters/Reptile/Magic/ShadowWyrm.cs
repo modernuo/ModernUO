@@ -65,15 +65,9 @@ namespace Server.Mobiles
       AddLoot(LootPack.Gems, 5);
     }
 
-    public override int GetIdleSound()
-    {
-      return 0x2D5;
-    }
+    public override int GetIdleSound() => 0x2D5;
 
-    public override int GetHurtSound()
-    {
-      return 0x2D1;
-    }
+    public override int GetHurtSound() => 0x2D1;
 
     public override void Serialize(GenericWriter writer)
     {

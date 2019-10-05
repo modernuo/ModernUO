@@ -4,10 +4,7 @@ namespace Server.Items
   public class Broadsword : BaseSword
   {
     [Constructible]
-    public Broadsword() : base(0xF5E)
-    {
-      Weight = 6.0;
-    }
+    public Broadsword() : base(0xF5E) => Weight = 6.0;
 
     public Broadsword(Serial serial) : base(serial)
     {

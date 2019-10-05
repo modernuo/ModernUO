@@ -4,10 +4,7 @@ namespace Server.Items
   public class Cleaver : BaseKnife
   {
     [Constructible]
-    public Cleaver() : base(0xEC3)
-    {
-      Weight = 2.0;
-    }
+    public Cleaver() : base(0xEC3) => Weight = 2.0;
 
     public Cleaver(Serial serial) : base(serial)
     {

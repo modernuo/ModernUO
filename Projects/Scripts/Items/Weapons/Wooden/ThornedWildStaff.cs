@@ -3,10 +3,7 @@ namespace Server.Items
   public class ThornedWildStaff : WildStaff
   {
     [Constructible]
-    public ThornedWildStaff()
-    {
-      Attributes.ReflectPhysical = 12;
-    }
+    public ThornedWildStaff() => Attributes.ReflectPhysical = 12;
 
     public ThornedWildStaff(Serial serial) : base(serial)
     {

@@ -190,15 +190,9 @@ namespace Server.Engines.Quests.Necro
 
     public override object Message => 1060119;
 
-    public override bool IgnoreYoungProtection(Mobile from)
-    {
-      return !m_SkitteringHoppersDisposed && from is SkitteringHopper;
-    }
+    public override bool IgnoreYoungProtection(Mobile from) => !m_SkitteringHoppersDisposed && from is SkitteringHopper;
 
-    public override bool GetKillEvent(BaseCreature creature, Container corpse)
-    {
-      return !m_SkitteringHoppersDisposed;
-    }
+    public override bool GetKillEvent(BaseCreature creature, Container corpse) => !m_SkitteringHoppersDisposed;
 
     public override void OnKill(BaseCreature creature, Container corpse)
     {
@@ -307,10 +301,7 @@ namespace Server.Engines.Quests.Necro
   {
     private bool m_Victory;
 
-    public FindMardothEndObjective(bool victory)
-    {
-      m_Victory = victory;
-    }
+    public FindMardothEndObjective(bool victory) => m_Victory = victory;
 
     // Serialization
     public FindMardothEndObjective()

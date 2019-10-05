@@ -62,11 +62,9 @@ namespace Server.Gumps
       set => Delta(ref m_Hue, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return m_Hue == 0 ? $"{{ tilepic {m_X} {m_Y} {m_ItemID} }}" :
+    public override string Compile(NetState ns) =>
+      m_Hue == 0 ? $"{{ tilepic {m_X} {m_Y} {m_ItemID} }}" :
         $"{{ tilepichue {m_X} {m_Y} {m_ItemID} {m_Hue} }}";
-    }
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

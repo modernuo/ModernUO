@@ -6,10 +6,7 @@ namespace Server.Items
   {
     private DateTime m_NextPassiveTrigger, m_NextActiveTrigger;
 
-    public BaseTrap(int itemID) : base(itemID)
-    {
-      Movable = false;
-    }
+    public BaseTrap(int itemID) : base(itemID) => Movable = false;
 
     public BaseTrap(Serial serial) : base(serial)
     {
@@ -36,16 +33,11 @@ namespace Server.Items
       return hue - 1;
     }
 
-    public bool CheckRange(Point3D loc, Point3D oldLoc, int range)
-    {
-      return CheckRange(loc, range) && !CheckRange(oldLoc, range);
-    }
+    public bool CheckRange(Point3D loc, Point3D oldLoc, int range) => CheckRange(loc, range) && !CheckRange(oldLoc, range);
 
-    public bool CheckRange(Point3D loc, int range)
-    {
-      return Z + 8 >= loc.Z && loc.Z + 16 > Z
-                            && Utility.InRange(GetWorldLocation(), loc, range);
-    }
+    public bool CheckRange(Point3D loc, int range) =>
+      Z + 8 >= loc.Z && loc.Z + 16 > Z
+                     && Utility.InRange(GetWorldLocation(), loc, range);
 
     public override void OnMovement(Mobile m, Point3D oldLocation)
     {

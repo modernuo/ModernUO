@@ -12,10 +12,7 @@ namespace Server.Items
 
     private int m_UsesRemaining;
 
-    public BasePoleArm(int itemID) : base(itemID)
-    {
-      m_UsesRemaining = 150;
-    }
+    public BasePoleArm(int itemID) : base(itemID) => m_UsesRemaining = 150;
 
     public BasePoleArm(Serial serial) : base(serial)
     {

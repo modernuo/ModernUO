@@ -27,11 +27,8 @@ namespace Server
       m_ModuleBuilder = m_AssemblyBuilder.DefineDynamicModule(assemblyName);
 		}
 
-		public TypeBuilder DefineType( string typeName, TypeAttributes attrs, Type parentType )
-		{
-			return m_ModuleBuilder.DefineType( typeName, attrs, parentType );
-		}
-	}
+		public TypeBuilder DefineType( string typeName, TypeAttributes attrs, Type parentType ) => m_ModuleBuilder.DefineType( typeName, attrs, parentType );
+  }
 
 	public class MethodEmitter
 	{
@@ -83,12 +80,9 @@ namespace Server
 			m_ArgumentTypes = parms;
 		}
 
-		public LocalBuilder CreateLocal( Type localType )
-		{
-			return Generator.DeclareLocal( localType );
-		}
+		public LocalBuilder CreateLocal( Type localType ) => Generator.DeclareLocal( localType );
 
-		public LocalBuilder AcquireTemp( Type localType )
+    public LocalBuilder AcquireTemp( Type localType )
 		{
 			if (!m_Temps.TryGetValue( localType, out Queue<LocalBuilder> list ))
 				m_Temps[localType] = list = new Queue<LocalBuilder>();
@@ -126,12 +120,9 @@ namespace Server
 			Generator.Emit( OpCodes.Brtrue, label );
 		}
 
-		public Label CreateLabel()
-		{
-			return Generator.DefineLabel();
-		}
+		public Label CreateLabel() => Generator.DefineLabel();
 
-		public void MarkLabel( Label label )
+    public void MarkLabel( Label label )
 		{
 			Generator.MarkLabel( label );
 		}

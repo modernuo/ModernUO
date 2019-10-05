@@ -44,15 +44,9 @@ namespace Server.Engines.Quests.Haven
       AddItem(staff);
     }
 
-    public override int GetAutoTalkRange(PlayerMobile pm)
-    {
-      return 3;
-    }
+    public override int GetAutoTalkRange(PlayerMobile pm) => 3;
 
-    public override bool CanTalkTo(PlayerMobile to)
-    {
-      return to.Quest is UzeraanTurmoilQuest;
-    }
+    public override bool CanTalkTo(PlayerMobile to) => to.Quest is UzeraanTurmoilQuest;
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

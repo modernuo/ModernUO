@@ -4,15 +4,13 @@ namespace Server.Ethics.Evil
 {
   public sealed class UnholyShield : Power
   {
-    public UnholyShield()
-    {
+    public UnholyShield() =>
       m_Definition = new PowerDefinition(
         20,
         "Unholy Shield",
         "Velgo K'blac",
         ""
       );
-    }
 
     public override void BeginInvoke(Player from)
     {

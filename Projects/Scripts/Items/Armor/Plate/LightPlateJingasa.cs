@@ -3,10 +3,7 @@ namespace Server.Items
   public class LightPlateJingasa : BaseArmor
   {
     [Constructible]
-    public LightPlateJingasa() : base(0x2781)
-    {
-      Weight = 5.0;
-    }
+    public LightPlateJingasa() : base(0x2781) => Weight = 5.0;
 
     public LightPlateJingasa(Serial serial) : base(serial)
     {

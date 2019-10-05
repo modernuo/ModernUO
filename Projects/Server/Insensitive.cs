@@ -27,10 +27,7 @@ namespace Server
   {
     public static IComparer<string> Comparer{ get; } = StringComparer.OrdinalIgnoreCase;
 
-    public static int Compare(string a, string b)
-    {
-      return Comparer.Compare(a, b);
-    }
+    public static int Compare(string a, string b) => Comparer.Compare(a, b);
 
     public static bool Equals(string a, string b)
     {

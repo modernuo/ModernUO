@@ -281,15 +281,9 @@ public class ConfirmSignupGump : Gump
       AddButton(314, y, 247, 248, 1);
     }
 
-    public string Center(string text)
-    {
-      return $"<CENTER>{text}</CENTER>";
-    }
+    public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
-    public string Color(string text, int color)
-    {
-      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
+    public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
     private void AddBorderedText(int x, int y, int width, int height, string text, int color, int borderColor)
     {

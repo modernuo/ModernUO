@@ -76,10 +76,7 @@ namespace Server.Spells.Necromancy
       m.SendLocalizedMessage(1060872); // Your mind feels normal again.
     }
 
-    public static bool HasMindRotScalar(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool HasMindRotScalar(Mobile m) => m_Table.ContainsKey(m);
 
     public static bool GetMindRotScalar(Mobile m, ref double scalar)
     {

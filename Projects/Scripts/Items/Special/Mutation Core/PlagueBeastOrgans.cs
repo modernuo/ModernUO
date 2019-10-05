@@ -69,15 +69,9 @@ namespace Server.Items
         m_Timer.Stop();
     }
 
-    public virtual bool OnLifted(Mobile from, PlagueBeastComponent c)
-    {
-      return c.IsGland || c.IsBrain;
-    }
+    public virtual bool OnLifted(Mobile from, PlagueBeastComponent c) => c.IsGland || c.IsBrain;
 
-    public virtual bool OnDropped(Mobile from, Item item, PlagueBeastComponent to)
-    {
-      return false;
-    }
+    public virtual bool OnDropped(Mobile from, Item item, PlagueBeastComponent to) => false;
 
     public virtual void FinishOpening(Mobile from)
     {
@@ -225,10 +219,7 @@ namespace Server.Items
 
     private int m_Veins;
 
-    public PlagueBeastRubbleOrgan()
-    {
-      m_Veins = 3;
-    }
+    public PlagueBeastRubbleOrgan() => m_Veins = 3;
 
     public PlagueBeastRubbleOrgan(Serial serial) : base(serial)
     {
@@ -446,10 +437,7 @@ namespace Server.Items
   {
     private int m_Brains;
 
-    public PlagueBeastMainOrgan()
-    {
-      m_Brains = 0;
-    }
+    public PlagueBeastMainOrgan() => m_Brains = 0;
 
     public PlagueBeastMainOrgan(Serial serial) : base(serial)
     {

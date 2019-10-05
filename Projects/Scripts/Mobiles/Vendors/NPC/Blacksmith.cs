@@ -117,15 +117,9 @@ namespace Server.Mobiles
       return null;
     }
 
-    public override bool IsValidBulkOrder(Item item)
-    {
-      return item is SmallSmithBOD || item is LargeSmithBOD;
-    }
+    public override bool IsValidBulkOrder(Item item) => item is SmallSmithBOD || item is LargeSmithBOD;
 
-    public override bool SupportsBulkOrders(Mobile from)
-    {
-      return from is PlayerMobile && from.Skills.Blacksmith.Base > 0;
-    }
+    public override bool SupportsBulkOrders(Mobile from) => from is PlayerMobile && from.Skills.Blacksmith.Base > 0;
 
     public override TimeSpan GetNextBulkOrder(Mobile from)
     {

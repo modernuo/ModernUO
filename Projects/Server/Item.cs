@@ -759,15 +759,9 @@ namespace Server
       }
     }
 
-    int IComparable<IEntity>.CompareTo(IEntity other)
-    {
-      return other == null ? -1 : Serial.CompareTo(other.Serial);
-    }
+    int IComparable<IEntity>.CompareTo(IEntity other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
-    public int CompareTo(Item other)
-    {
-      return other == null ? -1 : Serial.CompareTo(other.Serial);
-    }
+    public int CompareTo(Item other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
     /// <summary>
     ///   Moves the Item to a given <paramref name="location" /> and <paramref name="map" />.
@@ -1408,15 +1402,9 @@ namespace Server
       return flags;
     }
 
-    private CompactInfo LookupCompactInfo()
-    {
-      return m_CompactInfo;
-    }
+    private CompactInfo LookupCompactInfo() => m_CompactInfo;
 
-    private CompactInfo AcquireCompactInfo()
-    {
-      return m_CompactInfo ?? (m_CompactInfo = new CompactInfo());
-    }
+    private CompactInfo AcquireCompactInfo() => m_CompactInfo ?? (m_CompactInfo = new CompactInfo());
 
     private void ReleaseCompactInfo()
     {
@@ -1469,15 +1457,9 @@ namespace Server
         m_Flags &= ~flag;
     }
 
-    private bool GetFlag(ImplFlag flag)
-    {
-      return (m_Flags & flag) != 0;
-    }
+    private bool GetFlag(ImplFlag flag) => (m_Flags & flag) != 0;
 
-    public BounceInfo GetBounce()
-    {
-      return LookupCompactInfo()?.m_Bounce;
-    }
+    public BounceInfo GetBounce() => LookupCompactInfo()?.m_Bounce;
 
     public void RecordBounce()
     {
@@ -1521,10 +1503,7 @@ namespace Server
     ///   Overridable. Method checked to see if the item can be traded.
     /// </summary>
     /// <returns>True if the trade is allowed, false if not.</returns>
-    public virtual bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
-    {
-      return true;
-    }
+    public virtual bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted) => true;
 
     /// <summary>
     ///   Overridable. Virtual event invoked when a trade has completed, either successfully or not.
@@ -1552,10 +1531,7 @@ namespace Server
 	  ///     </item>
 	  ///   </list>
 	  /// </returns>
-	  public virtual bool CheckPropertyConfliction(Mobile m)
-    {
-      return false;
-    }
+	  public virtual bool CheckPropertyConfliction(Mobile m) => false;
 
     /// <summary>
     ///   Overridable. Sends the <see cref="PropertyList">object property list</see> to <paramref name="from" />.
@@ -1748,10 +1724,7 @@ namespace Server
         parentMobile.GetChildNameProperties(list, item);
     }
 
-    public virtual bool IsChildVisibleTo(Mobile m, Item child)
-    {
-      return true;
-    }
+    public virtual bool IsChildVisibleTo(Mobile m, Item child) => true;
 
     public void Bounce(Mobile from)
     {
@@ -1822,20 +1795,11 @@ namespace Server
 	  ///   When placed in an Item script, the item may be cast when equipped if the <paramref name="from" /> has 100 or more
 	  ///   intelligence. Otherwise, it will drop to their backpack.
 	  /// </example>
-	  public virtual bool AllowEquippedCast(Mobile from)
-    {
-      return false;
-    }
+	  public virtual bool AllowEquippedCast(Mobile from) => false;
 
-    public virtual bool CheckConflictingLayer(Mobile m, Item item, Layer layer)
-    {
-      return m_Layer == layer;
-    }
+    public virtual bool CheckConflictingLayer(Mobile m, Item item, Layer layer) => m_Layer == layer;
 
-    public virtual bool CanEquip(Mobile m)
-    {
-      return m_Layer != Layer.Invalid && m.FindItemOnLayer(m_Layer) == null;
-    }
+    public virtual bool CanEquip(Mobile m) => m_Layer != Layer.Invalid && m.FindItemOnLayer(m_Layer) == null;
 
     public virtual void GetChildContextMenuEntries(Mobile from, List<ContextMenuEntry> list, Item item)
     {
@@ -1853,10 +1817,7 @@ namespace Server
         mobile.GetChildContextMenuEntries(from, list, this);
     }
 
-    public virtual bool VerifyMove(Mobile from)
-    {
-      return Movable;
-    }
+    public virtual bool VerifyMove(Mobile from) => Movable;
 
     public virtual DeathMoveResult OnParentDeath(Mobile parent)
     {
@@ -1936,36 +1897,22 @@ namespace Server
         LabelTo(to, "(cursed)");
     }
 
-    public bool AtWorldPoint(int x, int y)
-    {
-      return m_Parent == null && m_Location.m_X == x && m_Location.m_Y == y;
-    }
+    public bool AtWorldPoint(int x, int y) => m_Parent == null && m_Location.m_X == x && m_Location.m_Y == y;
 
-    public bool AtPoint(int x, int y)
-    {
-      return m_Location.m_X == x && m_Location.m_Y == y;
-    }
+    public bool AtPoint(int x, int y) => m_Location.m_X == x && m_Location.m_Y == y;
 
-    public virtual bool OnDecay()
-    {
-      return Decays && Parent == null && Map != Map.Internal && Region.Find(Location, Map).OnDecay(this);
-    }
+    public virtual bool OnDecay() => Decays && Parent == null && Map != Map.Internal && Region.Find(Location, Map).OnDecay(this);
 
     public void SetLastMoved()
     {
       LastMoved = DateTime.UtcNow;
     }
 
-    public virtual bool CanStackWith(Item dropped)
-    {
-      return dropped.Stackable && Stackable && dropped.GetType() == GetType() && dropped.ItemID == ItemID &&
-             dropped.Hue == Hue && dropped.Name == Name && dropped.Amount + Amount <= 60000 && dropped != this;
-    }
+    public virtual bool CanStackWith(Item dropped) =>
+      dropped.Stackable && Stackable && dropped.GetType() == GetType() && dropped.ItemID == ItemID &&
+      dropped.Hue == Hue && dropped.Name == Name && dropped.Amount + Amount <= 60000 && dropped != this;
 
-    public bool StackWith(Mobile from, Item dropped)
-    {
-      return StackWith(from, dropped, true);
-    }
+    public bool StackWith(Mobile from, Item dropped) => StackWith(from, dropped, true);
 
     public virtual bool StackWith(Mobile from, Item dropped, bool playSound)
     {
@@ -2096,15 +2043,9 @@ namespace Server
       return flags;
     }
 
-    public virtual bool OnMoveOff(Mobile m)
-    {
-      return true;
-    }
+    public virtual bool OnMoveOff(Mobile m) => true;
 
-    public virtual bool OnMoveOver(Mobile m)
-    {
-      return true;
-    }
+    public virtual bool OnMoveOver(Mobile m) => true;
 
     public virtual void OnMovement(Mobile m, Point3D oldLocation)
     {
@@ -2133,10 +2074,7 @@ namespace Server
         flags |= toSet;
     }
 
-    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet)
-    {
-      return (flags & toGet) != 0;
-    }
+    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
     public IPooledEnumerable<IEntity> GetObjectsInRange(int range)
     {
@@ -2190,10 +2128,7 @@ namespace Server
       return map.GetClientsInRange(GetWorldLocation(), range);
     }
 
-    public bool GetTempFlag(int flag)
-    {
-      return ((LookupCompactInfo()?.m_TempFlags ?? 0) & flag) != 0;
-    }
+    public bool GetTempFlag(int flag) => ((LookupCompactInfo()?.m_TempFlags ?? 0) & flag) != 0;
 
     public void SetTempFlag(int flag, bool value)
     {
@@ -2208,10 +2143,7 @@ namespace Server
         VerifyCompactInfo();
     }
 
-    public bool GetSavedFlag(int flag)
-    {
-      return ((LookupCompactInfo()?.m_SavedFlags ?? 0) & flag) != 0;
-    }
+    public bool GetSavedFlag(int flag) => ((LookupCompactInfo()?.m_SavedFlags ?? 0) & flag) != 0;
 
     public void SetSavedFlag(int flag, bool value)
     {
@@ -2618,15 +2550,9 @@ namespace Server
       }
     }
 
-    public virtual int GetMaxUpdateRange()
-    {
-      return 18;
-    }
+    public virtual int GetMaxUpdateRange() => 18;
 
-    public virtual int GetUpdateRange(Mobile m)
-    {
-      return 18;
-    }
+    public virtual int GetUpdateRange(Mobile m) => 18;
 
     public void SendInfoTo(NetState state)
     {
@@ -2649,10 +2575,7 @@ namespace Server
       return WorldPacket;
     }
 
-    public virtual int GetTotal(TotalType type)
-    {
-      return 0;
-    }
+    public virtual int GetTotal(TotalType type) => 0;
 
     public virtual void UpdateTotal(Item sender, TotalType type, int delta)
     {
@@ -2757,12 +2680,10 @@ namespace Server
         if (_processing)
           try
           {
-            using (StreamWriter op = new StreamWriter("delta-recursion.log", true))
-            {
-              op.WriteLine("# {0}", DateTime.UtcNow);
-              op.WriteLine(new StackTrace());
-              op.WriteLine();
-            }
+            using StreamWriter op = new StreamWriter("delta-recursion.log", true);
+            op.WriteLine("# {0}", DateTime.UtcNow);
+            op.WriteLine(new StackTrace());
+            op.WriteLine();
           }
           catch
           {
@@ -2786,12 +2707,10 @@ namespace Server
         if (_processing)
           try
           {
-            using (StreamWriter op = new StreamWriter("delta-recursion.log", true))
-            {
-              op.WriteLine("# {0}", DateTime.UtcNow);
-              op.WriteLine(new StackTrace());
-              op.WriteLine();
-            }
+            using StreamWriter op = new StreamWriter("delta-recursion.log", true);
+            op.WriteLine("# {0}", DateTime.UtcNow);
+            op.WriteLine(new StackTrace());
+            op.WriteLine();
           }
           catch
           {
@@ -2939,15 +2858,9 @@ namespace Server
     {
     }
 
-    public virtual bool OnDragLift(Mobile from)
-    {
-      return true;
-    }
+    public virtual bool OnDragLift(Mobile from) => true;
 
-    public virtual bool OnEquip(Mobile from)
-    {
-      return true;
-    }
+    public virtual bool OnEquip(Mobile from) => true;
 
     protected virtual void OnAmountChange(int oldValue)
     {
@@ -2968,13 +2881,11 @@ namespace Server
       return true;
     }
 
-    public virtual bool DropToMobile(Mobile from, Mobile target, Point3D p)
-    {
-      return !(Deleted || from.Deleted || target.Deleted) && from.Map == target.Map && from.Map != null &&
-             target.Map != null && (from.AccessLevel >= AccessLevel.GameMaster || from.InRange(target.Location, 2)) &&
-             from.CanSee(target) && from.InLOS(target) && from.OnDroppedItemToMobile(this, target) &&
-             OnDroppedToMobile(from, target) && target.OnDragDrop(from, this);
-    }
+    public virtual bool DropToMobile(Mobile from, Mobile target, Point3D p) =>
+      !(Deleted || from.Deleted || target.Deleted) && from.Map == target.Map && from.Map != null &&
+      target.Map != null && (from.AccessLevel >= AccessLevel.GameMaster || from.InRange(target.Location, 2)) &&
+      from.CanSee(target) && from.InLOS(target) && from.OnDroppedItemToMobile(this, target) &&
+      OnDroppedToMobile(from, target) && target.OnDragDrop(from, this);
 
     public virtual bool OnDroppedInto(Mobile from, Container target, Point3D p)
     {
@@ -3045,10 +2956,7 @@ namespace Server
       return true;
     }
 
-    public virtual int GetLiftSound(Mobile from)
-    {
-      return 0x57;
-    }
+    public virtual int GetLiftSound(Mobile from) => 0x57;
 
     public virtual bool DropToWorld(Mobile from, Point3D p)
     {
@@ -3285,10 +3193,7 @@ namespace Server
       eable.Free();
     }
 
-    public virtual int GetDropSound()
-    {
-      return -1;
-    }
+    public virtual int GetDropSound() => -1;
 
     public Point3D GetWorldLocation()
     {
@@ -3312,10 +3217,7 @@ namespace Server
       return root.Location;
     }
 
-    public Point3D GetWorldTop()
-    {
-      return RootParent?.Location ?? new Point3D(m_Location.m_X, m_Location.m_Y, m_Location.m_Z + ItemData.CalcHeight);
-    }
+    public Point3D GetWorldTop() => RootParent?.Location ?? new Point3D(m_Location.m_X, m_Location.m_Y, m_Location.m_Z + ItemData.CalcHeight);
 
     public void SendLocalizedMessageTo(Mobile to, int number)
     {
@@ -3436,10 +3338,7 @@ namespace Server
       return true;*/
     }
 
-    public bool IsChildOf(IEntity o)
-    {
-      return IsChildOf(o, false);
-    }
+    public bool IsChildOf(IEntity o) => IsChildOf(o, false);
 
     public bool IsChildOf(IEntity o, bool allowNull)
     {
@@ -3473,10 +3372,7 @@ namespace Server
         parentMobile.OnItemUsed(from, item);
     }
 
-    public bool CheckItemUse(Mobile from)
-    {
-      return CheckItemUse(from, this);
-    }
+    public bool CheckItemUse(Mobile from) => CheckItemUse(from, this);
 
     public virtual bool CheckItemUse(Mobile from, Item item)
     {
@@ -3628,10 +3524,7 @@ namespace Server
       return m != null && m == BlessedFor;
     }
 
-    public virtual bool CheckNewbied()
-    {
-      return m_LootType == LootType.Newbied;
-    }
+    public virtual bool CheckNewbied() => m_LootType == LootType.Newbied;
 
     public virtual bool IsStandardLoot()
     {
@@ -3644,10 +3537,7 @@ namespace Server
       return m_LootType == LootType.Regular;
     }
 
-    public override string ToString()
-    {
-      return $"0x{Serial.Value:X} \"{GetType().Name}\"";
-    }
+    public override string ToString() => $"0x{Serial.Value:X} \"{GetType().Name}\"";
 
     public virtual void OnSectorActivate()
     {

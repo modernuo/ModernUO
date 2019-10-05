@@ -4,10 +4,7 @@ namespace Server.Items
   public class StuddedLegs : BaseArmor
   {
     [Constructible]
-    public StuddedLegs() : base(0x13DA)
-    {
-      Weight = 5.0;
-    }
+    public StuddedLegs() : base(0x13DA) => Weight = 5.0;
 
     public StuddedLegs(Serial serial) : base(serial)
     {

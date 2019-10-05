@@ -171,10 +171,7 @@ namespace Server.Multis
   public class LockableBarrel : LockableContainer
   {
     [Constructible]
-    public LockableBarrel() : base(0xE77)
-    {
-      Weight = 1.0;
-    }
+    public LockableBarrel() : base(0xE77) => Weight = 1.0;
 
     public LockableBarrel(Serial serial) : base(serial)
     {

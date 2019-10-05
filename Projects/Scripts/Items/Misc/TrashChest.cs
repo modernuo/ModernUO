@@ -6,10 +6,7 @@ namespace Server.Items
   public class TrashChest : Container
   {
     [Constructible]
-    public TrashChest() : base(0xE41)
-    {
-      Movable = false;
-    }
+    public TrashChest() : base(0xE41) => Movable = false;
 
     public TrashChest(Serial serial) : base(serial)
     {

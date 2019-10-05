@@ -118,10 +118,7 @@ namespace Server.Mobiles
       }
     }
 
-    public override int GetAngerSound()
-    {
-      return 541;
-    }
+    public override int GetAngerSound() => 541;
 
     public override int GetIdleSound()
     {
@@ -139,10 +136,7 @@ namespace Server.Mobiles
       return base.GetDeathSound();
     }
 
-    public override int GetAttackSound()
-    {
-      return 562;
-    }
+    public override int GetAttackSound() => 562;
 
     public override int GetHurtSound()
     {

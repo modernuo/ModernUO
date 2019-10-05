@@ -57,10 +57,7 @@ namespace Server.Spells.Chivalry
       FinishSequence();
     }
 
-    public static bool UnderEffect(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool UnderEffect(Mobile m) => m_Table.ContainsKey(m);
 
     private static void Expire_Callback(Mobile m)
     {

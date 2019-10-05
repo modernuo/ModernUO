@@ -9,10 +9,7 @@ namespace Server.Engines.MLQuests
     private static readonly Type m_Type = typeof(QuesterNameAttribute);
     private static readonly Dictionary<Type, string> m_Cache = new Dictionary<Type, string>();
 
-    public QuesterNameAttribute(string questerName)
-    {
-      QuesterName = questerName;
-    }
+    public QuesterNameAttribute(string questerName) => QuesterName = questerName;
 
     public string QuesterName{ get; }
 

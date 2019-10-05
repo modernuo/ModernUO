@@ -20,10 +20,7 @@ namespace Server.Spells.Seventh
 
     private RunebookEntry m_Entry;
 
-    public GateTravelSpell(Mobile caster, RunebookEntry entry = null, Item scroll = null) : base(caster, scroll, m_Info)
-    {
-      m_Entry = entry;
-    }
+    public GateTravelSpell(Mobile caster, RunebookEntry entry = null, Item scroll = null) : base(caster, scroll, m_Info) => m_Entry = entry;
 
     public override SpellCircle Circle => SpellCircle.Seventh;
 

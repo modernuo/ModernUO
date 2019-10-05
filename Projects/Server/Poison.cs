@@ -42,10 +42,7 @@ namespace Server
     public abstract Timer ConstructTimer(Mobile m);
     /*public abstract void OnDamage( Mobile m, ref object state );*/
 
-    public override string ToString()
-    {
-      return Name;
-    }
+    public override string ToString() => Name;
 
 
     public static void Register(Poison reg)
@@ -63,10 +60,7 @@ namespace Server
       Poisons.Add(reg);
     }
 
-    public static Poison Parse(string value)
-    {
-      return (int.TryParse(value, out int plevel) ? GetPoison(plevel) : null) ?? GetPoison(value);
-    }
+    public static Poison Parse(string value) => (int.TryParse(value, out int plevel) ? GetPoison(plevel) : null) ?? GetPoison(value);
 
     public static Poison GetPoison(int level)
     {

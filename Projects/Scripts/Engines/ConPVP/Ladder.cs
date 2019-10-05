@@ -118,10 +118,7 @@ namespace Server.Engines.ConPVP
 
     private Dictionary<Mobile, LadderEntry> m_Table;
 
-    public Ladder()
-    {
-      m_Table = new Dictionary<Mobile, LadderEntry>();
-    }
+    public Ladder() => m_Table = new Dictionary<Mobile, LadderEntry>();
 
     public Ladder(GenericReader reader)
     {
@@ -350,10 +347,7 @@ namespace Server.Engines.ConPVP
     [CommandProperty(AccessLevel.GameMaster)]
     public int Rank => Index;
 
-    public int CompareTo(LadderEntry l)
-    {
-      return (l?.m_Experience ?? 0) - m_Experience;
-    }
+    public int CompareTo(LadderEntry l) => (l?.m_Experience ?? 0) - m_Experience;
 
     public void Serialize(GenericWriter writer)
     {

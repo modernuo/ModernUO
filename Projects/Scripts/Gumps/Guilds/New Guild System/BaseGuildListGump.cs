@@ -103,10 +103,7 @@ namespace Server.Guilds
     {
     }
 
-    public virtual bool HasRelationship(T o)
-    {
-      return false;
-    }
+    public virtual bool HasRelationship(T o) => false;
 
     public virtual void DrawEntry(T o, int index, int itemNumber)
     {

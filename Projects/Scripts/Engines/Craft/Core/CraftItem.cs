@@ -424,10 +424,8 @@ namespace Server.Engines.Craft
     }
 
     public bool ConsumeRes(Mobile from, Type typeRes, CraftSystem craftSystem, ref int resHue, ref int maxAmount,
-      ConsumeType consumeType, ref object message)
-    {
-      return ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, consumeType, ref message, false);
-    }
+      ConsumeType consumeType, ref object message) =>
+      ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, consumeType, ref message, false);
 
     public bool ConsumeRes(Mobile from, Type typeRes, CraftSystem craftSystem, ref int resHue, ref int maxAmount,
       ConsumeType consumeType, ref object message, bool isFailure)
@@ -639,10 +637,7 @@ namespace Server.Engines.Craft
       }
     }
 
-    private int CheckHueGrouping(Item a, Item b)
-    {
-      return b.Hue.CompareTo(a.Hue);
-    }
+    private int CheckHueGrouping(Item a, Item b) => b.Hue.CompareTo(a.Hue);
 
     public double GetExceptionalChance(CraftSystem system, double chance, Mobile from)
     {
@@ -686,10 +681,8 @@ namespace Server.Engines.Craft
     }
 
     public bool CheckSkills(Mobile from, Type typeRes, CraftSystem craftSystem, ref int quality,
-      ref bool allRequiredSkills)
-    {
-      return CheckSkills(from, typeRes, craftSystem, ref quality, ref allRequiredSkills, true);
-    }
+      ref bool allRequiredSkills) =>
+      CheckSkills(from, typeRes, craftSystem, ref quality, ref allRequiredSkills, true);
 
     public bool CheckSkills(Mobile from, Type typeRes, CraftSystem craftSystem, ref int quality,
       ref bool allRequiredSkills, bool gainSkills)

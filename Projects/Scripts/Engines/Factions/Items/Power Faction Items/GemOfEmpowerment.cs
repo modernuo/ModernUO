@@ -6,10 +6,8 @@ namespace Server
   public sealed class GemOfEmpowerment : PowerFactionItem
   {
     public GemOfEmpowerment()
-      : base(7955)
-    {
+      : base(7955) =>
       Hue = 1154;
-    }
 
     public GemOfEmpowerment(Serial serial)
       : base(serial)

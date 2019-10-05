@@ -132,10 +132,7 @@ namespace Server.Factions
 
     public static List<Town> Towns => Reflector.Towns;
 
-    public int CompareTo(Town other)
-    {
-      return Definition.Sort - (other?.Definition.Sort ?? 0);
-    }
+    public int CompareTo(Town other) => Definition.Sort - (other?.Definition.Sort ?? 0);
 
     public static Town FromRegion(Region reg)
     {
@@ -379,17 +376,13 @@ namespace Server.Factions
       CommandSystem.Register("GrantTownSilver", AccessLevel.Administrator, GrantTownSilver_OnCommand);
     }
 
-    public bool IsSheriff(Mobile mob)
-    {
-      return mob?.Deleted == false &&
-             (mob.AccessLevel >= AccessLevel.GameMaster || mob == Sheriff);
-    }
+    public bool IsSheriff(Mobile mob) =>
+      mob?.Deleted == false &&
+      (mob.AccessLevel >= AccessLevel.GameMaster || mob == Sheriff);
 
-    public bool IsFinance(Mobile mob)
-    {
-      return mob?.Deleted == false &&
-             (mob.AccessLevel >= AccessLevel.GameMaster || mob == Finance);
-    }
+    public bool IsFinance(Mobile mob) =>
+      mob?.Deleted == false &&
+      (mob.AccessLevel >= AccessLevel.GameMaster || mob == Finance);
 
     public void Capture(Faction f)
     {
@@ -445,10 +438,7 @@ namespace Server.Factions
       ConstructGuardLists();
     }
 
-    public override string ToString()
-    {
-      return Definition.FriendlyName;
-    }
+    public override string ToString() => Definition.FriendlyName;
 
     public static void WriteReference(GenericWriter writer, Town town)
     {

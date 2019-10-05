@@ -4,10 +4,7 @@ namespace Server.Items
   public class HideChest : BaseArmor
   {
     [Constructible]
-    public HideChest() : base(0x2B74)
-    {
-      Weight = 6.0;
-    }
+    public HideChest() : base(0x2B74) => Weight = 6.0;
 
     public HideChest(Serial serial) : base(serial)
     {

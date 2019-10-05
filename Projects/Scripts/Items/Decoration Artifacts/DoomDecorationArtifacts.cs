@@ -197,10 +197,7 @@ namespace Server.Items
   public class BrazierArtifact : BaseDecorationArtifact
   {
     [Constructible]
-    public BrazierArtifact() : base(0xE31)
-    {
-      Light = LightType.Circle150;
-    }
+    public BrazierArtifact() : base(0xE31) => Light = LightType.Circle150;
 
     public BrazierArtifact(Serial serial) : base(serial)
     {
@@ -358,10 +355,7 @@ namespace Server.Items
   public class LampPostArtifact : BaseDecorationArtifact
   {
     [Constructible]
-    public LampPostArtifact() : base(0xB24)
-    {
-      Light = LightType.Circle300;
-    }
+    public LampPostArtifact() : base(0xB24) => Light = LightType.Circle300;
 
     public LampPostArtifact(Serial serial) : base(serial)
     {
@@ -583,10 +577,7 @@ namespace Server.Items
   public class SkullCandleArtifact : BaseDecorationArtifact
   {
     [Constructible]
-    public SkullCandleArtifact() : base(0x1858)
-    {
-      Light = LightType.Circle150;
-    }
+    public SkullCandleArtifact() : base(0x1858) => Light = LightType.Circle150;
 
     public SkullCandleArtifact(Serial serial) : base(serial)
     {

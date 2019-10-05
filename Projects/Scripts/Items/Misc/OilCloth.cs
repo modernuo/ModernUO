@@ -8,10 +8,7 @@ namespace Server.Items
   public class OilCloth : Item, IScissorable, IDyable
   {
     [Constructible]
-    public OilCloth() : base(0x175D)
-    {
-      Hue = 2001;
-    }
+    public OilCloth() : base(0x175D) => Hue = 2001;
 
     public OilCloth(Serial serial) : base(serial)
     {

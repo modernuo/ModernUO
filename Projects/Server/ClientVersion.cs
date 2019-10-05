@@ -131,45 +131,21 @@ namespace Server
       return 0;
     }
 
-    public static bool operator ==(ClientVersion l, ClientVersion r)
-    {
-      return Compare(l, r) == 0;
-    }
+    public static bool operator ==(ClientVersion l, ClientVersion r) => Compare(l, r) == 0;
 
-    public static bool operator !=(ClientVersion l, ClientVersion r)
-    {
-      return Compare(l, r) != 0;
-    }
+    public static bool operator !=(ClientVersion l, ClientVersion r) => Compare(l, r) != 0;
 
-    public static bool operator >=(ClientVersion l, ClientVersion r)
-    {
-      return Compare(l, r) >= 0;
-    }
+    public static bool operator >=(ClientVersion l, ClientVersion r) => Compare(l, r) >= 0;
 
-    public static bool operator >(ClientVersion l, ClientVersion r)
-    {
-      return Compare(l, r) > 0;
-    }
+    public static bool operator >(ClientVersion l, ClientVersion r) => Compare(l, r) > 0;
 
-    public static bool operator <=(ClientVersion l, ClientVersion r)
-    {
-      return Compare(l, r) <= 0;
-    }
+    public static bool operator <=(ClientVersion l, ClientVersion r) => Compare(l, r) <= 0;
 
-    public static bool operator <(ClientVersion l, ClientVersion r)
-    {
-      return Compare(l, r) < 0;
-    }
+    public static bool operator <(ClientVersion l, ClientVersion r) => Compare(l, r) < 0;
 
-    public override int GetHashCode()
-    {
-      return Major ^ Minor ^ Revision ^ Patch ^ (int)Type;
-    }
+    public override int GetHashCode() => Major ^ Minor ^ Revision ^ Patch ^ (int)Type;
 
-    int IComparer<ClientVersion>.Compare(ClientVersion x, ClientVersion y)
-    {
-      return Compare(x, y);
-    }
+    int IComparer<ClientVersion>.Compare(ClientVersion x, ClientVersion y) => Compare(x, y);
 
     public override bool Equals(object obj)
     {
@@ -212,15 +188,9 @@ namespace Server
       return builder.ToString();
     }
 
-    public override string ToString()
-    {
-      return _ToStringImpl();
-    }
+    public override string ToString() => _ToStringImpl();
 
-    public static bool IsNull(object x)
-    {
-      return ReferenceEquals(x, null);
-    }
+    public static bool IsNull(object x) => ReferenceEquals(x, null);
 
     public static int Compare(ClientVersion a, ClientVersion b)
     {

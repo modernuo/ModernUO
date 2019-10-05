@@ -174,13 +174,11 @@ namespace Server.Items
       ExamineAquarium(from);
     }
 
-    public virtual bool HasAccess(Mobile from)
-    {
-      return from?.Deleted == false && (
-               from.AccessLevel >= AccessLevel.GameMaster ||
-               BaseHouse.FindHouseAt(this)?.IsCoOwner(from) == true
+    public virtual bool HasAccess(Mobile from) =>
+      from?.Deleted == false && (
+        from.AccessLevel >= AccessLevel.GameMaster ||
+        BaseHouse.FindHouseAt(this)?.IsCoOwner(from) == true
       );
-    }
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {
@@ -525,10 +523,7 @@ namespace Server.Items
       return 1074236 + m_Food.State;
     }
 
-    public int WaterNumber()
-    {
-      return 1074242 + m_Water.State;
-    }
+    public int WaterNumber() => 1074242 + m_Water.State;
 
     #endregion
 
@@ -822,10 +817,7 @@ namespace Server.Items
       from.PlaySound(0x5A4);
     }
 
-    public virtual bool AddFish(BaseFish fish)
-    {
-      return AddFish(null, fish);
-    }
+    public virtual bool AddFish(BaseFish fish) => AddFish(null, fish);
 
     public virtual bool AddFish(Mobile from, BaseFish fish)
     {
@@ -851,10 +843,7 @@ namespace Server.Items
       return true;
     }
 
-    public virtual bool AddDecoration(Item item)
-    {
-      return AddDecoration(null, item);
-    }
+    public virtual bool AddDecoration(Item item) => AddDecoration(null, item);
 
     public virtual bool AddDecoration(Mobile from, Item item)
     {
@@ -936,9 +925,8 @@ namespace Server.Items
       private Aquarium m_Aquarium;
 
       public ExamineEntry(Aquarium aquarium) : base(6235, 2) // Examine Aquarium
-      {
-        m_Aquarium = aquarium;
-      }
+        =>
+          m_Aquarium = aquarium;
 
       public override void OnClick()
       {
@@ -954,9 +942,8 @@ namespace Server.Items
       private Aquarium m_Aquarium;
 
       public CollectRewardEntry(Aquarium aquarium) : base(6237, 2) // Collect Reward
-      {
-        m_Aquarium = aquarium;
-      }
+        =>
+          m_Aquarium = aquarium;
 
       public override void OnClick()
       {
@@ -972,9 +959,8 @@ namespace Server.Items
       private Aquarium m_Aquarium;
 
       public ViewEventEntry(Aquarium aquarium) : base(6239, 2) // View events
-      {
-        m_Aquarium = aquarium;
-      }
+        =>
+          m_Aquarium = aquarium;
 
       public override void OnClick()
       {
@@ -996,9 +982,8 @@ namespace Server.Items
       private Aquarium m_Aquarium;
 
       public CancelVacationMode(Aquarium aquarium) : base(6240, 2) // Cancel vacation mode
-      {
-        m_Aquarium = aquarium;
-      }
+        =>
+          m_Aquarium = aquarium;
 
       public override void OnClick()
       {
@@ -1017,9 +1002,8 @@ namespace Server.Items
       private Aquarium m_Aquarium;
 
       public GMAddFood(Aquarium aquarium) : base(6231) // GM Add Food
-      {
-        m_Aquarium = aquarium;
-      }
+        =>
+          m_Aquarium = aquarium;
 
       public override void OnClick()
       {
@@ -1036,9 +1020,8 @@ namespace Server.Items
       private Aquarium m_Aquarium;
 
       public GMAddWater(Aquarium aquarium) : base(6232) // GM Add Water
-      {
-        m_Aquarium = aquarium;
-      }
+        =>
+          m_Aquarium = aquarium;
 
       public override void OnClick()
       {
@@ -1055,9 +1038,8 @@ namespace Server.Items
       private Aquarium m_Aquarium;
 
       public GMForceEvaluate(Aquarium aquarium) : base(6233) // GM Force Evaluate
-      {
-        m_Aquarium = aquarium;
-      }
+        =>
+          m_Aquarium = aquarium;
 
       public override void OnClick()
       {
@@ -1073,9 +1055,8 @@ namespace Server.Items
       private Aquarium m_Aquarium;
 
       public GMOpen(Aquarium aquarium) : base(6234) // GM Open Container
-      {
-        m_Aquarium = aquarium;
-      }
+        =>
+          m_Aquarium = aquarium;
 
       public override void OnClick()
       {
@@ -1091,9 +1072,8 @@ namespace Server.Items
       private Aquarium m_Aquarium;
 
       public GMFill(Aquarium aquarium) : base(6236) // GM Fill Food and Water
-      {
-        m_Aquarium = aquarium;
-      }
+        =>
+          m_Aquarium = aquarium;
 
       public override void OnClick()
       {

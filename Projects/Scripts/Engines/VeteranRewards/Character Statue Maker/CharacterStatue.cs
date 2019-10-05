@@ -179,15 +179,9 @@ namespace Server.Mobiles
         Plinth.Location = new Point3D(X, Y, Z - 5);
     }
 
-    public override bool CanBeRenamedBy(Mobile from)
-    {
-      return false;
-    }
+    public override bool CanBeRenamedBy(Mobile from) => false;
 
-    public override bool CanBeDamaged()
-    {
-      return false;
-    }
+    public override bool CanBeDamaged() => false;
 
     public void OnRequestedAnimation(Mobile from)
     {
@@ -394,10 +388,7 @@ namespace Server.Mobiles
     {
       private CharacterStatue m_Statue;
 
-      public DemolishEntry(CharacterStatue statue) : base(6275, 2)
-      {
-        m_Statue = statue;
-      }
+      public DemolishEntry(CharacterStatue statue) : base(6275, 2) => m_Statue = statue;
 
       public override void OnClick()
       {

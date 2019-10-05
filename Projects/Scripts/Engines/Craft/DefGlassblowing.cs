@@ -18,10 +18,7 @@ namespace Server.Engines.Craft
 
     public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefGlassblowing());
 
-    public override double GetChanceAtMin(CraftItem item)
-    {
-      return item.ItemType == typeof(HollowPrism) ? 0.5 : 0.0;
-    }
+    public override double GetChanceAtMin(CraftItem item) => item.ItemType == typeof(HollowPrism) ? 0.5 : 0.0;
 
     public override int CanCraft(Mobile from, BaseTool tool, Type itemType)
     {
@@ -102,10 +99,7 @@ namespace Server.Engines.Craft
     {
       private Mobile m_From;
 
-      public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(0.7))
-      {
-        m_From = from;
-      }
+      public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(0.7)) => m_From = from;
 
       protected override void OnTick()
       {

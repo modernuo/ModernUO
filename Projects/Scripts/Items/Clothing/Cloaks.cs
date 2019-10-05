@@ -31,10 +31,7 @@ namespace Server.Items
   public class Cloak : BaseCloak, IArcaneEquip
   {
     [Constructible]
-    public Cloak(int hue = 0) : base(0x1515, hue)
-    {
-      Weight = 5.0;
-    }
+    public Cloak(int hue = 0) : base(0x1515, hue) => Weight = 5.0;
 
     public Cloak(Serial serial) : base(serial)
     {
@@ -273,10 +270,7 @@ namespace Server.Items
   public class FurCape : BaseCloak
   {
     [Constructible]
-    public FurCape(int hue = 0) : base(0x230A, hue)
-    {
-      Weight = 4.0;
-    }
+    public FurCape(int hue = 0) : base(0x230A, hue) => Weight = 4.0;
 
     public FurCape(Serial serial) : base(serial)
     {

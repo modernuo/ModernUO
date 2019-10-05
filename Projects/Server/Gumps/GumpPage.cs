@@ -27,10 +27,7 @@ namespace Server.Gumps
     private static byte[] m_LayoutName = Gump.StringToBuffer("page");
     private int m_Page;
 
-    public GumpPage(int page)
-    {
-      m_Page = page;
-    }
+    public GumpPage(int page) => m_Page = page;
 
     public int Page
     {
@@ -38,10 +35,7 @@ namespace Server.Gumps
       set => Delta(ref m_Page, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return $"{{ page {m_Page} }}";
-    }
+    public override string Compile(NetState ns) => $"{{ page {m_Page} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

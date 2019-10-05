@@ -28,15 +28,9 @@ namespace Server.Network
 {
   public static class SocketExtensions
   {
-    public static Task<int> ReceiveAsync(this Socket socket, Memory<byte> memory, SocketFlags socketFlags)
-    {
-      return SocketTaskExtensions.ReceiveAsync(socket, GetArray(memory), socketFlags);
-    }
+    public static Task<int> ReceiveAsync(this Socket socket, Memory<byte> memory, SocketFlags socketFlags) => SocketTaskExtensions.ReceiveAsync(socket, GetArray(memory), socketFlags);
 
-    public static ArraySegment<byte> GetArray(this Memory<byte> memory)
-    {
-      return ((ReadOnlyMemory<byte>)memory).GetArray();
-    }
+    public static ArraySegment<byte> GetArray(this Memory<byte> memory) => ((ReadOnlyMemory<byte>)memory).GetArray();
 
     public static ArraySegment<byte> GetArray(this ReadOnlyMemory<byte> memory)
     {

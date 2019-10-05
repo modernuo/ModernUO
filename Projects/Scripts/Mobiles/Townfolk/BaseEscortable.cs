@@ -293,10 +293,7 @@ namespace Server.Mobiles
       return false;
     }
 
-    public override bool HandlesOnSpeech(Mobile from)
-    {
-      return !MLQuestSystem.Enabled && (from.InRange(Location, 3) || base.HandlesOnSpeech(from));
-    }
+    public override bool HandlesOnSpeech(Mobile from) => !MLQuestSystem.Enabled && (from.InRange(Location, 3) || base.HandlesOnSpeech(from));
 
     public override void OnSpeech(SpeechEventArgs e)
     {
@@ -553,10 +550,7 @@ namespace Server.Mobiles
       }
     }
 
-    public override bool CanBeRenamedBy(Mobile from)
-    {
-      return from.AccessLevel >= AccessLevel.GameMaster;
-    }
+    public override bool CanBeRenamedBy(Mobile from) => from.AccessLevel >= AccessLevel.GameMaster;
 
     public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
     {
@@ -580,10 +574,7 @@ namespace Server.Mobiles
       base.AddCustomContextEntries(from, list);
     }
 
-    public virtual string[] GetPossibleDestinations()
-    {
-      return Core.ML ? m_MLTownNames : m_TownNames;
-    }
+    public virtual string[] GetPossibleDestinations() => Core.ML ? m_MLTownNames : m_TownNames;
 
     public virtual string PickRandomDestination()
     {
@@ -655,10 +646,7 @@ namespace Server.Mobiles
 
     public Region Region{ get; }
 
-    public bool Contains(Point3D p)
-    {
-      return Region.Contains(p);
-    }
+    public bool Contains(Point3D p) => Region.Contains(p);
 
     public static void LoadTable()
     {
@@ -730,10 +718,8 @@ namespace Server.Mobiles
     private BaseEscortable m_Mobile;
 
     public AbandonEscortEntry(BaseEscortable m)
-      : base(6102, 3)
-    {
+      : base(6102, 3) =>
       m_Mobile = m;
-    }
 
     public override void OnClick()
     {

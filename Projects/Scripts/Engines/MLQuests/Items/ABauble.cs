@@ -3,10 +3,7 @@ namespace Server.Items
   public class ABauble : Item
   {
     [Constructible]
-    public ABauble() : base(0x23B)
-    {
-      LootType = LootType.Blessed;
-    }
+    public ABauble() : base(0x23B) => LootType = LootType.Blessed;
 
     public ABauble(Serial serial) : base(serial)
     {

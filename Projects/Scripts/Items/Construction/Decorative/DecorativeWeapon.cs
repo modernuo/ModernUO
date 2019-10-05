@@ -4,10 +4,7 @@ namespace Server.Items
   public class DecorativeBowWest : Item
   {
     [Constructible]
-    public DecorativeBowWest() : base(Utility.Random(0x155E, 2))
-    {
-      Movable = false;
-    }
+    public DecorativeBowWest() : base(Utility.Random(0x155E, 2)) => Movable = false;
 
     public DecorativeBowWest(Serial serial) : base(serial)
     {
@@ -32,10 +29,7 @@ namespace Server.Items
   public class DecorativeBowNorth : Item
   {
     [Constructible]
-    public DecorativeBowNorth() : base(Utility.Random(0x155C, 2))
-    {
-      Movable = false;
-    }
+    public DecorativeBowNorth() : base(Utility.Random(0x155C, 2)) => Movable = false;
 
     public DecorativeBowNorth(Serial serial) : base(serial)
     {
@@ -60,10 +54,7 @@ namespace Server.Items
   public class DecorativeAxeNorth : Item
   {
     [Constructible]
-    public DecorativeAxeNorth() : base(Utility.Random(0x1560, 2))
-    {
-      Movable = false;
-    }
+    public DecorativeAxeNorth() : base(Utility.Random(0x1560, 2)) => Movable = false;
 
     public DecorativeAxeNorth(Serial serial) : base(serial)
     {
@@ -88,10 +79,7 @@ namespace Server.Items
   public class DecorativeAxeWest : Item
   {
     [Constructible]
-    public DecorativeAxeWest() : base(Utility.Random(0x1562, 2))
-    {
-      Movable = false;
-    }
+    public DecorativeAxeWest() : base(Utility.Random(0x1562, 2)) => Movable = false;
 
     public DecorativeAxeWest(Serial serial) : base(serial)
     {

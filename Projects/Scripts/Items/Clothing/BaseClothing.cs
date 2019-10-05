@@ -561,10 +561,7 @@ namespace Server.Items
       return false;
     }
 
-    private string GetNameString()
-    {
-      return Name ?? $"#{LabelNumber}";
-    }
+    private string GetNameString() => Name ?? $"#{LabelNumber}";
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
@@ -856,10 +853,7 @@ namespace Server.Items
         flags |= toSet;
     }
 
-    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet)
-    {
-      return (flags & toGet) != 0;
-    }
+    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
     [Flags]
     private enum SaveFlag

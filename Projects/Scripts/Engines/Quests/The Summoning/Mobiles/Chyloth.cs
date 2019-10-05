@@ -203,10 +203,7 @@ namespace Server.Engines.Quests.Doom
       return base.OnDragDrop(from, dropped);
     }
 
-    public override bool CanTalkTo(PlayerMobile to)
-    {
-      return false;
-    }
+    public override bool CanTalkTo(PlayerMobile to) => false;
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

@@ -5,10 +5,8 @@ namespace Server
   public sealed class BloodRose : PowerFactionItem
   {
     public BloodRose()
-      : base(Utility.RandomList(6378, 9035))
-    {
+      : base(Utility.RandomList(6378, 9035)) =>
       Hue = 2118;
-    }
 
     public BloodRose(Serial serial)
       : base(serial)

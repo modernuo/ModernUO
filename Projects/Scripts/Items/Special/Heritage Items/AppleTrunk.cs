@@ -32,10 +32,7 @@ namespace Server.Items
   public class AppleTrunkDeed : BaseAddonDeed
   {
     [Constructible]
-    public AppleTrunkDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public AppleTrunkDeed() => LootType = LootType.Blessed;
 
     public AppleTrunkDeed(Serial serial) : base(serial)
     {

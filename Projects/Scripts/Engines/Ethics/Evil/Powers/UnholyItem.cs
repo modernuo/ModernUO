@@ -6,15 +6,13 @@ namespace Server.Ethics.Evil
 {
   public sealed class UnholyItem : Power
   {
-    public UnholyItem()
-    {
+    public UnholyItem() =>
       m_Definition = new PowerDefinition(
         5,
         "Unholy Item",
         "Vidda K'balc",
         ""
       );
-    }
 
     public override void BeginInvoke(Player from)
     {

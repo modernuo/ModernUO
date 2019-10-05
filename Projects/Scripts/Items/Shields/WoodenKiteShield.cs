@@ -3,10 +3,7 @@ namespace Server.Items
   public class WoodenKiteShield : BaseShield
   {
     [Constructible]
-    public WoodenKiteShield() : base(0x1B79)
-    {
-      Weight = 5.0;
-    }
+    public WoodenKiteShield() : base(0x1B79) => Weight = 5.0;
 
     public WoodenKiteShield(Serial serial) : base(serial)
     {

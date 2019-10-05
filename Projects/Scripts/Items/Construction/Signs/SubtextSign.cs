@@ -6,17 +6,13 @@ namespace Server.Items
 
     [Constructible]
     public SubtextSign(SignType type, SignFacing facing, string subtext)
-      : base(type, facing)
-    {
+      : base(type, facing) =>
       m_Subtext = subtext;
-    }
 
     [Constructible]
     public SubtextSign(int itemID, string subtext)
-      : base(itemID)
-    {
+      : base(itemID) =>
       m_Subtext = subtext;
-    }
 
     public SubtextSign(Serial serial)
       : base(serial)

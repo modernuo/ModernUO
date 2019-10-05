@@ -19,10 +19,7 @@ namespace Server.Engines.ConPVP
       Register();
     }
 
-    public override bool AllowHousing(Mobile from, Point3D p)
-    {
-      return from.AccessLevel >= AccessLevel.GameMaster && base.AllowHousing(from, p);
-    }
+    public override bool AllowHousing(Mobile from, Point3D p) => from.AccessLevel >= AccessLevel.GameMaster && base.AllowHousing(from, p);
 
     public override bool OnMoveInto(Mobile m, Direction d, Point3D newLocation, Point3D oldLocation)
     {
@@ -58,9 +55,6 @@ namespace Server.Engines.ConPVP
       m.SendMessage("You have left a dueling safezone. Combat is now unrestricted.");
     }
 
-    public override bool CanUseStuckMenu(Mobile m)
-    {
-      return false;
-    }
+    public override bool CanUseStuckMenu(Mobile m) => false;
   }
 }

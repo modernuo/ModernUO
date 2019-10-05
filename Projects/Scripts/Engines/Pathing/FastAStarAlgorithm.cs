@@ -47,10 +47,7 @@ namespace Server.PathAlgorithms.FastAStar
       return x * x + y * y + z * z;
     }
 
-    public override bool CheckCondition(Mobile m, Map map, Point3D start, Point3D goal)
-    {
-      return Utility.InRange(start, goal, AreaSize);
-    }
+    public override bool CheckCondition(Mobile m, Map map, Point3D start, Point3D goal) => Utility.InRange(start, goal, AreaSize);
 
     private void RemoveFromChain(int node)
     {

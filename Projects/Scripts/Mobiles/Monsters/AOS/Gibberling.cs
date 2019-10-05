@@ -48,10 +48,7 @@ namespace Server.Mobiles
 
     public override int TreasureMapLevel => 1;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.Dismount;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
     public override void GenerateLoot()
     {

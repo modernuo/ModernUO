@@ -62,10 +62,7 @@ namespace Server.Spells.Bushido
       FinishSequence();
     }
 
-    public static bool IsCountering(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool IsCountering(Mobile m) => m_Table.ContainsKey(m);
 
     public static void StartCountering(Mobile m)
     {

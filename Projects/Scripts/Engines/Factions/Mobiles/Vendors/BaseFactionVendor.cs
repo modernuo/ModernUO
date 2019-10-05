@@ -83,10 +83,7 @@ namespace Server.Factions
       Unregister();
     }
 
-    public override bool CheckVendorAccess(Mobile from)
-    {
-      return true;
-    }
+    public override bool CheckVendorAccess(Mobile from) => true;
 
     public override void Serialize(GenericWriter writer)
     {

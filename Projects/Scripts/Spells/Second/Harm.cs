@@ -25,10 +25,7 @@ namespace Server.Spells.Second
       Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
-    public override double GetSlayerDamageScalar(Mobile target)
-    {
-      return 1.0; //This spell isn't affected by slayer spellbooks
-    }
+    public override double GetSlayerDamageScalar(Mobile target) => 1.0;
 
     public void Target(Mobile m)
     {

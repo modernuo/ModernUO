@@ -15,12 +15,7 @@ namespace Server.Items
     */
 
     [Constructible]
-    public Dyes() : base(0xFA9)
-    {
-      Weight = 3.0;
-
-      /* m_UsesRemaining = 25; */
-    }
+    public Dyes() : base(0xFA9) => Weight = 3.0;
 
     public Dyes(Serial serial) : base(serial)
     {
@@ -96,10 +91,7 @@ namespace Server.Items
       {
         private DyeTub m_Tub;
 
-        public InternalPicker(DyeTub tub) : base(tub.ItemID)
-        {
-          m_Tub = tub;
-        }
+        public InternalPicker(DyeTub tub) : base(tub.ItemID) => m_Tub = tub;
 
         public override void OnResponse(int hue)
         {

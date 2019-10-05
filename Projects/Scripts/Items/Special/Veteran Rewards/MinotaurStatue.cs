@@ -94,10 +94,7 @@ namespace Server.Items
     private MinotaurStatueType m_StatueType;
 
     [Constructible]
-    public MinotaurStatueDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public MinotaurStatueDeed() => LootType = LootType.Blessed;
 
     public MinotaurStatueDeed(Serial serial) : base(serial)
     {

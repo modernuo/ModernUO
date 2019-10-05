@@ -20,15 +20,9 @@ namespace Server.Spells.Mysticism
      * Players can use EITHER their Focus skill or Imbuing skill.
      * Evaluate Intelligence no longer has any effect on a Mystic’s spell power.
      */
-    public override double GetDamageSkill(Mobile m)
-    {
-      return Math.Max(m.Skills.Imbuing.Value, m.Skills.Focus.Value);
-    }
+    public override double GetDamageSkill(Mobile m) => Math.Max(m.Skills.Imbuing.Value, m.Skills.Focus.Value);
 
-    public override int GetDamageFixed(Mobile m)
-    {
-      return Math.Max(m.Skills.Imbuing.Fixed, m.Skills.Focus.Fixed);
-    }
+    public override int GetDamageFixed(Mobile m) => Math.Max(m.Skills.Imbuing.Fixed, m.Skills.Focus.Fixed);
 
     public override void GetCastSkills(out double min, out double max)
     {
@@ -39,10 +33,7 @@ namespace Server.Spells.Mysticism
       max = RequiredSkill + 37.5;
     }
 
-    public override int GetMana()
-    {
-      return RequiredMana;
-    }
+    public override int GetMana() => RequiredMana;
 
     public override bool CheckCast()
     {
@@ -80,14 +71,8 @@ namespace Server.Spells.Mysticism
       Caster.FixedEffect(0x37C4, 10, (int)(GetCastDelay().TotalSeconds * 28), 0x66C, 3);
     }
 
-    public static double GetBaseSkill(Mobile m)
-    {
-      return m.Skills.Mysticism.Value;
-    }
+    public static double GetBaseSkill(Mobile m) => m.Skills.Mysticism.Value;
 
-    public static double GetBoostSkill(Mobile m)
-    {
-      return Math.Max(m.Skills.Imbuing.Value, m.Skills.Focus.Value);
-    }
+    public static double GetBoostSkill(Mobile m) => Math.Max(m.Skills.Imbuing.Value, m.Skills.Focus.Value);
   }
 }

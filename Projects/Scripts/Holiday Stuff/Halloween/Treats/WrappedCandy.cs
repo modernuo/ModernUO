@@ -3,10 +3,8 @@
   public class WrappedCandy : CandyCane
   {
     public WrappedCandy(int amount = 1)
-      : base(0x469e)
-    {
+      : base(0x469e) =>
       Stackable = true;
-    }
 
     public WrappedCandy(Serial serial)
       : base(serial)

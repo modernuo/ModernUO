@@ -3,10 +3,7 @@ namespace Server.Items
   public class Wasabi : Item
   {
     [Constructible]
-    public Wasabi() : base(0x24E8)
-    {
-      Weight = 1.0;
-    }
+    public Wasabi() : base(0x24E8) => Weight = 1.0;
 
     public Wasabi(Serial serial) : base(serial)
     {
@@ -59,10 +56,7 @@ namespace Server.Items
   public class EmptyBentoBox : Item
   {
     [Constructible]
-    public EmptyBentoBox() : base(0x2834)
-    {
-      Weight = 5.0;
-    }
+    public EmptyBentoBox() : base(0x2834) => Weight = 5.0;
 
     public EmptyBentoBox(Serial serial) : base(serial)
     {
@@ -182,10 +176,7 @@ namespace Server.Items
   public class GreenTeaBasket : Item
   {
     [Constructible]
-    public GreenTeaBasket() : base(0x284B)
-    {
-      Weight = 10.0;
-    }
+    public GreenTeaBasket() : base(0x284B) => Weight = 10.0;
 
     public GreenTeaBasket(Serial serial) : base(serial)
     {

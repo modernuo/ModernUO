@@ -62,30 +62,15 @@ namespace Server.Mobiles
     public override bool CanRummageCorpses => true;
     public override int TreasureMapLevel => 4;
 
-    public override int GetAngerSound()
-    {
-      return 0x4E3;
-    }
+    public override int GetAngerSound() => 0x4E3;
 
-    public override int GetIdleSound()
-    {
-      return 0x4E2;
-    }
+    public override int GetIdleSound() => 0x4E2;
 
-    public override int GetAttackSound()
-    {
-      return 0x4E1;
-    }
+    public override int GetAttackSound() => 0x4E1;
 
-    public override int GetHurtSound()
-    {
-      return 0x4E4;
-    }
+    public override int GetHurtSound() => 0x4E4;
 
-    public override int GetDeathSound()
-    {
-      return 0x4E0;
-    }
+    public override int GetDeathSound() => 0x4E0;
 
     public override void GenerateLoot()
     {

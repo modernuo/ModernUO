@@ -84,10 +84,7 @@ namespace Server.Regions
       CheckTimer();
     }
 
-    public Point3D RandomSpawnLocation(int spawnHeight, bool land, bool water)
-    {
-      return Region.RandomSpawnLocation(spawnHeight, land, water, HomeLocation, HomeRange);
-    }
+    public Point3D RandomSpawnLocation(int spawnHeight, bool land, bool water) => Region.RandomSpawnLocation(spawnHeight, land, water, HomeLocation, HomeRange);
 
     public void Start()
     {

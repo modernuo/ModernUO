@@ -3,10 +3,7 @@ namespace Server.Items
   public class PurpleFrog : BaseFish
   {
     [Constructible]
-    public PurpleFrog() : base(0x3B0D)
-    {
-      Hue = 0x4FA;
-    }
+    public PurpleFrog() : base(0x3B0D) => Hue = 0x4FA;
 
     public PurpleFrog(Serial serial) : base(serial)
     {

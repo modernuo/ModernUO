@@ -179,10 +179,8 @@ namespace Server.Guilds
 
 
     public override Gump GetResentGump(PlayerMobile pm, Guild g, IComparer<Guild> comparer, bool ascending,
-      string filter, int startNumber)
-    {
-      return new GuildDiplomacyGump(pm, g, comparer, ascending, filter, startNumber, m_Display);
-    }
+      string filter, int startNumber) =>
+      new GuildDiplomacyGump(pm, g, comparer, ascending, filter, startNumber, m_Display);
 
     public override Gump GetObjectInfoGump(PlayerMobile pm, Guild g, Guild o)
     {
@@ -232,10 +230,7 @@ namespace Server.Guilds
     {
       private Guild m_Guild;
 
-      public StatusComparer(Guild g)
-      {
-        m_Guild = g;
-      }
+      public StatusComparer(Guild g) => m_Guild = g;
 
       public int Compare(Guild x, Guild y)
       {

@@ -183,10 +183,7 @@ namespace Server
       if (prof != null) prof.Created++;
     }
 
-    public override string ToString()
-    {
-      return GetType().FullName;
-    }
+    public override string ToString() => GetType().FullName;
 
     public static TimerPriority ComputePriority(TimeSpan ts)
     {
@@ -475,20 +472,11 @@ namespace Server
 
     #region DelayCall(..)
 
-    public static Timer DelayCall(TimerCallback callback)
-    {
-      return DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
-    }
+    public static Timer DelayCall(TimerCallback callback) => DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
 
-    public static Timer DelayCall(TimeSpan delay, TimerCallback callback)
-    {
-      return DelayCall(delay, TimeSpan.Zero, 1, callback);
-    }
+    public static Timer DelayCall(TimeSpan delay, TimerCallback callback) => DelayCall(delay, TimeSpan.Zero, 1, callback);
 
-    public static Timer DelayCall(TimeSpan delay, TimeSpan interval, TimerCallback callback)
-    {
-      return DelayCall(delay, interval, 0, callback);
-    }
+    public static Timer DelayCall(TimeSpan delay, TimeSpan interval, TimerCallback callback) => DelayCall(delay, interval, 0, callback);
 
     public static Timer DelayCall(TimeSpan delay, TimeSpan interval, int count, TimerCallback callback)
     {
@@ -504,20 +492,11 @@ namespace Server
 
     #region DelayCall<T>(..)
 
-    public static Timer DelayCall<T>(TimerStateCallback<T> callback, T state)
-    {
-      return DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, state);
-    }
+    public static Timer DelayCall<T>(TimerStateCallback<T> callback, T state) => DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, state);
 
-    public static Timer DelayCall<T>(TimeSpan delay, TimerStateCallback<T> callback, T state)
-    {
-      return DelayCall(delay, TimeSpan.Zero, 1, callback, state);
-    }
+    public static Timer DelayCall<T>(TimeSpan delay, TimerStateCallback<T> callback, T state) => DelayCall(delay, TimeSpan.Zero, 1, callback, state);
 
-    public static Timer DelayCall<T>(TimeSpan delay, TimeSpan interval, TimerStateCallback<T> callback, T state)
-    {
-      return DelayCall(delay, interval, 0, callback, state);
-    }
+    public static Timer DelayCall<T>(TimeSpan delay, TimeSpan interval, TimerStateCallback<T> callback, T state) => DelayCall(delay, interval, 0, callback, state);
 
     public static Timer DelayCall<T>(TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T> callback,
       T state)
@@ -553,10 +532,7 @@ namespace Server
         Callback?.Invoke();
       }
 
-      public override string ToString()
-      {
-        return $"DelayCallTimer[{FormatDelegate(Callback)}]";
-      }
+      public override string ToString() => $"DelayCallTimer[{FormatDelegate(Callback)}]";
     }
 
     private class DelayStateCallTimer<T> : Timer
@@ -581,10 +557,7 @@ namespace Server
         Callback?.Invoke(m_State);
       }
 
-      public override string ToString()
-      {
-        return $"DelayStateCall[{FormatDelegate(Callback)}]";
-      }
+      public override string ToString() => $"DelayStateCall[{FormatDelegate(Callback)}]";
     }
 
     #endregion
@@ -593,12 +566,9 @@ namespace Server
     {
       private TaskCompletionSource<DelayTaskTimer> m_TaskCompleter;
 
-      public Task Task { get { return m_TaskCompleter.Task; } }
+      public Task Task => m_TaskCompleter.Task;
 
-      public DelayTaskTimer(TimeSpan delay) : base(delay)
-      {
-        m_TaskCompleter = new TaskCompletionSource<DelayTaskTimer>();
-      }
+      public DelayTaskTimer(TimeSpan delay) : base(delay) => m_TaskCompleter = new TaskCompletionSource<DelayTaskTimer>();
 
       protected override void OnTick()
       {

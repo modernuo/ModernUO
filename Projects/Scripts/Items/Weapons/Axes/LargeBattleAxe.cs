@@ -4,10 +4,7 @@ namespace Server.Items
   public class LargeBattleAxe : BaseAxe
   {
     [Constructible]
-    public LargeBattleAxe() : base(0x13FB)
-    {
-      Weight = 6.0;
-    }
+    public LargeBattleAxe() : base(0x13FB) => Weight = 6.0;
 
     public LargeBattleAxe(Serial serial) : base(serial)
     {

@@ -5,10 +5,7 @@ namespace Server.Engines.Quests.Hag
   public class MagicFlute : Item
   {
     [Constructible]
-    public MagicFlute() : base(0x1421)
-    {
-      Hue = 0x8AB;
-    }
+    public MagicFlute() : base(0x1421) => Hue = 0x8AB;
 
     public MagicFlute(Serial serial) : base(serial)
     {

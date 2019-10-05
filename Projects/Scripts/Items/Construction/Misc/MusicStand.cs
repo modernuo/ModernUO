@@ -5,10 +5,7 @@ namespace Server.Items
   public class TallMusicStand : Item
   {
     [Constructible]
-    public TallMusicStand() : base(0xEBB)
-    {
-      Weight = 10.0;
-    }
+    public TallMusicStand() : base(0xEBB) => Weight = 10.0;
 
     public TallMusicStand(Serial serial) : base(serial)
     {
@@ -37,10 +34,7 @@ namespace Server.Items
   public class ShortMusicStand : Item
   {
     [Constructible]
-    public ShortMusicStand() : base(0xEB6)
-    {
-      Weight = 10.0;
-    }
+    public ShortMusicStand() : base(0xEB6) => Weight = 10.0;
 
     public ShortMusicStand(Serial serial) : base(serial)
     {

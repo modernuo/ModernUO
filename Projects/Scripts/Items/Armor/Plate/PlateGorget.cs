@@ -3,10 +3,7 @@ namespace Server.Items
   public class PlateGorget : BaseArmor
   {
     [Constructible]
-    public PlateGorget() : base(0x1413)
-    {
-      Weight = 2.0;
-    }
+    public PlateGorget() : base(0x1413) => Weight = 2.0;
 
     public PlateGorget(Serial serial) : base(serial)
     {

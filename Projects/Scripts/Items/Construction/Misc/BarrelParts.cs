@@ -3,10 +3,7 @@ namespace Server.Items
   public class BarrelLid : Item
   {
     [Constructible]
-    public BarrelLid() : base(0x1DB8)
-    {
-      Weight = 2;
-    }
+    public BarrelLid() : base(0x1DB8) => Weight = 2;
 
     public BarrelLid(Serial serial) : base(serial)
     {
@@ -31,10 +28,7 @@ namespace Server.Items
   public class BarrelStaves : Item
   {
     [Constructible]
-    public BarrelStaves() : base(0x1EB1)
-    {
-      Weight = 1;
-    }
+    public BarrelStaves() : base(0x1EB1) => Weight = 1;
 
     public BarrelStaves(Serial serial) : base(serial)
     {
@@ -58,10 +52,7 @@ namespace Server.Items
   public class BarrelHoops : Item
   {
     [Constructible]
-    public BarrelHoops() : base(0x1DB7)
-    {
-      Weight = 5;
-    }
+    public BarrelHoops() : base(0x1DB7) => Weight = 5;
 
     public BarrelHoops(Serial serial) : base(serial)
     {
@@ -87,10 +78,7 @@ namespace Server.Items
   public class BarrelTap : Item
   {
     [Constructible]
-    public BarrelTap() : base(0x1004)
-    {
-      Weight = 1;
-    }
+    public BarrelTap() : base(0x1004) => Weight = 1;
 
     public BarrelTap(Serial serial) : base(serial)
     {

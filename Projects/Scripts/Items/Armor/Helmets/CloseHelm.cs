@@ -3,10 +3,7 @@ namespace Server.Items
   public class CloseHelm : BaseArmor
   {
     [Constructible]
-    public CloseHelm() : base(0x1408)
-    {
-      Weight = 5.0;
-    }
+    public CloseHelm() : base(0x1408) => Weight = 5.0;
 
     public CloseHelm(Serial serial) : base(serial)
     {

@@ -39,10 +39,7 @@ namespace Server.Mobiles
       m.SendGump(new ResurrectGump(m, this, Price));
     }
 
-    public override bool CheckResurrect(Mobile m)
-    {
-      return true;
-    }
+    public override bool CheckResurrect(Mobile m) => true;
 
     public override void Serialize(GenericWriter writer)
     {

@@ -36,10 +36,7 @@ namespace Server.Spells.Mysticism
       EventSink.PlayerDeath += OnPlayerDeath;
     }
 
-    public static bool UnderEffect(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool UnderEffect(Mobile m) => m_Table.ContainsKey(m);
 
     public override bool CheckCast()
     {
@@ -129,15 +126,9 @@ namespace Server.Spells.Mysticism
       FinishSequence();
     }
 
-    public static int GetDIBonus(Mobile m)
-    {
-      return (int)((GetBaseSkill(m) + GetBoostSkill(m)) / 12.0);
-    }
+    public static int GetDIBonus(Mobile m) => (int)((GetBaseSkill(m) + GetBoostSkill(m)) / 12.0);
 
-    public static int GetResistCapBonus(Mobile m)
-    {
-      return (int)((GetBaseSkill(m) + GetBoostSkill(m)) / 48.0);
-    }
+    public static int GetResistCapBonus(Mobile m) => (int)((GetBaseSkill(m) + GetBoostSkill(m)) / 48.0);
 
     public static void RemoveEffects(Mobile m)
     {

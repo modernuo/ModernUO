@@ -3,10 +3,7 @@ namespace Server.Items
   public class ChargedAssassinSpike : AssassinSpike
   {
     [Constructible]
-    public ChargedAssassinSpike()
-    {
-      WeaponAttributes.HitLightning = 10;
-    }
+    public ChargedAssassinSpike() => WeaponAttributes.HitLightning = 10;
 
     public ChargedAssassinSpike(Serial serial) : base(serial)
     {

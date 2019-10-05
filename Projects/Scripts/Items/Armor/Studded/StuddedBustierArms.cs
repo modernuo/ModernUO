@@ -4,10 +4,7 @@ namespace Server.Items
   public class StuddedBustierArms : BaseArmor
   {
     [Constructible]
-    public StuddedBustierArms() : base(0x1C0C)
-    {
-      Weight = 1.0;
-    }
+    public StuddedBustierArms() : base(0x1C0C) => Weight = 1.0;
 
     public StuddedBustierArms(Serial serial) : base(serial)
     {

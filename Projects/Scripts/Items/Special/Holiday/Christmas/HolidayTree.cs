@@ -102,10 +102,7 @@ namespace Server.Items
 
     public override int LabelNumber => 1041117; // a tree for the holidays
 
-    public bool CouldFit(IPoint3D p, Map map)
-    {
-      return map.CanFit((Point3D)p, 20);
-    }
+    public bool CouldFit(IPoint3D p, Map map) => map.CanFit((Point3D)p, 20);
 
     Item IAddon.Deed => new HolidayTreeDeed();
 
@@ -217,10 +214,7 @@ namespace Server.Items
 
     private class Ornament : Item
     {
-      public Ornament(int itemID) : base(itemID)
-      {
-        Movable = false;
-      }
+      public Ornament(int itemID) : base(itemID) => Movable = false;
 
       public Ornament(Serial serial) : base(serial)
       {

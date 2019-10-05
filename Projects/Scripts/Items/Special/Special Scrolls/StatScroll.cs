@@ -5,10 +5,7 @@ namespace Server.Items
   public class StatCapScroll : SpecialScroll
   {
     [Constructible]
-    public StatCapScroll(int value = 105) : base(SkillName.Alchemy, value)
-    {
-      Hue = 0x481;
-    }
+    public StatCapScroll(int value = 105) : base(SkillName.Alchemy, value) => Hue = 0x481;
 
     public StatCapScroll(Serial serial) : base(serial)
     {

@@ -63,10 +63,7 @@ namespace Server.Items
   public class BrokenFallenChairDeed : BaseAddonDeed
   {
     [Constructible]
-    public BrokenFallenChairDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public BrokenFallenChairDeed() => LootType = LootType.Blessed;
 
     public BrokenFallenChairDeed(Serial serial) : base(serial)
     {

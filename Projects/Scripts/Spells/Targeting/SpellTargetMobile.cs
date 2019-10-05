@@ -12,10 +12,7 @@ namespace Server.Spells
     private ISpellTargetingMobile m_Spell;
     public ISpell Spell => m_Spell;
 
-    public SpellTargetMobile(ISpellTargetingMobile spell, TargetFlags flags, int range = 12) : base(range, false, flags)
-    {
-      m_Spell = spell;
-    }
+    public SpellTargetMobile(ISpellTargetingMobile spell, TargetFlags flags, int range = 12) : base(range, false, flags) => m_Spell = spell;
 
     protected override void OnTarget(Mobile from, object o)
     {

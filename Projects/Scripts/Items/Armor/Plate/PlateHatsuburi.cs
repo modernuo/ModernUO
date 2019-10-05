@@ -3,10 +3,7 @@ namespace Server.Items
   public class PlateHatsuburi : BaseArmor
   {
     [Constructible]
-    public PlateHatsuburi() : base(0x2775)
-    {
-      Weight = 5.0;
-    }
+    public PlateHatsuburi() : base(0x2775) => Weight = 5.0;
 
     public PlateHatsuburi(Serial serial) : base(serial)
     {

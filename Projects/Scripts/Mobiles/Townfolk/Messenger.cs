@@ -5,10 +5,7 @@ namespace Server.Mobiles
   public class Messenger : BaseEscortable
   {
     [Constructible]
-    public Messenger()
-    {
-      Title = "the messenger";
-    }
+    public Messenger() => Title = "the messenger";
 
     public Messenger(Serial serial) : base(serial)
     {

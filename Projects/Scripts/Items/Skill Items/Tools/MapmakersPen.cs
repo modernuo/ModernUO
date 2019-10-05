@@ -6,16 +6,10 @@ namespace Server.Items
   public class MapmakersPen : BaseTool
   {
     [Constructible]
-    public MapmakersPen() : base(0x0FBF)
-    {
-      Weight = 1.0;
-    }
+    public MapmakersPen() : base(0x0FBF) => Weight = 1.0;
 
     [Constructible]
-    public MapmakersPen(int uses) : base(uses, 0x0FBF)
-    {
-      Weight = 1.0;
-    }
+    public MapmakersPen(int uses) : base(uses, 0x0FBF) => Weight = 1.0;
 
     public MapmakersPen(Serial serial) : base(serial)
     {

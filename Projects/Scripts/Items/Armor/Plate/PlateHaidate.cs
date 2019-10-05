@@ -3,10 +3,7 @@ namespace Server.Items
   public class PlateHaidate : BaseArmor
   {
     [Constructible]
-    public PlateHaidate() : base(0x278D)
-    {
-      Weight = 7.0;
-    }
+    public PlateHaidate() : base(0x278D) => Weight = 7.0;
 
     public PlateHaidate(Serial serial) : base(serial)
     {

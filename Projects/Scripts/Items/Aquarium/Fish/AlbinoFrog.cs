@@ -3,10 +3,7 @@ namespace Server.Items
   public class AlbinoFrog : BaseFish
   {
     [Constructible]
-    public AlbinoFrog() : base(0x3B0D)
-    {
-      Hue = 0x47E;
-    }
+    public AlbinoFrog() : base(0x3B0D) => Hue = 0x47E;
 
     public AlbinoFrog(Serial serial) : base(serial)
     {

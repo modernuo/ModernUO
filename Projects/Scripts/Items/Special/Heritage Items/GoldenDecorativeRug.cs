@@ -40,10 +40,7 @@ namespace Server.Items
   public class GoldenDecorativeRugDeed : BaseAddonDeed
   {
     [Constructible]
-    public GoldenDecorativeRugDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public GoldenDecorativeRugDeed() => LootType = LootType.Blessed;
 
     public GoldenDecorativeRugDeed(Serial serial) : base(serial)
     {

@@ -11,10 +11,7 @@ namespace Server.Items
   {
     private List<Mobile> m_Users = new List<Mobile>();
 
-    public BaseConfusionBlastPotion(PotionEffect effect) : base(0xF06, effect)
-    {
-      Hue = 0x48D;
-    }
+    public BaseConfusionBlastPotion(PotionEffect effect) : base(0xF06, effect) => Hue = 0x48D;
 
     public BaseConfusionBlastPotion(Serial serial) : base(serial)
     {
@@ -97,10 +94,7 @@ namespace Server.Items
 
     private class ThrowTarget : Target
     {
-      public ThrowTarget(BaseConfusionBlastPotion potion) : base(12, true, TargetFlags.None)
-      {
-        Potion = potion;
-      }
+      public ThrowTarget(BaseConfusionBlastPotion potion) : base(12, true, TargetFlags.None) => Potion = potion;
 
       public BaseConfusionBlastPotion Potion{ get; }
 

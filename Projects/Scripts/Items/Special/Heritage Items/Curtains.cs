@@ -5,10 +5,7 @@ namespace Server.Items
 {
   public class CurtainsComponent : AddonComponent, IDyable
   {
-    public CurtainsComponent(int itemID, int closedID) : base(itemID)
-    {
-      ClosedID = closedID;
-    }
+    public CurtainsComponent(int itemID, int closedID) : base(itemID) => ClosedID = closedID;
 
     public CurtainsComponent(Serial serial) : base(serial)
     {
@@ -119,10 +116,7 @@ namespace Server.Items
     private bool m_East;
 
     [Constructible]
-    public CurtainsDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public CurtainsDeed() => LootType = LootType.Blessed;
 
     public CurtainsDeed(Serial serial) : base(serial)
     {

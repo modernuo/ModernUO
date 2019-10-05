@@ -64,10 +64,7 @@ namespace Server.Mobiles
     public override FoodType FavoriteFood => FoodType.Meat;
     public override bool CanAngerOnTame => true;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.Dismount;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
     private static int GetHue()
     {
@@ -107,30 +104,15 @@ namespace Server.Mobiles
       return false;
     }
 
-    public override int GetAngerSound()
-    {
-      return 0x4FE;
-    }
+    public override int GetAngerSound() => 0x4FE;
 
-    public override int GetIdleSound()
-    {
-      return 0x4FD;
-    }
+    public override int GetIdleSound() => 0x4FD;
 
-    public override int GetAttackSound()
-    {
-      return 0x4FC;
-    }
+    public override int GetAttackSound() => 0x4FC;
 
-    public override int GetHurtSound()
-    {
-      return 0x4FF;
-    }
+    public override int GetHurtSound() => 0x4FF;
 
-    public override int GetDeathSound()
-    {
-      return 0x4FB;
-    }
+    public override int GetDeathSound() => 0x4FB;
 
     public override void GenerateLoot()
     {

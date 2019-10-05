@@ -82,10 +82,7 @@ namespace Server.Items
 
     public override double DefaultWeight => 1.0;
 
-    public bool ValidLocation()
-    {
-      return m_PlotLocation != Point3D.Zero && m_Facet != null && m_Facet != Map.Internal;
-    }
+    public bool ValidLocation() => m_PlotLocation != Point3D.Zero && m_Facet != null && m_Facet != Map.Internal;
 
     public override void GetProperties(ObjectPropertyList list)
     {

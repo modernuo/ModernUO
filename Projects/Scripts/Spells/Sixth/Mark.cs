@@ -26,10 +26,7 @@ namespace Server.Spells.Sixth
       Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
-    public override bool CheckCast()
-    {
-      return base.CheckCast() && SpellHelper.CheckTravel(Caster, TravelCheckType.Mark);
-    }
+    public override bool CheckCast() => base.CheckCast() && SpellHelper.CheckTravel(Caster, TravelCheckType.Mark);
 
     public void Target(Item item)
     {

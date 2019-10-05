@@ -49,30 +49,15 @@ namespace Server.Mobiles
     public override string CorpseName => "a solen infiltrator corpse";
     public override string DefaultName => "a black solen infiltrator";
 
-    public override int GetAngerSound()
-    {
-      return 0x259;
-    }
+    public override int GetAngerSound() => 0x259;
 
-    public override int GetIdleSound()
-    {
-      return 0x259;
-    }
+    public override int GetIdleSound() => 0x259;
 
-    public override int GetAttackSound()
-    {
-      return 0x195;
-    }
+    public override int GetAttackSound() => 0x195;
 
-    public override int GetHurtSound()
-    {
-      return 0x250;
-    }
+    public override int GetHurtSound() => 0x250;
 
-    public override int GetDeathSound()
-    {
-      return 0x25B;
-    }
+    public override int GetDeathSound() => 0x25B;
 
     public override void GenerateLoot()
     {

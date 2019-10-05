@@ -87,20 +87,11 @@ namespace Server.Mobiles
       }
     }
 
-    public override int GetDeathSound()
-    {
-      return 0x423;
-    }
+    public override int GetDeathSound() => 0x423;
 
-    public override int GetAttackSound()
-    {
-      return 0x23B;
-    }
+    public override int GetAttackSound() => 0x23B;
 
-    public override int GetHurtSound()
-    {
-      return 0x140;
-    }
+    public override int GetHurtSound() => 0x140;
 
     public override void GenerateLoot()
     {

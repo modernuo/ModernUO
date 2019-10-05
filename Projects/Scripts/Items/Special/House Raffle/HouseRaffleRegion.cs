@@ -10,10 +10,8 @@ namespace Server.Regions
     private HouseRaffleStone m_Stone;
 
     public HouseRaffleRegion(HouseRaffleStone stone)
-      : base(null, stone.PlotFacet, DefaultPriority, stone.PlotBounds)
-    {
+      : base(null, stone.PlotFacet, DefaultPriority, stone.PlotBounds) =>
       m_Stone = stone;
-    }
 
     public override bool AllowHousing(Mobile from, Point3D p)
     {

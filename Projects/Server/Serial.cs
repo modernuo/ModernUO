@@ -55,10 +55,7 @@ namespace Server
       }
     }
 
-    private Serial(uint serial)
-    {
-      Value = serial;
-    }
+    private Serial(uint serial) => Value = serial;
 
     public uint Value{ get; }
 
@@ -68,20 +65,11 @@ namespace Server
 
     public bool IsValid => Value > 0;
 
-    public override int GetHashCode()
-    {
-      return Value.GetHashCode();
-    }
+    public override int GetHashCode() => Value.GetHashCode();
 
-    public int CompareTo(Serial other)
-    {
-      return Value.CompareTo(other.Value);
-    }
+    public int CompareTo(Serial other) => Value.CompareTo(other.Value);
 
-    public int CompareTo(uint other)
-    {
-      return Value.CompareTo(other);
-    }
+    public int CompareTo(uint other) => Value.CompareTo(other);
 
     public override bool Equals(object obj)
     {
@@ -98,49 +86,22 @@ namespace Server
       return false;
     }
 
-    public static bool operator ==(Serial l, Serial r)
-    {
-      return l.Value == r.Value;
-    }
+    public static bool operator ==(Serial l, Serial r) => l.Value == r.Value;
 
-    public static bool operator !=(Serial l, Serial r)
-    {
-      return l.Value != r.Value;
-    }
+    public static bool operator !=(Serial l, Serial r) => l.Value != r.Value;
 
-    public static bool operator >(Serial l, Serial r)
-    {
-      return l.Value > r.Value;
-    }
+    public static bool operator >(Serial l, Serial r) => l.Value > r.Value;
 
-    public static bool operator <(Serial l, Serial r)
-    {
-      return l.Value < r.Value;
-    }
+    public static bool operator <(Serial l, Serial r) => l.Value < r.Value;
 
-    public static bool operator >=(Serial l, Serial r)
-    {
-      return l.Value >= r.Value;
-    }
+    public static bool operator >=(Serial l, Serial r) => l.Value >= r.Value;
 
-    public static bool operator <=(Serial l, Serial r)
-    {
-      return l.Value <= r.Value;
-    }
+    public static bool operator <=(Serial l, Serial r) => l.Value <= r.Value;
 
-    public override string ToString()
-    {
-      return $"0x{Value:X8}";
-    }
+    public override string ToString() => $"0x{Value:X8}";
 
-    public static implicit operator uint(Serial a)
-    {
-      return a.Value;
-    }
+    public static implicit operator uint(Serial a) => a.Value;
 
-    public static implicit operator Serial(uint a)
-    {
-      return new Serial(a);
-    }
+    public static implicit operator Serial(uint a) => new Serial(a);
   }
 }

@@ -116,27 +116,17 @@ namespace Server.Engines.BulkOrders
       return points * points;
     }
 
-    public virtual int ComputePoints(SmallBOD bod)
-    {
-      return ComputePoints(bod.AmountMax, bod.RequireExceptional, bod.Material, 1, bod.Type);
-    }
+    public virtual int ComputePoints(SmallBOD bod) => ComputePoints(bod.AmountMax, bod.RequireExceptional, bod.Material, 1, bod.Type);
 
-    public virtual int ComputePoints(LargeBOD bod)
-    {
-      return ComputePoints(bod.AmountMax, bod.RequireExceptional, bod.Material, bod.Entries.Length,
+    public virtual int ComputePoints(LargeBOD bod) =>
+      ComputePoints(bod.AmountMax, bod.RequireExceptional, bod.Material, bod.Entries.Length,
         bod.Entries[0].Details.Type);
-    }
 
-    public virtual int ComputeGold(SmallBOD bod)
-    {
-      return ComputeGold(bod.AmountMax, bod.RequireExceptional, bod.Material, 1, bod.Type);
-    }
+    public virtual int ComputeGold(SmallBOD bod) => ComputeGold(bod.AmountMax, bod.RequireExceptional, bod.Material, 1, bod.Type);
 
-    public virtual int ComputeGold(LargeBOD bod)
-    {
-      return ComputeGold(bod.AmountMax, bod.RequireExceptional, bod.Material, bod.Entries.Length,
+    public virtual int ComputeGold(LargeBOD bod) =>
+      ComputeGold(bod.AmountMax, bod.RequireExceptional, bod.Material, bod.Entries.Length,
         bod.Entries[0].Details.Type);
-    }
 
     public virtual RewardGroup LookupRewards(int points)
     {
@@ -385,15 +375,9 @@ namespace Server.Engines.BulkOrders
 
     #region Constructors
 
-    private static Item CreateSturdyShovel(int type)
-    {
-      return new SturdyShovel();
-    }
+    private static Item CreateSturdyShovel(int type) => new SturdyShovel();
 
-    private static Item CreateSturdyPickaxe(int type)
-    {
-      return new SturdyPickaxe();
-    }
+    private static Item CreateSturdyPickaxe(int type) => new SturdyPickaxe();
 
     private static Item CreateMiningGloves(int type)
     {
@@ -410,20 +394,11 @@ namespace Server.Engines.BulkOrders
       }
     }
 
-    private static Item CreateGargoylesPickaxe(int type)
-    {
-      return new GargoylesPickaxe();
-    }
+    private static Item CreateGargoylesPickaxe(int type) => new GargoylesPickaxe();
 
-    private static Item CreateProspectorsTool(int type)
-    {
-      return new ProspectorsTool();
-    }
+    private static Item CreateProspectorsTool(int type) => new ProspectorsTool();
 
-    private static Item CreatePowderOfTemperament(int type)
-    {
-      return new PowderOfTemperament();
-    }
+    private static Item CreatePowderOfTemperament(int type) => new PowderOfTemperament();
 
     private static Item CreateRunicHammer(int type)
     {
@@ -441,13 +416,7 @@ namespace Server.Engines.BulkOrders
       throw new InvalidOperationException();
     }
 
-    private static Item CreateColoredAnvil(int type)
-    {
-      // Generate an anvil deed, not an actual anvil.
-      //return new ColoredAnvilDeed();
-
-      return new ColoredAnvil();
-    }
+    private static Item CreateColoredAnvil(int type) => new ColoredAnvil();
 
     private static Item CreateAncientHammer(int type)
     {
@@ -678,10 +647,7 @@ namespace Server.Engines.BulkOrders
       0x484, 0x497
     };
 
-    private static Item CreateSandals(int type)
-    {
-      return new Sandals(m_SandalHues[Utility.Random(m_SandalHues.Length)]);
-    }
+    private static Item CreateSandals(int type) => new Sandals(m_SandalHues[Utility.Random(m_SandalHues.Length)]);
 
     private static Item CreateStretchedHide(int type)
     {
@@ -735,10 +701,7 @@ namespace Server.Engines.BulkOrders
       throw new InvalidOperationException();
     }
 
-    private static Item CreateCBD(int type)
-    {
-      return new ClothingBlessDeed();
-    }
+    private static Item CreateCBD(int type) => new ClothingBlessDeed();
 
     #endregion
   }

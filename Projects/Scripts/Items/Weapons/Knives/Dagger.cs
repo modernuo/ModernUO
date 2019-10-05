@@ -4,10 +4,7 @@ namespace Server.Items
   public class Dagger : BaseKnife
   {
     [Constructible]
-    public Dagger() : base(0xF52)
-    {
-      Weight = 1.0;
-    }
+    public Dagger() : base(0xF52) => Weight = 1.0;
 
     public Dagger(Serial serial) : base(serial)
     {

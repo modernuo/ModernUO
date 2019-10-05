@@ -75,10 +75,7 @@ namespace Server.Engines.MLQuests.Gumps
       PacketHandlers.RegisterExtended(0x2A, true, RaceChangeReply);
     }
 
-    public static bool IsPending(NetState state)
-    {
-      return state != null && m_Pending.ContainsKey(state);
-    }
+    public static bool IsPending(NetState state) => state != null && m_Pending.ContainsKey(state);
 
     private static void Offer(IRaceChanger owner, PlayerMobile from, Race targetRace)
     {
@@ -277,10 +274,8 @@ namespace Server.Engines.MLQuests.Gumps
   {
     [Constructible]
     public RaceChangeDeed()
-      : base(0x14F0)
-    {
+      : base(0x14F0) =>
       LootType = LootType.Blessed;
-    }
 
     public RaceChangeDeed(Serial serial)
       : base(serial)

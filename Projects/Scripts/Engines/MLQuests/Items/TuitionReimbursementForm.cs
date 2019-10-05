@@ -3,10 +3,7 @@ namespace Server.Items
   public class TuitionReimbursementForm : Item
   {
     [Constructible]
-    public TuitionReimbursementForm() : base(0xE3A)
-    {
-      LootType = LootType.Blessed;
-    }
+    public TuitionReimbursementForm() : base(0xE3A) => LootType = LootType.Blessed;
 
     public TuitionReimbursementForm(Serial serial) : base(serial)
     {

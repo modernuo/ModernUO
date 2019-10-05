@@ -6,16 +6,10 @@ namespace Server.Items
   public class DovetailSaw : BaseTool
   {
     [Constructible]
-    public DovetailSaw() : base(0x1028)
-    {
-      Weight = 2.0;
-    }
+    public DovetailSaw() : base(0x1028) => Weight = 2.0;
 
     [Constructible]
-    public DovetailSaw(int uses) : base(uses, 0x1028)
-    {
-      Weight = 2.0;
-    }
+    public DovetailSaw(int uses) : base(uses, 0x1028) => Weight = 2.0;
 
     public DovetailSaw(Serial serial) : base(serial)
     {

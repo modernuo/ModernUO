@@ -38,10 +38,7 @@ namespace Server.PathAlgorithms.SlowAStar
       return x * x + y * y + z * z;
     }
 
-    public override bool CheckCondition(Mobile m, Map map, Point3D start, Point3D goal)
-    {
-      return false;
-    }
+    public override bool CheckCondition(Mobile m, Map map, Point3D start, Point3D goal) => false;
 
     public override Direction[] Find(Mobile m, Map map, Point3D start, Point3D goal)
     {

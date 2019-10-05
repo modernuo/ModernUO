@@ -23,10 +23,7 @@ namespace Server.Mobiles
 
     public override VendorShoeType ShoeType => Female ? VendorShoeType.ThighBoots : VendorShoeType.Boots;
 
-    public override int GetShoeHue()
-    {
-      return 0;
-    }
+    public override int GetShoeHue() => 0;
 
     public override void InitOutfit()
     {

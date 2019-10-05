@@ -165,10 +165,7 @@ namespace Server.Multis
     {
       private BaseDockedBoat m_Model;
 
-      public InternalTarget(BaseDockedBoat model) : base(model.MultiID, model.Offset)
-      {
-        m_Model = model;
-      }
+      public InternalTarget(BaseDockedBoat model) : base(model.MultiID, model.Offset) => m_Model = model;
 
       protected override void OnTarget(Mobile from, object o)
       {

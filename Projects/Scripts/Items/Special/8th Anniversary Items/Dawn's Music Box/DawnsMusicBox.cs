@@ -149,10 +149,7 @@ namespace Server.Items
       }
     }
 
-    public bool HasAccces(Mobile m)
-    {
-      return m.AccessLevel >= AccessLevel.GameMaster || BaseHouse.FindHouseAt(this)?.HasAccess(m) == true;
-    }
+    public bool HasAccces(Mobile m) => m.AccessLevel >= AccessLevel.GameMaster || BaseHouse.FindHouseAt(this)?.HasAccess(m) == true;
 
     public void PlayMusic(Mobile m, MusicName music)
     {

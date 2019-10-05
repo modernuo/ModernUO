@@ -101,15 +101,9 @@ namespace Server.Engines.MLQuests
         Console.WriteLine("INFO: Generating quest: {0}", GetType());
     }
 
-    public MLQuestInstance CreateInstance(IQuestGiver quester, PlayerMobile pm)
-    {
-      return new MLQuestInstance(this, quester, pm);
-    }
+    public MLQuestInstance CreateInstance(IQuestGiver quester, PlayerMobile pm) => new MLQuestInstance(this, quester, pm);
 
-    public bool CanOffer(IQuestGiver quester, PlayerMobile pm, bool message)
-    {
-      return CanOffer(quester, pm, MLQuestSystem.GetContext(pm), message);
-    }
+    public bool CanOffer(IQuestGiver quester, PlayerMobile pm, bool message) => CanOffer(quester, pm, MLQuestSystem.GetContext(pm), message);
 
     public virtual bool CanOffer(IQuestGiver quester, PlayerMobile pm, MLQuestContext context, bool message)
     {
@@ -215,10 +209,7 @@ namespace Server.Engines.MLQuests
     {
     }
 
-    public virtual TimeSpan GetRestartDelay()
-    {
-      return TimeSpan.FromSeconds(Utility.Random(1, 5) * 30);
-    }
+    public virtual TimeSpan GetRestartDelay() => TimeSpan.FromSeconds(Utility.Random(1, 5) * 30);
 
     public static void Serialize(GenericWriter writer, MLQuest quest)
     {

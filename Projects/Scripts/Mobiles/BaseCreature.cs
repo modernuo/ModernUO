@@ -130,19 +130,13 @@ namespace Server.Mobiles
       m_Damage = damage;
     }
 
-    public int CompareTo(DamageStore ds)
-    {
-      return ds?.m_Damage ?? 0 - m_Damage;
-    }
+    public int CompareTo(DamageStore ds) => ds?.m_Damage ?? 0 - m_Damage;
   }
 
   [AttributeUsage(AttributeTargets.Class)]
   public class FriendlyNameAttribute : Attribute
   {
-    public FriendlyNameAttribute(TextDefinition friendlyName)
-    {
-      FriendlyName = friendlyName;
-    }
+    public FriendlyNameAttribute(TextDefinition friendlyName) => FriendlyName = friendlyName;
     //future use: Talisman 'Protection/Bonus vs. Specific Creature
 
     public TextDefinition FriendlyName{ get; }
@@ -802,10 +796,7 @@ namespace Server.Mobiles
 
     public HonorContext ReceivedHonorContext{ get; set; }
 
-    public virtual WeaponAbility GetWeaponAbility()
-    {
-      return null;
-    }
+    public virtual WeaponAbility GetWeaponAbility() => null;
 
     public virtual bool IsEnemy(Mobile m)
     {
@@ -868,10 +859,7 @@ namespace Server.Mobiles
       return false;
     }
 
-    public virtual bool CanBeControlledBy(Mobile m)
-    {
-      return GetControlChance(m) > 0.0;
-    }
+    public virtual bool CanBeControlledBy(Mobile m) => GetControlChance(m) > 0.0;
 
     public virtual double GetControlChance(Mobile m, bool useBaseSkill = false)
     {
@@ -987,11 +975,9 @@ namespace Server.Mobiles
       return result;
     }
 
-    public override bool CheckPoisonImmunity(Mobile from, Poison poison)
-    {
-      return base.CheckPoisonImmunity(from, poison) ||
-             (m_Paragon ? PoisonImpl.IncreaseLevel(PoisonImmune) : PoisonImmune)?.Level >= poison.Level;
-    }
+    public override bool CheckPoisonImmunity(Mobile from, Poison poison) =>
+      base.CheckPoisonImmunity(from, poison) ||
+      (m_Paragon ? PoisonImpl.IncreaseLevel(PoisonImmune) : PoisonImmune)?.Level >= poison.Level;
 
     public void Unpacify()
     {
@@ -1571,15 +1557,9 @@ namespace Server.Mobiles
         AnimateDeadSpell.Register(m_SummonMaster, this);
     }
 
-    public virtual bool IsHumanInTown()
-    {
-      return Body.IsHuman && Region.IsPartOf<GuardedRegion>();
-    }
+    public virtual bool IsHumanInTown() => Body.IsHuman && Region.IsPartOf<GuardedRegion>();
 
-    public virtual bool CheckGold(Mobile from, Item dropped)
-    {
-      return dropped is Gold gold && OnGoldGiven(from, gold);
-    }
+    public virtual bool CheckGold(Mobile from, Item dropped) => dropped is Gold gold && OnGoldGiven(from, gold);
 
     public virtual bool OnGoldGiven(Mobile from, Gold dropped)
     {
@@ -1614,10 +1594,7 @@ namespace Server.Mobiles
       return false;
     }
 
-    public virtual bool OverrideBondingReqs()
-    {
-      return false;
-    }
+    public virtual bool OverrideBondingReqs() => false;
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {
@@ -1846,15 +1823,9 @@ namespace Server.Mobiles
       SetDirection((Direction)((((v & 0x7) + iTurnSteps) & 0x7) | (v & 0x80)));
     }
 
-    public bool IsHurt()
-    {
-      return Hits != HitsMax;
-    }
+    public bool IsHurt() => Hits != HitsMax;
 
-    public double GetHomeDistance()
-    {
-      return GetDistanceToSqrt(m_Home);
-    }
+    public double GetHomeDistance() => GetDistanceToSqrt(m_Home);
 
     public virtual int GetTeamSize(int iRange)
     {
@@ -1974,11 +1945,9 @@ namespace Server.Mobiles
       }
     }
 
-    public override bool HandlesOnSpeech(Mobile from)
-    {
-      return (SpeechType?.Flags & IHSFlags.OnSpeech) != 0 && from.InRange(this, 3) ||
-             AIObject?.HandlesOnSpeech(from) == true && from.InRange(this, RangePerception);
-    }
+    public override bool HandlesOnSpeech(Mobile from) =>
+      (SpeechType?.Flags & IHSFlags.OnSpeech) != 0 && from.InRange(this, 3) ||
+      AIObject?.HandlesOnSpeech(from) == true && from.InRange(this, RangePerception);
 
     public override void OnSpeech(SpeechEventArgs e)
     {
@@ -1990,12 +1959,10 @@ namespace Server.Mobiles
         AIObject.OnSpeech(e);
     }
 
-    public override bool IsHarmfulCriminal(Mobile target)
-    {
-      return (!Controlled || target != m_ControlMaster) && (!Summoned || target != m_SummonMaster) &&
-             (!(target is BaseCreature creature) || !creature.InitialInnocent || creature.Controlled) &&
-             (!(target is PlayerMobile mobile) || mobile.PermaFlags.Count <= 0) && base.IsHarmfulCriminal(target);
-    }
+    public override bool IsHarmfulCriminal(Mobile target) =>
+      (!Controlled || target != m_ControlMaster) && (!Summoned || target != m_SummonMaster) &&
+      (!(target is BaseCreature creature) || !creature.InitialInnocent || creature.Controlled) &&
+      (!(target is PlayerMobile mobile) || mobile.PermaFlags.Count <= 0) && base.IsHarmfulCriminal(target);
 
     public override void CriminalAction(bool message)
     {
@@ -2774,11 +2741,9 @@ namespace Server.Mobiles
       return base.CanBeHarmful(target, message, ignoreOurBlessedness);
     }
 
-    public override bool CanBeRenamedBy(Mobile from)
-    {
-      return Controlled && from == ControlMaster && !from.Region.IsPartOf<Jail>() ||
-             base.CanBeRenamedBy(from);
-    }
+    public override bool CanBeRenamedBy(Mobile from) =>
+      Controlled && from == ControlMaster && !from.Region.IsPartOf<Jail>() ||
+      base.CanBeRenamedBy(from);
 
     public bool SetControlMaster(Mobile m)
     {
@@ -2842,10 +2807,7 @@ namespace Server.Mobiles
       }
     }
 
-    public static bool Summon(BaseCreature creature, Mobile caster, Point3D p, int sound, TimeSpan duration)
-    {
-      return Summon(creature, true, caster, p, sound, duration);
-    }
+    public static bool Summon(BaseCreature creature, Mobile caster, Point3D p, int sound, TimeSpan duration) => Summon(creature, true, caster, p, sound, duration);
 
     public static bool Summon(BaseCreature creature, bool controlled, Mobile caster, Point3D p, int sound,
       TimeSpan duration)
@@ -3160,12 +3122,10 @@ namespace Server.Mobiles
       return base.CanBeDamaged();
     }
 
-    private bool IsSpawnerBound()
-    {
-      return Map != null && Map != Map.Internal &&
-             FightMode != FightMode.None && RangeHome >= 0 &&
-             !Controlled && !Summoned && Spawner is Spawner spawner && spawner.Map == Map;
-    }
+    private bool IsSpawnerBound() =>
+      Map != null && Map != Map.Internal &&
+      FightMode != FightMode.None && RangeHome >= 0 &&
+      !Controlled && !Summoned && Spawner is Spawner spawner && spawner.Map == Map;
 
     public override void OnSectorDeactivate()
     {
@@ -3234,10 +3194,7 @@ namespace Server.Mobiles
     {
       private BaseCreature m_Charmed;
 
-      public DeathAdderCharmTarget(BaseCreature charmed) : base(-1, false, TargetFlags.Harmful)
-      {
-        m_Charmed = charmed;
-      }
+      public DeathAdderCharmTarget(BaseCreature charmed) : base(-1, false, TargetFlags.Harmful) => m_Charmed = charmed;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -3333,10 +3290,7 @@ namespace Server.Mobiles
     public virtual bool CanGiveMLQuest => MLQuests.Count != 0;
     public virtual bool StaticMLQuester => true;
 
-    protected virtual List<MLQuest> ConstructQuestList()
-    {
-      return null;
-    }
+    protected virtual List<MLQuest> ConstructQuestList() => null;
 
     public virtual bool CanShout => false;
 
@@ -3767,10 +3721,7 @@ namespace Server.Mobiles
       kappa+acidslime, grizzles+whatever, etc.
     */
 
-    public virtual Item NewHarmfulItem()
-    {
-      return new PoolOfAcid(TimeSpan.FromSeconds(10), 30, 30);
-    }
+    public virtual Item NewHarmfulItem() => new PoolOfAcid(TimeSpan.FromSeconds(10), 30, 30);
 
     #endregion
 
@@ -3812,10 +3763,7 @@ namespace Server.Mobiles
 
     public virtual bool AllowNewPetFriend => Friends == null || Friends.Count < 5;
 
-    public virtual bool IsPetFriend(Mobile m)
-    {
-      return Friends.Contains(m);
-    }
+    public virtual bool IsPetFriend(Mobile m) => Friends.Contains(m);
 
     public virtual void AddPetFriend(Mobile m)
     {
@@ -3830,11 +3778,9 @@ namespace Server.Mobiles
       Friends?.Remove(m);
     }
 
-    public virtual bool IsFriend(Mobile m)
-    {
-      return OppositionGroup?.IsEnemy(this, m) != true && m is BaseCreature c && m_Team == c.m_Team
-             && (m_bSummoned || m_Controlled) == (c.m_bSummoned || c.m_Controlled);
-    }
+    public virtual bool IsFriend(Mobile m) =>
+      OppositionGroup?.IsEnemy(this, m) != true && m is BaseCreature c && m_Team == c.m_Team
+      && (m_bSummoned || m_Controlled) == (c.m_bSummoned || c.m_Controlled);
 
     #endregion
 
@@ -4678,10 +4624,7 @@ namespace Server.Mobiles
       pack.Generate(this, backpack, m_Spawning, m_KillersLuck);
     }
 
-    public bool PackArmor(int minLevel, int maxLevel)
-    {
-      return PackArmor(minLevel, maxLevel, 1.0);
-    }
+    public bool PackArmor(int minLevel, int maxLevel) => PackArmor(minLevel, maxLevel, 1.0);
 
     public bool PackArmor(int minLevel, int maxLevel, double chance)
     {

@@ -278,10 +278,8 @@ namespace Server.Items
       private INinjaWeapon weapon;
 
       public LoadEntry(INinjaWeapon wep, int entry)
-        : base(entry, 0)
-      {
+        : base(entry, 0) =>
         weapon = wep;
-      }
 
       public override void OnClick()
       {

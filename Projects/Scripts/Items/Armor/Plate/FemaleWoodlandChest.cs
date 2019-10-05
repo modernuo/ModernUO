@@ -5,10 +5,7 @@ namespace Server.Items
   public class FemaleElvenPlateChest : BaseArmor
   {
     [Constructible]
-    public FemaleElvenPlateChest() : base(0x2B6D)
-    {
-      Weight = 8.0;
-    }
+    public FemaleElvenPlateChest() : base(0x2B6D) => Weight = 8.0;
 
     public FemaleElvenPlateChest(Serial serial) : base(serial)
     {

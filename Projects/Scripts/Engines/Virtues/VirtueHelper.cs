@@ -25,15 +25,9 @@ namespace Server
 
   public class VirtueHelper
   {
-    public static bool HasAny(Mobile from, VirtueName virtue)
-    {
-      return from.Virtues.GetValue((int)virtue) > 0;
-    }
+    public static bool HasAny(Mobile from, VirtueName virtue) => from.Virtues.GetValue((int)virtue) > 0;
 
-    public static bool IsHighestPath(Mobile from, VirtueName virtue)
-    {
-      return from.Virtues.GetValue((int)virtue) >= GetMaxAmount(virtue);
-    }
+    public static bool IsHighestPath(Mobile from, VirtueName virtue) => from.Virtues.GetValue((int)virtue) >= GetMaxAmount(virtue);
 
     public static VirtueLevel GetLevel(Mobile from, VirtueName virtue)
     {
@@ -83,10 +77,7 @@ namespace Server
       return true;
     }
 
-    public static bool Atrophy(Mobile from, VirtueName virtue)
-    {
-      return Atrophy(from, virtue, 1);
-    }
+    public static bool Atrophy(Mobile from, VirtueName virtue) => Atrophy(from, virtue, 1);
 
     public static bool Atrophy(Mobile from, VirtueName virtue, int amount)
     {
@@ -100,20 +91,11 @@ namespace Server
       return current > 0;
     }
 
-    public static bool IsSeeker(Mobile from, VirtueName virtue)
-    {
-      return GetLevel(from, virtue) >= VirtueLevel.Seeker;
-    }
+    public static bool IsSeeker(Mobile from, VirtueName virtue) => GetLevel(from, virtue) >= VirtueLevel.Seeker;
 
-    public static bool IsFollower(Mobile from, VirtueName virtue)
-    {
-      return GetLevel(from, virtue) >= VirtueLevel.Follower;
-    }
+    public static bool IsFollower(Mobile from, VirtueName virtue) => GetLevel(from, virtue) >= VirtueLevel.Follower;
 
-    public static bool IsKnight(Mobile from, VirtueName virtue)
-    {
-      return GetLevel(from, virtue) >= VirtueLevel.Knight;
-    }
+    public static bool IsKnight(Mobile from, VirtueName virtue) => GetLevel(from, virtue) >= VirtueLevel.Knight;
 
     public static void AwardVirtue(PlayerMobile pm, VirtueName virtue, int amount)
     {

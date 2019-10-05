@@ -90,10 +90,8 @@ namespace Server.RemoteAdmin
         CommandLogging.AppendPath(ref path, accesslevel);
         path = Path.Combine(path, $"{name}.log");
 
-        using (StreamWriter sw = new StreamWriter(path, true))
-        {
-          sw.WriteLine("{0}: {1}: {2}", DateTime.UtcNow, statestr, text);
-        }
+        using StreamWriter sw = new StreamWriter(path, true);
+        sw.WriteLine("{0}: {1}: {2}", DateTime.UtcNow, statestr, text);
       }
       catch
       {

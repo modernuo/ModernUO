@@ -532,10 +532,7 @@ namespace Server.Mobiles
       return flags;
     }
 
-    public bool GetFlag(PlayerFlag flag)
-    {
-      return (Flags & flag) != 0;
-    }
+    public bool GetFlag(PlayerFlag flag) => (Flags & flag) != 0;
 
     public void SetFlag(PlayerFlag flag, bool value)
     {
@@ -567,10 +564,7 @@ namespace Server.Mobiles
             pm.AutoStablePets(); /* autostable checks summons, et al: no need here */
     }
 
-    private static bool CheckBlock(MountBlock block)
-    {
-      return block?.m_Timer.Running == true;
-    }
+    private static bool CheckBlock(MountBlock block) => block?.m_Timer.Running == true;
 
     public void SetMountBlock(BlockMountType type, TimeSpan duration, bool dismount)
     {
@@ -1075,10 +1069,7 @@ namespace Server.Mobiles
       return base.CanBeBeneficial(target, message, allowDead);
     }
 
-    public override bool CheckContextMenuDisplay(IEntity target)
-    {
-      return DesignContext == null;
-    }
+    public override bool CheckContextMenuDisplay(IEntity target) => DesignContext == null;
 
     public override void OnItemAdded(Item item)
     {
@@ -1719,11 +1710,9 @@ namespace Server.Mobiles
         Timer.DelayCall(TimeSpan.FromSeconds(10), RecoverAmmo);
     }
 
-    private bool FindItems_Callback(Item item)
-    {
-      return !item.Deleted && (item.LootType == LootType.Blessed || item.Insured) &&
-             Backpack != item.Parent;
-    }
+    private bool FindItems_Callback(Item item) =>
+      !item.Deleted && (item.LootType == LootType.Blessed || item.Insured) &&
+      Backpack != item.Parent;
 
     public override bool OnBeforeDeath()
     {
@@ -2633,10 +2622,7 @@ namespace Server.Mobiles
         base.Animate(action, frameCount, repeatCount, forward, repeat, delay);
     }
 
-    public override bool CanSee(Item item)
-    {
-      return DesignContext?.Foundation.IsHiddenToCustomizer(item) != true && base.CanSee(item);
-    }
+    public override bool CanSee(Item item) => DesignContext?.Foundation.IsHiddenToCustomizer(item) != true && base.CanSee(item);
 
     public override void OnAfterDelete()
     {
@@ -2919,10 +2905,7 @@ namespace Server.Mobiles
       {
       }
 
-      public CallbackEntry(int number, int range, ContextCallback callback) : base(number, range)
-      {
-        m_Callback = callback;
-      }
+      public CallbackEntry(int number, int range, ContextCallback callback) : base(number, range) => m_Callback = callback;
 
       public override void OnClick()
       {
@@ -3256,10 +3239,7 @@ namespace Server.Mobiles
 
     #region Insurance
 
-    private static int GetInsuranceCost(Item item)
-    {
-      return 600; // TODO
-    }
+    private static int GetInsuranceCost(Item item) => 600;
 
     private void ToggleItemInsurance()
     {
@@ -3464,10 +3444,7 @@ namespace Server.Mobiles
         SendGump(new ItemInsuranceMenuGump(this, items.ToArray()));
     }
 
-    private bool DisplayInItemInsuranceGump(Item item)
-    {
-      return (item.Visible || AccessLevel >= AccessLevel.GameMaster) && (item.Insured || CanInsure(item));
-    }
+    private bool DisplayInItemInsuranceGump(Item item) => (item.Visible || AccessLevel >= AccessLevel.GameMaster) && (item.Insured || CanInsure(item));
 
     private class ItemInsuranceMenuGump : Gump
     {
@@ -3572,10 +3549,7 @@ namespace Server.Mobiles
         }
       }
 
-      public ItemInsuranceMenuGump NewInstance()
-      {
-        return new ItemInsuranceMenuGump(m_From, m_Items, m_Insure, m_Page);
-      }
+      public ItemInsuranceMenuGump NewInstance() => new ItemInsuranceMenuGump(m_From, m_Items, m_Insure, m_Page);
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
@@ -4463,10 +4437,7 @@ namespace Server.Mobiles
       [CommandProperty(AccessLevel.GameMaster)]
       public int Harrower{ get; set; }
 
-      public int GetValue(ChampionSpawnType type)
-      {
-        return GetValue((int)type);
-      }
+      public int GetValue(ChampionSpawnType type) => GetValue((int)type);
 
       public void SetValue(ChampionSpawnType type, int value)
       {
@@ -4553,10 +4524,7 @@ namespace Server.Mobiles
           m_Values[index].LastDecay = DateTime.UtcNow;
       }
 
-      public override string ToString()
-      {
-        return "...";
-      }
+      public override string ToString() => "...";
 
       public static void Serialize(GenericWriter writer, ChampionTitleInfo titles)
       {
@@ -4650,15 +4618,9 @@ namespace Server.Mobiles
 
     private Dictionary<int, bool> m_AcquiredRecipes;
 
-    public virtual bool HasRecipe(Recipe r)
-    {
-      return r != null && HasRecipe(r.ID);
-    }
+    public virtual bool HasRecipe(Recipe r) => r != null && HasRecipe(r.ID);
 
-    public virtual bool HasRecipe(int recipeID)
-    {
-      return m_AcquiredRecipes.TryGetValue(recipeID, out bool value) && value;
-    }
+    public virtual bool HasRecipe(int recipeID) => m_AcquiredRecipes.TryGetValue(recipeID, out bool value) && value;
 
     public virtual void AcquireRecipe(Recipe r)
     {

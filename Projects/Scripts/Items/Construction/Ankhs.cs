@@ -65,10 +65,7 @@ namespace Server.Items
     {
       private PlayerMobile m_Mobile;
 
-      public LockKarmaEntry(PlayerMobile mobile) : base(mobile.KarmaLocked ? 6197 : 6196, LockRange)
-      {
-        m_Mobile = mobile;
-      }
+      public LockKarmaEntry(PlayerMobile mobile) : base(mobile.KarmaLocked ? 6197 : 6196, LockRange) => m_Mobile = mobile;
 
       public override void OnClick()
       {

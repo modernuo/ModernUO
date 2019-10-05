@@ -6,10 +6,7 @@ namespace Server.Items
   public class HairDye : Item
   {
     [Constructible]
-    public HairDye() : base(0xEFF)
-    {
-      Weight = 1.0;
-    }
+    public HairDye() : base(0xEFF) => Weight = 1.0;
 
     public HairDye(Serial serial) : base(serial)
     {

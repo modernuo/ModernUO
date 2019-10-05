@@ -4,10 +4,7 @@ namespace Server.Items
   public class Dressform : Item
   {
     [Constructible]
-    public Dressform() : base(0xec6)
-    {
-      Weight = 10;
-    }
+    public Dressform() : base(0xec6) => Weight = 10;
 
     public Dressform(Serial serial) : base(serial)
     {

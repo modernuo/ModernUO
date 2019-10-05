@@ -58,10 +58,7 @@ namespace Server.Mobiles
     public override int TreasureMapLevel => 5;
     public override int Hides => 20;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.DoubleStrike;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.DoubleStrike;
 
     public override void GenerateLoot()
     {
@@ -138,30 +135,15 @@ namespace Server.Mobiles
       }
     }
 
-    public override int GetAttackSound()
-    {
-      return 1260;
-    }
+    public override int GetAttackSound() => 1260;
 
-    public override int GetAngerSound()
-    {
-      return 1262;
-    }
+    public override int GetAngerSound() => 1262;
 
-    public override int GetDeathSound()
-    {
-      return 1259; //Other Death sound is 1258... One for Yamadon, one for Serado?
-    }
+    public override int GetDeathSound() => 1259;
 
-    public override int GetHurtSound()
-    {
-      return 1263;
-    }
+    public override int GetHurtSound() => 1263;
 
-    public override int GetIdleSound()
-    {
-      return 1261;
-    }
+    public override int GetIdleSound() => 1261;
 
     public override void Serialize(GenericWriter writer)
     {

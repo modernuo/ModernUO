@@ -5,10 +5,7 @@ namespace Server.Items
   public class SandMiningBook : Item
   {
     [Constructible]
-    public SandMiningBook() : base(0xFF4)
-    {
-      Weight = 1.0;
-    }
+    public SandMiningBook() : base(0xFF4) => Weight = 1.0;
 
     public SandMiningBook(Serial serial) : base(serial)
     {

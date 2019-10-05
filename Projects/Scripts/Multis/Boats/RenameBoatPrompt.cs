@@ -6,10 +6,7 @@ namespace Server.Multis
   {
     private BaseBoat m_Boat;
 
-    public RenameBoatPrompt(BaseBoat boat)
-    {
-      m_Boat = boat;
-    }
+    public RenameBoatPrompt(BaseBoat boat) => m_Boat = boat;
 
     public override void OnResponse(Mobile from, string text)
     {

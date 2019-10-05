@@ -49,10 +49,7 @@ namespace Server.Mobiles
       private int m_Count;
       private Wanderer m_Owner;
 
-      public InternalTimer(Wanderer owner) : base(TimeSpan.FromSeconds(0.1), TimeSpan.FromSeconds(0.1))
-      {
-        m_Owner = owner;
-      }
+      public InternalTimer(Wanderer owner) : base(TimeSpan.FromSeconds(0.1), TimeSpan.FromSeconds(0.1)) => m_Owner = owner;
 
       protected override void OnTick()
       {

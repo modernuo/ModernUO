@@ -225,10 +225,7 @@ namespace Server.Items
     {
       private VendorRentalContract m_Contract;
 
-      public ContractOptionEntry(VendorRentalContract contract) : base(6209)
-      {
-        m_Contract = contract;
-      }
+      public ContractOptionEntry(VendorRentalContract contract) : base(6209) => m_Contract = contract;
 
       public override void OnClick()
       {
@@ -246,10 +243,7 @@ namespace Server.Items
     {
       private VendorRentalContract m_Contract;
 
-      public RentTarget(VendorRentalContract contract) : base(-1, false, TargetFlags.None)
-      {
-        m_Contract = contract;
-      }
+      public RentTarget(VendorRentalContract contract) : base(-1, false, TargetFlags.None) => m_Contract = contract;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

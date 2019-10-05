@@ -152,10 +152,7 @@ namespace Server
 
     private class InternalTarget : Target
     {
-      public InternalTarget() : base(12, false, TargetFlags.None)
-      {
-        CheckLOS = true;
-      }
+      public InternalTarget() : base(12, false, TargetFlags.None) => CheckLOS = true;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -371,10 +368,7 @@ namespace Server
       }
     }
 
-    public bool CheckDistance()
-    {
-      return true;
-    }
+    public bool CheckDistance() => true;
 
     public void Cancel()
     {
@@ -395,10 +389,7 @@ namespace Server
     {
       private HonorContext m_Context;
 
-      public InternalTimer(HonorContext context) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
-      {
-        m_Context = context;
-      }
+      public InternalTimer(HonorContext context) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0)) => m_Context = context;
 
       protected override void OnTick()
       {

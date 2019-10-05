@@ -83,10 +83,7 @@ namespace Server.Items
   public class HaunterMirrorDeed : BaseAddonDeed
   {
     [Constructible]
-    public HaunterMirrorDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public HaunterMirrorDeed() => LootType = LootType.Blessed;
 
     public HaunterMirrorDeed(Serial serial) : base(serial)
     {

@@ -3,10 +3,7 @@ namespace Server.Items
   public class LeatherNinjaHood : BaseArmor
   {
     [Constructible]
-    public LeatherNinjaHood() : base(0x278E)
-    {
-      Weight = 2.0;
-    }
+    public LeatherNinjaHood() : base(0x278E) => Weight = 2.0;
 
     public LeatherNinjaHood(Serial serial) : base(serial)
     {

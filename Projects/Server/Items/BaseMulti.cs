@@ -24,10 +24,7 @@ namespace Server.Items
 {
   public abstract class BaseMulti : Item
   {
-    public BaseMulti(int itemID) : base(itemID)
-    {
-      Movable = false;
-    }
+    public BaseMulti(int itemID) : base(itemID) => Movable = false;
 
     public BaseMulti(Serial serial) : base(serial)
     {
@@ -90,30 +87,15 @@ namespace Server.Items
       }
     }
 
-    public override int GetMaxUpdateRange()
-    {
-      return 22;
-    }
+    public override int GetMaxUpdateRange() => 22;
 
-    public override int GetUpdateRange(Mobile m)
-    {
-      return 22;
-    }
+    public override int GetUpdateRange(Mobile m) => 22;
 
-    public virtual bool Contains(Point2D p)
-    {
-      return Contains(p.m_X, p.m_Y);
-    }
+    public virtual bool Contains(Point2D p) => Contains(p.m_X, p.m_Y);
 
-    public virtual bool Contains(Point3D p)
-    {
-      return Contains(p.m_X, p.m_Y);
-    }
+    public virtual bool Contains(Point3D p) => Contains(p.m_X, p.m_Y);
 
-    public virtual bool Contains(IPoint3D p)
-    {
-      return Contains(p.X, p.Y);
-    }
+    public virtual bool Contains(IPoint3D p) => Contains(p.X, p.Y);
 
     public virtual bool Contains(int x, int y)
     {

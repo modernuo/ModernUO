@@ -15,10 +15,7 @@ namespace Server.Spells.Ninjitsu
     public override TextDefinition AbilityMessage =>
       new TextDefinition(1063091); // You prepare to hit your opponent with a Death Strike.
 
-    public override double GetDamageScalar(Mobile attacker, Mobile defender)
-    {
-      return 0.5;
-    }
+    public override double GetDamageScalar(Mobile attacker, Mobile defender) => 0.5;
 
     public override void OnHit(Mobile attacker, Mobile defender, int damage)
     {

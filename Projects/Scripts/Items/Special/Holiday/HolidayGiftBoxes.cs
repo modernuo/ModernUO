@@ -47,10 +47,8 @@
   {
     [Constructible]
     public GiftBoxRectangle()
-      : base(Utility.RandomBool() ? 0x46A5 : 0x46A6)
-    {
+      : base(Utility.RandomBool() ? 0x46A5 : 0x46A6) =>
       Hue = GiftBoxHues.RandomGiftBoxHue;
-    }
 
     public GiftBoxRectangle(Serial serial)
       : base(serial)
@@ -76,10 +74,8 @@
   {
     [Constructible]
     public GiftBoxCube()
-      : base(0x46A2)
-    {
+      : base(0x46A2) =>
       Hue = GiftBoxHues.RandomGiftBoxHue;
-    }
 
     public GiftBoxCube(Serial serial)
       : base(serial)
@@ -105,10 +101,8 @@
   {
     [Constructible]
     public GiftBoxCylinder()
-      : base(0x46A3)
-    {
+      : base(0x46A3) =>
       Hue = GiftBoxHues.RandomGiftBoxHue;
-    }
 
     public GiftBoxCylinder(Serial serial)
       : base(serial)
@@ -134,10 +128,8 @@
   {
     [Constructible]
     public GiftBoxOctogon()
-      : base(0x46A4)
-    {
+      : base(0x46A4) =>
       Hue = GiftBoxHues.RandomGiftBoxHue;
-    }
 
     public GiftBoxOctogon(Serial serial)
       : base(serial)
@@ -163,10 +155,8 @@
   {
     [Constructible]
     public GiftBoxAngel()
-      : base(0x46A7)
-    {
+      : base(0x46A7) =>
       Hue = GiftBoxHues.RandomGiftBoxHue;
-    }
 
     public GiftBoxAngel(Serial serial)
       : base(serial)
@@ -193,10 +183,8 @@
   {
     [Constructible]
     public GiftBoxNeon()
-      : base(Utility.RandomBool() ? 0x232A : 0x232B)
-    {
+      : base(Utility.RandomBool() ? 0x232A : 0x232B) =>
       Hue = GiftBoxHues.RandomNeonBoxHue;
-    }
 
     public GiftBoxNeon(Serial serial)
       : base(serial)

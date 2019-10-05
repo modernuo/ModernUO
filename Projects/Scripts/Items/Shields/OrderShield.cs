@@ -47,10 +47,7 @@ namespace Server.Items
       writer.Write(0); //version
     }
 
-    public override bool OnEquip(Mobile from)
-    {
-      return Validate(from) && base.OnEquip(from);
-    }
+    public override bool OnEquip(Mobile from) => Validate(from) && base.OnEquip(from);
 
     public override void OnSingleClick(Mobile from)
     {

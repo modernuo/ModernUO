@@ -4,10 +4,7 @@ namespace Server.Items
   public class ElegantLowTable : Item
   {
     [Constructible]
-    public ElegantLowTable() : base(0x2819)
-    {
-      Weight = 1.0;
-    }
+    public ElegantLowTable() : base(0x2819) => Weight = 1.0;
 
     public ElegantLowTable(Serial serial) : base(serial)
     {
@@ -32,10 +29,7 @@ namespace Server.Items
   public class PlainLowTable : Item
   {
     [Constructible]
-    public PlainLowTable() : base(0x281A)
-    {
-      Weight = 1.0;
-    }
+    public PlainLowTable() : base(0x281A) => Weight = 1.0;
 
     public PlainLowTable(Serial serial) : base(serial)
     {
@@ -61,10 +55,7 @@ namespace Server.Items
   public class LargeTable : Item
   {
     [Constructible]
-    public LargeTable() : base(0xB90)
-    {
-      Weight = 1.0;
-    }
+    public LargeTable() : base(0xB90) => Weight = 1.0;
 
     public LargeTable(Serial serial) : base(serial)
     {
@@ -93,10 +84,7 @@ namespace Server.Items
   public class Nightstand : Item
   {
     [Constructible]
-    public Nightstand() : base(0xB35)
-    {
-      Weight = 1.0;
-    }
+    public Nightstand() : base(0xB35) => Weight = 1.0;
 
     public Nightstand(Serial serial) : base(serial)
     {
@@ -125,10 +113,7 @@ namespace Server.Items
   public class YewWoodTable : Item
   {
     [Constructible]
-    public YewWoodTable() : base(0xB8F)
-    {
-      Weight = 1.0;
-    }
+    public YewWoodTable() : base(0xB8F) => Weight = 1.0;
 
     public YewWoodTable(Serial serial) : base(serial)
     {

@@ -77,10 +77,7 @@ namespace Server.Engines.Quests.Ambitious
       m_Gold = gold;
     }
 
-    public FullBackpackConversation()
-    {
-      m_Logged = true;
-    }
+    public FullBackpackConversation() => m_Logged = true;
 
     public override object Message => 1054077;
 

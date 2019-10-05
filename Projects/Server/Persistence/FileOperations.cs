@@ -74,10 +74,8 @@ namespace Server
       private SafeFileHandle fileHandle;
 
       public UnbufferedFileStream(SafeFileHandle fileHandle, FileAccess access, int bufferSize, bool isAsync)
-        : base(fileHandle, access, bufferSize, isAsync)
-      {
+        : base(fileHandle, access, bufferSize, isAsync) =>
         this.fileHandle = fileHandle;
-      }
 
       public override void Write(byte[] array, int offset, int count)
       {
@@ -85,10 +83,8 @@ namespace Server
       }
 
       public override IAsyncResult BeginWrite(byte[] array, int offset, int numBytes, AsyncCallback userCallback,
-        object stateObject)
-      {
-        return base.BeginWrite(array, offset, BufferSize, userCallback, stateObject);
-      }
+        object stateObject) =>
+        base.BeginWrite(array, offset, BufferSize, userCallback, stateObject);
 
       protected override void Dispose(bool disposing)
       {

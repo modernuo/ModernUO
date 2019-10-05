@@ -144,10 +144,8 @@ namespace Server.SkillHandlers
       private BaseInstrument m_Instrument;
 
       public DiscordanceTarget(Mobile from, BaseInstrument inst) : base(
-        BaseInstrument.GetBardRange(from, SkillName.Discordance), false, TargetFlags.None)
-      {
+        BaseInstrument.GetBardRange(from, SkillName.Discordance), false, TargetFlags.None) =>
         m_Instrument = inst;
-      }
 
       protected override void OnTarget(Mobile from, object target)
       {

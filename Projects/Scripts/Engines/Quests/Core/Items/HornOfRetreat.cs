@@ -41,10 +41,7 @@ namespace Server.Engines.Quests
 
     public override int LabelNumber => 1049117; // Horn of Retreat
 
-    public virtual bool ValidateUse(Mobile from)
-    {
-      return true;
-    }
+    public virtual bool ValidateUse(Mobile from) => true;
 
     public override void GetProperties(ObjectPropertyList list)
     {
