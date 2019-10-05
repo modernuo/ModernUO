@@ -116,8 +116,6 @@ namespace Server
 
     internal static bool HaltOnWarning{ get; private set; }
 
-    public static List<string> DataDirectories{ get; } = new List<string>();
-
     public static Assembly Assembly{ get; set; }
 
     public static Version Version => Assembly.GetName().Version;
@@ -213,13 +211,14 @@ namespace Server
 
     public static string FindDataFile(string path)
     {
-      if (DataDirectories.Count == 0)
+      Configuration config = Configuration.Instance;
+      if (config.DataDirectories.Count == 0)
         throw new InvalidOperationException(
           "Attempted to FindDataFile before DataDirectories list has been filled.");
 
       string fullPath = null;
 
-      foreach (string p in DataDirectories)
+      foreach (string p in config.DataDirectories)
       {
         fullPath = Path.Combine(p, path);
 
@@ -383,14 +382,10 @@ namespace Server
       if (BaseDirectory.Length > 0)
         Directory.SetCurrentDirectory(BaseDirectory);
 
-      Timer.TimerThread ttObj = new Timer.TimerThread();
-      timerThread = new Thread(ttObj.TimerMain)
-      {
-        Name = "Timer Thread"
-      };
 
       Version ver = Assembly.GetName().Version;
 
+      Console.ForegroundColor = ConsoleColor.Green;
       // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
       Console.WriteLine("ModernUO - [https://github.com/kamronbatman/ModernUO] Version {0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build,
         ver.Revision);
@@ -400,6 +395,14 @@ namespace Server
       Console.WriteLine("Core: Running on .NET Framework Version {0}.{1}.{2}", Environment.Version.Major,
         Environment.Version.Minor, Environment.Version.Build);
 #endif
+      Console.ResetColor();
+      Console.WriteLine();
+
+      Timer.TimerThread ttObj = new Timer.TimerThread();
+      timerThread = new Thread(ttObj.TimerMain)
+      {
+        Name = "Timer Thread"
+      };
 
       string s = Arguments;
 
