@@ -22,25 +22,25 @@ using Server.Network;
 
 namespace Server.ContextMenus
 {
-	/// <summary>
-	///   Represents a single entry of a <see cref="ContextMenu">context menu</see>.
-	///   <seealso cref="ContextMenu" />
-	/// </summary>
-	public class ContextMenuEntry
+  /// <summary>
+  ///   Represents a single entry of a <see cref="ContextMenu">context menu</see>.
+  ///   <seealso cref="ContextMenu" />
+  /// </summary>
+  public class ContextMenuEntry
   {
-	  /// <summary>
-	  ///   Instantiates a new ContextMenuEntry with a given <see cref="Number">localization number</see> (<paramref name="number" />)
-	  ///   and <see cref="Range">maximum range</see> (<paramref name="range" />).
-	  /// </summary>
-	  /// <param name="number">
-	  ///   The localization number containing the name of this entry.
-	  ///   <seealso cref="Number" />
-	  /// </param>
-	  /// <param name="range">
-	  ///   The maximum range at which this entry can be used.
-	  ///   <seealso cref="Range" />
-	  /// </param>
-	  public ContextMenuEntry(int number, int range = -1)
+    /// <summary>
+    ///   Instantiates a new ContextMenuEntry with a given <see cref="Number">localization number</see> (<paramref name="number" />)
+    ///   and <see cref="Range">maximum range</see> (<paramref name="range" />).
+    /// </summary>
+    /// <param name="number">
+    ///   The localization number containing the name of this entry.
+    ///   <seealso cref="Number" />
+    /// </param>
+    /// <param name="range">
+    ///   The maximum range at which this entry can be used.
+    ///   <seealso cref="Range" />
+    /// </param>
+    public ContextMenuEntry(int number, int range = -1)
     {
       if (number <= 0x7FFF) // Legacy code support
         Number = 3000000 + number;
@@ -77,11 +77,11 @@ namespace Server.ContextMenus
     /// </summary>
     public int Color{ get; set; }
 
-	  /// <summary>
-	  ///   Gets or sets whether this entry is enabled. When false, the entry will appear in a gray hue and <see cref="OnClick" />
-	  ///   will never be invoked.
-	  /// </summary>
-	  public bool Enabled{ get; set; }
+    /// <summary>
+    ///   Gets or sets whether this entry is enabled. When false, the entry will appear in a gray hue and <see cref="OnClick" />
+    ///   will never be invoked.
+    /// </summary>
+    public bool Enabled{ get; set; }
 
     /// <summary>
     ///   Gets a value indicating if non local use of this entry is permitted.

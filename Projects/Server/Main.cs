@@ -381,12 +381,7 @@ namespace Server
       // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
       Console.WriteLine("ModernUO - [https://github.com/kamronbatman/ModernUO] Version {0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build,
         ver.Revision);
-#if NETCORE
       Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
-#else
-      Console.WriteLine("Core: Running on .NET Framework Version {0}.{1}.{2}", Environment.Version.Major,
-        Environment.Version.Minor, Environment.Version.Build);
-#endif
       Console.ResetColor();
       Console.WriteLine();
 

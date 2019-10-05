@@ -49,56 +49,6 @@ namespace Server.Engines.MLQuests.Gumps
     private string m_Title;
     private List<ButtonInfo> m_Buttons;
 
-#if false
-// OSI clone, inefficient layout
-		public BaseQuestGump( int label ) : base( 75, 25 )
-		{
-			m_Page = 0;
-			m_MaxPages = 0;
-			m_Label = label;
-			m_Title = null;
-			m_Buttons = new List<ButtonInfo>( 2 );
-		}
-
-		public void BuildPage()
-		{
-			AddPage( ++m_Page );
-
-			Closable = false;
-			AddImageTiled( 50, 20, 400, 460, 0x1404 );
-			AddImageTiled( 50, 29, 30, 450, 0x28DC );
-			AddImageTiled( 34, 140, 17, 339, 0x242F );
-			AddImage( 48, 135, 0x28AB );
-			AddImage( -16, 285, 0x28A2 );
-			AddImage( 0, 10, 0x28B5 );
-			AddImage( 25, 0, 0x28B4 );
-			AddImageTiled( 83, 15, 350, 15, 0x280A );
-			AddImage( 34, 479, 0x2842 );
-			AddImage( 442, 479, 0x2840 );
-			AddImageTiled( 51, 479, 392, 17, 0x2775 );
-			AddImageTiled( 415, 29, 44, 450, 0xA2D );
-			AddImageTiled( 415, 29, 30, 450, 0x28DC );
-			AddLabel( 100, 50, 0x481, "" );
-			AddImage( 370, 50, 0x589 );
-			AddImage( 379, 60, 0x15A9 );
-			AddImage( 425, 0, 0x28C9 );
-			AddImage( 90, 33, 0x232D );
-			AddHtmlLocalized( 130, 45, 270, 16, m_Label, 0xFFFFFF, false, false );
-			AddImageTiled( 130, 65, 175, 1, 0x238D );
-
-			if ( m_Page > 1 )
-				AddButton( 130, 430, (int)ButtonGraphic.Previous, (int)ButtonGraphic.Previous + 2, 0, GumpButtonType.Page, m_Page - 1 );
-
-			if ( m_Page < m_MaxPages )
-				AddButton( 275, 430, (int)ButtonGraphic.Continue, (int)ButtonGraphic.Continue + 2, 0, GumpButtonType.Page, m_Page + 1 );
-
-			foreach ( ButtonInfo button in m_Buttons )
-				AddButton( button.Position == ButtonPosition.Left ? 95 : 313, 455, (int)button.Graphic, (int)button.Graphic + 2, button.ButtonID, );
-
-			if ( m_Title != null )
-				AddHtmlLocalized( 130, 68, 220, 48, 1114513, m_Title, 0x2710, false, false ); // <DIV ALIGN=CENTER>~1_TOKEN~</DIV>
-		}
-#else
     // RunUO optimized version
     public BaseQuestGump(int label)
       : base(75, 25)
@@ -154,7 +104,6 @@ namespace Server.Engines.MLQuests.Gumps
       if (m_Title != null)
         AddHtmlLocalized(130, 68, 220, 48, 1114513, m_Title, 0x2710); // <DIV ALIGN=CENTER>~1_TOKEN~</DIV>
     }
-#endif
 
     public void SetPageCount(int maxPages)
     {

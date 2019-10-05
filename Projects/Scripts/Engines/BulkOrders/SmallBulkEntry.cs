@@ -4,54 +4,54 @@ using System.IO;
 
 namespace Server.Engines.BulkOrders
 {
-	public class SmallBulkEntry
-	{
-		public Type Type { get; }
+  public class SmallBulkEntry
+  {
+    public Type Type { get; }
 
-		public int Number { get; }
+    public int Number { get; }
 
-		public int Graphic { get; }
+    public int Graphic { get; }
 
-		public SmallBulkEntry( Type type, int number, int graphic )
-		{
-			Type = type;
-			Number = number;
-			Graphic = graphic;
-		}
+    public SmallBulkEntry( Type type, int number, int graphic )
+    {
+      Type = type;
+      Number = number;
+      Graphic = graphic;
+    }
 
-		public static SmallBulkEntry[] BlacksmithWeapons => GetEntries( "Blacksmith", "weapons" );
+    public static SmallBulkEntry[] BlacksmithWeapons => GetEntries( "Blacksmith", "weapons" );
 
-		public static SmallBulkEntry[] BlacksmithArmor => GetEntries( "Blacksmith", "armor" );
+    public static SmallBulkEntry[] BlacksmithArmor => GetEntries( "Blacksmith", "armor" );
 
-		public static SmallBulkEntry[] TailorCloth => GetEntries( "Tailoring", "cloth" );
+    public static SmallBulkEntry[] TailorCloth => GetEntries( "Tailoring", "cloth" );
 
-		public static SmallBulkEntry[] TailorLeather => GetEntries( "Tailoring", "leather" );
+    public static SmallBulkEntry[] TailorLeather => GetEntries( "Tailoring", "leather" );
 
-		private static Dictionary<string, Dictionary<string, SmallBulkEntry[]>> m_Cache;
+    private static Dictionary<string, Dictionary<string, SmallBulkEntry[]>> m_Cache;
 
-		public static SmallBulkEntry[] GetEntries( string type, string name )
-		{
-			if ( m_Cache == null )
-				m_Cache = new Dictionary<string, Dictionary<string, SmallBulkEntry[]>>();
+    public static SmallBulkEntry[] GetEntries( string type, string name )
+    {
+      if ( m_Cache == null )
+        m_Cache = new Dictionary<string, Dictionary<string, SmallBulkEntry[]>>();
 
-			if (!m_Cache.TryGetValue( type, out Dictionary<string, SmallBulkEntry[]> table ))
-				m_Cache[type] = table = new Dictionary<string, SmallBulkEntry[]>();
+      if (!m_Cache.TryGetValue( type, out Dictionary<string, SmallBulkEntry[]> table ))
+        m_Cache[type] = table = new Dictionary<string, SmallBulkEntry[]>();
 
-			if (!table.TryGetValue( name, out SmallBulkEntry[] entries ))
-				table[name] = entries = LoadEntries(type, name);
+      if (!table.TryGetValue( name, out SmallBulkEntry[] entries ))
+        table[name] = entries = LoadEntries(type, name);
 
-			return entries;
-		}
+      return entries;
+    }
 
-		public static SmallBulkEntry[] LoadEntries( string type, string name ) => LoadEntries($"Data/Bulk Orders/{type}/{name}.cfg");
+    public static SmallBulkEntry[] LoadEntries( string type, string name ) => LoadEntries($"Data/Bulk Orders/{type}/{name}.cfg");
 
     public static SmallBulkEntry[] LoadEntries( string path )
-		{
-			path = Path.Combine( Core.BaseDirectory, path );
+    {
+      path = Path.Combine( Core.BaseDirectory, path );
 
-			List<SmallBulkEntry> list = new List<SmallBulkEntry>();
+      List<SmallBulkEntry> list = new List<SmallBulkEntry>();
 
-			if ( File.Exists( path ) )
+      if ( File.Exists( path ) )
       {
         using StreamReader ip = new StreamReader( path );
         string line;
@@ -81,7 +81,7 @@ namespace Server.Engines.BulkOrders
         }
       }
 
-			return list.ToArray();
-		}
-	}
+      return list.ToArray();
+    }
+  }
 }

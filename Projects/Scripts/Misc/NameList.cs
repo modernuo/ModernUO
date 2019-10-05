@@ -5,93 +5,93 @@ using System.Xml;
 
 namespace Server
 {
-	public class NameList
-	{
-		public string Type { get; }
+  public class NameList
+  {
+    public string Type { get; }
 
-		public string[] List { get; }
+    public string[] List { get; }
 
-		public bool ContainsName( string name )
-		{
-			for ( int i = 0; i < List.Length; i++ )
-				if ( name == List[i] )
-					return true;
+    public bool ContainsName( string name )
+    {
+      for ( int i = 0; i < List.Length; i++ )
+        if ( name == List[i] )
+          return true;
 
-			return false;
-		}
+      return false;
+    }
 
-		public NameList( string type, XmlElement xml )
-		{
-			Type = type;
-			List = xml.InnerText.Split( ',' );
+    public NameList( string type, XmlElement xml )
+    {
+      Type = type;
+      List = xml.InnerText.Split( ',' );
 
-			for ( int i = 0; i < List.Length; ++i )
-				List[i] = Utility.Intern( List[i].Trim() );
-		}
+      for ( int i = 0; i < List.Length; ++i )
+        List[i] = Utility.Intern( List[i].Trim() );
+    }
 
-		public string GetRandomName()
-		{
-			if ( List.Length > 0 )
-				return List[Utility.Random( List.Length )];
+    public string GetRandomName()
+    {
+      if ( List.Length > 0 )
+        return List[Utility.Random( List.Length )];
 
-			return "";
-		}
+      return "";
+    }
 
-		public static NameList GetNameList( string type )
-		{
-			m_Table.TryGetValue( type, out NameList n );
-			return n;
-		}
+    public static NameList GetNameList( string type )
+    {
+      m_Table.TryGetValue( type, out NameList n );
+      return n;
+    }
 
-		public static string RandomName( string type ) => GetNameList( type )?.GetRandomName() ?? "";
+    public static string RandomName( string type ) => GetNameList( type )?.GetRandomName() ?? "";
 
     private static Dictionary<string, NameList> m_Table;
 
-		static NameList()
-		{
-			m_Table = new Dictionary<string, NameList>( StringComparer.OrdinalIgnoreCase );
+    static NameList()
+    {
+      m_Table = new Dictionary<string, NameList>( StringComparer.OrdinalIgnoreCase );
 
-			string filePath = Path.Combine( Core.BaseDirectory, "Data/names.xml" );
+      string filePath = Path.Combine( Core.BaseDirectory, "Data/names.xml" );
 
-			if ( !File.Exists( filePath ) )
-				return;
+      if ( !File.Exists( filePath ) )
+        return;
 
-			try
-			{
-				Load( filePath );
-			}
-			catch ( Exception e )
-			{
-				Console.WriteLine( "Warning: Exception caught loading name lists:" );
-				Console.WriteLine( e );
-			}
-		}
+      try
+      {
+        Load( filePath );
+      }
+      catch ( Exception e )
+      {
+        Console.WriteLine( "Warning: Exception caught loading name lists:" );
+        Console.WriteLine( e );
+      }
+    }
 
-		private static void Load( string filePath )
-		{
-			XmlDocument doc = new XmlDocument();
-			doc.Load( filePath );
+    private static void Load( string filePath )
+    {
+      XmlDocument doc = new XmlDocument();
+      doc.Load( filePath );
 
-			XmlElement root = doc["names"];
+      XmlElement root = doc["names"];
 
-			foreach ( XmlElement element in root.GetElementsByTagName( "namelist" ) )
-			{
-				string type = element.GetAttribute( "type" );
+      foreach ( XmlElement element in root.GetElementsByTagName( "namelist" ) )
+      {
+        string type = element.GetAttribute( "type" );
 
-				if ( string.IsNullOrEmpty( type ) )
-					continue;
+        if ( string.IsNullOrEmpty( type ) )
+          continue;
 
-				try
-				{
-					NameList list = new NameList( type, element );
+        try
+        {
+          NameList list = new NameList( type, element );
 
-					m_Table[type] = list;
-				}
+          m_Table[type] = list;
+        }
         catch
         {
           // ignored
         }
       }
-		}
-	}
+    }
+  }
 }

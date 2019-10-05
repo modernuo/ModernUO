@@ -1623,12 +1623,12 @@ namespace Server
         list.Add(1072789, weight.ToString()); //Weight: ~1_WEIGHT~ stones
     }
 
-	  /// <summary>
-	  ///   Overridable. Adds header properties. By default, this invokes <see cref="AddNameProperty" />,
-	  ///   <see cref="AddBlessedForProperty" /> (if applicable), and <see cref="AddLootTypeProperty" /> (if
-	  ///   <see cref="DisplayLootType" />).
-	  /// </summary>
-	  public virtual void AddNameProperties(ObjectPropertyList list)
+    /// <summary>
+    ///   Overridable. Adds header properties. By default, this invokes <see cref="AddNameProperty" />,
+    ///   <see cref="AddBlessedForProperty" /> (if applicable), and <see cref="AddLootTypeProperty" /> (if
+    ///   <see cref="DisplayLootType" />).
+    /// </summary>
+    public virtual void AddNameProperties(ObjectPropertyList list)
     {
       AddNameProperty(list);
 
