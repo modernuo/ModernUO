@@ -93,7 +93,7 @@ namespace Server.Mobiles
     public static bool Withdraw(Mobile from, int amount)
     {
       // If for whatever reason the TOL checks fail, we should still try old methods for withdrawing currency.
-      if (AccountGold.Enabled && from.Account != null && from.Account.WithdrawGold(amount)) return true;
+      if (AccountGold.Enabled && from.Account?.WithdrawGold(amount) == true) return true;
 
       int balance = GetBalance(from, out Item[] gold, out Item[] checks);
 
@@ -133,7 +133,7 @@ namespace Server.Mobiles
     public static bool Deposit(Mobile from, int amount)
     {
       // If for whatever reason the TOL checks fail, we should still try old methods for depositing currency.
-      if (AccountGold.Enabled && from.Account != null && from.Account.DepositGold(amount)) return true;
+      if (AccountGold.Enabled && from.Account?.DepositGold(amount) == true) return true;
 
       BankBox box = from.FindBankNoCreate();
 
@@ -179,7 +179,7 @@ namespace Server.Mobiles
     public static int DepositUpTo(Mobile from, int amount)
     {
       // If for whatever reason the TOL checks fail, we should still try old methods for depositing currency.
-      if (AccountGold.Enabled && from.Account != null && from.Account.DepositGold(amount)) return amount;
+      if (AccountGold.Enabled && from.Account?.DepositGold(amount) == true) return amount;
 
       BankBox box = from.FindBankNoCreate();
 

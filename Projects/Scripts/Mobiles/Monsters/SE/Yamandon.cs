@@ -108,7 +108,7 @@ namespace Server.Mobiles
             target = m;
         }
 
-        if (target == null || !target.InRange(this, 18))
+        if (target?.InRange(this, 18) != true)
           target = attacker;
 
         Animate(10, 4, 1, true, false, 0);

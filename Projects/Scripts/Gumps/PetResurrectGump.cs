@@ -42,7 +42,7 @@ namespace Server.Gumps
 
       if (info.ButtonID == 1)
       {
-        if (m_Pet.Map == null || !m_Pet.Map.CanFit(m_Pet.Location, 16, false, false))
+        if (m_Pet.Map?.CanFit(m_Pet.Location, 16, false, false) != true)
         {
           from.SendLocalizedMessage(503256); // You fail to resurrect the creature.
           return;

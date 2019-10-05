@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Server.Commands;
 using Server.Commands.Generic;
 using Server.Gumps;
 using Server.Items;
@@ -146,7 +145,7 @@ namespace Server.Guilds
 
     public void CheckLeader()
     {
-      if (m_Leader == null || m_Leader.Disbanded)
+      if (m_Leader?.Disbanded != false)
       {
         CalculateAllianceLeader();
 

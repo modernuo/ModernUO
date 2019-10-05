@@ -135,7 +135,7 @@ namespace Server
       if (callback == null)
         return "null";
 
-      return $"{callback.Method.DeclaringType.FullName}.{callback.Method.Name}";
+      return $"{callback.Method.DeclaringType?.FullName ?? ""}.{callback.Method.Name}";
     }
 
     public static void DumpInfo(TextWriter tw)
@@ -183,7 +183,7 @@ namespace Server
       if (prof != null) prof.Created++;
     }
 
-    public override string ToString() => GetType().FullName;
+    public override string ToString() => GetType().FullName ?? "";
 
     public static TimerPriority ComputePriority(TimeSpan ts)
     {
@@ -255,8 +255,7 @@ namespace Server
         60000
       };
 
-      private static List<Timer>[] m_Timers = new List<Timer>[8]
-      {
+      private static List<Timer>[] m_Timers = {
         new List<Timer>(),
         new List<Timer>(),
         new List<Timer>(),

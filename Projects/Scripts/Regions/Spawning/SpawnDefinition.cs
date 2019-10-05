@@ -302,7 +302,6 @@ namespace Server.Regions
 
           List<SpawnGroupElement> list = new List<SpawnGroupElement>();
           foreach (XmlNode node in xmlDef.ChildNodes)
-          {
             if (node is XmlElement el)
             {
               SpawnDefinition def = GetSpawnDefinition(el);
@@ -315,7 +314,6 @@ namespace Server.Regions
               SpawnGroupElement groupElement = new SpawnGroupElement(def, weight);
               list.Add(groupElement);
             }
-          }
 
           SpawnGroupElement[] elements = list.ToArray();
           SpawnGroup group = new SpawnGroup(name, elements);
@@ -324,7 +322,7 @@ namespace Server.Regions
       }
       catch (Exception ex)
       {
-        Console.WriteLine("Could not load SpawnDefinitions.xml: " + ex.Message);
+        Console.WriteLine($"Could not load SpawnDefinitions.xml: {ex.Message}");
       }
     }
 

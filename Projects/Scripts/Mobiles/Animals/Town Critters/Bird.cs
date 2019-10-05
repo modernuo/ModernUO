@@ -9,18 +9,13 @@ namespace Server.Mobiles
       {
         Hue = 0x901;
 
-        switch (Utility.Random(3))
+        Name = Utility.Random(3) switch
         {
-          case 0:
-            Name = "a crow";
-            break;
-          case 2:
-            Name = "a raven";
-            break;
-          case 1:
-            Name = "a magpie";
-            break;
-        }
+          0 => "a crow",
+          2 => "a raven",
+          1 => "a magpie",
+          _ => Name
+        };
       }
       else
       {

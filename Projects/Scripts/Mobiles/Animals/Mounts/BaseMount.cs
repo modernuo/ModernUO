@@ -115,7 +115,7 @@ namespace Server.Mobiles
 
       if (!(attacker == this || attacker == m_Rider || willKill || DateTime.UtcNow < NextMountAbility)
           && DoMountAbility(amount, from))
-          NextMountAbility = DateTime.UtcNow + MountAbilityDelay;
+        NextMountAbility = DateTime.UtcNow + MountAbilityDelay;
     }
 
     public override bool OnBeforeDeath()

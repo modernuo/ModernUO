@@ -136,7 +136,7 @@ namespace Server
 
       #region Dragon Barding
 
-      if ((from?.Player != true) && m.Player && m.Mount is SwampDragon pet)
+      if (from?.Player != true && m.Player && m.Mount is SwampDragon pet)
         if (pet.HasBarding)
         {
           int percent = pet.BardingExceptional ? 20 : 10;
@@ -194,26 +194,26 @@ namespace Server
 
     public static int GetStatus(Mobile from, int index)
     {
-      switch (index)
+      return index switch
       {
         // TODO: Account for buffs/debuffs
-        case 0: return from.GetMaxResistance(ResistanceType.Physical);
-        case 1: return from.GetMaxResistance(ResistanceType.Fire);
-        case 2: return from.GetMaxResistance(ResistanceType.Cold);
-        case 3: return from.GetMaxResistance(ResistanceType.Poison);
-        case 4: return from.GetMaxResistance(ResistanceType.Energy);
-        case 5: return AosAttributes.GetValue(from, AosAttribute.DefendChance);
-        case 6: return 45;
-        case 7: return AosAttributes.GetValue(from, AosAttribute.AttackChance);
-        case 8: return AosAttributes.GetValue(from, AosAttribute.WeaponSpeed);
-        case 9: return AosAttributes.GetValue(from, AosAttribute.WeaponDamage);
-        case 10: return AosAttributes.GetValue(from, AosAttribute.LowerRegCost);
-        case 11: return AosAttributes.GetValue(from, AosAttribute.SpellDamage);
-        case 12: return AosAttributes.GetValue(from, AosAttribute.CastRecovery);
-        case 13: return AosAttributes.GetValue(from, AosAttribute.CastSpeed);
-        case 14: return AosAttributes.GetValue(from, AosAttribute.LowerManaCost);
-        default: return 0;
-      }
+        0 => from.GetMaxResistance(ResistanceType.Physical),
+        1 => from.GetMaxResistance(ResistanceType.Fire),
+        2 => from.GetMaxResistance(ResistanceType.Cold),
+        3 => from.GetMaxResistance(ResistanceType.Poison),
+        4 => from.GetMaxResistance(ResistanceType.Energy),
+        5 => AosAttributes.GetValue(from, AosAttribute.DefendChance),
+        6 => 45,
+        7 => AosAttributes.GetValue(from, AosAttribute.AttackChance),
+        8 => AosAttributes.GetValue(from, AosAttribute.WeaponSpeed),
+        9 => AosAttributes.GetValue(from, AosAttribute.WeaponDamage),
+        10 => AosAttributes.GetValue(from, AosAttribute.LowerRegCost),
+        11 => AosAttributes.GetValue(from, AosAttribute.SpellDamage),
+        12 => AosAttributes.GetValue(from, AosAttribute.CastRecovery),
+        13 => AosAttributes.GetValue(from, AosAttribute.CastSpeed),
+        14 => AosAttributes.GetValue(from, AosAttribute.LowerManaCost),
+        _ => 0
+      };
     }
   }
 
@@ -522,13 +522,13 @@ namespace Server
         string modName = Owner.Serial.ToString();
 
         if (strBonus != 0)
-          to.AddStatMod(new StatMod(StatType.Str, modName + "Str", strBonus, TimeSpan.Zero));
+          to.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
 
         if (dexBonus != 0)
-          to.AddStatMod(new StatMod(StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero));
+          to.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
 
         if (intBonus != 0)
-          to.AddStatMod(new StatMod(StatType.Int, modName + "Int", intBonus, TimeSpan.Zero));
+          to.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
       }
 
       to.CheckStatTimers();
@@ -538,9 +538,9 @@ namespace Server
     {
       string modName = Owner.Serial.ToString();
 
-      from.RemoveStatMod(modName + "Str");
-      from.RemoveStatMod(modName + "Dex");
-      from.RemoveStatMod(modName + "Int");
+      from.RemoveStatMod($"{modName}Str");
+      from.RemoveStatMod($"{modName}Dex");
+      from.RemoveStatMod($"{modName}Int");
 
       from.CheckStatTimers();
     }
@@ -995,21 +995,19 @@ namespace Server
     public void GetProperties(ObjectPropertyList list)
     {
       for (int i = 0; i < 5; ++i)
-      {
         if (GetValues(i, out SkillName skill, out double bonus))
           list.Add(1060451 + i, "#{0}\t{1}", GetLabel(skill), bonus);
-      }
     }
 
     public static int GetLabel(SkillName skill)
     {
-      switch (skill)
+      return skill switch
       {
-        case SkillName.EvalInt: return 1002070; // Evaluate Intelligence
-        case SkillName.Forensics: return 1002078; // Forensic Evaluation
-        case SkillName.Lockpicking: return 1002097; // Lockpicking
-        default: return 1044060 + (int)skill;
-      }
+        SkillName.EvalInt => 1002070, // Evaluate Intelligence
+        SkillName.Forensics => 1002078, // Forensic Evaluation
+        SkillName.Lockpicking => 1002097, // Lockpicking
+        _ => (1044060 + (int)skill)
+      };
     }
 
     public void AddTo(Mobile m)

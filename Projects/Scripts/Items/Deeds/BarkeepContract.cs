@@ -54,7 +54,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(from);
 
-        if (house == null || !house.IsOwner(from))
+        if (house?.IsOwner(from) != true)
         {
           from.LocalOverheadMessage(MessageType.Regular, 0x3B2, false,
             "You are not the full owner of this house.");

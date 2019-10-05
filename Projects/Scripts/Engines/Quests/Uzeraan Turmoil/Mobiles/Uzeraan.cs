@@ -305,28 +305,15 @@ namespace Server.Engines.Quests.Haven
               }
               else
               {
-                BaseWeapon weapon;
-                switch (Utility.Random(6))
+                var weapon = Utility.Random(6) switch
                 {
-                  case 0:
-                    weapon = new Broadsword();
-                    break;
-                  case 1:
-                    weapon = new Cutlass();
-                    break;
-                  case 2:
-                    weapon = new Katana();
-                    break;
-                  case 3:
-                    weapon = new Longsword();
-                    break;
-                  case 4:
-                    weapon = new Scimitar();
-                    break;
-                  default:
-                    weapon = new VikingSword();
-                    break;
-                }
+                  0 => (BaseWeapon)new Broadsword(),
+                  1 => new Cutlass(),
+                  2 => new Katana(),
+                  3 => new Longsword(),
+                  4 => new Scimitar(),
+                  _ => new VikingSword()
+                };
 
                 if (Core.AOS)
                 {
@@ -392,7 +379,7 @@ namespace Server.Engines.Quests.Haven
 
       if (m is PlayerMobile && !m.Frozen && !m.Alive && InRange(m, 4) && !InRange(oldLocation, 4) && InLOS(m))
       {
-        if (m.Map == null || !m.Map.CanFit(m.Location, 16, false, false))
+        if (m.Map?.CanFit(m.Location, 16, false, false) != true)
         {
           m.SendLocalizedMessage(502391); // Thou can not be resurrected there!
         }

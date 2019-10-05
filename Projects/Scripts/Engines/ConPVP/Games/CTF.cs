@@ -848,7 +848,7 @@ namespace Server.Engines.ConPVP
       if (pm.DuelContext == null || pm.DuelContext != m_Context)
         return -1;
 
-      if (pm.DuelPlayer == null || pm.DuelPlayer.Eliminated)
+      if (pm.DuelPlayer?.Eliminated != false)
         return -1;
 
       return pm.DuelContext.Participants.IndexOf(pm.DuelPlayer.Participant);

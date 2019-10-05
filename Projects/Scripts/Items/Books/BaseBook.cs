@@ -165,7 +165,7 @@ namespace Server.Items
       if (Writable)
         flags |= SaveFlags.Writable;
 
-      if (content == null || !content.IsMatch(Pages))
+      if (content?.IsMatch(Pages) != true)
         flags |= SaveFlags.Content;
 
 

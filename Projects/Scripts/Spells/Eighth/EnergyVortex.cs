@@ -47,7 +47,7 @@ namespace Server.Spells.Eighth
 
       SpellHelper.GetSurfaceTop(ref p);
 
-      if (map == null || !map.CanSpawnMobile(p.X, p.Y, p.Z))
+      if (map?.CanSpawnMobile(p.X, p.Y, p.Z) != true)
       {
         Caster.SendLocalizedMessage(501942); // That location is blocked.
       }

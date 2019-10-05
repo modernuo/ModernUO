@@ -102,8 +102,11 @@ namespace Server.Mobiles
 
         if (pet?.Deleted != false)
         {
-          pet.IsStabled = false;
-          pet.StabledBy = null;
+          if (pet != null)
+          {
+            pet.IsStabled = false;
+            pet.StabledBy = null;
+          }
           from.Stabled.RemoveAt(i);
           --i;
           continue;

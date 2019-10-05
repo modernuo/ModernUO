@@ -1,5 +1,4 @@
 using System;
-using Server.Commands;
 using Server.Mobiles;
 using Server.Spells.Fifth;
 using Server.Spells.First;
@@ -307,7 +306,7 @@ namespace Server.Items
         list.Add(1072400,
           m_Summoner?.Name ?? "Unknown"); // Talisman of ~1_name~ Summoning
       else if (m_Removal != TalismanRemoval.None)
-        list.Add(1072389, "#" + (1072000 + (int)m_Removal)); // Talisman of ~1_name~
+        list.Add(1072389, $"#{1072000 + (int)m_Removal}"); // Talisman of ~1_name~
       else
         base.AddNameProperty(list);
     }
@@ -336,11 +335,11 @@ namespace Server.Items
       list.Add(1075085); // Requirement: Mondain's Legacy
 
       if (m_Killer?.IsEmpty == false && m_Killer.Amount > 0)
-        list.Add(1072388, "{0}\t{1}", m_Killer.Name != null ? m_Killer.Name.ToString() : "Unknown",
+        list.Add(1072388, "{0}\t{1}", m_Killer.Name?.ToString() ?? "Unknown",
           m_Killer.Amount); // ~1_NAME~ Killer: +~2_val~%
 
-      if (m_Protection != null && !m_Protection.IsEmpty && m_Protection.Amount > 0)
-        list.Add(1072387, "{0}\t{1}", m_Protection.Name != null ? m_Protection.Name.ToString() : "Unknown",
+      if (m_Protection?.IsEmpty == false && m_Protection.Amount > 0)
+        list.Add(1072387, "{0}\t{1}", m_Protection.Name?.ToString() ?? "Unknown",
           m_Protection.Amount); // ~1_NAME~ Protection: +~2_val~%
 
       if (m_ExceptionalBonus != 0)
@@ -397,7 +396,7 @@ namespace Server.Items
       if ((prop = Attributes.RegenMana) != 0)
         list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
 
-      if ((prop = Attributes.NightSight) != 0)
+      if (Attributes.NightSight != 0)
         list.Add(1060441); // night sight
 
       if ((prop = Attributes.ReflectPhysical) != 0)
@@ -409,7 +408,7 @@ namespace Server.Items
       if ((prop = Attributes.RegenHits) != 0)
         list.Add(1060444, prop.ToString()); // hit point regeneration ~1_val~
 
-      if ((prop = Attributes.SpellChanneling) != 0)
+      if (Attributes.SpellChanneling != 0)
         list.Add(1060482); // spell channeling
 
       if ((prop = Attributes.SpellDamage) != 0)
@@ -894,7 +893,7 @@ namespace Server.Items
 
     public virtual void StartTimer()
     {
-      if (m_Timer == null || !m_Timer.Running)
+      if (m_Timer?.Running != true)
         m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10), Slice);
     }
 

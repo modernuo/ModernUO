@@ -62,26 +62,15 @@ namespace Server.Gumps
 
     public override void OnResponse(NetState state, RelayInfo info)
     {
-      SecureLevel level = m_Info.Level;
-
-      switch (info.ButtonID)
+      var level = info.ButtonID switch
       {
-        case 1:
-          level = SecureLevel.Owner;
-          break;
-        case 2:
-          level = SecureLevel.CoOwners;
-          break;
-        case 3:
-          level = SecureLevel.Friends;
-          break;
-        case 4:
-          level = SecureLevel.Anyone;
-          break;
-        case 5:
-          level = SecureLevel.Guild;
-          break;
-      }
+        1 => SecureLevel.Owner,
+        2 => SecureLevel.CoOwners,
+        3 => SecureLevel.Friends,
+        4 => SecureLevel.Anyone,
+        5 => SecureLevel.Guild,
+        _ => m_Info.Level
+      };
 
       if (m_Info.Level == level)
       {

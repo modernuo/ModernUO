@@ -401,10 +401,8 @@ namespace Server.Misc
       List<string> keywordsFound = new List<string>();
 
       for ( int i = 0; i < split.Length; ++i )
-      {
         if (m_KeywordHash.TryGetValue( split[i], out string keyword ))
           keywordsFound.Add( keyword );
-      }
 
       if ( keywordsFound.Count > 0 )
       {
@@ -461,7 +459,7 @@ namespace Server.Misc
           }
         }
 
-        int maxWords = (split.Length / 2) + 1;
+        int maxWords = split.Length / 2 + 1;
 
         if ( maxWords < 2 )
           maxWords = 2;
@@ -501,7 +499,7 @@ namespace Server.Misc
       if ( (Flags & IHSFlags.OnMovement) == 0 )
         return; // not enabled
 
-      if ( !mover.Player || (mover.Hidden && mover.AccessLevel > AccessLevel.Player) )
+      if ( !mover.Player || mover.Hidden && mover.AccessLevel > AccessLevel.Player )
         return;
 
       if ( !mob.InRange( mover, 5 ) || mob.InRange( oldLocation, 5 ) )
@@ -522,16 +520,13 @@ namespace Server.Misc
         return; // 90% chance to do nothing; 10% chance to talk
 
       if ( amount < 5 )
-      {
         SayRandomTranslate( mob,
           "Ouch!",
           "Me not hurt bad!",
           "Thou fight bad.",
           "Thy blows soft!",
           "You bad with weapon!" );
-      }
       else
-      {
         SayRandomTranslate( mob,
           "Ouch! Me hurt!",
           "No, kill me not!",
@@ -540,7 +535,6 @@ namespace Server.Misc
           "Oof! That hurt!",
           "Aaah! That hurt...",
           "Good blow!" );
-      }
     }
 
     public void OnConstruct( Mobile mob )
@@ -552,10 +546,6 @@ namespace Server.Misc
     {
       mob.Say( ConstructSentance( wordCount ) );
       mob.PlaySound( Sound );
-    }
-
-    public InhumanSpeech()
-    {
     }
   }
 }

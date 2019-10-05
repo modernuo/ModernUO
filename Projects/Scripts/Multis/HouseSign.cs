@@ -86,32 +86,16 @@ namespace Server.Multis
     {
       if (Owner != null && BaseHouse.DecayEnabled && Owner.DecayPeriod != TimeSpan.Zero)
       {
-        string message;
-
-        switch (Owner.DecayLevel)
+        var message = Owner.DecayLevel switch
         {
-          case DecayLevel.Ageless:
-            message = "ageless";
-            break;
-          case DecayLevel.Fairly:
-            message = "fairly worn";
-            break;
-          case DecayLevel.Greatly:
-            message = "greatly worn";
-            break;
-          case DecayLevel.LikeNew:
-            message = "like new";
-            break;
-          case DecayLevel.Slightly:
-            message = "slightly worn";
-            break;
-          case DecayLevel.Somewhat:
-            message = "somewhat worn";
-            break;
-          default:
-            message = "in danger of collapsing";
-            break;
-        }
+          DecayLevel.Ageless => "ageless",
+          DecayLevel.Fairly => "fairly worn",
+          DecayLevel.Greatly => "greatly worn",
+          DecayLevel.LikeNew => "like new",
+          DecayLevel.Slightly => "slightly worn",
+          DecayLevel.Somewhat => "somewhat worn",
+          _ => "in danger of collapsing"
+        };
 
         LabelTo(from, "This house is {0}.", message);
       }
@@ -231,8 +215,7 @@ namespace Server.Multis
       {
         Mobile from = Owner.From;
 
-        if (!from.CheckAlive() || m_Sign.Deleted || m_Sign.Owner == null ||
-            !m_Sign.Owner.AreThereAvailableVendorsFor(from))
+        if (!from.CheckAlive() || m_Sign.Deleted || m_Sign.Owner?.AreThereAvailableVendorsFor(from) != true)
           return;
 
         if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))

@@ -388,13 +388,13 @@ namespace Server.Engines.Plants
 
     public int GetLocalizedHealth()
     {
-      switch (Health)
+      return Health switch
       {
-        case PlantHealth.Dying: return 1060825; // dying
-        case PlantHealth.Wilted: return 1060824; // wilted
-        case PlantHealth.Healthy: return 1060823; // healthy
-        default: return 1060822; // vibrant
-      }
+        PlantHealth.Dying => 1060825, // dying
+        PlantHealth.Wilted => 1060824, // wilted
+        PlantHealth.Healthy => 1060823, // healthy
+        _ => 1060822
+      };
     }
 
     public static void Configure()

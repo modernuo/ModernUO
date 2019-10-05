@@ -67,7 +67,7 @@ namespace Server.Spells.Bushido
 
       if (Core.ML)
       {
-        if (defender.Spell != null && defender.Spell.IsCasting) return false;
+        if (defender.Spell?.IsCasting == true) return false;
 
         if (weap != null)
         {

@@ -215,7 +215,7 @@ namespace Server.Misc
           m.SendLocalizedMessage(1019063); // You have lost a little karma.
       }
 
-      if (!Core.AOS && wasPositiveKarma && m.Karma < 0 && pm != null && !pm.KarmaLocked)
+      if (!Core.AOS && wasPositiveKarma && m.Karma < 0 && pm?.KarmaLocked == false)
       {
         pm.KarmaLocked = true;
         m.SendLocalizedMessage(1042511, "",
@@ -326,9 +326,9 @@ namespace Server.Misc
         string skillTitle = highest.Info.Title;
 
         if (mob.Female && skillTitle.EndsWith("man"))
-          skillTitle = skillTitle.Substring(0, skillTitle.Length - 3) + "woman";
+          skillTitle = $"{skillTitle.Substring(0, skillTitle.Length - 3)}woman";
 
-        return string.Concat(skillLevel, " ", skillTitle);
+        return $"{skillLevel} {skillTitle}";
       }
 
       return null;
@@ -361,12 +361,12 @@ namespace Server.Misc
 
     private static int GetTableType(Skill skill)
     {
-      switch (skill.SkillName)
+      return skill.SkillName switch
       {
-        default: return 0;
-        case SkillName.Bushido: return 1;
-        case SkillName.Ninjitsu: return 2;
-      }
+        SkillName.Bushido => 1,
+        SkillName.Ninjitsu => 2,
+        _ => 0
+      };
     }
 
     private static int GetTableIndex(Skill skill)

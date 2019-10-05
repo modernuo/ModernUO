@@ -94,10 +94,6 @@ namespace Server.Items
 
     public int RunicMaxIntensity { get; set; }
 
-    public CraftAttributeInfo()
-    {
-    }
-
     public static readonly CraftAttributeInfo Blank;
     public static readonly CraftAttributeInfo DullCopper, ShadowIron, Copper, Bronze, Golden, Agapite, Verite, Valorite;
     public static readonly CraftAttributeInfo Spined, Horned, Barbed;
@@ -462,7 +458,7 @@ namespace Server.Items
     /// <summary>
     /// Returns true if '<paramref name="resource"/>' is None, Iron, RegularLeather or RegularWood. False if otherwise.
     /// </summary>
-    public static bool IsStandard( CraftResource resource ) => ( resource == CraftResource.None || resource == CraftResource.Iron || resource == CraftResource.RegularLeather || resource == CraftResource.RegularWood );
+    public static bool IsStandard( CraftResource resource ) => resource == CraftResource.None || resource == CraftResource.Iron || resource == CraftResource.RegularLeather || resource == CraftResource.RegularWood;
 
     private static Dictionary<Type, CraftResource> m_TypeTable;
 
@@ -493,15 +489,14 @@ namespace Server.Items
     /// </summary>
     public static CraftResourceInfo GetInfo( CraftResource resource )
     {
-      CraftResourceInfo[] list = null;
-
-      switch ( GetType( resource ) )
+      var list = GetType(resource) switch
       {
-        case CraftResourceType.Metal: list = m_MetalInfo; break;
-        case CraftResourceType.Leather: list = Core.AOS ? m_AOSLeatherInfo : m_LeatherInfo; break;
-        case CraftResourceType.Scales: list = m_ScaleInfo; break;
-        case CraftResourceType.Wood: list = m_WoodInfo; break;
-      }
+        CraftResourceType.Metal => m_MetalInfo,
+        CraftResourceType.Leather => (Core.AOS ? m_AOSLeatherInfo : m_LeatherInfo),
+        CraftResourceType.Scales => m_ScaleInfo,
+        CraftResourceType.Wood => m_WoodInfo,
+        _ => null
+      };
 
       if ( list != null )
       {
@@ -539,15 +534,14 @@ namespace Server.Items
     /// </summary>
     public static CraftResource GetStart( CraftResource resource )
     {
-      switch ( GetType( resource ) )
+      return GetType(resource) switch
       {
-        case CraftResourceType.Metal: return CraftResource.Iron;
-        case CraftResourceType.Leather: return CraftResource.RegularLeather;
-        case CraftResourceType.Scales: return CraftResource.RedScales;
-        case CraftResourceType.Wood: return CraftResource.RegularWood;
-      }
-
-      return CraftResource.None;
+        CraftResourceType.Metal => CraftResource.Iron,
+        CraftResourceType.Leather => CraftResource.RegularLeather,
+        CraftResourceType.Scales => CraftResource.RedScales,
+        CraftResourceType.Wood => CraftResource.RegularWood,
+        _ => CraftResource.None
+      };
     }
 
     /// <summary>
@@ -590,7 +584,7 @@ namespace Server.Items
     {
       CraftResourceInfo info = GetInfo( resource );
 
-      return ( info == null ? string.Empty : info.Name );
+      return info == null ? string.Empty : info.Name;
     }
 
     /// <summary>

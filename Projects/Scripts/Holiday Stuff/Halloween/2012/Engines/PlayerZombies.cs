@@ -76,10 +76,7 @@ namespace Server.Engines.Events
 
       m_DeathQueue.Clear();
 
-      if ( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
-      {
-        m_ClearTimer.Stop();
-      }
+      if ( DateTime.UtcNow <= HolidaySettings.FinishHalloween ) m_ClearTimer.Stop();
     }
 
     private static void Timer_Callback()
@@ -89,20 +86,18 @@ namespace Server.Engines.Events
       if ( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
       {
         for( int index = 0; m_DeathQueue.Count > 0 && index < m_DeathQueue.Count; index++ )
-        {
           if ( !ReAnimated.ContainsKey( m_DeathQueue[ index ] ) )
           {
             player = m_DeathQueue[ index ];
 
             break;
           }
-        }
 
         if (player?.Deleted == false && ReAnimated.Count < m_TotalZombieLimit )
         {
           Map map = Utility.RandomBool() ? Map.Trammel : Map.Felucca;
 
-          Point3D home = ( GetRandomPointInRect( m_Cemetaries[ Utility.Random( m_Cemetaries.Length ) ], map ));
+          Point3D home = GetRandomPointInRect( m_Cemetaries[ Utility.Random( m_Cemetaries.Length ) ], map );
 
           if ( map.CanSpawnMobile( home ) )
           {
@@ -141,13 +136,13 @@ namespace Server.Engines.Events
     {
       Name = $"{name}'s bones";
 
-      switch( Utility.Random( 10 ) )
+      Hue = Utility.Random(10) switch
       {
-        case 0: Hue = 0xa09; break;
-        case 1: Hue = 0xa93; break;
-        case 2: Hue = 0xa47; break;
-        default: break;
-      }
+        0 => 0xa09,
+        1 => 0xa93,
+        2 => 0xa47,
+        _ => Hue
+      };
     }
 
     public PlayerBones( Serial serial )
@@ -223,8 +218,8 @@ namespace Server.Engines.Events
         case 2: PackItem( new Torso() ); break;
         case 3: PackItem( new Bone() ); break;
         case 4: PackItem( new RibCage() ); break;
-        case 5: if (m_DeadPlayer?.Deleted == false) { PackItem( new PlayerBones( m_DeadPlayer.Name ) ); } break;
-        default: break;
+        case 5: if (m_DeadPlayer?.Deleted == false) PackItem( new PlayerBones( m_DeadPlayer.Name ) );
+          break;
       }
 
       AddLoot( LootPack.Meager );
@@ -242,13 +237,9 @@ namespace Server.Engines.Events
     public override void OnDelete()
     {
       if ( HalloweenHauntings.ReAnimated != null )
-      {
         if (m_DeadPlayer?.Deleted == false)
-        {
           if ( HalloweenHauntings.ReAnimated.ContainsKey( m_DeadPlayer ) )
             HalloweenHauntings.ReAnimated.Remove( m_DeadPlayer );
-        }
-      }
     }
 
     public override void Serialize( GenericWriter writer )

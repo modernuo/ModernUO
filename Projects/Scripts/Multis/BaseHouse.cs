@@ -1076,7 +1076,6 @@ namespace Server.Multis
       List<BaseHouse> list = new List<BaseHouse>();
 
       if (m != null)
-      {
         if (m_Table.TryGetValue(m, out List<BaseHouse> exists))
           for (int i = 0; i < exists.Count; ++i)
           {
@@ -1085,7 +1084,6 @@ namespace Server.Multis
             if (house?.Deleted == false && house.Owner == m)
               list.Add(house);
           }
-      }
 
       return list;
     }
@@ -1095,7 +1093,7 @@ namespace Server.Multis
     {
       BaseHouse house = FindHouseAt(cont);
 
-      if (house == null || !house.IsAosRules)
+      if (house?.IsAosRules != true)
         return true;
 
       if (house.HasSecureItem(cont) && !house.CheckAosStorage(1 + item.TotalItems + plusItems))
@@ -1154,10 +1152,8 @@ namespace Server.Multis
       Sector sector = map.GetSector(loc);
 
       for (int i = 0; i < sector.Multis.Count; ++i)
-      {
         if (sector.Multis[i] is BaseHouse house && house.IsInside(loc, height))
           return house;
-      }
 
       return null;
     }
@@ -1411,7 +1407,7 @@ namespace Server.Multis
       AddDoor(westDoor, x, y, z);
       AddDoor(eastDoor, x + 1, y, z);
 
-      return new BaseDoor[] { westDoor, eastDoor };
+      return new[] { westDoor, eastDoor };
     }
 
     public uint CreateKeys(Mobile m)
@@ -1453,7 +1449,7 @@ namespace Server.Multis
       AddDoor(westDoor, x, y, z);
       AddDoor(eastDoor, x + 1, y, z);
 
-      return new BaseDoor[] { westDoor, eastDoor };
+      return new[] { westDoor, eastDoor };
     }
 
     public BaseDoor MakeDoor(bool wood, DoorFacing facing)
@@ -1862,8 +1858,7 @@ namespace Server.Multis
 
     public virtual bool IsCombatRestricted(Mobile m)
     {
-      if (m == null || !m.Player || m.AccessLevel >= AccessLevel.GameMaster || !IsAosRules ||
-          m_Owner != null && m_Owner.AccessLevel >= AccessLevel.GameMaster)
+      if (m?.Player != true || m.AccessLevel >= AccessLevel.GameMaster || !IsAosRules || m_Owner != null && m_Owner.AccessLevel >= AccessLevel.GameMaster)
         return false;
 
       for (int i = 0; i < m.Aggressed.Count; ++i)
@@ -1888,16 +1883,15 @@ namespace Server.Multis
       if (IsCombatRestricted(m))
         return false;
 
-      switch (level)
+      return level switch
       {
-        case SecureLevel.Owner: return IsOwner(m);
-        case SecureLevel.CoOwners: return IsCoOwner(m);
-        case SecureLevel.Friends: return IsFriend(m);
-        case SecureLevel.Anyone: return true;
-        case SecureLevel.Guild: return IsGuildMember(m);
-      }
-
-      return false;
+        SecureLevel.Owner => IsOwner(m),
+        SecureLevel.CoOwners => IsCoOwner(m),
+        SecureLevel.Friends => IsFriend(m),
+        SecureLevel.Anyone => true,
+        SecureLevel.Guild => IsGuildMember(m),
+        _ => false
+      };
     }
 
     public void ReleaseSecure(Mobile m, Item item)
@@ -2526,13 +2520,11 @@ namespace Server.Multis
             Secures = new List<SecureInfo>(items.Count);
 
             for (int i = 0; i < items.Count; ++i)
-            {
               if (items[i] is Container c)
               {
                 c.IsSecure = true;
                 Secures.Add(new SecureInfo(c, SecureLevel.CoOwners));
               }
-            }
           }
 
           MaxLockDowns = reader.ReadInt();
@@ -2874,10 +2866,8 @@ namespace Server.Multis
         uint keyValue = 0;
 
         for (int i = 0; keyValue == 0 && i < Doors.Count; ++i)
-        {
           if (Doors[i] is BaseDoor door)
             keyValue = door.KeyValue;
-        }
 
         Key.RemoveKeys(m, keyValue);
       }
@@ -2889,23 +2879,19 @@ namespace Server.Multis
 
       if (Doors != null)
         for (int i = 0; i < Doors.Count; ++i)
-        {
           if (Doors[i] is BaseDoor door)
             door.KeyValue = keyValue;
-        }
     }
 
     public void RemoveLocks()
     {
       if (Doors != null)
         for (int i = 0; i < Doors.Count; ++i)
-        {
           if (Doors[i] is BaseDoor door)
           {
             door.KeyValue = 0;
             door.Locked = false;
           }
-        }
     }
 
     public virtual HouseDeed GetDeed() => null;
@@ -3548,7 +3534,7 @@ namespace Server.Multis
     {
       BaseHouse house = BaseHouse.FindHouseAt(item);
 
-      if (house == null || !house.IsOwner(from) || !house.IsAosRules)
+      if (house?.IsOwner(from) != true || !house.IsAosRules)
         return null;
 
       ISecurable sec = null;

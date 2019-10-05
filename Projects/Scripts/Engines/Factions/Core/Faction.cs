@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Accounting;
-using Server.Commands;
 using Server.Commands.Generic;
 using Server.Engines.ConPVP;
 using Server.Ethics;
@@ -381,7 +380,7 @@ namespace Server.Factions
       else
       {
         AddMember(mob);
-        mob.SendLocalizedMessage(1042756, true, " " + m_Definition.FriendlyName); // You are now joining a faction:
+        mob.SendLocalizedMessage(1042756, true, $" {m_Definition.FriendlyName}"); // You are now joining a faction:
       }
     }
 
@@ -424,7 +423,7 @@ namespace Server.Factions
       {
         pm.SendLocalizedMessage(1010104); // You cannot join a faction as a young player
       }
-      else if (pl != null && pl.IsLeaving)
+      else if (pl?.IsLeaving == true)
       {
         pm.SendLocalizedMessage(
           1005051); // You cannot use the faction stone until you have finished quitting your current faction
@@ -505,7 +504,7 @@ namespace Server.Factions
     {
       PlayerState pl = PlayerState.Find(mob);
 
-      if (pl == null || !pl.IsLeaving)
+      if (pl?.IsLeaving != true)
         return false;
 
       if (pl.Leaving + LeavePeriod >= DateTime.UtcNow)

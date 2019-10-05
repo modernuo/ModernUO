@@ -122,24 +122,15 @@ namespace Server.Items
       {
         case 1:
         {
-          switch (reader.ReadInt())
+          Poison = reader.ReadInt() switch
           {
-            case 0:
-              Poison = null;
-              break;
-            case 1:
-              Poison = Poison.Lesser;
-              break;
-            case 2:
-              Poison = Poison.Regular;
-              break;
-            case 3:
-              Poison = Poison.Greater;
-              break;
-            case 4:
-              Poison = Poison.Deadly;
-              break;
-          }
+            0 => null,
+            1 => Poison.Lesser,
+            2 => Poison.Regular,
+            3 => Poison.Greater,
+            4 => Poison.Deadly,
+            _ => Poison
+          };
 
           break;
         }

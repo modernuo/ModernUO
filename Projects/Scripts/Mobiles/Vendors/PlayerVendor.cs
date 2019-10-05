@@ -602,7 +602,7 @@ namespace Server.Mobiles
             House.VendorInventories.Add(inventory);
           }
         }
-        else if ((toBackpack || House == null || !House.IsAosRules) && Map != Map.Internal
+        else if ((toBackpack || House?.IsAosRules != true) && Map != Map.Internal
         ) // Case 3 - Move to backpack
         {
           Container backpack = new Backpack();
@@ -851,7 +851,7 @@ namespace Server.Mobiles
       if (!string.IsNullOrEmpty(item.Name))
         name = item.Name;
       else
-        name = "#" + item.LabelNumber;
+        name = $"#{item.LabelNumber}";
 
       from.SendLocalizedMessage(1043303, name); // Type in a price and description for ~1_ITEM~ (ESC=not for sale)
       from.Prompt = new VendorPricePrompt(this, vi);
@@ -1110,7 +1110,7 @@ namespace Server.Mobiles
         {
           SayTo(from, 503212); // You own this shop, just take what you want.
         }
-        else if (House == null || !House.IsBanned(from))
+        else if (House?.IsBanned(from) != true)
         {
           from.SendLocalizedMessage(503213); // Select the item you wish to buy.
           from.Target = new PVBuyTarget();

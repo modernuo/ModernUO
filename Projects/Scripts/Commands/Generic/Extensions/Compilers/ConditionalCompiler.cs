@@ -229,7 +229,7 @@ namespace Server.Commands.Generic
 
     public override void Construct(TypeBuilder typeBuilder, ILGenerator il, int index)
     {
-      m_Value.Acquire(typeBuilder, il, "v" + index);
+      m_Value.Acquire(typeBuilder, il, $"v{index}");
     }
 
     public override void Compile(MethodEmitter emitter)
@@ -358,7 +358,7 @@ namespace Server.Commands.Generic
 
     public override void Construct(TypeBuilder typeBuilder, ILGenerator il, int index)
     {
-      m_Value.Acquire(typeBuilder, il, "v" + index);
+      m_Value.Acquire(typeBuilder, il, $"v{index}");
     }
 
     public override void Compile(MethodEmitter emitter)
@@ -446,7 +446,7 @@ namespace Server.Commands.Generic
     public static IConditional Compile(AssemblyEmitter assembly, Type objectType, ICondition[] conditions, int index)
     {
       TypeBuilder typeBuilder = assembly.DefineType(
-        "__conditional" + index,
+        $"__conditional{index}",
         TypeAttributes.Public,
         typeof(object)
       );

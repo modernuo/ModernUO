@@ -57,7 +57,7 @@ namespace Server.Items
 
     public virtual bool Validate(Mobile m)
     {
-      if (Core.AOS || m == null || !m.Player || m.AccessLevel != AccessLevel.Player)
+      if (Core.AOS || m?.Player != true || m.AccessLevel != AccessLevel.Player)
         return true;
 
       if (!(m.Guild is Guild g) || g.Type != GuildType.Order)

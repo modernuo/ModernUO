@@ -79,22 +79,14 @@ namespace Server.Items
 
     public void Flip()
     {
-      switch (ItemID)
+      ItemID = ItemID switch
       {
-        case 0x9AB:
-          ItemID = 0xE7C;
-          break;
-        case 0xE7C:
-          ItemID = 0x9AB;
-          break;
-
-        case 0xE40:
-          ItemID = 0xE41;
-          break;
-        case 0xE41:
-          ItemID = 0xE40;
-          break;
-      }
+        0x9AB => 0xE7C,
+        0xE7C => 0x9AB,
+        0xE40 => 0xE41,
+        0xE41 => 0xE40,
+        _ => ItemID
+      };
     }
 
     private void Fill(int level)
@@ -104,24 +96,15 @@ namespace Server.Items
       TrapLevel = level;
       Locked = true;
 
-      switch (level)
+      RequiredSkill = level switch
       {
-        case 1:
-          RequiredSkill = 36;
-          break;
-        case 2:
-          RequiredSkill = 76;
-          break;
-        case 3:
-          RequiredSkill = 84;
-          break;
-        case 4:
-          RequiredSkill = 92;
-          break;
-        case 5:
-          RequiredSkill = 100;
-          break;
-      }
+        1 => 36,
+        2 => 76,
+        3 => 84,
+        4 => 92,
+        5 => 100,
+        _ => RequiredSkill
+      };
 
       LockLevel = RequiredSkill - 10;
       MaxLockLevel = RequiredSkill + 40;

@@ -23,29 +23,16 @@ namespace Server.Items
       {
         Delete();
 
-        Item i = null;
-
-        switch (Utility.Random(from.BAC >= 5 ? 6 : 5))
+        var i = Utility.Random(from.BAC >= 5 ? 6 : 5) switch
         {
-          case 0:
-            i = new OrigamiButterfly();
-            break;
-          case 1:
-            i = new OrigamiSwan();
-            break;
-          case 2:
-            i = new OrigamiFrog();
-            break;
-          case 3:
-            i = new OrigamiShape();
-            break;
-          case 4:
-            i = new OrigamiSongbird();
-            break;
-          case 5:
-            i = new OrigamiFish();
-            break;
-        }
+          0 => (Item)new OrigamiButterfly(),
+          1 => new OrigamiSwan(),
+          2 => new OrigamiFrog(),
+          3 => new OrigamiShape(),
+          4 => new OrigamiSongbird(),
+          5 => new OrigamiFish(),
+          _ => null
+        };
 
         if (i != null)
           from.AddToBackpack(i);

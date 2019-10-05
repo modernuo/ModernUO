@@ -658,10 +658,8 @@ namespace Server.Mobiles
       m_Table = new Dictionary<string, EscortDestinationInfo>();
 
       foreach (Region r in list)
-      {
         if (r.Name != null && (r is DungeonRegion || r is TownRegion))
           m_Table[r.Name] = new EscortDestinationInfo(r.Name, r);
-      }
     }
 
     public static EDI Find(string name)

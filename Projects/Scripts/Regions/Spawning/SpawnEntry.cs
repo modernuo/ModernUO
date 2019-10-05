@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Server.Commands;
 using Server.Mobiles;
 
 namespace Server.Regions
@@ -174,7 +173,7 @@ namespace Server.Regions
       {
         spawnable.Spawner = null;
 
-        bool uncontrolled = !(spawnable is BaseCreature) || !((BaseCreature)spawnable).Controlled;
+        bool uncontrolled = (spawnable as BaseCreature)?.Controlled != true;
 
         if (uncontrolled)
           spawnable.Delete();
@@ -234,10 +233,8 @@ namespace Server.Regions
       int count = reader.ReadInt();
 
       for (int i = 0; i < count; i++)
-      {
         if (World.FindEntity(reader.ReadUInt()) is ISpawnable spawnableEntity)
           Add(spawnableEntity);
-      }
 
       Running = reader.ReadBool();
 

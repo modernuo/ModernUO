@@ -1,5 +1,3 @@
-using Server.Commands;
-
 namespace Server.Misc
 {
   public class NameVerification

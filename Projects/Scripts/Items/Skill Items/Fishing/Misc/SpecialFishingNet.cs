@@ -299,24 +299,14 @@ namespace Server.Items
 
       for (int i = 0; map != null && i < count; ++i)
       {
-        BaseCreature spawn;
-
-        switch (Utility.Random(4))
+        var spawn = Utility.Random(4) switch
         {
-          default:
-          case 0:
-            spawn = new SeaSerpent();
-            break;
-          case 1:
-            spawn = new DeepSeaSerpent();
-            break;
-          case 2:
-            spawn = new WaterElemental();
-            break;
-          case 3:
-            spawn = new Kraken();
-            break;
-        }
+          0 => (BaseCreature)new SeaSerpent(),
+          1 => new DeepSeaSerpent(),
+          2 => new WaterElemental(),
+          3 => new Kraken(),
+          _ => new SeaSerpent()
+        };
 
         Spawn(p, map, spawn);
 

@@ -440,23 +440,21 @@ namespace Server.Items
     {
       get
       {
-        switch (Layer)
+        return Layer switch
         {
-          default:
-          case Layer.Neck: return ArmorBodyType.Gorget;
-          case Layer.TwoHanded: return ArmorBodyType.Shield;
-          case Layer.Gloves: return ArmorBodyType.Gloves;
-          case Layer.Helm: return ArmorBodyType.Helmet;
-          case Layer.Arms: return ArmorBodyType.Arms;
-
-          case Layer.InnerLegs:
-          case Layer.OuterLegs:
-          case Layer.Pants: return ArmorBodyType.Legs;
-
-          case Layer.InnerTorso:
-          case Layer.OuterTorso:
-          case Layer.Shirt: return ArmorBodyType.Chest;
-        }
+          Layer.Neck => ArmorBodyType.Gorget,
+          Layer.TwoHanded => ArmorBodyType.Shield,
+          Layer.Gloves => ArmorBodyType.Gloves,
+          Layer.Helm => ArmorBodyType.Helmet,
+          Layer.Arms => ArmorBodyType.Arms,
+          Layer.InnerLegs => ArmorBodyType.Legs,
+          Layer.OuterLegs => ArmorBodyType.Legs,
+          Layer.Pants => ArmorBodyType.Legs,
+          Layer.InnerTorso => ArmorBodyType.Chest,
+          Layer.OuterTorso => ArmorBodyType.Chest,
+          Layer.Shirt => ArmorBodyType.Chest,
+          _ => ArmorBodyType.Gorget
+        };
       }
     }
 
@@ -765,15 +763,14 @@ namespace Server.Items
 
     public int GetProtOffset()
     {
-      switch (m_Protection)
+      return m_Protection switch
       {
-        case ArmorProtectionLevel.Guarding: return 1;
-        case ArmorProtectionLevel.Hardening: return 2;
-        case ArmorProtectionLevel.Fortification: return 3;
-        case ArmorProtectionLevel.Invulnerability: return 4;
-      }
-
-      return 0;
+        ArmorProtectionLevel.Guarding => 1,
+        ArmorProtectionLevel.Hardening => 2,
+        ArmorProtectionLevel.Fortification => 3,
+        ArmorProtectionLevel.Invulnerability => 4,
+        _ => 0
+      };
     }
 
     public int GetDurabilityBonus()
@@ -1206,39 +1203,19 @@ namespace Server.Items
           }
           else
           {
-            OreInfo info;
-
-            switch (reader.ReadInt())
+            var info = reader.ReadInt() switch
             {
-              default:
-              case 0:
-                info = OreInfo.Iron;
-                break;
-              case 1:
-                info = OreInfo.DullCopper;
-                break;
-              case 2:
-                info = OreInfo.ShadowIron;
-                break;
-              case 3:
-                info = OreInfo.Copper;
-                break;
-              case 4:
-                info = OreInfo.Bronze;
-                break;
-              case 5:
-                info = OreInfo.Gold;
-                break;
-              case 6:
-                info = OreInfo.Agapite;
-                break;
-              case 7:
-                info = OreInfo.Verite;
-                break;
-              case 8:
-                info = OreInfo.Valorite;
-                break;
-            }
+              0 => OreInfo.Iron,
+              1 => OreInfo.DullCopper,
+              2 => OreInfo.ShadowIron,
+              3 => OreInfo.Copper,
+              4 => OreInfo.Bronze,
+              5 => OreInfo.Gold,
+              6 => OreInfo.Agapite,
+              7 => OreInfo.Verite,
+              8 => OreInfo.Valorite,
+              _ => OreInfo.Iron
+            };
 
             m_Resource = CraftResources.GetFromOreInfo(info, mat);
           }
@@ -1311,13 +1288,13 @@ namespace Server.Items
         string modName = Serial.ToString();
 
         if (strBonus != 0)
-          m.AddStatMod(new StatMod(StatType.Str, modName + "Str", strBonus, TimeSpan.Zero));
+          m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
 
         if (dexBonus != 0)
-          m.AddStatMod(new StatMod(StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero));
+          m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
 
         if (intBonus != 0)
-          m.AddStatMod(new StatMod(StatType.Int, modName + "Int", intBonus, TimeSpan.Zero));
+          m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
       }
 
       m?.CheckStatTimers();
@@ -1424,13 +1401,13 @@ namespace Server.Items
         string modName = Serial.ToString();
 
         if (strBonus != 0)
-          from.AddStatMod(new StatMod(StatType.Str, modName + "Str", strBonus, TimeSpan.Zero));
+          from.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
 
         if (dexBonus != 0)
-          from.AddStatMod(new StatMod(StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero));
+          from.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
 
         if (intBonus != 0)
-          from.AddStatMod(new StatMod(StatType.Int, modName + "Int", intBonus, TimeSpan.Zero));
+          from.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
       }
 
       return base.OnEquip(from);
@@ -1442,9 +1419,9 @@ namespace Server.Items
       {
         string modName = Serial.ToString();
 
-        m.RemoveStatMod(modName + "Str");
-        m.RemoveStatMod(modName + "Dex");
-        m.RemoveStatMod(modName + "Int");
+        m.RemoveStatMod($"{modName}Str");
+        m.RemoveStatMod($"{modName}Dex");
+        m.RemoveStatMod($"{modName}Int");
 
         if (Core.AOS)
           SkillBonuses.Remove();
@@ -1460,65 +1437,27 @@ namespace Server.Items
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
-      int oreType;
-
-      switch (m_Resource)
+      var oreType = m_Resource switch
       {
-        case CraftResource.DullCopper:
-          oreType = 1053108;
-          break; // dull copper
-        case CraftResource.ShadowIron:
-          oreType = 1053107;
-          break; // shadow iron
-        case CraftResource.Copper:
-          oreType = 1053106;
-          break; // copper
-        case CraftResource.Bronze:
-          oreType = 1053105;
-          break; // bronze
-        case CraftResource.Gold:
-          oreType = 1053104;
-          break; // golden
-        case CraftResource.Agapite:
-          oreType = 1053103;
-          break; // agapite
-        case CraftResource.Verite:
-          oreType = 1053102;
-          break; // verite
-        case CraftResource.Valorite:
-          oreType = 1053101;
-          break; // valorite
-        case CraftResource.SpinedLeather:
-          oreType = 1061118;
-          break; // spined
-        case CraftResource.HornedLeather:
-          oreType = 1061117;
-          break; // horned
-        case CraftResource.BarbedLeather:
-          oreType = 1061116;
-          break; // barbed
-        case CraftResource.RedScales:
-          oreType = 1060814;
-          break; // red
-        case CraftResource.YellowScales:
-          oreType = 1060818;
-          break; // yellow
-        case CraftResource.BlackScales:
-          oreType = 1060820;
-          break; // black
-        case CraftResource.GreenScales:
-          oreType = 1060819;
-          break; // green
-        case CraftResource.WhiteScales:
-          oreType = 1060821;
-          break; // white
-        case CraftResource.BlueScales:
-          oreType = 1060815;
-          break; // blue
-        default:
-          oreType = 0;
-          break;
-      }
+        CraftResource.DullCopper => 1053108,
+        CraftResource.ShadowIron => 1053107,
+        CraftResource.Copper => 1053106,
+        CraftResource.Bronze => 1053105,
+        CraftResource.Gold => 1053104,
+        CraftResource.Agapite => 1053103,
+        CraftResource.Verite => 1053102,
+        CraftResource.Valorite => 1053101,
+        CraftResource.SpinedLeather => 1061118,
+        CraftResource.HornedLeather => 1061117,
+        CraftResource.BarbedLeather => 1061116,
+        CraftResource.RedScales => 1060814,
+        CraftResource.YellowScales => 1060818,
+        CraftResource.BlackScales => 1060820,
+        CraftResource.GreenScales => 1060819,
+        CraftResource.WhiteScales => 1060821,
+        CraftResource.BlueScales => 1060815,
+        _ => 0
+      };
 
       if (m_Quality == ArmorQuality.Exceptional)
       {
@@ -1621,7 +1560,7 @@ namespace Server.Items
       if ((prop = GetLuckBonus() + Attributes.Luck) != 0)
         list.Add(1060436, prop.ToString()); // luck ~1_val~
 
-      if ((prop = ArmorAttributes.MageArmor) != 0)
+      if (ArmorAttributes.MageArmor != 0)
         list.Add(1060437); // mage armor
 
       if ((prop = Attributes.BonusMana) != 0)
@@ -1630,7 +1569,7 @@ namespace Server.Items
       if ((prop = Attributes.RegenMana) != 0)
         list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
 
-      if ((prop = Attributes.NightSight) != 0)
+      if (Attributes.NightSight != 0)
         list.Add(1060441); // night sight
 
       if ((prop = Attributes.ReflectPhysical) != 0)
@@ -1645,7 +1584,7 @@ namespace Server.Items
       if ((prop = ArmorAttributes.SelfRepair) != 0)
         list.Add(1060450, prop.ToString()); // self repair ~1_val~
 
-      if ((prop = Attributes.SpellChanneling) != 0)
+      if (Attributes.SpellChanneling != 0)
         list.Add(1060482); // spell channeling
 
       if ((prop = Attributes.SpellDamage) != 0)

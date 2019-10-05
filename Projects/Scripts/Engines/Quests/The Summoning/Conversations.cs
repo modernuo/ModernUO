@@ -34,7 +34,7 @@ namespace Server.Engines.Quests.Doom
           System.From.SendMessage("Internal error: unable to find summoning altar. Quest unable to continue.");
           System.Cancel();
         }
-        else if (altar.Daemon == null || !altar.Daemon.Alive)
+        else if (altar.Daemon?.Alive != true)
         {
           BoneDemon daemon = new BoneDemon();
 

@@ -345,7 +345,7 @@ namespace Server
       if (cidrLength <= 0 || cidrLength >= 32) //if invalid cidr Length, just compare IPs
         return cidrPrefixValue == ipValue;
 
-      uint mask = uint.MaxValue << (32 - cidrLength);
+      uint mask = uint.MaxValue << 32 - cidrLength;
 
       return (cidrPrefixValue & mask) == (ipValue & mask);
     }
@@ -355,14 +355,14 @@ namespace Server
       if (bytes.Length != 4)
         return 0;
 
-      return (uint)((bytes[0] << 0x18) | (bytes[1] << 0x10) | (bytes[2] << 8) | bytes[3]) & 0xffffffff;
+      return (uint)(bytes[0] << 0x18 | bytes[1] << 0x10 | bytes[2] << 8 | bytes[3]) & 0xffffffff;
     }
 
     private static uint SwapUnsignedInt(uint source) =>
-      ((source & 0x000000FF) << 0x18)
-      | ((source & 0x0000FF00) << 8)
-      | ((source & 0x00FF0000) >> 8)
-      | ((source & 0xFF000000) >> 0x18);
+      (source & 0x000000FF) << 0x18
+      | (source & 0x0000FF00) << 8
+      | (source & 0x00FF0000) >> 8
+      | (source & 0xFF000000) >> 0x18;
 
     public static bool TryConvertIPv6toIPv4(ref IPAddress address)
     {
@@ -495,7 +495,7 @@ namespace Server
           }
         }
 
-        int b = (byte)(GetAddressValue(ip) >> (i * 8));
+        int b = (byte)(GetAddressValue(ip) >> i * 8);
 
         if (b < lowPart || b > highPart)
           return false;
@@ -1040,17 +1040,16 @@ namespace Server
     /// </summary>
     public static int RandomNondyedHue()
     {
-      switch (Random(6))
+      return Random(6) switch
       {
-        case 0: return RandomPinkHue();
-        case 1: return RandomBlueHue();
-        case 2: return RandomGreenHue();
-        case 3: return RandomOrangeHue();
-        case 4: return RandomRedHue();
-        case 5: return RandomYellowHue();
-      }
-
-      return 0;
+        0 => RandomPinkHue(),
+        1 => RandomBlueHue(),
+        2 => RandomGreenHue(),
+        3 => RandomOrangeHue(),
+        4 => RandomRedHue(),
+        5 => RandomYellowHue(),
+        _ => 0
+      };
     }
 
     /// <summary>

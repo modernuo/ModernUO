@@ -231,10 +231,8 @@ namespace Server.Multis
       Sector sector = map.GetSector(loc);
 
       for (int i = 0; i < sector.Multis.Count; i++)
-      {
         if (sector.Multis[i] is BaseBoat boat && boat.Contains(loc.X, loc.Y))
           return boat;
-      }
 
       return null;
     }
@@ -1121,7 +1119,7 @@ namespace Server.Multis
         return false;
       }
 
-      if (SetFacing((Direction)(((int)m_Facing + offset) & 0x7))) return true;
+      if (SetFacing((Direction)((int)m_Facing + offset & 0x7))) return true;
       if (message)
         TillerMan.Say(501423); // Ar, can't turn sir.
 
@@ -1296,7 +1294,7 @@ namespace Server.Multis
       else // Right, Down, Left and Up
         maxSpeed = Math.Min(adx, ady);
 
-      return (Direction)((iDir - (int)Facing) & 0x7);
+      return (Direction)(iDir - (int)Facing & 0x7);
     }
 
     public bool DoMovement(bool message)
@@ -1397,7 +1395,7 @@ namespace Server.Multis
       }
 
       int rx = 0, ry = 0;
-      Direction d = (Direction)(((int)m_Facing + (int)dir) & 0x7);
+      Direction d = (Direction)((int)m_Facing + (int)dir & 0x7);
       Movement.Movement.Offset(d, ref rx, ref ry);
 
       for (int i = 1; i <= speed; ++i)
@@ -1519,13 +1517,8 @@ namespace Server.Multis
         IEntity e = toMove[i];
 
         if (e is Item item)
-        {
           item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z + zOffset);
-        }
-        else if (e is Mobile m)
-        {
-          m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z + zOffset);
-        }
+        else if (e is Mobile m) m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z + zOffset);
       }
 
       Location = new Point3D(X + xOffset, Y + yOffset, Z + zOffset);
@@ -1615,7 +1608,7 @@ namespace Server.Multis
       if (Hold != null)
         Hold.Location = new Point3D(X + xOffset * HoldDistance, Y + yOffset * HoldDistance, Hold.Z);
 
-      int count = (m_Facing - old) & 0x7;
+      int count = m_Facing - old & 0x7;
       count /= 2;
 
       for (int i = 0; i < toMove.Count; ++i)
@@ -1628,26 +1621,19 @@ namespace Server.Multis
         }
         else if (e is Mobile m)
         {
-          m.Direction = (m.Direction - old + facing) & Direction.Mask;
+          m.Direction = m.Direction - old + facing & Direction.Mask;
           m.Location = Rotate(m.Location, count);
         }
       }
 
-      switch (facing)
+      ItemID = facing switch
       {
-        case Direction.North:
-          ItemID = NorthID;
-          break;
-        case Direction.East:
-          ItemID = EastID;
-          break;
-        case Direction.South:
-          ItemID = SouthID;
-          break;
-        case Direction.West:
-          ItemID = WestID;
-          break;
-      }
+        Direction.North => NorthID,
+        Direction.East => EastID,
+        Direction.South => SouthID,
+        Direction.West => WestID,
+        _ => ItemID
+      };
 
       return true;
     }

@@ -159,27 +159,16 @@ namespace Server.Items
         cont.TrapPower = level * 25;
         cont.TrapLevel = level;
 
-        switch (level)
+        cont.RequiredSkill = level switch
         {
-          case 1:
-            cont.RequiredSkill = 36;
-            break;
-          case 2:
-            cont.RequiredSkill = 76;
-            break;
-          case 3:
-            cont.RequiredSkill = 84;
-            break;
-          case 4:
-            cont.RequiredSkill = 92;
-            break;
-          case 5:
-            cont.RequiredSkill = 100;
-            break;
-          case 6:
-            cont.RequiredSkill = 100;
-            break;
-        }
+          1 => 36,
+          2 => 76,
+          3 => 84,
+          4 => 92,
+          5 => 100,
+          6 => 100,
+          _ => cont.RequiredSkill
+        };
 
         cont.LockLevel = cont.RequiredSkill - 10;
         cont.MaxLockLevel = cont.RequiredSkill + 40;
@@ -195,32 +184,16 @@ namespace Server.Items
 
         if (Core.SE)
         {
-          switch (level)
+          numberItems = level switch
           {
-            case 1:
-              numberItems = 5;
-              break;
-            case 2:
-              numberItems = 10;
-              break;
-            case 3:
-              numberItems = 15;
-              break;
-            case 4:
-              numberItems = 38;
-              break;
-            case 5:
-              numberItems = 50;
-              break;
-            case 6:
-              numberItems = 60;
-              break;
-            default:
-              numberItems = 0;
-              break;
-          }
-
-          ;
+            1 => 5,
+            2 => 10,
+            3 => 15,
+            4 => 38,
+            5 => 50,
+            6 => 60,
+            _ => 0
+          };
         }
         else
         {

@@ -52,7 +52,7 @@ namespace Server.Spells.Spellweaving
       {
         MLQuestContext context = MLQuestSystem.GetContext(mobile);
 
-        if (context == null || !context.Spellweaving)
+        if (context?.Spellweaving != true)
         {
           mobile.SendLocalizedMessage(
             1073220); // You must have completed the epic arcanist quest to use this ability.

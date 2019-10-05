@@ -3060,7 +3060,7 @@ namespace Server
 
         int bitCount = zEnd - zStart;
 
-        m_OpenSlots &= ~(((1 << bitCount) - 1) << zStart);
+        m_OpenSlots &= ~((1 << bitCount) - 1 << zStart);
       }
 
       for (int i = 0; i < items.Count; ++i)
@@ -3088,7 +3088,7 @@ namespace Server
 
         int bitCount = zEnd - zStart;
 
-        m_OpenSlots &= ~(((1 << bitCount) - 1) << zStart);
+        m_OpenSlots &= ~((1 << bitCount) - 1 << zStart);
       }
 
       int height = ItemData.Height;
@@ -3107,7 +3107,7 @@ namespace Server
         if (i + height > 20)
           match >>= 1;
 
-        okay = ((m_OpenSlots >> i) & match) == match;
+        okay = (m_OpenSlots >> i & match) == match;
 
         if (okay)
         {
@@ -3449,7 +3449,7 @@ namespace Server
       else
       {
         ns.Send(new UnicodeMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "",
-          Name + (m_Amount > 1 ? " : " + m_Amount : "")));
+          Name + (m_Amount > 1 ? $" : {m_Amount}" : "")));
       }
     }
 
@@ -3484,7 +3484,7 @@ namespace Server
       if (ScissorCopyLootType)
         newItem.LootType = type;
 
-      if (!(thisParent is Container) || !((Container)thisParent).TryDropItem(from, newItem, false))
+      if ((thisParent as Container)?.TryDropItem(from, newItem, false) != true)
         newItem.MoveToWorld(worldLoc, thisMap);
     }
 

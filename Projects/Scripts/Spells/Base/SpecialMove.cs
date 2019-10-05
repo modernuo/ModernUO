@@ -252,8 +252,6 @@ namespace Server.Spells
 
     public static void ClearCurrentMove(Mobile m)
     {
-      ;
-
       if (Table.TryGetValue(m, out SpecialMove move))
       {
         move.OnClearMove(m);

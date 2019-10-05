@@ -115,8 +115,7 @@ namespace Server.Mobiles
       ComputeRentalExpireDelay(out int days, out int hours);
 
       to.SendLocalizedMessage(1062464,
-        days + "\t" +
-        hours); // The rental contract on this vendor will expire in ~1_DAY~ day(s) and ~2_HOUR~ hour(s).
+        $"{days}\t{hours}"); // The rental contract on this vendor will expire in ~1_DAY~ day(s) and ~2_HOUR~ hour(s).
     }
 
     public override void OnAfterDelete()

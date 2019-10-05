@@ -151,7 +151,7 @@ namespace Server.Items
       if (NextSpawn < DateTime.UtcNow) // means we haven't spawned anything if the next spawn is below
         if (Utility.InRange(m.Location, Location, 1) && !Utility.InRange(oldLocation, Location, 1) && m.Player &&
             !(m.AccessLevel > AccessLevel.Player || m.Hidden))
-          if (m_Timer == null || !m_Timer.Running)
+          if (m_Timer?.Running != true)
             m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(2), HeedWarning);
 
       base.OnMovement(m, oldLocation);

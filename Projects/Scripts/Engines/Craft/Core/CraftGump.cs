@@ -201,7 +201,7 @@ namespace Server.Engines.Craft
           CraftContext context = m_CraftSystem.GetContext(m_From);
 
           AddButton(220, 260, 4005, 4007, GetButtonID(6, 4));
-          AddHtmlLocalized(255, 263, 200, 18, context == null || !context.DoNotColor ? 1061591 : 1061590,
+          AddHtmlLocalized(255, 263, 200, 18, context?.DoNotColor != true ? 1061591 : 1061590,
             LabelColor);
         }
 
@@ -557,18 +557,13 @@ namespace Server.Engines.Craft
               if (context == null || !system.MarkOption)
                 break;
 
-              switch (context.MarkOption)
+              context.MarkOption = context.MarkOption switch
               {
-                case CraftMarkOption.MarkItem:
-                  context.MarkOption = CraftMarkOption.DoNotMark;
-                  break;
-                case CraftMarkOption.DoNotMark:
-                  context.MarkOption = CraftMarkOption.PromptForMark;
-                  break;
-                case CraftMarkOption.PromptForMark:
-                  context.MarkOption = CraftMarkOption.MarkItem;
-                  break;
-              }
+                CraftMarkOption.MarkItem => CraftMarkOption.DoNotMark,
+                CraftMarkOption.DoNotMark => CraftMarkOption.PromptForMark,
+                CraftMarkOption.PromptForMark => CraftMarkOption.MarkItem,
+                _ => context.MarkOption
+              };
 
               m_From.SendGump(new CraftGump(m_From, m_CraftSystem, m_Tool, null, m_Page));
 

@@ -36,7 +36,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public double Value{ get; set; }
 
-    public virtual string GetNameLocalized() => string.Concat("#", AosSkillBonuses.GetLabel(Skill).ToString());
+    public virtual string GetNameLocalized() => $"#{AosSkillBonuses.GetLabel(Skill)}";
 
     public virtual string GetName()
     {

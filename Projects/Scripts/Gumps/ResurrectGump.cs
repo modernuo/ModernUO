@@ -162,12 +162,13 @@ namespace Server.Gumps
       {
         VirtueLevel level = VirtueHelper.GetLevel( m_Healer, VirtueName.Compassion );
 
-        switch( level )
+        from.Hits = level switch
         {
-          case VirtueLevel.Seeker: from.Hits = AOS.Scale( from.HitsMax, 20 ); break;
-          case VirtueLevel.Follower: from.Hits = AOS.Scale( from.HitsMax, 40 ); break;
-          case VirtueLevel.Knight: from.Hits = AOS.Scale( from.HitsMax, 80 ); break;
-        }
+          VirtueLevel.Seeker => AOS.Scale(from.HitsMax, 20),
+          VirtueLevel.Follower => AOS.Scale(from.HitsMax, 40),
+          VirtueLevel.Knight => AOS.Scale(from.HitsMax, 80),
+          _ => from.Hits
+        };
       }
 
       if ( m_FromSacrifice && from is PlayerMobile mobile )
@@ -200,7 +201,7 @@ namespace Server.Gumps
 
       if ( !Core.AOS && from.ShortTermMurders >= 5 )
       {
-        double loss = (100.0 - (4.0 + (from.ShortTermMurders / 5.0))) / 100.0; // 5 to 15% loss
+        double loss = (100.0 - (4.0 + from.ShortTermMurders / 5.0)) / 100.0; // 5 to 15% loss
 
         if ( loss < 0.85 )
           loss = 0.85;
@@ -215,10 +216,8 @@ namespace Server.Gumps
           from.RawDex = (int)(from.RawDex * loss);
 
         for( int s = 0; s < from.Skills.Length; s++ )
-        {
           if ( from.Skills[s].Base * loss > 35 )
             from.Skills[s].Base *= loss;
-        }
       }
 
       if ( from.Alive && m_HitsScalar > 0 )

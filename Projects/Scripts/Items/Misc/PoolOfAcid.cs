@@ -48,7 +48,7 @@ namespace Server.Items
       if ( age > m_Duration ) {
         Delete();
       } else {
-        if ( !m_Drying && age > (m_Duration - age) )
+        if ( !m_Drying && age > m_Duration - age )
         {
           m_Drying = true;
           ItemID = 0x122B;
@@ -57,12 +57,8 @@ namespace Server.Items
         List<Mobile> toDamage = new List<Mobile>();
 
         foreach( Mobile m in GetMobilesInRange( 0 ) )
-        {
           if ( m.Alive && !m.IsDeadBondedPet && (!(m is BaseCreature bc) || bc.Controlled || bc.Summoned) )
-          {
             toDamage.Add( m );
-          }
-        }
 
         for ( int i = 0; i < toDamage.Count; i++ )
           Damage( toDamage[i] );

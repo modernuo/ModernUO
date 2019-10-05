@@ -444,36 +444,18 @@ namespace Server.Items
       Item reagents;
       int amount = Utility.RandomMinMax(10, 25);
 
-      switch (Utility.Random(9))
+      reagents = Utility.Random(9) switch
       {
-        case 0:
-          reagents = new BlackPearl(amount);
-          break;
-        case 1:
-          reagents = new Bloodmoss(amount);
-          break;
-        case 2:
-          reagents = new Garlic(amount);
-          break;
-        case 3:
-          reagents = new Ginseng(amount);
-          break;
-        case 4:
-          reagents = new MandrakeRoot(amount);
-          break;
-        case 5:
-          reagents = new Nightshade(amount);
-          break;
-        case 6:
-          reagents = new SulfurousAsh(amount);
-          break;
-        case 7:
-          reagents = new SpidersSilk(amount);
-          break;
-        default:
-          reagents = new FertileDirt(amount);
-          break;
-      }
+        0 => (Item)new BlackPearl(amount),
+        1 => new Bloodmoss(amount),
+        2 => new Garlic(amount),
+        3 => new Ginseng(amount),
+        4 => new MandrakeRoot(amount),
+        5 => new Nightshade(amount),
+        6 => new SulfurousAsh(amount),
+        7 => new SpidersSilk(amount),
+        _ => new FertileDirt(amount)
+      };
 
       if (!SpawnItem(reagents))
         reagents.Delete();

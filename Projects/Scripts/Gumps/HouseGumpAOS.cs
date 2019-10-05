@@ -291,7 +291,7 @@ namespace Server.Gumps
             int vendors = house.PlayerVendors.Count + house.VendorRentalContracts.Count;
 
             AddHtmlLocalized(10, 350, 300, 20, 1062391, LabelColor); // Vendor Count
-            AddLabel(310, 350, LabelHue, vendors + " / " + maxVendors);
+            AddLabel(310, 350, LabelHue, $"{vendors} / {maxVendors}");
           }
           else
           {
@@ -484,7 +484,7 @@ namespace Server.Gumps
       if (m?.Deleted != false)
         return "(unowned)";
 
-      return String.IsNullOrWhiteSpace(m.Name) ? "(no name)" : m.Name.Trim();
+      return string.IsNullOrWhiteSpace(m.Name) ? "(no name)" : m.Name.Trim();
     }
 
     private string GetDateTime(DateTime val) => val == DateTime.MinValue ? "" : val.ToString("yyyy'-'MM'-'dd HH':'mm':'ss");
@@ -563,10 +563,10 @@ namespace Server.Gumps
           AddButton(10 + xoffset, 150 + yoffset, 4005, 4007, GetButtonID(button, i));
 
         if (accountOf && m.Player && m.Account != null)
-          name = "Account of " + name;
+          name = $"Account of {name}";
 
         if (leadingStar)
-          name = "* " + name;
+          name = $"* {name}";
 
         AddLabel(button > 0 ? 45 + xoffset : 10 + xoffset, 150 + yoffset, labelHue, name);
         ++index;
@@ -1404,7 +1404,7 @@ namespace Server.Gumps
       {
         string val = values[i];
 
-        string v = current.Length == 0 ? val : current + ' ' + val;
+        string v = current.Length == 0 ? val : $"{current}{' '}{val}";
 
         if (v.Length < 10)
         {

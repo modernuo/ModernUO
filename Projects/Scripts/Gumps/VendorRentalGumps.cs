@@ -144,10 +144,7 @@ namespace Server.Gumps
       {
         int index = info.ButtonID & 0xF;
 
-        if ( index < VendorRentalDuration.Instances.Length )
-        {
-          SetContractDuration( from, VendorRentalDuration.Instances[index] );
-        }
+        if ( index < VendorRentalDuration.Instances.Length ) SetContractDuration( from, VendorRentalDuration.Instances[index] );
       }
       else
       {

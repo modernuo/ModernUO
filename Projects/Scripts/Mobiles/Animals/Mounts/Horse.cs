@@ -14,7 +14,7 @@ namespace Server.Mobiles
 
     [Constructible]
     public Horse(string name = "a horse") :
-		  base(name, 0xE2, 0x3EA0, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+      base(name, 0xE2, 0x3EA0, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
       int random = Utility.Random(4);
 

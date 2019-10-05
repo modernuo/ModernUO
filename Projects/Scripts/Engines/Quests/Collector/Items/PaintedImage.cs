@@ -34,13 +34,13 @@ namespace Server.Engines.Quests.Collector
     public override void AddNameProperty(ObjectPropertyList list)
     {
       ImageTypeInfo info = ImageTypeInfo.Get(m_Image);
-      list.Add(1060847, "#1055126\t#" + info.Name); // a painted image of:
+      list.Add(1060847, $"#1055126\t#{info.Name}"); // a painted image of:
     }
 
     public override void OnSingleClick(Mobile from)
     {
       ImageTypeInfo info = ImageTypeInfo.Get(m_Image);
-      LabelTo(from, 1060847, "#1055126\t#" + info.Name); // a painted image of:
+      LabelTo(from, 1060847, $"#1055126\t#{info.Name}"); // a painted image of:
     }
 
     public override void OnDoubleClick(Mobile from)

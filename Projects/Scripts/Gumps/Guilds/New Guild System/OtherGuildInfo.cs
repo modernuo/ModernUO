@@ -356,7 +356,7 @@ namespace Server.Guilds
 
               guild.AcceptedWars.Remove(activeWar);
 
-              if (otherAlliance != null && otherAlliance.IsMember(otherGuild))
+              if (otherAlliance?.IsMember(otherGuild) == true)
               {
                 otherAlliance.AllianceMessage(1070739,
                   guild.Alliance != null
@@ -523,7 +523,7 @@ namespace Server.Guilds
           else if (alliance?.IsMember(guild) == true)
           {
             guild.Alliance = null; //Calls alliance.Removeguild
-//						alliance.RemoveGuild( guild );
+            // alliance.RemoveGuild( guild );
 
             m_Other.InvalidateWarNotoriety();
 

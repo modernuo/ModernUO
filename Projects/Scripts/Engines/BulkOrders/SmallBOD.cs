@@ -95,83 +95,82 @@ namespace Server.Engines.BulkOrders
 
     public static BulkMaterialType GetMaterial(CraftResource resource)
     {
-      switch (resource)
+      return resource switch
       {
-        case CraftResource.DullCopper: return BulkMaterialType.DullCopper;
-        case CraftResource.ShadowIron: return BulkMaterialType.ShadowIron;
-        case CraftResource.Copper: return BulkMaterialType.Copper;
-        case CraftResource.Bronze: return BulkMaterialType.Bronze;
-        case CraftResource.Gold: return BulkMaterialType.Gold;
-        case CraftResource.Agapite: return BulkMaterialType.Agapite;
-        case CraftResource.Verite: return BulkMaterialType.Verite;
-        case CraftResource.Valorite: return BulkMaterialType.Valorite;
-        case CraftResource.SpinedLeather: return BulkMaterialType.Spined;
-        case CraftResource.HornedLeather: return BulkMaterialType.Horned;
-        case CraftResource.BarbedLeather: return BulkMaterialType.Barbed;
-      }
-
-      return BulkMaterialType.None;
+        CraftResource.DullCopper => BulkMaterialType.DullCopper,
+        CraftResource.ShadowIron => BulkMaterialType.ShadowIron,
+        CraftResource.Copper => BulkMaterialType.Copper,
+        CraftResource.Bronze => BulkMaterialType.Bronze,
+        CraftResource.Gold => BulkMaterialType.Gold,
+        CraftResource.Agapite => BulkMaterialType.Agapite,
+        CraftResource.Verite => BulkMaterialType.Verite,
+        CraftResource.Valorite => BulkMaterialType.Valorite,
+        CraftResource.SpinedLeather => BulkMaterialType.Spined,
+        CraftResource.HornedLeather => BulkMaterialType.Horned,
+        CraftResource.BarbedLeather => BulkMaterialType.Barbed,
+        _ => BulkMaterialType.None
+      };
     }
 
     public override void EndCombine(Mobile from, Item item)
     {
       Type objectType = item.GetType();
 
-        if (m_AmountCur >= AmountMax)
+      if (m_AmountCur >= AmountMax)
+      {
+        from.SendLocalizedMessage(
+          1045166); // The maximum amount of requested items have already been combined to this deed.
+      }
+      else if (Type == null || objectType != Type && !objectType.IsSubclassOf(Type) ||
+               !(item is BaseWeapon) && !(item is BaseArmor) && !(item is BaseClothing))
+      {
+        from.SendLocalizedMessage(1045169); // The item is not in the request.
+      }
+      else
+      {
+        BaseArmor armor = item as BaseArmor;
+        BaseClothing clothing = item as BaseClothing;
+
+        BulkMaterialType material = GetMaterial(armor?.Resource ?? clothing?.Resource ?? CraftResource.None);
+
+        if (Material >= BulkMaterialType.DullCopper && Material <= BulkMaterialType.Valorite &&
+            material != Material)
         {
-          from.SendLocalizedMessage(
-            1045166); // The maximum amount of requested items have already been combined to this deed.
+          from.SendLocalizedMessage(1045168); // The item is not made from the requested ore.
         }
-        else if (Type == null || objectType != Type && !objectType.IsSubclassOf(Type) ||
-                 !(item is BaseWeapon) && !(item is BaseArmor) && !(item is BaseClothing))
+        else if (Material >= BulkMaterialType.Spined && Material <= BulkMaterialType.Barbed &&
+                 material != Material)
         {
-          from.SendLocalizedMessage(1045169); // The item is not in the request.
+          from.SendLocalizedMessage(1049352); // The item is not made from the requested leather type.
         }
         else
         {
-          BaseArmor armor = item as BaseArmor;
-          BaseClothing clothing = item as BaseClothing;
+          bool isExceptional;
 
-          BulkMaterialType material = GetMaterial(armor?.Resource ?? clothing?.Resource ?? CraftResource.None);
+          if (item is BaseWeapon weapon)
+            isExceptional = weapon.Quality == WeaponQuality.Exceptional;
+          else if (armor != null)
+            isExceptional = armor.Quality == ArmorQuality.Exceptional;
+          else
+            isExceptional = clothing.Quality == ClothingQuality.Exceptional;
 
-          if (Material >= BulkMaterialType.DullCopper && Material <= BulkMaterialType.Valorite &&
-              material != Material)
+          if (RequireExceptional && !isExceptional)
           {
-            from.SendLocalizedMessage(1045168); // The item is not made from the requested ore.
-          }
-          else if (Material >= BulkMaterialType.Spined && Material <= BulkMaterialType.Barbed &&
-                   material != Material)
-          {
-            from.SendLocalizedMessage(1049352); // The item is not made from the requested leather type.
+            from.SendLocalizedMessage(1045167); // The item must be exceptional.
           }
           else
           {
-            bool isExceptional;
+            item.Delete();
+            ++AmountCur;
 
-            if (item is BaseWeapon weapon)
-              isExceptional = weapon.Quality == WeaponQuality.Exceptional;
-            else if (armor != null)
-              isExceptional = armor.Quality == ArmorQuality.Exceptional;
-            else
-              isExceptional = clothing.Quality == ClothingQuality.Exceptional;
+            from.SendLocalizedMessage(1045170); // The item has been combined with the deed.
+            from.SendGump(new SmallBODGump(from, this));
 
-            if (RequireExceptional && !isExceptional)
-            {
-              from.SendLocalizedMessage(1045167); // The item must be exceptional.
-            }
-            else
-            {
-              item.Delete();
-              ++AmountCur;
-
-              from.SendLocalizedMessage(1045170); // The item has been combined with the deed.
-              from.SendGump(new SmallBODGump(from, this));
-
-              if (m_AmountCur < AmountMax)
-                BeginCombine(from);
-            }
+            if (m_AmountCur < AmountMax)
+              BeginCombine(from);
           }
         }
+      }
     }
 
     public override void Serialize(GenericWriter writer)

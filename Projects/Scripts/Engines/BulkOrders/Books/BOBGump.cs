@@ -279,35 +279,26 @@ namespace Server.Engines.BulkOrders
       if (f.Type == 2 && !isLarge)
         return false;
 
-      switch (f.Material)
+      return f.Material switch
       {
-        default:
-          return true;
-        case 1: return deedType == BODType.Smith;
-        case 2: return deedType == BODType.Tailor;
-
-        case 3:
-          return mat == BulkMaterialType.None &&
-                 BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Iron;
-        case 4: return mat == BulkMaterialType.DullCopper;
-        case 5: return mat == BulkMaterialType.ShadowIron;
-        case 6: return mat == BulkMaterialType.Copper;
-        case 7: return mat == BulkMaterialType.Bronze;
-        case 8: return mat == BulkMaterialType.Gold;
-        case 9: return mat == BulkMaterialType.Agapite;
-        case 10: return mat == BulkMaterialType.Verite;
-        case 11: return mat == BulkMaterialType.Valorite;
-
-        case 12:
-          return mat == BulkMaterialType.None &&
-                 BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Cloth;
-        case 13:
-          return mat == BulkMaterialType.None &&
-                 BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Leather;
-        case 14: return mat == BulkMaterialType.Spined;
-        case 15: return mat == BulkMaterialType.Horned;
-        case 16: return mat == BulkMaterialType.Barbed;
-      }
+        1 => (deedType == BODType.Smith),
+        2 => (deedType == BODType.Tailor),
+        3 => (mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Iron),
+        4 => (mat == BulkMaterialType.DullCopper),
+        5 => (mat == BulkMaterialType.ShadowIron),
+        6 => (mat == BulkMaterialType.Copper),
+        7 => (mat == BulkMaterialType.Bronze),
+        8 => (mat == BulkMaterialType.Gold),
+        9 => (mat == BulkMaterialType.Agapite),
+        10 => (mat == BulkMaterialType.Verite),
+        11 => (mat == BulkMaterialType.Valorite),
+        12 => (mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Cloth),
+        13 => (mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Leather),
+        14 => (mat == BulkMaterialType.Spined),
+        15 => (mat == BulkMaterialType.Horned),
+        16 => (mat == BulkMaterialType.Barbed),
+        _ => true
+      };
     }
 
     public int GetIndexForPage(int page)

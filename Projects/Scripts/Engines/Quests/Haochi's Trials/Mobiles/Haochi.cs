@@ -122,7 +122,7 @@ namespace Server.Engines.Quests.Samurai
           obj.Complete();
 
           obj = qs.FindObjective<FifthTrialIntroObjective>();
-          if (obj != null && ((FifthTrialIntroObjective)obj).StolenTreasure)
+          if (((FifthTrialIntroObjective)obj)?.StolenTreasure == true)
             qs.AddConversation(new SixthTrialIntroConversation(true));
           else
             qs.AddConversation(new SixthTrialIntroConversation(false));

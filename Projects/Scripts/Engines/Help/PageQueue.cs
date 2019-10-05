@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Mail;
 using Server.Accounting;
-using Server.Commands;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
@@ -108,7 +107,7 @@ namespace Server.Engines.Help
           if (index != -1)
             // m_Entry.AddResponse(m_Entry.Sender, "[Logout]");
 
-          PageQueue.Remove(m_Entry);
+            PageQueue.Remove(m_Entry);
         }
       }
     }

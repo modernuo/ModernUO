@@ -381,19 +381,13 @@ namespace Server.Items
 
     public override int GetTotal(TotalType type)
     {
-      switch (type)
+      return type switch
       {
-        case TotalType.Gold:
-          return m_TotalGold;
-
-        case TotalType.Items:
-          return m_TotalItems;
-
-        case TotalType.Weight:
-          return m_TotalWeight;
-      }
-
-      return base.GetTotal(type);
+        TotalType.Gold => m_TotalGold,
+        TotalType.Items => m_TotalItems,
+        TotalType.Weight => m_TotalWeight,
+        _ => base.GetTotal(type)
+      };
     }
 
     public override void UpdateTotal(Item sender, TotalType type, int delta)
@@ -1562,10 +1556,8 @@ namespace Server.Items
         Item item = items[i];
 
         if (item is T typedItem)
-        {
           if (predicate?.Invoke(typedItem) == true)
             list.Add(typedItem);
-        }
 
         if (recurse && item is Container)
           RecurseFindItemsByType(item, true, list, predicate);

@@ -48,12 +48,11 @@ namespace Server.Items
 
       int version = reader.ReadEncodedInt();
 
-      switch (version)
+      m_IsRewardItem = version switch
       {
-        case 1:
-          m_IsRewardItem = reader.ReadBool();
-          break;
-      }
+        1 => reader.ReadBool(),
+        _ => m_IsRewardItem
+      };
     }
   }
 

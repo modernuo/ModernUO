@@ -38,7 +38,7 @@ namespace Server.Spells.Eighth
         }
 
         IEnumerable<Mobile> targets = Caster.GetMobilesInRange(1 + (int)(Caster.Skills.Magery.Value / 15.0))
-            .Where(m => Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) && (!Core.AOS || Caster.InLOS(m)));
+          .Where(m => Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) && (!Core.AOS || Caster.InLOS(m)));
 
         foreach (Mobile m in targets)
         {

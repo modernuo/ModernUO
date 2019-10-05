@@ -36,8 +36,6 @@ namespace Server.SkillHandlers
 
     public static double GetStalkingBonus(Mobile tracker, Mobile target)
     {
-      ;
-
       if (!m_Table.TryGetValue(tracker, out TrackingInfo info) || info.m_Target != target || info.m_Map != target.Map)
         return 0.0;
 

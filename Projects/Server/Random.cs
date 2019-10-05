@@ -104,10 +104,10 @@ namespace Server
 
       return (double)r / 9007199254740992;
     }
-    }
+  }
 
   public sealed class CSPRandom : BaseRandom
-    {
+  {
     private static int BUFFER_SIZE = 0x4000;
     private static int LARGE_REQUEST = 0x40;
     private byte[] _Buffer = new byte[BUFFER_SIZE];
@@ -134,9 +134,9 @@ namespace Server
       if (c >= LARGE_REQUEST)
       {
         lock (_sync)
-    {
+        {
           _CSP.GetBytes(b);
-      }
+        }
 
         return;
       }
@@ -191,15 +191,15 @@ namespace Server
         CheckSwap(1);
         return _Working[_Index++];
       }
-      }
     }
+  }
 
   public sealed class RDRandUnix : BaseRandom, IHardwareRNG
-    {
-      [DllImport("rdrand.so")]
-      internal static extern RDRandError rdrand_32(ref uint rand, bool retry);
+  {
+    [DllImport("rdrand.so")]
+    internal static extern RDRandError rdrand_32(ref uint rand, bool retry);
 
-      [DllImport("rdrand.so")]
+    [DllImport("rdrand.so")]
     internal static extern unsafe RDRandError rdrand_get_bytes(int n, byte* buffer);
 
     public bool IsSupported()
@@ -217,11 +217,11 @@ namespace Server
     internal override void GetBytes(byte[] b, int offset, int count)
     {
       GetBytes(b.AsSpan().Slice(offset, count));
-      }
     }
+  }
 
   public sealed class RDRand64 : BaseRandom, IHardwareRNG
-    {
+  {
     [DllImport("rdrand")]
     internal static extern RDRandError rdrand_64(ref ulong rand, bool retry);
 

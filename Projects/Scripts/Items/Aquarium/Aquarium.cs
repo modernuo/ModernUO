@@ -316,8 +316,8 @@ namespace Server.Items
       if (decorations > 0)
         LabelTo(from, 1074249, (Items.Count - LiveCreatures - DeadCreatures).ToString()); // Decorations: ~1_NUM~
 
-      LabelTo(from, 1074250, "#" + FoodNumber()); // Food state: ~1_STATE~
-      LabelTo(from, 1074251, "#" + WaterNumber()); // Water state: ~1_STATE~
+      LabelTo(from, 1074250, $"#{FoodNumber()}"); // Food state: ~1_STATE~
+      LabelTo(from, 1074251, $"#{WaterNumber()}"); // Water state: ~1_STATE~
 
       if (m_Food.State == (int)FoodState.Dead)
         LabelTo(from, 1074577, $"{m_Food.Added}\t{m_Food.Improve}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~

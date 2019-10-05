@@ -27,38 +27,34 @@ namespace Server.Gumps
       foreach ( AggressorInfo ai in m.Aggressors )
       {
         if ( ai.Attacker.Player && ai.CanReportMurder && !ai.Reported )
-        {
           if (!Core.SE || !((PlayerMobile)m).RecentlyReported.Contains(ai.Attacker))
           {
             killers.Add(ai.Attacker);
             ai.Reported = true;
             ai.CanReportMurder = false;
           }
-        }
 
-        if ( ai.Attacker.Player && (DateTime.UtcNow - ai.LastCombatTime) < TimeSpan.FromSeconds( 30.0 ) && !toGive.Contains( ai.Attacker ) )
+        if ( ai.Attacker.Player && DateTime.UtcNow - ai.LastCombatTime < TimeSpan.FromSeconds( 30.0 ) && !toGive.Contains( ai.Attacker ) )
           toGive.Add( ai.Attacker );
       }
 
       foreach ( AggressorInfo ai in m.Aggressed )
-      {
-        if ( ai.Defender.Player && (DateTime.UtcNow - ai.LastCombatTime) < TimeSpan.FromSeconds( 30.0 ) && !toGive.Contains( ai.Defender ) )
+        if ( ai.Defender.Player && DateTime.UtcNow - ai.LastCombatTime < TimeSpan.FromSeconds( 30.0 ) && !toGive.Contains( ai.Defender ) )
           toGive.Add( ai.Defender );
-      }
 
       foreach ( Mobile g in toGive )
       {
         int n = Notoriety.Compute( g, m );
 
         int theirKarma = m.Karma, ourKarma = g.Karma;
-        bool innocent = ( n == Notoriety.Innocent );
-        bool criminal = ( n == Notoriety.Criminal || n == Notoriety.Murderer );
+        bool innocent = n == Notoriety.Innocent;
+        bool criminal = n == Notoriety.Criminal || n == Notoriety.Murderer;
 
         int fameAward = m.Fame / 200;
         int karmaAward = 0;
 
         if ( innocent )
-          karmaAward = ( ourKarma > -2500 ? -850 : -110 - (m.Karma / 100) );
+          karmaAward = ourKarma > -2500 ? -850 : -110 - m.Karma / 100;
         else if ( criminal )
           karmaAward = 50;
 
@@ -159,13 +155,8 @@ namespace Server.Gumps
               pk.SendLocalizedMessage(1049067);//You have been reported for murder!
 
               if (pk.Kills == 5)
-              {
                 pk.SendLocalizedMessage(502134);//You are now known as a murderer!
-              }
-              else if (SkillHandlers.Stealing.SuspendOnMurder && pk.Kills == 1 && pk.NpcGuild == NpcGuild.ThievesGuild)
-              {
-                pk.SendLocalizedMessage(501562); // You have been suspended by the Thieves Guild.
-              }
+              else if (SkillHandlers.Stealing.SuspendOnMurder && pk.Kills == 1 && pk.NpcGuild == NpcGuild.ThievesGuild) pk.SendLocalizedMessage(501562); // You have been suspended by the Thieves Guild.
             }
           }
           break;

@@ -142,21 +142,13 @@ namespace Server.Mobiles
 
       for (int i = 0; i < rats; ++i)
       {
-        BaseCreature rat;
-
-        switch (Utility.Random(5))
+        var rat = Utility.Random(5) switch
         {
-          default:
-            rat = new Ratman();
-            break;
-          case 2:
-          case 3:
-            rat = new RatmanArcher();
-            break;
-          case 4:
-            rat = new RatmanMage();
-            break;
-        }
+          2 => (BaseCreature)new RatmanArcher(),
+          3 => new RatmanArcher(),
+          4 => new RatmanMage(),
+          _ => new Ratman()
+        };
 
         rat.Team = Team;
         rat.MoveToWorld(map.GetRandomNearbyLocation(Location), map);

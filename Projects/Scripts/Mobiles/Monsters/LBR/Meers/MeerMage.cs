@@ -108,25 +108,14 @@ namespace Server.Mobiles
               if (!combatant.Map.CanSpawnMobile(loc))
                 continue;
 
-              BaseCreature rabid;
-              switch (i)
+              var rabid = i switch
               {
-                case 0:
-                  rabid = new EnragedRabbit(this);
-                  break;
-                case 1:
-                  rabid = new EnragedHind(this);
-                  break;
-                case 2:
-                  rabid = new EnragedHart(this);
-                  break;
-                case 3:
-                  rabid = new EnragedBlackBear(this);
-                  break;
-                default:
-                  rabid = new EnragedEagle(this);
-                  break;
-              }
+                0 => (BaseCreature)new EnragedRabbit(this),
+                1 => new EnragedHind(this),
+                2 => new EnragedHart(this),
+                3 => new EnragedBlackBear(this),
+                _ => new EnragedEagle(this)
+              };
 
               rabid.FocusMob = combatant;
               rabid.MoveToWorld(loc, combatant.Map);

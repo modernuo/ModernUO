@@ -284,15 +284,12 @@ namespace Server.Items
 
     public void OnOptionSelected(Mobile from, int option)
     {
-      switch (option)
+      m_East = option switch
       {
-        case 1:
-          m_East = false;
-          break;
-        case 2:
-          m_East = true;
-          break;
-      }
+        1 => false,
+        2 => true,
+        _ => m_East
+      };
 
       if (!Deleted)
         base.OnDoubleClick(from);

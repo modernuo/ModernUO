@@ -66,12 +66,12 @@ namespace Server.Engines.Quests.Haven
     {
       get
       {
-        switch (From.Profession)
+        return From.Profession switch
         {
-          case 1: return 0x15C9; // warrior
-          case 2: return 0x15C1; // magician
-          default: return 0x15D3; // paladin
-        }
+          1 => 0x15C9, // warrior
+          2 => 0x15C1, // magician
+          _ => 0x15D3
+        };
       }
     }
 

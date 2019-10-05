@@ -245,34 +245,34 @@ namespace Server.Items
 
       public override void OnResponse(NetState state, RelayInfo info)
       {
-          if (m_Tool?.Deleted != false || m_Target?.Deleted != false)
+        if (m_Tool?.Deleted != false || m_Target?.Deleted != false)
           return;
 
-          if (info.ButtonID != (int)Buttons.Okay)
-          {
-              state.Mobile.SendLocalizedMessage(1072363); // The object was not engraved.
-              return;
-          }
+        if (info.ButtonID != (int)Buttons.Okay)
+        {
+          state.Mobile.SendLocalizedMessage(1072363); // The object was not engraved.
+          return;
+        }
 
-          TextRelay relay = info.GetTextEntry((int)Buttons.Text);
+        TextRelay relay = info.GetTextEntry((int)Buttons.Text);
 
-          if (relay == null)
-              return;
+        if (relay == null)
+          return;
 
-          if (string.IsNullOrEmpty(relay.Text))
-          {
-              m_Target.EngravedText = null;
-              state.Mobile.SendLocalizedMessage(1072362); // You remove the engraving from the object.
-          }
-          else
-          {
-              m_Target.EngravedText = Utility.FixHtml(relay.Text.Length > 64 ?
-                  relay.Text.Substring(0, 64) : relay.Text);
-              state.Mobile.SendLocalizedMessage(1072361); // You engraved the object.
-              m_Target.InvalidateProperties();
-              m_Tool.UsesRemaining -= 1;
-              m_Tool.InvalidateProperties();
-          }
+        if (string.IsNullOrEmpty(relay.Text))
+        {
+          m_Target.EngravedText = null;
+          state.Mobile.SendLocalizedMessage(1072362); // You remove the engraving from the object.
+        }
+        else
+        {
+          m_Target.EngravedText = Utility.FixHtml(relay.Text.Length > 64 ?
+            relay.Text.Substring(0, 64) : relay.Text);
+          state.Mobile.SendLocalizedMessage(1072361); // You engraved the object.
+          m_Target.InvalidateProperties();
+          m_Tool.UsesRemaining -= 1;
+          m_Tool.InvalidateProperties();
+        }
       }
 
       private enum Buttons

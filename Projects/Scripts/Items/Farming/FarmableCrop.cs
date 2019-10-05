@@ -71,12 +71,11 @@ namespace Server.Items
 
       int version = reader.ReadEncodedInt();
 
-      switch (version)
+      m_Picked = version switch
       {
-        case 0:
-          m_Picked = reader.ReadBool();
-          break;
-      }
+        0 => reader.ReadBool(),
+        _ => m_Picked
+      };
 
       if (m_Picked)
       {

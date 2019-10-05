@@ -28,23 +28,22 @@ namespace Server.Items
     {
       get
       {
-        switch (ItemID)
+        return ItemID switch
         {
-          case 4360:
-          case 4361:
-          case 4366: return SpikeTrapType.WestWall;
-          case 4379:
-          case 4380:
-          case 4385: return SpikeTrapType.NorthWall;
-          case 4506:
-          case 4507:
-          case 4511: return SpikeTrapType.WestFloor;
-          case 4512:
-          case 4513:
-          case 4517: return SpikeTrapType.NorthFloor;
-        }
-
-        return SpikeTrapType.WestWall;
+          4360 => SpikeTrapType.WestWall,
+          4361 => SpikeTrapType.WestWall,
+          4366 => SpikeTrapType.WestWall,
+          4379 => SpikeTrapType.NorthWall,
+          4380 => SpikeTrapType.NorthWall,
+          4385 => SpikeTrapType.NorthWall,
+          4506 => SpikeTrapType.WestFloor,
+          4507 => SpikeTrapType.WestFloor,
+          4511 => SpikeTrapType.WestFloor,
+          4512 => SpikeTrapType.NorthFloor,
+          4513 => SpikeTrapType.NorthFloor,
+          4517 => SpikeTrapType.NorthFloor,
+          _ => SpikeTrapType.WestWall
+        };
       }
       set
       {
@@ -73,31 +72,28 @@ namespace Server.Items
 
     public static int GetBaseID(SpikeTrapType type)
     {
-      switch (type)
+      return type switch
       {
-        case SpikeTrapType.WestWall: return 4360;
-        case SpikeTrapType.NorthWall: return 4379;
-        case SpikeTrapType.WestFloor: return 4506;
-        case SpikeTrapType.NorthFloor: return 4512;
-      }
-
-      return 0;
+        SpikeTrapType.WestWall => 4360,
+        SpikeTrapType.NorthWall => 4379,
+        SpikeTrapType.WestFloor => 4506,
+        SpikeTrapType.NorthFloor => 4512,
+        _ => 0
+      };
     }
 
     public static int GetExtendedID(SpikeTrapType type) => GetBaseID(type) + GetExtendedOffset(type);
 
     public static int GetExtendedOffset(SpikeTrapType type)
     {
-      switch (type)
+      return type switch
       {
-        case SpikeTrapType.WestWall: return 6;
-        case SpikeTrapType.NorthWall: return 6;
-
-        case SpikeTrapType.WestFloor: return 5;
-        case SpikeTrapType.NorthFloor: return 5;
-      }
-
-      return 0;
+        SpikeTrapType.WestWall => 6,
+        SpikeTrapType.NorthWall => 6,
+        SpikeTrapType.WestFloor => 5,
+        SpikeTrapType.NorthFloor => 5,
+        _ => 0
+      };
     }
 
     public override void OnTrigger(Mobile from)

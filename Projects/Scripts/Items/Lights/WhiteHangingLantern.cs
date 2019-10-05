@@ -43,22 +43,14 @@ namespace Server.Items
     {
       Light = LightType.Circle300;
 
-      switch (ItemID)
+      ItemID = ItemID switch
       {
-        case 0x24C6:
-          ItemID = 0x24C8;
-          break;
-        case 0x24C5:
-          ItemID = 0x24C7;
-          break;
-
-        case 0x24C8:
-          ItemID = 0x24C6;
-          break;
-        case 0x24C7:
-          ItemID = 0x24C5;
-          break;
-      }
+        0x24C6 => 0x24C8,
+        0x24C5 => 0x24C7,
+        0x24C8 => 0x24C6,
+        0x24C7 => 0x24C5,
+        _ => ItemID
+      };
     }
 
     public override void Serialize(GenericWriter writer)

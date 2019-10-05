@@ -74,13 +74,13 @@ namespace Server.Engines.Plants
 
     public static Seed RandomPeculiarSeed(int group)
     {
-      switch (group)
+      return @group switch
       {
-        case 1: return new Seed(PlantTypeInfo.RandomPeculiarGroupOne(), PlantHue.Plain);
-        case 2: return new Seed(PlantTypeInfo.RandomPeculiarGroupTwo(), PlantHue.Plain);
-        case 3: return new Seed(PlantTypeInfo.RandomPeculiarGroupThree(), PlantHue.Plain);
-        default: return new Seed(PlantTypeInfo.RandomPeculiarGroupFour(), PlantHue.Plain);
-      }
+        1 => new Seed(PlantTypeInfo.RandomPeculiarGroupOne(), PlantHue.Plain),
+        2 => new Seed(PlantTypeInfo.RandomPeculiarGroupTwo(), PlantHue.Plain),
+        3 => new Seed(PlantTypeInfo.RandomPeculiarGroupThree(), PlantHue.Plain),
+        _ => new Seed(PlantTypeInfo.RandomPeculiarGroupFour(), PlantHue.Plain)
+      };
     }
 
     private int GetLabel(out string args)

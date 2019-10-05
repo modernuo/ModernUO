@@ -146,20 +146,13 @@ namespace Server.Engines.ConPVP
 
             for (int i = 0; i < partsPerMatch; ++i)
             {
-              int idx = 0;
-
-              switch (groupType)
+              var idx = groupType switch
               {
-                case GroupingType.HighVsLow:
-                  idx = i * (copy.Count - 1) / (partsPerMatch - 1);
-                  break;
-                case GroupingType.Nearest:
-                  idx = 0;
-                  break;
-                case GroupingType.Random:
-                  idx = Utility.Random(copy.Count);
-                  break;
-              }
+                GroupingType.HighVsLow => (i * (copy.Count - 1) / (partsPerMatch - 1)),
+                GroupingType.Nearest => 0,
+                GroupingType.Random => Utility.Random(copy.Count),
+                _ => 0
+              };
 
               thisMatch.Add(copy[idx]);
               copy.RemoveAt(idx);

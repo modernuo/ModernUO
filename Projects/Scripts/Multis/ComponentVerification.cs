@@ -152,10 +152,8 @@ namespace Server.Multis
       string line;
 
       while ((line = ip.ReadLine()) != null)
-      {
         if (line.Length > 0)
           return line.Split('\t');
-      }
 
       return null;
     }

@@ -43,23 +43,13 @@ namespace Server.Mobiles
       if (Core.ML && Utility.RandomDouble() < .33)
         PackItem(Seed.RandomPeculiarSeed(2));
 
-      Item orepile = null; /* no trust, no love :( */
-
-      switch (Utility.Random(4))
+      var orepile = Utility.Random(4) switch
       {
-        case 0:
-          orepile = new DullCopperOre();
-          break;
-        case 1:
-          orepile = new ShadowIronOre();
-          break;
-        case 2:
-          orepile = new CopperOre();
-          break;
-        default:
-          orepile = new BronzeOre();
-          break;
-      }
+        0 => (Item)new DullCopperOre(),
+        1 => new ShadowIronOre(),
+        2 => new CopperOre(),
+        _ => new BronzeOre()
+      };
 
       orepile.Amount = Utility.RandomMinMax(1, 10);
       orepile.ItemID = 0x19B9;

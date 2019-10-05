@@ -7,17 +7,12 @@ namespace Server.Items
   {
     public static int RandomChoice(int itemID1, int itemID2)
     {
-      int iRet = 0;
-      switch (Utility.Random(2))
+      var iRet = Utility.Random(2) switch
       {
-        default:
-        case 0:
-          iRet = itemID1;
-          break;
-        case 1:
-          iRet = itemID2;
-          break;
-      }
+        0 => itemID1,
+        1 => itemID2,
+        _ => itemID1
+      };
 
       return iRet;
     }

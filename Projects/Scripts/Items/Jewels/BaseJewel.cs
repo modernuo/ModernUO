@@ -197,13 +197,13 @@ namespace Server.Items
           string modName = Serial.ToString();
 
           if (strBonus != 0)
-            from.AddStatMod(new StatMod(StatType.Str, modName + "Str", strBonus, TimeSpan.Zero));
+            from.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
 
           if (dexBonus != 0)
-            from.AddStatMod(new StatMod(StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero));
+            from.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
 
           if (intBonus != 0)
-            from.AddStatMod(new StatMod(StatType.Int, modName + "Int", intBonus, TimeSpan.Zero));
+            from.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
         }
 
         from.CheckStatTimers();
@@ -218,9 +218,9 @@ namespace Server.Items
 
         string modName = Serial.ToString();
 
-        from.RemoveStatMod(modName + "Str");
-        from.RemoveStatMod(modName + "Dex");
-        from.RemoveStatMod(modName + "Int");
+        from.RemoveStatMod($"{modName}Str");
+        from.RemoveStatMod($"{modName}Dex");
+        from.RemoveStatMod($"{modName}Int");
 
         from.CheckStatTimers();
       }
@@ -279,7 +279,7 @@ namespace Server.Items
       if ((prop = Attributes.RegenMana) != 0)
         list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
 
-      if ((prop = Attributes.NightSight) != 0)
+      if (Attributes.NightSight != 0)
         list.Add(1060441); // night sight
 
       if ((prop = Attributes.ReflectPhysical) != 0)
@@ -291,7 +291,7 @@ namespace Server.Items
       if ((prop = Attributes.RegenHits) != 0)
         list.Add(1060444, prop.ToString()); // hit point regeneration ~1_val~
 
-      if ((prop = Attributes.SpellChanneling) != 0)
+      if (Attributes.SpellChanneling != 0)
         list.Add(1060482); // spell channeling
 
       if ((prop = Attributes.SpellDamage) != 0)
@@ -374,13 +374,13 @@ namespace Server.Items
             string modName = Serial.ToString();
 
             if (strBonus != 0)
-              m.AddStatMod(new StatMod(StatType.Str, modName + "Str", strBonus, TimeSpan.Zero));
+              m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
 
             if (dexBonus != 0)
-              m.AddStatMod(new StatMod(StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero));
+              m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
 
             if (intBonus != 0)
-              m.AddStatMod(new StatMod(StatType.Int, modName + "Int", intBonus, TimeSpan.Zero));
+              m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
           }
 
           m?.CheckStatTimers();

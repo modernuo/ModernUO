@@ -31,7 +31,7 @@ namespace Server.Factions
       if (faction.Tithe >= 0 && faction.Tithe <= 100 && faction.Tithe % 10 == 0)
         AddHtmlLocalized(125, 80, 350, 20, 1011480 + faction.Tithe / 10);
       else
-        AddHtml(125, 80, 350, 20, faction.Tithe + "%");
+        AddHtml(125, 80, 350, 20, $"{faction.Tithe}%");
 
 
       AddButton(20, 400, 4005, 4007, 1);

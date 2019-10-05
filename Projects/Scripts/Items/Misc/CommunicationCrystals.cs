@@ -342,9 +342,9 @@ namespace Server.Items
       string text = $"{from.Name} says {message}";
 
       if (RootParent is Mobile mobile)
-        mobile.SendMessage(0x2B2, "Crystal: " + text);
+        mobile.SendMessage(0x2B2, $"Crystal: {text}");
       else if (RootParent is Item item)
-        item.PublicOverheadMessage(MessageType.Regular, 0x2B2, false, "Crystal: " + text);
+        item.PublicOverheadMessage(MessageType.Regular, 0x2B2, false, $"Crystal: {text}");
       else
         PublicOverheadMessage(MessageType.Regular, 0x2B2, false, text);
     }

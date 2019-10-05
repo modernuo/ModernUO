@@ -234,7 +234,7 @@ namespace Server.Items
             || Core.SE && petPatient is FactionWarHorse && petPatient.ControlMaster == Healer
         ) //TODO: Dbl check doesn't check for faction of the horse here?
         {
-          if (Patient.Map == null || !Patient.Map.CanFit(Patient.Location, 16, false, false))
+          if (Patient.Map?.CanFit(Patient.Location, 16, false, false) != true)
           {
             healerNumber = 501042; // Target can not be resurrected at that location.
             patientNumber = 502391; // Thou can not be resurrected there!
@@ -442,7 +442,7 @@ namespace Server.Items
       {
         healer.SendLocalizedMessage(500955); // That being is not damaged!
       }
-      else if (!patient.Alive && (patient.Map == null || !patient.Map.CanFit(patient.Location, 16, false, false)))
+      else if (!patient.Alive && patient.Map?.CanFit(patient.Location, 16, false, false) != true)
       {
         healer.SendLocalizedMessage(501042); // Target cannot be resurrected at that location.
       }

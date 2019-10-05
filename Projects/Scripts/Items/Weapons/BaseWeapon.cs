@@ -425,13 +425,13 @@ namespace Server.Items
         string modName = Serial.ToString();
 
         if (strBonus != 0)
-          m.AddStatMod(new StatMod(StatType.Str, modName + "Str", strBonus, TimeSpan.Zero));
+          m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
 
         if (dexBonus != 0)
-          m.AddStatMod(new StatMod(StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero));
+          m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
 
         if (intBonus != 0)
-          m.AddStatMod(new StatMod(StatType.Int, modName + "Int", intBonus, TimeSpan.Zero));
+          m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
       }
 
       from.NextCombatTime = Core.TickCount + (int)GetDelay(from).TotalMilliseconds;
@@ -477,9 +477,9 @@ namespace Server.Items
 
         string modName = Serial.ToString();
 
-        m.RemoveStatMod(modName + "Str");
-        m.RemoveStatMod(modName + "Dex");
-        m.RemoveStatMod(modName + "Int");
+        m.RemoveStatMod($"{modName}Str");
+        m.RemoveStatMod($"{modName}Dex");
+        m.RemoveStatMod($"{modName}Int");
 
         if (weapon != null)
           m.NextCombatTime = Core.TickCount + (int)weapon.GetDelay(m).TotalMilliseconds;
@@ -559,11 +559,11 @@ namespace Server.Items
       BaseWeapon atkWeapon = attacker.Weapon as BaseWeapon;
       BaseWeapon defWeapon = defender.Weapon as BaseWeapon;
 
-      Skill atkSkill = attacker.Skills[atkWeapon.Skill];
+      Skill atkSkill = attacker.Skills[atkWeapon?.Skill ?? SkillName.Wrestling];
       // Skill defSkill = defender.Skills[defWeapon.Skill];
 
-      double atkValue = atkWeapon.GetAttackSkillValue(attacker, defender);
-      double defValue = defWeapon.GetDefendSkillValue(attacker, defender);
+      double atkValue = atkWeapon?.GetAttackSkillValue(attacker, defender) ?? 0.0;
+      double defValue = defWeapon?.GetDefendSkillValue(attacker, defender) ?? 0.0;
 
       double ourValue, theirValue;
 
@@ -832,8 +832,8 @@ namespace Server.Items
 
       if (shield != null)
       {
-        chance = (parry - bushidoNonRacial) /
-                   400.0; // As per OSI, no genitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
+        // As per OSI, no genitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
+        chance = (parry - bushidoNonRacial) / 400.0;
 
         if (chance < 0) // chance shouldn't go below 0
           chance = 0;
@@ -858,7 +858,7 @@ namespace Server.Items
 
       BaseWeapon weapon = defender.Weapon as BaseWeapon;
 
-      double divisor = weapon.Layer == Layer.OneHanded ? 48000.0 : 41140.0;
+      double divisor = weapon?.Layer == Layer.OneHanded ? 48000.0 : 41140.0;
 
       chance = parry * bushido / divisor;
 
@@ -1207,10 +1207,7 @@ namespace Server.Items
           type = 3;
         }
 
-        if (nrgy < low)
-        {
-          type = 4;
-        }
+        if (nrgy < low) type = 4;
 
         phys = fire = cold = pois = nrgy = chaos = direct = 0;
 
@@ -1251,7 +1248,7 @@ namespace Server.Items
         int lifeLeech = 0;
         int stamLeech = 0;
         int manaLeech = 0;
-        int wraithLeech = 0;
+        int wraithLeech;
 
         if ((int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLeechHits) * propertyBonus) >
             Utility.Random(100))
@@ -1458,8 +1455,8 @@ namespace Server.Items
     public virtual CheckSlayerResult CheckSlayers(Mobile attacker, Mobile defender)
     {
       BaseWeapon atkWeapon = attacker.Weapon as BaseWeapon;
-      SlayerEntry atkSlayer = SlayerGroup.GetEntryByName(atkWeapon.Slayer);
-      SlayerEntry atkSlayer2 = SlayerGroup.GetEntryByName(atkWeapon.Slayer2);
+      SlayerEntry atkSlayer = SlayerGroup.GetEntryByName(atkWeapon?.Slayer ?? SlayerName.None);
+      SlayerEntry atkSlayer2 = SlayerGroup.GetEntryByName(atkWeapon?.Slayer2 ?? SlayerName.None);
 
       if (atkWeapon is ButchersWarCleaver && TalismanSlayer.Slays(TalismanSlayerName.Bovine, defender))
         return CheckSlayerResult.Slayer;
@@ -1914,13 +1911,6 @@ namespace Server.Items
           switch (Animation)
           {
             default:
-            case WeaponAnimation.Wrestle:
-            case WeaponAnimation.Bash1H:
-            case WeaponAnimation.Pierce1H:
-            case WeaponAnimation.Slash1H:
-            case WeaponAnimation.Bash2H:
-            case WeaponAnimation.Pierce2H:
-            case WeaponAnimation.Slash2H:
               action = Utility.Random(4, 3);
               break;
             case WeaponAnimation.ShootBow: return; // 7
@@ -1934,27 +1924,19 @@ namespace Server.Items
           if (!from.Mounted)
             action = (int)Animation;
           else
-            switch (Animation)
+            action = Animation switch
             {
-              default:
-              case WeaponAnimation.Wrestle:
-              case WeaponAnimation.Bash1H:
-              case WeaponAnimation.Pierce1H:
-              case WeaponAnimation.Slash1H:
-                action = 26;
-                break;
-              case WeaponAnimation.Bash2H:
-              case WeaponAnimation.Pierce2H:
-              case WeaponAnimation.Slash2H:
-                action = 29;
-                break;
-              case WeaponAnimation.ShootBow:
-                action = 27;
-                break;
-              case WeaponAnimation.ShootXBow:
-                action = 28;
-                break;
-            }
+              WeaponAnimation.Wrestle => 26,
+              WeaponAnimation.Bash1H => 26,
+              WeaponAnimation.Pierce1H => 26,
+              WeaponAnimation.Slash1H => 26,
+              WeaponAnimation.Bash2H => 29,
+              WeaponAnimation.Pierce2H => 29,
+              WeaponAnimation.Slash2H => 29,
+              WeaponAnimation.ShootBow => 27,
+              WeaponAnimation.ShootXBow => 28,
+              _ => 26
+            };
 
           break;
         }
@@ -1999,65 +1981,27 @@ namespace Server.Items
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
-      int oreType;
-
-      switch (m_Resource)
+      var oreType = m_Resource switch
       {
-        case CraftResource.DullCopper:
-          oreType = 1053108;
-          break; // dull copper
-        case CraftResource.ShadowIron:
-          oreType = 1053107;
-          break; // shadow iron
-        case CraftResource.Copper:
-          oreType = 1053106;
-          break; // copper
-        case CraftResource.Bronze:
-          oreType = 1053105;
-          break; // bronze
-        case CraftResource.Gold:
-          oreType = 1053104;
-          break; // golden
-        case CraftResource.Agapite:
-          oreType = 1053103;
-          break; // agapite
-        case CraftResource.Verite:
-          oreType = 1053102;
-          break; // verite
-        case CraftResource.Valorite:
-          oreType = 1053101;
-          break; // valorite
-        case CraftResource.SpinedLeather:
-          oreType = 1061118;
-          break; // spined
-        case CraftResource.HornedLeather:
-          oreType = 1061117;
-          break; // horned
-        case CraftResource.BarbedLeather:
-          oreType = 1061116;
-          break; // barbed
-        case CraftResource.RedScales:
-          oreType = 1060814;
-          break; // red
-        case CraftResource.YellowScales:
-          oreType = 1060818;
-          break; // yellow
-        case CraftResource.BlackScales:
-          oreType = 1060820;
-          break; // black
-        case CraftResource.GreenScales:
-          oreType = 1060819;
-          break; // green
-        case CraftResource.WhiteScales:
-          oreType = 1060821;
-          break; // white
-        case CraftResource.BlueScales:
-          oreType = 1060815;
-          break; // blue
-        default:
-          oreType = 0;
-          break;
-      }
+        CraftResource.DullCopper => 1053108,
+        CraftResource.ShadowIron => 1053107,
+        CraftResource.Copper => 1053106,
+        CraftResource.Bronze => 1053105,
+        CraftResource.Gold => 1053104,
+        CraftResource.Agapite => 1053103,
+        CraftResource.Verite => 1053102,
+        CraftResource.Valorite => 1053101,
+        CraftResource.SpinedLeather => 1061118,
+        CraftResource.HornedLeather => 1061117,
+        CraftResource.BarbedLeather => 1061116,
+        CraftResource.RedScales => 1060814,
+        CraftResource.YellowScales => 1060818,
+        CraftResource.BlackScales => 1060820,
+        CraftResource.GreenScales => 1060819,
+        CraftResource.WhiteScales => 1060821,
+        CraftResource.BlueScales => 1060815,
+        _ => 0
+      };
 
       if (oreType != 0)
         list.Add(1053099, "#{0}\t{1}", oreType, GetNameString()); // ~1_oretype~ ~2_armortype~
@@ -2160,7 +2104,7 @@ namespace Server.Items
       if (Core.ML && ranged?.Balanced == true)
         list.Add(1072792); // Balanced
 
-      if ((prop = WeaponAttributes.UseBestSkill) != 0)
+      if (WeaponAttributes.UseBestSkill != 0)
         list.Add(1060400); // use best weapon skill
 
       if ((prop = GetDamageBonus() + Attributes.WeaponDamage) != 0)
@@ -2262,7 +2206,7 @@ namespace Server.Items
       if ((prop = Attributes.RegenMana) != 0)
         list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
 
-      if ((prop = Attributes.NightSight) != 0)
+      if (Attributes.NightSight != 0)
         list.Add(1060441); // night sight
 
       if ((prop = Attributes.ReflectPhysical) != 0)
@@ -2277,7 +2221,7 @@ namespace Server.Items
       if ((prop = WeaponAttributes.SelfRepair) != 0)
         list.Add(1060450, prop.ToString()); // self repair ~1_val~
 
-      if ((prop = Attributes.SpellChanneling) != 0)
+      if (Attributes.SpellChanneling != 0)
         list.Add(1060482); // spell channeling
 
       if ((prop = Attributes.SpellDamage) != 0)
@@ -3551,13 +3495,13 @@ namespace Server.Items
         string modName = Serial.ToString();
 
         if (strBonus != 0)
-          parentMobile.AddStatMod(new StatMod(StatType.Str, modName + "Str", strBonus, TimeSpan.Zero));
+          parentMobile.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
 
         if (dexBonus != 0)
-          parentMobile.AddStatMod(new StatMod(StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero));
+          parentMobile.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
 
         if (intBonus != 0)
-          parentMobile.AddStatMod(new StatMod(StatType.Int, modName + "Int", intBonus, TimeSpan.Zero));
+          parentMobile.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
       }
 
       parentMobile?.CheckStatTimers();

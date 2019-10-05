@@ -52,18 +52,13 @@ namespace Server.Items
       {
         m_BagOfSendingHue = value;
 
-        switch (value)
+        Hue = value switch
         {
-          case BagOfSendingHue.Yellow:
-            Hue = 0x8A5;
-            break;
-          case BagOfSendingHue.Blue:
-            Hue = 0x8AD;
-            break;
-          case BagOfSendingHue.Red:
-            Hue = 0x89B;
-            break;
-        }
+          BagOfSendingHue.Yellow => 0x8A5,
+          BagOfSendingHue.Blue => 0x8AD,
+          BagOfSendingHue.Red => 0x89B,
+          _ => Hue
+        };
       }
     }
 
@@ -111,12 +106,12 @@ namespace Server.Items
 
     public static BagOfSendingHue RandomHue()
     {
-      switch (Utility.Random(3))
+      return Utility.Random(3) switch
       {
-        case 0: return BagOfSendingHue.Yellow;
-        case 1: return BagOfSendingHue.Blue;
-        default: return BagOfSendingHue.Red;
-      }
+        0 => BagOfSendingHue.Yellow,
+        1 => BagOfSendingHue.Blue,
+        _ => BagOfSendingHue.Red
+      };
     }
 
     public override void GetProperties(ObjectPropertyList list)

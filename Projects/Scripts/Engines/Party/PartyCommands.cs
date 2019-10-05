@@ -98,7 +98,7 @@ namespace Server.Engines.PartySystem
 
       Party p = Party.Get(leader);
 
-      if (leader == null || p == null || !p.Candidates.Contains(from))
+      if (leader == null || p?.Candidates.Contains(from) != true)
         from.SendLocalizedMessage(3000222); // No one has invited you to be in a party.
       else if (p.Members.Count + p.Candidates.Count <= Party.Capacity)
         p.OnAccept(from);
@@ -111,7 +111,7 @@ namespace Server.Engines.PartySystem
 
       Party p = Party.Get(leader);
 
-      if (leader == null || p == null || !p.Candidates.Contains(from))
+      if (leader == null || p?.Candidates.Contains(from) != true)
         from.SendLocalizedMessage(3000222); // No one has invited you to be in a party.
       else
         p.OnDecline(from, leader);

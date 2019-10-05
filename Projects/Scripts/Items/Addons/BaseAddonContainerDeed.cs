@@ -79,12 +79,11 @@ namespace Server.Items
 
       int version = reader.ReadInt();
 
-      switch (version)
+      m_Resource = version switch
       {
-        case 1:
-          m_Resource = (CraftResource)reader.ReadInt();
-          break;
-      }
+        1 => (CraftResource)reader.ReadInt(),
+        _ => m_Resource
+      };
     }
 
     public override void OnDoubleClick(Mobile from)

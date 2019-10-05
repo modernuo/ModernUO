@@ -186,8 +186,8 @@ namespace Server.Gumps
         case AdminGumpPage.Information_Perf:
         {
           AddLabel(20, 130, LabelHue, "Cycles Per Second:");
-          AddLabel(40, 150, LabelHue, "Current: " + Core.CyclesPerSecond.ToString("N2"));
-          AddLabel(40, 170, LabelHue, "Average: " + Core.AverageCPS.ToString("N2"));
+          AddLabel(40, 150, LabelHue, $"Current: {Core.CyclesPerSecond:N2}");
+          AddLabel(40, 170, LabelHue, $"Average: {Core.AverageCPS:N2}");
 
           StringBuilder sb = new StringBuilder();
 
@@ -450,7 +450,7 @@ namespace Server.Gumps
           Account a = m.Account as Account;
 
           AddLabel(20, y, LabelHue, "Account:");
-          AddLabel(200, y, a != null && a.Banned ? RedHue : LabelHue, a == null ? "(no account)" : a.Username);
+          AddLabel(200, y, a?.Banned == true ? RedHue : LabelHue, a == null ? "(no account)" : a.Username);
           AddButton(380, y, 0xFA5, 0xFA7, GetButtonID(7, 14));
           y += 20;
 
@@ -1292,10 +1292,8 @@ namespace Server.Gumps
         IPAddress[] theirAddresses = acct.LoginIPs;
 
         for (int i = 0; i < theirAddresses.Length; ++i)
-        {
           if (!table.ContainsKey(theirAddresses[i]))
             table[theirAddresses[i]] = new List<Account>{ acct };
-        }
       }
 
       List<KeyValuePair<IPAddress, List<Account>>> tableEntries = table.ToList();
@@ -2390,33 +2388,17 @@ namespace Server.Gumps
               if (!(m_State is Account a))
                 break;
 
-              AccessLevel newLevel;
-
-              switch (index)
+              var newLevel = index switch
               {
-                default:
-                case 20:
-                  newLevel = AccessLevel.Player;
-                  break;
-                case 21:
-                  newLevel = AccessLevel.Counselor;
-                  break;
-                case 22:
-                  newLevel = AccessLevel.GameMaster;
-                  break;
-                case 23:
-                  newLevel = AccessLevel.Seer;
-                  break;
-                case 24:
-                  newLevel = AccessLevel.Administrator;
-                  break;
-                case 33:
-                  newLevel = AccessLevel.Developer;
-                  break;
-                case 34:
-                  newLevel = AccessLevel.Owner;
-                  break;
-              }
+                20 => AccessLevel.Player,
+                21 => AccessLevel.Counselor,
+                22 => AccessLevel.GameMaster,
+                23 => AccessLevel.Seer,
+                24 => AccessLevel.Administrator,
+                33 => AccessLevel.Developer,
+                34 => AccessLevel.Owner,
+                _ => AccessLevel.Player
+              };
 
               if (newLevel < from.AccessLevel || from.AccessLevel == AccessLevel.Owner)
               {

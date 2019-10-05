@@ -106,37 +106,37 @@ namespace Server.Spells
     private static bool[,] m_Rules =
     {
       /*T2A(Fel),	Khaldun,	Ilshenar,	Wind(Tram),	Wind(Fel),	Dungeons(Fel),	Solen(Tram),	Solen(Fel),	CrystalCave(Malas),	Gauntlet(Malas),	Gauntlet(Ferry),	SafeZone,	Stronghold,	ChampionSpawn,	Dungeons(Tokuno[Malas]),	LampRoom(Doom),	GuardianRoom(Doom),	Heartwood,	MLDungeons */
-/* Recall From */
+      /* Recall From */
       {
         false, false, true, true, false, false, true, false, false, false, false, true, true, false, true, false,
         false, false, false
       },
-/* Recall To */
+      /* Recall To */
       {
         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
         false, false, false, false
       },
-/* Gate From */
+      /* Gate From */
       {
         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
         false, false, false, false
       },
-/* Gate To */
+      /* Gate To */
       {
         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
         false, false, false, false
       },
-/* Mark In */
+      /* Mark In */
       {
         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
         false, false, false, false
       },
-/* Tele From */
+      /* Tele From */
       {
         true, true, true, true, true, true, true, true, false, true, true, true, false, true, true, true, true,
         false, true
       },
-/* Tele To */
+      /* Tele To */
       {
         true, true, true, true, true, true, true, true, false, true, false, false, false, true, true, true, true,
         false, false
@@ -686,9 +686,8 @@ namespace Server.Spells
       if (Region.Find(loc, map).IsPartOf<SafeZone>() &&
           (m_TravelType == TravelCheckType.TeleportTo || m_TravelType == TravelCheckType.TeleportFrom)
           && (m_TravelCaster as PlayerMobile)?.DuelPlayer?.Eliminated == false)
-      {
         return true;
-      }
+
       #endregion
 
       return false;

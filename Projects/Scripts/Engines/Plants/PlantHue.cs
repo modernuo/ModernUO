@@ -89,13 +89,13 @@ namespace Server.Engines.Plants
 
     public static PlantHue RandomFirstGeneration()
     {
-      switch (Utility.Random(4))
+      return Utility.Random(4) switch
       {
-        case 0: return PlantHue.Plain;
-        case 1: return PlantHue.Red;
-        case 2: return PlantHue.Blue;
-        default: return PlantHue.Yellow;
-      }
+        0 => PlantHue.Plain,
+        1 => PlantHue.Red,
+        2 => PlantHue.Blue,
+        _ => PlantHue.Yellow
+      };
     }
 
     public static bool CanReproduce(PlantHue plantHue) => (plantHue & PlantHue.Reproduces) != PlantHue.None;

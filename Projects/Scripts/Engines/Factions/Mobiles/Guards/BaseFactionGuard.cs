@@ -131,31 +131,16 @@ namespace Server.Factions
       {
         Direction = GetDirectionTo(m);
 
-        string warning = null;
-
-        switch (Utility.Random(6))
+        var warning = Utility.Random(6) switch
         {
-          case 0:
-            warning =
-              "I warn you, {0}, you would do well to leave this area before someone shows you the world of gray.";
-            break;
-          case 1:
-            warning = "It would be wise to leave this area, {0}, lest your head become my commanders' trophy.";
-            break;
-          case 2:
-            warning =
-              "You are bold, {0}, for one of the meager {1}. Leave now, lest you be taught the taste of dirt.";
-            break;
-          case 3:
-            warning = "Your presence here is an insult, {0}. Be gone now, knave.";
-            break;
-          case 4:
-            warning = "Dost thou wish to be hung by your toes, {0}? Nay? Then come no closer.";
-            break;
-          case 5:
-            warning = "Hey, {0}. Yeah, you. Get out of here before I beat you with a stick.";
-            break;
-        }
+          0 => "I warn you, {0}, you would do well to leave this area before someone shows you the world of gray.",
+          1 => "It would be wise to leave this area, {0}, lest your head become my commanders' trophy.",
+          2 => "You are bold, {0}, for one of the meager {1}. Leave now, lest you be taught the taste of dirt.",
+          3 => "Your presence here is an insult, {0}. Be gone now, knave.",
+          4 => "Dost thou wish to be hung by your toes, {0}? Nay? Then come no closer.",
+          5 => "Hey, {0}. Yeah, you. Get out of here before I beat you with a stick.",
+          _ => null
+        };
 
         Faction faction = Faction.Find(m);
 
@@ -188,20 +173,13 @@ namespace Server.Factions
       }
       else
       {
-        TextDefinition def = null;
-
-        switch (type)
+        var def = type switch
         {
-          case ReactionType.Ignore:
-            def = faction.Definition.GuardIgnore;
-            break;
-          case ReactionType.Warn:
-            def = faction.Definition.GuardWarn;
-            break;
-          case ReactionType.Attack:
-            def = faction.Definition.GuardAttack;
-            break;
-        }
+          ReactionType.Ignore => faction.Definition.GuardIgnore,
+          ReactionType.Warn => faction.Definition.GuardWarn,
+          ReactionType.Attack => faction.Definition.GuardAttack,
+          _ => null
+        };
 
         if (def != null && def.Number > 0)
           Say(def.Number);
@@ -229,7 +207,7 @@ namespace Server.Factions
       {
         if (e.HasKeyword(0xE6) && (Insensitive.Equals(e.Speech, "orders") || WasNamed(e.Speech))) // *orders*
         {
-          if (m_Town == null || !m_Town.IsSheriff(from))
+          if (m_Town?.IsSheriff(from) != true)
           {
             Say(1042189); // I don't work for you!
           }
@@ -319,7 +297,7 @@ namespace Server.Factions
     {
       if (m_Faction != null && Map == Faction.Facet)
       {
-        string text = string.Concat("(Guard, ", m_Faction.Definition.FriendlyName, ")");
+        string text = $"(Guard, {m_Faction.Definition.FriendlyName})";
 
         int hue = Faction.Find(from) == m_Faction ? 98 : 38;
 

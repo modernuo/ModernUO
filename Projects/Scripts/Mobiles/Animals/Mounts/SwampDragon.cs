@@ -12,7 +12,7 @@ namespace Server.Mobiles
 
     [Constructible]
     public SwampDragon(string name = "a swamp dragon") :
-		  base(name, 0x31A, 0x3EBD, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+      base(name, 0x31A, 0x3EBD, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
       BaseSoundID = 0x16A;
 

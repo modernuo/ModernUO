@@ -22,7 +22,7 @@ namespace Server.Items
 
     public override void Drink(Mobile from)
     {
-      if (Core.AOS && (from.Paralyzed || from.Frozen || from.Spell != null && from.Spell.IsCasting))
+      if (Core.AOS && (from.Paralyzed || from.Frozen || from.Spell?.IsCasting == true))
       {
         from.SendLocalizedMessage(1062725); // You can not use that potion while paralyzed.
         return;
@@ -251,7 +251,6 @@ namespace Server.Items
             return;
 
           foreach (Mobile m in m_Item.GetMobilesInRange(0))
-          {
             if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != from) &&
                 SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false))
             {
@@ -260,7 +259,6 @@ namespace Server.Items
               AOS.Damage(m, from, m_Item.GetDamage(), 0, 100, 0, 0, 0);
               m.PlaySound(0x208);
             }
-          }
         }
       }
     }

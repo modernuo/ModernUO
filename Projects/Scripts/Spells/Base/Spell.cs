@@ -403,11 +403,11 @@ namespace Server.Spells
 
       if (!Caster.CheckAlive()) return false;
 
-      if (Scroll is BaseWand && Caster.Spell != null && Caster.Spell.IsCasting)
+      if (Scroll is BaseWand && Caster.Spell?.IsCasting == true)
       {
         Caster.SendLocalizedMessage(502643); // You can not cast a spell while frozen.
       }
-      else if (Caster.Spell != null && Caster.Spell.IsCasting)
+      else if (Caster.Spell?.IsCasting == true)
       {
         Caster.SendLocalizedMessage(502642); // You are already casting a spell.
       }
@@ -432,8 +432,7 @@ namespace Server.Spells
 
       #region Dueling
 
-      else if ((Caster as PlayerMobile)?.DuelContext != null &&
-               !((PlayerMobile)Caster).DuelContext.AllowSpellCast(Caster, this))
+      else if ((Caster as PlayerMobile)?.DuelContext?.AllowSpellCast(Caster, this) == false)
       {
       }
 

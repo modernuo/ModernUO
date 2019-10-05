@@ -122,7 +122,7 @@ namespace Server.Gumps
             {
               int worth = check.Worth;
 
-              if (m_Mobile.Account != null && m_Mobile.Account.DepositGold(worth))
+              if (m_Mobile.Account?.DepositGold(worth) == true)
               {
                 check.Delete();
 

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Server.Commands;
 using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
@@ -239,7 +238,7 @@ namespace Server.Engines.Doom
     {
       LeverPuzzleRegion region = m_Tiles[index];
 
-      if (region?.Occupant != null && region.Occupant.Alive) return (PlayerMobile)region.Occupant;
+      if (region?.Occupant?.Alive == true) return (PlayerMobile)region.Occupant;
       return null;
     }
 
@@ -338,7 +337,7 @@ namespace Server.Engines.Doom
         else
         {
           for (int i = 0; i < 16; i++) /* Count matching SET bits, ie correct codes */
-            if (((MyKey >> i) & 1) == 1 && ((TheirKey >> i) & 1) == 1)
+            if ((MyKey >> i & 1) == 1 && (TheirKey >> i & 1) == 1)
               correct++;
 
           PuzzleStatus(Statue_Msg[correct], correct > 0 ? correct.ToString() : null);

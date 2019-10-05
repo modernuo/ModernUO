@@ -101,7 +101,7 @@ namespace Server.Misc
         op.WriteLine("<!DOCTYPE html>");
         op.WriteLine("<html>");
         op.WriteLine("   <head>");
-        op.WriteLine("      <title>" + ServerList.ServerName + " Server Status</title>");
+        op.WriteLine($"      <title>{ServerList.ServerName} Server Status</title>");
         op.WriteLine("   </head>");
         op.WriteLine("   <style type=\"text/css\">");
         op.WriteLine("   body { background: #999; }");
@@ -125,7 +125,7 @@ namespace Server.Misc
 
           Guild g = m.Guild as Guild;
 
-          op.Write("         <tr class=\"ruo-result " + (index % 2 == 0 ? "even" : "odd") + "\"><td>");
+          op.Write($"         <tr class=\"ruo-result {(index % 2 == 0 ? "even" : "odd")}\"><td>");
 
           if (g != null)
           {
@@ -134,7 +134,7 @@ namespace Server.Misc
 
             string title = m.GuildTitle;
 
-            title = title != null ? title.Trim() : string.Empty;
+            title = title?.Trim() ?? string.Empty;
 
             if (title.Length > 0)
             {

@@ -22,7 +22,6 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Pipelines;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Diagnostics;
@@ -30,13 +29,13 @@ using Server.Gumps;
 using Server.HuePickers;
 using Server.Items;
 using Server.Menus;
-using Server.Mobiles;
 using Server.Prompts;
 using Server.Targeting;
 using CV = Server.ClientVersion;
 
 namespace Server.Network
 {
+  [Flags]
   public enum MessageType
   {
     Regular = 0x00,
@@ -91,14 +90,6 @@ namespace Server.Network
     };
 
     public static PlayCharCallback ThirdPartyAuthCallback = null, ThirdPartyHackedCallback = null;
-
-    private static byte[] m_ThirdPartyAuthKey =
-    {
-      0x9, 0x11, 0x83, (byte)'+', 0x4, 0x17, 0x83,
-      0x5, 0x24, 0x85,
-      0x7, 0x17, 0x87,
-      0x6, 0x19, 0x88
-    };
 
     private static Dictionary<int, AuthIDPersistence> m_AuthIDWindow =
       new Dictionary<int, AuthIDPersistence>(m_AuthIDWindowSize);
@@ -320,7 +311,7 @@ namespace Server.Network
         }
         else
         {
-          int seed = (packetId << 24) | (r.ReadByte() << 16) | (r.ReadByte() << 8) | r.ReadByte();
+          int seed = packetId << 24 | r.ReadByte() << 16 | r.ReadByte() << 8 | r.ReadByte();
 
           if (seed == 0)
           {
@@ -2379,7 +2370,7 @@ namespace Server.Network
           name, female, hue,
           str, dex, intl,
           info[cityIndex],
-          new SkillNameValue[3]
+          new SkillNameValue[]
           {
             new SkillNameValue((SkillName)is1, vs1),
             new SkillNameValue((SkillName)is2, vs2),
@@ -2496,7 +2487,7 @@ namespace Server.Network
           name, female, hue,
           str, dex, intl,
           info[cityIndex],
-          new SkillNameValue[4]
+          new SkillNameValue[]
           {
             new SkillNameValue((SkillName)is1, vs1),
             new SkillNameValue((SkillName)is2, vs2),

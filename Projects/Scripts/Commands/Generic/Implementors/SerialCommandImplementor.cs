@@ -45,16 +45,6 @@ namespace Server.Commands.Generic
           {
             switch (command.ObjectTypes)
             {
-//              case ObjectTypes.Both:
-//              {
-//                if (!(obj is Item) && !(obj is Mobile))
-//                {
-//                  e.Mobile.SendMessage("This command does not work on that.");
-//                  return;
-//                }
-//
-//                break;
-//              }
               case ObjectTypes.Items:
               {
                 if (!(obj is Item))

@@ -25,15 +25,15 @@ namespace Server.Mobiles
 
     private static int GetRandomHue()
     {
-      switch (Utility.Random(5))
+      return Utility.Random(5) switch
       {
-        default:
-        case 0: return Utility.RandomBlueHue();
-        case 1: return Utility.RandomGreenHue();
-        case 2: return Utility.RandomRedHue();
-        case 3: return Utility.RandomYellowHue();
-        case 4: return Utility.RandomNeutralHue();
-      }
+        0 => Utility.RandomBlueHue(),
+        1 => Utility.RandomGreenHue(),
+        2 => Utility.RandomRedHue(),
+        3 => Utility.RandomYellowHue(),
+        4 => Utility.RandomNeutralHue(),
+        _ => Utility.RandomBlueHue()
+      };
     }
 
     public override void InitOutfit()

@@ -53,8 +53,8 @@ namespace Server.Movement
       bool checkDiagonals = ((int)d & 0x1) == 0x1;
 
       Offset(d, ref xForward, ref yForward);
-      Offset((Direction)(((int)d - 1) & 0x7), ref xLeft, ref yLeft);
-      Offset((Direction)(((int)d + 1) & 0x7), ref xRight, ref yRight);
+      Offset((Direction)((int)d - 1 & 0x7), ref xLeft, ref yLeft);
+      Offset((Direction)((int)d + 1 & 0x7), ref xRight, ref yRight);
 
       if (xForward < 0 || yForward < 0 || xForward >= map.Width || yForward >= map.Height)
       {
@@ -235,15 +235,15 @@ namespace Server.Movement
         if (m.Player && m.AccessLevel < AccessLevel.GameMaster)
         {
           if (!(Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk,
-                out _) && Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
-                m.CantWalk, out _)))
+                  out _) && Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
+                  m.CantWalk, out _)))
             moveIsOk = false;
         }
         else
         {
           if (!(Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk,
-                out _) || Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
-                m.CantWalk, out _)))
+                  out _) || Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
+                  m.CantWalk, out _)))
             moveIsOk = false;
         }
 

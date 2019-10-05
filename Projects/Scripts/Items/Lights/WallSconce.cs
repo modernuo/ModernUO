@@ -46,22 +46,14 @@ namespace Server.Items
       else if (Light == LightType.NorthBig)
         Light = LightType.WestBig;
 
-      switch (ItemID)
+      ItemID = ItemID switch
       {
-        case 0x9FB:
-          ItemID = 0xA00;
-          break;
-        case 0x9FD:
-          ItemID = 0xA02;
-          break;
-
-        case 0xA00:
-          ItemID = 0x9FB;
-          break;
-        case 0xA02:
-          ItemID = 0x9FD;
-          break;
-      }
+        0x9FB => 0xA00,
+        0x9FD => 0xA02,
+        0xA00 => 0x9FB,
+        0xA02 => 0x9FD,
+        _ => ItemID
+      };
     }
 
     public override void Serialize(GenericWriter writer)

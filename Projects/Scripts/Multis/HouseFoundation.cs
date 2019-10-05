@@ -1,6 +1,5 @@
 using System;
 using System.Buffers;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -326,33 +325,18 @@ namespace Server.Multis
             int type = (itemID - 0x675) / 16;
             DoorFacing facing = (DoorFacing)((itemID - 0x675) / 2 % 8);
 
-            switch (type)
+            door = type switch
             {
-              case 0:
-                door = new GenericHouseDoor(facing, 0x675, 0xEC, 0xF3);
-                break;
-              case 1:
-                door = new GenericHouseDoor(facing, 0x685, 0xEC, 0xF3);
-                break;
-              case 2:
-                door = new GenericHouseDoor(facing, 0x695, 0xEB, 0xF2);
-                break;
-              case 3:
-                door = new GenericHouseDoor(facing, 0x6A5, 0xEA, 0xF1);
-                break;
-              case 4:
-                door = new GenericHouseDoor(facing, 0x6B5, 0xEA, 0xF1);
-                break;
-              case 5:
-                door = new GenericHouseDoor(facing, 0x6C5, 0xEC, 0xF3);
-                break;
-              case 6:
-                door = new GenericHouseDoor(facing, 0x6D5, 0xEA, 0xF1);
-                break;
-              case 7:
-                door = new GenericHouseDoor(facing, 0x6E5, 0xEA, 0xF1);
-                break;
-            }
+              0 => new GenericHouseDoor(facing, 0x675, 0xEC, 0xF3),
+              1 => new GenericHouseDoor(facing, 0x685, 0xEC, 0xF3),
+              2 => new GenericHouseDoor(facing, 0x695, 0xEB, 0xF2),
+              3 => new GenericHouseDoor(facing, 0x6A5, 0xEA, 0xF1),
+              4 => new GenericHouseDoor(facing, 0x6B5, 0xEA, 0xF1),
+              5 => new GenericHouseDoor(facing, 0x6C5, 0xEC, 0xF3),
+              6 => new GenericHouseDoor(facing, 0x6D5, 0xEA, 0xF1),
+              7 => new GenericHouseDoor(facing, 0x6E5, 0xEA, 0xF1),
+              _ => door
+            };
           }
           else if (itemID >= 0x314 && itemID < 0x364)
           {
@@ -454,15 +438,12 @@ namespace Server.Multis
             int type = (itemID - 0x367B) / 16;
             DoorFacing facing = (DoorFacing)((itemID - 0x367B) / 2 % 8);
 
-            switch (type)
+            door = type switch
             {
-              case 0:
-                door = new GenericHouseDoor(facing, 0x367B, 0xED, 0xF4);
-                break; //crystal
-              case 1:
-                door = new GenericHouseDoor(facing, 0x368B, 0xEC, 0x3E7);
-                break; //shadow
-            }
+              0 => new GenericHouseDoor(facing, 0x367B, 0xED, 0xF4),
+              1 => new GenericHouseDoor(facing, 0x368B, 0xEC, 0x3E7),
+              _ => door
+            };
           }
           else if (itemID >= 0x409B && itemID < 0x40A3)
           {
@@ -532,13 +513,11 @@ namespace Server.Multis
         if (fixture is HouseTeleporter tp)
         {
           for (int j = 1; j <= Fixtures.Count; ++j)
-          {
             if (Fixtures[(i + j) % Fixtures.Count] is HouseTeleporter check && check.ItemID == tp.ItemID)
             {
               tp.Target = check;
               break;
             }
-          }
         }
         else if (fixture is BaseHouseDoor door)
         {
@@ -614,7 +593,6 @@ namespace Server.Multis
           }
 
           for (int j = i + 1; j < Fixtures.Count; ++j)
-          {
             if (Fixtures[j] is BaseHouseDoor check && check.Link == null && check.Facing == linkFacing &&
                 check.X - door.X == xOffset && check.Y - door.Y == yOffset && check.Z == door.Z)
             {
@@ -622,7 +600,6 @@ namespace Server.Multis
               door.Link = check;
               break;
             }
-          }
         }
       }
     }
@@ -2365,7 +2342,7 @@ namespace Server.Multis
         Write((byte)(0x20 | i));
         Write((byte)size);
         Write((byte)deflatedLength);
-        Write((byte)(((size >> 4) & 0xF0) | ((deflatedLength >> 8) & 0xF)));
+        Write((byte)(size >> 4 & 0xF0 | deflatedLength >> 8 & 0xF));
         Write(m_DeflatedBuffer, 0, deflatedLength);
 
         totalLength += 4 + deflatedLength;
@@ -2401,7 +2378,7 @@ namespace Server.Multis
         Write((byte)(9 + i));
         Write((byte)size);
         Write((byte)deflatedLength);
-        Write((byte)(((size >> 4) & 0xF0) | ((deflatedLength >> 8) & 0xF)));
+        Write((byte)(size >> 4 & 0xF0 | deflatedLength >> 8 & 0xF));
         Write(m_DeflatedBuffer, 0, deflatedLength);
 
         totalLength += 4 + deflatedLength;
@@ -2471,7 +2448,6 @@ namespace Server.Multis
         int count = m_SendQueue.Count;
 
         while (count > 0 && m_SendQueue.TryDequeue(out SendQueueEntry sqe))
-        {
           try
           {
             Packet p;
@@ -2514,7 +2490,6 @@ namespace Server.Multis
           {
             count = m_SendQueue.Count;
           }
-        }
       }
     }
 

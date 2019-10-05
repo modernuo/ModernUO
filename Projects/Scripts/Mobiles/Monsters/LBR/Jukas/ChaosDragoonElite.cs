@@ -41,44 +41,25 @@ namespace Server.Mobiles
       Karma = -8000;
 
       CraftResource res = CraftResource.None;
-      ;
 
-      switch (Utility.Random(6))
+      res = Utility.Random(6) switch
       {
-        case 0:
-          res = CraftResource.BlackScales;
-          break;
-        case 1:
-          res = CraftResource.RedScales;
-          break;
-        case 2:
-          res = CraftResource.BlueScales;
-          break;
-        case 3:
-          res = CraftResource.YellowScales;
-          break;
-        case 4:
-          res = CraftResource.GreenScales;
-          break;
-        case 5:
-          res = CraftResource.WhiteScales;
-          break;
-      }
+        0 => CraftResource.BlackScales,
+        1 => CraftResource.RedScales,
+        2 => CraftResource.BlueScales,
+        3 => CraftResource.YellowScales,
+        4 => CraftResource.GreenScales,
+        5 => CraftResource.WhiteScales,
+        _ => res
+      };
 
-      BaseWeapon melee = null;
-
-      switch (Utility.Random(3))
+      var melee = Utility.Random(3) switch
       {
-        case 0:
-          melee = new Kryss();
-          break;
-        case 1:
-          melee = new Broadsword();
-          break;
-        case 2:
-          melee = new Katana();
-          break;
-      }
+        0 => (BaseWeapon)new Kryss(),
+        1 => new Broadsword(),
+        2 => new Katana(),
+        _ => null
+      };
 
       melee.Movable = false;
       AddItem(melee);
@@ -139,36 +120,19 @@ namespace Server.Mobiles
           break;
       }
 
-      switch (Utility.Random(9))
+      res = Utility.Random(9) switch
       {
-        case 0:
-          res = CraftResource.DullCopper;
-          break;
-        case 1:
-          res = CraftResource.ShadowIron;
-          break;
-        case 2:
-          res = CraftResource.Copper;
-          break;
-        case 3:
-          res = CraftResource.Bronze;
-          break;
-        case 4:
-          res = CraftResource.Gold;
-          break;
-        case 5:
-          res = CraftResource.Agapite;
-          break;
-        case 6:
-          res = CraftResource.Verite;
-          break;
-        case 7:
-          res = CraftResource.Valorite;
-          break;
-        case 8:
-          res = CraftResource.Iron;
-          break;
-      }
+        0 => CraftResource.DullCopper,
+        1 => CraftResource.ShadowIron,
+        2 => CraftResource.Copper,
+        3 => CraftResource.Bronze,
+        4 => CraftResource.Gold,
+        5 => CraftResource.Agapite,
+        6 => CraftResource.Verite,
+        7 => CraftResource.Valorite,
+        8 => CraftResource.Iron,
+        _ => res
+      };
 
       SwampDragon mt = new SwampDragon();
       mt.HasBarding = true;

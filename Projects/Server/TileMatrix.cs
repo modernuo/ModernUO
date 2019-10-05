@@ -197,7 +197,7 @@ namespace Server
       m_StaticTiles[x][y] = value;
 
       if (m_StaticPatches[x] == null)
-        m_StaticPatches[x] = new int[(BlockHeight + 31) >> 5];
+        m_StaticPatches[x] = new int[BlockHeight + 31 >> 5];
 
       m_StaticPatches[x][y >> 5] |= 1 << (y & 0x1F);
     }
@@ -235,7 +235,7 @@ namespace Server
               {
                 int[] theirBits = shared.m_StaticPatches[x];
 
-                if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
+                if (theirBits != null && (theirBits[y >> 5] & 1 << (y & 0x1F)) != 0)
                   tiles = null;
               }
             }
@@ -293,7 +293,7 @@ namespace Server
       m_LandTiles[x][y] = value;
 
       if (m_LandPatches[x] == null)
-        m_LandPatches[x] = new int[(BlockHeight + 31) >> 5];
+        m_LandPatches[x] = new int[BlockHeight + 31 >> 5];
 
       m_LandPatches[x][y >> 5] |= 1 << (y & 0x1F);
     }
@@ -331,7 +331,7 @@ namespace Server
               {
                 int[] theirBits = shared.m_LandPatches[x];
 
-                if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
+                if (theirBits != null && (theirBits[y >> 5] & 1 << (y & 0x1F)) != 0)
                   tiles = null;
               }
             }

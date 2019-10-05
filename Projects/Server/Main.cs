@@ -585,7 +585,7 @@ namespace Server
       internal static extern bool SetConsoleCtrlHandler(ConsoleEventHandler callback, bool add);
     }
 
-#region Expansions
+    #region Expansions
 
     public static Expansion Expansion{ get; set; }
 
@@ -609,7 +609,7 @@ namespace Server
 
     public static bool TOL => Expansion >= Expansion.TOL;
 
-#endregion
+    #endregion
   }
 
   public class FileLogger : TextWriter

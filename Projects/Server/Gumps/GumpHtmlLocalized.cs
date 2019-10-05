@@ -160,20 +160,15 @@ namespace Server.Gumps
 
     public override string Compile(NetState ns)
     {
-      switch (m_Type)
+      return m_Type switch
       {
-        case GumpHtmlLocalizedType.Plain:
-          return
-            $"{{ xmfhtmlgump {m_X} {m_Y} {m_Width} {m_Height} {m_Number} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} }}";
-
-        case GumpHtmlLocalizedType.Color:
-          return
-            $"{{ xmfhtmlgumpcolor {m_X} {m_Y} {m_Width} {m_Height} {m_Number} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} {m_Color} }}";
-
-        default: // GumpHtmlLocalizedType.Args
-          return
-            $"{{ xmfhtmltok {m_X} {m_Y} {m_Width} {m_Height} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} {m_Color} {m_Number} @{m_Args}@ }}";
-      }
+        GumpHtmlLocalizedType.Plain =>
+        $"{{ xmfhtmlgump {m_X} {m_Y} {m_Width} {m_Height} {m_Number} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} }}",
+        GumpHtmlLocalizedType.Color =>
+        $"{{ xmfhtmlgumpcolor {m_X} {m_Y} {m_Width} {m_Height} {m_Number} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} {m_Color} }}",
+        _ =>
+        $"{{ xmfhtmltok {m_X} {m_Y} {m_Width} {m_Height} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} {m_Color} {m_Number} @{m_Args}@ }}"
+      };
     }
 
     public override void AppendTo(NetState ns, IGumpWriter disp)

@@ -340,7 +340,7 @@ namespace Server.Mobiles
               Skill skill = ourSkills[i];
               Skill theirSkill = theirSkills[i];
 
-              if (skill != null && skill?.Base >= 60.0 &&
+              if (skill != null && skill.Base >= 60.0 &&
                   m_Mobile.CheckTeach(skill.SkillName, e.Mobile))
               {
                 double toTeach = skill.Base / 3.0;
@@ -907,50 +907,23 @@ namespace Server.Mobiles
       if (m_Mobile.Deleted)
         return false;
 
-      switch (m_Mobile.ControlOrder)
+      return m_Mobile.ControlOrder switch
       {
-        case OrderType.None:
-          return DoOrderNone();
-
-        case OrderType.Come:
-          return DoOrderCome();
-
-        case OrderType.Drop:
-          return DoOrderDrop();
-
-        case OrderType.Friend:
-          return DoOrderFriend();
-
-        case OrderType.Unfriend:
-          return DoOrderUnfriend();
-
-        case OrderType.Guard:
-          return DoOrderGuard();
-
-        case OrderType.Attack:
-          return DoOrderAttack();
-
-        case OrderType.Patrol:
-          return DoOrderPatrol();
-
-        case OrderType.Release:
-          return DoOrderRelease();
-
-        case OrderType.Stay:
-          return DoOrderStay();
-
-        case OrderType.Stop:
-          return DoOrderStop();
-
-        case OrderType.Follow:
-          return DoOrderFollow();
-
-        case OrderType.Transfer:
-          return DoOrderTransfer();
-
-        default:
-          return false;
-      }
+        OrderType.None => DoOrderNone(),
+        OrderType.Come => DoOrderCome(),
+        OrderType.Drop => DoOrderDrop(),
+        OrderType.Friend => DoOrderFriend(),
+        OrderType.Unfriend => DoOrderUnfriend(),
+        OrderType.Guard => DoOrderGuard(),
+        OrderType.Attack => DoOrderAttack(),
+        OrderType.Patrol => DoOrderPatrol(),
+        OrderType.Release => DoOrderRelease(),
+        OrderType.Stay => DoOrderStay(),
+        OrderType.Stop => DoOrderStop(),
+        OrderType.Follow => DoOrderFollow(),
+        OrderType.Transfer => DoOrderTransfer(),
+        _ => false
+      };
     }
 
     public virtual void OnCurrentOrderChanged()
@@ -1131,7 +1104,7 @@ namespace Server.Mobiles
 
       if (pack != null)
       {
-        List<Item> list = pack?.Items;
+        List<Item> list = pack.Items;
 
         for (int i = list.Count - 1; i >= 0; --i)
           if (i < list.Count)
@@ -1629,9 +1602,10 @@ namespace Server.Mobiles
 
     public virtual bool DoBardProvoked()
     {
-      if (DateTime.UtcNow >= m_Mobile.BardEndTime && (m_Mobile.BardMaster?.Deleted != false ||
-        m_Mobile.BardMaster.Map != m_Mobile.Map || m_Mobile.GetDistanceToSqrt(m_Mobile.BardMaster) >
-        m_Mobile.RangePerception))
+      if (DateTime.UtcNow >= m_Mobile.BardEndTime &&
+          (m_Mobile.BardMaster?.Deleted != false ||
+           m_Mobile.BardMaster.Map != m_Mobile.Map || m_Mobile.GetDistanceToSqrt(m_Mobile.BardMaster) >
+           m_Mobile.RangePerception))
       {
         m_Mobile.DebugSay("I have lost my provoker");
         m_Mobile.BardProvoked = false;
@@ -1767,7 +1741,7 @@ namespace Server.Mobiles
         using (StreamWriter op = new StreamWriter("nan_transform.txt", true))
         {
           op.WriteLine(
-            $"NaN in TransformMoveDelay: {DateTime.UtcNow}, {GetType()}, {(m_Mobile == null ? "null" : m_Mobile.GetType().ToString())}, {m_Mobile.HitsMax}");
+            $"NaN in TransformMoveDelay: {DateTime.UtcNow}, {GetType()}, {m_Mobile?.GetType()}, {m_Mobile.HitsMax}");
         }
 
         return 1.0;
@@ -1791,7 +1765,7 @@ namespace Server.Mobiles
     public virtual MoveResult DoMoveImpl(Direction d)
     {
       if (m_Mobile.Deleted || m_Mobile.Frozen || m_Mobile.Paralyzed ||
-          m_Mobile.Spell != null && m_Mobile.Spell.IsCasting || m_Mobile.DisallowAllMoves)
+          m_Mobile.Spell?.IsCasting == true || m_Mobile.DisallowAllMoves)
         return MoveResult.BadState;
       if (!CheckMove())
         return MoveResult.BadState;
