@@ -48,8 +48,8 @@ namespace Server.Network
 
     public void DoWork()
     {
-      int count = m_WorkQueue.Count;
-      while (count-- > 0)
+      int count = 0;
+      while (!m_WorkQueue.IsEmpty && count++ < 250)
       {
         if (!m_WorkQueue.TryDequeue(out Work work))
           break;
