@@ -166,13 +166,14 @@ namespace Server
 
     public static string FindDataFile(string path)
     {
-      if (DataDirectories.Count == 0)
+      Configuration config = Configuration.Instance;
+      if (config.DataDirectories.Count == 0)
         throw new InvalidOperationException(
           "Attempted to FindDataFile before DataDirectories list has been filled.");
 
       string fullPath = null;
 
-      foreach (string p in DataDirectories)
+      foreach (string p in config.DataDirectories)
       {
         fullPath = Path.Combine(p, path);
 
