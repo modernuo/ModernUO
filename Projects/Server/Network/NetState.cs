@@ -522,7 +522,7 @@ namespace Server.Network
       while (true)
         try
         {
-          Packet p = await m_SendQueue?.DequeueAsync() ?? null;
+          Packet p = await m_SendQueue?.DequeueAsync();
           if (p == null)
             break;
 

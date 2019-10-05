@@ -168,7 +168,7 @@ namespace Server.Network
 
     public void Dispose()
     {
-      Interlocked.Exchange<Socket>(ref m_Socket, null)?.Close();
+      Interlocked.Exchange(ref m_Socket, null)?.Close();
       GC.SuppressFinalize(this);
     }
   }
