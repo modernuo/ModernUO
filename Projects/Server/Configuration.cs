@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Server
 {
@@ -11,6 +12,7 @@ namespace Server
 
     public static Configuration Instance => m_Configuration ??= ReadConfiguration();
 
+    [JsonPropertyName("dataDirectories")]
     public List<string> DataDirectories { get; set; } = new List<string>();
 
     private static string FilePath => Path.Join(Core.BaseDirectory, "modernuo.json");
