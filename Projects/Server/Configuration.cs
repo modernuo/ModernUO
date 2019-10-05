@@ -29,7 +29,7 @@ namespace Server
       config.DataDirectories.Add(directory);
     }
 
-    internal static Configuration ReadConfiguration()
+    private static Configuration ReadConfiguration()
     {
       Console.Write($"Reading configuration from {FilePath}...");
       Configuration config;
