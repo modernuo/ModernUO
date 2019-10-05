@@ -11,7 +11,6 @@ using Server.Misc;
 using Server.Multis;
 using Server.Network;
 using Server.Prompts;
-using Server.RemoteAdmin;
 
 namespace Server.Gumps
 {
@@ -417,8 +416,7 @@ namespace Server.Gumps
             int offset = 140 + i * 20;
 
             if (m == null)
-              AddLabelCropped(12, offset, 81, 20, LabelHue,
-                AdminNetwork.IsAuth(ns) ? "(remote admin)" : "(logging in)");
+              AddLabelCropped(12, offset, 81, 20, LabelHue, "(logging in)");
             else
               AddLabelCropped(12, offset, 81, 20, GetHueFor(m), m.Name);
             AddLabelCropped(95, offset, 81, 20, LabelHue, a == null ? "(no account)" : a.Username);
