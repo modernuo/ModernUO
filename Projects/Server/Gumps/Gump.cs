@@ -266,7 +266,6 @@ namespace Server.Gumps
       ArrayBufferWriter<byte> buffer = new ArrayBufferWriter<byte>();
       WriteLayout(buffer, strings);
 
-      Console.WriteLine("last character {0:X2}", buffer.WrittenSpan[0]);
       buffer.Write(stackalloc byte[]{0x00}); // Null Terminated
 
       Span<byte> layoutSpan = stackalloc byte[GetMaxPackedSize(buffer.WrittenCount)];

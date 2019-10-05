@@ -2106,9 +2106,7 @@ namespace Server.Mobiles
         }
       }
       else if (ReacquireOnMovement)
-      {
         ForceReacquire();
-      }
 
       InhumanSpeech speechType = SpeechType;
 
@@ -2129,10 +2127,7 @@ namespace Server.Mobiles
       if (MLQuestSystem.Enabled && CanShout && m is PlayerMobile mobile)
         CheckShout(mobile, oldLocation);
 
-      if (m_NoDupeGuards == m)
-        return;
-
-      if (!Body.IsHuman || Kills >= 5 || AlwaysMurderer || AlwaysAttackable || m.Kills < 5 ||
+      if (m_NoDupeGuards == m || !Body.IsHuman || Kills >= 5 || AlwaysMurderer || AlwaysAttackable || m.Kills < 5 ||
           !m.InRange(Location, 12) || !m.Alive)
         return;
 
@@ -3263,9 +3258,7 @@ namespace Server.Mobiles
       if (m_MLNextShout > DateTime.UtcNow || pm.Hidden || !pm.Alive)
         return;
 
-      int shoutRange = ShoutRange;
-
-      if (!InRange(pm.Location, shoutRange) || InRange(oldLocation, shoutRange) || !CanSee(pm) || !InLOS(pm))
+      if (!InRange(pm.Location, ShoutRange) || InRange(oldLocation, ShoutRange) || !CanSee(pm) || !InLOS(pm))
         return;
 
       MLQuestContext context = MLQuestSystem.GetContext(pm);

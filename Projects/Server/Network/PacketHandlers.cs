@@ -318,7 +318,7 @@ namespace Server.Network
         return -1;
       }
 
-      Console.WriteLine("Packet Handler {0:X}", handler.PacketID);
+      // Console.WriteLine("Packet Handler {0:X}", handler.PacketID);
 
       long packetLength = handler.Length;
       if (handler.Length <= 0 && r.Length >= 3)
@@ -1486,7 +1486,7 @@ namespace Server.Network
     {
       int packetID = pvSrc.ReadUInt16();
 
-      Console.WriteLine("Extended Packet: {0:X}", packetID);
+      // Console.WriteLine("Extended Packet: {0:X}", packetID);
       PacketHandler ph = GetExtendedHandler(packetID);
 
       if (ph == null)

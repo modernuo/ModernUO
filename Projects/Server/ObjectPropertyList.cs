@@ -60,7 +60,7 @@ namespace Server
 
       ReadOnlySpan<byte> body = m_Buffer.WrittenSpan;
 
-      short length = (short)(19 + body.Length);
+      ushort length = (ushort)(19 + body.Length);
       SpanWriter writer = new SpanWriter(stackalloc byte[length]);
       writer.Write((byte)0xD6); // Packet ID
       writer.Write(length); // Dynamic Length
@@ -75,33 +75,13 @@ namespace Server
       ns.Send(writer.Span);
     }
 
-    public void Add(int number)
-    {
-      if (number == 0)
-        return;
-
-      AddHash(number);
-
-      if (Header == 0)
-      {
-        Header = number;
-        HeaderArgs = "";
-      }
-
-      SpanWriter writer = new SpanWriter(m_Buffer.GetSpan(6));
-      writer.Write(number);
-      writer.Write((short)0);
-
-      m_Buffer.Advance(6);
-    }
-
     public void AddHash(int val)
     {
       m_Hash ^= val & 0x3FFFFFF;
       m_Hash ^= (val >> 26) & 0x3F;
     }
 
-    public void Add(int number, string arguments)
+    public void Add(int number, string arguments = "")
     {
       if (number == 0)
         return;
@@ -115,7 +95,8 @@ namespace Server
       }
 
       AddHash(number);
-      AddHash(arguments.GetHashCode());
+      if (arguments != "")
+        AddHash(arguments.GetHashCode());
 
       int argLength = Encoding.Unicode.GetByteCount(arguments);
       int length = 6 + argLength;
@@ -125,21 +106,6 @@ namespace Server
       writer.WriteLittleUni(arguments);
 
       m_Buffer.Advance(length);
-    }
-
-    public void Add(int number, string format, object arg0)
-    {
-      Add(number, string.Format(format, arg0));
-    }
-
-    public void Add(int number, string format, object arg0, object arg1)
-    {
-      Add(number, string.Format(format, arg0, arg1));
-    }
-
-    public void Add(int number, string format, object arg0, object arg1, object arg2)
-    {
-      Add(number, string.Format(format, arg0, arg1, arg2));
     }
 
     public void Add(int number, string format, params object[] args)
@@ -152,21 +118,6 @@ namespace Server
     public void Add(string text)
     {
       Add(GetStringNumber(), text);
-    }
-
-    public void Add(string format, string arg0)
-    {
-      Add(GetStringNumber(), string.Format(format, arg0));
-    }
-
-    public void Add(string format, string arg0, string arg1)
-    {
-      Add(GetStringNumber(), string.Format(format, arg0, arg1));
-    }
-
-    public void Add(string format, string arg0, string arg1, string arg2)
-    {
-      Add(GetStringNumber(), string.Format(format, arg0, arg1, arg2));
     }
 
     public void Add(string format, params object[] args)

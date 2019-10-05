@@ -8675,15 +8675,13 @@ namespace Server
 
     public void LocalOverheadMessage(MessageType type, int hue, bool ascii, string text)
     {
-      NetState ns = m_NetState;
-
-      if (ns == null)
+      if (m_NetState == null)
         return;
 
       if (ascii)
-        Packets.SendAsciiMessage(ns, Serial, Body, type, hue, 3, Name, text);
+        Packets.SendAsciiMessage(m_NetState, Serial, Body, type, hue, 3, Name, text);
       else
-        Packets.SendUnicodeMessage(ns, Serial, Body, type, hue, 3, Language, Name, text);
+        Packets.SendUnicodeMessage(m_NetState, Serial, Body, type, hue, 3, Language, Name, text);
     }
 
     public void LocalOverheadMessage(MessageType type, int hue, int number, string args = "")
@@ -8728,12 +8726,7 @@ namespace Server
 
     #region SendLocalizedMessage
 
-    public void SendLocalizedMessage(int number)
-    {
-      Packets.SendMessageLocalized(m_NetState, number);
-    }
-
-    public void SendLocalizedMessage(int number, string args, int hue = 0x3B2)
+    public void SendLocalizedMessage(int number, string args = "", int hue = 0x3B2)
     {
       if (hue == 0x3B2 && string.IsNullOrEmpty(args))
         Packets.SendMessageLocalized(m_NetState, number);

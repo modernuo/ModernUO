@@ -547,9 +547,9 @@ namespace Server.Network
       if (IsDisposing || BlockAllPackets)
         return;
 
-      Console.WriteLine("Packet ID {0:X}", input[0]);
-      if (input.Length >= 4 && input[0] == 0xBF)
-        Console.WriteLine("Sub-Packet {0:X}", input[3]);
+      // Console.WriteLine("Packet ID {0:X}", input[0]);
+      // if (input.Length >= 4 && input[0] == 0xBF)
+      //   Console.WriteLine("Sub-Packet {0:X}", input[3]);
 
       input.CopyTo(SendPipe.Writer.GetSpan(input.Length));
       _ = Flush(input.Length);
@@ -560,9 +560,9 @@ namespace Server.Network
       if (IsDisposing || BlockAllPackets)
         return;
 
-      Console.WriteLine("Packet ID {0:X}", input[0]);
-      if (input.Length >= 5 && input[0] == 0xBF)
-        Console.WriteLine("Sub-Packet {0:X}", input[4]);
+      // Console.WriteLine("Packet ID {0:X}", input[0]);
+      // if (input.Length >= 5 && input[0] == 0xBF)
+      //   Console.WriteLine("Sub-Packet {0:X}", input[4]);
 
       if (UseCompression)
       {

@@ -274,7 +274,7 @@ namespace Server.Buffers
     /// </summary>
     public void WriteUTF8Null(string value)
     {
-      Position += Utility.UTF8.GetBytes(value ?? "", RawSpan.Slice(Position)) + 1;
+      Position += Encoding.UTF8.GetBytes(value ?? "", RawSpan.Slice(Position)) + 1;
     }
 
     /// <summary>

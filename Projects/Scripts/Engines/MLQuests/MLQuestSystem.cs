@@ -555,8 +555,7 @@ namespace Server.Engines.MLQuests
          * Save first quest that reaches the CanOffer call.
          * If no quests are valid at all, return this quest for displaying the CanOffer error message.
          */
-        if (fallback == null)
-          fallback = quest;
+        fallback ??= quest;
 
         if (quest.CanOffer(quester, pm, context, false))
           m_EligiblePool.Add(quest);
@@ -632,10 +631,7 @@ namespace Server.Engines.MLQuests
 
       Type questType = AssemblyHandler.FindTypeByFullName(typeName);
 
-      if (questType == null)
-        return null; // no longer a type
-
-      return FindQuest(questType);
+      return questType == null ? null : FindQuest(questType);
     }
 
     public static MLQuest FindQuest(Type questType)
