@@ -40,6 +40,7 @@ namespace Server
         Span<byte> configBytes = stackalloc byte[(int)fs.Length];
         fs.Read(configBytes);
         config = JsonSerializer.Deserialize<Configuration>(Utility.UTF8WithEncoding.GetString(configBytes));
+        Console.WriteLine("done");
       }
       else
       {
