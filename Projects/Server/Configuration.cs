@@ -11,7 +11,7 @@ namespace Server
 
     public static Configuration Instance => m_Configuration ??= ReadConfiguration();
 
-    public List<string> DataDirectories { get; } = new List<string>();
+    public List<string> DataDirectories { get; set; } = new List<string>();
 
     private static string FilePath => Path.Join(Core.BaseDirectory, "modernuo.json");
 

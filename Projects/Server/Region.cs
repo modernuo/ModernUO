@@ -1072,7 +1072,7 @@ namespace Server
       Type type;
       try
       {
-        type = ScriptCompiler.FindTypeByName(s, false);
+        type = AssemblyHandler.FindTypeByName(s, false);
       }
       catch
       {

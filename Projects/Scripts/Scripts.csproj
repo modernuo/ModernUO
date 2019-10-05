@@ -3,16 +3,11 @@
   <PropertyGroup>
     <RootNamespace>Server</RootNamespace>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0'">
-    <DefineConstants>NETCORE;NETSTANDARD</DefineConstants>
     <AssemblyName>Scripts.CS</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Distribution\Assemblies\</OutputPath>
-    <OutDir>..\..\Distribution\Assemblies</OutDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
@@ -22,8 +17,7 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Distribution\Assemblies\</OutputPath>
-    <OutDir>..\..\Distribution\Assemblies</OutDir>
+    <PublishDir>..\..\Distribution\Assemblies</PublishDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
@@ -32,8 +26,7 @@
     <Content Include="SpecialSystems\README.TXT" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Server\Server.csproj">
-      <Private>false</Private>
+    <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
       <IncludeInPackage>false</IncludeInPackage>
     </ProjectReference>
   </ItemGroup>

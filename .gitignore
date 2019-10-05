@@ -6,13 +6,14 @@
 /Distribution/Saves
 /Distribution/System.IO.Pipelines.dll
 /Distribution/rdrand.so
-/Distribution/rdrand32.dll
-/Distribution/rdrand64.dll
-/Distribution/zlib32.dll
-/Distribution/zlib64.dll
+/Distribution/rdrand.dll
+/Distribution/zlib.dll
 /Projects/Scripts/obj
+/Projects/Scripts/bin
 /Projects/Server/obj
+/Projects/Server/bin
 
+*.log
 *.user
 /.idea
 /.vs

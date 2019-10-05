@@ -667,7 +667,7 @@ namespace Server.Commands
       List<Assembly> assemblies = new List<Assembly> { Core.Assembly };
 
 
-      foreach (Assembly asm in ScriptCompiler.Assemblies)
+      foreach (Assembly asm in AssemblyHandler.Assemblies)
         assemblies.Add(asm);
 
       Assembly[] asms = assemblies.ToArray();

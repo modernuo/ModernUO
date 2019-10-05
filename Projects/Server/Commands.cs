@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using Server.Network;
 
-namespace Server.Commands
+namespace Server
 {
   public delegate void CommandEventHandler(CommandEventArgs e);
 

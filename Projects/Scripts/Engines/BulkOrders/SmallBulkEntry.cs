@@ -71,7 +71,7 @@ namespace Server.Engines.BulkOrders
 
 							if ( split.Length >= 2 )
 							{
-								Type type = ScriptCompiler.FindTypeByName( split[0] );
+								Type type = AssemblyHandler.FindTypeByName( split[0] );
 								int graphic = Utility.ToInt32( split[split.Length - 1] );
 
 								if ( type != null && graphic > 0 )

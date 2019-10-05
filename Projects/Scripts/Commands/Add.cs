@@ -101,7 +101,7 @@ namespace Server.Commands
           break;
         }
 
-      Type type = ScriptCompiler.FindTypeByName(name);
+      Type type = AssemblyHandler.FindTypeByName(name);
 
       if (!IsEntity(type))
       {
@@ -241,7 +241,7 @@ namespace Server.Commands
       try
       {
         if (IsEnum(type)) return Enum.Parse(type, value, true);
-        if (IsType(type)) return ScriptCompiler.FindTypeByName(value);
+        if (IsType(type)) return AssemblyHandler.FindTypeByName(value);
         if (IsParsable(type)) return ParseParsable(type, value);
         object obj = value;
 

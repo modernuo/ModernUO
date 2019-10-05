@@ -124,7 +124,7 @@ namespace Server
       {
         string typeName = tdbReader.ReadString();
 
-        Type t = ScriptCompiler.FindTypeByFullName(typeName);
+        Type t = AssemblyHandler.FindTypeByFullName(typeName);
 
         if (t == null)
         {
@@ -703,7 +703,7 @@ namespace Server
       }
       else
       {
-        Mobiles[m.Serial] = m;
+        Mobiles.Add(m.Serial, m);
       }
     }
 
@@ -723,7 +723,7 @@ namespace Server
       }
       else
       {
-        Items[item.Serial] = item;
+        Items.Add(item.Serial, item);
       }
     }
 

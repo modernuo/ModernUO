@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,7 +7,7 @@
     </StartupObject>
     <AssemblyName>ModernUO</AssemblyName>
     <Win32Resource />
-    <Version>3.0.0</Version>
+    <Version>0.0.1</Version>
     <Authors>Kamron Batman</Authors>
     <Company>ModernUO</Company>
     <Product>ModernUO</Product>
@@ -15,54 +15,43 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0'">
-    <DefineConstants>NETCORE;NETSTANDARD</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Distribution\</OutputPath>
-    <OutDir>..\..\Distribution</OutDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PublishDir>..\..\Distribution</PublishDir>
+    <OutDir>..\..\Distribution</OutDir>
+    <OutputPath>..\..\Distribution</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <OutputPath>..\..\Distribution\</OutputPath>
-    <OutDir>..\..\Distribution</OutDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
     <PublishDir>..\..\Distribution</PublishDir>
+    <OutDir>..\..\Distribution</OutDir>
+    <OutputPath>..\..\Distribution</OutputPath>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Assemblies\rdrand.so">
+    <Content Include="Assemblies\zlib.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
+      <Link>zlib.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\rdrand.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
+      <Link>rdrand.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\rdrand.so" Condition="'$(RuntimeIdentifier)'=='osx-x64' OR '$(RuntimeIdentifier)'=='linux-x64'">
       <Link>rdrand.so</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assemblies\rdrand32.dll">
-      <Link>rdrand32.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assemblies\rdrand64.dll">
-      <Link>rdrand64.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assemblies\zlib32.dll">
-      <Link>zlib32.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assemblies\zlib64.dll">
-      <Link>zlib64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System.IO.Pipelines">
-      <HintPath>Assemblies\System.IO.Pipelines.dll</HintPath>
-      <IncludeInPackage>false</IncludeInPackage>
-    </Reference>
+    <PackageReference Include="System.IO.Pipelines" Version="4.6.0" />
   </ItemGroup>
 </Project>

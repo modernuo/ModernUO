@@ -104,7 +104,7 @@ namespace Server.Engines.BulkOrders
 			string type = reader.ReadString();
 
 			if ( type != null )
-				realType = ScriptCompiler.FindTypeByFullName( type );
+				realType = AssemblyHandler.FindTypeByFullName( type );
 
 			Details = new SmallBulkEntry( realType, reader.ReadInt(), reader.ReadInt() );
 		}

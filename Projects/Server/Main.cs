@@ -442,19 +442,19 @@ namespace Server
         RandomImpl.IsHardwareRNG ? "Hardware" : "Software");
 
       // Load Assembly Scripts.CS.dll
-      ScriptCompiler.LoadScripts();
+      AssemblyHandler.LoadScripts();
 
-      ScriptCompiler.Invoke("Configure");
+      AssemblyHandler.Invoke("Configure");
 
       Region.Load();
       World.Load();
 
-      ScriptCompiler.Invoke("Initialize");
+      AssemblyHandler.Invoke("Initialize");
 
       // Start accepting new connections
       MessagePump = new MessagePump();
 
-      ScriptCompiler.Invoke("RegisterListeners");
+      AssemblyHandler.Invoke("RegisterListeners");
 
       timerThread.Start();
 
@@ -513,7 +513,7 @@ namespace Server
 
       VerifySerialization(ca);
 
-      foreach (Assembly a in ScriptCompiler.Assemblies.Where(a => a != ca)) VerifySerialization(a);
+      foreach (Assembly a in AssemblyHandler.Assemblies.Where(a => a != ca)) VerifySerialization(a);
     }
 
     private static void VerifyType(Type t)
