@@ -80,8 +80,6 @@ namespace Server
 
     private static readonly Type[] m_SerialTypeArray = { typeof(Serial) };
 
-    public static Configuration m_Configuration = new Configuration();
-
     public static MessagePump MessagePump{ get; set; }
 
     public static bool Profiling
@@ -213,13 +211,14 @@ namespace Server
 
     public static string FindDataFile(string path)
     {
-      if (m_Configuration.DataDirectories.Count == 0)
+      Configuration config = Configuration.Instance;
+      if (config.DataDirectories.Count == 0)
         throw new InvalidOperationException(
           "Attempted to FindDataFile before DataDirectories list has been filled.");
 
       string fullPath = null;
 
-      foreach (string p in m_Configuration.DataDirectories)
+      foreach (string p in config.DataDirectories)
       {
         fullPath = Path.Combine(p, path);
 
@@ -398,8 +397,6 @@ namespace Server
 #endif
       Console.ResetColor();
       Console.WriteLine();
-
-      m_Configuration = Configuration.ReadConfiguration();
 
       Timer.TimerThread ttObj = new Timer.TimerThread();
       timerThread = new Thread(ttObj.TimerMain)
