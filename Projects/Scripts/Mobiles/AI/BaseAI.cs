@@ -340,7 +340,7 @@ namespace Server.Mobiles
               Skill skill = ourSkills[i];
               Skill theirSkill = theirSkills[i];
 
-              if (skill != null && skill?.Base >= 60.0 &&
+              if (skill != null && skill.Base >= 60.0 &&
                   m_Mobile.CheckTeach(skill.SkillName, e.Mobile))
               {
                 double toTeach = skill.Base / 3.0;
@@ -1104,7 +1104,7 @@ namespace Server.Mobiles
 
       if (pack != null)
       {
-        List<Item> list = pack?.Items;
+        List<Item> list = pack.Items;
 
         for (int i = list.Count - 1; i >= 0; --i)
           if (i < list.Count)
@@ -1602,9 +1602,10 @@ namespace Server.Mobiles
 
     public virtual bool DoBardProvoked()
     {
-      if (DateTime.UtcNow >= m_Mobile.BardEndTime && (m_Mobile.BardMaster?.Deleted != false ||
-        m_Mobile.BardMaster.Map != m_Mobile.Map || m_Mobile.GetDistanceToSqrt(m_Mobile.BardMaster) >
-        m_Mobile.RangePerception))
+      if (DateTime.UtcNow >= m_Mobile.BardEndTime &&
+          (m_Mobile.BardMaster?.Deleted != false ||
+           m_Mobile.BardMaster.Map != m_Mobile.Map || m_Mobile.GetDistanceToSqrt(m_Mobile.BardMaster) >
+           m_Mobile.RangePerception))
       {
         m_Mobile.DebugSay("I have lost my provoker");
         m_Mobile.BardProvoked = false;
@@ -1740,7 +1741,7 @@ namespace Server.Mobiles
         using (StreamWriter op = new StreamWriter("nan_transform.txt", true))
         {
           op.WriteLine(
-            $"NaN in TransformMoveDelay: {DateTime.UtcNow}, {GetType()}, {m_Mobile?.GetType().ToString() ?? "null"}, {m_Mobile.HitsMax}");
+            $"NaN in TransformMoveDelay: {DateTime.UtcNow}, {GetType()}, {m_Mobile?.GetType()}, {m_Mobile.HitsMax}");
         }
 
         return 1.0;

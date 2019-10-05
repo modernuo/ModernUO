@@ -2709,7 +2709,7 @@ namespace Server.Network
 
   public sealed class SeasonChange : Packet
   {
-    private static SeasonChange[][] m_Cache = new SeasonChange[5][]
+    private static SeasonChange[][] m_Cache = new SeasonChange[][]
     {
       new SeasonChange[2],
       new SeasonChange[2],
@@ -3798,7 +3798,7 @@ namespace Server.Network
   [Flags]
   public enum ThirdPartyFeature : ulong
   {
-    FilterWeather = 1 << 0,
+    FilterWeather = 1,
     FilterLight = 1 << 1,
 
     SmartTarget = 1 << 2,
@@ -4005,35 +4005,6 @@ namespace Server.Network
                  CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
 
       m_Stream.Write((int)(flags | CharacterList.AdditionalFlags)); // Additional Flags
-
-/*      ThirdPartyFeature disabled = FeatureProtection.DisabledFeatures;
-
-      if (disabled != 0)
-      {
-        if (m_MD5Provider == null)
-          m_MD5Provider = new MD5CryptoServiceProvider();
-
-        m_Stream.UnderlyingStream.Flush();
-
-        byte[] hashCode = m_MD5Provider.ComputeHash(m_Stream.UnderlyingStream.GetBuffer(), 0,
-          (int)m_Stream.UnderlyingStream.Length);
-        byte[] buffer = new byte[28];
-
-        for (int i = 0; i < count; ++i)
-        {
-          Utility.RandomBytes(buffer);
-
-          m_Stream.Seek(35 + i * 60, SeekOrigin.Begin);
-          m_Stream.Write(buffer, 0, buffer.Length);
-        }
-
-        m_Stream.Seek(35, SeekOrigin.Begin);
-        m_Stream.Write((int)((long)disabled >> 32));
-        m_Stream.Write((int)disabled);
-
-        m_Stream.Seek(95, SeekOrigin.Begin);
-        m_Stream.Write(hashCode, 0, hashCode.Length);
-      }*/
     }
   }
 

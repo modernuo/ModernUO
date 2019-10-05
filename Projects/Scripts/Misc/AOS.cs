@@ -136,7 +136,7 @@ namespace Server
 
       #region Dragon Barding
 
-      if (@from?.Player != true && m.Player && m.Mount is SwampDragon pet)
+      if (from?.Player != true && m.Player && m.Mount is SwampDragon pet)
         if (pet.HasBarding)
         {
           int percent = pet.BardingExceptional ? 20 : 10;
@@ -197,21 +197,21 @@ namespace Server
       return index switch
       {
         // TODO: Account for buffs/debuffs
-        0 => @from.GetMaxResistance(ResistanceType.Physical),
-        1 => @from.GetMaxResistance(ResistanceType.Fire),
-        2 => @from.GetMaxResistance(ResistanceType.Cold),
-        3 => @from.GetMaxResistance(ResistanceType.Poison),
-        4 => @from.GetMaxResistance(ResistanceType.Energy),
-        5 => AosAttributes.GetValue(@from, AosAttribute.DefendChance),
+        0 => from.GetMaxResistance(ResistanceType.Physical),
+        1 => from.GetMaxResistance(ResistanceType.Fire),
+        2 => from.GetMaxResistance(ResistanceType.Cold),
+        3 => from.GetMaxResistance(ResistanceType.Poison),
+        4 => from.GetMaxResistance(ResistanceType.Energy),
+        5 => AosAttributes.GetValue(from, AosAttribute.DefendChance),
         6 => 45,
-        7 => AosAttributes.GetValue(@from, AosAttribute.AttackChance),
-        8 => AosAttributes.GetValue(@from, AosAttribute.WeaponSpeed),
-        9 => AosAttributes.GetValue(@from, AosAttribute.WeaponDamage),
-        10 => AosAttributes.GetValue(@from, AosAttribute.LowerRegCost),
-        11 => AosAttributes.GetValue(@from, AosAttribute.SpellDamage),
-        12 => AosAttributes.GetValue(@from, AosAttribute.CastRecovery),
-        13 => AosAttributes.GetValue(@from, AosAttribute.CastSpeed),
-        14 => AosAttributes.GetValue(@from, AosAttribute.LowerManaCost),
+        7 => AosAttributes.GetValue(from, AosAttribute.AttackChance),
+        8 => AosAttributes.GetValue(from, AosAttribute.WeaponSpeed),
+        9 => AosAttributes.GetValue(from, AosAttribute.WeaponDamage),
+        10 => AosAttributes.GetValue(from, AosAttribute.LowerRegCost),
+        11 => AosAttributes.GetValue(from, AosAttribute.SpellDamage),
+        12 => AosAttributes.GetValue(from, AosAttribute.CastRecovery),
+        13 => AosAttributes.GetValue(from, AosAttribute.CastSpeed),
+        14 => AosAttributes.GetValue(from, AosAttribute.LowerManaCost),
         _ => 0
       };
     }

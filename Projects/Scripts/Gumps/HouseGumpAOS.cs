@@ -484,7 +484,7 @@ namespace Server.Gumps
       if (m?.Deleted != false)
         return "(unowned)";
 
-      return String.IsNullOrWhiteSpace(m.Name) ? "(no name)" : m.Name.Trim();
+      return string.IsNullOrWhiteSpace(m.Name) ? "(no name)" : m.Name.Trim();
     }
 
     private string GetDateTime(DateTime val) => val == DateTime.MinValue ? "" : val.ToString("yyyy'-'MM'-'dd HH':'mm':'ss");

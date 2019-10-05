@@ -1110,7 +1110,7 @@ namespace Server.Mobiles
         {
           SayTo(from, 503212); // You own this shop, just take what you want.
         }
-        else if (House?.IsBanned(@from) != true)
+        else if (House?.IsBanned(from) != true)
         {
           from.SendLocalizedMessage(503213); // Select the item you wish to buy.
           from.Target = new PVBuyTarget();

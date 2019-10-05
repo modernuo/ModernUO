@@ -207,7 +207,7 @@ namespace Server.Items
     private void SalvageCloth(Mobile from)
     {
       Scissors scissors = from.Backpack.FindItemByType<Scissors>();
-      
+
       if (scissors == null)
       {
         from.SendLocalizedMessage(1079823); // You need scissors in order to salvage cloth.
@@ -236,13 +236,13 @@ namespace Server.Items
 
       from.SendLocalizedMessage(1079974,
         $"{salvaged}\t{salvaged + notSalvaged}"); // Salvaged: ~1_COUNT~/~2_NUM~ tailored items
-      
+
       Item[] items = FindItemsByType(new[]{
         typeof(Leather), typeof(Cloth), typeof(SpinedLeather), typeof(HornedLeather), typeof(BarbedLeather),
         typeof(Bandage), typeof(Bone)
       });
 
-      for (int i = 0; i < items.Length; i++) @from.AddToBackpack(items[i]);
+      for (int i = 0; i < items.Length; i++) from.AddToBackpack(items[i]);
     }
 
     private void SalvageAll(Mobile from)

@@ -559,11 +559,11 @@ namespace Server.Items
       BaseWeapon atkWeapon = attacker.Weapon as BaseWeapon;
       BaseWeapon defWeapon = defender.Weapon as BaseWeapon;
 
-      Skill atkSkill = attacker.Skills[atkWeapon.Skill];
+      Skill atkSkill = attacker.Skills[atkWeapon?.Skill ?? SkillName.Wrestling];
       // Skill defSkill = defender.Skills[defWeapon.Skill];
 
-      double atkValue = atkWeapon.GetAttackSkillValue(attacker, defender);
-      double defValue = defWeapon.GetDefendSkillValue(attacker, defender);
+      double atkValue = atkWeapon?.GetAttackSkillValue(attacker, defender) ?? 0.0;
+      double defValue = defWeapon?.GetDefendSkillValue(attacker, defender) ?? 0.0;
 
       double ourValue, theirValue;
 
@@ -832,8 +832,8 @@ namespace Server.Items
 
       if (shield != null)
       {
-        chance = (parry - bushidoNonRacial) /
-                   400.0; // As per OSI, no genitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
+        // As per OSI, no genitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
+        chance = (parry - bushidoNonRacial) / 400.0;
 
         if (chance < 0) // chance shouldn't go below 0
           chance = 0;
@@ -858,7 +858,7 @@ namespace Server.Items
 
       BaseWeapon weapon = defender.Weapon as BaseWeapon;
 
-      double divisor = weapon.Layer == Layer.OneHanded ? 48000.0 : 41140.0;
+      double divisor = weapon?.Layer == Layer.OneHanded ? 48000.0 : 41140.0;
 
       chance = parry * bushido / divisor;
 
@@ -1248,7 +1248,7 @@ namespace Server.Items
         int lifeLeech = 0;
         int stamLeech = 0;
         int manaLeech = 0;
-        int wraithLeech = 0;
+        int wraithLeech;
 
         if ((int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLeechHits) * propertyBonus) >
             Utility.Random(100))
@@ -1455,8 +1455,8 @@ namespace Server.Items
     public virtual CheckSlayerResult CheckSlayers(Mobile attacker, Mobile defender)
     {
       BaseWeapon atkWeapon = attacker.Weapon as BaseWeapon;
-      SlayerEntry atkSlayer = SlayerGroup.GetEntryByName(atkWeapon.Slayer);
-      SlayerEntry atkSlayer2 = SlayerGroup.GetEntryByName(atkWeapon.Slayer2);
+      SlayerEntry atkSlayer = SlayerGroup.GetEntryByName(atkWeapon?.Slayer ?? SlayerName.None);
+      SlayerEntry atkSlayer2 = SlayerGroup.GetEntryByName(atkWeapon?.Slayer2 ?? SlayerName.None);
 
       if (atkWeapon is ButchersWarCleaver && TalismanSlayer.Slays(TalismanSlayerName.Bovine, defender))
         return CheckSlayerResult.Slayer;
@@ -1911,13 +1911,6 @@ namespace Server.Items
           switch (Animation)
           {
             default:
-            case WeaponAnimation.Wrestle:
-            case WeaponAnimation.Bash1H:
-            case WeaponAnimation.Pierce1H:
-            case WeaponAnimation.Slash1H:
-            case WeaponAnimation.Bash2H:
-            case WeaponAnimation.Pierce2H:
-            case WeaponAnimation.Slash2H:
               action = Utility.Random(4, 3);
               break;
             case WeaponAnimation.ShootBow: return; // 7
@@ -2111,7 +2104,7 @@ namespace Server.Items
       if (Core.ML && ranged?.Balanced == true)
         list.Add(1072792); // Balanced
 
-      if ((prop = WeaponAttributes.UseBestSkill) != 0)
+      if (WeaponAttributes.UseBestSkill != 0)
         list.Add(1060400); // use best weapon skill
 
       if ((prop = GetDamageBonus() + Attributes.WeaponDamage) != 0)
@@ -2213,7 +2206,7 @@ namespace Server.Items
       if ((prop = Attributes.RegenMana) != 0)
         list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
 
-      if ((prop = Attributes.NightSight) != 0)
+      if (Attributes.NightSight != 0)
         list.Add(1060441); // night sight
 
       if ((prop = Attributes.ReflectPhysical) != 0)
@@ -2228,7 +2221,7 @@ namespace Server.Items
       if ((prop = WeaponAttributes.SelfRepair) != 0)
         list.Add(1060450, prop.ToString()); // self repair ~1_val~
 
-      if ((prop = Attributes.SpellChanneling) != 0)
+      if (Attributes.SpellChanneling != 0)
         list.Add(1060482); // spell channeling
 
       if ((prop = Attributes.SpellDamage) != 0)

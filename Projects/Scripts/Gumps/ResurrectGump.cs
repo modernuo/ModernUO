@@ -162,12 +162,12 @@ namespace Server.Gumps
       {
         VirtueLevel level = VirtueHelper.GetLevel( m_Healer, VirtueName.Compassion );
 
-        @from.Hits = level switch
+        from.Hits = level switch
         {
-          VirtueLevel.Seeker => AOS.Scale(@from.HitsMax, 20),
-          VirtueLevel.Follower => AOS.Scale(@from.HitsMax, 40),
-          VirtueLevel.Knight => AOS.Scale(@from.HitsMax, 80),
-          _ => @from.Hits
+          VirtueLevel.Seeker => AOS.Scale(from.HitsMax, 20),
+          VirtueLevel.Follower => AOS.Scale(from.HitsMax, 40),
+          VirtueLevel.Knight => AOS.Scale(from.HitsMax, 80),
+          _ => from.Hits
         };
       }
 
@@ -201,7 +201,7 @@ namespace Server.Gumps
 
       if ( !Core.AOS && from.ShortTermMurders >= 5 )
       {
-        double loss = (100.0 - (4.0 + @from.ShortTermMurders / 5.0)) / 100.0; // 5 to 15% loss
+        double loss = (100.0 - (4.0 + from.ShortTermMurders / 5.0)) / 100.0; // 5 to 15% loss
 
         if ( loss < 0.85 )
           loss = 0.85;
@@ -216,8 +216,8 @@ namespace Server.Gumps
           from.RawDex = (int)(from.RawDex * loss);
 
         for( int s = 0; s < from.Skills.Length; s++ )
-          if ( @from.Skills[s].Base * loss > 35 )
-            @from.Skills[s].Base *= loss;
+          if ( from.Skills[s].Base * loss > 35 )
+            from.Skills[s].Base *= loss;
       }
 
       if ( from.Alive && m_HitsScalar > 0 )

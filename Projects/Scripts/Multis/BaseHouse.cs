@@ -3534,7 +3534,7 @@ namespace Server.Multis
     {
       BaseHouse house = BaseHouse.FindHouseAt(item);
 
-      if (house?.IsOwner(@from) != true || !house.IsAosRules)
+      if (house?.IsOwner(from) != true || !house.IsAosRules)
         return null;
 
       ISecurable sec = null;

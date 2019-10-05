@@ -122,9 +122,9 @@ namespace Server
       World.Broadcast(0x35, true, "Generating vendor spawns for {0}, please wait.", map);
 
       for (int i = 0; i < regions.Length; ++i)
-        for (int x = 0; x < map.Width; ++x)
-          for (int y = 0; y < map.Height; ++y)
-            CheckPoint(map, regions[i].X + x, regions[i].Y + y);
+      for (int x = 0; x < map.Width; ++x)
+      for (int y = 0; y < map.Height; ++y)
+        CheckPoint(map, regions[i].X + x, regions[i].Y + y);
 
       for (int i = 0; i < m_ShopList.Count; ++i)
       {

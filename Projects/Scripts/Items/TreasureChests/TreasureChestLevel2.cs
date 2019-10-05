@@ -121,12 +121,12 @@ namespace Server.Items
           break;
 
         case 6: // Keg
-          ItemID = UseFirstItemId ? 0xe7f : 0xe7f;
+          ItemID = 0xe7f;
           GumpID = 0x3e;
           break;
 
         case 7: // Barrel
-          ItemID = UseFirstItemId ? 0xe77 : 0xe77;
+          ItemID = 0xe77;
           GumpID = 0x3e;
           break;
       }

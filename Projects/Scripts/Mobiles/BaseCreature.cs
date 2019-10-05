@@ -1863,7 +1863,7 @@ namespace Server.Mobiles
 
       if (Region.IsPartOf<SafeZone>() && m is PlayerMobile pm &&
           (pm.DuelContext?.Started != true || pm.DuelContext.Finished ||
-          pm.DuelPlayer?.Eliminated != false))
+           pm.DuelPlayer?.Eliminated != false))
         return true;
 
       #endregion

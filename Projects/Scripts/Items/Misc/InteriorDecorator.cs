@@ -196,7 +196,7 @@ namespace Server.Items
             }
           }
 
-          if (house?.IsCoOwner(@from) != true)
+          if (house?.IsCoOwner(from) != true)
           {
             from.SendLocalizedMessage(502092); // You must be in your house to do this.
           }

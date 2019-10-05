@@ -55,9 +55,9 @@ namespace Server.Items
     public override void OnDoubleClick(Mobile from)
     {
       if (IsOwner(from))
-        @from.SendGump(new OnOffGump(this));
+        from.SendGump(new OnOffGump(this));
       else
-        @from.SendLocalizedMessage(502691); // You must be the owner to use this.
+        from.SendLocalizedMessage(502691); // You must be the owner to use this.
     }
 
     public override void Serialize(GenericWriter writer)

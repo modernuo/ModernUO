@@ -23,7 +23,7 @@ namespace Server.Items
       {
         Delete();
 
-        var i = Utility.Random(@from.BAC >= 5 ? 6 : 5) switch
+        var i = Utility.Random(from.BAC >= 5 ? 6 : 5) switch
         {
           0 => (Item)new OrigamiButterfly(),
           1 => new OrigamiSwan(),

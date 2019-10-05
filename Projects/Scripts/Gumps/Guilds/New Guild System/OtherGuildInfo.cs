@@ -523,7 +523,7 @@ namespace Server.Guilds
           else if (alliance?.IsMember(guild) == true)
           {
             guild.Alliance = null; //Calls alliance.Removeguild
-//						alliance.RemoveGuild( guild );
+            // alliance.RemoveGuild( guild );
 
             m_Other.InvalidateWarNotoriety();
 

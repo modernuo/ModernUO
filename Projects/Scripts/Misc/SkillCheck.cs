@@ -264,9 +264,9 @@ namespace Server.Misc
     {
       return stat switch
       {
-        Stat.Str => (@from.StrLock == StatLockType.Down && @from.RawStr > 10),
-        Stat.Dex => (@from.DexLock == StatLockType.Down && @from.RawDex > 10),
-        Stat.Int => (@from.IntLock == StatLockType.Down && @from.RawInt > 10),
+        Stat.Str => (from.StrLock == StatLockType.Down && from.RawStr > 10),
+        Stat.Dex => (from.DexLock == StatLockType.Down && from.RawDex > 10),
+        Stat.Int => (from.IntLock == StatLockType.Down && from.RawInt > 10),
         _ => false
       };
     }
@@ -279,9 +279,9 @@ namespace Server.Misc
 
       return stat switch
       {
-        Stat.Str => (@from.StrLock == StatLockType.Up && @from.RawStr < 125),
-        Stat.Dex => (@from.DexLock == StatLockType.Up && @from.RawDex < 125),
-        Stat.Int => (@from.IntLock == StatLockType.Up && @from.RawInt < 125),
+        Stat.Str => (from.StrLock == StatLockType.Up && from.RawStr < 125),
+        Stat.Dex => (from.DexLock == StatLockType.Up && from.RawDex < 125),
+        Stat.Int => (from.IntLock == StatLockType.Up && from.RawInt < 125),
         _ => false
       };
     }

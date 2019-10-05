@@ -6902,7 +6902,7 @@ namespace Server
     public BankBox FindBankNoCreate()
     {
       if (m_BankBox?.Deleted != false || m_BankBox.Parent != this)
-         m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox;
+        m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox;
 
       return m_BankBox;
     }

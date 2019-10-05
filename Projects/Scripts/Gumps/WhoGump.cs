@@ -109,7 +109,7 @@ namespace Server.Gumps
 
     public static List<Mobile> BuildList(Mobile owner, string rawFilter)
     {
-      string filter = String.IsNullOrWhiteSpace(rawFilter) ? null : rawFilter.Trim().ToLower();
+      string filter = string.IsNullOrWhiteSpace(rawFilter) ? null : rawFilter.Trim().ToLower();
 
       List<Mobile> list = new List<Mobile>();
       List<NetState> states = NetState.Instances;

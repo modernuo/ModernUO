@@ -136,13 +136,13 @@ namespace Server.Engines.Events
     {
       Name = $"{name}'s bones";
 
-      switch( Utility.Random( 10 ) )
+      Hue = Utility.Random(10) switch
       {
-        case 0: Hue = 0xa09; break;
-        case 1: Hue = 0xa93; break;
-        case 2: Hue = 0xa47; break;
-        default: break;
-      }
+        0 => 0xa09,
+        1 => 0xa93,
+        2 => 0xa47,
+        _ => Hue
+      };
     }
 
     public PlayerBones( Serial serial )
@@ -220,7 +220,6 @@ namespace Server.Engines.Events
         case 4: PackItem( new RibCage() ); break;
         case 5: if (m_DeadPlayer?.Deleted == false) PackItem( new PlayerBones( m_DeadPlayer.Name ) );
           break;
-        default: break;
       }
 
       AddLoot( LootPack.Meager );

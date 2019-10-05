@@ -64,7 +64,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (m_Boat?.Contains(@from) == true)
+      if (m_Boat?.Contains(from) == true)
         m_Boat.BeginRename(from);
       else
         m_Boat?.BeginDryDock(from);
@@ -72,7 +72,7 @@ namespace Server.Items
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {
-      if (dropped is MapItem item && m_Boat?.CanCommand(@from) == true && m_Boat.Contains(@from))
+      if (dropped is MapItem item && m_Boat?.CanCommand(from) == true && m_Boat.Contains(from))
         m_Boat.AssociateMap(item);
 
       return false;

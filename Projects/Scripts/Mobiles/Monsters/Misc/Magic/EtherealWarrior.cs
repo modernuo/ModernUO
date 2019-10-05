@@ -72,7 +72,7 @@ namespace Server.Mobiles
         {
           m_NextResurrect = DateTime.UtcNow + ResurrectDelay;
           if (!from.Criminal && from.Kills < 5 && from.Karma > 0)
-            if (@from.Map?.CanFit(@from.Location, 16, false, false) == true)
+            if (from.Map?.CanFit(from.Location, 16, false, false) == true)
             {
               Direction = GetDirectionTo(from);
               from.PlaySound(0x1F2);

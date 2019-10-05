@@ -215,7 +215,7 @@ namespace Server.Multis
       {
         Mobile from = Owner.From;
 
-        if (!@from.CheckAlive() || m_Sign.Deleted || m_Sign.Owner?.AreThereAvailableVendorsFor(@from) != true)
+        if (!from.CheckAlive() || m_Sign.Deleted || m_Sign.Owner?.AreThereAvailableVendorsFor(from) != true)
           return;
 
         if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))

@@ -174,7 +174,7 @@ namespace Server.Items
       int deposited = 0;
       int toAdd = m_Worth;
 
-      if (AccountGold.Enabled && @from.Account?.DepositGold(toAdd) == true)
+      if (AccountGold.Enabled && from.Account?.DepositGold(toAdd) == true)
       {
         deposited = toAdd;
         toAdd = 0;

@@ -755,7 +755,7 @@ namespace Server.Engines.Craft
 
           if (allRequiredSkills && chance >= 0.0)
           {
-            if (Recipe == null || (@from as PlayerMobile)?.HasRecipe(Recipe) != false)
+            if (Recipe == null || (from as PlayerMobile)?.HasRecipe(Recipe) != false)
             {
               int badCraft = craftSystem.CanCraft(from, tool, ItemType);
 

@@ -90,14 +90,6 @@ namespace Server.Network
 
     public static PlayCharCallback ThirdPartyAuthCallback = null, ThirdPartyHackedCallback = null;
 
-    private static byte[] m_ThirdPartyAuthKey =
-    {
-      0x9, 0x11, 0x83, (byte)'+', 0x4, 0x17, 0x83,
-      0x5, 0x24, 0x85,
-      0x7, 0x17, 0x87,
-      0x6, 0x19, 0x88
-    };
-
     private static Dictionary<int, AuthIDPersistence> m_AuthIDWindow =
       new Dictionary<int, AuthIDPersistence>(m_AuthIDWindowSize);
 
@@ -2377,7 +2369,7 @@ namespace Server.Network
           name, female, hue,
           str, dex, intl,
           info[cityIndex],
-          new SkillNameValue[3]
+          new SkillNameValue[]
           {
             new SkillNameValue((SkillName)is1, vs1),
             new SkillNameValue((SkillName)is2, vs2),
@@ -2494,7 +2486,7 @@ namespace Server.Network
           name, female, hue,
           str, dex, intl,
           info[cityIndex],
-          new SkillNameValue[4]
+          new SkillNameValue[]
           {
             new SkillNameValue((SkillName)is1, vs1),
             new SkillNameValue((SkillName)is2, vs2),
