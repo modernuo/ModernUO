@@ -231,10 +231,7 @@ namespace Server
       return fullPath;
     }
 
-    public static string FindDataFile(string format, params object[] args)
-    {
-      return FindDataFile(string.Format(format, args));
-    }
+    public static string FindDataFile(string format, params object[] args) => FindDataFile(string.Format(format, args));
 
     private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
@@ -397,6 +394,14 @@ namespace Server
 #endif
       Console.ResetColor();
       Console.WriteLine();
+
+      Configuration config = Configuration.Instance;
+      foreach (string dir in config.DataDirectories.Where(dir => !Directory.Exists(dir)))
+      {
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.WriteLine("Core: Config directory {0} does not exist.", dir);
+        Console.ResetColor();
+      }
 
       Timer.TimerThread ttObj = new Timer.TimerThread();
       timerThread = new Thread(ttObj.TimerMain)
