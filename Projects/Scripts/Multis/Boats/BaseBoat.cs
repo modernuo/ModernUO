@@ -1626,21 +1626,14 @@ namespace Server.Multis
         }
       }
 
-      switch (facing)
+      ItemID = facing switch
       {
-        case Direction.North:
-          ItemID = NorthID;
-          break;
-        case Direction.East:
-          ItemID = EastID;
-          break;
-        case Direction.South:
-          ItemID = SouthID;
-          break;
-        case Direction.West:
-          ItemID = WestID;
-          break;
-      }
+        Direction.North => NorthID,
+        Direction.East => EastID,
+        Direction.South => SouthID,
+        Direction.West => WestID,
+        _ => ItemID
+      };
 
       return true;
     }

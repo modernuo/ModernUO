@@ -33,28 +33,15 @@ namespace Server.Engines.Quests.Haven
       AddItem(new LeatherGloves());
       AddItem(new LeatherGorget());
 
-      Item weapon;
-      switch (Utility.Random(6))
+      var weapon = Utility.Random(6) switch
       {
-        case 0:
-          weapon = new Broadsword();
-          break;
-        case 1:
-          weapon = new Cutlass();
-          break;
-        case 2:
-          weapon = new Katana();
-          break;
-        case 3:
-          weapon = new Longsword();
-          break;
-        case 4:
-          weapon = new Scimitar();
-          break;
-        default:
-          weapon = new VikingSword();
-          break;
-      }
+        0 => (Item)new Broadsword(),
+        1 => new Cutlass(),
+        2 => new Katana(),
+        3 => new Longsword(),
+        4 => new Scimitar(),
+        _ => new VikingSword()
+      };
 
       weapon.Movable = false;
       AddItem(weapon);

@@ -356,7 +356,7 @@ namespace Server.Guilds
 
               guild.AcceptedWars.Remove(activeWar);
 
-              if (otherAlliance != null && otherAlliance.IsMember(otherGuild))
+              if (otherAlliance?.IsMember(otherGuild) == true)
               {
                 otherAlliance.AllianceMessage(1070739,
                   guild.Alliance != null

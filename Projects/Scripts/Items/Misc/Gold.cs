@@ -73,7 +73,7 @@ namespace Server.Items
         owner = box.Owner;
       }
 
-      if (owner?.Account == null || !owner.Account.DepositGold(Amount)) return;
+      if (owner?.Account?.DepositGold(Amount) != true) return;
 
       if (tradeInfo != null)
       {

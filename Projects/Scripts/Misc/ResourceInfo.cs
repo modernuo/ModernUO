@@ -493,15 +493,14 @@ namespace Server.Items
     /// </summary>
     public static CraftResourceInfo GetInfo( CraftResource resource )
     {
-      CraftResourceInfo[] list = null;
-
-      switch ( GetType( resource ) )
+      var list = GetType(resource) switch
       {
-        case CraftResourceType.Metal: list = m_MetalInfo; break;
-        case CraftResourceType.Leather: list = Core.AOS ? m_AOSLeatherInfo : m_LeatherInfo; break;
-        case CraftResourceType.Scales: list = m_ScaleInfo; break;
-        case CraftResourceType.Wood: list = m_WoodInfo; break;
-      }
+        CraftResourceType.Metal => m_MetalInfo,
+        CraftResourceType.Leather => (Core.AOS ? m_AOSLeatherInfo : m_LeatherInfo),
+        CraftResourceType.Scales => m_ScaleInfo,
+        CraftResourceType.Wood => m_WoodInfo,
+        _ => null
+      };
 
       if ( list != null )
       {
@@ -539,15 +538,14 @@ namespace Server.Items
     /// </summary>
     public static CraftResource GetStart( CraftResource resource )
     {
-      switch ( GetType( resource ) )
+      return GetType(resource) switch
       {
-        case CraftResourceType.Metal: return CraftResource.Iron;
-        case CraftResourceType.Leather: return CraftResource.RegularLeather;
-        case CraftResourceType.Scales: return CraftResource.RedScales;
-        case CraftResourceType.Wood: return CraftResource.RegularWood;
-      }
-
-      return CraftResource.None;
+        CraftResourceType.Metal => CraftResource.Iron,
+        CraftResourceType.Leather => CraftResource.RegularLeather,
+        CraftResourceType.Scales => CraftResource.RedScales,
+        CraftResourceType.Wood => CraftResource.RegularWood,
+        _ => CraftResource.None
+      };
     }
 
     /// <summary>

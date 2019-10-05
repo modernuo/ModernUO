@@ -1117,23 +1117,14 @@ namespace Server.Mobiles
 
           if (Core.AOS && holding is SkinningKnife)
           {
-            Item leather = null;
-
-            switch (HideType)
+            var leather = HideType switch
             {
-              case HideType.Regular:
-                leather = new Leather(hides);
-                break;
-              case HideType.Spined:
-                leather = new SpinedLeather(hides);
-                break;
-              case HideType.Horned:
-                leather = new HornedLeather(hides);
-                break;
-              case HideType.Barbed:
-                leather = new BarbedLeather(hides);
-                break;
-            }
+              HideType.Regular => (Item)new Leather(hides),
+              HideType.Spined => new SpinedLeather(hides),
+              HideType.Horned => new HornedLeather(hides),
+              HideType.Barbed => new BarbedLeather(hides),
+              _ => null
+            };
 
             if (leather != null)
             {
@@ -1622,39 +1613,21 @@ namespace Server.Mobiles
         return;
       }
 
-      AIObject = null;
-
-      switch (NewAI)
+      AIObject = NewAI switch
       {
-        case AIType.AI_Melee:
-          AIObject = new MeleeAI(this);
-          break;
-        case AIType.AI_Animal:
-          AIObject = new AnimalAI(this);
-          break;
-        case AIType.AI_Berserk:
-          AIObject = new BerserkAI(this);
-          break;
-        case AIType.AI_Archer:
-          AIObject = new ArcherAI(this);
-          break;
-        case AIType.AI_Healer:
-          AIObject = new HealerAI(this);
-          break;
-        case AIType.AI_Vendor:
-          AIObject = new VendorAI(this);
-          break;
-        case AIType.AI_Mage:
-          AIObject = new MageAI(this);
-          break;
-        case AIType.AI_Predator:
-          //m_AI = new PredatorAI(this);
-          AIObject = new MeleeAI(this);
-          break;
-        case AIType.AI_Thief:
-          AIObject = new ThiefAI(this);
-          break;
-      }
+        AIType.AI_Melee => (BaseAI)new MeleeAI(this),
+        AIType.AI_Animal => new AnimalAI(this),
+        AIType.AI_Berserk => new BerserkAI(this),
+        AIType.AI_Archer => new ArcherAI(this),
+        AIType.AI_Healer => new HealerAI(this),
+        AIType.AI_Vendor => new VendorAI(this),
+        AIType.AI_Mage => new MageAI(this),
+        AIType.AI_Predator =>
+        //m_AI = new PredatorAI(this);
+        new MeleeAI(this),
+        AIType.AI_Thief => new ThiefAI(this),
+        _ => null
+      };
     }
 
     public virtual void OnTeamChange()
@@ -1791,17 +1764,14 @@ namespace Server.Mobiles
       if (bPlayerOnly && !m.Player)
         return double.MinValue;
 
-      switch (acqType)
+      return acqType switch
       {
-        case FightMode.Strongest:
-          return m.Skills.Tactics.Value + m.Str; //returns strongest mobile
-
-        case FightMode.Weakest:
-          return -m.Hits; // returns weakest mobile
-
-        default:
-          return -GetDistanceToSqrt(m); // returns closest mobile
-      }
+        FightMode.Strongest => (m.Skills.Tactics.Value + m.Str) //returns strongest mobile
+        ,
+        FightMode.Weakest => -m.Hits // returns weakest mobile
+        ,
+        _ => -GetDistanceToSqrt(m)
+      };
     }
 
     // Turn, - for left, + for right
@@ -1967,9 +1937,9 @@ namespace Server.Mobiles
 
       if (Controlled || Summoned)
       {
-        if (m_ControlMaster != null && m_ControlMaster.Player)
+        if (m_ControlMaster?.Player == true)
           m_ControlMaster.CriminalAction(false);
-        else if (m_SummonMaster != null && m_SummonMaster.Player)
+        else if (m_SummonMaster?.Player == true)
           m_SummonMaster.CriminalAction(false);
       }
     }
@@ -1999,9 +1969,9 @@ namespace Server.Mobiles
 
         if (ai.Defender == target)
         {
-          if (m_ControlMaster != null && m_ControlMaster.Player && m_ControlMaster.CanBeHarmful(target, false))
+          if (m_ControlMaster?.Player == true && m_ControlMaster.CanBeHarmful(target, false))
             m_ControlMaster.DoHarmful(target, true);
-          else if (m_SummonMaster != null && m_SummonMaster.Player && m_SummonMaster.CanBeHarmful(target, false))
+          else if (m_SummonMaster?.Player == true && m_SummonMaster.CanBeHarmful(target, false))
             m_SummonMaster.DoHarmful(target, true);
 
           return;
@@ -2797,7 +2767,7 @@ namespace Server.Mobiles
     {
       base.OnRegionChange(Old, New);
 
-      if (Controlled && Spawner is SpawnEntry se && !se.UnlinkOnTaming && (New == null || !New.AcceptsSpawnsFrom(se.Region)))
+      if (Controlled && Spawner is SpawnEntry se && !se.UnlinkOnTaming && (New?.AcceptsSpawnsFrom(se.Region) != true))
       {
         Spawner.Remove(this);
         Spawner = null;
@@ -3387,7 +3357,7 @@ namespace Server.Mobiles
     {
       get
       {
-        if (m_DeleteTimer != null && m_DeleteTimer.Running)
+        if (m_DeleteTimer?.Running == true)
           return m_DeleteTimer.Next - DateTime.UtcNow;
 
         return TimeSpan.Zero;
@@ -4442,49 +4412,29 @@ namespace Server.Mobiles
 
     public void SetFameLevel(int level)
     {
-      switch (level)
+      Fame = level switch
       {
-        case 1:
-          Fame = Utility.RandomMinMax(0, 1249);
-          break;
-        case 2:
-          Fame = Utility.RandomMinMax(1250, 2499);
-          break;
-        case 3:
-          Fame = Utility.RandomMinMax(2500, 4999);
-          break;
-        case 4:
-          Fame = Utility.RandomMinMax(5000, 9999);
-          break;
-        case 5:
-          Fame = Utility.RandomMinMax(10000, 10000);
-          break;
-      }
+        1 => Utility.RandomMinMax(0, 1249),
+        2 => Utility.RandomMinMax(1250, 2499),
+        3 => Utility.RandomMinMax(2500, 4999),
+        4 => Utility.RandomMinMax(5000, 9999),
+        5 => Utility.RandomMinMax(10000, 10000),
+        _ => Fame
+      };
     }
 
     public void SetKarmaLevel(int level)
     {
-      switch (level)
+      Karma = level switch
       {
-        case 0:
-          Karma = -Utility.RandomMinMax(0, 624);
-          break;
-        case 1:
-          Karma = -Utility.RandomMinMax(625, 1249);
-          break;
-        case 2:
-          Karma = -Utility.RandomMinMax(1250, 2499);
-          break;
-        case 3:
-          Karma = -Utility.RandomMinMax(2500, 4999);
-          break;
-        case 4:
-          Karma = -Utility.RandomMinMax(5000, 9999);
-          break;
-        case 5:
-          Karma = -Utility.RandomMinMax(10000, 10000);
-          break;
-      }
+        0 => -Utility.RandomMinMax(0, 624),
+        1 => -Utility.RandomMinMax(625, 1249),
+        2 => -Utility.RandomMinMax(1250, 2499),
+        3 => -Utility.RandomMinMax(2500, 4999),
+        4 => -Utility.RandomMinMax(5000, 9999),
+        5 => -Utility.RandomMinMax(10000, 10000),
+        _ => Karma
+      };
     }
 
     #endregion

@@ -1040,17 +1040,16 @@ namespace Server
     /// </summary>
     public static int RandomNondyedHue()
     {
-      switch (Random(6))
+      return Random(6) switch
       {
-        case 0: return RandomPinkHue();
-        case 1: return RandomBlueHue();
-        case 2: return RandomGreenHue();
-        case 3: return RandomOrangeHue();
-        case 4: return RandomRedHue();
-        case 5: return RandomYellowHue();
-      }
-
-      return 0;
+        0 => RandomPinkHue(),
+        1 => RandomBlueHue(),
+        2 => RandomGreenHue(),
+        3 => RandomOrangeHue(),
+        4 => RandomRedHue(),
+        5 => RandomYellowHue(),
+        _ => 0
+      };
     }
 
     /// <summary>

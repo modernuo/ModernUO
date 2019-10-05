@@ -19,21 +19,14 @@ namespace Server.Items
 
     public void SetFacing(Direction dir)
     {
-      switch (dir)
+      ItemID = dir switch
       {
-        case Direction.South:
-          ItemID = 0x3E4B;
-          break;
-        case Direction.North:
-          ItemID = 0x3E4E;
-          break;
-        case Direction.West:
-          ItemID = 0x3E50;
-          break;
-        case Direction.East:
-          ItemID = 0x3E55;
-          break;
-      }
+        Direction.South => 0x3E4B,
+        Direction.North => 0x3E4E,
+        Direction.West => 0x3E50,
+        Direction.East => 0x3E55,
+        _ => ItemID
+      };
     }
 
     public override void GetProperties(ObjectPropertyList list)
@@ -71,7 +64,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (m_Boat != null && m_Boat.Contains(from))
+      if (m_Boat?.Contains(@from) == true)
         m_Boat.BeginRename(from);
       else
         m_Boat?.BeginDryDock(from);
@@ -79,7 +72,7 @@ namespace Server.Items
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {
-      if (dropped is MapItem item && m_Boat != null && m_Boat.CanCommand(from) && m_Boat.Contains(from))
+      if (dropped is MapItem item && m_Boat?.CanCommand(@from) == true && m_Boat.Contains(@from))
         m_Boat.AssociateMap(item);
 
       return false;

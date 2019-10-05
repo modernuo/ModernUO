@@ -23,34 +23,18 @@ namespace Server.Engines.BulkOrders
 
       int rand = Utility.Random(8);
 
-      switch (rand)
+      entries = rand switch
       {
-        default:
-        case 0:
-          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeRing);
-          break;
-        case 1:
-          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargePlate);
-          break;
-        case 2:
-          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeChain);
-          break;
-        case 3:
-          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeAxes);
-          break;
-        case 4:
-          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeFencing);
-          break;
-        case 5:
-          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeMaces);
-          break;
-        case 6:
-          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargePolearms);
-          break;
-        case 7:
-          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeSwords);
-          break;
-      }
+        0 => LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeRing),
+        1 => LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargePlate),
+        2 => LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeChain),
+        3 => LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeAxes),
+        4 => LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeFencing),
+        5 => LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeMaces),
+        6 => LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargePolearms),
+        7 => LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeSwords),
+        _ => LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeRing)
+      };
 
       if (rand > 2 && rand < 8)
         useMaterials = false;

@@ -86,20 +86,16 @@ namespace Server
 
     private static void EventSink_VirtueMacroRequest(VirtueMacroRequestEventArgs e)
     {
-      int virtueID = 0;
-
-      switch (e.VirtueID)
+      var virtueID = e.VirtueID switch
       {
-        case 0: // Honor
-          virtueID = 107;
-          break;
-        case 1: // Sacrifice
-          virtueID = 110;
-          break;
-        case 2: // Valor;
-          virtueID = 112;
-          break;
-      }
+        0 => // Honor
+        107,
+        1 => // Sacrifice
+        110,
+        2 => // Valor;
+        112,
+        _ => 0
+      };
 
       EventSink_VirtueItemRequest(new VirtueItemRequestEventArgs(e.Mobile, e.Mobile, virtueID));
     }

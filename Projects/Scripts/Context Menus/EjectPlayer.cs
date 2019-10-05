@@ -20,8 +20,7 @@ namespace Server.ContextMenus
       if (!m_From.Alive || m_TargetHouse.Deleted || !m_TargetHouse.IsFriend(m_From))
         return;
 
-      if (m_Target is Mobile mobile)
-        m_TargetHouse.Kick(m_From, mobile);
+      m_TargetHouse.Kick(m_From, m_Target);
     }
   }
 }

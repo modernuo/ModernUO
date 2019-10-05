@@ -66,23 +66,14 @@ namespace Server.Gumps
         case 3:
         case 4:
         {
-          int offer = 0;
-
-          switch (info.ButtonID)
+          var offer = info.ButtonID switch
           {
-            case 1:
-              offer = m_Offer - 100;
-              break;
-            case 2:
-              offer = 0;
-              break;
-            case 3:
-              offer = m_Offer + 100;
-              break;
-            case 4:
-              offer = m_From.TotalGold;
-              break;
-          }
+            1 => (m_Offer - 100),
+            2 => 0,
+            3 => (m_Offer + 100),
+            4 => m_From.TotalGold,
+            _ => 0
+          };
 
           m_From.SendGump(new TithingGump(m_From, offer));
           break;

@@ -85,48 +85,22 @@ namespace Server.Items
         if (m_Item.Deleted)
           return;
 
-        Mobile spawn;
-
-        switch (Utility.Random(12))
+        var spawn = Utility.Random(12) switch
         {
-          default:
-          case 0:
-            spawn = new Skeleton();
-            break;
-          case 1:
-            spawn = new Zombie();
-            break;
-          case 2:
-            spawn = new Wraith();
-            break;
-          case 3:
-            spawn = new Spectre();
-            break;
-          case 4:
-            spawn = new Ghoul();
-            break;
-          case 5:
-            spawn = new Mummy();
-            break;
-          case 6:
-            spawn = new Bogle();
-            break;
-          case 7:
-            spawn = new RottingCorpse();
-            break;
-          case 8:
-            spawn = new BoneKnight();
-            break;
-          case 9:
-            spawn = new SkeletalKnight();
-            break;
-          case 10:
-            spawn = new Lich();
-            break;
-          case 11:
-            spawn = new LichLord();
-            break;
-        }
+          0 => (Mobile)new Skeleton(),
+          1 => new Zombie(),
+          2 => new Wraith(),
+          3 => new Spectre(),
+          4 => new Ghoul(),
+          5 => new Mummy(),
+          6 => new Bogle(),
+          7 => new RottingCorpse(),
+          8 => new BoneKnight(),
+          9 => new SkeletalKnight(),
+          10 => new Lich(),
+          11 => new LichLord(),
+          _ => new Skeleton()
+        };
 
         spawn.MoveToWorld(m_Item.Location, m_Item.Map);
 

@@ -48,7 +48,7 @@ namespace Server.Items
         return;
       }
 
-      if (Core.AOS && (from.Paralyzed || from.Frozen || from.Spell != null && from.Spell.IsCasting))
+      if (Core.AOS && (from.Paralyzed || from.Frozen || @from.Spell?.IsCasting == true))
       {
         // to prevent exploiting for pvp
         from.SendLocalizedMessage(1075857); // You cannot use that while paralyzed.

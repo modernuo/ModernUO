@@ -14,22 +14,14 @@ namespace Server.Items
 
     public void Flip()
     {
-      switch (ItemID)
+      ItemID = ItemID switch
       {
-        case 0x295C:
-          ItemID = 0x295D;
-          break;
-        case 0x295E:
-          ItemID = 0x295F;
-          break;
-
-        case 0x295D:
-          ItemID = 0x295C;
-          break;
-        case 0x295F:
-          ItemID = 0x295E;
-          break;
-      }
+        0x295C => 0x295D,
+        0x295E => 0x295F,
+        0x295D => 0x295C,
+        0x295F => 0x295E,
+        _ => ItemID
+      };
     }
 
     public override void Serialize(GenericWriter writer)

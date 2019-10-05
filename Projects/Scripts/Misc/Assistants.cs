@@ -99,7 +99,7 @@ namespace Server.Misc
       {
         Mobile m = e.Mobile;
 
-        if (m?.NetState != null && m.NetState.Running)
+        if (m?.NetState?.Running == true)
         {
           m.Send(new BeginHandshake());
 
@@ -160,7 +160,7 @@ namespace Server.Misc
         if (m == null)
           return;
 
-        if (m.NetState != null && m.NetState.Running)
+        if (m.NetState?.Running == true)
           m.NetState.Dispose();
 
         m_Dictionary.Remove(m);

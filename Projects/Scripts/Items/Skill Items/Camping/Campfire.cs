@@ -46,17 +46,12 @@ namespace Server.Items
     {
       get
       {
-        switch (ItemID)
+        return ItemID switch
         {
-          case 0xDE3:
-            return CampfireStatus.Burning;
-
-          case 0xDE9:
-            return CampfireStatus.Extinguishing;
-
-          default:
-            return CampfireStatus.Off;
-        }
+          0xDE3 => CampfireStatus.Burning,
+          0xDE9 => CampfireStatus.Extinguishing,
+          _ => CampfireStatus.Off
+        };
       }
       set
       {

@@ -146,38 +146,19 @@ namespace Server.Items
           case MiningCartType.OreEast:
             if (Ore > 0)
             {
-              Item ingots = null;
-
-              switch (Utility.Random(9))
+              var ingots = Utility.Random(9) switch
               {
-                case 0:
-                  ingots = new IronIngot();
-                  break;
-                case 1:
-                  ingots = new DullCopperIngot();
-                  break;
-                case 2:
-                  ingots = new ShadowIronIngot();
-                  break;
-                case 3:
-                  ingots = new CopperIngot();
-                  break;
-                case 4:
-                  ingots = new BronzeIngot();
-                  break;
-                case 5:
-                  ingots = new GoldIngot();
-                  break;
-                case 6:
-                  ingots = new AgapiteIngot();
-                  break;
-                case 7:
-                  ingots = new VeriteIngot();
-                  break;
-                case 8:
-                  ingots = new ValoriteIngot();
-                  break;
-              }
+                0 => (Item)new IronIngot(),
+                1 => new DullCopperIngot(),
+                2 => new ShadowIronIngot(),
+                3 => new CopperIngot(),
+                4 => new BronzeIngot(),
+                5 => new GoldIngot(),
+                6 => new AgapiteIngot(),
+                7 => new VeriteIngot(),
+                8 => new ValoriteIngot(),
+                _ => null
+              };
 
               int amount = Math.Min(10, Ore);
               ingots.Amount = amount;
@@ -203,58 +184,26 @@ namespace Server.Items
           case MiningCartType.GemEast:
             if (Gems > 0)
             {
-              Item gems = null;
-
-              switch (Utility.Random(15))
+              var gems = Utility.Random(15) switch
               {
-                case 0:
-                  gems = new Amber();
-                  break;
-                case 1:
-                  gems = new Amethyst();
-                  break;
-                case 2:
-                  gems = new Citrine();
-                  break;
-                case 3:
-                  gems = new Diamond();
-                  break;
-                case 4:
-                  gems = new Emerald();
-                  break;
-                case 5:
-                  gems = new Ruby();
-                  break;
-                case 6:
-                  gems = new Sapphire();
-                  break;
-                case 7:
-                  gems = new StarSapphire();
-                  break;
-                case 8:
-                  gems = new Tourmaline();
-                  break;
-
+                0 => (Item)new Amber(),
+                1 => new Amethyst(),
+                2 => new Citrine(),
+                3 => new Diamond(),
+                4 => new Emerald(),
+                5 => new Ruby(),
+                6 => new Sapphire(),
+                7 => new StarSapphire(),
+                8 => new Tourmaline(),
                 // Mondain's Legacy gems
-                case 9:
-                  gems = new PerfectEmerald();
-                  break;
-                case 10:
-                  gems = new DarkSapphire();
-                  break;
-                case 11:
-                  gems = new Turquoise();
-                  break;
-                case 12:
-                  gems = new EcruCitrine();
-                  break;
-                case 13:
-                  gems = new FireRuby();
-                  break;
-                case 14:
-                  gems = new BlueDiamond();
-                  break;
-              }
+                9 => new PerfectEmerald(),
+                10 => new DarkSapphire(),
+                11 => new Turquoise(),
+                12 => new EcruCitrine(),
+                13 => new FireRuby(),
+                14 => new BlueDiamond(),
+                _ => null
+              };
 
               int amount = Math.Min(5, Gems);
               gems.Amount = amount;

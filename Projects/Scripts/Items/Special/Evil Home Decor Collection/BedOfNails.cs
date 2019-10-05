@@ -74,7 +74,7 @@ namespace Server.Items
             Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x53E, 0x540));
         }
 
-        if (m_Timer == null || !m_Timer.Running)
+        if (m_Timer?.Running != true)
           (m_Timer = new InternalTimer(m)).Start();
       }
 

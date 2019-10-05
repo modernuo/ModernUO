@@ -304,33 +304,18 @@ namespace Server.Engines.Craft
           EnhanceResult res = Enhance.Invoke(from, m_CraftSystem, m_Tool, item, m_Resource, m_ResourceType,
             ref message);
 
-          switch (res)
+          message = res switch
           {
-            case EnhanceResult.NotInBackpack:
-              message = 1061005;
-              break; // The item must be in your backpack to enhance it.
-            case EnhanceResult.AlreadyEnhanced:
-              message = 1061012;
-              break; // This item is already enhanced with the properties of a special material.
-            case EnhanceResult.BadItem:
-              message = 1061011;
-              break; // You cannot enhance this type of item with the properties of the selected special material.
-            case EnhanceResult.BadResource:
-              message = 1061010;
-              break; // You must select a special material in order to enhance an item with its properties.
-            case EnhanceResult.Broken:
-              message = 1061080;
-              break; // You attempt to enhance the item, but fail catastrophically. The item is lost.
-            case EnhanceResult.Failure:
-              message = 1061082;
-              break; // You attempt to enhance the item, but fail. Some material is lost in the process.
-            case EnhanceResult.Success:
-              message = 1061008;
-              break; // You enhance the item with the properties of the special material.
-            case EnhanceResult.NoSkill:
-              message = 1044153;
-              break; // You don't have the required skills to attempt this item.
-          }
+            EnhanceResult.NotInBackpack => 1061005,
+            EnhanceResult.AlreadyEnhanced => 1061012,
+            EnhanceResult.BadItem => 1061011,
+            EnhanceResult.BadResource => 1061010,
+            EnhanceResult.Broken => 1061080,
+            EnhanceResult.Failure => 1061082,
+            EnhanceResult.Success => 1061008,
+            EnhanceResult.NoSkill => 1044153,
+            _ => message
+          };
 
           from.SendGump(new CraftGump(from, m_CraftSystem, m_Tool, message));
         }

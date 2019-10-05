@@ -49,18 +49,26 @@ namespace Server.Misc
 
       public override int RandomHair(bool female) //Random hair doesn't include baldness
       {
-        switch (Utility.Random(9))
+        return Utility.Random(9) switch
         {
-          case 0: return 0x203B; //Short
-          case 1: return 0x203C; //Long
-          case 2: return 0x203D; //Pony Tail
-          case 3: return 0x2044; //Mohawk
-          case 4: return 0x2045; //Pageboy
-          case 5: return 0x2047; //Afro
-          case 6: return 0x2049; //Pig tails
-          case 7: return 0x204A; //Krisna
-          default: return female ? 0x2046 : 0x2048; //Buns or Receding Hair
-        }
+          0 => 0x203B //Short
+          ,
+          1 => 0x203C //Long
+          ,
+          2 => 0x203D //Pony Tail
+          ,
+          3 => 0x2044 //Mohawk
+          ,
+          4 => 0x2045 //Pageboy
+          ,
+          5 => 0x2047 //Afro
+          ,
+          6 => 0x2049 //Pig tails
+          ,
+          7 => 0x204A //Krisna
+          ,
+          _ => (female ? 0x2046 : 0x2048)
+        };
       }
 
       public override bool ValidateFacialHair(bool female, int itemID)
@@ -158,17 +166,24 @@ namespace Server.Misc
 
       public override int RandomHair(bool female) //Random hair doesn't include baldness
       {
-        switch (Utility.Random(8))
+        return Utility.Random(8) switch
         {
-          case 0: return 0x2FC0; //Long Feather
-          case 1: return 0x2FC1; //Short
-          case 2: return 0x2FC2; //Mullet
-          case 3: return 0x2FCE; //Knob
-          case 4: return 0x2FCF; //Braided
-          case 5: return 0x2FD1; //Spiked
-          case 6: return female ? 0x2FCC : 0x2FBF; //Flower or Mid-long
-          default: return female ? 0x2FD0 : 0x2FCD; //Bun or Long
-        }
+          0 => 0x2FC0 //Long Feather
+          ,
+          1 => 0x2FC1 //Short
+          ,
+          2 => 0x2FC2 //Mullet
+          ,
+          3 => 0x2FCE //Knob
+          ,
+          4 => 0x2FCF //Braided
+          ,
+          5 => 0x2FD1 //Spiked
+          ,
+          6 => (female ? 0x2FCC : 0x2FBF) //Flower or Mid-long
+          ,
+          _ => (female ? 0x2FD0 : 0x2FCD)
+        };
       }
 
       public override bool ValidateFacialHair(bool female, int itemID) => itemID == 0;
@@ -239,29 +254,19 @@ namespace Server.Misc
           return 0;
         if (!female)
           return 0x4258 + Utility.Random(8);
-        switch (Utility.Random(9))
+        return Utility.Random(9) switch
         {
-          case 0:
-            return 0x4261;
-          case 1:
-            return 0x4262;
-          case 2:
-            return 0x4273;
-          case 3:
-            return 0x4274;
-          case 4:
-            return 0x4275;
-          case 5:
-            return 0x42B0;
-          case 6:
-            return 0x42B1;
-          case 7:
-            return 0x42AA;
-          case 8:
-            return 0x42AB;
-        }
-
-        return 0;
+          0 => 0x4261,
+          1 => 0x4262,
+          2 => 0x4273,
+          3 => 0x4274,
+          4 => 0x4275,
+          5 => 0x42B0,
+          6 => 0x42B1,
+          7 => 0x42AA,
+          8 => 0x42AB,
+          _ => 0
+        };
       }
 
       public override bool ValidateFacialHair(bool female, int itemID) => !female && itemID >= 0x42AD && itemID <= 0x42B0;

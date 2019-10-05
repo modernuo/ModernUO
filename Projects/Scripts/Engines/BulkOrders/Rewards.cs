@@ -381,17 +381,13 @@ namespace Server.Engines.BulkOrders
 
     private static Item CreateMiningGloves(int type)
     {
-      switch (type)
+      return type switch
       {
-        case 1:
-          return new LeatherGlovesOfMining(1);
-        case 3:
-          return new StuddedGlovesOfMining(3);
-        case 5:
-          return new RingmailGlovesOfMining(5);
-        default:
-          throw new InvalidOperationException();
-      }
+        1 => (Item)new LeatherGlovesOfMining(1),
+        3 => new StuddedGlovesOfMining(3),
+        5 => new RingmailGlovesOfMining(5),
+        _ => throw new InvalidOperationException()
+      };
     }
 
     private static Item CreateGargoylesPickaxe(int type) => new GargoylesPickaxe();
@@ -651,38 +647,35 @@ namespace Server.Engines.BulkOrders
 
     private static Item CreateStretchedHide(int type)
     {
-      switch (Utility.Random(4))
+      return Utility.Random(4) switch
       {
-        default:
-          return new SmallStretchedHideEastDeed();
-        case 1: return new SmallStretchedHideSouthDeed();
-        case 2: return new MediumStretchedHideEastDeed();
-        case 3: return new MediumStretchedHideSouthDeed();
-      }
+        1 => (Item)new SmallStretchedHideSouthDeed(),
+        2 => new MediumStretchedHideEastDeed(),
+        3 => new MediumStretchedHideSouthDeed(),
+        _ => new SmallStretchedHideEastDeed()
+      };
     }
 
     private static Item CreateTapestry(int type)
     {
-      switch (Utility.Random(4))
+      return Utility.Random(4) switch
       {
-        default:
-          return new LightFlowerTapestryEastDeed();
-        case 1: return new LightFlowerTapestrySouthDeed();
-        case 2: return new DarkFlowerTapestryEastDeed();
-        case 3: return new DarkFlowerTapestrySouthDeed();
-      }
+        1 => (Item)new LightFlowerTapestrySouthDeed(),
+        2 => new DarkFlowerTapestryEastDeed(),
+        3 => new DarkFlowerTapestrySouthDeed(),
+        _ => new LightFlowerTapestryEastDeed()
+      };
     }
 
     private static Item CreateBearRug(int type)
     {
-      switch (Utility.Random(4))
+      return Utility.Random(4) switch
       {
-        default:
-          return new BrownBearRugEastDeed();
-        case 1: return new BrownBearRugSouthDeed();
-        case 2: return new PolarBearRugEastDeed();
-        case 3: return new PolarBearRugSouthDeed();
-      }
+        1 => (Item)new BrownBearRugSouthDeed(),
+        2 => new PolarBearRugEastDeed(),
+        3 => new PolarBearRugSouthDeed(),
+        _ => new BrownBearRugEastDeed()
+      };
     }
 
     private static Item CreateRunicKit(int type)

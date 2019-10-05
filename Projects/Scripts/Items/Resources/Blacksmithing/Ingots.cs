@@ -68,41 +68,19 @@ namespace Server.Items
         }
         case 0:
         {
-          OreInfo info;
-
-          switch (reader.ReadInt())
+          var info = reader.ReadInt() switch
           {
-            case 0:
-              info = OreInfo.Iron;
-              break;
-            case 1:
-              info = OreInfo.DullCopper;
-              break;
-            case 2:
-              info = OreInfo.ShadowIron;
-              break;
-            case 3:
-              info = OreInfo.Copper;
-              break;
-            case 4:
-              info = OreInfo.Bronze;
-              break;
-            case 5:
-              info = OreInfo.Gold;
-              break;
-            case 6:
-              info = OreInfo.Agapite;
-              break;
-            case 7:
-              info = OreInfo.Verite;
-              break;
-            case 8:
-              info = OreInfo.Valorite;
-              break;
-            default:
-              info = null;
-              break;
-          }
+            0 => OreInfo.Iron,
+            1 => OreInfo.DullCopper,
+            2 => OreInfo.ShadowIron,
+            3 => OreInfo.Copper,
+            4 => OreInfo.Bronze,
+            5 => OreInfo.Gold,
+            6 => OreInfo.Agapite,
+            7 => OreInfo.Verite,
+            8 => OreInfo.Valorite,
+            _ => null
+          };
 
           m_Resource = CraftResources.GetFromOreInfo(info);
           break;

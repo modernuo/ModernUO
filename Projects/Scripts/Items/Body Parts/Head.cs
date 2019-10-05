@@ -40,17 +40,12 @@ namespace Server.Items
         if (PlayerName == null)
           return base.DefaultName;
 
-        switch (HeadType)
+        return HeadType switch
         {
-          default:
-            return $"the head of {PlayerName}";
-
-          case HeadType.Duel:
-            return $"the head of {PlayerName}, taken in a duel";
-
-          case HeadType.Tournament:
-            return $"the head of {PlayerName}, taken in a tournament";
-        }
+          HeadType.Duel => $"the head of {PlayerName}, taken in a duel",
+          HeadType.Tournament => $"the head of {PlayerName}, taken in a tournament",
+          _ => $"the head of {PlayerName}"
+        };
       }
     }
 

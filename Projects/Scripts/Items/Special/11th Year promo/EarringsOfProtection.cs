@@ -83,28 +83,32 @@
 
     public static AosElementAttribute GetTypes(int value)
     {
-      switch (value)
+      return value switch
       {
-        case 0: return AosElementAttribute.Physical;
-        case 1: return AosElementAttribute.Fire;
-        case 2: return AosElementAttribute.Cold;
-        case 3: return AosElementAttribute.Poison;
-        default: return AosElementAttribute.Energy;
-      }
+        0 => AosElementAttribute.Physical,
+        1 => AosElementAttribute.Fire,
+        2 => AosElementAttribute.Cold,
+        3 => AosElementAttribute.Poison,
+        _ => AosElementAttribute.Energy
+      };
     }
 
     public static int GetItemData(AosElementAttribute element, bool label)
     {
-      switch (element)
+      return element switch
       {
-        case AosElementAttribute.Physical: return label ? 1071091 : 0; // Earring of Protection (Physical)  1071091
-        case AosElementAttribute.Fire: return label ? 1071092 : 0x4ec; // Earring of Protection (Fire)      1071092
-        case AosElementAttribute.Cold: return label ? 1071093 : 0x4f2; // Earring of Protection (Cold)      1071093
-        case AosElementAttribute.Poison: return label ? 1071094 : 0x4f8; // Earring of Protection (Poison)    1071094
-        case AosElementAttribute.Energy: return label ? 1071095 : 0x4fe; // Earring of Protection (Energy)    1071095
-
-        default: return -1;
-      }
+        AosElementAttribute.Physical => (label ? 1071091 : 0) // Earring of Protection (Physical)  1071091
+        ,
+        AosElementAttribute.Fire => (label ? 1071092 : 0x4ec) // Earring of Protection (Fire)      1071092
+        ,
+        AosElementAttribute.Cold => (label ? 1071093 : 0x4f2) // Earring of Protection (Cold)      1071093
+        ,
+        AosElementAttribute.Poison => (label ? 1071094 : 0x4f8) // Earring of Protection (Poison)    1071094
+        ,
+        AosElementAttribute.Energy => (label ? 1071095 : 0x4fe) // Earring of Protection (Energy)    1071095
+        ,
+        _ => -1
+      };
     }
   }
 }

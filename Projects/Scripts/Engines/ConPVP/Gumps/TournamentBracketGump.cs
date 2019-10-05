@@ -162,44 +162,26 @@ namespace Server.Engines.ConPVP
 
           int y = 53;
 
-          string groupText = null;
-
-          switch (tourney.GroupType)
+          var groupText = tourney.GroupType switch
           {
-            case GroupingType.HighVsLow:
-              groupText = "High vs Low";
-              break;
-            case GroupingType.Nearest:
-              groupText = "Closest opponent";
-              break;
-            case GroupingType.Random:
-              groupText = "Random";
-              break;
-          }
+            GroupingType.HighVsLow => "High vs Low",
+            GroupingType.Nearest => "Closest opponent",
+            GroupingType.Random => "Random",
+            _ => null
+          };
 
           AddHtml(35, y, 190, 20, $"Grouping: {groupText}");
           y += 20;
 
-          string tieText = null;
-
-          switch (tourney.TieType)
+          var tieText = tourney.TieType switch
           {
-            case TieType.Random:
-              tieText = "Random";
-              break;
-            case TieType.Highest:
-              tieText = "Highest advances";
-              break;
-            case TieType.Lowest:
-              tieText = "Lowest advances";
-              break;
-            case TieType.FullAdvancement:
-              tieText = tourney.ParticipantsPerMatch == 2 ? "Both advance" : "Everyone advances";
-              break;
-            case TieType.FullElimination:
-              tieText = tourney.ParticipantsPerMatch == 2 ? "Both eliminated" : "Everyone eliminated";
-              break;
-          }
+            TieType.Random => "Random",
+            TieType.Highest => "Highest advances",
+            TieType.Lowest => "Lowest advances",
+            TieType.FullAdvancement => (tourney.ParticipantsPerMatch == 2 ? "Both advance" : "Everyone advances"),
+            TieType.FullElimination => (tourney.ParticipantsPerMatch == 2 ? "Both eliminated" : "Everyone eliminated"),
+            _ => null
+          };
 
           AddHtml(35, y, 190, 20, $"Tiebreaker: {tieText}");
           y += 20;

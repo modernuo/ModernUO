@@ -298,17 +298,16 @@ namespace Server.Items
       if (IsEmpty)
         return ItemID >= 0x1F81 && ItemID <= 0x1F84 ? ItemID : 0x1F81;
 
-      switch (Content)
+      return Content switch
       {
-        case BeverageType.Ale: return ItemID == 0x9EF ? 0x9EF : 0x9EE;
-        case BeverageType.Cider: return ItemID >= 0x1F7D && ItemID <= 0x1F80 ? ItemID : 0x1F7D;
-        case BeverageType.Liquor: return ItemID >= 0x1F85 && ItemID <= 0x1F88 ? ItemID : 0x1F85;
-        case BeverageType.Milk: return ItemID >= 0x1F89 && ItemID <= 0x1F8C ? ItemID : 0x1F89;
-        case BeverageType.Wine: return ItemID >= 0x1F8D && ItemID <= 0x1F90 ? ItemID : 0x1F8D;
-        case BeverageType.Water: return ItemID >= 0x1F91 && ItemID <= 0x1F94 ? ItemID : 0x1F91;
-      }
-
-      return 0;
+        BeverageType.Ale => (ItemID == 0x9EF ? 0x9EF : 0x9EE),
+        BeverageType.Cider => (ItemID >= 0x1F7D && ItemID <= 0x1F80 ? ItemID : 0x1F7D),
+        BeverageType.Liquor => (ItemID >= 0x1F85 && ItemID <= 0x1F88 ? ItemID : 0x1F85),
+        BeverageType.Milk => (ItemID >= 0x1F89 && ItemID <= 0x1F8C ? ItemID : 0x1F89),
+        BeverageType.Wine => (ItemID >= 0x1F8D && ItemID <= 0x1F90 ? ItemID : 0x1F8D),
+        BeverageType.Water => (ItemID >= 0x1F91 && ItemID <= 0x1F94 ? ItemID : 0x1F91),
+        _ => 0
+      };
     }
 
     public override void Serialize(GenericWriter writer)
@@ -665,7 +664,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(this);
 
-        if (house == null || !house.HasLockedDownItem(this))
+        if (house?.HasLockedDownItem(this) != true)
         {
           if (message)
             from.SendLocalizedMessage(502946, "", 0x59); // That belongs to someone else.
@@ -846,23 +845,14 @@ namespace Server.Items
 
         if (ContainsAlchohol)
         {
-          int bac = 0;
-
-          switch (Content)
+          var bac = Content switch
           {
-            case BeverageType.Ale:
-              bac = 1;
-              break;
-            case BeverageType.Wine:
-              bac = 2;
-              break;
-            case BeverageType.Cider:
-              bac = 3;
-              break;
-            case BeverageType.Liquor:
-              bac = 4;
-              break;
-          }
+            BeverageType.Ale => 1,
+            BeverageType.Wine => 2,
+            BeverageType.Cider => 3,
+            BeverageType.Liquor => 4,
+            _ => 0
+          };
 
           from.BAC += bac;
 

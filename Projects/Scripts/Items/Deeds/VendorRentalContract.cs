@@ -149,7 +149,7 @@ namespace Server.Items
 
         BaseHouse house = BaseHouse.FindHouseAt(from);
 
-        if (house == null || !house.IsOwner(from))
+        if (house?.IsOwner(@from) != true)
         {
           from.SendLocalizedMessage(
             1062333); // You must be standing inside of a house that you own to make use of this contract.
@@ -258,7 +258,7 @@ namespace Server.Items
 
         BaseHouse house = BaseHouse.FindHouseAt(pLocation, map, 0);
 
-        if (house == null || !house.IsOwner(from))
+        if (house?.IsOwner(@from) != true)
         {
           from.SendLocalizedMessage(1062338); // The location being rented out must be inside of your house.
         }

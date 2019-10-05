@@ -176,61 +176,61 @@ namespace Server.Engines.Plants
 
     public static PlantType RandomFirstGeneration()
     {
-      switch (Utility.Random(3))
+      return Utility.Random(3) switch
       {
-        case 0: return PlantType.CampionFlowers;
-        case 1: return PlantType.Fern;
-        default: return PlantType.TribarrelCactus;
-      }
+        0 => PlantType.CampionFlowers,
+        1 => PlantType.Fern,
+        _ => PlantType.TribarrelCactus
+      };
     }
 
     public static PlantType RandomPeculiarGroupOne()
     {
-      switch (Utility.Random(6))
+      return Utility.Random(6) switch
       {
-        case 0: return PlantType.Cactus;
-        case 1: return PlantType.FlaxFlowers;
-        case 2: return PlantType.FoxgloveFlowers;
-        case 3: return PlantType.HopsEast;
-        case 4: return PlantType.CocoaTree;
-        default: return PlantType.OrfluerFlowers;
-      }
+        0 => PlantType.Cactus,
+        1 => PlantType.FlaxFlowers,
+        2 => PlantType.FoxgloveFlowers,
+        3 => PlantType.HopsEast,
+        4 => PlantType.CocoaTree,
+        _ => PlantType.OrfluerFlowers
+      };
     }
 
     public static PlantType RandomPeculiarGroupTwo()
     {
-      switch (Utility.Random(5))
+      return Utility.Random(5) switch
       {
-        case 0: return PlantType.CypressTwisted;
-        case 1: return PlantType.HedgeShort;
-        case 2: return PlantType.JuniperBush;
-        case 3: return PlantType.CocoaTree;
-        default: return PlantType.SnowdropPatch;
-      }
+        0 => PlantType.CypressTwisted,
+        1 => PlantType.HedgeShort,
+        2 => PlantType.JuniperBush,
+        3 => PlantType.CocoaTree,
+        _ => PlantType.SnowdropPatch
+      };
     }
 
     public static PlantType RandomPeculiarGroupThree()
     {
-      switch (Utility.Random(5))
+      return Utility.Random(5) switch
       {
-        case 0: return PlantType.Cattails;
-        case 1: return PlantType.PoppyPatch;
-        case 2: return PlantType.SpiderTree;
-        case 3: return PlantType.CocoaTree;
-        default: return PlantType.WaterLily;
-      }
+        0 => PlantType.Cattails,
+        1 => PlantType.PoppyPatch,
+        2 => PlantType.SpiderTree,
+        3 => PlantType.CocoaTree,
+        _ => PlantType.WaterLily
+      };
     }
 
     public static PlantType RandomPeculiarGroupFour()
     {
-      switch (Utility.Random(5))
+      return Utility.Random(5) switch
       {
-        case 0: return PlantType.CypressStraight;
-        case 1: return PlantType.HedgeTall;
-        case 2: return PlantType.HopsSouth;
-        case 3: return PlantType.CocoaTree;
-        default: return PlantType.SugarCanes;
-      }
+        0 => PlantType.CypressStraight,
+        1 => PlantType.HedgeTall,
+        2 => PlantType.HopsSouth,
+        3 => PlantType.CocoaTree,
+        _ => PlantType.SugarCanes
+      };
     }
 
     public static PlantType RandomBonsai(double increaseRatio)

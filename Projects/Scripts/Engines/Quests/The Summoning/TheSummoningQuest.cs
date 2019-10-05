@@ -42,7 +42,7 @@ namespace Server.Engines.Quests.Doom
       {
         SummoningAltar altar = Victoria.Altar;
 
-        if (altar != null && (altar.Daemon == null || !altar.Daemon.Alive))
+        if (altar != null && (altar.Daemon?.Alive != true))
           if (From.Map == Victoria.Map && From.InRange(Victoria, 8))
           {
             WaitForSummon = false;
@@ -56,7 +56,7 @@ namespace Server.Engines.Quests.Doom
 
     public static int GetDaemonBonesFor(BaseCreature creature)
     {
-      if (creature == null || creature.Controlled || creature.Summoned)
+      if (creature?.Controlled != false || creature.Summoned)
         return 0;
 
       int fame = creature.Fame;

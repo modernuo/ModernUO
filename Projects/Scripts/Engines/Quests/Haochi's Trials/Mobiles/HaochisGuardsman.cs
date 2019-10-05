@@ -64,19 +64,12 @@ namespace Server.Engines.Quests.Samurai
           break;
       }
 
-      Item weapon;
-      switch (Utility.Random(3))
+      var weapon = Utility.Random(3) switch
       {
-        case 0:
-          weapon = new NoDachi();
-          break;
-        case 1:
-          weapon = new Lajatang();
-          break;
-        default:
-          weapon = new Wakizashi();
-          break;
-      }
+        0 => (Item)new NoDachi(),
+        1 => new Lajatang(),
+        _ => new Wakizashi()
+      };
 
       weapon.Movable = false;
       AddItem(weapon);

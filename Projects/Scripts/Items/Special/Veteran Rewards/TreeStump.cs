@@ -96,32 +96,17 @@ namespace Server.Items
       {
         if (m_Logs > 0)
         {
-          Item logs = null;
-
-          switch (Utility.Random(7))
+          var logs = Utility.Random(7) switch
           {
-            case 0:
-              logs = new Log();
-              break;
-            case 1:
-              logs = new AshLog();
-              break;
-            case 2:
-              logs = new OakLog();
-              break;
-            case 3:
-              logs = new YewLog();
-              break;
-            case 4:
-              logs = new HeartwoodLog();
-              break;
-            case 5:
-              logs = new BloodwoodLog();
-              break;
-            case 6:
-              logs = new FrostwoodLog();
-              break;
-          }
+            0 => new Log(),
+            1 => new AshLog(),
+            2 => new OakLog(),
+            3 => new YewLog(),
+            4 => new HeartwoodLog(),
+            5 => new BloodwoodLog(),
+            6 => new FrostwoodLog(),
+            _ => null
+          };
 
           int amount = Math.Min(10, m_Logs);
           logs.Amount = amount;
@@ -242,21 +227,14 @@ namespace Server.Items
 
     public void OnOptionSelected(Mobile from, int option)
     {
-      switch (option)
+      m_ItemID = option switch
       {
-        case 1:
-          m_ItemID = 0xE56;
-          break;
-        case 2:
-          m_ItemID = 0xE58;
-          break;
-        case 3:
-          m_ItemID = 0xE57;
-          break;
-        case 4:
-          m_ItemID = 0xE59;
-          break;
-      }
+        1 => 0xE56,
+        2 => 0xE58,
+        3 => 0xE57,
+        4 => 0xE59,
+        _ => m_ItemID
+      };
 
       if (!Deleted)
         base.OnDoubleClick(from);

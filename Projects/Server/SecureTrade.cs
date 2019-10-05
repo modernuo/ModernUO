@@ -165,7 +165,7 @@ namespace Server
 
     private static void UpdateCurrency(SecureTradeInfo left, SecureTradeInfo right)
     {
-      if (left.Mobile.NetState != null && left.Mobile.NetState.NewSecureTrading)
+      if (left.Mobile.NetState?.NewSecureTrading == true)
       {
         int plat = left.Mobile.Account.TotalPlat;
         int gold = left.Mobile.Account.TotalGold;
@@ -173,7 +173,7 @@ namespace Server
         left.Mobile.Send(new UpdateSecureTrade(left.Container, TradeFlag.UpdateLedger, gold, plat));
       }
 
-      if (right.Mobile.NetState != null && right.Mobile.NetState.NewSecureTrading)
+      if (right.Mobile.NetState?.NewSecureTrading == true)
         right.Mobile.Send(new UpdateSecureTrade(right.Container, TradeFlag.UpdateGold, left.Gold, left.Plat));
     }
 

@@ -24,20 +24,19 @@ namespace Server.Items
     {
       get
       {
-        switch (ItemID)
+        return ItemID switch
         {
-          case 0x10F5:
-          case 0x10F6:
-          case 0x10F7: return StoneFaceTrapType.NorthWestWall;
-          case 0x10FC:
-          case 0x10FD:
-          case 0x10FE: return StoneFaceTrapType.NorthWall;
-          case 0x110F:
-          case 0x1110:
-          case 0x1111: return StoneFaceTrapType.WestWall;
-        }
-
-        return StoneFaceTrapType.NorthWestWall;
+          0x10F5 => StoneFaceTrapType.NorthWestWall,
+          0x10F6 => StoneFaceTrapType.NorthWestWall,
+          0x10F7 => StoneFaceTrapType.NorthWestWall,
+          0x10FC => StoneFaceTrapType.NorthWall,
+          0x10FD => StoneFaceTrapType.NorthWall,
+          0x10FE => StoneFaceTrapType.NorthWall,
+          0x110F => StoneFaceTrapType.WestWall,
+          0x1110 => StoneFaceTrapType.WestWall,
+          0x1111 => StoneFaceTrapType.WestWall,
+          _ => StoneFaceTrapType.NorthWestWall
+        };
       }
       set
       {
@@ -66,26 +65,24 @@ namespace Server.Items
 
     public static int GetBaseID(StoneFaceTrapType type)
     {
-      switch (type)
+      return type switch
       {
-        case StoneFaceTrapType.NorthWestWall: return 0x10F5;
-        case StoneFaceTrapType.NorthWall: return 0x10FC;
-        case StoneFaceTrapType.WestWall: return 0x110F;
-      }
-
-      return 0;
+        StoneFaceTrapType.NorthWestWall => 0x10F5,
+        StoneFaceTrapType.NorthWall => 0x10FC,
+        StoneFaceTrapType.WestWall => 0x110F,
+        _ => 0
+      };
     }
 
     public static int GetFireID(StoneFaceTrapType type)
     {
-      switch (type)
+      return type switch
       {
-        case StoneFaceTrapType.NorthWestWall: return 0x10F7;
-        case StoneFaceTrapType.NorthWall: return 0x10FE;
-        case StoneFaceTrapType.WestWall: return 0x1111;
-      }
-
-      return 0;
+        StoneFaceTrapType.NorthWestWall => 0x10F7,
+        StoneFaceTrapType.NorthWall => 0x10FE,
+        StoneFaceTrapType.WestWall => 0x1111,
+        _ => 0
+      };
     }
 
     public override void OnTrigger(Mobile from)

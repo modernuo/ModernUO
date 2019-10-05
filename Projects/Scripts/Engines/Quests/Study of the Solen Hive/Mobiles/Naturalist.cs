@@ -58,61 +58,26 @@ namespace Server.Engines.Quests.Naturalist
         {
           Seed reward;
 
-          PlantType type;
-          switch (Utility.Random(17))
+          var type = Utility.Random(17) switch
           {
-            case 0:
-              type = PlantType.CampionFlowers;
-              break;
-            case 1:
-              type = PlantType.Poppies;
-              break;
-            case 2:
-              type = PlantType.Snowdrops;
-              break;
-            case 3:
-              type = PlantType.Bulrushes;
-              break;
-            case 4:
-              type = PlantType.Lilies;
-              break;
-            case 5:
-              type = PlantType.PampasGrass;
-              break;
-            case 6:
-              type = PlantType.Rushes;
-              break;
-            case 7:
-              type = PlantType.ElephantEarPlant;
-              break;
-            case 8:
-              type = PlantType.Fern;
-              break;
-            case 9:
-              type = PlantType.PonytailPalm;
-              break;
-            case 10:
-              type = PlantType.SmallPalm;
-              break;
-            case 11:
-              type = PlantType.CenturyPlant;
-              break;
-            case 12:
-              type = PlantType.WaterPlant;
-              break;
-            case 13:
-              type = PlantType.SnakePlant;
-              break;
-            case 14:
-              type = PlantType.PricklyPearCactus;
-              break;
-            case 15:
-              type = PlantType.BarrelCactus;
-              break;
-            default:
-              type = PlantType.TribarrelCactus;
-              break;
-          }
+            0 => PlantType.CampionFlowers,
+            1 => PlantType.Poppies,
+            2 => PlantType.Snowdrops,
+            3 => PlantType.Bulrushes,
+            4 => PlantType.Lilies,
+            5 => PlantType.PampasGrass,
+            6 => PlantType.Rushes,
+            7 => PlantType.ElephantEarPlant,
+            8 => PlantType.Fern,
+            9 => PlantType.PonytailPalm,
+            10 => PlantType.SmallPalm,
+            11 => PlantType.CenturyPlant,
+            12 => PlantType.WaterPlant,
+            13 => PlantType.SnakePlant,
+            14 => PlantType.PricklyPearCactus,
+            15 => PlantType.BarrelCactus,
+            _ => PlantType.TribarrelCactus
+          };
 
           if (study.StudiedSpecialNest)
           {
@@ -120,19 +85,12 @@ namespace Server.Engines.Quests.Naturalist
           }
           else
           {
-            PlantHue hue;
-            switch (Utility.Random(3))
+            var hue = Utility.Random(3) switch
             {
-              case 0:
-                hue = PlantHue.Pink;
-                break;
-              case 1:
-                hue = PlantHue.Magenta;
-                break;
-              default:
-                hue = PlantHue.Aqua;
-                break;
-            }
+              0 => PlantHue.Pink,
+              1 => PlantHue.Magenta,
+              _ => PlantHue.Aqua
+            };
 
             reward = new Seed(type, hue);
           }

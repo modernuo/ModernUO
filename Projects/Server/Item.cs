@@ -3484,7 +3484,7 @@ namespace Server
       if (ScissorCopyLootType)
         newItem.LootType = type;
 
-      if (!(thisParent is Container) || !((Container)thisParent).TryDropItem(from, newItem, false))
+      if ((thisParent as Container)?.TryDropItem(@from, newItem, false) != true)
         newItem.MoveToWorld(worldLoc, thisMap);
     }
 

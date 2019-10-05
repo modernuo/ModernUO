@@ -31,7 +31,7 @@ namespace Server.Guilds
       AddImageTiled(67, 116, 156, 22, 0xBBC);
       AddHtmlLocalized(70, 117, 150, 20, 1063025, 0x0); // <i>Alliance</i>
 
-      if (guild.Alliance != null && guild.Alliance.IsMember(guild))
+      if (guild.Alliance?.IsMember(guild) == true)
       {
         AddHtml(233, 118, 320, 26, guild.Alliance.Name);
         AddButton(40, 120, 0x4B9, 0x4BA, 6); //Alliance Roster
@@ -119,7 +119,7 @@ namespace Server.Guilds
         case 6:
         {
           //Alliance Roster
-          if (guild.Alliance != null && guild.Alliance.IsMember(guild))
+          if (guild.Alliance?.IsMember(guild) == true)
             pm.SendGump(new AllianceInfo.AllianceRosterGump(pm, guild, guild.Alliance));
 
           break;

@@ -1093,7 +1093,7 @@ namespace Server.Multis
     {
       BaseHouse house = FindHouseAt(cont);
 
-      if (house == null || !house.IsAosRules)
+      if (house?.IsAosRules != true)
         return true;
 
       if (house.HasSecureItem(cont) && !house.CheckAosStorage(1 + item.TotalItems + plusItems))
@@ -1858,8 +1858,7 @@ namespace Server.Multis
 
     public virtual bool IsCombatRestricted(Mobile m)
     {
-      if (m == null || !m.Player || m.AccessLevel >= AccessLevel.GameMaster || !IsAosRules ||
-          m_Owner != null && m_Owner.AccessLevel >= AccessLevel.GameMaster)
+      if (m?.Player != true || m.AccessLevel >= AccessLevel.GameMaster || !IsAosRules || m_Owner != null && m_Owner.AccessLevel >= AccessLevel.GameMaster)
         return false;
 
       for (int i = 0; i < m.Aggressed.Count; ++i)
@@ -1884,16 +1883,15 @@ namespace Server.Multis
       if (IsCombatRestricted(m))
         return false;
 
-      switch (level)
+      return level switch
       {
-        case SecureLevel.Owner: return IsOwner(m);
-        case SecureLevel.CoOwners: return IsCoOwner(m);
-        case SecureLevel.Friends: return IsFriend(m);
-        case SecureLevel.Anyone: return true;
-        case SecureLevel.Guild: return IsGuildMember(m);
-      }
-
-      return false;
+        SecureLevel.Owner => IsOwner(m),
+        SecureLevel.CoOwners => IsCoOwner(m),
+        SecureLevel.Friends => IsFriend(m),
+        SecureLevel.Anyone => true,
+        SecureLevel.Guild => IsGuildMember(m),
+        _ => false
+      };
     }
 
     public void ReleaseSecure(Mobile m, Item item)
@@ -3536,7 +3534,7 @@ namespace Server.Multis
     {
       BaseHouse house = BaseHouse.FindHouseAt(item);
 
-      if (house == null || !house.IsOwner(from) || !house.IsAosRules)
+      if (house?.IsOwner(@from) != true || !house.IsAosRules)
         return null;
 
       ISecurable sec = null;

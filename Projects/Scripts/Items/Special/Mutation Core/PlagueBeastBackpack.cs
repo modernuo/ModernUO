@@ -81,19 +81,13 @@ namespace Server.Items
         if (i == 5)
           random = 0;
 
-        switch (random)
+        organ = random switch
         {
-          default:
-          case 0:
-            organ = new PlagueBeastRockOrgan();
-            break;
-          case 1:
-            organ = new PlagueBeastMaidenOrgan();
-            break;
-          case 2:
-            organ = new PlagueBeastRubbleOrgan();
-            break;
-        }
+          0 => (PlagueBeastOrgan)new PlagueBeastRockOrgan(),
+          1 => new PlagueBeastMaidenOrgan(),
+          2 => new PlagueBeastRubbleOrgan(),
+          _ => new PlagueBeastRockOrgan()
+        };
 
         organs.Add(organ);
         AddInnard(organ, m_Positions[random, i, 0], m_Positions[random, i, 1]);

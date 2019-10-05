@@ -68,22 +68,13 @@ namespace Server.Engines.Quests.Haven
 
     public void DoFireEffect(IPoint3D target)
     {
-      Point3D from;
-      switch (CannonDirection)
+      var from = CannonDirection switch
       {
-        case CannonDirection.North:
-          from = new Point3D(X, Y - 1, Z);
-          break;
-        case CannonDirection.East:
-          from = new Point3D(X + 1, Y, Z);
-          break;
-        case CannonDirection.South:
-          from = new Point3D(X, Y + 1, Z);
-          break;
-        default:
-          from = new Point3D(X - 1, Y, Z);
-          break;
-      }
+        CannonDirection.North => new Point3D(X, Y - 1, Z),
+        CannonDirection.East => new Point3D(X + 1, Y, Z),
+        CannonDirection.South => new Point3D(X, Y + 1, Z),
+        _ => new Point3D(X - 1, Y, Z)
+      };
 
       Effects.SendLocationEffect(from, Map, 0x36B0, 16, 1);
       Effects.PlaySound(from, Map, 0x11D);
@@ -104,22 +95,13 @@ namespace Server.Engines.Quests.Haven
       if (!(Canoneer?.Deleted == false && Canoneer.Active))
         return;
 
-      bool canFire;
-      switch (CannonDirection)
+      var canFire = CannonDirection switch
       {
-        case CannonDirection.North:
-          canFire = m.X >= X - 7 && m.X <= X + 7 && m.Y == Y - 7 && oldLocation.Y < Y - 7;
-          break;
-        case CannonDirection.East:
-          canFire = m.Y >= Y - 7 && m.Y <= Y + 7 && m.X == X + 7 && oldLocation.X > X + 7;
-          break;
-        case CannonDirection.South:
-          canFire = m.X >= X - 7 && m.X <= X + 7 && m.Y == Y + 7 && oldLocation.Y > Y + 7;
-          break;
-        default:
-          canFire = m.Y >= Y - 7 && m.Y <= Y + 7 && m.X == X - 7 && oldLocation.X < X - 7;
-          break;
-      }
+        CannonDirection.North => (m.X >= X - 7 && m.X <= X + 7 && m.Y == Y - 7 && oldLocation.Y < Y - 7),
+        CannonDirection.East => (m.Y >= Y - 7 && m.Y <= Y + 7 && m.X == X + 7 && oldLocation.X > X + 7),
+        CannonDirection.South => (m.X >= X - 7 && m.X <= X + 7 && m.Y == Y + 7 && oldLocation.Y > Y + 7),
+        _ => (m.Y >= Y - 7 && m.Y <= Y + 7 && m.X == X - 7 && oldLocation.X < X - 7)
+      };
 
       if (canFire && Canoneer.WillFire(this, m))
         Fire(Canoneer, m);

@@ -145,7 +145,7 @@ namespace Server.Guilds
 
     public void CheckLeader()
     {
-      if (m_Leader == null || m_Leader.Disbanded)
+      if (m_Leader?.Disbanded != false)
       {
         CalculateAllianceLeader();
 

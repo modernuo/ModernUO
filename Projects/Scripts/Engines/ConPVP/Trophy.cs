@@ -102,18 +102,13 @@ namespace Server.Items
     {
       Name = $"{m_Rank.ToString().ToLower()} trophy";
 
-      switch (m_Rank)
+      Hue = m_Rank switch
       {
-        case TrophyRank.Gold:
-          Hue = 2213;
-          break;
-        case TrophyRank.Silver:
-          Hue = 0;
-          break;
-        case TrophyRank.Bronze:
-          Hue = 2206;
-          break;
-      }
+        TrophyRank.Gold => 2213,
+        TrophyRank.Silver => 0,
+        TrophyRank.Bronze => 2206,
+        _ => Hue
+      };
     }
   }
 }

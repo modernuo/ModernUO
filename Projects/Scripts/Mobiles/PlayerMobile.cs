@@ -477,33 +477,23 @@ namespace Server.Mobiles
                 Direction dir = GetDirection4(oldWorldLoc, newWorldLoc);
 
                 if (itemIDs.Length == 2)
-                  switch (dir)
+                  item.ItemID = dir switch
                   {
-                    case Direction.North:
-                    case Direction.South:
-                      item.ItemID = itemIDs[0];
-                      break;
-                    case Direction.East:
-                    case Direction.West:
-                      item.ItemID = itemIDs[1];
-                      break;
-                  }
+                    Direction.North => itemIDs[0],
+                    Direction.South => itemIDs[0],
+                    Direction.East => itemIDs[1],
+                    Direction.West => itemIDs[1],
+                    _ => item.ItemID
+                  };
                 else if (itemIDs.Length == 4)
-                  switch (dir)
+                  item.ItemID = dir switch
                   {
-                    case Direction.South:
-                      item.ItemID = itemIDs[0];
-                      break;
-                    case Direction.East:
-                      item.ItemID = itemIDs[1];
-                      break;
-                    case Direction.North:
-                      item.ItemID = itemIDs[2];
-                      break;
-                    case Direction.West:
-                      item.ItemID = itemIDs[3];
-                      break;
-                  }
+                    Direction.South => itemIDs[0],
+                    Direction.East => itemIDs[1],
+                    Direction.North => itemIDs[2],
+                    Direction.West => itemIDs[3],
+                    _ => item.ItemID
+                  };
               }
             }
         }
@@ -575,8 +565,7 @@ namespace Server.Mobiles
         else if (AnimalForm.UnderTransformation(this)) AnimalForm.RemoveContext(this, true);
       }
 
-      if (m_MountBlock == null || !m_MountBlock.m_Timer.Running ||
-          m_MountBlock.m_Timer.Next < DateTime.UtcNow + duration) m_MountBlock = new MountBlock(duration, type, this);
+      if (m_MountBlock?.m_Timer.Running != true || m_MountBlock.m_Timer.Next < DateTime.UtcNow + duration) m_MountBlock = new MountBlock(duration, type, this);
     }
 
     public override void OnSkillInvalidated(Skill skill)
@@ -1928,8 +1917,7 @@ namespace Server.Mobiles
         if (YoungDeathTeleport())
           Timer.DelayCall(TimeSpan.FromSeconds(2.5), SendYoungDeathNotice);
 
-      if (DuelContext == null || !DuelContext.Registered || !DuelContext.Started || m_DuelPlayer == null ||
-          m_DuelPlayer.Eliminated)
+      if (DuelContext?.Registered != true || !DuelContext.Started || m_DuelPlayer?.Eliminated != false)
         Faction.HandleDeath(this, killer);
 
       Guilds.Guild.HandleDeath(this, killer);
@@ -1985,7 +1973,7 @@ namespace Server.Mobiles
         }
         else if (type == MessageType.Alliance)
         {
-          if (g.Alliance != null && g.Alliance.IsMember(g))
+          if (g.Alliance?.IsMember(g) == true)
           {
             //g.Alliance.AllianceTextMessage( hue, "[Alliance][{0}]: {1}", this.Name, text );
             g.Alliance.AllianceChat(this, text);
@@ -3281,7 +3269,7 @@ namespace Server.Mobiles
 
     private void ToggleItemInsurance_Callback(Mobile from, Item item, bool target)
     {
-      if (item == null || !item.IsChildOf(this))
+      if (item?.IsChildOf(this) != true)
       {
         if (target)
           BeginTarget(-1, false, TargetFlags.None, ToggleItemInsurance_Callback);
@@ -3763,7 +3751,7 @@ namespace Server.Mobiles
 
     public override bool CheckPoisonImmunity(Mobile from, Poison poison)
     {
-      if (Young && (DuelContext == null || !DuelContext.Started || DuelContext.Finished))
+      if (Young && (DuelContext?.Started != true || DuelContext.Finished))
         return true;
 
       return base.CheckPoisonImmunity(from, poison);
@@ -3771,7 +3759,7 @@ namespace Server.Mobiles
 
     public override void OnPoisonImmunity(Mobile from, Poison poison)
     {
-      if (Young && (DuelContext == null || !DuelContext.Started || DuelContext.Finished))
+      if (Young && (DuelContext?.Started != true || DuelContext.Finished))
         SendLocalizedMessage(
           502808); // You would have been poisoned, were you not new to the land of Britannia. Be careful in the future.
       else
@@ -4683,12 +4671,12 @@ namespace Server.Mobiles
 
     public void RemoveBuff(BuffIcon b)
     {
-      if (m_BuffTable == null || !m_BuffTable.ContainsKey(b))
+      if (m_BuffTable?.ContainsKey(b) != true)
         return;
 
       BuffInfo info = m_BuffTable[b];
 
-      if (info.Timer != null && info.Timer.Running)
+      if (info.Timer?.Running == true)
         info.Timer.Stop();
 
       m_BuffTable.Remove(b);

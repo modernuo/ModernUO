@@ -82,29 +82,29 @@ namespace Server.Items
         if (max > 20)
           max = 20;
 
-        switch (Utility.Random(max))
+        return Utility.Random(max) switch
         {
-          case 0: return new MinocBlueFish();
-          case 1: return new Shrimp();
-          case 2: return new FandancerFish();
-          case 3: return new GoldenBroadtail();
-          case 4: return new RedDartFish();
-          case 5: return new AlbinoCourtesanFish();
-          case 6: return new MakotoCourtesanFish();
-          case 7: return new NujelmHoneyFish();
-          case 8: return new Jellyfish();
-          case 9: return new SpeckledCrab();
-          case 10: return new LongClawCrab();
-          case 11: return new AlbinoFrog();
-          case 12: return new KillerFrog();
-          case 13: return new VesperReefTiger();
-          case 14: return new PurpleFrog();
-          case 15: return new BritainCrownFish();
-          case 16: return new YellowFinBluebelly();
-          case 17: return new SpottedBuccaneer();
-          case 18: return new SpinedScratcherFish();
-          default: return new SmallMouthSuckerFin();
-        }
+          0 => (BaseFish)new MinocBlueFish(),
+          1 => new Shrimp(),
+          2 => new FandancerFish(),
+          3 => new GoldenBroadtail(),
+          4 => new RedDartFish(),
+          5 => new AlbinoCourtesanFish(),
+          6 => new MakotoCourtesanFish(),
+          7 => new NujelmHoneyFish(),
+          8 => new Jellyfish(),
+          9 => new SpeckledCrab(),
+          10 => new LongClawCrab(),
+          11 => new AlbinoFrog(),
+          12 => new KillerFrog(),
+          13 => new VesperReefTiger(),
+          14 => new PurpleFrog(),
+          15 => new BritainCrownFish(),
+          16 => new YellowFinBluebelly(),
+          17 => new SpottedBuccaneer(),
+          18 => new SpinedScratcherFish(),
+          _ => new SmallMouthSuckerFin()
+        };
       }
 
       return new MinocBlueFish();

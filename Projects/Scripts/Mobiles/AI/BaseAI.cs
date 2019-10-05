@@ -907,50 +907,23 @@ namespace Server.Mobiles
       if (m_Mobile.Deleted)
         return false;
 
-      switch (m_Mobile.ControlOrder)
+      return m_Mobile.ControlOrder switch
       {
-        case OrderType.None:
-          return DoOrderNone();
-
-        case OrderType.Come:
-          return DoOrderCome();
-
-        case OrderType.Drop:
-          return DoOrderDrop();
-
-        case OrderType.Friend:
-          return DoOrderFriend();
-
-        case OrderType.Unfriend:
-          return DoOrderUnfriend();
-
-        case OrderType.Guard:
-          return DoOrderGuard();
-
-        case OrderType.Attack:
-          return DoOrderAttack();
-
-        case OrderType.Patrol:
-          return DoOrderPatrol();
-
-        case OrderType.Release:
-          return DoOrderRelease();
-
-        case OrderType.Stay:
-          return DoOrderStay();
-
-        case OrderType.Stop:
-          return DoOrderStop();
-
-        case OrderType.Follow:
-          return DoOrderFollow();
-
-        case OrderType.Transfer:
-          return DoOrderTransfer();
-
-        default:
-          return false;
-      }
+        OrderType.None => DoOrderNone(),
+        OrderType.Come => DoOrderCome(),
+        OrderType.Drop => DoOrderDrop(),
+        OrderType.Friend => DoOrderFriend(),
+        OrderType.Unfriend => DoOrderUnfriend(),
+        OrderType.Guard => DoOrderGuard(),
+        OrderType.Attack => DoOrderAttack(),
+        OrderType.Patrol => DoOrderPatrol(),
+        OrderType.Release => DoOrderRelease(),
+        OrderType.Stay => DoOrderStay(),
+        OrderType.Stop => DoOrderStop(),
+        OrderType.Follow => DoOrderFollow(),
+        OrderType.Transfer => DoOrderTransfer(),
+        _ => false
+      };
     }
 
     public virtual void OnCurrentOrderChanged()
@@ -1791,7 +1764,7 @@ namespace Server.Mobiles
     public virtual MoveResult DoMoveImpl(Direction d)
     {
       if (m_Mobile.Deleted || m_Mobile.Frozen || m_Mobile.Paralyzed ||
-          m_Mobile.Spell != null && m_Mobile.Spell.IsCasting || m_Mobile.DisallowAllMoves)
+          m_Mobile.Spell?.IsCasting == true || m_Mobile.DisallowAllMoves)
         return MoveResult.BadState;
       if (!CheckMove())
         return MoveResult.BadState;

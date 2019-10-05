@@ -29,16 +29,16 @@ namespace Server.Multis
 
     public override HouseDeed GetDeed()
     {
-      switch (ItemID)
+      return ItemID switch
       {
-        case 0x64: return new StonePlasterHouseDeed();
-        case 0x66: return new FieldStoneHouseDeed();
-        case 0x68: return new SmallBrickHouseDeed();
-        case 0x6A: return new WoodHouseDeed();
-        case 0x6C: return new WoodPlasterHouseDeed();
-        case 0x6E:
-        default: return new ThatchedRoofCottageDeed();
-      }
+        0x64 => (HouseDeed)new StonePlasterHouseDeed(),
+        0x66 => new FieldStoneHouseDeed(),
+        0x68 => new SmallBrickHouseDeed(),
+        0x6A => new WoodHouseDeed(),
+        0x6C => new WoodPlasterHouseDeed(),
+        0x6E => new ThatchedRoofCottageDeed(),
+        _ => new ThatchedRoofCottageDeed()
+      };
     }
 
     public override void Serialize(GenericWriter writer)
@@ -126,12 +126,12 @@ namespace Server.Multis
 
     public override HouseDeed GetDeed()
     {
-      switch (ItemID)
+      return ItemID switch
       {
-        case 0x76: return new TwoStoryWoodPlasterHouseDeed();
-        case 0x78:
-        default: return new TwoStoryStonePlasterHouseDeed();
-      }
+        0x76 => (HouseDeed)new TwoStoryWoodPlasterHouseDeed(),
+        0x78 => new TwoStoryStonePlasterHouseDeed(),
+        _ => new TwoStoryStonePlasterHouseDeed()
+      };
     }
 
     public override void Serialize(GenericWriter writer)
@@ -561,12 +561,12 @@ namespace Server.Multis
 
     public override HouseDeed GetDeed()
     {
-      switch (ItemID)
+      return ItemID switch
       {
-        case 0xA0: return new StoneWorkshopDeed();
-        case 0xA2:
-        default: return new MarbleWorkshopDeed();
-      }
+        0xA0 => (HouseDeed)new StoneWorkshopDeed(),
+        0xA2 => new MarbleWorkshopDeed(),
+        _ => new MarbleWorkshopDeed()
+      };
     }
 
     public override void Serialize(GenericWriter writer)

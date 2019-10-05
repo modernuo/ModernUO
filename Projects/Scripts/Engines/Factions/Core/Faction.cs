@@ -423,7 +423,7 @@ namespace Server.Factions
       {
         pm.SendLocalizedMessage(1010104); // You cannot join a faction as a young player
       }
-      else if (pl != null && pl.IsLeaving)
+      else if (pl?.IsLeaving == true)
       {
         pm.SendLocalizedMessage(
           1005051); // You cannot use the faction stone until you have finished quitting your current faction
@@ -504,7 +504,7 @@ namespace Server.Factions
     {
       PlayerState pl = PlayerState.Find(mob);
 
-      if (pl == null || !pl.IsLeaving)
+      if (pl?.IsLeaving != true)
         return false;
 
       if (pl.Leaving + LeavePeriod >= DateTime.UtcNow)

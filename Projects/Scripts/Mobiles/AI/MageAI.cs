@@ -227,7 +227,7 @@ namespace Server.Mobiles
 
     public void Run(Direction d)
     {
-      if (m_Mobile.Spell != null && m_Mobile.Spell.IsCasting || m_Mobile.Paralyzed || m_Mobile.Frozen ||
+      if (m_Mobile.Spell?.IsCasting == true || m_Mobile.Paralyzed || m_Mobile.Frozen ||
           m_Mobile.DisallowAllMoves)
         return;
 
@@ -282,22 +282,22 @@ namespace Server.Mobiles
       else if (maxCircle > 8)
         maxCircle = 8;
 
-      switch (Utility.Random(maxCircle * 2))
+      return Utility.Random(maxCircle * 2) switch
       {
-        case 0:
-        case 1: return new MagicArrowSpell(m_Mobile);
-        case 2:
-        case 3: return new HarmSpell(m_Mobile);
-        case 4:
-        case 5: return new FireballSpell(m_Mobile);
-        case 6:
-        case 7: return new LightningSpell(m_Mobile);
-        case 8:
-        case 9: return new MindBlastSpell(m_Mobile);
-        case 10: return new EnergyBoltSpell(m_Mobile);
-        case 11: return new ExplosionSpell(m_Mobile);
-        default: return new FlameStrikeSpell(m_Mobile);
-      }
+        0 => (Spell)new MagicArrowSpell(m_Mobile),
+        1 => new MagicArrowSpell(m_Mobile),
+        2 => new HarmSpell(m_Mobile),
+        3 => new HarmSpell(m_Mobile),
+        4 => new FireballSpell(m_Mobile),
+        5 => new FireballSpell(m_Mobile),
+        6 => new LightningSpell(m_Mobile),
+        7 => new LightningSpell(m_Mobile),
+        8 => new MindBlastSpell(m_Mobile),
+        9 => new MindBlastSpell(m_Mobile),
+        10 => new EnergyBoltSpell(m_Mobile),
+        11 => new ExplosionSpell(m_Mobile),
+        _ => new FlameStrikeSpell(m_Mobile)
+      };
     }
 
     public virtual Spell GetRandomCurseSpell() => UseNecromancy() ? GetRandomCurseSpellNecro() : GetRandomCurseSpellMage();
@@ -326,12 +326,12 @@ namespace Server.Mobiles
       if (m_Mobile.Skills.Magery.Value >= 40.0 && Utility.Random(4) == 0)
         return new CurseSpell(m_Mobile);
 
-      switch (Utility.Random(3))
+      return Utility.Random(3) switch
       {
-        case 0: return new WeakenSpell(m_Mobile);
-        case 1: return new ClumsySpell(m_Mobile);
-        default: return new FeeblemindSpell(m_Mobile);
-      }
+        0 => (Spell)new WeakenSpell(m_Mobile),
+        1 => new ClumsySpell(m_Mobile),
+        _ => new FeeblemindSpell(m_Mobile)
+      };
     }
 
     public virtual Spell GetRandomManaDrainSpell()
@@ -740,7 +740,7 @@ namespace Server.Mobiles
 
         m_NextCastTime = Core.TickCount + (int)GetDelay(spell).TotalMilliseconds;
       }
-      else if (m_Mobile.Spell == null || !m_Mobile.Spell.IsCasting)
+      else if (m_Mobile.Spell?.IsCasting != true)
       {
         RunTo(c);
       }

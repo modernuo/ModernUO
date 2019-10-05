@@ -247,7 +247,7 @@ namespace Server.Items
 
       BaseHouse house = BaseHouse.FindHouseAt(loc, from.Map, 16);
 
-      if (house == null || !house.IsCoOwner(from))
+      if (house?.IsCoOwner(@from) != true)
       {
         from.SendLocalizedMessage(1042036); // That location is not in your house.
         return;

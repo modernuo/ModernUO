@@ -294,21 +294,13 @@ namespace Server.Items
 
     public static MusicName RandomTrack(DawnsMusicRarity rarity)
     {
-      MusicName[] list;
-
-      switch (rarity)
+      var list = rarity switch
       {
-        default:
-        case DawnsMusicRarity.Common:
-          list = m_CommonTracks;
-          break;
-        case DawnsMusicRarity.Uncommon:
-          list = m_UncommonTracks;
-          break;
-        case DawnsMusicRarity.Rare:
-          list = m_RareTracks;
-          break;
-      }
+        DawnsMusicRarity.Common => m_CommonTracks,
+        DawnsMusicRarity.Uncommon => m_UncommonTracks,
+        DawnsMusicRarity.Rare => m_RareTracks,
+        _ => m_CommonTracks
+      };
 
       return list[Utility.Random(list.Length)];
     }

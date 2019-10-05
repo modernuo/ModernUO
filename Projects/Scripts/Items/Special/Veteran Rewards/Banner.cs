@@ -38,7 +38,7 @@ namespace Server.Items
 
     public bool CouldFit(IPoint3D p, Map map)
     {
-      if (map == null || !map.CanFit(p.X, p.Y, p.Z, ItemData.Height))
+      if (map?.CanFit(p.X, p.Y, p.Z, ItemData.Height) != true)
         return false;
 
       if (FacingSouth)

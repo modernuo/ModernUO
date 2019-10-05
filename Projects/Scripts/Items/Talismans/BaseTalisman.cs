@@ -338,7 +338,7 @@ namespace Server.Items
         list.Add(1072388, "{0}\t{1}", m_Killer.Name != null ? m_Killer.Name.ToString() : "Unknown",
           m_Killer.Amount); // ~1_NAME~ Killer: +~2_val~%
 
-      if (m_Protection != null && !m_Protection.IsEmpty && m_Protection.Amount > 0)
+      if (m_Protection?.IsEmpty == false && m_Protection.Amount > 0)
         list.Add(1072387, "{0}\t{1}", m_Protection.Name != null ? m_Protection.Name.ToString() : "Unknown",
           m_Protection.Amount); // ~1_NAME~ Protection: +~2_val~%
 
@@ -893,7 +893,7 @@ namespace Server.Items
 
     public virtual void StartTimer()
     {
-      if (m_Timer == null || !m_Timer.Running)
+      if (m_Timer?.Running != true)
         m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10), Slice);
     }
 

@@ -99,17 +99,17 @@ namespace Server.Items
 
     public static PuzzleChestCylinder RandomCylinder()
     {
-      switch (Utility.Random(8))
+      return Utility.Random(8) switch
       {
-        case 0: return PuzzleChestCylinder.LightBlue;
-        case 1: return PuzzleChestCylinder.Blue;
-        case 2: return PuzzleChestCylinder.Green;
-        case 3: return PuzzleChestCylinder.Orange;
-        case 4: return PuzzleChestCylinder.Purple;
-        case 5: return PuzzleChestCylinder.Red;
-        case 6: return PuzzleChestCylinder.DarkBlue;
-        default: return PuzzleChestCylinder.Yellow;
-      }
+        0 => PuzzleChestCylinder.LightBlue,
+        1 => PuzzleChestCylinder.Blue,
+        2 => PuzzleChestCylinder.Green,
+        3 => PuzzleChestCylinder.Orange,
+        4 => PuzzleChestCylinder.Purple,
+        5 => PuzzleChestCylinder.Red,
+        6 => PuzzleChestCylinder.DarkBlue,
+        _ => PuzzleChestCylinder.Yellow
+      };
     }
 
     public bool Matches(PuzzleChestSolution solution, out int cylinders, out int colors)

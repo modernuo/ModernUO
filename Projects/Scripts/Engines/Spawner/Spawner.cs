@@ -955,21 +955,20 @@ namespace Server.Mobiles
     public static string ConvertTypes(string type)
     {
       type = type.ToLower();
-      switch (type)
+      return type switch
       {
-        case "wheat": return "WheatSheaf";
-        case "noxxiousmage": return "NoxiousMage";
-        case "noxxiousarcher": return "NoxiousArcher";
-        case "noxxiouswarrior": return "NoxiousWarrior";
-        case "noxxiouswarlord": return "NoxiousWarlord";
-        case "obsidian": return "obsidianstatue";
-        case "adeepwaterelemental": return "deepwaterelemental";
-        case "noxskeleton": return "poisonskeleton";
-        case "earthcaller": return "earthsummoner";
-        case "bonedemon": return "bonedaemon";
-      }
-
-      return type;
+        "wheat" => "WheatSheaf",
+        "noxxiousmage" => "NoxiousMage",
+        "noxxiousarcher" => "NoxiousArcher",
+        "noxxiouswarrior" => "NoxiousWarrior",
+        "noxxiouswarlord" => "NoxiousWarlord",
+        "obsidian" => "obsidianstatue",
+        "adeepwaterelemental" => "deepwaterelemental",
+        "noxskeleton" => "poisonskeleton",
+        "earthcaller" => "earthsummoner",
+        "bonedemon" => "bonedaemon",
+        _ => type
+      };
     }
 
     private class InternalTimer : Timer

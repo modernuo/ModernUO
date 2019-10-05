@@ -288,24 +288,20 @@ namespace Server.Engines.Quests.Hag
       get
       {
         if (!BlackheartMet)
-          switch (Step)
+          return Step switch
           {
-            case 1:
-              /* You must gather each ingredient on the Hag's list so that she can cook
+            1 =>
+            /* You must gather each ingredient on the Hag's list so that she can cook
                * up her vile Magic Brew.  The first ingredient is :
                */
-              return 1055019;
-            case 2:
-              /* You must gather each ingredient on the Hag's list so that she can cook
+            1055019,
+            2 =>
+            /* You must gather each ingredient on the Hag's list so that she can cook
                * up her vile Magic Brew.  The second ingredient is :
                */
-              return 1055044;
-            default:
-              /* You must gather each ingredient on the Hag's list so that she can cook
-               * up her vile Magic Brew.  The final ingredient is :
-               */
-              return 1055045;
-          }
+            1055044,
+            _ => 1055045
+          };
 
         /* You are still attempting to obtain a jug of Captain Blackheart's
            * Whiskey, but the drunkard Captain refuses to share his unique brew.

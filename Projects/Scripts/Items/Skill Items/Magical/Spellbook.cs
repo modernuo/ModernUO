@@ -284,33 +284,17 @@ namespace Server.Items
       if (!DesignContext.Check(from))
         return; // They are customizing
 
-      SpellbookType type;
-
-      switch (e.Type)
+      var type = e.Type switch
       {
-        default:
-        case 1:
-          type = SpellbookType.Regular;
-          break;
-        case 2:
-          type = SpellbookType.Necromancer;
-          break;
-        case 3:
-          type = SpellbookType.Paladin;
-          break;
-        case 4:
-          type = SpellbookType.Ninja;
-          break;
-        case 5:
-          type = SpellbookType.Samurai;
-          break;
-        case 6:
-          type = SpellbookType.Arcanist;
-          break;
-        case 7:
-          type = SpellbookType.Mystic;
-          break;
-      }
+        1 => SpellbookType.Regular,
+        2 => SpellbookType.Necromancer,
+        3 => SpellbookType.Paladin,
+        4 => SpellbookType.Ninja,
+        5 => SpellbookType.Samurai,
+        6 => SpellbookType.Arcanist,
+        7 => SpellbookType.Mystic,
+        _ => SpellbookType.Regular
+      };
 
       Spellbook book = Find(from, -1, type);
 

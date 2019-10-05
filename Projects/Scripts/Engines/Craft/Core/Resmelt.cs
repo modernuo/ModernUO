@@ -65,35 +65,18 @@ namespace Server.Engines.Craft
           if (craftResource.Amount < 2)
             return SmeltResult.Invalid; // Not enough metal to resmelt
 
-          double difficulty = 0.0;
-
-          switch (resource)
+          var difficulty = resource switch
           {
-            case CraftResource.DullCopper:
-              difficulty = 65.0;
-              break;
-            case CraftResource.ShadowIron:
-              difficulty = 70.0;
-              break;
-            case CraftResource.Copper:
-              difficulty = 75.0;
-              break;
-            case CraftResource.Bronze:
-              difficulty = 80.0;
-              break;
-            case CraftResource.Gold:
-              difficulty = 85.0;
-              break;
-            case CraftResource.Agapite:
-              difficulty = 90.0;
-              break;
-            case CraftResource.Verite:
-              difficulty = 95.0;
-              break;
-            case CraftResource.Valorite:
-              difficulty = 99.0;
-              break;
-          }
+            CraftResource.DullCopper => 65.0,
+            CraftResource.ShadowIron => 70.0,
+            CraftResource.Copper => 75.0,
+            CraftResource.Bronze => 80.0,
+            CraftResource.Gold => 85.0,
+            CraftResource.Agapite => 90.0,
+            CraftResource.Verite => 95.0,
+            CraftResource.Valorite => 99.0,
+            _ => 0.0
+          };
 
           if (difficulty > from.Skills.Mining.Value)
             return SmeltResult.NoSkill;
@@ -163,19 +146,13 @@ namespace Server.Engines.Craft
             isStoreBought = false;
           }
 
-          switch (result)
+          message = result switch
           {
-            default:
-            case SmeltResult.Invalid:
-              message = 1044272;
-              break; // You can't melt that down into ingots.
-            case SmeltResult.NoSkill:
-              message = 1044269;
-              break; // You have no idea how to work this metal.
-            case SmeltResult.Success:
-              message = isStoreBought ? 500418 : 1044270;
-              break; // You melt the item down into ingots.
-          }
+            SmeltResult.Invalid => 1044272,
+            SmeltResult.NoSkill => 1044269,
+            SmeltResult.Success => (isStoreBought ? 500418 : 1044270),
+            _ => 1044272
+          };
 
           from.SendGump(new CraftGump(from, m_CraftSystem, m_Tool, message));
         }

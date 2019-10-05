@@ -212,22 +212,22 @@ namespace Server.Factions
       if (maxCircle < 1)
         maxCircle = 1;
 
-      switch (Utility.Random(maxCircle * 2))
+      return Utility.Random(maxCircle * 2) switch
       {
-        case 0:
-        case 1: return new MagicArrowSpell(m_Guard);
-        case 2:
-        case 3: return new HarmSpell(m_Guard);
-        case 4:
-        case 5: return new FireballSpell(m_Guard);
-        case 6:
-        case 7: return new LightningSpell(m_Guard);
-        case 8: return new MindBlastSpell(m_Guard);
-        case 9: return new ParalyzeSpell(m_Guard);
-        case 10: return new EnergyBoltSpell(m_Guard);
-        case 11: return new ExplosionSpell(m_Guard);
-        default: return new FlameStrikeSpell(m_Guard);
-      }
+        0 => (Spell)new MagicArrowSpell(m_Guard),
+        1 => new MagicArrowSpell(m_Guard),
+        2 => new HarmSpell(m_Guard),
+        3 => new HarmSpell(m_Guard),
+        4 => new FireballSpell(m_Guard),
+        5 => new FireballSpell(m_Guard),
+        6 => new LightningSpell(m_Guard),
+        7 => new LightningSpell(m_Guard),
+        8 => new MindBlastSpell(m_Guard),
+        9 => new ParalyzeSpell(m_Guard),
+        10 => new EnergyBoltSpell(m_Guard),
+        11 => new ExplosionSpell(m_Guard),
+        _ => new FlameStrikeSpell(m_Guard)
+      };
     }
 
     public Mobile FindDispelTarget(bool activeOnly)
@@ -398,7 +398,7 @@ namespace Server.Factions
 
     public void Run(Direction d)
     {
-      if (m_Mobile.Spell != null && m_Mobile.Spell.IsCasting || m_Mobile.Paralyzed || m_Mobile.Frozen ||
+      if (m_Mobile.Spell?.IsCasting == true || m_Mobile.Paralyzed || m_Mobile.Frozen ||
           m_Mobile.DisallowAllMoves)
         return;
 

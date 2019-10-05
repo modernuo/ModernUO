@@ -26,14 +26,13 @@ namespace Server
 
     private static int GetHonorDuration(PlayerMobile from)
     {
-      switch (VirtueHelper.GetLevel(from, VirtueName.Honor))
+      return VirtueHelper.GetLevel(@from, VirtueName.Honor) switch
       {
-        case VirtueLevel.Seeker: return 30;
-        case VirtueLevel.Follower: return 90;
-        case VirtueLevel.Knight: return 300;
-
-        default: return 0;
-      }
+        VirtueLevel.Seeker => 30,
+        VirtueLevel.Follower => 90,
+        VirtueLevel.Knight => 300,
+        _ => 0
+      };
     }
 
     private static void EmbraceHonor(PlayerMobile pm)

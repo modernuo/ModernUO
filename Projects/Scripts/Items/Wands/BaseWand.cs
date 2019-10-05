@@ -213,44 +213,21 @@ namespace Server.Items
       }
       else
       {
-        int num = 0;
-
-        switch (m_WandEffect)
+        var num = m_WandEffect switch
         {
-          case WandEffect.Clumsiness:
-            num = 3002011;
-            break;
-          case WandEffect.Identification:
-            num = 1044063;
-            break;
-          case WandEffect.Healing:
-            num = 3002014;
-            break;
-          case WandEffect.Feeblemindedness:
-            num = 3002013;
-            break;
-          case WandEffect.Weakness:
-            num = 3002018;
-            break;
-          case WandEffect.MagicArrow:
-            num = 3002015;
-            break;
-          case WandEffect.Harming:
-            num = 3002022;
-            break;
-          case WandEffect.Fireball:
-            num = 3002028;
-            break;
-          case WandEffect.GreaterHealing:
-            num = 3002039;
-            break;
-          case WandEffect.Lightning:
-            num = 3002040;
-            break;
-          case WandEffect.ManaDraining:
-            num = 3002041;
-            break;
-        }
+          WandEffect.Clumsiness => 3002011,
+          WandEffect.Identification => 1044063,
+          WandEffect.Healing => 3002014,
+          WandEffect.Feeblemindedness => 3002013,
+          WandEffect.Weakness => 3002018,
+          WandEffect.MagicArrow => 3002015,
+          WandEffect.Harming => 3002022,
+          WandEffect.Fireball => 3002028,
+          WandEffect.GreaterHealing => 3002039,
+          WandEffect.Lightning => 3002040,
+          WandEffect.ManaDraining => 3002041,
+          _ => 0
+        };
 
         if (num > 0)
           attrs.Add(new EquipInfoAttribute(num, m_Charges));

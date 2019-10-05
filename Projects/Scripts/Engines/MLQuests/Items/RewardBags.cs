@@ -18,26 +18,15 @@ namespace Server.Engines.MLQuests.Items
 
       for (; done < itemCount; ++done)
       {
-        Item loot = null;
-
-        switch (Utility.Random(5))
+        var loot = Utility.Random(5) switch
         {
-          case 0:
-            loot = Loot.RandomWeapon(false, true);
-            break;
-          case 1:
-            loot = Loot.RandomArmor(false, true);
-            break;
-          case 2:
-            loot = Loot.RandomRangedWeapon(false, true);
-            break;
-          case 3:
-            loot = Loot.RandomJewelry();
-            break;
-          case 4:
-            loot = Loot.RandomHat(false);
-            break;
-        }
+          0 => (Item)Loot.RandomWeapon(false, true),
+          1 => Loot.RandomArmor(false, true),
+          2 => Loot.RandomRangedWeapon(false, true),
+          3 => Loot.RandomJewelry(),
+          4 => Loot.RandomHat(false),
+          _ => null
+        };
 
         if (loot == null)
           continue;

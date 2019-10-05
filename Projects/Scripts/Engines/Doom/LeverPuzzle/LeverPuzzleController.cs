@@ -238,7 +238,7 @@ namespace Server.Engines.Doom
     {
       LeverPuzzleRegion region = m_Tiles[index];
 
-      if (region?.Occupant != null && region.Occupant.Alive) return (PlayerMobile)region.Occupant;
+      if (region?.Occupant?.Alive == true) return (PlayerMobile)region.Occupant;
       return null;
     }
 

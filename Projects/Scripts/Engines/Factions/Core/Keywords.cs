@@ -29,7 +29,7 @@ namespace Server.Factions
           {
             Town town = Town.FromRegion(from.Region);
 
-            if (town == null || !town.IsFinance(from) || !from.Alive)
+            if (town?.IsFinance(@from) != true || !@from.Alive)
               break;
 
             if (FactionGump.Exists(from))
@@ -43,7 +43,7 @@ namespace Server.Factions
           {
             Town town = Town.FromRegion(from.Region);
 
-            if (town == null || !town.IsSheriff(from) || !from.Alive)
+            if (town?.IsSheriff(@from) != true || !@from.Alive)
               break;
 
             if (FactionGump.Exists(from))
@@ -123,7 +123,7 @@ namespace Server.Factions
           {
             Faction faction = Faction.Find(from);
 
-            if (faction == null || !faction.IsCommander(from))
+            if (faction?.IsCommander(@from) != true)
               break;
 
             if (from.AccessLevel == AccessLevel.Player && !faction.FactionMessageReady)

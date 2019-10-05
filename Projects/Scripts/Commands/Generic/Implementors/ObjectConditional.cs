@@ -151,89 +151,35 @@ namespace Server.Commands.Generic
         prop.BindTo(objectType, PropertyAccess.Read);
         prop.CheckAccess(from);
 
-        ICondition condition = null;
-
-        switch (oper)
+        var condition = oper switch
         {
-          #region Equality
-
-          case "=":
-          case "==":
-          case "is":
-            condition = new ComparisonCondition(prop, inverse, ComparisonOperator.Equal, val);
-            break;
-
-          case "!=":
-            condition = new ComparisonCondition(prop, inverse, ComparisonOperator.NotEqual, val);
-            break;
-
-          #endregion
-
-          #region Relational
-
-          case ">":
-            condition = new ComparisonCondition(prop, inverse, ComparisonOperator.Greater, val);
-            break;
-
-          case "<":
-            condition = new ComparisonCondition(prop, inverse, ComparisonOperator.Lesser, val);
-            break;
-
-          case ">=":
-            condition = new ComparisonCondition(prop, inverse, ComparisonOperator.GreaterEqual, val);
-            break;
-
-          case "<=":
-            condition = new ComparisonCondition(prop, inverse, ComparisonOperator.LesserEqual, val);
-            break;
-
-          #endregion
-
-          #region Strings
-
-          case "==~":
-          case "~==":
-          case "=~":
-          case "~=":
-          case "is~":
-          case "~is":
-            condition = new StringCondition(prop, inverse, StringOperator.Equal, val, true);
-            break;
-
-          case "!=~":
-          case "~!=":
-            condition = new StringCondition(prop, inverse, StringOperator.NotEqual, val, true);
-            break;
-
-          case "starts":
-            condition = new StringCondition(prop, inverse, StringOperator.StartsWith, val, false);
-            break;
-
-          case "starts~":
-          case "~starts":
-            condition = new StringCondition(prop, inverse, StringOperator.StartsWith, val, true);
-            break;
-
-          case "ends":
-            condition = new StringCondition(prop, inverse, StringOperator.EndsWith, val, false);
-            break;
-
-          case "ends~":
-          case "~ends":
-            condition = new StringCondition(prop, inverse, StringOperator.EndsWith, val, true);
-            break;
-
-          case "contains":
-            condition = new StringCondition(prop, inverse, StringOperator.Contains, val, false);
-            break;
-
-          case "contains~":
-          case "~contains":
-            condition = new StringCondition(prop, inverse, StringOperator.Contains, val, true);
-            break;
-
-          #endregion
-        }
+          "=" => (ICondition)new ComparisonCondition(prop, inverse, ComparisonOperator.Equal, val),
+          "==" => new ComparisonCondition(prop, inverse, ComparisonOperator.Equal, val),
+          "is" => new ComparisonCondition(prop, inverse, ComparisonOperator.Equal, val),
+          "!=" => new ComparisonCondition(prop, inverse, ComparisonOperator.NotEqual, val),
+          ">" => new ComparisonCondition(prop, inverse, ComparisonOperator.Greater, val),
+          "<" => new ComparisonCondition(prop, inverse, ComparisonOperator.Lesser, val),
+          ">=" => new ComparisonCondition(prop, inverse, ComparisonOperator.GreaterEqual, val),
+          "<=" => new ComparisonCondition(prop, inverse, ComparisonOperator.LesserEqual, val),
+          "==~" => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
+          "~==" => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
+          "=~" => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
+          "~=" => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
+          "is~" => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
+          "~is" => new StringCondition(prop, inverse, StringOperator.Equal, val, true),
+          "!=~" => new StringCondition(prop, inverse, StringOperator.NotEqual, val, true),
+          "~!=" => new StringCondition(prop, inverse, StringOperator.NotEqual, val, true),
+          "starts" => new StringCondition(prop, inverse, StringOperator.StartsWith, val, false),
+          "starts~" => new StringCondition(prop, inverse, StringOperator.StartsWith, val, true),
+          "~starts" => new StringCondition(prop, inverse, StringOperator.StartsWith, val, true),
+          "ends" => new StringCondition(prop, inverse, StringOperator.EndsWith, val, false),
+          "ends~" => new StringCondition(prop, inverse, StringOperator.EndsWith, val, true),
+          "~ends" => new StringCondition(prop, inverse, StringOperator.EndsWith, val, true),
+          "contains" => new StringCondition(prop, inverse, StringOperator.Contains, val, false),
+          "contains~" => new StringCondition(prop, inverse, StringOperator.Contains, val, true),
+          "~contains" => new StringCondition(prop, inverse, StringOperator.Contains, val, true),
+          _ => null
+        };
 
         if (condition == null)
           throw new InvalidOperationException($"Unrecognized operator (\"{oper}\").");

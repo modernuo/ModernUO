@@ -36,7 +36,7 @@ namespace Server.Items
 
       int version = reader.ReadInt();
 
-      if (version == 0 && (Protection == null || Protection.IsEmpty))
+      if (version == 0 && (Protection?.IsEmpty != false))
         Protection = GetRandomProtection(false);
     }
   }

@@ -13,24 +13,15 @@ namespace Server.Items
       LootType = LootType.Cursed;
 
       // TODO: All hue values
-      switch (type)
+      Hue = type switch
       {
-        case ChampionSkullType.Power:
-          Hue = 0x159;
-          break;
-        case ChampionSkullType.Venom:
-          Hue = 0x172;
-          break;
-        case ChampionSkullType.Greed:
-          Hue = 0x1EE;
-          break;
-        case ChampionSkullType.Death:
-          Hue = 0x025;
-          break;
-        case ChampionSkullType.Pain:
-          Hue = 0x035;
-          break;
-      }
+        ChampionSkullType.Power => 0x159,
+        ChampionSkullType.Venom => 0x172,
+        ChampionSkullType.Greed => 0x1EE,
+        ChampionSkullType.Death => 0x025,
+        ChampionSkullType.Pain => 0x035,
+        _ => Hue
+      };
     }
 
     public ChampionSkull(Serial serial) : base(serial)

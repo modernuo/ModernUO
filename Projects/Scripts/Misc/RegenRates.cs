@@ -202,13 +202,13 @@ namespace Server.Misc
       if (ar == null || ar.ArmorAttributes.MageArmor != 0 || ar.Attributes.SpellChanneling != 0)
         return 0.0;
 
-      switch (ar.MeditationAllowance)
+      return ar.MeditationAllowance switch
       {
-        default:
-        case ArmorMeditationAllowance.None: return ar.BaseArmorRatingScaled;
-        case ArmorMeditationAllowance.Half: return ar.BaseArmorRatingScaled / 2.0;
-        case ArmorMeditationAllowance.All: return 0.0;
-      }
+        ArmorMeditationAllowance.None => ar.BaseArmorRatingScaled,
+        ArmorMeditationAllowance.Half => (ar.BaseArmorRatingScaled / 2.0),
+        ArmorMeditationAllowance.All => 0.0,
+        _ => ar.BaseArmorRatingScaled
+      };
     }
   }
 }

@@ -162,12 +162,13 @@ namespace Server.Gumps
       {
         VirtueLevel level = VirtueHelper.GetLevel( m_Healer, VirtueName.Compassion );
 
-        switch( level )
+        @from.Hits = level switch
         {
-          case VirtueLevel.Seeker: from.Hits = AOS.Scale( from.HitsMax, 20 ); break;
-          case VirtueLevel.Follower: from.Hits = AOS.Scale( from.HitsMax, 40 ); break;
-          case VirtueLevel.Knight: from.Hits = AOS.Scale( from.HitsMax, 80 ); break;
-        }
+          VirtueLevel.Seeker => AOS.Scale(@from.HitsMax, 20),
+          VirtueLevel.Follower => AOS.Scale(@from.HitsMax, 40),
+          VirtueLevel.Knight => AOS.Scale(@from.HitsMax, 80),
+          _ => @from.Hits
+        };
       }
 
       if ( m_FromSacrifice && from is PlayerMobile mobile )

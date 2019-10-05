@@ -63,7 +63,7 @@ namespace Server.Items
 
       PlagueBeastLord owner = Owner;
 
-      if (owner == null || !owner.Alive)
+      if (owner?.Alive != true)
         Delete();
     }
   }

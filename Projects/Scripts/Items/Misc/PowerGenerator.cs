@@ -132,21 +132,13 @@ namespace Server.Items
         {
           PathDirection dir = choices[Utility.Random(count)];
 
-          switch (dir)
+          current = dir switch
           {
-            case PathDirection.Left:
-              current = new Node(current.X - 1, current.Y);
-              break;
-            case PathDirection.Up:
-              current = new Node(current.X, current.Y - 1);
-              break;
-            case PathDirection.Right:
-              current = new Node(current.X + 1, current.Y);
-              break;
-            default:
-              current = new Node(current.X, current.Y + 1);
-              break;
-          }
+            PathDirection.Left => new Node(current.X - 1, current.Y),
+            PathDirection.Up => new Node(current.X, current.Y - 1),
+            PathDirection.Right => new Node(current.X + 1, current.Y),
+            _ => new Node(current.X, current.Y + 1)
+          };
 
           stack[stackSize++] = current;
 
@@ -391,19 +383,12 @@ namespace Server.Items
 
       private void AddNode(int x, int y, NodeHue hue)
       {
-        int id;
-        switch (hue)
+        var id = hue switch
         {
-          case NodeHue.Gray:
-            id = 0x25F8;
-            break;
-          case NodeHue.Blue:
-            id = 0x868;
-            break;
-          default:
-            id = 0x9A8;
-            break;
-        }
+          NodeHue.Gray => 0x25F8,
+          NodeHue.Blue => 0x868,
+          _ => 0x9A8
+        };
 
         AddImage(x, y, id);
       }

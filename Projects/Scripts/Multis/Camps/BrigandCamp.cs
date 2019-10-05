@@ -55,15 +55,11 @@ namespace Server.Multis
 
       for (int i = 0; i < 4; i++) AddMobile(Brigands, 6, Utility.RandomMinMax(-7, 7), Utility.RandomMinMax(-7, 7), 0);
 
-      switch (Utility.Random(2))
+      m_Prisoner = Utility.Random(2) switch
       {
-        case 0:
-          m_Prisoner = new Noble();
-          break;
-        default:
-          m_Prisoner = new SeekerOfAdventure();
-          break;
-      }
+        0 => (Mobile)new Noble(),
+        _ => new SeekerOfAdventure()
+      };
 
       //be = (BaseEscortable)m_Prisoner;
       //be.m_Captive = true;
@@ -78,20 +74,12 @@ namespace Server.Multis
 
     private void AddCampChests()
     {
-      LockableContainer chest = null;
-
-      switch (Utility.Random(3))
+      var chest = Utility.Random(3) switch
       {
-        case 0:
-          chest = new MetalChest();
-          break;
-        case 1:
-          chest = new MetalGoldenChest();
-          break;
-        default:
-          chest = new WoodenChest();
-          break;
-      }
+        0 => (LockableContainer)new MetalChest(),
+        1 => new MetalGoldenChest(),
+        _ => new WoodenChest()
+      };
 
       chest.LiftOverride = true;
 
@@ -99,23 +87,13 @@ namespace Server.Multis
 
       AddItem(chest, -2, -2, 0);
 
-      LockableContainer crates = null;
-
-      switch (Utility.Random(4))
+      var crates = Utility.Random(4) switch
       {
-        case 0:
-          crates = new SmallCrate();
-          break;
-        case 1:
-          crates = new MediumCrate();
-          break;
-        case 2:
-          crates = new LargeCrate();
-          break;
-        default:
-          crates = new LockableBarrel();
-          break;
-      }
+        0 => (LockableContainer)new SmallCrate(),
+        1 => new MediumCrate(),
+        2 => new LargeCrate(),
+        _ => new LockableBarrel()
+      };
 
       crates.TrapType = TrapType.ExplosionTrap;
       crates.TrapPower = Utility.RandomMinMax(30, 40);
@@ -155,37 +133,19 @@ namespace Server.Multis
     // Don't refresh decay timer
     public override void OnEnter(Mobile m)
     {
-      if (m.Player && m_Prisoner != null && m_Prisoner.CantWalk)
+      if (m.Player && m_Prisoner?.CantWalk == true)
       {
-        int number;
-
-        switch (Utility.Random(8))
+        var number = Utility.Random(8) switch
         {
-          case 0:
-            number = 502261;
-            break; // HELP!
-          case 1:
-            number = 502262;
-            break; // Help me!
-          case 2:
-            number = 502263;
-            break; // Canst thou aid me?!
-          case 3:
-            number = 502264;
-            break; // Help a poor prisoner!
-          case 4:
-            number = 502265;
-            break; // Help! Please!
-          case 5:
-            number = 502266;
-            break; // Aaah! Help me!
-          case 6:
-            number = 502267;
-            break; // Go and get some help!
-          default:
-            number = 502268;
-            break; // Quickly, I beg thee! Unlock my chains! If thou dost look at me close thou canst see them.	
-        }
+          0 => 502261,
+          1 => 502262,
+          2 => 502263,
+          3 => 502264,
+          4 => 502265,
+          5 => 502266,
+          6 => 502267,
+          _ => 502268
+        };
 
         m_Prisoner.Yell(number);
       }
