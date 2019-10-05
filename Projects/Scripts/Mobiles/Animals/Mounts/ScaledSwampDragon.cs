@@ -4,7 +4,7 @@ namespace Server.Mobiles
   {
     [Constructible]
     public ScaledSwampDragon(string name = "a swamp dragon") :
-		  base(name, 0x31F, 0x3EBE, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+      base(name, 0x31F, 0x3EBE, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
       SetStr(201, 300);
       SetDex(66, 85);

@@ -335,11 +335,11 @@ namespace Server.Items
       list.Add(1075085); // Requirement: Mondain's Legacy
 
       if (m_Killer?.IsEmpty == false && m_Killer.Amount > 0)
-        list.Add(1072388, "{0}\t{1}", m_Killer.Name != null ? m_Killer.Name.ToString() : "Unknown",
+        list.Add(1072388, "{0}\t{1}", m_Killer.Name?.ToString() ?? "Unknown",
           m_Killer.Amount); // ~1_NAME~ Killer: +~2_val~%
 
       if (m_Protection?.IsEmpty == false && m_Protection.Amount > 0)
-        list.Add(1072387, "{0}\t{1}", m_Protection.Name != null ? m_Protection.Name.ToString() : "Unknown",
+        list.Add(1072387, "{0}\t{1}", m_Protection.Name?.ToString() ?? "Unknown",
           m_Protection.Amount); // ~1_NAME~ Protection: +~2_val~%
 
       if (m_ExceptionalBonus != 0)

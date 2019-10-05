@@ -547,9 +547,5 @@ namespace Server.Misc
       mob.Say( ConstructSentance( wordCount ) );
       mob.PlaySound( Sound );
     }
-
-    public InhumanSpeech()
-    {
-    }
   }
 }

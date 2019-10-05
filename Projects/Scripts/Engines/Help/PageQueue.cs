@@ -107,7 +107,7 @@ namespace Server.Engines.Help
           if (index != -1)
             // m_Entry.AddResponse(m_Entry.Sender, "[Logout]");
 
-          PageQueue.Remove(m_Entry);
+            PageQueue.Remove(m_Entry);
         }
       }
     }

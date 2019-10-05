@@ -80,10 +80,6 @@ namespace Server.Gumps
     {
       public static readonly IComparer<Mobile> Instance = new InternalComparer();
 
-      public InternalComparer()
-      {
-      }
-
       public int Compare( Mobile x, Mobile y )
       {
         if ( x == null || y == null )

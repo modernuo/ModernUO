@@ -27,10 +27,6 @@ namespace Server.Network
   {
     private BlockingCollection<T> m_Queue = new BlockingCollection<T>(new ConcurrentQueue<T>());
 
-    public SendQueue()
-    {
-    }
-
     public void Enqueue(T t)
     {
       m_Queue.Add(t);

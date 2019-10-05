@@ -23,11 +23,11 @@ namespace Server.Guilds
       AddHtmlLocalized(65, 95, 200, 20, 1063009, 0x14AF); // <i>Duration of War</i>
       AddHtmlLocalized(65, 120, 400, 20, 1063010, 0x0); // Enter the number of hours the war will last.
       AddBackground(65, 150, 40, 30, 0x2486);
-      AddTextEntry(70, 154, 50, 30, 0x481, 10, war != null ? war.WarLength.Hours.ToString() : "0");
+      AddTextEntry(70, 154, 50, 30, 0x481, 10, war?.WarLength.Hours.ToString() ?? "0");
       AddHtmlLocalized(65, 195, 200, 20, 1063011, 0x14AF); // <i>Victory Condition</i>
       AddHtmlLocalized(65, 220, 400, 20, 1063012, 0x0); // Enter the winning number of kills.
       AddBackground(65, 250, 40, 30, 0x2486);
-      AddTextEntry(70, 254, 50, 30, 0x481, 11, war != null ? war.MaxKills.ToString() : "0");
+      AddTextEntry(70, 254, 50, 30, 0x481, 11, war?.MaxKills.ToString() ?? "0");
       AddBackground(190, 270, 130, 26, 0x2486);
       AddButton(195, 275, 0x845, 0x846, 0);
       AddHtmlLocalized(220, 273, 90, 26, 1006045, 0x0); // Cancel

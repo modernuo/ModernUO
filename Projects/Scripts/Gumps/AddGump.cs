@@ -157,7 +157,7 @@ namespace Server.Gumps
         case 1: // Search
         {
           TextRelay te = info.GetTextEntry(0);
-          string match = te == null ? "" : te.Text.Trim();
+          string match = te?.Text.Trim() ?? "";
 
           if (match.Length < 3)
           {

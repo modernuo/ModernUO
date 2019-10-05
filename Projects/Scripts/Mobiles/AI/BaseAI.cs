@@ -1740,7 +1740,7 @@ namespace Server.Mobiles
         using (StreamWriter op = new StreamWriter("nan_transform.txt", true))
         {
           op.WriteLine(
-            $"NaN in TransformMoveDelay: {DateTime.UtcNow}, {GetType()}, {(m_Mobile == null ? "null" : m_Mobile.GetType().ToString())}, {m_Mobile.HitsMax}");
+            $"NaN in TransformMoveDelay: {DateTime.UtcNow}, {GetType()}, {m_Mobile?.GetType().ToString() ?? "null"}, {m_Mobile.HitsMax}");
         }
 
         return 1.0;

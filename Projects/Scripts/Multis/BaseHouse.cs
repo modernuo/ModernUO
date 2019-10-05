@@ -1407,7 +1407,7 @@ namespace Server.Multis
       AddDoor(westDoor, x, y, z);
       AddDoor(eastDoor, x + 1, y, z);
 
-      return new BaseDoor[] { westDoor, eastDoor };
+      return new[] { westDoor, eastDoor };
     }
 
     public uint CreateKeys(Mobile m)
@@ -1449,7 +1449,7 @@ namespace Server.Multis
       AddDoor(westDoor, x, y, z);
       AddDoor(eastDoor, x + 1, y, z);
 
-      return new BaseDoor[] { westDoor, eastDoor };
+      return new[] { westDoor, eastDoor };
     }
 
     public BaseDoor MakeDoor(bool wood, DoorFacing facing)
