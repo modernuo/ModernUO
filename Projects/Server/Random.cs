@@ -174,7 +174,7 @@ namespace Server
       lock (_sync)
       {
         CheckSwap(c);
-        _Working.CopyTo(b);
+        _Working.AsSpan(0, c).CopyTo(b);
         _Index += c;
       }
     }
