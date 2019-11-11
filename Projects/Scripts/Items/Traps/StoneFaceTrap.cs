@@ -40,24 +40,22 @@ namespace Server.Items
       }
       set
       {
-        0x10F5 => StoneFaceTrapType.NorthWestWall,
-        0x10F6 => StoneFaceTrapType.NorthWestWall,
-        0x10F7 => StoneFaceTrapType.NorthWestWall,
-        0x10FC => StoneFaceTrapType.NorthWall,
-        0x10FD => StoneFaceTrapType.NorthWall,
-        0x10FE => StoneFaceTrapType.NorthWall,
-        0x110F => StoneFaceTrapType.WestWall,
-        0x1110 => StoneFaceTrapType.WestWall,
-        0x1111 => StoneFaceTrapType.WestWall,
-        _ => StoneFaceTrapType.NorthWestWall
-      };
-      set => ItemID = Breathing ? GetFireID(value) : GetBaseID(value);
+        bool breathing = Breathing;
+
+        ItemID = breathing ? GetFireID(value) : GetBaseID(value);
+      }
     }
 
     public bool Breathing
     {
       get => ItemID == GetFireID(Type);
-      set => ItemID = value ? GetFireID(Type) : GetBaseID(Type);
+      set
+      {
+        if (value)
+          ItemID = GetFireID(Type);
+        else
+          ItemID = GetBaseID(Type);
+      }
     }
 
     public override bool PassivelyTriggered => true;

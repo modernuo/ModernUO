@@ -491,7 +491,7 @@ namespace Server.Engines.Craft
 
         if (!usingDeed)
         {
-          m_CraftSystem.GetContext(from);
+          CraftContext context = m_CraftSystem.GetContext(from);
           from.SendGump(new CraftGump(from, m_CraftSystem, m_Tool, number));
         }
         else

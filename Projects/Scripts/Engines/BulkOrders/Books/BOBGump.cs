@@ -4,6 +4,7 @@ using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
+using Server.Prompts;
 
 namespace Server.Engines.BulkOrders
 {

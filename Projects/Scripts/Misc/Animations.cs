@@ -1,6 +1,6 @@
 namespace Server.Misc
 {
-  public static class Animations
+  public class Animations
   {
     public static void Initialize()
     {

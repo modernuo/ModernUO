@@ -8,7 +8,7 @@ using Server.Mobiles;
 
 #endregion
 
-namespace Server
+namespace Server.Movement
 {
   public class FastMovementImpl : IMovementImpl
   {
@@ -179,7 +179,7 @@ namespace Server
     private static bool Check(
       Map map,
       Mobile m,
-      IReadOnlyCollection<Item> items,
+      List<Item> items,
       int x,
       int y,
       int startTop,

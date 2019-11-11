@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Network;
 using Server.Targeting;
 
@@ -30,7 +29,14 @@ namespace Server.Items
 
     public int Amount{ get; }
 
-    public static CrystalRechargeInfo Get(Type type) => Table.FirstOrDefault(info => info.Type == type);
+    public static CrystalRechargeInfo Get(Type type)
+    {
+      foreach (CrystalRechargeInfo info in Table)
+        if (info.Type == type)
+          return info;
+
+      return null;
+    }
   }
 
   public class BroadcastCrystal : Item

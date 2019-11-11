@@ -18,31 +18,29 @@
  *
  ***************************************************************************/
 
-using System.Buffers;
-using Server.Buffers;
-using Server.Collections;
+using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpPage : GumpEntry
   {
-    public GumpPage(int page) => Page = page;
+    private static byte[] m_LayoutName = Gump.StringToBuffer("page");
+    private int m_Page;
 
     public GumpPage(int page) => m_Page = page;
 
-    public override string Compile(ArraySet<string> strings) => $"{{ page {Page} }}";
+    public int Page
+    {
+      get => m_Page;
+      set => Delta(ref m_Page, value);
+    }
 
     public override string Compile(NetState ns) => $"{{ page {m_Page} }}";
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
+    public override void AppendTo(NetState ns, IGumpWriter disp)
     {
-      SpanWriter writer = new SpanWriter(buffer.GetSpan(19));
-      writer.Write(m_LayoutName);
-      writer.WriteAscii(Page.ToString());
-      writer.Write((byte)0x20); // ' '
-      writer.Write((byte)0x7D); // '}'
-
-      buffer.Advance(writer.WrittenCount);
+      disp.AppendLayout(m_LayoutName);
+      disp.AppendLayout(m_Page);
     }
   }
 }

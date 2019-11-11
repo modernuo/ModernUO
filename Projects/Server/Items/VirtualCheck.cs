@@ -1,7 +1,8 @@
 using Server.Gumps;
+using Server.Items;
 using Server.Network;
 
-namespace Server.Items
+namespace Server
 {
   public sealed class VirtualCheck : Item
   {
@@ -34,7 +35,7 @@ namespace Server.Items
 
     public override string DefaultName => "Offer Of Currency";
 
-    public EditGump Editor { get; private set; }
+    public EditGump Editor{ get; private set; }
 
     [CommandProperty(AccessLevel.Administrator)]
     public int Plat
@@ -170,8 +171,8 @@ namespace Server.Items
         CompileLayout();
       }
 
-      public Mobile User { get; }
-      public VirtualCheck Check { get; private set; }
+      public Mobile User{ get; }
+      public VirtualCheck Check{ get; private set; }
 
       public override void OnServerClose(NetState owner)
       {

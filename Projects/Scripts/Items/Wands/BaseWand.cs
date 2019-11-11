@@ -236,15 +236,22 @@ namespace Server.Items
       int number;
 
       if (Name == null)
+      {
         number = 1017085;
+      }
       else
       {
         LabelTo(from, Name);
         number = 1041000;
       }
 
-      if (attrs.Count > 0 || Crafter != null || Name == null)
-        EquipmentPackets.SendDisplayEquipmentInfo(from.NetState, this, number, Crafter, false, attrs);
+      if (attrs.Count == 0 && Crafter == null && Name != null)
+        return;
+
+      EquipmentInfo eqInfo = new EquipmentInfo(number, Crafter, false,
+        attrs.ToArray());
+
+      from.Send(new DisplayEquipmentInfo(this, eqInfo));
     }
 
     public void Cast(Spell spell)

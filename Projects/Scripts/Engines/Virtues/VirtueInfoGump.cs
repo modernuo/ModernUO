@@ -79,7 +79,7 @@ namespace Server
       AddHtmlLocalized(83, 275, 400, 40, webPage == null ? 1052055 : 1052052); // This virtue is not yet defined. OR -click to learn more (opens webpage)
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState state, RelayInfo info)
     {
       switch (info.ButtonID)
       {
@@ -88,7 +88,7 @@ namespace Server
           m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, m_Virtue, m_Desc, m_Page));
 
           if (m_Page != null)
-            Packets.SendLaunchBrowser(sender, m_Page);
+            state.Send(new LaunchBrowser(m_Page)); //No message about web browser starting on OSI
           break;
         }
         case 2:

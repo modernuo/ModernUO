@@ -20,7 +20,7 @@
 
 using System.IO;
 
-namespace Server.Persistence
+namespace Server
 {
   public sealed class BinaryMemoryWriter : BinaryFileWriter
   {

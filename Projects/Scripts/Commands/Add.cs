@@ -7,7 +7,7 @@ using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Commands
 {
-  public static class Add
+  public class Add
   {
     private static Type m_EntityType = typeof(IEntity);
 

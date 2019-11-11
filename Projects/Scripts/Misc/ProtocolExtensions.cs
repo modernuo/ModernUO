@@ -3,9 +3,9 @@ using Server.Network;
 
 namespace Server.Misc
 {
-  public static class ProtocolExtensions
+  public class ProtocolExtensions
   {
-    private static readonly PacketHandler[] m_Handlers = new PacketHandler[0x100];
+    private static PacketHandler[] m_Handlers = new PacketHandler[0x100];
 
     public static void Initialize()
     {
@@ -17,34 +17,48 @@ namespace Server.Misc
       m_Handlers[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
     }
 
-    public static PacketHandler GetHandler(int packetID) => packetID >= 0 && packetID < m_Handlers.Length ? m_Handlers[packetID] : null;
+    public static PacketHandler GetHandler(int packetID)
+    {
+      if (packetID >= 0 && packetID < m_Handlers.Length)
+        return m_Handlers[packetID];
+
+      return null;
+    }
 
     public static void DecodeBundledPacket(NetState state, PacketReader pvSrc)
     {
       int packetID = pvSrc.ReadByte();
 
       PacketHandler ph = GetHandler(packetID);
-      if (ph == null)
-        return;
 
-      if (ph.Ingame)
+      if (ph != null)
       {
-        if (state.Mobile == null)
+        if (ph.Ingame && state.Mobile == null)
         {
           Console.WriteLine(
-            "Client: {0}: Sent ingame packet (0xF0x{1:X2}) before having been attached to a mobile", state, packetID);
+            "Client: {0}: Sent ingame packet (0xF0x{1:X2}) before having been attached to a mobile", state,
+            packetID);
           state.Dispose();
-          return;
         }
-
-        if (state.Mobile.Deleted)
+        else if (ph.Ingame && state.Mobile.Deleted)
         {
           state.Dispose();
-          return;
+        }
+        else
+        {
+          ph.OnReceive(state, pvSrc);
         }
       }
+    }
+  }
 
-      ph.OnReceive(state, pvSrc);
+  public abstract class ProtocolExtension : Packet
+  {
+    public ProtocolExtension(int packetID, int capacity) : base(0xF0)
+    {
+      EnsureCapacity(4 + capacity);
+
+      m_Stream.Write((byte)packetID);
     }
   }
 }

@@ -355,9 +355,13 @@ namespace Server.Items
       if (dropped is RecallRune rune)
       {
         if (IsLockedDown && from.AccessLevel < AccessLevel.GameMaster)
+        {
           from.SendLocalizedMessage(502413, null, 0x35); // That cannot be done while the book is locked down.
+        }
         else if (IsOpen(from))
+        {
           from.SendLocalizedMessage(1005571); // You cannot place objects in the book while viewing the contents.
+        }
         else if (Entries.Count < 16)
         {
           if (rune.Marked && rune.TargetMap != null)
@@ -366,12 +370,12 @@ namespace Server.Items
 
             rune.Delete();
 
-            Packets.SendPlaySound(from.NetState, 0x42, GetWorldLocation());
+            from.Send(new PlaySound(0x42, GetWorldLocation()));
 
             string desc = rune.Description;
 
             if (desc == null || (desc = desc.Trim()).Length == 0)
-              desc = "(nondescript)";
+              desc = "(indescript)";
 
             from.SendMessage(desc);
 
@@ -381,13 +385,15 @@ namespace Server.Items
           from.SendLocalizedMessage(502409); // This rune does not have a marked location.
         }
         else
+        {
           from.SendLocalizedMessage(502401); // This runebook is full.
+        }
       }
       else if (dropped is RecallScroll)
       {
         if (CurCharges < MaxCharges)
         {
-          Packets.SendPlaySound(from.NetState, 0x259, GetWorldLocation());
+          from.Send(new PlaySound(0x249, GetWorldLocation()));
 
           int amount = dropped.Amount;
 
@@ -405,7 +411,9 @@ namespace Server.Items
           }
         }
         else
+        {
           from.SendLocalizedMessage(502410); // This book already has the maximum amount of charges.
+        }
       }
 
       return false;

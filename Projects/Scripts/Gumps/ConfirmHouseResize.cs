@@ -46,7 +46,7 @@ namespace Server.Gumps
       AddHtmlLocalized(240, 250, 170, 20, 1011012, 0x7FFF); // CANCEL
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState state, RelayInfo info)
     {
       if (info.ButtonID == 1 && !m_House.Deleted)
       {
@@ -100,7 +100,7 @@ namespace Server.Gumps
           }
           else
           {
-            Item toGive;
+            Item toGive = null;
 
             if (m_House.IsAosRules)
             {

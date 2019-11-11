@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Server.Items;
 using Server.Network;
@@ -258,7 +259,7 @@ namespace Server.Multis
       }
 
       int xOffset = 0, yOffset = 0;
-      Movement.Offset(m_Facing, ref xOffset, ref yOffset);
+      Movement.Movement.Offset(m_Facing, ref xOffset, ref yOffset);
 
       if (TillerMan != null)
       {
@@ -1457,10 +1458,11 @@ namespace Server.Multis
       else
       {
         List<IEntity> toMove = GetMovingEntities();
-        if (TillerMan != null) toMove.Add(TillerMan);
-        if (Hold != null) toMove.Add(Hold);
-        if (PPlank != null) toMove.Add(PPlank);
-        if (SPlank != null) toMove.Add(SPlank);
+
+        SafeAdd(TillerMan, toMove);
+        SafeAdd(Hold, toMove);
+        SafeAdd(PPlank, toMove);
+        SafeAdd(SPlank, toMove);
 
         // Packet must be sent before actual locations are changed
         foreach (NetState ns in Map.GetClientsInRange(Location, GetMaxUpdateRange()))
@@ -1468,7 +1470,7 @@ namespace Server.Multis
           Mobile m = ns.Mobile;
 
           if (ns.HighSeas && m.CanSee(this) && m.InRange(Location, GetUpdateRange(m)))
-            BoatPackets.SendMoveBoatHS(ns, m, this, d, clientSpeed, toMove, xOffset, yOffset);
+            ns.Send(new MoveBoatHS(m, this, d, clientSpeed, toMove, xOffset, yOffset));
         }
 
         foreach (IEntity e in toMove)
@@ -1500,6 +1502,12 @@ namespace Server.Multis
       return true;
     }
 
+    private static void SafeAdd(Item item, List<IEntity> toMove)
+    {
+      if (item != null)
+        toMove.Add(item);
+    }
+
     public void Teleport(int xOffset, int yOffset, int zOffset)
     {
       List<IEntity> toMove = GetMovingEntities();
@@ -1526,9 +1534,9 @@ namespace Server.Multis
         return list;
 
       MultiComponentList mcl = Components;
-      IPooledEnumerable eable = map.GetObjectsInBounds(new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height));
 
-      foreach (IEntity o in eable)
+      foreach (IEntity o in map.GetObjectsInBounds(new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height))
+      )
       {
         if (o == this || o is TillerMan || o is Hold || o is Plank)
           continue;
@@ -1544,8 +1552,6 @@ namespace Server.Multis
             list.Add(m);
         }
       }
-
-      eable.Free();
 
       return list;
     }
@@ -1589,11 +1595,11 @@ namespace Server.Multis
 
       List<IEntity> toMove = GetMovingEntities();
 
-      if (PPlank != null) toMove.Add(PPlank);
-      if (SPlank != null) toMove.Add(SPlank);
+      toMove.Add(PPlank);
+      toMove.Add(SPlank);
 
       int xOffset = 0, yOffset = 0;
-      Movement.Offset(facing, ref xOffset, ref yOffset);
+      Movement.Movement.Offset(facing, ref xOffset, ref yOffset);
 
       if (TillerMan != null)
         TillerMan.Location = new Point3D(X + xOffset * TillerManDistance + (facing == Direction.North ? 1 : 0),
@@ -1610,7 +1616,9 @@ namespace Server.Multis
         IEntity e = toMove[i];
 
         if (e is Item item)
+        {
           item.Location = Rotate(item.Location, count);
+        }
         else if (e is Mobile m)
         {
           m.Direction = m.Direction - old + facing & Direction.Mask;
@@ -1726,6 +1734,8 @@ namespace Server.Multis
       }
     }
 
+    #region High Seas
+
     public override bool AllowsRelativeDrop => true;
 
     /*
@@ -1743,5 +1753,137 @@ namespace Server.Multis
         return base.GetWorldPacketFor( state );
     }
     */
+
+    public sealed class MoveBoatHS : Packet
+    {
+      public MoveBoatHS(Mobile beholder, BaseBoat boat, Direction d, int speed, List<IEntity> ents, int xOffset,
+        int yOffset)
+        : base(0xF6)
+      {
+        EnsureCapacity(3 + 15 + ents.Count * 10);
+
+        m_Stream.Write(boat.Serial);
+        m_Stream.Write((byte)speed);
+        m_Stream.Write((byte)d);
+        m_Stream.Write((byte)boat.Facing);
+        m_Stream.Write((short)(boat.X + xOffset));
+        m_Stream.Write((short)(boat.Y + yOffset));
+        m_Stream.Write((short)boat.Z);
+        m_Stream.Write((short)0); // count placeholder
+
+        int count = 0;
+
+        foreach (IEntity ent in ents)
+        {
+          if (!beholder.CanSee(ent))
+            continue;
+
+          m_Stream.Write(ent.Serial);
+          m_Stream.Write((short)(ent.X + xOffset));
+          m_Stream.Write((short)(ent.Y + yOffset));
+          m_Stream.Write((short)ent.Z);
+          ++count;
+        }
+
+        m_Stream.Seek(16, SeekOrigin.Begin);
+        m_Stream.Write((short)count);
+      }
+    }
+
+    public sealed class DisplayBoatHS : Packet
+    {
+      public DisplayBoatHS(Mobile beholder, BaseBoat boat)
+        : base(0xF7)
+      {
+        List<IEntity> ents = boat.GetMovingEntities();
+
+        SafeAdd(boat.TillerMan, ents);
+        SafeAdd(boat.Hold, ents);
+        SafeAdd(boat.PPlank, ents);
+        SafeAdd(boat.SPlank, ents);
+
+        ents.Add(boat);
+
+        EnsureCapacity(3 + 2 + ents.Count * 26);
+
+        m_Stream.Write((short)0); // count placeholder
+
+        int count = 0;
+
+        foreach (IEntity ent in ents)
+        {
+          if (!beholder.CanSee(ent))
+            continue;
+
+          // Embedded WorldItemHS packets
+          m_Stream.Write((byte)0xF3);
+          m_Stream.Write((short)0x1);
+
+          if (ent is BaseMulti bm)
+          {
+            m_Stream.Write((byte)0x02);
+            m_Stream.Write(bm.Serial);
+            // TODO: Mask no longer needed, merge with Item case?
+            m_Stream.Write((ushort)(bm.ItemID & 0x3FFF));
+            m_Stream.Write((byte)0);
+
+            m_Stream.Write((short)bm.Amount);
+            m_Stream.Write((short)bm.Amount);
+
+            m_Stream.Write((short)(bm.X & 0x7FFF));
+            m_Stream.Write((short)(bm.Y & 0x3FFF));
+            m_Stream.Write((sbyte)bm.Z);
+
+            m_Stream.Write((byte)bm.Light);
+            m_Stream.Write((short)bm.Hue);
+            m_Stream.Write((byte)bm.GetPacketFlags());
+          }
+          else if (ent is Mobile m)
+          {
+            m_Stream.Write((byte)0x01);
+            m_Stream.Write(m.Serial);
+            m_Stream.Write((short)m.Body);
+            m_Stream.Write((byte)0);
+
+            m_Stream.Write((short)1);
+            m_Stream.Write((short)1);
+
+            m_Stream.Write((short)(m.X & 0x7FFF));
+            m_Stream.Write((short)(m.Y & 0x3FFF));
+            m_Stream.Write((sbyte)m.Z);
+
+            m_Stream.Write((byte)m.Direction);
+            m_Stream.Write((short)m.Hue);
+            m_Stream.Write((byte)m.GetPacketFlags());
+          }
+          else if (ent is Item item)
+          {
+            m_Stream.Write((byte)0x00);
+            m_Stream.Write(item.Serial);
+            m_Stream.Write((ushort)(item.ItemID & 0xFFFF));
+            m_Stream.Write((byte)0);
+
+            m_Stream.Write((short)item.Amount);
+            m_Stream.Write((short)item.Amount);
+
+            m_Stream.Write((short)(item.X & 0x7FFF));
+            m_Stream.Write((short)(item.Y & 0x3FFF));
+            m_Stream.Write((sbyte)item.Z);
+
+            m_Stream.Write((byte)item.Light);
+            m_Stream.Write((short)item.Hue);
+            m_Stream.Write((byte)item.GetPacketFlags());
+          }
+
+          m_Stream.Write((short)0x00);
+          ++count;
+        }
+
+        m_Stream.Seek(3, SeekOrigin.Begin);
+        m_Stream.Write((short)count);
+      }
+    }
+
+    #endregion
   }
 }

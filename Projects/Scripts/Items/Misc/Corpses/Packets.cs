@@ -1,29 +1,24 @@
 using System.Collections.Generic;
-using Server.Buffers;
+using System.IO;
 using Server.Items;
 
 namespace Server.Network
 {
-  public static class CorpsePackets
+  public sealed class CorpseEquip : Packet
   {
-    public static void SendCorpseEquip(NetState ns, Mobile beholder, Corpse beheld)
+    public CorpseEquip(Mobile beholder, Corpse beheld) : base(0x89)
     {
-      if (ns == null)
-        return;
-
       List<Item> list = beheld.EquipItems;
 
-      int length = 8 + list.Count * 5;
-      if (beheld.Hair?.ItemID > 0)
-        length += 5;
-      if (beheld.FacialHair?.ItemID > 0)
-        length += 5;
+      int count = list.Count;
+      if (beheld.Hair != null && beheld.Hair.ItemID > 0)
+        count++;
+      if (beheld.FacialHair != null && beheld.FacialHair.ItemID > 0)
+        count++;
 
-      SpanWriter writer = new SpanWriter(stackalloc byte[length]);
-      writer.Write((byte)0x89); // Packet ID
-      writer.Write((ushort)length); // Dynamic Length
+      EnsureCapacity(8 + count * 5);
 
-      writer.Write(beheld.Serial);
+      m_Stream.Write(beheld.Serial);
 
       for (int i = 0; i < list.Count; ++i)
       {
@@ -31,180 +26,173 @@ namespace Server.Network
 
         if (!item.Deleted && beholder.CanSee(item) && item.Parent == beheld)
         {
-          writer.Write((byte)(item.Layer + 1));
-          writer.Write(item.Serial);
+          m_Stream.Write((byte)(item.Layer + 1));
+          m_Stream.Write(item.Serial);
         }
       }
 
-      if (beheld.Hair?.ItemID > 0)
+      if (beheld.Hair != null && beheld.Hair.ItemID > 0)
       {
-        writer.Write((byte)(Layer.Hair + 1));
-        writer.Write(HairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+        m_Stream.Write((byte)(Layer.Hair + 1));
+        m_Stream.Write(HairInfo.FakeSerial(beheld.Owner) - 2);
       }
 
-      if (beheld.FacialHair?.ItemID > 0)
+      if (beheld.FacialHair != null && beheld.FacialHair.ItemID > 0)
       {
-        writer.Write((byte)(Layer.FacialHair + 1));
-        writer.Write(FacialHairInfo.FakeSerial(beheld.Owner.Serial) - 2);
+        m_Stream.Write((byte)(Layer.FacialHair + 1));
+        m_Stream.Write(FacialHairInfo.FakeSerial(beheld.Owner) - 2);
       }
 
-      writer.Position++; // writer.Write((byte)Layer.Invalid);
-
-      ns.Send(writer.Span);
+      m_Stream.Write((byte)Layer.Invalid);
     }
+  }
 
-    public static void SendCorpseContent(NetState ns, Mobile beholder, Corpse corpse)
+  public sealed class CorpseContent : Packet
+  {
+    public CorpseContent(Mobile beholder, Corpse beheld)
+      : base(0x3C)
     {
-      if (ns == null)
-        return;
+      List<Item> items = beheld.EquipItems;
+      int count = items.Count;
 
-      if (ns.ContainerGridLines)
-        SendCorpseContentNew(ns, beholder, corpse);
-      else
-        SendCorpseContentOld(ns, beholder, corpse);
-    }
+      if (beheld.Hair != null && beheld.Hair.ItemID > 0)
+        count++;
+      if (beheld.FacialHair != null && beheld.FacialHair.ItemID > 0)
+        count++;
 
-    public static void SendCorpseContentOld(NetState ns, Mobile beholder, Corpse corpse)
-    {
-      if (ns == null)
-        return;
+      EnsureCapacity(5 + count * 19);
 
-      List<Item> items = corpse.EquipItems;
-      int length = 5 + items.Count * 19;
+      long pos = m_Stream.Position;
 
-      if (corpse.Hair?.ItemID > 0)
-        length += 19;
-      if (corpse.FacialHair?.ItemID > 0)
-        length += 19;
+      int written = 0;
 
-      SpanWriter writer = new SpanWriter(stackalloc byte[length]);
-      writer.Write((byte)0x3C); // Packet ID
-      writer.Write((ushort)length); // Dynamic Length
-      writer.Position += 2;
-
-      ushort written = 0;
+      m_Stream.Write((ushort)0);
 
       for (int i = 0; i < items.Count; ++i)
       {
         Item child = items[i];
 
-        if (!child.Deleted && child.Parent == corpse && beholder.CanSee(child))
+        if (!child.Deleted && child.Parent == beheld && beholder.CanSee(child))
         {
-          writer.Write(child.Serial);
-          writer.Write((ushort)child.ItemID);
-          writer.Position++; // signed, itemID offset
-          writer.Write((ushort)child.Amount);
-          writer.Write((short)child.X);
-          writer.Write((short)child.Y);
-          writer.Write(corpse.Serial);
-          writer.Write((ushort)child.Hue);
+          m_Stream.Write(child.Serial);
+          m_Stream.Write((ushort)child.ItemID);
+          m_Stream.Write((byte)0); // signed, itemID offset
+          m_Stream.Write((ushort)child.Amount);
+          m_Stream.Write((short)child.X);
+          m_Stream.Write((short)child.Y);
+          m_Stream.Write(beheld.Serial);
+          m_Stream.Write((ushort)child.Hue);
 
           ++written;
         }
       }
 
-      if (corpse.Hair?.ItemID > 0)
+      if (beheld.Hair != null && beheld.Hair.ItemID > 0)
       {
-        writer.Write(HairInfo.FakeSerial(corpse.Owner.Serial) - 2);
-        writer.Write((ushort)corpse.Hair.ItemID);
-        writer.Position++; // signed, itemID offset
-        writer.Write((ushort)1);
-        writer.Position += 4;
-        writer.Write(corpse.Serial);
-        writer.Write((ushort)corpse.Hair.Hue);
+        m_Stream.Write(HairInfo.FakeSerial(beheld.Owner) - 2);
+        m_Stream.Write((ushort)beheld.Hair.ItemID);
+        m_Stream.Write((byte)0); // signed, itemID offset
+        m_Stream.Write((ushort)1);
+        m_Stream.Write((short)0);
+        m_Stream.Write((short)0);
+        m_Stream.Write(beheld.Serial);
+        m_Stream.Write((ushort)beheld.Hair.Hue);
 
         ++written;
       }
 
-      if (corpse.FacialHair?.ItemID > 0)
+      if (beheld.FacialHair != null && beheld.FacialHair.ItemID > 0)
       {
-        writer.Write(FacialHairInfo.FakeSerial(corpse.Owner.Serial) - 2);
-        writer.Write((ushort)corpse.FacialHair.ItemID);
-        writer.Position++; // signed, itemID offset
-        writer.Write((ushort)1);
-        writer.Position += 4;
-        writer.Write(corpse.Serial);
-        writer.Write((ushort)corpse.FacialHair.Hue);
+        m_Stream.Write(FacialHairInfo.FakeSerial(beheld.Owner) - 2);
+        m_Stream.Write((ushort)beheld.FacialHair.ItemID);
+        m_Stream.Write((byte)0); // signed, itemID offset
+        m_Stream.Write((ushort)1);
+        m_Stream.Write((short)0);
+        m_Stream.Write((short)0);
+        m_Stream.Write(beheld.Serial);
+        m_Stream.Write((ushort)beheld.FacialHair.Hue);
 
         ++written;
       }
 
-      writer.Position = 3;
-      writer.Write(written);
-
-      ns.Send(writer.Span);
+      m_Stream.Seek(pos, SeekOrigin.Begin);
+      m_Stream.Write((ushort)written);
     }
+  }
 
-    public static void SendCorpseContentNew(NetState ns, Mobile beholder, Corpse corpse)
+  public sealed class CorpseContent6017 : Packet
+  {
+    public CorpseContent6017(Mobile beholder, Corpse beheld)
+      : base(0x3C)
     {
-      if (ns == null)
-        return;
+      List<Item> items = beheld.EquipItems;
+      int count = items.Count;
 
-      List<Item> items = corpse.EquipItems;
-      int length = 5 + items.Count * 20;
+      if (beheld.Hair != null && beheld.Hair.ItemID > 0)
+        count++;
+      if (beheld.FacialHair != null && beheld.FacialHair.ItemID > 0)
+        count++;
 
-      if (corpse.Hair?.ItemID > 0)
-        length += 20;
-      if (corpse.FacialHair?.ItemID > 0)
-        length += 20;
+      EnsureCapacity(5 + count * 20);
 
-      SpanWriter writer = new SpanWriter(stackalloc byte[length]);
-      writer.Write((byte)0x3C); // Packet ID
-      writer.Write((ushort)length); // Dynamic Length
-      writer.Position += 2;
+      long pos = m_Stream.Position;
 
-      ushort written = 0;
+      int written = 0;
+
+      m_Stream.Write((ushort)0);
 
       for (int i = 0; i < items.Count; ++i)
       {
         Item child = items[i];
 
-        if (!child.Deleted && child.Parent == corpse && beholder.CanSee(child))
+        if (!child.Deleted && child.Parent == beheld && beholder.CanSee(child))
         {
-          writer.Write(child.Serial);
-          writer.Write((ushort)child.ItemID);
-          writer.Position++; // signed, itemID offset
-          writer.Write((ushort)child.Amount);
-          writer.Write((short)child.X);
-          writer.Write((short)child.Y);
-          writer.Position++; // grid location
-          writer.Write(corpse.Serial);
-          writer.Write((ushort)child.Hue);
+          m_Stream.Write(child.Serial);
+          m_Stream.Write((ushort)child.ItemID);
+          m_Stream.Write((byte)0); // signed, itemID offset
+          m_Stream.Write((ushort)child.Amount);
+          m_Stream.Write((short)child.X);
+          m_Stream.Write((short)child.Y);
+          m_Stream.Write((byte)0); // Grid Location?
+          m_Stream.Write(beheld.Serial);
+          m_Stream.Write((ushort)child.Hue);
 
           ++written;
         }
       }
 
-      if (corpse.Hair?.ItemID > 0)
+      if (beheld.Hair != null && beheld.Hair.ItemID > 0)
       {
-        writer.Write(HairInfo.FakeSerial(corpse.Owner.Serial) - 2);
-        writer.Write((ushort)corpse.Hair.ItemID);
-        writer.Position++; // signed, itemID offset
-        writer.Write((ushort)1);
-        writer.Position += 5;
-        writer.Write(corpse.Serial);
-        writer.Write((ushort)corpse.Hair.Hue);
+        m_Stream.Write(HairInfo.FakeSerial(beheld.Owner) - 2);
+        m_Stream.Write((ushort)beheld.Hair.ItemID);
+        m_Stream.Write((byte)0); // signed, itemID offset
+        m_Stream.Write((ushort)1);
+        m_Stream.Write((short)0);
+        m_Stream.Write((short)0);
+        m_Stream.Write((byte)0); // Grid Location?
+        m_Stream.Write(beheld.Serial);
+        m_Stream.Write((ushort)beheld.Hair.Hue);
 
         ++written;
       }
 
-      if (corpse.FacialHair?.ItemID > 0)
+      if (beheld.FacialHair != null && beheld.FacialHair.ItemID > 0)
       {
-        writer.Write(FacialHairInfo.FakeSerial(corpse.Owner.Serial) - 2);
-        writer.Write((ushort)corpse.FacialHair.ItemID);
-        writer.Position++; // signed, itemID offset
-        writer.Write((ushort)1);
-        writer.Position += 5;
-        writer.Write(corpse.Serial);
-        writer.Write((ushort)corpse.FacialHair.Hue);
+        m_Stream.Write(FacialHairInfo.FakeSerial(beheld.Owner) - 2);
+        m_Stream.Write((ushort)beheld.FacialHair.ItemID);
+        m_Stream.Write((byte)0); // signed, itemID offset
+        m_Stream.Write((ushort)1);
+        m_Stream.Write((short)0);
+        m_Stream.Write((short)0);
+        m_Stream.Write((byte)0); // Grid Location?
+        m_Stream.Write(beheld.Serial);
+        m_Stream.Write((ushort)beheld.FacialHair.Hue);
 
         ++written;
       }
 
-      writer.Position = 3;
-      writer.Write(written);
-
-      ns.Send(writer.Span);
+      m_Stream.Seek(pos, SeekOrigin.Begin);
+      m_Stream.Write((ushort)written);
     }
   }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Server.Engines.MLQuests
 {
@@ -35,7 +34,14 @@ namespace Server.Engines.MLQuests
     // Debug method
     public void Validate()
     {
-      bool found = Region.Regions.Any(r => r.Name == RegionName && (ForceMap == null || r.Map == ForceMap));
+      bool found = false;
+
+      foreach (Region r in Region.Regions)
+        if (r.Name == RegionName && (ForceMap == null || r.Map == ForceMap))
+        {
+          found = true;
+          break;
+        }
 
       if (!found)
         Console.WriteLine("Warning: QuestArea region '{0}' does not exist (ForceMap = {1})", RegionName,

@@ -46,7 +46,9 @@ namespace Server.Engines.Help
       string sLog;
 
       if (page < 0 || page > lastPage)
+      {
         sLog = "";
+      }
       else
       {
         int max = log.Count - (lastPage - page) * MaxEntriesPerPage;

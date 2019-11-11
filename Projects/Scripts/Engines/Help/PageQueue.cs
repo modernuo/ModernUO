@@ -82,6 +82,8 @@ namespace Server.Engines.Help
 
     private class InternalTimer : Timer
     {
+      private static TimeSpan StatusDelay = TimeSpan.FromMinutes(2.0);
+
       private PageEntry m_Entry;
 
       public InternalTimer(PageEntry entry) : base(TimeSpan.FromSeconds(1.0), StatusDelay) => m_Entry = entry;

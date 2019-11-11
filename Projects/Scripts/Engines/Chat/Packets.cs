@@ -1,36 +1,28 @@
-using Server.Buffers;
 using Server.Network;
 
 namespace Server.Engines.Chat
 {
-  public static class ChatPackets
+  public sealed class ChatMessagePacket : Packet
   {
-    public static void SendChatMessage(NetState ns, Mobile who, int number, string param1, string param2)
+    public ChatMessagePacket(Mobile who, int number, string param1, string param2) : base(0xB2)
     {
-      if (ns == null)
-        return;
+      if (param1 == null)
+        param1 = string.Empty;
 
-      param1 ??= "";
-      param2 ??= "";
+      if (param2 == null)
+        param2 = string.Empty;
 
-      int length = 13 + (param1.Length + param2.Length) * 2;
-      //base(0xB2)
+      EnsureCapacity(13 + (param1.Length + param2.Length) * 2);
 
-      SpanWriter writer = new SpanWriter(stackalloc byte[length]);
-      writer.Write((byte)0xB2); // Packet ID
-      writer.Write((ushort)length); // Dynamic Length
-
-      writer.Write((ushort)(number - 20));
+      m_Stream.Write((ushort)(number - 20));
 
       if (who != null)
-        writer.WriteAsciiFixed(who.Language, 4);
+        m_Stream.WriteAsciiFixed(who.Language, 4);
       else
-        writer.Position += 4;
+        m_Stream.Write(0);
 
-      writer.WriteBigUniNull(param1);
-      writer.WriteBigUniNull(param2);
-
-      ns.Send(writer.Span);
+      m_Stream.WriteBigUniNull(param1);
+      m_Stream.WriteBigUniNull(param2);
     }
   }
 }

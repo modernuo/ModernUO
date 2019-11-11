@@ -20,7 +20,7 @@
 
 using System.Threading;
 
-namespace Server.Persistence
+namespace Server
 {
   public sealed class DualSaveStrategy : StandardSaveStrategy
   {

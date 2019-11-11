@@ -264,7 +264,9 @@ namespace Server.Regions
 
         if (entity != null)
         {
-          m_RemoveList ??= new List<IEntity>();
+          if (m_RemoveList == null)
+            m_RemoveList = new List<IEntity>();
+
           m_RemoveList.Add(entity);
         }
       }

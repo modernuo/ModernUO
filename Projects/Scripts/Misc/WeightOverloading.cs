@@ -23,12 +23,21 @@ namespace Server.Misc
 
     public static void FatigueOnDamage(Mobile m, int damage)
     {
-      double fatigue = DFA switch
+      double fatigue = 0.0;
+
+      switch (DFA)
       {
-        DFAlgorithm.Standard => damage * (100.0 / m.Hits) * ((double)m.Stam / 100) - 5.0,
-        DFAlgorithm.PainSpike => damage * (100.0 / m.Hits + (50.0 + m.Stam) / 100 - 1.0) - 5.0,
-        _ => 0.0,
-      };
+        case DFAlgorithm.Standard:
+        {
+          fatigue = damage * (100.0 / m.Hits) * ((double)m.Stam / 100) - 5.0;
+          break;
+        }
+        case DFAlgorithm.PainSpike:
+        {
+          fatigue = damage * (100.0 / m.Hits + (50.0 + m.Stam) / 100 - 1.0) - 5.0;
+          break;
+        }
+      }
 
       if (fatigue > 0)
         m.Stam -= (int)fatigue;

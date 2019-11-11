@@ -51,7 +51,7 @@ namespace Server.Spells.First
         int percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, true) * 100);
         TimeSpan length = SpellHelper.GetDuration(Caster, m);
 
-        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Clumsy, 1075831, percentage.ToString(), length, m));
+        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Clumsy, 1075831, length, m, percentage.ToString()));
 
         HarmfulSpell(m);
       }

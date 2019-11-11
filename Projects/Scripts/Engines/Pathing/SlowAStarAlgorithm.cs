@@ -1,18 +1,20 @@
 using System;
 using Server.Mobiles;
+using CalcMoves = Server.Movement.Movement;
+using MoveImpl = Server.Movement.MovementImpl;
 
-namespace Server.PathAlgorithms
+namespace Server.PathAlgorithms.SlowAStar
 {
+  public struct PathNode
+  {
+    public int x, y, z;
+    public int g, h;
+    public int px, py, pz;
+    public int dir;
+  }
+
   public class SlowAStarAlgorithm : PathAlgorithm
   {
-    public struct PathNode
-    {
-      public int x, y, z;
-      public int g, h;
-      public int px, py, pz;
-      public int dir;
-    }
-
     private const int MaxDepth = 300;
     private const int MaxNodes = MaxDepth * 16;
     public static PathAlgorithm Instance = new SlowAStarAlgorithm();
@@ -146,11 +148,11 @@ namespace Server.PathAlgorithms
 
         if (bc != null)
         {
-          MovementImpl.AlwaysIgnoreDoors = bc.CanOpenDoors;
-          MovementImpl.IgnoreMovableImpassables = bc.CanMoveOverObstacles;
+          MoveImpl.AlwaysIgnoreDoors = bc.CanOpenDoors;
+          MoveImpl.IgnoreMovableImpassables = bc.CanMoveOverObstacles;
         }
 
-        MovementImpl.Goal = goal;
+        MoveImpl.Goal = goal;
 
         int x;
         int y;
@@ -160,6 +162,7 @@ namespace Server.PathAlgorithms
           switch (i)
           {
             default:
+            case 0:
               x = 0;
               y = -1;
               break;
@@ -193,7 +196,7 @@ namespace Server.PathAlgorithms
               break;
           }
 
-          if (Movement.CheckMovement(m, map, new Point3D(curNode.x, curNode.y, curNode.z), (Direction)i, out z))
+          if (CalcMoves.CheckMovement(m, map, new Point3D(curNode.x, curNode.y, curNode.z), (Direction)i, out z))
           {
             successors[sucCount].x = x + curNode.x;
             successors[sucCount].y = y + curNode.y;
@@ -201,9 +204,9 @@ namespace Server.PathAlgorithms
           }
         }
 
-        MovementImpl.AlwaysIgnoreDoors = false;
-        MovementImpl.IgnoreMovableImpassables = false;
-        MovementImpl.Goal = Point3D.Zero;
+        MoveImpl.AlwaysIgnoreDoors = false;
+        MoveImpl.IgnoreMovableImpassables = false;
+        MoveImpl.Goal = Point3D.Zero;
 
         if (sucCount == 0 || ++depth > MaxDepth)
           break;

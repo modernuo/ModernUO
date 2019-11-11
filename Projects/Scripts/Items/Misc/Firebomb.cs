@@ -66,7 +66,8 @@ namespace Server.Items
         from.SendLocalizedMessage(1060581); // You've already lit it!  Better throw it now!
       }
 
-      m_Users ??= new List<Mobile>();
+      if (m_Users == null)
+        m_Users = new List<Mobile>();
 
       if (!m_Users.Contains(from))
         m_Users.Add(from);

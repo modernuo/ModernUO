@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Server.Items;
 using Server.Mobiles;
 
@@ -51,7 +50,7 @@ namespace Server.Engines.Quests.Hag
       Corpse = new HagApprenticeCorpse();
       Corpse.MoveToWorld(m_CorpseLocation, map);
 
-      Effects.SendLocationEffect(m_CorpseLocation, map, 0x3728, 10);
+      Effects.SendLocationEffect(m_CorpseLocation, map, 0x3728, 10, 10);
       Effects.PlaySound(m_CorpseLocation, map, 0x1FE);
 
       Mobile imp = new Zeefzorpul();
@@ -67,7 +66,7 @@ namespace Server.Engines.Quests.Hag
     {
       if (m?.Deleted == false)
       {
-        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
+        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10, 10);
         Effects.PlaySound(m.Location, m.Map, 0x1FE);
 
         m.Delete();
@@ -205,7 +204,7 @@ namespace Server.Engines.Quests.Hag
       Mobile from = System.From;
       Map map = from.Map;
 
-      Effects.SendLocationEffect(ImpLocation, map, 0x3728, 10);
+      Effects.SendLocationEffect(ImpLocation, map, 0x3728, 10, 10);
       Effects.PlaySound(ImpLocation, map, 0x1FE);
 
       Mobile imp = new Zeefzorpul();
@@ -220,7 +219,7 @@ namespace Server.Engines.Quests.Hag
     {
       if (imp is Mobile m && !m.Deleted)
       {
-        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
+        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10, 10);
         Effects.PlaySound(m.Location, m.Map, 0x1FE);
 
         m.Delete();
@@ -267,7 +266,7 @@ namespace Server.Engines.Quests.Hag
         for (int i = 0; i < oldIngredients.Length; i++)
           Ingredients[i] = oldIngredients[i];
 
-        Ingredients[^1] = IngredientInfo.RandomIngredient(oldIngredients);
+        Ingredients[Ingredients.Length - 1] = IngredientInfo.RandomIngredient(oldIngredients);
       }
       else
       {
@@ -280,8 +279,13 @@ namespace Server.Engines.Quests.Hag
       BlackheartMet = blackheartMet;
     }
 
-    public override object Message =>
-      !BlackheartMet ? Step switch
+    public FindIngredientObjective()
+    {
+    }
+
+    public override object Message
+    {
+      get
       {
         if (!BlackheartMet)
           return Step switch
@@ -306,13 +310,21 @@ namespace Server.Engines.Quests.Hag
            */
         return 1055055;
       }
-      : 1055055;
+    }
 
-    public override int MaxProgress => IngredientInfo.Get(Ingredient).Quantity;
+    public override int MaxProgress
+    {
+      get
+      {
+        IngredientInfo info = IngredientInfo.Get(Ingredient);
+
+        return info.Quantity;
+      }
+    }
 
     public Ingredient[] Ingredients{ get; private set; }
 
-    public Ingredient Ingredient => Ingredients[^1];
+    public Ingredient Ingredient => Ingredients[Ingredients.Length - 1];
     public int Step => Ingredients.Length;
     public bool BlackheartMet{ get; private set; }
 
@@ -333,14 +345,26 @@ namespace Server.Engines.Quests.Hag
       }
     }
 
-    public override bool IgnoreYoungProtection(Mobile from) =>
-      !Completed && IngredientInfo.Get(Ingredient).Creatures.Any(t => from.GetType() == t);
+    public override bool IgnoreYoungProtection(Mobile from)
+    {
+      if (Completed)
+        return false;
+
+      IngredientInfo info = IngredientInfo.Get(Ingredient);
+      Type fromType = from.GetType();
+
+      for (int i = 0; i < info.Creatures.Length; i++)
+        if (fromType == info.Creatures[i])
+          return true;
+
+      return false;
+    }
 
     public override void OnKill(BaseCreature creature, Container corpse)
     {
       IngredientInfo info = IngredientInfo.Get(Ingredient);
 
-      if (info.Creatures.Any(type => creature.GetType() == type))
+      for (int i = 0; i < info.Creatures.Length; i++)
       {
         Type type = info.Creatures[i];
 
@@ -351,7 +375,8 @@ namespace Server.Engines.Quests.Hag
 
           CurProgress++;
 
-        CurProgress++;
+          break;
+        }
       }
     }
 

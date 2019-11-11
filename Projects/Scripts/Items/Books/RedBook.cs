@@ -13,8 +13,8 @@ namespace Server.Items
     }
 
     [Constructible]
-    public RedBook(string title, string author, int pageCount, bool writable) :
-      base(0xFF1, title, author, pageCount,  writable)
+    public RedBook(string title, string author, int pageCount, bool writable) : base(0xFF1, title, author, pageCount,
+      writable)
     {
     }
 

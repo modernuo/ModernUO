@@ -1,17 +1,19 @@
 using System.Collections;
 using Server.Mobiles;
+using CalcMoves = Server.Movement.Movement;
+using MoveImpl = Server.Movement.MovementImpl;
 
-namespace Server.PathAlgorithms
+namespace Server.PathAlgorithms.FastAStar
 {
+  public struct PathNode
+  {
+    public int cost, total;
+    public int parent, next, prev;
+    public int z;
+  }
+
   public class FastAStarAlgorithm : PathAlgorithm
   {
-    public struct PathNode
-    {
-      public int cost, total;
-      public int parent, next, prev;
-      public int z;
-    }
-
     private const int MaxDepth = 300;
     private const int AreaSize = 38;
 
@@ -132,18 +134,18 @@ namespace Server.PathAlgorithms
 
         if (bc != null)
         {
-          MovementImpl.AlwaysIgnoreDoors = bc.CanOpenDoors;
-          MovementImpl.IgnoreMovableImpassables = bc.CanMoveOverObstacles;
+          MoveImpl.AlwaysIgnoreDoors = bc.CanOpenDoors;
+          MoveImpl.IgnoreMovableImpassables = bc.CanMoveOverObstacles;
         }
 
-        MovementImpl.Goal = goal;
+        MoveImpl.Goal = goal;
 
         int[] vals = m_Successors;
         int count = GetSuccessors(bestNode, m, map);
 
-        MovementImpl.AlwaysIgnoreDoors = false;
-        MovementImpl.IgnoreMovableImpassables = false;
-        MovementImpl.Goal = Point3D.Zero;
+        MoveImpl.AlwaysIgnoreDoors = false;
+        MoveImpl.IgnoreMovableImpassables = false;
+        MoveImpl.Goal = Point3D.Zero;
 
         if (count == 0)
           break;
@@ -156,26 +158,26 @@ namespace Server.PathAlgorithms
 
           if (wasTouched)
             continue;
-
+          
           int newCost = m_Nodes[bestNode].cost + 1;
           int newTotal = newCost + Heuristic(newNode % AreaSize, newNode / AreaSize % AreaSize,
                            m_Nodes[newNode].z);
 
           if (m_Nodes[newNode].total <= newTotal)
             continue;
-
+          
           m_Nodes[newNode].parent = bestNode;
           m_Nodes[newNode].cost = newCost;
           m_Nodes[newNode].total = newTotal;
 
           if (m_OnOpen[newNode])
             continue;
-
+          
           AddToChain(newNode);
 
           if (newNode != destNode)
             continue;
-
+          
           int pathCount = 0;
           int parent = m_Nodes[newNode].parent;
 
@@ -294,7 +296,7 @@ namespace Server.PathAlgorithms
         if (x < 0 || x >= AreaSize || y < 0 || y >= AreaSize)
           continue;
 
-        if (Movement.CheckMovement(m, map, p3D, (Direction)i, out int z))
+        if (CalcMoves.CheckMovement(m, map, p3D, (Direction)i, out int z))
         {
           int idx = GetIndex(x + m_xOffset, y + m_yOffset, z);
 

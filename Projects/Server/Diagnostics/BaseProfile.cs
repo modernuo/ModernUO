@@ -50,7 +50,7 @@ namespace Server.Diagnostics
     {
       List<T> list = new List<T>(profiles);
 
-      list.Sort((a, b) => -a.TotalTime.CompareTo(b.TotalTime));
+      list.Sort(delegate(T a, T b) { return -a.TotalTime.CompareTo(b.TotalTime); });
 
       foreach (T prof in list)
       {

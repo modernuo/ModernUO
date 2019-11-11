@@ -71,7 +71,7 @@ namespace Server.Items
         startLoc.Z + 32);
 
       Effects.SendMovingEffect(new Entity(Serial.Zero, startLoc, map), new Entity(Serial.Zero, endLoc, map),
-        0x36E4, 5, 0);
+        0x36E4, 5, 0, false, false);
 
       Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => FinishLaunch(endLoc, map));
     }

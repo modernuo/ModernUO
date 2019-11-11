@@ -119,7 +119,11 @@ namespace Server.Items
 
     private static void DeleteAll()
     {
-      List<Item> list = World.Items.Values.OfType<PublicMoongate>().Cast<Item>().ToList();
+      List<Item> list = new List<Item>();
+
+      foreach (Item item in World.Items.Values)
+        if (item is PublicMoongate)
+          list.Add(item);
 
       foreach (Item item in list)
         item.Delete();
@@ -345,7 +349,7 @@ namespace Server.Items
       }
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState state, RelayInfo info)
     {
       if (info.ButtonID == 0) // Cancel
         return;

@@ -74,7 +74,7 @@ namespace Server.Spells.Chivalry
             if (evil)
             {
               // TODO: Is this right?
-              double fleeChance = (100 - Math.Sqrt(m.Fame / 2.0)) * chiv * dispelSkill;
+              double fleeChance = (100 - Math.Sqrt(m.Fame / 2)) * chiv * dispelSkill;
               fleeChance /= 1000000;
 
               if (fleeChance > Utility.RandomDouble()) bc.BeginFlee(TimeSpan.FromSeconds(30.0));

@@ -72,13 +72,17 @@ namespace Server.Items
     {
       if (dropped is BasePiece piece && piece.Board == this && base.OnDragDropInto(from, dropped, point))
       {
-        Point3D loc = GetWorldLocation();
+        Packet p = new PlaySound(0x127, GetWorldLocation());
+
+        p.Acquire();
 
         if (RootParent == from)
-          Packets.SendPlaySound(from.NetState, 0x127, loc);
+          from.Send(p);
         else
           foreach (NetState state in GetClientsInRange(2))
-            Packets.SendPlaySound(state, 0x127, loc);
+            state.Send(p);
+
+        p.Release();
 
         return true;
       }

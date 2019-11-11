@@ -1,3 +1,5 @@
+using Server.Prompts;
+
 namespace Server.Multis
 {
   public class RenameBoatPrompt : Prompt

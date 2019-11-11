@@ -1,4 +1,5 @@
 using System;
+using CalcMoves = Server.Movement.Movement;
 
 namespace Server
 {
@@ -51,7 +52,7 @@ namespace Server
         {
           int x = p.X, y = p.Y;
 
-          Movement.Offset(dirs[index], ref x, ref y);
+          CalcMoves.Offset(dirs[index], ref x, ref y);
 
           p.X = x;
           p.Y = y;

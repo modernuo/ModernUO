@@ -160,7 +160,7 @@ namespace Server.Engines.ConPVP
       if (spell is RecallSpell)
         from.SendMessage("You may not cast this spell.");
 
-      string title;
+      string title = null;
       string option;
 
       if (spell is ArcanistSpell)
@@ -854,9 +854,16 @@ namespace Server.Engines.ConPVP
         Participant p = Participants[i];
 
         if (p.Eliminated)
-          hasWinner |= ++eliminated == Participants.Count - 1;
+        {
+          ++eliminated;
+
+          if (eliminated == Participants.Count - 1)
+            hasWinner = true;
+        }
         else
+        {
           winner = p;
+        }
       }
 
       return hasWinner ? winner ?? Participants[0] : null;
@@ -1623,7 +1630,16 @@ namespace Server.Engines.ConPVP
       int rx = dx - dy;
       int ry = dx + dy;
 
-      bool eastToWest = (rx < 0 || ry < 0) && (rx >= 0 || ry >= 0);
+      bool eastToWest;
+
+      if (rx >= 0 && ry >= 0)
+        eastToWest = false;
+      else if (rx >= 0)
+        eastToWest = true;
+      else if (ry >= 0)
+        eastToWest = true;
+      else
+        eastToWest = false;
 
       Effects.PlaySound(wall, Arena.Facet, 0x1F6);
 
@@ -1801,7 +1817,9 @@ namespace Server.Engines.ConPVP
         }
       }
       else
+      {
         defs = basedef.Options;
+      }
 
       int changes = 0;
 
@@ -1981,7 +1999,9 @@ namespace Server.Engines.ConPVP
       if (!Registered)
         return;
 
-      StartedReadyCountdown |= count != -1;
+      if (count != -1)
+        StartedReadyCountdown = true;
+
       ReadyCount = count;
 
       if (count == 0)

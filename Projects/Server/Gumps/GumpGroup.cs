@@ -18,30 +18,29 @@
  *
  ***************************************************************************/
 
-using System.Buffers;
-using Server.Buffers;
-using Server.Collections;
+using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpGroup : GumpEntry
   {
-    public GumpGroup(int group) => Group = group;
+    private static byte[] m_LayoutName = Gump.StringToBuffer("group");
+    private int m_Group;
 
     public GumpGroup(int group) => m_Group = group;
 
-    public override string Compile(ArraySet<string> strings) => $"{{ group {Group} }}";
+    public int Group
+    {
+      get => m_Group;
+      set => Delta(ref m_Group, value);
+    }
 
     public override string Compile(NetState ns) => $"{{ group {m_Group} }}";
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
+    public override void AppendTo(NetState ns, IGumpWriter disp)
     {
-      SpanWriter writer = new SpanWriter(buffer.GetSpan(20));
-      writer.Write(m_LayoutName);
-      writer.WriteAscii(Group.ToString());
-      writer.Write((byte)0x20); // ' '
-      writer.Write((byte)0x7D); // '}'
-      buffer.Advance(writer.WrittenCount);
+      disp.AppendLayout(m_LayoutName);
+      disp.AppendLayout(m_Group);
     }
   }
 }

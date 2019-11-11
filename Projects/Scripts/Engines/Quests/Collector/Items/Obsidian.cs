@@ -167,10 +167,11 @@ namespace Server.Engines.Quests.Collector
     {
       if (m_Quantity < m_Completed)
       {
-        if (IsChildOf(from.Backpack))
-          from.Target = new InternalTarget(this);
+        if (!IsChildOf(from.Backpack))
+          from.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x2C, 3, 500309, "",
+            "")); // Nothing Happens.
         else
-          Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Regular, 0x2C, 3, 500309); // Nothing Happens.
+          from.Target = new InternalTarget(this);
       }
     }
 
@@ -244,14 +245,14 @@ namespace Server.Engines.Quests.Collector
             if (targObsidian.Quantity >= m_Completed)
               targObsidian.StatueName = RandomName(from);
 
-            Packets.SendAsciiMessage(from.NetState, targObsidian.Serial, targObsidian.ItemID, MessageType.Regular, 0x59, 3,
-              m_Obsidian.Name, "Something Happened.");
+            from.Send(new AsciiMessage(targObsidian.Serial, targObsidian.ItemID, MessageType.Regular, 0x59, 3,
+              m_Obsidian.Name, "Something Happened."));
 
             return;
           }
 
-        Packets.SendMessageLocalized(from.NetState, m_Obsidian.Serial, m_Obsidian.ItemID, MessageType.Regular, 0x2C, 3, 500309,
-          m_Obsidian.Name); // Nothing Happens.
+        from.Send(new MessageLocalized(m_Obsidian.Serial, m_Obsidian.ItemID, MessageType.Regular, 0x2C, 3, 500309,
+          m_Obsidian.Name, "")); // Nothing Happens.
       }
     }
   }

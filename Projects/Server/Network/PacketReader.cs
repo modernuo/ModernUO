@@ -104,205 +104,30 @@ namespace Server.Network
 
     public sbyte ReadSByte() => (sbyte)ReadByte();
 
-    public bool ReadBoolean() => ReadByte() != 0;
+    public bool ReadBoolean() => ReadByte() > 0;
 
-    public bool IsSafeChar(int c) => c >= 0x20 && c < 0xFFFE;
-
-    public string ReadUTF8StringSafe()
+    public string ReadUnicodeStringLE()
     {
       StringBuilder sb = new StringBuilder();
-      bool end = false;
 
-      while (!(end |= m_Reader.End))
-      {
-        ReadOnlySpan<byte> span = m_Reader.UnreadSpan;
-        int count = 0;
-        bool safe = true;
-        while (count < span.Length)
-        {
-          byte chr = span[count];
-          if (chr == 0)
-          {
-            end = true;
-            break;
-          }
-
-          if (!IsSafeChar(chr))
-          {
-            safe = false;
-            break;
-          }
-
-          count++;
-        }
-
-        sb.Append(Encoding.UTF8.GetString(span.Slice(0, count)));
-        m_Reader.Advance(count + (safe ? 1 : 0));
-      }
+      while (m_Reader.TryReadLittleEndian(out short c) && c != 0)
+        sb.Append((char)c);
 
       return sb.ToString();
     }
 
-    public string ReadUTF8String()
+    public string ReadUnicodeStringLE(int fixedLength)
     {
       StringBuilder sb = new StringBuilder();
-      bool end = false;
 
-      while (!(end |= m_Reader.End))
-      {
-        ReadOnlySpan<byte> span = m_Reader.UnreadSpan;
-        int count = 0;
-        while (count < span.Length)
-        {
-          if (span[count] == 0)
-          {
-            end = true;
-            break;
-          }
+      while (fixedLength-- > 0 && m_Reader.TryReadLittleEndian(out short c) && c != 0)
+        sb.Append((char)c);
 
-          count++;
-        }
-
-        sb.Append(Encoding.UTF8.GetString(span.Slice(0, count)));
-        m_Reader.Advance(count);
-      }
+      if (fixedLength > 0)
+        m_Reader.Advance(fixedLength);
 
       return sb.ToString();
     }
-
-    public string ReadString()
-    {
-      StringBuilder sb = new StringBuilder();
-      bool end = false;
-
-      while (!(end |= m_Reader.End))
-      {
-        ReadOnlySpan<byte> span = m_Reader.UnreadSpan;
-        int count = 0;
-        while (count < span.Length)
-        {
-          if (span[count] == 0)
-          {
-            end = true;
-            break;
-          }
-
-          count++;
-        }
-
-        sb.Append(Encoding.ASCII.GetString(span.Slice(0, count)));
-        m_Reader.Advance(count);
-      }
-
-      return sb.ToString();
-    }
-
-    public string ReadString(int size)
-    {
-      StringBuilder sb = new StringBuilder();
-      bool end = false;
-
-      while (!(end |= m_Reader.End) && size > 0)
-      {
-        ReadOnlySpan<byte> span = m_Reader.UnreadSpan;
-        int count = 0;
-        while (count < span.Length && size > 0)
-        {
-          if (span[count] == 0)
-          {
-            end = true;
-            break;
-          }
-
-          count++;
-          size--;
-        }
-
-        sb.Append(Encoding.ASCII.GetString(span.Slice(0, count)));
-        m_Reader.Advance(count);
-      }
-
-      if (size > 0)
-        m_Reader.Advance(size);
-
-      return sb.ToString();
-    }
-
-    public bool IsSafeChar(int c) => c >= 0x20 && c < 0xFFFE;
-
-    public string ReadUTF8StringSafe(int fixedLength)
-    {
-      StringBuilder sb = new StringBuilder();
-      bool end = false;
-
-      while (!(end |= m_Reader.End))
-      {
-        ReadOnlySpan<byte> span = m_Reader.UnreadSpan;
-        int count = 0;
-        bool safe = true;
-        while (count < span.Length)
-        {
-          byte chr = span[count];
-          if (chr == 0)
-          {
-            end = true;
-            break;
-          }
-
-          if (!IsSafeChar(chr))
-          {
-            safe = false;
-            break;
-          }
-
-          count++;
-        }
-
-        sb.Append(Encoding.ASCII.GetString(span.Slice(0, count)));
-        m_Reader.Advance(count + (safe ? 1 : 0));
-      }
-
-      return sb.ToString();
-    }
-
-    public string ReadStringSafe(int size)
-    {
-      StringBuilder sb = new StringBuilder();
-      bool end = false;
-
-      while (!(end |= m_Reader.End) && size > 0)
-      {
-        ReadOnlySpan<byte> span = m_Reader.UnreadSpan;
-        int count = 0;
-        bool safe = true;
-        while (count < span.Length && size > 0)
-        {
-          byte chr = span[count];
-          if (chr == 0)
-          {
-            end = true;
-            break;
-          }
-
-          if (!IsSafeChar(chr))
-          {
-            safe = false;
-            break;
-          }
-
-          count++;
-          size--;
-        }
-
-        sb.Append(Encoding.ASCII.GetString(span.Slice(0, count)));
-        m_Reader.Advance(size + (safe ? 1 : 0));
-      }
-
-    public string ReadUTF8String() =>
-      Utility.UTF8.GetString(
-        m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0', true) ? span :
-          m_Reader.Sequence.Slice(m_Reader.Position, m_Reader.Remaining).ToArray()
-      );
 
     public string ReadUnicodeStringLESafe(int fixedLength)
     {
@@ -329,12 +154,109 @@ namespace Server.Network
       return sb.ToString();
     }
 
+    public string ReadUnicodeStringSafe()
+    {
+      StringBuilder sb = new StringBuilder();
+
+      while (m_Reader.TryReadBigEndian(out short c) && c != 0)
+        if (IsSafeChar(c))
+          sb.Append((char)c);
+
+      return sb.ToString();
+    }
+
     public string ReadUnicodeString()
     {
       StringBuilder sb = new StringBuilder();
 
       while (m_Reader.TryReadBigEndian(out short c) && c != 0)
         sb.Append((char)c);
+
+      return sb.ToString();
+    }
+
+    public bool IsSafeChar(int c) => c >= 0x20 && c < 0xFFFE;
+
+    public string ReadUTF8StringSafe(int fixedLength)
+    {
+      string s;
+
+      if (m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0', true))
+        s = Utility.UTF8.GetString(span.Length > fixedLength ? span.Slice(0, fixedLength) : span);
+      else
+      {
+        long size = Math.Min(m_Reader.Remaining, fixedLength);
+        s = Utility.UTF8.GetString(m_Reader.Sequence.Slice(m_Reader.Position, size).ToArray());
+        m_Reader.Advance(size);
+      }
+
+      StringBuilder sb = new StringBuilder(s.Length);
+
+      for (int i = 0; i < s.Length; ++i)
+        if (IsSafeChar(s[i]))
+          sb.Append(s[i]);
+
+      return sb.ToString();
+    }
+
+    public string ReadUTF8StringSafe()
+    {
+      string s;
+
+      if (m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0', true))
+        s = Utility.UTF8.GetString(span);
+      else
+      {
+        s = Utility.UTF8.GetString(m_Reader.Sequence.Slice(m_Reader.Position, m_Reader.Remaining).ToArray());
+        m_Reader.Advance(m_Reader.Remaining);
+      }
+
+      StringBuilder sb = new StringBuilder(s.Length);
+
+      for (int i = 0; i < s.Length; ++i)
+        if (IsSafeChar(s[i]))
+          sb.Append(s[i]);
+
+      return sb.ToString();
+    }
+
+    public string ReadUTF8String() =>
+      Utility.UTF8.GetString(
+        m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0', true) ? span :
+          m_Reader.Sequence.Slice(m_Reader.Position, m_Reader.Remaining).ToArray()
+      );
+
+    public string ReadString()
+    {
+      StringBuilder sb = new StringBuilder();
+
+      while (m_Reader.TryRead(out byte c))
+        sb.Append((char)c);
+
+      return sb.ToString();
+    }
+
+    public string ReadStringSafe()
+    {
+      StringBuilder sb = new StringBuilder();
+
+      while (m_Reader.TryRead(out byte c))
+        if (IsSafeChar(c))
+          sb.Append((char)c);
+
+      return sb.ToString();
+    }
+
+    public string ReadUnicodeStringSafe(int fixedLength)
+    {
+      StringBuilder sb = new StringBuilder();
+
+      while (fixedLength-- > 0 && m_Reader.TryReadBigEndian(out short c) && c != 0)
+        if (IsSafeChar(c))
+          sb.Append((char)c);
+
+      if (fixedLength > 0)
+        m_Reader.Advance(fixedLength * 2);
 
       return sb.ToString();
     }
@@ -352,27 +274,29 @@ namespace Server.Network
       return sb.ToString();
     }
 
-    public string ReadUnicodeStringSafe()
+    public string ReadStringSafe(int fixedLength)
     {
       StringBuilder sb = new StringBuilder();
 
-      while (m_Reader.TryReadBigEndian(out short c) && c != 0)
-        if (IsSafeChar(c))
-          sb.Append((char)c);
-
-      return sb.ToString();
-    }
-
-    public string ReadUnicodeStringSafe(int fixedLength)
-    {
-      StringBuilder sb = new StringBuilder();
-
-      while (fixedLength-- > 0 && m_Reader.TryReadBigEndian(out short c) && c != 0)
+      while (fixedLength-- > 0 && m_Reader.TryRead(out byte c) && c != 0)
         if (IsSafeChar(c))
           sb.Append((char)c);
 
       if (fixedLength > 0)
-        m_Reader.Advance(fixedLength * 2);
+        m_Reader.Advance(fixedLength);
+
+      return sb.ToString();
+    }
+
+    public string ReadString(int fixedLength)
+    {
+      StringBuilder sb = new StringBuilder();
+
+      while (fixedLength-- > 0 && m_Reader.TryRead(out byte c) && c != 0)
+        sb.Append((char)c);
+
+      if (fixedLength > 0)
+        m_Reader.Advance(fixedLength);
 
       return sb.ToString();
     }

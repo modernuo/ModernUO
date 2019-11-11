@@ -25,13 +25,13 @@ namespace Server.Targeting
 {
   public abstract class Target
   {
-    private static int _nextTargetId;
+    private static int m_NextTargetID;
 
     private Timer m_TimeoutTimer;
 
     protected Target(int range, bool allowGround, TargetFlags flags)
     {
-      TargetID = ++_nextTargetId;
+      TargetID = ++m_NextTargetID;
       Range = range;
       AllowGround = allowGround;
       Flags = flags;
@@ -57,7 +57,7 @@ namespace Server.Targeting
 
     public static void Cancel(Mobile m)
     {
-      Packets.SendCancelTarget(m.NetState);
+      m.NetState?.Send(CancelTarget.Instance);
       m.Target?.OnTargetCancel(m, TargetCancelType.Canceled);
     }
 

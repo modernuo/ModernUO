@@ -1,4 +1,5 @@
 using Server.Guilds;
+using Server.Prompts;
 
 namespace Server.Gumps
 {

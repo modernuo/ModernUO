@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Server.Engines.Chat
 {
@@ -402,7 +401,18 @@ namespace Server.Engines.Chat
       }
     }
 
-    public static Channel FindChannelByName(string name) => Channels.FirstOrDefault(channel => channel.m_Name == name);
+    public static Channel FindChannelByName(string name)
+    {
+      for (int i = 0; i < Channels.Count; ++i)
+      {
+        Channel channel = Channels[i];
+
+        if (channel.m_Name == name)
+          return channel;
+      }
+
+      return null;
+    }
 
     public static void Initialize()
     {

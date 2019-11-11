@@ -1,4 +1,3 @@
-using Server.Buffers;
 using Server.Network;
 
 namespace Server.Items
@@ -14,21 +13,14 @@ namespace Server.Items
 
     public override int LabelNumber => 503057; // Impassable!
 
-    protected override void SendWorldPacketFor(NetState state)
+    protected override Packet GetWorldPacketFor(NetState state)
     {
       Mobile mob = state.Mobile;
 
       if (mob?.AccessLevel >= AccessLevel.GameMaster)
-      {
-        if (state.HighSeas)
-          SendGMItemHS(state);
-        else if (state.StygianAbyss)
-          SendGMItemSA(state);
-        else
-          SendGMItem(state);
-      }
+        return new GMItemPacket(this);
 
-      base.SendWorldPacketFor(state);
+      return base.GetWorldPacketFor(state);
     }
 
     public override void Serialize(GenericWriter writer)
@@ -45,138 +37,66 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    private void SendGMItem(NetState ns)
+    public sealed class GMItemPacket : Packet
     {
-      if (ns == null)
-        return;
+      public GMItemPacket(Item item) : base(0x1A)
+      {
+        EnsureCapacity(20);
 
-      SpanWriter w = new SpanWriter(stackalloc byte[20]);
-      w.Write((byte)0x1A); // Packet ID
-      w.Position += 2; // Dynamic Length
+        // 14 base length
+        // +2 - Amount
+        // +2 - Hue
+        // +1 - Flags
 
-      uint serial = Serial.Value;
-      int itemId = 0x1183;
-      int amount = Amount;
-      Point3D loc = Location;
-      int x = loc.X;
-      int y = loc.Y;
-      int hue = Hue;
-      int flags = GetPacketFlags();
-      int direction = (int)Direction;
+        uint serial = item.Serial.Value;
+        int itemID = 0x1183;
+        int amount = item.Amount;
+        Point3D loc = item.Location;
+        int x = loc.X;
+        int y = loc.Y;
+        int hue = item.Hue;
+        int flags = item.GetPacketFlags();
+        int direction = (int)item.Direction;
 
-      if (amount != 0)
-        serial |= 0x80000000;
-      else
-        serial &= 0x7FFFFFFF;
+        if (amount != 0)
+          serial |= 0x80000000;
+        else
+          serial &= 0x7FFFFFFF;
 
-      w.Write(serial);
+        m_Stream.Write(serial);
+        m_Stream.Write((short)(itemID & 0x7FFF));
 
-      w.Write((short)itemId);
+        if (amount != 0)
+          m_Stream.Write((short)amount);
 
-      if (amount != 0)
-        w.Write((short)amount);
+        x &= 0x7FFF;
 
-      x &= 0x7FFF;
+        if (direction != 0)
+          x |= 0x8000;
 
-      if (direction != 0) x |= 0x8000;
+        m_Stream.Write((short)x);
 
-      w.Write((short)x);
+        y &= 0x3FFF;
 
-      y &= 0x3FFF;
+        if (hue != 0)
+          y |= 0x8000;
 
-      if (hue != 0) y |= 0x8000;
+        if (flags != 0)
+          y |= 0x4000;
 
-      if (flags != 0) y |= 0x4000;
+        m_Stream.Write((short)y);
 
-      w.Write((short)y);
+        if (direction != 0)
+          m_Stream.Write((byte)direction);
 
-      if (direction != 0)
-        w.Write((byte)direction);
+        m_Stream.Write((sbyte)loc.Z);
 
-      w.Write((sbyte)loc.Z);
+        if (hue != 0)
+          m_Stream.Write((ushort)hue);
 
-      if (hue != 0)
-        w.Write((ushort)hue);
-
-      if (flags != 0)
-        w.Write((byte)flags);
-
-      w.Position = 1;
-      w.Write((ushort)w.WrittenCount);
-
-      ns.Send(w.Span);
-    }
-
-    public void SendGMItemSA(NetState ns)
-    {
-      if (ns == null)
-        return;
-
-      SpanWriter w = new SpanWriter(stackalloc byte[24]);
-      w.Write((byte)0xF3); // Packet ID
-
-      w.Write((short)0x01);
-
-      int itemId = 0x1183;
-
-      w.Position++; // w.Write((byte)0);
-
-      w.Write(Serial);
-
-      w.Write((short)itemId);
-
-      w.Write((byte)Direction);
-
-      short amount = (short)Amount;
-      w.Write(amount);
-      w.Write(amount);
-
-      Point3D loc = Location;
-      w.Write((short)(loc.X & 0x7FFF));
-      w.Write((short)(loc.Y & 0x3FFF));
-      w.Write((sbyte)loc.Z);
-
-      w.Write((byte)Light);
-      w.Write((short)Hue);
-      w.Write((byte)GetPacketFlags());
-
-      ns.Send(w.RawSpan);
-    }
-
-    public void SendGMItemHS(NetState ns)
-    {
-      if (ns == null)
-        return;
-
-      SpanWriter w = new SpanWriter(stackalloc byte[26]);
-      w.Write((byte)0xF3); // Packet ID
-
-      w.Write((short)0x01);
-
-      int itemId = 0x1183;
-
-      w.Position++; // w.Write((byte)0);
-
-      w.Write(Serial);
-
-      w.Write((short)itemId);
-
-      w.Write((byte)Direction);
-
-      short amount = (short)Amount;
-      w.Write(amount);
-      w.Write(amount);
-
-      Point3D loc = Location;
-      w.Write((short)(loc.X & 0x7FFF));
-      w.Write((short)(loc.Y & 0x3FFF));
-      w.Write((sbyte)loc.Z);
-
-      w.Write((byte)Light);
-      w.Write((short)Hue);
-      w.Write((byte)GetPacketFlags());
-
-      ns.Send(w.RawSpan);
+        if (flags != 0)
+          m_Stream.Write((byte)flags);
+      }
     }
   }
 }

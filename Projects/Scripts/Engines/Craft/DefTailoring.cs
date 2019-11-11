@@ -23,7 +23,7 @@ namespace Server.Engines.Craft
 
     public override int GumpTitleNumber => 1044005;
 
-    public static CraftSystem CraftSystem => m_CraftSystem ??= new DefTailoring();
+    public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefTailoring());
 
     public override CraftECA ECA => CraftECA.ChanceMinusSixtyToFourtyFive;
 

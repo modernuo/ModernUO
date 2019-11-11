@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Server.Items;
 using Server.Multis;
 using Server.Network;
+using Server.Prompts;
 using Server.Spells.Chivalry;
 using Server.Spells.Fourth;
 using Server.Spells.Seventh;
@@ -202,9 +203,9 @@ namespace Server.Gumps
 
     public static bool HasSpell(Mobile from, int spellID) => Spellbook.Find(from, spellID)?.HasSpell(spellID) == true;
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState state, RelayInfo info)
     {
-      Mobile from = sender.Mobile;
+      Mobile from = state.Mobile;
 
       if (Book.Deleted || !from.InRange(Book.GetWorldLocation(), Core.ML ? 3 : 1) || !DesignContext.Check(from))
       {

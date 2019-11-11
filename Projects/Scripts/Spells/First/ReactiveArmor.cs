@@ -80,7 +80,7 @@ namespace Server.Spells.First
             int physresist = 15 + (int)(targ.Skills.Inscribe.Value / 20);
             string args = $"{physresist}\t{5}\t{5}\t{5}\t{5}";
 
-            BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.ReactiveArmor, 1075812, args));
+            BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.ReactiveArmor, 1075812, 1075813, args));
           }
           else
           {

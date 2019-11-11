@@ -18,7 +18,7 @@
  *
  ***************************************************************************/
 
-namespace Server.Persistence
+namespace Server
 {
   public abstract class SaveStrategy
   {

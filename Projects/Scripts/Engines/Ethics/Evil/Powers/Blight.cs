@@ -33,9 +33,7 @@ namespace Server.Ethics.Evil
 
       SpellHelper.GetSurfaceTop(ref p);
 
-      IPooledEnumerable eable = from.Mobile.GetMobilesInRange(6);
-
-      foreach (Mobile mob in eable)
+      foreach (Mobile mob in from.Mobile.GetMobilesInRange(6))
       {
         if (mob == from.Mobile || !SpellHelper.ValidIndirectTarget(from.Mobile, mob))
           continue;
@@ -55,8 +53,6 @@ namespace Server.Ethics.Evil
 
         powerFunctioned = true;
       }
-
-      eable.Free();
 
       if (powerFunctioned)
       {

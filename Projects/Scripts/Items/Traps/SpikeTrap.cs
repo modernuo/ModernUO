@@ -26,7 +26,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public SpikeTrapType Type
     {
-      get => ItemID switch
+      get
       {
         return ItemID switch
         {
@@ -56,7 +56,13 @@ namespace Server.Items
     public bool Extended
     {
       get => ItemID == GetExtendedID(Type);
-      set => ItemID = value ? GetExtendedID(Type) : GetBaseID(Type);
+      set
+      {
+        if (value)
+          ItemID = GetExtendedID(Type);
+        else
+          ItemID = GetBaseID(Type);
+      }
     }
 
     public override bool PassivelyTriggered => false;
@@ -95,7 +101,7 @@ namespace Server.Items
       if (!from.Alive || from.AccessLevel > AccessLevel.Player)
         return;
 
-      Effects.SendLocationEffect(Location, Map, GetBaseID(Type) + 1, 18, 3, GetEffectHue());
+      Effects.SendLocationEffect(Location, Map, GetBaseID(Type) + 1, 18, 3, GetEffectHue(), 0);
       Effects.PlaySound(Location, Map, 0x22C);
 
       foreach (Mobile mob in GetMobilesInRange(0))
@@ -116,7 +122,7 @@ namespace Server.Items
     public virtual void OnSpikeRetracted()
     {
       Extended = false;
-      Effects.SendLocationEffect(Location, Map, GetExtendedID(Type) - 1, 6, 3, GetEffectHue());
+      Effects.SendLocationEffect(Location, Map, GetExtendedID(Type) - 1, 6, 3, GetEffectHue(), 0);
     }
 
     public override void Serialize(GenericWriter writer)

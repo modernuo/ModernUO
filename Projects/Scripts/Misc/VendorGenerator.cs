@@ -347,6 +347,8 @@ namespace Server
 
     private static bool CanFit(Map map, int x, int y, int z)
     {
+      bool hasSurface = false;
+
       LandTile lt = map.Tiles.GetLandTile(x, y);
       int lowZ = 0, avgZ = 0, topZ = 0;
 
@@ -355,8 +357,8 @@ namespace Server
 
       if ((landFlags & TileFlag.Impassable) != 0 && topZ > z && z + 16 > lowZ)
         return false;
-
-      bool hasSurface = (landFlags & TileFlag.Impassable) == 0 && z == avgZ && !lt.Ignored;
+      if ((landFlags & TileFlag.Impassable) == 0 && z == avgZ && !lt.Ignored)
+        hasSurface = true;
 
       StaticTile[] staticTiles = map.Tiles.GetStaticTiles(x, y);
 
@@ -374,8 +376,8 @@ namespace Server
 
         if ((surface || impassable) && staticTiles[i].Z + id.CalcHeight > z && z + 16 > staticTiles[i].Z)
           return false;
-
-        hasSurface |= surface && !impassable && z == staticTiles[i].Z + id.CalcHeight;
+        if (surface && !impassable && z == staticTiles[i].Z + id.CalcHeight)
+          hasSurface = true;
       }
 
       Sector sector = map.GetSector(x, y);
@@ -393,8 +395,8 @@ namespace Server
 
           if ((surface || impassable) && item.Z + id.CalcHeight > z && z + 16 > item.Z)
             return false;
-
-          hasSurface |= surface && !impassable && z == item.Z + id.CalcHeight;
+          if (surface && !impassable && z == item.Z + id.CalcHeight)
+            hasSurface = true;
         }
       }
 
@@ -411,9 +413,9 @@ namespace Server
       floor.Add(p);
 
       for (int xo = -1; xo <= 1; ++xo)
-      for (int yo = -1; yo <= 1; ++yo)
-        if ((xo != 0 || yo != 0) && IsFloor(map, x + xo, y + yo, false))
-          RecurseFindFloor(map, x + xo, y + yo, floor);
+        for (int yo = -1; yo <= 1; ++yo)
+          if ((xo != 0 || yo != 0) && IsFloor(map, x + xo, y + yo, false))
+            RecurseFindFloor(map, x + xo, y + yo, floor);
     }
 
     [Flags]

@@ -76,7 +76,8 @@ namespace Server.Items
 
       from.RevealingAction();
 
-      Users ??= new List<Mobile>();
+      if (Users == null)
+        Users = new List<Mobile>();
 
       if (!Users.Contains(from))
         Users.Add(from);
@@ -168,7 +169,7 @@ namespace Server.Items
 
       Effects.PlaySound(loc, map, 0x307);
 
-      Effects.SendLocationEffect(loc, map, 0x36B0, 9);
+      Effects.SendLocationEffect(loc, map, 0x36B0, 9, 10, 0, 0);
       int alchemyBonus = 0;
 
       if (direct)

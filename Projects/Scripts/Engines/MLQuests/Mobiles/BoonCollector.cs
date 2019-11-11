@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Engines.MLQuests.Definitions;
 using Server.Engines.MLQuests.Gumps;
 using Server.Items;
@@ -136,7 +135,20 @@ namespace Server.Engines.MLQuests.Mobiles
     {
       MLQuestContext context = MLQuestSystem.GetContext(pm);
 
-      return context == null ? 0 : Needed.Select(MLQuestSystem.FindQuest).Count(quest => quest == null || context.HasDoneQuest(quest));
+      if (context == null)
+        return 0;
+
+      int result = 0;
+
+      foreach (Type type in Needed)
+      {
+        MLQuest quest = MLQuestSystem.FindQuest(type);
+
+        if (quest == null || context.HasDoneQuest(quest))
+          ++result;
+      }
+
+      return result;
     }
 
     public virtual void OnComplete(PlayerMobile pm)

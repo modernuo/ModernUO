@@ -70,7 +70,7 @@ namespace Server.Spells.Fifth
           TimeSpan duration;
 
           if (Core.AOS)
-            duration = TimeSpan.FromSeconds(2 * Caster.Skills.Magery.Fixed / 5.0);
+            duration = TimeSpan.FromSeconds(2 * Caster.Skills.Magery.Fixed / 5);
           else
             duration = TimeSpan.FromSeconds(4.0 * Caster.Skills.Magery.Value);
 

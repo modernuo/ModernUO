@@ -127,7 +127,7 @@ namespace Server.SkillHandlers
       public override void OnCast()
       {
         IPooledEnumerable<Corpse> eable = Caster.GetItemsInRange<Corpse>(3);
-        Corpse toChannel = eable.FirstOrDefault(corpse => corpse?.Channeled == false);
+        Corpse toChannel = eable.FirstOrDefault(item => item is Corpse corpse && !corpse.Channeled);
         eable.Free();
 
         int min = 1 + (int)(Caster.Skills.SpiritSpeak.Value * 0.25);

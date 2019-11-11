@@ -95,7 +95,7 @@ namespace Server.Misc
       if (map == null)
         return false;
 
-      ITile surface = map.GetTopSurface(from.Location);
+      object surface = map.GetTopSurface(from.Location);
 
       if (surface is LandTile tile)
       {

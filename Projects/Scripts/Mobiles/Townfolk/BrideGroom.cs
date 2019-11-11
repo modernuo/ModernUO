@@ -50,7 +50,10 @@ namespace Server.Mobiles
       else
         AddItem(new Boots(lowHue));
 
-      HairItemID = Utility.RandomBool() ? 0x203B : 0x203C;
+      if (Utility.RandomBool())
+        HairItemID = 0x203B;
+      else
+        HairItemID = 0x203C;
 
       HairHue = Race.RandomHairHue();
 

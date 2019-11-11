@@ -34,7 +34,9 @@ namespace Server.ContextMenus
             {
             }
             else if (book.HasSpell(m_Scroll.SpellID))
+            {
               from.SendLocalizedMessage(500179); // That spell is already present in that spellbook.
+            }
             else
             {
               int val = m_Scroll.SpellID - book.BookOffset;
@@ -45,7 +47,7 @@ namespace Server.ContextMenus
 
                 m_Scroll.Consume();
 
-                Packets.SendPlaySound(from.NetState, 0x249, book.GetWorldLocation());
+                from.Send(new PlaySound(0x249, book.GetWorldLocation()));
               }
             }
           }

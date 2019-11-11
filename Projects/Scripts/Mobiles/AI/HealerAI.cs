@@ -1,4 +1,3 @@
-using System.Linq;
 using Server.Spells;
 using Server.Spells.First;
 using Server.Spells.Fourth;
@@ -117,16 +116,19 @@ namespace Server.Mobiles
           if (!m_Mobile.CanSee(m) || !(m is BaseCreature) || ((BaseCreature)m).Team != m_Mobile.Team)
             continue;
 
-          if (funcs.Any(t => t(m)))
-          {
-            double val = -m_Mobile.GetDistanceToSqrt(m);
-
-            if (found == null || val > prio)
+          for (int i = 0; i < funcs.Length; ++i)
+            if (funcs[i](m))
             {
-              prio = val;
-              found = m;
+              double val = -m_Mobile.GetDistanceToSqrt(m);
+
+              if (found == null || val > prio)
+              {
+                prio = val;
+                found = m;
+              }
+
+              break;
             }
-          }
         }
 
         return found;

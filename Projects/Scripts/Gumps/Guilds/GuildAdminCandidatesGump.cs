@@ -21,7 +21,7 @@ namespace Server.Gumps
       AddHtmlLocalized(335, 400, 100, 35, 1013077); // Refuse
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState state, RelayInfo info)
     {
       if (GuildGump.BadLeader(m_Mobile, m_Guild))
         return;

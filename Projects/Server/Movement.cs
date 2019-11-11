@@ -18,7 +18,7 @@
  *
  ***************************************************************************/
 
-namespace Server
+namespace Server.Movement
 {
   public static class Movement
   {

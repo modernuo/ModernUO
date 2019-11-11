@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using Server.Commands;
 using Server.Items;
@@ -23,22 +22,24 @@ namespace Server.Mobiles
     private InternalTimer m_Timer;
     private int m_WalkingRange = -1;
 
-    [Constructible(AccessLevel.Developer)]
-    public Spawner() : base(0x1f13)
-    {
-      InitSpawn(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10), 0, 4);
-    }
-
+//		[Constructible]
     public Spawner(int amount, int minDelay, int maxDelay, int team, int homeRange, string spawnedNames) : base(0x1f13)
     {
       InitSpawn(amount, TimeSpan.FromMinutes(minDelay), TimeSpan.FromMinutes(maxDelay), team, homeRange);
       AddEntry(spawnedNames, 100, amount, false);
     }
 
+//		[Constructible]
     public Spawner(string spawnedName) : base(0x1f13)
     {
       InitSpawn(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10), 0, 4);
       AddEntry(spawnedName, 100, 1, false);
+    }
+
+    [Constructible(AccessLevel.Developer)]
+    public Spawner() : base(0x1f13)
+    {
+      InitSpawn(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10), 0, 4);
     }
 
     public Spawner(int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
@@ -70,8 +71,9 @@ namespace Server.Mobiles
       {
         m_Count = value;
 
-        if (m_Timer != null && IsFull == m_Timer.Running)
-          DoTimer();
+        if (m_Timer != null)
+          if (!IsFull && !m_Timer.Running || IsFull && m_Timer.Running)
+            DoTimer();
 
         InvalidateProperties();
       }
@@ -264,16 +266,20 @@ namespace Server.Mobiles
     {
       base.OnSingleClick(from);
 
-      LabelTo(from, m_Running ? "[Running]" : "[Off]");
+      if (m_Running)
+        LabelTo(from, "[Running]");
+      else
+        LabelTo(from, "[Off]");
     }
 
     public void Start()
     {
-      if (!m_Running && Entries.Count > 0)
-      {
-        m_Running = true;
-        DoTimer();
-      }
+      if (!m_Running)
+        if (Entries.Count > 0)
+        {
+          m_Running = true;
+          DoTimer();
+        }
     }
 
     public void Stop()
@@ -287,7 +293,8 @@ namespace Server.Mobiles
 
     public void Defrag()
     {
-      Entries ??= new List<SpawnerEntry>();
+      if (Entries == null)
+        Entries = new List<SpawnerEntry>();
 
       for (int i = 0; i < Entries.Count; ++i)
         Entries[i].Defrag(this);
@@ -295,6 +302,8 @@ namespace Server.Mobiles
 
     public void OnTick()
     {
+//			DoTimer( m_Spawned.Count >= m_Count );
+
       if (m_Group)
       {
         Defrag();
@@ -305,8 +314,19 @@ namespace Server.Mobiles
         Respawn();
       }
       else
+      {
         Spawn();
+      }
 
+/*
+			if ( m_Running && m_Timer != null )
+			{
+				if ( m_Spawned.Count >= m_Count && m_Timer.Running )
+					DoTimer( true );
+				else if ( m_Spawned.Count < m_Count && !m_Timer.Running )
+					DoTimer( false );
+			}
+*/
       DoTimer();
     }
 
@@ -327,7 +347,11 @@ namespace Server.Mobiles
       if (Entries.Count <= 0 || IsFull)
         return;
 
-      int probsum = Entries.Where(t => !t.IsFull).Sum(t => t.SpawnedProbability);
+      int probsum = 0;
+
+      for (int i = 0; i < Entries.Count; i++)
+        if (!Entries[i].IsFull)
+          probsum += Entries[i].SpawnedProbability;
 
       if (probsum <= 0)
         return;
@@ -370,7 +394,9 @@ namespace Server.Mobiles
         }
       }
       else
+      {
         props = new string[0, 0];
+      }
 
       return props;
     }
@@ -435,8 +461,13 @@ namespace Server.Mobiles
         try
         {
           object o = null;
+          string[] paramargs;
+          string[] propargs;
 
-          string[] propargs = string.IsNullOrEmpty(entry.Properties) ? new string[0] : CommandSystem.Split(entry.Properties.Trim());
+          if (string.IsNullOrEmpty(entry.Properties))
+            propargs = new string[0];
+          else
+            propargs = CommandSystem.Split(entry.Properties.Trim());
 
           string[,] props = FormatProperties(propargs);
 
@@ -448,7 +479,10 @@ namespace Server.Mobiles
             return false;
           }
 
-          string[] paramargs = string.IsNullOrEmpty(entry.Parameters) ? new string[0] : entry.Parameters.Trim().Split(' ');
+          if (string.IsNullOrEmpty(entry.Parameters))
+            paramargs = new string[0];
+          else
+            paramargs = entry.Parameters.Trim().Split(' ');
 
           ConstructorInfo[] ctors = type.GetConstructors();
 
@@ -614,9 +648,21 @@ namespace Server.Mobiles
 
       LandTile landTile = map.Tiles.GetLandTile(x, y);
 
-      return landTile.Z == z && (TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags & TileFlag.Wet) != 0 ||
-             map.Tiles.GetStaticTiles(x, y, true).Any(staticTile =>
-               staticTile.Z == z && (TileData.ItemTable[staticTile.ID & TileData.MaxItemValue].Flags & TileFlag.Wet) != 0);
+      if (landTile.Z == z && (TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags & TileFlag.Wet) != 0)
+        return true;
+
+      StaticTile[] staticTiles = map.Tiles.GetStaticTiles(x, y, true);
+
+      for (int i = 0; i < staticTiles.Length; ++i)
+      {
+        StaticTile staticTile = staticTiles[i];
+
+        if (staticTile.Z == z &&
+            (TileData.ItemTable[staticTile.ID & TileData.MaxItemValue].Flags & TileFlag.Wet) != 0)
+          return true;
+      }
+
+      return false;
     }
 
     public virtual Map GetSpawnMap() => Map;
@@ -931,7 +977,11 @@ namespace Server.Mobiles
 
       public InternalTimer(Spawner spawner, TimeSpan delay) : base(delay)
       {
-        Priority = spawner.IsFull ? TimerPriority.FiveSeconds : TimerPriority.OneSecond;
+        if (spawner.IsFull)
+          Priority = TimerPriority.FiveSeconds;
+        else
+          Priority = TimerPriority.OneSecond;
+
         m_Spawner = spawner;
       }
 
@@ -1100,11 +1150,41 @@ namespace Server.Mobiles
         bool remove = false;
 
         if (e is Item item)
-          remove |= item.Deleted || item.RootParent is Mobile || item.IsLockedDown || item.IsSecure || item.Spawner == null;
+        {
+          if (item.Deleted || item.RootParent is Mobile || item.IsLockedDown || item.IsSecure ||
+              item.Spawner == null)
+            remove = true;
+        }
         else if (e is Mobile m)
-          remove |= m.Deleted || m.Spawner == null || m is BaseCreature c && (c.Controlled || c.IsStabled);
+        {
+          if (m.Deleted)
+          {
+            remove = true;
+          }
+          else if (m is BaseCreature c)
+          {
+            if (c.Controlled || c.IsStabled)
+              remove = true;
+/*
+						else if ( c.Combatant == null && ( c.GetDistanceToSqrt( Location ) > (c.RangeHome * 4) ) )
+						{
+							//m_Spawned[i].Delete();
+							m_Spawned.RemoveAt( i );
+							--i;
+							c.Delete();
+							remove = true;
+						}
+*/
+          }
+          else if (m.Spawner == null)
+          {
+            remove = true;
+          }
+        }
         else
+        {
           remove = true;
+        }
 
         if (remove)
         {

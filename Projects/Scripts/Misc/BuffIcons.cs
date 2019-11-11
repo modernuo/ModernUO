@@ -1,5 +1,4 @@
 using System;
-using Server.Buffers;
 using Server.Mobiles;
 using Server.Network;
 
@@ -19,11 +18,13 @@ namespace Server
         };
     }
 
+    #region Properties
+
     public BuffIcon ID{ get; }
 
-    public int Title{ get; }
+    public int TitleCliloc{ get; }
 
-    public TextDefinition Description{ get; }
+    public int SecondaryCliloc{ get; }
 
     public TimeSpan TimeLength{ get; }
 
@@ -31,30 +32,50 @@ namespace Server
 
     public Timer Timer{ get; }
 
-    public bool RetainThroughDeath { get; }
+    public bool RetainThroughDeath{ get; }
 
-    public BuffInfo(BuffIcon iconId, int title, TimeSpan time = default, Mobile m = null) :
-      this(iconId, title, title + 1, time, m)
+    public TextDefinition Args{ get; }
+
+    #endregion
+
+    #region Constructors
+
+    public BuffInfo(BuffIcon iconID, int titleCliloc)
+      : this(iconID, titleCliloc, titleCliloc + 1)
     {
     }
 
-    public BuffInfo(BuffIcon iconId, int title, string args, TimeSpan time = default, Mobile m = null) :
-      this(iconId, title, title + 1, args, time, m)
+    public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc)
+    {
+      ID = iconID;
+      TitleCliloc = titleCliloc;
+      SecondaryCliloc = secondaryCliloc;
+    }
+
+    public BuffInfo(BuffIcon iconID, int titleCliloc, TimeSpan length, Mobile m)
+      : this(iconID, titleCliloc, titleCliloc + 1, length, m)
     {
     }
 
-    public BuffInfo(BuffIcon iconId, int title, int desc, TimeSpan time = default, Mobile m = null) :
-      this(iconId, title, desc, null, time, m)
+    //Only the timed one needs to Mobile to know when to automagically remove it.
+    public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m)
+      : this(iconID, titleCliloc, secondaryCliloc)
     {
+      TimeLength = length;
+      TimeStart = DateTime.UtcNow;
+
+      Timer = Timer.DelayCall(length, delegate
+      {
+        if (!(m is PlayerMobile pm))
+          return;
+
+        pm.RemoveBuff(this);
+      });
     }
 
-    public BuffInfo(BuffIcon iconId, int title, string args, bool retain, Mobile m = null) :
-      this(iconId, title, title + 1, args, DateTime.UtcNow, default, retain, m)
-    {
-    }
 
-    public BuffInfo(BuffIcon iconId, int title, int desc, string args, TimeSpan time, Mobile m = null) :
-      this(iconId, title, new TextDefinition(desc, args), DateTime.UtcNow, time, false, m)
+    public BuffInfo(BuffIcon iconID, int titleCliloc, TextDefinition args)
+      : this(iconID, titleCliloc, titleCliloc + 1, args)
     {
     }
 
@@ -62,8 +83,8 @@ namespace Server
       : this(iconID, titleCliloc, secondaryCliloc) =>
       Args = args;
 
-    public BuffInfo(BuffIcon iconId, int title, int desc, string args, TimeSpan time = default, bool retain = false,
-      Mobile m = null) : this(iconId, title, new TextDefinition(desc, args), DateTime.UtcNow, time, retain, m)
+    public BuffInfo(BuffIcon iconID, int titleCliloc, bool retainThroughDeath)
+      : this(iconID, titleCliloc, titleCliloc + 1, retainThroughDeath)
     {
     }
 
@@ -71,17 +92,9 @@ namespace Server
       : this(iconID, titleCliloc, secondaryCliloc) =>
       RetainThroughDeath = retainThroughDeath;
 
-    public BuffInfo(BuffIcon iconId, int title, TextDefinition desc, DateTime start = default, TimeSpan time = default, bool retain = false,
-      Mobile m = null)
+    public BuffInfo(BuffIcon iconID, int titleCliloc, TextDefinition args, bool retainThroughDeath)
+      : this(iconID, titleCliloc, titleCliloc + 1, args, retainThroughDeath)
     {
-      ID = iconId;
-      Title = title;
-      Description = desc;
-      TimeLength = time;
-      TimeStart = start;
-      RetainThroughDeath = retain;
-      if (m is PlayerMobile pm)
-        Timer = Timer.DelayCall(time, playermobile => playermobile.RemoveBuff(this), pm);
     }
 
     public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args, bool retainThroughDeath)
@@ -118,17 +131,20 @@ namespace Server
 
     public static void AddBuff(Mobile m, BuffInfo b)
     {
-      (m as PlayerMobile)?.AddBuff(b);
+      if (m is PlayerMobile pm)
+        pm.AddBuff(b);
     }
 
     public static void RemoveBuff(Mobile m, BuffInfo b)
     {
-      (m as PlayerMobile)?.RemoveBuff(b);
+      if (m is PlayerMobile pm)
+        pm.RemoveBuff(b);
     }
 
     public static void RemoveBuff(Mobile m, BuffIcon b)
     {
-      (m as PlayerMobile)?.RemoveBuff(b);
+      if (m is PlayerMobile pm)
+        pm.RemoveBuff(b);
     }
 
     #endregion
@@ -192,68 +208,80 @@ namespace Server
     Fly
   }
 
-  public static class BuffPackets
+  public sealed class AddBuffPacket : Packet
   {
-    public static void SendAddBuff(Mobile m, BuffInfo info)
+    public AddBuffPacket(Mobile m, BuffInfo info)
+      : this(m, info.ID, info.TitleCliloc, info.SecondaryCliloc, info.Args,
+        info.TimeStart != DateTime.MinValue ? info.TimeStart + info.TimeLength - DateTime.UtcNow : TimeSpan.Zero)
     {
-      SendAddBuff(m.NetState, m.Serial, info.ID, info.Title, info.Description,
-        info.TimeStart != DateTime.MinValue ? info.TimeStart + info.TimeLength - DateTime.UtcNow : TimeSpan.Zero);
-    }
-    public static void SendAddBuff(NetState ns, Serial m, BuffIcon iconID, int title, TextDefinition desc, TimeSpan time)
-    {
-      if (ns == null)
-        return;
-
-      string args = desc?.String ?? "";
-
-      int length = 44 + args.Length * 2;
-
-      SpanWriter writer = new SpanWriter(stackalloc byte[length]);
-      writer.Write((byte)0xDF); // Packet ID
-      writer.Write((ushort)length); // Dynamic Length
-
-      writer.Write(m);
-
-      writer.Write((short)iconID); //ID
-      writer.Write((short)0x1); //Type 0 for removal. 1 for add 2 for Data
-
-      writer.Position += 4;
-
-      writer.Write((short)iconID); //ID
-      writer.Write((short)0x01); //Type 0 for removal. 1 for add 2 for Data
-
-      writer.Position += 4;
-
-      writer.Write((short)Math.Max(time.TotalSeconds, 0)); //Time in seconds
-
-      writer.Position += 3;
-
-      writer.Write(title);
-      writer.Write(desc?.Number ?? 0);
-
-      writer.Position += 5;
-      writer.Write((byte)0x1); // Start indicator?
-      writer.Position += 2;
-
-      writer.WriteLittleUniNull(args);
-
-      ns.Send(writer.Span);
     }
 
-    public static void SendRemoveBuffPacket(NetState ns, Serial m, int icon)
+    public AddBuffPacket(Mobile mob, BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args,
+      TimeSpan length)
+      : base(0xDF)
     {
-      SpanWriter writer = new SpanWriter(stackalloc byte[13]);
-      writer.Write((byte)0xDF); // Packet ID
-      writer.Write((ushort)13); // Dynamic Length
+      bool hasArgs = args != null;
 
-      writer.Write(m);
+      EnsureCapacity(hasArgs ? 48 + args.ToString().Length * 2 : 44);
+      m_Stream.Write(mob.Serial);
 
-      writer.Write((short)icon); //ID
-      writer.Write((short)0x0); //Type 0 for removal. 1 for add 2 for Data
 
-      writer.Position += 4;
+      m_Stream.Write((short)iconID); //ID
+      m_Stream.Write((short)0x1); //Type 0 for removal. 1 for add 2 for Data
 
-      ns.Send(writer.Span);
+      m_Stream.Fill(4);
+
+      m_Stream.Write((short)iconID); //ID
+      m_Stream.Write((short)0x01); //Type 0 for removal. 1 for add 2 for Data
+
+      m_Stream.Fill(4);
+
+      if (length < TimeSpan.Zero)
+        length = TimeSpan.Zero;
+
+      m_Stream.Write((short)length.TotalSeconds); //Time in seconds
+
+      m_Stream.Fill(3);
+      m_Stream.Write(titleCliloc);
+      m_Stream.Write(secondaryCliloc);
+
+      if (!hasArgs)
+      {
+        //m_Stream.Fill( 2 );
+        m_Stream.Fill(10);
+      }
+      else
+      {
+        m_Stream.Fill(4);
+        m_Stream.Write((short)0x1); //Unknown -> Possibly something saying 'hey, I have more data!'?
+        m_Stream.Fill(2);
+
+        //m_Stream.WriteLittleUniNull( "\t#1018280" );
+        m_Stream.WriteLittleUniNull($"\t{args}");
+
+        m_Stream.Write((short)0x1); //Even more Unknown -> Possibly something saying 'hey, I have more data!'?
+        m_Stream.Fill(2);
+      }
+    }
+  }
+
+  public sealed class RemoveBuffPacket : Packet
+  {
+    public RemoveBuffPacket(Mobile mob, BuffInfo info)
+      : this(mob, info.ID)
+    {
+    }
+
+    public RemoveBuffPacket(Mobile mob, BuffIcon iconID)
+      : base(0xDF)
+    {
+      EnsureCapacity(13);
+      m_Stream.Write(mob.Serial);
+
+      m_Stream.Write((short)iconID); //ID
+      m_Stream.Write((short)0x0); //Type 0 for removal. 1 for add 2 for Data
+
+      m_Stream.Fill(4);
     }
   }
 }

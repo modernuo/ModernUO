@@ -84,7 +84,8 @@ namespace Server.Engines.Plants
         }
         else
         {
-          PlantSystem ??= new PlantSystem(this, false);
+          if (PlantSystem == null)
+            PlantSystem = new PlantSystem(this, false);
 
           int hits = (int)(PlantSystem.MaxHits * ratio);
 

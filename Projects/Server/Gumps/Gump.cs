@@ -19,13 +19,8 @@
  ***************************************************************************/
 
 using System;
-using System.Buffers;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using Server.Buffers;
-using Server.Collections;
 using Server.Network;
 
 namespace Server.Gumps
@@ -34,45 +29,135 @@ namespace Server.Gumps
   {
     private static uint m_NextSerial = 1;
 
+    private static byte[] m_BeginLayout = StringToBuffer("{ ");
+    private static byte[] m_EndLayout = StringToBuffer(" }");
+
     private static byte[] m_NoMove = StringToBuffer("{ nomove }");
     private static byte[] m_NoClose = StringToBuffer("{ noclose }");
     private static byte[] m_NoDispose = StringToBuffer("{ nodispose }");
     private static byte[] m_NoResize = StringToBuffer("{ noresize }");
+    private bool m_Closable = true;
+    private bool m_Disposable = true;
+
+    private bool m_Draggable = true;
+    private bool m_Resizable = true;
+
+    private uint m_Serial;
+    private List<string> m_Strings;
 
     internal int m_TextEntries, m_Switches;
+    private int m_X, m_Y;
 
     public Gump(int x, int y)
     {
       do
       {
-        Serial = m_NextSerial++;
-      } while (Serial == 0); // standard client apparently doesn't send a gump response packet if serial == 0
+        m_Serial = m_NextSerial++;
+      } while (m_Serial == 0); // standard client apparently doesn't send a gump response packet if serial == 0
 
-      X = x;
-      Y = y;
+      m_X = x;
+      m_Y = y;
 
       TypeID = GetTypeID(GetType());
 
       Entries = new List<GumpEntry>();
+      m_Strings = new List<string>();
     }
 
     public int TypeID{ get; }
 
     public List<GumpEntry> Entries{ get; }
 
-    public uint Serial { get; set; }
+    public uint Serial
+    {
+      get => m_Serial;
+      set
+      {
+        if (m_Serial != value)
+        {
+          m_Serial = value;
+          Invalidate();
+        }
+      }
+    }
 
-    public int X { get; set; }
+    public int X
+    {
+      get => m_X;
+      set
+      {
+        if (m_X != value)
+        {
+          m_X = value;
+          Invalidate();
+        }
+      }
+    }
 
-    public int Y { get; set; }
+    public int Y
+    {
+      get => m_Y;
+      set
+      {
+        if (m_Y != value)
+        {
+          m_Y = value;
+          Invalidate();
+        }
+      }
+    }
 
-    public bool Disposable { get; set; } = true;
+    public bool Disposable
+    {
+      get => m_Disposable;
+      set
+      {
+        if (m_Disposable != value)
+        {
+          m_Disposable = value;
+          Invalidate();
+        }
+      }
+    }
 
-    public bool Resizable { get; set; } = true;
+    public bool Resizable
+    {
+      get => m_Resizable;
+      set
+      {
+        if (m_Resizable != value)
+        {
+          m_Resizable = value;
+          Invalidate();
+        }
+      }
+    }
 
-    public bool Draggable { get; set; } = true;
+    public bool Draggable
+    {
+      get => m_Draggable;
+      set
+      {
+        if (m_Draggable != value)
+        {
+          m_Draggable = value;
+          Invalidate();
+        }
+      }
+    }
 
-    public bool Closable { get; set; } = true;
+    public bool Closable
+    {
+      get => m_Closable;
+      set
+      {
+        if (m_Closable != value)
+        {
+          m_Closable = value;
+          Invalidate();
+        }
+      }
+    }
 
     public static int GetTypeID(Type type) => type?.FullName?.GetHashCode() ?? -1;
 
@@ -177,12 +262,7 @@ namespace Server.Gumps
       Add(new GumpRadio(x, y, inactiveID, activeID, initialState, switchID));
     }
 
-    public void AddTextEntry( int x, int y, int width, int height, int hue, int entryID, string initialText )
-    {
-      Add( new GumpTextEntry( x, y, width, height, hue, entryID, initialText ) );
-    }
-
-    public void AddTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText, int size)
+    public void AddTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText, int size = 0)
     {
       Add(new GumpTextEntryLimited(x, y, width, height, hue, entryID, initialText, size));
     }
@@ -195,8 +275,14 @@ namespace Server.Gumps
     public void Add(GumpEntry g)
     {
       if (g.Parent != this)
+      {
         g.Parent = this;
-      else if (!Entries.Contains(g)) Entries.Add(g);
+      }
+      else if (!Entries.Contains(g))
+      {
+        Invalidate();
+        Entries.Add(g);
+      }
     }
 
     public void Remove(GumpEntry g)
@@ -204,120 +290,70 @@ namespace Server.Gumps
       if (g == null || !Entries.Contains(g))
         return;
 
+      Invalidate();
       Entries.Remove(g);
       g.Parent = null;
     }
 
-    public static byte[] StringToBuffer(string str) => Encoding.ASCII.GetBytes(str);
+    public int Intern(string value)
+    {
+      int indexOf = m_Strings.IndexOf(value);
+
+      if (indexOf >= 0) return indexOf;
+
+      Invalidate();
+      m_Strings.Add(value);
+      return m_Strings.Count - 1;
+    }
 
     public void SendTo(NetState state)
     {
       state.AddGump(this);
-      ArrayBufferWriter<byte> bufferWriter = new ArrayBufferWriter<byte>(0x10000);
-      m_TextEntries = 0;
-      m_Switches = 0;
-      if (state.Unpack)
-        CompilePacked(bufferWriter);
-      else
-        CompileFast(bufferWriter);
-      state.Send(bufferWriter.WrittenSpan);
-    }
-
-    private void WriteLayout(ArrayBufferWriter<byte> layoutBuffer, ArraySet<string> strings)
-    {
-      if (!Draggable)
-        layoutBuffer.Write(m_NoMove);
-
-      if (!Closable)
-        layoutBuffer.Write(m_NoClose);
-
-      if (!Disposable)
-        layoutBuffer.Write(m_NoDispose);
-
-      if (!Resizable)
-        layoutBuffer.Write(m_NoResize);
-
-      for (int i = 0; i < Entries.Count; ++i)
-        Entries[i].AppendTo(layoutBuffer, strings, ref m_TextEntries, ref m_Switches);
-    }
-
-    private static void WriteStrings(IBufferWriter<byte> stringsBuffer, IList<string> strings)
-    {
-      int stringLength = 2 * strings.Count + strings.Sum(t => t.Length * 2);
-      SpanWriter rawStringsWriter = new SpanWriter(stringsBuffer.GetSpan(stringLength));
-
-      for (int i = 0; i < strings.Count; ++i)
-      {
-        string v = strings[i] ?? "";
-
-        rawStringsWriter.Write((ushort)v.Length);
-        rawStringsWriter.WriteBigUni(v);
-      }
-
-      stringsBuffer.Advance(stringLength);
+      state.Send(Compile(state));
     }
 
     public static byte[] StringToBuffer(string str) => Encoding.ASCII.GetBytes(str);
 
-    private void CompileFast(IBufferWriter<byte> bufferWriter)
+    private Packet Compile(NetState ns = null)
     {
-      SpanWriter writer = new SpanWriter(bufferWriter.GetSpan(21));
-      writer.Write((byte)0xB0); // Packed ID
-      writer.Position += 2; // Dynamic Length
+      IGumpWriter disp;
 
-      writer.Write(Serial);
-      writer.Write(TypeID);
-      writer.Write(X);
-      writer.Write(Y);
+      if (ns?.Unpack == true)
+        disp = new DisplayGumpPacked(this);
+      else
+        disp = new DisplayGumpFast(this);
 
-      ArraySet<string> strings = new ArraySet<string>();
-      ArrayBufferWriter<byte> layoutBuffer = new ArrayBufferWriter<byte>();
-      WriteLayout(layoutBuffer, strings);
+      if (!m_Draggable)
+        disp.AppendLayout(m_NoMove);
 
-      writer.Write((ushort)layoutBuffer.WrittenCount);
+      if (!m_Closable)
+        disp.AppendLayout(m_NoClose);
 
-      ArrayBufferWriter<byte> stringsBuffer = new ArrayBufferWriter<byte>();
-      Span<byte> span = stringsBuffer.GetSpan(2);
-      span[0] = (byte)(strings.Count >> 8);
-      span[1] = (byte)strings.Count;
-      bufferWriter.Advance(2);
-      WriteStrings(stringsBuffer, strings);
+      if (!m_Disposable)
+        disp.AppendLayout(m_NoDispose);
 
-      writer.Position = 1;
-      writer.Write((ushort)(23 + layoutBuffer.WrittenCount + stringsBuffer.WrittenCount));
+      if (!m_Resizable)
+        disp.AppendLayout(m_NoResize);
 
-      // Write the header
-      bufferWriter.Advance(21);
+      int count = Entries.Count;
 
-      // Write the layout
-      bufferWriter.Write(layoutBuffer.WrittenSpan);
-
-      // Write strings
-      bufferWriter.Write(stringsBuffer.WrittenSpan);
-    }
-
-    private static int GetMaxPackedSize(int sourceLength) => 8 + (int)Compression.MaxPackSize((ulong)sourceLength);
-
-    private static int WritePacked(ReadOnlySpan<byte> source, Span<byte> dest)
-    {
-      int length = source.Length;
-
-      if (length == 0)
+      for (int i = 0; i < count; ++i)
       {
-        dest.Clear();
-        return 4;
+        GumpEntry e = Entries[i];
+
+        disp.AppendLayout(m_BeginLayout);
+        e.AppendTo(ns, disp);
+        disp.AppendLayout(m_EndLayout);
       }
 
-      ulong packLength = (ulong)dest.Length - 8;
+      disp.WriteStrings(m_Strings);
 
-      ZLibError ce = Compression.Pack(dest.Slice(8), ref packLength, source, ZLibQuality.Default);
-      if (ce != ZLibError.Okay) Console.WriteLine("ZLib error: {0} (#{1})", ce, (int)ce);
-      SpanWriter writer = new SpanWriter(dest);
-      int packLengthInt = (int)packLength;
-      writer.Write(4 + packLengthInt);
-      writer.Write(length);
+      disp.Flush();
 
-      return 8 + packLengthInt;
+      m_TextEntries = disp.TextEntries;
+      m_Switches = disp.Switches;
+
+      return (Packet)disp;
     }
 
     public virtual void OnResponse(NetState sender, RelayInfo info)

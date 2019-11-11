@@ -18,9 +18,16 @@
  *
  ***************************************************************************/
 
-using System.IO;
 
-namespace Server.Persistence
+using System;
+using System.IO;
+#if !MONO
+using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
+
+#endif
+
+namespace Server
 {
   public static class FileOperations
   {
@@ -31,7 +38,11 @@ namespace Server.Persistence
 
     public static int Concurrency{ get; set; } = 1;
 
+    public static bool Unbuffered{ get; set; } = true;
+
     public static bool AreSynchronous => Concurrency < 1;
+
+    public static bool AreAsynchronous => Concurrency > 0;
 
     public static FileStream OpenSequentialStream(string path, FileMode mode, FileAccess access, FileShare share)
     {
@@ -93,5 +104,6 @@ namespace Server.Persistence
       internal static extern SafeFileHandle CreateFile(string lpFileName, int dwDesiredAccess, FileShare dwShareMode,
         IntPtr securityAttrs, FileMode dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile);
     }
+#endif
   }
 }

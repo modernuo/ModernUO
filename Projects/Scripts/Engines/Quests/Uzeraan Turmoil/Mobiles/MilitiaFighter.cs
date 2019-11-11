@@ -118,10 +118,11 @@ namespace Server.Engines.Quests.Haven
       int hue = Notoriety.GetHue(NotorietyHandlers.CorpseNotoriety(from, this));
 
       if (ItemID == 0x2006) // Corpse form
-        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1049318, "",
-          Name); // the remains of ~1_NAME~ the militia fighter
+        from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1049318, "",
+          Name)); // the remains of ~1_NAME~ the militia fighter
       else
-        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1049318); // the remains of a militia fighters
+        from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1049319, "",
+          "")); // the remains of a militia fighter
     }
 
     public override void Open(Mobile from, bool checkSelfLoot)

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Server.Gumps;
 using Server.Items;
@@ -73,9 +72,11 @@ namespace Server.Engines.ConPVP
             entries.Add(teamInfo);
         }
       else
-        entries.AddRange(section.Players.Values.Where(player => player.Score > 0));
+        foreach (DDPlayerInfo player in section.Players.Values)
+          if (player.Score > 0)
+            entries.Add(player);
 
-      entries.Sort((a, b) => b.Score - a.Score);
+      entries.Sort(delegate(IRankedCTF a, IRankedCTF b) { return b.Score - a.Score; });
 
       int height = 0;
 
@@ -106,8 +107,7 @@ namespace Server.Engines.ConPVP
       if (section == null)
         for (int i = 0; i < entries.Count; ++i)
         {
-          if (!(entries[i] is DDTeamInfo teamInfo))
-            continue;
+          DDTeamInfo teamInfo = entries[i] as DDTeamInfo;
 
           AddImage(30, 70 + i * 75, 10152);
           AddImage(30, 85 + i * 75, 10151);

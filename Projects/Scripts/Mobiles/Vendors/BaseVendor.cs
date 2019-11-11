@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
 using Server.Factions;
@@ -25,10 +24,10 @@ namespace Server.Mobiles
   {
     private const int MaxSell = 500;
 
-    private static readonly TimeSpan InventoryDecayTime = TimeSpan.FromHours(1.0);
+    private static TimeSpan InventoryDecayTime = TimeSpan.FromHours(1.0);
 
-    private readonly List<IBuyItemInfo> m_ArmorBuyInfo = new List<IBuyItemInfo>();
-    private readonly List<IShopSellInfo> m_ArmorSellInfo = new List<IShopSellInfo>();
+    private List<IBuyItemInfo> m_ArmorBuyInfo = new List<IBuyItemInfo>();
+    private List<IShopSellInfo> m_ArmorSellInfo = new List<IShopSellInfo>();
 
     public BaseVendor(string title = null)
       : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
@@ -126,6 +125,7 @@ namespace Server.Mobiles
       IShopSellInfo[] info = GetSellInfo();
       int totalCost = 0;
       List<BuyItemResponse> validBuy = new List<BuyItemResponse>(list.Count);
+      bool bought;
       bool fromBank = false;
       bool fullPurchase = true;
       int controlSlots = buyer.FollowersMax - buyer.Followers;
@@ -188,7 +188,7 @@ namespace Server.Mobiles
       if (validBuy.Count == 0)
         return false;
 
-      bool bought = buyer.AccessLevel >= AccessLevel.GameMaster;
+      bought = buyer.AccessLevel >= AccessLevel.GameMaster;
 
       Container cont = buyer.Backpack;
       if (!bought && cont != null)
@@ -259,9 +259,8 @@ namespace Server.Mobiles
                   if (cont?.TryDropItem(buyer, buyItem, false) != true)
                     buyItem.MoveToWorld(buyer.Location, buyer.Map);
 
-              if (cont?.TryDropItem(buyer, buyItem, false) != true)
-                buyItem.MoveToWorld(buyer.Location, buyer.Map);
-            }
+                  break;
+                }
           }
         }
         else if (ser.IsMobile)
@@ -310,7 +309,10 @@ namespace Server.Mobiles
 
     public virtual bool OnSellItems(Mobile seller, List<SellItemResponse> list)
     {
-      if (!(IsActiveBuyer && seller.CheckAlive()))
+      if (!IsActiveBuyer)
+        return false;
+
+      if (!seller.CheckAlive())
         return false;
 
       if (!CheckVendorAccess(seller))
@@ -332,7 +334,12 @@ namespace Server.Mobiles
             !resp.Item.Movable || resp.Item is Container container && container.Items.Count != 0)
           continue;
 
-        if (info.Any(ssi => ssi.IsSellable(resp.Item))) Sold++;
+        foreach (IShopSellInfo ssi in info)
+          if (ssi.IsSellable(resp.Item))
+          {
+            Sold++;
+            break;
+          }
       }
 
       if (Sold > MaxSell)
@@ -361,11 +368,14 @@ namespace Server.Mobiles
             {
               bool found = false;
 
-              if (buyInfo.Any(bii => bii.Restock(resp.Item, amount)))
-              {
-                resp.Item.Consume(amount);
-                found = true;
-              }
+              foreach (IBuyItemInfo bii in buyInfo)
+                if (bii.Restock(resp.Item, amount))
+                {
+                  resp.Item.Consume(amount);
+                  found = true;
+
+                  break;
+                }
 
               if (!found)
               {
@@ -512,9 +522,11 @@ namespace Server.Mobiles
       if (CheckGargoyle())
         return;
 
-    public virtual int GetShoeHue() => 0.1 > Utility.RandomDouble() ? 0 : Utility.RandomNeutralHue();
+      if (CheckNecromancer())
+        return;
 
-    public virtual bool CheckMorph() => CheckGargoyle() || CheckNecromancer() || CheckTokuno();
+      CheckTokuno();
+    }
 
     public virtual bool CheckTokuno()
     {
@@ -536,7 +548,12 @@ namespace Server.Mobiles
 
     public virtual bool CheckGargoyle()
     {
-      if (!(Map == Map.Ilshenar && Region.IsPartOf("Gargoyle City")))
+      Map map = Map;
+
+      if (map != Map.Ilshenar)
+        return false;
+
+      if (!Region.IsPartOf("Gargoyle City"))
         return false;
 
       if (Body != 0x2F6 || (Hue & 0x8000) == 0)
@@ -547,7 +564,12 @@ namespace Server.Mobiles
 
     public virtual bool CheckNecromancer()
     {
-      if (!(Map == Map.Malas && Region.IsPartOf("Umbra")))
+      Map map = Map;
+
+      if (map != Map.Malas)
+        return false;
+
+      if (!Region.IsPartOf("Umbra"))
         return false;
 
       if (Hue != 0x83E8)
@@ -617,10 +639,12 @@ namespace Server.Mobiles
 
     public virtual void CapitalizeTitle()
     {
-      if (Title == null)
+      string title = Title;
+
+      if (title == null)
         return;
 
-      string[] split = Title.Split(' ');
+      string[] split = title.Split(' ');
 
       for (int i = 0; i < split.Length; ++i)
       {
@@ -706,7 +730,10 @@ namespace Server.Mobiles
 
     public virtual void VendorBuy(Mobile from)
     {
-      if (!(IsActiveSeller && from.CheckAlive()))
+      if (!IsActiveSeller)
+        return;
+
+      if (!from.CheckAlive())
         return;
 
       if (!CheckVendorAccess(from))
@@ -797,13 +824,25 @@ namespace Server.Mobiles
 
       NetState ns = from.NetState;
 
-      Packets.SendVendorBuyContent(ns, list);
-      Packets.SendVendorBuyList(ns, this, list);
-      Packets.SendDisplayBuyList(ns, this.Serial);
-      Packets.SendMobileStatusExtended(ns, from); //make sure their gold amount is sent
+      if (ns == null)
+        return;
+
+      if (ns.ContainerGridLines)
+        from.Send(new VendorBuyContent6017(list));
+      else
+        from.Send(new VendorBuyContent(list));
+
+      from.Send(new VendorBuyList(this, list));
+
+      if (ns.HighSeas)
+        from.Send(new DisplayBuyListHS(this));
+      else
+        from.Send(new DisplayBuyList(this));
+
+      from.Send(new MobileStatusExtended(from)); //make sure their gold amount is sent
 
       for (int i = 0; i < opls.Count; ++i)
-        opls[i].Send(ns);
+        from.Send(opls[i]);
 
       SayTo(from, 500186); // Greetings.  Have a look around.
     }
@@ -818,14 +857,12 @@ namespace Server.Mobiles
         AddItem(pack);
       }
 
-      NetState ns = from.NetState;
-
-      Packets.SendEquipUpdate(ns, pack);
+      from.Send(new EquipUpdate(pack));
 
       pack = FindItemOnLayer(Layer.ShopSell);
 
       if (pack != null)
-        Packets.SendEquipUpdate(ns, pack);
+        from.Send(new EquipUpdate(pack));
 
       pack = FindItemOnLayer(Layer.ShopResale);
 
@@ -835,12 +872,15 @@ namespace Server.Mobiles
         AddItem(pack);
       }
 
-      Packets.SendEquipUpdate(ns, pack);
+      from.Send(new EquipUpdate(pack));
     }
 
     public virtual void VendorSell(Mobile from)
     {
-      if (!(IsActiveBuyer && from.CheckAlive()))
+      if (!IsActiveBuyer)
+        return;
+
+      if (!from.CheckAlive())
         return;
 
       if (!CheckVendorAccess(from))
@@ -871,10 +911,13 @@ namespace Server.Mobiles
       if (list.Count > 0)
       {
         SendPacksTo(from);
-        Packets.SendVendorSellList(from.NetState, Serial, list);
+
+        from.Send(new VendorSellList(this, list));
       }
       else
+      {
         Say(true, "You have nothing I would be interested in.");
+      }
     }
 
     public override bool OnDragDrop(Mobile from, Item dropped)
@@ -949,7 +992,7 @@ namespace Server.Mobiles
       return null;
     }
 
-    private void ProcessSinglePurchase(BuyItemResponse buy, IBuyItemInfo bii, ICollection<BuyItemResponse> validBuy,
+    private void ProcessSinglePurchase(BuyItemResponse buy, IBuyItemInfo bii, List<BuyItemResponse> validBuy,
       ref int controlSlots, ref bool fullPurchase, ref int totalCost)
     {
       int amount = buy.Amount;
@@ -963,7 +1006,9 @@ namespace Server.Mobiles
       int slots = bii.ControlSlots * amount;
 
       if (controlSlots >= slots)
+      {
         controlSlots -= slots;
+      }
       else
       {
         fullPurchase = false;
@@ -1140,9 +1185,10 @@ namespace Server.Mobiles
         }
       }
 
-      IsParagon = false;
+      if (IsParagon)
+        IsParagon = false;
 
-      Timer.DelayCall(TimeSpan.Zero, () => CheckMorph());
+      Timer.DelayCall(TimeSpan.Zero, CheckMorph);
     }
 
     public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
@@ -1242,7 +1288,8 @@ namespace Server.ContextMenus
   {
     private BaseVendor m_Vendor;
 
-    public VendorBuyEntry(Mobile from, BaseVendor vendor) : base(6103, 8)
+    public VendorBuyEntry(Mobile from, BaseVendor vendor)
+      : base(6103, 8)
     {
       m_Vendor = vendor;
       Enabled = vendor.CheckVendorAccess(from);
@@ -1258,7 +1305,8 @@ namespace Server.ContextMenus
   {
     private BaseVendor m_Vendor;
 
-    public VendorSellEntry(Mobile from, BaseVendor vendor) : base(6104, 8)
+    public VendorSellEntry(Mobile from, BaseVendor vendor)
+      : base(6104, 8)
     {
       m_Vendor = vendor;
       Enabled = vendor.CheckVendorAccess(from);

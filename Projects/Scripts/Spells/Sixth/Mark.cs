@@ -31,8 +31,8 @@ namespace Server.Spells.Sixth
     public void Target(Item item)
     {
       if (!(item is RecallRune rune))
-        Packets.SendMessageLocalized(Caster.NetState, Caster.Serial, Caster.Body, MessageType.Regular,
-          0x3B2, 3, 501797, Caster.Name); // I cannot mark that object.
+        Caster.Send(new MessageLocalized(Caster.Serial, Caster.Body, MessageType.Regular, 0x3B2, 3, 501797, Caster.Name,
+          "")); // I cannot mark that object.
       else if (!Caster.CanSee(rune))
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
       else if (!SpellHelper.CheckTravel(Caster, TravelCheckType.Mark))

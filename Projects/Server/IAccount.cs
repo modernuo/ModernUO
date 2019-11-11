@@ -20,7 +20,7 @@
 
 using System;
 
-namespace Server
+namespace Server.Accounting
 {
   public static class AccountGold
   {

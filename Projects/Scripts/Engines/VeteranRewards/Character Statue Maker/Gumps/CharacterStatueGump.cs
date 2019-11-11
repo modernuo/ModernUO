@@ -66,8 +66,9 @@ namespace Server.Gumps
       }
     }
 
-    private int GetMaterialNumber(StatueType type, StatueMaterial material) =>
-      material switch
+    private int GetMaterialNumber(StatueType type, StatueMaterial material)
+    {
+      switch (material)
       {
         case StatueMaterial.Antique:
 
@@ -125,7 +126,7 @@ namespace Server.Gumps
 
         m_Maker?.Delete();
 
-        m_Statue.Sculpt(sender.Mobile);
+        m_Statue.Sculpt(state.Mobile);
       }
       else if (info.ButtonID == (int)Buttons.PosePrev)
       {
@@ -173,11 +174,11 @@ namespace Server.Gumps
       }
       else // Close
       {
-        sendGump = !m_Statue.Demolish(sender.Mobile);
+        sendGump = !m_Statue.Demolish(state.Mobile);
       }
 
       if (sendGump)
-        sender.Mobile.SendGump(new CharacterStatueGump(m_Maker, m_Statue, m_Owner));
+        state.Mobile.SendGump(new CharacterStatueGump(m_Maker, m_Statue, m_Owner));
     }
 
     private enum Buttons

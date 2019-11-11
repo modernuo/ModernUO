@@ -14,9 +14,9 @@ namespace Server.Menus.Questions
       Locations = locations;
     }
 
-    public int Name { get; }
+    public int Name{ get; }
 
-    public Point3D[] Locations { get; }
+    public Point3D[] Locations{ get; }
   }
 
   public class StuckMenu : Gump
@@ -162,7 +162,7 @@ namespace Server.Menus.Questions
       m_Mobile.Frozen = false;
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState state, RelayInfo info)
     {
       StopClose();
 

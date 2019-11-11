@@ -21,7 +21,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Server
+namespace Server.Mobiles
 {
   public interface IMount
   {
@@ -33,7 +33,10 @@ namespace Server
   {
     IMount Mount{ get; }
   }
+}
 
+namespace Server
+{
   public interface IVendor
   {
     DateTime LastRestock{ get; set; }

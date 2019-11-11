@@ -1,13 +1,12 @@
 using System;
 using System.IO;
-using System.Linq;
 using Server.Accounting;
 using Server.Misc;
 using Server.Network;
 
 namespace Server.Engines.Chat
 {
-  public static class ChatSystem
+  public class ChatSystem
   {
     public static bool Enabled{ get; set; } = true;
 
@@ -19,7 +18,7 @@ namespace Server.Engines.Chat
 
     public static void SendCommandTo(Mobile to, ChatCommand type, string param1 = null, string param2 = null)
     {
-      ChatPackets.SendChatMessage(to?.NetState, null, (int)type + 20, param1, param2);
+      to?.Send(new ChatMessagePacket(null, (int)type + 20, param1, param2));
     }
 
     public static void OpenChatWindowRequest(NetState state, PacketReader pvSrc)
@@ -62,11 +61,21 @@ namespace Server.Engines.Chat
         {
           // TODO: Optimize this search
 
-          if (Accounts.GetAccounts().Cast<Account>().Any(checkAccount => Insensitive.Equals(checkAccount.GetTag("ChatName")?.Trim(), chatName)))
+          foreach (Account checkAccount in Accounts.GetAccounts())
           {
-            from.SendMessage("Nickname already in use.");
-            SendCommandTo(from, ChatCommand.AskNewNickname);
-            return;
+            string existingName = checkAccount.GetTag("ChatName");
+
+            if (existingName != null)
+            {
+              existingName = existingName.Trim();
+
+              if (Insensitive.Equals(existingName, chatName))
+              {
+                from.SendMessage("Nickname already in use.");
+                SendCommandTo(from, ChatCommand.AskNewNickname);
+                return;
+              }
+            }
           }
 
           accountChatName = chatName;
@@ -120,15 +129,17 @@ namespace Server.Engines.Chat
 
           if (handler.RequireConference && channel == null)
             user.SendMessage(31); /* You must be in a conference to do this.
-                                           * To join a conference, select one from the Conference menu.
-                                           */
+												 * To join a conference, select one from the Conference menu.
+												 */
           else if (handler.RequireModerator && !user.IsModerator)
             user.SendMessage(29); // You must have operator status to do this.
           else
             handler.Callback(user, channel, param);
         }
         else
+        {
           Console.WriteLine("Client: {0}: Unknown chat action 0x{1:X}: {2}", state, actionID, param);
+        }
       }
       catch (Exception e)
       {

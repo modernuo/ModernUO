@@ -10,7 +10,7 @@ using Server.Mobiles;
 
 namespace Server.Commands
 {
-  public static class DecorateMag
+  public class DecorateMag
   {
     private static Mobile m_Mobile;
     private static int m_Count;

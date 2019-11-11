@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Items;
 using Server.Network;
 
@@ -50,8 +49,19 @@ namespace Server.Multis
     public override void DropItem(Item dropped)
     {
       // 1. Try to stack the item
-      if (Items.Any(item => item is PackingBox && item.Items.Any(subItem => !(subItem is Container) && subItem.StackWith(null, dropped, false))))
-        return;
+      foreach (Item item in Items)
+        if (item is PackingBox)
+        {
+          List<Item> subItems = item.Items;
+
+          for (int i = 0; i < subItems.Count; i++)
+          {
+            Item subItem = subItems[i];
+
+            if (!(subItem is Container) && subItem.StackWith(null, dropped, false))
+              return;
+          }
+        }
 
       // 2. Try to drop the item into an existing container
       foreach (Item item in Items)
@@ -163,7 +173,12 @@ namespace Server.Multis
         m_InternalizeTimer = null;
       }
 
-      foreach (Item item in Items.Where(item => item is PackingBox && item.Items.Count == 0))
+      List<Item> toRemove = new List<Item>();
+      foreach (Item item in Items)
+        if (item is PackingBox && item.Items.Count == 0)
+          toRemove.Add(item);
+
+      foreach (Item item in toRemove)
         item.Delete();
 
       if (TotalItems == 0)

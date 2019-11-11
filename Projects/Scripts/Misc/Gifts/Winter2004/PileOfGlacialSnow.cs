@@ -129,7 +129,9 @@ namespace Server.Items
               Effects.SendMovingEffect(from, targ, 0x36E4, 7, 0, false, true, 0x47F);
             }
             else
+            {
               from.SendLocalizedMessage(1005574); // The snow is not ready to be packed yet.  Keep trying.
+            }
           }
           else
           {
@@ -138,8 +140,10 @@ namespace Server.Items
           }
         }
         else
+        {
           from.SendLocalizedMessage(
             1005577); // You can only throw a snowball at something that can throw one back.
+        }
       }
     }
   }

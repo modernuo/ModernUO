@@ -5,7 +5,7 @@ using System.IO;
 
 #endregion
 
-namespace Server.Persistence
+namespace Server
 {
   public static class Persistence
   {

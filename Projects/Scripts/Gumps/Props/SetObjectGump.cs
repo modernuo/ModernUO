@@ -4,6 +4,7 @@ using System.Reflection;
 using Server.Commands;
 using Server.Commands.Generic;
 using Server.Network;
+using Server.Prompts;
 
 namespace Server.Gumps
 {

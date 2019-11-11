@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Server.Engines.CannedEvil;
 using Server.Mobiles;
 using Server.Network;
@@ -118,7 +117,9 @@ namespace Server.Items
           {
             Type t = bc.GetType();
 
-            return m_ChampTamables.Any(type => type == t);
+            foreach (Type type in m_ChampTamables)
+              if (type == t)
+                return true;
           }
         }
 
@@ -144,7 +145,7 @@ namespace Server.Items
 
             if (from.CheckTargetSkill(SkillName.Herding, m_Creature, min, max))
             {
-              if (!ReferenceEquals(p, from))
+              if (p != from)
                 p = new Point2D(p.X, p.Y);
 
               m_Creature.TargetLocation = p;

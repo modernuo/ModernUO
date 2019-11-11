@@ -65,8 +65,8 @@ namespace Server.Engines.Quests.Necro
       Maabus.Delete();
       Maabus = null;
 
-      foreach (AddonComponent addonComponent in Components)
-        (addonComponent as MaabusCoffinComponent)?.TurnToFull();
+      foreach (MaabusCoffinComponent c in Components)
+        c.TurnToFull();
     }
 
     public override void Serialize(GenericWriter writer)

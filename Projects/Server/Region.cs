@@ -21,17 +21,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Xml;
 using Server.Network;
 using Server.Targeting;
 
 namespace Server
 {
-  public enum MusicName : ushort
+  public enum MusicName
   {
-    Invalid = 0xFFFF,
-    None = 0x1FFF,
+    Invalid = -1,
     OldUlt01 = 0,
     Create1,
     DragFlit,
@@ -475,7 +473,13 @@ namespace Server
       List<Mobile> list = new List<Mobile>();
 
       for (int i = 0; i < Sectors?.Length; i++)
-        list.AddRange(Sectors[i].Players.Where(player => player.Region.IsPartOf(this)));
+      {
+        Sector sector = Sectors[i];
+
+        foreach (Mobile player in sector.Players)
+          if (player.Region.IsPartOf(this))
+            list.Add(player);
+      }
 
       return list;
     }
@@ -485,7 +489,13 @@ namespace Server
       int count = 0;
 
       for (int i = 0; i < Sectors?.Length; i++)
-        count += Sectors[i].Players.Count(player => player.Region.IsPartOf(this));
+      {
+        Sector sector = Sectors[i];
+
+        foreach (Mobile player in sector.Players)
+          if (player.Region.IsPartOf(this))
+            count++;
+      }
       return count;
     }
 
@@ -494,7 +504,13 @@ namespace Server
       List<Mobile> list = new List<Mobile>();
 
       for (int i = 0; i < Sectors?.Length; i++)
-        list.AddRange(Sectors[i].Mobiles.Where(mobile => mobile.Region.IsPartOf(this)));
+      {
+        Sector sector = Sectors[i];
+
+        foreach (Mobile mobile in sector.Mobiles)
+          if (mobile.Region.IsPartOf(this))
+            list.Add(mobile);
+      }
       return list;
     }
 
@@ -503,7 +519,13 @@ namespace Server
       int count = 0;
 
       for (int i = 0; i < Sectors?.Length; i++)
-        count += Sectors[i].Mobiles.Count(mobile => mobile.Region.IsPartOf(this));
+      {
+        Sector sector = Sectors[i];
+
+        foreach (Mobile mobile in sector.Mobiles)
+          if (mobile.Region.IsPartOf(this))
+            count++;
+      }
 
       return count;
     }
@@ -679,8 +701,7 @@ namespace Server
       {
         m.CheckLightLevels(false);
 
-        if (oldRegion == null || oldRegion.Music != newRegion.Music)
-          Packets.SendPlayMusic(m.NetState, newRegion.Music);
+        if (oldRegion == null || oldRegion.Music != newRegion.Music) m.Send(PlayMusic.GetInstance(newRegion.Music));
       }
 
       Region oldR = oldRegion;

@@ -3,7 +3,7 @@ using Server.Accounting;
 
 namespace Server.Misc
 {
-  public static class AccountPrompt
+  public class AccountPrompt
   {
     public static void Initialize()
     {
@@ -22,7 +22,8 @@ namespace Server.Misc
           Console.Write("Password: ");
           string password = Console.ReadLine();
 
-          Account a = new Account(username, password) {AccessLevel = AccessLevel.Owner};
+          Account a = new Account(username, password);
+          a.AccessLevel = AccessLevel.Owner;
 
           Console.WriteLine("Account created.");
         }

@@ -342,9 +342,9 @@ namespace Server
         targetFame / 100.0 * (m_HonorDamage / m_TotalDamage); //Initial honor gain is 100th of the monsters honor
 
       if (m_HonorDamage == m_TotalDamage && m_FirstHit == FirstHit.Granted)
-        dGain *= 1.5; //honor gain is increased alot more if the combat was fully honorable
+        dGain = dGain * 1.5; //honor gain is increased alot more if the combat was fully honorable
       else
-        dGain *= 0.9;
+        dGain = dGain * 0.9;
 
       int gain = Math.Min((int)dGain, 200);
 

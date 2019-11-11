@@ -70,7 +70,7 @@ namespace Server.Spells.Ninjitsu
     public static void OnLogin(LoginEventArgs e)
     {
       if (GetContext(e.Mobile)?.SpeedBoost == true)
-        Packets.SendSpeedControlMount(e.Mobile.NetState);
+        e.Mobile.Send(SpeedControl.MountSpeed);
     }
 
     public override bool CheckCast()
@@ -228,7 +228,7 @@ namespace Server.Spells.Ninjitsu
       m.HueMod = hueMod;
 
       if (entry.SpeedBoost)
-        Packets.SendSpeedControlMount(m.NetState);
+        m.Send(SpeedControl.MountSpeed);
 
       SkillMod mod = null;
 
@@ -275,7 +275,7 @@ namespace Server.Spells.Ninjitsu
       m_Table.Remove(m);
 
       if (context.SpeedBoost)
-        Packets.SendSpeedControlDisabled(m.NetState);
+        m.Send(SpeedControl.Disable);
 
       SkillMod mod = context.Mod;
 
@@ -575,7 +575,7 @@ namespace Server.Spells.Ninjitsu
       {
         m_Mobile.RevealingAction();
         m_Mobile.PlaySound(0x227);
-        Effects.SendMovingEffect(m_Mobile, target, 0x36D4, 5, 0);
+        Effects.SendMovingEffect(m_Mobile, target, 0x36D4, 5, 0, false, false);
 
         DelayCall(TimeSpan.FromSeconds(1), BreathDamage_Callback, target);
       }

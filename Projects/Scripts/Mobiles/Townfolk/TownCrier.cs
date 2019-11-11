@@ -4,6 +4,7 @@ using System.Text;
 using Server.Gumps;
 using Server.Items;
 using Server.Network;
+using Server.Prompts;
 
 namespace Server.Mobiles
 {
@@ -19,7 +20,7 @@ namespace Server.Mobiles
   {
     private static GlobalTownCrierEntryList m_Instance;
 
-    public static GlobalTownCrierEntryList Instance => m_Instance ??= new GlobalTownCrierEntryList();
+    public static GlobalTownCrierEntryList Instance => m_Instance ?? (m_Instance = new GlobalTownCrierEntryList());
 
     public bool IsEmpty => Entries == null || Entries.Count == 0;
 
@@ -49,7 +50,8 @@ namespace Server.Mobiles
 
     public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)
     {
-      Entries ??= new List<TownCrierEntry>();
+      if (Entries == null)
+        Entries = new List<TownCrierEntry>();
 
       TownCrierEntry tce = new TownCrierEntry(lines, duration);
 
@@ -382,7 +384,8 @@ namespace Server.Mobiles
 
     public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)
     {
-      Entries ??= new List<TownCrierEntry>();
+      if (Entries == null)
+        Entries = new List<TownCrierEntry>();
 
       TownCrierEntry tce = new TownCrierEntry(lines, duration);
 

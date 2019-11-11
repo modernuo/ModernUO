@@ -20,11 +20,11 @@
 
 using Server.Network;
 
-namespace Server
+namespace Server.HuePickers
 {
   public class HuePicker
   {
-    private static Serial m_NextSerial = 1;
+    private static int m_NextSerial = 1;
 
     public HuePicker(int itemID)
     {
@@ -36,7 +36,7 @@ namespace Server
       ItemID = itemID;
     }
 
-    public Serial Serial{ get; }
+    public int Serial{ get; }
 
     public int ItemID{ get; }
 
@@ -46,7 +46,7 @@ namespace Server
 
     public void SendTo(NetState state)
     {
-      Packets.SendDisplayHuePicker(state, Serial, ItemID);
+      state.Send(new DisplayHuePicker(this));
       state.AddHuePicker(this);
     }
   }

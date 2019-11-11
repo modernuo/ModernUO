@@ -47,7 +47,16 @@ namespace Server.Spells.Fifth
         int rx = (dx - dy) * 44;
         int ry = (dx + dy) * 44;
 
-        bool eastToWest = (rx < 0 || ry < 0) && (rx >= 0 || ry >= 0);
+        bool eastToWest;
+
+        if (rx >= 0 && ry >= 0)
+          eastToWest = false;
+        else if (rx >= 0)
+          eastToWest = true;
+        else if (ry >= 0)
+          eastToWest = true;
+        else
+          eastToWest = false;
 
         Effects.PlaySound(p, Caster.Map, 0x20B);
 

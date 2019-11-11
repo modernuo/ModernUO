@@ -4,6 +4,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Server.Gumps;
 using Server.Network;
+using Server.Prompts;
 
 namespace Server.Misc
 {
@@ -464,7 +465,9 @@ namespace Server.Misc
 
     public void QueuePoll(ShardPoller poller)
     {
-      m_Polls ??= new Queue<ShardPoller>(4);
+      if (m_Polls == null)
+        m_Polls = new Queue<ShardPoller>(4);
+
       m_Polls.Enqueue(poller);
     }
 

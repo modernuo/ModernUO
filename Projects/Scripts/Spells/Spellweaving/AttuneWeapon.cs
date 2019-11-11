@@ -61,7 +61,7 @@ namespace Server.Spells.Spellweaving
         Caster.BeginAction<AttuneWeaponSpell>();
 
         BuffInfo.AddBuff(Caster,
-          new BuffInfo(BuffIcon.AttuneWeapon, 1075798, damageAbsorb.ToString(), duration, Caster));
+          new BuffInfo(BuffIcon.AttuneWeapon, 1075798, duration, Caster, damageAbsorb.ToString()));
       }
 
       FinishSequence();

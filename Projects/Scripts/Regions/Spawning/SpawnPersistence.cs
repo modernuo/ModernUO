@@ -15,7 +15,8 @@ namespace Server.Regions
 
     public static void EnsureExistence()
     {
-      m_Instance ??= new SpawnPersistence();
+      if (m_Instance == null)
+        m_Instance = new SpawnPersistence();
     }
 
     public override void Serialize(GenericWriter writer)

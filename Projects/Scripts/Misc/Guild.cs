@@ -32,7 +32,7 @@ namespace Server.Guilds
 
   public class RankDefinition
   {
-    public static readonly RankDefinition[] Ranks =
+    public static RankDefinition[] Ranks =
     {
       new RankDefinition(1062963, 0, RankFlags.None), //Ronin
       new RankDefinition(1062962, 1, RankFlags.Member), //Member
@@ -78,8 +78,8 @@ namespace Server.Guilds
   public class AllianceInfo
   {
     private Guild m_Leader;
-    private readonly List<Guild> m_Members;
-    private readonly List<Guild> m_PendingMembers;
+    private List<Guild> m_Members;
+    private List<Guild> m_PendingMembers;
 
     public AllianceInfo(Guild leader, string name, Guild partner)
     {
@@ -154,9 +154,21 @@ namespace Server.Guilds
       }
     }
 
-    public bool IsPendingMember(Guild g) => g.Alliance == this && m_PendingMembers.Contains(g);
+    public bool IsPendingMember(Guild g)
+    {
+      if (g.Alliance != this)
+        return false;
 
-    public bool IsMember(Guild g) => g.Alliance == this && m_Members.Contains(g);
+      return m_PendingMembers.Contains(g);
+    }
+
+    public bool IsMember(Guild g)
+    {
+      if (g.Alliance != this)
+        return false;
+
+      return m_Members.Contains(g);
+    }
 
     public void Serialize(GenericWriter writer)
     {
@@ -320,18 +332,29 @@ namespace Server.Guilds
 
     public void AllianceChat(Mobile from, int hue, string text)
     {
+      Packet p = null;
       for (int i = 0; i < m_Members.Count; i++)
       {
         Guild g = m_Members[i];
 
         for (int j = 0; j < g.Members.Count; j++)
         {
-          NetState ns = g.Members[j].NetState;
+          Mobile m = g.Members[j];
 
-          if (ns != null)
-            Packets.SendUnicodeMessage(ns, from.Serial, from.Body, MessageType.Alliance, hue, 3, from.Language, from.Name, text);
+          NetState state = m.NetState;
+
+          if (state != null)
+          {
+            if (p == null)
+              p = Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Alliance, hue, 3,
+                from.Language, from.Name, text));
+
+            state.Send(p);
+          }
         }
       }
+
+      Packet.Release(p);
     }
 
     public void AllianceChat(Mobile from, string text)
@@ -660,7 +683,9 @@ namespace Server.Guilds
       Mobile from = e.Mobile;
 
       if (arg.Length == 0)
+      {
         e.Mobile.Target = new GuildPropsTarget();
+      }
       else
       {
         Guild g = uint.TryParse(arg, out uint id)
@@ -695,7 +720,7 @@ namespace Server.Guilds
 
         if (o is Guildstone stone)
         {
-          if (stone.Guild.Disbanded)
+          if (stone?.Guild.Disbanded != false)
           {
             from.SendMessage("The guild associated with that Guildstone no longer exists");
             return;
@@ -704,7 +729,9 @@ namespace Server.Guilds
           g = stone.Guild;
         }
         else if (o is Mobile mobile)
+        {
           g = mobile.Guild as Guild;
+        }
 
         if (g == null)
         {
@@ -746,7 +773,13 @@ namespace Server.Guilds
 
     public AllianceInfo Alliance
     {
-      get => m_AllianceInfo ?? m_AllianceLeader?.m_AllianceInfo;
+      get
+      {
+        if (m_AllianceInfo != null)
+          return m_AllianceInfo;
+
+        return m_AllianceLeader?.m_AllianceInfo;
+      }
       set
       {
         AllianceInfo current = Alliance;
@@ -789,7 +822,10 @@ namespace Server.Guilds
     {
       AllianceInfo alliance = g.Alliance;
 
-      return alliance?.Leader != null && alliance.IsMember(g) ? alliance.Leader : g;
+      if (alliance?.Leader != null && alliance.IsMember(g))
+        return alliance.Leader;
+
+      return g;
     }
 
     #endregion
@@ -801,9 +837,31 @@ namespace Server.Guilds
     public List<WarDeclaration> AcceptedWars{ get; private set; }
 
 
-    public WarDeclaration FindPendingWar(Guild g) => PendingWars.FirstOrDefault(w => w.Opponent == g);
+    public WarDeclaration FindPendingWar(Guild g)
+    {
+      for (int i = 0; i < PendingWars.Count; i++)
+      {
+        WarDeclaration w = PendingWars[i];
 
-    public WarDeclaration FindActiveWar(Guild g) => AcceptedWars.FirstOrDefault(w => w.Opponent == g);
+        if (w.Opponent == g)
+          return w;
+      }
+
+      return null;
+    }
+
+    public WarDeclaration FindActiveWar(Guild g)
+    {
+      for (int i = 0; i < AcceptedWars.Count; i++)
+      {
+        WarDeclaration w = AcceptedWars[i];
+
+        if (w.Opponent == g)
+          return w;
+      }
+
+      return null;
+    }
 
     public void CheckExpiredWars()
     {
@@ -878,7 +936,8 @@ namespace Server.Guilds
       if (!NewGuildSystem)
         return;
 
-      killer ??= victim.FindMostRecentDamager(false);
+      if (killer == null)
+        killer = victim.FindMostRecentDamager(false);
 
       if (killer == null || victim.Guild == null || killer.Guild == null)
         return;
@@ -1089,10 +1148,24 @@ namespace Server.Guilds
         }
       }
 
-      AllyDeclarations ??= new List<Guild>();
-      AllyInvitations ??= new List<Guild>();
-      AcceptedWars ??= new List<WarDeclaration>();
-      PendingWars ??= new List<WarDeclaration>();
+      if (AllyDeclarations == null)
+        AllyDeclarations = new List<Guild>();
+
+      if (AllyInvitations == null)
+        AllyInvitations = new List<Guild>();
+
+
+      if (AcceptedWars == null)
+        AcceptedWars = new List<WarDeclaration>();
+
+      if (PendingWars == null)
+        PendingWars = new List<WarDeclaration>();
+
+
+      /*
+      if ( ( !NewGuildSystem && m_Guildstone == null )|| m_Members.Count == 0 )
+        Disband();
+      */
 
       Timer.DelayCall(TimeSpan.Zero, VerifyGuild_Callback);
     }
@@ -1261,14 +1334,24 @@ namespace Server.Guilds
 
     public void GuildChat(Mobile from, int hue, string text)
     {
+      Packet p = null;
       for (int i = 0; i < Members.Count; i++)
       {
-        NetState ns = Members[i].NetState;
+        Mobile m = Members[i];
 
-        if (ns != null)
-          Packets.SendUnicodeMessage(ns, from.Serial, from.Body, MessageType.Guild, hue, 3,
-            from.Language, from.Name, text);
+        NetState state = m.NetState;
+
+        if (state != null)
+        {
+          if (p == null)
+            p = Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Guild, hue, 3,
+              from.Language, from.Name, text));
+
+          state.Send(p);
+        }
       }
+
+      Packet.Release(p);
     }
 
     public void GuildChat(Mobile from, string text)
@@ -1319,12 +1402,17 @@ namespace Server.Guilds
       Mobile winner = null;
       int highVotes = 0;
 
-      foreach ((Mobile m, int val) in votes)
+      foreach (KeyValuePair<Mobile, int> kvp in votes)
+      {
+        Mobile m = kvp.Key;
+        int val = kvp.Value;
+
         if (winner == null || val > highVotes)
         {
           winner = m;
           highVotes = val;
         }
+      }
 
       if (NewGuildSystem && highVotes * 100 / Math.Max(votingMembers, 1) < MajorityPercentage && !Disbanded &&
           winner != m_Leader && m_Leader.Guild == this)

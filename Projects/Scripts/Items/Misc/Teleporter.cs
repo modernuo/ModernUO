@@ -157,7 +157,10 @@ namespace Server.Items
     {
       base.GetProperties(list);
 
-      list.Add(m_Active ? 1060742 : 1060743);
+      if (m_Active)
+        list.Add(1060742); // active
+      else
+        list.Add(1060743); // inactive
 
       if (m_MapDest != null)
         list.Add(1060658, "Map\t{0}", m_MapDest);
@@ -231,12 +234,12 @@ namespace Server.Items
       bool sendEffect = !m.Hidden || m.AccessLevel == AccessLevel.Player;
 
       if (m_SourceEffect && sendEffect)
-        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
+        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10, 10);
 
       m.MoveToWorld(p, map);
 
       if (m_DestEffect && sendEffect)
-        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
+        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10, 10);
 
       if (m_SoundID > 0 && sendEffect)
         Effects.PlaySound(m.Location, m.Map, m_SoundID);
@@ -392,10 +395,11 @@ namespace Server.Items
         if (m.BeginAction(this))
         {
           if (m_MessageString != null)
-            Packets.SendUnicodeMessage(m.NetState, Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", "",
-              m_MessageString);
+            m.Send(new UnicodeMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", null,
+              m_MessageString));
           else if (m_MessageNumber != 0)
-            Packets.SendMessageLocalized(m.NetState, Serial, ItemID, MessageType.Regular, 0x3B2, 3, m_MessageNumber);
+            m.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, m_MessageNumber, null,
+              ""));
 
           Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => m.EndAction(this));
         }
@@ -521,7 +525,12 @@ namespace Server.Items
         if (!m.InRange(GetWorldLocation(), m_Range))
           return;
 
-        bool isMatch = m_Keyword >= 0 && e.HasKeyword(m_Keyword) || m_Substring != null && e.Speech.ToLower().IndexOf(m_Substring.ToLower()) >= 0;
+        bool isMatch = false;
+
+        if (m_Keyword >= 0 && e.HasKeyword(m_Keyword))
+          isMatch = true;
+        else if (m_Substring != null && e.Speech.ToLower().IndexOf(m_Substring.ToLower()) >= 0)
+          isMatch = true;
 
         if (!isMatch || !CanTeleport(m))
           return;
@@ -811,10 +820,10 @@ namespace Server.Items
       writer.Write(TimeoutDelay);
       writer.Write(m_Teleporting.Count);
 
-      foreach (var (key, value) in m_Teleporting)
+      foreach (KeyValuePair<Mobile, Timer> kvp in m_Teleporting)
       {
-        writer.Write(key);
-        writer.Write(value.Next);
+        writer.Write(kvp.Key);
+        writer.Write(kvp.Value.Next);
       }
     }
 
@@ -1054,7 +1063,9 @@ namespace Server.Items
             case Layer.Backpack:
             case Layer.Mount:
             case Layer.Bank:
+            {
               continue; // ignore
+            }
             default:
             {
               m.SendMessage("You must remove all of your equipment before proceeding.");

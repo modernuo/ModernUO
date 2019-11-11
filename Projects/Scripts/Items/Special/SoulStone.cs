@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Server.Accounting;
 using Server.Engines.VeteranRewards;
 using Server.Factions;
@@ -580,6 +579,7 @@ namespace Server.Items
           return;
         }
 
+        SkillName skill = m_Stone.Skill;
         double skillValue = m_Stone.SkillValue;
         Skill fromSkill = from.Skills[m_Stone.Skill];
 
@@ -589,8 +589,27 @@ namespace Server.Items
          */
         int requiredAmount = (int)(skillValue * 10) - fromSkill.BaseFixedPoint - (from.SkillsCap - from.SkillsTotal);
 
-        bool cannotAbsorb = fromSkill.Lock != SkillLock.Up || requiredAmount > 0 &&
-                            requiredAmount > from.Skills.Where(t => t.Lock == SkillLock.Down).Sum(t => t.BaseFixedPoint);
+        bool cannotAbsorb = false;
+
+        if (fromSkill.Lock != SkillLock.Up)
+        {
+          cannotAbsorb = true;
+        }
+        else if (requiredAmount > 0)
+        {
+          int available = 0;
+
+          for (int i = 0; i < from.Skills.Length; ++i)
+          {
+            if (from.Skills[i].Lock != SkillLock.Down)
+              continue;
+
+            available += from.Skills[i].BaseFixedPoint;
+          }
+
+          if (requiredAmount > available)
+            cannotAbsorb = true;
+        }
 
         if (cannotAbsorb)
         {

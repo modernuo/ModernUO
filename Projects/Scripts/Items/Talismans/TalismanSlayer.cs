@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Mobiles;
 
 namespace Server.Items
@@ -74,7 +73,9 @@ namespace Server.Items
         },
         [TalismanSlayerName.Bovine] = new[]
         {
-          typeof(Cow), typeof(Bull), typeof(Gaman), typeof(TormentedMinotaur)
+          typeof(Cow), typeof(Bull), typeof(Gaman) /*, typeof( MinotaurCaptain ),
+				  typeof( MinotaurScout ), typeof( Minotaur )*/
+          // TODO TormentedMinotaur
         }
       };
     }
@@ -82,11 +83,15 @@ namespace Server.Items
     public static bool Slays(TalismanSlayerName name, Mobile m)
     {
       if (m == null || !m_Table.TryGetValue(name, out Type[] types) || types == null)
-        return false;
+        return false;;
 
       Type type = m.GetType();
 
-      return types.Any(t => t.IsAssignableFrom(type));
+      for (int i = 0; i < types.Length; i++)
+        if (types[i].IsAssignableFrom(type))
+          return true;
+
+      return false;
     }
   }
 }

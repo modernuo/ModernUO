@@ -47,13 +47,13 @@ namespace Server.Items
     }
 
 #if false
-    public override void OnDoubleClick( Mobile from )
-    {
-      if ( !Movable )
-        return;
+		public override void OnDoubleClick( Mobile from )
+		{
+			if ( !Movable )
+				return;
 
-      from.Target = new InternalTarget( this );
-    }
+			from.Target = new InternalTarget( this );
+		}
 #endif
 
     private class InternalTarget : Target
@@ -135,13 +135,13 @@ namespace Server.Items
     }
 
 #if false
-    public override void OnDoubleClick( Mobile from )
-    {
-      if ( !Movable )
-        return;
+		public override void OnDoubleClick( Mobile from )
+		{
+			if ( !Movable )
+				return;
 
-      from.Target = new InternalTarget( this );
-    }
+			from.Target = new InternalTarget( this );
+		}
 #endif
 
     private class InternalTarget : Target
@@ -454,9 +454,9 @@ namespace Server.Items
         ++ItemID;
 
 #if false
-      this.Delete();
+			this.Delete();
 
-      from.AddToBackpack( new SackFlourOpen() );
+			from.AddToBackpack( new SackFlourOpen() );
 #endif
     }
   }
