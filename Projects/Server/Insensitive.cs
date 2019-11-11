@@ -37,5 +37,6 @@ namespace Server
     public static bool EndsWith(string a, string b) => a != null && b != null && a.Length >= b.Length && Comparer.Compare(a.Substring(a.Length - b.Length), b) == 0;
 
     public static bool Contains(string a, string b) => a != null && b != null && a.Length >= b.Length && a.IndexOf(b, StringComparison.OrdinalIgnoreCase) >= 0;
+
   }
 }

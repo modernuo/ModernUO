@@ -416,7 +416,9 @@ namespace Server
         {
           m_Signal.WaitOne();
 
+
           Task.WhenAll(
+
             Task.Run(Mobile.ProcessDeltaQueue),
             Task.Run(Item.ProcessDeltaQueue)
           );

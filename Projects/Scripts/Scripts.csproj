@@ -4,6 +4,7 @@
     <RootNamespace>Server</RootNamespace>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>Scripts.CS</AssemblyName>
+    <UseNETCoreGenerator>true</UseNETCoreGenerator>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -11,6 +12,8 @@
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
+    <OutDir>..\..\Distribution\Assemblies</OutDir>
+    <OutputPath>..\..\Distribution\Assemblies</OutputPath>
     <PublishDir>..\..\Distribution\Assemblies</PublishDir>
     <OutputPath>..\..\Distribution\Assemblies</OutputPath>
   </PropertyGroup>
@@ -18,6 +21,8 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
+    <OutDir>..\..\Distribution\Assemblies</OutDir>
+    <OutputPath>..\..\Distribution\Assemblies</OutputPath>
     <PublishDir>..\..\Distribution\Assemblies</PublishDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
