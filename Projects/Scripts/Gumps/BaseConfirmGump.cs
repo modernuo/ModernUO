@@ -50,14 +50,14 @@ namespace Server.Gumps
     public virtual int LabelNumber // Are you sure you wish to select this?
       => 1074975;
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (info.ButtonID == (int)Buttons.Confirm)
       {
         if (info.IsSwitched((int)Buttons.Break))
-          Confirm(state.Mobile);
+          Confirm(sender.Mobile);
         else
-          Refuse(state.Mobile);
+          Refuse(sender.Mobile);
       }
     }
 

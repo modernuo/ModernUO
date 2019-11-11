@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Mobiles;
 
 namespace Server.Engines.Quests.Hag
@@ -89,12 +90,7 @@ namespace Server.Engines.Quests.Hag
       {
         Ingredient currIngredient = (Ingredient)i;
 
-        bool found = false;
-        for (int j = 0; !found && j < oldIngredients.Length; j++)
-          if (oldIngredients[j] == currIngredient)
-            found = true;
-
-        if (!found)
+        if (oldIngredients.All(ingredient => ingredient != currIngredient))
           ingredients[n++] = currIngredient;
       }
 

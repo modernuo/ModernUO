@@ -43,13 +43,13 @@ namespace Server.Items
     }
 
 #if false
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( !Movable )
-				return;
+    public override void OnDoubleClick( Mobile from )
+    {
+      if ( !Movable )
+        return;
 
-			from.Target = new InternalTarget( this );
-		}
+      from.Target = new InternalTarget( this );
+    }
 #endif
 
     public static bool IsHeatSource(object targeted)
@@ -63,22 +63,13 @@ namespace Server.Items
       else
         return false;
 
-      if (itemID >= 0xDE3 && itemID <= 0xDE9)
-        return true; // Campfire
-      if (itemID >= 0x461 && itemID <= 0x48E)
-        return true; // Sandstone oven/fireplace
-      if (itemID >= 0x92B && itemID <= 0x96C)
-        return true; // Stone oven/fireplace
-      if (itemID == 0xFAC)
-        return true; // Firepit
-      if (itemID >= 0x184A && itemID <= 0x184C)
-        return true; // Heating stand (left)
-      if (itemID >= 0x184E && itemID <= 0x1850)
-        return true; // Heating stand (right)
-      if (itemID >= 0x398C && itemID <= 0x399F)
-        return true; // Fire field
-
-      return false;
+      return itemID == 0xFAC ||
+             itemID >= 0xDE3 && itemID <= 0xDE9 ||
+             itemID >= 0x461 && itemID <= 0x48E ||
+             itemID >= 0x92B && itemID <= 0x96C ||
+             itemID >= 0x184A && itemID <= 0x184C ||
+             itemID >= 0x184E && itemID <= 0x1850 ||
+             itemID >= 0x398C && itemID <= 0x399F;
     }
 
     private class InternalTarget : Target
@@ -103,9 +94,7 @@ namespace Server.Items
             t.Start();
           }
           else
-          {
             from.SendLocalizedMessage(500119); // You must wait to perform another action
-          }
         }
       }
 
@@ -143,9 +132,7 @@ namespace Server.Items
               m_From.PlaySound(0x57);
           }
           else
-          {
             m_From.SendLocalizedMessage(500686); // You burn the food to a crisp! It's ruined.
-          }
         }
       }
     }

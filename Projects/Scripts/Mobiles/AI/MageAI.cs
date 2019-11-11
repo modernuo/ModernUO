@@ -339,18 +339,17 @@ namespace Server.Mobiles
       if (m_Mobile.Skills.Magery.Value >= 80.0 && Utility.RandomBool())
         return new ManaVampireSpell(m_Mobile);
 
-      return new ManaDrainSpell(m_Mobile);
-    }
+    public virtual Spell GetRandomManaDrainSpell() =>
+      m_Mobile.Skills.Magery.Value >= 80.0 && Utility.RandomBool()
+        ? (Spell)new ManaVampireSpell(m_Mobile)
+        : new ManaDrainSpell(m_Mobile);
 
     public virtual Spell DoDispel(Mobile toDispel)
     {
       if (!SmartAI)
-      {
-        if (ScaleBySkill(DispelChance, SkillName.Magery) > Utility.RandomDouble())
-          return new DispelSpell(m_Mobile);
-
-        return ChooseSpell(toDispel);
-      }
+        return ScaleBySkill(DispelChance, SkillName.Magery) > Utility.RandomDouble()
+          ? new DispelSpell(m_Mobile)
+          : ChooseSpell(toDispel);
 
       Spell spell = CheckCastHealingSpell();
 

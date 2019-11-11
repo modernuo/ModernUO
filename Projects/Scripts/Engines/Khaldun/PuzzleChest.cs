@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Gumps;
 using Server.Network;
 
@@ -47,22 +48,9 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
 
       int length = reader.ReadEncodedInt();
-      for (int i = 0;; i++)
-        if (i < length)
-        {
-          PuzzleChestCylinder cylinder = (PuzzleChestCylinder)reader.ReadInt();
 
-          if (i < Cylinders.Length)
-            Cylinders[i] = cylinder;
-        }
-        else if (i < Cylinders.Length)
-        {
-          Cylinders[i] = RandomCylinder();
-        }
-        else
-        {
-          break;
-        }
+      for (int i = 0; i < Cylinders.Length; i++)
+        Cylinders[i] = i < length ? (PuzzleChestCylinder)reader.ReadInt() : RandomCylinder();
     }
 
     public PuzzleChestCylinder[] Cylinders{ get; } = new PuzzleChestCylinder[Length];
@@ -296,7 +284,7 @@ namespace Server.Items
       {
         case 0:
         {
-          Effects.SendLocationEffect(to, to.Map, 0x113A, 20, 10);
+          Effects.SendLocationEffect(to, to.Map, 0x113A, 20);
           to.PlaySound(0x231);
           to.LocalOverheadMessage(MessageType.Regular, 0x44, 1010523); // A toxic vapor envelops thee.
 
@@ -326,7 +314,7 @@ namespace Server.Items
         }
         default:
         {
-          to.BoltEffect(0);
+          to.BoltEffect();
           to.LocalOverheadMessage(MessageType.Regular, 0xDA, 1010526); // Lightning arcs through thy body.
 
           AOS.Damage(to, to, Utility.RandomMinMax(10, 40), 0, 0, 0, 0, 100);
@@ -409,12 +397,8 @@ namespace Server.Items
 
       for (int i = 0; i < 2; i++)
       {
-        Item item;
-
-        if (Core.AOS)
-          item = Loot.RandomArmorOrShieldOrWeaponOrJewelry();
-        else
-          item = Loot.RandomArmorOrShieldOrWeapon();
+        Item item = Core.AOS ?
+          Loot.RandomArmorOrShieldOrWeaponOrJewelry() : Loot.RandomArmorOrShieldOrWeapon();
 
         if (item is BaseWeapon weapon)
         {
@@ -475,13 +459,7 @@ namespace Server.Items
 
     public void CleanupGuesses()
     {
-      List<Mobile> toDelete = new List<Mobile>();
-
-      foreach (KeyValuePair<Mobile, PuzzleChestSolutionAndTime> kvp in m_Guesses)
-        if (DateTime.UtcNow - kvp.Value.When > CleanupTime)
-          toDelete.Add(kvp.Key);
-
-      foreach (Mobile m in toDelete)
+      foreach (Mobile m in from kvp in m_Guesses where DateTime.UtcNow - kvp.Value.When > CleanupTime select kvp.Key)
         m_Guesses.Remove(m);
     }
 
@@ -499,10 +477,10 @@ namespace Server.Items
       for (int i = 0; i < Hints.Length; i++) writer.Write((int)Hints[i]);
 
       writer.WriteEncodedInt(m_Guesses.Count);
-      foreach (KeyValuePair<Mobile, PuzzleChestSolutionAndTime> kvp in m_Guesses)
+      foreach (var (key, value) in m_Guesses)
       {
-        writer.Write(kvp.Key);
-        kvp.Value.Serialize(writer);
+        writer.Write(key);
+        value.Serialize(writer);
       }
     }
 
@@ -680,9 +658,7 @@ namespace Server.Items
         }
 
         if (info.ButtonID == 1)
-        {
           m_Chest.SubmitSolution(m_From, m_Solution);
-        }
         else
         {
           if (info.Switches.Length == 0)

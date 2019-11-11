@@ -485,9 +485,6 @@ namespace Server.Items
       int extraItems = 0;
       int extraWeight = 0;
 
-//			from.SendMessage( String.Format( "There are {0} items in this container.", this.Items.Count ) );
-//			from.SendMessage( String.Format( "There are {0} items being dropped into this container.", droppedItems.Length ) );
-
       for (int i = 0; i < droppedItems.Length; i++)
       {
         Item dropped = droppedItems[i];
@@ -596,9 +593,7 @@ namespace Server.Items
         }
       }
       else
-      {
         from.SendLocalizedMessage(500446); // That is too far away.
-      }
     }
 
     public virtual bool CheckContentDisplay(Mobile from) =>
@@ -630,10 +625,7 @@ namespace Server.Items
 
       if (ns != null)
       {
-        if (ns.HighSeas)
-          to.Send(new ContainerDisplayHS(this));
-        else
-          to.Send(new ContainerDisplay(this));
+        Packets.SendDisplayContainer(ns, Serial, (short)GumpID);
 
         SendContentTo(ns);
 
@@ -642,7 +634,7 @@ namespace Server.Items
           List<Item> items = Items;
 
           for (int i = 0; i < items.Count; ++i)
-            to.Send(items[i].OPLPacket);
+            items[i].PropertyList.SendOPLInfo(ns);
         }
       }
     }
@@ -664,9 +656,7 @@ namespace Server.Items
           Mobile mob = Openers[i];
 
           if (mob == opener)
-          {
             contains = true;
-          }
           else
           {
             int range = GetUpdateRange(mob);
@@ -679,24 +669,14 @@ namespace Server.Items
 
       if (!contains)
       {
-        if (Openers == null)
-          Openers = new List<Mobile>();
-
+        Openers ??= new List<Mobile>();
         Openers.Add(opener);
       }
       else if (Openers?.Count == 0)
-      {
         Openers = null;
-      }
     }
 
-    public virtual void SendContentTo(NetState state)
-    {
-      if (state?.ContainerGridLines == true)
-        state.Send(new ContainerContent6017(state.Mobile, this));
-      else
-        state.Send(new ContainerContent(state.Mobile, this));
-    }
+    public virtual void SendContentTo(NetState state) => Packets.SendContainerContent(state, state.Mobile, this);
 
     public override void GetProperties(ObjectPropertyList list)
     {
@@ -808,8 +788,7 @@ namespace Server.Items
         for (int j = 0; j < items[i].Length; ++j)
           totals[i] += items[i][j].Amount;
 
-        if (totals[i] >= amount)
-          hasEnough = true;
+        hasEnough |= totals[i] >= amount;
       }
 
       if (!hasEnough)
@@ -901,8 +880,7 @@ namespace Server.Items
           for (int k = 0; k < items[i][j].Length; ++k)
             totals[i][j] += items[i][j][k].Amount;
 
-          if (totals[i][j] >= amounts[i])
-            hasEnough = true;
+          hasEnough |= totals[i][j] >= amounts[i];
         }
 
         if (!hasEnough)
@@ -996,8 +974,7 @@ namespace Server.Items
           for (int k = 0; k < items[i][j].Length; ++k)
             totals[i][j] += items[i][j][k].Amount;
 
-          if (totals[i][j] >= amounts[i])
-            hasEnough = true;
+          hasEnough |= totals[i][j] >= amounts[i];
         }
 
         if (!hasEnough)
@@ -1598,12 +1575,10 @@ namespace Server.Items
 
   public class ContainerData
   {
-    private static Dictionary<int, ContainerData> m_Table;
+    private static readonly Dictionary<int, ContainerData> Table = new Dictionary<int, ContainerData>();
 
     static ContainerData()
     {
-      m_Table = new Dictionary<int, ContainerData>();
-
       string path = Path.Combine(Core.BaseDirectory, "Data/containers.cfg");
 
       if (!File.Exists(path))
@@ -1629,7 +1604,7 @@ namespace Server.Items
 
             if (split.Length >= 3)
             {
-              int gumpID = Utility.ToInt32(split[0]);
+              int gumpId = Utility.ToInt32(split[0]);
 
               string[] aRect = split[1].Split(' ');
               if (aRect.Length < 4)
@@ -1644,10 +1619,9 @@ namespace Server.Items
 
               int dropSound = Utility.ToInt32(split[2]);
 
-              ContainerData data = new ContainerData(gumpID, bounds, dropSound);
+              ContainerData data = new ContainerData(gumpId, bounds, dropSound);
 
-              if (Default == null)
-                Default = data;
+              Default ??= data;
 
               if (split.Length >= 4)
               {
@@ -1657,10 +1631,10 @@ namespace Server.Items
                 {
                   int id = Utility.ToInt32(aIDs[i]);
 
-                  if (m_Table.ContainsKey(id))
+                  if (Table.ContainsKey(id))
                     Console.WriteLine(@"Warning: double ItemID entry in Data\containers.cfg");
                   else
-                    m_Table[id] = data;
+                    Table[id] = data;
                 }
               }
             }
@@ -1672,13 +1646,12 @@ namespace Server.Items
         }
       }
 
-      if (Default == null)
-        Default = new ContainerData(0x3C, new Rectangle2D(44, 65, 142, 94), 0x48);
+      Default ??= new ContainerData(0x3C, new Rectangle2D(44, 65, 142, 94), 0x48);
     }
 
-    public ContainerData(int gumpID, Rectangle2D bounds, int dropSound)
+    public ContainerData(int gumpId, Rectangle2D bounds, int dropSound)
     {
-      GumpID = gumpID;
+      GumpID = gumpId;
       Bounds = bounds;
       DropSound = dropSound;
     }
@@ -1691,9 +1664,9 @@ namespace Server.Items
 
     public int DropSound{ get; }
 
-    public static ContainerData GetData(int itemID)
+    public static ContainerData GetData(int itemId)
     {
-      m_Table.TryGetValue(itemID, out ContainerData data);
+      Table.TryGetValue(itemId, out ContainerData data);
       return data ?? Default;
     }
   }

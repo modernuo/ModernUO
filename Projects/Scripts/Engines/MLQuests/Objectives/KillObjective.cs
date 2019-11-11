@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Gumps;
 using Server.Mobiles;
 
@@ -91,22 +92,21 @@ namespace Server.Engines.MLQuests.Objectives
     {
       int desired = Objective.DesiredAmount;
 
-      foreach (Type acceptedType in Objective.AcceptedTypes)
-        if (acceptedType.IsAssignableFrom(type))
-        {
-          if (Objective.Area?.Contains(mob) == false)
-            return false;
+      if (Objective.AcceptedTypes.Any(acceptedType => acceptedType.IsAssignableFrom(type)))
+      {
+        if (Objective.Area?.Contains(mob) == false)
+          return false;
 
-          PlayerMobile pm = Instance.Player;
+        PlayerMobile pm = Instance.Player;
 
-          if (++Slain >= desired)
-            pm.SendLocalizedMessage(1075050); // You have killed all the required quest creatures of this type.
-          else
-            pm.SendLocalizedMessage(1075051,
-              (desired - Slain).ToString()); // You have killed a quest creature. ~1_val~ more left.
+        if (++Slain >= desired)
+          pm.SendLocalizedMessage(1075050); // You have killed all the required quest creatures of this type.
+        else
+          pm.SendLocalizedMessage(1075051,
+            (desired - Slain).ToString()); // You have killed a quest creature. ~1_val~ more left.
 
-          return true;
-        }
+        return true;
+      }
 
       return false;
     }

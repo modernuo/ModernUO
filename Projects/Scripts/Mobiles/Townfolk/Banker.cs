@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Server.Accounting;
 using Server.ContextMenus;
 using Server.Items;
 using Server.Network;
@@ -284,22 +283,16 @@ namespace Server.Mobiles
                   break;
 
                 if (!Core.ML && amount > 5000 || Core.ML && amount > 60000)
-                {
                   Say(500381); // Thou canst not withdraw so much at one time!
-                }
                 else if (pack?.Deleted != false || !(pack.TotalWeight < pack.MaxWeight) ||
                          !(pack.TotalItems < pack.MaxItems))
-                {
                   Say(1048147); // Your backpack can't hold anything else.
-                }
                 else if (amount > 0)
                 {
                   BankBox box = e.Mobile.FindBankNoCreate();
 
                   if (box == null || !Withdraw(e.Mobile, amount))
-                  {
                     Say(500384); // Ah, art thou trying to fool me? Thou hast not so much gold!
-                  }
                   else
                   {
                     pack.DropItem(new Gold(amount));
@@ -365,13 +358,9 @@ namespace Server.Mobiles
                   break;
 
                 if (amount < 5000)
-                {
                   Say(1010006); // We cannot create checks for such a paltry amount of gold!
-                }
                 else if (amount > 1000000)
-                {
                   Say(1010007); // Our policies prevent us from creating checks worth that much!
-                }
                 else
                 {
                   BankCheck check = new BankCheck(amount);

@@ -50,16 +50,13 @@ namespace Server.SkillHandlers
       // According to uoherald bard must remain alive, visible, and
       // within range of the target or the effect ends in 15 seconds.
       if (!targ.Alive || targ.Deleted || !from.Alive || from.Hidden)
-      {
         ends = true;
-      }
       else
       {
         int range = (int)targ.GetDistanceToSqrt(from);
         int maxRange = BaseInstrument.GetBardRange(from, SkillName.Discordance);
 
-        if (from.Map != targ.Map || range > maxRange)
-          ends = true;
+        ends |= from.Map != targ.Map || range > maxRange;
       }
 
       if (ends && info.m_Ending && info.m_EndTime < DateTime.UtcNow)

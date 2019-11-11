@@ -113,9 +113,14 @@ namespace Server.Factions
         return 502956; // You cannot place a trap on that.
 
       if (Core.ML)
-        foreach (Item item in m.GetItemsInRange(p, 0))
+      {
+        IPooledEnumerable eable = m.GetItemsInRange(p, 0);
+        foreach (Item item in eable)
           if (item is BaseFactionTrap trap && trap.Faction == Faction)
             return 1075263; // There is already a trap belonging to your faction at this location.;
+
+        eable.Free();
+      }
 
       switch (AllowedPlacing)
       {
@@ -129,22 +134,12 @@ namespace Server.Factions
           return 1010355; // This trap can only be placed in your stronghold
         }
         case AllowedPlacing.AnyFactionTown:
-        {
-          Town town = Town.FromRegion(Region.Find(p, m));
-
-          if (town != null)
-            return 0;
-
-          return 1010356; // This trap can only be placed in a faction town
-        }
+          return Town.FromRegion(Region.Find(p, m)) != null ? 0 : 1010356;
         case AllowedPlacing.ControlledFactionTown:
         {
           Town town = Town.FromRegion(Region.Find(p, m));
 
-          if (town != null && town.Owner == Faction)
-            return 0;
-
-          return 1010357; // This trap can only be placed in a town your faction controls
+          return town != null && town.Owner == Faction ? 0 : 1010357;
         }
       }
 
@@ -155,17 +150,16 @@ namespace Server.Factions
     {
       base.OnMovement(m, oldLocation);
 
-      if (!CheckDecay() && CheckRange(m.Location, oldLocation, 6))
-        if (Faction.Find(m) != null &&
-            (m.Skills.DetectHidden.Value - 80.0) / 20.0 > Utility.RandomDouble())
-          PrivateOverheadLocalizedMessage(m, 1010154, MessageHue, "", ""); // [Faction Trap]
+      if (!CheckDecay() && CheckRange(m.Location, oldLocation, 6) &&
+          Faction.Find(m) != null && (m.Skills.DetectHidden.Value - 80.0) / 20.0 > Utility.RandomDouble())
+        PrivateOverheadLocalizedMessage(m, 1010154, MessageHue, "", ""); // [Faction Trap]
     }
 
     public void PrivateOverheadLocalizedMessage(Mobile to, int number, int hue, string name, string args)
     {
       NetState ns = to?.NetState;
 
-      ns?.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, hue, 3, number, name, args));
+      Packets.SendMessageLocalized(ns, Serial, ItemID, MessageType.Regular, hue, 3, number, name, args);
     }
 
     public virtual bool CheckDecay()
@@ -252,10 +246,7 @@ namespace Server.Factions
       if (faction == null && mob is BaseFactionGuard guard)
         faction = guard.Faction;
 
-      if (faction == null)
-        return false;
-
-      return faction != Faction;
+      return faction != null && faction != Faction;
     }
   }
 }

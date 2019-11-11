@@ -90,17 +90,14 @@ namespace Server.Regions
         GuardedRegion reg = from.Region.GetRegion<GuardedRegion>();
 
         if (reg == null)
-        {
           from.SendMessage("You are not in a guardable region.");
-        }
         else
         {
           reg.Disabled = !e.GetBoolean(0);
 
-          if (reg.Disabled)
-            from.SendMessage("The guards in this region have been disabled.");
-          else
-            from.SendMessage("The guards in this region have been enabled.");
+          from.SendMessage(reg.Disabled
+            ? "The guards in this region have been disabled."
+            : "The guards in this region have been enabled.");
         }
       }
       else
@@ -191,12 +188,6 @@ namespace Server.Regions
 
       if (!AllowReds && m.Kills >= 5)
         CheckGuardCandidate(m);
-    }
-
-    public override void OnExit(Mobile m)
-    {
-//      if (IsDisabled())
-        return;
     }
 
     public override void OnSpeech(SpeechEventArgs args)

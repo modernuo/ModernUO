@@ -65,22 +65,16 @@ namespace Server.Engines.CannedEvil
         Skull = null;
 
       if (from.Map != Map || !from.InRange(GetWorldLocation(), 3))
-      {
         from.SendLocalizedMessage(500446); // That is too far away.
-      }
       else if (!Harrower.CanSpawn)
-      {
         from.SendMessage("The harrower has already been spawned.");
-      }
       else if (m_Skull == null)
       {
         from.SendLocalizedMessage(1049485); // What would you like to sacrifice?
         from.Target = new SacrificeTarget(this);
       }
       else
-      {
-        SendLocalizedMessageTo(from, 1049487, ""); // I already have my champions awakening skull!
-      }
+        SendLocalizedMessageTo(from, 1049487); // I already have my champions awakening skull!
     }
 
     public void EndSacrifice(Mobile from, ChampionSkull skull)
@@ -92,25 +86,15 @@ namespace Server.Engines.CannedEvil
         Skull = null;
 
       if (from.Map != Map || !from.InRange(GetWorldLocation(), 3))
-      {
         from.SendLocalizedMessage(500446); // That is too far away.
-      }
       else if (!Harrower.CanSpawn)
-      {
         from.SendMessage("The harrower has already been spawned.");
-      }
       else if (skull == null)
-      {
-        SendLocalizedMessageTo(from, 1049488, ""); // That is not my champions awakening skull!
-      }
+        SendLocalizedMessageTo(from, 1049488); // That is not my champions awakening skull!
       else if (m_Skull != null)
-      {
-        SendLocalizedMessageTo(from, 1049487, ""); // I already have my champions awakening skull!
-      }
+        SendLocalizedMessageTo(from, 1049487); // I already have my champions awakening skull!
       else if (!skull.IsChildOf(from.Backpack))
-      {
         from.SendLocalizedMessage(1049486); // You can only sacrifice items that are in your backpack!
-      }
       else
       {
         if (skull.Type == Type)
@@ -121,9 +105,7 @@ namespace Server.Engines.CannedEvil
           Skull = skull;
         }
         else
-        {
-          SendLocalizedMessageTo(from, 1049488, ""); // That is not my champions awakening skull!
-        }
+          SendLocalizedMessageTo(from, 1049488); // That is not my champions awakening skull!
       }
     }
 

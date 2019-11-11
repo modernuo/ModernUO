@@ -390,7 +390,7 @@ namespace Server
 
     public static bool IsFrame(int id, int[] list)
     {
-      if (id > list[list.Length - 1])
+      if (id > list[^1])
         return false;
 
       for (int i = 0; i < list.Length; ++i)

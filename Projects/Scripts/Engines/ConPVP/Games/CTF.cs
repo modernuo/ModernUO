@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Server.Gumps;
 using Server.Items;
@@ -70,17 +71,13 @@ namespace Server.Engines.ConPVP
         {
           CTFTeamInfo teamInfo = game.Controller.TeamInfo[i % 8];
 
-          if (teamInfo?.Flag == null)
-            continue;
-
-          entries.Add(teamInfo);
+          if (teamInfo?.Flag != null)
+            entries.Add(teamInfo);
         }
       else
-        foreach (CTFPlayerInfo player in section.Players.Values)
-          if (player.Score > 0)
-            entries.Add(player);
+        entries.AddRange(section.Players.Values.Where(player => player.Score > 0));
 
-      entries.Sort(delegate(IRankedCTF a, IRankedCTF b) { return b.Score - a.Score; });
+      entries.Sort((a, b) => b.Score - a.Score);
 
       int height = 0;
 
@@ -111,7 +108,8 @@ namespace Server.Engines.ConPVP
       if (section == null)
         for (int i = 0; i < entries.Count; ++i)
         {
-          CTFTeamInfo teamInfo = entries[i] as CTFTeamInfo;
+          if (!(entries[i] is CTFTeamInfo teamInfo))
+            continue;
 
           AddImage(30, 70 + i * 75, 10152);
           AddImage(30, 85 + i * 75, 10151);
@@ -194,10 +192,7 @@ namespace Server.Engines.ConPVP
 
     private void AddColoredText(int x, int y, int width, int height, string text, int color)
     {
-      if (color == 0)
-        AddHtml(x, y, width, height, text);
-      else
-        AddHtml(x, y, width, height, Color(text, color));
+      AddHtml(x, y, width, height, color == 0 ? text : Color(text, color));
     }
   }
 
@@ -246,10 +241,8 @@ namespace Server.Engines.ConPVP
         else if (ourTeam == useTeam)
         {
           if (Location == m_TeamInfo.Origin && Map == m_TeamInfo.Game.Facet)
-          {
-            from.Send(new UnicodeMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", Name,
-              "Touch me not for I am chaste."));
-          }
+            Packets.SendUnicodeMessage(from.NetState, Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", Name,
+              "Touch me not for I am chaste.");
           else
           {
             CTFPlayerInfo playerInfo = useTeam[from];
@@ -306,9 +299,7 @@ namespace Server.Engines.ConPVP
         m_ReturnCount = Math.Min(m_ReturnCount, 10);
       }
       else
-      {
         SendHome();
-      }
     }
 
     private void StopCountdown()
@@ -417,9 +408,7 @@ namespace Server.Engines.ConPVP
           }
         }
         else
-        {
           from.LocalOverheadMessage(MessageType.Regular, 0x26, false, "Those are not my cookies.");
-        }
       }
       else if (obj is Mobile passTo)
       {
@@ -943,15 +932,8 @@ namespace Server.Engines.ConPVP
 
               if (ourFlagCarrier != null && GetTeamInfo(ourFlagCarrier) == teamInfo)
               {
-                for (int j = 0; j < ourFlagCarrier.Aggressors.Count; ++j)
-                {
-                  if (!(ourFlagCarrier.Aggressors[j] is AggressorInfo aggr) ||
-                      aggr.Defender != ourFlagCarrier || aggr.Attacker != mob)
-                    continue;
-
+                if (ourFlagCarrier.Aggressors.Any(t => t.Defender == ourFlagCarrier && t.Attacker == mob))
                   playerInfo.Score += 2; // helped defend guy capturing enemy flag
-                  break;
-                }
 
                 if (mob.Map == ourFlagCarrier.Map && ourFlagCarrier.InRange(mob, 12))
                   playerInfo.Score += 1; // helped defend guy capturing enemy flag

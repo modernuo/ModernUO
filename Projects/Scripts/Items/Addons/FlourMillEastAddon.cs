@@ -130,11 +130,10 @@ namespace Server.Items
     {
       List<AddonComponent> components = Components;
 
-      int[][] stageTable = m_StageTable;
-
       for (int i = 0; i < components.Count; ++i)
       {
-        if (!(components[i] is AddonComponent component))
+        AddonComponent component = components[i];
+        if (component == null)
           continue;
 
         int[] itemTable = FindItemTable(component.ItemID);

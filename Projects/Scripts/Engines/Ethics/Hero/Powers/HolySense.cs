@@ -80,9 +80,7 @@ namespace Server.Ethics.Hero
         }
       }
       else
-      {
         sb.Append('.');
-      }
 
       from.Mobile.LocalOverheadMessage(MessageType.Regular, 0x59, false, sb.ToString());
 

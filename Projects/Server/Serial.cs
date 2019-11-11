@@ -35,7 +35,7 @@ namespace Server
     {
       get
       {
-        while (World.FindMobile(LastMobile = LastMobile + 1) != null)
+        while (World.FindMobile(LastMobile += 1) != null)
         {
         }
 
@@ -47,7 +47,7 @@ namespace Server
     {
       get
       {
-        while (World.FindItem(LastItem = LastItem + 1) != null)
+        while (World.FindItem(LastItem += 1) != null)
         {
         }
 

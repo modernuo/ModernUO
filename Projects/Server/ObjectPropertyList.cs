@@ -18,27 +18,19 @@
  *
  ***************************************************************************/
 
-using System.IO;
+using System;
+using System.Buffers;
 using System.Text;
+using Server.Buffers;
 using Server.Network;
 
 namespace Server
 {
-  public interface IPropertyListObject : IEntity
+  public sealed class ObjectPropertyList
   {
-    ObjectPropertyList PropertyList{ get; }
-    OPLInfo OPLPacket{ get;  }
-
-    void GetProperties(ObjectPropertyList list);
-  }
-
-  public sealed class ObjectPropertyList : Packet
-  {
-    private static byte[] m_Buffer = new byte[1024];
-    private static Encoding m_Encoding = Encoding.Unicode;
-
     // Each of these are localized to "~1_NOTHING~" which allows the string argument to be used
-    private static int[] m_StringNumbers =
+    // TODO: There are more of these, add them.
+    private static readonly int[] m_StringNumbers =
     {
       1042971,
       1070722
@@ -47,18 +39,9 @@ namespace Server
     private int m_Hash;
     private int m_Strings;
 
-    public ObjectPropertyList(IEntity e) : base(0xD6)
-    {
-      EnsureCapacity(128);
+    private ArrayBufferWriter<byte> m_Buffer = new ArrayBufferWriter<byte>();
 
-      Entity = e;
-
-      m_Stream.Write((short)1);
-      m_Stream.Write(e.Serial);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)0);
-      m_Stream.Write(e.Serial);
-    }
+    public ObjectPropertyList(IEntity e) => Entity = e;
 
     public IEntity Entity{ get; }
 
@@ -70,29 +53,26 @@ namespace Server
 
     public static bool Enabled{ get; set; }
 
-    public void Add(int number)
+    public void Send(NetState ns)
     {
-      if (number == 0)
+      if (ns == null)
         return;
 
-      AddHash(number);
+      ReadOnlySpan<byte> body = m_Buffer.WrittenSpan;
 
-      if (Header == 0)
-      {
-        Header = number;
-        HeaderArgs = "";
-      }
+      ushort length = (ushort)(19 + body.Length);
+      SpanWriter writer = new SpanWriter(stackalloc byte[length]);
+      writer.Write((byte)0xD6); // Packet ID
+      writer.Write(length); // Dynamic Length
 
-      m_Stream.Write(number);
-      m_Stream.Write((short)0);
-    }
+      writer.Write((short)1); // Command
+      writer.Write(Entity.Serial);
+      writer.Position += 2;
+      writer.Write(m_Hash);
+      writer.Write(body);
+      writer.Position += 4;
 
-    public void Terminate()
-    {
-      m_Stream.Write(0);
-
-      m_Stream.Seek(11, SeekOrigin.Begin);
-      m_Stream.Write(m_Hash);
+      ns.Send(writer.Span);
     }
 
     public void AddHash(int val)
@@ -101,13 +81,12 @@ namespace Server
       m_Hash ^= val >> 26 & 0x3F;
     }
 
-    public void Add(int number, string arguments)
+    public void Add(int number, string arguments = "")
     {
       if (number == 0)
         return;
 
-      if (arguments == null)
-        arguments = "";
+      arguments ??= "";
 
       if (Header == 0)
       {
@@ -116,34 +95,17 @@ namespace Server
       }
 
       AddHash(number);
-      AddHash(arguments.GetHashCode());
+      if (arguments != "")
+        AddHash(arguments.GetHashCode());
 
-      m_Stream.Write(number);
+      int argLength = Encoding.Unicode.GetByteCount(arguments);
+      int length = 6 + argLength;
+      SpanWriter writer = new SpanWriter(m_Buffer.GetSpan(length));
+      writer.Write(number);
+      writer.Write((short)argLength);
+      writer.WriteLittleUni(arguments);
 
-      int byteCount = m_Encoding.GetByteCount(arguments);
-
-      if (byteCount > m_Buffer.Length)
-        m_Buffer = new byte[byteCount];
-
-      byteCount = m_Encoding.GetBytes(arguments, 0, arguments.Length, m_Buffer, 0);
-
-      m_Stream.Write((short)byteCount);
-      m_Stream.Write(m_Buffer, 0, byteCount);
-    }
-
-    public void Add(int number, string format, object arg0)
-    {
-      Add(number, string.Format(format, arg0));
-    }
-
-    public void Add(int number, string format, object arg0, object arg1)
-    {
-      Add(number, string.Format(format, arg0, arg1));
-    }
-
-    public void Add(int number, string format, object arg0, object arg1, object arg2)
-    {
-      Add(number, string.Format(format, arg0, arg1, arg2));
+      m_Buffer.Advance(length);
     }
 
     public void Add(int number, string format, params object[] args)
@@ -158,42 +120,20 @@ namespace Server
       Add(GetStringNumber(), text);
     }
 
-    public void Add(string format, string arg0)
-    {
-      Add(GetStringNumber(), string.Format(format, arg0));
-    }
-
-    public void Add(string format, string arg0, string arg1)
-    {
-      Add(GetStringNumber(), string.Format(format, arg0, arg1));
-    }
-
-    public void Add(string format, string arg0, string arg1, string arg2)
-    {
-      Add(GetStringNumber(), string.Format(format, arg0, arg1, arg2));
-    }
-
     public void Add(string format, params object[] args)
     {
       Add(GetStringNumber(), string.Format(format, args));
     }
-  }
 
-  public sealed class OPLInfo : Packet
-  {
-    /*public OPLInfo( ObjectPropertyList list ) : base( 0xBF )
+    public void SendOPLInfo(NetState ns)
     {
-      EnsureCapacity( 13 );
+      SpanWriter writer = new SpanWriter(stackalloc byte[9]);
+      writer.Write((byte)0xDC); // Packet ID
 
-      m_Stream.Write( (short) 0x10 );
-      m_Stream.Write( (int) list.Entity.Serial );
-      m_Stream.Write( (int) list.Hash );
-    }*/
+      writer.Write(Entity.Serial);
+      writer.Write(m_Hash);
 
-    public OPLInfo(ObjectPropertyList list) : base(0xDC, 9)
-    {
-      m_Stream.Write(list.Entity.Serial);
-      m_Stream.Write(list.Hash);
+      ns.Send(writer.Span);
     }
   }
 }

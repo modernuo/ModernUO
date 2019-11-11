@@ -373,8 +373,7 @@ namespace Server.Misc
     {
       int fp = Math.Min(skill.BaseFixedPoint, 1200);
 
-      return (fp - 300) / 100;
-    }
+    private static int GetTableIndex(Skill skill) => (Math.Min(skill.BaseFixedPoint, 1200) - 300) / 100;
   }
 
   public class FameEntry

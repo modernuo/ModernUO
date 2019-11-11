@@ -491,7 +491,7 @@ namespace Server.Items
 
           scroll.Delete();
 
-          from.Send(new PlaySound(0x249, GetWorldLocation()));
+          Packets.SendPlaySound(from.NetState, 0x249, GetWorldLocation());
           return true;
         }
       }
@@ -569,49 +569,16 @@ namespace Server.Items
         return;
 
       if (Parent == null)
-      {
-        to.Send(WorldPacket);
-      }
+        SendWorldPacketFor(ns);
       else if (Parent is Item)
-      {
         // What will happen if the client doesn't know about our parent?
-        if (ns.ContainerGridLines)
-          to.Send(new ContainerContentUpdate6017(this));
-        else
-          to.Send(new ContainerContentUpdate(this));
-      }
+        Packets.SendContainerContentUpdate(ns, this);
       else if (Parent is Mobile)
-      {
         // What will happen if the client doesn't know about our parent?
-        to.Send(new EquipUpdate(this));
-      }
+        Packets.SendEquipUpdate(ns, this);
 
-      if (ns.HighSeas)
-        to.Send(new DisplaySpellbookHS(this));
-      else
-        to.Send(new DisplaySpellbook(this));
-
-      if (ObjectPropertyList.Enabled)
-      {
-        if (ns.NewSpellbook)
-        {
-          to.Send(new NewSpellbookContent(this, ItemID, BookOffset + 1, m_Content));
-        }
-        else
-        {
-          if (ns.ContainerGridLines)
-            to.Send(new SpellbookContent6017(SpellCount, BookOffset + 1, m_Content, this));
-          else
-            to.Send(new SpellbookContent(SpellCount, BookOffset + 1, m_Content, this));
-        }
-      }
-      else
-      {
-        if (ns.ContainerGridLines)
-          to.Send(new SpellbookContent6017(SpellCount, BookOffset + 1, m_Content, this));
-        else
-          to.Send(new SpellbookContent(SpellCount, BookOffset + 1, m_Content, this));
-      }
+      Packets.SendDisplayContainer(ns, Serial);
+      Packets.SendSpellbookContent(ns, Serial, ItemID, BookOffset + 1, m_Content);
     }
 
     public override void GetProperties(ObjectPropertyList list)
@@ -810,11 +777,9 @@ namespace Server.Items
         }
       }
 
-      if (Attributes == null)
-        Attributes = new AosAttributes(this);
+      Attributes ??= new AosAttributes(this);
 
-      if (SkillBonuses == null)
-        SkillBonuses = new AosSkillBonuses(this);
+      SkillBonuses ??= new AosSkillBonuses(this);
 
       if (Core.AOS && Parent is Mobile mobile)
         SkillBonuses.AddTo(mobile);

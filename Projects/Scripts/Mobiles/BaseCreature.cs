@@ -327,6 +327,7 @@ namespace Server.Mobiles
       {
         if (m_Paragon == value)
           return;
+
         if (value)
           Paragon.Convert(this);
         else
@@ -915,7 +916,7 @@ namespace Server.Mobiles
       return (double)chance / 1000;
     }
 
-    public override void Damage(int amount, Mobile from)
+    public override void Damage(int amount, Mobile from = null, bool informMount = true)
     {
       int oldHits = Hits;
 
@@ -930,10 +931,10 @@ namespace Server.Mobiles
       if (oath == this)
       {
         amount = (int)(amount * 1.1);
-        from.Damage(amount, from);
+        from?.Damage(amount, from);
       }
 
-      base.Damage(amount, from);
+      base.Damage(amount, from, informMount);
 
       if (SubdueBeforeTame && !Controlled && oldHits > HitsMax / 10 && Hits <= HitsMax / 10)
         PublicOverheadMessage(MessageType.Regular, 0x3B2, false,
@@ -2110,9 +2111,7 @@ namespace Server.Mobiles
         }
       }
       else if (ReacquireOnMovement)
-      {
         ForceReacquire();
-      }
 
       InhumanSpeech speechType = SpeechType;
 
@@ -2133,10 +2132,7 @@ namespace Server.Mobiles
       if (MLQuestSystem.Enabled && CanShout && m is PlayerMobile mobile)
         CheckShout(mobile, oldLocation);
 
-      if (m_NoDupeGuards == m)
-        return;
-
-      if (!Body.IsHuman || Kills >= 5 || AlwaysMurderer || AlwaysAttackable || m.Kills < 5 ||
+      if (m_NoDupeGuards == m || !Body.IsHuman || Kills >= 5 || AlwaysMurderer || AlwaysAttackable || m.Kills < 5 ||
           !m.InRange(Location, 12) || !m.Alive)
         return;
 
@@ -3056,7 +3052,12 @@ namespace Server.Mobiles
 
       IsDeadPet = false;
 
-      Effects.SendPacket(Location, Map, new BondedStatus(0, Serial, 0));
+      IPooledEnumerable<NetState> eable = Map.GetClientsInRange(Location);
+
+      foreach (NetState ns in eable)
+        Packets.SendBondStatus(ns, Serial, false);
+
+      eable.Free();
 
       SendIncomingPacket();
       SendIncomingPacket();
@@ -3100,10 +3101,7 @@ namespace Server.Mobiles
 
         m_ReturnQueued = true;
       }
-      else if (PlayerRangeSensitive)
-      {
-        AIObject?.Deactivate();
-      }
+      else if (PlayerRangeSensitive) AIObject?.Deactivate();
 
       base.OnSectorDeactivate();
     }
@@ -3237,15 +3235,11 @@ namespace Server.Mobiles
       {
         if (m_MLQuests == null)
         {
-          if (StaticMLQuester)
-            m_MLQuests = MLQuestSystem.FindQuestList(GetType());
-          else
-            m_MLQuests = ConstructQuestList();
+          m_MLQuests = StaticMLQuester ? MLQuestSystem.FindQuestList(GetType()) : ConstructQuestList();
 
+          // return EmptyList, but don't cache it (run construction again next time)
           if (m_MLQuests == null)
-            return
-              MLQuestSystem
-                .EmptyList; // return EmptyList, but don't cache it (run construction again next time)
+            return MLQuestSystem.EmptyList;
         }
 
         return m_MLQuests;
@@ -3269,9 +3263,7 @@ namespace Server.Mobiles
       if (m_MLNextShout > DateTime.UtcNow || pm.Hidden || !pm.Alive)
         return;
 
-      int shoutRange = ShoutRange;
-
-      if (!InRange(pm.Location, shoutRange) || InRange(oldLocation, shoutRange) || !CanSee(pm) || !InLOS(pm))
+      if (!InRange(pm.Location, ShoutRange) || InRange(oldLocation, ShoutRange) || !CanSee(pm) || !InLOS(pm))
         return;
 
       MLQuestContext context = MLQuestSystem.GetContext(pm);
@@ -3314,16 +3306,7 @@ namespace Server.Mobiles
     public Spawner MySpawner => Spawner as Spawner;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile LastOwner
-    {
-      get
-      {
-        if (Owners == null || Owners.Count == 0)
-          return null;
-
-        return Owners[Owners.Count - 1];
-      }
-    }
+    public Mobile LastOwner => Owners?.Count > 0 ? Owners[^1] : null;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsBonded
@@ -3732,9 +3715,7 @@ namespace Server.Mobiles
 
     public virtual void AddPetFriend(Mobile m)
     {
-      if (Friends == null)
-        Friends = new List<Mobile>();
-
+      Friends ??= new List<Mobile>();
       Friends.Add(m);
     }
 
@@ -3865,28 +3846,13 @@ namespace Server.Mobiles
       typeof(Gold)
     };
 
-    public virtual bool CheckFoodPreference(Item f)
-    {
-      if (CheckFoodPreference(f, FoodType.Eggs, m_Eggs))
-        return true;
-
-      if (CheckFoodPreference(f, FoodType.Fish, m_Fish))
-        return true;
-
-      if (CheckFoodPreference(f, FoodType.GrainsAndHay, m_GrainsAndHay))
-        return true;
-
-      if (CheckFoodPreference(f, FoodType.Meat, m_Meat))
-        return true;
-
-      if (CheckFoodPreference(f, FoodType.FruitsAndVegies, m_FruitsAndVegies))
-        return true;
-
-      if (CheckFoodPreference(f, FoodType.Gold, m_Gold))
-        return true;
-
-      return false;
-    }
+    public virtual bool CheckFoodPreference(Item f) =>
+      CheckFoodPreference(f, FoodType.Eggs, m_Eggs) ||
+      CheckFoodPreference(f, FoodType.Fish, m_Fish) ||
+      CheckFoodPreference(f, FoodType.GrainsAndHay, m_GrainsAndHay) ||
+      CheckFoodPreference(f, FoodType.Meat, m_Meat) ||
+      CheckFoodPreference(f, FoodType.FruitsAndVegies, m_FruitsAndVegies) ||
+      CheckFoodPreference(f, FoodType.Gold, m_Gold);
 
     public virtual bool CheckFoodPreference(Item fed, FoodType type, Type[] types)
     {
@@ -3904,82 +3870,79 @@ namespace Server.Mobiles
 
     public virtual bool CheckFeed(Mobile from, Item dropped)
     {
-      if (!IsDeadPet && Controlled && (ControlMaster == from || IsPetFriend(from)))
+      if (IsDeadPet || !Controlled || ControlMaster != from && !IsPetFriend(from))
+        return false;
+
+      Item f = dropped;
+
+      if (!CheckFoodPreference(f))
+        return false;
+
+      int amount = f.Amount;
+
+      if (amount <= 0)
+        return false;
+
+      int stamGain;
+
+      if (f is Gold)
+        stamGain = amount - 50;
+      else
+        stamGain = amount * 15 - 50;
+
+      if (stamGain > 0)
+        Stam += stamGain;
+
+      if (Core.SE)
       {
-        Item f = dropped;
+        if (m_Loyalty < MaxLoyalty)
+          m_Loyalty = MaxLoyalty;
+      }
+      else
+        for (int i = 0; i < amount; ++i)
+          if (m_Loyalty < MaxLoyalty && 0.5 >= Utility.RandomDouble())
+            m_Loyalty += 10;
 
-        if (CheckFoodPreference(f))
+      /* if ( happier )*/
+      // looks like in OSI pets say they are happier even if they are at maximum loyalty
+      SayTo(from, 502060); // Your pet looks happier.
+
+      if (Body.IsAnimal)
+        Animate(3, 5, 1, true, false, 0);
+      else if (Body.IsMonster)
+        Animate(17, 5, 1, true, false, 0);
+
+      if (IsBondable && !IsBonded)
+      {
+        Mobile master = m_ControlMaster;
+
+        if (master != null && master == from) //So friends can't start the bonding process
         {
-          int amount = f.Amount;
-
-          if (amount > 0)
+          if (MinTameSkill <= 29.1 || master.Skills.AnimalTaming.Base >= MinTameSkill ||
+              OverrideBondingReqs() ||
+              Core.ML && master.Skills.AnimalTaming.Value >= MinTameSkill)
           {
-            int stamGain;
-
-            if (f is Gold)
-              stamGain = amount - 50;
-            else
-              stamGain = amount * 15 - 50;
-
-            if (stamGain > 0)
-              Stam += stamGain;
-
-            if (Core.SE)
+            if (BondingBegin == DateTime.MinValue)
             {
-              if (m_Loyalty < MaxLoyalty) m_Loyalty = MaxLoyalty;
+              BondingBegin = DateTime.UtcNow;
             }
-            else
+            else if (BondingBegin + BondingDelay <= DateTime.UtcNow)
             {
-              for (int i = 0; i < amount; ++i)
-                if (m_Loyalty < MaxLoyalty && 0.5 >= Utility.RandomDouble())
-                  m_Loyalty += 10;
+              IsBonded = true;
+              BondingBegin = DateTime.MinValue;
+              from.SendLocalizedMessage(1049666); // Your pet has bonded with you!
             }
-
-            /* if ( happier )*/
-            // looks like in OSI pets say they are happier even if they are at maximum loyalty
-            SayTo(from, 502060); // Your pet looks happier.
-
-            if (Body.IsAnimal)
-              Animate(3, 5, 1, true, false, 0);
-            else if (Body.IsMonster)
-              Animate(17, 5, 1, true, false, 0);
-
-            if (IsBondable && !IsBonded)
-            {
-              Mobile master = m_ControlMaster;
-
-              if (master != null && master == from) //So friends can't start the bonding process
-              {
-                if (MinTameSkill <= 29.1 || master.Skills.AnimalTaming.Base >= MinTameSkill ||
-                    OverrideBondingReqs() ||
-                    Core.ML && master.Skills.AnimalTaming.Value >= MinTameSkill)
-                {
-                  if (BondingBegin == DateTime.MinValue)
-                  {
-                    BondingBegin = DateTime.UtcNow;
-                  }
-                  else if (BondingBegin + BondingDelay <= DateTime.UtcNow)
-                  {
-                    IsBonded = true;
-                    BondingBegin = DateTime.MinValue;
-                    from.SendLocalizedMessage(1049666); // Your pet has bonded with you!
-                  }
-                }
-                else if (Core.ML)
-                {
-                  from.SendLocalizedMessage(
-                    1075268); // Your pet cannot form a bond with you until your animal taming ability has risen.
-                }
-              }
-            }
-
-            dropped.Delete();
-            return true;
+          }
+          else if (Core.ML)
+          {
+            from.SendLocalizedMessage(
+              1075268); // Your pet cannot form a bond with you until your animal taming ability has risen.
           }
         }
       }
 
-      return false;
+      dropped.Delete();
+      return true;
     }
 
     #endregion
@@ -4032,23 +3995,10 @@ namespace Server.Mobiles
 
     public virtual bool CanTeach => false;
 
-    public virtual bool CheckTeach(SkillName skill, Mobile from)
-    {
-      if (!CanTeach)
-        return false;
-
-      if (skill == SkillName.Stealth && from.Skills.Hiding.Base < Stealth.HidingRequirement)
-        return false;
-
-      if (skill == SkillName.RemoveTrap && (from.Skills.Lockpicking.Base < 50.0 ||
-                                            from.Skills.DetectHidden.Base < 50.0))
-        return false;
-
-      if (!Core.AOS && (skill == SkillName.Focus || skill == SkillName.Chivalry || skill == SkillName.Necromancy))
-        return false;
-
-      return true;
-    }
+    public virtual bool CheckTeach(SkillName skill, Mobile from) =>
+      CanTeach && (skill != SkillName.Stealth || !(from.Skills.Hiding.Base < Stealth.HidingRequirement)) &&
+      (skill != SkillName.RemoveTrap || !(from.Skills.Lockpicking.Base < 50.0) && !(from.Skills.DetectHidden.Base < 50.0)) &&
+      (Core.AOS || skill != SkillName.Focus && skill != SkillName.Chivalry && skill != SkillName.Necromancy);
 
     public enum TeachResult
     {
@@ -4158,16 +4108,8 @@ namespace Server.Mobiles
       return TeachResult.Success;
     }
 
-    public virtual bool CheckTeachingMatch(Mobile m)
-    {
-      if (m_Teaching == (SkillName)(-1))
-        return false;
-
-      if (m is PlayerMobile mobile)
-        return mobile.Learning == m_Teaching;
-
-      return true;
-    }
+    public virtual bool CheckTeachingMatch(Mobile m) =>
+      m_Teaching != (SkillName)(-1) && (!(m is PlayerMobile mobile) || mobile.Learning == m_Teaching);
 
     private SkillName m_Teaching = (SkillName)(-1);
 
@@ -5112,9 +5054,7 @@ namespace Server.Mobiles
 
             if (c.Loyalty <= 0)
               lock (toRelease)
-              {
                 toRelease.Add(c);
-              }
           }
         }
 
@@ -5122,18 +5062,12 @@ namespace Server.Mobiles
         if (!c.Controlled && !c.IsStabled && (c.Region.IsPartOf<HouseRegion>() && c.CanBeDamaged() ||
                                               c.RemoveIfUntamed && c.Spawner == null))
         {
-          c.RemoveStep++;
-
-          if (c.RemoveStep >= 20)
+          if (c.RemoveStep++ >= 20)
             lock (toRemove)
-            {
               toRemove.Add(c);
-            }
         }
         else
-        {
           c.RemoveStep = 0;
-        }
       });
 
       // TODO: Parallelize this

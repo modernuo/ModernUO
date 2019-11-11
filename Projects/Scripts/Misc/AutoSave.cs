@@ -141,7 +141,7 @@ namespace Server.Misc
       string saves = Path.Combine(Core.BaseDirectory, "Saves");
 
       if (Directory.Exists(saves))
-        Directory.Move(saves, FormatDirectory(root, m_Backups[m_Backups.Length - 1], GetTimeStamp()));
+        Directory.Move(saves, FormatDirectory(root, m_Backups[^1], GetTimeStamp()));
     }
 
     private static DirectoryInfo Match(string[] paths, string match)

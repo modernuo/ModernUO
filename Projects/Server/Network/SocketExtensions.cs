@@ -34,7 +34,7 @@ namespace Server.Network
 
     public static ArraySegment<byte> GetArray(this ReadOnlyMemory<byte> memory)
     {
-      if (MemoryMarshal.TryGetArray(memory, out var result))
+      if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> result))
         return result;
 
       throw new InvalidOperationException("Buffer backed by array was expected");
@@ -42,7 +42,7 @@ namespace Server.Network
 
     public static ArraySegment<byte> GetArray(this ReadOnlySequence<byte> memory)
     {
-      if (SequenceMarshal.TryGetArray(memory, out var result))
+      if (SequenceMarshal.TryGetArray(memory, out ArraySegment<byte> result))
         return result;
 
       throw new InvalidOperationException("Buffer backed by array was expected");

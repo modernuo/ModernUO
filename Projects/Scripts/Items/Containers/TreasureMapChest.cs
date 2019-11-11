@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.ContextMenus;
 using Server.Engines.PartySystem;
 using Server.Gumps;
@@ -39,7 +40,7 @@ namespace Server.Items
 
     public override int LabelNumber => 3000541;
 
-    public static Type[] Artifacts{ get; } =
+    public static Type[] Artifacts { get; } =
     {
       typeof(CandelabraOfSouls), typeof(GoldBricks), typeof(PhillipsWoodenSteed),
       typeof(ArcticDeathDealer), typeof(BlazeOfDeath), typeof(BurglarsBandana),
@@ -51,18 +52,18 @@ namespace Server.Items
     };
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Level{ get; set; }
+    public int Level { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Owner{ get; set; }
+    public Mobile Owner { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime DeleteTime{ get; private set; }
+    public DateTime DeleteTime { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Temporary{ get; set; }
+    public bool Temporary { get; set; }
 
-    public List<Mobile> Guardians{ get; private set; }
+    public List<Mobile> Guardians { get; private set; }
 
     public override bool IsDecoContainer => false;
 
@@ -196,18 +197,11 @@ namespace Server.Items
           };
         }
         else
-        {
           numberItems = level * 6;
-        }
 
         for (int i = 0; i < numberItems; ++i)
         {
-          Item item;
-
-          if (Core.AOS)
-            item = Loot.RandomArmorOrShieldOrWeaponOrJewelry();
-          else
-            item = Loot.RandomArmorOrShieldOrWeapon();
+          Item item = Core.AOS ? Loot.RandomArmorOrShieldOrWeaponOrJewelry() : Loot.RandomArmorOrShieldOrWeapon();
 
           if (item is BaseWeapon weapon)
           {
@@ -296,13 +290,12 @@ namespace Server.Items
 
       if (Level == 0 && from.AccessLevel < AccessLevel.GameMaster)
       {
-        foreach (Mobile m in Guardians)
-          if (m.Alive)
-          {
-            from.SendLocalizedMessage(
-              1046448); // You must first kill the guardians before you may open this chest.
-            return true;
-          }
+        if (Guardians.Any(m => m.Alive))
+        {
+          from.SendLocalizedMessage(
+            1046448); // You must first kill the guardians before you may open this chest.
+          return true;
+        }
 
         LockPick(from);
         return false;
@@ -395,29 +388,29 @@ namespace Server.Items
       switch (version)
       {
         case 2:
-        {
-          Guardians = reader.ReadStrongMobileList();
-          Temporary = reader.ReadBool();
+          {
+            Guardians = reader.ReadStrongMobileList();
+            Temporary = reader.ReadBool();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          Owner = reader.ReadMobile();
+          {
+            Owner = reader.ReadMobile();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          Level = reader.ReadInt();
-          DeleteTime = reader.ReadDeltaTime();
-          m_Lifted = reader.ReadStrongItemList();
+          {
+            Level = reader.ReadInt();
+            DeleteTime = reader.ReadDeltaTime();
+            m_Lifted = reader.ReadStrongItemList();
 
-          if (version < 2)
-            Guardians = new List<Mobile>();
+            if (version < 2)
+              Guardians = new List<Mobile>();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (!Temporary)

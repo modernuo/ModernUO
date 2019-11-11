@@ -153,9 +153,7 @@ namespace Server.Gumps
 
       if (parent != null)
       {
-        if (m_Stack == null)
-          m_Stack = new Stack<StackEntry>();
-
+        m_Stack ??= new Stack<StackEntry>();
         m_Stack.Push(parent);
       }
 
@@ -281,9 +279,9 @@ namespace Server.Gumps
       }
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       if (!BaseCommand.IsAccessible(from, m_Object))
       {

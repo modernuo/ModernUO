@@ -61,8 +61,7 @@ namespace Server.Accounting
 
       InvalidAccountAccessLog accessLog = FindAccessLog(ns);
 
-      if (accessLog == null)
-        m_List.Add(accessLog = new InvalidAccountAccessLog(ns.Address));
+      m_List.Add(accessLog ??= new InvalidAccountAccessLog(ns.Address));
 
       accessLog.Counts += 1;
       accessLog.RefreshAccessTime();

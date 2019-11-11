@@ -6,17 +6,17 @@ using System.Threading;
 
 namespace Server.Misc
 {
-  public class Email
+  public static class Email
   {
     /* In order to support emailing, fill in EmailServer and FromAddress:
      * Example:
      *  public static readonly string EmailServer = "mail.domain.com";
      *  public static readonly string FromAddress = "runuo@domain.com";
-     * 
+     *
      * If you want to add crash reporting emailing, fill in CrashAddresses:
      * Example:
      *  public static readonly string CrashAddresses = "first@email.here,second@email.here,third@email.here";
-     * 
+     *
      * If you want to add speech log page emailing, fill in SpeechLogPageAddresses:
      * Example:
      *  public static readonly string SpeechLogPageAddresses = "first@email.here,second@email.here,third@email.here";
@@ -62,7 +62,7 @@ namespace Server.Misc
         // .NET relies on the MTA to generate Message-ID header. Not all MTAs will add this header.
 
         DateTime now = DateTime.UtcNow;
-        string messageID = $"<{now.ToString("yyyyMMdd")}.{now.ToString("HHmmssff")}@{EmailServer}>";
+        string messageID = $"<{now:yyyyMMdd}.{now:HHmmssff}@{EmailServer}>";
         message.Headers.Add("Message-ID", messageID);
 
         message.Headers.Add("X-Mailer", "RunUO");
@@ -89,10 +89,8 @@ namespace Server.Misc
     {
       MailMessage message = (MailMessage)state;
 
-      if (Send(message))
-        Console.WriteLine("Sent e-mail '{0}' to '{1}'.", message.Subject, message.To);
-      else
-        Console.WriteLine("Failure sending e-mail '{0}' to '{1}'.", message.Subject, message.To);
+      Console.WriteLine(Send(message) ? "Sent e-mail '{0}' to '{1}'." : "Failure sending e-mail '{0}' to '{1}'.",
+        message.Subject, message.To);
     }
   }
 }

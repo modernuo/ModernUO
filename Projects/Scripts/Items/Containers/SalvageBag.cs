@@ -126,16 +126,11 @@ namespace Server.Items
 
     #region Checks
 
-    private bool Resmeltables() //Where context menu checks for metal items and dragon barding deeds
-    {
-      foreach (Item i in Items)
-        return i?.Deleted == false && (
-                 i is BaseWeapon weapon && CraftResources.GetType(weapon.Resource) == CraftResourceType.Metal ||
-                 i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Metal ||
-                 i is DragonBardingDeed);
-
-      return false;
-    }
+    private bool Resmeltables() => //Where context menu checks for metal items and dragon barding deeds
+      Items.Select(i => i?.Deleted == false &&
+                        (i is BaseWeapon weapon && CraftResources.GetType(weapon.Resource) == CraftResourceType.Metal ||
+                         i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Metal ||
+                         i is DragonBardingDeed)).FirstOrDefault();
 
     private bool Scissorables() //Where context menu checks for Leather items and cloth items
     {

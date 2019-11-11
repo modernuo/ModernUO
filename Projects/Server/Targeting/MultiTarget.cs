@@ -24,10 +24,10 @@ namespace Server.Targeting
 {
   public abstract class MultiTarget : Target
   {
-    protected MultiTarget(int multiID, Point3D offset, int range = 10, bool allowGround = true, TargetFlags flags = TargetFlags.None)
+    protected MultiTarget(int multiId, Point3D offset, int range = 10, bool allowGround = true, TargetFlags flags = TargetFlags.None)
       : base(range, allowGround, flags)
     {
-      MultiID = multiID;
+      MultiID = multiId;
       Offset = offset;
     }
 
@@ -35,11 +35,12 @@ namespace Server.Targeting
 
     public Point3D Offset{ get; set; }
 
-    public override Packet GetPacketFor(NetState ns)
+    public override void Send(NetState ns)
     {
       if (ns.HighSeas)
-        return new MultiTargetReqHS(this);
-      return new MultiTargetReq(this);
+        Packets.SendMultiTargetReqHS(ns, this);
+      else
+        Packets.SendMultiTargetReq(ns, this);
     }
   }
 }

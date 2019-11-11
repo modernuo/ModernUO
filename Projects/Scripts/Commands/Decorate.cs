@@ -9,7 +9,7 @@ using Server.Mobiles;
 
 namespace Server.Commands
 {
-  public class Decorate
+  public static class Decorate
   {
     private static Mobile m_Mobile;
     private static int m_Count;
@@ -878,9 +878,7 @@ namespace Server.Commands
                 res = true;
             }
             else if ((item.ItemData.Flags & TileFlag.LightSource) != 0 && item.ItemData.Name == srcName)
-            {
               m_DeleteQueue.Enqueue(item);
-            }
           }
       }
       else if (srcItem is Teleporter || srcItem is FillableContainer || srcItem is BaseBook)

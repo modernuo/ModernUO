@@ -60,7 +60,7 @@ namespace Server.Gumps
 
     public int GetFirstID(SecureLevel level) => m_Info.Level == level ? 4006 : 4005;
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       var level = info.ButtonID switch
       {
@@ -74,12 +74,12 @@ namespace Server.Gumps
 
       if (m_Info.Level == level)
       {
-        state.Mobile.SendLocalizedMessage(1061281); // Access level unchanged.
+        sender.Mobile.SendLocalizedMessage(1061281); // Access level unchanged.
       }
       else
       {
         m_Info.Level = level;
-        state.Mobile.SendLocalizedMessage(1061280); // New access level set.
+        sender.Mobile.SendLocalizedMessage(1061280); // New access level set.
       }
     }
   }

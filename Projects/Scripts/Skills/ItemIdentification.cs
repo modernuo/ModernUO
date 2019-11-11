@@ -39,18 +39,12 @@ namespace Server.Items
               item.OnSingleClick(from);
           }
           else
-          {
             from.SendLocalizedMessage(500353); // You are not certain...
-          }
         }
         else if (o is Mobile mobile)
-        {
           mobile.OnSingleClick(from);
-        }
         else
-        {
           from.SendLocalizedMessage(500353); // You are not certain...
-        }
       }
     }
   }

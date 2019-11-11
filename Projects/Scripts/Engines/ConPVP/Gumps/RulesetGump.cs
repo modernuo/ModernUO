@@ -93,9 +93,7 @@ namespace Server.Engines.ConPVP
         for (int i = 0; i < info.Switches.Length; ++i)
         {
           int sid = info.Switches[i];
-
-          if (sid >= 0 && sid < m_Page.Options.Length)
-            opts[sid] = true;
+          opts[sid] |= sid >= 0 && sid < m_Page.Options.Length;
         }
 
         for (int i = 0; i < opts.Length; ++i)

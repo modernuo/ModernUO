@@ -6,7 +6,7 @@ namespace Server.Engines.Mahjong
 
   public sealed class MahjongPacketHandlers
   {
-    private static OnMahjongPacketReceive[] m_SubCommandDelegates = new OnMahjongPacketReceive[0x100];
+    private static readonly OnMahjongPacketReceive[] m_SubCommandDelegates = new OnMahjongPacketReceive[0x100];
 
     public static void RegisterSubCommand(int subCmd, OnMahjongPacketReceive onReceive)
     {
@@ -80,12 +80,7 @@ namespace Server.Engines.Mahjong
 
     public static void ExitGame(MahjongGame game, NetState state, PacketReader pvSrc)
     {
-      if (game == null)
-        return;
-
-      Mobile from = state.Mobile;
-
-      game.Players.LeaveGame(from);
+      game?.Players.LeaveGame(state.Mobile);
     }
 
     public static void GivePoints(MahjongGame game, NetState state, PacketReader pvSrc)

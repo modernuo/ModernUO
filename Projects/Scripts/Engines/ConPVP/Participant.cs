@@ -173,7 +173,7 @@ namespace Server.Engines.ConPVP
         }
 
       Resize(Players.Length + 1);
-      Players[Players.Length - 1] = new DuelPlayer(player, this);
+      Players[^1] = new DuelPlayer(player, this);
     }
 
     public void Resize(int count)

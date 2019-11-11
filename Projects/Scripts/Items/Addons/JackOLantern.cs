@@ -39,15 +39,7 @@ namespace Server.Items
 
     public override bool ShareHue => false;
 
-    private AddonComponent GetComponent(int itemID, int hue)
-    {
-      AddonComponent ac = new AddonComponent(itemID);
-
-      ac.Hue = hue;
-      ac.Name = "jack-o-lantern";
-
-      return ac;
-    }
+    private AddonComponent GetComponent(int itemID, int hue) => new AddonComponent(itemID) {Hue = hue, Name = "jack-o-lantern"};
 
     public override void Serialize(GenericWriter writer)
     {
@@ -66,16 +58,22 @@ namespace Server.Items
         Timer.DelayCall(TimeSpan.Zero, delegate
         {
           for (int i = 0; i < Components.Count; ++i)
-            if (Components[i] is AddonComponent ac && ac.Hue == 2118)
+          {
+            AddonComponent ac = Components[i];
+            if (ac?.Hue == 2118)
               ac.Hue = 1161;
+          }
         });
 
       if (version <= 1)
         Timer.DelayCall(TimeSpan.Zero, delegate
         {
           for (int i = 0; i < Components.Count; ++i)
-            if (Components[i] is AddonComponent ac)
+          {
+            AddonComponent ac = Components[i];
+            if (ac != null)
               ac.Name = "jack-o-lantern";
+          }
         });
     }
   }

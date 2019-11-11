@@ -124,23 +124,9 @@ namespace Server.Spells.Fourth
       return true;
     }
 
-    private bool IsAggressor(Mobile m)
-    {
-      foreach (AggressorInfo info in Caster.Aggressors)
-        if (m == info.Attacker && !info.Expired)
-          return true;
+    private bool IsAggressor(Mobile m) => Caster.Aggressors.Any(info => m == info.Attacker && !info.Expired);
 
-      return false;
-    }
-
-    private bool IsAggressed(Mobile m)
-    {
-      foreach (AggressorInfo info in Caster.Aggressed)
-        if (m == info.Defender && !info.Expired)
-          return true;
-
-      return false;
-    }
+    private bool IsAggressed(Mobile m) => Caster.Aggressed.Any(info => m == info.Defender && !info.Expired);
 
     private static bool IsInnocentTo(Mobile from, Mobile to) => Notoriety.Compute(from, to) == Notoriety.Innocent;
 

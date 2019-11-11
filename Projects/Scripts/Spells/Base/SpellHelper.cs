@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Engines.CannedEvil;
 using Server.Engines.ConPVP;
 using Server.Engines.PartySystem;
@@ -148,13 +149,8 @@ namespace Server.Spells
 
     public static bool DisableSkillCheck{ get; set; }
 
-    public static TimeSpan GetDamageDelayForSpell(Spell sp)
-    {
-      if (!sp.DelayedDamage)
-        return TimeSpan.Zero;
-
-      return Core.AOS ? AosDamageDelay : OldDamageDelay;
-    }
+    public static TimeSpan GetDamageDelayForSpell(Spell sp) =>
+      !sp.DelayedDamage ? TimeSpan.Zero : Core.AOS ? AosDamageDelay : OldDamageDelay;
 
     public static bool CheckMulti(Point3D p, Map map, bool houses = true, int housingrange = 0)
     {
@@ -173,9 +169,7 @@ namespace Server.Spells
             return true;
         }
         else if (multi.Contains(p))
-        {
           return true;
-        }
       }
 
       return false;
@@ -191,36 +185,15 @@ namespace Server.Spells
         if (item.RootParent != from)
           from.Direction = from.GetDirectionTo(item.GetWorldLocation());
       }
-      else if (from != target)
-      {
+      else if (!ReferenceEquals(from, target))
         from.Direction = from.GetDirectionTo(target);
-      }
     }
 
-    public static bool CheckCombat(Mobile m)
-    {
-      if (!RestrictTravelCombat)
-        return false;
-
-      for (int i = 0; i < m.Aggressed.Count; ++i)
-      {
-        AggressorInfo info = m.Aggressed[i];
-
-        if (info.Defender.Player && DateTime.UtcNow - info.LastCombatTime < CombatHeatDelay)
-          return true;
-      }
-
-      if (Core.Expansion == Expansion.AOS)
-        for (int i = 0; i < m.Aggressors.Count; ++i)
-        {
-          AggressorInfo info = m.Aggressors[i];
-
-          if (info.Attacker.Player && DateTime.UtcNow - info.LastCombatTime < CombatHeatDelay)
-            return true;
-        }
-
-      return false;
-    }
+    public static bool CheckCombat(Mobile m) =>
+      RestrictTravelCombat &&
+      (m.Aggressed.Any(info => info.Defender.Player && DateTime.UtcNow - info.LastCombatTime < CombatHeatDelay) ||
+       Core.Expansion == Expansion.AOS && m.Aggressors.Any(info =>
+         info.Attacker.Player && DateTime.UtcNow - info.LastCombatTime < CombatHeatDelay));
 
     public static bool AdjustField(ref Point3D p, Map map, int height, bool mobsBlock)
     {
@@ -246,9 +219,7 @@ namespace Server.Spells
     public static void GetSurfaceTop(ref IPoint3D p)
     {
       if (p is Item item)
-      {
         p = item.GetSurfaceTop();
-      }
       else if (p is StaticTarget t)
       {
         int z = t.Z;
@@ -260,15 +231,10 @@ namespace Server.Spells
       }
     }
 
-    public static bool AddStatOffset(Mobile m, StatType type, int offset, TimeSpan duration)
-    {
-      if (offset > 0)
-        return AddStatBonus(m, m, type, offset, duration);
-      if (offset < 0)
-        return AddStatCurse(m, m, type, -offset, duration);
-
-      return true;
-    }
+    public static bool AddStatOffset(Mobile m, StatType type, int offset, TimeSpan duration) =>
+      offset > 0
+        ? AddStatBonus(m, m, type, offset, duration)
+        : offset >= 0 || AddStatCurse(m, m, type, -offset, duration);
 
     public static bool AddStatBonus(Mobile caster, Mobile target, StatType type) => AddStatBonus(caster, target, type, GetOffset(caster, target, type, false), GetDuration(caster, target));
 
@@ -604,7 +570,7 @@ namespace Server.Spells
 
       // Always allow monsters to teleport
       if (caster is BaseCreature bc && !bc.Controlled && !bc.Summoned && (type == TravelCheckType.TeleportTo || type == TravelCheckType.TeleportFrom))
-          return true;
+        return true;
 
       m_TravelCaster = caster;
       m_TravelType = type;

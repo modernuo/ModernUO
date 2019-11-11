@@ -4,7 +4,6 @@ using Server.ContextMenus;
 using Server.Gumps;
 using Server.Misc;
 using Server.Multis;
-using Server.Prompts;
 
 namespace Server.Mobiles
 {
@@ -129,8 +128,7 @@ namespace Server.Mobiles
     {
       if (RentalGold > 0 && House?.IsAosRules == true)
       {
-        if (House.MovingCrate == null)
-          House.MovingCrate = new MovingCrate(House);
+        House.MovingCrate ??= new MovingCrate(House);
 
         Banker.Deposit(House.MovingCrate, RentalGold);
         RentalGold = 0;

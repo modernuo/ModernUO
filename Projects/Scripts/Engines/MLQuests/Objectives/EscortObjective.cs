@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Gumps;
 using Server.Misc;
 using Server.Mobiles;
@@ -20,14 +21,13 @@ namespace Server.Engines.MLQuests.Objectives
       MLQuestContext context = MLQuestSystem.GetContext(pm);
 
       if (context != null)
-        foreach (MLQuestInstance instance in context.QuestInstances)
-          if (instance.Quest.IsEscort)
-          {
-            if (message)
-              MLQuestSystem.Tell(quester, pm, 500896); // I see you already have an escort.
+        if (context.QuestInstances.Any(instance => instance.Quest.IsEscort))
+        {
+          if (message)
+            MLQuestSystem.Tell(quester, pm, 500896); // I see you already have an escort.
 
-            return false;
-          }
+          return false;
+        }
 
       DateTime nextEscort = pm.LastEscortTime + BaseEscortable.EscortDelay;
 

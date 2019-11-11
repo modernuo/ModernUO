@@ -16,7 +16,7 @@ namespace Server.Gumps
 {
   public enum AdminGumpPage
   {
-    Information_General,
+    Information_General = 0,
     Information_Perf,
     Administer,
     Clients,
@@ -39,7 +39,8 @@ namespace Server.Gumps
     AccountDetails_Tags,
     AccountDetails_ChangePassword,
     AccountDetails_ChangeAccess,
-    FirewallInfo
+    FirewallInfo,
+    Invalid = -1
   }
 
   public class AdminGump : Gump
@@ -587,8 +588,7 @@ namespace Server.Gumps
         }
         case AdminGumpPage.Accounts:
         {
-          if (m_List == null)
-            m_List = new List<object>();
+          m_List ??= new List<object>();
 
           List<Account> rads = state as List<Account>;
 
@@ -1182,11 +1182,10 @@ namespace Server.Gumps
       if (totalBytes > 1000000)
         return $"{(double)totalBytes / 1048576:F1} MB";
 
-      if (totalBytes > 1000)
-        return $"{(double)totalBytes / 1024:F1} KB";
-
-      return $"{totalBytes} Bytes";
-    }
+    public static string FormatByteAmount(long totalBytes) =>
+      totalBytes > 1000000000 ? $"{(double)totalBytes / 1073741824:F1} GB" :
+      totalBytes > 1000000 ? $"{(double)totalBytes / 1048576:F1} MB" :
+      totalBytes > 1000 ? $"{(double)totalBytes / 1024:F1} KB" : $"{totalBytes} Bytes";
 
     public static void Initialize()
     {
@@ -1525,7 +1524,7 @@ namespace Server.Gumps
       {
         IPAddress[] ips = a.LoginIPs;
 
-        if (ips.Length != 0 && ip == ips[0] && AccountHandler.IPTable.ContainsKey(ips[0]))
+        if (ips.Length != 0 && ip.Equals(ips[0]) && AccountHandler.IPTable.ContainsKey(ips[0]))
           --AccountHandler.IPTable[ip];
 
         List<IPAddress> newList = new List<IPAddress>(ips);
@@ -1608,30 +1607,19 @@ namespace Server.Gumps
       {
         case 0:
         {
-          AdminGumpPage page;
-
-          switch (index)
+          AdminGumpPage page = index switch
           {
-            case 0:
-              page = AdminGumpPage.Information_General;
-              break;
-            case 1:
-              page = AdminGumpPage.Administer;
-              break;
-            case 2:
-              page = AdminGumpPage.Clients;
-              break;
-            case 3:
-              page = AdminGumpPage.Accounts;
-              break;
-            case 4:
-              page = AdminGumpPage.Firewall;
-              break;
-            case 5:
-              page = AdminGumpPage.Information_Perf;
-              break;
-            default: return;
-          }
+            0 => AdminGumpPage.Information_General,
+            1 => AdminGumpPage.Administer,
+            2 => AdminGumpPage.Clients,
+            3 => AdminGumpPage.Accounts,
+            4 => AdminGumpPage.Firewall,
+            5 => AdminGumpPage.Information_Perf,
+            _ => AdminGumpPage.Invalid,
+          };
+
+          if (page == AdminGumpPage.Invalid)
+            return;
 
           from.SendGump(new AdminGump(from, page));
           break;
@@ -1951,12 +1939,7 @@ namespace Server.Gumps
                     hasAccess = true;
                   else
                     for (int j = 0; !hasAccess && j < a.Length; ++j)
-                    {
-                      Mobile m = a[j];
-
-                      if (m?.AccessLevel >= level)
-                        hasAccess = true;
-                    }
+                      hasAccess |= a[j]?.AccessLevel >= level;
 
                   if (!hasAccess)
                   {
@@ -2500,11 +2483,7 @@ namespace Server.Gumps
             }
             case 31: // View all inactive accounts
             {
-              List<object> results = new List<object>();
-
-              foreach (Account acct in Accounts.GetAccounts())
-                if (acct.Inactive)
-                  results.Add(acct);
+              List<object> results = Accounts.GetAccounts().Cast<Account>().Where(acct => acct.Inactive).Cast<object>().ToList();
 
               if (results.Count == 1)
                 from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Information, 0, null,
@@ -2517,11 +2496,7 @@ namespace Server.Gumps
             }
             case 32: // View all banned accounts
             {
-              List<object> results = new List<object>();
-
-              foreach (Account acct in Accounts.GetAccounts())
-                if (acct.Banned)
-                  results.Add(acct);
+              List<object> results = Accounts.GetAccounts().Cast<Account>().Where(acct => acct.Banned).Cast<object>().ToList();
 
               if (results.Count == 1)
                 from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Information, 0, null,
@@ -2552,8 +2527,7 @@ namespace Server.Gumps
                 bool hasHouse = false;
 
                 for (int i = 0; i < acct.Length && !hasHouse; ++i)
-                  if (acct[i] != null && BaseHouse.HasHouse(acct[i]))
-                    hasHouse = true;
+                  hasHouse |= acct[i] != null && BaseHouse.HasHouse(acct[i]);
 
                 if (!hasHouse)
                   newRads.Add(acct);
@@ -2972,8 +2946,7 @@ namespace Server.Gumps
         if (check.AccessLevel > accessLevel)
           accessLevel = check.AccessLevel;
 
-        if (check.NetState != null)
-          online = true;
+        online |= check.NetState != null;
       }
     }
 

@@ -387,7 +387,7 @@ namespace Server.Items
           double toHeal = min + Utility.RandomDouble() * (max - min);
 
           if (Patient.Body.IsMonster || Patient.Body.IsAnimal)
-            toHeal += Patient.HitsMax / 100;
+            toHeal += Patient.HitsMax / 100.0;
 
           if (Core.AOS)
             toHeal -= toHeal * Slips * 0.35; // TODO: Verify algorithm

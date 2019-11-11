@@ -62,9 +62,8 @@ namespace Server.Engines.Quests.Haven
     public override TimeSpan RestartDelay => TimeSpan.MaxValue;
     public override bool IsTutorial => true;
 
-    public override int Picture
-    {
-      get
+    public override int Picture =>
+      From.Profession switch
       {
         return From.Profession switch
         {

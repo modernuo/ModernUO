@@ -436,9 +436,8 @@ namespace Server.Items
       BaseEnergyResistance + GetProtOffset() + GetResourceAttrs().ArmorEnergyResist + m_EnergyBonus;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public ArmorBodyType BodyPosition
-    {
-      get
+    public ArmorBodyType BodyPosition =>
+      Layer switch
       {
         return Layer switch
         {
@@ -1144,8 +1143,7 @@ namespace Server.Items
           if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
             SkillBonuses = new AosSkillBonuses(this, reader);
 
-          if (GetSaveFlag(flags, SaveFlag.PlayerConstructed))
-            PlayerConstructed = true;
+          PlayerConstructed |= GetSaveFlag(flags, SaveFlag.PlayerConstructed);
 
           break;
         }
@@ -1271,8 +1269,7 @@ namespace Server.Items
         }
       }
 
-      if (SkillBonuses == null)
-        SkillBonuses = new AosSkillBonuses(this);
+      SkillBonuses ??= new AosSkillBonuses(this);
 
       Mobile m = Parent as Mobile;
 
@@ -1299,17 +1296,11 @@ namespace Server.Items
 
       m?.CheckStatTimers();
 
-      if (version < 7)
-        PlayerConstructed = true; // we don't know, so, assume it's crafted
+      PlayerConstructed |= version < 7; // we don't know, so, assume it's crafted
     }
 
-    public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
-    {
-      if (!Ethic.CheckTrade(from, to, newOwner, this))
-        return false;
-
-      return base.AllowSecureTrade(from, to, newOwner, accepted);
-    }
+    public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted) =>
+      Ethic.CheckTrade(@from, to, newOwner, this) && base.AllowSecureTrade(@from, to, newOwner, accepted);
 
     public override bool CanEquip(Mobile from)
     {
@@ -1374,19 +1365,10 @@ namespace Server.Items
       return base.CanEquip(from);
     }
 
-    public override bool CheckPropertyConfliction(Mobile m)
-    {
-      if (base.CheckPropertyConfliction(m))
-        return true;
-
-      if (Layer == Layer.Pants)
-        return m.FindItemOnLayer(Layer.InnerLegs) != null;
-
-      if (Layer == Layer.Shirt)
-        return m.FindItemOnLayer(Layer.InnerTorso) != null;
-
-      return false;
-    }
+    public override bool CheckPropertyConfliction(Mobile m) =>
+      base.CheckPropertyConfliction(m) || (Layer == Layer.Pants
+        ? m.FindItemOnLayer(Layer.InnerLegs) != null
+        : Layer == Layer.Shirt && m.FindItemOnLayer(Layer.InnerTorso) != null);
 
     public override bool OnEquip(Mobile from)
     {
@@ -1477,25 +1459,9 @@ namespace Server.Items
       }
     }
 
-    public override bool AllowEquippedCast(Mobile from)
-    {
-      if (base.AllowEquippedCast(from))
-        return true;
+    public override bool AllowEquippedCast(Mobile from) => base.AllowEquippedCast(@from) || Attributes.SpellChanneling != 0;
 
-      return Attributes.SpellChanneling != 0;
-    }
-
-    public virtual int GetLuckBonus()
-    {
-      CraftResourceInfo resInfo = CraftResources.GetInfo(m_Resource);
-
-      CraftAttributeInfo attrInfo = resInfo?.AttributeInfo;
-
-      if (attrInfo == null)
-        return 0;
-
-      return attrInfo.ArmorLuck;
-    }
+    public virtual int GetLuckBonus() => CraftResources.GetInfo(m_Resource)?.AttributeInfo?.ArmorLuck ?? 0;
 
     public override void GetProperties(ObjectPropertyList list)
     {
@@ -1665,9 +1631,7 @@ namespace Server.Items
       if (attrs.Count == 0 && Crafter == null && Name != null)
         return;
 
-      EquipmentInfo eqInfo = new EquipmentInfo(number, m_Crafter, false, attrs.ToArray());
-
-      from.Send(new DisplayEquipmentInfo(this, eqInfo));
+      EquipmentPackets.SendDisplayEquipmentInfo(from.NetState, this, number, m_Crafter, false, attrs);
     }
 
     [Flags]

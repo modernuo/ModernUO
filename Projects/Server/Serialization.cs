@@ -24,7 +24,6 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
-using Server.Guilds;
 
 namespace Server
 {
@@ -584,10 +583,7 @@ namespace Server
 
     public override void Write(BaseGuild value)
     {
-      if (value == null)
-        Write(0);
-      else
-        Write(value.Id);
+      Write(value?.Id ?? 0);
     }
 
     public override void WriteItem<T>(T value)
@@ -916,10 +912,7 @@ namespace Server
     public override IEntity ReadEntity()
     {
       Serial serial = ReadUInt();
-      IEntity entity = World.FindEntity(serial);
-      if (entity == null)
-        return new Entity(serial, new Point3D(0, 0, 0), Map.Internal);
-      return entity;
+      return World.FindEntity(serial) ?? new Entity(serial, new Point3D(0, 0, 0), Map.Internal);
     }
 
     public override Item ReadItem() => World.FindItem(ReadUInt());
@@ -1370,10 +1363,7 @@ namespace Server
 
     public override void Write(BaseGuild value)
     {
-      if (value == null)
-        Write(0);
-      else
-        Write(value.Id);
+      Write(value?.Id ?? 0);
     }
 
     public override void WriteItem<T>(T value)

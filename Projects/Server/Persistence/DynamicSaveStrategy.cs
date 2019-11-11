@@ -23,9 +23,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Server.Guilds;
 
-namespace Server
+namespace Server.Persistence
 {
   public sealed class DynamicSaveStrategy : SaveStrategy
   {

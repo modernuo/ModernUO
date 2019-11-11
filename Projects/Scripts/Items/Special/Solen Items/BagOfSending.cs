@@ -219,54 +219,34 @@ namespace Server.Items
           return;
 
         if (from.Region.IsPartOf<Jail>())
-        {
           from.SendMessage("You may not do that in jail.");
-        }
         else if (!m_Bag.IsChildOf(from.Backpack))
-        {
-          MessageHelper.SendLocalizedMessageTo(m_Bag, from, 1062334,
-            0x59); // The bag of sending must be in your backpack. 1054107 is gone from client, using generic response
-        }
+          MessageHelper.SendLocalizedMessageTo(m_Bag, from, 1054107,
+            0x59); // This item must be in your backpack.
         else if (m_Bag.Charges == 0)
-        {
           MessageHelper.SendLocalizedMessageTo(m_Bag, from, 1042544, 0x59); // This item is out of charges.
-        }
         else if (targeted is Item item)
         {
           int reqCharges = (int)Math.Max(1, Math.Ceiling(item.TotalWeight / 10.0));
 
           if (!item.IsChildOf(from.Backpack))
-          {
             MessageHelper.SendLocalizedMessageTo(m_Bag, from, 1054152,
               0x59); // You may only send items from your backpack to your bank box.
-          }
           else if (item is BagOfSending || item is Container)
-          {
-            from.Send(new AsciiMessage(m_Bag.Serial, m_Bag.ItemID, MessageType.Regular, 0x3B2, 3, "",
-              "You cannot send a container through the bag of sending."));
-          }
+            Packets.SendAsciiMessage(from.NetState, m_Bag.Serial, m_Bag.ItemID, MessageType.Regular, 0x3B2, 3, "",
+              "You cannot send a container through the bag of sending." );
           else if (item.LootType == LootType.Cursed)
-          {
             MessageHelper.SendLocalizedMessageTo(m_Bag, from, 1054108,
               0x59); // The bag of sending rejects the cursed item.
-          }
           else if (!item.VerifyMove(from) || item is QuestItem || item.Nontransferable)
-          {
             MessageHelper.SendLocalizedMessageTo(m_Bag, from, 1054109,
               0x59); // The bag of sending rejects that item.
-          }
           else if (SpellHelper.IsDoomGauntlet(from.Map, from.Location))
-          {
             from.SendLocalizedMessage(1062089); // You cannot use that here.
-          }
           else if (!from.BankBox.TryDropItem(from, item, false))
-          {
             MessageHelper.SendLocalizedMessageTo(m_Bag, from, 1054110, 0x59); // Your bank box is full.
-          }
           else if (Core.ML && reqCharges > m_Bag.Charges)
-          {
             from.SendLocalizedMessage(1079932); //You don't have enough charges to send that much weight
-          }
           else
           {
             m_Bag.Charges -= Core.ML ? reqCharges : 1;

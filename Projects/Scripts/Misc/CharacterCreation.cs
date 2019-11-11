@@ -7,7 +7,7 @@ using Server.Network;
 
 namespace Server.Misc
 {
-  public class CharacterCreation
+  public static class CharacterCreation
   {
     private static readonly CityInfo m_NewHavenInfo =
       new CityInfo("New Haven", "The Bountiful Harvest Inn", 3503, 2574, 14, Map.Trammel);
@@ -22,15 +22,8 @@ namespace Server.Misc
 
     private static void AddBackpack(Mobile m)
     {
-      Container pack = m.Backpack;
-
-      if (pack == null)
-      {
-        pack = new Backpack();
-        pack.Movable = false;
-
-        m.AddItem(pack);
-      }
+      if (m.Backpack == null)
+        m.AddItem(new Backpack {Movable = false});
 
       PackItem(new RedBook("a book", m.Name, 20, true));
       PackItem(new Gold(1000)); // Starting gold can be customized here
@@ -52,16 +45,8 @@ namespace Server.Misc
       item.Location = new Point3D(x, y, 0);
     }
 
-    private static Item MakePotionKeg(PotionEffect type, int hue)
-    {
-      PotionKeg keg = new PotionKeg();
-
-      keg.Held = 100;
-      keg.Type = type;
-      keg.Hue = hue;
-
-      return MakeNewbie(keg);
-    }
+    private static Item MakePotionKeg(PotionEffect type, int hue) =>
+      MakeNewbie(new PotionKeg {Held = 100, Type = type, Hue = hue});
 
     private static void FillBankAOS(Mobile m)
     {
@@ -75,11 +60,8 @@ namespace Server.Misc
       m.StatCap = 250;
 
 
-      Container cont;
-
-
       // Begin box of money
-      cont = new WoodenBox();
+      Container cont = new WoodenBox();
       cont.ItemID = 0xE7D;
       cont.Hue = 0x489;
 
@@ -97,8 +79,7 @@ namespace Server.Misc
 
 
       // Begin bag of potion kegs
-      cont = new Backpack();
-      cont.Name = "Various Potion Kegs";
+      cont = new Backpack {Name = "Various Potion Kegs"};
 
       PlaceItemIn(cont, 45, 149, MakePotionKeg(PotionEffect.CureGreater, 0x2D));
       PlaceItemIn(cont, 69, 149, MakePotionKeg(PotionEffect.HealGreater, 0x499));
@@ -113,8 +94,7 @@ namespace Server.Misc
 
 
       // Begin bag of tools
-      cont = new Bag();
-      cont.Name = "Tool Bag";
+      cont = new Bag {Name = "Tool Bag"};
 
       PlaceItemIn(cont, 30, 35, new TinkerTools(1000));
       PlaceItemIn(cont, 60, 35, new HousePlacementTool());
@@ -145,8 +125,7 @@ namespace Server.Misc
 
 
       // Begin bag of archery ammo
-      cont = new Bag();
-      cont.Name = "Bag Of Archery Ammo";
+      cont = new Bag {Name = "Bag Of Archery Ammo"};
 
       PlaceItemIn(cont, 48, 76, new Arrow(5000));
       PlaceItemIn(cont, 72, 76, new Bolt(5000));
@@ -156,8 +135,7 @@ namespace Server.Misc
 
 
       // Begin bag of treasure maps
-      cont = new Bag();
-      cont.Name = "Bag Of Treasure Maps";
+      cont = new Bag {Name = "Bag Of Treasure Maps"};
 
       PlaceItemIn(cont, 30, 35, new TreasureMap(1, Map.Trammel));
       PlaceItemIn(cont, 45, 35, new TreasureMap(2, Map.Trammel));
@@ -181,9 +159,7 @@ namespace Server.Misc
 
 
       // Begin bag of raw materials
-      cont = new Bag();
-      cont.Hue = 0x835;
-      cont.Name = "Raw Materials Bag";
+      cont = new Bag {Hue = 0x835, Name = "Raw Materials Bag"};
 
       PlaceItemIn(cont, 92, 60, new BarbedLeather(5000));
       PlaceItemIn(cont, 92, 68, new HornedLeather(5000));
@@ -216,9 +192,7 @@ namespace Server.Misc
 
 
       // Begin bag of spell casting stuff
-      cont = new Backpack();
-      cont.Hue = 0x480;
-      cont.Name = "Spell Casting Stuff";
+      cont = new Backpack {Hue = 0x480, Name = "Spell Casting Stuff"};
 
       PlaceItemIn(cont, 45, 105, new Spellbook(ulong.MaxValue));
       PlaceItemIn(cont, 65, 105, new NecromancerSpellbook((ulong)0xFFFF));
@@ -234,8 +208,7 @@ namespace Server.Misc
       toHue.Hue = 0x2D;
       PlaceItemIn(cont, 45, 150, toHue);
 
-      toHue = new BagOfNecroReagents(150);
-      toHue.Hue = 0x488;
+      toHue = new BagOfNecroReagents(150) {Hue = 0x488};
       PlaceItemIn(cont, 65, 150, toHue);
 
       PlaceItemIn(cont, 140, 150, new BagOfAllReagents(500));
@@ -250,9 +223,7 @@ namespace Server.Misc
 
 
       // Begin bag of ethereals
-      cont = new Backpack();
-      cont.Hue = 0x490;
-      cont.Name = "Bag Of Ethy's!";
+      cont = new Backpack {Hue = 0x490, Name = "Bag Of Ethy's!"};
 
       PlaceItemIn(cont, 45, 66, new EtherealHorse());
       PlaceItemIn(cont, 69, 82, new EtherealOstard());
@@ -268,9 +239,7 @@ namespace Server.Misc
 
 
       // Begin first bag of artifacts
-      cont = new Backpack();
-      cont.Hue = 0x48F;
-      cont.Name = "Bag of Artifacts";
+      cont = new Backpack {Hue = 0x48F, Name = "Bag of Artifacts"};
 
       PlaceItemIn(cont, 45, 66, new TitansHammer());
       PlaceItemIn(cont, 69, 82, new InquisitorsResolution());
@@ -282,9 +251,7 @@ namespace Server.Misc
 
 
       // Begin second bag of artifacts
-      cont = new Backpack();
-      cont.Hue = 0x48F;
-      cont.Name = "Bag of Artifacts";
+      cont = new Backpack {Hue = 0x48F, Name = "Bag of Artifacts"};
 
       PlaceItemIn(cont, 45, 66, new GauntletsOfNobility());
       PlaceItemIn(cont, 69, 82, new MidnightBracers());
@@ -324,10 +291,7 @@ namespace Server.Misc
       // End second bag of artifacts
 
       // Begin bag of minor artifacts
-      cont = new Backpack();
-      cont.Hue = 0x48F;
-      cont.Name = "Bag of Minor Artifacts";
-
+      cont = new Backpack {Hue = 0x48F, Name = "Bag of Minor Artifacts"};
 
       PlaceItemIn(cont, 45, 66, new LunaLance());
       PlaceItemIn(cont, 69, 82, new VioletCourage());
@@ -368,9 +332,7 @@ namespace Server.Misc
 
       if (Core.SE)
       {
-        cont = new Bag();
-        cont.Hue = 0x501;
-        cont.Name = "Tokuno Minor Artifacts";
+        cont = new Bag {Hue = 0x501, Name = "Tokuno Minor Artifacts"};
 
         PlaceItemIn(cont, 42, 70, new Exiler());
         PlaceItemIn(cont, 38, 53, new HanzosBow());
@@ -398,8 +360,7 @@ namespace Server.Misc
 
       if (Core.SE) //This bag came only after SE.
       {
-        cont = new Bag();
-        cont.Name = "Bag of Bows";
+        cont = new Bag {Name = "Bag of Bows"};
 
         PlaceItemIn(cont, 31, 84, new Bow());
         PlaceItemIn(cont, 78, 74, new CompositeBow());
@@ -432,11 +393,7 @@ namespace Server.Misc
       bank.DropItem(new BankCheck(1000000));
 
       // Full spellbook
-      Spellbook book = new Spellbook();
-
-      book.Content = ulong.MaxValue;
-
-      bank.DropItem(book);
+      bank.DropItem(new Spellbook {Content = ulong.MaxValue});
 
       Bag bag = new Bag();
 
@@ -641,10 +598,7 @@ namespace Server.Misc
       newChar.Female = args.Female;
       //newChar.Body = newChar.Female ? 0x191 : 0x190;
 
-      if (Core.Expansion >= args.Race.RequiredExpansion)
-        newChar.Race = args.Race; //Sets body
-      else
-        newChar.Race = Race.DefaultRace;
+      newChar.Race = Core.Expansion >= args.Race.RequiredExpansion ? args.Race : Race.DefaultRace;
 
       //newChar.Hue = Utility.ClipSkinHue( args.Hue & 0x3FFF ) | 0x8000;
       newChar.Hue = newChar.Race.ClipSkinHue(args.Hue & 0x3FFF) | 0x8000;
@@ -692,12 +646,7 @@ namespace Server.Misc
       if (TestCenter.Enabled)
         FillBankbox(newChar);
 
-      if (young)
-      {
-        NewPlayerTicket ticket = new NewPlayerTicket();
-        ticket.Owner = newChar;
-        newChar.BankBox.DropItem(ticket);
-      }
+      if (young) newChar.BankBox.DropItem(new NewPlayerTicket {Owner = newChar});
 
       CityInfo city = GetStartLocation(args, young);
 
@@ -710,19 +659,8 @@ namespace Server.Misc
       new WelcomeTimer(newChar).Start();
     }
 
-    public static bool VerifyProfession(int profession)
-    {
-      if (profession < 0)
-        return false;
-      if (profession < 4)
-        return true;
-      if (Core.AOS && profession < 6)
-        return true;
-      if (Core.SE && profession < 8)
-        return true;
-
-      return false;
-    }
+    public static bool VerifyProfession(int profession) =>
+      profession >= 0 && (profession < 4 || Core.AOS && profession < 6 || Core.SE && profession < 8);
 
     private static CityInfo GetStartLocation(CharacterCreatedEventArgs args, bool isYoung)
     {
@@ -754,9 +692,7 @@ namespace Server.Misc
           break;
         }
         case 5: //Paladin
-        {
           return m_NewHavenInfo;
-        }
         case 6: //Samurai
         {
           if ((flags & ClientFlags.Tokuno) != 0)
@@ -795,10 +731,7 @@ namespace Server.Misc
         }
       }
 
-      if (useHaven)
-        return m_NewHavenInfo;
-
-      return args.City;
+      return useHaven ? m_NewHavenInfo : args.City;
     }
 
     private static void FixStats(ref int str, ref int dex, ref int intel, int max)
@@ -1164,7 +1097,7 @@ namespace Server.Misc
       if (m_Mobile?.EquipItem(item) == true)
         return;
 
-      Container pack = m_Mobile.Backpack;
+      Container pack = m_Mobile?.Backpack;
 
       if (!mustEquip && pack != null)
         pack.DropItem(item);
@@ -1177,7 +1110,7 @@ namespace Server.Misc
       if (!Core.AOS)
         item.LootType = LootType.Newbied;
 
-      Container pack = m_Mobile.Backpack;
+      Container pack = m_Mobile?.Backpack;
 
       if (pack != null)
         pack.DropItem(item);
@@ -1733,18 +1666,18 @@ namespace Server.Misc
     private class BadStartMessage : Timer
     {
       private int m_Message;
-      private Mobile m_Mobile;
+      private Mobile m_From;
 
       public BadStartMessage(Mobile m, int message) : base(TimeSpan.FromSeconds(3.5))
       {
-        m_Mobile = m;
+        m_From = m;
         m_Message = message;
         Start();
       }
 
       protected override void OnTick()
       {
-        m_Mobile.SendLocalizedMessage(m_Message);
+        m_From.SendLocalizedMessage(m_Message);
       }
     }
   }

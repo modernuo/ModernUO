@@ -20,10 +20,10 @@ namespace Server.Items
       from.LocalOverheadMessage(MessageType.Regular, 0x3B2,
         1008155); // You peer into the heavens, seeking the moons...
 
-      from.Send(new MessageLocalizedAffix(from.Serial, from.Body, MessageType.Regular, 0x3B2, 3,
-        1008146 + (int)Clock.GetMoonPhase(Map.Trammel, from.X, from.Y), "", AffixType.Prepend, "Trammel : ", ""));
-      from.Send(new MessageLocalizedAffix(from.Serial, from.Body, MessageType.Regular, 0x3B2, 3,
-        1008146 + (int)Clock.GetMoonPhase(Map.Felucca, from.X, from.Y), "", AffixType.Prepend, "Felucca : ", ""));
+      Packets.SendMessageLocalizedAffix(from.NetState, from.Serial, from.Body, MessageType.Regular, 0x3B2, 3,
+        1008146 + (int)Clock.GetMoonPhase(Map.Trammel, from.X, from.Y), "", AffixType.Prepend, "Trammel : ");
+      Packets.SendMessageLocalizedAffix(from.NetState, from.Serial, from.Body, MessageType.Regular, 0x3B2, 3,
+        1008146 + (int)Clock.GetMoonPhase(Map.Felucca, from.X, from.Y), "", AffixType.Prepend, "Felucca : ");
 
       if (from is PlayerMobile player)
       {
@@ -33,7 +33,7 @@ namespace Server.Items
           return;
 
         FindIngredientObjective obj = qs.FindObjective<FindIngredientObjective>();
-        
+
         if (obj?.Completed == false && obj.Ingredient == Ingredient.StarChart)
         {
           Clock.GetTime(from.Map, from.X, from.Y, out int hours, out int _);

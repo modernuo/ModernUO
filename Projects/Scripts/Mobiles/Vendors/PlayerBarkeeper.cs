@@ -5,7 +5,6 @@ using Server.Gumps;
 using Server.Items;
 using Server.Multis;
 using Server.Network;
-using Server.Prompts;
 
 namespace Server.Mobiles
 {
@@ -969,7 +968,7 @@ namespace Server.Mobiles
       AddItem(580, 44, 4033);
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (!m_Barkeeper.IsOwner(m_From))
         return;

@@ -316,9 +316,10 @@ namespace Server
     {
       bin.Read(m_StringBuffer, 0, 20);
 
-      int count;
-
-      for (count = 0; count < 20 && m_StringBuffer[count] != 0; ++count) ;
+      int count = 0;
+      while (count < 20 && m_StringBuffer[count++] != 0)
+      {
+      }
 
       return Encoding.ASCII.GetString(m_StringBuffer, 0, count);
     }

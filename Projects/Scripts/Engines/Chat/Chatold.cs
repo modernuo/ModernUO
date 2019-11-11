@@ -1,6 +1,6 @@
 namespace Server.Chat
 {
-  public class ChatSystem
+  public static class ChatSystem
   {
     public static void Initialize()
     {

@@ -18,7 +18,8 @@
  *
  ***************************************************************************/
 
-using Server.Network;
+using System.Buffers;
+using Server.Collections;
 
 namespace Server.Gumps
 {
@@ -42,37 +43,7 @@ namespace Server.Gumps
       }
     }
 
-    protected void Delta(ref uint var, uint val)
-    {
-      if (var != val)
-        var = val;
-    }
-
-    protected void Delta(ref int var, int val)
-    {
-      if (var != val)
-        var = val;
-    }
-
-    protected void Delta(ref bool var, bool val)
-    {
-      if (var != val)
-        var = val;
-    }
-
-    protected void Delta(ref string var, string val)
-    {
-      if (var != val)
-        var = val;
-    }
-
-    protected void Delta(ref object[] var, object[] val)
-    {
-      if (var != val)
-        var = val;
-    }
-
-    public abstract string Compile(NetState ns);
-    public abstract void AppendTo(NetState ns, IGumpWriter disp);
+    public abstract string Compile(ArraySet<string> strings);
+    public abstract void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches);
   }
 }

@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Misc
 {
-  public class AttackMessage
+  public static class AttackMessage
   {
     private const string AggressorFormat = "You are attacking {0}!";
     private const string AggressedFormat = "{0} is attacking you!";

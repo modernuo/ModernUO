@@ -42,9 +42,7 @@ namespace Server.Engines.MLQuests.Mobiles
 
     public override bool GetGender() => false;
 
-    public override void CheckMorph()
-    {
-    }
+    public override bool CheckMorph() => true;
 
     public override void InitOutfit()
     {
@@ -53,22 +51,9 @@ namespace Server.Engines.MLQuests.Mobiles
       HairHue = FacialHairHue = 0x8A7;
 
       AddItem(new Sandals());
-
-      Item item;
-
-      item = new Cloak();
-      item.ItemID = 0x26AD;
-      item.Hue = 0x455;
-      AddItem(item);
-
-      item = new Robe();
-      item.ItemID = 0x26AE;
-      item.Hue = 0x4AB;
-      AddItem(item);
-
-      item = new Backpack();
-      item.Movable = false;
-      AddItem(item);
+      AddItem(new Cloak{ ItemID = 0x26AD, Hue = 0x455});
+      AddItem(new Robe {ItemID = 0x26AE, Hue = 0x4AB});
+      AddItem(new Backpack {Movable = false});
     }
 
     public override void OnDoubleClick(Mobile from)
@@ -92,32 +77,23 @@ namespace Server.Engines.MLQuests.Mobiles
 
       if (m_NextShout <= DateTime.UtcNow)
       {
-        Packet shoutPacket = null;
-
-        foreach (NetState state in GetClientsInRange(12))
+        IPooledEnumerable eable = GetClientsInRange(12);
+        foreach (NetState state in eable)
         {
           Mobile m = state.Mobile;
 
           if (m.CanSee(this) && m.InLOS(this) && m.CanBeginAction(this))
-          {
-            if (shoutPacket == null)
-              shoutPacket = Packet.Acquire(new MessageLocalized(Serial, Body, MessageType.Regular, 946, 3,
-                1078099, Name, "")); // Double Click On Me For Help!
-
-            state.Send(shoutPacket);
-          }
+            Packets.SendMessageLocalized(state, Serial, Body, MessageType.Regular, 946, 3,
+              1078099, Name); // Double Click On Me For Help!
         }
 
-        Packet.Release(shoutPacket);
+        eable.Free();
 
         m_NextShout = DateTime.UtcNow + m_ShoutDelay;
       }
     }
 
-    private void EndLock(Mobile m)
-    {
-      m.EndAction(this);
-    }
+    private void EndLock(Mobile m) => m.EndAction(this);
 
     public override void Serialize(GenericWriter writer)
     {

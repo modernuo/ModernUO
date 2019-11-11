@@ -44,9 +44,7 @@ namespace Server.Engines.Quests
       switch (encoding)
       {
         default:
-        {
           return null;
-        }
         case 0x01: // indexed
         {
           int index = reader.ReadEncodedInt();
@@ -75,9 +73,7 @@ namespace Server.Engines.Quests
       switch (encoding)
       {
         default:
-        {
           return null;
-        }
         case 0x01:
         {
           Type type = ReadType(QuestSystem.QuestTypes, reader);
@@ -94,9 +90,7 @@ namespace Server.Engines.Quests
     public static void Serialize(QuestSystem qs, GenericWriter writer)
     {
       if (qs == null)
-      {
         writer.WriteEncodedInt(0x00);
-      }
       else
       {
         writer.WriteEncodedInt(0x01);
@@ -114,9 +108,7 @@ namespace Server.Engines.Quests
       switch (encoding)
       {
         default:
-        {
           return null;
-        }
         case 0x01:
         {
           Type type = ReadType(referenceTable, reader);
@@ -133,9 +125,7 @@ namespace Server.Engines.Quests
     public static void Serialize(Type[] referenceTable, QuestObjective obj, GenericWriter writer)
     {
       if (obj == null)
-      {
         writer.WriteEncodedInt(0x00);
-      }
       else
       {
         writer.WriteEncodedInt(0x01);
@@ -153,9 +143,7 @@ namespace Server.Engines.Quests
       switch (encoding)
       {
         default:
-        {
           return null;
-        }
         case 0x01:
         {
           Type type = ReadType(referenceTable, reader);
@@ -172,9 +160,7 @@ namespace Server.Engines.Quests
     public static void Serialize(Type[] referenceTable, QuestConversation conv, GenericWriter writer)
     {
       if (conv == null)
-      {
         writer.WriteEncodedInt(0x00);
-      }
       else
       {
         writer.WriteEncodedInt(0x01);

@@ -1,8 +1,6 @@
 using System;
 using Server.Items;
 using Server.PathAlgorithms;
-using Server.PathAlgorithms.FastAStar;
-using Server.PathAlgorithms.SlowAStar;
 using Server.Spells;
 using Server.Targeting;
 
@@ -84,7 +82,7 @@ namespace Server
 
         for (int i = 0; i < path.Directions.Length; ++i)
         {
-          Movement.Movement.Offset(path.Directions[i], ref x, ref y);
+          Movement.Offset(path.Directions[i], ref x, ref y);
 
           new RecallRune().MoveToWorld(new Point3D(x, y, z + zOffset), from.Map);
         }

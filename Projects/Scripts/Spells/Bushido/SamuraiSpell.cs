@@ -106,7 +106,7 @@ namespace Server.Spells.Bushido
       int spellID = SpellRegistry.GetRegistryNumber(this);
 
       if (spellID > 0)
-        caster.Send(new ToggleSpecialAbility(spellID + 1, true));
+        Packets.SendToggleSpecialAbility(caster.NetState, (short)(spellID + 1), true);
     }
 
     public static void OnEffectEnd(Mobile caster, Type type)
@@ -114,7 +114,7 @@ namespace Server.Spells.Bushido
       int spellID = SpellRegistry.GetRegistryNumber(type);
 
       if (spellID > 0)
-        caster.Send(new ToggleSpecialAbility(spellID + 1, false));
+        Packets.SendToggleSpecialAbility(caster.NetState, (short)(spellID + 1), false);
     }
   }
 }

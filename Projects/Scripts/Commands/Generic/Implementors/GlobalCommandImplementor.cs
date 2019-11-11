@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Commands.Generic
 {
@@ -28,14 +29,10 @@ namespace Server.Commands.Generic
         List<object> list = new List<object>();
 
         if (items)
-          foreach (Item item in World.Items.Values)
-            if (ext.IsValid(item))
-              list.Add(item);
+          list.AddRange(World.Items.Values.Where(item => ext.IsValid(item)));
 
         if (mobiles)
-          foreach (Mobile mob in World.Mobiles.Values)
-            if (ext.IsValid(mob))
-              list.Add(mob);
+          list.AddRange(World.Mobiles.Values.Where(mob => ext.IsValid(mob)));
 
         ext.Filter(list);
 

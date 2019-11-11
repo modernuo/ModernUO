@@ -20,17 +20,17 @@
 
 namespace Server
 {
-  public delegate int NotorietyHandler(Mobile source, Mobile target);
+  public delegate byte NotorietyHandler(Mobile source, Mobile target);
 
   public static class Notoriety
   {
-    public const int Innocent = 1;
-    public const int Ally = 2;
-    public const int CanBeAttacked = 3;
-    public const int Criminal = 4;
-    public const int Enemy = 5;
-    public const int Murderer = 6;
-    public const int Invulnerable = 7;
+    public const byte Innocent = 1;
+    public const byte Ally = 2;
+    public const byte CanBeAttacked = 3;
+    public const byte Criminal = 4;
+    public const byte Enemy = 5;
+    public const byte Murderer = 6;
+    public const byte Invulnerable = 7;
 
     public static NotorietyHandler Handler{ get; set; }
 
@@ -46,13 +46,7 @@ namespace Server
       0x035
     };
 
-    public static int GetHue(int noto)
-    {
-      if (noto < 0 || noto >= Hues.Length)
-        return 0;
-
-      return Hues[noto];
-    }
+    public static int GetHue(int noto) => noto < 0 || noto >= Hues.Length ? 0 : Hues[noto];
 
     public static int Compute(Mobile source, Mobile target) => Handler?.Invoke(source, target) ?? CanBeAttacked;
   }

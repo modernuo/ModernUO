@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -118,8 +119,8 @@ namespace Server
 
     private static Stack<ConsoleColor> m_ConsoleColors = new Stack<ConsoleColor>();
 
-    public static Encoding UTF8 => m_UTF8 ?? (m_UTF8 = new UTF8Encoding(false, false));
-    public static Encoding UTF8WithEncoding => m_UTF8WithEncoding ?? (m_UTF8WithEncoding = new UTF8Encoding(true, false));
+    public static Encoding UTF8 => m_UTF8 ??= new UTF8Encoding(false, false);
+    public static Encoding UTF8WithEncoding => m_UTF8WithEncoding ??= new UTF8Encoding(true, false);
 
     public static void Separate(StringBuilder sb, string value, string separator)
     {
@@ -138,8 +139,7 @@ namespace Server
 
     public static IPAddress Intern(IPAddress ipAddress)
     {
-      if (_ipAddressTable == null)
-        _ipAddressTable = new Dictionary<IPAddress, IPAddress>();
+      _ipAddressTable ??= new Dictionary<IPAddress, IPAddress>();
 
       if (!_ipAddressTable.TryGetValue(ipAddress, out IPAddress interned))
       {
@@ -518,78 +518,14 @@ namespace Server
       int adx = Math.Abs(dx);
       int ady = Math.Abs(dy);
 
-      if (adx >= ady * 3)
-      {
-        if (dx > 0)
-          return Direction.East;
-        return Direction.West;
-      }
+      if (adx >= ady * 3) return dx > 0 ? Direction.East : Direction.West;
 
-      if (ady >= adx * 3)
-      {
-        if (dy > 0)
-          return Direction.South;
-        return Direction.North;
-      }
+      if (ady >= adx * 3) return dy > 0 ? Direction.South : Direction.North;
 
-      if (dx > 0)
-      {
-        if (dy > 0)
-          return Direction.Down;
-        return Direction.Right;
-      }
+      if (dx > 0) return dy > 0 ? Direction.Down : Direction.Right;
 
       return dy > 0 ? Direction.Left : Direction.Up;
     }
-
-    /* Should probably be rewritten to use an ITile interface
-
-    public static bool CanMobileFit( int z, StaticTile[] tiles )
-    {
-      int checkHeight = 15;
-      int checkZ = z;
-
-      for ( int i = 0; i < tiles.Length; ++i )
-      {
-        StaticTile tile = tiles[i];
-
-        if ( ((checkZ + checkHeight) > tile.Z && checkZ < (tile.Z + tile.Height))*/
-    /* || (tile.Z < (checkZ + checkHeight) && (tile.Z + tile.Height) > checkZ)*/ /* )
-				{
-					return false;
-				}
-				else if ( checkHeight == 0 && tile.Height == 0 && checkZ == tile.Z )
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		public static bool IsInContact( StaticTile check, StaticTile[] tiles )
-		{
-			int checkHeight = check.Height;
-			int checkZ = check.Z;
-
-			for ( int i = 0; i < tiles.Length; ++i )
-			{
-				StaticTile tile = tiles[i];
-
-				if ( ((checkZ + checkHeight) > tile.Z && checkZ < (tile.Z + tile.Height))*/
-    /* || (tile.Z < (checkZ + checkHeight) && (tile.Z + tile.Height) > checkZ)*/ /* )
-				{
-					return true;
-				}
-				else if ( checkHeight == 0 && tile.Height == 0 && checkZ == tile.Z )
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-		*/
 
     public static object GetArrayCap(Array array, int index, object emptyValue = null)
     {
@@ -793,14 +729,7 @@ namespace Server
     public static List<TOutput> SafeConvertList<TInput, TOutput>(List<TInput> list) where TOutput : class
     {
       List<TOutput> output = new List<TOutput>(list.Capacity);
-
-      for (int i = 0; i < list.Count; i++)
-      {
-        TOutput t = list[i] as TOutput;
-
-        if (t != null)
-          output.Add(t);
-      }
+      output.AddRange(list.OfType<TOutput>());
 
       return output;
     }
@@ -1028,6 +957,8 @@ namespace Server
     {
       RandomImpl.NextBytes(buffer);
     }
+
+    public static double RandomDouble() => RandomImpl.NextDouble();
 
     public static double RandomDouble() => RandomImpl.NextDouble();
 

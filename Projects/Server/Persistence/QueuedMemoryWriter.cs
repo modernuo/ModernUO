@@ -21,7 +21,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Server
+namespace Server.Persistence
 {
   public sealed class QueuedMemoryWriter : BinaryFileWriter
   {

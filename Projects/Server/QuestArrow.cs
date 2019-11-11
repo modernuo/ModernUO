@@ -58,9 +58,9 @@ namespace Server
         return;
 
       if (ns.HighSeas)
-        ns.Send(new SetArrowHS(x, y, Target.Serial));
+        Packets.SendSetArrowHS(ns, Target.Serial, (short)x, (short)y);
       else
-        ns.Send(new SetArrow(x, y));
+        Packets.SendSetArrow(ns, (short)x, (short)y);
     }
 
     public void Stop()
@@ -80,9 +80,9 @@ namespace Server
       if (ns != null)
       {
         if (ns.HighSeas)
-          ns.Send(new CancelArrowHS(x, y, Target.Serial));
+          Packets.SendCancelArrowHS(ns, Target.Serial, (short)x, (short)y);
         else
-          ns.Send(new CancelArrow());
+          Packets.SendCancelArrow(ns);
       }
 
       Running = false;

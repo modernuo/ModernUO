@@ -32,8 +32,7 @@ namespace Server.Commands.Generic
         prop.CheckAccess(from);
       }
 
-      if (assembly == null)
-        assembly = new AssemblyEmitter("__dynamic");
+      assembly ??= new AssemblyEmitter("__dynamic");
 
       m_Comparer = DistinctCompiler.Compile<object>(assembly, baseType, m_Properties.ToArray());
     }

@@ -724,9 +724,7 @@ namespace Server.Items
       int number;
 
       if (Name == null)
-      {
         number = LabelNumber;
-      }
       else
       {
         LabelTo(from, Name);
@@ -736,9 +734,7 @@ namespace Server.Items
       if (attrs.Count == 0 && Crafter == null && Name != null)
         return;
 
-      EquipmentInfo eqInfo = new EquipmentInfo(number, m_Crafter, false, attrs.ToArray());
-
-      from.Send(new DisplayEquipmentInfo(this, eqInfo));
+      EquipmentPackets.SendDisplayEquipmentInfo(from.NetState, this, number, m_Crafter, false, attrs);
     }
 
     public virtual void AddEquipInfoAttributes(Mobile from, List<EquipInfoAttribute> attrs)
@@ -904,25 +900,13 @@ namespace Server.Items
           else
             m_Resource = DefaultResource;
 
-          if (GetSaveFlag(flags, SaveFlag.Attributes))
-            Attributes = new AosAttributes(this, reader);
-          else
-            Attributes = new AosAttributes(this);
+          Attributes = GetSaveFlag(flags, SaveFlag.Attributes) ? new AosAttributes(this, reader) : new AosAttributes(this);
 
-          if (GetSaveFlag(flags, SaveFlag.ClothingAttributes))
-            ClothingAttributes = new AosArmorAttributes(this, reader);
-          else
-            ClothingAttributes = new AosArmorAttributes(this);
+          ClothingAttributes = GetSaveFlag(flags, SaveFlag.ClothingAttributes) ? new AosArmorAttributes(this, reader) : new AosArmorAttributes(this);
 
-          if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
-            SkillBonuses = new AosSkillBonuses(this, reader);
-          else
-            SkillBonuses = new AosSkillBonuses(this);
+          SkillBonuses = GetSaveFlag(flags, SaveFlag.SkillBonuses) ? new AosSkillBonuses(this, reader) : new AosSkillBonuses(this);
 
-          if (GetSaveFlag(flags, SaveFlag.Resistances))
-            Resistances = new AosElementAttributes(this, reader);
-          else
-            Resistances = new AosElementAttributes(this);
+          Resistances = GetSaveFlag(flags, SaveFlag.Resistances) ? new AosElementAttributes(this, reader) : new AosElementAttributes(this);
 
           if (GetSaveFlag(flags, SaveFlag.MaxHitPoints))
             m_MaxHitPoints = reader.ReadEncodedInt();
@@ -943,8 +927,7 @@ namespace Server.Items
           else
             m_StrReq = -1;
 
-          if (GetSaveFlag(flags, SaveFlag.PlayerConstructed))
-            PlayerConstructed = true;
+          PlayerConstructed |= GetSaveFlag(flags, SaveFlag.PlayerConstructed);
 
           break;
         }
@@ -982,8 +965,7 @@ namespace Server.Items
         }
       }
 
-      if (version < 2)
-        PlayerConstructed = true; // we don't know, so, assume it's crafted
+      PlayerConstructed |= version < 2; // we don't know, so, assume it's crafted
 
       if (version < 3)
       {

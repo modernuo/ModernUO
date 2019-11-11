@@ -512,7 +512,7 @@ namespace Server.Engines.ConPVP
         if (offset < offsets.Length)
           p = offsets[offset++];
         else
-          p = offsets[offsets.Length - 1];
+          p = offsets[^1];
 
         p.X = p.X * matrix[0, 0] + p.Y * matrix[0, 1];
         p.Y = p.X * matrix[1, 0] + p.Y * matrix[1, 1];
@@ -574,11 +574,14 @@ namespace Server.Engines.ConPVP
       if (hasBounds)
       {
         List<Mobile> pets = new List<Mobile>();
+        IPooledEnumerable eable = facet.GetMobilesInBounds(m_Bounds);
 
-        foreach (Mobile mob in facet.GetMobilesInBounds(m_Bounds))
+        foreach (Mobile mob in eable)
           if (mob is BaseCreature pet && pet.Controlled && pet.ControlMaster != null &&
               Players.Contains(pet.ControlMaster))
             pets.Add(pet);
+
+        eable.Free();
 
         foreach (Mobile pet in pets)
         {
@@ -749,7 +752,7 @@ namespace Server.Engines.ConPVP
 
     #region Offsets & Rotation
 
-    private static Point2D[] m_EdgeOffsets =
+    private static readonly Point2D[] m_EdgeOffsets =
     {
       /*
        *        /\
@@ -772,7 +775,7 @@ namespace Server.Engines.ConPVP
     };
 
     // nw corner
-    private static Point2D[] m_CornerOffsets =
+    private static readonly Point2D[] m_CornerOffsets =
     {
       /*
        *         /\
@@ -793,7 +796,7 @@ namespace Server.Engines.ConPVP
       new Point2D(3, 0)
     };
 
-    private static int[][,] m_Rotate =
+    private static readonly int[][,] m_Rotate =
     {
       new[,] { { +1, 0 }, { 0, +1 } }, // west
       new[,] { { -1, 0 }, { 0, -1 } }, // east

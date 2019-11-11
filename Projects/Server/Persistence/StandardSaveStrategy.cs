@@ -20,9 +20,8 @@
 
 using System;
 using System.Collections.Generic;
-using Server.Guilds;
 
-namespace Server
+namespace Server.Persistence
 {
   public class StandardSaveStrategy : SaveStrategy
   {
@@ -91,7 +90,7 @@ namespace Server
 
         idx.Write((int)(bin.Position - start));
 
-        m.FreeCache();
+        m.ClearProperties();
       }
 
       tdb.Write(World.m_MobileTypes.Count);
@@ -144,7 +143,7 @@ namespace Server
 
         idx.Write((int)(bin.Position - start));
 
-        item.FreeCache();
+        item.ClearProperties();
       }
 
       tdb.Write(World.m_ItemTypes.Count);

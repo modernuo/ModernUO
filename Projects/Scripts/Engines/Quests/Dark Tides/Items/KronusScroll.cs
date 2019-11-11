@@ -1,13 +1,12 @@
 using System;
 using Server.Items;
 using Server.Mobiles;
-using Server.Network;
 
 namespace Server.Engines.Quests.Necro
 {
   public class KronusScroll : QuestItem
   {
-    private static readonly Rectangle2D m_WellOfTearsArea = new Rectangle2D(2080, 1346, 10, 10);
+    private static Rectangle2D m_WellOfTearsArea = new Rectangle2D(2080, 1346, 10, 10);
     private static readonly Map m_WellOfTearsMap = Map.Malas;
 
     [Constructible]
@@ -134,9 +133,7 @@ namespace Server.Engines.Quests.Necro
 
             int hue = Utility.RandomList(0x481, 0x482, 0x489, 0x497, 0x66D);
 
-            Effects.SendPacket(from, map,
-              new HuedEffect(EffectType.Moving, Serial.Zero, Serial.Zero, 0x36D4, from, to, 0, 0, false, true,
-                hue, 0));
+            Effects.SendMovingEffect(from, to, map, 0x36D4, 0, 0, false, true,  hue);
           }
         }
 

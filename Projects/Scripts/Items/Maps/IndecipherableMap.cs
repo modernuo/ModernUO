@@ -3,13 +3,7 @@ namespace Server.Items
   public class IndecipherableMap : MapItem
   {
     [Constructible]
-    public IndecipherableMap()
-    {
-      if (Utility.RandomDouble() < 0.2)
-        Hue = 0x965;
-      else
-        Hue = 0x961;
-    }
+    public IndecipherableMap() => Hue = Utility.RandomDouble() < 0.2 ? 0x965 : 0x961;
 
     public IndecipherableMap(Serial serial) : base(serial)
     {

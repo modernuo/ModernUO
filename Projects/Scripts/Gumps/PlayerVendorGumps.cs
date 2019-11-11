@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Server.HuePickers;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
@@ -37,9 +36,9 @@ namespace Server.Gumps
       AddHtmlLocalized(152, 130, 100, 24, 1011036); // OKAY
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       if (!m_Vendor.CanInteractWith(from, false))
         return;
@@ -135,9 +134,9 @@ namespace Server.Gumps
       AddLabel(300, 48, 0, ((int)(days / 12.0)).ToString());
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       if (!m_Vendor.CanInteractWith(from, true))
         return;
@@ -476,12 +475,12 @@ namespace Server.Gumps
       }
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (m_Vendor.Deleted)
         return;
 
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       if (m_Vendor is PlayerVendor vendor && !vendor.CanInteractWith(from, true))
         return;
@@ -581,11 +580,11 @@ namespace Server.Gumps
 
               if (category.Layer == Layer.Hair)
               {
-                new PVHairHuePicker(false, m_Vendor, from).SendTo(state);
+                new PVHairHuePicker(false, m_Vendor, from).SendTo(sender);
               }
               else if (category.Layer == Layer.FacialHair)
               {
-                new PVHairHuePicker(true, m_Vendor, from).SendTo(state);
+                new PVHairHuePicker(true, m_Vendor, from).SendTo(sender);
               }
               else
               {
@@ -604,7 +603,7 @@ namespace Server.Gumps
                 }
 
                 if (item != null)
-                  new PVHuePicker(item, m_Vendor, from).SendTo(state);
+                  new PVHuePicker(item, m_Vendor, from).SendTo(sender);
               }
             }
           }

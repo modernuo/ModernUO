@@ -191,9 +191,7 @@ namespace Server
             return otherAddress.Equals(m_Address);
         }
         else if (obj is IPFirewallEntry entry)
-        {
           return m_Address.Equals(entry.m_Address);
-        }
 
         return false;
       }
@@ -246,7 +244,7 @@ namespace Server
 
       public WildcardIPFirewallEntry(string entry) => m_Entry = entry;
 
-      public bool IsBlocked(IPAddress address)
+      bool IFirewallEntry.IsBlocked(IPAddress address)
       {
         if (!m_Valid)
           return false; //Why process if it's invalid?  it'll return false anyway after processing it.

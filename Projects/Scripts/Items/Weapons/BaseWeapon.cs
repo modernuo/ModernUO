@@ -291,24 +291,16 @@ namespace Server.Items
       if (m_Quality == WeaponQuality.Exceptional)
         bonus += 20;
 
-      switch (m_DurabilityLevel)
+
+      bonus += m_DurabilityLevel switch
       {
-        case WeaponDurabilityLevel.Durable:
-          bonus += 20;
-          break;
-        case WeaponDurabilityLevel.Substantial:
-          bonus += 50;
-          break;
-        case WeaponDurabilityLevel.Massive:
-          bonus += 70;
-          break;
-        case WeaponDurabilityLevel.Fortified:
-          bonus += 100;
-          break;
-        case WeaponDurabilityLevel.Indestructible:
-          bonus += 120;
-          break;
-      }
+        WeaponDurabilityLevel.Durable => 20,
+        WeaponDurabilityLevel.Substantial => 50,
+        WeaponDurabilityLevel.Massive => 70,
+        WeaponDurabilityLevel.Fortified => 100,
+        WeaponDurabilityLevel.Indestructible => 120,
+        _ => 0
+      };
 
       if (Core.AOS)
       {
@@ -516,10 +508,9 @@ namespace Server.Items
         double swrd = m.Skills.Swords.Value;
         double fenc = m.Skills.Fencing.Value;
         double mcng = m.Skills.Macing.Value;
-        double val;
 
         sk = SkillName.Swords;
-        val = swrd;
+        double val = swrd;
 
         if (fenc > val)
         {
@@ -530,12 +521,7 @@ namespace Server.Items
         if (mcng > val) sk = SkillName.Macing;
       }
       else if (WeaponAttributes.MageWeapon != 0)
-      {
-        if (m.Skills.Magery.Value > m.Skills[Skill].Value)
-          sk = SkillName.Magery;
-        else
-          sk = Skill;
-      }
+        sk = m.Skills.Magery.Value > m.Skills[Skill].Value ? SkillName.Magery : Skill;
       else
       {
         sk = Skill;
@@ -792,9 +778,7 @@ namespace Server.Items
       if (canSwing && attacker.HarmfulCheck(defender))
       {
         attacker.DisruptiveAction();
-
-        if (attacker.NetState != null)
-          attacker.Send(new Swing(0, attacker, defender));
+        Packets.SendSwing(attacker.NetState, attacker.Serial, defender.Serial);
 
         if (attacker is BaseCreature bc)
         {
@@ -1449,7 +1433,7 @@ namespace Server.Items
 
       damage = AOS.Scale(damage, 100 + damageBonus);
 
-      return damage / 100;
+      return damage / 100.0;
     }
 
     public virtual CheckSlayerResult CheckSlayers(Mobile attacker, Mobile defender)
@@ -1641,65 +1625,32 @@ namespace Server.Items
       if (!Core.AOS)
         return 0;
 
-      int bonus = 0;
-
-      switch (m_AccuracyLevel)
+      return m_AccuracyLevel switch
       {
-        case WeaponAccuracyLevel.Accurate:
-          bonus += 02;
-          break;
-        case WeaponAccuracyLevel.Surpassingly:
-          bonus += 04;
-          break;
-        case WeaponAccuracyLevel.Eminently:
-          bonus += 06;
-          break;
-        case WeaponAccuracyLevel.Exceedingly:
-          bonus += 08;
-          break;
-        case WeaponAccuracyLevel.Supremely:
-          bonus += 10;
-          break;
-      }
-
-      return bonus;
+        WeaponAccuracyLevel.Accurate => 2,
+        WeaponAccuracyLevel.Surpassingly => 4,
+        WeaponAccuracyLevel.Eminently => 6,
+        WeaponAccuracyLevel.Exceedingly => 8,
+        WeaponAccuracyLevel.Supremely => 10,
+        _ => 0
+      };
     }
 
-    public virtual int GetDamageBonus()
-    {
-      int bonus = VirtualDamageBonus;
-
-      switch (m_Quality)
+    public virtual int GetDamageBonus() =>
+      VirtualDamageBonus + m_Quality switch
       {
-        case WeaponQuality.Low:
-          bonus -= 20;
-          break;
-        case WeaponQuality.Exceptional:
-          bonus += 20;
-          break;
-      }
-
-      switch (m_DamageLevel)
+        WeaponQuality.Low => -20,
+        WeaponQuality.Exceptional => 20,
+        _ => 0,
+      } + m_DamageLevel switch
       {
-        case WeaponDamageLevel.Ruin:
-          bonus += 15;
-          break;
-        case WeaponDamageLevel.Might:
-          bonus += 20;
-          break;
-        case WeaponDamageLevel.Force:
-          bonus += 25;
-          break;
-        case WeaponDamageLevel.Power:
-          bonus += 30;
-          break;
-        case WeaponDamageLevel.Vanq:
-          bonus += 35;
-          break;
-      }
-
-      return bonus;
-    }
+        WeaponDamageLevel.Ruin => 15,
+        WeaponDamageLevel.Might => 20,
+        WeaponDamageLevel.Force => 25,
+        WeaponDamageLevel.Power => 30,
+        WeaponDamageLevel.Vanq => 35,
+        _ => 0,
+      };
 
     public virtual double ScaleDamageAOS(Mobile attacker, double damage, bool checkSkills)
     {
@@ -2353,10 +2304,7 @@ namespace Server.Items
       }
       else if (m_Slayer != SlayerName.None || m_Slayer2 != SlayerName.None ||
                m_DurabilityLevel != WeaponDurabilityLevel.Regular || m_DamageLevel != WeaponDamageLevel.Regular ||
-               m_AccuracyLevel != WeaponAccuracyLevel.Regular)
-      {
-        attrs.Add(new EquipInfoAttribute(1038000)); // Unidentified
-      }
+               m_AccuracyLevel != WeaponAccuracyLevel.Regular) attrs.Add(new EquipInfoAttribute(1038000)); // Unidentified
 
       if (m_Poison != null && m_PoisonCharges > 0)
         attrs.Add(new EquipInfoAttribute(1017383, m_PoisonCharges));
@@ -2364,21 +2312,15 @@ namespace Server.Items
       int number;
 
       if (Name == null)
-      {
         number = LabelNumber;
-      }
       else
       {
         LabelTo(from, Name);
         number = 1041000;
       }
 
-      if (attrs.Count == 0 && Crafter == null && Name != null)
-        return;
-
-      EquipmentInfo eqInfo = new EquipmentInfo(number, m_Crafter, false, attrs.ToArray());
-
-      from.Send(new DisplayEquipmentInfo(this, eqInfo));
+      if (attrs.Count > 0 || Crafter != null || Name == null)
+        EquipmentPackets.SendDisplayEquipmentInfo(from.NetState, this, number, m_Crafter, false, attrs);
     }
 
     private class ResetEquipTimer : Timer
@@ -2918,7 +2860,7 @@ namespace Server.Items
 
       double damage = GetAosDamage(attacker, 23, 1, 4);
 
-      defender.BoltEffect(0);
+      defender.BoltEffect();
 
       SpellHelper.Damage(TimeSpan.Zero, defender, attacker, damage, 0, 0, 0, 0, 100);
     }
@@ -3355,8 +3297,7 @@ namespace Server.Items
             parentMobile.AddSkillMod(m_MageMod);
           }
 
-          if (GetSaveFlag(flags, SaveFlag.PlayerConstructed))
-            PlayerConstructed = true;
+          PlayerConstructed |= GetSaveFlag(flags, SaveFlag.PlayerConstructed);
 
           if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
             SkillBonuses = new AosSkillBonuses(this, reader);
@@ -3508,8 +3449,7 @@ namespace Server.Items
 
       if (m_Hits <= 0 && m_MaxHits <= 0) m_Hits = m_MaxHits = Utility.RandomMinMax(InitMinHits, InitMaxHits);
 
-      if (version < 6)
-        PlayerConstructed = true; // we don't know, so, assume it's crafted
+      PlayerConstructed |= version < 6; // we don't know, so, assume it's crafted
     }
 
     #endregion

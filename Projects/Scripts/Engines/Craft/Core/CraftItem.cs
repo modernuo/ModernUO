@@ -484,8 +484,7 @@ namespace Server.Engines.Craft
           if (m_TypesTable[j][0] == baseType)
             types[i] = m_TypesTable[j];
 
-        if (types[i] == null)
-          types[i] = new[] { baseType };
+        types[i] ??= new[] { baseType };
 
         amounts[i] = craftRes.Amount;
 
@@ -910,8 +909,7 @@ namespace Server.Engines.Craft
               hammer.Delete();
           }
 
-        if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
-          toolBroken = true;
+        toolBroken |= tool.UsesRemaining < 1 && tool.BreakOnDepletion;
 
         if (toolBroken)
           tool.Delete();
@@ -1033,8 +1031,7 @@ namespace Server.Engines.Craft
 
         tool.UsesRemaining--;
 
-        if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
-          toolBroken = true;
+        toolBroken |= tool.UsesRemaining < 1 && tool.BreakOnDepletion;
 
         if (toolBroken)
           tool.Delete();

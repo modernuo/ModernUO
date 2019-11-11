@@ -100,7 +100,7 @@ namespace Server.Items
     public Corpse(Mobile owner, HairInfo hair, FacialHairInfo facialhair, List<Item> equipItems)
       : base(0x2006)
     {
-      // To supress console warnings, stackable must be true
+      // To suppress console warnings, stackable must be true
       Stackable = true;
       Amount = owner.Body; // protocol defines that for itemid 0x2006, amount=body
       Stackable = false;
@@ -193,16 +193,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public virtual bool InstancedCorpse
-    {
-      get
-      {
-        if (!Core.SE)
-          return false;
-
-        return DateTime.UtcNow < TimeOfDeath + InstancedCorpseTime;
-      }
-    }
+    public virtual bool InstancedCorpse => Core.SE && DateTime.UtcNow < TimeOfDeath + InstancedCorpseTime;
 
     public override bool IsDecoContainer => false;
 
@@ -302,9 +293,7 @@ namespace Server.Items
       Mobile dead = Owner;
 
       if (GetFlag(CorpseFlag.Carved) || dead == null)
-      {
         from.SendLocalizedMessage(500485); // You see nothing useful to carve from the corpse.
-      }
       else if (((Body)Amount).IsHuman && ItemID == 0x2006)
       {
         new Blood(0x122D).MoveToWorld(Location, Map);
@@ -328,13 +317,9 @@ namespace Server.Items
           from.CriminalAction(true);
       }
       else if (dead is BaseCreature creature)
-      {
         creature.OnCarve(from, this, item);
-      }
       else
-      {
         from.SendLocalizedMessage(500485); // You see nothing useful to carve from the corpse.
-      }
     }
 
     public override bool IsChildVisibleTo(Mobile m, Item child) =>
@@ -347,8 +332,7 @@ namespace Server.Items
       if (Aggressors.Count == 0 || Items.Count == 0)
         return;
 
-      if (m_InstancedItems == null)
-        m_InstancedItems = new Dictionary<Item, InstancedItemInfo>();
+      m_InstancedItems ??= new Dictionary<Item, InstancedItemInfo>();
 
       List<Item> m_Stackables = new List<Item>();
       List<Item> m_Unstackables = new List<Item>();
@@ -401,7 +385,7 @@ namespace Server.Items
           }
 
           if (remainder == 0)
-            m_InstancedItems.Add(item, new InstancedItemInfo(item, attackers[attackers.Count - 1]));
+            m_InstancedItems.Add(item, new InstancedItemInfo(item, attackers[^1]));
           else
             m_Unstackables.Add(item);
         }
@@ -427,9 +411,7 @@ namespace Server.Items
 
       if (InstancedCorpse)
       {
-        if (m_InstancedItems == null)
-          m_InstancedItems = new Dictionary<Item, InstancedItemInfo>();
-
+        m_InstancedItems ??= new Dictionary<Item, InstancedItemInfo>();
         m_InstancedItems.Add(carved, new InstancedItemInfo(carved, carver));
       }
     }
@@ -464,7 +446,6 @@ namespace Server.Items
     public override void OnAfterDelete()
     {
       m_DecayTimer?.Stop();
-
       m_DecayTimer = null;
     }
 
@@ -543,29 +524,23 @@ namespace Server.Items
 
       writer.WriteDeltaTime(TimeOfDeath);
 
-      List<KeyValuePair<Item, Point3D>> list = m_RestoreTable == null
-        ? null
-        : new List<KeyValuePair<Item, Point3D>>(m_RestoreTable);
-      int count = list?.Count ?? 0;
-
-      writer.Write(count);
-
-      for (int i = 0; i < count; ++i)
+      if (m_RestoreTable == null)
+        writer.Write(0);
+      else
       {
-        KeyValuePair<Item, Point3D> kvp = list[i];
-        Item item = kvp.Key;
-        Point3D loc = kvp.Value;
+        writer.Write(m_RestoreTable.Count);
 
-        writer.Write(item);
+        foreach (var (item, loc) in m_RestoreTable)
+        {
+          writer.Write(item);
 
-        if (item.Location == loc)
-        {
-          writer.Write(false);
-        }
-        else
-        {
-          writer.Write(true);
-          writer.Write(loc);
+          if (item.Location == loc)
+            writer.Write(false);
+          else
+          {
+            writer.Write(true);
+            writer.Write(loc);
+          }
         }
       }
 
@@ -757,12 +732,8 @@ namespace Server.Items
       if (!(((Body)Amount).IsHuman && ItemID == 0x2006))
         return;
 
-      if (state.ContainerGridLines)
-        state.Send(new CorpseContent6017(state.Mobile, this));
-      else
-        state.Send(new CorpseContent(state.Mobile, this));
-
-      state.Send(new CorpseEquip(state.Mobile, this));
+      CorpsePackets.SendCorpseContent(state, state.Mobile, this);
+      CorpsePackets.SendCorpseEquip(state, state.Mobile, this);
     }
 
     public bool IsCriminalAction(Mobile from)
@@ -836,8 +807,7 @@ namespace Server.Items
       if (item == null)
         return;
 
-      if (m_RestoreTable == null)
-        m_RestoreTable = new Dictionary<Item, Point3D>();
+      m_RestoreTable ??= new Dictionary<Item, Point3D>();
 
       m_RestoreTable[item] = loc;
     }
@@ -1065,7 +1035,7 @@ namespace Server.Items
       ObjectPropertyList opl = PropertyList;
 
       if (opl.Header > 0)
-        from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, opl.Header, Name, opl.HeaderArgs));
+        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, opl.Header, Name, opl.HeaderArgs);
     }
 
     public override void OnSingleClick(Mobile from)
@@ -1075,14 +1045,12 @@ namespace Server.Items
       if (ItemID == 0x2006) // Corpse form
       {
         if (m_CorpseName != null)
-          from.Send(new AsciiMessage(Serial, ItemID, MessageType.Label, hue, 3, "", m_CorpseName));
+          Packets.SendAsciiMessage(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, "", m_CorpseName);
         else
-          from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1046414, "", Name));
+          Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1046414, "", Name);
       }
       else // Bone form
-      {
-        from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1046414, "", Name));
-      }
+        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1046414, "", Name);
     }
 
     private class InstancedItemInfo

@@ -149,7 +149,7 @@ namespace Server.Commands.Generic
       AddResponse("Awaiting confirmation...");
     }
 
-    private void OnConfirmCallback(Mobile from, bool okay, List<object> list, bool staticsOnly)
+    private void OnConfirmCallback(Mobile from, bool okay, IReadOnlyList<object> list, bool staticsOnly)
     {
       bool flushToLog = false;
 
@@ -191,9 +191,7 @@ namespace Server.Commands.Generic
           house.Delta(ItemDelta.Update);
       }
       else
-      {
         AddResponse("Command aborted.");
-      }
 
       Flush(from, flushToLog);
     }

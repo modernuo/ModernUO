@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Server.ContextMenus;
 using Server.Mobiles;
 using Server.Multis;
@@ -16,40 +17,17 @@ namespace Server.Items
     {
     }
 
-    public override int DefaultMaxWeight
-    {
-      get
-      {
-        if (IsSecure)
-          return 0;
+    public override int DefaultMaxWeight => IsSecure ? 0 : base.DefaultMaxWeight;
 
-        return base.DefaultMaxWeight;
-      }
-    }
+    public override bool IsAccessibleTo(Mobile m) =>
+      BaseHouse.CheckAccessible(m, this) && base.IsAccessibleTo(m);
 
-    public override bool IsAccessibleTo(Mobile m)
-    {
-      if (!BaseHouse.CheckAccessible(m, this))
-        return false;
+    public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight) =>
+      (!IsSecure || BaseHouse.CheckHold(m, this, item, message, checkItems, plusItems, plusWeight)) &&
+      base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
 
-      return base.IsAccessibleTo(m);
-    }
-
-    public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
-    {
-      if (IsSecure && !BaseHouse.CheckHold(m, this, item, message, checkItems, plusItems, plusWeight))
-        return false;
-
-      return base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
-    }
-
-    public override bool CheckItemUse(Mobile from, Item item)
-    {
-      if (IsDecoContainer && item is BaseBook)
-        return true;
-
-      return base.CheckItemUse(from, item);
-    }
+    public override bool CheckItemUse(Mobile from, Item item) =>
+      IsDecoContainer && item is BaseBook || base.CheckItemUse(from, item);
 
     public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
     {
@@ -79,13 +57,8 @@ namespace Server.Items
 
       List<Item> list = Items;
 
-      for (int i = 0; i < list.Count; ++i)
-      {
-        Item item = list[i];
-
-        if (!(item is Container) && item.StackWith(from, dropped, false))
-          return true;
-      }
+      if (list.Any(item => !(item is Container) && item.StackWith(from, dropped, false)))
+        return true;
 
       DropItem(dropped);
 

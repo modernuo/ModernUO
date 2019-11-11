@@ -7,7 +7,7 @@ using Server.Network;
 
 namespace Server.Commands
 {
-  public class ConvertPlayers
+  public static class ConvertPlayers
   {
     public static void Initialize()
     {

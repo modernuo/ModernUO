@@ -44,7 +44,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public CampfireStatus Status
     {
-      get
+      get => ItemID switch
       {
         return ItemID switch
         {

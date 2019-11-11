@@ -18,63 +18,58 @@
  *
  ***************************************************************************/
 
-using Server.Network;
+using System.Buffers;
+using Server.Buffers;
+using Server.Collections;
 
 namespace Server.Gumps
 {
   public class GumpItem : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("tilepic");
-    private static byte[] m_LayoutNameHue = Gump.StringToBuffer("tilepichue");
-    private int m_Hue;
-    private int m_ItemID;
-    private int m_X, m_Y;
-
     public GumpItem(int x, int y, int itemID, int hue = 0)
     {
-      m_X = x;
-      m_Y = y;
-      m_ItemID = itemID;
-      m_Hue = hue;
+      X = x;
+      Y = y;
+      ItemID = itemID;
+      Hue = hue;
     }
 
-    public int X
-    {
-      get => m_X;
-      set => Delta(ref m_X, value);
-    }
+    public int X { get; set; }
 
-    public int Y
-    {
-      get => m_Y;
-      set => Delta(ref m_Y, value);
-    }
+    public int Y { get; set; }
 
-    public int ItemID
-    {
-      get => m_ItemID;
-      set => Delta(ref m_ItemID, value);
-    }
+    public int ItemID { get; set; }
 
-    public int Hue
-    {
-      get => m_Hue;
-      set => Delta(ref m_Hue, value);
-    }
+    public int Hue { get; set; }
 
     public override string Compile(NetState ns) =>
       m_Hue == 0 ? $"{{ tilepic {m_X} {m_Y} {m_ItemID} }}" :
         $"{{ tilepichue {m_X} {m_Y} {m_ItemID} {m_Hue} }}";
 
-    public override void AppendTo(NetState ns, IGumpWriter disp)
-    {
-      disp.AppendLayout(m_Hue == 0 ? m_LayoutName : m_LayoutNameHue);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_ItemID);
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ tilepic ");
+    private static readonly byte[] m_LayoutNameHue = Gump.StringToBuffer("{ tilepichue ");
 
-      if (m_Hue != 0)
-        disp.AppendLayout(m_Hue);
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
+    {
+      SpanWriter writer = new SpanWriter(buffer.GetSpan(57));
+      writer.Write(Hue == 0 ? m_LayoutName : m_LayoutNameHue);
+      writer.WriteAscii(X.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(Y.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(ItemID.ToString());
+      writer.Write((byte)0x20); // ' '
+
+      if (Hue != 0)
+      {
+        writer.WriteAscii(Hue.ToString());
+        writer.Write((byte)0x20); // ' '
+      }
+
+      writer.Write((byte)0x20); // ' '
+      writer.Write((byte)0x7D); // '}'
+
+      buffer.Advance(writer.WrittenCount);
     }
   }
 }

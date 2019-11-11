@@ -26,14 +26,13 @@ using System.IO;
 using System.IO.Pipelines;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Server.Accounting;
-using Server.Diagnostics;
 using Server.Gumps;
-using Server.HuePickers;
 using Server.Items;
 using Server.Menus;
+using NetworkPackets = Server.Network.Packets;
 
 namespace Server.Network
 {
@@ -93,7 +92,6 @@ namespace Server.Network
   {
     private string m_ToString;
     private ClientVersion m_Version;
-    private SendQueue<Packet> m_SendQueue = new SendQueue<Packet>();
 
     public DateTime ConnectedOn { get; }
 
@@ -110,6 +108,8 @@ namespace Server.Network
     private static AsyncState m_ResumeState = new AsyncState(false);
 
     private static AsyncState m_AsyncState = m_ResumeState;
+
+    public bool UseCompression { get; set; }
 
     public IPacketEncoder PacketEncoder { get; set; }
 
@@ -158,7 +158,8 @@ namespace Server.Network
           ProtocolChanges = ProtocolChanges.Version500a;
         else if (value >= m_Version407a)
           ProtocolChanges = ProtocolChanges.Version407a;
-        else if (value >= m_Version400a) ProtocolChanges = ProtocolChanges.Version400a;
+        else if (value >= m_Version400a)
+          ProtocolChanges = ProtocolChanges.Version400a;
       }
     }
 
@@ -272,9 +273,7 @@ namespace Server.Network
 
     public Socket Socket { get; private set; }
 
-    public bool CompressionEnabled { get; set; }
-
-    public int Sequence { get; set; }
+    public byte Sequence { get; set; }
 
     public List<Gump> Gumps { get; private set; }
 
@@ -300,8 +299,7 @@ namespace Server.Network
 
     public void AddMenu(IMenu menu)
     {
-      if (Menus == null)
-        Menus = new List<IMenu>();
+      Menus ??= new List<IMenu>();
 
       if (Menus.Count < MenuCap)
         Menus.Add(menu);
@@ -329,8 +327,7 @@ namespace Server.Network
 
     public void AddHuePicker(HuePicker huePicker)
     {
-      if (HuePickers == null)
-        HuePickers = new List<HuePicker>();
+      HuePickers ??= new List<HuePicker>();
 
       if (HuePickers.Count < HuePickerCap)
         HuePickers.Add(huePicker);
@@ -358,8 +355,7 @@ namespace Server.Network
 
     public void AddGump(Gump gump)
     {
-      if (Gumps == null)
-        Gumps = new List<Gump>();
+      Gumps ??= new List<Gump>();
 
       if (Gumps.Count < GumpCap)
         Gumps.Add(gump);
@@ -387,8 +383,8 @@ namespace Server.Network
 
     public void LaunchBrowser(string url)
     {
-      Send(new MessageLocalized(Serial.MinusOne, -1, MessageType.Label, 0x35, 3, 501231, "", ""));
-      Send(new LaunchBrowser(url));
+      NetworkPackets.SendMessageLocalized(this, Serial.MinusOne, -1, MessageType.Label, 0x35, 3, 501231);
+      NetworkPackets.SendLaunchBrowser(this, url);
     }
 
     public CityInfo[] CityInfo { get; set; }
@@ -446,17 +442,6 @@ namespace Server.Network
       m_AsyncState = Interlocked.Exchange(ref m_AsyncState, m_ResumeState);
     }
 
-    public virtual void Send(Packet p)
-    {
-      if (Socket == null || BlockAllPackets)
-      {
-        p.OnSend();
-        return;
-      }
-
-      m_SendQueue.Enqueue(p);
-    }
-
     public bool CheckEncrypted(int packetID)
     {
       if (!SentFirstPacket && packetID != 0xF0 && packetID != 0xF1 && packetID != 0xCF && packetID != 0x80 &&
@@ -470,32 +455,35 @@ namespace Server.Network
       return false;
     }
 
-    private Pipe m_RecvdPipe;
+    public Pipe RecvdPipe { get; private set; }
+    public Pipe SendPipe { get; private set; }
 
     private async Task Start(MessagePump pump)
     {
-      m_RecvdPipe = new Pipe();
+      RecvdPipe = new Pipe();
+      SendPipe = new Pipe();
       Running = true;
 
-      await Task.WhenAll(ProcessSends(), ProcessRecvs(), HandlePackets(pump)).ConfigureAwait(false);
+      await Task.WhenAll(HandlePackets(pump), ProcessSends(), ProcessRecvs());
     }
 
     private async Task ProcessRecvs()
     {
-      PipeWriter w = m_RecvdPipe.Writer;
+      PipeWriter w = RecvdPipe.Writer;
 
-      while (true)
+      while (!Core.Closing)
       {
         if (m_AsyncState.Paused)
         {
-          await Timer.Pause(50).ConfigureAwait(false);
+          Interlocked.Exchange(ref m_NextCheckActivity, Core.TickCount + 90000);
+          await Timer.Pause(50);
           continue;
         }
 
         try
         {
           Memory<byte> memory = w.GetMemory();
-          int bytesRead = await Socket.ReceiveAsync(memory, SocketFlags.None).ConfigureAwait(false);
+          int bytesRead = await Socket.ReceiveAsync(memory, SocketFlags.None);
           if (bytesRead == 0)
             break;
 
@@ -503,7 +491,7 @@ namespace Server.Network
 
           w.Advance(bytesRead);
 
-          FlushResult result = await w.FlushAsync().ConfigureAwait(false);
+          FlushResult result = await w.FlushAsync();
           if (result.IsCompleted || result.IsCanceled)
             break;
         }
@@ -517,7 +505,7 @@ namespace Server.Network
       Dispose();
     }
 
-    private async Task ProcessSends()
+    private async Task HandlePackets(MessagePump pump)
     {
       while (true)
         try
@@ -526,26 +514,31 @@ namespace Server.Network
           if (p == null)
             break;
 
-          ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out int length);
+        long pos = PacketHandlers.ProcessPacket(pump, this, seq);
 
-          if (buffer.Length <= 0 || length <= 0)
-          {
-            p.OnSend();
-            return;
-          }
+        if (pos <= 0)
+          break;
 
-          buffer = buffer.Slice(0, length);
+        pr.AdvanceTo(seq.GetPosition(pos, seq.Start));
 
-          PacketSendProfile prof = null;
+        if (result.IsCompleted || result.IsCanceled)
+          break;
+      }
 
-          if (Core.Profiling)
-            prof = PacketSendProfile.Acquire(p.GetType());
+      pr.Complete();
+    }
 
-          prof?.Start();
+    public async Task Flush(int bytesWritten)
+    {
+      if (IsDisposing || BlockAllPackets)
+        return;
 
-          await Socket.SendAsync(buffer, SocketFlags.None).ConfigureAwait(false);
+      SendPipe.Writer.Advance(bytesWritten);
+      FlushResult result = await SendPipe.Writer.FlushAsync();
 
-          p.OnSend();
+      if (result.IsCompleted || result.IsCanceled)
+        Dispose();
+    }
 
           prof?.Finish(length);
         }
@@ -562,29 +555,44 @@ namespace Server.Network
         }
     }
 
-    private async Task HandlePackets(MessagePump pump)
+    private async Task ProcessSends()
     {
-      PipeReader pr = m_RecvdPipe.Reader;
+      PipeReader pr = SendPipe.Reader;
 
-      while (true)
+      while (!Core.Closing)
       {
+        if (m_AsyncState.Paused)
+        {
+          await Timer.Pause(50);
+          continue;
+        }
+
         ReadResult result = await pr.ReadAsync();
         ReadOnlySequence<byte> seq = result.Buffer;
         if (seq.Length == 0)
           break;
 
-        long pos = PacketHandlers.ProcessPacket(pump, this, seq);
-
-        if (pos <= 0)
+        if (!SequenceMarshal.TryGetReadOnlyMemory(seq, out ReadOnlyMemory<byte> memory))
           break;
 
-        pr.AdvanceTo(seq.GetPosition(pos, seq.Start));
+        try
+        {
+          int bytesWritten = await Socket.SendAsync(memory, SocketFlags.None);
+
+          pr.AdvanceTo(seq.GetPosition(bytesWritten));
+        }
+        catch (SocketException ex)
+        {
+          Console.WriteLine(ex);
+          TraceException(ex);
+          break;
+        }
 
         if (result.IsCompleted || result.IsCanceled)
           break;
       }
 
-      pr.Complete();
+      Dispose();
     }
 
     public PacketHandler GetHandler(int packetID) =>
@@ -639,17 +647,17 @@ namespace Server.Network
 
       Task.Run(async () =>
       {
-        m_RecvdPipe.Reader.CancelPendingRead();
-        m_RecvdPipe.Reader.Complete();
-        await m_RecvdPipe.Writer.FlushAsync().ConfigureAwait(false);
-        m_RecvdPipe.Writer.Complete();
+        RecvdPipe.Reader.CancelPendingRead();
+        RecvdPipe.Reader.Complete();
+        await SendPipe.Writer.FlushAsync();
+        SendPipe.Writer.Complete();
 
         try { Socket.Shutdown(SocketShutdown.Both); } catch (Exception ex) { TraceException(ex); }
         try { Socket.Close(); } catch (Exception ex) { TraceException(ex); }
 
         Socket = null;
-        m_RecvdPipe = null;
-        m_SendQueue = null;
+        RecvdPipe = null;
+        SendPipe = null;
         m_Disposed.Enqueue(this);
       });
     }

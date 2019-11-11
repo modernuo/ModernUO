@@ -293,7 +293,7 @@ namespace Server.Engines.ConPVP
 
         if (list.Count > 0)
         {
-          Point3D p = list[list.Count - 1];
+          Point3D p = list[^1];
 
           if (p.X != ix || p.Y != iy || p.Z != iz)
             list.Add(new Point3D(ix, iy, iz));
@@ -308,7 +308,7 @@ namespace Server.Engines.ConPVP
         z += zslp;
       }
 
-      if (list.Count > 0 && list[list.Count - 1] != dest)
+      if (list.Count > 0 && list[^1] != dest)
         list.Add(dest);
 
       /*if ( dist3d > 4 && ( dest.X != org.X || dest.Y != org.Y ) )
@@ -429,10 +429,7 @@ namespace Server.Engines.ConPVP
             if (t.Z <= point.Z && t.Z + height >= point.Z &&
                 (id.Flags & (TileFlag.Impassable | TileFlag.Wall | TileFlag.NoShoot)) != 0)
             {
-              if (i > m_PathIdx)
-                point = m_Path[i - 1];
-              else
-                point = GetWorldLocation();
+              point = i > m_PathIdx ? m_Path[i - 1] : GetWorldLocation();
               HitObject(point, t.Z, height);
               return;
             }
@@ -448,13 +445,9 @@ namespace Server.Engines.ConPVP
             continue;
 
           if (i is BRGoal)
-          {
             height = 17;
-          }
           else if (i is Blocker)
-          {
             height = 20;
-          }
           else
           {
             ItemData id = i.ItemData;
@@ -473,10 +466,7 @@ namespace Server.Engines.ConPVP
                 (i is Blocker || loc.Z <= point.Z && loc.Z + height >= point.Z))
             {
               found = true;
-              if (j > m_PathIdx)
-                point = m_Path[j - 1];
-              else
-                point = GetWorldLocation();
+              point = j > m_PathIdx ? m_Path[j - 1] : GetWorldLocation();
               break;
             }
           }
@@ -494,9 +484,7 @@ namespace Server.Engines.ConPVP
               HitObject(point, loc.Z, height);
           }
           else
-          {
             HitObject(point, loc.Z, height);
-          }
 
           return;
         }
@@ -511,12 +499,11 @@ namespace Server.Engines.ConPVP
           if (m == null || m == Thrower)
             continue;
 
-          Point3D point;
           Point3D loc = m.Location;
 
           for (int j = m_PathIdx; j < pathCheckEnd && !found; j++)
           {
-            point = m_Path[j];
+            Point3D point = m_Path[j];
 
             if (loc.X == point.X && loc.Y == point.Y &&
                 loc.Z <= point.Z && loc.Z + 16 >= point.Z)
@@ -550,9 +537,10 @@ namespace Server.Engines.ConPVP
         else if (m_Path.Count > 0)
           MoveToWorld(m_Path.Last);
 
-        int myZ = Map.GetAverageZ(X, Y);
+        int myZ = Map?.GetAverageZ(X, Y) ?? 0;
 
-        StaticTile[] statics = Map.Tiles.GetStaticTiles(X, Y, true);
+        StaticTile[] statics = Map?.Tiles?.GetStaticTiles(X, Y, true) ?? new StaticTile[0];
+
         for (int j = 0; j < statics.Length; j++)
         {
           StaticTile t = statics[j];
@@ -676,7 +664,7 @@ namespace Server.Engines.ConPVP
         if (m_Bomb.Parent == null && m_Bomb.m_Game?.Controller != null)
         {
           if (!m_Bomb.m_Flying && m_Bomb.Map != Map.Internal)
-            Effects.SendLocationEffect(m_Bomb.GetWorldLocation(), m_Bomb.Map, 0x377A, 16, 10, m_Bomb.Hue, 0);
+            Effects.SendLocationEffect(m_Bomb.GetWorldLocation(), m_Bomb.Map, 0x377A, 16, 10, m_Bomb.Hue);
 
           if (m_Bomb.Location != m_Bomb.m_Game.Controller.BombHome)
           {
@@ -983,9 +971,7 @@ namespace Server.Engines.ConPVP
         total = entries.Count;
       }
       else
-        foreach (BRPlayerInfo player in section.Players.Values)
-          if (player.Score > 0)
-            total++;
+        total += section.Players.Values.Count(player => player.Score > 0);
 
       entries.Sort();
 
@@ -1722,12 +1708,13 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
       {
-        if (!(m_Context.Participants[i] is Participant p) || p.Players == null)
+        DuelPlayer[] players = m_Context.Participants[i]?.Players;
+        if (players == null)
           continue;
 
-        for (int j = 0; j < p.Players.Length; ++j)
+        for (int j = 0; j < players.Length; ++j)
         {
-          DuelPlayer dp = p.Players[j];
+          DuelPlayer dp = players[j];
 
           if (dp?.Mobile != null)
           {
@@ -1736,16 +1723,16 @@ namespace Server.Engines.ConPVP
           }
         }
 
-        if (i == winner.TeamID)
+        if (i == winner?.TeamID)
           continue;
 
-        if (p.Players != null)
-          for (int j = 0; j < p.Players.Length; ++j)
-            if (p.Players[j] != null)
-              p.Players[j].Eliminated = true;
+        for (int j = 0; j < players.Length; ++j)
+          if (players[j] != null)
+            players[j].Eliminated = true;
       }
 
-      m_Context.Finish(m_Context.Participants[winner.TeamID]);
+      if (winner != null)
+        m_Context.Finish(m_Context.Participants[winner.TeamID]);
     }
 
     public override void OnStop()

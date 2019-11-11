@@ -5,7 +5,7 @@ using Server.Accounting;
 
 namespace Server.Commands
 {
-  public class CommandLogging
+  public static class CommandLogging
   {
     private static char[] m_NotSafe = { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
     public static bool Enabled{ get; set; } = true;

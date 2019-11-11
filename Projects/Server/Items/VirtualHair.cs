@@ -18,9 +18,7 @@
  *
  ***************************************************************************/
 
-using Server.Network;
-
-namespace Server
+namespace Server.Items
 {
   public abstract class BaseHairInfo
   {
@@ -61,12 +59,7 @@ namespace Server
 
   public class HairInfo : BaseHairInfo
   {
-    public HairInfo(int itemid)
-      : base(itemid)
-    {
-    }
-
-    public HairInfo(int itemid, int hue)
+    public HairInfo(int itemid, int hue = 0)
       : base(itemid, hue)
     {
     }
@@ -82,12 +75,7 @@ namespace Server
 
   public class FacialHairInfo : BaseHairInfo
   {
-    public FacialHairInfo(int itemid)
-      : base(itemid)
-    {
-    }
-
-    public FacialHairInfo(int itemid, int hue)
+    public FacialHairInfo(int itemid, int hue = 0)
       : base(itemid, hue)
     {
     }

@@ -100,18 +100,15 @@ namespace Server.Multis.Deeds
     public override void OnDoubleClick(Mobile from)
     {
       if (!IsChildOf(from.Backpack))
-      {
         from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
-      }
       else if (from.AccessLevel < AccessLevel.GameMaster && BaseHouse.HasAccountHouse(from))
-      {
         from.SendLocalizedMessage(501271); // You already own a house, you may not place another!
-      }
       else
       {
-        from.SendLocalizedMessage(1010433); /* House placement cancellation could result in a
-													   * 60 second delay in the return of your deed.
-													   */
+        from.SendLocalizedMessage(1010433);
+        /* House placement cancellation could result in a
+         * 60 second delay in the return of your deed.
+         */
 
         from.Target = new HousePlacementTarget(this);
       }
@@ -125,13 +122,9 @@ namespace Server.Multis.Deeds
         return;
 
       if (!IsChildOf(from.Backpack))
-      {
         from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
-      }
       else if (from.AccessLevel < AccessLevel.GameMaster && BaseHouse.HasAccountHouse(from))
-      {
         from.SendLocalizedMessage(501271); // You already own a house, you may not place another!
-      }
       else
       {
         Point3D center = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);

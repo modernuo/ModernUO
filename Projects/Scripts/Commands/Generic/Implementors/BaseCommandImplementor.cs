@@ -111,20 +111,15 @@ namespace Server.Commands.Generic
         case ObjectTypes.All:
         case ObjectTypes.Both:
         {
-          if (condIsItem)
-            items = true;
-
-          if (condIsMobile)
-            mobiles = true;
+          items |= condIsItem;
+          mobiles |= condIsMobile;
 
           break;
         }
         case ObjectTypes.Items:
         {
           if (condIsItem)
-          {
             items = true;
-          }
           else if (condIsMobile)
           {
             from.SendMessage("You may not use a mobile type condition for this command.");
@@ -136,9 +131,7 @@ namespace Server.Commands.Generic
         case ObjectTypes.Mobiles:
         {
           if (condIsMobile)
-          {
             mobiles = true;
-          }
           else if (condIsItem)
           {
             from.SendMessage("You may not use an item type condition for this command.");

@@ -127,7 +127,6 @@ namespace Server.Gumps
         switch (index)
         {
           default:
-          case 0:
             type = ModelBodyType.Monsters;
             list = m_Monster;
             break;
@@ -204,24 +203,17 @@ namespace Server.Gumps
         if (((Body)bodyID).IsEmpty)
           continue;
 
-        List<InternalEntry> list;
-
-        switch (oldEntry.BodyType)
+        List<InternalEntry> list = oldEntry.BodyType switch
         {
-          default: continue;
-          case ModelBodyType.Monsters:
-            list = m_Monster;
-            break;
-          case ModelBodyType.Animals:
-            list = m_Animal;
-            break;
-          case ModelBodyType.Sea:
-            list = m_Sea;
-            break;
-          case ModelBodyType.Human:
-            list = m_Human;
-            break;
-        }
+          ModelBodyType.Monsters => m_Monster,
+          ModelBodyType.Animals => m_Animal,
+          ModelBodyType.Sea => m_Sea,
+          ModelBodyType.Human => m_Human,
+          _ => null
+        };
+
+        if (list == null)
+          return;
 
         int itemID = ShrinkTable.Lookup(bodyID, -1);
 
@@ -287,7 +279,7 @@ namespace Server.Gumps
         int v = Name.CompareTo(comp.Name);
 
         if (v == 0)
-          Body.CompareTo(comp.Body);
+          v = Body.CompareTo(comp.Body);
 
         return v;
       }

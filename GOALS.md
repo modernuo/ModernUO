@@ -7,8 +7,8 @@
 - [X] Support configuration via a `modernuo.json` file
 
 ### Networking
-- [ ] Replace Packet classes with functions
-- [ ] Improve asynchronous socket handling using Pipes
+- [X] Replace Packet classes with functions
+- [X] Improve asynchronous socket handling using Pipes
 - [ ] Improve socket handling (2-5x) and event loop using libuv
 
 ### Administration

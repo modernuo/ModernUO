@@ -81,8 +81,8 @@ namespace Server.Spells.Necromancy
         timer = new ExpireTimer(Caster, m, duration);
         timer.Start();
 
-        BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.BloodOathCaster, 1075659, duration, Caster, m.Name));
-        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.BloodOathCurse, 1075661, duration, m, Caster.Name));
+        BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.BloodOathCaster, 1075659, m.Name, duration, Caster));
+        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.BloodOathCurse, 1075661, Caster.Name, duration, m));
 
         m_Table[m] = timer;
         HarmfulSpell(m);

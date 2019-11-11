@@ -39,10 +39,6 @@ namespace Server
   {
     private static bool m_Crashed;
     private static Thread timerThread;
-    private static string m_BaseDirectory;
-    private static string m_ExePath;
-
-    private static bool m_Cache = true;
 
     private static bool m_Profiling;
     private static DateTime m_ProfileStart;
@@ -56,17 +52,15 @@ namespace Server
      * GetTickCount and GetTickCount64 have poor resolution.
      * GetTickCount64 is unavailable on Windows XP and Windows Server 2003.
      * Stopwatch.GetTimestamp() (QueryPerformanceCounter) is high resolution, but
-     * somewhat expensive to call because of its defference to DateTime.Now,
+     * somewhat expensive to call because of its difference to DateTime.Now,
      * which is why Stopwatch has been used to verify HRT before calling GetTimestamp(),
      * enabling the usage of DateTime.UtcNow instead.
      */
 
-    private static readonly bool _HighRes = Stopwatch.IsHighResolution;
+    private static readonly bool UsingHighResolutionTiming = Stopwatch.IsHighResolution;
 
     private static readonly double _HighFrequency = 1000.0 / Stopwatch.Frequency;
     private static readonly double _LowFrequency = 1000.0 / TimeSpan.TicksPerSecond;
-
-    private static bool _UseHRT;
 
     public static readonly bool Is64Bit = Environment.Is64BitProcess;
     internal static ConsoleEventHandler m_ConsoleEventHandler;
@@ -99,16 +93,8 @@ namespace Server
       }
     }
 
-    public static TimeSpan ProfileTime
-    {
-      get
-      {
-        if (m_ProfileStart > DateTime.MinValue)
-          return m_ProfileTime + (DateTime.UtcNow - m_ProfileStart);
-
-        return m_ProfileTime;
-      }
-    }
+    public static TimeSpan ProfileTime =>
+      m_ProfileStart > DateTime.MinValue ? m_ProfileTime + (DateTime.UtcNow - m_ProfileStart) : m_ProfileTime;
 
     public static bool Service{ get; private set; }
 
@@ -116,28 +102,22 @@ namespace Server
 
     internal static bool HaltOnWarning{ get; private set; }
 
-    public static Assembly Assembly{ get; set; }
+    public static List<string> DataDirectories{ get; } = new List<string>();
 
-    public static Version Version => Assembly.GetName().Version;
-    public static Process Process{ get; private set; }
+    public static Assembly Assembly { get; } = Assembly.GetEntryAssembly();
+
+    public static readonly Version Version = Assembly.GetName().Version;
+
+    public static Process Process { get; } = Process.GetCurrentProcess();
 
     public static Thread Thread{ get; private set; }
 
     public static MultiTextWriter MultiConsoleOut{ get; private set; }
 
-    public static bool UsingHighResolutionTiming => _UseHRT && _HighRes && !Unix;
-
     public static long TickCount => (long)Ticks;
 
-    public static double Ticks
-    {
-      get
-      {
-        if (_UseHRT && _HighRes && !Unix) return Stopwatch.GetTimestamp() * _HighFrequency;
-
-        return DateTime.UtcNow.Ticks * _LowFrequency;
-      }
-    }
+    public static double Ticks =>
+      UsingHighResolutionTiming ? Stopwatch.GetTimestamp() * _HighFrequency : DateTime.UtcNow.Ticks * _LowFrequency;
 
     public static bool MultiProcessor{ get; private set; }
 
@@ -145,28 +125,9 @@ namespace Server
 
     public static bool Unix{ get; private set; }
 
-    public static string ExePath => m_ExePath ?? (m_ExePath = Assembly.Location);
+    public static string ExePath => Process.MainModule?.FileName;
 
-    public static string BaseDirectory
-    {
-      get
-      {
-        if (m_BaseDirectory == null)
-          try
-          {
-            m_BaseDirectory = ExePath;
-
-            if (m_BaseDirectory.Length > 0)
-              m_BaseDirectory = Path.GetDirectoryName(m_BaseDirectory);
-          }
-          catch
-          {
-            m_BaseDirectory = "";
-          }
-
-        return m_BaseDirectory;
-      }
-    }
+    public static readonly string BaseDirectory = Path.GetDirectoryName(ExePath ?? "") ?? "";
 
     public static bool Closing{ get; private set; }
 
@@ -189,14 +150,8 @@ namespace Server
         if (m_Profiling)
           Utility.Separate(sb, "-profile", " ");
 
-        if (!m_Cache)
-          Utility.Separate(sb, "-nocache", " ");
-
         if (HaltOnWarning)
           Utility.Separate(sb, "-haltonwarning", " ");
-
-        if (_UseHRT)
-          Utility.Separate(sb, "-usehrt", " ");
 
         return sb.ToString();
       }
@@ -279,10 +234,8 @@ namespace Server
 
     private static bool OnConsoleEvent(ConsoleEventType type)
     {
-      if (World.Saving || Service && type == ConsoleEventType.CTRL_LOGOFF_EVENT)
-        return true;
-
-      Kill(); //Kill -> HandleClosed will handle waiting for the completion of flushing to disk
+      if (!(World.Saving || Service && type == ConsoleEventType.CTRL_LOGOFF_EVENT))
+        Kill(); //Kill -> HandleClosed will handle waiting for the completion of flushing to disk
 
       return true;
     }
@@ -321,10 +274,7 @@ namespace Server
       Console.WriteLine("done");
     }
 
-    public static void Set()
-    {
-      m_Signal.Set();
-    }
+    public static void Set() => m_Signal.Set();
 
     public static void Main(string[] args)
     {
@@ -332,18 +282,12 @@ namespace Server
       AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
       foreach (string a in args)
-        if (Insensitive.Equals(a, "-debug"))
-          Debug = true;
-        else if (Insensitive.Equals(a, "-service"))
-          Service = true;
-        else if (Insensitive.Equals(a, "-profile"))
-          Profiling = true;
-        else if (Insensitive.Equals(a, "-nocache"))
-          m_Cache = false;
-        else if (Insensitive.Equals(a, "-haltonwarning"))
-          HaltOnWarning = true;
-        else if (Insensitive.Equals(a, "-usehrt"))
-          _UseHRT = true;
+      {
+        Debug |= Insensitive.Equals(a, "-debug");
+        Service |= Insensitive.Equals(a, "-service");
+        Profiling |= Insensitive.Equals(a, "-profiling");
+        HaltOnWarning |= Insensitive.Equals(a, "-haltonwarning");
+      }
 
       try
       {
@@ -355,9 +299,7 @@ namespace Server
           Console.SetOut(MultiConsoleOut = new MultiTextWriter(new FileLogger("Logs/Console.log")));
         }
         else
-        {
           Console.SetOut(MultiConsoleOut = new MultiTextWriter(Console.Out));
-        }
       }
       catch
       {
@@ -365,8 +307,6 @@ namespace Server
       }
 
       Thread = Thread.CurrentThread;
-      Process = Process.GetCurrentProcess();
-      Assembly = Assembly.GetEntryAssembly();
 
       if (Thread != null)
         Thread.Name = "Core Thread";
@@ -399,6 +339,12 @@ namespace Server
         Name = "Timer Thread"
       };
 
+      Version ver = Version;
+
+      // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
+      Console.WriteLine("ModernUO - [https://github.com/modernuo/modernuo] v{0}.{1}.{2}{3}", ver.Major, ver.Minor, ver.Build, ver.Revision != 0 ? ver.Revision.ToString() : "");
+      Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
+
       string s = Arguments;
 
       if (s.Length > 0)
@@ -406,17 +352,15 @@ namespace Server
 
       ProcessorCount = Environment.ProcessorCount;
 
-      if (ProcessorCount > 1)
-        MultiProcessor = true;
+      MultiProcessor |= ProcessorCount > 1;
 
-      if (MultiProcessor || Is64Bit)
-        Console.WriteLine("Core: Optimizing for {0} {2}processor{1}", ProcessorCount, ProcessorCount == 1 ? "" : "s",
-          Is64Bit ? "64-bit " : "");
+      if (!Is64Bit) throw new NotSupportedException("Core: 32-bit operating systems are not supported");
 
-      int platform = (int)Environment.OSVersion.Platform;
-      if (platform == 4 || platform == 128)
+      if (MultiProcessor)
+        Console.WriteLine("Core: Optimizing for {0} processor{1}", ProcessorCount, ProcessorCount == 1 ? "" : "s");
+
+      if (Environment.OSVersion.Platform == PlatformID.Unix)
       {
-        // MS 4, MONO 128
         Unix = true;
         Console.WriteLine("Core: Unix environment detected");
       }
@@ -429,9 +373,8 @@ namespace Server
       if (GCSettings.IsServerGC)
         Console.WriteLine("Core: Server garbage collection mode enabled");
 
-      if (_UseHRT)
-        Console.WriteLine("Core: Requested high resolution timing ({0})",
-          UsingHighResolutionTiming ? "Supported" : "Unsupported");
+      if (UsingHighResolutionTiming)
+        Console.WriteLine("Core: High resolution timing detected");
 
       Console.WriteLine("RandomImpl: {0} ({1})", RandomImpl.Type.Name,
         RandomImpl.IsHardwareRNG ? "Hardware" : "Software");
@@ -473,7 +416,9 @@ namespace Server
         {
           m_Signal.WaitOne();
 
-          Task.WaitAll(
+
+          Task.WhenAll(
+
             Task.Run(Mobile.ProcessDeltaQueue),
             Task.Run(Item.ProcessDeltaQueue)
           );
@@ -539,8 +484,7 @@ namespace Server
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) ==
           null)
         {
-          if (warningSb == null) warningSb = new StringBuilder();
-
+          warningSb ??= new StringBuilder();
           warningSb.AppendLine("       - No Serialize() method");
         }
 
@@ -550,8 +494,7 @@ namespace Server
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) ==
           null)
         {
-          if (warningSb == null) warningSb = new StringBuilder();
-
+          warningSb ??= new StringBuilder();
           warningSb.AppendLine("       - No Deserialize() method");
         }
 
@@ -565,7 +508,8 @@ namespace Server
 
     private static void VerifySerialization(Assembly a)
     {
-      if (a != null) Parallel.ForEach(a.GetTypes(), VerifyType);
+      if (a != null)
+        Parallel.ForEach(a.GetTypes(), VerifyType);
     }
 
     internal enum ConsoleEventType

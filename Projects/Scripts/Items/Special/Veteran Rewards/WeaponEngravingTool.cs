@@ -243,7 +243,7 @@ namespace Server.Items
         AddTextEntry(75, 245, 350, 40, 0x0, (int)Buttons.Text, "");
       }
 
-      public override void OnResponse(NetState state, RelayInfo info)
+      public override void OnResponse(NetState sender, RelayInfo info)
       {
         if (m_Tool?.Deleted != false || m_Target?.Deleted != false)
           return;
@@ -319,12 +319,12 @@ namespace Server.Items
         AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF); // CANCEL
       }
 
-      public override void OnResponse(NetState state, RelayInfo info)
+      public override void OnResponse(NetState sender, RelayInfo info)
       {
         if (m_Engraver?.Deleted != false || info.ButtonID != (int)Buttons.Confirm)
           return;
 
-        m_Engraver.Recharge(state.Mobile, m_Guildmaster);
+        m_Engraver.Recharge(sender.Mobile, m_Guildmaster);
       }
 
       private enum Buttons

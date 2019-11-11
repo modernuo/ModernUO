@@ -611,9 +611,7 @@ namespace Server.Items
         case HousePlacementResult.Valid:
         {
           if (from.AccessLevel < AccessLevel.GameMaster && BaseHouse.HasAccountHouse(from))
-          {
             from.SendLocalizedMessage(501271); // You already own a house, you may not place another!
-          }
           else
           {
             BaseHouse house = ConstructHouse(from);
@@ -624,17 +622,13 @@ namespace Server.Items
             house.Price = Cost;
 
             if (from.AccessLevel >= AccessLevel.GameMaster)
-            {
               from.SendMessage("{0} gold would have been withdrawn from your bank if you were not a GM.",
                 Cost.ToString());
-            }
             else
             {
               if (Banker.Withdraw(from, Cost))
-              {
                 from.SendLocalizedMessage(1060398,
                   Cost.ToString()); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-              }
               else
               {
                 house.RemoveKeys(from);
@@ -707,9 +701,7 @@ namespace Server.Items
         case HousePlacementResult.Valid:
         {
           if (from.AccessLevel < AccessLevel.GameMaster && BaseHouse.HasAccountHouse(from))
-          {
             from.SendLocalizedMessage(501271); // You already own a house, you may not place another!
-          }
           else
           {
             from.SendLocalizedMessage(1011576); // This is a valid location.
@@ -804,16 +796,13 @@ namespace Server.Items
     {
       m_Table.TryGetValue(house.GetType(), out object obj);
 
-      if (obj is HousePlacementEntry entry)
-        return entry;
-
-      if (obj is List<HousePlacementEntry> list)
-        return list.FirstOrDefault(e => e.MultiID == house.ItemID);
-
-      if (obj is Dictionary<int, HousePlacementEntry> table)
-        return table[house.ItemID];
-
-      return null;
+      return obj switch
+      {
+        HousePlacementEntry entry => entry,
+        List<HousePlacementEntry> list => list.FirstOrDefault(e => e.MultiID == house.ItemID),
+        Dictionary<int, HousePlacementEntry> table => table[house.ItemID],
+        _ => null
+      };
     }
 
     private static void FillTable(HousePlacementEntry[] entries)
@@ -823,9 +812,7 @@ namespace Server.Items
         HousePlacementEntry e = entries[i];
 
         if (!m_Table.TryGetValue(e.Type, out object obj))
-        {
           m_Table[e.Type] = e;
-        }
         else if (obj is HousePlacementEntry entry)
         {
           List<HousePlacementEntry> list = new List<HousePlacementEntry> { entry, e };
@@ -848,10 +835,7 @@ namespace Server.Items
           else
             list.Add(e);
         }
-        else if (obj is Dictionary<int, HousePlacementEntry> table)
-        {
-          table[e.MultiID] = e;
-        }
+        else if (obj is Dictionary<int, HousePlacementEntry> table) table[e.MultiID] = e;
       }
     }
   }

@@ -1,5 +1,5 @@
 // Ideas
-// When you run on animals the panic
+// When you run on animals they panic
 // When if ( distance < 8 && Utility.RandomDouble() * Math.Sqrt( (8 - distance) / 6 ) >= incoming.Skills.AnimalTaming.Value )
 // More your close, the more it can panic
 /*

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Items;
+using Server.Regions;
 
 namespace Server.Mobiles
 {
@@ -396,9 +397,6 @@ namespace Server.Mobiles
       int version = reader.ReadEncodedInt();
     }
 
-    /*
-    // An area attack that only damages staff, wtf?
-
     private DateTime m_NextWave;
 
     public void AreaHeatDamage()
@@ -408,29 +406,20 @@ namespace Server.Mobiles
       if ( mob != null )
       {
         if ( mob.InRange( Location, 2 ) )
-        {
-          if ( mob.AccessLevel != AccessLevel.Player )
+          if ( mob.AccessLevel == AccessLevel.Player )
           {
             AOS.Damage( mob, Utility.Random( 2, 3 ), 0, 100, 0, 0, 0 );
             mob.SendLocalizedMessage( 1008112 ); // The intense heat is damaging you!
           }
-        }
 
-        GuardedRegion r = Region as GuardedRegion;
-
-        if ( r != null && mob.Alive )
-        {
+        if ( Region is GuardedRegion && mob.Alive )
           foreach ( Mobile m in GetMobilesInRange( 2 ) )
-          {
             if ( !mob.CanBeHarmful( m ) )
               mob.CriminalAction( false );
-          }
-        }
       }
 
       m_NextWave = DateTime.UtcNow + TimeSpan.FromSeconds( 3 );
     }
-    */
   }
 
   public class SummonedOrcBrute : BaseTalismanSummon

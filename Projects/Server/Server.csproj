@@ -37,6 +37,10 @@
     <OutDir>..\..\Distribution</OutDir>
     <OutputPath>..\..\Distribution</OutputPath>
     <LangVersion>8.0</LangVersion>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Assemblies\zlib.dll" Condition="'$(RuntimeIdentifier)'=='win-x64' OR !Exists('$(RuntimeIdentifier)')">

@@ -1,6 +1,6 @@
 namespace Server.Misc
 {
-  public class NameVerification
+  public static class NameVerification
   {
     public static readonly char[] SpaceDashPeriodQuote =
     {
@@ -148,20 +148,9 @@ namespace Server.Misc
 
             exceptCount = 0;
           }
-          else
-          {
-            bool except = false;
-
-            for (int j = 0; !except && j < exceptions.Length; ++j)
-              if (c == exceptions[j])
-                except = true;
-
-            if (!except || i == 0 && noExceptionsAtStart)
-              return false;
-
-            if (exceptCount++ == maxExceptions)
-              return false;
-          }
+          else if (exceptCount++ == maxExceptions || exceptions.All(exception => exception != c) ||
+                   i == 0 && noExceptionsAtStart)
+            return false;
         }
 
       for (int i = 0; i < disallowed.Length; ++i)
@@ -188,11 +177,7 @@ namespace Server.Misc
           return false;
       }
 
-      for (int i = 0; i < startDisallowed.Length; ++i)
-        if (name.StartsWith(startDisallowed[i]))
-          return false;
-
-      return true;
+      return startDisallowed.All(t => !name.StartsWith(t));
     }
   }
 }

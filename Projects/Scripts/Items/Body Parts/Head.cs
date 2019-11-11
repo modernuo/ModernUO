@@ -33,9 +33,8 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public HeadType HeadType{ get; set; }
 
-    public override string DefaultName
-    {
-      get
+    public override string DefaultName =>
+      PlayerName == null ? base.DefaultName : HeadType switch
       {
         if (PlayerName == null)
           return base.DefaultName;

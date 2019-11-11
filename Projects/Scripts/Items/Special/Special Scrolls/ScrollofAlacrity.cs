@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Engines.MLQuests;
 using Server.Engines.MLQuests.Objectives;
 using Server.Mobiles;
@@ -21,9 +22,11 @@ namespace Server.Items
     public override int LabelNumber => 1078604; // Scroll of Alacrity
 
     public override int Message =>
-      1078602; /*Using a Scroll of Transcendence for a given skill will permanently increase your current
-																*level in that skill by the amount of points displayed on the scroll.
-																*As you may not gain skills beyond your maximum skill cap, any excess points will be lost.*/
+      1078602;
+    /* Using a Scroll of Transcendence for a given skill will permanently increase your current
+     * level in that skill by the amount of points displayed on the scroll.
+     * As you may not gain skills beyond your maximum skill cap, any excess points will be lost.
+     */
 
     public override string DefaultTitle => "<basefont color=#FFFFFF>Scroll of Alacrity:</basefont>";
 
@@ -74,8 +77,10 @@ namespace Server.Items
       if (tskill >= tcap || from.Skills[Skill].Lock != SkillLock.Up)
       {
         from.SendLocalizedMessage(
-          1094935); /*You cannot increase this skill at this time. The skill may be locked or set to lower in your skill menu.
-														*If you are at your total skill cap, you must use a Powerscroll to increase your current skill cap.*/
+          1094935);
+        /* You cannot increase this skill at this time. The skill may be locked or set to lower in your skill menu.
+         * If you are at your total skill cap, you must use a Powerscroll to increase your current skill cap.
+         */
         return;
       }
 

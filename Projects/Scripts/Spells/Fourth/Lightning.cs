@@ -58,7 +58,7 @@ namespace Server.Spells.Fourth
           damage *= GetDamageScalar(m);
         }
 
-        m.BoltEffect(0);
+        m.BoltEffect();
 
         SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 100);
       }

@@ -57,19 +57,17 @@ namespace Server.Items
 
       if (content == null)
       {
-        Pages = new BookPageInfo[pageCount];
+        Pages = new BookPageInfo[Math.Min(pageCount, 255)];
 
         for (int i = 0; i < Pages.Length; ++i)
           Pages[i] = new BookPageInfo();
       }
       else
-      {
         Pages = content.Copy();
-      }
     }
 
     // Intended for defined books only
-    public BaseBook(int itemID, bool writable) : this(itemID, 0)
+    public BaseBook(int itemID, bool writable) : this(itemID, 0, writable)
     {
     }
 
@@ -230,12 +228,7 @@ namespace Server.Items
               Pages[i] = new BookPageInfo(reader);
           }
           else
-          {
-            if (content != null)
-              Pages = content.Copy();
-            else
-              Pages = new BookPageInfo[0];
-          }
+            Pages = content?.Copy() ?? new BookPageInfo[0];
 
           break;
         }
@@ -254,14 +247,7 @@ namespace Server.Items
               Pages[i] = new BookPageInfo(reader);
           }
           else
-          {
-            BookContent content = DefaultContent;
-
-            if (content != null)
-              Pages = content.Copy();
-            else
-              Pages = new BookPageInfo[0];
-          }
+            Pages = DefaultContent?.Copy() ?? new BookPageInfo[0];
 
           break;
         }
@@ -307,8 +293,8 @@ namespace Server.Items
         Author = from.Name;
       }
 
-      from.Send(new BookHeader(from, this));
-      from.Send(new BookPageDetails(this));
+      BookPackets.SendBookHeader(from.NetState, from, this);
+      BookPackets.SendBookPageDetails(from.NetState, this);
     }
 
     public static void Initialize()
@@ -350,14 +336,14 @@ namespace Server.Items
       if (titleLength > 60)
         return;
 
-      string title = pvSrc.ReadUTF8StringSafe(titleLength);
+      string title = pvSrc.ReadStringSafe(titleLength);
 
       int authorLength = pvSrc.ReadUInt16();
 
       if (authorLength > 30)
         return;
 
-      string author = pvSrc.ReadUTF8StringSafe(authorLength);
+      string author = pvSrc.ReadStringSafe(authorLength);
 
       book.Title = Utility.FixHtml(title);
       book.Author = Utility.FixHtml(author);
@@ -380,31 +366,23 @@ namespace Server.Items
       {
         int index = pvSrc.ReadUInt16();
 
-        if (index >= 1 && index <= book.PagesCount)
-        {
-          --index;
-
-          int lineCount = pvSrc.ReadUInt16();
-
-          if (lineCount <= 8)
-          {
-            string[] lines = new string[lineCount];
-
-            for (int j = 0; j < lineCount; ++j)
-              if ((lines[j] = pvSrc.ReadUTF8StringSafe()).Length >= 80)
-                return;
-
-            book.Pages[index].Lines = lines;
-          }
-          else
-          {
-            return;
-          }
-        }
-        else
-        {
+        if (index < 1 || index > book.PagesCount)
           return;
-        }
+
+        --index;
+
+        int lineCount = pvSrc.ReadUInt16();
+
+        if (lineCount > 8)
+          return;
+
+        string[] lines = new string[lineCount];
+
+        for (int j = 0; j < lineCount; ++j)
+          if ((lines[j] = pvSrc.ReadUTF8StringSafe()).Length >= 80)
+            return;
+
+        book.Pages[index].Lines = lines;
       }
     }
 
@@ -416,60 +394,6 @@ namespace Server.Items
       Author = 0x02,
       Writable = 0x04,
       Content = 0x08
-    }
-  }
-
-  public sealed class BookPageDetails : Packet
-  {
-    public BookPageDetails(BaseBook book) : base(0x66)
-    {
-      EnsureCapacity(256);
-
-      m_Stream.Write(book.Serial);
-      m_Stream.Write((ushort)book.PagesCount);
-
-      for (int i = 0; i < book.PagesCount; ++i)
-      {
-        BookPageInfo page = book.Pages[i];
-
-        m_Stream.Write((ushort)(i + 1));
-        m_Stream.Write((ushort)page.Lines.Length);
-
-        for (int j = 0; j < page.Lines.Length; ++j)
-        {
-          byte[] buffer = Utility.UTF8.GetBytes(page.Lines[j]);
-
-          m_Stream.Write(buffer, 0, buffer.Length);
-          m_Stream.Write((byte)0);
-        }
-      }
-    }
-  }
-
-  public sealed class BookHeader : Packet
-  {
-    public BookHeader(Mobile from, BaseBook book) : base(0xD4)
-    {
-      string title = book.Title ?? "";
-      string author = book.Author ?? "";
-
-      byte[] titleBuffer = Utility.UTF8.GetBytes(title);
-      byte[] authorBuffer = Utility.UTF8.GetBytes(author);
-
-      EnsureCapacity(15 + titleBuffer.Length + authorBuffer.Length);
-
-      m_Stream.Write(book.Serial);
-      m_Stream.Write(true);
-      m_Stream.Write(book.Writable && from.InRange(book.GetWorldLocation(), 1));
-      m_Stream.Write((ushort)book.PagesCount);
-
-      m_Stream.Write((ushort)(titleBuffer.Length + 1));
-      m_Stream.Write(titleBuffer, 0, titleBuffer.Length);
-      m_Stream.Write((byte)0); // terminate
-
-      m_Stream.Write((ushort)(authorBuffer.Length + 1));
-      m_Stream.Write(authorBuffer, 0, authorBuffer.Length);
-      m_Stream.Write((byte)0); // terminate
     }
   }
 }

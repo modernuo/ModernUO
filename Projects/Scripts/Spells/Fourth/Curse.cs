@@ -77,7 +77,7 @@ namespace Server.Spells.Fourth
 
         string args = $"{percentage}\t{percentage}\t{percentage}\t{10}\t{10}\t{10}\t{10}";
 
-        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Curse, 1075835, 1075836, length, m, args));
+        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Curse, 1075835, args, length, m));
 
         HarmfulSpell(m);
       }

@@ -203,7 +203,7 @@ namespace Server.Mobiles
         spawner.Start();
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (m_Spawner.Deleted)
         return;
@@ -246,7 +246,7 @@ namespace Server.Mobiles
             }
             case 2: //Okay
             {
-              CreateArray(info, state.Mobile, m_Spawner);
+              CreateArray(info, sender.Mobile, m_Spawner);
               return;
             }
             case 3:
@@ -261,7 +261,7 @@ namespace Server.Mobiles
             }
             case 5:
             {
-              CreateArray(info, state.Mobile, m_Spawner);
+              CreateArray(info, sender.Mobile, m_Spawner);
               break;
             }
           }
@@ -282,15 +282,15 @@ namespace Server.Mobiles
               m_Spawner.RemoveSpawn(entryindex);
           }
 
-          CreateArray(info, state.Mobile, m_Spawner);
+          CreateArray(info, sender.Mobile, m_Spawner);
           break;
         }
       }
 
       if (m_Entry != null && m_Spawner.Entries?.Contains(m_Entry) == true)
-        state.Mobile.SendGump(new SpawnerGump(m_Spawner, m_Entry, m_Page));
+        sender.Mobile.SendGump(new SpawnerGump(m_Spawner, m_Entry, m_Page));
       else
-        state.Mobile.SendGump(new SpawnerGump(m_Spawner, null, m_Page));
+        sender.Mobile.SendGump(new SpawnerGump(m_Spawner, null, m_Page));
     }
   }
 }

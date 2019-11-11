@@ -76,7 +76,7 @@ namespace Server.Engines.Mahjong
         m_SpectatorVision = value;
 
         if (Players.IsInGamePlayer(Players.DealerPosition))
-          Players.Dealer.Send(new MahjongGeneralInfo(this));
+          MahjongPackets.SendMahjongGeneralInfo(Players.Dealer.NetState, this);
 
         Players.SendTilesPacket(false, true);
 

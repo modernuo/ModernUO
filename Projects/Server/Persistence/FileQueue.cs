@@ -23,7 +23,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Server
+namespace Server.Persistence
 {
   public delegate void FileCommitCallback(FileQueue.Chunk chunk);
 
@@ -47,7 +47,7 @@ namespace Server
 
     public FileQueue(int concurrentWrites, FileCommitCallback callback)
     {
-      if (concurrentWrites < 1) throw new ArgumentOutOfRangeException("concurrentWrites");
+      if (concurrentWrites < 1) throw new ArgumentOutOfRangeException(nameof(concurrentWrites));
 
       if (bufferSize < 1)
         throw new ArgumentOutOfRangeException("bufferSize");
@@ -134,7 +134,7 @@ namespace Server
       {
         if (active[slot] != chunk) throw new ArgumentException();
 
-        ArrayPool<byte>.Shared.Return(chunk.Buffer);
+        ArrayPool<byte>.Shared.Return(chunk.Buffer, true);
 
         if (pending.Count > 0)
         {
@@ -157,18 +157,17 @@ namespace Server
 
     public void Enqueue(byte[] buffer, int offset, int size)
     {
-      if (buffer == null) throw new ArgumentNullException("buffer");
+      if (buffer == null) throw new ArgumentNullException(nameof(buffer));
 
-      if (offset < 0) throw new ArgumentOutOfRangeException("offset");
-      if (size < 0) throw new ArgumentOutOfRangeException("size");
+      if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+      if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
       if (buffer.Length - offset < size) throw new ArgumentException();
 
       Position += size;
 
       while (size > 0)
       {
-        if (buffered.buffer == null)
-          buffered.buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        buffered.buffer ??= ArrayPool<byte>.Shared.Rent(bufferSize);
 
         byte[] page = buffered.buffer; // buffer page
         int pageSpace = page.Length - buffered.length; // available bytes in page

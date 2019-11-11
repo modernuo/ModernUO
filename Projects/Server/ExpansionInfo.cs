@@ -72,6 +72,7 @@ namespace Server
     RoleplayFaces = 0x00002000,
     TrialAccount = 0x00004000,
     LiveAccount = 0x00008000,
+
     SA = 0x00010000,
     HS = 0x00020000,
     Gothic = 0x00040000,

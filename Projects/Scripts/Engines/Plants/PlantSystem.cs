@@ -383,6 +383,7 @@ namespace Server.Engines.Plants
         return 1060827; // soft
       if (Water <= 3)
         return 1060828; // squishy
+
       return 1060829; // sopping wet
     }
 

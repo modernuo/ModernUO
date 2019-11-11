@@ -24,14 +24,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using Server.Guilds;
 using Server.Network;
+using Server.Persistence;
 
 namespace Server
 {
   public static class World
   {
-    private static ManualResetEvent m_DiskWriteHandle = new ManualResetEvent(true);
+    private static readonly ManualResetEvent m_DiskWriteHandle = new ManualResetEvent(true);
 
     private static Queue<IEntity> _addQueue, _deleteQueue;
 
@@ -91,22 +91,19 @@ namespace Server
 
     public static void Broadcast(int hue, bool ascii, string text)
     {
-      Packet p;
-
-      if (ascii)
-        p = new AsciiMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text);
-      else
-        p = new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text);
-
       List<NetState> list = NetState.Instances;
 
-      p.Acquire();
-
       for (int i = 0; i < list.Count; ++i)
-        if (list[i].Mobile != null)
-          list[i].Send(p);
+      {
+        NetState state = list[i];
+        if (state == null)
+          continue;
 
-      p.Release();
+        if (ascii)
+          Packets.SendAsciiMessage(state, Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text);
+        else
+          Packets.SendUnicodeMessage(state, Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text);
+      }
     }
 
     public static void Broadcast(int hue, bool ascii, string format, params object[] args)
@@ -178,8 +175,6 @@ namespace Server
 
       _addQueue = new Queue<IEntity>();
       _deleteQueue = new Queue<IEntity>();
-
-      int mobileCount, itemCount, guildCount;
 
       object[] ctorArgs = new object[1];
 
@@ -574,7 +569,7 @@ namespace Server
       }
     }
 
-    private static void SaveIndex<T>(List<T> list, string path) where T : IEntityEntry
+    private static void SaveIndex<T>(IReadOnlyList<T> list, string path) where T : IEntityEntry
     {
       if (!Directory.Exists("Saves/Mobiles/"))
         Directory.CreateDirectory("Saves/Mobiles/");
@@ -603,12 +598,10 @@ namespace Server
       idxWriter.Close();
     }
 
-    public static void Save()
-    {
-      Save(true, false);
+      idxWriter.Close();
     }
 
-    public static void Save(bool message, bool permitBackgroundWrite)
+    public static void Save(bool message = true, bool permitBackgroundWrite = false)
     {
       if (Saving)
         return;
@@ -672,15 +665,7 @@ namespace Server
       NetState.Resume();
     }
 
-    public static IEntity FindEntity(Serial serial)
-    {
-      if (serial.IsItem)
-        return FindItem(serial);
-      if (serial.IsMobile)
-        return FindMobile(serial);
-
-      return null;
-    }
+    public static IEntity FindEntity(Serial serial) => serial.IsItem ? (IEntity)FindItem(serial) : serial.IsMobile ? FindMobile(serial) : null;
 
     public static Mobile FindMobile(Serial serial)
     {

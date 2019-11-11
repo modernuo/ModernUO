@@ -1,20 +1,25 @@
+using Server.Buffers;
+
 namespace Server.Network
 {
-  public class UpdateStatueAnimation : Packet
+  public static class StatuePackets
   {
-    public UpdateStatueAnimation(Mobile m, int status, int animation, int frame) : base(0xBF, 17)
+    public static void SendUpdateStatueAnimation(NetState ns, Serial m, int status, int animation, int frame)
     {
-      m_Stream.Write((short)0x11);
-      m_Stream.Write((short)0x19);
-      m_Stream.Write((byte)0x5);
-      m_Stream.Write(m.Serial);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)0xFF);
-      m_Stream.Write((byte)status);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)animation);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)frame);
+      if (ns == null)
+        return;
+
+      SpanWriter writer = new SpanWriter(stackalloc byte[17]);
+      writer.Write((byte)0xBF); // Extended Packet ID
+      writer.Write((short)17); // Dynamic Length
+
+      writer.Write((short)0x19);
+      writer.Write((byte)0x5);
+      writer.Write(m);
+      writer.Write((short)0xFF);
+      writer.Write((byte)status);
+      writer.Write((short)animation);
+      writer.Write((short)frame);
     }
   }
 }

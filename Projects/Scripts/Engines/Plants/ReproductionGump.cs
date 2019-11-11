@@ -138,24 +138,21 @@ namespace Server.Engines.Plants
         }
         case 3: // Pollination
         {
-          from.Send(new DisplayHelpTopic(67, true)); // POLLINATION STATE
-
+          ContentPackets.SendDisplayHelpTopic(from.NetState, 67, true); // POLLINATION STATE
           from.SendGump(new ReproductionGump(m_Plant));
 
           break;
         }
         case 4: // Resources
         {
-          from.Send(new DisplayHelpTopic(69, true)); // RESOURCE PRODUCTION
-
+          ContentPackets.SendDisplayHelpTopic(from.NetState, 69, true); // RESOURCE PRODUCTION
           from.SendGump(new ReproductionGump(m_Plant));
 
           break;
         }
         case 5: // Seeds
         {
-          from.Send(new DisplayHelpTopic(68, true)); // SEED PRODUCTION
-
+          ContentPackets.SendDisplayHelpTopic(from.NetState, 68, true); // SEED PRODUCTION
           from.SendGump(new ReproductionGump(m_Plant));
 
           break;
@@ -200,9 +197,7 @@ namespace Server.Engines.Plants
               m_Plant.LabelTo(from, 1053055); // Mutated plants do not produce resources!
           }
           else if (system.AvailableResources == 0)
-          {
             m_Plant.LabelTo(from, 1053056); // This plant has no resources to gather!
-          }
           else
           {
             Item resource = resInfo.CreateResource();
@@ -229,13 +224,9 @@ namespace Server.Engines.Plants
           PlantSystem system = m_Plant.PlantSystem;
 
           if (!m_Plant.Reproduces)
-          {
             m_Plant.LabelTo(from, 1053060); // Mutated plants do not produce seeds!
-          }
           else if (system.AvailableSeeds == 0)
-          {
             m_Plant.LabelTo(from, 1053061); // This plant has no seeds to gather!
-          }
           else
           {
             Seed seed = new Seed(system.SeedType, system.SeedHue, true);

@@ -63,37 +63,37 @@ namespace Server.Items
       switch (direction)
       {
         case CannonDirection.North:
-        {
-          AddComponent(new CannonAddonComponent(0xE8D), 0, 0, 0);
-          AddComponent(new CannonAddonComponent(0xE8C), 0, 1, 0);
-          AddComponent(new CannonAddonComponent(0xE8B), 0, 2, 0);
+          {
+            AddComponent(new CannonAddonComponent(0xE8D), 0, 0, 0);
+            AddComponent(new CannonAddonComponent(0xE8C), 0, 1, 0);
+            AddComponent(new CannonAddonComponent(0xE8B), 0, 2, 0);
 
-          break;
-        }
+            break;
+          }
         case CannonDirection.East:
-        {
-          AddComponent(new CannonAddonComponent(0xE96), 0, 0, 0);
-          AddComponent(new CannonAddonComponent(0xE95), -1, 0, 0);
-          AddComponent(new CannonAddonComponent(0xE94), -2, 0, 0);
+          {
+            AddComponent(new CannonAddonComponent(0xE96), 0, 0, 0);
+            AddComponent(new CannonAddonComponent(0xE95), -1, 0, 0);
+            AddComponent(new CannonAddonComponent(0xE94), -2, 0, 0);
 
-          break;
-        }
+            break;
+          }
         case CannonDirection.South:
-        {
-          AddComponent(new CannonAddonComponent(0xE91), 0, 0, 0);
-          AddComponent(new CannonAddonComponent(0xE92), 0, -1, 0);
-          AddComponent(new CannonAddonComponent(0xE93), 0, -2, 0);
+          {
+            AddComponent(new CannonAddonComponent(0xE91), 0, 0, 0);
+            AddComponent(new CannonAddonComponent(0xE92), 0, -1, 0);
+            AddComponent(new CannonAddonComponent(0xE93), 0, -2, 0);
 
-          break;
-        }
+            break;
+          }
         default:
-        {
-          AddComponent(new CannonAddonComponent(0xE8E), 0, 0, 0);
-          AddComponent(new CannonAddonComponent(0xE8F), 1, 0, 0);
-          AddComponent(new CannonAddonComponent(0xE90), 2, 0, 0);
+          {
+            AddComponent(new CannonAddonComponent(0xE8E), 0, 0, 0);
+            AddComponent(new CannonAddonComponent(0xE8F), 1, 0, 0);
+            AddComponent(new CannonAddonComponent(0xE90), 2, 0, 0);
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -114,7 +114,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CannonDirection CannonDirection{ get; private set; }
+    public CannonDirection CannonDirection { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Charges
@@ -261,34 +261,19 @@ namespace Server.Items
         {
           if (!Utility.InRange(new Point3D(p), m_Cannon.Location, 2))
           {
-            bool allow = false;
 
             int x = p.X - m_Cannon.X;
             int y = p.Y - m_Cannon.Y;
 
-            switch (m_Cannon.CannonDirection)
+            bool allow = m_Cannon.CannonDirection switch
             {
-              case CannonDirection.North:
-                if (y < 0 && Math.Abs(x) <= -y / 3)
-                  allow = true;
 
-                break;
-              case CannonDirection.East:
-                if (x > 0 && Math.Abs(y) <= x / 3)
-                  allow = true;
-
-                break;
-              case CannonDirection.South:
-                if (y > 0 && Math.Abs(x) <= y / 3)
-                  allow = true;
-
-                break;
-              case CannonDirection.West:
-                if (x < 0 && Math.Abs(y) <= -x / 3)
-                  allow = true;
-
-                break;
-            }
+              CannonDirection.North => y < 0 && Math.Abs(x) <= -y / 3,
+              CannonDirection.East => x > 0 && Math.Abs(y) <= x / 3,
+              CannonDirection.South => y > 0 && Math.Abs(x) <= y / 3,
+              CannonDirection.West => x < 0 && Math.Abs(y) <= -x / 3,
+              _ => false,
+            };
 
             if (allow && Utility.InRange(new Point3D(p), m_Cannon.Location, 14))
               m_Cannon.DoFireEffect(p);
@@ -301,9 +286,7 @@ namespace Server.Items
           }
         }
         else
-        {
           from.SendLocalizedMessage(1049630); // You cannot see that target!
-        }
       }
 
       protected override void OnTargetOutOfRange(Mobile from, object targeted)
@@ -341,10 +324,10 @@ namespace Server.Items
         AddHtmlLocalized(195, 109, 120, 20, 1076197, 0x7FFF); // Recharge
       }
 
-      public override void OnResponse(NetState state, RelayInfo info)
+      public override void OnResponse(NetState sender, RelayInfo info)
       {
         if (m_Cannon?.Deleted == false && info.ButtonID == (int)Buttons.Recharge)
-          m_Cannon.Fill(state.Mobile, m_Keg);
+          m_Cannon.Fill(sender.Mobile, m_Keg);
       }
 
       private enum Buttons
@@ -373,7 +356,8 @@ namespace Server.Items
 
     public override BaseAddon Addon => new CannonAddon(m_Direction)
     {
-      Charges = m_Charges, IsRewardItem = m_IsRewardItem
+      Charges = m_Charges,
+      IsRewardItem = m_IsRewardItem
     };
 
     [CommandProperty(AccessLevel.GameMaster)]

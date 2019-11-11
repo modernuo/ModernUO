@@ -338,8 +338,7 @@ namespace Server.SkillHandlers
             if (!alreadyOwned) // Passively check animal lore for gain
               m_Tamer.CheckTargetSkill(SkillName.AnimalLore, m_Creature, 0.0, 120.0);
 
-            if (m_Creature.Paralyzed)
-              m_Paralyzed = true;
+            m_Paralyzed |= m_Creature.Paralyzed;
           }
           else
           {
@@ -347,8 +346,7 @@ namespace Server.SkillHandlers
             m_Tamer.NextSkillTime = Core.TickCount;
             m_BeingTamed.Remove(m_Creature);
 
-            if (m_Creature.Paralyzed)
-              m_Paralyzed = true;
+            m_Paralyzed |= m_Creature.Paralyzed;
 
             if (!alreadyOwned) // Passively check animal lore for gain
               m_Tamer.CheckTargetSkill(SkillName.AnimalLore, m_Creature, 0.0, 120.0);

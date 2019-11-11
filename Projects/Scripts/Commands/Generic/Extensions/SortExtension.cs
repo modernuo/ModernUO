@@ -31,8 +31,7 @@ namespace Server.Commands.Generic
         order.Property.CheckAccess(from);
       }
 
-      if (assembly == null)
-        assembly = new AssemblyEmitter("__dynamic");
+      assembly ??= new AssemblyEmitter("__dynamic");
 
       m_Comparer = SortCompiler.Compile<object>(assembly, baseType, m_Orders.ToArray());
     }
@@ -69,7 +68,6 @@ namespace Server.Commands.Generic
             case "up":
             case "asc":
             case "ascending":
-              isAscending = true;
               ++offset;
               break;
 

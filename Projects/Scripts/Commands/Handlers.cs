@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Server.Commands.Generic;
 using Server.Engines.Help;
 using Server.Gumps;
 using Server.Items;
-using Server.Menus.ItemLists;
+using Server.Menus;
 using Server.Menus.Questions;
 using Server.Misc;
 using Server.Mobiles;
@@ -16,7 +17,7 @@ using Server.Targets;
 
 namespace Server.Commands
 {
-  public class CommandHandlers
+  public static class CommandHandlers
   {
     public static void Initialize()
     {
@@ -88,19 +89,17 @@ namespace Server.Commands
       {
         if (e.Length == 1 && !e.GetBoolean(0))
         {
-          from.Send(SpeedControl.Disable);
+          Packets.SendSpeedControlDisabled(from.NetState);
           from.SendMessage("Speed boost has been disabled.");
         }
         else
         {
-          from.Send(SpeedControl.MountSpeed);
+          Packets.SendSpeedControlMount(from.NetState);
           from.SendMessage("Speed boost has been enabled.");
         }
       }
       else
-      {
         from.SendMessage("Format: SpeedBoost [true|false]");
-      }
     }
 
     [Usage("Where")]
@@ -159,18 +158,16 @@ namespace Server.Commands
           {
             PageEntry pe = PageQueue.GetEntry(targ);
 
-            if (pe?.Handler == from)
-              from.SendMessage("You may only use this command if you are handling their help page.");
-            else
-              from.SendMessage("You may only use this command on someone who has paged you.");
+            from.SendMessage(pe?.Handler == from
+              ? "You may only use this command if you are handling their help page."
+              : "You may only use this command on someone who has paged you.");
 
             return;
           }
 
-          if (targ.AddToBackpack(held))
-            from.SendMessage("The item they were holding has been placed into their backpack.");
-          else
-            from.SendMessage("The item they were holding has been placed at their feet.");
+          from.SendMessage(targ.AddToBackpack(held)
+            ? "The item they were holding has been placed into their backpack."
+            : "The item they were holding has been placed at their feet.");
 
           held.ClearBounce();
 
@@ -220,14 +217,8 @@ namespace Server.Commands
       }
 
       List<IEntity> list = new List<IEntity>();
-
-      foreach (Item item in World.Items.Values)
-        if (item.Map == map && item.Parent == null)
-          list.Add(item);
-
-      foreach (Mobile m in World.Mobiles.Values)
-        if (m.Map == map && !m.Player)
-          list.Add(m);
+      list.AddRange(World.Items.Values.Where(item => item.Map == map && item.Parent == null));
+      list.AddRange(World.Mobiles.Values.Where(m => m.Map == map && !m.Player));
 
       if (list.Count > 0)
       {
@@ -277,9 +268,7 @@ namespace Server.Commands
           }
         }
         else
-        {
           from.SendMessage("There were no pets found for that player.");
-        }
       }
       else if (obj is Mobile master && master.Player)
       {
@@ -308,9 +297,7 @@ namespace Server.Commands
           }
         }
         else
-        {
           from.SendMessage("There were no pets found for that player.");
-        }
       }
       else
       {
@@ -349,15 +336,9 @@ namespace Server.Commands
       CommandLogging.WriteLine(m, "{0} {1} playing sound {2} (toAll={3})", m.AccessLevel, CommandLogging.Format(m),
         index, toAll);
 
-      Packet p = new PlaySound(index, m.Location);
-
-      p.Acquire();
-
       foreach (NetState state in m.GetClientsInRange(12))
         if (toAll || state.Mobile.CanSee(m))
-          state.Send(p);
-
-      p.Release();
+          Packets.SendPlaySound(state, index, m.Location);
     }
 
     [Usage("Echo <text>")]
@@ -366,10 +347,7 @@ namespace Server.Commands
     {
       string toEcho = e.ArgString.Trim();
 
-      if (toEcho.Length > 0)
-        e.Mobile.SendMessage(toEcho);
-      else
-        e.Mobile.SendMessage("Format: Echo \"<text>\"");
+      e.Mobile.SendMessage(toEcho.Length > 0 ? toEcho : "Format: Echo \"<text>\"");
     }
 
     [Usage("Bank")]
@@ -528,16 +506,12 @@ namespace Server.Commands
 
             Dictionary<string, Region> list = from.Map.Regions;
 
-            foreach (KeyValuePair<string, Region> kvp in list)
-            {
-              Region r = kvp.Value;
-
+            foreach (var (_, r) in list)
               if (Insensitive.Equals(r.Name, name))
               {
                 from.Location = new Point3D(r.GoLocation);
                 return;
               }
-            }
 
             for (int i = 0; i < Map.AllMaps.Count; ++i)
             {
@@ -618,11 +592,7 @@ namespace Server.Commands
     {
       Mobile m = e.Mobile;
 
-      List<CommandEntry> list = new List<CommandEntry>();
-
-      foreach (CommandEntry entry in CommandSystem.Entries.Values)
-        if (m.AccessLevel >= entry.AccessLevel)
-          list.Add(entry);
+      List<CommandEntry> list = CommandSystem.Entries.Values.Where(entry => m.AccessLevel >= entry.AccessLevel).ToList();
 
       list.Sort();
 
@@ -671,13 +641,8 @@ namespace Server.Commands
 
     public static void BroadcastMessage(AccessLevel ac, int hue, string message)
     {
-      foreach (NetState state in NetState.Instances)
-      {
-        Mobile m = state.Mobile;
-
-        if (m?.AccessLevel >= ac)
-          m.SendMessage(hue, message);
-      }
+      foreach (Mobile m in NetState.Instances.Select(state => state.Mobile).Where(m => m?.AccessLevel >= ac))
+        m.SendMessage(hue, message);
     }
 
     [Usage("AutoPageNotify")]

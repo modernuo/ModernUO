@@ -5,7 +5,7 @@ using Server.Multis;
 
 namespace Server.Commands
 {
-  public class Wipe
+  public static class Wipe
   {
     [Flags]
     public enum WipeType
@@ -74,7 +74,7 @@ namespace Server.Commands
 
       if (!items && !multis || !mobiles)
         return;
-      
+
       eable = map.GetObjectsInBounds(rect);
 
       foreach (IEntity obj in eable)

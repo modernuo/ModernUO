@@ -47,16 +47,7 @@ namespace Server.Spells.Fourth
         int rx = (dx - dy) * 44;
         int ry = (dx + dy) * 44;
 
-        bool eastToWest;
-
-        if (rx >= 0 && ry >= 0)
-          eastToWest = false;
-        else if (rx >= 0)
-          eastToWest = true;
-        else if (ry >= 0)
-          eastToWest = true;
-        else
-          eastToWest = false;
+        bool eastToWest = (rx < 0 || ry < 0) && (rx >= 0 || ry >= 0);
 
         Effects.PlaySound(p, Caster.Map, 0x20C);
 
@@ -65,7 +56,7 @@ namespace Server.Spells.Fourth
         TimeSpan duration;
 
         if (Core.AOS)
-          duration = TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5) / 4);
+          duration = TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5.0) / 4.0);
         else
           duration = TimeSpan.FromSeconds(4.0 + Caster.Skills.Magery.Value * 0.5);
 

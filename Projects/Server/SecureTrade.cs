@@ -18,15 +18,10 @@
  *
  ***************************************************************************/
 
-#region References
-
 using System;
 using System.Collections.Generic;
-using Server.Accounting;
 using Server.Items;
 using Server.Network;
-
-#endregion
 
 namespace Server
 {
@@ -39,56 +34,33 @@ namespace Server
       From = new SecureTradeInfo(this, from, new SecureTradeContainer(this));
       To = new SecureTradeInfo(this, to, new SecureTradeContainer(this));
 
-      bool from6017 = from.NetState?.ContainerGridLines == true;
-      bool to6017 = to.NetState?.ContainerGridLines == true;
+      NetState fromNS = from.NetState;
+      NetState toNS = to.NetState;
 
-      bool from704565 = from.NetState?.NewSecureTrading == true;
-      bool to704565 = to.NetState?.NewSecureTrading == true;
+      bool from704565 = fromNS?.NewSecureTrading == true;
+      bool to704565 = toNS?.NewSecureTrading == true;
 
-      from.Send(new MobileStatus(from, to));
-      from.Send(new UpdateSecureTrade(From.Container, false, false));
-
-      if (from6017)
-        from.Send(new SecureTradeEquip6017(To.Container, to));
-      else
-        from.Send(new SecureTradeEquip(To.Container, to));
-
-      from.Send(new UpdateSecureTrade(From.Container, false, false));
-
-      if (from6017)
-        from.Send(new SecureTradeEquip6017(From.Container, from));
-      else
-        from.Send(new SecureTradeEquip(From.Container, from));
-
-      from.Send(new DisplaySecureTrade(to, From.Container, To.Container, to.Name));
-      from.Send(new UpdateSecureTrade(From.Container, false, false));
-
+      Packets.SendMobileStatus(fromNS, from, to);
+      Packets.SendUpdateSecureTrade(fromNS, From.Container.Serial, false, false);
+      Packets.SendSecureTradeEquip(fromNS, To.Container, to.Serial);
+      Packets.SendUpdateSecureTrade(fromNS, From.Container.Serial, false, false);
+      Packets.SendSecureTradeEquip(fromNS, To.Container, from.Serial);
+      Packets.SendDisplaySecureTrade(fromNS, to.Serial, From.Container.Serial, To.Container.Serial, to.Name);
+      Packets.SendUpdateSecureTrade(fromNS, From.Container.Serial, false, false);
       if (from.Account != null && from704565)
-        from.Send(
-          new UpdateSecureTrade(From.Container, TradeFlag.UpdateLedger, from.Account.TotalGold,
-            from.Account.TotalPlat));
+        Packets.SendUpdateSecureTrade(fromNS, From.Container.Serial, TradeFlag.UpdateLedger,from.Account.TotalGold,
+          from.Account.TotalPlat);
 
-      to.Send(new MobileStatus(to, from));
-      to.Send(new UpdateSecureTrade(To.Container, false, false));
-
-      if (to6017)
-        to.Send(new SecureTradeEquip6017(From.Container, from));
-      else
-        to.Send(new SecureTradeEquip(From.Container, from));
-
-      to.Send(new UpdateSecureTrade(To.Container, false, false));
-
-      if (to6017)
-        to.Send(new SecureTradeEquip6017(To.Container, to));
-      else
-        to.Send(new SecureTradeEquip(To.Container, to));
-
-      to.Send(new DisplaySecureTrade(from, To.Container, From.Container, from.Name));
-      to.Send(new UpdateSecureTrade(To.Container, false, false));
-
+      Packets.SendMobileStatus(toNS, to, from);
+      Packets.SendUpdateSecureTrade(toNS, To.Container.Serial, false, false);
+      Packets.SendSecureTradeEquip(toNS, From.Container, from.Serial);
+      Packets.SendUpdateSecureTrade(toNS, To.Container.Serial, false, false);
+      Packets.SendSecureTradeEquip(toNS, From.Container, to.Serial);
+      Packets.SendDisplaySecureTrade(toNS, from.Serial, To.Container.Serial, From.Container.Serial, from.Name);
+      Packets.SendUpdateSecureTrade(toNS, To.Container.Serial, false, false);
       if (to.Account != null && to704565)
-        to.Send(new UpdateSecureTrade(To.Container, TradeFlag.UpdateLedger, to.Account.TotalGold,
-          to.Account.TotalPlat));
+        Packets.SendUpdateSecureTrade(toNS, To.Container.Serial, TradeFlag.UpdateLedger,to.Account.TotalGold,
+          to.Account.TotalPlat);
     }
 
     public SecureTradeInfo From{ get; }
@@ -112,7 +84,8 @@ namespace Server
 
           item.OnSecureTrade(From.Mobile, To.Mobile, From.Mobile, false);
 
-          if (!item.Deleted) From.Mobile.AddToBackpack(item);
+          if (!item.Deleted)
+            From.Mobile.AddToBackpack(item);
         }
 
       list = To.Container.Items;
@@ -136,16 +109,15 @@ namespace Server
     {
       if (!Valid) return;
 
-      From.Mobile.Send(new CloseSecureTrade(From.Container));
-      To.Mobile.Send(new CloseSecureTrade(To.Container));
-
       Valid = false;
 
       NetState ns = From.Mobile.NetState;
+      Packets.SendCloseSecureTrade(ns, From.Container.Serial);
 
       ns?.RemoveTrade(this);
 
       ns = To.Mobile.NetState;
+      Packets.SendCloseSecureTrade(ns, To.Container.Serial);
 
       ns?.RemoveTrade(this);
 
@@ -170,8 +142,9 @@ namespace Server
         int plat = left.Mobile.Account.TotalPlat;
         int gold = left.Mobile.Account.TotalGold;
 
-        left.Mobile.Send(new UpdateSecureTrade(left.Container, TradeFlag.UpdateLedger, gold, plat));
-      }
+      if (from.NetState?.NewSecureTrading == true)
+        Packets.SendUpdateSecureTrade(from.NetState, left.Container.Serial, TradeFlag.UpdateLedger,
+          from.Account.TotalPlat, from.Account.TotalGold);
 
       if (right.Mobile.NetState?.NewSecureTrading == true)
         right.Mobile.Send(new UpdateSecureTrade(right.Container, TradeFlag.UpdateGold, left.Gold, left.Plat));
@@ -241,8 +214,8 @@ namespace Server
           From.Accepted = false;
           To.Accepted = false;
 
-          From.Mobile.Send(new UpdateSecureTrade(From.Container, From.Accepted, To.Accepted));
-          To.Mobile.Send(new UpdateSecureTrade(To.Container, To.Accepted, From.Accepted));
+          Packets.SendUpdateSecureTrade(From.Mobile.NetState, From.Container.Serial, From.Accepted, To.Accepted);
+          Packets.SendUpdateSecureTrade(To.Mobile.NetState, To.Container.Serial, To.Accepted, From.Accepted);
 
           return;
         }
@@ -282,8 +255,8 @@ namespace Server
       }
       else if (!From.IsDisposed && !To.IsDisposed)
       {
-        From.Mobile.Send(new UpdateSecureTrade(From.Container, From.Accepted, To.Accepted));
-        To.Mobile.Send(new UpdateSecureTrade(To.Container, To.Accepted, From.Accepted));
+        Packets.SendUpdateSecureTrade(From.Mobile.NetState, From.Container.Serial, From.Accepted, To.Accepted);
+        Packets.SendUpdateSecureTrade(To.Mobile.NetState, To.Container.Serial, To.Accepted, From.Accepted);
       }
     }
 

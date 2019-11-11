@@ -33,12 +33,12 @@ namespace Server.Gumps
       AddButton(110, 105, 0x819, 0x818, 0x2); // Cancel
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (m_Pet.Deleted || !m_Pet.IsBonded || !m_Pet.IsDeadPet)
         return;
 
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       if (info.ButtonID == 1)
       {

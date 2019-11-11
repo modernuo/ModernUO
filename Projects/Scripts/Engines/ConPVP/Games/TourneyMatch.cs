@@ -106,7 +106,7 @@ namespace Server.Engines.ConPVP
 
             foreach (Mobile view in mob.GetMobilesInRange(18))
               if (!mob.CanSee(view))
-                mob.Send(view.RemovePacket);
+                Packets.SendRemoveEntity(mob.NetState, view.Serial);
 
             mob.LocalOverheadMessage(MessageType.Emote, 0x3B2, false,
               "* Your mind focuses intently on the fight and all other distractions fade away *");

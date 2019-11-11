@@ -6,7 +6,7 @@ using Server.Mobiles;
 namespace Server.Items
 {
   [Flippable(0x2790, 0x27DB)]
-  public class LeatherNinjaBelt : BaseWaist, IDyable, INinjaWeapon
+  public class LeatherNinjaBelt : BaseWaist, INinjaWeapon
   {
     private Poison m_Poison;
     private int m_PoisonCharges;
@@ -27,18 +27,18 @@ namespace Server.Items
 
     public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
-    public virtual int WrongAmmoMessage => 1063301; //You can only place shuriken in a ninja belt.
-    public virtual int NoFreeHandMessage => 1063299; //You must have a free hand to throw shuriken.
-    public virtual int EmptyWeaponMessage => 1063297; //You have no shuriken in your ninja belt!
-    public virtual int RecentlyUsedMessage => 1063298; //You cannot throw another shuriken yet.
-    public virtual int FullWeaponMessage => 1063302; //You cannot add any more shuriken.
+    public int WrongAmmoMessage => 1063301; //You can only place shuriken in a ninja belt.
+    public int NoFreeHandMessage => 1063299; //You must have a free hand to throw shuriken.
+    public int EmptyWeaponMessage => 1063297; //You have no shuriken in your ninja belt!
+    public int RecentlyUsedMessage => 1063298; //You cannot throw another shuriken yet.
+    public int FullWeaponMessage => 1063302; //You cannot add any more shuriken.
 
-    public virtual int WeaponMinRange => 2;
-    public virtual int WeaponMaxRange => 10;
+    public int WeaponMinRange => 2;
+    public int WeaponMaxRange => 10;
 
-    public virtual int WeaponDamage => Utility.RandomMinMax(3, 5);
+    public int WeaponDamage => Utility.RandomMinMax(3, 5);
 
-    public virtual Type AmmoType => typeof(Shuriken);
+    public Type AmmoType => typeof(Shuriken);
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int UsesRemaining
@@ -81,7 +81,8 @@ namespace Server.Items
 
     public void AttackAnimation(Mobile from, Mobile to)
     {
-      if (from.Body.IsHuman) from.Animate(from.Mounted ? 26 : 9, 7, 1, true, false, 0);
+      if (from.Body.IsHuman)
+        from.Animate(from.Mounted ? 26 : 9, 7, 1, true, false, 0);
 
       from.PlaySound(0x23A);
       from.MovingEffect(to, 0x27AC, 1, 0, false, false);

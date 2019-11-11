@@ -14,7 +14,7 @@
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
+ *   (at your option) any later version.1
  *
  ***************************************************************************/
 
@@ -199,7 +199,7 @@ namespace Server
     Spawner = 0x100
   }
 
-  public class Item : IHued, IComparable<Item>, ISerializable, ISpawnable, IPropertyListObject
+  public class Item : IHued, IComparable<Item>, ISerializable, ISpawnable, ITile
   {
     public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
     public static readonly List<Item> EmptyItems = new List<Item>();
@@ -340,20 +340,22 @@ namespace Server
       set => SetFlag(ImplFlag.Stackable, value);
     }
 
-    public Packet RemovePacket => StaticPacketHandlers.GetRemoveEntityPacket(this);
-    public OPLInfo OPLPacket => StaticPacketHandlers.GetOPLInfoPacket(this);
-    public ObjectPropertyList PropertyList => StaticPacketHandlers.GetOPLPacket(this);
+    private ObjectPropertyList m_PropertyList;
 
-    // World packets need to be invalidated when any of the following changes:
-    //  - ItemID
-    //  - Amount
-    //  - Location
-    //  - Hue
-    //  - Packet Flags
-    //  - Direction
-    public Packet WorldPacket => StaticPacketHandlers.GetWorldItemPacket(this);
-    public Packet WorldPacketSA => StaticPacketHandlers.GetWorldItemSAPacket(this);
-    public Packet WorldPacketHS => StaticPacketHandlers.GetWorldItemHSPacket(this);
+    public ObjectPropertyList PropertyList
+    {
+      get
+      {
+        if (m_PropertyList == null)
+        {
+          m_PropertyList = new ObjectPropertyList(this);
+          GetProperties(m_PropertyList);
+          AppendChildProperties(m_PropertyList);
+        }
+
+        return m_PropertyList;
+      }
+    }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Visible
@@ -364,7 +366,6 @@ namespace Server
         if (GetFlag(ImplFlag.Visible) != value)
         {
           SetFlag(ImplFlag.Visible, value);
-          ReleaseWorldPackets();
 
           if (m_Map != null)
           {
@@ -377,7 +378,7 @@ namespace Server
               Mobile m = state.Mobile;
 
               if (!m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
-                state.Send(RemovePacket);
+                Packets.SendRemoveEntity(state, Serial);
             }
 
             eable.Free();
@@ -397,7 +398,6 @@ namespace Server
         if (GetFlag(ImplFlag.Movable) != value)
         {
           SetFlag(ImplFlag.Movable, value);
-          ReleaseWorldPackets();
           Delta(ItemDelta.Update);
         }
       }
@@ -433,16 +433,7 @@ namespace Server
 
     public virtual bool IsVirtualItem => false;
 
-    public virtual int LabelNumber
-    {
-      get
-      {
-        if (m_ItemID < 0x4000)
-          return 1020000 + m_ItemID;
-
-        return 1078872 + m_ItemID;
-      }
-    }
+    public virtual int LabelNumber => m_ItemID < 0x4000 ? 1020000 + m_ItemID : 1078872 + m_ItemID;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int TotalGold => GetTotal(TotalType.Gold);
@@ -513,8 +504,6 @@ namespace Server
         if (m_Hue != value)
         {
           m_Hue = value;
-          ReleaseWorldPackets();
-
           Delta(ItemDelta.Update);
         }
       }
@@ -576,7 +565,6 @@ namespace Server
           int oldPileWeight = PileWeight;
 
           m_ItemID = value;
-          ReleaseWorldPackets();
 
           int newPileWeight = PileWeight;
 
@@ -642,8 +630,6 @@ namespace Server
         if ((LightType)m_Direction != value)
         {
           m_Direction = (Direction)value;
-          ReleaseWorldPackets();
-
           Delta(ItemDelta.Update);
         }
       }
@@ -658,8 +644,6 @@ namespace Server
         if (m_Direction != value)
         {
           m_Direction = value;
-          ReleaseWorldPackets();
-
           Delta(ItemDelta.Update);
         }
       }
@@ -678,7 +662,6 @@ namespace Server
           int oldPileWeight = PileWeight;
 
           m_Amount = value;
-          ReleaseWorldPackets();
 
           int newPileWeight = PileWeight;
 
@@ -706,6 +689,8 @@ namespace Server
 
     public ItemData ItemData => TileData.ItemTable[m_ItemID & TileData.MaxItemValue];
 
+    int ITile.ID => ItemData.Value;
+
     public virtual bool CanTarget => true;
     public virtual bool DisplayLootType => true;
 
@@ -720,8 +705,6 @@ namespace Server
         SetFlag(ImplFlag.QuestItem, value);
 
         InvalidateProperties();
-
-        ReleaseWorldPackets();
 
         Delta(ItemDelta.Update);
       }
@@ -798,7 +781,7 @@ namespace Server
               Mobile m = state.Mobile;
 
               if (m.InRange(oldLocation, GetUpdateRange(m)))
-                state.Send(RemovePacket);
+                Packets.SendRemoveEntity(state, Serial);
             }
 
             eable.Free();
@@ -807,8 +790,6 @@ namespace Server
 
         m_Location = location;
         OnLocationChange(oldRealLocation);
-
-        ReleaseWorldPackets();
 
         List<Item> items = LookupItems();
 
@@ -853,7 +834,8 @@ namespace Server
           {
             Mobile m = state.Mobile;
 
-            if (!m.InRange(location, GetUpdateRange(m))) state.Send(RemovePacket);
+            if (!m.InRange(location, GetUpdateRange(m)))
+              Packets.SendRemoveEntity(state, Serial);
           }
 
           eable.Free();
@@ -863,8 +845,6 @@ namespace Server
 
         m_Location = location;
         OnLocationChange(oldRealLocation);
-
-        ReleaseWorldPackets();
 
         eable = m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange());
 
@@ -955,17 +935,13 @@ namespace Server
         {
           NetState ns = rootParent.NetState;
 
-          if (ns != null)
-            if (rootParent.CanSee(this) && rootParent.InRange(worldLoc, GetUpdateRange(rootParent)))
-            {
-              if (ns.ContainerGridLines)
-                ns.Send(new ContainerContentUpdate6017(this));
-              else
-                ns.Send(new ContainerContentUpdate(this));
+          if (ns != null && rootParent.CanSee(this) && rootParent.InRange(worldLoc, GetUpdateRange(rootParent)))
+          {
+            Packets.SendContainerContentUpdate(ns, this);
 
-              if (ObjectPropertyList.Enabled)
-                ns.Send(OPLPacket);
-            }
+            if (ObjectPropertyList.Enabled)
+              PropertyList.Send(ns);
+          }
         }
 
         SecureTrade st = GetSecureTradeCont()?.Trade;
@@ -986,19 +962,16 @@ namespace Server
 
           if (ns != null && tradeRecip.CanSee(this) && tradeRecip.InRange(worldLoc, GetUpdateRange(tradeRecip)))
           {
-            if (ns.ContainerGridLines)
-              ns.Send(new ContainerContentUpdate6017(this));
-            else
-              ns.Send(new ContainerContentUpdate(this));
+            Packets.SendContainerContentUpdate(ns, this);
 
             if (ObjectPropertyList.Enabled)
-              ns.Send(OPLPacket);
+              PropertyList.Send(ns);
           }
         }
 
         List<Mobile> openers = contParent.Openers;
 
-        if (openers != null)
+        if (openers?.Count > 0)
           lock (openers)
           {
             for (int i = 0; i < openers.Count; ++i)
@@ -1008,9 +981,7 @@ namespace Server
               int range = GetUpdateRange(mob);
 
               if (mob.Map != map || !mob.InRange(worldLoc, range))
-              {
                 openers.RemoveAt(i--);
-              }
               else
               {
                 if (mob == rootParent || mob == tradeRecip)
@@ -1020,13 +991,10 @@ namespace Server
 
                 if (ns != null && mob.CanSee(this))
                 {
-                  if (ns.ContainerGridLines)
-                    ns.Send(new ContainerContentUpdate6017(this));
-                  else
-                    ns.Send(new ContainerContentUpdate(this));
+                  Packets.SendContainerContentUpdate(ns, this);
 
                   if (ObjectPropertyList.Enabled)
-                    ns.Send(OPLPacket);
+                    PropertyList.Send(ns);
                 }
               }
             }
@@ -1037,8 +1005,6 @@ namespace Server
 
         return;
       }
-
-      Packet p = null;
 
       IPooledEnumerable<NetState> eable = map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
@@ -1054,39 +1020,26 @@ namespace Server
               SendInfoTo(state, ObjectPropertyList.Enabled);
             else
             {
-              if (p != null)
-                state.Send(p);
-              else if (m_Parent is Item)
-              {
-                if (state.ContainerGridLines)
-                  state.Send(new ContainerContentUpdate6017(this));
-                else
-                  state.Send(new ContainerContentUpdate(this));
-              }
+              if (m_Parent is Item)
+                Packets.SendContainerContentUpdate(state, this);
               else if (m_Parent is Mobile)
-              {
-                p = new EquipUpdate(this);
-                p.Acquire();
-
-                state.Send(p);
-              }
+                Packets.SendEquipUpdate(state, this);
 
               if (ObjectPropertyList.Enabled)
-                state.Send(OPLPacket);
+                PropertyList.Send(state);
             }
           }
           else if ((flags & ItemDelta.EquipOnly) != 0 && m_Parent is Mobile)
           {
-            state.Send(p ?? (p = Packet.Acquire(new EquipUpdate(this))));
+            Packets.SendEquipUpdate(state, this);
 
             if (ObjectPropertyList.Enabled)
-              state.Send(OPLPacket);
+              PropertyList.Send(state);
           } else if (ObjectPropertyList.Enabled && (flags & ItemDelta.Properties) != 0)
-            state.Send(OPLPacket);
+            PropertyList.Send(state);
         }
       }
 
-      Packet.Release(p);
       eable.Free();
     }
 
@@ -1126,7 +1079,7 @@ namespace Server
 
       OnAfterDelete();
 
-      FreeCache();
+      ClearProperties();
     }
 
     [CommandProperty(AccessLevel.Counselor)]
@@ -1237,17 +1190,7 @@ namespace Server
       long ticks = LastMoved.Ticks;
       long now = DateTime.UtcNow.Ticks;
 
-      TimeSpan d;
-
-      try
-      {
-        d = new TimeSpan(ticks - now);
-      }
-      catch
-      {
-        if (ticks < now) d = TimeSpan.MaxValue;
-        else d = TimeSpan.MaxValue;
-      }
+      TimeSpan d = new TimeSpan(ticks - now);
 
       double minutes = -d.TotalMinutes;
 
@@ -1306,13 +1249,7 @@ namespace Server
       if (GetSaveFlag(flags, SaveFlag.Name))
         writer.Write(info.m_Name);
 
-      if (GetSaveFlag(flags, SaveFlag.Parent))
-      {
-        if (m_Parent?.Deleted == false)
-          writer.Write(m_Parent.Serial);
-        else
-          writer.Write(Serial.MinusOne);
-      }
+      if (GetSaveFlag(flags, SaveFlag.Parent)) writer.Write(m_Parent?.Deleted == false ? m_Parent.Serial : Serial.MinusOne);
 
       if (GetSaveFlag(flags, SaveFlag.Items))
         writer.Write(items, false);
@@ -1443,10 +1380,10 @@ namespace Server
     public List<Item> AcquireItems()
     {
       if (this is Container cont)
-        return cont.m_Items ?? (cont.m_Items = new List<Item>());
+        return cont.m_Items ??= new List<Item>();
 
       CompactInfo info = AcquireCompactInfo();
-      return info.m_Items ?? (info.m_Items = new List<Item>());
+      return info.m_Items ??= new List<Item>();
     }
 
     private void SetFlag(ImplFlag flag, bool value)
@@ -1538,7 +1475,7 @@ namespace Server
     /// </summary>
     public virtual void SendPropertiesTo(Mobile from)
     {
-      from.Send(PropertyList);
+      PropertyList.Send(from?.NetState);
     }
 
     /// <summary>
@@ -1687,23 +1624,23 @@ namespace Server
       list.Add(1062203, "{0}", m.Name); // Blessed for ~1_NAME~
     }
 
-	  /// <summary>
-	  ///   Overridable. Fills an <see cref="ObjectPropertyList" /> with everything applicable. By default, this invokes
-	  ///   <see cref="AddNameProperties" />, then <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or
-	  ///   <see cref="Mobile.GetChildProperties">Mobile.GetChildProperties</see>. This method should be overridden to add any custom
-	  ///   properties.
-	  /// </summary>
-	  public virtual void GetProperties(ObjectPropertyList list)
+    /// <summary>
+    ///   Overridable. Fills an <see cref="ObjectPropertyList" /> with everything applicable. By default, this invokes
+    ///   <see cref="AddNameProperties" />, then <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or
+    ///   <see cref="Mobile.GetChildProperties">Mobile.GetChildProperties</see>. This method should be overridden to add any custom
+    ///   properties.
+    /// </summary>
+    public virtual void GetProperties(ObjectPropertyList list)
     {
       AddNameProperties(list);
     }
 
-	  /// <summary>
-	  ///   Overridable. Event invoked when a child (<paramref name="item" />) is building it's <see cref="ObjectPropertyList" />.
-	  ///   Recursively calls <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or
-	  ///   <see cref="Mobile.GetChildProperties">Mobile.GetChildProperties</see>.
-	  /// </summary>
-	  public virtual void GetChildProperties(ObjectPropertyList list, Item item)
+    /// <summary>
+    ///   Overridable. Event invoked when a child (<paramref name="item" />) is building it's <see cref="ObjectPropertyList" />.
+    ///   Recursively calls <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or
+    ///   <see cref="Mobile.GetChildProperties">Mobile.GetChildProperties</see>.
+    /// </summary>
+    public virtual void GetChildProperties(ObjectPropertyList list, Item item)
     {
       if (m_Parent is Item parentItem)
         parentItem.GetChildProperties(list, item);
@@ -1711,12 +1648,12 @@ namespace Server
         parentMobile.GetChildProperties(list, item);
     }
 
-	  /// <summary>
-	  ///   Overridable. Event invoked when a child (<paramref name="item" />) is building it's Name <see cref="ObjectPropertyList" />
-	  ///   . Recursively calls <see cref="Item.GetChildProperties">Item.GetChildNameProperties</see> or
-	  ///   <see cref="Mobile.GetChildProperties">Mobile.GetChildNameProperties</see>.
-	  /// </summary>
-	  public virtual void GetChildNameProperties(ObjectPropertyList list, Item item)
+    /// <summary>
+    ///   Overridable. Event invoked when a child (<paramref name="item" />) is building it's Name <see cref="ObjectPropertyList" />
+    ///   . Recursively calls <see cref="Item.GetChildProperties">Item.GetChildNameProperties</see> or
+    ///   <see cref="Mobile.GetChildProperties">Mobile.GetChildNameProperties</see>.
+    /// </summary>
+    public virtual void GetChildNameProperties(ObjectPropertyList list, Item item)
     {
       if (m_Parent is Item parentItem)
         parentItem.GetChildNameProperties(list, item);
@@ -1742,9 +1679,7 @@ namespace Server
         IEntity parent = bounce.m_Parent;
 
         if (parent?.Deleted != false)
-        {
           MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
-        }
         else if (parent is Item p)
         {
           IEntity root = p.RootParent;
@@ -1756,9 +1691,7 @@ namespace Server
             p.AddItem(this);
           }
           else
-          {
             MoveToWorld(from.Location, from.Map);
-          }
         }
         else if (parent is Mobile parentMobile)
         {
@@ -1766,9 +1699,7 @@ namespace Server
             MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
         }
         else
-        {
           MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
-        }
 
         ClearBounce();
       }
@@ -1859,19 +1790,14 @@ namespace Server
       MoveToWorld(location, m_Map);
     }
 
-    public void LabelTo(Mobile to, int number)
+    public void LabelTo(Mobile to, int number, string args = "")
     {
-      to.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", ""));
-    }
-
-    public void LabelTo(Mobile to, int number, string args)
-    {
-      to.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", args));
+      Packets.SendMessageLocalized(to?.NetState, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", args);
     }
 
     public void LabelTo(Mobile to, string text)
     {
-      to.Send(new UnicodeMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", text));
+      Packets.SendUnicodeMessage(to?.NetState, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", text);
     }
 
     public void LabelTo(Mobile to, string format, params object[] args)
@@ -1879,14 +1805,9 @@ namespace Server
       LabelTo(to, string.Format(format, args));
     }
 
-    public void LabelToAffix(Mobile to, int number, AffixType type, string affix)
+    public void LabelToAffix(Mobile to, int number, AffixType type, string affix, string args = "")
     {
-      to.Send(new MessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, ""));
-    }
-
-    public void LabelToAffix(Mobile to, int number, AffixType type, string affix, string args)
-    {
-      to.Send(new MessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, args));
+      Packets.SendMessageLocalizedAffix(to?.NetState, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, args);
     }
 
     public virtual void LabelLootTypeTo(Mobile to)
@@ -2000,8 +1921,7 @@ namespace Server
 
     public void ClearProperties()
     {
-      StaticPacketHandlers.FreeOPLPacket(this);
-      StaticPacketHandlers.FreeOPLInfoPacket(this);
+      m_PropertyList = null;
     }
 
     public void InvalidateProperties()
@@ -2011,23 +1931,14 @@ namespace Server
 
       if (m_Map != null && m_Map != Map.Internal && !World.Loading)
       {
-        ObjectPropertyList oldList = StaticPacketHandlers.FreeOPLPacket(this);
+        ObjectPropertyList oldList = m_PropertyList;
+        m_PropertyList = null;
 
         if (oldList?.Hash != PropertyList.Hash)
-        {
-          StaticPacketHandlers.FreeOPLInfoPacket(this);
           Delta(ItemDelta.Properties);
-        }
       }
       else
-      {
         ClearProperties();
-      }
-    }
-
-    public void ReleaseWorldPackets()
-    {
-      StaticPacketHandlers.FreeWorldItemPackets(this);
     }
 
     public virtual int GetPacketFlags()
@@ -2076,18 +1987,17 @@ namespace Server
 
     private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
-    public IPooledEnumerable<IEntity> GetObjectsInRange(int range)
-    {
-      Map map = m_Map;
+    public IPooledEnumerable<IEntity> GetObjectsInRange(int range) =>
+      m_Map?.GetObjectsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range) ?? Map.NullEnumerable<IEntity>.Instance;
 
-      if (map == null)
-        return Map.NullEnumerable<IEntity>.Instance;
+    public IPooledEnumerable<Item> GetItemsInRange(int range) =>
+      m_Map?.GetItemsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range) ?? Map.NullEnumerable<Item>.Instance;
 
-      if (m_Parent == null)
-        return map.GetObjectsInRange(m_Location, range);
+    public IPooledEnumerable<Mobile> GetMobilesInRange(int range) =>
+      m_Map?.GetMobilesInRange(m_Parent == null ? m_Location : GetWorldLocation(), range) ?? Map.NullEnumerable<Mobile>.Instance;
 
-      return map.GetObjectsInRange(GetWorldLocation(), range);
-    }
+    public IPooledEnumerable<NetState> GetClientsInRange(int range) =>
+      m_Map?.GetClientsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range) ?? Map.NullEnumerable<NetState>.Instance;
 
     public IPooledEnumerable<Item> GetItemsInRange(int range)
     {
@@ -2538,9 +2448,7 @@ namespace Server
       if (heldBy != null)
       {
         if (GetBounce() != null)
-        {
           Bounce(heldBy);
-        }
         else
         {
           heldBy.Holding = null;
@@ -2561,18 +2469,22 @@ namespace Server
 
     public virtual void SendInfoTo(NetState state, bool sendOplPacket)
     {
-      state.Send(GetWorldPacketFor(state));
+      SendWorldPacketFor(state);
 
-      if (sendOplPacket) state.Send(OPLPacket);
+      if (sendOplPacket)
+        PropertyList.Send(state);
     }
 
-    protected virtual Packet GetWorldPacketFor(NetState state)
+    // World packets need to be invalidated when any of the following changes:
+    //  - ItemID
+    //  - Amount
+    //  - Location
+    //  - Hue
+    //  - Packet Flags
+    //  - Direction
+    protected virtual void SendWorldPacketFor(NetState state)
     {
-      if (state.HighSeas)
-        return WorldPacketHS;
-      if (state.StygianAbyss)
-        return WorldPacketSA;
-      return WorldPacket;
+      Packets.SendWorldItem(state, this);
     }
 
     public virtual int GetTotal(TotalType type) => 0;
@@ -2752,10 +2664,7 @@ namespace Server
 
     public virtual void FreeCache()
     {
-      ReleaseWorldPackets();
-      StaticPacketHandlers.FreeRemoveItemPacket(this);
-      StaticPacketHandlers.FreeOPLInfoPacket(this);
-      StaticPacketHandlers.FreeOPLPacket(this);
+      m_PropertyList = null;
     }
 
     public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text)
@@ -2763,7 +2672,6 @@ namespace Server
       if (m_Map == null)
         return;
 
-      Packet p = null;
       Point3D worldLoc = GetWorldLocation();
 
       IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
@@ -2774,36 +2682,21 @@ namespace Server
 
         if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
         {
-          if (p == null)
-          {
-            if (ascii)
-              p = new AsciiMessage(Serial, m_ItemID, type, hue, 3, Name, text);
-            else
-              p = new UnicodeMessage(Serial, m_ItemID, type, hue, 3, "ENU", Name, text);
-
-            p.Acquire();
-          }
-
-          state.Send(p);
+          if (ascii)
+            Packets.SendAsciiMessage(state, Serial, m_ItemID, type, hue, 3, Name, text);
+          else
+            Packets.SendUnicodeMessage(state, Serial, m_ItemID, type, hue, 3, "ENU", Name, text);
         }
       }
-
-      Packet.Release(p);
 
       eable.Free();
     }
 
-    public void PublicOverheadMessage(MessageType type, int hue, int number)
-    {
-      PublicOverheadMessage(type, hue, number, "");
-    }
-
-    public void PublicOverheadMessage(MessageType type, int hue, int number, string args)
+    public void PublicOverheadMessage(MessageType type, int hue, int number, string args = "")
     {
       if (m_Map == null)
         return;
 
-      Packet p = null;
       Point3D worldLoc = GetWorldLocation();
 
       IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
@@ -2813,15 +2706,8 @@ namespace Server
         Mobile m = state.Mobile;
 
         if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
-        {
-          if (p == null)
-            p = Packet.Acquire(new MessageLocalized(Serial, m_ItemID, type, hue, 3, number, Name, args));
-
-          state.Send(p);
-        }
+          Packets.SendMessageLocalized(state, Serial, m_ItemID, type, hue, 3, number, Name, args);
       }
-
-      Packet.Release(p);
 
       eable.Free();
     }
@@ -3187,7 +3073,8 @@ namespace Server
       {
         Mobile m = state.Mobile;
 
-        if (m.InRange(worldLoc, GetUpdateRange(m))) state.Send(RemovePacket);
+        if (m.InRange(worldLoc, GetUpdateRange(m)))
+          Packets.SendRemoveEntity(state, Serial);
       }
 
       eable.Free();
@@ -3227,21 +3114,21 @@ namespace Server
       to.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", ""));
     }
 
-    public void SendLocalizedMessageTo(Mobile to, int number, string args)
+    public void SendLocalizedMessageTo(Mobile to, int number, string args = "")
     {
       if (Deleted || !to.CanSee(this))
         return;
 
-      to.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", args));
+      Packets.SendMessageLocalized(to.NetState, Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", args);
     }
 
-    public void SendLocalizedMessageTo(Mobile to, int number, AffixType affixType, string affix, string args)
+    public void SendLocalizedMessageTo(Mobile to, int number, AffixType affixType, string affix = "", string args = "")
     {
       if (Deleted || !to.CanSee(this))
         return;
 
-      to.Send(new MessageLocalizedAffix(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", affixType, affix,
-        args));
+      Packets.SendMessageLocalizedAffix(to.NetState, Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", affixType, affix,
+        args);
     }
 
     public virtual void OnSnoop(Mobile from)
@@ -3393,7 +3280,7 @@ namespace Server
 
     public bool CheckLift(Mobile from)
     {
-      LRReason reject = LRReason.Inspecific;
+      LRReason reject = LRReason.Unspecific;
 
       return CheckLift(from, this, ref reject);
     }
@@ -3420,8 +3307,8 @@ namespace Server
       ObjectPropertyList opl = PropertyList;
 
       if (opl.Header > 0)
-        from.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, opl.Header, Name,
-          opl.HeaderArgs));
+        Packets.SendMessageLocalized(from.NetState, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, opl.Header, Name,
+          opl.HeaderArgs);
     }
 
     public virtual void OnSingleClick(Mobile from)
@@ -3440,11 +3327,10 @@ namespace Server
       if (Name == null)
       {
         if (m_Amount <= 1)
-          ns.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", ""));
+          Packets.SendMessageLocalized(ns, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber);
         else
-          ns.Send(new MessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "",
-            AffixType.Append,
-            $" : {m_Amount}", ""));
+          Packets.SendMessageLocalizedAffix(ns, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "",
+            AffixType.Append, $" : {m_Amount}");
       }
       else
       {
@@ -3534,8 +3420,8 @@ namespace Server
       if (BlessedFor != null)
         return false;
 
-      return m_LootType == LootType.Regular;
-    }
+    public virtual bool IsStandardLoot() =>
+      !(Mobile.InsuranceEnabled && Insured) && BlessedFor == null && m_LootType == LootType.Regular;
 
     public override string ToString() => $"0x{Serial.Value:X} \"{GetType().Name}\"";
 
@@ -3623,11 +3509,9 @@ namespace Server
     private Map m_Map;
     private LootType m_LootType;
     private Direction m_Direction;
-
     #endregion
 
     #region Location Location Location!
-
     public virtual void OnLocationChange(Point3D oldLocation)
     {
     }
@@ -3656,7 +3540,8 @@ namespace Server
               {
                 Mobile m = state.Mobile;
 
-                if (!m.InRange(value, GetUpdateRange(m))) state.Send(RemovePacket);
+                if (!m.InRange(value, GetUpdateRange(m)))
+                  Packets.SendRemoveEntity(state, Serial);
               }
 
               eable.Free();
@@ -3664,7 +3549,6 @@ namespace Server
 
             Point3D oldLoc = m_Location;
             m_Location = value;
-            ReleaseWorldPackets();
 
             SetLastMoved();
 
@@ -3687,24 +3571,17 @@ namespace Server
           else if (m_Parent is Item)
           {
             m_Location = value;
-            ReleaseWorldPackets();
 
             Delta(ItemDelta.Update);
           }
           else
-          {
             m_Location = value;
-            ReleaseWorldPackets();
-          }
 
           if (m_Parent == null)
             m_Map.OnMove(oldLocation, this);
         }
         else
-        {
           m_Location = value;
-          ReleaseWorldPackets();
-        }
 
         OnLocationChange(oldLocation);
       }
@@ -3730,11 +3607,9 @@ namespace Server
       get => m_Location.m_Z;
       set => Location = new Point3D(m_Location.m_X, m_Location.m_Y, value);
     }
-
     #endregion
 
     #region OnDoubleClick[...]
-
     public virtual void OnDoubleClick(Mobile from)
     {
     }
@@ -3761,7 +3636,6 @@ namespace Server
     {
       from.SendLocalizedMessage(500447); // That is not accessible.
     }
-
     #endregion
   }
 }

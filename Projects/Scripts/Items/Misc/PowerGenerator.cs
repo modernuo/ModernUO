@@ -31,11 +31,7 @@ namespace Server.Items
 
     private void AddGeneratorComponent(int itemID, int x, int y, int z)
     {
-      AddonComponent component = new AddonComponent(itemID);
-      component.Name = "a power generator";
-      component.Hue = 0x451;
-
-      AddComponent(component, x, y, z);
+      AddComponent(new AddonComponent(itemID){ Name = "a power generator", Hue = 0x451 }, x, y, z);
     }
 
     public override void Serialize(GenericWriter writer)
@@ -148,9 +144,7 @@ namespace Server.Items
           visited[current.X, current.Y] = true;
         }
         else
-        {
           current = stack[--stackSize - 1];
-        }
       }
 
       Path = new Node[stackSize];
@@ -197,9 +191,8 @@ namespace Server.Items
 
     public void DoDamage(Mobile to)
     {
-      to.Send(new UnicodeMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, "", "",
-        "The generator shoots an arc of electricity at you!"));
-      to.BoltEffect(0);
+      Packets.SendMessageLocalized(to.NetState, Serial, ItemID, MessageType.Regular, 0x3B2, 3, 1152372); // The Nexus shoots an arc of energy at you!
+      to.BoltEffect();
       to.LocalOverheadMessage(MessageType.Regular, 0xC9, true, "* Your body convulses from electric shock *");
       to.NonlocalOverheadMessage(MessageType.Regular, 0xC9, true, $"* {to.Name} spasms from electric shock *");
 
@@ -358,7 +351,7 @@ namespace Server.Items
           hues[n.X, n.Y] = NodeHue.Blue;
         }
 
-        Node lastNode = path[path.Length - 1];
+        Node lastNode = path[^1];
         hues[lastNode.X, lastNode.Y] = NodeHue.Red;
 
         for (int i = 0; i < sideLength; i++)

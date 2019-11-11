@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Engines.MLQuests.Gumps;
 using Server.Engines.MLQuests.Objectives;
 using Server.Engines.MLQuests.Rewards;
@@ -36,16 +37,7 @@ namespace Server.Engines.MLQuests
 
       Objectives = new BaseObjectiveInstance[quest.Objectives.Count];
 
-      BaseObjectiveInstance obj;
-      bool timed = false;
-
-      for (int i = 0; i < quest.Objectives.Count; ++i)
-      {
-        Objectives[i] = obj = quest.Objectives[i].CreateInstance(this);
-
-        if (obj.IsTimed)
-          timed = true;
-      }
+      bool timed = quest.Objectives.Aggregate(false, (current, t) => current | t.CreateInstance(this).IsTimed);
 
       Register();
 
@@ -113,14 +105,8 @@ namespace Server.Engines.MLQuests
       Removed = true;
     }
 
-    public bool AllowsQuestItem(Item item, Type type)
-    {
-      foreach (BaseObjectiveInstance objective in Objectives)
-        if (!objective.Expired && objective.AllowsQuestItem(item, type))
-          return true;
-
-      return false;
-    }
+    public bool AllowsQuestItem(Item item, Type type) =>
+      Objectives.Any(objective => !objective.Expired && objective.AllowsQuestItem(item, type));
 
     public bool IsCompleted()
     {
@@ -252,13 +238,11 @@ namespace Server.Engines.MLQuests
       if (Quest.ObjectiveType == ObjectiveType.All)
       {
         // TODO: 1115877 - You no longer have the required items to complete this quest.
-        foreach (BaseObjectiveInstance objective in Objectives)
-          if (!objective.IsCompleted())
-            return;
+        if (Objectives.Any(objective => !objective.IsCompleted()))
+          return;
 
-        foreach (BaseObjectiveInstance objective in Objectives)
-          if (!objective.OnBeforeClaimReward())
-            return;
+        if (Objectives.Any(objective => !objective.OnBeforeClaimReward()))
+          return;
 
         foreach (BaseObjectiveInstance objective in Objectives)
           objective.OnClaimReward();
@@ -314,14 +298,7 @@ namespace Server.Engines.MLQuests
       {
         // On OSI a more naive method of checking is used.
         // For containers, only the actual container item counts.
-        bool canFit = true;
-
-        foreach (Item rewardItem in rewards)
-          if (!Player.AddToBackpack(rewardItem))
-          {
-            canFit = false;
-            break;
-          }
+        bool canFit = rewards.All(rewardItem => Player.AddToBackpack(rewardItem));
 
         if (!canFit)
         {

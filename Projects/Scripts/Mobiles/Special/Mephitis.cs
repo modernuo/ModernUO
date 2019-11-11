@@ -68,12 +68,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.UltraRich, 4);
     }
 
-    public override void OnGotMeleeAttack(Mobile attacker)
-    {
-      base.OnGotMeleeAttack(attacker);
-
-      // TODO: Web ability
-    }
+    // TODO: Web Ability
 
     public override void Serialize(GenericWriter writer)
     {

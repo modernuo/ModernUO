@@ -1,6 +1,6 @@
 namespace Server.Engines.Chat
 {
-  public class ChatActionHandlers
+  public static class ChatActionHandlers
   {
     private static ChatActionHandler[] m_Handlers;
 
@@ -112,8 +112,8 @@ namespace Server.Engines.Chat
     {
       from.IgnorePrivateMessage = true;
       from.SendMessage(38); /* You will no longer receive private messages.
-									 * Those who send you a message will be notified that you are blocking incoming messages.
-									 */
+                                     * Those who send you a message will be notified that you are blocking incoming messages.
+                                     */
     }
 
     public static void TogglePrivateMessages(ChatUser from, Channel channel, string param)

@@ -151,7 +151,7 @@ namespace Server.Mobiles
         return;
 
       IPooledEnumerable<Mobile> eable = GetMobilesInRange(8);
-      
+
       switch (Utility.Random(3))
       {
         case 0: /* greater heal */
@@ -208,7 +208,7 @@ namespace Server.Mobiles
               damage = Utility.Random(12, 9);
             }
 
-            m.BoltEffect(0);
+            m.BoltEffect();
 
             SpellHelper.Damage(TimeSpan.FromSeconds(0.25), m, this, damage, 0, 0, 0, 0, 100);
           }
@@ -260,7 +260,7 @@ namespace Server.Mobiles
           break;
         }
       }
-      
+
       eable.Free();
     }
 

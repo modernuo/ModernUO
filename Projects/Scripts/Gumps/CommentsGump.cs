@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Server.Accounting;
 using Server.Network;
-using Server.Prompts;
 using Server.Targeting;
 
 namespace Server.Gumps
@@ -78,12 +77,12 @@ namespace Server.Gumps
         from.SendGump(new CommentsGump((Account)m.Account));
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (info.ButtonID == 0x7F)
       {
-        state.Mobile.SendMessage("Enter the text for the account comment (or press [Esc] to cancel):");
-        state.Mobile.Prompt = new CommentPrompt(m_Acct);
+        sender.Mobile.SendMessage("Enter the text for the account comment (or press [Esc] to cancel):");
+        sender.Mobile.Prompt = new CommentPrompt(m_Acct);
       }
     }
 

@@ -1,3 +1,4 @@
+using System.Linq;
 using Server.Gumps;
 using Server.Misc;
 using Server.Mobiles;
@@ -40,9 +41,7 @@ namespace Server.Guilds
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      PlayerMobile pm = sender.Mobile as PlayerMobile;
-
-      if (!IsMember(pm, guild))
+      if (!(sender.Mobile is PlayerMobile pm &&IsMember(pm, guild)))
         return;
 
       switch (info.ButtonID)
@@ -85,30 +84,12 @@ namespace Server.Guilds
 
       s = s.ToLower();
 
-      for (int i = 0; i < s.Length; ++i)
-      {
-        char c = s[i];
-
-        if ((c < 'a' || c > 'z') && (c < '0' || c > '9'))
-        {
-          bool except = false;
-
-          for (int j = 0; !except && j < exceptions.Length; j++)
-            if (c == exceptions[j])
-              except = true;
-
-          if (!except)
-            return false;
-        }
-      }
+      if (s.Any(c => (c < 'a' || c > 'z') && (c < '0' || c > '9') && exceptions.All(exception => exception != c)))
+        return false;
 
       string[] disallowed = ProfanityProtection.Disallowed;
 
-      for (int i = 0; i < disallowed.Length; i++)
-        if (s.IndexOf(disallowed[i]) != -1)
-          return false;
-
-      return true;
+      return disallowed.All(t => s.IndexOf(t) == -1);
     }
 
     public void AddHtmlText(int x, int y, int width, int height, TextDefinition text, bool back, bool scroll)

@@ -84,10 +84,7 @@ namespace Server.Mobiles
       return max;
     }
 
-    private void CloseClaimList(Mobile from)
-    {
-      from.CloseGump<ClaimListGump>();
-    }
+    private void CloseClaimList(Mobile from) => from.CloseGump<ClaimListGump>();
 
     public void BeginClaimList(Mobile from)
     {
@@ -141,9 +138,7 @@ namespace Server.Mobiles
         (from as PlayerMobile)?.AutoStabled.Remove(pet);
       }
       else
-      {
         SayTo(from, 1049612, pet.Name); // ~1_NAME~ remained in the stables because you have too many followers.
-      }
     }
 
     public void BeginStable(Mobile from)
@@ -176,43 +171,25 @@ namespace Server.Mobiles
         return;
 
       if (pet.Body.IsHuman)
-      {
         SayTo(from, 502672); // HA HA HA! Sorry, I am not an inn.
-      }
       else if (!pet.Controlled)
-      {
         SayTo(from, 1048053); // You can't stable that!
-      }
       else if (pet.ControlMaster != from)
-      {
         SayTo(from, 1042562); // You do not own that pet!
-      }
       else if (pet.IsDeadPet)
-      {
         SayTo(from, 1049668); // Living pets only, please.
-      }
       else if (pet.Summoned)
-      {
         SayTo(from, 502673); // I can not stable summoned creatures.
-      }
-/*
-			else if ( pet.Allured )
-			{
-				SayTo( from, 1048053 ); // You can't stable that!
-			}
-*/
+      /*else if ( pet.Allured )
+      {
+        SayTo( from, 1048053 ); // You can't stable that!
+      }*/
       else if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack?.Items.Count > 0)
-      {
         SayTo(from, 1042563); // You need to unload your pet.
-      }
       else if (pet.Combatant != null && pet.InRange(pet.Combatant, 12) && pet.Map == pet.Combatant.Map)
-      {
         SayTo(from, 1042564); // I'm sorry.  Your pet seems to be busy.
-      }
       else if (from.Stabled.Count >= GetMaxStabled(from))
-      {
         SayTo(from, 1042565); // You have too many pets in the stables!
-      }
       else
       {
         Container bank = from.FindBankNoCreate();
@@ -241,9 +218,7 @@ namespace Server.Mobiles
               : 502679); // [AOS: Your pet has been stabled.] Very well, thy pet is stabled. Thou mayst recover it by saying 'claim' to me. In one real world week, I shall sell it off if it is not claimed!
         }
         else
-        {
           SayTo(from, 502677); // But thou hast not the funds in thy bank account!
-        }
       }
     }
 
@@ -263,8 +238,11 @@ namespace Server.Mobiles
 
         if (pet?.Deleted != false)
         {
-          pet.IsStabled = false;
-          pet.StabledBy = null;
+          if (pet != null)
+          {
+            pet.IsStabled = false;
+            pet.StabledBy = null;
+          }
           from.Stabled.RemoveAt(i);
           --i;
           continue;
@@ -303,7 +281,7 @@ namespace Server.Mobiles
 
     public bool CanClaim(Mobile from, BaseCreature pet) => from.Followers + pet.ControlSlots <= from.FollowersMax;
 
-    private void DoClaim(Mobile from, BaseCreature pet)
+    private static void DoClaim(Mobile from, BaseCreature pet)
     {
       pet.SetControlMaster(from);
 

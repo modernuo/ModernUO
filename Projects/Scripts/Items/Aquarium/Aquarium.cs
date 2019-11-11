@@ -597,8 +597,7 @@ namespace Server.Items
         UpdateWaterState();
 
         // reward
-        if (LiveCreatures > 0)
-          m_RewardAvailable = true;
+        m_RewardAvailable |= LiveCreatures > 0;
       }
       else
       {
@@ -606,12 +605,12 @@ namespace Server.Items
         if (OptimalState && LiveCreatures < MaxLiveCreatures)
           if (Utility.RandomDouble() < 0.005 * LiveCreatures)
           {
-            BaseFish fish = null;
-            int message = 0;
+            BaseFish fish;
+            int message;
 
             switch (Utility.Random(6))
             {
-              case 0:
+              default:
               {
                 message = 1074371; // Brine shrimp have hatched overnight in the tank.
                 fish = new BrineShrimp();

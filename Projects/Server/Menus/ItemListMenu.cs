@@ -20,7 +20,7 @@
 
 using Server.Network;
 
-namespace Server.Menus.ItemLists
+namespace Server.Menus
 {
   public class ItemListEntry
   {
@@ -40,8 +40,7 @@ namespace Server.Menus.ItemLists
 
   public class ItemListMenu : IMenu
   {
-    private static int m_NextSerial;
-    private int m_Serial;
+    private static Serial m_NextSerial;
 
     public ItemListMenu(string question, ItemListEntry[] entries)
     {
@@ -50,18 +49,18 @@ namespace Server.Menus.ItemLists
 
       do
       {
-        m_Serial = m_NextSerial++;
-        m_Serial &= 0x7FFFFFFF;
-      } while (m_Serial == 0);
+        Serial = m_NextSerial++;
+        Serial &= 0x7FFFFFFF;
+      } while (Serial == 0);
 
-      m_Serial = (int)((uint)m_Serial | 0x80000000);
+      Serial |= 0x80000000;
     }
 
     public string Question{ get; }
 
     public ItemListEntry[] Entries{ get; set; }
 
-    int IMenu.Serial => m_Serial;
+    public Serial Serial { get; private set; }
 
     int IMenu.EntryLength => Entries.Length;
 
@@ -76,7 +75,7 @@ namespace Server.Menus.ItemLists
     public void SendTo(NetState state)
     {
       state.AddMenu(this);
-      state.Send(new DisplayItemListMenu(this));
+      Packets.SendDisplayItemListMenu(state, this);
     }
   }
 }
