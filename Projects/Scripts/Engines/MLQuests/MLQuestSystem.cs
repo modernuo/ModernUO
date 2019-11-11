@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Server.Commands;
 using Server.Commands.Generic;
 using Server.Engines.MLQuests.Gumps;
@@ -214,7 +213,7 @@ namespace Server.Engines.MLQuests
         return;
       }
 
-      bool enable = e.Length != 1 || e.GetBoolean(0);
+      bool enable = e.Length == 1 ? e.GetBoolean(0) : true;
 
       foreach (MLQuest quest in Quests.Values)
         quest.SaveEnabled = enable;
@@ -330,8 +329,17 @@ namespace Server.Engines.MLQuests
       }
     }
 
-    public static bool CanMarkQuestItem(PlayerMobile pm, Item item, Type type) =>
-      GetContext(pm)?.QuestInstances.Any(quest => !quest.ClaimReward && quest.AllowsQuestItem(item, type)) == true;
+    public static bool CanMarkQuestItem(PlayerMobile pm, Item item, Type type)
+    {
+      MLQuestContext context = GetContext(pm);
+
+      if (context != null)
+        foreach (MLQuestInstance quest in context.QuestInstances)
+          if (!quest.ClaimReward && quest.AllowsQuestItem(item, type))
+            return true;
+
+      return false;
+    }
 
     private static void OnMarkQuestItem(PlayerMobile pm, Item item, Type type)
     {
@@ -555,7 +563,8 @@ namespace Server.Engines.MLQuests
          * Save first quest that reaches the CanOffer call.
          * If no quests are valid at all, return this quest for displaying the CanOffer error message.
          */
-        fallback ??= quest;
+        if (fallback == null)
+          fallback = quest;
 
         if (quest.CanOffer(quester, pm, context, false))
           m_EligiblePool.Add(quest);
@@ -634,7 +643,7 @@ namespace Server.Engines.MLQuests
       if (questType == null)
         return null; // no longer a type
 
-      return questType == null ? null : FindQuest(questType);
+      return FindQuest(questType);
     }
 
     public static MLQuest FindQuest(Type questType)

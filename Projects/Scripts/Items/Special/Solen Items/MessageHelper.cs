@@ -2,7 +2,7 @@ using Server.Network;
 
 namespace Server
 {
-  public static class MessageHelper
+  public class MessageHelper
   {
     public static void SendLocalizedMessageTo(Item from, Mobile to, int number, int hue)
     {
@@ -11,12 +11,12 @@ namespace Server
 
     public static void SendLocalizedMessageTo(Item from, Mobile to, int number, string args, int hue)
     {
-      Packets.SendMessageLocalized(to.NetState, from.Serial, from.ItemID, MessageType.Regular, hue, 3, number, "", args);
+      to.Send(new MessageLocalized(from.Serial, from.ItemID, MessageType.Regular, hue, 3, number, "", args));
     }
 
     public static void SendMessageTo(Item from, Mobile to, string text, int hue)
     {
-      Packets.SendUnicodeMessage(to.NetState, from.Serial, from.ItemID, MessageType.Regular, hue, 3, "ENU", "", text);
+      to.Send(new UnicodeMessage(from.Serial, from.ItemID, MessageType.Regular, hue, 3, "ENU", "", text));
     }
   }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Mobiles;
 
 namespace Server.Engines.MLQuests
@@ -114,7 +113,14 @@ namespace Server.Engines.MLQuests
       return quest != null && HasDoneQuest(quest);
     }
 
-    public bool HasDoneQuest(MLQuest quest) => m_DoneQuests.Any(info => info.m_Quest == quest);
+    public bool HasDoneQuest(MLQuest quest)
+    {
+      foreach (MLDoneQuestInfo info in m_DoneQuests)
+        if (info.m_Quest == quest)
+          return true;
+
+      return false;
+    }
 
     public bool HasDoneQuest(MLQuest quest, out DateTime nextAvailable)
     {
@@ -174,10 +180,20 @@ namespace Server.Engines.MLQuests
     {
       MLQuest quest = MLQuestSystem.FindQuest(questType);
 
-      return quest == null ? null : FindInstance(quest);
+      if (quest == null)
+        return null;
+
+      return FindInstance(quest);
     }
 
-    public MLQuestInstance FindInstance(MLQuest quest) => QuestInstances.FirstOrDefault(instance => instance.Quest == quest);
+    public MLQuestInstance FindInstance(MLQuest quest)
+    {
+      foreach (MLQuestInstance instance in QuestInstances)
+        if (instance.Quest == quest)
+          return instance;
+
+      return null;
+    }
 
     public bool IsDoingQuest(Type questType)
     {

@@ -56,7 +56,9 @@ namespace Server.Items
         new[] { 1074393, 1074390, 0x2fd0, 0x2fcd, 0xedde, 0xc6cb } // buns, long
       };
 
-      // racial arrays are: cliloc_F, cliloc_M, ItemID_F, ItemID_M, gump_img_F, gump_img_M
+/*
+		racial arrays are: cliloc_F, cliloc_M, ItemID_F, ItemID_M, gump_img_F, gump_img_M
+*/
       private int[][] HumanArray = /* why on earth cant these utilies be consistent with hex/dec */
       {
         new[] { 0 },
@@ -71,8 +73,10 @@ namespace Server.Items
         new[] { 1011050, 1011050, 0x204A, 0x204A, 0xED29, 0xED29 }, // Topknot
         new[] { 1011396, 1011396, 0x2047, 0x2047, 0xed25, 0xc618 } // Curly
       };
+/*
+		gump data: bgX, bgY, htmlX, htmlY, imgX, imgY, butX, butY
+*/
 
-      // gump data: bgX, bgY, htmlX, htmlY, imgX, imgY, butX, butY
       private int[][] LayoutArray =
       {
         new[] { 0 }, /* padding: its more efficient than code to ++ the index/buttonid */

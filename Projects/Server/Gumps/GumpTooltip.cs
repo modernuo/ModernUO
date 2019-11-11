@@ -18,31 +18,29 @@
  *
  ***************************************************************************/
 
-using System.Buffers;
-using Server.Buffers;
-using Server.Collections;
+using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpTooltip : GumpEntry
   {
-    public GumpTooltip(int number) => Number = number;
+    private static byte[] m_LayoutName = Gump.StringToBuffer("tooltip");
+    private int m_Number;
 
     public GumpTooltip(int number) => m_Number = number;
 
-    public override string Compile(ArraySet<string> strings) => $"{{ tooltip {Number} }}";
+    public int Number
+    {
+      get => m_Number;
+      set => Delta(ref m_Number, value);
+    }
 
     public override string Compile(NetState ns) => $"{{ tooltip {m_Number} }}";
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
+    public override void AppendTo(NetState ns, IGumpWriter disp)
     {
-      SpanWriter writer = new SpanWriter(buffer.GetSpan(22));
-      writer.Write(m_LayoutName);
-      writer.WriteAscii(Number.ToString());
-      writer.Write((byte)0x20); // ' '
-      writer.Write((byte)0x7D); // '}'
-
-      buffer.Advance(writer.WrittenCount);
+      disp.AppendLayout(m_LayoutName);
+      disp.AppendLayout(m_Number);
     }
   }
 }

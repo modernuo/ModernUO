@@ -17,7 +17,7 @@ namespace Server.Items
     private static Point2D[] m_Locations;
     private static Point2D[] m_HavenLocations;
 
-    private static readonly Type[][] m_SpawnTypes =
+    private static Type[][] m_SpawnTypes =
     {
       new[] { typeof(HeadlessOne), typeof(Skeleton) },
       new[] { typeof(Mongbat), typeof(Ratman), typeof(HeadlessOne), typeof(Skeleton), typeof(Zombie) },
@@ -32,13 +32,18 @@ namespace Server.Items
     private Mobile m_CompletedBy;
     private Mobile m_Decoder;
     private int m_Level;
+    private Map m_Map;
 
     [Constructible]
-    public TreasureMap(int level, Map facet = null) : base(facet)
+    public TreasureMap(int level, Map map)
     {
       m_Level = level;
+      m_Map = map;
 
-      ChestLocation = level == 0 ? GetRandomHavenLocation() : GetRandomLocation();
+      if (level == 0)
+        ChestLocation = GetRandomHavenLocation();
+      else
+        ChestLocation = GetRandomLocation();
 
       Width = 300;
       Height = 300;
@@ -122,12 +127,12 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public override Map Facet
+    public Map ChestMap
     {
-      get => base.Facet;
+      get => m_Map;
       set
       {
-        base.Facet = value;
+        m_Map = value;
         InvalidateProperties();
       }
     }
@@ -140,9 +145,15 @@ namespace Server.Items
       get
       {
         if (m_Decoder != null)
-          return m_Level == 6 ? 1063453 : 1041516 + m_Level;
+        {
+          if (m_Level == 6)
+            return 1063453;
+          return 1041516 + m_Level;
+        }
 
-        return m_Level == 6 ? 1063452 : 1041510 + m_Level;
+        if (m_Level == 6)
+          return 1063452;
+        return 1041510 + m_Level;
       }
     }
 
@@ -151,8 +162,10 @@ namespace Server.Items
       if (m_Locations == null)
         LoadLocations();
 
-      // ReSharper disable once PossibleNullReferenceException
-      return m_Locations.Length > 0 ? m_Locations[Utility.Random(m_Locations.Length)] : Point2D.Zero;
+      if (m_Locations.Length > 0)
+        return m_Locations[Utility.Random(m_Locations.Length)];
+
+      return Point2D.Zero;
     }
 
     public static Point2D GetRandomHavenLocation()
@@ -160,8 +173,10 @@ namespace Server.Items
       if (m_HavenLocations == null)
         LoadLocations();
 
-      // ReSharper disable once PossibleNullReferenceException
-      return m_HavenLocations.Length > 0 ? m_HavenLocations[Utility.Random(m_HavenLocations.Length)] : Point2D.Zero;
+      if (m_HavenLocations.Length > 0)
+        return m_HavenLocations[Utility.Random(m_HavenLocations.Length)];
+
+      return Point2D.Zero;
     }
 
     private static void LoadLocations()
@@ -310,7 +325,7 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(503020); // You are already digging treasure.
       }
-      else if (from.Map != Facet)
+      else if (from.Map != m_Map)
       {
         from.SendLocalizedMessage(1010479); // You seem to be in the right place, but may be on the wrong facet!
       }
@@ -458,7 +473,7 @@ namespace Server.Items
     {
       base.GetProperties(list);
 
-      list.Add(Facet == Map.Felucca ? 1041502 : 1041503); // for somewhere in Felucca : for somewhere in Trammel
+      list.Add(m_Map == Map.Felucca ? 1041502 : 1041503); // for somewhere in Felucca : for somewhere in Trammel
 
       if (m_Completed)
         list.Add(1041507, m_CompletedBy == null ? "someone" : m_CompletedBy.Name); // completed by ~1_val~
@@ -468,8 +483,9 @@ namespace Server.Items
     {
       if (m_Completed)
       {
-        Packets.SendMessageLocalizedAffix(from.NetState, Serial, ItemID, MessageType.Label, 0x3B2, 3, 1048030, "",
-          AffixType.Append, $" completed by {m_CompletedBy?.Name ?? "someone"}");
+        from.Send(new MessageLocalizedAffix(Serial, ItemID, MessageType.Label, 0x3B2, 3, 1048030, "",
+          AffixType.Append,
+          $" completed by {(m_CompletedBy == null ? "someone" : m_CompletedBy.Name)}", ""));
       }
       else if (m_Decoder != null)
       {
@@ -480,10 +496,10 @@ namespace Server.Items
       }
       else
       {
-        LabelTo(from, 1041522,
-          m_Level == 6
-            ? $"#{1063452}\t \t#{(Facet == Map.Felucca ? 1041502 : 1041503)}"
-            : $"#{1041510 + m_Level}\t \t#{(Facet == Map.Felucca ? 1041502 : 1041503)}");
+        if (m_Level == 6)
+          LabelTo(from, 1041522, $"#{1063452}\t \t#{(m_Map == Map.Felucca ? 1041502 : 1041503)}");
+        else
+          LabelTo(from, 1041522, $"#{1041510 + m_Level}\t \t#{(m_Map == Map.Felucca ? 1041502 : 1041503)}");
       }
     }
 
@@ -491,13 +507,14 @@ namespace Server.Items
     {
       base.Serialize(writer);
 
-      writer.Write(2);
+      writer.Write(1);
 
       writer.Write(m_CompletedBy);
 
       writer.Write(m_Level);
       writer.Write(m_Completed);
       writer.Write(m_Decoder);
+      writer.Write(m_Map);
       writer.Write(ChestLocation);
     }
 
@@ -520,8 +537,7 @@ namespace Server.Items
           m_Level = reader.ReadInt();
           m_Completed = reader.ReadBool();
           m_Decoder = reader.ReadMobile();
-          if (version < 2)
-            Facet = reader.ReadMap();
+          m_Map = reader.ReadMap();
           ChestLocation = reader.ReadPoint2D();
 
           if (version == 0 && m_Completed)
@@ -546,10 +562,12 @@ namespace Server.Items
         if (m_Map.Deleted)
           return;
 
-        Map facet = m_Map.Facet;
+        Map map = m_Map.m_Map;
 
         if (m_Map.m_Completed)
+        {
           from.SendLocalizedMessage(503028); // The treasure for this map has already been found.
+        }
         /*
         else if ( from != m_Map.m_Decoder )
         {
@@ -557,14 +575,22 @@ namespace Server.Items
         }
         */
         else if (m_Map.m_Decoder != from && !m_Map.HasRequiredSkill(from))
+        {
           from.SendLocalizedMessage(
             503031); // You did not decode this map and have no clue where to look for the treasure.
+        }
         else if (!from.CanBeginAction<TreasureMap>())
+        {
           from.SendLocalizedMessage(503020); // You are already digging treasure.
+        }
         else if (!HasDiggingTool(from))
-          from.SendLocalizedMessage(1114416); // You must have a digging tool to dig for treasure.
-        else if (from.Map != facet)
+        {
+          from.SendMessage("You must have a digging tool to dig for treasure.");
+        }
+        else if (from.Map != map)
+        {
           from.SendLocalizedMessage(1010479); // You seem to be in the right place, but may be on the wrong facet!
+        }
         else
         {
           IPoint3D p = targeted as IPoint3D;
@@ -591,17 +617,19 @@ namespace Server.Items
           if (Utility.InRange(targ3D, chest3D0, maxRange))
           {
             if (from.Location.X == x && from.Location.Y == y)
+            {
               from.SendLocalizedMessage(
                 503030); // The chest can't be dug up because you are standing on top of it.
-            else if (facet != null)
+            }
+            else if (map != null)
             {
-              int z = facet.GetAverageZ(x, y);
+              int z = map.GetAverageZ(x, y);
 
-              if (!facet.CanFit(x, y, z, 16, true))
+              if (!map.CanFit(x, y, z, 16, true))
                 from.SendLocalizedMessage(
                   503021); // You have found the treasure chest but something is keeping it from being dug up.
               else if (from.BeginAction<TreasureMap>())
-                new DigTimer(from, m_Map, new Point3D(x, y, z), facet).Start();
+                new DigTimer(from, m_Map, new Point3D(x, y, z), map).Start();
               else
                 from.SendLocalizedMessage(503020); // You are already digging treasure.
             }
@@ -616,7 +644,9 @@ namespace Server.Items
           else
           {
             if (Utility.InRange(targ3D, chest3D0, 8)) // We're close, but not quite
-              from.SendLocalizedMessage(1080030, "", 0x44); // The treasure chest is very close!
+            {
+              from.SendAsciiMessage(0x44, "The treasure chest is very close!");
+            }
             else
             {
               Direction dir = Utility.GetDirection(targ3D, chest3D0);

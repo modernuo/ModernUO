@@ -37,19 +37,19 @@ namespace Server.Spells.Spellweaving
       TransformContext context = TransformationSpellHelper.GetContext(e.Mobile);
 
       if (context?.Type == typeof(ReaperFormSpell))
-        Packets.SendSpeedControlWalk(e.Mobile.NetState);
+        e.Mobile.Send(SpeedControl.WalkSpeed);
     }
 
     public override void DoEffect(Mobile m)
     {
       m.PlaySound(0x1BA);
 
-      Packets.SendSpeedControlWalk(m.NetState);
+      m.Send(SpeedControl.WalkSpeed);
     }
 
     public override void RemoveEffect(Mobile m)
     {
-      Packets.SendSpeedControlDisabled(m.NetState);
+      m.Send(SpeedControl.Disable);
     }
   }
 }

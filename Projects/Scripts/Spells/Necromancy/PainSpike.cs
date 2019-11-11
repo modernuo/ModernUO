@@ -73,7 +73,7 @@ namespace Server.Spells.Necromancy
           buffTime = timer.Next - DateTime.UtcNow;
         }
 
-        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.PainSpike, 1075667, ((int)damage).ToString(), buffTime, m));
+        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.PainSpike, 1075667, buffTime, m, Convert.ToString((int)damage)));
 
         // TODO: Find a better way to do this
         WeightOverloading.DFA = DFAlgorithm.PainSpike;

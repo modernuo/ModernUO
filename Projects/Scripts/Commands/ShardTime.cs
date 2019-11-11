@@ -2,7 +2,7 @@
 
 namespace Server.Commands
 {
-  public static class ShardTime
+  public class ShardTime
   {
     public static void Initialize()
     {

@@ -76,7 +76,8 @@ namespace Server.Mobiles
       {
         OpenedBy = from;
 
-        m_Timer ??= new DecayTimer(this);
+        if (m_Timer == null)
+          m_Timer = new DecayTimer(this);
 
         if (!m_Timer.Running)
           m_Timer.Start();

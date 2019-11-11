@@ -80,7 +80,9 @@ namespace Server.Ethics.Evil
         }
       }
       else
+      {
         sb.Append('.');
+      }
 
       from.Mobile.LocalOverheadMessage(MessageType.Regular, 0x59, false, sb.ToString());
 

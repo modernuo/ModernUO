@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
+using Server.Commands;
 using Server.Gumps;
 using Server.Items;
 
-namespace Server.Commands
+namespace Server
 {
-  public static class Statics
+  public class Statics
   {
     private const string BaseFreezeWarning = "{0}  " +
                                              "Those items <u>will be removed from the world</u> and placed into the server data files.  " +
@@ -179,8 +180,11 @@ namespace Server.Commands
 
       int totalFrozen = 0;
 
-      foreach (var (map, table) in mapTable)
+      foreach (KeyValuePair<Map, Dictionary<Point2D, DeltaState>> de in mapTable)
       {
+        Map map = de.Key;
+        Dictionary<Point2D, DeltaState> table = de.Value;
+
         TileMatrix matrix = map.Tiles;
 
         using FileStream idxStream = OpenWrite(matrix.IndexStream);

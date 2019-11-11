@@ -15,7 +15,6 @@
     <OutDir>..\..\Distribution\Assemblies</OutDir>
     <OutputPath>..\..\Distribution\Assemblies</OutputPath>
     <PublishDir>..\..\Distribution\Assemblies</PublishDir>
-    <OutputPath>..\..\Distribution\Assemblies</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>

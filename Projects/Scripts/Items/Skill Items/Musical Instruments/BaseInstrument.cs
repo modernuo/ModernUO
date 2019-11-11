@@ -406,8 +406,13 @@ namespace Server.Items
         number = 1041000;
       }
 
-      if (attrs.Count > 0 || Crafter != null || Name == null)
-        EquipmentPackets.SendDisplayEquipmentInfo(from.NetState, this, number, m_Crafter, false, attrs);
+      if (attrs.Count == 0 && Crafter == null && Name != null)
+        return;
+
+      EquipmentInfo eqInfo = new EquipmentInfo(number, m_Crafter, false,
+        attrs.ToArray());
+
+      from.Send(new DisplayEquipmentInfo(this, eqInfo));
     }
 
     public override void Serialize(GenericWriter writer)

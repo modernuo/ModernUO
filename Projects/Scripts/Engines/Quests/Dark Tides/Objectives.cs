@@ -258,7 +258,7 @@ namespace Server.Engines.Quests.Necro
 
   public class FindWellOfTearsObjective : QuestObjective
   {
-    private static Rectangle2D m_WellOfTearsArea = new Rectangle2D(2080, 1346, 10, 10);
+    private static readonly Rectangle2D m_WellOfTearsArea = new Rectangle2D(2080, 1346, 10, 10);
 
     private bool m_Inside;
 

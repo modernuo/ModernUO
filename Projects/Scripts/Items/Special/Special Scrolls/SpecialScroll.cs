@@ -158,7 +158,7 @@ namespace Server.Items
           AddHtmlLocalized(310, 20, 120, 20, AosSkillBonuses.GetLabel(m_Scroll.Skill), 0xFFFFFF);
       }
 
-      public override void OnResponse(NetState sender, RelayInfo info)
+      public override void OnResponse(NetState state, RelayInfo info)
       {
         if (info.ButtonID == 1)
           m_Scroll.Use(m_Mobile);

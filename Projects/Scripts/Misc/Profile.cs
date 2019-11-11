@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Misc
 {
-  public static class Profile
+  public class Profile
   {
     public static void Initialize()
     {
@@ -48,9 +48,12 @@ namespace Server.Misc
       if (footer.Length == 0 && beholder == beheld)
         footer = GetAccountDuration(beheld);
 
-      string body = beheld.Profile ?? "";
+      string body = beheld.Profile;
 
-      Packets.SendDisplayProfile(beholder.NetState, beholder != beheld || !beheld.ProfileLocked ? beheld.Serial : Serial.Zero, header, body, footer);
+      if (body == null || body.Length <= 0)
+        body = "";
+
+      beholder.Send(new DisplayProfile(beholder != beheld || !beheld.ProfileLocked, beheld, header, body, footer));
     }
 
     private static string GetAccountDuration(Mobile m)
@@ -69,7 +72,10 @@ namespace Server.Misc
       if (Format(ts.TotalMinutes, "This account is {0} minute{1} old.", out v))
         return v;
 
-      return Format(ts.TotalSeconds, "This account is {0} second{1} old.", out v) ? v : "";
+      if (Format(ts.TotalSeconds, "This account is {0} second{1} old.", out v))
+        return v;
+
+      return "";
     }
 
     public static bool Format(double value, string format, out string op)

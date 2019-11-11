@@ -1,6 +1,6 @@
 using Server.Targeting;
 
-namespace Server.Commands
+namespace Server
 {
   public delegate void BoundingBoxCallback(Map map, Point3D start, Point3D end);
 

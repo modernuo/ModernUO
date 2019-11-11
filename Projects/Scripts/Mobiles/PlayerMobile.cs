@@ -18,6 +18,7 @@ using Server.Guilds;
 using Server.Gumps;
 using Server.Items;
 using Server.Misc;
+using Server.Movement;
 using Server.Multis;
 using Server.Network;
 using Server.Regions;
@@ -203,7 +204,16 @@ namespace Server.Mobiles
       SkillName.TasteID
     };
 
-    public override double RacialSkillBonus => Core.ML && Race == Race.Human ? 20.0 : 0;
+    public override double RacialSkillBonus
+    {
+      get
+      {
+        if (Core.ML && Race == Race.Human)
+          return 20.0;
+
+        return 0;
+      }
+    }
 
     public List<Item> EquipSnapshot{ get; private set; }
 
@@ -292,7 +302,15 @@ namespace Server.Mobiles
     public DateTime SessionStart{ get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan GameTime => NetState != null ? m_GameTime + (DateTime.UtcNow - SessionStart) : m_GameTime;
+    public TimeSpan GameTime
+    {
+      get
+      {
+        if (NetState != null)
+          return m_GameTime + (DateTime.UtcNow - SessionStart);
+        return m_GameTime;
+      }
+    }
 
     public override bool NewGuildDisplay => Guilds.Guild.NewGuildSystem;
 
@@ -347,9 +365,13 @@ namespace Server.Mobiles
       BlockMountType type = MountBlockReason;
 
       if (!Alive)
+      {
         SendLocalizedMessage(1113082); // You may not fly while dead.
+      }
       else if (IsBodyMod && !(BodyMod == 666 || BodyMod == 667))
+      {
         SendLocalizedMessage(1112453); // You can't fly in your current form!
+      }
       else if (type != BlockMountType.None)
       {
         switch (type)
@@ -526,9 +548,10 @@ namespace Server.Mobiles
     private static void CheckPets()
     {
       foreach (Mobile m in World.Mobiles.Values)
-        if (m is PlayerMobile pm && ((!pm.Mounted || pm.Mount is EtherealMount) && pm.AllFollowers.Count > pm.AutoStabled.Count ||
-                                     pm.Mounted && pm.AllFollowers.Count > pm.AutoStabled.Count + 1))
-          pm.AutoStablePets(); /* autostable checks summons, et al: no need here */
+        if (m is PlayerMobile pm)
+          if ((!pm.Mounted || pm.Mount is EtherealMount) && pm.AllFollowers.Count > pm.AutoStabled.Count ||
+              pm.Mounted && pm.AllFollowers.Count > pm.AutoStabled.Count + 1)
+            pm.AutoStablePets(); /* autostable checks summons, et al: no need here */
     }
 
     private static bool CheckBlock(MountBlock block) => block?.m_Timer.Running == true;
@@ -609,8 +632,8 @@ namespace Server.Mobiles
       m_LastGlobalLight = global;
       m_LastPersonalLight = personal;
 
-      Packets.SendGlobalLightLevel(ns, (sbyte)global);
-      Packets.SendPersonalLightLevel(ns, Serial, (sbyte)personal);
+      ns.Send(GlobalLightLevel.Instantiate(global));
+      ns.Send(new PersonalLightLevel(this, personal));
     }
 
     public override int GetMinResistance(ResistanceType type)
@@ -654,17 +677,23 @@ namespace Server.Mobiles
 
         if (!(from.Account is Account acct) || !acct.HasAccess(from.NetState))
         {
-          notice = from.AccessLevel == AccessLevel.Player ?
-            "The server is currently under lockdown. No players are allowed to log in at this time." :
-            "The server is currently under lockdown. You do not have sufficient access level to connect.";
+          if (from.AccessLevel == AccessLevel.Player)
+            notice = "The server is currently under lockdown. No players are allowed to log in at this time.";
+          else
+            notice =
+              "The server is currently under lockdown. You do not have sufficient access level to connect.";
 
-          Timer.DelayCall(TimeSpan.FromSeconds(1.0), ns => ns?.Dispose(), from.NetState);
+          Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => from.NetState?.Dispose());
         }
         else if (from.AccessLevel >= AccessLevel.Administrator)
+        {
           notice =
             "The server is currently under lockdown. As you are an administrator, you may change this from the [Admin gump.";
+        }
         else
+        {
           notice = "The server is currently under lockdown. You have sufficient access level to connect.";
+        }
 
         from.SendGump(new NoticeGump(1060637, 30720, notice, 0xFFC000, 300, 140));
         return;
@@ -1021,9 +1050,13 @@ namespace Server.Mobiles
       return base.CanBeHarmful(target, message, ignoreOurBlessedness);
     }
 
-    public override bool CanBeBeneficial(Mobile target, bool message, bool allowDead) =>
-      DesignContext == null && (!(target is PlayerMobile mobile) || mobile.DesignContext == null) &&
-      base.CanBeBeneficial(target, message, allowDead);
+    public override bool CanBeBeneficial(Mobile target, bool message, bool allowDead)
+    {
+      if (DesignContext != null || target is PlayerMobile mobile && mobile.DesignContext != null)
+        return false;
+
+      return base.CanBeBeneficial(target, message, allowDead);
+    }
 
     public override bool CheckContextMenuDisplay(IEntity target) => DesignContext == null;
 
@@ -1083,10 +1116,12 @@ namespace Server.Mobiles
 
       int speed = ComputeMovementSpeed(d);
 
+      bool res;
+
       if (!Alive)
         MovementImpl.IgnoreMovableImpassables = true;
 
-      bool res = base.Move(d);
+      res = base.Move(d);
 
       MovementImpl.IgnoreMovableImpassables = false;
 
@@ -1110,7 +1145,7 @@ namespace Server.Mobiles
       newZ = foundation.Z + HouseFoundation.GetLevelZ(context.Level, context.Foundation);
 
       int newX = X, newY = Y;
-      Movement.Offset(d, ref newX, ref newY);
+      Movement.Movement.Offset(d, ref newX, ref newY);
 
       int startX = foundation.X + foundation.Components.Min.X + 1;
       int startY = foundation.Y + foundation.Components.Min.Y + 1;
@@ -1847,7 +1882,7 @@ namespace Server.Mobiles
 
           pointsToGain += (int)Math.Sqrt(GameTime.TotalSeconds * 4);
           pointsToGain *= 5;
-          pointsToGain += (int)Math.Pow(Skills.Total / 250.0, 2);
+          pointsToGain += (int)Math.Pow(Skills.Total / 250, 2);
 
           if (VirtueHelper.Award(m, VirtueName.Justice, pointsToGain, ref gainedPath))
           {
@@ -1859,7 +1894,7 @@ namespace Server.Mobiles
             m.FixedParticles(0x375A, 9, 20, 5027, EffectLayer.Waist);
             m.PlaySound(0x1F7);
 
-            m_NextJustAward = DateTime.UtcNow + TimeSpan.FromMinutes(pointsToGain / 3.0);
+            m_NextJustAward = DateTime.UtcNow + TimeSpan.FromMinutes(pointsToGain / 3);
           }
         }
       }
@@ -1896,8 +1931,16 @@ namespace Server.Mobiles
       #endregion
 
       if (m_BuffTable != null)
-        foreach(var buff in m_BuffTable.Values.Where(buff => !buff.RetainThroughDeath))
-          RemoveBuff(buff);
+      {
+        List<BuffInfo> list = new List<BuffInfo>();
+
+        foreach (BuffInfo buff in m_BuffTable.Values)
+          if (!buff.RetainThroughDeath)
+            list.Add(buff);
+
+        for (int i = 0; i < list.Count; i++)
+          RemoveBuff(list[i]);
+      }
     }
 
     public override bool MutateSpeech(List<Mobile> hears, ref string text, ref object context)
@@ -1908,8 +1951,14 @@ namespace Server.Mobiles
       if (Core.ML && Skills.SpiritSpeak.Value >= 100.0)
         return false;
 
-      if (Core.AOS && hears.Any(m => m != this && m.Skills.SpiritSpeak.Value >= 100.0))
-        return false;
+      if (Core.AOS)
+        for (int i = 0; i < hears.Count; ++i)
+        {
+          Mobile m = hears[i];
+
+          if (m != this && m.Skills.SpiritSpeak.Value >= 100.0)
+            return false;
+        }
 
       return base.MutateSpeech(hears, ref text, ref context);
     }
@@ -1919,48 +1968,65 @@ namespace Server.Mobiles
       if (Guilds.Guild.NewGuildSystem && (type == MessageType.Guild || type == MessageType.Alliance))
       {
         if (!(Guild is Guild g))
+        {
           SendLocalizedMessage(1063142); // You are not in a guild!
+        }
         else if (type == MessageType.Alliance)
         {
           if (g.Alliance?.IsMember(g) == true)
           {
             //g.Alliance.AllianceTextMessage( hue, "[Alliance][{0}]: {1}", this.Name, text );
             g.Alliance.AllianceChat(this, text);
-            SendToStaffMessage(this, $"[Alliance]: {text}");
+            SendToStaffMessage(this, "[Alliance]: {0}", text);
 
             AllianceMessageHue = hue;
           }
           else
+          {
             SendLocalizedMessage(1071020); // You are not in an alliance!
+          }
         }
         else //Type == MessageType.Guild
         {
           GuildMessageHue = hue;
 
           g.GuildChat(this, text);
-          SendToStaffMessage(this, $"[Guild]: {text}");
+          SendToStaffMessage(this, "[Guild]: {0}", text);
         }
       }
       else
+      {
         base.DoSpeech(text, keywords, type, hue);
+      }
     }
 
     private static void SendToStaffMessage(Mobile from, string text)
     {
-      IPooledEnumerable eable = from.GetClientsInRange(8);
-      foreach (NetState ns in eable)
+      Packet p = null;
+
+      foreach (NetState ns in from.GetClientsInRange(8))
       {
         Mobile mob = ns.Mobile;
 
         if (mob?.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel)
-          Packets.SendUnicodeMessage(ns, from.Serial, from.Body, MessageType.Regular, from.SpeechHue, 3,
-            from.Language, from.Name, text);
+        {
+          if (p == null)
+            p = Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Regular, from.SpeechHue, 3,
+              from.Language, from.Name, text));
+
+          ns.Send(p);
+        }
       }
 
-      eable.Free();
+      Packet.Release(p);
     }
 
-    public override void Damage(int amount, Mobile from = null, bool informMount = true)
+    private static void SendToStaffMessage(Mobile from, string format, params object[] args)
+    {
+      SendToStaffMessage(from, string.Format(format, args));
+    }
+
+    public override void Damage(int amount, Mobile from)
     {
       if (EvilOmenSpell.TryEndEffect(this))
         amount = (int)(amount * 1.25);
@@ -1983,15 +2049,16 @@ namespace Server.Mobiles
           from.Damage(amount, this);
       }
 
-      if (from != null && Talisman is BaseTalisman talisman && talisman.Protection != null && talisman.Protection.Type != null)
-      {
-        Type type = talisman.Protection.Type;
+      if (from != null && Talisman is BaseTalisman talisman)
+        if (talisman.Protection != null && talisman.Protection.Type != null)
+        {
+          Type type = talisman.Protection.Type;
 
-        if (type.IsInstanceOfType(from))
-          amount = (int)(amount * (1 - (double)talisman.Protection.Amount / 100));
-      }
+          if (type.IsInstanceOfType(from))
+            amount = (int)(amount * (1 - (double)talisman.Protection.Amount / 100));
+        }
 
-      base.Damage(amount, from, informMount);
+      base.Damage(amount, from);
     }
 
     public override bool IsHarmfulCriminal(Mobile target)
@@ -2291,23 +2358,32 @@ namespace Server.Mobiles
         }
       }
 
-      RecentlyReported ??= new List<Mobile>();
+      if (RecentlyReported == null)
+        RecentlyReported = new List<Mobile>();
 
       // Professions weren't verified on 1.0 RC0
       if (!CharacterCreation.VerifyProfession(Profession))
         Profession = 0;
 
-      PermaFlags ??= new List<Mobile>();
-      JusticeProtectors ??= new List<Mobile>();
-      BOBFilter ??= new BOBFilter();
+      if (PermaFlags == null)
+        PermaFlags = new List<Mobile>();
 
-      //Default to member if going from older version to new version (only time it should be null)
-      m_GuildRank ??= RankDefinition.Member;
+      if (JusticeProtectors == null)
+        JusticeProtectors = new List<Mobile>();
+
+      if (BOBFilter == null)
+        BOBFilter = new BOBFilter();
+
+      if (m_GuildRank == null)
+        m_GuildRank =
+          RankDefinition
+            .Member; //Default to member if going from older version to new version (only time it should be null)
 
       if (LastOnline == DateTime.MinValue && Account != null)
         LastOnline = ((Account)Account).LastLogin;
 
-      ChampionTitles ??= new ChampionTitleInfo();
+      if (ChampionTitles == null)
+        ChampionTitles = new ChampionTitleInfo();
 
       if (AccessLevel > AccessLevel.Player)
         m_IgnoreMobiles = true;
@@ -2721,10 +2797,9 @@ namespace Server.Mobiles
 
       for (int i = AutoStabled.Count - 1; i >= 0; --i)
       {
-        if (!(AutoStabled[i] is BaseCreature pet))
-          return;
+        BaseCreature pet = AutoStabled[i] as BaseCreature;
 
-        if (pet.Deleted)
+        if (pet?.Deleted == true)
         {
           pet.IsStabled = false;
           pet.StabledBy = null;
@@ -2756,8 +2831,10 @@ namespace Server.Mobiles
             Stabled.Remove(pet);
         }
         else
+        {
           SendLocalizedMessage(1049612,
             pet.Name); // ~1_NAME~ remained in the stables because you have too many followers.
+        }
       }
 
       AutoStabled.Clear();
@@ -2825,7 +2902,7 @@ namespace Server.Mobiles
 
     public bool NinjaWepCooldown{ get; set; }
 
-    public List<Mobile> AllFollowers => m_AllFollowers ??= new List<Mobile>();
+    public List<Mobile> AllFollowers => m_AllFollowers ?? (m_AllFollowers = new List<Mobile>());
 
     public RankDefinition GuildRank
     {
@@ -3006,14 +3083,14 @@ namespace Server.Mobiles
       if (!Core.SE || !Alive)
         return;
 
-      foreach (var (key, value) in RecoverableAmmo)
-        if (value > 0)
+      foreach (KeyValuePair<Type, int> kvp in RecoverableAmmo)
+        if (kvp.Value > 0)
         {
           Item ammo = null;
 
           try
           {
-            ammo = Activator.CreateInstance(key) as Item;
+            ammo = Activator.CreateInstance(kvp.Key) as Item;
           }
           catch
           {
@@ -3023,7 +3100,7 @@ namespace Server.Mobiles
           if (ammo == null)
             continue;
           string name = ammo.Name;
-          ammo.Amount = value;
+          ammo.Amount = kvp.Value;
 
           if (name == null)
           {
@@ -3103,21 +3180,39 @@ namespace Server.Mobiles
     [CommandProperty(AccessLevel.GameMaster)]
     public override int Str
     {
-      get => Core.ML && AccessLevel == AccessLevel.Player ? Math.Min(base.Str, 150) : base.Str;
+      get
+      {
+        if (Core.ML && AccessLevel == AccessLevel.Player)
+          return Math.Min(base.Str, 150);
+
+        return base.Str;
+      }
       set => base.Str = value;
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public override int Int
     {
-      get => Core.ML && AccessLevel == AccessLevel.Player ? Math.Min(base.Int, 150) : base.Int;
+      get
+      {
+        if (Core.ML && AccessLevel == AccessLevel.Player)
+          return Math.Min(base.Int, 150);
+
+        return base.Int;
+      }
       set => base.Int = value;
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public override int Dex
     {
-      get => Core.ML && AccessLevel == AccessLevel.Player ? Math.Min(base.Dex, 150) : base.Dex;
+      get
+      {
+        if (Core.ML && AccessLevel == AccessLevel.Player)
+          return Math.Min(base.Dex, 150);
+
+        return base.Dex;
+      }
       set => base.Dex = value;
     }
 
@@ -3136,16 +3231,36 @@ namespace Server.Mobiles
       SendLocalizedMessage(1060868); // Target the item you wish to toggle insurance status on <ESC> to cancel
     }
 
-    private bool CanInsure(Item item) =>
-      (!(item is Container) || item is BaseQuiver) && !(item is BagOfSending) && !(item is KeyRing) &&
-      !(item is PotionKeg) && !(item is Sigil) && !item.Stackable && item.LootType != LootType.Cursed &&
-      item.ItemID != 0x204E && item.Layer != Layer.Mount && item.LootType != LootType.Blessed &&
-      item.LootType != LootType.Newbied && item.BlessedFor != this;
+    private bool CanInsure(Item item)
+    {
+      if (item is Container && !(item is BaseQuiver) || item is BagOfSending || item is KeyRing || item is PotionKeg ||
+          item is Sigil)
+        return false;
+
+      if (item.Stackable)
+        return false;
+
+      if (item.LootType == LootType.Cursed)
+        return false;
+
+      if (item.ItemID == 0x204E) // death shroud
+        return false;
+
+      if (item.Layer == Layer.Mount)
+        return false;
+
+      if (item.LootType == LootType.Blessed || item.LootType == LootType.Newbied || item.BlessedFor == this)
+        return false;
+
+      return true;
+    }
 
     private void ToggleItemInsurance_Callback(Mobile from, object obj)
     {
-      if (CheckAlive())
-        ToggleItemInsurance_Callback(from, obj as Item, true);
+      if (!CheckAlive())
+        return;
+
+      ToggleItemInsurance_Callback(from, obj as Item, true);
     }
 
     private void ToggleItemInsurance_Callback(Mobile from, Item item, bool target)
@@ -3275,7 +3390,9 @@ namespace Server.Mobiles
           m_Player.AutoRenewInsurance = false;
         }
         else
+        {
           m_Player.SendLocalizedMessage(1042021); // Cancelled.
+        }
 
         if (m_InsuranceGump != null)
           m_Player.SendGump(m_InsuranceGump.NewInstance());
@@ -3287,7 +3404,11 @@ namespace Server.Mobiles
       if (!CheckAlive())
         return;
 
-      List<Item> items = Items.Where(DisplayInItemInsuranceGump).ToList();
+      List<Item> items = new List<Item>();
+
+      foreach (Item item in Items)
+        if (DisplayInItemInsuranceGump(item))
+          items.Add(item);
 
       Container pack = Backpack;
 
@@ -3358,7 +3479,11 @@ namespace Server.Mobiles
         AddHtmlLocalized(400, 54, 70, 20, 1114311, 0x7FFF); // Insured
 
         int balance = Banker.GetBalance(from);
-        int cost = items.Where((t, i) => insure[i]).Sum(GetInsuranceCost);
+        int cost = 0;
+
+        for (int i = 0; i < items.Length; ++i)
+          if (insure[i])
+            cost += GetInsuranceCost(items[i]);
 
         AddHtmlLocalized(15, 420, 300, 20, 1114310, 0x7FFF); // GOLD AVAILABLE:
         AddLabel(215, 420, 0x481, balance.ToString());
@@ -3577,12 +3702,20 @@ namespace Server.Mobiles
 
     private DateTime[] m_StuckMenuUses;
 
-    public bool CanUseStuckMenu() =>
-      m_StuckMenuUses?.Any(t => DateTime.UtcNow - t > TimeSpan.FromDays(1.0)) != false;
+    public bool CanUseStuckMenu()
+    {
+      if (m_StuckMenuUses == null) return true;
+
+      for (int i = 0; i < m_StuckMenuUses.Length; ++i)
+        if (DateTime.UtcNow - m_StuckMenuUses[i] > TimeSpan.FromDays(1.0))
+          return true;
+
+      return false;
+    }
 
     public void UsedStuckMenu()
     {
-      m_StuckMenuUses ??= new DateTime[2];
+      if (m_StuckMenuUses == null) m_StuckMenuUses = new DateTime[2];
 
       for (int i = 0; i < m_StuckMenuUses.Length; ++i)
         if (DateTime.UtcNow - m_StuckMenuUses[i] > TimeSpan.FromDays(1.0))
@@ -3646,7 +3779,10 @@ namespace Server.Mobiles
 
         m_DuelPlayer = value;
 
-        DuelContext = m_DuelPlayer?.Participant.Context;
+        if (m_DuelPlayer == null)
+          DuelContext = null;
+        else
+          DuelContext = m_DuelPlayer.Participant.Context;
 
         bool isInTourney = DuelContext?.Finished == false && DuelContext.m_Tournament != null;
 
@@ -3809,14 +3945,22 @@ namespace Server.Mobiles
 
     private void DeltaEnemies(Type oldType, Type newType)
     {
-      NetState ns = NetState;
-
       foreach (Mobile m in GetMobilesInRange(18))
       {
         Type t = m.GetType();
 
         if (t == oldType || t == newType)
-          Packets.SendMobileMoving(NetState, m, Notoriety.Compute(this, m));
+        {
+          NetState ns = NetState;
+
+          if (ns != null)
+          {
+            if (ns.StygianAbyss)
+              ns.Send(new MobileMoving(m, Notoriety.Compute(this, m)));
+            else
+              ns.Send(new MobileMovingOld(m, Notoriety.Compute(this, m)));
+          }
+        }
       }
     }
 
@@ -3976,8 +4120,13 @@ namespace Server.Mobiles
       return base.ApplyNameSuffix(suffix);
     }
 
-    public override TimeSpan GetLogoutDelay() =>
-      Young || BedrollLogout || TestCenter.Enabled ? TimeSpan.Zero : base.GetLogoutDelay();
+    public override TimeSpan GetLogoutDelay()
+    {
+      if (Young || BedrollLogout || TestCenter.Enabled)
+        return TimeSpan.Zero;
+
+      return base.GetLogoutDelay();
+    }
 
     private DateTime m_LastYoungMessage = DateTime.MinValue;
 
@@ -4018,7 +4167,7 @@ namespace Server.Mobiles
       return false;
     }
 
-    private static readonly Point3D[] m_TrammelDeathDestinations =
+    private static Point3D[] m_TrammelDeathDestinations =
     {
       new Point3D(1481, 1612, 20),
       new Point3D(2708, 2153, 0),
@@ -4037,7 +4186,7 @@ namespace Server.Mobiles
       new Point3D(3665, 2587, 0)
     };
 
-    private static readonly Point3D[] m_IlshenarDeathDestinations =
+    private static Point3D[] m_IlshenarDeathDestinations =
     {
       new Point3D(1216, 468, -13),
       new Point3D(723, 1367, -60),
@@ -4050,13 +4199,13 @@ namespace Server.Mobiles
       new Point3D(1722, 219, 96)
     };
 
-    private static readonly Point3D[] m_MalasDeathDestinations =
+    private static Point3D[] m_MalasDeathDestinations =
     {
       new Point3D(2079, 1376, -70),
       new Point3D(944, 519, -71)
     };
 
-    private static readonly Point3D[] m_TokunoDeathDestinations =
+    private static Point3D[] m_TokunoDeathDestinations =
     {
       new Point3D(1166, 801, 27),
       new Point3D(782, 1228, 25),
@@ -4136,7 +4285,9 @@ namespace Server.Mobiles
     {
       if (SpeechLog.Enabled && NetState != null)
       {
-        SpeechLog ??= new SpeechLog();
+        if (SpeechLog == null)
+          SpeechLog = new SpeechLog();
+
         SpeechLog.Add(e.Mobile, e.Speech);
       }
     }
@@ -4284,7 +4435,8 @@ namespace Server.Mobiles
         if (m_Values == null || index < 0 || index >= m_Values.Length)
           return 0;
 
-        m_Values[index] ??= new TitleInfo();
+        if (m_Values[index] == null)
+          m_Values[index] = new TitleInfo();
 
         return m_Values[index].Value;
       }
@@ -4294,14 +4446,16 @@ namespace Server.Mobiles
         if (m_Values == null || index < 0 || index >= m_Values.Length)
           return DateTime.MinValue;
 
-        m_Values[index] ??= new TitleInfo();
+        if (m_Values[index] == null)
+          m_Values[index] = new TitleInfo();
 
         return m_Values[index].LastDecay;
       }
 
       public void SetValue(int index, int value)
       {
-        m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
+        if (m_Values == null)
+          m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
 
         if (value < 0)
           value = 0;
@@ -4309,31 +4463,36 @@ namespace Server.Mobiles
         if (index < 0 || index >= m_Values.Length)
           return;
 
-        m_Values[index] ??= new TitleInfo();
+        if (m_Values[index] == null)
+          m_Values[index] = new TitleInfo();
 
         m_Values[index].Value = value;
       }
 
       public void Award(int index, int value)
       {
-        m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
+        if (m_Values == null)
+          m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
 
         if (index < 0 || index >= m_Values.Length || value <= 0)
           return;
 
-        m_Values[index] ??= new TitleInfo();
+        if (m_Values[index] == null)
+          m_Values[index] = new TitleInfo();
 
         m_Values[index].Value += value;
       }
 
       public void Atrophy(int index, int value)
       {
-        m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
+        if (m_Values == null)
+          m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
 
         if (index < 0 || index >= m_Values.Length || value <= 0)
           return;
 
-        m_Values[index] ??= new TitleInfo();
+        if (m_Values[index] == null)
+          m_Values[index] = new TitleInfo();
 
         int before = m_Values[index].Value;
 
@@ -4359,7 +4518,9 @@ namespace Server.Mobiles
 
         for (int i = 0; i < length; i++)
         {
-          titles.m_Values[i] ??= new TitleInfo();
+          if (titles.m_Values[i] == null)
+            titles.m_Values[i] = new TitleInfo();
+
           TitleInfo.Serialize(writer, titles.m_Values[i]);
         }
       }
@@ -4370,7 +4531,8 @@ namespace Server.Mobiles
         if (t == null)
           return;
 
-        t.m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
+        if (t.m_Values == null)
+          t.m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
 
         for (int i = 0; i < t.m_Values.Length; i++)
           if (t.GetLastDecay(i) + LossDelay < DateTime.UtcNow)
@@ -4384,8 +4546,16 @@ namespace Server.Mobiles
         if (t == null)
           return;
 
-        t.m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
-        t.Harrower = Math.Max(1 + t.m_Values.Count(t1 => t1.Value > 900), t.Harrower); //Harrower titles never decay.
+        if (t.m_Values == null)
+          t.m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
+
+        int count = 1;
+
+        for (int i = 0; i < t.m_Values.Length; i++)
+          if (t.m_Values[i].Value > 900)
+            count++;
+
+        t.Harrower = Math.Max(count, t.Harrower); //Harrower titles never decay.
       }
 
       private class TitleInfo
@@ -4441,7 +4611,9 @@ namespace Server.Mobiles
 
     public virtual void AcquireRecipe(int recipeID)
     {
-      m_AcquiredRecipes ??= new Dictionary<int, bool>();
+      if (m_AcquiredRecipes == null)
+        m_AcquiredRecipes = new Dictionary<int, bool>();
+
       m_AcquiredRecipes[recipeID] = true;
     }
 
@@ -4459,11 +4631,12 @@ namespace Server.Mobiles
 
     public void ResendBuffs()
     {
-      if (!BuffInfo.Enabled || m_BuffTable == null || NetState?.BuffIcon != true)
+      if (!BuffInfo.Enabled || m_BuffTable == null)
         return;
 
-      foreach (BuffInfo info in m_BuffTable.Values)
-        BuffPackets.SendAddBuff(this, info);
+      if (NetState?.BuffIcon == true)
+        foreach (BuffInfo info in m_BuffTable.Values)
+          NetState.Send(new AddBuffPacket(this, info));
     }
 
     private Dictionary<BuffIcon, BuffInfo> m_BuffTable;
@@ -4481,7 +4654,7 @@ namespace Server.Mobiles
       m_BuffTable.Add(b.ID, b);
 
       if (NetState?.BuffIcon == true)
-        BuffPackets.SendAddBuff(this, b);
+        NetState.Send(new AddBuffPacket(this, b));
     }
 
     public void RemoveBuff(BuffInfo b)
@@ -4505,7 +4678,7 @@ namespace Server.Mobiles
       m_BuffTable.Remove(b);
 
       if (NetState?.BuffIcon == true)
-        BuffPackets.SendRemoveBuffPacket(NetState, Serial, (int)b);
+        NetState.Send(new RemoveBuffPacket(this, b));
 
       if (m_BuffTable.Count <= 0)
         m_BuffTable = null;

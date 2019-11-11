@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Server.Buffers;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -89,7 +87,7 @@ namespace Server.Engines.MLQuests.Gumps
       CloseCurrent(ns);
 
       m_Pending[ns] = new RaceChangeState(owner, ns, targetRace);
-      SendRaceChanger(ns, from.Female, targetRace);
+      ns.Send(new RaceChanger(from.Female, targetRace));
     }
 
     private static void CloseCurrent(NetState ns)
@@ -100,7 +98,7 @@ namespace Server.Engines.MLQuests.Gumps
         m_Pending.Remove(ns);
       }
 
-      SendCloseRaceChanger(ns);
+      ns.Send(CloseRaceChanger.Instance);
     }
 
     private static void Timeout(NetState ns)
@@ -108,21 +106,30 @@ namespace Server.Engines.MLQuests.Gumps
       if (IsPending(ns))
       {
         m_Pending.Remove(ns);
-        SendCloseRaceChanger(ns);
+        ns.Send(CloseRaceChanger.Instance);
       }
     }
 
     public static bool IsWearingEquipment(Mobile from)
     {
-      return from.Items.Select(item => item.Layer switch
+      foreach (Item item in from.Items)
+        switch (item.Layer)
         {
-          Layer.Hair => false,
-          Layer.FacialHair => false,
-          Layer.Backpack => false,
-          Layer.Mount => false,
-          Layer.Bank => false,
-          _ => true
-        }).FirstOrDefault();
+          case Layer.Hair:
+          case Layer.FacialHair:
+          case Layer.Backpack:
+          case Layer.Mount:
+          case Layer.Bank:
+          {
+            continue; // ignore
+          }
+          default:
+          {
+            return true;
+          }
+        }
+
+      return false;
     }
 
     private static bool CanChange(PlayerMobile from, Race targetRace)
@@ -231,34 +238,38 @@ namespace Server.Engines.MLQuests.Gumps
         m_Timeout = Timer.DelayCall(m_TimeoutDelay, Timeout, ns);
       }
     }
+  }
 
-    public static void SendRaceChanger(NetState ns, bool female, Race targetRace)
+  public sealed class RaceChanger : Packet
+  {
+    public RaceChanger(bool female, Race targetRace)
+      : base(0xBF)
     {
-      if (ns == null)
-        return;
+      EnsureCapacity(7);
 
-      SpanWriter writer = new SpanWriter(stackalloc byte[7]);
-      writer.Write((byte)0xBF); // Packet ID
-      writer.Write((ushort)0x07); // Dynamic Length
-
-      writer.Write((short)0x2A);
-      writer.Write(female);
-      writer.Write((byte)(targetRace.RaceID + 1));
-
-      ns.Send(writer.Span);
-    }
-
-    private static void SendCloseRaceChanger(NetState ns)
-    {
-      ns?.Send(stackalloc byte[]
-      {
-        0xBF, // Packet ID
-        0x07, // Dynamic Length
-        0x00,
-        0xFF
-      });
+      m_Stream.Write((short)0x2A);
+      m_Stream.Write((byte)(female ? 1 : 0));
+      m_Stream.Write((byte)(targetRace.RaceID + 1));
     }
   }
+
+  public sealed class CloseRaceChanger : Packet
+  {
+    public static readonly Packet Instance = SetStatic(new CloseRaceChanger());
+
+    private CloseRaceChanger()
+      : base(0xBF)
+    {
+      EnsureCapacity(7);
+
+      m_Stream.Write((short)0x2A);
+      m_Stream.Write((byte)0);
+      m_Stream.Write((byte)0xFF);
+    }
+  }
+
+  #region For testing
+
   public class RaceChangeDeed : Item, IRaceChanger
   {
     [Constructible]
@@ -319,4 +330,6 @@ namespace Server.Engines.MLQuests.Gumps
       int version = reader.ReadInt();
     }
   }
+
+  #endregion
 }

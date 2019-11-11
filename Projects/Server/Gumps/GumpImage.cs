@@ -18,68 +18,66 @@
  *
  ***************************************************************************/
 
-using System.Buffers;
-using Server.Buffers;
-using Server.Collections;
+using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpImage : GumpEntry
   {
+    private static byte[] m_LayoutName = Gump.StringToBuffer("gumppic");
+    private static byte[] m_HueEquals = Gump.StringToBuffer(" hue=");
+    private int m_GumpID;
+    private int m_Hue;
+    private int m_X, m_Y;
+
     public GumpImage(int x, int y, int gumpID, int hue = 0)
     {
-      X = x;
-      Y = y;
-      GumpID = gumpID;
-      Hue = hue;
+      m_X = x;
+      m_Y = y;
+      m_GumpID = gumpID;
+      m_Hue = hue;
     }
 
-    public GumpImage(int x, int y, int gumpID, int hue = 0, string cls = null)
+    public int X
     {
-      X = x;
-      Y = y;
-      GumpID = gumpID;
-      Hue = hue;
-      Class = cls;
+      get => m_X;
+      set => Delta(ref m_X, value);
     }
 
-    public int X { get; set; }
+    public int Y
+    {
+      get => m_Y;
+      set => Delta(ref m_Y, value);
+    }
 
-    public int Y { get; set; }
+    public int GumpID
+    {
+      get => m_GumpID;
+      set => Delta(ref m_GumpID, value);
+    }
 
-    public int GumpID { get; set; }
+    public int Hue
+    {
+      get => m_Hue;
+      set => Delta(ref m_Hue, value);
+    }
 
     public override string Compile(NetState ns) =>
       m_Hue == 0 ? $"{{ gumppic {m_X} {m_Y} {m_GumpID} }}" :
         $"{{ gumppic {m_X} {m_Y} {m_GumpID} hue={m_Hue} }}";
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
+    public override void AppendTo(NetState ns, IGumpWriter disp)
     {
-      SpanWriter writer = new SpanWriter(buffer.GetSpan(66 + Class?.Length ?? 0));
-      writer.Write(m_LayoutName);
-      writer.WriteAscii(X.ToString());
-      writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(Y.ToString());
-      writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(GumpID.ToString());
-      writer.Write((byte)0x20); // ' '
+      disp.AppendLayout(m_LayoutName);
+      disp.AppendLayout(m_X);
+      disp.AppendLayout(m_Y);
+      disp.AppendLayout(m_GumpID);
 
-      if (Hue != 0)
+      if (m_Hue != 0)
       {
-        writer.Write(m_HueEquals);
-        writer.WriteAscii(Hue.ToString());
-        writer.Write((byte)0x20); // ' '
+        disp.AppendLayout(m_HueEquals);
+        disp.AppendLayoutNS(m_Hue);
       }
-
-      if (!string.IsNullOrWhiteSpace(Class))
-      {
-        writer.Write(m_ClassEquals);
-        writer.WriteAscii(Class);
-        writer.Write((byte)0x20); // ' '
-      }
-
-      writer.Write((byte)0x7D); // '}'
-      buffer.Advance(writer.WrittenCount);
     }
   }
 }

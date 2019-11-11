@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Server.Items;
 
 namespace Server.Engines.Plants
@@ -32,8 +31,14 @@ namespace Server.Engines.Plants
 
     public Type ResourceType{ get; }
 
-    public static PlantResourceInfo GetInfo(PlantType plantType, PlantHue plantHue) =>
-      m_ResourceList.FirstOrDefault(info => info.PlantType == plantType && info.PlantHue == plantHue);
+    public static PlantResourceInfo GetInfo(PlantType plantType, PlantHue plantHue)
+    {
+      foreach (PlantResourceInfo info in m_ResourceList)
+        if (info.PlantType == plantType && info.PlantHue == plantHue)
+          return info;
+
+      return null;
+    }
 
     public Item CreateResource() => (Item)Activator.CreateInstance(ResourceType);
   }

@@ -4,7 +4,7 @@ using Server.Items;
 
 namespace Server.Commands
 {
-  public static class SignParser
+  public class SignParser
   {
     private static Queue<Item> m_ToDelete = new Queue<Item>();
 
@@ -76,7 +76,9 @@ namespace Server.Commands
         from.SendMessage("Sign generating complete.");
       }
       else
+      {
         from.SendMessage("{0} not found!", cfg);
+      }
     }
 
     public static void Add_Static(int itemID, Point3D location, Map map, string name)
@@ -92,8 +94,17 @@ namespace Server.Commands
       while (m_ToDelete.Count > 0)
         m_ToDelete.Dequeue().Delete();
 
-      Item sign = name.StartsWith("#") ? new LocalizedSign(itemID, Utility.ToInt32(name.Substring(1))) :
-        new Sign(itemID) {Name = name};
+      Item sign;
+
+      if (name.StartsWith("#"))
+      {
+        sign = new LocalizedSign(itemID, Utility.ToInt32(name.Substring(1)));
+      }
+      else
+      {
+        sign = new Sign(itemID);
+        sign.Name = name;
+      }
 
       if (map == Map.Malas)
       {

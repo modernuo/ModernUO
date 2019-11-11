@@ -18,9 +18,7 @@
  *
  ***************************************************************************/
 
-using System.Buffers;
-using Server.Buffers;
-using Server.Collections;
+using Server.Network;
 
 namespace Server.Gumps
 {
@@ -33,33 +31,45 @@ namespace Server.Gumps
 
   public class GumpHtmlLocalized : GumpEntry
   {
+    private static byte[] m_LayoutNamePlain = Gump.StringToBuffer("xmfhtmlgump");
+    private static byte[] m_LayoutNameColor = Gump.StringToBuffer("xmfhtmlgumpcolor");
+    private static byte[] m_LayoutNameArgs = Gump.StringToBuffer("xmfhtmltok");
+    private string m_Args;
+    private bool m_Background, m_Scrollbar;
+    private int m_Color;
+    private int m_Number;
+
+    private GumpHtmlLocalizedType m_Type;
+    private int m_Width, m_Height;
+    private int m_X, m_Y;
+
     public GumpHtmlLocalized(int x, int y, int width, int height, int number,
       bool background = false, bool scrollbar = false)
     {
-      X = x;
-      Y = y;
-      Width = width;
-      Height = height;
-      Number = number;
-      Background = background;
-      Scrollbar = scrollbar;
+      m_X = x;
+      m_Y = y;
+      m_Width = width;
+      m_Height = height;
+      m_Number = number;
+      m_Background = background;
+      m_Scrollbar = scrollbar;
 
-      Type = GumpHtmlLocalizedType.Plain;
+      m_Type = GumpHtmlLocalizedType.Plain;
     }
 
     public GumpHtmlLocalized(int x, int y, int width, int height, int number, int color,
       bool background = false, bool scrollbar = false)
     {
-      X = x;
-      Y = y;
-      Width = width;
-      Height = height;
-      Number = number;
-      Color = color;
-      Background = background;
-      Scrollbar = scrollbar;
+      m_X = x;
+      m_Y = y;
+      m_Width = width;
+      m_Height = height;
+      m_Number = number;
+      m_Color = color;
+      m_Background = background;
+      m_Scrollbar = scrollbar;
 
-      Type = GumpHtmlLocalizedType.Color;
+      m_Type = GumpHtmlLocalizedType.Color;
     }
 
     public GumpHtmlLocalized(int x, int y, int width, int height, int number, string args, int color,
@@ -67,38 +77,81 @@ namespace Server.Gumps
     {
       // Are multiple arguments unsupported? And what about non ASCII arguments?
 
-      X = x;
-      Y = y;
-      Width = width;
-      Height = height;
-      Number = number;
-      Args = args;
-      Color = color;
-      Background = background;
-      Scrollbar = scrollbar;
+      m_X = x;
+      m_Y = y;
+      m_Width = width;
+      m_Height = height;
+      m_Number = number;
+      m_Args = args;
+      m_Color = color;
+      m_Background = background;
+      m_Scrollbar = scrollbar;
 
-      Type = GumpHtmlLocalizedType.Args;
+      m_Type = GumpHtmlLocalizedType.Args;
     }
 
-    public int X { get; set; }
+    public int X
+    {
+      get => m_X;
+      set => Delta(ref m_X, value);
+    }
 
-    public int Y { get; set; }
+    public int Y
+    {
+      get => m_Y;
+      set => Delta(ref m_Y, value);
+    }
 
-    public int Width { get; set; }
+    public int Width
+    {
+      get => m_Width;
+      set => Delta(ref m_Width, value);
+    }
 
-    public int Height { get; set; }
+    public int Height
+    {
+      get => m_Height;
+      set => Delta(ref m_Height, value);
+    }
 
-    public int Number { get; set; }
+    public int Number
+    {
+      get => m_Number;
+      set => Delta(ref m_Number, value);
+    }
 
-    public string Args { get; set; }
+    public string Args
+    {
+      get => m_Args;
+      set => Delta(ref m_Args, value);
+    }
 
-    public int Color { get; set; }
+    public int Color
+    {
+      get => m_Color;
+      set => Delta(ref m_Color, value);
+    }
 
-    public bool Background { get; set; }
+    public bool Background
+    {
+      get => m_Background;
+      set => Delta(ref m_Background, value);
+    }
 
-    public bool Scrollbar { get; set; }
+    public bool Scrollbar
+    {
+      get => m_Scrollbar;
+      set => Delta(ref m_Scrollbar, value);
+    }
 
-    public GumpHtmlLocalizedType Type { get; set; }
+    public GumpHtmlLocalizedType Type
+    {
+      get => m_Type;
+      set
+      {
+        if (m_Type != value)
+        {
+          m_Type = value;
 
           Parent?.Invalidate();
         }
@@ -120,81 +173,56 @@ namespace Server.Gumps
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {
-      SpanWriter writer = new SpanWriter(buffer.GetSpan(90 + Args?.Length ?? 0));
-      switch (Type)
+      switch (m_Type)
       {
         case GumpHtmlLocalizedType.Plain:
         {
-          writer.Write(m_LayoutNamePlain);
-          writer.WriteAscii(X.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Y.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Width.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Height.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Number.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Background ? "1" : "0");
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Scrollbar ? "1" : "0");
+          disp.AppendLayout(m_LayoutNamePlain);
+
+          disp.AppendLayout(m_X);
+          disp.AppendLayout(m_Y);
+          disp.AppendLayout(m_Width);
+          disp.AppendLayout(m_Height);
+          disp.AppendLayout(m_Number);
+          disp.AppendLayout(m_Background);
+          disp.AppendLayout(m_Scrollbar);
 
           break;
         }
 
         case GumpHtmlLocalizedType.Color:
         {
-          writer.Write(m_LayoutNameColor);
-          writer.WriteAscii(X.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Y.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Width.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Height.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Number.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Background ? "1" : "0");
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Scrollbar ? "1" : "0");
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Color.ToString());
+          disp.AppendLayout(m_LayoutNameColor);
+
+          disp.AppendLayout(m_X);
+          disp.AppendLayout(m_Y);
+          disp.AppendLayout(m_Width);
+          disp.AppendLayout(m_Height);
+          disp.AppendLayout(m_Number);
+          disp.AppendLayout(m_Background);
+          disp.AppendLayout(m_Scrollbar);
+          disp.AppendLayout(m_Color);
 
           break;
         }
 
         case GumpHtmlLocalizedType.Args:
         {
-          writer.Write(m_LayoutNameArgs);
-          writer.WriteAscii(X.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Y.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Width.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Height.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Background ? "1" : "0");
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Scrollbar ? "1" : "0");
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Color.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.WriteAscii(Number.ToString());
-          writer.Write((byte)0x20); // ' '
-          writer.Write((byte)0x40); // '@'
-          writer.WriteAscii(Args ?? "");
-          writer.Write((byte)0x40); // '@'
+          disp.AppendLayout(m_LayoutNameArgs);
+
+          disp.AppendLayout(m_X);
+          disp.AppendLayout(m_Y);
+          disp.AppendLayout(m_Width);
+          disp.AppendLayout(m_Height);
+          disp.AppendLayout(m_Background);
+          disp.AppendLayout(m_Scrollbar);
+          disp.AppendLayout(m_Color);
+          disp.AppendLayout(m_Number);
+          disp.AppendLayout(m_Args);
 
           break;
         }
       }
-
-      writer.Write((byte)0x20); // ' '
-      writer.Write((byte)0x7D); // '}'
-      buffer.Advance(writer.WrittenCount);
     }
   }
 }

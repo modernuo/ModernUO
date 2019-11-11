@@ -79,8 +79,9 @@ namespace Server.Items
       from.Backpack.ConsumeUpTo(typeof(SulfurousAsh), sulfAsh);
 
       from.PlaySound(0x15F);
-
-      Effects.SendMovingEffect(from, loc, from.Map, 0x36D4, 5, 0, false, true);
+      Effects.SendPacket(from, from.Map,
+        new HuedEffect(EffectType.Moving, from.Serial, Serial.Zero, 0x36D4, from.Location, loc, 5, 0, false, true, 0,
+          0));
 
       IPooledEnumerable<Mobile> eable = from.Map.GetMobilesInRange(new Point3D(loc), 2);
 
@@ -91,9 +92,11 @@ namespace Server.Items
             || Core.AOS && !from.InLOS(m))
           return false;
 
-        playerVsPlayer |= m.Player;
+        if (m.Player)
+          playerVsPlayer = true;
 
         return true;
+
       }).ToList();
 
       eable.Free();

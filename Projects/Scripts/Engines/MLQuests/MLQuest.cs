@@ -86,7 +86,14 @@ namespace Server.Engines.MLQuests
 
     public virtual int Version => 0;
 
-    public bool HasObjective<T>() where T : BaseObjective => Objectives.OfType<T>().Any();
+    public bool HasObjective<T>() where T : BaseObjective
+    {
+      foreach (BaseObjective obj in Objectives)
+        if (obj is T)
+          return true;
+
+      return false;
+    }
 
     public virtual void Generate()
     {
@@ -144,7 +151,11 @@ namespace Server.Engines.MLQuests
         }
       }
 
-      return Objectives.All(obj => obj.CanOffer(quester, pm, message));
+      foreach (BaseObjective obj in Objectives)
+        if (!obj.CanOffer(quester, pm, message))
+          return false;
+
+      return true;
     }
 
     public virtual void SendOffer(IQuestGiver quester, PlayerMobile pm)

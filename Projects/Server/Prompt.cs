@@ -18,11 +18,11 @@
  *
  ***************************************************************************/
 
-namespace Server
+namespace Server.Prompts
 {
   public abstract class Prompt
   {
-    private static Serial m_Serials;
+    private static int m_Serials;
 
     protected Prompt()
     {
@@ -32,7 +32,7 @@ namespace Server
       } while (Serial == 0);
     }
 
-    public Serial Serial{ get; }
+    public int Serial{ get; }
 
     public virtual void OnCancel(Mobile from)
     {

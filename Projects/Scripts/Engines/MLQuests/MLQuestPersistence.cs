@@ -14,7 +14,8 @@ namespace Server.Engines.MLQuests
 
     public static void EnsureExistence()
     {
-      m_Instance ??= new MLQuestPersistence();
+      if (m_Instance == null)
+        m_Instance = new MLQuestPersistence();
     }
 
     public override void Serialize(GenericWriter writer)

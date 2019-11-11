@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Events.Halloween;
 using Server.Items;
 using Server.Mobiles;
@@ -70,7 +69,9 @@ namespace Server.Engines.Events
         if (twin.Deleted)
           return;
 
-        m_Items.AddRange(m_From.Items.Where(item => item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank));
+        foreach (Item item in m_From.Items)
+          if (item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank)
+            m_Items.Add(item);
 
         if (m_Items.Count > 0)
         {

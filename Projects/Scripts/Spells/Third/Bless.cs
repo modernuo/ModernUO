@@ -61,7 +61,7 @@ namespace Server.Spells.Third
 
         string args = $"{percentage}\t{percentage}\t{percentage}";
 
-        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Bless, 1075847, 1075848, args, length, m));
+        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Bless, 1075847, 1075848, length, m, args));
       }
 
       FinishSequence();

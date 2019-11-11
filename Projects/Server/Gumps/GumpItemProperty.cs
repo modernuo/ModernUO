@@ -18,31 +18,29 @@
  *
  ***************************************************************************/
 
-using System.Buffers;
-using Server.Buffers;
-using Server.Collections;
+using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpItemProperty : GumpEntry
   {
-    public GumpItemProperty(uint serial) => Serial = serial;
+    private static byte[] m_LayoutName = Gump.StringToBuffer("itemproperty");
+    private uint m_Serial;
 
     public GumpItemProperty(uint serial) => m_Serial = serial;
 
-    public override string Compile(ArraySet<string> strings) => $"{{ itemproperty {Serial} }}";
+    public uint Serial
+    {
+      get => m_Serial;
+      set => Delta(ref m_Serial, value);
+    }
 
     public override string Compile(NetState ns) => $"{{ itemproperty {m_Serial} }}";
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
+    public override void AppendTo(NetState ns, IGumpWriter disp)
     {
-      SpanWriter writer = new SpanWriter(buffer.GetSpan(27));
-      writer.Write(m_LayoutName);
-      writer.WriteAscii(Serial.ToString());
-      writer.Write((byte)0x20); // ' '
-      writer.Write((byte)0x7D); // '}'
-
-      buffer.Advance(writer.WrittenCount);
+      disp.AppendLayout(m_LayoutName);
+      disp.AppendLayout(m_Serial);
     }
   }
 }

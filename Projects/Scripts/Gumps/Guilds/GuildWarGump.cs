@@ -86,7 +86,7 @@ namespace Server.Gumps
         }
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState state, RelayInfo info)
     {
       if (GuildGump.BadMember(m_Mobile, m_Guild))
         return;

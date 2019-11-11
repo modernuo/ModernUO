@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Server.Network;
 
 namespace Server.Spells.Mysticism
 {
@@ -66,7 +67,8 @@ namespace Server.Spells.Mysticism
 
               targets.Add(m);
 
-              pvp |= m.Player;
+              if (m.Player)
+                pvp = true;
             }
           }
         }
@@ -111,7 +113,9 @@ namespace Server.Spells.Mysticism
 
     private static void SendEffectPacket(IPoint3D p, Map map, Point3D orig, Point3D dest)
     {
-      Effects.SendMovingEffect(p, orig, dest, map, 0x36D4, 0, 0, false, false, 0x63, 4);
+      Effects.SendPacket(p, map,
+        new HuedEffect(EffectType.Moving, Serial.Zero, Serial.Zero, 0x36D4, orig, dest, 0, 0, false, false, 0x63,
+          0x4));
     }
   }
 }

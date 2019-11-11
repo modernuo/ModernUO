@@ -19,7 +19,7 @@ namespace Server
     public static void Initialize()
     {
       string filePath = Path.Combine(Core.BaseDirectory, "Data/treasure.cfg");
-      int i = 0;
+      int i = 0, x = 0, y = 0;
 
       if (File.Exists(filePath))
       {

@@ -78,7 +78,7 @@ namespace Server.Items
 
     public Rectangle2D Bounds{ get; }
 
-    public static readonly PresetMapEntry[] Table =
+    public static PresetMapEntry[] Table{ get; } =
     {
       new PresetMapEntry(1041189, 200, 200, 1092, 1396, 1736, 1924), // map of Britain
       new PresetMapEntry(1041203, 200, 200, 0256, 1792, 1736, 2560), // map of Britain to Skara Brae

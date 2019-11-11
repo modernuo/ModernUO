@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Server.Buffers;
 using Server.Network;
 using Server.Targeting;
 
@@ -55,7 +54,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string BoardName { get; set; }
+    public string BoardName{ get; set; }
 
     public static bool CheckTime(DateTime time, TimeSpan range) => time + range < DateTime.UtcNow;
 
@@ -67,10 +66,8 @@ namespace Server.Items
 
       if (minutes != 0 && seconds != 0)
         return $"{minutes} minute{(minutes == 1 ? "" : "s")} and {seconds} second{(seconds == 1 ? "" : "s")}";
-
       if (minutes != 0)
         return $"{minutes} minute{(minutes == 1 ? "" : "s")}";
-
       return $"{seconds} second{(seconds == 1 ? "" : "s")}";
     }
 
@@ -149,8 +146,11 @@ namespace Server.Items
 
         NetState state = from.NetState;
 
-        BBPackets.SendBBDisplayBoard(state, this);
-        Packets.SendContainerContent(state, from, this);
+        state.Send(new BBDisplayBoard(this));
+        if (state.ContainerGridLines)
+          state.Send(new ContainerContent6017(from, this));
+        else
+          state.Send(new ContainerContent(from, this));
       }
       else
       {
@@ -232,14 +232,18 @@ namespace Server.Items
 
     public static void BBRequestContent(Mobile from, BaseBulletinBoard board, PacketReader pvSrc)
     {
-      if (World.FindItem(pvSrc.ReadUInt32()) is BulletinMessage msg && msg.Parent == board)
-        BBPackets.SendBBMessageContent(from.NetState, board, msg);
+      if (!(World.FindItem(pvSrc.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
+        return;
+
+      from.Send(new BBMessageContent(board, msg));
     }
 
     public static void BBRequestHeader(Mobile from, BaseBulletinBoard board, PacketReader pvSrc)
     {
-      if (World.FindItem(pvSrc.ReadUInt32()) is BulletinMessage msg && msg.Parent == board)
-        BBPackets.SendBBMessageHeader(from.NetState, board, msg);
+      if (!(World.FindItem(pvSrc.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
+        return;
+
+      from.Send(new BBMessageHeader(board, msg));
     }
 
     public static void BBPostMessage(Mobile from, BaseBulletinBoard board, PacketReader pvSrc)
@@ -267,7 +271,7 @@ namespace Server.Items
           return;
         }
 
-      string subject = pvSrc.ReadStringSafe(pvSrc.ReadByte());
+      string subject = pvSrc.ReadUTF8StringSafe(pvSrc.ReadByte());
 
       if (subject.Length == 0)
         return;
@@ -278,7 +282,7 @@ namespace Server.Items
         return;
 
       for (int i = 0; i < lines.Length; ++i)
-        lines[i] = pvSrc.ReadStringSafe(pvSrc.ReadByte());
+        lines[i] = pvSrc.ReadUTF8StringSafe(pvSrc.ReadByte());
 
       board.PostMessage(from, thread, subject, lines);
     }
@@ -340,25 +344,25 @@ namespace Server.Items
     {
     }
 
-    public Mobile Poster { get; private set; }
+    public Mobile Poster{ get; private set; }
 
-    public BulletinMessage Thread { get; private set; }
+    public BulletinMessage Thread{ get; private set; }
 
-    public string Subject { get; private set; }
+    public string Subject{ get; private set; }
 
-    public DateTime Time { get; private set; }
+    public DateTime Time{ get; private set; }
 
-    public DateTime LastPostTime { get; set; }
+    public DateTime LastPostTime{ get; set; }
 
-    public string PostedName { get; private set; }
+    public string PostedName{ get; private set; }
 
-    public int PostedBody { get; private set; }
+    public int PostedBody{ get; private set; }
 
-    public int PostedHue { get; private set; }
+    public int PostedHue{ get; private set; }
 
-    public BulletinEquip[] PostedEquip { get; private set; }
+    public BulletinEquip[] PostedEquip{ get; private set; }
 
-    public string[] Lines { get; private set; }
+    public string[] Lines{ get; private set; }
 
     public string GetTimeAsString() => Time.ToString("MMM dd, yyyy");
 
@@ -448,63 +452,69 @@ namespace Server.Items
     }
   }
 
-  public static class BBPackets
+  public class BBDisplayBoard : Packet
   {
-    public static void SendBBDisplayBoard(NetState ns, BaseBulletinBoard board)
+    public BBDisplayBoard(BaseBulletinBoard board) : base(0x71)
     {
-      SpanWriter writer = new SpanWriter(stackalloc byte[38]);
-      writer.Write((byte)0x71); // Packet ID
-      writer.Write((ushort)38); // Dynamic Length
+      EnsureCapacity(38);
 
-      writer.Position++; // writer.Write((byte)0); // Command
-      writer.Write(board.Serial);
-      writer.WriteAsciiNull(board.BoardName ?? "", 29);
+      byte[] buffer = Utility.UTF8.GetBytes(board.BoardName ?? "");
 
-      ns.Send(writer.Span);
+      m_Stream.Write((byte)0x00); // PacketID
+      m_Stream.Write(board.Serial); // Bulletin board serial
+
+      // Bulletin board name
+      if (buffer.Length >= 29)
+      {
+        m_Stream.Write(buffer, 0, 29);
+        m_Stream.Write((byte)0);
+      }
+      else
+      {
+        m_Stream.Write(buffer, 0, buffer.Length);
+        m_Stream.Fill(30 - buffer.Length);
+      }
+    }
+  }
+
+  public class BBMessageHeader : Packet
+  {
+    public BBMessageHeader(BaseBulletinBoard board, BulletinMessage msg) : base(0x71)
+    {
+      string poster = SafeString(msg.PostedName);
+      string subject = SafeString(msg.Subject);
+      string time = SafeString(msg.GetTimeAsString());
+
+      EnsureCapacity(22 + poster.Length + subject.Length + time.Length);
+
+      m_Stream.Write((byte)0x01); // PacketID
+      m_Stream.Write(board.Serial); // Bulletin board serial
+      m_Stream.Write(msg.Serial); // Message serial
+
+      BulletinMessage thread = msg.Thread;
+
+      if (thread == null)
+        m_Stream.Write(0); // Thread serial--root
+      else
+        m_Stream.Write(thread.Serial); // Thread serial--parent
+
+      WriteString(poster);
+      WriteString(subject);
+      WriteString(time);
     }
 
-    public static void SendBBMessageHeader(NetState ns, BaseBulletinBoard board, BulletinMessage msg)
+    public void WriteString(string v)
     {
-      string poster = msg.PostedName ?? "";
-      string subject = msg.Subject ?? "";
-      string time = msg.GetTimeAsString() ?? "";
+      byte[] buffer = Utility.UTF8.GetBytes(v);
+      int len = buffer.Length + 1;
 
-      byte posterLength = Math.Min((byte)poster.Length, (byte)254);
-      byte subjectLength = Math.Min((byte)subject.Length, (byte)254);
-      byte timeLength = Math.Min((byte)time.Length, (byte)254);
+      if (len > 255)
+        len = 255;
 
-      int length = 22 + posterLength + subjectLength + timeLength;
-      SpanWriter writer = new SpanWriter(stackalloc byte[length]);
-      writer.Write((byte)0x71); // Packet ID
-      writer.Write((ushort)length); // Dynamic Length
-
-      writer.Write((byte)0x01); // Command
-      writer.Write(board.Serial); // Bulletin board serial
-      writer.Write(msg.Serial); // Message serial
-      writer.Write(msg.Thread?.Serial ?? 0);
-
-      writer.Write(posterLength);
-      writer.WriteAsciiNull(poster, posterLength + 1);
-      writer.Write(subjectLength);
-      writer.WriteAsciiNull(subject, subjectLength + 1);
-      writer.Write(timeLength);
-      writer.WriteAsciiNull(time, timeLength + 1);
-
-      ns.Send(writer.Span);
+      m_Stream.Write((byte)len);
+      m_Stream.Write(buffer, 0, len - 1);
+      m_Stream.Write((byte)0);
     }
-
-    public static void SendBBMessageContent(NetState ns, BaseBulletinBoard board, BulletinMessage msg)
-    {
-      string poster = msg.PostedName ?? "";
-      string subject = msg.Subject ?? "";
-      string time = msg.GetTimeAsString() ?? "";
-
-      byte posterLength = Math.Min((byte)poster.Length, (byte)254);
-      byte subjectLength = Math.Min((byte)subject.Length, (byte)254);
-      byte timeLength = Math.Min((byte)time.Length, (byte)254);
-
-      int equipLength = Math.Min(msg.PostedEquip.Length, 255);
-      int msgLength = Math.Min(msg.Lines.Length, 255);
 
     public string SafeString(string v) => v ?? string.Empty;
   }
@@ -519,43 +529,72 @@ namespace Server.Items
 
       EnsureCapacity(22 + poster.Length + subject.Length + time.Length);
 
-      writer.Write((byte)0x02); // Command
-      writer.Write(board.Serial); // Bulletin board serial
-      writer.Write(msg.Serial); // Message serial
+      m_Stream.Write((byte)0x02); // PacketID
+      m_Stream.Write(board.Serial); // Bulletin board serial
+      m_Stream.Write(msg.Serial); // Message serial
 
-      writer.Write(posterLength);
-      writer.WriteAsciiNull(poster, posterLength + 1);
-      writer.Write(subjectLength);
-      writer.WriteAsciiNull(subject, subjectLength + 1);
-      writer.Write(timeLength);
-      writer.WriteAsciiNull(time, timeLength + 1);
+      WriteString(poster);
+      WriteString(subject);
+      WriteString(time);
 
-      writer.Write((short)msg.PostedBody);
-      writer.Write((short)msg.PostedHue);
+      m_Stream.Write((short)msg.PostedBody);
+      m_Stream.Write((short)msg.PostedHue);
 
-      writer.Write((byte)equipLength);
+      int len = msg.PostedEquip.Length;
 
-      for (int i = 0; i < equipLength; ++i)
+      if (len > 255)
+        len = 255;
+
+      m_Stream.Write((byte)len);
+
+      for (int i = 0; i < len; ++i)
       {
         BulletinEquip eq = msg.PostedEquip[i];
 
-        writer.Write((short)eq.itemID);
-        writer.Write((short)eq.hue);
+        m_Stream.Write((short)eq.itemID);
+        m_Stream.Write((short)eq.hue);
       }
 
-      writer.Write((byte)msgLength);
+      len = msg.Lines.Length;
 
-      for (int i = 0; i < msgLength; ++i)
-      {
-        string line = msg.Lines[i];
-        byte len = Math.Min((byte)line.Length, (byte)254);
-        writer.WriteAsciiNull(line, len);
-      }
+      if (len > 255)
+        len = 255;
 
-      writer.Position = 1;
-      writer.Write((ushort)writer.WrittenCount);
+      m_Stream.Write((byte)len);
 
-      ns.Send(writer.Span);
+      for (int i = 0; i < len; ++i)
+        WriteString(msg.Lines[i], true);
+    }
+
+    public void WriteString(string v)
+    {
+      WriteString(v, false);
+    }
+
+    public void WriteString(string v, bool padding)
+    {
+      byte[] buffer = Utility.UTF8.GetBytes(v);
+      int tail = padding ? 2 : 1;
+      int len = buffer.Length + tail;
+
+      if (len > 255)
+        len = 255;
+
+      m_Stream.Write((byte)len);
+      m_Stream.Write(buffer, 0, len - tail);
+
+      if (padding)
+        m_Stream.Write((short)0); // padding compensates for a client bug
+      else
+        m_Stream.Write((byte)0);
+    }
+
+    public string SafeString(string v)
+    {
+      if (v == null)
+        return string.Empty;
+
+      return v;
     }
   }
 }

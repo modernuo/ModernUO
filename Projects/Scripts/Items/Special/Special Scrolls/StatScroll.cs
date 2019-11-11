@@ -12,12 +12,10 @@ namespace Server.Items
     }
 
     public override int Message =>
-      1049469;
-    /* Using a scroll increases the maximum amount of a specific skill or your maximum statistics.
-     * When used, the effect is not immediately seen without a gain of points with that skill or statistics.
-     * You can view your maximum skill values in your skills window.
-     * You can view your maximum statistic value in your statistics window.
-     */
+      1049469; /* Using a scroll increases the maximum amount of a specific skill or your maximum statistics.
+																* When used, the effect is not immediately seen without a gain of points with that skill or statistics.
+																* You can view your maximum skill values in your skills window.
+																* You can view your maximum statistic value in your statistics window. */
 
     public override int Title
     {
@@ -26,13 +24,11 @@ namespace Server.Items
         int level = ((int)Value - 230) / 5;
 
         if (level >= 0 && level <= 4 && Value % 5 == 0)
-          return 1049458 + level;
-        /* Wonderous Scroll (+5 Maximum Stats): OR
-         * Exalted Scroll (+10 Maximum Stats): OR
-         * Mythical Scroll (+15 Maximum Stats): OR
-         * Legendary Scroll (+20 Maximum Stats): OR
-         * Ultimate Scroll (+25 Maximum Stats):
-         */
+          return 1049458 + level; /* Wonderous Scroll (+5 Maximum Stats): OR
+											* Exalted Scroll (+10 Maximum Stats): OR
+											* Mythical Scroll (+15 Maximum Stats): OR
+											* Legendary Scroll (+20 Maximum Stats): OR
+											* Ultimate Scroll (+25 Maximum Stats): */
 
         return 0;
       }
@@ -46,13 +42,11 @@ namespace Server.Items
       int level = ((int)Value - 230) / 5;
 
       if (level >= 0 && level <= 4 && (int)Value % 5 == 0)
-        list.Add(1049463 + level, "#1049476");
-      /* a wonderous scroll of ~1_type~ (+5 Maximum Stats) OR
-       * an exalted scroll of ~1_type~ (+10 Maximum Stats) OR
-       * a mythical scroll of ~1_type~ (+15 Maximum Stats) OR
-       * a legendary scroll of ~1_type~ (+20 Maximum Stats) OR
-       * an ultimate scroll of ~1_type~ (+25 Maximum Stats)
-       */
+        list.Add(1049463 + level, "#1049476"); /* a wonderous scroll of ~1_type~ (+5 Maximum Stats) OR
+															* an exalted scroll of ~1_type~ (+10 Maximum Stats) OR
+															* a mythical scroll of ~1_type~ (+15 Maximum Stats) OR
+															* a legendary scroll of ~1_type~ (+20 Maximum Stats) OR
+															* an ultimate scroll of ~1_type~ (+25 Maximum Stats) */
       else
         list.Add("a scroll of power ({0}{1} Maximum Stats)", Value - 225 >= 0 ? "+" : "", Value - 225);
     }

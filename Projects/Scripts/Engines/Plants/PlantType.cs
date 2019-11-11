@@ -261,13 +261,21 @@ namespace Server.Engines.Plants
 
       double rand = Utility.RandomDouble();
 
-      return rand < 0.5 / exp4 ? PlantType.CommonGreenBonsai :
-        rand < 1.0 / exp4 ? PlantType.CommonPinkBonsai :
-        rand < (k1 * 0.5 + 1.0) / exp4 ? PlantType.UncommonGreenBonsai :
-        rand < exp1 / exp4 ? PlantType.UncommonPinkBonsai :
-        rand < (k2 * 0.5 + exp1) / exp4 ? PlantType.RareGreenBonsai :
-        rand < exp2 / exp4 ? PlantType.RarePinkBonsai :
-        rand < exp3 / exp4 ? PlantType.ExceptionalBonsai : PlantType.ExoticBonsai;
+      if (rand < 0.5 / exp4)
+        return PlantType.CommonGreenBonsai;
+      if (rand < 1.0 / exp4)
+        return PlantType.CommonPinkBonsai;
+      if (rand < (k1 * 0.5 + 1.0) / exp4)
+        return PlantType.UncommonGreenBonsai;
+      if (rand < exp1 / exp4)
+        return PlantType.UncommonPinkBonsai;
+      if (rand < (k2 * 0.5 + exp1) / exp4)
+        return PlantType.RareGreenBonsai;
+      if (rand < exp2 / exp4)
+        return PlantType.RarePinkBonsai;
+      if (rand < exp3 / exp4)
+        return PlantType.ExceptionalBonsai;
+      return PlantType.ExoticBonsai;
     }
 
     public static bool IsCrossable(PlantType plantType) => GetInfo(plantType).Crossable;

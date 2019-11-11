@@ -77,15 +77,17 @@ namespace Server.Engines.Doom
     public Mobile m_Occupant;
 
     public LeverPuzzleRegion(LeverPuzzleController controller, int[] loc)
-      : base(null, Map.Malas, Find(LeverPuzzleController.lr_Enter, Map.Malas), new Rectangle2D(loc[0], loc[1], 1, 1)) =>
+      : base(null, Map.Malas, Find(LeverPuzzleController.lr_Enter, Map.Malas), new Rectangle2D(loc[0], loc[1], 1, 1))
+    {
       Register();
+    }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Mobile Occupant => m_Occupant?.Alive == true ? m_Occupant : null;
 
     public override void OnEnter(Mobile m)
     {
-      if (m_Occupant == null && m is PlayerMobile && m.Alive)
+      if (m != null && m_Occupant == null && m is PlayerMobile && m.Alive)
         m_Occupant = m;
     }
 

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
 using Server.Ethics;
@@ -9,6 +8,7 @@ using Server.Gumps;
 using Server.Items;
 using Server.Misc;
 using Server.Multis;
+using Server.Prompts;
 using Server.Targeting;
 
 namespace Server.Mobiles
@@ -326,7 +326,11 @@ namespace Server.Mobiles
       {
         if (BaseHouse.NewVendorSystem) return ChargePerRealWorldDay / 12;
 
-        long total = m_SellItems.Values.Aggregate<VendorItem, long>(0, (current, vi) => current + vi.Price) - 500;
+        long total = 0;
+        foreach (VendorItem vi in m_SellItems.Values)
+          total += vi.Price;
+
+        total -= 500;
 
         if (total < 0)
           total = 0;
@@ -341,7 +345,9 @@ namespace Server.Mobiles
       {
         if (BaseHouse.NewVendorSystem)
         {
-          long total = m_SellItems.Values.Aggregate<VendorItem, long>(0, (current, vi) => current + vi.Price);
+          long total = 0;
+          foreach (VendorItem vi in m_SellItems.Values)
+            total += vi.Price;
 
           return (int)(60 + total / 500 * 3);
         }
@@ -538,7 +544,11 @@ namespace Server.Mobiles
 
     protected List<Item> GetItems()
     {
-      List<Item> list = Items.Where(item => item.Movable && item != Backpack && item.Layer != Layer.Hair && item.Layer != Layer.FacialHair).ToList();
+      List<Item> list = new List<Item>();
+
+      foreach (Item item in Items)
+        if (item.Movable && item != Backpack && item.Layer != Layer.Hair && item.Layer != Layer.FacialHair)
+          list.Add(item);
 
       if (Backpack != null)
         list.AddRange(Backpack.Items);
@@ -574,17 +584,18 @@ namespace Server.Mobiles
         {
           if (House.IsOwner(Owner)) // Move to moving crate
           {
-            House.MovingCrate ??= new MovingCrate(House);
+            if (House.MovingCrate == null)
+              House.MovingCrate = new MovingCrate(House);
 
             if (HoldGold > 0)
               Banker.Deposit(House.MovingCrate, HoldGold);
 
-            foreach (Item item in list)
-              House.MovingCrate.DropItem(item);
+            foreach (Item item in list) House.MovingCrate.DropItem(item);
           }
           else // Move to vendor inventory
           {
-            VendorInventory inventory = new VendorInventory(House, Owner, Name, ShopName) {Gold = HoldGold};
+            VendorInventory inventory = new VendorInventory(House, Owner, Name, ShopName);
+            inventory.Gold = HoldGold;
 
             foreach (Item item in list) inventory.AddItem(item);
 

@@ -82,7 +82,9 @@ namespace Server.Commands
           if (baseInfo == null)
             m_Types[baseType] = baseInfo = new TypeInfo(baseType);
 
-          baseInfo.m_Derived ??= new List<TypeInfo>();
+          if (baseInfo.m_Derived == null)
+            baseInfo.m_Derived = new List<TypeInfo>();
+
           baseInfo.m_Derived.Add(info);
         }
 
@@ -95,7 +97,9 @@ namespace Server.Commands
           if (decInfo == null)
             m_Types[decType] = decInfo = new TypeInfo(decType);
 
-          decInfo.m_Nested ??= new List<TypeInfo>();
+          if (decInfo.m_Nested == null)
+            decInfo.m_Nested = new List<TypeInfo>();
+
           decInfo.m_Nested.Add(info);
         }
 
@@ -111,7 +115,9 @@ namespace Server.Commands
           if (ifaceInfo == null)
             m_Types[iface] = ifaceInfo = new TypeInfo(iface);
 
-          ifaceInfo.m_Derived ??= new List<TypeInfo>();
+          if (ifaceInfo.m_Derived == null)
+            ifaceInfo.m_Derived = new List<TypeInfo>();
+
           ifaceInfo.m_Derived.Add(info);
         }
       }
@@ -638,7 +644,6 @@ namespace Server.Commands
       m_Namespaces = new Dictionary<string, List<TypeInfo>>();
 
       List<Assembly> assemblies = new List<Assembly> { Core.Assembly };
-      assemblies.AddRange(AssemblyHandler.Assemblies);
 
 
       foreach (Assembly asm in AssemblyHandler.Assemblies)
@@ -1158,21 +1163,37 @@ namespace Server.Commands
         Item item = items[i].Construct();
 
         if (item is Sandals)
+        {
           rewards[5] = true;
+        }
         else if (item is SmallStretchedHideEastDeed || item is SmallStretchedHideSouthDeed)
+        {
           rewards[10] = rewards[11] = true;
+        }
         else if (item is MediumStretchedHideEastDeed || item is MediumStretchedHideSouthDeed)
+        {
           rewards[10] = rewards[11] = true;
+        }
         else if (item is LightFlowerTapestryEastDeed || item is LightFlowerTapestrySouthDeed)
+        {
           rewards[12] = rewards[13] = true;
+        }
         else if (item is DarkFlowerTapestryEastDeed || item is DarkFlowerTapestrySouthDeed)
+        {
           rewards[12] = rewards[13] = true;
+        }
         else if (item is BrownBearRugEastDeed || item is BrownBearRugSouthDeed)
+        {
           rewards[14] = rewards[15] = true;
+        }
         else if (item is PolarBearRugEastDeed || item is PolarBearRugSouthDeed)
+        {
           rewards[14] = rewards[15] = true;
+        }
         else if (item is ClothingBlessDeed)
+        {
           rewards[16] = true;
+        }
         else if (item is PowerScroll ps)
         {
           if (ps.Value == 105.0)
@@ -1197,7 +1218,10 @@ namespace Server.Commands
           else
             rewards[4] = true;
         }
-        else if (item is RunicSewingKit rkit) rewards[16 + CraftResources.GetIndex(rkit.Resource)] = true;
+        else if (item is RunicSewingKit rkit)
+        {
+          rewards[16 + CraftResources.GetIndex(rkit.Resource)] = true;
+        }
 
         item.Delete();
       }
@@ -1415,21 +1439,37 @@ namespace Server.Commands
         Item item = items[i].Construct();
 
         if (item is SturdyPickaxe || item is SturdyShovel)
+        {
           rewards[0] = true;
+        }
         else if (item is LeatherGlovesOfMining)
+        {
           rewards[1] = true;
+        }
         else if (item is StuddedGlovesOfMining)
+        {
           rewards[2] = true;
+        }
         else if (item is RingmailGlovesOfMining)
+        {
           rewards[3] = true;
+        }
         else if (item is GargoylesPickaxe)
+        {
           rewards[4] = true;
+        }
         else if (item is ProspectorsTool)
+        {
           rewards[5] = true;
+        }
         else if (item is PowderOfTemperament)
+        {
           rewards[6] = true;
+        }
         else if (item is ColoredAnvil)
+        {
           rewards[7] = true;
+        }
         else if (item is PowerScroll ps)
         {
           if (ps.Value == 105.0)
@@ -1442,7 +1482,9 @@ namespace Server.Commands
             rewards[11] = true;
         }
         else if (item is RunicHammer rh)
+        {
           rewards[11 + CraftResources.GetIndex(rh.Resource)] = true;
+        }
         else if (item is AncientSmithyHammer ash)
         {
           if (ash.Bonus == 10)

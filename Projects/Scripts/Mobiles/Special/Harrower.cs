@@ -398,24 +398,24 @@ namespace Server.Mobiles
 
       Dictionary<Mobile, int> validEntries = new Dictionary<Mobile, int>();
 
-      foreach (var (key, value) in m_DamageEntries)
-        if (IsEligible(key, artifact))
+      foreach (KeyValuePair<Mobile, int> kvp in m_DamageEntries)
+        if (IsEligible(kvp.Key, artifact))
         {
-          validEntries.Add(key, value);
-          totalDamage += value;
+          validEntries.Add(kvp.Key, kvp.Value);
+          totalDamage += kvp.Value;
         }
 
       int randomDamage = Utility.RandomMinMax(1, totalDamage);
 
       totalDamage = 0;
 
-      foreach (var (key, value) in validEntries)
+      foreach (KeyValuePair<Mobile, int> kvp in validEntries)
       {
-        totalDamage += value;
+        totalDamage += kvp.Value;
 
         if (totalDamage >= randomDamage)
         {
-          GiveArtifact(key, artifact);
+          GiveArtifact(kvp.Key, artifact);
           return;
         }
       }

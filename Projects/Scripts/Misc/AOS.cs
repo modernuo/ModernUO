@@ -9,7 +9,7 @@ using Server.Spells.Seventh;
 
 namespace Server
 {
-  public static class AOS
+  public class AOS
   {
     public static void DisableStatInfluences()
     {
@@ -1019,7 +1019,8 @@ namespace Server
         if (!GetValues(i, out SkillName skill, out double bonus))
           continue;
 
-        m_Mods ??= new List<SkillMod>();
+        if (m_Mods == null)
+          m_Mods = new List<SkillMod>();
 
         SkillMod sk = new DefaultSkillMod(skill, true, bonus);
         sk.ObeyCap = true;

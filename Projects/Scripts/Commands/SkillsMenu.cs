@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Commands
 {
-  public static class Skills
+  public class Skills
   {
     public static void Initialize()
     {

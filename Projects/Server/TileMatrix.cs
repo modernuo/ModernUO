@@ -191,7 +191,8 @@ namespace Server
       if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight)
         return;
 
-      m_StaticTiles[x] ??= new StaticTile[BlockHeight][][][];
+      if (m_StaticTiles[x] == null)
+        m_StaticTiles[x] = new StaticTile[BlockHeight][][][];
 
       m_StaticTiles[x][y] = value;
 
@@ -207,7 +208,8 @@ namespace Server
       if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || DataStream == null || IndexStream == null)
         return EmptyStaticBlock;
 
-      m_StaticTiles[x] ??= new StaticTile[BlockHeight][][][];
+      if (m_StaticTiles[x] == null)
+        m_StaticTiles[x] = new StaticTile[BlockHeight][][][];
 
       StaticTile[][][] tiles = m_StaticTiles[x][y];
 
@@ -285,7 +287,9 @@ namespace Server
       if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight)
         return;
 
-      m_LandTiles[x] ??= new LandTile[BlockHeight][];
+      if (m_LandTiles[x] == null)
+        m_LandTiles[x] = new LandTile[BlockHeight][];
+
       m_LandTiles[x][y] = value;
 
       if (m_LandPatches[x] == null)
@@ -300,7 +304,8 @@ namespace Server
       if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || MapStream == null)
         return m_InvalidLandBlock;
 
-      m_LandTiles[x] ??= new LandTile[BlockHeight][];
+      if (m_LandTiles[x] == null)
+        m_LandTiles[x] = new LandTile[BlockHeight][];
 
       LandTile[] tiles = m_LandTiles[x][y];
 
@@ -384,7 +389,7 @@ namespace Server
           while (pCur < pEnd)
           {
             lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add(pCur->m_ID, pCur->m_Z);
-            pCur += 1;
+            pCur = pCur + 1;
           }
 
           StaticTile[][][] tiles = new StaticTile[8][][];
@@ -464,13 +469,8 @@ namespace Server
     }
   }
 
-  public interface ITile
-  {
-    int ID { get; }
-  }
-
   [StructLayout(LayoutKind.Sequential, Pack = 1)]
-  public struct LandTile : ITile
+  public struct LandTile
   {
     internal short m_ID;
     internal sbyte m_Z;
@@ -501,7 +501,7 @@ namespace Server
   }
 
   [StructLayout(LayoutKind.Sequential, Pack = 1)]
-  public struct StaticTile : ITile
+  public struct StaticTile
   {
     internal ushort m_ID;
     internal byte m_X;

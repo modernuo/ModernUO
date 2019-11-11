@@ -91,7 +91,8 @@ namespace Server
 
     private void Add<T>(ref List<T> list, T value)
     {
-      list ??= new List<T>();
+      if (list == null) list = new List<T>();
+
       list.Add(value);
     }
 

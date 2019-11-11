@@ -313,9 +313,7 @@ namespace Server.Factions
           actPrio = inactPrio = m_Mobile.GetDistanceToSqrt(comb);
         }
 
-        IPooledEnumerable eable = m_Mobile.GetMobilesInRange(12);
-
-        foreach (Mobile m in eable)
+        foreach (Mobile m in m_Mobile.GetMobilesInRange(12))
           if (m != m_Mobile && CanDispel(m))
           {
             double prio = m_Mobile.GetDistanceToSqrt(m);
@@ -332,8 +330,6 @@ namespace Server.Factions
               actPrio = prio;
             }
           }
-
-        eable.Free();
 
         return active ?? inactive;
       }

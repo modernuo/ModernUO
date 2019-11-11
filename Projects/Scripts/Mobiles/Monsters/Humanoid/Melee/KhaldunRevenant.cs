@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Items;
 
 namespace Server.Mobiles
@@ -80,9 +79,13 @@ namespace Server.Mobiles
       if (lastKiller is BaseCreature creature)
         lastKiller = creature.GetMaster();
 
-      if (IsInsideKhaldun(m) && IsInsideKhaldun(lastKiller) && lastKiller.Player &&
-          !m_Set.Contains(lastKiller) && m.Aggressors.Any(ai => ai.Attacker == lastKiller && ai.CanReportMurder))
-        SummonRevenant(m, lastKiller);
+      if (IsInsideKhaldun(m) && IsInsideKhaldun(lastKiller) && lastKiller.Player && !m_Set.Contains(lastKiller))
+        foreach (AggressorInfo ai in m.Aggressors)
+          if (ai.Attacker == lastKiller && ai.CanReportMurder)
+          {
+            SummonRevenant(m, lastKiller);
+            break;
+          }
     }
 
     public static void SummonRevenant(Mobile victim, Mobile killer)

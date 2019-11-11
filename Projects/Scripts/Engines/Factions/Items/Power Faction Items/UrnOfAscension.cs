@@ -25,9 +25,7 @@ namespace Server
 
       bool used = false;
 
-      IPooledEnumerable eable = from.GetMobilesInRange(8);
-
-      foreach (Mobile mob in eable)
+      foreach (Mobile mob in from.GetMobilesInRange(8))
         if (mob.Player && !mob.Alive && from.InLOS(mob))
         {
           if (Faction.Find(mob) != ourFaction) continue;
@@ -42,8 +40,6 @@ namespace Server
             used = true;
           }
         }
-
-      eable.Free();
 
       if (used)
       {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -30,10 +31,12 @@ namespace Server.Items
 
       writer.Write(timerCount);
 
-      foreach (var (m, value) in DisguiseTimers.Timers)
+      foreach (KeyValuePair<Mobile, Timer> entry in DisguiseTimers.Timers)
       {
+        Mobile m = entry.Key;
+
         writer.Write(m);
-        writer.Write(value.Next - DateTime.UtcNow);
+        writer.Write(entry.Value.Next - DateTime.UtcNow);
         writer.Write(m.NameMod);
       }
     }

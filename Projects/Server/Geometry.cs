@@ -134,11 +134,13 @@ namespace Server
       m_Z = z;
     }
 
-    public Point3D(IPoint3D p) : this(p.X, p.Y, p.Z)
+    public Point3D(IPoint3D p)
+      : this(p.X, p.Y, p.Z)
     {
     }
 
-    public Point3D(IPoint2D p, int z) : this(p.X, p.Y, z)
+    public Point3D(IPoint2D p, int z)
+      : this(p.X, p.Y, z)
     {
     }
 

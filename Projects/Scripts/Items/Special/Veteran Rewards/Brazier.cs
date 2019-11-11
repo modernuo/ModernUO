@@ -63,7 +63,8 @@ namespace Server.Items
 
     public void TurnOn()
     {
-      m_Fire ??= new Item();
+      if (m_Fire == null)
+        m_Fire = new Item();
 
       m_Fire.ItemID = 0x19AB;
       m_Fire.Movable = false;

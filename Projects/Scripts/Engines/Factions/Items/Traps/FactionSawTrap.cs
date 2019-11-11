@@ -8,10 +8,6 @@ namespace Server.Factions
     {
     }
 
-    public FactionSawTrap(Serial serial) : base(serial)
-    {
-    }
-
     public override int LabelNumber => 1041047; // faction saw trap
 
     public override int AttackMessage => 1010544; // The blade cuts deep into your skin!
@@ -23,7 +19,7 @@ namespace Server.Factions
 
     public override void DoVisibleEffect()
     {
-      Effects.SendLocationEffect(Location, Map, 0x11AD, 25);
+      Effects.SendLocationEffect(Location, Map, 0x11AD, 25, 10);
     }
 
     public override void DoAttackEffect(Mobile m)

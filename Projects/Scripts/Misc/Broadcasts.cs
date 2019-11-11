@@ -1,6 +1,6 @@
 namespace Server.Misc
 {
-  public static class Broadcasts
+  public class Broadcasts
   {
     public static void Initialize()
     {

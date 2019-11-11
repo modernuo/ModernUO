@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.Factions;
 using Server.Gumps;
 using Server.Items;
+using Server.Mobiles;
 using Server.Spells.Fifth;
 
 namespace Server.Spells.Seventh

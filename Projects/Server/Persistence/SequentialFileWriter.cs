@@ -21,7 +21,7 @@
 using System;
 using System.IO;
 
-namespace Server.Persistence
+namespace Server
 {
   public sealed class SequentialFileWriter : Stream
   {

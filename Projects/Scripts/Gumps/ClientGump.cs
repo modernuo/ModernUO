@@ -128,13 +128,13 @@ namespace Server.Gumps
       to.SendGump(new ClientGump(to, m_State, te == null ? "" : te.Text));
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState state, RelayInfo info)
     {
       if (m_State == null)
         return;
 
       Mobile focus = m_State.Mobile;
-      Mobile from = sender.Mobile;
+      Mobile from = state.Mobile;
 
       if (focus == null)
       {

@@ -12,6 +12,7 @@ using Server.Regions;
 using Server.Spells;
 using Server.Spells.Spellweaving;
 using Server.Targets;
+using MoveImpl = Server.Movement.MovementImpl;
 
 namespace Server.Mobiles
 {
@@ -110,7 +111,18 @@ namespace Server.Mobiles
 
       m_Timer = new AITimer(this);
 
-      if (!(m.PlayerRangeSensitive || World.Loading || m.Map == null || m.Map == Map.Internal || !m.Map.GetSector(m).Active))
+      bool activate;
+
+      if (!m.PlayerRangeSensitive)
+        activate = true;
+      else if (World.Loading)
+        activate = false;
+      else if (m.Map == null || m.Map == Map.Internal || !m.Map.GetSector(m).Active)
+        activate = false;
+      else
+        activate = true;
+
+      if (activate)
         m_Timer.Start();
 
       Action = ActionType.Wander;
@@ -1677,17 +1689,20 @@ namespace Server.Mobiles
       bool isPassive = delay == m_Mobile.PassiveSpeed;
       bool isControlled = m_Mobile.Controlled || m_Mobile.Summoned;
 
-      delay = delay switch
-      {
-        0.2 => 0.3,
-        0.25 => 0.45,
-        0.3 => 0.6,
-        0.4 => 0.9,
-        0.5 => 1.05,
-        0.6 => 1.2,
-        0.8 => 1.5,
-        _ => delay
-      };
+      if (delay == 0.2)
+        delay = 0.3;
+      else if (delay == 0.25)
+        delay = 0.45;
+      else if (delay == 0.3)
+        delay = 0.6;
+      else if (delay == 0.4)
+        delay = 0.9;
+      else if (delay == 0.5)
+        delay = 1.05;
+      else if (delay == 0.6)
+        delay = 1.2;
+      else if (delay == 0.8)
+        delay = 1.5;
 
       if (isPassive)
         delay += 0.2;
@@ -1767,13 +1782,13 @@ namespace Server.Mobiles
 
       m_Mobile.Pushing = false;
 
-      MovementImpl.IgnoreMovableImpassables = m_Mobile.CanMoveOverObstacles && !m_Mobile.CanDestroyObstacles;
+      MoveImpl.IgnoreMovableImpassables = m_Mobile.CanMoveOverObstacles && !m_Mobile.CanDestroyObstacles;
 
       if ((m_Mobile.Direction & Direction.Mask) != (d & Direction.Mask))
       {
         bool v = m_Mobile.Move(d);
 
-        MovementImpl.IgnoreMovableImpassables = false;
+        MoveImpl.IgnoreMovableImpassables = false;
         return v ? MoveResult.Success : MoveResult.Blocked;
       }
 
@@ -1795,7 +1810,7 @@ namespace Server.Mobiles
           if (map != null)
           {
             int x = m_Mobile.X, y = m_Mobile.Y;
-            Movement.Offset(d, ref x, ref y);
+            Movement.Movement.Offset(d, ref x, ref y);
 
             int destroyables = 0;
 
@@ -1884,20 +1899,20 @@ namespace Server.Mobiles
 
             if (m_Mobile.Move(m_Mobile.Direction))
             {
-              MovementImpl.IgnoreMovableImpassables = false;
+              MoveImpl.IgnoreMovableImpassables = false;
               return MoveResult.SuccessAutoTurn;
             }
           }
 
-          MovementImpl.IgnoreMovableImpassables = false;
+          MoveImpl.IgnoreMovableImpassables = false;
           return wasPushing ? MoveResult.BadState : MoveResult.Blocked;
         }
 
-        MovementImpl.IgnoreMovableImpassables = false;
+        MoveImpl.IgnoreMovableImpassables = false;
         return MoveResult.Success;
       }
 
-      MovementImpl.IgnoreMovableImpassables = false;
+      MoveImpl.IgnoreMovableImpassables = false;
       return MoveResult.Success;
     }
 
@@ -2007,9 +2022,9 @@ namespace Server.Mobiles
         return true;
       }
 
-      if (ReferenceEquals(m_Path?.Goal, m))
+      if (m_Path?.Goal == m)
       {
-        if (m_Path?.Follow(run, 1) == true)
+        if (m_Path.Follow(run, 1))
         {
           m_Path = null;
           return true;
@@ -2017,7 +2032,8 @@ namespace Server.Mobiles
       }
       else if (!DoMove(m_Mobile.GetDirectionTo(m), true))
       {
-        m_Path = new PathFollower(m_Mobile, m) {Mover = DoMoveImpl};
+        m_Path = new PathFollower(m_Mobile, m);
+        m_Path.Mover = DoMoveImpl;
 
         if (m_Path.Follow(run, 1))
         {
@@ -2059,23 +2075,30 @@ namespace Server.Mobiles
         if (iCurrDist < iWantDistMin || iCurrDist > iWantDistMax)
         {
           bool needCloser = iCurrDist > iWantDistMax;
+          bool needFurther = !needCloser;
 
-          if (needCloser && m_Path != null && ReferenceEquals(m_Path.Goal, m))
+          if (needCloser && m_Path != null && m_Path.Goal == m)
           {
             if (m_Path.Follow(bRun, 1))
               m_Path = null;
           }
           else
           {
-            Direction dirTo = iCurrDist > iWantDistMax ? m_Mobile.GetDirectionTo(m) : m.GetDirectionTo(m_Mobile);
+            Direction dirTo;
+
+            if (iCurrDist > iWantDistMax)
+              dirTo = m_Mobile.GetDirectionTo(m);
+            else
+              dirTo = m.GetDirectionTo(m_Mobile);
 
             // Add the run flag
             if (bRun)
-              dirTo |= Direction.Running;
+              dirTo = dirTo | Direction.Running;
 
             if (!DoMove(dirTo, true) && needCloser)
             {
-              m_Path = new PathFollower(m_Mobile, m) {Mover = DoMoveImpl};
+              m_Path = new PathFollower(m_Mobile, m);
+              m_Path.Mover = DoMoveImpl;
 
               if (m_Path.Follow(bRun, 1))
                 m_Path = null;
@@ -2681,9 +2704,13 @@ namespace Server.Mobiles
         }
 
         if (m_Owner.m_Mobile.BardPacified)
+        {
           m_Owner.DoBardPacified();
+        }
         else if (m_Owner.m_Mobile.BardProvoked)
+        {
           m_Owner.DoBardProvoked();
+        }
         else
         {
           if (!m_Owner.m_Mobile.Controlled)

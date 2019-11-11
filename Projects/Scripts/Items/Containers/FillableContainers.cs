@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Mobiles;
 
 namespace Server.Items
@@ -96,7 +95,14 @@ namespace Server.Items
       }
     }
 
-    public int GetItemsCount() => Items.Sum(item => item.Amount);
+    public int GetItemsCount()
+    {
+      int count = 0;
+
+      foreach (Item item in Items) count += item.Amount;
+
+      return count;
+    }
 
     public void CheckRespawn()
     {
@@ -1501,9 +1507,7 @@ namespace Server.Items
       Mobile nearest = null;
       FillableContent content = null;
 
-      IPooledEnumerable eable = map.GetMobilesInRange(loc, 20);
-
-      foreach (Mobile mob in eable)
+      foreach (Mobile mob in map.GetMobilesInRange(loc, 20))
       {
         if (nearest != null && mob.GetDistanceToSqrt(loc) > nearest.GetDistanceToSqrt(loc) &&
             !(nearest is Cobbler && mob is Provisioner))
@@ -1515,8 +1519,6 @@ namespace Server.Items
           content = check;
         }
       }
-
-      eable.Free();
 
       return content;
     }

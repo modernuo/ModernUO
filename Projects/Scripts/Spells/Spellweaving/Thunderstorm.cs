@@ -66,7 +66,7 @@ namespace Server.Spells.Spellweaving
           m_Table[m] = Timer.DelayCall(duration, DoExpire, m);
 
           BuffInfo.AddBuff(m,
-            new BuffInfo(BuffIcon.Thunderstorm, 1075800, GetCastRecoveryMalus(m).ToString(), duration, m));
+            new BuffInfo(BuffIcon.Thunderstorm, 1075800, duration, m, GetCastRecoveryMalus(m)));
         }
 
         eable.Free();

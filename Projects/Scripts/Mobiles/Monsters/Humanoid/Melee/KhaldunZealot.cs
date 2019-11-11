@@ -113,7 +113,7 @@ namespace Server.Mobiles
       }
 
       Effects.PlaySound(this, Map, GetDeathSound());
-      Effects.SendLocationEffect(Location, Map, 0x3709, 30, 10, 0x835);
+      Effects.SendLocationEffect(Location, Map, 0x3709, 30, 10, 0x835, 0);
       rm.MoveToWorld(Location, Map);
 
       Delete();

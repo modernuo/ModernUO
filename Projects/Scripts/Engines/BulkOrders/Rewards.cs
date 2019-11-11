@@ -357,14 +357,7 @@ namespace Server.Engines.BulkOrders
       int[][][] goldTable = m_GoldTable;
 
       int typeIndex = ComputeType(type, itemCount);
-
-      int quanIndex = quantity switch
-      {
-        20 => 2,
-        15 => 1,
-        _ => 0
-      };
-
+      int quanIndex = quantity == 20 ? 2 : quantity == 15 ? 1 : 0;
       int mtrlIndex = material >= BulkMaterialType.DullCopper && material <= BulkMaterialType.Valorite
         ? 1 + (material - BulkMaterialType.DullCopper)
         : 0;
@@ -606,28 +599,11 @@ namespace Server.Engines.BulkOrders
     {
       int[][][] goldTable = Core.AOS ? m_AosGoldTable : m_OldGoldTable;
 
-      int typeIndex = itemCount switch
-      {
-        6 => 3,
-        5 => 2,
-        4 => 1,
-        _ => 0
-      } * 2 + (exceptional ? 1 : 0);
-
-      int quanIndex = quantity switch
-      {
-        20 => 2,
-        15 => 1,
-        _ => 0
-      };
-
-      int mtrlIndex = material switch
-      {
-        BulkMaterialType.Barbed => 3,
-        BulkMaterialType.Horned => 2,
-        BulkMaterialType.Spined => 1,
-        _ => 0
-      };
+      int typeIndex = (itemCount == 6 ? 3 : itemCount == 5 ? 2 : itemCount == 4 ? 1 : 0) * 2 + (exceptional ? 1 : 0);
+      int quanIndex = quantity == 20 ? 2 : quantity == 15 ? 1 : 0;
+      int mtrlIndex = material == BulkMaterialType.Barbed ? 3 :
+        material == BulkMaterialType.Horned ? 2 :
+        material == BulkMaterialType.Spined ? 1 : 0;
 
       int gold = goldTable[typeIndex][quanIndex][mtrlIndex];
 
@@ -639,7 +615,7 @@ namespace Server.Engines.BulkOrders
 
     #region Constructors
 
-    private static readonly int[][] m_ClothHues =
+    private static int[][] m_ClothHues =
     {
       new[] { 0x483, 0x48C, 0x488, 0x48A },
       new[] { 0x495, 0x48B, 0x486, 0x485 },
@@ -702,15 +678,13 @@ namespace Server.Engines.BulkOrders
       };
     }
 
-    private static Item CreateRunicKit(int type) =>
-      type >= 1 && type <= 3
-        ? new RunicSewingKit(CraftResource.RegularLeather + type, 60 - type * 15)
-        : throw new InvalidOperationException();
+    private static Item CreateRunicKit(int type)
+    {
+      if (type >= 1 && type <= 3)
+        return new RunicSewingKit(CraftResource.RegularLeather + type, 60 - type * 15);
 
-    private static Item CreatePowerScroll(int type) =>
-      type == 5 || type == 10 || type == 15 || type == 20
-        ? new PowerScroll(SkillName.Tailoring, 100 + type)
-        : throw new InvalidOperationException();
+      throw new InvalidOperationException();
+    }
 
     private static Item CreatePowerScroll(int type)
     {

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using Server.Accounting;
 using Server.Engines.Help;
@@ -177,8 +176,8 @@ namespace Server.Misc
 
             from.SendLocalizedMessage(501234, "",
               0x35); /* The next available Counselor/Game Master will respond as soon as possible.
-                           * Please check your Journal for messages every few minutes.
-                           */
+																	    * Please check your Journal for messages every few minutes.
+																	    */
 
             PageQueue.Enqueue(new PageEntry(from,
               $"[Automated: Change Password]<br>Desired password: {pass}<br>Current IP address: {ipAddress}<br>Account IP address: {accessList[0]}",
@@ -200,27 +199,38 @@ namespace Server.Misc
       if (!(state.Account is Account acct))
       {
         state.Dispose();
-        return;
       }
-
-      DeleteResultType deleteType;
-
-      if (index < 0 || index >= acct.Length)
-        deleteType = DeleteResultType.BadRequest;
+      else if (index < 0 || index >= acct.Length)
+      {
+        state.Send(new DeleteResult(DeleteResultType.BadRequest));
+        state.Send(new CharacterListUpdate(acct));
+      }
       else
       {
         Mobile m = acct[index];
 
         if (m == null)
-          deleteType = DeleteResultType.CharNotExist;
+        {
+          state.Send(new DeleteResult(DeleteResultType.CharNotExist));
+          state.Send(new CharacterListUpdate(acct));
+        }
         else if (m.NetState != null)
-          deleteType = DeleteResultType.CharBeingPlayed;
+        {
+          state.Send(new DeleteResult(DeleteResultType.CharBeingPlayed));
+          state.Send(new CharacterListUpdate(acct));
+        }
         else if (RestrictDeletion && DateTime.UtcNow < m.CreationTime + DeleteDelay)
-          deleteType = DeleteResultType.CharTooYoung;
+        {
+          state.Send(new DeleteResult(DeleteResultType.CharTooYoung));
+          state.Send(new CharacterListUpdate(acct));
+        }
         else if (m.AccessLevel == AccessLevel.Player &&
                  Region.Find(m.LogoutLocation, m.LogoutMap).IsPartOf<Jail>()
         ) //Don't need to check current location, if netstate is null, they're logged out
-          deleteType = DeleteResultType.BadRequest;
+        {
+          state.Send(new DeleteResult(DeleteResultType.BadRequest));
+          state.Send(new CharacterListUpdate(acct));
+        }
         else
         {
           Console.WriteLine("Client: {0}: Deleting character {1} (0x{2:X})", state, index, m.Serial.Value);
@@ -228,18 +238,27 @@ namespace Server.Misc
           acct.Comments.Add(new AccountComment("System", $"Character #{index + 1} {m} deleted by {state}"));
 
           m.Delete();
-          Packets.SendCharacterListUpdate(state, acct);
-          return;
+          state.Send(new CharacterListUpdate(acct));
         }
       }
-
-      Packets.SendDeleteResult(state, deleteType);
-      Packets.SendCharacterListUpdate(state, acct);
     }
 
-    public static bool CanCreate(IPAddress ip) => !IPTable.ContainsKey(ip) || IPTable[ip] < MaxAccountsPerIP;
+    public static bool CanCreate(IPAddress ip)
+    {
+      if (!IPTable.ContainsKey(ip))
+        return true;
 
-    private static bool IsForbiddenChar(char c) => m_ForbiddenChars.Any(t => c == t);
+      return IPTable[ip] < MaxAccountsPerIP;
+    }
+
+    private static bool IsForbiddenChar(char c)
+    {
+      for (int i = 0; i < m_ForbiddenChars.Length; ++i)
+        if (c == m_ForbiddenChars[i])
+          return true;
+
+      return false;
+    }
 
     private static Account CreateAccount(NetState state, string un, string pw)
     {
@@ -358,7 +377,9 @@ namespace Server.Misc
       string pw = e.Password;
 
       if (!(Accounts.GetAccount(un) is Account acct))
+      {
         e.Accepted = false;
+      }
       else if (!acct.HasAccess(e.State))
       {
         Console.WriteLine("Login: {0}: Access denied for '{1}'", e.State, un);

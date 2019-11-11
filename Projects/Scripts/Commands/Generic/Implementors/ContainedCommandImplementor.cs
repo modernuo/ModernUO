@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Items;
 using Server.Targeting;
 
@@ -41,7 +40,7 @@ namespace Server.Commands.Generic
         from.SendMessage("That is not a container.");
         return;
       }
-
+      
       try
       {
         Extensions ext = Extensions.Parse(from, ref args);

@@ -135,10 +135,16 @@ namespace Server.Spells.Chivalry
               sendEffect = true;
             }
 
+            if (EvilOmenSpell.TryEndEffect(m))
+              sendEffect = true;
+
+            if (StrangleSpell.RemoveCurse(m))
+              sendEffect = true;
+
+            if (CorpseSkinSpell.RemoveCurse(m))
+              sendEffect = true;
+
             // TODO: Should this remove blood oath? Pain spike?
-            sendEffect |= EvilOmenSpell.TryEndEffect(m);
-            sendEffect |= StrangleSpell.RemoveCurse(m);
-            sendEffect |= CorpseSkinSpell.RemoveCurse(m);
 
             if (sendEffect)
             {

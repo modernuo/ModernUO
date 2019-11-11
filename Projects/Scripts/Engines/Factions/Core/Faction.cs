@@ -8,6 +8,7 @@ using Server.Ethics;
 using Server.Guilds;
 using Server.Items;
 using Server.Mobiles;
+using Server.Prompts;
 using Server.Targeting;
 
 namespace Server.Factions
@@ -132,12 +133,21 @@ namespace Server.Factions
 
     public static void HandleAtrophy()
     {
-      if (Factions.Any(f => !f.State.IsAtrophyReady))
-        return;
+      foreach (Faction f in Factions)
+        if (!f.State.IsAtrophyReady)
+          return;
 
-      List<PlayerState> activePlayers = (from f in Factions from ps in f.Members where ps.KillPoints > 0 && ps.IsActive select ps).ToList();
+      List<PlayerState> activePlayers = new List<PlayerState>();
 
-      int distrib = Factions.Sum(f => f.State.CheckAtrophy());
+      foreach (Faction f in Factions)
+      foreach (PlayerState ps in f.Members)
+        if (ps.KillPoints > 0 && ps.IsActive)
+          activePlayers.Add(ps);
+
+      int distrib = 0;
+
+      foreach (Faction f in Factions)
+        distrib += f.State.CheckAtrophy();
 
       if (activePlayers.Count == 0)
         return;
@@ -148,7 +158,12 @@ namespace Server.Factions
 
     public static void DistributePoints(int distrib)
     {
-      List<PlayerState> activePlayers = (from f in Factions from ps in f.Members where ps.KillPoints > 0 && ps.IsActive select ps).ToList();
+      List<PlayerState> activePlayers = new List<PlayerState>();
+
+      foreach (Faction f in Factions)
+      foreach (PlayerState ps in f.Members)
+        if (ps.KillPoints > 0 && ps.IsActive)
+          activePlayers.Add(ps);
 
       if (activePlayers.Count > 0)
         for (int i = 0; i < distrib; ++i)
@@ -172,9 +187,13 @@ namespace Server.Factions
           return;
 
         if (recvState == null || recvState.Faction != giveState.Faction)
+        {
           from.SendLocalizedMessage(1042497); // Only faction mates can be honored this way.
+        }
         else if (giveState.KillPoints < 5)
+        {
           from.SendLocalizedMessage(1042499); // You must have at least five kill points to honor them.
+        }
         else
         {
           recvState.LastHonorTime = DateTime.UtcNow;
@@ -186,7 +205,9 @@ namespace Server.Factions
         }
       }
       else
+      {
         from.SendLocalizedMessage(1042496); // You may only honor another player.
+      }
     }
 
     public virtual void AddMember(Mobile mob)
@@ -628,7 +649,11 @@ namespace Server.Factions
 
     public static void FactionItemReset_OnCommand(CommandEventArgs e)
     {
-      List<Item> items = World.Items.Values.Where(item => item is IFactionItem && !(item is HoodedShroudOfShadows)).ToList();
+      List<Item> items = new List<Item>();
+
+      foreach (Item item in World.Items.Values)
+        if (item is IFactionItem && !(item is HoodedShroudOfShadows))
+          items.Add(item);
 
       int[] hues = new int[Factions.Count * 2];
 
@@ -648,7 +673,16 @@ namespace Server.Factions
         if (fci.FactionItemState != null || item.LootType != LootType.Blessed)
           continue;
 
-        if (hues.Any(t => item.Hue == t))
+        bool isHued = false;
+
+        for (int j = 0; j < hues.Length; ++j)
+          if (item.Hue == hues[j])
+          {
+            isHued = true;
+            break;
+          }
+
+        if (isHued)
         {
           fci.FactionItemState = null;
           ++count;
@@ -807,7 +841,7 @@ namespace Server.Factions
 
       Silver += tithed;
 
-      silver -= tithed;
+      silver = silver - tithed;
 
       if (silver > 0)
         mob.AddToBackpack(new Silver(silver));
@@ -853,12 +887,19 @@ namespace Server.Factions
 
       Faction smallest = FindSmallestFaction();
 
-      return smallest == null || (Members.Count + influx) * 100 / StabilityFactor <= smallest.Members.Count;
+      if (smallest == null)
+        return true; // sanity
+
+      if ((Members.Count + influx) * 100 / StabilityFactor > smallest.Members.Count)
+        return false;
+
+      return true;
     }
 
     public static void HandleDeath(Mobile victim, Mobile killer)
     {
-      killer ??= victim.FindMostRecentDamager(true);
+      if (killer == null)
+        killer = victim.FindMostRecentDamager(true);
 
       PlayerState killerState = PlayerState.Find(killer);
       Container killerPack = killer?.Backpack;
@@ -900,7 +941,7 @@ namespace Server.Factions
           int silver = killerState.Faction.AwardSilver(killer, bc.FactionSilverWorth);
 
           if (silver > 0)
-            killer?.SendLocalizedMessage(1042748,
+            killer.SendLocalizedMessage(1042748,
               silver.ToString("N0")); // Thou hast earned ~1_AMOUNT~ silver for vanquishing the vile creature.
         }
 
@@ -941,7 +982,7 @@ namespace Server.Factions
       {
         if (victimState.KillPoints <= -6)
         {
-          killer?.SendLocalizedMessage(501693); // This victim is not worth enough to get kill points from.
+          killer.SendLocalizedMessage(501693); // This victim is not worth enough to get kill points from.
 
           #region Ethics
 
@@ -983,12 +1024,13 @@ namespace Server.Factions
             {
               victimState.IsActive = true;
 
-              killerState.IsActive |= 1 > Utility.Random(3);
+              if (1 > Utility.Random(3))
+                killerState.IsActive = true;
 
               int silver = killerState.Faction.AwardSilver(killer, award * 40);
 
               if (silver > 0)
-                killer?.SendLocalizedMessage(1042736,
+                killer.SendLocalizedMessage(1042736,
                   $"{silver:N0} silver\t{victim.Name}"); // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
             }
 
@@ -997,9 +1039,9 @@ namespace Server.Factions
 
             int offset = award != 1 ? 0 : 2; // for pluralization
 
-            string args = $"{award}\t{victim.Name}\t{killer?.Name ?? ""}";
+            string args = $"{award}\t{victim.Name}\t{killer.Name}";
 
-            killer?.SendLocalizedMessage(1042737 + offset,
+            killer.SendLocalizedMessage(1042737 + offset,
               args); // Thou hast been honored with ~1_KILL_POINTS~ kill point(s) for vanquishing ~2_DEAD_PLAYER~!
             victim.SendLocalizedMessage(1042738 + offset,
               args); // Thou has lost ~1_KILL_POINTS~ kill point(s) to ~3_ATTACKER_NAME~ for being vanquished!
@@ -1031,7 +1073,7 @@ namespace Server.Factions
           }
           else
           {
-            killer?.SendLocalizedMessage(
+            killer.SendLocalizedMessage(
               1042231); // You have recently defeated this enemy and thus their death brings you no honor.
           }
         }
@@ -1242,7 +1284,9 @@ namespace Server.Factions
             AddResponse("They have been kicked from their faction.");
           }
           else
+          {
             LogFailure("They are not in a faction.");
+          }
 
           break;
         }
@@ -1256,7 +1300,9 @@ namespace Server.Factions
               AddResponse("The account has been banned from joining factions.");
             }
             else
+            {
               AddResponse("The account is already banned from joining factions.");
+            }
 
             for (int i = 0; i < acct.Length; ++i)
             {
@@ -1276,7 +1322,9 @@ namespace Server.Factions
             }
           }
           else
+          {
             LogFailure("They have no assigned account.");
+          }
 
           break;
         }
@@ -1285,7 +1333,9 @@ namespace Server.Factions
           if (mob.Account is Account acct)
           {
             if (acct.GetTag("FactionBanned") == null)
+            {
               AddResponse("The account is not already banned from joining factions.");
+            }
             else
             {
               acct.RemoveTag("FactionBanned");
@@ -1293,7 +1343,9 @@ namespace Server.Factions
             }
           }
           else
+          {
             LogFailure("They have no assigned account.");
+          }
 
           break;
         }

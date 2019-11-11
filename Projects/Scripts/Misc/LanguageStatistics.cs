@@ -20,7 +20,7 @@ namespace Server.Misc
    * enable showing of unicode control chars
    **/
 
-  public static class LanguageStatistics
+  public class LanguageStatistics
   {
     private static InternationalCode[] InternationalCodes =
     {
@@ -317,10 +317,13 @@ namespace Server.Misc
 
       public int Compare(InternationalCodeCounter x, InternationalCodeCounter y)
       {
-        string a = x?.Code;
-        int ca = x?.Count ?? 0;
-        string b = y?.Code;
-        int cb = y?.Count ?? 0;
+        string a = null, b = null;
+        int ca = 0, cb = 0;
+
+        a = x.Code;
+        ca = x.Count;
+        b = y.Code;
+        cb = y.Count;
 
 
         if (ca > cb)

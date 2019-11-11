@@ -264,7 +264,9 @@ namespace Server.Engines.Plants
         case 1: // Reproduction menu
         {
           if (m_Plant.PlantStatus > PlantStatus.BowlOfDirt)
+          {
             from.SendGump(new ReproductionGump(m_Plant));
+          }
           else
           {
             from.SendLocalizedMessage(1061885); // You need to plant a seed in the bowl first.
@@ -276,28 +278,32 @@ namespace Server.Engines.Plants
         }
         case 2: // Infestation
         {
-          ContentPackets.SendDisplayHelpTopic(from.NetState, 54, true); // INFESTATION LEVEL
+          from.Send(new DisplayHelpTopic(54, true)); // INFESTATION LEVEL
+
           from.SendGump(new MainPlantGump(m_Plant));
 
           break;
         }
         case 3: // Fungus
         {
-          ContentPackets.SendDisplayHelpTopic(from.NetState, 56, true); // FUNGUS LEVEL
+          from.Send(new DisplayHelpTopic(56, true)); // FUNGUS LEVEL
+
           from.SendGump(new MainPlantGump(m_Plant));
 
           break;
         }
         case 4: // Poison
         {
-          ContentPackets.SendDisplayHelpTopic(from.NetState, 58, true); // POISON LEVEL
+          from.Send(new DisplayHelpTopic(58, true)); // POISON LEVEL
+
           from.SendGump(new MainPlantGump(m_Plant));
 
           break;
         }
         case 5: // Disease
         {
-          ContentPackets.SendDisplayHelpTopic(from.NetState, 60, true); // DISEASE LEVEL
+          from.Send(new DisplayHelpTopic(60, true)); // DISEASE LEVEL
+
           from.SendGump(new MainPlantGump(m_Plant));
 
           break;
@@ -314,7 +320,9 @@ namespace Server.Engines.Plants
               $"#{m_Plant.GetLocalizedPlantStatus()}"); // Target the container you wish to use to water the ~1_val~.
           }
           else
+          {
             m_Plant.Pour(from, bev);
+          }
 
           from.SendGump(new MainPlantGump(m_Plant));
 
@@ -346,7 +354,7 @@ namespace Server.Engines.Plants
         }
         case 11: // Help
         {
-          ContentPackets.SendDisplayHelpTopic(from.NetState, 48, true); // PLANT GROWING
+          from.Send(new DisplayHelpTopic(48, true)); // PLANT GROWING
 
           from.SendGump(new MainPlantGump(m_Plant));
 
@@ -366,7 +374,9 @@ namespace Server.Engines.Plants
       Item item = GetPotion(from, effects);
 
       if (item != null)
+      {
         m_Plant.Pour(from, item);
+      }
       else
       {
         if (m_Plant.ApplyPotion(effects[0], true, out int message))

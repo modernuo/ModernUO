@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Engines.ConPVP;
 using Server.Engines.PartySystem;
 using Server.Factions;
@@ -13,7 +12,7 @@ using Server.Spells.Seventh;
 
 namespace Server.Misc
 {
-  public static class NotorietyHandlers
+  public class NotorietyHandlers
   {
     public static void Initialize()
     {
@@ -307,7 +306,7 @@ namespace Server.Misc
     }
 
     /* Must be thread-safe */
-    public static byte MobileNotoriety(Mobile source, Mobile target)
+    public static int MobileNotoriety(Mobile source, Mobile target)
     {
       BaseCreature bcTarg = target as BaseCreature;
 
@@ -430,12 +429,27 @@ namespace Server.Misc
 
     public static bool IsSummoned(BaseCreature c) => c?.Summoned == true;
 
-    public static bool IsSummoned(BaseCreature c) => c?.Summoned == true;
+    public static bool CheckAggressor(List<AggressorInfo> list, Mobile target)
+    {
+      for (int i = 0; i < list.Count; ++i)
+        if (list[i].Attacker == target)
+          return true;
 
-    public static bool CheckAggressor(IEnumerable<AggressorInfo> list, Mobile target) => list.Any(t => t.Attacker == target);
+      return false;
+    }
 
-    public static bool CheckAggressed(IEnumerable<AggressorInfo> list, Mobile target) =>
-      list.Any(info => !info.CriminalAggression && info.Defender == target);
+    public static bool CheckAggressed(List<AggressorInfo> list, Mobile target)
+    {
+      for (int i = 0; i < list.Count; ++i)
+      {
+        AggressorInfo info = list[i];
+
+        if (!info.CriminalAggression && info.Defender == target)
+          return true;
+      }
+
+      return false;
+    }
 
     private enum GuildStatus
     {

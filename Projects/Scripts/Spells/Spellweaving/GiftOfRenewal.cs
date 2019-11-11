@@ -75,7 +75,7 @@ namespace Server.Spells.Spellweaving
           Caster.BeginAction<GiftOfRenewalSpell>();
 
           BuffInfo.AddBuff(m,
-            new BuffInfo(BuffIcon.GiftOfRenewal, 1031602, 1075797, hitsPerRound.ToString(), duration, m));
+            new BuffInfo(BuffIcon.GiftOfRenewal, 1031602, 1075797, duration, m, hitsPerRound.ToString()));
         }
       }
 

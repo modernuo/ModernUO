@@ -99,10 +99,11 @@ namespace Server.Items
       else if (from.Map == Map.Ilshenar)
       {
 #if false
-        banks = m_IlshenarBanks;
-        moongates = PMList.Ilshenar;
+				banks = m_IlshenarBanks;
+				moongates = PMList.Ilshenar;
 #else
-        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, 0x482, 3, 1061684); // The magic of the sextant fails...
+        from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, 0x482, 3, 1061684, "",
+          "")); // The magic of the sextant fails...
         return;
 #endif
       }
@@ -153,7 +154,7 @@ namespace Server.Items
       else
         moonMsg = 1048018; // You are next to a Moongate at the moment.
 
-      Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, 0x482, 3, moonMsg);
+      from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, 0x482, 3, moonMsg, "", ""));
 
       int bankMsg;
       if (bankDistance == double.MaxValue)
@@ -165,7 +166,7 @@ namespace Server.Items
       else
         bankMsg = 1048019; // You are next to a Bank at the moment.
 
-      Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, 0x5AA, 3, bankMsg);
+      from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, 0x5AA, 3, bankMsg, "", ""));
     }
 
     public override void Serialize(GenericWriter writer)

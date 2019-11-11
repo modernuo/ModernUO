@@ -29,7 +29,7 @@ namespace Server.Items
 
     public override void Drink(Mobile from)
     {
-      if (from.BeginAction<LightCycle.NightSightTimer>())
+      if (from.BeginAction<LightCycle>())
       {
         new LightCycle.NightSightTimer(from).Start();
         from.LightLevel = LightCycle.DungeonLevel / 2;
@@ -43,7 +43,9 @@ namespace Server.Items
           Consume();
       }
       else
+      {
         from.SendMessage("You already have nightsight.");
+      }
     }
   }
 }

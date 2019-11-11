@@ -233,19 +233,21 @@ namespace Server.Items
         bool xEast = false, ySouth = false;
         string fmt;
 
-        fmt = Sextant.Format(loc, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth) ?
-          $"{yLat}°{yMins}'{(ySouth ? "S" : "N")},{xLong}°{xMins}'{(xEast ? "E" : "W")}" : "?????";
+        if (Sextant.Format(loc, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth))
+          fmt = $"{yLat}°{yMins}'{(ySouth ? "S" : "N")},{xLong}°{xMins}'{(xEast ? "E" : "W")}";
+        else
+          fmt = "?????";
 
         AddPage(0);
 
         AddBackground(0, 40, 350, 300, 2520);
 
-        AddHtmlLocalized(30, 80, 285, 160, 1018326, true, true);
-        /* This is a message hastily scribbled by a passenger aboard a sinking ship.
-         * While it is probably too late to save the passengers and crew,
-         * perhaps some treasure went down with the ship!
-         * The message gives the ship's last known sextant co-ordinates.=
-         */
+        AddHtmlLocalized(30, 80, 285, 160, 1018326, true,
+          true); /* This is a message hastily scribbled by a passenger aboard a sinking ship.
+																			* While it is probably too late to save the passengers and crew,
+																			* perhaps some treasure went down with the ship!
+																			* The message gives the ship's last known sextant co-ordinates.
+																			*/
 
         AddHtml(35, 240, 230, 20, fmt);
 

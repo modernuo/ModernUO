@@ -76,7 +76,7 @@ namespace Server.Network
 
       DisplayListener();
 
-      while (!Core.Closing)
+      while (true)
       {
         Socket s;
         try
@@ -90,7 +90,7 @@ namespace Server.Network
         }
 
         if (VerifySocket(s))
-          new NetState(s, pump);
+          _ = new NetState(s, pump);
         else
           Release(s);
       }
@@ -105,9 +105,12 @@ namespace Server.Network
       {
         NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
         foreach (NetworkInterface adapter in adapters)
-        foreach (UnicastIPAddressInformation unicast in adapter.GetIPProperties().UnicastAddresses)
-          if (ipep.AddressFamily == unicast.Address.AddressFamily)
-            Console.WriteLine("Listening: {0}:{1}", unicast.Address, ipep.Port);
+        {
+          IPInterfaceProperties properties = adapter.GetIPProperties();
+          foreach (UnicastIPAddressInformation unicast in properties.UnicastAddresses)
+            if (ipep.AddressFamily == unicast.Address.AddressFamily)
+              Console.WriteLine("Listening: {0}:{1}", unicast.Address, ipep.Port);
+        }
       }
       else
       {

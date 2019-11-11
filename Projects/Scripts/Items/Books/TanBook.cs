@@ -13,8 +13,8 @@ namespace Server.Items
     }
 
     [Constructible]
-    public TanBook(string title, string author, int pageCount, bool writable) :
-      base(0xFF0, title, author, pageCount, writable)
+    public TanBook(string title, string author, int pageCount, bool writable) : base(0xFF0, title, author, pageCount,
+      writable)
     {
     }
 

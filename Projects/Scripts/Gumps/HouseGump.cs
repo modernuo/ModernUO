@@ -54,12 +54,12 @@ namespace Server.Gumps
       }
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState state, RelayInfo info)
     {
       if (m_House.Deleted)
         return;
 
-      Mobile from = sender.Mobile;
+      Mobile from = state.Mobile;
 
       from.SendGump(new HouseGump(from, m_House));
     }
@@ -125,12 +125,12 @@ namespace Server.Gumps
       }
     }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState state, RelayInfo info)
     {
       if (m_House.Deleted)
         return;
 
-      Mobile from = sender.Mobile;
+      Mobile from = state.Mobile;
 
       if (m_List != null && info.ButtonID == 1) // Remove now
       {

@@ -185,7 +185,7 @@ namespace Server.Mobiles
 
     public void OnRequestedAnimation(Mobile from)
     {
-      StatuePackets.SendUpdateStatueAnimation(from.NetState, Serial, 1, m_Animation, m_Frames);
+      from.Send(new UpdateStatueAnimation(this, 1, m_Animation, m_Frames));
     }
 
     public override void OnAosSingleClick(Mobile from)
@@ -364,13 +364,21 @@ namespace Server.Mobiles
       {
         ProcessDelta();
 
+        Packet p = null;
+
         IPooledEnumerable<NetState> eable = Map.GetClientsInRange(Location);
 
         foreach (NetState state in eable)
         {
           state.Mobile.ProcessDelta();
-          StatuePackets.SendUpdateStatueAnimation(state, Serial, 1, m_Animation, m_Frames);
+
+          if (p == null)
+            p = Packet.Acquire(new UpdateStatueAnimation(this, 1, m_Animation, m_Frames));
+
+          state.Send(p);
         }
+
+        Packet.Release(p);
 
         eable.Free();
       }
@@ -416,8 +424,9 @@ namespace Server.Mobiles
     {
     }
 
-    public override int LabelNumber =>
-      (Statue?.StatueType ?? m_Type) switch
+    public override int LabelNumber
+    {
+      get
       {
         StatueType t = m_Type;
 
@@ -439,7 +448,13 @@ namespace Server.Mobiles
     [CommandProperty(AccessLevel.GameMaster)]
     public StatueType StatueType
     {
-      get => Statue?.StatueType ?? m_Type;
+      get
+      {
+        if (Statue != null)
+          return Statue.StatueType;
+
+        return m_Type;
+      }
       set => m_Type = value;
     }
 
@@ -596,11 +611,18 @@ namespace Server.Mobiles
           from.SendGump(new CharacterStatueGump(m_Maker, statue, from));
         }
         else if (result == AddonFitResult.Blocked)
+        {
           from.SendLocalizedMessage(500269); // You cannot build that there.
+        }
         else if (result == AddonFitResult.NotInHouse)
+        {
           from.SendLocalizedMessage(
             1076192); // Statues can only be placed in houses where you are the owner or co-owner.
-        else if (result == AddonFitResult.DoorTooClose) from.SendLocalizedMessage(500271); // You cannot build near the door.
+        }
+        else if (result == AddonFitResult.DoorTooClose)
+        {
+          from.SendLocalizedMessage(500271); // You cannot build near the door.
+        }
       }
       else
       {
@@ -608,9 +630,15 @@ namespace Server.Mobiles
       }
     }
 
-    public static AddonFitResult CouldFit(Point3D p, Map map, Mobile from, ref BaseHouse house) =>
-      !map.CanFit(p.X, p.Y, p.Z, 20, true) ? AddonFitResult.Blocked :
-      !BaseAddon.CheckHouse(from, p, map, 20, ref house) ? AddonFitResult.NotInHouse : CheckDoors(p, 20, house);
+    public static AddonFitResult CouldFit(Point3D p, Map map, Mobile from, ref BaseHouse house)
+    {
+      if (!map.CanFit(p.X, p.Y, p.Z, 20, true))
+        return AddonFitResult.Blocked;
+      if (!BaseAddon.CheckHouse(from, p, map, 20, ref house))
+        return AddonFitResult.NotInHouse;
+
+      return CheckDoors(p, 20, house);
+    }
 
     public static AddonFitResult CheckDoors(Point3D p, int height, BaseHouse house)
     {

@@ -28,14 +28,15 @@ namespace Server.Engines.Quests.Haven
     {
     }
 
-    // TODO: Should be a better way than making/deleting a mob.
+    // TODO: What is this? Why are we creating and deleting a mobile?
     private static Mobile GetOwner()
     {
-      Mobile apprentice = new Mobile
-      {
-        Hue = Race.Human.RandomSkinHue(), Female = false, Body = 0x190, Name = NameList.RandomName("male")
-      };
+      Mobile apprentice = new Mobile();
 
+      apprentice.Hue = Race.Human.RandomSkinHue();
+      apprentice.Female = false;
+      apprentice.Body = 0x190;
+      apprentice.Name = NameList.RandomName("male");
 
       apprentice.Delete();
 
@@ -44,14 +45,12 @@ namespace Server.Engines.Quests.Haven
 
     private static List<Item> GetEquipment()
     {
-      List<Item> list = new List<Item>
-      {
-        new Robe(QuestSystem.RandomBrightHue()),
-        new WizardsHat(Utility.RandomNeutralHue()),
-        new Shoes(Utility.RandomNeutralHue()),
-        new Spellbook()
-      };
+      List<Item> list = new List<Item>();
 
+      list.Add(new Robe(QuestSystem.RandomBrightHue()));
+      list.Add(new WizardsHat(Utility.RandomNeutralHue()));
+      list.Add(new Shoes(Utility.RandomNeutralHue()));
+      list.Add(new Spellbook());
 
       return list;
     }
@@ -87,10 +86,11 @@ namespace Server.Engines.Quests.Haven
       int hue = Notoriety.GetHue(NotorietyHandlers.CorpseNotoriety(from, this));
 
       if (ItemID == 0x2006) // Corpse form
-        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1049144, "",
-          Name); // the remains of ~1_NAME~ the apprentice
+        from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1049144, "",
+          Name)); // the remains of ~1_NAME~ the apprentice
       else
-        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1049145); // the remains of a wizard's apprentice
+        from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1049145, "",
+          "")); // the remains of a wizard's apprentice
     }
 
     public override void Open(Mobile from, bool checkSelfLoot)

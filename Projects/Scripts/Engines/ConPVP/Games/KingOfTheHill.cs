@@ -171,7 +171,8 @@ namespace Server.Engines.ConPVP
 
       King = m;
 
-      m_KingTimer ??= new KingTimer(this);
+      if (m_KingTimer == null)
+        m_KingTimer = new KingTimer(this);
       m_KingTimer.Stop();
       m_KingTimer.StartHillTicker();
 
@@ -1112,13 +1113,12 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
       {
-        DuelPlayer[] players = m_Context.Participants[i]?.Players;
-        if (players == null)
+        if (!(m_Context.Participants[i] is Participant p) || p.Players == null)
           continue;
 
-        for (int j = 0; j < players.Length; ++j)
+        for (int j = 0; j < p.Players.Length; ++j)
         {
-          DuelPlayer dp = players[j];
+          DuelPlayer dp = p.Players[j];
 
           if (dp?.Mobile != null)
           {
@@ -1130,9 +1130,10 @@ namespace Server.Engines.ConPVP
         if (i == winner?.TeamID)
           continue;
 
-        for (int j = 0; j < players.Length; ++j)
-          if (players[j] != null)
-            players[j].Eliminated = true;
+        if (p.Players != null)
+          for (int j = 0; j < p.Players.Length; ++j)
+            if (p.Players[j] != null)
+              p.Players[j].Eliminated = true;
       }
 
       if (winner != null)
@@ -1148,7 +1149,7 @@ namespace Server.Engines.ConPVP
         if (Controller.Hills[i] != null)
           Controller.Hills[i].Game = null;
 
-      foreach (var board in Controller.Boards)
+      foreach (KHBoard board in Controller.Boards)
         if (board != null)
           board.m_Game = null;
 

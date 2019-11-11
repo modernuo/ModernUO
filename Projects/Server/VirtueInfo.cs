@@ -130,7 +130,8 @@ namespace Server
 
     public void SetValue(int index, int value)
     {
-      Values ??= new int[8];
+      if (Values == null)
+        Values = new int[8];
 
       Values[index] = value;
     }

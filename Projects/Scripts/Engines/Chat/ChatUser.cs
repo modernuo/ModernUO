@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Server.Accounting;
 
 namespace Server.Engines.Chat
@@ -65,14 +64,16 @@ namespace Server.Engines.Chat
       return false;
     }
 
-    public void SendMessage(int number, string param1 = "", string param2 = "")
+    public void SendMessage(int number, string param1 = null, string param2 = null)
     {
-      ChatPackets.SendChatMessage(Mobile.NetState, Mobile, number, param1, param2);
+      if (Mobile.NetState != null)
+        Mobile.Send(new ChatMessagePacket(Mobile, number, param1, param2));
     }
 
-    public void SendMessage(int number, Mobile from, string param1 = "", string param2 = "")
+    public void SendMessage(int number, Mobile from, string param1, string param2)
     {
-      ChatPackets.SendChatMessage(Mobile.NetState, from, number, param1, param2);
+      if (Mobile.NetState != null)
+        Mobile.Send(new ChatMessagePacket(from, number, param1, param2));
     }
 
     public bool IsIgnored(ChatUser check) => Ignored.Contains(check);
@@ -80,7 +81,9 @@ namespace Server.Engines.Chat
     public void AddIgnored(ChatUser user)
     {
       if (IsIgnored(user))
+      {
         SendMessage(22, user.Username); // You are already ignoring %1.
+      }
       else
       {
         Ignored.Add(user);
@@ -103,7 +106,9 @@ namespace Server.Engines.Chat
           SendMessage(26); // You are no longer ignoring anyone.
       }
       else
+      {
         SendMessage(25, user.Username); // You are not ignoring %1.
+      }
     }
 
     public static ChatUser AddChatUser(Mobile from)
@@ -167,7 +172,18 @@ namespace Server.Engines.Chat
       return c;
     }
 
-    public static ChatUser GetChatUser(string username) => m_Users.FirstOrDefault(user => user.Username == username);
+    public static ChatUser GetChatUser(string username)
+    {
+      for (int i = 0; i < m_Users.Count; ++i)
+      {
+        ChatUser user = m_Users[i];
+
+        if (user.Username == username)
+          return user;
+      }
+
+      return null;
+    }
 
     public static void GlobalSendCommand(ChatCommand command, string param1, string param2 = null)
     {
