@@ -85,7 +85,7 @@ namespace Server.Items
         if (m_Item.Deleted)
           return;
 
-        Mobile spawn = Utility.Random(12) switch
+        var spawn = Utility.Random(12) switch
         {
           0 => (Mobile)new Skeleton(),
           1 => new Zombie(),

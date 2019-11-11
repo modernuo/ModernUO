@@ -34,7 +34,7 @@ namespace Server
 
           BaseHouse house = BaseHouse.FindHouseAt(mob);
 
-          if (house == null || house.IsFriend(from) || house.IsFriend(mob))
+          if (house?.IsFriend(from) != false || house.IsFriend(mob))
           {
             Faction.ClearSkillLoss(mob);
 

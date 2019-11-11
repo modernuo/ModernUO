@@ -27,6 +27,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Server.Accounting;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Items;
@@ -439,6 +440,13 @@ namespace Server
 
     private static readonly TimeSpan WarmodeSpamCatch = TimeSpan.FromSeconds(Core.SE ? 1.0 : 0.5);
     private static readonly TimeSpan WarmodeSpamDelay = TimeSpan.FromSeconds(Core.SE ? 4.0 : 2.0);
+
+
+    private static Packet[][] m_MovingPacketCache = new Packet[][]
+    {
+      new Packet[8],
+      new Packet[8]
+    };
 
     private static List<IEntity> m_MoveList = new List<IEntity>();
     private static List<Mobile> m_MoveClientList = new List<Mobile>();
@@ -2319,6 +2327,8 @@ namespace Server
         sendFacialHair = true;
       }
 
+      Packet[][] cache = new Packet[][] { new Packet[8], new Packet[8] };
+
       NetState ourState = m.m_NetState;
 
       if (ourState != null)
@@ -3780,7 +3790,10 @@ namespace Server
     ///   Overridable. Any call to <see cref="Resurrect" /> will silently fail if this method returns false.
     ///   <seealso cref="Resurrect" />
     /// </summary>
-    public virtual bool CheckResurrect() => true;
+    public virtual bool CheckResurrect()
+    {
+      return true;
+    }
 
     /// <summary>
     ///   Overridable. Event invoked before the Mobile is <see cref="Resurrect">resurrected</see>.
@@ -4070,7 +4083,8 @@ namespace Server
         foreach (NetState state in eable)
           if (state != m_NetState)
           {
-            Packets.SendDeathAnimation(state, Serial, cSerial);
+            if (animPacket == null)
+              animPacket = Packet.Acquire(new DeathAnimation(this, c));
 
             if (!state.Mobile.CanSee(this))
               Packets.SendRemoveEntity(state, Serial);
@@ -4089,7 +4103,10 @@ namespace Server
     ///   <seealso cref="OnDeath" />
     /// </summary>
     /// <returns>True to continue with death, false to override it.</returns>
-    public virtual bool OnBeforeDeath() => true;
+    public virtual bool OnBeforeDeath()
+    {
+      return true;
+    }
 
     /// <summary>
     ///   Overridable. Event invoked after the Mobile is <see cref="Kill">killed</see>. Primarily, this method is responsible for
@@ -4864,6 +4881,15 @@ namespace Server
     ///   <seealso cref="Kill" />
     /// </summary>
     public virtual void OnDamage(int amount, Mobile from, bool willKill)
+    {
+    }
+
+    public virtual void Damage(int amount)
+    {
+      Damage(amount, null);
+    }
+
+    public virtual bool CanBeDamaged()
     {
     }
 
@@ -5693,6 +5719,25 @@ namespace Server
       eable.Free();
     }
 
+    public bool Send(Packet p)
+    {
+      return Send(p, false);
+    }
+
+    public bool Send(Packet p, bool throwOnOffline)
+    {
+      if (m_NetState != null)
+      {
+        m_NetState.Send(p);
+        return true;
+      }
+
+      if (throwOnOffline)
+        throw new MobileNotConnectedException(this, "Packet could not be sent.");
+
+      return false;
+    }
+
     /// <summary>
     ///   Overridable. Event invoked before the Mobile says something.
     ///   <seealso cref="DoSpeech" />
@@ -6326,7 +6371,10 @@ namespace Server
     ///  		return base.OnDragLift( item );
     ///   }</code>
     /// </example>
-    public virtual bool OnDragLift(Item item) => true;
+    public virtual bool OnDragLift(Item item)
+    {
+      return true;
+    }
 
     /// <summary>
     ///   Overridable. Virtual event invoked when the Mobile attempts to drop <paramref name="item" /> into a
@@ -6336,28 +6384,40 @@ namespace Server
     ///   .
     /// </summary>
     /// <returns>True if the drop is allowed, false if otherwise.</returns>
-    public virtual bool OnDroppedItemInto(Item item, Container container, Point3D loc) => true;
+    public virtual bool OnDroppedItemInto(Item item, Container container, Point3D loc)
+    {
+      return true;
+    }
 
     /// <summary>
     ///   Overridable. Virtual event invoked when the Mobile attempts to drop <paramref name="item" /> directly onto another
     ///   <see cref="Item" />, <paramref name="target" />. This is the case of stacking items.
     /// </summary>
     /// <returns>True if the drop is allowed, false if otherwise.</returns>
-    public virtual bool OnDroppedItemOnto(Item item, Item target) => true;
+    public virtual bool OnDroppedItemOnto(Item item, Item target)
+    {
+      return true;
+    }
 
     /// <summary>
     ///   Overridable. Virtual event invoked when the Mobile attempts to drop <paramref name="item" /> into another
     ///   <see cref="Item" />, <paramref name="target" />. The target item is most likely a <see cref="Container" />.
     /// </summary>
     /// <returns>True if the drop is allowed, false if otherwise.</returns>
-    public virtual bool OnDroppedItemToItem(Item item, Item target, Point3D loc) => true;
+    public virtual bool OnDroppedItemToItem(Item item, Item target, Point3D loc)
+    {
+      return true;
+    }
 
     /// <summary>
     ///   Overridable. Virtual event invoked when the Mobile attempts to give <paramref name="item" /> to a Mobile (
     ///   <paramref name="target" />).
     /// </summary>
     /// <returns>True if the drop is allowed, false if otherwise.</returns>
-    public virtual bool OnDroppedItemToMobile(Item item, Mobile target) => true;
+    public virtual bool OnDroppedItemToMobile(Item item, Mobile target)
+    {
+      return true;
+    }
 
     /// <summary>
     ///   Overridable. Virtual event invoked when the Mobile attempts to drop <paramref name="item" /> to the world at a
@@ -6367,7 +6427,10 @@ namespace Server
     ///   .
     /// </summary>
     /// <returns>True if the drop is allowed, false if otherwise.</returns>
-    public virtual bool OnDroppedItemToWorld(Item item, Point3D location) => true;
+    public virtual bool OnDroppedItemToWorld(Item item, Point3D location)
+    {
+      return true;
+    }
 
     /// <summary>
     ///   Overridable. Virtual event when <paramref name="from" /> successfully uses <paramref name="item" /> while it's on this
@@ -8279,7 +8342,10 @@ namespace Server
     ///   <seealso cref="ApplyPoison" />
     ///   <seealso cref="Poison" />
     /// </summary>
-    public virtual bool CheckPoisonImmunity(Mobile from, Poison poison) => false;
+    public virtual bool CheckPoisonImmunity(Mobile from, Poison poison)
+    {
+      return false;
+    }
 
     /// <summary>
     ///   Overridable. Called from <see cref="ApplyPoison" />, this method checks if the Mobile is already poisoned by some
@@ -8289,7 +8355,10 @@ namespace Server
     ///   <seealso cref="ApplyPoison" />
     ///   <seealso cref="Poison" />
     /// </summary>
-    public virtual bool CheckHigherPoison(Mobile from, Poison poison) => m_Poison != null && m_Poison.Level >= poison.Level;
+    public virtual bool CheckHigherPoison(Mobile from, Poison poison)
+    {
+      return m_Poison != null && m_Poison.Level >= poison.Level;
+    }
 
     /// <summary>
     ///   Overridable. Attempts to apply poison to the Mobile. Checks are made such that no
@@ -8362,7 +8431,10 @@ namespace Server
     ///   <seealso cref="CurePoison" />
     ///   <seealso cref="Poison" />
     /// </summary>
-    public virtual bool CheckCure(Mobile from) => true;
+    public virtual bool CheckCure(Mobile from)
+    {
+      return true;
+    }
 
     /// <summary>
     ///   Overridable. Virtual event invoked when a call to <see cref="CurePoison" /> succeeded.

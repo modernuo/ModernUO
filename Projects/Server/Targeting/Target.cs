@@ -88,10 +88,7 @@ namespace Server.Targeting
       OnTargetFinish(from);
     }
 
-    public virtual void Send(NetState ns)
-    {
-      Packets.SendTargetReq(ns, this);
-    }
+    public virtual Packet GetPacketFor(NetState ns) => new TargetReq(this);
 
     public void Cancel(Mobile from, TargetCancelType type)
     {

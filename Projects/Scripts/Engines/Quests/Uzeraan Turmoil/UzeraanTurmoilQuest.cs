@@ -65,10 +65,14 @@ namespace Server.Engines.Quests.Haven
     public override int Picture =>
       From.Profession switch
       {
-        1 => 0x15C9, // warrior
-        2 => 0x15C1, // magician
-        _ => 0x15D3
-      };
+        return From.Profession switch
+        {
+          1 => 0x15C9, // warrior
+          2 => 0x15C1, // magician
+          _ => 0x15D3
+        };
+      }
+    }
 
     public override void Slice()
     {

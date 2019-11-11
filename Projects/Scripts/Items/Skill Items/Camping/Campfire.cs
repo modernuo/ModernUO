@@ -46,10 +46,13 @@ namespace Server.Items
     {
       get => ItemID switch
       {
-        0xDE3 => CampfireStatus.Burning,
-        0xDE9 => CampfireStatus.Extinguishing,
-        _ => CampfireStatus.Off
-      };
+        return ItemID switch
+        {
+          0xDE3 => CampfireStatus.Burning,
+          0xDE9 => CampfireStatus.Extinguishing,
+          _ => CampfireStatus.Off
+        };
+      }
       set
       {
         if (Status == value)

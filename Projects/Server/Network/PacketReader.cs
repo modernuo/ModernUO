@@ -228,7 +228,9 @@ namespace Server.Network
       return sb.ToString();
     }
 
-    public string ReadStringSafe()
+    public bool IsSafeChar(int c) => c >= 0x20 && c < 0xFFFE;
+
+    public string ReadUTF8StringSafe(int fixedLength)
     {
       StringBuilder sb = new StringBuilder();
       bool end = false;
@@ -296,11 +298,11 @@ namespace Server.Network
         m_Reader.Advance(size + (safe ? 1 : 0));
       }
 
-      if (size > 0)
-        m_Reader.Advance(size);
-
-      return sb.ToString();
-    }
+    public string ReadUTF8String() =>
+      Utility.UTF8.GetString(
+        m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0', true) ? span :
+          m_Reader.Sequence.Slice(m_Reader.Position, m_Reader.Remaining).ToArray()
+      );
 
     public string ReadUnicodeStringLESafe(int fixedLength)
     {

@@ -81,7 +81,7 @@ namespace Server
       return v;
     }
 
-    public override bool Equals(object obj) => obj is IPoint2D p && m_X == p.X && m_Y == p.Y;
+    public override bool Equals(object o) => o is IPoint2D p && m_X == p.X && m_Y == p.Y;
 
     public override int GetHashCode() => m_X ^ m_Y;
 
@@ -89,33 +89,33 @@ namespace Server
 
     public static bool operator !=(Point2D l, Point2D r) => l.m_X != r.m_X || l.m_Y != r.m_Y;
 
-    public static bool operator ==(Point2D l, IPoint2D r) => r != null && l.m_X == r.X && l.m_Y == r.Y;
+    public static bool operator ==(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X == r.X && l.m_Y == r.Y;
 
-    public static bool operator !=(Point2D l, IPoint2D r) => r != null && (l.m_X != r.X || l.m_Y != r.Y);
+    public static bool operator !=(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && (l.m_X != r.X || l.m_Y != r.Y);
 
     public static bool operator >(Point2D l, Point2D r) => l.m_X > r.m_X && l.m_Y > r.m_Y;
 
     public static bool operator >(Point2D l, Point3D r) => l.m_X > r.m_X && l.m_Y > r.m_Y;
 
-    public static bool operator >(Point2D l, IPoint2D r) => r != null && l.m_X > r.X && l.m_Y > r.Y;
+    public static bool operator >(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X > r.X && l.m_Y > r.Y;
 
     public static bool operator <(Point2D l, Point2D r) => l.m_X < r.m_X && l.m_Y < r.m_Y;
 
     public static bool operator <(Point2D l, Point3D r) => l.m_X < r.m_X && l.m_Y < r.m_Y;
 
-    public static bool operator <(Point2D l, IPoint2D r) => r != null && l.m_X < r.X && l.m_Y < r.Y;
+    public static bool operator <(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X < r.X && l.m_Y < r.Y;
 
     public static bool operator >=(Point2D l, Point2D r) => l.m_X >= r.m_X && l.m_Y >= r.m_Y;
 
     public static bool operator >=(Point2D l, Point3D r) => l.m_X >= r.m_X && l.m_Y >= r.m_Y;
 
-    public static bool operator >=(Point2D l, IPoint2D r) => r != null && l.m_X >= r.X && l.m_Y >= r.Y;
+    public static bool operator >=(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X >= r.X && l.m_Y >= r.Y;
 
     public static bool operator <=(Point2D l, Point2D r) => l.m_X <= r.m_X && l.m_Y <= r.m_Y;
 
     public static bool operator <=(Point2D l, Point3D r) => l.m_X <= r.m_X && l.m_Y <= r.m_Y;
 
-    public static bool operator <=(Point2D l, IPoint2D r) => r != null && l.m_X <= r.X && l.m_Y <= r.Y;
+    public static bool operator <=(Point2D l, IPoint2D r) => !ReferenceEquals(r, null) && l.m_X <= r.X && l.m_Y <= r.Y;
   }
 
   [Parsable]
@@ -165,7 +165,7 @@ namespace Server
 
     public override string ToString() => $"({m_X}, {m_Y}, {m_Z})";
 
-    public override bool Equals(object obj) => obj is IPoint3D p && m_X == p.X && m_Y == p.Y && m_Z == p.Z;
+    public override bool Equals(object o) => o is IPoint3D p && m_X == p.X && m_Y == p.Y && m_Z == p.Z;
 
     public override int GetHashCode() => m_X ^ m_Y ^ m_Z;
 
@@ -193,9 +193,9 @@ namespace Server
 
     public static bool operator !=(Point3D l, Point3D r) => l.m_X != r.m_X || l.m_Y != r.m_Y || l.m_Z != r.m_Z;
 
-    public static bool operator ==(Point3D l, IPoint3D r) => r != null && l.m_X == r.X && l.m_Y == r.Y && l.m_Z == r.Z;
+    public static bool operator ==(Point3D l, IPoint3D r) => !ReferenceEquals(r, null) && l.m_X == r.X && l.m_Y == r.Y && l.m_Z == r.Z;
 
-    public static bool operator !=(Point3D l, IPoint3D r) => r != null && (l.m_X != r.X || l.m_Y != r.Y || l.m_Z != r.Z);
+    public static bool operator !=(Point3D l, IPoint3D r) => !ReferenceEquals(r, null) && (l.m_X != r.X || l.m_Y != r.Y || l.m_Z != r.Z);
 
     public int CompareTo(Point3D other)
     {

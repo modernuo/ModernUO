@@ -149,7 +149,7 @@ namespace Server.Gumps
       }
 
       if (from != focus && focus.Hidden && from.AccessLevel < focus.AccessLevel &&
-          (!(focus is PlayerMobile) || !((PlayerMobile)focus).VisibilityList.Contains(from)))
+          (focus as PlayerMobile)?.VisibilityList.Contains(from) != true)
       {
         from.SendMessage("That character is no longer visible.");
         return;

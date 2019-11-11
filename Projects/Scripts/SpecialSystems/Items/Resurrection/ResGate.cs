@@ -20,7 +20,7 @@ namespace Server.Items
 
     public override bool OnMoveOver(Mobile m)
     {
-      if (!m.Alive && m.Map != null && m.Map.CanFit(m.Location, 16, false, false))
+      if (!m.Alive && m.Map?.CanFit(m.Location, 16, false, false) == true)
       {
         m.PlaySound(0x214);
         m.FixedEffect(0x376A, 10, 16);

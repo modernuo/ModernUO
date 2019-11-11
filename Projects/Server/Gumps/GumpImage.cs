@@ -49,17 +49,9 @@ namespace Server.Gumps
 
     public int GumpID { get; set; }
 
-    public int Hue { get; set; }
-
-    public string Class { get; set; }
-
-    public override string Compile(ArraySet<string> strings) => Hue == 0 ?
-      $"{{ gumppic {X} {Y} {GumpID} }}" :
-      $"{{ gumppic {X} {Y} {GumpID} hue={Hue} }}";
-
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ gumppic ");
-    private static readonly byte[] m_HueEquals = Gump.StringToBuffer(" hue=");
-    private static readonly byte[] m_ClassEquals = Gump.StringToBuffer(" class=");
+    public override string Compile(NetState ns) =>
+      m_Hue == 0 ? $"{{ gumppic {m_X} {m_Y} {m_GumpID} }}" :
+        $"{{ gumppic {m_X} {m_Y} {m_GumpID} hue={m_Hue} }}";
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {

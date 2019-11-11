@@ -142,11 +142,11 @@ namespace Server.Commands
 
       SortedList<string, List<TypeInfo>> nspaces = new SortedList<string, List<TypeInfo>>(m_Namespaces);
 
-      foreach (var (key, value) in nspaces)
+      foreach (KeyValuePair<string, List<TypeInfo>> kvp in nspaces)
       {
-        value.Sort(new TypeComparer());
+        kvp.Value.Sort(new TypeComparer());
 
-        SaveNamespace(key, value, indexHtml);
+        SaveNamespace(kvp.Key, kvp.Value, indexHtml);
       }
 
       indexHtml.WriteLine("   </body>");
@@ -640,6 +640,9 @@ namespace Server.Commands
       List<Assembly> assemblies = new List<Assembly> { Core.Assembly };
       assemblies.AddRange(AssemblyHandler.Assemblies);
 
+
+      foreach (Assembly asm in AssemblyHandler.Assemblies)
+        assemblies.Add(asm);
 
       Assembly[] asms = assemblies.ToArray();
 
@@ -1772,8 +1775,8 @@ namespace Server.Commands
 
         while (bin.PeekChar() >= 0)
         {
-          int index = (bin.ReadByte() << 8) | bin.ReadByte();
-          int length = (bin.ReadByte() << 8) | bin.ReadByte();
+          int index = bin.ReadByte() << 8 | bin.ReadByte();
+          int length = bin.ReadByte() << 8 | bin.ReadByte();
           string text = Encoding.UTF8.GetString(bin.ReadBytes(length)).Trim();
 
           if (text.Length == 0)
@@ -2132,7 +2135,7 @@ namespace Server.Commands
 
       items.ForEach(tuple =>
       {
-        (Type type, ConstructorInfo[] constructors) = tuple;
+        var (type, constructors) = tuple;
         DocumentConstructibleObject(html, type, constructors);
       });
 
@@ -2146,7 +2149,7 @@ namespace Server.Commands
 
       mobiles.ForEach(tuple =>
       {
-        (Type type, ConstructorInfo[] constructors) = tuple;
+        var (type, constructors) = tuple;
         DocumentConstructibleObject(html, type, constructors);
       });
 

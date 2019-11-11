@@ -81,8 +81,9 @@
 
     public static AosElementAttribute RandomType() => GetTypes(Utility.Random(5));
 
-    public static AosElementAttribute GetTypes(int value) =>
-      value switch
+    public static AosElementAttribute GetTypes(int value)
+    {
+      return value switch
       {
         0 => AosElementAttribute.Physical,
         1 => AosElementAttribute.Fire,
@@ -90,16 +91,19 @@
         3 => AosElementAttribute.Poison,
         _ => AosElementAttribute.Energy
       };
+    }
 
-    public static int GetItemData(AosElementAttribute element, bool label) =>
-      element switch
+    public static int GetItemData(AosElementAttribute element, bool label)
+    {
+      return element switch
       {
-        AosElementAttribute.Physical => (label ? 1071091 : 0), // Earring of Protection (Physical)
-        AosElementAttribute.Fire => (label ? 1071092 : 0x4ec), // Earring of Protection (Fire)
-        AosElementAttribute.Cold => (label ? 1071093 : 0x4f2), // Earring of Protection (Cold)
-        AosElementAttribute.Poison => (label ? 1071094 : 0x4f8), // Earring of Protection (Poison)
-        AosElementAttribute.Energy => (label ? 1071095 : 0x4fe), // Earring of Protection (Energy)
+        AosElementAttribute.Physical => (label ? 1071091 : 0), // Earring of Protection (Physical)  1071091
+        AosElementAttribute.Fire => (label ? 1071092 : 0x4ec), // Earring of Protection (Fire)      1071092
+        AosElementAttribute.Cold => (label ? 1071093 : 0x4f2), // Earring of Protection (Cold)      1071093
+        AosElementAttribute.Poison => (label ? 1071094 : 0x4f8), // Earring of Protection (Poison)    1071094
+        AosElementAttribute.Energy => (label ? 1071095 : 0x4fe), // Earring of Protection (Energy)    1071095
         _ => -1
       };
+    }
   }
 }

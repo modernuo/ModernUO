@@ -96,7 +96,7 @@ namespace Server.Items
       {
         if (m_Logs > 0)
         {
-          Log logs = Utility.Random(7) switch
+          var logs = Utility.Random(7) switch
           {
             0 => new Log(),
             1 => new AshLog(),

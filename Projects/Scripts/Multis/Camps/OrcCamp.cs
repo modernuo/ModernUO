@@ -75,7 +75,7 @@ namespace Server.Multis
 
     private void AddCampChests()
     {
-      LockableContainer chest = Utility.Random(3) switch
+      var chest = Utility.Random(3) switch
       {
         0 => (LockableContainer)new MetalChest(),
         1 => new MetalGoldenChest(),
@@ -88,7 +88,7 @@ namespace Server.Multis
 
       AddItem(chest, -2, 2, 0);
 
-      LockableContainer crates = Utility.Random(4) switch
+      var crates = Utility.Random(4) switch
       {
         0 => (LockableContainer)new SmallCrate(),
         1 => new MediumCrate(),
@@ -134,9 +134,9 @@ namespace Server.Multis
     // Don't refresh decay timer
     public override void OnEnter(Mobile m)
     {
-      if (m.Player && m_Prisoner != null && m_Prisoner.CantWalk)
+      if (m.Player && m_Prisoner?.CantWalk == true)
       {
-        int number = Utility.Random(8) switch
+        var number = Utility.Random(8) switch
         {
           0 => 502261,
           1 => 502262,

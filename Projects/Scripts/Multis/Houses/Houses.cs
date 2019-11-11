@@ -27,8 +27,9 @@ namespace Server.Multis
 
     public override HousePlacementEntry ConvertEntry => HousePlacementEntry.TwoStoryFoundations[0];
 
-    public override HouseDeed GetDeed() =>
-      ItemID switch
+    public override HouseDeed GetDeed()
+    {
+      return ItemID switch
       {
         0x64 => (HouseDeed)new StonePlasterHouseDeed(),
         0x66 => new FieldStoneHouseDeed(),
@@ -38,6 +39,7 @@ namespace Server.Multis
         0x6E => new ThatchedRoofCottageDeed(),
         _ => new ThatchedRoofCottageDeed()
       };
+    }
 
     public override void Serialize(GenericWriter writer)
     {
@@ -122,13 +124,15 @@ namespace Server.Multis
 
     public override int DefaultPrice => 192400;
 
-    public override HouseDeed GetDeed() =>
-      ItemID switch
+    public override HouseDeed GetDeed()
+    {
+      return ItemID switch
       {
         0x76 => (HouseDeed)new TwoStoryWoodPlasterHouseDeed(),
         0x78 => new TwoStoryStonePlasterHouseDeed(),
         _ => new TwoStoryStonePlasterHouseDeed()
       };
+    }
 
     public override void Serialize(GenericWriter writer)
     {
@@ -555,13 +559,15 @@ namespace Server.Multis
 
     public override HousePlacementEntry ConvertEntry => HousePlacementEntry.TwoStoryFoundations[0];
 
-    public override HouseDeed GetDeed() =>
-      ItemID switch
+    public override HouseDeed GetDeed()
+    {
+      return ItemID switch
       {
         0xA0 => (HouseDeed)new StoneWorkshopDeed(),
         0xA2 => new MarbleWorkshopDeed(),
         _ => new MarbleWorkshopDeed()
       };
+    }
 
     public override void Serialize(GenericWriter writer)
     {

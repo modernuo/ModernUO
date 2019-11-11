@@ -17,6 +17,8 @@ namespace Server.Mobiles
 
     public override bool DoActionWander()
     {
+      // New, only flee @ 10%
+
       double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
 
       if (!m_Mobile.Summoned && !m_Mobile.Controlled && hitPercent < 0.1 && m_Mobile.CanFlee) // Less than 10% health

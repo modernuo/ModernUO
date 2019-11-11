@@ -193,7 +193,7 @@ namespace Server
 
           List<Tuple<ConstructorInfo, string>> types = ReadTypes(tdbReader);
 
-          int mobileCount = idxReader.ReadInt32();
+          mobileCount = idxReader.ReadInt32();
 
           Mobiles = new Dictionary<Serial, Mobile>(mobileCount);
 
@@ -249,7 +249,7 @@ namespace Server
 
           List<Tuple<ConstructorInfo, string>> types = ReadTypes(tdbReader);
 
-          int itemCount = idxReader.ReadInt32();
+          itemCount = idxReader.ReadInt32();
 
           Items = new Dictionary<Serial, Item>(itemCount);
 
@@ -299,7 +299,7 @@ namespace Server
         using FileStream idx = new FileStream(GuildIndexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
         BinaryReader idxReader = new BinaryReader(idx);
 
-        int guildCount = idxReader.ReadInt32();
+        guildCount = idxReader.ReadInt32();
 
         CreateGuildEventArgs createEventArgs = new CreateGuildEventArgs(0xFFFFFFFF);
         for (int i = 0; i < guildCount; ++i)
@@ -598,6 +598,9 @@ namespace Server
       idxWriter.Close();
     }
 
+      idxWriter.Close();
+    }
+
     public static void Save(bool message = true, bool permitBackgroundWrite = false)
     {
       if (Saving)
@@ -680,7 +683,7 @@ namespace Server
       }
       else
       {
-        Mobiles[m.Serial] = m;
+        Mobiles.Add(m.Serial, m);
       }
     }
 
@@ -700,7 +703,7 @@ namespace Server
       }
       else
       {
-        Items[item.Serial] = item;
+        Items.Add(item.Serial, item);
       }
     }
 

@@ -37,11 +37,14 @@ namespace Server.Items
     {
       get => ItemID switch
       {
-        0x113C => GasTrapType.NorthWall,
-        0x1147 => GasTrapType.WestWall,
-        0x11A8 => GasTrapType.Floor,
-        _ => GasTrapType.WestWall
-      };
+        return ItemID switch
+        {
+          0x113C => GasTrapType.NorthWall,
+          0x1147 => GasTrapType.WestWall,
+          0x11A8 => GasTrapType.Floor,
+          _ => GasTrapType.WestWall
+        };
+      }
       set => ItemID = GetBaseID(value);
     }
 
@@ -50,14 +53,16 @@ namespace Server.Items
     public override int PassiveTriggerRange => 0;
     public override TimeSpan ResetDelay => TimeSpan.FromSeconds(0.0);
 
-    public static int GetBaseID(GasTrapType type) =>
-      type switch
+    public static int GetBaseID(GasTrapType type)
+    {
+      return type switch
       {
         GasTrapType.NorthWall => 0x113C,
         GasTrapType.WestWall => 0x1147,
         GasTrapType.Floor => 0x11A8,
         _ => 0
       };
+    }
 
     public override void OnTrigger(Mobile from)
     {

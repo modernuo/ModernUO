@@ -81,10 +81,8 @@ namespace Server.Engines.BulkOrders
           from.SendLocalizedMessage( 1062385 ); // You must have the book in your backpack to add deeds to it.
           return false;
         }
-
         if ( !from.Backpack.CheckHold( from, dropped, true, true ) )
           return false;
-
         if ( Entries.Count < 500 )
         {
           if ( dropped is LargeBOD bod )
@@ -119,8 +117,15 @@ namespace Server.Engines.BulkOrders
       return false;
     }
 
-    public override int GetTotal( TotalType type ) =>
-      type == TotalType.Items ? ItemCount : base.GetTotal( type );
+    public override int GetTotal( TotalType type )
+    {
+      int total = base.GetTotal( type );
+
+      if ( type == TotalType.Items )
+        total = ItemCount;
+
+      return total;
+    }
 
     public void InvalidateItems()
     {
@@ -131,18 +136,12 @@ namespace Server.Engines.BulkOrders
       }
     }
 
-    public static void InvalidateContainers(IEntity parent)
+    public void InvalidateContainers(IEntity parent)
     {
-      while (true)
+      if ( parent is Container c )
       {
-        if (parent is Container c)
-        {
-          c.InvalidateProperties();
-          parent = c.Parent;
-          continue;
-        }
-
-        break;
+        c.InvalidateProperties();
+        InvalidateContainers( c.Parent );
       }
     }
 

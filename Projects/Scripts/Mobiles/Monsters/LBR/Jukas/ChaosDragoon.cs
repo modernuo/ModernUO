@@ -40,7 +40,7 @@ namespace Server.Mobiles
       Fame = 5000;
       Karma = -5000;
 
-      CraftResource res = Utility.Random(6) switch
+      var res = Utility.Random(6) switch
       {
         0 => CraftResource.BlackScales,
         1 => CraftResource.RedScales,
@@ -51,7 +51,7 @@ namespace Server.Mobiles
         _ => CraftResource.None
       };
 
-      BaseWeapon melee = Utility.Random(3) switch
+      var melee = Utility.Random(3) switch
       {
         0 => (BaseWeapon)new Kryss(),
         1 => new Broadsword(),

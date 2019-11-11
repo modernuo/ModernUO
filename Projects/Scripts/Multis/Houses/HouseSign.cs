@@ -86,7 +86,7 @@ namespace Server.Multis
     {
       if (Owner != null && BaseHouse.DecayEnabled && Owner.DecayPeriod != TimeSpan.Zero)
       {
-        string message = Owner.DecayLevel switch
+        var message = Owner.DecayLevel switch
         {
           DecayLevel.Ageless => "ageless",
           DecayLevel.Fairly => "fairly worn",
@@ -215,8 +215,7 @@ namespace Server.Multis
       {
         Mobile from = Owner.From;
 
-        if (!from.CheckAlive() || m_Sign.Deleted || m_Sign.Owner == null ||
-            !m_Sign.Owner.AreThereAvailableVendorsFor(from))
+        if (!from.CheckAlive() || m_Sign.Deleted || m_Sign.Owner?.AreThereAvailableVendorsFor(from) != true)
           return;
 
         if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))

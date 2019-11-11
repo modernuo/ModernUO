@@ -42,9 +42,7 @@ namespace Server.Gumps
 
     public string Text { get; set; }
 
-    public override string Compile(ArraySet<string> strings) => $"{{ text {X} {Y} {Hue} {strings.Add(Text)} }}";
-
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ text ");
+    public override string Compile(NetState ns) => $"{{ text {m_X} {m_Y} {m_Hue} {Parent.Intern(m_Text)} }}";
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {

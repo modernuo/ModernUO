@@ -262,6 +262,8 @@ namespace Server.Items
     public Item Deed => new GuildstoneDeed(Guild, m_GuildName, m_GuildAbbrev);
 
     public bool CouldFit(IPoint3D p, Map map) => map.CanFit(p.X, p.Y, p.Z, ItemData.Height);
+
+    #endregion
   }
 
   [Flippable(0x14F0, 0x14EF)]

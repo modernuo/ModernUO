@@ -625,11 +625,11 @@ namespace Server.Engines.Quests
     {
       c16 &= 0x7FFF;
 
-      int r = ((c16 >> 10) & 0x1F) << 3;
-      int g = ((c16 >> 05) & 0x1F) << 3;
+      int r = (c16 >> 10 & 0x1F) << 3;
+      int g = (c16 >> 05 & 0x1F) << 3;
       int b = (c16 & 0x1F) << 3;
 
-      return (r << 16) | (g << 8) | b;
+      return r << 16 | g << 8 | b;
     }
 
     public static int C16216(int c16) => c16 & 0x7FFF;
@@ -638,11 +638,11 @@ namespace Server.Engines.Quests
     {
       c32 &= 0xFFFFFF;
 
-      int r = ((c32 >> 16) & 0xFF) >> 3;
-      int g = ((c32 >> 08) & 0xFF) >> 3;
+      int r = (c32 >> 16 & 0xFF) >> 3;
+      int g = (c32 >> 08 & 0xFF) >> 3;
       int b = (c32 & 0xFF) >> 3;
 
-      return (r << 10) | (g << 5) | b;
+      return r << 10 | g << 5 | b;
     }
 
     public static string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";

@@ -61,7 +61,7 @@ namespace Server.Engines.Help
         PageEntry e = list[i];
 
         if (e.Sender.Deleted || e.Sender.NetState == null)
-        // e.AddResponse(e.Sender, "[Logout]");
+          // e.AddResponse(e.Sender, "[Logout]");
           PageQueue.Remove(e);
         else
           ++i;
@@ -734,8 +734,8 @@ namespace Server.Engines.Help
           TextRelay text = info.GetTextEntry(0);
 
           if (text != null)
-          // m_Entry.AddResponse(state.Mobile, "[Response] " + text.Text);
-            m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender, sender.Mobile.Name, text.Text));
+            // m_Entry.AddResponse(state.Mobile, "[Response] " + text.Text);
+            m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender, state.Mobile.Name, text.Text));
           //m_Entry.Sender.SendMessage( 0x482, "{0} tells you:", state.Mobile.Name );
           //m_Entry.Sender.SendMessage( 0x482, text.Text );
 
@@ -754,7 +754,7 @@ namespace Server.Engines.Help
         {
           Resend(sender);
 
-          if (m_Entry.SpeechLog != null) sender.Mobile.SendGump(new SpeechLogGump(m_Entry.Sender, m_Entry.SpeechLog));
+          if (m_Entry.SpeechLog != null) state.Mobile.SendGump(new SpeechLogGump(m_Entry.Sender, m_Entry.SpeechLog));
 
           break;
         }
@@ -764,8 +764,8 @@ namespace Server.Engines.Help
           List<PredefinedResponse> preresp = PredefinedResponse.List;
 
           if (index >= 0 && index < preresp.Count)
-          // m_Entry.AddResponse(state.Mobile, "[PreDef] " + preresp[index].Title);
-            m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender,  sender.Mobile.Name,
+            // m_Entry.AddResponse(state.Mobile, "[PreDef] " + preresp[index].Title);
+            m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender, state.Mobile.Name,
               preresp[index].Message));
 
           Resend(sender);

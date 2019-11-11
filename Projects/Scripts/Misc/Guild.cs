@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Commands.Generic;
 using Server.Gumps;
 using Server.Items;
@@ -146,7 +145,7 @@ namespace Server.Guilds
 
     public void CheckLeader()
     {
-      if (m_Leader == null || m_Leader.Disbanded)
+      if (m_Leader?.Disbanded != false)
       {
         CalculateAllianceLeader();
 
@@ -464,8 +463,9 @@ namespace Server.Guilds
 
   public class WarTimer : Timer
   {
-    public WarTimer() : base(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0)) =>
-      Priority = TimerPriority.FiveSeconds;
+    private static TimeSpan InternalDelay = TimeSpan.FromMinutes(1.0);
+
+    public WarTimer() : base(InternalDelay, InternalDelay) => Priority = TimerPriority.FiveSeconds;
 
     public static void Initialize()
     {

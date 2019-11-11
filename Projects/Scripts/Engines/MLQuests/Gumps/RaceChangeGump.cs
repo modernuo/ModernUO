@@ -62,7 +62,7 @@ namespace Server.Engines.MLQuests.Gumps
         }
         case 1: // Okay
         {
-          if (m_Owner == null || m_Owner.CheckComplete(m_From))
+          if (m_Owner?.CheckComplete(m_From) != false)
             Offer(m_Owner, m_From, m_Race);
 
           break;
@@ -142,7 +142,7 @@ namespace Server.Engines.MLQuests.Gumps
                AnimalForm.UnderTransformation(from) || !from.CanBeginAction<IncognitoSpell>() ||
                from.IsBodyMod) // TODO: Does this cover everything?
         from.SendLocalizedMessage(1073648); // You may only proceed while in your original state...
-      else if (from.Spell != null && from.Spell.IsCasting)
+      else if (from.Spell?.IsCasting == true)
         from.SendLocalizedMessage(1073649); // One may not proceed while embracing magic...
       else if (from.Poisoned)
         from.SendLocalizedMessage(1073652); // You must be healthy to proceed...

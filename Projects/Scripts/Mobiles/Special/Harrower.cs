@@ -287,7 +287,7 @@ namespace Server.Mobiles
                 !JusticeVirtue.CheckMapRegion(pm, prot))
               continue;
 
-            int chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
+            var chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
             {
               VirtueLevel.Seeker => 60,
               VirtueLevel.Follower => 80,

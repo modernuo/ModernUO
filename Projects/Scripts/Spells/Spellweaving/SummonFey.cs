@@ -32,7 +32,7 @@ namespace Server.Spells.Spellweaving
       {
         MLQuestContext context = MLQuestSystem.GetContext(mobile);
 
-        if (context == null || !context.SummonFey)
+        if (context?.SummonFey != true)
         {
           mobile.SendLocalizedMessage(
             1074563); // You haven't forged a friendship with the fey and are unable to summon their aid.

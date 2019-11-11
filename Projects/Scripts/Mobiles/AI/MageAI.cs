@@ -197,7 +197,7 @@ namespace Server.Mobiles
 
     public void RunFrom(Mobile m)
     {
-      Run((m_Mobile.GetDirectionTo(m) - 4) & Direction.Mask);
+      Run(m_Mobile.GetDirectionTo(m) - 4 & Direction.Mask);
     }
 
     public void OnFailedMove()
@@ -227,7 +227,7 @@ namespace Server.Mobiles
 
     public void Run(Direction d)
     {
-      if (m_Mobile.Spell != null && m_Mobile.Spell.IsCasting || m_Mobile.Paralyzed || m_Mobile.Frozen ||
+      if (m_Mobile.Spell?.IsCasting == true || m_Mobile.Paralyzed || m_Mobile.Frozen ||
           m_Mobile.DisallowAllMoves)
         return;
 
@@ -321,14 +321,23 @@ namespace Server.Mobiles
       }
     }
 
-    public virtual Spell GetRandomCurseSpellMage() =>
-      m_Mobile.Skills.Magery.Value >= 40.0 && Utility.Random(4) == 0 ? new CurseSpell(m_Mobile)
-        : Utility.Random(3) switch
-        {
-          0 => (Spell)new WeakenSpell(m_Mobile),
-          1 => new ClumsySpell(m_Mobile),
-          _ => new FeeblemindSpell(m_Mobile)
-        };
+    public virtual Spell GetRandomCurseSpellMage()
+    {
+      if (m_Mobile.Skills.Magery.Value >= 40.0 && Utility.Random(4) == 0)
+        return new CurseSpell(m_Mobile);
+
+      return Utility.Random(3) switch
+      {
+        0 => (Spell)new WeakenSpell(m_Mobile),
+        1 => new ClumsySpell(m_Mobile),
+        _ => new FeeblemindSpell(m_Mobile)
+      };
+    }
+
+    public virtual Spell GetRandomManaDrainSpell()
+    {
+      if (m_Mobile.Skills.Magery.Value >= 80.0 && Utility.RandomBool())
+        return new ManaVampireSpell(m_Mobile);
 
     public virtual Spell GetRandomManaDrainSpell() =>
       m_Mobile.Skills.Magery.Value >= 80.0 && Utility.RandomBool()
@@ -730,7 +739,7 @@ namespace Server.Mobiles
 
         m_NextCastTime = Core.TickCount + (int)GetDelay(spell).TotalMilliseconds;
       }
-      else if (m_Mobile.Spell == null || !m_Mobile.Spell.IsCasting)
+      else if (m_Mobile.Spell?.IsCasting != true)
       {
         RunTo(c);
       }

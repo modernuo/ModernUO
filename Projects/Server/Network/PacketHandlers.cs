@@ -22,12 +22,13 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using Server.Accounting;
 using Server.ContextMenus;
 using Server.Diagnostics;
 using Server.Gumps;
 using Server.Items;
 using Server.Menus;
+using Server.Prompts;
 using Server.Targeting;
 using CV = Server.ClientVersion;
 
@@ -81,6 +82,8 @@ namespace Server.Network
       125, 126, 127,
       128
     };
+
+    public static PlayCharCallback ThirdPartyAuthCallback = null, ThirdPartyHackedCallback = null;
 
     private static Dictionary<int, AuthIDPersistence> m_AuthIDWindow =
       new Dictionary<int, AuthIDPersistence>(m_AuthIDWindowSize);
@@ -287,7 +290,7 @@ namespace Server.Network
         }
         else
         {
-          int seed = (packetId << 24) | (r.ReadByte() << 16) | (r.ReadByte() << 8) | r.ReadByte();
+          int seed = packetId << 24 | r.ReadByte() << 16 | r.ReadByte() << 8 | r.ReadByte();
 
           if (seed == 0)
           {
@@ -2068,7 +2071,7 @@ namespace Server.Network
           name, female, hue,
           str, dex, intl,
           info[cityIndex],
-          new[]
+          new SkillNameValue[]
           {
             new SkillNameValue((SkillName)is1, vs1),
             new SkillNameValue((SkillName)is2, vs2),
@@ -2183,7 +2186,7 @@ namespace Server.Network
           name, female, hue,
           str, dex, intl,
           info[cityIndex],
-          new[]
+          new SkillNameValue[]
           {
             new SkillNameValue((SkillName)is1, vs1),
             new SkillNameValue((SkillName)is2, vs2),

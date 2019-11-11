@@ -34,8 +34,8 @@ namespace Server
           {
             string[] split = line.Split(' ');
 
-            var x = Convert.ToInt32(split[0]);
-            var y = Convert.ToInt32(split[1]);
+            x = Convert.ToInt32(split[0]);
+            y = Convert.ToInt32(split[1]);
 
             try
             {

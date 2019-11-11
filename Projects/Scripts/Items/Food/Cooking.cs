@@ -7,7 +7,7 @@ namespace Server.Items
   {
     public static int RandomChoice(int itemID1, int itemID2)
     {
-      int iRet = Utility.Random(2) switch
+      var iRet = Utility.Random(2) switch
       {
         0 => itemID1,
         1 => itemID2,

@@ -58,7 +58,7 @@ namespace Server.Engines.Quests.Naturalist
         {
           Seed reward;
 
-          PlantType type = Utility.Random(17) switch
+          var type = Utility.Random(17) switch
           {
             0 => PlantType.CampionFlowers,
             1 => PlantType.Poppies,
@@ -85,7 +85,7 @@ namespace Server.Engines.Quests.Naturalist
           }
           else
           {
-            PlantHue hue = Utility.Random(3) switch
+            var hue = Utility.Random(3) switch
             {
               0 => PlantHue.Pink,
               1 => PlantHue.Magenta,

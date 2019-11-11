@@ -43,7 +43,7 @@ namespace Server.Mobiles
       if (Core.ML && Utility.RandomDouble() < .33)
         PackItem(Seed.RandomPeculiarSeed(2));
 
-      Item orepile = Utility.Random(4) switch
+      var orepile = Utility.Random(4) switch
       {
         0 => (Item)new DullCopperOre(),
         1 => new ShadowIronOre(),

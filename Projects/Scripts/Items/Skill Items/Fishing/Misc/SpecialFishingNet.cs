@@ -298,7 +298,7 @@ namespace Server.Items
 
       for (int i = 0; map != null && i < count; ++i)
       {
-        BaseCreature spawn = Utility.Random(4) switch
+        var spawn = Utility.Random(4) switch
         {
           0 => (BaseCreature)new SeaSerpent(),
           1 => new DeepSeaSerpent(),

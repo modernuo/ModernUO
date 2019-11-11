@@ -131,7 +131,7 @@ namespace Server.Factions
       {
         Direction = GetDirectionTo(m);
 
-        string warning = Utility.Random(6) switch
+        var warning = Utility.Random(6) switch
         {
           0 => "I warn you, {0}, you would do well to leave this area before someone shows you the world of gray.",
           1 => "It would be wise to leave this area, {0}, lest your head become my commanders' trophy.",
@@ -173,7 +173,7 @@ namespace Server.Factions
       }
       else
       {
-        TextDefinition def = type switch
+        var def = type switch
         {
           ReactionType.Ignore => faction.Definition.GuardIgnore,
           ReactionType.Warn => faction.Definition.GuardWarn,
@@ -207,7 +207,7 @@ namespace Server.Factions
       {
         if (e.HasKeyword(0xE6) && (Insensitive.Equals(e.Speech, "orders") || WasNamed(e.Speech))) // *orders*
         {
-          if (m_Town == null || !m_Town.IsSheriff(from))
+          if (m_Town?.IsSheriff(from) != true)
           {
             Say(1042189); // I don't work for you!
           }

@@ -293,8 +293,9 @@ namespace Server.Items
       return true;
     }
 
-    public BasePotion FillBottle() =>
-      m_Type switch
+    public BasePotion FillBottle()
+    {
+      return m_Type switch
       {
         PotionEffect.Nightsight => (BasePotion)new NightSightPotion(),
         PotionEffect.CureLesser => new LesserCurePotion(),
@@ -322,6 +323,7 @@ namespace Server.Items
         PotionEffect.ConfusionBlastGreater => new GreaterConfusionBlastPotion(),
         _ => new NightSightPotion()
       };
+    }
 
     public static void Initialize()
     {

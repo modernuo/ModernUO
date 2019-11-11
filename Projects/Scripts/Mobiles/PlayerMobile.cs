@@ -542,8 +542,7 @@ namespace Server.Mobiles
         else if (AnimalForm.UnderTransformation(this)) AnimalForm.RemoveContext(this, true);
       }
 
-      if (m_MountBlock?.m_Timer.Running != true || m_MountBlock.m_Timer.Next < DateTime.UtcNow + duration)
-        m_MountBlock = new MountBlock(duration, type, this);
+      if (m_MountBlock?.m_Timer.Running != true || m_MountBlock.m_Timer.Next < DateTime.UtcNow + duration) m_MountBlock = new MountBlock(duration, type, this);
     }
 
     public override void OnSkillInvalidated(Skill skill)
@@ -1883,8 +1882,7 @@ namespace Server.Mobiles
         if (YoungDeathTeleport())
           Timer.DelayCall(TimeSpan.FromSeconds(2.5), SendYoungDeathNotice);
 
-      if (DuelContext == null || !DuelContext.Registered || !DuelContext.Started || m_DuelPlayer == null ||
-          m_DuelPlayer.Eliminated)
+      if (DuelContext?.Registered != true || !DuelContext.Started || m_DuelPlayer?.Eliminated != false)
         Faction.HandleDeath(this, killer);
 
       Guilds.Guild.HandleDeath(this, killer);
@@ -1924,7 +1922,7 @@ namespace Server.Mobiles
           SendLocalizedMessage(1063142); // You are not in a guild!
         else if (type == MessageType.Alliance)
         {
-          if (g.Alliance != null && g.Alliance.IsMember(g))
+          if (g.Alliance?.IsMember(g) == true)
           {
             //g.Alliance.AllianceTextMessage( hue, "[Alliance][{0}]: {1}", this.Name, text );
             g.Alliance.AllianceChat(this, text);
@@ -3152,7 +3150,7 @@ namespace Server.Mobiles
 
     private void ToggleItemInsurance_Callback(Mobile from, Item item, bool target)
     {
-      if (item == null || !item.IsChildOf(this))
+      if (item?.IsChildOf(this) != true)
       {
         if (target)
           BeginTarget(-1, false, TargetFlags.None, ToggleItemInsurance_Callback);
@@ -3614,13 +3612,17 @@ namespace Server.Mobiles
       return result;
     }
 
-    public override bool CheckPoisonImmunity(Mobile from, Poison poison) =>
-      Young && (DuelContext == null || !DuelContext.Started || DuelContext.Finished) ||
-      base.CheckPoisonImmunity(from, poison);
+    public override bool CheckPoisonImmunity(Mobile from, Poison poison)
+    {
+      if (Young && (DuelContext?.Started != true || DuelContext.Finished))
+        return true;
+
+      return base.CheckPoisonImmunity(from, poison);
+    }
 
     public override void OnPoisonImmunity(Mobile from, Poison poison)
     {
-      if (Young && (DuelContext == null || !DuelContext.Started || DuelContext.Finished))
+      if (Young && (DuelContext?.Started != true || DuelContext.Finished))
         SendLocalizedMessage(
           502808); // You would have been poisoned, were you not new to the land of Britannia. Be careful in the future.
       else
@@ -3938,12 +3940,22 @@ namespace Server.Mobiles
     public override string ApplyNameSuffix(string suffix)
     {
       if (Young)
-        suffix = suffix.Length == 0 ? "(Young)" : $"{suffix} (Young)";
+      {
+        if (suffix.Length == 0)
+          suffix = "(Young)";
+        else
+          suffix = $"{suffix} (Young)";
+      }
 
       #region Ethics
 
       if (EthicPlayer != null)
-        suffix = suffix.Length == 0 ? EthicPlayer.Ethic.Definition.Adjunct.String : $"{suffix} {EthicPlayer.Ethic.Definition.Adjunct.String}";
+      {
+        if (suffix.Length == 0)
+          suffix = EthicPlayer.Ethic.Definition.Adjunct.String;
+        else
+          suffix = $"{suffix} {EthicPlayer.Ethic.Definition.Adjunct.String}";
+      }
 
       #endregion
 
@@ -3954,7 +3966,10 @@ namespace Server.Mobiles
         if (faction != null)
         {
           string adjunct = $"[{faction.Definition.Abbreviation}]";
-          suffix = suffix.Length == 0 ? adjunct : $"{suffix} {adjunct}";
+          if (suffix.Length == 0)
+            suffix = adjunct;
+          else
+            suffix = $"{suffix} {adjunct}";
         }
       }
 
@@ -4484,7 +4499,7 @@ namespace Server.Mobiles
 
       BuffInfo info = m_BuffTable[b];
 
-      if (info.Timer != null && info.Timer.Running)
+      if (info.Timer?.Running == true)
         info.Timer.Stop();
 
       m_BuffTable.Remove(b);

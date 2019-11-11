@@ -328,7 +328,7 @@ namespace Server.Mobiles
               Skill skill = ourSkills[i];
               Skill theirSkill = theirSkills[i];
 
-              if (skill?.Base >= 60.0 &&
+              if (skill != null && skill.Base >= 60.0 &&
                   m_Mobile.CheckTeach(skill.SkillName, e.Mobile))
               {
                 double toTeach = skill.Base / 3.0;
@@ -890,8 +890,12 @@ namespace Server.Mobiles
 
     public virtual bool DoActionBackoff() => true;
 
-    public virtual bool Obey() =>
-      !m_Mobile.Deleted && m_Mobile.ControlOrder switch
+    public virtual bool Obey()
+    {
+      if (m_Mobile.Deleted)
+        return false;
+
+      return m_Mobile.ControlOrder switch
       {
         OrderType.None => DoOrderNone(),
         OrderType.Come => DoOrderCome(),
@@ -908,6 +912,7 @@ namespace Server.Mobiles
         OrderType.Transfer => DoOrderTransfer(),
         _ => false
       };
+    }
 
     public virtual void OnCurrentOrderChanged()
     {
@@ -1087,7 +1092,7 @@ namespace Server.Mobiles
 
       if (pack != null)
       {
-        List<Item> list = pack?.Items;
+        List<Item> list = pack.Items;
 
         for (int i = list.Count - 1; i >= 0; --i)
           if (i < list.Count)
@@ -1587,8 +1592,8 @@ namespace Server.Mobiles
     {
       if (DateTime.UtcNow >= m_Mobile.BardEndTime &&
           (m_Mobile.BardMaster?.Deleted != false ||
-           m_Mobile.BardMaster.Map != m_Mobile.Map ||
-           m_Mobile.GetDistanceToSqrt(m_Mobile.BardMaster) > m_Mobile.RangePerception))
+           m_Mobile.BardMaster.Map != m_Mobile.Map || m_Mobile.GetDistanceToSqrt(m_Mobile.BardMaster) >
+           m_Mobile.RangePerception))
       {
         m_Mobile.DebugSay("I have lost my provoker");
         m_Mobile.BardProvoked = false;
@@ -1721,7 +1726,7 @@ namespace Server.Mobiles
         using (StreamWriter op = new StreamWriter("nan_transform.txt", true))
         {
           op.WriteLine(
-            $"NaN in TransformMoveDelay: {DateTime.UtcNow}, {GetType()}, {(m_Mobile == null ? "null" : m_Mobile.GetType().ToString())}, {m_Mobile.HitsMax}");
+            $"NaN in TransformMoveDelay: {DateTime.UtcNow}, {GetType()}, {m_Mobile?.GetType()}, {m_Mobile.HitsMax}");
         }
 
         return 1.0;
@@ -1745,7 +1750,7 @@ namespace Server.Mobiles
     public virtual MoveResult DoMoveImpl(Direction d)
     {
       if (m_Mobile.Deleted || m_Mobile.Frozen || m_Mobile.Paralyzed ||
-          m_Mobile.Spell != null && m_Mobile.Spell.IsCasting || m_Mobile.DisallowAllMoves)
+          m_Mobile.Spell?.IsCasting == true || m_Mobile.DisallowAllMoves)
         return MoveResult.BadState;
       if (!CheckMove())
         return MoveResult.BadState;

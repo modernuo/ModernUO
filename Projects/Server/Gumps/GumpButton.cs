@@ -60,7 +60,7 @@ namespace Server.Gumps
 
     public override string Compile(ArraySet<string> strings) => $"{{ button {X} {Y} {NormalID} {PressedID} {(int)Type} {Param} {ButtonID} }}";
 
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ button ");
+    public override string Compile(NetState ns) => $"{{ button {m_X} {m_Y} {m_ID1} {m_ID2} {(int)m_Type} {m_Param} {m_ButtonID} }}";
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {

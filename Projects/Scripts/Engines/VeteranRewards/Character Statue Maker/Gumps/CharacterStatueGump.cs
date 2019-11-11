@@ -69,21 +69,31 @@ namespace Server.Gumps
     private int GetMaterialNumber(StatueType type, StatueMaterial material) =>
       material switch
       {
-        StatueMaterial.Antique => (type switch
-        {
-          StatueType.Bronze => 1076187,
-          StatueType.Jade => 1076186,
-          StatueType.Marble => 1076182,
-          _ => 1076187
-        }),
-        StatueMaterial.Dark => (type == StatueType.Marble ? 1076183 : 1076182),
-        StatueMaterial.Medium => 1076184,
-        StatueMaterial.Light => 1076185,
-        _ => 1076187
-      };
+        case StatueMaterial.Antique:
 
-    private int GetDirectionNumber(Direction direction) =>
-      direction switch
+          return type switch
+          {
+            StatueType.Bronze => 1076187,
+            StatueType.Jade => 1076186,
+            StatueType.Marble => 1076182,
+            _ => 1076187
+          };
+
+        case StatueMaterial.Dark:
+
+          if (type == StatueType.Marble)
+            return 1076183;
+
+          return 1076182;
+        case StatueMaterial.Medium: return 1076184;
+        case StatueMaterial.Light: return 1076185;
+        default: return 1076187;
+      }
+    }
+
+    private int GetDirectionNumber(Direction direction)
+    {
+      return direction switch
       {
         Direction.North => 1075389,
         Direction.Right => 1075388,
@@ -95,8 +105,9 @@ namespace Server.Gumps
         Direction.Up => 1076205,
         _ => 1075386
       };
+    }
 
-    public override void OnResponse(NetState sender, RelayInfo info)
+    public override void OnResponse(NetState state, RelayInfo info)
     {
       if (m_Statue?.Deleted != false)
         return;

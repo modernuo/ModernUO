@@ -200,7 +200,7 @@ namespace Server.Engines.ConPVP
           SpellCircle.Sixth => "6th Circle",
           SpellCircle.Seventh => "7th Circle",
           SpellCircle.Eighth => "8th Circle",
-          _ => null
+          _ => title
         };
 
         option = magerySpell.Name;
@@ -502,7 +502,7 @@ namespace Server.Engines.ConPVP
 
       DuelPlayer pl = Find(mob);
 
-      if (pl?.Eliminated == true || m_EventGame != null && !m_EventGame.OnDeath(mob, corpse))
+      if (pl?.Eliminated == true || m_EventGame?.OnDeath(mob, corpse) == false)
         return;
 
       pl.Eliminated = true;

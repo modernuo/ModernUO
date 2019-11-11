@@ -58,20 +58,18 @@ namespace Server
     {
     }
 
-    public BuffInfo(BuffIcon iconId, int title, int desc, TimeSpan time = default, bool retain = false,
-      Mobile m = null) : this(iconId, title, desc, null, time, retain, m)
-    {
-    }
+    public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args)
+      : this(iconID, titleCliloc, secondaryCliloc) =>
+      Args = args;
 
     public BuffInfo(BuffIcon iconId, int title, int desc, string args, TimeSpan time = default, bool retain = false,
       Mobile m = null) : this(iconId, title, new TextDefinition(desc, args), DateTime.UtcNow, time, retain, m)
     {
     }
 
-    public BuffInfo(BuffIcon iconId, int title, int desc, string args, DateTime start, TimeSpan time = default, bool retain = false,
-      Mobile m = null) : this(iconId, title, new TextDefinition(desc, args), start, time, retain, m)
-    {
-    }
+    public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc, bool retainThroughDeath)
+      : this(iconID, titleCliloc, secondaryCliloc) =>
+      RetainThroughDeath = retainThroughDeath;
 
     public BuffInfo(BuffIcon iconId, int title, TextDefinition desc, DateTime start = default, TimeSpan time = default, bool retain = false,
       Mobile m = null)
@@ -85,6 +83,36 @@ namespace Server
       if (m is PlayerMobile pm)
         Timer = Timer.DelayCall(time, playermobile => playermobile.RemoveBuff(this), pm);
     }
+
+    public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args, bool retainThroughDeath)
+      : this(iconID, titleCliloc, secondaryCliloc, args) =>
+      RetainThroughDeath = retainThroughDeath;
+
+    public BuffInfo(BuffIcon iconID, int titleCliloc, TimeSpan length, Mobile m, TextDefinition args)
+      : this(iconID, titleCliloc, titleCliloc + 1, length, m, args)
+    {
+    }
+
+    public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m,
+      TextDefinition args)
+      : this(iconID, titleCliloc, secondaryCliloc, length, m) =>
+      Args = args;
+
+    public BuffInfo(BuffIcon iconID, int titleCliloc, TimeSpan length, Mobile m, TextDefinition args,
+      bool retainThroughDeath)
+      : this(iconID, titleCliloc, titleCliloc + 1, length, m, args, retainThroughDeath)
+    {
+    }
+
+    public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m,
+      TextDefinition args, bool retainThroughDeath)
+      : this(iconID, titleCliloc, secondaryCliloc, length, m)
+    {
+      Args = args;
+      RetainThroughDeath = retainThroughDeath;
+    }
+
+    #endregion
 
     #region Convenience Methods
 

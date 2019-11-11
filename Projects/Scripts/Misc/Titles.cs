@@ -215,7 +215,7 @@ namespace Server.Misc
           m.SendLocalizedMessage(1019063); // You have lost a little karma.
       }
 
-      if (!Core.AOS && wasPositiveKarma && m.Karma < 0 && pm != null && !pm.KarmaLocked)
+      if (!Core.AOS && wasPositiveKarma && m.Karma < 0 && pm?.KarmaLocked == false)
       {
         pm.KarmaLocked = true;
         m.SendLocalizedMessage(1042511, "",
@@ -359,13 +359,19 @@ namespace Server.Misc
 
     private static string GetSkillLevel(Skill skill) => m_Levels[GetTableIndex(skill), GetTableType(skill)];
 
-    private static int GetTableType(Skill skill) =>
-      skill.SkillName switch
+    private static int GetTableType(Skill skill)
+    {
+      return skill.SkillName switch
       {
         SkillName.Bushido => 1,
         SkillName.Ninjitsu => 2,
         _ => 0
       };
+    }
+
+    private static int GetTableIndex(Skill skill)
+    {
+      int fp = Math.Min(skill.BaseFixedPoint, 1200);
 
     private static int GetTableIndex(Skill skill) => (Math.Min(skill.BaseFixedPoint, 1200) - 300) / 100;
   }

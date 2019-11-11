@@ -51,10 +51,7 @@ namespace Server.Gumps
 
     public bool Scrollbar { get; set; }
 
-    public override string Compile(ArraySet<string> strings) =>
-      $"{{ htmlgump {X} {Y} {Width} {Height} {strings.Add(Text)} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} }}";
-
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ htmlgump ");
+    public override string Compile(NetState ns) => $"{{ htmlgump {m_X} {m_Y} {m_Width} {m_Height} {Parent.Intern(m_Text)} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} }}";
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {

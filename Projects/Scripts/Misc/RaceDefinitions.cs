@@ -37,22 +37,37 @@ namespace Server.Misc
         (itemID >= 0x203B && itemID <= 0x203D || itemID >= 0x2044 && itemID <= 0x204A);
 
       public override int RandomHair(bool female) //Random hair doesn't include baldness
-        =>
-          Utility.Random(9) switch
-          {
-            0 => 0x203B, //Short
-            1 => 0x203C, //Long
-            2 => 0x203D, //Pony Tail
-            3 => 0x2044, //Mohawk
-            4 => 0x2045, //Pageboy
-            5 => 0x2047, //Afro
-            6 => 0x2049, //Pig tails
-            7 => 0x204A, //Krisna
-            _ => (female ? 0x2046 : 0x2048)
-          };
+      {
+        return Utility.Random(9) switch
+        {
+          0 => 0x203B, //Short
+          1 => 0x203C, //Long
+          2 => 0x203D, //Pony Tail
+          3 => 0x2044, //Mohawk
+          4 => 0x2045, //Pageboy
+          5 => 0x2047, //Afro
+          6 => 0x2049, //Pig tails
+          7 => 0x204A, //Krisna
+          _ => (female ? 0x2046 : 0x2048)
+        };
+      }
 
-      public override bool ValidateFacialHair(bool female, int itemID) =>
-        itemID == 0 || !female && (itemID >= 0x203E && itemID <= 0x2041 || itemID >= 0x204B && itemID <= 0x204D);
+      public override bool ValidateFacialHair(bool female, int itemID)
+      {
+        if (itemID == 0)
+          return true;
+
+        if (female)
+          return false;
+
+        if (itemID >= 0x203E && itemID <= 0x2041)
+          return true;
+
+        if (itemID >= 0x204B && itemID <= 0x204D)
+          return true;
+
+        return false;
+      }
 
       public override int RandomFacialHair(bool female)
       {
@@ -104,8 +119,21 @@ namespace Server.Misc
         (female || itemID != 0x2FCC && itemID != 0x2FD0) &&
         (itemID >= 0x2FBF && itemID <= 0x2FC2 || itemID >= 0x2FCC && itemID <= 0x2FD1);
 
-      public override int RandomHair(bool female) => //Random hair doesn't include baldness
-        Utility.Random(8) switch
+        if (female && (itemID == 0x2FCD || itemID == 0x2FBF) || !female && (itemID == 0x2FCC || itemID == 0x2FD0))
+          return false;
+
+        if (itemID >= 0x2FBF && itemID <= 0x2FC2)
+          return true;
+
+        if (itemID >= 0x2FCC && itemID <= 0x2FD1)
+          return true;
+
+        return false;
+      }
+
+      public override int RandomHair(bool female) //Random hair doesn't include baldness
+      {
+        return Utility.Random(8) switch
         {
           0 => 0x2FC0, //Long Feather
           1 => 0x2FC1, //Short
@@ -116,12 +144,22 @@ namespace Server.Misc
           6 => (female ? 0x2FCC : 0x2FBF), //Flower or Mid-long
           _ => (female ? 0x2FD0 : 0x2FCD)
         };
+      }
 
       public override bool ValidateFacialHair(bool female, int itemID) => itemID == 0;
 
       public override int RandomFacialHair(bool female) => 0;
 
-      public override int ClipSkinHue(int hue) => m_SkinHues.Any(t => t == hue) ? hue : m_SkinHues[0];
+      public override int ClipSkinHue(int hue)
+      {
+        for (int i = 0; i < m_SkinHues.Length; i++)
+          if (m_SkinHues[i] == hue)
+            return hue;
+
+        return m_SkinHues[0];
+      }
+
+      public override int RandomSkinHue() => m_SkinHues[Utility.Random(m_SkinHues.Length)] | 0x8000;
 
       public override int RandomSkinHue() => m_SkinHues[Utility.Random(m_SkinHues.Length)] | 0x8000;
 
@@ -163,8 +201,13 @@ namespace Server.Misc
           : itemID == 0x4261 || itemID == 0x4262 || itemID >= 0x4273 && itemID <= 0x4275 || itemID == 0x42B0 ||
             itemID == 0x42B1 || itemID == 0x42AA || itemID == 0x42AB;
 
-      public override int RandomHair(bool female) =>
-        Utility.Random(9) == 0 ? 0 : !female ? 0x4258 + Utility.Random(8) : Utility.Random(9) switch
+      public override int RandomHair(bool female)
+      {
+        if (Utility.Random(9) == 0)
+          return 0;
+        if (!female)
+          return 0x4258 + Utility.Random(8);
+        return Utility.Random(9) switch
         {
           0 => 0x4261,
           1 => 0x4262,
@@ -177,12 +220,15 @@ namespace Server.Misc
           8 => 0x42AB,
           _ => 0
         };
+      }
 
       public override bool ValidateFacialHair(bool female, int itemID) => !female && itemID >= 0x42AD && itemID <= 0x42B0;
 
       public override int RandomFacialHair(bool female) => female ? 0 : Utility.RandomList(0, 0x42AD, 0x42AE, 0x42AF, 0x42B0);
 
       public override int ClipSkinHue(int hue) => hue;
+
+      public override int RandomSkinHue() => m_BodyHues[Utility.Random(m_BodyHues.Length)] | 0x8000;
 
       public override int RandomSkinHue() => m_BodyHues[Utility.Random(m_BodyHues.Length)] | 0x8000;
 

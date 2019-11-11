@@ -39,7 +39,7 @@ namespace Server.Engines.MLQuests
 
       if (!found)
         Console.WriteLine("Warning: QuestArea region '{0}' does not exist (ForceMap = {1})", RegionName,
-          ForceMap == null ? "-null-" : ForceMap.ToString());
+          ForceMap?.ToString() ?? "-null-");
     }
   }
 }

@@ -28,11 +28,11 @@ namespace Server.Gumps
   {
     public GumpItemProperty(uint serial) => Serial = serial;
 
-    public uint Serial { get; set; }
+    public GumpItemProperty(uint serial) => m_Serial = serial;
 
     public override string Compile(ArraySet<string> strings) => $"{{ itemproperty {Serial} }}";
 
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ itemproperty ");
+    public override string Compile(NetState ns) => $"{{ itemproperty {m_Serial} }}";
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {

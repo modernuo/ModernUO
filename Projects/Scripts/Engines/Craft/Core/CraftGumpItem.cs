@@ -109,13 +109,15 @@ namespace Server.Engines.Craft
         AddHtmlLocalized(170, 302 + m_OtherCount++ * 20, 310, 18, 1073620, RedLabelColor); // You have not learned this recipe.
     }
 
-    private TextDefinition RequiredExpansionMessage(Expansion expansion) =>
-      expansion switch
+    private TextDefinition RequiredExpansionMessage(Expansion expansion)
+    {
+      return expansion switch
       {
         Expansion.SE => (TextDefinition)1063363, // * Requires the "Samurai Empire" expansion
         Expansion.ML => (TextDefinition)1072651, // * Requires the "Mondain's Legacy" expansion
         _ => (TextDefinition)$"* Requires the \"{ExpansionInfo.GetInfo(expansion).Name}\" expansion"
       };
+    }
 
     public void DrawItem()
     {

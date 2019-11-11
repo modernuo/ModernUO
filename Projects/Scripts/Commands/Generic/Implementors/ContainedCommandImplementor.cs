@@ -55,7 +55,11 @@ namespace Server.Commands.Generic
           return;
         }
 
-        List<object> list = cont.FindItemsByType<Item>().Where(item => ext.IsValid(item)).Cast<object>().ToList();
+        List<object> list = new List<object>();
+
+        foreach (Item item in cont.FindItemsByType<Item>())
+          if (ext.IsValid(item))
+            list.Add(item);
 
         ext.Filter(list);
 

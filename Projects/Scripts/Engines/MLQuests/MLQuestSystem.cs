@@ -631,6 +631,9 @@ namespace Server.Engines.MLQuests
 
       Type questType = AssemblyHandler.FindTypeByFullName(typeName);
 
+      if (questType == null)
+        return null; // no longer a type
+
       return questType == null ? null : FindQuest(questType);
     }
 

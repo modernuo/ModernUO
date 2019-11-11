@@ -28,11 +28,11 @@ namespace Server.Gumps
   {
     public GumpGroup(int group) => Group = group;
 
-    public int Group { get; set; }
+    public GumpGroup(int group) => m_Group = group;
 
     public override string Compile(ArraySet<string> strings) => $"{{ group {Group} }}";
 
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ group ");
+    public override string Compile(NetState ns) => $"{{ group {m_Group} }}";
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {

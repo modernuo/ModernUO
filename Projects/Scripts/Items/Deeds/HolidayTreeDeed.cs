@@ -63,7 +63,7 @@ namespace Server.Items
 
       BaseHouse house = BaseHouse.FindHouseAt(loc, map, 20);
 
-      if (house == null || !house.IsFriend(from))
+      if (house?.IsFriend(from) != true)
       {
         from.SendLocalizedMessage(1005701); // The holiday tree can only be placed in your house.
         return false;

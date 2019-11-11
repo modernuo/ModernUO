@@ -86,7 +86,7 @@ namespace Server
 
     private static void EventSink_VirtueMacroRequest(VirtueMacroRequestEventArgs e)
     {
-      int virtueID = e.VirtueID switch
+      var virtueID = e.VirtueID switch
       {
         0 => // Honor
         107,
@@ -151,6 +151,24 @@ namespace Server
     {
       if (info.ButtonID == 1 && m_Beholder == m_Beheld)
         m_Beholder.SendGump(new VirtueStatusGump(m_Beholder));
+    }
+
+    private class InternalEntry : GumpImage
+    {
+      private static byte[] m_Class = StringToBuffer(" class=VirtueGumpItem");
+
+      public InternalEntry(int x, int y, int gumpID, int hue) : base(x, y, gumpID, hue)
+      {
+      }
+
+      public override string Compile(NetState ns) => $"{{ gumppic {X} {Y} {GumpID} hue={Hue} class=VirtueGumpItem }}";
+
+      public override void AppendTo(NetState ns, IGumpWriter disp)
+      {
+        base.AppendTo(ns, disp);
+
+        disp.AppendLayout(m_Class);
+      }
     }
   }
 }

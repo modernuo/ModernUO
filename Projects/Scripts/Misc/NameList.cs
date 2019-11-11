@@ -12,7 +12,14 @@ namespace Server
 
     public string[] List { get; }
 
-    public bool ContainsName( string name ) => List.Any(t => name == t);
+    public bool ContainsName( string name )
+    {
+      for ( int i = 0; i < List.Length; i++ )
+        if ( name == List[i] )
+          return true;
+
+      return false;
+    }
 
     public NameList( string type, XmlElement xml )
     {
@@ -23,7 +30,13 @@ namespace Server
         List[i] = Utility.Intern( List[i].Trim() );
     }
 
-    public string GetRandomName() => List.Length > 0 ? List[Utility.Random( List.Length )] : "";
+    public string GetRandomName()
+    {
+      if ( List.Length > 0 )
+        return List[Utility.Random( List.Length )];
+
+      return "";
+    }
 
     public static NameList GetNameList( string type )
     {

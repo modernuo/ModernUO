@@ -79,7 +79,7 @@ namespace Server.Factions
     {
       get
       {
-        TimeSpan period = CurrentState switch
+        var period = CurrentState switch
         {
           ElectionState.Pending => PendingPeriod,
           ElectionState.Election => VotingPeriod,
@@ -96,7 +96,7 @@ namespace Server.Factions
       }
       set
       {
-        TimeSpan period = CurrentState switch
+        var period = CurrentState switch
         {
           ElectionState.Pending => PendingPeriod,
           ElectionState.Election => VotingPeriod,

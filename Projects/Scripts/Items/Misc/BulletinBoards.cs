@@ -506,10 +506,18 @@ namespace Server.Items
       int equipLength = Math.Min(msg.PostedEquip.Length, 255);
       int msgLength = Math.Min(msg.Lines.Length, 255);
 
-      SpanWriter writer =
-        new SpanWriter(stackalloc byte[22 + posterLength + subjectLength + timeLength + equipLength * 4 + msgLength * 255]);
-      writer.Write((byte)0x71); // Packet ID
-      writer.Position += 2; // Dynamic Length
+    public string SafeString(string v) => v ?? string.Empty;
+  }
+
+  public class BBMessageContent : Packet
+  {
+    public BBMessageContent(BaseBulletinBoard board, BulletinMessage msg) : base(0x71)
+    {
+      string poster = SafeString(msg.PostedName);
+      string subject = SafeString(msg.Subject);
+      string time = SafeString(msg.GetTimeAsString());
+
+      EnsureCapacity(22 + poster.Length + subject.Length + time.Length);
 
       writer.Write((byte)0x02); // Command
       writer.Write(board.Serial); // Bulletin board serial

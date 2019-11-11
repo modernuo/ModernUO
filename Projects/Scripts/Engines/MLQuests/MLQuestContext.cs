@@ -243,7 +243,7 @@ namespace Server.Engines.MLQuests
         MLQuest quest = MLQuestSystem.ReadQuestRef(reader);
         DateTime nextAvailable = reader.ReadDateTime();
 
-        if (quest == null || !quest.RecordCompletion)
+        if (quest?.RecordCompletion != true)
           return null; // forget about this record
 
         return new MLDoneQuestInfo(quest, nextAvailable);

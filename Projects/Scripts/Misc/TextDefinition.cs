@@ -53,14 +53,18 @@ namespace Server
       }
     }
 
-    public static TextDefinition Deserialize(GenericReader reader) =>
-      reader.ReadEncodedInt() switch
+    public static TextDefinition Deserialize(GenericReader reader)
+    {
+      int type = reader.ReadEncodedInt();
+
+      return type switch
       {
         0 => new TextDefinition(),
         1 => new TextDefinition(reader.ReadEncodedInt()),
         2 => new TextDefinition(reader.ReadString()),
         _ => null
       };
+    }
 
     public static void AddTo(ObjectPropertyList list, TextDefinition def)
     {
@@ -158,6 +162,6 @@ namespace Server
       return isInteger ? new TextDefinition(i) : new TextDefinition(value);
     }
 
-    public static bool IsNullOrEmpty(TextDefinition def) => def == null || def.IsEmpty;
+    public static bool IsNullOrEmpty(TextDefinition def) => def?.IsEmpty != false;
   }
 }

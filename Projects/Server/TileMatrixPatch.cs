@@ -158,7 +158,7 @@ namespace Server
           while (pCur < pEnd)
           {
             lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add(pCur->m_ID, pCur->m_Z);
-            pCur += 1;
+            pCur = pCur + 1;
           }
 
           StaticTile[][][] tiles = new StaticTile[8][][];

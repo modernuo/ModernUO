@@ -75,29 +75,37 @@ namespace Server.Engines.Quests.Haven
     public override object Message =>
       Step switch
       {
-        KillHordeMinionsStep.First =>
-        /* Find the mountain pass beyond the house which lies at the
+        return Step switch
+        {
+          KillHordeMinionsStep.First =>
+          /* Find the mountain pass beyond the house which lies at the
              * end of the runic road.<BR><BR>
              *
              * Assist the city Militia by slaying <I>Horde Minions</I>
              */
-        1049089,
-        KillHordeMinionsStep.LearnKarma =>
-        /* You have just gained some <a href="?ForceTopic45">Karma</a>
+          1049089,
+          KillHordeMinionsStep.LearnKarma =>
+          /* You have just gained some <a href="?ForceTopic45">Karma</a>
              * for killing the horde minion. <a href="?ForceTopic134">Learn</a>
              * how this affects your Paladin abilities.
              */
-        1060389,
-        _ => 1060507
-      };
+          1060389,
+          _ => 1060507
+        };
+      }
+    }
 
-    public override int MaxProgress =>
-      System.From.Profession == 5 ? Step switch
+    public override int MaxProgress
+    {
+      get
       {
-        KillHordeMinionsStep.First => 1,
-        KillHordeMinionsStep.LearnKarma => 2,
-        _ => 5
-      } : 5;
+        if (System.From.Profession == 5) // paladin
+          return Step switch
+          {
+            KillHordeMinionsStep.First => 1,
+            KillHordeMinionsStep.LearnKarma => 2,
+            _ => 5
+          };
 
     public override bool Completed => Step == KillHordeMinionsStep.LearnKarma && HasBeenRead || base.Completed;
 

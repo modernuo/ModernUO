@@ -174,16 +174,19 @@ namespace Server.Engines.Plants
       return m_Table[0];
     }
 
-    public static PlantType RandomFirstGeneration() =>
-      Utility.Random(3) switch
+    public static PlantType RandomFirstGeneration()
+    {
+      return Utility.Random(3) switch
       {
         0 => PlantType.CampionFlowers,
         1 => PlantType.Fern,
         _ => PlantType.TribarrelCactus
       };
+    }
 
-    public static PlantType RandomPeculiarGroupOne() =>
-      Utility.Random(6) switch
+    public static PlantType RandomPeculiarGroupOne()
+    {
+      return Utility.Random(6) switch
       {
         0 => PlantType.Cactus,
         1 => PlantType.FlaxFlowers,
@@ -192,9 +195,11 @@ namespace Server.Engines.Plants
         4 => PlantType.CocoaTree,
         _ => PlantType.OrfluerFlowers
       };
+    }
 
-    public static PlantType RandomPeculiarGroupTwo() =>
-      Utility.Random(5) switch
+    public static PlantType RandomPeculiarGroupTwo()
+    {
+      return Utility.Random(5) switch
       {
         0 => PlantType.CypressTwisted,
         1 => PlantType.HedgeShort,
@@ -202,9 +207,11 @@ namespace Server.Engines.Plants
         3 => PlantType.CocoaTree,
         _ => PlantType.SnowdropPatch
       };
+    }
 
-    public static PlantType RandomPeculiarGroupThree() =>
-      Utility.Random(5) switch
+    public static PlantType RandomPeculiarGroupThree()
+    {
+      return Utility.Random(5) switch
       {
         0 => PlantType.Cattails,
         1 => PlantType.PoppyPatch,
@@ -212,9 +219,11 @@ namespace Server.Engines.Plants
         3 => PlantType.CocoaTree,
         _ => PlantType.WaterLily
       };
+    }
 
-    public static PlantType RandomPeculiarGroupFour() =>
-      Utility.Random(5) switch
+    public static PlantType RandomPeculiarGroupFour()
+    {
+      return Utility.Random(5) switch
       {
         0 => PlantType.CypressStraight,
         1 => PlantType.HedgeTall,
@@ -222,6 +231,7 @@ namespace Server.Engines.Plants
         3 => PlantType.CocoaTree,
         _ => PlantType.SugarCanes
       };
+    }
 
     public static PlantType RandomBonsai(double increaseRatio)
     {

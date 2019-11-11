@@ -54,9 +54,7 @@ namespace Server.Gumps
 
     public int Size { get; set; }
 
-    public override string Compile(ArraySet<string> strings) => $"{{ textentrylimited {X} {Y} {Width} {Height} {Hue} {EntryID} {strings.Add(InitialText)} {Size} }}";
-
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer(" { textentrylimited ");
+    public override string Compile(NetState ns) => $"{{ textentrylimited {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {m_EntryID} {Parent.Intern(m_InitialText)} {m_Size} }}";
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {

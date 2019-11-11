@@ -136,7 +136,7 @@ namespace Server.Spells.Spellweaving
     {
       Mobile m = e.Mobile;
 
-      if (m == null || m.Alive || m_Table[m] == null)
+      if (m?.Alive != false || m_Table[m] == null)
         return;
 
       HandleDeath_OnCallback(m);

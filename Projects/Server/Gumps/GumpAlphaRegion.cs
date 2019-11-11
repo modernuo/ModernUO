@@ -42,9 +42,7 @@ namespace Server.Gumps
 
     public int Height { get; set; }
 
-    public override string Compile(ArraySet<string> strings) => $"{{ checkertrans {X} {Y} {Width} {Height} }}";
-
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ checkertrans ");
+    public override string Compile(NetState ns) => $"{{ checkertrans {m_X} {m_Y} {m_Width} {m_Height} }}";
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {

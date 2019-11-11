@@ -7,20 +7,27 @@ namespace Server
 {
   public class AssemblyEmitter
   {
+    private string m_AssemblyName;
+
+    private AppDomain m_AppDomain;
+    private AssemblyBuilder m_AssemblyBuilder;
     private ModuleBuilder m_ModuleBuilder;
 
     public AssemblyEmitter( string assemblyName )
     {
-      AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
+      m_AssemblyName = assemblyName;
+
+      m_AppDomain = AppDomain.CurrentDomain;
+
+      m_AssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
         new AssemblyName( assemblyName ),
         AssemblyBuilderAccess.Run
       );
 
-      m_ModuleBuilder = assemblyBuilder.DefineDynamicModule(assemblyName);
+      m_ModuleBuilder = m_AssemblyBuilder.DefineDynamicModule(assemblyName);
     }
 
-    public TypeBuilder DefineType( string typeName, TypeAttributes attrs, Type parentType ) =>
-      m_ModuleBuilder.DefineType( typeName, attrs, parentType );
+    public TypeBuilder DefineType( string typeName, TypeAttributes attrs, Type parentType ) => m_ModuleBuilder.DefineType( typeName, attrs, parentType );
   }
 
   public class MethodEmitter
@@ -73,8 +80,7 @@ namespace Server
       m_ArgumentTypes = parms;
     }
 
-    public LocalBuilder CreateLocal( Type localType ) =>
-      Generator.DeclareLocal( localType );
+    public LocalBuilder CreateLocal( Type localType ) => Generator.DeclareLocal( localType );
 
     public LocalBuilder AcquireTemp( Type localType )
     {
@@ -602,11 +608,16 @@ namespace Server
 
     public void BeginCall( MethodInfo method )
     {
-      Type type = ( method.CallingConvention & CallingConventions.HasThis ) != 0 ? m_Stack.Peek() : method.DeclaringType;
+      Type type;
+
+      if ( ( method.CallingConvention & CallingConventions.HasThis ) != 0 )
+        type = m_Stack.Peek();
+      else
+        type = method.DeclaringType;
 
       m_Calls.Push( new CallInfo( type, method ) );
 
-      if ( type?.IsValueType == true )
+      if ( type.IsValueType )
       {
         LocalBuilder temp = AcquireTemp( type );
 

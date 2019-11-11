@@ -117,7 +117,7 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        DecorateCommand command = info.ButtonID switch
+        var command = info.ButtonID switch
         {
           1 => DecorateCommand.Turn,
           2 => DecorateCommand.Up,
@@ -194,7 +194,7 @@ namespace Server.Items
             }
           }
 
-          if (house == null || !house.IsCoOwner(from))
+          if (house?.IsCoOwner(from) != true)
           {
             from.SendLocalizedMessage(502092); // You must be in your house to do this.
           }

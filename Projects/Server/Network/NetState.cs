@@ -507,14 +507,12 @@ namespace Server.Network
 
     private async Task HandlePackets(MessagePump pump)
     {
-      PipeReader pr = RecvdPipe.Reader;
-
-      while (!Core.Closing)
-      {
-        ReadResult result = await pr.ReadAsync();
-        ReadOnlySequence<byte> seq = result.Buffer;
-        if (seq.Length == 0)
-          break;
+      while (true)
+        try
+        {
+          Packet p = await m_SendQueue?.DequeueAsync();
+          if (p == null)
+            break;
 
         long pos = PacketHandlers.ProcessPacket(pump, this, seq);
 
@@ -542,37 +540,19 @@ namespace Server.Network
         Dispose();
     }
 
-    public void SendRaw(ReadOnlySpan<byte> input)
-    {
-      if (IsDisposing || BlockAllPackets)
-        return;
-
-      // Console.WriteLine("Packet ID {0:X}", input[0]);
-      // if (input.Length >= 4 && input[0] == 0xBF)
-      //   Console.WriteLine("Sub-Packet {0:X}", input[3]);
-
-      input.CopyTo(SendPipe.Writer.GetSpan(input.Length));
-      _ = Flush(input.Length);
-    }
-
-    public void Send(ReadOnlySpan<byte> input)
-    {
-      if (IsDisposing || BlockAllPackets)
-        return;
-
-      // Console.WriteLine("Packet ID {0:X}", input[0]);
-      // if (input.Length >= 5 && input[0] == 0xBF)
-      //   Console.WriteLine("Sub-Packet {0:X}", input[4]);
-
-      if (UseCompression)
-      {
-        int destSize = (int)Compression.Compressor.CompressBound((ulong)input.Length);
-        Compression.Compress(input, 0, input.Length, SendPipe.Writer.GetSpan(destSize), out int bytesWritten);
-        _ = Flush(bytesWritten);
-        return;
-      }
-
-      SendRaw(input);
+          prof?.Finish(length);
+        }
+        catch (SocketException ex)
+        {
+          Console.WriteLine(ex);
+          TraceException(ex);
+          Dispose();
+          break;
+        }
+        catch (Exception ex)
+        {
+          Console.WriteLine(ex);
+        }
     }
 
     private async Task ProcessSends()
@@ -655,7 +635,9 @@ namespace Server.Network
 
     private int m_Disposing;
 
-    public bool IsDisposing => m_Disposing != 0;
+    public bool IsDisposing { get => m_Disposing != 0;
+      private set => m_Disposing = value ? 1 : 0;
+    }
 
     public virtual void Dispose()
     {

@@ -63,7 +63,7 @@ namespace Server.Items
         if (craftResource.Amount < 2)
           return false; // Not enough metal to resmelt
 
-        double difficulty = resource switch
+        var difficulty = resource switch
         {
           CraftResource.DullCopper => 65.0,
           CraftResource.ShadowIron => 70.0,

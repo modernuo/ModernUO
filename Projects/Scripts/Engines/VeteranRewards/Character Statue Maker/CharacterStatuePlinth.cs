@@ -27,7 +27,7 @@ namespace Server.Items
     {
       Point3D point = new Point3D(p.X, p.Y, p.Z);
 
-      if (map == null || !map.CanFit(point, 20))
+      if (map?.CanFit(point, 20) != true)
         return false;
 
       BaseHouse house = BaseHouse.FindHouseAt(point, map, 20);
@@ -111,14 +111,16 @@ namespace Server.Items
         AddHtmlLocalized(55, 100, 150, 20, GetTypeNumber(statue.StatueType), 0);
       }
 
-      public int GetTypeNumber(StatueType type) =>
-        type switch
+      public int GetTypeNumber(StatueType type)
+      {
+        return type switch
         {
           StatueType.Marble => 1076181,
           StatueType.Jade => 1076180,
           StatueType.Bronze => 1076230,
           _ => 1076181
         };
+      }
     }
   }
 }

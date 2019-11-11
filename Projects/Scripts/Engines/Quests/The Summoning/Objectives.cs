@@ -28,7 +28,7 @@ namespace Server.Engines.Quests.Doom
           System.From.SendMessage("Internal error: unable to find summoning altar. Quest unable to continue.");
           System.Cancel();
         }
-        else if (altar.Daemon == null || !altar.Daemon.Alive)
+        else if (altar.Daemon?.Alive != true)
         {
           System.AddConversation(new VanquishDaemonConversation());
         }
@@ -85,7 +85,7 @@ namespace Server.Engines.Quests.Doom
 
     public override void CheckProgress()
     {
-      if (m_Daemon == null || !m_Daemon.Alive)
+      if (m_Daemon?.Alive != true)
         Complete();
     }
 

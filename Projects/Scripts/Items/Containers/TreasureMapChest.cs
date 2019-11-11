@@ -184,6 +184,7 @@ namespace Server.Items
           cont.DropItem(Loot.RandomScroll(0, 63, SpellbookType.Regular));
 
         if (Core.SE)
+        {
           numberItems = level switch
           {
             1 => 5,
@@ -194,6 +195,7 @@ namespace Server.Items
             6 => 60,
             _ => 0
           };
+        }
         else
           numberItems = level * 6;
 

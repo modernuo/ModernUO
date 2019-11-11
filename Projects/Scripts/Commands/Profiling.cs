@@ -204,9 +204,11 @@ namespace Server.Commands
 
         list.Sort(new CountsSorter());
 
-        foreach (var (key, countTable) in list)
+        foreach (KeyValuePair<Type, int[]> kvp in list)
         {
-          op.WriteLine("# {0}", key.FullName);
+          int[] countTable = kvp.Value;
+
+          op.WriteLine("# {0}", kvp.Key.FullName);
 
           for (int i = 0; i < countTable.Length; ++i)
             if (countTable[i] > 0)
@@ -252,8 +254,12 @@ namespace Server.Commands
       op.WriteLine();
       op.WriteLine("Type\t\tCount\t\tAmount\t\tAvg. Amount");
 
-      foreach (var (key, parms) in table)
-        op.WriteLine("{0}\t\t{1}\t\t{2}\t\t{3:F2}", key.Name, parms[0], parms[1], (double)parms[1] / parms[0]);
+      foreach (KeyValuePair<Type, int[]> de in table)
+      {
+        int[] parms = de.Value;
+
+        op.WriteLine("{0}\t\t{1}\t\t{2}\t\t{3:F2}", de.Key.Name, parms[0], parms[1], (double)parms[1] / parms[0]);
+      }
     }
 
     [Usage("ProfileWorld")]

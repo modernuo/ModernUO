@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace Server.Misc
 {
   public static class NameVerification

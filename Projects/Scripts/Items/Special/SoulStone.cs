@@ -193,7 +193,7 @@ namespace Server.Items
         return false;
       }
 
-      if (from.Spell != null && from.Spell.IsCasting)
+      if (from.Spell?.IsCasting == true)
       {
         from.SendLocalizedMessage(1070733); // You may not use a Soulstone while your character is casting a spell.
         return false;

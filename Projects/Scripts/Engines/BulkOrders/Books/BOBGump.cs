@@ -258,33 +258,46 @@ namespace Server.Engines.BulkOrders
     {
       BOBFilter f = m_From.UseOwnFilter ? m_From.BOBFilter : m_Book.Filter;
 
-      return f.IsDefault || (f.Quality != 1 || !reqExc) &&
-             (f.Quality != 2 || reqExc) &&
-             (f.Quantity != 1 || amountMax == 10) &&
-             (f.Quantity != 2 || amountMax == 15) &&
-             (f.Quantity != 3 || amountMax == 20) &&
-             (f.Type != 1 || !isLarge) &&
-             (f.Type != 2 || isLarge) &&
-             f.Material switch
-             {
-               1 => (deedType == BODType.Smith),
-               2 => (deedType == BODType.Tailor),
-               3 => (mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Iron),
-               4 => (mat == BulkMaterialType.DullCopper),
-               5 => (mat == BulkMaterialType.ShadowIron),
-               6 => (mat == BulkMaterialType.Copper),
-               7 => (mat == BulkMaterialType.Bronze),
-               8 => (mat == BulkMaterialType.Gold),
-               9 => (mat == BulkMaterialType.Agapite),
-               10 => (mat == BulkMaterialType.Verite),
-               11 => (mat == BulkMaterialType.Valorite),
-               12 => (mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Cloth),
-               13 => (mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Leather),
-               14 => (mat == BulkMaterialType.Spined),
-               15 => (mat == BulkMaterialType.Horned),
-               16 => (mat == BulkMaterialType.Barbed),
-               _ => true
-             };
+      if (f.IsDefault)
+        return true;
+
+      if (f.Quality == 1 && reqExc)
+        return false;
+      if (f.Quality == 2 && !reqExc)
+        return false;
+
+      if (f.Quantity == 1 && amountMax != 10)
+        return false;
+      if (f.Quantity == 2 && amountMax != 15)
+        return false;
+      if (f.Quantity == 3 && amountMax != 20)
+        return false;
+
+      if (f.Type == 1 && isLarge)
+        return false;
+      if (f.Type == 2 && !isLarge)
+        return false;
+
+      return f.Material switch
+      {
+        1 => (deedType == BODType.Smith),
+        2 => (deedType == BODType.Tailor),
+        3 => (mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Iron),
+        4 => (mat == BulkMaterialType.DullCopper),
+        5 => (mat == BulkMaterialType.ShadowIron),
+        6 => (mat == BulkMaterialType.Copper),
+        7 => (mat == BulkMaterialType.Bronze),
+        8 => (mat == BulkMaterialType.Gold),
+        9 => (mat == BulkMaterialType.Agapite),
+        10 => (mat == BulkMaterialType.Verite),
+        11 => (mat == BulkMaterialType.Valorite),
+        12 => (mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Cloth),
+        13 => (mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Leather),
+        14 => (mat == BulkMaterialType.Spined),
+        15 => (mat == BulkMaterialType.Horned),
+        16 => (mat == BulkMaterialType.Barbed),
+        _ => true
+      };
     }
 
     public int GetIndexForPage(int page)

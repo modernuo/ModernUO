@@ -28,11 +28,11 @@ namespace Server.Gumps
   {
     public GumpTooltip(int number) => Number = number;
 
-    public int Number { get; set; }
+    public GumpTooltip(int number) => m_Number = number;
 
     public override string Compile(ArraySet<string> strings) => $"{{ tooltip {Number} }}";
 
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ tooltip ");
+    public override string Compile(NetState ns) => $"{{ tooltip {m_Number} }}";
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {

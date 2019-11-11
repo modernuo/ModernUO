@@ -31,7 +31,7 @@ namespace Server.Items
       {
         m.SendLocalizedMessage(500446); // That is too far away.
       }
-      else if (m.Map != null && m.Map.CanFit(m.Location, 16, false, false))
+      else if (m.Map?.CanFit(m.Location, 16, false, false) == true)
       {
         m.CloseGump<ResurrectGump>();
         m.SendGump(new ResurrectGump(m, ResurrectMessage.VirtueShrine));

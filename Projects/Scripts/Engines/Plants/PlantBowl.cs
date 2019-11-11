@@ -87,9 +87,9 @@ namespace Server.Engines.Plants
       int tileID;
 
       if (obj is Static staticObj && !staticObj.Movable)
-        tileID = (staticObj.ItemID & 0x3FFF) | 0x4000;
+        tileID = staticObj.ItemID & 0x3FFF | 0x4000;
       else if (obj is StaticTarget staticTarget)
-        tileID = (staticTarget.ItemID & 0x3FFF) | 0x4000;
+        tileID = staticTarget.ItemID & 0x3FFF | 0x4000;
       else if (obj is LandTarget landTarget)
         tileID = landTarget.TileID;
       else

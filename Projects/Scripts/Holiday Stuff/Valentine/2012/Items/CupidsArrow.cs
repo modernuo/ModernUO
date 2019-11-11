@@ -29,7 +29,8 @@ namespace Server.Items
     public bool IsSigned => m_From != null && m_To != null;
 
     [Constructible]
-    public CupidsArrow(): base( 0x4F7F ) =>
+    public CupidsArrow()
+      : base( 0x4F7F ) =>
       LootType = LootType.Blessed;
 
     public override void AddNameProperty( ObjectPropertyList list )

@@ -104,7 +104,7 @@ namespace Server.Engines.ConPVP
 
     public override bool OnMoveOver(Mobile m)
     {
-      if (m_Game == null || m == null || !m.Alive)
+      if (m_Game == null || m?.Alive != true)
         return base.OnMoveOver(m);
 
       if (CanBeKing(m))
@@ -870,7 +870,7 @@ namespace Server.Engines.ConPVP
       if (pm.DuelContext == null || pm.DuelContext != m_Context)
         return -1;
 
-      if (pm.DuelPlayer == null || pm.DuelPlayer.Eliminated)
+      if (pm.DuelPlayer?.Eliminated != false)
         return -1;
 
       return pm.DuelContext.Participants.IndexOf(pm.DuelPlayer.Participant);

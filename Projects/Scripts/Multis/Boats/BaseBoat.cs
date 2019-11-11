@@ -1118,7 +1118,7 @@ namespace Server.Multis
         return false;
       }
 
-      if (SetFacing((Direction)(((int)m_Facing + offset) & 0x7))) return true;
+      if (SetFacing((Direction)((int)m_Facing + offset & 0x7))) return true;
       if (message)
         TillerMan.Say(501423); // Ar, can't turn sir.
 
@@ -1293,7 +1293,7 @@ namespace Server.Multis
       else // Right, Down, Left and Up
         maxSpeed = Math.Min(adx, ady);
 
-      return (Direction)((iDir - (int)Facing) & 0x7);
+      return (Direction)(iDir - (int)Facing & 0x7);
     }
 
     public bool DoMovement(bool message)
@@ -1394,8 +1394,8 @@ namespace Server.Multis
       }
 
       int rx = 0, ry = 0;
-      Direction d = (Direction)(((int)m_Facing + (int)dir) & 0x7);
-      Movement.Offset(d, ref rx, ref ry);
+      Direction d = (Direction)((int)m_Facing + (int)dir & 0x7);
+      Movement.Movement.Offset(d, ref rx, ref ry);
 
       for (int i = 1; i <= speed; ++i)
         if (!CanFit(new Point3D(X + i * rx, Y + i * ry, Z), Map, ItemID))
@@ -1510,8 +1510,7 @@ namespace Server.Multis
 
         if (e is Item item)
           item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z + zOffset);
-        else if (e is Mobile m)
-          m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z + zOffset);
+        else if (e is Mobile m) m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z + zOffset);
       }
 
       Location = new Point3D(X + xOffset, Y + yOffset, Z + zOffset);
@@ -1603,7 +1602,8 @@ namespace Server.Multis
       if (Hold != null)
         Hold.Location = new Point3D(X + xOffset * HoldDistance, Y + yOffset * HoldDistance, Hold.Z);
 
-      int count = ((m_Facing - old) & 0x7) / 2;
+      int count = m_Facing - old & 0x7;
+      count /= 2;
 
       for (int i = 0; i < toMove.Count; ++i)
       {
@@ -1613,7 +1613,7 @@ namespace Server.Multis
           item.Location = Rotate(item.Location, count);
         else if (e is Mobile m)
         {
-          m.Direction = (m.Direction - old + facing) & Direction.Mask;
+          m.Direction = m.Direction - old + facing & Direction.Mask;
           m.Location = Rotate(m.Location, count);
         }
       }

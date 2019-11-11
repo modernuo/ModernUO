@@ -98,6 +98,7 @@ namespace Server.Spells.Necromancy
 
           //Surprisingly, no sparkle type effects
           foreach (Mobile m in targets)
+            //Surprisingly, no sparkle type effects
             m.Location = GetNearestShrine(m);
         }
       }

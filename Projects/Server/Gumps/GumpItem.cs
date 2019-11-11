@@ -42,9 +42,9 @@ namespace Server.Gumps
 
     public int Hue { get; set; }
 
-    public override string Compile(ArraySet<string> strings) => Hue == 0 ?
-      $"{{ tilepic {X} {Y} {ItemID} }}" :
-      $"{{ tilepichue {X} {Y} {ItemID} {Hue} }}";
+    public override string Compile(NetState ns) =>
+      m_Hue == 0 ? $"{{ tilepic {m_X} {m_Y} {m_ItemID} }}" :
+        $"{{ tilepichue {m_X} {m_Y} {m_ItemID} {m_Hue} }}";
 
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ tilepic ");
     private static readonly byte[] m_LayoutNameHue = Gump.StringToBuffer("{ tilepichue ");

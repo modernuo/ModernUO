@@ -422,8 +422,7 @@ namespace Server
       return v / 2;
     }
 
-    public IPooledEnumerable<StaticTile[]> GetMultiTilesAt(int x, int y) =>
-      PooledEnumeration.GetMultiTiles(this, new Rectangle2D(x, y, 1, 1));
+    public IPooledEnumerable<StaticTile[]> GetMultiTilesAt(int x, int y) => PooledEnumeration.GetMultiTiles(this, new Rectangle2D(x, y, 1, 1));
 
     private static List<Item> AcquireFixItems(Map map, int x, int y)
     {
@@ -965,22 +964,19 @@ namespace Server
       GetObjectsInBounds(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1), items,
         mobiles);
 
-    public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds, bool items = true, bool mobiles = true) =>
-      PooledEnumeration.GetEntities(this, bounds, items, mobiles);
+    public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds, bool items = true, bool mobiles = true) => PooledEnumeration.GetEntities(this, bounds, items, mobiles);
 
-    public IPooledEnumerable<NetState> GetClientsInRange(IPoint3D p) => GetClientsInRange(p, Core.GlobalMaxUpdateRange);
+    public IPooledEnumerable<NetState> GetClientsInRange(Point3D p) => GetClientsInRange(p, Core.GlobalMaxUpdateRange);
 
-    public IPooledEnumerable<NetState> GetClientsInRange(IPoint3D p, int range) =>
-      GetClientsInBounds(new Rectangle2D(p.X - range, p.Y - range, range * 2 + 1, range * 2 + 1));
+    public IPooledEnumerable<NetState> GetClientsInRange(Point3D p, int range) => GetClientsInBounds(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
 
     public IPooledEnumerable<NetState> GetClientsInBounds(Rectangle2D bounds) => PooledEnumeration.GetClients(this, bounds);
 
-    public IPooledEnumerable<Item> GetItemsInRange(IPoint3D p) => GetItemsInRange(p, Core.GlobalMaxUpdateRange);
+    public IPooledEnumerable<Item> GetItemsInRange(Point3D p) => GetItemsInRange(p, Core.GlobalMaxUpdateRange);
 
-    public IPooledEnumerable<Item> GetItemsInRange(IPoint3D p, int range) => GetItemsInRange<Item>(p, range);
+    public IPooledEnumerable<Item> GetItemsInRange(Point3D p, int range) => GetItemsInRange<Item>(p, range);
 
-    public IPooledEnumerable<T> GetItemsInRange<T>(IPoint3D p, int range) where T : Item =>
-      GetItemsInBounds<T>(new Rectangle2D(p.X - range, p.Y - range, range * 2 + 1, range * 2 + 1));
+    public IPooledEnumerable<T> GetItemsInRange<T>(Point3D p, int range) where T : Item => GetItemsInBounds<T>(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
 
     public IPooledEnumerable<Item> GetItemsInBounds(Rectangle2D bounds) => GetItemsInBounds<Item>(bounds);
 
@@ -988,12 +984,13 @@ namespace Server
 
     public IPooledEnumerable<Mobile> GetMobilesInRange(Point3D p) => GetMobilesInRange(p, Core.GlobalMaxUpdateRange);
 
-    public IPooledEnumerable<Mobile> GetMobilesInRange(IPoint3D p, int range) => GetMobilesInRange<Mobile>(p, range);
+    public IPooledEnumerable<Mobile> GetMobilesInRange(Point3D p, int range) => GetMobilesInRange<Mobile>(p, range);
 
-    public IPooledEnumerable<T> GetMobilesInRange<T>(IPoint3D p, int range) where T : Mobile =>
-      GetMobilesInBounds<T>(new Rectangle2D(p.X - range, p.Y - range, range * 2 + 1, range * 2 + 1));
+    public IPooledEnumerable<T> GetMobilesInRange<T>(Point3D p, int range) where T : Mobile => GetMobilesInBounds<T>(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1));
 
     public IPooledEnumerable<Mobile> GetMobilesInBounds(Rectangle2D bounds) => GetMobilesInBounds<Mobile>(bounds);
+
+    public IPooledEnumerable<T> GetMobilesInBounds<T>(Rectangle2D bounds) where T : Mobile => PooledEnumeration.GetMobiles<T>(this, bounds);
 
     public IPooledEnumerable<T> GetMobilesInBounds<T>(Rectangle2D bounds) where T : Mobile => PooledEnumeration.GetMobiles<T>(this, bounds);
     #endregion
@@ -1001,10 +998,12 @@ namespace Server
     #region CanFit
 
     public bool CanFit(Point3D p, int height, bool checkBlocksFit = false, bool checkMobiles = true,
-      bool requireSurface = true) => CanFit(p.m_X, p.m_Y, p.m_Z, height, checkBlocksFit, checkMobiles, requireSurface);
+      bool requireSurface = true) =>
+      CanFit(p.m_X, p.m_Y, p.m_Z, height, checkBlocksFit, checkMobiles, requireSurface);
 
     public bool CanFit(Point2D p, int z, int height, bool checkBlocksFit = false, bool checkMobiles = true,
-      bool requireSurface = true) => CanFit(p.m_X, p.m_Y, z, height, checkBlocksFit, checkMobiles, requireSurface);
+      bool requireSurface = true) =>
+      CanFit(p.m_X, p.m_Y, z, height, checkBlocksFit, checkMobiles, requireSurface);
 
     public bool CanFit(int x, int y, int z, int height, bool checkBlocksFit = false, bool checkMobiles = true,
       bool requireSurface = true)

@@ -439,19 +439,23 @@ namespace Server.Items
     public ArmorBodyType BodyPosition =>
       Layer switch
       {
-        Layer.Neck => ArmorBodyType.Gorget,
-        Layer.TwoHanded => ArmorBodyType.Shield,
-        Layer.Gloves => ArmorBodyType.Gloves,
-        Layer.Helm => ArmorBodyType.Helmet,
-        Layer.Arms => ArmorBodyType.Arms,
-        Layer.InnerLegs => ArmorBodyType.Legs,
-        Layer.OuterLegs => ArmorBodyType.Legs,
-        Layer.Pants => ArmorBodyType.Legs,
-        Layer.InnerTorso => ArmorBodyType.Chest,
-        Layer.OuterTorso => ArmorBodyType.Chest,
-        Layer.Shirt => ArmorBodyType.Chest,
-        _ => ArmorBodyType.Gorget
-      };
+        return Layer switch
+        {
+          Layer.Neck => ArmorBodyType.Gorget,
+          Layer.TwoHanded => ArmorBodyType.Shield,
+          Layer.Gloves => ArmorBodyType.Gloves,
+          Layer.Helm => ArmorBodyType.Helmet,
+          Layer.Arms => ArmorBodyType.Arms,
+          Layer.InnerLegs => ArmorBodyType.Legs,
+          Layer.OuterLegs => ArmorBodyType.Legs,
+          Layer.Pants => ArmorBodyType.Legs,
+          Layer.InnerTorso => ArmorBodyType.Chest,
+          Layer.OuterTorso => ArmorBodyType.Chest,
+          Layer.Shirt => ArmorBodyType.Chest,
+          _ => ArmorBodyType.Gorget
+        };
+      }
+    }
 
     public static double[] ArmorScalars{ get; set; } = { 0.07, 0.07, 0.14, 0.15, 0.22, 0.35 };
 
@@ -756,8 +760,9 @@ namespace Server.Items
       return info.AttributeInfo;
     }
 
-    public int GetProtOffset() =>
-      m_Protection switch
+    public int GetProtOffset()
+    {
+      return m_Protection switch
       {
         ArmorProtectionLevel.Guarding => 1,
         ArmorProtectionLevel.Hardening => 2,
@@ -765,6 +770,7 @@ namespace Server.Items
         ArmorProtectionLevel.Invulnerability => 4,
         _ => 0
       };
+    }
 
     public int GetDurabilityBonus()
     {
@@ -1195,7 +1201,7 @@ namespace Server.Items
           }
           else
           {
-            OreInfo info = reader.ReadInt() switch
+            var info = reader.ReadInt() switch
             {
               0 => OreInfo.Iron,
               1 => OreInfo.DullCopper,
@@ -1413,7 +1419,7 @@ namespace Server.Items
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
-      int oreType = m_Resource switch
+      var oreType = m_Resource switch
       {
         CraftResource.DullCopper => 1053108,
         CraftResource.ShadowIron => 1053107,

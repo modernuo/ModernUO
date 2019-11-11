@@ -36,10 +36,17 @@ namespace Server.Items
     public override string DefaultName =>
       PlayerName == null ? base.DefaultName : HeadType switch
       {
-        HeadType.Duel => $"the head of {PlayerName}, taken in a duel",
-        HeadType.Tournament => $"the head of {PlayerName}, taken in a tournament",
-        _ => $"the head of {PlayerName}"
-      };
+        if (PlayerName == null)
+          return base.DefaultName;
+
+        return HeadType switch
+        {
+          HeadType.Duel => $"the head of {PlayerName}, taken in a duel",
+          HeadType.Tournament => $"the head of {PlayerName}, taken in a tournament",
+          _ => $"the head of {PlayerName}"
+        };
+      }
+    }
 
     public override void Serialize(GenericWriter writer)
     {

@@ -116,7 +116,7 @@ namespace Server.Items
         owner = box.Owner;
       }
 
-      if (owner?.Account == null || !owner.Account.DepositGold(Worth)) return;
+      if (owner?.Account?.DepositGold(Worth) != true) return;
 
       if (tradeInfo != null)
       {
@@ -140,15 +140,18 @@ namespace Server.Items
 
     public override void OnSingleClick(Mobile from)
     {
-      Packets.SendMessageLocalizedAffix(from.NetState, Serial,
-        ItemID,
-        MessageType.Label,
-        0x3B2,
-        3,
-        1041361,
-        "",
-        AffixType.Append,
-        $" {m_Worth}"); // A bank check:
+      from.Send(
+        new MessageLocalizedAffix(
+          Serial,
+          ItemID,
+          MessageType.Label,
+          0x3B2,
+          3,
+          1041361,
+          "",
+          AffixType.Append,
+          $" {m_Worth}",
+          "")); // A bank check:
     }
 
     public override void OnDoubleClick(Mobile from)
@@ -170,7 +173,7 @@ namespace Server.Items
       int deposited = 0;
       int toAdd = m_Worth;
 
-      if (AccountGold.Enabled && from.Account != null && from.Account.DepositGold(toAdd))
+      if (AccountGold.Enabled && from.Account?.DepositGold(toAdd) == true)
       {
         deposited = toAdd;
         toAdd = 0;

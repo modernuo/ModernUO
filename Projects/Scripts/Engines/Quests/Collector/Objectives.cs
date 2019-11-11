@@ -146,7 +146,10 @@ namespace Server.Engines.Quests.Collector
 
       Region region = Region.Find(player.Location, player.Map);
 
-      return region != null && m_Theater switch
+      if (region == null)
+        return false;
+
+      return m_Theater switch
       {
         Theater.Britain => region.IsPartOf("Britain"),
         Theater.Nujelm => region.IsPartOf("Nujel'm"),

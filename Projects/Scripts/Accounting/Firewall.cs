@@ -177,7 +177,7 @@ namespace Server
 
       public IPFirewallEntry(IPAddress address) => m_Address = address;
 
-      bool IFirewallEntry.IsBlocked(IPAddress address) => m_Address.Equals(address);
+      public bool IsBlocked(IPAddress address) => m_Address.Equals(address);
 
       public override string ToString() => m_Address.ToString();
 
@@ -196,7 +196,7 @@ namespace Server
         return false;
       }
 
-      public override int GetHashCode() => m_Address?.GetHashCode() ?? 0;
+      public override int GetHashCode() => m_Address.GetHashCode();
     }
 
     public class CIDRFirewallEntry : IFirewallEntry
@@ -210,7 +210,7 @@ namespace Server
         m_CIDRLength = cidrLength;
       }
 
-      bool IFirewallEntry.IsBlocked(IPAddress address) => Utility.IPMatchCIDR(m_CIDRPrefix, address, m_CIDRLength);
+      public bool IsBlocked(IPAddress address) => Utility.IPMatchCIDR(m_CIDRPrefix, address, m_CIDRLength);
 
       public override string ToString() => $"{m_CIDRPrefix}/{m_CIDRLength}";
 

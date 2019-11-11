@@ -73,12 +73,12 @@ namespace Server.Accounting
     /// <summary>
     /// List of account comments. Type of contained objects is AccountComment.
     /// </summary>
-    public List<AccountComment> Comments => m_Comments ??= new List<AccountComment>();
+    public List<AccountComment> Comments => m_Comments ?? (m_Comments = new List<AccountComment>());
 
     /// <summary>
     /// List of account tags. Type of contained objects is AccountTag.
     /// </summary>
-    public List<AccountTag> Tags => m_Tags ??= new List<AccountTag>();
+    public List<AccountTag> Tags => m_Tags ?? (m_Tags = new List<AccountTag>());
 
     /// <summary>
     /// Account username. Case insensitive validation.
@@ -205,7 +205,7 @@ namespace Server.Accounting
     /// Gets the value of a specific flag in the Flags bitfield.
     /// </summary>
     /// <param name="index">The zero-based flag index.</param>
-    public bool GetFlag( int index ) => ( Flags & ( 1 << index ) ) != 0;
+    public bool GetFlag( int index ) => ( Flags & 1 << index ) != 0;
 
     /// <summary>
     /// Sets the value of a specific flag in the Flags bitfield.
@@ -626,9 +626,27 @@ namespace Server.Accounting
     /// <returns>String list. Value will never be null.</returns>
     public static string[] LoadAccessCheck( XmlElement node )
     {
+      string[] stringList;
       XmlElement accessCheck = node["accessCheck"];
 
-      var stringList = accessCheck?.GetElementsByTagName("ip").Cast<XmlElement>().Select(ip => Utility.GetText(ip, null)).Where(text => text != null).ToArray() ?? new string[0];
+      if ( accessCheck != null )
+      {
+        List<string> list = new List<string>();
+
+        foreach ( XmlElement ip in accessCheck.GetElementsByTagName( "ip" ) )
+        {
+          string text = Utility.GetText( ip, null );
+
+          if ( text != null )
+            list.Add( text );
+        }
+
+        stringList = list.ToArray();
+      }
+      else
+      {
+        stringList = new string[0];
+      }
 
       return stringList;
     }
@@ -780,7 +798,8 @@ namespace Server.Accounting
           {
             Mobile m = this[i];
 
-            hasAccess |= m?.AccessLevel >= level;
+            if ( m?.AccessLevel >= level )
+              hasAccess = true;
           }
 
         Console.WriteLine("{0} {1}", hasAccess ? "yes" : "no", m_AccessLevel);

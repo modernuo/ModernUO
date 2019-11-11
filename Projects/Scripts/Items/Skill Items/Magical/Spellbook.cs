@@ -284,7 +284,7 @@ namespace Server.Items
       if (!DesignContext.Check(from))
         return; // They are customizing
 
-      SpellbookType type = e.Type switch
+      var type = e.Type switch
       {
         1 => SpellbookType.Regular,
         2 => SpellbookType.Necromancer,
@@ -556,7 +556,7 @@ namespace Server.Items
     {
       spellID -= BookOffset;
 
-      return spellID >= 0 && spellID < BookCount && (m_Content & ((ulong)1 << spellID)) != 0;
+      return spellID >= 0 && spellID < BookCount && (m_Content & (ulong)1 << spellID) != 0;
     }
 
     public void DisplayTo(Mobile to)

@@ -474,6 +474,20 @@ namespace Server.Multis
 
     public virtual HousePlacementEntry GetAosEntry() => HousePlacementEntry.Find(this);
 
+    public virtual int GetAosMaxSecures()
+    {
+      HousePlacementEntry hpe = GetAosEntry();
+
+      if (hpe == null)
+        return 0;
+
+      return (int)(hpe.Storage * BonusStorageScalar);
+    }
+
+    public virtual int GetAosMaxLockdowns()
+    {
+      HousePlacementEntry hpe = GetAosEntry();
+
     public virtual int GetAosMaxSecures() => (int)(GetAosEntry()?.Storage ?? 0 * BonusStorageScalar);
 
     public virtual int GetAosMaxLockdowns() => (int)(GetAosEntry()?.Lockdowns ?? 0 * BonusStorageScalar);
@@ -522,6 +536,27 @@ namespace Server.Multis
     public virtual bool CanPlaceNewVendor() =>
       !IsAosRules || (!NewVendorSystem ? CheckAosLockdowns(10) :
         PlayerVendors.Count + VendorRentalContracts.Count < GetNewVendorSystemMaxVendors());
+
+    public virtual int GetNewVendorSystemMaxVendors()
+    {
+      HousePlacementEntry hpe = GetAosEntry();
+
+      if (hpe == null)
+        return 0;
+
+      return (int)(hpe.Vendors * BonusStorageScalar);
+    }
+
+    public virtual bool CanPlaceNewVendor()
+    {
+      if (!IsAosRules)
+        return true;
+
+      if (!NewVendorSystem)
+        return CheckAosLockdowns(10);
+
+      return PlayerVendors.Count + VendorRentalContracts.Count < GetNewVendorSystemMaxVendors();
+    }
 
     public virtual bool CanPlaceNewBarkeep() => PlayerBarkeepers.Count < MaximumBarkeepCount;
 
@@ -889,6 +924,15 @@ namespace Server.Multis
 
     public virtual bool CheckAosLockdowns(int need) => GetAosCurLockdowns() + need <= GetAosMaxLockdowns();
 
+      foreach (Mobile mobile in Region.GetMobiles())
+        if (IsInside(mobile))
+          list.Add(mobile);
+
+      return list;
+    }
+
+    public virtual bool CheckAosLockdowns(int need) => GetAosCurLockdowns() + need <= GetAosMaxLockdowns();
+
     public virtual bool CheckAosStorage(int need) =>
       GetAosCurSecures(out int fromSecures, out int fromVendors, out int fromLockdowns, out int fromMovingCrate) + need <=
       GetAosMaxSecures();
@@ -905,6 +949,14 @@ namespace Server.Multis
 
     public static bool CheckLockedDown(Item item) => FindHouseAt(item)?.HasLockedDownItem(item) == true;
 
+      if (!NewVendorSystem)
+        v += PlayerVendors.Count * 10;
+
+      return v;
+    }
+
+    public static bool CheckLockedDown(Item item) => FindHouseAt(item)?.HasLockedDownItem(item) == true;
+
     public static bool CheckSecured(Item item) => FindHouseAt(item)?.HasSecureItem(item) == true;
 
     public static bool CheckLockedDownOrSecured(Item item)
@@ -917,8 +969,15 @@ namespace Server.Multis
     {
       List<BaseHouse> list = new List<BaseHouse>();
 
-      if (m != null && m_Table.TryGetValue(m, out List<BaseHouse> exists))
-        list.AddRange(exists.Where(house => house?.Deleted == false && house.Owner == m));
+      if (m != null)
+        if (m_Table.TryGetValue(m, out List<BaseHouse> exists))
+          for (int i = 0; i < exists.Count; ++i)
+          {
+            BaseHouse house = exists[i];
+
+            if (house?.Deleted == false && house.Owner == m)
+              list.Add(house);
+          }
 
       return list;
     }
@@ -928,7 +987,7 @@ namespace Server.Multis
     {
       BaseHouse house = FindHouseAt(cont);
 
-      if (house == null || !house.IsAosRules)
+      if (house?.IsAosRules != true)
         return true;
 
       if (house.HasSecureItem(cont) && !house.CheckAosStorage(1 + item.TotalItems + plusItems))
@@ -1612,8 +1671,7 @@ namespace Server.Multis
 
     public virtual bool IsCombatRestricted(Mobile m)
     {
-      if (m == null || !m.Player || m.AccessLevel >= AccessLevel.GameMaster || !IsAosRules ||
-          m_Owner != null && m_Owner.AccessLevel >= AccessLevel.GameMaster)
+      if (m?.Player != true || m.AccessLevel >= AccessLevel.GameMaster || !IsAosRules || m_Owner != null && m_Owner.AccessLevel >= AccessLevel.GameMaster)
         return false;
 
       for (int i = 0; i < m.Aggressed.Count; ++i)
@@ -1630,8 +1688,15 @@ namespace Server.Multis
       return false;
     }
 
-    public bool HasSecureAccess(Mobile m, SecureLevel level) =>
-      m.AccessLevel >= AccessLevel.GameMaster || !IsCombatRestricted(m) && level switch
+    public bool HasSecureAccess(Mobile m, SecureLevel level)
+    {
+      if (m.AccessLevel >= AccessLevel.GameMaster)
+        return true;
+
+      if (IsCombatRestricted(m))
+        return false;
+
+      return level switch
       {
         SecureLevel.Owner => IsOwner(m),
         SecureLevel.CoOwners => IsCoOwner(m),
@@ -1640,6 +1705,7 @@ namespace Server.Multis
         SecureLevel.Guild => IsGuildMember(m),
         _ => false
       };
+    }
 
     public void ReleaseSecure(Mobile m, Item item)
     {
@@ -2514,11 +2580,8 @@ namespace Server.Multis
         uint keyValue = 0;
 
         for (int i = 0; keyValue == 0 && i < Doors.Count; ++i)
-        {
-          BaseDoor door = Doors[i];
-          if (door != null)
+          if (Doors[i] is BaseDoor door)
             keyValue = door.KeyValue;
-        }
 
         Key.RemoveKeys(m, keyValue);
       }
@@ -2530,25 +2593,19 @@ namespace Server.Multis
 
       if (Doors != null)
         for (int i = 0; i < Doors.Count; ++i)
-        {
-          BaseDoor door = Doors[i];
-          if (door != null)
+          if (Doors[i] is BaseDoor door)
             door.KeyValue = keyValue;
-        }
     }
 
     public void RemoveLocks()
     {
       if (Doors != null)
         for (int i = 0; i < Doors.Count; ++i)
-        {
-          BaseDoor door = Doors[i];
-          if (door != null)
+          if (Doors[i] is BaseDoor door)
           {
             door.KeyValue = 0;
             door.Locked = false;
           }
-        }
     }
 
     public virtual HouseDeed GetDeed() => null;
@@ -3192,7 +3249,7 @@ namespace Server.Multis
     {
       BaseHouse house = BaseHouse.FindHouseAt(item);
 
-      if (house == null || !house.IsOwner(from) || !house.IsAosRules)
+      if (house?.IsOwner(from) != true || !house.IsAosRules)
         return null;
 
       ISecurable sec = null;

@@ -379,14 +379,16 @@ namespace Server.Items
       UpdateContainerData();
     }
 
-    public override int GetTotal(TotalType type) =>
-      type switch
+    public override int GetTotal(TotalType type)
+    {
+      return type switch
       {
         TotalType.Gold => m_TotalGold,
         TotalType.Items => m_TotalItems,
         TotalType.Weight => m_TotalWeight,
         _ => base.GetTotal(type)
       };
+    }
 
     public override void UpdateTotal(Item sender, TotalType type, int delta)
     {
@@ -706,6 +708,15 @@ namespace Server.Items
         DisplayTo(from);
       else
         from.SendLocalizedMessage(500446); // That is too far away.
+    }
+
+    private class GroupComparer : IComparer<Item>
+    {
+      private CheckItemGroup m_Grouper;
+
+      public GroupComparer(CheckItemGroup grouper) => m_Grouper = grouper;
+
+      public int Compare(Item a, Item b) => m_Grouper(a, b);
     }
 
     [Flags]

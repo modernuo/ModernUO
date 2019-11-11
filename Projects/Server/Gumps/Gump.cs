@@ -76,6 +76,12 @@ namespace Server.Gumps
 
     public static int GetTypeID(Type type) => type?.FullName?.GetHashCode() ?? -1;
 
+    public void Invalidate()
+    {
+      //if ( m_Strings.Count > 0 )
+      //	m_Strings.Clear();
+    }
+
     public void AddPage(int page)
     {
       Add(new GumpPage(page));
@@ -251,49 +257,7 @@ namespace Server.Gumps
       stringsBuffer.Advance(stringLength);
     }
 
-    private void CompilePacked(IBufferWriter<byte> bufferWriter)
-    {
-      SpanWriter writer = new SpanWriter(bufferWriter.GetSpan(19));
-      writer.Write((byte)0xDD); // Packed ID
-      writer.Position += 2; // Dynamic Length
-
-      writer.Write(Serial);
-      writer.Write(TypeID);
-      writer.Write(X);
-      writer.Write(Y);
-
-      ArraySet<string> strings = new ArraySet<string>();
-      ArrayBufferWriter<byte> buffer = new ArrayBufferWriter<byte>();
-      WriteLayout(buffer, strings);
-
-      buffer.Write(stackalloc byte[]{0x00}); // Null Terminated
-
-      Span<byte> layoutSpan = stackalloc byte[GetMaxPackedSize(buffer.WrittenCount)];
-      int writtenBytes = WritePacked(buffer.WrittenSpan, layoutSpan);
-      layoutSpan = layoutSpan.Slice(0, writtenBytes);
-
-      buffer = new ArrayBufferWriter<byte>();
-      WriteStrings(buffer, strings);
-
-      Span<byte> stringsSpan = stackalloc byte[GetMaxPackedSize(buffer.WrittenCount)];
-      writtenBytes = WritePacked(buffer.WrittenSpan, stringsSpan);
-      stringsSpan = stringsSpan.Slice(0, writtenBytes);
-
-      writer.Position = 1;
-      writer.Write((ushort)(23 + layoutSpan.Length + stringsSpan.Length));
-
-      // Write the header
-      bufferWriter.Advance(19);
-
-      // Write the layout
-      bufferWriter.Write(layoutSpan);
-
-      // Write strings
-      writer = new SpanWriter(bufferWriter.GetSpan(4));
-      writer.Write(strings.Count);
-      bufferWriter.Advance(4);
-      bufferWriter.Write(stringsSpan);
-    }
+    public static byte[] StringToBuffer(string str) => Encoding.ASCII.GetBytes(str);
 
     private void CompileFast(IBufferWriter<byte> bufferWriter)
     {

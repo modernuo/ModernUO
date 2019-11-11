@@ -319,7 +319,7 @@ namespace Server.Mobiles
 
       AddItem(new FancyShirt(Utility.RandomBlueHue()));
 
-      Item skirt = Utility.Random(2) switch
+      var skirt = Utility.Random(2) switch
       {
         0 => (Item)new Skirt(),
         1 => new Kilt(),
@@ -332,7 +332,7 @@ namespace Server.Mobiles
 
       AddItem(new FeatheredHat(Utility.RandomGreenHue()));
 
-      Item boots = Utility.Random(2) switch
+      var boots = Utility.Random(2) switch
       {
         0 => (Item)new Boots(),
         1 => new ThighBoots(),

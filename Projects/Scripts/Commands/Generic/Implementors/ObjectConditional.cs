@@ -150,7 +150,7 @@ namespace Server.Commands.Generic
         prop.BindTo(objectType, PropertyAccess.Read);
         prop.CheckAccess(from);
 
-        ICondition condition = oper switch
+        var condition = oper switch
         {
           "=" => (ICondition)new ComparisonCondition(prop, inverse, ComparisonOperator.Equal, val),
           "==" => new ComparisonCondition(prop, inverse, ComparisonOperator.Equal, val),

@@ -250,7 +250,7 @@ namespace Server.Items
 
         if (info.ButtonID != (int)Buttons.Okay)
         {
-          sender.Mobile.SendLocalizedMessage(1072363); // The object was not engraved.
+          state.Mobile.SendLocalizedMessage(1072363); // The object was not engraved.
           return;
         }
 
@@ -262,13 +262,13 @@ namespace Server.Items
         if (string.IsNullOrEmpty(relay.Text))
         {
           m_Target.EngravedText = null;
-          sender.Mobile.SendLocalizedMessage(1072362); // You remove the engraving from the object.
+          state.Mobile.SendLocalizedMessage(1072362); // You remove the engraving from the object.
         }
         else
         {
           m_Target.EngravedText = Utility.FixHtml(relay.Text.Length > 64 ?
-              relay.Text.Substring(0, 64) : relay.Text);
-          sender.Mobile.SendLocalizedMessage(1072361); // You engraved the object.
+            relay.Text.Substring(0, 64) : relay.Text);
+          state.Mobile.SendLocalizedMessage(1072361); // You engraved the object.
           m_Target.InvalidateProperties();
           m_Tool.UsesRemaining -= 1;
           m_Tool.InvalidateProperties();

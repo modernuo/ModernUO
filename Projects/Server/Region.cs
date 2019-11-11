@@ -578,8 +578,7 @@ namespace Server
 
     public virtual bool OnDecay(Item item) => Parent?.OnDecay(item) != false;
 
-    public virtual bool AllowHarmful(Mobile from, Mobile target) => Parent?.AllowHarmful(from, target) ??
-      Mobile.AllowHarmfulHandler?.Invoke(from, target) ?? true;
+    public virtual bool AllowHarmful(Mobile from, Mobile target) => Parent?.AllowHarmful(from, target) ?? Mobile.AllowHarmfulHandler?.Invoke(from, target) ?? true;
 
     public virtual void OnCriminalAction(Mobile m, bool message)
     {
@@ -589,7 +588,8 @@ namespace Server
         m.SendLocalizedMessage(1005040); // You've committed a criminal act!!
     }
 
-    public virtual bool AllowBeneficial(Mobile from, Mobile target) => Parent?.AllowBeneficial(from, target) ??
+    public virtual bool AllowBeneficial(Mobile from, Mobile target) =>
+      Parent?.AllowBeneficial(from, target) ??
       Mobile.AllowBeneficialHandler?.Invoke(from, target) ?? true;
 
     public virtual void OnBeneficialAction(Mobile helper, Mobile target)

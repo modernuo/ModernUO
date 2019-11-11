@@ -548,8 +548,8 @@ namespace Server.Items
       Skill atkSkill = attacker.Skills[atkWeapon?.Skill ?? SkillName.Wrestling];
       // Skill defSkill = defender.Skills[defWeapon.Skill];
 
-      double atkValue = atkWeapon?.GetAttackSkillValue(attacker, defender) ?? 0;
-      double defValue = defWeapon?.GetDefendSkillValue(attacker, defender) ?? 0;
+      double atkValue = atkWeapon?.GetAttackSkillValue(attacker, defender) ?? 0.0;
+      double defValue = defWeapon?.GetDefendSkillValue(attacker, defender) ?? 0.0;
 
       double ourValue, theirValue;
 
@@ -1232,7 +1232,7 @@ namespace Server.Items
         int lifeLeech = 0;
         int stamLeech = 0;
         int manaLeech = 0;
-        int wraithLeech = 0;
+        int wraithLeech;
 
         if ((int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLeechHits) * propertyBonus) >
             Utility.Random(100))
@@ -1439,8 +1439,8 @@ namespace Server.Items
     public virtual CheckSlayerResult CheckSlayers(Mobile attacker, Mobile defender)
     {
       BaseWeapon atkWeapon = attacker.Weapon as BaseWeapon;
-      SlayerEntry atkSlayer = SlayerGroup.GetEntryByName(atkWeapon.Slayer);
-      SlayerEntry atkSlayer2 = SlayerGroup.GetEntryByName(atkWeapon.Slayer2);
+      SlayerEntry atkSlayer = SlayerGroup.GetEntryByName(atkWeapon?.Slayer ?? SlayerName.None);
+      SlayerEntry atkSlayer2 = SlayerGroup.GetEntryByName(atkWeapon?.Slayer2 ?? SlayerName.None);
 
       if (atkWeapon is ButchersWarCleaver && TalismanSlayer.Slays(TalismanSlayerName.Bovine, defender))
         return CheckSlayerResult.Slayer;
@@ -1932,7 +1932,7 @@ namespace Server.Items
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
-      int oreType = m_Resource switch
+      var oreType = m_Resource switch
       {
         CraftResource.DullCopper => 1053108,
         CraftResource.ShadowIron => 1053107,

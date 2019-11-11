@@ -46,7 +46,8 @@ namespace Server.Items
       MLQuestContext context = MLQuestSystem.GetContext(pm);
 
       if (context != null)
-        foreach (var objective in context.QuestInstances.SelectMany(instance => instance.Objectives))
+        foreach (MLQuestInstance instance in context.QuestInstances)
+        foreach (BaseObjectiveInstance objective in instance.Objectives)
           if (!objective.Expired && objective is GainSkillObjectiveInstance objectiveInstance &&
               objectiveInstance.Handles(Skill))
           {

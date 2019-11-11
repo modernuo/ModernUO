@@ -51,7 +51,7 @@ namespace Server.Gumps
 
     public string InitialText { get; set; }
 
-    public override string Compile(ArraySet<string> strings) => $"{{ textentry {X} {Y} {Width} {Height} {Hue} {EntryID} {strings.Add(InitialText)} }}";
+    public override string Compile(NetState ns) => $"{{ textentry {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {m_EntryID} {Parent.Intern(m_InitialText)} }}";
 
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer(" { textentry ");
 

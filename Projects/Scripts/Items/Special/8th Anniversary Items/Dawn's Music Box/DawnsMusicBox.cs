@@ -284,7 +284,7 @@ namespace Server.Items
 
     public static MusicName RandomTrack(DawnsMusicRarity rarity)
     {
-      MusicName[] list = rarity switch
+      var list = rarity switch
       {
         DawnsMusicRarity.Common => m_CommonTracks,
         DawnsMusicRarity.Uncommon => m_UncommonTracks,

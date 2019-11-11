@@ -38,7 +38,7 @@ namespace Server.Engines.Help
       else
       {
         TextRelay entry = info.GetTextEntry(0);
-        string text = entry == null ? "" : entry.Text.Trim();
+        string text = entry?.Text.Trim() ?? "";
 
         if (text.Length == 0)
         {

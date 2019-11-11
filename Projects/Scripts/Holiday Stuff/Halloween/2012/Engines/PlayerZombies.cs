@@ -20,7 +20,7 @@ namespace Server.Engines.Events
 
     private static List<PlayerMobile> m_DeathQueue;
 
-    private static readonly Rectangle2D[] m_Cemetaries = {
+    private static Rectangle2D[] m_Cemetaries = {
       new Rectangle2D(1272,3712,30,20), // Jhelom
       new Rectangle2D(1337,1444,48,52), // Britain
       new Rectangle2D(2424,1098,20,28), // Trinsic
@@ -211,16 +211,14 @@ namespace Server.Engines.Events
 
     public override void GenerateLoot()
     {
-      switch ( Utility.Random( 10 ) )
+      switch( Utility.Random( 10 ) )
       {
         case 0: PackItem( new LeftArm() ); break;
         case 1: PackItem( new RightArm() ); break;
         case 2: PackItem( new Torso() ); break;
         case 3: PackItem( new Bone() ); break;
         case 4: PackItem( new RibCage() ); break;
-        case 5:
-          if (m_DeadPlayer?.Deleted == false)
-            PackItem( new PlayerBones( m_DeadPlayer.Name ) );
+        case 5: if (m_DeadPlayer?.Deleted == false) PackItem( new PlayerBones( m_DeadPlayer.Name ) );
           break;
       }
 
@@ -238,8 +236,10 @@ namespace Server.Engines.Events
 
     public override void OnDelete()
     {
-      if (m_DeadPlayer?.Deleted == false && HalloweenHauntings.ReAnimated?.ContainsKey(m_DeadPlayer) == true)
-        HalloweenHauntings.ReAnimated.Remove(m_DeadPlayer);
+      if ( HalloweenHauntings.ReAnimated != null )
+        if (m_DeadPlayer?.Deleted == false)
+          if ( HalloweenHauntings.ReAnimated.ContainsKey( m_DeadPlayer ) )
+            HalloweenHauntings.ReAnimated.Remove( m_DeadPlayer );
     }
 
     public override void Serialize( GenericWriter writer )

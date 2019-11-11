@@ -246,9 +246,18 @@ namespace Server.Mobiles
             if (amount > item.Amount)
               amount = item.Amount;
 
-            if (info.Where(ssi => ssi.IsSellable(item)).Any(ssi => ssi.IsResellable(item)))
-            {
-              Item buyItem = amount >= item.Amount ? item : LiftItemDupe(item, item.Amount - amount) ?? item;
+            foreach (IShopSellInfo ssi in info)
+              if (ssi.IsSellable(item))
+                if (ssi.IsResellable(item))
+                {
+                  Item buyItem;
+                  if (amount >= item.Amount)
+                    buyItem = item;
+                  else
+                    buyItem = LiftItemDupe(item, item.Amount - amount) ?? item;
+
+                  if (cont?.TryDropItem(buyer, buyItem, false) != true)
+                    buyItem.MoveToWorld(buyer.Location, buyer.Map);
 
               if (cont?.TryDropItem(buyer, buyItem, false) != true)
                 buyItem.MoveToWorld(buyer.Location, buyer.Map);
@@ -483,8 +492,9 @@ namespace Server.Mobiles
       }
     }
 
-    public virtual int GetRandomHue() =>
-      Utility.Random(5) switch
+    public virtual int GetRandomHue()
+    {
+      return Utility.Random(5) switch
       {
         0 => Utility.RandomBlueHue(),
         1 => Utility.RandomGreenHue(),
@@ -493,6 +503,14 @@ namespace Server.Mobiles
         4 => Utility.RandomNeutralHue(),
         _ => Utility.RandomBlueHue()
       };
+    }
+
+    public virtual int GetShoeHue() => 0.1 > Utility.RandomDouble() ? 0 : Utility.RandomNeutralHue();
+
+    public virtual void CheckMorph()
+    {
+      if (CheckGargoyle())
+        return;
 
     public virtual int GetShoeHue() => 0.1 > Utility.RandomDouble() ? 0 : Utility.RandomNeutralHue();
 
@@ -552,13 +570,15 @@ namespace Server.Mobiles
       LoadSBInfo();
     }
 
-    public virtual int GetRandomNecromancerHue() =>
-      Utility.Random(20) switch
+    public virtual int GetRandomNecromancerHue()
+    {
+      return Utility.Random(20) switch
       {
         0 => 0,
         1 => 0x4E9,
         _ => Utility.RandomList(0x485, 0x497)
       };
+    }
 
     public virtual void TurnToNecromancer()
     {
@@ -972,14 +992,14 @@ namespace Server.Mobiles
         {
           item.Amount = amount;
 
-          if (cont == null || !cont.TryDropItem(buyer, item, false))
+          if (cont?.TryDropItem(buyer, item, false) != true)
             item.MoveToWorld(buyer.Location, buyer.Map);
         }
         else
         {
           item.Amount = 1;
 
-          if (cont == null || !cont.TryDropItem(buyer, item, false))
+          if (cont?.TryDropItem(buyer, item, false) != true)
             item.MoveToWorld(buyer.Location, buyer.Map);
 
           for (int i = 1; i < amount; i++)
@@ -987,7 +1007,7 @@ namespace Server.Mobiles
             {
               newItem.Amount = 1;
 
-              if (cont == null || !cont.TryDropItem(buyer, newItem, false))
+              if (cont?.TryDropItem(buyer, newItem, false) != true)
                 newItem.MoveToWorld(buyer.Location, buyer.Map);
             }
         }
@@ -1042,7 +1062,7 @@ namespace Server.Mobiles
 
           int maxAmount = gbi.MaxAmount;
 
-          int doubled = maxAmount switch
+          var doubled = maxAmount switch
           {
             40 => 1,
             80 => 2,
@@ -1099,7 +1119,7 @@ namespace Server.Mobiles
                 {
                   GenericBuyInfo gbi = buyInfo[buyInfoIndex];
 
-                  int amount = doubled switch
+                  var amount = doubled switch
                   {
                     1 => 40,
                     2 => 80,

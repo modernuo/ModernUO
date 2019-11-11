@@ -134,7 +134,7 @@ namespace Server.Misc
 
             string title = m.GuildTitle;
 
-            title = title != null ? title.Trim() : string.Empty;
+            title = title?.Trim() ?? string.Empty;
 
             if (title.Length > 0)
             {

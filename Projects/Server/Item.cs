@@ -1341,7 +1341,7 @@ namespace Server
 
     private CompactInfo LookupCompactInfo() => m_CompactInfo;
 
-    private CompactInfo AcquireCompactInfo() => m_CompactInfo ??= new CompactInfo();
+    private CompactInfo AcquireCompactInfo() => m_CompactInfo ?? (m_CompactInfo = new CompactInfo());
 
     private void ReleaseCompactInfo()
     {
@@ -1449,26 +1449,26 @@ namespace Server
     {
     }
 
-    /// <summary>
-    ///   Overridable. Method checked to see if the elemental resistances of this Item conflict with another Item on the
-    ///   <see cref="Mobile" />.
-    /// </summary>
-    /// <returns>
-    ///   <list type="table">
-    ///     <item>
-    ///       <term>True</term>
-    ///       <description>
-    ///         There is a confliction. The elemental resistance bonuses of this Item should not be applied to the
-    ///         <see cref="Mobile" />
-    ///       </description>
-    ///     </item>
-    ///     <item>
-    ///       <term>False</term>
-    ///       <description>There is no confliction. The bonuses should be applied.</description>
-    ///     </item>
-    ///   </list>
-    /// </returns>
-    public virtual bool CheckPropertyConfliction(Mobile m) => false;
+	  /// <summary>
+	  ///   Overridable. Method checked to see if the elemental resistances of this Item conflict with another Item on the
+	  ///   <see cref="Mobile" />.
+	  /// </summary>
+	  /// <returns>
+	  ///   <list type="table">
+	  ///     <item>
+	  ///       <term>True</term>
+	  ///       <description>
+	  ///         There is a confliction. The elemental resistance bonuses of this Item should not be applied to the
+	  ///         <see cref="Mobile" />
+	  ///       </description>
+	  ///     </item>
+	  ///     <item>
+	  ///       <term>False</term>
+	  ///       <description>There is no confliction. The bonuses should be applied.</description>
+	  ///     </item>
+	  ///   </list>
+	  /// </returns>
+	  public virtual bool CheckPropertyConfliction(Mobile m) => false;
 
     /// <summary>
     ///   Overridable. Sends the <see cref="PropertyList">object property list</see> to <paramref name="from" />.
@@ -1709,24 +1709,24 @@ namespace Server
       }
     }
 
-    /// <summary>
-    ///   Overridable. Method checked to see if this item may be equipped while casting a spell. By default, this returns false. It
-    ///   is overridden on spellbook and spell channeling weapons or shields.
-    /// </summary>
-    /// <returns>True if it may, false if not.</returns>
-    /// <example>
-    ///   <code>
-    /// 	public override bool AllowEquippedCast( Mobile from )
-    /// 	{
-    /// 		if ( from.Int &gt;= 100 )
-    /// 			return true;
-    ///
-    /// 		return base.AllowEquippedCast( from );
-    ///  }</code>
-    ///   When placed in an Item script, the item may be cast when equipped if the <paramref name="from" /> has 100 or more
-    ///   intelligence. Otherwise, it will drop to their backpack.
-    /// </example>
-    public virtual bool AllowEquippedCast(Mobile from) => false;
+	  /// <summary>
+	  ///   Overridable. Method checked to see if this item may be equipped while casting a spell. By default, this returns false. It
+	  ///   is overridden on spellbook and spell channeling weapons or shields.
+	  /// </summary>
+	  /// <returns>True if it may, false if not.</returns>
+	  /// <example>
+	  ///   <code>
+	  /// 	public override bool AllowEquippedCast( Mobile from )
+	  /// 	{
+	  /// 		if ( from.Int &gt;= 100 )
+	  /// 			return true;
+	  ///
+	  /// 		return base.AllowEquippedCast( from );
+	  ///  }</code>
+	  ///   When placed in an Item script, the item may be cast when equipped if the <paramref name="from" /> has 100 or more
+	  ///   intelligence. Otherwise, it will drop to their backpack.
+	  /// </example>
+	  public virtual bool AllowEquippedCast(Mobile from) => false;
 
     public virtual bool CheckConflictingLayer(Mobile m, Item item, Layer layer) => m_Layer == layer;
 
@@ -1998,6 +1998,45 @@ namespace Server
 
     public IPooledEnumerable<NetState> GetClientsInRange(int range) =>
       m_Map?.GetClientsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range) ?? Map.NullEnumerable<NetState>.Instance;
+
+    public IPooledEnumerable<Item> GetItemsInRange(int range)
+    {
+      Map map = m_Map;
+
+      if (map == null)
+        return Map.NullEnumerable<Item>.Instance;
+
+      if (m_Parent == null)
+        return map.GetItemsInRange(m_Location, range);
+
+      return map.GetItemsInRange(GetWorldLocation(), range);
+    }
+
+    public IPooledEnumerable<Mobile> GetMobilesInRange(int range)
+    {
+      Map map = m_Map;
+
+      if (map == null)
+        return Map.NullEnumerable<Mobile>.Instance;
+
+      if (m_Parent == null)
+        return map.GetMobilesInRange(m_Location, range);
+
+      return map.GetMobilesInRange(GetWorldLocation(), range);
+    }
+
+    public IPooledEnumerable<NetState> GetClientsInRange(int range)
+    {
+      Map map = m_Map;
+
+      if (map == null)
+        return Map.NullEnumerable<NetState>.Instance;
+
+      if (m_Parent == null)
+        return map.GetClientsInRange(m_Location, range);
+
+      return map.GetClientsInRange(GetWorldLocation(), range);
+    }
 
     public bool GetTempFlag(int flag) => ((LookupCompactInfo()?.m_TempFlags ?? 0) & flag) != 0;
 
@@ -2907,7 +2946,7 @@ namespace Server
 
         int bitCount = zEnd - zStart;
 
-        m_OpenSlots &= ~(((1 << bitCount) - 1) << zStart);
+        m_OpenSlots &= ~((1 << bitCount) - 1 << zStart);
       }
 
       for (int i = 0; i < items.Count; ++i)
@@ -2935,7 +2974,7 @@ namespace Server
 
         int bitCount = zEnd - zStart;
 
-        m_OpenSlots &= ~(((1 << bitCount) - 1) << zStart);
+        m_OpenSlots &= ~((1 << bitCount) - 1 << zStart);
       }
 
       int height = ItemData.Height;
@@ -2954,7 +2993,7 @@ namespace Server
         if (i + height > 20)
           match >>= 1;
 
-        okay = ((m_OpenSlots >> i) & match) == match;
+        okay = (m_OpenSlots >> i & match) == match;
 
         if (okay)
         {
@@ -3066,6 +3105,14 @@ namespace Server
     }
 
     public Point3D GetWorldTop() => RootParent?.Location ?? new Point3D(m_Location.m_X, m_Location.m_Y, m_Location.m_Z + ItemData.CalcHeight);
+
+    public void SendLocalizedMessageTo(Mobile to, int number)
+    {
+      if (Deleted || !to.CanSee(this))
+        return;
+
+      to.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", ""));
+    }
 
     public void SendLocalizedMessageTo(Mobile to, int number, string args = "")
     {
@@ -3286,8 +3333,10 @@ namespace Server
             AffixType.Append, $" : {m_Amount}");
       }
       else
-        Packets.SendUnicodeMessage(ns, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "",
-          Name + (m_Amount > 1 ? $" : {m_Amount}" : ""));
+      {
+        ns.Send(new UnicodeMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "",
+          Name + (m_Amount > 1 ? $" : {m_Amount}" : "")));
+      }
     }
 
     public virtual void ScissorHelper(Mobile from, Item newItem, int amountPerOldItem)
@@ -3321,7 +3370,7 @@ namespace Server
       if (ScissorCopyLootType)
         newItem.LootType = type;
 
-      if (!(thisParent is Container) || !((Container)thisParent).TryDropItem(from, newItem, false))
+      if ((thisParent as Container)?.TryDropItem(from, newItem, false) != true)
         newItem.MoveToWorld(worldLoc, thisMap);
     }
 
@@ -3362,6 +3411,14 @@ namespace Server
     }
 
     public virtual bool CheckNewbied() => m_LootType == LootType.Newbied;
+
+    public virtual bool IsStandardLoot()
+    {
+      if (Mobile.InsuranceEnabled && Insured)
+        return false;
+
+      if (BlessedFor != null)
+        return false;
 
     public virtual bool IsStandardLoot() =>
       !(Mobile.InsuranceEnabled && Insured) && BlessedFor == null && m_LootType == LootType.Regular;

@@ -130,7 +130,7 @@ namespace Server.Engines.ConPVP
       {
         Mobile m = ns.Mobile;
 
-        if (m == null || !m.Player || !m.Alive)
+        if (m?.Player != true || !m.Alive)
           continue;
 
         BRTeamInfo useTeam = m_Game.GetTeamInfo(m);
@@ -208,7 +208,7 @@ namespace Server.Engines.ConPVP
 
     private bool CheckCatch(Mobile m, Point3D myLoc)
     {
-      if (m == null || !m.Alive || !m.Player || m_Game == null)
+      if (m?.Alive != true || !m.Player || m_Game == null)
         return false;
 
       if (m_Game.GetTeamInfo(m) == null)
@@ -237,7 +237,7 @@ namespace Server.Engines.ConPVP
       m_Flying = false;
       Visible = true;
 
-      if (m == null || !m.Alive || !m.Player || m_Game == null)
+      if (m?.Alive != true || !m.Player || m_Game == null)
         return;
 
       BRTeamInfo useTeam = m_Game.GetTeamInfo(m);
@@ -945,8 +945,12 @@ namespace Server.Engines.ConPVP
     private const int LabelColor32 = 0xFFFFFF;
     private const int BlackColor32 = 0x000000;
 
+    //    private BRGame m_Game;
+
     public BRBoardGump(Mobile mob, BRGame game, BRTeamInfo section = null) : base(60, 60)
     {
+      //      m_Game = game;
+
       BRTeamInfo ourTeam = game.GetTeamInfo(mob);
 
       List<BRTeamInfo> entries = new List<BRTeamInfo>();
@@ -1464,7 +1468,7 @@ namespace Server.Engines.ConPVP
       if (pm.DuelContext == null || pm.DuelContext != m_Context)
         return -1;
 
-      if (pm.DuelPlayer == null || pm.DuelPlayer.Eliminated)
+      if (pm.DuelPlayer?.Eliminated != false)
         return -1;
 
       return pm.DuelContext.Participants.IndexOf(pm.DuelPlayer.Participant);

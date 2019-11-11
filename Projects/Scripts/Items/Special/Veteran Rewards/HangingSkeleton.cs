@@ -48,7 +48,7 @@ namespace Server.Items
 
     public bool CouldFit(IPoint3D p, Map map)
     {
-      if (map == null || !map.CanFit(p.X, p.Y, p.Z, ItemData.Height))
+      if (map?.CanFit(p.X, p.Y, p.Z, ItemData.Height) != true)
         return false;
 
       if (FacingSouth)
@@ -196,13 +196,15 @@ namespace Server.Items
       m_IsRewardItem = reader.ReadBool();
     }
 
-    public static int GetWestItemID(int south) =>
-      south switch
+    public static int GetWestItemID(int south)
+    {
+      return south switch
       {
         0x1B1E => 0x1B1D,
         0x1B7F => 0x1B7C,
         _ => (south + 1)
       };
+    }
 
     private class InternalGump : Gump
     {

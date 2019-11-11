@@ -1118,7 +1118,7 @@ namespace Server.Mobiles
 
           if (Core.AOS && holding is SkinningKnife)
           {
-            Item leather = HideType switch
+            var leather = HideType switch
             {
               HideType.Regular => (Item)new Leather(hides),
               HideType.Spined => new SpinedLeather(hides),
@@ -1760,13 +1760,18 @@ namespace Server.Mobiles
      *
      */
 
-    public virtual double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly) =>
-      bPlayerOnly && !m.Player ? double.MinValue : acqType switch
+    public virtual double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly)
+    {
+      if (bPlayerOnly && !m.Player)
+        return double.MinValue;
+
+      return acqType switch
       {
         FightMode.Strongest => (m.Skills.Tactics.Value + m.Str), //returns strongest mobile
         FightMode.Weakest => -m.Hits, // returns weakest mobile
         _ => -GetDistanceToSqrt(m)
       };
+    }
 
     // Turn, - for left, + for right
     // Basic for now, needs work
@@ -1774,14 +1779,14 @@ namespace Server.Mobiles
     {
       int v = (int)Direction;
 
-      Direction = (Direction)((((v & 0x7) + iTurnSteps) & 0x7) | (v & 0x80));
+      Direction = (Direction)((v & 0x7) + iTurnSteps & 0x7 | v & 0x80);
     }
 
     public virtual void TurnInternal(int iTurnSteps)
     {
       int v = (int)Direction;
 
-      SetDirection((Direction)((((v & 0x7) + iTurnSteps) & 0x7) | (v & 0x80)));
+      SetDirection((Direction)((v & 0x7) + iTurnSteps & 0x7 | v & 0x80));
     }
 
     public bool IsHurt() => Hits != HitsMax;
@@ -1859,7 +1864,7 @@ namespace Server.Mobiles
 
       if (Region.IsPartOf<SafeZone>() && m is PlayerMobile pm &&
           (pm.DuelContext?.Started != true || pm.DuelContext.Finished ||
-          pm.DuelPlayer?.Eliminated != false))
+           pm.DuelPlayer?.Eliminated != false))
         return true;
 
       #endregion
@@ -1931,9 +1936,9 @@ namespace Server.Mobiles
 
       if (Controlled || Summoned)
       {
-        if (m_ControlMaster != null && m_ControlMaster.Player)
+        if (m_ControlMaster?.Player == true)
           m_ControlMaster.CriminalAction(false);
-        else if (m_SummonMaster != null && m_SummonMaster.Player)
+        else if (m_SummonMaster?.Player == true)
           m_SummonMaster.CriminalAction(false);
       }
     }
@@ -1963,9 +1968,9 @@ namespace Server.Mobiles
 
         if (ai.Defender == target)
         {
-          if (m_ControlMaster != null && m_ControlMaster.Player && m_ControlMaster.CanBeHarmful(target, false))
+          if (m_ControlMaster?.Player == true && m_ControlMaster.CanBeHarmful(target, false))
             m_ControlMaster.DoHarmful(target, true);
-          else if (m_SummonMaster != null && m_SummonMaster.Player && m_SummonMaster.CanBeHarmful(target, false))
+          else if (m_SummonMaster?.Player == true && m_SummonMaster.CanBeHarmful(target, false))
             m_SummonMaster.DoHarmful(target, true);
 
           return;
@@ -2756,7 +2761,7 @@ namespace Server.Mobiles
     {
       base.OnRegionChange(Old, New);
 
-      if (Controlled && Spawner is SpawnEntry se && !se.UnlinkOnTaming && (New == null || !New.AcceptsSpawnsFrom(se.Region)))
+      if (Controlled && Spawner is SpawnEntry se && !se.UnlinkOnTaming && New?.AcceptsSpawnsFrom(se.Region) != true)
       {
         Spawner.Remove(this);
         Spawner = null;
@@ -3329,7 +3334,16 @@ namespace Server.Mobiles
     private DeleteTimer m_DeleteTimer;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan DeleteTimeLeft => m_DeleteTimer?.Running == true ? m_DeleteTimer.Next - DateTime.UtcNow : TimeSpan.Zero;
+    public TimeSpan DeleteTimeLeft
+    {
+      get
+      {
+        if (m_DeleteTimer?.Running == true)
+          return m_DeleteTimer.Next - DateTime.UtcNow;
+
+        return TimeSpan.Zero;
+      }
+    }
 
     private class DeleteTimer : Timer
     {

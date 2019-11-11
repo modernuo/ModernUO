@@ -28,21 +28,29 @@ namespace Server.Items
     {
       get => ItemID switch
       {
-        4360 => SpikeTrapType.WestWall,
-        4361 => SpikeTrapType.WestWall,
-        4366 => SpikeTrapType.WestWall,
-        4379 => SpikeTrapType.NorthWall,
-        4380 => SpikeTrapType.NorthWall,
-        4385 => SpikeTrapType.NorthWall,
-        4506 => SpikeTrapType.WestFloor,
-        4507 => SpikeTrapType.WestFloor,
-        4511 => SpikeTrapType.WestFloor,
-        4512 => SpikeTrapType.NorthFloor,
-        4513 => SpikeTrapType.NorthFloor,
-        4517 => SpikeTrapType.NorthFloor,
-        _ => SpikeTrapType.WestWall
-      };
-      set => ItemID = Extended ? GetExtendedID(value) : GetBaseID(value);
+        return ItemID switch
+        {
+          4360 => SpikeTrapType.WestWall,
+          4361 => SpikeTrapType.WestWall,
+          4366 => SpikeTrapType.WestWall,
+          4379 => SpikeTrapType.NorthWall,
+          4380 => SpikeTrapType.NorthWall,
+          4385 => SpikeTrapType.NorthWall,
+          4506 => SpikeTrapType.WestFloor,
+          4507 => SpikeTrapType.WestFloor,
+          4511 => SpikeTrapType.WestFloor,
+          4512 => SpikeTrapType.NorthFloor,
+          4513 => SpikeTrapType.NorthFloor,
+          4517 => SpikeTrapType.NorthFloor,
+          _ => SpikeTrapType.WestWall
+        };
+      }
+      set
+      {
+        bool extended = Extended;
+
+        ItemID = extended ? GetExtendedID(value) : GetBaseID(value);
+      }
     }
 
     public bool Extended
@@ -56,8 +64,9 @@ namespace Server.Items
     public override int PassiveTriggerRange => 0;
     public override TimeSpan ResetDelay => TimeSpan.FromSeconds(6.0);
 
-    public static int GetBaseID(SpikeTrapType type) =>
-      type switch
+    public static int GetBaseID(SpikeTrapType type)
+    {
+      return type switch
       {
         SpikeTrapType.WestWall => 4360,
         SpikeTrapType.NorthWall => 4379,
@@ -65,11 +74,13 @@ namespace Server.Items
         SpikeTrapType.NorthFloor => 4512,
         _ => 0
       };
+    }
 
     public static int GetExtendedID(SpikeTrapType type) => GetBaseID(type) + GetExtendedOffset(type);
 
-    public static int GetExtendedOffset(SpikeTrapType type) =>
-      type switch
+    public static int GetExtendedOffset(SpikeTrapType type)
+    {
+      return type switch
       {
         SpikeTrapType.WestWall => 6,
         SpikeTrapType.NorthWall => 6,
@@ -77,6 +88,7 @@ namespace Server.Items
         SpikeTrapType.NorthFloor => 5,
         _ => 0
       };
+    }
 
     public override void OnTrigger(Mobile from)
     {

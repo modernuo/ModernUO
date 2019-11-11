@@ -87,14 +87,16 @@ namespace Server.Engines.Plants
 
     public static PlantHueInfo GetInfo(PlantHue plantHue) => m_Table.TryGetValue(plantHue, out PlantHueInfo info) ? info : m_Table[PlantHue.Plain];
 
-    public static PlantHue RandomFirstGeneration() =>
-      Utility.Random(4) switch
+    public static PlantHue RandomFirstGeneration()
+    {
+      return Utility.Random(4) switch
       {
         0 => PlantHue.Plain,
         1 => PlantHue.Red,
         2 => PlantHue.Blue,
         _ => PlantHue.Yellow
       };
+    }
 
     public static bool CanReproduce(PlantHue plantHue) => (plantHue & PlantHue.Reproduces) != PlantHue.None;
 

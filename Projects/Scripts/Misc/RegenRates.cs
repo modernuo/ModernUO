@@ -197,14 +197,18 @@ namespace Server.Misc
       return rating / 4;
     }
 
-    private static double GetArmorMeditationValue(BaseArmor ar) =>
-      ar == null || ar.ArmorAttributes.MageArmor != 0 || ar.Attributes.SpellChanneling != 0 ? 0.0
-        : ar.MeditationAllowance switch
-        {
-          ArmorMeditationAllowance.None => ar.BaseArmorRatingScaled,
-          ArmorMeditationAllowance.Half => (ar.BaseArmorRatingScaled / 2.0),
-          ArmorMeditationAllowance.All => 0.0,
-          _ => ar.BaseArmorRatingScaled
-        };
+    private static double GetArmorMeditationValue(BaseArmor ar)
+    {
+      if (ar == null || ar.ArmorAttributes.MageArmor != 0 || ar.Attributes.SpellChanneling != 0)
+        return 0.0;
+
+      return ar.MeditationAllowance switch
+      {
+        ArmorMeditationAllowance.None => ar.BaseArmorRatingScaled,
+        ArmorMeditationAllowance.Half => (ar.BaseArmorRatingScaled / 2.0),
+        ArmorMeditationAllowance.All => 0.0,
+        _ => ar.BaseArmorRatingScaled
+      };
+    }
   }
 }

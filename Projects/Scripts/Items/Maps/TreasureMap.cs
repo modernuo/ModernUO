@@ -353,8 +353,9 @@ namespace Server.Items
       return false;
     }
 
-    private double GetMinSkillLevel() =>
-      m_Level switch
+    private double GetMinSkillLevel()
+    {
+      return m_Level switch
       {
         1 => -3.0,
         2 => 41.0,
@@ -364,6 +365,7 @@ namespace Server.Items
         6 => 70.0,
         _ => 0.0
       };
+    }
 
     private bool HasRequiredSkill(Mobile from) => from.Skills.Cartography.Value >= GetMinSkillLevel();
 
@@ -619,7 +621,7 @@ namespace Server.Items
             {
               Direction dir = Utility.GetDirection(targ3D, chest3D0);
 
-              string sDir = dir switch
+              var sDir = dir switch
               {
                 Direction.North => "north",
                 Direction.Right => "northeast",
@@ -631,7 +633,7 @@ namespace Server.Items
                 _ => "northwest"
               };
 
-              from.SendLocalizedMessage(1080040, sDir, 0x44); // Try looking for the treasure chest more ~1_NAME~.
+              from.SendAsciiMessage(0x44, "Try looking for the treasure chest more to the {0}.", sDir);
             }
           }
         }
@@ -768,7 +770,7 @@ namespace Server.Items
           m_TreasureMap.Completed = true;
           m_TreasureMap.CompletedBy = m_From;
 
-          int spawns = m_TreasureMap.Level switch
+          var spawns = m_TreasureMap.Level switch
           {
             0 => 3,
             1 => 0,

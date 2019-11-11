@@ -100,22 +100,25 @@ namespace Server.Gumps
 
     public GumpHtmlLocalizedType Type { get; set; }
 
-    public override string Compile(ArraySet<string> strings) =>
-      Type switch
+          Parent?.Invalidate();
+        }
+      }
+    }
+
+    public override string Compile(NetState ns)
+    {
+      return m_Type switch
       {
         GumpHtmlLocalizedType.Plain =>
-        $"{{ xmfhtmlgump {X} {Y} {Width} {Height} {Number} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} }}",
+        $"{{ xmfhtmlgump {m_X} {m_Y} {m_Width} {m_Height} {m_Number} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} }}",
         GumpHtmlLocalizedType.Color =>
-        $"{{ xmfhtmlgumpcolor {X} {Y} {Width} {Height} {Number} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} {Color} }}",
+        $"{{ xmfhtmlgumpcolor {m_X} {m_Y} {m_Width} {m_Height} {m_Number} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} {m_Color} }}",
         _ =>
-        $"{{ xmfhtmltok {X} {Y} {Width} {Height} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} {Color} {Number} @{Args}@ }}"
+        $"{{ xmfhtmltok {m_X} {m_Y} {m_Width} {m_Height} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} {m_Color} {m_Number} @{m_Args}@ }}"
       };
+    }
 
-    private static readonly byte[] m_LayoutNamePlain = Gump.StringToBuffer("{ xmfhtmlgump ");
-    private static readonly byte[] m_LayoutNameColor = Gump.StringToBuffer("{ xmfhtmlgumpcolor ");
-    private static readonly byte[] m_LayoutNameArgs = Gump.StringToBuffer("{ xmfhtmltok ");
-
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
+    public override void AppendTo(NetState ns, IGumpWriter disp)
     {
       SpanWriter writer = new SpanWriter(buffer.GetSpan(90 + Args?.Length ?? 0));
       switch (Type)

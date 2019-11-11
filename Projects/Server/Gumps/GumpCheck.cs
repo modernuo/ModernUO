@@ -48,7 +48,7 @@ namespace Server.Gumps
 
     public int SwitchID { get; set; }
 
-    public override string Compile(ArraySet<string> strings) => $"{{ checkbox {X} {Y} {InactiveID} {ActiveID} {(InitialState ? 1 : 0)} {SwitchID} }}";
+    public override string Compile(NetState ns) => $"{{ checkbox {m_X} {m_Y} {m_ID1} {m_ID2} {(m_InitialState ? 1 : 0)} {m_SwitchID} }}";
 
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ checkbox ");
 

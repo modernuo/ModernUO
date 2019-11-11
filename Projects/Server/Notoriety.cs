@@ -48,6 +48,6 @@ namespace Server
 
     public static int GetHue(int noto) => noto < 0 || noto >= Hues.Length ? 0 : Hues[noto];
 
-    public static byte Compute(Mobile source, Mobile target) => Handler?.Invoke(source, target) ?? CanBeAttacked;
+    public static int Compute(Mobile source, Mobile target) => Handler?.Invoke(source, target) ?? CanBeAttacked;
   }
 }

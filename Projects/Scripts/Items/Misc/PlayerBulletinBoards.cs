@@ -161,7 +161,7 @@ namespace Server.Items
     {
       BaseHouse house = BaseHouse.FindHouseAt( this );
 
-      if ( house == null || !house.HasLockedDownItem( this ) )
+      if ( house?.HasLockedDownItem( this ) != true )
         from.SendLocalizedMessage( 1062396 ); // This bulletin board must be locked down in a house to be usable.
       else if ( !from.InRange( GetWorldLocation(), 2 ) || !from.InLOS( this ) )
         from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
@@ -195,7 +195,7 @@ namespace Server.Items
         BaseHouse house = m_House;
         BasePlayerBB board = m_Board;
 
-        if ( house == null || !house.HasLockedDownItem( board ) )
+        if ( house?.HasLockedDownItem( board ) != true )
         {
           from.SendLocalizedMessage( 1062396 ); // This bulletin board must be locked down in a house to be usable.
           return;
@@ -268,7 +268,7 @@ namespace Server.Items
         BaseHouse house = m_House;
         BasePlayerBB board = m_Board;
 
-        if ( house == null || !house.HasLockedDownItem( board ) )
+        if ( house?.HasLockedDownItem( board ) != true )
         {
           from.SendLocalizedMessage( 1062396 ); // This bulletin board must be locked down in a house to be usable.
           return;
@@ -359,7 +359,7 @@ namespace Server.Items
       BaseHouse house = m_House;
       BasePlayerBB board = m_Board;
 
-      if ( house == null || !house.HasLockedDownItem( board ) )
+      if ( house?.HasLockedDownItem( board ) != true )
       {
         from.SendLocalizedMessage( 1062396 ); // This bulletin board must be locked down in a house to be usable.
         return;

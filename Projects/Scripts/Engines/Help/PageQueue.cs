@@ -84,7 +84,7 @@ namespace Server.Engines.Help
     {
       private PageEntry m_Entry;
 
-      public InternalTimer(PageEntry entry) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromMinutes(2.0)) => m_Entry = entry;
+      public InternalTimer(PageEntry entry) : base(TimeSpan.FromSeconds(1.0), StatusDelay) => m_Entry = entry;
 
       protected override void OnTick()
       {

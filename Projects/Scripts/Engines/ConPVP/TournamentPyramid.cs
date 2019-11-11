@@ -146,7 +146,7 @@ namespace Server.Engines.ConPVP
 
             for (int i = 0; i < partsPerMatch; ++i)
             {
-              int idx = groupType switch
+              var idx = groupType switch
               {
                 GroupingType.HighVsLow => (i * (copy.Count - 1) / (partsPerMatch - 1)),
                 GroupingType.Nearest => 0,

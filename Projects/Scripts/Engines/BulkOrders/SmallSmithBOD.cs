@@ -97,7 +97,7 @@ namespace Server.Engines.BulkOrders
         {
           BulkMaterialType check = GetRandomMaterial(BulkMaterialType.DullCopper, m_BlacksmithMaterialChances);
 
-          double skillReq = check switch
+          var skillReq = check switch
           {
             BulkMaterialType.DullCopper => 65.0,
             BulkMaterialType.ShadowIron => 70.0,

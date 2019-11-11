@@ -24,14 +24,11 @@ namespace Server
       }
     }
 
-    public static int Damage(Mobile m, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois, int nrgy) =>
-      Damage(m, null, damage, ignoreArmor, phys, fire, cold, pois, nrgy);
+    public static int Damage(Mobile m, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois, int nrgy) => Damage(m, null, damage, ignoreArmor, phys, fire, cold, pois, nrgy);
 
-    public static int Damage(Mobile m, int damage, int phys, int fire, int cold, int pois, int nrgy) =>
-      Damage(m, null, damage, phys, fire, cold, pois, nrgy);
+    public static int Damage(Mobile m, int damage, int phys, int fire, int cold, int pois, int nrgy) => Damage(m, null, damage, phys, fire, cold, pois, nrgy);
 
-    public static int Damage(Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy) =>
-      Damage(m, from, damage, false, phys, fire, cold, pois, nrgy);
+    public static int Damage(Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy) => Damage(m, from, damage, false, phys, fire, cold, pois, nrgy);
 
     public static int Damage(Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy,
       int chaos) =>
@@ -195,8 +192,9 @@ namespace Server
 
     public static int Scale(int input, int percent) => input * percent / 100;
 
-    public static int GetStatus(Mobile from, int index) =>
-      index switch
+    public static int GetStatus(Mobile from, int index)
+    {
+      return index switch
       {
         // TODO: Account for buffs/debuffs
         0 => from.GetMaxResistance(ResistanceType.Physical),
@@ -216,6 +214,7 @@ namespace Server
         14 => AosAttributes.GetValue(from, AosAttribute.LowerManaCost),
         _ => 0
       };
+    }
   }
 
   [Flags]
@@ -1004,12 +1003,9 @@ namespace Server
     {
       return skill switch
       {
-        SkillName.EvalInt => 1002070 // Evaluate Intelligence
-        ,
-        SkillName.Forensics => 1002078 // Forensic Evaluation
-        ,
-        SkillName.Lockpicking => 1002097 // Lockpicking
-        ,
+        SkillName.EvalInt => 1002070, // Evaluate Intelligence
+        SkillName.Forensics => 1002078, // Forensic Evaluation
+        SkillName.Lockpicking => 1002097, // Lockpicking
         _ => (1044060 + (int)skill)
       };
     }

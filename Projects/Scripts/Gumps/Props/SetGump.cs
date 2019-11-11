@@ -229,7 +229,7 @@ namespace Server.Gumps
         try
         {
           CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name,
-            toSet == null ? "(null)" : toSet.ToString());
+            toSet?.ToString() ?? "(null)");
           m_Property.SetValue(m_Object, toSet, null);
           PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
         }

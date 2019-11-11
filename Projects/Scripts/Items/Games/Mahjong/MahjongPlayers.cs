@@ -87,7 +87,7 @@ namespace Server.Engines.Mahjong
 
     public bool IsSpectator(Mobile mobile) => m_Spectators.Contains(mobile);
 
-    public int GetScore(int index) => index < 0 || index >= m_Scores.Length ? 0 : m_Scores[index];
+    public bool IsSpectator(Mobile mobile) => m_Spectators.Contains(mobile);
 
     public bool IsPublic(int index) => index >= 0 && index < m_PublicHand.Length && m_PublicHand[index];
 

@@ -10,6 +10,7 @@ using Server.Items;
 using Server.Misc;
 using Server.Multis;
 using Server.Network;
+using Server.Prompts;
 
 namespace Server.Gumps
 {
@@ -450,7 +451,7 @@ namespace Server.Gumps
           Account a = m.Account as Account;
 
           AddLabel(20, y, LabelHue, "Account:");
-          AddLabel(200, y, a != null && a.Banned ? RedHue : LabelHue, a == null ? "(no account)" : a.Username);
+          AddLabel(200, y, a?.Banned == true ? RedHue : LabelHue, a == null ? "(no account)" : a.Username);
           AddButton(380, y, 0xFA5, 0xFA7, GetButtonID(7, 14));
           y += 20;
 
@@ -1172,6 +1173,14 @@ namespace Server.Gumps
     public int GetButtonID(int type, int index) => 1 + index * 11 + type;
 
     public static string FormatTimeSpan(TimeSpan ts) => $"{ts.Days:D2}:{ts.Hours % 24:D2}:{ts.Minutes % 60:D2}:{ts.Seconds % 60:D2}";
+
+    public static string FormatByteAmount(long totalBytes)
+    {
+      if (totalBytes > 1000000000)
+        return $"{(double)totalBytes / 1073741824:F1} GB";
+
+      if (totalBytes > 1000000)
+        return $"{(double)totalBytes / 1048576:F1} MB";
 
     public static string FormatByteAmount(long totalBytes) =>
       totalBytes > 1000000000 ? $"{(double)totalBytes / 1073741824:F1} GB" :
@@ -2362,7 +2371,7 @@ namespace Server.Gumps
               if (!(m_State is Account a))
                 break;
 
-              AccessLevel newLevel = index switch
+              var newLevel = index switch
               {
                 20 => AccessLevel.Player,
                 21 => AccessLevel.Counselor,

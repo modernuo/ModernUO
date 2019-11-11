@@ -321,8 +321,7 @@ namespace Server.Misc
       #region Dueling
 
       if (pmFrom != null && pmTarg != null)
-        if (pmFrom.DuelContext != null && pmFrom.DuelContext.StartedBeginCountdown && !pmFrom.DuelContext.Finished &&
-            pmFrom.DuelContext == pmTarg.DuelContext)
+        if (pmFrom.DuelContext?.StartedBeginCountdown == true && !pmFrom.DuelContext.Finished && pmFrom.DuelContext == pmTarg.DuelContext)
           return pmFrom.DuelContext.IsAlly(pmFrom, pmTarg) ? Notoriety.Ally : Notoriety.Enemy;
 
       #endregion
@@ -428,6 +427,8 @@ namespace Server.Misc
     }
 
     public static bool IsPet(BaseCreature c) => c?.Controlled == true;
+
+    public static bool IsSummoned(BaseCreature c) => c?.Summoned == true;
 
     public static bool IsSummoned(BaseCreature c) => c?.Summoned == true;
 

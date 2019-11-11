@@ -47,7 +47,7 @@ namespace Server.Gumps
 
     public override string Compile(ArraySet<string> strings) => $"{{ resizepic {X} {Y} {m_GumpID} {Width} {Height} }}";
 
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ resizepic ");
+    public override string Compile(NetState ns) => $"{{ resizepic {m_X} {m_Y} {m_GumpID} {m_Width} {m_Height} }}";
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {

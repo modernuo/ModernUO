@@ -565,7 +565,7 @@ namespace Server.Items
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
-      int oreType = m_Resource switch
+      var oreType = m_Resource switch
       {
         CraftResource.DullCopper => 1053108,
         CraftResource.ShadowIron => 1053107,

@@ -66,7 +66,7 @@ namespace Server.Gumps
         case 3:
         case 4:
         {
-          int offer = info.ButtonID switch
+          var offer = info.ButtonID switch
           {
             1 => (m_Offer - 100),
             2 => 0,

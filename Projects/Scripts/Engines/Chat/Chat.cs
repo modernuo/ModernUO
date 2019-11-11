@@ -33,7 +33,7 @@ namespace Server.Engines.Chat
       }
 
       pvSrc.Seek(2, SeekOrigin.Begin);
-      string chatName = pvSrc.ReadUnicodeStringSafe((0x40 - 2) >> 1).Trim();
+      string chatName = pvSrc.ReadUnicodeStringSafe(0x40 - 2 >> 1).Trim();
 
       Account acct = state.Account as Account;
 

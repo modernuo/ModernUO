@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Server
 {
@@ -11,7 +12,8 @@ namespace Server
 
     public static Configuration Instance => m_Configuration ??= ReadConfiguration();
 
-    public List<string> DataDirectories { get; } = new List<string>();
+    [JsonPropertyName("dataDirectories")]
+    public List<string> DataDirectories { get; set; } = new List<string>();
 
     private static string FilePath => Path.Join(Core.BaseDirectory, "modernuo.json");
 
@@ -31,7 +33,8 @@ namespace Server
 
     private static Configuration ReadConfiguration()
     {
-      Console.Write($"Reading configuration from {FilePath}...");
+      string relPath = new Uri($"{Core.BaseDirectory}/").MakeRelativeUri(new Uri(FilePath)).ToString();
+      Console.Write($"Reading configuration from {relPath}...");
       Configuration config;
 
       if (File.Exists(FilePath))
@@ -44,7 +47,7 @@ namespace Server
       }
       else
       {
-        Console.WriteLine("not found.");
+        Console.WriteLine("not found");
         config = new Configuration();
       }
 

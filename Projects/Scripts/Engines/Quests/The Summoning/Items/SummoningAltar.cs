@@ -28,7 +28,7 @@ namespace Server.Engines.Quests.Doom
 
     public void CheckDaemon()
     {
-      if (m_Daemon == null || !m_Daemon.Alive)
+      if (m_Daemon?.Alive != true)
       {
         m_Daemon = null;
         Hue = 0;

@@ -43,7 +43,7 @@ namespace Server
             Values = new int[8];
 
             for (int i = 0; i < 8; ++i)
-              if ((mask & (1 << i)) != 0)
+              if ((mask & 1 << i) != 0)
                 Values[i] = reader.ReadInt();
           }
 

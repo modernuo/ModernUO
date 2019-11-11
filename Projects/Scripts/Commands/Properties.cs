@@ -457,7 +457,7 @@ namespace Server.Commands
 
         if (shouldLog)
           CommandLogging.LogChangeProperty(from, logObject, givenName,
-            toSet == null ? "(-null-)" : toSet.ToString());
+            toSet?.ToString() ?? "(-null-)");
 
         prop.SetValue(obj, toSet, null);
         return "Property has been set.";

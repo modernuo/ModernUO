@@ -93,8 +93,9 @@ namespace Server.Engines.BulkOrders
       OnDoubleClick(from);
     }
 
-    public static BulkMaterialType GetMaterial(CraftResource resource) =>
-      resource switch
+    public static BulkMaterialType GetMaterial(CraftResource resource)
+    {
+      return resource switch
       {
         CraftResource.DullCopper => BulkMaterialType.DullCopper,
         CraftResource.ShadowIron => BulkMaterialType.ShadowIron,
@@ -109,6 +110,7 @@ namespace Server.Engines.BulkOrders
         CraftResource.BarbedLeather => BulkMaterialType.Barbed,
         _ => BulkMaterialType.None
       };
+    }
 
     public override void EndCombine(Mobile from, Item item)
     {
@@ -133,10 +135,14 @@ namespace Server.Engines.BulkOrders
 
         if (Material >= BulkMaterialType.DullCopper && Material <= BulkMaterialType.Valorite &&
             material != Material)
+        {
           from.SendLocalizedMessage(1045168); // The item is not made from the requested ore.
+        }
         else if (Material >= BulkMaterialType.Spined && Material <= BulkMaterialType.Barbed &&
                  material != Material)
+        {
           from.SendLocalizedMessage(1049352); // The item is not made from the requested leather type.
+        }
         else
         {
           bool isExceptional;
@@ -149,7 +155,9 @@ namespace Server.Engines.BulkOrders
             isExceptional = clothing.Quality == ClothingQuality.Exceptional;
 
           if (RequireExceptional && !isExceptional)
+          {
             from.SendLocalizedMessage(1045167); // The item must be exceptional.
+          }
           else
           {
             item.Delete();

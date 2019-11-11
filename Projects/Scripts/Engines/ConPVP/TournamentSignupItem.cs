@@ -25,7 +25,9 @@ namespace Server.Engines.ConPVP
     public override void OnDoubleClick(Mobile from)
     {
       if (!from.InRange(GetWorldLocation(), 2))
+      {
         from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that
+      }
       else
       {
         Tournament tourney = Tournament?.Tournament;
@@ -66,30 +68,47 @@ namespace Server.Engines.ConPVP
             LadderEntry entry = ladder?.Find(from);
 
             if (entry != null && Ladder.GetLevel(entry.Experience) < tourney.LevelRequirement)
+            {
               Registrar?.PrivateOverheadMessage(MessageType.Regular,
                 0x35, false, "You have not yet proven yourself a worthy dueler.", from.NetState);
-            else if (tourney.IsFactionRestricted && Faction.Find(from) == null)
+
+              break;
+            }
+
+            if (tourney.IsFactionRestricted && Faction.Find(from) == null)
+            {
               Registrar?.PrivateOverheadMessage(MessageType.Regular,
                 0x35, false, "Only those who have declared their faction allegiance may participate.",
                 from.NetState);
 
-            else if (from.HasGump<AcceptTeamGump>())
+              break;
+            }
+
+            if (from.HasGump<AcceptTeamGump>())
+            {
               Registrar?.PrivateOverheadMessage(MessageType.Regular,
                 0x22, false, "You must first respond to the offer I've given you.", from.NetState);
+            }
             else if (from.HasGump<AcceptDuelGump>())
+            {
               Registrar?.PrivateOverheadMessage(MessageType.Regular,
                 0x22, false, "You must first cancel your duel offer.", from.NetState);
+            }
             else if (from is PlayerMobile mobile && mobile.DuelContext != null)
+            {
               Registrar?.PrivateOverheadMessage(MessageType.Regular,
                 0x22, false, "You are already participating in a duel.", mobile.NetState);
+            }
             else if (!tourney.HasParticipant(from))
             {
               from.CloseGump<ConfirmSignupGump>();
               from.SendGump(new ConfirmSignupGump(from, Registrar, tourney, new List<Mobile> { from }));
             }
             else
+            {
               Registrar?.PrivateOverheadMessage(MessageType.Regular,
                 0x35, false, "You have already entered this tournament.", from.NetState);
+            }
 
             break;
           }

@@ -14,7 +14,17 @@ namespace Server.Engines.BulkOrders
     }
 
     [CommandProperty( AccessLevel.GameMaster )]
-    public override bool Complete => m_Entries.All(t => t.Amount >= AmountMax);
+    public override bool Complete
+    {
+      get
+      {
+        for ( int i = 0; i < m_Entries.Length; ++i )
+          if ( m_Entries[i].Amount < AmountMax )
+            return false;
+
+        return true;
+      }
+    }
 
     public override int LabelNumber => 1045151; // a bulk order deed
 

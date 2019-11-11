@@ -283,17 +283,28 @@ namespace Server.Engines.Quests.Hag
     public override object Message =>
       !BlackheartMet ? Step switch
       {
-        1 =>
-        /* You must gather each ingredient on the Hag's list so that she can cook
+        if (!BlackheartMet)
+          return Step switch
+          {
+            1 =>
+            /* You must gather each ingredient on the Hag's list so that she can cook
                * up her vile Magic Brew.  The first ingredient is :
                */
-        1055019,
-        2 =>
-        /* You must gather each ingredient on the Hag's list so that she can cook
+            1055019,
+            2 =>
+            /* You must gather each ingredient on the Hag's list so that she can cook
                * up her vile Magic Brew.  The second ingredient is :
                */
-        1055044,
-        _ => 1055045
+            1055044,
+            _ => 1055045
+          };
+
+        /* You are still attempting to obtain a jug of Captain Blackheart's
+           * Whiskey, but the drunkard Captain refuses to share his unique brew.
+           * You must prove your worthiness as a pirate to Blackheart before he'll
+           * offer you a jug.
+           */
+        return 1055055;
       }
       : 1055055;
 
@@ -331,8 +342,14 @@ namespace Server.Engines.Quests.Hag
 
       if (info.Creatures.Any(type => creature.GetType() == type))
       {
-        System.From.SendLocalizedMessage(1055043,
-          $"#{info.Name}"); // You gather a ~1_INGREDIENT_NAME~ from the corpse.
+        Type type = info.Creatures[i];
+
+        if (creature.GetType() == type)
+        {
+          System.From.SendLocalizedMessage(1055043,
+            $"#{info.Name}"); // You gather a ~1_INGREDIENT_NAME~ from the corpse.
+
+          CurProgress++;
 
         CurProgress++;
       }

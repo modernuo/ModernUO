@@ -305,7 +305,7 @@ namespace Server.Engines.Quests.Haven
               }
               else
               {
-                BaseWeapon weapon = Utility.Random(6) switch
+                var weapon = Utility.Random(6) switch
                 {
                   0 => (BaseWeapon)new Broadsword(),
                   1 => new Cutlass(),
@@ -379,7 +379,7 @@ namespace Server.Engines.Quests.Haven
 
       if (m is PlayerMobile && !m.Frozen && !m.Alive && InRange(m, 4) && !InRange(oldLocation, 4) && InLOS(m))
       {
-        if (m.Map == null || !m.Map.CanFit(m.Location, 16, false, false))
+        if (m.Map?.CanFit(m.Location, 16, false, false) != true)
         {
           m.SendLocalizedMessage(502391); // Thou can not be resurrected there!
         }

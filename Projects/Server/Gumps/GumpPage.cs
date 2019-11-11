@@ -28,11 +28,11 @@ namespace Server.Gumps
   {
     public GumpPage(int page) => Page = page;
 
-    public int Page { get; set; }
+    public GumpPage(int page) => m_Page = page;
 
     public override string Compile(ArraySet<string> strings) => $"{{ page {Page} }}";
 
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ page ");
+    public override string Compile(NetState ns) => $"{{ page {m_Page} }}";
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {

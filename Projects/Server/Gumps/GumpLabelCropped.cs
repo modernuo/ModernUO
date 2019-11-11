@@ -48,7 +48,7 @@ namespace Server.Gumps
 
     public string Text { get; set; }
 
-    public override string Compile(ArraySet<string> strings) => $"{{ croppedtext {X} {Y} {Width} {Height} {Hue} {strings.Add(Text)} }}";
+    public override string Compile(NetState ns) => $"{{ croppedtext {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {Parent.Intern(m_Text)} }}";
 
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ croppedtext ");
 

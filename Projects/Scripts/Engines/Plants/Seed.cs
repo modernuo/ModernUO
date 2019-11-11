@@ -72,14 +72,16 @@ namespace Server.Engines.Plants
 
     public static Seed RandomBonsaiSeed(double increaseRatio) => new Seed(PlantTypeInfo.RandomBonsai(increaseRatio), PlantHue.Plain);
 
-    public static Seed RandomPeculiarSeed(int group) =>
-      @group switch
+    public static Seed RandomPeculiarSeed(int group)
+    {
+      return @group switch
       {
         1 => new Seed(PlantTypeInfo.RandomPeculiarGroupOne(), PlantHue.Plain),
         2 => new Seed(PlantTypeInfo.RandomPeculiarGroupTwo(), PlantHue.Plain),
         3 => new Seed(PlantTypeInfo.RandomPeculiarGroupThree(), PlantHue.Plain),
         _ => new Seed(PlantTypeInfo.RandomPeculiarGroupFour(), PlantHue.Plain)
       };
+    }
 
     private int GetLabel(out string args)
     {

@@ -53,9 +53,13 @@ namespace Server.Engines.ConPVP
     private const int LabelColor32 = 0xFFFFFF;
     private const int BlackColor32 = 0x000000;
 
+    //    private DDGame m_Game;
+
     public DDBoardGump(Mobile mob, DDGame game, DDTeamInfo section = null)
       : base(60, 60)
     {
+      //      m_Game = game;
+
       DDTeamInfo ourTeam = game.GetTeamInfo(mob);
 
       List<IRankedCTF> entries = new List<IRankedCTF>();
@@ -495,7 +499,7 @@ namespace Server.Engines.ConPVP
       if (pm.DuelContext == null || pm.DuelContext != m_Context)
         return -1;
 
-      if (pm.DuelPlayer == null || pm.DuelPlayer.Eliminated)
+      if (pm.DuelPlayer?.Eliminated != false)
         return -1;
 
       return pm.DuelContext.Participants.IndexOf(pm.DuelPlayer.Participant);

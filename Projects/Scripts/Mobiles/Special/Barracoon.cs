@@ -142,7 +142,7 @@ namespace Server.Mobiles
 
       for (int i = 0; i < rats; ++i)
       {
-        BaseCreature rat = Utility.Random(5) switch
+        var rat = Utility.Random(5) switch
         {
           2 => (BaseCreature)new RatmanArcher(),
           3 => new RatmanArcher(),

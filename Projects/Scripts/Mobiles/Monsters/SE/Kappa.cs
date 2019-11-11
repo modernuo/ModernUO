@@ -134,7 +134,7 @@ namespace Server.Mobiles
         int amt = 0;
         Mobile target = this;
         int rand = Utility.Random(1, 100);
-        if (willKill) amt = ((rand % 5) >> 2) + 3;
+        if (willKill) amt = (rand % 5 >> 2) + 3;
         if (Hits < 100 && rand < 21)
         {
           target = rand % 2 < 1 ? this : from;

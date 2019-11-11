@@ -250,20 +250,20 @@ namespace Server.Commands
   }
 
   public class CategoryTypeSorter : IComparer<CategoryTypeEntry>
+  {
+    public int Compare(CategoryTypeEntry x, CategoryTypeEntry y)
     {
-      public int Compare(CategoryTypeEntry x, CategoryTypeEntry y)
-      {
-        string a = x?.Type.Name;
-        string b = y?.Type.Name;
+      string a = x?.Type.Name;
+      string b = y?.Type.Name;
 
-        if (a == null && b == null)
-          return 0;
+      if (a == null && b == null)
+        return 0;
 
-        if (a == null)
-          return 1;
+      if (a == null)
+        return 1;
 
-        return a.CompareTo(b);
-      }
+      return a.CompareTo(b);
+    }
   }
 
   public class CategoryTypeEntry

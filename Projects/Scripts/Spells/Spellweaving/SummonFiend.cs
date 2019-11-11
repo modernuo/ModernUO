@@ -32,7 +32,7 @@ namespace Server.Spells.Spellweaving
       {
         MLQuestContext context = MLQuestSystem.GetContext(mobile);
 
-        if (context == null || !context.SummonFiend)
+        if (context?.SummonFiend != true)
         {
           mobile.SendLocalizedMessage(1074564); // You haven't demonstrated mastery to summon a fiend.
           return false;

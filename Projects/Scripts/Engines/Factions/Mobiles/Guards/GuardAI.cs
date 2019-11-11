@@ -371,7 +371,7 @@ namespace Server.Factions
 
     public void RunFrom(Mobile m)
     {
-      Run((m_Mobile.GetDirectionTo(m) - 4) & Direction.Mask);
+      Run(m_Mobile.GetDirectionTo(m) - 4 & Direction.Mask);
     }
 
     public void OnFailedMove()
@@ -402,7 +402,7 @@ namespace Server.Factions
 
     public void Run(Direction d)
     {
-      if (m_Mobile.Spell != null && m_Mobile.Spell.IsCasting || m_Mobile.Paralyzed || m_Mobile.Frozen ||
+      if (m_Mobile.Spell?.IsCasting == true || m_Mobile.Paralyzed || m_Mobile.Frozen ||
           m_Mobile.DisallowAllMoves)
         return;
 

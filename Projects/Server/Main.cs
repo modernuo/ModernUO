@@ -314,6 +314,25 @@ namespace Server
       if (BaseDirectory.Length > 0)
         Directory.SetCurrentDirectory(BaseDirectory);
 
+
+      Version ver = Assembly.GetName().Version;
+
+      Console.ForegroundColor = ConsoleColor.Green;
+      // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
+      Console.WriteLine("ModernUO - [https://github.com/kamronbatman/ModernUO] Version {0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build,
+        ver.Revision);
+      Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
+      Console.ResetColor();
+      Console.WriteLine();
+
+      Configuration config = Configuration.Instance;
+      foreach (string dir in config.DataDirectories.Where(dir => !Directory.Exists(dir)))
+      {
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.WriteLine("Core: Config directory {0} does not exist.", dir);
+        Console.ResetColor();
+      }
+
       Timer.TimerThread ttObj = new Timer.TimerThread();
       timerThread = new Thread(ttObj.TimerMain)
       {
@@ -362,9 +381,6 @@ namespace Server
 
       // Load Assembly Scripts.CS.dll
       AssemblyHandler.LoadScripts();
-
-      // Verify the loaded assemblies
-      VerifySerialization();
 
       AssemblyHandler.Invoke("Configure");
 
@@ -433,8 +449,9 @@ namespace Server
 
       Assembly ca = Assembly.GetCallingAssembly();
 
-      foreach (Assembly a in AssemblyHandler.Assemblies.Where(a => a != ca))
-        VerifySerialization(a);
+      VerifySerialization(ca);
+
+      foreach (Assembly a in AssemblyHandler.Assemblies.Where(a => a != ca)) VerifySerialization(a);
     }
 
     private static void VerifyType(Type t)
@@ -510,7 +527,7 @@ namespace Server
       internal static extern bool SetConsoleCtrlHandler(ConsoleEventHandler callback, bool add);
     }
 
-#region Expansions
+    #region Expansions
 
     public static Expansion Expansion{ get; set; }
 
@@ -534,7 +551,7 @@ namespace Server
 
     public static bool TOL => Expansion >= Expansion.TOL;
 
-#endregion
+    #endregion
   }
 
   public class FileLogger : TextWriter

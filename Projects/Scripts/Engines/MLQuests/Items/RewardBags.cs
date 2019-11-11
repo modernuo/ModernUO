@@ -18,7 +18,7 @@ namespace Server.Engines.MLQuests.Items
 
       for (; done < itemCount; ++done)
       {
-        Item loot = Utility.Random(5) switch
+        var loot = Utility.Random(5) switch
         {
           0 => (Item)Loot.RandomWeapon(false, true),
           1 => Loot.RandomArmor(false, true),
