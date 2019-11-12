@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Server.Guilds;
 
 namespace Server
@@ -48,9 +49,11 @@ namespace Server
     {
       PermitBackgroundWrite = permitBackgroundWrite;
 
-      SaveMobiles();
-      SaveItems();
-      SaveGuilds();
+      Task.WaitAll(new Task[3] {
+        Task.Factory.StartNew(() => SaveMobiles()),
+        Task.Factory.StartNew(() => SaveItems()),
+        Task.Factory.StartNew(() => SaveGuilds())
+      });
 
       if (permitBackgroundWrite && UseSequentialWriters
       ) //If we're permitted to write in the background, but we don't anyways, then notify.
@@ -78,30 +81,37 @@ namespace Server
         bin = new AsyncWriter(World.MobileDataPath, true);
       }
 
-      idx.Write(mobiles.Count);
-      foreach (Mobile m in mobiles.Values)
+      Task.Factory.StartNew(() =>
       {
-        long start = bin.Position;
+        tdb.Write(World.m_MobileTypes.Count);
 
-        idx.Write(m.m_TypeRef);
-        idx.Write(m.Serial);
-        idx.Write(start);
+        for (int i = 0; i < World.m_MobileTypes.Count; ++i)
+          tdb.Write(World.m_MobileTypes[i].FullName);
 
-        m.Serialize(bin);
+        tdb.Close();
+      });
 
-        idx.Write((int)(bin.Position - start));
+      Parallel.ForEach(mobiles.Values, mobile => mobile.Serialize());
 
-        m.FreeCache();
-      }
+      Task.Factory.StartNew(() =>
+      {
+        idx.Write(mobiles.Count);
+        foreach (Mobile m in mobiles.Values)
+        {
+          long start = bin.Position;
 
-      tdb.Write(World.m_MobileTypes.Count);
+          idx.Write(m.m_TypeRef);
+          idx.Write(m.Serial);
+          idx.Write(start);
+          idx.Write((int)(m.SaveBuffer.Position));
 
-      for (int i = 0; i < World.m_MobileTypes.Count; ++i)
-        tdb.Write(World.m_MobileTypes[i].FullName);
+          m.SaveBuffer.WriteTo(bin);
+          m.FreeCache();
+        }
 
-      idx.Close();
-      tdb.Close();
-      bin.Close();
+        idx.Close();
+        bin.Close();
+      });
     }
 
     protected void SaveItems()
@@ -125,37 +135,43 @@ namespace Server
         bin = new AsyncWriter(World.ItemDataPath, true);
       }
 
+      Task.Factory.StartNew(() =>
+      {
+        tdb.Write(World.m_ItemTypes.Count);
+
+        for (int i = 0; i < World.m_ItemTypes.Count; ++i)
+          tdb.Write(World.m_ItemTypes[i].FullName);
+
+        tdb.Close();
+      });
+
+      Parallel.ForEach(items.Values, item => item.Serialize());
+
       idx.Write(items.Count);
 
       DateTime n = DateTime.UtcNow;
 
-      foreach (Item item in items.Values)
-      {
-        if (item.Decays && item.Parent == null && item.Map != Map.Internal && item.LastMoved + item.DecayTime <= n)
-          _decayQueue.Enqueue(item);
+      Task.Factory.StartNew(() => {
+        foreach (Item item in items.Values)
+        {
+          if (item.Decays && item.Parent == null && item.Map != Map.Internal && item.LastMoved + item.DecayTime <= n)
+            _decayQueue.Enqueue(item);
 
-        long start = bin.Position;
+          long start = bin.Position;
 
-        idx.Write(item.m_TypeRef);
-        idx.Write(item.Serial);
-        idx.Write(start);
+          idx.Write(item.m_TypeRef);
+          idx.Write(item.Serial);
+          idx.Write(start);
+          idx.Write((int)item.SaveBuffer.Position);
 
-        item.Serialize(bin);
+          item.SaveBuffer.WriteTo(bin);
+          item.FreeCache();
+        }
 
-        idx.Write((int)(bin.Position - start));
-
-        item.FreeCache();
-      }
-
-      tdb.Write(World.m_ItemTypes.Count);
-      for (int i = 0; i < World.m_ItemTypes.Count; ++i)
-        tdb.Write(World.m_ItemTypes[i].FullName);
-
-      idx.Close();
-      tdb.Close();
-      bin.Close();
+        idx.Close();
+        bin.Close();
+      });
     }
-
     protected void SaveGuilds()
     {
       IGenericWriter idx;
@@ -172,22 +188,27 @@ namespace Server
         bin = new AsyncWriter(World.GuildDataPath, true);
       }
 
+      Parallel.ForEach(BaseGuild.List.Values, guild => guild.Serialize());
+
       idx.Write(BaseGuild.List.Count);
-      foreach (BaseGuild guild in BaseGuild.List.Values)
+
+      Task.Factory.StartNew(() =>
       {
-        long start = bin.Position;
+        foreach (BaseGuild guild in BaseGuild.List.Values)
+        {
+          long start = bin.Position;
 
-        idx.Write(0); //guilds have no typeid
-        idx.Write(guild.Id);
-        idx.Write(start);
+          idx.Write(0); //guilds have no typeid
+          idx.Write(guild.Id);
+          idx.Write(start);
+          idx.Write((int)(guild.SaveBuffer.Position));
 
-        guild.Serialize(bin);
+          guild.SaveBuffer.WriteTo(bin);
+        }
 
-        idx.Write((int)(bin.Position - start));
-      }
-
-      idx.Close();
-      bin.Close();
+        idx.Close();
+        bin.Close();
+      });
     }
 
     public override void ProcessDecay()

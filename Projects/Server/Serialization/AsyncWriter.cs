@@ -259,6 +259,16 @@ namespace Server
       OnWrite();
     }
 
+    public void Write(byte[] value)
+    {
+      Write(value, value.Length);
+    }
+
+    public void Write(byte[] value, int length)
+    {
+      m_Bin.Write(value, 0, length);
+      OnWrite();
+    }
     public void Write(sbyte value)
     {
       m_Bin.Write(value);
