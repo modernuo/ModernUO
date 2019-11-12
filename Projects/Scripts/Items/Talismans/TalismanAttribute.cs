@@ -26,7 +26,7 @@ namespace Server.Items
       Amount = amount;
     }
 
-    public TalismanAttribute(GenericReader reader)
+    public TalismanAttribute(IGenericReader reader)
     {
       int version = reader.ReadInt();
 
@@ -67,7 +67,7 @@ namespace Server.Items
 
     private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
-    public virtual void Serialize(GenericWriter writer)
+    public virtual void Serialize(IGenericWriter writer)
     {
       writer.Write(0); // version
 

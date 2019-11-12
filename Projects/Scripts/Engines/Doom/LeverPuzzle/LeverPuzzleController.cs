@@ -438,7 +438,7 @@ namespace Server.Engines.Doom
       Packet.Release(p);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
       writer.Write(0); // version
@@ -448,7 +448,7 @@ namespace Server.Engines.Doom
       writer.Write(m_Box);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

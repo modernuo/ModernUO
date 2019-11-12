@@ -201,7 +201,7 @@ namespace Server.Factions
         Visible = false;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -215,7 +215,7 @@ namespace Server.Factions
         BeginConceal();
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

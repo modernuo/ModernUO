@@ -194,7 +194,7 @@ namespace Server.Misc
         from.SendGump(new ShardPollGump(from, this, true, null));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -211,7 +211,7 @@ namespace Server.Misc
         Options[i].Serialize(writer);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -258,7 +258,7 @@ namespace Server.Misc
       Voters = new IPAddress[0];
     }
 
-    public ShardPollOption(GenericReader reader)
+    public ShardPollOption(IGenericReader reader)
     {
       int version = reader.ReadInt();
 
@@ -349,7 +349,7 @@ namespace Server.Misc
       return count;
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.Write(0); // version
 

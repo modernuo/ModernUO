@@ -15,7 +15,7 @@ namespace Server.Items
 
     public BookPageInfo(params string[] lines) => Lines = lines;
 
-    public BookPageInfo(GenericReader reader)
+    public BookPageInfo(IGenericReader reader)
     {
       int length = reader.ReadInt();
 
@@ -27,7 +27,7 @@ namespace Server.Items
 
     public string[] Lines{ get; set; }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.Write(Lines.Length);
 
@@ -148,7 +148,7 @@ namespace Server.Items
       SetSecureLevelEntry.AddTo(from, this, list);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -190,7 +190,7 @@ namespace Server.Items
       }
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

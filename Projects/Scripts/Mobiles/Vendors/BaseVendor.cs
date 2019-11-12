@@ -1088,7 +1088,7 @@ namespace Server.Mobiles
       Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false ||
       Region != from.Region && from.Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -1129,7 +1129,7 @@ namespace Server.Mobiles
       writer.WriteEncodedInt(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

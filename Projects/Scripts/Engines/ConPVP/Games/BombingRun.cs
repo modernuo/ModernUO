@@ -55,7 +55,7 @@ namespace Server.Engines.ConPVP
       return null;
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -72,7 +72,7 @@ namespace Server.Engines.ConPVP
       Timer.DelayCall(TimeSpan.Zero, Delete).Start(); // delete this after the world loads
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -860,7 +860,7 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -869,7 +869,7 @@ namespace Server.Engines.ConPVP
       writer.Write(m_North);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -937,14 +937,14 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1186,7 +1186,7 @@ namespace Server.Engines.ConPVP
       Players = new Dictionary<Mobile, BRPlayerInfo>();
     }
 
-    public BRTeamInfo(int teamID, GenericReader ip)
+    public BRTeamInfo(int teamID, IGenericReader ip)
     {
       TeamID = teamID;
       Players = new Dictionary<Mobile, BRPlayerInfo>();
@@ -1287,7 +1287,7 @@ namespace Server.Engines.ConPVP
         m_Goal.Team = this;
     }
 
-    public void Serialize(GenericWriter op)
+    public void Serialize(IGenericWriter op)
     {
       op.WriteEncodedInt(0); // version
 
@@ -1358,7 +1358,7 @@ namespace Server.Engines.ConPVP
 
     public override EventGame Construct(DuelContext context) => new BRGame(this, context);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -1374,7 +1374,7 @@ namespace Server.Engines.ConPVP
         TeamInfo[i].Serialize(writer);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

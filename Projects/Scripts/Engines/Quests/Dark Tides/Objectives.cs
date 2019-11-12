@@ -217,7 +217,7 @@ namespace Server.Engines.Quests.Necro
       System.AddObjective(new FindMardothAboutKronusObjective());
     }
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -226,7 +226,7 @@ namespace Server.Engines.Quests.Necro
       m_SkitteringHoppersDisposed = reader.ReadBool();
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 
@@ -327,14 +327,14 @@ namespace Server.Engines.Quests.Necro
       System.AddConversation(new MardothEndConversation());
     }
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
       m_Victory = reader.ReadBool();
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 

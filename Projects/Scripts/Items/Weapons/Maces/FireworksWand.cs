@@ -102,7 +102,7 @@ namespace Server.Items
       Effects.SendLocationEffect(endLoc, map, 0x373A + 0x10 * Utility.Random(4), 16, 10, hue, renderMode);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -111,7 +111,7 @@ namespace Server.Items
       writer.Write(m_Charges);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

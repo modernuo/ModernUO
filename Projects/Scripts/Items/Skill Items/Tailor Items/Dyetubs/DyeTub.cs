@@ -72,7 +72,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public SecureLevel Level{ get; set; }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -83,7 +83,7 @@ namespace Server.Items
       writer.Write(m_DyedHue);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

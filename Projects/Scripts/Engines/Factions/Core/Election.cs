@@ -23,7 +23,7 @@ namespace Server.Factions
       StartTimer();
     }
 
-    public Election(GenericReader reader)
+    public Election(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -113,7 +113,7 @@ namespace Server.Factions
       m_Timer = Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), Slice);
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 
@@ -376,7 +376,7 @@ namespace Server.Factions
       Time = DateTime.UtcNow;
     }
 
-    public Voter(GenericReader reader, Mobile candidate)
+    public Voter(IGenericReader reader, Mobile candidate)
     {
       Candidate = candidate;
 
@@ -433,7 +433,7 @@ namespace Server.Factions
       return new object[] { From, Address, Time, totalFactor };
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0);
 
@@ -451,7 +451,7 @@ namespace Server.Factions
       Voters = new List<Voter>();
     }
 
-    public Candidate(GenericReader reader)
+    public Candidate(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -506,7 +506,7 @@ namespace Server.Factions
       }
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(1); // version
 

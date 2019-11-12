@@ -2194,14 +2194,14 @@ namespace Server.Engines.ConPVP
         Effects.SendLocationParticles(this, 0x376A, 9, 10, 5025);
       }
 
-      public override void Serialize(GenericWriter writer)
+      public override void Serialize(IGenericWriter writer)
       {
         base.Serialize(writer);
 
         writer.Write(0);
       }
 
-      public override void Deserialize(GenericReader reader)
+      public override void Deserialize(IGenericReader reader)
       {
         base.Deserialize(reader);
 
@@ -2341,7 +2341,7 @@ namespace Server.Engines.ConPVP
         return true;
       }
 
-      public override void Serialize(GenericWriter writer)
+      public override void Serialize(IGenericWriter writer)
       {
         base.Serialize(writer);
 
@@ -2362,7 +2362,7 @@ namespace Server.Engines.ConPVP
         }
       }
 
-      public override void Deserialize(GenericReader reader)
+      public override void Deserialize(IGenericReader reader)
       {
         base.Deserialize(reader);
 
@@ -2449,14 +2449,14 @@ namespace Server.Engines.ConPVP
         MoveToWorld(loc, map);
       }
 
-      public override void Serialize(GenericWriter writer)
+      public override void Serialize(IGenericWriter writer)
       {
         base.Serialize(writer);
 
         writer.Write(0);
       }
 
-      public override void Deserialize(GenericReader reader)
+      public override void Deserialize(IGenericReader reader)
       {
         base.Deserialize(reader);
 

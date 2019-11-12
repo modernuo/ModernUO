@@ -256,7 +256,7 @@ namespace Server.Items
       return true;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -277,7 +277,7 @@ namespace Server.Items
       writer.Write(m_MapDest);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -430,7 +430,7 @@ namespace Server.Items
         list.Add(1060662, "Message\t#{0}", m_MessageNumber);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -442,7 +442,7 @@ namespace Server.Items
       writer.Write(m_MessageNumber);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -563,7 +563,7 @@ namespace Server.Items
         list.Add(1060663, "Substring\t{0}", m_Substring);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -574,7 +574,7 @@ namespace Server.Items
       writer.Write(m_Range);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -707,7 +707,7 @@ namespace Server.Items
       base.DoTeleport(m);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -720,7 +720,7 @@ namespace Server.Items
       writer.Write(ShowTimeRemaining);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -811,7 +811,7 @@ namespace Server.Items
       return true;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -827,7 +827,7 @@ namespace Server.Items
       }
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -877,7 +877,7 @@ namespace Server.Items
       return true;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -886,7 +886,7 @@ namespace Server.Items
       writer.WriteItem(Teleporter);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1128,7 +1128,7 @@ namespace Server.Items
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -1137,7 +1137,7 @@ namespace Server.Items
       writer.Write((int)m_Flags);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

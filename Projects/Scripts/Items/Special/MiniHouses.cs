@@ -52,7 +52,7 @@ namespace Server.Items
           AddComponent(new AddonComponent(info.Graphics[num++]), size - x - 1, size - y - 1, 0);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -61,7 +61,7 @@ namespace Server.Items
       writer.Write((int)m_Type);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -116,7 +116,7 @@ namespace Server.Items
       list.Add(MiniHouseInfo.GetInfo(m_Type).LabelNumber);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -125,7 +125,7 @@ namespace Server.Items
       writer.Write((int)m_Type);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

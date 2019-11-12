@@ -34,14 +34,14 @@ namespace Server.Items
         from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

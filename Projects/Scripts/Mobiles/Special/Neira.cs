@@ -181,7 +181,7 @@ namespace Server.Mobiles
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -189,7 +189,7 @@ namespace Server.Mobiles
       writer.Write(m_SpeedBoost);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -245,7 +245,7 @@ namespace Server.Mobiles
 
       public IMount Mount => m_Mount;
 
-      public override void Serialize(GenericWriter writer)
+      public override void Serialize(IGenericWriter writer)
       {
         base.Serialize(writer);
 
@@ -254,7 +254,7 @@ namespace Server.Mobiles
         writer.Write(Rider);
       }
 
-      public override void Deserialize(GenericReader reader)
+      public override void Deserialize(IGenericReader reader)
       {
         base.Deserialize(reader);
 

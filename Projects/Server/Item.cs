@@ -127,7 +127,7 @@ namespace Server
       m_Parent = parent;
     }
 
-    public static BounceInfo Deserialize(GenericReader reader)
+    public static BounceInfo Deserialize(IGenericReader reader)
     {
       if (reader.ReadBool())
       {
@@ -152,7 +152,7 @@ namespace Server
       return null;
     }
 
-    public static void Serialize(BounceInfo info, GenericWriter writer)
+    public static void Serialize(BounceInfo info, IGenericWriter writer)
     {
       if (info == null)
       {
@@ -1138,7 +1138,7 @@ namespace Server
 
     uint ISerializable.SerialIdentity => Serial;
 
-    public virtual void Serialize(GenericWriter writer)
+    public virtual void Serialize(IGenericWriter writer)
     {
       writer.Write(9); // version
 
@@ -2158,7 +2158,7 @@ namespace Server
         VerifyCompactInfo();
     }
 
-    public virtual void Deserialize(GenericReader reader)
+    public virtual void Deserialize(IGenericReader reader)
     {
       int version = reader.ReadInt();
 

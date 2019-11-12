@@ -2690,7 +2690,7 @@ namespace Server
 
     uint ISerializable.SerialIdentity => Serial;
 
-    public virtual void Serialize(GenericWriter writer)
+    public virtual void Serialize(IGenericWriter writer)
     {
       writer.Write(32); // version
 
@@ -5665,7 +5665,7 @@ namespace Server
     {
     }
 
-    public virtual void Deserialize(GenericReader reader)
+    public virtual void Deserialize(IGenericReader reader)
     {
       int version = reader.ReadInt();
 

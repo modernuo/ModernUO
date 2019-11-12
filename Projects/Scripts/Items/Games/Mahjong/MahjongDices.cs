@@ -9,7 +9,7 @@ namespace Server.Engines.Mahjong
       Second = Utility.Random(1, 6);
     }
 
-    public MahjongDices(MahjongGame game, GenericReader reader)
+    public MahjongDices(MahjongGame game, IGenericReader reader)
     {
       Game = game;
 
@@ -37,7 +37,7 @@ namespace Server.Engines.Mahjong
           $"{from.Name}\t{First}\t{Second}"); // ~1_name~ rolls the dice and gets a ~2_number~ and a ~3_number~!
     }
 
-    public void Save(GenericWriter writer)
+    public void Save(IGenericWriter writer)
     {
       writer.Write(0); // version
 

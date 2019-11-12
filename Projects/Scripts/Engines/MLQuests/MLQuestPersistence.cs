@@ -18,7 +18,7 @@ namespace Server.Engines.MLQuests
         m_Instance = new MLQuestPersistence();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -34,7 +34,7 @@ namespace Server.Engines.MLQuests
         MLQuest.Serialize(writer, quest);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

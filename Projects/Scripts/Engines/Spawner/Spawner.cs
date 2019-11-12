@@ -783,7 +783,7 @@ namespace Server.Mobiles
       RemoveSpawns();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -811,7 +811,7 @@ namespace Server.Mobiles
         writer.WriteDeltaTime(End);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1068,7 +1068,7 @@ namespace Server.Mobiles
       Spawned = new List<ISpawnable>();
     }
 
-    public SpawnerEntry(Spawner parent, GenericReader reader)
+    public SpawnerEntry(Spawner parent, IGenericReader reader)
     {
       int version = reader.ReadInt();
 
@@ -1116,7 +1116,7 @@ namespace Server.Mobiles
 
     public bool IsFull => Spawned.Count >= SpawnedMaxCount;
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.Write(0); // version
 

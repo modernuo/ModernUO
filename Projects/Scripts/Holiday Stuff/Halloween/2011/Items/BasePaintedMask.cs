@@ -39,7 +39,7 @@ namespace Server.Items.Holiday
 
     public virtual string MaskName => "A Mask";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -47,7 +47,7 @@ namespace Server.Items.Holiday
       writer.Write(m_Staffer);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

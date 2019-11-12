@@ -30,7 +30,7 @@ namespace Server
       Hue = hue;
     }
 
-    protected BaseHairInfo(GenericReader reader)
+    protected BaseHairInfo(IGenericReader reader)
     {
       int version = reader.ReadInt();
 
@@ -51,7 +51,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public int Hue{ get; set; }
 
-    public virtual void Serialize(GenericWriter writer)
+    public virtual void Serialize(IGenericWriter writer)
     {
       writer.Write(0); //version
       writer.Write(ItemID);
@@ -71,7 +71,7 @@ namespace Server
     {
     }
 
-    public HairInfo(GenericReader reader)
+    public HairInfo(IGenericReader reader)
       : base(reader)
     {
     }
@@ -92,7 +92,7 @@ namespace Server
     {
     }
 
-    public FacialHairInfo(GenericReader reader)
+    public FacialHairInfo(IGenericReader reader)
       : base(reader)
     {
     }

@@ -21,7 +21,7 @@ namespace Server.Engines.BulkOrders
       Graphic = bod.Graphic;
     }
 
-    public BOBSmallEntry(GenericReader reader)
+    public BOBSmallEntry(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -80,7 +80,7 @@ namespace Server.Engines.BulkOrders
       return bod;
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 

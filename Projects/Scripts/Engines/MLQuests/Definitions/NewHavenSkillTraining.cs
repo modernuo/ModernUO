@@ -876,14 +876,14 @@ namespace Server.Engines.MLQuests.Definitions
       AddItem(new OrderShield());
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -935,14 +935,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078128); // You there! Wanna master hand to hand defense? Of course you do!
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1013,14 +1013,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078141); // Don't listen to Jockles. Real warriors wield mace weapons!
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1095,14 +1095,14 @@ namespace Server.Engines.MLQuests.Definitions
       AddItem(item);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1176,14 +1176,14 @@ namespace Server.Engines.MLQuests.Definitions
         1078187); // The art of fencing requires a dexterous hand, a quick wit and fleet feet.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1238,14 +1238,14 @@ namespace Server.Engines.MLQuests.Definitions
         1078136); // There is an art to slaying your enemies swiftly. It's called tactics, and I can teach it to you.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1299,14 +1299,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078135); // Talk to me to learn the way of the blade.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1380,14 +1380,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078140); // Want to learn how to parry blows?
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1436,14 +1436,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078130); // A mage should learn how to resist spells.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1492,14 +1492,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078126); // Meditation allows a mage to replenish mana quickly. I can teach you.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1518,14 +1518,14 @@ namespace Server.Engines.MLQuests.Definitions
 
     public override string DefaultName => " ";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // Version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1575,14 +1575,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078129); // I can teach you how to scribe magic scrolls.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1632,14 +1632,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078125); // Want to unlock the secrets of magery?
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1693,14 +1693,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078127); // Want to maximize your spell damage? I have a scholarly task for you!
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1753,14 +1753,14 @@ namespace Server.Engines.MLQuests.Definitions
       AddItem(new HalfApron(0x8AB));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1813,14 +1813,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078138); // Learning of the body will allow you to excel in combat.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1870,14 +1870,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078137); // A warrior needs to learn how to apply bandages to wounds.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1932,14 +1932,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078139); // Know yourself, and you will become a true warrior.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2002,14 +2002,14 @@ namespace Server.Engines.MLQuests.Definitions
       PackGold(100, 200);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2051,14 +2051,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078165); // To be undetected means you cannot be harmed.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2111,14 +2111,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078175); // Walk Silently. Remain unseen. I can teach you.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2176,14 +2176,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2247,14 +2247,14 @@ namespace Server.Engines.MLQuests.Definitions
       PackGold(100, 200);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2325,14 +2325,14 @@ namespace Server.Engines.MLQuests.Definitions
       AddItem(item);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2383,14 +2383,14 @@ namespace Server.Engines.MLQuests.Definitions
       AddItem(new SkullCap(0x455));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2446,14 +2446,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1078124); // You there! I can use some help mining these rocks!
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2511,14 +2511,14 @@ namespace Server.Engines.MLQuests.Definitions
       AddItem(item);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

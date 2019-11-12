@@ -118,7 +118,7 @@ namespace Server.Engines.BulkOrders
         from.Target = new BODTarget(this);
     }
 
-    public override void Serialize( GenericWriter writer )
+    public override void Serialize(IGenericWriter writer )
     {
       base.Serialize( writer );
 
@@ -129,7 +129,7 @@ namespace Server.Engines.BulkOrders
       writer.Write( (int) m_Material );
     }
 
-    public override void Deserialize( GenericReader reader )
+    public override void Deserialize( IGenericReader reader )
     {
       base.Deserialize( reader );
 

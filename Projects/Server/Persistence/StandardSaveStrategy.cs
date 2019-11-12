@@ -61,9 +61,9 @@ namespace Server
     {
       Dictionary<Serial, Mobile> mobiles = World.Mobiles;
 
-      GenericWriter idx;
-      GenericWriter tdb;
-      GenericWriter bin;
+      IGenericWriter idx;
+      IGenericWriter tdb;
+      IGenericWriter bin;
 
       if (UseSequentialWriters)
       {
@@ -108,9 +108,9 @@ namespace Server
     {
       Dictionary<Serial, Item> items = World.Items;
 
-      GenericWriter idx;
-      GenericWriter tdb;
-      GenericWriter bin;
+      IGenericWriter idx;
+      IGenericWriter tdb;
+      IGenericWriter bin;
 
       if (UseSequentialWriters)
       {
@@ -158,8 +158,8 @@ namespace Server
 
     protected void SaveGuilds()
     {
-      GenericWriter idx;
-      GenericWriter bin;
+      IGenericWriter idx;
+      IGenericWriter bin;
 
       if (UseSequentialWriters)
       {

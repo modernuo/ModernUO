@@ -113,7 +113,7 @@ namespace Server.Spells.Fifth
         m_Timer?.Stop();
       }
 
-      public override void Serialize(GenericWriter writer)
+      public override void Serialize(IGenericWriter writer)
       {
         base.Serialize(writer);
 
@@ -123,7 +123,7 @@ namespace Server.Spells.Fifth
         writer.WriteDeltaTime(m_End);
       }
 
-      public override void Deserialize(GenericReader reader)
+      public override void Deserialize(IGenericReader reader)
       {
         base.Deserialize(reader);
 

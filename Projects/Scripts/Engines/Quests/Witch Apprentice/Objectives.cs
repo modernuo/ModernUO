@@ -78,7 +78,7 @@ namespace Server.Engines.Quests.Hag
       System.AddConversation(new ApprenticeCorpseConversation());
     }
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -100,7 +100,7 @@ namespace Server.Engines.Quests.Hag
         m_CorpseLocation = RandomCorpseLocation();
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       if (Corpse?.Deleted == true)
         Corpse = null;
@@ -172,14 +172,14 @@ namespace Server.Engines.Quests.Hag
       System.AddConversation(new ImpDeathConversation(loc));
     }
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
       m_MaxProgress = reader.ReadInt();
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 
@@ -230,14 +230,14 @@ namespace Server.Engines.Quests.Hag
       System.AddConversation(new ZeefzorpulConversation());
     }
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
       ImpLocation = reader.ReadPoint3D();
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 
@@ -396,7 +396,7 @@ namespace Server.Engines.Quests.Hag
         System.AddObjective(new ReturnIngredientsObjective());
     }
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -407,7 +407,7 @@ namespace Server.Engines.Quests.Hag
       BlackheartMet = reader.ReadBool();
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 

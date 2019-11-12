@@ -30,14 +30,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer) // Default Serialize method
+    public override void Serialize(IGenericWriter writer) // Default Serialize method
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader) // Default Deserialize method
+    public override void Deserialize(IGenericReader reader) // Default Deserialize method
     {
       base.Deserialize(reader);
 
@@ -57,14 +57,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer) // Default Serialize method
+    public override void Serialize(IGenericWriter writer) // Default Serialize method
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader) // Default Deserialize method
+    public override void Deserialize(IGenericReader reader) // Default Deserialize method
     {
       base.Deserialize(reader);
 
@@ -84,14 +84,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer) // Default Serialize method
+    public override void Serialize(IGenericWriter writer) // Default Serialize method
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader) // Default Deserialize method
+    public override void Deserialize(IGenericReader reader) // Default Deserialize method
     {
       base.Deserialize(reader);
 
@@ -111,14 +111,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer) // Default Serialize method
+    public override void Serialize(IGenericWriter writer) // Default Serialize method
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader) // Default Deserialize method
+    public override void Deserialize(IGenericReader reader) // Default Deserialize method
     {
       base.Deserialize(reader);
 
@@ -138,14 +138,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer) // Default Serialize method
+    public override void Serialize(IGenericWriter writer) // Default Serialize method
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader) // Default Deserialize method
+    public override void Deserialize(IGenericReader reader) // Default Deserialize method
     {
       base.Deserialize(reader);
 
@@ -165,14 +165,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer) // Default Serialize method
+    public override void Serialize(IGenericWriter writer) // Default Serialize method
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader) // Default Deserialize method
+    public override void Deserialize(IGenericReader reader) // Default Deserialize method
     {
       base.Deserialize(reader);
 
@@ -192,14 +192,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer) // Default Serialize method
+    public override void Serialize(IGenericWriter writer) // Default Serialize method
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader) // Default Deserialize method
+    public override void Deserialize(IGenericReader reader) // Default Deserialize method
     {
       base.Deserialize(reader);
 
@@ -219,14 +219,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer) // Default Serialize method
+    public override void Serialize(IGenericWriter writer) // Default Serialize method
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader) // Default Deserialize method
+    public override void Deserialize(IGenericReader reader) // Default Deserialize method
     {
       base.Deserialize(reader);
 
@@ -246,14 +246,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer) // Default Serialize method
+    public override void Serialize(IGenericWriter writer) // Default Serialize method
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader) // Default Deserialize method
+    public override void Deserialize(IGenericReader reader) // Default Deserialize method
     {
       base.Deserialize(reader);
 
@@ -273,14 +273,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer) // Default Serialize method
+    public override void Serialize(IGenericWriter writer) // Default Serialize method
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader) // Default Deserialize method
+    public override void Deserialize(IGenericReader reader) // Default Deserialize method
     {
       base.Deserialize(reader);
 
@@ -300,14 +300,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer) // Default Serialize method
+    public override void Serialize(IGenericWriter writer) // Default Serialize method
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader) // Default Deserialize method
+    public override void Deserialize(IGenericReader reader) // Default Deserialize method
     {
       base.Deserialize(reader);
 
@@ -327,14 +327,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer) // Default Serialize method
+    public override void Serialize(IGenericWriter writer) // Default Serialize method
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader) // Default Deserialize method
+    public override void Deserialize(IGenericReader reader) // Default Deserialize method
     {
       base.Deserialize(reader);
 
@@ -354,14 +354,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer) // Default Serialize method
+    public override void Serialize(IGenericWriter writer) // Default Serialize method
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader) // Default Deserialize method
+    public override void Deserialize(IGenericReader reader) // Default Deserialize method
     {
       base.Deserialize(reader);
 

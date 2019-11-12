@@ -35,7 +35,7 @@ namespace Server.Engines.ConPVP
         base.Delete();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -44,7 +44,7 @@ namespace Server.Engines.ConPVP
       Preferences.Serialize(writer);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -72,7 +72,7 @@ namespace Server.Engines.ConPVP
       Entries = new List<PreferencesEntry>();
     }
 
-    public Preferences(GenericReader reader)
+    public Preferences(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -116,7 +116,7 @@ namespace Server.Engines.ConPVP
       return entry;
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version;
 
@@ -135,7 +135,7 @@ namespace Server.Engines.ConPVP
       Disliked = new List<string>();
     }
 
-    public PreferencesEntry(GenericReader reader, int version)
+    public PreferencesEntry(IGenericReader reader, int version)
     {
       switch (version)
       {
@@ -159,7 +159,7 @@ namespace Server.Engines.ConPVP
 
     public List<string> Disliked{ get; }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.Write(Mobile);
 

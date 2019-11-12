@@ -89,7 +89,7 @@ namespace Server.Engines.Quests.Ambitious
         System.AddObjective(new GetRewardObjective(m_BagOfSending, m_PowderOfTranslocation, m_Gold));
     }
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -98,7 +98,7 @@ namespace Server.Engines.Quests.Ambitious
       m_Gold = reader.ReadBool();
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 

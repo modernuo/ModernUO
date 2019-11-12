@@ -91,7 +91,7 @@ namespace Server.Mobiles
 
     public string Keyword{ get; set; }
 
-    public static BarkeeperRumor Deserialize(GenericReader reader)
+    public static BarkeeperRumor Deserialize(IGenericReader reader)
     {
       if (!reader.ReadBool())
         return null;
@@ -99,7 +99,7 @@ namespace Server.Mobiles
       return new BarkeeperRumor(reader.ReadString(), reader.ReadString());
     }
 
-    public static void Serialize(GenericWriter writer, BarkeeperRumor rumor)
+    public static void Serialize(IGenericWriter writer, BarkeeperRumor rumor)
     {
       if (rumor == null)
       {
@@ -475,7 +475,7 @@ namespace Server.Mobiles
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -493,7 +493,7 @@ namespace Server.Mobiles
       writer.Write(TipMessage);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

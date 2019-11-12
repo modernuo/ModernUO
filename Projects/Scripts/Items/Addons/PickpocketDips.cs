@@ -87,7 +87,7 @@ namespace Server.Items
         Use(from);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -97,7 +97,7 @@ namespace Server.Items
       writer.Write(MaxSkill);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -154,14 +154,14 @@ namespace Server.Items
 
     public override BaseAddonDeed Deed => new PickpocketDipEastDeed();
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -183,14 +183,14 @@ namespace Server.Items
     public override BaseAddon Addon => new PickpocketDipEastAddon();
     public override int LabelNumber => 1044337; // pickpocket dip (east)
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -212,14 +212,14 @@ namespace Server.Items
 
     public override BaseAddonDeed Deed => new PickpocketDipSouthDeed();
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -241,14 +241,14 @@ namespace Server.Items
     public override BaseAddon Addon => new PickpocketDipSouthAddon();
     public override int LabelNumber => 1044338; // pickpocket dip (south)
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

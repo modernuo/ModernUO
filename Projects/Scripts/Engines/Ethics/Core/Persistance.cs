@@ -22,7 +22,7 @@ namespace Server.Ethics
 
     public override string DefaultName => "Ethics Persistance - Internal";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -32,7 +32,7 @@ namespace Server.Ethics
         Ethic.Ethics[i].Serialize(writer);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

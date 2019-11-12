@@ -171,7 +171,7 @@ namespace Server.Items
         DoEffect(m);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -214,9 +214,9 @@ namespace Server.Items
       writer.WriteEncodedInt(TriggerRange);
     }
 
-    private IEntity ReadEntity(GenericReader reader) => World.FindEntity(reader.ReadUInt());
+    private IEntity ReadEntity(IGenericReader reader) => World.FindEntity(reader.ReadUInt());
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

@@ -1,4 +1,4 @@
-﻿using Server.Gumps;
+using Server.Gumps;
 using Server.Network;
 
 namespace Server.Items
@@ -54,14 +54,14 @@ namespace Server.Items
       m?.CloseGump<PromotionalTokenGump>();
     }
 
-    public override void Serialize( GenericWriter writer )
+    public override void Serialize(IGenericWriter writer )
     {
       base.Serialize( writer );
 
       writer.Write( 0 );
     }
 
-    public override void Deserialize( GenericReader reader )
+    public override void Deserialize( IGenericReader reader )
     {
       base.Deserialize( reader );
 
@@ -139,14 +139,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize( GenericWriter writer )
+    public override void Serialize(IGenericWriter writer )
     {
       base.Serialize( writer );
 
       writer.Write( 0 );
     }
 
-    public override void Deserialize( GenericReader reader )
+    public override void Deserialize( IGenericReader reader )
     {
       base.Deserialize( reader );
 

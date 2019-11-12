@@ -163,14 +163,14 @@ namespace Server.Engines.Quests.Collector
       System.AddConversation(new GetSheetMusicConversation());
     }
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
       m_Theater = (Theater)reader.ReadEncodedInt();
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 
@@ -310,7 +310,7 @@ namespace Server.Engines.Quests.Collector
       System.AddObjective(new ReturnImagesObjective());
     }
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -326,7 +326,7 @@ namespace Server.Engines.Quests.Collector
       }
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 

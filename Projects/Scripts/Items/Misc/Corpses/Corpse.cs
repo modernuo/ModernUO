@@ -523,7 +523,7 @@ namespace Server.Items
       m_Flags = on ? m_Flags | flag : m_Flags & ~flag;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -590,7 +590,7 @@ namespace Server.Items
       writer.Write(EquipItems);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

@@ -60,9 +60,9 @@ namespace Server.Guilds
     int ISerializable.TypeReference => 0;
 
     uint ISerializable.SerialIdentity => Id;
-    public abstract void Serialize(GenericWriter writer);
+    public abstract void Serialize(IGenericWriter writer);
 
-    public abstract void Deserialize(GenericReader reader);
+    public abstract void Deserialize(IGenericReader reader);
     public abstract void OnDelete(Mobile mob);
 
     public static BaseGuild Find(uint id)

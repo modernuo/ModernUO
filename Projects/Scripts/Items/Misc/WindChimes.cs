@@ -60,7 +60,7 @@ namespace Server.Items
         from.SendLocalizedMessage(502691); // You must be the owner to use this.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -69,7 +69,7 @@ namespace Server.Items
       writer.Write(m_TurnedOn);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -135,13 +135,13 @@ namespace Server.Items
 
     public override int LabelNumber => 1030290;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
       int version = reader.ReadInt();
@@ -161,13 +161,13 @@ namespace Server.Items
 
     public override int LabelNumber => 1030291;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
       int version = reader.ReadInt();

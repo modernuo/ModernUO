@@ -439,14 +439,14 @@ namespace Server.Factions
 
     public override string ToString() => Definition.FriendlyName;
 
-    public static void WriteReference(GenericWriter writer, Town town)
+    public static void WriteReference(IGenericWriter writer, Town town)
     {
       int idx = Towns.IndexOf(town);
 
       writer.WriteEncodedInt(idx + 1);
     }
 
-    public static Town ReadReference(GenericReader reader)
+    public static Town ReadReference(IGenericReader reader)
     {
       int idx = reader.ReadEncodedInt() - 1;
 

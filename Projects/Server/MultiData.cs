@@ -178,7 +178,7 @@ namespace Server
         List[i] = toCopy.List[i];
     }
 
-    public MultiComponentList(GenericReader reader)
+    public MultiComponentList(IGenericReader reader)
     {
       int version = reader.ReadInt();
 
@@ -555,7 +555,7 @@ namespace Server
       }
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.Write(1); // version;
 

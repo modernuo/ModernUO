@@ -14,14 +14,14 @@ namespace Server.Items
 
     public override BaseAddonDeed Deed => new SmallStretchedHideEastDeed();
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -43,14 +43,14 @@ namespace Server.Items
     public override BaseAddon Addon => new SmallStretchedHideEastAddon();
     public override int LabelNumber => 1049401; // a small stretched hide deed facing east
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -72,14 +72,14 @@ namespace Server.Items
 
     public override BaseAddonDeed Deed => new SmallStretchedHideSouthDeed();
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -101,14 +101,14 @@ namespace Server.Items
     public override BaseAddon Addon => new SmallStretchedHideSouthAddon();
     public override int LabelNumber => 1049402; // a small stretched hide deed facing south
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -130,14 +130,14 @@ namespace Server.Items
 
     public override BaseAddonDeed Deed => new MediumStretchedHideEastDeed();
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -159,14 +159,14 @@ namespace Server.Items
     public override BaseAddon Addon => new MediumStretchedHideEastAddon();
     public override int LabelNumber => 1049403; // a medium stretched hide deed facing east
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -188,14 +188,14 @@ namespace Server.Items
 
     public override BaseAddonDeed Deed => new MediumStretchedHideSouthDeed();
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -217,14 +217,14 @@ namespace Server.Items
     public override BaseAddon Addon => new MediumStretchedHideSouthAddon();
     public override int LabelNumber => 1049404; // a medium stretched hide deed facing south
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

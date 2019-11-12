@@ -17,7 +17,7 @@ namespace Server.Factions
       Faction = faction;
     }
 
-    public FactionItem(GenericReader reader, Faction faction)
+    public FactionItem(IGenericReader reader, Faction faction)
     {
       int version = reader.ReadEncodedInt();
 
@@ -81,7 +81,7 @@ namespace Server.Factions
         Faction.State.FactionItems.Remove(this);
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0);
 

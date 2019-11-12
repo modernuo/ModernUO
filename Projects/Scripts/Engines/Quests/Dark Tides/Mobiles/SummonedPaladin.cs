@@ -117,7 +117,7 @@ namespace Server.Engines.Quests.Necro
         qs.AddObjective(new FindMardothEndObjective(true));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -127,7 +127,7 @@ namespace Server.Engines.Quests.Necro
       writer.Write(m_ToDelete);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -224,14 +224,14 @@ namespace Server.Engines.Quests.Necro
     {
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
