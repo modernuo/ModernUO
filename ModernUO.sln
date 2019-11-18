@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Projects\Server\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripts", "Projects\Scripts\Scripts.csproj", "{83CF2484-BCCB-4B7C-9C5F-7AB43AEA5E8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModernServer", "Projects\ModernServer\ModernServer.csproj", "{EC7A5989-5FC4-444B-AB58-3F90F1F88E5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{83CF2484-BCCB-4B7C-9C5F-7AB43AEA5E8F}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{83CF2484-BCCB-4B7C-9C5F-7AB43AEA5E8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83CF2484-BCCB-4B7C-9C5F-7AB43AEA5E8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC7A5989-5FC4-444B-AB58-3F90F1F88E5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC7A5989-5FC4-444B-AB58-3F90F1F88E5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC7A5989-5FC4-444B-AB58-3F90F1F88E5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC7A5989-5FC4-444B-AB58-3F90F1F88E5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -12,6 +12,8 @@
 /Projects/Scripts/bin
 /Projects/Server/obj
 /Projects/Server/bin
+/Projects/ModernServer/obj
+/Projects/ModernServer/bin
 
 *.log
 *.user
