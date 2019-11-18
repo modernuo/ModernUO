@@ -20,6 +20,7 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -27,6 +28,13 @@ namespace ModernServer
 {
   public static class Core
   {
+    public static bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+    public static bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+    public static bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static long VolatileRead(ref long value) => IntPtr.Size == 8 ? Volatile.Read(ref value) : Interlocked.Read(ref value);
+
     public static bool Closing { get; private set; }
     public static readonly AutoResetEvent UnloadSignal = new AutoResetEvent(true);
 
@@ -47,15 +55,13 @@ namespace ModernServer
       // Load Engine.dll assembly
 
       while (UnloadSignal.WaitOne())
-      {
-        if (Closing)
-          break;
+      if (Closing)
+        break;
 
-        // Load Everything
-        // Wait for restart signal
-        // Unload Everything
-        // Restart
-      }
+      // Load Everything
+      // Wait for restart signal
+      // Unload Everything
+      // Restart
 
       HandleClosed();
     }

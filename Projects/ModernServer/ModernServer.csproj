@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -57,5 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.IO.Pipelines" Version="4.6.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Libuv" />
   </ItemGroup>
 </Project>
