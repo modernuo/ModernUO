@@ -58,11 +58,12 @@ namespace ModernServer
       GameThread gameThread = new GameThread();
       gameThread.StartAsync().Wait(); // Synchronously wait for this to complete
 
-
+      // Start TCP Listener
 
       while (UnloadSignal.WaitOne())
       {
-
+        // Unload everything
+        // Load everything
       }
 
       // Load Everything
