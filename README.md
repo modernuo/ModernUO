@@ -3,8 +3,10 @@ ModernUO
 
 Ultima Online Server Emulator for the modern era!
 
-### Join!
-[Join Discord Channel](https://discord.gg/VdyCpjQ)
+### Join and Follow!
+[Discord Channel](https://discord.gg/VdyCpjQ)  
+[Twitter](https://www.twitter.com/modernuo)  
+[Reddit](https://www.reddit.com/r/modernuo)  
 
 ### Goals
 - See [Goals](./GOALS.md)
