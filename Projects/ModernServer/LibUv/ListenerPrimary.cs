@@ -7,9 +7,10 @@ using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Libuv;
 using Libuv.Internal;
+using Microsoft.Extensions.Logging;
 using ModernServer;
+#pragma warning disable 169
 
 namespace Libuv
 {

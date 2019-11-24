@@ -8,7 +8,9 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Libuv.Internal;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal;
+using Microsoft.AspNetCore.Connections;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using ModernServer;
 
 namespace Libuv

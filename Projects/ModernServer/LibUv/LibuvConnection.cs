@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Libuv.Internal;
 using Microsoft.AspNetCore.Connections;
+using Microsoft.Extensions.Logging;
 
 namespace Libuv
 {
@@ -20,8 +21,7 @@ namespace Libuv
     private static readonly Action<UvStreamHandle, int, object> _readCallback =
       (handle, status, state) => ReadCallback(handle, status, state);
 
-    private static readonly Func<UvStreamHandle, int, object, LibuvFunctions.uv_buf_t> _allocCallback =
-      (handle, suggestedSize, state) => AllocCallback(handle, suggestedSize, state);
+    private static readonly Func<UvStreamHandle, int, object, LibuvFunctions.uv_buf_t> _allocCallback = AllocCallback;
 
     private readonly UvStreamHandle _socket;
     private readonly CancellationTokenSource _connectionClosedTokenSource = new CancellationTokenSource();
@@ -202,8 +202,8 @@ namespace Libuv
         var flushTask = Input.FlushAsync();
 
         if (!flushTask.IsCompleted)
-        // We wrote too many bytes to the reader, so pause reading and resume when
-        // we hit the low water mark.
+          // We wrote too many bytes to the reader, so pause reading and resume when
+          // we hit the low water mark.
           _ = ApplyBackpressureAsync(flushTask);
       }
       else
@@ -244,7 +244,7 @@ namespace Libuv
           state._waitForConnectionClosedTcs.TrySetResult(null);
         },
         this,
-        preferLocal: false);
+        false);
     }
 
     private async Task ApplyBackpressureAsync(ValueTask<FlushResult> flushTask)

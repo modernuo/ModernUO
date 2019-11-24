@@ -98,7 +98,7 @@ namespace Libuv.Internal
     public Func<IntPtr, int> _uv_loop_close;
     public void loop_close(UvLoopHandle handle)
     {
-      handle.Validate(closed: true);
+      handle.Validate(true);
       ThrowIfErrored(_uv_loop_close(handle.InternalGetHandle()));
     }
 
@@ -144,7 +144,7 @@ namespace Libuv.Internal
     public Action<IntPtr, uv_close_cb> _uv_close;
     public void close(UvHandle handle, uv_close_cb close_cb)
     {
-      handle.Validate(closed: true);
+      handle.Validate(true);
       _uv_close(handle.InternalGetHandle(), close_cb);
     }
 

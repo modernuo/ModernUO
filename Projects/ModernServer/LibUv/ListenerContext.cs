@@ -9,6 +9,9 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Libuv.Internal;
+using Microsoft.AspNetCore.Connections;
+using Microsoft.Extensions.Logging;
 
 namespace Libuv
 {
@@ -50,7 +53,7 @@ namespace Libuv
     {
       while (await _acceptQueue.Reader.WaitToReadAsync())
       while (_acceptQueue.Reader.TryRead(out var connection))
-      // REVIEW: Pass an abort reason?
+        // REVIEW: Pass an abort reason?
         connection.Abort();
     }
 

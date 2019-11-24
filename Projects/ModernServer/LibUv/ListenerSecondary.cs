@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Libuv.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace Libuv
 {

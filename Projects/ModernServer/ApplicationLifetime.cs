@@ -3,6 +3,8 @@
 
 using System;
 using System.Threading;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.AspNetCore.Hosting
 {
@@ -42,8 +44,8 @@ namespace Microsoft.AspNetCore.Hosting
     /// </summary>
     public void StopApplication()
     {
-      // Lock on CTS to synchronize multiple calls to StopApplication. This guarantees that the first call 
-      // to StopApplication and its callbacks run to completion before subsequent calls to StopApplication, 
+      // Lock on CTS to synchronize multiple calls to StopApplication. This guarantees that the first call
+      // to StopApplication and its callbacks run to completion before subsequent calls to StopApplication,
       // which will no-op since the first call already requested cancellation, get a chance to execute.
       lock (_stoppingSource)
       {
@@ -100,7 +102,7 @@ namespace Microsoft.AspNetCore.Hosting
       if (cancel.IsCancellationRequested) return;
 
       // Run the cancellation token callbacks
-      cancel.Cancel(throwOnFirstException: false);
+      cancel.Cancel(false);
     }
   }
 }

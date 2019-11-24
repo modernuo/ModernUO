@@ -5,6 +5,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Microsoft.Extensions.Logging;
 
 namespace Libuv.Internal
 {
@@ -131,7 +132,7 @@ namespace Libuv.Internal
       Action<UvWriteReq, int, UvException, object> callback,
       object state)
     {
-      WriteArraySegmentInternal(handle, bufs, sendHandle: null, callback: callback, state: state);
+      WriteArraySegmentInternal(handle, bufs, null, callback, state);
     }
 
     public void Write2(

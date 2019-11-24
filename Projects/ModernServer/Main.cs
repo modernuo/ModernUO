@@ -54,9 +54,16 @@ namespace ModernServer
 
       // Load Engine.dll assembly
 
+      // TODO: Make configurable
+      GameThread gameThread = new GameThread();
+      gameThread.StartAsync().Wait(); // Synchronously wait for this to complete
+
+
+
       while (UnloadSignal.WaitOne())
-      if (Closing)
-        break;
+      {
+
+      }
 
       // Load Everything
       // Wait for restart signal

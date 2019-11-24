@@ -6,6 +6,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Libuv.Internal;
+using Microsoft.AspNetCore.Connections;
+using Microsoft.Extensions.Logging;
 
 namespace Libuv
 {
@@ -46,8 +48,8 @@ namespace Libuv
     {
       return EndPoint switch
       {
-        IPEndPoint _ => ListenTcp(useFileHandle: false),
-        UnixDomainSocketEndPoint _ => ListenPipe(useFileHandle: false),
+        IPEndPoint _ => ListenTcp(false),
+        UnixDomainSocketEndPoint _ => ListenPipe(false),
         FileHandleEndPoint _ => ListenHandle(),
         _ => throw new NotSupportedException()
       };
@@ -115,9 +117,9 @@ namespace Libuv
         case FileHandleType.Auto:
           break;
         case FileHandleType.Tcp:
-          return ListenTcp(useFileHandle: true);
+          return ListenTcp(true);
         case FileHandleType.Pipe:
-          return ListenPipe(useFileHandle: true);
+          return ListenPipe(true);
         default:
           throw new NotSupportedException();
       }
@@ -125,7 +127,7 @@ namespace Libuv
       UvStreamHandle handle;
       try
       {
-        handle = ListenTcp(useFileHandle: true);
+        handle = ListenTcp(true);
         EndPoint = new FileHandleEndPoint(handleEndPoint.FileHandle, FileHandleType.Tcp);
         return handle;
       }
@@ -134,7 +136,7 @@ namespace Libuv
         Log.LogDebug(0, exception, "Listener.ListenHandle");
       }
 
-      handle = ListenPipe(useFileHandle: true);
+      handle = ListenPipe(true);
       EndPoint = new FileHandleEndPoint(handleEndPoint.FileHandle, FileHandleType.Pipe);
       return handle;
     }
