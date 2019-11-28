@@ -28,6 +28,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Connections;
 using Server.Accounting;
 using Server.Diagnostics;
 using Server.Gumps;
@@ -93,7 +94,6 @@ namespace Server.Network
   {
     private string m_ToString;
     private ClientVersion m_Version;
-    private SendQueue<Packet> m_SendQueue = new SendQueue<Packet>();
 
     public DateTime ConnectedOn { get; }
 
@@ -270,7 +270,7 @@ namespace Server.Network
 
     public bool Seeded { get; set; }
 
-    public Socket Socket { get; private set; }
+    public ConnectionContext Connection { get; private set; }
 
     public bool CompressionEnabled { get; set; }
 
@@ -282,11 +282,15 @@ namespace Server.Network
 
     public List<IMenu> Menus { get; private set; }
 
+    public PipeReader RecvPipe => Connection.Transport.Input;
+    public PipeWriter SendPipe => Connection.Transport.Output;
+
     public static int GumpCap { get; set; } = 512;
 
     public static int HuePickerCap { get; set; } = 512;
 
     public static int MenuCap { get; set; } = 512;
+
 
     public void WriteConsole(string text)
     {
@@ -403,9 +407,9 @@ namespace Server.Network
 
     public static List<NetState> Instances { get; } = new List<NetState>();
 
-    public NetState(Socket socket, MessagePump pump)
+    public NetState(ConnectionContext connection, MessagePump pump)
     {
-      Socket = socket;
+      Connection = connection;
       Seeded = false;
       Running = false;
       Gumps = new List<Gump>();
@@ -419,7 +423,7 @@ namespace Server.Network
 
       try
       {
-        Address = Utility.Intern(((IPEndPoint)Socket.RemoteEndPoint).Address);
+        Address = Utility.Intern(((IPEndPoint)Connection.RemoteEndPoint).Address);
         m_ToString = Address.ToString();
       }
       catch (Exception ex)
@@ -430,10 +434,10 @@ namespace Server.Network
       }
 
       ConnectedOn = DateTime.UtcNow;
-      _ = Start(pump);
+      _ = ProcessRecvs(pump);
 
       CreatedCallback?.Invoke(this);
-      Console.WriteLine("Client: {0}: Connected. [{1} Online]", this, NetState.Instances.Count);
+      Console.WriteLine("Client: {0}: Connected. [{1} Online]", this, Instances.Count);
     }
 
     public static void Pause()
@@ -448,13 +452,46 @@ namespace Server.Network
 
     public virtual void Send(Packet p)
     {
-      if (Socket == null || BlockAllPackets)
+      if (Connection == null || BlockAllPackets)
       {
         p.OnSend();
         return;
       }
 
-      m_SendQueue.Enqueue(p);
+      try
+      {
+        ReadOnlySpan<byte> buffer = p.Compile(CompressionEnabled, out int length);
+
+        if (buffer.Length <= 0 || length <= 0)
+        {
+          p.OnSend();
+          return;
+        }
+
+        PacketSendProfile prof = null;
+
+        if (Core.Profiling)
+          prof = PacketSendProfile.Acquire(p.GetType());
+
+        prof?.Start();
+
+        buffer.Slice(0, length).CopyTo(SendPipe.GetSpan(length));
+        SendPipe.Advance(length);
+
+        p.OnSend();
+
+        prof?.Finish(length);
+      }
+      catch (SocketException ex)
+      {
+        Console.WriteLine(ex);
+        TraceException(ex);
+        Dispose();
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine(ex);
+      }
     }
 
     public bool CheckEncrypted(int packetID)
@@ -470,106 +507,13 @@ namespace Server.Network
       return false;
     }
 
-    private Pipe m_RecvdPipe;
-
-    private async Task Start(MessagePump pump)
+    private async Task ProcessRecvs(MessagePump pump)
     {
-      m_RecvdPipe = new Pipe();
-      Running = true;
-
-      await Task.WhenAll(ProcessSends(), ProcessRecvs(), HandlePackets(pump)).ConfigureAwait(false);
-    }
-
-    private async Task ProcessRecvs()
-    {
-      PipeWriter w = m_RecvdPipe.Writer;
-
       while (true)
       {
-        if (m_AsyncState.Paused)
-        {
-          await Timer.Pause(50).ConfigureAwait(false);
-          continue;
-        }
-
-        try
-        {
-          Memory<byte> memory = w.GetMemory();
-          int bytesRead = await Socket.ReceiveAsync(memory, SocketFlags.None).ConfigureAwait(false);
-          if (bytesRead == 0)
-            break;
-
-          Interlocked.Exchange(ref m_NextCheckActivity, Core.TickCount + 90000);
-
-          w.Advance(bytesRead);
-
-          FlushResult result = await w.FlushAsync().ConfigureAwait(false);
-          if (result.IsCompleted || result.IsCanceled)
-            break;
-        }
-        catch
-        {
-          break;
-        }
-      }
-
-      w.Complete();
-      Dispose();
-    }
-
-    private async Task ProcessSends()
-    {
-      while (true)
-        try
-        {
-          Packet p = await m_SendQueue?.DequeueAsync();
-          if (p == null)
-            break;
-
-          ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out int length);
-
-          if (buffer.Length <= 0 || length <= 0)
-          {
-            p.OnSend();
-            return;
-          }
-
-          buffer = buffer.Slice(0, length);
-
-          PacketSendProfile prof = null;
-
-          if (Core.Profiling)
-            prof = PacketSendProfile.Acquire(p.GetType());
-
-          prof?.Start();
-
-          await Socket.SendAsync(buffer, SocketFlags.None).ConfigureAwait(false);
-
-          p.OnSend();
-
-          prof?.Finish(length);
-        }
-        catch (SocketException ex)
-        {
-          Console.WriteLine(ex);
-          TraceException(ex);
-          Dispose();
-          break;
-        }
-        catch (Exception ex)
-        {
-          Console.WriteLine(ex);
-        }
-    }
-
-    private async Task HandlePackets(MessagePump pump)
-    {
-      PipeReader pr = m_RecvdPipe.Reader;
-
-      while (true)
-      {
-        ReadResult result = await pr.ReadAsync();
+        ReadResult result = await RecvPipe.ReadAsync();
         ReadOnlySequence<byte> seq = result.Buffer;
+
         if (seq.Length == 0)
           break;
 
@@ -578,13 +522,13 @@ namespace Server.Network
         if (pos <= 0)
           break;
 
-        pr.AdvanceTo(seq.GetPosition(pos, seq.Start));
+        RecvPipe.AdvanceTo(seq.GetPosition(pos, seq.Start));
 
         if (result.IsCompleted || result.IsCanceled)
           break;
       }
 
-      pr.Complete();
+      RecvPipe.Complete();
     }
 
     public PacketHandler GetHandler(int packetID) =>
@@ -595,7 +539,7 @@ namespace Server.Network
 
     public void CheckAlive(long curTicks)
     {
-      if (Socket == null || m_NextCheckActivity - curTicks >= 0)
+      if (Connection == null || m_NextCheckActivity - curTicks >= 0)
         return;
 
       Console.WriteLine("Client: {0}: Disconnecting due to inactivity...", this);
@@ -637,21 +581,17 @@ namespace Server.Network
       if (disposing == 1)
         return;
 
-      Task.Run(async () =>
+      try
       {
-        m_RecvdPipe.Reader.CancelPendingRead();
-        m_RecvdPipe.Reader.Complete();
-        await m_RecvdPipe.Writer.FlushAsync().ConfigureAwait(false);
-        m_RecvdPipe.Writer.Complete();
+        Task.Run(Connection.DisposeAsync).Wait();
+      }
+      catch (Exception ex)
+      {
+        TraceException(ex);
+      }
 
-        try { Socket.Shutdown(SocketShutdown.Both); } catch (Exception ex) { TraceException(ex); }
-        try { Socket.Close(); } catch (Exception ex) { TraceException(ex); }
-
-        Socket = null;
-        m_RecvdPipe = null;
-        m_SendQueue = null;
-        m_Disposed.Enqueue(this);
-      });
+      Connection = null;
+      m_Disposed.Enqueue(this);
     }
 
     public static void Initialize()

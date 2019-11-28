@@ -291,6 +291,8 @@ namespace Server.Network
         ph.ThrottleCallback = t;
     }
 
+    private static MemoryPool<byte> _memoryPool = SlabMemoryPoolFactory.Create();
+
     public static long ProcessPacket(MessagePump pump, NetState ns, in ReadOnlySequence<byte> seq)
     {
       PacketReader r = new PacketReader(seq);
@@ -380,7 +382,12 @@ namespace Server.Network
 
       prof?.Start();
 
-      pump.QueueWork(ns, seq.Slice(r.Position), handler.OnReceive);
+      ReadOnlySequence<byte> packet = seq.Slice(r.Position);
+      IMemoryOwner<byte> memOwner = _memoryPool.Rent((int)packet.Length);
+
+      packet.CopyTo(memOwner.Memory.Span);
+
+      pump.QueueWork(ns, memOwner, handler.OnReceive);
 
       prof?.Finish(packetLength);
 

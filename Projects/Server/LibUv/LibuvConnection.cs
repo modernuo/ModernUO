@@ -18,8 +18,7 @@ namespace Libuv
   {
     private static readonly int MinAllocBufferSize = SlabMemoryPool.BlockSize / 2;
 
-    private static readonly Action<UvStreamHandle, int, object> _readCallback =
-      (handle, status, state) => ReadCallback(handle, status, state);
+    private static readonly Action<UvStreamHandle, int, object> _readCallback = ReadCallback;
 
     private static readonly Func<UvStreamHandle, int, object, LibuvFunctions.uv_buf_t> _allocCallback = AllocCallback;
 

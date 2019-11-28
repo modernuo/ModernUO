@@ -265,8 +265,9 @@ namespace Server
         {
           try
           {
-            foreach (Listener l in MessagePump.Listeners)
-              l.Dispose();
+            Task.WhenAll(
+              MessagePump.Listeners.Select(listener => listener.Dispose())
+            ).Wait();
           }
           catch
           {

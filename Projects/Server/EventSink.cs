@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using Microsoft.AspNetCore.Connections;
 using Server.Accounting;
 using Server.Guilds;
 using Server.Network;
@@ -380,13 +381,13 @@ namespace Server
 
   public class SocketConnectEventArgs : EventArgs
   {
-    public SocketConnectEventArgs(Socket s)
+    public SocketConnectEventArgs(ConnectionContext c)
     {
-      Socket = s;
+      Context = c;
       AllowConnection = true;
     }
 
-    public Socket Socket{ get; }
+    public ConnectionContext Context{ get; }
 
     public bool AllowConnection{ get; set; }
   }
