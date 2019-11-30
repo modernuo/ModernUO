@@ -109,43 +109,32 @@ namespace Server.Network
       Register(0x01, 5, false, Disconnect);
       Register(0x02, 7, true, MovementReq);
       Register(0x03, 0, true, AsciiSpeech);
-      Register(0x04, 2, true, GodModeRequest);
       Register(0x05, 5, true, AttackReq);
       Register(0x06, 5, true, UseReq);
       Register(0x07, 7, true, LiftReq);
       Register(0x08, 14, true, DropReq);
       Register(0x09, 5, true, LookReq);
-      Register(0x0A, 11, true, Edit);
       Register(0x12, 0, true, TextCommand);
       Register(0x13, 10, true, EquipReq);
-      Register(0x14, 6, true, ChangeZ);
       Register(0x22, 3, true, Resynchronize);
       Register(0x2C, 2, true, DeathStatusResponse);
       Register(0x34, 10, true, MobileQuery);
       Register(0x3A, 0, true, ChangeSkillLock);
       Register(0x3B, 0, true, VendorBuyReply);
-      Register(0x47, 11, true, NewTerrain);
-      Register(0x48, 73, true, NewAnimData);
-      Register(0x58, 106, true, NewRegion);
       Register(0x5D, 73, false, PlayCharacter);
-      Register(0x61, 9, true, DeleteStatic);
       Register(0x6C, 19, true, TargetResponse);
       Register(0x6F, 0, true, SecureTrade);
       Register(0x72, 5, true, SetWarMode);
       Register(0x73, 2, false, PingReq);
       Register(0x75, 35, true, RenameRequest);
-      Register(0x79, 9, true, ResourceQuery);
-      Register(0x7E, 2, true, GodviewQuery);
       Register(0x7D, 13, true, MenuResponse);
       Register(0x80, 62, false, AccountLogin);
       Register(0x83, 39, false, DeleteCharacter);
       Register(0x91, 65, false, GameLogin);
       Register(0x95, 9, true, HuePickerResponse);
-      Register(0x96, 0, true, GameCentralMoniter);
       Register(0x98, 0, true, MobileNameRequest);
       Register(0x9A, 0, true, AsciiPromptResponse);
       Register(0x9B, 258, true, HelpRequest);
-      Register(0x9D, 51, true, GMSingle);
       Register(0x9F, 0, true, VendorSellReply);
       Register(0xA0, 3, false, PlayServer);
       Register(0xA4, 149, false, SystemInfo);
@@ -161,8 +150,6 @@ namespace Server.Network
       Register(0xBF, 0, true, ExtendedCommand);
       Register(0xC2, 0, true, UnicodePromptResponse);
       Register(0xC8, 2, true, SetUpdateRange);
-      Register(0xC9, 6, true, TripTime);
-      Register(0xCA, 6, true, UTripTime);
       Register(0xCF, 0, false, AccountLogin);
       Register(0xD0, 0, true, ConfigurationFile);
       Register(0xD1, 2, true, LogoutReq);
@@ -214,9 +201,7 @@ namespace Server.Network
     public static void Register(int packetID, int length, bool ingame, OnPacketReceive onReceive)
     {
       Handlers[packetID] = new PacketHandler(packetID, length, ingame, onReceive);
-
-      if (m_6017Handlers[packetID] == null)
-        m_6017Handlers[packetID] = new PacketHandler(packetID, length, ingame, onReceive);
+      m_6017Handlers[packetID] ??= new PacketHandler(packetID, length, ingame, onReceive);
     }
 
     public static PacketHandler GetHandler(int packetID) => Handlers[packetID];
@@ -420,9 +405,9 @@ namespace Server.Network
     public static void EncodedCommand(NetState state, PacketReader pvSrc)
     {
       IEntity e = World.FindEntity(pvSrc.ReadUInt32());
-      int packetID = pvSrc.ReadUInt16();
+      int packetId = pvSrc.ReadUInt16();
 
-      EncodedPacketHandler ph = GetEncodedHandler(packetID);
+      EncodedPacketHandler ph = GetEncodedHandler(packetId);
 
       if (ph != null)
       {
@@ -430,7 +415,7 @@ namespace Server.Network
         {
           Console.WriteLine(
             "Client: {0}: Sent ingame packet (0xD7x{1:X2}) before having been attached to a mobile", state,
-            packetID);
+            packetId);
           state.Dispose();
         }
         else if (ph.Ingame && state.Mobile.Deleted)
@@ -616,39 +601,6 @@ namespace Server.Network
       EventSink.InvokeDeleteRequest(new DeleteRequestEventArgs(state, index));
     }
 
-    public static void ResourceQuery(NetState state, PacketReader pvSrc)
-    {
-      if (VerifyGC(state))
-      {
-      }
-    }
-
-    public static void GameCentralMoniter(NetState state, PacketReader pvSrc)
-    {
-      if (VerifyGC(state))
-      {
-        int type = pvSrc.ReadByte();
-        int num1 = pvSrc.ReadInt32();
-
-        Console.WriteLine("God Client: {0}: Game central moniter", state);
-        Console.WriteLine(" - Type: {0}", type);
-        Console.WriteLine(" - Number: {0}", num1);
-
-        pvSrc.Trace(state);
-      }
-    }
-
-    public static void GodviewQuery(NetState state, PacketReader pvSrc)
-    {
-      if (VerifyGC(state)) Console.WriteLine("God Client: {0}: Godview query 0x{1:X}", state, pvSrc.ReadByte());
-    }
-
-    public static void GMSingle(NetState state, PacketReader pvSrc)
-    {
-      if (VerifyGC(state))
-        pvSrc.Trace(state);
-    }
-
     public static void DeathStatusResponse(NetState state, PacketReader pvSrc)
     {
       // Ignored
@@ -718,35 +670,7 @@ namespace Server.Network
           huePicker.OnResponse(hue);
 
           break;
-        }
     }
-
-    public static void TripTime(NetState state, PacketReader pvSrc)
-    {
-      int unk1 = pvSrc.ReadByte();
-      int unk2 = pvSrc.ReadInt32();
-
-      state.Send(new TripTimeResponse(unk1));
-    }
-
-    public static void UTripTime(NetState state, PacketReader pvSrc)
-    {
-      int unk1 = pvSrc.ReadByte();
-      int unk2 = pvSrc.ReadInt32();
-
-      state.Send(new UTripTimeResponse(unk1));
-    }
-
-    public static void ChangeZ(NetState state, PacketReader pvSrc)
-    {
-      if (VerifyGC(state))
-      {
-        int x = pvSrc.ReadInt16();
-        int y = pvSrc.ReadInt16();
-        int z = pvSrc.ReadSByte();
-
-        Console.WriteLine("God Client: {0}: Change Z ({1}, {2}, {3})", state, x, y, z);
-      }
     }
 
     public static void SystemInfo(NetState state, PacketReader pvSrc)
@@ -763,83 +687,6 @@ namespace Server.Network
       int v6 = pvSrc.ReadInt32();
       int v7 = pvSrc.ReadInt32();
       int v8 = pvSrc.ReadInt32();
-    }
-
-    public static void Edit(NetState state, PacketReader pvSrc)
-    {
-      if (VerifyGC(state))
-      {
-        int type = pvSrc.ReadByte(); // 10 = static, 7 = npc, 4 = dynamic
-        int x = pvSrc.ReadInt16();
-        int y = pvSrc.ReadInt16();
-        int id = pvSrc.ReadInt16();
-        int z = pvSrc.ReadSByte();
-        int hue = pvSrc.ReadUInt16();
-
-        Console.WriteLine("God Client: {0}: Edit {6} ({1}, {2}, {3}) 0x{4:X} (0x{5:X})", state, x, y, z, id, hue,
-          type);
-      }
-    }
-
-    public static void DeleteStatic(NetState state, PacketReader pvSrc)
-    {
-      if (VerifyGC(state))
-      {
-        int x = pvSrc.ReadInt16();
-        int y = pvSrc.ReadInt16();
-        int z = pvSrc.ReadInt16();
-        int id = pvSrc.ReadUInt16();
-
-        Console.WriteLine("God Client: {0}: Delete Static ({1}, {2}, {3}) 0x{4:X}", state, x, y, z, id);
-      }
-    }
-
-    public static void NewAnimData(NetState state, PacketReader pvSrc)
-    {
-      if (VerifyGC(state))
-      {
-        Console.WriteLine("God Client: {0}: New tile animation", state);
-
-        pvSrc.Trace(state);
-      }
-    }
-
-    public static void NewTerrain(NetState state, PacketReader pvSrc)
-    {
-      if (VerifyGC(state))
-      {
-        int x = pvSrc.ReadInt16();
-        int y = pvSrc.ReadInt16();
-        int id = pvSrc.ReadUInt16();
-        int width = pvSrc.ReadInt16();
-        int height = pvSrc.ReadInt16();
-
-        Console.WriteLine("God Client: {0}: New Terrain ({1}, {2})+({3}, {4}) 0x{5:X4}", state, x, y, width, height,
-          id);
-      }
-    }
-
-    public static void NewRegion(NetState state, PacketReader pvSrc)
-    {
-      if (VerifyGC(state))
-      {
-        string name = pvSrc.ReadString(40);
-        int unk = pvSrc.ReadInt32();
-        int x = pvSrc.ReadInt16();
-        int y = pvSrc.ReadInt16();
-        int width = pvSrc.ReadInt16();
-        int height = pvSrc.ReadInt16();
-        int zStart = pvSrc.ReadInt16();
-        int zEnd = pvSrc.ReadInt16();
-        string desc = pvSrc.ReadString(40);
-        int soundFX = pvSrc.ReadInt16();
-        int music = pvSrc.ReadInt16();
-        int nightFX = pvSrc.ReadInt16();
-        int dungeon = pvSrc.ReadByte();
-        int light = pvSrc.ReadInt16();
-
-        Console.WriteLine("God Client: {0}: New Region '{1}' ('{2}')", state, name, desc);
-      }
     }
 
     public static void AccountID(NetState state, PacketReader pvSrc)
@@ -975,12 +822,6 @@ namespace Server.Network
           break;
         }
       }
-    }
-
-    public static void GodModeRequest(NetState state, PacketReader pvSrc)
-    {
-      if (VerifyGC(state))
-        state.Send(new GodModeReply(pvSrc.ReadBoolean()));
     }
 
     public static void AsciiPromptResponse(NetState state, PacketReader pvSrc)
@@ -1557,9 +1398,7 @@ namespace Server.Network
         uint value = pvSrc.ReadUInt32();
 
         if ((value & ~0x7FFFFFFF) != 0)
-        {
           from.OnPaperdollRequest();
-        }
         else
         {
           Serial s = value;
@@ -1583,9 +1422,7 @@ namespace Server.Network
         from.NextActionTime = Core.TickCount + Mobile.ActionDelay;
       }
       else
-      {
         from.SendActionMessage();
-      }
     }
 
     public static void LookReq(NetState state, PacketReader pvSrc)
@@ -1601,9 +1438,7 @@ namespace Server.Network
         if (m != null && from.CanSee(m) && Utility.InUpdateRange(from, m))
         {
           if (SingleClickProps)
-          {
             m.OnAosSingleClick(from);
-          }
           else
           {
             if (from.Region.OnSingleClick(from, m))
@@ -1619,9 +1454,7 @@ namespace Server.Network
             Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
         {
           if (SingleClickProps)
-          {
             item.OnAosSingleClick(from);
-          }
           else if (from.Region.OnSingleClick(from, item))
           {
             if (item.Parent is Item item1)
@@ -2069,13 +1902,6 @@ namespace Server.Network
       if (m != null)
         switch (type)
         {
-          case 0x00: // Unknown, sent by godclient
-          {
-            if (VerifyGC(state))
-              Console.WriteLine("God Client: {0}: Query 0x{1:X2} on {2} '{3}'", state, type, m.Serial, m.Name);
-
-            break;
-          }
           case 0x04: // Stats
           {
             m.OnStatsQuery(from);
@@ -2621,9 +2447,7 @@ namespace Server.Network
           state.Send(new CharacterListOld(state.Account, state.CityInfo));
       }
       else
-      {
         state.Dispose();
-      }
     }
 
     public static void PlayServer(NetState state, PacketReader pvSrc)
@@ -2633,9 +2457,7 @@ namespace Server.Network
       IAccount a = state.Account;
 
       if (info == null || a == null || index < 0 || index >= info.Length)
-      {
         state.Dispose();
-      }
       else
       {
         ServerInfo si = info[index];

@@ -53,7 +53,7 @@ namespace Microsoft.AspNetCore.Hosting
         {
           ExecuteHandlers(_stoppingSource);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
           /*                    _logger.ApplicationError(LoggerEventIds.ApplicationStoppingException,
                                                        "An error occurred stopping the application",
@@ -71,7 +71,7 @@ namespace Microsoft.AspNetCore.Hosting
       {
         ExecuteHandlers(_startedSource);
       }
-      catch (Exception ex)
+      catch (Exception)
       {
         /*                _logger.ApplicationError(LoggerEventIds.ApplicationStartupException,
                                                  "An error occurred starting the application",
@@ -88,7 +88,7 @@ namespace Microsoft.AspNetCore.Hosting
       {
         ExecuteHandlers(_stoppedSource);
       }
-      catch (Exception ex)
+      catch (Exception)
       {
         /*                _logger.ApplicationError(LoggerEventIds.ApplicationStoppedException,
                                                  "An error occurred stopping the application",

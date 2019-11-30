@@ -458,9 +458,13 @@ namespace Server.Network
         return;
       }
 
+      Console.WriteLine("Send Packet: {0:X}", p.PacketID);
+
       try
       {
         ReadOnlySpan<byte> buffer = p.Compile(CompressionEnabled, out int length);
+
+        Console.WriteLine("Compiled Packet: {0}", buffer.Length);
 
         if (buffer.Length <= 0 || length <= 0)
         {
@@ -477,6 +481,11 @@ namespace Server.Network
 
         buffer.Slice(0, length).CopyTo(SendPipe.GetSpan(length));
         SendPipe.Advance(length);
+        FlushResult flushed = SendPipe.FlushAsync().GetAwaiter().GetResult();
+        if (flushed.IsCanceled || flushed.IsCompleted)
+        {
+          Console.WriteLine("Flush is Canceled or Completed");
+        }
 
         p.OnSend();
 
