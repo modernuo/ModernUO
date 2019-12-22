@@ -4142,14 +4142,6 @@ namespace Server.Network
     }
   }
 
-  public sealed class GodModeReply : Packet
-  {
-    public GodModeReply(bool reply) : base(0x2B, 2)
-    {
-      m_Stream.Write(reply);
-    }
-  }
-
   public sealed class PlayServerAck : Packet
   {
     internal static int m_AuthID = -1;

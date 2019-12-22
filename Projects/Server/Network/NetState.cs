@@ -266,8 +266,6 @@ namespace Server.Network
       return newTrade.From.Container;
     }
 
-    public bool Running { get; private set; }
-
     public bool Seeded { get; set; }
 
     public ConnectionContext Connection { get; private set; }
@@ -407,17 +405,18 @@ namespace Server.Network
 
     public static List<NetState> Instances { get; } = new List<NetState>();
 
+    public void SetConnectionAlive() => m_NextCheckActivity = Core.TickCount + 60000;
+
     public NetState(ConnectionContext connection, MessagePump pump)
     {
       Connection = connection;
       Seeded = false;
-      Running = false;
       Gumps = new List<Gump>();
       HuePickers = new List<HuePicker>();
       Menus = new List<IMenu>();
       Trades = new List<SecureTrade>();
 
-      m_NextCheckActivity = Core.TickCount + 30000;
+      SetConnectionAlive();
 
       Instances.Add(this);
 
@@ -434,10 +433,11 @@ namespace Server.Network
       }
 
       ConnectedOn = DateTime.UtcNow;
+      Console.WriteLine("Client: {0}: Connected. [{1} Online]", this, Instances.Count);
+
       _ = ProcessRecvs(pump);
 
       CreatedCallback?.Invoke(this);
-      Console.WriteLine("Client: {0}: Connected. [{1} Online]", this, Instances.Count);
     }
 
     public static void Pause()
@@ -454,6 +454,7 @@ namespace Server.Network
     {
       if (Connection == null || BlockAllPackets)
       {
+        Console.WriteLine("Blocked Packet: {0:X}", p.PacketID);
         p.OnSend();
         return;
       }
@@ -464,32 +465,22 @@ namespace Server.Network
       {
         ReadOnlySpan<byte> buffer = p.Compile(CompressionEnabled, out int length);
 
-        Console.WriteLine("Compiled Packet: {0}", buffer.Length);
+        Console.WriteLine("Compiled Packet: {0:X} ({1})", p.PacketID, buffer.Length);
 
         if (buffer.Length <= 0 || length <= 0)
         {
+          Console.WriteLine("Empty Packet!");
           p.OnSend();
           return;
         }
 
-        PacketSendProfile prof = null;
-
-        if (Core.Profiling)
-          prof = PacketSendProfile.Acquire(p.GetType());
-
-        prof?.Start();
-
         buffer.Slice(0, length).CopyTo(SendPipe.GetSpan(length));
         SendPipe.Advance(length);
-        FlushResult flushed = SendPipe.FlushAsync().GetAwaiter().GetResult();
-        if (flushed.IsCanceled || flushed.IsCompleted)
-        {
-          Console.WriteLine("Flush is Canceled or Completed");
-        }
+        SendPipe.FlushAsync().GetAwaiter().GetResult();
+
+        Console.WriteLine("Flushed Packet: {0:X} ({1})", p.PacketID, buffer.Length);
 
         p.OnSend();
-
-        prof?.Finish(length);
       }
       catch (SocketException ex)
       {
@@ -523,21 +514,24 @@ namespace Server.Network
         ReadResult result = await RecvPipe.ReadAsync();
         ReadOnlySequence<byte> seq = result.Buffer;
 
-        if (seq.Length == 0)
+        if (seq.IsEmpty)
           break;
 
-        long pos = PacketHandlers.ProcessPacket(pump, this, seq);
+        SetConnectionAlive();
+
+        int pos = PacketHandlers.ProcessPacket(pump, this, seq);
 
         if (pos <= 0)
           break;
 
-        RecvPipe.AdvanceTo(seq.GetPosition(pos, seq.Start));
+        RecvPipe.AdvanceTo(seq.Slice(0, pos).End);
 
         if (result.IsCompleted || result.IsCanceled)
           break;
       }
 
       RecvPipe.Complete();
+      Dispose();
     }
 
     public PacketHandler GetHandler(int packetID) =>
@@ -592,6 +586,7 @@ namespace Server.Network
 
       try
       {
+        Connection.Abort();
         Task.Run(Connection.DisposeAsync).Wait();
       }
       catch (Exception ex)

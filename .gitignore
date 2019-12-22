@@ -8,6 +8,27 @@
 /Distribution/rdrand.so
 /Distribution/rdrand.dll
 /Distribution/zlib.dll
+
+# LibUv Dependencies
+/Distribution/libuv.dll
+/Distribution/libuv.so
+/Distribution/Microsoft.AspNetCore.Connections.Abstractions.dll
+/Distribution/Microsoft.AspNetCore.Http.Features.dll
+/Distribution/Microsoft.Extensions.Configuration.Abstractions.dll
+/Distribution/Microsoft.Extensions.Configuration.Binder.dll
+/Distribution/Microsoft.Extensions.Configuration.dll
+/Distribution/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+/Distribution/Microsoft.Extensions.DependencyInjection.dll
+/Distribution/Microsoft.Extensions.FileProviders.Abstractions.dll
+/Distribution/Microsoft.Extensions.Hosting.Abstractions.dll
+/Distribution/Microsoft.Extensions.Logging.Abstractions.dll
+/Distribution/Microsoft.Extensions.Logging.Configuration.dll
+/Distribution/Microsoft.Extensions.Logging.Console.dll
+/Distribution/Microsoft.Extensions.Logging.dll
+/Distribution/Microsoft.Extensions.Options.ConfigurationExtensions.dll
+/Distribution/Microsoft.Extensions.Options.dll
+/Distribution/Microsoft.Extensions.Primitives.dll
+
 /Projects/Scripts/obj
 /Projects/Scripts/bin
 /Projects/Server/obj

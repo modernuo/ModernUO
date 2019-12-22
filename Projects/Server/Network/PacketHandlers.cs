@@ -159,6 +159,7 @@ namespace Server.Network
       Register(0xEF, 21, false, LoginServerSeed);
       Register(0xF4, 0, false, CrashReport);
       Register(0xF8, 106, false, CreateCharacter70160);
+      Register(0xFB, 2, false, ShowPublicHouseContent);
 
       Register6017(0x08, 15, true, DropReq6017);
 
@@ -278,7 +279,7 @@ namespace Server.Network
 
     private static MemoryPool<byte> _memoryPool = SlabMemoryPoolFactory.Create();
 
-    public static long ProcessPacket(MessagePump pump, NetState ns, in ReadOnlySequence<byte> seq)
+    public static int ProcessPacket(MessagePump pump, NetState ns, in ReadOnlySequence<byte> seq)
     {
       PacketReader r = new PacketReader(seq);
 
@@ -329,7 +330,7 @@ namespace Server.Network
         return -1;
       }
 
-      long packetLength = handler.Length;
+      int packetLength = handler.Length;
       if (handler.Length <= 0 && r.Length >= 3)
       {
         packetLength = r.ReadUInt16();
@@ -360,21 +361,12 @@ namespace Server.Network
       if (throttled > TimeSpan.Zero)
         ns.ThrottledUntil = DateTime.UtcNow + throttled;
 
-      PacketReceiveProfile prof = null;
-
-      if (Core.Profiling)
-        prof = PacketReceiveProfile.Acquire(packetId);
-
-      prof?.Start();
-
       ReadOnlySequence<byte> packet = seq.Slice(r.Position);
       IMemoryOwner<byte> memOwner = _memoryPool.Rent((int)packet.Length);
 
       packet.CopyTo(memOwner.Memory.Span);
 
       pump.QueueWork(ns, memOwner, handler.OnReceive);
-
-      prof?.Finish(packetLength);
 
       return packetLength;
     }
@@ -693,20 +685,6 @@ namespace Server.Network
     {
     }
 
-    public static bool VerifyGC(NetState state)
-    {
-      if (state.Mobile == null || state.Mobile.AccessLevel <= AccessLevel.Counselor)
-      {
-        if (state.Running)
-          Console.WriteLine("Warning: {0}: Player using godclient, disconnecting", state);
-
-        state.Dispose();
-        return false;
-      }
-
-      return true;
-    }
-
     public static void TextCommand(NetState state, PacketReader pvSrc)
     {
       int type = pvSrc.ReadByte();
@@ -716,34 +694,6 @@ namespace Server.Network
 
       switch (type)
       {
-        case 0x00: // Go
-        {
-          if (VerifyGC(state))
-            try
-            {
-              string[] split = command.Split(' ');
-
-              int x = Utility.ToInt32(split[0]);
-              int y = Utility.ToInt32(split[1]);
-
-              int z;
-
-              if (split.Length >= 3)
-                z = Utility.ToInt32(split[2]);
-              else if (m.Map != null)
-                z = m.Map.GetAverageZ(x, y);
-              else
-                z = 0;
-
-              m.Location = new Point3D(x, y, z);
-            }
-            catch
-            {
-              // ignored
-            }
-
-          break;
-        }
         case 0xC7: // Animate
         {
           EventSink.InvokeAnimateRequest(new AnimateRequestEventArgs(m, command));
@@ -1927,44 +1877,10 @@ namespace Server.Network
       string name = pvSrc.ReadString(30);
 
       pvSrc.Seek(2, SeekOrigin.Current);
+
       int flags = pvSrc.ReadInt32();
 
-/*      if (FeatureProtection.DisabledFeatures != 0 && ThirdPartyAuthCallback != null)
-      {
-        bool authOK = false;
-
-        ulong razorFeatures = ((ulong)pvSrc.ReadUInt32() << 32) | pvSrc.ReadUInt32();
-
-        if (razorFeatures == (ulong)FeatureProtection.DisabledFeatures)
-        {
-          bool doesNotMatch = false;
-          for (int i = 0; !doesNotMatch && i < m_ThirdPartyAuthKey.Length; i++)
-            doesNotMatch = pvSrc.ReadByte() != m_ThirdPartyAuthKey[i];
-
-          if (!doesNotMatch)
-            authOK = true;
-        }
-        else
-        {
-          pvSrc.Seek(16, SeekOrigin.Current);
-        }
-
-        ThirdPartyAuthCallback(state, authOK);
-      }*/
-/*      else
-      {*/
-        pvSrc.Seek(24, SeekOrigin.Current);
-/*      }*/
-
-/*      if (ThirdPartyHackedCallback != null)
-      {
-        pvSrc.Seek(-2, SeekOrigin.Current);
-        if (pvSrc.ReadUInt16() == 0xDEAD)
-          ThirdPartyHackedCallback(state, true);
-      }*/
-
-      if (!state.Running)
-        return;
+      pvSrc.Seek(24, SeekOrigin.Current);
 
       int charSlot = pvSrc.ReadInt32();
       int clientIP = pvSrc.ReadInt32();
@@ -2012,6 +1928,11 @@ namespace Server.Network
 
         new LoginTimer(state, m).Start();
       }
+    }
+
+    public static void ShowPublicHouseContent(NetState state, PacketReader pvSrc)
+    {
+      bool showPublicHouseContent = pvSrc.ReadBoolean();
     }
 
     public static void DoLogin(NetState state, Mobile m)
