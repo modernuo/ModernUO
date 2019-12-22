@@ -56,8 +56,6 @@ namespace Server.Network
         if (!m_WorkQueue.TryDequeue(out Work work))
           break;
 
-        Console.WriteLine("Packet Executing: {0}", work.OnReceive.Method.Name);
-
         work.OnReceive(work.State, new PacketReader(new ReadOnlySequence<byte>(work.MemoryOwner.Memory)));
         work.MemoryOwner.Dispose();
       }
