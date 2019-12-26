@@ -122,7 +122,7 @@ namespace System.Buffers
         if (i != blockCount - 1) // last block
         {
 #if BLOCK_LEASE_TRACKING
-                    block.IsLeased = true;
+          block.IsLeased = true;
 #endif
           Return(block);
         }
@@ -160,10 +160,10 @@ namespace System.Buffers
     {
       lock (_disposeSync)
       {
-        if (!_isDisposed && slab != null && slab.IsActive)
-        // Need to make a new object because this one is being finalized
-        // Note, this must be called within the _disposeSync lock because the block
-        // could be disposed at the same time as the finalizer.
+        if (!_isDisposed && slab?.IsActive == true)
+          // Need to make a new object because this one is being finalized
+          // Note, this must be called within the _disposeSync lock because the block
+          // could be disposed at the same time as the finalizer.
           Return(new MemoryPoolBlock(this, slab, offset, length));
       }
     }
@@ -178,7 +178,7 @@ namespace System.Buffers
 
         if (disposing)
           while (_slabs.TryPop(out MemoryPoolSlab slab))
-          // dispose managed state (managed objects).
+            // dispose managed state (managed objects).
             slab.Dispose();
 
         // Discard blocks in pool

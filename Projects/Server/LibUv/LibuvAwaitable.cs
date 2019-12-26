@@ -53,7 +53,8 @@ namespace Libuv
     {
       // There should never be a race between IsCompleted and OnCompleted since both operations
       // should always be on the libuv thread
-      if (ReferenceEquals(_callback, _callbackCompleted)) Debug.Fail($"{typeof(LibuvAwaitable<TRequest>)}.{nameof(OnCompleted)} raced with {nameof(IsCompleted)}, scheduling callback.");
+      if (ReferenceEquals(_callback, _callbackCompleted))
+        Debug.Fail($"{typeof(LibuvAwaitable<TRequest>)}.{nameof(OnCompleted)} raced with {nameof(IsCompleted)}, scheduling callback.");
 
       _callback = continuation;
     }

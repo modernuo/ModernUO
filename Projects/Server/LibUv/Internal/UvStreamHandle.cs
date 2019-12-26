@@ -9,10 +9,12 @@ namespace Libuv.Internal
 {
   public abstract class UvStreamHandle : UvHandle
   {
-    private static readonly LibuvFunctions.uv_connection_cb _uv_connection_cb = (handle, status) => UvConnectionCb(handle, status);
+    private static readonly LibuvFunctions.uv_connection_cb _uv_connection_cb = UvConnectionCb;
     // Ref and out lamda params must be explicitly typed
-    private static readonly LibuvFunctions.uv_alloc_cb _uv_alloc_cb = (IntPtr handle, int suggested_size, out LibuvFunctions.uv_buf_t buf) => UvAllocCb(handle, suggested_size, out buf);
-    private static readonly LibuvFunctions.uv_read_cb _uv_read_cb = (IntPtr handle, int status, ref LibuvFunctions.uv_buf_t buf) => UvReadCb(handle, status, ref buf);
+    private static readonly LibuvFunctions.uv_alloc_cb _uv_alloc_cb =
+      (IntPtr handle, int suggested_size, out LibuvFunctions.uv_buf_t buf) => UvAllocCb(handle, suggested_size, out buf);
+    private static readonly LibuvFunctions.uv_read_cb _uv_read_cb =
+      (IntPtr handle, int status, ref LibuvFunctions.uv_buf_t buf) => UvReadCb(handle, status, ref buf);
 
     private Action<UvStreamHandle, int, UvException, object> _listenCallback;
     private object _listenState;

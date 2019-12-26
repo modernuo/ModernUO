@@ -123,7 +123,8 @@ namespace System.Buffers
     public async Task WhenAllBlocksReturnedAsync(TimeSpan timeout)
     {
       var task = await Task.WhenAny(_allBlocksReturned.Task, Task.Delay(timeout));
-      if (task != _allBlocksReturned.Task) MemoryPoolThrowHelper.ThrowInvalidOperationException_BlocksWereNotReturnedInTime(_totalBlocks - _blocks.Count, _totalBlocks, _blocks.ToArray());
+      if (task != _allBlocksReturned.Task)
+        MemoryPoolThrowHelper.ThrowInvalidOperationException_BlocksWereNotReturnedInTime(_totalBlocks - _blocks.Count, _totalBlocks, _blocks.ToArray());
 
       await task;
     }

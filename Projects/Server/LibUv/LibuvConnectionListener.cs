@@ -63,7 +63,8 @@ namespace Libuv
 
       var disposeTasks = _listeners.Select(listener => ((IAsyncDisposable)listener).DisposeAsync()).ToArray();
 
-      if (!await WaitAsync(Task.WhenAll(disposeTasks), TimeSpan.FromSeconds(5)).ConfigureAwait(false)) Log.LogError(0, null, "Disposing listeners failed");
+      if (!await WaitAsync(Task.WhenAll(disposeTasks), TimeSpan.FromSeconds(5)).ConfigureAwait(false))
+        Log.LogError(0, null, "Disposing listeners failed");
     }
 
 
@@ -170,7 +171,7 @@ namespace Libuv
       while (remainingSlots > 0)
       {
         // Calling GetAwaiter().GetResult() is safe because we know the task is completed
-        (var connection, var slot) = (await Task.WhenAny(slots)).GetAwaiter().GetResult();
+        var (connection, slot) = (await Task.WhenAny(slots)).GetAwaiter().GetResult();
 
         // If the connection is null then the listener was closed
         if (connection == null)

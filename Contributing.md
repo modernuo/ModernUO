@@ -6,7 +6,7 @@ One of the easiest ways to contribute is to participate in discussions on GitHub
 Start a discussion on the [repository issue tracker](https://github.com/modernuo/modernuo/issues).
 
 ## Reporting security issues and bugs
-Security issues and bugs should be reported privately, via email, to the hi@modernuo.com.
+Security issues and bugs should be reported privately, via email, to hi@modernuo.com.
 You should receive a response within 24 hours.
 If for some reason you do not, please follow up via email to ensure we received your original message.
 
@@ -35,7 +35,7 @@ If you don't know what a pull request is read this article: https://help.github.
    configurations, environment variables, dependencies, etc.
 1. Increase the version numbers to the new version that this Pull Request would represent.
    The versioning scheme we use is [SemVer](http://semver.org/).
-1. You may merge the Pull Request in once you have the sign-off of two other developers, or if you 
+1. You may merge the Pull Request in once you have the sign-off of two other developers, or if you
    do not have permission to do that, you may request the second reviewer to merge it for you.
 
 ## Code of Conduct

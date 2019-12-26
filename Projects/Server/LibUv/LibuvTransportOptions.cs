@@ -20,14 +20,6 @@ namespace Libuv
     public int ThreadCount { get; set; } = ProcessorThreadCount;
 
     /// <summary>
-    /// Set to false to enable Nagle's algorithm for all connections.
-    /// </summary>
-    /// <remarks>
-    /// Defaults to true.
-    /// </remarks>
-    public bool NoDelay { get; set; } = true;
-
-    /// <summary>
     /// The maximum length of the pending connection queue.
     /// </summary>
     /// <remarks>
@@ -47,19 +39,12 @@ namespace Libuv
       {
         // Actual core count would be a better number
         // rather than logical cores which includes hyper-threaded cores.
-        // Divide by 2 for hyper-threading, and good defaults (still need threads to do webserving).
+        // Divide by 2 for hyper-threading, and good defaults (still need threads for the game thread).
         var threadCount = Environment.ProcessorCount >> 1;
 
-        if (threadCount < 1)
-          // Ensure shifted value is at least one
-          return 1;
-
-        if (threadCount > 16)
-          // Receive Side Scaling RSS Processor count currently maxes out at 16
-          // would be better to check the NIC's current hardware queues; but xplat...
-          return 16;
-
-        return threadCount;
+        // Receive Side Scaling RSS Processor count currently maxes out at 16
+        // would be better to check the NIC's current hardware queues; but xplat...
+        return threadCount < 1 ? 1 : threadCount > 16 ? 16 : threadCount;
       }
     }
   }

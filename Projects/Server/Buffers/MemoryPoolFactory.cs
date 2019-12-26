@@ -10,7 +10,7 @@ namespace System.Buffers
 #if DEBUG
       return new DiagnosticMemoryPool(CreateSlabMemoryPool());
 #else
-            return CreateSlabMemoryPool();
+      return CreateSlabMemoryPool();
 #endif
     }
 

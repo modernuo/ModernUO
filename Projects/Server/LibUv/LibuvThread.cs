@@ -60,9 +60,9 @@ namespace Libuv
 #endif
 
 #if !DEBUG
-            // Mark the thread as being as unimportant to keeping the process alive.
-            // Don't do this for debug builds, so we know if the thread isn't terminating.
-            _thread.IsBackground = true;
+      // Mark the thread as being as unimportant to keeping the process alive.
+      // Don't do this for debug builds, so we know if the thread isn't terminating.
+      _thread.IsBackground = true;
 #endif
       QueueCloseHandle = PostCloseHandle;
       QueueCloseAsyncHandle = EnqueueCloseHandle;

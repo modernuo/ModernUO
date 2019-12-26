@@ -118,7 +118,7 @@ namespace System.Buffers
 
           _pinCount++;
 
-          _memoryHandle = _memoryHandle ?? _memory.Pin();
+          _memoryHandle ??= _memory.Pin();
 
           unsafe
           {

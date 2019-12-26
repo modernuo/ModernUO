@@ -9,7 +9,7 @@ namespace Libuv.Internal
 {
   public abstract class UvHandle : UvMemory
   {
-    private static readonly LibuvFunctions.uv_close_cb _destroyMemory = handle => DestroyMemory(handle);
+    private static readonly LibuvFunctions.uv_close_cb _destroyMemory = DestroyMemory;
     private Action<Action<IntPtr>, IntPtr> _queueCloseHandle;
 
     protected UvHandle(ILibuvTrace logger) : base (logger)

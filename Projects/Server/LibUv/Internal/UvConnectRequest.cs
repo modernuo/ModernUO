@@ -11,7 +11,7 @@ namespace Libuv.Internal
   /// </summary>
   public class UvConnectRequest : UvRequest
   {
-    private static readonly LibuvFunctions.uv_connect_cb _uv_connect_cb = (req, status) => UvConnectCb(req, status);
+    private static readonly LibuvFunctions.uv_connect_cb _uv_connect_cb = UvConnectCb;
 
     private Action<UvConnectRequest, int, UvException, object> _callback;
     private object _state;

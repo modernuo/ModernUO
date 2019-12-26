@@ -66,8 +66,8 @@ namespace Libuv.Internal
       int family = (int)_field0;
       if (Core.IsDarwin)
         // see explanation in example 4
-        family = family >> 8;
-      family = family & 0xFF;
+        family >>= 8;
+      family &= 0xFF;
 
       if (family == 2)
         // AF_INET => IPv4

@@ -15,16 +15,8 @@ namespace System.Buffers
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(int sourceLength, int offset)
-    {
-      if ((uint)offset > (uint)sourceLength)
-      // Offset is negative or less than array length
-        return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.offset));
-
-      // The third parameter (not passed) length must be out of range
-      return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.length));
-    }
-
+    private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(int sourceLength, int offset) =>
+      (uint)offset > (uint)sourceLength ? new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.offset)) : new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.length));
     public static void ThrowInvalidOperationException_PinCountZero(DiagnosticPoolBlock block)
     {
       throw new InvalidOperationException(GenerateMessage("Can't unpin, pin count is zero", block));

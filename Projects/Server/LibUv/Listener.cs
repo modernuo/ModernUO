@@ -62,7 +62,7 @@ namespace Libuv
       try
       {
         socket.Init(Thread.Loop, Thread.QueueCloseHandle);
-        socket.NoDelay(TransportContext.Options.NoDelay);
+        socket.NoDelay(true);
 
         if (!useFileHandle)
         {
