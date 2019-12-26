@@ -1,5 +1,8 @@
 # GOALS
 
+The goal of ModernUO is a complete rewrite of RunUO that focuses on performance.
+Some of the many high level goals include:
+
 ### Architecture
 - [x] Upgrade Server/Scripts to target .NET Core 3
 - [X] Upgrade the code to use C# 8 standards
