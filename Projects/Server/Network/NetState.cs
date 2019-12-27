@@ -454,22 +454,16 @@ namespace Server.Network
     {
       if (Connection == null || BlockAllPackets)
       {
-        Console.WriteLine("Blocked Packet: {0:X}", p.PacketID);
         p.OnSend();
         return;
       }
-
-      Console.WriteLine("Send Packet: {0:X}", p.PacketID);
 
       try
       {
         ReadOnlySpan<byte> buffer = p.Compile(CompressionEnabled, out int length);
 
-        Console.WriteLine("Compiled Packet: {0:X} ({1})", p.PacketID, buffer.Length);
-
         if (buffer.Length <= 0 || length <= 0)
         {
-          Console.WriteLine("Empty Packet!");
           p.OnSend();
           return;
         }
@@ -477,8 +471,6 @@ namespace Server.Network
         buffer.Slice(0, length).CopyTo(SendPipe.GetSpan(length));
         SendPipe.Advance(length);
         SendPipe.FlushAsync().GetAwaiter().GetResult();
-
-        Console.WriteLine("Flushed Packet: {0:X} ({1})", p.PacketID, buffer.Length);
 
         p.OnSend();
       }
