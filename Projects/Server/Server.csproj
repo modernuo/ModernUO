@@ -7,7 +7,7 @@
     </StartupObject>
     <AssemblyName>ModernUO</AssemblyName>
     <Win32Resource />
-    <Version>0.0.1</Version>
+    <Version>0.1.2</Version>
     <Authors>Kamron Batman</Authors>
     <Company>ModernUO</Company>
     <Product>ModernUO</Product>
@@ -39,20 +39,38 @@
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Assemblies\zlib.dll" Condition="'$(RuntimeIdentifier)'=='win-x64' OR !Exists('$(RuntimeIdentifier)')">
+    <Content Include="Assemblies\libuv.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
+      <Link>libuv.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\libuv.osx.so" Condition="'$(RuntimeIdentifier)'=='osx-x64'">
+      <Link>libuv.so</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\libuv.linux.so" Condition="'$(RuntimeIdentifier)'=='linux-x64'">
+      <Link>libuv.so</Link>
+      <Update>libuv.so</Update>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\zlib.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
       <Link>zlib.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assemblies\rdrand.dll" Condition="'$(RuntimeIdentifier)'=='win-x64' OR !Exists('$(RuntimeIdentifier)')">
+    <Content Include="Assemblies\rdrand.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
       <Link>rdrand.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assemblies\rdrand.so" Condition="'$(RuntimeIdentifier)'=='osx-x64' OR '$(RuntimeIdentifier)'=='linux-x64' OR !Exists('$(RuntimeIdentifier)')">
+    <Content Include="Assemblies\rdrand.so" Condition="'$(RuntimeIdentifier)'=='osx-x64' OR '$(RuntimeIdentifier)'=='linux-x64'">
       <Link>rdrand.so</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.1" />
     <PackageReference Include="System.IO.Pipelines" Version="4.6.0" />
   </ItemGroup>
 </Project>

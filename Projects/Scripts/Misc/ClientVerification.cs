@@ -108,7 +108,7 @@ namespace Server.Misc
 
         Timer.DelayCall(KickDelay, delegate
         {
-          if (state.Socket != null)
+          if (state.Connection != null)
           {
             Console.WriteLine("Client: {0}: Disconnecting, bad version", state);
             state.Dispose();

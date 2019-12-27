@@ -143,9 +143,13 @@ namespace Server
 
     public static int ProcessorCount{ get; private set; }
 
-    public static bool Unix{ get; private set; }
+    public static bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+    public static bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+    public static bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
+    public static bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
+    public static bool Unix = IsDarwin || IsFreeBSD || IsLinux;
 
-    public static string ExePath => m_ExePath ?? (m_ExePath = Assembly.Location);
+    public static string ExePath => m_ExePath ??= Assembly.Location;
 
     public static string BaseDirectory
     {
@@ -261,8 +265,9 @@ namespace Server
         {
           try
           {
-            foreach (Listener l in MessagePump.Listeners)
-              l.Dispose();
+            Task.WhenAll(
+              MessagePump.Listeners.Select(listener => listener.Dispose())
+            ).Wait();
           }
           catch
           {
@@ -413,14 +418,7 @@ namespace Server
         Console.WriteLine("Core: Optimizing for {0} {2}processor{1}", ProcessorCount, ProcessorCount == 1 ? "" : "s",
           Is64Bit ? "64-bit " : "");
 
-      int platform = (int)Environment.OSVersion.Platform;
-      if (platform == 4 || platform == 128)
-      {
-        // MS 4, MONO 128
-        Unix = true;
-        Console.WriteLine("Core: Unix environment detected");
-      }
-      else
+      if (IsWindows)
       {
         m_ConsoleEventHandler = OnConsoleEvent;
         UnsafeNativeMethods.SetConsoleCtrlHandler(m_ConsoleEventHandler, true);

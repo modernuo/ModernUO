@@ -28,7 +28,7 @@ namespace Server.Network
 
   public class PacketHandler
   {
-    public PacketHandler(int packetID, long length, bool ingame, OnPacketReceive onReceive)
+    public PacketHandler(int packetID, int length, bool ingame, OnPacketReceive onReceive)
     {
       PacketID = packetID;
       Length = length;
@@ -38,7 +38,7 @@ namespace Server.Network
 
     public int PacketID{ get; }
 
-    public long Length{ get; }
+    public int Length{ get; }
 
     public OnPacketReceive OnReceive{ get; }
 

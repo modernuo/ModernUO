@@ -23,6 +23,8 @@ using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Net;
+using System.Threading.Tasks;
+using SignalR;
 
 namespace Server.Network
 {
@@ -40,9 +42,9 @@ namespace Server.Network
       listeners[Listeners.Length] = listener;
     }
 
-    public void QueueWork(NetState ns, in ReadOnlySequence<byte> seq, OnPacketReceive onReceive)
+    public void QueueWork(NetState ns, IMemoryOwner<byte> memOwner, OnPacketReceive onReceive)
     {
-      m_WorkQueue.Enqueue(new Work(ns, seq, onReceive));
+      m_WorkQueue.Enqueue(new Work(ns, memOwner, onReceive));
       Core.Set();
     }
 
@@ -54,21 +56,22 @@ namespace Server.Network
         if (!m_WorkQueue.TryDequeue(out Work work))
           break;
 
-        work.OnReceive(work.State, new PacketReader(work.Sequence));
+        work.OnReceive(work.State, new PacketReader(new ReadOnlySequence<byte>(work.MemoryOwner.Memory)));
+        work.MemoryOwner.Dispose();
       }
     }
 
-    // TODO: Optimize this with a pool
     private class Work
     {
-      public NetState State;
-      public ReadOnlySequence<byte> Sequence;
-      public OnPacketReceive OnReceive;
+      public readonly NetState State;
+      // TODO: Force dispose?
+      public readonly IMemoryOwner<byte> MemoryOwner;
+      public readonly OnPacketReceive OnReceive;
 
-      public Work(NetState ns, in ReadOnlySequence<byte> seq, OnPacketReceive onReceive)
+      public Work(NetState ns, IMemoryOwner<byte> memOwner, OnPacketReceive onReceive)
       {
         State = ns;
-        Sequence = seq;
+        MemoryOwner = memOwner;
         OnReceive = onReceive;
       }
     }

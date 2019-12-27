@@ -24,53 +24,54 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Libuv;
+using Libuv.Internal;
+using Microsoft.AspNetCore.Connections;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Server.Network
 {
   public class Listener
   {
-    private Socket m_Socket;
-    private IPEndPoint m_EndPoint;
+    private static readonly LibuvFunctions functions = new LibuvFunctions();
+
+    private readonly IPEndPoint m_EndPoint;
+    private LibuvConnectionListener m_Listener;
+
     public Listener(IPEndPoint ipep)
     {
-#pragma warning disable IDE0068 // Use recommended dispose pattern
-      m_Socket = new Socket(ipep.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-#pragma warning restore IDE0068 // Use recommended dispose pattern
-
-      m_Socket.LingerState.Enabled = false;
-      m_Socket.ExclusiveAddressUse = false;
       m_EndPoint = ipep;
+      LibuvTransportContext transport = new LibuvTransportContext
+      {
+        Options = new LibuvTransportOptions(),
+        AppLifetime = new ApplicationLifetime(
+          LoggerFactory.Create(builder => { builder.AddConsole(); }).CreateLogger<ApplicationLifetime>()
+        ),
+        Log = new LibuvTrace(LoggerFactory.Create(builder => { builder.AddConsole(); }).CreateLogger("network"))
+      };
+
+      m_Listener = new LibuvConnectionListener(functions, transport, ipep);
     }
 
     public virtual async Task Start(MessagePump pump)
     {
       try
       {
-        m_Socket.Bind(m_EndPoint);
-        m_Socket.Listen(8);
+        await m_Listener.BindAsync();
+      }
+      catch (AddressInUseException)
+      {
+        Console.WriteLine("Listener Failed: {0}:{1} (In Use)", m_EndPoint.Address, m_EndPoint.Port);
+        m_Listener = null;
+        return;
       }
       catch (Exception e)
       {
-        if (e is SocketException se)
-        {
-          if (se.ErrorCode == 10048)
-          {
-            // WSAEADDRINUSE
-            Console.WriteLine("Listener Failed: {0}:{1} (In Use)", m_EndPoint.Address, m_EndPoint.Port);
-          }
-          else if (se.ErrorCode == 10049)
-          {
-            // WSAEADDRNOTAVAIL
-            Console.WriteLine("Listener Failed: {0}:{1} (Unavailable)", m_EndPoint.Address, m_EndPoint.Port);
-          }
-          else
-          {
-            Console.WriteLine("Listener Exception:");
-            Console.WriteLine(e);
-          }
-        }
+        Console.WriteLine("Listener Exception:");
+        Console.WriteLine(e);
 
-        m_Socket = null;
+        m_Listener = null;
         return;
       }
 
@@ -78,10 +79,10 @@ namespace Server.Network
 
       while (true)
       {
-        Socket s;
+        ConnectionContext context;
         try
         {
-          s = await m_Socket.AcceptAsync().ConfigureAwait(false);
+          context = await m_Listener.AcceptAsync();
         }
         catch (SocketException ex)
         {
@@ -89,16 +90,16 @@ namespace Server.Network
           continue;
         }
 
-        if (VerifySocket(s))
-          _ = new NetState(s, pump);
+        if (VerifySocket(context))
+          _ = new NetState(context, pump);
         else
-          Release(s);
+          Release(context);
       }
     }
 
     private void DisplayListener()
     {
-      if (!(m_Socket.LocalEndPoint is IPEndPoint ipep))
+      if (!(m_Listener.EndPoint is IPEndPoint ipep))
         return;
 
       if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
@@ -113,16 +114,14 @@ namespace Server.Network
         }
       }
       else
-      {
         Console.WriteLine("Listening: {0}:{1}", ipep.Address, ipep.Port);
-      }
     }
 
-    private bool VerifySocket(Socket socket)
+    private static bool VerifySocket(ConnectionContext context)
     {
       try
       {
-        SocketConnectEventArgs args = new SocketConnectEventArgs(socket);
+        SocketConnectEventArgs args = new SocketConnectEventArgs(context);
 
         EventSink.InvokeSocketConnect(args);
 
@@ -131,44 +130,47 @@ namespace Server.Network
       catch (Exception ex)
       {
         NetState.TraceException(ex);
-
         return false;
       }
     }
 
-    private void Release(Socket socket)
+    private static void Release(ConnectionContext context)
     {
       try
       {
-        socket.Shutdown(SocketShutdown.Both);
+        context.Abort(new ConnectionAbortedException("Failed socket verification."));
       }
-      catch (SocketException ex)
+      catch (Exception ex)
       {
         NetState.TraceException(ex);
       }
 
       try
       {
-        socket.Close();
+        // TODO: Is this needed?
+        context.DisposeAsync();
       }
-      catch (SocketException ex)
-      {
-        NetState.TraceException(ex);
-      }
-
-      try
-      {
-        socket.Dispose();
-      }
-      catch (SocketException ex)
+      catch (Exception ex)
       {
         NetState.TraceException(ex);
       }
     }
 
-    public void Dispose()
+    public async Task Dispose()
     {
-      Interlocked.Exchange(ref m_Socket, null)?.Close();
+      LibuvConnectionListener listener = Interlocked.Exchange(ref m_Listener, null);
+      if (listener != null)
+        try
+        {
+          await listener.UnbindAsync();
+          await listener.DisposeAsync();
+        }
+        catch (Exception ex)
+        {
+          Console.WriteLine("Listener: Failed to dispose.");
+          Console.WriteLine(ex);
+        }
+
       GC.SuppressFinalize(this);
     }
   }

@@ -1445,7 +1445,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Owner)]
     public NetState NetState
     {
-      get => m_NetState?.Socket != null && !m_NetState.IsDisposing ? m_NetState : null;
+      get => m_NetState?.Connection != null && !m_NetState.IsDisposing ? m_NetState : null;
       set
       {
         if (m_NetState != value)

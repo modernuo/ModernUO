@@ -63,7 +63,7 @@ namespace Server.Misc
       }
     }
 
-    private static bool HasDisconnected(Mobile m) => m.NetState?.Socket == null;
+    private static bool HasDisconnected(Mobile m) => m.NetState?.Connection == null;
 
     private static LocationInfo GetRandomDestination() => m_Destinations[Utility.Random(m_Destinations.Length)];
 
