@@ -22,12 +22,11 @@ namespace Server
   public static class RandomImpl
   {
     private static readonly IRandomImpl _Random;
+    // private static readonly IRandomImpl _SecureRandom;
 
     static RandomImpl()
     {
-      if (Core.Unix && File.Exists("rdrand.so"))
-        _Random = new RDRandUnix();
-      else if (File.Exists("rdrand.dll"))
+      if (Core.Unix && File.Exists("rdrand.so") || !Core.Unix && File.Exists("rdrand.dll"))
         _Random = new RDRand64();
 
       if (_Random == null || _Random is IHardwareRNG rng && !rng.IsSupported())
@@ -38,7 +37,7 @@ namespace Server
 
     public static Type Type => _Random.GetType();
 
-    public static int Next(int c) => _Random.Next(c);
+    public static uint Next(uint c) => _Random.Next(c);
 
     public static bool NextBool() => _Random.NextBool();
 
@@ -49,7 +48,10 @@ namespace Server
 
   public interface IRandomImpl
   {
-    int Next(int c);
+    uint NextUInt32();
+    uint Next(uint n);
+    ulong NextUInt64();
+    ulong Next(ulong n);
     bool NextBool();
     void NextBytes(Span<byte> b);
     double NextDouble();
@@ -66,7 +68,13 @@ namespace Server
     internal abstract void GetBytes(byte[] b, int offset, int count);
 
     public virtual void NextBytes(Span<byte> b) => GetBytes(b);
-    public virtual int Next(int c) => (int)(c * NextDouble());
+    public uint NextUInt32() => throw new NotImplementedException();
+
+    public virtual uint Next(uint c) => (uint)(c * NextDouble());
+    public ulong NextUInt64() => throw new NotImplementedException();
+
+    public ulong Next(ulong n) => throw new NotImplementedException();
+
     public virtual bool NextBool() => (NextByte() & 1) == 1;
 
     public virtual byte NextByte()
@@ -92,10 +100,7 @@ namespace Server
       }
 
       ulong r;
-      fixed (byte* buf = b)
-      {
-        r = *(ulong*)&buf[0] >> 3;
-      }
+      fixed (byte* buf = b) r = *(ulong*)&buf[0] >> 3;
 
       /* double: 53 bits of significand precision
        * ulong.MaxValue >> 11 = 9007199254740991
@@ -194,31 +199,31 @@ namespace Server
     }
   }
 
-  public sealed class RDRandUnix : BaseRandom, IHardwareRNG
-  {
-    [DllImport("rdrand.so")]
-    internal static extern RDRandError rdrand_32(ref uint rand, bool retry);
-
-    [DllImport("rdrand.so")]
-    internal static extern unsafe RDRandError rdrand_get_bytes(int n, byte* buffer);
-
-    public bool IsSupported()
-    {
-      uint r = 0;
-      return rdrand_32(ref r, true) == RDRandError.Success;
-    }
-
-    internal override unsafe void GetBytes(Span<byte> b)
-    {
-      fixed(byte* ptr = b)
-        rdrand_get_bytes(b.Length, ptr);
-    }
-
-    internal override void GetBytes(byte[] b, int offset, int count)
-    {
-      GetBytes(b.AsSpan().Slice(offset, count));
-    }
-  }
+  // public sealed class RDRandUnix : BaseRandom, IHardwareRNG
+  // {
+  //   [DllImport("rdrand.so")]
+  //   internal static extern RDRandError rdrand_32(ref uint rand, bool retry);
+  //
+  //   [DllImport("rdrand.so")]
+  //   internal static extern unsafe RDRandError rdrand_get_bytes(int n, byte* buffer);
+  //
+  //   public bool IsSupported()
+  //   {
+  //     uint r = 0;
+  //     return rdrand_32(ref r, true) == RDRandError.Success;
+  //   }
+  //
+  //   internal override unsafe void GetBytes(Span<byte> b)
+  //   {
+  //     fixed(byte* ptr = b)
+  //       rdrand_get_bytes(b.Length, ptr);
+  //   }
+  //
+  //   internal override void GetBytes(byte[] b, int offset, int count)
+  //   {
+  //     GetBytes(b.AsSpan().Slice(offset, count));
+  //   }
+  // }
 
   public sealed class RDRand64 : BaseRandom, IHardwareRNG
   {
