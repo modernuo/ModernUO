@@ -69,7 +69,7 @@ namespace Server.Engines.MLQuests.Items
         list.Add($"Required quest: {m_QuestType.Name}");
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -79,7 +79,7 @@ namespace Server.Engines.MLQuests.Items
       TextDefinition.Serialize(writer, Message);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -167,7 +167,7 @@ namespace Server.Engines.MLQuests.Items
         list.Add($"Required ticket: {m_TicketType.Name}");
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -177,7 +177,7 @@ namespace Server.Engines.MLQuests.Items
       TextDefinition.Serialize(writer, Message);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

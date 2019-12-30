@@ -1985,14 +1985,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2048,14 +2048,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2109,14 +2109,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2171,14 +2171,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2232,14 +2232,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1074223); // Have you done it yet?� Oh, I haven�t told you, have I?
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2291,14 +2291,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2354,14 +2354,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2413,14 +2413,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2486,14 +2486,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2541,14 +2541,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2600,14 +2600,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2658,14 +2658,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2729,14 +2729,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2808,14 +2808,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2871,14 +2871,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2936,14 +2936,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -2994,14 +2994,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3059,14 +3059,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3118,14 +3118,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3176,14 +3176,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3225,14 +3225,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override string DefaultName => "Anolly";
     public override bool CanTeach => true;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3293,14 +3293,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3351,14 +3351,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3416,14 +3416,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3476,14 +3476,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3535,14 +3535,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3594,14 +3594,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3657,14 +3657,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Tyeelor";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3718,14 +3718,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Athailon";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3762,14 +3762,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Elder Taellia";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3819,14 +3819,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Elder Mallew";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3862,14 +3862,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Elder Abbein";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3910,14 +3910,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Elder Vicaie";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3955,14 +3955,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Elder Jothan";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4000,14 +4000,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Elder Alethanian";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4043,14 +4043,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Rebinil";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4086,14 +4086,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Aluniol";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4130,14 +4130,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Olaeni";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4180,14 +4180,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Bolaevin";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4223,14 +4223,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Lorekeeper Aneen";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4275,14 +4275,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Daelas";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4330,14 +4330,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Alelle";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4381,14 +4381,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override string DefaultName => "Lorekeeper Nillaen";
     public override bool CanTeach => true;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4441,14 +4441,14 @@ namespace Server.Engines.MLQuests.Definitions
       ));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4496,14 +4496,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1074187); // Want a job?
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4551,14 +4551,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1074197); // Pardon me, but if you could spare some time I�d greatly appreciate it.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4606,14 +4606,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1074204); // Greetings seeker.� I have an urgent matter for you, if you are willing.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -4661,14 +4661,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1074206); // Excuse me please traveler, might I have a little of your time?
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

@@ -29,7 +29,7 @@ namespace Server.Engines.MLQuests
       m_Flags = MLQuestFlag.None;
     }
 
-    public MLQuestContext(GenericReader reader, int version)
+    public MLQuestContext(IGenericReader reader, int version)
     {
       Owner = reader.ReadMobile<PlayerMobile>();
       QuestInstances = new List<MLQuestInstance>();
@@ -204,7 +204,7 @@ namespace Server.Engines.MLQuests
 
     public bool IsDoingQuest(MLQuest quest) => FindInstance(quest) != null;
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       // Version info is written in MLQuestPersistence.Serialize
 
@@ -248,13 +248,13 @@ namespace Server.Engines.MLQuests
         m_NextAvailable = nextAvailable;
       }
 
-      public void Serialize(GenericWriter writer)
+      public void Serialize(IGenericWriter writer)
       {
         MLQuestSystem.WriteQuestRef(writer, m_Quest);
         writer.Write(m_NextAvailable);
       }
 
-      public static MLDoneQuestInfo Deserialize(GenericReader reader, int version)
+      public static MLDoneQuestInfo Deserialize(IGenericReader reader, int version)
       {
         MLQuest quest = MLQuestSystem.ReadQuestRef(reader);
         DateTime nextAvailable = reader.ReadDateTime();

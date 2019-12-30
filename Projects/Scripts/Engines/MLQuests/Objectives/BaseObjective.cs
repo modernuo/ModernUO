@@ -108,7 +108,7 @@ namespace Server.Engines.MLQuests.Objectives
     {
     }
 
-    public virtual void Serialize(GenericWriter writer)
+    public virtual void Serialize(IGenericWriter writer)
     {
       // Version info is written in MLQuestPersistence.Serialize
 
@@ -127,7 +127,7 @@ namespace Server.Engines.MLQuests.Objectives
       writer.Write((byte)ExtraDataType);
     }
 
-    public static void Deserialize(GenericReader reader, int version, BaseObjectiveInstance objInstance)
+    public static void Deserialize(IGenericReader reader, int version, BaseObjectiveInstance objInstance)
     {
       if (reader.ReadBool())
       {

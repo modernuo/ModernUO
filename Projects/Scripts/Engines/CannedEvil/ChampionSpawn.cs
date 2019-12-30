@@ -993,7 +993,7 @@ namespace Server.Engines.CannedEvil
       m.Player && m.Alive && m.Region != null && m.Region == m_Region &&
       m.Backpack?.CheckHold(m, Artifact, false) == true;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -1035,7 +1035,7 @@ namespace Server.Engines.CannedEvil
         writer.WriteDeltaTime(RestartTime);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1187,7 +1187,7 @@ namespace Server.Engines.CannedEvil
       Spawn?.Delete();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -1196,7 +1196,7 @@ namespace Server.Engines.CannedEvil
       writer.Write(Spawn);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

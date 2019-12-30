@@ -24,7 +24,7 @@ namespace Server.Engines.Mahjong
         m_Scores[i] = baseScore;
     }
 
-    public MahjongPlayers(MahjongGame game, GenericReader reader)
+    public MahjongPlayers(MahjongGame game, IGenericReader reader)
     {
       Game = game;
       m_Spectators = new List<Mobile>();
@@ -483,7 +483,7 @@ namespace Server.Engines.Mahjong
         mobile.SendLocalizedMessage(number, args);
     }
 
-    public void Save(GenericWriter writer)
+    public void Save(IGenericWriter writer)
     {
       writer.Write(0); // version
 

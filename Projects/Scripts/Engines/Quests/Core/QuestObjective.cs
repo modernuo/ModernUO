@@ -35,7 +35,7 @@ namespace Server.Engines.Quests
 
     public bool IsSingleObjective => MaxProgress == 1;
 
-    public virtual void BaseDeserialize(GenericReader reader)
+    public virtual void BaseDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -58,12 +58,12 @@ namespace Server.Engines.Quests
       ChildDeserialize(reader);
     }
 
-    public virtual void ChildDeserialize(GenericReader reader)
+    public virtual void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
     }
 
-    public virtual void BaseSerialize(GenericWriter writer)
+    public virtual void BaseSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(1); // version
 
@@ -74,7 +74,7 @@ namespace Server.Engines.Quests
       ChildSerialize(writer);
     }
 
-    public virtual void ChildSerialize(GenericWriter writer)
+    public virtual void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
     }

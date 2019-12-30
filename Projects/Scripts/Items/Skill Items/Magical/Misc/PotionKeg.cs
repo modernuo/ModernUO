@@ -62,7 +62,7 @@ namespace Server.Items
       Weight = 20 + held * 80 / 100;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -72,7 +72,7 @@ namespace Server.Items
       writer.Write(m_Held);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

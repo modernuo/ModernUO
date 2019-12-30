@@ -68,14 +68,14 @@ namespace Server.Engines.Quests.Hag
       System.AddObjective(new FindZeefzorpulObjective(m_ImpLocation));
     }
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
       m_ImpLocation = reader.ReadPoint3D();
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 
@@ -189,7 +189,7 @@ namespace Server.Engines.Quests.Hag
 
     public override bool Logged => false;
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -197,7 +197,7 @@ namespace Server.Engines.Quests.Hag
       m_Drunken = reader.ReadBool();
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 
@@ -251,14 +251,14 @@ namespace Server.Engines.Quests.Hag
       System.FindObjective<FindIngredientObjective>()?.NextStep();
     }
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
       m_FirstMet = reader.ReadBool();
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 

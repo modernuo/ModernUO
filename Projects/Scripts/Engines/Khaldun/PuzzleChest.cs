@@ -42,7 +42,7 @@ namespace Server.Items
       for (int i = 0; i < Cylinders.Length; i++) Cylinders[i] = solution.Cylinders[i];
     }
 
-    public PuzzleChestSolution(GenericReader reader)
+    public PuzzleChestSolution(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -142,7 +142,7 @@ namespace Server.Items
       return cylinders == Cylinders.Length;
     }
 
-    public virtual void Serialize(GenericWriter writer)
+    public virtual void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 
@@ -155,7 +155,7 @@ namespace Server.Items
   {
     public PuzzleChestSolutionAndTime(DateTime when, PuzzleChestSolution solution) : base(solution) => When = when;
 
-    public PuzzleChestSolutionAndTime(GenericReader reader) : base(reader)
+    public PuzzleChestSolutionAndTime(IGenericReader reader) : base(reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -164,7 +164,7 @@ namespace Server.Items
 
     public DateTime When{ get; }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -485,7 +485,7 @@ namespace Server.Items
         m_Guesses.Remove(m);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       CleanupGuesses();
 
@@ -506,7 +506,7 @@ namespace Server.Items
       }
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -761,14 +761,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -788,14 +788,14 @@ namespace Server.Items
     {
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

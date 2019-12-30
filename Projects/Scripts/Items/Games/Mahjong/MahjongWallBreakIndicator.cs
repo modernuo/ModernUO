@@ -8,7 +8,7 @@ namespace Server.Engines.Mahjong
       Position = position;
     }
 
-    public MahjongWallBreakIndicator(MahjongGame game, GenericReader reader)
+    public MahjongWallBreakIndicator(MahjongGame game, IGenericReader reader)
     {
       Game = game;
 
@@ -37,7 +37,7 @@ namespace Server.Engines.Mahjong
       Game.Players.SendGeneralPacket(true, true);
     }
 
-    public void Save(GenericWriter writer)
+    public void Save(IGenericWriter writer)
     {
       writer.Write(0); // version
 

@@ -18,13 +18,13 @@ namespace Server.Items
 
     public override BaseAddonDeed Deed => new GingerBreadHouseDeed();
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
       int version = reader.ReadInt();
@@ -47,13 +47,13 @@ namespace Server.Items
     public override int LabelNumber => 1077394; //a Gingerbread House Deed
     public override BaseAddon Addon => new GingerBreadHouseAddon();
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
       int version = reader.ReadInt();

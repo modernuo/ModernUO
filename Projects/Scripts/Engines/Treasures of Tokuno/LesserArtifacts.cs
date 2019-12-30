@@ -22,14 +22,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(2);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -71,14 +71,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -108,14 +108,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -148,14 +148,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(1);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -191,14 +191,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -228,14 +228,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -265,14 +265,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -310,14 +310,14 @@ namespace Server.Items
       nrgy = 100;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -347,14 +347,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -384,14 +384,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -423,14 +423,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -460,14 +460,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -496,14 +496,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -532,14 +532,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -566,14 +566,14 @@ namespace Server.Items
 
     public override int LabelNumber => 1070934; // Tome of Enlightenment
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -607,14 +607,14 @@ namespace Server.Items
     public override int InitMinHits => 255;
     public override int InitMaxHits => 255;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -692,7 +692,7 @@ namespace Server.Items
 
     public override int LabelNumber => 1071014; // Ancient Urn
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -700,7 +700,7 @@ namespace Server.Items
       writer.Write(m_UrnName);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -751,7 +751,7 @@ namespace Server.Items
 
     public override int LabelNumber => 1071015; // Honorable Swords
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -759,7 +759,7 @@ namespace Server.Items
       writer.Write(m_SwordsName);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -849,14 +849,14 @@ namespace Server.Items
 
     public override int LabelNumber => 1070937; // Chest of heirlooms
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -884,14 +884,14 @@ namespace Server.Items
     public override int InitMinUses => 300;
     public override int InitMaxUses => 300;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(1); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1019,7 +1019,7 @@ namespace Server.Items
       return m_Table[v];
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -1028,7 +1028,7 @@ namespace Server.Items
       writer.WriteEncodedInt((int)m_Type);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1066,14 +1066,14 @@ namespace Server.Items
         Hue = 0;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

@@ -43,7 +43,7 @@ namespace Server.Items
 
     public override int LabelNumber => 1041361; // A bank check
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -52,7 +52,7 @@ namespace Server.Items
       writer.Write(m_Worth);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
       LootType = LootType.Blessed;

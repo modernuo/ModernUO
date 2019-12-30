@@ -19,7 +19,7 @@ namespace Server.Regions
         m_Instance = new SpawnPersistence();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -34,7 +34,7 @@ namespace Server.Regions
       }
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

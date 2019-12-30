@@ -16,7 +16,7 @@ namespace Server.Engines.Quests
       }
     }
 
-    public static void Write(Type type, Type[] referenceTable, GenericWriter writer)
+    public static void Write(Type type, Type[] referenceTable, IGenericWriter writer)
     {
       if (type == null)
       {
@@ -37,7 +37,7 @@ namespace Server.Engines.Quests
       }
     }
 
-    public static Type ReadType(Type[] referenceTable, GenericReader reader)
+    public static Type ReadType(Type[] referenceTable, IGenericReader reader)
     {
       int encoding = reader.ReadEncodedInt();
 
@@ -68,7 +68,7 @@ namespace Server.Engines.Quests
       }
     }
 
-    public static QuestSystem DeserializeQuest(GenericReader reader)
+    public static QuestSystem DeserializeQuest(IGenericReader reader)
     {
       int encoding = reader.ReadEncodedInt();
 
@@ -91,7 +91,7 @@ namespace Server.Engines.Quests
       }
     }
 
-    public static void Serialize(QuestSystem qs, GenericWriter writer)
+    public static void Serialize(QuestSystem qs, IGenericWriter writer)
     {
       if (qs == null)
       {
@@ -107,7 +107,7 @@ namespace Server.Engines.Quests
       }
     }
 
-    public static QuestObjective DeserializeObjective(Type[] referenceTable, GenericReader reader)
+    public static QuestObjective DeserializeObjective(Type[] referenceTable, IGenericReader reader)
     {
       int encoding = reader.ReadEncodedInt();
 
@@ -130,7 +130,7 @@ namespace Server.Engines.Quests
       }
     }
 
-    public static void Serialize(Type[] referenceTable, QuestObjective obj, GenericWriter writer)
+    public static void Serialize(Type[] referenceTable, QuestObjective obj, IGenericWriter writer)
     {
       if (obj == null)
       {
@@ -146,7 +146,7 @@ namespace Server.Engines.Quests
       }
     }
 
-    public static QuestConversation DeserializeConversation(Type[] referenceTable, GenericReader reader)
+    public static QuestConversation DeserializeConversation(Type[] referenceTable, IGenericReader reader)
     {
       int encoding = reader.ReadEncodedInt();
 
@@ -169,7 +169,7 @@ namespace Server.Engines.Quests
       }
     }
 
-    public static void Serialize(Type[] referenceTable, QuestConversation conv, GenericWriter writer)
+    public static void Serialize(Type[] referenceTable, QuestConversation conv, IGenericWriter writer)
     {
       if (conv == null)
       {

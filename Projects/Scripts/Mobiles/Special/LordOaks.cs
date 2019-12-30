@@ -173,7 +173,7 @@ namespace Server.Mobiles
       attacker.Mana -= Utility.Random(20, 10);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -183,7 +183,7 @@ namespace Server.Mobiles
       writer.Write(m_SpawnedQueen);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

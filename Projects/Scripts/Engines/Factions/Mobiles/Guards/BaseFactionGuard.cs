@@ -415,7 +415,7 @@ namespace Server.Factions
         GenerateRandomHair();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -427,7 +427,7 @@ namespace Server.Factions
       Orders.Serialize(writer);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -476,7 +476,7 @@ namespace Server.Factions
 
     public IMount Mount => m_Mount;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -485,7 +485,7 @@ namespace Server.Factions
       writer.Write(Rider);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

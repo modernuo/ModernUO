@@ -88,7 +88,7 @@ namespace Server
       return null;
     }
 
-    public static void Serialize(Poison p, GenericWriter writer)
+    public static void Serialize(Poison p, IGenericWriter writer)
     {
       if (p == null)
       {
@@ -101,7 +101,7 @@ namespace Server
       }
     }
 
-    public static Poison Deserialize(GenericReader reader)
+    public static Poison Deserialize(IGenericReader reader)
     {
       switch (reader.ReadByte())
       {

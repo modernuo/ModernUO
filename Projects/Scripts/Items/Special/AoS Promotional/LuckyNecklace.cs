@@ -17,14 +17,14 @@
     public override int Hue => 1150;
     public override int LabelNumber => 1075239; //Lucky Necklace	1075239
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

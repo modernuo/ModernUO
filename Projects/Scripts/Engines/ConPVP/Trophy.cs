@@ -50,7 +50,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public DateTime Date{ get; private set; }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -62,7 +62,7 @@ namespace Server.Items
       writer.Write(Date);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

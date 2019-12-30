@@ -22,7 +22,7 @@ namespace Server.Factions
       Traps = new List<BaseFactionTrap>();
     }
 
-    public FactionState(GenericReader reader)
+    public FactionState(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -230,7 +230,7 @@ namespace Server.Factions
         }
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(5); // version
 

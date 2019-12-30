@@ -821,7 +821,7 @@ namespace Server.Multis
       stateToSend.SendGeneralInfoTo(state);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       writer.Write(5); // version
 
@@ -842,7 +842,7 @@ namespace Server.Multis
       base.Serialize(writer);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       int version = reader.ReadInt();
 
@@ -1727,7 +1727,7 @@ namespace Server.Multis
         Fixtures[i] = toCopy.Fixtures[i];
     }
 
-    public DesignState(HouseFoundation foundation, GenericReader reader)
+    public DesignState(HouseFoundation foundation, IGenericReader reader)
     {
       Foundation = foundation;
 
@@ -1781,7 +1781,7 @@ namespace Server.Multis
 
     public int Revision{ get; set; }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.Write(0); // version
 

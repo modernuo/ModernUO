@@ -32,14 +32,14 @@ namespace Server.Items
       from.SendLocalizedMessage(1061907); // Choose a book you wish to seal with the wax from the red leaf.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

@@ -1,4 +1,4 @@
-﻿#region References
+#region References
 
 using System;
 using System.IO;
@@ -9,12 +9,12 @@ namespace Server
 {
   public static class Persistence
   {
-    public static void Serialize(string path, Action<GenericWriter> serializer)
+    public static void Serialize(string path, Action<IGenericWriter> serializer)
     {
       Serialize(new FileInfo(path), serializer);
     }
 
-    public static void Serialize(FileInfo file, Action<GenericWriter> serializer)
+    public static void Serialize(FileInfo file, Action<IGenericWriter> serializer)
     {
       file.Refresh();
 
@@ -39,22 +39,22 @@ namespace Server
       }
     }
 
-    public static void Deserialize(string path, Action<GenericReader> deserializer)
+    public static void Deserialize(string path, Action<IGenericReader> deserializer)
     {
       Deserialize(path, deserializer, true);
     }
 
-    public static void Deserialize(FileInfo file, Action<GenericReader> deserializer)
+    public static void Deserialize(FileInfo file, Action<IGenericReader> deserializer)
     {
       Deserialize(file, deserializer, true);
     }
 
-    public static void Deserialize(string path, Action<GenericReader> deserializer, bool ensure)
+    public static void Deserialize(string path, Action<IGenericReader> deserializer, bool ensure)
     {
       Deserialize(new FileInfo(path), deserializer, ensure);
     }
 
-    public static void Deserialize(FileInfo file, Action<GenericReader> deserializer, bool ensure)
+    public static void Deserialize(FileInfo file, Action<IGenericReader> deserializer, bool ensure)
     {
       file.Refresh();
 

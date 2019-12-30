@@ -20,7 +20,7 @@ namespace Server.Engines.BulkOrders
         Entries[i] = new BOBLargeSubEntry(bod.Entries[i]);
     }
 
-    public BOBLargeEntry(GenericReader reader)
+    public BOBLargeEntry(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -84,7 +84,7 @@ namespace Server.Engines.BulkOrders
       return entries;
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 

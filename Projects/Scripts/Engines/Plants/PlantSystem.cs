@@ -58,7 +58,7 @@ namespace Server.Engines.Plants
       m_LeftResources = 8;
     }
 
-    public PlantSystem(PlantItem plant, GenericReader reader)
+    public PlantSystem(PlantItem plant, IGenericReader reader)
     {
       Plant = plant;
 
@@ -650,7 +650,7 @@ namespace Server.Engines.Plants
       StrengthPotion = 0;
     }
 
-    public void Save(GenericWriter writer)
+    public void Save(IGenericWriter writer)
     {
       writer.Write(2); // version
 

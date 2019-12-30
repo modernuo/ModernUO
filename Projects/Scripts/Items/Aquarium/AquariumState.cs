@@ -50,7 +50,7 @@ namespace Server.Items
 
     public override string ToString() => "...";
 
-    public virtual void Serialize(GenericWriter writer)
+    public virtual void Serialize(IGenericWriter writer)
     {
       writer.Write(0); // version
 
@@ -60,7 +60,7 @@ namespace Server.Items
       writer.Write(Added);
     }
 
-    public virtual void Deserialize(GenericReader reader)
+    public virtual void Deserialize(IGenericReader reader)
     {
       int version = reader.ReadInt();
 

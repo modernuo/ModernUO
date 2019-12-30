@@ -60,7 +60,7 @@ namespace Server.Multis.Deeds
 
     public abstract Rectangle2D[] Area{ get; }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -71,7 +71,7 @@ namespace Server.Multis.Deeds
       writer.Write(MultiID);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -210,14 +210,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new SmallOldHouse(owner, 0x64);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -241,14 +241,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new SmallOldHouse(owner, 0x66);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -272,14 +272,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new SmallOldHouse(owner, 0x68);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -303,14 +303,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new SmallOldHouse(owner, 0x6A);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -334,14 +334,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new SmallOldHouse(owner, 0x6C);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -365,14 +365,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new SmallOldHouse(owner, 0x6E);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -396,14 +396,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new GuildHouse(owner);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -427,14 +427,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new TwoStoryHouse(owner, 0x76);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -458,14 +458,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new TwoStoryHouse(owner, 0x78);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -489,14 +489,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new Tower(owner);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -520,14 +520,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new Keep(owner);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -551,14 +551,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new Castle(owner);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -582,14 +582,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new LargePatioHouse(owner);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -613,14 +613,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new LargeMarbleHouse(owner);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -644,14 +644,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new SmallTower(owner);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -675,14 +675,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new LogCabin(owner);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -706,14 +706,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new SandStonePatio(owner);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -737,14 +737,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new TwoStoryVilla(owner);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -768,14 +768,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new SmallShop(owner, 0xA0);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -799,14 +799,14 @@ namespace Server.Multis.Deeds
 
     public override BaseHouse GetHouse(Mobile owner) => new SmallShop(owner, 0xA2);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

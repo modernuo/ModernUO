@@ -741,7 +741,7 @@ namespace Server.Items
           500207); // The spellbook must be in your backpack (and not in a container within) to open.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -763,7 +763,7 @@ namespace Server.Items
       writer.Write(SpellCount);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

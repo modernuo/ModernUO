@@ -68,7 +68,7 @@ namespace Server.Items
       OnDoubleClick(m);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -79,7 +79,7 @@ namespace Server.Items
       writer.Write(MapDest);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

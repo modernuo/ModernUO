@@ -9,7 +9,7 @@ namespace Server.Factions
 
     public TownState(Town town) => Town = town;
 
-    public TownState(GenericReader reader)
+    public TownState(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -111,7 +111,7 @@ namespace Server.Factions
 
     public DateTime LastIncome{ get; set; }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(3); // version
 

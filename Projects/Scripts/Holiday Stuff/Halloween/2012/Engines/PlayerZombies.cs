@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Server.Items;
 using Server.Mobiles;
 using System.Collections.Generic;
@@ -150,13 +150,13 @@ namespace Server.Engines.Events
     {
     }
 
-    public override void Serialize( GenericWriter writer )
+    public override void Serialize(IGenericWriter writer )
     {
       base.Serialize( writer );
       writer.Write( 0 );
     }
 
-    public override void Deserialize( GenericReader reader )
+    public override void Deserialize( IGenericReader reader )
     {
       base.Deserialize( reader );
       int version = reader.ReadInt();
@@ -242,7 +242,7 @@ namespace Server.Engines.Events
             HalloweenHauntings.ReAnimated.Remove( m_DeadPlayer );
     }
 
-    public override void Serialize( GenericWriter writer )
+    public override void Serialize(IGenericWriter writer )
     {
       base.Serialize( writer );
       writer.Write( 0 );
@@ -250,7 +250,7 @@ namespace Server.Engines.Events
       writer.WriteMobile( m_DeadPlayer );
     }
 
-    public override void Deserialize( GenericReader reader )
+    public override void Deserialize( IGenericReader reader )
     {
       base.Deserialize( reader );
       int version = reader.ReadInt();

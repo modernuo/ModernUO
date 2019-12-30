@@ -458,6 +458,9 @@ namespace Server
   /// </summary>
   public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable, IPropertyListObject
   {
+    private BufferWriter m_SaveBuffer;
+    public BufferWriter SaveBuffer { get { return m_SaveBuffer; } }
+
     private const int
       WarmodeCatchCount = 4; // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
 
@@ -579,6 +582,7 @@ namespace Server
         World.m_MobileTypes.Add(ourType);
         m_TypeRef = World.m_MobileTypes.Count - 1;
       }
+      m_SaveBuffer = new BufferWriter(true);
     }
 
     public Mobile()
@@ -598,6 +602,7 @@ namespace Server
         World.m_MobileTypes.Add(ourType);
         m_TypeRef = World.m_MobileTypes.Count - 1;
       }
+      m_SaveBuffer = new BufferWriter(true);
     }
 
     public static bool DragEffects{ get; set; } = true;
@@ -2690,7 +2695,12 @@ namespace Server
 
     uint ISerializable.SerialIdentity => Serial;
 
-    public virtual void Serialize(GenericWriter writer)
+    public void Serialize()
+    {
+      SaveBuffer.Flush();
+      Serialize(SaveBuffer);
+    }
+    public virtual void Serialize(IGenericWriter writer)
     {
       writer.Write(32); // version
 
@@ -5665,7 +5675,7 @@ namespace Server
     {
     }
 
-    public virtual void Deserialize(GenericReader reader)
+    public virtual void Deserialize(IGenericReader reader)
     {
       int version = reader.ReadInt();
 

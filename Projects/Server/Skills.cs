@@ -103,7 +103,7 @@ namespace Server
     private ushort m_Base;
     private ushort m_Cap;
 
-    public Skill(Skills owner, SkillInfo info, GenericReader reader)
+    public Skill(Skills owner, SkillInfo info, IGenericReader reader)
     {
       Owner = owner;
       Info = info;
@@ -339,7 +339,7 @@ namespace Server
       Lock = skillLock;
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       if (m_Base == 0 && m_Cap == 1000 && Lock == SkillLock.Up)
       {
@@ -502,7 +502,7 @@ namespace Server
       //	m_Skills[i] = new Skill( this, info[i], 0, 1000, SkillLock.Up );
     }
 
-    public Skills(Mobile owner, GenericReader reader)
+    public Skills(Mobile owner, IGenericReader reader)
     {
       Owner = owner;
 
@@ -668,7 +668,7 @@ namespace Server
       return false;
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       Total = 0;
 

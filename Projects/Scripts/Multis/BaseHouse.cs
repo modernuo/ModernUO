@@ -2244,7 +2244,7 @@ namespace Server.Multis
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -2350,7 +2350,7 @@ namespace Server.Multis
       }
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -3018,14 +3018,14 @@ namespace Server.Multis
         list.Add(1061114, location); // Location: ~1_val~
       }
 
-      public override void Serialize(GenericWriter writer)
+      public override void Serialize(IGenericWriter writer)
       {
         base.Serialize(writer);
 
         writer.Write(0); // version
       }
 
-      public override void Deserialize(GenericReader reader)
+      public override void Deserialize(IGenericReader reader)
       {
         base.Deserialize(reader);
 
@@ -3183,7 +3183,7 @@ namespace Server.Multis
       Level = level;
     }
 
-    public SecureInfo(GenericReader reader)
+    public SecureInfo(IGenericReader reader)
     {
       Item = reader.ReadItem() as Container;
       Level = (SecureLevel)reader.ReadByte();
@@ -3193,7 +3193,7 @@ namespace Server.Multis
 
     public SecureLevel Level{ get; set; }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.Write(Item);
       writer.Write((byte)Level);

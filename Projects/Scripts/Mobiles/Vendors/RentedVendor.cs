@@ -160,7 +160,7 @@ namespace Server.Mobiles
       base.GetContextMenuEntries(from, list);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -178,7 +178,7 @@ namespace Server.Mobiles
       writer.WriteDeltaTime(RentalExpireTime);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

@@ -65,7 +65,7 @@ namespace Server.Engines.Quests.Ninja
       PrivateOverheadMessage(MessageType.Regular, 0x3B2, Message, player.NetState);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -74,7 +74,7 @@ namespace Server.Engines.Quests.Ninja
       writer.Write(Message);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

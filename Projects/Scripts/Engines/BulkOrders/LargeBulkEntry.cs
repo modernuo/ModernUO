@@ -94,7 +94,7 @@ namespace Server.Engines.BulkOrders
       Details = details;
     }
 
-    public LargeBulkEntry( LargeBOD owner, GenericReader reader )
+    public LargeBulkEntry( LargeBOD owner, IGenericReader reader )
     {
       Owner = owner;
       m_Amount = reader.ReadInt();
@@ -109,7 +109,7 @@ namespace Server.Engines.BulkOrders
       Details = new SmallBulkEntry( realType, reader.ReadInt(), reader.ReadInt() );
     }
 
-    public void Serialize( GenericWriter writer )
+    public void Serialize(IGenericWriter writer )
     {
       writer.Write( m_Amount );
       writer.Write( Details.Type == null ? null : Details.Type.FullName );

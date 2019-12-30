@@ -80,7 +80,7 @@ namespace Server.Items
       Owner?.PlaySound(0x50);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -91,7 +91,7 @@ namespace Server.Items
       writer.Write(Opened);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -135,14 +135,14 @@ namespace Server.Items
       Opened = true;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -195,14 +195,14 @@ namespace Server.Items
         AddComponent(new PlagueBeastBlood(), -7, 24);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -299,7 +299,7 @@ namespace Server.Items
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -308,7 +308,7 @@ namespace Server.Items
       writer.Write(m_Veins);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -414,7 +414,7 @@ namespace Server.Items
         AddComponent(new PlagueBeastComponent(0x1CF0, BrainHue, true), 55, 69);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -423,7 +423,7 @@ namespace Server.Items
       writer.Write(m_Gland);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -529,7 +529,7 @@ namespace Server.Items
       Opened = true;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -538,7 +538,7 @@ namespace Server.Items
       writer.Write(m_Brains);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

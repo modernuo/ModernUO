@@ -10,7 +10,7 @@ namespace Server.Engines.Mahjong
       Wind = wind;
     }
 
-    public MahjongDealerIndicator(MahjongGame game, GenericReader reader)
+    public MahjongDealerIndicator(MahjongGame game, IGenericReader reader)
     {
       Game = game;
 
@@ -52,7 +52,7 @@ namespace Server.Engines.Mahjong
       Game.Players.SendGeneralPacket(true, true);
     }
 
-    public void Save(GenericWriter writer)
+    public void Save(IGenericWriter writer)
     {
       writer.Write(0); // version
 

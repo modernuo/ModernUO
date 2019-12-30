@@ -209,7 +209,7 @@ namespace Server.Engines.MLQuests.Objectives
       // No extra instance stuff printed for this objective
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 

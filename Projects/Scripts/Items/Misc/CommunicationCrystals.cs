@@ -150,7 +150,7 @@ namespace Server.Items
       from.Target = new InternalTarget(this);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -160,7 +160,7 @@ namespace Server.Items
       writer.WriteItemList(Receivers);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -360,7 +360,7 @@ namespace Server.Items
       from.Target = new InternalTarget(this);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -369,7 +369,7 @@ namespace Server.Items
       writer.WriteItem(m_Sender);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

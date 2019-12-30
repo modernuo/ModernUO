@@ -54,7 +54,7 @@ namespace Server.Engines.Quests.Collector
       from.SendGump(new InternalGump(m_Image));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -63,7 +63,7 @@ namespace Server.Engines.Quests.Collector
       writer.WriteEncodedInt((int)m_Image);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

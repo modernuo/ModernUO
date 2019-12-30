@@ -12,7 +12,7 @@ namespace Server.Engines.BulkOrders
       Graphic = lbe.Details.Graphic;
     }
 
-    public BOBLargeSubEntry(GenericReader reader)
+    public BOBLargeSubEntry(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -42,7 +42,7 @@ namespace Server.Engines.BulkOrders
 
     public int Graphic{ get; }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 

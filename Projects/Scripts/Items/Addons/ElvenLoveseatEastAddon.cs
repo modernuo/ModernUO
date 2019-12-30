@@ -15,14 +15,14 @@ namespace Server.Items
 
     public override BaseAddonDeed Deed => new ElvenLoveseatEastDeed();
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -44,14 +44,14 @@ namespace Server.Items
     public override BaseAddon Addon => new ElvenLoveseatEastAddon();
     public override int LabelNumber => 1073372; // elven loveseat (east)
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

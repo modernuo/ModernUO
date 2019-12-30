@@ -24,7 +24,7 @@ namespace Server.Mobiles
       m_ExpireTimer.Start();
     }
 
-    public VendorInventory(BaseHouse house, GenericReader reader)
+    public VendorInventory(BaseHouse house, IGenericReader reader)
     {
       House = house;
 
@@ -83,7 +83,7 @@ namespace Server.Mobiles
       m_ExpireTimer.Stop();
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 

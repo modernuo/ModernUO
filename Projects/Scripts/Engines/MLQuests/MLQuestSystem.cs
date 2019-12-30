@@ -626,12 +626,12 @@ namespace Server.Engines.MLQuests
         Tell(quester, pm, def.String);
     }
 
-    public static void WriteQuestRef(GenericWriter writer, MLQuest quest)
+    public static void WriteQuestRef(IGenericWriter writer, MLQuest quest)
     {
       writer.Write(quest?.SaveEnabled == true ? quest.GetType().FullName : null);
     }
 
-    public static MLQuest ReadQuestRef(GenericReader reader)
+    public static MLQuest ReadQuestRef(IGenericReader reader)
     {
       string typeName = reader.ReadString();
 

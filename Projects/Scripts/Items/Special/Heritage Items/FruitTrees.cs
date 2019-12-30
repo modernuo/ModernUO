@@ -72,7 +72,7 @@ namespace Server.Items
       m_Fruits = Utility.RandomMinMax(1, 4);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -81,7 +81,7 @@ namespace Server.Items
       writer.Write(m_Fruits);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -110,14 +110,14 @@ namespace Server.Items
     public override BaseAddonDeed Deed => new AppleTreeDeed();
     public override Item Fruit => new Apple();
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -137,14 +137,14 @@ namespace Server.Items
     public override BaseAddon Addon => new AppleTreeAddon();
     public override int LabelNumber => 1076269; // Apple Tree
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -168,14 +168,14 @@ namespace Server.Items
     public override BaseAddonDeed Deed => new PeachTreeDeed();
     public override Item Fruit => new Peach();
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -195,14 +195,14 @@ namespace Server.Items
     public override BaseAddon Addon => new PeachTreeAddon();
     public override int LabelNumber => 1076270; // Peach Tree
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

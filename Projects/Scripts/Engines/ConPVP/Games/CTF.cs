@@ -34,14 +34,14 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -476,14 +476,14 @@ namespace Server.Engines.ConPVP
         mob.SolidHueOverride = m_TeamInfo?.Game.GetColor(mob) ?? -1;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -561,7 +561,7 @@ namespace Server.Engines.ConPVP
       Players = new Dictionary<Mobile, CTFPlayerInfo>();
     }
 
-    public CTFTeamInfo(int teamID, GenericReader ip)
+    public CTFTeamInfo(int teamID, IGenericReader ip)
     {
       TeamID = teamID;
       Players = new Dictionary<Mobile, CTFPlayerInfo>();
@@ -660,7 +660,7 @@ namespace Server.Engines.ConPVP
         Board.m_TeamInfo = this;
     }
 
-    public void Serialize(GenericWriter op)
+    public void Serialize(IGenericWriter op)
     {
       op.WriteEncodedInt(2); // version
 
@@ -733,7 +733,7 @@ namespace Server.Engines.ConPVP
 
     public override EventGame Construct(DuelContext context) => new CTFGame(this, context);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -747,7 +747,7 @@ namespace Server.Engines.ConPVP
         TeamInfo[i].Serialize(writer);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

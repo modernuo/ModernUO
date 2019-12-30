@@ -79,7 +79,7 @@ namespace Server.Factions
         base.OnDoubleClick(from);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -88,7 +88,7 @@ namespace Server.Factions
       Faction.WriteReference(writer, m_Faction);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

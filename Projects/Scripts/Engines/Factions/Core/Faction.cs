@@ -1092,14 +1092,14 @@ namespace Server.Factions
       CheckLeaveTimer(mob);
     }
 
-    public static void WriteReference(GenericWriter writer, Faction fact)
+    public static void WriteReference(IGenericWriter writer, Faction fact)
     {
       int idx = Factions.IndexOf(fact);
 
       writer.WriteEncodedInt(idx + 1);
     }
 
-    public static Faction ReadReference(GenericReader reader)
+    public static Faction ReadReference(IGenericReader reader)
     {
       int idx = reader.ReadEncodedInt() - 1;
 

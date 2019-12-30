@@ -31,13 +31,13 @@ namespace Server.Items
 
     public override int LabelNumber => 1045122; // leather blacksmith gloves of mining
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
       int version = reader.ReadInt();
@@ -73,13 +73,13 @@ namespace Server.Items
 
     public override int LabelNumber => 1045123; // studded leather blacksmith gloves of mining
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
       int version = reader.ReadInt();
@@ -116,13 +116,13 @@ namespace Server.Items
 
     public override int LabelNumber => 1045124; // ringmail blacksmith gloves of mining
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
       int version = reader.ReadInt();
@@ -203,7 +203,7 @@ namespace Server.Items
         list.Add(1062005, m_Bonus.ToString()); // mining bonus +~1_val~
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -212,7 +212,7 @@ namespace Server.Items
       writer.Write(m_Bonus);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

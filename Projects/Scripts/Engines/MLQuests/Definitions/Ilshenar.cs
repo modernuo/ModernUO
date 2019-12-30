@@ -178,14 +178,14 @@ namespace Server.Engines.MLQuests.Definitions
       AddItem(new Sandals());
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -229,14 +229,14 @@ namespace Server.Engines.MLQuests.Definitions
     public override string DefaultName => "Grandpa Charley";
     public override bool CanTeach => true;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -279,14 +279,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1074221); // Greetings!  I have a small task for you good traveler.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -330,14 +330,14 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, 1074218); // Hey!  I want to talk to you, now.
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

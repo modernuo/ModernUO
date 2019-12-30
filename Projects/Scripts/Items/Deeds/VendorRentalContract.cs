@@ -193,7 +193,7 @@ namespace Server.Items
       if (IsUsableBy(from, true, true, true, false)) list.Add(new ContractOptionEntry(this));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -205,7 +205,7 @@ namespace Server.Items
       writer.Write(LandlordRenew);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

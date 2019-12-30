@@ -27,7 +27,7 @@ namespace Server
     {
     }
 
-    public VirtueInfo(GenericReader reader)
+    public VirtueInfo(IGenericReader reader)
     {
       int version = reader.ReadByte();
 
@@ -138,7 +138,7 @@ namespace Server
 
     public override string ToString() => "...";
 
-    public static void Serialize(GenericWriter writer, VirtueInfo info)
+    public static void Serialize(IGenericWriter writer, VirtueInfo info)
     {
       writer.Write((byte)1); // version
 

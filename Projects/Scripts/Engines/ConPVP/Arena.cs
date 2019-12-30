@@ -47,7 +47,7 @@ namespace Server.Engines.ConPVP
         from.SendGump(new PropertiesGump(from, Arena));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -58,7 +58,7 @@ namespace Server.Engines.ConPVP
       Arena.Serialize(writer);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -88,7 +88,7 @@ namespace Server.Engines.ConPVP
   {
     public ArenaStartPoints(Point3D[] points = null) => Points = points ?? new Point3D[8];
 
-    public ArenaStartPoints(GenericReader reader)
+    public ArenaStartPoints(IGenericReader reader)
     {
       Points = new Point3D[reader.ReadEncodedInt()];
 
@@ -156,7 +156,7 @@ namespace Server.Engines.ConPVP
 
     public override string ToString() => "...";
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(Points.Length);
 
@@ -187,7 +187,7 @@ namespace Server.Engines.ConPVP
       Players = new List<Mobile>();
     }
 
-    public Arena(GenericReader reader)
+    public Arena(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -592,7 +592,7 @@ namespace Server.Engines.ConPVP
       Players.Clear();
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(7);
 

@@ -56,14 +56,14 @@ namespace Server.Engines.Quests.Ninja
       System.AddConversation(new UseTeleporterConversation());
     }
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
       TaughtHowToUseSkills = reader.ReadBool();
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 
@@ -140,14 +140,14 @@ namespace Server.Engines.Quests.Ninja
       System.AddConversation(new ReturnSwordConversation());
     }
 
-    public override void ChildDeserialize(GenericReader reader)
+    public override void ChildDeserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
       StolenTreasure = reader.ReadBool();
     }
 
-    public override void ChildSerialize(GenericWriter writer)
+    public override void ChildSerialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 
