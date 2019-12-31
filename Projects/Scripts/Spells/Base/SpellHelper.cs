@@ -498,7 +498,7 @@ namespace Server.Spells
       /*
       int offset = Utility.Random( 8 ) * 2;
 
-      for( int i = 0; i < m_Offsets.Length; i += 2 )
+      for ( int i = 0; i < m_Offsets.Length; i += 2 )
       {
         int x = caster.X + m_Offsets[(offset + i) % m_Offsets.Length];
         int y = caster.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];

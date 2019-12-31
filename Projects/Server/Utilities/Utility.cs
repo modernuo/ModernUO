@@ -969,10 +969,10 @@ namespace Server
     #region Random
 
     //4d6+8 would be: Utility.Dice( 4, 6, 8 )
-    public static int Dice(int numDice, int numSides, int bonus)
+    public static int Dice(uint numDice, uint numSides, int bonus)
     {
       int total = 0;
-      uint sides = (uint)numSides;
+      uint sides = numSides;
 
       for (int i = 0; i < numDice; ++i)
         total += (int)RandomImpl.Next(sides) + 1;

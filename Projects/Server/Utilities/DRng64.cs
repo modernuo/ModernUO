@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019 - ModernUO Development Team                        *
  * Email: hi@modernuo.com                                                *
- * File: SocketExtensions.cs - Created: 2019/08/02 - Updated: 2019/12/24 *
+ * File: DRng64.cs - Created: 2019/12/30 - Updated: 2019/12/30           *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -19,33 +19,45 @@
  *************************************************************************/
 
 using System;
-using System.Buffers;
-using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
-namespace Server.Network
+namespace Server
 {
-  public static class SocketExtensions
+  public sealed class DRng64 : BaseRandom, IHardwareRNG
   {
-    public static Task<int> ReceiveAsync(this Socket socket, Memory<byte> memory, SocketFlags socketFlags) => SocketTaskExtensions.ReceiveAsync(socket, GetArray(memory), socketFlags);
+    [DllImport("libdrng", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern RDRandError rdrand_64(ref ulong rand, bool retry);
 
-    public static ArraySegment<byte> GetArray(this Memory<byte> memory) => ((ReadOnlyMemory<byte>)memory).GetArray();
+    [DllImport("libdrng", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern unsafe RDRandError rdrand_get_bytes(int n, byte* buffer);
 
-    public static ArraySegment<byte> GetArray(this ReadOnlyMemory<byte> memory)
+    public bool IsSupported()
     {
-      if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> result))
-        return result;
-
-      throw new InvalidOperationException("Buffer backed by array was expected");
+      ulong r = 0;
+      return rdrand_64(ref r, true) == RDRandError.Success;
     }
 
-    public static ArraySegment<byte> GetArray(this ReadOnlySequence<byte> memory)
+    internal override unsafe void GetBytes(Span<byte> b)
     {
-      if (SequenceMarshal.TryGetArray(memory, out ArraySegment<byte> result))
-        return result;
-
-      throw new InvalidOperationException("Buffer backed by array was expected");
+      fixed (byte* ptr = b)
+        rdrand_get_bytes(b.Length, ptr);
     }
+
+    internal override void GetBytes(byte[] b, int offset, int count)
+    {
+      GetBytes(b.AsSpan(offset, count));
+    }
+  }
+
+  public enum RDRandError
+  {
+    Unknown = -4,
+    Unsupported = -3,
+    Supported = -2,
+    NotReady = -1,
+
+    Failure = 0,
+
+    Success = 1
   }
 }
