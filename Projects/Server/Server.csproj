@@ -17,9 +17,9 @@
     <UseNETCoreGenerator>true</UseNETCoreGenerator>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PublishDir>..\..\Distribution</PublishDir>
@@ -27,6 +27,8 @@
     <OutputPath>..\..\Distribution</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>8.0</LangVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -37,34 +39,10 @@
     <OutDir>..\..\Distribution</OutDir>
     <OutputPath>..\..\Distribution</OutputPath>
     <LangVersion>8.0</LangVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Include="Assemblies\libuv.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
-      <Link>libuv.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assemblies\libuv.osx.so" Condition="'$(RuntimeIdentifier)'=='osx-x64'">
-      <Link>libuv.so</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assemblies\libuv.linux.so" Condition="'$(RuntimeIdentifier)'=='linux-x64'">
-      <Link>libuv.so</Link>
-      <Update>libuv.so</Update>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assemblies\zlib.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
-      <Link>zlib.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assemblies\rdrand.dll" Condition="'$(RuntimeIdentifier)'=='win-x64'">
-      <Link>rdrand.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assemblies\rdrand.so" Condition="'$(RuntimeIdentifier)'=='osx-x64' OR '$(RuntimeIdentifier)'=='linux-x64'">
-      <Link>rdrand.so</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.1" />
@@ -73,4 +51,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.1" />
     <PackageReference Include="System.IO.Pipelines" Version="4.6.0" />
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /s /d /y &quot;$(ProjectDir)\Assemblies&quot; &quot;$(TargetDir)&quot;" />
+  </Target>
 </Project>

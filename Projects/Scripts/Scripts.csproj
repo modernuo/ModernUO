@@ -15,17 +15,21 @@
     <OutDir>..\..\Distribution\Assemblies</OutDir>
     <OutputPath>..\..\Distribution\Assemblies</OutputPath>
     <PublishDir>..\..\Distribution\Assemblies</PublishDir>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutDir>..\..\Distribution\Assemblies</OutDir>
     <OutputPath>..\..\Distribution\Assemblies</OutputPath>
     <PublishDir>..\..\Distribution\Assemblies</PublishDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="SpecialSystems\README.TXT" />
