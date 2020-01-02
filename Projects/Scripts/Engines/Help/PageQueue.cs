@@ -6,6 +6,7 @@ using Server.Accounting;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
+using MailKit;
 
 namespace Server.Engines.Help
 {
@@ -49,7 +50,7 @@ namespace Server.Engines.Help
       m_Timer.Start();
     }
 
-    public Mobile Sender{ get; }
+    public Mobile Sender { get; }
 
     public Mobile Handler
     {
@@ -61,17 +62,17 @@ namespace Server.Engines.Help
       }
     }
 
-    public DateTime Sent{ get; }
+    public DateTime Sent { get; }
 
-    public string Message{ get; }
+    public string Message { get; }
 
-    public PageType Type{ get; }
+    public PageType Type { get; }
 
-    public Point3D PageLocation{ get; }
+    public Point3D PageLocation { get; }
 
-    public Map PageMap{ get; }
+    public Map PageMap { get; }
 
-    public List<SpeechLogEntry> SpeechLog{ get; }
+    public List<SpeechLogEntry> SpeechLog { get; }
 
     public void Stop()
     {
@@ -118,7 +119,7 @@ namespace Server.Engines.Help
     private static Dictionary<Mobile, PageEntry> m_KeyedByHandler = new Dictionary<Mobile, PageEntry>();
     private static Dictionary<Mobile, PageEntry> m_KeyedBySender = new Dictionary<Mobile, PageEntry>();
 
-    public static List<PageEntry> List{ get; } = new List<PageEntry>();
+    public static List<PageEntry> List { get; } = new List<PageEntry>();
 
     public static void Initialize()
     {
@@ -207,6 +208,7 @@ namespace Server.Engines.Help
       Remove(GetEntry(sender));
     }
 
+
     public static void Enqueue(PageEntry entry)
     {
       List.Add(entry);
@@ -231,54 +233,12 @@ namespace Server.Engines.Help
           "We are sorry, but no staff members are currently available to assist you.  Your page will remain in the queue until one becomes available, or until you cancel it manually.");
 
       if (Email.FromAddress != null && Email.SpeechLogPageAddresses != null && entry.SpeechLog != null)
-        SendEmail(entry);
-    }
-
-    private static void SendEmail(PageEntry entry)
-    {
-      Mobile sender = entry.Sender;
-      DateTime time = DateTime.UtcNow;
-
-      MailMessage mail = new MailMessage(Email.FromAddress, Email.SpeechLogPageAddresses)
       {
-        Subject = "RunUO Speech Log Page Forwarding"
-      };
-
-      using (StringWriter writer = new StringWriter())
-      {
-        writer.WriteLine("RunUO Speech Log Page - {0}", GetPageTypeName(entry.Type));
-        writer.WriteLine();
-
-        writer.WriteLine("From: '{0}', Account: '{1}'", sender.RawName,
-          sender.Account is Account ? sender.Account.Username : "???");
-        writer.WriteLine("Location: {0} [{1}]", sender.Location, sender.Map);
-        writer.WriteLine("Sent on: {0}/{1:00}/{2:00} {3}:{4:00}:{5:00}", time.Year, time.Month, time.Day, time.Hour,
-          time.Minute, time.Second);
-        writer.WriteLine();
-
-        writer.WriteLine("Message:");
-        writer.WriteLine("'{0}'", entry.Message);
-        writer.WriteLine();
-
-        writer.WriteLine("Speech Log");
-        writer.WriteLine("==========");
-
-        foreach (SpeechLogEntry logEntry in entry.SpeechLog)
-        {
-          Mobile from = logEntry.From;
-          string fromName = from.RawName;
-          string fromAccount = from.Account is Account ? from.Account.Username : "???";
-          DateTime created = logEntry.Created;
-          string speech = logEntry.Speech;
-
-          writer.WriteLine("{0}:{1:00}:{2:00} - {3} ({4}): '{5}'", created.Hour, created.Minute, created.Second,
-            fromName, fromAccount, speech);
-        }
-
-        mail.Body = writer.ToString();
+        Console.WriteLine("passes");
+        Email.SendQueueEmail(entry, GetPageTypeName(entry.Type));
       }
-
-      Email.AsyncSend(mail);
+        
     }
+
   }
 }
