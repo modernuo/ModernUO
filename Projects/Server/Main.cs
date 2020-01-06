@@ -431,7 +431,7 @@ namespace Server
         Console.WriteLine("Core: Requested high resolution timing ({0})",
           UsingHighResolutionTiming ? "Supported" : "Unsupported");
 
-      Console.WriteLine("RandomImpl: SecureRandom: {0} ({1})", SecureRandomImpl.Name,
+      Console.WriteLine("SecureRandomImpl: {0} ({1})", SecureRandomImpl.Name,
         SecureRandomImpl.IsHardwareRNG ? "Hardware" : "Software");
 
       // Load Assembly Scripts.CS.dll

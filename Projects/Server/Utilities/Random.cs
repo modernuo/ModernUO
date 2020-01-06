@@ -49,11 +49,11 @@ namespace Server
       {
         _Random = new DRng64();
         if (_Random is IHardwareRNG rng && rng?.IsSupported() != true)
-          _Random = RandomNumberGenerator.Create();
+          _Random = new RNGCryptoServiceProvider();
       }
       catch (Exception)
       {
-        _Random = RandomNumberGenerator.Create();
+        _Random = new RNGCryptoServiceProvider();
       }
     }
 
