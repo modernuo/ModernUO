@@ -19,9 +19,9 @@ Ultima Online Server Emulator for the modern era!
 - zlib (Linux only)
 
 ### Building with .NET Core 3.0 SDK
-`dotnet publish /p:PublishProfile=[platform][-SelfContained]`
+`dotnet publish /p:PublishProfile=[platform][--self-contained]`
 - `platform` can be `Windows`, `Linux`, or `OSX` (capitalization matters)
-- Appending `-SelfContained` will export all .NET Core files required to run portably.
+- Appending `--self-contained` will export all .NET Core files required to run portably.
 
 ### Running
 - Follow the build instructions
