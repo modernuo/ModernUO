@@ -30,7 +30,7 @@ namespace Server.Multis
 
     public abstract BaseBoat Boat{ get; }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -40,7 +40,7 @@ namespace Server.Multis
       writer.Write(Offset);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

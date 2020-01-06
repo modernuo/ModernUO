@@ -26,7 +26,7 @@ namespace Server.Factions
       Invalidate();
     }
 
-    public PlayerState(GenericReader reader, Faction faction, List<PlayerState> owner)
+    public PlayerState(IGenericReader reader, Faction faction, List<PlayerState> owner)
     {
       Faction = faction;
       Owner = owner;
@@ -277,7 +277,7 @@ namespace Server.Factions
         mobile.FactionPlayerState = this;
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(1); // version
 

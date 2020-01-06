@@ -22,7 +22,7 @@ namespace Server.Ethics
       History = 5;
     }
 
-    public Player(Ethic ethic, GenericReader reader)
+    public Player(Ethic ethic, IGenericReader reader)
     {
       Ethic = ethic;
 
@@ -139,7 +139,7 @@ namespace Server.Ethics
       Ethic.Players.Remove(this);
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 

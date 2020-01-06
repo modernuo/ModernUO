@@ -24,7 +24,7 @@ namespace Server.Misc
         new TreasuresOfTokunoPersistance();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -34,7 +34,7 @@ namespace Server.Misc
       writer.WriteEncodedInt((int)TreasuresOfTokuno.DropEra);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

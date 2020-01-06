@@ -165,7 +165,7 @@ namespace Server.Multis
       base.AddItem(item, xOffset, yOffset, zOffset);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -174,7 +174,7 @@ namespace Server.Multis
       writer.Write(m_Prisoner);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

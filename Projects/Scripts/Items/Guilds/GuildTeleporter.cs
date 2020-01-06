@@ -23,7 +23,7 @@ namespace Server.Items
 
     public override bool DisplayLootType => false;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -32,7 +32,7 @@ namespace Server.Items
       writer.Write(m_Stone);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
       LootType = LootType.Blessed;

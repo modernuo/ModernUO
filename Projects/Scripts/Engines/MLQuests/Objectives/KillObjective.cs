@@ -128,7 +128,7 @@ namespace Server.Engines.MLQuests.Objectives
       y += 16;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 

@@ -186,7 +186,7 @@ namespace Server.Ethics
 
     public abstract bool IsEligible(Mobile mob);
 
-    public virtual void Deserialize(GenericReader reader)
+    public virtual void Deserialize(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -209,7 +209,7 @@ namespace Server.Ethics
       }
     }
 
-    public virtual void Serialize(GenericWriter writer)
+    public virtual void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 

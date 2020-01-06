@@ -57,7 +57,7 @@ namespace Server.Items
       list.Add(1070880); // Winter 2004
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -66,7 +66,7 @@ namespace Server.Items
       writer.Write(Dipper);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

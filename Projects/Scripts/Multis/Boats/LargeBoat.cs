@@ -26,14 +26,14 @@ namespace Server.Multis
 
     public override BaseDockedBoat DockedBoat => new LargeDockedBoat(this);
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
       int version = reader.ReadInt();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -55,14 +55,14 @@ namespace Server.Multis
     public override int LabelNumber => 1041209; // large ship deed
     public override BaseBoat Boat => new LargeBoat();
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
       int version = reader.ReadInt();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -82,14 +82,14 @@ namespace Server.Multis
 
     public override BaseBoat Boat => new LargeBoat();
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
       int version = reader.ReadInt();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 

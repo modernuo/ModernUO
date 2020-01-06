@@ -15,14 +15,14 @@ namespace Server.Items
     public override int LabelNumber => 1080007; // Cocoa liquor
     public override double DefaultWeight => 1.0;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -49,14 +49,14 @@ namespace Server.Items
     public override int LabelNumber => 1080003; // Sack of sugar
     public override double DefaultWeight => 1.0;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -79,14 +79,14 @@ namespace Server.Items
     public override int LabelNumber => 1080005; // Cocoa butter
     public override double DefaultWeight => 1.0;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -113,14 +113,14 @@ namespace Server.Items
     public override int LabelNumber => 1080009; // Vanilla
     public override double DefaultWeight => 1.0;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -147,14 +147,14 @@ namespace Server.Items
     public override int LabelNumber => 1080530; // cocoa pulp
     public override double DefaultWeight => 1.0;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -180,14 +180,14 @@ namespace Server.Items
     public override int LabelNumber => 1079994; // Dark chocolate
     public override double DefaultWeight => 1.0;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -213,14 +213,14 @@ namespace Server.Items
     public override int LabelNumber => 1079995; // Milk chocolate
     public override double DefaultWeight => 1.0;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -246,14 +246,14 @@ namespace Server.Items
     public override int LabelNumber => 1079996; // White chocolate
     public override double DefaultWeight => 1.0;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

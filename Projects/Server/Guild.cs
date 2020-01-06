@@ -31,6 +31,9 @@ namespace Server.Guilds
 
   public abstract class BaseGuild : ISerializable
   {
+    private BufferWriter m_SaveBuffer;
+    public BufferWriter SaveBuffer { get { return m_SaveBuffer; } }
+
     private static uint m_NextID = 1;
 
     protected BaseGuild(uint Id) //serialization ctor
@@ -39,12 +42,14 @@ namespace Server.Guilds
       List.Add(this.Id, this);
       if (this.Id + 1 > m_NextID)
         m_NextID = this.Id + 1;
+      m_SaveBuffer = new BufferWriter(true);
     }
 
     protected BaseGuild()
     {
       Id = m_NextID++;
       List.Add(Id, this);
+      m_SaveBuffer = new BufferWriter(true);
     }
 
     [CommandProperty(AccessLevel.Counselor)]
@@ -60,9 +65,15 @@ namespace Server.Guilds
     int ISerializable.TypeReference => 0;
 
     uint ISerializable.SerialIdentity => Id;
-    public abstract void Serialize(GenericWriter writer);
 
-    public abstract void Deserialize(GenericReader reader);
+    public void Serialize()
+    {
+      SaveBuffer.Flush();
+      Serialize(SaveBuffer);
+    }
+    public abstract void Serialize(IGenericWriter writer);
+
+    public abstract void Deserialize(IGenericReader reader);
     public abstract void OnDelete(Mobile mob);
 
     public static BaseGuild Find(uint id)

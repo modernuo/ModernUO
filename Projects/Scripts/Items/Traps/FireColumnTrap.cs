@@ -75,7 +75,7 @@ namespace Server.Items
       Effects.PlaySound(Location, Map, 0x225);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -86,7 +86,7 @@ namespace Server.Items
       writer.Write(m_MaxDamage);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

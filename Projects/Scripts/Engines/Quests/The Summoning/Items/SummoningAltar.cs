@@ -39,7 +39,7 @@ namespace Server.Engines.Quests.Doom
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -48,7 +48,7 @@ namespace Server.Engines.Quests.Doom
       writer.Write(m_Daemon);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

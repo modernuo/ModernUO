@@ -48,7 +48,7 @@ namespace Server.Engines.Quests.Hag
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -57,7 +57,7 @@ namespace Server.Engines.Quests.Hag
       writer.WriteEncodedInt(Uses);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

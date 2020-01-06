@@ -32,14 +32,14 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -259,7 +259,7 @@ namespace Server.Engines.ConPVP
       Players = new Dictionary<Mobile, DDPlayerInfo>();
     }
 
-    public DDTeamInfo(int teamID, GenericReader ip)
+    public DDTeamInfo(int teamID, IGenericReader ip)
     {
       TeamID = teamID;
       Players = new Dictionary<Mobile, DDPlayerInfo>();
@@ -336,7 +336,7 @@ namespace Server.Engines.ConPVP
         Board.m_TeamInfo = this;
     }
 
-    public void Serialize(GenericWriter op)
+    public void Serialize(IGenericWriter op)
     {
       op.WriteEncodedInt(0); // version
 
@@ -395,7 +395,7 @@ namespace Server.Engines.ConPVP
 
     public override EventGame Construct(DuelContext context) => new DDGame(this, context);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -412,7 +412,7 @@ namespace Server.Engines.ConPVP
       writer.Write(PointB);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -989,14 +989,14 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -1060,14 +1060,14 @@ namespace Server.Engines.ConPVP
       {
       }
 
-      public override void Deserialize(GenericReader reader)
+      public override void Deserialize(IGenericReader reader)
       {
         base.Deserialize(reader);
 
         int version = reader.ReadInt();
       }
 
-      public override void Serialize(GenericWriter writer)
+      public override void Serialize(IGenericWriter writer)
       {
         base.Serialize(writer);
 

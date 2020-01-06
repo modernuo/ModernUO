@@ -155,7 +155,7 @@ namespace Server.Items
 
     public bool VerifyRegion(Mobile m) => m.Region.IsPartOf<TownRegion>() && Faction.IsNearType(m, RepairSkillInfo.GetInfo(m_Skill).NearbyTypes, 6);
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -166,7 +166,7 @@ namespace Server.Items
       writer.Write(m_Crafter);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

@@ -41,13 +41,13 @@ namespace Server.Mobiles
     public override double DispelFocus => 45.0;
     public override string DefaultName => "an earth elemental";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
       writer.Write(0);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
       int version = reader.ReadInt();

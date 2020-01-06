@@ -69,7 +69,7 @@ namespace Server.Engines.Quests.Necro
         c.TurnToFull();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -79,7 +79,7 @@ namespace Server.Engines.Quests.Necro
       writer.Write(SpawnLocation);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -131,7 +131,7 @@ namespace Server.Engines.Quests.Necro
       ItemID = m_FullItemID;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -141,7 +141,7 @@ namespace Server.Engines.Quests.Necro
       writer.Write(m_EmptyItemID);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

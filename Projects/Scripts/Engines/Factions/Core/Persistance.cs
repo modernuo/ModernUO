@@ -20,7 +20,7 @@ namespace Server.Factions
 
     public override string DefaultName => "Faction Persistance - Internal";
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -45,7 +45,7 @@ namespace Server.Factions
       writer.WriteEncodedInt((int)PersistedType.Terminator);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

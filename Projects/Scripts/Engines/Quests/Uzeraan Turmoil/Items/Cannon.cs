@@ -107,7 +107,7 @@ namespace Server.Engines.Quests.Haven
         Fire(Canoneer, m);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       if (Canoneer?.Deleted == true)
         Canoneer = null;
@@ -120,7 +120,7 @@ namespace Server.Engines.Quests.Haven
       writer.Write(Canoneer);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -151,14 +151,14 @@ namespace Server.Engines.Quests.Haven
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

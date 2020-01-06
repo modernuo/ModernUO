@@ -153,7 +153,7 @@ namespace Server.Engines.Plants
       newSeed.ShowType = m_ShowType;
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -164,7 +164,7 @@ namespace Server.Engines.Plants
       writer.Write(m_ShowType);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

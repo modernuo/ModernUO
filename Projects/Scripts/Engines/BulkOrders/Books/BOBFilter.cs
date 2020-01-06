@@ -6,7 +6,7 @@ namespace Server.Engines.BulkOrders
     {
     }
 
-    public BOBFilter(GenericReader reader)
+    public BOBFilter(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -42,7 +42,7 @@ namespace Server.Engines.BulkOrders
       Quantity = 0;
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       if (IsDefault)
       {

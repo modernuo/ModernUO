@@ -2113,7 +2113,7 @@ namespace Server.Mobiles
       SetHairMods(-1, -1);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
       int version = reader.ReadInt();
@@ -2403,7 +2403,7 @@ namespace Server.Mobiles
         AddBuff(new BuffInfo(BuffIcon.HidingAndOrStealth, 1075655));
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       //cleanup our anti-macro table
       foreach (Dictionary<object, CountAndTimeStamp> t in m_AntiMacroTable.Values)
@@ -4331,7 +4331,7 @@ namespace Server.Mobiles
       {
       }
 
-      public ChampionTitleInfo(GenericReader reader)
+      public ChampionTitleInfo(IGenericReader reader)
       {
         int version = reader.ReadEncodedInt();
 
@@ -4507,7 +4507,7 @@ namespace Server.Mobiles
 
       public override string ToString() => "...";
 
-      public static void Serialize(GenericWriter writer, ChampionTitleInfo titles)
+      public static void Serialize(IGenericWriter writer, ChampionTitleInfo titles)
       {
         writer.WriteEncodedInt(0); // version
 
@@ -4564,7 +4564,7 @@ namespace Server.Mobiles
         {
         }
 
-        public TitleInfo(GenericReader reader)
+        public TitleInfo(IGenericReader reader)
         {
           int version = reader.ReadEncodedInt();
 
@@ -4583,7 +4583,7 @@ namespace Server.Mobiles
 
         public DateTime LastDecay{ get; set; }
 
-        public static void Serialize(GenericWriter writer, TitleInfo info)
+        public static void Serialize(IGenericWriter writer, TitleInfo info)
         {
           writer.WriteEncodedInt(0); // version
 

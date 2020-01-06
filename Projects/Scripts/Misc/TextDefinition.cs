@@ -31,7 +31,7 @@ namespace Server
 
     public string GetValue() => Number > 0 ? Number.ToString() : String ?? "";
 
-    public static void Serialize(GenericWriter writer, TextDefinition def)
+    public static void Serialize(IGenericWriter writer, TextDefinition def)
     {
       if (def == null)
       {
@@ -53,7 +53,7 @@ namespace Server
       }
     }
 
-    public static TextDefinition Deserialize(GenericReader reader)
+    public static TextDefinition Deserialize(IGenericReader reader)
     {
       int type = reader.ReadEncodedInt();
 

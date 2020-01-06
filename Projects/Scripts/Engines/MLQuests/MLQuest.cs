@@ -211,13 +211,13 @@ namespace Server.Engines.MLQuests
 
     public virtual TimeSpan GetRestartDelay() => TimeSpan.FromSeconds(Utility.Random(1, 5) * 30);
 
-    public static void Serialize(GenericWriter writer, MLQuest quest)
+    public static void Serialize(IGenericWriter writer, MLQuest quest)
     {
       MLQuestSystem.WriteQuestRef(writer, quest);
       writer.Write(quest.Version);
     }
 
-    public static void Deserialize(GenericReader reader, int version)
+    public static void Deserialize(IGenericReader reader, int version)
     {
       MLQuest quest = MLQuestSystem.ReadQuestRef(reader);
       int oldVersion = reader.ReadInt();

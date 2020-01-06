@@ -204,7 +204,7 @@ namespace Server.Mobiles
       LabelTo(from, m_IsDonationItem ? "Donation Ethereal" : "Veteran Reward");
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -218,7 +218,7 @@ namespace Server.Mobiles
       writer.Write(m_Rider);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
       LootType = LootType.Blessed;
@@ -418,14 +418,14 @@ namespace Server.Mobiles
 
     public override int LabelNumber => 1041298; // Ethereal Horse Statuette
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -454,14 +454,14 @@ namespace Server.Mobiles
 
     public override int LabelNumber => 1041300; // Ethereal Llama Statuette
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -487,14 +487,14 @@ namespace Server.Mobiles
 
     public override int LabelNumber => 1041299; // Ethereal Ostard Statuette
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -520,14 +520,14 @@ namespace Server.Mobiles
 
     public override int LabelNumber => 1049747; // Ethereal Ridgeback Statuette
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -553,14 +553,14 @@ namespace Server.Mobiles
 
     public override int LabelNumber => 1049745; // Ethereal Unicorn Statuette
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -586,14 +586,14 @@ namespace Server.Mobiles
 
     public override int LabelNumber => 1049748; // Ethereal Beetle Statuette
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -619,14 +619,14 @@ namespace Server.Mobiles
 
     public override int LabelNumber => 1049746; // Ethereal Ki-Rin Statuette
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -652,14 +652,14 @@ namespace Server.Mobiles
 
     public override int LabelNumber => 1049749; // Ethereal Swamp Dragon Statuette
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -686,14 +686,14 @@ namespace Server.Mobiles
     public override int LabelNumber => 1076159; // Rideable Polar Bear
     public override int EtherealHue => 0;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -716,14 +716,14 @@ namespace Server.Mobiles
 
     public override int LabelNumber => 1080386; // Ethereal Cu Sidhe Statuette
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -746,14 +746,14 @@ namespace Server.Mobiles
 
     public override int LabelNumber => 1113813; // Ethereal Hiryu Statuette
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -776,14 +776,14 @@ namespace Server.Mobiles
 
     public override int LabelNumber => 1113812; // Ethereal Reptalon Statuette
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -808,14 +808,14 @@ namespace Server.Mobiles
 
     public override int EtherealHue => 0;
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

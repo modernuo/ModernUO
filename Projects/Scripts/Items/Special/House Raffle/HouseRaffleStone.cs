@@ -21,7 +21,7 @@ namespace Server.Items
       Date = DateTime.UtcNow;
     }
 
-    public RaffleEntry(GenericReader reader, int version)
+    public RaffleEntry(IGenericReader reader, int version)
     {
       switch (version)
       {
@@ -45,7 +45,7 @@ namespace Server.Items
 
     public DateTime Date{ get; }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.Write(From);
       writer.Write(Address);
@@ -520,7 +520,7 @@ namespace Server.Items
       base.OnDelete();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -546,7 +546,7 @@ namespace Server.Items
         entry.Serialize(writer);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

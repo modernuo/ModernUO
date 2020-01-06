@@ -45,7 +45,7 @@ namespace Server.Items
       m_Item2?.Delete();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -55,7 +55,7 @@ namespace Server.Items
       writer.Write(m_Item2);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -100,7 +100,7 @@ namespace Server.Items
         m_Item?.Delete();
       }
 
-      public override void Serialize(GenericWriter writer)
+      public override void Serialize(IGenericWriter writer)
       {
         base.Serialize(writer);
 
@@ -109,7 +109,7 @@ namespace Server.Items
         writer.Write(m_Item);
       }
 
-      public override void Deserialize(GenericReader reader)
+      public override void Deserialize(IGenericReader reader)
       {
         base.Deserialize(reader);
 
@@ -154,7 +154,7 @@ namespace Server.Items
         m_Item?.Delete();
       }
 
-      public override void Serialize(GenericWriter writer)
+      public override void Serialize(IGenericWriter writer)
       {
         base.Serialize(writer);
 
@@ -163,7 +163,7 @@ namespace Server.Items
         writer.Write(m_Item);
       }
 
-      public override void Deserialize(GenericReader reader)
+      public override void Deserialize(IGenericReader reader)
       {
         base.Deserialize(reader);
 
@@ -217,7 +217,7 @@ namespace Server.Items
       m_Item2?.Delete();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -227,7 +227,7 @@ namespace Server.Items
       writer.Write(m_Item2);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -272,7 +272,7 @@ namespace Server.Items
         m_Item?.Delete();
       }
 
-      public override void Serialize(GenericWriter writer)
+      public override void Serialize(IGenericWriter writer)
       {
         base.Serialize(writer);
 
@@ -281,7 +281,7 @@ namespace Server.Items
         writer.Write(m_Item);
       }
 
-      public override void Deserialize(GenericReader reader)
+      public override void Deserialize(IGenericReader reader)
       {
         base.Deserialize(reader);
 
@@ -326,7 +326,7 @@ namespace Server.Items
         m_Item?.Delete();
       }
 
-      public override void Serialize(GenericWriter writer)
+      public override void Serialize(IGenericWriter writer)
       {
         base.Serialize(writer);
 
@@ -335,7 +335,7 @@ namespace Server.Items
         writer.Write(m_Item);
       }
 
-      public override void Deserialize(GenericReader reader)
+      public override void Deserialize(IGenericReader reader)
       {
         base.Deserialize(reader);
 

@@ -86,7 +86,7 @@ namespace Server.Items
         Use(from, weapon);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -96,7 +96,7 @@ namespace Server.Items
       writer.Write(MaxSkill);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -159,14 +159,14 @@ namespace Server.Items
 
     public override BaseAddonDeed Deed => new TrainingDummyEastDeed();
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -188,14 +188,14 @@ namespace Server.Items
     public override BaseAddon Addon => new TrainingDummyEastAddon();
     public override int LabelNumber => 1044335; // training dummy (east)
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -217,14 +217,14 @@ namespace Server.Items
 
     public override BaseAddonDeed Deed => new TrainingDummySouthDeed();
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -246,14 +246,14 @@ namespace Server.Items
     public override BaseAddon Addon => new TrainingDummySouthAddon();
     public override int LabelNumber => 1044336; // training dummy (south)
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
       writer.Write(0); // version
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

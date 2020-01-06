@@ -24,7 +24,7 @@ namespace Server.Factions.AI
       Type = type;
     }
 
-    public Reaction(GenericReader reader)
+    public Reaction(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -44,7 +44,7 @@ namespace Server.Factions.AI
 
     public ReactionType Type{ get; set; }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(0); // version
 
@@ -64,7 +64,7 @@ namespace Server.Factions.AI
       Movement = MovementType.Patrol;
     }
 
-    public Orders(BaseFactionGuard guard, GenericReader reader)
+    public Orders(BaseFactionGuard guard, IGenericReader reader)
     {
       Guard = guard;
 
@@ -124,7 +124,7 @@ namespace Server.Factions.AI
       reaction.Type = type;
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(1); // version
 

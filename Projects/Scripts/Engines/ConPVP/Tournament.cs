@@ -47,7 +47,7 @@ namespace Server.Engines.ConPVP
     private int m_ParticipantsPerMatch;
     private int m_PlayersPerParticipant;
 
-    public Tournament(GenericReader reader)
+    public Tournament(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -209,7 +209,7 @@ namespace Server.Engines.ConPVP
       return false;
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(5); // version
 

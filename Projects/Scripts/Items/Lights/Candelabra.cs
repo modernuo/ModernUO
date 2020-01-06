@@ -27,7 +27,7 @@ namespace Server.Items
 
     #endregion
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
       writer.Write(1);
@@ -35,7 +35,7 @@ namespace Server.Items
       writer.Write(IsShipwreckedItem);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
       int version = reader.ReadInt();

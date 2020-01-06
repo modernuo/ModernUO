@@ -96,7 +96,7 @@ namespace Server.Guilds
         Alliances.Add(Name.ToLower(), this);
     }
 
-    public AllianceInfo(GenericReader reader)
+    public AllianceInfo(IGenericReader reader)
     {
       int version = reader.ReadInt();
 
@@ -170,7 +170,7 @@ namespace Server.Guilds
       return m_Members.Contains(g);
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.Write(0); //Version
 
@@ -391,7 +391,7 @@ namespace Server.Guilds
       WarRequester = warRequester;
     }
 
-    public WarDeclaration(GenericReader reader)
+    public WarDeclaration(IGenericReader reader)
     {
       int version = reader.ReadInt();
 
@@ -467,7 +467,7 @@ namespace Server.Guilds
       }
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.Write(0); //version
 
@@ -1001,7 +1001,7 @@ namespace Server.Guilds
 
     #region Serialization
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       if (LastFealty + TimeSpan.FromDays(1.0) < DateTime.UtcNow)
         CalculateGuildmaster();
@@ -1067,7 +1067,7 @@ namespace Server.Guilds
       writer.Write(Website);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       int version = reader.ReadInt();
 

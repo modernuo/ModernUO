@@ -38,7 +38,7 @@ namespace Server.Factions
       list.Add(1060584, Charges.ToString()); // uses remaining: ~1_val~
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -47,7 +47,7 @@ namespace Server.Factions
       writer.WriteEncodedInt(Charges);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

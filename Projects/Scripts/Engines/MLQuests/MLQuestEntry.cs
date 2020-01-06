@@ -431,7 +431,7 @@ namespace Server.Engines.MLQuests
         m_Flags &= ~flag;
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       // Version info is written in MLQuestPersistence.Serialize
 
@@ -446,7 +446,7 @@ namespace Server.Engines.MLQuests
         objInstance.Serialize(writer);
     }
 
-    public static MLQuestInstance Deserialize(GenericReader reader, int version, PlayerMobile pm)
+    public static MLQuestInstance Deserialize(IGenericReader reader, int version, PlayerMobile pm)
     {
       MLQuest quest = MLQuestSystem.ReadQuestRef(reader);
 

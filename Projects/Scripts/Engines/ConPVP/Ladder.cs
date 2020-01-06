@@ -34,7 +34,7 @@ namespace Server.Engines.ConPVP
       base.Delete();
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -45,7 +45,7 @@ namespace Server.Engines.ConPVP
       writer.Write(Ladder.Instance == Ladder);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -120,7 +120,7 @@ namespace Server.Engines.ConPVP
 
     public Ladder() => m_Table = new Dictionary<Mobile, LadderEntry>();
 
-    public Ladder(GenericReader reader)
+    public Ladder(IGenericReader reader)
     {
       int version = reader.ReadEncodedInt();
 
@@ -282,7 +282,7 @@ namespace Server.Engines.ConPVP
       return entry;
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.WriteEncodedInt(1); // version;
 
@@ -304,7 +304,7 @@ namespace Server.Engines.ConPVP
       Mobile = mob;
     }
 
-    public LadderEntry(GenericReader reader, Ladder ladder, int version)
+    public LadderEntry(IGenericReader reader, Ladder ladder, int version)
     {
       m_Ladder = ladder;
 
@@ -349,7 +349,7 @@ namespace Server.Engines.ConPVP
 
     public int CompareTo(LadderEntry l) => (l?.m_Experience ?? 0) - m_Experience;
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.Write(Mobile);
       writer.WriteEncodedInt(m_Experience);

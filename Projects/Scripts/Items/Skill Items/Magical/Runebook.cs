@@ -147,7 +147,7 @@ namespace Server.Items
       SetSecureLevelEntry.AddTo(from, this, list);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -170,7 +170,7 @@ namespace Server.Items
       writer.Write(m_DefaultIndex);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -430,7 +430,7 @@ namespace Server.Items
       House = house;
     }
 
-    public RunebookEntry(GenericReader reader)
+    public RunebookEntry(IGenericReader reader)
     {
       int version = reader.ReadByte();
 
@@ -460,7 +460,7 @@ namespace Server.Items
 
     public BaseHouse House{ get; }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       if (House?.Deleted == false)
       {

@@ -208,7 +208,7 @@ namespace Server.Regions
         Table.Remove(ID);
     }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.Write(SpawnedObjects.Count);
 
@@ -228,7 +228,7 @@ namespace Server.Regions
       }
     }
 
-    public void Deserialize(GenericReader reader, int version)
+    public void Deserialize(IGenericReader reader, int version)
     {
       int count = reader.ReadInt();
 
@@ -254,7 +254,7 @@ namespace Server.Regions
       CheckTimer();
     }
 
-    public static void Remove(GenericReader reader, int version)
+    public static void Remove(IGenericReader reader, int version)
     {
       int count = reader.ReadInt();
 

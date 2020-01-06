@@ -159,7 +159,7 @@ namespace Server.Mobiles
         list.Add(1060853, m_BardingCrafter.Name); // armor exceptionally crafted by ~1_val~
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -172,7 +172,7 @@ namespace Server.Mobiles
       writer.Write((int)m_BardingResource);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

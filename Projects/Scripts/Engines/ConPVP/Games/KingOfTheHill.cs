@@ -59,7 +59,7 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -75,7 +75,7 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -312,7 +312,7 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -321,7 +321,7 @@ namespace Server.Engines.ConPVP
       writer.Write(m_Controller);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 
@@ -557,7 +557,7 @@ namespace Server.Engines.ConPVP
       Players = new Dictionary<Mobile, KHPlayerInfo>();
     }
 
-    public KHTeamInfo(int teamID, GenericReader ip)
+    public KHTeamInfo(int teamID, IGenericReader ip)
     {
       TeamID = teamID;
       Players = new Dictionary<Mobile, KHPlayerInfo>();
@@ -636,7 +636,7 @@ namespace Server.Engines.ConPVP
       Players.Clear();
     }
 
-    public void Serialize(GenericWriter op)
+    public void Serialize(IGenericWriter op)
     {
       op.WriteEncodedInt(0); // version
 
@@ -755,7 +755,7 @@ namespace Server.Engines.ConPVP
         Boards.Add(b);
     }
 
-    public override void Serialize(GenericWriter writer)
+    public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
@@ -775,7 +775,7 @@ namespace Server.Engines.ConPVP
         TeamInfo[i].Serialize(writer);
     }
 
-    public override void Deserialize(GenericReader reader)
+    public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);
 

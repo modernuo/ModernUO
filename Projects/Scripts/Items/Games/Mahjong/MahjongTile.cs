@@ -16,7 +16,7 @@ namespace Server.Engines.Mahjong
       Flipped = flipped;
     }
 
-    public MahjongTile(MahjongGame game, GenericReader reader)
+    public MahjongTile(MahjongGame game, IGenericReader reader)
     {
       Game = game;
 
@@ -73,7 +73,7 @@ namespace Server.Engines.Mahjong
       Game.Players.SendTilePacket(this, true, true);
     }
 
-    public void Save(GenericWriter writer)
+    public void Save(IGenericWriter writer)
     {
       writer.Write(0); // version
 

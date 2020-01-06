@@ -258,7 +258,7 @@ namespace Server
     {
     }
 
-    public AosAttributes(Item owner, GenericReader reader)
+    public AosAttributes(Item owner, IGenericReader reader)
       : base(owner, reader)
     {
     }
@@ -588,7 +588,7 @@ namespace Server
     {
     }
 
-    public AosWeaponAttributes(Item owner, GenericReader reader)
+    public AosWeaponAttributes(Item owner, IGenericReader reader)
       : base(owner, reader)
     {
     }
@@ -824,7 +824,7 @@ namespace Server
     {
     }
 
-    public AosArmorAttributes(Item owner, GenericReader reader)
+    public AosArmorAttributes(Item owner, IGenericReader reader)
       : base(owner, reader)
     {
     }
@@ -911,7 +911,7 @@ namespace Server
     {
     }
 
-    public AosSkillBonuses(Item owner, GenericReader reader)
+    public AosSkillBonuses(Item owner, IGenericReader reader)
       : base(owner, reader)
     {
     }
@@ -1189,7 +1189,7 @@ namespace Server
     {
     }
 
-    public AosElementAttributes(Item owner, GenericReader reader)
+    public AosElementAttributes(Item owner, IGenericReader reader)
       : base(owner, reader)
     {
     }
@@ -1273,7 +1273,7 @@ namespace Server
       m_Names = other.m_Names;
     }
 
-    public BaseAttributes(Item owner, GenericReader reader)
+    public BaseAttributes(Item owner, IGenericReader reader)
     {
       Owner = owner;
 
@@ -1307,7 +1307,7 @@ namespace Server
     public bool IsEmpty => m_Names == 0;
     public Item Owner{ get; }
 
-    public void Serialize(GenericWriter writer)
+    public void Serialize(IGenericWriter writer)
     {
       writer.Write((byte)1); // version;
 
