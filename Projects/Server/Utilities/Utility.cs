@@ -1025,7 +1025,9 @@ namespace Server
 
     public static int Random(uint count) => (int)RandomImpl.Next(count);
 
-    public static void RandomBytes(byte[] buffer) => RandomImpl.NextBytes(buffer);
+    public static void RandomBytes(byte[] buffer) => RandomImpl.GetBytes(buffer);
+
+    public static void RandomBytes(Span<byte> buffer) => RandomImpl.GetBytes(buffer);
 
     public static double RandomDouble() => RandomImpl.NextDouble();
 

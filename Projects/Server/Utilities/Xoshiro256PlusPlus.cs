@@ -23,10 +23,11 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 namespace Server
 {
-  public class Xoshiro256PlusPlus : IRandom
+  public class Xoshiro256PlusPlus : RandomNumberGenerator
   {
     private ulong _s0, _s1, _s2, _s3;
 
@@ -115,8 +116,16 @@ namespace Server
 
     public bool NextBool() => NextUInt64() < 1ul << 63;
 
-    public unsafe void NextBytes(Span<byte> b)
+    public override void GetBytes(byte[] data)
     {
+      if (data == null) throw new ArgumentNullException(nameof(data));
+      GetBytes(new Span<byte>(data));
+    }
+
+    public override unsafe void GetBytes(Span<byte> b)
+    {
+      if (b.Length == 0) return;
+
       ulong s0 = _s0;
       ulong s1 = _s1;
       ulong s2 = _s2;
@@ -128,7 +137,7 @@ namespace Server
       {
         ulong* pULong = (ulong*)pBuffer;
 
-        for (int bound = b.Length / 8; i < bound; i++)
+        for (int bound = b.Length / sizeof(ulong); i < bound; i++)
         {
           ulong r1 = (s1 << 2) + s1;
           ulong r2 = (r1 << 7) | (r1 >> 57);
