@@ -39,7 +39,6 @@
     <OutDir>..\..\Distribution</OutDir>
     <OutputPath>..\..\Distribution</OutputPath>
     <LangVersion>8.0</LangVersion>
-    <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>DEBUG</DefineConstants>
     <Optimize>true</Optimize>
