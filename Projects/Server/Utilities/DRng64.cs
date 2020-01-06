@@ -55,14 +55,6 @@ namespace Server
       rdrand_get_bytes(count, pBuffer);
     }
 
-    // As long as each implementation can provide a static GetBytes(ref byte buf, int length)
-    // they can share this one implementation of FillSpan.
-    internal static unsafe void FillSpan(Span<byte> data)
-    {
-      if (data.Length > 0)
-        fixed (byte* ptr = data) GetBytes(ptr, data.Length);
-    }
-
     public override void GetBytes(byte[] data)
     {
       if (data == null) throw new ArgumentNullException(nameof(data));
