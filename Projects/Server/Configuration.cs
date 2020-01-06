@@ -94,7 +94,7 @@ namespace Server
     [JsonPropertyName("emailServer")]
     public string emailServer { get; set; }
     [JsonPropertyName("emailPort")]
-    public string emailPort { get; set; }
+    public int emailPort { get; set; }
     [JsonPropertyName("emailUsername")]
     public string emailUsername { get; set; }
     [JsonPropertyName("emailPassword")]

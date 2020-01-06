@@ -16,7 +16,7 @@ namespace Server.Misc
     public static readonly MailboxAddress CrashAddresses = new MailboxAddress(Configuration.Instance.emailSettings.crashName, Configuration.Instance.emailSettings.crashAddress);
     public static readonly MailboxAddress SpeechLogPageAddress = new MailboxAddress(Configuration.Instance.emailSettings.speechLogPageName, Configuration.Instance.emailSettings.speechLogPageAddress);
     public static readonly string EmailServer = Configuration.Instance.emailSettings.emailServer;
-    public static readonly int EmailPort = Int32.Parse(Configuration.Instance.emailSettings.emailPort);
+    public static readonly int EmailPort = Configuration.Instance.emailSettings.emailPort;
     public static readonly string EmailServerUsername = Configuration.Instance.emailSettings.emailUsername;
     public static readonly string EmailServerPassword = Configuration.Instance.emailSettings.emailPassword;
     public static readonly int m_retryCount = 5;
