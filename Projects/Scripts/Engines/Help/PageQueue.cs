@@ -234,10 +234,9 @@ namespace Server.Engines.Help
 
       if (Email.FromAddress != null && Email.SpeechLogPageAddresses != null && entry.SpeechLog != null)
       {
-        Console.WriteLine("passes");
         Email.SendQueueEmail(entry, GetPageTypeName(entry.Type));
       }
-        
+
     }
 
   }
