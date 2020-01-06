@@ -232,7 +232,7 @@ namespace Server.Engines.Help
         entry.Sender.SendMessage(
           "We are sorry, but no staff members are currently available to assist you.  Your page will remain in the queue until one becomes available, or until you cancel it manually.");
 
-      if (Email.FromAddress != null && Email.SpeechLogPageAddresses != null && entry.SpeechLog != null)
+      if (Email.FromAddress != null && Email.SpeechLogPageAddress != null && entry.SpeechLog != null)
       {
         Email.SendQueueEmail(entry, GetPageTypeName(entry.Type));
       }

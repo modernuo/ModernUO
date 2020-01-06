@@ -12,19 +12,14 @@ namespace Server.Misc
 {
   public class Email
   {
-    public static readonly MailboxAddress FromAddress = null; //new MailboxAddress("Joey Tribbiani", "joey@friends.com");
-    public static readonly MailboxAddress CrashAddresses = null; //new MailboxAddress("Joey Tribbiani", "joey@friends.com");
-    public static readonly MailboxAddress SpeechLogPageAddresses = null; //new MailboxAddress("Joey Tribbiani", "joey@friends.com");
-    public static readonly string EmailServer = null; //"smtp.friends.com";
-    public static readonly int EmailPort = 0; //25;
-    public static readonly string EmailServerUsername = null; //joe
-    public static readonly string EmailServerPassword = null; //password
+    public static readonly MailboxAddress FromAddress = new MailboxAddress(Configuration.Instance.emailSettings.FromName, Configuration.Instance.emailSettings.FromAddress);
+    public static readonly MailboxAddress CrashAddresses = new MailboxAddress(Configuration.Instance.emailSettings.crashName, Configuration.Instance.emailSettings.crashAddress);
+    public static readonly MailboxAddress SpeechLogPageAddress = new MailboxAddress(Configuration.Instance.emailSettings.speechLogPageName, Configuration.Instance.emailSettings.speechLogPageAddress);
+    public static readonly string EmailServer = Configuration.Instance.emailSettings.emailServer;
+    public static readonly int EmailPort = Int32.Parse(Configuration.Instance.emailSettings.emailPort);
+    public static readonly string EmailServerUsername = Configuration.Instance.emailSettings.emailUsername;
+    public static readonly string EmailServerPassword = Configuration.Instance.emailSettings.emailPassword;
     public static readonly int m_retryCount = 5;
-
-    //private static Regex m_pattern = new Regex(@"^[a-z0-9.+_-]+@([a-z0-9-]+\.)+[a-z]+$",
-    //  RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-
 
     /// <summary>
     /// Sends Queue-Page request using Email
@@ -38,7 +33,7 @@ namespace Server.Misc
       //=========================================================[HEADER]
       //=========================================================[HEADER]
       var message = new MimeMessage();
-      message.To.Add(SpeechLogPageAddresses);
+      message.To.Add(SpeechLogPageAddress);
       message.Subject = "ModernUO Speech Log Page Forwarding";
       //=========================================================[BODY]
       //=========================================================[BODY]
@@ -104,8 +99,6 @@ namespace Server.Misc
       };
       builder.Attachments.Add(filePath);
       message.Body = builder.ToMessageBody();
-
-
     }
 
     /// <summary>
@@ -126,10 +119,7 @@ namespace Server.Misc
         {
           using (var client = new SmtpClient())
           {
-
-            // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
-            client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-            await client.ConnectAsync(EmailServer, EmailPort, false).ConfigureAwait(false);
+            await client.ConnectAsync(EmailServer, EmailPort, true).ConfigureAwait(false);
             await client.AuthenticateAsync(EmailServerUsername, EmailServerPassword);
             await client.SendAsync(message).ConfigureAwait(false);
             await client.DisconnectAsync(true).ConfigureAwait(false);
