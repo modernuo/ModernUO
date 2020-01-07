@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Gumps;
 using Server.Network;
 
@@ -47,7 +48,7 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
 
       int length = reader.ReadEncodedInt();
-      for (int i = 0;; i++)
+      for (int i = 0; ; i++)
         if (i < length)
         {
           PuzzleChestCylinder cylinder = (PuzzleChestCylinder)reader.ReadInt();
@@ -65,7 +66,7 @@ namespace Server.Items
         }
     }
 
-    public PuzzleChestCylinder[] Cylinders{ get; } = new PuzzleChestCylinder[Length];
+    public PuzzleChestCylinder[] Cylinders { get; } = new PuzzleChestCylinder[Length];
 
     public PuzzleChestCylinder First
     {
@@ -162,7 +163,7 @@ namespace Server.Items
       When = reader.ReadDeltaTime();
     }
 
-    public DateTime When{ get; }
+    public DateTime When { get; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -202,7 +203,7 @@ namespace Server.Items
       }
     }
 
-    public PuzzleChestCylinder[] Hints{ get; private set; } = new PuzzleChestCylinder[HintsCount];
+    public PuzzleChestCylinder[] Hints { get; private set; } = new PuzzleChestCylinder[HintsCount];
 
     public PuzzleChestCylinder FirstHint
     {
@@ -295,44 +296,44 @@ namespace Server.Items
       switch (Utility.Random(4))
       {
         case 0:
-        {
-          Effects.SendLocationEffect(to, to.Map, 0x113A, 20, 10);
-          to.PlaySound(0x231);
-          to.LocalOverheadMessage(MessageType.Regular, 0x44, 1010523); // A toxic vapor envelops thee.
+          {
+            Effects.SendLocationEffect(to, to.Map, 0x113A, 20, 10);
+            to.PlaySound(0x231);
+            to.LocalOverheadMessage(MessageType.Regular, 0x44, 1010523); // A toxic vapor envelops thee.
 
-          to.ApplyPoison(to, Poison.Regular);
+            to.ApplyPoison(to, Poison.Regular);
 
-          break;
-        }
+            break;
+          }
         case 1:
-        {
-          Effects.SendLocationEffect(to, to.Map, 0x3709, 30);
-          to.PlaySound(0x54);
-          to.LocalOverheadMessage(MessageType.Regular, 0xEE, 1010524); // Searing heat scorches thy skin.
+          {
+            Effects.SendLocationEffect(to, to.Map, 0x3709, 30);
+            to.PlaySound(0x54);
+            to.LocalOverheadMessage(MessageType.Regular, 0xEE, 1010524); // Searing heat scorches thy skin.
 
-          AOS.Damage(to, to, Utility.RandomMinMax(10, 40), 0, 100, 0, 0, 0);
+            AOS.Damage(to, to, Utility.RandomMinMax(10, 40), 0, 100, 0, 0, 0);
 
-          break;
-        }
+            break;
+          }
         case 2:
-        {
-          to.PlaySound(0x223);
-          to.LocalOverheadMessage(MessageType.Regular, 0x62,
-            1010525); // Pain lances through thee from a sharp metal blade.
+          {
+            to.PlaySound(0x223);
+            to.LocalOverheadMessage(MessageType.Regular, 0x62,
+              1010525); // Pain lances through thee from a sharp metal blade.
 
-          AOS.Damage(to, to, Utility.RandomMinMax(10, 40), 100, 0, 0, 0, 0);
+            AOS.Damage(to, to, Utility.RandomMinMax(10, 40), 100, 0, 0, 0, 0);
 
-          break;
-        }
+            break;
+          }
         default:
-        {
-          to.BoltEffect(0);
-          to.LocalOverheadMessage(MessageType.Regular, 0xDA, 1010526); // Lightning arcs through thy body.
+          {
+            to.BoltEffect(0);
+            to.LocalOverheadMessage(MessageType.Regular, 0xDA, 1010526); // Lightning arcs through thy body.
 
-          AOS.Damage(to, to, Utility.RandomMinMax(10, 40), 0, 0, 0, 0, 100);
+            AOS.Damage(to, to, Utility.RandomMinMax(10, 40), 0, 0, 0, 0, 100);
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -381,7 +382,9 @@ namespace Server.Items
 
     protected override void GenerateTreasure()
     {
-      DropItem(new Gold(600, 900));
+      //DropItem(new Gold(600, 900));
+      ObjectPool.Put(new Gold(600, 900));
+      
 
       List<Item> gems = new List<Item>();
       for (int i = 0; i < 9; i++)
