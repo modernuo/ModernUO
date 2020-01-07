@@ -132,7 +132,6 @@ namespace Server.Misc
           Console.WriteLine(exception);
           if (m_retryCount >= 0)
           {
-            Console.WriteLine("Failure sending e-mail '{0}' to '{1}'.", message.Subject, message.To);
             Console.WriteLine(exception.StackTrace);
           }
           await Task.Delay(count * 1000);
