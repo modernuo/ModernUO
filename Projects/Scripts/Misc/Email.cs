@@ -42,8 +42,7 @@ namespace Server.Misc
         writer.WriteLine("ModernUO Speech Log Page - {0}", pageType);
         writer.WriteLine();
 
-        writer.WriteLine("From: '{0}', Account: '{1}'", sender.RawName,
-          sender.Account is Account ? sender.Account.Username : "???");
+        writer.WriteLine("From: '{0}', Account: '{1}'", sender.RawName, (sender.Account is Account accSend) ? accSend.Username : "???");
         writer.WriteLine("Location: {0} [{1}]", sender.Location, sender.Map);
         writer.WriteLine("Sent on: {0}/{1:00}/{2:00} {3}:{4:00}:{5:00}", time.Year, time.Month, time.Day, time.Hour,
           time.Minute, time.Second);
@@ -60,7 +59,7 @@ namespace Server.Misc
         {
           Mobile from = logEntry.From;
           string fromName = from.RawName;
-          string fromAccount = from.Account is Account ? from.Account.Username : "???";
+          string fromAccount = (from.Account is Account accFrom) ? accFrom.Username : "???";
           DateTime created = logEntry.Created;
           string speech = logEntry.Speech;
 
