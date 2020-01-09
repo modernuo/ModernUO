@@ -39,7 +39,7 @@ namespace Server.Misc
       //=========================================================[BODY]
       using (StringWriter writer = new StringWriter())
       {
-        writer.WriteLine("RunUO Speech Log Page - {0}", pageType);
+        writer.WriteLine("ModernUO Speech Log Page - {0}", pageType);
         writer.WriteLine();
 
         writer.WriteLine("From: '{0}', Account: '{1}'", sender.RawName,
@@ -89,12 +89,12 @@ namespace Server.Misc
       //=========================================================[HEADER]
       var message = new MimeMessage();
       message.To.Add(CrashAddresses);
-      message.Subject = "Automated RunUO Crash Report";
+      message.Subject = "Automated ModernUO Crash Report";
       //=========================================================[BODY]
       //=========================================================[BODY]
       var builder = new BodyBuilder
       {
-        TextBody = "Automated RunUO Crash Report. See attachment for details.",
+        TextBody = "Automated ModernUO Crash Report. See attachment for details.",
         HtmlBody = null
       };
       builder.Attachments.Add(filePath);
