@@ -5,13 +5,14 @@
 /Distribution/Backups
 /Distribution/Saves
 /Distribution/System.IO.Pipelines.dll
-/Distribution/rdrand.so
-/Distribution/rdrand.dll
+/Distribution/libdrng.dll
 /Distribution/zlib.dll
+/Distribution/Microsoft.Bcl.AsyncInterfaces.dll
+/Distribution/System.ComponentModel.Annotations.dll
+/Distribution/System.Runtime.CompilerServices.Unsafe.dll
 
 # LibUv Dependencies
 /Distribution/libuv.dll
-/Distribution/libuv.so
 /Distribution/Microsoft.AspNetCore.Connections.Abstractions.dll
 /Distribution/Microsoft.AspNetCore.Http.Features.dll
 /Distribution/Microsoft.Extensions.Configuration.Abstractions.dll
