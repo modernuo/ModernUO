@@ -237,7 +237,7 @@ namespace Server.Misc
 
         Console.WriteLine("done");
 
-        if (Email.FromAddress != null && Email.CrashAddresses != null)
+        if (Email.FROM_ADDRESS != null && Email.CRASH_ADDRESS != null)
           SendEmail(filePath);
       }
       catch

@@ -12,14 +12,14 @@ namespace Server.Misc
 {
   public class Email
   {
-    public static readonly MailboxAddress FromAddress = new MailboxAddress(Configuration.Instance.emailSettings.FromName, Configuration.Instance.emailSettings.FromAddress);
-    public static readonly MailboxAddress CrashAddresses = new MailboxAddress(Configuration.Instance.emailSettings.crashName, Configuration.Instance.emailSettings.crashAddress);
-    public static readonly MailboxAddress SpeechLogPageAddress = new MailboxAddress(Configuration.Instance.emailSettings.speechLogPageName, Configuration.Instance.emailSettings.speechLogPageAddress);
-    public static readonly string EmailServer = Configuration.Instance.emailSettings.emailServer;
-    public static readonly int EmailPort = Configuration.Instance.emailSettings.emailPort;
-    public static readonly string EmailServerUsername = Configuration.Instance.emailSettings.emailUsername;
-    public static readonly string EmailServerPassword = Configuration.Instance.emailSettings.emailPassword;
-    public static readonly int m_retryCount = 5;
+    public static readonly MailboxAddress FROM_ADDRESS = new MailboxAddress(Configuration.Instance.emailSettings.FromName, Configuration.Instance.emailSettings.FromAddress);
+    public static readonly MailboxAddress CRASH_ADDRESS = new MailboxAddress(Configuration.Instance.emailSettings.crashName, Configuration.Instance.emailSettings.crashAddress);
+    public static readonly MailboxAddress SPEECH_LOG_PAGE_ADDRESS = new MailboxAddress(Configuration.Instance.emailSettings.speechLogPageName, Configuration.Instance.emailSettings.speechLogPageAddress);
+    public static readonly string EMAIL_SERVER = Configuration.Instance.emailSettings.emailServer;
+    public static readonly int EMAIL_PORT = Configuration.Instance.emailSettings.emailPort;
+    public static readonly string EMAIL_SERVER_USERNAME = Configuration.Instance.emailSettings.emailUsername;
+    public static readonly string EMAIL_SERVER_PASSWORD = Configuration.Instance.emailSettings.emailPassword;
+    public static readonly int RETRY_SEND_EMAIL_COUNT = 5;
 
     /// <summary>
     /// Sends Queue-Page request using Email
@@ -33,7 +33,7 @@ namespace Server.Misc
       //=========================================================[HEADER]
       //=========================================================[HEADER]
       var message = new MimeMessage();
-      message.To.Add(SpeechLogPageAddress);
+      message.To.Add(SPEECH_LOG_PAGE_ADDRESS);
       message.Subject = "ModernUO Speech Log Page Forwarding";
       //=========================================================[BODY]
       //=========================================================[BODY]
@@ -84,7 +84,7 @@ namespace Server.Misc
       //=========================================================[HEADER]
       //=========================================================[HEADER]
       var message = new MimeMessage();
-      message.To.Add(CrashAddresses);
+      message.To.Add(CRASH_ADDRESS);
       message.Subject = "Automated ModernUO Crash Report";
       //=========================================================[BODY]
       //=========================================================[BODY]
@@ -105,18 +105,18 @@ namespace Server.Misc
     {
 
       DateTime now = DateTime.UtcNow;
-      string messageID = $"<{now.ToString("yyyyMMdd")}.{now.ToString("HHmmssff")}@{EmailServer}>";
+      string messageID = $"<{now.ToString("yyyyMMdd")}.{now.ToString("HHmmssff")}@{EMAIL_SERVER}>";
       message.Headers.Add("Message-ID", messageID);
-      message.From.Add(FromAddress);
+      message.From.Add(FROM_ADDRESS);
 
-      for (var count = 1; count <= m_retryCount; count++)
+      for (var count = 1; count <= RETRY_SEND_EMAIL_COUNT; count++)
       {
         try
         {
           using (var client = new SmtpClient())
           {
-            await client.ConnectAsync(EmailServer, EmailPort, true).ConfigureAwait(false);
-            await client.AuthenticateAsync(EmailServerUsername, EmailServerPassword);
+            await client.ConnectAsync(EMAIL_SERVER, EMAIL_PORT, true).ConfigureAwait(false);
+            await client.AuthenticateAsync(EMAIL_SERVER_USERNAME, EMAIL_SERVER_PASSWORD);
             await client.SendAsync(message).ConfigureAwait(false);
             await client.DisconnectAsync(true).ConfigureAwait(false);
             Console.WriteLine("Sent e-mail '{0}' to '{1}'.", message.Subject, message.To);
@@ -126,7 +126,7 @@ namespace Server.Misc
         catch (Exception exception)
         {
           Console.WriteLine(exception);
-          if (m_retryCount >= 0)
+          if (RETRY_SEND_EMAIL_COUNT >= 0)
           {
             Console.WriteLine(exception.StackTrace);
           }
