@@ -39,22 +39,21 @@ namespace Server.Misc
       //=========================================================[BODY]
       using (StringWriter writer = new StringWriter())
       {
-        writer.WriteLine("ModernUO Speech Log Page - {0}", pageType);
-        writer.WriteLine();
+        writer.WriteLine(@$"
+          ModernUO Speech Log Page - {pageType}
 
-        writer.WriteLine("From: '{0}', Account: '{1}'", sender.RawName, (sender.Account is Account accSend) ? accSend.Username : "???");
-        writer.WriteLine("Location: {0} [{1}]", sender.Location, sender.Map);
-        writer.WriteLine("Sent on: {0}/{1:00}/{2:00} {3}:{4:00}:{5:00}", time.Year, time.Month, time.Day, time.Hour,
-          time.Minute, time.Second);
-        writer.WriteLine();
+          From: '{sender.RawName}', Account: '{((sender.Account is Account accSend) ? accSend.Username : " ??? ")}'
 
-        writer.WriteLine("Message:");
-        writer.WriteLine("'{0}'", entry.Message);
-        writer.WriteLine();
+          Location: {sender.Location} [{sender.Map}]
+          Sent on: {time.Year}/{time.Month:00}/{time.Day:00} {time.Hour}:{time.Minute:00}:{time.Second:00}
 
-        writer.WriteLine("Speech Log");
-        writer.WriteLine("==========");
+          Message:
+          '{entry.Message}'
 
+          Speech Log
+          ==========
+        ");
+     
         foreach (SpeechLogEntry logEntry in entry.SpeechLog)
         {
           Mobile from = logEntry.From;
@@ -62,9 +61,7 @@ namespace Server.Misc
           string fromAccount = (from.Account is Account accFrom) ? accFrom.Username : "???";
           DateTime created = logEntry.Created;
           string speech = logEntry.Speech;
-
-          writer.WriteLine("{0}:{1:00}:{2:00} - {3} ({4}): '{5}'", created.Hour, created.Minute, created.Second,
-            fromName, fromAccount, speech);
+          writer.WriteLine(@$"{created.Hour}:{created.Minute:00}:{created.Second:00} - {fromName} ({fromAccount}): '{speech}'");
         }
         var builder = new BodyBuilder
         {
