@@ -85,7 +85,7 @@ namespace Server.Engines.Events
 
       if ( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
       {
-        for( int index = 0; m_DeathQueue.Count > 0 && index < m_DeathQueue.Count; index++ )
+        for ( int index = 0; m_DeathQueue.Count > 0 && index < m_DeathQueue.Count; index++ )
           if ( !ReAnimated.ContainsKey( m_DeathQueue[ index ] ) )
           {
             player = m_DeathQueue[ index ];
