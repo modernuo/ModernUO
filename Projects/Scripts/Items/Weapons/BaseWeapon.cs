@@ -1420,7 +1420,7 @@ namespace Server.Items
       }
     }
 
-    public virtual double GetAosDamage(Mobile attacker, int bonus, int dice, int sides)
+    public virtual double GetAosDamage(Mobile attacker, int bonus, uint dice, uint sides)
     {
       int damage = Utility.Dice(dice, sides, bonus) * 100;
       int damageBonus = 0;
@@ -1449,7 +1449,7 @@ namespace Server.Items
 
       damage = AOS.Scale(damage, 100 + damageBonus);
 
-      return damage / 100;
+      return damage / 100.0;
     }
 
     public virtual CheckSlayerResult CheckSlayers(Mobile attacker, Mobile defender)

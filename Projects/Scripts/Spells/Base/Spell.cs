@@ -150,7 +150,7 @@ namespace Server.Spells
       (m as BaseCreature)?.OnHarmfulSpell(Caster);
     }
 
-    public virtual int GetNewAosDamage(int bonus, int dice, int sides, Mobile singleTarget)
+    public virtual int GetNewAosDamage(int bonus, uint dice, uint sides, Mobile singleTarget)
     {
       if (singleTarget != null)
         return GetNewAosDamage(bonus, dice, sides, Caster.Player && singleTarget.Player,
@@ -159,9 +159,9 @@ namespace Server.Spells
       return GetNewAosDamage(bonus, dice, sides, false);
     }
 
-    public virtual int GetNewAosDamage(int bonus, int dice, int sides, bool playerVsPlayer) => GetNewAosDamage(bonus, dice, sides, playerVsPlayer, 1.0);
+    public virtual int GetNewAosDamage(int bonus, uint dice, uint sides, bool playerVsPlayer) => GetNewAosDamage(bonus, dice, sides, playerVsPlayer, 1.0);
 
-    public virtual int GetNewAosDamage(int bonus, int dice, int sides, bool playerVsPlayer, double scalar)
+    public virtual int GetNewAosDamage(int bonus, uint dice, uint sides, bool playerVsPlayer, double scalar)
     {
       int damage = Utility.Dice(dice, sides, bonus) * 100;
       int damageBonus = 0;
