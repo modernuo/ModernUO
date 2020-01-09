@@ -182,7 +182,7 @@ namespace Server.Gumps
         {
           List<Item> items = new List<Item>( corpse.Items );
 
-          for( int i = 0; i < items.Count; ++i )
+          for ( int i = 0; i < items.Count; ++i )
           {
             Item item = items[i];
 
@@ -215,7 +215,7 @@ namespace Server.Gumps
         if ( from.RawDex * loss > 10 )
           from.RawDex = (int)(from.RawDex * loss);
 
-        for( int s = 0; s < from.Skills.Length; s++ )
+        for ( int s = 0; s < from.Skills.Length; s++ )
           if ( from.Skills[s].Base * loss > 35 )
             from.Skills[s].Base *= loss;
       }

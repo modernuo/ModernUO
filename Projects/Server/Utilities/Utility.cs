@@ -969,15 +969,15 @@ namespace Server
     #region Random
 
     //4d6+8 would be: Utility.Dice( 4, 6, 8 )
-    public static int Dice(int numDice, int numSides, int bonus)
+    public static int Dice(uint numDice, uint numSides, int bonus)
     {
       int total = 0;
+      uint sides = numSides;
 
       for (int i = 0; i < numDice; ++i)
-        total += RandomImpl.Next(numSides) + 1;
+        total += (int)RandomImpl.Next(sides) + 1;
 
-      total += bonus;
-      return total;
+      return total + bonus;
     }
 
     public static void Shuffle<T>(IList<T> list)
@@ -985,7 +985,7 @@ namespace Server
       int count = list.Count;
       for (int i = count - 1; i > 0; i--)
       {
-        int r = RandomImpl.Next(count);
+        int r = (int)RandomImpl.Next((uint)count);
         T swap = list[r];
         list[r] = list[i];
         list[i] = swap;
@@ -994,7 +994,7 @@ namespace Server
 
     public static int RandomList(params int[] list) => RandomList<int>(list);
 
-    public static T RandomList<T>(IList<T> list) => list[RandomImpl.Next(list.Count)];
+    public static T RandomList<T>(IList<T> list) => list[Random(list.Count)];
 
     public static bool RandomBool() => RandomImpl.NextBool();
 
@@ -1007,27 +1007,27 @@ namespace Server
         max = copy;
       }
       else if (min == max)
-      {
         return min;
-      }
 
-      return min + RandomImpl.Next(max - min + 1);
+      return min + (int)RandomImpl.Next((uint)(max - min + 1));
     }
 
     public static int Random(int from, int count)
     {
       if (count == 0) return from;
 
-      if (count > 0) return from + RandomImpl.Next(count);
-      return from - RandomImpl.Next(-count);
+      if (count > 0) return (int)(from + RandomImpl.Next((uint)count));
+
+      return (int)(from - RandomImpl.Next((uint)-count));
     }
 
-    public static int Random(int count) => RandomImpl.Next(count);
+    public static int Random(int count) => (int)RandomImpl.Next((uint)count);
 
-    public static void RandomBytes(byte[] buffer)
-    {
-      RandomImpl.NextBytes(buffer);
-    }
+    public static int Random(uint count) => (int)RandomImpl.Next(count);
+
+    public static void RandomBytes(byte[] buffer) => RandomImpl.GetBytes(buffer);
+
+    public static void RandomBytes(Span<byte> buffer) => RandomImpl.GetBytes(buffer);
 
     public static double RandomDouble() => RandomImpl.NextDouble();
 

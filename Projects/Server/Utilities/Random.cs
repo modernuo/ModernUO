@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019 - ModernUO Development Team                        *
  * Email: hi@modernuo.com                                                *
- * File: SocketExtensions.cs - Created: 2019/08/02 - Updated: 2019/12/24 *
+ * File: Random.cs - Created: 2019/12/30 - Updated: 2019/01/05           *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -19,33 +19,53 @@
  *************************************************************************/
 
 using System;
-using System.Buffers;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+using System.Security.Cryptography;
 
-namespace Server.Network
+namespace Server
 {
-  public static class SocketExtensions
+  /// <summary>
+  ///   Handles random number generation.
+  /// </summary>
+  public static class RandomImpl
   {
-    public static Task<int> ReceiveAsync(this Socket socket, Memory<byte> memory, SocketFlags socketFlags) => SocketTaskExtensions.ReceiveAsync(socket, GetArray(memory), socketFlags);
+    private static readonly Xoshiro256PlusPlus _Random = new Xoshiro256PlusPlus();
 
-    public static ArraySegment<byte> GetArray(this Memory<byte> memory) => ((ReadOnlyMemory<byte>)memory).GetArray();
+    public static uint Next(uint c) => _Random.Next(c);
 
-    public static ArraySegment<byte> GetArray(this ReadOnlyMemory<byte> memory)
+    public static bool NextBool() => _Random.NextBool();
+
+    public static void GetBytes(Span<byte> b) => _Random.GetBytes(b);
+
+    public static double NextDouble() => _Random.NextDouble();
+  }
+
+  public static class SecureRandomImpl
+  {
+    public static readonly RandomNumberGenerator _Random;
+
+    static SecureRandomImpl()
     {
-      if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> result))
-        return result;
-
-      throw new InvalidOperationException("Buffer backed by array was expected");
+      try
+      {
+        _Random = new DRng64();
+        if (_Random is IHardwareRNG rng && rng?.IsSupported() != true)
+          _Random = new RNGCryptoServiceProvider();
+      }
+      catch (Exception)
+      {
+        _Random = new RNGCryptoServiceProvider();
+      }
     }
 
-    public static ArraySegment<byte> GetArray(this ReadOnlySequence<byte> memory)
-    {
-      if (SequenceMarshal.TryGetArray(memory, out ArraySegment<byte> result))
-        return result;
+    public static bool IsHardwareRNG => _Random is IHardwareRNG;
 
-      throw new InvalidOperationException("Buffer backed by array was expected");
-    }
+    public static string Name => _Random.GetType().Name;
+
+    public static void GetBytes(Span<byte> buffer) => _Random.GetBytes(buffer);
+  }
+
+  public interface IHardwareRNG
+  {
+    bool IsSupported();
   }
 }

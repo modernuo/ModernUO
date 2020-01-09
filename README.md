@@ -4,19 +4,24 @@ ModernUO
 Ultima Online Server Emulator for the modern era!
 
 ### Join and Follow!
-[Discord Channel](https://discord.gg/VdyCpjQ)  
-[Twitter](https://www.twitter.com/modernuo)  
-[Reddit](https://www.reddit.com/r/modernuo)  
+[Discord Channel](https://discord.gg/VdyCpjQ)
+[Twitter](https://www.twitter.com/modernuo)
+[Reddit](https://www.reddit.com/r/modernuo)
 
 ### Goals
 - See [Goals](./GOALS.md)
 
 # Requirements to Compile
 - [.NET Core 3.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.0)
-- [System.IO.Pipelines 4.6.0](https://www.nuget.org/packages/System.IO.Pipelines/) (Restored automatically during publishing)
 
 ### Requirements to Run
-- zlib (Linux only)
+
+#### Linux
+- `apt get zlib libuv` or equiv for that distribution
+- Optional: compile and install [Intel DRNG](https://github.com/modernuo/libdrng)
+#### OSX
+- `brew install zlib libuv`
+- Optional: compile and install [Intel DRNG](https://github.com/modernuo/libdrng)
 
 ### Building with .NET Core 3.0 SDK
 `dotnet publish /p:PublishProfile=[platform][-SelfContained]`
