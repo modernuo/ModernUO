@@ -53,7 +53,7 @@ namespace Server.Misc
           Speech Log
           ==========
         ");
-     
+
         foreach (SpeechLogEntry logEntry in entry.SpeechLog)
         {
           Mobile from = logEntry.From;
@@ -103,13 +103,13 @@ namespace Server.Misc
     /// <param name="message"></param>
     private static async void SendAsync(MimeMessage message)
     {
-
+      Exception error = null;
       DateTime now = DateTime.UtcNow;
       string messageID = $"<{now.ToString("yyyyMMdd")}.{now.ToString("HHmmssff")}@{EMAIL_SERVER}>";
       message.Headers.Add("Message-ID", messageID);
       message.From.Add(FROM_ADDRESS);
 
-      for (var count = 1; count <= RETRY_SEND_EMAIL_COUNT; count++)
+      for (int i = 0; i < RETRY_SEND_EMAIL_COUNT; i++)
       {
         try
         {
@@ -125,15 +125,17 @@ namespace Server.Misc
         }
         catch (Exception exception)
         {
-          Console.WriteLine(exception);
+
+          error = exception;
           if (RETRY_SEND_EMAIL_COUNT >= 0)
           {
             Console.WriteLine(exception.StackTrace);
           }
-          await Task.Delay(count * 1000);
+          await Task.Delay((i + 1) * 1000);
         }
+        if (error != null)
+          Console.WriteLine(error.StackTrace);
       }
-
     }
   }
 }
