@@ -4,13 +4,11 @@ using Server.Accounting;
 using Server.Engines.Help;
 using System;
 using System.IO;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Server.Misc
 {
-  public class Email
+  public static class Email
   {
     public static readonly MailboxAddress FROM_ADDRESS = new MailboxAddress(Configuration.Instance.emailSettings.FromName, Configuration.Instance.emailSettings.FromAddress);
     public static readonly MailboxAddress CRASH_ADDRESS = new MailboxAddress(Configuration.Instance.emailSettings.crashName, Configuration.Instance.emailSettings.crashAddress);
@@ -20,6 +18,7 @@ namespace Server.Misc
     public static readonly string EMAIL_SERVER_USERNAME = Configuration.Instance.emailSettings.emailUsername;
     public static readonly string EMAIL_SERVER_PASSWORD = Configuration.Instance.emailSettings.emailPassword;
     public static readonly int RETRY_SEND_EMAIL_COUNT = 5;
+    public static readonly int SEND_DELAY_SECONDS = 2;
 
     /// <summary>
     /// Sends Queue-Page request using Email
@@ -30,13 +29,11 @@ namespace Server.Misc
     {
       Mobile sender = entry.Sender;
       DateTime time = DateTime.UtcNow;
-      //=========================================================[HEADER]
-      //=========================================================[HEADER]
+
       var message = new MimeMessage();
       message.To.Add(SPEECH_LOG_PAGE_ADDRESS);
       message.Subject = "ModernUO Speech Log Page Forwarding";
-      //=========================================================[BODY]
-      //=========================================================[BODY]
+
       using (StringWriter writer = new StringWriter())
       {
         writer.WriteLine(@$"
@@ -58,21 +55,20 @@ namespace Server.Misc
         {
           Mobile from = logEntry.From;
           string fromName = from.RawName;
-          string fromAccount = (from.Account is Account accFrom) ? accFrom.Username : "???";
+          string fromAccount = from.Account is Account accFrom ? accFrom.Username : "???";
           DateTime created = logEntry.Created;
           string speech = logEntry.Speech;
           writer.WriteLine(@$"{created.Hour}:{created.Minute:00}:{created.Second:00} - {fromName} ({fromAccount}): '{speech}'");
         }
-        var builder = new BodyBuilder
+
+        message.Body = new BodyBuilder
         {
           TextBody = writer.ToString(),
           HtmlBody = null
-        };
-        message.Body = builder.ToMessageBody();
+        }.ToMessageBody();
 
       }
       SendAsync(message);
-
     }
 
     /// <summary>
@@ -81,13 +77,9 @@ namespace Server.Misc
     /// <param name="filePath"></param>
     public static void SendCrashEmail(string filePath)
     {
-      //=========================================================[HEADER]
-      //=========================================================[HEADER]
       var message = new MimeMessage();
       message.To.Add(CRASH_ADDRESS);
       message.Subject = "Automated ModernUO Crash Report";
-      //=========================================================[BODY]
-      //=========================================================[BODY]
       var builder = new BodyBuilder
       {
         TextBody = "Automated ModernUO Crash Report. See attachment for details.",
@@ -103,39 +95,31 @@ namespace Server.Misc
     /// <param name="message"></param>
     private static async void SendAsync(MimeMessage message)
     {
-      Exception error = null;
       DateTime now = DateTime.UtcNow;
-      string messageID = $"<{now.ToString("yyyyMMdd")}.{now.ToString("HHmmssff")}@{EMAIL_SERVER}>";
+      string messageID = $"<{now:yyyyMMdd}.{now:HHmmssff}@{EMAIL_SERVER}>";
       message.Headers.Add("Message-ID", messageID);
       message.From.Add(FROM_ADDRESS);
 
+      int delay = SEND_DELAY_SECONDS;
+
       for (int i = 0; i < RETRY_SEND_EMAIL_COUNT; i++)
-      {
         try
         {
-          using (var client = new SmtpClient())
-          {
-            await client.ConnectAsync(EMAIL_SERVER, EMAIL_PORT, true).ConfigureAwait(false);
-            await client.AuthenticateAsync(EMAIL_SERVER_USERNAME, EMAIL_SERVER_PASSWORD);
-            await client.SendAsync(message).ConfigureAwait(false);
-            await client.DisconnectAsync(true).ConfigureAwait(false);
-            Console.WriteLine("Sent e-mail '{0}' to '{1}'.", message.Subject, message.To);
-            return;
-          }
+          using SmtpClient client = new SmtpClient();
+          await client.ConnectAsync(EMAIL_SERVER, EMAIL_PORT, true);
+          await client.AuthenticateAsync(EMAIL_SERVER_USERNAME, EMAIL_SERVER_PASSWORD);
+          await client.SendAsync(message);
+          await client.DisconnectAsync(true);
+          return;
         }
-        catch (Exception exception)
+        catch (Exception ex)
         {
+          Console.WriteLine(ex.Message);
+          Console.WriteLine(ex.StackTrace);
+          delay *= delay;
 
-          error = exception;
-          if (RETRY_SEND_EMAIL_COUNT >= 0)
-          {
-            Console.WriteLine(exception.StackTrace);
-          }
-          await Task.Delay((i + 1) * 1000);
+          await Task.Delay(delay * 1000);
         }
-        if (error != null)
-          Console.WriteLine(error.StackTrace);
-      }
     }
   }
 }
