@@ -31,6 +31,7 @@ namespace Server.Misc
       DateTime time = DateTime.UtcNow;
 
       var message = new MimeMessage();
+      message.From.Add(FROM_ADDRESS);
       message.To.Add(SPEECH_LOG_PAGE_ADDRESS);
       message.Subject = "ModernUO Speech Log Page Forwarding";
 
@@ -78,6 +79,7 @@ namespace Server.Misc
     public static void SendCrashEmail(string filePath)
     {
       var message = new MimeMessage();
+      message.From.Add(FROM_ADDRESS);
       message.To.Add(CRASH_ADDRESS);
       message.Subject = "Automated ModernUO Crash Report";
       var builder = new BodyBuilder

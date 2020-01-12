@@ -42,7 +42,8 @@ namespace Server.Misc
     {
       Console.Write("Crash: Sending email...");
 
-      Email.SendCrashEmail(filePath);
+      if (Email.FROM_ADDRESS != null && Email.CRASH_ADDRESS != null)
+        Email.SendCrashEmail(filePath);
 
     }
 
@@ -58,13 +59,7 @@ namespace Server.Misc
       }
     }
 
-    private static string Combine(string path1, string path2)
-    {
-      if (path1.Length == 0)
-        return path2;
-
-      return Path.Combine(path1, path2);
-    }
+    private static string Combine(string path1, string path2) => path1.Length == 0 ? path2 : Path.Combine(path1, path2);
 
     private static void Restart(CrashedEventArgs e)
     {
