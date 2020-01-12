@@ -13,10 +13,10 @@ namespace Server
     public static Configuration Instance => m_Configuration ??= ReadConfiguration();
 
     [JsonPropertyName("dataDirectories")]
-    public List<string> DataDirectories { get; } = new List<string>();
+    public List<string> DataDirectories { get; set; } = new List<string>();
 
     [JsonPropertyName("emailSettings")]
-    public EmailSettings emailSettings { get; } = new EmailSettings();
+    public EmailSettings emailSettings { get; set; } = new EmailSettings();
 
     private static string FilePath => Path.Join(Core.BaseDirectory, "modernuo.json");
 
