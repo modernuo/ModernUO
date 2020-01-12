@@ -1,98 +1,131 @@
+using MailKit.Net.Smtp;
+using MimeKit;
+using Server.Accounting;
+using Server.Engines.Help;
 using System;
-using System.Net;
-using System.Net.Mail;
-using System.Text.RegularExpressions;
-using System.Threading;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Server.Misc
 {
-  public class Email
+  public static class Email
   {
-    /* In order to support emailing, fill in EmailServer and FromAddress:
-     * Example:
-     *  public static readonly string EmailServer = "mail.domain.com";
-     *  public static readonly string FromAddress = "runuo@domain.com";
-     * 
-     * If you want to add crash reporting emailing, fill in CrashAddresses:
-     * Example:
-     *  public static readonly string CrashAddresses = "first@email.here,second@email.here,third@email.here";
-     * 
-     * If you want to add speech log page emailing, fill in SpeechLogPageAddresses:
-     * Example:
-     *  public static readonly string SpeechLogPageAddresses = "first@email.here,second@email.here,third@email.here";
-     */
+    public static readonly MailboxAddress FROM_ADDRESS = new MailboxAddress(Configuration.Instance.emailSettings.FromName, Configuration.Instance.emailSettings.FromAddress);
+    public static readonly MailboxAddress CRASH_ADDRESS = new MailboxAddress(Configuration.Instance.emailSettings.crashName, Configuration.Instance.emailSettings.crashAddress);
+    public static readonly MailboxAddress SPEECH_LOG_PAGE_ADDRESS = new MailboxAddress(Configuration.Instance.emailSettings.speechLogPageName, Configuration.Instance.emailSettings.speechLogPageAddress);
+    public static readonly string EMAIL_SERVER = Configuration.Instance.emailSettings.emailServer;
+    public static readonly int EMAIL_PORT = Configuration.Instance.emailSettings.emailPort;
+    public static readonly string EMAIL_SERVER_USERNAME = Configuration.Instance.emailSettings.emailUsername;
+    public static readonly string EMAIL_SERVER_PASSWORD = Configuration.Instance.emailSettings.emailPassword;
+    public static readonly int RETRY_SEND_EMAIL_COUNT = 5;
+    public static readonly int SEND_DELAY_SECONDS = 2;
 
-    public static readonly string EmailServer = null;
-    public static readonly int EmailPort = 25;
-
-    public static readonly string FromAddress = null;
-    public static readonly string EmailUsername = null;
-    public static readonly string EmailPassword = null;
-
-
-    public static readonly string CrashAddresses = null;
-    public static readonly string SpeechLogPageAddresses = null;
-
-    private static Regex _pattern = new Regex(@"^[a-z0-9.+_-]+@([a-z0-9-]+\.)+[a-z]+$",
-      RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-    private static SmtpClient _Client;
-
-    public static bool IsValid(string address)
+    /// <summary>
+    /// Sends Queue-Page request using Email
+    /// </summary>
+    /// <param name="entry"></param>
+    /// <param name="pageType"></param>
+    public static void SendQueueEmail(PageEntry entry, string pageType)
     {
-      if (address == null || address.Length > 320)
-        return false;
+      Mobile sender = entry.Sender;
+      DateTime time = DateTime.UtcNow;
 
-      return _pattern.IsMatch(address);
-    }
+      var message = new MimeMessage();
+      message.From.Add(FROM_ADDRESS);
+      message.To.Add(SPEECH_LOG_PAGE_ADDRESS);
+      message.Subject = "ModernUO Speech Log Page Forwarding";
 
-    public static void Configure()
-    {
-      if (EmailServer != null)
+      using (StringWriter writer = new StringWriter())
       {
-        _Client = new SmtpClient(EmailServer, EmailPort);
-        if (EmailUsername != null) _Client.Credentials = new NetworkCredential(EmailUsername, EmailPassword);
-      }
-    }
+        writer.WriteLine(@$"
+          ModernUO Speech Log Page - {pageType}
 
-    public static bool Send(MailMessage message)
-    {
-      try
-      {
-        // .NET relies on the MTA to generate Message-ID header. Not all MTAs will add this header.
+          From: '{sender.RawName}', Account: '{((sender.Account is Account accSend) ? accSend.Username : " ??? ")}'
 
-        DateTime now = DateTime.UtcNow;
-        string messageID = $"<{now.ToString("yyyyMMdd")}.{now.ToString("HHmmssff")}@{EmailServer}>";
-        message.Headers.Add("Message-ID", messageID);
+          Location: {sender.Location} [{sender.Map}]
+          Sent on: {time.Year}/{time.Month:00}/{time.Day:00} {time.Hour}:{time.Minute:00}:{time.Second:00}
 
-        message.Headers.Add("X-Mailer", "RunUO");
+          Message:
+          '{entry.Message}'
 
-        lock (_Client)
+          Speech Log
+          ==========
+        ");
+
+        foreach (SpeechLogEntry logEntry in entry.SpeechLog)
         {
-          _Client.Send(message);
+          Mobile from = logEntry.From;
+          string fromName = from.RawName;
+          string fromAccount = from.Account is Account accFrom ? accFrom.Username : "???";
+          DateTime created = logEntry.Created;
+          string speech = logEntry.Speech;
+          writer.WriteLine(@$"{created.Hour}:{created.Minute:00}:{created.Second:00} - {fromName} ({fromAccount}): '{speech}'");
         }
+
+        message.Body = new BodyBuilder
+        {
+          TextBody = writer.ToString(),
+          HtmlBody = null
+        }.ToMessageBody();
+
       }
-      catch
+      SendAsync(message);
+    }
+
+    /// <summary>
+    /// Sends crash email
+    /// </summary>
+    /// <param name="filePath"></param>
+    public static void SendCrashEmail(string filePath)
+    {
+      var message = new MimeMessage();
+      message.From.Add(FROM_ADDRESS);
+      message.To.Add(CRASH_ADDRESS);
+      message.Subject = "Automated ModernUO Crash Report";
+      var builder = new BodyBuilder
       {
-        return false;
-      }
-
-      return true;
+        TextBody = "Automated ModernUO Crash Report. See attachment for details.",
+        HtmlBody = null
+      };
+      builder.Attachments.Add(filePath);
+      message.Body = builder.ToMessageBody();
     }
 
-    public static void AsyncSend(MailMessage message)
+    /// <summary>
+    /// Sends emails async
+    /// </summary>
+    /// <param name="message"></param>
+    private static async void SendAsync(MimeMessage message)
     {
-      ThreadPool.QueueUserWorkItem(SendCallback, message);
-    }
+      DateTime now = DateTime.UtcNow;
+      string messageID = $"<{now:yyyyMMdd}.{now:HHmmssff}@{EMAIL_SERVER}>";
+      message.Headers.Add("Message-ID", messageID);
+      message.From.Add(FROM_ADDRESS);
 
-    private static void SendCallback(object state)
-    {
-      MailMessage message = (MailMessage)state;
+      int delay = SEND_DELAY_SECONDS;
 
-      if (Send(message))
-        Console.WriteLine("Sent e-mail '{0}' to '{1}'.", message.Subject, message.To);
-      else
-        Console.WriteLine("Failure sending e-mail '{0}' to '{1}'.", message.Subject, message.To);
+      for (int i = 0; i < RETRY_SEND_EMAIL_COUNT; i++)
+        try
+        {
+          using SmtpClient client = new SmtpClient();
+          await client.ConnectAsync(EMAIL_SERVER, EMAIL_PORT, true);
+          await client.AuthenticateAsync(EMAIL_SERVER_USERNAME, EMAIL_SERVER_PASSWORD);
+          await client.SendAsync(message);
+          await client.DisconnectAsync(true);
+          return;
+        }
+        catch (Exception ex)
+        {
+          if (i == 0)
+          {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+          }
+
+          delay *= delay;
+
+          await Task.Delay(delay * 1000);
+        }
     }
   }
 }

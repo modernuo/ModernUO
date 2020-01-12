@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Net.Mail;
 using Server.Accounting;
 using Server.Network;
 
@@ -43,18 +42,9 @@ namespace Server.Misc
     {
       Console.Write("Crash: Sending email...");
 
-      MailMessage message = new MailMessage(Email.FromAddress, Email.CrashAddresses);
+      if (Email.FROM_ADDRESS != null && Email.CRASH_ADDRESS != null)
+        Email.SendCrashEmail(filePath);
 
-      message.Subject = "Automated RunUO Crash Report";
-
-      message.Body = "Automated RunUO Crash Report. See attachment for details.";
-
-      message.Attachments.Add(new Attachment(filePath));
-
-      if (Email.Send(message))
-        Console.WriteLine("done");
-      else
-        Console.WriteLine("failed");
     }
 
     private static string GetRoot()
@@ -69,13 +59,7 @@ namespace Server.Misc
       }
     }
 
-    private static string Combine(string path1, string path2)
-    {
-      if (path1.Length == 0)
-        return path2;
-
-      return Path.Combine(path1, path2);
-    }
+    private static string Combine(string path1, string path2) => path1.Length == 0 ? path2 : Path.Combine(path1, path2);
 
     private static void Restart(CrashedEventArgs e)
     {
@@ -247,7 +231,7 @@ namespace Server.Misc
 
         Console.WriteLine("done");
 
-        if (Email.FromAddress != null && Email.CrashAddresses != null)
+        if (Email.FROM_ADDRESS != null && Email.CRASH_ADDRESS != null)
           SendEmail(filePath);
       }
       catch
