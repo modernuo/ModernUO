@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net.Mail;
-using Server.Accounting;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
-using MailKit;
 
 namespace Server.Engines.Help
 {
@@ -233,10 +229,7 @@ namespace Server.Engines.Help
           "We are sorry, but no staff members are currently available to assist you.  Your page will remain in the queue until one becomes available, or until you cancel it manually.");
 
       if (Email.FROM_ADDRESS != null && Email.SPEECH_LOG_PAGE_ADDRESS != null && entry.SpeechLog != null)
-      {
         Email.SendQueueEmail(entry, GetPageTypeName(entry.Type));
-      }
-
     }
 
   }
