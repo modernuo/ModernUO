@@ -13,10 +13,10 @@ namespace Server
     public static Configuration Instance => m_Configuration ??= ReadConfiguration();
 
     [JsonPropertyName("dataDirectories")]
-    public List<string> DataDirectories { get; set; } = new List<string>();
+    public List<string> DataDirectories { get; } = new List<string>();
 
     [JsonPropertyName("emailSettings")]
-    public EmailSettings emailSettings { get; set; } = new EmailSettings();
+    public EmailSettings emailSettings { get; } = new EmailSettings();
 
     private static string FilePath => Path.Join(Core.BaseDirectory, "modernuo.json");
 
@@ -77,10 +77,11 @@ namespace Server
     }
   }
 
+  // TODO: Make configuration pluggable. Move this to scripts
   public class EmailSettings
   {
     [JsonPropertyName("fromAddress")]
-    public string FromAddress { get; set; } 
+    public string FromAddress { get; set; }
     [JsonPropertyName("fromName")]
     public string FromName { get; set; }
     [JsonPropertyName("crashAddress")]
