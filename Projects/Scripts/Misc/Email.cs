@@ -116,8 +116,12 @@ namespace Server.Misc
         }
         catch (Exception ex)
         {
-          Console.WriteLine(ex.Message);
-          Console.WriteLine(ex.StackTrace);
+          if (i == 0)
+          {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+          }
+
           delay *= delay;
 
           await Task.Delay(delay * 1000);
