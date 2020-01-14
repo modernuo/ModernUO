@@ -1185,43 +1185,43 @@ namespace Server.Multis
       MultiComponentList newComponents = MultiData.GetComponents(itemID);
 
       for (int x = 0; x < newComponents.Width; ++x)
-        for (int y = 0; y < newComponents.Height; ++y)
+      for (int y = 0; y < newComponents.Height; ++y)
+      {
+        int tx = p.X + newComponents.Min.X + x;
+        int ty = p.Y + newComponents.Min.Y + y;
+
+        if (newComponents.Tiles[x][y].Length == 0 || Contains(tx, ty))
+          continue;
+
+        LandTile landTile = map.Tiles.GetLandTile(tx, ty);
+        StaticTile[] tiles = map.Tiles.GetStaticTiles(tx, ty, true);
+
+        bool hasWater = landTile.Z == p.Z &&
+                        (landTile.ID >= 168 && landTile.ID <= 171 || landTile.ID >= 310 && landTile.ID <= 311);
+
+        // int z = p.Z;
+
+        //int landZ = 0, landAvg = 0, landTop = 0;
+
+        //map.GetAverageZ( tx, ty, ref landZ, ref landAvg, ref landTop );
+
+        //if ( !landTile.Ignored && top > landZ && landTop > z )
+        //	return false;
+
+        for (int i = 0; i < tiles.Length; ++i)
         {
-          int tx = p.X + newComponents.Min.X + x;
-          int ty = p.Y + newComponents.Min.Y + y;
+          StaticTile tile = tiles[i];
+          bool isWater = tile.ID >= 0x1796 && tile.ID <= 0x17B2;
 
-          if (newComponents.Tiles[x][y].Length == 0 || Contains(tx, ty))
-            continue;
-
-          LandTile landTile = map.Tiles.GetLandTile(tx, ty);
-          StaticTile[] tiles = map.Tiles.GetStaticTiles(tx, ty, true);
-
-          bool hasWater = landTile.Z == p.Z &&
-                          (landTile.ID >= 168 && landTile.ID <= 171 || landTile.ID >= 310 && landTile.ID <= 311);
-
-          // int z = p.Z;
-
-          //int landZ = 0, landAvg = 0, landTop = 0;
-
-          //map.GetAverageZ( tx, ty, ref landZ, ref landAvg, ref landTop );
-
-          //if ( !landTile.Ignored && top > landZ && landTop > z )
-          //	return false;
-
-          for (int i = 0; i < tiles.Length; ++i)
-          {
-            StaticTile tile = tiles[i];
-            bool isWater = tile.ID >= 0x1796 && tile.ID <= 0x17B2;
-
-            if (tile.Z == p.Z && isWater)
-              hasWater = true;
-            else if (tile.Z >= p.Z && !isWater)
-              return false;
-          }
-
-          if (!hasWater)
+          if (tile.Z == p.Z && isWater)
+            hasWater = true;
+          else if (tile.Z >= p.Z && !isWater)
             return false;
         }
+
+        if (!hasWater)
+          return false;
+      }
 
       IPooledEnumerable<Item> eable = map.GetItemsInBounds(new Rectangle2D(p.X + newComponents.Min.X,
         p.Y + newComponents.Min.Y, newComponents.Width, newComponents.Height));

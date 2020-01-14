@@ -83,7 +83,7 @@ namespace Server.Items
     public static bool Slays(TalismanSlayerName name, Mobile m)
     {
       if (m == null || !m_Table.TryGetValue(name, out Type[] types) || types == null)
-        return false;;
+        return false;
 
       Type type = m.GetType();
 

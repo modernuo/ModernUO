@@ -2594,9 +2594,10 @@ namespace Server.Multis
       Account acct = mob.Account as Account;
       Mobile trans = null;
 
-      for (int i = 0; i < acct.Length; ++i)
-        if (acct[i] != null && acct[i] != mob)
-          trans = acct[i];
+      if (acct != null)
+        for (int i = 0; i < acct.Length; ++i)
+          if (acct[i] != null && acct[i] != mob)
+            trans = acct[i];
 
       for (int i = 0; i < houses.Count; ++i)
       {
@@ -2866,8 +2867,7 @@ namespace Server.Multis
         uint keyValue = 0;
 
         for (int i = 0; keyValue == 0 && i < Doors.Count; ++i)
-          if (Doors[i] is BaseDoor door)
-            keyValue = door.KeyValue;
+          keyValue = Doors[i].KeyValue;
 
         Key.RemoveKeys(m, keyValue);
       }
@@ -2879,19 +2879,18 @@ namespace Server.Multis
 
       if (Doors != null)
         for (int i = 0; i < Doors.Count; ++i)
-          if (Doors[i] is BaseDoor door)
-            door.KeyValue = keyValue;
+          Doors[i].KeyValue = keyValue;
     }
 
     public void RemoveLocks()
     {
       if (Doors != null)
         for (int i = 0; i < Doors.Count; ++i)
-          if (Doors[i] is BaseDoor door)
-          {
-            door.KeyValue = 0;
-            door.Locked = false;
-          }
+        {
+          BaseDoor door = Doors[i];
+          door.KeyValue = 0;
+          door.Locked = false;
+        }
     }
 
     public virtual HouseDeed GetDeed() => null;

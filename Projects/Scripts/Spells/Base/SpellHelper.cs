@@ -604,7 +604,7 @@ namespace Server.Spells
 
       // Always allow monsters to teleport
       if (caster is BaseCreature bc && !bc.Controlled && !bc.Summoned && (type == TravelCheckType.TeleportTo || type == TravelCheckType.TeleportFrom))
-          return true;
+        return true;
 
       m_TravelCaster = caster;
       m_TravelType = type;
@@ -794,12 +794,9 @@ namespace Server.Spells
 
       #region Dueling
       if (Region.Find(loc, map).GetRegion<SafeZone>() != null)
-      {
-        PlayerMobile pm = caster as PlayerMobile;
-
-        if (pm.DuelContext?.Started != true || pm.DuelPlayer?.Eliminated != false)
+        if (caster is PlayerMobile pm && (pm.DuelContext?.Started != true || pm.DuelPlayer?.Eliminated != false))
           return true;
-      }
+
       #endregion
 
       GuardedRegion reg = Region.Find(loc, map).GetRegion<GuardedRegion>();

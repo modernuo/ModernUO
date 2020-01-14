@@ -530,7 +530,6 @@ namespace Server.Multis
           switch (door.Facing)
           {
             default:
-            case DoorFacing.WestCW:
               linkFacing = DoorFacing.EastCCW;
               xOffset = 1;
               yOffset = 0;
@@ -618,7 +617,6 @@ namespace Server.Multis
       switch (type)
       {
         default:
-        case FoundationType.DarkWood:
           corner = 0x0014;
           east = 0x0015;
           south = 0x0016;
@@ -1284,7 +1282,6 @@ namespace Server.Multis
       switch (dir)
       {
         default:
-        case 0: // North
         {
           xStart = x;
           yStart = y + height;
