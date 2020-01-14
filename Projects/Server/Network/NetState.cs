@@ -30,7 +30,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
 using Server.Accounting;
-using Server.Diagnostics;
 using Server.Gumps;
 using Server.HuePickers;
 using Server.Items;
