@@ -682,12 +682,12 @@ namespace Server.Engines.Craft
 
     public bool CheckSkills(Mobile from, Type typeRes, CraftSystem craftSystem, ref int quality,
       ref bool allRequiredSkills) =>
-      CheckSkills(from, typeRes, craftSystem, ref quality, ref allRequiredSkills, true);
+      CheckSkills(from, typeRes, craftSystem, ref quality, out allRequiredSkills, true);
 
     public bool CheckSkills(Mobile from, Type typeRes, CraftSystem craftSystem, ref int quality,
-      ref bool allRequiredSkills, bool gainSkills)
+      out bool allRequiredSkills, bool gainSkills)
     {
-      double chance = GetSuccessChance(from, typeRes, craftSystem, gainSkills, ref allRequiredSkills);
+      double chance = GetSuccessChance(from, typeRes, craftSystem, gainSkills, out allRequiredSkills);
 
       if (GetExceptionalChance(craftSystem, chance, from) > Utility.RandomDouble())
         quality = 2;
@@ -696,7 +696,7 @@ namespace Server.Engines.Craft
     }
 
     public double GetSuccessChance(Mobile from, Type typeRes, CraftSystem craftSystem, bool gainSkills,
-      ref bool allRequiredSkills)
+      out bool allRequiredSkills)
     {
       double minMainSkill = 0.0;
       double maxMainSkill = 0.0;
@@ -750,8 +750,8 @@ namespace Server.Engines.Craft
         if (RequiredExpansion == Expansion.None ||
             from.NetState?.SupportsExpansion(RequiredExpansion) == true)
         {
-          bool allRequiredSkills = true;
-          double chance = GetSuccessChance(from, typeRes, craftSystem, false, ref allRequiredSkills);
+          bool allRequiredSkills;
+          double chance = GetSuccessChance(from, typeRes, craftSystem, false, out allRequiredSkills);
 
           if (allRequiredSkills && chance >= 0.0)
           {
@@ -1100,7 +1100,7 @@ namespace Server.Engines.Craft
           int quality = 1;
           bool allRequiredSkills = true;
 
-          m_CraftItem.CheckSkills(m_From, m_TypeRes, m_CraftSystem, ref quality, ref allRequiredSkills, false);
+          m_CraftItem.CheckSkills(m_From, m_TypeRes, m_CraftSystem, ref quality, out allRequiredSkills, false);
 
           CraftContext context = m_CraftSystem.GetContext(m_From);
 

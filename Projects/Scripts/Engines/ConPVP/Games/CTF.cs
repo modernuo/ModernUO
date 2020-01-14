@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Server.Gumps;
 using Server.Items;
@@ -112,6 +113,9 @@ namespace Server.Engines.ConPVP
         for (int i = 0; i < entries.Count; ++i)
         {
           CTFTeamInfo teamInfo = entries[i] as CTFTeamInfo;
+
+          if (teamInfo == null)
+            continue;
 
           AddImage(30, 70 + i * 75, 10152);
           AddImage(30, 85 + i * 75, 10151);
@@ -943,15 +947,8 @@ namespace Server.Engines.ConPVP
 
               if (ourFlagCarrier != null && GetTeamInfo(ourFlagCarrier) == teamInfo)
               {
-                for (int j = 0; j < ourFlagCarrier.Aggressors.Count; ++j)
-                {
-                  if (!(ourFlagCarrier.Aggressors[j] is AggressorInfo aggr) ||
-                      aggr.Defender != ourFlagCarrier || aggr.Attacker != mob)
-                    continue;
-
+                if (ourFlagCarrier.Aggressors.Any(aggr => aggr.Defender == ourFlagCarrier && aggr.Attacker == mob))
                   playerInfo.Score += 2; // helped defend guy capturing enemy flag
-                  break;
-                }
 
                 if (mob.Map == ourFlagCarrier.Map && ourFlagCarrier.InRange(mob, 12))
                   playerInfo.Score += 1; // helped defend guy capturing enemy flag
@@ -1143,7 +1140,7 @@ namespace Server.Engines.ConPVP
           }
         }
 
-        if (i == winner.TeamID)
+        if (i == winner?.TeamID)
           continue;
 
         for (int j = 0; j < p.Players.Length; ++j)
@@ -1151,7 +1148,8 @@ namespace Server.Engines.ConPVP
             p.Players[j].Eliminated = true;
       }
 
-      m_Context.Finish(m_Context.Participants[winner.TeamID]);
+      if (winner != null)
+        m_Context.Finish(m_Context.Participants[winner.TeamID]);
     }
 
     public override void OnStop()

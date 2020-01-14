@@ -149,18 +149,18 @@ namespace Server.Engines.Craft
     public override void InitCraftList()
     {
       /*
-      Synthax for a SIMPLE craft item
+      Syntax for a SIMPLE craft item
       AddCraft( ObjectType, Group, MinSkill, MaxSkill, ResourceType, Amount, Message )
 
       ObjectType		: The type of the object you want to add to the build list.
-      Group			: The group in wich the object will be showed in the craft menu.
-      MinSkill		: The minimum of skill value
-      MaxSkill		: The maximum of skill value
+      Group			    : The group in which the object will be showed in the craft menu.
+      MinSkill		  : The minimum of skill value
+      MaxSkill		  : The maximum of skill value
       ResourceType	: The type of the resource the mobile need to create the item
-      Amount			: The amount of the ResourceType it need to create the item
-      Message			: String or Int for Localized.  The message that will be sent to the mobile, if the specified resource is missing.
+      Amount			  : The amount of the ResourceType it need to create the item
+      Message			  : String or Int for Localized.  The message that will be sent to the mobile, if the specified resource is missing.
 
-      Synthax for a COMPLEXE craft item.  A complexe item is an item that need either more than
+      Syntax for a COMPLEX craft item.  A complex item is an item that need either more than
       only one skill, or more than only one resource.
 
       Coming soon....
@@ -183,7 +183,7 @@ namespace Server.Engines.Craft
 
       #endregion
 
-      int index = -1;
+      int index;
 
       #region Platemail
 

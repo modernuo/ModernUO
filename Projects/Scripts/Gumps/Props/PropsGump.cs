@@ -599,7 +599,7 @@ namespace Server.Gumps
       {
         MethodInfo parseMethod = t.GetMethod("Parse", new[] { typeof(string) });
 
-        return parseMethod.Invoke(null, new object[] { s });
+        return parseMethod?.Invoke(null, new object[] { s });
       }
 
       throw new Exception("bad");

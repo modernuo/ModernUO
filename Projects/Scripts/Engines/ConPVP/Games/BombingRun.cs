@@ -550,19 +550,21 @@ namespace Server.Engines.ConPVP
         else if (m_Path.Count > 0)
           MoveToWorld(m_Path.Last);
 
-        int myZ = Map.GetAverageZ(X, Y);
+        int myZ = Map?.GetAverageZ(X, Y) ?? 0;
 
-        StaticTile[] statics = Map.Tiles.GetStaticTiles(X, Y, true);
-        for (int j = 0; j < statics.Length; j++)
-        {
-          StaticTile t = statics[j];
+        StaticTile[] statics = Map?.Tiles?.GetStaticTiles(X, Y, true);
 
-          ItemData id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
-          height = id.CalcHeight;
+        if (statics != null)
+          for (int j = 0; j < statics.Length; j++)
+          {
+            StaticTile t = statics[j];
 
-          if (t.Z + height > myZ && t.Z + height <= Z)
-            myZ = t.Z + height;
-        }
+            ItemData id = TileData.ItemTable[t.ID & TileData.MaxItemValue];
+            height = id.CalcHeight;
+
+            if (t.Z + height > myZ && t.Z + height <= Z)
+              myZ = t.Z + height;
+          }
 
         IPooledEnumerable<Item> eable = GetItemsInRange(0);
         foreach (Item item in eable)
@@ -1722,7 +1724,9 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
       {
-        if (!(m_Context.Participants[i] is Participant p) || p.Players == null)
+        Participant p = m_Context.Participants[i];
+
+        if (p?.Players == null)
           continue;
 
         for (int j = 0; j < p.Players.Length; ++j)
@@ -1736,7 +1740,7 @@ namespace Server.Engines.ConPVP
           }
         }
 
-        if (i == winner.TeamID)
+        if (i == winner?.TeamID)
           continue;
 
         if (p.Players != null)

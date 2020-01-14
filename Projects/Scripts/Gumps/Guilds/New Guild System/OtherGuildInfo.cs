@@ -185,9 +185,7 @@ namespace Server.Guilds
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      PlayerMobile pm = sender.Mobile as PlayerMobile;
-
-      if (!IsMember(pm, guild))
+      if (!(sender.Mobile is PlayerMobile pm && IsMember(pm, guild)))
         return;
 
       RankDefinition playerRank = pm.GuildRank;

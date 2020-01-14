@@ -19,7 +19,6 @@ namespace Server.Engines.BulkOrders
       switch (Utility.Random(14))
       {
         default:
-        case 0:
           entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.Farmer);
           break;
         case 1:

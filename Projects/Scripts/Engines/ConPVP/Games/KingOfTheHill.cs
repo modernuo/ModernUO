@@ -1113,7 +1113,8 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
       {
-        if (!(m_Context.Participants[i] is Participant p) || p.Players == null)
+        Participant p = m_Context.Participants[i];
+        if (p.Players == null)
           continue;
 
         for (int j = 0; j < p.Players.Length; ++j)

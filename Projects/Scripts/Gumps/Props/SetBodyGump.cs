@@ -127,7 +127,6 @@ namespace Server.Gumps
         switch (index)
         {
           default:
-          case 0:
             type = ModelBodyType.Monsters;
             list = m_Monster;
             break;
@@ -284,12 +283,12 @@ namespace Server.Gumps
 
       public int CompareTo(InternalEntry comp)
       {
-        int v = Name.CompareTo(comp.Name);
+        if (Name == null && comp.Name == null)
+          return 0;
 
-        if (v == 0)
-          Body.CompareTo(comp.Body);
+        int v = Name?.CompareTo(comp.Name) ?? 1;
 
-        return v;
+        return v == 0 ? Body.CompareTo(comp.Body) : v;
       }
     }
   }

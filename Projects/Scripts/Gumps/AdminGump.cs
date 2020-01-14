@@ -1214,7 +1214,6 @@ namespace Server.Gumps
         case AccessLevel.Seer: return 0x144;
         case AccessLevel.GameMaster: return 0x21;
         case AccessLevel.Counselor: return 0x2;
-        case AccessLevel.Player:
         default:
         {
           if (m.Kills >= 5)
@@ -1525,7 +1524,7 @@ namespace Server.Gumps
       {
         IPAddress[] ips = a.LoginIPs;
 
-        if (ips.Length != 0 && ip == ips[0] && AccountHandler.IPTable.ContainsKey(ips[0]))
+        if (ips.Length != 0 && Equals(ip, ips[0]) && AccountHandler.IPTable.ContainsKey(ips[0]))
           --AccountHandler.IPTable[ip];
 
         List<IPAddress> newList = new List<IPAddress>(ips);
