@@ -456,8 +456,7 @@ namespace Server
           pool = _FixPool.Dequeue();
       }
 
-      if (pool == null)
-        pool = new List<Item>(128); // Arbitrary limit
+      pool ??= new List<Item>(128); // Arbitrary limit
 
       IPooledEnumerable<Item> eable = map.GetItemsInRange(new Point3D(x, y, 0), 0);
 

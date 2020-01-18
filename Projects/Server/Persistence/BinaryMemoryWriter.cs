@@ -44,7 +44,7 @@ namespace Server
 
       dataFile.Write(buffer, 0, length);
 
-      if (indexBuffer == null) indexBuffer = new byte[20];
+      indexBuffer ??= new byte[20];
 
       indexBuffer[0] = (byte)typeCode;
       indexBuffer[1] = (byte)(typeCode >> 8);

@@ -191,14 +191,10 @@ namespace Server
       if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight)
         return;
 
-      if (m_StaticTiles[x] == null)
-        m_StaticTiles[x] = new StaticTile[BlockHeight][][][];
-
+      m_StaticTiles[x] ??= new StaticTile[BlockHeight][][][];
       m_StaticTiles[x][y] = value;
 
-      if (m_StaticPatches[x] == null)
-        m_StaticPatches[x] = new int[BlockHeight + 31 >> 5];
-
+      m_StaticPatches[x] ??= new int[BlockHeight + 31 >> 5];
       m_StaticPatches[x][y >> 5] |= 1 << (y & 0x1F);
     }
 
@@ -208,8 +204,7 @@ namespace Server
       if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || DataStream == null || IndexStream == null)
         return EmptyStaticBlock;
 
-      if (m_StaticTiles[x] == null)
-        m_StaticTiles[x] = new StaticTile[BlockHeight][][][];
+      m_StaticTiles[x] ??= new StaticTile[BlockHeight][][][];
 
       StaticTile[][][] tiles = m_StaticTiles[x][y];
 
@@ -287,14 +282,10 @@ namespace Server
       if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight)
         return;
 
-      if (m_LandTiles[x] == null)
-        m_LandTiles[x] = new LandTile[BlockHeight][];
-
+      m_LandTiles[x] ??= new LandTile[BlockHeight][];
       m_LandTiles[x][y] = value;
 
-      if (m_LandPatches[x] == null)
-        m_LandPatches[x] = new int[BlockHeight + 31 >> 5];
-
+      m_LandPatches[x] ??= new int[BlockHeight + 31 >> 5];
       m_LandPatches[x][y >> 5] |= 1 << (y & 0x1F);
     }
 
@@ -304,8 +295,7 @@ namespace Server
       if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || MapStream == null)
         return m_InvalidLandBlock;
 
-      if (m_LandTiles[x] == null)
-        m_LandTiles[x] = new LandTile[BlockHeight][];
+      m_LandTiles[x] ??= new LandTile[BlockHeight][];
 
       LandTile[] tiles = m_LandTiles[x][y];
 

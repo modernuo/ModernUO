@@ -129,7 +129,7 @@ namespace Server
       sb.Append(value);
     }
 
-    public static string Intern(string str) => str == null ? null : str.Length == 0 ? string.Empty : string.Intern(str);
+    public static string Intern(string str) => str?.Length > 0 ? string.Intern(str) : str;
 
     public static void Intern(ref string str)
     {
@@ -138,8 +138,7 @@ namespace Server
 
     public static IPAddress Intern(IPAddress ipAddress)
     {
-      if (_ipAddressTable == null)
-        _ipAddressTable = new Dictionary<IPAddress, IPAddress>();
+      _ipAddressTable ??= new Dictionary<IPAddress, IPAddress>();
 
       if (!_ipAddressTable.TryGetValue(ipAddress, out IPAddress interned))
       {

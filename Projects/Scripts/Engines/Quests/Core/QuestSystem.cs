@@ -326,18 +326,15 @@ namespace Server.Engines.Quests
 
         if (completed && restartDelay > TimeSpan.Zero || !completed && restartDelay == TimeSpan.MaxValue)
         {
-          List<QuestRestartInfo> doneQuests = From.DoneQuests;
-
-          if (doneQuests == null)
-            From.DoneQuests = doneQuests = new List<QuestRestartInfo>();
+          From.DoneQuests ??= new List<QuestRestartInfo>();
 
           bool found = false;
 
           Type ourQuestType = GetType();
 
-          for (int i = 0; i < doneQuests.Count; ++i)
+          for (int i = 0; i < From.DoneQuests.Count; ++i)
           {
-            QuestRestartInfo restartInfo = doneQuests[i];
+            QuestRestartInfo restartInfo = From.DoneQuests[i];
 
             if (restartInfo.QuestType == ourQuestType)
             {
@@ -348,7 +345,7 @@ namespace Server.Engines.Quests
           }
 
           if (!found)
-            doneQuests.Add(new QuestRestartInfo(ourQuestType, restartDelay));
+            From.DoneQuests.Add(new QuestRestartInfo(ourQuestType, restartDelay));
         }
       }
     }

@@ -195,8 +195,6 @@ namespace Server.Regions
 
     public override void OnExit(Mobile m)
     {
-//      if (IsDisabled())
-        return;
     }
 
     public override void OnSpeech(SpeechEventArgs args)

@@ -145,8 +145,7 @@ namespace Server.Engines.Help
 
     public static void Save()
     {
-      if (List == null)
-        List = Load();
+      List ??= Load();
 
       try
       {

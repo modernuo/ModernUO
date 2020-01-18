@@ -27,10 +27,10 @@ namespace Server.SkillHandlers
       {
         m.Target = new InternalTarget();
 
-        m.SendLocalizedMessage(502368); // Wich trap will you attempt to disarm?
+        m.SendLocalizedMessage(502368); // Which trap will you attempt to disarm?
       }
 
-      return TimeSpan.FromSeconds(10.0); // 10 second delay before beign able to re-use a skill
+      return TimeSpan.FromSeconds(10.0); // 10 second delay before being able to re-use a skill
     }
 
     private class InternalTarget : Target

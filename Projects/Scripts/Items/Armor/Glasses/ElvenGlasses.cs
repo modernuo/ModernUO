@@ -1,3 +1,5 @@
+using System;
+
 namespace Server.Items
 {
   public class ElvenGlasses : BaseArmor
@@ -126,6 +128,7 @@ namespace Server.Items
         WeaponAttributes = new AosWeaponAttributes(this);
     }
 
+    [Flags]
     private enum SaveFlag
     {
       None = 0x00000000,

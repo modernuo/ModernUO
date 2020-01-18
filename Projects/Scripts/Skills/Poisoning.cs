@@ -19,7 +19,7 @@ namespace Server.SkillHandlers
 
       m.SendLocalizedMessage(502137); // Select the poison you wish to use
 
-      return TimeSpan.FromSeconds(10.0); // 10 second delay before beign able to re-use a skill
+      return TimeSpan.FromSeconds(10.0); // 10 second delay before being able to re-use a skill
     }
 
     private class InternalTargetPoison : Target

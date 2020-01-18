@@ -28,13 +28,9 @@ namespace Server.Engines.ConPVP
       from.CloseGump<ParticipantGump>();
 
       RulesetLayout depthCounter = page;
-      int depth = 0;
 
       while (depthCounter != null)
-      {
-        ++depth;
         depthCounter = depthCounter.Parent;
-      }
 
       int count = page.Children.Length + page.Options.Length;
 

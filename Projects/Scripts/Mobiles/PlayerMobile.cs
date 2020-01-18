@@ -1882,7 +1882,7 @@ namespace Server.Mobiles
 
           pointsToGain += (int)Math.Sqrt(GameTime.TotalSeconds * 4);
           pointsToGain *= 5;
-          pointsToGain += (int)Math.Pow(Skills.Total / 250, 2);
+          pointsToGain += (int)Math.Pow(Skills.Total / 250.0, 2);
 
           if (VirtueHelper.Award(m, VirtueName.Justice, pointsToGain, ref gainedPath))
           {
@@ -1894,7 +1894,7 @@ namespace Server.Mobiles
             m.FixedParticles(0x375A, 9, 20, 5027, EffectLayer.Waist);
             m.PlaySound(0x1F7);
 
-            m_NextJustAward = DateTime.UtcNow + TimeSpan.FromMinutes(pointsToGain / 3);
+            m_NextJustAward = DateTime.UtcNow + TimeSpan.FromMinutes(pointsToGain / 3.0);
           }
         }
       }
@@ -2010,9 +2010,7 @@ namespace Server.Mobiles
 
         if (mob?.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel)
         {
-          if (p == null)
-            p = Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Regular, from.SpeechHue, 3,
-              from.Language, from.Name, text));
+          p ??= Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Regular, from.SpeechHue, 3, from.Language, from.Name, text));
 
           ns.Send(p);
         }
@@ -2358,32 +2356,23 @@ namespace Server.Mobiles
         }
       }
 
-      if (RecentlyReported == null)
-        RecentlyReported = new List<Mobile>();
+      RecentlyReported ??= new List<Mobile>();
 
       // Professions weren't verified on 1.0 RC0
       if (!CharacterCreation.VerifyProfession(Profession))
         Profession = 0;
 
-      if (PermaFlags == null)
-        PermaFlags = new List<Mobile>();
+      PermaFlags ??= new List<Mobile>();
+      JusticeProtectors ??= new List<Mobile>();
+      BOBFilter ??= new BOBFilter();
 
-      if (JusticeProtectors == null)
-        JusticeProtectors = new List<Mobile>();
-
-      if (BOBFilter == null)
-        BOBFilter = new BOBFilter();
-
-      if (m_GuildRank == null)
-        m_GuildRank =
-          RankDefinition
-            .Member; //Default to member if going from older version to new version (only time it should be null)
+      //Default to member if going from older version to new version (only time it should be null)
+      m_GuildRank ??= RankDefinition.Member;
 
       if (LastOnline == DateTime.MinValue && Account != null)
         LastOnline = ((Account)Account).LastLogin;
 
-      if (ChampionTitles == null)
-        ChampionTitles = new ChampionTitleInfo();
+      ChampionTitles ??= new ChampionTitleInfo();
 
       if (AccessLevel > AccessLevel.Player)
         m_IgnoreMobiles = true;
@@ -2797,9 +2786,10 @@ namespace Server.Mobiles
 
       for (int i = AutoStabled.Count - 1; i >= 0; --i)
       {
-        BaseCreature pet = AutoStabled[i] as BaseCreature;
+        if (!(AutoStabled[i] is BaseCreature pet))
+          continue;
 
-        if (pet?.Deleted == true)
+        if (pet.Deleted)
         {
           pet.IsStabled = false;
           pet.StabledBy = null;
@@ -3099,22 +3089,15 @@ namespace Server.Mobiles
 
           if (ammo == null)
             continue;
-          string name = ammo.Name;
+
           ammo.Amount = kvp.Value;
 
-          if (name == null)
+          string name = ammo.Name ?? ammo switch
           {
-            if (ammo is Arrow)
-              name = "arrow";
-            else if (ammo is Bolt)
-              name = "bolt";
-          }
-
-          if (name != null && ammo.Amount > 1)
-            name = $"{name}s";
-
-          if (name == null)
-            name = $"#{ammo.LabelNumber}";
+            Arrow _ => $"arrow{(ammo.Amount != 1 ? "s" : "")}",
+            Bolt _ => $"bolt{(ammo.Amount != 1 ? "s" : "")}",
+            _ => $"#{ammo.LabelNumber}"
+          };
 
           PlaceInBackpack(ammo);
           SendLocalizedMessage(1073504, $"{ammo.Amount}\t{name}"); // You recover ~1_NUM~ ~2_AMMO~.
@@ -3779,10 +3762,7 @@ namespace Server.Mobiles
 
         m_DuelPlayer = value;
 
-        if (m_DuelPlayer == null)
-          DuelContext = null;
-        else
-          DuelContext = m_DuelPlayer.Participant.Context;
+        DuelContext = m_DuelPlayer?.Participant.Context;
 
         bool isInTourney = DuelContext?.Finished == false && DuelContext.m_Tournament != null;
 
@@ -4435,8 +4415,7 @@ namespace Server.Mobiles
         if (m_Values == null || index < 0 || index >= m_Values.Length)
           return 0;
 
-        if (m_Values[index] == null)
-          m_Values[index] = new TitleInfo();
+        m_Values[index] ??= new TitleInfo();
 
         return m_Values[index].Value;
       }
@@ -4446,16 +4425,14 @@ namespace Server.Mobiles
         if (m_Values == null || index < 0 || index >= m_Values.Length)
           return DateTime.MinValue;
 
-        if (m_Values[index] == null)
-          m_Values[index] = new TitleInfo();
+        m_Values[index] ??= new TitleInfo();
 
         return m_Values[index].LastDecay;
       }
 
       public void SetValue(int index, int value)
       {
-        if (m_Values == null)
-          m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
+        m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
 
         if (value < 0)
           value = 0;
@@ -4463,36 +4440,31 @@ namespace Server.Mobiles
         if (index < 0 || index >= m_Values.Length)
           return;
 
-        if (m_Values[index] == null)
-          m_Values[index] = new TitleInfo();
+        m_Values[index] ??= new TitleInfo();
 
         m_Values[index].Value = value;
       }
 
       public void Award(int index, int value)
       {
-        if (m_Values == null)
-          m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
+        m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
 
         if (index < 0 || index >= m_Values.Length || value <= 0)
           return;
 
-        if (m_Values[index] == null)
-          m_Values[index] = new TitleInfo();
+        m_Values[index] ??= new TitleInfo();
 
         m_Values[index].Value += value;
       }
 
       public void Atrophy(int index, int value)
       {
-        if (m_Values == null)
-          m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
+        m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
 
         if (index < 0 || index >= m_Values.Length || value <= 0)
           return;
 
-        if (m_Values[index] == null)
-          m_Values[index] = new TitleInfo();
+        m_Values[index] ??= new TitleInfo();
 
         int before = m_Values[index].Value;
 
@@ -4518,8 +4490,7 @@ namespace Server.Mobiles
 
         for (int i = 0; i < length; i++)
         {
-          if (titles.m_Values[i] == null)
-            titles.m_Values[i] = new TitleInfo();
+          titles.m_Values[i] ??= new TitleInfo();
 
           TitleInfo.Serialize(writer, titles.m_Values[i]);
         }
@@ -4531,8 +4502,7 @@ namespace Server.Mobiles
         if (t == null)
           return;
 
-        if (t.m_Values == null)
-          t.m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
+        t.m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
 
         for (int i = 0; i < t.m_Values.Length; i++)
           if (t.GetLastDecay(i) + LossDelay < DateTime.UtcNow)
@@ -4546,14 +4516,9 @@ namespace Server.Mobiles
         if (t == null)
           return;
 
-        if (t.m_Values == null)
-          t.m_Values = new TitleInfo[ChampionSpawnInfo.Table.Length];
+        t.m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
 
-        int count = 1;
-
-        for (int i = 0; i < t.m_Values.Length; i++)
-          if (t.m_Values[i].Value > 900)
-            count++;
+        int count = 1 + t.m_Values.Count(t1 => t1.Value > 900);
 
         t.Harrower = Math.Max(count, t.Harrower); //Harrower titles never decay.
       }
@@ -4611,8 +4576,7 @@ namespace Server.Mobiles
 
     public virtual void AcquireRecipe(int recipeID)
     {
-      if (m_AcquiredRecipes == null)
-        m_AcquiredRecipes = new Dictionary<int, bool>();
+      m_AcquiredRecipes ??= new Dictionary<int, bool>();
 
       m_AcquiredRecipes[recipeID] = true;
     }
@@ -4648,8 +4612,7 @@ namespace Server.Mobiles
 
       RemoveBuff(b); //Check & subsequently remove the old one.
 
-      if (m_BuffTable == null)
-        m_BuffTable = new Dictionary<BuffIcon, BuffInfo>();
+      m_BuffTable ??= new Dictionary<BuffIcon, BuffInfo>();
 
       m_BuffTable.Add(b.ID, b);
 

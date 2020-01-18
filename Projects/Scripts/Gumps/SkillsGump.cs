@@ -257,7 +257,7 @@ namespace Server.Gumps
         x -= OldStyle ? OffsetSize : 0;
 
         AddImageTiled(x, y, emptyWidth + (OldStyle ? OffsetSize * 2 : 0), EntryHeight, EntryGumpID);
-        AddLabel(x + TextOffsetX, y, TextHue, group.Name);
+        AddLabel(x + TextOffsetX, y, TextHue, group?.Name ?? "");
 
         x += emptyWidth + (OldStyle ? OffsetSize * 2 : 0);
         x += OffsetSize;
@@ -306,7 +306,6 @@ namespace Server.Gumps
               switch (sk.Lock)
               {
                 default:
-                case SkillLock.Up:
                   buttonID1 = 0x983;
                   buttonID2 = 0x983;
                   xOffset = 6;

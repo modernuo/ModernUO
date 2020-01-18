@@ -106,7 +106,7 @@ namespace System.Buffers
 
       var basePtr = slab.NativePointer;
       // Page align the blocks
-      var offset = (int)((((ulong)basePtr + (uint)_blockSize - 1) & ~((uint)_blockSize - 1)) - (ulong)basePtr);
+      var offset = (int)((((ulong)basePtr + _blockSize - 1) & ~((uint)_blockSize - 1)) - (ulong)basePtr);
       // Ensure page aligned
       Debug.Assert(((ulong)basePtr + (uint)offset) % _blockSize == 0);
 

@@ -100,9 +100,8 @@ namespace Server.Engines.MLQuests.Mobiles
 
           if (m.CanSee(this) && m.InLOS(this) && m.CanBeginAction(this))
           {
-            if (shoutPacket == null)
-              shoutPacket = Packet.Acquire(new MessageLocalized(Serial, Body, MessageType.Regular, 946, 3,
-                1078099, Name, "")); // Double Click On Me For Help!
+            shoutPacket ??= Packet.Acquire(new MessageLocalized(Serial, Body, MessageType.Regular, 946, 3,
+              1078099, Name, "")); // Double Click On Me For Help!
 
             state.Send(shoutPacket);
           }

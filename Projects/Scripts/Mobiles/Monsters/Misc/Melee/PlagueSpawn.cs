@@ -35,8 +35,7 @@ namespace Server.Mobiles
           Body = 0x15;
           BaseSoundID = 0xDB;
           break;
-        default:
-        case 5: // slime
+        default: // slime
           Body = 51;
           BaseSoundID = 456;
           break;

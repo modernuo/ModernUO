@@ -121,8 +121,7 @@ namespace Server.Mobiles
     {
       AcquireFocusMob(m_Mobile.RangePerception * 2, m_Mobile.FightMode, true, false, true);
 
-      if (m_Mobile.FocusMob == null)
-        m_Mobile.FocusMob = m_Mobile.Combatant;
+      m_Mobile.FocusMob ??= m_Mobile.Combatant;
 
       return base.DoActionFlee();
     }

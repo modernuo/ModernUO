@@ -135,7 +135,7 @@ namespace Server.Engines.BulkOrders
         if (item != null)
         {
           bool allRequiredSkills = true;
-          double chance = item.GetSuccessChance(m, null, system, false, ref allRequiredSkills);
+          double chance = item.GetSuccessChance(m, null, system, false, out allRequiredSkills);
 
           if (allRequiredSkills && chance >= 0.0)
           {

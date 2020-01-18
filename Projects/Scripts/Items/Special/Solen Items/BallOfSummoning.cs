@@ -274,13 +274,7 @@ namespace Server.Items
 
     private void InternalUpdatePetName()
     {
-      BaseCreature pet = Pet;
-
-      if (pet == null)
-        PetName = "";
-      else
-        PetName = pet.Name;
-
+      PetName = Pet?.Name ?? "";
       InvalidateProperties();
     }
 

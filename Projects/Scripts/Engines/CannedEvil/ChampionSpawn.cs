@@ -331,12 +331,10 @@ namespace Server.Engines.CannedEvil
         killer.SendLocalizedMessage(1049524); // You have received a scroll of power!
 
       if (killer.Alive)
-      {
         killer.AddToBackpack(scroll);
-      }
       else
       {
-        if (killer?.Corpse.Deleted == false)
+        if (killer.Corpse.Deleted == false)
           killer.Corpse.DropItem(scroll);
         else
           killer.AddToBackpack(scroll);

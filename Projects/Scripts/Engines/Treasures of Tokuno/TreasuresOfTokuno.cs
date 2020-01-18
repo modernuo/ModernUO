@@ -136,7 +136,7 @@ namespace Server.Misc
 
       //This is the Exponentional regression with only 2 datapoints.
       //A log. func would also work, but it didn't make as much sense.
-      //This function isn't OSI exact beign that I don't know OSI's func they used ;p
+      //This function isn't OSI exact being that I don't know OSI's func they used ;p
       int x = pm.ToTTotalMonsterFame;
 
       //const double A = 8.63316841 * Math.Pow( 10, -4 );

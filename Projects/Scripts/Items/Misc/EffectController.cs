@@ -261,13 +261,7 @@ namespace Server.Items
 
     public void PlaySound(IEntity trigger)
     {
-      IEntity ent = null;
-
-      if (PlaySoundAtTrigger)
-        ent = trigger;
-
-      if (ent == null)
-        ent = this;
+      IEntity ent = PlaySoundAtTrigger ? trigger : this;
 
       Effects.PlaySound((ent as Item)?.GetWorldLocation() ?? ent.Location, ent.Map, SoundID);
     }
@@ -292,13 +286,8 @@ namespace Server.Items
 
     public void InternalDoEffect(IEntity trigger)
     {
-      IEntity from = m_Source, to = m_Target;
-
-      if (from == null)
-        from = trigger;
-
-      if (to == null)
-        to = trigger;
+      IEntity from = m_Source ?? trigger;
+      IEntity to = m_Target ?? trigger;
 
       switch (EffectType)
       {

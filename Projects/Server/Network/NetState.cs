@@ -30,7 +30,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
 using Server.Accounting;
-using Server.Diagnostics;
 using Server.Gumps;
 using Server.HuePickers;
 using Server.Items;
@@ -302,8 +301,7 @@ namespace Server.Network
 
     public void AddMenu(IMenu menu)
     {
-      if (Menus == null)
-        Menus = new List<IMenu>();
+      Menus ??= new List<IMenu>();
 
       if (Menus.Count < MenuCap)
         Menus.Add(menu);
@@ -331,8 +329,7 @@ namespace Server.Network
 
     public void AddHuePicker(HuePicker huePicker)
     {
-      if (HuePickers == null)
-        HuePickers = new List<HuePicker>();
+      HuePickers ??= new List<HuePicker>();
 
       if (HuePickers.Count < HuePickerCap)
         HuePickers.Add(huePicker);
@@ -360,8 +357,7 @@ namespace Server.Network
 
     public void AddGump(Gump gump)
     {
-      if (Gumps == null)
-        Gumps = new List<Gump>();
+      Gumps ??= new List<Gump>();
 
       if (Gumps.Count < GumpCap)
         Gumps.Add(gump);
@@ -435,7 +431,9 @@ namespace Server.Network
       ConnectedOn = DateTime.UtcNow;
       Console.WriteLine("Client: {0}: Connected. [{1} Online]", this, Instances.Count);
 
-      _ = ProcessRecvs(pump);
+#pragma warning disable 4014
+      ProcessRecvs(pump);
+#pragma warning restore 4014
 
       CreatedCallback?.Invoke(this);
     }
@@ -566,9 +564,7 @@ namespace Server.Network
 
     private int m_Disposing;
 
-    public bool IsDisposing { get => m_Disposing != 0;
-      private set => m_Disposing = value ? 1 : 0;
-    }
+    public bool IsDisposing => m_Disposing != 0;
 
     public virtual void Dispose()
     {

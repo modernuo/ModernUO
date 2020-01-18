@@ -165,7 +165,7 @@ namespace Server.Network
     public DisplaySecureTrade(Mobile them, Container first, Container second, string name)
       : base(0x6F)
     {
-      if (name == null) name = "";
+      name ??= "";
 
       EnsureCapacity(18 + name.Length);
 
@@ -405,13 +405,9 @@ namespace Server.Network
         m_Stream.Write((ushort)state.Item.Amount);
         m_Stream.Write((ushort)state.Price);
 
-        string name = state.Item.Name;
-
-        if (name == null || (name = name.Trim()).Length <= 0)
-          name = state.Name;
-
-        if (name == null)
-          name = "";
+        string name = state.Item.Name?.Trim();
+        if (string.IsNullOrWhiteSpace(name))
+          name = state.Name ?? "";
 
         m_Stream.Write((ushort)name.Length);
         m_Stream.WriteAsciiFixed(name, (ushort)name.Length);
@@ -979,14 +975,9 @@ namespace Server.Network
   {
     public DisplayProfile(bool realSerial, Mobile m, string header, string body, string footer) : base(0xB8)
     {
-      if (header == null)
-        header = "";
-
-      if (body == null)
-        body = "";
-
-      if (footer == null)
-        footer = "";
+      header ??= "";
+      body ??= "";
+      footer ??= "";
 
       EnsureCapacity(12 + header.Length + footer.Length * 2 + body.Length * 2);
 
@@ -2104,7 +2095,7 @@ namespace Server.Network
   {
     public LaunchBrowser(string url) : base(0xA5)
     {
-      if (url == null) url = "";
+      url ??= "";
 
       EnsureCapacity(4 + url.Length);
 
@@ -2121,8 +2112,8 @@ namespace Server.Network
     public MessageLocalized(Serial serial, int graphic, MessageType type, int hue, int font, int number, string name,
       string args) : base(0xC1)
     {
-      if (name == null) name = "";
-      if (args == null) args = "";
+      name ??= "";
+      args ??= "";
 
       if (hue == 0)
         hue = 0x3B2;
@@ -2570,7 +2561,7 @@ namespace Server.Network
   {
     public DisplayGump(Gump g, string layout, string[] text) : base(0xB0)
     {
-      if (layout == null) layout = "";
+      layout ??= "";
 
       EnsureCapacity(256);
 
@@ -2673,7 +2664,7 @@ namespace Server.Network
   {
     public ScrollMessage(int type, int tip, string text) : base(0xA6)
     {
-      if (text == null) text = "";
+      text ??= "";
 
       EnsureCapacity(10 + text.Length);
 
@@ -2755,12 +2746,12 @@ namespace Server.Network
 
       flags |= Value;
 
-      if (ns.Account is IAccount acct && acct.Limit >= 6)
+      if (ns.Account.Limit >= 6)
       {
         flags |= FeatureFlags.LiveAccount;
         flags &= ~FeatureFlags.UOTD;
 
-        if (acct.Limit > 6)
+        if (ns.Account.Limit > 6)
           flags |= FeatureFlags.SeventhCharacterSlot;
         else
           flags |= FeatureFlags.SixthCharacterSlot;
@@ -3618,11 +3609,8 @@ namespace Server.Network
     public AsciiMessage(Serial serial, int graphic, MessageType type, int hue, int font, string name, string text) :
       base(0x1C)
     {
-      if (name == null)
-        name = "";
-
-      if (text == null)
-        text = "";
+      name ??= "";
+      text ??= "";
 
       if (hue == 0)
         hue = 0x3B2;
@@ -3645,8 +3633,8 @@ namespace Server.Network
       string text) : base(0xAE)
     {
       if (string.IsNullOrEmpty(lang)) lang = "ENU";
-      if (name == null) name = "";
-      if (text == null) text = "";
+      name ??= "";
+      text ??= "";
 
       if (hue == 0)
         hue = 0x3B2;
@@ -4051,9 +4039,9 @@ namespace Server.Network
     public MessageLocalizedAffix(Serial serial, int graphic, MessageType messageType, int hue, int font, int number,
       string name, AffixType affixType, string affix, string args) : base(0xCC)
     {
-      if (name == null) name = "";
-      if (affix == null) affix = "";
-      if (args == null) args = "";
+      name ??= "";
+      affix ??= "";
+      args ??= "";
 
       if (hue == 0)
         hue = 0x3B2;
@@ -4128,8 +4116,8 @@ namespace Server.Network
   {
     public DisplaySignGump(Serial serial, int gumpID, string unknown, string caption) : base(0x8B)
     {
-      if (unknown == null) unknown = "";
-      if (caption == null) caption = "";
+      unknown ??= "";
+      caption ??= "";
 
       EnsureCapacity(16 + unknown.Length + caption.Length);
 

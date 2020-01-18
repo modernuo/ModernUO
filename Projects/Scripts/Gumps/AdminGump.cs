@@ -587,8 +587,7 @@ namespace Server.Gumps
         }
         case AdminGumpPage.Accounts:
         {
-          if (m_List == null)
-            m_List = new List<object>();
+          m_List ??= new List<object>();
 
           List<Account> rads = state as List<Account>;
 
@@ -1214,7 +1213,6 @@ namespace Server.Gumps
         case AccessLevel.Seer: return 0x144;
         case AccessLevel.GameMaster: return 0x21;
         case AccessLevel.Counselor: return 0x2;
-        case AccessLevel.Player:
         default:
         {
           if (m.Kills >= 5)
@@ -1525,7 +1523,7 @@ namespace Server.Gumps
       {
         IPAddress[] ips = a.LoginIPs;
 
-        if (ips.Length != 0 && ip == ips[0] && AccountHandler.IPTable.ContainsKey(ips[0]))
+        if (ips.Length != 0 && Equals(ip, ips[0]) && AccountHandler.IPTable.ContainsKey(ips[0]))
           --AccountHandler.IPTable[ip];
 
         List<IPAddress> newList = new List<IPAddress>(ips);

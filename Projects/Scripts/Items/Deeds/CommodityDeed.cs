@@ -85,13 +85,9 @@ namespace Server.Items
 
       if (Commodity != null)
       {
-        string args;
-
-        if (Commodity.Name == null)
-          args =
-            $"#{(Commodity is ICommodity commodity ? commodity.DescriptionNumber : Commodity.LabelNumber)}\t{Commodity.Amount}";
-        else
-          args = $"{Commodity.Name}\t{Commodity.Amount}";
+        var args = Commodity.Name == null ?
+          $"#{(Commodity is ICommodity commodity ? commodity.DescriptionNumber : Commodity.LabelNumber)}\t{Commodity.Amount}" :
+          $"{Commodity.Name}\t{Commodity.Amount}";
 
         list.Add(1060658, args); // ~1_val~: ~2_val~
       }

@@ -1,3 +1,4 @@
+using System;
 using Server.Guilds;
 using Server.Network;
 
@@ -48,12 +49,10 @@ namespace Server.Gumps
       if (fealty == null || !guild.IsMember(fealty))
         fealty = leader;
 
-      if (fealty == null)
-        fealty = beholder;
+      fealty ??= beholder;
 
-      string fealtyName;
-
-      if ((fealtyName = fealty.Name) == null || (fealtyName = fealtyName.Trim()).Length <= 0)
+      string fealtyName = fealty.Name?.Trim();
+      if (string.IsNullOrWhiteSpace(fealtyName))
         fealtyName = "(empty)";
 
       if (beholder == fealty)

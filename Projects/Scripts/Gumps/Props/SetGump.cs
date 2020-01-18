@@ -71,14 +71,12 @@ namespace Server.Gumps
       bool isBody = prop.IsDefined(typeof(BodyAttribute), false);
 
       object val = prop.GetValue(m_Object, null);
-      string initialText;
-
-      if (val == null)
-        initialText = "";
-      else if (val is TextDefinition definition)
-        initialText = definition.GetValue();
-      else
-        initialText = val.ToString();
+      string initialText = val switch
+      {
+        null => "",
+        TextDefinition definition => definition.GetValue(),
+        _ => val.ToString()
+      };
 
       AddPage(0);
 

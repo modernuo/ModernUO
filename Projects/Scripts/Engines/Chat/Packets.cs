@@ -6,11 +6,8 @@ namespace Server.Engines.Chat
   {
     public ChatMessagePacket(Mobile who, int number, string param1, string param2) : base(0xB2)
     {
-      if (param1 == null)
-        param1 = string.Empty;
-
-      if (param2 == null)
-        param2 = string.Empty;
+      param1 ??= string.Empty;
+      param2 ??= string.Empty;
 
       EnsureCapacity(13 + (param1.Length + param2.Length) * 2);
 

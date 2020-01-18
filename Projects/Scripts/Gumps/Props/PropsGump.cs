@@ -153,9 +153,7 @@ namespace Server.Gumps
 
       if (parent != null)
       {
-        if (m_Stack == null)
-          m_Stack = new Stack<StackEntry>();
-
+        m_Stack ??= new Stack<StackEntry>();
         m_Stack.Push(parent);
       }
 
@@ -599,7 +597,7 @@ namespace Server.Gumps
       {
         MethodInfo parseMethod = t.GetMethod("Parse", new[] { typeof(string) });
 
-        return parseMethod.Invoke(null, new object[] { s });
+        return parseMethod?.Invoke(null, new object[] { s });
       }
 
       throw new Exception("bad");

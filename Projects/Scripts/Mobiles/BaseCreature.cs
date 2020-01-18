@@ -403,9 +403,9 @@ namespace Server.Mobiles
       }
     }
 
-    public virtual bool IsNecroFamiliar => Summoned && m_ControlMaster != null &&
-        SummonFamiliarSpell.Table.TryGetValue(m_ControlMaster, out BaseCreature bc) &&
-        bc == this;
+    public virtual bool IsNecroFamiliar =>
+      Summoned && m_ControlMaster != null &&
+      SummonFamiliarSpell.Table.TryGetValue(m_ControlMaster, out BaseCreature bc) && bc == this;
 
     public virtual bool DeleteCorpseOnDeath => !Core.AOS && m_bSummoned;
 
@@ -3732,8 +3732,7 @@ namespace Server.Mobiles
 
     public virtual void AddPetFriend(Mobile m)
     {
-      if (Friends == null)
-        Friends = new List<Mobile>();
+      Friends ??= new List<Mobile>();
 
       Friends.Add(m);
     }

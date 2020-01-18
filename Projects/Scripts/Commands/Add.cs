@@ -426,7 +426,7 @@ namespace Server.Commands
       from.SendMessage(sb.ToString());
     }
 
-    private static void TileBox_Callback(Mobile from, Map map, Point3D start, Point3D end, TileState ts)
+    private static void TileBox_Callback(Mobile from, Point3D start, Point3D end, TileState ts)
     {
       bool mapAvg = false;
 
@@ -453,7 +453,7 @@ namespace Server.Commands
 
       if (e.Length >= 1)
         BoundingBoxPicker.Begin(from, (map, start, end) =>
-          TileBox_Callback(from, map, start, end, new TileState(TileZType.Start, 0, e.Arguments, outline)));
+          TileBox_Callback(from, start, end, new TileState(TileZType.Start, 0, e.Arguments, outline)));
       else
         from.SendMessage("Format: {0} <type> [params] [set {{<propertyName> <value> ...}}]",
           outline ? "Outline" : "Tile");
@@ -515,7 +515,7 @@ namespace Server.Commands
           subArgs[i] = e.Arguments[i + 1];
 
         BoundingBoxPicker.Begin(from, (map, start, end) =>
-          TileBox_Callback(from, map, start, end, new TileState(TileZType.Fixed, e.GetInt32(0), subArgs, outline)));
+          TileBox_Callback(from, start, end, new TileState(TileZType.Fixed, e.GetInt32(0), subArgs, outline)));
       }
       else
       {
@@ -530,7 +530,7 @@ namespace Server.Commands
 
       if (e.Length >= 1)
         BoundingBoxPicker.Begin(from, (map, start, end) =>
-          TileBox_Callback(from, map, start, end, new TileState(TileZType.MapAverage, 0, e.Arguments, outline)));
+          TileBox_Callback(from, start, end, new TileState(TileZType.MapAverage, 0, e.Arguments, outline)));
       else
         from.SendMessage("Format: {0}Avg <type> [params] [set {{<propertyName> <value> ...}}]",
           outline ? "Outline" : "Tile");

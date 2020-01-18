@@ -81,8 +81,7 @@ namespace Server.Items
     {
       base.OnAdded(parent);
 
-      if (Owner == null)
-        Owner = RootParent as Mobile;
+      Owner ??= RootParent as Mobile;
     }
 
     public override void OnSingleClick(Mobile from)

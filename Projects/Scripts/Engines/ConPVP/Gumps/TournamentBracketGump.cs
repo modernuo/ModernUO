@@ -350,9 +350,10 @@ namespace Server.Engines.ConPVP
           AddLeftArrow(25, 11, ToButtonID(0, 0));
           AddHtml(25, 35, 250, 20, Center("Rounds"));
 
-//          List<PyramidLevel> levelsList = m_List != null
-//            ? Utility.CastListCovariant<object, PyramidLevel>(m_List)
-//            : new List<PyramidLevel>(tourney.Pyramid.Levels);
+
+          //          List<PyramidLevel> levelsList = m_List != null
+          //            ? Utility.CastListCovariant<object, PyramidLevel>(m_List)
+          //            : new List<PyramidLevel>(tourney.Pyramid.Levels);
 
           StartPage(out int index, out int count, out int y, 12);
 

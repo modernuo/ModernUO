@@ -485,9 +485,6 @@ namespace Server.Items
       int extraItems = 0;
       int extraWeight = 0;
 
-//			from.SendMessage( String.Format( "There are {0} items in this container.", this.Items.Count ) );
-//			from.SendMessage( String.Format( "There are {0} items being dropped into this container.", droppedItems.Length ) );
-
       for (int i = 0; i < droppedItems.Length; i++)
       {
         Item dropped = droppedItems[i];
@@ -679,8 +676,7 @@ namespace Server.Items
 
       if (!contains)
       {
-        if (Openers == null)
-          Openers = new List<Mobile>();
+        Openers ??= new List<Mobile>();
 
         Openers.Add(opener);
       }
@@ -692,7 +688,10 @@ namespace Server.Items
 
     public virtual void SendContentTo(NetState state)
     {
-      if (state?.ContainerGridLines == true)
+      if (state == null)
+        return;
+
+      if (state.ContainerGridLines)
         state.Send(new ContainerContent6017(state.Mobile, this));
       else
         state.Send(new ContainerContent(state.Mobile, this));
@@ -1646,8 +1645,7 @@ namespace Server.Items
 
               ContainerData data = new ContainerData(gumpID, bounds, dropSound);
 
-              if (Default == null)
-                Default = data;
+              Default ??= data;
 
               if (split.Length >= 4)
               {
@@ -1672,8 +1670,7 @@ namespace Server.Items
         }
       }
 
-      if (Default == null)
-        Default = new ContainerData(0x3C, new Rectangle2D(44, 65, 142, 94), 0x48);
+      Default ??= new ContainerData(0x3C, new Rectangle2D(44, 65, 142, 94), 0x48);
     }
 
     public ContainerData(int gumpID, Rectangle2D bounds, int dropSound)

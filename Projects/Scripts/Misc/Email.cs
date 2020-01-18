@@ -40,7 +40,7 @@ namespace Server.Misc
         writer.WriteLine(@$"
           ModernUO Speech Log Page - {pageType}
 
-          From: '{sender.RawName}', Account: '{((sender.Account is Account accSend) ? accSend.Username : " ??? ")}'
+          From: '{sender.RawName}', Account: '{(sender.Account is Account accSend ? accSend.Username : " ??? ")}'
 
           Location: {sender.Location} [{sender.Map}]
           Sent on: {time.Year}/{time.Month:00}/{time.Day:00} {time.Hour}:{time.Minute:00}:{time.Second:00}

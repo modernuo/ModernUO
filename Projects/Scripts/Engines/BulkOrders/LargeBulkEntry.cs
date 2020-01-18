@@ -66,8 +66,7 @@ namespace Server.Engines.BulkOrders
 
     public static SmallBulkEntry[] GetEntries( string type, string name )
     {
-      if (m_Cache == null)
-        m_Cache = new Dictionary<string, Dictionary<string, SmallBulkEntry[]>>();
+      m_Cache ??= new Dictionary<string, Dictionary<string, SmallBulkEntry[]>>();
 
       if (!m_Cache.TryGetValue( type, out Dictionary<string, SmallBulkEntry[]> table ))
         m_Cache[type] = table = new Dictionary<string, SmallBulkEntry[]>();
@@ -112,7 +111,7 @@ namespace Server.Engines.BulkOrders
     public void Serialize(IGenericWriter writer )
     {
       writer.Write( m_Amount );
-      writer.Write( Details.Type == null ? null : Details.Type.FullName );
+      writer.Write( Details.Type?.FullName );
       writer.Write( Details.Number );
       writer.Write( Details.Graphic );
     }

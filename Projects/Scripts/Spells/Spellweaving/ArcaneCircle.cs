@@ -112,7 +112,7 @@ namespace Server.Spells.Spellweaving
       // Everyone gets the Arcane Focus, power capped elsewhere
       weavers.AddRange(Caster.GetMobilesInRange(1)
         .Where(m => m != Caster && m is PlayerMobile && Caster.CanBeBeneficial(m, false) &&
-          Math.Abs(Caster.Skills.Spellweaving.Value - m.Skills.Spellweaving.Value) <= 20));
+                    Math.Abs(Caster.Skills.Spellweaving.Value - m.Skills.Spellweaving.Value) <= 20));
 
       return weavers;
     }

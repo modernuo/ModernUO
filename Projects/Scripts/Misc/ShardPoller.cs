@@ -465,8 +465,7 @@ namespace Server.Misc
 
     public void QueuePoll(ShardPoller poller)
     {
-      if (m_Polls == null)
-        m_Polls = new Queue<ShardPoller>(4);
+      m_Polls ??= new Queue<ShardPoller>(4);
 
       m_Polls.Enqueue(poller);
     }
@@ -479,11 +478,15 @@ namespace Server.Misc
     {
       if (m_Polls?.Count > 0)
       {
-        ShardPoller poller = m_Polls.Dequeue();
+        ShardPoller shardPoller = m_Polls.Dequeue();
 
-        if (poller != null)
+        if (shardPoller != null)
           Timer.DelayCall(TimeSpan.FromSeconds(1.0),
-            () => m_From.SendGump(new ShardPollGump(m_From, poller, false, m_Polls)));
+            data =>
+            {
+              var (mobile, poller, polls) = data;
+              m_From.SendGump(new ShardPollGump(mobile, poller, false, polls));
+            }, (m_From, shardPoller, m_Polls));
       }
 
       if (info.ButtonID == 1)

@@ -163,52 +163,48 @@ namespace Server.Engines.ConPVP
       string title = null;
       string option;
 
-      if (spell is ArcanistSpell)
+      switch (spell)
       {
-        title = "Spellweaving";
-        option = spell.Name;
-      }
-      else if (spell is PaladinSpell)
-      {
-        title = "Chivalry";
-        option = spell.Name;
-      }
-      else if (spell is NecromancerSpell)
-      {
-        title = "Necromancy";
-        option = spell.Name;
-      }
-      else if (spell is NinjaSpell)
-      {
-        title = "Ninjitsu";
-        option = spell.Name;
-      }
-      else if (spell is SamuraiSpell)
-      {
-        title = "Bushido";
-        option = spell.Name;
-      }
-      else if (spell is MagerySpell magerySpell)
-      {
-        title = magerySpell.Circle switch
-        {
-          SpellCircle.First => "1st Circle",
-          SpellCircle.Second => "2nd Circle",
-          SpellCircle.Third => "3rd Circle",
-          SpellCircle.Fourth => "4th Circle",
-          SpellCircle.Fifth => "5th Circle",
-          SpellCircle.Sixth => "6th Circle",
-          SpellCircle.Seventh => "7th Circle",
-          SpellCircle.Eighth => "8th Circle",
-          _ => title
-        };
+        case ArcanistSpell _:
+          title = "Spellweaving";
+          option = spell.Name;
+          break;
+        case PaladinSpell _:
+          title = "Chivalry";
+          option = spell.Name;
+          break;
+        case NecromancerSpell _:
+          title = "Necromancy";
+          option = spell.Name;
+          break;
+        case NinjaSpell _:
+          title = "Ninjitsu";
+          option = spell.Name;
+          break;
+        case SamuraiSpell _:
+          title = "Bushido";
+          option = spell.Name;
+          break;
+        case MagerySpell magerySpell:
+          title = magerySpell.Circle switch
+          {
+            SpellCircle.First => "1st Circle",
+            SpellCircle.Second => "2nd Circle",
+            SpellCircle.Third => "3rd Circle",
+            SpellCircle.Fourth => "4th Circle",
+            SpellCircle.Fifth => "5th Circle",
+            SpellCircle.Sixth => "6th Circle",
+            SpellCircle.Seventh => "7th Circle",
+            SpellCircle.Eighth => "8th Circle",
+            _ => null
+          };
 
-        option = magerySpell.Name;
-      }
-      else
-      {
-        title = "Other Spell";
-        option = spell.Name;
+          option = magerySpell.Name;
+          break;
+        default:
+          title = "Other Spell";
+          option = spell.Name;
+          break;
       }
 
       if (title == null || option == null || Ruleset.GetOption(title, option))

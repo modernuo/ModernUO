@@ -293,8 +293,7 @@ namespace Server.Mobiles
 
     public void Defrag()
     {
-      if (Entries == null)
-        Entries = new List<SpawnerEntry>();
+      Entries ??= new List<SpawnerEntry>();
 
       for (int i = 0; i < Entries.Count; ++i)
         Entries[i].Defrag(this);
@@ -302,8 +301,6 @@ namespace Server.Mobiles
 
     public void OnTick()
     {
-//			DoTimer( m_Spawned.Count >= m_Count );
-
       if (m_Group)
       {
         Defrag();
@@ -318,15 +315,6 @@ namespace Server.Mobiles
         Spawn();
       }
 
-/*
-			if ( m_Running && m_Timer != null )
-			{
-				if ( m_Spawned.Count >= m_Count && m_Timer.Running )
-					DoTimer( true );
-				else if ( m_Spawned.Count < m_Count && !m_Timer.Running )
-					DoTimer( false );
-			}
-*/
       DoTimer();
     }
 
@@ -915,8 +903,7 @@ namespace Server.Mobiles
 
               if (SpawnerType.GetType(typeName) == null)
               {
-                if (m_WarnTimer == null)
-                  m_WarnTimer = new WarnTimer();
+                m_WarnTimer ??= new WarnTimer();
 
                 m_WarnTimer.Add(Location, Map, typeName);
               }
