@@ -106,8 +106,7 @@ namespace Server
       if (number == 0)
         return;
 
-      if (arguments == null)
-        arguments = "";
+      arguments ??= "";
 
       if (Header == 0)
       {

@@ -121,18 +121,11 @@ namespace Server
       set => SetValue(7, value);
     }
 
-    public int GetValue(int index)
-    {
-      if (Values == null)
-        return 0;
-      return Values[index];
-    }
+    public int GetValue(int index) => Values?[index] ?? 0;
 
     public void SetValue(int index, int value)
     {
-      if (Values == null)
-        Values = new int[8];
-
+      Values ??= new int[8];
       Values[index] = value;
     }
 

@@ -2092,8 +2092,7 @@ namespace Server.Network
         race = Race.Races[(byte)(genderRace / 2)];
       }
 
-      if (race == null)
-        race = Race.DefaultRace;
+      race ??= Race.DefaultRace;
 
       CityInfo[] info = state.CityInfo;
       IAccount a = state.Account;

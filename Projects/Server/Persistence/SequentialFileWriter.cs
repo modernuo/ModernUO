@@ -66,7 +66,7 @@ namespace Server
       }
       else
       {
-        if (writeCallback == null) writeCallback = OnWrite;
+        writeCallback ??= OnWrite;
 
         fileStream.BeginWrite(chunk.Buffer, chunk.Offset, chunk.Size, writeCallback, chunk);
       }
@@ -78,7 +78,7 @@ namespace Server
 
       fileStream.EndWrite(asyncResult);
 
-      chunk.Commit();
+      chunk?.Commit();
     }
 
     public override void Write(byte[] buffer, int offset, int size)

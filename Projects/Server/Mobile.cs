@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Server.Accounting;
@@ -762,8 +763,7 @@ namespace Server
           {
             UpdateTotal(m_Holding, TotalType.Weight, m_Holding.TotalWeight + m_Holding.PileWeight);
 
-            if (m_Holding.HeldBy == null)
-              m_Holding.HeldBy = this;
+            m_Holding.HeldBy ??= this;
           }
         }
       }
@@ -928,7 +928,6 @@ namespace Server
           if (m_Combatant == null)
           {
             m_ExpireCombatant?.Stop();
-
             m_CombatTimer?.Stop();
 
             m_ExpireCombatant = null;
@@ -936,14 +935,10 @@ namespace Server
           }
           else
           {
-            if (m_ExpireCombatant == null)
-              m_ExpireCombatant = new ExpireCombatantTimer(this);
-
+            m_ExpireCombatant ??= new ExpireCombatantTimer(this);
             m_ExpireCombatant.Start();
 
-            if (m_CombatTimer == null)
-              m_CombatTimer = new CombatTimer(this);
-
+            m_CombatTimer ??= new CombatTimer(this);
             m_CombatTimer.Start();
           }
 
@@ -2573,16 +2568,14 @@ namespace Server
 
               if (sendHealthbarPoison)
               {
-                if (hbpPacket == null)
-                  hbpPacket = Packet.Acquire(new HealthbarPoison(m));
+                hbpPacket ??= Packet.Acquire(new HealthbarPoison(m));
 
                 state.Send(hbpPacket);
               }
 
               if (sendHealthbarYellow)
               {
-                if (hbyPacket == null)
-                  hbyPacket = Packet.Acquire(new HealthbarYellow(m));
+                hbyPacket ??= Packet.Acquire(new HealthbarYellow(m));
 
                 state.Send(hbyPacket);
               }
@@ -2606,49 +2599,34 @@ namespace Server
             {
               if (m.CanBeRenamedBy(beholder))
               {
-                if (statPacketTrue == null)
-                  statPacketTrue = Packet.Acquire(new MobileStatusCompact(true, m));
+                statPacketTrue ??= Packet.Acquire(new MobileStatusCompact(true, m));
 
                 state.Send(statPacketTrue);
               }
               else
               {
-                if (statPacketFalse == null)
-                  statPacketFalse = Packet.Acquire(new MobileStatusCompact(false, m));
+                statPacketFalse ??= Packet.Acquire(new MobileStatusCompact(false, m));
 
                 state.Send(statPacketFalse);
               }
             }
             else if (sendHits)
             {
-              if (hitsPacket == null)
-                hitsPacket = Packet.Acquire(new MobileHitsN(m));
+              hitsPacket ??= Packet.Acquire(new MobileHitsN(m));
 
               state.Send(hitsPacket);
             }
 
             if (sendHair)
             {
-              if (hairPacket == null)
-              {
-                if (removeHair)
-                  hairPacket = Packet.Acquire(new RemoveHair(m));
-                else
-                  hairPacket = Packet.Acquire(new HairEquipUpdate(m));
-              }
+              hairPacket ??= removeHair ? Packet.Acquire(new RemoveHair(m)) : Packet.Acquire(new HairEquipUpdate(m));
 
               state.Send(hairPacket);
             }
 
             if (sendFacialHair)
             {
-              if (facialhairPacket == null)
-              {
-                if (removeFacialHair)
-                  facialhairPacket = Packet.Acquire(new RemoveFacialHair(m));
-                else
-                  facialhairPacket = Packet.Acquire(new FacialHairEquipUpdate(m));
-              }
+              facialhairPacket ??= removeFacialHair ? Packet.Acquire(new RemoveFacialHair(m)) : Packet.Acquire(new FacialHairEquipUpdate(m));
 
               state.Send(facialhairPacket);
             }
@@ -4359,8 +4337,7 @@ namespace Server
         foreach (NetState state in eable)
           if (state != m_NetState)
           {
-            if (animPacket == null)
-              animPacket = Packet.Acquire(new DeathAnimation(this, c));
+            animPacket ??= Packet.Acquire(new DeathAnimation(this, c));
 
             state.Send(animPacket);
 
@@ -5041,9 +5018,7 @@ namespace Server
 
             if (ns != null)
             {
-              if (regp == null)
-                regp = Packet.Acquire(new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name,
-                  text));
+              regp ??= Packet.Acquire(new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text));
 
               ns.Send(regp);
             }
@@ -5056,9 +5031,7 @@ namespace Server
 
             if (ns != null)
             {
-              if (mutp == null)
-                mutp = Packet.Acquire(new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name,
-                  mutatedText));
+              mutp ??= Packet.Acquire(new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, mutatedText));
 
               ns.Send(mutp);
             }
@@ -5244,18 +5217,7 @@ namespace Server
         if (list == null)
           de.Responsible = list = new List<DamageEntry>();
 
-        DamageEntry resp = null;
-
-        for (int i = 0; i < list.Count; ++i)
-        {
-          DamageEntry check = list[i];
-
-          if (check.Damager == master)
-          {
-            resp = check;
-            break;
-          }
-        }
+        DamageEntry resp = list.FirstOrDefault(check => check.Damager == master);
 
         if (resp == null)
           list.Add(resp = new DamageEntry(master));
@@ -5433,15 +5395,13 @@ namespace Server
         {
           if (ns.DamagePacket)
           {
-            if (pNew == null)
-              pNew = Packet.Acquire(new DamagePacket(this, amount));
+            pNew ??= Packet.Acquire(new DamagePacket(this, amount));
 
             ns.Send(pNew);
           }
           else
           {
-            if (pOld == null)
-              pOld = Packet.Acquire(new DamagePacketOld(this, amount));
+            pOld ??= Packet.Acquire(new DamagePacketOld(this, amount));
 
             ns.Send(pOld);
           }
@@ -5828,8 +5788,7 @@ namespace Server
 
           if (m_Criminal)
           {
-            if (m_ExpireCriminal == null)
-              m_ExpireCriminal = new ExpireCriminalTimer(this);
+            m_ExpireCriminal ??= new ExpireCriminalTimer(this);
 
             m_ExpireCriminal.Start();
           }
@@ -6879,7 +6838,7 @@ namespace Server
 
       if (!from.CheckTrade(this, offer, cont, true, true, 0, 0)) return false;
 
-      if (cont == null) cont = theirState.AddTrade(ourState);
+      cont ??= theirState.AddTrade(ourState);
 
       if (offer != null) cont.DropItem(offer);
 
@@ -8568,8 +8527,7 @@ namespace Server
 
           if (Hits < HitsMax)
           {
-            if (m_HitsTimer == null)
-              m_HitsTimer = new HitsTimer(this);
+            m_HitsTimer ??= new HitsTimer(this);
 
             m_HitsTimer.Start();
           }
@@ -8639,8 +8597,7 @@ namespace Server
 
           if (Stam < StamMax)
           {
-            if (m_StamTimer == null)
-              m_StamTimer = new StamTimer(this);
+            m_StamTimer ??= new StamTimer(this);
 
             m_StamTimer.Start();
           }
@@ -8710,8 +8667,7 @@ namespace Server
 
           if (Mana < ManaMax)
           {
-            if (m_ManaTimer == null)
-              m_ManaTimer = new ManaTimer(this);
+            m_ManaTimer ??= new ManaTimer(this);
 
             m_ManaTimer.Start();
           }
@@ -8801,8 +8757,7 @@ namespace Server
         {
           if (CanRegenHits)
           {
-            if (m_HitsTimer == null)
-              m_HitsTimer = new HitsTimer(this);
+            m_HitsTimer ??= new HitsTimer(this);
 
             m_HitsTimer.Start();
           }
@@ -8855,8 +8810,7 @@ namespace Server
         {
           if (CanRegenStam)
           {
-            if (m_StamTimer == null)
-              m_StamTimer = new StamTimer(this);
+            m_StamTimer ??= new StamTimer(this);
 
             m_StamTimer.Start();
           }
@@ -8918,8 +8872,7 @@ namespace Server
         {
           if (CanRegenMana)
           {
-            if (m_ManaTimer == null)
-              m_ManaTimer = new ManaTimer(this);
+            m_ManaTimer ??= new ManaTimer(this);
 
             m_ManaTimer.Start();
           }

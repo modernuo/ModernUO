@@ -2824,8 +2824,7 @@ namespace Server
 
         if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
         {
-          if (p == null)
-            p = Packet.Acquire(new MessageLocalized(Serial, m_ItemID, type, hue, 3, number, Name, args));
+          p ??= Packet.Acquire(new MessageLocalized(Serial, m_ItemID, type, hue, 3, number, Name, args));
 
           state.Send(p);
         }
