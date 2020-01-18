@@ -888,7 +888,7 @@ namespace Server.Engines.ConPVP
 
     private void DelayBounce_Callback(Mobile mob, Container corpse)
     {
-      DuelPlayer dp = mob is PlayerMobile mobile ? mobile.DuelPlayer : null;
+      DuelPlayer dp = (mob as PlayerMobile)?.DuelPlayer;
 
       m_Context.RemoveAggressions(mob);
 
