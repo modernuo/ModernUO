@@ -111,7 +111,7 @@ namespace Server.Engines.BulkOrders
     public void Serialize(IGenericWriter writer )
     {
       writer.Write( m_Amount );
-      writer.Write( Details.Type == null ? null : Details.Type.FullName );
+      writer.Write( Details.Type?.FullName );
       writer.Write( Details.Number );
       writer.Write( Details.Graphic );
     }

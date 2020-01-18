@@ -129,7 +129,7 @@ namespace Server
       sb.Append(value);
     }
 
-    public static string Intern(string str) => str == null ? null : str.Length == 0 ? string.Empty : string.Intern(str);
+    public static string Intern(string str) => str?.Length > 0 ? string.Intern(str) : str;
 
     public static void Intern(ref string str)
     {

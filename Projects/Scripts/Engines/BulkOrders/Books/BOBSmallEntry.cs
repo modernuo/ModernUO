@@ -84,7 +84,7 @@ namespace Server.Engines.BulkOrders
     {
       writer.WriteEncodedInt(0); // version
 
-      writer.Write(ItemType == null ? null : ItemType.FullName);
+      writer.Write(ItemType?.FullName);
 
       writer.Write(RequireExceptional);
 

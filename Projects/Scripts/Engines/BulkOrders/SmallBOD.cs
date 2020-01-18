@@ -180,7 +180,7 @@ namespace Server.Engines.BulkOrders
       writer.Write(0); // version
 
       writer.Write(m_AmountCur);
-      writer.Write(Type == null ? null : Type.FullName);
+      writer.Write(Type?.FullName);
       writer.Write(m_Number);
       writer.Write(Graphic);
     }
