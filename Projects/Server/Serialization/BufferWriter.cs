@@ -1,3 +1,24 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright (C) 2019 - ModernUO Development Team                        *
+ * Email: hi@modernuo.com                                                *
+ * File: BufferWriter.cs                                                 *
+ * Created: 2019/12/30 - Updated: 2020/01/18                             *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,18 +50,11 @@ namespace Server
       m_Buffer = new byte[BufferSize];
     }
 
-    protected virtual int BufferSize {
-      get {
-        if (m_Buffer != null)
-        {
-          return m_Buffer.Length;
-        }
-        return 64;
-      } }
+    protected virtual int BufferSize => m_Buffer?.Length ?? 64;
 
     public long Position => m_Index;
 
-    public byte[] Data { get { return m_Buffer; } }
+    public byte[] Data => m_Buffer;
 
     public void Close()
     {
@@ -388,26 +402,17 @@ namespace Server
 
     public void WriteEntity(IEntity value)
     {
-      if (value?.Deleted != false)
-        Write(Serial.MinusOne);
-      else
-        Write(value.Serial);
+      Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
     }
 
     public void Write(Item value)
     {
-      if (value?.Deleted != false)
-        Write(Serial.MinusOne);
-      else
-        Write(value.Serial);
+      Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
     }
 
     public void Write(Mobile value)
     {
-      if (value?.Deleted != false)
-        Write(Serial.MinusOne);
-      else
-        Write(value.Serial);
+      Write(value?.Deleted != false ? Serial.MinusOne : value.Serial);
     }
 
     public void Write(BaseGuild value)

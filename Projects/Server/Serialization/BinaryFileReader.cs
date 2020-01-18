@@ -1,3 +1,24 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright (C) 2019 - ModernUO Development Team                        *
+ * Email: hi@modernuo.com                                                *
+ * File: BinaryFileReader.cs                                             *
+ * Created: 2019/12/30 - Updated: 2020/01/18                             *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,8 +60,7 @@ namespace Server
       }
       catch
       {
-        if (ticks > 0) return DateTime.MaxValue;
-        return DateTime.MinValue;
+        return ticks > 0 ? DateTime.MaxValue : DateTime.MinValue;
       }
     }
 
@@ -112,10 +132,7 @@ namespace Server
     public IEntity ReadEntity()
     {
       Serial serial = ReadUInt();
-      IEntity entity = World.FindEntity(serial);
-      if (entity == null)
-        return new Entity(serial, new Point3D(0, 0, 0), Map.Internal);
-      return entity;
+      return World.FindEntity(serial) ?? new Entity(serial, new Point3D(0, 0, 0), Map.Internal);
     }
 
     public Item ReadItem() => World.FindItem(ReadUInt());
