@@ -326,11 +326,11 @@ namespace Server.Mobiles
 
       private bool TimeToSpare() => m_Owner.NextCombatTime - Core.TickCount > 1000;
 
-      private bool OutOfMaxDistance(Mobile target) => !m_Owner.InRange(target, m_Owner.Weapon.MaxRange);
+      private bool OutOfMaxDistance(IPoint2D target) => !m_Owner.InRange(target, m_Owner.Weapon.MaxRange);
 
-      private bool InMinDistance(Mobile target) => m_Owner.InRange(target, 4);
+      private bool InMinDistance(IPoint2D target) => m_Owner.InRange(target, 4);
 
-      private void TeleportTo(Mobile target)
+      private void TeleportTo(IEntity target)
       {
         Point3D from = m_Owner.Location;
         Point3D to = target.Location;

@@ -76,6 +76,9 @@ namespace Libuv.Internal
             nBuffers++;
 
         var pBuffers = (LibuvFunctions.uv_buf_t*)_bufs;
+        if (pBuffers == null)
+          throw new NullReferenceException();
+
         if (nBuffers > BUFFER_COUNT)
         {
           // create and pin buffer array when it's larger than the pre-allocated one
@@ -83,6 +86,8 @@ namespace Libuv.Internal
           var gcHandle = GCHandle.Alloc(bufArray, GCHandleType.Pinned);
           _pins.Add(gcHandle);
           pBuffers = (LibuvFunctions.uv_buf_t*)gcHandle.AddrOfPinnedObject();
+          if (pBuffers == null)
+            throw new NullReferenceException();
         }
 
         if (nBuffers == 1)
@@ -149,12 +154,15 @@ namespace Libuv.Internal
       UvStreamHandle handle,
       ArraySegment<ArraySegment<byte>> bufs,
       UvStreamHandle sendHandle,
-      Action<UvWriteReq, int, UvException, object> callback,
-      object state)
+      Action<UvWriteReq, int, UvException, object> callback, object state
+    )
     {
       try
       {
         var pBuffers = (LibuvFunctions.uv_buf_t*)_bufs;
+        if (pBuffers == null)
+          throw new NullReferenceException();
+
         var nBuffers = bufs.Count;
         if (nBuffers > BUFFER_COUNT)
         {
@@ -163,12 +171,14 @@ namespace Libuv.Internal
           var gcHandle = GCHandle.Alloc(bufArray, GCHandleType.Pinned);
           _pins.Add(gcHandle);
           pBuffers = (LibuvFunctions.uv_buf_t*)gcHandle.AddrOfPinnedObject();
+          if (pBuffers == null)
+            throw new NullReferenceException();
         }
 
         for (var index = 0; index < nBuffers; index++)
         {
           // create and pin each segment being written
-          var buf = bufs.Array[bufs.Offset + index];
+          var buf = bufs.Array?[bufs.Offset + index] ?? throw new Exception("buffs.Array is null");
 
           var gcHandle = GCHandle.Alloc(buf.Array, GCHandleType.Pinned);
           _pins.Add(gcHandle);

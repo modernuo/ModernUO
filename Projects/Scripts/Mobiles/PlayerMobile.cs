@@ -1882,7 +1882,7 @@ namespace Server.Mobiles
 
           pointsToGain += (int)Math.Sqrt(GameTime.TotalSeconds * 4);
           pointsToGain *= 5;
-          pointsToGain += (int)Math.Pow(Skills.Total / 250, 2);
+          pointsToGain += (int)Math.Pow(Skills.Total / 250.0, 2);
 
           if (VirtueHelper.Award(m, VirtueName.Justice, pointsToGain, ref gainedPath))
           {
@@ -1894,7 +1894,7 @@ namespace Server.Mobiles
             m.FixedParticles(0x375A, 9, 20, 5027, EffectLayer.Waist);
             m.PlaySound(0x1F7);
 
-            m_NextJustAward = DateTime.UtcNow + TimeSpan.FromMinutes(pointsToGain / 3);
+            m_NextJustAward = DateTime.UtcNow + TimeSpan.FromMinutes(pointsToGain / 3.0);
           }
         }
       }

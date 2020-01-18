@@ -184,7 +184,7 @@ namespace Server.Mobiles
           continue;
 
         if (m is PlayerMobile pm && pm.Mounted)
-            pm.Mount.Rider = null;
+          pm.Mount.Rider = null;
 
         int damage = (int)(m.Hits * 0.6);
         if (damage < 10)

@@ -7134,16 +7134,13 @@ namespace Server
         Parallel.ForEach(m_DeltaQueue, m => m.ProcessDelta());
         m_DeltaQueue.Clear();
       }
-      else
-      {
-        while (m_DeltaQueue.Count > 0)
-          m_DeltaQueue.Dequeue().ProcessDelta();
-      }
+      else while (m_DeltaQueue.TryDequeue(out Mobile m))
+        m.ProcessDelta();
 
       _processing = false;
 
-      while (m_DeltaQueueR.Count > 0)
-        m_DeltaQueueR.Dequeue().ProcessDelta();
+      while (m_DeltaQueueR.TryDequeue(out Mobile m))
+        m.ProcessDelta();
     }
 
     public virtual void OnKillsChange(int oldValue)

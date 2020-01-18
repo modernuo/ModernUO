@@ -413,9 +413,9 @@ namespace Server
       floor.Add(p);
 
       for (int xo = -1; xo <= 1; ++xo)
-        for (int yo = -1; yo <= 1; ++yo)
-          if ((xo != 0 || yo != 0) && IsFloor(map, x + xo, y + yo, false))
-            RecurseFindFloor(map, x + xo, y + yo, floor);
+      for (int yo = -1; yo <= 1; ++yo)
+        if ((xo != 0 || yo != 0) && IsFloor(map, x + xo, y + yo, false))
+          RecurseFindFloor(map, x + xo, y + yo, floor);
     }
 
     [Flags]

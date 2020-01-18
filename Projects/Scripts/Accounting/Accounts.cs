@@ -21,7 +21,7 @@ namespace Server.Accounting
       EventSink.WorldSave += Save;
     }
 
-    public static ICollection<IAccount> GetAccounts() => m_Accounts.Values;
+    public static IEnumerable<IAccount> GetAccounts() => m_Accounts.Values;
 
     public static IAccount GetAccount(string username)
     {

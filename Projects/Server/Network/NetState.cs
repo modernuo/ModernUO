@@ -434,7 +434,9 @@ namespace Server.Network
       ConnectedOn = DateTime.UtcNow;
       Console.WriteLine("Client: {0}: Connected. [{1} Online]", this, Instances.Count);
 
-      _ = ProcessRecvs(pump);
+#pragma warning disable 4014
+      ProcessRecvs(pump);
+#pragma warning restore 4014
 
       CreatedCallback?.Invoke(this);
     }
@@ -565,9 +567,7 @@ namespace Server.Network
 
     private int m_Disposing;
 
-    public bool IsDisposing { get => m_Disposing != 0;
-      private set => m_Disposing = value ? 1 : 0;
-    }
+    public bool IsDisposing => m_Disposing != 0;
 
     public virtual void Dispose()
     {

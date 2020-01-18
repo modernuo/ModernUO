@@ -2755,12 +2755,12 @@ namespace Server.Network
 
       flags |= Value;
 
-      if (ns.Account is IAccount acct && acct.Limit >= 6)
+      if (ns.Account.Limit >= 6)
       {
         flags |= FeatureFlags.LiveAccount;
         flags &= ~FeatureFlags.UOTD;
 
-        if (acct.Limit > 6)
+        if (ns.Account.Limit > 6)
           flags |= FeatureFlags.SeventhCharacterSlot;
         else
           flags |= FeatureFlags.SixthCharacterSlot;

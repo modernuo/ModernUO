@@ -61,10 +61,10 @@ namespace Server.Mobiles
       foreach (Mobile m in eable)
       {
         if (m == this || !CanBeHarmful(m) ||
-            !(m is BaseCreature creature && (creature.Controlled || creature.Summoned || creature.Team != Team) ||
-            m.Player))
+            !(m.Player || m is BaseCreature creature &&
+              (creature.Controlled || creature.Summoned || creature.Team != Team)))
           continue;
-        
+
         DoHarmful(m);
 
         m.FixedParticles(0x374A, 10, 15, 5013, 0x496, 0, EffectLayer.Waist);
@@ -77,7 +77,7 @@ namespace Server.Mobiles
         Hits += toDrain;
         m.Damage(toDrain, this);
       }
-      
+
       eable.Free();
     }
 
