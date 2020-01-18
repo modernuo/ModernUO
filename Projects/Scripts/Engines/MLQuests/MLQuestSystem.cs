@@ -433,8 +433,7 @@ namespace Server.Engines.MLQuests
         foreach (BaseObjectiveInstance objective in instance.Objectives)
           if (!objective.Expired && objective is KillObjectiveInstance kill)
           {
-            if (type == null)
-              type = mob.GetType();
+            type ??= mob.GetType();
 
             if (kill.AddKill(mob, type))
             {
@@ -477,8 +476,7 @@ namespace Server.Engines.MLQuests
               instance.Quester = quester;
             }
 
-            if (deliverInstance == null)
-              deliverInstance = instance;
+            deliverInstance ??= instance;
 
             break; // don't return, we may have to complete more deliveries
           }
@@ -563,8 +561,7 @@ namespace Server.Engines.MLQuests
          * Save first quest that reaches the CanOffer call.
          * If no quests are valid at all, return this quest for displaying the CanOffer error message.
          */
-        if (fallback == null)
-          fallback = quest;
+        fallback ??= quest;
 
         if (quest.CanOffer(quester, pm, context, false))
           m_EligiblePool.Add(quest);

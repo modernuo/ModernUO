@@ -345,9 +345,7 @@ namespace Server.Guilds
 
           if (state != null)
           {
-            if (p == null)
-              p = Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Alliance, hue, 3,
-                from.Language, from.Name, text));
+            p ??= Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Alliance, hue, 3, from.Language, from.Name, text));
 
             state.Send(p);
           }
@@ -936,10 +934,9 @@ namespace Server.Guilds
       if (!NewGuildSystem)
         return;
 
-      if (killer == null)
-        killer = victim.FindMostRecentDamager(false);
+      killer ??= victim.FindMostRecentDamager(false);
 
-      if (killer == null || victim.Guild == null || killer.Guild == null)
+      if (killer?.Guild == null || victim.Guild == null)
         return;
 
       Guild victimGuild = GetAllianceLeader(victim.Guild as Guild);
@@ -1148,24 +1145,10 @@ namespace Server.Guilds
         }
       }
 
-      if (AllyDeclarations == null)
-        AllyDeclarations = new List<Guild>();
-
-      if (AllyInvitations == null)
-        AllyInvitations = new List<Guild>();
-
-
-      if (AcceptedWars == null)
-        AcceptedWars = new List<WarDeclaration>();
-
-      if (PendingWars == null)
-        PendingWars = new List<WarDeclaration>();
-
-
-      /*
-      if ( ( !NewGuildSystem && m_Guildstone == null )|| m_Members.Count == 0 )
-        Disband();
-      */
+      AllyDeclarations ??= new List<Guild>();
+      AllyInvitations ??= new List<Guild>();
+      AcceptedWars ??= new List<WarDeclaration>();
+      PendingWars ??= new List<WarDeclaration>();
 
       Timer.DelayCall(TimeSpan.Zero, VerifyGuild_Callback);
     }
@@ -1343,9 +1326,7 @@ namespace Server.Guilds
 
         if (state != null)
         {
-          if (p == null)
-            p = Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Guild, hue, 3,
-              from.Language, from.Name, text));
+          p ??= Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Guild, hue, 3, from.Language, from.Name, text));
 
           state.Send(p);
         }

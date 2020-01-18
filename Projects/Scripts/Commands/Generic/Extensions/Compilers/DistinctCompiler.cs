@@ -192,8 +192,7 @@ namespace Server.Commands.Generic
 
           MethodInfo getHashCode = active.GetMethod("GetHashCode", Type.EmptyTypes);
 
-          if (getHashCode == null)
-            getHashCode = typeof(T).GetMethod("GetHashCode", Type.EmptyTypes);
+          getHashCode ??= typeof(T).GetMethod("GetHashCode", Type.EmptyTypes);
 
           if (active != typeof(int))
           {

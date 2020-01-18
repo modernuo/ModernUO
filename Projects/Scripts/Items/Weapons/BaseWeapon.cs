@@ -107,10 +107,7 @@ namespace Server.Items
 
       PlayerConstructed = true;
 
-      Type resourceType = typeRes;
-
-      if (resourceType == null)
-        resourceType = craftItem.Resources.GetAt(0).ItemType;
+      Type resourceType = typeRes ?? craftItem.Resources.GetAt(0).ItemType;
 
       if (Core.AOS)
       {

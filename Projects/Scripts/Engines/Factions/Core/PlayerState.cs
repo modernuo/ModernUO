@@ -260,8 +260,7 @@ namespace Server.Factions
 
     public void OnGivenSilverTo(Mobile mob)
     {
-      if (SilverGiven == null)
-        SilverGiven = new List<SilverGivenEntry>();
+      SilverGiven ??= new List<SilverGivenEntry>();
 
       SilverGiven.Add(new SilverGivenEntry(mob));
     }

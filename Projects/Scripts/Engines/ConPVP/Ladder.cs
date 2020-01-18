@@ -13,8 +13,7 @@ namespace Server.Engines.ConPVP
 
       Ladder = new Ladder();
 
-      if (Ladder.Instance == null)
-        Ladder.Instance = Ladder;
+      Ladder.Instance ??= Ladder;
     }
 
     public LadderController(Serial serial) : base(serial)

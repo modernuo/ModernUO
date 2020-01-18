@@ -347,8 +347,7 @@ namespace Server.Items
       if (Aggressors.Count == 0 || Items.Count == 0)
         return;
 
-      if (m_InstancedItems == null)
-        m_InstancedItems = new Dictionary<Item, InstancedItemInfo>();
+      m_InstancedItems ??= new Dictionary<Item, InstancedItemInfo>();
 
       List<Item> m_Stackables = new List<Item>();
       List<Item> m_Unstackables = new List<Item>();
@@ -427,8 +426,7 @@ namespace Server.Items
 
       if (InstancedCorpse)
       {
-        if (m_InstancedItems == null)
-          m_InstancedItems = new Dictionary<Item, InstancedItemInfo>();
+        m_InstancedItems ??= new Dictionary<Item, InstancedItemInfo>();
 
         m_InstancedItems.Add(carved, new InstancedItemInfo(carved, carver));
       }
@@ -836,8 +834,7 @@ namespace Server.Items
       if (item == null)
         return;
 
-      if (m_RestoreTable == null)
-        m_RestoreTable = new Dictionary<Item, Point3D>();
+      m_RestoreTable ??= new Dictionary<Item, Point3D>();
 
       m_RestoreTable[item] = loc;
     }

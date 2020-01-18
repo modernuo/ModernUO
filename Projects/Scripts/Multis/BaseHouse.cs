@@ -995,8 +995,7 @@ namespace Server.Multis
 
     public void DropToMovingCrate(Item item)
     {
-      if (MovingCrate == null)
-        MovingCrate = new MovingCrate(this);
+      MovingCrate ??= new MovingCrate(this);
 
       MovingCrate.DropItem(item);
     }
@@ -2603,24 +2602,7 @@ namespace Server.Multis
       {
         BaseHouse house = houses[i];
 
-        bool canClaim = false;
-
-        if (trans == null)
-          canClaim = house.CoOwners.Count > 0;
-        /*{
-          for ( int j = 0; j < house.CoOwners.Count; ++j )
-          {
-            Mobile check = house.CoOwners[j] as Mobile;
-
-            if ( check != null && !check.Deleted && !HasAccountHouse( check ) )
-            {
-              canClaim = true;
-              break;
-            }
-          }
-        }*/
-
-        if (trans == null && !canClaim)
+        if (trans == null && house.CoOwners.Count == 0)
           Timer.DelayCall(TimeSpan.Zero, house.Delete);
         else
           house.Owner = trans;
@@ -2802,21 +2784,8 @@ namespace Server.Multis
       AllHouses.Remove(this);
     }
 
-    public static bool HasHouse(Mobile m)
-    {
-      if (m == null || !m_Table.TryGetValue(m, out List<BaseHouse> list))
-        return false;
-
-      for (int i = 0; i < list.Count; ++i)
-      {
-        BaseHouse h = list[i];
-
-        if (!h.Deleted)
-          return true;
-      }
-
-      return false;
-    }
+    public static bool HasHouse(Mobile m) =>
+      m != null && m_Table.TryGetValue(m, out List<BaseHouse> list) && list.Any(h => !h.Deleted);
 
     public static bool HasAccountHouse(Mobile m)
     {
@@ -2830,35 +2799,15 @@ namespace Server.Multis
       return false;
     }
 
-    public bool IsOwner(Mobile m)
-    {
-      if (m == null)
-        return false;
+    public bool IsOwner(Mobile m) =>
+      m != null && (m == m_Owner || m.AccessLevel >= AccessLevel.GameMaster ||
+                    IsAosRules && AccountHandler.CheckAccount(m, m_Owner));
 
-      if (m == m_Owner || m.AccessLevel >= AccessLevel.GameMaster)
-        return true;
+    public bool IsCoOwner(Mobile m) =>
+      m != null && CoOwners != null &&
+      (IsOwner(m) || CoOwners.Contains(m) || !IsAosRules && AccountHandler.CheckAccount(m, m_Owner));
 
-      return IsAosRules && AccountHandler.CheckAccount(m, m_Owner);
-    }
-
-    public bool IsCoOwner(Mobile m)
-    {
-      if (m == null || CoOwners == null)
-        return false;
-
-      if (IsOwner(m) || CoOwners.Contains(m))
-        return true;
-
-      return !IsAosRules && AccountHandler.CheckAccount(m, m_Owner);
-    }
-
-    public bool IsGuildMember(Mobile m)
-    {
-      if (m == null || Owner?.Guild == null)
-        return false;
-
-      return m.Guild == Owner.Guild;
-    }
+    public bool IsGuildMember(Mobile m) => m != null && Owner?.Guild != null && m.Guild == Owner.Guild;
 
     public void RemoveKeys(Mobile m)
     {
@@ -2895,13 +2844,7 @@ namespace Server.Multis
 
     public virtual HouseDeed GetDeed() => null;
 
-    public bool IsFriend(Mobile m)
-    {
-      if (m == null || Friends == null)
-        return false;
-
-      return IsCoOwner(m) || Friends.Contains(m);
-    }
+    public bool IsFriend(Mobile m) => m != null && Friends != null && (IsCoOwner(m) || Friends.Contains(m));
 
     public bool IsBanned(Mobile m)
     {

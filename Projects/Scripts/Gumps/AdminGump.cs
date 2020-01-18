@@ -587,8 +587,7 @@ namespace Server.Gumps
         }
         case AdminGumpPage.Accounts:
         {
-          if (m_List == null)
-            m_List = new List<object>();
+          m_List ??= new List<object>();
 
           List<Account> rads = state as List<Account>;
 

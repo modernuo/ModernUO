@@ -300,8 +300,7 @@ namespace Server.Multis
 
     public void AddFixtures(Mobile from, MultiTileEntry[] list)
     {
-      if (Fixtures == null)
-        Fixtures = new List<Item>();
+      Fixtures ??= new List<Item>();
 
       uint keyValue = 0;
 

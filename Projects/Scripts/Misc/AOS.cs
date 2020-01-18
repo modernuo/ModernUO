@@ -1019,8 +1019,7 @@ namespace Server
         if (!GetValues(i, out SkillName skill, out double bonus))
           continue;
 
-        if (m_Mods == null)
-          m_Mods = new List<SkillMod>();
+        m_Mods ??= new List<SkillMod>();
 
         SkillMod sk = new DefaultSkillMod(skill, true, bonus);
         sk.ObeyCap = true;

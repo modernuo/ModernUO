@@ -171,8 +171,7 @@ namespace Server.Engines.ConPVP
 
       King = m;
 
-      if (m_KingTimer == null)
-        m_KingTimer = new KingTimer(this);
+      m_KingTimer ??= new KingTimer(this);
       m_KingTimer.Stop();
       m_KingTimer.StartHillTicker();
 
@@ -450,11 +449,7 @@ namespace Server.Engines.ConPVP
         AddBorderedText(160 + 10, 85 + i * 75, 100, 20, "Captures:", 0xFFC000, BlackColor32);
         AddBorderedText(160 + 15, 105 + i * 75, 100, 20, teamInfo.Captures.ToString("N0"), 0xFFC000, BlackColor32);
 
-        string leader = null;
-        if (teamInfo.Leader != null)
-          leader = teamInfo.Leader.Name;
-        if (leader == null)
-          leader = "(none)";
+        string leader = teamInfo.Leader?.Name ?? "(none)";
 
         AddBorderedText(235 + 10, 85 + i * 75, 250, 20, "Leader:", 0xFFC000, BlackColor32);
         AddBorderedText(235 + 15, 105 + i * 75, 250, 20, leader, 0xFFC000, BlackColor32);

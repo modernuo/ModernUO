@@ -1430,8 +1430,7 @@ namespace Server.Engines.ConPVP
     {
       if (m_Bomb != null && Controller != null)
       {
-        if (m_UnhideCallback == null)
-          m_UnhideCallback = UnhideBomb;
+        m_UnhideCallback ??= UnhideBomb;
         m_Bomb.Visible = false;
         m_Bomb.MoveToWorld(Controller.BombHome, Controller.Map);
         Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(5, 15)), m_UnhideCallback);

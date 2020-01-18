@@ -584,8 +584,7 @@ namespace Server.Mobiles
         {
           if (House.IsOwner(Owner)) // Move to moving crate
           {
-            if (House.MovingCrate == null)
-              House.MovingCrate = new MovingCrate(House);
+            House.MovingCrate ??= new MovingCrate(House);
 
             if (HoldGold > 0)
               Banker.Deposit(House.MovingCrate, HoldGold);

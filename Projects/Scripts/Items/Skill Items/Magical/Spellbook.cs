@@ -810,11 +810,8 @@ namespace Server.Items
         }
       }
 
-      if (Attributes == null)
-        Attributes = new AosAttributes(this);
-
-      if (SkillBonuses == null)
-        SkillBonuses = new AosSkillBonuses(this);
+      Attributes ??= new AosAttributes(this);
+      SkillBonuses ??= new AosSkillBonuses(this);
 
       if (Core.AOS && Parent is Mobile mobile)
         SkillBonuses.AddTo(mobile);

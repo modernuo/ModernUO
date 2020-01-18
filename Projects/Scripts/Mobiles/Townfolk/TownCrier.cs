@@ -50,8 +50,7 @@ namespace Server.Mobiles
 
     public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)
     {
-      if (Entries == null)
-        Entries = new List<TownCrierEntry>();
+      Entries ??= new List<TownCrierEntry>();
 
       TownCrierEntry tce = new TownCrierEntry(lines, duration);
 
@@ -204,10 +203,7 @@ namespace Server.Mobiles
 
       owner.GetRandomEntry(); // force expiration checks
 
-      int count = 0;
-
-      if (entries != null)
-        count = entries.Count;
+      int count = entries?.Count ?? 0;
 
       AddImageTiled(0, 0, 300, 38 + (count == 0 ? 20 : count * 85), 0xA40);
       AddAlphaRegion(1, 1, 298, 36 + (count == 0 ? 20 : count * 85));
@@ -384,15 +380,13 @@ namespace Server.Mobiles
 
     public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)
     {
-      if (Entries == null)
-        Entries = new List<TownCrierEntry>();
+      Entries ??= new List<TownCrierEntry>();
 
       TownCrierEntry tce = new TownCrierEntry(lines, duration);
 
       Entries.Add(tce);
 
-      if (m_AutoShoutTimer == null)
-        m_AutoShoutTimer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), TimeSpan.FromMinutes(1.0), AutoShout_Callback);
+      m_AutoShoutTimer ??= Timer.DelayCall(TimeSpan.FromSeconds(5.0), TimeSpan.FromMinutes(1.0), AutoShout_Callback);
 
       return tce;
     }
@@ -417,8 +411,7 @@ namespace Server.Mobiles
 
     public void ForceBeginAutoShout()
     {
-      if (m_AutoShoutTimer == null)
-        m_AutoShoutTimer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), TimeSpan.FromMinutes(1.0), AutoShout_Callback);
+      m_AutoShoutTimer ??= Timer.DelayCall(TimeSpan.FromSeconds(5.0), TimeSpan.FromMinutes(1.0), AutoShout_Callback);
     }
 
     private void AutoShout_Callback()
@@ -433,9 +426,8 @@ namespace Server.Mobiles
       }
       else if (m_NewsTimer == null)
       {
-        int index = 0;
         m_NewsTimer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(3.0),
-          () => ShoutNews_Callback(tce, index));
+          () => ShoutNews_Callback(tce, 0));
 
         PublicOverheadMessage(MessageType.Regular, 0x3B2, 502976); // Hear ye! Hear ye!
       }
@@ -478,9 +470,8 @@ namespace Server.Mobiles
         }
         else
         {
-          int index = 0;
           m_NewsTimer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(3.0),
-            () => ShoutNews_Callback(tce, index));
+            () => ShoutNews_Callback(tce, 0));
 
           PublicOverheadMessage(MessageType.Regular, 0x3B2, 502978); // Some of the latest news!
         }

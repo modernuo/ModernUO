@@ -898,8 +898,7 @@ namespace Server.Factions
 
     public static void HandleDeath(Mobile victim, Mobile killer)
     {
-      if (killer == null)
-        killer = victim.FindMostRecentDamager(true);
+      killer ??= victim.FindMostRecentDamager(true);
 
       PlayerState killerState = PlayerState.Find(killer);
       Container killerPack = killer?.Backpack;

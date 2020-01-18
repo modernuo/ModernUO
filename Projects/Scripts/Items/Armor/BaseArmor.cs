@@ -486,10 +486,7 @@ namespace Server.Items
       if (makersMark)
         Crafter = from;
 
-      Type resourceType = typeRes;
-
-      if (resourceType == null)
-        resourceType = craftItem.Resources.GetAt(0).ItemType;
+      Type resourceType = typeRes ?? craftItem.Resources.GetAt(0).ItemType;
 
       Resource = CraftResources.GetFromType(resourceType);
       PlayerConstructed = true;
@@ -1271,8 +1268,7 @@ namespace Server.Items
         }
       }
 
-      if (SkillBonuses == null)
-        SkillBonuses = new AosSkillBonuses(this);
+      SkillBonuses ??= new AosSkillBonuses(this);
 
       Mobile m = Parent as Mobile;
 

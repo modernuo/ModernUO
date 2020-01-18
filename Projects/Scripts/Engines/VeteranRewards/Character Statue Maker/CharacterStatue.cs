@@ -372,8 +372,7 @@ namespace Server.Mobiles
         {
           state.Mobile.ProcessDelta();
 
-          if (p == null)
-            p = Packet.Acquire(new UpdateStatueAnimation(this, 1, m_Animation, m_Frames));
+          p ??= Packet.Acquire(new UpdateStatueAnimation(this, 1, m_Animation, m_Frames));
 
           state.Send(p);
         }

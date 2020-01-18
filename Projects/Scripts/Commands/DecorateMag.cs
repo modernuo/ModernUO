@@ -929,8 +929,7 @@ namespace Server.Commands
 
         for (int j = 0; j < maps.Length; ++j)
         {
-          if (item == null)
-            item = Construct();
+          item ??= Construct();
 
           if (item == null)
             continue;

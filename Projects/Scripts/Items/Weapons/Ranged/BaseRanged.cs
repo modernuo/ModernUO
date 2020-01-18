@@ -144,8 +144,7 @@ namespace Server.Items
 
             if (!pm.Warmode)
             {
-              if (m_RecoveryTimer == null)
-                m_RecoveryTimer = Timer.DelayCall(TimeSpan.FromSeconds(10), pm.RecoverAmmo);
+              m_RecoveryTimer ??= Timer.DelayCall(TimeSpan.FromSeconds(10), pm.RecoverAmmo);
 
               if (!m_RecoveryTimer.Running)
                 m_RecoveryTimer.Start();
