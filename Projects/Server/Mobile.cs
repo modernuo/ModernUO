@@ -3574,7 +3574,8 @@ namespace Server
           m_TotalWeight += delta;
           Delta(MobileDelta.Weight);
           OnWeightChange(m_TotalWeight - delta);
-          break; }
+          break;
+      }
     }
 
     public virtual void UpdateTotals()
