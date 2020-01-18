@@ -103,7 +103,7 @@ namespace Server
           idx.Write(m.m_TypeRef);
           idx.Write(m.Serial);
           idx.Write(start);
-          idx.Write((int)(m.SaveBuffer.Position));
+          idx.Write((int)m.SaveBuffer.Position);
 
           m.SaveBuffer.WriteTo(bin);
           m.FreeCache();
@@ -201,7 +201,7 @@ namespace Server
           idx.Write(0); //guilds have no typeid
           idx.Write(guild.Id);
           idx.Write(start);
-          idx.Write((int)(guild.SaveBuffer.Position));
+          idx.Write((int)guild.SaveBuffer.Position);
 
           guild.SaveBuffer.WriteTo(bin);
         }
