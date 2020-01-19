@@ -171,7 +171,7 @@ namespace Server.Misc
           op.WriteLine("Server Crash Report");
           op.WriteLine("===================");
           op.WriteLine();
-          op.WriteLine("RunUO Version {0}.{1}, Build {2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
+          op.WriteLine("ModernUO Version {0}.{1}, Build {2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
           op.WriteLine("Operating System: {0}", Environment.OSVersion);
           op.WriteLine(".NET Framework: {0}", Environment.Version);
           op.WriteLine("Time: {0}", DateTime.UtcNow);

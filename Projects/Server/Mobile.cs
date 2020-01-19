@@ -4125,10 +4125,7 @@ namespace Server
       Spawner = null;
     }
 
-    public virtual bool CheckSpellCast(ISpell spell)
-    {
-      return true;
-    }
+    public virtual bool CheckSpellCast(ISpell spell) => true;
 
     /// <summary>
     ///   Overridable. Virtual event invoked when the Mobile casts a <paramref name="spell" />.
@@ -4415,10 +4412,7 @@ namespace Server
       }
     }
 
-    public virtual bool CheckTarget(Mobile from, Target targ, object targeted)
-    {
-      return true;
-    }
+    public virtual bool CheckTarget(Mobile from, Target targ, object targeted) => true;
 
     public virtual void Use(Item item)
     {
@@ -4853,10 +4847,7 @@ namespace Server
       StringBuilder sb = new StringBuilder(text.Length, text.Length);
 
       for (int i = 0; i < text.Length; ++i)
-        if (text[i] != ' ')
-          sb.Append(GhostChars[Utility.Random(GhostChars.Length)]);
-        else
-          sb.Append(' ');
+        sb.Append(text[i] != ' ' ? GhostChars[Utility.Random(GhostChars.Length)] : ' ');
 
       text = sb.ToString();
       context = m_GhostMutateContext;
@@ -4929,6 +4920,22 @@ namespace Server
         case MessageType.Yell:
           YellHue = hue;
           range = 18;
+          break;
+        case MessageType.System:
+          break;
+        case MessageType.Label:
+          break;
+        case MessageType.Focus:
+          break;
+        case MessageType.Spell:
+          break;
+        case MessageType.Guild:
+          break;
+        case MessageType.Alliance:
+          break;
+        case MessageType.Command:
+          break;
+        case MessageType.Encoded:
           break;
         default:
           type = MessageType.Regular;
@@ -5069,10 +5076,7 @@ namespace Server
       }
     }
 
-    public static Mobile GetDamagerFrom(DamageEntry de)
-    {
-      return de?.Damager;
-    }
+    public static Mobile GetDamagerFrom(DamageEntry de) => de?.Damager;
 
     public Mobile FindMostRecentDamager(bool allowSelf)
     {
@@ -5097,10 +5101,7 @@ namespace Server
       return null;
     }
 
-    public Mobile FindLeastRecentDamager(bool allowSelf)
-    {
-      return GetDamagerFrom(FindLeastRecentDamageEntry(allowSelf));
-    }
+    public Mobile FindLeastRecentDamager(bool allowSelf) => GetDamagerFrom(FindLeastRecentDamageEntry(allowSelf));
 
     public DamageEntry FindLeastRecentDamageEntry(bool allowSelf)
     {
@@ -5125,10 +5126,7 @@ namespace Server
       return null;
     }
 
-    public Mobile FindMostTotalDamger(bool allowSelf)
-    {
-      return GetDamagerFrom(FindMostTotalDamageEntry(allowSelf));
-    }
+    public Mobile FindMostTotalDamager(bool allowSelf) => GetDamagerFrom(FindMostTotalDamageEntry(allowSelf));
 
     public DamageEntry FindMostTotalDamageEntry(bool allowSelf)
     {
@@ -5150,10 +5148,7 @@ namespace Server
       return mostTotal;
     }
 
-    public Mobile FindLeastTotalDamger(bool allowSelf)
-    {
-      return GetDamagerFrom(FindLeastTotalDamageEntry(allowSelf));
-    }
+    public Mobile FindLeastTotalDamager(bool allowSelf) => GetDamagerFrom(FindLeastTotalDamageEntry(allowSelf));
 
     public DamageEntry FindLeastTotalDamageEntry(bool allowSelf)
     {
@@ -7238,11 +7233,11 @@ namespace Server
       string val;
 
       if (prefix.Length > 0 && suffix.Length > 0)
-        val = string.Concat(prefix, " ", name, " ", suffix);
+        val = $"{prefix} {name} {suffix}";
       else if (prefix.Length > 0)
-        val = string.Concat(prefix, " ", name);
+        val = $"{prefix} {name}";
       else if (suffix.Length > 0)
-        val = string.Concat(name, " ", suffix);
+        val = $"{name} {suffix}";
       else
         val = name;
 

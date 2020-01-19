@@ -1478,7 +1478,6 @@ namespace Server.Network
     {
       int packetID = pvSrc.ReadUInt16();
 
-      Console.WriteLine("Extended Packet: {0:X}", packetID);
       PacketHandler ph = GetExtendedHandler(packetID);
 
       if (ph == null)

@@ -71,10 +71,7 @@ namespace Server
 
       if (!m_PrioritySet)
       {
-        if (count == 1)
-          m_Priority = ComputePriority(delay);
-        else
-          m_Priority = ComputePriority(interval);
+        m_Priority = ComputePriority(count == 1 ? delay : interval);
         m_PrioritySet = true;
       }
 
@@ -130,13 +127,8 @@ namespace Server
 
     public virtual bool DefRegCreation => true;
 
-    private static string FormatDelegate(Delegate callback)
-    {
-      if (callback == null)
-        return "null";
-
-      return $"{callback.Method.DeclaringType?.FullName ?? ""}.{callback.Method.Name}";
-    }
+    private static string FormatDelegate(Delegate callback) =>
+      callback == null ? "null" : $"{callback.Method.DeclaringType?.FullName ?? ""}.{callback.Method.Name}";
 
     public static void DumpInfo(TextWriter tw)
     {

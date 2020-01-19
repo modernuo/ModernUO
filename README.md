@@ -12,7 +12,7 @@ Ultima Online Server Emulator for the modern era!
 - See [Goals](./GOALS.md)
 
 # Requirements to Compile
-- [.NET Core 3.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.0)
+- [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.0)
 
 ### Requirements to Run
 

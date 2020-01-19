@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -312,15 +313,13 @@ namespace Server
         bytes[i] = (byte)part;
       }
 
-      uint cidrPrefix = OrderedAddressValue(bytes);
-
-      return IPMatchCIDR(cidrPrefix, ip, cidrLength);
+      return IPMatchCIDR(OrderedAddressValue(bytes), ip, cidrLength);
     }
 
     public static bool IPMatchCIDR(IPAddress cidrPrefix, IPAddress ip, int cidrLength)
     {
-      if (cidrPrefix == null || ip == null || cidrPrefix.AddressFamily == AddressFamily.InterNetworkV6
-      ) //Ignore IPv6 for now
+      //Ignore IPv6 for now
+      if (cidrPrefix == null || ip == null || cidrPrefix.AddressFamily == AddressFamily.InterNetworkV6)
         return false;
 
       uint cidrValue = SwapUnsignedInt((uint)GetLongAddressValue(cidrPrefix));
@@ -517,26 +516,11 @@ namespace Server
       int adx = Math.Abs(dx);
       int ady = Math.Abs(dy);
 
-      if (adx >= ady * 3)
-      {
-        if (dx > 0)
-          return Direction.East;
-        return Direction.West;
-      }
+      if (adx >= ady * 3) return dx > 0 ? Direction.East : Direction.West;
 
-      if (ady >= adx * 3)
-      {
-        if (dy > 0)
-          return Direction.South;
-        return Direction.North;
-      }
+      if (ady >= adx * 3) return dy > 0 ? Direction.South : Direction.North;
 
-      if (dx > 0)
-      {
-        if (dy > 0)
-          return Direction.Down;
-        return Direction.Right;
-      }
+      if (dx > 0) return dy > 0 ? Direction.Down : Direction.Right;
 
       return dy > 0 ? Direction.Left : Direction.Up;
     }
@@ -779,27 +763,16 @@ namespace Server
         m.FacialHairHue = m.Race.RandomHairHue();
     }
 
-    public static List<TOutput> CastListContravariant<TInput, TOutput>(List<TInput> list) where TInput : TOutput
-    {
-      return list.ConvertAll(value => (TOutput)value);
-    }
+    public static List<TOutput> CastListContravariant<TInput, TOutput>(List<TInput> list) where TInput : TOutput =>
+      list.ConvertAll(value => (TOutput)value);
 
-    public static List<TOutput> CastListCovariant<TInput, TOutput>(List<TInput> list) where TOutput : TInput
-    {
-      return list.ConvertAll(value => (TOutput)value);
-    }
+    public static List<TOutput> CastListCovariant<TInput, TOutput>(List<TInput> list) where TOutput : TInput =>
+      list.ConvertAll(value => (TOutput)value);
 
     public static List<TOutput> SafeConvertList<TInput, TOutput>(List<TInput> list) where TOutput : class
     {
       List<TOutput> output = new List<TOutput>(list.Capacity);
-
-      for (int i = 0; i < list.Count; i++)
-      {
-        TOutput t = list[i] as TOutput;
-
-        if (t != null)
-          output.Add(t);
-      }
+      output.AddRange(list.OfType<TOutput>());
 
       return output;
     }
