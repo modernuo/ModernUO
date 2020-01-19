@@ -4,6 +4,11 @@
     <RootNamespace>Server</RootNamespace>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Scripts.CS</AssemblyName>
+    <Authors>Kamron Batman</Authors>
+    <Company>ModernUO</Company>
+    <Product>ModernUO Scripts</Product>
+    <Copyright>2019-2020</Copyright>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <UseNETCoreGenerator>true</UseNETCoreGenerator>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

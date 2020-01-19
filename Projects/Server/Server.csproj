@@ -10,8 +10,8 @@
     <Version>0.2.1</Version>
     <Authors>Kamron Batman</Authors>
     <Company>ModernUO</Company>
-    <Product>ModernUO</Product>
-    <Copyright>2019</Copyright>
+    <Product>ModernUO Server</Product>
+    <Copyright>2019-2020</Copyright>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <UseNETCoreGenerator>true</UseNETCoreGenerator>
