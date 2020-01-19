@@ -11,8 +11,8 @@ Some of the many high level goals include:
 
 ### Networking
 - [ ] Replace Packet classes with functions
-- [ ] Improve asynchronous socket handling using Pipes
-- [ ] Improve socket handling (2-5x) and event loop using libuv
+- [X] Improve asynchronous socket handling using Pipes
+- [X] Improve socket handling (2-5x) and event loop using libuv
 
 ### Administration
 - [ ] Move IP logging and account data to SQL
@@ -37,7 +37,7 @@ Some of the many high level goals include:
 - [ ] Create object pools for high availability items such as gold and reagents
   * For example, `new MandrakeRoot()` -> `ObjectPool.Get<Reagent>(ReagentType.MandrakeRoot)`.
   * Pools should be elastic and adjust according to nominal usage. For example, if thousands of gold objects are created and destroyed in a small period of time, the pool should be expanded and replenished properly so it is never empty, or full.
-- [ ] Replace timer system with a [wheel](https://github.com/runuo/runuo/pull/42) implementation
+- [ ] Replace timer system with libuv implementation
 - [X] Create `DefaultName` for mobiles
 
 ### Plugins (Separate Repos & Optional)

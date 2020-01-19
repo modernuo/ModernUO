@@ -12,7 +12,7 @@ Ultima Online Server Emulator for the modern era!
 - See [Goals](./GOALS.md)
 
 # Requirements to Compile
-- [.NET Core 3.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.0)
+- [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
 ### Requirements to Run
 
@@ -23,7 +23,7 @@ Ultima Online Server Emulator for the modern era!
 - `brew install zlib libuv`
 - Optional: compile and install [Intel DRNG](https://github.com/modernuo/libdrng)
 
-### Building with .NET Core 3.0 SDK
+### Building with .NET Core SDK
 `dotnet publish /p:PublishProfile=[platform][-SelfContained]`
 - `platform` can be `Windows`, `Linux`, or `OSX` (capitalization matters)
 - Appending `-SelfContained` will export all .NET Core files required to run portably.

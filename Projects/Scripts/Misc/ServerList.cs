@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -39,9 +40,9 @@ namespace Server.Misc
      */
 
     public static readonly string Address = null;
-    public static readonly string ServerName = "RunUO TC";
+    public const string ServerName = "ModernUO TC";
 
-    public static readonly bool AutoDetect = true;
+    public const bool AutoDetect = true;
 
     private static IPAddress m_PublicAddress;
 
@@ -120,65 +121,23 @@ namespace Server.Misc
       }
     }
 
-    private static bool HasPublicIPAddress()
-    {
-      NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
+    private static bool HasPublicIPAddress() =>
+      NetworkInterface.GetAllNetworkInterfaces().Select(adapter => adapter.GetIPProperties())
+        .Any(properties => properties.UnicastAddresses.Select(unicast => unicast.Address)
+          .Any(ip => !IPAddress.IsLoopback(ip) && ip.AddressFamily != AddressFamily.InterNetworkV6 && !IsPrivateNetwork(ip)));
 
-      foreach (NetworkInterface adapter in adapters)
-      {
-        IPInterfaceProperties properties = adapter.GetIPProperties();
-
-        foreach (IPAddressInformation unicast in properties.UnicastAddresses)
-        {
-          IPAddress ip = unicast.Address;
-
-          if (!IPAddress.IsLoopback(ip) && ip.AddressFamily != AddressFamily.InterNetworkV6 &&
-              !IsPrivateNetwork(ip))
-            return true;
-        }
-      }
-
-      return false;
-
-
-      /*
-      IPHostEntry iphe = Dns.GetHostEntry( Dns.GetHostName() );
-
-      IPAddress[] ips = iphe.AddressList;
-
-      for ( int i = 0; i < ips.Length; ++i )
-      {
-        if ( ips[i].AddressFamily != AddressFamily.InterNetworkV6 && !IsPrivateNetwork( ips[i] ) )
-          return true;
-      }
-
-      return false;
-      */
-    }
-
-    private static bool IsPrivateNetwork(IPAddress ip)
-    {
-      // 10.0.0.0/8
-      // 172.16.0.0/12
-      // 192.168.0.0/16
-      // 169.254.0.0/16
-      // 100.64.0.0/10 RFC 6598
-
-      if (ip.AddressFamily == AddressFamily.InterNetworkV6)
-        return false;
-
-      if (Utility.IPMatch("192.168.*", ip))
-        return true;
-      if (Utility.IPMatch("10.*", ip))
-        return true;
-      if (Utility.IPMatch("172.16-31.*", ip))
-        return true;
-      if (Utility.IPMatch("169.254.*", ip))
-        return true;
-      if (Utility.IPMatch("100.64-127.*", ip))
-        return true;
-      return false;
-    }
+    // 10.0.0.0/8
+    // 172.16.0.0/12
+    // 192.168.0.0/16
+    // 169.254.0.0/16
+    // 100.64.0.0/10 RFC 6598
+    private static bool IsPrivateNetwork(IPAddress ip) =>
+      ip.AddressFamily != AddressFamily.InterNetworkV6 &&
+      (Utility.IPMatch("192.168.*", ip) ||
+       Utility.IPMatch("10.*", ip) ||
+       Utility.IPMatch("172.16-31.*", ip) ||
+       Utility.IPMatch("169.254.*", ip) ||
+       Utility.IPMatch("100.64-127.*", ip));
 
     private static IPAddress FindPublicAddress()
     {
@@ -194,7 +153,7 @@ namespace Server.Misc
 
         StreamReader sr = new StreamReader(s);
 
-        IPAddress ip = IPAddress.Parse(sr.ReadLine());
+        IPAddress ip = IPAddress.Parse(sr.ReadLine() ?? "");
 
         sr.Close();
         s.Close();
