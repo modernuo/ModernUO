@@ -69,7 +69,7 @@ namespace Server.Commands
             _ => null
           };
 
-          for (int j = 0; maps?.Length >= j; ++j)
+          for (int j = 0; maps?.Length > j; ++j)
             Add_Static(e.m_ItemID, e.m_Location, maps[j], e.m_Text);
         }
 
