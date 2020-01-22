@@ -1399,13 +1399,11 @@ namespace Server.Network
       }
       else if (s.IsItem)
       {
-        Console.WriteLine("Item");
         Item item = World.FindItem(s);
 
         if (item?.Deleted == false && from.CanSee(item) &&
             Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
         {
-          Console.WriteLine("SingleClick");
           if (SingleClickProps)
             item.OnAosSingleClick(from);
           else if (from.Region.OnSingleClick(from, item))
@@ -1607,8 +1605,6 @@ namespace Server.Network
       else if (s.IsItem)
       {
         Item item = World.FindItem(s);
-
-        Console.WriteLine("Requested to send PropertyList");
 
         if (item?.Deleted == false && from.CanSee(item) &&
             Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
