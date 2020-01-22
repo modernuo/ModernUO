@@ -111,19 +111,9 @@ namespace Server.Items
              && mcl.Tiles[x][y].Length > 0;
     }
 
-    public bool Contains(Mobile m)
-    {
-      if (m.Map == Map)
-        return Contains(m.X, m.Y);
-      return false;
-    }
+    public bool Contains(Mobile m) => m.Map == Map && Contains(m.X, m.Y);
 
-    public bool Contains(Item item)
-    {
-      if (item.Map == Map)
-        return Contains(item.X, item.Y);
-      return false;
-    }
+    public bool Contains(Item item) => item.Map == Map && Contains(item.X, item.Y);
 
     public override void Serialize(IGenericWriter writer)
     {

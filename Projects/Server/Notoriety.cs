@@ -46,13 +46,7 @@ namespace Server
       0x035
     };
 
-    public static int GetHue(int noto)
-    {
-      if (noto < 0 || noto >= Hues.Length)
-        return 0;
-
-      return Hues[noto];
-    }
+    public static int GetHue(int noto) => noto < 0 || noto >= Hues.Length ? 0 : Hues[noto];
 
     public static int Compute(Mobile source, Mobile target) => Handler?.Invoke(source, target) ?? CanBeAttacked;
   }

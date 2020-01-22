@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Guilds
 {
@@ -32,7 +33,7 @@ namespace Server.Guilds
   public abstract class BaseGuild : ISerializable
   {
     private BufferWriter m_SaveBuffer;
-    public BufferWriter SaveBuffer { get { return m_SaveBuffer; } }
+    public BufferWriter SaveBuffer => m_SaveBuffer;
 
     private static uint m_NextID = 1;
 
@@ -83,23 +84,9 @@ namespace Server.Guilds
       return g;
     }
 
-    public static BaseGuild FindByName(string name)
-    {
-      foreach (BaseGuild g in List.Values)
-        if (g.Name == name)
-          return g;
+    public static BaseGuild FindByName(string name) => List.Values.FirstOrDefault(g => g.Name == name);
 
-      return null;
-    }
-
-    public static BaseGuild FindByAbbrev(string abbr)
-    {
-      foreach (BaseGuild g in List.Values)
-        if (g.Abbreviation == abbr)
-          return g;
-
-      return null;
-    }
+    public static BaseGuild FindByAbbrev(string abbr) => List.Values.FirstOrDefault(g => g.Abbreviation == abbr);
 
     public static List<BaseGuild> Search(string find)
     {
@@ -108,16 +95,9 @@ namespace Server.Guilds
 
       foreach (BaseGuild g in List.Values)
       {
-        bool match = true;
         string name = g.Name.ToLower();
-        for (int i = 0; i < words.Length; i++)
-          if (name.IndexOf(words[i]) == -1)
-          {
-            match = false;
-            break;
-          }
 
-        if (match)
+        if (words.All(t => name.IndexOf(t) != -1))
           results.Add(g);
       }
 

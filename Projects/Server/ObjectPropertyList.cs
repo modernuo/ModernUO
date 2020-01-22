@@ -26,8 +26,8 @@ namespace Server
 {
   public interface IPropertyListObject : IEntity
   {
-    ObjectPropertyList PropertyList{ get; }
-    OPLInfo OPLPacket{ get;  }
+    ObjectPropertyList PropertyList { get; }
+    OPLInfo OPLPacket { get;  }
 
     void GetProperties(ObjectPropertyList list);
   }
@@ -189,10 +189,10 @@ namespace Server
       m_Stream.Write( (int) list.Hash );
     }*/
 
-    public OPLInfo(ObjectPropertyList list) : base(0xDC, 9)
+    public OPLInfo(Serial serial, int hash) : base(0xDC, 9)
     {
-      m_Stream.Write(list.Entity.Serial);
-      m_Stream.Write(list.Hash);
+      m_Stream.Write(serial);
+      m_Stream.Write(hash);
     }
   }
 }
