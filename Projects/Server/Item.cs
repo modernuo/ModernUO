@@ -3448,8 +3448,6 @@ namespace Server
     {
       ObjectPropertyList opl = PropertyList;
 
-      Console.WriteLine("Got Here: {0} {1}", opl.Header, opl.HeaderArgs);
-
       if (opl.Header > 0)
         from.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, opl.Header, Name,
           opl.HeaderArgs));
