@@ -1370,9 +1370,9 @@ namespace Server.Items
       return base.CanEquip(from);
     }
 
-    public override bool CheckPropertyConfliction(Mobile m)
+    public override bool CheckPropertyConflict(Mobile m)
     {
-      if (base.CheckPropertyConfliction(m))
+      if (base.CheckPropertyConflict(m))
         return true;
 
       if (Layer == Layer.Pants)

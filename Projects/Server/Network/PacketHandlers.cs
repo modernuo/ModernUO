@@ -567,7 +567,8 @@ namespace Server.Network
       }
 
       int count = pvSrc.ReadUInt16();
-      if (count < 100 && pvSrc.Length == 1 + 2 + 4 + 2 + count * 6)
+
+      if (count < 100 && pvSrc.Length == 4 + 2 + count * 6)
       {
         List<SellItemResponse> sellList = new List<SellItemResponse>(count);
 
@@ -662,7 +663,7 @@ namespace Server.Network
           huePicker.OnResponse(hue);
 
           break;
-    }
+        }
     }
 
     public static void SystemInfo(NetState state, PacketReader pvSrc)
@@ -1490,7 +1491,7 @@ namespace Server.Network
       {
         if (state.Mobile == null)
           Console.WriteLine(
-            "Client: {0}: Sent ingame packet (0xBFx{1:X2}) before having been attached to a mobile", state,
+            "Client: {0}: Sent in-game packet (0xBFx{1:X2}) before having been attached to a mobile", state,
             packetID);
         state.Dispose();
       }
@@ -1556,7 +1557,7 @@ namespace Server.Network
 
       Mobile from = state.Mobile;
 
-      long length = pvSrc.Length - 3;
+      long length = pvSrc.Length;
 
       if (length < 0 || length % 4 != 0)
         return;
@@ -2122,7 +2123,7 @@ namespace Server.Network
           name, female, hue,
           str, dex, intl,
           info[cityIndex],
-          new SkillNameValue[]
+          new[]
           {
             new SkillNameValue((SkillName)is1, vs1),
             new SkillNameValue((SkillName)is2, vs2),
@@ -2239,7 +2240,7 @@ namespace Server.Network
           name, female, hue,
           str, dex, intl,
           info[cityIndex],
-          new SkillNameValue[]
+          new[]
           {
             new SkillNameValue((SkillName)is1, vs1),
             new SkillNameValue((SkillName)is2, vs2),

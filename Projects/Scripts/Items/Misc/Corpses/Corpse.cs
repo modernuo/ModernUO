@@ -541,31 +541,22 @@ namespace Server.Items
 
       writer.WriteDeltaTime(TimeOfDeath);
 
-      List<KeyValuePair<Item, Point3D>> list = m_RestoreTable == null
-        ? null
-        : new List<KeyValuePair<Item, Point3D>>(m_RestoreTable);
-      int count = list?.Count ?? 0;
-
+      int count = m_RestoreTable?.Count ?? 0;
       writer.Write(count);
 
-      for (int i = 0; i < count; ++i)
-      {
-        KeyValuePair<Item, Point3D> kvp = list[i];
-        Item item = kvp.Key;
-        Point3D loc = kvp.Value;
-
-        writer.Write(item);
-
-        if (item.Location == loc)
+      if (m_RestoreTable != null)
+        foreach (var (item, loc) in m_RestoreTable)
         {
-          writer.Write(false);
+          writer.Write(item);
+
+          if (item.Location == loc)
+            writer.Write(false);
+          else
+          {
+            writer.Write(true);
+            writer.Write(loc);
+          }
         }
-        else
-        {
-          writer.Write(true);
-          writer.Write(loc);
-        }
-      }
 
       writer.Write(m_DecayTimer != null);
 

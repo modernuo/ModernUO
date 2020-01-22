@@ -347,7 +347,18 @@ namespace Server
 
     public Packet RemovePacket => StaticPacketHandlers.GetRemoveEntityPacket(this);
     public OPLInfo OPLPacket => StaticPacketHandlers.GetOPLInfoPacket(this);
-    public ObjectPropertyList PropertyList => StaticPacketHandlers.GetOPLPacket(this);
+
+    private ObjectPropertyList m_PropertyList;
+    public ObjectPropertyList PropertyList => m_PropertyList ??= NewObjectPropertyList();
+
+    public void ReleaseOPLPacket()
+    {
+      if (m_PropertyList == null)
+        return;
+
+      Packet.Release(m_PropertyList);
+      m_PropertyList = null;
+    }
 
     // World packets need to be invalidated when any of the following changes:
     //  - ItemID
@@ -960,17 +971,16 @@ namespace Server
         {
           NetState ns = rootParent.NetState;
 
-          if (ns != null)
-            if (rootParent.CanSee(this) && rootParent.InRange(worldLoc, GetUpdateRange(rootParent)))
-            {
-              if (ns.ContainerGridLines)
-                ns.Send(new ContainerContentUpdate6017(this));
-              else
-                ns.Send(new ContainerContentUpdate(this));
+          if (ns != null && rootParent.CanSee(this) && rootParent.InRange(worldLoc, GetUpdateRange(rootParent)))
+          {
+            if (ns.ContainerGridLines)
+              ns.Send(new ContainerContentUpdate6017(this));
+            else
+              ns.Send(new ContainerContentUpdate(this));
 
-              if (ObjectPropertyList.Enabled)
-                ns.Send(OPLPacket);
-            }
+            if (ObjectPropertyList.Enabled)
+              ns.Send(OPLPacket);
+          }
         }
 
         SecureTrade st = GetSecureTradeCont()?.Trade;
@@ -1013,9 +1023,7 @@ namespace Server
               int range = GetUpdateRange(mob);
 
               if (mob.Map != map || !mob.InRange(worldLoc, range))
-              {
                 openers.RemoveAt(i--);
-              }
               else
               {
                 if (mob == rootParent || mob == tradeRecip)
@@ -1051,44 +1059,43 @@ namespace Server
       {
         Mobile m = state.Mobile;
 
-        if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
+        if (!m.CanSee(this) || !m.InRange(worldLoc, GetUpdateRange(m))) continue;
+
+        if (update)
         {
-          if (update)
+          if (m_Parent == null)
+            SendInfoTo(state, ObjectPropertyList.Enabled);
+          else
           {
-            if (m_Parent == null)
-              SendInfoTo(state, ObjectPropertyList.Enabled);
-            else
+            if (p != null)
+              state.Send(p);
+            else if (m_Parent is Item)
             {
-              if (p != null)
-                state.Send(p);
-              else if (m_Parent is Item)
-              {
-                if (state.ContainerGridLines)
-                  state.Send(new ContainerContentUpdate6017(this));
-                else
-                  state.Send(new ContainerContentUpdate(this));
-              }
-              else if (m_Parent is Mobile)
-              {
-                p = new EquipUpdate(this);
-                p.Acquire();
-
-                state.Send(p);
-              }
-
-              if (ObjectPropertyList.Enabled)
-                state.Send(OPLPacket);
+              if (state.ContainerGridLines)
+                state.Send(new ContainerContentUpdate6017(this));
+              else
+                state.Send(new ContainerContentUpdate(this));
             }
-          }
-          else if ((flags & ItemDelta.EquipOnly) != 0 && m_Parent is Mobile)
-          {
-            state.Send(p ?? (p = Packet.Acquire(new EquipUpdate(this))));
+            else if (m_Parent is Mobile)
+            {
+              p = new EquipUpdate(this);
+              p.Acquire();
+
+              state.Send(p);
+            }
 
             if (ObjectPropertyList.Enabled)
               state.Send(OPLPacket);
-          } else if (ObjectPropertyList.Enabled && (flags & ItemDelta.Properties) != 0)
-            state.Send(OPLPacket);
+          }
         }
+        else if ((flags & ItemDelta.EquipOnly) != 0 && m_Parent is Mobile)
+        {
+          state.Send(p ??= Packet.Acquire(new EquipUpdate(this)));
+
+          if (ObjectPropertyList.Enabled)
+            state.Send(OPLPacket);
+        } else if (ObjectPropertyList.Enabled && (flags & ItemDelta.Properties) != 0)
+          state.Send(OPLPacket);
       }
 
       Packet.Release(p);
@@ -1273,7 +1280,7 @@ namespace Server
         writer.Write((byte)m_Direction);
 
       if (GetSaveFlag(flags, SaveFlag.Bounce))
-        BounceInfo.Serialize(info.m_Bounce, writer);
+        BounceInfo.Serialize(info?.m_Bounce, writer);
 
       if (GetSaveFlag(flags, SaveFlag.LootType))
         writer.Write((byte)m_LootType);
@@ -1414,7 +1421,7 @@ namespace Server
 
     private CompactInfo LookupCompactInfo() => m_CompactInfo;
 
-    private CompactInfo AcquireCompactInfo() => m_CompactInfo ?? (m_CompactInfo = new CompactInfo());
+    private CompactInfo AcquireCompactInfo() => m_CompactInfo ??= new CompactInfo();
 
     private void ReleaseCompactInfo()
     {
@@ -1531,17 +1538,17 @@ namespace Server
     ///     <item>
     ///       <term>True</term>
     ///       <description>
-    ///         There is a confliction. The elemental resistance bonuses of this Item should not be applied to the
+    ///         There is a conflict. The elemental resistance bonuses of this Item should not be applied to the
     ///         <see cref="Mobile" />
     ///       </description>
     ///     </item>
     ///     <item>
     ///       <term>False</term>
-    ///       <description>There is no confliction. The bonuses should be applied.</description>
+    ///       <description>There is no conflict. The bonuses should be applied.</description>
     ///     </item>
     ///   </list>
     /// </returns>
-    public virtual bool CheckPropertyConfliction(Mobile m) => false;
+    public virtual bool CheckPropertyConflict(Mobile m) => false;
 
     /// <summary>
     ///   Overridable. Sends the <see cref="PropertyList">object property list</see> to <paramref name="from" />.
@@ -2008,9 +2015,21 @@ namespace Server
         mobile.GetChildNameProperties(list, this);
     }
 
+    public ObjectPropertyList NewObjectPropertyList()
+    {
+      ObjectPropertyList list = new ObjectPropertyList(this);
+
+      GetProperties(list);
+      AppendChildProperties(list);
+
+      list.Terminate();
+      list.SetStatic();
+      return list;
+    }
+
     public void ClearProperties()
     {
-      StaticPacketHandlers.FreeOPLPacket(this);
+      ReleaseOPLPacket();
       StaticPacketHandlers.FreeOPLInfoPacket(this);
     }
 
@@ -2021,9 +2040,10 @@ namespace Server
 
       if (m_Map != null && m_Map != Map.Internal && !World.Loading)
       {
-        ObjectPropertyList oldList = StaticPacketHandlers.FreeOPLPacket(this);
+        ObjectPropertyList oldList = m_PropertyList;
+        m_PropertyList = null;
 
-        if (oldList?.Hash != PropertyList.Hash)
+        if (oldList != null && oldList.Hash != PropertyList.Hash)
         {
           StaticPacketHandlers.FreeOPLInfoPacket(this);
           Delta(ItemDelta.Properties);
@@ -2398,8 +2418,8 @@ namespace Server
           {
             List<Item> items = reader.ReadStrongItemList();
 
-            if (this is Container)
-              (this as Container).m_Items = items;
+            if (this is Container cont)
+              cont.m_Items = items;
             else
               AcquireCompactInfo().m_Items = items;
           }
@@ -2500,8 +2520,8 @@ namespace Server
                 items.Add(item);
             }
 
-            if (this is Container)
-              (this as Container).m_Items = items;
+            if (this is Container cont)
+              cont.m_Items = items;
             else
               AcquireCompactInfo().m_Items = items;
           }
@@ -2765,7 +2785,7 @@ namespace Server
       ReleaseWorldPackets();
       StaticPacketHandlers.FreeRemoveItemPacket(this);
       StaticPacketHandlers.FreeOPLInfoPacket(this);
-      StaticPacketHandlers.FreeOPLPacket(this);
+      ReleaseOPLPacket();
     }
 
     public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text)

@@ -106,10 +106,7 @@ namespace Server
     public HairEquipUpdate(Mobile parent)
       : base(0x2E, 15)
     {
-      int hue = parent.HairHue;
-
-      if (parent.SolidHueOverride >= 0)
-        hue = parent.SolidHueOverride;
+      int hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.HairHue;
 
       m_Stream.Write(HairInfo.FakeSerial(parent));
       m_Stream.Write((short)parent.HairItemID);
@@ -125,10 +122,7 @@ namespace Server
     public FacialHairEquipUpdate(Mobile parent)
       : base(0x2E, 15)
     {
-      int hue = parent.FacialHairHue;
-
-      if (parent.SolidHueOverride >= 0)
-        hue = parent.SolidHueOverride;
+      int hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.FacialHairHue;
 
       m_Stream.Write(FacialHairInfo.FakeSerial(parent));
       m_Stream.Write((short)parent.FacialHairItemID);

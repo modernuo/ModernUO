@@ -1759,7 +1759,17 @@ namespace Server
 
     public Packet RemovePacket => StaticPacketHandlers.GetRemoveEntityPacket(this);
     public OPLInfo OPLPacket => StaticPacketHandlers.GetOPLInfoPacket(this);
-    public ObjectPropertyList PropertyList => StaticPacketHandlers.GetOPLPacket(this);
+    private ObjectPropertyList m_PropertyList;
+    public ObjectPropertyList PropertyList => m_PropertyList ??= NewObjectPropertyList();
+
+    public void ReleaseOPLPacket()
+    {
+      if (m_PropertyList == null)
+        return;
+
+      Packet.Release(m_PropertyList);
+      m_PropertyList = null;
+    }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int SolidHueOverride
@@ -2902,7 +2912,7 @@ namespace Server
       {
         Item item = Items[i];
 
-        if (item.CheckPropertyConfliction(this))
+        if (item.CheckPropertyConflict(this))
           continue;
 
         Resistances[0] += item.PhysicalResistance;
@@ -6525,12 +6535,23 @@ namespace Server
     {
       StaticPacketHandlers.FreeRemoveItemPacket(this);
       StaticPacketHandlers.FreeOPLInfoPacket(this);
-      StaticPacketHandlers.FreeOPLPacket(this);
+      ReleaseOPLPacket();
+    }
+
+    public ObjectPropertyList NewObjectPropertyList()
+    {
+      ObjectPropertyList list = new ObjectPropertyList(this);
+
+      GetProperties(list);
+
+      list.Terminate();
+      list.SetStatic();
+      return list;
     }
 
     public void ClearProperties()
     {
-      StaticPacketHandlers.FreeOPLPacket(this);
+      ReleaseOPLPacket();
       StaticPacketHandlers.FreeOPLInfoPacket(this);
     }
 
@@ -6541,9 +6562,10 @@ namespace Server
 
       if (m_Map != null && m_Map != Map.Internal && !World.Loading)
       {
-        ObjectPropertyList oldList = StaticPacketHandlers.FreeOPLPacket(this);
+        ObjectPropertyList oldList = m_PropertyList;
+        m_PropertyList = null;
 
-        if (oldList?.Hash != PropertyList.Hash)
+        if (oldList != null && oldList.Hash != PropertyList.Hash)
         {
           StaticPacketHandlers.FreeOPLInfoPacket(this);
           Delta(MobileDelta.Properties);

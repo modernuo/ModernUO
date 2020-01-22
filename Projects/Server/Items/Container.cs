@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Server.Network;
 
 namespace Server.Items
@@ -1322,10 +1323,7 @@ namespace Server.Items
       for (int j = 0; j < groups.Count; ++j)
       {
         Item[] items = groups[j].ToArray();
-        int total = 0;
-
-        for (int k = 0; k < items.Length; ++k)
-          total += items[k].Amount;
+        int total = items.Sum(t => t.Amount);
 
         if (total >= best)
           best = total;
@@ -1387,29 +1385,9 @@ namespace Server.Items
       return best;
     }
 
-    public int GetAmount(Type type, bool recurse = true)
-    {
-      Item[] items = FindItemsByType(type, recurse);
+    public int GetAmount(Type type, bool recurse = true) => FindItemsByType(type, recurse).Sum(t => t.Amount);
 
-      int amount = 0;
-
-      for (int i = 0; i < items.Length; ++i)
-        amount += items[i].Amount;
-
-      return amount;
-    }
-
-    public int GetAmount(Type[] types, bool recurse = true)
-    {
-      Item[] items = FindItemsByType(types, recurse);
-
-      int amount = 0;
-
-      for (int i = 0; i < items.Length; ++i)
-        amount += items[i].Amount;
-
-      return amount;
-    }
+    public int GetAmount(Type[] types, bool recurse = true) => FindItemsByType(types, recurse).Sum(t => t.Amount);
 
     #endregion
 

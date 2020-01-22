@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Concurrent;
 
 namespace Server.Network
@@ -26,7 +27,6 @@ namespace Server.Network
   public static class StaticPacketHandlers
   {
     private static ConcurrentDictionary<IPropertyListObject,OPLInfo> OPLInfoPackets = new ConcurrentDictionary<IPropertyListObject,OPLInfo>();
-    private static ConcurrentDictionary<IPropertyListObject,ObjectPropertyList> ObjectPropertyListPackets = new ConcurrentDictionary<IPropertyListObject,ObjectPropertyList>();
     private static ConcurrentDictionary<IEntity,RemoveEntity> RemoveEntityPackets = new ConcurrentDictionary<IEntity,RemoveEntity>();
 
     private static ConcurrentDictionary<Item,WorldItem> WorldItemPackets = new ConcurrentDictionary<Item,WorldItem>();
@@ -37,7 +37,7 @@ namespace Server.Network
     {
       return OPLInfoPackets.GetOrAdd(obj, value =>
       {
-        OPLInfo packet = new OPLInfo(value.PropertyList);
+        OPLInfo packet = new OPLInfo(value.PropertyList.Entity.Serial, value.PropertyList.Hash);
         packet.SetStatic();
         return packet;
       });
@@ -49,30 +49,6 @@ namespace Server.Network
         Packet.Release(p);
 
       return p;
-    }
-
-    public static ObjectPropertyList GetOPLPacket(IPropertyListObject obj)
-    {
-      return ObjectPropertyListPackets.GetOrAdd(obj, value =>
-      {
-        ObjectPropertyList list = new ObjectPropertyList(value);
-
-        value.GetProperties(list);
-        if (value is Item item)
-          item.AppendChildProperties(list);
-
-        list.Terminate();
-        list.SetStatic();
-        return list;
-      });
-    }
-
-    public static ObjectPropertyList FreeOPLPacket(IPropertyListObject obj)
-    {
-      if (ObjectPropertyListPackets.TryRemove(obj, out ObjectPropertyList list))
-        Packet.Release(list);
-
-      return list;
     }
 
     public static RemoveEntity GetRemoveEntityPacket(IEntity entity)
