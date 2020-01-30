@@ -28,13 +28,12 @@ namespace Server.Engines.Events
     {
       NextOccurrence += Interval;
 
-      if (_event != null)
-        _event.OnEventScheduled();
+      _event?.OnEventScheduled();
     }
 
     public override string ToString()
     {
-      return _event.ToString();
+      return _event?.ToString();
     }
   }
   public class EventScheduler : Timer
@@ -42,7 +41,7 @@ namespace Server.Engines.Events
     private static EventScheduler _instance;
     private List<EventScheduleEntry> _schedule = new List<EventScheduleEntry>();
 
-    public static EventScheduler Instance => _instance ?? (_instance = new EventScheduler());
+    public static EventScheduler Instance => _instance ??= new EventScheduler();
     public static List<IEvent> AvailableEvents { get; } = new List<IEvent>();
 
     private EventScheduler() : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0))
