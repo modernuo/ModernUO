@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
+using Server.Utilities;
 
 namespace Server.Spells.Necromancy
 {
@@ -170,7 +171,7 @@ namespace Server.Spells.Necromancy
         {
           try
           {
-            BaseCreature bc = (BaseCreature)Activator.CreateInstance(entry.Type);
+            BaseCreature bc = (BaseCreature)ActivatorUtil.CreateInstance(entry.Type);
 
             // TODO: Is this right?
             bc.Skills.MagicResist.Base = m_From.Skills.MagicResist.Base;

@@ -8,6 +8,7 @@ using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
 using Server.Regions;
+using Server.Utilities;
 
 namespace Server.Misc
 {
@@ -152,7 +153,7 @@ namespace Server.Misc
 
         try
         {
-          i = Activator.CreateInstance(
+          i = ActivatorUtil.CreateInstance(
               m_LesserArtifacts[(int)DropEra - 1][Utility.Random(m_LesserArtifacts[(int)DropEra - 1].Length)])
             as
             Item;
@@ -528,7 +529,7 @@ namespace Server.Gumps
 
         try
         {
-          item = (Item)Activator.CreateInstance(t.Type);
+          item = (Item)ActivatorUtil.CreateInstance(t.Type);
         }
         catch
         {

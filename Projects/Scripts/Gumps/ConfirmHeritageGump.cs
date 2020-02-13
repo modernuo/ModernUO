@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using Server.Items;
 using Server.Network;
+using Server.Utilities;
 
 namespace Server.Gumps
 {
@@ -42,7 +43,7 @@ namespace Server.Gumps
           {
             try
             {
-              item = Activator.CreateInstance(type) as Item;
+              item = ActivatorUtil.CreateInstance(type) as Item;
             }
             catch (Exception ex)
             {

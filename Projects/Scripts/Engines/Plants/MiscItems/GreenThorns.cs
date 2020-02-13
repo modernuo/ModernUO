@@ -2,6 +2,7 @@ using System;
 using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
+using Server.Utilities;
 
 namespace Server.Items
 {
@@ -280,7 +281,7 @@ namespace Server.Items
         if (contains)
         {
           GreenThornsEffect effect =
-            (GreenThornsEffect)Activator.CreateInstance(taep.Effect, land.Location, from.Map, from);
+            (GreenThornsEffect)ActivatorUtil.CreateInstance(taep.Effect, land.Location, from.Map, from);
           return effect;
         }
       }

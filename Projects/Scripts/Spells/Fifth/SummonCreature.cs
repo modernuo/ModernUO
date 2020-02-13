@@ -1,5 +1,6 @@
 using System;
 using Server.Mobiles;
+using Server.Utilities;
 
 namespace Server.Spells.Fifth
 {
@@ -63,7 +64,7 @@ namespace Server.Spells.Fifth
       if (CheckSequence())
         try
         {
-          BaseCreature creature = (BaseCreature)Activator.CreateInstance(m_Types[Utility.Random(m_Types.Length)]);
+          BaseCreature creature = (BaseCreature)ActivatorUtil.CreateInstance(m_Types[Utility.Random(m_Types.Length)]);
 
           //creature.ControlSlots = 2;
 

@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Server.Engines.Quests.Haven;
 using Server.Engines.Quests.Necro;
 using Server.Items;
 using Server.Mobiles;
+using Server.Utilities;
 
 namespace Server.Commands
 {
@@ -339,9 +342,9 @@ namespace Server.Commands
             }
 
           if (fill)
-            item = (Item)Activator.CreateInstance(m_Type, content);
+            item = (Item)ActivatorUtil.CreateInstance(m_Type, content);
           else
-            item = (Item)Activator.CreateInstance(m_Type);
+            item = (Item)ActivatorUtil.CreateInstance(m_Type);
         }
         else if (m_Type.IsSubclassOf(typeofBaseDoor))
         {
@@ -359,16 +362,16 @@ namespace Server.Commands
               }
             }
 
-          item = (Item)Activator.CreateInstance(m_Type, facing);
+          item = (Item)ActivatorUtil.CreateInstance(m_Type, facing);
         }
         else
         {
-          item = (Item)Activator.CreateInstance(m_Type);
+          item = (Item)ActivatorUtil.CreateInstance(m_Type);
         }
       }
       catch (Exception e)
       {
-        throw new Exception($"Bad type: {m_Type}", e);
+        throw new TypeInitializationException(m_Type.ToString(), e);
       }
 
       if (item is BaseAddon addon)
@@ -931,7 +934,16 @@ namespace Server.Commands
 
         for (int j = 0; j < maps.Length; ++j)
         {
-          item ??= Construct();
+
+          try
+          {
+            item ??= Construct();
+          }
+          catch(TypeInitializationException e)
+          {
+            Console.WriteLine($"{nameof(Generate)}() failed to load type: {e.TypeName}: {e.InnerException.Message}");
+            continue;
+          }
 
           if (item == null)
             continue;

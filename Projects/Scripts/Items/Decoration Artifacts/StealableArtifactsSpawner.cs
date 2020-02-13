@@ -1,3 +1,4 @@
+using Server.Utilities;
 using System;
 using System.Collections.Generic;
 
@@ -316,7 +317,7 @@ namespace Server.Items
 
       public Item CreateInstance()
       {
-        Item item = (Item)Activator.CreateInstance(Type);
+        Item item = (Item)ActivatorUtil.CreateInstance(Type);
 
         if (Hue > 0)
           item.Hue = Hue;

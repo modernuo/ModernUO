@@ -5,6 +5,7 @@ using Server.Engines.Quests.Necro;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
+using Server.Utilities;
 
 namespace Server.Spells.Necromancy
 {
@@ -298,7 +299,7 @@ namespace Server.Spells.Necromancy
 
       try
       {
-        summoned = Activator.CreateInstance(toSummon) as Mobile;
+        summoned = ActivatorUtil.CreateInstance(toSummon) as Mobile;
       }
       catch
       {

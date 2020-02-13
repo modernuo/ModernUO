@@ -4,6 +4,7 @@ using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 using Server.Regions;
+using Server.Utilities;
 
 namespace Server.Engines.CannedEvil
 {
@@ -363,7 +364,7 @@ namespace Server.Engines.CannedEvil
           {
             prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
 
-            if (Activator.CreateInstance(scroll.GetType()) is SpecialScroll scrollDupe)
+            if (ActivatorUtil.CreateInstance(scroll.GetType()) is SpecialScroll scrollDupe)
             {
               scrollDupe.Skill = scroll.Skill;
               scrollDupe.Value = scroll.Value;
@@ -552,7 +553,7 @@ namespace Server.Engines.CannedEvil
 
       try
       {
-        Champion = Activator.CreateInstance(ChampionSpawnInfo.GetInfo(m_Type).Champion) as Mobile;
+        Champion = ActivatorUtil.CreateInstance(ChampionSpawnInfo.GetInfo(m_Type).Champion) as Mobile;
       }
       catch
       {
@@ -689,7 +690,7 @@ namespace Server.Engines.CannedEvil
     {
       try
       {
-        return Activator.CreateInstance(types[Utility.Random(types.Length)]) as Mobile;
+        return ActivatorUtil.CreateInstance(types[Utility.Random(types.Length)]) as Mobile;
       }
       catch
       {

@@ -2,6 +2,7 @@ using System;
 using Server.Ethics;
 using Server.Items;
 using Server.Targeting;
+using Server.Utilities;
 
 namespace Server.Engines.Craft
 {
@@ -82,7 +83,7 @@ namespace Server.Engines.Craft
             return SmeltResult.NoSkill;
 
           Type resourceType = info.ResourceTypes[0];
-          Item ingot = (Item)Activator.CreateInstance(resourceType);
+          Item ingot = (Item)ActivatorUtil.CreateInstance(resourceType);
 
           if (item is DragonBardingDeed || item is BaseArmor armor && armor.PlayerConstructed ||
               item is BaseWeapon weapon && weapon.PlayerConstructed ||

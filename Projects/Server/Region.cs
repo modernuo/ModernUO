@@ -24,6 +24,7 @@ using System.IO;
 using System.Xml;
 using Server.Network;
 using Server.Targeting;
+using Server.Utilities;
 
 namespace Server
 {
@@ -780,7 +781,7 @@ namespace Server
         Region region = null;
         try
         {
-          region = (Region)Activator.CreateInstance(type, xmlReg, map, parent);
+          region = (Region)ActivatorUtil.CreateInstance(type, xmlReg, map, parent);
         }
         catch (Exception ex)
         {

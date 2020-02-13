@@ -1,6 +1,7 @@
 using System;
 using Server.Engines.Craft;
 using Server.Items;
+using Server.Utilities;
 
 namespace Server.Factions
 {
@@ -50,7 +51,7 @@ namespace Server.Factions
     {
       try
       {
-        return Activator.CreateInstance(TrapType, m_Faction, from) as BaseFactionTrap;
+        return ActivatorUtil.CreateInstance(TrapType, m_Faction, from) as BaseFactionTrap;
       }
       catch
       {

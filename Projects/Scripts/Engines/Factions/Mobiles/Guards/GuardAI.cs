@@ -12,6 +12,7 @@ using Server.Spells.Seventh;
 using Server.Spells.Sixth;
 using Server.Spells.Third;
 using Server.Targeting;
+using Server.Utilities;
 
 namespace Server.Factions
 {
@@ -86,7 +87,7 @@ namespace Server.Factions
         if (entry.Chance > Utility.Random(100))
         {
           releaseTime = DateTime.UtcNow + entry.Hold;
-          return (Spell)Activator.CreateInstance(entry.Spell, mob, null);
+          return (Spell)ActivatorUtil.CreateInstance(entry.Spell, mob, null);
         }
       }
 
@@ -656,7 +657,7 @@ namespace Server.Factions
               if (types.Count > 1)
                 spell = new BlessSpell(m_Guard);
               else if (types.Count == 1)
-                spell = Activator.CreateInstance(types[0], m_Guard, null) as Spell;
+                spell = ActivatorUtil.CreateInstance(types[0], m_Guard, null) as Spell;
             }
             else if (types.Count > 0)
             {
@@ -694,7 +695,7 @@ namespace Server.Factions
               if (types.Count > 1)
                 spell = new CurseSpell(m_Guard);
               else if (types.Count == 1)
-                spell = (Spell)Activator.CreateInstance(types[0], m_Guard, null);
+                spell = (Spell)ActivatorUtil.CreateInstance(types[0], m_Guard, null);
             }
           }
         }

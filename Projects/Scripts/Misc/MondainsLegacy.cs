@@ -1,6 +1,7 @@
 using System;
 using Server.Items;
 using Server.Mobiles;
+using Server.Utilities;
 
 namespace Server
 {
@@ -26,7 +27,7 @@ namespace Server
 
     public static void GiveArtifactTo(Mobile m)
     {
-      if (!(Activator.CreateInstance(Artifacts[Utility.Random(Artifacts.Length)]) is Item item))
+      if (!(ActivatorUtil.CreateInstance(Artifacts[Utility.Random(Artifacts.Length)]) is Item item))
         return;
 
       if (m.AddToBackpack(item))

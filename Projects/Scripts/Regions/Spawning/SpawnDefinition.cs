@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml;
 using Server.Items;
 using Server.Mobiles;
+using Server.Utilities;
 
 namespace Server.Regions
 {
@@ -157,7 +158,7 @@ namespace Server.Regions
 
     protected override void Init()
     {
-      Mobile mob = (Mobile)Activator.CreateInstance(Type);
+      Mobile mob = (Mobile)ActivatorUtil.CreateInstance(Type);
 
       m_Land = !mob.CantWalk;
       m_Water = mob.CanSwim;
@@ -186,7 +187,7 @@ namespace Server.Regions
       return mobile;
     }
 
-    protected virtual Mobile CreateMobile() => (Mobile)Activator.CreateInstance(Type);
+    protected virtual Mobile CreateMobile() => (Mobile)ActivatorUtil.CreateInstance(Type);
   }
 
   public class SpawnItem : SpawnType
@@ -221,7 +222,7 @@ namespace Server.Regions
 
     protected override void Init()
     {
-      Item item = (Item)Activator.CreateInstance(Type);
+      Item item = (Item)ActivatorUtil.CreateInstance(Type);
 
       m_Height = item.ItemData.Height;
 
@@ -239,7 +240,7 @@ namespace Server.Regions
       return item;
     }
 
-    protected virtual Item CreateItem() => (Item)Activator.CreateInstance(Type);
+    protected virtual Item CreateItem() => (Item)ActivatorUtil.CreateInstance(Type);
   }
 
   public class SpawnTreasureChest : SpawnItem

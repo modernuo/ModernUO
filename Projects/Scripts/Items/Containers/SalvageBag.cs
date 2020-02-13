@@ -4,6 +4,7 @@ using System.Linq;
 using Server.ContextMenus;
 using Server.Engines.Craft;
 using Server.Network;
+using Server.Utilities;
 
 namespace Server.Items
 {
@@ -77,7 +78,7 @@ namespace Server.Items
         };
 
         Type resourceType = info.ResourceTypes[0];
-        Item ingot = (Item)Activator.CreateInstance(resourceType);
+        Item ingot = (Item)ActivatorUtil.CreateInstance(resourceType);
 
         if (item is DragonBardingDeed || item is BaseArmor armor && armor.PlayerConstructed ||
             item is BaseWeapon weapon && weapon.PlayerConstructed ||

@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using Server.Items;
+using Server.Utilities;
 
 namespace Server.Events.Halloween
 {
@@ -35,8 +36,8 @@ namespace Server.Events.Halloween
     public static DateTime FinishHalloween => new DateTime(2012, 11, 15);
 
     public static Item RandomGMBeggerItem =>
-      (Item)Activator.CreateInstance(m_GMBeggarTreats[Utility.Random(m_GMBeggarTreats.Length)]);
+      (Item)ActivatorUtil.CreateInstance(m_GMBeggarTreats[Utility.Random(m_GMBeggarTreats.Length)]);
 
-    public static Item RandomTreat => (Item)Activator.CreateInstance(m_Treats[Utility.Random(m_Treats.Length)]);
+    public static Item RandomTreat => (Item)ActivatorUtil.CreateInstance(m_Treats[Utility.Random(m_Treats.Length)]);
   }
 }

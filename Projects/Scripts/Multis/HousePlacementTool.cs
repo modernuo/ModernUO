@@ -7,6 +7,7 @@ using Server.Multis;
 using Server.Network;
 using Server.Regions;
 using Server.Targeting;
+using Server.Utilities;
 
 namespace Server.Items
 {
@@ -568,7 +569,7 @@ namespace Server.Items
         else
           args = new object[] { from };
 
-        return Activator.CreateInstance(Type, args) as BaseHouse;
+        return ActivatorUtil.CreateInstance(Type, args) as BaseHouse;
       }
       catch
       {

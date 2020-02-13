@@ -2,6 +2,7 @@ using System;
 using System.Xml;
 using Server.Mobiles;
 using Server.Regions;
+using Server.Utilities;
 
 namespace Server.Engines.Quests
 {
@@ -26,7 +27,7 @@ namespace Server.Engines.Quests
       if (m is PlayerMobile player && player.Quest == null && QuestSystem.CanOfferQuest(m, m_Quest))
         try
         {
-          QuestSystem qs = (QuestSystem)Activator.CreateInstance(m_Quest, player);
+          QuestSystem qs = (QuestSystem)ActivatorUtil.CreateInstance(m_Quest, player);
           qs.SendOffer();
         }
         catch (Exception ex)

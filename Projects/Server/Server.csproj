@@ -3,8 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <ApplicationIcon>MUO.ico</ApplicationIcon>
-    <StartupObject>
-    </StartupObject>
+    <StartupObject>Server.Core</StartupObject>
     <AssemblyName>ModernUO</AssemblyName>
     <Win32Resource />
     <Version>0.2.1</Version>
