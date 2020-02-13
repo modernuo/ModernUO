@@ -1541,33 +1541,31 @@ namespace Server.Items
       }
     }
 
-    public T FindItemByType<T>(bool recurse = true) where T : Item => RecurseFindItemByType<T>(this, recurse);
-
-    private static T RecurseFindItemByType<T>(Item current, bool recurse = true, Predicate<T> predicate = null) where T : Item
+    /// <summary>
+    /// Performs a Breadth-First search through the all <see cref="Item"/>s and
+    /// nested <see cref="Container"/>s within this <see cref="Container"/>.
+    /// </summary>
+    /// <typeparam name="T">Type of object being searched for</typeparam>
+    /// <param name="recurse">Optional: If true, the search will recursively
+    ///     check any nested <see cref="Container"/>s; otherwise, nested
+    ///     <see cref="Container"/>s will not be searched.</param>
+    /// <param name="predicate">Optional: A predicate to check if the <see cref="Item"/>
+    ///     of type <typeparamref name="T"/> is the target of the search.</param>
+    /// <returns>The first <see cref="Item"/> of type <typeparamref name="T"/> that matches the optional <paramref name="predicate"/>.</returns>
+    public T FindItemByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
-      if (current == null || current.Items.Count == 0)
-        return null;
-
-      List<Item> list = current.Items;
-
-      for (int i = 0; i < list.Count; ++i)
+      var queue = new Queue<Container>();
+      queue.Enqueue(this);
+      while(queue.Count > 0)
       {
-        Item item = list[i];
-
-        if (item is T typedItem)
-        {
-          if (predicate?.Invoke(typedItem) == true)
+        var container = queue.Dequeue();
+        foreach (var item in container.Items) {
+          if (item is T typedItem && (predicate == null || predicate(typedItem)))
             return typedItem;
-        }
-        else if (recurse && item is Container)
-        {
-          T check = RecurseFindItemByType(item, true, predicate);
-
-          if (check != null)
-            return check;
+          if (item is Container itemContainer && recurse)
+            queue.Enqueue(itemContainer);
         }
       }
-
       return null;
     }
     #endregion
