@@ -1512,37 +1512,39 @@ namespace Server.Items
 
     public List<T> FindItemsByType<T>(Predicate<T> predicate) where T : Item => FindItemsByType(true, predicate);
 
+    /// <summary>
+    /// Performs a Breadth-First search through all the <see cref="Item"/>s and
+    /// nested <see cref="Container"/>s within this <see cref="Container"/>.
+    /// </summary>
+    /// <typeparam name="T">Type of objects being searched for</typeparam>
+    /// <param name="recurse">Optional: If true, the search will recursively
+    ///     check any nested <see cref="Container"/>s; otherwise, nested
+    ///     <see cref="Container"/>s will not be searched.</param>
+    /// <param name="predicate">Optional: A predicate to check if the <see cref="Item"/>
+    ///     of type <typeparamref name="T"/> is one of the targets of the search.</param>
+    /// <returns>A list of <see cref="Item"/>s of type <typeparamref name="T"/> that matche the optional <paramref name="predicate"/>.</returns>
     public List<T> FindItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
-      List<T> list = new List<T>();
-      RecurseFindItemsByType(this, recurse, list, predicate);
-
-      return list;
-    }
-
-    private static void RecurseFindItemsByType<T>(Item current, bool recurse, List<T> list, Predicate<T> predicate)
-      where T : Item
-    {
-      if (current == null || current.Items.Count == 0)
-        return;
-
-      List<Item> items = current.Items;
-
-      for (int i = 0; i < items.Count; ++i)
+      var queue = new Queue<Container>();
+      queue.Enqueue(this);
+      var items = new List<T>();
+      while (queue.Count > 0)
       {
-        Item item = items[i];
-
-        if (item is T typedItem)
-          if (predicate?.Invoke(typedItem) == true)
-            list.Add(typedItem);
-
-        if (recurse && item is Container)
-          RecurseFindItemsByType(item, true, list, predicate);
+        var container = queue.Dequeue();
+        foreach (var item in container.Items)
+        {
+          if (item is T typedItem && (predicate == null || predicate(typedItem)))
+            items.Add(typedItem);
+          else if (recurse && item is Container itemContainer)
+            queue.Enqueue(itemContainer);
+        }
       }
+      return items;
     }
+
 
     /// <summary>
-    /// Performs a Breadth-First search through the all <see cref="Item"/>s and
+    /// Performs a Breadth-First search through all the <see cref="Item"/>s and
     /// nested <see cref="Container"/>s within this <see cref="Container"/>.
     /// </summary>
     /// <typeparam name="T">Type of object being searched for</typeparam>
@@ -1562,7 +1564,7 @@ namespace Server.Items
         foreach (var item in container.Items) {
           if (item is T typedItem && (predicate == null || predicate(typedItem)))
             return typedItem;
-          if (item is Container itemContainer && recurse)
+          if (recurse && item is Container itemContainer)
             queue.Enqueue(itemContainer);
         }
       }
