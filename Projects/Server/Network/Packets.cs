@@ -1839,7 +1839,7 @@ namespace Server.Network
       m_Stream.Write(item.Serial);
       m_Stream.Write((ushort)item.ItemID);
       m_Stream.Write((byte)0); // signed, itemID offset
-      m_Stream.Write((ushort)item.Amount);
+      m_Stream.Write((ushort)Math.Min(item.Amount, ushort.MaxValue));
       m_Stream.Write((short)item.X);
       m_Stream.Write((short)item.Y);
       m_Stream.Write(parentSerial);
@@ -1866,7 +1866,7 @@ namespace Server.Network
       m_Stream.Write(item.Serial);
       m_Stream.Write((ushort)item.ItemID);
       m_Stream.Write((byte)0); // signed, itemID offset
-      m_Stream.Write((ushort)item.Amount);
+      m_Stream.Write((ushort)Math.Min(item.Amount, ushort.MaxValue));
       m_Stream.Write((short)item.X);
       m_Stream.Write((short)item.Y);
       m_Stream.Write((byte)0); // Grid Location?
@@ -1901,7 +1901,7 @@ namespace Server.Network
           m_Stream.Write(child.Serial);
           m_Stream.Write((ushort)child.ItemID);
           m_Stream.Write((byte)0); // signed, itemID offset
-          m_Stream.Write((ushort)child.Amount);
+          m_Stream.Write((ushort)Math.Min(child.Amount, ushort.MaxValue));
           m_Stream.Write((short)loc.m_X);
           m_Stream.Write((short)loc.m_Y);
           m_Stream.Write(beheld.Serial);
@@ -1942,7 +1942,7 @@ namespace Server.Network
           m_Stream.Write(child.Serial);
           m_Stream.Write((ushort)child.ItemID);
           m_Stream.Write((byte)0); // signed, itemID offset
-          m_Stream.Write((ushort)child.Amount);
+          m_Stream.Write((ushort)Math.Min(child.Amount, ushort.MaxValue));
           m_Stream.Write((short)loc.m_X);
           m_Stream.Write((short)loc.m_Y);
           m_Stream.Write((byte)0); // Grid Location?
