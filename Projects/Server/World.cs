@@ -629,7 +629,7 @@ namespace Server
       SaveStrategy strategy = SaveStrategy.Acquire();
       Console.WriteLine("Core: Using {0} save strategy", strategy.Name.ToLowerInvariant());
 
-      Console.Write($"[{DateTime.Now.ToLongTimeString()}] World: Saving...");
+      Console.Write($"[{DateTime.UtcNow.ToLongTimeString()}] World: Saving...");
 
       Stopwatch watch = Stopwatch.StartNew();
 
