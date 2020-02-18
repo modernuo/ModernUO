@@ -1533,7 +1533,7 @@ namespace Server.Items
         var container = queue.Dequeue();
         foreach (var item in container.Items)
         {
-          if (item is T typedItem && (predicate == null || predicate(typedItem)))
+          if (item is T typedItem && predicate?.Invoke(typedItem) != null)
             items.Add(typedItem);
           else if (recurse && item is Container itemContainer)
             queue.Enqueue(itemContainer);
@@ -1558,11 +1558,12 @@ namespace Server.Items
     {
       var queue = new Queue<Container>();
       queue.Enqueue(this);
-      while(queue.Count > 0)
+      while (queue.Count > 0)
       {
         var container = queue.Dequeue();
-        foreach (var item in container.Items) {
-          if (item is T typedItem && (predicate == null || predicate(typedItem)))
+        foreach (var item in container.Items)
+        {
+          if (item is T typedItem && predicate?.Invoke(typedItem) != false)
             return typedItem;
           if (recurse && item is Container itemContainer)
             queue.Enqueue(itemContainer);
