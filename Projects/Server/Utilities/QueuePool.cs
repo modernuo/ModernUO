@@ -38,7 +38,11 @@ namespace Server.Utilities
     {
       _pool = pool;
     }
-    public void Dispose() => _pool.Return(this);
+    public void Dispose()
+    {
+      Clear();
+      _pool.Return(this);
+    }
 
     public static QueueRef<T> CreateInstance(RefPool<QueueRef<T>> pool) => new QueueRef<T>(pool);
   }
@@ -49,7 +53,11 @@ namespace Server.Utilities
     {
       _pool = pool;
     }
-    public void Dispose() => _pool.Return(this);
+    public void Dispose()
+    {
+      Clear();
+      _pool.Return(this);
+    }
     public static StackRef<T> CreateInstance(RefPool<StackRef<T>> pool) => new StackRef<T>(pool);
   }
 }
