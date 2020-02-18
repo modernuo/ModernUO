@@ -24,11 +24,7 @@ namespace Server.Utilities
     {
       try
       {
-        ConstructorInfo cctor = null;
-        if (args.All(x => x != null))
-          cctor = type.GetConstructor(args);
-        if (cctor == null)
-          cctor = type.GetConstructors().Single(info =>
+        return args.All(x => x != null) ? type.GetConstructor(args) : null ?? type.GetConstructors().Single(info =>
           {
             var paramList = info.GetParameters().ToList();
             // If more args are given than parameters, skip.
@@ -37,25 +33,16 @@ namespace Server.Utilities
             // check all given args map to params.
             for (int i = 0; i < args.Length; i++)
             {
-              // if a null reference is passed, but the type is not nullable, skip.
-              if (args[i] == null)
-              {
-                if (paramList[i].ParameterType.IsValueType) return false;
-              }
-              // If an arg is not assignable to the parameter type, skip.
-              else if (!paramList[i].ParameterType.IsAssignableFrom(args[i]))
+              // if a null reference is passed, but the type is not nullable
+              if ((args[i] == null && paramList[i].ParameterType.IsValueType)
+              // or if an arg is not null and is not assignable to the parameter type, skip.
+                || !(args[i] == null || paramList[i].ParameterType.IsAssignableFrom(args[i])))
                 return false;
             }
             // If there are more parameters, check if they any are not optional, if any are not, skip.
-            if (args.Length < paramList.Count && paramList.GetRange(args.Length, paramList.Count - args.Length).Any(x => !x.IsOptional))
-              return false;
-            // All checks have passed. We have found a match.
-            return true;
-          });
-        if (cctor == null)
-          throw new TypeInitializationException(type.ToString(), new Exception($"There is no empty/default constructor for {type}"));
-        else
-          return cctor;
+            // Otherwise all checks have passed. We have found a match 
+            return args.Length <= paramList.Count || paramList.GetRange(args.Length, paramList.Count - args.Length).All(x => x.IsOptional);
+          }) ?? throw new Exception($"There is no empty/default constructor for {type}");
       }
       catch (Exception e)
       {
