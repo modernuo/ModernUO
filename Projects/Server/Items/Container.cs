@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Server.Network;
+using Server.Utilities;
+using QueuePool = Server.Utilities.RefPool<Server.Utilities.QueueRef<Server.Items.Container>>;
 
 namespace Server.Items
 {
@@ -34,6 +36,7 @@ namespace Server.Items
 
   public class Container : Item
   {
+    private static QueuePool m_QueuePool = new QueuePool(QueueRef<Container>.CreateInstance);
     private static List<Item> m_FindItemsList = new List<Item>();
 
     private ContainerData m_ContainerData;
@@ -1525,21 +1528,23 @@ namespace Server.Items
     /// <returns>A list of <see cref="Item"/>s of type <typeparamref name="T"/> that matche the optional <paramref name="predicate"/>.</returns>
     public List<T> FindItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
-      var queue = new Queue<Container>();
-      queue.Enqueue(this);
-      var items = new List<T>();
-      while (queue.Count > 0)
+      using (var queue = m_QueuePool.Get())
       {
-        var container = queue.Dequeue();
-        foreach (var item in container.Items)
+        queue.Enqueue(this);
+        var items = new List<T>();
+        while (queue.Count > 0)
         {
-          if (item is T typedItem && predicate?.Invoke(typedItem) != null)
-            items.Add(typedItem);
-          else if (recurse && item is Container itemContainer)
-            queue.Enqueue(itemContainer);
+          var container = queue.Dequeue();
+          foreach (var item in container.Items)
+          {
+            if (item is T typedItem && predicate?.Invoke(typedItem) != false)
+              items.Add(typedItem);
+            else if (recurse && item is Container itemContainer)
+              queue.Enqueue(itemContainer);
+          }
         }
+        return items;
       }
-      return items;
     }
 
 
@@ -1556,20 +1561,22 @@ namespace Server.Items
     /// <returns>The first <see cref="Item"/> of type <typeparamref name="T"/> that matches the optional <paramref name="predicate"/>.</returns>
     public T FindItemByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
-      var queue = new Queue<Container>();
-      queue.Enqueue(this);
-      while (queue.Count > 0)
+      using (var queue = m_QueuePool.Get())
       {
-        var container = queue.Dequeue();
-        foreach (var item in container.Items)
+        queue.Enqueue(this);
+        while (queue.Count > 0)
         {
-          if (item is T typedItem && predicate?.Invoke(typedItem) != false)
-            return typedItem;
-          if (recurse && item is Container itemContainer)
-            queue.Enqueue(itemContainer);
+          var container = queue.Dequeue();
+          foreach (var item in container.Items)
+          {
+            if (item is T typedItem && predicate?.Invoke(typedItem) != false)
+              return typedItem;
+            if (recurse && item is Container itemContainer)
+              queue.Enqueue(itemContainer);
+          }
         }
+        return null;
       }
-      return null;
     }
     #endregion
   }
