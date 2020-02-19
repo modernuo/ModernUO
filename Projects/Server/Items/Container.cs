@@ -36,7 +36,7 @@ namespace Server.Items
 
   public class Container : Item
   {
-    private static QueuePool m_QueuePool = new QueuePool(QueueRef<Container>.CreateInstance);
+    private static QueuePool m_QueuePool = new QueuePool(QueueRef<Container>.Generate, preGenerateCount: 2, maxRefrenceRetention: 5);
     private static List<Item> m_FindItemsList = new List<Item>();
 
     private ContainerData m_ContainerData;
