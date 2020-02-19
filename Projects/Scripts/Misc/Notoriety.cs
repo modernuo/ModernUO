@@ -403,8 +403,8 @@ namespace Server.Misc
       {
         Mobile master = bc.GetMaster();
 
-        if (master != null && CheckAggressor(master.Aggressors, target) ||
-            MobileNotoriety(master, target) == Notoriety.CanBeAttacked || bcTarg != null)
+        if (master != null && (CheckAggressor(master.Aggressors, target) ||
+            MobileNotoriety(master, target) == Notoriety.CanBeAttacked || bcTarg != null))
           return Notoriety.CanBeAttacked;
       }
 
