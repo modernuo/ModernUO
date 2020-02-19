@@ -55,12 +55,9 @@ namespace Server.Utilities
       var args = cctor.GetParameters();
       if (args.Length == 0)
         return cctor.Invoke(Type.EmptyTypes);
-      else
-      {
-        var argList = new object[args.Length];
-        Array.Fill(argList, Type.Missing);
-        return cctor.Invoke(argList);
-      }
+      var argList = new object[args.Length];
+      Array.Fill(argList, Type.Missing);
+      return cctor.Invoke(argList);
     }
     public static object CreateInstance(Type type, params object[] args)
     {
