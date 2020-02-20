@@ -1,5 +1,6 @@
 using System;
 using Server.Items;
+using Server.Utilities;
 
 namespace Server
 {
@@ -689,7 +690,7 @@ namespace Server
     {
       try
       {
-        return Activator.CreateInstance(type) as Item;
+        return ActivatorUtil.CreateInstance(type) as Item;
       }
       catch
       {

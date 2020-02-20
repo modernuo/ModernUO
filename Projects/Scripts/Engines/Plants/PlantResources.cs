@@ -1,5 +1,6 @@
 using System;
 using Server.Items;
+using Server.Utilities;
 
 namespace Server.Engines.Plants
 {
@@ -40,6 +41,6 @@ namespace Server.Engines.Plants
       return null;
     }
 
-    public Item CreateResource() => (Item)Activator.CreateInstance(ResourceType);
+    public Item CreateResource() => (Item)ActivatorUtil.CreateInstance(ResourceType);
   }
 }

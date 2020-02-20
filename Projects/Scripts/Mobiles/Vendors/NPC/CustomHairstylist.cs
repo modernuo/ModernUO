@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.Gumps;
 using Server.Items;
 using Server.Network;
+using Server.Utilities;
 
 namespace Server.Mobiles
 {
@@ -193,7 +194,7 @@ namespace Server.Mobiles
               else
                 args[i] = origArgs[i];
 
-            Gump g = Activator.CreateInstance(buyInfo.GumpType, args) as Gump;
+            Gump g = ActivatorUtil.CreateInstance(buyInfo.GumpType, args) as Gump;
 
             m_From.SendGump(g);
           }

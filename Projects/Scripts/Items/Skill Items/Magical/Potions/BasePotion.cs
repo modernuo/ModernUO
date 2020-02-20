@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server.Engines.ConPVP;
 using Server.Engines.Craft;
+using Server.Utilities;
 
 namespace Server.Items
 {
@@ -141,7 +142,7 @@ namespace Server.Items
         {
           if (this is BaseExplosionPotion && Amount > 1)
           {
-            BasePotion pot = (BasePotion)Activator.CreateInstance(GetType());
+            BasePotion pot = (BasePotion)ActivatorUtil.CreateInstance(GetType());
 
             Amount--;
 

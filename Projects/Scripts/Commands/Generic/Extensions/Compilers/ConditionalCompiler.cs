@@ -1,3 +1,4 @@
+using Server.Utilities;
 using System;
 using System.Globalization;
 using System.Reflection;
@@ -543,7 +544,7 @@ namespace Server.Commands.Generic
 
       Type conditionalType = typeBuilder.CreateType();
 
-      return (IConditional)Activator.CreateInstance(conditionalType);
+      return (IConditional)ActivatorUtil.CreateInstance(conditionalType);
     }
   }
 }

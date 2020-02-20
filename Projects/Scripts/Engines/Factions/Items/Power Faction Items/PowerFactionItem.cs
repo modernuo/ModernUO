@@ -3,6 +3,7 @@ using System.IO;
 using Server.Factions;
 using Server.Mobiles;
 using Server.Network;
+using Server.Utilities;
 
 namespace Server
 {
@@ -174,7 +175,7 @@ namespace Server
 
       public Type Type{ get; }
 
-      public Item Construct() => Activator.CreateInstance(Type) as Item;
+      public Item Construct() => ActivatorUtil.CreateInstance(Type) as Item;
     }
   }
 }

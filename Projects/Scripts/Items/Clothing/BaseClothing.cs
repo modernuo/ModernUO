@@ -4,6 +4,7 @@ using Server.Engines.Craft;
 using Server.Ethics;
 using Server.Factions;
 using Server.Network;
+using Server.Utilities;
 
 namespace Server.Items
 {
@@ -210,7 +211,7 @@ namespace Server.Items
 
           Type resourceType = info.ResourceTypes?[0] ?? item.Resources.GetAt(0).ItemType;
 
-          Item res = (Item)Activator.CreateInstance(resourceType);
+          Item res = (Item)ActivatorUtil.CreateInstance(resourceType);
 
           ScissorHelper(from, res, PlayerConstructed ? item.Resources.GetAt(0).Amount / 2 : 1);
 

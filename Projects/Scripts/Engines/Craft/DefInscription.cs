@@ -2,6 +2,7 @@ using System;
 using Server.Engines.BulkOrders;
 using Server.Items;
 using Server.Spells;
+using Server.Utilities;
 
 namespace Server.Engines.Craft
 {
@@ -49,7 +50,7 @@ namespace Server.Engines.Craft
 
       if (typeItem != null)
       {
-        object o = Activator.CreateInstance(typeItem);
+        object o = ActivatorUtil.CreateInstance(typeItem);
 
         if (o is SpellScroll scroll)
         {

@@ -1,5 +1,6 @@
 using System;
 using Server.Mobiles;
+using Server.Utilities;
 
 namespace Server.Spells.Spellweaving
 {
@@ -39,7 +40,7 @@ namespace Server.Spells.Spellweaving
 
           try
           {
-            bc = Activator.CreateInstance<T>();
+            bc = ActivatorUtil.CreateInstance<T>();
           }
           catch
           {

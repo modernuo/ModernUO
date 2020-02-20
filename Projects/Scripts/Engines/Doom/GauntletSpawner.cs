@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.Items;
 using Server.Mobiles;
 using Server.Regions;
+using Server.Utilities;
 
 namespace Server.Engines.Doom
 {
@@ -298,7 +299,7 @@ namespace Server.Engines.Doom
         if (type == null)
           return;
 
-        object obj = Activator.CreateInstance(type);
+        object obj = ActivatorUtil.CreateInstance(type);
 
         if (obj is Item item)
         {

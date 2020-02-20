@@ -2,6 +2,7 @@ using System;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
+using Server.Utilities;
 
 namespace Server.Engines.Harvest
 {
@@ -258,7 +259,7 @@ namespace Server.Engines.Harvest
             if (map == null)
               return;
 
-            if (Activator.CreateInstance(res.Types[2], 25) is BaseCreature spawned)
+            if (ActivatorUtil.CreateInstance(res.Types[2], 25) is BaseCreature spawned)
             {
               int offset = Utility.Random(8) * 2;
 

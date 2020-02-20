@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
+using Server.Utilities;
 
 namespace Server.Engines.MLQuests.Objectives
 {
@@ -45,7 +46,7 @@ namespace Server.Engines.MLQuests.Objectives
 
       for (int i = 0; i < Amount; ++i)
       {
-        if (!(Activator.CreateInstance(Delivery) is Item item))
+        if (!(ActivatorUtil.CreateInstance(Delivery) is Item item))
           continue;
 
         delivery.Add(item);

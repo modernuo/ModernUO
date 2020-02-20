@@ -5,6 +5,7 @@ using Server.Commands;
 using Server.Factions;
 using Server.Items;
 using Server.Mobiles;
+using Server.Utilities;
 
 namespace Server.Engines.Craft
 {
@@ -139,7 +140,7 @@ namespace Server.Engines.Craft
 
         try
         {
-          item = Activator.CreateInstance(type) as Item;
+          item = ActivatorUtil.CreateInstance(type) as Item;
         }
         catch
         {
@@ -930,7 +931,7 @@ namespace Server.Engines.Craft
         }
         else
         {
-          item = Activator.CreateInstance(ItemType) as Item;
+          item = ActivatorUtil.CreateInstance(ItemType) as Item;
         }
 
         if (item != null)
@@ -1113,7 +1114,7 @@ namespace Server.Engines.Craft
 
             try
             {
-              cc = Activator.CreateInstance(m_CraftItem.ItemType, m_From, m_CraftItem, m_CraftSystem,
+              cc = ActivatorUtil.CreateInstance(m_CraftItem.ItemType, m_From, m_CraftItem, m_CraftSystem,
                 m_TypeRes, m_Tool, quality) as CustomCraft;
             }
             catch

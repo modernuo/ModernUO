@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server.Items;
 using Server.Mobiles;
+using Server.Utilities;
 
 namespace Server
 {
@@ -886,7 +887,7 @@ namespace Server
         else if (Type == typeof(SummonAirElementalScroll)) // high scroll
           item = RandomScroll(2, 8, 8);
         else
-          item = Activator.CreateInstance(Type) as Item;
+          item = ActivatorUtil.CreateInstance(Type) as Item;
 
         return item;
       }

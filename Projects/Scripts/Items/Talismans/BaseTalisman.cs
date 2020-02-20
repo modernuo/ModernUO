@@ -6,6 +6,7 @@ using Server.Spells.Fourth;
 using Server.Spells.Necromancy;
 using Server.Spells.Second;
 using Server.Targeting;
+using Server.Utilities;
 
 namespace Server.Items
 {
@@ -228,7 +229,7 @@ namespace Server.Items
 
         try
         {
-          obj = Activator.CreateInstance(type);
+          obj = ActivatorUtil.CreateInstance(type);
         }
         catch
         {
@@ -260,7 +261,7 @@ namespace Server.Items
             from.PlaceInBackpack(item);
 
             if (i + 1 < count)
-              item = Activator.CreateInstance(type) as Item;
+              item = ActivatorUtil.CreateInstance(type) as Item;
           }
 
           if (item is Board)

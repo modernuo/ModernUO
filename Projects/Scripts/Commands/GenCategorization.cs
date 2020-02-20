@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using Server.Items;
+using Server.Utilities;
 
 namespace Server.Commands
 {
@@ -271,7 +272,7 @@ namespace Server.Commands
     public CategoryTypeEntry(Type type)
     {
       Type = type;
-      Object = Activator.CreateInstance(type);
+      Object = ActivatorUtil.CreateInstance(type);
     }
 
     public Type Type{ get; }

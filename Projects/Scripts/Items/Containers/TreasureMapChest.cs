@@ -4,6 +4,7 @@ using Server.ContextMenus;
 using Server.Engines.PartySystem;
 using Server.Gumps;
 using Server.Network;
+using Server.Utilities;
 
 namespace Server.Items
 {
@@ -286,7 +287,7 @@ namespace Server.Items
       }
 
       if (level == 6 && Core.AOS)
-        cont.DropItem((Item)Activator.CreateInstance(Artifacts[Utility.Random(Artifacts.Length)]));
+        cont.DropItem((Item)ActivatorUtil.CreateInstance(Artifacts[Utility.Random(Artifacts.Length)]));
     }
 
     public override bool CheckLocked(Mobile from)

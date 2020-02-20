@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Server.Items;
+using Server.Utilities;
 
 namespace Server.Mobiles
 {
@@ -94,10 +95,10 @@ namespace Server.Mobiles
     public virtual IEntity GetEntity()
     {
       if (Args == null || Args.Length == 0)
-        return (IEntity)Activator.CreateInstance(Type);
+        return (IEntity)ActivatorUtil.CreateInstance(Type);
 
-      return (IEntity)Activator.CreateInstance(Type, Args);
-      //return (Item)Activator.CreateInstance( m_Type );
+      return (IEntity)ActivatorUtil.CreateInstance(Type, Args);
+      //return (Item)ActivatorUtil.CreateInstance( m_Type );
     }
 
     //Attempt to restock with item, (return true if restock successful)

@@ -23,6 +23,7 @@ using Server.Spells.Necromancy;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
 using Server.Targeting;
+using Server.Utilities;
 
 namespace Server.Mobiles
 {
@@ -2170,7 +2171,7 @@ namespace Server.Mobiles
         return null;
 
       Type type = m_SpellAttack[Utility.Random(m_SpellAttack.Count)];
-      return Activator.CreateInstance(type, this, null) as Spell;
+      return ActivatorUtil.CreateInstance(type, this, null) as Spell;
     }
 
     public Spell GetDefenseSpellRandom()
@@ -2179,7 +2180,7 @@ namespace Server.Mobiles
         return null;
 
       Type type = m_SpellDefense[Utility.Random(m_SpellDefense.Count)];
-      return Activator.CreateInstance(type, this, null) as Spell;
+      return ActivatorUtil.CreateInstance(type, this, null) as Spell;
     }
 
     public Spell GetSpellSpecific(Type type)
@@ -2188,11 +2189,11 @@ namespace Server.Mobiles
 
       for (i = 0; i < m_SpellAttack.Count; i++)
         if (m_SpellAttack[i] == type)
-          return Activator.CreateInstance(type, this, null) as Spell;
+          return ActivatorUtil.CreateInstance(type, this, null) as Spell;
 
       for (i = 0; i < m_SpellDefense.Count; i++)
         if (m_SpellDefense[i] == type)
-          return Activator.CreateInstance(type, this, null) as Spell;
+          return ActivatorUtil.CreateInstance(type, this, null) as Spell;
 
       return null;
     }

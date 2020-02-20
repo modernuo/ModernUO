@@ -33,6 +33,7 @@ using Server.Spells.Seventh;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
 using Server.Targeting;
+using Server.Utilities;
 using BaseQuestGump = Server.Engines.MLQuests.Gumps.BaseQuestGump;
 using QuestOfferGump = Server.Engines.MLQuests.Gumps.QuestOfferGump;
 using RankDefinition = Server.Guilds.RankDefinition;
@@ -3080,7 +3081,7 @@ namespace Server.Mobiles
 
           try
           {
-            ammo = Activator.CreateInstance(kvp.Key) as Item;
+            ammo = ActivatorUtil.CreateInstance(kvp.Key) as Item;
           }
           catch
           {

@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Server.Engines.MLQuests.Items;
 using Server.Mobiles;
+using Server.Utilities;
 
 namespace Server.Engines.MLQuests.Rewards
 {
@@ -53,7 +54,7 @@ namespace Server.Engines.MLQuests.Rewards
 
       try
       {
-        spawnedItem = Activator.CreateInstance(m_Type) as Item;
+        spawnedItem = ActivatorUtil.CreateInstance(m_Type) as Item;
       }
       catch (Exception e)
       {
