@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using Server.Commands;
 using Server.Items;
+using Server.Utilities;
 using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Mobiles
@@ -472,45 +473,54 @@ namespace Server.Mobiles
           else
             paramargs = entry.Parameters.Trim().Split(' ');
 
-          ConstructorInfo[] ctors = type.GetConstructors();
-
-          for (int i = 0; i < ctors.Length; ++i)
+          if (paramargs.Length == 0)
           {
-            ConstructorInfo ctor = ctors[i];
+            o = ActivatorUtil.CreateInstance(type, ci => Add.IsConstructible(ci, AccessLevel.Developer));
+          }
+          else
+          {
+            ConstructorInfo[] ctors = type.GetConstructors();
 
-            if (Add.IsConstructible(ctor, AccessLevel.Developer))
+            for (int i = 0; i < ctors.Length; ++i)
             {
-              ParameterInfo[] paramList = ctor.GetParameters();
+              ConstructorInfo ctor = ctors[i];
 
-              if (paramargs.Length == paramList.Length)
+              if (Add.IsConstructible(ctor, AccessLevel.Developer))
               {
-                object[] paramValues = Add.ParseValues(paramList, paramargs);
+                ParameterInfo[] paramList = ctor.GetParameters();
 
-                if (paramValues != null)
+                if (paramargs.Length == paramList.Length)
                 {
-                  o = ctor.Invoke(paramValues);
-                  for (int j = 0; j < realProps.Length; j++)
-                    if (realProps[j] != null)
-                    {
-                      object toSet = null;
-                      string result = Properties.ConstructFromString(realProps[j].PropertyType, o,
-                        props[j, 1], ref toSet);
-                      if (result == null)
-                      {
-                        realProps[j].SetValue(o, toSet, null);
-                      }
-                      else
-                      {
-                        flags = EntryFlags.InvalidProps;
+                  object[] paramValues = Add.ParseValues(paramList, paramargs);
 
-                        (o as ISpawnable)?.Delete();
-
-                        return false;
-                      }
-                    }
-
-                  break;
+                  if (paramValues != null)
+                  {
+                    o = ctor.Invoke(paramValues);
+                    break;
+                  }
                 }
+              }
+            }
+          }
+
+          for (int i = 0; i < realProps.Length; i++)
+          {
+            if (realProps[i] != null)
+            {
+              object toSet = null;
+              string result = Properties.ConstructFromString(realProps[i].PropertyType, o, props[i, 1], ref toSet);
+
+              if (result == null)
+              {
+                realProps[i].SetValue(o, toSet, null);
+              }
+              else
+              {
+                flags = EntryFlags.InvalidProps;
+
+                (o as ISpawnable)?.Delete();
+
+                return false;
               }
             }
           }
