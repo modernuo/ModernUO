@@ -1,7 +1,8 @@
-using System;
-using System.Reflection;
 using Server.Items;
 using Server.Targeting;
+using Server.Utilities;
+using System;
+using System.Reflection;
 
 namespace Server.Commands
 {
@@ -90,18 +91,17 @@ namespace Server.Commands
           pack = from.Backpack;
         }
 
-        Type t = copy.GetType();
-
-        //ConstructorInfo[] info = t.GetConstructors();
-
-        ConstructorInfo c = t.GetConstructor(Type.EmptyTypes);
-
+        ConstructorInfo c = ActivatorUtil.GetConstructor(copy.GetType());
         if (c != null)
+        {
+          var paramList = c.GetParameters();
+          object[] args = paramList.Length == 0 ? null : new object[paramList.Length];
+          Array.Fill(args, Type.Missing);
           try
           {
             from.SendMessage("Duping {0}...", m_Amount);
             for (int i = 0; i < m_Amount; i++)
-              if (c.Invoke(null) is Item newItem)
+              if (c.Invoke(args) is Item newItem)
               {
                 CopyProperties(newItem, copy); //copy.Dupe( item, copy.Amount );
                 copy.OnAfterDuped(newItem);
@@ -127,6 +127,7 @@ namespace Server.Commands
             from.SendMessage("Error!");
             return;
           }
+        }
 
         if (!done) from.SendMessage("Unable to dupe.  Item must have a 0 parameter constructor.");
       }
