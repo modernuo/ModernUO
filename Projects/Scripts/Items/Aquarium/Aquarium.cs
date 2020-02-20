@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Multis;
 using Server.Network;
+using Server.Utilities;
 
 namespace Server.Items
 {
@@ -692,7 +693,7 @@ namespace Server.Items
 
       try
       {
-        item = Activator.CreateInstance(m_Decorations[random]) as Item;
+        item = ActivatorUtil.CreateInstance(m_Decorations[random]) as Item;
       }
       catch
       {

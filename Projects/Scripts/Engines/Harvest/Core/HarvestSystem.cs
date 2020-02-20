@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Server.Items;
 using Server.Targeting;
+using Server.Utilities;
 
 namespace Server.Engines.Harvest
 {
@@ -220,7 +221,7 @@ namespace Server.Engines.Harvest
     {
       try
       {
-        return Activator.CreateInstance(type) as Item;
+        return ActivatorUtil.CreateInstance(type) as Item;
       }
       catch
       {

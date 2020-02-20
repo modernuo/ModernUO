@@ -36,6 +36,7 @@ using Server.Mobiles;
 using Server.Network;
 using Server.Prompts;
 using Server.Targeting;
+using Server.Utilities;
 
 namespace Server
 {
@@ -4690,7 +4691,7 @@ namespace Server
       Item item;
       try
       {
-        item = (Item)Activator.CreateInstance(oldItem.GetType());
+        item = (Item)ActivatorUtil.CreateInstance(oldItem.GetType());
       }
       catch
       {

@@ -1,3 +1,4 @@
+using Server.Utilities;
 using System;
 using System.Collections.Generic;
 
@@ -83,7 +84,7 @@ namespace Server.Spells
 
         try
         {
-          spm = Activator.CreateInstance(type) as SpecialMove;
+          spm = ActivatorUtil.CreateInstance(type) as SpecialMove;
         }
         catch
         {
@@ -123,7 +124,7 @@ namespace Server.Spells
 
         try
         {
-          return (Spell)Activator.CreateInstance(t, m_Params);
+          return (Spell)ActivatorUtil.CreateInstance(t, m_Params);
         }
         catch
         {
@@ -147,7 +148,7 @@ namespace Server.Spells
 
           try
           {
-            return (Spell)Activator.CreateInstance(t, m_Params);
+            return (Spell)ActivatorUtil.CreateInstance(t, m_Params);
           }
           catch
           {

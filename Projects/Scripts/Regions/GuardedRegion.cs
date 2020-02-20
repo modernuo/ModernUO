@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using Server.Mobiles;
+using Server.Utilities;
 
 namespace Server.Regions
 {
@@ -171,7 +172,7 @@ namespace Server.Regions
 
         try
         {
-          Activator.CreateInstance(m_GuardType, m_GuardParams);
+          ActivatorUtil.CreateInstance(m_GuardType, m_GuardParams);
         }
         catch
         {

@@ -1,5 +1,6 @@
 using System;
 using Server.Items;
+using Server.Utilities;
 
 namespace Server.Mobiles
 {
@@ -179,7 +180,7 @@ namespace Server.Mobiles
 
     public static void GiveArtifactTo(Mobile m)
     {
-      Item item = (Item)Activator.CreateInstance(Artifacts[Utility.Random(Artifacts.Length)]);
+      Item item = (Item)ActivatorUtil.CreateInstance(Artifacts[Utility.Random(Artifacts.Length)]);
 
       if (m.AddToBackpack(item))
         m.SendMessage("As a reward for slaying the mighty paragon, an artifact has been placed in your backpack.");

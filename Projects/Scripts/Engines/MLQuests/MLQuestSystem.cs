@@ -9,6 +9,7 @@ using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
+using Server.Utilities;
 
 namespace Server.Engines.MLQuests
 {
@@ -62,7 +63,7 @@ namespace Server.Engines.MLQuests
 
           try
           {
-            quest = Activator.CreateInstance(type) as MLQuest;
+            quest = ActivatorUtil.CreateInstance(type) as MLQuest;
           }
           catch
           {

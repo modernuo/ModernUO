@@ -1,3 +1,4 @@
+using Server.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -252,7 +253,7 @@ namespace Server.Commands.Generic
 
       Type comparerType = typeBuilder.CreateType();
 
-      return (IComparer<T>)Activator.CreateInstance(comparerType);
+      return (IComparer<T>)ActivatorUtil.CreateInstance(comparerType);
     }
   }
 }

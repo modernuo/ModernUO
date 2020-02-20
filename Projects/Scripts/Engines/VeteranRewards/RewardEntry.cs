@@ -1,3 +1,4 @@
+using Server.Utilities;
 using System;
 
 namespace Server.Engines.VeteranRewards
@@ -64,7 +65,7 @@ namespace Server.Engines.VeteranRewards
     {
       try
       {
-        Item item = Activator.CreateInstance(ItemType, Args) as Item;
+        Item item = ActivatorUtil.CreateInstance(ItemType, Args) as Item;
 
         if (item is IRewardItem rewardItem)
           rewardItem.IsRewardItem = true;

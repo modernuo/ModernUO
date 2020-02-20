@@ -7,6 +7,7 @@ using Server.Engines.Quests.Haven;
 using Server.Engines.Quests.Necro;
 using Server.Items;
 using Server.Mobiles;
+using Server.Utilities;
 
 namespace Server.Commands
 {
@@ -337,9 +338,9 @@ namespace Server.Commands
             }
 
           if (fill)
-            item = (Item)Activator.CreateInstance(m_Type, content);
+            item = (Item)ActivatorUtil.CreateInstance(m_Type, content);
           else
-            item = (Item)Activator.CreateInstance(m_Type);
+            item = (Item)ActivatorUtil.CreateInstance(m_Type);
         }
         else if (m_Type.IsSubclassOf(typeofBaseDoor))
         {
@@ -357,11 +358,11 @@ namespace Server.Commands
               }
             }
 
-          item = (Item)Activator.CreateInstance(m_Type, facing);
+          item = (Item)ActivatorUtil.CreateInstance(m_Type, facing);
         }
         else
         {
-          item = (Item)Activator.CreateInstance(m_Type);
+          item = (Item)ActivatorUtil.CreateInstance(m_Type);
         }
       }
       catch (Exception e)

@@ -1,3 +1,4 @@
+using Server.Utilities;
 using System;
 
 namespace Server.Engines.Quests
@@ -8,7 +9,7 @@ namespace Server.Engines.Quests
     {
       try
       {
-        return Activator.CreateInstance(type);
+        return ActivatorUtil.CreateInstance(type);
       }
       catch
       {

@@ -1,5 +1,6 @@
 using System;
 using Server.Items;
+using Server.Utilities;
 
 namespace Server.Spells.First
 {
@@ -75,7 +76,7 @@ namespace Server.Spells.First
 
       try
       {
-        item = (Item)Activator.CreateInstance(Type);
+        item = (Item)ActivatorUtil.CreateInstance(Type);
       }
       catch
       {

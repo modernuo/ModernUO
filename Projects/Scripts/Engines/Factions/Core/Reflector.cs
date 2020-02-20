@@ -1,3 +1,4 @@
+using Server.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -36,7 +37,7 @@ namespace Server.Factions
     {
       try
       {
-        return Activator.CreateInstance(type);
+        return ActivatorUtil.CreateInstance(type);
       }
       catch
       {

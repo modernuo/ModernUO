@@ -1,6 +1,7 @@
 using System;
 using Server.Mobiles;
 using Server.Network;
+using Server.Utilities;
 
 namespace Server.Items
 {
@@ -195,7 +196,7 @@ namespace Server.Items
           {
             Map map = Map;
             BaseCreature bc =
-              (BaseCreature)Activator.CreateInstance(Creatures[Utility.Random(Creatures.Length)]);
+              (BaseCreature)ActivatorUtil.CreateInstance(Creatures[Utility.Random(Creatures.Length)]);
 
             Point3D spawnLoc = GetSpawnPosition();
 

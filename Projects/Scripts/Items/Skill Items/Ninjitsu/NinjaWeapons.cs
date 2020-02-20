@@ -6,6 +6,7 @@ using Server.Spells.Chivalry;
 using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
 using Server.Targeting;
+using Server.Utilities;
 
 /*
  * There really was no prettier way to do this,  other than the one
@@ -85,7 +86,7 @@ namespace Server.Items
     {
       if (weapon.UsesRemaining > 0)
       {
-        INinjaAmmo ammo = Activator.CreateInstance(weapon.AmmoType, weapon.UsesRemaining) as INinjaAmmo;
+        INinjaAmmo ammo = ActivatorUtil.CreateInstance(weapon.AmmoType, weapon.UsesRemaining) as INinjaAmmo;
 
         ammo.Poison = weapon.Poison;
         ammo.PoisonCharges = weapon.PoisonCharges;

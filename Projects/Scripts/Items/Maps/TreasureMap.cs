@@ -7,6 +7,7 @@ using Server.Engines.Harvest;
 using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
+using Server.Utilities;
 
 namespace Server.Items
 {
@@ -224,7 +225,7 @@ namespace Server.Items
 
         try
         {
-          bc = (BaseCreature)Activator.CreateInstance(
+          bc = (BaseCreature)ActivatorUtil.CreateInstance(
             m_SpawnTypes[level][Utility.Random(m_SpawnTypes[level].Length)]);
         }
         catch

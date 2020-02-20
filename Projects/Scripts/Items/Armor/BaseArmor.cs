@@ -4,6 +4,7 @@ using Server.Engines.Craft;
 using Server.Ethics;
 using Server.Factions;
 using Server.Network;
+using Server.Utilities;
 using AMA = Server.Items.ArmorMeditationAllowance;
 using AMT = Server.Items.ArmorMaterialType;
 
@@ -560,7 +561,7 @@ namespace Server.Items
       if (item?.Resources.Count == 1 && item.Resources.GetAt(0).Amount >= 2)
         try
         {
-          Item res = (Item)Activator.CreateInstance(CraftResources.GetInfo(m_Resource).ResourceTypes[0]);
+          Item res = (Item)ActivatorUtil.CreateInstance(CraftResources.GetInfo(m_Resource).ResourceTypes[0]);
 
           ScissorHelper(from, res, PlayerConstructed ? item.Resources.GetAt(0).Amount / 2 : 1);
           return true;

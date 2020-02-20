@@ -1,3 +1,4 @@
+using Server.Utilities;
 using System;
 using System.Collections.Generic;
 
@@ -19,7 +20,7 @@ namespace Server.Factions
     {
       try
       {
-        return Activator.CreateInstance(Definition.Type, town, faction) as BaseFactionVendor;
+        return ActivatorUtil.CreateInstance(Definition.Type, town, faction) as BaseFactionVendor;
       }
       catch
       {

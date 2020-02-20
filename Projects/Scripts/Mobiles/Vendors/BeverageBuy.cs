@@ -1,5 +1,6 @@
 using System;
 using Server.Items;
+using Server.Utilities;
 
 namespace Server.Mobiles
 {
@@ -27,6 +28,6 @@ namespace Server.Mobiles
 
     public override bool CanCacheDisplay => false;
 
-    public override IEntity GetEntity() => (IEntity)Activator.CreateInstance(Type, m_Content);
+    public override IEntity GetEntity() => (IEntity)ActivatorUtil.CreateInstance(Type, m_Content);
   }
 }
