@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Server.Network;
+using Server.Utilities;
+using QueuePool = Server.Utilities.RefPool<Server.Utilities.QueueRef<Server.Items.Container>>;
 
 namespace Server.Items
 {
@@ -34,6 +36,7 @@ namespace Server.Items
 
   public class Container : Item
   {
+    private static QueuePool m_QueuePool = new QueuePool(QueueRef<Container>.Generate, preGenerateCount: 2, maxRefrenceRetention: 5);
     private static List<Item> m_FindItemsList = new List<Item>();
 
     private ContainerData m_ContainerData;
@@ -1512,63 +1515,68 @@ namespace Server.Items
 
     public List<T> FindItemsByType<T>(Predicate<T> predicate) where T : Item => FindItemsByType(true, predicate);
 
+    /// <summary>
+    /// Performs a Breadth-First search through all the <see cref="Item"/>s and
+    /// nested <see cref="Container"/>s within this <see cref="Container"/>.
+    /// </summary>
+    /// <typeparam name="T">Type of objects being searched for</typeparam>
+    /// <param name="recurse">Optional: If true, the search will recursively
+    ///     check any nested <see cref="Container"/>s; otherwise, nested
+    ///     <see cref="Container"/>s will not be searched.</param>
+    /// <param name="predicate">Optional: A predicate to check if the <see cref="Item"/>
+    ///     of type <typeparamref name="T"/> is one of the targets of the search.</param>
+    /// <returns>A list of <see cref="Item"/>s of type <typeparamref name="T"/> that matche the optional <paramref name="predicate"/>.</returns>
     public List<T> FindItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
-      List<T> list = new List<T>();
-      RecurseFindItemsByType(this, recurse, list, predicate);
-
-      return list;
-    }
-
-    private static void RecurseFindItemsByType<T>(Item current, bool recurse, List<T> list, Predicate<T> predicate)
-      where T : Item
-    {
-      if (current == null || current.Items.Count == 0)
-        return;
-
-      List<Item> items = current.Items;
-
-      for (int i = 0; i < items.Count; ++i)
+      using (var queue = m_QueuePool.Get())
       {
-        Item item = items[i];
-
-        if (item is T typedItem)
-          if (predicate?.Invoke(typedItem) == true)
-            list.Add(typedItem);
-
-        if (recurse && item is Container)
-          RecurseFindItemsByType(item, true, list, predicate);
+        queue.Enqueue(this);
+        var items = new List<T>();
+        while (queue.Count > 0)
+        {
+          var container = queue.Dequeue();
+          foreach (var item in container.Items)
+          {
+            if (item is T typedItem && predicate?.Invoke(typedItem) != false)
+              items.Add(typedItem);
+            else if (recurse && item is Container itemContainer)
+              queue.Enqueue(itemContainer);
+          }
+        }
+        return items;
       }
     }
 
-    public T FindItemByType<T>(bool recurse = true) where T : Item => RecurseFindItemByType<T>(this, recurse);
 
-    private static T RecurseFindItemByType<T>(Item current, bool recurse = true, Predicate<T> predicate = null) where T : Item
+    /// <summary>
+    /// Performs a Breadth-First search through all the <see cref="Item"/>s and
+    /// nested <see cref="Container"/>s within this <see cref="Container"/>.
+    /// </summary>
+    /// <typeparam name="T">Type of object being searched for</typeparam>
+    /// <param name="recurse">Optional: If true, the search will recursively
+    ///     check any nested <see cref="Container"/>s; otherwise, nested
+    ///     <see cref="Container"/>s will not be searched.</param>
+    /// <param name="predicate">Optional: A predicate to check if the <see cref="Item"/>
+    ///     of type <typeparamref name="T"/> is the target of the search.</param>
+    /// <returns>The first <see cref="Item"/> of type <typeparamref name="T"/> that matches the optional <paramref name="predicate"/>.</returns>
+    public T FindItemByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
-      if (current == null || current.Items.Count == 0)
+      using (var queue = m_QueuePool.Get())
+      {
+        queue.Enqueue(this);
+        while (queue.Count > 0)
+        {
+          var container = queue.Dequeue();
+          foreach (var item in container.Items)
+          {
+            if (item is T typedItem && predicate?.Invoke(typedItem) != false)
+              return typedItem;
+            if (recurse && item is Container itemContainer)
+              queue.Enqueue(itemContainer);
+          }
+        }
         return null;
-
-      List<Item> list = current.Items;
-
-      for (int i = 0; i < list.Count; ++i)
-      {
-        Item item = list[i];
-
-        if (item is T typedItem)
-        {
-          if (predicate?.Invoke(typedItem) == true)
-            return typedItem;
-        }
-        else if (recurse && item is Container)
-        {
-          T check = RecurseFindItemByType(item, true, predicate);
-
-          if (check != null)
-            return check;
-        }
       }
-
-      return null;
     }
     #endregion
   }
