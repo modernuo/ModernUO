@@ -23,7 +23,7 @@ namespace Server.Engines.BulkOrders
           string type = reader.ReadString();
 
           if (type != null)
-            ItemType = AssemblyHandler.FindTypeByFullName(type);
+            ItemType = AssemblyHandler.FindFirstTypeForName(type);
 
           AmountCur = reader.ReadEncodedInt();
           Number = reader.ReadEncodedInt();

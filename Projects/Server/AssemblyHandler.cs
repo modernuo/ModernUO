@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Collections.Immutable;
 
 namespace Server
 {
@@ -62,28 +63,35 @@ namespace Server
       return m_TypeCaches[asm] = new TypeCache(asm);
     }
 
-    public static Type FindTypeByFullName(string fullName) => FindTypeByFullName(fullName, true);
-
-    public static Type FindTypeByFullName(string fullName, bool ignoreCase)
+    public static Type FindFirstTypeForName(string name, bool ignoreCase = false, Func<Type, bool> predicate = null)
     {
-      Type type = null;
-
-      for (int i = 0; type == null && i < Assemblies.Length; ++i)
-        type = GetTypeCache(Assemblies[i]).GetTypeByFullName(fullName, ignoreCase);
-
-      return type ?? GetTypeCache(Core.Assembly).GetTypeByFullName(fullName, ignoreCase);
+      var types = FindTypesByName(name, ignoreCase).ToList();
+      if (types.Count == 0)
+        return null;
+      if (predicate != null)
+        return types.FirstOrDefault(predicate);
+      if (types.Count == 1)
+        return types[0];
+      // Try to find the closest match if there is no predicate.
+      // Check for exact match of the FullName or Name
+      // Then check for case-insensitive match of FullName or Name
+      // Otherwise just return the first entry
+      return (!ignoreCase ? types.FirstOrDefault(x => x.FullName == name || x.Name == name) : null)
+        ?? types.FirstOrDefault(x => StringComparer.OrdinalIgnoreCase.Equals(x.FullName, name) || StringComparer.OrdinalIgnoreCase.Equals(x.Name, name))
+        ?? types[0];
     }
-
-    public static Type FindTypeByName(string name) => FindTypeByName(name, true);
-
-    public static Type FindTypeByName(string name, bool ignoreCase)
+    public static IEnumerable<Type> FindTypesByName(string name, bool ignoreCase = false)
     {
-      Type type = null;
-
-      for (int i = 0; type == null && i < Assemblies.Length; ++i)
-        type = GetTypeCache(Assemblies[i]).GetTypeByName(name, ignoreCase);
-
-      return type ?? GetTypeCache(Core.Assembly).GetTypeByName(name, ignoreCase);
+      List<Type> types = new List<Type>();
+      if(ignoreCase)
+        name = name.ToLower();
+      for (int i = 0; i < Assemblies.Length; i++)
+      {
+        types.AddRange(GetTypeCache(Assemblies[i])[name]);
+      }
+      if (types.Count == 0)
+        types.AddRange(GetTypeCache(Core.Assembly)[name]);
+      return types;
     }
 
     public static string EnsureDirectory(string dir)
@@ -99,70 +107,52 @@ namespace Server
 
   public class TypeCache
   {
+    private Dictionary<string, int[]> m_NameMap = new Dictionary<string, int[]>();
+    private Type[] m_Types;
+    public IEnumerable<Type> Types { get => m_Types; }
+    public IEnumerable<string> Names { get => m_NameMap.Keys; }
+
+    public IEnumerable<Type> this[string name]
+    {
+      get => m_NameMap.TryGetValue(name, out int[] value) ? value.Select(x => m_Types[x]) : new Type[0];
+    }
+
     public TypeCache(Assembly asm)
     {
-      Types = asm?.GetTypes() ?? Type.EmptyTypes;
-
-      Names = new TypeTable(Types.Length);
-      FullNames = new TypeTable(Types.Length);
-
-      Type typeofTypeAliasAttribute = typeof(TypeAliasAttribute);
-
-      for (int i = 0; i < Types.Length; ++i)
+      m_Types = asm?.GetTypes() ?? Type.EmptyTypes;
+      var nameMap = new Dictionary<string, HashSet<int>>();
+      HashSet<int> refs;
+      Action<int, string> addToRefs = (index, key) =>
       {
-        Type type = Types[i];
-
-        Names.Add(type.Name, type);
-        FullNames.Add(type.FullName, type);
-
-        if (type.IsDefined(typeofTypeAliasAttribute, false))
+        if (nameMap.TryGetValue(key, out refs))
+          refs.Add(index);
+        else
         {
-          object[] attrs = type.GetCustomAttributes(typeofTypeAliasAttribute, false);
-
-          if (attrs.Length > 0 && attrs[0] is TypeAliasAttribute attr)
-            for (int j = 0; j < attr.Aliases.Length; ++j)
-              FullNames.Add(attr.Aliases[j], type);
+          refs = new HashSet<int>();
+          refs.Add(index);
+          nameMap.Add(key, refs);
         }
+      };
+      Type current;
+      Type aliasType = typeof(TypeAliasAttribute);
+      TypeAliasAttribute alias;
+      for (int i = 0, j = 0; i < m_Types.Length; i++)
+      {
+        current = m_Types[i];
+        addToRefs(i, current.Name);
+        addToRefs(i, current.Name.ToLower());
+        addToRefs(i, current.FullName);
+        addToRefs(i, current.FullName.ToLower());
+        alias = current.GetCustomAttribute(aliasType, false) as TypeAliasAttribute;
+        if (alias != null)
+          for (j = 0; j < alias.Aliases.Length; j++)
+          {
+            addToRefs(i, alias.Aliases[j]);
+            addToRefs(i, alias.Aliases[j].ToLower());
+          }
       }
-    }
-
-    public Type[] Types{ get; }
-
-    public TypeTable Names{ get; }
-
-    public TypeTable FullNames{ get; }
-
-    public Type GetTypeByName(string name, bool ignoreCase) => Names.Get(name, ignoreCase);
-
-    public Type GetTypeByFullName(string fullName, bool ignoreCase) => FullNames.Get(fullName, ignoreCase);
-  }
-
-  public class TypeTable
-  {
-    private Dictionary<string, Type> m_Sensitive, m_Insensitive;
-
-    public TypeTable(int capacity)
-    {
-      m_Sensitive = new Dictionary<string, Type>(capacity);
-      m_Insensitive = new Dictionary<string, Type>(capacity, StringComparer.OrdinalIgnoreCase);
-    }
-
-    public void Add(string key, Type type)
-    {
-      m_Sensitive[key] = type;
-      m_Insensitive[key] = type;
-    }
-
-    public Type Get(string key, bool ignoreCase)
-    {
-      Type t;
-
-      if (ignoreCase)
-        m_Insensitive.TryGetValue(key, out t);
-      else
-        m_Sensitive.TryGetValue(key, out t);
-
-      return t;
+      foreach (var entry in nameMap)
+        m_NameMap[entry.Key] = entry.Value.ToArray();
     }
   }
 }

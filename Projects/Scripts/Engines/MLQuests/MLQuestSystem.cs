@@ -48,7 +48,7 @@ namespace Server.Engines.MLQuests
 
           string[] split = line.Split('\t');
 
-          Type type = AssemblyHandler.FindTypeByName(split[0]);
+          Type type = AssemblyHandler.FindFirstTypeForName(split[0]);
 
           if (type == null || !baseQuestType.IsAssignableFrom(type))
           {
@@ -77,7 +77,7 @@ namespace Server.Engines.MLQuests
 
           for (int i = 1; i < split.Length; ++i)
           {
-            Type questerType = AssemblyHandler.FindTypeByName(split[i]);
+            Type questerType = AssemblyHandler.FindFirstTypeForName(split[i]);
 
             if (questerType == null || !baseQuesterType.IsAssignableFrom(questerType))
             {
@@ -158,7 +158,7 @@ namespace Server.Engines.MLQuests
         return;
       }
 
-      Type index = AssemblyHandler.FindTypeByName(e.GetString(0));
+      Type index = AssemblyHandler.FindFirstTypeForName(e.GetString(0));
 
       if (index == null || !Quests.TryGetValue(index, out MLQuest quest))
       {
@@ -184,7 +184,7 @@ namespace Server.Engines.MLQuests
         return;
       }
 
-      Type index = AssemblyHandler.FindTypeByName(e.GetString(0));
+      Type index = AssemblyHandler.FindFirstTypeForName(e.GetString(0));
 
       if (index == null || !Quests.TryGetValue(index, out MLQuest quest))
       {
@@ -636,7 +636,7 @@ namespace Server.Engines.MLQuests
       if (typeName == null)
         return null; // not serialized
 
-      Type questType = AssemblyHandler.FindTypeByFullName(typeName);
+      Type questType = AssemblyHandler.FindFirstTypeForName(typeName);
 
       if (questType == null)
         return null; // no longer a type

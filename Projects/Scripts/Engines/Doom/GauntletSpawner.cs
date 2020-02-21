@@ -294,7 +294,7 @@ namespace Server.Engines.Doom
         if (TypeName == null)
           return;
 
-        Type type = AssemblyHandler.FindTypeByName(TypeName, true);
+        Type type = AssemblyHandler.FindFirstTypeForName(TypeName, true);
 
         if (type == null)
           return;

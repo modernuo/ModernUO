@@ -200,7 +200,7 @@ namespace Server.Engines.BulkOrders
           string type = reader.ReadString();
 
           if (type != null)
-            Type = AssemblyHandler.FindTypeByFullName(type);
+            Type = AssemblyHandler.FindFirstTypeForName(type);
 
           m_Number = reader.ReadInt();
           Graphic = reader.ReadInt();

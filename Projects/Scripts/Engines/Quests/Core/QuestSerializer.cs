@@ -64,7 +64,7 @@ namespace Server.Engines.Quests
           if (fullName == null)
             return null;
 
-          return AssemblyHandler.FindTypeByFullName(fullName, false);
+          return AssemblyHandler.FindFirstTypeForName(fullName, false);
         }
       }
     }

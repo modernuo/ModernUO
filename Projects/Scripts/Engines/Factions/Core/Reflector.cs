@@ -1,6 +1,7 @@
 using Server.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Server.Factions
@@ -56,7 +57,7 @@ namespace Server.Factions
       {
         Assembly asm = asms[i];
         TypeCache tc = AssemblyHandler.GetTypeCache(asm);
-        Type[] types = tc.Types;
+        Type[] types = tc.Types.ToArray();
 
         for (int j = 0; j < types.Length; ++j)
         {

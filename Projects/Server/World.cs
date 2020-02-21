@@ -124,7 +124,7 @@ namespace Server
       {
         string typeName = tdbReader.ReadString();
 
-        Type t = AssemblyHandler.FindTypeByFullName(typeName);
+        Type t = AssemblyHandler.FindFirstTypeForName(typeName);
 
         if (t == null)
         {
