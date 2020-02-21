@@ -278,6 +278,7 @@ namespace Server.Items
 
     private string m_GuildName;
 
+    [Constructible]
     public GuildstoneDeed(Guild g = null, string guildName = null, string abbrev = null) :
       base(0x14F0)
     {

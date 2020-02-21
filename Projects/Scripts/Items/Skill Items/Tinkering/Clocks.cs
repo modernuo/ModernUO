@@ -141,6 +141,11 @@ namespace Server.Items
   [Flippable(0x104B, 0x104C)]
   public class ClockRight : Clock
   {
+    [Constructible]
+    public ClockRight() : base(0x104B)
+    {
+    }
+
     public ClockRight(Serial serial) : base(serial)
     {
     }

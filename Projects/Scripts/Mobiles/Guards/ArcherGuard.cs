@@ -9,6 +9,7 @@ namespace Server.Mobiles
 
     private Mobile m_Focus;
 
+    [Constructible]
     public ArcherGuard(Mobile target = null) : base(target)
     {
       InitStats(100, 125, 25);
