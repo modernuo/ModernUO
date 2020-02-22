@@ -2,6 +2,7 @@
 {
   public class WrappedCandy : CandyCane
   {
+    [Constructible]
     public WrappedCandy(int amount = 1)
       : base(0x469e) =>
       Stackable = true;

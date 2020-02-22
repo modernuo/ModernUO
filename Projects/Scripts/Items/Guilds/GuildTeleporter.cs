@@ -7,6 +7,7 @@ namespace Server.Items
   {
     private Item m_Stone;
 
+    [Constructible]
     public GuildTeleporter(Item stone = null) : base(0x1869)
     {
       Weight = 1.0;

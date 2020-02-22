@@ -4,6 +4,7 @@ namespace Server.Factions
 {
   public class FactionSpikeTrap : BaseFactionTrap
   {
+    [Constructible]
     public FactionSpikeTrap(Faction f = null, Mobile m = null) : base(f, m, 0x11A0)
     {
     }

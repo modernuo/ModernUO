@@ -10,6 +10,7 @@ namespace Server.Items
 
   public class CommodityDeed : Item
   {
+    [Constructible]
     public CommodityDeed(Item commodity = null) : base(0x14F0)
     {
       Weight = 1.0;

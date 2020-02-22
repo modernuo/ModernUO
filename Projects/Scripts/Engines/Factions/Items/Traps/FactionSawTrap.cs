@@ -4,6 +4,7 @@ namespace Server.Factions
 {
   public class FactionSawTrap : BaseFactionTrap
   {
+    [Constructible]
     public FactionSawTrap(Faction f = null, Mobile m = null) : base(f, m, 0x11AC)
     {
     }

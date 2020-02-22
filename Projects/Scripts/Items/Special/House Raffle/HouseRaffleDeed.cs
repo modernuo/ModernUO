@@ -10,6 +10,7 @@ namespace Server.Items
     private Point3D m_PlotLocation;
     private HouseRaffleStone m_Stone;
 
+    [Constructible]
     public HouseRaffleDeed(HouseRaffleStone stone = null, Mobile m = null) : base(0x2830)
     {
       m_Stone = stone;

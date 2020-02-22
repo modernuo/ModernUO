@@ -28,6 +28,7 @@ namespace Server.Items
     {
     }
 
+    [Constructible]
     public RepairDeed(RepairSkillType skill = RepairSkillType.Smithing, double level = 100.0,
       Mobile crafter = null, bool normalizeLevel = true) : base(0x14F0)
     {

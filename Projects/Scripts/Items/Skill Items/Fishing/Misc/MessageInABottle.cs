@@ -7,6 +7,7 @@ namespace Server.Items
   {
     private int m_Level;
 
+    [Constructible]
     public MessageInABottle(Map map = null) : this(map, GetRandomLevel())
     {
     }

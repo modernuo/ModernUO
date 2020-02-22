@@ -29,6 +29,7 @@ namespace Server.Items
     [CommandProperty( AccessLevel.GameMaster )]
     public int Bolts { get; set; }
 
+    [Constructible]
     public ArcheryButte(int itemID = 0x100A) : base(itemID)
     {
       MinSkill = -25.0;

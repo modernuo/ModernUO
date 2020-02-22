@@ -9,6 +9,7 @@ namespace Server.Mobiles
 
     private Mobile m_Focus;
 
+    [Constructible]
     public WarriorGuard(Mobile target = null) : base(target)
     {
       InitStats(1000, 1000, 1000);
