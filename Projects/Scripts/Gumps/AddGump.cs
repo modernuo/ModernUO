@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Server.Network;
 using Server.Targeting;
@@ -136,11 +137,11 @@ namespace Server.Gumps
 
       for (int i = 0; i < asms.Length; ++i)
       {
-        types = AssemblyHandler.GetTypeCache(asms[i]).Types;
+        types = AssemblyHandler.GetTypeCache(asms[i]).Types.ToArray();
         Match(match, types, results);
       }
 
-      types = AssemblyHandler.GetTypeCache(Core.Assembly).Types;
+      types = AssemblyHandler.GetTypeCache(Core.Assembly).Types.ToArray();
       Match(match, types, results);
 
       results.Sort(new TypeNameComparer());

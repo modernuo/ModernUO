@@ -32,7 +32,7 @@ namespace Server.Engines.BulkOrders
           string type = reader.ReadString();
 
           if (type != null)
-            ItemType = AssemblyHandler.FindTypeByFullName(type);
+            ItemType = AssemblyHandler.FindFirstTypeForName(type);
 
           RequireExceptional = reader.ReadBool();
 

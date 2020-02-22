@@ -316,7 +316,7 @@ namespace Server.Commands
 
       for (int i = 0; i < split.Length; ++i)
       {
-        Type type = AssemblyHandler.FindTypeByName(split[i].Trim());
+        Type type = AssemblyHandler.FindFirstTypeForName(split[i].Trim());
 
         if (type == null)
           Console.WriteLine("Match type not found ('{0}')", split[i].Trim());

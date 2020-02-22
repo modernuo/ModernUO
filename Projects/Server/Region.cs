@@ -969,7 +969,7 @@ namespace Server
       Type type;
       try
       {
-        type = AssemblyHandler.FindTypeByName(s, false);
+        type = AssemblyHandler.FindFirstTypeForName(s, false);
       }
       catch
       {

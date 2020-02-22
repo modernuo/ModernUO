@@ -282,7 +282,7 @@ namespace Server.Commands
           int count = bin.ReadInt32();
 
           for (int i = 0; i < count; ++i)
-            types.Add(AssemblyHandler.FindTypeByFullName(bin.ReadString()));
+            types.Add(AssemblyHandler.FindFirstTypeForName(bin.ReadString()));
         }
 
         long total = 0;

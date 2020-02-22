@@ -88,7 +88,7 @@ namespace Server.Engines.MLQuests.Items
       string typeName = reader.ReadString();
 
       if (typeName != null)
-        m_QuestType = AssemblyHandler.FindTypeByFullName(typeName, false);
+        m_QuestType = AssemblyHandler.FindFirstTypeForName(typeName, false);
 
       Message = TextDefinition.Deserialize(reader);
     }
@@ -186,7 +186,7 @@ namespace Server.Engines.MLQuests.Items
       string typeName = reader.ReadString();
 
       if (typeName != null)
-        m_TicketType = AssemblyHandler.FindTypeByFullName(typeName, false);
+        m_TicketType = AssemblyHandler.FindFirstTypeForName(typeName, false);
 
       Message = TextDefinition.Deserialize(reader);
     }

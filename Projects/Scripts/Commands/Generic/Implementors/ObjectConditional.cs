@@ -89,7 +89,7 @@ namespace Server.Commands.Generic
 
       int index = 0;
 
-      Type objectType = AssemblyHandler.FindTypeByName(args[offset + index], true);
+      Type objectType = AssemblyHandler.FindFirstTypeForName(args[offset + index], true);
 
       if (objectType == null)
         throw new Exception($"No type with that name ({args[offset + index]}) was found.");

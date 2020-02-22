@@ -33,7 +33,7 @@ namespace Server.Items
       SaveFlag flags = (SaveFlag)reader.ReadEncodedInt();
 
       if (GetSaveFlag(flags, SaveFlag.Type))
-        Type = AssemblyHandler.FindTypeByFullName(reader.ReadString(), false);
+        Type = AssemblyHandler.FindFirstTypeForName(reader.ReadString(), false);
 
       if (GetSaveFlag(flags, SaveFlag.Name))
         Name = TextDefinition.Deserialize(reader);
