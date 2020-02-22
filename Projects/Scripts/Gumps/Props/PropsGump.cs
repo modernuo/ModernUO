@@ -273,7 +273,7 @@ namespace Server.Gumps
 
           CPA cpa = GetCPA(prop);
 
-          if (prop.CanWrite && cpa != null && m_Mobile.AccessLevel >= cpa.WriteLevel && !cpa.ReadOnly)
+          if ((!prop.GetType().IsValueType || prop.CanWrite) && cpa != null && m_Mobile.AccessLevel >= cpa.WriteLevel && !cpa.ReadOnly)
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 3);
         }
       }
@@ -328,7 +328,7 @@ namespace Server.Gumps
 
             CPA attr = GetCPA(prop);
 
-            if (!prop.CanWrite || attr == null || from.AccessLevel < attr.WriteLevel || attr.ReadOnly)
+            if (prop.GetType().IsValueType && !prop.CanWrite || attr == null || from.AccessLevel < attr.WriteLevel || attr.ReadOnly)
               return;
 
             Type type = prop.PropertyType;
