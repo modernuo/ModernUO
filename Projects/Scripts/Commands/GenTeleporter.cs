@@ -3,57 +3,68 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Server.Commands
 {
-  public class Location : IComparable
+  public class MapConverter : JsonConverter<Map>
   {
-    public Point3D Pos;
-    public Map Map;
-    public Location(int x, int y, int z, Map m)
+    public override Map Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+      => Map.Parse(reader.GetString());
+    public override void Write(Utf8JsonWriter writer, Map value, JsonSerializerOptions options)
+      => writer.WriteStringValue(value.Name);
+  }
+  public class Point3DConverter : JsonConverter<Point3D>
+  {
+    public override Point3D Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-      Pos = new Point3D(x, y, z);
-      Map = m;
+      if (reader.TokenType != JsonTokenType.StartArray)
+        throw new JsonException($"Point3D requires an array of exactly 3 integers. Invalid Starting TokenType: ${reader.TokenType}");
+      reader.Read();
+      var data = new List<int>();
+      for (; reader.TokenType != JsonTokenType.EndArray; reader.Read())
+        data.Add(reader.GetInt32());
+      if (data.Count < 2 || data.Count > 3)
+        throw new JsonException($"Invalid number of parameters for Point3D, {data.Count} were provided when either 2 or 3 expected.");
+      return new Point3D(data[0], data[1], data.Count == 3 ? data[2] : 0);
     }
-
-    public int CompareTo(object obj)
+    public override void Write(Utf8JsonWriter writer, Point3D value, JsonSerializerOptions options)
     {
-      if (!(obj is Location))
-        return GetHashCode().CompareTo(obj.GetHashCode());
-
-      Location l = (Location)obj;
-      if (l.Map.MapID != Map.MapID)
-        return l.Map.MapID - Map.MapID;
-      if (l.Pos.X != Pos.X)
-        return l.Pos.X - Pos.X;
-      if (l.Pos.Y != Pos.Y)
-        return l.Pos.Y - Pos.Y;
-      return l.Pos.Z - Pos.Z;
+      writer.WriteStartArray();
+      writer.WriteNumberValue(value.X);
+      writer.WriteNumberValue(value.Y);
+      writer.WriteNumberValue(value.Z);
+      writer.WriteEndArray();
     }
+  }
 
-    public override string ToString() => $"{{{Map.MapID}}}:({Pos.X},{Pos.Y},{Pos.Z})";
+  public struct Location
+  {
+    [JsonPropertyName("p"), JsonConverter(typeof(Point3DConverter))] public Point3D Pos { get; set; }
+    [JsonPropertyName("m"), JsonConverter(typeof(MapConverter))] public Map Map { get; set; }
+    public override string ToString() => $"({Map.Name}:{Pos.X},{Pos.Y},{Pos.Z})";
     public override int GetHashCode() => ToString().GetHashCode();
   }
-  public class TeleporterDefinition
+  public struct TeleporterDefinition
   {
-    public Location Source;
-    public Location Destination;
-    public bool Back;
-    public TeleporterDefinition(Location s, Location d, bool b)
-    {
-      Source = s;
-      Destination = d;
-      Back = b;
-    }
+    [JsonPropertyName("s")] public Location Source { get; set; }
+    [JsonPropertyName("d")] public Location Destination { get; set; }
+    [JsonPropertyName("b")] public bool Back { get; set; }
+    public override string ToString() => $"{{{Source},{Destination},{Back}}}";
+    public override int GetHashCode() => ToString().GetHashCode();
   }
   public class GenTeleporter
   {
-    private const int SuccessHue = 72;
-    private const int WarningHue = 53;
-    private const int ErrorHue = 33;
-    private const string CSVSeperator = ",";
+    private const int SuccessHue = 72, WarningHue = 53, ErrorHue = 33;
     private static readonly string TeleporterDataPath = Path.Combine("Data", "teleporters.csv");
-    private static readonly List<Item> m_List = new List<Item>();
+    private static readonly string TeleporterJsonDataPath = Path.Combine("Data", "teleporters.json");
+    private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
+    {
+      AllowTrailingCommas = true,
+      PropertyNameCaseInsensitive = true,
+      ReadCommentHandling = JsonCommentHandling.Skip
+    };
 
     public static void Initialize()
     {
@@ -67,11 +78,16 @@ namespace Server.Commands
     {
       e.Mobile.SendMessage("Removing teleporters, please wait.");
       int count = 0;
-      ProcessTeleporterData(e, x =>
+      if (ProcessTeleporterData(e, x =>
+       {
+         count += TeleportersCreator.DeleteTeleporters(x.Source);
+         if (x.Back) count += TeleportersCreator.DeleteTeleporters(x.Destination);
+       }))
       {
-        count += TeleportersCreator.DeleteTeleporters(x.Source);
-        if (x.Back) count += TeleportersCreator.DeleteTeleporters(x.Destination);
-      });
+        if (count > 0)
+          e.Mobile.SendMessage(WarningHue, $"Partial Completion, {count} Teleporters Removed.");
+        return;
+      }
       e.Mobile.SendMessage(WarningHue, $"{count} Teleporters Removed.");
     }
 
@@ -81,45 +97,37 @@ namespace Server.Commands
     {
       e.Mobile.SendMessage("Generating teleporters, please wait.");
       TeleportersCreator c = new TeleportersCreator();
-      ProcessTeleporterData(e, c.CreateTeleporter);
+      if (ProcessTeleporterData(e, c.CreateTeleporter))
+      {
+        if (c.DelCount > 0)
+          e.Mobile.SendMessage(WarningHue, $"Partial Completion: {c.DelCount} Teleporters Removed.");
+        if (c.Count > 0)
+          e.Mobile.SendMessage(WarningHue, $"Partial Completion: {c.Count} Teleporters Added.");
+        return;
+      }
       e.Mobile.SendMessage(SuccessHue, $"Teleporter generating complete.");
       e.Mobile.SendMessage(WarningHue, $"{c.DelCount} Teleporters Removed.");
       e.Mobile.SendMessage(SuccessHue, $"{c.Count} Teleporters Added.");
     }
 
-    private static void ProcessTeleporterData(CommandEventArgs e, Action<TeleporterDefinition> processor)
+    private static bool ProcessTeleporterData(CommandEventArgs e, Action<TeleporterDefinition> processor)
     {
-      using StreamReader reader = new StreamReader(TeleporterDataPath);
-      string line;
-      int lineNum = 0;
-      while ((line = reader.ReadLine()) != null)
+      try
       {
-        lineNum++;
-        line = line.Trim();
-        if (line.StartsWith("#"))
-          continue;
-        string[] parts = line.Split(CSVSeperator);
-        if (parts.Length != 9)
-        {
-          e.Mobile.SendMessage(ErrorHue, $"Bad teleporter definition on line {lineNum}");
-          continue;
-        }
-        try
-        {
-          processor(new TeleporterDefinition(
-            new Location(int.Parse(parts[0]), int.Parse(parts[1]), int.Parse(parts[2]), Map.Parse(parts[3])),
-            new Location(int.Parse(parts[4]), int.Parse(parts[5]), int.Parse(parts[6]), Map.Parse(parts[7])),
-            bool.Parse(parts[8])));
-        }
-        catch (FormatException)
-        {
-          e.Mobile.SendMessage(ErrorHue, $"Bad number format on line {lineNum}");
-        }
-        catch (ArgumentException ex)
-        {
-          e.Mobile.SendMessage(ErrorHue, $"Argument Execption {ex.Message} on line {lineNum}");
-        }
+        string json;
+        using (StreamReader reader = new StreamReader(TeleporterJsonDataPath))
+          json = reader.ReadToEnd();
+        var teleporters = JsonSerializer.Deserialize<List<TeleporterDefinition>>(json, JsonOptions);
+        for (int i = 0; i < teleporters.Count; i++)
+          processor(teleporters[i]);
       }
+      catch (Exception ex)
+      {
+        Console.WriteLine(ex.ToString());
+        e.Mobile.SendMessage(ErrorHue, $"Failed to load/process data file '{TeleporterJsonDataPath}'");
+        return true;
+      }
+      return false;
     }
 
     class TeleportersCreator
