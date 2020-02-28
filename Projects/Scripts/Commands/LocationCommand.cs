@@ -15,7 +15,9 @@ namespace Server.Commands
       ObjectTypes = ObjectTypes.All;
       Supports = CommandSupport.Single | CommandSupport.Multi;
       Usage = "Location [itemIds ...]";
-      Description = "Retrieves the positional coordinates of a target. Displaying a message above the item, mobile, or environment. Environment targets will also have a graphic temporarily displayed on the tile. This graphic can be changed to the provided list of itemIds.";
+      Description = "Retrieves the positional coordinates of a target. Displaying a message above the item, "
+                  + "mobile, or environment. Environment targets will also have a graphic temporarily displayed "
+                  + "on the tile. This graphic can be changed to the provided list of itemIds.";
     }
 
     public override void Execute(CommandEventArgs e, object obj)
@@ -23,13 +25,9 @@ namespace Server.Commands
       int[] graphics = new[] { 0x17AF, 0X17B0, 0X17B1, 0X17B2 };
       if (e.Arguments.Length > 0)
         graphics = e.Arguments
-          .Select(x =>
-          {
-            int result;
-            if (x.StartsWith("0x"))
-              return int.TryParse(x.Substring(2), NumberStyles.HexNumber, CultureInfo.CurrentCulture, out result) ? result : (int?)null;
-            return int.TryParse(x, out result) ? result : (int?)null;
-          })
+          .Select(x => int.TryParse(x, out int result)
+                     ? result : int.TryParse(x.Substring(2), NumberStyles.HexNumber, CultureInfo.CurrentCulture, out result)
+                     ? result : (int?)null)
           .Where(x => x.HasValue)
           .Select(x => x.Value)
           .ToArray();
@@ -45,12 +43,10 @@ namespace Server.Commands
         }
         else if (obj is Mobile entity) entity.SayTo(e.Mobile, label);
         else if (obj is Item item) item.LabelTo(e.Mobile, label);
-        AddResponse($"Location: (x:{point.X}, y:{point.Y}, z:{point.Z})");
+        AddResponse($"Location: {label}");
       }
       else
-      {
         LogFailure("That is not locatable.");
-      }
     }
   }
 }
