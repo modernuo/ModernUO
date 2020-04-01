@@ -3762,6 +3762,26 @@ namespace Server
 
     #endregion
 
+    #region InRange
+    public virtual bool InRange(Point2D p, int range) =>
+      p.m_X >= Location.m_X - range
+      && p.m_X <= Location.m_X + range
+      && p.m_Y >= Location.m_Y - range
+      && p.m_Y <= Location.m_Y + range;
+
+    public virtual bool InRange(Point3D p, int range) =>
+      p.m_X >= Location.m_X - range
+      && p.m_X <= Location.m_X + range
+      && p.m_Y >= Location.m_Y - range
+      && p.m_Y <= Location.m_Y + range;
+
+    public virtual bool InRange(IPoint2D p, int range) =>
+      p.X >= Location.m_X - range
+      && p.X <= Location.m_X + range
+      && p.Y >= Location.m_Y - range
+      && p.Y <= Location.m_Y + range;
+    #endregion
+
     #region OnDoubleClick[...]
 
     public virtual void OnDoubleClick(Mobile from)

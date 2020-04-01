@@ -607,6 +607,8 @@ namespace Server
 
     public static bool TOL => Expansion >= Expansion.TOL;
 
+    public static bool EJ => Expansion >= Expansion.EJ;
+
     #endregion
   }
 
