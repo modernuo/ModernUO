@@ -440,22 +440,12 @@ namespace Server
 
     public void Write(List<Item> list)
     {
-      Write(list, false);
+      WriteItemList(list);
     }
 
     public void Write(List<Item> list, bool tidy)
     {
-      if (tidy)
-        for (int i = 0; i < list.Count;)
-          if (list[i].Deleted)
-            list.RemoveAt(i);
-          else
-            ++i;
-
-      Write(list.Count);
-
-      for (int i = 0; i < list.Count; ++i)
-        Write(list[i]);
+      WriteItemList(list, tidy);
     }
 
     public void WriteItemList<T>(List<T> list) where T : Item

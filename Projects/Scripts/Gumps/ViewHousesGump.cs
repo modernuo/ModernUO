@@ -270,7 +270,7 @@ namespace Server.Gumps
     {
       public static readonly IComparer<BaseHouse> Instance = new HouseComparer();
 
-      public int Compare(BaseHouse x, BaseHouse y) => x.BuiltOn.CompareTo(y.BuiltOn);
+      public int Compare(BaseHouse x, BaseHouse y) => x?.BuiltOn.CompareTo(y?.BuiltOn) ?? 0;
     }
   }
 }

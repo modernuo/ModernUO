@@ -32,6 +32,12 @@ namespace Server
 
     void Delete();
     void ProcessDelta();
+
+    bool InRange(Point2D p, int range);
+
+    bool InRange(Point3D p, int range);
+
+    bool InRange(IPoint2D p, int range);
   }
 
   public class Entity : IEntity, IComparable<Entity>
@@ -75,5 +81,23 @@ namespace Server
     public void ProcessDelta()
     {
     }
+
+    public bool InRange(Point2D p, int range) =>
+      p.m_X >= Location.m_X - range
+      && p.m_X <= Location.m_X + range
+      && p.m_Y >= Location.m_Y - range
+      && p.m_Y <= Location.m_Y + range;
+
+    public bool InRange(Point3D p, int range) =>
+      p.m_X >= Location.m_X - range
+      && p.m_X <= Location.m_X + range
+      && p.m_Y >= Location.m_Y - range
+      && p.m_Y <= Location.m_Y + range;
+
+    public bool InRange(IPoint2D p, int range) =>
+      p.X >= Location.m_X - range
+      && p.X <= Location.m_X + range
+      && p.Y >= Location.m_Y - range
+      && p.Y <= Location.m_Y + range;
   }
 }
