@@ -5,8 +5,8 @@ namespace Server.Items
 {
   public class MorphItem : Item
   {
-    private int m_InRange;
-    private int m_OutRange;
+    private int m_InsideRange;
+    private int m_OutsideRange;
 
     [Constructible]
     public MorphItem(int inactiveItemID, int activeItemID, int range) : this(inactiveItemID, activeItemID, range, range)
@@ -20,8 +20,8 @@ namespace Server.Items
 
       InactiveItemID = inactiveItemID;
       ActiveItemID = activeItemID;
-      InRange = inRange;
-      OutRange = outRange;
+      InsideRange = inRange;
+      OutsideRange = outRange;
     }
 
     public MorphItem(Serial serial) : base(serial)
@@ -35,29 +35,21 @@ namespace Server.Items
     public int ActiveItemID{ get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int InRange
+    public int InsideRange
     {
-      get => m_InRange;
-      set
-      {
-        if (value > 18) value = 18;
-        m_InRange = value;
-      }
+      get => m_InsideRange;
+      set => m_InsideRange = value > 18 ? 18 : value < 0 ? 0 : value;
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int OutRange
+    public int OutsideRange
     {
-      get => m_OutRange;
-      set
-      {
-        if (value > 18) value = 18;
-        m_OutRange = value;
-      }
+      get => m_OutsideRange;
+      set => m_OutsideRange = value > 18 ? 18 : value < 0 ? 0 : value;
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int CurrentRange => ItemID == InactiveItemID ? InRange : OutRange;
+    public int CurrentRange => ItemID == InactiveItemID ? InsideRange : OutsideRange;
 
     public override bool HandlesOnMovement => true;
 
@@ -93,11 +85,11 @@ namespace Server.Items
 
       writer.Write(1); // version
 
-      writer.Write(m_OutRange);
+      writer.Write(m_OutsideRange);
 
       writer.Write(InactiveItemID);
       writer.Write(ActiveItemID);
-      writer.Write(m_InRange);
+      writer.Write(m_InsideRange);
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -110,17 +102,17 @@ namespace Server.Items
       {
         case 1:
         {
-          m_OutRange = reader.ReadInt();
+          m_OutsideRange = reader.ReadInt();
           goto case 0;
         }
         case 0:
         {
           InactiveItemID = reader.ReadInt();
           ActiveItemID = reader.ReadInt();
-          m_InRange = reader.ReadInt();
+          m_InsideRange = reader.ReadInt();
 
           if (version < 1)
-            m_OutRange = m_InRange;
+            m_OutsideRange = m_InsideRange;
 
           break;
         }
