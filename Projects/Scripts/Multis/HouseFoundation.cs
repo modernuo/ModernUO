@@ -1745,7 +1745,7 @@ namespace Server.Multis
             Fixtures[i].m_OffsetX = reader.ReadShort();
             Fixtures[i].m_OffsetY = reader.ReadShort();
             Fixtures[i].m_OffsetZ = reader.ReadShort();
-            Fixtures[i].m_Flags = reader.ReadInt();
+            Fixtures[i].m_Flags = (TileFlag)reader.ReadInt();
           }
 
           Revision = reader.ReadInt();
@@ -1793,7 +1793,7 @@ namespace Server.Multis
         writer.Write(ent.m_OffsetX);
         writer.Write(ent.m_OffsetY);
         writer.Write(ent.m_OffsetZ);
-        writer.Write(ent.m_Flags);
+        writer.Write((int)ent.m_Flags);
       }
 
       writer.Write(Revision);
