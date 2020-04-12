@@ -24,11 +24,13 @@ namespace Server.Spells.Spellweaving
 
     public static void Initialize()
     {
-      EventSink.AggressiveAction += delegate(AggressiveActionEventArgs e)
-      {
-        if (TransformationSpellHelper.UnderTransformation(e.Aggressor, typeof(EtherealVoyageSpell)))
-          TransformationSpellHelper.RemoveContext(e.Aggressor, true);
-      };
+      EventSink.AggressiveAction += RemoveTransformationOnAggressiveAction;
+    }
+
+    public static void RemoveTransformationOnAggressiveAction(AggressiveActionEventArgs e)
+    {
+      if (TransformationSpellHelper.UnderTransformation(e.Aggressor, typeof(EtherealVoyageSpell)))
+        TransformationSpellHelper.RemoveContext(e.Aggressor, true);
     }
 
     public override bool CheckCast()

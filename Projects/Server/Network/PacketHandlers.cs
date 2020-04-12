@@ -157,6 +157,8 @@ namespace Server.Network
       Register(0xD7, 0, true, EncodedCommand);
       Register(0xE1, 0, false, ClientType);
       Register(0xEF, 21, false, LoginServerSeed);
+      Register(0xEC, 0, false, EquipMacro);
+      Register(0xED, 0, false, UnequipMacro);
       Register(0xF4, 0, false, CrashReport);
       Register(0xF8, 106, false, CreateCharacter70160);
       Register(0xFB, 2, false, ShowPublicHouseContent);
@@ -179,6 +181,9 @@ namespace Server.Network
       RegisterExtended(0x1C, true, CastSpell);
       RegisterExtended(0x24, false, UnhandledBF);
       RegisterExtended(0x2C, true, BandageTarget);
+      RegisterExtended(0x2D, true, TargetedSpell);
+      RegisterExtended(0x2E, true, TargetedSkillUse);
+      RegisterExtended(0x30, true, TargetByResourceMacro);
       RegisterExtended(0x32, true, ToggleFlying);
 
       RegisterEncoded(0x19, true, SetAbility);
@@ -381,17 +386,17 @@ namespace Server.Network
 
     public static void SetAbility(NetState state, IEntity e, EncodedReader reader)
     {
-      EventSink.InvokeSetAbility(new SetAbilityEventArgs(state.Mobile, reader.ReadInt32()));
+      EventSink.InvokeSetAbility(state.Mobile, reader.ReadInt32());
     }
 
     public static void GuildGumpRequest(NetState state, IEntity e, EncodedReader reader)
     {
-      EventSink.InvokeGuildGumpRequest(new GuildGumpRequestArgs(state.Mobile));
+      EventSink.InvokeGuildGumpRequest(state.Mobile);
     }
 
     public static void QuestGumpRequest(NetState state, IEntity e, EncodedReader reader)
     {
-      EventSink.InvokeQuestGumpRequest(new QuestGumpRequestArgs(state.Mobile));
+      EventSink.InvokeQuestGumpRequest(state.Mobile);
     }
 
     public static void EncodedCommand(NetState state, PacketReader pvSrc)
@@ -431,12 +436,12 @@ namespace Server.Network
       Mobile targ = World.FindMobile(pvSrc.ReadUInt32());
 
       if (targ != null)
-        EventSink.InvokeRenameRequest(new RenameRequestEventArgs(from, targ, pvSrc.ReadStringSafe()));
+        EventSink.InvokeRenameRequest(from, targ, pvSrc.ReadStringSafe());
     }
 
     public static void ChatRequest(NetState state, PacketReader pvSrc)
     {
-      EventSink.InvokeChatRequest(new ChatRequestEventArgs(state.Mobile));
+      EventSink.InvokeChatRequest(state.Mobile);
     }
 
     public static void SecureTrade(NetState state, PacketReader pvSrc)
@@ -591,7 +596,7 @@ namespace Server.Network
       pvSrc.Seek(30, SeekOrigin.Current);
       int index = pvSrc.ReadInt32();
 
-      EventSink.InvokeDeleteRequest(new DeleteRequestEventArgs(state, index));
+      EventSink.InvokeDeleteRequest(state, index);
     }
 
     public static void DeathStatusResponse(NetState state, PacketReader pvSrc)
@@ -697,7 +702,7 @@ namespace Server.Network
       {
         case 0xC7: // Animate
         {
-          EventSink.InvokeAnimateRequest(new AnimateRequestEventArgs(m, command));
+          EventSink.InvokeAnimateRequest(m, command);
 
           break;
         }
@@ -715,7 +720,7 @@ namespace Server.Network
           if (!int.TryParse(command, out int booktype))
             booktype = 1;
 
-          EventSink.InvokeOpenSpellbookRequest(new OpenSpellbookRequestEventArgs(m, booktype));
+          EventSink.InvokeOpenSpellbookRequest(m, booktype);
 
           break;
         }
@@ -728,14 +733,14 @@ namespace Server.Network
             int spellID = Utility.ToInt32(split[0]) - 1;
             uint serial = split.Length > 1 ? Utility.ToUInt32(split[1]) : (uint)Serial.MinusOne;
 
-            EventSink.InvokeCastSpellRequest(new CastSpellRequestEventArgs(m, spellID, World.FindItem(serial)));
+            EventSink.InvokeCastSpellRequest(m, spellID, World.FindItem(serial));
           }
 
           break;
         }
         case 0x58: // Open door
         {
-          EventSink.InvokeOpenDoorMacroUsed(new OpenDoorMacroEventArgs(m));
+          EventSink.InvokeOpenDoorMacroUsed(m);
 
           break;
         }
@@ -743,7 +748,7 @@ namespace Server.Network
         {
           int spellID = Utility.ToInt32(command) - 1;
 
-          EventSink.InvokeCastSpellRequest(new CastSpellRequestEventArgs(m, spellID, null));
+          EventSink.InvokeCastSpellRequest(m, spellID, null);
 
           break;
         }
@@ -751,7 +756,7 @@ namespace Server.Network
         {
           int virtueID = Utility.ToInt32(command) - 1;
 
-          EventSink.InvokeVirtueMacroRequest(new VirtueMacroRequestEventArgs(m, virtueID));
+          EventSink.InvokeVirtueMacroRequest(m, virtueID);
 
           break;
         }
@@ -863,7 +868,7 @@ namespace Server.Network
       {
         case 0x00: // display request
         {
-          EventSink.InvokeProfileRequest(new ProfileRequestEventArgs(beholder, beheld));
+          EventSink.InvokeProfileRequest(beholder, beheld);
 
           break;
         }
@@ -877,7 +882,7 @@ namespace Server.Network
 
           string text = pvSrc.ReadUnicodeString(length);
 
-          EventSink.InvokeChangeProfileRequest(new ChangeProfileRequestEventArgs(beholder, beheld, text));
+          EventSink.InvokeChangeProfileRequest(beholder, beheld, text);
 
           break;
         }
@@ -1011,7 +1016,7 @@ namespace Server.Network
 
     public static void HelpRequest(NetState state, PacketReader pvSrc)
     {
-      EventSink.InvokeHelpRequest(new HelpRequestEventArgs(state.Mobile));
+      EventSink.InvokeHelpRequest(state.Mobile);
     }
 
     public static void TargetResponse(NetState state, PacketReader pvSrc)
@@ -1216,14 +1221,14 @@ namespace Server.Network
           Mobile beheld = World.FindMobile(pvSrc.ReadUInt32());
 
           if (beheld != null)
-            EventSink.InvokeVirtueGumpRequest(new VirtueGumpRequestEventArgs(state.Mobile, beheld));
+            EventSink.InvokeVirtueGumpRequest(state.Mobile, beheld);
         }
         else
         {
           Mobile beheld = World.FindMobile(serial);
 
           if (beheld != null)
-            EventSink.InvokeVirtueItemRequest(new VirtueItemRequestEventArgs(state.Mobile, beheld, buttonID));
+            EventSink.InvokeVirtueItemRequest(state.Mobile, beheld, buttonID);
         }
       }
     }
@@ -1513,7 +1518,7 @@ namespace Server.Network
 
       int spellID = pvSrc.ReadInt16() - 1;
 
-      EventSink.InvokeCastSpellRequest(new CastSpellRequestEventArgs(from, spellID, spellbook));
+      EventSink.InvokeCastSpellRequest(from, spellID, spellbook);
     }
 
     public static void BandageTarget(NetState state, PacketReader pvSrc)
@@ -1535,7 +1540,7 @@ namespace Server.Network
         if (target == null)
           return;
 
-        EventSink.InvokeBandageTargetRequest(new BandageTargetRequestEventArgs(from, bandage, target));
+        EventSink.InvokeBandageTargetRequest(from, bandage, target);
 
         from.NextActionTime = Core.TickCount + Mobile.ActionDelay;
       }
@@ -1691,12 +1696,12 @@ namespace Server.Network
 
     public static void StunRequest(NetState state, PacketReader pvSrc)
     {
-      EventSink.InvokeStunRequest(new StunRequestEventArgs(state.Mobile));
+      EventSink.InvokeStunRequest(state.Mobile);
     }
 
     public static void DisarmRequest(NetState state, PacketReader pvSrc)
     {
-      EventSink.InvokeDisarmRequest(new DisarmRequestEventArgs(state.Mobile));
+      EventSink.InvokeDisarmRequest(state.Mobile);
     }
 
     public static void StatLockChange(NetState state, PacketReader pvSrc)
@@ -1828,7 +1833,7 @@ namespace Server.Network
     {
       CV version = state.Version = new CV(pvSrc.ReadString());
 
-      EventSink.InvokeClientVersionReceived(new ClientVersionReceivedArgs(state, version));
+      EventSink.InvokeClientVersionReceived(state, version);
     }
 
     public static void ClientType(NetState state, PacketReader pvSrc)
@@ -1838,7 +1843,7 @@ namespace Server.Network
       int type = pvSrc.ReadUInt16();
       CV version = state.Version = new CV(pvSrc.ReadString());
 
-      //EventSink.InvokeClientVersionReceived( new ClientVersionReceivedArgs( state, version ) );//todo
+      EventSink.InvokeClientVersionReceived(state, version);
     }
 
     public static void MobileQuery(NetState state, PacketReader pvSrc)
@@ -2025,7 +2030,7 @@ namespace Server.Network
       state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
       state.Send(new MapChange(m));
 
-      EventSink.InvokeLogin(new LoginEventArgs(m));
+      EventSink.InvokeLogin(m);
 
       m.ClearFastwalkStack();
     }
@@ -2491,6 +2496,47 @@ namespace Server.Network
     {
       state.Send(new AccountLoginRej(reason));
       state.Dispose();
+    }
+
+    public static void EquipMacro(NetState ns, PacketReader pvSrc)
+    {
+      int count = pvSrc.ReadByte();
+      List<Serial> serialList = new List<Serial>(count);
+      for (int i = 0; i < count; ++i)
+        serialList.Add(pvSrc.ReadUInt32());
+
+      EventSink.InvokeEquipMacro(ns.Mobile, serialList);
+    }
+
+    public static void UnequipMacro(NetState ns, PacketReader pvSrc)
+    {
+      int count = pvSrc.ReadByte();
+      List<Layer> layers = new List<Layer>(count);
+      for (int i = 0; i < count; ++i)
+        layers.Add((Layer)pvSrc.ReadUInt16());
+
+      EventSink.InvokeUnequipMacro(ns.Mobile, layers);
+    }
+
+    public static void TargetedSpell(NetState ns, PacketReader pvSrc)
+    {
+      short spellId = (short)(pvSrc.ReadInt16() - 1);    // zero based;
+
+      EventSink.InvokeTargetedSpell(ns.Mobile, World.FindEntity(pvSrc.ReadUInt32()), spellId);
+    }
+
+    public static void TargetedSkillUse(NetState ns, PacketReader pvSrc)
+    {
+      short skillId = pvSrc.ReadInt16();
+
+      EventSink.InvokeTargetedSkillUse(ns.Mobile, World.FindEntity(pvSrc.ReadUInt32()), skillId);
+    }
+
+    public static void TargetByResourceMacro(NetState ns, PacketReader pvSrc)
+    {
+      Serial serial = pvSrc.ReadUInt32();
+
+      if (serial.IsItem) EventSink.InvokeTargetByResourceMacro(ns.Mobile, World.FindItem(serial), pvSrc.ReadInt16());
     }
 
     private class LoginTimer : Timer

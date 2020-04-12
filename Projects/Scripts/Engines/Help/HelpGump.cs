@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Engines.ConPVP;
 using Server.Factions;
 using Server.Gumps;
@@ -194,19 +195,17 @@ namespace Server.Engines.Help
       EventSink.HelpRequest += EventSink_HelpRequest;
     }
 
-    private static void EventSink_HelpRequest(HelpRequestEventArgs e)
+    private static void EventSink_HelpRequest(Mobile m)
     {
-      foreach (Gump g in e.Mobile.NetState.Gumps)
-        if (g is HelpGump)
-          return;
+      if (m.NetState.Gumps.OfType<HelpGump>().Any()) return;
 
-      if (!PageQueue.CheckAllowedToPage(e.Mobile))
+      if (!PageQueue.CheckAllowedToPage(m))
         return;
 
-      if (PageQueue.Contains(e.Mobile))
-        e.Mobile.SendMenu(new ContainedMenu(e.Mobile));
+      if (PageQueue.Contains(m))
+        m.SendMenu(new ContainedMenu(m));
       else
-        e.Mobile.SendGump(new HelpGump(e.Mobile));
+        m.SendGump(new HelpGump(m));
     }
 
     private static bool IsYoung(Mobile m) => m is PlayerMobile mobile && mobile.Young;

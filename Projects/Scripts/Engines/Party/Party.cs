@@ -134,9 +134,8 @@ namespace Server.Engines.PartySystem
       }
     }
 
-    public static void EventSink_PlayerDeath(PlayerDeathEventArgs e)
+    public static void EventSink_PlayerDeath(Mobile from)
     {
-      Mobile from = e.Mobile;
       Party p = Get(from);
 
       if (p != null)
@@ -152,9 +151,8 @@ namespace Server.Engines.PartySystem
       }
     }
 
-    public static void EventSink_Login(LoginEventArgs e)
+    public static void EventSink_Login(Mobile from)
     {
-      Mobile from = e.Mobile;
       Party p = Get(from);
 
       if (p != null)
@@ -163,9 +161,8 @@ namespace Server.Engines.PartySystem
         from.Party = null;
     }
 
-    public static void EventSink_Logout(LogoutEventArgs e)
+    public static void EventSink_Logout(Mobile from)
     {
-      Mobile from = e.Mobile;
       Party p = Get(from);
 
       p?.Remove(from);

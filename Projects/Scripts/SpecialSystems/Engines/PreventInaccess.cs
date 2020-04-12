@@ -37,11 +37,9 @@ namespace Server.Misc
         EventSink.Login += OnLogin;
     }
 
-    public static void OnLogin(LoginEventArgs e)
+    public static void OnLogin(Mobile from)
     {
-      Mobile from = e.Mobile;
-
-      if (from?.AccessLevel < AccessLevel.Counselor)
+      if (from == null || from.AccessLevel < AccessLevel.Counselor)
         return;
 
       if (HasDisconnected(from))

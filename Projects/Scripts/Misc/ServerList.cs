@@ -9,7 +9,7 @@ using Server.Network;
 
 namespace Server.Misc
 {
-  public class ServerList
+  public static class ServerList
   {
     /*
      * The default setting for Address, a value of 'null', will use your local IP address. If all of your local IP addresses

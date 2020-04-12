@@ -95,6 +95,12 @@ namespace Server
     }
   }
 
+  public static partial class EventSink
+  {
+    public static event Action<CommandEventArgs> Command;
+    public static void InvokeCommand(CommandEventArgs e) => Command?.Invoke(e);
+  }
+
   public class CommandEntry : IComparable<CommandEntry>
   {
     public CommandEntry(string command, CommandEventHandler handler, AccessLevel accessLevel)

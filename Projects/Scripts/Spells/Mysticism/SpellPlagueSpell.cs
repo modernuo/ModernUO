@@ -93,9 +93,9 @@ namespace Server.Spells.Mysticism
         context.OnDamage();
     }
 
-    private static void OnPlayerDeath(PlayerDeathEventArgs e)
+    private static void OnPlayerDeath(Mobile m)
     {
-      RemoveEffect(e.Mobile);
+      RemoveEffect(m);
     }
 
     protected void VisualEffect(Mobile to)

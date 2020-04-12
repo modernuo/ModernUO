@@ -11,11 +11,13 @@ namespace Server
     public static void Initialize()
     {
       if (Enabled)
-        EventSink.ClientVersionReceived += delegate(ClientVersionReceivedArgs args)
-        {
-          if (args.State.Mobile is PlayerMobile pm)
-            Timer.DelayCall(TimeSpan.Zero, pm.ResendBuffs);
-        };
+        EventSink.ClientVersionReceived += ResendBuffsOnClientVersionReceived;
+    }
+
+    public static void ResendBuffsOnClientVersionReceived(NetState ns, ClientVersion cv)
+    {
+      if (ns.Mobile is PlayerMobile pm)
+        Timer.DelayCall(TimeSpan.Zero, pm.ResendBuffs);
     }
 
     #region Properties

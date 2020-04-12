@@ -206,7 +206,6 @@ namespace Server
             tileList.Add(new MultiTileEntry(itemid, x, y, z, tileFlag));
           }
 
-          Console.WriteLine($"ChunkID {chunkID}");
           Components[chunkID] = new MultiComponentList(tileList);
 
           stream.Seek(position, SeekOrigin.Begin); // back to position

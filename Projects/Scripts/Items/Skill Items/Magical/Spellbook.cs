@@ -245,6 +245,7 @@ namespace Server.Items
     {
       EventSink.OpenSpellbookRequest += EventSink_OpenSpellbookRequest;
       EventSink.CastSpellRequest += EventSink_CastSpellRequest;
+      EventSink.TargetedSpell += EventSink_TargetedSpell;
 
       CommandSystem.Register("AllSpells", AccessLevel.GameMaster, AllSpells_OnCommand);
     }
@@ -278,14 +279,12 @@ namespace Server.Items
       }
     }
 
-    private static void EventSink_OpenSpellbookRequest(OpenSpellbookRequestEventArgs e)
+    private static void EventSink_OpenSpellbookRequest(Mobile from, int typeID)
     {
-      Mobile from = e.Mobile;
-
       if (!DesignContext.Check(from))
         return; // They are customizing
 
-      var type = e.Type switch
+      var type = typeID switch
       {
         1 => SpellbookType.Regular,
         2 => SpellbookType.Necromancer,
@@ -302,15 +301,32 @@ namespace Server.Items
       book?.DisplayTo(from);
     }
 
-    private static void EventSink_CastSpellRequest(CastSpellRequestEventArgs e)
+    private static void EventSink_TargetedSpell(Mobile from, IEntity target, int spellId)
     {
-      Mobile from = e.Mobile;
+      if (!DesignContext.Check(from)) return; // They are customizing
 
+      Spellbook book = Find(from, spellId);
+
+      if (book?.HasSpell(spellId) != true)
+      {
+        from.SendLocalizedMessage(500015); // You do not have that spell!
+        return;
+      }
+
+      SpecialMove move = SpellRegistry.GetSpecialMove(spellId);
+
+      if (move != null)
+        SpecialMove.SetCurrentMove(from, move);
+      else
+        SpellRegistry.NewSpell(spellId, @from, null)?.Cast();
+    }
+
+    private static void EventSink_CastSpellRequest(Mobile from, int spellID, Item item)
+    {
       if (!DesignContext.Check(from))
         return; // They are customizing
 
-      Spellbook book = e.Spellbook as Spellbook;
-      int spellID = e.SpellID;
+      Spellbook book = item as Spellbook;
 
       if (book?.HasSpell(spellID) != true)
         book = Find(from, spellID);
@@ -688,7 +704,7 @@ namespace Server.Items
       if ((prop = Attributes.RegenMana) != 0)
         list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
 
-      if ((prop = Attributes.NightSight) != 0)
+      if ((Attributes.NightSight) != 0)
         list.Add(1060441); // night sight
 
       if ((prop = Attributes.ReflectPhysical) != 0)
@@ -700,7 +716,7 @@ namespace Server.Items
       if ((prop = Attributes.RegenHits) != 0)
         list.Add(1060444, prop.ToString()); // hit point regeneration ~1_val~
 
-      if ((prop = Attributes.SpellChanneling) != 0)
+      if ((Attributes.SpellChanneling) != 0)
         list.Add(1060482); // spell channeling
 
       if ((prop = Attributes.SpellDamage) != 0)

@@ -645,7 +645,7 @@ namespace Server
 
       try
       {
-        EventSink.InvokeWorldSave(new WorldSaveEventArgs(message));
+        EventSink.InvokeWorldSave(message);
       }
       catch (Exception e)
       {

@@ -1650,7 +1650,7 @@ namespace Server.Multis
       EventSink.WorldSave += EventSink_WorldSave;
     }
 
-    private static void EventSink_WorldSave(WorldSaveEventArgs e)
+    private static void EventSink_WorldSave(bool message)
     {
       new UpdateAllTimer().Start();
     }

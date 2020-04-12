@@ -723,7 +723,7 @@ namespace Server
         {
           m_Hunger = value;
 
-          EventSink.InvokeHungerChanged(new HungerChangedEventArgs(this, oldValue));
+          EventSink.InvokeHungerChanged(this, oldValue);
         }
       }
     }
@@ -1477,7 +1477,7 @@ namespace Server
           if (m_NetState == null)
           {
             OnDisconnected();
-            EventSink.InvokeDisconnected(new DisconnectedEventArgs(this));
+            EventSink.InvokeDisconnected(this);
 
             // Disconnected, start the logout timer
 
@@ -1492,7 +1492,7 @@ namespace Server
           else
           {
             OnConnected();
-            EventSink.InvokeConnected(new ConnectedEventArgs(this));
+            EventSink.InvokeConnected(this);
 
             // Connected, stop the logout timer and if needed, move to the world
 
@@ -4413,7 +4413,7 @@ namespace Server
         Stam = 0;
         Mana = 0;
 
-        EventSink.InvokePlayerDeath(new PlayerDeathEventArgs(this));
+        EventSink.InvokePlayerDeath(this);
 
         ProcessDeltaQueue();
 
@@ -7156,7 +7156,7 @@ namespace Server
 
     public virtual void DisplayPaperdollTo(Mobile to)
     {
-      EventSink.InvokePaperdollRequest(new PaperdollRequestEventArgs(to, this));
+      EventSink.InvokePaperdollRequest(to, this);
     }
 
     /// <summary>
@@ -7654,7 +7654,7 @@ namespace Server
       {
         if (m_Mobile.m_Map != Map.Internal)
         {
-          EventSink.InvokeLogout(new LogoutEventArgs(m_Mobile));
+          EventSink.InvokeLogout(m_Mobile);
 
           m_Mobile.LogoutLocation = m_Mobile.m_Location;
           m_Mobile.LogoutMap = m_Mobile.m_Map;

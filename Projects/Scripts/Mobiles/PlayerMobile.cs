@@ -543,7 +543,74 @@ namespace Server.Mobiles
       EventSink.Connected += EventSink_Connected;
       EventSink.Disconnected += EventSink_Disconnected;
 
+      EventSink.TargetedSkillUse += TargetedSkillUse;
+      EventSink.EquipMacro += EquipMacro;
+      EventSink.UnequipMacro += UnequipMacro;
+
       if (Core.SE) Timer.DelayCall(TimeSpan.Zero, CheckPets);
+    }
+
+    private static void TargetedSkillUse(Mobile from, IEntity target, int skillId)
+    {
+      if (from == null || target == null)
+        return;
+
+      from.TargetLocked = true;
+
+      if (skillId == 35)
+        AnimalTaming.DisableMessage = true;
+      // AnimalTaming.DeferredTarget = false;
+
+      if (from.UseSkill(skillId))
+        from.Target?.Invoke(from, target);
+
+      if (skillId == 35)
+        // AnimalTaming.DeferredTarget = true;
+        AnimalTaming.DisableMessage = false;
+
+      from.TargetLocked = false;
+    }
+
+    public static void EquipMacro(Mobile m, List<Serial> list)
+    {
+      if (m is PlayerMobile pm && pm.Backpack != null && pm.Alive)
+      {
+        Container pack = pm.Backpack;
+
+        foreach (var serial in list)
+        {
+          Item item = pack.Items.FirstOrDefault(i => i.Serial == serial);
+          if (item == null) continue;
+
+          Item toMove = pm.FindItemOnLayer(item.Layer);
+
+          if (toMove != null)
+          {
+            //pack.DropItem(toMove);
+            toMove.Internalize();
+
+            if (!pm.EquipItem(item))
+              pm.EquipItem(toMove);
+            else
+              pack.DropItem(toMove);
+          }
+          else
+            pm.EquipItem(item);
+        }
+      }
+    }
+
+    public static void UnequipMacro(Mobile m, List<Layer> layers)
+    {
+      if (m is PlayerMobile pm && pm.Backpack != null && pm.Alive)
+      {
+        Container pack = pm.Backpack;
+        List<Item> eq = m.Items;
+
+        foreach (var item in eq)
+          if (layers.Contains(item.Layer))
+            pack.TryDropItem(pm, item, false);
+      }
     }
 
     private static void CheckPets()
@@ -666,10 +733,8 @@ namespace Server.Mobiles
           SpecialMove.ClearCurrentMove(this);
     }
 
-    private static void OnLogin(LoginEventArgs e)
+    private static void OnLogin(Mobile from)
     {
-      Mobile from = e.Mobile;
-
       CheckAtrophies(from);
 
       if (AccountHandler.LockdownLevel > AccessLevel.Player)
@@ -925,15 +990,14 @@ namespace Server.Mobiles
         ValidateEquipment();
     }
 
-    private static void OnLogout(LogoutEventArgs e)
+    private static void OnLogout(Mobile m)
     {
-      if (e.Mobile is PlayerMobile mobile)
-        mobile.AutoStablePets();
+      (m as PlayerMobile)?.AutoStablePets();
     }
 
-    private static void EventSink_Connected(ConnectedEventArgs e)
+    private static void EventSink_Connected(Mobile m)
     {
-      if (e.Mobile is PlayerMobile pm)
+      if (m is PlayerMobile pm)
       {
         pm.SessionStart = DateTime.UtcNow;
 
@@ -943,14 +1007,13 @@ namespace Server.Mobiles
         pm.LastOnline = DateTime.UtcNow;
       }
 
-      DisguiseTimers.StartTimer(e.Mobile);
+      DisguiseTimers.StartTimer(m);
 
-      Timer.DelayCall(TimeSpan.Zero, SpecialMove.ClearAllMoves, e.Mobile);
+      Timer.DelayCall(TimeSpan.Zero, SpecialMove.ClearAllMoves, m);
     }
 
-    private static void EventSink_Disconnected(DisconnectedEventArgs e)
+    private static void EventSink_Disconnected(Mobile from)
     {
-      Mobile from = e.Mobile;
       DesignContext context = DesignContext.Find(from);
 
       if (context != null)
@@ -977,7 +1040,7 @@ namespace Server.Mobiles
         context.Foundation.RestoreRelocatedEntities();
       }
 
-      if (e.Mobile is PlayerMobile pm)
+      if (from is PlayerMobile pm)
       {
         pm.m_GameTime += DateTime.UtcNow - pm.SessionStart;
 

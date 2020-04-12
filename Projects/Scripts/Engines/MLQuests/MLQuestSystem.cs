@@ -535,9 +535,9 @@ namespace Server.Engines.MLQuests
       }
     }
 
-    public static void EventSink_QuestGumpRequest(QuestGumpRequestArgs args)
+    public static void EventSink_QuestGumpRequest(Mobile m)
     {
-      if (!Enabled || !(args.Mobile is PlayerMobile pm))
+      if (!Enabled || !(m is PlayerMobile pm))
         return;
 
       pm.SendGump(new QuestLogGump(pm));

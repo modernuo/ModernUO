@@ -96,7 +96,7 @@ namespace Server.Commands
         {
           var paramList = c.GetParameters();
           object[] args = paramList.Length == 0 ? null : new object[paramList.Length];
-          Array.Fill(args, Type.Missing);
+          if (args != null) Array.Fill(args, Type.Missing);
           try
           {
             from.SendMessage("Duping {0}...", m_Amount);

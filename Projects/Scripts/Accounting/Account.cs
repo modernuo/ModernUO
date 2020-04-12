@@ -427,9 +427,9 @@ namespace Server.Accounting
       EventSink.Login += EventSink_Login;
     }
 
-    private static void EventSink_Connected( ConnectedEventArgs e )
+    private static void EventSink_Connected(Mobile m)
     {
-      if ( !(e.Mobile.Account is Account acc) )
+      if ( !(m.Account is Account acc) )
         return;
 
       if ( acc.Young && acc.m_YoungTimer == null )
@@ -439,9 +439,9 @@ namespace Server.Accounting
       }
     }
 
-    private static void EventSink_Disconnected( DisconnectedEventArgs e )
+    private static void EventSink_Disconnected(Mobile m)
     {
-      if ( !(e.Mobile.Account is Account acc) )
+      if ( !(m.Account is Account acc) )
         return;
 
       if ( acc.m_YoungTimer != null )
@@ -450,21 +450,21 @@ namespace Server.Accounting
         acc.m_YoungTimer = null;
       }
 
-      if ( !(e.Mobile is PlayerMobile m) )
+      if ( !(m is PlayerMobile pm) )
         return;
 
-      acc.m_TotalGameTime += DateTime.UtcNow - m.SessionStart;
+      acc.m_TotalGameTime += DateTime.UtcNow - pm.SessionStart;
     }
 
-    private static void EventSink_Login( LoginEventArgs e )
+    private static void EventSink_Login(Mobile m)
     {
-      if ( !(e.Mobile is PlayerMobile m) )
+      if ( !(m is PlayerMobile pm) )
         return;
 
       if ( !(m.Account is Account acc) )
         return;
 
-      if ( m.Young && acc.Young )
+      if ( pm.Young && acc.Young )
       {
         TimeSpan ts = YoungDuration - acc.TotalGameTime;
         int hours = Math.Max( (int) ts.TotalHours, 0 );

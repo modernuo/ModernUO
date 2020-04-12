@@ -54,10 +54,8 @@ namespace Server
       }
     }
 
-    public static void OnLogin(LoginEventArgs args)
+    public static void OnLogin(Mobile m)
     {
-      Mobile m = args.Mobile;
-
       m.CheckLightLevels(true);
     }
 
@@ -69,12 +67,12 @@ namespace Server
       Clock.GetTime(from.Map, from.X, from.Y, out int hours, out int minutes);
 
       /* OSI times:
-       * 
+       *
        * Midnight ->  3:59 AM : Night
        *  4:00 AM -> 11:59 PM : Day
-       * 
+       *
        * RunUO times:
-       * 
+       *
        * 10:00 PM -> 11:59 PM : Scale to night
        * Midnight ->  3:59 AM : Night
        *  4:00 AM ->  5:59 AM : Scale to day

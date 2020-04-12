@@ -10,7 +10,7 @@ namespace Server.Misc
     PainSpike
   }
 
-  public class WeightOverloading
+  public static class WeightOverloading
   {
     public const int OverloadAllowance = 4; // We can be four stones overweight without getting fatigued
 

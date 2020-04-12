@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.Commands
 {
-  public class VisibilityList
+  public static class VisibilityList
   {
     public static void Initialize()
     {
@@ -16,9 +16,9 @@ namespace Server.Commands
       CommandSystem.Register("VisClear", AccessLevel.Counselor, VisClear_OnCommand);
     }
 
-    public static void OnLogin(LoginEventArgs e)
+    public static void OnLogin(Mobile m)
     {
-      if (e.Mobile is PlayerMobile pm) pm.VisibilityList.Clear();
+      (m as PlayerMobile)?.VisibilityList.Clear();
     }
 
     [Usage("Vis")]

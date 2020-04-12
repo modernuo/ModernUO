@@ -1164,7 +1164,7 @@ namespace Server.Misc
       if (m_Mobile?.EquipItem(item) == true)
         return;
 
-      Container pack = m_Mobile.Backpack;
+      Container pack = m_Mobile?.Backpack;
 
       if (!mustEquip && pack != null)
         pack.DropItem(item);

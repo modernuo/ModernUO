@@ -115,10 +115,8 @@ namespace Server.Misc
       return false;
     }
 
-    public static void EventSink_Login(LoginEventArgs e)
+    public static void EventSink_Login(Mobile from)
     {
-      Mobile from = e.Mobile;
-
       if (!IsStranded(from))
         return;
 
@@ -153,7 +151,7 @@ namespace Server.Misc
 
       int x = p.X, y = p.Y;
       int z;
-      bool canFit = false;
+      bool canFit;
 
       z = map.GetAverageZ(x, y);
       canFit = map.CanSpawnMobile(x, y, z);

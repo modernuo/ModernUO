@@ -70,30 +70,27 @@ namespace Server.Items
       }
     }
 
-    private static void EventSink_BandageTargetRequest(BandageTargetRequestEventArgs e)
+    private static void EventSink_BandageTargetRequest(Mobile from, Item item, Mobile target)
     {
-      if (!(e.Bandage is Bandage b) || b.Deleted)
+      if (!(item is Bandage b) || b.Deleted)
         return;
 
-      Mobile from = e.Mobile;
-
-      if (from.InRange(b.GetWorldLocation(), Range))
-      {
-        if (from.Target != null)
-        {
-          Target.Cancel(from);
-          from.Target = null;
-        }
-
-        from.RevealingAction();
-        from.SendLocalizedMessage(500948); // Who will you use the bandages on?
-
-        new InternalTarget(b).Invoke(from, e.Target);
-      }
-      else
+      if (!from.InRange(b.GetWorldLocation(), Range))
       {
         from.SendLocalizedMessage(500295); // You are too far away to do that.
+        return;
       }
+
+      if (from.Target != null)
+      {
+        Target.Cancel(from);
+        from.Target = null;
+      }
+
+      from.RevealingAction();
+      from.SendLocalizedMessage(500948); // Who will you use the bandages on?
+
+      new InternalTarget(b).Invoke(from, target);
     }
 
     private class InternalTarget : Target
@@ -203,7 +200,7 @@ namespace Server.Items
     {
       StopHeal();
 
-      int healerNumber = -1, patientNumber = -1;
+      int healerNumber, patientNumber;
       bool playSound = true;
       bool checkSkills = false;
 

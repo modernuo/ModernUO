@@ -30,12 +30,12 @@ namespace Server.Regions
       EventSink.Login += OnLogin;
     }
 
-    public static void OnLogin(LoginEventArgs e)
+    public static void OnLogin(Mobile m)
     {
-      BaseHouse house = BaseHouse.FindHouseAt(e.Mobile);
+      BaseHouse house = BaseHouse.FindHouseAt(m);
 
-      if (house?.Public == false && !house.IsFriend(e.Mobile))
-        e.Mobile.Location = house.BanLocation;
+      if (house?.Public == false && !house.IsFriend(m))
+        m.Location = house.BanLocation;
     }
 
     public override bool AllowHousing(Mobile from, Point3D p) => false;

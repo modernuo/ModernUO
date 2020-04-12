@@ -940,7 +940,7 @@ namespace Server.Factions
           int silver = killerState.Faction.AwardSilver(killer, bc.FactionSilverWorth);
 
           if (silver > 0)
-            killer.SendLocalizedMessage(1042748,
+            killer?.SendLocalizedMessage(1042748,
               silver.ToString("N0")); // Thou hast earned ~1_AMOUNT~ silver for vanquishing the vile creature.
         }
 
@@ -981,7 +981,7 @@ namespace Server.Factions
       {
         if (victimState.KillPoints <= -6)
         {
-          killer.SendLocalizedMessage(501693); // This victim is not worth enough to get kill points from.
+          killer?.SendLocalizedMessage(501693); // This victim is not worth enough to get kill points from.
 
           #region Ethics
 
@@ -1029,7 +1029,7 @@ namespace Server.Factions
               int silver = killerState.Faction.AwardSilver(killer, award * 40);
 
               if (silver > 0)
-                killer.SendLocalizedMessage(1042736,
+                killer?.SendLocalizedMessage(1042736,
                   $"{silver:N0} silver\t{victim.Name}"); // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
             }
 
@@ -1038,9 +1038,9 @@ namespace Server.Factions
 
             int offset = award != 1 ? 0 : 2; // for pluralization
 
-            string args = $"{award}\t{victim.Name}\t{killer.Name}";
+            string args = $"{award}\t{victim.Name}\t{killer?.Name}";
 
-            killer.SendLocalizedMessage(1042737 + offset,
+            killer?.SendLocalizedMessage(1042737 + offset,
               args); // Thou hast been honored with ~1_KILL_POINTS~ kill point(s) for vanquishing ~2_DEAD_PLAYER~!
             victim.SendLocalizedMessage(1042738 + offset,
               args); // Thou has lost ~1_KILL_POINTS~ kill point(s) to ~3_ATTACKER_NAME~ for being vanquished!
@@ -1072,24 +1072,19 @@ namespace Server.Factions
           }
           else
           {
-            killer.SendLocalizedMessage(
+            killer?.SendLocalizedMessage(
               1042231); // You have recently defeated this enemy and thus their death brings you no honor.
           }
         }
       }
     }
 
-    private static void EventSink_Logout(LogoutEventArgs e)
+    private static void EventSink_Logout(Mobile m)
     {
-      e.Mobile.Backpack?.FindItemsByType<Sigil>().ForEach(sigil => sigil.ReturnHome());
+      m.Backpack?.FindItemsByType<Sigil>().ForEach(sigil => sigil.ReturnHome());
     }
 
-    private static void EventSink_Login(LoginEventArgs e)
-    {
-      Mobile mob = e.Mobile;
-
-      CheckLeaveTimer(mob);
-    }
+    private static void EventSink_Login(Mobile m) => CheckLeaveTimer(m);
 
     public static void WriteReference(IGenericWriter writer, Faction fact)
     {
@@ -1102,10 +1097,7 @@ namespace Server.Factions
     {
       int idx = reader.ReadEncodedInt() - 1;
 
-      if (idx >= 0 && idx < Factions.Count)
-        return Factions[idx];
-
-      return null;
+      return idx >= 0 && idx < Factions.Count ? Factions[idx] : null;
     }
 
     public static Faction Find(Mobile mob, bool inherit = false, bool creatureAllegiances = false)

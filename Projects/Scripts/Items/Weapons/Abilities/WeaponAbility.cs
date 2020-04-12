@@ -389,14 +389,12 @@ namespace Server.Items
       EventSink.SetAbility += EventSink_SetAbility;
     }
 
-    private static void EventSink_SetAbility(SetAbilityEventArgs e)
+    private static void EventSink_SetAbility(Mobile m, int index)
     {
-      int index = e.Index;
-
       if (index == 0)
-        ClearCurrentAbility(e.Mobile);
+        ClearCurrentAbility(m);
       else if (index >= 1 && index < Abilities.Length)
-        SetCurrentAbility(e.Mobile, Abilities[index]);
+        SetCurrentAbility(m, Abilities[index]);
     }
 
     private static void AddContext(Mobile m, WeaponAbilityContext context)

@@ -4,7 +4,7 @@ using Server.Mobiles;
 
 namespace Server.Misc
 {
-  public class Keywords
+  public static class Keywords
   {
     public static void Initialize()
     {

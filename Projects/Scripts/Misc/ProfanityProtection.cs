@@ -10,7 +10,7 @@ namespace Server.Misc
     Other // some other implementation
   }
 
-  public class ProfanityProtection
+  public static class ProfanityProtection
   {
     private static bool Enabled = false;
 
