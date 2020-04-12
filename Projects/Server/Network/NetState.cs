@@ -29,6 +29,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.PipeWriterHelpers;
 using Server.Accounting;
 using Server.Gumps;
 using Server.HuePickers;
@@ -288,7 +289,6 @@ namespace Server.Network
 
     public static int MenuCap { get; set; } = 512;
 
-
     public void WriteConsole(string text)
     {
       Console.WriteLine("Client: {0}: {1}", this, text);
@@ -448,6 +448,8 @@ namespace Server.Network
       m_AsyncState = Interlocked.Exchange(ref m_AsyncState, m_ResumeState);
     }
 
+    private TimingPipeFlusher m_Flusher;
+
     public virtual void Send(Packet p)
     {
       if (Connection == null || BlockAllPackets)
@@ -455,6 +457,10 @@ namespace Server.Network
         p.OnSend();
         return;
       }
+
+      // WriteConsole("Sending Packet {0:X}", p.PacketID);
+
+      m_Flusher ??= new TimingPipeFlusher(SendPipe);
 
       try
       {
@@ -466,9 +472,13 @@ namespace Server.Network
           return;
         }
 
-        buffer.Slice(0, length).CopyTo(SendPipe.GetSpan(length));
-        SendPipe.Advance(length);
-        SendPipe.FlushAsync().GetAwaiter().GetResult();
+        BufferWriter<PipeWriter> writer = new BufferWriter<PipeWriter>(SendPipe);
+        writer.Ensure(length);
+        writer.Write(buffer.Slice(0, length));
+        writer.Commit();
+
+        m_Flusher.FlushAsync().GetAwaiter();
+        // WriteConsole("Packet Completed Sending... {0:X}", p.PacketID);
 
         p.OnSend();
       }

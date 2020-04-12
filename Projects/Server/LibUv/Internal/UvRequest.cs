@@ -14,11 +14,6 @@ namespace Libuv.Internal
 
     public virtual void Init(LibuvThread thread)
     {
-#if DEBUG
-      // Store weak handles to all UvRequest objects so we can do leak detection
-      // while running tests
-      thread.Requests.Add(new WeakReference(this));
-#endif
     }
 
     protected override bool ReleaseHandle()

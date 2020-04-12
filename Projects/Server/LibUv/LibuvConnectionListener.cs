@@ -101,11 +101,6 @@ namespace Libuv
       }
 
       Threads.Clear();
-#if DEBUG && !INNER_LOOP
-      GC.Collect();
-      GC.WaitForPendingFinalizers();
-      GC.Collect();
-#endif
     }
 
     public async Task BindAsync()

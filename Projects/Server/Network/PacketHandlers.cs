@@ -294,6 +294,8 @@ namespace Server.Network
         return -1;
       }
 
+      Console.WriteLine("Processing Packet... {0:X}", packetId);
+
       if (!ns.Seeded)
       {
         if (packetId == 0xEF)

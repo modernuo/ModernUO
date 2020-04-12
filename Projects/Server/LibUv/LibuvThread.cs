@@ -76,10 +76,6 @@ namespace Libuv
 
     public WriteReqPool WriteReqPool { get; }
 
-#if DEBUG
-    public List<WeakReference> Requests { get; } = new List<WeakReference>();
-#endif
-
     public Exception FatalError => _closeError;
 
     public Action<Action<IntPtr>, IntPtr> QueueCloseHandle { get; }
@@ -128,18 +124,6 @@ namespace Libuv
 
       if (_closeError != null) ExceptionDispatchInfo.Capture(_closeError).Throw();
     }
-
-#if DEBUG && !INNER_LOOP
-    private void CheckUvReqLeaks()
-    {
-      GC.Collect();
-      GC.WaitForPendingFinalizers();
-      GC.Collect();
-
-      // Detect leaks in UvRequest objects
-      foreach (var request in Requests) Debug.Assert(request.Target == null, $"{request.Target?.GetType()} object is still alive.");
-    }
-#endif
 
     private void AllowStop()
     {
@@ -320,11 +304,6 @@ namespace Libuv
         }
         WriteReqPool.Dispose();
         _threadTcs.SetResult(null);
-
-#if DEBUG && !INNER_LOOP
-        // Check for handle leaks after disposing everything
-        CheckUvReqLeaks();
-#endif
       }
     }
 

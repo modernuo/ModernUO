@@ -64,15 +64,10 @@ namespace Server
     }
 
     public TimedSkillMod(SkillName skill, bool relative, double value, DateTime expire)
-      : base(skill, relative, value)
-    {
+      : base(skill, relative, value) =>
       m_Expire = expire;
-    }
 
-    public override bool CheckCondition()
-    {
-      return DateTime.UtcNow < m_Expire;
-    }
+    public override bool CheckCondition() => DateTime.UtcNow < m_Expire;
   }
 
   public class EquippedSkillMod : SkillMod
@@ -87,10 +82,7 @@ namespace Server
       m_Mobile = mobile;
     }
 
-    public override bool CheckCondition()
-    {
-      return !m_Item.Deleted && !m_Mobile.Deleted && m_Item.Parent == m_Mobile;
-    }
+    public override bool CheckCondition() => !m_Item.Deleted && !m_Mobile.Deleted && m_Item.Parent == m_Mobile;
   }
 
   public class DefaultSkillMod : SkillMod
@@ -100,10 +92,7 @@ namespace Server
     {
     }
 
-    public override bool CheckCondition()
-    {
-      return true;
-    }
+    public override bool CheckCondition() => true;
   }
 
   public abstract class SkillMod
@@ -296,10 +285,7 @@ namespace Server
 
   public class DamageEntry
   {
-    public DamageEntry(Mobile damager)
-    {
-      Damager = damager;
-    }
+    public DamageEntry(Mobile damager) => Damager = damager;
 
     public Mobile Damager{ get; }
 
@@ -425,10 +411,8 @@ namespace Server
   public class MobileNotConnectedException : Exception
   {
     public MobileNotConnectedException(Mobile source, string message)
-      : base(message)
-    {
+      : base(message) =>
       Source = source.ToString();
-    }
   }
 
   #region Delegates
@@ -461,7 +445,7 @@ namespace Server
   public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable, IPropertyListObject
   {
     private BufferWriter m_SaveBuffer;
-    public BufferWriter SaveBuffer { get { return m_SaveBuffer; } }
+    public BufferWriter SaveBuffer => m_SaveBuffer;
 
     private const int
       WarmodeCatchCount = 4; // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
@@ -1834,16 +1818,7 @@ namespace Server
 
     public virtual bool KeepsItemsOnDeath => m_AccessLevel > AccessLevel.Player;
 
-    public bool HasTrade
-    {
-      get
-      {
-        if (m_NetState != null)
-          return m_NetState.Trades.Count > 0;
-
-        return false;
-      }
-    }
+    public bool HasTrade => m_NetState?.Trades.Count > 0;
 
     public bool NoMoveHS{ get; set; }
 
@@ -4367,10 +4342,7 @@ namespace Server
     ///   <seealso cref="OnDeath" />
     /// </summary>
     /// <returns>True to continue with death, false to override it.</returns>
-    public virtual bool OnBeforeDeath()
-    {
-      return true;
-    }
+    public virtual bool OnBeforeDeath() => true;
 
     /// <summary>
     ///   Overridable. Event invoked after the Mobile is <see cref="Kill">killed</see>. Primarily, this method is responsible for
@@ -5089,10 +5061,7 @@ namespace Server
 
     public static Mobile GetDamagerFrom(DamageEntry de) => de?.Damager;
 
-    public Mobile FindMostRecentDamager(bool allowSelf)
-    {
-      return GetDamagerFrom(FindMostRecentDamageEntry(allowSelf));
-    }
+    public Mobile FindMostRecentDamager(bool allowSelf) => GetDamagerFrom(FindMostRecentDamageEntry(allowSelf));
 
     public DamageEntry FindMostRecentDamageEntry(bool allowSelf)
     {
@@ -5199,10 +5168,7 @@ namespace Server
       return null;
     }
 
-    public virtual Mobile GetDamageMaster(Mobile damagee)
-    {
-      return null;
-    }
+    public virtual Mobile GetDamageMaster(Mobile damagee) => null;
 
     public virtual DamageEntry RegisterDamage(int amount, Mobile from)
     {
@@ -5251,10 +5217,7 @@ namespace Server
       Damage(amount, null);
     }
 
-    public virtual bool CanBeDamaged()
-    {
-      return !m_Blessed;
-    }
+    public virtual bool CanBeDamaged() => !m_Blessed;
 
     public virtual void Damage(int amount, Mobile from)
     {
@@ -5906,15 +5869,9 @@ namespace Server
       }
     }
 
-    public static string GetAccessLevelName(AccessLevel level)
-    {
-      return m_AccessLevelNames[(int)level];
-    }
+    public static string GetAccessLevelName(AccessLevel level) => m_AccessLevelNames[(int)level];
 
-    public virtual bool CanPaperdollBeOpenedBy(Mobile from)
-    {
-      return Body.IsHuman || Body.IsGhost || IsBodyMod;
-    }
+    public virtual bool CanPaperdollBeOpenedBy(Mobile from) => Body.IsHuman || Body.IsGhost || IsBodyMod;
 
     public virtual void GetChildContextMenuEntries(Mobile from, List<ContextMenuEntry> list, Item item)
     {
@@ -6215,10 +6172,7 @@ namespace Server
       eable.Free();
     }
 
-    public bool Send(Packet p)
-    {
-      return Send(p, false);
-    }
+    public bool Send(Packet p) => Send(p, false);
 
     public bool Send(Packet p, bool throwOnOffline)
     {
@@ -6254,10 +6208,7 @@ namespace Server
         RevealingAction();
     }
 
-    public virtual bool HandlesOnSpeech(Mobile from)
-    {
-      return false;
-    }
+    public virtual bool HandlesOnSpeech(Mobile from) => false;
 
     /// <summary>
     ///   Overridable. Virtual event invoked when the Mobile hears speech. This event will only be invoked if
@@ -6337,10 +6288,7 @@ namespace Server
       m_Direction = dir;
     }
 
-    public virtual int GetSeason()
-    {
-      return m_Map?.Season ?? 1;
-    }
+    public virtual int GetSeason() => m_Map?.Season ?? 1;
 
     public virtual int GetPacketFlags()
     {
@@ -6499,16 +6447,13 @@ namespace Server
         return false;
 
       return this == m || m.m_Map == m_Map &&
-             (!m.Hidden || m_AccessLevel != AccessLevel.Player &&
-              (m_AccessLevel >= m.AccessLevel || m_AccessLevel >= AccessLevel.Administrator)) &&
-             (m.Alive || Core.SE && Skills.SpiritSpeak.Value >= 100.0 || !Alive ||
-              m_AccessLevel > AccessLevel.Player || m.Warmode);
+        (!m.Hidden || m_AccessLevel != AccessLevel.Player &&
+          (m_AccessLevel >= m.AccessLevel || m_AccessLevel >= AccessLevel.Administrator)) &&
+        (m.Alive || Core.SE && Skills.SpiritSpeak.Value >= 100.0 || !Alive ||
+         m_AccessLevel > AccessLevel.Player || m.Warmode);
     }
 
-    public virtual bool CanBeRenamedBy(Mobile from)
-    {
-      return from.AccessLevel >= AccessLevel.GameMaster && from.m_AccessLevel > m_AccessLevel;
-    }
+    public virtual bool CanBeRenamedBy(Mobile from) => from.AccessLevel >= AccessLevel.GameMaster && from.m_AccessLevel > m_AccessLevel;
 
     public virtual void OnGuildTitleChange(string oldTitle)
     {
@@ -6738,10 +6683,7 @@ namespace Server
 
     public bool HasFreeHand() => FindItemOnLayer(Layer.TwoHanded) == null;
 
-    public virtual IWeapon GetDefaultWeapon()
-    {
-      return DefaultWeapon;
-    }
+    public virtual IWeapon GetDefaultWeapon() => DefaultWeapon;
 
     public BankBox FindBankNoCreate()
     {
@@ -6827,21 +6769,13 @@ namespace Server
       return true;
     }
 
-    public virtual bool CheckLift(Mobile from, Item item, ref LRReason reject)
-    {
-      return true;
-    }
+    public virtual bool CheckLift(Mobile from, Item item, ref LRReason reject) => true;
 
-    public virtual bool CheckNonlocalLift(Mobile from, Item item)
-    {
-      return from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster;
-    }
+    public virtual bool CheckNonlocalLift(Mobile from, Item item) => from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster;
 
     public virtual bool CheckTrade(Mobile to, Item item, SecureTradeContainer cont, bool message, bool checkItems,
-      int plusItems, int plusWeight)
-    {
-      return true;
-    }
+      int plusItems, int plusWeight) =>
+      true;
 
     public virtual bool OpenTrade(Mobile from, Item offer = null)
     {
@@ -6927,10 +6861,7 @@ namespace Server
     ///  		return base.OnDragLift( item );
     ///   }</code>
     /// </example>
-    public virtual bool OnDragLift(Item item)
-    {
-      return true;
-    }
+    public virtual bool OnDragLift(Item item) => true;
 
     /// <summary>
     ///   Overridable. Virtual event invoked when the Mobile attempts to drop <paramref name="item" /> into a
@@ -6940,40 +6871,28 @@ namespace Server
     ///   .
     /// </summary>
     /// <returns>True if the drop is allowed, false if otherwise.</returns>
-    public virtual bool OnDroppedItemInto(Item item, Container container, Point3D loc)
-    {
-      return true;
-    }
+    public virtual bool OnDroppedItemInto(Item item, Container container, Point3D loc) => true;
 
     /// <summary>
     ///   Overridable. Virtual event invoked when the Mobile attempts to drop <paramref name="item" /> directly onto another
     ///   <see cref="Item" />, <paramref name="target" />. This is the case of stacking items.
     /// </summary>
     /// <returns>True if the drop is allowed, false if otherwise.</returns>
-    public virtual bool OnDroppedItemOnto(Item item, Item target)
-    {
-      return true;
-    }
+    public virtual bool OnDroppedItemOnto(Item item, Item target) => true;
 
     /// <summary>
     ///   Overridable. Virtual event invoked when the Mobile attempts to drop <paramref name="item" /> into another
     ///   <see cref="Item" />, <paramref name="target" />. The target item is most likely a <see cref="Container" />.
     /// </summary>
     /// <returns>True if the drop is allowed, false if otherwise.</returns>
-    public virtual bool OnDroppedItemToItem(Item item, Item target, Point3D loc)
-    {
-      return true;
-    }
+    public virtual bool OnDroppedItemToItem(Item item, Item target, Point3D loc) => true;
 
     /// <summary>
     ///   Overridable. Virtual event invoked when the Mobile attempts to give <paramref name="item" /> to a Mobile (
     ///   <paramref name="target" />).
     /// </summary>
     /// <returns>True if the drop is allowed, false if otherwise.</returns>
-    public virtual bool OnDroppedItemToMobile(Item item, Mobile target)
-    {
-      return true;
-    }
+    public virtual bool OnDroppedItemToMobile(Item item, Mobile target) => true;
 
     /// <summary>
     ///   Overridable. Virtual event invoked when the Mobile attempts to drop <paramref name="item" /> to the world at a
@@ -6983,10 +6902,7 @@ namespace Server
     ///   .
     /// </summary>
     /// <returns>True if the drop is allowed, false if otherwise.</returns>
-    public virtual bool OnDroppedItemToWorld(Item item, Point3D location)
-    {
-      return true;
-    }
+    public virtual bool OnDroppedItemToWorld(Item item, Point3D location) => true;
 
     /// <summary>
     ///   Overridable. Virtual event when <paramref name="from" /> successfully uses <paramref name="item" /> while it's on this
@@ -6997,15 +6913,9 @@ namespace Server
     {
     }
 
-    public virtual bool CheckNonlocalDrop(Mobile from, Item item, Item target)
-    {
-      return from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster;
-    }
+    public virtual bool CheckNonlocalDrop(Mobile from, Item item, Item target) => from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster;
 
-    public virtual bool CheckItemUse(Mobile from, Item item)
-    {
-      return true;
-    }
+    public virtual bool CheckItemUse(Mobile from, Item item) => true;
 
     /// <summary>
     ///   Overridable. Virtual event invoked when <paramref name="from" /> successfully lifts <paramref name="item" /> from this
@@ -7016,15 +6926,9 @@ namespace Server
     {
     }
 
-    public virtual bool AllowItemUse(Item item)
-    {
-      return true;
-    }
+    public virtual bool AllowItemUse(Item item) => true;
 
-    public virtual bool AllowEquipFrom(Mobile mob)
-    {
-      return mob == this || mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > AccessLevel;
-    }
+    public virtual bool AllowEquipFrom(Mobile mob) => mob == this || mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > AccessLevel;
 
     public virtual bool EquipItem(Item item)
     {
@@ -7307,10 +7211,7 @@ namespace Server
       private static Queue<MovementRecord> m_InstancePool = new Queue<MovementRecord>();
       public long m_End;
 
-      private MovementRecord(long end)
-      {
-        m_End = end;
-      }
+      private MovementRecord(long end) => m_End = end;
 
       public static MovementRecord NewInstance(long end)
       {
@@ -7368,10 +7269,8 @@ namespace Server
       private TargetCallback m_Callback;
 
       public SimpleTarget(int range, TargetFlags flags, bool allowGround, TargetCallback callback)
-        : base(range, allowGround, flags)
-      {
+        : base(range, allowGround, flags) =>
         m_Callback = callback;
-      }
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -7403,10 +7302,8 @@ namespace Server
       private Mobile m_Mobile;
 
       public AutoManifestTimer(Mobile m, TimeSpan delay)
-        : base(delay)
-      {
+        : base(delay) =>
         m_Mobile = m;
-      }
 
       protected override void OnTick()
       {
@@ -7419,17 +7316,11 @@ namespace Server
     {
       private static LocationComparer m_Instance;
 
-      public LocationComparer(IEntity relativeTo)
-      {
-        RelativeTo = relativeTo;
-      }
+      public LocationComparer(IEntity relativeTo) => RelativeTo = relativeTo;
 
       public IEntity RelativeTo{ get; set; }
 
-      public int Compare(IEntity x, IEntity y)
-      {
-        return GetDistance(x) - GetDistance(y);
-      }
+      public int Compare(IEntity x, IEntity y) => GetDistance(x) - GetDistance(y);
 
       public static LocationComparer GetInstance(IEntity relativeTo)
       {
@@ -7454,15 +7345,9 @@ namespace Server
       }
     }
 
-    int IComparable<IEntity>.CompareTo(IEntity other)
-    {
-      return other == null ? -1 : Serial.CompareTo(other.Serial);
-    }
+    int IComparable<IEntity>.CompareTo(IEntity other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
-    public int CompareTo(Mobile other)
-    {
-      return other == null ? -1 : Serial.CompareTo(other.Serial);
-    }
+    public int CompareTo(Mobile other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
     #region Handlers
 
@@ -7962,10 +7847,7 @@ namespace Server
 
     #region Get*InRange
 
-    public IPooledEnumerable<Item> GetItemsInRange(int range)
-    {
-      return GetItemsInRange<Item>(range);
-    }
+    public IPooledEnumerable<Item> GetItemsInRange(int range) => GetItemsInRange<Item>(range);
 
     public IPooledEnumerable<T> GetItemsInRange<T>(int range) where T : Item
     {
@@ -7987,10 +7869,7 @@ namespace Server
       return map.GetObjectsInRange(m_Location, range);
     }
 
-    public IPooledEnumerable<Mobile> GetMobilesInRange(int range)
-    {
-      return GetMobilesInRange<Mobile>(range);
-    }
+    public IPooledEnumerable<Mobile> GetMobilesInRange(int range) => GetMobilesInRange<Mobile>(range);
 
     public IPooledEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile
     {
@@ -8177,10 +8056,7 @@ namespace Server
       return true;
     }
 
-    public bool HasGump<T>() where T : Gump
-    {
-      return FindGump<T>() != null;
-    }
+    public bool HasGump<T>() where T : Gump => FindGump<T>() != null;
 
     public bool SendGump(Gump g)
     {
@@ -8204,15 +8080,9 @@ namespace Server
 
     #region Beneficial Checks/Actions
 
-    public virtual bool CanBeBeneficial(Mobile target)
-    {
-      return CanBeBeneficial(target, true, false);
-    }
+    public virtual bool CanBeBeneficial(Mobile target) => CanBeBeneficial(target, true, false);
 
-    public virtual bool CanBeBeneficial(Mobile target, bool message)
-    {
-      return CanBeBeneficial(target, message, false);
-    }
+    public virtual bool CanBeBeneficial(Mobile target, bool message) => CanBeBeneficial(target, message, false);
 
     public virtual bool CanBeBeneficial(Mobile target, bool message, bool allowDead)
     {
@@ -9001,10 +8871,7 @@ namespace Server
     ///   <seealso cref="ApplyPoison" />
     ///   <seealso cref="Poison" />
     /// </summary>
-    public virtual bool CheckPoisonImmunity(Mobile from, Poison poison)
-    {
-      return false;
-    }
+    public virtual bool CheckPoisonImmunity(Mobile from, Poison poison) => false;
 
     /// <summary>
     ///   Overridable. Called from <see cref="ApplyPoison" />, this method checks if the Mobile is already poisoned by some
@@ -9014,10 +8881,7 @@ namespace Server
     ///   <seealso cref="ApplyPoison" />
     ///   <seealso cref="Poison" />
     /// </summary>
-    public virtual bool CheckHigherPoison(Mobile from, Poison poison)
-    {
-      return m_Poison != null && m_Poison.Level >= poison.Level;
-    }
+    public virtual bool CheckHigherPoison(Mobile from, Poison poison) => m_Poison != null && m_Poison.Level >= poison.Level;
 
     /// <summary>
     ///   Overridable. Attempts to apply poison to the Mobile. Checks are made such that no
@@ -9090,10 +8954,7 @@ namespace Server
     ///   <seealso cref="CurePoison" />
     ///   <seealso cref="Poison" />
     /// </summary>
-    public virtual bool CheckCure(Mobile from)
-    {
-      return true;
-    }
+    public virtual bool CheckCure(Mobile from) => true;
 
     /// <summary>
     ///   Overridable. Virtual event invoked when a call to <see cref="CurePoison" /> succeeded.
@@ -9166,10 +9027,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public int FacialHairItemID
     {
-      get
-      {
-        return m_FacialHair?.ItemID ?? 0;
-      }
+      get => m_FacialHair?.ItemID ?? 0;
       set
       {
         if (m_FacialHair == null && value > 0)
@@ -9327,15 +9185,9 @@ namespace Server
       return ret;
     }
 
-    public Direction GetDirectionTo(Point2D p)
-    {
-      return GetDirectionTo(p.m_X, p.m_Y);
-    }
+    public Direction GetDirectionTo(Point2D p) => GetDirectionTo(p.m_X, p.m_Y);
 
-    public Direction GetDirectionTo(Point3D p)
-    {
-      return GetDirectionTo(p.m_X, p.m_Y);
-    }
+    public Direction GetDirectionTo(Point3D p) => GetDirectionTo(p.m_X, p.m_Y);
 
     public Direction GetDirectionTo(IPoint2D p)
     {

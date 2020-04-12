@@ -193,16 +193,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public virtual bool InstancedCorpse
-    {
-      get
-      {
-        if (!Core.SE)
-          return false;
-
-        return DateTime.UtcNow < TimeOfDeath + InstancedCorpseTime;
-      }
-    }
+    public virtual bool InstancedCorpse => Core.SE && DateTime.UtcNow < TimeOfDeath + InstancedCorpseTime;
 
     public override bool IsDecoContainer => false;
 

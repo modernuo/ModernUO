@@ -3250,7 +3250,7 @@ namespace Server.Network
 
   public sealed class MobileIncoming : Packet
   {
-    private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => { return new int[256]; });
+    private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => new int[256]);
     private static ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
 
     public Mobile m_Beheld;
@@ -3363,7 +3363,7 @@ namespace Server.Network
 
   public sealed class MobileIncomingSA : Packet
   {
-    private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => { return new int[256]; });
+    private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => new int[256]);
     private static ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
 
     public Mobile m_Beheld;
