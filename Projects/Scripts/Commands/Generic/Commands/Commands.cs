@@ -59,6 +59,7 @@ namespace Server.Commands.Generic
       Register(new FactionKickCommand(FactionKickType.Unban));
       Register(new BringToPackCommand());
       Register(new TraceLockdownCommand());
+      Register(new LocationCommand());
     }
 
     public static void Register(BaseCommand command)
@@ -751,7 +752,7 @@ namespace Server.Commands.Generic
     {
       AccessLevel = AccessLevel.GameMaster;
       Supports = CommandSupport.AllNPCs | CommandSupport.AllItems;
-      Commands = new[] { "Delete", "Remove" };
+      Commands = new[] { "Delete", "Remove", "Rm" };
       ObjectTypes = ObjectTypes.Both;
       Usage = "Delete";
       Description = "Deletes a targeted item or mobile. Does not delete players.";
