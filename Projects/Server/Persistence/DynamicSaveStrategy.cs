@@ -29,16 +29,16 @@ namespace Server
 {
   public sealed class DynamicSaveStrategy : SaveStrategy
   {
-    private ConcurrentBag<Item> _decayBag;
+    private readonly ConcurrentBag<Item> _decayBag;
     private SequentialFileWriter _guildData, _guildIndex;
-    private BlockingCollection<QueuedMemoryWriter> _guildThreadWriters;
+    private readonly BlockingCollection<QueuedMemoryWriter> _guildThreadWriters;
 
     private SequentialFileWriter _itemData, _itemIndex;
 
-    private BlockingCollection<QueuedMemoryWriter> _itemThreadWriters;
+    private readonly BlockingCollection<QueuedMemoryWriter> _itemThreadWriters;
 
     private SequentialFileWriter _mobileData, _mobileIndex;
-    private BlockingCollection<QueuedMemoryWriter> _mobileThreadWriters;
+    private readonly BlockingCollection<QueuedMemoryWriter> _mobileThreadWriters;
 
     public DynamicSaveStrategy()
     {

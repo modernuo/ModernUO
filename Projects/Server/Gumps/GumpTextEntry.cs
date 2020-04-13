@@ -24,7 +24,7 @@ namespace Server.Gumps
 {
   public class GumpTextEntry : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("textentry");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("textentry");
     private int m_EntryID;
     private int m_Hue;
     private string m_InitialText;

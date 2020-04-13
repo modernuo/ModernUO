@@ -29,7 +29,7 @@ namespace Server
 {
   public sealed class BinaryFileReader : IGenericReader
   {
-    private BinaryReader m_File;
+    private readonly BinaryReader m_File;
 
     public BinaryFileReader(BinaryReader br) => m_File = br;
 

@@ -32,7 +32,7 @@ namespace Server.Guilds
 
   public abstract class BaseGuild : ISerializable
   {
-    private BufferWriter m_SaveBuffer;
+    private readonly BufferWriter m_SaveBuffer;
     public BufferWriter SaveBuffer => m_SaveBuffer;
 
     private static uint m_NextID = 1;

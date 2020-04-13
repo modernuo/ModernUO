@@ -20,11 +20,8 @@ namespace Server.Utilities
   /// <typeparam name="TDerived"></typeparam>
   public abstract class BaseRef<TDerived> : IRef where TDerived : IRef
   {
-    private RefPool<TDerived> m_Pool;
-    public BaseRef(RefPool<TDerived> pool)
-    {
-      m_Pool = pool;
-    }
+    private readonly RefPool<TDerived> m_Pool;
+    public BaseRef(RefPool<TDerived> pool) => m_Pool = pool;
     protected abstract void OnDispose();
     public void Dispose()
     {
@@ -42,8 +39,8 @@ namespace Server.Utilities
     public delegate TRef Generator(RefPool<TRef> targetPool);
     public const int DEFAULT_RESOURCE_RETENTION = 10;
 
-    private Stack<TRef> m_Resources = new Stack<TRef>();
-    private Generator m_Generator;
+    private readonly Stack<TRef> m_Resources = new Stack<TRef>();
+    private readonly Generator m_Generator;
     private int m_MaxRefrenceRetention;
 
     /// <summary>
@@ -90,8 +87,9 @@ namespace Server.Utilities
   /// <inheritdoc/>
   public class QueueRef<T> : Queue<T>, IRef
   {
-    private RefPool<QueueRef<T>> m_Pool;
-    private QueueRef(RefPool<QueueRef<T>> pool) { m_Pool = pool; }
+    private readonly RefPool<QueueRef<T>> m_Pool;
+    private QueueRef(RefPool<QueueRef<T>> pool) => m_Pool = pool;
+
     /// <summary>Clears the queue and returns this resource to its parent resource pool.</summary>
     public void Dispose() { Clear(); m_Pool.Return(this); }
     /// <summary>
@@ -102,8 +100,9 @@ namespace Server.Utilities
   /// <inheritdoc/>
   public class StackRef<T> : Stack<T>, IRef
   {
-    private RefPool<StackRef<T>> m_Pool;
-    private StackRef(RefPool<StackRef<T>> pool) { m_Pool = pool; }
+    private readonly RefPool<StackRef<T>> m_Pool;
+    private StackRef(RefPool<StackRef<T>> pool) => m_Pool = pool;
+
     /// <summary>Clears the stack and returns this resource to its parent resource pool.</summary>
     public void Dispose() { Clear(); m_Pool.Return(this); }
     /// <summary>

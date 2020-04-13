@@ -35,13 +35,13 @@ namespace Server
 
     private byte[] m_CharacterBuffer;
 
-    private Encoding m_Encoding;
+    private readonly Encoding m_Encoding;
 
     private int m_Index;
     private int m_MaxBufferChars;
 
-    private char[] m_SingleCharBuffer = new char[1];
-    private bool PrefixStrings;
+    private readonly char[] m_SingleCharBuffer = new char[1];
+    private readonly bool PrefixStrings;
 
     public BufferWriter(bool prefixStr)
     {

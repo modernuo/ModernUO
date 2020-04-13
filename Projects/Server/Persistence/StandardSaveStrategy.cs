@@ -35,7 +35,7 @@ namespace Server
 
     public static SaveOption SaveType = SaveOption.Normal;
 
-    private Queue<Item> _decayQueue;
+    private readonly Queue<Item> _decayQueue;
 
     public StandardSaveStrategy() => _decayQueue = new Queue<Item>();
 

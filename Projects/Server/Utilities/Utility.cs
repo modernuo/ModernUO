@@ -36,7 +36,7 @@ namespace Server
 
     private static Dictionary<IPAddress, IPAddress> _ipAddressTable;
 
-    private static SkillName[] m_AllSkills =
+    private static readonly SkillName[] m_AllSkills =
     {
       SkillName.Alchemy,
       SkillName.Anatomy,
@@ -95,7 +95,7 @@ namespace Server
       SkillName.Spellweaving
     };
 
-    private static SkillName[] m_CombatSkills =
+    private static readonly SkillName[] m_CombatSkills =
     {
       SkillName.Archery,
       SkillName.Swords,
@@ -104,7 +104,7 @@ namespace Server
       SkillName.Wrestling
     };
 
-    private static SkillName[] m_CraftSkills =
+    private static readonly SkillName[] m_CraftSkills =
     {
       SkillName.Alchemy,
       SkillName.Blacksmith,
@@ -117,7 +117,7 @@ namespace Server
       SkillName.Tinkering
     };
 
-    private static Stack<ConsoleColor> m_ConsoleColors = new Stack<ConsoleColor>();
+    private static readonly Stack<ConsoleColor> m_ConsoleColors = new Stack<ConsoleColor>();
 
     public static Encoding UTF8 => m_UTF8 ?? (m_UTF8 = new UTF8Encoding(false, false));
     public static Encoding UTF8WithEncoding => m_UTF8WithEncoding ?? (m_UTF8WithEncoding = new UTF8Encoding(true, false));

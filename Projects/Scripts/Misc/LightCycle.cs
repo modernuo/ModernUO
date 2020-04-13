@@ -20,9 +20,9 @@ namespace Server
       {
         m_LevelOverride = value;
 
-        for (int i = 0; i < NetState.Instances.Count; ++i)
+        for (int i = 0; i < TcpServer.Instances.Count; ++i)
         {
-          NetState ns = NetState.Instances[i];
+          NetState ns = TcpServer.Instances[i];
           Mobile m = ns.Mobile;
 
           m?.CheckLightLevels(false);
@@ -69,12 +69,12 @@ namespace Server
       Clock.GetTime(from.Map, from.X, from.Y, out int hours, out int minutes);
 
       /* OSI times:
-       * 
+       *
        * Midnight ->  3:59 AM : Night
        *  4:00 AM -> 11:59 PM : Day
-       * 
+       *
        * RunUO times:
-       * 
+       *
        * 10:00 PM -> 11:59 PM : Scale to night
        * Midnight ->  3:59 AM : Night
        *  4:00 AM ->  5:59 AM : Scale to day
@@ -102,9 +102,9 @@ namespace Server
 
       protected override void OnTick()
       {
-        for (int i = 0; i < NetState.Instances.Count; ++i)
+        for (int i = 0; i < TcpServer.Instances.Count; ++i)
         {
-          NetState ns = NetState.Instances[i];
+          NetState ns = TcpServer.Instances[i];
           Mobile m = ns.Mobile;
 
           m?.CheckLightLevels(false);

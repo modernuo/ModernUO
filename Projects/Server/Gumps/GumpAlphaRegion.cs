@@ -24,7 +24,7 @@ namespace Server.Gumps
 {
   public class GumpAlphaRegion : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("checkertrans");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("checkertrans");
     private int m_Width, m_Height;
     private int m_X, m_Y;
 

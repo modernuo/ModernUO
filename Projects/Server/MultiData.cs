@@ -25,10 +25,12 @@ namespace Server
 {
   public static class MultiData
   {
-    private static MultiComponentList[] m_Components;
+    private static readonly MultiComponentList[] m_Components;
 
-    private static FileStream m_Index, m_Stream;
-    private static BinaryReader m_IndexReader, m_StreamReader;
+    private static readonly FileStream m_Index;
+    private static readonly FileStream m_Stream;
+    private static readonly BinaryReader m_IndexReader;
+    private static readonly BinaryReader m_StreamReader;
 
     static MultiData()
     {

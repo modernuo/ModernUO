@@ -24,8 +24,8 @@ namespace Server.Gumps
 {
   public class GumpImageTileButton : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("buttontileart");
-    private static byte[] m_LayoutTooltip = Gump.StringToBuffer(" }{ tooltip");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("buttontileart");
+    private static readonly byte[] m_LayoutTooltip = Gump.StringToBuffer(" }{ tooltip");
     private int m_ButtonID;
     private int m_Height;
     private int m_Hue;

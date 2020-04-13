@@ -202,7 +202,7 @@ namespace Server.Misc
 
           try
           {
-            List<NetState> states = NetState.Instances;
+            List<NetState> states = TcpServer.Instances;
 
             op.WriteLine("- Count: {0}", states.Count);
 

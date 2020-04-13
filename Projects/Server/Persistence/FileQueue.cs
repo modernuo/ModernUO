@@ -29,19 +29,19 @@ namespace Server
 
   public sealed class FileQueue : IDisposable
   {
-    private static int bufferSize;
+    private static readonly int bufferSize;
 
-    private Chunk[] active;
+    private readonly Chunk[] active;
     private int activeCount;
     private Page buffered;
 
-    private FileCommitCallback callback;
+    private readonly FileCommitCallback callback;
 
     private ManualResetEvent idle;
 
-    private Queue<Page> pending;
+    private readonly Queue<Page> pending;
 
-    private object syncRoot;
+    private readonly object syncRoot;
 
     static FileQueue() => bufferSize = FileOperations.BufferSize;
 
@@ -193,8 +193,8 @@ namespace Server
     public sealed class Chunk
     {
       private int offset;
-      private FileQueue owner;
-      private int slot;
+      private readonly FileQueue owner;
+      private readonly int slot;
 
       public Chunk(FileQueue owner, int slot, byte[] buffer, int offset, int size)
       {

@@ -71,7 +71,7 @@ namespace Server
 #if !MONO
     private class UnbufferedFileStream : FileStream
     {
-      private SafeFileHandle fileHandle;
+      private readonly SafeFileHandle fileHandle;
 
       public UnbufferedFileStream(SafeFileHandle fileHandle, FileAccess access, int bufferSize, bool isAsync)
         : base(fileHandle, access, bufferSize, isAsync) =>

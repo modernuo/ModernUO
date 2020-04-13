@@ -540,7 +540,7 @@ namespace Server.Network
 
   public sealed class ChangeUpdateRange : Packet
   {
-    private static ChangeUpdateRange[] m_Cache = new ChangeUpdateRange[0x100];
+    private static readonly ChangeUpdateRange[] m_Cache = new ChangeUpdateRange[0x100];
 
     public ChangeUpdateRange(int range) : base(0xC8, 2)
     {
@@ -811,7 +811,7 @@ namespace Server.Network
 
   public sealed class GlobalLightLevel : Packet
   {
-    private static GlobalLightLevel[] m_Cache = new GlobalLightLevel[0x100];
+    private static readonly GlobalLightLevel[] m_Cache = new GlobalLightLevel[0x100];
 
     public GlobalLightLevel(int level) : base(0x4F, 2)
     {
@@ -2105,9 +2105,9 @@ namespace Server.Network
 
   public sealed class MessageLocalized : Packet
   {
-    private static MessageLocalized[] m_Cache_IntLoc = new MessageLocalized[15000];
-    private static MessageLocalized[] m_Cache_CliLoc = new MessageLocalized[100000];
-    private static MessageLocalized[] m_Cache_CliLocCmp = new MessageLocalized[5000];
+    private static readonly MessageLocalized[] m_Cache_IntLoc = new MessageLocalized[15000];
+    private static readonly MessageLocalized[] m_Cache_CliLoc = new MessageLocalized[100000];
+    private static readonly MessageLocalized[] m_Cache_CliLocCmp = new MessageLocalized[5000];
 
     public MessageLocalized(Serial serial, int graphic, MessageType type, int hue, int font, int number, string name,
       string args) : base(0xC1)
@@ -2318,20 +2318,20 @@ namespace Server.Network
 
   public sealed class DisplayGumpPacked : Packet, IGumpWriter
   {
-    private static byte[] m_True = Gump.StringToBuffer(" 1");
-    private static byte[] m_False = Gump.StringToBuffer(" 0");
+    private static readonly byte[] m_True = Gump.StringToBuffer(" 1");
+    private static readonly byte[] m_False = Gump.StringToBuffer(" 0");
 
-    private static byte[] m_BeginTextSeparator = Gump.StringToBuffer(" @");
-    private static byte[] m_EndTextSeparator = Gump.StringToBuffer("@");
+    private static readonly byte[] m_BeginTextSeparator = Gump.StringToBuffer(" @");
+    private static readonly byte[] m_EndTextSeparator = Gump.StringToBuffer("@");
 
-    private static byte[] m_Buffer = new byte[48];
+    private static readonly byte[] m_Buffer = new byte[48];
 
-    private Gump m_Gump;
+    private readonly Gump m_Gump;
 
-    private PacketWriter m_Layout;
+    private readonly PacketWriter m_Layout;
 
     private int m_StringCount;
-    private PacketWriter m_Strings;
+    private readonly PacketWriter m_Strings;
 
     static DisplayGumpPacked() => m_Buffer[0] = (byte)' ';
 
@@ -2457,13 +2457,13 @@ namespace Server.Network
 
   public sealed class DisplayGumpFast : Packet, IGumpWriter
   {
-    private static byte[] m_True = Gump.StringToBuffer(" 1");
-    private static byte[] m_False = Gump.StringToBuffer(" 0");
+    private static readonly byte[] m_True = Gump.StringToBuffer(" 1");
+    private static readonly byte[] m_False = Gump.StringToBuffer(" 0");
 
-    private static byte[] m_BeginTextSeparator = Gump.StringToBuffer(" @");
-    private static byte[] m_EndTextSeparator = Gump.StringToBuffer("@");
+    private static readonly byte[] m_BeginTextSeparator = Gump.StringToBuffer(" @");
+    private static readonly byte[] m_EndTextSeparator = Gump.StringToBuffer("@");
 
-    private byte[] m_Buffer = new byte[48];
+    private readonly byte[] m_Buffer = new byte[48];
     private int m_LayoutLength;
 
     public DisplayGumpFast(Gump g) : base(0xB0)
@@ -2629,7 +2629,7 @@ namespace Server.Network
   {
     public static readonly Packet InvalidInstance = SetStatic(new PlayMusic(MusicName.Invalid));
 
-    private static Packet[] m_Instances = new Packet[60];
+    private static readonly Packet[] m_Instances = new Packet[60];
 
     public PlayMusic(MusicName name) : base(0x6D, 3)
     {
@@ -2700,7 +2700,7 @@ namespace Server.Network
 
   public sealed class SeasonChange : Packet
   {
-    private static SeasonChange[][] m_Cache = new SeasonChange[][]
+    private static readonly SeasonChange[][] m_Cache = new SeasonChange[][]
     {
       new SeasonChange[2],
       new SeasonChange[2],
@@ -3250,8 +3250,8 @@ namespace Server.Network
 
   public sealed class MobileIncoming : Packet
   {
-    private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => { return new int[256]; });
-    private static ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
+    private static readonly ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => { return new int[256]; });
+    private static readonly ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
 
     public Mobile m_Beheld;
 
@@ -3363,8 +3363,8 @@ namespace Server.Network
 
   public sealed class MobileIncomingSA : Packet
   {
-    private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => { return new int[256]; });
-    private static ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
+    private static readonly ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => { return new int[256]; });
+    private static readonly ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
 
     public Mobile m_Beheld;
 
@@ -3485,8 +3485,8 @@ namespace Server.Network
   // Pre-7.0.0.0 Mobile Incoming
   public sealed class MobileIncomingOld : Packet
   {
-    private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => { return new int[256]; });
-    private static ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
+    private static readonly ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => { return new int[256]; });
+    private static readonly ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
 
     public Mobile m_Beheld;
 
@@ -3654,7 +3654,7 @@ namespace Server.Network
 
   public sealed class PingAck : Packet
   {
-    private static PingAck[] m_Cache = new PingAck[0x100];
+    private static readonly PingAck[] m_Cache = new PingAck[0x100];
 
     public PingAck(byte ping) : base(0x73, 2)
     {
@@ -3689,7 +3689,7 @@ namespace Server.Network
 
   public sealed class MovementAck : Packet
   {
-    private static MovementAck[] m_Cache = new MovementAck[8 * 256];
+    private static readonly MovementAck[] m_Cache = new MovementAck[8 * 256];
 
     private MovementAck(int seq, int noto) : base(0x22, 3)
     {

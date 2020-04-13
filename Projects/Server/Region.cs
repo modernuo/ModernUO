@@ -110,8 +110,8 @@ namespace Server
     private Point3D m_GoLocation;
 
 
-    private string m_Name;
-    private int m_Priority;
+    private readonly string m_Name;
+    private readonly int m_Priority;
 
     public Region(string name, Map map, int priority, params Rectangle2D[] area) : this(name, map, priority,
       ConvertTo3D(area))

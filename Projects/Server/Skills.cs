@@ -487,7 +487,7 @@ namespace Server
   public class Skills : IEnumerable<Skill>
   {
     private Skill m_Highest;
-    private Skill[] m_Skills;
+    private readonly Skill[] m_Skills;
 
     public Skills(Mobile owner)
     {

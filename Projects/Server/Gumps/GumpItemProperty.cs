@@ -24,7 +24,7 @@ namespace Server.Gumps
 {
   public class GumpItemProperty : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("itemproperty");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("itemproperty");
     private uint m_Serial;
 
     public GumpItemProperty(uint serial) => m_Serial = serial;

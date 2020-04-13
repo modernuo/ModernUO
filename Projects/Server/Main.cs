@@ -29,6 +29,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Server.Network;
 
 namespace Server
@@ -56,7 +59,7 @@ namespace Server
      * GetTickCount and GetTickCount64 have poor resolution.
      * GetTickCount64 is unavailable on Windows XP and Windows Server 2003.
      * Stopwatch.GetTimestamp() (QueryPerformanceCounter) is high resolution, but
-     * somewhat expensive to call because of its defference to DateTime.Now,
+     * somewhat expensive to call because of its difference to DateTime.Now,
      * which is why Stopwatch has been used to verify HRT before calling GetTimestamp(),
      * enabling the usage of DateTime.UtcNow instead.
      */
@@ -79,8 +82,6 @@ namespace Server
     private static int m_ItemCount, m_MobileCount;
 
     private static readonly Type[] m_SerialTypeArray = { typeof(Serial) };
-
-    public static MessagePump MessagePump{ get; set; }
 
     public static bool Profiling
     {
@@ -265,9 +266,7 @@ namespace Server
         {
           try
           {
-            Task.WhenAll(
-              MessagePump.Listeners.Select(listener => listener.Dispose())
-            ).Wait();
+            // Close all listeners
           }
           catch
           {
@@ -444,9 +443,6 @@ namespace Server
 
       AssemblyHandler.Invoke("Initialize");
 
-      // Start accepting new connections
-      MessagePump = new MessagePump();
-
       AssemblyHandler.Invoke("RegisterListeners");
 
       timerThread.Start();
@@ -454,10 +450,18 @@ namespace Server
       foreach (Map m in Map.AllMaps)
         m.Tiles.Force();
 
-      NetState.Initialize();
-
       EventSink.InvokeServerStarted();
 
+      // Start net socket server
+      var host = TcpServer.CreateWebHostBuilder(new string[0]).Build();
+      var life = host.Services.GetRequiredService<IHostApplicationLifetime>();
+      life.ApplicationStopping.Register(() => { Kill(); });
+
+      host.Run();
+    }
+
+    public static void RunEventLoop(IMessagePumpService messagePumpService)
+    {
       try
       {
         long last = TickCount;
@@ -477,7 +481,7 @@ namespace Server
           );
 
           Timer.Slice();
-          MessagePump.DoWork();
+          messagePumpService.DoWork();
 
           NetState.ProcessDisposedQueue();
 

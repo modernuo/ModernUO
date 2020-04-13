@@ -24,7 +24,7 @@ namespace Server.Gumps
 {
   public class GumpCheck : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("checkbox");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("checkbox");
     private int m_ID1, m_ID2;
     private bool m_InitialState;
     private int m_SwitchID;

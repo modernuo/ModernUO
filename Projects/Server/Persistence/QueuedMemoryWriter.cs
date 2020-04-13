@@ -25,8 +25,8 @@ namespace Server
 {
   public sealed class QueuedMemoryWriter : BinaryFileWriter
   {
-    private MemoryStream _memStream;
-    private List<IndexInfo> _orderedIndexInfo = new List<IndexInfo>();
+    private readonly MemoryStream _memStream;
+    private readonly List<IndexInfo> _orderedIndexInfo = new List<IndexInfo>();
 
     public QueuedMemoryWriter()
       : base(new MemoryStream(1024 * 1024), true) =>

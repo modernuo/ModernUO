@@ -34,7 +34,7 @@ namespace Server.Network
 
     private byte[] m_CompiledBuffer;
     private int m_CompiledLength;
-    private int m_Length;
+    private readonly int m_Length;
     private State m_State;
 
     protected PacketWriter m_Stream;

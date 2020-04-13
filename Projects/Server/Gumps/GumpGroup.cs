@@ -24,7 +24,7 @@ namespace Server.Gumps
 {
   public class GumpGroup : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("group");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("group");
     private int m_Group;
 
     public GumpGroup(int group) => m_Group = group;

@@ -53,7 +53,7 @@ namespace Server.Diagnostics
 
   public class PacketSendProfile : BasePacketProfile
   {
-    private static Dictionary<Type, PacketSendProfile> _profiles = new Dictionary<Type, PacketSendProfile>();
+    private static readonly Dictionary<Type, PacketSendProfile> _profiles = new Dictionary<Type, PacketSendProfile>();
 
     private long _created;
 
@@ -87,7 +87,7 @@ namespace Server.Diagnostics
 
   public class PacketReceiveProfile : BasePacketProfile
   {
-    private static Dictionary<int, PacketReceiveProfile> _profiles = new Dictionary<int, PacketReceiveProfile>();
+    private static readonly Dictionary<int, PacketReceiveProfile> _profiles = new Dictionary<int, PacketReceiveProfile>();
 
     public PacketReceiveProfile(int packetId)
       : base($"0x{packetId:X2}")

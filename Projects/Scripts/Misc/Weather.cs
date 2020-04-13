@@ -263,7 +263,7 @@ namespace Server.Misc
         else
           type = 2;
 
-        List<NetState> states = NetState.Instances;
+        List<NetState> states = TcpServer.Instances;
 
         Packet weatherPacket = null;
 
