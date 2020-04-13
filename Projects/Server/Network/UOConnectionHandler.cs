@@ -43,6 +43,10 @@ namespace Server.Network
       var inPipe = ns.Connection.Transport.Input;
 
       while (true)
+      {
+        if (NetState.AsyncState.Paused)
+          continue;
+
         try
         {
           ReadResult result = await inPipe.ReadAsync();
@@ -65,6 +69,7 @@ namespace Server.Network
         {
           // ignored
         }
+      }
 
       inPipe.Complete();
     }

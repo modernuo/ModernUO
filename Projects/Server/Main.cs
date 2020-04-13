@@ -79,8 +79,6 @@ namespace Server
 
     private static readonly AutoResetEvent m_Signal = new AutoResetEvent(true);
 
-    public static void WaitOne() => m_Signal.WaitOne();
-
     private static int m_ItemCount, m_MobileCount;
 
     private static readonly Type[] m_SerialTypeArray = { typeof(Serial) };
@@ -293,10 +291,10 @@ namespace Server
       return true;
     }
 
-    // private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
-    // {
-    //   HandleClosed();
-    // }
+    private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
+    {
+      HandleClosed();
+    }
 
     public static void Kill(bool restart = false)
     {
@@ -335,7 +333,7 @@ namespace Server
     public static void Main(string[] args)
     {
       AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-      // AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
+      AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
       foreach (string a in args)
         if (Insensitive.Equals(a, "-debug"))
@@ -452,13 +450,10 @@ namespace Server
       foreach (Map m in Map.AllMaps)
         m.Tiles.Force();
 
-      // Initialize NetStates
-
       EventSink.InvokeServerStarted();
 
       // Start net socket server
       var host = TcpServer.CreateWebHostBuilder(new string[0]).Build();
-
       var life = host.Services.GetRequiredService<IHostApplicationLifetime>();
       life.ApplicationStopping.Register(() => { Kill(); });
 
@@ -478,7 +473,7 @@ namespace Server
 
         while (!Closing)
         {
-          WaitOne();
+          m_Signal.WaitOne();
 
           Task.WaitAll(
             Task.Run(Mobile.ProcessDeltaQueue),

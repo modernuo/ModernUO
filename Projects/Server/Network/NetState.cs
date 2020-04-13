@@ -108,6 +108,7 @@ namespace Server.Network
     private static readonly AsyncState m_ResumeState = new AsyncState(false);
 
     private static AsyncState m_AsyncState = m_ResumeState;
+    public static AsyncState AsyncState => m_AsyncState;
 
     public IPacketEncoder PacketEncoder { get; set; }
 
@@ -431,7 +432,7 @@ namespace Server.Network
       m_AsyncState = Interlocked.Exchange(ref m_AsyncState, m_ResumeState);
     }
 
-    public virtual void Send(Packet p)
+    public virtual async void Send(Packet p)
     {
       if (Connection == null || BlockAllPackets)
       {
@@ -443,12 +444,14 @@ namespace Server.Network
 
       try
       {
+        //TODO: Rented memory
         ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out int length);
 
         if (buffer.Length > 0 && length > 0)
           try
           {
-            FlushResult result = outPipe.WriteAsync(buffer.Slice(0, length)).GetAwaiter().GetResult();
+            FlushResult result = await outPipe.WriteAsync(buffer.Slice(0, length));
+
             if (result.IsCanceled || result.IsCompleted)
             {
               Dispose();
