@@ -1,3 +1,4 @@
+# Distribution Files
 /Distribution/ModernUO
 /Distribution/ModernUO.*
 /Distribution/Assemblies
@@ -11,6 +12,7 @@
 /Distribution/Microsoft.Bcl.AsyncInterfaces.dll
 /Distribution/System.ComponentModel.Annotations.dll
 /Distribution/System.Runtime.CompilerServices.Unsafe.dll
+/Distribution/Data/modernuo.json
 
 # LibUv Dependencies
 /Distribution/libuv.dylib

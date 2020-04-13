@@ -38,7 +38,7 @@ namespace Server
     [JsonPropertyName("emailSettings")]
     public EmailSettings emailSettings { get; set; } = new EmailSettings();
 
-    private static string FilePath => Path.Join(Core.BaseDirectory, "modernuo.json");
+    private static string FilePath => Path.Join(Core.BaseDirectory, "Data/modernuo.json");
 
     private static void PromptDataDirectories(Configuration config)
     {
