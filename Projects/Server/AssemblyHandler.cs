@@ -68,6 +68,7 @@ namespace Server
       var types = FindTypesByName(name, ignoreCase).ToList();
       if (types.Count == 0)
         return null;
+
       if (predicate != null)
         return types.FirstOrDefault(predicate);
       if (types.Count == 1)
@@ -76,10 +77,13 @@ namespace Server
       // Check for exact match of the FullName or Name
       // Then check for case-insensitive match of FullName or Name
       // Otherwise just return the first entry
-      return (!ignoreCase ? types.FirstOrDefault(x => x.FullName == name || x.Name == name) : null)
-        ?? types.FirstOrDefault(x => StringComparer.OrdinalIgnoreCase.Equals(x.FullName, name) || StringComparer.OrdinalIgnoreCase.Equals(x.Name, name))
-        ?? types[0];
+      var stringComparer = ignoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+
+      return types.FirstOrDefault(x =>
+               stringComparer.Equals(x.FullName, name) || stringComparer.Equals(x.Name, name)) ??
+             types[0];
     }
+
     public static IEnumerable<Type> FindTypesByName(string name, bool ignoreCase = false)
     {
       List<Type> types = new List<Type>();
@@ -122,31 +126,30 @@ namespace Server
           refs.Add(index);
         else
         {
-          refs = new HashSet<int>();
-          refs.Add(index);
+          refs = new HashSet<int> {index};
           nameMap.Add(key, refs);
         }
       };
       Type current;
       Type aliasType = typeof(TypeAliasAttribute);
       TypeAliasAttribute alias;
-      for (int i = 0, j = 0; i < m_Types.Length; i++)
+      for (int i = 0; i < m_Types.Length; i++)
       {
         current = m_Types[i];
         addToRefs(i, current.Name);
         addToRefs(i, current.Name.ToLower());
         addToRefs(i, current.FullName);
-        addToRefs(i, current.FullName.ToLower());
+        addToRefs(i, current.FullName?.ToLower());
         alias = current.GetCustomAttribute(aliasType, false) as TypeAliasAttribute;
         if (alias != null)
-          for (j = 0; j < alias.Aliases.Length; j++)
+          for (int j = 0; j < alias.Aliases.Length; j++)
           {
             addToRefs(i, alias.Aliases[j]);
             addToRefs(i, alias.Aliases[j].ToLower());
           }
       }
-      foreach (var entry in nameMap)
-        m_NameMap[entry.Key] = entry.Value.ToArray();
+      foreach (var (key, value) in nameMap)
+        m_NameMap[key] = value.ToArray();
     }
   }
 }
