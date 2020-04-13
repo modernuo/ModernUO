@@ -51,8 +51,6 @@ namespace Server.Network
             DisplayListener(ipep);
           }
 
-          options.ListenLocalhost(2593, builder => { builder.UseConnectionHandler<ServerConnectionHandler>(); });
-
           // Webservices here
         })
         .UseLibuv()
