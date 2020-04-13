@@ -431,8 +431,6 @@ namespace Server.Network
       m_AsyncState = Interlocked.Exchange(ref m_AsyncState, m_ResumeState);
     }
 
-    private TimingPipeFlusher m_Flusher;
-
     public virtual async void Send(Packet p)
     {
       if (Connection == null || BlockAllPackets)
@@ -449,21 +447,21 @@ namespace Server.Network
         ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out int length);
 
         if (buffer.Length > 0 && length > 0)
-      try
-      {
+          try
+          {
             FlushResult result = await outPipe.WriteAsync(buffer.Slice(0, length));
 
             if (result.IsCanceled || result.IsCompleted)
-        {
+            {
               Dispose();
-          return;
+              return;
             }
           }
           catch
           {
             Dispose();
             // ignored
-        }
+          }
 
         p.OnSend();
       }
