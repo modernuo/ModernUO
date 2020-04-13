@@ -12,7 +12,8 @@ namespace Server.Json
       if (reader.TokenType != JsonTokenType.StartArray)
         throw new JsonException("Point3d must be an array of x, y, z");
 
-      var data = new List<int>();
+      var data = new int[3];
+      int count = 0;
 
       while (true)
       {
@@ -21,13 +22,18 @@ namespace Server.Json
           break;
 
         if (reader.TokenType == JsonTokenType.Number)
-          data.Add(reader.GetInt32());
+        {
+          if (count < 3)
+            data[count] = reader.GetInt32();
+
+          count++;
+        }
       }
 
-      if (data.Count < 2 || data.Count > 3)
+      if (count < 2 || count > 3)
         throw new JsonException("Point3d must be an array of x, y, z");
 
-      return new Point3D(data[0], data[1], data.Count == 3 ? data[2] : 0);
+      return new Point3D(data[0], data[1], data[2]);
     }
     public override void Write(Utf8JsonWriter writer, Point3D value, JsonSerializerOptions options)
     {
