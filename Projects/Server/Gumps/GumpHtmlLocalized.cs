@@ -31,9 +31,9 @@ namespace Server.Gumps
 
   public class GumpHtmlLocalized : GumpEntry
   {
-    private static byte[] m_LayoutNamePlain = Gump.StringToBuffer("xmfhtmlgump");
-    private static byte[] m_LayoutNameColor = Gump.StringToBuffer("xmfhtmlgumpcolor");
-    private static byte[] m_LayoutNameArgs = Gump.StringToBuffer("xmfhtmltok");
+    private static readonly byte[] m_LayoutNamePlain = Gump.StringToBuffer("xmfhtmlgump");
+    private static readonly byte[] m_LayoutNameColor = Gump.StringToBuffer("xmfhtmlgumpcolor");
+    private static readonly byte[] m_LayoutNameArgs = Gump.StringToBuffer("xmfhtmltok");
     private string m_Args;
     private bool m_Background, m_Scrollbar;
     private int m_Color;

@@ -22,7 +22,7 @@ namespace Server.ContextMenus
 {
   public class OpenBackpackEntry : ContextMenuEntry
   {
-    private Mobile m_Mobile;
+    private readonly Mobile m_Mobile;
 
     public OpenBackpackEntry(Mobile m) : base(6145) => m_Mobile = m;
 

@@ -1,4 +1,5 @@
 using System.Net;
+using Server.Network;
 
 namespace Server
 {
@@ -15,8 +16,7 @@ namespace Server
 
     public static void RegisterListeners()
     {
-      for (int i = 0; i < m_ListenerEndPoints.Length; i++)
-        Core.MessagePump.AddListener(m_ListenerEndPoints[i]);
+      TcpServer.Listeners.AddRange(m_ListenerEndPoints);
     }
   }
 }

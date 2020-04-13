@@ -24,8 +24,8 @@ namespace Server.Gumps
 {
   public class GumpItem : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("tilepic");
-    private static byte[] m_LayoutNameHue = Gump.StringToBuffer("tilepichue");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("tilepic");
+    private static readonly byte[] m_LayoutNameHue = Gump.StringToBuffer("tilepichue");
     private int m_Hue;
     private int m_ItemID;
     private int m_X, m_Y;

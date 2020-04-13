@@ -24,7 +24,7 @@ namespace Server.Gumps
 {
   public class GumpPage : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("page");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("page");
     private int m_Page;
 
     public GumpPage(int page) => m_Page = page;

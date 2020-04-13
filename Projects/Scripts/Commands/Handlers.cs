@@ -671,7 +671,7 @@ namespace Server.Commands
 
     public static void BroadcastMessage(AccessLevel ac, int hue, string message)
     {
-      foreach (NetState state in NetState.Instances)
+      foreach (NetState state in TcpServer.Instances)
       {
         Mobile m = state.Mobile;
 
@@ -743,7 +743,7 @@ namespace Server.Commands
     [Description("View some stats about the server.")]
     public static void Stats_OnCommand(CommandEventArgs e)
     {
-      e.Mobile.SendMessage("Open Connections: {0}", NetState.Instances.Count);
+      e.Mobile.SendMessage("Open Connections: {0}", TcpServer.Instances.Count);
       e.Mobile.SendMessage("Mobiles: {0}", World.Mobiles.Count);
       e.Mobile.SendMessage("Items: {0}", World.Items.Count);
     }

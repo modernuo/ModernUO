@@ -25,7 +25,7 @@ namespace Server
   public sealed class BinaryMemoryWriter : BinaryFileWriter
   {
     private static byte[] indexBuffer;
-    private MemoryStream stream;
+    private readonly MemoryStream stream;
 
     public BinaryMemoryWriter()
       : base(new MemoryStream(512), true) =>

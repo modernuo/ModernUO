@@ -22,7 +22,7 @@ namespace Server
 {
   public class Point3DList
   {
-    private static Point3D[] m_EmptyList = new Point3D[0];
+    private static readonly Point3D[] m_EmptyList = new Point3D[0];
     private Point3D[] m_List;
 
     public Point3DList()

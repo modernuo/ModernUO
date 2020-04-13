@@ -28,7 +28,7 @@ namespace Server
 {
   public sealed class ParallelSaveStrategy : SaveStrategy
   {
-    private Queue<Item> _decayQueue;
+    private readonly Queue<Item> _decayQueue;
 
     private Consumer[] consumers;
     private int cycle;
@@ -40,7 +40,7 @@ namespace Server
 
     private SequentialFileWriter mobileData, mobileIndex;
 
-    private int processorCount;
+    private readonly int processorCount;
 
     public ParallelSaveStrategy(int processorCount)
     {
@@ -226,9 +226,9 @@ namespace Server
 
     private sealed class Producer : IEnumerable<ISerializable>
     {
-      private IEnumerable<BaseGuild> guilds;
-      private IEnumerable<Item> items;
-      private IEnumerable<Mobile> mobiles;
+      private readonly IEnumerable<BaseGuild> guilds;
+      private readonly IEnumerable<Item> items;
+      private readonly IEnumerable<Mobile> mobiles;
 
       public Producer()
       {
@@ -257,13 +257,13 @@ namespace Server
 
     private sealed class Consumer
     {
-      public ConsumableEntry[] buffer;
+      public readonly ConsumableEntry[] buffer;
 
-      public ManualResetEvent completionEvent;
+      public readonly ManualResetEvent completionEvent;
       public int head, done, tail;
-      private ParallelSaveStrategy owner;
+      private readonly ParallelSaveStrategy owner;
 
-      private Thread thread;
+      private readonly Thread thread;
 
       public Consumer(ParallelSaveStrategy owner, int bufferSize)
       {

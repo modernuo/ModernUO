@@ -24,7 +24,7 @@ namespace Server.Gumps
 {
   public class GumpHtml : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("htmlgump");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("htmlgump");
     private bool m_Background, m_Scrollbar;
     private string m_Text;
     private int m_Width, m_Height;

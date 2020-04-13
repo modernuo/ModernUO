@@ -22,7 +22,7 @@ namespace Server
 {
   public class KeywordList
   {
-    private static int[] m_EmptyInts = new int[0];
+    private static readonly int[] m_EmptyInts = new int[0];
     private int[] m_Keywords;
 
     public KeywordList()

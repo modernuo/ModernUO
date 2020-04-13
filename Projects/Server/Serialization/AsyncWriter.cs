@@ -29,18 +29,18 @@ namespace Server
 {
   public sealed class AsyncWriter : IGenericWriter
   {
-    private int BufferSize;
+    private readonly int BufferSize;
     private BinaryWriter m_Bin;
     private bool m_Closed;
-    private FileStream m_File;
+    private readonly FileStream m_File;
 
     private long m_LastPos, m_CurPos;
 
     private MemoryStream m_Mem;
     private Thread m_WorkerThread;
 
-    private Queue<MemoryStream> m_WriteQueue;
-    private bool PrefixStrings;
+    private readonly Queue<MemoryStream> m_WriteQueue;
+    private readonly bool PrefixStrings;
 
     public AsyncWriter(string filename, bool prefix)
       : this(filename, 1048576, prefix) //1 mb buffer
@@ -565,7 +565,7 @@ namespace Server
 
     private class WorkerThread
     {
-      private AsyncWriter m_Owner;
+      private readonly AsyncWriter m_Owner;
 
       public WorkerThread(AsyncWriter owner) => m_Owner = owner;
 

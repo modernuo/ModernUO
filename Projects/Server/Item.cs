@@ -201,13 +201,13 @@ namespace Server
 
   public class Item : IHued, IComparable<Item>, ISerializable, ISpawnable, IPropertyListObject
   {
-    private BufferWriter m_SaveBuffer;
-    public BufferWriter SaveBuffer { get { return m_SaveBuffer; } }
+    private readonly BufferWriter m_SaveBuffer;
+    public BufferWriter SaveBuffer => m_SaveBuffer;
 
     public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
     public static readonly List<Item> EmptyItems = new List<Item>();
 
-    private static List<Item> m_DeltaQueue = new List<Item>();
+    private static readonly List<Item> m_DeltaQueue = new List<Item>();
 
     private static bool _processing;
 

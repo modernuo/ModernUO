@@ -24,7 +24,7 @@ namespace Server.Gumps
 {
   public class GumpTooltip : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("tooltip");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("tooltip");
     private int m_Number;
 
     public GumpTooltip(int number) => m_Number = number;

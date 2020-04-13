@@ -177,7 +177,7 @@ namespace Server
 
   public static class TileData
   {
-    private static byte[] m_StringBuffer = new byte[20];
+    private static readonly byte[] m_StringBuffer = new byte[20];
 
     static TileData()
     {

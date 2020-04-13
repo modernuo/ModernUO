@@ -29,30 +29,30 @@ namespace Server
 {
   public class TileMatrix
   {
-    private static List<TileMatrix> m_Instances = new List<TileMatrix>();
+    private static readonly List<TileMatrix> m_Instances = new List<TileMatrix>();
 
-    private int m_FileIndex;
-    private List<TileMatrix> m_FileShare = new List<TileMatrix>();
+    private readonly int m_FileIndex;
+    private readonly List<TileMatrix> m_FileShare = new List<TileMatrix>();
 
-    private LandTile[] m_InvalidLandBlock;
-    private int[][] m_LandPatches;
-    private LandTile[][][] m_LandTiles;
+    private readonly LandTile[] m_InvalidLandBlock;
+    private readonly int[][] m_LandPatches;
+    private readonly LandTile[][][] m_LandTiles;
 
     private TileList[][] m_Lists;
 
-    private UOPIndex m_MapIndex;
+    private readonly UOPIndex m_MapIndex;
     private DateTime m_NextLandWarning;
 
     private DateTime m_NextStaticWarning;
 
-    private Map m_Owner;
+    private readonly Map m_Owner;
 
-    private int[][] m_StaticPatches;
-    private StaticTile[][][][][] m_StaticTiles;
+    private readonly int[][] m_StaticPatches;
+    private readonly StaticTile[][][][][] m_StaticTiles;
 
     private StaticTile[] m_TileBuffer = new StaticTile[128];
 
-    private TileList m_TilesList = new TileList();
+    private readonly TileList m_TilesList = new TileList();
     // private int m_Width, m_Height;
 
     public TileMatrix(Map owner, int fileIndex, int mapID, int width, int height)
@@ -564,10 +564,10 @@ namespace Server
 
   public class UOPIndex
   {
-    private UOPEntry[] m_Entries;
-    private int m_Length;
+    private readonly UOPEntry[] m_Entries;
+    private readonly int m_Length;
 
-    private BinaryReader m_Reader;
+    private readonly BinaryReader m_Reader;
 
     public UOPIndex(FileStream stream)
     {
@@ -652,7 +652,7 @@ namespace Server
 
     private class UOPEntry : IComparable<UOPEntry>
     {
-      public int m_Length;
+      public readonly int m_Length;
       public int m_Offset;
       public int m_Order;
 

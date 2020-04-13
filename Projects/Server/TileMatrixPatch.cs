@@ -25,7 +25,8 @@ namespace Server
 {
   public class TileMatrixPatch
   {
-    private int m_LandBlocks, m_StaticBlocks;
+    private readonly int m_LandBlocks;
+    private readonly int m_StaticBlocks;
 
     private StaticTile[] m_TileBuffer = new StaticTile[128];
 

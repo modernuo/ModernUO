@@ -36,8 +36,8 @@ namespace Server.Items
 
   public class Container : Item
   {
-    private static QueuePool m_QueuePool = new QueuePool(QueueRef<Container>.Generate, preGenerateCount: 2, maxRefrenceRetention: 5);
-    private static List<Item> m_FindItemsList = new List<Item>();
+    private static readonly QueuePool m_QueuePool = new QueuePool(QueueRef<Container>.Generate, preGenerateCount: 2, maxRefrenceRetention: 5);
+    private static readonly List<Item> m_FindItemsList = new List<Item>();
 
     private ContainerData m_ContainerData;
 
@@ -735,7 +735,7 @@ namespace Server.Items
 
     private class GroupComparer : IComparer<Item>
     {
-      private CheckItemGroup m_Grouper;
+      private readonly CheckItemGroup m_Grouper;
 
       public GroupComparer(CheckItemGroup grouper) => m_Grouper = grouper;
 
@@ -754,8 +754,8 @@ namespace Server.Items
 
     private struct ItemStackEntry
     {
-      public Item m_StackItem;
-      public Item m_DropItem;
+      public readonly Item m_StackItem;
+      public readonly Item m_DropItem;
 
       public ItemStackEntry(Item stack, Item drop)
       {
@@ -1536,12 +1536,10 @@ namespace Server.Items
         {
           var container = queue.Dequeue();
           foreach (var item in container.Items)
-          {
             if (item is T typedItem && predicate?.Invoke(typedItem) != false)
               items.Add(typedItem);
             else if (recurse && item is Container itemContainer)
               queue.Enqueue(itemContainer);
-          }
         }
         return items;
       }
@@ -1583,7 +1581,7 @@ namespace Server.Items
 
   public class ContainerData
   {
-    private static Dictionary<int, ContainerData> m_Table;
+    private static readonly Dictionary<int, ContainerData> m_Table;
 
     static ContainerData()
     {

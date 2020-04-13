@@ -27,7 +27,7 @@ namespace Server
 {
   public class AggressorInfo
   {
-    private static Queue<AggressorInfo> m_Pool = new Queue<AggressorInfo>();
+    private static readonly Queue<AggressorInfo> m_Pool = new Queue<AggressorInfo>();
     private Mobile m_Attacker, m_Defender;
     private bool m_CanReportMurder;
     private bool m_CriminalAggression;

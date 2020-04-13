@@ -24,8 +24,8 @@ namespace Server.Gumps
 {
   public class GumpImage : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("gumppic");
-    private static byte[] m_HueEquals = Gump.StringToBuffer(" hue=");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("gumppic");
+    private static readonly byte[] m_HueEquals = Gump.StringToBuffer(" hue=");
     private int m_GumpID;
     private int m_Hue;
     private int m_X, m_Y;

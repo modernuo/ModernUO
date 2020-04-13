@@ -196,7 +196,7 @@ namespace Server
 
   public class AggressiveActionEventArgs : EventArgs
   {
-    private static Queue<AggressiveActionEventArgs> m_Pool = new Queue<AggressiveActionEventArgs>();
+    private static readonly Queue<AggressiveActionEventArgs> m_Pool = new Queue<AggressiveActionEventArgs>();
 
     private AggressiveActionEventArgs(Mobile aggressed, Mobile aggressor, bool criminal)
     {
@@ -512,7 +512,7 @@ namespace Server
 
   public class MovementEventArgs : EventArgs
   {
-    private static Queue<MovementEventArgs> m_Pool = new Queue<MovementEventArgs>();
+    private static readonly Queue<MovementEventArgs> m_Pool = new Queue<MovementEventArgs>();
 
     public MovementEventArgs(Mobile mobile, Direction dir)
     {

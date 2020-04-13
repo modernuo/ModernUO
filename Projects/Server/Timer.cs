@@ -45,11 +45,12 @@ namespace Server
 
   public class Timer
   {
-    private static Queue<Timer> m_Queue = new Queue<Timer>();
+    private static readonly Queue<Timer> m_Queue = new Queue<Timer>();
 
     private static int m_QueueCountAtSlice;
     private long m_Delay;
-    private int m_Index, m_Count;
+    private int m_Index;
+    private readonly int m_Count;
     private long m_Interval;
     private List<Timer> m_List;
     private long m_Next;
@@ -232,11 +233,11 @@ namespace Server
 
     public class TimerThread
     {
-      private static Dictionary<Timer, TimerChangeEntry> m_Changed = new Dictionary<Timer, TimerChangeEntry>();
+      private static readonly Dictionary<Timer, TimerChangeEntry> m_Changed = new Dictionary<Timer, TimerChangeEntry>();
 
-      private static long[] m_NextPriorities = new long[8];
+      private static readonly long[] m_NextPriorities = new long[8];
 
-      private static long[] m_PriorityDelays = {
+      private static readonly long[] m_PriorityDelays = {
         0,
         10,
         25,
@@ -247,7 +248,7 @@ namespace Server
         60000
       };
 
-      private static List<Timer>[] m_Timers = {
+      private static readonly List<Timer>[] m_Timers = {
         new List<Timer>(),
         new List<Timer>(),
         new List<Timer>(),
@@ -258,7 +259,7 @@ namespace Server
         new List<Timer>()
       };
 
-      private static AutoResetEvent m_Signal = new AutoResetEvent(false);
+      private static readonly AutoResetEvent m_Signal = new AutoResetEvent(false);
 
       public static void DumpInfo(TextWriter tw)
       {
@@ -415,7 +416,7 @@ namespace Server
 
       private class TimerChangeEntry
       {
-        private static Queue<TimerChangeEntry> m_InstancePool = new Queue<TimerChangeEntry>();
+        private static readonly Queue<TimerChangeEntry> m_InstancePool = new Queue<TimerChangeEntry>();
         public bool m_IsAdd;
         public int m_NewIndex;
         public Timer m_Timer;
@@ -528,7 +529,7 @@ namespace Server
 
     private class DelayStateCallTimer<T> : Timer
     {
-      private T m_State;
+      private readonly T m_State;
 
       public DelayStateCallTimer(TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T> callback, T state)
         : base(delay, interval, count)
@@ -555,7 +556,7 @@ namespace Server
 
     private class DelayTaskTimer : Timer
     {
-      private TaskCompletionSource<DelayTaskTimer> m_TaskCompleter;
+      private readonly TaskCompletionSource<DelayTaskTimer> m_TaskCompleter;
 
       public Task Task => m_TaskCompleter.Task;
 
