@@ -45,7 +45,7 @@ namespace Server.Commands.Generic
         List<object> objs = new List<object>();
 
         foreach (IEntity obj in eable)
-          if ((!mobiles || obj is Mobile && BaseCommand.IsAccessible(from, obj)) && ext.IsValid(obj))
+          if ((!mobiles || obj is Mobile) && BaseCommand.IsAccessible(from, obj) && ext.IsValid(obj))
             objs.Add(obj);
 
 
