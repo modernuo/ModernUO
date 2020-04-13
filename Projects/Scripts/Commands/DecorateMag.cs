@@ -805,7 +805,7 @@ namespace Server.Commands
 
           if (indexOf >= 0)
           {
-            // Must supress stackable warnings
+            // Must suppress stackable warnings
 
             bool wasStackable = item.Stackable;
 
