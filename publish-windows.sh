@@ -1,1 +1,1 @@
-dotnet publish /p:PublishProfile=Windows
+dotnet -c Release Publish /p:PublishProfile=Windows

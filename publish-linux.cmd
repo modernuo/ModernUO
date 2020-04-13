@@ -1,1 +1,1 @@
-dotnet publish /p:PublishProfile=Linux
+dotnet publish -c Release /p:PublishProfile=Linux
