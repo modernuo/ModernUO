@@ -34,7 +34,7 @@ namespace Server.Commands.Generic
 
         List<object> list = new List<object>();
 
-        List<NetState> states = NetState.Instances;
+        List<NetState> states = TcpServer.Instances;
 
         for (int i = 0; i < states.Count; ++i)
         {

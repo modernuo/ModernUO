@@ -22,7 +22,7 @@ namespace Server.ContextMenus
 {
   public class PaperdollEntry : ContextMenuEntry
   {
-    private Mobile m_Mobile;
+    private readonly Mobile m_Mobile;
 
     public PaperdollEntry(Mobile m) : base(6123, 18) => m_Mobile = m;
 

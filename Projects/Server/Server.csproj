@@ -6,7 +6,7 @@
     <StartupObject>Server.Core</StartupObject>
     <AssemblyName>ModernUO</AssemblyName>
     <Win32Resource />
-    <Version>0.2.1</Version>
+    <Version>0.3.0</Version>
     <Authors>Kamron Batman</Authors>
     <Company>ModernUO</Company>
     <Product>ModernUO Server</Product>
@@ -35,10 +35,6 @@
       <Link>libdrng.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assemblies\libuv.dll" Condition="'$(OS)' == 'Windows_NT'">
-      <Link>libuv.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Assemblies\zlib.dll" Condition="'$(OS)' == 'Windows_NT'">
       <Link>zlib.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -46,10 +42,20 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.3" />
     <PackageReference Include="System.IO.Pipelines" Version="4.7.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Kestrel\Transport.Libuv\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Kestrel\Transport.Libuv\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Kestrel\Transport.Libuv\**" />
   </ItemGroup>
 </Project>

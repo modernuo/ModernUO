@@ -35,7 +35,7 @@ namespace Server
 
   public struct Body
   {
-    private static BodyType[] m_Types;
+    private static readonly BodyType[] m_Types;
 
     static Body()
     {

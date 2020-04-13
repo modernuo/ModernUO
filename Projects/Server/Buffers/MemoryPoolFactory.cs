@@ -5,11 +5,7 @@ namespace System.Buffers
 {
   public static class SlabMemoryPoolFactory
   {
-    public static MemoryPool<byte> Create()
-    {
-      return CreateSlabMemoryPool();
-    }
-
+    public static MemoryPool<byte> Create() => CreateSlabMemoryPool();
     public static MemoryPool<byte> CreateSlabMemoryPool() => new SlabMemoryPool();
   }
 }

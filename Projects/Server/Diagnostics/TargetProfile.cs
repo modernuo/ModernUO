@@ -25,7 +25,7 @@ namespace Server.Diagnostics
 {
   public class TargetProfile : BaseProfile
   {
-    private static Dictionary<Type, TargetProfile> _profiles = new Dictionary<Type, TargetProfile>();
+    private static readonly Dictionary<Type, TargetProfile> _profiles = new Dictionary<Type, TargetProfile>();
 
     public TargetProfile(Type type)
       : base(type.FullName)

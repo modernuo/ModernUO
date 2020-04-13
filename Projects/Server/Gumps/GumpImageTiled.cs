@@ -24,7 +24,7 @@ namespace Server.Gumps
 {
   public class GumpImageTiled : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("gumppictiled");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("gumppictiled");
     private int m_GumpID;
     private int m_Width, m_Height;
     private int m_X, m_Y;

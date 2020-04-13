@@ -19,19 +19,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using System.Collections.Concurrent;
 
 namespace Server.Network
 {
   public static class StaticPacketHandlers
   {
-    private static ConcurrentDictionary<IPropertyListObject,OPLInfo> OPLInfoPackets = new ConcurrentDictionary<IPropertyListObject,OPLInfo>();
-    private static ConcurrentDictionary<IEntity,RemoveEntity> RemoveEntityPackets = new ConcurrentDictionary<IEntity,RemoveEntity>();
+    private static readonly ConcurrentDictionary<IPropertyListObject,OPLInfo> OPLInfoPackets = new ConcurrentDictionary<IPropertyListObject,OPLInfo>();
+    private static readonly ConcurrentDictionary<IEntity,RemoveEntity> RemoveEntityPackets = new ConcurrentDictionary<IEntity,RemoveEntity>();
 
-    private static ConcurrentDictionary<Item,WorldItem> WorldItemPackets = new ConcurrentDictionary<Item,WorldItem>();
-    private static ConcurrentDictionary<Item,WorldItemSA> WorldItemSAPackets = new ConcurrentDictionary<Item,WorldItemSA>();
-    private static ConcurrentDictionary<Item,WorldItemHS> WorldItemHSPackets = new ConcurrentDictionary<Item,WorldItemHS>();
+    private static readonly ConcurrentDictionary<Item,WorldItem> WorldItemPackets = new ConcurrentDictionary<Item,WorldItem>();
+    private static readonly ConcurrentDictionary<Item,WorldItemSA> WorldItemSAPackets = new ConcurrentDictionary<Item,WorldItemSA>();
+    private static readonly ConcurrentDictionary<Item,WorldItemHS> WorldItemHSPackets = new ConcurrentDictionary<Item,WorldItemHS>();
 
     public static OPLInfo GetOPLInfoPacket(IPropertyListObject obj)
     {

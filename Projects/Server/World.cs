@@ -31,7 +31,7 @@ namespace Server
 {
   public static class World
   {
-    private static ManualResetEvent m_DiskWriteHandle = new ManualResetEvent(true);
+    private static readonly ManualResetEvent m_DiskWriteHandle = new ManualResetEvent(true);
 
     private static Queue<IEntity> _addQueue, _deleteQueue;
 
@@ -98,7 +98,7 @@ namespace Server
       else
         p = new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text);
 
-      List<NetState> list = NetState.Instances;
+      List<NetState> list = TcpServer.Instances;
 
       p.Acquire();
 

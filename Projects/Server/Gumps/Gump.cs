@@ -29,13 +29,13 @@ namespace Server.Gumps
   {
     private static uint m_NextSerial = 1;
 
-    private static byte[] m_BeginLayout = StringToBuffer("{ ");
-    private static byte[] m_EndLayout = StringToBuffer(" }");
+    private static readonly byte[] m_BeginLayout = StringToBuffer("{ ");
+    private static readonly byte[] m_EndLayout = StringToBuffer(" }");
 
-    private static byte[] m_NoMove = StringToBuffer("{ nomove }");
-    private static byte[] m_NoClose = StringToBuffer("{ noclose }");
-    private static byte[] m_NoDispose = StringToBuffer("{ nodispose }");
-    private static byte[] m_NoResize = StringToBuffer("{ noresize }");
+    private static readonly byte[] m_NoMove = StringToBuffer("{ nomove }");
+    private static readonly byte[] m_NoClose = StringToBuffer("{ noclose }");
+    private static readonly byte[] m_NoDispose = StringToBuffer("{ nodispose }");
+    private static readonly byte[] m_NoResize = StringToBuffer("{ noresize }");
     private bool m_Closable = true;
     private bool m_Disposable = true;
 
@@ -43,7 +43,7 @@ namespace Server.Gumps
     private bool m_Resizable = true;
 
     private uint m_Serial;
-    private List<string> m_Strings;
+    private readonly List<string> m_Strings;
 
     internal int m_TextEntries, m_Switches;
     private int m_X, m_Y;

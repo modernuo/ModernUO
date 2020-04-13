@@ -25,7 +25,7 @@ namespace Server.Menus.Questions
   public class QuestionMenu : IMenu
   {
     private static int m_NextSerial;
-    private int m_Serial;
+    private readonly int m_Serial;
 
     public QuestionMenu(string question, string[] answers)
     {

@@ -32,20 +32,20 @@ namespace Server
   {
     private const int LargeByteBufferSize = 256;
 
-    private byte[] m_Buffer;
+    private readonly byte[] m_Buffer;
 
     private byte[] m_CharacterBuffer;
 
-    private Encoding m_Encoding;
-    private Stream m_File;
+    private readonly Encoding m_Encoding;
+    private readonly Stream m_File;
 
     private int m_Index;
     private int m_MaxBufferChars;
 
     private long m_Position;
 
-    private char[] m_SingleCharBuffer = new char[1];
-    private bool PrefixStrings;
+    private readonly char[] m_SingleCharBuffer = new char[1];
+    private readonly bool PrefixStrings;
 
     public BinaryFileWriter(Stream strm, bool prefixStr)
     {

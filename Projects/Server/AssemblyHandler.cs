@@ -29,7 +29,7 @@ namespace Server
 {
   public static class AssemblyHandler
   {
-    private static Dictionary<Assembly, TypeCache> m_TypeCaches = new Dictionary<Assembly, TypeCache>();
+    private static readonly Dictionary<Assembly, TypeCache> m_TypeCaches = new Dictionary<Assembly, TypeCache>();
     private static TypeCache m_NullCache;
     public static Assembly[] Assemblies { get; set; }
 
@@ -85,10 +85,7 @@ namespace Server
       List<Type> types = new List<Type>();
       if(ignoreCase)
         name = name.ToLower();
-      for (int i = 0; i < Assemblies.Length; i++)
-      {
-        types.AddRange(GetTypeCache(Assemblies[i])[name]);
-      }
+      for (int i = 0; i < Assemblies.Length; i++) types.AddRange(GetTypeCache(Assemblies[i])[name]);
       if (types.Count == 0)
         types.AddRange(GetTypeCache(Core.Assembly)[name]);
       return types;
@@ -107,15 +104,12 @@ namespace Server
 
   public class TypeCache
   {
-    private Dictionary<string, int[]> m_NameMap = new Dictionary<string, int[]>();
-    private Type[] m_Types;
-    public IEnumerable<Type> Types { get => m_Types; }
-    public IEnumerable<string> Names { get => m_NameMap.Keys; }
+    private readonly Dictionary<string, int[]> m_NameMap = new Dictionary<string, int[]>();
+    private readonly Type[] m_Types;
+    public IEnumerable<Type> Types => m_Types;
+    public IEnumerable<string> Names => m_NameMap.Keys;
 
-    public IEnumerable<Type> this[string name]
-    {
-      get => m_NameMap.TryGetValue(name, out int[] value) ? value.Select(x => m_Types[x]) : new Type[0];
-    }
+    public IEnumerable<Type> this[string name] => m_NameMap.TryGetValue(name, out int[] value) ? value.Select(x => m_Types[x]) : new Type[0];
 
     public TypeCache(Assembly asm)
     {

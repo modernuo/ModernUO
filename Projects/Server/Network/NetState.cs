@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 using System;
-using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -29,7 +28,6 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.PipeWriterHelpers;
 using Server.Accounting;
 using Server.Gumps;
 using Server.HuePickers;
@@ -92,7 +90,7 @@ namespace Server.Network
 
   public class NetState : IComparable<NetState>
   {
-    private string m_ToString;
+    private readonly string m_ToString;
     private ClientVersion m_Version;
 
     public DateTime ConnectedOn { get; }
@@ -106,10 +104,11 @@ namespace Server.Network
 
     public IPAddress Address { get; }
 
-    private static AsyncState m_PauseState = new AsyncState(true);
-    private static AsyncState m_ResumeState = new AsyncState(false);
+    private static readonly AsyncState m_PauseState = new AsyncState(true);
+    private static readonly AsyncState m_ResumeState = new AsyncState(false);
 
     private static AsyncState m_AsyncState = m_ResumeState;
+    public static AsyncState AsyncState => m_AsyncState;
 
     public IPacketEncoder PacketEncoder { get; set; }
 
@@ -280,9 +279,6 @@ namespace Server.Network
 
     public List<IMenu> Menus { get; private set; }
 
-    public PipeReader RecvPipe => Connection.Transport.Input;
-    public PipeWriter SendPipe => Connection.Transport.Output;
-
     public static int GumpCap { get; set; } = 512;
 
     public static int HuePickerCap { get; set; } = 512;
@@ -398,12 +394,8 @@ namespace Server.Network
     public IAccount Account { get; set; }
 
     public override string ToString() => m_ToString;
+    public NetState(ConnectionContext connection)
 
-    public static List<NetState> Instances { get; } = new List<NetState>();
-
-    public void SetConnectionAlive() => m_NextCheckActivity = Core.TickCount + 60000;
-
-    public NetState(ConnectionContext connection, MessagePump pump)
     {
       Connection = connection;
       Seeded = false;
@@ -411,10 +403,6 @@ namespace Server.Network
       HuePickers = new List<HuePicker>();
       Menus = new List<IMenu>();
       Trades = new List<SecureTrade>();
-
-      SetConnectionAlive();
-
-      Instances.Add(this);
 
       try
       {
@@ -429,11 +417,6 @@ namespace Server.Network
       }
 
       ConnectedOn = DateTime.UtcNow;
-      Console.WriteLine("Client: {0}: Connected. [{1} Online]", this, Instances.Count);
-
-#pragma warning disable 4014
-      ProcessRecvs(pump);
-#pragma warning restore 4014
 
       CreatedCallback?.Invoke(this);
     }
@@ -450,7 +433,7 @@ namespace Server.Network
 
     private TimingPipeFlusher m_Flusher;
 
-    public virtual void Send(Packet p)
+    public virtual async void Send(Packet p)
     {
       if (Connection == null || BlockAllPackets)
       {
@@ -458,27 +441,29 @@ namespace Server.Network
         return;
       }
 
-      // WriteConsole("Sending Packet {0:X}", p.PacketID);
-
-      m_Flusher ??= new TimingPipeFlusher(SendPipe);
+      var outPipe = Connection.Transport.Output;
 
       try
       {
-        ReadOnlySpan<byte> buffer = p.Compile(CompressionEnabled, out int length);
+        //TODO: Rented memory
+        ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out int length);
 
-        if (buffer.Length <= 0 || length <= 0)
+        if (buffer.Length > 0 && length > 0)
+      try
+      {
+            FlushResult result = await outPipe.WriteAsync(buffer.Slice(0, length));
+
+            if (result.IsCanceled || result.IsCompleted)
         {
-          p.OnSend();
+              Dispose();
           return;
+            }
+          }
+          catch
+          {
+            Dispose();
+            // ignored
         }
-
-        BufferWriter<PipeWriter> writer = new BufferWriter<PipeWriter>(SendPipe);
-        writer.Ensure(length);
-        writer.Write(buffer.Slice(0, length));
-        writer.Commit();
-
-        m_Flusher.FlushAsync().GetAwaiter();
-        // WriteConsole("Packet Completed Sending... {0:X}", p.PacketID);
 
         p.OnSend();
       }
@@ -507,47 +492,9 @@ namespace Server.Network
       return false;
     }
 
-    private async Task ProcessRecvs(MessagePump pump)
-    {
-      while (true)
-      {
-        ReadResult result = await RecvPipe.ReadAsync();
-        ReadOnlySequence<byte> seq = result.Buffer;
-
-        if (seq.IsEmpty)
-          break;
-
-        SetConnectionAlive();
-
-        int pos = PacketHandlers.ProcessPacket(pump, this, seq);
-
-        if (pos <= 0)
-          break;
-
-        RecvPipe.AdvanceTo(seq.Slice(0, pos).End);
-
-        if (result.IsCompleted || result.IsCanceled)
-          break;
-      }
-
-      RecvPipe.Complete();
-      Dispose();
-    }
-
     public PacketHandler GetHandler(int packetID) =>
       ContainerGridLines ? PacketHandlers.Get6017Handler(packetID) :
         PacketHandlers.GetHandler(packetID);
-
-    private long m_NextCheckActivity;
-
-    public void CheckAlive(long curTicks)
-    {
-      if (Connection == null || m_NextCheckActivity - curTicks >= 0)
-        return;
-
-      Console.WriteLine("Client: {0}: Disconnecting due to inactivity...", this);
-      Dispose();
-    }
 
     public static void TraceException(Exception ex)
     {
@@ -596,30 +543,7 @@ namespace Server.Network
       m_Disposed.Enqueue(this);
     }
 
-    public static void Initialize()
-    {
-      Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.5), CheckAllAlive);
-    }
-
-    public static void CheckAllAlive()
-    {
-      try
-      {
-        long curTicks = Core.TickCount;
-
-        if (Instances.Count >= 1024)
-          Parallel.ForEach(Instances, ns => ns.CheckAlive(curTicks));
-        else
-          for (int i = 0; i < Instances.Count; ++i)
-            Instances[i].CheckAlive(curTicks);
-      }
-      catch (Exception ex)
-      {
-        TraceException(ex);
-      }
-    }
-
-    private static ConcurrentQueue<NetState> m_Disposed = new ConcurrentQueue<NetState>();
+    private static readonly ConcurrentQueue<NetState> m_Disposed = new ConcurrentQueue<NetState>();
 
     public static void ProcessDisposedQueue()
     {
@@ -646,12 +570,10 @@ namespace Server.Network
         ns.ServerInfo = null;
         ns.CityInfo = null;
 
-        Instances.Remove(ns);
-
         if (a != null)
-          ns.WriteConsole("Disconnected. [{0} Online] [{1}]", Instances.Count, a);
+          ns.WriteConsole("Disconnected. [{0} Online] [{1}]", TcpServer.Instances.Count, a);
         else
-          ns.WriteConsole("Disconnected. [{0} Online]", Instances.Count);
+          ns.WriteConsole("Disconnected. [{0} Online]", TcpServer.Instances.Count);
       }
     }
 

@@ -35,10 +35,10 @@ namespace Server
   public sealed class ObjectPropertyList : Packet
   {
     private static byte[] m_Buffer = new byte[1024];
-    private static Encoding m_Encoding = Encoding.Unicode;
+    private static readonly Encoding m_Encoding = Encoding.Unicode;
 
     // Each of these are localized to "~1_NOTHING~" which allows the string argument to be used
-    private static int[] m_StringNumbers =
+    private static readonly int[] m_StringNumbers =
     {
       1042971,
       1070722

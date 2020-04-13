@@ -25,7 +25,7 @@ namespace Server.Diagnostics
 {
   public class GumpProfile : BaseProfile
   {
-    private static Dictionary<Type, GumpProfile> _profiles = new Dictionary<Type, GumpProfile>();
+    private static readonly Dictionary<Type, GumpProfile> _profiles = new Dictionary<Type, GumpProfile>();
 
     public GumpProfile(Type type) : base(type.FullName)
     {

@@ -62,17 +62,17 @@ namespace Server.Network
     private const int BadUOTD = unchecked((int)0xFFCEFFCE);
 
     private const int m_AuthIDWindowSize = 128;
-    private static PacketHandler[] m_6017Handlers;
+    private static readonly PacketHandler[] m_6017Handlers;
 
-    private static PacketHandler[] m_ExtendedHandlersLow;
-    private static Dictionary<int, PacketHandler> m_ExtendedHandlersHigh;
+    private static readonly PacketHandler[] m_ExtendedHandlersLow;
+    private static readonly Dictionary<int, PacketHandler> m_ExtendedHandlersHigh;
 
-    private static EncodedPacketHandler[] m_EncodedHandlersLow;
-    private static Dictionary<int, EncodedPacketHandler> m_EncodedHandlersHigh;
+    private static readonly EncodedPacketHandler[] m_EncodedHandlersLow;
+    private static readonly Dictionary<int, EncodedPacketHandler> m_EncodedHandlersHigh;
 
-    private static int[] m_EmptyInts = new int[0];
+    private static readonly int[] m_EmptyInts = new int[0];
 
-    private static KeywordList m_KeywordList = new KeywordList();
+    private static readonly KeywordList m_KeywordList = new KeywordList();
 
     public static int[] m_ValidAnimations =
     {
@@ -91,7 +91,7 @@ namespace Server.Network
 
     public static PlayCharCallback ThirdPartyAuthCallback = null, ThirdPartyHackedCallback = null;
 
-    private static Dictionary<int, AuthIDPersistence> m_AuthIDWindow =
+    private static readonly Dictionary<int, AuthIDPersistence> m_AuthIDWindow =
       new Dictionary<int, AuthIDPersistence>(m_AuthIDWindowSize);
 
     static PacketHandlers()
@@ -282,9 +282,9 @@ namespace Server.Network
         ph.ThrottleCallback = t;
     }
 
-    private static MemoryPool<byte> _memoryPool = SlabMemoryPoolFactory.Create();
+    private static readonly MemoryPool<byte> _memoryPool = SlabMemoryPoolFactory.Create();
 
-    public static int ProcessPacket(MessagePump pump, NetState ns, in ReadOnlySequence<byte> seq)
+    public static int ProcessPacket(IMessagePumpService pump, NetState ns, in ReadOnlySequence<byte> seq)
     {
       PacketReader r = new PacketReader(seq);
 
@@ -2543,8 +2543,8 @@ namespace Server.Network
 
     private class LoginTimer : Timer
     {
-      private Mobile m_Mobile;
-      private NetState m_State;
+      private readonly Mobile m_Mobile;
+      private readonly NetState m_State;
 
       public LoginTimer(NetState state, Mobile m) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
       {
@@ -2555,7 +2555,10 @@ namespace Server.Network
       protected override void OnTick()
       {
         if (m_State == null)
+        {
           Stop();
+          return;
+        }
 
         if (m_State.Version != null)
         {

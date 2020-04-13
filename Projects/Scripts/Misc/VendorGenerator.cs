@@ -316,10 +316,7 @@ namespace Server
 
     private static void ProcessDisplayCase(Map map, StaticTile[] tiles, int x, int y)
     {
-      ShopFlags flags = ShopFlags.None;
-
-      for (int i = 0; i < tiles.Length; ++i)
-        flags |= ProcessDisplayedItem(tiles[i].ID);
+      ShopFlags flags = tiles.Aggregate(ShopFlags.None, (current, t) => current | ProcessDisplayedItem(t.ID));
 
       if (flags != ShopFlags.None)
       {

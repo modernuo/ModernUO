@@ -41,7 +41,7 @@ namespace Server.Menus.ItemLists
   public class ItemListMenu : IMenu
   {
     private static int m_NextSerial;
-    private int m_Serial;
+    private readonly int m_Serial;
 
     public ItemListMenu(string question, ItemListEntry[] entries)
     {

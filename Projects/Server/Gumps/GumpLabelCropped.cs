@@ -24,7 +24,7 @@ namespace Server.Gumps
 {
   public class GumpLabelCropped : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("croppedtext");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("croppedtext");
     private int m_Hue;
     private string m_Text;
     private int m_Width, m_Height;

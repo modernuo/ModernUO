@@ -56,7 +56,7 @@ namespace Server
 
   public class TimedSkillMod : SkillMod
   {
-    private DateTime m_Expire;
+    private readonly DateTime m_Expire;
 
     public TimedSkillMod(SkillName skill, bool relative, double value, TimeSpan delay)
       : this(skill, relative, value, DateTime.UtcNow + delay)
@@ -72,8 +72,8 @@ namespace Server
 
   public class EquippedSkillMod : SkillMod
   {
-    private Item m_Item;
-    private Mobile m_Mobile;
+    private readonly Item m_Item;
+    private readonly Mobile m_Mobile;
 
     public EquippedSkillMod(SkillName skill, bool relative, double value, Item item, Mobile mobile)
       : base(skill, relative, value)
@@ -254,8 +254,8 @@ namespace Server
 
   public class StatMod
   {
-    private DateTime m_Added;
-    private TimeSpan m_Duration;
+    private readonly DateTime m_Added;
+    private readonly TimeSpan m_Duration;
 
     public StatMod(StatType type, string name, int offset, TimeSpan duration)
     {
@@ -444,7 +444,7 @@ namespace Server
   /// </summary>
   public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable, IPropertyListObject
   {
-    private BufferWriter m_SaveBuffer;
+    private readonly BufferWriter m_SaveBuffer;
     public BufferWriter SaveBuffer => m_SaveBuffer;
 
     private const int
@@ -454,23 +454,23 @@ namespace Server
     private static readonly TimeSpan WarmodeSpamDelay = TimeSpan.FromSeconds(Core.SE ? 4.0 : 2.0);
 
 
-    private static Packet[][] m_MovingPacketCache = new Packet[][]
+    private static readonly Packet[][] m_MovingPacketCache = new Packet[][]
     {
       new Packet[8],
       new Packet[8]
     };
 
-    private static List<IEntity> m_MoveList = new List<IEntity>();
-    private static List<Mobile> m_MoveClientList = new List<Mobile>();
+    private static readonly List<IEntity> m_MoveList = new List<IEntity>();
+    private static readonly List<Mobile> m_MoveClientList = new List<Mobile>();
 
-    private static object m_GhostMutateContext = new object();
+    private static readonly object m_GhostMutateContext = new object();
 
-    private static List<Mobile> m_Hears = new List<Mobile>();
-    private static List<IEntity> m_OnSpeech = new List<IEntity>();
+    private static readonly List<Mobile> m_Hears = new List<Mobile>();
+    private static readonly List<IEntity> m_OnSpeech = new List<IEntity>();
 
     public static bool m_DefaultShowVisibleDamage, m_DefaultCanSeeVisibleDamage;
 
-    private static string[] m_AccessLevelNames =
+    private static readonly string[] m_AccessLevelNames =
     {
       "a player",
       "a counselor",
@@ -481,7 +481,7 @@ namespace Server
       "an owner"
     };
 
-    private static int[] m_InvalidBodies =
+    private static readonly int[] m_InvalidBodies =
     {
       32,
       95,
@@ -490,12 +490,12 @@ namespace Server
       198
     };
 
-    private static Queue<Mobile> m_DeltaQueue = new Queue<Mobile>();
-    private static Queue<Mobile> m_DeltaQueueR = new Queue<Mobile>();
+    private static readonly Queue<Mobile> m_DeltaQueue = new Queue<Mobile>();
+    private static readonly Queue<Mobile> m_DeltaQueueR = new Queue<Mobile>();
 
     private static bool _processing;
 
-    private static string[] m_GuildTypes =
+    private static readonly string[] m_GuildTypes =
     {
       "",
       " (Chaos)",
@@ -7208,7 +7208,7 @@ namespace Server
 
     private class MovementRecord
     {
-      private static Queue<MovementRecord> m_InstancePool = new Queue<MovementRecord>();
+      private static readonly Queue<MovementRecord> m_InstancePool = new Queue<MovementRecord>();
       public long m_End;
 
       private MovementRecord(long end) => m_End = end;
@@ -7244,7 +7244,7 @@ namespace Server
 
     private class WarmodeTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public WarmodeTimer(Mobile m, bool value)
         : base(WarmodeSpamDelay)
@@ -7266,7 +7266,7 @@ namespace Server
 
     private class SimpleTarget : Target
     {
-      private TargetCallback m_Callback;
+      private readonly TargetCallback m_Callback;
 
       public SimpleTarget(int range, TargetFlags flags, bool allowGround, TargetCallback callback)
         : base(range, allowGround, flags) =>
@@ -7280,8 +7280,8 @@ namespace Server
 
     private class SimpleStateTarget<T> : Target
     {
-      private TargetStateCallback<T> m_Callback;
-      private T m_State;
+      private readonly TargetStateCallback<T> m_Callback;
+      private readonly T m_State;
 
       public SimpleStateTarget(int range, TargetFlags flags, bool allowGround, TargetStateCallback<T> callback,
         T state)
@@ -7299,7 +7299,7 @@ namespace Server
 
     private class AutoManifestTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public AutoManifestTimer(Mobile m, TimeSpan delay)
         : base(delay) =>
@@ -7466,7 +7466,7 @@ namespace Server
 
     private class ManaTimer : Timer
     {
-      private Mobile m_Owner;
+      private readonly Mobile m_Owner;
 
       public ManaTimer(Mobile m)
         : base(GetManaRegenRate(m), GetManaRegenRate(m))
@@ -7486,7 +7486,7 @@ namespace Server
 
     private class HitsTimer : Timer
     {
-      private Mobile m_Owner;
+      private readonly Mobile m_Owner;
 
       public HitsTimer(Mobile m)
         : base(GetHitsRegenRate(m), GetHitsRegenRate(m))
@@ -7506,7 +7506,7 @@ namespace Server
 
     private class StamTimer : Timer
     {
-      private Mobile m_Owner;
+      private readonly Mobile m_Owner;
 
       public StamTimer(Mobile m)
         : base(GetStamRegenRate(m), GetStamRegenRate(m))
@@ -7526,7 +7526,7 @@ namespace Server
 
     private class LogoutTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public LogoutTimer(Mobile m)
         : base(TimeSpan.FromDays(1.0))
@@ -7551,7 +7551,7 @@ namespace Server
 
     private class ParalyzedTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public ParalyzedTimer(Mobile m, TimeSpan duration)
         : base(duration)
@@ -7568,7 +7568,7 @@ namespace Server
 
     private class FrozenTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public FrozenTimer(Mobile m, TimeSpan duration)
         : base(duration)
@@ -7585,7 +7585,7 @@ namespace Server
 
     private class CombatTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public CombatTimer(Mobile m) : base(TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(0.01))
       {
@@ -7629,7 +7629,7 @@ namespace Server
 
     private class ExpireCombatantTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public ExpireCombatantTimer(Mobile m)
         : base(TimeSpan.FromMinutes(1.0))
@@ -7648,7 +7648,7 @@ namespace Server
 
     private class ExpireCriminalTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public ExpireCriminalTimer(Mobile m)
         : base(ExpireCriminalDelay)
@@ -7665,7 +7665,7 @@ namespace Server
 
     private class ExpireAggressorsTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public ExpireAggressorsTimer(Mobile m)
         : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0))
@@ -7689,9 +7689,9 @@ namespace Server
 
     private class SimplePrompt : Prompt
     {
-      private PromptCallback m_Callback;
-      private bool m_CallbackHandlesCancel;
-      private PromptCallback m_CancelCallback;
+      private readonly PromptCallback m_Callback;
+      private readonly bool m_CallbackHandlesCancel;
+      private readonly PromptCallback m_CancelCallback;
 
       public SimplePrompt(PromptCallback callback, PromptCallback cancelCallback)
       {
@@ -7715,11 +7715,9 @@ namespace Server
         if (m_CallbackHandlesCancel && m_Callback != null)
           m_Callback(from, "");
         else
-        {
-          m_CancelCallback?.Invoke(from, "");
+          m_CancelCallback?.Invoke(@from, "");
         }
       }
-    }
 
     public Prompt BeginPrompt(PromptCallback callback, PromptCallback cancelCallback)
     {
@@ -7733,10 +7731,10 @@ namespace Server
 
     private class SimpleStatePrompt<T> : Prompt
     {
-      private PromptStateCallback<T> m_Callback;
-      private PromptStateCallback<T> m_CancelCallback;
+      private readonly PromptStateCallback<T> m_Callback;
+      private readonly PromptStateCallback<T> m_CancelCallback;
 
-      private T m_State;
+      private readonly T m_State;
 
       public SimpleStatePrompt(PromptStateCallback<T> callback, PromptStateCallback<T> cancelCallback, T state)
       {

@@ -30,7 +30,7 @@ namespace Server.Gumps
 
   public class GumpButton : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("button");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("button");
     private int m_ButtonID;
     private int m_ID1, m_ID2;
     private int m_Param;

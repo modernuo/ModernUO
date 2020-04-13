@@ -262,16 +262,17 @@ namespace Server
     private static readonly List<Item> _EmptyFixItems = new List<Item>();
     private Region m_DefaultRegion;
 
-    private int m_FileIndex;
+    private readonly int m_FileIndex;
 
     private string m_Name;
-    private Sector[][] m_Sectors;
+    private readonly Sector[][] m_Sectors;
 
-    private int m_SectorsWidth, m_SectorsHeight;
+    private readonly int m_SectorsWidth;
+    private readonly int m_SectorsHeight;
 
     private TileMatrix m_Tiles;
 
-    private object tileLock = new object();
+    private readonly object tileLock = new object();
 
     public Map(int mapID, int mapIndex, int fileIndex, int width, int height, int season, string name, MapRules rules)
     {

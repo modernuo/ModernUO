@@ -27,7 +27,7 @@ namespace Server.Diagnostics
 {
   public abstract class BaseProfile
   {
-    private Stopwatch _stopwatch;
+    private readonly Stopwatch _stopwatch;
 
     protected BaseProfile(string name)
     {
