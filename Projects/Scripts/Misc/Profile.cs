@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Misc
 {
-  public class Profile
+  public static class Profile
   {
     public static void Initialize()
     {
@@ -12,21 +12,16 @@ namespace Server.Misc
       EventSink.ChangeProfileRequest += EventSink_ChangeProfileRequest;
     }
 
-    public static void EventSink_ChangeProfileRequest(ChangeProfileRequestEventArgs e)
+    public static void EventSink_ChangeProfileRequest(Mobile beholder, Mobile beheld, string text)
     {
-      Mobile from = e.Beholder;
-
-      if (from.ProfileLocked)
-        from.SendMessage("Your profile is locked. You may not change it.");
+      if (beholder.ProfileLocked)
+        beholder.SendMessage("Your profile is locked. You may not change it.");
       else
-        from.Profile = e.Text;
+        beholder.Profile = text;
     }
 
-    public static void EventSink_ProfileRequest(ProfileRequestEventArgs e)
+    public static void EventSink_ProfileRequest(Mobile beholder, Mobile beheld)
     {
-      Mobile beholder = e.Beholder;
-      Mobile beheld = e.Beheld;
-
       if (!beheld.Player)
         return;
 
@@ -48,10 +43,7 @@ namespace Server.Misc
       if (footer.Length == 0 && beholder == beheld)
         footer = GetAccountDuration(beheld);
 
-      string body = beheld.Profile;
-
-      if (body == null || body.Length <= 0)
-        body = "";
+      string body = beheld.Profile ?? "";
 
       beholder.Send(new DisplayProfile(beholder != beheld || !beheld.ProfileLocked, beheld, header, body, footer));
     }

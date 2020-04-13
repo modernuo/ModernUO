@@ -630,10 +630,8 @@ namespace Server.Items
       EventSink.Logout += EventSink_Logout;
     }
 
-    public static void EventSink_Logout(LogoutEventArgs e)
+    public static void EventSink_Logout(Mobile from)
     {
-      Mobile from = e.Mobile;
-
       if (from == null || !m_Table.TryGetValue(from, out TeleportingInfo info))
         return;
 

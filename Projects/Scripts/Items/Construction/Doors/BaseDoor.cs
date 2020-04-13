@@ -215,61 +215,58 @@ namespace Server.Items
       }
     }
 
-    private static void EventSink_OpenDoorMacroUsed(OpenDoorMacroEventArgs args)
+    private static void EventSink_OpenDoorMacroUsed(Mobile m)
     {
-      Mobile m = args.Mobile;
+      if (m.Map == null) return;
 
-      if (m.Map != null)
+      int x = m.X, y = m.Y;
+
+      switch (m.Direction & Direction.Mask)
       {
-        int x = m.X, y = m.Y;
-
-        switch (m.Direction & Direction.Mask)
-        {
-          case Direction.North:
-            --y;
-            break;
-          case Direction.Right:
-            ++x;
-            --y;
-            break;
-          case Direction.East:
-            ++x;
-            break;
-          case Direction.Down:
-            ++x;
-            ++y;
-            break;
-          case Direction.South:
-            ++y;
-            break;
-          case Direction.Left:
-            --x;
-            ++y;
-            break;
-          case Direction.West:
-            --x;
-            break;
-          case Direction.Up:
-            --x;
-            --y;
-            break;
-        }
-
-        Sector sector = m.Map.GetSector(x, y);
-
-        foreach (Item item in sector.Items)
-          if (item.Location.X == x && item.Location.Y == y && item.Z + item.ItemData.Height > m.Z &&
-              m.Z + 16 > item.Z && item is BaseDoor && m.CanSee(item) && m.InLOS(item))
-          {
-            if (m.CheckAlive())
-            {
-              m.SendLocalizedMessage(500024); // Opening door...
-              item.OnDoubleClick(m);
-            }
-
-            break;
-          }
+        case Direction.North:
+          --y;
+          break;
+        case Direction.Right:
+          ++x;
+          --y;
+          break;
+        case Direction.East:
+          ++x;
+          break;
+        case Direction.Down:
+          ++x;
+          ++y;
+          break;
+        case Direction.South:
+          ++y;
+          break;
+        case Direction.Left:
+          --x;
+          ++y;
+          break;
+        case Direction.West:
+          --x;
+          break;
+        case Direction.Up:
+          --x;
+          --y;
+          break;
       }
+
+      Sector sector = m.Map.GetSector(x, y);
+
+      foreach (Item item in sector.Items)
+        if (item.Location.X == x && item.Location.Y == y && item.Z + item.ItemData.Height > m.Z &&
+            m.Z + 16 > item.Z && item is BaseDoor && m.CanSee(item) && m.InLOS(item))
+        {
+          if (m.CheckAlive())
+          {
+            m.SendLocalizedMessage(500024); // Opening door...
+            item.OnDoubleClick(m);
+          }
+
+          break;
+        }
     }
 
     public static Point3D GetOffset(DoorFacing facing) => m_Offsets[(int)facing];

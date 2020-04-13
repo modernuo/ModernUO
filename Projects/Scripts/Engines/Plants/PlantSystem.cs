@@ -407,10 +407,8 @@ namespace Server.Engines.Plants
       EventSink.Login += EventSink_Login;
     }
 
-    private static void EventSink_Login(LoginEventArgs args)
+    private static void EventSink_Login(Mobile from)
     {
-      Mobile from = args.Mobile;
-
       from.Backpack?.FindItemsByType<PlantItem>().ForEach(plant =>
       {
         if (plant.IsGrowable)
@@ -443,7 +441,7 @@ namespace Server.Engines.Plants
       GrowAll();
     }
 
-    private static void EventSink_WorldSave(WorldSaveEventArgs args)
+    private static void EventSink_WorldSave(bool message)
     {
       GrowAll();
     }

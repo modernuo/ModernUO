@@ -7,20 +7,20 @@ using Server.Network;
 
 namespace Server.Misc
 {
-  public class CrashGuard
+  public static class CrashGuard
   {
-    private static bool Enabled = true;
-    private static bool SaveBackup = true;
-    private static bool RestartServer = true;
-    private static bool GenerateReport = true;
+    private static readonly bool Enabled = true;
+    private static readonly bool SaveBackup = true;
+    private static readonly bool RestartServer = true;
+    private static readonly bool GenerateReport = true;
 
     public static void Initialize()
     {
       if (Enabled) // If enabled, register our crash event handler
-        EventSink.Crashed += CrashGuard_OnCrash;
+        EventSink.ServerCrashed += CrashGuard_OnCrash;
     }
 
-    public static void CrashGuard_OnCrash(CrashedEventArgs e)
+    public static void CrashGuard_OnCrash(ServerCrashedEventArgs e)
     {
       if (GenerateReport)
         GenerateCrashReport(e);
@@ -61,7 +61,7 @@ namespace Server.Misc
 
     private static string Combine(string path1, string path2) => path1.Length == 0 ? path2 : Path.Combine(path1, path2);
 
-    private static void Restart(CrashedEventArgs e)
+    private static void Restart(ServerCrashedEventArgs e)
     {
       string root = GetRoot();
 
@@ -152,7 +152,7 @@ namespace Server.Misc
       }
     }
 
-    private static void GenerateCrashReport(CrashedEventArgs e)
+    private static void GenerateCrashReport(ServerCrashedEventArgs e)
     {
       Console.Write("Crash: Generating report...");
 

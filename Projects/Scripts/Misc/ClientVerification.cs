@@ -56,13 +56,11 @@ namespace Server.Misc
       }
     }
 
-    private static void EventSink_ClientVersionReceived(ClientVersionReceivedArgs e)
+    private static void EventSink_ClientVersionReceived(NetState state, ClientVersion version)
     {
       string kickMessage = null;
-      NetState state = e.State;
-      ClientVersion version = e.Version;
 
-      if (state.Mobile == null || state.Mobile.AccessLevel > AccessLevel.Player)
+      if (state.Mobile?.AccessLevel != AccessLevel.Player)
         return;
 
       if (Required != null && version < Required && (m_OldClientResponse == OldClientResponse.Kick ||

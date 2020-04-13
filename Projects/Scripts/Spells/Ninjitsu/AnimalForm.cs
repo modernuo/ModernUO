@@ -67,10 +67,10 @@ namespace Server.Spells.Ninjitsu
       EventSink.Login += OnLogin;
     }
 
-    public static void OnLogin(LoginEventArgs e)
+    public static void OnLogin(Mobile m)
     {
-      if (GetContext(e.Mobile)?.SpeedBoost == true)
-        e.Mobile.Send(SpeedControl.MountSpeed);
+      if (GetContext(m)?.SpeedBoost == true)
+        m.Send(SpeedControl.MountSpeed);
     }
 
     public override bool CheckCast()

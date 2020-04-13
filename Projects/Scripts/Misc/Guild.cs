@@ -484,9 +484,7 @@ namespace Server.Guilds
 
   public class WarTimer : Timer
   {
-    private static TimeSpan InternalDelay = TimeSpan.FromMinutes(1.0);
-
-    public WarTimer() : base(InternalDelay, InternalDelay) => Priority = TimerPriority.FiveSeconds;
+    public WarTimer() : base(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0)) => Priority = TimerPriority.FiveSeconds;
 
     public static void Initialize()
     {
@@ -718,7 +716,7 @@ namespace Server.Guilds
 
         if (o is Guildstone stone)
         {
-          if (stone?.Guild.Disbanded != false)
+          if (stone.Guild.Disbanded)
           {
             from.SendMessage("The guild associated with that Guildstone no longer exists");
             return;
@@ -748,9 +746,9 @@ namespace Server.Guilds
 
     #region EventSinks
 
-    public static void EventSink_GuildGumpRequest(GuildGumpRequestArgs args)
+    public static void EventSink_GuildGumpRequest(Mobile m)
     {
-      if (!NewGuildSystem || !(args.Mobile is PlayerMobile pm))
+      if (!NewGuildSystem || !(m is PlayerMobile pm))
         return;
 
       if (pm.Guild == null)

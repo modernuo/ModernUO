@@ -64,10 +64,10 @@ namespace Server.Engines.Events
       }
     }
 
-    public static void EventSink_PlayerDeath( PlayerDeathEventArgs e )
+    public static void EventSink_PlayerDeath(Mobile m)
     {
-      if ( e.Mobile is PlayerMobile player && !player.Deleted && m_Timer.Running && !m_DeathQueue.Contains( player ) && m_DeathQueue.Count < m_DeathQueueLimit )
-        m_DeathQueue.Add( player );
+      if (m is PlayerMobile pm && !pm.Deleted && m_Timer.Running && !m_DeathQueue.Contains(pm) && m_DeathQueue.Count < m_DeathQueueLimit)
+        m_DeathQueue.Add(pm);
     }
 
     private static void Clear_Callback()

@@ -54,10 +54,8 @@ namespace Server
       }
     }
 
-    public static void OnLogin(LoginEventArgs args)
+    public static void OnLogin(Mobile m)
     {
-      Mobile m = args.Mobile;
-
       m.CheckLightLevels(true);
     }
 

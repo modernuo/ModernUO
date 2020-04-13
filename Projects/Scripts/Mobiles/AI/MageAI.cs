@@ -632,7 +632,7 @@ namespace Server.Mobiles
 
       if (!Core.AOS && SmartAI && !m_Mobile.StunReady && m_Mobile.Skills.Wrestling.Value >= 80.0 &&
           m_Mobile.Skills.Anatomy.Value >= 80.0)
-        EventSink.InvokeStunRequest(new StunRequestEventArgs(m_Mobile));
+        EventSink.InvokeStunRequest(m_Mobile);
 
       if (!m_Mobile.InRange(c, m_Mobile.RangePerception))
       {

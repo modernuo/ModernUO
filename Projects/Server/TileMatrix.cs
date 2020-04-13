@@ -34,6 +34,14 @@ namespace Server
     private readonly int m_FileIndex;
     private readonly List<TileMatrix> m_FileShare = new List<TileMatrix>();
 
+    private readonly FileStream m_MapStream;
+
+    public FileStream IndexStream { get; }
+
+    public FileStream DataStream { get; }
+
+    private readonly BinaryReader m_IndexReader;
+
     private readonly LandTile[] m_InvalidLandBlock;
     private readonly int[][] m_LandPatches;
     private readonly LandTile[][][] m_LandTiles;
@@ -53,7 +61,6 @@ namespace Server
     private StaticTile[] m_TileBuffer = new StaticTile[128];
 
     private readonly TileList m_TilesList = new TileList();
-    // private int m_Width, m_Height;
 
     public TileMatrix(Map owner, int fileIndex, int mapID, int width, int height)
     {
@@ -78,8 +85,6 @@ namespace Server
       }
 
       m_FileIndex = fileIndex;
-//      m_Width = width;
-//      m_Height = height;
       BlockWidth = width >> 3;
       BlockHeight = height >> 3;
 
@@ -87,21 +92,19 @@ namespace Server
 
       if (fileIndex != 0x7F)
       {
-        string mapPath = Core.FindDataFile("map{0}.mul", fileIndex);
+        string mapPath = Core.FindDataFile("map{0}LegacyMUL.uop", fileIndex);
 
         if (File.Exists(mapPath))
         {
-          MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+          m_MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+          m_MapIndex = new UOPIndex(m_MapStream);
         }
         else
         {
-          mapPath = Core.FindDataFile("map{0}LegacyMUL.uop", fileIndex);
+          mapPath = Core.FindDataFile("map{0}.mul", fileIndex);
 
           if (File.Exists(mapPath))
-          {
-            MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            m_MapIndex = new UOPIndex(MapStream);
-          }
+            m_MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
 
         string indexPath = Core.FindDataFile("staidx{0}.mul", fileIndex);
@@ -109,7 +112,7 @@ namespace Server
         if (File.Exists(indexPath))
         {
           IndexStream = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-          IndexReader = new BinaryReader(IndexStream);
+          m_IndexReader = new BinaryReader(IndexStream);
         }
 
         string staticsPath = Core.FindDataFile("statics{0}.mul", fileIndex);
@@ -138,50 +141,11 @@ namespace Server
       Patch = new TileMatrixPatch(this, mapID);
     }
 
-    /*public Map Owner
-    {
-      get
-      {
-        return m_Owner;
-      }
-    }*/
-
     public TileMatrixPatch Patch{ get; }
 
     public int BlockWidth{ get; }
 
     public int BlockHeight{ get; }
-
-    /*public int Width
-    {
-      get
-      {
-        return m_Width;
-      }
-    }
-
-    public int Height
-    {
-      get
-      {
-        return m_Height;
-      }
-    }*/
-
-    public FileStream MapStream{ get; set; }
-
-    /*public bool MapUOPPacked
-    {
-      get{ return ( m_MapIndex != null ); }
-    }*/
-
-    public FileStream IndexStream{ get; set; }
-
-    public FileStream DataStream{ get; set; }
-
-    public BinaryReader IndexReader{ get; set; }
-
-    public bool Exists => MapStream != null && IndexStream != null && DataStream != null;
 
     public StaticTile[][][] EmptyStaticBlock{ get; }
 
@@ -292,7 +256,7 @@ namespace Server
     [MethodImpl(MethodImplOptions.Synchronized)]
     public LandTile[] GetLandBlock(int x, int y)
     {
-      if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || MapStream == null)
+      if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || m_MapStream == null)
         return m_InvalidLandBlock;
 
       m_LandTiles[x] ??= new LandTile[BlockHeight][];
@@ -339,10 +303,10 @@ namespace Server
     {
       try
       {
-        IndexReader.BaseStream.Seek((x * BlockHeight + y) * 12, SeekOrigin.Begin);
+        m_IndexReader.BaseStream.Seek((x * BlockHeight + y) * 12, SeekOrigin.Begin);
 
-        int lookup = IndexReader.ReadInt32();
-        int length = IndexReader.ReadInt32();
+        int lookup = m_IndexReader.ReadInt32();
+        int length = m_IndexReader.ReadInt32();
 
         if (lookup < 0 || length <= 0)
           return EmptyStaticBlock;
@@ -423,13 +387,13 @@ namespace Server
         if (m_MapIndex != null)
           offset = m_MapIndex.Lookup(offset);
 
-        MapStream.Seek(offset, SeekOrigin.Begin);
+        m_MapStream.Seek(offset, SeekOrigin.Begin);
 
         LandTile[] tiles = new LandTile[64];
 
         fixed (LandTile* pTiles = tiles)
         {
-          NativeReader.Read(MapStream.SafeFileHandle.DangerousGetHandle(), pTiles, 192);
+          NativeReader.Read(m_MapStream.SafeFileHandle.DangerousGetHandle(), pTiles, 192);
         }
 
         return tiles;
@@ -448,14 +412,10 @@ namespace Server
 
     public void Dispose()
     {
-      if (m_MapIndex != null)
-        m_MapIndex.Close();
-      else
-        MapStream?.Close();
-
+      m_MapIndex?.Close();
+      m_MapStream?.Close();
       DataStream?.Close();
-
-      IndexReader?.Close();
+      m_IndexReader?.Close();
     }
   }
 
@@ -670,16 +630,8 @@ namespace Server
     {
       public static readonly IComparer<UOPEntry> Instance = new OffsetComparer();
 
-      public int Compare(UOPEntry x, UOPEntry y)
-      {
-        if (x == null)
-          return y == null ? 0 : 1;
-
-        if (y == null)
-          return -1;
-
-        return x.m_Offset.CompareTo(y.m_Offset);
-      }
+      public int Compare(UOPEntry x, UOPEntry y) =>
+        x == null ? y == null ? 0 : 1 : y == null ? -1 : x.m_Offset.CompareTo(y.m_Offset);
     }
   }
 }

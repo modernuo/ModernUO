@@ -216,12 +216,10 @@ namespace Server.Items
       return (item == null || item is Spellbook) && m.FindItemOnLayer(Layer.TwoHanded) == null;
     }
 
-    private static void EventSink_DisarmRequest(DisarmRequestEventArgs e)
+    private static void EventSink_DisarmRequest(Mobile m)
     {
       if (Core.AOS)
         return;
-
-      Mobile m = e.Mobile;
 
       #region Dueling
 
@@ -251,12 +249,10 @@ namespace Server.Items
       }
     }
 
-    private static void EventSink_StunRequest(StunRequestEventArgs e)
+    private static void EventSink_StunRequest(Mobile m)
     {
       if (Core.AOS)
         return;
-
-      Mobile m = e.Mobile;
 
       #region Dueling
 

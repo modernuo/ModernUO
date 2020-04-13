@@ -64,47 +64,41 @@ namespace Server
       m_Callbacks[gumpID] = callback;
     }
 
-    private static void EventSink_VirtueItemRequest(VirtueItemRequestEventArgs e)
+    private static void EventSink_VirtueItemRequest(Mobile beholder, Mobile beheld, int gumpID)
     {
-      if (e.Beholder != e.Beheld)
+      if (beholder != beheld)
         return;
 
-      e.Beholder.CloseGump<VirtueGump>();
+      beholder.CloseGump<VirtueGump>();
 
-      if (e.Beholder.Kills >= 5)
+      if (beholder.Kills >= 5)
       {
-        e.Beholder.SendLocalizedMessage(1049609); // Murderers cannot invoke this virtue.
+        beholder.SendLocalizedMessage(1049609); // Murderers cannot invoke this virtue.
         return;
       }
 
-      if (m_Callbacks.TryGetValue(e.GumpID, out OnVirtueUsed callback))
-        callback(e.Beholder);
+      if (m_Callbacks.TryGetValue(gumpID, out OnVirtueUsed callback))
+        callback(beholder);
       else
-        e.Beholder.SendLocalizedMessage(1052066); // That virtue is not active yet.
+        beholder.SendLocalizedMessage(1052066); // That virtue is not active yet.
     }
 
 
-    private static void EventSink_VirtueMacroRequest(VirtueMacroRequestEventArgs e)
+    private static void EventSink_VirtueMacroRequest(Mobile beholder, int virtue)
     {
-      var virtueID = e.VirtueID switch
+      var virtueID = virtue switch
       {
-        0 => // Honor
-        107,
-        1 => // Sacrifice
-        110,
-        2 => // Valor;
-        112,
+        0 => 107, // Honor
+        1 => 110, // Sacrifice
+        2 => 112, // Valor;
         _ => 0
       };
 
-      EventSink_VirtueItemRequest(new VirtueItemRequestEventArgs(e.Mobile, e.Mobile, virtueID));
+      EventSink_VirtueItemRequest(beholder, beholder, virtueID);
     }
 
-    private static void EventSink_VirtueGumpRequest(VirtueGumpRequestEventArgs e)
+    private static void EventSink_VirtueGumpRequest(Mobile beholder, Mobile beheld)
     {
-      Mobile beholder = e.Beholder;
-      Mobile beheld = e.Beheld;
-
       if (beholder == beheld && beholder.Kills >= 5)
       {
         beholder.SendLocalizedMessage(1049609); // Murderers cannot invoke this virtue.

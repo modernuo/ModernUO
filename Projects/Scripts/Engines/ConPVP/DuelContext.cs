@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Engines.PartySystem;
 using Server.Factions;
 using Server.Gumps;
@@ -160,7 +161,7 @@ namespace Server.Engines.ConPVP
       if (spell is RecallSpell)
         from.SendMessage("You may not cast this spell.");
 
-      string title = null;
+      string title;
       string option;
 
       switch (spell)
@@ -498,7 +499,7 @@ namespace Server.Engines.ConPVP
 
       DuelPlayer pl = Find(mob);
 
-      if (pl?.Eliminated == true || m_EventGame?.OnDeath(mob, corpse) == false)
+      if (pl?.Eliminated != false || m_EventGame?.OnDeath(mob, corpse) == false)
         return;
 
       pl.Eliminated = true;
@@ -1075,30 +1076,13 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public static bool CheckCombat(Mobile m)
+    public static bool CheckCombat(Mobile m) =>
+      m.Aggressed.Any(info => info.Defender.Player && DateTime.UtcNow - info.LastCombatTime < CombatDelay) ||
+      m.Aggressors.Any(info => info.Attacker.Player && DateTime.UtcNow - info.LastCombatTime < CombatDelay);
+
+    private static void EventSink_Login(Mobile m)
     {
-      for (int i = 0; i < m.Aggressed.Count; ++i)
-      {
-        AggressorInfo info = m.Aggressed[i];
-
-        if (info.Defender.Player && DateTime.UtcNow - info.LastCombatTime < CombatDelay)
-          return true;
-      }
-
-      for (int i = 0; i < m.Aggressors.Count; ++i)
-      {
-        AggressorInfo info = m.Aggressors[i];
-
-        if (info.Attacker.Player && DateTime.UtcNow - info.LastCombatTime < CombatDelay)
-          return true;
-      }
-
-      return false;
-    }
-
-    private static void EventSink_Login(LoginEventArgs e)
-    {
-      if (!(e.Mobile is PlayerMobile pm))
+      if (!(m is PlayerMobile pm))
         return;
 
       DuelContext dc = pm.DuelContext;

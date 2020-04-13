@@ -285,7 +285,6 @@ namespace Server.Network
 
     public static int MenuCap { get; set; } = 512;
 
-
     public void WriteConsole(string text)
     {
       Console.WriteLine("Client: {0}: {1}", this, text);
@@ -395,8 +394,8 @@ namespace Server.Network
     public IAccount Account { get; set; }
 
     public override string ToString() => m_ToString;
-
     public NetState(ConnectionContext connection)
+
     {
       Connection = connection;
       Seeded = false;

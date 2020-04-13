@@ -146,9 +146,9 @@ namespace Server.Spells.Mysticism
       BuffInfo.RemoveBuff(m, BuffIcon.StoneForm);
     }
 
-    private static void OnPlayerDeath(PlayerDeathEventArgs e)
+    private static void OnPlayerDeath(Mobile m)
     {
-      RemoveEffects(e.Mobile);
+      RemoveEffects(m);
     }
   }
 }

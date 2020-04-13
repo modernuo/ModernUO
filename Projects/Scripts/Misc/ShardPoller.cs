@@ -142,12 +142,12 @@ namespace Server.Misc
       EventSink.Login += EventSink_Login;
     }
 
-    private static void EventSink_Login(LoginEventArgs e)
+    private static void EventSink_Login(Mobile m)
     {
       if (m_ActivePollers.Count == 0)
         return;
 
-      Timer.DelayCall(TimeSpan.FromSeconds(1.0), EventSink_Login_Callback, e.Mobile);
+      Timer.DelayCall(TimeSpan.FromSeconds(1.0), EventSink_Login_Callback, m);
     }
 
     private static void EventSink_Login_Callback(Mobile from)

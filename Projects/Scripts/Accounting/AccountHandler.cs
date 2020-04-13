@@ -191,11 +191,8 @@ namespace Server.Misc
       }
     }
 
-    private static void EventSink_DeleteRequest(DeleteRequestEventArgs e)
+    private static void EventSink_DeleteRequest(NetState state, int index)
     {
-      NetState state = e.State;
-      int index = e.Index;
-
       if (!(state.Account is Account acct))
       {
         state.Dispose();

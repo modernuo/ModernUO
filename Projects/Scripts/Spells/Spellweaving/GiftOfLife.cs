@@ -29,7 +29,7 @@ namespace Server.Spells.Spellweaving
 
     public static void Initialize()
     {
-      EventSink.PlayerDeath += delegate(PlayerDeathEventArgs e) { HandleDeath(e.Mobile); };
+      EventSink.PlayerDeath += HandleDeath;
     }
 
     public override void OnCast()
@@ -132,10 +132,8 @@ namespace Server.Spells.Spellweaving
       timer.DoExpire();
     }
 
-    public static void OnLogin(LoginEventArgs e)
+    public static void OnLogin(Mobile m)
     {
-      Mobile m = e.Mobile;
-
       if (m?.Alive != false || m_Table[m] == null)
         return;
 

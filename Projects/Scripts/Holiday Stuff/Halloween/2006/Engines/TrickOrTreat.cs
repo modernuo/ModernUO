@@ -7,7 +7,7 @@ using Server.Targeting;
 
 namespace Server.Engines.Events
 {
-  public class TrickOrTreat
+  public static class TrickOrTreat
   {
     public static TimeSpan OneSecond = TimeSpan.FromSeconds(1);
 

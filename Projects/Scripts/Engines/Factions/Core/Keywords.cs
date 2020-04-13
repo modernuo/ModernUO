@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Factions
 {
-  public class Keywords
+  public static class Keywords
   {
     public static void Initialize()
     {

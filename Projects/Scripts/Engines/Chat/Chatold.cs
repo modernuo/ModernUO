@@ -1,15 +1,15 @@
 namespace Server.Chat
 {
-  public class ChatSystem
+  public static class ChatSystem
   {
     public static void Initialize()
     {
       EventSink.ChatRequest += EventSink_ChatRequest;
     }
 
-    private static void EventSink_ChatRequest(ChatRequestEventArgs e)
+    private static void EventSink_ChatRequest(Mobile m)
     {
-      e.Mobile.SendMessage("Chat is not currently supported.");
+      m.SendMessage("Chat is not currently supported.");
     }
   }
 }

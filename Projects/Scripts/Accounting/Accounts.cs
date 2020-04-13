@@ -65,7 +65,7 @@ namespace Server.Accounting
         }
     }
 
-    public static void Save(WorldSaveEventArgs e)
+    public static void Save(bool message)
     {
       if (!Directory.Exists("Saves/Accounts"))
         Directory.CreateDirectory("Saves/Accounts");

@@ -17,10 +17,8 @@ namespace Server.Gumps
       EventSink.PlayerDeath += EventSink_PlayerDeath;
     }
 
-    public static void EventSink_PlayerDeath( PlayerDeathEventArgs e )
+    public static void EventSink_PlayerDeath(Mobile m)
     {
-      Mobile m = e.Mobile;
-
       List<Mobile> killers = new List<Mobile>();
       List<Mobile> toGive  = new List<Mobile>();
 
@@ -46,7 +44,7 @@ namespace Server.Gumps
       {
         int n = Notoriety.Compute( g, m );
 
-        int theirKarma = m.Karma, ourKarma = g.Karma;
+        int ourKarma = g.Karma;
         bool innocent = n == Notoriety.Innocent;
         bool criminal = n == Notoriety.Criminal || n == Notoriety.Murderer;
 

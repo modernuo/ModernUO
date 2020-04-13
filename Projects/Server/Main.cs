@@ -251,9 +251,9 @@ namespace Server
 
         try
         {
-          CrashedEventArgs args = new CrashedEventArgs(e.ExceptionObject as Exception);
+          ServerCrashedEventArgs args = new ServerCrashedEventArgs(e.ExceptionObject as Exception);
 
-          EventSink.InvokeCrashed(args);
+          EventSink.InvokeServerCrashed(args);
 
           close = args.Close;
         }
@@ -318,7 +318,7 @@ namespace Server
       World.WaitForWriteCompletion();
 
       if (!m_Crashed)
-        EventSink.InvokeShutdown(new ShutdownEventArgs());
+        EventSink.InvokeShutdown();
 
       Timer.TimerThread.Set();
 

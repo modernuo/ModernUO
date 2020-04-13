@@ -49,11 +49,7 @@ namespace Server
     {
       PermitBackgroundWrite = permitBackgroundWrite;
 
-      Task.WaitAll(new Task[3] {
-        Task.Factory.StartNew(() => SaveMobiles()),
-        Task.Factory.StartNew(() => SaveItems()),
-        Task.Factory.StartNew(() => SaveGuilds())
-      });
+      Task.WaitAll(Task.Factory.StartNew(SaveMobiles), Task.Factory.StartNew(SaveItems), Task.Factory.StartNew(SaveGuilds));
 
       if (permitBackgroundWrite && UseSequentialWriters
       ) //If we're permitted to write in the background, but we don't anyways, then notify.
@@ -155,7 +151,10 @@ namespace Server
         foreach (Item item in items.Values)
         {
           if (item.Decays && item.Parent == null && item.Map != Map.Internal && item.LastMoved + item.DecayTime <= n)
+          {
+            Console.WriteLine($"Decay Item {item.Name ?? item.DefaultName} ({item.GetType().FullName})");
             _decayQueue.Enqueue(item);
+          }
 
           long start = bin.Position;
 
@@ -217,7 +216,8 @@ namespace Server
       {
         Item item = _decayQueue.Dequeue();
 
-        if (item.OnDecay()) item.Delete();
+        if (item.OnDecay())
+          item.Delete();
       }
     }
   }

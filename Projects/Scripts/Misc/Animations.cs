@@ -1,30 +1,22 @@
 namespace Server.Misc
 {
-  public class Animations
+  public static class Animations
   {
     public static void Initialize()
     {
       EventSink.AnimateRequest += EventSink_AnimateRequest;
     }
 
-    private static void EventSink_AnimateRequest(AnimateRequestEventArgs e)
+    private static void EventSink_AnimateRequest(Mobile from, string actionName)
     {
-      Mobile from = e.Mobile;
-
-      int action;
-
-      switch (e.Action)
+      int action = actionName switch
       {
-        case "bow":
-          action = 32;
-          break;
-        case "salute":
-          action = 33;
-          break;
-        default: return;
-      }
+        "bow" => 32,
+        "salute" => 33,
+        _ => 0,
+      };
 
-      if (from.Alive && !from.Mounted && from.Body.IsHuman)
+      if (action > 0 && from.Alive && !from.Mounted && from.Body.IsHuman)
         from.Animate(action, 5, 1, true, false, 0);
     }
   }

@@ -56,7 +56,7 @@ namespace Server.Mobiles
 
         if (!Core.AOS && !m_Mobile.DisarmReady && m_Mobile.Skills.Wrestling.Value >= 80.0 &&
             m_Mobile.Skills.ArmsLore.Value >= 80.0 && m_toDisarm != null)
-          EventSink.InvokeDisarmRequest(new DisarmRequestEventArgs(m_Mobile));
+          EventSink.InvokeDisarmRequest(m_Mobile);
 
         if (m_toDisarm?.IsChildOf(combatant.Backpack) == true &&
             Core.TickCount - m_Mobile.NextSkillTime >= 0 && m_toDisarm.LootType != LootType.Blessed &&

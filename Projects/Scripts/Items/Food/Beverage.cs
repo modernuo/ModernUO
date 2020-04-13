@@ -1048,9 +1048,9 @@ namespace Server.Items
       EventSink.Login += EventSink_Login;
     }
 
-    private static void EventSink_Login(LoginEventArgs e)
+    private static void EventSink_Login(Mobile m)
     {
-      CheckHeaveTimer(e.Mobile);
+      CheckHeaveTimer(m);
     }
 
     public static void CheckHeaveTimer(Mobile from)

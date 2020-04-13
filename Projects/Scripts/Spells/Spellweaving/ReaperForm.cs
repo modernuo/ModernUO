@@ -32,12 +32,12 @@ namespace Server.Spells.Spellweaving
       EventSink.Login += OnLogin;
     }
 
-    public static void OnLogin(LoginEventArgs e)
+    public static void OnLogin(Mobile m)
     {
-      TransformContext context = TransformationSpellHelper.GetContext(e.Mobile);
+      TransformContext context = TransformationSpellHelper.GetContext(m);
 
       if (context?.Type == typeof(ReaperFormSpell))
-        e.Mobile.Send(SpeedControl.WalkSpeed);
+        m.Send(SpeedControl.WalkSpeed);
     }
 
     public override void DoEffect(Mobile m)
