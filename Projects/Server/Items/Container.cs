@@ -200,7 +200,7 @@ namespace Server.Items
 
     public virtual bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
     {
-      if (m?.AccessLevel < AccessLevel.GameMaster)
+      if (m == null || m.AccessLevel < AccessLevel.GameMaster)
       {
         if (IsDecoContainer)
         {
