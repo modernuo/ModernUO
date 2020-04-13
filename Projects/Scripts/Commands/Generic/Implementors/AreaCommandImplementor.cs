@@ -42,8 +42,12 @@ namespace Server.Commands.Generic
 
         IPooledEnumerable<IEntity> eable = map.GetObjectsInBounds(rect, items, mobiles);
 
-        List<object> objs = eable.Where(obj => !mobiles || !(obj is Mobile) || BaseCommand.IsAccessible(from, obj))
-          .Where(obj => ext.IsValid(obj)).Cast<object>().ToList();
+        List<object> objs = new List<object>();
+
+        foreach (IEntity obj in eable)
+          if ((!mobiles || obj is Mobile && BaseCommand.IsAccessible(from, obj)) && ext.IsValid(obj))
+            objs.Add(obj);
+
 
         eable.Free();
         ext.Filter(objs);

@@ -200,10 +200,7 @@ namespace Server.Items
       return false;
     }
 
-    public bool CanClose()
-    {
-      return Map != null && !Deleted && GetObjectsInRange(0).Cast<object>().All(o => o == this);
-    }
+    public bool CanClose() => Map != null && !Deleted && GetObjectsInRange(0).All(o => o == this);
 
     public void Close()
     {

@@ -100,7 +100,7 @@ namespace Server.Items
     public Corpse(Mobile owner, HairInfo hair, FacialHairInfo facialhair, List<Item> equipItems)
       : base(0x2006)
     {
-      // To supress console warnings, stackable must be true
+      // To suppress console warnings, stackable must be true
       Stackable = true;
       Amount = owner.Body; // protocol defines that for itemid 0x2006, amount=body
       Stackable = false;
@@ -859,161 +859,157 @@ namespace Server.Items
 
     public virtual void Open(Mobile from, bool checkSelfLoot)
     {
-      if (from.AccessLevel > AccessLevel.Player || from.InRange(GetWorldLocation(), 2))
+      if (from.AccessLevel <= AccessLevel.Player && !from.InRange(GetWorldLocation(), 2))
       {
-        #region Self Looting
+        from.SendLocalizedMessage(500446); // That is too far away.
+        return;
+      }
 
-        if (checkSelfLoot && from == Owner && !GetFlag(CorpseFlag.SelfLooted) && Items.Count != 0)
+      #region Self Looting
+
+      if (checkSelfLoot && from == Owner && !GetFlag(CorpseFlag.SelfLooted) && Items.Count != 0)
+      {
+        if (from.FindItemOnLayer(Layer.OuterTorso) is DeathRobe robe)
         {
-          if (from.FindItemOnLayer(Layer.OuterTorso) is DeathRobe robe)
-          {
-            Map map = from.Map;
+          Map map = from.Map;
 
-            if (map != null && map != Map.Internal)
-            {
-              robe.MoveToWorld(from.Location, map);
-              robe.BeginDecay();
-            }
+          if (map != null && map != Map.Internal)
+          {
+            robe.MoveToWorld(from.Location, map);
+            robe.BeginDecay();
           }
+        }
 
-          Container pack = from.Backpack;
+        Container pack = from.Backpack;
 
-          if (RestoreEquip != null && pack != null)
+        if (RestoreEquip != null && pack != null)
+        {
+          List<Item> packItems = new List<Item>(pack.Items); // Only items in the top-level pack are re-equipped
+
+          for (int i = 0; i < packItems.Count; i++)
           {
-            List<Item>
-              packItems = new List<Item>(pack.Items); // Only items in the top-level pack are re-equipped
+            Item packItem = packItems[i];
 
-            for (int i = 0; i < packItems.Count; i++)
-            {
-              Item packItem = packItems[i];
-
-              if (RestoreEquip.Contains(packItem) && packItem.Movable)
-                from.EquipItem(packItem);
-            }
+            if (RestoreEquip.Contains(packItem) && packItem.Movable)
+              from.EquipItem(packItem);
           }
+        }
 
-          List<Item> items = new List<Item>(Items);
+        List<Item> items = new List<Item>(Items);
 
-          bool didntFit = false;
+        bool didntFit = false;
 
-          for (int i = 0; !didntFit && i < items.Count; ++i)
+        for (int i = 0; !didntFit && i < items.Count; ++i)
+        {
+          Item item = items[i];
+          Point3D loc = item.Location;
+
+          if (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair || !item.Movable ||
+              !GetRestoreInfo(item, ref loc))
+            continue;
+
+          if (pack?.CheckHold(from, item, false, true) == true)
           {
-            Item item = items[i];
-            Point3D loc = item.Location;
+            item.Location = loc;
+            pack.AddItem(item);
 
-            if (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair || !item.Movable ||
-                !GetRestoreInfo(item, ref loc))
-              continue;
-
-            if (pack?.CheckHold(from, item, false, true) == true)
-            {
-              item.Location = loc;
-              pack.AddItem(item);
-
-              if (RestoreEquip?.Contains(item) == true)
-                from.EquipItem(item);
-            }
-            else
-            {
-              didntFit = true;
-            }
-          }
-
-          from.PlaySound(0x3E3);
-
-          if (Items.Count != 0)
-          {
-            from.SendLocalizedMessage(
-              1062472); // You gather some of your belongings. The rest remain on the corpse.
+            if (RestoreEquip?.Contains(item) == true)
+              from.EquipItem(item);
           }
           else
           {
-            SetFlag(CorpseFlag.Carved, true);
-
-            if (ItemID == 0x2006)
-            {
-              ProcessDelta();
-              SendRemovePacket();
-              ItemID = Utility.Random(0xECA, 9); // bone graphic
-              Hue = 0;
-              ProcessDelta();
-            }
-
-            from.SendLocalizedMessage(1062471); // You quickly gather all of your belongings.
+            didntFit = true;
           }
-
-          SetFlag(CorpseFlag.SelfLooted, true);
         }
 
-        #endregion
+        from.PlaySound(0x3E3);
 
-        if (!CheckLoot(from, null))
-          return;
-
-        #region Quests
-
-        if (from is PlayerMobile player)
+        if (Items.Count != 0)
         {
-          QuestSystem qs = player.Quest;
+          from.SendLocalizedMessage(1062472); // You gather some of your belongings. The rest remain on the corpse.
+        }
+        else
+        {
+          SetFlag(CorpseFlag.Carved, true);
 
-          if (qs is UzeraanTurmoilQuest)
+          if (ItemID == 0x2006)
           {
-            GetDaemonBoneObjective obj = qs.FindObjective<GetDaemonBoneObjective>();
-            if (obj?.CorpseWithBone == this && (!obj.Completed || UzeraanTurmoilQuest.HasLostDaemonBone(player)))
-            {
-              Item bone = new QuestDaemonBone();
-
-              if (player.PlaceInBackpack(bone))
-              {
-                obj.CorpseWithBone = null;
-                player.SendLocalizedMessage(1049341, "",
-                  0x22); // You rummage through the bones and find a Daemon Bone!  You quickly place the item in your pack.
-
-                if (!obj.Completed)
-                  obj.Complete();
-              }
-              else
-              {
-                bone.Delete();
-                player.SendLocalizedMessage(1049342, "",
-                  0x22); // Rummaging through the bones you find a Daemon Bone, but can't pick it up because your pack is too full.  Come back when you have more room in your pack.
-              }
-
-              return;
-            }
+            ProcessDelta();
+            SendRemovePacket();
+            ItemID = Utility.Random(0xECA, 9); // bone graphic
+            Hue = 0;
+            ProcessDelta();
           }
-          else if (qs is TheSummoningQuest)
-          {
-            VanquishDaemonObjective obj = qs.FindObjective<VanquishDaemonObjective>();
-            if (obj?.Completed == true && obj.CorpseWithSkull == this)
-            {
-              GoldenSkull sk = new GoldenSkull();
 
-              if (player.PlaceInBackpack(sk))
-              {
-                obj.CorpseWithSkull = null;
-                player.SendLocalizedMessage(
-                  1050022); // For your valor in combating the devourer, you have been awarded a golden skull.
-                qs.Complete();
-              }
-              else
-              {
-                sk.Delete();
-                player.SendLocalizedMessage(
-                  1050023); // You find a golden skull, but your backpack is too full to carry it.
-              }
-            }
-          }
+          from.SendLocalizedMessage(1062471); // You quickly gather all of your belongings.
         }
 
-        #endregion
+        SetFlag(CorpseFlag.SelfLooted, true);
+      }
 
-        base.OnDoubleClick(from);
-      }
-      else
+      #endregion
+
+      if (!CheckLoot(from, null))
+        return;
+
+      #region Quests
+
+      if (!(from is PlayerMobile player)) return;
+
+      QuestSystem qs = player.Quest;
+
+      if (qs is UzeraanTurmoilQuest)
       {
-        from.SendLocalizedMessage(500446); // That is too far away.
+        GetDaemonBoneObjective obj = qs.FindObjective<GetDaemonBoneObjective>();
+        if (obj?.CorpseWithBone == this && (!obj.Completed || UzeraanTurmoilQuest.HasLostDaemonBone(player)))
+        {
+          Item bone = new QuestDaemonBone();
+
+          if (player.PlaceInBackpack(bone))
+          {
+            obj.CorpseWithBone = null;
+            player.SendLocalizedMessage(1049341, "",
+              0x22); // You rummage through the bones and find a Daemon Bone!  You quickly place the item in your pack.
+
+            if (!obj.Completed)
+              obj.Complete();
+          }
+          else
+          {
+            bone.Delete();
+            player.SendLocalizedMessage(1049342, "",
+              0x22); // Rummaging through the bones you find a Daemon Bone, but can't pick it up because your pack is too full.  Come back when you have more room in your pack.
+          }
+
+          return;
+        }
       }
+      else if (qs is TheSummoningQuest)
+      {
+        VanquishDaemonObjective obj = qs.FindObjective<VanquishDaemonObjective>();
+        if (obj?.Completed == true && obj.CorpseWithSkull == this)
+        {
+          GoldenSkull sk = new GoldenSkull();
+
+          if (player.PlaceInBackpack(sk))
+          {
+            obj.CorpseWithSkull = null;
+            player.SendLocalizedMessage(
+              1050022); // For your valor in combating the devourer, you have been awarded a golden skull.
+            qs.Complete();
+          }
+          else
+          {
+            sk.Delete();
+            player.SendLocalizedMessage(
+              1050023); // You find a golden skull, but your backpack is too full to carry it.
+          }
+        }
+      }
+
+      #endregion
+
+      base.OnDoubleClick(from);
     }
 
     public override void OnDoubleClick(Mobile from)
