@@ -57,7 +57,7 @@ namespace Server.Items
       {
         attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
       }
-      else if (!Core.ML && toDisarm == null || toDisarm is BaseShield || toDisarm is Spellbook)
+      else if ((!Core.ML && toDisarm == null) || toDisarm is BaseShield || toDisarm is Spellbook)
       {
         attacker.SendLocalizedMessage(1060849); // Your target is already unarmed!
       }

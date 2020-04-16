@@ -69,7 +69,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-    public Point3D Target{ get; set; }
+    public Point3D Target { get; set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public Map TargetMap
@@ -116,21 +116,21 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_House = reader.ReadItem() as BaseHouse;
-          goto case 0;
-        }
+          {
+            m_House = reader.ReadItem() as BaseHouse;
+            goto case 0;
+          }
         case 0:
-        {
-          m_Description = reader.ReadString();
-          m_Marked = reader.ReadBool();
-          Target = reader.ReadPoint3D();
-          m_TargetMap = reader.ReadMap();
+          {
+            m_Description = reader.ReadString();
+            m_Marked = reader.ReadBool();
+            Target = reader.ReadPoint3D();
+            m_TargetMap = reader.ReadMap();
 
-          CalculateHue();
+            CalculateHue();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -288,7 +288,7 @@ namespace Server.Items
 
     private class RenamePrompt : Prompt
     {
-      private RecallRune m_Rune;
+      private readonly RecallRune m_Rune;
 
       public RenamePrompt(RecallRune rune) => m_Rune = rune;
 

@@ -24,10 +24,10 @@ namespace Server.Engines.MLQuests.Definitions
     }
 
     // OSI sends this instead, but it doesn't make sense for an escortable
-    //public override void OnComplete( MLQuestInstance instance )
-    //{
-    //	instance.Player.SendLocalizedMessage( 1073775, "", 0x23 ); // Your quest is complete. Return for your reward.
-    //}
+    // public override void OnComplete( MLQuestInstance instance )
+    // {
+    // instance.Player.SendLocalizedMessage( 1073775, "", 0x23 ); // Your quest is complete. Return for your reward.
+    // }
 
     public override void Generate()
     {
@@ -151,8 +151,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
       MLQuestSystem.Tell(this, pm, Utility.RandomList(
         1074204, // Greetings seeker.  I have an urgent matter for you, if you are willing.
-        1074222 // Could I trouble you for some assistance?
-      ));
+        1074222)); // Could I trouble you for some assistance?
     }
 
     public override void InitBody()

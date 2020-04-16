@@ -4,7 +4,7 @@ namespace Server.Items
 {
   public class DecayedCorpse : Container
   {
-    private static TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(7.0);
+    private static readonly TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(7.0);
     private DateTime m_DecayTime;
     private Timer m_DecayTimer;
 
@@ -74,24 +74,24 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          BeginDecay(m_DefaultDecayTime);
+          {
+            BeginDecay(m_DefaultDecayTime);
 
-          break;
-        }
+            break;
+          }
         case 1:
-        {
-          if (reader.ReadBool())
-            BeginDecay(reader.ReadDeltaTime() - DateTime.UtcNow);
+          {
+            if (reader.ReadBool())
+              BeginDecay(reader.ReadDeltaTime() - DateTime.UtcNow);
 
-          break;
-        }
+            break;
+          }
       }
     }
 
     private class InternalTimer : Timer
     {
-      private DecayedCorpse m_Corpse;
+      private readonly DecayedCorpse m_Corpse;
 
       public InternalTimer(DecayedCorpse c, TimeSpan delay) : base(delay)
       {

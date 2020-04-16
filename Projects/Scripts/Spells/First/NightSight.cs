@@ -4,13 +4,12 @@ namespace Server.Spells.First
 {
   public class NightSightSpell : MagerySpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Night Sight", "In Lor",
       236,
       9031,
       Reagent.SulfurousAsh,
-      Reagent.SpidersSilk
-    );
+      Reagent.SpidersSilk);
 
     public NightSightSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -25,7 +24,7 @@ namespace Server.Spells.First
 
     private class NightSightTarget : Target
     {
-      private Spell m_Spell;
+      private readonly Spell m_Spell;
 
       public NightSightTarget(Spell spell) : base(12, false, TargetFlags.Beneficial) => m_Spell = spell;
 
@@ -52,7 +51,7 @@ namespace Server.Spells.First
             targ.PlaySound(0x1E3);
 
             BuffInfo.AddBuff(targ,
-              new BuffInfo(BuffIcon.NightSight, 1075643)); //Night Sight/You ignore lighting effects
+              new BuffInfo(BuffIcon.NightSight, 1075643)); // Night Sight/You ignore lighting effects
           }
           else
           {

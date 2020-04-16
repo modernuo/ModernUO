@@ -42,18 +42,18 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          if (reader.ReadBool())
           {
-            reader.ReadInt();
-            reader.ReadInt();
+            if (reader.ReadBool())
+            {
+              reader.ReadInt();
+              reader.ReadInt();
+            }
+
+            Weight = 2.0;
+            ItemID = 0x2792;
+
+            break;
           }
-
-          Weight = 2.0;
-          ItemID = 0x2792;
-
-          break;
-        }
       }
     }
   }

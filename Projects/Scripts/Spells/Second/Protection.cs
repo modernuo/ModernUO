@@ -5,22 +5,21 @@ namespace Server.Spells.Second
 {
   public class ProtectionSpell : MagerySpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Protection", "Uus Sanct",
       236,
       9011,
       Reagent.Garlic,
       Reagent.Ginseng,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
-    private static Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> m_Table = new Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>>();
+    private static readonly Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> m_Table = new Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>>();
 
     public ProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
-    public static Dictionary<Mobile, double> Registry{ get; } = new Dictionary<Mobile, double>();
+    public static Dictionary<Mobile, double> Registry { get; } = new Dictionary<Mobile, double>();
 
     public override SpellCircle Circle => SpellCircle.Second;
 
@@ -40,7 +39,6 @@ namespace Server.Spells.Second
 
       Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
       return false;
-
     }
 
     public static void Toggle(Mobile caster, Mobile target)
@@ -63,8 +61,7 @@ namespace Server.Spells.Second
           new ResistanceMod(ResistanceType.Physical,
             -15 + Math.Min((int)(caster.Skills.Inscribe.Value / 20), 15)),
           new DefaultSkillMod(SkillName.MagicResist, true,
-            -35 + Math.Min((int)(caster.Skills.Inscribe.Value / 20), 35))
-        );
+            -35 + Math.Min((int)(caster.Skills.Inscribe.Value / 20), 35)));
 
         m_Table[target] = mods;
         Registry[target] = 100.0;
@@ -157,7 +154,7 @@ namespace Server.Spells.Second
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Caster;
+      private readonly Mobile m_Caster;
 
       public InternalTimer(Mobile caster) : base(TimeSpan.FromSeconds(0))
       {

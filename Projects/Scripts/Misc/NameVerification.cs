@@ -9,7 +9,7 @@ namespace Server.Misc
 
     public static readonly char[] Empty = new char[0];
 
-    public static string[] StartDisallowed{ get; } =
+    public static string[] StartDisallowed { get; } =
     {
       "seer",
       "counselor",
@@ -19,7 +19,7 @@ namespace Server.Misc
       "lord"
     };
 
-    public static string[] Disallowed{ get; } =
+    public static string[] Disallowed { get; } =
     {
       "jigaboo",
       "chigaboo",
@@ -129,7 +129,7 @@ namespace Server.Misc
       name = name.ToLower();
 
       if (!allowLetters || !allowDigits ||
-          exceptions.Length > 0 && (noExceptionsAtStart || maxExceptions < int.MaxValue))
+          (exceptions.Length > 0 && (noExceptionsAtStart || maxExceptions < int.MaxValue)))
         for (int i = 0; i < name.Length; ++i)
         {
           char c = name[i];
@@ -156,7 +156,7 @@ namespace Server.Misc
               if (c == exceptions[j])
                 except = true;
 
-            if (!except || i == 0 && noExceptionsAtStart)
+            if (!except || (i == 0 && noExceptionsAtStart))
               return false;
 
             if (exceptCount++ == maxExceptions)

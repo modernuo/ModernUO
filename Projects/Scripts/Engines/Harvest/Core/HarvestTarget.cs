@@ -8,8 +8,8 @@ namespace Server.Engines.Harvest
 {
   public class HarvestTarget : Target
   {
-    private HarvestSystem m_System;
-    private Item m_Tool;
+    private readonly HarvestSystem m_System;
+    private readonly Item m_Tool;
 
     public HarvestTarget(Item tool, HarvestSystem system) : base(-1, true, TargetFlags.None)
     {

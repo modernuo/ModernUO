@@ -29,9 +29,9 @@ namespace Server.Engines.MLQuests.Objectives
         m_Flags |= GainSkillObjectiveFlags.Accelerate;
     }
 
-    public SkillName Skill{ get; set; }
+    public SkillName Skill { get; set; }
 
-    public int ThresholdFixed{ get; set; }
+    public int ThresholdFixed { get; set; }
 
     public bool UseReal
     {
@@ -91,7 +91,7 @@ namespace Server.Engines.MLQuests.Objectives
       : base(instance, objective) =>
       Objective = objective;
 
-    public GainSkillObjective Objective{ get; set; }
+    public GainSkillObjective Objective { get; set; }
 
     public bool Handles(SkillName skill) => Objective.Skill == skill;
 

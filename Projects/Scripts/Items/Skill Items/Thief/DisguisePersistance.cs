@@ -17,7 +17,7 @@ namespace Server.Items
 
     public DisguisePersistance(Serial serial) : base(serial) => Instance = this;
 
-    public static DisguisePersistance Instance{ get; private set; }
+    public static DisguisePersistance Instance { get; private set; }
 
     public override string DefaultName => "Disguise Persistance - Internal";
 
@@ -50,18 +50,18 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          int count = reader.ReadInt();
-
-          for (int i = 0; i < count; ++i)
           {
-            Mobile m = reader.ReadMobile();
-            DisguiseTimers.CreateTimer(m, reader.ReadTimeSpan());
-            m.NameMod = reader.ReadString();
-          }
+            int count = reader.ReadInt();
 
-          break;
-        }
+            for (int i = 0; i < count; ++i)
+            {
+              Mobile m = reader.ReadMobile();
+              DisguiseTimers.CreateTimer(m, reader.ReadTimeSpan());
+              m.NameMod = reader.ReadString();
+            }
+
+            break;
+          }
       }
     }
 

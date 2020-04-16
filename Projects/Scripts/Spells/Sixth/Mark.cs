@@ -6,14 +6,13 @@ namespace Server.Spells.Sixth
 {
   public class MarkSpell : MagerySpell, ISpellTargetingItem
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Mark", "Kal Por Ylem",
       218,
       9002,
       Reagent.BlackPearl,
       Reagent.Bloodmoss,
-      Reagent.MandrakeRoot
-    );
+      Reagent.MandrakeRoot);
 
     public MarkSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

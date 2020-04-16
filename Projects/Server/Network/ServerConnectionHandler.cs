@@ -20,8 +20,6 @@
  *************************************************************************/
 
 using System;
-using System.Buffers;
-using System.IO.Pipelines;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Logging;
@@ -35,8 +33,7 @@ namespace Server.Network
 
     public ServerConnectionHandler(
       IMessagePumpService messagePumpService,
-      ILogger<ServerConnectionHandler> logger
-    )
+      ILogger<ServerConnectionHandler> logger)
     {
       _messagePumpService = messagePumpService;
       _logger = logger;
@@ -50,7 +47,7 @@ namespace Server.Network
         return;
       }
 
-      NetState ns = new NetState(connection);
+      var ns = new NetState(connection);
       TcpServer.Instances.Add(ns);
       _logger.LogInformation($"Client: {ns}: Connected. [{TcpServer.Instances.Count} Online]");
 
@@ -70,16 +67,16 @@ namespace Server.Network
 
         try
         {
-          ReadResult result = await inPipe.ReadAsync();
+          var result = await inPipe.ReadAsync();
           if (result.IsCanceled || result.IsCompleted)
             return;
 
-          ReadOnlySequence<byte> seq = result.Buffer;
+          var seq = result.Buffer;
 
           if (seq.IsEmpty)
             break;
 
-          int pos = PacketHandlers.ProcessPacket(_messagePumpService, ns, seq);
+          var pos = PacketHandlers.ProcessPacket(_messagePumpService, ns, seq);
 
           if (pos <= 0)
             break;
@@ -99,7 +96,7 @@ namespace Server.Network
     {
       try
       {
-        SocketConnectEventArgs args = new SocketConnectEventArgs(connection);
+        var args = new SocketConnectEventArgs(connection);
 
         EventSink.InvokeSocketConnect(args);
 

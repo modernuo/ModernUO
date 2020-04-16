@@ -48,7 +48,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private ThrowingDagger m_Dagger;
+      private readonly ThrowingDagger m_Dagger;
 
       public InternalTarget(ThrowingDagger dagger) : base(10, false, TargetFlags.Harmful) => m_Dagger = dagger;
 

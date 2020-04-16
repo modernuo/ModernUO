@@ -26,15 +26,15 @@ namespace Server.Engines.CannedEvil
       SpawnTypes = spawnTypes;
     }
 
-    public string Name{ get; }
+    public string Name { get; }
 
-    public Type Champion{ get; }
+    public Type Champion { get; }
 
-    public Type[][] SpawnTypes{ get; }
+    public Type[][] SpawnTypes { get; }
 
-    public string[] LevelNames{ get; }
+    public string[] LevelNames { get; }
 
-    public static ChampionSpawnInfo[] Table{ get; } =
+    public static ChampionSpawnInfo[] Table { get; } =
     {
       new ChampionSpawnInfo("Abyss", typeof(Semidar), new[] { "Foe", "Assassin", "Conqueror" }, new[] // Abyss
       {

@@ -21,10 +21,10 @@ namespace Server.Items
     public virtual Point3D WallPosition => Point3D.Zero;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public BaseAddonContainer Addon{ get; set; }
+    public BaseAddonContainer Addon { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D Offset{ get; set; }
+    public Point3D Offset { get; set; }
 
     [Hue]
     [CommandProperty(AccessLevel.GameMaster)]

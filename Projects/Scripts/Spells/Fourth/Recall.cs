@@ -8,21 +8,19 @@ namespace Server.Spells.Fourth
 {
   public class RecallSpell : MagerySpell, IRecallSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Recall", "Kal Ort Por",
       239,
       9031,
       Reagent.BlackPearl,
       Reagent.Bloodmoss,
-      Reagent.MandrakeRoot
-    );
+      Reagent.MandrakeRoot);
 
-    private Runebook m_Book;
+    private readonly Runebook m_Book;
 
-    private RunebookEntry m_Entry;
+    private readonly RunebookEntry m_Entry;
 
-    public RecallSpell(Mobile caster, RunebookEntry entry = null, Runebook book = null, Item scroll = null) :
-      base(caster, scroll, m_Info)
+    public RecallSpell(Mobile caster, RunebookEntry entry = null, Runebook book = null, Item scroll = null) : base(caster, scroll, m_Info)
     {
       m_Entry = entry;
       m_Book = book;
@@ -34,7 +32,7 @@ namespace Server.Spells.Fourth
     {
       if (TransformationSpellHelper.UnderTransformation(Caster, typeof(WraithFormSpell)))
         min = max = 0;
-      else if (Core.SE && m_Book != null) //recall using Runebook charge
+      else if (Core.SE && m_Book != null) // recall using Runebook charge
         min = max = 0;
       else
         base.GetCastSkills(out min, out max);
@@ -83,7 +81,7 @@ namespace Server.Spells.Fourth
       {
         Caster.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
       }
-      else if (map == null || !Core.AOS && Caster.Map != map)
+      else if (map == null || (!Core.AOS && Caster.Map != map))
       {
         Caster.SendLocalizedMessage(1005569); // You can not recall to another facet.
       }

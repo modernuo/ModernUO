@@ -79,13 +79,11 @@ namespace Server.Mobiles
       int version = reader.ReadInt();
     }
 
-    #region Peace
-
     private DateTime m_NextPeace;
 
     public void Peace(Mobile target)
     {
-      if (target == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || 0.1 < Utility.RandomDouble())
+      if (target == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || Utility.RandomDouble() > 0.1)
         return;
 
       if (target is PlayerMobile p && p.PeacedUntil < DateTime.UtcNow && !p.Hidden && CanBeHarmful(p))
@@ -101,17 +99,13 @@ namespace Server.Mobiles
       m_NextPeace = DateTime.UtcNow + TimeSpan.FromSeconds(10);
     }
 
-    #endregion
-
-    #region Suppress
-
-    private static Dictionary<Mobile, Timer> m_Suppressed = new Dictionary<Mobile, Timer>();
+    private static readonly Dictionary<Mobile, Timer> m_Suppressed = new Dictionary<Mobile, Timer>();
     private DateTime m_NextSuppress;
 
     public void Suppress(Mobile target)
     {
       if (target == null || m_Suppressed.ContainsKey(target) || Deleted || !Alive ||
-          m_NextSuppress > DateTime.UtcNow || 0.1 < Utility.RandomDouble())
+          m_NextSuppress > DateTime.UtcNow || Utility.RandomDouble() > 0.1)
         return;
 
       TimeSpan delay = TimeSpan.FromSeconds(Utility.RandomMinMax(20, 80));
@@ -155,7 +149,7 @@ namespace Server.Mobiles
     private class AnimateTimer : Timer
     {
       private int m_Count;
-      private Mobile m_Owner;
+      private readonly Mobile m_Owner;
 
       public AnimateTimer(Mobile owner, int count) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.25))
       {
@@ -172,15 +166,11 @@ namespace Server.Mobiles
       }
     }
 
-    #endregion
-
-    #region Undress
-
     private DateTime m_NextUndress;
 
     public void Undress(Mobile target)
     {
-      if (target == null || Deleted || !Alive || m_NextUndress > DateTime.UtcNow || 0.005 < Utility.RandomDouble())
+      if (target == null || Deleted || !Alive || m_NextUndress > DateTime.UtcNow || Utility.RandomDouble() > 0.005)
         return;
 
       if (target.Player && target.Female && !target.Hidden && CanBeHarmful(target))
@@ -206,15 +196,11 @@ namespace Server.Mobiles
         m.PlaceInBackpack(item);
     }
 
-    #endregion
-
-    #region Provoke
-
     private DateTime m_NextProvoke;
 
     public void Provoke(Mobile target)
     {
-      if (target == null || Deleted || !Alive || m_NextProvoke > DateTime.UtcNow || 0.05 < Utility.RandomDouble())
+      if (target == null || Deleted || !Alive || m_NextProvoke > DateTime.UtcNow || Utility.RandomDouble() > 0.05)
         return;
 
       foreach (Mobile m in GetMobilesInRange(RangePerception))
@@ -235,7 +221,5 @@ namespace Server.Mobiles
 
       m_NextProvoke = DateTime.UtcNow + TimeSpan.FromSeconds(10);
     }
-
-    #endregion
   }
 }

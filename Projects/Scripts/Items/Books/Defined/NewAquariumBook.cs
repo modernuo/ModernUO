@@ -2,20 +2,16 @@ namespace Server.Items
 {
   public class NewAquariumBook : BlueBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Your New Aquarium", "Les Bilgewater",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Welcome to the",
         "wonderful world",
         "of aquarium ownership.",
         "With a little time and",
         "skill your aquarium can",
-        "become a work of art!"
-      ),
-      new BookPageInfo
-      (
+        "become a work of art!"),
+      new BookPageInfo(
         "Catching Fish:",
         "You will need to",
         "aquire a fishing net,",
@@ -23,10 +19,8 @@ namespace Server.Items
         "bowls, from your local",
         "fisherman.",
         "To use the net,",
-        "select it from your"
-      ),
-      new BookPageInfo
-      (
+        "select it from your"),
+      new BookPageInfo(
         "backpack, and cast it",
         "into shallow water.",
         "Then we wait.",
@@ -34,19 +28,15 @@ namespace Server.Items
         "happy to be in your",
         "aquarium, they will",
         "jump right into your",
-        "fish bowl when caught!"
-      ),
-      new BookPageInfo
-      (
+        "fish bowl when caught!"),
+      new BookPageInfo(
         "Just take them home",
         "and pour them into",
         "your aquarium, and",
         "BING! You have a happy",
         "new addition to your",
-        "collection!"
-      ),
-      new BookPageInfo
-      (
+        "collection!"),
+      new BookPageInfo(
         "Caring for our",
         "Underwater Allies:",
         "",
@@ -54,10 +44,8 @@ namespace Server.Items
         "water and food to",
         "survive.",
         "  Our aquarium comes",
-        "with a status monitoring"
-      ),
-      new BookPageInfo
-      (
+        "with a status monitoring"),
+      new BookPageInfo(
         "aid.  Must be Magic!",
         "  Just look at the",
         "front of your aquarium",
@@ -65,10 +53,8 @@ namespace Server.Items
         "helpful and friendly",
         "guide? It tells how much",
         "food and water is",
-        "needed to maintain,"
-      ),
-      new BookPageInfo
-      (
+        "needed to maintain,"),
+      new BookPageInfo(
         "and improve the quality",
         "of your tank.",
         "  You dont want to",
@@ -76,10 +62,8 @@ namespace Server.Items
         "very often.  In fact,",
         "you only want to feed",
         "them every other day.",
-        "But, remember to keep"
-      ),
-      new BookPageInfo
-      (
+        "But, remember to keep"),
+      new BookPageInfo(
         "the water strong and",
         "healthy, and add more",
         "on a regular basis",
@@ -87,18 +71,14 @@ namespace Server.Items
         "a pretty, sparkely blue.",
         "",
         "  Well, I hope you",
-        "get as much enjoyment,"
-      ),
-      new BookPageInfo
-      (
+        "get as much enjoyment,"),
+      new BookPageInfo(
         "collecting a beautiful",
         "array of our fine, finned,",
         "friends from the sea,",
         "as I do!",
         "",
-        "Happy Fishing!"
-      )
-    );
+        "Happy Fishing!"));
 
     [Constructible]
     public NewAquariumBook() : base(false) => Hue = 0;

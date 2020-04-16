@@ -41,7 +41,7 @@ namespace Server
     {
       if (File.Exists("Data/bodyTable.cfg"))
       {
-        using StreamReader ip = new StreamReader("Data/bodyTable.cfg");
+        using var ip = new StreamReader("Data/bodyTable.cfg");
         m_Types = new BodyType[0x1000];
 
         string line;
@@ -51,9 +51,9 @@ namespace Server
           if (line.Length == 0 || line.StartsWith("#"))
             continue;
 
-          string[] split = line.Split('\t');
+          var split = line.Split('\t');
 
-          if (int.TryParse(split[0], out int bodyID) && Enum.TryParse(split[1], true, out BodyType type) && bodyID >= 0 &&
+          if (int.TryParse(split[0], out var bodyID) && Enum.TryParse(split[1], true, out BodyType type) && bodyID >= 0 &&
               bodyID < m_Types.Length)
           {
             m_Types[bodyID] = type;
@@ -141,7 +141,7 @@ namespace Server
                                && BodyID < m_Types.Length
                                && m_Types[BodyID] == BodyType.Equipment;
 
-    public int BodyID{ get; }
+    public int BodyID { get; }
 
     public static implicit operator int(Body a) => a.BodyID;
 

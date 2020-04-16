@@ -6,8 +6,8 @@ namespace Server.Gumps
 {
   public class GuildmasterGump : Gump
   {
-    private Guild m_Guild;
-    private Mobile m_Mobile;
+    private readonly Guild m_Guild;
+    private readonly Mobile m_Mobile;
 
     public GuildmasterGump(Mobile from, Guild guild) : base(20, 30)
     {
@@ -90,98 +90,98 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 1: // Main menu
-        {
-          GuildGump.EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildGump(m_Mobile, m_Guild));
-
-          break;
-        }
-        case 2: // Set guild name
-        {
-          m_Mobile.SendLocalizedMessage(1013060); // Enter new guild name (40 characters max):
-          m_Mobile.Prompt = new GuildNamePrompt(m_Mobile, m_Guild);
-
-          break;
-        }
-        case 3: // Set guild abbreviation
-        {
-          m_Mobile.SendLocalizedMessage(1013061); // Enter new guild abbreviation (3 characters max):
-          m_Mobile.Prompt = new GuildAbbrvPrompt(m_Mobile, m_Guild);
-
-          break;
-        }
-        case 4: // Change guild type
-        {
-          if (!Guild.OrderChaos)
-            return;
-
-          GuildGump.EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildChangeTypeGump(m_Mobile, m_Guild));
-
-          break;
-        }
-        case 5: // Set charter
-        {
-          m_Mobile.SendLocalizedMessage(1013071); // Enter the new guild charter (50 characters max):
-          m_Mobile.Prompt = new GuildCharterPrompt(m_Mobile, m_Guild);
-
-          break;
-        }
-        case 6: // Dismiss member
-        {
-          GuildGump.EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildDismissGump(m_Mobile, m_Guild));
-
-          break;
-        }
-        case 7: // War menu
-        {
-          GuildGump.EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildWarAdminGump(m_Mobile, m_Guild));
-
-          break;
-        }
-        case 8: // Administer candidates
-        {
-          GuildGump.EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildAdminCandidatesGump(m_Mobile, m_Guild));
-
-          break;
-        }
-        case 9: // Set guildmaster's title
-        {
-          m_Mobile.SendLocalizedMessage(1013073); // Enter new guildmaster title (20 characters max):
-          m_Mobile.Prompt = new GuildTitlePrompt(m_Mobile, m_Mobile, m_Guild);
-
-          break;
-        }
-        case 10: // Grant title
-        {
-          GuildGump.EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GrantGuildTitleGump(m_Mobile, m_Guild));
-
-          break;
-        }
-        case 11: // Move guildstone
-        {
-          if (m_Guild.Guildstone != null)
           {
-            GuildTeleporter item = new GuildTeleporter(m_Guild.Guildstone);
+            GuildGump.EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildGump(m_Mobile, m_Guild));
 
-            m_Guild.Teleporter?.Delete();
-
-            m_Mobile.SendLocalizedMessage(
-              501133); // Use the teleporting object placed in your backpack to move this guildstone.
-
-            m_Mobile.AddToBackpack(item);
-            m_Guild.Teleporter = item;
+            break;
           }
+        case 2: // Set guild name
+          {
+            m_Mobile.SendLocalizedMessage(1013060); // Enter new guild name (40 characters max):
+            m_Mobile.Prompt = new GuildNamePrompt(m_Mobile, m_Guild);
 
-          GuildGump.EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+            break;
+          }
+        case 3: // Set guild abbreviation
+          {
+            m_Mobile.SendLocalizedMessage(1013061); // Enter new guild abbreviation (3 characters max):
+            m_Mobile.Prompt = new GuildAbbrvPrompt(m_Mobile, m_Guild);
 
-          break;
-        }
+            break;
+          }
+        case 4: // Change guild type
+          {
+            if (!Guild.OrderChaos)
+              return;
+
+            GuildGump.EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildChangeTypeGump(m_Mobile, m_Guild));
+
+            break;
+          }
+        case 5: // Set charter
+          {
+            m_Mobile.SendLocalizedMessage(1013071); // Enter the new guild charter (50 characters max):
+            m_Mobile.Prompt = new GuildCharterPrompt(m_Mobile, m_Guild);
+
+            break;
+          }
+        case 6: // Dismiss member
+          {
+            GuildGump.EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildDismissGump(m_Mobile, m_Guild));
+
+            break;
+          }
+        case 7: // War menu
+          {
+            GuildGump.EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildWarAdminGump(m_Mobile, m_Guild));
+
+            break;
+          }
+        case 8: // Administer candidates
+          {
+            GuildGump.EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildAdminCandidatesGump(m_Mobile, m_Guild));
+
+            break;
+          }
+        case 9: // Set guildmaster's title
+          {
+            m_Mobile.SendLocalizedMessage(1013073); // Enter new guildmaster title (20 characters max):
+            m_Mobile.Prompt = new GuildTitlePrompt(m_Mobile, m_Mobile, m_Guild);
+
+            break;
+          }
+        case 10: // Grant title
+          {
+            GuildGump.EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GrantGuildTitleGump(m_Mobile, m_Guild));
+
+            break;
+          }
+        case 11: // Move guildstone
+          {
+            if (m_Guild.Guildstone != null)
+            {
+              GuildTeleporter item = new GuildTeleporter(m_Guild.Guildstone);
+
+              m_Guild.Teleporter?.Delete();
+
+              m_Mobile.SendLocalizedMessage(
+                501133); // Use the teleporting object placed in your backpack to move this guildstone.
+
+              m_Mobile.AddToBackpack(item);
+              m_Guild.Teleporter = item;
+            }
+
+            GuildGump.EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+
+            break;
+          }
       }
     }
   }

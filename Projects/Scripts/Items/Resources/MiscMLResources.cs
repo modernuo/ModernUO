@@ -60,7 +60,6 @@ namespace Server.Items
     }
   }
 
-
   public class CapturedEssence : Item
   {
     [Constructible]
@@ -90,7 +89,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
   }
-
 
   public class EyeOfTheTravesty : Item
   {
@@ -128,7 +126,6 @@ namespace Server.Items
     }
   }
 
-
   public class Corruption : Item
   {
     [Constructible]
@@ -164,7 +161,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
   }
-
 
   public class DreadHornMane : Item
   {
@@ -202,7 +198,6 @@ namespace Server.Items
     }
   }
 
-
   public class ParasiticPlant : Item
   {
     [Constructible]
@@ -238,7 +233,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
   }
-
 
   public class Muculent : Item
   {
@@ -276,7 +270,6 @@ namespace Server.Items
     }
   }
 
-
   public class DiseasedBark : Item
   {
     [Constructible]
@@ -313,7 +306,6 @@ namespace Server.Items
     }
   }
 
-
   public class BarkFragment : Item
   {
     [Constructible]
@@ -349,7 +341,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
   }
-
 
   public class GrizzledBones : Item
   {
@@ -389,7 +380,6 @@ namespace Server.Items
         ItemID = 0x318C;
     }
   }
-
 
   public class LardOfParoxysmus : Item
   {
@@ -499,7 +489,6 @@ namespace Server.Items
     }
   }
 
-
   public class Turquoise : Item
   {
     [Constructible]
@@ -535,7 +524,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
   }
-
 
   public class EcruCitrine : Item
   {
@@ -573,7 +561,6 @@ namespace Server.Items
     }
   }
 
-
   public class WhitePearl : Item
   {
     [Constructible]
@@ -609,7 +596,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
   }
-
 
   public class FireRuby : Item
   {
@@ -647,7 +633,6 @@ namespace Server.Items
     }
   }
 
-
   public class BlueDiamond : Item
   {
     [Constructible]
@@ -683,7 +668,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
   }
-
 
   public class BrilliantAmber : Item
   {
@@ -758,7 +742,6 @@ namespace Server.Items
     }
   }
 
-
   public class Putrefication : Item
   {
     [Constructible]
@@ -795,7 +778,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
   }
-
 
   public class Taint : Item
   {

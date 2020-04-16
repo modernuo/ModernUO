@@ -23,13 +23,13 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TrapType TrapType{ get; set; }
+    public TrapType TrapType { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int TrapPower{ get; set; }
+    public int TrapPower { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int TrapLevel{ get; set; }
+    public int TrapLevel { get; set; }
 
     public virtual bool TrapOnOpen => true;
 
@@ -73,99 +73,99 @@ namespace Server.Items
         switch (TrapType)
         {
           case TrapType.ExplosionTrap:
-          {
-            SendMessageTo(from, 502999, 0x3B2); // You set off a trap!
-
-            if (from.InRange(loc, 3))
             {
-              int damage;
+              SendMessageTo(from, 502999, 0x3B2); // You set off a trap!
 
-              if (TrapLevel > 0)
-                damage = Utility.RandomMinMax(10, 30) * TrapLevel;
-              else
-                damage = TrapPower;
+              if (from.InRange(loc, 3))
+              {
+                int damage;
 
-              AOS.Damage(from, damage, 0, 100, 0, 0, 0);
+                if (TrapLevel > 0)
+                  damage = Utility.RandomMinMax(10, 30) * TrapLevel;
+                else
+                  damage = TrapPower;
 
-              // Your skin blisters from the heat!
-              from.LocalOverheadMessage(MessageType.Regular, 0x2A, 503000);
+                AOS.Damage(from, damage, 0, 100, 0, 0, 0);
+
+                // Your skin blisters from the heat!
+                from.LocalOverheadMessage(MessageType.Regular, 0x2A, 503000);
+              }
+
+              Effects.SendLocationEffect(loc, facet, 0x36BD, 15, 10);
+              Effects.PlaySound(loc, facet, 0x307);
+
+              break;
             }
-
-            Effects.SendLocationEffect(loc, facet, 0x36BD, 15, 10);
-            Effects.PlaySound(loc, facet, 0x307);
-
-            break;
-          }
           case TrapType.MagicTrap:
-          {
-            if (from.InRange(loc, 1))
-              from.Damage(TrapPower);
-            //AOS.Damage( from, m_TrapPower, 0, 100, 0, 0, 0 );
+            {
+              if (from.InRange(loc, 1))
+                from.Damage(TrapPower);
+              // AOS.Damage( from, m_TrapPower, 0, 100, 0, 0, 0 );
 
-            Effects.PlaySound(loc, Map, 0x307);
+              Effects.PlaySound(loc, Map, 0x307);
 
-            Effects.SendLocationEffect(new Point3D(loc.X - 1, loc.Y, loc.Z), Map, 0x36BD, 15);
-            Effects.SendLocationEffect(new Point3D(loc.X + 1, loc.Y, loc.Z), Map, 0x36BD, 15);
+              Effects.SendLocationEffect(new Point3D(loc.X - 1, loc.Y, loc.Z), Map, 0x36BD, 15);
+              Effects.SendLocationEffect(new Point3D(loc.X + 1, loc.Y, loc.Z), Map, 0x36BD, 15);
 
-            Effects.SendLocationEffect(new Point3D(loc.X, loc.Y - 1, loc.Z), Map, 0x36BD, 15);
-            Effects.SendLocationEffect(new Point3D(loc.X, loc.Y + 1, loc.Z), Map, 0x36BD, 15);
+              Effects.SendLocationEffect(new Point3D(loc.X, loc.Y - 1, loc.Z), Map, 0x36BD, 15);
+              Effects.SendLocationEffect(new Point3D(loc.X, loc.Y + 1, loc.Z), Map, 0x36BD, 15);
 
-            Effects.SendLocationEffect(new Point3D(loc.X + 1, loc.Y + 1, loc.Z + 11), Map, 0x36BD, 15);
+              Effects.SendLocationEffect(new Point3D(loc.X + 1, loc.Y + 1, loc.Z + 11), Map, 0x36BD, 15);
 
-            break;
-          }
+              break;
+            }
           case TrapType.DartTrap:
-          {
-            SendMessageTo(from, 502999, 0x3B2); // You set off a trap!
-
-            if (from.InRange(loc, 3))
             {
-              int damage;
+              SendMessageTo(from, 502999, 0x3B2); // You set off a trap!
 
-              if (TrapLevel > 0)
-                damage = Utility.RandomMinMax(5, 15) * TrapLevel;
-              else
-                damage = TrapPower;
+              if (from.InRange(loc, 3))
+              {
+                int damage;
 
-              AOS.Damage(from, damage, 100, 0, 0, 0, 0);
+                if (TrapLevel > 0)
+                  damage = Utility.RandomMinMax(5, 15) * TrapLevel;
+                else
+                  damage = TrapPower;
 
-              // A dart imbeds itself in your flesh!
-              from.LocalOverheadMessage(MessageType.Regular, 0x62, 502998);
+                AOS.Damage(from, damage, 100, 0, 0, 0, 0);
+
+                // A dart imbeds itself in your flesh!
+                from.LocalOverheadMessage(MessageType.Regular, 0x62, 502998);
+              }
+
+              Effects.PlaySound(loc, facet, 0x223);
+
+              break;
             }
-
-            Effects.PlaySound(loc, facet, 0x223);
-
-            break;
-          }
           case TrapType.PoisonTrap:
-          {
-            SendMessageTo(from, 502999, 0x3B2); // You set off a trap!
-
-            if (from.InRange(loc, 3))
             {
-              Poison poison;
+              SendMessageTo(from, 502999, 0x3B2); // You set off a trap!
 
-              if (TrapLevel > 0)
+              if (from.InRange(loc, 3))
               {
-                poison = Poison.GetPoison(Math.Max(0, Math.Min(4, TrapLevel - 1)));
-              }
-              else
-              {
-                AOS.Damage(from, TrapPower, 0, 0, 0, 100, 0);
-                poison = Poison.Greater;
+                Poison poison;
+
+                if (TrapLevel > 0)
+                {
+                  poison = Poison.GetPoison(Math.Max(0, Math.Min(4, TrapLevel - 1)));
+                }
+                else
+                {
+                  AOS.Damage(from, TrapPower, 0, 0, 0, 100, 0);
+                  poison = Poison.Greater;
+                }
+
+                from.ApplyPoison(from, poison);
+
+                // You are enveloped in a noxious green cloud!
+                from.LocalOverheadMessage(MessageType.Regular, 0x44, 503004);
               }
 
-              from.ApplyPoison(from, poison);
+              Effects.SendLocationEffect(loc, facet, 0x113A, 10, 20);
+              Effects.PlaySound(loc, facet, 0x231);
 
-              // You are enveloped in a noxious green cloud!
-              from.LocalOverheadMessage(MessageType.Regular, 0x44, 503004);
+              break;
             }
-
-            Effects.SendLocationEffect(loc, facet, 0x113A, 10, 20);
-            Effects.PlaySound(loc, facet, 0x231);
-
-            break;
-          }
         }
 
         TrapType = TrapType.None;
@@ -204,20 +204,20 @@ namespace Server.Items
       switch (version)
       {
         case 2:
-        {
-          TrapLevel = reader.ReadInt();
-          goto case 1;
-        }
+          {
+            TrapLevel = reader.ReadInt();
+            goto case 1;
+          }
         case 1:
-        {
-          TrapPower = reader.ReadInt();
-          goto case 0;
-        }
+          {
+            TrapPower = reader.ReadInt();
+            goto case 0;
+          }
         case 0:
-        {
-          TrapType = (TrapType)reader.ReadInt();
-          break;
-        }
+          {
+            TrapType = (TrapType)reader.ReadInt();
+            break;
+          }
       }
     }
   }

@@ -7,7 +7,7 @@ namespace Server
 {
   public static class MondainsLegacy
   {
-    public static Type[] Artifacts{ get; } =
+    public static Type[] Artifacts { get; } =
     {
       typeof(AegisOfGrace), typeof(BladeDance), typeof(BloodwoodSpirit), typeof(Bonesmasher),
       typeof(Boomstick), typeof(BrightsightLenses), typeof(FeyLeggings), typeof(FleshRipper),

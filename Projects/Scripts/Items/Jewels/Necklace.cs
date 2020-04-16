@@ -99,7 +99,6 @@ namespace Server.Items
     }
   }
 
-
   public class SilverNecklace : BaseNecklace
   {
     [Constructible]

@@ -6,8 +6,6 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Definitions
 {
-  #region Quests
-
   public class HonestBeggar : MLQuest
   {
     public HonestBeggar()
@@ -69,10 +67,6 @@ namespace Server.Engines.MLQuests.Definitions
       PutSpawner(new Spawner(1, 5, 10, 0, 3, "Regina"), new Point3D(1422, 1621, 20), Map.Felucca);
     }
   }
-
-  #endregion
-
-  #region Mobiles
 
   public class Evan : BaseCreature
   {
@@ -159,6 +153,4 @@ namespace Server.Engines.MLQuests.Definitions
       int version = reader.ReadInt();
     }
   }
-
-  #endregion
 }

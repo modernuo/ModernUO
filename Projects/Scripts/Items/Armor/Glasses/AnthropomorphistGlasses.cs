@@ -16,7 +16,7 @@ namespace Server.Items
     {
     }
 
-    public override int LabelNumber => 1073379; //Anthropomorphist Reading Glasses
+    public override int LabelNumber => 1073379; // Anthropomorphist Reading Glasses
 
     public override int BasePhysicalResistance => 5;
     public override int BaseFireResistance => 5;

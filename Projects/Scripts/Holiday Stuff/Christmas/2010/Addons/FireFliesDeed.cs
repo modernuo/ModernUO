@@ -149,8 +149,8 @@ namespace Server.Items
 
     private class FacingGump : Gump
     {
-      private FirefliesDeed m_Deed;
-      private Mobile m_Placer;
+      private readonly FirefliesDeed m_Deed;
+      private readonly Mobile m_Placer;
 
       public FacingGump(FirefliesDeed deed, Mobile player)
         : base(150, 50)
@@ -202,8 +202,8 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private FirefliesDeed m_FirefliesDeed;
-      private int m_ItemID;
+      private readonly FirefliesDeed m_FirefliesDeed;
+      private readonly int m_ItemID;
 
       public InternalTarget(FirefliesDeed m_Deed, int itemid)
         : base(-1, true, TargetFlags.None)
@@ -243,7 +243,7 @@ namespace Server.Items
 
                 bool isclear = !Map.Malas.GetItemsInRange(p3d, 0).OfType<Fireflies>().Any();
 
-                if ((m_ItemID == 0x2336 && north || m_ItemID == 0x2332 && west) && isclear)
+                if (((m_ItemID == 0x2336 && north) || (m_ItemID == 0x2332 && west)) && isclear)
                 {
                   Fireflies flies = new Fireflies(m_ItemID);
 

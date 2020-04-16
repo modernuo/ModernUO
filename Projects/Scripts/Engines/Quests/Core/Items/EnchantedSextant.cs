@@ -8,7 +8,7 @@ namespace Server.Items
 
     private const double m_ShortDistance = 5.0;
 
-    //TODO: Trammel/Haven
+    // TODO: Trammel/Haven
     private static readonly Point2D[] m_TrammelBanks =
     {
       new Point2D(652, 820),

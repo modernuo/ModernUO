@@ -6,8 +6,7 @@ namespace Server.Factions
 {
   public class FactionBoardVendor : BaseFactionVendor
   {
-    public FactionBoardVendor(Town town, Faction faction) :
-      base(town, faction, "the LumberMan") // NOTE: title inconsistant, as OSI
+    public FactionBoardVendor(Town town, Faction faction) : base(town, faction, "the LumberMan") // NOTE: title inconsistant, as OSI
     {
       SetSkill(SkillName.Carpentry, 85.0, 100.0);
       SetSkill(SkillName.Lumberjacking, 60.0, 83.0);
@@ -46,9 +45,9 @@ namespace Server.Factions
 
   public class SBFactionBoard : SBInfo
   {
-    public override IShopSellInfo SellInfo{ get; } = new InternalSellInfo();
+    public override IShopSellInfo SellInfo { get; } = new InternalSellInfo();
 
-    public override List<GenericBuyInfo> BuyInfo{ get; } = new InternalBuyInfo();
+    public override List<GenericBuyInfo> BuyInfo { get; } = new InternalBuyInfo();
 
     public class InternalBuyInfo : List<GenericBuyInfo>
     {

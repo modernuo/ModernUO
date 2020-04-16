@@ -148,7 +148,7 @@ namespace Server.Engines.Quests.Necro
     private class SummonTimer : Timer
     {
       private SummonedPaladin m_Paladin;
-      private PlayerMobile m_Player;
+      private readonly PlayerMobile m_Player;
       private int m_Step;
 
       public SummonTimer(PlayerMobile player) : base(TimeSpan.FromSeconds(4.0))

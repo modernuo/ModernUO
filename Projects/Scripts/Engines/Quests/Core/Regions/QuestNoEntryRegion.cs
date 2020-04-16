@@ -7,10 +7,10 @@ namespace Server.Engines.Quests
 {
   public class QuestNoEntryRegion : BaseRegion
   {
-    private Type m_MaxObjective;
-    private int m_Message;
-    private Type m_MinObjective;
-    private Type m_Quest;
+    private readonly Type m_MaxObjective;
+    private readonly int m_Message;
+    private readonly Type m_MinObjective;
+    private readonly Type m_Quest;
 
     public QuestNoEntryRegion(XmlElement xml, Map map, Region parent) : base(xml, map, parent)
     {

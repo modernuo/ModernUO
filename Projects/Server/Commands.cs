@@ -36,13 +36,13 @@ namespace Server
       Arguments = arguments;
     }
 
-    public Mobile Mobile{ get; }
+    public Mobile Mobile { get; }
 
-    public string Command{ get; }
+    public string Command { get; }
 
-    public string ArgString{ get; }
+    public string ArgString { get; }
 
-    public string[] Arguments{ get; }
+    public string[] Arguments { get; }
 
     public int Length => Arguments.Length;
 
@@ -110,39 +110,39 @@ namespace Server
       AccessLevel = accessLevel;
     }
 
-    public string Command{ get; }
+    public string Command { get; }
 
-    public CommandEventHandler Handler{ get; }
+    public CommandEventHandler Handler { get; }
 
-    public AccessLevel AccessLevel{ get; }
+    public AccessLevel AccessLevel { get; }
 
     public int CompareTo(CommandEntry e) => e == null ? 1 : Command.CompareTo(e.Command);
   }
 
   public static class CommandSystem
   {
-    public static string Prefix{ get; set; } = "[";
+    public static string Prefix { get; set; } = "[";
 
-    public static Dictionary<string, CommandEntry> Entries{ get; } =
+    public static Dictionary<string, CommandEntry> Entries { get; } =
       new Dictionary<string, CommandEntry>(StringComparer.OrdinalIgnoreCase);
 
-    public static AccessLevel BadCommandIgnoreLevel{ get; set; } = AccessLevel.Player;
+    public static AccessLevel BadCommandIgnoreLevel { get; set; } = AccessLevel.Player;
 
     public static string[] Split(string value)
     {
-      char[] array = value.ToCharArray();
-      List<string> list = new List<string>();
+      var array = value.ToCharArray();
+      var list = new List<string>();
 
-      int start = 0;
+      var start = 0;
 
       while (start < array.Length)
       {
-        char c = array[start];
+        var c = array[start];
 
         if (c == '"')
         {
           ++start;
-          int end = start;
+          var end = start;
 
           while (end < array.Length)
             if (array[end] != '"' || array[end - 1] == '\\')
@@ -156,7 +156,7 @@ namespace Server
         }
         else if (c != ' ')
         {
-          int end = start;
+          var end = start;
 
           while (end < array.Length)
             if (array[end] != ' ')
@@ -190,7 +190,7 @@ namespace Server
       if (type != MessageType.Command)
         text = text.Substring(Prefix.Length);
 
-      int indexOf = text.IndexOf(' ');
+      var indexOf = text.IndexOf(' ');
 
       string command;
       string[] args;
@@ -210,7 +210,7 @@ namespace Server
         args = new string[0];
       }
 
-      Entries.TryGetValue(command, out CommandEntry entry);
+      Entries.TryGetValue(command, out var entry);
 
       if (entry != null)
       {
@@ -218,7 +218,7 @@ namespace Server
         {
           if (entry.Handler != null)
           {
-            CommandEventArgs e = new CommandEventArgs(from, command, argString, args);
+            var e = new CommandEventArgs(from, command, argString, args);
             entry.Handler(e);
             EventSink.InvokeCommand(e);
           }

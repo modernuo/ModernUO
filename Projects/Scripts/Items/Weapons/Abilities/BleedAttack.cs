@@ -14,7 +14,7 @@ namespace Server.Items
   /// </summary>
   public class BleedAttack : WeaponAbility
   {
-    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+    private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     public override int BaseMana => 30;
 
@@ -28,8 +28,8 @@ namespace Server.Items
       // Necromancers under Lich or Wraith Form are immune to Bleed Attacks.
       TransformContext context = TransformationSpellHelper.GetContext(defender);
 
-      if (context != null && (context.Type == typeof(LichFormSpell) || context.Type == typeof(WraithFormSpell)) ||
-          defender is BaseCreature creature && creature.BleedImmune)
+      if ((context != null && (context.Type == typeof(LichFormSpell) || context.Type == typeof(WraithFormSpell))) ||
+          (defender is BaseCreature creature && creature.BleedImmune))
       {
         attacker.SendLocalizedMessage(1062052); // Your target is not affected by the bleed attack!
         return;
@@ -98,8 +98,8 @@ namespace Server.Items
     private class InternalTimer : Timer
     {
       private int m_Count;
-      private Mobile m_From;
-      private Mobile m_Mobile;
+      private readonly Mobile m_From;
+      private readonly Mobile m_Mobile;
 
       public InternalTimer(Mobile from, Mobile m) : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0))
       {

@@ -11,8 +11,8 @@ namespace Server.Mobiles
 {
   public class ChangeRumorMessagePrompt : Prompt
   {
-    private PlayerBarkeeper m_Barkeeper;
-    private int m_RumorIndex;
+    private readonly PlayerBarkeeper m_Barkeeper;
+    private readonly int m_RumorIndex;
 
     public ChangeRumorMessagePrompt(PlayerBarkeeper barkeeper, int rumorIndex)
     {
@@ -36,8 +36,8 @@ namespace Server.Mobiles
 
   public class ChangeRumorKeywordPrompt : Prompt
   {
-    private PlayerBarkeeper m_Barkeeper;
-    private int m_RumorIndex;
+    private readonly PlayerBarkeeper m_Barkeeper;
+    private readonly int m_RumorIndex;
 
     public ChangeRumorKeywordPrompt(PlayerBarkeeper barkeeper, int rumorIndex)
     {
@@ -61,7 +61,7 @@ namespace Server.Mobiles
 
   public class ChangeTipMessagePrompt : Prompt
   {
-    private PlayerBarkeeper m_Barkeeper;
+    private readonly PlayerBarkeeper m_Barkeeper;
 
     public ChangeTipMessagePrompt(PlayerBarkeeper barkeeper) => m_Barkeeper = barkeeper;
 
@@ -87,9 +87,9 @@ namespace Server.Mobiles
       Keyword = keyword;
     }
 
-    public string Message{ get; set; }
+    public string Message { get; set; }
 
-    public string Keyword{ get; set; }
+    public string Keyword { get; set; }
 
     public static BarkeeperRumor Deserialize(IGenericReader reader)
     {
@@ -116,8 +116,8 @@ namespace Server.Mobiles
 
   public class ManageBarkeeperEntry : ContextMenuEntry
   {
-    private PlayerBarkeeper m_Barkeeper;
-    private Mobile m_From;
+    private readonly PlayerBarkeeper m_Barkeeper;
+    private readonly Mobile m_From;
 
     public ManageBarkeeperEntry(Mobile from, PlayerBarkeeper barkeeper) : base(6151, 12)
     {
@@ -137,7 +137,7 @@ namespace Server.Mobiles
 
     private Timer m_NewsTimer;
 
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     public PlayerBarkeeper(Mobile owner, BaseHouse house) : base("the barkeeper")
     {
@@ -153,7 +153,7 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Owner{ get; set; }
+    public Mobile Owner { get; set; }
 
     public BaseHouse House
     {
@@ -169,7 +169,7 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string TipMessage{ get; set; }
+    public string TipMessage { get; set; }
 
     public override bool IsActiveBuyer => false;
     public override bool IsActiveSeller => m_SBInfos.Count > 0;
@@ -177,7 +177,7 @@ namespace Server.Mobiles
     public override bool DisallowAllMoves => true;
     public override bool NoHouseRestrictions => true;
 
-    public BarkeeperRumor[] Rumors{ get; private set; }
+    public BarkeeperRumor[] Rumors { get; private set; }
 
     public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.ThighBoots : VendorShoeType.Boots;
     protected override List<SBInfo> SBInfos => m_SBInfos;
@@ -502,24 +502,24 @@ namespace Server.Mobiles
       switch (version)
       {
         case 1:
-        {
-          House = (BaseHouse)reader.ReadItem();
+          {
+            House = (BaseHouse)reader.ReadItem();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          Owner = reader.ReadMobile();
+          {
+            Owner = reader.ReadMobile();
 
-          Rumors = new BarkeeperRumor[reader.ReadEncodedInt()];
+            Rumors = new BarkeeperRumor[reader.ReadEncodedInt()];
 
-          for (int i = 0; i < Rumors.Length; ++i)
-            Rumors[i] = BarkeeperRumor.Deserialize(reader);
+            for (int i = 0; i < Rumors.Length; ++i)
+              Rumors[i] = BarkeeperRumor.Deserialize(reader);
 
-          TipMessage = reader.ReadString();
+            TipMessage = reader.ReadString();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (version < 1)
@@ -534,7 +534,7 @@ namespace Server.Mobiles
 
   public class BarkeeperTitleGump : Gump
   {
-    private static Entry[] m_Entries =
+    private static readonly Entry[] m_Entries =
     {
       new Entry("Alchemist"),
       new Entry("Animal Tamer"),
@@ -598,8 +598,8 @@ namespace Server.Mobiles
       new Entry("No Title", null)
     };
 
-    private PlayerBarkeeper m_Barkeeper;
-    private Mobile m_From;
+    private readonly PlayerBarkeeper m_Barkeeper;
+    private readonly Mobile m_From;
 
     public BarkeeperTitleGump(Mobile from, PlayerBarkeeper barkeeper) : base(0, 0)
     {
@@ -719,9 +719,9 @@ namespace Server.Mobiles
 
     private class Entry
     {
-      public string m_Description;
-      public string m_Title;
-      public bool m_Vendor;
+      public readonly string m_Description;
+      public readonly string m_Title;
+      public readonly bool m_Vendor;
 
       public Entry(string desc, bool vendor = false) : this(desc, $"the {desc.ToLower()}", vendor)
       {
@@ -738,8 +738,8 @@ namespace Server.Mobiles
 
   public class BarkeeperGump : Gump
   {
-    private PlayerBarkeeper m_Barkeeper;
-    private Mobile m_From;
+    private readonly PlayerBarkeeper m_Barkeeper;
+    private readonly Mobile m_From;
 
     public BarkeeperGump(Mobile from, PlayerBarkeeper barkeeper) : base(0, 0)
     {
@@ -985,55 +985,55 @@ namespace Server.Mobiles
       switch (type)
       {
         case 0: // Controls
-        {
-          switch (index)
           {
-            case 0: // Dismiss
+            switch (index)
             {
-              m_Barkeeper.Dismiss();
-              break;
+              case 0: // Dismiss
+                {
+                  m_Barkeeper.Dismiss();
+                  break;
+                }
             }
-          }
 
-          break;
-        }
+            break;
+          }
         case 1: // Change message
-        {
-          m_Barkeeper.BeginChangeRumor(m_From, index);
-          break;
-        }
-        case 2: // Remove message
-        {
-          m_Barkeeper.RemoveRumor(m_From, index);
-          break;
-        }
-        case 3: // Change tip
-        {
-          m_Barkeeper.BeginChangeTip(m_From);
-          break;
-        }
-        case 4: // Remove tip
-        {
-          m_Barkeeper.RemoveTip(m_From);
-          break;
-        }
-        case 5: // Appearance category selection
-        {
-          switch (index)
           {
-            case 0:
-              m_Barkeeper.BeginChangeTitle(m_From);
-              break;
-            case 1:
-              m_Barkeeper.BeginChangeAppearance(m_From);
-              break;
-            case 2:
-              m_Barkeeper.ChangeGender(m_From);
-              break;
+            m_Barkeeper.BeginChangeRumor(m_From, index);
+            break;
           }
+        case 2: // Remove message
+          {
+            m_Barkeeper.RemoveRumor(m_From, index);
+            break;
+          }
+        case 3: // Change tip
+          {
+            m_Barkeeper.BeginChangeTip(m_From);
+            break;
+          }
+        case 4: // Remove tip
+          {
+            m_Barkeeper.RemoveTip(m_From);
+            break;
+          }
+        case 5: // Appearance category selection
+          {
+            switch (index)
+            {
+              case 0:
+                m_Barkeeper.BeginChangeTitle(m_From);
+                break;
+              case 1:
+                m_Barkeeper.BeginChangeAppearance(m_From);
+                break;
+              case 2:
+                m_Barkeeper.ChangeGender(m_From);
+                break;
+            }
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

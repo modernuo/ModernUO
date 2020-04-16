@@ -1,8 +1,8 @@
-using Server.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using Server.Utilities;
 
 namespace Server.Commands.Generic
 {
@@ -13,17 +13,13 @@ namespace Server.Commands.Generic
       TypeBuilder typeBuilder = assembly.DefineType(
         "__distinct",
         TypeAttributes.Public,
-        typeof(object)
-      );
-
-      #region Constructor
+        typeof(object));
 
       {
         ConstructorBuilder ctor = typeBuilder.DefineConstructor(
           MethodAttributes.Public,
           CallingConventions.Standard,
-          Type.EmptyTypes
-        );
+          Type.EmptyTypes);
 
         ILGenerator il = ctor.GetILGenerator();
 
@@ -36,15 +32,9 @@ namespace Server.Commands.Generic
         il.Emit(OpCodes.Ret);
       }
 
-      #endregion
-
-      #region IComparer
-
       typeBuilder.AddInterfaceImplementation(typeof(IComparer<T>));
 
       MethodBuilder compareMethod;
-
-      #region Compare
 
       {
         MethodEmitter emitter = new MethodEmitter(typeBuilder);
@@ -87,7 +77,7 @@ namespace Server.Commands.Generic
           emitter.Chain(prop);
 
           bool couldCompare =
-            emitter.CompareTo(1, delegate
+            emitter.CompareTo(1, () =>
             {
               emitter.LoadLocal(b);
               emitter.Chain(prop);
@@ -112,22 +102,12 @@ namespace Server.Commands.Generic
             {
               typeof(T),
               typeof(T)
-            }
-          ) ?? throw new Exception($"No Compare method found for type {typeof(T).FullName}")
-        );
+            }) ?? throw new Exception($"No Compare method found for type {typeof(T).FullName}"));
 
         compareMethod = emitter.Method;
       }
 
-      #endregion
-
-      #endregion
-
-      #region IEqualityComparer
-
       typeBuilder.AddInterfaceImplementation(typeof(IEqualityComparer<T>));
-
-      #region Equals
 
       {
         MethodEmitter emitter = new MethodEmitter(typeBuilder);
@@ -158,14 +138,8 @@ namespace Server.Commands.Generic
             {
               typeof(T),
               typeof(T)
-            }
-          ) ?? throw new Exception($"No Equals method found for type {typeof(T).FullName}")
-        );
+            }) ?? throw new Exception($"No Equals method found for type {typeof(T).FullName}"));
       }
-
-      #endregion
-
-      #region GetHashCode
 
       {
         MethodEmitter emitter = new MethodEmitter(typeBuilder);
@@ -242,14 +216,8 @@ namespace Server.Commands.Generic
             new[]
             {
               typeof(T)
-            }
-          ) ?? throw new Exception($"No GetHashCode method found for type {typeof(T).FullName}")
-        );
+            }) ?? throw new Exception($"No GetHashCode method found for type {typeof(T).FullName}"));
       }
-
-      #endregion
-
-      #endregion
 
       Type comparerType = typeBuilder.CreateType();
 

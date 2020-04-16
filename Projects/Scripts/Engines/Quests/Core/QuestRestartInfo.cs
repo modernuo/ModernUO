@@ -16,9 +16,9 @@ namespace Server.Engines.Quests
       RestartTime = restartTime;
     }
 
-    public Type QuestType{ get; set; }
+    public Type QuestType { get; set; }
 
-    public DateTime RestartTime{ get; set; }
+    public DateTime RestartTime { get; set; }
 
     public void Reset(TimeSpan restartDelay)
     {

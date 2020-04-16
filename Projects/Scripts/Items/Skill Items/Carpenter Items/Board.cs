@@ -49,7 +49,7 @@ namespace Server.Items
         {
           CraftResource.Bloodwood => 1075055,
           CraftResource.Frostwood => 1075056,
-          CraftResource.Heartwood => 1075062, //WHY Osi.  Why?
+          CraftResource.Heartwood => 1075062, // WHY Osi.  Why?
           _ => LabelNumber
         };
       }
@@ -72,7 +72,6 @@ namespace Server.Items
       }
     }
 
-
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
@@ -92,20 +91,19 @@ namespace Server.Items
       {
         case 3:
         case 2:
-        {
-          m_Resource = (CraftResource)reader.ReadInt();
-          break;
-        }
+          {
+            m_Resource = (CraftResource)reader.ReadInt();
+            break;
+          }
       }
 
-      if (version == 0 && Weight == 0.1 || version <= 2 && Weight == 2)
+      if ((version == 0 && Weight == 0.1) || (version <= 2 && Weight == 2))
         Weight = -1;
 
       if (version <= 1)
         m_Resource = CraftResource.RegularWood;
     }
   }
-
 
   public class HeartwoodBoard : Board
   {

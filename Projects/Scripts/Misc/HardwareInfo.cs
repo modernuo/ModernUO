@@ -10,82 +10,82 @@ namespace Server
   public class HardwareInfo
   {
     [CommandProperty(AccessLevel.GameMaster)]
-    public int CpuModel{ get; private set; }
+    public int CpuModel { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int CpuClockSpeed{ get; private set; }
+    public int CpuClockSpeed { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int CpuQuantity{ get; private set; }
+    public int CpuQuantity { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int OSMajor{ get; private set; }
+    public int OSMajor { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int OSMinor{ get; private set; }
+    public int OSMinor { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int OSRevision{ get; private set; }
+    public int OSRevision { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int InstanceID{ get; private set; }
+    public int InstanceID { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ScreenWidth{ get; private set; }
+    public int ScreenWidth { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ScreenHeight{ get; private set; }
+    public int ScreenHeight { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ScreenDepth{ get; private set; }
+    public int ScreenDepth { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int PhysicalMemory{ get; private set; }
+    public int PhysicalMemory { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int CpuManufacturer{ get; private set; }
+    public int CpuManufacturer { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int CpuFamily{ get; private set; }
+    public int CpuFamily { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int VCVendorID{ get; private set; }
+    public int VCVendorID { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int VCDeviceID{ get; private set; }
+    public int VCDeviceID { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int VCMemory{ get; private set; }
+    public int VCMemory { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int DXMajor{ get; private set; }
+    public int DXMajor { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int DXMinor{ get; private set; }
+    public int DXMinor { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string VCDescription{ get; private set; }
+    public string VCDescription { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string Language{ get; private set; }
+    public string Language { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Distribution{ get; private set; }
+    public int Distribution { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ClientsRunning{ get; private set; }
+    public int ClientsRunning { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ClientsInstalled{ get; private set; }
+    public int ClientsInstalled { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int PartialInstalled{ get; private set; }
+    public int PartialInstalled { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string Unknown{ get; private set; }
+    public string Unknown { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime TimeReceived{ get; private set; }
+    public DateTime TimeReceived { get; private set; }
 
     public static void Initialize()
     {

@@ -42,10 +42,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          Resistances.Cold = 0;
-          break;
-        }
+          {
+            Resistances.Cold = 0;
+            break;
+          }
       }
     }
   }

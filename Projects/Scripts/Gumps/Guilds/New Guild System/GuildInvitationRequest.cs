@@ -6,7 +6,7 @@ namespace Server.Guilds
 {
   public class GuildInvitationRequest : BaseGuildGump
   {
-    private PlayerMobile m_Inviter;
+    private readonly PlayerMobile m_Inviter;
 
     public GuildInvitationRequest(PlayerMobile pm, Guild g, PlayerMobile inviter) : base(pm, g)
     {
@@ -28,7 +28,6 @@ namespace Server.Guilds
       AddHtmlLocalized(45, 130, 150, 30, 1062943, 0x0); // <i>Ignore Guild Invites</i>
     }
 
-
     public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (guild.Disbanded || player.Guild != null)
@@ -37,27 +36,27 @@ namespace Server.Guilds
       switch (info.ButtonID)
       {
         case 0:
-        {
-          m_Inviter.SendLocalizedMessage(1063250,
-            $"{player.Name}\t{guild.Name}"); // ~1_val~ has declined your invitation to join ~2_val~.
-          break;
-        }
+          {
+            m_Inviter.SendLocalizedMessage(1063250,
+              $"{player.Name}\t{guild.Name}"); // ~1_val~ has declined your invitation to join ~2_val~.
+            break;
+          }
         case 1:
-        {
-          guild.AddMember(player);
-          player.SendLocalizedMessage(1063056, guild.Name); // You have joined ~1_val~.
-          m_Inviter.SendLocalizedMessage(1063249,
-            $"{player.Name}\t{guild.Name}"); // ~1_val~ has accepted your invitation to join ~2_val~.
+          {
+            guild.AddMember(player);
+            player.SendLocalizedMessage(1063056, guild.Name); // You have joined ~1_val~.
+            m_Inviter.SendLocalizedMessage(1063249,
+              $"{player.Name}\t{guild.Name}"); // ~1_val~ has accepted your invitation to join ~2_val~.
 
-          break;
-        }
+            break;
+          }
         case 2:
-        {
-          player.AcceptGuildInvites = false;
-          player.SendLocalizedMessage(1070698); // You are now ignoring guild invitations.
+          {
+            player.AcceptGuildInvites = false;
+            player.SendLocalizedMessage(1070698); // You are now ignoring guild invitations.
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

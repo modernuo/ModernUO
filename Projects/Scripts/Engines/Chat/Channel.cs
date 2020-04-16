@@ -6,7 +6,10 @@ namespace Server.Engines.Chat
   {
     private string m_Name;
     private string m_Password;
-    private List<ChatUser> m_Users, m_Banned, m_Moderators, m_Voices;
+    private readonly List<ChatUser> m_Users;
+    private readonly List<ChatUser> m_Banned;
+    private readonly List<ChatUser> m_Moderators;
+    private readonly List<ChatUser> m_Voices;
     private bool m_VoiceRestricted;
 
     public Channel(string name)
@@ -66,9 +69,9 @@ namespace Server.Engines.Chat
       }
     }
 
-    public bool AlwaysAvailable{ get; set; }
+    public bool AlwaysAvailable { get; set; }
 
-    public static List<Channel> Channels{ get; } = new List<Channel>();
+    public static List<Channel> Channels { get; } = new List<Channel>();
 
     public bool Contains(ChatUser user) => m_Users.Contains(user);
 
@@ -100,7 +103,6 @@ namespace Server.Engines.Chat
 
       from.Mobile.SendMessage("Your access level is too low to do this.");
       return false;
-
     }
 
     public bool AddUser(ChatUser user, string password = null)
@@ -132,7 +134,7 @@ namespace Server.Engines.Chat
       m_Users.Add(user);
       user.CurrentChannel = this;
 
-      if (user.Mobile.AccessLevel >= AccessLevel.GameMaster || !AlwaysAvailable && m_Users.Count == 1)
+      if (user.Mobile.AccessLevel >= AccessLevel.GameMaster || (!AlwaysAvailable && m_Users.Count == 1))
         AddModerator(user);
 
       SendUsersTo(user);

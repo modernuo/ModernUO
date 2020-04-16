@@ -6,12 +6,11 @@ namespace Server.Spells.Spellweaving
 {
   public class ImmolatingWeaponSpell : ArcanistSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Immolating Weapon", "Thalshara",
-      -1
-    );
+      -1);
 
-    private static Dictionary<BaseWeapon, ImmolatingWeaponEntry> m_WeaponDamageTable =
+    private static readonly Dictionary<BaseWeapon, ImmolatingWeaponEntry> m_WeaponDamageTable =
       new Dictionary<BaseWeapon, ImmolatingWeaponEntry>();
 
     public ImmolatingWeaponSpell(Mobile caster, Item scroll = null)
@@ -92,9 +91,9 @@ namespace Server.Spells.Spellweaving
 
     private class ImmolatingWeaponEntry
     {
-      public Mobile m_Caster;
-      public int m_Damage;
-      public Timer m_Timer;
+      public readonly Mobile m_Caster;
+      public readonly int m_Damage;
+      public readonly Timer m_Timer;
 
       public ImmolatingWeaponEntry(int damage, Timer stopTimer, Mobile caster)
       {
@@ -106,8 +105,8 @@ namespace Server.Spells.Spellweaving
 
     private class DelayedEffectEntry
     {
-      public Mobile m_Target;
-      public BaseWeapon m_Weapon;
+      public readonly Mobile m_Target;
+      public readonly BaseWeapon m_Weapon;
 
       public DelayedEffectEntry(BaseWeapon weapon, Mobile target)
       {

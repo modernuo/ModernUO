@@ -6,12 +6,12 @@ namespace Server.Gumps
 {
   public interface ISecurable
   {
-    SecureLevel Level{ get; set; }
+    SecureLevel Level { get; set; }
   }
 
   public class SetSecureLevelGump : Gump
   {
-    private ISecurable m_Info;
+    private readonly ISecurable m_Info;
 
     public SetSecureLevelGump(Mobile owner, ISecurable info, BaseHouse house) : base(50, 50)
     {
@@ -45,8 +45,7 @@ namespace Server.Gumps
 
       Mobile houseOwner = house.Owner;
       if (Guild.NewGuildSystem && houseOwner?.Guild != null &&
-          ((Guild)houseOwner.Guild).Leader == houseOwner
-      ) //Only the actual House owner AND guild master can set guild secures
+          ((Guild)houseOwner.Guild).Leader == houseOwner) // Only the actual House owner AND guild master can set guild secures
       {
         AddButton(10, 130, GetFirstID(SecureLevel.Guild), 4007, 5);
         AddHtmlLocalized(45, 130, 150, 20, 1063455, GetColor(SecureLevel.Guild)); // Guild Members

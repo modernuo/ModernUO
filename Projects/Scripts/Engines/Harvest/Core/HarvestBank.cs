@@ -5,7 +5,7 @@ namespace Server.Engines.Harvest
   public class HarvestBank
   {
     private int m_Current;
-    private int m_Maximum;
+    private readonly int m_Maximum;
     private DateTime m_NextRespawn;
     private HarvestVein m_Vein, m_DefaultVein;
 
@@ -19,7 +19,7 @@ namespace Server.Engines.Harvest
       Definition = def;
     }
 
-    public HarvestDefinition Definition{ get; }
+    public HarvestDefinition Definition { get; }
 
     public int Current
     {
@@ -74,8 +74,8 @@ namespace Server.Engines.Harvest
         m_Current = m_Maximum - amount;
 
         double minutes = min + rnd * (max - min);
-        if (Definition.RaceBonus && from.Race == Race.Elf) //def.RaceBonus = Core.ML
-          minutes *= .75; //25% off the time.  
+        if (Definition.RaceBonus && from.Race == Race.Elf) // def.RaceBonus = Core.ML
+          minutes *= .75; // 25% off the time.  
 
         m_NextRespawn = DateTime.UtcNow + TimeSpan.FromMinutes(minutes);
       }

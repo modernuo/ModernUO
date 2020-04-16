@@ -12,20 +12,20 @@ namespace Server.Misc
 
   public static class ProfanityProtection
   {
-    private static bool Enabled = false;
+    private static readonly bool Enabled = false;
 
-    private static ProfanityAction
+    private static readonly ProfanityAction
       Action = ProfanityAction.Disallow; // change here what to do when profanity is detected
 
-    public static char[] Exceptions{ get; } =
+    public static char[] Exceptions { get; } =
     {
       ' ', '-', '.', '\'', '"', ',', '_', '+', '=', '~', '`', '!', '^', '*', '\\', '/', ';', ':', '<', '>', '[', ']',
       '{', '}', '?', '|', '(', ')', '%', '$', '&', '#', '@'
     };
 
-    public static string[] StartDisallowed{ get; } = { };
+    public static string[] StartDisallowed { get; } = { };
 
-    public static string[] Disallowed{ get; } =
+    public static string[] Disallowed { get; } =
     {
       "jigaboo",
       "chigaboo",
@@ -93,16 +93,16 @@ namespace Server.Misc
           from.CriminalAction(false);
           return true;
         case ProfanityAction.Disconnect:
-        {
-          from.NetState?.Dispose();
+          {
+            from.NetState?.Dispose();
 
-          return false;
-        }
+            return false;
+          }
         default:
         case ProfanityAction.Other: // TODO: Provide custom implementation if this is chosen
-        {
-          return true;
-        }
+          {
+            return true;
+          }
       }
     }
 

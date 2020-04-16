@@ -55,8 +55,8 @@ namespace Server.Mobiles
       c.DropItem(new SalivasFeather());
 
       // TODO: uncomment once added
-      //if ( Utility.RandomDouble() < 0.1 )
-      //	c.DropItem( new ParrotItem() );
+      // if ( Utility.RandomDouble() < 0.1 )
+      // c.DropItem( new ParrotItem() );
     }
 
     public override void Serialize(IGenericWriter writer)

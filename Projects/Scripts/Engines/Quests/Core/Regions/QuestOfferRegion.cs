@@ -8,7 +8,7 @@ namespace Server.Engines.Quests
 {
   public class QuestOfferRegion : BaseRegion
   {
-    private Type m_Quest;
+    private readonly Type m_Quest;
 
     public QuestOfferRegion(XmlElement xml, Map map, Region parent) : base(xml, map, parent)
     {

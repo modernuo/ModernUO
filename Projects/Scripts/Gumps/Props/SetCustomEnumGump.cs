@@ -8,7 +8,7 @@ namespace Server.Gumps
 {
   public class SetCustomEnumGump : SetListOptionGump
   {
-    private string[] m_Names;
+    private readonly string[] m_Names;
 
     public SetCustomEnumGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int propspage,
       List<object> list, string[] names) : base(prop, mobile, o, stack, propspage, list, names, null) =>

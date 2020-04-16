@@ -29,7 +29,7 @@ namespace Server.Items
     public override int LabelNumber => 1032629; // Arcane Focus
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int StrengthBonus{ get; set; }
+    public int StrengthBonus { get; set; }
 
     public override TextDefinition InvalidTransferMessage => 1073480; // Your arcane focus disappears.
     public override bool Nontransferable => true;

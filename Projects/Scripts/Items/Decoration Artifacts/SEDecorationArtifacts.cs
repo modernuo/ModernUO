@@ -2,8 +2,6 @@ using Server.Network;
 
 namespace Server.Items
 {
-  #region Basket1Artifact
-
   public class Basket1Artifact : BaseDecorationContainerArtifact
   {
     [Constructible]
@@ -31,10 +29,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region Basket2Artifact
 
   public class Basket2Artifact : BaseDecorationContainerArtifact
   {
@@ -64,10 +58,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Basket3WestArtifact
-
   public class Basket3WestArtifact : BaseDecorationContainerArtifact
   {
     [Constructible]
@@ -95,10 +85,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region Basket3NorthArtifact
 
   public class Basket3NorthArtifact : BaseDecorationContainerArtifact
   {
@@ -128,10 +114,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Basket4Artifact
-
   public class Basket4Artifact : BaseDecorationContainerArtifact
   {
     [Constructible]
@@ -159,10 +141,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region Basket5WestArtifact
 
   public class Basket5WestArtifact : BaseDecorationContainerArtifact
   {
@@ -192,10 +170,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Basket5NorthArtifact
-
   public class Basket5NorthArtifact : BaseDecorationContainerArtifact
   {
     [Constructible]
@@ -223,10 +197,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region Basket6Artifact
 
   public class Basket6Artifact : BaseDecorationContainerArtifact
   {
@@ -256,10 +226,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region BowlArtifact
-
   public class BowlArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -287,10 +253,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region BowlsVerticalArtifact
 
   public class BowlsVerticalArtifact : BaseDecorationArtifact
   {
@@ -320,10 +282,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region BowlsHorizontalArtifact
-
   public class BowlsHorizontalArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -351,10 +309,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region CupsArtifact
 
   public class CupsArtifact : BaseDecorationArtifact
   {
@@ -384,10 +338,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region FanWestArtifact
-
   public class FanWestArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -415,10 +365,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region FanNorthArtifact
 
   public class FanNorthArtifact : BaseDecorationArtifact
   {
@@ -448,10 +394,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region TripleFanWestArtifact
-
   public class TripleFanWestArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -479,10 +421,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region TripleFanNorthArtifact
 
   public class TripleFanNorthArtifact : BaseDecorationArtifact
   {
@@ -512,10 +450,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region FlowersArtifact
-
   public class FlowersArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -543,10 +477,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region Painting1WestArtifact
 
   public class Painting1WestArtifact : BaseDecorationArtifact
   {
@@ -576,10 +506,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Painting1NorthArtifact
-
   public class Painting1NorthArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -607,10 +533,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region Painting2WestArtifact
 
   public class Painting2WestArtifact : BaseDecorationArtifact
   {
@@ -640,10 +562,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Painting2NorthArtifact
-
   public class Painting2NorthArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -671,10 +589,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region Painting3Artifact
 
   public class Painting3Artifact : BaseDecorationArtifact
   {
@@ -704,10 +618,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Painting4WestArtifact
-
   public class Painting4WestArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -735,10 +645,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region Painting4NorthArtifact
 
   public class Painting4NorthArtifact : BaseDecorationArtifact
   {
@@ -768,10 +674,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Painting5WestArtifact
-
   public class Painting5WestArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -799,10 +701,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region Painting5NorthArtifact
 
   public class Painting5NorthArtifact : BaseDecorationArtifact
   {
@@ -832,10 +730,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Painting6WestArtifact
-
   public class Painting6WestArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -863,10 +757,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region Painting6NorthArtifact
 
   public class Painting6NorthArtifact : BaseDecorationArtifact
   {
@@ -896,10 +786,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region SakeArtifact
-
   public class SakeArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -927,10 +813,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region Sculpture1Artifact
 
   public class Sculpture1Artifact : BaseDecorationArtifact
   {
@@ -960,10 +842,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Sculpture2Artifact
-
   public class Sculpture2Artifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -991,10 +869,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region DolphinLeftArtifact
 
   public class DolphinLeftArtifact : BaseDecorationArtifact
   {
@@ -1024,10 +898,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region DolphinRightArtifact
-
   public class DolphinRightArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -1055,10 +925,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region ManStatuetteSouthArtifact
 
   public class ManStatuetteSouthArtifact : BaseDecorationArtifact
   {
@@ -1088,10 +954,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region ManStatuetteEastArtifact
-
   public class ManStatuetteEastArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -1119,10 +981,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region SwordDisplay1WestArtifact
 
   public class SwordDisplay1WestArtifact : BaseDecorationArtifact
   {
@@ -1152,10 +1010,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region SwordDisplay1NorthArtifact
-
   public class SwordDisplay1NorthArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -1183,10 +1037,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region SwordDisplay2WestArtifact
 
   public class SwordDisplay2WestArtifact : BaseDecorationArtifact
   {
@@ -1216,10 +1066,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region SwordDisplay2NorthArtifact
-
   public class SwordDisplay2NorthArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -1247,10 +1093,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region SwordDisplay3SouthArtifact
 
   public class SwordDisplay3SouthArtifact : BaseDecorationArtifact
   {
@@ -1280,10 +1122,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region SwordDisplay3EastArtifact
-
   public class SwordDisplay3EastArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -1311,10 +1149,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region SwordDisplay4WestArtifact
 
   public class SwordDisplay4WestArtifact : BaseDecorationArtifact
   {
@@ -1344,10 +1178,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region SwordDisplay4NorthArtifact
-
   public class SwordDisplay4NorthArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -1375,10 +1205,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region SwordDisplay5WestArtifact
 
   public class SwordDisplay5WestArtifact : BaseDecorationArtifact
   {
@@ -1408,10 +1234,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region SwordDisplay5NorthArtifact
-
   public class SwordDisplay5NorthArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -1439,10 +1261,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region TeapotWestArtifact
 
   public class TeapotWestArtifact : BaseDecorationArtifact
   {
@@ -1472,10 +1290,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region TeapotNorthArtifact
-
   public class TeapotNorthArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -1503,10 +1317,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region TowerLanternArtifact
 
   public class TowerLanternArtifact : BaseDecorationArtifact
   {
@@ -1565,10 +1375,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Urn1Artifact
-
   public class Urn1Artifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -1596,10 +1402,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region Urn2Artifact
 
   public class Urn2Artifact : BaseDecorationArtifact
   {
@@ -1629,10 +1431,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region ZenRock1Artifact
-
   public class ZenRock1Artifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -1660,10 +1458,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region ZenRock2Artifact
 
   public class ZenRock2Artifact : BaseDecorationArtifact
   {
@@ -1693,10 +1487,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region ZenRock3Artifact
-
   public class ZenRock3Artifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -1724,6 +1514,4 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
 }

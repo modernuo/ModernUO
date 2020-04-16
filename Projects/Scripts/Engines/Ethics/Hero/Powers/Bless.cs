@@ -12,8 +12,7 @@ namespace Server.Ethics.Hero
         15,
         "Bless",
         "Erstok Ontawl",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

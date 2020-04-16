@@ -28,7 +28,7 @@ namespace Server.Items
       {
         Point3D p = GetWorldLocation();
 
-        if (1 > Utility.Random(Math.Max(Math.Abs(from.X - p.X), Math.Abs(from.Y - p.Y))))
+        if (Utility.Random(Math.Max(Math.Abs(from.X - p.X), Math.Abs(from.Y - p.Y))) < 1)
         {
           Effects.PlaySound(from.Location, from.Map, from.GetHurtSound());
           from.PublicOverheadMessage(MessageType.Regular, from.SpeechHue, true, "Ouch!");

@@ -5,8 +5,7 @@ namespace Server.Mobiles
   public class CuSidhe : BaseMount
   {
     [Constructible]
-    public CuSidhe(string name = null) :
-      base(name, 277, 0x3E91, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    public CuSidhe(string name = null) : base(name, 277, 0x3E91, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
       double chance = Utility.RandomDouble() * 23301;
 
@@ -41,8 +40,8 @@ namespace Server.Mobiles
       SetSkill(SkillName.Anatomy, 65.5, 69.4);
       SetSkill(SkillName.Healing, 72.2, 98.9);
 
-      Fame = 5000; //Guessing here
-      Karma = 5000; //Guessing here
+      Fame = 5000; // Guessing here
+      Karma = 5000; // Guessing here
 
       Tamable = true;
       ControlSlots = 4;
@@ -51,8 +50,8 @@ namespace Server.Mobiles
       if (Utility.RandomDouble() < 0.2)
         PackItem(new TreasureMap(5, Map.Trammel));
 
-      //if ( Utility.RandomDouble() < 0.1 )
-      //PackItem( new ParrotItem() );
+      // if ( Utility.RandomDouble() < 0.1 )
+      // PackItem( new ParrotItem() );
 
       PackGold(500, 800);
 

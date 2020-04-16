@@ -8,7 +8,7 @@ namespace Server.Engines.BulkOrders
   {
     private const int LabelColor = 0x7FFF;
 
-    private static int[,] m_MaterialFilters =
+    private static readonly int[,] m_MaterialFilters =
     {
       { 1044067, 1 }, // Blacksmithy
       { 1062226, 3 }, // Iron
@@ -32,21 +32,21 @@ namespace Server.Engines.BulkOrders
       { 1062238, 16 } // Barbed
     };
 
-    private static int[,] m_TypeFilters =
+    private static readonly int[,] m_TypeFilters =
     {
       { 1062229, 0 }, // All
       { 1062224, 1 }, // Small
       { 1062225, 2 } // Large
     };
 
-    private static int[,] m_QualityFilters =
+    private static readonly int[,] m_QualityFilters =
     {
       { 1062229, 0 }, // All
       { 1011542, 1 }, // Normal
       { 1060636, 2 } // Exceptional
     };
 
-    private static int[,] m_AmountFilters =
+    private static readonly int[,] m_AmountFilters =
     {
       { 1062229, 0 }, // All
       { 1049706, 1 }, // 10
@@ -54,7 +54,7 @@ namespace Server.Engines.BulkOrders
       { 1062239, 3 } // 20
     };
 
-    private static int[][,] m_Filters =
+    private static readonly int[][,] m_Filters =
     {
       m_TypeFilters,
       m_QualityFilters,
@@ -62,15 +62,15 @@ namespace Server.Engines.BulkOrders
       m_AmountFilters
     };
 
-    private static int[] m_XOffsets_Type = { 0, 75, 170 };
-    private static int[] m_XOffsets_Quality = { 0, 75, 170 };
-    private static int[] m_XOffsets_Amount = { 0, 75, 180, 275 };
-    private static int[] m_XOffsets_Material = { 0, 105, 210, 305, 390, 485 };
+    private static readonly int[] m_XOffsets_Type = { 0, 75, 170 };
+    private static readonly int[] m_XOffsets_Quality = { 0, 75, 170 };
+    private static readonly int[] m_XOffsets_Amount = { 0, 75, 180, 275 };
+    private static readonly int[] m_XOffsets_Material = { 0, 105, 210, 305, 390, 485 };
 
-    private static int[] m_XWidths_Small = { 50, 50, 70, 50 };
-    private static int[] m_XWidths_Large = { 80, 50, 50, 50, 50, 50 };
-    private BulkOrderBook m_Book;
-    private PlayerMobile m_From;
+    private static readonly int[] m_XWidths_Small = { 50, 50, 70, 50 };
+    private static readonly int[] m_XWidths_Large = { 80, 50, 50, 50, 50, 50 };
+    private readonly BulkOrderBook m_Book;
+    private readonly PlayerMobile m_From;
 
     public BOBFilterGump(PlayerMobile from, BulkOrderBook book) : base(12, 24)
     {
@@ -132,7 +132,7 @@ namespace Server.Engines.BulkOrders
           continue;
 
         bool isSelected = filters[i, 1] == filterValue ||
-                          i % xOffsets.Length == 0 && filterValue == 0;
+                          (i % xOffsets.Length == 0 && filterValue == 0);
 
         AddHtmlLocalized(x + 35 + xOffsets[i % xOffsets.Length], y + i / xOffsets.Length * yOffset,
           xWidths[i % xOffsets.Length], 32, number, isSelected ? 16927 : LabelColor);
@@ -150,70 +150,70 @@ namespace Server.Engines.BulkOrders
       switch (index)
       {
         case 0: // Apply
-        {
-          m_From.SendGump(new BOBGump(m_From, m_Book));
-
-          break;
-        }
-        case 1: // Set Book Filter
-        {
-          m_From.UseOwnFilter = false;
-          m_From.SendGump(new BOBFilterGump(m_From, m_Book));
-
-          break;
-        }
-        case 2: // Set Your Filter
-        {
-          m_From.UseOwnFilter = true;
-          m_From.SendGump(new BOBFilterGump(m_From, m_Book));
-
-          break;
-        }
-        case 3: // Clear Filter
-        {
-          f.Clear();
-          m_From.SendGump(new BOBFilterGump(m_From, m_Book));
-
-          break;
-        }
-        default:
-        {
-          index -= 4;
-
-          int type = index % 4;
-          index /= 4;
-
-          if (type >= 0 && type < m_Filters.Length)
           {
-            int[,] filters = m_Filters[type];
+            m_From.SendGump(new BOBGump(m_From, m_Book));
 
-            if (index >= 0 && index < filters.GetLength(0))
-            {
-              if (filters[index, 0] == 0)
-                break;
-
-              switch (type)
-              {
-                case 0:
-                  f.Type = filters[index, 1];
-                  break;
-                case 1:
-                  f.Quality = filters[index, 1];
-                  break;
-                case 2:
-                  f.Material = filters[index, 1];
-                  break;
-                case 3:
-                  f.Quantity = filters[index, 1];
-                  break;
-              }
-
-              m_From.SendGump(new BOBFilterGump(m_From, m_Book));
-            }
+            break;
           }
+        case 1: // Set Book Filter
+          {
+            m_From.UseOwnFilter = false;
+            m_From.SendGump(new BOBFilterGump(m_From, m_Book));
 
-          break;
-        }
+            break;
+          }
+        case 2: // Set Your Filter
+          {
+            m_From.UseOwnFilter = true;
+            m_From.SendGump(new BOBFilterGump(m_From, m_Book));
+
+            break;
+          }
+        case 3: // Clear Filter
+          {
+            f.Clear();
+            m_From.SendGump(new BOBFilterGump(m_From, m_Book));
+
+            break;
+          }
+        default:
+          {
+            index -= 4;
+
+            int type = index % 4;
+            index /= 4;
+
+            if (type >= 0 && type < m_Filters.Length)
+            {
+              int[,] filters = m_Filters[type];
+
+              if (index >= 0 && index < filters.GetLength(0))
+              {
+                if (filters[index, 0] == 0)
+                  break;
+
+                switch (type)
+                {
+                  case 0:
+                    f.Type = filters[index, 1];
+                    break;
+                  case 1:
+                    f.Quality = filters[index, 1];
+                    break;
+                  case 2:
+                    f.Material = filters[index, 1];
+                    break;
+                  case 3:
+                    f.Quantity = filters[index, 1];
+                    break;
+                }
+
+                m_From.SendGump(new BOBFilterGump(m_From, m_Book));
+              }
+            }
+
+            break;
+          }
       }
     }
   }

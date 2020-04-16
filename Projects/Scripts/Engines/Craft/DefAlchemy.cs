@@ -7,7 +7,7 @@ namespace Server.Engines.Craft
   {
     private static CraftSystem m_CraftSystem;
 
-    private static Type typeofPotion = typeof(BasePotion);
+    private static readonly Type typeofPotion = typeof(BasePotion);
 
     private DefAlchemy() : base(1, 1, 1.25) // base( 1, 1, 3.1 )
     {

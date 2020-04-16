@@ -1,6 +1,5 @@
-using Server.Utilities;
-using System;
 using System.Collections.Generic;
+using Server.Utilities;
 
 namespace Server.Factions
 {
@@ -12,9 +11,9 @@ namespace Server.Factions
       Vendors = new List<BaseFactionVendor>();
     }
 
-    public VendorDefinition Definition{ get; }
+    public VendorDefinition Definition { get; }
 
-    public List<BaseFactionVendor> Vendors{ get; }
+    public List<BaseFactionVendor> Vendors { get; }
 
     public BaseFactionVendor Construct(Town town, Faction faction)
     {

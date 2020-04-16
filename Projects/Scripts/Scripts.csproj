@@ -14,10 +14,11 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>8.0</LangVersion>
-    <OutDir>..\..\Distribution\Assemblies</OutDir>
-    <OutputPath>..\..\Distribution\Assemblies</OutputPath>
-    <PublishDir>..\..\Distribution\Assemblies</PublishDir>
+    <OutDir>$(SolutionDir)\Distribution\Assemblies</OutDir>
+    <OutputPath>$(SolutionDir)\Distribution\Assemblies</OutputPath>
+    <PublishDir>$(SolutionDir)\Distribution\Assemblies</PublishDir>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>$(SolutionDir)\StyleCop.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>true</Optimize>
@@ -39,5 +40,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.3" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="all" />
+    <AdditionalFiles Include="$(SolutionDir)\stylecop.json" Link="stylecop.json" />
+    <AdditionalFiles Include="$(SolutionDir)\Stylecop.ruleset" Link="Stylecop.rulest" />
   </ItemGroup>
 </Project>

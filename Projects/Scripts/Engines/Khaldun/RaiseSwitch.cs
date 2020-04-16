@@ -16,7 +16,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public RaisableItem RaisableItem{ get; set; }
+    public RaisableItem RaisableItem { get; set; }
 
     public override void OnDoubleClick(Mobile m)
     {
@@ -110,7 +110,7 @@ namespace Server.Items
 
     private class ResetTimer : Timer
     {
-      private RaiseSwitch m_RaiseSwitch;
+      private readonly RaiseSwitch m_RaiseSwitch;
 
       public ResetTimer(RaiseSwitch raiseSwitch, TimeSpan delay) : base(delay)
       {

@@ -11,11 +11,11 @@ namespace Server.Engines.Harvest
   {
     public HarvestSystem() => Definitions = new List<HarvestDefinition>();
 
-    public List<HarvestDefinition> Definitions{ get; }
+    public List<HarvestDefinition> Definitions { get; }
 
     public virtual bool CheckTool(Mobile from, Item tool)
     {
-      bool wornOut = tool?.Deleted != false || tool is IUsesRemaining remaining && remaining.UsesRemaining <= 0;
+      bool wornOut = tool?.Deleted != false || (tool is IUsesRemaining remaining && remaining.UsesRemaining <= 0);
 
       if (wornOut)
         from.SendLocalizedMessage(1044038); // You have worn out your tool!
@@ -139,7 +139,7 @@ namespace Server.Engines.Harvest
           }
           else
           {
-            //The whole harvest system is kludgy and I'm sure this is just adding to it.
+            // The whole harvest system is kludgy and I'm sure this is just adding to it.
             if (item.Stackable)
             {
               int amount = def.ConsumedPerHarvest;
@@ -152,11 +152,11 @@ namespace Server.Engines.Harvest
               bool inFelucca = map == Map.Felucca;
 
               if (eligableForRacialBonus && inFelucca && bank.Current >= feluccaRacialAmount &&
-                  0.1 > Utility.RandomDouble())
+                  Utility.RandomDouble() < 0.1)
                 item.Amount = feluccaRacialAmount;
               else if (inFelucca && bank.Current >= feluccaAmount)
                 item.Amount = feluccaAmount;
-              else if (eligableForRacialBonus && bank.Current >= racialAmount && 0.1 > Utility.RandomDouble())
+              else if (eligableForRacialBonus && bank.Current >= racialAmount && Utility.RandomDouble() < 0.1)
                 item.Amount = racialAmount;
               else
                 item.Amount = amount;
@@ -180,8 +180,7 @@ namespace Server.Engines.Harvest
             {
               Item bonusItem = Construct(bonus.Type, from);
 
-              if (Give(from, bonusItem, true)
-              ) //Bonuses always allow placing at feet, even if pack is full irregrdless of def
+              if (Give(from, bonusItem, true)) // Bonuses always allow placing at feet, even if pack is full irregrdless of def
                 bonus.SendSuccessTo(from);
               else
                 item.Delete();

@@ -8,7 +8,7 @@ namespace Server.Items
   /// </summary>
   public class Block : WeaponAbility
   {
-    private static Dictionary<Mobile, BlockInfo> m_Table = new Dictionary<Mobile, BlockInfo>();
+    private static readonly Dictionary<Mobile, BlockInfo> m_Table = new Dictionary<Mobile, BlockInfo>();
 
     public override int BaseMana => 30;
 
@@ -68,8 +68,8 @@ namespace Server.Items
 
     private class BlockInfo
     {
-      public int m_Bonus;
-      public Timer m_Timer;
+      public readonly int m_Bonus;
+      public readonly Timer m_Timer;
 
       public BlockInfo(Mobile target, int bonus)
       {
@@ -80,7 +80,7 @@ namespace Server.Items
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public InternalTimer(Mobile m) : base(TimeSpan.FromSeconds(6.0))
       {

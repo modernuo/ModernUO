@@ -16,11 +16,11 @@ namespace Server.Regions
 
   public class BaseRegion : Region
   {
-    private static List<Rectangle3D> m_RectBuffer1 = new List<Rectangle3D>();
-    private static List<Rectangle3D> m_RectBuffer2 = new List<Rectangle3D>();
+    private static readonly List<Rectangle3D> m_RectBuffer1 = new List<Rectangle3D>();
+    private static readonly List<Rectangle3D> m_RectBuffer2 = new List<Rectangle3D>();
 
-    private static List<int> m_SpawnBuffer1 = new List<int>();
-    private static List<Item> m_SpawnBuffer2 = new List<Item>();
+    private static readonly List<int> m_SpawnBuffer1 = new List<int>();
+    private static readonly List<Item> m_SpawnBuffer2 = new List<Item>();
     private bool m_ExcludeFromParentSpawns;
 
     private Rectangle3D[] m_Rectangles;
@@ -55,7 +55,6 @@ namespace Server.Regions
       ReadBoolean(xml["logoutDelay"], "active", ref logoutDelayActive, false);
       NoLogoutDelay = !logoutDelayActive;
 
-
       XmlElement spawning = xml["spawning"];
       if (spawning != null)
       {
@@ -64,7 +63,6 @@ namespace Server.Regions
         SpawnZLevel zLevel = SpawnZLevel.Lowest;
         ReadEnum(spawning, "zLevel", ref zLevel, false);
         SpawnZLevel = zLevel;
-
 
         List<SpawnEntry> list = new List<SpawnEntry>();
 
@@ -121,7 +119,7 @@ namespace Server.Regions
       set => m_RuneName = value;
     }
 
-    public bool NoLogoutDelay{ get; set; }
+    public bool NoLogoutDelay { get; set; }
 
     public SpawnEntry[] Spawns
     {
@@ -136,7 +134,7 @@ namespace Server.Regions
       }
     }
 
-    public SpawnZLevel SpawnZLevel{ get; set; }
+    public SpawnZLevel SpawnZLevel { get; set; }
 
     public bool ExcludeFromParentSpawns
     {
@@ -395,7 +393,6 @@ namespace Server.Regions
             }
         }
 
-
         Sector sector = map.GetSector(x, y);
 
         for (int j = 0; j < sector.Items.Count; j++)
@@ -425,7 +422,6 @@ namespace Server.Regions
           }
         }
 
-
         if (m_SpawnBuffer1.Count == 0)
         {
           m_SpawnBuffer1.Clear();
@@ -437,44 +433,43 @@ namespace Server.Regions
         switch (SpawnZLevel)
         {
           case SpawnZLevel.Lowest:
-          {
-            z = int.MaxValue;
-
-            for (int j = 0; j < m_SpawnBuffer1.Count; j++)
             {
-              int l = m_SpawnBuffer1[j];
+              z = int.MaxValue;
 
-              if (l < z)
-                z = l;
+              for (int j = 0; j < m_SpawnBuffer1.Count; j++)
+              {
+                int l = m_SpawnBuffer1[j];
+
+                if (l < z)
+                  z = l;
+              }
+
+              break;
             }
-
-            break;
-          }
           case SpawnZLevel.Highest:
-          {
-            z = int.MinValue;
-
-            for (int j = 0; j < m_SpawnBuffer1.Count; j++)
             {
-              int l = m_SpawnBuffer1[j];
+              z = int.MinValue;
 
-              if (l > z)
-                z = l;
+              for (int j = 0; j < m_SpawnBuffer1.Count; j++)
+              {
+                int l = m_SpawnBuffer1[j];
+
+                if (l > z)
+                  z = l;
+              }
+
+              break;
             }
-
-            break;
-          }
           default: // SpawnZLevel.Random
-          {
-            int index = Utility.Random(m_SpawnBuffer1.Count);
-            z = m_SpawnBuffer1[index];
+            {
+              int index = Utility.Random(m_SpawnBuffer1.Count);
+              z = m_SpawnBuffer1[index];
 
-            break;
-          }
+              break;
+            }
         }
 
         m_SpawnBuffer1.Clear();
-
 
         if (!Find(new Point3D(x, y, z), map).AcceptsSpawnsFrom(this))
         {

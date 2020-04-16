@@ -81,7 +81,7 @@ namespace Server
       pm.SendLocalizedMessage(1063235); // You embrace your honor
 
       Timer.DelayCall(TimeSpan.FromSeconds(duration),
-        delegate
+        () =>
         {
           pm.HonorActive = false;
           pm.LastHonorUse = DateTime.UtcNow;
@@ -116,20 +116,20 @@ namespace Server
         return;
       }
 
-      if (target.Body.IsHuman && (!(target is BaseCreature cret) || !cret.AlwaysAttackable && !cret.AlwaysMurderer))
+      if (target.Body.IsHuman && (!(target is BaseCreature cret) || (!cret.AlwaysAttackable && !cret.AlwaysMurderer)))
       {
         if (reg?.IsDisabled() != true)
         {
-          //Allow honor on blue if Out of guardzone
+          // Allow honor on blue if Out of guardzone
         }
         else if ((map?.Rules & MapRules.HarmfulRestrictions) == 0)
         {
-          //Allow honor on blue if in Fel
+          // Allow honor on blue if in Fel
         }
         else
         {
           source.SendLocalizedMessage(1001018); // You cannot perform negative acts
-          return; //cannot honor in trammel town on blue
+          return; // cannot honor in trammel town on blue
         }
       }
 
@@ -173,18 +173,18 @@ namespace Server
 
   public interface IHonorTarget
   {
-    HonorContext ReceivedHonorContext{ get; set; }
+    HonorContext ReceivedHonorContext { get; set; }
   }
 
   public class HonorContext
   {
     private FirstHit m_FirstHit;
     private double m_HonorDamage;
-    private Point3D m_InitialLocation;
-    private Map m_InitialMap;
+    private readonly Point3D m_InitialLocation;
+    private readonly Map m_InitialMap;
     private bool m_Poisoned;
 
-    private InternalTimer m_Timer;
+    private readonly InternalTimer m_Timer;
     private int m_TotalDamage;
 
     public HonorContext(PlayerMobile source, Mobile target)
@@ -206,17 +206,17 @@ namespace Server
       source.m_hontime = DateTime.UtcNow + TimeSpan.FromMinutes(40);
 
       Timer.DelayCall(TimeSpan.FromMinutes(40),
-        delegate
+        () =>
         {
           if (source.m_hontime < DateTime.UtcNow && source.SentHonorContext != null) Cancel();
         });
     }
 
-    public PlayerMobile Source{ get; }
+    public PlayerMobile Source { get; }
 
-    public Mobile Target{ get; }
+    public Mobile Target { get; }
 
-    public int PerfectionDamageBonus{ get; private set; }
+    public int PerfectionDamageBonus { get; private set; }
 
     public int PerfectionLuckBonus => PerfectionDamageBonus * PerfectionDamageBonus / 10;
 
@@ -252,8 +252,8 @@ namespace Server
       if (from == Source)
       {
         if (Target.CanSee(Source) && Target.InLOS(Source) && (Source.InRange(Target, 1)
-                                                              || Source.Location == m_InitialLocation &&
-                                                              Source.Map == m_InitialMap))
+                                                              || (Source.Location == m_InitialLocation &&
+                                                              Source.Map == m_InitialMap)))
           m_HonorDamage += amount;
         else
           m_HonorDamage += amount * 0.8;
@@ -339,17 +339,17 @@ namespace Server
         return;
 
       double dGain =
-        targetFame / 100.0 * (m_HonorDamage / m_TotalDamage); //Initial honor gain is 100th of the monsters honor
+        targetFame / 100.0 * (m_HonorDamage / m_TotalDamage); // Initial honor gain is 100th of the monsters honor
 
       if (m_HonorDamage == m_TotalDamage && m_FirstHit == FirstHit.Granted)
-        dGain = dGain * 1.5; //honor gain is increased alot more if the combat was fully honorable
+        dGain = dGain * 1.5; // honor gain is increased alot more if the combat was fully honorable
       else
         dGain = dGain * 0.9;
 
       int gain = Math.Min((int)dGain, 200);
 
       if (gain < 1)
-        gain = 1; //Minimum gain of 1 honor when the honor is under the monsters fame
+        gain = 1; // Minimum gain of 1 honor when the honor is under the monsters fame
 
       if (VirtueHelper.IsHighestPath(Source, VirtueName.Honor))
       {
@@ -386,7 +386,7 @@ namespace Server
 
     private class InternalTimer : Timer
     {
-      private HonorContext m_Context;
+      private readonly HonorContext m_Context;
 
       public InternalTimer(HonorContext context) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0)) => m_Context = context;
 

@@ -98,10 +98,10 @@ namespace Server.Factions
       switch (version)
       {
         case 0:
-        {
-          Faction = Faction.ReadReference(reader);
-          break;
-        }
+          {
+            Faction = Faction.ReadReference(reader);
+            break;
+          }
       }
     }
   }

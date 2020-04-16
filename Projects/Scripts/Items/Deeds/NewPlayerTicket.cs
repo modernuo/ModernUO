@@ -18,7 +18,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Owner{ get; set; }
+    public Mobile Owner { get; set; }
 
     public override int LabelNumber => 1062094; // a young player ticket
 
@@ -49,10 +49,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          Owner = reader.ReadMobile();
-          break;
-        }
+          {
+            Owner = reader.ReadMobile();
+            break;
+          }
       }
 
       if (Name == "a young player ticket")
@@ -78,7 +78,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private NewPlayerTicket m_Ticket;
+      private readonly NewPlayerTicket m_Ticket;
 
       public InternalTarget(NewPlayerTicket ticket) : base(2, false, TargetFlags.None) => m_Ticket = ticket;
 
@@ -115,8 +115,8 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private Mobile m_From;
-      private NewPlayerTicket m_Ticket;
+      private readonly Mobile m_From;
+      private readonly NewPlayerTicket m_Ticket;
 
       public InternalGump(Mobile from, NewPlayerTicket ticket) : base(50, 50)
       {

@@ -19,10 +19,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public double MinSkill{ get; set; }
+    public double MinSkill { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public double MaxSkill{ get; set; }
+    public double MaxSkill { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Swinging => m_Timer != null;
@@ -105,18 +105,18 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          MinSkill = reader.ReadDouble();
-          MaxSkill = reader.ReadDouble();
-
-          if (MinSkill == 0.0 && MaxSkill == 30.0)
           {
-            MinSkill = -25.0;
-            MaxSkill = +25.0;
-          }
+            MinSkill = reader.ReadDouble();
+            MaxSkill = reader.ReadDouble();
 
-          break;
-        }
+            if (MinSkill == 0.0 && MaxSkill == 30.0)
+            {
+              MinSkill = -25.0;
+              MaxSkill = +25.0;
+            }
+
+            break;
+          }
       }
 
       UpdateItemID();
@@ -125,7 +125,7 @@ namespace Server.Items
     private class InternalTimer : Timer
     {
       private bool m_Delay = true;
-      private TrainingDummy m_Dummy;
+      private readonly TrainingDummy m_Dummy;
 
       public InternalTimer(TrainingDummy dummy) : base(TimeSpan.FromSeconds(0.25), TimeSpan.FromSeconds(2.75))
       {

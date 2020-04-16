@@ -74,9 +74,7 @@ namespace Server.Misc
 
       m.StatCap = 250;
 
-
       Container cont;
-
 
       // Begin box of money
       cont = new WoodenBox();
@@ -95,7 +93,6 @@ namespace Server.Misc
       PlaceItemIn(bank, 18, 169, cont);
       // End box of money
 
-
       // Begin bag of potion kegs
       cont = new Backpack();
       cont.Name = "Various Potion Kegs";
@@ -110,7 +107,6 @@ namespace Server.Misc
 
       PlaceItemIn(bank, 53, 169, cont);
       // End bag of potion kegs
-
 
       // Begin bag of tools
       cont = new Bag();
@@ -143,7 +139,6 @@ namespace Server.Misc
       PlaceItemIn(bank, 118, 169, cont);
       // End bag of tools
 
-
       // Begin bag of archery ammo
       cont = new Bag();
       cont.Name = "Bag Of Archery Ammo";
@@ -153,7 +148,6 @@ namespace Server.Misc
 
       PlaceItemIn(bank, 118, 124, cont);
       // End bag of archery ammo
-
 
       // Begin bag of treasure maps
       cont = new Bag();
@@ -178,7 +172,6 @@ namespace Server.Misc
 
       PlaceItemIn(bank, 98, 124, cont);
       // End bag of treasure maps
-
 
       // Begin bag of raw materials
       cont = new Bag();
@@ -214,7 +207,6 @@ namespace Server.Misc
       PlaceItemIn(bank, 98, 169, cont);
       // End bag of raw materials
 
-
       // Begin bag of spell casting stuff
       cont = new Backpack();
       cont.Hue = 0x480;
@@ -223,8 +215,8 @@ namespace Server.Misc
       PlaceItemIn(cont, 45, 105, new Spellbook(ulong.MaxValue));
       PlaceItemIn(cont, 65, 105, new NecromancerSpellbook((ulong)0xFFFF));
       PlaceItemIn(cont, 85, 105, new BookOfChivalry());
-      PlaceItemIn(cont, 105, 105, new BookOfBushido()); //Default ctor = full
-      PlaceItemIn(cont, 125, 105, new BookOfNinjitsu()); //Default ctor = full
+      PlaceItemIn(cont, 105, 105, new BookOfBushido()); // Default ctor = full
+      PlaceItemIn(cont, 125, 105, new BookOfNinjitsu()); // Default ctor = full
 
       Runebook runebook = new Runebook(10);
       runebook.CurCharges = runebook.MaxCharges;
@@ -248,7 +240,6 @@ namespace Server.Misc
       PlaceItemIn(bank, 78, 169, cont);
       // End bag of spell casting stuff
 
-
       // Begin bag of ethereals
       cont = new Backpack();
       cont.Hue = 0x490;
@@ -266,7 +257,6 @@ namespace Server.Misc
       PlaceItemIn(bank, 38, 124, cont);
       // End bag of ethereals
 
-
       // Begin first bag of artifacts
       cont = new Backpack();
       cont.Hue = 0x48F;
@@ -279,7 +269,6 @@ namespace Server.Misc
 
       PlaceItemIn(bank, 58, 124, cont);
       // End first bag of artifacts
-
 
       // Begin second bag of artifacts
       cont = new Backpack();
@@ -327,7 +316,6 @@ namespace Server.Misc
       cont = new Backpack();
       cont.Hue = 0x48F;
       cont.Name = "Bag of Minor Artifacts";
-
 
       PlaceItemIn(cont, 45, 66, new LunaLance());
       PlaceItemIn(cont, 69, 82, new VioletCourage());
@@ -396,7 +384,7 @@ namespace Server.Misc
         PlaceItemIn(bank, 58, 124, cont);
       }
 
-      if (Core.SE) //This bag came only after SE.
+      if (Core.SE) // This bag came only after SE.
       {
         cont = new Bag();
         cont.Name = "Bag of Bows";
@@ -639,14 +627,14 @@ namespace Server.Misc
       newChar.Player = true;
       newChar.AccessLevel = args.Account.AccessLevel;
       newChar.Female = args.Female;
-      //newChar.Body = newChar.Female ? 0x191 : 0x190;
+      // newChar.Body = newChar.Female ? 0x191 : 0x190;
 
       if (Core.Expansion >= args.Race.RequiredExpansion)
-        newChar.Race = args.Race; //Sets body
+        newChar.Race = args.Race; // Sets body
       else
         newChar.Race = Race.DefaultRace;
 
-      //newChar.Hue = Utility.ClipSkinHue( args.Hue & 0x3FFF ) | 0x8000;
+      // newChar.Hue = Utility.ClipSkinHue( args.Hue & 0x3FFF ) | 0x8000;
       newChar.Hue = newChar.Race.ClipSkinHue(args.Hue & 0x3FFF) | 0x8000;
 
       newChar.Hunger = 20;
@@ -726,7 +714,7 @@ namespace Server.Misc
 
     private static CityInfo GetStartLocation(CharacterCreatedEventArgs args, bool isYoung)
     {
-      if (Core.ML) return m_NewHavenInfo; //We don't get the client Version until AFTER Character creation
+      if (Core.ML) return m_NewHavenInfo; // We don't get the client Version until AFTER Character creation
 
       bool useHaven = isYoung;
 
@@ -735,64 +723,64 @@ namespace Server.Misc
 
       switch (args.Profession)
       {
-        case 4: //Necro
-        {
-          if ((flags & ClientFlags.Malas) != 0)
-            return new CityInfo("Umbra", "Mardoth's Tower", 2114, 1301, -50, Map.Malas);
+        case 4: // Necro
+          {
+            if ((flags & ClientFlags.Malas) != 0)
+              return new CityInfo("Umbra", "Mardoth's Tower", 2114, 1301, -50, Map.Malas);
 
-          useHaven = true;
+            useHaven = true;
 
-          new BadStartMessage(m, 1062205);
-          /*
-           * Unfortunately you are playing on a *NON-Age-Of-Shadows* game
-           * installation and cannot be transported to Malas.
-           * You will not be able to take your new player quest in Malas
-           * without an AOS client.  You are now being taken to the city of
-           * Haven on the Trammel facet.
-           * */
+            new BadStartMessage(m, 1062205);
+            /*
+             * Unfortunately you are playing on a *NON-Age-Of-Shadows* game
+             * installation and cannot be transported to Malas.
+             * You will not be able to take your new player quest in Malas
+             * without an AOS client.  You are now being taken to the city of
+             * Haven on the Trammel facet.
+             * */
 
-          break;
-        }
-        case 5: //Paladin
-        {
-          return m_NewHavenInfo;
-        }
-        case 6: //Samurai
-        {
-          if ((flags & ClientFlags.Tokuno) != 0)
-            return new CityInfo("Samurai DE", "Haoti's Grounds", 368, 780, -1, Map.Malas);
+            break;
+          }
+        case 5: // Paladin
+          {
+            return m_NewHavenInfo;
+          }
+        case 6: // Samurai
+          {
+            if ((flags & ClientFlags.Tokuno) != 0)
+              return new CityInfo("Samurai DE", "Haoti's Grounds", 368, 780, -1, Map.Malas);
 
-          useHaven = true;
+            useHaven = true;
 
-          new BadStartMessage(m, 1063487);
-          /*
-           * Unfortunately you are playing on a *NON-Samurai-Empire* game
-           * installation and cannot be transported to Tokuno.
-           * You will not be able to take your new player quest in Tokuno
-           * without an SE client. You are now being taken to the city of
-           * Haven on the Trammel facet.
-           * */
+            new BadStartMessage(m, 1063487);
+            /*
+             * Unfortunately you are playing on a *NON-Samurai-Empire* game
+             * installation and cannot be transported to Tokuno.
+             * You will not be able to take your new player quest in Tokuno
+             * without an SE client. You are now being taken to the city of
+             * Haven on the Trammel facet.
+             * */
 
-          break;
-        }
-        case 7: //Ninja
-        {
-          if ((flags & ClientFlags.Tokuno) != 0)
-            return new CityInfo("Ninja DE", "Enimo's Residence", 414, 823, -1, Map.Malas);
+            break;
+          }
+        case 7: // Ninja
+          {
+            if ((flags & ClientFlags.Tokuno) != 0)
+              return new CityInfo("Ninja DE", "Enimo's Residence", 414, 823, -1, Map.Malas);
 
-          useHaven = true;
+            useHaven = true;
 
-          new BadStartMessage(m, 1063487);
-          /*
-           * Unfortunately you are playing on a *NON-Samurai-Empire* game
-           * installation and cannot be transported to Tokuno.
-           * You will not be able to take your new player quest in Tokuno
-           * without an SE client. You are now being taken to the city of
-           * Haven on the Trammel facet.
-           * */
+            new BadStartMessage(m, 1063487);
+            /*
+             * Unfortunately you are playing on a *NON-Samurai-Empire* game
+             * installation and cannot be transported to Tokuno.
+             * You will not be able to take your new player quest in Tokuno
+             * without an SE client. You are now being taken to the city of
+             * Haven on the Trammel facet.
+             * */
 
-          break;
-        }
+            break;
+          }
       }
 
       if (useHaven)
@@ -898,45 +886,45 @@ namespace Server.Misc
       switch (prof)
       {
         case 1: // Warrior
-        {
-          skills = new[]
           {
+            skills = new[]
+            {
             new SkillNameValue(SkillName.Anatomy, 30),
             new SkillNameValue(SkillName.Healing, 45),
             new SkillNameValue(SkillName.Swords, 35),
             new SkillNameValue(SkillName.Tactics, 50)
           };
 
-          break;
-        }
+            break;
+          }
         case 2: // Magician
-        {
-          skills = new[]
           {
+            skills = new[]
+            {
             new SkillNameValue(SkillName.EvalInt, 30),
             new SkillNameValue(SkillName.Wrestling, 30),
             new SkillNameValue(SkillName.Magery, 50),
             new SkillNameValue(SkillName.Meditation, 50)
           };
 
-          break;
-        }
+            break;
+          }
         case 3: // Blacksmith
-        {
-          skills = new[]
           {
+            skills = new[]
+            {
             new SkillNameValue(SkillName.Mining, 30),
             new SkillNameValue(SkillName.ArmsLore, 30),
             new SkillNameValue(SkillName.Blacksmith, 50),
             new SkillNameValue(SkillName.Tinkering, 50)
           };
 
-          break;
-        }
+            break;
+          }
         case 4: // Necromancer
-        {
-          skills = new[]
           {
+            skills = new[]
+            {
             new SkillNameValue(SkillName.Necromancy, 50),
             new SkillNameValue(SkillName.Focus, 30),
             new SkillNameValue(SkillName.SpiritSpeak, 30),
@@ -944,49 +932,49 @@ namespace Server.Misc
             new SkillNameValue(SkillName.Tactics, 20)
           };
 
-          break;
-        }
+            break;
+          }
         case 5: // Paladin
-        {
-          skills = new[]
           {
+            skills = new[]
+            {
             new SkillNameValue(SkillName.Chivalry, 51),
             new SkillNameValue(SkillName.Swords, 49),
             new SkillNameValue(SkillName.Focus, 30),
             new SkillNameValue(SkillName.Tactics, 30)
           };
 
-          break;
-        }
-        case 6: //Samurai
-        {
-          skills = new[]
+            break;
+          }
+        case 6: // Samurai
           {
+            skills = new[]
+            {
             new SkillNameValue(SkillName.Bushido, 50),
             new SkillNameValue(SkillName.Swords, 50),
             new SkillNameValue(SkillName.Anatomy, 30),
             new SkillNameValue(SkillName.Healing, 30)
           };
-          break;
-        }
-        case 7: //Ninja
-        {
-          skills = new[]
+            break;
+          }
+        case 7: // Ninja
           {
+            skills = new[]
+            {
             new SkillNameValue(SkillName.Ninjitsu, 50),
             new SkillNameValue(SkillName.Hiding, 50),
             new SkillNameValue(SkillName.Fencing, 30),
             new SkillNameValue(SkillName.Stealth, 30)
           };
-          break;
-        }
+            break;
+          }
         default:
-        {
-          if (!ValidSkills(skills))
-            return;
+          {
+            if (!ValidSkills(skills))
+              return;
 
-          break;
-        }
+            break;
+          }
       }
 
       bool addSkillItems = true;
@@ -995,145 +983,145 @@ namespace Server.Misc
       switch (prof)
       {
         case 1: // Warrior
-        {
-          if (elf)
-            EquipItem(new LeafChest());
-          else
-            EquipItem(new LeatherChest());
-          break;
-        }
+          {
+            if (elf)
+              EquipItem(new LeafChest());
+            else
+              EquipItem(new LeatherChest());
+            break;
+          }
         case 4: // Necromancer
-        {
-          Container regs = new BagOfNecroReagents();
-
-          if (!Core.AOS)
-            foreach (Item item in regs.Items)
-              item.LootType = LootType.Newbied;
-
-          PackItem(regs);
-
-          regs.LootType = LootType.Regular;
-
-          EquipItem(new BoneHelm());
-
-          if (elf)
           {
-            EquipItem(new ElvenMachete());
-            EquipItem(NecroHue(new LeafChest()));
-            EquipItem(NecroHue(new LeafArms()));
-            EquipItem(NecroHue(new LeafGloves()));
-            EquipItem(NecroHue(new LeafGorget()));
-            EquipItem(NecroHue(new LeafGorget()));
-            EquipItem(NecroHue(new ElvenPants())); //TODO: Verify the pants
-            EquipItem(new ElvenBoots());
+            Container regs = new BagOfNecroReagents();
+
+            if (!Core.AOS)
+              foreach (Item item in regs.Items)
+                item.LootType = LootType.Newbied;
+
+            PackItem(regs);
+
+            regs.LootType = LootType.Regular;
+
+            EquipItem(new BoneHelm());
+
+            if (elf)
+            {
+              EquipItem(new ElvenMachete());
+              EquipItem(NecroHue(new LeafChest()));
+              EquipItem(NecroHue(new LeafArms()));
+              EquipItem(NecroHue(new LeafGloves()));
+              EquipItem(NecroHue(new LeafGorget()));
+              EquipItem(NecroHue(new LeafGorget()));
+              EquipItem(NecroHue(new ElvenPants())); // TODO: Verify the pants
+              EquipItem(new ElvenBoots());
+            }
+            else
+            {
+              EquipItem(new BoneHarvester());
+              EquipItem(NecroHue(new LeatherChest()));
+              EquipItem(NecroHue(new LeatherArms()));
+              EquipItem(NecroHue(new LeatherGloves()));
+              EquipItem(NecroHue(new LeatherGorget()));
+              EquipItem(NecroHue(new LeatherLegs()));
+              EquipItem(NecroHue(new Skirt()));
+              EquipItem(new Sandals(0x8FD));
+            }
+
+            Spellbook
+              book = new NecromancerSpellbook(
+                (ulong)0x8981); // animate dead, evil omen, pain spike, summon familiar, wraith form
+
+            PackItem(book);
+
+            book.LootType = LootType.Blessed;
+
+            addSkillItems = false;
+
+            break;
           }
-          else
-          {
-            EquipItem(new BoneHarvester());
-            EquipItem(NecroHue(new LeatherChest()));
-            EquipItem(NecroHue(new LeatherArms()));
-            EquipItem(NecroHue(new LeatherGloves()));
-            EquipItem(NecroHue(new LeatherGorget()));
-            EquipItem(NecroHue(new LeatherLegs()));
-            EquipItem(NecroHue(new Skirt()));
-            EquipItem(new Sandals(0x8FD));
-          }
-
-          Spellbook
-            book = new NecromancerSpellbook(
-              (ulong)0x8981); // animate dead, evil omen, pain spike, summon familiar, wraith form
-
-          PackItem(book);
-
-          book.LootType = LootType.Blessed;
-
-          addSkillItems = false;
-
-          break;
-        }
         case 5: // Paladin
-        {
-          if (elf)
           {
-            EquipItem(new ElvenMachete());
-            EquipItem(new WingedHelm());
-            EquipItem(new LeafGorget());
-            EquipItem(new LeafArms());
-            EquipItem(new LeafChest());
-            EquipItem(new LeafLegs());
-            EquipItem(new ElvenBoots()); //Verify hue
+            if (elf)
+            {
+              EquipItem(new ElvenMachete());
+              EquipItem(new WingedHelm());
+              EquipItem(new LeafGorget());
+              EquipItem(new LeafArms());
+              EquipItem(new LeafChest());
+              EquipItem(new LeafLegs());
+              EquipItem(new ElvenBoots()); // Verify hue
+            }
+            else
+            {
+              EquipItem(new Broadsword());
+              EquipItem(new Helmet());
+              EquipItem(new PlateGorget());
+              EquipItem(new RingmailArms());
+              EquipItem(new RingmailChest());
+              EquipItem(new RingmailLegs());
+              EquipItem(new ThighBoots(0x748));
+              EquipItem(new Cloak(0xCF));
+              EquipItem(new BodySash(0xCF));
+            }
+
+            Spellbook book = new BookOfChivalry();
+
+            PackItem(book);
+
+            book.LootType = LootType.Blessed;
+
+            addSkillItems = false;
+
+            break;
           }
-          else
-          {
-            EquipItem(new Broadsword());
-            EquipItem(new Helmet());
-            EquipItem(new PlateGorget());
-            EquipItem(new RingmailArms());
-            EquipItem(new RingmailChest());
-            EquipItem(new RingmailLegs());
-            EquipItem(new ThighBoots(0x748));
-            EquipItem(new Cloak(0xCF));
-            EquipItem(new BodySash(0xCF));
-          }
-
-          Spellbook book = new BookOfChivalry();
-
-          PackItem(book);
-
-          book.LootType = LootType.Blessed;
-
-          addSkillItems = false;
-
-          break;
-        }
 
         case 6: // Samurai
-        {
-          addSkillItems = false;
-          EquipItem(new HakamaShita(0x2C3));
-          EquipItem(new Hakama(0x2C3));
-          EquipItem(new SamuraiTabi(0x2C3));
-          EquipItem(new TattsukeHakama(0x22D));
-          EquipItem(new Bokuto());
+          {
+            addSkillItems = false;
+            EquipItem(new HakamaShita(0x2C3));
+            EquipItem(new Hakama(0x2C3));
+            EquipItem(new SamuraiTabi(0x2C3));
+            EquipItem(new TattsukeHakama(0x22D));
+            EquipItem(new Bokuto());
 
-          if (elf)
-            EquipItem(new RavenHelm());
-          else
-            EquipItem(new LeatherJingasa());
+            if (elf)
+              EquipItem(new RavenHelm());
+            else
+              EquipItem(new LeatherJingasa());
 
-          PackItem(new Scissors());
-          PackItem(new Bandage(50));
+            PackItem(new Scissors());
+            PackItem(new Bandage(50));
 
-          Spellbook book = new BookOfBushido();
-          PackItem(book);
+            Spellbook book = new BookOfBushido();
+            PackItem(book);
 
-          break;
-        }
+            break;
+          }
         case 7: // Ninja
-        {
-          addSkillItems = false;
-          EquipItem(new Kasa());
+          {
+            addSkillItems = false;
+            EquipItem(new Kasa());
 
-          int[] hues = { 0x1A8, 0xEC, 0x99, 0x90, 0xB5, 0x336, 0x89 };
-          //TODO: Verify that's ALL the hues for that above.
+            int[] hues = { 0x1A8, 0xEC, 0x99, 0x90, 0xB5, 0x336, 0x89 };
+            // TODO: Verify that's ALL the hues for that above.
 
-          EquipItem(new TattsukeHakama(hues[Utility.Random(hues.Length)]));
+            EquipItem(new TattsukeHakama(hues[Utility.Random(hues.Length)]));
 
-          EquipItem(new HakamaShita(0x2C3));
-          EquipItem(new NinjaTabi(0x2C3));
+            EquipItem(new HakamaShita(0x2C3));
+            EquipItem(new NinjaTabi(0x2C3));
 
-          if (elf)
-            EquipItem(new AssassinSpike());
-          else
-            EquipItem(new Tekagi());
+            if (elf)
+              EquipItem(new AssassinSpike());
+            else
+              EquipItem(new Tekagi());
 
-          PackItem(new SmokeBomb());
+            PackItem(new SmokeBomb());
 
-          Spellbook book = new BookOfNinjitsu();
-          PackItem(book);
+            Spellbook book = new BookOfNinjitsu();
+            PackItem(book);
 
-          break;
-        }
+            break;
+          }
       }
 
       for (int i = 0; i < skills.Length; ++i)
@@ -1303,437 +1291,437 @@ namespace Server.Misc
       switch (skill)
       {
         case SkillName.Alchemy:
-        {
-          PackItem(new Bottle(4));
-          PackItem(new MortarPestle());
-
-          int hue = Utility.RandomPinkHue();
-
-          if (elf)
           {
-            if (m.Female)
-              EquipItem(new FemaleElvenRobe(hue));
+            PackItem(new Bottle(4));
+            PackItem(new MortarPestle());
+
+            int hue = Utility.RandomPinkHue();
+
+            if (elf)
+            {
+              if (m.Female)
+                EquipItem(new FemaleElvenRobe(hue));
+              else
+                EquipItem(new MaleElvenRobe(hue));
+            }
             else
-              EquipItem(new MaleElvenRobe(hue));
-          }
-          else
-          {
-            EquipItem(new Robe(Utility.RandomPinkHue()));
-          }
+            {
+              EquipItem(new Robe(Utility.RandomPinkHue()));
+            }
 
-          break;
-        }
+            break;
+          }
         case SkillName.Anatomy:
-        {
-          PackItem(new Bandage(3));
-
-          int hue = Utility.RandomYellowHue();
-
-          if (elf)
           {
-            if (m.Female)
-              EquipItem(new FemaleElvenRobe(hue));
+            PackItem(new Bandage(3));
+
+            int hue = Utility.RandomYellowHue();
+
+            if (elf)
+            {
+              if (m.Female)
+                EquipItem(new FemaleElvenRobe(hue));
+              else
+                EquipItem(new MaleElvenRobe(hue));
+            }
             else
-              EquipItem(new MaleElvenRobe(hue));
-          }
-          else
-          {
-            EquipItem(new Robe(hue));
-          }
+            {
+              EquipItem(new Robe(hue));
+            }
 
-          break;
-        }
+            break;
+          }
         case SkillName.AnimalLore:
-        {
-          int hue = Utility.RandomBlueHue();
-
-          if (elf)
           {
-            EquipItem(new WildStaff());
+            int hue = Utility.RandomBlueHue();
 
-            if (m.Female)
-              EquipItem(new FemaleElvenRobe(hue));
+            if (elf)
+            {
+              EquipItem(new WildStaff());
+
+              if (m.Female)
+                EquipItem(new FemaleElvenRobe(hue));
+              else
+                EquipItem(new MaleElvenRobe(hue));
+            }
             else
-              EquipItem(new MaleElvenRobe(hue));
-          }
-          else
-          {
-            EquipItem(new ShepherdsCrook());
-            EquipItem(new Robe(hue));
-          }
+            {
+              EquipItem(new ShepherdsCrook());
+              EquipItem(new Robe(hue));
+            }
 
-          break;
-        }
+            break;
+          }
         case SkillName.Archery:
-        {
-          PackItem(new Arrow(25));
-
-          if (elf)
-            EquipItem(new ElvenCompositeLongbow());
-          else
-            EquipItem(new Bow());
-
-          break;
-        }
-        case SkillName.ArmsLore:
-        {
-          if (elf)
-            switch (Utility.Random(3))
-            {
-              case 0:
-                EquipItem(new Leafblade());
-                break;
-              case 1:
-                EquipItem(new RuneBlade());
-                break;
-              case 2:
-                EquipItem(new DiamondMace());
-                break;
-            }
-          else
-            switch (Utility.Random(3))
-            {
-              case 0:
-                EquipItem(new Kryss());
-                break;
-              case 1:
-                EquipItem(new Katana());
-                break;
-              case 2:
-                EquipItem(new Club());
-                break;
-            }
-
-          break;
-        }
-        case SkillName.Begging:
-        {
-          if (elf)
-            EquipItem(new WildStaff());
-          else
-            EquipItem(new GnarledStaff());
-          break;
-        }
-        case SkillName.Blacksmith:
-        {
-          PackItem(new Tongs());
-          PackItem(new Pickaxe());
-          PackItem(new Pickaxe());
-          PackItem(new IronIngot(50));
-          EquipItem(new HalfApron(Utility.RandomYellowHue()));
-          break;
-        }
-        case SkillName.Bushido:
-        {
-          EquipItem(new Hakama());
-          EquipItem(new Kasa());
-          EquipItem(new BookOfBushido());
-          break;
-        }
-        case SkillName.Fletching:
-        {
-          PackItem(new Board(14));
-          PackItem(new Feather(5));
-          PackItem(new Shaft(5));
-          break;
-        }
-        case SkillName.Camping:
-        {
-          PackItem(new Bedroll());
-          PackItem(new Kindling(5));
-          break;
-        }
-        case SkillName.Carpentry:
-        {
-          PackItem(new Board(10));
-          PackItem(new Saw());
-          EquipItem(new HalfApron(Utility.RandomYellowHue()));
-          break;
-        }
-        case SkillName.Cartography:
-        {
-          PackItem(new BlankMap());
-          PackItem(new BlankMap());
-          PackItem(new BlankMap());
-          PackItem(new BlankMap());
-          PackItem(new Sextant());
-          break;
-        }
-        case SkillName.Cooking:
-        {
-          PackItem(new Kindling(2));
-          PackItem(new RawLambLeg());
-          PackItem(new RawChickenLeg());
-          PackItem(new RawFishSteak());
-          PackItem(new SackFlour());
-          PackItem(new Pitcher(BeverageType.Water));
-          break;
-        }
-        case SkillName.Chivalry:
-        {
-          if (Core.ML)
-            PackItem(new BookOfChivalry());
-
-          break;
-        }
-        case SkillName.DetectHidden:
-        {
-          EquipItem(new Cloak(0x455));
-          break;
-        }
-        case SkillName.Discordance:
-        {
-          PackInstrument();
-          break;
-        }
-        case SkillName.Fencing:
-        {
-          if (elf)
-            EquipItem(new Leafblade());
-          else
-            EquipItem(new Kryss());
-
-          break;
-        }
-        case SkillName.Fishing:
-        {
-          EquipItem(new FishingPole());
-
-          int hue = Utility.RandomYellowHue();
-
-          if (elf)
           {
-            Item i = new Circlet();
-            i.Hue = hue;
-            EquipItem(i);
-          }
-          else
-          {
-            EquipItem(new FloppyHat(hue));
-          }
+            PackItem(new Arrow(25));
 
-          break;
-        }
-        case SkillName.Healing:
-        {
-          PackItem(new Bandage(50));
-          PackItem(new Scissors());
-          break;
-        }
-        case SkillName.Herding:
-        {
-          if (elf)
-            EquipItem(new WildStaff());
-          else
-            EquipItem(new ShepherdsCrook());
-
-          break;
-        }
-        case SkillName.Hiding:
-        {
-          EquipItem(new Cloak(0x455));
-          break;
-        }
-        case SkillName.Inscribe:
-        {
-          PackItem(new BlankScroll(2));
-          PackItem(new BlueBook());
-          break;
-        }
-        case SkillName.ItemID:
-        {
-          if (elf)
-            EquipItem(new WildStaff());
-          else
-            EquipItem(new GnarledStaff());
-          break;
-        }
-        case SkillName.Lockpicking:
-        {
-          PackItem(new Lockpick(20));
-          break;
-        }
-        case SkillName.Lumberjacking:
-        {
-          EquipItem(new Hatchet());
-          break;
-        }
-        case SkillName.Macing:
-        {
-          if (elf)
-            EquipItem(new DiamondMace());
-          else
-            EquipItem(new Club());
-
-          break;
-        }
-        case SkillName.Magery:
-        {
-          BagOfReagents regs = new BagOfReagents(30);
-
-          if (!Core.AOS)
-            foreach (Item item in regs.Items)
-              item.LootType = LootType.Newbied;
-
-          PackItem(regs);
-
-          regs.LootType = LootType.Regular;
-
-          PackScroll(0);
-          PackScroll(1);
-          PackScroll(2);
-
-          Spellbook book = new Spellbook((ulong)0x382A8C38);
-
-          EquipItem(book);
-
-          book.LootType = LootType.Blessed;
-
-          if (elf)
-          {
-            EquipItem(new Circlet());
-
-            if (m.Female)
-              EquipItem(new FemaleElvenRobe(Utility.RandomBlueHue()));
+            if (elf)
+              EquipItem(new ElvenCompositeLongbow());
             else
-              EquipItem(new MaleElvenRobe(Utility.RandomBlueHue()));
-          }
-          else
-          {
-            EquipItem(new WizardsHat());
-            EquipItem(new Robe(Utility.RandomBlueHue()));
-          }
+              EquipItem(new Bow());
 
-          break;
-        }
-        case SkillName.Mining:
-        {
-          PackItem(new Pickaxe());
-          break;
-        }
-        case SkillName.Musicianship:
-        {
-          PackInstrument();
-          break;
-        }
-        case SkillName.Necromancy:
-        {
-          if (Core.ML)
+            break;
+          }
+        case SkillName.ArmsLore:
           {
-            Container regs = new BagOfNecroReagents();
+            if (elf)
+              switch (Utility.Random(3))
+              {
+                case 0:
+                  EquipItem(new Leafblade());
+                  break;
+                case 1:
+                  EquipItem(new RuneBlade());
+                  break;
+                case 2:
+                  EquipItem(new DiamondMace());
+                  break;
+              }
+            else
+              switch (Utility.Random(3))
+              {
+                case 0:
+                  EquipItem(new Kryss());
+                  break;
+                case 1:
+                  EquipItem(new Katana());
+                  break;
+                case 2:
+                  EquipItem(new Club());
+                  break;
+              }
+
+            break;
+          }
+        case SkillName.Begging:
+          {
+            if (elf)
+              EquipItem(new WildStaff());
+            else
+              EquipItem(new GnarledStaff());
+            break;
+          }
+        case SkillName.Blacksmith:
+          {
+            PackItem(new Tongs());
+            PackItem(new Pickaxe());
+            PackItem(new Pickaxe());
+            PackItem(new IronIngot(50));
+            EquipItem(new HalfApron(Utility.RandomYellowHue()));
+            break;
+          }
+        case SkillName.Bushido:
+          {
+            EquipItem(new Hakama());
+            EquipItem(new Kasa());
+            EquipItem(new BookOfBushido());
+            break;
+          }
+        case SkillName.Fletching:
+          {
+            PackItem(new Board(14));
+            PackItem(new Feather(5));
+            PackItem(new Shaft(5));
+            break;
+          }
+        case SkillName.Camping:
+          {
+            PackItem(new Bedroll());
+            PackItem(new Kindling(5));
+            break;
+          }
+        case SkillName.Carpentry:
+          {
+            PackItem(new Board(10));
+            PackItem(new Saw());
+            EquipItem(new HalfApron(Utility.RandomYellowHue()));
+            break;
+          }
+        case SkillName.Cartography:
+          {
+            PackItem(new BlankMap());
+            PackItem(new BlankMap());
+            PackItem(new BlankMap());
+            PackItem(new BlankMap());
+            PackItem(new Sextant());
+            break;
+          }
+        case SkillName.Cooking:
+          {
+            PackItem(new Kindling(2));
+            PackItem(new RawLambLeg());
+            PackItem(new RawChickenLeg());
+            PackItem(new RawFishSteak());
+            PackItem(new SackFlour());
+            PackItem(new Pitcher(BeverageType.Water));
+            break;
+          }
+        case SkillName.Chivalry:
+          {
+            if (Core.ML)
+              PackItem(new BookOfChivalry());
+
+            break;
+          }
+        case SkillName.DetectHidden:
+          {
+            EquipItem(new Cloak(0x455));
+            break;
+          }
+        case SkillName.Discordance:
+          {
+            PackInstrument();
+            break;
+          }
+        case SkillName.Fencing:
+          {
+            if (elf)
+              EquipItem(new Leafblade());
+            else
+              EquipItem(new Kryss());
+
+            break;
+          }
+        case SkillName.Fishing:
+          {
+            EquipItem(new FishingPole());
+
+            int hue = Utility.RandomYellowHue();
+
+            if (elf)
+            {
+              Item i = new Circlet();
+              i.Hue = hue;
+              EquipItem(i);
+            }
+            else
+            {
+              EquipItem(new FloppyHat(hue));
+            }
+
+            break;
+          }
+        case SkillName.Healing:
+          {
+            PackItem(new Bandage(50));
+            PackItem(new Scissors());
+            break;
+          }
+        case SkillName.Herding:
+          {
+            if (elf)
+              EquipItem(new WildStaff());
+            else
+              EquipItem(new ShepherdsCrook());
+
+            break;
+          }
+        case SkillName.Hiding:
+          {
+            EquipItem(new Cloak(0x455));
+            break;
+          }
+        case SkillName.Inscribe:
+          {
+            PackItem(new BlankScroll(2));
+            PackItem(new BlueBook());
+            break;
+          }
+        case SkillName.ItemID:
+          {
+            if (elf)
+              EquipItem(new WildStaff());
+            else
+              EquipItem(new GnarledStaff());
+            break;
+          }
+        case SkillName.Lockpicking:
+          {
+            PackItem(new Lockpick(20));
+            break;
+          }
+        case SkillName.Lumberjacking:
+          {
+            EquipItem(new Hatchet());
+            break;
+          }
+        case SkillName.Macing:
+          {
+            if (elf)
+              EquipItem(new DiamondMace());
+            else
+              EquipItem(new Club());
+
+            break;
+          }
+        case SkillName.Magery:
+          {
+            BagOfReagents regs = new BagOfReagents(30);
+
+            if (!Core.AOS)
+              foreach (Item item in regs.Items)
+                item.LootType = LootType.Newbied;
 
             PackItem(regs);
 
             regs.LootType = LootType.Regular;
+
+            PackScroll(0);
+            PackScroll(1);
+            PackScroll(2);
+
+            Spellbook book = new Spellbook((ulong)0x382A8C38);
+
+            EquipItem(book);
+
+            book.LootType = LootType.Blessed;
+
+            if (elf)
+            {
+              EquipItem(new Circlet());
+
+              if (m.Female)
+                EquipItem(new FemaleElvenRobe(Utility.RandomBlueHue()));
+              else
+                EquipItem(new MaleElvenRobe(Utility.RandomBlueHue()));
+            }
+            else
+            {
+              EquipItem(new WizardsHat());
+              EquipItem(new Robe(Utility.RandomBlueHue()));
+            }
+
+            break;
           }
+        case SkillName.Mining:
+          {
+            PackItem(new Pickaxe());
+            break;
+          }
+        case SkillName.Musicianship:
+          {
+            PackInstrument();
+            break;
+          }
+        case SkillName.Necromancy:
+          {
+            if (Core.ML)
+            {
+              Container regs = new BagOfNecroReagents();
 
-          break;
-        }
+              PackItem(regs);
+
+              regs.LootType = LootType.Regular;
+            }
+
+            break;
+          }
         case SkillName.Ninjitsu:
-        {
-          EquipItem(new Hakama(0x2C3)); //Only ninjas get the hued one.
-          EquipItem(new Kasa());
-          EquipItem(new BookOfNinjitsu());
-          break;
-        }
+          {
+            EquipItem(new Hakama(0x2C3)); // Only ninjas get the hued one.
+            EquipItem(new Kasa());
+            EquipItem(new BookOfNinjitsu());
+            break;
+          }
         case SkillName.Parry:
-        {
-          EquipItem(new WoodenShield());
-          break;
-        }
+          {
+            EquipItem(new WoodenShield());
+            break;
+          }
         case SkillName.Peacemaking:
-        {
-          PackInstrument();
-          break;
-        }
+          {
+            PackInstrument();
+            break;
+          }
         case SkillName.Poisoning:
-        {
-          PackItem(new LesserPoisonPotion());
-          PackItem(new LesserPoisonPotion());
-          break;
-        }
+          {
+            PackItem(new LesserPoisonPotion());
+            PackItem(new LesserPoisonPotion());
+            break;
+          }
         case SkillName.Provocation:
-        {
-          PackInstrument();
-          break;
-        }
+          {
+            PackInstrument();
+            break;
+          }
         case SkillName.Snooping:
-        {
-          PackItem(new Lockpick(20));
-          break;
-        }
+          {
+            PackItem(new Lockpick(20));
+            break;
+          }
         case SkillName.SpiritSpeak:
-        {
-          EquipItem(new Cloak(0x455));
-          break;
-        }
+          {
+            EquipItem(new Cloak(0x455));
+            break;
+          }
         case SkillName.Stealing:
-        {
-          PackItem(new Lockpick(20));
-          break;
-        }
+          {
+            PackItem(new Lockpick(20));
+            break;
+          }
         case SkillName.Swords:
-        {
-          if (elf)
-            EquipItem(new RuneBlade());
-          else
-            EquipItem(new Katana());
+          {
+            if (elf)
+              EquipItem(new RuneBlade());
+            else
+              EquipItem(new Katana());
 
-          break;
-        }
+            break;
+          }
         case SkillName.Tactics:
-        {
-          if (elf)
-            EquipItem(new RuneBlade());
-          else
-            EquipItem(new Katana());
+          {
+            if (elf)
+              EquipItem(new RuneBlade());
+            else
+              EquipItem(new Katana());
 
-          break;
-        }
+            break;
+          }
         case SkillName.Tailoring:
-        {
-          PackItem(new BoltOfCloth());
-          PackItem(new SewingKit());
-          break;
-        }
+          {
+            PackItem(new BoltOfCloth());
+            PackItem(new SewingKit());
+            break;
+          }
         case SkillName.Tracking:
-        {
-          Item shoes = m_Mobile?.FindItemOnLayer(Layer.Shoes);
+          {
+            Item shoes = m_Mobile?.FindItemOnLayer(Layer.Shoes);
 
-          shoes?.Delete();
+            shoes?.Delete();
 
-          int hue = Utility.RandomYellowHue();
+            int hue = Utility.RandomYellowHue();
 
-          if (elf)
-            EquipItem(new ElvenBoots(hue));
-          else
-            EquipItem(new Boots(hue));
+            if (elf)
+              EquipItem(new ElvenBoots(hue));
+            else
+              EquipItem(new Boots(hue));
 
-          EquipItem(new SkinningKnife());
-          break;
-        }
+            EquipItem(new SkinningKnife());
+            break;
+          }
         case SkillName.Veterinary:
-        {
-          PackItem(new Bandage(5));
-          PackItem(new Scissors());
-          break;
-        }
+          {
+            PackItem(new Bandage(5));
+            PackItem(new Scissors());
+            break;
+          }
         case SkillName.Wrestling:
-        {
-          if (elf)
-            EquipItem(new LeafGloves());
-          else
-            EquipItem(new LeatherGloves());
+          {
+            if (elf)
+              EquipItem(new LeafGloves());
+            else
+              EquipItem(new LeatherGloves());
 
-          break;
-        }
+            break;
+          }
       }
     }
 
     private class BadStartMessage : Timer
     {
-      private int m_Message;
-      private Mobile m_Mobile;
+      private readonly int m_Message;
+      private readonly Mobile m_Mobile;
 
       public BadStartMessage(Mobile m, int message) : base(TimeSpan.FromSeconds(3.5))
       {

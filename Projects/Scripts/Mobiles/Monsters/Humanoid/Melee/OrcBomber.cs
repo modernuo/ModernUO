@@ -48,7 +48,7 @@ namespace Server.Mobiles
       PackItem(new MortarPestle());
       PackItem(new LesserExplosionPotion());
 
-      if (0.2 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.2)
         PackItem(new BolaBall());
     }
 
@@ -108,7 +108,7 @@ namespace Server.Mobiles
 
         m_Thrown++;
 
-        if (0.75 >= Utility.RandomDouble() && m_Thrown % 2 == 1) // 75% chance to quickly throw another bomb
+        if (Utility.RandomDouble() <= 0.75 && m_Thrown % 2 == 1) // 75% chance to quickly throw another bomb
           m_NextBomb = DateTime.UtcNow + TimeSpan.FromSeconds(3.0);
         else
           m_NextBomb = DateTime.UtcNow + TimeSpan.FromSeconds(5.0 + 10.0 * Utility.RandomDouble()); // 5-15 seconds
@@ -138,7 +138,8 @@ namespace Server.Mobiles
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Mobile, m_From;
+      private readonly Mobile m_Mobile;
+      private readonly Mobile m_From;
 
       public InternalTimer(Mobile m, Mobile from) : base(TimeSpan.FromSeconds(1.0))
       {

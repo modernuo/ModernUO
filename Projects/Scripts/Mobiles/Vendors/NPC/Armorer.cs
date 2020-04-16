@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
   public class Armorer : BaseVendor
   {
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public Armorer() : base("the armorer")
@@ -27,39 +27,39 @@ namespace Server.Mobiles
       switch (Utility.Random(4))
       {
         case 0:
-        {
-          m_SBInfos.Add(new SBLeatherArmor());
-          m_SBInfos.Add(new SBStuddedArmor());
-          m_SBInfos.Add(new SBMetalShields());
-          m_SBInfos.Add(new SBPlateArmor());
-          m_SBInfos.Add(new SBHelmetArmor());
-          m_SBInfos.Add(new SBChainmailArmor());
-          m_SBInfos.Add(new SBRingmailArmor());
-          break;
-        }
+          {
+            m_SBInfos.Add(new SBLeatherArmor());
+            m_SBInfos.Add(new SBStuddedArmor());
+            m_SBInfos.Add(new SBMetalShields());
+            m_SBInfos.Add(new SBPlateArmor());
+            m_SBInfos.Add(new SBHelmetArmor());
+            m_SBInfos.Add(new SBChainmailArmor());
+            m_SBInfos.Add(new SBRingmailArmor());
+            break;
+          }
         case 1:
-        {
-          m_SBInfos.Add(new SBStuddedArmor());
-          m_SBInfos.Add(new SBLeatherArmor());
-          m_SBInfos.Add(new SBMetalShields());
-          m_SBInfos.Add(new SBHelmetArmor());
-          break;
-        }
+          {
+            m_SBInfos.Add(new SBStuddedArmor());
+            m_SBInfos.Add(new SBLeatherArmor());
+            m_SBInfos.Add(new SBMetalShields());
+            m_SBInfos.Add(new SBHelmetArmor());
+            break;
+          }
         case 2:
-        {
-          m_SBInfos.Add(new SBMetalShields());
-          m_SBInfos.Add(new SBPlateArmor());
-          m_SBInfos.Add(new SBHelmetArmor());
-          m_SBInfos.Add(new SBChainmailArmor());
-          m_SBInfos.Add(new SBRingmailArmor());
-          break;
-        }
+          {
+            m_SBInfos.Add(new SBMetalShields());
+            m_SBInfos.Add(new SBPlateArmor());
+            m_SBInfos.Add(new SBHelmetArmor());
+            m_SBInfos.Add(new SBChainmailArmor());
+            m_SBInfos.Add(new SBRingmailArmor());
+            break;
+          }
         case 3:
-        {
-          m_SBInfos.Add(new SBMetalShields());
-          m_SBInfos.Add(new SBHelmetArmor());
-          break;
-        }
+          {
+            m_SBInfos.Add(new SBMetalShields());
+            m_SBInfos.Add(new SBHelmetArmor());
+            break;
+          }
       }
 
       if (IsTokunoVendor)

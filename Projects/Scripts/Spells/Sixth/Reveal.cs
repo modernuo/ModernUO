@@ -5,13 +5,12 @@ namespace Server.Spells.Sixth
 {
   public class RevealSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Reveal", "Wis Quas",
       206,
       9002,
       Reagent.Bloodmoss,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public RevealSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -44,8 +43,8 @@ namespace Server.Spells.Sixth
           foreach (Mobile m in eable)
           {
             if (m is ShadowKnight &&
-                (m.X != p.X || m.Y != p.Y || !m.Hidden || m.AccessLevel != AccessLevel.Player &&
-                 Caster.AccessLevel <= m.AccessLevel ||
+                (m.X != p.X || m.Y != p.Y || !m.Hidden || (m.AccessLevel != AccessLevel.Player &&
+                 Caster.AccessLevel <= m.AccessLevel) ||
                  !CheckDifficulty(Caster, m)))
               continue;
 

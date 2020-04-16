@@ -147,21 +147,21 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_UsesRemaining = reader.ReadInt();
-          break;
-        }
+          {
+            m_UsesRemaining = reader.ReadInt();
+            break;
+          }
         case 0:
-        {
-          m_UsesRemaining = 50;
-          break;
-        }
+          {
+            m_UsesRemaining = 50;
+            break;
+          }
       }
     }
 
     private class InternalTarget : Target
     {
-      private ProspectorsTool m_Tool;
+      private readonly ProspectorsTool m_Tool;
 
       public InternalTarget(ProspectorsTool tool) : base(2, true, TargetFlags.None) => m_Tool = tool;
 

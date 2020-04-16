@@ -12,13 +12,12 @@ namespace Server.Spells.Necromancy
 {
   public class ExorcismSpell : NecromancerSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Exorcism", "Ort Corp Grav",
       203,
       9031,
       Reagent.NoxCrystal,
-      Reagent.GraveDust
-    );
+      Reagent.GraveDust);
 
     private static readonly int Range = Core.ML ? 48 : 18;
 
@@ -67,7 +66,6 @@ namespace Server.Spells.Necromancy
     public override double RequiredSkill => 80.0;
     public override int RequiredMana => 40;
 
-
     public override bool DelayedDamage => false;
 
     public override bool CheckCast()
@@ -99,7 +97,7 @@ namespace Server.Spells.Necromancy
           IEnumerable<Mobile> targets = r.ChampionSpawn.GetMobilesInRange(Range).Where(IsValidTarget);
 
           foreach (Mobile m in targets)
-            //Surprisingly, no sparkle type effects
+            // Surprisingly, no sparkle type effects
             m.Location = GetNearestShrine(m);
         }
       }
@@ -118,12 +116,12 @@ namespace Server.Spells.Necromancy
       if (c?.Deleted == false && map != null && c.Map == map)
       {
         if (SpellHelper.IsAnyT2A(map, c.Location) && SpellHelper.IsAnyT2A(map, m.Location))
-          return false; //Same Map, both in T2A, ie, same 'sub server'.
+          return false; // Same Map, both in T2A, ie, same 'sub server'.
 
         if (m.Region.IsPartOf<DungeonRegion>() == Region.Find(c.Location, map).IsPartOf<DungeonRegion>())
-          return false; //Same Map, both in Dungeon region OR They're both NOT in a dungeon region.
+          return false; // Same Map, both in Dungeon region OR They're both NOT in a dungeon region.
 
-        //Just an approximation cause RunUO doesn't divide up the world the same way OSI does ;p
+        // Just an approximation cause RunUO doesn't divide up the world the same way OSI does ;p
       }
 
       if (Party.Get(m)?.Contains(Caster) == true)
@@ -143,7 +141,7 @@ namespace Server.Spells.Necromancy
 
       Faction f = Faction.Find(m);
 
-      return Faction.Facet != m.Map || f == null || f != Faction.Find(Caster);
+      return m.Map != Faction.Facet || f == null || f != Faction.Find(Caster);
     }
 
     private static Point3D GetNearestShrine(Mobile m)
@@ -151,7 +149,6 @@ namespace Server.Spells.Necromancy
       Map map = m.Map;
 
       Point3D[] locList;
-
 
       if (map == Map.Felucca || map == Map.Trammel)
         locList = m_BritanniaLocs;

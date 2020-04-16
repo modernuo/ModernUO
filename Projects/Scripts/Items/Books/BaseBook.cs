@@ -25,7 +25,7 @@ namespace Server.Items
         Lines[i] = Utility.Intern(reader.ReadString());
     }
 
-    public string[] Lines{ get; set; }
+    public string[] Lines { get; set; }
 
     public void Serialize(IGenericWriter writer)
     {
@@ -100,12 +100,12 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Writable{ get; set; }
+    public bool Writable { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int PagesCount => Pages.Length;
 
-    public BookPageInfo[] Pages{ get; private set; }
+    public BookPageInfo[] Pages { get; private set; }
 
     public virtual BookContent DefaultContent => null;
 
@@ -116,8 +116,8 @@ namespace Server.Items
         StringBuilder sb = new StringBuilder();
 
         foreach (BookPageInfo bpi in Pages)
-        foreach (string line in bpi.Lines)
-          sb.AppendLine(line);
+          foreach (string line in bpi.Lines)
+            sb.AppendLine(line);
 
         return sb.ToString();
       }
@@ -135,12 +135,8 @@ namespace Server.Items
       }
     }
 
-    #region ISecurable Members
-
     [CommandProperty(AccessLevel.GameMaster)]
-    public SecureLevel Level{ get; set; }
-
-    #endregion
+    public SecureLevel Level { get; set; }
 
     public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
     {
@@ -167,7 +163,6 @@ namespace Server.Items
 
       if (content?.IsMatch(Pages) != true)
         flags |= SaveFlags.Content;
-
 
       writer.Write(4); // version
 
@@ -199,72 +194,72 @@ namespace Server.Items
       switch (version)
       {
         case 4:
-        {
-          Level = (SecureLevel)reader.ReadInt();
-          goto case 3;
-        }
+          {
+            Level = (SecureLevel)reader.ReadInt();
+            goto case 3;
+          }
         case 3:
         case 2:
-        {
-          BookContent content = DefaultContent;
-
-          SaveFlags flags = (SaveFlags)reader.ReadByte();
-
-          if ((flags & SaveFlags.Title) != 0)
-            m_Title = Utility.Intern(reader.ReadString());
-          else if (content != null)
-            m_Title = content.Title;
-
-          if ((flags & SaveFlags.Author) != 0)
-            m_Author = reader.ReadString();
-          else if (content != null)
-            m_Author = content.Author;
-
-          Writable = (flags & SaveFlags.Writable) != 0;
-
-          if ((flags & SaveFlags.Content) != 0)
-          {
-            Pages = new BookPageInfo[reader.ReadEncodedInt()];
-
-            for (int i = 0; i < Pages.Length; ++i)
-              Pages[i] = new BookPageInfo(reader);
-          }
-          else
-          {
-            if (content != null)
-              Pages = content.Copy();
-            else
-              Pages = new BookPageInfo[0];
-          }
-
-          break;
-        }
-        case 1:
-        case 0:
-        {
-          m_Title = reader.ReadString();
-          m_Author = reader.ReadString();
-          Writable = reader.ReadBool();
-
-          if (version == 0 || reader.ReadBool())
-          {
-            Pages = new BookPageInfo[reader.ReadInt()];
-
-            for (int i = 0; i < Pages.Length; ++i)
-              Pages[i] = new BookPageInfo(reader);
-          }
-          else
           {
             BookContent content = DefaultContent;
 
-            if (content != null)
-              Pages = content.Copy();
-            else
-              Pages = new BookPageInfo[0];
-          }
+            SaveFlags flags = (SaveFlags)reader.ReadByte();
 
-          break;
-        }
+            if ((flags & SaveFlags.Title) != 0)
+              m_Title = Utility.Intern(reader.ReadString());
+            else if (content != null)
+              m_Title = content.Title;
+
+            if ((flags & SaveFlags.Author) != 0)
+              m_Author = reader.ReadString();
+            else if (content != null)
+              m_Author = content.Author;
+
+            Writable = (flags & SaveFlags.Writable) != 0;
+
+            if ((flags & SaveFlags.Content) != 0)
+            {
+              Pages = new BookPageInfo[reader.ReadEncodedInt()];
+
+              for (int i = 0; i < Pages.Length; ++i)
+                Pages[i] = new BookPageInfo(reader);
+            }
+            else
+            {
+              if (content != null)
+                Pages = content.Copy();
+              else
+                Pages = new BookPageInfo[0];
+            }
+
+            break;
+          }
+        case 1:
+        case 0:
+          {
+            m_Title = reader.ReadString();
+            m_Author = reader.ReadString();
+            Writable = reader.ReadBool();
+
+            if (version == 0 || reader.ReadBool())
+            {
+              Pages = new BookPageInfo[reader.ReadInt()];
+
+              for (int i = 0; i < Pages.Length; ++i)
+                Pages[i] = new BookPageInfo(reader);
+            }
+            else
+            {
+              BookContent content = DefaultContent;
+
+              if (content != null)
+                Pages = content.Copy();
+              else
+                Pages = new BookPageInfo[0];
+            }
+
+            break;
+          }
       }
 
       if (version < 3 && (Weight == 1 || Weight == 2))

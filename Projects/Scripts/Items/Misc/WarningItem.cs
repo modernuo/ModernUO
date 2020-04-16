@@ -40,10 +40,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string WarningString{ get; set; }
+    public string WarningString { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int WarningNumber{ get; set; }
+    public int WarningNumber { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Range
@@ -57,7 +57,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan ResetDelay{ get; set; }
+    public TimeSpan ResetDelay { get; set; }
 
     public virtual bool OnlyToTriggerer => false;
     public virtual int NeighborRange => 5;
@@ -142,14 +142,14 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          WarningString = reader.ReadString();
-          WarningNumber = reader.ReadInt();
-          m_Range = reader.ReadInt();
-          ResetDelay = reader.ReadTimeSpan();
+          {
+            WarningString = reader.ReadString();
+            WarningNumber = reader.ReadInt();
+            m_Range = reader.ReadInt();
+            ResetDelay = reader.ReadTimeSpan();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
@@ -167,10 +167,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string HintString{ get; set; }
+    public string HintString { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int HintNumber{ get; set; }
+    public int HintNumber { get; set; }
 
     public override bool OnlyToTriggerer => true;
 
@@ -198,12 +198,12 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          HintString = reader.ReadString();
-          HintNumber = reader.ReadInt();
+          {
+            HintString = reader.ReadString();
+            HintNumber = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

@@ -4,14 +4,14 @@ namespace Server.Mobiles
 {
   public class SeekerOfAdventure : BaseEscortable
   {
-    private static string[] m_Dungeons =
+    private static readonly string[] m_Dungeons =
     {
       "Covetous", "Deceit", "Despise",
       "Destard", "Hythloth", "Shame", // Old Code for Pre-ML shards.
       "Wrong"
     };
 
-    private static string[] m_MLDestinations =
+    private static readonly string[] m_MLDestinations =
     {
       "Cove", "Serpent's Hold", "Jhelom", // ML List
       "Nujel'm"

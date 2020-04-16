@@ -16,7 +16,7 @@ namespace Server.Items
      * 
      */
 
-    private static int[] m_itemids =
+    private static readonly int[] m_itemids =
     {
       0x3486, 0x348b, 0x3ae
     };

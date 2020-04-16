@@ -95,7 +95,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private Bandage m_Bandage;
+      private readonly Bandage m_Bandage;
 
       public InternalTarget(Bandage bandage) : base(Bandage.Range, false, TargetFlags.Beneficial) => m_Bandage = bandage;
 
@@ -144,7 +144,7 @@ namespace Server.Items
 
   public class BandageContext
   {
-    private static Dictionary<Mobile, BandageContext> m_Table = new Dictionary<Mobile, BandageContext>();
+    private static readonly Dictionary<Mobile, BandageContext> m_Table = new Dictionary<Mobile, BandageContext>();
 
     public BandageContext(Mobile healer, Mobile patient, TimeSpan delay)
     {
@@ -155,13 +155,13 @@ namespace Server.Items
       Timer.Start();
     }
 
-    public Mobile Healer{ get; }
+    public Mobile Healer { get; }
 
-    public Mobile Patient{ get; }
+    public Mobile Patient { get; }
 
-    public int Slips{ get; set; }
+    public int Slips { get; set; }
 
-    public Timer Timer{ get; private set; }
+    public Timer Timer { get; private set; }
 
     public void Slip()
     {
@@ -227,9 +227,8 @@ namespace Server.Items
         double anatomy = Healer.Skills[secondarySkill].Value;
         double chance = (healing - 68.0) / 50.0 - Slips * 0.02;
 
-        if ((checkSkills = healing >= 80.0 && anatomy >= 80.0) && chance > Utility.RandomDouble()
-            || Core.SE && petPatient is FactionWarHorse && petPatient.ControlMaster == Healer
-        ) //TODO: Dbl check doesn't check for faction of the horse here?
+        if (((checkSkills = healing >= 80.0 && anatomy >= 80.0) && chance > Utility.RandomDouble())
+            || (Core.SE && petPatient is FactionWarHorse && petPatient.ControlMaster == Healer)) // TODO: Dbl check doesn't check for faction of the horse here?
         {
           if (Patient.Map?.CanFit(Patient.Location, 16, false, false) != true)
           {
@@ -494,7 +493,7 @@ namespace Server.Items
         m_Table[healer] = context;
 
         if (!onSelf)
-          patient.SendLocalizedMessage(1008078, false, healer.Name); //  : Attempting to heal you.
+          patient.SendLocalizedMessage(1008078, false, healer.Name); // : Attempting to heal you.
 
         healer.SendLocalizedMessage(500956); // You begin applying the bandages.
         return context;
@@ -505,7 +504,7 @@ namespace Server.Items
 
     private class InternalTimer : Timer
     {
-      private BandageContext m_Context;
+      private readonly BandageContext m_Context;
 
       public InternalTimer(BandageContext context, TimeSpan delay) : base(delay)
       {

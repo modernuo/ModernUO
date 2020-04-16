@@ -16,7 +16,7 @@ namespace Server.Factions
 
     public FactionPersistance(Serial serial) : base(serial) => Instance = this;
 
-    public static FactionPersistance Instance{ get; private set; }
+    public static FactionPersistance Instance { get; private set; }
 
     public override string DefaultName => "Faction Persistance - Internal";
 
@@ -54,22 +54,22 @@ namespace Server.Factions
       switch (version)
       {
         case 0:
-        {
-          PersistedType type;
+          {
+            PersistedType type;
 
-          while ((type = (PersistedType)reader.ReadEncodedInt()) != PersistedType.Terminator)
-            switch (type)
-            {
-              case PersistedType.Faction:
-                new FactionState(reader);
-                break;
-              case PersistedType.Town:
-                new TownState(reader);
-                break;
-            }
+            while ((type = (PersistedType)reader.ReadEncodedInt()) != PersistedType.Terminator)
+              switch (type)
+              {
+                case PersistedType.Faction:
+                  new FactionState(reader);
+                  break;
+                case PersistedType.Town:
+                  new TownState(reader);
+                  break;
+              }
 
-          break;
-        }
+            break;
+          }
       }
     }
 

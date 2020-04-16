@@ -105,10 +105,10 @@ namespace Server.Mobiles
       switch (version)
       {
         case 1:
-        {
-          NextWoolTime = reader.ReadDeltaTime();
-          break;
-        }
+          {
+            NextWoolTime = reader.ReadDeltaTime();
+            break;
+          }
       }
     }
   }

@@ -10,7 +10,7 @@ namespace Server.Mobiles
   public class RealEstateBroker : BaseVendor
   {
     private DateTime m_NextCheckPack;
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public RealEstateBroker() : base("the real estate broker")

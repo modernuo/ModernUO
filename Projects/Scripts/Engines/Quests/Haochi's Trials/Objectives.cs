@@ -138,7 +138,7 @@ namespace Server.Engines.Quests.Samurai
 
     public override object Message => 1063229;
 
-    public bool Dragon{ get; private set; }
+    public bool Dragon { get; private set; }
 
     public override void OnComplete()
     {
@@ -230,7 +230,7 @@ namespace Server.Engines.Quests.Samurai
 
     public override object Message => 1063242;
 
-    public bool KilledCat{ get; private set; }
+    public bool KilledCat { get; private set; }
 
     public override void OnComplete()
     {
@@ -256,7 +256,7 @@ namespace Server.Engines.Quests.Samurai
   {
     public override object Message => 1063072;
 
-    public bool StolenTreasure{ get; set; }
+    public bool StolenTreasure { get; set; }
 
     public override void OnComplete()
     {

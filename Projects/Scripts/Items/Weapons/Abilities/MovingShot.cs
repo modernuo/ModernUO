@@ -15,7 +15,7 @@ namespace Server.Items
 
     public override void OnMiss(Mobile attacker, Mobile defender)
     {
-      //Validates in OnSwing for accuracy scalar
+      // Validates in OnSwing for accuracy scalar
 
       ClearCurrentAbility(attacker);
 
@@ -24,7 +24,7 @@ namespace Server.Items
 
     public override void OnHit(Mobile attacker, Mobile defender, int damage)
     {
-      //Validates in OnSwing for accuracy scalar
+      // Validates in OnSwing for accuracy scalar
 
       ClearCurrentAbility(attacker);
 

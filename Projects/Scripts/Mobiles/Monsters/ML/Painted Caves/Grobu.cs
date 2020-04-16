@@ -55,7 +55,6 @@ namespace Server.Mobiles
       AddLoot(LootPack.FilthyRich, 2);
     }
 
-
     public override void OnDeath(Container c)
     {
       base.OnDeath(c);

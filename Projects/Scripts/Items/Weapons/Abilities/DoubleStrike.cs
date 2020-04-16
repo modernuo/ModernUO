@@ -34,7 +34,7 @@ namespace Server.Items
 
       IWeapon weapon = attacker.Weapon;
 
-      if (!(weapon != null && attacker.InRange(defender, weapon.MaxRange) &&attacker.InLOS(defender)))
+      if (!(weapon != null && attacker.InRange(defender, weapon.MaxRange) && attacker.InLOS(defender)))
         return;
 
       BaseWeapon.InDoubleStrike = true;

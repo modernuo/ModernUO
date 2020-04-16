@@ -342,7 +342,7 @@ namespace Server.Items
     }
   }
 
-  //remove 
+  // remove 
   public class SmallBlueFlask : Item
   {
     [Constructible]
@@ -1100,7 +1100,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
   }
-
 
   public class EmptyVial : Item
   {

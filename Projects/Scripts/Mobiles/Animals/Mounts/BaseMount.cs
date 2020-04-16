@@ -28,9 +28,9 @@ namespace Server.Mobiles
     public virtual TimeSpan MountAbilityDelay => TimeSpan.Zero;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime NextMountAbility{ get; set; }
+    public DateTime NextMountAbility { get; set; }
 
-    protected Item InternalItem{ get; private set; }
+    protected Item InternalItem { get; private set; }
 
     public virtual bool AllowMaleRider => true;
     public virtual bool AllowFemaleRider => true;
@@ -160,20 +160,20 @@ namespace Server.Mobiles
       switch (version)
       {
         case 1:
-        {
-          NextMountAbility = reader.ReadDateTime();
-          goto case 0;
-        }
+          {
+            NextMountAbility = reader.ReadDateTime();
+            goto case 0;
+          }
         case 0:
-        {
-          m_Rider = reader.ReadMobile();
-          InternalItem = reader.ReadItem();
+          {
+            m_Rider = reader.ReadMobile();
+            InternalItem = reader.ReadItem();
 
-          if (InternalItem == null)
-            Delete();
+            if (InternalItem == null)
+              Delete();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -224,8 +224,8 @@ namespace Server.Mobiles
       if (from.InRange(this, 1))
       {
         bool canAccess = from.AccessLevel >= AccessLevel.GameMaster
-                         || Controlled && ControlMaster == from
-                         || Summoned && SummonMaster == from;
+                         || (Controlled && ControlMaster == from)
+                         || (Summoned && SummonMaster == from);
 
         if (canAccess)
         {
@@ -334,14 +334,14 @@ namespace Server.Mobiles
       switch (version)
       {
         case 0:
-        {
-          m_Mount = reader.ReadMobile() as BaseMount;
+          {
+            m_Mount = reader.ReadMobile() as BaseMount;
 
-          if (m_Mount == null)
-            Delete();
+            if (m_Mount == null)
+              Delete();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

@@ -1,8 +1,8 @@
-using Server.Utilities;
 using System;
 using System.Globalization;
 using System.Reflection;
 using System.Reflection.Emit;
+using Server.Utilities;
 
 namespace Server.Commands.Generic
 {
@@ -47,11 +47,11 @@ namespace Server.Commands.Generic
       Value = value;
     }
 
-    public Type Type{ get; }
+    public Type Type { get; }
 
-    public object Value{ get; private set; }
+    public object Value { get; private set; }
 
-    public FieldInfo Field{ get; private set; }
+    public FieldInfo Field { get; private set; }
 
     public bool HasField => Field != null;
 
@@ -119,8 +119,7 @@ namespace Server.Commands.Generic
           BindingFlags.Public | BindingFlags.Static,
           null,
           new[] { typeof(string), typeof(NumberStyles) },
-          null
-        );
+          null);
 
         if (parseNumber != null)
         {
@@ -142,8 +141,7 @@ namespace Server.Commands.Generic
             BindingFlags.Public | BindingFlags.Static,
             null,
             new[] { typeof(string) },
-            null
-          );
+            null);
 
           parseMethod = parseGeneral;
           parseArgs = new object[] { toParse };
@@ -158,12 +156,10 @@ namespace Server.Commands.Generic
             Field = typeBuilder.DefineField(
               fieldName,
               Type,
-              FieldAttributes.Private | FieldAttributes.InitOnly
-            );
+              FieldAttributes.Private | FieldAttributes.InitOnly);
 
-            //            parseMethod.Invoke(null,
+            // parseMethod.Invoke(null,
             //              parseArgs.Length == 2 ? new object[] {toParse, (int) parseArgs[1]} : new object[] {toParse});
-
 
             il.Emit(OpCodes.Ldarg_0);
 
@@ -179,8 +175,7 @@ namespace Server.Commands.Generic
         else
         {
           throw new InvalidOperationException(
-            $"Unable to convert string \"{Value}\" into type '{Type}'."
-          );
+            $"Unable to convert string \"{Value}\" into type '{Type}'.");
         }
       }
     }
@@ -215,9 +210,9 @@ namespace Server.Commands.Generic
 
   public sealed class StringCondition : PropertyCondition
   {
-    private bool m_IgnoreCase;
-    private StringOperator m_Operator;
-    private PropertyValue m_Value;
+    private readonly bool m_IgnoreCase;
+    private readonly StringOperator m_Operator;
+    private readonly PropertyValue m_Value;
 
     public StringCondition(Property property, bool not, StringOperator op, object value, bool ignoreCase)
       : base(property, not)
@@ -280,9 +275,7 @@ namespace Server.Commands.Generic
               typeof(string),
               typeof(string)
             },
-            null
-          )
-        );
+            null));
 
         emitter.Chain(m_Property);
         m_Value.Load(emitter);
@@ -319,9 +312,7 @@ namespace Server.Commands.Generic
             {
               typeof(string)
             },
-            null
-          )
-        );
+            null));
 
         m_Value.Load(emitter);
 
@@ -347,8 +338,8 @@ namespace Server.Commands.Generic
 
   public sealed class ComparisonCondition : PropertyCondition
   {
-    private ComparisonOperator m_Operator;
-    private PropertyValue m_Value;
+    private readonly ComparisonOperator m_Operator;
+    private readonly PropertyValue m_Value;
 
     public ComparisonCondition(Property property, bool not, ComparisonOperator op, object value)
       : base(property, not)
@@ -369,7 +360,7 @@ namespace Server.Commands.Generic
       bool inverse = false;
 
       bool couldCompare =
-        emitter.CompareTo(1, delegate { m_Value.Load(emitter); });
+        emitter.CompareTo(1, () => { m_Value.Load(emitter); });
 
       if (couldCompare)
       {
@@ -449,17 +440,13 @@ namespace Server.Commands.Generic
       TypeBuilder typeBuilder = assembly.DefineType(
         $"__conditional{index}",
         TypeAttributes.Public,
-        typeof(object)
-      );
-
-      #region Constructor
+        typeof(object));
 
       {
         ConstructorBuilder ctor = typeBuilder.DefineConstructor(
           MethodAttributes.Public,
           CallingConventions.Standard,
-          Type.EmptyTypes
-        );
+          Type.EmptyTypes);
 
         ILGenerator il = ctor.GetILGenerator();
 
@@ -474,15 +461,9 @@ namespace Server.Commands.Generic
         il.Emit(OpCodes.Ret);
       }
 
-      #endregion
-
-      #region IComparer
-
       typeBuilder.AddInterfaceImplementation(typeof(IConditional));
 
       MethodBuilder compareMethod;
-
-      #region Compare
 
       {
         MethodEmitter emitter = new MethodEmitter(typeBuilder);
@@ -531,16 +512,10 @@ namespace Server.Commands.Generic
             new[]
             {
               typeof(object)
-            }
-          )
-        );
+            }));
 
         compareMethod = emitter.Method;
       }
-
-      #endregion
-
-      #endregion
 
       Type conditionalType = typeBuilder.CreateType();
 

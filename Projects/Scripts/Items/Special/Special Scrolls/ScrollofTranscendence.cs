@@ -50,20 +50,17 @@ namespace Server.Items
       if (!(base.CanUse(from) && from is PlayerMobile pm))
         return false;
 
-      #region Mondain's Legacy
       MLQuestContext context = MLQuestSystem.GetContext(pm);
 
       if (context != null)
         foreach (MLQuestInstance instance in context.QuestInstances)
-        foreach (BaseObjectiveInstance objective in instance.Objectives)
-          if (!objective.Expired && objective is GainSkillObjectiveInstance objectiveInstance &&
-              objectiveInstance.Handles(Skill))
-          {
-            from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
-            return false;
-          }
-
-      #endregion
+          foreach (BaseObjectiveInstance objective in instance.Objectives)
+            if (!objective.Expired && objective is GainSkillObjectiveInstance objectiveInstance &&
+                objectiveInstance.Handles(Skill))
+            {
+              from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
+              return false;
+            }
 
       if (pm.AcceleratedStart > DateTime.UtcNow)
       {
@@ -140,7 +137,7 @@ namespace Server.Items
     {
       base.Deserialize(reader);
 
-      int version = InheritsItem ? 0 : reader.ReadInt(); //Required for SpecialScroll insertion
+      int version = InheritsItem ? 0 : reader.ReadInt(); // Required for SpecialScroll insertion
 
       LootType = LootType.Cursed;
       Insured = false;

@@ -2,8 +2,8 @@
 {
   internal class Tub : BaseWaterContainer
   {
-    private static int vItemID = 0xe83;
-    private static int fItemID = 0xe7b;
+    private static readonly int vItemID = 0xe83;
+    private static readonly int fItemID = 0xe7b;
 
     [Constructible]
     public Tub(bool filled = false)

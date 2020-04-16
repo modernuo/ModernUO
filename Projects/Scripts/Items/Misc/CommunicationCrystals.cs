@@ -25,9 +25,9 @@ namespace Server.Items
       Amount = amount;
     }
 
-    public Type Type{ get; }
+    public Type Type { get; }
 
-    public int Amount{ get; }
+    public int Amount { get; }
 
     public static CrystalRechargeInfo Get(Type type)
     {
@@ -83,7 +83,7 @@ namespace Server.Items
       }
     }
 
-    public List<ReceiverCrystal> Receivers{ get; private set; }
+    public List<ReceiverCrystal> Receivers { get; private set; }
 
     public override bool HandlesOnSpeech => true;
 
@@ -113,7 +113,7 @@ namespace Server.Items
 
     public override void OnSpeech(SpeechEventArgs e)
     {
-      if (!Active || Receivers.Count == 0 || RootParent != null && !(RootParent is Mobile))
+      if (!Active || Receivers.Count == 0 || (RootParent != null && !(RootParent is Mobile)))
         return;
 
       if (e.Type == MessageType.Emote)
@@ -172,7 +172,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private BroadcastCrystal m_Crystal;
+      private readonly BroadcastCrystal m_Crystal;
 
       public InternalTarget(BroadcastCrystal crystal) : base(2, false, TargetFlags.None) => m_Crystal = crystal;
 
@@ -380,7 +380,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private ReceiverCrystal m_Crystal;
+      private readonly ReceiverCrystal m_Crystal;
 
       public InternalTarget(ReceiverCrystal crystal) : base(-1, false, TargetFlags.None) => m_Crystal = crystal;
 

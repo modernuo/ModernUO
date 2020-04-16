@@ -49,10 +49,10 @@ namespace Server.Mobiles
     public override string CorpseName => "a cow corpse";
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime MilkedOn{ get; set; }
+    public DateTime MilkedOn { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Milk{ get; set; }
+    public int Milk { get; set; }
 
     public override string DefaultName => "a cow";
 

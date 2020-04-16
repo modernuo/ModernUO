@@ -19,16 +19,16 @@ namespace Server.Engines.Craft
       Message = message;
     }
 
-    public Type ItemType{ get; }
+    public Type ItemType { get; }
 
-    public string NameString{ get; }
+    public string NameString { get; }
 
-    public int NameNumber{ get; }
+    public int NameNumber { get; }
 
-    public int GenericNameNumber{ get; }
+    public int GenericNameNumber { get; }
 
-    public object Message{ get; }
+    public object Message { get; }
 
-    public double RequiredSkill{ get; }
+    public double RequiredSkill { get; }
   }
 }

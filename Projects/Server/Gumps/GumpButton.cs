@@ -88,7 +88,7 @@ namespace Server.Gumps
         {
           m_Type = value;
 
-          Gump parent = Parent;
+          var parent = Parent;
 
           parent?.Invalidate();
         }
@@ -101,7 +101,8 @@ namespace Server.Gumps
       set => Delta(ref m_Param, value);
     }
 
-    public override string Compile(NetState ns) => $"{{ button {m_X} {m_Y} {m_ID1} {m_ID2} {(int)m_Type} {m_Param} {m_ButtonID} }}";
+    public override string Compile(NetState ns) =>
+      $"{{ button {m_X} {m_Y} {m_ID1} {m_ID2} {(int)m_Type} {m_Param} {m_ButtonID} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

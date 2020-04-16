@@ -73,29 +73,29 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.2 < Utility.RandomDouble())
+      if (Utility.RandomDouble() > 0.2)
         return;
 
       switch (Utility.Random(3))
       {
         case 0:
-        {
-          defender.SendLocalizedMessage(1004014); // You have been stunned!
-          defender.Freeze(TimeSpan.FromSeconds(4.0));
-          break;
-        }
+          {
+            defender.SendLocalizedMessage(1004014); // You have been stunned!
+            defender.Freeze(TimeSpan.FromSeconds(4.0));
+            break;
+          }
         case 1:
-        {
-          defender.SendAsciiMessage("You have been hit by a paralyzing blow!");
-          defender.Freeze(TimeSpan.FromSeconds(3.0));
-          break;
-        }
+          {
+            defender.SendAsciiMessage("You have been hit by a paralyzing blow!");
+            defender.Freeze(TimeSpan.FromSeconds(3.0));
+            break;
+          }
         case 2:
-        {
-          AOS.Damage(defender, this, Utility.Random(10, 5), 100, 0, 0, 0, 0);
-          defender.SendAsciiMessage("You have been hit by a critical strike!");
-          break;
-        }
+          {
+            AOS.Damage(defender, this, Utility.Random(10, 5), 100, 0, 0, 0, 0);
+            defender.SendAsciiMessage("You have been hit by a critical strike!");
+            break;
+          }
       }
     }
 

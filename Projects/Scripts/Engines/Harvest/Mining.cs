@@ -10,7 +10,7 @@ namespace Server.Engines.Harvest
   {
     private static Mining m_System;
 
-    private static int[] m_Offsets =
+    private static readonly int[] m_Offsets =
     {
       -1, -1,
       -1, 0,
@@ -24,8 +24,6 @@ namespace Server.Engines.Harvest
 
     private Mining()
     {
-      #region Mining for ore and stone
-
       OreAndStone = new HarvestDefinition
       {
         BankWidth = 8,
@@ -91,7 +89,7 @@ namespace Server.Engines.Harvest
       if (Core.ML)
         OreAndStone.BonusResources = new[]
         {
-          new BonusHarvestResource(0, 99.4, null, null), //Nothing
+          new BonusHarvestResource(0, 99.4, null, null), // Nothing
           new BonusHarvestResource(100, .1, 1072562, typeof(BlueDiamond)),
           new BonusHarvestResource(100, .1, 1072567, typeof(DarkSapphire)),
           new BonusHarvestResource(100, .1, 1072570, typeof(EcruCitrine)),
@@ -104,10 +102,6 @@ namespace Server.Engines.Harvest
       OreAndStone.RandomizeVeins = Core.ML;
 
       Definitions.Add(OreAndStone);
-
-      #endregion
-
-      #region Mining for sand
 
       Sand = new HarvestDefinition
       {
@@ -150,15 +144,13 @@ namespace Server.Engines.Harvest
       Sand.Veins = veins;
 
       Definitions.Add(Sand);
-
-      #endregion
     }
 
     public static Mining System => m_System ?? (m_System = new Mining());
 
-    public HarvestDefinition OreAndStone{ get; }
+    public HarvestDefinition OreAndStone { get; }
 
-    public HarvestDefinition Sand{ get; }
+    public HarvestDefinition Sand { get; }
 
     public override Type GetResourceType(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
       HarvestResource resource)
@@ -166,13 +158,11 @@ namespace Server.Engines.Harvest
       if (def != OreAndStone)
         return base.GetResourceType(from, tool, def, map, loc, resource);
 
-
       if (from.Skills.Mining.Base >= 100.0 && from is PlayerMobile pm && pm.StoneMining && pm.ToggleMiningStone
-          && 0.1 > Utility.RandomDouble())
+          && Utility.RandomDouble() < 0.1)
         return resource.Types[1];
 
       return resource.Types[0];
-
     }
 
     public override bool CheckHarvest(Mobile from, Item tool)
@@ -247,7 +237,7 @@ namespace Server.Engines.Harvest
     public override void OnHarvestFinished(Mobile from, Item tool, HarvestDefinition def, HarvestVein vein,
       HarvestBank bank, HarvestResource resource, object harvested)
     {
-      if (tool is GargoylesPickaxe && def == OreAndStone && 0.1 > Utility.RandomDouble())
+      if (tool is GargoylesPickaxe && def == OreAndStone && Utility.RandomDouble() < 0.1)
       {
         HarvestResource res = vein.PrimaryResource;
 
@@ -324,9 +314,7 @@ namespace Server.Engines.Harvest
         from.SendLocalizedMessage(501863); // You can't mine that.
     }
 
-    #region Tile lists
-
-    private static int[] m_MountainAndCaveTiles =
+    private static readonly int[] m_MountainAndCaveTiles =
     {
       220, 221, 222, 223, 224, 225, 226, 227, 228, 229,
       230, 231, 236, 237, 238, 239, 240, 241, 242, 243,
@@ -365,7 +353,7 @@ namespace Server.Engines.Harvest
       0x4549, 0x454A, 0x454B, 0x454C, 0x454D, 0x454E, 0x454F
     };
 
-    private static int[] m_SandTiles =
+    private static readonly int[] m_SandTiles =
     {
       22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
       32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
@@ -389,7 +377,5 @@ namespace Server.Engines.Harvest
       1617, 1618, 1623, 1624, 1625, 1626, 1635, 1636, 1637,
       1638, 1639, 1640, 1641, 1642, 1647, 1648, 1649, 1650
     };
-
-    #endregion
   }
 }

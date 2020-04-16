@@ -14,8 +14,8 @@ namespace Server.Mobiles
       Map.Ilshenar
     };
 
-    private static TimeSpan FastRegenRate = TimeSpan.FromSeconds(.5);
-    private static TimeSpan CPUSaverRate = TimeSpan.FromSeconds(2);
+    private static readonly TimeSpan FastRegenRate = TimeSpan.FromSeconds(.5);
+    private static readonly TimeSpan CPUSaverRate = TimeSpan.FromSeconds(2);
 
     public static Type[] Artifacts =
     {
@@ -191,7 +191,7 @@ namespace Server.Mobiles
 
     private class ParagonStamRegen : Timer
     {
-      private BaseCreature m_Owner;
+      private readonly BaseCreature m_Owner;
 
       public ParagonStamRegen(Mobile m)
         : base(FastRegenRate, FastRegenRate)

@@ -29,8 +29,8 @@ namespace Server.Mobiles
       SetSkill(SkillName.Tactics, 65.1, 90.0); // Unknown
       SetSkill(SkillName.Wrestling, 65.1, 85.0); // Unknown
 
-      Fame = 12500; //Unknown
-      Karma = 12500; //Unknown
+      Fame = 12500; // Unknown
+      Karma = 12500; // Unknown
 
       VirtualArmor = 24;
       PackItem(new Log(Utility.RandomMinMax(23, 34)));
@@ -58,7 +58,7 @@ namespace Server.Mobiles
 
     public override void GenerateLoot()
     {
-      AddLoot(LootPack.Average); //Unknown
+      AddLoot(LootPack.Average); // Unknown
     }
 
     public override void Serialize(IGenericWriter writer)

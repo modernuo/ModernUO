@@ -4,7 +4,7 @@ namespace Server.Engines.Plants
 {
   public class PlantPourTarget : Target
   {
-    private PlantItem m_Plant;
+    private readonly PlantItem m_Plant;
 
     public PlantPourTarget(PlantItem plant) : base(3, true, TargetFlags.None) => m_Plant = plant;
 

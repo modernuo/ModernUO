@@ -17,7 +17,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsShipwreckedItem{ get; set; }
+    public bool IsShipwreckedItem { get; set; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -37,10 +37,10 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          IsShipwreckedItem = reader.ReadBool();
-          break;
-        }
+          {
+            IsShipwreckedItem = reader.ReadBool();
+            break;
+          }
       }
     }
 
@@ -67,7 +67,7 @@ namespace Server.Items
 
       if (Quality == ClothingQuality.Exceptional)
         DistributeBonuses(tool is BaseRunicTool ? 6 :
-          Core.SE ? 15 : 14); //BLAME OSI. (We can't confirm it's an OSI bug yet.)
+          Core.SE ? 15 : 14); // BLAME OSI. (We can't confirm it's an OSI bug yet.)
 
       return base.OnCraft(quality, makersMark, from, craftSystem, typeRes, tool, craftItem, resHue);
     }
@@ -631,7 +631,7 @@ namespace Server.Items
   public class SavageMask : BaseHat
   {
     [Constructible]
-    public SavageMask() : this(GetRandomHue()) {}
+    public SavageMask() : this(GetRandomHue()) { }
 
     [Constructible]
     public SavageMask(int hue) : base(0x154B, hue) => Weight = 2.0;

@@ -16,17 +16,17 @@ namespace Server.Engines.Craft
       Quality = quality;
     }
 
-    public Mobile From{ get; }
+    public Mobile From { get; }
 
-    public CraftItem CraftItem{ get; }
+    public CraftItem CraftItem { get; }
 
-    public CraftSystem CraftSystem{ get; }
+    public CraftSystem CraftSystem { get; }
 
-    public Type TypeRes{ get; }
+    public Type TypeRes { get; }
 
-    public BaseTool Tool{ get; }
+    public BaseTool Tool { get; }
 
-    public int Quality{ get; }
+    public int Quality { get; }
 
     public abstract void EndCraftAction();
     public abstract Item CompleteCraft(out int message);

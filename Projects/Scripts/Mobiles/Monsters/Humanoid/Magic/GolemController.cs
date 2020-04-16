@@ -46,7 +46,7 @@ namespace Server.Mobiles
 
       VirtualArmor = 16;
 
-      if (0.7 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.7)
         PackItem(new ArcaneGem());
     }
 

@@ -32,28 +32,28 @@ namespace Server
 
     protected BaseHairInfo(IGenericReader reader)
     {
-      int version = reader.ReadInt();
+      var version = reader.ReadInt();
 
       switch (version)
       {
         case 0:
-        {
-          ItemID = reader.ReadInt();
-          Hue = reader.ReadInt();
-          break;
-        }
+          {
+            ItemID = reader.ReadInt();
+            Hue = reader.ReadInt();
+            break;
+          }
       }
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ItemID{ get; set; }
+    public int ItemID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Hue{ get; set; }
+    public int Hue { get; set; }
 
     public virtual void Serialize(IGenericWriter writer)
     {
-      writer.Write(0); //version
+      writer.Write(0); // version
       writer.Write(ItemID);
       writer.Write(Hue);
     }
@@ -106,7 +106,7 @@ namespace Server
     public HairEquipUpdate(Mobile parent)
       : base(0x2E, 15)
     {
-      int hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.HairHue;
+      var hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.HairHue;
 
       m_Stream.Write(HairInfo.FakeSerial(parent));
       m_Stream.Write((short)parent.HairItemID);
@@ -122,7 +122,7 @@ namespace Server
     public FacialHairEquipUpdate(Mobile parent)
       : base(0x2E, 15)
     {
-      int hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.FacialHairHue;
+      var hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.FacialHairHue;
 
       m_Stream.Write(FacialHairInfo.FakeSerial(parent));
       m_Stream.Write((short)parent.FacialHairItemID);

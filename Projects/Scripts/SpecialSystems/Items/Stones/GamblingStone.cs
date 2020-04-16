@@ -115,11 +115,11 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_GamblePot = reader.ReadInt();
+          {
+            m_GamblePot = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

@@ -48,7 +48,8 @@ namespace Server.Gumps
 
     private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
 
-    private static bool PrevLabel = OldStyle, NextLabel = OldStyle;
+    private static readonly bool PrevLabel = OldStyle;
+    private static readonly bool NextLabel = OldStyle;
 
     private static readonly int PrevLabelOffsetX = PrevWidth + 1;
     private static readonly int PrevLabelOffsetY = 0;
@@ -62,7 +63,7 @@ namespace Server.Gumps
     protected PropertyInfo m_Property;
     protected Stack<StackEntry> m_Stack;
 
-    private object[] m_Values;
+    private readonly object[] m_Values;
 
     public SetListOptionGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int propspage,
       List<object> list, string[] names, object[] values) : base(GumpOffsetX, GumpOffsetY)
@@ -95,7 +96,6 @@ namespace Server.Gumps
         AddBackground(0, 0, BackWidth, backHeight, BackGumpID);
         AddImageTiled(BorderSize, BorderSize, TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0), totalHeight,
           OffsetGumpID);
-
 
         int x = BorderSize + OffsetSize;
         int y = BorderSize + OffsetSize;
@@ -133,7 +133,6 @@ namespace Server.Gumps
           if (NextLabel)
             AddLabel(x + NextLabelOffsetX, y + NextLabelOffsetY, TextHue, "Next");
         }
-
 
         AddRect(0, prop.Name, 0);
 

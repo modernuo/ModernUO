@@ -6,8 +6,6 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Definitions
 {
-  #region Quests
-
   public class VilePoison : MLQuest
   {
     public VilePoison()
@@ -184,10 +182,6 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsChainTriggered => true;
   }
 
-  #endregion
-
-  #region Mobiles
-
   [QuesterName("Jamal (near Blighted Grove)")]
   public class Jamal : BaseCreature
   {
@@ -264,8 +258,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
       MLQuestSystem.Tell(this, pm, Utility.RandomList(
         1074209, // Hey, could you help me out with something?
-        1074215 // Don’t test my patience you sniveling worm!
-      ));
+        1074215)); // Don’t test my patience you sniveling worm!
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -282,6 +275,4 @@ namespace Server.Engines.MLQuests.Definitions
       reader.ReadInt();
     }
   }
-
-  #endregion
 }

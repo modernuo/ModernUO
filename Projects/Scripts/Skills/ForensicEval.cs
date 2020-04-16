@@ -36,13 +36,13 @@ namespace Server.SkillHandlers
           if (from.CheckTargetSkill(SkillName.Forensics, target, 40.0, 100.0))
           {
             if (target is PlayerMobile pm && pm.NpcGuild == NpcGuild.ThievesGuild)
-              from.SendLocalizedMessage(501004); //That individual is a thief!
+              from.SendLocalizedMessage(501004); // That individual is a thief!
             else
-              from.SendLocalizedMessage(501003); //You notice nothing unusual.
+              from.SendLocalizedMessage(501003); // You notice nothing unusual.
           }
           else
           {
-            from.SendLocalizedMessage(501001); //You cannot determain anything useful.
+            from.SendLocalizedMessage(501001); // You cannot determain anything useful.
           }
         }
         else if (target is Corpse c)
@@ -57,7 +57,7 @@ namespace Server.SkillHandlers
 
             if (((Body)c.Amount).IsHuman)
               from.SendLocalizedMessage(1042751,
-                c.Killer == null ? "no one" : c.Killer.Name); //This person was killed by ~1_KILLER_NAME~
+                c.Killer == null ? "no one" : c.Killer.Name); // This person was killed by ~1_KILLER_NAME~
 
             if (c.Looters.Count > 0)
             {
@@ -70,24 +70,24 @@ namespace Server.SkillHandlers
               }
 
               from.SendLocalizedMessage(1042752,
-                sb.ToString()); //This body has been distrubed by ~1_PLAYER_NAMES~
+                sb.ToString()); // This body has been distrubed by ~1_PLAYER_NAMES~
             }
             else
             {
-              from.SendLocalizedMessage(501002); //The corpse has not be desecrated.
+              from.SendLocalizedMessage(501002); // The corpse has not be desecrated.
             }
           }
           else
           {
-            from.SendLocalizedMessage(501001); //You cannot determain anything useful.
+            from.SendLocalizedMessage(501001); // You cannot determain anything useful.
           }
         }
         else if (target is ILockpickable p)
         {
           if (p.Picker != null)
-            from.SendLocalizedMessage(1042749, p.Picker.Name); //This lock was opened by ~1_PICKER_NAME~
+            from.SendLocalizedMessage(1042749, p.Picker.Name); // This lock was opened by ~1_PICKER_NAME~
           else
-            from.SendLocalizedMessage(501003); //You notice nothing unusual.
+            from.SendLocalizedMessage(501003); // You notice nothing unusual.
         }
       }
     }

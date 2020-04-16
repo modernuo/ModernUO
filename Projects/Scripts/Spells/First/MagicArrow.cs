@@ -4,12 +4,11 @@ namespace Server.Spells.First
 {
   public class MagicArrowSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Magic Arrow", "In Por Ylem",
       212,
       9041,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public MagicArrowSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

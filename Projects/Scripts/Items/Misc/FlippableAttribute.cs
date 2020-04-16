@@ -56,7 +56,7 @@ namespace Server.Items
   {
     public FlippableAttribute(params int[] itemIDs) => ItemIDs = itemIDs;
 
-    public int[] ItemIDs{ get; }
+    public int[] ItemIDs { get; }
 
     public virtual void Flip(Item item)
     {

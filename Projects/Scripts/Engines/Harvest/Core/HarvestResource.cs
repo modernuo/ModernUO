@@ -13,15 +13,15 @@ namespace Server.Engines.Harvest
       SuccessMessage = message;
     }
 
-    public Type[] Types{ get; set; }
+    public Type[] Types { get; set; }
 
-    public double ReqSkill{ get; set; }
+    public double ReqSkill { get; set; }
 
-    public double MinSkill{ get; set; }
+    public double MinSkill { get; set; }
 
-    public double MaxSkill{ get; set; }
+    public double MaxSkill { get; set; }
 
-    public object SuccessMessage{ get; }
+    public object SuccessMessage { get; }
 
     public void SendSuccessTo(Mobile m)
     {

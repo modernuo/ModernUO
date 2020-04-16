@@ -37,7 +37,7 @@ namespace Server.Mobiles
 
       VirtualArmor = 28;
 
-      if (0.25 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.25)
         PackItem(new Board(10));
       else
         PackItem(new Log(10));
@@ -116,10 +116,10 @@ namespace Server.Mobiles
 
       if (Hits > HitsMax / 4)
       {
-        if (0.25 >= Utility.RandomDouble())
+        if (Utility.RandomDouble() <= 0.25)
           SpawnBogling(attacker);
       }
-      else if (0.25 >= Utility.RandomDouble())
+      else if (Utility.RandomDouble() <= 0.25)
         EatBoglings();
     }
   }

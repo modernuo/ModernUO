@@ -5,67 +5,67 @@ namespace Server.Engines.Harvest
 {
   public class HarvestDefinition
   {
-    public int BankWidth{ get; set; }
+    public int BankWidth { get; set; }
 
-    public int BankHeight{ get; set; }
+    public int BankHeight { get; set; }
 
-    public int MinTotal{ get; set; }
+    public int MinTotal { get; set; }
 
-    public int MaxTotal{ get; set; }
+    public int MaxTotal { get; set; }
 
-    public int[] Tiles{ get; set; }
+    public int[] Tiles { get; set; }
 
-    public bool RangedTiles{ get; set; }
+    public bool RangedTiles { get; set; }
 
-    public TimeSpan MinRespawn{ get; set; }
+    public TimeSpan MinRespawn { get; set; }
 
-    public TimeSpan MaxRespawn{ get; set; }
+    public TimeSpan MaxRespawn { get; set; }
 
-    public int MaxRange{ get; set; }
+    public int MaxRange { get; set; }
 
-    public int ConsumedPerHarvest{ get; set; }
+    public int ConsumedPerHarvest { get; set; }
 
-    public int ConsumedPerFeluccaHarvest{ get; set; }
+    public int ConsumedPerFeluccaHarvest { get; set; }
 
-    public bool PlaceAtFeetIfFull{ get; set; }
+    public bool PlaceAtFeetIfFull { get; set; }
 
-    public SkillName Skill{ get; set; }
+    public SkillName Skill { get; set; }
 
-    public int[] EffectActions{ get; set; }
+    public int[] EffectActions { get; set; }
 
-    public int[] EffectCounts{ get; set; }
+    public int[] EffectCounts { get; set; }
 
-    public int[] EffectSounds{ get; set; }
+    public int[] EffectSounds { get; set; }
 
-    public TimeSpan EffectSoundDelay{ get; set; }
+    public TimeSpan EffectSoundDelay { get; set; }
 
-    public TimeSpan EffectDelay{ get; set; }
+    public TimeSpan EffectDelay { get; set; }
 
-    public object NoResourcesMessage{ get; set; }
+    public object NoResourcesMessage { get; set; }
 
-    public object OutOfRangeMessage{ get; set; }
+    public object OutOfRangeMessage { get; set; }
 
-    public object TimedOutOfRangeMessage{ get; set; }
+    public object TimedOutOfRangeMessage { get; set; }
 
-    public object DoubleHarvestMessage{ get; set; }
+    public object DoubleHarvestMessage { get; set; }
 
-    public object FailMessage{ get; set; }
+    public object FailMessage { get; set; }
 
-    public object PackFullMessage{ get; set; }
+    public object PackFullMessage { get; set; }
 
-    public object ToolBrokeMessage{ get; set; }
+    public object ToolBrokeMessage { get; set; }
 
-    public HarvestResource[] Resources{ get; set; }
+    public HarvestResource[] Resources { get; set; }
 
-    public HarvestVein[] Veins{ get; set; }
+    public HarvestVein[] Veins { get; set; }
 
-    public BonusHarvestResource[] BonusResources{ get; set; }
+    public BonusHarvestResource[] BonusResources { get; set; }
 
-    public bool RaceBonus{ get; set; }
+    public bool RaceBonus { get; set; }
 
-    public bool RandomizeVeins{ get; set; }
+    public bool RandomizeVeins { get; set; }
 
-    public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks{ get; }
+    public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks { get; }
       = new Dictionary<Map, Dictionary<Point2D, HarvestBank>>();
 
     public void SendMessageTo(Mobile from, object message)

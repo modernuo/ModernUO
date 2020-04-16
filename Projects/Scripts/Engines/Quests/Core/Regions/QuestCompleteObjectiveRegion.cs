@@ -7,8 +7,8 @@ namespace Server.Engines.Quests
 {
   public class QuestCompleteObjectiveRegion : BaseRegion
   {
-    private Type m_Objective;
-    private Type m_Quest;
+    private readonly Type m_Objective;
+    private readonly Type m_Quest;
 
     public QuestCompleteObjectiveRegion(XmlElement xml, Map map, Region parent) : base(xml, map, parent)
     {

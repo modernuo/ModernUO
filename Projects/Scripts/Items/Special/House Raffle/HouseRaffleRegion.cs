@@ -7,7 +7,7 @@ namespace Server.Regions
 {
   public class HouseRaffleRegion : BaseRegion
   {
-    private HouseRaffleStone m_Stone;
+    private readonly HouseRaffleStone m_Stone;
 
     public HouseRaffleRegion(HouseRaffleStone stone)
       : base(null, stone.PlotFacet, DefaultPriority, stone.PlotBounds) =>

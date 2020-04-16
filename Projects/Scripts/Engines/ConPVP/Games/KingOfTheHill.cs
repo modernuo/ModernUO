@@ -30,7 +30,7 @@ namespace Server.Engines.ConPVP
     {
     }
 
-    public Mobile King{ get; private set; }
+    public Mobile King { get; private set; }
 
     public KHGame Game
     {
@@ -47,7 +47,7 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ScoreInterval{ get; set; }
+    public int ScoreInterval { get; set; }
 
     public int CapturesSoFar
     {
@@ -68,10 +68,10 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 0:
-        {
-          ScoreInterval = reader.ReadEncodedInt();
-          break;
-        }
+          {
+            ScoreInterval = reader.ReadEncodedInt();
+            break;
+          }
       }
     }
 
@@ -182,7 +182,7 @@ namespace Server.Engines.ConPVP
     private class KingTimer : Timer
     {
       private int m_Counter;
-      private HillOfTheKing m_Hill;
+      private readonly HillOfTheKing m_Hill;
 
       public KingTimer(HillOfTheKing hill)
         : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
@@ -194,7 +194,7 @@ namespace Server.Engines.ConPVP
         Priority = TimerPriority.FiftyMS;
       }
 
-      public int Captures{ get; private set; }
+      public int Captures { get; private set; }
 
       public void StartHillTicker()
       {
@@ -329,10 +329,10 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 0:
-        {
-          m_Controller = reader.ReadItem() as KHController;
-          break;
-        }
+          {
+            m_Controller = reader.ReadItem() as KHController;
+            break;
+          }
       }
     }
   }
@@ -384,7 +384,7 @@ namespace Server.Engines.ConPVP
       AddAlphaRegion(16, 15, 369, height - 29);
 
       AddImage(215, -45, 0xEE40);
-      //AddImage( 330, 141, 0x8BA );
+      // AddImage( 330, 141, 0x8BA );
 
       AddBorderedText(22, 22, 294, 20, Center("King of the Hill Scoreboard"), LabelColor32, BlackColor32);
 
@@ -486,7 +486,7 @@ namespace Server.Engines.ConPVP
 
     private int m_Kills;
     private int m_Score;
-    private KHTeamInfo m_TeamInfo;
+    private readonly KHTeamInfo m_TeamInfo;
 
     public KHPlayerInfo(KHTeamInfo teamInfo, Mobile player)
     {
@@ -494,7 +494,7 @@ namespace Server.Engines.ConPVP
       Player = player;
     }
 
-    public Mobile Player{ get; }
+    public Mobile Player { get; }
 
     public int CompareTo(KHPlayerInfo pi)
     {
@@ -562,21 +562,21 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 0:
-        {
-          TeamName = ip.ReadString();
-          Color = ip.ReadEncodedInt();
-          break;
-        }
+          {
+            TeamName = ip.ReadString();
+            Color = ip.ReadEncodedInt();
+            break;
+          }
       }
     }
 
-    public KHGame Game{ get; set; }
+    public KHGame Game { get; set; }
 
-    public int TeamID{ get; }
+    public int TeamID { get; }
 
-    public KHPlayerInfo Leader{ get; set; }
+    public KHPlayerInfo Leader { get; set; }
 
-    public Dictionary<Mobile, KHPlayerInfo> Players{ get; }
+    public Dictionary<Mobile, KHPlayerInfo> Players { get; }
 
     public KHPlayerInfo this[Mobile mob]
     {
@@ -593,10 +593,10 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Color{ get; set; }
+    public int Color { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string TeamName{ get; set; }
+    public string TeamName { get; set; }
 
     public int CompareTo(KHTeamInfo ti)
     {
@@ -614,11 +614,11 @@ namespace Server.Engines.ConPVP
 
     public string Name => $"{TeamName ?? "(none)"} Team";
 
-    public int Kills{ get; set; }
+    public int Kills { get; set; }
 
-    public int Captures{ get; set; }
+    public int Captures { get; set; }
 
-    public int Score{ get; set; }
+    public int Score { get; set; }
 
     public void Reset()
     {
@@ -668,7 +668,7 @@ namespace Server.Engines.ConPVP
     {
     }
 
-    public KHTeamInfo[] TeamInfo{ get; private set; }
+    public KHTeamInfo[] TeamInfo { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public KHTeamInfo Team1_W => TeamInfo[0];
@@ -694,7 +694,7 @@ namespace Server.Engines.ConPVP
     [CommandProperty(AccessLevel.GameMaster)]
     public KHTeamInfo Team8_NE => TeamInfo[7];
 
-    public HillOfTheKing[] Hills{ get; private set; }
+    public HillOfTheKing[] Hills { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public HillOfTheKing Hill1
@@ -724,10 +724,10 @@ namespace Server.Engines.ConPVP
       set => Hills[3] = value;
     }
 
-    public List<KHBoard> Boards{ get; private set; }
+    public List<KHBoard> Boards { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan Duration{ get; set; }
+    public TimeSpan Duration { get; set; }
 
     public override string Title => "King of the Hill";
 
@@ -779,23 +779,23 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 0:
-        {
-          m_ScoreInterval = reader.ReadEncodedInt();
+          {
+            m_ScoreInterval = reader.ReadEncodedInt();
 
-          Duration = reader.ReadTimeSpan();
+            Duration = reader.ReadTimeSpan();
 
-          Boards = reader.ReadStrongItemList<KHBoard>();
+            Boards = reader.ReadStrongItemList<KHBoard>();
 
-          Hills = new HillOfTheKing[reader.ReadEncodedInt()];
-          for (int i = 0; i < Hills.Length; ++i)
-            Hills[i] = reader.ReadItem() as HillOfTheKing;
+            Hills = new HillOfTheKing[reader.ReadEncodedInt()];
+            for (int i = 0; i < Hills.Length; ++i)
+              Hills[i] = reader.ReadItem() as HillOfTheKing;
 
-          TeamInfo = new KHTeamInfo[reader.ReadEncodedInt()];
-          for (int i = 0; i < TeamInfo.Length; ++i)
-            TeamInfo[i] = new KHTeamInfo(i, reader);
+            TeamInfo = new KHTeamInfo[reader.ReadEncodedInt()];
+            for (int i = 0; i < TeamInfo.Length; ++i)
+              TeamInfo[i] = new KHTeamInfo(i, reader);
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
@@ -806,7 +806,7 @@ namespace Server.Engines.ConPVP
 
     public KHGame(KHController controller, DuelContext context) : base(context) => Controller = controller;
 
-    public KHController Controller{ get; }
+    public KHController Controller { get; }
 
     public Map Facet
     {

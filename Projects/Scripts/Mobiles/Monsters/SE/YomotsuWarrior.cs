@@ -93,7 +93,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.1)
       {
         /* Maniacal laugh
          * Cliloc: 1070840

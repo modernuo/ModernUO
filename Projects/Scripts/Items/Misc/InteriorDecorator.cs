@@ -97,7 +97,7 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private InteriorDecorator m_Decorator;
+      private readonly InteriorDecorator m_Decorator;
 
       public InternalGump(InteriorDecorator decorator) : base(150, 50)
       {
@@ -140,7 +140,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private InteriorDecorator m_Decorator;
+      private readonly InteriorDecorator m_Decorator;
 
       public InternalTarget(InteriorDecorator decorator) : base(-1, false, TargetFlags.None)
       {

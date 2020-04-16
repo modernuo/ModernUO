@@ -7,8 +7,6 @@ namespace Server.Engines.MLQuests.Definitions
 {
   // TODO: Assassination Contract, Evidence, Lost in Transit, Last Words
 
-  #region Quests
-
   public class LostAndFound : MLQuest
   {
     public LostAndFound()
@@ -30,10 +28,6 @@ namespace Server.Engines.MLQuests.Definitions
     }
   }
 
-  #endregion
-
-  #region Items
-
   public class BatteredBucket : TransientQuestGiverItem
   {
     [Constructible]
@@ -46,7 +40,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
     }
     // Original label, doesn't fit the expiration message well
-    //public override int LabelNumber => 1073129; // A battered bucket.
+    // public override int LabelNumber => 1073129; // A battered bucket.
 
     public override string DefaultName => "battered bucket";
 
@@ -64,6 +58,4 @@ namespace Server.Engines.MLQuests.Definitions
       int version = reader.ReadInt();
     }
   }
-
-  #endregion
 }

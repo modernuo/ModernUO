@@ -176,7 +176,7 @@ namespace Server.Buffers
     /// </summary>
     public void Write(ReadOnlySpan<byte> input)
     {
-      int size = Math.Min(input.Length, Length - Position);
+      var size = Math.Min(input.Length, Length - Position);
 
       input.Slice(0, size).CopyTo(RawSpan.Slice(Position));
       Position += size;
@@ -197,7 +197,7 @@ namespace Server.Buffers
     {
       value ??= "";
 
-      int length = Math.Min(size, value.Length);
+      var length = Math.Min(size, value.Length);
 
       Encoding.ASCII.GetBytes(value.AsSpan(0, length), RawSpan.Slice(Position));
 
@@ -207,7 +207,9 @@ namespace Server.Buffers
         Fill(size - length);
       }
       else
+      {
         Position += size;
+      }
     }
 
     /// <summary>

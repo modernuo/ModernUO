@@ -20,8 +20,7 @@ namespace Server.Ethics.Evil
           new UnholyShield(),
           new UnholySteed(),
           new UnholyWord()
-        }
-      );
+        });
     }
 
     public override bool IsEligible(Mobile mob)

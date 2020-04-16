@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Ninja
 {
   public class EminosUndertakingQuest : QuestSystem
   {
-    private static Type[] m_TypeReferenceTable =
+    private static readonly Type[] m_TypeReferenceTable =
     {
       typeof(AcceptConversation),
       typeof(FindZoelConversation),

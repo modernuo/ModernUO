@@ -9,15 +9,14 @@ namespace Server.Spells.Fourth
 {
   public class FireFieldSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Fire Field", "In Flam Grav",
       215,
       9041,
       false,
       Reagent.BlackPearl,
       Reagent.SpidersSilk,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public FireFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -142,25 +141,25 @@ namespace Server.Spells.Fourth
         switch (version)
         {
           case 2:
-          {
-            m_Damage = reader.ReadInt();
-            goto case 1;
-          }
+            {
+              m_Damage = reader.ReadInt();
+              goto case 1;
+            }
           case 1:
-          {
-            m_Caster = reader.ReadMobile();
+            {
+              m_Caster = reader.ReadMobile();
 
-            goto case 0;
-          }
+              goto case 0;
+            }
           case 0:
-          {
-            m_End = reader.ReadDeltaTime();
+            {
+              m_End = reader.ReadDeltaTime();
 
-            m_Timer = new InternalTimer(this, TimeSpan.Zero, true, true);
-            m_Timer.Start();
+              m_Timer = new InternalTimer(this, TimeSpan.Zero, true, true);
+              m_Timer.Start();
 
-            break;
-          }
+              break;
+            }
         }
 
         if (version < 2)
@@ -197,9 +196,10 @@ namespace Server.Spells.Fourth
 
       private class InternalTimer : Timer
       {
-        private static Queue m_Queue = new Queue();
-        private bool m_InLOS, m_CanFit;
-        private FireFieldItem m_Item;
+        private static readonly Queue m_Queue = new Queue();
+        private readonly bool m_InLOS;
+        private readonly bool m_CanFit;
+        private readonly FireFieldItem m_Item;
 
         public InternalTimer(FireFieldItem item, TimeSpan delay, bool inLOS, bool canFit) : base(delay,
           TimeSpan.FromSeconds(1.0))

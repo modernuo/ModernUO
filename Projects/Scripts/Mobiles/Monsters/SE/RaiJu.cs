@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
   public class RaiJu : BaseCreature
   {
-    private static HashSet<Mobile> m_Table = new HashSet<Mobile>();
+    private static readonly HashSet<Mobile> m_Table = new HashSet<Mobile>();
 
     [Constructible]
     public RaiJu() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -60,7 +60,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 <= Utility.RandomDouble() || m_Table.Contains(defender))
+      if (Utility.RandomDouble() >= 0.1 || m_Table.Contains(defender))
         return;
 
       /* Lightning Fist
@@ -75,7 +75,7 @@ namespace Server.Mobiles
       defender.SendLocalizedMessage(1070839); // The creature attacks with stunning force!
 
       // This should be done in place of the normal attack damage.
-      //AOS.Damage( defender, this, Utility.RandomMinMax( 35, 65 ), 0, 0, 0, 0, 100 );
+      // AOS.Damage( defender, this, Utility.RandomMinMax( 35, 65 ), 0, 0, 0, 0, 100 );
 
       defender.Frozen = true;
 
@@ -100,7 +100,7 @@ namespace Server.Mobiles
 
     private class ExpireTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public ExpireTimer(Mobile m, TimeSpan delay) : base(delay)
       {

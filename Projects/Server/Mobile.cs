@@ -117,7 +117,7 @@ namespace Server
       {
         m_ObeyCap = value;
 
-        Skill sk = m_Owner?.Skills[m_Skill];
+        var sk = m_Owner?.Skills[m_Skill];
         sk?.Update();
       }
     }
@@ -146,11 +146,11 @@ namespace Server
       {
         if (m_Skill != value)
         {
-          Skill oldUpdate = m_Owner?.Skills[m_Skill];
+          var oldUpdate = m_Owner?.Skills[m_Skill];
 
           m_Skill = value;
 
-          Skill sk = m_Owner?.Skills[m_Skill];
+          var sk = m_Owner?.Skills[m_Skill];
           sk?.Update();
           oldUpdate?.Update();
         }
@@ -166,7 +166,7 @@ namespace Server
         {
           m_Relative = value;
 
-          Skill sk = m_Owner?.Skills[m_Skill];
+          var sk = m_Owner?.Skills[m_Skill];
           sk?.Update();
         }
       }
@@ -181,7 +181,7 @@ namespace Server
         {
           m_Relative = !value;
 
-          Skill sk = m_Owner?.Skills[m_Skill];
+          var sk = m_Owner?.Skills[m_Skill];
           sk?.Update();
         }
       }
@@ -196,7 +196,7 @@ namespace Server
         {
           m_Value = value;
 
-          Skill sk = m_Owner?.Skills[m_Skill];
+          var sk = m_Owner?.Skills[m_Skill];
           sk?.Update();
         }
       }
@@ -221,7 +221,7 @@ namespace Server
       m_Offset = offset;
     }
 
-    public Mobile Owner{ get; set; }
+    public Mobile Owner { get; set; }
 
     public ResistanceType Type
     {
@@ -266,11 +266,11 @@ namespace Server
       m_Added = DateTime.UtcNow;
     }
 
-    public StatType Type{ get; }
+    public StatType Type { get; }
 
-    public string Name{ get; }
+    public string Name { get; }
 
-    public int Offset{ get; }
+    public int Offset { get; }
 
     public bool HasElapsed()
     {
@@ -287,17 +287,17 @@ namespace Server
   {
     public DamageEntry(Mobile damager) => Damager = damager;
 
-    public Mobile Damager{ get; }
+    public Mobile Damager { get; }
 
-    public int DamageGiven{ get; set; }
+    public int DamageGiven { get; set; }
 
-    public DateTime LastDamage{ get; set; }
+    public DateTime LastDamage { get; set; }
 
     public bool HasExpired => DateTime.UtcNow > LastDamage + ExpireDelay;
 
-    public List<DamageEntry> Responsible{ get; set; }
+    public List<DamageEntry> Responsible { get; set; }
 
-    public static TimeSpan ExpireDelay{ get; set; } = TimeSpan.FromMinutes(2.0);
+    public static TimeSpan ExpireDelay { get; set; } = TimeSpan.FromMinutes(2.0);
   }
 
   #region Enums
@@ -453,7 +453,6 @@ namespace Server
     private static readonly TimeSpan WarmodeSpamCatch = TimeSpan.FromSeconds(Core.SE ? 1.0 : 0.5);
     private static readonly TimeSpan WarmodeSpamDelay = TimeSpan.FromSeconds(Core.SE ? 4.0 : 2.0);
 
-
     private static readonly Packet[][] m_MovingPacketCache = new Packet[][]
     {
       new Packet[8],
@@ -560,7 +559,7 @@ namespace Server
       NextSkillTime = Core.TickCount;
       DamageEntries = new List<DamageEntry>();
 
-      Type ourType = GetType();
+      var ourType = GetType();
       m_TypeRef = World.m_MobileTypes.IndexOf(ourType);
 
       if (m_TypeRef == -1)
@@ -568,6 +567,7 @@ namespace Server
         World.m_MobileTypes.Add(ourType);
         m_TypeRef = World.m_MobileTypes.Count - 1;
       }
+
       m_SaveBuffer = new BufferWriter(true);
     }
 
@@ -580,7 +580,7 @@ namespace Server
 
       World.AddMobile(this);
 
-      Type ourType = GetType();
+      var ourType = GetType();
       m_TypeRef = World.m_MobileTypes.IndexOf(ourType);
 
       if (m_TypeRef == -1)
@@ -588,10 +588,11 @@ namespace Server
         World.m_MobileTypes.Add(ourType);
         m_TypeRef = World.m_MobileTypes.Count - 1;
       }
+
       m_SaveBuffer = new BufferWriter(true);
     }
 
-    public static bool DragEffects{ get; set; } = true;
+    public static bool DragEffects { get; set; } = true;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Race Race
@@ -599,7 +600,7 @@ namespace Server
       get => m_Race ?? (m_Race = Race.DefaultRace);
       set
       {
-        Race oldRace = Race;
+        var oldRace = Race;
 
         m_Race = value ?? Race.DefaultRace;
 
@@ -614,7 +615,7 @@ namespace Server
 
     public virtual double RacialSkillBonus => 0;
 
-    public int[] Resistances{ get; private set; }
+    public int[] Resistances { get; private set; }
 
     public virtual int BasePhysicalResistance => 0;
     public virtual int BaseFireResistance => 0;
@@ -637,20 +638,20 @@ namespace Server
     [CommandProperty(AccessLevel.Counselor)]
     public virtual int EnergyResistance => GetResistance(ResistanceType.Energy);
 
-    public List<ResistanceMod> ResistanceMods{ get; set; }
+    public List<ResistanceMod> ResistanceMods { get; set; }
 
-    public static int MaxPlayerResistance{ get; set; } = 70;
+    public static int MaxPlayerResistance { get; set; } = 70;
 
     public virtual bool NewGuildDisplay => false;
 
-    public List<Mobile> Stabled{ get; private set; }
+    public List<Mobile> Stabled { get; private set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-    public VirtueInfo Virtues{ get; private set; }
+    public VirtueInfo Virtues { get; private set; }
 
-    public object Party{ get; set; }
+    public object Party { get; set; }
 
-    public List<SkillMod> SkillMods{ get; private set; }
+    public List<SkillMod> SkillMods { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int VirtualArmorMod
@@ -668,10 +669,10 @@ namespace Server
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int MeleeDamageAbsorb{ get; set; }
+    public int MeleeDamageAbsorb { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int MagicDamageAbsorb{ get; set; }
+    public int MagicDamageAbsorb { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int SkillsTotal => Skills?.Total ?? 0;
@@ -688,12 +689,12 @@ namespace Server
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int BaseSoundID{ get; set; }
+    public int BaseSoundID { get; set; }
 
-    public long NextCombatTime{ get; set; }
+    public long NextCombatTime { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int NameHue{ get; set; } = -1;
+    public int NameHue { get; set; } = -1;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Hunger
@@ -701,7 +702,7 @@ namespace Server
       get => m_Hunger;
       set
       {
-        int oldValue = m_Hunger;
+        var oldValue = m_Hunger;
 
         if (oldValue != value)
         {
@@ -713,16 +714,16 @@ namespace Server
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Thirst{ get; set; }
+    public int Thirst { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int BAC{ get; set; }
+    public int BAC { get; set; }
 
     /// <summary>
     ///   Gets or sets the number of steps this player may take when hidden before being revealed.
     /// </summary>
     [CommandProperty(AccessLevel.GameMaster)]
-    public int AllowedStealthSteps{ get; set; }
+    public int AllowedStealthSteps { get; set; }
 
     public Item Holding
     {
@@ -754,7 +755,7 @@ namespace Server
       }
     }
 
-    public long LastMoveTime{ get; set; }
+    public long LastMoveTime { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual bool Paralyzed
@@ -779,10 +780,10 @@ namespace Server
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool DisarmReady{ get; set; }
+    public bool DisarmReady { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool StunReady{ get; set; }
+    public bool StunReady { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Frozen
@@ -858,13 +859,13 @@ namespace Server
       }
     }
 
-    public long NextActionTime{ get; set; }
+    public long NextActionTime { get; set; }
 
-    public long NextActionMessage{ get; set; }
+    public long NextActionMessage { get; set; }
 
-    public static int ActionMessageDelay{ get; set; } = 125;
+    public static int ActionMessageDelay { get; set; } = 125;
 
-    public static bool GlobalRegenThroughPoison{ get; set; } = true;
+    public static bool GlobalRegenThroughPoison { get; set; } = true;
 
     public virtual bool RegenThroughPoison => GlobalRegenThroughPoison;
 
@@ -872,11 +873,11 @@ namespace Server
     public virtual bool CanRegenStam => Alive;
     public virtual bool CanRegenMana => Alive;
 
-    public long NextSkillTime{ get; set; }
+    public long NextSkillTime { get; set; }
 
-    public List<AggressorInfo> Aggressors{ get; private set; }
+    public List<AggressorInfo> Aggressors { get; private set; }
 
-    public List<AggressorInfo> Aggressed{ get; private set; }
+    public List<AggressorInfo> Aggressed { get; private set; }
 
     public bool ChangingCombatant => m_ChangingCombatant > 0;
 
@@ -895,12 +896,12 @@ namespace Server
 
         if (m_Combatant != value && value != this)
         {
-          Mobile old = m_Combatant;
+          var old = m_Combatant;
 
           ++m_ChangingCombatant;
           m_Combatant = value;
 
-          if (m_Combatant != null && !CanBeHarmful(m_Combatant, false) ||
+          if ((m_Combatant != null && !CanBeHarmful(m_Combatant, false)) ||
               !Region.OnCombatantChange(this, old, m_Combatant))
           {
             m_Combatant = old;
@@ -994,15 +995,15 @@ namespace Server
       }
     }
 
-    public bool TargetLocked{ get; set; }
+    public bool TargetLocked { get; set; }
 
     public Target Target
     {
       get => m_Target;
       set
       {
-        Target oldTarget = m_Target;
-        Target newTarget = value;
+        var oldTarget = m_Target;
+        var newTarget = value;
 
         if (oldTarget == newTarget)
           return;
@@ -1039,23 +1040,23 @@ namespace Server
       }
     }
 
-    public bool Pushing{ get; set; }
+    public bool Pushing { get; set; }
 
-    public static int WalkFoot{ get; set; } = 400;
+    public static int WalkFoot { get; set; } = 400;
 
-    public static int RunFoot{ get; set; } = 200;
+    public static int RunFoot { get; set; } = 200;
 
-    public static int WalkMount{ get; set; } = 200;
+    public static int WalkMount { get; set; } = 200;
 
-    public static int RunMount{ get; set; } = 100;
+    public static int RunMount { get; set; } = 100;
 
-    public static AccessLevel FwdAccessOverride{ get; set; } = AccessLevel.Counselor;
+    public static AccessLevel FwdAccessOverride { get; set; } = AccessLevel.Counselor;
 
-    public static bool FwdEnabled{ get; set; } = true;
+    public static bool FwdEnabled { get; set; } = true;
 
-    public static bool FwdUOTDOverride{ get; set; } = false;
+    public static bool FwdUOTDOverride { get; set; } = false;
 
-    public static int FwdMaxSteps{ get; set; } = 4;
+    public static int FwdMaxSteps { get; set; } = 4;
 
     public virtual bool IsDeadBondedPet => false;
 
@@ -1072,10 +1073,10 @@ namespace Server
     }
 
     [CommandProperty(AccessLevel.Administrator)]
-    public bool AutoPageNotify{ get; set; }
+    public bool AutoPageNotify { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Owner)]
-    public IAccount Account{ get; set; }
+    public IAccount Account { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int VirtualArmor
@@ -1102,29 +1103,29 @@ namespace Server
     [CommandProperty(AccessLevel.Counselor)]
     public virtual bool Alive => !Deleted && (!m_Player || !m_Body.IsGhost);
 
-    public static CreateCorpseHandler CreateCorpseHandler{ get; set; }
+    public static CreateCorpseHandler CreateCorpseHandler { get; set; }
 
     public virtual bool RetainPackLocsOnDeath => Core.AOS;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Container Corpse{ get; set; }
+    public Container Corpse { get; set; }
 
-    public static char[] GhostChars{ get; set; } = { 'o', 'O' };
+    public static char[] GhostChars { get; set; } = { 'o', 'O' };
 
-    public static bool NoSpeechLOS{ get; set; }
+    public static bool NoSpeechLOS { get; set; }
 
-    public static TimeSpan AutoManifestTimeout{ get; set; } = TimeSpan.FromSeconds(5.0);
+    public static TimeSpan AutoManifestTimeout { get; set; } = TimeSpan.FromSeconds(5.0);
 
-    public static bool InsuranceEnabled{ get; set; }
+    public static bool InsuranceEnabled { get; set; }
 
-    public static int ActionDelay{ get; set; } = 500;
+    public static int ActionDelay { get; set; } = 500;
 
-    public static VisibleDamageType VisibleDamageType{ get; set; }
+    public static VisibleDamageType VisibleDamageType { get; set; }
 
-    public List<DamageEntry> DamageEntries{ get; private set; }
+    public List<DamageEntry> DamageEntries { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile LastKiller{ get; set; }
+    public Mobile LastKiller { get; set; }
 
     public static bool DefaultShowVisibleDamage
     {
@@ -1142,12 +1143,12 @@ namespace Server
     public virtual bool CanSeeVisibleDamage => m_DefaultCanSeeVisibleDamage;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Squelched{ get; set; }
+    public bool Squelched { get; set; }
 
     public virtual bool ShouldCheckStatTimers => true;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime CreationTime{ get; private set; }
+    public DateTime CreationTime { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int LightLevel
@@ -1168,10 +1169,10 @@ namespace Server
     }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-    public string Profile{ get; set; }
+    public string Profile { get; set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-    public bool ProfileLocked{ get; set; }
+    public bool ProfileLocked { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
     public bool Player
@@ -1202,14 +1203,14 @@ namespace Server
       }
     }
 
-    public List<Item> Items{ get; private set; }
+    public List<Item> Items { get; private set; }
 
     public virtual int MaxWeight => int.MaxValue;
 
-    public static IWeapon DefaultWeapon{ get; set; }
+    public static IWeapon DefaultWeapon { get; set; }
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skills Skills{ get; private set; }
+    public Skills Skills { get; private set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
     public AccessLevel AccessLevel
@@ -1217,7 +1218,7 @@ namespace Server
       get => m_AccessLevel;
       set
       {
-        AccessLevel oldValue = m_AccessLevel;
+        var oldValue = m_AccessLevel;
 
         if (oldValue != value)
         {
@@ -1241,7 +1242,7 @@ namespace Server
       get => m_Fame;
       set
       {
-        int oldValue = m_Fame;
+        var oldValue = m_Fame;
 
         if (oldValue != value)
         {
@@ -1261,7 +1262,7 @@ namespace Server
       get => m_Karma;
       set
       {
-        int old = m_Karma;
+        var old = m_Karma;
 
         if (old != value)
         {
@@ -1316,7 +1317,7 @@ namespace Server
       }
       set
       {
-        int oldHue = m_Hue;
+        var oldHue = m_Hue;
 
         if (oldHue != value)
         {
@@ -1338,7 +1339,7 @@ namespace Server
           m_Direction = value;
 
           Delta(MobileDelta.Direction);
-          //ProcessDelta();
+          // ProcessDelta();
         }
       }
     }
@@ -1420,7 +1421,7 @@ namespace Server
         if (m_Hidden != value)
         {
           m_Hidden = value;
-          //Delta( MobileDelta.Flags );
+          // Delta( MobileDelta.Flags );
 
           OnHiddenChanged();
         }
@@ -1443,18 +1444,18 @@ namespace Server
 
           m_Spell?.OnConnectionChanged();
 
-          //if ( m_Spell != null )
-          //	m_Spell.FinishSequence();
+          // if ( m_Spell != null )
+          // m_Spell.FinishSequence();
 
           m_NetState?.CancelAllTrades();
 
-          BankBox box = FindBankNoCreate();
+          var box = FindBankNoCreate();
 
           if (box?.Opened == true)
             box.Close();
 
           // REMOVED:
-          //m_Actions.Clear();
+          // m_Actions.Clear();
 
           m_NetState = value;
 
@@ -1491,23 +1492,23 @@ namespace Server
             }
           }
 
-          for (int i = Items.Count - 1; i >= 0; --i)
+          for (var i = Items.Count - 1; i >= 0; --i)
           {
             if (i >= Items.Count)
               continue;
 
-            Item item = Items[i];
+            var item = Items[i];
 
             if (item is SecureTradeContainer)
             {
-              for (int j = item.Items.Count - 1; j >= 0; --j)
+              for (var j = item.Items.Count - 1; j >= 0; --j)
                 if (j < item.Items.Count)
                 {
                   item.Items[j].OnSecureTrade(this, this, this, false);
                   AddToBackpack(item.Items[j]);
                 }
 
-              Timer.DelayCall(TimeSpan.Zero, delegate { item.Delete(); });
+              Timer.DelayCall(TimeSpan.Zero, item.Delete);
             }
           }
 
@@ -1525,16 +1526,16 @@ namespace Server
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int SpeechHue{ get; set; }
+    public int SpeechHue { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int EmoteHue{ get; set; }
+    public int EmoteHue { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int WhisperHue{ get; set; }
+    public int WhisperHue { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int YellHue{ get; set; }
+    public int YellHue { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public string GuildTitle
@@ -1542,7 +1543,7 @@ namespace Server
       get => m_GuildTitle;
       set
       {
-        string old = m_GuildTitle;
+        var old = m_GuildTitle;
 
         if (old != value)
         {
@@ -1570,7 +1571,7 @@ namespace Server
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile GuildFealty{ get; set; }
+    public Mobile GuildFealty { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public string NameMod
@@ -1613,7 +1614,7 @@ namespace Server
       {
         if (m_Name != value) // I'm leaving out the && m_NameMod == null
         {
-          string oldName = m_Name;
+          var oldName = m_Name;
           m_Name = value;
           OnAfterNameChange(oldName, m_Name);
           Delta(MobileDelta.Name);
@@ -1623,19 +1624,19 @@ namespace Server
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime LastStrGain{ get; set; }
+    public DateTime LastStrGain { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime LastIntGain{ get; set; }
+    public DateTime LastIntGain { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime LastDexGain{ get; set; }
+    public DateTime LastDexGain { get; set; }
 
     public DateTime LastStatGain
     {
       get
       {
-        DateTime d = LastStrGain;
+        var d = LastStrGain;
 
         if (LastIntGain > d)
           d = LastIntGain;
@@ -1658,7 +1659,7 @@ namespace Server
       get => m_Guild;
       set
       {
-        BaseGuild old = m_Guild;
+        var old = m_Guild;
 
         if (old != value)
         {
@@ -1675,7 +1676,7 @@ namespace Server
       }
     }
 
-    public Region WalkRegion{ get; set; }
+    public Region WalkRegion { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Poisoned => m_Poison != null;
@@ -1735,10 +1736,10 @@ namespace Server
     }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-    public Point3D LogoutLocation{ get; set; }
+    public Point3D LogoutLocation { get; set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-    public Map LogoutMap{ get; set; }
+    public Map LogoutMap { get; set; }
 
     public Region Region => m_Region ?? (Map == null ? Map.Internal.DefaultRegion : Map.DefaultRegion);
 
@@ -1820,7 +1821,7 @@ namespace Server
 
     public bool HasTrade => m_NetState?.Trades.Count > 0;
 
-    public bool NoMoveHS{ get; set; }
+    public bool NoMoveHS { get; set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public int Kills
@@ -1828,7 +1829,7 @@ namespace Server
       get => m_Kills;
       set
       {
-        int oldValue = m_Kills;
+        var oldValue = m_Kills;
 
         if (m_Kills != value)
         {
@@ -1894,9 +1895,9 @@ namespace Server
       }
     }
 
-    public static bool DisableDismountInWarmode{ get; set; }
+    public static bool DisableDismountInWarmode { get; set; }
 
-    public static int BodyWeight{ get; set; } = 14;
+    public static int BodyWeight { get; set; } = 14;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public IMount Mount
@@ -1940,15 +1941,15 @@ namespace Server
 
     public virtual bool PropertyTitle => OldPropertyTitles ? ClickTitle : true;
 
-    public static bool DisableHiddenSelfClick{ get; set; } = true;
+    public static bool DisableHiddenSelfClick { get; set; } = true;
 
-    public static bool AsciiClickMessage{ get; set; } = true;
+    public static bool AsciiClickMessage { get; set; } = true;
 
-    public static bool GuildClickMessage{ get; set; } = true;
+    public static bool GuildClickMessage { get; set; } = true;
 
-    public static bool OldPropertyTitles{ get; set; }
+    public static bool OldPropertyTitles { get; set; }
 
-    public virtual bool ShowFameTitle //(m_Player || m_Body.IsHuman) && m_Fame >= 10000; }
+    public virtual bool ShowFameTitle // (m_Player || m_Body.IsHuman) && m_Fame >= 10000; }
       => true;
 
     /// <summary>
@@ -1970,13 +1971,13 @@ namespace Server
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Meditating{ get; set; }
+    public bool Meditating { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool CanSwim{ get; set; }
+    public bool CanSwim { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool CantWalk{ get; set; }
+    public bool CantWalk { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool CanHearGhosts
@@ -1988,9 +1989,9 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public int RawStatTotal => RawStr + RawDex + RawInt;
 
-    public long NextSpellTime{ get; set; }
+    public long NextSpellTime { get; set; }
 
-    public bool Deleted{ get; private set; }
+    public bool Deleted { get; private set; }
 
     public virtual void Delete()
     {
@@ -2011,17 +2012,17 @@ namespace Server
       Region.OnRegionChange(this, m_Region, null);
 
       m_Region = null;
-      //Is the above line REALLY needed?  The old Region system did NOT have said line
-      //and worked fine, because of this a LOT of extra checks have to be done everywhere...
-      //I guess this should be there for Garbage collection purposes, but, still, is it /really/ needed?
+      // Is the above line REALLY needed?  The old Region system did NOT have said line
+      // and worked fine, because of this a LOT of extra checks have to be done everywhere...
+      // I guess this should be there for Garbage collection purposes, but, still, is it /really/ needed?
 
       OnDelete();
 
-      for (int i = Items.Count - 1; i >= 0; --i)
+      for (var i = Items.Count - 1; i >= 0; --i)
         if (i < Items.Count)
           Items[i].OnParentDeleted(this);
 
-      for (int i = 0; i < Stabled.Count; i++)
+      for (var i = 0; i < Stabled.Count; i++)
         Stabled[i].Delete();
 
       SendRemovePacket();
@@ -2057,7 +2058,7 @@ namespace Server
         {
           m_NetState?.ValidateAllTrades();
 
-          Map oldMap = m_Map;
+          var oldMap = m_Map;
 
           if (m_Map != null)
           {
@@ -2067,7 +2068,7 @@ namespace Server
             SendRemovePacket();
           }
 
-          for (int i = 0; i < Items.Count; ++i)
+          for (var i = 0; i < Items.Count; ++i)
             Items[i].Map = value;
 
           m_Map = value;
@@ -2076,7 +2077,7 @@ namespace Server
 
           m_Map?.OnEnter(this);
 
-          NetState ns = m_NetState;
+          var ns = m_NetState;
 
           if (ns != null && m_Map != null)
           {
@@ -2147,7 +2148,7 @@ namespace Server
     }
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Serial Serial{ get; }
+    public Serial Serial { get; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public Point3D Location
@@ -2167,15 +2168,15 @@ namespace Server
         return;
       }
 
-      BankBox box = FindBankNoCreate();
+      var box = FindBankNoCreate();
 
       if (box?.Opened == true)
         box.Close();
 
-      Point3D oldLocation = m_Location;
-      Map oldMap = m_Map;
+      var oldLocation = m_Location;
+      var oldMap = m_Map;
 
-      Region oldRegion = m_Region;
+      var oldRegion = m_Region;
 
       if (oldMap != null)
       {
@@ -2185,14 +2186,14 @@ namespace Server
         SendRemovePacket();
       }
 
-      for (int i = 0; i < Items.Count; ++i)
+      for (var i = 0; i < Items.Count; ++i)
         Items[i].Map = map;
 
       m_Map = map;
 
       m_Location = newLocation;
 
-      NetState ns = m_NetState;
+      var ns = m_NetState;
 
       if (m_Map != null)
       {
@@ -2297,13 +2298,13 @@ namespace Server
 
     public virtual void ProcessDelta()
     {
-      Mobile m = this;
-      MobileDelta delta = m.m_DeltaFlags;
+      var m = this;
+      var delta = m.m_DeltaFlags;
 
       if (delta == MobileDelta.None)
         return;
 
-      MobileDelta attrs = delta & MobileDelta.Attributes;
+      var attrs = delta & MobileDelta.Attributes;
 
       m.m_DeltaFlags = MobileDelta.None;
       m.m_InDeltaQueue = false;
@@ -2313,7 +2314,7 @@ namespace Server
       bool sendUpdate = false, sendRemove = false;
       bool sendPublicStats = false, sendPrivateStats = false;
       bool sendMoving = false, sendNonlocalMoving = false;
-      bool sendOPLUpdate = ObjectPropertyList.Enabled && (delta & MobileDelta.Properties) != 0;
+      var sendOPLUpdate = ObjectPropertyList.Enabled && (delta & MobileDelta.Properties) != 0;
 
       bool sendHair = false, sendFacialHair = false, removeHair = false, removeFacialHair = false;
 
@@ -2402,9 +2403,9 @@ namespace Server
         sendFacialHair = true;
       }
 
-      Packet[][] cache = new Packet[][] { new Packet[8], new Packet[8] };
+      var cache = new Packet[][] { new Packet[8], new Packet[8] };
 
-      NetState ourState = m.m_NetState;
+      var ourState = m.m_NetState;
 
       if (ourState != null)
       {
@@ -2427,7 +2428,7 @@ namespace Server
         {
           if (sendMoving)
           {
-            int noto = Notoriety.Compute(m, m);
+            var noto = Notoriety.Compute(m, m);
             ourState.Send(cache[0][noto] = Packet.Acquire(new MobileMoving(m, noto)));
           }
 
@@ -2441,7 +2442,7 @@ namespace Server
         {
           if (sendMoving || sendHealthbarPoison || sendHealthbarYellow)
           {
-            int noto = Notoriety.Compute(m, m);
+            var noto = Notoriety.Compute(m, m);
             ourState.Send(cache[1][noto] = Packet.Acquire(new MobileMovingOld(m, noto)));
           }
         }
@@ -2515,9 +2516,9 @@ namespace Server
         Packet hbpPacket = null;
         Packet hbyPacket = null;
 
-        IPooledEnumerable<NetState> eable = m.Map.GetClientsInRange(m.m_Location);
+        var eable = m.Map.GetClientsInRange(m.m_Location);
 
-        foreach (NetState state in eable)
+        foreach (var state in eable)
         {
           beholder = state.Mobile;
 
@@ -2542,9 +2543,9 @@ namespace Server
             {
               if (sendMoving)
               {
-                int noto = Notoriety.Compute(beholder, m);
+                var noto = Notoriety.Compute(beholder, m);
 
-                Packet p = cache[0][noto];
+                var p = cache[0][noto];
 
                 if (p == null)
                   cache[0][noto] = p = Packet.Acquire(new MobileMoving(m, noto));
@@ -2570,9 +2571,9 @@ namespace Server
             {
               if (sendMoving || sendHealthbarPoison || sendHealthbarYellow)
               {
-                int noto = Notoriety.Compute(beholder, m);
+                var noto = Notoriety.Compute(beholder, m);
 
-                Packet p = cache[1][noto];
+                var p = cache[1][noto];
 
                 if (p == null)
                   cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(m, noto));
@@ -2612,7 +2613,9 @@ namespace Server
 
             if (sendFacialHair)
             {
-              facialhairPacket ??= removeFacialHair ? Packet.Acquire(new RemoveFacialHair(m)) : Packet.Acquire(new FacialHairEquipUpdate(m));
+              facialhairPacket ??= removeFacialHair
+                ? Packet.Acquire(new RemoveFacialHair(m))
+                : Packet.Acquire(new FacialHairEquipUpdate(m));
 
               state.Send(facialhairPacket);
             }
@@ -2635,9 +2638,9 @@ namespace Server
       }
 
       if (sendMoving || sendNonlocalMoving || sendHealthbarPoison || sendHealthbarYellow)
-        for (int i = 0; i < cache.Length; ++i)
-        for (int j = 0; j < cache[i].Length; ++j)
-          Packet.Release(ref cache[i][j]);
+        for (var i = 0; i < cache.Length; ++i)
+          for (var j = 0; j < cache[i].Length; ++j)
+            Packet.Release(ref cache[i][j]);
     }
 
     public virtual int HuedItemID => m_Female ? 0x2107 : 0x2106;
@@ -2651,6 +2654,7 @@ namespace Server
       SaveBuffer.Flush();
       Serialize(SaveBuffer);
     }
+
     public virtual void Serialize(IGenericWriter writer)
     {
       writer.Write(32); // version
@@ -2691,10 +2695,10 @@ namespace Server
       writer.Write(BAC);
 
       writer.Write(m_ShortTermMurders);
-      //writer.Write( m_ShortTermElapse );
-      //writer.Write( m_LongTermElapse );
+      // writer.Write( m_ShortTermElapse );
+      // writer.Write( m_LongTermElapse );
 
-      //writer.Write( m_Followers );
+      // writer.Write( m_Followers );
       writer.Write(m_FollowersMax);
 
       writer.Write(MagicDamageAbsorb);
@@ -2718,7 +2722,7 @@ namespace Server
       writer.Write(DisarmReady);
       writer.Write(StunReady);
 
-      //Poison.Serialize( m_Poison, writer );
+      // Poison.Serialize( m_Poison, writer );
 
       writer.Write(m_StatCap);
 
@@ -2773,7 +2777,7 @@ namespace Server
       writer.Write((byte)m_IntLock);
     }
 
-    public ISpawner Spawner{ get; set; }
+    public ISpawner Spawner { get; set; }
 
     public virtual void OnBeforeSpawn(Point3D location, Map m)
     {
@@ -2808,9 +2812,9 @@ namespace Server
     {
       Resistances ??= new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
 
-      bool delta = false;
+      var delta = false;
 
-      for (int i = 0; i < Resistances.Length; ++i)
+      for (var i = 0; i < Resistances.Length; ++i)
         if (Resistances[i] != int.MinValue)
         {
           Resistances[i] = int.MinValue;
@@ -2825,12 +2829,12 @@ namespace Server
     {
       Resistances ??= new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
 
-      int v = (int)type;
+      var v = (int)type;
 
       if (v < 0 || v >= Resistances.Length)
         return 0;
 
-      int res = Resistances[v];
+      var res = Resistances[v];
 
       if (res == int.MinValue)
       {
@@ -2866,7 +2870,7 @@ namespace Server
     {
       Resistances ??= new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
 
-      for (int i = 0; i < Resistances.Length; ++i)
+      for (var i = 0; i < Resistances.Length; ++i)
         Resistances[i] = 0;
 
       Resistances[0] += BasePhysicalResistance;
@@ -2875,18 +2879,18 @@ namespace Server
       Resistances[3] += BasePoisonResistance;
       Resistances[4] += BaseEnergyResistance;
 
-      for (int i = 0; ResistanceMods != null && i < ResistanceMods.Count; ++i)
+      for (var i = 0; ResistanceMods != null && i < ResistanceMods.Count; ++i)
       {
-        ResistanceMod mod = ResistanceMods[i];
-        int v = (int)mod.Type;
+        var mod = ResistanceMods[i];
+        var v = (int)mod.Type;
 
         if (v >= 0 && v < Resistances.Length)
           Resistances[v] += mod.Offset;
       }
 
-      for (int i = 0; i < Items.Count; ++i)
+      for (var i = 0; i < Items.Count; ++i)
       {
-        Item item = Items[i];
+        var item = Items[i];
 
         if (item.CheckPropertyConflict(this))
           continue;
@@ -2898,10 +2902,10 @@ namespace Server
         Resistances[4] += item.EnergyResistance;
       }
 
-      for (int i = 0; i < Resistances.Length; ++i)
+      for (var i = 0; i < Resistances.Length; ++i)
       {
-        int min = GetMinResistance((ResistanceType)i);
-        int max = GetMaxResistance((ResistanceType)i);
+        var min = GetMinResistance((ResistanceType)i);
+        var max = GetMaxResistance((ResistanceType)i);
 
         if (max < min)
           max = min;
@@ -2926,7 +2930,7 @@ namespace Server
 
     public virtual void OnAosSingleClick(Mobile from)
     {
-      ObjectPropertyList opl = PropertyList;
+      var opl = PropertyList;
 
       if (opl.Header > 0)
       {
@@ -2947,29 +2951,30 @@ namespace Server
 
     public virtual void AddNameProperties(ObjectPropertyList list)
     {
-      string name = Name ?? string.Empty;
+      var name = Name ?? string.Empty;
 
-      string prefix = "";
+      var prefix = "";
 
       if (ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000)
         prefix = m_Female ? "Lady" : "Lord";
 
-      string suffix = "";
+      var suffix = "";
 
       if (PropertyTitle && !string.IsNullOrEmpty(Title))
         suffix = Title;
 
-      BaseGuild guild = m_Guild;
+      var guild = m_Guild;
 
       if (guild != null && (m_Player || m_DisplayGuildTitle))
-        suffix = suffix.Length > 0 ? $"{suffix} [{Utility.FixHtml(guild.Abbreviation)}]"
+        suffix = suffix.Length > 0
+          ? $"{suffix} [{Utility.FixHtml(guild.Abbreviation)}]"
           : $"[{Utility.FixHtml(guild.Abbreviation)}]";
 
       suffix = ApplyNameSuffix(suffix);
 
       list.Add(1050045, "{0} \t{1}\t {2}", prefix, name, suffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
-      if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
+      if (guild != null && (m_DisplayGuildTitle || (m_Player && guild.Type != GuildType.Regular)))
       {
         string type;
 
@@ -2978,7 +2983,7 @@ namespace Server
         else
           type = "";
 
-        string title = GuildTitle?.Trim() ?? "";
+        var title = GuildTitle?.Trim() ?? "";
 
         if (NewGuildDisplay && title.Length > 0)
         {
@@ -3009,7 +3014,7 @@ namespace Server
 
     private void UpdateAggrExpire()
     {
-      if (Deleted || Aggressors.Count == 0 && Aggressed.Count == 0)
+      if (Deleted || (Aggressors.Count == 0 && Aggressed.Count == 0))
       {
         StopAggrExpire();
       }
@@ -3029,16 +3034,16 @@ namespace Server
 
     private void CheckAggrExpire()
     {
-      for (int i = Aggressors.Count - 1; i >= 0; --i)
+      for (var i = Aggressors.Count - 1; i >= 0; --i)
       {
         if (i >= Aggressors.Count)
           continue;
 
-        AggressorInfo info = Aggressors[i];
+        var info = Aggressors[i];
 
         if (info.Expired)
         {
-          Mobile attacker = info.Attacker;
+          var attacker = info.Attacker;
           attacker.RemoveAggressed(this);
 
           Aggressors.RemoveAt(i);
@@ -3049,16 +3054,16 @@ namespace Server
         }
       }
 
-      for (int i = Aggressed.Count - 1; i >= 0; --i)
+      for (var i = Aggressed.Count - 1; i >= 0; --i)
       {
         if (i >= Aggressed.Count)
           continue;
 
-        AggressorInfo info = Aggressed[i];
+        var info = Aggressed[i];
 
         if (info.Expired)
         {
-          Mobile defender = info.Defender;
+          var defender = info.Defender;
           defender.RemoveAggressor(this);
 
           Aggressed.RemoveAt(i);
@@ -3083,19 +3088,19 @@ namespace Server
     {
       ValidateSkillMods();
 
-      for (int i = 0; i < SkillMods.Count; ++i)
+      for (var i = 0; i < SkillMods.Count; ++i)
       {
-        SkillMod mod = SkillMods[i];
-        Skill sk = Skills[mod.Skill];
+        var mod = SkillMods[i];
+        var sk = Skills[mod.Skill];
         sk?.Update();
       }
     }
 
     public virtual void ValidateSkillMods()
     {
-      for (int i = 0; i < SkillMods.Count;)
+      for (var i = 0; i < SkillMods.Count;)
       {
-        SkillMod mod = SkillMods[i];
+        var mod = SkillMods[i];
 
         if (mod.CheckCondition())
           ++i;
@@ -3116,7 +3121,7 @@ namespace Server
         SkillMods.Add(mod);
         mod.Owner = this;
 
-        Skill sk = Skills[mod.Skill];
+        var sk = Skills[mod.Skill];
         sk?.Update();
       }
     }
@@ -3138,7 +3143,7 @@ namespace Server
         SkillMods.Remove(mod);
         mod.Owner = null;
 
-        Skill sk = Skills[mod.Skill];
+        var sk = Skills[mod.Skill];
         sk?.Update();
       }
     }
@@ -3190,7 +3195,7 @@ namespace Server
 
     public bool InLOS(object target) =>
       !Deleted && m_Map != null &&
-      (target == this || m_AccessLevel > AccessLevel.Player || target is Item item && item.RootParent == this
+      (target == this || m_AccessLevel > AccessLevel.Player || (target is Item item && item.RootParent == this)
        || m_Map.LineOfSight(this, target));
 
     public bool InLOS(Point3D target) =>
@@ -3287,7 +3292,7 @@ namespace Server
     {
       if (item?.Movable == true && !item.AllowEquippedCast(this))
       {
-        Container pack = Backpack;
+        var pack = Backpack;
 
         if (pack == null)
           AddToBackpack(item);
@@ -3314,24 +3319,24 @@ namespace Server
 
     public double GetDistanceToSqrt(Point3D p)
     {
-      int xDelta = m_Location.m_X - p.m_X;
-      int yDelta = m_Location.m_Y - p.m_Y;
+      var xDelta = m_Location.m_X - p.m_X;
+      var yDelta = m_Location.m_Y - p.m_Y;
 
       return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
     }
 
     public double GetDistanceToSqrt(Mobile m)
     {
-      int xDelta = m_Location.m_X - m.m_Location.m_X;
-      int yDelta = m_Location.m_Y - m.m_Location.m_Y;
+      var xDelta = m_Location.m_X - m.m_Location.m_X;
+      var yDelta = m_Location.m_Y - m.m_Location.m_Y;
 
       return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
     }
 
     public double GetDistanceToSqrt(IPoint2D p)
     {
-      int xDelta = m_Location.m_X - p.X;
-      int yDelta = m_Location.m_Y - p.Y;
+      var xDelta = m_Location.m_X - p.X;
+      var yDelta = m_Location.m_Y - p.Y;
 
       return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
     }
@@ -3343,7 +3348,7 @@ namespace Server
       if (aggressor == this)
         return;
 
-      AggressiveActionEventArgs args = AggressiveActionEventArgs.Create(this, aggressor, criminal);
+      var args = AggressiveActionEventArgs.Create(this, aggressor, criminal);
 
       EventSink.InvokeAggressiveAction(args);
 
@@ -3359,13 +3364,13 @@ namespace Server
         m_ExpireCombatant.Start();
       }
 
-      bool addAggressor = true;
+      var addAggressor = true;
 
-      List<AggressorInfo> list = Aggressors;
+      var list = Aggressors;
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
       {
-        AggressorInfo info = list[i];
+        var info = list[i];
 
         if (info.Attacker == aggressor)
         {
@@ -3379,9 +3384,9 @@ namespace Server
 
       list = aggressor.Aggressors;
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
       {
-        AggressorInfo info = list[i];
+        var info = list[i];
 
         if (info.Attacker == this)
         {
@@ -3391,13 +3396,13 @@ namespace Server
         }
       }
 
-      bool addAggressed = true;
+      var addAggressed = true;
 
       list = Aggressed;
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
       {
-        AggressorInfo info = list[i];
+        var info = list[i];
 
         if (info.Defender == aggressor)
         {
@@ -3409,9 +3414,9 @@ namespace Server
 
       list = aggressor.Aggressed;
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
       {
-        AggressorInfo info = list[i];
+        var info = list[i];
 
         if (info.Defender == this)
         {
@@ -3423,7 +3428,7 @@ namespace Server
         }
       }
 
-      bool setCombatant = false;
+      var setCombatant = false;
 
       if (addAggressor)
       {
@@ -3462,11 +3467,11 @@ namespace Server
       if (Deleted)
         return;
 
-      List<AggressorInfo> list = Aggressed;
+      var list = Aggressed;
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
       {
-        AggressorInfo info = list[i];
+        var info = list[i];
 
         if (info.Defender == aggressed)
         {
@@ -3488,11 +3493,11 @@ namespace Server
       if (Deleted)
         return;
 
-      List<AggressorInfo> list = Aggressors;
+      var list = Aggressors;
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
       {
-        AggressorInfo info = list[i];
+        var info = list[i];
 
         if (info.Attacker == aggressor)
         {
@@ -3547,15 +3552,15 @@ namespace Server
       if (Items == null)
         return;
 
-      int oldWeight = m_TotalWeight;
+      var oldWeight = m_TotalWeight;
 
       m_TotalGold = 0;
       m_TotalItems = 0;
       m_TotalWeight = 0;
 
-      for (int i = 0; i < Items.Count; ++i)
+      for (var i = 0; i < Items.Count; ++i)
       {
-        Item item = Items[i];
+        var item = Items[i];
 
         item.UpdateTotals();
 
@@ -3578,7 +3583,8 @@ namespace Server
 
     public void ClearTarget() => m_Target = null;
 
-    public Target BeginTarget(int range, bool allowGround, TargetFlags flags, TargetCallback callback) => Target = new SimpleTarget(range, flags, allowGround, callback);
+    public Target BeginTarget(int range, bool allowGround, TargetFlags flags, TargetCallback callback) =>
+      Target = new SimpleTarget(range, flags, allowGround, callback);
 
     public Target BeginTarget<T>(int range, bool allowGround, TargetFlags flags, TargetStateCallback<T> callback,
       T state) =>
@@ -3598,11 +3604,11 @@ namespace Server
       if (!OnMove(d))
         return false;
 
-      MovementEventArgs e = MovementEventArgs.Create(this, d);
+      var e = MovementEventArgs.Create(this, d);
 
       EventSink.InvokeMovement(e);
 
-      bool ret = !e.Blocked;
+      var ret = !e.Blocked;
 
       e.Free();
 
@@ -3637,13 +3643,13 @@ namespace Server
       if (Deleted)
         return false;
 
-      BankBox box = FindBankNoCreate();
+      var box = FindBankNoCreate();
 
       if (box?.Opened == true)
         box.Close();
 
-      Point3D newLocation = m_Location;
-      Point3D oldLocation = newLocation;
+      var newLocation = m_Location;
+      var oldLocation = newLocation;
 
       if ((m_Direction & Direction.Mask) == (d & Direction.Mask))
       {
@@ -3659,11 +3665,11 @@ namespace Server
           return false;
         }
 
-        if (CheckMovement(d, out int newZ))
+        if (CheckMovement(d, out var newZ))
         {
           int x = oldLocation.m_X, y = oldLocation.m_Y;
           int oldX = x, oldY = y;
-          int oldZ = oldLocation.m_Z;
+          var oldZ = oldLocation.m_Z;
 
           switch (d & Direction.Mask)
           {
@@ -3703,57 +3709,57 @@ namespace Server
 
           Pushing = false;
 
-          Map map = m_Map;
+          var map = m_Map;
 
           if (map != null)
           {
-            Sector oldSector = map.GetSector(oldX, oldY);
-            Sector newSector = map.GetSector(x, y);
+            var oldSector = map.GetSector(oldX, oldY);
+            var newSector = map.GetSector(x, y);
 
             if (oldSector != newSector)
             {
-              for (int i = 0; i < oldSector.Mobiles.Count; ++i)
+              for (var i = 0; i < oldSector.Mobiles.Count; ++i)
               {
-                Mobile m = oldSector.Mobiles[i];
+                var m = oldSector.Mobiles[i];
 
                 if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z &&
                     !m.OnMoveOff(this))
                   return false;
               }
 
-              for (int i = 0; i < oldSector.Items.Count; ++i)
+              for (var i = 0; i < oldSector.Items.Count; ++i)
               {
-                Item item = oldSector.Items[i];
+                var item = oldSector.Items[i];
 
                 if (item.AtWorldPoint(oldX, oldY) &&
-                    (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
+                    (item.Z == oldZ || (item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z)) &&
                     !item.OnMoveOff(this))
                   return false;
               }
 
-              for (int i = 0; i < newSector.Mobiles.Count; ++i)
+              for (var i = 0; i < newSector.Mobiles.Count; ++i)
               {
-                Mobile m = newSector.Mobiles[i];
+                var m = newSector.Mobiles[i];
 
                 if (m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z && !m.OnMoveOver(this))
                   return false;
               }
 
-              for (int i = 0; i < newSector.Items.Count; ++i)
+              for (var i = 0; i < newSector.Items.Count; ++i)
               {
-                Item item = newSector.Items[i];
+                var item = newSector.Items[i];
 
                 if (item.AtWorldPoint(x, y) &&
-                    (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
+                    (item.Z == newZ || (item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z)) &&
                     !item.OnMoveOver(this))
                   return false;
               }
             }
             else
             {
-              for (int i = 0; i < oldSector.Mobiles.Count; ++i)
+              for (var i = 0; i < oldSector.Mobiles.Count; ++i)
               {
-                Mobile m = oldSector.Mobiles[i];
+                var m = oldSector.Mobiles[i];
 
                 if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z &&
                     !m.OnMoveOff(this))
@@ -3762,16 +3768,16 @@ namespace Server
                   return false;
               }
 
-              for (int i = 0; i < oldSector.Items.Count; ++i)
+              for (var i = 0; i < oldSector.Items.Count; ++i)
               {
-                Item item = oldSector.Items[i];
+                var item = oldSector.Items[i];
 
                 if (item.AtWorldPoint(oldX, oldY) &&
-                    (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
+                    (item.Z == oldZ || (item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z)) &&
                     !item.OnMoveOff(this))
                   return false;
                 if (item.AtWorldPoint(x, y) &&
-                    (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
+                    (item.Z == newZ || (item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z)) &&
                     !item.OnMoveOver(this))
                   return false;
               }
@@ -3795,7 +3801,7 @@ namespace Server
 
             while (m_MoveRecords.Count > 0)
             {
-              MovementRecord r = m_MoveRecords.Peek();
+              var r = m_MoveRecords.Peek();
 
               if (r.Expired())
                 m_MoveRecords.Dequeue();
@@ -3805,14 +3811,14 @@ namespace Server
 
             if (m_MoveRecords.Count >= FwdMaxSteps)
             {
-              FastWalkEventArgs fw = new FastWalkEventArgs(m_NetState);
+              var fw = new FastWalkEventArgs(m_NetState);
               EventSink.InvokeFastWalk(fw);
 
               if (fw.Blocked)
                 return false;
             }
 
-            int delay = ComputeMovementSpeed(d);
+            var delay = ComputeMovementSpeed(d);
 
             long end;
 
@@ -3837,16 +3843,16 @@ namespace Server
       }
 
       m_NetState?.Send(MovementAck.Instantiate(m_NetState.Sequence,
-        this)); //new MovementAck( m_NetState.Sequence, this ) );
+        this)); // new MovementAck( m_NetState.Sequence, this ) );
 
       SetLocation(newLocation, false);
       SetDirection(d);
 
       if (m_Map != null)
       {
-        IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
+        var eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
 
-        foreach (IEntity o in eable)
+        foreach (var o in eable)
         {
           if (o == this)
             continue;
@@ -3865,22 +3871,22 @@ namespace Server
 
         eable.Free();
 
-        Packet[][] cache = m_MovingPacketCache;
+        var cache = m_MovingPacketCache;
 
         /*for( int i = 0; i < cache.Length; ++i )
           for( int j = 0; j < cache[i].Length; ++j )
             Packet.Release( ref cache[i][j] );*/
 
-        foreach (Mobile m in m_MoveClientList)
+        foreach (var m in m_MoveClientList)
         {
-          NetState ns = m.NetState;
+          var ns = m.NetState;
 
           if (ns != null && Utility.InUpdateRange(m_Location, m.m_Location) && m.CanSee(this))
           {
             if (ns.StygianAbyss)
             {
-              int noto = Notoriety.Compute(m, this);
-              Packet p = cache[0][noto];
+              var noto = Notoriety.Compute(m, this);
+              var p = cache[0][noto];
 
               if (p == null)
                 cache[0][noto] = p = Packet.Acquire(new MobileMoving(this, noto));
@@ -3889,8 +3895,8 @@ namespace Server
             }
             else
             {
-              int noto = Notoriety.Compute(m, this);
-              Packet p = cache[1][noto];
+              var noto = Notoriety.Compute(m, this);
+              var p = cache[1][noto];
 
               if (p == null)
                 cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(this, noto));
@@ -3900,13 +3906,13 @@ namespace Server
           }
         }
 
-        for (int i = 0; i < cache.Length; ++i)
-        for (int j = 0; j < cache[i].Length; ++j)
-          Packet.Release(ref cache[i][j]);
+        for (var i = 0; i < cache.Length; ++i)
+          for (var j = 0; j < cache[i].Length; ++j)
+            Packet.Release(ref cache[i][j]);
 
-        for (int i = 0; i < m_MoveList.Count; ++i)
+        for (var i = 0; i < m_MoveList.Count; ++i)
         {
-          IEntity o = m_MoveList[i];
+          var o = m_MoveList[i];
 
           if (o is Mobile mobile)
             mobile.OnMovement(this, oldLocation);
@@ -4050,7 +4056,7 @@ namespace Server
 
         OnBeforeResurrect();
 
-        BankBox box = FindBankNoCreate();
+        var box = FindBankNoCreate();
 
         if (box?.Opened == true)
           box.Close();
@@ -4068,12 +4074,12 @@ namespace Server
 
         ProcessDeltaQueue();
 
-        for (int i = Items.Count - 1; i >= 0; --i)
+        for (var i = Items.Count - 1; i >= 0; --i)
         {
           if (i >= Items.Count)
             continue;
 
-          Item item = Items[i];
+          var item = Items[i];
 
           if (item.ItemID == 0x204E)
             item.Delete();
@@ -4084,13 +4090,13 @@ namespace Server
 
         OnAfterResurrect();
 
-        //Send( new DeathStatus( false ) );
+        // Send( new DeathStatus( false ) );
       }
     }
 
     public void DropHolding()
     {
-      Item holding = m_Holding;
+      var holding = m_Holding;
 
       if (holding != null)
       {
@@ -4193,7 +4199,7 @@ namespace Server
       if (!OnBeforeDeath())
         return;
 
-      BankBox box = FindBankNoCreate();
+      var box = FindBankNoCreate();
 
       if (box?.Opened == true)
         box.Close();
@@ -4201,7 +4207,7 @@ namespace Server
       m_NetState?.CancelAllTrades();
 
       m_Spell?.OnCasterKilled();
-      //m_Spell.Disturb( DisturbType.Kill );
+      // m_Spell.Disturb( DisturbType.Kill );
 
       m_Target?.Cancel(this, TargetCancelType.Canceled);
 
@@ -4232,48 +4238,48 @@ namespace Server
         m_FrozenTimer?.Stop();
       }
 
-      List<Item> content = new List<Item>();
-      List<Item> equip = new List<Item>();
-      List<Item> moveToPack = new List<Item>();
+      var content = new List<Item>();
+      var equip = new List<Item>();
+      var moveToPack = new List<Item>();
 
-      List<Item> itemsCopy = new List<Item>(Items);
+      var itemsCopy = new List<Item>(Items);
 
-      Container pack = Backpack;
+      var pack = Backpack;
 
-      for (int i = 0; i < itemsCopy.Count; ++i)
+      for (var i = 0; i < itemsCopy.Count; ++i)
       {
-        Item item = itemsCopy[i];
+        var item = itemsCopy[i];
 
         if (item == pack)
           continue;
 
-        DeathMoveResult res = GetParentMoveResultFor(item);
+        var res = GetParentMoveResultFor(item);
 
         switch (res)
         {
           case DeathMoveResult.MoveToCorpse:
-          {
-            content.Add(item);
-            equip.Add(item);
-            break;
-          }
+            {
+              content.Add(item);
+              equip.Add(item);
+              break;
+            }
           case DeathMoveResult.MoveToBackpack:
-          {
-            moveToPack.Add(item);
-            break;
-          }
+            {
+              moveToPack.Add(item);
+              break;
+            }
         }
       }
 
       if (pack != null)
       {
-        List<Item> packCopy = new List<Item>(pack.Items);
+        var packCopy = new List<Item>(pack.Items);
 
-        for (int i = 0; i < packCopy.Count; ++i)
+        for (var i = 0; i < packCopy.Count; ++i)
         {
-          Item item = packCopy[i];
+          var item = packCopy[i];
 
-          DeathMoveResult res = GetInventoryMoveResultFor(item);
+          var res = GetInventoryMoveResultFor(item);
 
           if (res == DeathMoveResult.MoveToCorpse)
             content.Add(item);
@@ -4281,9 +4287,9 @@ namespace Server
             moveToPack.Add(item);
         }
 
-        for (int i = 0; i < moveToPack.Count; ++i)
+        for (var i = 0; i < moveToPack.Count; ++i)
         {
-          Item item = moveToPack[i];
+          var item = moveToPack[i];
 
           if (RetainPackLocsOnDeath && item.Parent == pack)
             continue;
@@ -4300,8 +4306,7 @@ namespace Server
       if (m_FacialHair != null)
         facialhair = new FacialHairInfo(m_FacialHair.ItemID, m_FacialHair.Hue);
 
-      Container c = CreateCorpseHandler?.Invoke(this, hair, facialhair, content, equip);
-
+      var c = CreateCorpseHandler?.Invoke(this, hair, facialhair, content, equip);
 
       /*m_Corpse = c;
 
@@ -4315,9 +4320,9 @@ namespace Server
       {
         Packet animPacket = null;
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+        var eable = m_Map.GetClientsInRange(m_Location);
 
-        foreach (NetState state in eable)
+        foreach (var state in eable)
           if (state != m_NetState)
           {
             animPacket ??= Packet.Acquire(new DeathAnimation(this, c));
@@ -4352,7 +4357,7 @@ namespace Server
     /// </summary>
     public virtual void OnDeath(Container c)
     {
-      int sound = GetDeathSound();
+      var sound = GetDeathSound();
 
       if (sound >= 0)
         Effects.PlaySound(this, Map, sound);
@@ -4368,10 +4373,10 @@ namespace Server
         Warmode = false;
 
         BodyMod = 0;
-        //Body = this.Female ? 0x193 : 0x192;
+        // Body = this.Female ? 0x193 : 0x192;
         Body = Race.GhostBody(this);
 
-        Item deathShroud = new Item(0x204E) { Movable = false, Layer = Layer.OuterTorso };
+        var deathShroud = new Item(0x204E) { Movable = false, Layer = Layer.OuterTorso };
 
         AddItem(deathShroud);
 
@@ -4407,8 +4412,8 @@ namespace Server
       if (m_Spell?.OnCasterUsingObject(item) == false)
         return;
 
-      IEntity root = item.RootParent;
-      bool okay = false;
+      var root = item.RootParent;
+      var okay = false;
 
       if (!Utility.InUpdateRange(this, item.GetWorldLocation()))
       {
@@ -4420,7 +4425,7 @@ namespace Server
       }
       else if (!item.IsAccessibleTo(this))
       {
-        Region reg = Region.Find(item.GetWorldLocation(), item.Map);
+        var reg = Region.Find(item.GetWorldLocation(), item.Map);
 
         if (reg?.SendInaccessibleMessage(item, this) != true)
           item.OnDoubleClickNotAccessible(this);
@@ -4488,8 +4493,8 @@ namespace Server
       if (item == null)
         return;
 
-      Mobile from = this;
-      NetState state = m_NetState;
+      var from = this;
+      var state = m_NetState;
 
       if (from.AccessLevel >= AccessLevel.GameMaster || Core.TickCount - from.NextActionTime >= 0)
       {
@@ -4529,7 +4534,7 @@ namespace Server
           }
           else
           {
-            IEntity root = item.RootParent;
+            var root = item.RootParent;
 
             if (root is Mobile mobile && !mobile.CheckNonlocalLift(from, item))
             {
@@ -4559,22 +4564,22 @@ namespace Server
               if (amount > item.Amount)
                 amount = item.Amount;
 
-              int oldAmount = item.Amount;
-              //item.Amount = amount; //Set in LiftItemDupe
+              var oldAmount = item.Amount;
+              // item.Amount = amount; //Set in LiftItemDupe
 
               if (amount < oldAmount)
                 LiftItemDupe(item, amount);
-              //item.Dupe( oldAmount - amount );
+              // item.Dupe( oldAmount - amount );
 
-              Map map = from.Map;
+              var map = from.Map;
 
               if (DragEffects && map != null && (root == null || root is Item))
               {
-                IPooledEnumerable<NetState> eable = map.GetClientsInRange(from.Location);
+                var eable = map.GetClientsInRange(from.Location);
                 Packet p = null;
-                Item rootItem = root as Item;
+                var rootItem = root as Item;
 
-                foreach (NetState ns in eable)
+                foreach (var ns in eable)
                   if (ns.Mobile != from && ns.Mobile.CanSee(from) && ns.Mobile.InLOS(from) &&
                       ns.Mobile.CanSee(root))
                   {
@@ -4594,9 +4599,9 @@ namespace Server
                 eable.Free();
               }
 
-              Point3D fixLoc = item.Location;
-              Map fixMap = item.Map;
-              bool shouldFix = item.Parent == null;
+              var fixLoc = item.Location;
+              var fixMap = item.Map;
+              var shouldFix = item.Parent == null;
 
               item.RecordBounce();
               item.OnItemLifted(from, item);
@@ -4604,7 +4609,7 @@ namespace Server
 
               from.Holding = item;
 
-              int liftSound = item.GetLiftSound(from);
+              var liftSound = item.GetLiftSound(from);
 
               if (liftSound != -1)
                 from.Send(new PlaySound(liftSound, from));
@@ -4703,16 +4708,16 @@ namespace Server
     {
       if (DragEffects && !item.Deleted)
       {
-        Map map = m_Map;
-        IEntity root = item.RootParent;
+        var map = m_Map;
+        var root = item.RootParent;
 
         if (map != null && (root == null || root is Item))
         {
-          IPooledEnumerable<NetState> eable = map.GetClientsInRange(m_Location);
+          var eable = map.GetClientsInRange(m_Location);
           Packet p = null;
-          Item rootItem = root as Item;
+          var rootItem = root as Item;
 
-          foreach (NetState ns in eable)
+          foreach (var ns in eable)
           {
             if (ns.StygianAbyss)
               continue;
@@ -4740,16 +4745,16 @@ namespace Server
 
     public virtual bool Drop(Item to, Point3D loc)
     {
-      Mobile from = this;
-      Item item = from.Holding;
+      var from = this;
+      var item = from.Holding;
 
-      bool valid = item != null && item.HeldBy == from && item.Map == Map.Internal;
+      var valid = item != null && item.HeldBy == from && item.Map == Map.Internal;
 
       from.Holding = null;
 
       if (!valid) return false;
 
-      bool bounced = true;
+      var bounced = true;
 
       item.SetLastMoved();
 
@@ -4768,16 +4773,16 @@ namespace Server
 
     public virtual bool Drop(Point3D loc)
     {
-      Mobile from = this;
-      Item item = from.Holding;
+      var from = this;
+      var item = from.Holding;
 
-      bool valid = item != null && item.HeldBy == from && item.Map == Map.Internal;
+      var valid = item != null && item.HeldBy == from && item.Map == Map.Internal;
 
       from.Holding = null;
 
       if (!valid) return false;
 
-      bool bounced = true;
+      var bounced = true;
 
       item.SetLastMoved();
 
@@ -4796,16 +4801,16 @@ namespace Server
 
     public virtual bool Drop(Mobile to, Point3D loc)
     {
-      Mobile from = this;
-      Item item = from.Holding;
+      var from = this;
+      var item = from.Holding;
 
-      bool valid = item != null && item.HeldBy == from && item.Map == Map.Internal;
+      var valid = item != null && item.HeldBy == from && item.Map == Map.Internal;
 
       from.Holding = null;
 
       if (!valid) return false;
 
-      bool bounced = true;
+      var bounced = true;
 
       item.SetLastMoved();
 
@@ -4827,9 +4832,9 @@ namespace Server
       if (Alive)
         return false;
 
-      StringBuilder sb = new StringBuilder(text.Length, text.Length);
+      var sb = new StringBuilder(text.Length, text.Length);
 
-      for (int i = 0; i < text.Length; ++i)
+      for (var i = 0; i < text.Length; ++i)
         sb.Append(text[i] != ' ' ? GhostChars[Utility.Random(GhostChars.Length)] : ' ');
 
       text = sb.ToString();
@@ -4854,7 +4859,7 @@ namespace Server
       if (Alive)
         return false;
 
-      TimeSpan delay = AutoManifestTimeout;
+      var delay = AutoManifestTimeout;
 
       if (delay > TimeSpan.Zero && (!Warmode || m_AutoManifestTimer != null))
       {
@@ -4865,13 +4870,14 @@ namespace Server
       return false;
     }
 
-    public virtual bool CheckHearsMutatedSpeech(Mobile m, object context) => context != m_GhostMutateContext || m.Alive && !m.CanHearGhosts;
+    public virtual bool CheckHearsMutatedSpeech(Mobile m, object context) =>
+      context != m_GhostMutateContext || (m.Alive && !m.CanHearGhosts);
 
     private void AddSpeechItemsFrom(List<IEntity> list, Container cont)
     {
-      for (int i = 0; i < cont.Items.Count; ++i)
+      for (var i = 0; i < cont.Items.Count; ++i)
       {
-        Item item = cont.Items[i];
+        var item = cont.Items[i];
 
         if (item.HandlesOnSpeech)
           list.Add(item);
@@ -4886,7 +4892,7 @@ namespace Server
       if (Deleted || CommandSystem.Handle(this, text, type))
         return;
 
-      int range = 15;
+      var range = 15;
 
       switch (type)
       {
@@ -4925,7 +4931,7 @@ namespace Server
           break;
       }
 
-      SpeechEventArgs regArgs = new SpeechEventArgs(this, text, type, hue, keywords);
+      var regArgs = new SpeechEventArgs(this, text, type, hue, keywords);
 
       EventSink.InvokeSpeech(regArgs);
       Region.OnSpeech(regArgs);
@@ -4939,17 +4945,17 @@ namespace Server
       if (string.IsNullOrEmpty(text))
         return;
 
-      List<Mobile> hears = m_Hears;
-      List<IEntity> onSpeech = m_OnSpeech;
+      var hears = m_Hears;
+      var onSpeech = m_OnSpeech;
 
       if (m_Map != null)
       {
-        IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange(m_Location, range);
+        var eable = m_Map.GetObjectsInRange(m_Location, range);
 
-        foreach (IEntity o in eable)
+        foreach (var o in eable)
           if (o is Mobile heard)
           {
-            if (!heard.CanSee(this) || !NoSpeechLOS && heard.Player && !heard.InLOS(this))
+            if (!heard.CanSee(this) || (!NoSpeechLOS && heard.Player && !heard.InLOS(this)))
               continue;
 
             if (heard.m_NetState != null)
@@ -4958,9 +4964,9 @@ namespace Server
             if (heard.HandlesOnSpeech(this))
               onSpeech.Add(heard);
 
-            for (int i = 0; i < heard.Items.Count; ++i)
+            for (var i = 0; i < heard.Items.Count; ++i)
             {
-              Item item = heard.Items[i];
+              var item = heard.Items[i];
 
               if (item.HandlesOnSpeech)
                 onSpeech.Add(item);
@@ -4981,7 +4987,7 @@ namespace Server
         eable.Free();
 
         object mutateContext = null;
-        string mutatedText = text;
+        var mutatedText = text;
         SpeechEventArgs mutatedArgs = null;
 
         if (MutateSpeech(hears, ref mutatedText, ref mutateContext))
@@ -4996,15 +5002,15 @@ namespace Server
 
         // TODO: Should this be sorted like onSpeech is below?
 
-        for (int i = 0; i < hears.Count; ++i)
+        for (var i = 0; i < hears.Count; ++i)
         {
-          Mobile heard = hears[i];
+          var heard = hears[i];
 
           if (mutatedArgs == null || !CheckHearsMutatedSpeech(heard, mutateContext))
           {
             heard.OnSpeech(regArgs);
 
-            NetState ns = heard.NetState;
+            var ns = heard.NetState;
 
             if (ns != null)
             {
@@ -5017,7 +5023,7 @@ namespace Server
           {
             heard.OnSpeech(mutatedArgs);
 
-            NetState ns = heard.NetState;
+            var ns = heard.NetState;
 
             if (ns != null)
             {
@@ -5034,9 +5040,9 @@ namespace Server
         if (onSpeech.Count > 1)
           onSpeech.Sort(LocationComparer.GetInstance(this));
 
-        for (int i = 0; i < onSpeech.Count; ++i)
+        for (var i = 0; i < onSpeech.Count; ++i)
         {
-          IEntity obj = onSpeech[i];
+          var obj = onSpeech[i];
 
           if (obj is Mobile heard)
           {
@@ -5065,12 +5071,12 @@ namespace Server
 
     public DamageEntry FindMostRecentDamageEntry(bool allowSelf)
     {
-      for (int i = DamageEntries.Count - 1; i >= 0; --i)
+      for (var i = DamageEntries.Count - 1; i >= 0; --i)
       {
         if (i >= DamageEntries.Count)
           continue;
 
-        DamageEntry de = DamageEntries[i];
+        var de = DamageEntries[i];
 
         if (de.HasExpired)
           DamageEntries.RemoveAt(i);
@@ -5085,12 +5091,12 @@ namespace Server
 
     public DamageEntry FindLeastRecentDamageEntry(bool allowSelf)
     {
-      for (int i = 0; i < DamageEntries.Count; ++i)
+      for (var i = 0; i < DamageEntries.Count; ++i)
       {
         if (i < 0)
           continue;
 
-        DamageEntry de = DamageEntries[i];
+        var de = DamageEntries[i];
 
         if (de.HasExpired)
         {
@@ -5112,12 +5118,12 @@ namespace Server
     {
       DamageEntry mostTotal = null;
 
-      for (int i = DamageEntries.Count - 1; i >= 0; --i)
+      for (var i = DamageEntries.Count - 1; i >= 0; --i)
       {
         if (i >= DamageEntries.Count)
           continue;
 
-        DamageEntry de = DamageEntries[i];
+        var de = DamageEntries[i];
 
         if (de.HasExpired)
           DamageEntries.RemoveAt(i);
@@ -5134,12 +5140,12 @@ namespace Server
     {
       DamageEntry mostTotal = null;
 
-      for (int i = DamageEntries.Count - 1; i >= 0; --i)
+      for (var i = DamageEntries.Count - 1; i >= 0; --i)
       {
         if (i >= DamageEntries.Count)
           continue;
 
-        DamageEntry de = DamageEntries[i];
+        var de = DamageEntries[i];
 
         if (de.HasExpired)
           DamageEntries.RemoveAt(i);
@@ -5152,12 +5158,12 @@ namespace Server
 
     public DamageEntry FindDamageEntryFor(Mobile m)
     {
-      for (int i = DamageEntries.Count - 1; i >= 0; --i)
+      for (var i = DamageEntries.Count - 1; i >= 0; --i)
       {
         if (i >= DamageEntries.Count)
           continue;
 
-        DamageEntry de = DamageEntries[i];
+        var de = DamageEntries[i];
 
         if (de.HasExpired)
           DamageEntries.RemoveAt(i);
@@ -5172,7 +5178,7 @@ namespace Server
 
     public virtual DamageEntry RegisterDamage(int amount, Mobile from)
     {
-      DamageEntry de = FindDamageEntryFor(from) ?? new DamageEntry(from);
+      var de = FindDamageEntryFor(from) ?? new DamageEntry(from);
 
       de.DamageGiven += amount;
       de.LastDamage = DateTime.UtcNow;
@@ -5180,16 +5186,16 @@ namespace Server
       DamageEntries.Remove(de);
       DamageEntries.Add(de);
 
-      Mobile master = from.GetDamageMaster(this);
+      var master = from.GetDamageMaster(this);
 
       if (master != null)
       {
-        List<DamageEntry> list = de.Responsible;
+        var list = de.Responsible;
 
         if (list == null)
           de.Responsible = list = new List<DamageEntry>();
 
-        DamageEntry resp = list.FirstOrDefault(check => check.Damager == master);
+        var resp = list.FirstOrDefault(check => check.Damager == master);
 
         if (resp == null)
           list.Add(resp = new DamageEntry(master));
@@ -5234,13 +5240,13 @@ namespace Server
 
       if (amount > 0)
       {
-        int oldHits = Hits;
-        int newHits = oldHits - amount;
+        var oldHits = Hits;
+        var newHits = oldHits - amount;
 
         m_Spell?.OnCasterHurt();
 
-        //if ( m_Spell != null && m_Spell.State == SpellState.Casting )
-        //	m_Spell.Disturb( DisturbType.Hurt, false, true );
+        // if ( m_Spell != null && m_Spell.State == SpellState.Casting )
+        // m_Spell.Disturb( DisturbType.Hurt, false, true );
 
         if (from != null)
           RegisterDamage(amount, from);
@@ -5252,25 +5258,25 @@ namespace Server
         switch (VisibleDamageType)
         {
           case VisibleDamageType.Related:
-          {
-            SendVisibleDamageRelated(from, amount);
-            break;
-          }
+            {
+              SendVisibleDamageRelated(from, amount);
+              break;
+            }
           case VisibleDamageType.Everyone:
-          {
-            SendVisibleDamageEveryone(amount);
-            break;
-          }
+            {
+              SendVisibleDamageEveryone(amount);
+              break;
+            }
           case VisibleDamageType.Selective:
-          {
-            SendVisibleDamageSelective(from, amount);
-            break;
-          }
+            {
+              SendVisibleDamageSelective(from, amount);
+              break;
+            }
         }
 
         OnDamage(amount, from, newHits < 0);
 
-        IMount m = Mount;
+        var m = Mount;
         if (m != null && informMount)
           m.OnRiderDamaged(amount, from, newHits < 0);
 
@@ -5296,7 +5302,7 @@ namespace Server
 
       if (ourState == null)
       {
-        Mobile master = GetDamageMaster(from);
+        var master = GetDamageMaster(from);
 
         if (master != null)
           ourState = master.m_NetState;
@@ -5304,7 +5310,7 @@ namespace Server
 
       if (theirState == null && from != null)
       {
-        Mobile master = from.GetDamageMaster(this);
+        var master = from.GetDamageMaster(this);
 
         if (master != null)
           theirState = master.m_NetState;
@@ -5316,15 +5322,16 @@ namespace Server
 
         if (ourState != null)
         {
-          p = ourState.DamagePacket ? Packet.Acquire(new DamagePacket(this, amount)) :
-            Packet.Acquire(new DamagePacketOld(this, amount));
+          p = ourState.DamagePacket
+            ? Packet.Acquire(new DamagePacket(this, amount))
+            : Packet.Acquire(new DamagePacketOld(this, amount));
 
           ourState.Send(p);
         }
 
         if (theirState != null && theirState != ourState)
         {
-          bool newPacket = theirState.DamagePacket;
+          var newPacket = theirState.DamagePacket;
 
           if (newPacket && !(p is DamagePacket))
           {
@@ -5349,17 +5356,17 @@ namespace Server
       if (amount < 0)
         return;
 
-      Map map = m_Map;
+      var map = m_Map;
 
       if (map == null)
         return;
 
-      IPooledEnumerable<NetState> eable = map.GetClientsInRange(m_Location);
+      var eable = map.GetClientsInRange(m_Location);
 
       Packet pNew = null;
       Packet pOld = null;
 
-      foreach (NetState ns in eable)
+      foreach (var ns in eable)
         if (ns.Mobile.CanSee(this))
         {
           if (ns.DamagePacket)
@@ -5386,12 +5393,12 @@ namespace Server
     {
       NetState ourState = m_NetState, theirState = from?.m_NetState;
 
-      Mobile damager = from;
-      Mobile damaged = this;
+      var damager = from;
+      var damaged = this;
 
       if (ourState == null)
       {
-        Mobile master = GetDamageMaster(from);
+        var master = GetDamageMaster(from);
 
         if (master != null)
         {
@@ -5405,7 +5412,7 @@ namespace Server
 
       if (theirState == null && from != null)
       {
-        Mobile master = from.GetDamageMaster(this);
+        var master = from.GetDamageMaster(this);
 
         if (master != null)
         {
@@ -5469,313 +5476,313 @@ namespace Server
 
     public virtual void Deserialize(IGenericReader reader)
     {
-      int version = reader.ReadInt();
+      var version = reader.ReadInt();
 
       switch (version)
       {
         case 32:
-        {
-          // Removed StuckMenu
-          goto case 31;
-        }
+          {
+            // Removed StuckMenu
+            goto case 31;
+          }
         case 31:
-        {
-          LastStrGain = reader.ReadDeltaTime();
-          LastIntGain = reader.ReadDeltaTime();
-          LastDexGain = reader.ReadDeltaTime();
+          {
+            LastStrGain = reader.ReadDeltaTime();
+            LastIntGain = reader.ReadDeltaTime();
+            LastDexGain = reader.ReadDeltaTime();
 
-          goto case 30;
-        }
+            goto case 30;
+          }
         case 30:
-        {
-          byte hairflag = reader.ReadByte();
+          {
+            var hairflag = reader.ReadByte();
 
-          if ((hairflag & 0x01) != 0)
-            m_Hair = new HairInfo(reader);
-          if ((hairflag & 0x02) != 0)
-            m_FacialHair = new FacialHairInfo(reader);
+            if ((hairflag & 0x01) != 0)
+              m_Hair = new HairInfo(reader);
+            if ((hairflag & 0x02) != 0)
+              m_FacialHair = new FacialHairInfo(reader);
 
-          goto case 29;
-        }
+            goto case 29;
+          }
         case 29:
-        {
-          m_Race = reader.ReadRace();
-          goto case 28;
-        }
+          {
+            m_Race = reader.ReadRace();
+            goto case 28;
+          }
         case 28:
-        {
-          if (version <= 30)
-            LastStatGain = reader.ReadDeltaTime();
+          {
+            if (version <= 30)
+              LastStatGain = reader.ReadDeltaTime();
 
-          goto case 27;
-        }
+            goto case 27;
+          }
         case 27:
-        {
-          m_TithingPoints = reader.ReadInt();
+          {
+            m_TithingPoints = reader.ReadInt();
 
-          goto case 26;
-        }
+            goto case 26;
+          }
         case 26:
         case 25:
         case 24:
-        {
-          Corpse = reader.ReadItem() as Container;
+          {
+            Corpse = reader.ReadItem() as Container;
 
-          goto case 23;
-        }
+            goto case 23;
+          }
         case 23:
-        {
-          CreationTime = reader.ReadDateTime();
+          {
+            CreationTime = reader.ReadDateTime();
 
-          goto case 22;
-        }
+            goto case 22;
+          }
         case 22: // Just removed followers
         case 21:
-        {
-          Stabled = reader.ReadStrongMobileList();
+          {
+            Stabled = reader.ReadStrongMobileList();
 
-          goto case 20;
-        }
+            goto case 20;
+          }
         case 20:
-        {
-          CantWalk = reader.ReadBool();
+          {
+            CantWalk = reader.ReadBool();
 
-          goto case 19;
-        }
+            goto case 19;
+          }
         case 19: // Just removed variables
         case 18:
-        {
-          Virtues = new VirtueInfo(reader);
+          {
+            Virtues = new VirtueInfo(reader);
 
-          goto case 17;
-        }
+            goto case 17;
+          }
         case 17:
-        {
-          Thirst = reader.ReadInt();
-          BAC = reader.ReadInt();
+          {
+            Thirst = reader.ReadInt();
+            BAC = reader.ReadInt();
 
-          goto case 16;
-        }
+            goto case 16;
+          }
         case 16:
-        {
-          m_ShortTermMurders = reader.ReadInt();
-
-          if (version <= 24)
           {
-            reader.ReadDateTime();
-            reader.ReadDateTime();
-          }
+            m_ShortTermMurders = reader.ReadInt();
 
-          goto case 15;
-        }
-        case 15:
-        {
-          if (version < 22)
-            reader.ReadInt(); // followers
-
-          m_FollowersMax = reader.ReadInt();
-
-          goto case 14;
-        }
-        case 14:
-        {
-          MagicDamageAbsorb = reader.ReadInt();
-
-          goto case 13;
-        }
-        case 13:
-        {
-          GuildFealty = reader.ReadMobile();
-
-          goto case 12;
-        }
-        case 12:
-        {
-          m_Guild = reader.ReadGuild();
-
-          goto case 11;
-        }
-        case 11:
-        {
-          m_DisplayGuildTitle = reader.ReadBool();
-
-          goto case 10;
-        }
-        case 10:
-        {
-          CanSwim = reader.ReadBool();
-
-          goto case 9;
-        }
-        case 9:
-        {
-          Squelched = reader.ReadBool();
-
-          goto case 8;
-        }
-        case 8:
-        {
-          m_Holding = reader.ReadItem();
-
-          goto case 7;
-        }
-        case 7:
-        {
-          m_VirtualArmor = reader.ReadInt();
-
-          goto case 6;
-        }
-        case 6:
-        {
-          BaseSoundID = reader.ReadInt();
-
-          goto case 5;
-        }
-        case 5:
-        {
-          DisarmReady = reader.ReadBool();
-          StunReady = reader.ReadBool();
-
-          goto case 4;
-        }
-        case 4:
-        {
-          if (version <= 25) Poison.Deserialize(reader);
-
-          goto case 3;
-        }
-        case 3:
-        {
-          m_StatCap = reader.ReadInt();
-
-          goto case 2;
-        }
-        case 2:
-        {
-          NameHue = reader.ReadInt();
-
-          goto case 1;
-        }
-        case 1:
-        {
-          m_Hunger = reader.ReadInt();
-
-          goto case 0;
-        }
-        case 0:
-        {
-          if (version < 21)
-            Stabled = new List<Mobile>();
-
-          if (version < 18)
-            Virtues = new VirtueInfo();
-
-          if (version < 11)
-            m_DisplayGuildTitle = true;
-
-          if (version < 3)
-            m_StatCap = 225;
-
-          if (version < 15)
-          {
-            m_Followers = 0;
-            m_FollowersMax = 5;
-          }
-
-          m_Location = reader.ReadPoint3D();
-          m_Body = new Body(reader.ReadInt());
-          m_Name = reader.ReadString();
-          m_GuildTitle = reader.ReadString();
-          m_Criminal = reader.ReadBool();
-          m_Kills = reader.ReadInt();
-          SpeechHue = reader.ReadInt();
-          EmoteHue = reader.ReadInt();
-          WhisperHue = reader.ReadInt();
-          YellHue = reader.ReadInt();
-          m_Language = reader.ReadString();
-          m_Female = reader.ReadBool();
-          m_Warmode = reader.ReadBool();
-          m_Hidden = reader.ReadBool();
-          m_Direction = (Direction)reader.ReadByte();
-          m_Hue = reader.ReadInt();
-          m_Str = reader.ReadInt();
-          m_Dex = reader.ReadInt();
-          m_Int = reader.ReadInt();
-          m_Hits = reader.ReadInt();
-          m_Stam = reader.ReadInt();
-          m_Mana = reader.ReadInt();
-          m_Map = reader.ReadMap();
-          m_Blessed = reader.ReadBool();
-          m_Fame = reader.ReadInt();
-          m_Karma = reader.ReadInt();
-          m_AccessLevel = (AccessLevel)reader.ReadByte();
-
-          Skills = new Skills(this, reader);
-
-          Items = reader.ReadStrongItemList();
-
-          m_Player = reader.ReadBool();
-          m_Title = reader.ReadString();
-          Profile = reader.ReadString();
-          ProfileLocked = reader.ReadBool();
-
-          if (version <= 18)
-          {
-            reader.ReadInt();
-            reader.ReadInt();
-            reader.ReadInt();
-          }
-
-          AutoPageNotify = reader.ReadBool();
-
-          LogoutLocation = reader.ReadPoint3D();
-          LogoutMap = reader.ReadMap();
-
-          m_StrLock = (StatLockType)reader.ReadByte();
-          m_DexLock = (StatLockType)reader.ReadByte();
-          m_IntLock = (StatLockType)reader.ReadByte();
-
-          StatMods = new List<StatMod>();
-          SkillMods = new List<SkillMod>();
-
-          if (version < 32)
-            if (reader.ReadBool())
+            if (version <= 24)
             {
-              int count = reader.ReadInt();
-              for (int i = 0; i < count; ++i) reader.ReadDateTime();
+              reader.ReadDateTime();
+              reader.ReadDateTime();
             }
 
-          if (m_Player && m_Map != Map.Internal)
-          {
-            LogoutLocation = m_Location;
-            LogoutMap = m_Map;
-
-            m_Map = Map.Internal;
+            goto case 15;
           }
-
-          m_Map?.OnEnter(this);
-
-          if (m_Criminal)
+        case 15:
           {
-            m_ExpireCriminal ??= new ExpireCriminalTimer(this);
+            if (version < 22)
+              reader.ReadInt(); // followers
 
-            m_ExpireCriminal.Start();
+            m_FollowersMax = reader.ReadInt();
+
+            goto case 14;
           }
+        case 14:
+          {
+            MagicDamageAbsorb = reader.ReadInt();
 
-          if (ShouldCheckStatTimers)
-            CheckStatTimers();
+            goto case 13;
+          }
+        case 13:
+          {
+            GuildFealty = reader.ReadMobile();
 
-          if (!m_Player && m_Dex <= 100 && m_CombatTimer != null)
-            m_CombatTimer.Priority = TimerPriority.FiftyMS;
-          else if (m_CombatTimer != null)
-            m_CombatTimer.Priority = TimerPriority.EveryTick;
+            goto case 12;
+          }
+        case 12:
+          {
+            m_Guild = reader.ReadGuild();
 
-          UpdateRegion();
+            goto case 11;
+          }
+        case 11:
+          {
+            m_DisplayGuildTitle = reader.ReadBool();
 
-          UpdateResistances();
+            goto case 10;
+          }
+        case 10:
+          {
+            CanSwim = reader.ReadBool();
 
-          break;
-        }
+            goto case 9;
+          }
+        case 9:
+          {
+            Squelched = reader.ReadBool();
+
+            goto case 8;
+          }
+        case 8:
+          {
+            m_Holding = reader.ReadItem();
+
+            goto case 7;
+          }
+        case 7:
+          {
+            m_VirtualArmor = reader.ReadInt();
+
+            goto case 6;
+          }
+        case 6:
+          {
+            BaseSoundID = reader.ReadInt();
+
+            goto case 5;
+          }
+        case 5:
+          {
+            DisarmReady = reader.ReadBool();
+            StunReady = reader.ReadBool();
+
+            goto case 4;
+          }
+        case 4:
+          {
+            if (version <= 25) Poison.Deserialize(reader);
+
+            goto case 3;
+          }
+        case 3:
+          {
+            m_StatCap = reader.ReadInt();
+
+            goto case 2;
+          }
+        case 2:
+          {
+            NameHue = reader.ReadInt();
+
+            goto case 1;
+          }
+        case 1:
+          {
+            m_Hunger = reader.ReadInt();
+
+            goto case 0;
+          }
+        case 0:
+          {
+            if (version < 21)
+              Stabled = new List<Mobile>();
+
+            if (version < 18)
+              Virtues = new VirtueInfo();
+
+            if (version < 11)
+              m_DisplayGuildTitle = true;
+
+            if (version < 3)
+              m_StatCap = 225;
+
+            if (version < 15)
+            {
+              m_Followers = 0;
+              m_FollowersMax = 5;
+            }
+
+            m_Location = reader.ReadPoint3D();
+            m_Body = new Body(reader.ReadInt());
+            m_Name = reader.ReadString();
+            m_GuildTitle = reader.ReadString();
+            m_Criminal = reader.ReadBool();
+            m_Kills = reader.ReadInt();
+            SpeechHue = reader.ReadInt();
+            EmoteHue = reader.ReadInt();
+            WhisperHue = reader.ReadInt();
+            YellHue = reader.ReadInt();
+            m_Language = reader.ReadString();
+            m_Female = reader.ReadBool();
+            m_Warmode = reader.ReadBool();
+            m_Hidden = reader.ReadBool();
+            m_Direction = (Direction)reader.ReadByte();
+            m_Hue = reader.ReadInt();
+            m_Str = reader.ReadInt();
+            m_Dex = reader.ReadInt();
+            m_Int = reader.ReadInt();
+            m_Hits = reader.ReadInt();
+            m_Stam = reader.ReadInt();
+            m_Mana = reader.ReadInt();
+            m_Map = reader.ReadMap();
+            m_Blessed = reader.ReadBool();
+            m_Fame = reader.ReadInt();
+            m_Karma = reader.ReadInt();
+            m_AccessLevel = (AccessLevel)reader.ReadByte();
+
+            Skills = new Skills(this, reader);
+
+            Items = reader.ReadStrongItemList();
+
+            m_Player = reader.ReadBool();
+            m_Title = reader.ReadString();
+            Profile = reader.ReadString();
+            ProfileLocked = reader.ReadBool();
+
+            if (version <= 18)
+            {
+              reader.ReadInt();
+              reader.ReadInt();
+              reader.ReadInt();
+            }
+
+            AutoPageNotify = reader.ReadBool();
+
+            LogoutLocation = reader.ReadPoint3D();
+            LogoutMap = reader.ReadMap();
+
+            m_StrLock = (StatLockType)reader.ReadByte();
+            m_DexLock = (StatLockType)reader.ReadByte();
+            m_IntLock = (StatLockType)reader.ReadByte();
+
+            StatMods = new List<StatMod>();
+            SkillMods = new List<SkillMod>();
+
+            if (version < 32)
+              if (reader.ReadBool())
+              {
+                var count = reader.ReadInt();
+                for (var i = 0; i < count; ++i) reader.ReadDateTime();
+              }
+
+            if (m_Player && m_Map != Map.Internal)
+            {
+              LogoutLocation = m_Location;
+              LogoutMap = m_Map;
+
+              m_Map = Map.Internal;
+            }
+
+            m_Map?.OnEnter(this);
+
+            if (m_Criminal)
+            {
+              m_ExpireCriminal ??= new ExpireCriminalTimer(this);
+
+              m_ExpireCriminal.Start();
+            }
+
+            if (ShouldCheckStatTimers)
+              CheckStatTimers();
+
+            if (!m_Player && m_Dex <= 100 && m_CombatTimer != null)
+              m_CombatTimer.Priority = TimerPriority.FiftyMS;
+            else if (m_CombatTimer != null)
+              m_CombatTimer.Priority = TimerPriority.EveryTick;
+
+            UpdateRegion();
+
+            UpdateResistances();
+
+            break;
+          }
       }
 
       if (!m_Player)
@@ -5986,7 +5993,7 @@ namespace Server
       {
         item.SendRemovePacket();
 
-        //int oldCount = m_Items.Count;
+        // int oldCount = m_Items.Count;
 
         Items.Remove(item);
 
@@ -6010,28 +6017,28 @@ namespace Server
 
     public virtual void Animate(int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
     {
-      Map map = m_Map;
+      var map = m_Map;
 
       if (map == null)
         return;
       ProcessDelta();
 
       Packet p = null;
-      //Packet pNew = null;
+      // Packet pNew = null;
 
-      IPooledEnumerable<NetState> eable = map.GetClientsInRange(m_Location);
+      var eable = map.GetClientsInRange(m_Location);
 
-      foreach (NetState state in eable)
+      foreach (var state in eable)
         if (state.Mobile.CanSee(this))
         {
           state.Mobile.ProcessDelta();
 
-          //if ( state.StygianAbyss ) {
-          //if ( pNew == null )
-          //pNew = Packet.Acquire( new NewMobileAnimation( this, action, frameCount, delay ) );
+          // if ( state.StygianAbyss ) {
+          // if ( pNew == null )
+          // pNew = Packet.Acquire( new NewMobileAnimation( this, action, frameCount, delay ) );
 
-          //state.Send( pNew );
-          //} else {
+          // state.Send( pNew );
+          // } else {
           if (p == null)
           {
             #region SA
@@ -6071,11 +6078,11 @@ namespace Server
           }
 
           state.Send(p);
-          //}
+          // }
         }
 
       Packet.Release(p);
-      //Packet.Release( pNew );
+      // Packet.Release( pNew );
 
       eable.Free();
     }
@@ -6097,11 +6104,11 @@ namespace Server
       if (soundID == -1 || m_Map == null)
         return;
 
-      Packet p = Packet.Acquire(new PlaySound(soundID, this));
+      var p = Packet.Acquire(new PlaySound(soundID, this));
 
-      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      var eable = m_Map.GetClientsInRange(m_Location);
 
-      foreach (NetState state in eable)
+      foreach (var state in eable)
         if (state.Mobile.CanSee(this))
           state.Send(p);
 
@@ -6141,9 +6148,9 @@ namespace Server
       if (m_Map == null)
         return;
 
-      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      var eable = m_Map.GetClientsInRange(m_Location);
 
-      foreach (NetState state in eable)
+      foreach (var state in eable)
         if (state != m_NetState && (everyone || !state.Mobile.CanSee(this)))
           state.Send(RemovePacket);
 
@@ -6155,9 +6162,9 @@ namespace Server
       if (m_Map == null || m_NetState == null)
         return;
 
-      IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
+      var eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
 
-      foreach (IEntity o in eable)
+      foreach (var o in eable)
         if (o is Mobile m)
         {
           if (m != this && Utility.InUpdateRange(m_Location, m.m_Location))
@@ -6199,7 +6206,7 @@ namespace Server
         if (Core.ML)
           SendLocalizedMessage(500168); // You can not say anything, you have been muted.
         else
-          SendMessage("You can not say anything, you have been squelched."); //Cliloc ITSELF changed during ML.
+          SendMessage("You can not say anything, you have been squelched."); // Cliloc ITSELF changed during ML.
 
         e.Blocked = true;
       }
@@ -6221,13 +6228,13 @@ namespace Server
 
     public void SendEverything()
     {
-      NetState ns = m_NetState;
+      var ns = m_NetState;
 
       if (m_Map != null && ns != null)
       {
-        IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
+        var eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
 
-        foreach (IEntity o in eable)
+        foreach (var o in eable)
           if (o is Item item)
           {
             if (CanSee(item) && InRange(item.Location, item.GetUpdateRange(this)))
@@ -6264,7 +6271,7 @@ namespace Server
       if (Deleted)
         return;
 
-      Region newRegion = Region.Find(m_Location, m_Map);
+      var newRegion = Region.Find(m_Location, m_Map);
 
       if (newRegion != m_Region)
       {
@@ -6282,7 +6289,6 @@ namespace Server
     {
     }
 
-
     public void SetDirection(Direction dir)
     {
       m_Direction = dir;
@@ -6292,7 +6298,7 @@ namespace Server
 
     public virtual int GetPacketFlags()
     {
-      int flags = 0x0;
+      var flags = 0x0;
 
       if (m_Paralyzed || m_Frozen)
         flags |= 0x01;
@@ -6318,7 +6324,7 @@ namespace Server
     // Pre-7.0.0.0 Packet Flags
     public virtual int GetOldPacketFlags()
     {
-      int flags = 0x0;
+      var flags = 0x0;
 
       if (m_Paralyzed || m_Frozen)
         flags |= 0x01;
@@ -6363,9 +6369,9 @@ namespace Server
       if (m_Map == null)
         return;
 
-      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      var eable = m_Map.GetClientsInRange(m_Location);
 
-      foreach (NetState state in eable)
+      foreach (var state in eable)
         if (!state.Mobile.CanSee(this))
         {
           state.Send(RemovePacket);
@@ -6432,7 +6438,7 @@ namespace Server
 
       if (item is SecureTradeContainer container)
       {
-        SecureTrade trade = container.Trade;
+        var trade = container.Trade;
 
         if (trade != null && trade.From.Mobile != this && trade.To.Mobile != this)
           return false;
@@ -6446,14 +6452,15 @@ namespace Server
       if (Deleted || m.Deleted || m_Map == Map.Internal || m.m_Map == Map.Internal)
         return false;
 
-      return this == m || m.m_Map == m_Map &&
-        (!m.Hidden || m_AccessLevel != AccessLevel.Player &&
-          (m_AccessLevel >= m.AccessLevel || m_AccessLevel >= AccessLevel.Administrator)) &&
-        (m.Alive || Core.SE && Skills.SpiritSpeak.Value >= 100.0 || !Alive ||
-         m_AccessLevel > AccessLevel.Player || m.Warmode);
+      return this == m || (m.m_Map == m_Map &&
+        (!m.Hidden || (m_AccessLevel != AccessLevel.Player &&
+          (m_AccessLevel >= m.AccessLevel || m_AccessLevel >= AccessLevel.Administrator))) &&
+        (m.Alive || (Core.SE && Skills.SpiritSpeak.Value >= 100.0) || !Alive ||
+         m_AccessLevel > AccessLevel.Player || m.Warmode));
     }
 
-    public virtual bool CanBeRenamedBy(Mobile from) => from.AccessLevel >= AccessLevel.GameMaster && from.m_AccessLevel > m_AccessLevel;
+    public virtual bool CanBeRenamedBy(Mobile from) =>
+      from.AccessLevel >= AccessLevel.GameMaster && from.m_AccessLevel > m_AccessLevel;
 
     public virtual void OnGuildTitleChange(string oldTitle)
     {
@@ -6469,9 +6476,9 @@ namespace Server
 
     public virtual int SafeBody(int body)
     {
-      int delta = -1;
+      var delta = -1;
 
-      for (int i = 0; delta < 0 && i < m_InvalidBodies.Length; ++i)
+      for (var i = 0; delta < 0 && i < m_InvalidBodies.Length; ++i)
         delta = m_InvalidBodies[i] - body;
 
       return delta != 0 ? body : 0;
@@ -6486,7 +6493,7 @@ namespace Server
 
     public ObjectPropertyList NewObjectPropertyList()
     {
-      ObjectPropertyList list = new ObjectPropertyList(this);
+      var list = new ObjectPropertyList(this);
 
       GetProperties(list);
 
@@ -6508,7 +6515,7 @@ namespace Server
 
       if (m_Map != null && m_Map != Map.Internal && !World.Loading)
       {
-        ObjectPropertyList oldList = m_PropertyList;
+        var oldList = m_PropertyList;
         m_PropertyList = null;
 
         if (oldList != null && oldList.Hash != PropertyList.Hash)
@@ -6528,7 +6535,7 @@ namespace Server
       if (Deleted)
         return;
 
-      Point3D oldLocation = m_Location;
+      var oldLocation = m_Location;
 
       if (oldLocation == newLocation)
         return;
@@ -6536,7 +6543,7 @@ namespace Server
       m_Location = newLocation;
       UpdateRegion();
 
-      BankBox box = FindBankNoCreate();
+      var box = FindBankNoCreate();
 
       if (box?.Opened == true)
         box.Close();
@@ -6557,34 +6564,34 @@ namespace Server
         ClearFastwalkStack();
       }
 
-      Map map = m_Map;
+      var map = m_Map;
 
       if (map != null)
       {
         // First, send a remove message to everyone who can no longer see us. (inOldRange && !inNewRange)
 
-        IPooledEnumerable<NetState> eable = map.GetClientsInRange(oldLocation);
+        var eable = map.GetClientsInRange(oldLocation);
 
-        foreach (NetState ns in eable)
+        foreach (var ns in eable)
           if (ns != m_NetState && !Utility.InUpdateRange(newLocation, ns.Mobile.Location))
             ns.Send(RemovePacket);
 
         eable.Free();
 
-        NetState ourState = m_NetState;
+        var ourState = m_NetState;
 
         // Check to see if we are attached to a client
         if (ourState != null)
         {
-          IPooledEnumerable<IEntity> eeable = map.GetObjectsInRange(newLocation, Core.GlobalMaxUpdateRange);
+          var eeable = map.GetObjectsInRange(newLocation, Core.GlobalMaxUpdateRange);
 
           // We are attached to a client, so it's a bit more complex. We need to send new items and people to ourself, and ourself to other clients
 
-          foreach (IEntity o in eeable)
+          foreach (var o in eeable)
             if (o is Item item)
             {
-              int range = item.GetUpdateRange(this);
-              Point3D loc = item.Location;
+              var range = item.GetUpdateRange(this);
+              var loc = item.Location;
 
               if (!Utility.InRange(oldLocation, loc, range) && Utility.InRange(newLocation, loc, range) &&
                   CanSee(item))
@@ -6595,19 +6602,19 @@ namespace Server
               if (!Utility.InUpdateRange(newLocation, m.m_Location))
                 continue;
 
-              bool inOldRange = Utility.InUpdateRange(oldLocation, m.m_Location);
+              var inOldRange = Utility.InUpdateRange(oldLocation, m.m_Location);
 
               if (m.m_NetState != null &&
-                  (isTeleport && (!m.m_NetState.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
+                  ((isTeleport && (!m.m_NetState.HighSeas || !NoMoveHS)) || !inOldRange) && m.CanSee(this))
               {
                 m.m_NetState.Send(MobileIncoming.Create(m.m_NetState, m, this));
 
                 if (m.m_NetState.StygianAbyss)
                 {
-                  //if ( m_Poison != null )
+                  // if ( m_Poison != null )
                   m.m_NetState.Send(new HealthbarPoison(this));
 
-                  //if ( m_Blessed || m_YellowHealthbar )
+                  // if ( m_Blessed || m_YellowHealthbar )
                   m.m_NetState.Send(new HealthbarYellow(this));
                 }
 
@@ -6624,10 +6631,10 @@ namespace Server
 
               if (ourState.StygianAbyss)
               {
-                //if ( m.Poisoned )
+                // if ( m.Poisoned )
                 ourState.Send(new HealthbarPoison(m));
 
-                //if ( m.Blessed || m.YellowHealthbar )
+                // if ( m.Blessed || m.YellowHealthbar )
                 ourState.Send(new HealthbarYellow(m));
               }
 
@@ -6644,18 +6651,18 @@ namespace Server
           eable = map.GetClientsInRange(newLocation);
 
           // We're not attached to a client, so simply send an Incoming
-          foreach (NetState ns in eable)
-            if ((isTeleport && (!ns.HighSeas || !NoMoveHS) ||
+          foreach (var ns in eable)
+            if (((isTeleport && (!ns.HighSeas || !NoMoveHS)) ||
                  !Utility.InUpdateRange(oldLocation, ns.Mobile.Location)) && ns.Mobile.CanSee(this))
             {
               ns.Send(MobileIncoming.Create(ns, ns.Mobile, this));
 
               if (ns.StygianAbyss)
               {
-                //if ( m_Poison != null )
+                // if ( m_Poison != null )
                 ns.Send(new HealthbarPoison(this));
 
-                //if ( m_Blessed || m_YellowHealthbar )
+                // if ( m_Blessed || m_YellowHealthbar )
                 ns.Send(new HealthbarYellow(this));
               }
 
@@ -6695,12 +6702,12 @@ namespace Server
 
     public Item FindItemOnLayer(Layer layer)
     {
-      List<Item> eq = Items;
-      int count = eq.Count;
+      var eq = Items;
+      var count = eq.Count;
 
-      for (int i = 0; i < count; ++i)
+      for (var i = 0; i < count; ++i)
       {
-        Item item = eq[i];
+        var item = eq[i];
 
         if (!item.Deleted && item.Layer == layer) return item;
       }
@@ -6713,9 +6720,9 @@ namespace Server
       if (m_Map == null)
         return;
 
-      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      var eable = m_Map.GetClientsInRange(m_Location);
 
-      foreach (NetState state in eable)
+      foreach (var state in eable)
         if (state.Mobile.CanSee(this))
         {
           state.Send(MobileIncoming.Create(state, state.Mobile, this));
@@ -6753,8 +6760,8 @@ namespace Server
 
       if (!PlaceInBackpack(item))
       {
-        Point3D loc = m_Location;
-        Map map = m_Map;
+        var loc = m_Location;
+        var map = m_Map;
 
         if ((map == null || map == Map.Internal) && LogoutMap != null)
         {
@@ -6771,7 +6778,8 @@ namespace Server
 
     public virtual bool CheckLift(Mobile from, Item item, ref LRReason reject) => true;
 
-    public virtual bool CheckNonlocalLift(Mobile from, Item item) => from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster;
+    public virtual bool CheckNonlocalLift(Mobile from, Item item) =>
+      from == this || (from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster);
 
     public virtual bool CheckTrade(Mobile to, Item item, SecureTradeContainer cont, bool message, bool checkItems,
       int plusItems, int plusWeight) =>
@@ -6781,12 +6789,12 @@ namespace Server
     {
       if (!from.Player || !Player || !from.Alive || !Alive) return false;
 
-      NetState ourState = m_NetState;
-      NetState theirState = from.m_NetState;
+      var ourState = m_NetState;
+      var theirState = from.m_NetState;
 
       if (ourState == null || theirState == null) return false;
 
-      SecureTradeContainer cont = theirState.FindTradeContainer(this);
+      var cont = theirState.FindTradeContainer(this);
 
       if (!from.CheckTrade(this, offer, cont, true, true, 0, 0)) return false;
 
@@ -6808,7 +6816,7 @@ namespace Server
     {
       if (from == this)
       {
-        Container pack = Backpack;
+        var pack = Backpack;
         return pack != null && dropped.DropToItem(from, pack, new Point3D(-1, -1, 0));
       }
 
@@ -6817,7 +6825,7 @@ namespace Server
 
     public virtual bool CheckEquip(Item item)
     {
-      for (int i = 0; i < Items.Count; ++i)
+      for (var i = 0; i < Items.Count; ++i)
         if (Items[i].CheckConflictingLayer(this, item, item.Layer) ||
             item.CheckConflictingLayer(this, Items[i], Items[i].Layer))
           return false;
@@ -6913,7 +6921,8 @@ namespace Server
     {
     }
 
-    public virtual bool CheckNonlocalDrop(Mobile from, Item item, Item target) => from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster;
+    public virtual bool CheckNonlocalDrop(Mobile from, Item item, Item target) =>
+      from == this || (from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster);
 
     public virtual bool CheckItemUse(Mobile from, Item item) => true;
 
@@ -6928,7 +6937,8 @@ namespace Server
 
     public virtual bool AllowItemUse(Item item) => true;
 
-    public virtual bool AllowEquipFrom(Mobile mob) => mob == this || mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > AccessLevel;
+    public virtual bool AllowEquipFrom(Mobile mob) =>
+      mob == this || (mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > AccessLevel);
 
     public virtual bool EquipItem(Item item)
     {
@@ -6940,8 +6950,8 @@ namespace Server
         if (m_Spell?.OnCasterEquipping(item) == false)
           return false;
 
-        //if ( m_Spell != null && m_Spell.State == SpellState.Casting )
-        //	m_Spell.Disturb( DisturbType.EquipRequest );
+        // if ( m_Spell != null && m_Spell.State == SpellState.Casting )
+        // m_Spell.Disturb( DisturbType.EquipRequest );
 
         AddItem(item);
         return true;
@@ -6988,7 +6998,7 @@ namespace Server
 
             try
             {
-              using (StreamWriter op = new StreamWriter("delta-recursion.log", true))
+              using (var op = new StreamWriter("delta-recursion.log", true))
               {
                 op.WriteLine("# {0}", DateTime.UtcNow);
                 op.WriteLine(new StackTrace());
@@ -7016,12 +7026,15 @@ namespace Server
         Parallel.ForEach(m_DeltaQueue, m => m.ProcessDelta());
         m_DeltaQueue.Clear();
       }
-      else while (m_DeltaQueue.TryDequeue(out Mobile m))
-        m.ProcessDelta();
+      else
+      {
+        while (m_DeltaQueue.TryDequeue(out var m))
+          m.ProcessDelta();
+      }
 
       _processing = false;
 
-      while (m_DeltaQueueR.TryDequeue(out Mobile m))
+      while (m_DeltaQueueR.TryDequeue(out var m))
         m.ProcessDelta();
     }
 
@@ -7110,16 +7123,16 @@ namespace Server
     public virtual void OnSingleClick(Mobile from)
     {
       if (Deleted ||
-          AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this)
+          (AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this))
         return;
 
       if (GuildClickMessage)
       {
-        BaseGuild guild = m_Guild;
+        var guild = m_Guild;
 
-        if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
+        if (guild != null && (m_DisplayGuildTitle || (m_Player && guild.Type != GuildType.Regular)))
         {
-          string title = GuildTitle?.Trim() ?? "";
+          var title = GuildTitle?.Trim() ?? "";
           string type;
 
           if (guild.Type >= 0 && (int)guild.Type < m_GuildTypes.Length)
@@ -7127,7 +7140,7 @@ namespace Server
           else
             type = "";
 
-          string text = string.Format(title.Length <= 0 ? "[{1}]{2}" : "[{0}, {1}]{2}", title, guild.Abbreviation,
+          var text = string.Format(title.Length <= 0 ? "[{1}]{2}" : "[{0}, {1}]{2}", title, guild.Abbreviation,
             type);
 
           PrivateOverheadMessage(MessageType.Regular, SpeechHue, true, text, from.NetState);
@@ -7143,14 +7156,14 @@ namespace Server
       else
         hue = Notoriety.GetHue(Notoriety.Compute(from, this));
 
-      string name = Name ?? string.Empty;
+      var name = Name ?? string.Empty;
 
-      string prefix = "";
+      var prefix = "";
 
       if (ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000)
         prefix = m_Female ? "Lady" : "Lord";
 
-      string suffix = "";
+      var suffix = "";
 
       if (ClickTitle && !string.IsNullOrEmpty(Title))
         suffix = Title;
@@ -7233,7 +7246,7 @@ namespace Server
 
       public bool Expired()
       {
-        bool v = Core.TickCount - m_End >= 0;
+        var v = Core.TickCount - m_End >= 0;
 
         if (v)
           m_InstancePool.Enqueue(this);
@@ -7253,7 +7266,7 @@ namespace Server
         Value = value;
       }
 
-      public bool Value{ get; set; }
+      public bool Value { get; set; }
 
       protected override void OnTick()
       {
@@ -7318,7 +7331,7 @@ namespace Server
 
       public LocationComparer(IEntity relativeTo) => RelativeTo = relativeTo;
 
-      public IEntity RelativeTo{ get; set; }
+      public IEntity RelativeTo { get; set; }
 
       public int Compare(IEntity x, IEntity y) => GetDistance(x) - GetDistance(y);
 
@@ -7334,9 +7347,9 @@ namespace Server
 
       private int GetDistance(IEntity p)
       {
-        int x = RelativeTo.X - p.X;
-        int y = RelativeTo.Y - p.Y;
-        int z = RelativeTo.Z - p.Z;
+        var x = RelativeTo.X - p.X;
+        var y = RelativeTo.Y - p.Y;
+        var z = RelativeTo.Z - p.Z;
 
         x *= 11;
         y *= 11;
@@ -7351,35 +7364,35 @@ namespace Server
 
     #region Handlers
 
-    public static AllowBeneficialHandler AllowBeneficialHandler{ get; set; }
+    public static AllowBeneficialHandler AllowBeneficialHandler { get; set; }
 
-    public static AllowHarmfulHandler AllowHarmfulHandler{ get; set; }
+    public static AllowHarmfulHandler AllowHarmfulHandler { get; set; }
 
-    public static SkillCheckTargetHandler SkillCheckTargetHandler{ get; set; }
+    public static SkillCheckTargetHandler SkillCheckTargetHandler { get; set; }
 
-    public static SkillCheckLocationHandler SkillCheckLocationHandler{ get; set; }
+    public static SkillCheckLocationHandler SkillCheckLocationHandler { get; set; }
 
-    public static SkillCheckDirectTargetHandler SkillCheckDirectTargetHandler{ get; set; }
+    public static SkillCheckDirectTargetHandler SkillCheckDirectTargetHandler { get; set; }
 
-    public static SkillCheckDirectLocationHandler SkillCheckDirectLocationHandler{ get; set; }
+    public static SkillCheckDirectLocationHandler SkillCheckDirectLocationHandler { get; set; }
 
-    public static AOSStatusHandler AOSStatusHandler{ get; set; }
+    public static AOSStatusHandler AOSStatusHandler { get; set; }
 
     #endregion
 
     #region Regeneration
 
-    public static RegenRateHandler HitsRegenRateHandler{ get; set; }
+    public static RegenRateHandler HitsRegenRateHandler { get; set; }
 
-    public static TimeSpan DefaultHitsRate{ get; set; }
+    public static TimeSpan DefaultHitsRate { get; set; }
 
-    public static RegenRateHandler StamRegenRateHandler{ get; set; }
+    public static RegenRateHandler StamRegenRateHandler { get; set; }
 
-    public static TimeSpan DefaultStamRate{ get; set; }
+    public static TimeSpan DefaultStamRate { get; set; }
 
-    public static RegenRateHandler ManaRegenRateHandler{ get; set; }
+    public static RegenRateHandler ManaRegenRateHandler { get; set; }
 
-    public static TimeSpan DefaultManaRate{ get; set; }
+    public static TimeSpan DefaultManaRate { get; set; }
 
     public static TimeSpan GetHitsRegenRate(Mobile m)
     {
@@ -7600,7 +7613,7 @@ namespace Server
         if (Core.TickCount - m_Mobile.NextCombatTime < 0)
           return;
 
-        Mobile combatant = m_Mobile.Combatant;
+        var combatant = m_Mobile.Combatant;
 
         // If no combatant, wrong map, one of us is a ghost, or cannot see, or deleted, then stop combat
         if (combatant?.Deleted != false || m_Mobile.Deleted || combatant.m_Map != m_Mobile.m_Map ||
@@ -7611,7 +7624,7 @@ namespace Server
           return;
         }
 
-        IWeapon weapon = m_Mobile.Weapon;
+        var weapon = m_Mobile.Weapon;
 
         if (!m_Mobile.InRange(combatant, weapon.MaxRange))
           return;
@@ -7619,7 +7632,7 @@ namespace Server
         if (m_Mobile.InLOS(combatant))
         {
           weapon.OnBeforeSwing(m_Mobile,
-            combatant); //OnBeforeSwing for checking in regards to being hidden and whatnot
+            combatant); // OnBeforeSwing for checking in regards to being hidden and whatnot
           m_Mobile.RevealingAction();
           m_Mobile.NextCombatTime =
             Core.TickCount + (int)weapon.OnSwing(m_Mobile, combatant).TotalMilliseconds;
@@ -7644,7 +7657,7 @@ namespace Server
       }
     }
 
-    public static TimeSpan ExpireCriminalDelay{ get; set; } = TimeSpan.FromMinutes(2.0);
+    public static TimeSpan ExpireCriminalDelay { get; set; } = TimeSpan.FromMinutes(2.0);
 
     private class ExpireCriminalTimer : Timer
     {
@@ -7676,7 +7689,7 @@ namespace Server
 
       protected override void OnTick()
       {
-        if (m_Mobile.Deleted || m_Mobile.Aggressors.Count == 0 && m_Mobile.Aggressed.Count == 0)
+        if (m_Mobile.Deleted || (m_Mobile.Aggressors.Count == 0 && m_Mobile.Aggressed.Count == 0))
           m_Mobile.StopAggrExpire();
         else
           m_Mobile.CheckAggrExpire();
@@ -7716,8 +7729,8 @@ namespace Server
           m_Callback(from, "");
         else
           m_CancelCallback?.Invoke(@from, "");
-        }
       }
+    }
 
     public Prompt BeginPrompt(PromptCallback callback, PromptCallback cancelCallback)
     {
@@ -7779,8 +7792,8 @@ namespace Server
       get => m_Prompt;
       set
       {
-        Prompt oldPrompt = m_Prompt;
-        Prompt newPrompt = value;
+        var oldPrompt = m_Prompt;
+        var newPrompt = value;
 
         if (oldPrompt == newPrompt)
           return;
@@ -7849,7 +7862,7 @@ namespace Server
 
     public IPooledEnumerable<T> GetItemsInRange<T>(int range) where T : Item
     {
-      Map map = m_Map;
+      var map = m_Map;
 
       if (map == null)
         return Map.NullEnumerable<T>.Instance;
@@ -7859,7 +7872,7 @@ namespace Server
 
     public IPooledEnumerable<IEntity> GetObjectsInRange(int range)
     {
-      Map map = m_Map;
+      var map = m_Map;
 
       if (map == null)
         return Map.NullEnumerable<IEntity>.Instance;
@@ -7871,7 +7884,7 @@ namespace Server
 
     public IPooledEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile
     {
-      Map map = m_Map;
+      var map = m_Map;
 
       if (map == null)
         return Map.NullEnumerable<T>.Instance;
@@ -7881,7 +7894,7 @@ namespace Server
 
     public IPooledEnumerable<NetState> GetClientsInRange(int range)
     {
-      Map map = m_Map;
+      var map = m_Map;
 
       if (map == null)
         return Map.NullEnumerable<NetState>.Instance;
@@ -8020,7 +8033,7 @@ namespace Server
       if (m_NetState == null)
         return false;
 
-      Gump gump = FindGump<T>();
+      var gump = FindGump<T>();
 
       if (gump != null)
       {
@@ -8035,16 +8048,16 @@ namespace Server
 
     public bool CloseAllGumps()
     {
-      NetState ns = m_NetState;
+      var ns = m_NetState;
 
       if (ns == null)
         return false;
 
-      List<Gump> gumps = new List<Gump>(ns.Gumps);
+      var gumps = new List<Gump>(ns.Gumps);
 
       ns.ClearGumps();
 
-      foreach (Gump gump in gumps)
+      foreach (var gump in gumps)
       {
         ns.Send(new CloseGump(gump.TypeID, 0));
 
@@ -8088,7 +8101,7 @@ namespace Server
         return false;
 
       if (Deleted || target.Deleted || !Alive || IsDeadBondedPet ||
-          !allowDead && (!target.Alive || target.IsDeadBondedPet))
+          (!allowDead && (!target.Alive || target.IsDeadBondedPet)))
       {
         if (message)
           SendLocalizedMessage(1001017); // You can not perform beneficial acts on your target.
@@ -8099,16 +8112,16 @@ namespace Server
       if (target == this)
         return true;
 
-      if ( /*m_Player &&*/ !Region.AllowBeneficial(this, target))
+      if ( /*m_Player &&*/!Region.AllowBeneficial(this, target))
       {
         // TODO: Pets
-        //if ( !(target.m_Player || target.Body.IsHuman || target.Body.IsAnimal) )
-        //{
+        // if ( !(target.m_Player || target.Body.IsHuman || target.Body.IsAnimal) )
+        // {
         if (message)
           SendLocalizedMessage(1001017); // You can not perform beneficial acts on your target.
 
         return false;
-        //}
+        // }
       }
 
       return true;
@@ -8119,7 +8132,7 @@ namespace Server
       if (this == target)
         return false;
 
-      int n = Notoriety.Compute(this, target);
+      var n = Notoriety.Compute(this, target);
 
       return n == Notoriety.Criminal || n == Notoriety.Murderer;
     }
@@ -8168,7 +8181,7 @@ namespace Server
       if (target == null)
         return false;
 
-      if (Deleted || !ignoreOurBlessedness && m_Blessed || target.Deleted || target.m_Blessed || !Alive ||
+      if (Deleted || (!ignoreOurBlessedness && m_Blessed) || target.Deleted || target.m_Blessed || !Alive ||
           IsDeadBondedPet || !target.Alive || target.IsDeadBondedPet)
       {
         if (message)
@@ -8182,8 +8195,7 @@ namespace Server
 
       // TODO: Pets
       if ( /*m_Player &&*/
-        !Region.AllowHarmful(this, target)
-      ) //(target.m_Player || target.Body.IsHuman) && !Region.AllowHarmful( this, target )  )
+        !Region.AllowHarmful(this, target)) // (target.m_Player || target.Body.IsHuman) && !Region.AllowHarmful( this, target )  )
       {
         if (message)
           SendLocalizedMessage(1001018); // You can not perform negative acts on your target.
@@ -8194,7 +8206,8 @@ namespace Server
       return true;
     }
 
-    public virtual bool IsHarmfulCriminal(Mobile target) => this != target && Notoriety.Compute(this, target) == Notoriety.Innocent;
+    public virtual bool IsHarmfulCriminal(Mobile target) =>
+      this != target && Notoriety.Compute(this, target) == Notoriety.Innocent;
 
     /// <summary>
     ///   Overridable. Event invoked when the Mobile <see cref="DoHarmful">does a harmful action</see>.
@@ -8215,7 +8228,7 @@ namespace Server
       if (target == null || Deleted)
         return;
 
-      bool isCriminal = IsHarmfulCriminal(target);
+      var isCriminal = IsHarmfulCriminal(target);
 
       OnHarmfulAction(target, isCriminal);
       target.AggressiveAction(this, isCriminal);
@@ -8252,13 +8265,13 @@ namespace Server
     /// <summary>
     ///   Gets a list of all <see cref="StatMod">StatMod's</see> currently active for the Mobile.
     /// </summary>
-    public List<StatMod> StatMods{ get; private set; }
+    public List<StatMod> StatMods { get; private set; }
 
     public bool RemoveStatMod(string name)
     {
-      for (int i = 0; i < StatMods.Count; ++i)
+      for (var i = 0; i < StatMods.Count; ++i)
       {
-        StatMod check = StatMods[i];
+        var check = StatMods[i];
 
         if (check.Name == name)
         {
@@ -8274,9 +8287,9 @@ namespace Server
 
     public StatMod GetStatMod(string name)
     {
-      for (int i = 0; i < StatMods.Count; ++i)
+      for (var i = 0; i < StatMods.Count; ++i)
       {
-        StatMod check = StatMods[i];
+        var check = StatMods[i];
 
         if (check.Name == name)
           return check;
@@ -8287,9 +8300,9 @@ namespace Server
 
     public void AddStatMod(StatMod mod)
     {
-      for (int i = 0; i < StatMods.Count; ++i)
+      for (var i = 0; i < StatMods.Count; ++i)
       {
-        StatMod check = StatMods[i];
+        var check = StatMods[i];
 
         if (check.Name == mod.Name)
         {
@@ -8325,11 +8338,11 @@ namespace Server
     /// </summary>
     public int GetStatOffset(StatType type)
     {
-      int offset = 0;
+      var offset = 0;
 
-      for (int i = 0; i < StatMods.Count; ++i)
+      for (var i = 0; i < StatMods.Count; ++i)
       {
-        StatMod mod = StatMods[i];
+        var mod = StatMods[i];
 
         if (mod.HasElapsed())
         {
@@ -8406,7 +8419,7 @@ namespace Server
 
         if (m_Str != value)
         {
-          int oldValue = m_Str;
+          var oldValue = m_Str;
 
           m_Str = value;
           Delta(MobileDelta.Stat | MobileDelta.Hits);
@@ -8440,7 +8453,7 @@ namespace Server
     {
       get
       {
-        int value = m_Str + GetStatOffset(StatType.Str);
+        var value = m_Str + GetStatOffset(StatType.Str);
 
         if (value < 1)
           value = 1;
@@ -8476,7 +8489,7 @@ namespace Server
 
         if (m_Dex != value)
         {
-          int oldValue = m_Dex;
+          var oldValue = m_Dex;
 
           m_Dex = value;
           Delta(MobileDelta.Stat | MobileDelta.Stam);
@@ -8510,7 +8523,7 @@ namespace Server
     {
       get
       {
-        int value = m_Dex + GetStatOffset(StatType.Dex);
+        var value = m_Dex + GetStatOffset(StatType.Dex);
 
         if (value < 1)
           value = 1;
@@ -8546,7 +8559,7 @@ namespace Server
 
         if (m_Int != value)
         {
-          int oldValue = m_Int;
+          var oldValue = m_Int;
 
           m_Int = value;
           Delta(MobileDelta.Stat | MobileDelta.Mana);
@@ -8580,7 +8593,7 @@ namespace Server
     {
       get
       {
-        int value = m_Int + GetStatOffset(StatType.Int);
+        var value = m_Int + GetStatOffset(StatType.Int);
 
         if (value < 1)
           value = 1;
@@ -8632,7 +8645,7 @@ namespace Server
 
           m_HitsTimer?.Stop();
 
-          for (int i = 0; i < Aggressors.Count; i++) //reset reports on full HP
+          for (var i = 0; i < Aggressors.Count; i++) // reset reports on full HP
             Aggressors[i].CanReportMurder = false;
 
           if (DamageEntries.Count > 0)
@@ -8655,7 +8668,7 @@ namespace Server
 
         if (m_Hits != value)
         {
-          int oldValue = m_Hits;
+          var oldValue = m_Hits;
           m_Hits = value;
           Delta(MobileDelta.Hits);
           OnHitsChange(oldValue);
@@ -8708,7 +8721,7 @@ namespace Server
 
         if (m_Stam != value)
         {
-          int oldValue = m_Stam;
+          var oldValue = m_Stam;
           m_Stam = value;
           Delta(MobileDelta.Stam);
           OnStamChange(oldValue);
@@ -8770,7 +8783,7 @@ namespace Server
 
         if (m_Mana != value)
         {
-          int oldValue = m_Mana;
+          var oldValue = m_Mana;
           m_Mana = value;
           Delta(MobileDelta.Mana);
           OnManaChange(oldValue);
@@ -8791,7 +8804,7 @@ namespace Server
 
     #region Poison/Curing
 
-    public Timer PoisonTimer{ get; private set; }
+    public Timer PoisonTimer { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Poison Poison
@@ -8938,7 +8951,7 @@ namespace Server
         return ApplyPoisonResult.Immune;
       }
 
-      Poison oldPoison = m_Poison;
+      var oldPoison = m_Poison;
       Poison = poison;
 
       OnPoisoned(from, poison, oldPoison);
@@ -8982,7 +8995,7 @@ namespace Server
     {
       if (CheckCure(from))
       {
-        Poison oldPoison = m_Poison;
+        var oldPoison = m_Poison;
         Poison = null;
 
         OnCured(from, oldPoison);
@@ -9019,8 +9032,8 @@ namespace Server
       }
     }
 
-    //		[CommandProperty( AccessLevel.GameMaster )]
-    //		public int HairSerial { get { return HairInfo.FakeSerial( this ); } }
+    // [CommandProperty( AccessLevel.GameMaster )]
+    // public int HairSerial { get { return HairInfo.FakeSerial( this ); } }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int FacialHairItemID
@@ -9039,8 +9052,8 @@ namespace Server
       }
     }
 
-    //		[CommandProperty( AccessLevel.GameMaster )]
-    //		public int FacialHairSerial { get { return FacialHairInfo.FakeSerial( this ); } }
+    // [CommandProperty( AccessLevel.GameMaster )]
+    // public int FacialHairSerial { get { return FacialHairInfo.FakeSerial( this ); } }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int HairHue
@@ -9156,14 +9169,14 @@ namespace Server
 
     public Direction GetDirectionTo(int x, int y)
     {
-      int dx = m_Location.m_X - x;
-      int dy = m_Location.m_Y - y;
+      var dx = m_Location.m_X - x;
+      var dy = m_Location.m_Y - y;
 
-      int rx = (dx - dy) * 44;
-      int ry = (dx + dy) * 44;
+      var rx = (dx - dy) * 44;
+      var ry = (dx + dy) * 44;
 
-      int ax = Math.Abs(rx);
-      int ay = Math.Abs(ry);
+      var ax = Math.Abs(rx);
+      var ay = Math.Abs(ry);
 
       Direction ret;
 
@@ -9204,15 +9217,15 @@ namespace Server
       if (m_Map == null)
         return;
 
-      Packet p = ascii
+      var p = ascii
         ? (Packet)new AsciiMessage(Serial, Body, type, hue, 3, Name, text)
         : new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text);
 
       p.Acquire();
 
-      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      var eable = m_Map.GetClientsInRange(m_Location);
 
-      foreach (NetState state in eable)
+      foreach (var state in eable)
         if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
           state.Send(p);
 
@@ -9226,11 +9239,11 @@ namespace Server
       if (m_Map == null)
         return;
 
-      Packet p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
+      var p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
 
-      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      var eable = m_Map.GetClientsInRange(m_Location);
 
-      foreach (NetState state in eable)
+      foreach (var state in eable)
         if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
           state.Send(p);
 
@@ -9245,12 +9258,12 @@ namespace Server
       if (m_Map == null)
         return;
 
-      Packet p = Packet.Acquire(new MessageLocalizedAffix(Serial, Body, type, hue, 3, number, Name, affixType,
+      var p = Packet.Acquire(new MessageLocalizedAffix(Serial, Body, type, hue, 3, number, Name, affixType,
         affix, args));
 
-      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      var eable = m_Map.GetClientsInRange(m_Location);
 
-      foreach (NetState state in eable)
+      foreach (var state in eable)
         if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
           state.Send(p);
 
@@ -9282,7 +9295,7 @@ namespace Server
 
     public void LocalOverheadMessage(MessageType type, int hue, bool ascii, string text)
     {
-      NetState ns = m_NetState;
+      var ns = m_NetState;
 
       if (ns == null)
         return;
@@ -9303,11 +9316,11 @@ namespace Server
       if (m_Map == null)
         return;
 
-      Packet p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
+      var p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
 
-      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      var eable = m_Map.GetClientsInRange(m_Location);
 
-      foreach (NetState state in eable)
+      foreach (var state in eable)
         if (state != m_NetState && state.Mobile.CanSee(this))
           state.Send(p);
 
@@ -9321,15 +9334,15 @@ namespace Server
       if (m_Map == null)
         return;
 
-      Packet p = ascii
+      var p = ascii
         ? (Packet)new AsciiMessage(Serial, Body, type, hue, 3, Name, text)
         : new UnicodeMessage(Serial, Body, type, hue, 3, Language, Name, text);
 
       p.Acquire();
 
-      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      var eable = m_Map.GetClientsInRange(m_Location);
 
-      foreach (NetState state in eable)
+      foreach (var state in eable)
         if (state != m_NetState && state.Mobile.CanSee(this))
           state.Send(p);
 
@@ -9408,6 +9421,7 @@ namespace Server
     #endregion
 
     #region InRange
+
     public virtual bool InRange(Point2D p, int range) =>
       p.m_X >= Location.m_X - range
       && p.m_X <= Location.m_X + range
@@ -9425,6 +9439,7 @@ namespace Server
       && p.X <= Location.m_X + range
       && p.Y >= Location.m_Y - range
       && p.Y <= Location.m_Y + range;
+
     #endregion
 
     #region OnDoubleClick[..]
@@ -9439,7 +9454,7 @@ namespace Server
     {
       if (this == from && (!DisableDismountInWarmode || !m_Warmode))
       {
-        IMount mount = Mount;
+        var mount = Mount;
 
         if (mount != null)
         {

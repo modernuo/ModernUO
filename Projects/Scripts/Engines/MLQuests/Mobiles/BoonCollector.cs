@@ -26,10 +26,10 @@ namespace Server.Engines.MLQuests.Mobiles
 
     public override bool IsInvulnerable => true;
 
-    public abstract TextDefinition[] Offer{ get; }
-    public abstract TextDefinition[] Incomplete{ get; }
-    public abstract TextDefinition[] Complete{ get; }
-    public abstract Type[] Needed{ get; }
+    public abstract TextDefinition[] Offer { get; }
+    public abstract TextDefinition[] Incomplete { get; }
+    public abstract TextDefinition[] Complete { get; }
+    public abstract Type[] Needed { get; }
 
     public bool CheckComplete(PlayerMobile pm)
     {
@@ -171,11 +171,11 @@ namespace Server.Engines.MLQuests.Mobiles
 
     private class InternalTimer : Timer
     {
-      private IList<TextDefinition> m_Conversation;
+      private readonly IList<TextDefinition> m_Conversation;
       private int m_Index;
-      private bool m_IsComplete;
-      private DoneQuestCollector m_Owner;
-      private PlayerMobile m_Target;
+      private readonly bool m_IsComplete;
+      private readonly DoneQuestCollector m_Owner;
+      private readonly PlayerMobile m_Target;
 
       public InternalTimer(DoneQuestCollector owner, PlayerMobile target, IList<TextDefinition> conversation,
         bool isComplete)

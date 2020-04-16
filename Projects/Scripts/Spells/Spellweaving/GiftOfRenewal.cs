@@ -6,12 +6,11 @@ namespace Server.Spells.Spellweaving
 {
   public class GiftOfRenewalSpell : ArcanistSpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Gift of Renewal", "Olorisstra",
-      -1
-    );
+      -1);
 
-    private static Dictionary<Mobile, GiftOfRenewalInfo> m_Table = new Dictionary<Mobile, GiftOfRenewalInfo>();
+    private static readonly Dictionary<Mobile, GiftOfRenewalInfo> m_Table = new Dictionary<Mobile, GiftOfRenewalInfo>();
 
     public GiftOfRenewalSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
@@ -60,7 +59,7 @@ namespace Server.Spells.Spellweaving
           GiftOfRenewalInfo info = new GiftOfRenewalInfo(Caster, m, hitsPerRound);
 
           Timer.DelayCall(duration,
-            delegate
+            () =>
             {
               if (StopEffect(m))
               {
@@ -68,7 +67,6 @@ namespace Server.Spells.Spellweaving
                 m.SendLocalizedMessage(1075071); // The Gift of Renewal has faded.
               }
             });
-
 
           m_Table[m] = info;
 
@@ -92,17 +90,17 @@ namespace Server.Spells.Spellweaving
       info.m_Timer.Stop();
       BuffInfo.RemoveBuff(m, BuffIcon.GiftOfRenewal);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(60), delegate { info.m_Caster.EndAction<GiftOfRenewalSpell>(); });
+      Timer.DelayCall(TimeSpan.FromSeconds(60), info.m_Caster.EndAction<GiftOfRenewalSpell>);
 
       return true;
     }
 
     private class GiftOfRenewalInfo
     {
-      public Mobile m_Caster;
-      public int m_HitsPerRound;
-      public Mobile m_Mobile;
-      public InternalTimer m_Timer;
+      public readonly Mobile m_Caster;
+      public readonly int m_HitsPerRound;
+      public readonly Mobile m_Mobile;
+      public readonly InternalTimer m_Timer;
 
       public GiftOfRenewalInfo(Mobile caster, Mobile mobile, int hitsPerRound)
       {
@@ -117,7 +115,7 @@ namespace Server.Spells.Spellweaving
 
     private class InternalTimer : Timer
     {
-      private GiftOfRenewalInfo m_GiftInfo;
+      private readonly GiftOfRenewalInfo m_GiftInfo;
 
       public InternalTimer(GiftOfRenewalInfo info)
         : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0)) =>

@@ -36,11 +36,11 @@ namespace Server
       Update(x, y);
     }
 
-    public Mobile Mobile{ get; }
+    public Mobile Mobile { get; }
 
-    public Mobile Target{ get; }
+    public Mobile Target { get; }
 
-    public bool Running{ get; private set; }
+    public bool Running { get; private set; }
 
     public void Update()
     {
@@ -52,7 +52,7 @@ namespace Server
       if (!Running)
         return;
 
-      NetState ns = Mobile.NetState;
+      var ns = Mobile.NetState;
 
       if (ns == null)
         return;
@@ -75,7 +75,7 @@ namespace Server
 
       Mobile.ClearQuestArrow();
 
-      NetState ns = Mobile.NetState;
+      var ns = Mobile.NetState;
 
       if (ns != null)
       {

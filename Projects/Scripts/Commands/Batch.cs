@@ -15,11 +15,11 @@ namespace Server.Commands
       ListOptimized = true;
     }
 
-    public BaseCommandImplementor Scope{ get; set; }
+    public BaseCommandImplementor Scope { get; set; }
 
-    public string Condition{ get; set; } = "";
+    public string Condition { get; set; } = "";
 
-    public List<BatchCommand> BatchCommands{ get; } = new List<BatchCommand>();
+    public List<BatchCommand> BatchCommands { get; } = new List<BatchCommand>();
 
     public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
@@ -180,9 +180,9 @@ namespace Server.Commands
       Object = obj;
     }
 
-    public string Command{ get; set; }
+    public string Command { get; set; }
 
-    public string Object{ get; set; }
+    public string Object { get; set; }
 
     public void GetDetails(out string command, out string argString, out string[] args)
     {
@@ -206,8 +206,8 @@ namespace Server.Commands
 
   public class BatchGump : BaseGridGump
   {
-    private Batch m_Batch;
-    private Mobile m_From;
+    private readonly Batch m_Batch;
+    private readonly Mobile m_From;
 
     public BatchGump(Mobile from, Batch batch) : base(30, 30)
     {
@@ -326,28 +326,28 @@ namespace Server.Commands
       switch (type)
       {
         case 0: // main
-        {
-          switch (index)
           {
-            case 0: // run
+            switch (index)
             {
-              m_Batch.Run(m_From);
-              break;
+              case 0: // run
+                {
+                  m_Batch.Run(m_From);
+                  break;
+                }
+              case 1: // set scope
+                {
+                  m_From.SendGump(new BatchScopeGump(m_From, m_Batch));
+                  return;
+                }
+              case 2: // add command
+                {
+                  m_Batch.BatchCommands.Add(new BatchCommand("", ""));
+                  break;
+                }
             }
-            case 1: // set scope
-            {
-              m_From.SendGump(new BatchScopeGump(m_From, m_Batch));
-              return;
-            }
-            case 2: // add command
-            {
-              m_Batch.BatchCommands.Add(new BatchCommand("", ""));
-              break;
-            }
-          }
 
-          break;
-        }
+            break;
+          }
       }
 
       m_From.SendGump(new BatchGump(m_From, m_Batch));
@@ -356,8 +356,8 @@ namespace Server.Commands
 
   public class BatchScopeGump : BaseGridGump
   {
-    private Batch m_Batch;
-    private Mobile m_From;
+    private readonly Batch m_Batch;
+    private readonly Mobile m_From;
 
     public BatchScopeGump(Mobile from, Batch batch) : base(30, 30)
     {
@@ -399,17 +399,17 @@ namespace Server.Commands
         switch (type)
         {
           case 0:
-          {
-            if (index < BaseCommandImplementor.Implementors.Count)
             {
-              BaseCommandImplementor impl = BaseCommandImplementor.Implementors[index];
+              if (index < BaseCommandImplementor.Implementors.Count)
+              {
+                BaseCommandImplementor impl = BaseCommandImplementor.Implementors[index];
 
-              if (m_From.AccessLevel >= impl.AccessLevel)
-                m_Batch.Scope = impl;
+                if (m_From.AccessLevel >= impl.AccessLevel)
+                  m_Batch.Scope = impl;
+              }
+
+              break;
             }
-
-            break;
-          }
         }
 
       m_From.SendGump(new BatchGump(m_From, m_Batch));

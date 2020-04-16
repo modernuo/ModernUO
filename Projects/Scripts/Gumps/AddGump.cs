@@ -9,10 +9,11 @@ namespace Server.Gumps
 {
   public class AddGump : Gump
   {
-    private static Type typeofItem = typeof(Item), typeofMobile = typeof(Mobile);
-    private int m_Page;
-    private Type[] m_SearchResults;
-    private string m_SearchString;
+    private static readonly Type typeofItem = typeof(Item);
+    private static readonly Type typeofMobile = typeof(Mobile);
+    private readonly int m_Page;
+    private readonly Type[] m_SearchResults;
+    private readonly string m_SearchString;
 
     public AddGump(Mobile from, string searchString, int page, Type[] searchResults, bool explicitSearch) : base(50, 50)
     {
@@ -156,48 +157,48 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 1: // Search
-        {
-          TextRelay te = info.GetTextEntry(0);
-          string match = te?.Text.Trim() ?? "";
-
-          if (match.Length < 3)
           {
-            from.SendMessage("Invalid search string.");
-            from.SendGump(new AddGump(from, match, m_Page, m_SearchResults, false));
-          }
-          else
-          {
-            from.SendGump(new AddGump(from, match, 0, Match(match).ToArray(), true));
-          }
+            TextRelay te = info.GetTextEntry(0);
+            string match = te?.Text.Trim() ?? "";
 
-          break;
-        }
+            if (match.Length < 3)
+            {
+              from.SendMessage("Invalid search string.");
+              from.SendGump(new AddGump(from, match, m_Page, m_SearchResults, false));
+            }
+            else
+            {
+              from.SendGump(new AddGump(from, match, 0, Match(match).ToArray(), true));
+            }
+
+            break;
+          }
         case 2: // Previous page
-        {
-          if (m_Page > 0)
-            from.SendGump(new AddGump(from, m_SearchString, m_Page - 1, m_SearchResults, true));
-
-          break;
-        }
-        case 3: // Next page
-        {
-          if ((m_Page + 1) * 10 < m_SearchResults.Length)
-            from.SendGump(new AddGump(from, m_SearchString, m_Page + 1, m_SearchResults, true));
-
-          break;
-        }
-        default:
-        {
-          int index = info.ButtonID - 4;
-
-          if (index >= 0 && index < m_SearchResults.Length)
           {
-            from.SendMessage("Where do you wish to place this object? <ESC> to cancel.");
-            from.Target = new InternalTarget(m_SearchResults[index], m_SearchResults, m_SearchString, m_Page);
-          }
+            if (m_Page > 0)
+              from.SendGump(new AddGump(from, m_SearchString, m_Page - 1, m_SearchResults, true));
 
-          break;
-        }
+            break;
+          }
+        case 3: // Next page
+          {
+            if ((m_Page + 1) * 10 < m_SearchResults.Length)
+              from.SendGump(new AddGump(from, m_SearchString, m_Page + 1, m_SearchResults, true));
+
+            break;
+          }
+        default:
+          {
+            int index = info.ButtonID - 4;
+
+            if (index >= 0 && index < m_SearchResults.Length)
+            {
+              from.SendMessage("Where do you wish to place this object? <ESC> to cancel.");
+              from.Target = new InternalTarget(m_SearchResults[index], m_SearchResults, m_SearchString, m_Page);
+            }
+
+            break;
+          }
       }
     }
 
@@ -208,10 +209,10 @@ namespace Server.Gumps
 
     public class InternalTarget : Target
     {
-      private int m_Page;
-      private Type[] m_SearchResults;
-      private string m_SearchString;
-      private Type m_Type;
+      private readonly int m_Page;
+      private readonly Type[] m_SearchResults;
+      private readonly string m_SearchString;
+      private readonly Type m_Type;
 
       public InternalTarget(Type type, Type[] searchResults, string searchString, int page) : base(-1, true,
         TargetFlags.None)

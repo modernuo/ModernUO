@@ -38,8 +38,7 @@ namespace Server.Items
       if (defender is ChaosDragoon || defender is ChaosDragoonElite)
         return;
 
-      if (attacker.Mounted && (!(attacker.Weapon is Lance) || !(defender.Weapon is Lance))
-      ) // TODO: Should there be a message here?
+      if (attacker.Mounted && (!(attacker.Weapon is Lance) || !(defender.Weapon is Lance))) // TODO: Should there be a message here?
         return;
 
       ClearCurrentAbility(attacker);
@@ -55,8 +54,8 @@ namespace Server.Items
       if (!CheckMana(attacker, true))
         return;
 
-      if (Core.ML && attacker is LesserHiryu && 0.8 >= Utility.RandomDouble())
-        return; //Lesser Hiryu have an 80% chance of missing this attack
+      if (Core.ML && attacker is LesserHiryu && Utility.RandomDouble() <= 0.8)
+        return; // Lesser Hiryu have an 80% chance of missing this attack
 
       attacker.SendLocalizedMessage(1060082); // The force of your attack has dislodged them from their mount!
 

@@ -7,7 +7,7 @@ namespace Server.Items
 {
   public abstract class BaseConflagrationPotion : BasePotion
   {
-    private List<Mobile> m_Users = new List<Mobile>();
+    private readonly List<Mobile> m_Users = new List<Mobile>();
 
     public BaseConflagrationPotion(PotionEffect effect) : base(0xF06, effect) => Hue = 0x489;
 
@@ -15,8 +15,8 @@ namespace Server.Items
     {
     }
 
-    public abstract int MinDamage{ get; }
-    public abstract int MaxDamage{ get; }
+    public abstract int MinDamage { get; }
+    public abstract int MaxDamage { get; }
 
     public override bool RequireFreeHand => false;
 
@@ -78,20 +78,20 @@ namespace Server.Items
       Effects.PlaySound(loc, map, 0x20C);
 
       for (int i = -2; i <= 2; i++)
-      for (int j = -2; j <= 2; j++)
-      {
-        Point3D p = new Point3D(loc.X + i, loc.Y + j, loc.Z);
+        for (int j = -2; j <= 2; j++)
+        {
+          Point3D p = new Point3D(loc.X + i, loc.Y + j, loc.Z);
 
-        if (map.CanFit(p, 12, true, false) && from.InLOS(p))
-          new InternalItem(from, p, map, MinDamage, MaxDamage);
-      }
+          if (map.CanFit(p, 12, true, false) && from.InLOS(p))
+            new InternalItem(from, p, map, MinDamage, MaxDamage);
+        }
     }
 
     private class ThrowTarget : Target
     {
       public ThrowTarget(BaseConflagrationPotion potion) : base(12, true, TargetFlags.None) => Potion = potion;
 
-      public BaseConflagrationPotion Potion{ get; }
+      public BaseConflagrationPotion Potion { get; }
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -147,7 +147,7 @@ namespace Server.Items
       {
       }
 
-      public Mobile From{ get; private set; }
+      public Mobile From { get; private set; }
 
       public override bool BlocksFit => true;
 
@@ -222,8 +222,8 @@ namespace Server.Items
 
       private class InternalTimer : Timer
       {
-        private DateTime m_End;
-        private InternalItem m_Item;
+        private readonly DateTime m_End;
+        private readonly InternalItem m_Item;
 
         public InternalTimer(InternalItem item, DateTime end) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0))
         {
@@ -263,9 +263,7 @@ namespace Server.Items
       }
     }
 
-    #region Delay
-
-    private static Dictionary<Mobile, Timer> m_Delay = new Dictionary<Mobile, Timer>();
+    private static readonly Dictionary<Mobile, Timer> m_Delay = new Dictionary<Mobile, Timer>();
 
     public static void AddDelay(Mobile m)
     {
@@ -290,7 +288,5 @@ namespace Server.Items
         m_Delay.Remove(m);
       }
     }
-
-    #endregion
   }
 }

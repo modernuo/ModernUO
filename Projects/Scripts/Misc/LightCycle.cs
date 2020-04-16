@@ -112,7 +112,7 @@ namespace Server
 
     public class NightSightTimer : Timer
     {
-      private Mobile m_Owner;
+      private readonly Mobile m_Owner;
 
       public NightSightTimer(Mobile owner) : base(TimeSpan.FromMinutes(Utility.Random(15, 25)))
       {

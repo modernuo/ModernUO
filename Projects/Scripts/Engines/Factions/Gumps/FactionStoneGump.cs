@@ -7,8 +7,8 @@ namespace Server.Factions
 {
   public class FactionStoneGump : FactionGump
   {
-    private Faction m_Faction;
-    private PlayerMobile m_From;
+    private readonly Faction m_Faction;
+    private readonly PlayerMobile m_From;
 
     public FactionStoneGump(PlayerMobile from, Faction faction) : base(20, 30)
     {
@@ -19,8 +19,6 @@ namespace Server.Factions
 
       AddBackground(0, 0, 550, 440, 5054);
       AddBackground(10, 10, 530, 420, 3000);
-
-      #region General
 
       AddPage(1);
 
@@ -79,10 +77,6 @@ namespace Server.Factions
       AddHtmlLocalized(55, 300, 200, 20, 1011441); // EXIT
       AddButton(20, 300, 4005, 4007, 0);
 
-      #endregion
-
-      #region City Status
-
       AddPage(2);
 
       AddHtmlLocalized(20, 30, 250, 20, 1011430); // CITY STATUS
@@ -109,7 +103,6 @@ namespace Server.Factions
         }
       }
 
-
       AddImage(20, 300, 2361);
       AddHtmlLocalized(45, 295, 300, 20, 1011491); // sigil may be recaptured
 
@@ -118,10 +111,6 @@ namespace Server.Factions
 
       AddHtmlLocalized(55, 350, 100, 20, 1011447); // BACK
       AddButton(20, 350, 4005, 4007, 0, GumpButtonType.Page, 1);
-
-      #endregion
-
-      #region Statistics
 
       AddPage(4);
 
@@ -138,10 +127,6 @@ namespace Server.Factions
 
       AddHtmlLocalized(55, 250, 100, 20, 1011447); // BACK
       AddButton(20, 250, 4005, 4007, 0, GumpButtonType.Page, 1);
-
-      #endregion
-
-      #region Merchant Options
 
       if ((pl == null || pl.MerchantTitle == MerchantTitle.None) && isMerchantQualified)
       {
@@ -169,14 +154,8 @@ namespace Server.Factions
         AddButton(20, 340, 4005, 4007, 0, GumpButtonType.Page, 1);
       }
 
-      #endregion
-
-      #region Commander Options
-
       if (faction.IsCommander(from))
       {
-        #region General
-
         AddPage(6);
 
         AddHtmlLocalized(20, 30, 200, 20, 1011461); // COMMANDER OPTIONS
@@ -202,10 +181,6 @@ namespace Server.Factions
         AddHtmlLocalized(55, 310, 100, 20, 1011447); // BACK
         AddButton(20, 310, 4005, 4007, 0, GumpButtonType.Page, 1);
 
-        #endregion
-
-        #region Town Finance
-
         if (faction.Silver >= 10000)
         {
           AddPage(7);
@@ -230,10 +205,6 @@ namespace Server.Factions
           AddButton(20, 310, 4005, 4007, 0, GumpButtonType.Page, 1);
         }
 
-        #endregion
-
-        #region Change Tithe Rate
-
         AddPage(8);
 
         AddHtmlLocalized(20, 30, 400, 20, 1011479); // Select the % for the new tithe rate
@@ -256,11 +227,7 @@ namespace Server.Factions
 
         AddHtmlLocalized(55, 310, 300, 20, 1011447); // BACK
         AddButton(20, 310, 4005, 4007, 0, GumpButtonType.Page, 1);
-
-        #endregion
       }
-
-      #endregion
     }
 
     public override int ButtonTypes => 4;
@@ -273,84 +240,84 @@ namespace Server.Factions
       switch (type)
       {
         case 0: // general
-        {
-          switch (index)
           {
-            case 0: // vote
+            switch (index)
             {
-              m_From.SendGump(new ElectionGump(m_From, m_Faction.Election));
-              break;
+              case 0: // vote
+                {
+                  m_From.SendGump(new ElectionGump(m_From, m_Faction.Election));
+                  break;
+                }
+              case 1: // leave
+                {
+                  m_From.SendGump(new LeaveFactionGump(m_From, m_Faction));
+                  break;
+                }
             }
-            case 1: // leave
-            {
-              m_From.SendGump(new LeaveFactionGump(m_From, m_Faction));
-              break;
-            }
-          }
 
-          break;
-        }
+            break;
+          }
         case 1: // merchant title
-        {
-          if (index >= 0 && index <= MerchantTitles.Info.Length)
           {
-            PlayerState pl = PlayerState.Find(m_From);
-
-            MerchantTitle newTitle = (MerchantTitle)index;
-            MerchantTitleInfo mti = MerchantTitles.GetInfo(newTitle);
-
-            if (mti == null)
+            if (index >= 0 && index <= MerchantTitles.Info.Length)
             {
-              m_From.SendLocalizedMessage(1010120); // Your merchant title has been removed
+              PlayerState pl = PlayerState.Find(m_From);
 
-              if (pl != null)
-                pl.MerchantTitle = newTitle;
-            }
-            else if (MerchantTitles.IsQualified(m_From, mti))
-            {
-              m_From.SendLocalizedMessage(mti.Assigned);
+              MerchantTitle newTitle = (MerchantTitle)index;
+              MerchantTitleInfo mti = MerchantTitles.GetInfo(newTitle);
 
-              if (pl != null)
-                pl.MerchantTitle = newTitle;
-            }
-          }
-
-          break;
-        }
-        case 2: // transfer silver
-        {
-          if (!m_Faction.IsCommander(m_From))
-            return;
-
-          List<Town> towns = Town.Towns;
-
-          if (index >= 0 && index < towns.Count)
-          {
-            Town town = towns[index];
-
-            if (town.Owner == m_Faction)
-              if (m_Faction.Silver >= 10000)
+              if (mti == null)
               {
-                m_Faction.Silver -= 10000;
-                town.Silver += 10000;
+                m_From.SendLocalizedMessage(1010120); // Your merchant title has been removed
 
-                // 10k in silver has been received by:
-                m_From.SendLocalizedMessage(1042726, true, $" {town.Definition.FriendlyName}");
+                if (pl != null)
+                  pl.MerchantTitle = newTitle;
               }
+              else if (MerchantTitles.IsQualified(m_From, mti))
+              {
+                m_From.SendLocalizedMessage(mti.Assigned);
+
+                if (pl != null)
+                  pl.MerchantTitle = newTitle;
+              }
+            }
+
+            break;
           }
+        case 2: // transfer silver
+          {
+            if (!m_Faction.IsCommander(m_From))
+              return;
 
-          break;
-        }
+            List<Town> towns = Town.Towns;
+
+            if (index >= 0 && index < towns.Count)
+            {
+              Town town = towns[index];
+
+              if (town.Owner == m_Faction)
+                if (m_Faction.Silver >= 10000)
+                {
+                  m_Faction.Silver -= 10000;
+                  town.Silver += 10000;
+
+                  // 10k in silver has been received by:
+                  m_From.SendLocalizedMessage(1042726, true, $" {town.Definition.FriendlyName}");
+                }
+            }
+
+            break;
+          }
         case 3: // change tithe
-        {
-          if (!m_Faction.IsCommander(m_From))
-            return;
+          {
+            if (!m_Faction.IsCommander(m_From))
+              return;
 
-          if (index >= 0 && index <= 10)
-            m_Faction.Tithe = index * 10;
+            if (index >= 0 && index <= 10)
+              m_Faction.Tithe = index * 10;
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

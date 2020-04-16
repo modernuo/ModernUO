@@ -24,10 +24,10 @@ namespace Server
 {
   public interface IEntity : IPoint3D, IComparable<IEntity>
   {
-    Serial Serial{ get; }
-    Point3D Location{ get; }
-    Map Map{ get; }
-    bool Deleted{ get; }
+    Serial Serial { get; }
+    Point3D Location { get; }
+    Map Map { get; }
+    bool Deleted { get; }
     void MoveToWorld(Point3D location, Map map);
 
     void Delete();
@@ -54,9 +54,9 @@ namespace Server
 
     public int CompareTo(IEntity other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
-    public Serial Serial{ get; }
+    public Serial Serial { get; }
 
-    public Point3D Location{ get; private set; }
+    public Point3D Location { get; private set; }
 
     public int X => Location.X;
 
@@ -64,7 +64,7 @@ namespace Server
 
     public int Z => Location.Z;
 
-    public Map Map{ get; private set; }
+    public Map Map { get; private set; }
 
     public virtual void MoveToWorld(Point3D newLocation, Map map)
     {
@@ -72,7 +72,7 @@ namespace Server
       Map = map;
     }
 
-    public bool Deleted{ get; }
+    public bool Deleted { get; }
 
     public void Delete()
     {

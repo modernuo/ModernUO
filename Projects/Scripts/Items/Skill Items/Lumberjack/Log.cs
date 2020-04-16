@@ -90,10 +90,10 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Resource = (CraftResource)reader.ReadInt();
-          break;
-        }
+          {
+            m_Resource = (CraftResource)reader.ReadInt();
+            break;
+          }
       }
 
       if (version == 0)

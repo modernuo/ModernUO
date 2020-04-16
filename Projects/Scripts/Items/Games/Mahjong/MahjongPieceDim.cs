@@ -2,11 +2,11 @@ namespace Server.Engines.Mahjong
 {
   public struct MahjongPieceDim
   {
-    public Point2D Position{ get; }
+    public Point2D Position { get; }
 
-    public int Width{ get; }
+    public int Width { get; }
 
-    public int Height{ get; }
+    public int Height { get; }
 
     public MahjongPieceDim(Point2D position, int width, int height)
     {

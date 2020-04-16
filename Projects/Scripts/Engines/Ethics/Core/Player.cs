@@ -31,37 +31,37 @@ namespace Server.Ethics
       switch (version)
       {
         case 0:
-        {
-          Mobile = reader.ReadMobile();
+          {
+            Mobile = reader.ReadMobile();
 
-          Power = reader.ReadEncodedInt();
-          History = reader.ReadEncodedInt();
+            Power = reader.ReadEncodedInt();
+            History = reader.ReadEncodedInt();
 
-          Steed = reader.ReadMobile();
-          Familiar = reader.ReadMobile();
+            Steed = reader.ReadMobile();
+            Familiar = reader.ReadMobile();
 
-          m_Shield = reader.ReadDeltaTime();
+            m_Shield = reader.ReadDeltaTime();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public Ethic Ethic{ get; }
+    public Ethic Ethic { get; }
 
-    public Mobile Mobile{ get; }
-
-    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public int Power{ get; set; }
+    public Mobile Mobile { get; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public int History{ get; set; }
+    public int Power { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public Mobile Steed{ get; set; }
+    public int History { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public Mobile Familiar{ get; set; }
+    public Mobile Steed { get; set; }
+
+    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+    public Mobile Familiar { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsShielded

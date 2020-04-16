@@ -39,14 +39,14 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Harrower = reader.ReadMobile();
+          {
+            m_Harrower = reader.ReadMobile();
 
-          if (m_Harrower == null)
-            Delete();
+            if (m_Harrower == null)
+              Delete();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (Light != LightType.Circle300)

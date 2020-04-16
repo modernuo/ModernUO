@@ -33,15 +33,15 @@ namespace Server
       Password = password;
     }
 
-    public NetState State{ get; }
+    public NetState State { get; }
 
-    public string Username{ get; }
+    public string Username { get; }
 
-    public string Password{ get; }
+    public string Password { get; }
 
-    public bool Accepted{ get; set; }
+    public bool Accepted { get; set; }
 
-    public ALRReason RejectReason{ get; set; }
+    public ALRReason RejectReason { get; set; }
   }
 
   public static partial class EventSink

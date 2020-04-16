@@ -27,7 +27,7 @@ namespace Server
   public interface IPropertyListObject : IEntity
   {
     ObjectPropertyList PropertyList { get; }
-    OPLInfo OPLPacket { get;  }
+    OPLInfo OPLPacket { get; }
 
     void GetProperties(ObjectPropertyList list);
   }
@@ -60,15 +60,15 @@ namespace Server
       m_Stream.Write(e.Serial);
     }
 
-    public IEntity Entity{ get; }
+    public IEntity Entity { get; }
 
     public int Hash => 0x40000000 + m_Hash;
 
-    public int Header{ get; set; }
+    public int Header { get; set; }
 
-    public string HeaderArgs{ get; set; }
+    public string HeaderArgs { get; set; }
 
-    public static bool Enabled{ get; set; }
+    public static bool Enabled { get; set; }
 
     public void Add(int number)
     {
@@ -98,7 +98,7 @@ namespace Server
     public void AddHash(int val)
     {
       m_Hash ^= val & 0x3FFFFFF;
-      m_Hash ^= val >> 26 & 0x3F;
+      m_Hash ^= (val >> 26) & 0x3F;
     }
 
     public void Add(int number, string arguments)
@@ -119,7 +119,7 @@ namespace Server
 
       m_Stream.Write(number);
 
-      int byteCount = m_Encoding.GetByteCount(arguments);
+      var byteCount = m_Encoding.GetByteCount(arguments);
 
       if (byteCount > m_Buffer.Length)
         m_Buffer = new byte[byteCount];

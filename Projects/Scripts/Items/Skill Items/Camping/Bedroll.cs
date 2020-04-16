@@ -65,10 +65,10 @@ namespace Server.Items
 
     private class LogoutGump : Gump
     {
-      private Bedroll m_Bedroll;
-      private Timer m_CloseTimer;
+      private readonly Bedroll m_Bedroll;
+      private readonly Timer m_CloseTimer;
 
-      private CampfireEntry m_Entry;
+      private readonly CampfireEntry m_Entry;
 
       public LogoutGump(CampfireEntry entry, Bedroll bedroll) : base(100, 0)
       {

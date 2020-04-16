@@ -35,13 +35,13 @@ namespace Server.Items
   public abstract class BaseBulletinBoard : Item
   {
     // Threads will be removed six hours after the last post was made
-    private static TimeSpan ThreadDeletionTime = TimeSpan.FromHours(6.0);
+    private static readonly TimeSpan ThreadDeletionTime = TimeSpan.FromHours(6.0);
 
     // A player may only create a thread once every two minutes
-    private static TimeSpan ThreadCreateTime = TimeSpan.FromMinutes(2.0);
+    private static readonly TimeSpan ThreadCreateTime = TimeSpan.FromMinutes(2.0);
 
     // A player may only reply once every thirty seconds
-    private static TimeSpan ThreadReplyTime = TimeSpan.FromSeconds(30.0);
+    private static readonly TimeSpan ThreadReplyTime = TimeSpan.FromSeconds(30.0);
 
     public BaseBulletinBoard(int itemID) : base(itemID)
     {
@@ -54,7 +54,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string BoardName{ get; set; }
+    public string BoardName { get; set; }
 
     public static bool CheckTime(DateTime time, TimeSpan range) => time + range < DateTime.UtcNow;
 
@@ -192,10 +192,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          BoardName = reader.ReadString();
-          break;
-        }
+          {
+            BoardName = reader.ReadString();
+            break;
+          }
       }
     }
 
@@ -344,25 +344,25 @@ namespace Server.Items
     {
     }
 
-    public Mobile Poster{ get; private set; }
+    public Mobile Poster { get; private set; }
 
-    public BulletinMessage Thread{ get; private set; }
+    public BulletinMessage Thread { get; private set; }
 
-    public string Subject{ get; private set; }
+    public string Subject { get; private set; }
 
-    public DateTime Time{ get; private set; }
+    public DateTime Time { get; private set; }
 
-    public DateTime LastPostTime{ get; set; }
+    public DateTime LastPostTime { get; set; }
 
-    public string PostedName{ get; private set; }
+    public string PostedName { get; private set; }
 
-    public int PostedBody{ get; private set; }
+    public int PostedBody { get; private set; }
 
-    public int PostedHue{ get; private set; }
+    public int PostedHue { get; private set; }
 
-    public BulletinEquip[] PostedEquip{ get; private set; }
+    public BulletinEquip[] PostedEquip { get; private set; }
 
-    public string[] Lines{ get; private set; }
+    public string[] Lines { get; private set; }
 
     public string GetTimeAsString() => Time.ToString("MMM dd, yyyy");
 
@@ -410,38 +410,38 @@ namespace Server.Items
       {
         case 1:
         case 0:
-        {
-          Poster = reader.ReadMobile();
-          Subject = reader.ReadString();
-          Time = reader.ReadDateTime();
-          LastPostTime = reader.ReadDateTime();
-          bool hasThread = reader.ReadBool();
-          Thread = reader.ReadItem() as BulletinMessage;
-          PostedName = reader.ReadString();
-          PostedBody = reader.ReadInt();
-          PostedHue = reader.ReadInt();
-
-          PostedEquip = new BulletinEquip[reader.ReadInt()];
-
-          for (int i = 0; i < PostedEquip.Length; ++i)
           {
-            PostedEquip[i].itemID = reader.ReadInt();
-            PostedEquip[i].hue = reader.ReadInt();
+            Poster = reader.ReadMobile();
+            Subject = reader.ReadString();
+            Time = reader.ReadDateTime();
+            LastPostTime = reader.ReadDateTime();
+            bool hasThread = reader.ReadBool();
+            Thread = reader.ReadItem() as BulletinMessage;
+            PostedName = reader.ReadString();
+            PostedBody = reader.ReadInt();
+            PostedHue = reader.ReadInt();
+
+            PostedEquip = new BulletinEquip[reader.ReadInt()];
+
+            for (int i = 0; i < PostedEquip.Length; ++i)
+            {
+              PostedEquip[i].itemID = reader.ReadInt();
+              PostedEquip[i].hue = reader.ReadInt();
+            }
+
+            Lines = new string[reader.ReadInt()];
+
+            for (int i = 0; i < Lines.Length; ++i)
+              Lines[i] = reader.ReadString();
+
+            if (hasThread && Thread == null)
+              Delete();
+
+            if (version == 0)
+              ValidationQueue<BulletinMessage>.Add(this);
+
+            break;
           }
-
-          Lines = new string[reader.ReadInt()];
-
-          for (int i = 0; i < Lines.Length; ++i)
-            Lines[i] = reader.ReadString();
-
-          if (hasThread && Thread == null)
-            Delete();
-
-          if (version == 0)
-            ValidationQueue<BulletinMessage>.Add(this);
-
-          break;
-        }
       }
     }
 

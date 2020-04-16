@@ -7,8 +7,7 @@ namespace Server.Mobiles
     private DrainTimer m_Timer;
 
     [Constructible]
-    public HarrowerTentacles(Mobile harrower = null) :
-      base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    public HarrowerTentacles(Mobile harrower = null) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
       Harrower = harrower;
       Body = 129;
@@ -58,7 +57,7 @@ namespace Server.Mobiles
     public override string CorpseName => "a tentacles corpse";
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Harrower{ get; set; }
+    public Mobile Harrower { get; set; }
 
     public override string DefaultName => "tentacles of the harrower";
 
@@ -107,14 +106,14 @@ namespace Server.Mobiles
       switch (version)
       {
         case 0:
-        {
-          Harrower = reader.ReadMobile();
+          {
+            Harrower = reader.ReadMobile();
 
-          m_Timer = new DrainTimer(this);
-          m_Timer.Start();
+            m_Timer = new DrainTimer(this);
+            m_Timer.Start();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -128,7 +127,7 @@ namespace Server.Mobiles
 
     private class DrainTimer : Timer
     {
-      private HarrowerTentacles m_Owner;
+      private readonly HarrowerTentacles m_Owner;
 
       public DrainTimer(HarrowerTentacles owner) : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0))
       {
@@ -148,7 +147,7 @@ namespace Server.Mobiles
 
         foreach (Mobile m in eable)
         {
-          if (m == m_Owner || !(m_Owner.CanBeHarmful(m) || m.Player && m.Alive))
+          if (m == m_Owner || !(m_Owner.CanBeHarmful(m) || (m.Player && m.Alive)))
             continue;
 
           if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != m_Owner.Team))

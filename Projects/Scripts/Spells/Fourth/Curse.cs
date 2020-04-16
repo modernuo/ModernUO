@@ -6,16 +6,15 @@ namespace Server.Spells.Fourth
 {
   public class CurseSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Curse", "Des Sanct",
       227,
       9031,
       Reagent.Nightshade,
       Reagent.Garlic,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
-    private static HashSet<Mobile> m_UnderEffect = new HashSet<Mobile>();
+    private static readonly HashSet<Mobile> m_UnderEffect = new HashSet<Mobile>();
 
     public CurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -56,8 +55,7 @@ namespace Server.Spells.Fourth
         SpellHelper.AddStatCurse(Caster, m, StatType.Int);
         SpellHelper.DisableSkillCheck = false;
 
-        if (Caster.Player && m.Player /*&& Caster != m */ && !UnderEffect(m)
-        ) //On OSI you CAN curse yourself and get this effect.
+        if (Caster.Player && m.Player /*&& Caster != m */ && !UnderEffect(m)) // On OSI you CAN curse yourself and get this effect.
         {
           TimeSpan duration = SpellHelper.GetDuration(Caster, m);
           m_UnderEffect.Add(m);

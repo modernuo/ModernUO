@@ -65,7 +65,7 @@ namespace Server.Engines.Quests.Ambitious
     private bool m_BagOfSending;
     private bool m_Gold;
 
-    private bool m_Logged;
+    private readonly bool m_Logged;
     private bool m_PowderOfTranslocation;
 
     public FullBackpackConversation(bool logged, bool bagOfSending, bool powderOfTranslocation, bool gold)

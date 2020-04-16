@@ -18,11 +18,11 @@ namespace Server.Gumps
     {
     }
 
-    public int CurrentPage{ get; private set; }
+    public int CurrentPage { get; private set; }
 
-    public int CurrentX{ get; private set; }
+    public int CurrentX { get; private set; }
 
-    public int CurrentY{ get; private set; }
+    public int CurrentY { get; private set; }
 
     public virtual int BorderSize => 10;
     public virtual int OffsetSize => 1;

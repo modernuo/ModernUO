@@ -10,8 +10,8 @@ namespace Server.Gumps
 {
   public class PlayerVendorBuyGump : Gump
   {
-    private PlayerVendor m_Vendor;
-    private VendorItem m_VI;
+    private readonly PlayerVendor m_Vendor;
+    private readonly VendorItem m_VI;
 
     public PlayerVendorBuyGump(PlayerVendor vendor, VendorItem vi) : base(100, 200)
     {
@@ -99,7 +99,7 @@ namespace Server.Gumps
 
   public class PlayerVendorOwnerGump : Gump
   {
-    private PlayerVendor m_Vendor;
+    private readonly PlayerVendor m_Vendor;
 
     public PlayerVendorOwnerGump(PlayerVendor vendor) : base(50, 200)
     {
@@ -122,7 +122,7 @@ namespace Server.Gumps
       AddHtmlLocalized(40, 96, 260, 20, 1038322); // Gold held in my account:
       AddLabel(300, 96, 0, m_Vendor.BankAccount.ToString());
 
-      //AddHtmlLocalized( 40, 120, 260, 20, 1038324, false, false ); // My charge per day is:
+      // AddHtmlLocalized( 40, 120, 260, 20, 1038324, false, false ); // My charge per day is:
       // Localization has changed, we must use a string here
       AddHtml(40, 120, 260, 20, "My charge per day is:");
       AddLabel(300, 120, 0, perDay.ToString());
@@ -145,24 +145,24 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 1:
-        {
-          m_Vendor.OpenBackpack(from);
+          {
+            m_Vendor.OpenBackpack(from);
 
-          break;
-        }
+            break;
+          }
         case 2:
-        {
-          from.SendGump(new PlayerVendorCustomizeGump(m_Vendor, from));
+          {
+            from.SendGump(new PlayerVendorCustomizeGump(m_Vendor, from));
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
 
   public class NewPlayerVendorOwnerGump : Gump
   {
-    private PlayerVendor m_Vendor;
+    private readonly PlayerVendor m_Vendor;
 
     public NewPlayerVendorOwnerGump(PlayerVendor vendor) : base(50, 200)
     {
@@ -251,54 +251,54 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 1: // See goods
-        {
-          m_Vendor.OpenBackpack(from);
+          {
+            m_Vendor.OpenBackpack(from);
 
-          break;
-        }
+            break;
+          }
         case 2: // Customize
-        {
-          from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+          {
+            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
 
-          break;
-        }
+            break;
+          }
         case 3: // Rename Shop
-        {
-          m_Vendor.RenameShop(from);
+          {
+            m_Vendor.RenameShop(from);
 
-          break;
-        }
+            break;
+          }
         case 4: // Rename Vendor
-        {
-          m_Vendor.Rename(from);
+          {
+            m_Vendor.Rename(from);
 
-          break;
-        }
+            break;
+          }
         case 5: // Open Paperdoll
-        {
-          m_Vendor.DisplayPaperdollTo(from);
+          {
+            m_Vendor.DisplayPaperdollTo(from);
 
-          break;
-        }
+            break;
+          }
         case 6: // Collect Gold
-        {
-          m_Vendor.CollectGold(from);
+          {
+            m_Vendor.CollectGold(from);
 
-          break;
-        }
+            break;
+          }
         case 7: // Dismiss Vendor
-        {
-          m_Vendor.Dismiss(from);
+          {
+            m_Vendor.Dismiss(from);
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
 
   public class PlayerVendorCustomizeGump : Gump
   {
-    private static CustomCategory[] Categories =
+    private static readonly CustomCategory[] Categories =
     {
       new CustomCategory(Layer.InnerTorso, 1011357, true, new[]
       {
@@ -312,7 +312,7 @@ namespace Server.Gumps
 
       new CustomCategory(Layer.MiddleTorso, 1011371, true, new[]
       {
-        //Over chest
+        // Over chest
         new CustomItem(typeof(Doublet), 1011358, 8059),
         new CustomItem(typeof(Tunic), 1011361, 8097),
         new CustomItem(typeof(JesterSuit), 1011366, 8095),
@@ -324,7 +324,7 @@ namespace Server.Gumps
 
       new CustomCategory(Layer.Shoes, 1011388, true, new[]
       {
-        //Footwear
+        // Footwear
         new CustomItem(typeof(Sandals), 1011389, 5901),
         new CustomItem(typeof(Shoes), 1011390, 5904),
         new CustomItem(typeof(Boots), 1011391, 5899),
@@ -333,7 +333,7 @@ namespace Server.Gumps
 
       new CustomCategory(Layer.Helm, 1011375, true, new[]
       {
-        //Hats
+        // Hats
         new CustomItem(typeof(SkullCap), 1011376, 5444),
         new CustomItem(typeof(Bandana), 1011377, 5440),
         new CustomItem(typeof(FloppyHat), 1011378, 5907),
@@ -344,7 +344,7 @@ namespace Server.Gumps
 
       new CustomCategory(Layer.Helm, 1015319, true, new[]
       {
-        //More Hats
+        // More Hats
         new CustomItem(typeof(StrawHat), 1011382, 5911),
         new CustomItem(typeof(WizardsHat), 1011383, 5912),
         new CustomItem(typeof(Bonnet), 1011384, 5913),
@@ -355,7 +355,7 @@ namespace Server.Gumps
 
       new CustomCategory(Layer.Pants, 1011367, true, new[]
       {
-        //Lower Torso
+        // Lower Torso
         new CustomItem(typeof(LongPants), 1011368, 5433),
         new CustomItem(typeof(Kilt), 1011369, 5431),
         new CustomItem(typeof(Skirt), 1011370, 5398)
@@ -383,7 +383,7 @@ namespace Server.Gumps
 
       new CustomCategory(Layer.FacialHair, 1015320, true, new[]
       {
-        //Facial Hair
+        // Facial Hair
         new CustomItem(0x2041, 1011062),
         new CustomItem(0x203F, 1011060),
         new CustomItem(0x204B, 1015321, true),
@@ -395,7 +395,7 @@ namespace Server.Gumps
 
       new CustomCategory(Layer.FirstValid, 1011397, false, new[]
       {
-        //Held items
+        // Held items
         new CustomItem(typeof(FishingPole), 1011406, 3520),
         new CustomItem(typeof(Pickaxe), 1011407, 3717),
         new CustomItem(typeof(Pitchfork), 1011408, 3720),
@@ -409,7 +409,7 @@ namespace Server.Gumps
 
       new CustomCategory(Layer.FirstValid, 1015325, false, new[]
       {
-        //More held items
+        // More held items
         new CustomItem(typeof(Crossbow), 1011414, 3920),
         new CustomItem(typeof(WarMace), 1011415, 5126),
         new CustomItem(typeof(TwoHandedAxe), 1011416, 5186),
@@ -419,7 +419,7 @@ namespace Server.Gumps
       })
     };
 
-    private Mobile m_Vendor;
+    private readonly Mobile m_Vendor;
 
     public PlayerVendorCustomizeGump(Mobile v, Mobile from) : base(30, 40)
     {
@@ -494,7 +494,7 @@ namespace Server.Gumps
         if (m_Vendor is PlayerVendor) // do nothing for barkeeps
         {
           m_Vendor.Direction = m_Vendor.GetDirectionTo(from);
-          m_Vendor.Animate(32, 5, 1, true, false, 0); //bow
+          m_Vendor.Animate(32, 5, 1, true, false, 0); // bow
           m_Vendor.SayTo(from, 1043310 + Utility.Random(12)); // a little random speech
         }
       }
@@ -669,15 +669,15 @@ namespace Server.Gumps
         LongText = longText;
       }
 
-      public Type Type{ get; }
+      public Type Type { get; }
 
-      public int ItemID{ get; }
+      public int ItemID { get; }
 
-      public int LocNumber{ get; }
+      public int LocNumber { get; }
 
-      public int ArtNumber{ get; }
+      public int ArtNumber { get; }
 
-      public bool LongText{ get; }
+      public bool LongText { get; }
 
       public Item Create()
       {
@@ -711,20 +711,20 @@ namespace Server.Gumps
         LocNumber = loc;
       }
 
-      public bool CanDye{ get; }
+      public bool CanDye { get; }
 
-      public CustomItem[] Entries{ get; }
+      public CustomItem[] Entries { get; }
 
-      public Layer Layer{ get; }
+      public Layer Layer { get; }
 
-      public int LocNumber{ get; }
+      public int LocNumber { get; }
     }
 
     private class PVHuePicker : HuePicker
     {
-      private Item m_Item;
-      private Mobile m_Mob;
-      private Mobile m_Vendor;
+      private readonly Item m_Item;
+      private readonly Mobile m_Mob;
+      private readonly Mobile m_Vendor;
 
       public PVHuePicker(Item item, Mobile v, Mobile from) : base(item.ItemID)
       {
@@ -751,9 +751,9 @@ namespace Server.Gumps
 
     private class PVHairHuePicker : HuePicker
     {
-      private bool m_FacialHair;
-      private Mobile m_Mob;
-      private Mobile m_Vendor;
+      private readonly bool m_FacialHair;
+      private readonly Mobile m_Mob;
+      private readonly Mobile m_Vendor;
 
       public PVHairHuePicker(bool facialHair, Mobile v, Mobile from) : base(0xFAB)
       {
@@ -785,7 +785,7 @@ namespace Server.Gumps
 
   public class NewPlayerVendorCustomizeGump : Gump
   {
-    private static HairOrBeard[] m_HairStyles =
+    private static readonly HairOrBeard[] m_HairStyles =
     {
       new HairOrBeard(0x203B, 1011052), // Short
       new HairOrBeard(0x203C, 1011053), // Long
@@ -798,7 +798,7 @@ namespace Server.Gumps
       new HairOrBeard(0x2049, 1011049) // 2-tails
     };
 
-    private static HairOrBeard[] m_BeardStyles =
+    private static readonly HairOrBeard[] m_BeardStyles =
     {
       new HairOrBeard(0x2041, 1011062), // Mustache
       new HairOrBeard(0x203F, 1011060), // Short beard
@@ -809,7 +809,7 @@ namespace Server.Gumps
       new HairOrBeard(0x204D, 1011401) // Vandyke
     };
 
-    private PlayerVendor m_Vendor;
+    private readonly PlayerVendor m_Vendor;
 
     public NewPlayerVendorCustomizeGump(PlayerVendor vendor) : base(50, 50)
     {
@@ -887,116 +887,116 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 0: // CLOSE
-        {
-          m_Vendor.Direction = m_Vendor.GetDirectionTo(from);
-          m_Vendor.Animate(32, 5, 1, true, false, 0); // bow
-          m_Vendor.SayTo(from, 1043310 + Utility.Random(12)); // a little random speech
+          {
+            m_Vendor.Direction = m_Vendor.GetDirectionTo(from);
+            m_Vendor.Animate(32, 5, 1, true, false, 0); // bow
+            m_Vendor.SayTo(from, 1043310 + Utility.Random(12)); // a little random speech
 
-          break;
-        }
+            break;
+          }
         case 1: // Female/Male
-        {
-          if (m_Vendor.Female)
-          {
-            m_Vendor.BodyValue = 400;
-            m_Vendor.Female = false;
-          }
-          else
-          {
-            m_Vendor.BodyValue = 401;
-            m_Vendor.Female = true;
-
-            m_Vendor.FacialHairItemID = 0;
-          }
-
-          from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
-
-          break;
-        }
-        case 2: // Remove hair
-        {
-          m_Vendor.HairItemID = 0;
-
-          from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
-
-          break;
-        }
-        case 3: // Color hair
-        {
-          if (m_Vendor.HairItemID > 0)
-            new PVHuePicker(m_Vendor, false, from).SendTo(from.NetState);
-          else
-            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
-
-          break;
-        }
-        case 4: // Remove beard
-        {
-          m_Vendor.FacialHairItemID = 0;
-
-          from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
-
-          break;
-        }
-        case 5: // Color beard
-        {
-          if (m_Vendor.FacialHairItemID > 0)
-            new PVHuePicker(m_Vendor, true, from).SendTo(from.NetState);
-          else
-            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
-
-          break;
-        }
-        default:
-        {
-          int hairhue = 0;
-
-          if ((info.ButtonID & 0x100) != 0) // Hair style selected
-          {
-            int index = info.ButtonID & 0xFF;
-
-            if (index >= m_HairStyles.Length)
-              return;
-
-            HairOrBeard hairStyle = m_HairStyles[index];
-
-            hairhue = m_Vendor.HairHue;
-
-            m_Vendor.HairItemID = 0;
-            m_Vendor.ProcessDelta();
-
-            m_Vendor.HairItemID = hairStyle.ItemID;
-
-            m_Vendor.HairHue = hairhue;
-
-            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
-          }
-          else if ((info.ButtonID & 0x200) != 0) // Beard style selected
           {
             if (m_Vendor.Female)
-              return;
+            {
+              m_Vendor.BodyValue = 400;
+              m_Vendor.Female = false;
+            }
+            else
+            {
+              m_Vendor.BodyValue = 401;
+              m_Vendor.Female = true;
 
-            int index = info.ButtonID & 0xFF;
-
-            if (index >= m_BeardStyles.Length)
-              return;
-
-            HairOrBeard beardStyle = m_BeardStyles[index];
-
-            hairhue = m_Vendor.FacialHairHue;
-
-            m_Vendor.FacialHairItemID = 0;
-            m_Vendor.ProcessDelta();
-
-            m_Vendor.FacialHairItemID = beardStyle.ItemID;
-
-            m_Vendor.FacialHairHue = hairhue;
+              m_Vendor.FacialHairItemID = 0;
+            }
 
             from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
-          }
 
-          break;
-        }
+            break;
+          }
+        case 2: // Remove hair
+          {
+            m_Vendor.HairItemID = 0;
+
+            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+
+            break;
+          }
+        case 3: // Color hair
+          {
+            if (m_Vendor.HairItemID > 0)
+              new PVHuePicker(m_Vendor, false, from).SendTo(from.NetState);
+            else
+              from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+
+            break;
+          }
+        case 4: // Remove beard
+          {
+            m_Vendor.FacialHairItemID = 0;
+
+            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+
+            break;
+          }
+        case 5: // Color beard
+          {
+            if (m_Vendor.FacialHairItemID > 0)
+              new PVHuePicker(m_Vendor, true, from).SendTo(from.NetState);
+            else
+              from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+
+            break;
+          }
+        default:
+          {
+            int hairhue = 0;
+
+            if ((info.ButtonID & 0x100) != 0) // Hair style selected
+            {
+              int index = info.ButtonID & 0xFF;
+
+              if (index >= m_HairStyles.Length)
+                return;
+
+              HairOrBeard hairStyle = m_HairStyles[index];
+
+              hairhue = m_Vendor.HairHue;
+
+              m_Vendor.HairItemID = 0;
+              m_Vendor.ProcessDelta();
+
+              m_Vendor.HairItemID = hairStyle.ItemID;
+
+              m_Vendor.HairHue = hairhue;
+
+              from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+            }
+            else if ((info.ButtonID & 0x200) != 0) // Beard style selected
+            {
+              if (m_Vendor.Female)
+                return;
+
+              int index = info.ButtonID & 0xFF;
+
+              if (index >= m_BeardStyles.Length)
+                return;
+
+              HairOrBeard beardStyle = m_BeardStyles[index];
+
+              hairhue = m_Vendor.FacialHairHue;
+
+              m_Vendor.FacialHairItemID = 0;
+              m_Vendor.ProcessDelta();
+
+              m_Vendor.FacialHairItemID = beardStyle.ItemID;
+
+              m_Vendor.FacialHairHue = hairhue;
+
+              from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+            }
+
+            break;
+          }
       }
     }
 
@@ -1008,16 +1008,16 @@ namespace Server.Gumps
         Name = name;
       }
 
-      public int ItemID{ get; }
+      public int ItemID { get; }
 
-      public int Name{ get; }
+      public int Name { get; }
     }
 
     private class PVHuePicker : HuePicker
     {
-      private bool m_FacialHair;
-      private Mobile m_From;
-      private PlayerVendor m_Vendor;
+      private readonly bool m_FacialHair;
+      private readonly Mobile m_From;
+      private readonly PlayerVendor m_Vendor;
 
       public PVHuePicker(PlayerVendor vendor, bool facialHair, Mobile from) : base(0xFAB)
       {

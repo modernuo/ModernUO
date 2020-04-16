@@ -8,9 +8,9 @@ namespace Server.SkillHandlers
   {
     public static double HidingRequirement => Core.ML ? 30.0 : Core.SE ? 50.0 : 80.0;
 
-    public static int[,] ArmorTable{ get; } =
+    public static int[,] ArmorTable { get; } =
     {
-      //	Gorget	Gloves	Helmet	Arms	Legs	Chest	Shield
+      // Gorget	Gloves	Helmet	Arms	Legs	Chest	Shield
       /* Cloth	*/ { 0, 0, 0, 0, 0, 0, 0 },
       /* Leather	*/ { 0, 0, 0, 0, 0, 0, 0 },
       /* Studded	*/ { 2, 2, 0, 4, 6, 10, 0 },
@@ -74,7 +74,7 @@ namespace Server.SkillHandlers
       {
         int armorRating = GetArmorRating(m);
 
-        if (armorRating >= (Core.AOS ? 42 : 26)) //I have a hunch '42' was chosen cause someone's a fan of DNA
+        if (armorRating >= (Core.AOS ? 42 : 26)) // I have a hunch '42' was chosen cause someone's a fan of DNA
         {
           m.SendLocalizedMessage(502727); // You could not hope to move quietly wearing this much armor.
           m.RevealingAction();

@@ -95,12 +95,12 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_WarningFlame = reader.ReadBool();
-          m_MinDamage = reader.ReadInt();
-          m_MaxDamage = reader.ReadInt();
-          break;
-        }
+          {
+            m_WarningFlame = reader.ReadBool();
+            m_MinDamage = reader.ReadInt();
+            m_MaxDamage = reader.ReadInt();
+            break;
+          }
       }
 
       if (version == 0)

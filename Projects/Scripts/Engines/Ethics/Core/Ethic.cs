@@ -193,19 +193,19 @@ namespace Server.Ethics
       switch (version)
       {
         case 0:
-        {
-          int playerCount = reader.ReadEncodedInt();
-
-          for (int i = 0; i < playerCount; ++i)
           {
-            Player pl = new Player(this, reader);
+            int playerCount = reader.ReadEncodedInt();
 
-            if (pl.Mobile != null)
-              Timer.DelayCall(TimeSpan.Zero, pl.CheckAttach);
+            for (int i = 0; i < playerCount; ++i)
+            {
+              Player pl = new Player(this, reader);
+
+              if (pl.Mobile != null)
+                Timer.DelayCall(TimeSpan.Zero, pl.CheckAttach);
+            }
+
+            break;
           }
-
-          break;
-        }
       }
     }
 

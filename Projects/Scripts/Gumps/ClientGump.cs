@@ -10,7 +10,7 @@ namespace Server.Gumps
   public class ClientGump : Gump
   {
     private const int LabelColor32 = 0xFFFFFF;
-    private NetState m_State;
+    private readonly NetState m_State;
 
     public ClientGump(Mobile from, NetState state, string initialText = "") : base(30, 20)
     {
@@ -158,137 +158,137 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 1: // Tell
-        {
-          TextRelay text = info.GetTextEntry(0);
-
-          if (text != null)
           {
-            focus.SendMessage(0x482, "{0} tells you:", from.Name);
-            focus.SendMessage(0x482, text.Text);
+            TextRelay text = info.GetTextEntry(0);
 
-            CommandLogging.WriteLine(from, "{0} {1} telling {2} \"{3}\" ", from.AccessLevel,
-              CommandLogging.Format(from), CommandLogging.Format(focus), text.Text);
+            if (text != null)
+            {
+              focus.SendMessage(0x482, "{0} tells you:", from.Name);
+              focus.SendMessage(0x482, text.Text);
+
+              CommandLogging.WriteLine(from, "{0} {1} telling {2} \"{3}\" ", from.AccessLevel,
+                CommandLogging.Format(from), CommandLogging.Format(focus), text.Text);
+            }
+
+            from.SendGump(new ClientGump(from, m_State));
+
+            break;
           }
-
-          from.SendGump(new ClientGump(from, m_State));
-
-          break;
-        }
         case 4: // Props
-        {
-          Resend(from, info);
-
-          if (!BaseCommand.IsAccessible(from, focus))
           {
-            from.SendLocalizedMessage(500447); // That is not accessible.
-          }
-          else
-          {
-            from.SendGump(new PropertiesGump(from, focus));
-            CommandLogging.WriteLine(from, "{0} {1} opening properties gump of {2} ", from.AccessLevel,
-              CommandLogging.Format(from), CommandLogging.Format(focus));
-          }
+            Resend(from, info);
 
-          break;
-        }
+            if (!BaseCommand.IsAccessible(from, focus))
+            {
+              from.SendLocalizedMessage(500447); // That is not accessible.
+            }
+            else
+            {
+              from.SendGump(new PropertiesGump(from, focus));
+              CommandLogging.WriteLine(from, "{0} {1} opening properties gump of {2} ", from.AccessLevel,
+                CommandLogging.Format(from), CommandLogging.Format(focus));
+            }
+
+            break;
+          }
         case 5: // Go to
-        {
-          if (focus.Map == null || focus.Map == Map.Internal)
           {
-            from.SendMessage("That character is not in the world.");
-          }
-          else
-          {
-            from.MoveToWorld(focus.Location, focus.Map);
-            Resend(from, info);
+            if (focus.Map == null || focus.Map == Map.Internal)
+            {
+              from.SendMessage("That character is not in the world.");
+            }
+            else
+            {
+              from.MoveToWorld(focus.Location, focus.Map);
+              Resend(from, info);
 
-            CommandLogging.WriteLine(from, "{0} {1} going to {2}, Location {3}, Map {4}", from.AccessLevel,
-              CommandLogging.Format(from), CommandLogging.Format(focus), focus.Location, focus.Map);
-          }
+              CommandLogging.WriteLine(from, "{0} {1} going to {2}, Location {3}, Map {4}", from.AccessLevel,
+                CommandLogging.Format(from), CommandLogging.Format(focus), focus.Location, focus.Map);
+            }
 
-          break;
-        }
+            break;
+          }
         case 6: // Get
-        {
-          if (from.Map == null || from.Map == Map.Internal)
           {
-            from.SendMessage("You cannot bring that person here.");
+            if (from.Map == null || from.Map == Map.Internal)
+            {
+              from.SendMessage("You cannot bring that person here.");
+            }
+            else
+            {
+              focus.MoveToWorld(from.Location, from.Map);
+              Resend(from, info);
+
+              CommandLogging.WriteLine(from, "{0} {1} bringing {2} to Location {3}, Map {4}", from.AccessLevel,
+                CommandLogging.Format(from), CommandLogging.Format(focus), from.Location, from.Map);
+            }
+
+            break;
           }
-          else
+        case 7: // Move
           {
-            focus.MoveToWorld(from.Location, from.Map);
+            from.Target = new MoveTarget(focus);
             Resend(from, info);
 
-            CommandLogging.WriteLine(from, "{0} {1} bringing {2} to Location {3}, Map {4}", from.AccessLevel,
-              CommandLogging.Format(from), CommandLogging.Format(focus), from.Location, from.Map);
+            break;
           }
-
-          break;
-        }
-        case 7: // Move
-        {
-          from.Target = new MoveTarget(focus);
-          Resend(from, info);
-
-          break;
-        }
         case 8: // Kick
-        {
-          if (from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > focus.AccessLevel)
           {
-            focus.Say("I've been kicked!");
+            if (from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > focus.AccessLevel)
+            {
+              focus.Say("I've been kicked!");
 
-            m_State.Dispose();
+              m_State.Dispose();
 
-            CommandLogging.WriteLine(from, "{0} {1} kicking {2} ", from.AccessLevel, CommandLogging.Format(from),
-              CommandLogging.Format(focus));
+              CommandLogging.WriteLine(from, "{0} {1} kicking {2} ", from.AccessLevel, CommandLogging.Format(from),
+                CommandLogging.Format(focus));
+            }
+
+            break;
           }
-
-          break;
-        }
         case 9: // Kill
-        {
-          if (from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > focus.AccessLevel)
           {
-            focus.Kill();
-            CommandLogging.WriteLine(from, "{0} {1} killing {2} ", from.AccessLevel, CommandLogging.Format(from),
-              CommandLogging.Format(focus));
+            if (from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > focus.AccessLevel)
+            {
+              focus.Kill();
+              CommandLogging.WriteLine(from, "{0} {1} killing {2} ", from.AccessLevel, CommandLogging.Format(from),
+                CommandLogging.Format(focus));
+            }
+
+            Resend(from, info);
+
+            break;
           }
-
-          Resend(from, info);
-
-          break;
-        }
-        case 10: //Res
-        {
-          if (from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > focus.AccessLevel)
+        case 10: // Res
           {
-            focus.PlaySound(0x214);
-            focus.FixedEffect(0x376A, 10, 16);
+            if (from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > focus.AccessLevel)
+            {
+              focus.PlaySound(0x214);
+              focus.FixedEffect(0x376A, 10, 16);
 
-            focus.Resurrect();
+              focus.Resurrect();
 
-            CommandLogging.WriteLine(from, "{0} {1} resurrecting {2} ", from.AccessLevel,
-              CommandLogging.Format(from), CommandLogging.Format(focus));
+              CommandLogging.WriteLine(from, "{0} {1} resurrecting {2} ", from.AccessLevel,
+                CommandLogging.Format(from), CommandLogging.Format(focus));
+            }
+
+            Resend(from, info);
+
+            break;
           }
-
-          Resend(from, info);
-
-          break;
-        }
         case 11: // Skills
-        {
-          Resend(from, info);
-
-          if (from.AccessLevel > focus.AccessLevel)
           {
-            from.SendGump(new SkillsGump(from, focus));
-            CommandLogging.WriteLine(from, "{0} {1} Opening Skills gump of {2} ", from.AccessLevel,
-              CommandLogging.Format(from), CommandLogging.Format(focus));
-          }
+            Resend(from, info);
 
-          break;
-        }
+            if (from.AccessLevel > focus.AccessLevel)
+            {
+              from.SendGump(new SkillsGump(from, focus));
+              CommandLogging.WriteLine(from, "{0} {1} Opening Skills gump of {2} ", from.AccessLevel,
+                CommandLogging.Format(from), CommandLogging.Format(focus));
+            }
+
+            break;
+          }
       }
     }
 

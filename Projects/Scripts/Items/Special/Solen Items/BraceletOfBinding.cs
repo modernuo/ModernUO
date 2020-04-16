@@ -327,17 +327,17 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Recharges = reader.ReadEncodedInt();
-          goto case 0;
-        }
+          {
+            m_Recharges = reader.ReadEncodedInt();
+            goto case 0;
+          }
         case 0:
-        {
-          m_Charges = Math.Min(reader.ReadEncodedInt(), MaxCharges);
-          m_Inscription = reader.ReadString();
-          Bound = (BraceletOfBinding)reader.ReadItem();
-          break;
-        }
+          {
+            m_Charges = Math.Min(reader.ReadEncodedInt(), MaxCharges);
+            m_Inscription = reader.ReadString();
+            Bound = (BraceletOfBinding)reader.ReadItem();
+            break;
+          }
       }
     }
 
@@ -345,7 +345,7 @@ namespace Server.Items
 
     private class BraceletEntry : ContextMenuEntry
     {
-      private BraceletCallback m_Callback;
+      private readonly BraceletCallback m_Callback;
 
       public BraceletEntry(BraceletCallback callback, int number, bool enabled) : base(number)
       {
@@ -366,8 +366,8 @@ namespace Server.Items
 
     private class TransportTimer : Timer
     {
-      private BraceletOfBinding m_Bracelet;
-      private Mobile m_From;
+      private readonly BraceletOfBinding m_Bracelet;
+      private readonly Mobile m_From;
 
       public TransportTimer(BraceletOfBinding bracelet, Mobile from) : base(TimeSpan.FromSeconds(2.0))
       {
@@ -397,7 +397,7 @@ namespace Server.Items
 
     private class BindTarget : Target
     {
-      private BraceletOfBinding m_Bracelet;
+      private readonly BraceletOfBinding m_Bracelet;
 
       public BindTarget(BraceletOfBinding bracelet) : base(-1, false, TargetFlags.None) => m_Bracelet = bracelet;
 
@@ -438,7 +438,7 @@ namespace Server.Items
 
     private class InscribePrompt : Prompt
     {
-      private BraceletOfBinding m_Bracelet;
+      private readonly BraceletOfBinding m_Bracelet;
 
       public InscribePrompt(BraceletOfBinding bracelet) => m_Bracelet = bracelet;
 

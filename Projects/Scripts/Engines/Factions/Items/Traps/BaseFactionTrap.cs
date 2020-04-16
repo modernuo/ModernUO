@@ -31,13 +31,13 @@ namespace Server.Factions
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Faction Faction{ get; set; }
+    public Faction Faction { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Placer{ get; set; }
+    public Mobile Placer { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime TimeOfPlacement{ get; set; }
+    public DateTime TimeOfPlacement { get; set; }
 
     public virtual int EffectSound => 0;
 
@@ -120,32 +120,32 @@ namespace Server.Factions
       switch (AllowedPlacing)
       {
         case AllowedPlacing.FactionStronghold:
-        {
-          StrongholdRegion region = Region.Find(p, m).GetRegion<StrongholdRegion>();
+          {
+            StrongholdRegion region = Region.Find(p, m).GetRegion<StrongholdRegion>();
 
-          if (region != null && region.Faction == Faction)
-            return 0;
+            if (region != null && region.Faction == Faction)
+              return 0;
 
-          return 1010355; // This trap can only be placed in your stronghold
-        }
+            return 1010355; // This trap can only be placed in your stronghold
+          }
         case AllowedPlacing.AnyFactionTown:
-        {
-          Town town = Town.FromRegion(Region.Find(p, m));
+          {
+            Town town = Town.FromRegion(Region.Find(p, m));
 
-          if (town != null)
-            return 0;
+            if (town != null)
+              return 0;
 
-          return 1010356; // This trap can only be placed in a faction town
-        }
+            return 1010356; // This trap can only be placed in a faction town
+          }
         case AllowedPlacing.ControlledFactionTown:
-        {
-          Town town = Town.FromRegion(Region.Find(p, m));
+          {
+            Town town = Town.FromRegion(Region.Find(p, m));
 
-          if (town != null && town.Owner == Faction)
-            return 0;
+            if (town != null && town.Owner == Faction)
+              return 0;
 
-          return 1010357; // This trap can only be placed in a town your faction controls
-        }
+            return 1010357; // This trap can only be placed in a town your faction controls
+          }
       }
 
       return 0;

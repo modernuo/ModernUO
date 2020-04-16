@@ -13,15 +13,15 @@ namespace Server.Gumps
     private const int TextColor32 = 0xFFFFFF;
 
     private static List<InternalEntry> m_Monster, m_Animal, m_Sea, m_Human;
-    private List<object> m_List;
-    private Mobile m_Mobile;
-    private object m_Object;
-    private List<InternalEntry> m_OurList;
-    private int m_OurPage;
-    private ModelBodyType m_OurType;
-    private int m_Page;
-    private PropertyInfo m_Property;
-    private Stack<StackEntry> m_Stack;
+    private readonly List<object> m_List;
+    private readonly Mobile m_Mobile;
+    private readonly object m_Object;
+    private readonly List<InternalEntry> m_OurList;
+    private readonly int m_OurPage;
+    private readonly ModelBodyType m_OurType;
+    private readonly int m_Page;
+    private readonly PropertyInfo m_Property;
+    private readonly Stack<StackEntry> m_Stack;
 
     public SetBodyGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, List<object> list,
       int ourPage = 0, List<InternalEntry> ourList = null, ModelBodyType ourType = ModelBodyType.Invalid)
@@ -236,7 +236,7 @@ namespace Server.Gumps
 
     public class InternalEntry : IComparable<InternalEntry>
     {
-      private static string[] m_GroupNames =
+      private static readonly string[] m_GroupNames =
       {
         "ogres_", "ettins_", "walking_dead_", "gargoyles_",
         "orcs_", "flails_", "daemons_", "arachnids_",
@@ -273,13 +273,13 @@ namespace Server.Gumps
         DisplayName = DisplayName.Replace('_', ' ');
       }
 
-      public int Body{ get; }
+      public int Body { get; }
 
-      public int ItemID{ get; }
+      public int ItemID { get; }
 
-      public string Name{ get; }
+      public string Name { get; }
 
-      public string DisplayName{ get; }
+      public string DisplayName { get; }
 
       public int CompareTo(InternalEntry comp)
       {

@@ -74,7 +74,7 @@ namespace Server.Mobiles
           break;
       }
 
-      if (0.2 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.2)
         PackItem(new BolaBall());
     }
 

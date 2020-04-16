@@ -4,8 +4,8 @@ namespace Server.Items
 {
   public interface ICommodity /* added IsDeedable prop so expansion-based deedables can determine true/false */
   {
-    int DescriptionNumber{ get; }
-    bool IsDeedable{ get; }
+    int DescriptionNumber { get; }
+    bool IsDeedable { get; }
   }
 
   public class CommodityDeed : Item
@@ -26,7 +26,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Item Commodity{ get; private set; }
+    public Item Commodity { get; private set; }
 
     public override int LabelNumber => Commodity == null ? 1047016 : 1047017;
 
@@ -66,10 +66,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          if (Commodity != null) Hue = 0x592;
-          break;
-        }
+          {
+            if (Commodity != null) Hue = 0x592;
+            break;
+          }
       }
     }
 
@@ -182,7 +182,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private CommodityDeed m_Deed;
+      private readonly CommodityDeed m_Deed;
 
       public InternalTarget(CommodityDeed deed) : base(3, false, TargetFlags.None) => m_Deed = deed;
 
@@ -203,8 +203,8 @@ namespace Server.Items
           CommodityDeedBox cox = CommodityDeedBox.Find(m_Deed);
 
           // Veteran Rewards mods
-          if (box != null && m_Deed.IsChildOf(box) && item.IsChildOf(box) ||
-              cox?.IsSecure != true && item.IsChildOf(cox))
+          if ((box != null && m_Deed.IsChildOf(box) && item.IsChildOf(box)) ||
+              (cox?.IsSecure != true && item.IsChildOf(cox)))
           {
             if (m_Deed.SetCommodity(item))
             {

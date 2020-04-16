@@ -50,10 +50,10 @@ namespace Server.Items
       {
         case 1:
         case 0:
-        {
-          m_Resource = (CraftResource)reader.ReadInt();
-          break;
-        }
+          {
+            m_Resource = (CraftResource)reader.ReadInt();
+            break;
+          }
       }
 
       if (version < 1)

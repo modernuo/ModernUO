@@ -18,11 +18,11 @@
  *
  ***************************************************************************/
 
-using Server.Diagnostics;
 using System;
 using System.Buffers;
 using System.Diagnostics;
 using System.IO;
+using Server.Diagnostics;
 
 namespace Server.Network
 {
@@ -45,7 +45,7 @@ namespace Server.Network
 
       if (Core.Profiling)
       {
-        PacketSendProfile prof = PacketSendProfile.Acquire(GetType());
+        var prof = PacketSendProfile.Acquire(GetType());
         prof.Increment();
       }
     }
@@ -60,7 +60,7 @@ namespace Server.Network
 
       if (Core.Profiling)
       {
-        PacketSendProfile prof = PacketSendProfile.Acquire(GetType());
+        var prof = PacketSendProfile.Acquire(GetType());
         prof.Increment();
       }
     }
@@ -154,7 +154,7 @@ namespace Server.Network
 
               try
               {
-                using StreamWriter op = new StreamWriter("net_opt.log", true);
+                using var op = new StreamWriter("net_opt.log", true);
                 op.WriteLine("Redundant compile for packet {0}, use Acquire() and Release()", GetType());
                 op.WriteLine(new StackTrace());
               }
@@ -183,27 +183,27 @@ namespace Server.Network
     {
       if (m_Length == 0)
       {
-        long streamLen = m_Stream.Length;
+        var streamLen = m_Stream.Length;
 
         m_Stream.Seek(1, SeekOrigin.Begin);
         m_Stream.Write((ushort)streamLen);
       }
       else if (m_Stream.Length != m_Length)
       {
-        int diff = (int)m_Stream.Length - m_Length;
+        var diff = (int)m_Stream.Length - m_Length;
 
         Console.WriteLine("Packet: 0x{0:X2}: Bad packet length! ({1}{2} bytes)", PacketID, diff >= 0 ? "+" : "",
           diff);
       }
 
-      MemoryStream ms = m_Stream.UnderlyingStream;
+      var ms = m_Stream.UnderlyingStream;
 
       m_CompiledBuffer = ms.GetBuffer();
-      int length = (int)ms.Length;
+      var length = (int)ms.Length;
 
       if (compress)
       {
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(CompressorBufferSize);
+        var buffer = ArrayPool<byte>.Shared.Rent(CompressorBufferSize);
 
         Compression.Compress(m_CompiledBuffer, 0, length, buffer, out length);
 
@@ -211,7 +211,7 @@ namespace Server.Network
         {
           Console.WriteLine("Warning: Compression buffer overflowed on packet 0x{0:X2} ('{1}') (length={2})",
             PacketID, GetType().Name, length);
-          using StreamWriter op = new StreamWriter("compression_overflow.log", true);
+          using var op = new StreamWriter("compression_overflow.log", true);
           op.WriteLine("{0} Warning: Compression buffer overflowed on packet 0x{1:X2} ('{2}') (length={3})",
             DateTime.UtcNow, PacketID, GetType().Name, length);
           op.WriteLine(new StackTrace());
@@ -235,11 +235,13 @@ namespace Server.Network
       }
       else if (length > 0)
       {
-        byte[] old = m_CompiledBuffer;
+        var old = m_CompiledBuffer;
         m_CompiledLength = length;
 
         if ((m_State & State.Static) != 0)
+        {
           m_CompiledBuffer = new byte[length];
+        }
         else
         {
           m_CompiledBuffer = ArrayPool<byte>.Shared.Rent(length);

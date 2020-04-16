@@ -5,7 +5,7 @@ namespace Server.Misc
 {
   public class ProtocolExtensions
   {
-    private static PacketHandler[] m_Handlers = new PacketHandler[0x100];
+    private static readonly PacketHandler[] m_Handlers = new PacketHandler[0x100];
 
     public static void Initialize()
     {

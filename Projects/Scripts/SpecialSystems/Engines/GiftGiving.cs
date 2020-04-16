@@ -12,7 +12,7 @@ namespace Server.Misc
 
   public class GiftGiving
   {
-    private static List<GiftGiver> m_Givers = new List<GiftGiver>();
+    private static readonly List<GiftGiver> m_Givers = new List<GiftGiver>();
 
     public static void Register(GiftGiver giver)
     {
@@ -55,8 +55,8 @@ namespace Server.Misc
   {
     public virtual TimeSpan MinimumAge => TimeSpan.FromDays(30.0);
 
-    public abstract DateTime Start{ get; }
-    public abstract DateTime Finish{ get; }
+    public abstract DateTime Start { get; }
+    public abstract DateTime Finish { get; }
     public abstract void GiveGift(Mobile mob);
 
     public virtual void DelayGiveGift(TimeSpan delay, Mobile mob)

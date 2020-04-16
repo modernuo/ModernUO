@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -9,11 +8,11 @@ namespace Server.Utilities
   {
     public static ConstructorInfo GetConstructor(Type type, Predicate<ConstructorInfo> predicate = null)
     {
-      ConstructorInfo emptyCtor = type.GetConstructor(Type.EmptyTypes);
+      var emptyCtor = type.GetConstructor(Type.EmptyTypes);
 
       if (emptyCtor != null && predicate?.Invoke(emptyCtor) != false) return emptyCtor;
 
-      ConstructorInfo optionalCtor = type.GetConstructors().SingleOrDefault(info =>
+      var optionalCtor = type.GetConstructors().SingleOrDefault(info =>
         predicate?.Invoke(info) != false && info.GetParameters().All(x => x.IsOptional));
 
       if (optionalCtor != null) return optionalCtor;
@@ -40,25 +39,25 @@ namespace Server.Utilities
           {
             if (predicate?.Invoke(info) == false) return false;
 
-            List<ParameterInfo> paramList = info.GetParameters().ToList();
+            var paramList = info.GetParameters().ToList();
 
             // If more args are given than parameters, skip.
             if (args.Length > paramList.Count) return false;
 
             // check all given args map to params.
-            for (int i = 0; i < args.Length; i++)
-            // if a null reference is passed, but the type is not nullable
-              if (args[i] == null && paramList[i].ParameterType.IsValueType
+            for (var i = 0; i < args.Length; i++)
+              // if a null reference is passed, but the type is not nullable
+              if ((args[i] == null && paramList[i].ParameterType.IsValueType)
                   // or if an arg is not null and is not assignable to the parameter type, skip.
                   || !(args[i] == null || paramList[i].ParameterType.IsAssignableFrom(args[i])))
                 return false;
 
             // If there are more parameters, check if they any are not optional, if any are not, skip.
-            // Otherwise all checks have passed. We have found a match 
+            // Otherwise all checks have passed. We have found a match
             return args.Length <= paramList.Count || paramList.GetRange(args.Length, paramList.Count - args.Length)
-                     .All(x => x.IsOptional);
+              .All(x => x.IsOptional);
           });
-          
+
           if (ctor != null) return ctor;
         }
 
@@ -72,12 +71,12 @@ namespace Server.Utilities
 
     public static object CreateInstance(Type type, Predicate<ConstructorInfo> constructorPredicate = null)
     {
-      ConstructorInfo cctor = GetConstructor(type, constructorPredicate);
-      ParameterInfo[] args = cctor.GetParameters();
+      var cctor = GetConstructor(type, constructorPredicate);
+      var args = cctor.GetParameters();
 
       if (args.Length == 0) return cctor.Invoke(Type.EmptyTypes);
 
-      object[] argList = new object[args.Length];
+      var argList = new object[args.Length];
       Array.Fill(argList, Type.Missing);
       return cctor.Invoke(argList);
     }
@@ -87,12 +86,15 @@ namespace Server.Utilities
     {
       if (args == null || args.Length == 0) return CreateInstance(type, constructorPredicate);
 
-      ConstructorInfo cctor = GetConstructor(type, constructorPredicate, args.Select(x => x?.GetType()).ToArray());
+      var cctor = GetConstructor(type, constructorPredicate, args.Select(x => x?.GetType()).ToArray());
       return cctor.Invoke(args);
     }
 
     public static object CreateInstance(Type type, params object[] args) => CreateInstance(type, null, args);
-    public static T CreateInstance<T>(Predicate<ConstructorInfo> constructorPredicate = null) => (T)CreateInstance(typeof(T), constructorPredicate);
+
+    public static T CreateInstance<T>(Predicate<ConstructorInfo> constructorPredicate = null) =>
+      (T)CreateInstance(typeof(T), constructorPredicate);
+
     public static T CreateInstance<T>(params object[] args) => (T)CreateInstance(typeof(T), null, args);
   }
 }

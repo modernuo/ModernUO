@@ -243,7 +243,8 @@ namespace Server.Commands
         {
           parms[0]++;
           parms[1] += item.Amount;
-        } else
+        }
+        else
           table[type] = new[] { 1, item.Amount };
       }
 

@@ -121,7 +121,7 @@ namespace Server.Mobiles
       if (Map == null)
         return;
 
-      if (!(0.2 > Utility.RandomDouble()))
+      if (!(Utility.RandomDouble() < 0.2))
         return;
 
       Mobile target = null;
@@ -150,7 +150,7 @@ namespace Server.Mobiles
 
       foreach (Mobile m in eable)
       {
-        if (m == this || !(CanBeHarmful(m) || m.Player && m.Alive))
+        if (m == this || !(CanBeHarmful(m) || (m.Player && m.Alive)))
           continue;
 
         if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != Team))

@@ -19,46 +19,46 @@ namespace Server.Regions
       switch (xml.Name)
       {
         case "object":
-        {
-          Type type = null;
-          if (!Region.ReadType(xml, "type", ref type))
-            return null;
-
-          if (typeof(Mobile).IsAssignableFrom(type)) return SpawnMobile.Get(type);
-
-          if (typeof(Item).IsAssignableFrom(type)) return SpawnItem.Get(type);
-          Console.WriteLine("Invalid type '{0}' in a SpawnDefinition", type.FullName);
-          return null;
-        }
-        case "group":
-        {
-          string group = null;
-          if (!Region.ReadString(xml, "name", ref group))
-            return null;
-
-          if (!SpawnGroup.Table.TryGetValue(group, out SpawnGroup def))
           {
-            Console.WriteLine("Could not find group '{0}' in a SpawnDefinition", group);
+            Type type = null;
+            if (!Region.ReadType(xml, "type", ref type))
+              return null;
+
+            if (typeof(Mobile).IsAssignableFrom(type)) return SpawnMobile.Get(type);
+
+            if (typeof(Item).IsAssignableFrom(type)) return SpawnItem.Get(type);
+            Console.WriteLine("Invalid type '{0}' in a SpawnDefinition", type.FullName);
             return null;
           }
+        case "group":
+          {
+            string group = null;
+            if (!Region.ReadString(xml, "name", ref group))
+              return null;
 
-          return def;
-        }
+            if (!SpawnGroup.Table.TryGetValue(group, out SpawnGroup def))
+            {
+              Console.WriteLine("Could not find group '{0}' in a SpawnDefinition", group);
+              return null;
+            }
+
+            return def;
+          }
         case "treasureChest":
-        {
-          int itemID = 0xE43;
-          Region.ReadInt32(xml, "itemID", ref itemID, false);
+          {
+            int itemID = 0xE43;
+            Region.ReadInt32(xml, "itemID", ref itemID, false);
 
-          BaseTreasureChest.TreasureLevel level = BaseTreasureChest.TreasureLevel.Level2;
+            BaseTreasureChest.TreasureLevel level = BaseTreasureChest.TreasureLevel.Level2;
 
-          Region.ReadEnum(xml, "level", ref level, false);
+            Region.ReadEnum(xml, "level", ref level, false);
 
-          return new SpawnTreasureChest(itemID, level);
-        }
+            return new SpawnTreasureChest(itemID, level);
+          }
         default:
-        {
-          return null;
-        }
+          {
+            return null;
+          }
       }
     }
   }
@@ -73,11 +73,11 @@ namespace Server.Regions
       m_Init = false;
     }
 
-    public Type Type{ get; }
+    public Type Type { get; }
 
-    public abstract int Height{ get; }
-    public abstract bool Land{ get; }
-    public abstract bool Water{ get; }
+    public abstract int Height { get; }
+    public abstract bool Land { get; }
+    public abstract bool Water { get; }
 
     protected void EnsureInit()
     {
@@ -119,7 +119,7 @@ namespace Server.Regions
 
   public class SpawnMobile : SpawnType
   {
-    private static Dictionary<Type, SpawnMobile> m_Table = new Dictionary<Type, SpawnMobile>();
+    private static readonly Dictionary<Type, SpawnMobile> m_Table = new Dictionary<Type, SpawnMobile>();
 
     private bool m_Land;
     private bool m_Water;
@@ -192,7 +192,7 @@ namespace Server.Regions
 
   public class SpawnItem : SpawnType
   {
-    private static Dictionary<Type, SpawnItem> m_Table = new Dictionary<Type, SpawnItem>();
+    private static readonly Dictionary<Type, SpawnItem> m_Table = new Dictionary<Type, SpawnItem>();
 
     protected int m_Height;
 
@@ -251,9 +251,9 @@ namespace Server.Regions
       Level = level;
     }
 
-    public int ItemID{ get; }
+    public int ItemID { get; }
 
-    public BaseTreasureChest.TreasureLevel Level{ get; }
+    public BaseTreasureChest.TreasureLevel Level { get; }
 
     protected override void Init()
     {
@@ -271,14 +271,14 @@ namespace Server.Regions
       Weight = weight;
     }
 
-    public SpawnDefinition SpawnDefinition{ get; }
+    public SpawnDefinition SpawnDefinition { get; }
 
-    public int Weight{ get; }
+    public int Weight { get; }
   }
 
   public class SpawnGroup : SpawnDefinition
   {
-    private int m_TotalWeight;
+    private readonly int m_TotalWeight;
 
     static SpawnGroup()
     {
@@ -337,11 +337,11 @@ namespace Server.Regions
         m_TotalWeight += elements[i].Weight;
     }
 
-    public static Dictionary<string, SpawnGroup> Table{ get; } = new Dictionary<string, SpawnGroup>();
+    public static Dictionary<string, SpawnGroup> Table { get; } = new Dictionary<string, SpawnGroup>();
 
-    public string Name{ get; }
+    public string Name { get; }
 
-    public SpawnGroupElement[] Elements{ get; }
+    public SpawnGroupElement[] Elements { get; }
 
     public static void Register(SpawnGroup group)
     {

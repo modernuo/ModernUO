@@ -13,7 +13,7 @@ namespace Server.Factions
       Register();
     }
 
-    public Faction Faction{ get; set; }
+    public Faction Faction { get; set; }
 
     public override bool OnMoveInto(Mobile m, Direction d, Point3D newLocation, Point3D oldLocation)
     {

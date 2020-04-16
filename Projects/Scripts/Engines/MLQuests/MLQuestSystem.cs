@@ -23,7 +23,7 @@ namespace Server.Engines.MLQuests
 
     public static readonly List<MLQuest> EmptyList = new List<MLQuest>();
 
-    private static List<MLQuest> m_EligiblePool = new List<MLQuest>();
+    private static readonly List<MLQuest> m_EligiblePool = new List<MLQuest>();
 
     static MLQuestSystem()
     {
@@ -96,11 +96,11 @@ namespace Server.Engines.MLQuests
 
     public static bool Enabled => Core.ML;
 
-    public static Dictionary<Type, MLQuest> Quests{ get; }
+    public static Dictionary<Type, MLQuest> Quests { get; }
 
-    public static Dictionary<Type, List<MLQuest>> QuestGivers{ get; }
+    public static Dictionary<Type, List<MLQuest>> QuestGivers { get; }
 
-    public static Dictionary<PlayerMobile, MLQuestContext> Contexts{ get; }
+    public static Dictionary<PlayerMobile, MLQuestContext> Contexts { get; }
 
     private static void Register(Type type, MLQuest quest)
     {
@@ -266,7 +266,7 @@ namespace Server.Engines.MLQuests
           MLQuestInstance instance = context.FindInstance(questEntry);
 
           if (instance != null && (instance.Quester == quester ||
-                                   !questEntry.IsEscort && instance.QuesterType == questerType))
+                                   (!questEntry.IsEscort && instance.QuesterType == questerType)))
           {
             entry = instance;
             quest = questEntry;
@@ -460,8 +460,8 @@ namespace Server.Engines.MLQuests
         MLQuestInstance instance = instances[i];
 
         // Do NOT skip quests on ClaimReward, because the quester still needs the quest ref!
-        //if ( instance.ClaimReward )
-        //	continue;
+        // if ( instance.ClaimReward )
+        // continue;
 
         foreach (BaseObjectiveInstance objective in instance.Objectives)
           // Note: On OSI, expired deliveries can still be completed. Bug?

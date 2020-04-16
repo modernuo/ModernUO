@@ -18,7 +18,7 @@ namespace Server.Multis
     {
     }
 
-    public BaseHouse Owner{ get; private set; }
+    public BaseHouse Owner { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool RestrictDecay
@@ -32,11 +32,11 @@ namespace Server.Multis
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile OriginalOwner{ get; private set; }
+    public Mobile OriginalOwner { get; private set; }
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
-    public bool GettingProperties{ get; private set; }
+    public bool GettingProperties { get; private set; }
 
     public string GetName() => Name ?? "An Unnamed House";
 
@@ -109,12 +109,8 @@ namespace Server.Multis
       {
         if (Owner.IsFriend(m) && m.AccessLevel < AccessLevel.GameMaster)
         {
-          #region Mondain's Legacy
-
-          if (Core.ML && Owner.IsOwner(m) || !Core.ML)
+          if ((Core.ML && Owner.IsOwner(m)) || !Core.ML)
             Owner.RefreshDecay();
-
-          #endregion
 
           if (!Core.AOS)
             m.SendLocalizedMessage(501293); // Welcome back to the house, friend!
@@ -131,7 +127,7 @@ namespace Server.Multis
     {
       if (okay && Owner != null && Owner.Owner == null && Owner.DecayLevel != DecayLevel.DemolitionPending)
       {
-        bool canClaim = Owner.CoOwners?.Count > 0 && Owner.IsCoOwner(from) || Owner.IsFriend(from);
+        bool canClaim = (Owner.CoOwners?.Count > 0 && Owner.IsCoOwner(from)) || Owner.IsFriend(from);
 
         if (canClaim && !BaseHouse.HasAccountHouse(from))
         {
@@ -151,7 +147,7 @@ namespace Server.Multis
       if (m.AccessLevel < AccessLevel.GameMaster && Owner.Owner == null &&
           Owner.DecayLevel != DecayLevel.DemolitionPending)
       {
-        bool canClaim = Owner?.CoOwners.Count > 0 && Owner.IsCoOwner(m) || Owner.IsFriend(m);
+        bool canClaim = (Owner?.CoOwners.Count > 0 && Owner.IsCoOwner(m)) || Owner.IsFriend(m);
 
         if (canClaim && !BaseHouse.HasAccountHouse(m))
           m.SendGump(new WarningGump(501036, 32512, 1049719, 32512, 420, 280, okay => ClaimGump_Callback(m, okay)));
@@ -193,12 +189,12 @@ namespace Server.Multis
       switch (version)
       {
         case 0:
-        {
-          Owner = reader.ReadItem() as BaseHouse;
-          OriginalOwner = reader.ReadMobile();
+          {
+            Owner = reader.ReadItem() as BaseHouse;
+            OriginalOwner = reader.ReadMobile();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (Name == "a house sign")
@@ -207,7 +203,7 @@ namespace Server.Multis
 
     private class VendorsEntry : ContextMenuEntry
     {
-      private HouseSign m_Sign;
+      private readonly HouseSign m_Sign;
 
       public VendorsEntry(HouseSign sign) : base(6211) => m_Sign = sign;
 
@@ -228,7 +224,7 @@ namespace Server.Multis
 
     private class ReclaimVendorInventoryEntry : ContextMenuEntry
     {
-      private HouseSign m_Sign;
+      private readonly HouseSign m_Sign;
 
       public ReclaimVendorInventoryEntry(HouseSign sign) : base(6213) => m_Sign = sign;
 

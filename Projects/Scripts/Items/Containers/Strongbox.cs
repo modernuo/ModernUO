@@ -38,7 +38,7 @@ namespace Server.Items
 
     public override int DefaultMaxWeight => 0;
 
-    public override bool Decays => m_House == null ||  m_Owner?.Deleted != false || !m_House.IsCoOwner(m_Owner);
+    public override bool Decays => m_House == null || m_Owner?.Deleted != false || !m_House.IsCoOwner(m_Owner);
 
     public override TimeSpan DecayTime => TimeSpan.FromMinutes(30.0);
 
@@ -67,12 +67,12 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Owner = reader.ReadMobile();
-          m_House = reader.ReadItem() as BaseHouse;
+          {
+            m_Owner = reader.ReadMobile();
+            m_House = reader.ReadItem() as BaseHouse;
 
-          break;
-        }
+            break;
+          }
       }
 
       Timer.DelayCall(TimeSpan.FromSeconds(1.0), Validate);
@@ -113,7 +113,7 @@ namespace Server.Items
     public override bool IsAccessibleTo(Mobile m) =>
       m_Owner?.Deleted != false || m_House?.Deleted != false ||
       m.AccessLevel >= AccessLevel.GameMaster ||
-      m == m_Owner && m_House.IsCoOwner(m) && base.IsAccessibleTo(m);
+      (m == m_Owner && m_House.IsCoOwner(m) && base.IsAccessibleTo(m));
 
     private void Chop(Mobile from)
     {

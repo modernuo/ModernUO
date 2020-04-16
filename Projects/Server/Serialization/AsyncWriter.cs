@@ -43,7 +43,7 @@ namespace Server
     private readonly bool PrefixStrings;
 
     public AsyncWriter(string filename, bool prefix)
-      : this(filename, 1048576, prefix) //1 mb buffer
+      : this(filename, 1048576, prefix) // 1 mb buffer
     {
     }
 
@@ -59,7 +59,7 @@ namespace Server
       m_Bin = new BinaryWriter(m_Mem, Utility.UTF8WithEncoding);
     }
 
-    public static int ThreadCount{ get; private set; }
+    public static int ThreadCount { get; private set; }
 
     public MemoryStream MemStream
     {
@@ -95,7 +95,7 @@ namespace Server
 
     private void OnWrite()
     {
-      long curlen = m_Mem.Length;
+      var curlen = m_Mem.Length;
       m_CurPos += curlen - m_LastPos;
       m_LastPos = curlen;
       if (curlen >= BufferSize)
@@ -143,8 +143,8 @@ namespace Server
 
     public void WriteDeltaTime(DateTime value)
     {
-      long ticks = value.Ticks;
-      long now = DateTime.UtcNow.Ticks;
+      var ticks = value.Ticks;
+      var now = DateTime.UtcNow.Ticks;
 
       TimeSpan d;
 
@@ -199,7 +199,7 @@ namespace Server
 
     public void WriteEncodedInt(int value)
     {
-      uint v = (uint)value;
+      var v = (uint)value;
 
       while (v >= 0x80)
       {
@@ -269,6 +269,7 @@ namespace Server
       m_Bin.Write(value, 0, length);
       OnWrite();
     }
+
     public void Write(sbyte value)
     {
       m_Bin.Write(value);
@@ -387,7 +388,7 @@ namespace Server
     public void WriteItemList<T>(List<T> list, bool tidy) where T : Item
     {
       if (tidy)
-        for (int i = 0; i < list.Count;)
+        for (var i = 0; i < list.Count;)
           if (list[i].Deleted)
             list.RemoveAt(i);
           else
@@ -395,7 +396,7 @@ namespace Server
 
       Write(list.Count);
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
         Write(list[i]);
     }
 
@@ -410,7 +411,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (Item item in set) Write(item);
+      foreach (var item in set) Write(item);
     }
 
     public void WriteItemSet<T>(HashSet<T> set) where T : Item
@@ -424,7 +425,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (T item in set) Write(item);
+      foreach (var item in set) Write(item);
     }
 
     public void Write(List<Mobile> list)
@@ -435,7 +436,7 @@ namespace Server
     public void Write(List<Mobile> list, bool tidy)
     {
       if (tidy)
-        for (int i = 0; i < list.Count;)
+        for (var i = 0; i < list.Count;)
           if (list[i].Deleted)
             list.RemoveAt(i);
           else
@@ -443,7 +444,7 @@ namespace Server
 
       Write(list.Count);
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
         Write(list[i]);
     }
 
@@ -455,7 +456,7 @@ namespace Server
     public void WriteMobileList<T>(List<T> list, bool tidy) where T : Mobile
     {
       if (tidy)
-        for (int i = 0; i < list.Count;)
+        for (var i = 0; i < list.Count;)
           if (list[i].Deleted)
             list.RemoveAt(i);
           else
@@ -463,7 +464,7 @@ namespace Server
 
       Write(list.Count);
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
         Write(list[i]);
     }
 
@@ -478,7 +479,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (Mobile mob in set) Write(mob);
+      foreach (var mob in set) Write(mob);
     }
 
     public void WriteMobileSet<T>(HashSet<T> set) where T : Mobile
@@ -492,7 +493,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (T mob in set) Write(mob);
+      foreach (var mob in set) Write(mob);
     }
 
     public void Write(List<BaseGuild> list)
@@ -503,7 +504,7 @@ namespace Server
     public void Write(List<BaseGuild> list, bool tidy)
     {
       if (tidy)
-        for (int i = 0; i < list.Count;)
+        for (var i = 0; i < list.Count;)
           if (list[i].Disbanded)
             list.RemoveAt(i);
           else
@@ -511,7 +512,7 @@ namespace Server
 
       Write(list.Count);
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
         Write(list[i]);
     }
 
@@ -523,7 +524,7 @@ namespace Server
     public void WriteGuildList<T>(List<T> list, bool tidy) where T : BaseGuild
     {
       if (tidy)
-        for (int i = 0; i < list.Count;)
+        for (var i = 0; i < list.Count;)
           if (list[i].Disbanded)
             list.RemoveAt(i);
           else
@@ -531,7 +532,7 @@ namespace Server
 
       Write(list.Count);
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
         Write(list[i]);
     }
 
@@ -546,7 +547,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (BaseGuild guild in set) Write(guild);
+      foreach (var guild in set) Write(guild);
     }
 
     public void WriteGuildSet<T>(HashSet<T> set) where T : BaseGuild
@@ -560,7 +561,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (T guild in set) Write(guild);
+      foreach (var guild in set) Write(guild);
     }
 
     private class WorkerThread

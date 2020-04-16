@@ -56,10 +56,10 @@ namespace Server.Mobiles
 
       PackItem(new RingmailChest());
 
-      if (0.3 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.3)
         PackItem(Loot.RandomPossibleReagent());
 
-      if (0.2 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.2)
         PackItem(new BolaBall());
     }
 

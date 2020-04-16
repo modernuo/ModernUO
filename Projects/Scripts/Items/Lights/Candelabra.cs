@@ -20,12 +20,8 @@ namespace Server.Items
     public override int LitItemID => 0xB1D;
     public override int UnlitItemID => 0xA27;
 
-    #region IShipwreckedItem Members
-
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsShipwreckedItem{ get; set; }
-
-    #endregion
+    public bool IsShipwreckedItem { get; set; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -43,10 +39,10 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          IsShipwreckedItem = reader.ReadBool();
-          break;
-        }
+          {
+            IsShipwreckedItem = reader.ReadBool();
+            break;
+          }
       }
     }
 
@@ -63,7 +59,7 @@ namespace Server.Items
       base.OnSingleClick(from);
 
       if (IsShipwreckedItem)
-        LabelTo(from, 1041645); //recovered from a shipwreck
+        LabelTo(from, 1041645); // recovered from a shipwreck
     }
   }
 }

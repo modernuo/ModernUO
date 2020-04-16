@@ -5,7 +5,7 @@ namespace Server.Items
 {
   public class BaseQuiver : Container, ICraftable
   {
-    private static Type[] m_Ammo =
+    private static readonly Type[] m_Ammo =
     {
       typeof(Arrow), typeof(Bolt)
     };
@@ -39,7 +39,7 @@ namespace Server.Items
     public override double DefaultWeight => 2.0;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosAttributes Attributes{ get; private set; }
+    public AosAttributes Attributes { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Capacity
@@ -109,8 +109,6 @@ namespace Server.Items
 
     public Item Ammo => Items.Count > 0 ? Items[0] : null;
 
-    #region ICraftable
-
     public virtual int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes,
       BaseTool tool, CraftItem craftItem, int resHue)
     {
@@ -121,8 +119,6 @@ namespace Server.Items
 
       return quality;
     }
-
-    #endregion
 
     public override void OnAfterDuped(Item newItem)
     {
@@ -172,9 +168,9 @@ namespace Server.Items
     public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
     {
       if (CheckType(item))
-        return Items.Count >= DefaultMaxItems && !checkItems && Ammo?.Deleted == false &&
-               Ammo.Amount + item.Amount <= m_Capacity || item.Amount <= m_Capacity &&
-               base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
+        return (Items.Count >= DefaultMaxItems && !checkItems && Ammo?.Deleted == false &&
+               Ammo.Amount + item.Amount <= m_Capacity) || (item.Amount <= m_Capacity &&
+               base.CheckHold(m, item, message, checkItems, plusItems, plusWeight));
 
       if (message)
         m.SendLocalizedMessage(1074836); // The container can not hold that type of object.

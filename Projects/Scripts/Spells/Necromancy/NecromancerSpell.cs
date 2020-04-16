@@ -8,13 +8,13 @@ namespace Server.Spells.Necromancy
     {
     }
 
-    public abstract double RequiredSkill{ get; }
-    public abstract int RequiredMana{ get; }
+    public abstract double RequiredSkill { get; }
+    public abstract int RequiredMana { get; }
 
     public override SkillName CastSkill => SkillName.Necromancy;
     public override SkillName DamageSkill => SkillName.SpiritSpeak;
 
-    //public override int CastDelayBase => base.CastDelayBase; // Reference, 3
+    // public override int CastDelayBase => base.CastDelayBase; // Reference, 3
 
     public override bool ClearHandsOnCast => false;
 
@@ -25,12 +25,11 @@ namespace Server.Spells.Necromancy
 
     public override int ComputeKarmaAward()
     {
-      //TODO: Verify this formula being that Necro spells don't HAVE a circle.
-      //int karma = -(70 + (10 * (int)Circle));
+      // TODO: Verify this formula being that Necro spells don't HAVE a circle.
+      // int karma = -(70 + (10 * (int)Circle));
       int karma = -(40 + (int)(10 * (CastDelayBase.TotalSeconds / CastDelaySecondsPerTick)));
 
-      if (Core.ML
-      ) // Pub 36: "Added a new property called Increased Karma Loss which grants higher karma loss for casting necromancy spells."
+      if (Core.ML) // Pub 36: "Added a new property called Increased Karma Loss which grants higher karma loss for casting necromancy spells."
         karma += AOS.Scale(karma, AosAttributes.GetValue(Caster, AosAttribute.IncreasedKarmaLoss));
 
       return karma;

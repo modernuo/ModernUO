@@ -77,8 +77,6 @@ namespace Server.Mobiles
       int version = reader.ReadInt();
     }
 
-    #region Pack Animal Methods
-
     public override bool OnBeforeDeath()
     {
       if (!base.OnBeforeDeath())
@@ -128,7 +126,5 @@ namespace Server.Mobiles
 
       PackAnimal.GetContextMenuEntries(this, from, list);
     }
-
-    #endregion
   }
 }

@@ -15,7 +15,7 @@ namespace Server.Items
 
   public interface IAddon
   {
-    Item Deed{ get; }
+    Item Deed { get; }
 
     bool CouldFit(IPoint3D p, Map map);
   }
@@ -38,7 +38,7 @@ namespace Server.Items
 
     public virtual BaseAddonDeed Deed => null;
 
-    public List<AddonComponent> Components{ get; private set; }
+    public List<AddonComponent> Components { get; private set; }
 
     public virtual bool ShareHue => true;
 
@@ -155,7 +155,7 @@ namespace Server.Items
 
           if (Utility.InRange(doorLoc, addonLoc, 1) &&
               (addonLoc.Z == doorLoc.Z ||
-               addonLoc.Z + addonHeight > doorLoc.Z && doorLoc.Z + doorHeight > addonLoc.Z))
+               (addonLoc.Z + addonHeight > doorLoc.Z && doorLoc.Z + doorHeight > addonLoc.Z)))
             return AddonFitResult.DoorTooClose;
         }
       }
@@ -237,17 +237,15 @@ namespace Server.Items
       {
         case 1:
         case 0:
-        {
-          Components = reader.ReadStrongItemList<AddonComponent>();
-          break;
-        }
+          {
+            Components = reader.ReadStrongItemList<AddonComponent>();
+            break;
+          }
       }
 
       if (version < 1 && Weight == 0)
         Weight = -1;
     }
-
-    #region Mondain's Legacy
 
     private CraftResource m_Resource;
 
@@ -266,7 +264,5 @@ namespace Server.Items
         }
       }
     }
-
-    #endregion
   }
 }

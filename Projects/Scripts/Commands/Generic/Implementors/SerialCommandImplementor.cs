@@ -46,25 +46,25 @@ namespace Server.Commands.Generic
             switch (command.ObjectTypes)
             {
               case ObjectTypes.Items:
-              {
-                if (!(obj is Item))
                 {
-                  e.Mobile.SendMessage("This command only works on items.");
-                  return;
-                }
+                  if (!(obj is Item))
+                  {
+                    e.Mobile.SendMessage("This command only works on items.");
+                    return;
+                  }
 
-                break;
-              }
+                  break;
+                }
               case ObjectTypes.Mobiles:
-              {
-                if (!(obj is Mobile))
                 {
-                  e.Mobile.SendMessage("This command only works on mobiles.");
-                  return;
-                }
+                  if (!(obj is Mobile))
+                  {
+                    e.Mobile.SendMessage("This command only works on mobiles.");
+                    return;
+                  }
 
-                break;
-              }
+                  break;
+                }
             }
 
             string[] oldArgs = e.Arguments;

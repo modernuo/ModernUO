@@ -34,15 +34,15 @@ namespace Server.Engines.Mahjong
     {
     }
 
-    public MahjongTile[] Tiles{ get; private set; }
+    public MahjongTile[] Tiles { get; private set; }
 
-    public MahjongDealerIndicator DealerIndicator{ get; private set; }
+    public MahjongDealerIndicator DealerIndicator { get; private set; }
 
-    public MahjongWallBreakIndicator WallBreakIndicator{ get; private set; }
+    public MahjongWallBreakIndicator WallBreakIndicator { get; private set; }
 
-    public MahjongDices Dices{ get; private set; }
+    public MahjongDices Dices { get; private set; }
 
-    public MahjongPlayers Players{ get; private set; }
+    public MahjongPlayers Players { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool ShowScores
@@ -87,7 +87,7 @@ namespace Server.Engines.Mahjong
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public SecureLevel Level{ get; set; }
+    public SecureLevel Level { get; set; }
 
     private void BuildHorizontalWall(ref int index, int x, int y, int stackLevel, MahjongPieceDirection direction,
       MahjongTileTypeGenerator typeGenerator)
@@ -242,43 +242,43 @@ namespace Server.Engines.Mahjong
       switch (version)
       {
         case 1:
-        {
-          Level = (SecureLevel)reader.ReadInt();
+          {
+            Level = (SecureLevel)reader.ReadInt();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          if (version < 1)
-            Level = SecureLevel.CoOwners;
+          {
+            if (version < 1)
+              Level = SecureLevel.CoOwners;
 
-          int length = reader.ReadInt();
-          Tiles = new MahjongTile[length];
+            int length = reader.ReadInt();
+            Tiles = new MahjongTile[length];
 
-          for (int i = 0; i < length; i++)
-            Tiles[i] = new MahjongTile(this, reader);
+            for (int i = 0; i < length; i++)
+              Tiles[i] = new MahjongTile(this, reader);
 
-          DealerIndicator = new MahjongDealerIndicator(this, reader);
+            DealerIndicator = new MahjongDealerIndicator(this, reader);
 
-          WallBreakIndicator = new MahjongWallBreakIndicator(this, reader);
+            WallBreakIndicator = new MahjongWallBreakIndicator(this, reader);
 
-          Dices = new MahjongDices(this, reader);
+            Dices = new MahjongDices(this, reader);
 
-          Players = new MahjongPlayers(this, reader);
+            Players = new MahjongPlayers(this, reader);
 
-          m_ShowScores = reader.ReadBool();
-          m_SpectatorVision = reader.ReadBool();
+            m_ShowScores = reader.ReadBool();
+            m_SpectatorVision = reader.ReadBool();
 
-          m_LastReset = DateTime.UtcNow;
+            m_LastReset = DateTime.UtcNow;
 
-          break;
-        }
+            break;
+          }
       }
     }
 
     private class ResetGameEntry : ContextMenuEntry
     {
-      private MahjongGame m_Game;
+      private readonly MahjongGame m_Game;
 
       public ResetGameEntry(MahjongGame game) : base(6162) => m_Game = game;
 

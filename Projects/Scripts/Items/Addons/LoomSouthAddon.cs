@@ -15,7 +15,7 @@ namespace Server.Items
 
     public override BaseAddonDeed Deed => new LoomSouthDeed();
 
-    public int Phase{ get; set; }
+    public int Phase { get; set; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -35,10 +35,10 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          Phase = reader.ReadInt();
-          break;
-        }
+          {
+            Phase = reader.ReadInt();
+            break;
+          }
       }
     }
   }

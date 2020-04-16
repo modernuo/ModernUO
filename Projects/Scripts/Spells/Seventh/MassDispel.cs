@@ -6,15 +6,14 @@ namespace Server.Spells.Seventh
 {
   public class MassDispelSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Mass Dispel", "Vas An Ort",
       263,
       9002,
       Reagent.Garlic,
       Reagent.MandrakeRoot,
       Reagent.BlackPearl,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public MassDispelSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

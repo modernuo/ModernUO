@@ -13,7 +13,7 @@ namespace Server.Items
 
     public static readonly TimeSpan FreezeDelayDuration = TimeSpan.FromSeconds(8.0);
 
-    private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
+    private static readonly Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
     public override int BaseMana => 30;
 
@@ -56,7 +56,7 @@ namespace Server.Items
 
       ClearCurrentAbility(attacker);
 
-      if (IsImmune(defender)) //Intentionally going after Mana consumption
+      if (IsImmune(defender)) // Intentionally going after Mana consumption
       {
         attacker.SendLocalizedMessage(1070804); // Your target resists paralysis.
         defender.SendLocalizedMessage(1070813); // You resist paralysis.
@@ -99,7 +99,7 @@ namespace Server.Items
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public InternalTimer(Mobile m, TimeSpan duration) : base(duration)
       {

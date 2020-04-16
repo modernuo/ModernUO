@@ -9,12 +9,12 @@ namespace Server.Guilds
 {
   public class GuildRosterGump : BaseGuildListGump<PlayerMobile>
   {
-    private static InfoField<PlayerMobile>[] m_Fields =
+    private static readonly InfoField<PlayerMobile>[] m_Fields =
     {
-      new InfoField<PlayerMobile>(1062955, 130, NameComparer.Instance), //Name
-      new InfoField<PlayerMobile>(1062956, 80, RankComparer.Instance), //Rank
-      new InfoField<PlayerMobile>(1062952, 80, LastOnComparer.Instance), //Last On
-      new InfoField<PlayerMobile>(1062953, 150, TitleComparer.Instance) //Guild Title
+      new InfoField<PlayerMobile>(1062955, 130, NameComparer.Instance), // Name
+      new InfoField<PlayerMobile>(1062956, 80, RankComparer.Instance), // Rank
+      new InfoField<PlayerMobile>(1062952, 80, LastOnComparer.Instance), // Last On
+      new InfoField<PlayerMobile>(1062953, 150, TitleComparer.Instance) // Guild Title
     };
 
     public GuildRosterGump(PlayerMobile pm, Guild g) : this(pm, g, LastOnComparer.Instance)
@@ -130,13 +130,10 @@ namespace Server.Guilds
       {
         pm.SendLocalizedMessage(1063051, targ.Name); // ~1_val~ is already a member of a guild.
       }
-      else if (targ.HasGump<BaseGuildGump>() || targ.HasGump<CreateGuildGump>()
-      ) //TODO: Check message if CreateGuildGump Open
+      else if (targ.HasGump<BaseGuildGump>() || targ.HasGump<CreateGuildGump>()) // TODO: Check message if CreateGuildGump Open
       {
         pm.SendLocalizedMessage(1063052, targ.Name); // ~1_val~ is currently considering another guild invitation.
       }
-
-      #region Factions
 
       else if (targ.Young && guildFaction != null)
       {
@@ -157,16 +154,12 @@ namespace Server.Guilds
         pm.SendMessage("That person is quitting their faction and so you may not recruit them.");
       }
 
-      #endregion
-
       else
       {
         pm.SendLocalizedMessage(1063053, targ.Name); // You invite ~1_val~ to join your guild.
         targ.SendGump(new GuildInvitationRequest(targ, guild, pm));
       }
     }
-
-    #region Comparers
 
     private class NameComparer : IComparer<PlayerMobile>
     {
@@ -244,7 +237,5 @@ namespace Server.Guilds
         return x.GuildRank.Rank.CompareTo(y.GuildRank.Rank);
       }
     }
-
-    #endregion
   }
 }

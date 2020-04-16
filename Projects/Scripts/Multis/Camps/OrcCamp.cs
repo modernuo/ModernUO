@@ -22,7 +22,7 @@ namespace Server.Multis
     public override void AddComponents()
     {
       BaseCreature bc;
-      //BaseEscortable be;
+      // BaseEscortable be;
 
       Visible = false;
       DecayDelay = TimeSpan.FromMinutes(5.0);
@@ -32,21 +32,21 @@ namespace Server.Multis
       switch (Utility.Random(3))
       {
         case 0:
-        {
-          AddItem(new Item(0xDE3), 0, 7, 0); // Campfire
-          AddItem(new Item(0x974), 0, 7, 1); // Cauldron
-          break;
-        }
+          {
+            AddItem(new Item(0xDE3), 0, 7, 0); // Campfire
+            AddItem(new Item(0x974), 0, 7, 1); // Cauldron
+            break;
+          }
         case 1:
-        {
-          AddItem(new Item(0x1E95), 0, 7, 1); // Rabbit on a spit
-          break;
-        }
+          {
+            AddItem(new Item(0x1E95), 0, 7, 1); // Rabbit on a spit
+            break;
+          }
         default:
-        {
-          AddItem(new Item(0x1E94), 0, 7, 1); // Chicken on a spit
-          break;
-        }
+          {
+            AddItem(new Item(0x1E94), 0, 7, 1); // Chicken on a spit
+            break;
+          }
       }
 
       AddItem(new Item(0x428), -5, -4, 0); // Gruesome Standart West
@@ -62,8 +62,8 @@ namespace Server.Multis
         _ => new SeekerOfAdventure()
       };
 
-      //be = (BaseEscortable)m_Prisoner;
-      //be.m_Captive = true;
+      // be = (BaseEscortable)m_Prisoner;
+      // be.m_Captive = true;
 
       bc = (BaseCreature)m_Prisoner;
       bc.IsPrisoner = true;
@@ -183,16 +183,16 @@ namespace Server.Multis
       switch (version)
       {
         case 1:
-        {
-          m_Prisoner = reader.ReadMobile();
-          break;
-        }
+          {
+            m_Prisoner = reader.ReadMobile();
+            break;
+          }
         case 0:
-        {
-          m_Prisoner = reader.ReadMobile();
-          reader.ReadItem();
-          break;
-        }
+          {
+            m_Prisoner = reader.ReadMobile();
+            reader.ReadItem();
+            break;
+          }
       }
     }
   }

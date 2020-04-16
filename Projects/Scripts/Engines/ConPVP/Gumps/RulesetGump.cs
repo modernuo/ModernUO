@@ -6,11 +6,11 @@ namespace Server.Engines.ConPVP
 {
   public class RulesetGump : Gump
   {
-    private DuelContext m_DuelContext;
-    private Mobile m_From;
-    private RulesetLayout m_Page;
-    private bool m_ReadOnly;
-    private Ruleset m_Ruleset;
+    private readonly DuelContext m_DuelContext;
+    private readonly Mobile m_From;
+    private readonly RulesetLayout m_Page;
+    private readonly bool m_ReadOnly;
+    private readonly Ruleset m_Ruleset;
 
     public RulesetGump(Mobile from, Ruleset ruleset, RulesetLayout page, DuelContext duelContext, bool readOnly = false)
       : base(readOnly ? 310 : 50, 50)

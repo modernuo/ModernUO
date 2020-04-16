@@ -30,11 +30,11 @@ namespace Server.Items
       }
       else if (CheckMana(attacker, true))
       {
-        //attacker.SendLocalizedMessage( 1060092 ); // You disarm their weapon!
+        // attacker.SendLocalizedMessage( 1060092 ); // You disarm their weapon!
         defender.SendLocalizedMessage(1062002); // You can no longer wear your ~1_ARMOR~
 
         defender.PlaySound(0x3B9);
-        //defender.FixedParticles( 0x37BE, 232, 25, 9948, EffectLayer.InnerTorso );
+        // defender.FixedParticles( 0x37BE, 232, 25, 9948, EffectLayer.InnerTorso );
 
         pack.DropItem(toDisrobe);
 

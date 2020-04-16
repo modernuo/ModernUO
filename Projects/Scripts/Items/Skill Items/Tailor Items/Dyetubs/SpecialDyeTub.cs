@@ -15,7 +15,7 @@ namespace Server.Items
     public override int LabelNumber => 1041285; // Special Dye Tub
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsRewardItem{ get; set; }
+    public bool IsRewardItem { get; set; }
 
     public override void OnDoubleClick(Mobile from)
     {
@@ -51,10 +51,10 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          IsRewardItem = reader.ReadBool();
-          break;
-        }
+          {
+            IsRewardItem = reader.ReadBool();
+            break;
+          }
       }
     }
   }

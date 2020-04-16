@@ -50,13 +50,13 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int MoveSound{ get; set; }
+    public int MoveSound { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int StopSound{ get; set; }
+    public int StopSound { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan CloseDelay{ get; set; }
+    public TimeSpan CloseDelay { get; set; }
 
     public bool IsRaisable => m_RaiseTimer == null;
 
@@ -100,8 +100,8 @@ namespace Server.Items
 
     private class RaiseTimer : Timer
     {
-      private DateTime m_CloseTime;
-      private RaisableItem m_Item;
+      private readonly DateTime m_CloseTime;
+      private readonly RaisableItem m_Item;
       private int m_Step;
       private bool m_Up;
 

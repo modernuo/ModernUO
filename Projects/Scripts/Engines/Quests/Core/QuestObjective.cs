@@ -10,14 +10,14 @@ namespace Server.Engines.Quests
   {
     private int m_CurProgress;
 
-    public abstract object Message{ get; }
+    public abstract object Message { get; }
 
     public virtual int MaxProgress => 1;
     public virtual QuestItemInfo[] Info => null;
 
-    public QuestSystem System{ get; set; }
+    public QuestSystem System { get; set; }
 
-    public bool HasBeenRead{ get; set; }
+    public bool HasBeenRead { get; set; }
 
     public int CurProgress
     {
@@ -29,7 +29,7 @@ namespace Server.Engines.Quests
       }
     }
 
-    public bool HasCompleted{ get; set; }
+    public bool HasCompleted { get; set; }
 
     public virtual bool Completed => m_CurProgress >= MaxProgress;
 
@@ -42,17 +42,17 @@ namespace Server.Engines.Quests
       switch (version)
       {
         case 1:
-        {
-          HasBeenRead = reader.ReadBool();
-          goto case 0;
-        }
+          {
+            HasBeenRead = reader.ReadBool();
+            goto case 0;
+          }
         case 0:
-        {
-          m_CurProgress = reader.ReadEncodedInt();
-          HasCompleted = reader.ReadBool();
+          {
+            m_CurProgress = reader.ReadEncodedInt();
+            HasCompleted = reader.ReadBool();
 
-          break;
-        }
+            break;
+          }
       }
 
       ChildDeserialize(reader);
@@ -128,7 +128,7 @@ namespace Server.Engines.Quests
 
   public class QuestLogUpdatedGump : BaseQuestGump
   {
-    private QuestSystem m_System;
+    private readonly QuestSystem m_System;
 
     public QuestLogUpdatedGump(QuestSystem system) : base(3, 30)
     {
@@ -155,9 +155,9 @@ namespace Server.Engines.Quests
 
   public class QuestObjectivesGump : BaseQuestGump
   {
-    private List<QuestObjective> m_Objectives;
+    private readonly List<QuestObjective> m_Objectives;
 
-    public QuestObjectivesGump(QuestObjective obj) : this(new List<QuestObjective>{ obj })
+    public QuestObjectivesGump(QuestObjective obj) : this(new List<QuestObjective> { obj })
     {
     }
 

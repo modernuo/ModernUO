@@ -3,8 +3,7 @@ namespace Server.Mobiles
   public class SkeletalMount : BaseMount
   {
     [Constructible]
-    public SkeletalMount(string name = null) :
-      base(name, 793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    public SkeletalMount(string name = null) : base(name, 793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
       SetStr(91, 100);
       SetDex(46, 55);
@@ -56,12 +55,12 @@ namespace Server.Mobiles
       switch (version)
       {
         case 0:
-        {
-          Tamable = false;
-          MinTameSkill = 0.0;
-          ControlSlots = 0;
-          break;
-        }
+          {
+            Tamable = false;
+            MinTameSkill = 0.0;
+            ControlSlots = 0;
+            break;
+          }
       }
     }
   }

@@ -12,9 +12,9 @@ namespace Server.Items
       Chance = chance;
     }
 
-    public Poison Poison{ get; }
+    public Poison Poison { get; }
 
-    public double Chance{ get; }
+    public double Chance { get; }
   }
 
   public abstract class BaseCurePotion : BasePotion
@@ -27,7 +27,7 @@ namespace Server.Items
     {
     }
 
-    public abstract CureLevelInfo[] LevelInfo{ get; }
+    public abstract CureLevelInfo[] LevelInfo { get; }
 
     public override void Serialize(IGenericWriter writer)
     {

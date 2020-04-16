@@ -74,7 +74,6 @@ namespace Server.Mobiles
         return true;
       }
 
-
       // At 20% we should check if we must leave
       if (m_Mobile.Hits < m_Mobile.HitsMax * 20 / 100 && m_Mobile.CanFlee)
       {

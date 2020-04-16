@@ -18,7 +18,6 @@
  *
  ***************************************************************************/
 
-
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -54,7 +53,7 @@ namespace Server
     {
       OpenFiles();
 
-      Task[] saveTasks = new Task[3];
+      var saveTasks = new Task[3];
 
       saveTasks[0] = SaveItems();
       saveTasks[1] = SaveMobiles();
@@ -64,7 +63,7 @@ namespace Server
 
       if (permitBackgroundWrite)
       {
-        //This option makes it finish the writing to disk in the background, continuing even after Save() returns.
+        // This option makes it finish the writing to disk in the background, continuing even after Save() returns.
         Task.Factory.ContinueWhenAll(saveTasks, _ =>
         {
           CloseFiles();
@@ -74,7 +73,7 @@ namespace Server
       }
       else
       {
-        Task.WaitAll(saveTasks); //Waits for the completion of all of the tasks(committing to disk)
+        Task.WaitAll(saveTasks); // Waits for the completion of all of the tasks(committing to disk)
         CloseFiles();
       }
     }
@@ -82,7 +81,7 @@ namespace Server
     private Task StartCommitTask(BlockingCollection<QueuedMemoryWriter> threadWriter, SequentialFileWriter data,
       SequentialFileWriter index)
     {
-      Task commitTask = Task.Factory.StartNew(() =>
+      var commitTask = Task.Factory.StartNew(() =>
       {
         while (!threadWriter.IsCompleted)
         {
@@ -94,7 +93,7 @@ namespace Server
           }
           catch (InvalidOperationException)
           {
-            //Per MSDN, it's fine if we're here, successful completion of adding can rarely put us into this state.
+            // Per MSDN, it's fine if we're here, successful completion of adding can rarely put us into this state.
             break;
           }
 
@@ -107,20 +106,20 @@ namespace Server
 
     private Task SaveItems()
     {
-      //Start the blocking consumer; this runs in background.
-      Task commitTask = StartCommitTask(_itemThreadWriters, _itemData, _itemIndex);
+      // Start the blocking consumer; this runs in background.
+      var commitTask = StartCommitTask(_itemThreadWriters, _itemData, _itemIndex);
 
       IEnumerable<Item> items = World.Items.Values;
 
-      //Start the producer.
+      // Start the producer.
       Parallel.ForEach(items, () => new QueuedMemoryWriter(),
         (item, state, writer) =>
         {
-          long startPosition = writer.Position;
+          var startPosition = writer.Position;
 
           item.Serialize(writer);
 
-          int size = (int)(writer.Position - startPosition);
+          var size = (int)(writer.Position - startPosition);
 
           writer.QueueForIndex(item, size);
 
@@ -136,27 +135,27 @@ namespace Server
           _itemThreadWriters.Add(writer);
         });
 
-      _itemThreadWriters.CompleteAdding(); //We only get here after the Parallel.ForEach completes.  Lets our task
+      _itemThreadWriters.CompleteAdding(); // We only get here after the Parallel.ForEach completes.  Lets our task
 
       return commitTask;
     }
 
     private Task SaveMobiles()
     {
-      //Start the blocking consumer; this runs in background.
-      Task commitTask = StartCommitTask(_mobileThreadWriters, _mobileData, _mobileIndex);
+      // Start the blocking consumer; this runs in background.
+      var commitTask = StartCommitTask(_mobileThreadWriters, _mobileData, _mobileIndex);
 
       IEnumerable<Mobile> mobiles = World.Mobiles.Values;
 
-      //Start the producer.
+      // Start the producer.
       Parallel.ForEach(mobiles, () => new QueuedMemoryWriter(),
         (mobile, state, writer) =>
         {
-          long startPosition = writer.Position;
+          var startPosition = writer.Position;
 
           mobile.Serialize(writer);
 
-          int size = (int)(writer.Position - startPosition);
+          var size = (int)(writer.Position - startPosition);
 
           writer.QueueForIndex(mobile, size);
 
@@ -170,27 +169,27 @@ namespace Server
         });
 
       _mobileThreadWriters
-        .CompleteAdding(); //We only get here after the Parallel.ForEach completes.  Lets our task tell the consumer that we're done
+        .CompleteAdding(); // We only get here after the Parallel.ForEach completes.  Lets our task tell the consumer that we're done
 
       return commitTask;
     }
 
     private Task SaveGuilds()
     {
-      //Start the blocking consumer; this runs in background.
-      Task commitTask = StartCommitTask(_guildThreadWriters, _guildData, _guildIndex);
+      // Start the blocking consumer; this runs in background.
+      var commitTask = StartCommitTask(_guildThreadWriters, _guildData, _guildIndex);
 
       IEnumerable<BaseGuild> guilds = BaseGuild.List.Values;
 
-      //Start the producer.
+      // Start the producer.
       Parallel.ForEach(guilds, () => new QueuedMemoryWriter(),
         (guild, state, writer) =>
         {
-          long startPosition = writer.Position;
+          var startPosition = writer.Position;
 
           guild.Serialize(writer);
 
-          int size = (int)(writer.Position - startPosition);
+          var size = (int)(writer.Position - startPosition);
 
           writer.QueueForIndex(guild, size);
 
@@ -203,14 +202,14 @@ namespace Server
           _guildThreadWriters.Add(writer);
         });
 
-      _guildThreadWriters.CompleteAdding(); //We only get here after the Parallel.ForEach completes.  Lets our task
+      _guildThreadWriters.CompleteAdding(); // We only get here after the Parallel.ForEach completes.  Lets our task
 
       return commitTask;
     }
 
     public override void ProcessDecay()
     {
-      while (_decayBag.TryTake(out Item item))
+      while (_decayBag.TryTake(out var item))
         if (item.OnDecay())
           item.Delete();
     }
@@ -245,8 +244,8 @@ namespace Server
 
     private void WriteCount(SequentialFileWriter indexFile, int count)
     {
-      //Equiv to GenericWriter.Write( (int)count );
-      byte[] buffer = new byte[4];
+      // Equiv to GenericWriter.Write( (int)count );
+      var buffer = new byte[4];
 
       buffer[0] = (byte)count;
       buffer[1] = (byte)(count >> 8);
@@ -264,11 +263,11 @@ namespace Server
 
     private void SaveTypeDatabase(string path, List<Type> types)
     {
-      BinaryFileWriter bfw = new BinaryFileWriter(path, false);
+      var bfw = new BinaryFileWriter(path, false);
 
       bfw.Write(types.Count);
 
-      foreach (Type type in types) bfw.Write(type.FullName);
+      foreach (var type in types) bfw.Write(type.FullName);
 
       bfw.Flush();
 

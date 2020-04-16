@@ -11,8 +11,8 @@ namespace Server.Gumps
 
   public class RewardOptionGump : Gump
   {
-    private IRewardOption m_Option;
-    private RewardOptionList m_Options = new RewardOptionList();
+    private readonly IRewardOption m_Option;
+    private readonly RewardOptionList m_Options = new RewardOptionList();
 
     public RewardOptionGump(IRewardOption option, int title = 0) : base(60, 36)
     {
@@ -72,9 +72,9 @@ namespace Server.Gumps
       Cliloc = cliloc;
     }
 
-    public int ID{ get; }
+    public int ID { get; }
 
-    public int Cliloc{ get; }
+    public int Cliloc { get; }
   }
 
   public class RewardOptionList : List<RewardOption>

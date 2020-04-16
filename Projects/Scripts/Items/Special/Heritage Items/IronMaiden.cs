@@ -60,7 +60,7 @@ namespace Server.Items
 
       if (c.ItemID < 0x124D)
         return;
-      
+
       // blood
       int amount = Utility.RandomMinMax(3, 7);
 

@@ -8,7 +8,7 @@ namespace Server.Engines.Chat
 {
   public class ChatSystem
   {
-    public static bool Enabled{ get; set; } = true;
+    public static bool Enabled { get; set; } = true;
 
     public static void Initialize()
     {

@@ -41,7 +41,7 @@ namespace Server
 
     public override string Name => "Standard";
 
-    protected bool PermitBackgroundWrite{ get; set; }
+    protected bool PermitBackgroundWrite { get; set; }
 
     protected bool UseSequentialWriters => SaveType == SaveOption.Normal || !PermitBackgroundWrite;
 
@@ -51,14 +51,13 @@ namespace Server
 
       Task.WaitAll(Task.Factory.StartNew(SaveMobiles), Task.Factory.StartNew(SaveItems), Task.Factory.StartNew(SaveGuilds));
 
-      if (permitBackgroundWrite && UseSequentialWriters
-      ) //If we're permitted to write in the background, but we don't anyways, then notify.
+      if (permitBackgroundWrite && UseSequentialWriters) // If we're permitted to write in the background, but we don't anyways, then notify.
         World.NotifyDiskWriteComplete();
     }
 
     protected void SaveMobiles()
     {
-      Dictionary<Serial, Mobile> mobiles = World.Mobiles;
+      var mobiles = World.Mobiles;
 
       IGenericWriter idx;
       IGenericWriter tdb;
@@ -81,7 +80,7 @@ namespace Server
       {
         tdb.Write(World.m_MobileTypes.Count);
 
-        for (int i = 0; i < World.m_MobileTypes.Count; ++i)
+        for (var i = 0; i < World.m_MobileTypes.Count; ++i)
           tdb.Write(World.m_MobileTypes[i].FullName);
 
         tdb.Close();
@@ -92,9 +91,9 @@ namespace Server
       Task.Factory.StartNew(() =>
       {
         idx.Write(mobiles.Count);
-        foreach (Mobile m in mobiles.Values)
+        foreach (var m in mobiles.Values)
         {
-          long start = bin.Position;
+          var start = bin.Position;
 
           idx.Write(m.m_TypeRef);
           idx.Write(m.Serial);
@@ -112,7 +111,7 @@ namespace Server
 
     protected void SaveItems()
     {
-      Dictionary<Serial, Item> items = World.Items;
+      var items = World.Items;
 
       IGenericWriter idx;
       IGenericWriter tdb;
@@ -135,7 +134,7 @@ namespace Server
       {
         tdb.Write(World.m_ItemTypes.Count);
 
-        for (int i = 0; i < World.m_ItemTypes.Count; ++i)
+        for (var i = 0; i < World.m_ItemTypes.Count; ++i)
           tdb.Write(World.m_ItemTypes[i].FullName);
 
         tdb.Close();
@@ -145,10 +144,11 @@ namespace Server
 
       idx.Write(items.Count);
 
-      DateTime n = DateTime.UtcNow;
+      var n = DateTime.UtcNow;
 
-      Task.Factory.StartNew(() => {
-        foreach (Item item in items.Values)
+      Task.Factory.StartNew(() =>
+      {
+        foreach (var item in items.Values)
         {
           if (item.Decays && item.Parent == null && item.Map != Map.Internal && item.LastMoved + item.DecayTime <= n)
           {
@@ -156,7 +156,7 @@ namespace Server
             _decayQueue.Enqueue(item);
           }
 
-          long start = bin.Position;
+          var start = bin.Position;
 
           idx.Write(item.m_TypeRef);
           idx.Write(item.Serial);
@@ -171,6 +171,7 @@ namespace Server
         bin.Close();
       });
     }
+
     protected void SaveGuilds()
     {
       IGenericWriter idx;
@@ -193,11 +194,11 @@ namespace Server
 
       Task.Factory.StartNew(() =>
       {
-        foreach (BaseGuild guild in BaseGuild.List.Values)
+        foreach (var guild in BaseGuild.List.Values)
         {
-          long start = bin.Position;
+          var start = bin.Position;
 
-          idx.Write(0); //guilds have no typeid
+          idx.Write(0); // guilds have no typeid
           idx.Write(guild.Id);
           idx.Write(start);
           idx.Write((int)guild.SaveBuffer.Position);
@@ -214,7 +215,7 @@ namespace Server
     {
       while (_decayQueue.Count > 0)
       {
-        Item item = _decayQueue.Dequeue();
+        var item = _decayQueue.Dequeue();
 
         if (item.OnDecay())
           item.Delete();

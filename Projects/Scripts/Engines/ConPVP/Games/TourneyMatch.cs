@@ -43,11 +43,11 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public List<TourneyParticipant> Participants{ get; set; }
+    public List<TourneyParticipant> Participants { get; set; }
 
-    public TourneyParticipant Winner{ get; set; }
+    public TourneyParticipant Winner { get; set; }
 
-    public DuelContext Context{ get; set; }
+    public DuelContext Context { get; set; }
 
     public bool InProgress => Context?.Registered == true;
 
@@ -66,7 +66,6 @@ namespace Server.Engines.ConPVP
         {
           TourneyPart = tourneyPart
         };
-
 
         for (int j = 0; j < tourneyPart.Players.Count; ++j)
           duelPart.Add(tourneyPart.Players[j]);

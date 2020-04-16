@@ -26,7 +26,7 @@ namespace Server
 {
   public class AggressiveActionEventArgs : EventArgs
   {
-    private static Queue<AggressiveActionEventArgs> m_Pool = new Queue<AggressiveActionEventArgs>();
+    private static readonly Queue<AggressiveActionEventArgs> m_Pool = new Queue<AggressiveActionEventArgs>();
 
     private AggressiveActionEventArgs(Mobile aggressed, Mobile aggressor, bool criminal)
     {
@@ -35,11 +35,11 @@ namespace Server
       Criminal = criminal;
     }
 
-    public Mobile Aggressed{ get; private set; }
+    public Mobile Aggressed { get; private set; }
 
-    public Mobile Aggressor{ get; private set; }
+    public Mobile Aggressor { get; private set; }
 
-    public bool Criminal{ get; private set; }
+    public bool Criminal { get; private set; }
 
     public static AggressiveActionEventArgs Create(Mobile aggressed, Mobile aggressor, bool criminal)
     {

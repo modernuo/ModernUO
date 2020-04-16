@@ -70,7 +70,7 @@ namespace Server.Items
     public virtual int FailMessage => 1042083;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public SecureLevel Level{ get; set; }
+    public SecureLevel Level { get; set; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -92,17 +92,17 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          Level = (SecureLevel)reader.ReadInt();
-          goto case 0;
-        }
+          {
+            Level = (SecureLevel)reader.ReadInt();
+            goto case 0;
+          }
         case 0:
-        {
-          m_Redyable = reader.ReadBool();
-          m_DyedHue = reader.ReadInt();
+          {
+            m_Redyable = reader.ReadBool();
+            m_DyedHue = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -127,7 +127,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private DyeTub m_Tub;
+      private readonly DyeTub m_Tub;
 
       public InternalTarget(DyeTub tub) : base(1, false, TargetFlags.None) => m_Tub = tub;
 
@@ -164,7 +164,7 @@ namespace Server.Items
                 {
                   BaseHouse house = BaseHouse.FindHouseAt(item);
 
-                  if (house == null || !house.HasLockedDownItem(item) && !house.HasSecureItem(item))
+                  if (house == null || (!house.HasLockedDownItem(item) && !house.HasSecureItem(item)))
                     from.SendLocalizedMessage(501022); // Furniture must be locked down to paint it.
                   else if (!house.IsCoOwner(from))
                     from.SendLocalizedMessage(501023); // You must be the owner to use this item.
@@ -217,9 +217,9 @@ namespace Server.Items
               from.PlaySound(0x23E);
             }
           }
-          else if ((item is BaseArmor armor &&
+          else if (((item is BaseArmor armor &&
                     (armor.MaterialType == ArmorMaterialType.Leather ||
-                     armor.MaterialType == ArmorMaterialType.Studded) || item is ElvenBoots ||
+                     armor.MaterialType == ArmorMaterialType.Studded)) || item is ElvenBoots ||
                     item is WoodlandBelt) && m_Tub.AllowLeather)
           {
             if (!from.InRange(m_Tub.GetWorldLocation(), 1) || !from.InRange(item.GetWorldLocation(), 1))

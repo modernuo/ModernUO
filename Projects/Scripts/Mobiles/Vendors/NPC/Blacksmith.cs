@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
   public class Blacksmith : BaseVendor
   {
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public Blacksmith() : base("the blacksmith")
@@ -93,11 +93,9 @@ namespace Server.Mobiles
       int version = reader.ReadInt();
     }
 
-    #region Bulk Orders
-
     public override Item CreateBulkOrder(Mobile from, bool fromContextMenu)
     {
-      if (from is PlayerMobile pm && pm.NextSmithBulkOrder == TimeSpan.Zero && (fromContextMenu || 0.2 > Utility.RandomDouble()))
+      if (from is PlayerMobile pm && pm.NextSmithBulkOrder == TimeSpan.Zero && (fromContextMenu || Utility.RandomDouble() < 0.2))
       {
         double theirSkill = pm.Skills.Blacksmith.Base;
 
@@ -134,7 +132,5 @@ namespace Server.Mobiles
       if (Core.SE && from is PlayerMobile mobile)
         mobile.NextSmithBulkOrder = TimeSpan.Zero;
     }
-
-    #endregion
   }
 }

@@ -4,8 +4,8 @@ namespace Server.ContextMenus
 {
   public class RemoveFromPartyEntry : ContextMenuEntry
   {
-    private Mobile m_From;
-    private Mobile m_Target;
+    private readonly Mobile m_From;
+    private readonly Mobile m_Target;
 
     public RemoveFromPartyEntry(Mobile from, Mobile target) : base(0198, 12)
     {

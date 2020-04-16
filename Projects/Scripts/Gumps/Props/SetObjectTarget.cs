@@ -9,13 +9,13 @@ namespace Server.Gumps
 {
   public class SetObjectTarget : Target
   {
-    private List<object> m_List;
-    private Mobile m_Mobile;
-    private object m_Object;
-    private int m_Page;
-    private PropertyInfo m_Property;
-    private Stack<StackEntry> m_Stack;
-    private Type m_Type;
+    private readonly List<object> m_List;
+    private readonly Mobile m_Mobile;
+    private readonly object m_Object;
+    private readonly int m_Page;
+    private readonly PropertyInfo m_Property;
+    private readonly Stack<StackEntry> m_Stack;
+    private readonly Type m_Type;
 
     public SetObjectTarget(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, Type type, int page,
       List<object> list) : base(-1, false, TargetFlags.None)

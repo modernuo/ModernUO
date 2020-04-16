@@ -520,56 +520,56 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          SaveFlag flags = (SaveFlag)reader.ReadEncodedInt();
+          {
+            SaveFlag flags = (SaveFlag)reader.ReadEncodedInt();
 
-          Attributes = GetSaveFlag(flags, SaveFlag.Attributes) ? new AosAttributes(this, reader) : new AosAttributes(this);
-          SkillBonuses = GetSaveFlag(flags, SaveFlag.SkillBonuses)
-            ? new AosSkillBonuses(this, reader)
-            : new AosSkillBonuses(this);
+            Attributes = GetSaveFlag(flags, SaveFlag.Attributes) ? new AosAttributes(this, reader) : new AosAttributes(this);
+            SkillBonuses = GetSaveFlag(flags, SaveFlag.SkillBonuses)
+              ? new AosSkillBonuses(this, reader)
+              : new AosSkillBonuses(this);
 
-          // Backward compatibility
-          if (GetSaveFlag(flags, SaveFlag.Owner))
-            BlessedFor = reader.ReadMobile();
+            // Backward compatibility
+            if (GetSaveFlag(flags, SaveFlag.Owner))
+              BlessedFor = reader.ReadMobile();
 
-          m_Protection = GetSaveFlag(flags, SaveFlag.Protection) ? new TalismanAttribute(reader) : new TalismanAttribute();
-          m_Killer = GetSaveFlag(flags, SaveFlag.Killer) ? new TalismanAttribute(reader) : new TalismanAttribute();
-          m_Summoner = GetSaveFlag(flags, SaveFlag.Summoner) ? new TalismanAttribute(reader) : new TalismanAttribute();
+            m_Protection = GetSaveFlag(flags, SaveFlag.Protection) ? new TalismanAttribute(reader) : new TalismanAttribute();
+            m_Killer = GetSaveFlag(flags, SaveFlag.Killer) ? new TalismanAttribute(reader) : new TalismanAttribute();
+            m_Summoner = GetSaveFlag(flags, SaveFlag.Summoner) ? new TalismanAttribute(reader) : new TalismanAttribute();
 
-          if (GetSaveFlag(flags, SaveFlag.Removal))
-            m_Removal = (TalismanRemoval)reader.ReadEncodedInt();
+            if (GetSaveFlag(flags, SaveFlag.Removal))
+              m_Removal = (TalismanRemoval)reader.ReadEncodedInt();
 
-          if (GetSaveFlag(flags, SaveFlag.OldKarmaLoss))
-            Attributes.IncreasedKarmaLoss = reader.ReadEncodedInt();
+            if (GetSaveFlag(flags, SaveFlag.OldKarmaLoss))
+              Attributes.IncreasedKarmaLoss = reader.ReadEncodedInt();
 
-          if (GetSaveFlag(flags, SaveFlag.Skill))
-            m_Skill = (SkillName)reader.ReadEncodedInt();
+            if (GetSaveFlag(flags, SaveFlag.Skill))
+              m_Skill = (SkillName)reader.ReadEncodedInt();
 
-          if (GetSaveFlag(flags, SaveFlag.SuccessBonus))
-            m_SuccessBonus = reader.ReadEncodedInt();
+            if (GetSaveFlag(flags, SaveFlag.SuccessBonus))
+              m_SuccessBonus = reader.ReadEncodedInt();
 
-          if (GetSaveFlag(flags, SaveFlag.ExceptionalBonus))
-            m_ExceptionalBonus = reader.ReadEncodedInt();
+            if (GetSaveFlag(flags, SaveFlag.ExceptionalBonus))
+              m_ExceptionalBonus = reader.ReadEncodedInt();
 
-          if (GetSaveFlag(flags, SaveFlag.MaxCharges))
-            m_MaxCharges = reader.ReadEncodedInt();
+            if (GetSaveFlag(flags, SaveFlag.MaxCharges))
+              m_MaxCharges = reader.ReadEncodedInt();
 
-          if (GetSaveFlag(flags, SaveFlag.Charges))
-            m_Charges = reader.ReadEncodedInt();
+            if (GetSaveFlag(flags, SaveFlag.Charges))
+              m_Charges = reader.ReadEncodedInt();
 
-          if (GetSaveFlag(flags, SaveFlag.MaxChargeTime))
-            m_MaxChargeTime = reader.ReadEncodedInt();
+            if (GetSaveFlag(flags, SaveFlag.MaxChargeTime))
+              m_MaxChargeTime = reader.ReadEncodedInt();
 
-          if (GetSaveFlag(flags, SaveFlag.ChargeTime))
-            m_ChargeTime = reader.ReadEncodedInt();
+            if (GetSaveFlag(flags, SaveFlag.ChargeTime))
+              m_ChargeTime = reader.ReadEncodedInt();
 
-          if (GetSaveFlag(flags, SaveFlag.Slayer))
-            m_Slayer = (TalismanSlayerName)reader.ReadEncodedInt();
+            if (GetSaveFlag(flags, SaveFlag.Slayer))
+              m_Slayer = (TalismanSlayerName)reader.ReadEncodedInt();
 
-          m_Blessed = GetSaveFlag(flags, SaveFlag.Blessed);
+            m_Blessed = GetSaveFlag(flags, SaveFlag.Blessed);
 
-          break;
-        }
+            break;
+          }
       }
 
       if (Parent is Mobile m)
@@ -637,7 +637,7 @@ namespace Server.Items
 
     private class TalismanTarget : Target
     {
-      private BaseTalisman m_Talisman;
+      private readonly BaseTalisman m_Talisman;
 
       public TalismanTarget(BaseTalisman talisman)
         : base(12, false, TargetFlags.Beneficial) =>
@@ -761,8 +761,6 @@ namespace Server.Items
       }
     }
 
-    #region Slayer
-
     private TalismanSlayerName m_Slayer;
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -775,10 +773,6 @@ namespace Server.Items
         InvalidateProperties();
       }
     }
-
-    #endregion
-
-    #region Summoner/Removal
 
     private TalismanAttribute m_Summoner;
     private TalismanRemoval m_Removal;
@@ -806,10 +800,6 @@ namespace Server.Items
       }
     }
 
-    #endregion
-
-    #region Protection/Killer
-
     private TalismanAttribute m_Protection;
     private TalismanAttribute m_Killer;
 
@@ -834,10 +824,6 @@ namespace Server.Items
         InvalidateProperties();
       }
     }
-
-    #endregion
-
-    #region Craft bonuses
 
     private SkillName m_Skill;
     private int m_SuccessBonus;
@@ -876,19 +862,11 @@ namespace Server.Items
       }
     }
 
-    #endregion
-
-    #region AOS bonuses
+    [CommandProperty(AccessLevel.GameMaster)]
+    public AosAttributes Attributes { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosAttributes Attributes{ get; private set; }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public AosSkillBonuses SkillBonuses{ get; private set; }
-
-    #endregion
-
-    #region Timer
+    public AosSkillBonuses SkillBonuses { get; private set; }
 
     private Timer m_Timer;
 
@@ -920,18 +898,14 @@ namespace Server.Items
       InvalidateProperties();
     }
 
-    #endregion
-
-    #region Randomize
-
-    private static int[] m_ItemIDs =
+    private static readonly int[] m_ItemIDs =
     {
       0x2F58, 0x2F59, 0x2F5A, 0x2F5B
     };
 
     public static int GetRandomItemID() => Utility.RandomList(m_ItemIDs);
 
-    private static Type[] m_Summons =
+    private static readonly Type[] m_Summons =
     {
       typeof(SummonedAntLion),
       typeof(SummonedCow),
@@ -956,7 +930,7 @@ namespace Server.Items
       typeof(Bandage)
     };
 
-    private static int[] m_SummonLabels =
+    private static readonly int[] m_SummonLabels =
     {
       1075211, // Ant Lion
       1072494, // Cow
@@ -985,7 +959,7 @@ namespace Server.Items
 
     public static TalismanAttribute GetRandomSummoner()
     {
-      if (0.025 <= Utility.RandomDouble())
+      if (Utility.RandomDouble() >= 0.025)
         return new TalismanAttribute();
 
       int num = Utility.Random(m_Summons.Length);
@@ -997,13 +971,13 @@ namespace Server.Items
 
     public static TalismanRemoval GetRandomRemoval()
     {
-      if (0.65 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.65)
         return (TalismanRemoval)Utility.RandomList(390, 404, 407);
 
       return TalismanRemoval.None;
     }
 
-    private static Type[] m_Killers =
+    private static readonly Type[] m_Killers =
     {
       typeof(OrcBomber), typeof(OrcBrute), typeof(SewerRat), typeof(Rat), typeof(GiantRat),
       typeof(Ratman), typeof(RatmanArcher), typeof(GiantSpider), typeof(FrostSpider), typeof(GiantBlackWidow),
@@ -1017,11 +991,11 @@ namespace Server.Items
       typeof(Crane), typeof(SnowLeopard), typeof(IceFiend), typeof(FrostOoze), typeof(FrostTroll),
       typeof(IceElemental), typeof(SnowElemental), typeof(GiantIceWorm), typeof(LadyOfTheSnow), typeof(FireElemental),
       typeof(FireSteed), typeof(HellHound), typeof(HellCat), typeof(PredatorHellCat), typeof(LavaLizard),
-      typeof(FireBeetle), typeof(Cow), typeof(Bull), typeof(Gaman) //,			typeof( Minotaur)
+      typeof(FireBeetle), typeof(Cow), typeof(Bull), typeof(Gaman) // ,			typeof( Minotaur)
       // TODO Meraktus, Tormented Minotaur, Minotaur
     };
 
-    private static int[] m_KillerLabels =
+    private static readonly int[] m_KillerLabels =
     {
       1072413, 1072414, 1072418, 1072419, 1072420,
       1072421, 1072423, 1072424, 1072425, 1072426,
@@ -1062,7 +1036,7 @@ namespace Server.Items
       return new TalismanAttribute(m_Killers[num], m_KillerLabels[num], Utility.RandomMinMax(5, 60));
     }
 
-    private static SkillName[] m_Skills =
+    private static readonly SkillName[] m_Skills =
     {
       SkillName.Alchemy,
       SkillName.Blacksmith,
@@ -1079,7 +1053,7 @@ namespace Server.Items
 
     public static int GetRandomExceptional()
     {
-      if (0.3 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.3)
       {
         double num = 40 - Math.Log(Utility.RandomMinMax(7, 403)) * 5;
 
@@ -1091,7 +1065,7 @@ namespace Server.Items
 
     public static int GetRandomSuccessful()
     {
-      if (0.75 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.75)
       {
         double num = 40 - Math.Log(Utility.RandomMinMax(7, 403)) * 5;
 
@@ -1101,12 +1075,10 @@ namespace Server.Items
       return 0;
     }
 
-    public static bool GetRandomBlessed() => 0.02 > Utility.RandomDouble();
+    public static bool GetRandomBlessed() => Utility.RandomDouble() < 0.02;
 
-    public static TalismanSlayerName GetRandomSlayer() => 0.01 > Utility.RandomDouble() ? (TalismanSlayerName)Utility.RandomMinMax(1, 9) : TalismanSlayerName.None;
+    public static TalismanSlayerName GetRandomSlayer() => Utility.RandomDouble() < 0.01 ? (TalismanSlayerName)Utility.RandomMinMax(1, 9) : TalismanSlayerName.None;
 
-    public static int GetRandomCharges() => 0.5 > Utility.RandomDouble() ? Utility.RandomMinMax(10, 50) : 0;
-
-    #endregion
+    public static int GetRandomCharges() => Utility.RandomDouble() < 0.5 ? Utility.RandomMinMax(10, 50) : 0;
   }
 }

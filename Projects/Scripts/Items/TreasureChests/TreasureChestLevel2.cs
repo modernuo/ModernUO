@@ -33,7 +33,7 @@ namespace Server.Items
       DropItem(new Gold(Utility.Random(70, 100)));
 
       // Drop bolts
-      //DropItem( new Arrow( 10 ) );
+      // DropItem( new Arrow( 10 ) );
 
       // Reagents
       for (int i = Utility.Random(1, m_Level); i > 1; i--)

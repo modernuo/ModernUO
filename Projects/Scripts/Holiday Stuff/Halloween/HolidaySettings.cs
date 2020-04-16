@@ -6,7 +6,7 @@ namespace Server.Events.Halloween
 {
   internal class HolidaySettings
   {
-    private static Type[] m_GMBeggarTreats =
+    private static readonly Type[] m_GMBeggarTreats =
     {
       typeof(CreepyCake),
       typeof(PumpkinPizza),
@@ -21,7 +21,7 @@ namespace Server.Events.Halloween
       typeof(ColoredSmallWebs)
     };
 
-    private static Type[] m_Treats =
+    private static readonly Type[] m_Treats =
     {
       typeof(Lollipops),
       typeof(WrappedCandy),

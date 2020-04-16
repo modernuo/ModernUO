@@ -4,10 +4,9 @@ namespace Server.Spells.Spellweaving
 {
   public class EtherealVoyageSpell : ArcaneForm
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Ethereal Voyage", "Orlavdra",
-      -1
-    );
+      -1);
 
     public EtherealVoyageSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
@@ -59,7 +58,7 @@ namespace Server.Spells.Spellweaving
       Timer.DelayCall(duration, RemoveEffect, Caster);
 
       Caster.BeginAction(
-        typeof(EtherealVoyageSpell)); //Cannot cast this spell for another 5 minutes(300sec) after effect removed.
+        typeof(EtherealVoyageSpell)); // Cannot cast this spell for another 5 minutes(300sec) after effect removed.
 
       BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.EtherealVoyage, 1031613, 1075805, duration, Caster));
     }
@@ -70,7 +69,7 @@ namespace Server.Spells.Spellweaving
 
       TransformationSpellHelper.RemoveContext(m, true);
 
-      Timer.DelayCall(TimeSpan.FromMinutes(5), delegate { m.EndAction<EtherealVoyageSpell>(); });
+      Timer.DelayCall(TimeSpan.FromMinutes(5), m.EndAction<EtherealVoyageSpell>);
 
       BuffInfo.RemoveBuff(m, BuffIcon.EtherealVoyage);
     }

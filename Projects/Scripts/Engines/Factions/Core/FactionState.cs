@@ -8,9 +8,9 @@ namespace Server.Factions
     private const int BroadcastsPerPeriod = 2;
     private static readonly TimeSpan BroadcastPeriod = TimeSpan.FromHours(1.0);
     private Mobile m_Commander;
-    private Faction m_Faction;
+    private readonly Faction m_Faction;
 
-    private DateTime[] m_LastBroadcasts = new DateTime[BroadcastsPerPeriod];
+    private readonly DateTime[] m_LastBroadcasts = new DateTime[BroadcastsPerPeriod];
 
     public FactionState(Faction faction)
     {
@@ -29,113 +29,113 @@ namespace Server.Factions
       switch (version)
       {
         case 5:
-        {
-          LastAtrophy = reader.ReadDateTime();
-          goto case 4;
-        }
-        case 4:
-        {
-          int count = reader.ReadEncodedInt();
-
-          for (int i = 0; i < count; ++i)
           {
-            DateTime time = reader.ReadDateTime();
-
-            if (i < m_LastBroadcasts.Length)
-              m_LastBroadcasts[i] = time;
+            LastAtrophy = reader.ReadDateTime();
+            goto case 4;
           }
+        case 4:
+          {
+            int count = reader.ReadEncodedInt();
 
-          goto case 3;
-        }
+            for (int i = 0; i < count; ++i)
+            {
+              DateTime time = reader.ReadDateTime();
+
+              if (i < m_LastBroadcasts.Length)
+                m_LastBroadcasts[i] = time;
+            }
+
+            goto case 3;
+          }
         case 3:
         case 2:
         case 1:
-        {
-          Election = new Election(reader);
+          {
+            Election = new Election(reader);
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          m_Faction = Faction.ReadReference(reader);
-
-          m_Commander = reader.ReadMobile();
-
-          if (version < 5)
-            LastAtrophy = DateTime.UtcNow;
-
-          if (version < 4)
           {
-            DateTime time = reader.ReadDateTime();
+            m_Faction = Faction.ReadReference(reader);
 
-            if (m_LastBroadcasts.Length > 0)
-              m_LastBroadcasts[0] = time;
-          }
+            m_Commander = reader.ReadMobile();
 
-          Tithe = reader.ReadEncodedInt();
-          Silver = reader.ReadEncodedInt();
+            if (version < 5)
+              LastAtrophy = DateTime.UtcNow;
 
-          int memberCount = reader.ReadEncodedInt();
-
-          Members = new List<PlayerState>();
-
-          for (int i = 0; i < memberCount; ++i)
-          {
-            PlayerState pl = new PlayerState(reader, m_Faction, Members);
-
-            if (pl.Mobile != null)
-              Members.Add(pl);
-          }
-
-          m_Faction.State = this;
-
-          m_Faction.ZeroRankOffset = Members.Count;
-          Members.Sort();
-
-          for (int i = Members.Count - 1; i >= 0; i--)
-          {
-            PlayerState player = Members[i];
-
-            if (player.KillPoints <= 0)
-              m_Faction.ZeroRankOffset = i;
-            else
-              player.RankIndex = i;
-          }
-
-          FactionItems = new List<FactionItem>();
-
-          if (version >= 2)
-          {
-            int factionItemCount = reader.ReadEncodedInt();
-
-            for (int i = 0; i < factionItemCount; ++i)
+            if (version < 4)
             {
-              FactionItem factionItem = new FactionItem(reader, m_Faction);
+              DateTime time = reader.ReadDateTime();
 
-              Timer.DelayCall(TimeSpan.Zero, factionItem.CheckAttach); // sandbox attachment
+              if (m_LastBroadcasts.Length > 0)
+                m_LastBroadcasts[0] = time;
             }
+
+            Tithe = reader.ReadEncodedInt();
+            Silver = reader.ReadEncodedInt();
+
+            int memberCount = reader.ReadEncodedInt();
+
+            Members = new List<PlayerState>();
+
+            for (int i = 0; i < memberCount; ++i)
+            {
+              PlayerState pl = new PlayerState(reader, m_Faction, Members);
+
+              if (pl.Mobile != null)
+                Members.Add(pl);
+            }
+
+            m_Faction.State = this;
+
+            m_Faction.ZeroRankOffset = Members.Count;
+            Members.Sort();
+
+            for (int i = Members.Count - 1; i >= 0; i--)
+            {
+              PlayerState player = Members[i];
+
+              if (player.KillPoints <= 0)
+                m_Faction.ZeroRankOffset = i;
+              else
+                player.RankIndex = i;
+            }
+
+            FactionItems = new List<FactionItem>();
+
+            if (version >= 2)
+            {
+              int factionItemCount = reader.ReadEncodedInt();
+
+              for (int i = 0; i < factionItemCount; ++i)
+              {
+                FactionItem factionItem = new FactionItem(reader, m_Faction);
+
+                Timer.DelayCall(TimeSpan.Zero, factionItem.CheckAttach); // sandbox attachment
+              }
+            }
+
+            Traps = new List<BaseFactionTrap>();
+
+            if (version >= 3)
+            {
+              int factionTrapCount = reader.ReadEncodedInt();
+
+              for (int i = 0; i < factionTrapCount; ++i)
+                if (reader.ReadItem() is BaseFactionTrap trap && !trap.CheckDecay())
+                  Traps.Add(trap);
+            }
+
+            break;
           }
-
-          Traps = new List<BaseFactionTrap>();
-
-          if (version >= 3)
-          {
-            int factionTrapCount = reader.ReadEncodedInt();
-
-            for (int i = 0; i < factionTrapCount; ++i)
-              if (reader.ReadItem() is BaseFactionTrap trap && !trap.CheckDecay())
-                Traps.Add(trap);
-          }
-
-          break;
-        }
       }
 
       if (version < 1)
         Election = new Election(m_Faction);
     }
 
-    public DateTime LastAtrophy{ get; set; }
+    public DateTime LastAtrophy { get; set; }
 
     public bool FactionMessageReady
     {
@@ -151,11 +151,11 @@ namespace Server.Factions
 
     public bool IsAtrophyReady => DateTime.UtcNow >= LastAtrophy + TimeSpan.FromHours(47.0);
 
-    public List<FactionItem> FactionItems{ get; set; }
+    public List<FactionItem> FactionItems { get; set; }
 
-    public List<BaseFactionTrap> Traps{ get; set; }
+    public List<BaseFactionTrap> Traps { get; set; }
 
-    public Election Election{ get; set; }
+    public Election Election { get; set; }
 
     public Mobile Commander
     {
@@ -183,11 +183,11 @@ namespace Server.Factions
       }
     }
 
-    public int Tithe{ get; set; }
+    public int Tithe { get; set; }
 
-    public int Silver{ get; set; }
+    public int Silver { get; set; }
 
-    public List<PlayerState> Members{ get; set; }
+    public List<PlayerState> Members { get; set; }
 
     public int CheckAtrophy()
     {

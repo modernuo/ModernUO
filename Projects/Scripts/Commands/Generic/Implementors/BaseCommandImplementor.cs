@@ -32,19 +32,19 @@ namespace Server.Commands.Generic
 
     public BaseCommandImplementor() => Commands = new Dictionary<string, BaseCommand>(StringComparer.OrdinalIgnoreCase);
 
-    public bool SupportsConditionals{ get; set; }
+    public bool SupportsConditionals { get; set; }
 
-    public string[] Accessors{ get; set; }
+    public string[] Accessors { get; set; }
 
-    public string Usage{ get; set; }
+    public string Usage { get; set; }
 
-    public string Description{ get; set; }
+    public string Description { get; set; }
 
-    public AccessLevel AccessLevel{ get; set; }
+    public AccessLevel AccessLevel { get; set; }
 
-    public CommandSupport SupportRequirement{ get; set; }
+    public CommandSupport SupportRequirement { get; set; }
 
-    public Dictionary<string, BaseCommand> Commands{ get; }
+    public Dictionary<string, BaseCommand> Commands { get; }
 
     public static List<BaseCommandImplementor> Implementors
     {
@@ -110,43 +110,43 @@ namespace Server.Commands.Generic
       {
         case ObjectTypes.All:
         case ObjectTypes.Both:
-        {
-          if (condIsItem)
-            items = true;
+          {
+            if (condIsItem)
+              items = true;
 
-          if (condIsMobile)
-            mobiles = true;
+            if (condIsMobile)
+              mobiles = true;
 
-          break;
-        }
+            break;
+          }
         case ObjectTypes.Items:
-        {
-          if (condIsItem)
           {
-            items = true;
-          }
-          else if (condIsMobile)
-          {
-            from.SendMessage("You may not use a mobile type condition for this command.");
-            return false;
-          }
+            if (condIsItem)
+            {
+              items = true;
+            }
+            else if (condIsMobile)
+            {
+              from.SendMessage("You may not use a mobile type condition for this command.");
+              return false;
+            }
 
-          break;
-        }
+            break;
+          }
         case ObjectTypes.Mobiles:
-        {
-          if (condIsMobile)
           {
-            mobiles = true;
-          }
-          else if (condIsItem)
-          {
-            from.SendMessage("You may not use an item type condition for this command.");
-            return false;
-          }
+            if (condIsMobile)
+            {
+              mobiles = true;
+            }
+            else if (condIsItem)
+            {
+              from.SendMessage("You may not use an item type condition for this command.");
+              return false;
+            }
 
-          break;
-        }
+            break;
+          }
       }
 
       return true;
@@ -199,8 +199,8 @@ namespace Server.Commands.Generic
 
     public void RunCommand(Mobile from, object obj, BaseCommand command, string[] args)
     {
-      //	try
-      //	{
+      // try
+      // {
       CommandEventArgs e = new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args);
 
       if (!command.ValidateArgs(this, e))
@@ -226,17 +226,17 @@ namespace Server.Commands.Generic
       else if (obj != null)
       {
         if (command.ListOptimized)
-          command.ExecuteList(e, new List<object>{ obj });
+          command.ExecuteList(e, new List<object> { obj });
         else
           command.Execute(e, obj);
       }
 
       command.Flush(from, flushToLog);
-      //	}
-      //	catch ( Exception ex )
-      //	{
-      //		from.SendMessage( ex.Message );
-      //	}
+      // }
+      // catch ( Exception ex )
+      // {
+      // from.SendMessage( ex.Message );
+      // }
     }
 
     public virtual void Process(Mobile from, BaseCommand command, string[] args)

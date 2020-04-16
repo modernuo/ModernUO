@@ -42,10 +42,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Price{ get; set; }
+    public int Price { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool LandlordRenew{ get; set; }
+    public bool LandlordRenew { get; set; }
 
     public Mobile Offeree
     {
@@ -223,7 +223,7 @@ namespace Server.Items
 
     private class ContractOptionEntry : ContextMenuEntry
     {
-      private VendorRentalContract m_Contract;
+      private readonly VendorRentalContract m_Contract;
 
       public ContractOptionEntry(VendorRentalContract contract) : base(6209) => m_Contract = contract;
 
@@ -241,7 +241,7 @@ namespace Server.Items
 
     private class RentTarget : Target
     {
-      private VendorRentalContract m_Contract;
+      private readonly VendorRentalContract m_Contract;
 
       public RentTarget(VendorRentalContract contract) : base(-1, false, TargetFlags.None) => m_Contract = contract;
 
@@ -318,7 +318,7 @@ namespace Server.Items
 
     private class OfferExpireTimer : Timer
     {
-      private VendorRentalContract m_Contract;
+      private readonly VendorRentalContract m_Contract;
 
       public OfferExpireTimer(VendorRentalContract contract) : base(TimeSpan.FromSeconds(30.0))
       {

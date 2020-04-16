@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Naturalist
 {
   public class StudyOfSolenQuest : QuestSystem
   {
-    private static Type[] m_TypeReferenceTable =
+    private static readonly Type[] m_TypeReferenceTable =
     {
       typeof(StudyNestsObjective),
       typeof(ReturnToNaturalistObjective),
@@ -35,7 +35,7 @@ namespace Server.Engines.Quests.Naturalist
 
     public override int Picture => 0x15C7;
 
-    public Naturalist Naturalist{ get; private set; }
+    public Naturalist Naturalist { get; private set; }
 
     public override void ChildDeserialize(IGenericReader reader)
     {

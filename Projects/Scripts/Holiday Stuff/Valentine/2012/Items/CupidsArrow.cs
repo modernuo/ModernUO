@@ -12,14 +12,14 @@ namespace Server.Items
     private string m_From;
     private string m_To;
 
-    [CommandProperty( AccessLevel.GameMaster )]
+    [CommandProperty(AccessLevel.GameMaster)]
     public string From
     {
       get => m_From;
       set { m_From = value; InvalidateProperties(); }
     }
 
-    [CommandProperty( AccessLevel.GameMaster )]
+    [CommandProperty(AccessLevel.GameMaster)]
     public string To
     {
       get => m_To;
@@ -30,59 +30,59 @@ namespace Server.Items
 
     [Constructible]
     public CupidsArrow()
-      : base( 0x4F7F ) =>
+      : base(0x4F7F) =>
       LootType = LootType.Blessed;
 
-    public override void AddNameProperty( ObjectPropertyList list )
+    public override void AddNameProperty(ObjectPropertyList list)
     {
-      base.AddNameProperty( list );
+      base.AddNameProperty(list);
 
-      if ( IsSigned )
-        list.Add( 1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
+      if (IsSigned)
+        list.Add(1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
     }
 
-    public static bool CheckSeason( Mobile from )
+    public static bool CheckSeason(Mobile from)
     {
-      if ( DateTime.UtcNow.Month == 2 )
+      if (DateTime.UtcNow.Month == 2)
         return true;
 
-      from.SendLocalizedMessage( 1152318 ); // You may not use this item out of season.
+      from.SendLocalizedMessage(1152318); // You may not use this item out of season.
       return false;
     }
 
-    public override void OnSingleClick( Mobile from )
+    public override void OnSingleClick(Mobile from)
     {
-      base.OnSingleClick( from );
+      base.OnSingleClick(from);
 
-      if ( IsSigned )
-        LabelTo( from, 1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
+      if (IsSigned)
+        LabelTo(from, 1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
     }
 
-    public override void OnDoubleClick( Mobile from )
+    public override void OnDoubleClick(Mobile from)
     {
-      if ( IsSigned || !CheckSeason( from ) )
+      if (IsSigned || !CheckSeason(from))
         return;
 
-      if ( !IsChildOf( from.Backpack ) )
+      if (!IsChildOf(from.Backpack))
       {
-        from.SendLocalizedMessage( 1080063 ); // This must be in your backpack to use it.
+        from.SendLocalizedMessage(1080063); // This must be in your backpack to use it.
         return;
       }
 
-      from.BeginTarget( 10, false, TargetFlags.None, OnTarget );
-      from.SendMessage( "Who do you wish to use this on?" );
+      from.BeginTarget(10, false, TargetFlags.None, OnTarget);
+      from.SendMessage("Who do you wish to use this on?");
     }
 
-    private void OnTarget( Mobile from, object targeted )
+    private void OnTarget(Mobile from, object targeted)
     {
-      if ( IsSigned || !IsChildOf( from.Backpack ) )
+      if (IsSigned || !IsChildOf(from.Backpack))
         return;
 
-      if ( targeted is Mobile m )
+      if (targeted is Mobile m)
       {
-        if ( !m.Alive )
+        if (!m.Alive)
         {
-          from.SendLocalizedMessage( 1152269 ); // That target is dead and even Cupid's arrow won't make them love you.
+          from.SendLocalizedMessage(1152269); // That target is dead and even Cupid's arrow won't make them love you.
           return;
         }
 
@@ -91,37 +91,37 @@ namespace Server.Items
 
         InvalidateProperties();
 
-        from.SendMessage( "You inscribe the arrow." );
+        from.SendMessage("You inscribe the arrow.");
       }
       else
       {
-        from.SendMessage( "That is not a person." );
+        from.SendMessage("That is not a person.");
       }
     }
 
-    public CupidsArrow( Serial serial )
-      : base( serial )
+    public CupidsArrow(Serial serial)
+      : base(serial)
     {
     }
 
-    public override void Serialize(IGenericWriter writer )
+    public override void Serialize(IGenericWriter writer)
     {
-      base.Serialize( writer );
+      base.Serialize(writer);
 
-      writer.Write( 0 );
+      writer.Write(0);
 
-      writer.Write( m_From );
-      writer.Write( m_To );
+      writer.Write(m_From);
+      writer.Write(m_To);
     }
 
-    public override void Deserialize( IGenericReader reader )
+    public override void Deserialize(IGenericReader reader)
     {
-      base.Deserialize( reader );
+      base.Deserialize(reader);
 
       int version = reader.ReadInt();
 
-      m_From = Utility.Intern( reader.ReadString() );
-      m_To = Utility.Intern( reader.ReadString() );
+      m_From = Utility.Intern(reader.ReadString());
+      m_To = Utility.Intern(reader.ReadString());
     }
   }
 }

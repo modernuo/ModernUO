@@ -101,14 +101,14 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_UsesRemaining = reader.ReadInt();
+          {
+            m_UsesRemaining = reader.ReadInt();
 
-          m_Poison = Poison.Deserialize(reader);
-          m_PoisonCharges = reader.ReadInt();
+            m_Poison = Poison.Deserialize(reader);
+            m_PoisonCharges = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

@@ -23,7 +23,7 @@ namespace Server.Regions
       GoLocation = new Point3D(house.X + ban.X, house.Y + ban.Y, house.Z + ban.Z);
     }
 
-    public BaseHouse House{ get; }
+    public BaseHouse House { get; }
 
     public static void Initialize()
     {

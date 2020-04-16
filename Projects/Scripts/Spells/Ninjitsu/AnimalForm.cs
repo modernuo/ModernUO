@@ -18,14 +18,13 @@ namespace Server.Spells.Ninjitsu
       NoSkill
     }
 
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Animal Form", null,
       -1,
-      9002
-    );
+      9002);
 
-    private static Dictionary<Mobile, int> m_LastAnimalForms = new Dictionary<Mobile, int>();
-    private static Dictionary<Mobile, AnimalFormContext> m_Table = new Dictionary<Mobile, AnimalFormContext>();
+    private static readonly Dictionary<Mobile, int> m_LastAnimalForms = new Dictionary<Mobile, int>();
+    private static readonly Dictionary<Mobile, AnimalFormContext> m_Table = new Dictionary<Mobile, AnimalFormContext>();
 
     private bool m_WasMoving;
 
@@ -42,7 +41,7 @@ namespace Server.Spells.Ninjitsu
 
     public override bool BlockedByAnimalForm => false;
 
-    public static AnimalFormEntry[] Entries{ get; } =
+    public static AnimalFormEntry[] Entries { get; } =
     {
       new AnimalFormEntry(typeof(Kirin), 1029632, 9632, 0, 1070811, 100.0, 0x84, 0, 0),
       new AnimalFormEntry(typeof(Unicorn), 1018214, 9678, 0, 1070812, 100.0, 0x7A, 0, 0),
@@ -120,7 +119,7 @@ namespace Server.Spells.Ninjitsu
       {
         Caster.SendLocalizedMessage(1063219); // You cannot mimic an animal while in that form.
       }
-      else if (!Caster.CanBeginAction<IncognitoSpell>() || Caster.IsBodyMod && GetContext(Caster) == null)
+      else if (!Caster.CanBeginAction<IncognitoSpell>() || (Caster.IsBodyMod && GetContext(Caster) == null))
       {
         DoFizzle();
       }
@@ -187,7 +186,7 @@ namespace Server.Spells.Ninjitsu
 
       AnimalFormEntry entry = Entries[entryID];
 
-      m_LastAnimalForms[m] = entryID; //On OSI, it's the last /attempted/ one not the last succeeded one
+      m_LastAnimalForms[m] = entryID; // On OSI, it's the last /attempted/ one not the last succeeded one
 
       if (m.Skills.Ninjitsu.Value < entry.ReqSkill)
       {
@@ -311,9 +310,9 @@ namespace Server.Spells.Ninjitsu
 
     public class AnimalFormEntry
     {
-      private int m_HueModMax;
+      private readonly int m_HueModMax;
 
-      private int m_HueModMin;
+      private readonly int m_HueModMin;
       /*
       private AnimalFormCallback m_TransformCallback;
       private AnimalFormCallback m_UntransformCallback;
@@ -337,33 +336,33 @@ namespace Server.Spells.Ninjitsu
         StealingBonus = stealingBonus;
       }
 
-      public Type Type{ get; }
+      public Type Type { get; }
 
-      public TextDefinition Name{ get; }
+      public TextDefinition Name { get; }
 
-      public int ItemID{ get; }
+      public int ItemID { get; }
 
-      public int Hue{ get; }
+      public int Hue { get; }
 
-      public int Tooltip{ get; }
+      public int Tooltip { get; }
 
-      public double ReqSkill{ get; }
+      public double ReqSkill { get; }
 
-      public int BodyMod{ get; }
+      public int BodyMod { get; }
 
       public int HueMod => Utility.RandomMinMax(m_HueModMin, m_HueModMax);
-      public bool StealthBonus{ get; }
+      public bool StealthBonus { get; }
 
-      public bool SpeedBoost{ get; }
+      public bool SpeedBoost { get; }
 
-      public bool StealingBonus{ get; }
+      public bool StealingBonus { get; }
     }
 
     public class AnimalFormGump : Gump
     {
-      //TODO: Convert this for ML to the BaseImageTileButtonsGump
-      private Mobile m_Caster;
-      private AnimalForm m_Spell;
+      // TODO: Convert this for ML to the BaseImageTileButtonsGump
+      private readonly Mobile m_Caster;
+      private readonly AnimalForm m_Spell;
 
       public AnimalFormGump(Mobile caster, AnimalFormEntry[] entries, AnimalForm spell)
         : base(50, 50)
@@ -449,13 +448,9 @@ namespace Server.Spells.Ninjitsu
         }
         else if (BaseFormTalisman.EntryEnabled(sender.Mobile, entry.Type))
         {
-          #region Dueling
-
           if ((m_Caster as PlayerMobile)?.DuelContext?.AllowSpellCast(m_Caster, m_Spell) == false)
           {
           }
-
-          #endregion
 
           else if (Morph(m_Caster, entryID) == MorphResult.Fail)
           {
@@ -484,24 +479,24 @@ namespace Server.Spells.Ninjitsu
       StealingMod = stealingMod;
     }
 
-    public Timer Timer{ get; }
+    public Timer Timer { get; }
 
-    public SkillMod Mod{ get; }
+    public SkillMod Mod { get; }
 
-    public bool SpeedBoost{ get; }
+    public bool SpeedBoost { get; }
 
-    public Type Type{ get; }
+    public Type Type { get; }
 
-    public SkillMod StealingMod{ get; }
+    public SkillMod StealingMod { get; }
   }
 
   public class AnimalFormTimer : Timer
   {
-    private int m_Body;
+    private readonly int m_Body;
     private int m_Counter;
-    private int m_Hue;
+    private readonly int m_Hue;
     private Mobile m_LastTarget;
-    private Mobile m_Mobile;
+    private readonly Mobile m_Mobile;
 
     public AnimalFormTimer(Mobile from, int body, int hue)
       : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))

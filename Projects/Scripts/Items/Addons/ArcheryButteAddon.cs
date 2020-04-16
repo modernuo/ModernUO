@@ -4,29 +4,29 @@ using Server.Network;
 
 namespace Server.Items
 {
-  [FlippableAttribute( 0x100A/*East*/, 0x100B/*South*/ )]
+  [FlippableAttribute(0x100A/*East*/, 0x100B/*South*/)]
   public class ArcheryButte : AddonComponent
   {
-    [CommandProperty( AccessLevel.GameMaster )]
+    [CommandProperty(AccessLevel.GameMaster)]
     public double MinSkill { get; set; }
 
-    [CommandProperty( AccessLevel.GameMaster )]
+    [CommandProperty(AccessLevel.GameMaster)]
     public double MaxSkill { get; set; }
 
-    [CommandProperty( AccessLevel.GameMaster )]
+    [CommandProperty(AccessLevel.GameMaster)]
     public DateTime LastUse { get; set; }
 
-    [CommandProperty( AccessLevel.GameMaster )]
+    [CommandProperty(AccessLevel.GameMaster)]
     public bool FacingEast
     {
       get => ItemID == 0x100A;
       set => ItemID = value ? 0x100A : 0x100B;
     }
 
-    [CommandProperty( AccessLevel.GameMaster )]
+    [CommandProperty(AccessLevel.GameMaster)]
     public int Arrows { get; set; }
 
-    [CommandProperty( AccessLevel.GameMaster )]
+    [CommandProperty(AccessLevel.GameMaster)]
     public int Bolts { get; set; }
 
     [Constructible]
@@ -36,27 +36,27 @@ namespace Server.Items
       MaxSkill = +25.0;
     }
 
-    public ArcheryButte( Serial serial ) : base( serial )
+    public ArcheryButte(Serial serial) : base(serial)
     {
     }
 
-    public override void OnDoubleClick( Mobile from )
+    public override void OnDoubleClick(Mobile from)
     {
-      if ( (Arrows > 0 || Bolts > 0) && from.InRange( GetWorldLocation(), 1 ) )
-        Gather( from );
+      if ((Arrows > 0 || Bolts > 0) && from.InRange(GetWorldLocation(), 1))
+        Gather(from);
       else
-        Fire( from );
+        Fire(from);
     }
 
-    public void Gather( Mobile from )
+    public void Gather(Mobile from)
     {
-      from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500592 ); // You gather the arrows and bolts.
+      from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500592); // You gather the arrows and bolts.
 
-      if ( Arrows > 0 )
-        from.AddToBackpack( new Arrow( Arrows ) );
+      if (Arrows > 0)
+        from.AddToBackpack(new Arrow(Arrows));
 
-      if ( Bolts > 0 )
-        from.AddToBackpack( new Bolt( Bolts ) );
+      if (Bolts > 0)
+        from.AddToBackpack(new Bolt(Bolts));
 
       Arrows = 0;
       Bolts = 0;
@@ -64,7 +64,7 @@ namespace Server.Items
       m_Entries = null;
     }
 
-    private static TimeSpan UseDelay = TimeSpan.FromSeconds( 2.0 );
+    private static readonly TimeSpan UseDelay = TimeSpan.FromSeconds(2.0);
 
     private class ScoreEntry
     {
@@ -72,7 +72,7 @@ namespace Server.Items
 
       public int Count { get; set; }
 
-      public void Record( int score )
+      public void Record(int score)
       {
         Total += score;
         Count += 1;
@@ -81,9 +81,9 @@ namespace Server.Items
 
     private Dictionary<Mobile, ScoreEntry> m_Entries;
 
-    private ScoreEntry GetEntryFor( Mobile from )
+    private ScoreEntry GetEntryFor(Mobile from)
     {
-      if ( m_Entries == null )
+      if (m_Entries == null)
         m_Entries = new Dictionary<Mobile, ScoreEntry>();
 
       if (!m_Entries.TryGetValue(from, out ScoreEntry e))
@@ -92,105 +92,105 @@ namespace Server.Items
       return e;
     }
 
-    public void Fire( Mobile from )
+    public void Fire(Mobile from)
     {
-      if ( !(from.Weapon is BaseRanged bow) )
+      if (!(from.Weapon is BaseRanged bow))
       {
-        SendLocalizedMessageTo( from, 500593 ); // You must practice with ranged weapons on this.
+        SendLocalizedMessageTo(from, 500593); // You must practice with ranged weapons on this.
         return;
       }
 
-      if ( DateTime.UtcNow < LastUse + UseDelay )
+      if (DateTime.UtcNow < LastUse + UseDelay)
         return;
 
       Point3D worldLoc = GetWorldLocation();
 
-      if ( FacingEast ? from.X <= worldLoc.X : from.Y <= worldLoc.Y )
+      if (FacingEast ? from.X <= worldLoc.X : from.Y <= worldLoc.Y)
       {
-        from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500596 ); // You would do better to stand in front of the archery butte.
+        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500596); // You would do better to stand in front of the archery butte.
         return;
       }
 
-      if ( FacingEast ? from.Y != worldLoc.Y : from.X != worldLoc.X )
+      if (FacingEast ? from.Y != worldLoc.Y : from.X != worldLoc.X)
       {
-        from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500597 ); // You aren't properly lined up with the archery butte to get an accurate shot.
+        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500597); // You aren't properly lined up with the archery butte to get an accurate shot.
         return;
       }
 
-      if ( !from.InRange( worldLoc, 6 ) )
+      if (!from.InRange(worldLoc, 6))
       {
-        from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500598 ); // You are too far away from the archery butte to get an accurate shot.
+        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500598); // You are too far away from the archery butte to get an accurate shot.
         return;
       }
 
-      if ( from.InRange( worldLoc, 4 ) )
+      if (from.InRange(worldLoc, 4))
       {
-        from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500599 ); // You are too close to the target.
+        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500599); // You are too close to the target.
         return;
       }
 
       Container pack = from.Backpack;
       Type ammoType = bow.AmmoType;
 
-      bool isArrow = ammoType == typeof( Arrow );
-      bool isBolt = ammoType == typeof( Bolt );
+      bool isArrow = ammoType == typeof(Arrow);
+      bool isBolt = ammoType == typeof(Bolt);
       bool isKnown = isArrow || isBolt;
 
-      if (pack?.ConsumeTotal( ammoType ) != true)
+      if (pack?.ConsumeTotal(ammoType) != true)
       {
-        if ( isArrow )
-          from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500594 ); // You do not have any arrows with which to practice.
-        else if ( isBolt )
-          from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500595 ); // You do not have any crossbow bolts with which to practice.
+        if (isArrow)
+          from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500594); // You do not have any arrows with which to practice.
+        else if (isBolt)
+          from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500595); // You do not have any crossbow bolts with which to practice.
         else
-          SendLocalizedMessageTo( from, 500593 ); // You must practice with ranged weapons on this.
+          SendLocalizedMessageTo(from, 500593); // You must practice with ranged weapons on this.
 
         return;
       }
 
       LastUse = DateTime.UtcNow;
 
-      from.Direction = from.GetDirectionTo( GetWorldLocation() );
-      bow.PlaySwingAnimation( from );
-      from.MovingEffect( this, bow.EffectID, 18, 1, false, false );
+      from.Direction = from.GetDirectionTo(GetWorldLocation());
+      bow.PlaySwingAnimation(from);
+      from.MovingEffect(this, bow.EffectID, 18, 1, false, false);
 
-      ScoreEntry se = GetEntryFor( from );
+      ScoreEntry se = GetEntryFor(from);
 
-      if ( !from.CheckSkill( bow.Skill, MinSkill, MaxSkill ) )
+      if (!from.CheckSkill(bow.Skill, MinSkill, MaxSkill))
       {
-        from.PlaySound( bow.MissSound );
+        from.PlaySound(bow.MissSound);
 
-        PublicOverheadMessage( MessageType.Regular, 0x3B2, 500604, from.Name ); // You miss the target altogether.
+        PublicOverheadMessage(MessageType.Regular, 0x3B2, 500604, from.Name); // You miss the target altogether.
 
-        se.Record( 0 );
+        se.Record(0);
 
-        if ( se.Count == 1 )
-          PublicOverheadMessage( MessageType.Regular, 0x3B2, 1062719, se.Total.ToString() );
+        if (se.Count == 1)
+          PublicOverheadMessage(MessageType.Regular, 0x3B2, 1062719, se.Total.ToString());
         else
-          PublicOverheadMessage( MessageType.Regular, 0x3B2, 1042683, $"{se.Total}\t{se.Count}");
+          PublicOverheadMessage(MessageType.Regular, 0x3B2, 1042683, $"{se.Total}\t{se.Count}");
 
         return;
       }
 
-      Effects.PlaySound( Location, Map, 0x2B1 );
+      Effects.PlaySound(Location, Map, 0x2B1);
 
       double rand = Utility.RandomDouble();
 
       int area, score, splitScore;
 
-      if ( 0.10 > rand )
+      if (rand < 0.10)
       {
         area = 0; // bullseye
         score = 50;
         splitScore = 100;
       }
-      else if ( 0.25 > rand )
+      else if (rand < 0.25)
       {
         area = 1; // inner ring
         score = 10;
         splitScore = 20;
       }
-      else if ( 0.50 > rand )
+      else if (rand < 0.50)
       {
         area = 2; // middle ring
         score = 5;
@@ -205,64 +205,64 @@ namespace Server.Items
 
       bool split = isKnown && (Arrows + Bolts) * 0.02 > Utility.RandomDouble();
 
-      if ( split )
+      if (split)
       {
-        PublicOverheadMessage( MessageType.Regular, 0x3B2, 1010027 + area,
+        PublicOverheadMessage(MessageType.Regular, 0x3B2, 1010027 + area,
           $"{from.Name}\t{(isArrow ? "arrow" : "bolt")}");
       }
       else
       {
-        PublicOverheadMessage( MessageType.Regular, 0x3B2, 1010035 + area, from.Name );
+        PublicOverheadMessage(MessageType.Regular, 0x3B2, 1010035 + area, from.Name);
 
-        if ( isArrow )
+        if (isArrow)
           ++Arrows;
-        else if ( isBolt )
+        else if (isBolt)
           ++Bolts;
       }
 
-      se.Record( split ? splitScore : score );
+      se.Record(split ? splitScore : score);
 
-      if ( se.Count == 1 )
-        PublicOverheadMessage( MessageType.Regular, 0x3B2, 1062719, se.Total.ToString() );
+      if (se.Count == 1)
+        PublicOverheadMessage(MessageType.Regular, 0x3B2, 1062719, se.Total.ToString());
       else
-        PublicOverheadMessage( MessageType.Regular, 0x3B2, 1042683, $"{se.Total}\t{se.Count}");
+        PublicOverheadMessage(MessageType.Regular, 0x3B2, 1042683, $"{se.Total}\t{se.Count}");
     }
 
-    public override void Serialize(IGenericWriter writer )
+    public override void Serialize(IGenericWriter writer)
     {
-      base.Serialize( writer );
+      base.Serialize(writer);
 
-      writer.Write( 0 );
+      writer.Write(0);
 
-      writer.Write( MinSkill );
-      writer.Write( MaxSkill );
-      writer.Write( Arrows );
-      writer.Write( Bolts );
+      writer.Write(MinSkill);
+      writer.Write(MaxSkill);
+      writer.Write(Arrows);
+      writer.Write(Bolts);
     }
 
-    public override void Deserialize( IGenericReader reader )
+    public override void Deserialize(IGenericReader reader)
     {
-      base.Deserialize( reader );
+      base.Deserialize(reader);
 
       int version = reader.ReadInt();
 
-      switch ( version )
+      switch (version)
       {
         case 0:
-        {
-          MinSkill = reader.ReadDouble();
-          MaxSkill = reader.ReadDouble();
-          Arrows = reader.ReadInt();
-          Bolts = reader.ReadInt();
-
-          if ( MinSkill == 0.0 && MaxSkill == 30.0 )
           {
-            MinSkill = -25.0;
-            MaxSkill = +25.0;
-          }
+            MinSkill = reader.ReadDouble();
+            MaxSkill = reader.ReadDouble();
+            Arrows = reader.ReadInt();
+            Bolts = reader.ReadInt();
 
-          break;
-        }
+            if (MinSkill == 0.0 && MaxSkill == 30.0)
+            {
+              MinSkill = -25.0;
+              MaxSkill = +25.0;
+            }
+
+            break;
+          }
       }
     }
   }
@@ -274,23 +274,23 @@ namespace Server.Items
     [Constructible]
     public ArcheryButteAddon()
     {
-      AddComponent( new ArcheryButte(), 0, 0, 0 );
+      AddComponent(new ArcheryButte(), 0, 0, 0);
     }
 
-    public ArcheryButteAddon( Serial serial ) : base( serial )
+    public ArcheryButteAddon(Serial serial) : base(serial)
     {
     }
 
-    public override void Serialize(IGenericWriter writer )
+    public override void Serialize(IGenericWriter writer)
     {
-      base.Serialize( writer );
+      base.Serialize(writer);
 
-      writer.Write( 0 ); // version
+      writer.Write(0); // version
     }
 
-    public override void Deserialize( IGenericReader reader )
+    public override void Deserialize(IGenericReader reader)
     {
-      base.Deserialize( reader );
+      base.Deserialize(reader);
 
       int version = reader.ReadInt();
     }
@@ -306,20 +306,20 @@ namespace Server.Items
     {
     }
 
-    public ArcheryButteDeed( Serial serial ) : base( serial )
+    public ArcheryButteDeed(Serial serial) : base(serial)
     {
     }
 
-    public override void Serialize(IGenericWriter writer )
+    public override void Serialize(IGenericWriter writer)
     {
-      base.Serialize( writer );
+      base.Serialize(writer);
 
-      writer.Write( 0 ); // version
+      writer.Write(0); // version
     }
 
-    public override void Deserialize( IGenericReader reader )
+    public override void Deserialize(IGenericReader reader)
     {
-      base.Deserialize( reader );
+      base.Deserialize(reader);
 
       int version = reader.ReadInt();
     }

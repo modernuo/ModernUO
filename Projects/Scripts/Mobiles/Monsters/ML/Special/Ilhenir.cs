@@ -9,7 +9,7 @@ namespace Server.Mobiles
 {
   public class Ilhenir : BaseChampion
   {
-    private static HashSet<Mobile> m_Table = new HashSet<Mobile>();
+    private static readonly HashSet<Mobile> m_Table = new HashSet<Mobile>();
 
     [Constructible]
     public Ilhenir()
@@ -92,7 +92,7 @@ namespace Server.Mobiles
 
     public override Poison PoisonImmune => Poison.Lethal;
 
-    //public override bool GivesMLMinorArtifact => true; // TODO: Needs verification
+    // public override bool GivesMLMinorArtifact => true; // TODO: Needs verification
     public override int TreasureMapLevel => 5;
 
     public virtual void PackResources(int amount)
@@ -303,7 +303,7 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Corrosive{ get; set; }
+    public bool Corrosive { get; set; }
 
     public override void OnAfterDelete()
     {

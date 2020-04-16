@@ -9,8 +9,7 @@ namespace Server.Ethics.Hero
         20,
         "Holy Shield",
         "Erstok K'blac",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

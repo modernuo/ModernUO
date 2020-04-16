@@ -35,7 +35,7 @@ namespace Server.Multis
     /* Stair block IDs
      * (sorted ascending)
      */
-    private static int[] m_BlockIDs =
+    private static readonly int[] m_BlockIDs =
     {
       0x3EE, 0x709, 0x71E, 0x721,
       0x738, 0x750, 0x76C, 0x788,
@@ -47,7 +47,7 @@ namespace Server.Multis
      * (sorted ascending)
      * Use this for stairs in the proper N,W,S,E sequence
      */
-    private static int[] m_StairSeqs =
+    private static readonly int[] m_StairSeqs =
     {
       0x3EF, 0x70A, 0x722, 0x739,
       0x751, 0x76D, 0x789, 0x7A4
@@ -57,7 +57,7 @@ namespace Server.Multis
      * Listed in order: north, west, south, east
      * Use this for stairs not in the proper sequence
      */
-    private static int[] m_StairIDs =
+    private static readonly int[] m_StairIDs =
     {
       0x71F, 0x736, 0x737, 0x749,
       0x35D4, 0x35D3, 0x35D6, 0x35D5,
@@ -99,19 +99,19 @@ namespace Server.Multis
     {
     }
 
-    public FoundationType Type{ get; set; }
+    public FoundationType Type { get; set; }
 
-    public int LastRevision{ get; set; }
+    public int LastRevision { get; set; }
 
-    public List<Item> Fixtures{ get; private set; }
+    public List<Item> Fixtures { get; private set; }
 
-    public Item SignHanger{ get; private set; }
+    public Item SignHanger { get; private set; }
 
-    public Item Signpost{ get; private set; }
+    public Item Signpost { get; private set; }
 
-    public int SignpostGraphic{ get; set; }
+    public int SignpostGraphic { get; set; }
 
-    public Mobile Customizer{ get; set; }
+    public Mobile Customizer { get; set; }
 
     public override bool IsAosRules => true;
 
@@ -375,13 +375,13 @@ namespace Server.Multis
           }
           else if (itemID >= 0x241F && itemID < 0x2421)
           {
-            //DoorFacing facing = (DoorFacing)(((itemID - 0x241F) / 2) % 8);
+            // DoorFacing facing = (DoorFacing)(((itemID - 0x241F) / 2) % 8);
             door = new GenericHouseDoor(DoorFacing.NorthCCW, 0x2415, -1, -1);
           }
           else if (itemID >= 0x2423 && itemID < 0x2425)
           {
-            //DoorFacing facing = (DoorFacing)(((itemID - 0x241F) / 2) % 8);
-            //This one and the above one are 'special' cases, ie: OSI had the ItemID pattern discombobulated for these
+            // DoorFacing facing = (DoorFacing)(((itemID - 0x241F) / 2) % 8);
+            // This one and the above one are 'special' cases, ie: OSI had the ItemID pattern discombobulated for these
             door = new GenericHouseDoor(DoorFacing.WestCW, 0x2423, -1, -1);
           }
           else if (itemID >= 0x2A05 && itemID < 0x2A1D)
@@ -415,7 +415,7 @@ namespace Server.Multis
           }
           else if (itemID >= 0x319C && itemID < 0x31AE)
           {
-            //special case for 0x31aa <-> 0x31a8 (a9)
+            // special case for 0x31aa <-> 0x31a8 (a9)
 
             int mod = (itemID - 0x319C) / 2 % 2;
 
@@ -847,48 +847,48 @@ namespace Server.Multis
       {
         case 5:
         case 4:
-        {
-          Signpost = reader.ReadItem();
-          SignpostGraphic = reader.ReadInt();
+          {
+            Signpost = reader.ReadItem();
+            SignpostGraphic = reader.ReadInt();
 
-          goto case 3;
-        }
+            goto case 3;
+          }
         case 3:
-        {
-          Type = (FoundationType)reader.ReadInt();
+          {
+            Type = (FoundationType)reader.ReadInt();
 
-          goto case 2;
-        }
+            goto case 2;
+          }
         case 2:
-        {
-          SignHanger = reader.ReadItem();
+          {
+            SignHanger = reader.ReadItem();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          if (version < 5)
-            m_DefaultPrice = reader.ReadInt();
+          {
+            if (version < 5)
+              m_DefaultPrice = reader.ReadInt();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          if (version < 3)
-            Type = FoundationType.Stone;
+          {
+            if (version < 3)
+              Type = FoundationType.Stone;
 
-          if (version < 4)
-            SignpostGraphic = 9;
+            if (version < 4)
+              SignpostGraphic = 9;
 
-          LastRevision = reader.ReadInt();
-          Fixtures = reader.ReadStrongItemList();
+            LastRevision = reader.ReadInt();
+            Fixtures = reader.ReadStrongItemList();
 
-          m_Current = new DesignState(this, reader);
-          m_Design = new DesignState(this, reader);
-          m_Backup = new DesignState(this, reader);
+            m_Current = new DesignState(this, reader);
+            m_Design = new DesignState(this, reader);
+            m_Backup = new DesignState(this, reader);
 
-          break;
-        }
+            break;
+          }
       }
 
       base.Deserialize(reader);
@@ -1216,7 +1216,7 @@ namespace Server.Multis
 
     public static bool IsStair(int id, ref int dir)
     {
-      //dir n=0 w=1 s=2 e=3
+      // dir n=0 w=1 s=2 e=3
       int delta = -4;
 
       for (int i = 0; delta < -3 && i < m_StairSeqs.Length; ++i)
@@ -1281,37 +1281,37 @@ namespace Server.Multis
       switch (dir)
       {
         default:
-        {
-          xStart = x;
-          yStart = y + height;
-          xInc = 0;
-          yInc = -1;
-          break;
-        }
+          {
+            xStart = x;
+            yStart = y + height;
+            xInc = 0;
+            yInc = -1;
+            break;
+          }
         case 1: // West
-        {
-          xStart = x + height;
-          yStart = y;
-          xInc = -1;
-          yInc = 0;
-          break;
-        }
+          {
+            xStart = x + height;
+            yStart = y;
+            xInc = -1;
+            yInc = 0;
+            break;
+          }
         case 2: // South
-        {
-          xStart = x;
-          yStart = y - height;
-          xInc = 0;
-          yInc = 1;
-          break;
-        }
+          {
+            xStart = x;
+            yStart = y - height;
+            xInc = 0;
+            yInc = 1;
+            break;
+          }
         case 3: // East
-        {
-          xStart = x - height;
-          yStart = y;
-          xInc = 1;
-          yInc = 0;
-          break;
-        }
+          {
+            xStart = x - height;
+            yStart = y;
+            xInc = 1;
+            yInc = 0;
+            break;
+          }
       }
 
       int zStart = z - height * 5;
@@ -1628,7 +1628,7 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (context == null || !Core.SE && from.AccessLevel < AccessLevel.GameMaster)
+      if (context == null || (!Core.SE && from.AccessLevel < AccessLevel.GameMaster))
         return;
 
       // Read data detailing component graphic and location
@@ -1732,26 +1732,26 @@ namespace Server.Multis
       switch (version)
       {
         case 0:
-        {
-          Components = new MultiComponentList(reader);
-
-          int length = reader.ReadInt();
-
-          Fixtures = new MultiTileEntry[length];
-
-          for (int i = 0; i < length; ++i)
           {
-            Fixtures[i].m_ItemID = reader.ReadUShort();
-            Fixtures[i].m_OffsetX = reader.ReadShort();
-            Fixtures[i].m_OffsetY = reader.ReadShort();
-            Fixtures[i].m_OffsetZ = reader.ReadShort();
-            Fixtures[i].m_Flags = (TileFlag)reader.ReadInt();
+            Components = new MultiComponentList(reader);
+
+            int length = reader.ReadInt();
+
+            Fixtures = new MultiTileEntry[length];
+
+            for (int i = 0; i < length; ++i)
+            {
+              Fixtures[i].m_ItemID = reader.ReadUShort();
+              Fixtures[i].m_OffsetX = reader.ReadShort();
+              Fixtures[i].m_OffsetY = reader.ReadShort();
+              Fixtures[i].m_OffsetZ = reader.ReadShort();
+              Fixtures[i].m_Flags = (TileFlag)reader.ReadInt();
+            }
+
+            Revision = reader.ReadInt();
+
+            break;
           }
-
-          Revision = reader.ReadInt();
-
-          break;
-        }
       }
     }
 
@@ -1769,13 +1769,13 @@ namespace Server.Multis
       }
     }
 
-    public HouseFoundation Foundation{ get; }
+    public HouseFoundation Foundation { get; }
 
-    public MultiComponentList Components{ get; }
+    public MultiComponentList Components { get; }
 
-    public MultiTileEntry[] Fixtures{ get; private set; }
+    public MultiTileEntry[] Fixtures { get; private set; }
 
-    public int Revision{ get; set; }
+    public int Revision { get; set; }
 
     public void Serialize(IGenericWriter writer)
     {
@@ -1937,7 +1937,7 @@ namespace Server.Multis
 
   public class ConfirmCommitGump : Gump
   {
-    private HouseFoundation m_Foundation;
+    private readonly HouseFoundation m_Foundation;
 
     public ConfirmCommitGump(Mobile from, HouseFoundation foundation, int bankBalance, int oldPrice, int newPrice)
       : base(50, 50)
@@ -2000,13 +2000,13 @@ namespace Server.Multis
       Level = 1;
     }
 
-    public HouseFoundation Foundation{ get; }
+    public HouseFoundation Foundation { get; }
 
-    public int Level{ get; set; }
+    public int Level { get; set; }
 
     public int MaxLevels => Foundation.MaxLevels;
 
-    public static Dictionary<Mobile, DesignContext> Table{ get; } = new Dictionary<Mobile, DesignContext>();
+    public static Dictionary<Mobile, DesignContext> Table { get; } = new Dictionary<Mobile, DesignContext>();
 
     public static DesignContext Find(Mobile from)
     {
@@ -2025,7 +2025,6 @@ namespace Server.Multis
 
       m.SendLocalizedMessage(1062206); // You cannot do that while customizing a house.
       return false;
-
     }
 
     public static void Add(Mobile from, HouseFoundation foundation)
@@ -2156,14 +2155,14 @@ namespace Server.Multis
   {
     public const int MaxItemsPerStairBuffer = 750;
 
-    private static ConcurrentQueue<SendQueueEntry> m_SendQueue;
-    private static AutoResetEvent m_Sync;
+    private static readonly ConcurrentQueue<SendQueueEntry> m_SendQueue;
+    private static readonly AutoResetEvent m_Sync;
 
-    private byte[][] m_PlaneBuffers;
+    private readonly byte[][] m_PlaneBuffers;
 
-    private bool[] m_PlaneUsed = new bool[9];
-    private byte[] m_PrimBuffer = new byte[4];
-    private byte[][] m_StairBuffers;
+    private readonly bool[] m_PlaneUsed = new bool[9];
+    private readonly byte[] m_PrimBuffer = new byte[4];
+    private readonly byte[][] m_StairBuffers;
 
     static DesignStateDetailed()
     {
@@ -2238,23 +2237,23 @@ namespace Server.Multis
             plane = 4;
             break;
           default:
-          {
-            int stairBufferIndex = totalStairsUsed / MaxItemsPerStairBuffer;
-            byte[] stairBuffer = m_StairBuffers[stairBufferIndex];
+            {
+              int stairBufferIndex = totalStairsUsed / MaxItemsPerStairBuffer;
+              byte[] stairBuffer = m_StairBuffers[stairBufferIndex];
 
-            int byteIndex = totalStairsUsed % MaxItemsPerStairBuffer * 5;
+              int byteIndex = totalStairsUsed % MaxItemsPerStairBuffer * 5;
 
-            stairBuffer[byteIndex++] = (byte)(mte.m_ItemID >> 8);
-            stairBuffer[byteIndex++] = (byte)mte.m_ItemID;
+              stairBuffer[byteIndex++] = (byte)(mte.m_ItemID >> 8);
+              stairBuffer[byteIndex++] = (byte)mte.m_ItemID;
 
-            stairBuffer[byteIndex++] = (byte)mte.m_OffsetX;
-            stairBuffer[byteIndex++] = (byte)mte.m_OffsetY;
-            stairBuffer[byteIndex++] = (byte)mte.m_OffsetZ;
+              stairBuffer[byteIndex++] = (byte)mte.m_OffsetX;
+              stairBuffer[byteIndex++] = (byte)mte.m_OffsetY;
+              stairBuffer[byteIndex++] = (byte)mte.m_OffsetZ;
 
-            ++totalStairsUsed;
+              ++totalStairsUsed;
 
-            continue;
-          }
+              continue;
+            }
         }
 
         if (plane == 0)
@@ -2498,12 +2497,15 @@ namespace Server.Multis
 
     private class SendQueueEntry
     {
-      public NetState m_NetState;
-      public DesignState m_Root;
-      public int m_Revision;
-      public uint m_Serial;
-      public MultiTileEntry[] m_Tiles;
-      public int m_xMin, m_yMin, m_xMax, m_yMax;
+      public readonly NetState m_NetState;
+      public readonly DesignState m_Root;
+      public readonly int m_Revision;
+      public readonly uint m_Serial;
+      public readonly MultiTileEntry[] m_Tiles;
+      public readonly int m_xMin;
+      public readonly int m_yMin;
+      public readonly int m_xMax;
+      public readonly int m_yMax;
 
       public SendQueueEntry(NetState ns, HouseFoundation foundation, DesignState state)
       {

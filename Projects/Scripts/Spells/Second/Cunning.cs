@@ -6,13 +6,12 @@ namespace Server.Spells.Second
 {
   public class CunningSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Cunning", "Uus Wis",
       212,
       9061,
       Reagent.MandrakeRoot,
-      Reagent.Nightshade
-    );
+      Reagent.Nightshade);
 
     public CunningSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

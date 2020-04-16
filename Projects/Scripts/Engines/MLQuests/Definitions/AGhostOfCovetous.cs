@@ -6,8 +6,6 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Definitions
 {
-  #region Quests
-
   public class AGhostOfCovetous : MLQuest
   {
     public AGhostOfCovetous()
@@ -108,10 +106,6 @@ namespace Server.Engines.MLQuests.Definitions
       PutSpawner(new Spawner(1, 5, 10, 0, 3, "Andros"), new Point3D(2531, 581, 0), Map.Felucca);
     }
   }
-
-  #endregion
-
-  #region Mobiles
 
   public class Ben : BaseCreature
   {
@@ -284,6 +278,4 @@ namespace Server.Engines.MLQuests.Definitions
       int version = reader.ReadInt();
     }
   }
-
-  #endregion
 }

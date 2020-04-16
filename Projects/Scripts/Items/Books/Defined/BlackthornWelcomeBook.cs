@@ -2,11 +2,9 @@ namespace Server.Items
 {
   public class BlackthornWelcomeBook : RedBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "A Welcome", "Lord Blackthorn",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  Greetings to you,",
         "new member of the",
         "Trusted.",
@@ -14,10 +12,8 @@ namespace Server.Items
         "words because you",
         "have been deemed",
         "worthy to join the",
-        "ranks of"
-      ),
-      new BookPageInfo
-      (
+        "ranks of"),
+      new BookPageInfo(
         "Britannia's defenders.",
         "Some will call you a",
         "betrayer of mankind, I",
@@ -25,10 +21,8 @@ namespace Server.Items
         "misguided.  I call you",
         "a defender for Sosaria",
         "needs saving from",
-        "itself."
-      ),
-      new BookPageInfo
-      (
+        "itself."),
+      new BookPageInfo(
         "  The forces of order",
         "once ruled our world.",
         "Like a great",
@@ -36,10 +30,8 @@ namespace Server.Items
         "lives we lived under",
         "the oppressive watch",
         "of a king who",
-        "dictated our actions"
-      ),
-      new BookPageInfo
-      (
+        "dictated our actions"),
+      new BookPageInfo(
         "and passed judgment",
         "on our character.  He",
         "suppressed our way of",
@@ -47,10 +39,8 @@ namespace Server.Items
         "freedom and the",
         "ability to determine",
         "who we are and what",
-        "we stand for.  Even"
-      ),
-      new BookPageInfo
-      (
+        "we stand for.  Even"),
+      new BookPageInfo(
         "today in the absence",
         "of this man we still",
         "see the symbol of his",
@@ -58,10 +48,8 @@ namespace Server.Items
         "personal guards patrol",
         "the cities to",
         "intimidate us, and we",
-        "feel his laws like a"
-      ),
-      new BookPageInfo
-      (
+        "feel his laws like a"),
+      new BookPageInfo(
         "vice on our lives.",
         "  You are here",
         "because you choose to",
@@ -69,10 +57,8 @@ namespace Server.Items
         "Britannians you have",
         "felt the oppression of",
         "one man's ideas",
-        "weighing down upon"
-      ),
-      new BookPageInfo
-      (
+        "weighing down upon"),
+      new BookPageInfo(
         "you like chains.  You",
         "have felt the embrace",
         "of fear, wondering if",
@@ -80,10 +66,8 @@ namespace Server.Items
         "for simply having",
         "ideas not in harmony",
         "with those forced upon",
-        "you.  You have seen"
-      ),
-      new BookPageInfo
-      (
+        "you.  You have seen"),
+      new BookPageInfo(
         "men fight and die for",
         "the principles of a",
         "zealot and wondered,",
@@ -91,10 +75,8 @@ namespace Server.Items
         "my principles should",
         "they be opposed?'",
         "You tire of living",
-        "under the shadow of"
-      ),
-      new BookPageInfo
-      (
+        "under the shadow of"),
+      new BookPageInfo(
         "dreams that do not",
         "belong to you.  And",
         "most of all, you have",
@@ -102,10 +84,8 @@ namespace Server.Items
         "can do to live free.",
         "  Your journey to",
         "freedom begins here.",
-        "  I, like you, once"
-      ),
-      new BookPageInfo
-      (
+        "  I, like you, once"),
+      new BookPageInfo(
         "desired my freedom",
         "from the limits placed",
         "on me.  I watched in",
@@ -113,10 +93,8 @@ namespace Server.Items
         "became engrossed with",
         "the preaching of",
         "virtue and none of the",
-        "practice.  I held my"
-      ),
-      new BookPageInfo
-      (
+        "practice.  I held my"),
+      new BookPageInfo(
         "convictions in check,",
         "fearful of the reaction",
         "of men blinded by",
@@ -124,10 +102,8 @@ namespace Server.Items
         "myself to bury the",
         "very ideology that",
         "made me an individual.",
-        "I was fortunate that"
-      ),
-      new BookPageInfo
-      (
+        "I was fortunate that"),
+      new BookPageInfo(
         "a being of unique",
         "power and",
         "unimaginable",
@@ -135,10 +111,8 @@ namespace Server.Items
         "through to the true",
         "person I was, the",
         "person I was meant to",
-        "be.  Exodus found"
-      ),
-      new BookPageInfo
-      (
+        "be.  Exodus found"),
+      new BookPageInfo(
         "within me a man of",
         "free will,",
         "determination, and",
@@ -146,10 +120,8 @@ namespace Server.Items
         "the plight of",
         "oppression forced on so",
         "many Britannians.",
-        "  Exodus has also"
-      ),
-      new BookPageInfo
-      (
+        "  Exodus has also"),
+      new BookPageInfo(
         "chosen you because of",
         "the strength of your",
         "character.",
@@ -157,10 +129,8 @@ namespace Server.Items
         "who were once my",
         "peers look upon me",
         "and see a betrayer of",
-        "humanity.  They"
-      ),
-      new BookPageInfo
-      (
+        "humanity.  They"),
+      new BookPageInfo(
         "claim my newfound",
         "form is unnatural and",
         "wrong.  Because they",
@@ -168,10 +138,8 @@ namespace Server.Items
         "me, they show fear.",
         "They disapprove of",
         "my choices and in",
-        "their ignorance see"
-      ),
-      new BookPageInfo
-      (
+        "their ignorance see"),
+      new BookPageInfo(
         "evil.  Yet I hide my",
         "true self no longer",
         "from these men.  My",
@@ -179,10 +147,8 @@ namespace Server.Items
         "personal morality have",
         "been liberated in the",
         "face of the oppression",
-        "that once consumed me."
-      ),
-      new BookPageInfo
-      (
+        "that once consumed me."),
+      new BookPageInfo(
         "Where they see a",
         "man no longer human.",
         "I see a man that has",
@@ -190,10 +156,8 @@ namespace Server.Items
         "humanity but has been",
         "freed from it.  This",
         "is the power that has",
-        "been granted to me by"
-      ),
-      new BookPageInfo
-      (
+        "been granted to me by"),
+      new BookPageInfo(
         "Exodus.  I have been",
         "given my freedom.  I",
         "have been released",
@@ -201,10 +165,8 @@ namespace Server.Items
         "  Exodus will give",
         "you the power to",
         "conquer your fears as",
-        "well."
-      ),
-      new BookPageInfo
-      (
+        "well."),
+      new BookPageInfo(
         "  When your fear",
         "of this world is gone,",
         "then the world truly",
@@ -212,10 +174,8 @@ namespace Server.Items
         "way it never has",
         "before.  You, trusted",
         "one, will soon be given",
-        "a gift.  Your body,"
-      ),
-      new BookPageInfo
-      (
+        "a gift.  Your body,"),
+      new BookPageInfo(
         "like mine, will be",
         "enlightened and raised",
         "to a level no mortal",
@@ -223,10 +183,8 @@ namespace Server.Items
         "to control your own",
         "destiny will belong to",
         "you for the first time",
-        "in your life."
-      ),
-      new BookPageInfo
-      (
+        "in your life."),
+      new BookPageInfo(
         "  You will, at long",
         "last, be cleansed of",
         "fear.",
@@ -234,10 +192,8 @@ namespace Server.Items
         "power of Exodus",
         "behind us, we shall",
         "finally wage war on",
-        "the oppression that"
-      ),
-      new BookPageInfo
-      (
+        "the oppression that"),
+      new BookPageInfo(
         "once held us back",
         "from our full",
         "potential.  We shall",
@@ -245,10 +201,8 @@ namespace Server.Items
         "reshape it in an image",
         "of freedom for all of",
         "us.  Those who once",
-        "told you who you are"
-      ),
-      new BookPageInfo
-      (
+        "told you who you are"),
+      new BookPageInfo(
         "and how you should",
         "live will no longer be",
         "able to stand in the",
@@ -256,14 +210,10 @@ namespace Server.Items
         "Many say you will",
         "be abandoning your",
         "humanity but in truth,",
-        "you will be more than"
-      ),
-      new BookPageInfo
-      (
+        "you will be more than"),
+      new BookPageInfo(
         "human.",
-        "  You will be freed."
-      )
-    );
+        "  You will be freed."));
 
     [Constructible]
     public BlackthornWelcomeBook() : base(false) => Hue = 0x89B;

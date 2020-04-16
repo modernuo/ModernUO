@@ -6,16 +6,15 @@ namespace Server.Spells.First
 {
   public class CreateFoodSpell : MagerySpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Create Food", "In Mani Ylem",
       224,
       9011,
       Reagent.Garlic,
       Reagent.Ginseng,
-      Reagent.MandrakeRoot
-    );
+      Reagent.MandrakeRoot);
 
-    private static FoodInfo[] m_Food =
+    private static readonly FoodInfo[] m_Food =
     {
       new FoodInfo(typeof(Grapes), "a grape bunch"),
       new FoodInfo(typeof(Ham), "a ham"),
@@ -66,9 +65,9 @@ namespace Server.Spells.First
       Name = name;
     }
 
-    public Type Type{ get; set; }
+    public Type Type { get; set; }
 
-    public string Name{ get; set; }
+    public string Name { get; set; }
 
     public Item Create()
     {

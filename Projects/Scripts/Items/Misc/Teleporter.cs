@@ -286,38 +286,38 @@ namespace Server.Items
       switch (version)
       {
         case 4:
-        {
-          m_CriminalCheck = reader.ReadBool();
-          goto case 3;
-        }
+          {
+            m_CriminalCheck = reader.ReadBool();
+            goto case 3;
+          }
         case 3:
-        {
-          m_CombatCheck = reader.ReadBool();
-          goto case 2;
-        }
+          {
+            m_CombatCheck = reader.ReadBool();
+            goto case 2;
+          }
         case 2:
-        {
-          m_SourceEffect = reader.ReadBool();
-          m_DestEffect = reader.ReadBool();
-          m_Delay = reader.ReadTimeSpan();
-          m_SoundID = reader.ReadEncodedInt();
+          {
+            m_SourceEffect = reader.ReadBool();
+            m_DestEffect = reader.ReadBool();
+            m_Delay = reader.ReadTimeSpan();
+            m_SoundID = reader.ReadEncodedInt();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          m_Creatures = reader.ReadBool();
+          {
+            m_Creatures = reader.ReadBool();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          m_Active = reader.ReadBool();
-          m_PointDest = reader.ReadPoint3D();
-          m_MapDest = reader.ReadMap();
+          {
+            m_Active = reader.ReadBool();
+            m_PointDest = reader.ReadPoint3D();
+            m_MapDest = reader.ReadMap();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
@@ -451,14 +451,14 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Skill = (SkillName)reader.ReadInt();
-          m_Required = reader.ReadDouble();
-          m_MessageString = reader.ReadString();
-          m_MessageNumber = reader.ReadInt();
+          {
+            m_Skill = (SkillName)reader.ReadInt();
+            m_Required = reader.ReadDouble();
+            m_MessageString = reader.ReadString();
+            m_MessageNumber = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
@@ -583,13 +583,13 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Substring = reader.ReadString();
-          m_Keyword = reader.ReadInt();
-          m_Range = reader.ReadInt();
+          {
+            m_Substring = reader.ReadString();
+            m_Keyword = reader.ReadInt();
+            m_Range = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
@@ -609,19 +609,19 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int StartNumber{ get; set; }
+    public int StartNumber { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string StartMessage{ get; set; }
+    public string StartMessage { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ProgressNumber{ get; set; }
+    public int ProgressNumber { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string ProgressMessage{ get; set; }
+    public string ProgressMessage { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool ShowTimeRemaining{ get; set; }
+    public bool ShowTimeRemaining { get; set; }
 
     public static void Initialize()
     {
@@ -739,9 +739,9 @@ namespace Server.Items
         Timer = t;
       }
 
-      public WaitTeleporter Teleporter{ get; }
+      public WaitTeleporter Teleporter { get; }
 
-      public Timer Timer{ get; }
+      public Timer Timer { get; }
     }
   }
 
@@ -765,7 +765,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan TimeoutDelay{ get; set; }
+    public TimeSpan TimeoutDelay { get; set; }
 
     public void StartTimer(Mobile m)
     {
@@ -864,7 +864,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeoutTeleporter Teleporter{ get; set; }
+    public TimeoutTeleporter Teleporter { get; set; }
 
     public override string DefaultName => "timeout teleporter goal";
 
@@ -1022,7 +1022,7 @@ namespace Server.Items
       }
 
       if (GetFlag(ConditionFlag.DenyFollowers) &&
-          (m.Followers != 0 || m is PlayerMobile mobile && mobile.AutoStabled.Count != 0))
+          (m.Followers != 0 || (m is PlayerMobile mobile && mobile.AutoStabled.Count != 0)))
       {
         m.SendLocalizedMessage(1077250); // No pets permitted beyond this point.
         return false;
@@ -1039,7 +1039,7 @@ namespace Server.Items
         }
 
         if (GetFlag(ConditionFlag.DenyPackEthereals) &&
-            pack.FindItemByType(new []{typeof(EtherealMount), typeof(BaseImprisonedMobile)}) != null)
+            pack.FindItemByType(new[] { typeof(EtherealMount), typeof(BaseImprisonedMobile) }) != null)
         {
           m.SendMessage("You must empty your backpack of ethereal mounts before proceeding.");
           return false;
@@ -1061,14 +1061,14 @@ namespace Server.Items
             case Layer.Backpack:
             case Layer.Mount:
             case Layer.Bank:
-            {
-              continue; // ignore
-            }
+              {
+                continue; // ignore
+              }
             default:
-            {
-              m.SendMessage("You must remove all of your equipment before proceeding.");
-              return false;
-            }
+              {
+                m.SendMessage("You must remove all of your equipment before proceeding.");
+                return false;
+              }
           }
 
       if (GetFlag(ConditionFlag.DenyTransformed) && m.IsBodyMod)

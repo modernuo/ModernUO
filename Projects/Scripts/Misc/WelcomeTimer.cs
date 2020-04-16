@@ -7,7 +7,7 @@ namespace Server.Misc
   /// </summary>
   public class WelcomeTimer : Timer
   {
-    private static string[] m_Messages = TestCenter.Enabled
+    private static readonly string[] m_Messages = TestCenter.Enabled
       ? new[]
       {
         "Welcome to this test shard.  You are able to customize your character's stats and skills at anytime to anything you wish.  To see the commands to do this just say 'help'.",
@@ -23,13 +23,14 @@ namespace Server.Misc
       }
       : new[]
       {
-        //Yes, this message is a pathetic message, It's suggested that you change it.
+        // Yes, this message is a pathetic message, It's suggested that you change it.
         "Welcome to this shard.",
         "Please enjoy your stay."
       };
 
-    private Mobile m_Mobile;
-    private int m_State, m_Count;
+    private readonly Mobile m_Mobile;
+    private int m_State;
+    private readonly int m_Count;
 
     public WelcomeTimer(Mobile m) : this(m, m_Messages.Length)
     {

@@ -42,9 +42,9 @@ namespace Server
       Amount = amount;
     }
 
-    public Serial Serial{ get; }
+    public Serial Serial { get; }
 
-    public int Amount{ get; }
+    public int Amount { get; }
   }
 
   public class SellItemResponse
@@ -55,9 +55,9 @@ namespace Server
       Amount = amount;
     }
 
-    public Item Item{ get; }
+    public Item Item { get; }
 
-    public int Amount{ get; }
+    public int Amount { get; }
   }
 
   public class SellItemState
@@ -69,11 +69,11 @@ namespace Server
       Name = name;
     }
 
-    public Item Item{ get; }
+    public Item Item { get; }
 
-    public int Price{ get; }
+    public int Price { get; }
 
-    public string Name{ get; }
+    public string Name { get; }
   }
 
   public class BuyItemState
@@ -89,18 +89,18 @@ namespace Server
       Hue = hue;
     }
 
-    public int Price{ get; }
+    public int Price { get; }
 
-    public Serial MySerial{ get; }
+    public Serial MySerial { get; }
 
-    public Serial ContainerSerial{ get; }
+    public Serial ContainerSerial { get; }
 
-    public int ItemID{ get; }
+    public int ItemID { get; }
 
-    public int Amount{ get; }
+    public int Amount { get; }
 
-    public int Hue{ get; }
+    public int Hue { get; }
 
-    public string Description{ get; }
+    public string Description { get; }
   }
 }

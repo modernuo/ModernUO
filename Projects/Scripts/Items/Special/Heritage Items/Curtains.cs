@@ -15,9 +15,7 @@ namespace Server.Items
     public override bool DisplayWeight => false;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ClosedID{ get; set; }
-
-    #region IDyable
+    public int ClosedID { get; set; }
 
     public virtual bool Dye(Mobile from, DyeTub sender)
     {
@@ -27,8 +25,6 @@ namespace Server.Items
       Hue = sender.DyedHue;
       return true;
     }
-
-    #endregion
 
     public override void OnDoubleClick(Mobile from)
     {
@@ -159,7 +155,7 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private CurtainsDeed m_Deed;
+      private readonly CurtainsDeed m_Deed;
 
       public InternalGump(CurtainsDeed deed) : base(60, 36)
       {

@@ -21,8 +21,7 @@ namespace Server.Items
     private double m_SkillValue;
 
     [Constructible]
-    public SoulStone(string account = null, int inactiveItemID = 0x2A93, int activeItemID = 0x2A94) :
-      base(inactiveItemID)
+    public SoulStone(string account = null, int inactiveItemID = 0x2A93, int activeItemID = 0x2A94) : base(inactiveItemID)
     {
       Light = LightType.Circle300;
       LootType = LootType.Blessed;
@@ -66,7 +65,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string Account{ get; set; }
+    public string Account { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public string LastUserName
@@ -111,7 +110,7 @@ namespace Server.Items
     public bool IsEmpty => m_SkillValue <= 0.0;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public SecureLevel Level{ get; set; }
+    public SecureLevel Level { get; set; }
 
     public override void GetProperties(ObjectPropertyList list)
     {
@@ -210,16 +209,12 @@ namespace Server.Items
         return false;
       }
 
-      #region Scroll of Alacrity
-
       if (pm.AcceleratedStart > DateTime.UtcNow)
       {
         from.SendLocalizedMessage(
           1078115); // You may not use a soulstone while your character is under the effects of a Scroll of Alacrity.
         return false;
       }
-
-      #endregion
 
       return true;
     }
@@ -247,17 +242,17 @@ namespace Server.Items
 
       writer.WriteEncodedInt(3); // version
 
-      //version 3
+      // version 3
       writer.Write(m_LastUserName);
 
-      //version 2
+      // version 2
       writer.Write((int)Level);
 
       writer.Write(m_ActiveItemID);
       writer.Write(m_InactiveItemID);
 
       writer.Write(Account);
-      writer.Write(m_NextUse); //TODO: delete it in a harmless way
+      writer.Write(m_NextUse); // TODO: delete it in a harmless way
 
       writer.WriteEncodedInt((int)m_Skill);
       writer.Write(m_SkillValue);
@@ -272,31 +267,31 @@ namespace Server.Items
       switch (version)
       {
         case 3:
-        {
-          m_LastUserName = reader.ReadString();
-          goto case 2;
-        }
+          {
+            m_LastUserName = reader.ReadString();
+            goto case 2;
+          }
         case 2:
-        {
-          Level = (SecureLevel)reader.ReadInt();
-          goto case 1;
-        }
+          {
+            Level = (SecureLevel)reader.ReadInt();
+            goto case 1;
+          }
         case 1:
-        {
-          m_ActiveItemID = reader.ReadInt();
-          m_InactiveItemID = reader.ReadInt();
+          {
+            m_ActiveItemID = reader.ReadInt();
+            m_InactiveItemID = reader.ReadInt();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          Account = reader.ReadString();
-          m_NextUse = reader.ReadDateTime(); //TODO: delete it in a harmless way
+          {
+            Account = reader.ReadString();
+            m_NextUse = reader.ReadDateTime(); // TODO: delete it in a harmless way
 
-          m_Skill = (SkillName)reader.ReadEncodedInt();
-          m_SkillValue = reader.ReadDouble();
-          break;
-        }
+            m_Skill = (SkillName)reader.ReadEncodedInt();
+            m_SkillValue = reader.ReadDouble();
+            break;
+          }
       }
 
       if (version == 0)
@@ -308,7 +303,7 @@ namespace Server.Items
 
     private class SelectSkillGump : Gump
     {
-      private SoulStone m_Stone;
+      private readonly SoulStone m_Stone;
 
       public SelectSkillGump(SoulStone stone, Mobile from) : base(50, 50)
       {
@@ -391,8 +386,8 @@ namespace Server.Items
 
     private class ConfirmSkillGump : Gump
     {
-      private Skill m_Skill;
-      private SoulStone m_Stone;
+      private readonly Skill m_Skill;
+      private readonly SoulStone m_Stone;
 
       public ConfirmSkillGump(SoulStone stone, Skill skill) : base(50, 50)
       {
@@ -506,7 +501,7 @@ namespace Server.Items
 
     private class ConfirmTransferGump : Gump
     {
-      private SoulStone m_Stone;
+      private readonly SoulStone m_Stone;
 
       public ConfirmTransferGump(SoulStone stone, Mobile from) : base(50, 50)
       {
@@ -655,8 +650,6 @@ namespace Server.Items
           return;
         }
 
-        #region Scroll of ALacrity
-
         PlayerMobile pm = from as PlayerMobile;
         if (pm.AcceleratedStart > DateTime.UtcNow)
         {
@@ -669,8 +662,6 @@ namespace Server.Items
           from.SendGump(new ErrorGump(m_Stone, 1070717, 1078115));
           return;
         }
-
-        #endregion
 
         if (requiredAmount > 0)
           for (int i = 0; i < from.Skills.Length; ++i)
@@ -715,7 +706,7 @@ namespace Server.Items
 
     private class ConfirmRemovalGump : Gump
     {
-      private SoulStone m_Stone;
+      private readonly SoulStone m_Stone;
 
       public ConfirmRemovalGump(SoulStone stone) : base(50, 50)
       {
@@ -764,7 +755,7 @@ namespace Server.Items
 
     private class ErrorGump : Gump
     {
-      private SoulStone m_Stone;
+      private readonly SoulStone m_Stone;
 
       public ErrorGump(SoulStone stone, int title, int message) : base(50, 50)
       {
@@ -817,8 +808,7 @@ namespace Server.Items
     }
 
     [Constructible]
-    public SoulstoneFragment(int usesRemaining = 5, string account = null) :
-      base(account, Utility.Random(0x2AA1, 9)) =>
+    public SoulstoneFragment(int usesRemaining = 5, string account = null) : base(account, Utility.Random(0x2AA1, 9)) =>
       m_UsesRemaining = usesRemaining;
 
     public SoulstoneFragment(Serial serial) : base(serial)
@@ -837,7 +827,6 @@ namespace Server.Items
         InvalidateProperties();
       }
     }
-
 
     bool IUsesRemaining.ShowUsesRemaining
     {
@@ -991,10 +980,10 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_IsRewardItem = reader.ReadBool();
-          break;
-        }
+          {
+            m_IsRewardItem = reader.ReadBool();
+            break;
+          }
       }
     }
   }

@@ -7,10 +7,10 @@ namespace Server.Mobiles
 {
   public class KhaldunRevenant : BaseCreature
   {
-    private static HashSet<Mobile> m_Set = new HashSet<Mobile>();
-    private DateTime m_ExpireTime;
+    private static readonly HashSet<Mobile> m_Set = new HashSet<Mobile>();
+    private readonly DateTime m_ExpireTime;
 
-    private Mobile m_Target;
+    private readonly Mobile m_Target;
 
     public KhaldunRevenant(Mobile target) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.18, 0.36)
     {
@@ -116,8 +116,8 @@ namespace Server.Mobiles
         return;
       }
 
-      //Combatant = m_Target;
-      //FocusMob = m_Target;
+      // Combatant = m_Target;
+      // FocusMob = m_Target;
 
       if (AIObject != null)
         AIObject.Action = ActionType.Combat;

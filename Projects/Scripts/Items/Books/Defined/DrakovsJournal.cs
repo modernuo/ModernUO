@@ -2,11 +2,9 @@ namespace Server.Items
 {
   public class DrakovsJournal : BlueBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Drakov's Journal", "Drakov",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "My Master",
         "",
         "This journal was",
@@ -14,18 +12,14 @@ namespace Server.Items
         "our controllers.  It",
         "seems he has lost",
         "faith in you.  Know",
-        "that he has been"
-      ),
-      new BookPageInfo
-      (
+        "that he has been"),
+      new BookPageInfo(
         "dealth with and will",
         "never again speak",
         "ill of you or our",
         "cause.",
-        "          -Galzon"
-      ),
-      new BookPageInfo
-      (
+        "          -Galzon"),
+      new BookPageInfo(
         "We have completted",
         "construction of the",
         "devices needed to",
@@ -33,10 +27,8 @@ namespace Server.Items
         "overseers and minions",
         "as per the request of",
         "the Master.  The",
-        "gargoyles have been"
-      ),
-      new BookPageInfo
-      (
+        "gargoyles have been"),
+      new BookPageInfo(
         "most useful and their",
         "knowledge of the",
         "techniques for the",
@@ -44,10 +36,8 @@ namespace Server.Items
         "creatures will serve",
         "us well.",
         "        -----",
-        "I am not one to"
-      ),
-      new BookPageInfo
-      (
+        "I am not one to"),
+      new BookPageInfo(
         "criticize the Master,",
         "but I believe he may",
         "have erred in his",
@@ -55,10 +45,8 @@ namespace Server.Items
         "the wingless ones.",
         "Already our forces",
         "are weakened by the",
-        "constant attacks of"
-      ),
-      new BookPageInfo
-      (
+        "constant attacks of"),
+      new BookPageInfo(
         "the humans  Their",
         "strength and",
         "unquestioning",
@@ -66,10 +54,8 @@ namespace Server.Items
         "have made them very",
         "useful in the fight",
         "against the humans.",
-        "But the Master felt"
-      ),
-      new BookPageInfo
-      (
+        "But the Master felt"),
+      new BookPageInfo(
         "their presence to be",
         "an annoyance and",
         "a distraction to the",
@@ -77,10 +63,8 @@ namespace Server.Items
         "not difficult at all",
         "to remove them from",
         "this world.  But now",
-        "I fear without more"
-      ),
-      new BookPageInfo
-      (
+        "I fear without more"),
+      new BookPageInfo(
         "allies, willing or",
         "not, we stand",
         "little chance of",
@@ -88,15 +72,11 @@ namespace Server.Items
         "humans from our",
         "lands.  Perhaps if",
         "the Master had",
-        "shown a little"
-      ),
-      new BookPageInfo
-      (
+        "shown a little"),
+      new BookPageInfo(
         "mercy and forsight",
         "we would not be",
-        "in such dire peril."
-      )
-    );
+        "in such dire peril."));
 
     [Constructible]
     public DrakovsJournal() : base(false)

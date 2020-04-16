@@ -99,7 +99,7 @@ namespace Server
 
     public void WriteEncodedInt(int value)
     {
-      uint v = (uint)value;
+      var v = (uint)value;
 
       while (v >= 0x80)
       {
@@ -118,7 +118,7 @@ namespace Server
 
     internal void InternalWriteString(string value)
     {
-      int length = m_Encoding.GetByteCount(value);
+      var length = m_Encoding.GetByteCount(value);
 
       WriteEncodedInt(length);
 
@@ -130,13 +130,13 @@ namespace Server
 
       if (length > LargeByteBufferSize)
       {
-        int current = 0;
-        int charsLeft = value.Length;
+        var current = 0;
+        var charsLeft = value.Length;
 
         while (charsLeft > 0)
         {
-          int charCount = charsLeft > m_MaxBufferChars ? m_MaxBufferChars : charsLeft;
-          int byteLength = m_Encoding.GetBytes(value, current, charCount, m_CharacterBuffer, 0);
+          var charCount = charsLeft > m_MaxBufferChars ? m_MaxBufferChars : charsLeft;
+          var byteLength = m_Encoding.GetBytes(value, current, charCount, m_CharacterBuffer, 0);
 
           if (m_Index + byteLength > m_Buffer.Length)
             Flush();
@@ -150,7 +150,7 @@ namespace Server
       }
       else
       {
-        int byteLength = m_Encoding.GetBytes(value, 0, value.Length, m_CharacterBuffer, 0);
+        var byteLength = m_Encoding.GetBytes(value, 0, value.Length, m_CharacterBuffer, 0);
 
         if (m_Index + byteLength > m_Buffer.Length)
           Flush();
@@ -200,8 +200,8 @@ namespace Server
 
     public void WriteDeltaTime(DateTime value)
     {
-      long ticks = value.Ticks;
-      long now = DateTime.UtcNow.Ticks;
+      var ticks = value.Ticks;
+      var now = DateTime.UtcNow.Ticks;
 
       TimeSpan d;
 
@@ -229,9 +229,9 @@ namespace Server
 
     public void Write(decimal value)
     {
-      int[] bits = decimal.GetBits(value);
+      var bits = decimal.GetBits(value);
 
-      for (int i = 0; i < bits.Length; ++i)
+      for (var i = 0; i < bits.Length; ++i)
         Write(bits[i]);
     }
 
@@ -344,7 +344,7 @@ namespace Server
 
       m_SingleCharBuffer[0] = value;
 
-      int byteCount = m_Encoding.GetBytes(m_SingleCharBuffer, 0, 1, m_Buffer, m_Index);
+      var byteCount = m_Encoding.GetBytes(m_SingleCharBuffer, 0, 1, m_Buffer, m_Index);
       m_Index += byteCount;
     }
 
@@ -369,6 +369,7 @@ namespace Server
       Buffer.BlockCopy(value, 0, m_Buffer, m_Index, length);
       m_Index += length;
     }
+
     public void Write(sbyte value)
     {
       if (m_Index + 1 > m_Buffer.Length)
@@ -491,7 +492,7 @@ namespace Server
     public void WriteItemList<T>(List<T> list, bool tidy) where T : Item
     {
       if (tidy)
-        for (int i = 0; i < list.Count;)
+        for (var i = 0; i < list.Count;)
           if (list[i]?.Deleted != false)
             list.RemoveAt(i);
           else
@@ -499,7 +500,7 @@ namespace Server
 
       Write(list.Count);
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
         Write(list[i]);
     }
 
@@ -514,7 +515,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (Item item in set) Write(item);
+      foreach (var item in set) Write(item);
     }
 
     public void WriteItemSet<T>(HashSet<T> set) where T : Item
@@ -528,7 +529,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (T item in set) Write(item);
+      foreach (var item in set) Write(item);
     }
 
     public void Write(List<Mobile> list)
@@ -539,7 +540,7 @@ namespace Server
     public void Write(List<Mobile> list, bool tidy)
     {
       if (tidy)
-        for (int i = 0; i < list.Count;)
+        for (var i = 0; i < list.Count;)
           if (list[i].Deleted)
             list.RemoveAt(i);
           else
@@ -547,7 +548,7 @@ namespace Server
 
       Write(list.Count);
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
         Write(list[i]);
     }
 
@@ -559,7 +560,7 @@ namespace Server
     public void WriteMobileList<T>(List<T> list, bool tidy) where T : Mobile
     {
       if (tidy)
-        for (int i = 0; i < list.Count;)
+        for (var i = 0; i < list.Count;)
           if (list[i].Deleted)
             list.RemoveAt(i);
           else
@@ -567,7 +568,7 @@ namespace Server
 
       Write(list.Count);
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
         Write(list[i]);
     }
 
@@ -582,7 +583,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (Mobile mob in set) Write(mob);
+      foreach (var mob in set) Write(mob);
     }
 
     public void WriteMobileSet<T>(HashSet<T> set) where T : Mobile
@@ -596,7 +597,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (T mob in set) Write(mob);
+      foreach (var mob in set) Write(mob);
     }
 
     public void Write(List<BaseGuild> list)
@@ -607,7 +608,7 @@ namespace Server
     public void Write(List<BaseGuild> list, bool tidy)
     {
       if (tidy)
-        for (int i = 0; i < list.Count;)
+        for (var i = 0; i < list.Count;)
           if (list[i].Disbanded)
             list.RemoveAt(i);
           else
@@ -615,7 +616,7 @@ namespace Server
 
       Write(list.Count);
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
         Write(list[i]);
     }
 
@@ -627,7 +628,7 @@ namespace Server
     public void WriteGuildList<T>(List<T> list, bool tidy) where T : BaseGuild
     {
       if (tidy)
-        for (int i = 0; i < list.Count;)
+        for (var i = 0; i < list.Count;)
           if (list[i].Disbanded)
             list.RemoveAt(i);
           else
@@ -635,7 +636,7 @@ namespace Server
 
       Write(list.Count);
 
-      for (int i = 0; i < list.Count; ++i)
+      for (var i = 0; i < list.Count; ++i)
         Write(list[i]);
     }
 
@@ -650,7 +651,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (BaseGuild guild in set) Write(guild);
+      foreach (var guild in set) Write(guild);
     }
 
     public void WriteGuildSet<T>(HashSet<T> set) where T : BaseGuild
@@ -664,8 +665,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (T guild in set) Write(guild);
+      foreach (var guild in set) Write(guild);
     }
   }
-
 }

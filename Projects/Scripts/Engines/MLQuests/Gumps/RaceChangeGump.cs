@@ -20,10 +20,10 @@ namespace Server.Engines.MLQuests.Gumps
   public class RaceChangeConfirmGump : Gump
   {
     private static Dictionary<NetState, RaceChangeState> m_Pending;
-    private PlayerMobile m_From;
+    private readonly PlayerMobile m_From;
 
-    private IRaceChanger m_Owner;
-    private Race m_Race;
+    private readonly IRaceChanger m_Owner;
+    private readonly Race m_Race;
 
     public RaceChangeConfirmGump(IRaceChanger owner, PlayerMobile from, Race targetRace)
       : base(50, 50)
@@ -53,18 +53,18 @@ namespace Server.Engines.MLQuests.Gumps
       switch (info.ButtonID)
       {
         case 0: // Cancel
-        {
-          m_Owner?.OnCancel(m_From);
+          {
+            m_Owner?.OnCancel(m_From);
 
-          break;
-        }
+            break;
+          }
         case 1: // Okay
-        {
-          if (m_Owner?.CheckComplete(m_From) != false)
-            Offer(m_Owner, m_From, m_Race);
+          {
+            if (m_Owner?.CheckComplete(m_From) != false)
+              Offer(m_Owner, m_From, m_Race);
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -120,13 +120,13 @@ namespace Server.Engines.MLQuests.Gumps
           case Layer.Backpack:
           case Layer.Mount:
           case Layer.Bank:
-          {
-            continue; // ignore
-          }
+            {
+              continue; // ignore
+            }
           default:
-          {
-            return true;
-          }
+            {
+              return true;
+            }
         }
 
       return false;
@@ -227,9 +227,9 @@ namespace Server.Engines.MLQuests.Gumps
     {
       private static readonly TimeSpan m_TimeoutDelay = TimeSpan.FromMinutes(1);
 
-      public IRaceChanger m_Owner;
-      public Race m_TargetRace;
-      public Timer m_Timeout;
+      public readonly IRaceChanger m_Owner;
+      public readonly Race m_TargetRace;
+      public readonly Timer m_Timeout;
 
       public RaceChangeState(IRaceChanger owner, NetState ns, Race targetRace)
       {
@@ -267,8 +267,6 @@ namespace Server.Engines.MLQuests.Gumps
       m_Stream.Write((byte)0xFF);
     }
   }
-
-  #region For testing
 
   public class RaceChangeDeed : Item, IRaceChanger
   {
@@ -330,6 +328,4 @@ namespace Server.Engines.MLQuests.Gumps
       int version = reader.ReadInt();
     }
   }
-
-  #endregion
 }

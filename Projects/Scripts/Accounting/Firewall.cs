@@ -41,7 +41,7 @@ namespace Server
       }
     }
 
-    public static List<IFirewallEntry> List{ get; }
+    public static List<IFirewallEntry> List { get; }
 
     public static IFirewallEntry ToFirewallEntry(object entry)
     {
@@ -60,7 +60,7 @@ namespace Server
       if (IPAddress.TryParse(entry, out IPAddress addr))
         return new IPFirewallEntry(addr);
 
-      //Try CIDR parse
+      // Try CIDR parse
       string[] str = entry.Split('/');
 
       if (str.Length == 2)
@@ -164,8 +164,6 @@ namespace Server
        * */
     }
 
-    #region Firewall Entries
-
     public interface IFirewallEntry
     {
       bool IsBlocked(IPAddress address);
@@ -173,7 +171,7 @@ namespace Server
 
     public class IPFirewallEntry : IFirewallEntry
     {
-      private IPAddress m_Address;
+      private readonly IPAddress m_Address;
 
       public IPFirewallEntry(IPAddress address) => m_Address = address;
 
@@ -203,8 +201,8 @@ namespace Server
 
     public class CIDRFirewallEntry : IFirewallEntry
     {
-      private int m_CIDRLength;
-      private IPAddress m_CIDRPrefix;
+      private readonly int m_CIDRLength;
+      private readonly IPAddress m_CIDRPrefix;
 
       public CIDRFirewallEntry(IPAddress cidrPrefix, int cidrLength)
       {
@@ -240,7 +238,7 @@ namespace Server
 
     public class WildcardIPFirewallEntry : IFirewallEntry
     {
-      private string m_Entry;
+      private readonly string m_Entry;
 
       private bool m_Valid;
 
@@ -249,7 +247,7 @@ namespace Server
       public bool IsBlocked(IPAddress address)
       {
         if (!m_Valid)
-          return false; //Why process if it's invalid?  it'll return false anyway after processing it.
+          return false; // Why process if it's invalid?  it'll return false anyway after processing it.
 
         bool matched = Utility.IPMatch(m_Entry, address, out bool valid);
         m_Valid = valid;
@@ -268,7 +266,5 @@ namespace Server
 
       public override int GetHashCode() => m_Entry.GetHashCode();
     }
-
-    #endregion
   }
 }

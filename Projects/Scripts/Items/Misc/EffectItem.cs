@@ -5,7 +5,7 @@ namespace Server.Items
 {
   public class EffectItem : Item
   {
-    private static List<EffectItem> m_Free = new List<EffectItem>(); // List of available EffectItems
+    private static readonly List<EffectItem> m_Free = new List<EffectItem>(); // List of available EffectItems
 
     public static readonly TimeSpan DefaultDuration = TimeSpan.FromSeconds(5.0);
 
@@ -67,7 +67,7 @@ namespace Server.Items
 
     private class FreeTimer : Timer
     {
-      private EffectItem m_Item;
+      private readonly EffectItem m_Item;
 
       public FreeTimer(EffectItem item, TimeSpan delay) : base(delay)
       {

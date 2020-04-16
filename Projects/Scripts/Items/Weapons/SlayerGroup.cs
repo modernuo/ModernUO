@@ -163,17 +163,17 @@ namespace Server.Items
       TotalEntries = CompileEntries(Groups);
     }
 
-    public static SlayerEntry[] TotalEntries{ get; }
+    public static SlayerEntry[] TotalEntries { get; }
 
-    public static SlayerGroup[] Groups{ get; }
+    public static SlayerGroup[] Groups { get; }
 
-    public SlayerGroup[] Opposition{ get; set; }
+    public SlayerGroup[] Opposition { get; set; }
 
-    public SlayerEntry Super{ get; set; }
+    public SlayerEntry Super { get; set; }
 
-    public SlayerEntry[] Entries{ get; set; }
+    public SlayerEntry[] Entries { get; set; }
 
-    public Type[] FoundOn{ get; set; }
+    public Type[] FoundOn { get; set; }
 
     public static SlayerEntry GetEntryByName(SlayerName name)
     {

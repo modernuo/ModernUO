@@ -8,7 +8,7 @@ namespace Server.Spells.Seventh
 {
   public class EnergyFieldSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Energy Field", "In Sanct Grav",
       221,
       9022,
@@ -16,8 +16,7 @@ namespace Server.Spells.Seventh
       Reagent.BlackPearl,
       Reagent.MandrakeRoot,
       Reagent.SpidersSilk,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public EnergyFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -92,8 +91,8 @@ namespace Server.Spells.Seventh
     [DispellableField]
     private class InternalItem : Item
     {
-      private Mobile m_Caster;
-      private Timer m_Timer;
+      private readonly Mobile m_Caster;
+      private readonly Timer m_Timer;
 
       public InternalItem(Point3D loc, Map map, TimeSpan duration, int itemID, Mobile caster) : base(itemID)
       {
@@ -143,7 +142,7 @@ namespace Server.Spells.Seventh
       {
         if (!(m is PlayerMobile))
           return base.OnMoveOver(m);
-        
+
         int noto = Notoriety.Compute(m_Caster, m);
         return noto != Notoriety.Enemy && noto != Notoriety.Ally && base.OnMoveOver(m);
       }
@@ -157,7 +156,7 @@ namespace Server.Spells.Seventh
 
       private class InternalTimer : Timer
       {
-        private InternalItem m_Item;
+        private readonly InternalItem m_Item;
 
         public InternalTimer(InternalItem item, TimeSpan duration) : base(duration)
         {

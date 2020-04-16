@@ -5,8 +5,6 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Definitions
 {
-  #region Quests
-
   public class PointyEars : MLQuest
   {
     public PointyEars()
@@ -31,10 +29,6 @@ namespace Server.Engines.MLQuests.Definitions
       PutSpawner(new Spawner(1, 5, 10, 0, 4, "Drithen"), new Point3D(1983, 1364, -80), Map.Malas);
     }
   }
-
-  #endregion
-
-  #region Mobiles
 
   [QuesterName("Drithen (Umbra)")]
   public class Drithen : BaseCreature
@@ -88,6 +82,4 @@ namespace Server.Engines.MLQuests.Definitions
       int version = reader.ReadInt();
     }
   }
-
-  #endregion
 }

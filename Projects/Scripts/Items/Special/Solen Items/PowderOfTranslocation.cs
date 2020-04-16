@@ -5,11 +5,11 @@ namespace Server.Items
 {
   public interface TranslocationItem
   {
-    int Charges{ get; set; }
-    int Recharges{ get; set; }
-    int MaxCharges{ get; }
-    int MaxRecharges{ get; }
-    string TranslocationItemName{ get; }
+    int Charges { get; set; }
+    int Recharges { get; set; }
+    int MaxCharges { get; }
+    int MaxRecharges { get; }
+    string TranslocationItemName { get; }
   }
 
   public class PowderOfTranslocation : Item
@@ -50,7 +50,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private PowderOfTranslocation m_Powder;
+      private readonly PowderOfTranslocation m_Powder;
 
       public InternalTarget(PowderOfTranslocation powder) : base(-1, false, TargetFlags.None) => m_Powder = powder;
 

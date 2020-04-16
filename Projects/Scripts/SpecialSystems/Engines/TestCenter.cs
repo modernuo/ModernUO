@@ -121,7 +121,7 @@ namespace Server.Misc
 
     private static void ChangeSkill(Mobile from, string name, double value)
     {
-      if (!Enum.TryParse(name, true, out SkillName index) || !Core.SE && (int)index > 51 || !Core.AOS && (int)index > 48)
+      if (!Enum.TryParse(name, true, out SkillName index) || (!Core.SE && (int)index > 51) || (!Core.AOS && (int)index > 48))
       {
         from.SendLocalizedMessage(1005631); // You have specified an invalid skill to set.
         return;
@@ -152,7 +152,6 @@ namespace Server.Misc
       }
     }
 
-
     public class TCHelpGump : Gump
     {
       public TCHelpGump() : base(40, 40)
@@ -178,52 +177,52 @@ namespace Server.Misc
         switch (info.ButtonID)
         {
           case 1: // RunUO
-          {
-            sender.LaunchBrowser("https://github.com/runuo/");
-            break;
-          }
-          case 2: // List of skills
-          {
-            string[] strings = Enum.GetNames(typeof(SkillName));
-
-            Array.Sort(strings);
-
-            StringBuilder sb = new StringBuilder();
-
-            if (strings.Length > 0)
-              sb.Append(strings[0]);
-
-            for (int i = 1; i < strings.Length; ++i)
             {
-              string v = strings[i];
-
-              if (sb.Length + 1 + v.Length >= 256)
-              {
-                sender.Send(new AsciiMessage(Server.Serial.MinusOne, -1, MessageType.Label, 0x35, 3,
-                  "System", sb.ToString()));
-                sb = new StringBuilder();
-                sb.Append(v);
-              }
-              else
-              {
-                sb.Append(' ');
-                sb.Append(v);
-              }
+              sender.LaunchBrowser("https://github.com/runuo/");
+              break;
             }
+          case 2: // List of skills
+            {
+              string[] strings = Enum.GetNames(typeof(SkillName));
 
-            if (sb.Length > 0)
-              sender.Send(new AsciiMessage(Server.Serial.MinusOne, -1, MessageType.Label, 0x35, 3, "System",
-                sb.ToString()));
+              Array.Sort(strings);
 
-            break;
-          }
+              StringBuilder sb = new StringBuilder();
+
+              if (strings.Length > 0)
+                sb.Append(strings[0]);
+
+              for (int i = 1; i < strings.Length; ++i)
+              {
+                string v = strings[i];
+
+                if (sb.Length + 1 + v.Length >= 256)
+                {
+                  sender.Send(new AsciiMessage(Server.Serial.MinusOne, -1, MessageType.Label, 0x35, 3,
+                    "System", sb.ToString()));
+                  sb = new StringBuilder();
+                  sb.Append(v);
+                }
+                else
+                {
+                  sb.Append(' ');
+                  sb.Append(v);
+                }
+              }
+
+              if (sb.Length > 0)
+                sender.Send(new AsciiMessage(Server.Serial.MinusOne, -1, MessageType.Label, 0x35, 3, "System",
+                  sb.ToString()));
+
+              break;
+            }
           case 3: // Command list
-          {
-            sender.Mobile.SendAsciiMessage(0x482, "The command prefix is \"{0}\"", CommandSystem.Prefix);
-            CommandHandlers.Help_OnCommand(new CommandEventArgs(sender.Mobile, "help", "", new string[0]));
+            {
+              sender.Mobile.SendAsciiMessage(0x482, "The command prefix is \"{0}\"", CommandSystem.Prefix);
+              CommandHandlers.Help_OnCommand(new CommandEventArgs(sender.Mobile, "help", "", new string[0]));
 
-            break;
-          }
+              break;
+            }
         }
       }
     }

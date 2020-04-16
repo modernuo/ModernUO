@@ -145,7 +145,7 @@ namespace Server.Mobiles
       {
         scalar *= 0.1;
 
-        if (0.1 >= Utility.RandomDouble())
+        if (Utility.RandomDouble() <= 0.1)
           SpawnPixies(caster);
       }
     }
@@ -165,7 +165,7 @@ namespace Server.Mobiles
 
       CheckQueen();
 
-      if (m_Queen != null && 0.1 >= Utility.RandomDouble())
+      if (m_Queen != null && Utility.RandomDouble() <= 0.1)
         SpawnPixies(attacker);
 
       attacker.Damage(Utility.Random(20, 10), this);
@@ -192,12 +192,12 @@ namespace Server.Mobiles
       switch (version)
       {
         case 0:
-        {
-          m_Queen = reader.ReadMobile<BaseCreature>();
-          m_SpawnedQueen = reader.ReadBool();
+          {
+            m_Queen = reader.ReadMobile<BaseCreature>();
+            m_SpawnedQueen = reader.ReadBool();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

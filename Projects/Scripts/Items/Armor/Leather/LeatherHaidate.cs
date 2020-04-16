@@ -26,7 +26,6 @@ namespace Server.Items
     public override ArmorMaterialType MaterialType => ArmorMaterialType.Leather;
     public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
-
     public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
 
     public override void Serialize(IGenericWriter writer)

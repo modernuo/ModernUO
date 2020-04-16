@@ -8,7 +8,7 @@ namespace Server.SkillHandlers
 {
   public class Discordance
   {
-    private static Dictionary<Mobile, DiscordanceInfo> m_Table = new Dictionary<Mobile, DiscordanceInfo>();
+    private static readonly Dictionary<Mobile, DiscordanceInfo> m_Table = new Dictionary<Mobile, DiscordanceInfo>();
 
     public static void Initialize()
     {
@@ -88,12 +88,12 @@ namespace Server.SkillHandlers
 
     private class DiscordanceInfo
     {
-      public Mobile m_Creature;
-      public int m_Effect;
+      public readonly Mobile m_Creature;
+      public readonly int m_Effect;
       public bool m_Ending;
       public DateTime m_EndTime;
-      public Mobile m_From;
-      public List<object> m_Mods;
+      public readonly Mobile m_From;
+      public readonly List<object> m_Mods;
       public Timer m_Timer;
 
       public DiscordanceInfo(Mobile from, Mobile creature, int effect, List<object> mods)
@@ -141,7 +141,7 @@ namespace Server.SkillHandlers
 
     public class DiscordanceTarget : Target
     {
-      private BaseInstrument m_Instrument;
+      private readonly BaseInstrument m_Instrument;
 
       public DiscordanceTarget(Mobile from, BaseInstrument inst) : base(
         BaseInstrument.GetBardRange(from, SkillName.Discordance), false, TargetFlags.None) =>
@@ -159,13 +159,13 @@ namespace Server.SkillHandlers
         }
         else if (target is Mobile targ)
         {
-          if (targ == from || targ is BaseCreature bc &&
+          if (targ == from || (targ is BaseCreature bc &&
               (bc.BardImmune || !from.CanBeHarmful(bc, false)) &&
-              bc.ControlMaster != from)
+              bc.ControlMaster != from))
           {
             from.SendLocalizedMessage(1049535); // A song of discord would have no effect on that.
           }
-          else if (m_Table.ContainsKey(targ)) //Already discorded
+          else if (m_Table.ContainsKey(targ)) // Already discorded
           {
             from.SendLocalizedMessage(1049537); // Your target is already in discord.
           }

@@ -9,8 +9,8 @@ namespace Server.Engines.Chat
     public const char ModeratorColorCharacter = '1';
     public const char VoicedColorCharacter = '2';
 
-    private static List<ChatUser> m_Users = new List<ChatUser>();
-    private static Dictionary<Mobile, ChatUser> m_Table = new Dictionary<Mobile, ChatUser>();
+    private static readonly List<ChatUser> m_Users = new List<ChatUser>();
+    private static readonly Dictionary<Mobile, ChatUser> m_Table = new Dictionary<Mobile, ChatUser>();
 
     public ChatUser(Mobile m)
     {
@@ -19,11 +19,11 @@ namespace Server.Engines.Chat
       Ignoring = new List<ChatUser>();
     }
 
-    public Mobile Mobile{ get; }
+    public Mobile Mobile { get; }
 
-    public List<ChatUser> Ignored{ get; }
+    public List<ChatUser> Ignored { get; }
 
-    public List<ChatUser> Ignoring{ get; }
+    public List<ChatUser> Ignoring { get; }
 
     public string Username
     {
@@ -41,13 +41,13 @@ namespace Server.Engines.Chat
       }
     }
 
-    public Channel CurrentChannel{ get; set; }
+    public Channel CurrentChannel { get; set; }
 
     public bool IsOnline => Mobile.NetState != null;
 
-    public bool Anonymous{ get; set; }
+    public bool Anonymous { get; set; }
 
-    public bool IgnorePrivateMessage{ get; set; }
+    public bool IgnorePrivateMessage { get; set; }
 
     public bool IsModerator => CurrentChannel?.IsModerator(this) == true;
 
@@ -135,7 +135,7 @@ namespace Server.Engines.Chat
           break;
       }
 
-      //ChatSystem.SendCommandTo( user.m_Mobile, ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username );
+      // ChatSystem.SendCommandTo( user.m_Mobile, ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username );
 
       return user;
     }

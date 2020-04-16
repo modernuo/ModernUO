@@ -4,13 +4,12 @@ namespace Server.Spells.Second
 {
   public class HarmSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Harm", "An Mani",
       212,
       Core.AOS ? 9001 : 9041,
       Reagent.Nightshade,
-      Reagent.SpidersSilk
-    );
+      Reagent.SpidersSilk);
 
     public HarmSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

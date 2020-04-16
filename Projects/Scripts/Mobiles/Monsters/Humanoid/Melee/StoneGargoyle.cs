@@ -37,7 +37,7 @@ namespace Server.Mobiles
 
       PackItem(new IronIngot(12));
 
-      if (0.05 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.05)
         PackItem(new GargoylesPickaxe());
     }
 

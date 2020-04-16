@@ -28,7 +28,7 @@ namespace Server.Items
       Effects.PlaySound(GetWorldLocation(), Map, 0x48F);
       Effects.SendLocationEffect(GetWorldLocation(), Map, 0x3728, 10, 10, 0, 0);
 
-      if (0.3 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.3)
       {
         if (ItemID == 0xF7E)
           from.SendMessage("You destroy the bone.");
@@ -71,7 +71,7 @@ namespace Server.Items
 
     private class SpawnTimer : Timer
     {
-      private Item m_Item;
+      private readonly Item m_Item;
 
       public SpawnTimer(Item item) : base(TimeSpan.FromSeconds(Utility.RandomMinMax(5, 10)))
       {

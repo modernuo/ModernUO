@@ -6,15 +6,14 @@ namespace Server.Spells.Fifth
 {
   public class DispelFieldSpell : MagerySpell, ISpellTargetingItem
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Dispel Field", "An Grav",
       206,
       9002,
       Reagent.BlackPearl,
       Reagent.SpidersSilk,
       Reagent.SulfurousAsh,
-      Reagent.Garlic
-    );
+      Reagent.Garlic);
 
     public DispelFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

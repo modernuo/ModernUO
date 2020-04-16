@@ -24,11 +24,11 @@ namespace Server.Items
 
     public virtual bool IsCuttable => false;
 
-    public List<PlagueBeastComponent> Components{ get; private set; }
+    public List<PlagueBeastComponent> Components { get; private set; }
 
-    public int BrainHue{ get; set; }
+    public int BrainHue { get; set; }
 
-    public bool Opened{ get; set; }
+    public bool Opened { get; set; }
 
     public virtual void Initialize()
     {
@@ -212,7 +212,7 @@ namespace Server.Items
 
   public class PlagueBeastRubbleOrgan : PlagueBeastOrgan
   {
-    private static int[] m_Hues =
+    private static readonly int[] m_Hues =
     {
       0xD, 0x17, 0x2B, 0x42, 0x54, 0x5D
     };

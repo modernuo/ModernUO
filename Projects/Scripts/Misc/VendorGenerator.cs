@@ -7,7 +7,7 @@ namespace Server
 {
   public class VendorGenerator
   {
-    private static Rectangle2D[] m_BritRegions =
+    private static readonly Rectangle2D[] m_BritRegions =
     {
       new Rectangle2D(new Point2D(250, 750), new Point2D(775, 1330)),
       new Rectangle2D(new Point2D(525, 2095), new Point2D(925, 2430)),
@@ -27,7 +27,7 @@ namespace Server
       new Rectangle2D(new Point2D(5120, 2300), new Point2D(6143, 4095))
     };
 
-    private static Rectangle2D[] m_IlshRegions =
+    private static readonly Rectangle2D[] m_IlshRegions =
     {
       new Rectangle2D(new Point2D(0, 0), new Point2D(288 * 8, 200 * 8))
     };
@@ -106,13 +106,13 @@ namespace Server
     }
 
     private static bool IsStaticFloor(int itemID) =>
-      itemID >= 0x495 && itemID <= 0x514
-      || itemID >= 0x519 && itemID <= 0x53A;
+      (itemID >= 0x495 && itemID <= 0x514)
+      || (itemID >= 0x519 && itemID <= 0x53A);
 
     private static bool IsDisplayCase(int itemID) =>
-      itemID >= 0xB00 && itemID <= 0xB02
-      || itemID >= 0xB06 && itemID <= 0xB0A
-      || itemID >= 0xB0D && itemID <= 0xB17;
+      (itemID >= 0xB00 && itemID <= 0xB02)
+      || (itemID >= 0xB06 && itemID <= 0xB0A)
+      || (itemID >= 0xB0D && itemID <= 0xB17);
 
     private static void Process(Map map, Rectangle2D[] regions)
     {
@@ -122,9 +122,9 @@ namespace Server
       World.Broadcast(0x35, true, "Generating vendor spawns for {0}, please wait.", map);
 
       for (int i = 0; i < regions.Length; ++i)
-      for (int x = 0; x < map.Width; ++x)
-      for (int y = 0; y < map.Height; ++y)
-        CheckPoint(map, regions[i].X + x, regions[i].Y + y);
+        for (int x = 0; x < map.Width; ++x)
+          for (int y = 0; y < map.Height; ++y)
+            CheckPoint(map, regions[i].X + x, regions[i].Y + y);
 
       for (int i = 0; i < m_ShopList.Count; ++i)
       {
@@ -254,22 +254,22 @@ namespace Server
     }
 
     private static bool IsClothes(int itemID) =>
-      itemID >= 0x1515 && itemID <= 0x1518 || itemID >= 0x152E && itemID <= 0x1531 || itemID >= 0x1537
-      && itemID <= 0x154C || itemID >= 0x1EFD && itemID <= 0x1F04 || itemID >= 0x170B && itemID <= 0x171C;
+      (itemID >= 0x1515 && itemID <= 0x1518) || (itemID >= 0x152E && itemID <= 0x1531) || (itemID >= 0x1537
+      && itemID <= 0x154C) || (itemID >= 0x1EFD && itemID <= 0x1F04) || (itemID >= 0x170B && itemID <= 0x171C);
 
     private static bool IsArmor(int itemID) =>
-      itemID >= 0x13BB && itemID <= 0x13E2 || itemID >= 0x13E5 && itemID <= 0x13F2 ||
-      itemID >= 0x1408 && itemID <= 0x141A || itemID >= 0x144E && itemID <= 0x1457;
+      (itemID >= 0x13BB && itemID <= 0x13E2) || (itemID >= 0x13E5 && itemID <= 0x13F2) ||
+      (itemID >= 0x1408 && itemID <= 0x141A) || (itemID >= 0x144E && itemID <= 0x1457);
 
     private static bool IsMetalWeapon(int itemID) =>
-      itemID >= 0xF43 && itemID <= 0xF4E || itemID >= 0xF51 && itemID <= 0xF52 ||
-      itemID >= 0xF5C && itemID <= 0xF63 || itemID >= 0x13AF && itemID <= 0x13B0 ||
-      itemID >= 0x13B5 && itemID <= 0x13BA || itemID >= 0x13FA && itemID <= 0x13FB ||
-      itemID >= 0x13FE && itemID <= 0x1407 || itemID >= 0x1438 && itemID <= 0x1443;
+      (itemID >= 0xF43 && itemID <= 0xF4E) || (itemID >= 0xF51 && itemID <= 0xF52) ||
+      (itemID >= 0xF5C && itemID <= 0xF63) || (itemID >= 0x13AF && itemID <= 0x13B0) ||
+      (itemID >= 0x13B5 && itemID <= 0x13BA) || (itemID >= 0x13FA && itemID <= 0x13FB) ||
+      (itemID >= 0x13FE && itemID <= 0x1407) || (itemID >= 0x1438 && itemID <= 0x1443);
 
     private static bool IsArcheryWeapon(int itemID) =>
-      itemID >= 0xF4F && itemID <= 0xF50 || itemID >= 0x13B1 && itemID <= 0x13B2 ||
-      itemID >= 0x13FC && itemID <= 0x13FD;
+      (itemID >= 0xF4F && itemID <= 0xF50) || (itemID >= 0x13B1 && itemID <= 0x13B2) ||
+      (itemID >= 0x13FC && itemID <= 0x13FD);
 
     private static ShopFlags ProcessDisplayedItem(int itemID)
     {
@@ -304,8 +304,8 @@ namespace Server
       if (itemID >= 0xF78 && itemID <= 0xF91)
         res |= ShopFlags.Reagent;
 
-      if (itemID >= 0xE35 && itemID <= 0xE3A || itemID >= 0xEF4 && itemID <= 0xEF9 ||
-          itemID >= 0x1F2D && itemID <= 0x1F72)
+      if ((itemID >= 0xE35 && itemID <= 0xE3A) || (itemID >= 0xEF4 && itemID <= 0xEF9) ||
+          (itemID >= 0x1F2D && itemID <= 0x1F72))
         res |= ShopFlags.Scroll;
 
       if (itemID == 0xE38 || itemID == 0xEFA)
@@ -410,9 +410,9 @@ namespace Server
       floor.Add(p);
 
       for (int xo = -1; xo <= 1; ++xo)
-      for (int yo = -1; yo <= 1; ++yo)
-        if ((xo != 0 || yo != 0) && IsFloor(map, x + xo, y + yo, false))
-          RecurseFindFloor(map, x + xo, y + yo, floor);
+        for (int yo = -1; yo <= 1; ++yo)
+          if ((xo != 0 || yo != 0) && IsFloor(map, x + xo, y + yo, false))
+            RecurseFindFloor(map, x + xo, y + yo, floor);
     }
 
     [Flags]

@@ -11,8 +11,7 @@ namespace Server.Ethics.Evil
         0,
         "Unholy Sense",
         "Drewrok Velgo",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

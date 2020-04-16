@@ -6,8 +6,8 @@ namespace Server.Items
 {
   public interface IFlourMill
   {
-    int MaxFlour{ get; }
-    int CurFlour{ get; set; }
+    int MaxFlour { get; }
+    int CurFlour { get; set; }
   }
 
   public enum FlourMillStage
@@ -19,7 +19,7 @@ namespace Server.Items
 
   public class FlourMillEastAddon : BaseAddon, IFlourMill
   {
-    private static int[][] m_StageTable =
+    private static readonly int[][] m_StageTable =
     {
       new[] { 0x1920, 0x1921, 0x1925 },
       new[] { 0x1922, 0x1923, 0x1926 },
@@ -86,7 +86,6 @@ namespace Server.Items
       if (from?.Deleted == false && !Deleted && IsFull)
       {
         SackFlour flour = new SackFlour { ItemID = Utility.RandomBool() ? 4153 : 4165 };
-
 
         if (from.PlaceInBackpack(flour))
         {
@@ -172,10 +171,10 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Flour = reader.ReadInt();
-          break;
-        }
+          {
+            m_Flour = reader.ReadInt();
+            break;
+          }
       }
 
       UpdateStage();

@@ -6,7 +6,7 @@ namespace Server.Engines.MLQuests.Gumps
 {
   public class QuestReportBackGump : BaseQuestGump
   {
-    private MLQuestInstance m_Instance;
+    private readonly MLQuestInstance m_Instance;
 
     public QuestReportBackGump(MLQuestInstance instance)
       : base(3006156) // Quest Conversation

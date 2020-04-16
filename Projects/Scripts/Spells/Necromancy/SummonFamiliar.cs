@@ -9,14 +9,13 @@ namespace Server.Spells.Necromancy
 {
   public class SummonFamiliarSpell : NecromancerSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Summon Familiar", "Kal Xen Bal",
       203,
       9031,
       Reagent.BatWing,
       Reagent.GraveDust,
-      Reagent.DaemonBlood
-    );
+      Reagent.DaemonBlood);
 
     public SummonFamiliarSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -27,9 +26,9 @@ namespace Server.Spells.Necromancy
     public override double RequiredSkill => 30.0;
     public override int RequiredMana => 17;
 
-    public static Dictionary<Mobile, BaseCreature> Table{ get; } = new Dictionary<Mobile, BaseCreature>();
+    public static Dictionary<Mobile, BaseCreature> Table { get; } = new Dictionary<Mobile, BaseCreature>();
 
-    public static SummonFamiliarEntry[] Entries{ get; } =
+    public static SummonFamiliarEntry[] Entries { get; } =
     {
       new SummonFamiliarEntry(typeof(HordeMinionFamiliar), 1060146, 30.0, 30.0), // Horde Minion
       new SummonFamiliarEntry(typeof(ShadowWispFamiliar), 1060142, 50.0, 50.0), // Shadow Wisp
@@ -69,13 +68,13 @@ namespace Server.Spells.Necromancy
       ReqSpiritSpeak = reqSpiritSpeak;
     }
 
-    public Type Type{ get; }
+    public Type Type { get; }
 
-    public object Name{ get; }
+    public object Name { get; }
 
-    public double ReqNecromancy{ get; }
+    public double ReqNecromancy { get; }
 
-    public double ReqSpiritSpeak{ get; }
+    public double ReqSpiritSpeak { get; }
   }
 
   public class SummonFamiliarGump : Gump
@@ -86,10 +85,10 @@ namespace Server.Spells.Necromancy
     private const int EnabledColor32 = 0x18CD00;
     private const int DisabledColor32 = 0x4A8B52;
 
-    private SummonFamiliarEntry[] m_Entries;
-    private Mobile m_From;
+    private readonly SummonFamiliarEntry[] m_Entries;
+    private readonly Mobile m_From;
 
-    private SummonFamiliarSpell m_Spell;
+    private readonly SummonFamiliarSpell m_Spell;
 
     public SummonFamiliarGump(Mobile from, SummonFamiliarEntry[] entries, SummonFamiliarSpell spell) : base(200, 100)
     {
@@ -143,11 +142,9 @@ namespace Server.Spells.Necromancy
         double necro = m_From.Skills.Necromancy.Value;
         double spirit = m_From.Skills.SpiritSpeak.Value;
 
-        #region Dueling
         if ((m_From as PlayerMobile)?.DuelContext?.AllowSpellCast(m_From, m_Spell) == false)
         {
         }
-        #endregion
         else if (SummonFamiliarSpell.Table.TryGetValue(m_From, out BaseCreature check) && check?.Deleted == false)
         {
           m_From.SendLocalizedMessage(1061605); // You already have a familiar.

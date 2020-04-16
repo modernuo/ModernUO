@@ -8,7 +8,7 @@ namespace Server.Mobiles
   {
     public static readonly TimeSpan GracePeriod = TimeSpan.FromDays(7.0);
 
-    private Timer m_ExpireTimer;
+    private readonly Timer m_ExpireTimer;
 
     public VendorInventory(BaseHouse house, Mobile owner, string vendorName, string shopName)
     {
@@ -51,19 +51,19 @@ namespace Server.Mobiles
       }
     }
 
-    public BaseHouse House{ get; set; }
+    public BaseHouse House { get; set; }
 
-    public string VendorName{ get; set; }
+    public string VendorName { get; set; }
 
-    public string ShopName{ get; set; }
+    public string ShopName { get; set; }
 
-    public Mobile Owner{ get; set; }
+    public Mobile Owner { get; set; }
 
-    public List<Item> Items{ get; }
+    public List<Item> Items { get; }
 
-    public int Gold{ get; set; }
+    public int Gold { get; set; }
 
-    public DateTime ExpireTime{ get; }
+    public DateTime ExpireTime { get; }
 
     public void AddItem(Item item)
     {
@@ -99,7 +99,7 @@ namespace Server.Mobiles
 
     private class ExpireTimer : Timer
     {
-      private VendorInventory m_Inventory;
+      private readonly VendorInventory m_Inventory;
 
       public ExpireTimer(VendorInventory inventory, TimeSpan delay) : base(delay)
       {

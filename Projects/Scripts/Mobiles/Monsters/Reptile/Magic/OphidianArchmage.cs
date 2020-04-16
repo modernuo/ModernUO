@@ -3,7 +3,7 @@ namespace Server.Mobiles
   [TypeAlias("Server.Mobiles.OphidianJusticar", "Server.Mobiles.OphidianZealot")]
   public class OphidianArchmage : BaseCreature
   {
-    private static string[] m_Names =
+    private static readonly string[] m_Names =
     {
       "an ophidian justicar",
       "an ophidian zealot"

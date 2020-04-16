@@ -44,7 +44,7 @@ namespace Server.Items
     {
     }
 
-    public override int LabelNumber => 1077394; //a Gingerbread House Deed
+    public override int LabelNumber => 1077394; // a Gingerbread House Deed
     public override BaseAddon Addon => new GingerBreadHouseAddon();
 
     public override void Serialize(IGenericWriter writer)

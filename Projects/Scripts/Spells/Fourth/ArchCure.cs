@@ -8,14 +8,13 @@ namespace Server.Spells.Fourth
 {
   public class ArchCureSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Arch Cure", "Vas An Nox",
       215,
       9061,
       Reagent.Garlic,
       Reagent.Ginseng,
-      Reagent.MandrakeRoot
-    );
+      Reagent.MandrakeRoot);
 
     public ArchCureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

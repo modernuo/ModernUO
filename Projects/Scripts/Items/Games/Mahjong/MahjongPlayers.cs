@@ -4,11 +4,11 @@ namespace Server.Engines.Mahjong
 {
   public class MahjongPlayers
   {
-    private bool[] m_InGame;
-    private Mobile[] m_Players;
-    private bool[] m_PublicHand;
-    private int[] m_Scores;
-    private List<Mobile> m_Spectators;
+    private readonly bool[] m_InGame;
+    private readonly Mobile[] m_Players;
+    private readonly bool[] m_PublicHand;
+    private readonly int[] m_Scores;
+    private readonly List<Mobile> m_Spectators;
 
     public MahjongPlayers(MahjongGame game, int maxPlayers, int baseScore)
     {
@@ -47,11 +47,11 @@ namespace Server.Engines.Mahjong
       DealerPosition = reader.ReadInt();
     }
 
-    public MahjongGame Game{ get; }
+    public MahjongGame Game { get; }
 
     public int Seats => m_Players.Length;
     public Mobile Dealer => m_Players[DealerPosition];
-    public int DealerPosition{ get; private set; }
+    public int DealerPosition { get; private set; }
 
     public Mobile GetPlayer(int index)
     {

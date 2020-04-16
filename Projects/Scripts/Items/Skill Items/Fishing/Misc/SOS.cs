@@ -35,13 +35,13 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Map TargetMap{ get; set; }
+    public Map TargetMap { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D TargetLocation{ get; set; }
+    public Point3D TargetLocation { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int MessageIndex{ get; set; }
+    public int MessageIndex { get; set; }
 
     public void UpdateHue()
     {
@@ -97,30 +97,30 @@ namespace Server.Items
         case 4:
         case 3:
         case 2:
-        {
-          m_Level = reader.ReadInt();
-          goto case 1;
-        }
+          {
+            m_Level = reader.ReadInt();
+            goto case 1;
+          }
         case 1:
-        {
-          TargetMap = reader.ReadMap();
-          TargetLocation = reader.ReadPoint3D();
-          MessageIndex = reader.ReadInt();
+          {
+            TargetMap = reader.ReadMap();
+            TargetLocation = reader.ReadPoint3D();
+            MessageIndex = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
         case 0:
-        {
-          TargetMap = Map;
+          {
+            TargetMap = Map;
 
-          if (TargetMap == null || TargetMap == Map.Internal)
-            TargetMap = Map.Trammel;
+            if (TargetMap == null || TargetMap == Map.Internal)
+              TargetMap = Map.Trammel;
 
-          TargetLocation = FindLocation(TargetMap);
-          MessageIndex = Utility.Random(MessageEntry.Entries.Length);
+            TargetLocation = FindLocation(TargetMap);
+            MessageIndex = Utility.Random(MessageEntry.Entries.Length);
 
-          break;
-        }
+            break;
+          }
       }
 
       if (version < 2)
@@ -144,7 +144,7 @@ namespace Server.Items
         else
           entry = MessageEntry.Entries[MessageIndex = Utility.Random(MessageEntry.Entries.Length)];
 
-        //from.CloseGump( typeof( MessageGump ) );
+        // from.CloseGump( typeof( MessageGump ) );
         from.SendGump(new MessageGump(entry, TargetMap, TargetLocation));
       }
       else
@@ -153,18 +153,18 @@ namespace Server.Items
       }
     }
 
-    private static int[] m_WaterTiles =
+    private static readonly int[] m_WaterTiles =
     {
       0x00A8, 0x00AB,
       0x0136, 0x0137
     };
 
-    private static Rectangle2D[] m_BritRegions = { new Rectangle2D(0, 0, 5120, 4096) };
+    private static readonly Rectangle2D[] m_BritRegions = { new Rectangle2D(0, 0, 5120, 4096) };
 
-    private static Rectangle2D[] m_IlshRegions =
+    private static readonly Rectangle2D[] m_IlshRegions =
       { new Rectangle2D(1472, 272, 304, 240), new Rectangle2D(1240, 1000, 312, 160) };
 
-    private static Rectangle2D[] m_MalasRegions = { new Rectangle2D(1376, 1520, 464, 280) };
+    private static readonly Rectangle2D[] m_MalasRegions = { new Rectangle2D(1376, 1520, 464, 280) };
 
     public static Point3D FindLocation(Map map)
     {
@@ -242,12 +242,13 @@ namespace Server.Items
 
         AddBackground(0, 40, 350, 300, 2520);
 
+        /* This is a message hastily scribbled by a passenger aboard a sinking ship.
+         * While it is probably too late to save the passengers and crew,
+         * perhaps some treasure went down with the ship!
+         * The message gives the ship's last known sextant co-ordinates.
+         */
         AddHtmlLocalized(30, 80, 285, 160, 1018326, true,
-          true); /* This is a message hastily scribbled by a passenger aboard a sinking ship.
-																			* While it is probably too late to save the passengers and crew,
-																			* perhaps some treasure went down with the ship!
-																			* The message gives the ship's last known sextant co-ordinates.
-																			*/
+          true);
 
         AddHtml(35, 240, 230, 20, fmt);
 
@@ -265,13 +266,13 @@ namespace Server.Items
         Message = message;
       }
 
-      public int Width{ get; }
+      public int Width { get; }
 
-      public int Height{ get; }
+      public int Height { get; }
 
-      public string Message{ get; }
+      public string Message { get; }
 
-      public static MessageEntry[] Entries{ get; } =
+      public static MessageEntry[] Entries { get; } =
       {
         new MessageEntry(280, 180,
           "...Ar! {0} and a fair wind! No chance... storms, though--ar! Is that a sea serp...<br><br>uh oh."),

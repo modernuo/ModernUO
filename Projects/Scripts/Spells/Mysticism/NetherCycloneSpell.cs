@@ -6,15 +6,14 @@ namespace Server.Spells.Mysticism
 {
   public class NetherCycloneSpell : MysticSpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Nether Cyclone", "Grav Hur",
       -1,
       9002,
       Reagent.MandrakeRoot,
       Reagent.Nightshade,
       Reagent.SulfurousAsh,
-      Reagent.Bloodmoss
-    );
+      Reagent.Bloodmoss);
 
     public NetherCycloneSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)

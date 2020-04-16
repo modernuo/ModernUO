@@ -117,8 +117,8 @@ namespace Server.Items
 
     private class WreathAddonGump : Gump
     {
-      private WreathAddon m_Addon;
-      private Mobile m_From;
+      private readonly WreathAddon m_Addon;
+      private readonly Mobile m_From;
 
       public WreathAddonGump(Mobile from, WreathAddon addon) : base(150, 50)
       {
@@ -276,9 +276,9 @@ namespace Server.Items
 
     private class WreathDeedGump : Gump
     {
-      private WreathDeed m_Deed;
-      private Mobile m_From;
-      private Point3D m_Loc;
+      private readonly WreathDeed m_Deed;
+      private readonly Mobile m_From;
+      private readonly Point3D m_Loc;
 
       public WreathDeedGump(Mobile from, Point3D loc, WreathDeed deed) : base(150, 50)
       {

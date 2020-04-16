@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
   public abstract class BaseHealer : BaseVendor
   {
-    private static TimeSpan ResurrectDelay = TimeSpan.FromSeconds(2.0);
+    private static readonly TimeSpan ResurrectDelay = TimeSpan.FromSeconds(2.0);
 
     private DateTime m_NextResurrect;
 
@@ -57,7 +57,7 @@ namespace Server.Mobiles
     {
     }
 
-    protected override List<SBInfo> SBInfos{ get; } = new List<SBInfo>();
+    protected override List<SBInfo> SBInfos { get; } = new List<SBInfo>();
 
     public override bool IsActiveVendor => false;
     public override bool IsInvulnerable => false;

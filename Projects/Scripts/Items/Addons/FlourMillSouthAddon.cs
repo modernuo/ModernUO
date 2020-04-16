@@ -6,7 +6,7 @@ namespace Server.Items
 {
   public class FlourMillSouthAddon : BaseAddon, IFlourMill
   {
-    private static int[][] m_StageTable =
+    private static readonly int[][] m_StageTable =
     {
       new[] { 0x192C, 0x192D, 0x1931 },
       new[] { 0x192E, 0x192F, 0x1932 },
@@ -160,10 +160,10 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Flour = reader.ReadInt();
-          break;
-        }
+          {
+            m_Flour = reader.ReadInt();
+            break;
+          }
       }
 
       UpdateStage();

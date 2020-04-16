@@ -40,8 +40,6 @@ namespace Server.Items
       }
     }
 
-    #region Resmelt.cs
-
     private bool Resmelt(Mobile from, Item item, CraftResource resource)
     {
       try
@@ -80,9 +78,9 @@ namespace Server.Items
         Type resourceType = info.ResourceTypes[0];
         Item ingot = (Item)ActivatorUtil.CreateInstance(resourceType);
 
-        if (item is DragonBardingDeed || item is BaseArmor armor && armor.PlayerConstructed ||
-            item is BaseWeapon weapon && weapon.PlayerConstructed ||
-            item is BaseClothing clothing && clothing.PlayerConstructed)
+        if (item is DragonBardingDeed || (item is BaseArmor armor && armor.PlayerConstructed) ||
+            (item is BaseWeapon weapon && weapon.PlayerConstructed) ||
+            (item is BaseClothing clothing && clothing.PlayerConstructed))
         {
           double mining = from.Skills.Mining.Value;
           if (mining > 100.0)
@@ -123,22 +121,18 @@ namespace Server.Items
       return false;
     }
 
-    #endregion
-
-    #region Checks
-
-    private bool Resmeltables() //Where context menu checks for metal items and dragon barding deeds
+    private bool Resmeltables() // Where context menu checks for metal items and dragon barding deeds
     {
       foreach (Item i in Items)
         return i?.Deleted == false && (
-                 i is BaseWeapon weapon && CraftResources.GetType(weapon.Resource) == CraftResourceType.Metal ||
-                 i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Metal ||
+                 (i is BaseWeapon weapon && CraftResources.GetType(weapon.Resource) == CraftResourceType.Metal) ||
+                 (i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Metal) ||
                  i is DragonBardingDeed);
 
       return false;
     }
 
-    private bool Scissorables() //Where context menu checks for Leather items and cloth items
+    private bool Scissorables() // Where context menu checks for Leather items and cloth items
     {
       foreach (Item i in Items)
       {
@@ -146,16 +140,12 @@ namespace Server.Items
           continue;
 
         if (i is BaseClothing || i is Cloth || i is BoltOfCloth || i is Hides || i is BonePile ||
-            i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Leather)
+            (i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Leather))
           return true;
       }
 
       return false;
     }
-
-    #endregion
-
-    #region Salvaging
 
     private void SalvageIngots(Mobile from)
     {
@@ -185,8 +175,8 @@ namespace Server.Items
         if (item?.Deleted != false)
           continue;
 
-        if (item is BaseArmor armor && Resmelt(from, armor, armor.Resource) ||
-            item is BaseWeapon weapon && Resmelt(from, weapon, weapon.Resource) ||
+        if ((item is BaseArmor armor && Resmelt(from, armor, armor.Resource)) ||
+            (item is BaseWeapon weapon && Resmelt(from, weapon, weapon.Resource)) ||
             item is DragonBardingDeed)
           salvaged++;
         else
@@ -253,13 +243,9 @@ namespace Server.Items
       SalvageCloth(from);
     }
 
-    #endregion
-
-    #region ContextMenuEntries
-
     private class SalvageAllEntry : ContextMenuEntry
     {
-      private SalvageBag m_Bag;
+      private readonly SalvageBag m_Bag;
 
       public SalvageAllEntry(SalvageBag bag, bool enabled)
         : base(6276)
@@ -284,7 +270,7 @@ namespace Server.Items
 
     private class SalvageIngotsEntry : ContextMenuEntry
     {
-      private SalvageBag m_Bag;
+      private readonly SalvageBag m_Bag;
 
       public SalvageIngotsEntry(SalvageBag bag, bool enabled)
         : base(6277)
@@ -309,7 +295,7 @@ namespace Server.Items
 
     private class SalvageClothEntry : ContextMenuEntry
     {
-      private SalvageBag m_Bag;
+      private readonly SalvageBag m_Bag;
 
       public SalvageClothEntry(SalvageBag bag, bool enabled)
         : base(6278)
@@ -332,10 +318,6 @@ namespace Server.Items
       }
     }
 
-    #endregion
-
-    #region Serialization
-
     public SalvageBag(Serial serial)
       : base(serial)
     {
@@ -354,7 +336,5 @@ namespace Server.Items
 
       int version = reader.ReadEncodedInt();
     }
-
-    #endregion
   }
 }

@@ -95,11 +95,11 @@ namespace Server.Engines.Quests.Ambitious
 
     public override object Message => 1054148;
 
-    public bool BagOfSending{ get; set; }
+    public bool BagOfSending { get; set; }
 
-    public bool PowderOfTranslocation{ get; set; }
+    public bool PowderOfTranslocation { get; set; }
 
-    public bool Gold{ get; set; }
+    public bool Gold { get; set; }
 
     public override void OnComplete()
     {

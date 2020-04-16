@@ -1,19 +1,19 @@
-using Server.Utilities;
 using System;
 using System.Collections.Generic;
+using Server.Utilities;
 
 namespace Server.Spells
 {
   public class SpellRegistry
   {
-    private static Type[] m_Types = new Type[700];
+    private static readonly Type[] m_Types = new Type[700];
     private static int m_Count;
 
-    private static Dictionary<Type, int> m_IDsFromTypes = new Dictionary<Type, int>(m_Types.Length);
+    private static readonly Dictionary<Type, int> m_IDsFromTypes = new Dictionary<Type, int>(m_Types.Length);
 
-    private static object[] m_Params = new object[2];
+    private static readonly object[] m_Params = new object[2];
 
-    private static string[] m_CircleNames =
+    private static readonly string[] m_CircleNames =
     {
       "First",
       "Second",
@@ -39,7 +39,7 @@ namespace Server.Spells
       }
     }
 
-    //What IS this used for anyways.
+    // What IS this used for anyways.
     public static int Count
     {
       get
@@ -57,7 +57,7 @@ namespace Server.Spells
       }
     }
 
-    public static Dictionary<int, SpecialMove> SpecialMoves{ get; } = new Dictionary<int, SpecialMove>();
+    public static Dictionary<int, SpecialMove> SpecialMoves { get; } = new Dictionary<int, SpecialMove>();
 
     public static int GetRegistryNumber(ISpell s) => GetRegistryNumber(s.GetType());
 

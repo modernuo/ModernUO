@@ -7,8 +7,8 @@ namespace Server.Spells
 {
   public class RecallSpellTarget : Target
   {
-    private IRecallSpell m_Spell;
-    private bool m_ToBoat;
+    private readonly IRecallSpell m_Spell;
+    private readonly bool m_ToBoat;
 
     public RecallSpellTarget(IRecallSpell spell, bool toBoat = true) : base(Core.ML ? 10 : 12, false, TargetFlags.None)
     {

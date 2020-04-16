@@ -7,8 +7,7 @@ namespace Server.Ethics.Hero
         100,
         "Holy Word",
         "Erstok Oostrac",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

@@ -47,9 +47,9 @@ namespace Server.Items
       int num = 0;
 
       for (int y = 0; y < size; ++y)
-      for (int x = 0; x < size; ++x)
-        if (info.Graphics[num] != 0x1) // Veteran Rewards Mod
-          AddComponent(new AddonComponent(info.Graphics[num++]), size - x - 1, size - y - 1, 0);
+        for (int x = 0; x < size; ++x)
+          if (info.Graphics[num] != 0x1) // Veteran Rewards Mod
+            AddComponent(new AddonComponent(info.Graphics[num++]), size - x - 1, size - y - 1, 0);
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -70,10 +70,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Type = (MiniHouseType)reader.ReadInt();
-          break;
-        }
+          {
+            m_Type = (MiniHouseType)reader.ReadInt();
+            break;
+          }
       }
     }
   }
@@ -134,10 +134,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Type = (MiniHouseType)reader.ReadInt();
-          break;
-        }
+          {
+            m_Type = (MiniHouseType)reader.ReadInt();
+            break;
+          }
       }
 
       if (Weight == 0.0)
@@ -167,13 +167,13 @@ namespace Server.Items
     SandstoneHouseWithPatio,
     SmallStoneWorkshop,
     SmallMarbleWorkshop,
-    MalasMountainPass, //Veteran reward house
-    ChurchAtNight //Veteran reward house
+    MalasMountainPass, // Veteran reward house
+    ChurchAtNight // Veteran reward house
   }
 
   public class MiniHouseInfo
   {
-    private static MiniHouseInfo[] m_Info =
+    private static readonly MiniHouseInfo[] m_Info =
     {
       /* Stone and plaster house           */ new MiniHouseInfo(0x22C4, 1, 1011303),
       /* Field stone house                 */ new MiniHouseInfo(0x22DE, 1, 1011304),
@@ -217,9 +217,9 @@ namespace Server.Items
       Graphics = graphics;
     }
 
-    public int[] Graphics{ get; }
+    public int[] Graphics { get; }
 
-    public int LabelNumber{ get; }
+    public int LabelNumber { get; }
 
     public static MiniHouseInfo GetInfo(MiniHouseType type)
     {

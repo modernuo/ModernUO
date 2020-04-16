@@ -11,12 +11,12 @@ namespace Server.Engines.Harvest
       FallbackResource = fallbackResource;
     }
 
-    public double VeinChance{ get; set; }
+    public double VeinChance { get; set; }
 
-    public double ChanceToFallback{ get; set; }
+    public double ChanceToFallback { get; set; }
 
-    public HarvestResource PrimaryResource{ get; set; }
+    public HarvestResource PrimaryResource { get; set; }
 
-    public HarvestResource FallbackResource{ get; set; }
+    public HarvestResource FallbackResource { get; set; }
   }
 }

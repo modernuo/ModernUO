@@ -17,13 +17,13 @@
  * You should have received a copy of the GNU General Public License     *
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using System.Collections.Immutable;
 
 namespace Server
 {
@@ -33,7 +33,7 @@ namespace Server
     private static TypeCache m_NullCache;
     public static Assembly[] Assemblies { get; set; }
 
-    public static string AssembliesPath = EnsureDirectory("Assemblies");
+    public static readonly string AssembliesPath = EnsureDirectory("Assemblies");
 
     public static void LoadScripts(string path = null) =>
       Assemblies = Directory.GetFiles(path ?? AssembliesPath, "*.dll")
@@ -41,15 +41,15 @@ namespace Server
 
     public static void Invoke(string method)
     {
-      List<MethodInfo> invoke = new List<MethodInfo>();
+      var invoke = new List<MethodInfo>();
 
-      for (int a = 0; a < Assemblies.Length; ++a)
+      for (var a = 0; a < Assemblies.Length; ++a)
         invoke.AddRange(Assemblies[a].GetTypes()
           .Select(t => t.GetMethod(method, BindingFlags.Static | BindingFlags.Public)).Where(m => m != null));
 
       invoke.Sort(new CallPriorityComparer());
 
-      for (int i = 0; i < invoke.Count; ++i)
+      for (var i = 0; i < invoke.Count; ++i)
         invoke[i].Invoke(null, null);
     }
 
@@ -57,7 +57,7 @@ namespace Server
     {
       if (asm == null) return m_NullCache ??= new TypeCache(null);
 
-      if (m_TypeCaches.TryGetValue(asm, out TypeCache c))
+      if (m_TypeCaches.TryGetValue(asm, out var c))
         return c;
 
       return m_TypeCaches[asm] = new TypeCache(asm);
@@ -86,10 +86,10 @@ namespace Server
 
     public static IEnumerable<Type> FindTypesByName(string name, bool ignoreCase = false)
     {
-      List<Type> types = new List<Type>();
-      if(ignoreCase)
+      var types = new List<Type>();
+      if (ignoreCase)
         name = name.ToLower();
-      for (int i = 0; i < Assemblies.Length; i++) types.AddRange(GetTypeCache(Assemblies[i])[name]);
+      for (var i = 0; i < Assemblies.Length; i++) types.AddRange(GetTypeCache(Assemblies[i])[name]);
       if (types.Count == 0)
         types.AddRange(GetTypeCache(Core.Assembly)[name]);
       return types;
@@ -97,7 +97,7 @@ namespace Server
 
     public static string EnsureDirectory(string dir)
     {
-      string path = Path.Combine(Core.BaseDirectory, dir);
+      var path = Path.Combine(Core.BaseDirectory, dir);
 
       if (!Directory.Exists(path))
         Directory.CreateDirectory(path);
@@ -113,7 +113,8 @@ namespace Server
     public IEnumerable<Type> Types => m_Types;
     public IEnumerable<string> Names => m_NameMap.Keys;
 
-    public IEnumerable<Type> this[string name] => m_NameMap.TryGetValue(name, out int[] value) ? value.Select(x => m_Types[x]) : new Type[0];
+    public IEnumerable<Type> this[string name] =>
+      m_NameMap.TryGetValue(name, out var value) ? value.Select(x => m_Types[x]) : new Type[0];
 
     public TypeCache(Assembly asm)
     {
@@ -123,31 +124,31 @@ namespace Server
       Action<int, string> addToRefs = (index, key) =>
       {
         if (nameMap.TryGetValue(key, out refs))
+        {
           refs.Add(index);
+        }
         else
         {
-          refs = new HashSet<int> {index};
+          refs = new HashSet<int> { index };
           nameMap.Add(key, refs);
         }
       };
-      Type current;
-      Type aliasType = typeof(TypeAliasAttribute);
-      TypeAliasAttribute alias;
-      for (int i = 0; i < m_Types.Length; i++)
+      var aliasType = typeof(TypeAliasAttribute);
+      for (var i = 0; i < m_Types.Length; i++)
       {
-        current = m_Types[i];
+        var current = m_Types[i];
         addToRefs(i, current.Name);
         addToRefs(i, current.Name.ToLower());
         addToRefs(i, current.FullName);
         addToRefs(i, current.FullName?.ToLower());
-        alias = current.GetCustomAttribute(aliasType, false) as TypeAliasAttribute;
-        if (alias != null)
-          for (int j = 0; j < alias.Aliases.Length; j++)
+        if (current.GetCustomAttribute(aliasType, false) is TypeAliasAttribute alias)
+          for (var j = 0; j < alias.Aliases.Length; j++)
           {
             addToRefs(i, alias.Aliases[j]);
             addToRefs(i, alias.Aliases[j].ToLower());
           }
       }
+
       foreach (var (key, value) in nameMap)
         m_NameMap[key] = value.ToArray();
     }

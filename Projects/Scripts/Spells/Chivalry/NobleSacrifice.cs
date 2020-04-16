@@ -8,11 +8,10 @@ namespace Server.Spells.Chivalry
 {
   public class NobleSacrificeSpell : PaladinSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Noble Sacrifice", "Dium Prostra",
       -1,
-      9002
-    );
+      9002);
 
     public NobleSacrificeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

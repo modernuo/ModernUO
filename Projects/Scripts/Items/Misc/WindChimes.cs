@@ -27,7 +27,7 @@ namespace Server.Items
       }
     }
 
-    public static int[] Sounds{ get; } = { 0x505, 0x506, 0x507 };
+    public static int[] Sounds { get; } = { 0x505, 0x506, 0x507 };
 
     public override bool HandlesOnMovement => m_TurnedOn && IsLockedDown;
 
@@ -78,16 +78,16 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_TurnedOn = reader.ReadBool();
-          break;
-        }
+          {
+            m_TurnedOn = reader.ReadBool();
+            break;
+          }
       }
     }
 
     private class OnOffGump : Gump
     {
-      private BaseWindChimes m_Chimes;
+      private readonly BaseWindChimes m_Chimes;
 
       public OnOffGump(BaseWindChimes chimes) : base(150, 200)
       {

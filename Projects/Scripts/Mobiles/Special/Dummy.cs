@@ -128,7 +128,7 @@ namespace Server.Mobiles
 
     private class AutokillTimer : Timer
     {
-      private Dummy m_Owner;
+      private readonly Dummy m_Owner;
 
       public AutokillTimer(Dummy owner) : base(TimeSpan.FromMinutes(5.0))
       {

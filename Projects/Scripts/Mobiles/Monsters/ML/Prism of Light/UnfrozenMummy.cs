@@ -67,7 +67,7 @@ namespace Server.Mobiles
     {
       AddLoot(LootPack.UltraRich, 2);
       // TODO: uncomment once added
-      //AddLoot( LootPack.Parrot );
+      // AddLoot( LootPack.Parrot );
     }
 
     public override void Serialize(IGenericWriter writer)

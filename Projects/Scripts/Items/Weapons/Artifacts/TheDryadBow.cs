@@ -2,7 +2,7 @@ namespace Server.Items
 {
   public class TheDryadBow : Bow
   {
-    private static SkillName[] m_PossibleBonusSkills =
+    private static readonly SkillName[] m_PossibleBonusSkills =
     {
       SkillName.Archery,
       SkillName.Healing,

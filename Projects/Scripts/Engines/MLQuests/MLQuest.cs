@@ -41,25 +41,25 @@ namespace Server.Engines.MLQuests
       SaveEnabled = true;
     }
 
-    public bool Deserialized{ get; set; }
+    public bool Deserialized { get; set; }
 
-    public bool SaveEnabled{ get; set; }
+    public bool SaveEnabled { get; set; }
 
     // TODO: Flags? (Deserialized, SaveEnabled, Activated)
 
-    public bool Activated{ get; set; }
+    public bool Activated { get; set; }
 
-    public List<BaseObjective> Objectives{ get; set; }
+    public List<BaseObjective> Objectives { get; set; }
 
-    public ObjectiveType ObjectiveType{ get; set; }
+    public ObjectiveType ObjectiveType { get; set; }
 
-    public List<BaseReward> Rewards{ get; set; }
+    public List<BaseReward> Rewards { get; set; }
 
-    public List<MLQuestInstance> Instances{ get; set; }
+    public List<MLQuestInstance> Instances { get; set; }
 
-    public bool OneTimeOnly{ get; set; }
+    public bool OneTimeOnly { get; set; }
 
-    public bool HasRestartDelay{ get; set; }
+    public bool HasRestartDelay { get; set; }
 
     public bool IsEscort => HasObjective<EscortObjective>();
 
@@ -72,17 +72,17 @@ namespace Server.Engines.MLQuests
     public virtual bool IsChainTriggered => false;
     public virtual Type NextQuest => null;
 
-    public TextDefinition Title{ get; set; }
+    public TextDefinition Title { get; set; }
 
-    public TextDefinition Description{ get; set; }
+    public TextDefinition Description { get; set; }
 
-    public TextDefinition RefusalMessage{ get; set; }
+    public TextDefinition RefusalMessage { get; set; }
 
-    public TextDefinition InProgressMessage{ get; set; }
+    public TextDefinition InProgressMessage { get; set; }
 
-    public TextDefinition CompletionMessage{ get; set; }
+    public TextDefinition CompletionMessage { get; set; }
 
-    public TextDefinition CompletionNotice{ get; set; }
+    public TextDefinition CompletionNotice { get; set; }
 
     public virtual int Version => 0;
 
@@ -233,8 +233,6 @@ namespace Server.Engines.MLQuests
     {
     }
 
-    #region Generation Methods
-
     public void PutSpawner(Spawner s, Point3D loc, Map map)
     {
       string name = $"MLQS-{GetType().Name}";
@@ -258,7 +256,5 @@ namespace Server.Engines.MLQuests
 
       deco.MoveToWorld(loc, map);
     }
-
-    #endregion
   }
 }

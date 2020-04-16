@@ -41,16 +41,16 @@ namespace Server.Factions
     }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
-    public DateTime LastStolen{ get; set; }
+    public DateTime LastStolen { get; set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
-    public DateTime GraceStart{ get; set; }
+    public DateTime GraceStart { get; set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
-    public DateTime CorruptionStart{ get; set; }
+    public DateTime CorruptionStart { get; set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
-    public DateTime PurificationStart{ get; set; }
+    public DateTime PurificationStart { get; set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
     public Town Town
@@ -86,7 +86,7 @@ namespace Server.Factions
     }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
-    public BaseMonolith LastMonolith{ get; set; }
+    public BaseMonolith LastMonolith { get; set; }
 
     [CommandProperty(AccessLevel.Counselor)]
     public bool IsBeingCorrupted => LastMonolith is StrongholdMonolith && LastMonolith.Faction == m_Corrupting &&
@@ -118,7 +118,7 @@ namespace Server.Factions
       }
     }
 
-    public static List<Sigil> Sigils{ get; } = new List<Sigil>();
+    public static List<Sigil> Sigils { get; } = new List<Sigil>();
 
     public void Update()
     {
@@ -240,8 +240,6 @@ namespace Server.Factions
       if (Deleted || !IsChildOf(from.Backpack))
         return;
 
-      #region Give To Mobile
-
       if (obj is Mobile)
       {
         if (obj is PlayerMobile targ)
@@ -274,16 +272,12 @@ namespace Server.Factions
         }
         else
         {
-          from.SendLocalizedMessage(1005221); //You cannot give the sigil to them
+          from.SendLocalizedMessage(1005221); // You cannot give the sigil to them
         }
       }
 
-      #endregion
-
       else if (obj is BaseMonolith)
       {
-        #region Put in Stronghold
-
         if (obj is StrongholdMonolith sm)
         {
           if (sm.Faction == null || sm.Faction != Faction.Find(from))
@@ -328,10 +322,6 @@ namespace Server.Factions
           }
         }
 
-        #endregion
-
-        #region Put in Town
-
         else if (obj is TownMonolith tm)
         {
           if (tm.Town == null || tm.Town != m_Town)
@@ -355,12 +345,10 @@ namespace Server.Factions
             m_Corrupted = null;
           }
         }
-
-        #endregion
       }
       else
       {
-        from.SendLocalizedMessage(1005224); //	You can't use the sigil on that
+        from.SendLocalizedMessage(1005224); // You can't use the sigil on that
       }
 
       Update();
@@ -393,25 +381,25 @@ namespace Server.Factions
       switch (version)
       {
         case 0:
-        {
-          m_Town = Town.ReadReference(reader);
-          m_Corrupted = Faction.ReadReference(reader);
-          m_Corrupting = Faction.ReadReference(reader);
+          {
+            m_Town = Town.ReadReference(reader);
+            m_Corrupted = Faction.ReadReference(reader);
+            m_Corrupting = Faction.ReadReference(reader);
 
-          LastMonolith = reader.ReadItem() as BaseMonolith;
+            LastMonolith = reader.ReadItem() as BaseMonolith;
 
-          LastStolen = reader.ReadDateTime();
-          GraceStart = reader.ReadDateTime();
-          CorruptionStart = reader.ReadDateTime();
-          PurificationStart = reader.ReadDateTime();
+            LastStolen = reader.ReadDateTime();
+            GraceStart = reader.ReadDateTime();
+            CorruptionStart = reader.ReadDateTime();
+            PurificationStart = reader.ReadDateTime();
 
-          Update();
+            Update();
 
-          if (RootParent is Mobile mob)
-            mob.SolidHueOverride = OwnershipHue;
+            if (RootParent is Mobile mob)
+              mob.SolidHueOverride = OwnershipHue;
 
-          break;
-        }
+            break;
+          }
       }
     }
 

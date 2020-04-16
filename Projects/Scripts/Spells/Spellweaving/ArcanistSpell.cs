@@ -13,8 +13,8 @@ namespace Server.Spells.Spellweaving
     {
     }
 
-    public abstract double RequiredSkill{ get; }
-    public abstract int RequiredMana{ get; }
+    public abstract double RequiredSkill { get; }
+    public abstract int RequiredMana { get; }
 
     public override SkillName CastSkill => SkillName.Spellweaving;
     public override SkillName DamageSkill => SkillName.Spellweaving;
@@ -81,7 +81,7 @@ namespace Server.Spells.Spellweaving
 
     public override void GetCastSkills(out double min, out double max)
     {
-      min = RequiredSkill - 12.5; //per 5 on Friday, 2/16/07
+      min = RequiredSkill - 12.5; // per 5 on Friday, 2/16/07
       max = RequiredSkill + 37.5;
     }
 
@@ -123,7 +123,7 @@ namespace Server.Spells.Spellweaving
     {
       double percent =
         (50 + 2 * (GetResistSkill(m) - GetDamageSkill(Caster))) /
-        100; //TODO: According to the guide this is it.. but.. is it correct per OSI?
+        100; // TODO: According to the guide this is it.. but.. is it correct per OSI?
 
       if (percent <= 0)
         return false;

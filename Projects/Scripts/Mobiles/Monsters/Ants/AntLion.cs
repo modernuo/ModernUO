@@ -58,7 +58,6 @@ namespace Server.Mobiles
       // TODO: skeleton
     }
 
-
     public AntLion(Serial serial) : base(serial)
     {
     }

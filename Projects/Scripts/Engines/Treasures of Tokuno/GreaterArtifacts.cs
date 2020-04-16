@@ -330,7 +330,6 @@ namespace Server.Items
       Attributes.DefendChance = 10;
     }
 
-
     public WindsEdge(Serial serial) : base(serial)
     {
     }
@@ -388,7 +387,7 @@ namespace Server.Items
 
   public class PigmentsOfTokuno : BasePigmentsOfTokuno
   {
-    private static int[][] m_Table =
+    private static readonly int[][] m_Table =
     {
       // Hue, Label
       new[]

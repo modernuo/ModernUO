@@ -9,12 +9,11 @@ namespace Server.Spells.Necromancy
 {
   public class PoisonStrikeSpell : NecromancerSpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Poison Strike", "In Vas Nox",
       203,
       9031,
-      Reagent.NoxCrystal
-    );
+      Reagent.NoxCrystal);
 
     public PoisonStrikeSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
@@ -47,7 +46,7 @@ namespace Server.Spells.Necromancy
          * One tile from main target receives 50% damage, two tiles from target receives 33% damage.
          */
 
-        //CheckResisted( m ); // Check magic resist for skill, but do not use return value	//reports from OSI:  Necro spells don't give Resist gain
+        // CheckResisted( m ); // Check magic resist for skill, but do not use return value	//reports from OSI:  Necro spells don't give Resist gain
 
         Effects.SendLocationParticles(EffectItem.Create(m.Location, m.Map, EffectItem.DefaultDuration), 0x36B0, 1,
           14, 63, 7, 9915, 0);

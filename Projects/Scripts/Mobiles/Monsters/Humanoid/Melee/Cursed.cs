@@ -61,7 +61,7 @@ namespace Server.Mobiles
     public override void GenerateLoot()
     {
       AddLoot(LootPack.Meager);
-      //AddLoot( LootPack.Miscellaneous );
+      // AddLoot( LootPack.Miscellaneous );
     }
 
     public override void Serialize(IGenericWriter writer)

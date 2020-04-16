@@ -5,7 +5,7 @@ namespace Server.Items
 {
   public class AquariumGump : Gump
   {
-    private Aquarium m_Aquarium;
+    private readonly Aquarium m_Aquarium;
 
     public AquariumGump(Aquarium aquarium, bool edit) : base(100, 100)
     {

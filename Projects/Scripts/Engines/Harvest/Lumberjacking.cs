@@ -9,9 +9,7 @@ namespace Server.Engines.Harvest
   {
     private static Lumberjacking m_System;
 
-    #region Tile lists
-
-    private static int[] m_TreeTiles =
+    private static readonly int[] m_TreeTiles =
     {
       0x4CCA, 0x4CCB, 0x4CCC, 0x4CCD, 0x4CD0, 0x4CD3, 0x4CD6, 0x4CD8,
       0x4CDA, 0x4CDD, 0x4CE0, 0x4CE3, 0x4CE6, 0x4CF8, 0x4CFB, 0x4CFE,
@@ -35,8 +33,6 @@ namespace Server.Engines.Harvest
       0x52BE, 0x52BF, 0x52C0, 0x52C1, 0x52C2, 0x52C3, 0x52C4, 0x52C5,
       0x52C6, 0x52C7
     };
-
-    #endregion
 
     private Lumberjacking()
     {
@@ -81,7 +77,6 @@ namespace Server.Engines.Harvest
           new HarvestResource(100.0, 60.0, 140.0, 1072546, typeof(FrostwoodLog))
         };
 
-
         veins = new[]
         {
           new HarvestVein(49.0, 0.0, res[0], null), // Ordinary Logs
@@ -95,7 +90,7 @@ namespace Server.Engines.Harvest
 
         lumber.BonusResources = new[]
         {
-          new BonusHarvestResource(0, 83.9, null, null), //Nothing
+          new BonusHarvestResource(0, 83.9, null, null), // Nothing
           new BonusHarvestResource(100, 10.0, 1072548, typeof(BarkFragment)),
           new BonusHarvestResource(100, 03.0, 1072550, typeof(LuminescentFungi)),
           new BonusHarvestResource(100, 02.0, 1072547, typeof(SwitchItem)),
@@ -128,7 +123,7 @@ namespace Server.Engines.Harvest
 
     public static Lumberjacking System => m_System ?? (m_System = new Lumberjacking());
 
-    public HarvestDefinition Definition{ get; }
+    public HarvestDefinition Definition { get; }
 
     public override bool CheckHarvest(Mobile from, Item tool)
     {

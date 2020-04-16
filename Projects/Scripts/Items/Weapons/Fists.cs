@@ -221,12 +221,8 @@ namespace Server.Items
       if (Core.AOS)
         return;
 
-      #region Dueling
-
       if (!DuelContext.AllowSpecialAbility(m, "Disarm", true))
         return;
-
-      #endregion
 
       double armsValue = m.Skills.ArmsLore.Value;
       double wresValue = m.Skills.Wrestling.Value;
@@ -254,12 +250,8 @@ namespace Server.Items
       if (Core.AOS)
         return;
 
-      #region Dueling
-
       if (!DuelContext.AllowSpecialAbility(m, "Stun", true))
         return;
-
-      #endregion
 
       double anatValue = m.Skills.Anatomy.Value;
       double wresValue = m.Skills.Wrestling.Value;
@@ -289,7 +281,7 @@ namespace Server.Items
 
     private class MoveDelayTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public MoveDelayTimer(Mobile m) : base(TimeSpan.FromSeconds(10.0))
       {

@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Hag
 {
   public class FindApprenticeObjective : QuestObjective
   {
-    private static Point3D[] m_CorpseLocations =
+    private static readonly Point3D[] m_CorpseLocations =
     {
       new Point3D(778, 1158, 0),
       new Point3D(698, 1443, 0),
@@ -29,7 +29,7 @@ namespace Server.Engines.Quests.Hag
 
     public override object Message => 1055014;
 
-    public Corpse Corpse{ get; private set; }
+    public Corpse Corpse { get; private set; }
 
     private static Point3D RandomCorpseLocation()
     {
@@ -43,7 +43,7 @@ namespace Server.Engines.Quests.Hag
       PlayerMobile player = System.From;
       Map map = player.Map;
 
-      if (Corpse?.Deleted == false || map != Map.Trammel && map != Map.Felucca ||
+      if (Corpse?.Deleted == false || (map != Map.Trammel && map != Map.Felucca) ||
           !player.InRange(m_CorpseLocation, 8))
         return;
 
@@ -85,15 +85,15 @@ namespace Server.Engines.Quests.Hag
       switch (version)
       {
         case 1:
-        {
-          m_CorpseLocation = reader.ReadPoint3D();
-          goto case 0;
-        }
+          {
+            m_CorpseLocation = reader.ReadPoint3D();
+            goto case 0;
+          }
         case 0:
-        {
-          Corpse = (Corpse)reader.ReadItem();
-          break;
-        }
+          {
+            Corpse = (Corpse)reader.ReadItem();
+            break;
+          }
       }
 
       if (version == 0)
@@ -197,7 +197,7 @@ namespace Server.Engines.Quests.Hag
 
     public override object Message => 1055017;
 
-    public Point3D ImpLocation{ get; private set; }
+    public Point3D ImpLocation { get; private set; }
 
     public override void OnComplete()
     {
@@ -322,11 +322,11 @@ namespace Server.Engines.Quests.Hag
       }
     }
 
-    public Ingredient[] Ingredients{ get; private set; }
+    public Ingredient[] Ingredients { get; private set; }
 
     public Ingredient Ingredient => Ingredients[Ingredients.Length - 1];
     public int Step => Ingredients.Length;
-    public bool BlackheartMet{ get; private set; }
+    public bool BlackheartMet { get; private set; }
 
     public override void RenderProgress(BaseQuestGump gump)
     {

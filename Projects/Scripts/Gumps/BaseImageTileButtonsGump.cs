@@ -46,12 +46,11 @@ namespace Server.Gumps
 
   public class BaseImageTileButtonsGump : Gump
   {
-    public BaseImageTileButtonsGump(TextDefinition header, List<ImageTileButtonInfo> buttons) :
-      this(header, buttons.ToArray())
+    public BaseImageTileButtonsGump(TextDefinition header, List<ImageTileButtonInfo> buttons) : this(header, buttons.ToArray())
     {
     }
 
-    public BaseImageTileButtonsGump(TextDefinition header, ImageTileButtonInfo[] buttons) : base(10, 10) //Coords are 0, o on OSI, intentional difference
+    public BaseImageTileButtonsGump(TextDefinition header, ImageTileButtonInfo[] buttons) : base(10, 10) // Coords are 0, o on OSI, intentional difference
     {
       Buttons = buttons;
       AddPage(0);
@@ -65,7 +64,7 @@ namespace Server.Gumps
       AddImageTiled(10, y + 54, x, 20, 0xA40);
       AddAlphaRegion(10, 10, x, y + 64);
 
-      AddButton(10, y + 54, 0xFB1, 0xFB2, 0); //Cancel Button
+      AddButton(10, y + 54, 0xFB1, 0xFB2, 0); // Cancel Button
       AddHtmlLocalized(45, y + 56, x - 50, 20, 1060051, 0x7FFF); // CANCEL
       TextDefinition.AddHtmlText(this, 14, 12, x, 20, header, false, false, 0x7FFF, 0xFFFFFF);
 
@@ -101,7 +100,7 @@ namespace Server.Gumps
       }
     }
 
-    protected ImageTileButtonInfo[] Buttons{ get; }
+    protected ImageTileButtonInfo[] Buttons { get; }
 
     protected virtual int XItems => 2;
     protected virtual int YItems => 5;

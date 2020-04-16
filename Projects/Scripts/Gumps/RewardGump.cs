@@ -9,11 +9,11 @@ namespace Server.Gumps
 
   public interface IRewardEntry
   {
-    int Price{ get; }
-    int ItemID{ get; }
-    int Hue{ get; }
-    int Tooltip{ get; }
-    TextDefinition Description{ get; }
+    int Price { get; }
+    int ItemID { get; }
+    int Hue { get; }
+    int Tooltip { get; }
+    TextDefinition Description { get; }
   }
 
   public delegate void RewardPickedHandler(Mobile from, int index);
@@ -100,13 +100,13 @@ namespace Server.Gumps
       }
     }
 
-    public TextDefinition Title{ get; }
+    public TextDefinition Title { get; }
 
-    public IRewardEntry[] Rewards{ get; }
+    public IRewardEntry[] Rewards { get; }
 
-    public int Points{ get; }
+    public int Points { get; }
 
-    public RewardPickedHandler OnPicked{ get; }
+    public RewardPickedHandler OnPicked { get; }
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
@@ -129,8 +129,8 @@ namespace Server.Gumps
 
   public class RewardConfirmGump : Gump
   {
-    private int m_Index;
-    private RewardGump m_Parent;
+    private readonly int m_Index;
+    private readonly RewardGump m_Parent;
 
     public RewardConfirmGump(RewardGump parent, int index, IRewardEntry entry)
       : base(120, 50)

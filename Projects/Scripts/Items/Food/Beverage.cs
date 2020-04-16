@@ -23,7 +23,7 @@ namespace Server.Items
 
   public interface IHasQuantity
   {
-    int Quantity{ get; set; }
+    int Quantity { get; set; }
   }
 
   public interface IWaterSource : IHasQuantity
@@ -81,29 +81,29 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          if (CheckType("BottleAle"))
           {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Ale;
-          }
-          else if (CheckType("BottleLiquor"))
-          {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Liquor;
-          }
-          else if (CheckType("BottleWine"))
-          {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Wine;
-          }
-          else
-          {
-            throw new Exception(World.LoadingType);
-          }
+            if (CheckType("BottleAle"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Ale;
+            }
+            else if (CheckType("BottleLiquor"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Liquor;
+            }
+            else if (CheckType("BottleWine"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Wine;
+            }
+            else
+            {
+              throw new Exception(World.LoadingType);
+            }
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
@@ -300,12 +300,12 @@ namespace Server.Items
 
       return Content switch
       {
-        BeverageType.Ale => (ItemID == 0x9EF ? 0x9EF : 0x9EE),
-        BeverageType.Cider => (ItemID >= 0x1F7D && ItemID <= 0x1F80 ? ItemID : 0x1F7D),
-        BeverageType.Liquor => (ItemID >= 0x1F85 && ItemID <= 0x1F88 ? ItemID : 0x1F85),
-        BeverageType.Milk => (ItemID >= 0x1F89 && ItemID <= 0x1F8C ? ItemID : 0x1F89),
-        BeverageType.Wine => (ItemID >= 0x1F8D && ItemID <= 0x1F90 ? ItemID : 0x1F8D),
-        BeverageType.Water => (ItemID >= 0x1F91 && ItemID <= 0x1F94 ? ItemID : 0x1F91),
+        BeverageType.Ale => ItemID == 0x9EF ? 0x9EF : 0x9EE,
+        BeverageType.Cider => ItemID >= 0x1F7D && ItemID <= 0x1F80 ? ItemID : 0x1F7D,
+        BeverageType.Liquor => ItemID >= 0x1F85 && ItemID <= 0x1F88 ? ItemID : 0x1F85,
+        BeverageType.Milk => ItemID >= 0x1F89 && ItemID <= 0x1F8C ? ItemID : 0x1F89,
+        BeverageType.Wine => ItemID >= 0x1F8D && ItemID <= 0x1F90 ? ItemID : 0x1F8D,
+        BeverageType.Water => ItemID >= 0x1F91 && ItemID <= 0x1F94 ? ItemID : 0x1F91,
         _ => 0
       };
     }
@@ -326,44 +326,44 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          if (CheckType("MugAle"))
           {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Ale;
-          }
-          else if (CheckType("GlassCider"))
-          {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Cider;
-          }
-          else if (CheckType("GlassLiquor"))
-          {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Liquor;
-          }
-          else if (CheckType("GlassMilk"))
-          {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Milk;
-          }
-          else if (CheckType("GlassWine"))
-          {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Wine;
-          }
-          else if (CheckType("GlassWater"))
-          {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Water;
-          }
-          else
-          {
-            throw new Exception(World.LoadingType);
-          }
+            if (CheckType("MugAle"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Ale;
+            }
+            else if (CheckType("GlassCider"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Cider;
+            }
+            else if (CheckType("GlassLiquor"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Liquor;
+            }
+            else if (CheckType("GlassMilk"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Milk;
+            }
+            else if (CheckType("GlassWine"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Wine;
+            }
+            else if (CheckType("GlassWater"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Water;
+            }
+            else
+            {
+              throw new Exception(World.LoadingType);
+            }
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
@@ -402,47 +402,47 @@ namespace Server.Items
       switch (Content)
       {
         case BeverageType.Ale:
-        {
-          if (ItemID == 0x1F96)
-            return ItemID;
+          {
+            if (ItemID == 0x1F96)
+              return ItemID;
 
-          return 0x1F95;
-        }
+            return 0x1F95;
+          }
         case BeverageType.Cider:
-        {
-          if (ItemID == 0x1F98)
-            return ItemID;
+          {
+            if (ItemID == 0x1F98)
+              return ItemID;
 
-          return 0x1F97;
-        }
+            return 0x1F97;
+          }
         case BeverageType.Liquor:
-        {
-          if (ItemID == 0x1F9A)
-            return ItemID;
+          {
+            if (ItemID == 0x1F9A)
+              return ItemID;
 
-          return 0x1F99;
-        }
+            return 0x1F99;
+          }
         case BeverageType.Milk:
-        {
-          if (ItemID == 0x9AD)
-            return ItemID;
+          {
+            if (ItemID == 0x9AD)
+              return ItemID;
 
-          return 0x9F0;
-        }
+            return 0x9F0;
+          }
         case BeverageType.Wine:
-        {
-          if (ItemID == 0x1F9C)
-            return ItemID;
+          {
+            if (ItemID == 0x1F9C)
+              return ItemID;
 
-          return 0x1F9B;
-        }
+            return 0x1F9B;
+          }
         case BeverageType.Water:
-        {
-          if (ItemID == 0xFF8 || ItemID == 0xFF9 || ItemID == 0x1F9E)
-            return ItemID;
+          {
+            if (ItemID == 0xFF8 || ItemID == 0xFF9 || ItemID == 0x1F9E)
+              return ItemID;
 
-          return 0x1F9D;
-        }
+            return 0x1F9D;
+          }
       }
 
       return 0;
@@ -467,56 +467,56 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          if (CheckType("PitcherAle"))
           {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Ale;
-          }
-          else if (CheckType("PitcherCider"))
-          {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Cider;
-          }
-          else if (CheckType("PitcherLiquor"))
-          {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Liquor;
-          }
-          else if (CheckType("PitcherMilk"))
-          {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Milk;
-          }
-          else if (CheckType("PitcherWine"))
-          {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Wine;
-          }
-          else if (CheckType("PitcherWater"))
-          {
-            Quantity = MaxQuantity;
-            Content = BeverageType.Water;
-          }
-          else if (CheckType("GlassPitcher"))
-          {
-            Quantity = 0;
-            Content = BeverageType.Water;
-          }
-          else
-          {
-            throw new Exception(World.LoadingType);
-          }
+            if (CheckType("PitcherAle"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Ale;
+            }
+            else if (CheckType("PitcherCider"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Cider;
+            }
+            else if (CheckType("PitcherLiquor"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Liquor;
+            }
+            else if (CheckType("PitcherMilk"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Milk;
+            }
+            else if (CheckType("PitcherWine"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Wine;
+            }
+            else if (CheckType("PitcherWater"))
+            {
+              Quantity = MaxQuantity;
+              Content = BeverageType.Water;
+            }
+            else if (CheckType("GlassPitcher"))
+            {
+              Quantity = 0;
+              Content = BeverageType.Water;
+            }
+            else
+            {
+              throw new Exception(World.LoadingType);
+            }
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
 
   public abstract class BaseBeverage : Item, IHasQuantity
   {
-    private static int[] m_SwampTiles =
+    private static readonly int[] m_SwampTiles =
     {
       0x9C4, 0x9EB,
       0x3D65, 0x3D65,
@@ -564,7 +564,7 @@ namespace Server.Items
     public virtual int EmptyLabelNumber => base.LabelNumber;
     public virtual int BaseLabelNumber => 0;
 
-    public abstract int MaxQuantity{ get; }
+    public abstract int MaxQuantity { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsEmpty => m_Quantity <= 0;
@@ -576,10 +576,10 @@ namespace Server.Items
     public bool IsFull => m_Quantity >= MaxQuantity;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Poison Poison{ get; set; }
+    public Poison Poison { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Poisoner{ get; set; }
+    public Mobile Poisoner { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public BeverageType Content
@@ -711,7 +711,7 @@ namespace Server.Items
       }
       else if (targ is BaseWaterContainer bwc)
       {
-        if (Quantity == 0 || Content == BeverageType.Water && !IsFull)
+        if (Quantity == 0 || (Content == BeverageType.Water && !IsFull))
         {
           int iNeed = Math.Min(MaxQuantity - Quantity, bwc.Quantity);
 
@@ -910,7 +910,7 @@ namespace Server.Items
               BaseAddon vat = component.Addon;
 
               if (vat.X > 5784 && vat.X < 5814 && vat.Y > 1903 && vat.Y < 1934 &&
-                  (qs.RedSolen && vat.Map == Map.Trammel || !qs.RedSolen && vat.Map == Map.Felucca))
+                  ((qs.RedSolen && vat.Map == Map.Trammel) || (!qs.RedSolen && vat.Map == Map.Felucca)))
               {
                 if (obj.CurProgress + Quantity > obj.MaxProgress)
                 {
@@ -1025,23 +1025,21 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          Poisoner = reader.ReadMobile();
-          goto case 0;
-        }
+          {
+            Poisoner = reader.ReadMobile();
+            goto case 0;
+          }
         case 0:
-        {
-          Poison = Poison.Deserialize(reader);
-          m_Content = (BeverageType)reader.ReadInt();
-          m_Quantity = reader.ReadInt();
-          break;
-        }
+          {
+            Poison = Poison.Deserialize(reader);
+            m_Content = (BeverageType)reader.ReadInt();
+            m_Quantity = reader.ReadInt();
+            break;
+          }
       }
     }
 
-    #region Effects of achohol
-
-    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+    private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     public static void Initialize()
     {
@@ -1080,7 +1078,7 @@ namespace Server.Items
 
     private class HeaveTimer : Timer
     {
-      private Mobile m_Drunk;
+      private readonly Mobile m_Drunk;
 
       public HeaveTimer(Mobile drunk)
         : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0))
@@ -1103,7 +1101,7 @@ namespace Server.Items
             m_Drunk.BAC = 60;
 
           // chance to get sober
-          if (10 > Utility.Random(100))
+          if (Utility.Random(100) < 10)
             --m_Drunk.BAC;
 
           // lose some stats
@@ -1135,7 +1133,5 @@ namespace Server.Items
         }
       }
     }
-
-    #endregion
   }
 }

@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
   public class LadyJennifyr : SkeletalKnight
   {
-    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+    private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public LadyJennifyr()
@@ -107,8 +107,8 @@ namespace Server.Mobiles
 
     private class ExpireTimer : Timer
     {
-      private Mobile m_Mobile;
-      private ResistanceMod m_Mod;
+      private readonly Mobile m_Mobile;
+      private readonly ResistanceMod m_Mod;
 
       public ExpireTimer(Mobile m, ResistanceMod mod)
         : base(TimeSpan.FromSeconds(10))

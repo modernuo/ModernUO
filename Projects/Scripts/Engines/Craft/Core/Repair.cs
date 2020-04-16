@@ -21,9 +21,9 @@ namespace Server.Engines.Craft
 
     private class InternalTarget : Target
     {
-      private CraftSystem m_CraftSystem;
-      private RepairDeed m_Deed;
-      private BaseTool m_Tool;
+      private readonly CraftSystem m_CraftSystem;
+      private readonly RepairDeed m_Deed;
+      private readonly BaseTool m_Tool;
 
       public InternalTarget(CraftSystem craftSystem, BaseTool tool) : base(2, false, TargetFlags.None)
       {
@@ -46,7 +46,6 @@ namespace Server.Engines.Craft
       private bool CheckRepairDifficulty(Mobile mob, SkillName skill, int curHits, int maxHits)
       {
         double difficulty = GetRepairDifficulty(curHits, maxHits) * 0.1;
-
 
         if (m_Deed != null)
         {
@@ -105,19 +104,13 @@ namespace Server.Engines.Craft
                  || weapon is BlackStaff
                  || weapon is MagicWand
 
-                 #region Temporary
-
                  // TODO: Make these items craftable
                  || weapon is WildStaff;
-
-          #endregion
         }
 
         if (m_CraftSystem is DefBlacksmithy)
         {
           return weapon is Pitchfork
-
-                 #region Temporary
 
                  // TODO: Make these items craftable
                  || weapon is RadiantScimitar
@@ -129,18 +122,12 @@ namespace Server.Engines.Craft
                  || weapon is ElvenMachete
                  || weapon is OrnateAxe
                  || weapon is DiamondMace;
-
-          #endregion
         }
-
-        #region Temporary
 
         // TODO: Make these items craftable
         if (m_CraftSystem is DefBowFletching)
           return weapon is ElvenCompositeLongbow
                  || weapon is MagicalShortbow;
-
-        #endregion
 
         return false;
       }
@@ -148,8 +135,6 @@ namespace Server.Engines.Craft
       private bool IsSpecialArmor(BaseArmor armor)
       {
         // Armor repairable but not craftable
-
-        #region Temporary
 
         // TODO: Make these items craftable
         if (m_CraftSystem is DefTailoring)
@@ -178,8 +163,6 @@ namespace Server.Engines.Craft
           return armor is Circlet
                  || armor is RoyalCirclet
                  || armor is GemmedCirclet;
-
-        #endregion
 
         return false;
       }

@@ -10,13 +10,13 @@ namespace Server.Engines.Craft
   {
     private static CraftSystem m_CraftSystem;
 
-    private static Type typeofSpellScroll = typeof(SpellScroll);
+    private static readonly Type typeofSpellScroll = typeof(SpellScroll);
 
     private int m_Circle, m_Mana;
 
     private int m_Index;
 
-    private Type[] m_RegTypes =
+    private readonly Type[] m_RegTypes =
     {
       typeof(BlackPearl),
       typeof(Bloodmoss),
@@ -78,7 +78,7 @@ namespace Server.Engines.Craft
       if (toolBroken)
         from.SendLocalizedMessage(1044038); // You have worn out your tool
 
-      if (!typeofSpellScroll.IsAssignableFrom(item.ItemType)) //  not a scroll
+      if (!typeofSpellScroll.IsAssignableFrom(item.ItemType)) // not a scroll
       {
         if (failed)
         {
@@ -156,7 +156,7 @@ namespace Server.Engines.Craft
     {
       int index = AddCraft(type, 1061677, 1060509 + spell, minSkill, minSkill + 1.0, regs[0],
         CraftItem.LabelNumber(regs[0]), 1,
-        501627); //Yes, on OSI it's only 1.0 skill diff'.  Don't blame me, blame OSI.
+        501627); // Yes, on OSI it's only 1.0 skill diff'.  Don't blame me, blame OSI.
 
       for (int i = 1; i < regs.Length; ++i)
         AddRes(index, regs[i], CraftItem.LabelNumber(regs[0]), 1, 501627);

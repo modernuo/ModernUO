@@ -54,7 +54,7 @@ namespace Server.Items
 
     private class PickLoomTarget : Target
     {
-      private BaseClothMaterial m_Material;
+      private readonly BaseClothMaterial m_Material;
 
       public PickLoomTarget(BaseClothMaterial material) : base(3, false, TargetFlags.None) => m_Material = material;
 

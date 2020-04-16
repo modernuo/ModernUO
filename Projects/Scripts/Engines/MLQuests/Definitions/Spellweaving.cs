@@ -35,8 +35,6 @@ namespace Server.Engines.MLQuests.Definitions
     }
   }
 
-  #region Patience
-
   public class Patience : MLQuest
   {
     public Patience()
@@ -178,10 +176,6 @@ namespace Server.Engines.MLQuests.Definitions
     }
   }
 
-  #endregion
-
-  #region Discipline
-
   public class Discipline : MLQuest
   {
     public Discipline()
@@ -305,10 +299,6 @@ namespace Server.Engines.MLQuests.Definitions
     }
   }
 
-  #endregion
-
-  #region Friend of the Fey
-
   public class FriendOfTheFey : MLQuest
   {
     public FriendOfTheFey()
@@ -389,10 +379,6 @@ namespace Server.Engines.MLQuests.Definitions
       base.GetRewards(instance);
     }
   }
-
-  #endregion
-
-  #region Fiendish Friends
 
   public class FiendishFriends : MLQuest
   {
@@ -476,10 +462,6 @@ namespace Server.Engines.MLQuests.Definitions
       base.GetRewards(instance);
     }
   }
-
-  #endregion
-
-  #region Mobiles
 
   [QuesterName("Aeluva (The Heartwood)")]
   public class Aeluva : BaseCreature
@@ -587,8 +569,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
       MLQuestSystem.Tell(this, pm, Utility.RandomList(
         1074186, // Come here, I have a task.
-        1074218 // Hey!  I want to talk to you, now.
-      ));
+        1074218)); // Hey!  I want to talk to you, now.
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -704,8 +685,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
       MLQuestSystem.Tell(this, pm, Utility.RandomList(
         1074215, // Don’t test my patience you sniveling worm!
-        1074218 // Hey!  I want to talk to you, now.
-      ));
+        1074218)); // Hey!  I want to talk to you, now.
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -722,6 +702,4 @@ namespace Server.Engines.MLQuests.Definitions
       int version = reader.ReadInt();
     }
   }
-
-  #endregion
 }

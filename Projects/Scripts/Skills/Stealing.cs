@@ -61,7 +61,7 @@ namespace Server.SkillHandlers
 
     private class StealingTarget : Target
     {
-      private Mobile m_Thief;
+      private readonly Mobile m_Thief;
 
       public StealingTarget(Mobile thief) : base(1, false, TargetFlags.None)
       {
@@ -114,8 +114,6 @@ namespace Server.SkillHandlers
           m_Thief.SendLocalizedMessage(1048147); // Your backpack can't hold anything else.
         }
 
-        #region Sigils
-
         else if (toSteal is Sigil sig)
         {
           PlayerState pl = PlayerState.Find(m_Thief);
@@ -133,15 +131,15 @@ namespace Server.SkillHandlers
           {
             if (!m_Thief.CanBeginAction<IncognitoSpell>())
             {
-              m_Thief.SendLocalizedMessage(1010581); //	You cannot steal the sigil when you are incognito
+              m_Thief.SendLocalizedMessage(1010581); // You cannot steal the sigil when you are incognito
             }
             else if (DisguiseTimers.IsDisguised(m_Thief))
             {
-              m_Thief.SendLocalizedMessage(1010583); //	You cannot steal the sigil while disguised
+              m_Thief.SendLocalizedMessage(1010583); // You cannot steal the sigil while disguised
             }
             else if (!m_Thief.CanBeginAction<PolymorphSpell>())
             {
-              m_Thief.SendLocalizedMessage(1010582); //	You cannot steal the sigil while polymorphed
+              m_Thief.SendLocalizedMessage(1010582); // You cannot steal the sigil while polymorphed
             }
             else if (TransformationSpellHelper.UnderTransformation(m_Thief))
             {
@@ -158,7 +156,7 @@ namespace Server.SkillHandlers
             }
             else if (sig.IsBeingCorrupted && sig.LastMonolith.Faction == faction)
             {
-              m_Thief.SendLocalizedMessage(1005590); //	You cannot steal your own sigil
+              m_Thief.SendLocalizedMessage(1005590); // You cannot steal your own sigil
             }
             else if (sig.IsPurifying)
             {
@@ -169,12 +167,12 @@ namespace Server.SkillHandlers
               if (Sigil.ExistsOn(m_Thief))
               {
                 m_Thief.SendLocalizedMessage(
-                  1010258); //	The sigil has gone back to its home location because you already have a sigil.
+                  1010258); // The sigil has gone back to its home location because you already have a sigil.
               }
               else if (m_Thief?.Backpack.CheckHold(m_Thief, sig, false, true) != true)
               {
                 m_Thief.SendLocalizedMessage(
-                  1010259); //	The sigil has gone home because your backpack is full
+                  1010259); // The sigil has gone home because your backpack is full
               }
               else
               {
@@ -194,16 +192,14 @@ namespace Server.SkillHandlers
             }
             else
             {
-              m_Thief.SendLocalizedMessage(1005594); //	You do not have enough skill to steal the sigil
+              m_Thief.SendLocalizedMessage(1005594); // You do not have enough skill to steal the sigil
             }
           }
           else
           {
-            m_Thief.SendLocalizedMessage(1005588); //	You must join a faction to do that
+            m_Thief.SendLocalizedMessage(1005588); // You must join a faction to do that
           }
         }
-
-        #endregion
 
         else if (si == null && (toSteal.Parent == null || !toSteal.Movable))
         {
@@ -395,7 +391,7 @@ namespace Server.SkillHandlers
   {
     public static readonly TimeSpan StealTime = TimeSpan.FromMinutes(2.0);
 
-    private static Queue<StolenItem> m_Queue = new Queue<StolenItem>();
+    private static readonly Queue<StolenItem> m_Queue = new Queue<StolenItem>();
 
     public StolenItem(Item stolen, Mobile thief, Mobile victim)
     {
@@ -406,13 +402,13 @@ namespace Server.SkillHandlers
       Expires = DateTime.UtcNow + StealTime;
     }
 
-    public Item Stolen{ get; }
+    public Item Stolen { get; }
 
-    public Mobile Thief{ get; }
+    public Mobile Thief { get; }
 
-    public Mobile Victim{ get; }
+    public Mobile Victim { get; }
 
-    public DateTime Expires{ get; private set; }
+    public DateTime Expires { get; private set; }
 
     public bool IsExpired => DateTime.UtcNow >= Expires;
 

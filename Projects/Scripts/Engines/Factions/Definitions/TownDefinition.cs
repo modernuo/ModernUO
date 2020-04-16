@@ -22,30 +22,30 @@ namespace Server.Factions
       TownStone = townStone;
     }
 
-    public int Sort{ get; }
+    public int Sort { get; }
 
-    public int SigilID{ get; }
+    public int SigilID { get; }
 
-    public string Region{ get; }
+    public string Region { get; }
 
-    public string FriendlyName{ get; }
+    public string FriendlyName { get; }
 
-    public TextDefinition TownName{ get; }
+    public TextDefinition TownName { get; }
 
-    public TextDefinition TownStoneHeader{ get; }
+    public TextDefinition TownStoneHeader { get; }
 
-    public TextDefinition StrongholdMonolithName{ get; }
+    public TextDefinition StrongholdMonolithName { get; }
 
-    public TextDefinition TownMonolithName{ get; }
+    public TextDefinition TownMonolithName { get; }
 
-    public TextDefinition TownStoneName{ get; }
+    public TextDefinition TownStoneName { get; }
 
-    public TextDefinition SigilName{ get; }
+    public TextDefinition SigilName { get; }
 
-    public TextDefinition CorruptedSigilName{ get; }
+    public TextDefinition CorruptedSigilName { get; }
 
-    public Point3D Monolith{ get; }
+    public Point3D Monolith { get; }
 
-    public Point3D TownStone{ get; }
+    public Point3D TownStone { get; }
   }
 }

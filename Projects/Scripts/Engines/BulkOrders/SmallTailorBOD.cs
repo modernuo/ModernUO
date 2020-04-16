@@ -121,7 +121,6 @@ namespace Server.Engines.BulkOrders
 
         bool reqExceptional = excChance > Utility.RandomDouble();
 
-
         CraftSystem system = DefTailoring.CraftSystem;
 
         List<SmallBulkEntry> validEntries = new List<SmallBulkEntry>();

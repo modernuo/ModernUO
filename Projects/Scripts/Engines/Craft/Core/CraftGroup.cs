@@ -9,11 +9,11 @@ namespace Server.Engines.Craft
       CraftItems = new CraftItemCol();
     }
 
-    public CraftItemCol CraftItems{ get; }
+    public CraftItemCol CraftItems { get; }
 
-    public string NameString{ get; }
+    public string NameString { get; }
 
-    public int NameNumber{ get; }
+    public int NameNumber { get; }
 
     public void AddCraftItem(CraftItem craftItem)
     {

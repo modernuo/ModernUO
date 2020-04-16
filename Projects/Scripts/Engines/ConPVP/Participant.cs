@@ -10,16 +10,16 @@ namespace Server.Engines.ConPVP
     public Participant(DuelContext context, int count)
     {
       Context = context;
-      //m_Stakes = new StakesContainer( context, this );
+      // m_Stakes = new StakesContainer( context, this );
       Resize(count);
     }
 
     public int Count => Players.Length;
-    public DuelPlayer[] Players{ get; private set; }
+    public DuelPlayer[] Players { get; private set; }
 
-    public DuelContext Context{ get; }
+    public DuelContext Context { get; }
 
-    public TourneyParticipant TourneyPart{ get; set; }
+    public TourneyParticipant TourneyPart { get; set; }
 
     public int FilledSlots
     {
@@ -205,9 +205,9 @@ namespace Server.Engines.ConPVP
         mobile.DuelPlayer = this;
     }
 
-    public Mobile Mobile{ get; }
+    public Mobile Mobile { get; }
 
-    public bool Ready{ get; set; }
+    public bool Ready { get; set; }
 
     public bool Eliminated
     {
@@ -223,6 +223,6 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public Participant Participant{ get; set; }
+    public Participant Participant { get; set; }
   }
 }

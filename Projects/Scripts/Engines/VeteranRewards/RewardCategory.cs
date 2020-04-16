@@ -16,10 +16,10 @@ namespace Server.Engines.VeteranRewards
       Entries = new List<RewardEntry>();
     }
 
-    public int Name{ get; }
+    public int Name { get; }
 
-    public string NameString{ get; }
+    public string NameString { get; }
 
-    public List<RewardEntry> Entries{ get; }
+    public List<RewardEntry> Entries { get; }
   }
 }

@@ -8,7 +8,7 @@ namespace Server.Gumps
 {
   public abstract class CAGNode
   {
-    public abstract string Caption{ get; }
+    public abstract string Caption { get; }
     public abstract void OnClick(Mobile from, int page);
   }
 
@@ -28,13 +28,13 @@ namespace Server.Gumps
         Hue = XmlConvert.ToInt32(xml.Value);
     }
 
-    public Type Type{ get; }
+    public Type Type { get; }
 
-    public int ItemID{ get; }
+    public int ItemID { get; }
 
-    public int Hue{ get; }
+    public int Hue { get; }
 
-    public CAGCategory Parent{ get; }
+    public CAGCategory Parent { get; }
 
     public override string Caption => Type == null ? "bad type" : Type.Name;
 
@@ -102,11 +102,11 @@ namespace Server.Gumps
       }
     }
 
-    public string Title{ get; }
+    public string Title { get; }
 
-    public CAGNode[] Nodes{ get; }
+    public CAGNode[] Nodes { get; }
 
-    public CAGCategory Parent{ get; }
+    public CAGCategory Parent { get; }
 
     public override string Caption => Title;
 
@@ -122,7 +122,6 @@ namespace Server.Gumps
       if (File.Exists(path))
       {
         XmlTextReader xml = new XmlTextReader(path) { WhitespaceHandling = WhitespaceHandling.None };
-
 
         while (xml.Read())
           if (xml.Name == "category" && xml.NodeType == XmlNodeType.Element)
@@ -143,7 +142,7 @@ namespace Server.Gumps
   {
     public static bool OldStyle = PropsConfig.OldStyle;
 
-    public static readonly int EntryHeight = 24; //PropsConfig.EntryHeight;
+    public static readonly int EntryHeight = 24; // PropsConfig.EntryHeight;
 
     public static readonly int OffsetSize = PropsConfig.OffsetSize;
     public static readonly int BorderSize = PropsConfig.BorderSize;
@@ -184,7 +183,8 @@ namespace Server.Gumps
     public static readonly int NextButtonID1 = PropsConfig.NextButtonID1;
     public static readonly int NextButtonID2 = PropsConfig.NextButtonID2;
 
-    private static bool PrevLabel = false, NextLabel = false;
+    private static readonly bool PrevLabel = false;
+    private static readonly bool NextLabel = false;
 
     private static readonly int PrevLabelOffsetX = PrevWidth + 1;
     private static readonly int PrevLabelOffsetY = 0;
@@ -200,9 +200,9 @@ namespace Server.Gumps
 
     private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
     private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
-    private CAGCategory m_Category;
+    private readonly CAGCategory m_Category;
 
-    private Mobile m_Owner;
+    private readonly Mobile m_Owner;
     private int m_Page;
 
     public CategorizedAddGump(Mobile owner) : this(owner, CAGCategory.Root)
@@ -340,46 +340,46 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 0: // Closed
-        {
-          return;
-        }
-        case 1: // Up
-        {
-          if (m_Category.Parent != null)
           {
-            int index = Array.IndexOf(m_Category.Parent.Nodes, m_Category) / EntryCount;
-
-            if (index < 0)
-              index = 0;
-
-            from.SendGump(new CategorizedAddGump(from, m_Category.Parent, index));
+            return;
           }
+        case 1: // Up
+          {
+            if (m_Category.Parent != null)
+            {
+              int index = Array.IndexOf(m_Category.Parent.Nodes, m_Category) / EntryCount;
 
-          break;
-        }
+              if (index < 0)
+                index = 0;
+
+              from.SendGump(new CategorizedAddGump(from, m_Category.Parent, index));
+            }
+
+            break;
+          }
         case 2: // Previous
-        {
-          if (m_Page > 0)
-            from.SendGump(new CategorizedAddGump(from, m_Category, m_Page - 1));
+          {
+            if (m_Page > 0)
+              from.SendGump(new CategorizedAddGump(from, m_Category, m_Page - 1));
 
-          break;
-        }
+            break;
+          }
         case 3: // Next
-        {
-          if ((m_Page + 1) * EntryCount < m_Category.Nodes.Length)
-            from.SendGump(new CategorizedAddGump(from, m_Category, m_Page + 1));
+          {
+            if ((m_Page + 1) * EntryCount < m_Category.Nodes.Length)
+              from.SendGump(new CategorizedAddGump(from, m_Category, m_Page + 1));
 
-          break;
-        }
+            break;
+          }
         default:
-        {
-          int index = m_Page * EntryCount + (info.ButtonID - 4);
+          {
+            int index = m_Page * EntryCount + (info.ButtonID - 4);
 
-          if (index >= 0 && index < m_Category.Nodes.Length)
-            m_Category.Nodes[index].OnClick(from, m_Page);
+            if (index >= 0 && index < m_Category.Nodes.Length)
+              m_Category.Nodes[index].OnClick(from, m_Page);
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

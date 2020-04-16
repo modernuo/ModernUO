@@ -9,16 +9,15 @@ namespace Server.Spells.Seventh
 {
   public class GateTravelSpell : MagerySpell, IRecallSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Gate Travel", "Vas Rel Por",
       263,
       9032,
       Reagent.BlackPearl,
       Reagent.MandrakeRoot,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
-    private RunebookEntry m_Entry;
+    private readonly RunebookEntry m_Entry;
 
     public GateTravelSpell(Mobile caster, RunebookEntry entry = null, Item scroll = null) : base(caster, scroll, m_Info) => m_Entry = entry;
 
@@ -70,7 +69,7 @@ namespace Server.Spells.Seventh
       {
         Caster.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
       }
-      else if (map == null || !Core.AOS && Caster.Map != map)
+      else if (map == null || (!Core.AOS && Caster.Map != map))
       {
         Caster.SendLocalizedMessage(1005570); // You can not gate to another facet.
       }
@@ -104,8 +103,7 @@ namespace Server.Spells.Seventh
       {
         Caster.SendLocalizedMessage(501942); // That location is blocked.
       }
-      else if (Core.SE && (GateExistsAt(map, loc) || GateExistsAt(Caster.Map, Caster.Location))
-      ) // SE restricted stacking gates
+      else if (Core.SE && (GateExistsAt(map, loc) || GateExistsAt(Caster.Map, Caster.Location))) // SE restricted stacking gates
       {
         Caster.SendLocalizedMessage(1071242); // There is already a gate there.
       }
@@ -163,7 +161,7 @@ namespace Server.Spells.Seventh
 
       private class InternalTimer : Timer
       {
-        private Item m_Item;
+        private readonly Item m_Item;
 
         public InternalTimer(Item item) : base(TimeSpan.FromSeconds(30.0))
         {

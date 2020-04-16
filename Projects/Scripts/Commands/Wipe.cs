@@ -72,9 +72,9 @@ namespace Server.Commands
 
       IPooledEnumerable<IEntity> eable;
 
-      if (!items && !multis || !mobiles)
+      if ((!items && !multis) || !mobiles)
         return;
-      
+
       eable = map.GetObjectsInBounds(rect);
 
       foreach (IEntity obj in eable)

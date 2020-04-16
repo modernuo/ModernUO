@@ -64,9 +64,9 @@ namespace Server.Gumps
       m_Strings = new List<string>();
     }
 
-    public int TypeID{ get; }
+    public int TypeID { get; }
 
-    public List<GumpEntry> Entries{ get; }
+    public List<GumpEntry> Entries { get; }
 
     public uint Serial
     {
@@ -163,8 +163,8 @@ namespace Server.Gumps
 
     public void Invalidate()
     {
-      //if ( m_Strings.Count > 0 )
-      //	m_Strings.Clear();
+      // if ( m_Strings.Count > 0 )
+      // m_Strings.Clear();
     }
 
     public void AddPage(int page)
@@ -208,7 +208,8 @@ namespace Server.Gumps
       Add(new GumpHtml(x, y, width, height, text, background, scrollbar));
     }
 
-    public void AddHtmlLocalized(int x, int y, int width, int height, int number, bool background = false, bool scrollbar = false)
+    public void AddHtmlLocalized(int x, int y, int width, int height, int number, bool background = false,
+      bool scrollbar = false)
     {
       Add(new GumpHtmlLocalized(x, y, width, height, number, background, scrollbar));
     }
@@ -264,7 +265,7 @@ namespace Server.Gumps
 
     public void AddTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText)
     {
-      Add( new GumpTextEntry(x, y, width, height, hue, entryID, initialText));
+      Add(new GumpTextEntry(x, y, width, height, hue, entryID, initialText));
     }
 
     public void AddTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText, int size)
@@ -302,7 +303,7 @@ namespace Server.Gumps
 
     public int Intern(string value)
     {
-      int indexOf = m_Strings.IndexOf(value);
+      var indexOf = m_Strings.IndexOf(value);
 
       if (indexOf >= 0) return indexOf;
 
@@ -340,11 +341,11 @@ namespace Server.Gumps
       if (!m_Resizable)
         disp.AppendLayout(m_NoResize);
 
-      int count = Entries.Count;
+      var count = Entries.Count;
 
-      for (int i = 0; i < count; ++i)
+      for (var i = 0; i < count; ++i)
       {
-        GumpEntry e = Entries[i];
+        var e = Entries[i];
 
         disp.AppendLayout(m_BeginLayout);
         e.AppendTo(ns, disp);

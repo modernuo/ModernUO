@@ -64,7 +64,7 @@ namespace Server.Items
 
     private class PickWheelTarget : Target
     {
-      private Cotton m_Cotton;
+      private readonly Cotton m_Cotton;
 
       public PickWheelTarget(Cotton cotton) : base(3, false, TargetFlags.None) => m_Cotton = cotton;
 

@@ -2,11 +2,9 @@ namespace Server.Items
 {
   public class TavarasJournal1 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal: Discovery of the Tomb", "Tavara Sewel",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day One:",
         "",
         "The workers continue",
@@ -14,10 +12,8 @@ namespace Server.Items
         "efforts to unload our",
         "supplies even as light",
         "fades.  I feel I should",
-        "lend a hand in the"
-      ),
-      new BookPageInfo
-      (
+        "lend a hand in the"),
+      new BookPageInfo(
         "effort, and yet I",
         "cannot bear to take my",
         "attention away from",
@@ -25,10 +21,8 @@ namespace Server.Items
         "doors of the tomb.",
         "Every inch of their",
         "massive frame is",
-        "covered with"
-      ),
-      new BookPageInfo
-      (
+        "covered with"),
+      new BookPageInfo(
         "intricately carved",
         "design work - 'tis",
         "truly a sight to see.",
@@ -36,10 +30,8 @@ namespace Server.Items
         "sketching and",
         "cataloging what I can",
         "of them while my",
-        "companions set up our"
-      ),
-      new BookPageInfo
-      (
+        "companions set up our"),
+      new BookPageInfo(
         "camp and make",
         "preparations for",
         "tomorrow's work.",
@@ -47,10 +39,8 @@ namespace Server.Items
         "symbols inspire me to",
         "new flights of fancy,",
         "some of the workers",
-        "seem strangely"
-      ),
-      new BookPageInfo
-      (
+        "seem strangely"),
+      new BookPageInfo(
         "fearful of them.  I",
         "cannot wait 'til the",
         "morrow when those",
@@ -58,14 +48,10 @@ namespace Server.Items
         "shall swing open and",
         "deliver unto me",
         "everything I have",
-        "dreamed of for the"
-      ),
-      new BookPageInfo
-      (
+        "dreamed of for the"),
+      new BookPageInfo(
         "last ten years of my",
-        "life."
-      )
-    );
+        "life."));
 
     [Constructible]
     public TavarasJournal1() : base(Utility.Random(0xFF1, 2), false)
@@ -95,11 +81,9 @@ namespace Server.Items
 
   public class TavarasJournal2 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal: Discovery of the Tomb", "Tavara Sewel",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Two:",
         "",
         "Everything we'd",
@@ -107,10 +91,8 @@ namespace Server.Items
         "tomb has proved",
         "correct - and yet,",
         "nothing could prepare",
-        "me for the sight of it"
-      ),
-      new BookPageInfo
-      (
+        "me for the sight of it"),
+      new BookPageInfo(
         "with my own eyes.",
         "The Tomb of Khal",
         "Ankur has given up",
@@ -118,10 +100,8 @@ namespace Server.Items
         "intricate stonework",
         "that covered the tomb",
         "doors seems to",
-        "continue throughout"
-      ),
-      new BookPageInfo
-      (
+        "continue throughout"),
+      new BookPageInfo(
         "the entirety of the",
         "catacombs, each",
         "hallway and room",
@@ -129,10 +109,8 @@ namespace Server.Items
         "endless amount of",
         "information for my",
         "companions and I to",
-        "record.  It will take"
-      ),
-      new BookPageInfo
-      (
+        "record.  It will take"),
+      new BookPageInfo(
         "years to catalogue the",
         "entirety of the Tomb,",
         "if those legends of its",
@@ -140,10 +118,8 @@ namespace Server.Items
         "true.  Sadly, a good",
         "deal of the Tomb's",
         "interior has been",
-        "damaged or utterly"
-      ),
-      new BookPageInfo
-      (
+        "damaged or utterly"),
+      new BookPageInfo(
         "destroyed, whether",
         "by seismic activity in",
         "the surrounding",
@@ -151,10 +127,8 @@ namespace Server.Items
         "merely the slow",
         "efforts of Time",
         "itself, I do not know.",
-        "A good deal of the"
-      ),
-      new BookPageInfo
-      (
+        "A good deal of the"),
+      new BookPageInfo(
         "stonework has been",
         "cracked or collapsed",
         "entirely, especially",
@@ -162,10 +136,8 @@ namespace Server.Items
         "supports of the main",
         "hall.  Our passage has",
         "indeed already been",
-        "entirely blocked in the"
-      ),
-      new BookPageInfo
-      (
+        "entirely blocked in the"),
+      new BookPageInfo(
         "first major room",
         "we've discovered, a",
         "massive pile of",
@@ -173,10 +145,8 @@ namespace Server.Items
         "blocking any exit",
         "from the",
         "antechamber.  What",
-        "could have caused"
-      ),
-      new BookPageInfo
-      (
+        "could have caused"),
+      new BookPageInfo(
         "such a localized",
         "disruption of the",
         "support structures,",
@@ -184,17 +154,13 @@ namespace Server.Items
         "but it will surely take",
         "an entire afternoon's",
         "effort to remove even",
-        "a fraction of it.  I look"
-      ),
-      new BookPageInfo
-      (
+        "a fraction of it.  I look"),
+      new BookPageInfo(
         "forward to more",
         "progress tomorrow",
         "once the workers have",
         "set to excavating the",
-        "hall."
-      )
-    );
+        "hall."));
 
     [Constructible]
     public TavarasJournal2() : base(Utility.Random(0xFF1, 2), false)
@@ -224,11 +190,9 @@ namespace Server.Items
 
   public class TavarasJournal3 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal: Discovery of the Tomb", "Tavara Sewel",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Three - Day Five:",
         "",
         "I do not understand",
@@ -236,10 +200,8 @@ namespace Server.Items
         "once thought I did.",
         "Something palatable",
         "seems to hinder our",
-        "every attempt to"
-      ),
-      new BookPageInfo
-      (
+        "every attempt to"),
+      new BookPageInfo(
         "investigate this",
         "ancient site.",
         "Excavation work on",
@@ -247,10 +209,8 @@ namespace Server.Items
         "hallway finished only",
         "yesterday - the",
         "amount of stone and",
-        "rubble blocking the"
-      ),
-      new BookPageInfo
-      (
+        "rubble blocking the"),
+      new BookPageInfo(
         "egress was",
         "astounding, it stands",
         "in immense piles",
@@ -258,10 +218,8 @@ namespace Server.Items
         "entrance, as if we",
         "were digging the",
         "tunnels of this",
-        "abhorred place"
-      ),
-      new BookPageInfo
-      (
+        "abhorred place"),
+      new BookPageInfo(
         "ourselves!  The",
         "satisfaction of",
         "completing our efforts",
@@ -269,10 +227,8 @@ namespace Server.Items
         "however, as we",
         "discovered the end of",
         "the hallway we had",
-        "just revealed was"
-      ),
-      new BookPageInfo
-      (
+        "just revealed was"),
+      new BookPageInfo(
         "blocked by yet another",
         "colossal pile of stone.",
         "I've had a few of the",
@@ -280,18 +236,14 @@ namespace Server.Items
         "primitive scaffolding",
         "in the main",
         "antechamber so that I",
-        "can spend my time"
-      ),
-      new BookPageInfo
-      (
+        "can spend my time"),
+      new BookPageInfo(
         "pouring over the detail",
         "work on the stone",
         "carvings while the",
         "rest of our crew",
         "continue excavating",
-        "the inner halls."
-      )
-    );
+        "the inner halls."));
 
     [Constructible]
     public TavarasJournal3() : base(Utility.Random(0xFF1, 2), false)
@@ -321,11 +273,9 @@ namespace Server.Items
 
   public class TavarasJournal6 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal: Discovery of the Tomb", "Tavara Sewel",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Six:",
         "",
         "Late last night our",
@@ -333,10 +283,8 @@ namespace Server.Items
         "a pack of wild beasts",
         "- behemoth creatures",
         "with a speed and",
-        "viciousness I'd n'ere"
-      ),
-      new BookPageInfo
-      (
+        "viciousness I'd n'ere"),
+      new BookPageInfo(
         "before seen.  Even",
         "Grimmoch, well",
         "versed in all manner",
@@ -344,10 +292,8 @@ namespace Server.Items
         "unsure as to their",
         "nature - though I lay",
         "blame upon the",
-        "darkness covering"
-      ),
-      new BookPageInfo
-      (
+        "darkness covering"),
+      new BookPageInfo(
         "their movements",
         "rather than on his",
         "skill as a huntsman.",
@@ -355,10 +301,8 @@ namespace Server.Items
         "up the entire night,",
         "and we were",
         "eventually forced to",
-        "flee into the Tomb"
-      ),
-      new BookPageInfo
-      (
+        "flee into the Tomb"),
+      new BookPageInfo(
         "itself to take refuge",
         "from the ravenous",
         "creatures - e'en",
@@ -366,10 +310,8 @@ namespace Server.Items
         "could not keep the foul",
         "things from attacking",
         "in great numbers.",
-        "The Tomb performed"
-      ),
-      new BookPageInfo
-      (
+        "The Tomb performed"),
+      new BookPageInfo(
         "well as an impromptu",
         "fortress, and we",
         "managed to spend the",
@@ -377,10 +319,8 @@ namespace Server.Items
         "Morning's light",
         "seemed to have",
         "scattered the beasts,",
-        "as not a single one of"
-      ),
-      new BookPageInfo
-      (
+        "as not a single one of"),
+      new BookPageInfo(
         "them was to be seen as",
         "we exited the Tomb -",
         "not even a carcass of",
@@ -388,10 +328,8 @@ namespace Server.Items
         "slain a'fore we fled.",
         "Lysander set the crew",
         "to work, moving our",
-        "supplies and gear into"
-      ),
-      new BookPageInfo
-      (
+        "supplies and gear into"),
+      new BookPageInfo(
         "the Tomb, in case the",
         "creatures did opt to",
         "return.  Such savage",
@@ -399,9 +337,7 @@ namespace Server.Items
         "and not a single one",
         "ever turned to run,",
         "even in the face of",
-        "certain death."
-      )
-    );
+        "certain death."));
 
     [Constructible]
     public TavarasJournal6() : base(Utility.Random(0xFF1, 2), false)
@@ -431,11 +367,9 @@ namespace Server.Items
 
   public class TavarasJournal7 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal: Discovery of the Tomb", "Tavara Sewel",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Seven:",
         "",
         "T'was written that,",
@@ -443,10 +377,8 @@ namespace Server.Items
         "Ankur's followers,",
         "those known as the",
         "Keepers of the",
-        "Seventh Death, sealed"
-      ),
-      new BookPageInfo
-      (
+        "Seventh Death, sealed"),
+      new BookPageInfo(
         "themselves within the",
         "Sanctum they had",
         "carved from the",
@@ -454,10 +386,8 @@ namespace Server.Items
         "honor.  The Zealots of",
         "his order entombed",
         "the lesser followers",
-        "alive, then, when all"
-      ),
-      new BookPageInfo
-      (
+        "alive, then, when all"),
+      new BookPageInfo(
         "but two remained, slit",
         "their throats and",
         "joined Khal Ankur in",
@@ -465,10 +395,8 @@ namespace Server.Items
         "not surprising for a",
         "Cult that worshipped",
         "death and sacrifice so",
-        "vehemently as it is"
-      ),
-      new BookPageInfo
-      (
+        "vehemently as it is"),
+      new BookPageInfo(
         "said that the Keepers",
         "did - and yet, to be in",
         "this Tomb, to know",
@@ -476,10 +404,8 @@ namespace Server.Items
         "depths hundreds upon",
         "hundreds of bodies",
         "lay, sealed alive at",
-        "their own behest..."
-      ),
-      new BookPageInfo
-      (
+        "their own behest..."),
+      new BookPageInfo(
         "I must confess that",
         "the very thought of it",
         "troubles my dreams at",
@@ -487,19 +413,15 @@ namespace Server.Items
         "Lysander if we might",
         "reestablish the camp",
         "outside the Tomb,",
-        "setting up night"
-      ),
-      new BookPageInfo
-      (
+        "setting up night"),
+      new BookPageInfo(
         "watches and some sort",
         "of fortification, but",
         "he'll have none of it.  I",
         "did not press the",
         "issue, as I suddenly",
         "felt foolish even at",
-        "my askance."
-      )
-    );
+        "my askance."));
 
     [Constructible]
     public TavarasJournal7() : base(Utility.Random(0xFF1, 2), false)
@@ -529,11 +451,9 @@ namespace Server.Items
 
   public class TavarasJournal8 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal: Discovery of the Tomb", "Tavara Sewel",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Eight :",
         "",
         "Astounding progress",
@@ -541,10 +461,8 @@ namespace Server.Items
         "my very head spins",
         "with the excitement",
         "of it.  Upon full",
-        "excavation of the far"
-      ),
-      new BookPageInfo
-      (
+        "excavation of the far"),
+      new BookPageInfo(
         "western hall, another",
         "large antechamber",
         "was revealed.  By the",
@@ -552,10 +470,8 @@ namespace Server.Items
         "the wall carvings and",
         "their framing, as well",
         "as the numerous",
-        "vellum scrolls and"
-      ),
-      new BookPageInfo
-      (
+        "vellum scrolls and"),
+      new BookPageInfo(
         "tomes held within, the",
         "room appears to have",
         "been a great museum",
@@ -563,10 +479,8 @@ namespace Server.Items
         "The sheer amount of",
         "written information",
         "encased within this",
-        "room would surely"
-      ),
-      new BookPageInfo
-      (
+        "room would surely"),
+      new BookPageInfo(
         "take me decades to",
         "study e'en if I could",
         "immediately decipher",
@@ -574,10 +488,8 @@ namespace Server.Items
         "which it was written.",
         "My sheer joy at the",
         "discovery was quickly",
-        "noted by the brute"
-      ),
-      new BookPageInfo
-      (
+        "noted by the brute"),
+      new BookPageInfo(
         "known as Morg",
         "Bergen, who, even in",
         "his simple way,",
@@ -585,10 +497,8 @@ namespace Server.Items
         "delighted as I that",
         "some progress had",
         "been made.  I must",
-        "confess, upon his"
-      ),
-      new BookPageInfo
-      (
+        "confess, upon his"),
+      new BookPageInfo(
         "inclusion in our party",
         "at the beginning of",
         "this journey I was",
@@ -596,10 +506,8 @@ namespace Server.Items
         "his nature, but he has",
         "a startlingly quick wit",
         "about him for such a",
-        "massive, calloused"
-      ),
-      new BookPageInfo
-      (
+        "massive, calloused"),
+      new BookPageInfo(
         "warrior.  While",
         "Lysander and e'en",
         "Grimmoch always",
@@ -607,17 +515,13 @@ namespace Server.Items
         "tomb with a scowling",
         "determination, Bergen",
         "seems to feel the same",
-        "thrill of discovery as"
-      ),
-      new BookPageInfo
-      (
+        "thrill of discovery as"),
+      new BookPageInfo(
         "I.  I am proud to now",
         "count him as a friend,",
         "and am thankful for",
         "his laughter as well",
-        "as his strength."
-      )
-    );
+        "as his strength."));
 
     [Constructible]
     public TavarasJournal8() : base(Utility.Random(0xFF1, 2), false)
@@ -647,11 +551,9 @@ namespace Server.Items
 
   public class TavarasJournal9 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal: Discovery of the Tomb", "Tavara Sewel",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Nine - Day Ten:",
         "",
         "The excavation of the",
@@ -659,10 +561,8 @@ namespace Server.Items
         "has ceased, as three",
         "of the workers have",
         "gone missing in the",
-        "night.  Bergen voiced"
-      ),
-      new BookPageInfo
-      (
+        "night.  Bergen voiced"),
+      new BookPageInfo(
         "the opinion that they",
         "had most likely",
         "abandoned our group",
@@ -670,10 +570,8 @@ namespace Server.Items
         "back, as they were of",
         "the number that",
         "seemed especially",
-        "disturbed by the"
-      ),
-      new BookPageInfo
-      (
+        "disturbed by the"),
+      new BookPageInfo(
         "Tomb.  Lysander had",
         "other ideas, however.",
         "In the middle of our",
@@ -681,10 +579,8 @@ namespace Server.Items
         "matter, he went into a",
         "wild tirade on the",
         "possibility that they",
-        "had somehow"
-      ),
-      new BookPageInfo
-      (
+        "had somehow"),
+      new BookPageInfo(
         "infiltrated the tomb's",
         "interior without us.",
         "The pure, hateful",
@@ -692,10 +588,8 @@ namespace Server.Items
         "when he spoke of the",
         "workers shocked me,",
         "as I had always",
-        "thought him to be a"
-      ),
-      new BookPageInfo
-      (
+        "thought him to be a"),
+      new BookPageInfo(
         "levelheaded man of",
         "great learning.  As we",
         "are still at work",
@@ -703,15 +597,11 @@ namespace Server.Items
         "that blocks all access",
         "to the inner chambers,",
         "I cannot help but",
-        "believe the workers"
-      ),
-      new BookPageInfo
-      (
+        "believe the workers"),
+      new BookPageInfo(
         "must have fled the",
         "site altogether, as",
-        "Bergen said."
-      )
-    );
+        "Bergen said."));
 
     [Constructible]
     public TavarasJournal9() : base(Utility.Random(0xFF1, 2), false)
@@ -741,11 +631,9 @@ namespace Server.Items
 
   public class TavarasJournal11 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal: Discovery of the Tomb", "Tavara Sewel",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Eleven - Day",
         "Thirteen:",
         "",
@@ -753,10 +641,8 @@ namespace Server.Items
         "have gone missing.",
         "Even more disturbing",
         "is the fact that",
-        "Lysander has joined"
-      ),
-      new BookPageInfo
-      (
+        "Lysander has joined"),
+      new BookPageInfo(
         "them. Late last night",
         "the workers finished",
         "excavating the next",
@@ -764,10 +650,8 @@ namespace Server.Items
         "retired to the main",
         "antechamber and our",
         "camp to rest up for",
-        "exploration on the"
-      ),
-      new BookPageInfo
-      (
+        "exploration on the"),
+      new BookPageInfo(
         "'morrow.  In the",
         "middle of the night we",
         "woke to a strange",
@@ -775,10 +659,8 @@ namespace Server.Items
         "the men prepared",
         "themselves for",
         "another onslaught of",
-        "the beasts that had"
-      ),
-      new BookPageInfo
-      (
+        "the beasts that had"),
+      new BookPageInfo(
         "troubled our outer",
         "camp, it was noticed",
         "that Lysander was",
@@ -786,10 +668,8 @@ namespace Server.Items
         "number.  I cannot",
         "fathom where he has",
         "gone - the newly",
-        "revealed chamber"
-      ),
-      new BookPageInfo
-      (
+        "revealed chamber"),
+      new BookPageInfo(
         "holds no immediate",
         "egress, blocked again",
         "by piles of stone and",
@@ -797,10 +677,8 @@ namespace Server.Items
         "believe that Lysander,",
         "of all people, would",
         "have fled this site -",
-        "indeed, he had lately"
-      ),
-      new BookPageInfo
-      (
+        "indeed, he had lately"),
+      new BookPageInfo(
         "grown almost fanatical",
         "in his work to",
         "discover more of the",
@@ -808,10 +686,8 @@ namespace Server.Items
         "by the consistently",
         "slow progress of",
         "excavating each new",
-        "hallway.  The men are"
-      ),
-      new BookPageInfo
-      (
+        "hallway.  The men are"),
+      new BookPageInfo(
         "at work even now, and",
         "as the ceaseless",
         "thumps and cracks of",
@@ -819,17 +695,13 @@ namespace Server.Items
         "reverberate",
         "throughout the",
         "entirety of the tomb,",
-        "the dust continues to"
-      ),
-      new BookPageInfo
-      (
+        "the dust continues to"),
+      new BookPageInfo(
         "pour down from the",
         "ancient stonework",
         "above us like some",
         "horrible, eldritch",
-        "curse upon us all."
-      )
-    );
+        "curse upon us all."));
 
     [Constructible]
     public TavarasJournal11() : base(Utility.Random(0xFF1, 2), false)
@@ -859,11 +731,9 @@ namespace Server.Items
 
   public class TavarasJournal14 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal: Discovery of the Tomb", "Tavara Sewel",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Fourteen - Day",
         "Fifteen:",
         "",
@@ -871,10 +741,8 @@ namespace Server.Items
         "returned... and yet,",
         "how can I describe the",
         "horror of it?  He",
-        "stands across the"
-      ),
-      new BookPageInfo
-      (
+        "stands across the"),
+      new BookPageInfo(
         "chamber from me",
         "even now, a changed",
         "man.  His hair hangs",
@@ -882,10 +750,8 @@ namespace Server.Items
         "his face, his clothes",
         "filthy and torn in",
         "places... and the blood",
-        "- covered in blood, his"
-      ),
-      new BookPageInfo
-      (
+        "- covered in blood, his"),
+      new BookPageInfo(
         "skin shining in",
         "scarlet reflections of",
         "the torchlight.  He",
@@ -893,10 +759,8 @@ namespace Server.Items
         "approach; a thick,",
         "rusted dagger in his",
         "hand warding off any",
-        "attempts to overcome"
-      ),
-      new BookPageInfo
-      (
+        "attempts to overcome"),
+      new BookPageInfo(
         "him.  And the blood,",
         "which runs down in",
         "great rivulets from",
@@ -904,10 +768,8 @@ namespace Server.Items
         "it is not his own, and",
         "this is enough to keep",
         "us at a wary distance.",
-        "Morg Bergen wishes"
-      ),
-      new BookPageInfo
-      (
+        "Morg Bergen wishes"),
+      new BookPageInfo(
         "to subdue him",
         "quickly, but there is",
         "something in",
@@ -915,10 +777,8 @@ namespace Server.Items
         "I remember the power",
         "of his spells, even as",
         "he swings the jagged",
-        "dagger back and forth"
-      ),
-      new BookPageInfo
-      (
+        "dagger back and forth"),
+      new BookPageInfo(
         "in a wide swath",
         "before him.",
         "Something about the",
@@ -926,19 +786,15 @@ namespace Server.Items
         "stomach churn.",
         "Something has",
         "happened, something",
-        "that changes"
-      ),
-      new BookPageInfo
-      (
+        "that changes"),
+      new BookPageInfo(
         "everything.  Lysander",
         "has lost his sanity to",
         "this tomb... or to",
         "something within it.",
         "Do we dare approach?",
         "We must make a",
-        "decision soon."
-      )
-    );
+        "decision soon."));
 
     [Constructible]
     public TavarasJournal14() : base(Utility.Random(0xFF1, 2), false)
@@ -968,11 +824,9 @@ namespace Server.Items
 
   public class TavarasJournal16 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal: Discovery of the Tomb", "Tavara Sewel",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Sixteen:",
         "",
         "Why do I write?  I",
@@ -980,10 +834,8 @@ namespace Server.Items
         "because there must be",
         "some record of",
         "this... what's",
-        "happened here... as"
-      ),
-      new BookPageInfo
-      (
+        "happened here... as"),
+      new BookPageInfo(
         "for my own sanity.",
         "The act of putting pen",
         "to paper calms me,",
@@ -991,10 +843,8 @@ namespace Server.Items
         "this madness.",
         "Lysander is dead.  So",
         "many are dead.  And",
-        "we're trapped here,"
-      ),
-      new BookPageInfo
-      (
+        "we're trapped here,"),
+      new BookPageInfo(
         "trapped forever in",
         "this nightmare.  He",
         "would not let us pass,",
@@ -1002,10 +852,8 @@ namespace Server.Items
         "furious, spitting,",
         "covered in blood, he",
         "swung the ancient",
-        "dagger at any who"
-      ),
-      new BookPageInfo
-      (
+        "dagger at any who"),
+      new BookPageInfo(
         "approached.  He",
         "babbled incoherently,",
         "cursed at us, the most",
@@ -1013,10 +861,8 @@ namespace Server.Items
         "prophecy, doom upon",
         "us.  Bergen would",
         "have none of it.",
-        "Finally, he leapt at"
-      ),
-      new BookPageInfo
-      (
+        "Finally, he leapt at"),
+      new BookPageInfo(
         "Lysander, his",
         "massive axe at his",
         "side.  But he would not",
@@ -1024,10 +870,8 @@ namespace Server.Items
         "mage... no... they",
         "were... those hands,",
         "covered in the dirt of",
-        "the grave, maggots,"
-      ),
-      new BookPageInfo
-      (
+        "the grave, maggots,"),
+      new BookPageInfo(
         "filth.  They rose up",
         "behind Lysander.",
         "That look of curiosity",
@@ -1035,10 +879,8 @@ namespace Server.Items
         "Bergen skidded to a",
         "halt... t'was almost a",
         "moment of sanity for",
-        "him, surely, to"
-      ),
-      new BookPageInfo
-      (
+        "him, surely, to"),
+      new BookPageInfo(
         "attempt to comprehend",
         "what could have",
         "stopped the warrior in",
@@ -1046,10 +888,8 @@ namespace Server.Items
         "they were upon him.",
         "Skeletal hands, arms",
         "and faces with loose,",
-        "corrupted flesh"
-      ),
-      new BookPageInfo
-      (
+        "corrupted flesh"),
+      new BookPageInfo(
         "hanging from yellow",
         "bone.  Inhuman, yet",
         "once human,",
@@ -1057,9 +897,7 @@ namespace Server.Items
         "as their companions",
         "tore at Lysander,",
         "coming towards us in",
-        "droves."
-      )
-    );
+        "droves."));
 
     [Constructible]
     public TavarasJournal16() : base(Utility.Random(0xFF1, 2), false)
@@ -1089,11 +927,9 @@ namespace Server.Items
 
   public class TavarasJournal16b : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal: Discovery of the Tomb", "Tavara Sewel",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Sixteen, Later :",
         "",
         "We ran. What could",
@@ -1101,10 +937,8 @@ namespace Server.Items
         "towards the entrance,",
         "cutting at them when",
         "we could.  T'was a",
-        "nightmare, and yet"
-      ),
-      new BookPageInfo
-      (
+        "nightmare, and yet"),
+      new BookPageInfo(
         "nothing to prepare us",
         "for what would come.",
         "We were almost there,",
@@ -1112,10 +946,8 @@ namespace Server.Items
         "abhorred crypt in",
         "sight.  Then the earth",
         "shook with such a",
-        "force that we were"
-      ),
-      new BookPageInfo
-      (
+        "force that we were"),
+      new BookPageInfo(
         "dropped to our hands",
         "and knees, stumbling",
         "in the darkness with",
@@ -1123,10 +955,8 @@ namespace Server.Items
         "surely behind us.",
         "The noise of falling",
         "rock and crumbling",
-        "stone drowned out our"
-      ),
-      new BookPageInfo
-      (
+        "stone drowned out our"),
+      new BookPageInfo(
         "piteous cries.  No sign",
         "of the entrance",
         "remained.",
@@ -1134,10 +964,8 @@ namespace Server.Items
         "Bergen, whose wits",
         "returned quickly.",
         "That he could make us",
-        "hurry back into the"
-      ),
-      new BookPageInfo
-      (
+        "hurry back into the"),
+      new BookPageInfo(
         "main antechamber...",
         "actually run back",
         "towards those eldritch",
@@ -1145,10 +973,8 @@ namespace Server.Items
         "But we did, the",
         "strength of his",
         "convictions enough for",
-        "us in the moment."
-      ),
-      new BookPageInfo
-      (
+        "us in the moment."),
+      new BookPageInfo(
         "And at our campsite",
         "we erected our last",
         "defense, a pitiable",
@@ -1156,10 +982,8 @@ namespace Server.Items
         "stone, anything at",
         "hand that might block",
         "the tide of those",
-        "nightmare creatures."
-      ),
-      new BookPageInfo
-      (
+        "nightmare creatures."),
+      new BookPageInfo(
         "And I sit against it",
         "even now.  I can hear",
         "their moans, their",
@@ -1167,9 +991,7 @@ namespace Server.Items
         "distance - they'll be",
         "here soon, even at the",
         "unhurried pace of the",
-        "shuffling dead."
-      )
-    );
+        "shuffling dead."));
 
     [Constructible]
     public TavarasJournal16b() : base(Utility.Random(0xFF1, 2), false)
@@ -1199,11 +1021,9 @@ namespace Server.Items
 
   public class TavarasJournal17 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal: Discovery of the Tomb", "Tavara Sewel",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Seventeen - Day",
         "Eighteen :",
         "",
@@ -1211,10 +1031,8 @@ namespace Server.Items
         "longer.  I know now",
         "t'was no work of the",
         "earth that trapped us",
-        "here - I can feel His"
-      ),
-      new BookPageInfo
-      (
+        "here - I can feel His"),
+      new BookPageInfo(
         "force in it.  It was His",
         "will, His power that",
         "has sealed us here in",
@@ -1222,10 +1040,8 @@ namespace Server.Items
         "barricade will not be",
         "enough.  So many of",
         "them. They come like",
-        "unto the ocean's waves"
-      ),
-      new BookPageInfo
-      (
+        "unto the ocean's waves"),
+      new BookPageInfo(
         "- ceaseless,",
         "neverending.  For",
         "every five we strike",
@@ -1233,14 +1049,10 @@ namespace Server.Items
         "up against us.  And",
         "like the sands we",
         "cannot help but be",
-        "brought down, wasted"
-      ),
-      new BookPageInfo
-      (
+        "brought down, wasted"),
+      new BookPageInfo(
         "away in this ocean of",
-        "blood."
-      )
-    );
+        "blood."));
 
     [Constructible]
     public TavarasJournal17() : base(Utility.Random(0xFF1, 2), false)
@@ -1270,11 +1082,9 @@ namespace Server.Items
 
   public class TavarasJournal19 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal: Discovery of the Tomb", "Tavara Sewel",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Nineteen - Day",
         "Twenty-One :",
         "",
@@ -1282,10 +1092,8 @@ namespace Server.Items
         "hold - never, and",
         "they'll come, they",
         "come even now.  I",
-        "would tear the last of"
-      ),
-      new BookPageInfo
-      (
+        "would tear the last of"),
+      new BookPageInfo(
         "it down, let them in to",
         "devour us all, if only",
         "to stop the screaming",
@@ -1293,14 +1101,10 @@ namespace Server.Items
         "cries that fill the tomb",
         "with their presence.",
         "May my ancestors",
-        "forgive me, but it"
-      ),
-      new BookPageInfo
-      (
+        "forgive me, but it"),
+      new BookPageInfo(
         "must be done. I must",
-        "end this."
-      )
-    );
+        "end this."));
 
     [Constructible]
     public TavarasJournal19() : base(Utility.Random(0xFF1, 2), false)

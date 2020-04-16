@@ -19,7 +19,7 @@ namespace Server.Items
     {
     }
 
-    public abstract BaseAddon Addon{ get; }
+    public abstract BaseAddon Addon { get; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -48,7 +48,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private BaseAddonDeed m_Deed;
+      private readonly BaseAddonDeed m_Deed;
 
       public InternalTarget(BaseAddonDeed deed) : base(-1, true, TargetFlags.None)
       {
@@ -103,8 +103,6 @@ namespace Server.Items
       }
     }
 
-    #region Mondain's Legacy
-
     private CraftResource m_Resource;
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -122,7 +120,5 @@ namespace Server.Items
         }
       }
     }
-
-    #endregion
   }
 }

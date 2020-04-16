@@ -8,7 +8,7 @@ namespace Server.Items
   /// </summary>
   public class Feint : WeaponAbility
   {
-    public static Dictionary<Mobile, FeintTimer> Registry{ get; } = new Dictionary<Mobile, FeintTimer>();
+    public static Dictionary<Mobile, FeintTimer> Registry { get; } = new Dictionary<Mobile, FeintTimer>();
 
     public override int BaseMana => 30;
 
@@ -44,7 +44,7 @@ namespace Server.Items
 
       timer = new FeintTimer(defender,
         (int)(20.0 + 3.0 * (Math.Max(attacker.Skills.Ninjitsu.Value,
-                              attacker.Skills.Bushido.Value) - 50.0) / 7.0)); //20-50 % decrease
+                              attacker.Skills.Bushido.Value) - 50.0) / 7.0)); // 20-50 % decrease
 
       timer.Start();
       Registry.Add(defender, timer);
@@ -52,7 +52,7 @@ namespace Server.Items
 
     public class FeintTimer : Timer
     {
-      private Mobile m_Defender;
+      private readonly Mobile m_Defender;
 
       public FeintTimer(Mobile defender, int swingSpeedReduction)
         : base(TimeSpan.FromSeconds(6.0))
@@ -62,7 +62,7 @@ namespace Server.Items
         Priority = TimerPriority.FiftyMS;
       }
 
-      public int SwingSpeedReduction{ get; }
+      public int SwingSpeedReduction { get; }
 
       protected override void OnTick()
       {

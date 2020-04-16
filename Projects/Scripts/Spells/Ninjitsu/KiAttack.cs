@@ -6,7 +6,7 @@ namespace Server.Spells.Ninjitsu
 {
   public class KiAttack : NinjaMove
   {
-    private static Dictionary<Mobile, KiAttackInfo> m_Table = new Dictionary<Mobile, KiAttackInfo>();
+    private static readonly Dictionary<Mobile, KiAttackInfo> m_Table = new Dictionary<Mobile, KiAttackInfo>();
 
     public override int BaseMana => 25;
     public override double RequiredSkill => 80.0;
@@ -116,7 +116,7 @@ namespace Server.Spells.Ninjitsu
     private class KiAttackInfo
     {
       public Point3D m_Location;
-      public Mobile m_Mobile;
+      public readonly Mobile m_Mobile;
       public Timer m_Timer;
 
       public KiAttackInfo(Mobile m)

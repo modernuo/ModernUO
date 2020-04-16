@@ -50,12 +50,12 @@ namespace Server.Gumps
 
     private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
     private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
-    private List<object> m_List;
-    private Mobile m_Mobile;
-    private object m_Object;
-    private int m_Page;
-    private PropertyInfo m_Property;
-    private Stack<StackEntry> m_Stack;
+    private readonly List<object> m_List;
+    private readonly Mobile m_Mobile;
+    private readonly object m_Object;
+    private readonly int m_Page;
+    private readonly PropertyInfo m_Property;
+    private readonly Stack<StackEntry> m_Stack;
 
     public SetPoint3DGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, List<object> list)
       : base(GumpOffsetX, GumpOffsetY)
@@ -138,44 +138,44 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 1: // Current location
-        {
-          toSet = m_Mobile.Location;
-          shouldSet = true;
-          shouldSend = true;
+          {
+            toSet = m_Mobile.Location;
+            shouldSet = true;
+            shouldSend = true;
 
-          break;
-        }
+            break;
+          }
         case 2: // Pick location
-        {
-          m_Mobile.Target = new InternalTarget(m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List);
+          {
+            m_Mobile.Target = new InternalTarget(m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List);
 
-          toSet = Point3D.Zero;
-          shouldSet = false;
-          shouldSend = false;
+            toSet = Point3D.Zero;
+            shouldSet = false;
+            shouldSend = false;
 
-          break;
-        }
+            break;
+          }
         case 3: // Use values
-        {
-          TextRelay x = info.GetTextEntry(0);
-          TextRelay y = info.GetTextEntry(1);
-          TextRelay z = info.GetTextEntry(2);
+          {
+            TextRelay x = info.GetTextEntry(0);
+            TextRelay y = info.GetTextEntry(1);
+            TextRelay z = info.GetTextEntry(2);
 
-          toSet = new Point3D(x == null ? 0 : Utility.ToInt32(x.Text), y == null ? 0 : Utility.ToInt32(y.Text),
-            z == null ? 0 : Utility.ToInt32(z.Text));
-          shouldSet = true;
-          shouldSend = true;
+            toSet = new Point3D(x == null ? 0 : Utility.ToInt32(x.Text), y == null ? 0 : Utility.ToInt32(y.Text),
+              z == null ? 0 : Utility.ToInt32(z.Text));
+            shouldSet = true;
+            shouldSend = true;
 
-          break;
-        }
+            break;
+          }
         default:
-        {
-          toSet = Point3D.Zero;
-          shouldSet = false;
-          shouldSend = true;
+          {
+            toSet = Point3D.Zero;
+            shouldSet = false;
+            shouldSend = true;
 
-          break;
-        }
+            break;
+          }
       }
 
       if (shouldSet)
@@ -196,12 +196,12 @@ namespace Server.Gumps
 
     private class InternalTarget : Target
     {
-      private List<object> m_List;
-      private Mobile m_Mobile;
-      private object m_Object;
-      private int m_Page;
-      private PropertyInfo m_Property;
-      private Stack<StackEntry> m_Stack;
+      private readonly List<object> m_List;
+      private readonly Mobile m_Mobile;
+      private readonly object m_Object;
+      private readonly int m_Page;
+      private readonly PropertyInfo m_Property;
+      private readonly Stack<StackEntry> m_Stack;
 
       public InternalTarget(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page,
         List<object> list) : base(-1, true, TargetFlags.None)

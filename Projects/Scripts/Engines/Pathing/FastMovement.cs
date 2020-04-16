@@ -1,12 +1,8 @@
-#region References
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Items;
 using Server.Mobiles;
-
-#endregion
 
 namespace Server.Movement
 {
@@ -156,7 +152,7 @@ namespace Server.Movement
       if ((itemData.Flags & ImpassableSurface) == 0) return true;
 
       if (((itemData.Flags & TileFlag.Door) != 0 || itemID == 0x692 || itemID == 0x846 || itemID == 0x873 ||
-           itemID >= 0x6F5 && itemID <= 0x6F6) && ignoreDoors)
+           (itemID >= 0x6F5 && itemID <= 0x6F6)) && ignoreDoors)
         return true;
 
       if ((itemID == 0x82 || itemID == 0x3946 || itemID == 0x3956) && ignoreSpellFields) return true;
@@ -217,13 +213,9 @@ namespace Server.Movement
       ItemData itemData;
       TileFlag flags;
 
-      #region Tiles
-
       foreach (StaticTile tile in tiles)
       {
         itemData = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
-
-        #region SA
 
         if (m.Flying && Insensitive.Equals(itemData.Name, "hover over"))
         {
@@ -242,7 +234,7 @@ namespace Server.Movement
           }
           else if (x >= 42 && x <= 89)
           {
-            if (y >= 333 && y <= 399 || y >= 531 && y <= 597 || y >= 739 && y <= 805)
+            if ((y >= 333 && y <= 399) || (y >= 531 && y <= 597) || (y >= 739 && y <= 805))
             {
               if (tile.Z > newZ) newZ = tile.Z;
 
@@ -250,8 +242,6 @@ namespace Server.Movement
             }
           }
         }
-
-        #endregion
 
         flags = itemData.Flags;
 
@@ -269,7 +259,7 @@ namespace Server.Movement
         {
           int cmp = Math.Abs(ourZ - m.Z) - Math.Abs(newZ - m.Z);
 
-          if (cmp > 0 || cmp == 0 && ourZ > newZ) continue;
+          if (cmp > 0 || (cmp == 0 && ourZ > newZ)) continue;
         }
 
         if (ourTop > testTop) testTop = ourTop;
@@ -293,24 +283,16 @@ namespace Server.Movement
         moveIsOk = true;
       }
 
-      #endregion
-
-      #region Items
-
       foreach (Item item in items)
       {
         itemData = item.ItemData;
         flags = itemData.Flags;
-
-        #region SA
 
         if (m.Flying && Insensitive.Equals(itemData.Name, "hover over"))
         {
           newZ = item.Z;
           return true;
         }
-
-        #endregion
 
         if (item.Movable) continue;
 
@@ -328,7 +310,7 @@ namespace Server.Movement
         {
           int cmp = Math.Abs(ourZ - m.Z) - Math.Abs(newZ - m.Z);
 
-          if (cmp > 0 || cmp == 0 && ourZ > newZ) continue;
+          if (cmp > 0 || (cmp == 0 && ourZ > newZ)) continue;
         }
 
         if (ourTop > testTop) testTop = ourTop;
@@ -352,8 +334,6 @@ namespace Server.Movement
         moveIsOk = true;
       }
 
-      #endregion
-
       if (!considerLand || landBlocks || stepTop < landZ) return moveIsOk;
 
       ourZ = landCenter;
@@ -368,7 +348,7 @@ namespace Server.Movement
       {
         int cmp = Math.Abs(ourZ - m.Z) - Math.Abs(newZ - m.Z);
 
-        if (cmp > 0 || cmp == 0 && ourZ > newZ) shouldCheck = false;
+        if (cmp > 0 || (cmp == 0 && ourZ > newZ)) shouldCheck = false;
       }
 
       if (!shouldCheck || !IsOk(ignoreDoors, ignoreSpellFields, ourZ, testTop, tiles, items)) return moveIsOk;

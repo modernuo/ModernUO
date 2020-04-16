@@ -8,7 +8,7 @@ namespace Server.Gumps
 {
   public class HouseListGump : Gump
   {
-    private BaseHouse m_House;
+    private readonly BaseHouse m_House;
 
     public HouseListGump(int number, List<Mobile> list, BaseHouse house, bool accountOf) : base(20, 30)
     {
@@ -67,10 +67,11 @@ namespace Server.Gumps
 
   public class HouseRemoveGump : Gump
   {
-    private bool m_AccountOf;
-    private BaseHouse m_House;
-    private List<Mobile> m_List, m_Copy;
-    private int m_Number;
+    private readonly bool m_AccountOf;
+    private readonly BaseHouse m_House;
+    private readonly List<Mobile> m_List;
+    private readonly List<Mobile> m_Copy;
+    private readonly int m_Number;
 
     public HouseRemoveGump(int number, List<Mobile> list, BaseHouse house, bool accountOf) : base(20, 30)
     {
@@ -163,7 +164,7 @@ namespace Server.Gumps
 
   public class HouseGump : Gump
   {
-    private BaseHouse m_House;
+    private readonly BaseHouse m_House;
 
     public HouseGump(Mobile from, BaseHouse house) : base(20, 30)
     {
@@ -311,7 +312,7 @@ namespace Server.Gumps
       }
       else
       {
-        //AddHtmlLocalized( 45, 280, 350, 30, 1011250, false, false ); // Change the sign type
+        // AddHtmlLocalized( 45, 280, 350, 30, 1011250, false, false ); // Change the sign type
         AddHtmlLocalized(45, 210, 350, 30, 1011250); // Change the sign type
         AddButton(20, 210, 2714, 2715, 0, GumpButtonType.Page, 4);
 
@@ -450,266 +451,266 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 1: // Rename sign
-        {
-          from.Prompt = new RenamePrompt(m_House);
-          from.SendLocalizedMessage(501302); // What dost thou wish the sign to say?
+          {
+            from.Prompt = new RenamePrompt(m_House);
+            from.SendLocalizedMessage(501302); // What dost thou wish the sign to say?
 
-          break;
-        }
+            break;
+          }
         case 2: // List of co-owners
-        {
-          from.CloseGump<HouseGump>();
-          from.CloseGump<HouseListGump>();
-          from.CloseGump<HouseRemoveGump>();
-          from.SendGump(new HouseListGump(1011275, m_House.CoOwners, m_House, false));
+          {
+            from.CloseGump<HouseGump>();
+            from.CloseGump<HouseListGump>();
+            from.CloseGump<HouseRemoveGump>();
+            from.SendGump(new HouseListGump(1011275, m_House.CoOwners, m_House, false));
 
-          break;
-        }
+            break;
+          }
         case 3: // Add co-owner
-        {
-          if (isOwner)
-          {
-            from.SendLocalizedMessage(
-              501328); // Target the person you wish to name a co-owner of your household.
-            from.Target = new CoOwnerTarget(true, m_House);
-          }
-          else
-          {
-            from.SendLocalizedMessage(501327); // Only the house owner may add Co-owners.
-          }
-
-          break;
-        }
-        case 4: // Remove co-owner
-        {
-          if (isOwner)
-          {
-            from.CloseGump<HouseGump>();
-            from.CloseGump<HouseListGump>();
-            from.CloseGump<HouseRemoveGump>();
-            from.SendGump(new HouseRemoveGump(1011274, m_House.CoOwners, m_House, false));
-          }
-          else
-          {
-            from.SendLocalizedMessage(501329); // Only the house owner may remove co-owners.
-          }
-
-          break;
-        }
-        case 5: // Clear co-owners
-        {
-          if (isOwner)
-          {
-            m_House.CoOwners?.Clear();
-
-            from.SendLocalizedMessage(501333); // All co-owners have been removed from this house.
-          }
-          else
-          {
-            from.SendLocalizedMessage(501330); // Only the house owner may remove co-owners.
-          }
-
-          break;
-        }
-        case 6: // List friends
-        {
-          from.CloseGump<HouseGump>();
-          from.CloseGump<HouseListGump>();
-          from.CloseGump<HouseRemoveGump>();
-          from.SendGump(new HouseListGump(1011273, m_House.Friends, m_House, false));
-
-          break;
-        }
-        case 7: // Add friend
-        {
-          if (isCoOwner)
-          {
-            from.SendLocalizedMessage(501317); // Target the person you wish to name a friend of your household.
-            from.Target = new HouseFriendTarget(true, m_House);
-          }
-          else
-          {
-            from.SendLocalizedMessage(501316); // Only the house owner may add friends.
-          }
-
-          break;
-        }
-        case 8: // Remove friend
-        {
-          if (isCoOwner)
-          {
-            from.CloseGump<HouseGump>();
-            from.CloseGump<HouseListGump>();
-            from.CloseGump<HouseRemoveGump>();
-            from.SendGump(new HouseRemoveGump(1011272, m_House.Friends, m_House, false));
-          }
-          else
-          {
-            from.SendLocalizedMessage(501318); // Only the house owner may remove friends.
-          }
-
-          break;
-        }
-        case 9: // Clear friends
-        {
-          if (isCoOwner)
-          {
-            m_House.Friends?.Clear();
-
-            from.SendLocalizedMessage(501332); // All friends have been removed from this house.
-          }
-          else
-          {
-            from.SendLocalizedMessage(501319); // Only the house owner may remove friends.
-          }
-
-          break;
-        }
-        case 10: // Ban
-        {
-          from.SendLocalizedMessage(501325); // Target the individual to ban from this house.
-          from.Target = new HouseBanTarget(true, m_House);
-
-          break;
-        }
-        case 11: // Eject
-        {
-          from.SendLocalizedMessage(501326); // Target the individual to eject from this house.
-          from.Target = new HouseKickTarget(m_House);
-
-          break;
-        }
-        case 12: // List bans
-        {
-          from.CloseGump<HouseGump>();
-          from.CloseGump<HouseListGump>();
-          from.CloseGump<HouseRemoveGump>();
-          from.SendGump(new HouseListGump(1011271, m_House.Bans, m_House, true));
-
-          break;
-        }
-        case 13: // Remove ban
-        {
-          from.CloseGump<HouseGump>();
-          from.CloseGump<HouseListGump>();
-          from.CloseGump<HouseRemoveGump>();
-          from.SendGump(new HouseRemoveGump(1011269, m_House.Bans, m_House, true));
-
-          break;
-        }
-        case 14: // Transfer ownership
-        {
-          if (isOwner)
-          {
-            from.SendLocalizedMessage(501309); // Target the person to whom you wish to give this house.
-            from.Target = new HouseOwnerTarget(m_House);
-          }
-          else
-          {
-            from.SendLocalizedMessage(501310); // Only the house owner may do this.
-          }
-
-          break;
-        }
-        case 15: // Demolish house
-        {
-          if (isOwner)
-          {
-            if (!Guild.NewGuildSystem && m_House.FindGuildstone() != null)
-            {
-              from.SendLocalizedMessage(501389); // You cannot redeed a house with a guildstone inside.
-            }
-            else
-            {
-              from.CloseGump<HouseDemolishGump>();
-              from.SendGump(new HouseDemolishGump(from, m_House));
-            }
-          }
-          else
-          {
-            from.SendLocalizedMessage(501320); // Only the house owner may do this.
-          }
-
-          break;
-        }
-        case 16: // Change locks
-        {
-          if (m_House.Public)
-          {
-            from.SendLocalizedMessage(501669); // Public houses are always unlocked.
-          }
-          else
           {
             if (isOwner)
             {
-              m_House.RemoveKeys(from);
-              m_House.ChangeLocks(from);
-
               from.SendLocalizedMessage(
-                501306); // The locks on your front door have been changed, and new master keys have been placed in your bank and your backpack.
+                501328); // Target the person you wish to name a co-owner of your household.
+              from.Target = new CoOwnerTarget(true, m_House);
             }
             else
             {
-              from.SendLocalizedMessage(501303); // Only the house owner may change the house locks.
+              from.SendLocalizedMessage(501327); // Only the house owner may add Co-owners.
             }
-          }
 
-          break;
-        }
+            break;
+          }
+        case 4: // Remove co-owner
+          {
+            if (isOwner)
+            {
+              from.CloseGump<HouseGump>();
+              from.CloseGump<HouseListGump>();
+              from.CloseGump<HouseRemoveGump>();
+              from.SendGump(new HouseRemoveGump(1011274, m_House.CoOwners, m_House, false));
+            }
+            else
+            {
+              from.SendLocalizedMessage(501329); // Only the house owner may remove co-owners.
+            }
+
+            break;
+          }
+        case 5: // Clear co-owners
+          {
+            if (isOwner)
+            {
+              m_House.CoOwners?.Clear();
+
+              from.SendLocalizedMessage(501333); // All co-owners have been removed from this house.
+            }
+            else
+            {
+              from.SendLocalizedMessage(501330); // Only the house owner may remove co-owners.
+            }
+
+            break;
+          }
+        case 6: // List friends
+          {
+            from.CloseGump<HouseGump>();
+            from.CloseGump<HouseListGump>();
+            from.CloseGump<HouseRemoveGump>();
+            from.SendGump(new HouseListGump(1011273, m_House.Friends, m_House, false));
+
+            break;
+          }
+        case 7: // Add friend
+          {
+            if (isCoOwner)
+            {
+              from.SendLocalizedMessage(501317); // Target the person you wish to name a friend of your household.
+              from.Target = new HouseFriendTarget(true, m_House);
+            }
+            else
+            {
+              from.SendLocalizedMessage(501316); // Only the house owner may add friends.
+            }
+
+            break;
+          }
+        case 8: // Remove friend
+          {
+            if (isCoOwner)
+            {
+              from.CloseGump<HouseGump>();
+              from.CloseGump<HouseListGump>();
+              from.CloseGump<HouseRemoveGump>();
+              from.SendGump(new HouseRemoveGump(1011272, m_House.Friends, m_House, false));
+            }
+            else
+            {
+              from.SendLocalizedMessage(501318); // Only the house owner may remove friends.
+            }
+
+            break;
+          }
+        case 9: // Clear friends
+          {
+            if (isCoOwner)
+            {
+              m_House.Friends?.Clear();
+
+              from.SendLocalizedMessage(501332); // All friends have been removed from this house.
+            }
+            else
+            {
+              from.SendLocalizedMessage(501319); // Only the house owner may remove friends.
+            }
+
+            break;
+          }
+        case 10: // Ban
+          {
+            from.SendLocalizedMessage(501325); // Target the individual to ban from this house.
+            from.Target = new HouseBanTarget(true, m_House);
+
+            break;
+          }
+        case 11: // Eject
+          {
+            from.SendLocalizedMessage(501326); // Target the individual to eject from this house.
+            from.Target = new HouseKickTarget(m_House);
+
+            break;
+          }
+        case 12: // List bans
+          {
+            from.CloseGump<HouseGump>();
+            from.CloseGump<HouseListGump>();
+            from.CloseGump<HouseRemoveGump>();
+            from.SendGump(new HouseListGump(1011271, m_House.Bans, m_House, true));
+
+            break;
+          }
+        case 13: // Remove ban
+          {
+            from.CloseGump<HouseGump>();
+            from.CloseGump<HouseListGump>();
+            from.CloseGump<HouseRemoveGump>();
+            from.SendGump(new HouseRemoveGump(1011269, m_House.Bans, m_House, true));
+
+            break;
+          }
+        case 14: // Transfer ownership
+          {
+            if (isOwner)
+            {
+              from.SendLocalizedMessage(501309); // Target the person to whom you wish to give this house.
+              from.Target = new HouseOwnerTarget(m_House);
+            }
+            else
+            {
+              from.SendLocalizedMessage(501310); // Only the house owner may do this.
+            }
+
+            break;
+          }
+        case 15: // Demolish house
+          {
+            if (isOwner)
+            {
+              if (!Guild.NewGuildSystem && m_House.FindGuildstone() != null)
+              {
+                from.SendLocalizedMessage(501389); // You cannot redeed a house with a guildstone inside.
+              }
+              else
+              {
+                from.CloseGump<HouseDemolishGump>();
+                from.SendGump(new HouseDemolishGump(from, m_House));
+              }
+            }
+            else
+            {
+              from.SendLocalizedMessage(501320); // Only the house owner may do this.
+            }
+
+            break;
+          }
+        case 16: // Change locks
+          {
+            if (m_House.Public)
+            {
+              from.SendLocalizedMessage(501669); // Public houses are always unlocked.
+            }
+            else
+            {
+              if (isOwner)
+              {
+                m_House.RemoveKeys(from);
+                m_House.ChangeLocks(from);
+
+                from.SendLocalizedMessage(
+                  501306); // The locks on your front door have been changed, and new master keys have been placed in your bank and your backpack.
+              }
+              else
+              {
+                from.SendLocalizedMessage(501303); // Only the house owner may change the house locks.
+              }
+            }
+
+            break;
+          }
         case 17: // Declare public/private
-        {
-          if (isOwner)
           {
-            if (m_House.Public && m_House.PlayerVendors.Count > 0)
+            if (isOwner)
             {
-              from.SendLocalizedMessage(
-                501887); // You have vendors working out of this building. It cannot be declared private until there are no vendors in place.
-              break;
-            }
+              if (m_House.Public && m_House.PlayerVendors.Count > 0)
+              {
+                from.SendLocalizedMessage(
+                  501887); // You have vendors working out of this building. It cannot be declared private until there are no vendors in place.
+                break;
+              }
 
-            m_House.Public = !m_House.Public;
-            if (!m_House.Public)
-            {
-              m_House.ChangeLocks(from);
+              m_House.Public = !m_House.Public;
+              if (!m_House.Public)
+              {
+                m_House.ChangeLocks(from);
 
-              from.SendLocalizedMessage(501888); // This house is now private.
-              from.SendLocalizedMessage(
-                501306); // The locks on your front door have been changed, and new master keys have been placed in your bank and your backpack.
+                from.SendLocalizedMessage(501888); // This house is now private.
+                from.SendLocalizedMessage(
+                  501306); // The locks on your front door have been changed, and new master keys have been placed in your bank and your backpack.
+              }
+              else
+              {
+                m_House.RemoveKeys(from);
+                m_House.RemoveLocks();
+                from.SendLocalizedMessage(
+                  501886); // This house is now public. Friends of the house my now have vendors working out of this building.
+              }
             }
             else
             {
-              m_House.RemoveKeys(from);
-              m_House.RemoveLocks();
-              from.SendLocalizedMessage(
-                501886); //This house is now public. Friends of the house my now have vendors working out of this building.
+              from.SendLocalizedMessage(501307); // Only the house owner may do this.
             }
-          }
-          else
-          {
-            from.SendLocalizedMessage(501307); // Only the house owner may do this.
-          }
 
-          break;
-        }
+            break;
+          }
         case 18: // Change type
-        {
-          if (isOwner)
           {
-            if (m_House.Public && info.Switches.Length > 0)
+            if (isOwner)
             {
-              int index = info.Switches[0] - 1;
+              if (m_House.Public && info.Switches.Length > 0)
+              {
+                int index = info.Switches[0] - 1;
 
-              if (index >= 0 && index < 53)
-                m_House.ChangeSignType(2980 + index * 2);
+                if (index >= 0 && index < 53)
+                  m_House.ChangeSignType(2980 + index * 2);
+              }
             }
-          }
-          else
-          {
-            from.SendLocalizedMessage(501307); // Only the house owner may do this.
-          }
+            else
+            {
+              from.SendLocalizedMessage(501307); // Only the house owner may do this.
+            }
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
@@ -719,7 +720,7 @@ namespace Server.Prompts
 {
   public class RenamePrompt : Prompt
   {
-    private BaseHouse m_House;
+    private readonly BaseHouse m_House;
 
     public RenamePrompt(BaseHouse house) => m_House = house;
 

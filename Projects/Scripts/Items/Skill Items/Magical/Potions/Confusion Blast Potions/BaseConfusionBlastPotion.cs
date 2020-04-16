@@ -9,7 +9,7 @@ namespace Server.Items
 {
   public abstract class BaseConfusionBlastPotion : BasePotion
   {
-    private List<Mobile> m_Users = new List<Mobile>();
+    private readonly List<Mobile> m_Users = new List<Mobile>();
 
     public BaseConfusionBlastPotion(PotionEffect effect) : base(0xF06, effect) => Hue = 0x48D;
 
@@ -17,7 +17,7 @@ namespace Server.Items
     {
     }
 
-    public abstract int Radius{ get; }
+    public abstract int Radius { get; }
 
     public override bool RequireFreeHand => false;
 
@@ -96,7 +96,7 @@ namespace Server.Items
     {
       public ThrowTarget(BaseConfusionBlastPotion potion) : base(12, true, TargetFlags.None) => Potion = potion;
 
-      public BaseConfusionBlastPotion Potion{ get; }
+      public BaseConfusionBlastPotion Potion { get; }
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -125,8 +125,6 @@ namespace Server.Items
       }
     }
 
-    #region Effects
-
     public virtual void BlastEffect(Point3D p, Map map)
     {
       if (map.CanFit(p, 12, true, false))
@@ -138,11 +136,7 @@ namespace Server.Items
       Geometry.Circle2D(p, m, Radius, BlastEffect, 90, 270);
     }
 
-    #endregion
-
-    #region Delay
-
-    private static Dictionary<Mobile, Timer> m_Delay = new Dictionary<Mobile, Timer>();
+    private static readonly Dictionary<Mobile, Timer> m_Delay = new Dictionary<Mobile, Timer>();
 
     public static void AddDelay(Mobile m)
     {
@@ -167,7 +161,5 @@ namespace Server.Items
         m_Delay.Remove(m);
       }
     }
-
-    #endregion
   }
 }

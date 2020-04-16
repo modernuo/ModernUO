@@ -23,11 +23,11 @@ namespace Server.Mobiles
       SetDamageType(ResistanceType.Cold, 25);
       SetDamageType(ResistanceType.Energy, 25);
 
-      //SetResistance( ResistanceType.Physical, 25, 38 );
-      //SetResistance( ResistanceType.Fire, 25, 38 );
-      //SetResistance( ResistanceType.Cold, 25, 38 );
-      //SetResistance( ResistanceType.Poison, 25, 38 );
-      //SetResistance( ResistanceType.Energy, 25, 38 );
+      // SetResistance( ResistanceType.Physical, 25, 38 );
+      // SetResistance( ResistanceType.Fire, 25, 38 );
+      // SetResistance( ResistanceType.Cold, 25, 38 );
+      // SetResistance( ResistanceType.Poison, 25, 38 );
+      // SetResistance( ResistanceType.Energy, 25, 38 );
 
       SetSkill(SkillName.Fencing, 77.6, 92.5);
       SetSkill(SkillName.Healing, 60.3, 90.0);
@@ -146,7 +146,7 @@ namespace Server.Mobiles
     public override void GenerateLoot()
     {
       AddLoot(LootPack.Rich);
-      //AddLoot( LootPack.Gems );
+      // AddLoot( LootPack.Gems );
     }
 
     public override bool OnBeforeDeath()

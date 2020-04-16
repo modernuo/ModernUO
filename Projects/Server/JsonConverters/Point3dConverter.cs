@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -13,7 +12,7 @@ namespace Server.Json
         throw new JsonException("Point3d must be an array of x, y, z");
 
       var data = new int[3];
-      int count = 0;
+      var count = 0;
 
       while (true)
       {
@@ -35,6 +34,7 @@ namespace Server.Json
 
       return new Point3D(data[0], data[1], data[2]);
     }
+
     public override void Write(Utf8JsonWriter writer, Point3D value, JsonSerializerOptions options)
     {
       writer.WriteStartArray();

@@ -37,7 +37,7 @@ namespace Server.Gumps
 
     private int m_Width;
 
-    //Note, on OSI, The tooltip supports ONLY clilocs as far as I can figure out, and the tooltip ONLY works after the buttonTileArt (as far as I can tell from testing)
+    // Note, on OSI, The tooltip supports ONLY clilocs as far as I can figure out, and the tooltip ONLY works after the buttonTileArt (as far as I can tell from testing)
     private int m_X, m_Y;
 
     public GumpImageTileButton(int x, int y, int normalID, int pressedID, int buttonID, GumpButtonType type, int param,
@@ -98,7 +98,7 @@ namespace Server.Gumps
         {
           m_Type = value;
 
-          Gump parent = Parent;
+          var parent = Parent;
 
           parent?.Invalidate();
         }
@@ -135,7 +135,7 @@ namespace Server.Gumps
       set => Delta(ref m_Height, value);
     }
 
-    public int LocalizedTooltip{ get; set; }
+    public int LocalizedTooltip { get; set; }
 
     public override string Compile(NetState ns)
     {

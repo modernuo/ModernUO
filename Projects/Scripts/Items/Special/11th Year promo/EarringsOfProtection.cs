@@ -97,11 +97,11 @@
     {
       return element switch
       {
-        AosElementAttribute.Physical => (label ? 1071091 : 0), // Earring of Protection (Physical)  1071091
-        AosElementAttribute.Fire => (label ? 1071092 : 0x4ec), // Earring of Protection (Fire)      1071092
-        AosElementAttribute.Cold => (label ? 1071093 : 0x4f2), // Earring of Protection (Cold)      1071093
-        AosElementAttribute.Poison => (label ? 1071094 : 0x4f8), // Earring of Protection (Poison)    1071094
-        AosElementAttribute.Energy => (label ? 1071095 : 0x4fe), // Earring of Protection (Energy)    1071095
+        AosElementAttribute.Physical => label ? 1071091 : 0, // Earring of Protection (Physical)  1071091
+        AosElementAttribute.Fire => label ? 1071092 : 0x4ec, // Earring of Protection (Fire)      1071092
+        AosElementAttribute.Cold => label ? 1071093 : 0x4f2, // Earring of Protection (Cold)      1071093
+        AosElementAttribute.Poison => label ? 1071094 : 0x4f8, // Earring of Protection (Poison)    1071094
+        AosElementAttribute.Energy => label ? 1071095 : 0x4fe, // Earring of Protection (Energy)    1071095
         _ => -1
       };
     }

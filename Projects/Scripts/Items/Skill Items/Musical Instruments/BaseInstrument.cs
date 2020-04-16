@@ -18,7 +18,7 @@ namespace Server.Items
 
   public abstract class BaseInstrument : Item, ICraftable, ISlayer
   {
-    private static Dictionary<Mobile, BaseInstrument> m_Instruments = new Dictionary<Mobile, BaseInstrument>();
+    private static readonly Dictionary<Mobile, BaseInstrument> m_Instruments = new Dictionary<Mobile, BaseInstrument>();
     private Mobile m_Crafter;
 
     private DateTime m_LastReplenished;
@@ -40,10 +40,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int SuccessSound{ get; set; }
+    public int SuccessSound { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int FailureSound{ get; set; }
+    public int FailureSound { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public InstrumentQuality Quality
@@ -113,8 +113,6 @@ namespace Server.Items
       }
     }
 
-    #region ICraftable Members
-
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
     {
@@ -125,8 +123,6 @@ namespace Server.Items
 
       return quality;
     }
-
-    #endregion
 
     [CommandProperty(AccessLevel.GameMaster)]
     public SlayerName Slayer
@@ -160,7 +156,7 @@ namespace Server.Items
         TimeSpan timeDifference = DateTime.UtcNow - m_LastReplenished;
 
         m_UsesRemaining = Math.Min(m_UsesRemaining + (int)(timeDifference.Ticks / ChargeReplenishRate.Ticks),
-          InitMaxUses); //How rude of TimeSpan to not allow timespan division.
+          InitMaxUses); // How rude of TimeSpan to not allow timespan division.
         m_LastReplenished = DateTime.UtcNow;
 
         if (invalidate)
@@ -171,7 +167,7 @@ namespace Server.Items
     public void ScaleUses()
     {
       UsesRemaining = UsesRemaining * GetUsesScalar() / 100;
-      //InvalidateProperties();
+      // InvalidateProperties();
     }
 
     public void UnscaleUses()
@@ -425,7 +421,6 @@ namespace Server.Items
       if (m_ReplenishesCharges)
         writer.Write(m_LastReplenished);
 
-
       writer.Write(m_Crafter);
 
       writer.WriteEncodedInt((int)m_Quality);
@@ -447,51 +442,51 @@ namespace Server.Items
       switch (version)
       {
         case 3:
-        {
-          m_ReplenishesCharges = reader.ReadBool();
+          {
+            m_ReplenishesCharges = reader.ReadBool();
 
-          if (m_ReplenishesCharges)
-            m_LastReplenished = reader.ReadDateTime();
+            if (m_ReplenishesCharges)
+              m_LastReplenished = reader.ReadDateTime();
 
-          goto case 2;
-        }
+            goto case 2;
+          }
         case 2:
-        {
-          m_Crafter = reader.ReadMobile();
+          {
+            m_Crafter = reader.ReadMobile();
 
-          m_Quality = (InstrumentQuality)reader.ReadEncodedInt();
-          m_Slayer = (SlayerName)reader.ReadEncodedInt();
-          m_Slayer2 = (SlayerName)reader.ReadEncodedInt();
+            m_Quality = (InstrumentQuality)reader.ReadEncodedInt();
+            m_Slayer = (SlayerName)reader.ReadEncodedInt();
+            m_Slayer2 = (SlayerName)reader.ReadEncodedInt();
 
-          UsesRemaining = reader.ReadEncodedInt();
+            UsesRemaining = reader.ReadEncodedInt();
 
-          SuccessSound = reader.ReadEncodedInt();
-          FailureSound = reader.ReadEncodedInt();
+            SuccessSound = reader.ReadEncodedInt();
+            FailureSound = reader.ReadEncodedInt();
 
-          break;
-        }
+            break;
+          }
         case 1:
-        {
-          m_Crafter = reader.ReadMobile();
+          {
+            m_Crafter = reader.ReadMobile();
 
-          m_Quality = (InstrumentQuality)reader.ReadEncodedInt();
-          m_Slayer = (SlayerName)reader.ReadEncodedInt();
+            m_Quality = (InstrumentQuality)reader.ReadEncodedInt();
+            m_Slayer = (SlayerName)reader.ReadEncodedInt();
 
-          UsesRemaining = reader.ReadEncodedInt();
+            UsesRemaining = reader.ReadEncodedInt();
 
-          SuccessSound = reader.ReadEncodedInt();
-          FailureSound = reader.ReadEncodedInt();
+            SuccessSound = reader.ReadEncodedInt();
+            FailureSound = reader.ReadEncodedInt();
 
-          break;
-        }
+            break;
+          }
         case 0:
-        {
-          SuccessSound = reader.ReadInt();
-          FailureSound = reader.ReadInt();
-          UsesRemaining = Utility.RandomMinMax(InitMinUses, InitMaxUses);
+          {
+            SuccessSound = reader.ReadInt();
+            FailureSound = reader.ReadInt();
+            UsesRemaining = Utility.RandomMinMax(InitMinUses, InitMaxUses);
 
-          break;
-        }
+            break;
+          }
       }
 
       CheckReplenishUses();
@@ -540,7 +535,7 @@ namespace Server.Items
 
     private class InternalTimer : Timer
     {
-      private Mobile m_From;
+      private readonly Mobile m_From;
 
       public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(6.0))
       {

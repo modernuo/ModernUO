@@ -64,7 +64,7 @@ namespace Server.Items
 
     private class InternalTimer : Timer
     {
-      private Mobile m_From;
+      private readonly Mobile m_From;
 
       public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(5.0)) => m_From = from;
 

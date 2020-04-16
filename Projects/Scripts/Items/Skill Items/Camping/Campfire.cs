@@ -19,9 +19,9 @@ namespace Server.Items
 
     private static readonly Dictionary<Mobile, CampfireEntry> m_Table = new Dictionary<Mobile, CampfireEntry>();
 
-    private List<CampfireEntry> m_Entries;
+    private readonly List<CampfireEntry> m_Entries;
 
-    private Timer m_Timer;
+    private readonly Timer m_Timer;
 
     public Campfire() : base(0xDE3)
     {
@@ -39,7 +39,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime Created{ get; }
+    public DateTime Created { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public CampfireStatus Status
@@ -176,11 +176,11 @@ namespace Server.Items
       m_Safe = false;
     }
 
-    public PlayerMobile Player{ get; }
+    public PlayerMobile Player { get; }
 
-    public Campfire Fire{ get; }
+    public Campfire Fire { get; }
 
-    public DateTime Start{ get; }
+    public DateTime Start { get; }
 
     public bool Valid => !Fire.Deleted && Fire.Status != CampfireStatus.Off && Player.Map == Fire.Map &&
                          Player.InRange(Fire, Campfire.SecureRange);

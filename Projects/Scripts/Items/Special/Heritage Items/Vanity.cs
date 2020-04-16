@@ -86,7 +86,7 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private VanityDeed m_Deed;
+      private readonly VanityDeed m_Deed;
 
       public InternalGump(VanityDeed deed) : base(60, 36)
       {

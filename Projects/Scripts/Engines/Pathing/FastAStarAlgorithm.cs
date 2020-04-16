@@ -24,11 +24,11 @@ namespace Server.PathAlgorithms.FastAStar
     private const int PlaneHeight = 20;
     public static PathAlgorithm Instance = new FastAStarAlgorithm();
 
-    private static Direction[] m_Path = new Direction[AreaSize * AreaSize];
-    private static PathNode[] m_Nodes = new PathNode[NodeCount];
-    private static BitArray m_Touched = new BitArray(NodeCount);
-    private static BitArray m_OnOpen = new BitArray(NodeCount);
-    private static int[] m_Successors = new int[8];
+    private static readonly Direction[] m_Path = new Direction[AreaSize * AreaSize];
+    private static readonly PathNode[] m_Nodes = new PathNode[NodeCount];
+    private static readonly BitArray m_Touched = new BitArray(NodeCount);
+    private static readonly BitArray m_OnOpen = new BitArray(NodeCount);
+    private static readonly int[] m_Successors = new int[8];
 
     private static int m_xOffset, m_yOffset;
     private static int m_OpenList;
@@ -158,26 +158,26 @@ namespace Server.PathAlgorithms.FastAStar
 
           if (wasTouched)
             continue;
-          
+
           int newCost = m_Nodes[bestNode].cost + 1;
           int newTotal = newCost + Heuristic(newNode % AreaSize, newNode / AreaSize % AreaSize,
-                           m_Nodes[newNode].z);
+            m_Nodes[newNode].z);
 
           if (m_Nodes[newNode].total <= newTotal)
             continue;
-          
+
           m_Nodes[newNode].parent = bestNode;
           m_Nodes[newNode].cost = newCost;
           m_Nodes[newNode].total = newTotal;
 
           if (m_OnOpen[newNode])
             continue;
-          
+
           AddToChain(newNode);
 
           if (newNode != destNode)
             continue;
-          
+
           int pathCount = 0;
           int parent = m_Nodes[newNode].parent;
 

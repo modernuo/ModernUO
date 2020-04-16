@@ -31,10 +31,10 @@ namespace Server.Mobiles
       SetResistance(ResistanceType.Poison, 40, 60);
       SetResistance(ResistanceType.Energy, 50, 55);
 
-      //SetSkill( SkillName.Meditation, Unknown );
-      //SetSkill( SkillName.EvalInt, Unknown );
-      //SetSkill( SkillName.Magery, Unknown );
-      //SetSkill( SkillName.Poisoning, Unknown );
+      // SetSkill( SkillName.Meditation, Unknown );
+      // SetSkill( SkillName.EvalInt, Unknown );
+      // SetSkill( SkillName.Magery, Unknown );
+      // SetSkill( SkillName.Poisoning, Unknown );
       SetSkill(SkillName.Anatomy, 0);
       SetSkill(SkillName.MagicResist, 107.0, 111.3);
       SetSkill(SkillName.Tactics, 107.0, 117.0);
@@ -169,7 +169,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.2 >= Utility.RandomDouble())
+      if (Utility.RandomDouble() <= 0.2)
         Earthquake();
     }
 
@@ -179,8 +179,8 @@ namespace Server.Mobiles
 
       foreach (Mobile m in eable)
       {
-        if (m == this || !CanBeHarmful(m) || m.Deleted || !m.Player &&
-            !(m is BaseCreature creature && (creature.Controlled || creature.Summoned || creature.Team != Team)))
+        if (m == this || !CanBeHarmful(m) || m.Deleted || (!m.Player &&
+            !(m is BaseCreature creature && (creature.Controlled || creature.Summoned || creature.Team != Team))))
           continue;
 
         if (m is PlayerMobile pm && pm.Mounted)
@@ -212,8 +212,6 @@ namespace Server.Mobiles
       int version = reader.ReadInt();
     }
 
-    #region SpawnHelpers
-
     public void SpawnTormented()
     {
       BaseCreature spawna = new TormentedMinotaur();
@@ -228,7 +226,5 @@ namespace Server.Mobiles
       BaseCreature spawnd = new TormentedMinotaur();
       spawnd.MoveToWorld(Location, Map);
     }
-
-    #endregion
   }
 }

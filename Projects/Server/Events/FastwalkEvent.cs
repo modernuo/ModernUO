@@ -32,9 +32,9 @@ namespace Server
       Blocked = false;
     }
 
-    public NetState NetState{ get; }
+    public NetState NetState { get; }
 
-    public bool Blocked{ get; set; }
+    public bool Blocked { get; set; }
   }
 
   public static partial class EventSink

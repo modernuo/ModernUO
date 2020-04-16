@@ -23,7 +23,7 @@ namespace Server.Engines.CannedEvil
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public ChampionSkullPlatform Platform{ get; private set; }
+    public ChampionSkullPlatform Platform { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public ChampionSkullType Type
@@ -147,16 +147,16 @@ namespace Server.Engines.CannedEvil
       switch (version)
       {
         case 0:
-        {
-          m_Type = (ChampionSkullType)reader.ReadInt();
-          Platform = reader.ReadItem() as ChampionSkullPlatform;
-          m_Skull = reader.ReadItem();
+          {
+            m_Type = (ChampionSkullType)reader.ReadInt();
+            Platform = reader.ReadItem() as ChampionSkullPlatform;
+            m_Skull = reader.ReadItem();
 
-          if (Platform == null)
-            Delete();
+            if (Platform == null)
+              Delete();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (Hue == 0x497)
@@ -168,7 +168,7 @@ namespace Server.Engines.CannedEvil
 
     private class SacrificeTarget : Target
     {
-      private ChampionSkullBrazier m_Brazier;
+      private readonly ChampionSkullBrazier m_Brazier;
 
       public SacrificeTarget(ChampionSkullBrazier brazier) : base(12, false, TargetFlags.None) => m_Brazier = brazier;
 

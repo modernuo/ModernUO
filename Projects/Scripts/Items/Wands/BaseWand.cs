@@ -144,12 +144,12 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_WandEffect = (WandEffect)reader.ReadInt();
-          m_Charges = reader.ReadInt();
+          {
+            m_WandEffect = (WandEffect)reader.ReadInt();
+            m_Charges = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 

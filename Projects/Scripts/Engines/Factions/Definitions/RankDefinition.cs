@@ -10,12 +10,12 @@ namespace Server.Factions
       MaxWearables = maxWearables;
     }
 
-    public int Rank{ get; }
+    public int Rank { get; }
 
-    public int Required{ get; }
+    public int Required { get; }
 
-    public int MaxWearables{ get; }
+    public int MaxWearables { get; }
 
-    public TextDefinition Title{ get; }
+    public TextDefinition Title { get; }
   }
 }

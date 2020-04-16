@@ -22,7 +22,7 @@ namespace Server.Movement
 {
   public static class Movement
   {
-    public static IMovementImpl Impl{ get; set; }
+    public static IMovementImpl Impl { get; set; }
 
     public static bool CheckMovement(Mobile m, Direction d, out int newZ)
     {

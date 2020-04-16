@@ -28,8 +28,8 @@ namespace Server
   {
     /*public abstract TimeSpan Interval{ get; }
       public abstract TimeSpan Duration{ get; }*/
-    public abstract string Name{ get; }
-    public abstract int Level{ get; }
+    public abstract string Name { get; }
+    public abstract int Level { get; }
 
     public static Poison Lesser => GetPoison("Lesser");
     public static Poison Regular => GetPoison("Regular");
@@ -37,19 +37,18 @@ namespace Server
     public static Poison Deadly => GetPoison("Deadly");
     public static Poison Lethal => GetPoison("Lethal");
 
-    public static List<Poison> Poisons{ get; } = new List<Poison>();
+    public static List<Poison> Poisons { get; } = new List<Poison>();
 
     public abstract Timer ConstructTimer(Mobile m);
     /*public abstract void OnDamage( Mobile m, ref object state );*/
 
     public override string ToString() => Name;
 
-
     public static void Register(Poison reg)
     {
-      string regName = reg.Name.ToLower();
+      var regName = reg.Name.ToLower();
 
-      for (int i = 0; i < Poisons.Count; i++)
+      for (var i = 0; i < Poisons.Count; i++)
       {
         if (reg.Level == Poisons[i].Level)
           throw new Exception("A poison with that level already exists.");
@@ -60,13 +59,14 @@ namespace Server
       Poisons.Add(reg);
     }
 
-    public static Poison Parse(string value) => (int.TryParse(value, out int plevel) ? GetPoison(plevel) : null) ?? GetPoison(value);
+    public static Poison Parse(string value) =>
+      (int.TryParse(value, out var plevel) ? GetPoison(plevel) : null) ?? GetPoison(value);
 
     public static Poison GetPoison(int level)
     {
-      for (int i = 0; i < Poisons.Count; ++i)
+      for (var i = 0; i < Poisons.Count; ++i)
       {
-        Poison p = Poisons[i];
+        var p = Poisons[i];
 
         if (p.Level == level)
           return p;
@@ -77,9 +77,9 @@ namespace Server
 
     public static Poison GetPoison(string name)
     {
-      for (int i = 0; i < Poisons.Count; ++i)
+      for (var i = 0; i < Poisons.Count; ++i)
       {
-        Poison p = Poisons[i];
+        var p = Poisons[i];
 
         if (Utility.InsensitiveCompare(p.Name, name) == 0)
           return p;
@@ -107,7 +107,7 @@ namespace Server
       {
         case 1: return GetPoison(reader.ReadByte());
         case 2:
-          //no longer used, safe to remove?
+          // no longer used, safe to remove?
           reader.ReadInt();
           reader.ReadDouble();
           reader.ReadInt();

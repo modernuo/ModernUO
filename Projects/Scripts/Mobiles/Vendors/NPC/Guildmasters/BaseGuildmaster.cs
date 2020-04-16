@@ -13,7 +13,7 @@ namespace Server.Mobiles
     {
     }
 
-    protected override List<SBInfo> SBInfos{ get; } = new List<SBInfo>();
+    protected override List<SBInfo> SBInfos { get; } = new List<SBInfo>();
 
     public override bool IsActiveVendor => false;
 

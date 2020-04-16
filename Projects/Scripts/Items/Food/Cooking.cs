@@ -58,7 +58,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private Dough m_Item;
+      private readonly Dough m_Item;
 
       public InternalTarget(Dough item) : base(1, false, TargetFlags.None) => m_Item = item;
 
@@ -146,7 +146,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private SweetDough m_Item;
+      private readonly SweetDough m_Item;
 
       public InternalTarget(SweetDough item) : base(1, false, TargetFlags.None) => m_Item = item;
 
@@ -172,8 +172,8 @@ namespace Server.Items
 
       private class InternalTimer : Timer
       {
-        private Campfire m_Campfire;
-        private Mobile m_From;
+        private readonly Campfire m_Campfire;
+        private readonly Mobile m_From;
 
         public InternalTimer(Mobile from, Campfire campfire) : base(TimeSpan.FromSeconds(5.0))
         {
@@ -242,7 +242,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private JarHoney m_Item;
+      private readonly JarHoney m_Item;
 
       public InternalTarget(JarHoney item) : base(1, false, TargetFlags.None) => m_Item = item;
 
@@ -430,15 +430,15 @@ namespace Server.Items
       {
         case 2:
         case 1:
-        {
-          m_Quantity = reader.ReadInt();
-          break;
-        }
+          {
+            m_Quantity = reader.ReadInt();
+            break;
+          }
         case 0:
-        {
-          m_Quantity = 20;
-          break;
-        }
+          {
+            m_Quantity = 20;
+            break;
+          }
       }
 
       if (version < 2 && Weight == 1.0)

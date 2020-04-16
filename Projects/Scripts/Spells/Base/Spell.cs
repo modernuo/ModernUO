@@ -16,15 +16,15 @@ namespace Server.Spells
 {
   public abstract class Spell : ISpell
   {
-    private static TimeSpan NextSpellDelay = TimeSpan.FromSeconds(0.75);
+    private static readonly TimeSpan NextSpellDelay = TimeSpan.FromSeconds(0.75);
 
-    private static TimeSpan AnimateDelay = TimeSpan.FromSeconds(1.5);
-    //In reality, it's ANY delayed Damage spell Post-AoS that can't stack, but, only
-    //Expo & Magic Arrow have enough delay and a short enough cast time to bring up
-    //the possibility of stacking 'em.  Note that a MA & an Explosion will stack, but
-    //of course, two MA's won't.
+    private static readonly TimeSpan AnimateDelay = TimeSpan.FromSeconds(1.5);
+    // In reality, it's ANY delayed Damage spell Post-AoS that can't stack, but, only
+    // Expo & Magic Arrow have enough delay and a short enough cast time to bring up
+    // the possibility of stacking 'em.  Note that a MA & an Explosion will stack, but
+    // of course, two MA's won't.
 
-    private static Dictionary<Type, DelayedDamageContextWrapper> m_ContextTable =
+    private static readonly Dictionary<Type, DelayedDamageContextWrapper> m_ContextTable =
       new Dictionary<Type, DelayedDamageContextWrapper>();
 
     private AnimTimer m_AnimTimer;
@@ -38,18 +38,18 @@ namespace Server.Spells
       Info = info;
     }
 
-    public SpellState State{ get; set; }
+    public SpellState State { get; set; }
 
-    public Mobile Caster{ get; }
+    public Mobile Caster { get; }
 
-    public SpellInfo Info{ get; }
+    public SpellInfo Info { get; }
 
     public string Name => Info.Name;
     public string Mantra => Info.Mantra;
     public Type[] Reagents => Info.Reagents;
-    public Item Scroll{ get; }
+    public Item Scroll { get; }
 
-    public long StartCastTime{ get; private set; }
+    public long StartCastTime { get; private set; }
 
     public virtual SkillName CastSkill => SkillName.Magery;
     public virtual SkillName DamageSkill => SkillName.EvalInt;
@@ -73,7 +73,7 @@ namespace Server.Spells
     public virtual int CastRecoveryPerSecond => 4;
     public virtual int CastRecoveryMinimum => 0;
 
-    public abstract TimeSpan CastDelayBase{ get; }
+    public abstract TimeSpan CastDelayBase { get; }
 
     public virtual double CastDelayFastScalar => 1;
     public virtual double CastDelaySecondsPerTick => 0.25;
@@ -83,7 +83,7 @@ namespace Server.Spells
 
     public virtual void OnCasterHurt()
     {
-      //Confirm: Monsters and pets cannot be disturbed.
+      // Confirm: Monsters and pets cannot be disturbed.
       if (Caster.Player && IsCasting && ProtectionSpell.Registry.TryGetValue(Caster, out double d) &&
           d <= Utility.RandomDouble() * 100.0)
         Disturb(DisturbType.Hurt, false, true);
@@ -131,7 +131,7 @@ namespace Server.Spells
     public void StartDelayedDamageContext(Mobile m, Timer t)
     {
       if (DelayedDamageStacking)
-        return; //Sanity
+        return; // Sanity
 
       if (!m_ContextTable.TryGetValue(GetType(), out DelayedDamageContextWrapper contexts))
         m_ContextTable[GetType()] = contexts = new DelayedDamageContextWrapper();
@@ -233,7 +233,7 @@ namespace Server.Spells
     {
       double scalar = 1.0;
 
-      if (!Core.AOS) //EvalInt stuff for AoS is handled elsewhere
+      if (!Core.AOS) // EvalInt stuff for AoS is handled elsewhere
       {
         double casterEI = Caster.Skills[DamageSkill].Value;
         double targetRS = target.Skills.MagicResist.Value;
@@ -243,7 +243,7 @@ namespace Server.Spells
           targetRS = 0;
         */
 
-        //m_Caster.CheckSkill( DamageSkill, 0.0, 120.0 );
+        // m_Caster.CheckSkill( DamageSkill, 0.0, 120.0 );
 
         if (casterEI > targetRS)
           scalar = 1.0 + (casterEI - targetRS) / 500.0;
@@ -266,7 +266,7 @@ namespace Server.Spells
 
       target.Region.SpellDamageScalar(Caster, target, ref scalar);
 
-      if (Evasion.CheckSpellEvasion(target)) //Only single target spells an be evaded
+      if (Evasion.CheckSpellEvasion(target)) // Only single target spells an be evaded
         scalar = 0;
 
       return scalar;
@@ -284,7 +284,7 @@ namespace Server.Spells
 
         if (atkSlayer?.Slays(defender) == true || atkSlayer2?.Slays(defender) == true)
         {
-          defender.FixedEffect(0x37B9, 10, 5); //TODO: Confirm this displays on OSIs
+          defender.FixedEffect(0x37B9, 10, 5); // TODO: Confirm this displays on OSIs
           scalar = 2.0;
         }
 
@@ -411,9 +411,9 @@ namespace Server.Spells
       {
         Caster.SendLocalizedMessage(502642); // You are already casting a spell.
       }
-      else if (BlockedByHorrificBeast &&
-               TransformationSpellHelper.UnderTransformation(Caster, typeof(HorrificBeastSpell)) ||
-               BlockedByAnimalForm && AnimalForm.UnderTransformation(Caster))
+      else if ((BlockedByHorrificBeast &&
+               TransformationSpellHelper.UnderTransformation(Caster, typeof(HorrificBeastSpell))) ||
+               (BlockedByAnimalForm && AnimalForm.UnderTransformation(Caster)))
       {
         Caster.SendLocalizedMessage(1061091); // You cannot cast that spell in this form.
       }
@@ -430,13 +430,9 @@ namespace Server.Spells
         mobile.SendLocalizedMessage(1072060); // You cannot cast a spell while calmed.
       }
 
-      #region Dueling
-
       else if ((Caster as PlayerMobile)?.DuelContext?.AllowSpellCast(Caster, this) == false)
       {
       }
-
-      #endregion
 
       else if (Caster.Mana >= ScaleMana(GetMana()))
       {
@@ -453,7 +449,7 @@ namespace Server.Spells
 
           TimeSpan castDelay = GetCastDelay();
 
-          if (ShowHandMovement && (Caster.Body.IsHuman || Caster.Player && Caster.Body.IsMonster))
+          if (ShowHandMovement && (Caster.Body.IsHuman || (Caster.Player && Caster.Body.IsMonster)))
           {
             int count = (int)Math.Ceiling(castDelay.TotalSeconds / AnimateDelay.TotalSeconds);
 
@@ -477,7 +473,7 @@ namespace Server.Spells
             WeaponAbility.ClearCurrentAbility(Caster);
 
           m_CastTimer = new CastTimer(this, castDelay);
-          //m_CastTimer.Start();
+          // m_CastTimer.Start();
 
           OnBeginCast();
 
@@ -507,7 +503,7 @@ namespace Server.Spells
 
     public virtual void GetCastSkills(out double min, out double max)
     {
-      min = max = 0; //Intended but not required for overriding.
+      min = max = 0; // Intended but not required for overriding.
     }
 
     public virtual bool CheckFizzle()
@@ -574,10 +570,10 @@ namespace Server.Spells
       return TimeSpan.FromSeconds((double)delay / CastRecoveryPerSecond);
     }
 
-    //public virtual int CastDelayBase{ get{ return 3; } }
-    //public virtual int CastDelayFastScalar{ get{ return 1; } }
-    //public virtual int CastDelayPerSecond{ get{ return 4; } }
-    //public virtual int CastDelayMinimum{ get{ return 1; } }
+    // public virtual int CastDelayBase{ get{ return 3; } }
+    // public virtual int CastDelayFastScalar{ get{ return 1; } }
+    // public virtual int CastDelayPerSecond{ get{ return 4; } }
+    // public virtual int CastDelayMinimum{ get{ return 1; } }
 
     public virtual TimeSpan GetCastDelay()
     {
@@ -591,7 +587,7 @@ namespace Server.Spells
       int fcMax = 4;
 
       if (CastSkill == SkillName.Magery || CastSkill == SkillName.Necromancy ||
-          CastSkill == SkillName.Chivalry && Caster.Skills.Magery.Value >= 70.0)
+          (CastSkill == SkillName.Chivalry && Caster.Skills.Magery.Value >= 70.0))
         fcMax = 2;
 
       int fc = AosAttributes.GetValue(Caster, AosAttribute.CastSpeed);
@@ -609,13 +605,13 @@ namespace Server.Spells
 
       TimeSpan fcDelay = TimeSpan.FromSeconds(-(CastDelayFastScalar * fc * CastDelaySecondsPerTick));
 
-      //int delay = CastDelayBase + circleDelay + fcDelay;
+      // int delay = CastDelayBase + circleDelay + fcDelay;
       TimeSpan delay = baseDelay + fcDelay;
 
       if (delay < CastDelayMinimum)
         delay = CastDelayMinimum;
 
-      //return TimeSpan.FromSeconds( (double)delay / CastDelayPerSecond );
+      // return TimeSpan.FromSeconds( (double)delay / CastDelayPerSecond );
       return delay;
     }
 
@@ -638,8 +634,8 @@ namespace Server.Spells
         DoFizzle();
       }
       else if (Scroll != null && !(Scroll is Runebook) &&
-               (Scroll.Amount <= 0 || Scroll.Deleted || Scroll.RootParent != Caster || Scroll is BaseWand baseWand &&
-                (baseWand.Charges <= 0 || baseWand.Parent != Caster)))
+               (Scroll.Amount <= 0 || Scroll.Deleted || Scroll.RootParent != Caster || (Scroll is BaseWand baseWand &&
+                (baseWand.Charges <= 0 || baseWand.Parent != Caster))))
       {
         DoFizzle();
       }
@@ -759,7 +755,7 @@ namespace Server.Spells
 
     private class DelayedDamageContextWrapper
     {
-      private Dictionary<Mobile, Timer> m_Contexts = new Dictionary<Mobile, Timer>();
+      private readonly Dictionary<Mobile, Timer> m_Contexts = new Dictionary<Mobile, Timer>();
 
       public void Add(Mobile m, Timer t)
       {
@@ -780,7 +776,7 @@ namespace Server.Spells
 
     private class AnimTimer : Timer
     {
-      private Spell m_Spell;
+      private readonly Spell m_Spell;
 
       public AnimTimer(Spell spell, int count) : base(TimeSpan.Zero, AnimateDelay, count)
       {
@@ -812,7 +808,7 @@ namespace Server.Spells
 
     private class CastTimer : Timer
     {
-      private Spell m_Spell;
+      private readonly Spell m_Spell;
 
       public CastTimer(Spell spell, TimeSpan castDelay) : base(castDelay)
       {

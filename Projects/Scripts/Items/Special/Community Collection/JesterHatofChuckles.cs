@@ -18,7 +18,7 @@
     {
     }
 
-    public override int LabelNumber => 1073256; //Jester Hat of Chuckles - Museum of Vesper Replica	1073256
+    public override int LabelNumber => 1073256; // Jester Hat of Chuckles - Museum of Vesper Replica	1073256
 
     public override int BasePhysicalResistance => 12;
     public override int BaseFireResistance => 12;

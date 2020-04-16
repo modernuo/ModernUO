@@ -113,11 +113,11 @@ namespace Server.Multis
       switch (version)
       {
         case 0:
-        {
-          m_Components = reader.ReadStrongItemList();
+          {
+            m_Components = reader.ReadStrongItemList();
 
-          break;
-        }
+            break;
+          }
       }
 
       Timer.DelayCall(TimeSpan.Zero, Delete);
@@ -125,7 +125,7 @@ namespace Server.Multis
 
     private class DecayTimer : Timer
     {
-      private Item m_Item;
+      private readonly Item m_Item;
 
       public DecayTimer(Item item) : base(TimeSpan.FromSeconds(20.0))
       {

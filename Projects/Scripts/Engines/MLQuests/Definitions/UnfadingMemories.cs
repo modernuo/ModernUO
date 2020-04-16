@@ -6,8 +6,6 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Definitions
 {
-  #region Quests
-
   public class UnfadingMemoriesPartOne : MLQuest
   {
     public UnfadingMemoriesPartOne()
@@ -96,10 +94,6 @@ namespace Server.Engines.MLQuests.Definitions
       PutSpawner(new Spawner(1, 5, 10, 0, 3, "Thalia"), new Point3D(3675, 1322, 20), Map.Felucca);
     }
   }
-
-  #endregion
-
-  #region Mobiles
 
   [QuesterName("Emilio (Britain)")] // OSI's description is "Artist", not very helpful
   public class Emilio : BaseCreature
@@ -191,6 +185,4 @@ namespace Server.Engines.MLQuests.Definitions
       int version = reader.ReadInt();
     }
   }
-
-  #endregion
 }

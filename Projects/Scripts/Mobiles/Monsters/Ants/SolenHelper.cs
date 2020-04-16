@@ -7,7 +7,7 @@ namespace Server.Mobiles
   {
     public static void PackPicnicBasket(BaseCreature solen)
     {
-      if (1 > Utility.Random(100))
+      if (Utility.Random(100) < 1)
       {
         PicnicBasket basket = new PicnicBasket();
 

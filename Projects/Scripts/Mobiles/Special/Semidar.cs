@@ -90,7 +90,7 @@ namespace Server.Mobiles
 
       foreach (Mobile m in eable)
       {
-        if (m == this || !(CanBeHarmful(m) || m.Player && m.Alive))
+        if (m == this || !(CanBeHarmful(m) || (m.Player && m.Alive)))
           continue;
 
         if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != Team))
@@ -116,7 +116,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.25 >= Utility.RandomDouble())
+      if (Utility.RandomDouble() <= 0.25)
         DrainLife();
     }
 
@@ -124,7 +124,7 @@ namespace Server.Mobiles
     {
       base.OnGotMeleeAttack(attacker);
 
-      if (0.25 >= Utility.RandomDouble())
+      if (Utility.RandomDouble() <= 0.25)
         DrainLife();
     }
 

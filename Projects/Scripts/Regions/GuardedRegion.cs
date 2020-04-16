@@ -9,10 +9,10 @@ namespace Server.Regions
 {
   public class GuardedRegion : BaseRegion
   {
-    private static object[] m_GuardParams = new object[1];
+    private static readonly object[] m_GuardParams = new object[1];
 
-    private Dictionary<Mobile, GuardTimer> m_GuardCandidates = new Dictionary<Mobile, GuardTimer>();
-    private Type m_GuardType;
+    private readonly Dictionary<Mobile, GuardTimer> m_GuardCandidates = new Dictionary<Mobile, GuardTimer>();
+    private readonly Type m_GuardType;
 
     public GuardedRegion(string name, Map map, int priority, params Rectangle3D[] area) : base(name, map, priority, area) => m_GuardType = DefaultGuardType;
 
@@ -42,7 +42,7 @@ namespace Server.Regions
         Disabled = disabled;
     }
 
-    public bool Disabled{ get; set; }
+    public bool Disabled { get; set; }
 
     public virtual bool AllowReds => Core.AOS;
 
@@ -298,7 +298,7 @@ namespace Server.Regions
 
       foreach (Mobile m in eable)
         if (IsGuardCandidate(m) &&
-            (!AllowReds && m.Kills >= 5 && m.Region.IsPartOf(this) || m_GuardCandidates.ContainsKey(m)))
+            ((!AllowReds && m.Kills >= 5 && m.Region.IsPartOf(this)) || m_GuardCandidates.ContainsKey(m)))
         {
           if (m_GuardCandidates.TryGetValue(m, out GuardTimer timer))
           {
@@ -317,16 +317,16 @@ namespace Server.Regions
     public bool IsGuardCandidate(Mobile m)
     {
       if (m is BaseGuard || !m.Alive || m.AccessLevel > AccessLevel.Player || m.Blessed ||
-          m is BaseCreature creature && creature.IsInvulnerable || IsDisabled())
+          (m is BaseCreature creature && creature.IsInvulnerable) || IsDisabled())
         return false;
 
-      return !AllowReds && m.Kills >= 5 || m.Criminal;
+      return (!AllowReds && m.Kills >= 5) || m.Criminal;
     }
 
     private class GuardTimer : Timer
     {
-      private Mobile m_Mobile;
-      private Dictionary<Mobile, GuardTimer> m_Table;
+      private readonly Mobile m_Mobile;
+      private readonly Dictionary<Mobile, GuardTimer> m_Table;
 
       public GuardTimer(Mobile m, Dictionary<Mobile, GuardTimer> table) : base(TimeSpan.FromSeconds(15.0))
       {

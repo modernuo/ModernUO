@@ -41,7 +41,6 @@ namespace Server.Mobiles
     public override int Meat => 1;
     public override int Feathers => 25;
 
-
     public override int GetAngerSound() => 0x4D9;
 
     public override int GetIdleSound() => 0x4D8;

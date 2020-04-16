@@ -15,11 +15,11 @@ namespace Server.Guilds
       pm.CloseGump<BaseGuildGump>();
     }
 
-    protected Guild guild{ get; }
+    protected Guild guild { get; }
 
-    protected PlayerMobile player{ get; }
+    protected PlayerMobile player { get; }
 
-    //There's prolly a way to have all the vars set of inherited classes before something is called in the Ctor... but... I can't think of it right now, and I can't use Timer.DelayCall here :<
+    // There's prolly a way to have all the vars set of inherited classes before something is called in the Ctor... but... I can't think of it right now, and I can't use Timer.DelayCall here :<
 
     public virtual void PopulateGump()
     {
@@ -48,36 +48,36 @@ namespace Server.Guilds
       switch (info.ButtonID)
       {
         case 1:
-        {
-          pm.SendGump(new GuildInfoGump(pm, guild));
-          break;
-        }
+          {
+            pm.SendGump(new GuildInfoGump(pm, guild));
+            break;
+          }
         case 2:
-        {
-          pm.SendGump(new GuildRosterGump(pm, guild));
-          break;
-        }
+          {
+            pm.SendGump(new GuildRosterGump(pm, guild));
+            break;
+          }
         case 3:
-        {
-          pm.SendGump(new GuildDiplomacyGump(pm, guild));
-          break;
-        }
+          {
+            pm.SendGump(new GuildDiplomacyGump(pm, guild));
+            break;
+          }
       }
     }
 
     public static bool IsLeader(Mobile m, Guild g) =>
       !(m.Deleted || g.Disbanded || !(m is PlayerMobile) ||
-        m.AccessLevel < AccessLevel.GameMaster && g.Leader != m);
+        (m.AccessLevel < AccessLevel.GameMaster && g.Leader != m));
 
     public static bool IsMember(Mobile m, Guild g) =>
       !(m.Deleted || g.Disbanded || !(m is PlayerMobile) ||
-        m.AccessLevel < AccessLevel.GameMaster && !g.IsMember(m));
+        (m.AccessLevel < AccessLevel.GameMaster && !g.IsMember(m)));
 
     public static bool CheckProfanity(string s, int maxLength = 50)
     {
-      //return NameVerification.Validate( s, 1, 50, true, true, false, int.MaxValue, ProfanityProtection.Exceptions, ProfanityProtection.Disallowed, ProfanityProtection.StartDisallowed );	//What am I doing wrong, this still allows chars like the <3 symbol... 3 AM.  someone change this to use this
+      // return NameVerification.Validate( s, 1, 50, true, true, false, int.MaxValue, ProfanityProtection.Exceptions, ProfanityProtection.Disallowed, ProfanityProtection.StartDisallowed );	//What am I doing wrong, this still allows chars like the <3 symbol... 3 AM.  someone change this to use this
 
-      //With testing on OSI, Guild stuff seems to follow a 'simpler' method of profanity protection
+      // With testing on OSI, Guild stuff seems to follow a 'simpler' method of profanity protection
       if (s.Length < 1 || s.Length > maxLength)
         return false;
 

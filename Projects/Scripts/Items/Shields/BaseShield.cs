@@ -31,7 +31,7 @@ namespace Server.Items
     {
       base.Serialize(writer);
 
-      writer.Write(1); //version
+      writer.Write(1); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -138,7 +138,7 @@ namespace Server.Items
 
         owner.FixedEffect(0x37B9, 10, 16);
 
-        if (25 > Utility.Random(100)) // 25% chance to lower durability
+        if (Utility.Random(100) < 25) // 25% chance to lower durability
         {
           int wear = Utility.Random(2);
 

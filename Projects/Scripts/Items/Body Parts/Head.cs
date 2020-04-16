@@ -28,10 +28,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string PlayerName{ get; set; }
+    public string PlayerName { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public HeadType HeadType{ get; set; }
+    public HeadType HeadType { get; set; }
 
     public override string DefaultName
     {

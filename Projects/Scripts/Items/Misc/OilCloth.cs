@@ -103,8 +103,6 @@ namespace Server.Items
         }
       }
 
-      #region Firebomb
-
       else if (obj is BaseBeverage beverage)
       {
         if (beverage.Content == BeverageType.Liquor)
@@ -122,8 +120,6 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(1060579); // That is already a firebomb!
       }
-
-      #endregion
 
       else
       {

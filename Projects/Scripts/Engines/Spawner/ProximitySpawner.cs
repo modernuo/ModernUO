@@ -52,13 +52,13 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.Developer)]
-    public int TriggerRange{ get; set; }
+    public int TriggerRange { get; set; }
 
     [CommandProperty(AccessLevel.Developer)]
-    public TextDefinition SpawnMessage{ get; set; }
+    public TextDefinition SpawnMessage { get; set; }
 
     [CommandProperty(AccessLevel.Developer)]
-    public bool InstantFlag{ get; set; }
+    public bool InstantFlag { get; set; }
 
     public override string DefaultName => "Proximity Spawner";
 
@@ -84,7 +84,7 @@ namespace Server.Mobiles
       if (m is BaseCreature bc && (bc.IsDeadBondedPet || !(bc.Controlled || bc.Summoned)))
         return false;
 
-      return m.AccessLevel == AccessLevel.Player && (m.Player || m.Alive && !m.Hidden && m.CanBeDamaged());
+      return m.AccessLevel == AccessLevel.Player && (m.Player || (m.Alive && !m.Hidden && m.CanBeDamaged()));
     }
 
     public override void OnMovement(Mobile m, Point3D oldLocation)

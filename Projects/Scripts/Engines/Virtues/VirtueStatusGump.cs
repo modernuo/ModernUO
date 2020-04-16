@@ -5,7 +5,7 @@ namespace Server
 {
   public class VirtueStatusGump : Gump
   {
-    private Mobile m_Beholder;
+    private readonly Mobile m_Beholder;
 
     public VirtueStatusGump(Mobile beholder) : base(0, 0)
     {
@@ -52,55 +52,55 @@ namespace Server
       switch (info.ButtonID)
       {
         case 1:
-        {
-          m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Humility, 1052051));
-          break;
-        }
+          {
+            m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Humility, 1052051));
+            break;
+          }
         case 2:
-        {
-          m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Sacrifice, 1052053,
-            @"http://update.uo.com/design_389.html"));
-          break;
-        }
+          {
+            m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Sacrifice, 1052053,
+              @"http://update.uo.com/design_389.html"));
+            break;
+          }
         case 3:
-        {
-          m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Compassion, 1053000,
-            @"http://update.uo.com/design_412.html"));
-          break;
-        }
+          {
+            m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Compassion, 1053000,
+              @"http://update.uo.com/design_412.html"));
+            break;
+          }
         case 4:
-        {
-          m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Spirituality, 1052056));
-          break;
-        }
+          {
+            m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Spirituality, 1052056));
+            break;
+          }
         case 5:
-        {
-          m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Valor, 1054033,
-            @"http://update.uo.com/design_427.html"));
-          break;
-        }
+          {
+            m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Valor, 1054033,
+              @"http://update.uo.com/design_427.html"));
+            break;
+          }
         case 6:
-        {
-          m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Honor, 1052058,
-            @"http://guide.uo.com/virtues_2.html"));
-          break;
-        }
+          {
+            m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Honor, 1052058,
+              @"http://guide.uo.com/virtues_2.html"));
+            break;
+          }
         case 7:
-        {
-          m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Justice, 1052059,
-            @"http://update.uo.com/design_413.html"));
-          break;
-        }
+          {
+            m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Justice, 1052059,
+              @"http://update.uo.com/design_413.html"));
+            break;
+          }
         case 8:
-        {
-          m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Honesty, 1052060));
-          break;
-        }
+          {
+            m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, VirtueName.Honesty, 1052060));
+            break;
+          }
         case 9:
-        {
-          m_Beholder.SendGump(new VirtueGump(m_Beholder, m_Beholder));
-          break;
-        }
+          {
+            m_Beholder.SendGump(new VirtueGump(m_Beholder, m_Beholder));
+            break;
+          }
       }
     }
   }

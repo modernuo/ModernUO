@@ -34,18 +34,18 @@ namespace Server.Diagnostics
 
     public static IEnumerable<TimerProfile> Profiles => _profiles.Values;
 
-    public long Created{ get; set; }
+    public long Created { get; set; }
 
-    public long Started{ get; set; }
+    public long Started { get; set; }
 
-    public long Stopped{ get; set; }
+    public long Stopped { get; set; }
 
     public static TimerProfile Acquire(string name)
     {
       if (!Core.Profiling)
         return null;
 
-      if (!_profiles.TryGetValue(name, out TimerProfile prof))
+      if (!_profiles.TryGetValue(name, out var prof))
         _profiles.Add(name, prof = new TimerProfile(name));
 
       return prof;

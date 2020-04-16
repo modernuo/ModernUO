@@ -12,7 +12,7 @@ namespace Server.Commands.Generic
 
     private IConditional[] m_Conditionals;
 
-    private ICondition[][] m_Conditions;
+    private readonly ICondition[][] m_Conditions;
 
     public ObjectConditional(Type objectType, ICondition[][] conditions)
     {
@@ -20,7 +20,7 @@ namespace Server.Commands.Generic
       m_Conditions = conditions;
     }
 
-    public Type Type{ get; }
+    public Type Type { get; }
 
     public bool IsItem => Type == null || Type == typeofItem || Type.IsSubclassOf(typeofItem);
 

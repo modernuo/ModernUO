@@ -9,7 +9,7 @@ namespace Server.Commands.Generic
 
     public override ExtensionInfo Info => ExtInfo;
 
-    public int Limit{ get; private set; }
+    public int Limit { get; private set; }
 
     public static void Initialize()
     {

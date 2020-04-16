@@ -36,7 +36,7 @@ namespace Server.Items
     public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosWeaponAttributes WeaponAttributes{ get; private set; }
+    public AosWeaponAttributes WeaponAttributes { get; private set; }
 
     public override void AppendChildNameProperties(ObjectPropertyList list)
     {

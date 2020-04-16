@@ -32,7 +32,7 @@ namespace Server.SkillHandlers
 
     private class InternalTarget : Target
     {
-      private BaseInstrument m_Instrument;
+      private readonly BaseInstrument m_Instrument;
       private bool m_SetSkillTime = true;
 
       public InternalTarget(Mobile from, BaseInstrument instrument) : base(
@@ -176,7 +176,7 @@ namespace Server.SkillHandlers
                 from.NextSkillTime = Core.TickCount + 5000;
                 targ.Combatant = null;
                 targ.Warmode = false;
-                
+
                 if (bc != null)
                 {
                   from.SendLocalizedMessage(1049532); // You play hypnotic music, calming your target.

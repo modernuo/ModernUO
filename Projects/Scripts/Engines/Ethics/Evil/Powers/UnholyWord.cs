@@ -7,8 +7,7 @@ namespace Server.Ethics.Evil
         100,
         "Unholy Word",
         "Velgo Oostrac",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

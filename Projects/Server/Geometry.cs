@@ -58,22 +58,22 @@ namespace Server
 
     public static Point2D Parse(string value)
     {
-      int start = value.IndexOf('(');
-      int end = value.IndexOf(',', start + 1);
+      var start = value.IndexOf('(');
+      var end = value.IndexOf(',', start + 1);
 
-      string param1 = value.Substring(start + 1, end - (start + 1)).Trim();
+      var param1 = value.Substring(start + 1, end - (start + 1)).Trim();
 
       start = end;
       end = value.IndexOf(')', start + 1);
 
-      string param2 = value.Substring(start + 1, end - (start + 1)).Trim();
+      var param2 = value.Substring(start + 1, end - (start + 1)).Trim();
 
       return new Point2D(Convert.ToInt32(param1), Convert.ToInt32(param2));
     }
 
     public int CompareTo(Point2D other)
     {
-      int v = m_X.CompareTo(other.m_X);
+      var v = m_X.CompareTo(other.m_X);
 
       if (v == 0)
         v = m_Y.CompareTo(other.m_Y);
@@ -173,20 +173,20 @@ namespace Server
 
     public static Point3D Parse(string value)
     {
-      int start = value.IndexOf('(');
-      int end = value.IndexOf(',', start + 1);
+      var start = value.IndexOf('(');
+      var end = value.IndexOf(',', start + 1);
 
-      string param1 = value.Substring(start + 1, end - (start + 1)).Trim();
+      var param1 = value.Substring(start + 1, end - (start + 1)).Trim();
 
       start = end;
       end = value.IndexOf(',', start + 1);
 
-      string param2 = value.Substring(start + 1, end - (start + 1)).Trim();
+      var param2 = value.Substring(start + 1, end - (start + 1)).Trim();
 
       start = end;
       end = value.IndexOf(')', start + 1);
 
-      string param3 = value.Substring(start + 1, end - (start + 1)).Trim();
+      var param3 = value.Substring(start + 1, end - (start + 1)).Trim();
 
       return new Point3D(Convert.ToInt32(param1), Convert.ToInt32(param2), Convert.ToInt32(param3));
     }
@@ -195,13 +195,15 @@ namespace Server
 
     public static bool operator !=(Point3D l, Point3D r) => l.m_X != r.m_X || l.m_Y != r.m_Y || l.m_Z != r.m_Z;
 
-    public static bool operator ==(Point3D l, IPoint3D r) => !ReferenceEquals(r, null) && l.m_X == r.X && l.m_Y == r.Y && l.m_Z == r.Z;
+    public static bool operator ==(Point3D l, IPoint3D r) =>
+      !ReferenceEquals(r, null) && l.m_X == r.X && l.m_Y == r.Y && l.m_Z == r.Z;
 
-    public static bool operator !=(Point3D l, IPoint3D r) => !ReferenceEquals(r, null) && (l.m_X != r.X || l.m_Y != r.Y || l.m_Z != r.Z);
+    public static bool operator !=(Point3D l, IPoint3D r) =>
+      !ReferenceEquals(r, null) && (l.m_X != r.X || l.m_Y != r.Y || l.m_Z != r.Z);
 
     public int CompareTo(Point3D other)
     {
-      int v = m_X.CompareTo(other.m_X);
+      var v = m_X.CompareTo(other.m_X);
 
       if (v == 0)
       {
@@ -243,25 +245,25 @@ namespace Server
 
     public static Rectangle2D Parse(string value)
     {
-      int start = value.IndexOf('(');
-      int end = value.IndexOf(',', start + 1);
+      var start = value.IndexOf('(');
+      var end = value.IndexOf(',', start + 1);
 
-      string param1 = value.Substring(start + 1, end - (start + 1)).Trim();
-
-      start = end;
-      end = value.IndexOf(',', start + 1);
-
-      string param2 = value.Substring(start + 1, end - (start + 1)).Trim();
+      var param1 = value.Substring(start + 1, end - (start + 1)).Trim();
 
       start = end;
       end = value.IndexOf(',', start + 1);
 
-      string param3 = value.Substring(start + 1, end - (start + 1)).Trim();
+      var param2 = value.Substring(start + 1, end - (start + 1)).Trim();
+
+      start = end;
+      end = value.IndexOf(',', start + 1);
+
+      var param3 = value.Substring(start + 1, end - (start + 1)).Trim();
 
       start = end;
       end = value.IndexOf(')', start + 1);
 
-      string param4 = value.Substring(start + 1, end - (start + 1)).Trim();
+      var param4 = value.Substring(start + 1, end - (start + 1)).Trim();
 
       return new Rectangle2D(Convert.ToInt32(param1), Convert.ToInt32(param2), Convert.ToInt32(param3),
         Convert.ToInt32(param4));
@@ -324,9 +326,11 @@ namespace Server
         m_End.m_Y = r.m_End.m_Y;
     }
 
-    public bool Contains(Point3D p) => m_Start.m_X <= p.m_X && m_Start.m_Y <= p.m_Y && m_End.m_X > p.m_X && m_End.m_Y > p.m_Y;
+    public bool Contains(Point3D p) =>
+      m_Start.m_X <= p.m_X && m_Start.m_Y <= p.m_Y && m_End.m_X > p.m_X && m_End.m_Y > p.m_Y;
 
-    public bool Contains(Point2D p) => m_Start.m_X <= p.m_X && m_Start.m_Y <= p.m_Y && m_End.m_X > p.m_X && m_End.m_Y > p.m_Y;
+    public bool Contains(Point2D p) =>
+      m_Start.m_X <= p.m_X && m_Start.m_Y <= p.m_Y && m_End.m_X > p.m_X && m_End.m_Y > p.m_Y;
 
     public bool Contains(IPoint2D p) => m_Start <= p && m_End > p;
 
@@ -350,10 +354,10 @@ namespace Server
     }
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Point3D Start{ get; set; }
+    public Point3D Start { get; set; }
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Point3D End{ get; set; }
+    public Point3D End { get; set; }
 
     [CommandProperty(AccessLevel.Counselor)]
     public int Width => End.X - Start.X;

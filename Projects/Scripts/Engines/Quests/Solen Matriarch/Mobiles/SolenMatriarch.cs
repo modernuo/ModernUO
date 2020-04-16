@@ -23,7 +23,7 @@ namespace Server.Engines.Quests.Matriarch
     {
     }
 
-    public abstract bool RedSolen{ get; }
+    public abstract bool RedSolen { get; }
     public override string DefaultName => "the solen matriarch";
     public override bool DisallowAllMoves => false;
 
@@ -193,8 +193,8 @@ namespace Server.Engines.Quests.Matriarch
 
     private class ProcessZoogiFungusEntry : ContextMenuEntry
     {
-      private PlayerMobile m_From;
-      private BaseSolenMatriarch m_Matriarch;
+      private readonly PlayerMobile m_From;
+      private readonly BaseSolenMatriarch m_Matriarch;
 
       public ProcessZoogiFungusEntry(BaseSolenMatriarch matriarch, PlayerMobile from) : base(6184)
       {
@@ -211,8 +211,8 @@ namespace Server.Engines.Quests.Matriarch
 
     private class ProcessFungiTarget : Target
     {
-      private PlayerMobile m_From;
-      private BaseSolenMatriarch m_Matriarch;
+      private readonly PlayerMobile m_From;
+      private readonly BaseSolenMatriarch m_Matriarch;
 
       public ProcessFungiTarget(BaseSolenMatriarch matriarch, PlayerMobile from) : base(-1, false, TargetFlags.None)
       {

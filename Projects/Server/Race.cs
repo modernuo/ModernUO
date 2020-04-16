@@ -48,31 +48,31 @@ namespace Server
 
     public static Race DefaultRace => Races[0];
 
-    public static Race[] Races{ get; } = new Race[0x100];
+    public static Race[] Races { get; } = new Race[0x100];
 
     public static Race Human => Races[0];
     public static Race Elf => Races[1];
     public static Race Gargoyle => Races[2];
 
-    public static List<Race> AllRaces{ get; } = new List<Race>();
+    public static List<Race> AllRaces { get; } = new List<Race>();
 
-    public Expansion RequiredExpansion{ get; }
+    public Expansion RequiredExpansion { get; }
 
-    public int MaleBody{ get; }
+    public int MaleBody { get; }
 
-    public int MaleGhostBody{ get; }
+    public int MaleGhostBody { get; }
 
-    public int FemaleBody{ get; }
+    public int FemaleBody { get; }
 
-    public int FemaleGhostBody{ get; }
+    public int FemaleGhostBody { get; }
 
-    public int RaceID{ get; }
+    public int RaceID { get; }
 
-    public int RaceIndex{ get; }
+    public int RaceIndex { get; }
 
-    public string Name{ get; set; }
+    public string Name { get; set; }
 
-    public string PluralName{ get; set; }
+    public string PluralName { get; set; }
 
     public static string[] GetRaceNames()
     {
@@ -90,11 +90,11 @@ namespace Server
     {
       CheckNamesAndValues();
 
-      for (int i = 0; i < m_RaceNames.Length; ++i)
+      for (var i = 0; i < m_RaceNames.Length; ++i)
         if (Insensitive.Equals(m_RaceNames[i], value))
           return m_RaceValues[i];
 
-      if (int.TryParse(value, out int index) && index >= 0 && index < Races.Length &&
+      if (int.TryParse(value, out var index) && index >= 0 && index < Races.Length &&
           Races[index] != null)
         return Races[index];
 
@@ -109,9 +109,9 @@ namespace Server
       m_RaceNames = new string[AllRaces.Count];
       m_RaceValues = new Race[AllRaces.Count];
 
-      for (int i = 0; i < AllRaces.Count; ++i)
+      for (var i = 0; i < AllRaces.Count; ++i)
       {
-        Race race = AllRaces[i];
+        var race = AllRaces[i];
 
         m_RaceNames[i] = race.Name;
         m_RaceValues[i] = race;
@@ -134,7 +134,7 @@ namespace Server
 
     public virtual int RandomFacialHair(Mobile m) => RandomFacialHair(m.Female);
 
-    public abstract int RandomFacialHair(bool female); //For the *ahem* bearded ladies
+    public abstract int RandomFacialHair(bool female); // For the *ahem* bearded ladies
 
     public abstract int ClipSkinHue(int hue);
     public abstract int RandomSkinHue();

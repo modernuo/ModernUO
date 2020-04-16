@@ -61,13 +61,13 @@ namespace Server.Mobiles
     public override string CorpseName => "a demon knight corpse";
     public override bool IgnoreYoungProtection => Core.ML;
 
-    public static Type[] ArtifactRarity10{ get; } =
+    public static Type[] ArtifactRarity10 { get; } =
     {
       typeof(LegacyOfTheDreadLord),
       typeof(TheTaskmaster)
     };
 
-    public static Type[] ArtifactRarity11{ get; } =
+    public static Type[] ArtifactRarity11 { get; } =
     {
       typeof(TheDragonSlayer),
       typeof(ArmorOfFortune),
@@ -231,7 +231,7 @@ namespace Server.Mobiles
         MovingEffect(from, 0xECA, 10, 0, false, false, 0, 0);
         PlaySound(0x491);
 
-        if (0.05 > Utility.RandomDouble())
+        if (Utility.RandomDouble() < 0.05)
           Timer.DelayCall(TimeSpan.FromSeconds(1.0), CreateBones_Callback, from);
 
         m_InHere = false;

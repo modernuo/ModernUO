@@ -5,8 +5,8 @@ namespace Server.Engines.BulkOrders
 {
   public class LargeBODAcceptGump : Gump
   {
-    private LargeBOD m_Deed;
-    private Mobile m_From;
+    private readonly LargeBOD m_Deed;
+    private readonly Mobile m_From;
 
     public LargeBODAcceptGump(Mobile from, LargeBOD deed) : base(50, 50)
     {

@@ -19,28 +19,28 @@ namespace Server.Engines.BulkOrders
       switch (version)
       {
         case 0:
-        {
-          string type = reader.ReadString();
+          {
+            string type = reader.ReadString();
 
-          if (type != null)
-            ItemType = AssemblyHandler.FindFirstTypeForName(type);
+            if (type != null)
+              ItemType = AssemblyHandler.FindFirstTypeForName(type);
 
-          AmountCur = reader.ReadEncodedInt();
-          Number = reader.ReadEncodedInt();
-          Graphic = reader.ReadEncodedInt();
+            AmountCur = reader.ReadEncodedInt();
+            Number = reader.ReadEncodedInt();
+            Graphic = reader.ReadEncodedInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public Type ItemType{ get; }
+    public Type ItemType { get; }
 
-    public int AmountCur{ get; }
+    public int AmountCur { get; }
 
-    public int Number{ get; }
+    public int Number { get; }
 
-    public int Graphic{ get; }
+    public int Graphic { get; }
 
     public void Serialize(IGenericWriter writer)
     {

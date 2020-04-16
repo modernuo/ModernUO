@@ -292,7 +292,6 @@ namespace Server.Items
       Attributes.WeaponSpeed = 20;
     }
 
-
     public Exiler(Serial serial) : base(serial)
     {
     }
@@ -622,7 +621,7 @@ namespace Server.Items
     }
   }
 
-  //Non weapon/armor ones:
+  // Non weapon/armor ones:
 
   public class AncientUrn : Item
   {
@@ -644,7 +643,7 @@ namespace Server.Items
     {
     }
 
-    public static string[] Names{ get; } =
+    public static string[] Names { get; } =
     {
       "Akira",
       "Avaniaga",
@@ -870,7 +869,7 @@ namespace Server.Items
     public FluteOfRenewal()
     {
       Slayer = SlayerGroup.Groups[Utility.Random(SlayerGroup.Groups.Length - 1)].Super
-        .Name; //-1 to exclude Fey slayer.  Try to confrim no fey slayer on this on OSI
+        .Name; // -1 to exclude Fey slayer.  Try to confrim no fey slayer on this on OSI
 
       ReplenishesCharges = true;
     }
@@ -919,7 +918,7 @@ namespace Server.Items
 
   public class LesserPigmentsOfTokuno : BasePigmentsOfTokuno
   {
-    private static int[][] m_Table =
+    private static readonly int[][] m_Table =
     {
       // Hue, Label
       new[]

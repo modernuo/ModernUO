@@ -9,7 +9,7 @@ namespace Server.Targets
 {
   public class BladedItemTarget : Target
   {
-    private Item m_Item;
+    private readonly Item m_Item;
 
     public BladedItemTarget(Item item) : base(2, false, TargetFlags.None) => m_Item = item;
 

@@ -4,16 +4,15 @@ namespace Server.Spells.First
 {
   public class ReactiveArmorSpell : MagerySpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Reactive Armor", "Flam Sanct",
       236,
       9011,
       Reagent.Garlic,
       Reagent.SpidersSilk,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
-    private static Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
+    private static readonly Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
 
     public ReactiveArmorSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -62,7 +61,7 @@ namespace Server.Spells.First
             targ.PlaySound(0x1E9);
             targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
 
-            mods = new []
+            mods = new[]
             {
               new ResistanceMod(ResistanceType.Physical,
                 15 + (int)(targ.Skills.Inscribe.Value / 20)),

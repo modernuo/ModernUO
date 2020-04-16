@@ -1,6 +1,5 @@
-using Server.Utilities;
-using System;
 using System.Collections.Generic;
+using Server.Utilities;
 
 namespace Server.Factions
 {
@@ -12,9 +11,9 @@ namespace Server.Factions
       Guards = new List<BaseFactionGuard>();
     }
 
-    public GuardDefinition Definition{ get; }
+    public GuardDefinition Definition { get; }
 
-    public List<BaseFactionGuard> Guards{ get; }
+    public List<BaseFactionGuard> Guards { get; }
 
     public BaseFactionGuard Construct()
     {

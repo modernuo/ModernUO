@@ -14,14 +14,13 @@ namespace Server.Engines.ConPVP
     private const int LabelColor32 = 0xFFFFFF;
     private bool m_Active;
 
-    private Mobile m_From;
-    private List<Mobile> m_Players;
-    private Mobile m_Registrar;
-    private Mobile m_Requested;
-    private Tournament m_Tournament;
+    private readonly Mobile m_From;
+    private readonly List<Mobile> m_Players;
+    private readonly Mobile m_Registrar;
+    private readonly Mobile m_Requested;
+    private readonly Tournament m_Tournament;
 
-    public AcceptTeamGump(Mobile from, Mobile requested, Tournament tourney, Mobile registrar, List<Mobile> players) :
-      base(50, 50)
+    public AcceptTeamGump(Mobile from, Mobile requested, Tournament tourney, Mobile registrar, List<Mobile> players) : base(50, 50)
     {
       m_From = from;
       m_Requested = requested;
@@ -30,8 +29,6 @@ namespace Server.Engines.ConPVP
       m_Players = players;
 
       m_Active = true;
-
-      #region Rules
 
       Ruleset ruleset = tourney.Ruleset;
       Ruleset basedef = ruleset.Base;
@@ -65,8 +62,6 @@ namespace Server.Engines.ConPVP
       height += changes * 22;
 
       height += 10 + 22 + 25 + 25;
-
-      #endregion
 
       Closable = false;
 
@@ -124,8 +119,6 @@ namespace Server.Engines.ConPVP
       AddImageTiled(32, 88, 264, 1, 9107);
       AddImageTiled(42, 90, 264, 1, 9157);
 
-      #region Rules
-
       int y = 100;
 
       var groupText = tourney.GroupType switch
@@ -144,8 +137,8 @@ namespace Server.Engines.ConPVP
         TieType.Random => "Random",
         TieType.Highest => "Highest advances",
         TieType.Lowest => "Lowest advances",
-        TieType.FullAdvancement => (tourney.ParticipantsPerMatch == 2 ? "Both advance" : "Everyone advances"),
-        TieType.FullElimination => (tourney.ParticipantsPerMatch == 2 ? "Both eliminated" : "Everyone eliminated"),
+        TieType.FullAdvancement => tourney.ParticipantsPerMatch == 2 ? "Both advance" : "Everyone advances",
+        TieType.FullElimination => tourney.ParticipantsPerMatch == 2 ? "Both eliminated" : "Everyone eliminated",
         _ => null
       };
 
@@ -204,8 +197,6 @@ namespace Server.Engines.ConPVP
         AddBorderedText(35, y, 190, 20, "Modifications: None", LabelColor32, BlackColor32);
         y += 20;
       }
-
-      #endregion
 
       y += 8;
       AddImageTiled(32, y - 1, 264, 1, 9107);

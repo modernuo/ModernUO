@@ -5,8 +5,8 @@ namespace Server.Multis
 {
   public class ConfirmDryDockGump : Gump
   {
-    private BaseBoat m_Boat;
-    private Mobile m_From;
+    private readonly BaseBoat m_Boat;
+    private readonly Mobile m_From;
 
     public ConfirmDryDockGump(Mobile from, BaseBoat boat) : base(150, 200)
     {

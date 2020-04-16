@@ -55,7 +55,7 @@ namespace Server.Items
         }
         else if (house.FindGuildstone() != null)
         {
-          from.SendLocalizedMessage(501142); //Only one guildstone may reside in a given house.
+          from.SendLocalizedMessage(501142); // Only one guildstone may reside in a given house.
         }
         else if (!house.IsOwner(from))
         {
@@ -71,7 +71,7 @@ namespace Server.Items
 
     private class InternalPrompt : Prompt
     {
-      private GuildDeed m_Deed;
+      private readonly GuildDeed m_Deed;
 
       public InternalPrompt(GuildDeed deed) => m_Deed = deed;
 
@@ -98,7 +98,7 @@ namespace Server.Items
           }
           else if (house.FindGuildstone() != null)
           {
-            from.SendLocalizedMessage(501142); //Only one guildstone may reside in a given house.
+            from.SendLocalizedMessage(501142); // Only one guildstone may reside in a given house.
           }
           else if (!house.IsOwner(from))
           {

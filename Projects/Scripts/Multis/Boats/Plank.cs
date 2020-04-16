@@ -32,10 +32,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public BaseBoat Boat{ get; set; }
+    public BaseBoat Boat { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public PlankSide Side{ get; set; }
+    public PlankSide Side { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsOpen => ItemID == 0x3ED5 || ItemID == 0x3ED4 || ItemID == 0x3E84 || ItemID == 0x3E89;
@@ -44,16 +44,16 @@ namespace Server.Items
     public bool Starboard => Side == PlankSide.Starboard;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Locked{ get; set; }
+    public bool Locked { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public uint KeyValue{ get; set; }
+    public uint KeyValue { get; set; }
 
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
 
-      writer.Write(0); //version
+      writer.Write(0); // version
 
       writer.Write(Boat);
       writer.Write((int)Side);
@@ -70,17 +70,17 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          Boat = reader.ReadItem() as BaseBoat;
-          Side = (PlankSide)reader.ReadInt();
-          Locked = reader.ReadBool();
-          KeyValue = reader.ReadUInt();
+          {
+            Boat = reader.ReadItem() as BaseBoat;
+            Side = (PlankSide)reader.ReadInt();
+            Locked = reader.ReadBool();
+            KeyValue = reader.ReadUInt();
 
-          if (Boat == null)
-            Delete();
+            if (Boat == null)
+              Delete();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (IsOpen)
@@ -95,19 +95,19 @@ namespace Server.Items
       if (IsOpen)
         ItemID = dir switch
         {
-          Direction.North => (Starboard ? 0x3ED4 : 0x3ED5),
-          Direction.East => (Starboard ? 0x3E84 : 0x3E89),
-          Direction.South => (Starboard ? 0x3ED5 : 0x3ED4),
-          Direction.West => (Starboard ? 0x3E89 : 0x3E84),
+          Direction.North => Starboard ? 0x3ED4 : 0x3ED5,
+          Direction.East => Starboard ? 0x3E84 : 0x3E89,
+          Direction.South => Starboard ? 0x3ED5 : 0x3ED4,
+          Direction.West => Starboard ? 0x3E89 : 0x3E84,
           _ => ItemID
         };
       else
         ItemID = dir switch
         {
-          Direction.North => (Starboard ? 0x3EB2 : 0x3EB1),
-          Direction.East => (Starboard ? 0x3E85 : 0x3E8A),
-          Direction.South => (Starboard ? 0x3EB1 : 0x3EB2),
-          Direction.West => (Starboard ? 0x3E8A : 0x3E85),
+          Direction.North => Starboard ? 0x3EB2 : 0x3EB1,
+          Direction.East => Starboard ? 0x3E85 : 0x3E8A,
+          Direction.South => Starboard ? 0x3EB1 : 0x3EB2,
+          Direction.West => Starboard ? 0x3E8A : 0x3E85,
           _ => ItemID
         };
     }
@@ -281,7 +281,7 @@ namespace Server.Items
 
     private class CloseTimer : Timer
     {
-      private Plank m_Plank;
+      private readonly Plank m_Plank;
 
       public CloseTimer(Plank plank) : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0))
       {

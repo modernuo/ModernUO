@@ -9,7 +9,7 @@ namespace Server.Engines.Events
   {
     private static Timer m_Timer;
 
-    private static Rectangle2D[] m_PumpkinFields =
+    private static readonly Rectangle2D[] m_PumpkinFields =
     {
       new Rectangle2D(4557, 1471, 20, 10),
       new Rectangle2D(796, 2152, 36, 24),

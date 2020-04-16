@@ -24,8 +24,6 @@ namespace Server.Items
     public override int InitMinHits => 5;
     public override int InitMaxHits => 5;
 
-    #region ITicket Members
-
     public void OnTicketUsed(Mobile from)
     {
       if (Utility.RandomDouble() < 0.25)
@@ -40,8 +38,6 @@ namespace Server.Items
           1075008); // Your bone handled machete has grown dull but you still manage to force your way past the venomous branches.
       }
     }
-
-    #endregion
 
     public override void Serialize(IGenericWriter writer)
     {

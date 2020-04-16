@@ -1,8 +1,8 @@
+using System;
+using System.Reflection;
 using Server.Items;
 using Server.Targeting;
 using Server.Utilities;
-using System;
-using System.Reflection;
 
 namespace Server.Commands
 {
@@ -48,14 +48,14 @@ namespace Server.Commands
         }
         catch
         {
-          //Console.WriteLine( "Denied" );
+          // Console.WriteLine( "Denied" );
         }
     }
 
     private class DupeTarget : Target
     {
-      private int m_Amount;
-      private bool m_InBag;
+      private readonly int m_Amount;
+      private readonly bool m_InBag;
 
       public DupeTarget(bool inbag, int amount)
         : base(15, false, TargetFlags.None)
@@ -103,7 +103,7 @@ namespace Server.Commands
             for (int i = 0; i < m_Amount; i++)
               if (c.Invoke(args) is Item newItem)
               {
-                CopyProperties(newItem, copy); //copy.Dupe( item, copy.Amount );
+                CopyProperties(newItem, copy); // copy.Dupe( item, copy.Amount );
                 copy.OnAfterDuped(newItem);
                 newItem.Parent = null;
 

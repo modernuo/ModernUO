@@ -26,7 +26,7 @@ namespace Server
 {
   public class MovementEventArgs : EventArgs
   {
-    private static Queue<MovementEventArgs> m_Pool = new Queue<MovementEventArgs>();
+    private static readonly Queue<MovementEventArgs> m_Pool = new Queue<MovementEventArgs>();
 
     public MovementEventArgs(Mobile mobile, Direction dir)
     {
@@ -34,11 +34,11 @@ namespace Server
       Direction = dir;
     }
 
-    public Mobile Mobile{ get; private set; }
+    public Mobile Mobile { get; private set; }
 
-    public Direction Direction{ get; private set; }
+    public Direction Direction { get; private set; }
 
-    public bool Blocked{ get; set; }
+    public bool Blocked { get; set; }
 
     public static MovementEventArgs Create(Mobile mobile, Direction dir)
     {

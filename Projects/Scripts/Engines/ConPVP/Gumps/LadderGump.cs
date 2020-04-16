@@ -15,7 +15,7 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public LadderController Ladder{ get; set; }
+    public LadderController Ladder { get; set; }
 
     public override string DefaultName => "1v1 leaderboard";
 
@@ -37,10 +37,10 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 1:
-        {
-          Ladder = reader.ReadItem<LadderController>();
-          break;
-        }
+          {
+            Ladder = reader.ReadItem<LadderController>();
+            break;
+          }
       }
     }
 
@@ -66,10 +66,10 @@ namespace Server.Engines.ConPVP
   public class LadderGump : Gump
   {
     private int m_ColumnX = 12;
-    private Ladder m_Ladder;
+    private readonly Ladder m_Ladder;
 
-    private List<LadderEntry> m_List;
-    private int m_Page;
+    private readonly List<LadderEntry> m_List;
+    private readonly int m_Page;
 
     public LadderGump(Ladder ladder, int page = 0) : base(50, 50)
     {
@@ -153,7 +153,7 @@ namespace Server.Engines.ConPVP
         else
           width = (109 * xpOffset + xpAdvance / 2) / (xpAdvance - 1);
 
-        //AddImageTiled( 21, y + 6, width, 8, 0x2617 );
+        // AddImageTiled( 21, y + 6, width, 8, 0x2617 );
         AddImageTiled(x + 3, y + 4, width, 11, 0x806);
         AddBorderedText(x, y, 115, Center(level.ToString()), 0xFFFFFF, 0);
         x += 115;
@@ -174,7 +174,7 @@ namespace Server.Engines.ConPVP
         AddBorderedText(x, y, 60, Center(entry.Losses.ToString()), 0xFFFFFF, 0);
         x += 60;
 
-        //AddBorderedText( 292 + 15, y, 115 - 30, String.Format( "{0} <DIV ALIGN=CENTER>/</DIV> <DIV ALIGN=RIGHT>{1}</DIV>", entry.Wins, entry.Losses ), 0xFFC000, 0 );
+        // AddBorderedText( 292 + 15, y, 115 - 30, String.Format( "{0} <DIV ALIGN=CENTER>/</DIV> <DIV ALIGN=RIGHT>{1}</DIV>", entry.Wins, entry.Losses ), 0xFFC000, 0 );
       }
     }
 

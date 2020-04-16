@@ -44,8 +44,8 @@ namespace Server.Items
 
     private class ResurrectEntry : ContextMenuEntry
     {
-      private Item m_Item;
-      private Mobile m_Mobile;
+      private readonly Item m_Item;
+      private readonly Mobile m_Mobile;
 
       public ResurrectEntry(Mobile mobile, Item item) : base(6195, ResurrectRange)
       {
@@ -63,7 +63,7 @@ namespace Server.Items
 
     private class LockKarmaEntry : ContextMenuEntry
     {
-      private PlayerMobile m_Mobile;
+      private readonly PlayerMobile m_Mobile;
 
       public LockKarmaEntry(PlayerMobile mobile) : base(mobile.KarmaLocked ? 6197 : 6196, LockRange) => m_Mobile = mobile;
 
@@ -81,7 +81,7 @@ namespace Server.Items
 
     private class TitheEntry : ContextMenuEntry
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public TitheEntry(Mobile mobile) : base(6198, TitheRange)
       {

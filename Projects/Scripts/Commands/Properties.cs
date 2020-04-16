@@ -18,25 +18,25 @@ namespace Server.Commands
 
   public static class Properties
   {
-    private static Type typeofCPA = typeof(CPA);
+    private static readonly Type typeofCPA = typeof(CPA);
 
-    private static Type typeofSerial = typeof(Serial);
+    private static readonly Type typeofSerial = typeof(Serial);
 
-    private static Type typeofType = typeof(Type);
+    private static readonly Type typeofType = typeof(Type);
 
-    private static Type typeofChar = typeof(char);
+    private static readonly Type typeofChar = typeof(char);
 
-    private static Type typeofString = typeof(string);
+    private static readonly Type typeofString = typeof(string);
 
-    private static Type typeofText = typeof(TextDefinition);
+    private static readonly Type typeofText = typeof(TextDefinition);
 
-    private static Type typeofTimeSpan = typeof(TimeSpan);
-    private static Type typeofParsable = typeof(ParsableAttribute);
+    private static readonly Type typeofTimeSpan = typeof(TimeSpan);
+    private static readonly Type typeofParsable = typeof(ParsableAttribute);
 
-    private static Type[] m_ParseTypes = { typeof(string) };
-    private static object[] m_ParseParams = new object[1];
+    private static readonly Type[] m_ParseTypes = { typeof(string) };
+    private static readonly object[] m_ParseParams = new object[1];
 
-    private static Type[] m_NumericTypes =
+    private static readonly Type[] m_NumericTypes =
     {
       typeof(byte), typeof(sbyte),
       typeof(short), typeof(ushort),
@@ -602,8 +602,8 @@ namespace Server
     {
     }
 
-    public AccessLevel PlayerAccess{ get; set; }
-    public AccessLevel NeededAccess{ get; set; }
+    public AccessLevel PlayerAccess { get; set; }
+    public AccessLevel NeededAccess { get; set; }
   }
 
   public sealed class ReadAccessException : ClearanceException
@@ -630,11 +630,11 @@ namespace Server
 
     public Property(PropertyInfo[] chain) => m_Chain = chain;
 
-    public string Binding{ get; }
+    public string Binding { get; }
 
     public bool IsBound => m_Chain != null;
 
-    public PropertyAccess Access{ get; private set; }
+    public PropertyAccess Access { get; private set; }
 
     public PropertyInfo[] Chain
     {

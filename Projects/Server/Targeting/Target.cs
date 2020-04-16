@@ -39,21 +39,21 @@ namespace Server.Targeting
       CheckLOS = true;
     }
 
-    public DateTime TimeoutTime{ get; private set; }
+    public DateTime TimeoutTime { get; private set; }
 
-    public bool CheckLOS{ get; set; }
+    public bool CheckLOS { get; set; }
 
-    public bool DisallowMultis{ get; set; }
+    public bool DisallowMultis { get; set; }
 
-    public bool AllowNonlocal{ get; set; }
+    public bool AllowNonlocal { get; set; }
 
-    public int TargetID{ get; }
+    public int TargetID { get; }
 
-    public int Range{ get; set; }
+    public int Range { get; set; }
 
-    public bool AllowGround{ get; set; }
+    public bool AllowGround { get; set; }
 
-    public TargetFlags Flags{ get; set; }
+    public TargetFlags Flags { get; set; }
 
     public static void Cancel(Mobile m)
     {
@@ -114,8 +114,8 @@ namespace Server.Targeting
       Point3D loc;
       Map map;
 
-      Item item = targeted as Item;
-      Mobile mobile = targeted as Mobile;
+      var item = targeted as Item;
+      var mobile = targeted as Mobile;
 
       if (targeted is LandTarget target)
       {
@@ -179,7 +179,7 @@ namespace Server.Targeting
         return;
       }
 
-      if (map == null || map != from.Map || Range != -1 && !from.InRange(loc, Range))
+      if (map == null || map != from.Map || (Range != -1 && !from.InRange(loc, Range)))
       {
         OnTargetOutOfRange(from, targeted);
       }

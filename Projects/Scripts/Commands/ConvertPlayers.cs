@@ -64,7 +64,7 @@ namespace Server.Commands
       }
     }
 
-    private static PropertyInfo[] _mobProps =
+    private static readonly PropertyInfo[] _mobProps =
       typeof(Mobile).GetProperties(BindingFlags.Public | BindingFlags.Instance)
         .Where(prop => prop.CanRead && prop.CanWrite).ToArray();
 

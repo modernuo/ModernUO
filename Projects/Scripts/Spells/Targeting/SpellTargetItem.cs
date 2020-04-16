@@ -9,7 +9,7 @@ namespace Server.Spells
 
   public class SpellTargetItem : Target, ISpellTarget
   {
-    private ISpellTargetingItem m_Spell;
+    private readonly ISpellTargetingItem m_Spell;
     public ISpell Spell => m_Spell;
 
     public SpellTargetItem(ISpellTargetingItem spell, TargetFlags flags, int range = 12) : base(range, false, flags) => m_Spell = spell;

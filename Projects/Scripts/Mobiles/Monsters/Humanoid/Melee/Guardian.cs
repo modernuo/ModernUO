@@ -46,7 +46,6 @@ namespace Server.Mobiles
       helm.Hue = 0x966;
       AddItem(helm);
 
-
       Bow bow = new Bow();
 
       bow.Movable = false;

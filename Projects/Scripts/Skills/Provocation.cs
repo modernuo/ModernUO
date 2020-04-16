@@ -30,7 +30,7 @@ namespace Server.SkillHandlers
 
     private class InternalFirstTarget : Target
     {
-      private BaseInstrument m_Instrument;
+      private readonly BaseInstrument m_Instrument;
 
       public InternalFirstTarget(Mobile from, BaseInstrument instrument) : base(
         BaseInstrument.GetBardRange(from, SkillName.Provocation), false, TargetFlags.None) =>
@@ -73,8 +73,8 @@ namespace Server.SkillHandlers
 
     private class InternalSecondTarget : Target
     {
-      private BaseCreature m_Creature;
-      private BaseInstrument m_Instrument;
+      private readonly BaseCreature m_Creature;
+      private readonly BaseInstrument m_Instrument;
 
       public InternalSecondTarget(Mobile from, BaseInstrument instrument, BaseCreature creature) : base(
         BaseInstrument.GetBardRange(from, SkillName.Provocation), false, TargetFlags.None)
@@ -130,8 +130,8 @@ namespace Server.SkillHandlers
               }
               else
               {
-                //from.DoHarmful( m_Creature );
-                //from.DoHarmful( creature );
+                // from.DoHarmful( m_Creature );
+                // from.DoHarmful( creature );
 
                 if (!from.CheckTargetSkill(SkillName.Provocation, creature, diff - 25.0, diff + 25.0))
                 {

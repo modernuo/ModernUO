@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
   public class Vagabond : BaseVendor
   {
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public Vagabond() : base("the vagabond")
@@ -43,7 +43,6 @@ namespace Server.Mobiles
           AddItem(new Bandana(Utility.RandomNeutralHue()));
           break;
       }
-
 
       Utility.AssignRandomHair(this);
       Utility.AssignRandomFacialHair(this, HairHue);

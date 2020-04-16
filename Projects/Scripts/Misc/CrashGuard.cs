@@ -30,7 +30,6 @@ namespace Server.Misc
       if (SaveBackup)
         Backup();
 
-
       /*if ( Core.Service )
         e.Close = true;
       else */
@@ -44,7 +43,6 @@ namespace Server.Misc
 
       if (Email.FROM_ADDRESS != null && Email.CRASH_ADDRESS != null)
         Email.SendCrashEmail(filePath);
-
     }
 
     private static string GetRoot()

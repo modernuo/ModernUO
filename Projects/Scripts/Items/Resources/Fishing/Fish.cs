@@ -10,7 +10,6 @@ namespace Server.Items
       Amount = amount;
     }
 
-
     public Fish(Serial serial) : base(serial)
     {
     }

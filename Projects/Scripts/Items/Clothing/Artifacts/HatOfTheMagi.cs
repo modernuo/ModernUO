@@ -42,11 +42,11 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          Resistances.Poison = 0;
-          Resistances.Energy = 0;
-          break;
-        }
+          {
+            Resistances.Poison = 0;
+            Resistances.Energy = 0;
+            break;
+          }
       }
     }
   }

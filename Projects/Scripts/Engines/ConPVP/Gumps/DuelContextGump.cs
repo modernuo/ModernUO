@@ -52,9 +52,9 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public Mobile From{ get; }
+    public Mobile From { get; }
 
-    public DuelContext Context{ get; }
+    public DuelContext Context { get; }
 
     public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
@@ -80,56 +80,56 @@ namespace Server.Engines.ConPVP
       switch (index)
       {
         case -1: // CloseGump
-        {
-          break;
-        }
+          {
+            break;
+          }
         case 0: // closed
-        {
-          Context.Unregister();
-          break;
-        }
+          {
+            Context.Unregister();
+            break;
+          }
         case 1: // Rules
-        {
-          //m_From.SendGump( new RulesetGump( m_From, m_Context.Ruleset, m_Context.Ruleset.Layout, m_Context ) );
-          From.SendGump(new PickRulesetGump(From, Context, Context.Ruleset));
-          break;
-        }
+          {
+            // m_From.SendGump( new RulesetGump( m_From, m_Context.Ruleset, m_Context.Ruleset.Layout, m_Context ) );
+            From.SendGump(new PickRulesetGump(From, Context, Context.Ruleset));
+            break;
+          }
         case 2: // Start
-        {
-          if (Context.CheckFull())
           {
-            Context.CloseAllGumps();
-            Context.SendReadyUpGump();
-            //m_Context.SendReadyGump();
-          }
-          else
-          {
-            From.SendMessage("You cannot start the duel before all participating players have been assigned.");
-            From.SendGump(new DuelContextGump(From, Context));
-          }
+            if (Context.CheckFull())
+            {
+              Context.CloseAllGumps();
+              Context.SendReadyUpGump();
+              // m_Context.SendReadyGump();
+            }
+            else
+            {
+              From.SendMessage("You cannot start the duel before all participating players have been assigned.");
+              From.SendGump(new DuelContextGump(From, Context));
+            }
 
-          break;
-        }
+            break;
+          }
         case 3: // New Participant
-        {
-          if (Context.Participants.Count < 10)
-            Context.Participants.Add(new Participant(Context, 1));
-          else
-            From.SendMessage("The number of participating parties may not be increased further.");
+          {
+            if (Context.Participants.Count < 10)
+              Context.Participants.Add(new Participant(Context, 1));
+            else
+              From.SendMessage("The number of participating parties may not be increased further.");
 
-          From.SendGump(new DuelContextGump(From, Context));
+            From.SendGump(new DuelContextGump(From, Context));
 
-          break;
-        }
+            break;
+          }
         default: // Participant
-        {
-          index -= 4;
+          {
+            index -= 4;
 
-          if (index >= 0 && index < Context.Participants.Count)
-            From.SendGump(new ParticipantGump(From, Context, Context.Participants[index]));
+            if (index >= 0 && index < Context.Participants.Count)
+              From.SendGump(new ParticipantGump(From, Context, Context.Participants[index]));
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

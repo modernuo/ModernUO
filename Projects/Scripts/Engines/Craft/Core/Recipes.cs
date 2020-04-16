@@ -22,16 +22,15 @@ namespace Server.Engines.Craft
       LargestRecipeID = Math.Max(id, LargestRecipeID);
     }
 
+    public static Dictionary<int, Recipe> Recipes { get; } = new Dictionary<int, Recipe>();
 
-    public static Dictionary<int, Recipe> Recipes{ get; } = new Dictionary<int, Recipe>();
+    public static int LargestRecipeID { get; private set; }
 
-    public static int LargestRecipeID{ get; private set; }
+    public CraftSystem CraftSystem { get; set; }
 
-    public CraftSystem CraftSystem{ get; set; }
+    public CraftItem CraftItem { get; set; }
 
-    public CraftItem CraftItem{ get; set; }
-
-    public int ID{ get; }
+    public int ID { get; }
 
     public TextDefinition TextDefinition => m_TD ?? (m_TD = new TextDefinition(CraftItem.NameNumber, CraftItem.NameString));
 
@@ -48,7 +47,7 @@ namespace Server.Engines.Craft
       Mobile m = e.Mobile;
       m.SendMessage("Target a player to teach them all of the recipes.");
 
-      m.BeginTarget(-1, false, TargetFlags.None, delegate(Mobile from, object targeted)
+      m.BeginTarget(-1, false, TargetFlags.None,  (from, targeted) =>
       {
         if (targeted is PlayerMobile mobile)
         {
@@ -71,7 +70,7 @@ namespace Server.Engines.Craft
       Mobile m = e.Mobile;
       m.SendMessage("Target a player to have them forget all of the recipes they've learned.");
 
-      m.BeginTarget(-1, false, TargetFlags.None, delegate(Mobile from, object targeted)
+      m.BeginTarget(-1, false, TargetFlags.None, delegate (Mobile from, object targeted)
       {
         if (targeted is PlayerMobile mobile)
         {

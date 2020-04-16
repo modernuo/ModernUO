@@ -7,8 +7,8 @@ namespace Server.Factions
 {
   public class ElectionGump : FactionGump
   {
-    private Election m_Election;
-    private PlayerMobile m_From;
+    private readonly Election m_Election;
+    private readonly PlayerMobile m_From;
 
     public ElectionGump(PlayerMobile from, Election election) : base(50, 50)
     {
@@ -27,71 +27,71 @@ namespace Server.Factions
       switch (election.State)
       {
         case ElectionState.Pending:
-        {
-          TimeSpan toGo = election.LastStateTime + Election.PendingPeriod - DateTime.UtcNow;
-          int days = (int)(toGo.TotalDays + 0.5);
-
-          AddHtmlLocalized(20, 40, 380, 20, 1038034); // A new election campaign is pending
-
-          if (days > 0)
           {
-            AddHtmlLocalized(20, 60, 280, 20, 1018062); // Days until next election :
-            AddLabel(300, 60, 0, days.ToString());
-          }
-          else
-          {
-            AddHtmlLocalized(20, 60, 280, 20, 1018059); // Election campaigning begins tonight.
-          }
+            TimeSpan toGo = election.LastStateTime + Election.PendingPeriod - DateTime.UtcNow;
+            int days = (int)(toGo.TotalDays + 0.5);
 
-          break;
-        }
+            AddHtmlLocalized(20, 40, 380, 20, 1038034); // A new election campaign is pending
+
+            if (days > 0)
+            {
+              AddHtmlLocalized(20, 60, 280, 20, 1018062); // Days until next election :
+              AddLabel(300, 60, 0, days.ToString());
+            }
+            else
+            {
+              AddHtmlLocalized(20, 60, 280, 20, 1018059); // Election campaigning begins tonight.
+            }
+
+            break;
+          }
         case ElectionState.Campaign:
-        {
-          TimeSpan toGo = election.LastStateTime + Election.CampaignPeriod - DateTime.UtcNow;
-          int days = (int)(toGo.TotalDays + 0.5);
-
-          AddHtmlLocalized(20, 40, 380, 20, 1018058); // There is an election campaign in progress.
-
-          if (days > 0)
           {
-            AddHtmlLocalized(20, 60, 280, 20, 1038033); // Days to go:
-            AddLabel(300, 60, 0, days.ToString());
-          }
-          else
-          {
-            AddHtmlLocalized(20, 60, 280, 20, 1018061); // Campaign in progress. Voting begins tonight.
-          }
+            TimeSpan toGo = election.LastStateTime + Election.CampaignPeriod - DateTime.UtcNow;
+            int days = (int)(toGo.TotalDays + 0.5);
 
-          if (m_Election.CanBeCandidate(m_From))
-          {
-            AddButton(20, 110, 4005, 4007, 2);
-            AddHtmlLocalized(55, 110, 350, 20, 1011427); // CAMPAIGN FOR LEADERSHIP
-          }
-          else
-          {
-            PlayerState pl = PlayerState.Find(m_From);
+            AddHtmlLocalized(20, 40, 380, 20, 1018058); // There is an election campaign in progress.
 
-            if (pl == null || pl.Rank.Rank < Election.CandidateRank)
-              AddHtmlLocalized(20, 100, 380, 20, 1010118); // You must have a higher rank to run for office
-          }
+            if (days > 0)
+            {
+              AddHtmlLocalized(20, 60, 280, 20, 1038033); // Days to go:
+              AddLabel(300, 60, 0, days.ToString());
+            }
+            else
+            {
+              AddHtmlLocalized(20, 60, 280, 20, 1018061); // Campaign in progress. Voting begins tonight.
+            }
 
-          break;
-        }
+            if (m_Election.CanBeCandidate(m_From))
+            {
+              AddButton(20, 110, 4005, 4007, 2);
+              AddHtmlLocalized(55, 110, 350, 20, 1011427); // CAMPAIGN FOR LEADERSHIP
+            }
+            else
+            {
+              PlayerState pl = PlayerState.Find(m_From);
+
+              if (pl == null || pl.Rank.Rank < Election.CandidateRank)
+                AddHtmlLocalized(20, 100, 380, 20, 1010118); // You must have a higher rank to run for office
+            }
+
+            break;
+          }
         case ElectionState.Election:
-        {
-          TimeSpan toGo = election.LastStateTime + Election.VotingPeriod - DateTime.UtcNow;
-          int days = (int)Math.Ceiling(toGo.TotalDays);
+          {
+            TimeSpan toGo = election.LastStateTime + Election.VotingPeriod - DateTime.UtcNow;
+            int days = (int)Math.Ceiling(toGo.TotalDays);
 
-          AddHtmlLocalized(20, 40, 380, 20, 1018060); // There is an election vote in progress.
+            AddHtmlLocalized(20, 40, 380, 20, 1018060); // There is an election vote in progress.
 
-          AddHtmlLocalized(20, 60, 280, 20, 1038033);
-          AddLabel(300, 60, 0, days.ToString());
+            AddHtmlLocalized(20, 60, 280, 20, 1038033);
+            AddLabel(300, 60, 0, days.ToString());
 
-          AddHtmlLocalized(55, 100, 380, 20, 1011428); // VOTE FOR LEADERSHIP
-          AddButton(20, 100, 4005, 4007, 1);
+            AddHtmlLocalized(55, 100, 380, 20, 1011428); // VOTE FOR LEADERSHIP
+            AddButton(20, 100, 4005, 4007, 1);
 
-          break;
-        }
+            break;
+          }
       }
 
       AddButton(20, 140, 4005, 4007, 0);
@@ -103,24 +103,24 @@ namespace Server.Factions
       switch (info.ButtonID)
       {
         case 0: // back
-        {
-          m_From.SendGump(new FactionStoneGump(m_From, m_Election.Faction));
-          break;
-        }
+          {
+            m_From.SendGump(new FactionStoneGump(m_From, m_Election.Faction));
+            break;
+          }
         case 1: // vote
-        {
-          if (m_Election.State == ElectionState.Election)
-            m_From.SendGump(new VoteGump(m_From, m_Election));
+          {
+            if (m_Election.State == ElectionState.Election)
+              m_From.SendGump(new VoteGump(m_From, m_Election));
 
-          break;
-        }
+            break;
+          }
         case 2: // campaign
-        {
-          if (m_Election.CanBeCandidate(m_From))
-            m_Election.AddCandidate(m_From);
+          {
+            if (m_Election.CanBeCandidate(m_From))
+              m_Election.AddCandidate(m_From);
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

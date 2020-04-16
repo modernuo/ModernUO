@@ -47,7 +47,7 @@ namespace Server
       Refresh();
     }
 
-    public static TimeSpan ExpireDelay{ get; set; } = TimeSpan.FromMinutes(2.0);
+    public static TimeSpan ExpireDelay { get; set; } = TimeSpan.FromMinutes(2.0);
 
     public bool Expired
     {
@@ -184,7 +184,7 @@ namespace Server
 
     public static void DumpAccess()
     {
-      using StreamWriter op = new StreamWriter("warnings.log", true);
+      using var op = new StreamWriter("warnings.log", true);
       op.WriteLine("Warning: Access to queued AggressorInfo:");
       op.WriteLine(new StackTrace());
       op.WriteLine();

@@ -58,7 +58,7 @@ namespace Server.Items
 
     private class HerdingTarget : Target
     {
-      private static Type[] m_ChampTamables =
+      private static readonly Type[] m_ChampTamables =
       {
         typeof(StrongMongbat), typeof(Imp), typeof(Scorpion), typeof(GiantSpider),
         typeof(Snake), typeof(LavaLizard), typeof(Drake), typeof(Dragon),
@@ -128,7 +128,7 @@ namespace Server.Items
 
       private class InternalTarget : Target
       {
-        private BaseCreature m_Creature;
+        private readonly BaseCreature m_Creature;
 
         public InternalTarget(BaseCreature c) : base(10, true, TargetFlags.None) => m_Creature = c;
 

@@ -7,8 +7,7 @@ namespace Server.Mobiles
   public class Unicorn : BaseMount
   {
     [Constructible]
-    public Unicorn(string name = "a unicorn") :
-      base(name, 0x7A, 0x3EB4, AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4)
+    public Unicorn(string name = "a unicorn") : base(name, 0x7A, 0x3EB4, AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4)
     {
       BaseSoundID = 0x4BC;
 
@@ -71,7 +70,7 @@ namespace Server.Mobiles
 
     public override bool DoMountAbility(int damage, Mobile attacker)
     {
-      if (Rider == null || attacker == null) //sanity
+      if (Rider == null || attacker == null) // sanity
         return false;
 
       if (Rider.Poisoned && Rider.Hits - damage < 40)
@@ -85,7 +84,7 @@ namespace Server.Mobiles
           chanceToCure /= 100;
 
           if (chanceToCure > Utility.Random(100))
-            if (Rider.CurePoison(this)) //TODO: Confirm if mount is the one flagged for curing it or the rider is
+            if (Rider.CurePoison(this)) // TODO: Confirm if mount is the one flagged for curing it or the rider is
             {
               Rider.LocalOverheadMessage(MessageType.Regular, 0x3B2, true,
                 "Your mount senses you are in danger and aids you with magic.");

@@ -36,15 +36,15 @@ namespace Server.Items
       {
         case 2: break; // empty, resource removed
         case 1:
-        {
-          m_Resource = (CraftResource)reader.ReadInt();
-          break;
-        }
+          {
+            m_Resource = (CraftResource)reader.ReadInt();
+            break;
+          }
         case 0:
-        {
-          m_Resource = DefaultResource;
-          break;
-        }
+          {
+            m_Resource = DefaultResource;
+            break;
+          }
       }
     }
   }
@@ -140,22 +140,20 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          if (reader.ReadBool())
           {
-            m_CurArcaneCharges = reader.ReadInt();
-            m_MaxArcaneCharges = reader.ReadInt();
+            if (reader.ReadBool())
+            {
+              m_CurArcaneCharges = reader.ReadInt();
+              m_MaxArcaneCharges = reader.ReadInt();
 
-            if (Hue == 2118)
-              Hue = ArcaneGem.DefaultArcaneHue;
+              if (Hue == 2118)
+                Hue = ArcaneGem.DefaultArcaneHue;
+            }
+
+            break;
           }
-
-          break;
-        }
       }
     }
-
-    #region Arcane Impl
 
     private int m_MaxArcaneCharges, m_CurArcaneCharges;
 
@@ -220,8 +218,6 @@ namespace Server.Items
       else if (ItemID == 0x1712)
         ItemID = 0x1711;
     }
-
-    #endregion
   }
 
   [Flippable(0x170f, 0x1710)]

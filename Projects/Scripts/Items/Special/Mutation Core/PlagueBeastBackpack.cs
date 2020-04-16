@@ -4,14 +4,14 @@ namespace Server.Items
 {
   public class PlagueBeastBackpack : BaseContainer
   {
-    private static int[,,] m_Positions =
+    private static readonly int[,,] m_Positions =
     {
       { { 275, 85 }, { 360, 111 }, { 375, 184 }, { 332, 228 }, { 141, 105 }, { 189, 75 } },
       { { 274, 34 }, { 327, 89 }, { 354, 168 }, { 304, 225 }, { 113, 86 }, { 189, 75 } },
       { { 276, 79 }, { 369, 117 }, { 372, 192 }, { 336, 230 }, { 141, 116 }, { 189, 75 } }
     };
 
-    private static int[] m_BrainHues =
+    private static readonly int[] m_BrainHues =
     {
       0x2B, 0x42, 0x54, 0x60
     };

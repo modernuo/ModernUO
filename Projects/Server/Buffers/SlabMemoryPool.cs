@@ -80,15 +80,17 @@ namespace System.Buffers
     /// <returns>The block that is reserved for the called. It must be passed to Return when it is no longer being used.</returns>
     private MemoryPoolBlock Lease()
     {
-      if (_isDisposed) MemoryPoolThrowHelper.ThrowObjectDisposedException(MemoryPoolThrowHelper.ExceptionArgument.MemoryPool);
+      if (_isDisposed)
+        MemoryPoolThrowHelper.ThrowObjectDisposedException(MemoryPoolThrowHelper.ExceptionArgument.MemoryPool);
 
-      if (_blocks.TryDequeue(out MemoryPoolBlock block))
+      if (_blocks.TryDequeue(out var block))
       {
         // block successfully taken from the stack - return it
 
         block.Lease();
         return block;
       }
+
       // no blocks available - grow the pool
       block = AllocateSlab();
       block.Lease();
@@ -115,7 +117,7 @@ namespace System.Buffers
 
       MemoryPoolBlock block = null;
 
-      for (int i = 0; i < blockCount; i++)
+      for (var i = 0; i < blockCount; i++)
       {
         block = new MemoryPoolBlock(this, slab, offset, _blockSize);
 
@@ -177,12 +179,12 @@ namespace System.Buffers
         _isDisposed = true;
 
         if (disposing)
-          while (_slabs.TryPop(out MemoryPoolSlab slab))
+          while (_slabs.TryPop(out var slab))
             // dispose managed state (managed objects).
             slab.Dispose();
 
         // Discard blocks in pool
-        while (_blocks.TryDequeue(out MemoryPoolBlock block)) GC.SuppressFinalize(block);
+        while (_blocks.TryDequeue(out var block)) GC.SuppressFinalize(block);
       }
     }
   }

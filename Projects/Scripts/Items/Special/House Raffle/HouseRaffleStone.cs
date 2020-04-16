@@ -29,21 +29,21 @@ namespace Server.Items
         case 2:
         case 1:
         case 0:
-        {
-          From = reader.ReadMobile();
-          Address = Utility.Intern(reader.ReadIPAddress());
-          Date = reader.ReadDateTime();
+          {
+            From = reader.ReadMobile();
+            Address = Utility.Intern(reader.ReadIPAddress());
+            Date = reader.ReadDateTime();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public Mobile From{ get; }
+    public Mobile From { get; }
 
-    public IPAddress Address{ get; }
+    public IPAddress Address { get; }
 
-    public DateTime Date{ get; }
+    public DateTime Date { get; }
 
     public void Serialize(IGenericWriter writer)
     {
@@ -77,7 +77,7 @@ namespace Server.Items
     public static readonly TimeSpan DefaultDuration = TimeSpan.FromDays(7.0);
     public static readonly TimeSpan ExpirationTime = TimeSpan.FromDays(30.0);
 
-    private static List<HouseRaffleStone> m_AllStones = new List<HouseRaffleStone>();
+    private static readonly List<HouseRaffleStone> m_AllStones = new List<HouseRaffleStone>();
     private Rectangle2D m_Bounds;
     private TimeSpan m_Duration;
     private Map m_Facet;
@@ -179,7 +179,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Seer)]
-    public HouseRaffleDeed Deed{ get; set; }
+    public HouseRaffleDeed Deed { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Seer)]
     public DateTime Started
@@ -216,7 +216,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Seer)]
-    public HouseRaffleExpireAction ExpireAction{ get; set; }
+    public HouseRaffleExpireAction ExpireAction { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Seer)]
     public int TicketPrice
@@ -229,7 +229,7 @@ namespace Server.Items
       }
     }
 
-    public List<RaffleEntry> Entries{ get; private set; }
+    public List<RaffleEntry> Entries { get; private set; }
 
     public override string DefaultName => "a house raffle stone";
 
@@ -251,20 +251,20 @@ namespace Server.Items
           switch (stone.ExpireAction)
           {
             case HouseRaffleExpireAction.HideStone:
-            {
-              if (stone.Visible)
               {
-                stone.Visible = false;
-                stone.ItemID = 0x1B7B; // Non-blocking ItemID
-              }
+                if (stone.Visible)
+                {
+                  stone.Visible = false;
+                  stone.ItemID = 0x1B7B; // Non-blocking ItemID
+                }
 
-              break;
-            }
+                break;
+              }
             case HouseRaffleExpireAction.DeleteStone:
-            {
-              stone.Delete();
-              break;
-            }
+              {
+                stone.Delete();
+                break;
+              }
           }
       }
 
@@ -372,16 +372,16 @@ namespace Server.Items
       switch (m_State)
       {
         case HouseRaffleState.Active:
-        {
-          list.Add(1060658, "ticket price\t{0}", FormatPrice()); // ~1_val~: ~2_val~
-          list.Add(1060659, "ends\t{0}", m_Started + m_Duration); // ~1_val~: ~2_val~
-          break;
-        }
+          {
+            list.Add(1060658, "ticket price\t{0}", FormatPrice()); // ~1_val~: ~2_val~
+            list.Add(1060659, "ends\t{0}", m_Started + m_Duration); // ~1_val~: ~2_val~
+            break;
+          }
         case HouseRaffleState.Completed:
-        {
-          list.Add(1060658, "winner\t{0}", m_Winner == null ? "unknown" : m_Winner.Name); // ~1_val~: ~2_val~
-          break;
-        }
+          {
+            list.Add(1060658, "winner\t{0}", m_Winner == null ? "unknown" : m_Winner.Name); // ~1_val~: ~2_val~
+            break;
+          }
       }
     }
 
@@ -392,15 +392,15 @@ namespace Server.Items
       switch (m_State)
       {
         case HouseRaffleState.Active:
-        {
-          LabelTo(from, 1060658, $"Ends\t{m_Started + m_Duration}"); // ~1_val~: ~2_val~
-          break;
-        }
+          {
+            LabelTo(from, 1060658, $"Ends\t{m_Started + m_Duration}"); // ~1_val~: ~2_val~
+            break;
+          }
         case HouseRaffleState.Completed:
-        {
-          LabelTo(from, 1060658, $"Winner\t{(m_Winner == null ? "Unknown" : m_Winner.Name)}"); // ~1_val~: ~2_val~
-          break;
-        }
+          {
+            LabelTo(from, 1060658, $"Winner\t{(m_Winner == null ? "Unknown" : m_Winner.Name)}"); // ~1_val~: ~2_val~
+            break;
+          }
       }
     }
 
@@ -555,72 +555,72 @@ namespace Server.Items
       switch (version)
       {
         case 3:
-        {
-          m_State = (HouseRaffleState)reader.ReadEncodedInt();
+          {
+            m_State = (HouseRaffleState)reader.ReadEncodedInt();
 
-          goto case 2;
-        }
+            goto case 2;
+          }
         case 2:
-        {
-          ExpireAction = (HouseRaffleExpireAction)reader.ReadEncodedInt();
+          {
+            ExpireAction = (HouseRaffleExpireAction)reader.ReadEncodedInt();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          Deed = reader.ReadItem<HouseRaffleDeed>();
+          {
+            Deed = reader.ReadItem<HouseRaffleDeed>();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          bool oldActive = version < 3 && reader.ReadBool();
-
-          m_Bounds = reader.ReadRect2D();
-          m_Facet = reader.ReadMap();
-
-          m_Winner = reader.ReadMobile();
-
-          m_TicketPrice = reader.ReadInt();
-          m_Started = reader.ReadDateTime();
-          m_Duration = reader.ReadTimeSpan();
-
-          int entryCount = reader.ReadInt();
-          Entries = new List<RaffleEntry>(entryCount);
-
-          for (int i = 0; i < entryCount; i++)
           {
-            RaffleEntry entry = new RaffleEntry(reader, version);
+            bool oldActive = version < 3 && reader.ReadBool();
 
-            if (entry.From == null)
-              continue; // Character was deleted
+            m_Bounds = reader.ReadRect2D();
+            m_Facet = reader.ReadMap();
 
-            Entries.Add(entry);
+            m_Winner = reader.ReadMobile();
+
+            m_TicketPrice = reader.ReadInt();
+            m_Started = reader.ReadDateTime();
+            m_Duration = reader.ReadTimeSpan();
+
+            int entryCount = reader.ReadInt();
+            Entries = new List<RaffleEntry>(entryCount);
+
+            for (int i = 0; i < entryCount; i++)
+            {
+              RaffleEntry entry = new RaffleEntry(reader, version);
+
+              if (entry.From == null)
+                continue; // Character was deleted
+
+              Entries.Add(entry);
+            }
+
+            InvalidateRegion();
+
+            m_AllStones.Add(this);
+
+            if (version < 3)
+            {
+              if (oldActive)
+                m_State = HouseRaffleState.Active;
+              else if (m_Winner != null)
+                m_State = HouseRaffleState.Completed;
+              else
+                m_State = HouseRaffleState.Inactive;
+            }
+
+            break;
           }
-
-          InvalidateRegion();
-
-          m_AllStones.Add(this);
-
-          if (version < 3)
-          {
-            if (oldActive)
-              m_State = HouseRaffleState.Active;
-            else if (m_Winner != null)
-              m_State = HouseRaffleState.Completed;
-            else
-              m_State = HouseRaffleState.Inactive;
-          }
-
-          break;
-        }
       }
     }
 
     private class RaffleContextMenuEntry : ContextMenuEntry
     {
-      protected Mobile m_From;
-      protected HouseRaffleStone m_Stone;
+      protected readonly Mobile m_From;
+      protected readonly HouseRaffleStone m_Stone;
 
       public RaffleContextMenuEntry(Mobile from, HouseRaffleStone stone, int label)
         : base(label)

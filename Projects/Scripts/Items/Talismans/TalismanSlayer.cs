@@ -28,12 +28,12 @@ namespace Server.Items
       {
         [TalismanSlayerName.Bear] = new[]
         {
-          typeof(GrizzlyBear), typeof(BlackBear), typeof(BrownBear), typeof(PolarBear) //, typeof( Grobu )
+          typeof(GrizzlyBear), typeof(BlackBear), typeof(BrownBear), typeof(PolarBear) // , typeof( Grobu )
         },
         [TalismanSlayerName.Vermin] = new[]
         {
           typeof(RatmanMage), typeof(RatmanMage), typeof(RatmanArcher), typeof(Barracoon), typeof(Ratman), typeof(SewerRat),
-          typeof(Rat), typeof(GiantRat) //, typeof( Chiikkaha )
+          typeof(Rat), typeof(GiantRat) // , typeof( Chiikkaha )
         },
         [TalismanSlayerName.Bat] = new[] { typeof(Mongbat), typeof(StrongMongbat), typeof(VampireBat) },
         [TalismanSlayerName.Mage] =

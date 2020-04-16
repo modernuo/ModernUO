@@ -19,10 +19,10 @@ namespace Server.PathAlgorithms.SlowAStar
     private const int MaxNodes = MaxDepth * 16;
     public static PathAlgorithm Instance = new SlowAStarAlgorithm();
 
-    private static PathNode[] m_Closed = new PathNode[MaxNodes];
-    private static PathNode[] m_Open = new PathNode[MaxNodes];
-    private static PathNode[] m_Successors = new PathNode[8];
-    private static Direction[] m_Path = new Direction[MaxNodes];
+    private static readonly PathNode[] m_Closed = new PathNode[MaxNodes];
+    private static readonly PathNode[] m_Open = new PathNode[MaxNodes];
+    private static readonly PathNode[] m_Successors = new PathNode[8];
+    private static readonly Direction[] m_Path = new Direction[MaxNodes];
 
     private Point3D m_Goal;
 

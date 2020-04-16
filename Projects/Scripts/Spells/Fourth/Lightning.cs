@@ -4,13 +4,12 @@ namespace Server.Spells.Fourth
 {
   public class LightningSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Lightning", "Por Ort Grav",
       239,
       9021,
       Reagent.MandrakeRoot,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public LightningSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

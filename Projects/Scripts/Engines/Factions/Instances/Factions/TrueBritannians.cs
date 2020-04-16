@@ -79,10 +79,9 @@ namespace Server.Factions
               new TextDefinition(1011528, "KNIGHT"), new TextDefinition(1011497, "Hire Knight")),
             new GuardDefinition(typeof(FactionPaladin), 0x143F, 8000, 4000, 10,
               new TextDefinition(1011529, "PALADIN"), new TextDefinition(1011498, "Hire Paladin"))
-          }
-        );
+          });
     }
 
-    public static Faction Instance{ get; private set; }
+    public static Faction Instance { get; private set; }
   }
 }

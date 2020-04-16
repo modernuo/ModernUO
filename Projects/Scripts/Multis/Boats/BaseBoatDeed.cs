@@ -23,12 +23,12 @@ namespace Server.Multis
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int MultiID{ get; set; }
+    public int MultiID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D Offset{ get; set; }
+    public Point3D Offset { get; set; }
 
-    public abstract BaseBoat Boat{ get; }
+    public abstract BaseBoat Boat { get; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -49,12 +49,12 @@ namespace Server.Multis
       switch (version)
       {
         case 0:
-        {
-          MultiID = reader.ReadInt();
-          Offset = reader.ReadPoint3D();
+          {
+            MultiID = reader.ReadInt();
+            Offset = reader.ReadPoint3D();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (Weight == 0.0)
@@ -144,7 +144,7 @@ namespace Server.Multis
 
     private class InternalTarget : MultiTarget
     {
-      private BaseBoatDeed m_Deed;
+      private readonly BaseBoatDeed m_Deed;
 
       public InternalTarget(BaseBoatDeed deed) : base(deed.MultiID, deed.Offset) => m_Deed = deed;
 

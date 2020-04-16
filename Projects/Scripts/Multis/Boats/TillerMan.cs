@@ -87,7 +87,7 @@ namespace Server.Items
     {
       base.Serialize(writer);
 
-      writer.Write(0); //version
+      writer.Write(0); // version
 
       writer.Write(m_Boat);
     }
@@ -101,14 +101,14 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Boat = reader.ReadItem() as BaseBoat;
+          {
+            m_Boat = reader.ReadItem() as BaseBoat;
 
-          if (m_Boat == null)
-            Delete();
+            if (m_Boat == null)
+              Delete();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

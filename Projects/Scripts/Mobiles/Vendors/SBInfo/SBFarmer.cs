@@ -5,9 +5,9 @@ namespace Server.Mobiles
 {
   public class SBFarmer : SBInfo
   {
-    public override IShopSellInfo SellInfo{ get; } = new InternalSellInfo();
+    public override IShopSellInfo SellInfo { get; } = new InternalSellInfo();
 
-    public override List<GenericBuyInfo> BuyInfo{ get; } = new InternalBuyInfo();
+    public override List<GenericBuyInfo> BuyInfo { get; } = new InternalBuyInfo();
 
     public class InternalBuyInfo : List<GenericBuyInfo>
     {
@@ -23,9 +23,9 @@ namespace Server.Mobiles
         Add(new GenericBuyInfo(typeof(Pumpkin), 11, 20, 0xC6A, 0));
         Add(new GenericBuyInfo(typeof(GreenGourd), 3, 20, 0xC66, 0));
         Add(new GenericBuyInfo(typeof(YellowGourd), 3, 20, 0xC64, 0));
-        //Add( new GenericBuyInfo( typeof( Turnip ), 6, 20, XXXXXX, 0 ) );
+        // Add( new GenericBuyInfo( typeof( Turnip ), 6, 20, XXXXXX, 0 ) );
         Add(new GenericBuyInfo(typeof(Watermelon), 7, 20, 0xC5C, 0));
-        //Add( new GenericBuyInfo( typeof( EarOfCorn ), 3, 20, XXXXXX, 0 ) );
+        // Add( new GenericBuyInfo( typeof( EarOfCorn ), 3, 20, XXXXXX, 0 ) );
         Add(new GenericBuyInfo(typeof(Eggs), 3, 20, 0x9B5, 0));
         Add(new BeverageBuyInfo(typeof(Pitcher), BeverageType.Milk, 7, 20, 0x9AD, 0));
         Add(new GenericBuyInfo(typeof(Peach), 3, 20, 0x9D2, 0));

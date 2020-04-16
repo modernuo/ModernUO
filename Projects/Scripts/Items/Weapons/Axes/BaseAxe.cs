@@ -136,22 +136,22 @@ namespace Server.Items
       switch (version)
       {
         case 2:
-        {
-          m_ShowUsesRemaining = reader.ReadBool();
-          goto case 1;
-        }
+          {
+            m_ShowUsesRemaining = reader.ReadBool();
+            goto case 1;
+          }
         case 1:
-        {
-          m_UsesRemaining = reader.ReadInt();
-          goto case 0;
-        }
+          {
+            m_UsesRemaining = reader.ReadInt();
+            goto case 0;
+          }
         case 0:
-        {
-          if (m_UsesRemaining < 1)
-            m_UsesRemaining = 150;
+          {
+            if (m_UsesRemaining < 1)
+              m_UsesRemaining = 150;
 
-          break;
-        }
+            break;
+          }
       }
     }
 

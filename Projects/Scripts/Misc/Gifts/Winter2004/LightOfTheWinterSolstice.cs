@@ -3,7 +3,7 @@ namespace Server.Items
   [Flippable(0x236E, 0x2371)]
   public class LightOfTheWinterSolstice : Item
   {
-    private static string[] m_StaffNames =
+    private static readonly string[] m_StaffNames =
     {
       "Aenima",
       "Alkiser",
@@ -12,14 +12,14 @@ namespace Server.Items
       "Krrios",
       "Mark",
       "Merlin",
-      "Merlix", //LordMerlix
+      "Merlix", // LordMerlix
       "Phantom",
       "Phenos",
       "psz",
       "Ryan",
       "Quantos",
-      "Outkast", //TheOutkastDev
-      "V", //Admin_V
+      "Outkast", // TheOutkastDev
+      "V", // Admin_V
       "Zippy"
     };
 
@@ -39,7 +39,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string Dipper{ get; set; }
+    public string Dipper { get; set; }
 
     public override void OnSingleClick(Mobile from)
     {
@@ -75,15 +75,15 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          Dipper = reader.ReadString();
-          break;
-        }
+          {
+            Dipper = reader.ReadString();
+            break;
+          }
         case 0:
-        {
-          Dipper = m_StaffNames[Utility.Random(m_StaffNames.Length)];
-          break;
-        }
+          {
+            Dipper = m_StaffNames[Utility.Random(m_StaffNames.Length)];
+            break;
+          }
       }
 
       if (Dipper != null)

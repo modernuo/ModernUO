@@ -37,7 +37,7 @@ namespace Server.Guilds
 
     private static uint m_NextID = 1;
 
-    protected BaseGuild(uint Id) //serialization ctor
+    protected BaseGuild(uint Id) // serialization ctor
     {
       this.Id = Id;
       List.Add(this.Id, this);
@@ -54,14 +54,14 @@ namespace Server.Guilds
     }
 
     [CommandProperty(AccessLevel.Counselor)]
-    public uint Id{ get; }
+    public uint Id { get; }
 
-    public abstract string Abbreviation{ get; set; }
-    public abstract string Name{ get; set; }
-    public abstract GuildType Type{ get; set; }
-    public abstract bool Disbanded{ get; }
+    public abstract string Abbreviation { get; set; }
+    public abstract string Name { get; set; }
+    public abstract GuildType Type { get; set; }
+    public abstract bool Disbanded { get; }
 
-    public static Dictionary<uint, BaseGuild> List{ get; } = new Dictionary<uint, BaseGuild>();
+    public static Dictionary<uint, BaseGuild> List { get; } = new Dictionary<uint, BaseGuild>();
 
     int ISerializable.TypeReference => 0;
 
@@ -72,6 +72,7 @@ namespace Server.Guilds
       SaveBuffer.Flush();
       Serialize(SaveBuffer);
     }
+
     public abstract void Serialize(IGenericWriter writer);
 
     public abstract void Deserialize(IGenericReader reader);
@@ -79,7 +80,7 @@ namespace Server.Guilds
 
     public static BaseGuild Find(uint id)
     {
-      List.TryGetValue(id, out BaseGuild g);
+      List.TryGetValue(id, out var g);
 
       return g;
     }
@@ -90,12 +91,12 @@ namespace Server.Guilds
 
     public static List<BaseGuild> Search(string find)
     {
-      string[] words = find.ToLower().Split(' ');
-      List<BaseGuild> results = new List<BaseGuild>();
+      var words = find.ToLower().Split(' ');
+      var results = new List<BaseGuild>();
 
-      foreach (BaseGuild g in List.Values)
+      foreach (var g in List.Values)
       {
-        string name = g.Name.ToLower();
+        var name = g.Name.ToLower();
 
         if (words.All(t => name.IndexOf(t) != -1))
           results.Add(g);

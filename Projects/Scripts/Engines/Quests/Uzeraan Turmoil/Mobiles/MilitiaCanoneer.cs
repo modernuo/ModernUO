@@ -13,7 +13,7 @@ namespace Server.Engines.Quests.Haven
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Active{ get; set; }
+    public bool Active { get; set; }
 
     public override void InitBody()
     {

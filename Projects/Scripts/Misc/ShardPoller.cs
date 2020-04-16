@@ -10,7 +10,7 @@ namespace Server.Misc
 {
   public class ShardPoller : Item
   {
-    private static List<ShardPoller> m_ActivePollers = new List<ShardPoller>();
+    private static readonly List<ShardPoller> m_ActivePollers = new List<ShardPoller>();
 
     private bool m_Active;
     private string m_Title;
@@ -29,9 +29,9 @@ namespace Server.Misc
     {
     }
 
-    public ShardPollOption[] Options{ get; set; }
+    public ShardPollOption[] Options { get; set; }
 
-    public IPAddress[] Addresses{ get; set; }
+    public IPAddress[] Addresses { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
     public string Title
@@ -41,10 +41,10 @@ namespace Server.Misc
     }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public TimeSpan Duration{ get; set; }
+    public TimeSpan Duration { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public DateTime StartTime{ get; set; }
+    public DateTime StartTime { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
     public TimeSpan TimeRemaining
@@ -220,22 +220,22 @@ namespace Server.Misc
       switch (version)
       {
         case 0:
-        {
-          m_Title = reader.ReadString();
-          Duration = reader.ReadTimeSpan();
-          StartTime = reader.ReadDateTime();
-          m_Active = reader.ReadBool();
+          {
+            m_Title = reader.ReadString();
+            Duration = reader.ReadTimeSpan();
+            StartTime = reader.ReadDateTime();
+            m_Active = reader.ReadBool();
 
-          Options = new ShardPollOption[reader.ReadInt()];
+            Options = new ShardPollOption[reader.ReadInt()];
 
-          for (int i = 0; i < Options.Length; ++i)
-            Options[i] = new ShardPollOption(reader);
+            for (int i = 0; i < Options.Length; ++i)
+              Options[i] = new ShardPollOption(reader);
 
-          if (m_Active)
-            m_ActivePollers.Add(this);
+            if (m_Active)
+              m_ActivePollers.Add(this);
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -265,17 +265,17 @@ namespace Server.Misc
       switch (version)
       {
         case 0:
-        {
-          m_Title = reader.ReadString();
-          LineBreaks = GetBreaks(m_Title);
+          {
+            m_Title = reader.ReadString();
+            LineBreaks = GetBreaks(m_Title);
 
-          Voters = new IPAddress[reader.ReadInt()];
+            Voters = new IPAddress[reader.ReadInt()];
 
-          for (int i = 0; i < Voters.Length; ++i)
-            Voters[i] = Utility.Intern(reader.ReadIPAddress());
+            for (int i = 0; i < Voters.Length; ++i)
+              Voters[i] = Utility.Intern(reader.ReadIPAddress());
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -289,10 +289,10 @@ namespace Server.Misc
       }
     }
 
-    public int LineBreaks{ get; private set; }
+    public int LineBreaks { get; private set; }
 
     public int Votes => Voters.Length;
-    public IPAddress[] Voters{ get; set; }
+    public IPAddress[] Voters { get; set; }
 
     public bool HasAlreadyVoted(NetState ns)
     {
@@ -365,8 +365,8 @@ namespace Server.Misc
   public class ShardPollGump : Gump
   {
     private const int LabelColor32 = 0xFFFFFF;
-    private Mobile m_From;
-    private ShardPoller m_Poller;
+    private readonly Mobile m_From;
+    private readonly ShardPoller m_Poller;
     private Queue<ShardPoller> m_Polls;
 
     public ShardPollGump(Mobile from, ShardPoller poller, bool editing, Queue<ShardPoller> polls) : base(50, 50)
@@ -461,7 +461,7 @@ namespace Server.Misc
       AddButton(314, height - 47, 242, 241, 0);
     }
 
-    public bool Editing{ get; }
+    public bool Editing { get; }
 
     public void QueuePoll(ShardPoller poller)
     {
@@ -539,11 +539,11 @@ namespace Server.Misc
 
   public class ShardPollPrompt : Prompt
   {
-    private static Regex m_UrlRegex =
+    private static readonly Regex m_UrlRegex =
       new Regex(@"\[url(?:=(.*?))?\](.*?)\[/url\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    private ShardPollOption m_Option;
-    private ShardPoller m_Poller;
+    private readonly ShardPollOption m_Option;
+    private readonly ShardPoller m_Poller;
 
     public ShardPollPrompt(ShardPoller poller, ShardPollOption opt)
     {

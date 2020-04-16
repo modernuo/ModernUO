@@ -5,9 +5,9 @@ namespace Server.Mobiles
 {
   public class SBScribe : SBInfo
   {
-    public override IShopSellInfo SellInfo{ get; } = new InternalSellInfo();
+    public override IShopSellInfo SellInfo { get; } = new InternalSellInfo();
 
-    public override List<GenericBuyInfo> BuyInfo{ get; } = new InternalBuyInfo();
+    public override List<GenericBuyInfo> BuyInfo { get; } = new InternalBuyInfo();
 
     public class InternalBuyInfo : List<GenericBuyInfo>
     {
@@ -19,7 +19,7 @@ namespace Server.Mobiles
         Add(new GenericBuyInfo(typeof(BrownBook), 15, 10, 0xFEF, 0));
         Add(new GenericBuyInfo(typeof(TanBook), 15, 10, 0xFF0, 0));
         Add(new GenericBuyInfo(typeof(BlueBook), 15, 10, 0xFF2, 0));
-        //Add( new GenericBuyInfo( "1041267", typeof( Runebook ), 3500, 10, 0xEFA, 0x461 ) );
+        // Add( new GenericBuyInfo( "1041267", typeof( Runebook ), 3500, 10, 0xEFA, 0x461 ) );
       }
     }
 

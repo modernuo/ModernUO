@@ -176,52 +176,52 @@ namespace Server.Gumps
       switch (m_Type)
       {
         case GumpHtmlLocalizedType.Plain:
-        {
-          disp.AppendLayout(m_LayoutNamePlain);
+          {
+            disp.AppendLayout(m_LayoutNamePlain);
 
-          disp.AppendLayout(m_X);
-          disp.AppendLayout(m_Y);
-          disp.AppendLayout(m_Width);
-          disp.AppendLayout(m_Height);
-          disp.AppendLayout(m_Number);
-          disp.AppendLayout(m_Background);
-          disp.AppendLayout(m_Scrollbar);
+            disp.AppendLayout(m_X);
+            disp.AppendLayout(m_Y);
+            disp.AppendLayout(m_Width);
+            disp.AppendLayout(m_Height);
+            disp.AppendLayout(m_Number);
+            disp.AppendLayout(m_Background);
+            disp.AppendLayout(m_Scrollbar);
 
-          break;
-        }
+            break;
+          }
 
         case GumpHtmlLocalizedType.Color:
-        {
-          disp.AppendLayout(m_LayoutNameColor);
+          {
+            disp.AppendLayout(m_LayoutNameColor);
 
-          disp.AppendLayout(m_X);
-          disp.AppendLayout(m_Y);
-          disp.AppendLayout(m_Width);
-          disp.AppendLayout(m_Height);
-          disp.AppendLayout(m_Number);
-          disp.AppendLayout(m_Background);
-          disp.AppendLayout(m_Scrollbar);
-          disp.AppendLayout(m_Color);
+            disp.AppendLayout(m_X);
+            disp.AppendLayout(m_Y);
+            disp.AppendLayout(m_Width);
+            disp.AppendLayout(m_Height);
+            disp.AppendLayout(m_Number);
+            disp.AppendLayout(m_Background);
+            disp.AppendLayout(m_Scrollbar);
+            disp.AppendLayout(m_Color);
 
-          break;
-        }
+            break;
+          }
 
         case GumpHtmlLocalizedType.Args:
-        {
-          disp.AppendLayout(m_LayoutNameArgs);
+          {
+            disp.AppendLayout(m_LayoutNameArgs);
 
-          disp.AppendLayout(m_X);
-          disp.AppendLayout(m_Y);
-          disp.AppendLayout(m_Width);
-          disp.AppendLayout(m_Height);
-          disp.AppendLayout(m_Background);
-          disp.AppendLayout(m_Scrollbar);
-          disp.AppendLayout(m_Color);
-          disp.AppendLayout(m_Number);
-          disp.AppendLayout(m_Args);
+            disp.AppendLayout(m_X);
+            disp.AppendLayout(m_Y);
+            disp.AppendLayout(m_Width);
+            disp.AppendLayout(m_Height);
+            disp.AppendLayout(m_Background);
+            disp.AppendLayout(m_Scrollbar);
+            disp.AppendLayout(m_Color);
+            disp.AppendLayout(m_Number);
+            disp.AppendLayout(m_Args);
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

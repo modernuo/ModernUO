@@ -2,11 +2,9 @@ namespace Server.Items
 {
   public class LysanderNotebook1 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Lysander's Notebook", "L. Gathenwale",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day One :",
         "",
         "At last, it stands",
@@ -14,10 +12,8 @@ namespace Server.Items
         "of Thy Sanctum will",
         "open to me now, after",
         "all these years of",
-        "searching.  I give"
-      ),
-      new BookPageInfo
-      (
+        "searching.  I give"),
+      new BookPageInfo(
         "myself unto Thee,",
         "Khal Ankur, I have",
         "come for Thy secrets",
@@ -25,13 +21,9 @@ namespace Server.Items
         "prostrate before Thee.",
         " Blessed are the",
         "Keepers, praise unto",
-        "Thee, a thousand"
-      ),
-      new BookPageInfo
-      (
-        "fortunes in the night."
-      )
-    );
+        "Thee, a thousand"),
+      new BookPageInfo(
+        "fortunes in the night."));
 
     [Constructible]
     public LysanderNotebook1() : base(Utility.Random(0xFF1, 2), false)
@@ -61,11 +53,9 @@ namespace Server.Items
 
   public class LysanderNotebook2 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Lysander's Notebook", "L. Gathenwale",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Two:",
         "",
         "The woman, Tavara",
@@ -73,10 +63,8 @@ namespace Server.Items
         "Her entire demeanor",
         "sickens me.  I would",
         "take her life for Thee",
-        "now, my Lord.  But I"
-      ),
-      new BookPageInfo
-      (
+        "now, my Lord.  But I"),
+      new BookPageInfo(
         "cannot alert the",
         "others.  Progress is",
         "made too slowly, I",
@@ -84,10 +72,8 @@ namespace Server.Items
         "perpetual waiting.",
         "Today I knelt down",
         "with the workers,",
-        "tossing stones and dirt"
-      ),
-      new BookPageInfo
-      (
+        "tossing stones and dirt"),
+      new BookPageInfo(
         "aside with my very",
         "hands as they dug at",
         "the last of the rubble",
@@ -95,10 +81,8 @@ namespace Server.Items
         "to Thy Sanctum.  The",
         "Sewel woman was",
         "shocked at my",
-        "demeanor, dirtying"
-      ),
-      new BookPageInfo
-      (
+        "demeanor, dirtying"),
+      new BookPageInfo(
         "my robes, on my",
         "knees in the muck as I",
         "clawed at the rocks.",
@@ -106,10 +90,8 @@ namespace Server.Items
         "for those sickly",
         "scholars, or for her,",
         "or for what she",
-        "laughably calls 'The"
-      ),
-      new BookPageInfo
-      (
+        "laughably calls 'The"),
+      new BookPageInfo(
         "Gift of Discovery', of",
         "learning.  As if I did",
         "not know what I went",
@@ -117,16 +99,12 @@ namespace Server.Items
         "Thee, Master.  Soon",
         "shall I receive Thy",
         "gifts, Thy blessings.",
-        "Patience, eternal"
-      ),
-      new BookPageInfo
-      (
+        "Patience, eternal"),
+      new BookPageInfo(
         "patience.  I must take",
         "my lessons well.  I",
         "have learned from",
-        "Thee, Master, I have."
-      )
-    );
+        "Thee, Master, I have."));
 
     [Constructible]
     public LysanderNotebook2() : base(Utility.Random(0xFF1, 2), false)
@@ -156,11 +134,9 @@ namespace Server.Items
 
   public class LysanderNotebook3 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Lysander's Notebook", "L. Gathenwale",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Three - Day Six:",
         "",
         "What are these Beasts",
@@ -168,10 +144,8 @@ namespace Server.Items
         "presence here?  Hast",
         "Thou sent them,",
         "Master?  To tear",
-        "apart these foolish"
-      ),
-      new BookPageInfo
-      (
+        "apart these foolish"),
+      new BookPageInfo(
         "ones that accompany",
         "me?  That repugnant",
         "pustule, Drummel, put",
@@ -179,10 +153,8 @@ namespace Server.Items
         "theories as to the",
         "nature of the Beasts",
         "that attacked our",
-        "camp, but I'll have"
-      ),
-      new BookPageInfo
-      (
+        "camp, but I'll have"),
+      new BookPageInfo(
         "none of his words.  He",
         "asks too many",
         "questions.  He is a",
@@ -190,10 +162,8 @@ namespace Server.Items
         "of Thy Sanctum,",
         "Master - I will deal",
         "with him after the",
-        "Sewel woman."
-      ),
-      new BookPageInfo
-      (
+        "Sewel woman."),
+      new BookPageInfo(
         "Speaking of Sewel, I",
         "have convinced that",
         "empty-headed harlot",
@@ -201,10 +171,8 @@ namespace Server.Items
         "our encampment",
         "within the",
         "antechamber.  She",
-        "thinks I worry for"
-      ),
-      new BookPageInfo
-      (
+        "thinks I worry for"),
+      new BookPageInfo(
         "her safety.  I come",
         "for thee, Master.  I",
         "make my camp in Thy",
@@ -212,9 +180,7 @@ namespace Server.Items
         "under Thy roof.  I can",
         "feel Thine presence",
         "even now.  Soon,",
-        "Master.  Soon."
-      )
-    );
+        "Master.  Soon."));
 
     [Constructible]
     public LysanderNotebook3() : base(Utility.Random(0xFF1, 2), false)
@@ -244,11 +210,9 @@ namespace Server.Items
 
   public class LysanderNotebook7 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Lysander's Notebook", "L. Gathenwale",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Seven :",
         "",
         "The Sewel woman",
@@ -256,10 +220,8 @@ namespace Server.Items
         "And she dares to",
         "speak Thy Name,",
         "Master!  I wish so",
-        "vehemently to take a"
-      ),
-      new BookPageInfo
-      (
+        "vehemently to take a"),
+      new BookPageInfo(
         "knife to that little",
         "neck of hers.  She",
         "struts around the",
@@ -267,10 +229,8 @@ namespace Server.Items
         "Sanctum with her",
         "repugnant airs, her",
         "scholarly conjecture",
-        "on this or that.  That I"
-      ),
-      new BookPageInfo
-      (
+        "on this or that.  That I"),
+      new BookPageInfo(
         "could peel the skin",
         "from her face and",
         "show her how vile and",
@@ -278,10 +238,8 @@ namespace Server.Items
         "unworthy of entrance",
         "to Thy Sanctum.  I",
         "must take her,",
-        "Master.  I must rend"
-      ),
-      new BookPageInfo
-      (
+        "Master.  I must rend"),
+      new BookPageInfo(
         "that little wench to",
         "pieces.  I ask this gift",
         "of Thee, that I might",
@@ -289,10 +247,8 @@ namespace Server.Items
         "of her presence.  Give",
         "me the Sewel woman",
         "and I shall show you",
-        "my mastery of Death,"
-      ),
-      new BookPageInfo
-      (
+        "my mastery of Death,"),
+      new BookPageInfo(
         "Master.  I shall cut",
         "her to bits and scatter",
         "them before the",
@@ -300,10 +256,8 @@ namespace Server.Items
         "I cannot stand her",
         "presence, I cannot",
         "abide it.  And",
-        "Drummel!  He is a"
-      ),
-      new BookPageInfo
-      (
+        "Drummel!  He is a"),
+      new BookPageInfo(
         "pustule that must be",
         "lanced, a sickness that",
         "I must cure by blade",
@@ -311,15 +265,11 @@ namespace Server.Items
         "of him will be left",
         "when I'm done with",
         "him.  Praises to Thee,",
-        "Master.  I shall honor"
-      ),
-      new BookPageInfo
-      (
+        "Master.  I shall honor"),
+      new BookPageInfo(
         "Thee with many",
         "sacrifices, soon",
-        "enough."
-      )
-    );
+        "enough."));
 
     [Constructible]
     public LysanderNotebook7() : base(Utility.Random(0xFF1, 2), false)
@@ -349,11 +299,9 @@ namespace Server.Items
 
   public class LysanderNotebook8 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Lysander's Notebook", "L. Gathenwale",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Eight - Day Ten :",
         "",
         "Have you taken them,",
@@ -361,10 +309,8 @@ namespace Server.Items
         "not have found a way",
         "past the stones that",
         "block our path!  The",
-        "three workers, My"
-      ),
-      new BookPageInfo
-      (
+        "three workers, My"),
+      new BookPageInfo(
         "Master, where have",
         "they gone?  Curses",
         "upon them!  I'll cut",
@@ -372,10 +318,8 @@ namespace Server.Items
         "they show their faces",
         "again, then burn the",
         "rest alive upon a pyre,",
-        "for all to see, as a"
-      ),
-      new BookPageInfo
-      (
+        "for all to see, as a"),
+      new BookPageInfo(
         "warning of Thy",
         "Power.  How could",
         "they have gotten past",
@@ -383,10 +327,8 @@ namespace Server.Items
         "the very walls, to",
         "hear Thy Words, to",
         "feel Thy Breath.  I",
-        "can find no egress"
-      ),
-      new BookPageInfo
-      (
+        "can find no egress"),
+      new BookPageInfo(
         "from the chambers",
         "that the Sewel woman",
         "does not know of nor",
@@ -394,10 +336,8 @@ namespace Server.Items
         "excavating.  Where",
         "have they gone,",
         "Master?  Have you",
-        "taken them, or do they"
-      ),
-      new BookPageInfo
-      (
+        "taken them, or do they"),
+      new BookPageInfo(
         "truly flee from Thy",
         "Presence?  I will kill",
         "them if they show",
@@ -405,16 +345,12 @@ namespace Server.Items
         "Give me Strength, my",
         "Master, to let them",
         "live a while longer,",
-        "until they have"
-      ),
-      new BookPageInfo
-      (
+        "until they have"),
+      new BookPageInfo(
         "fulfilled their",
         "purpose and I kneel",
         "before Thee, covered",
-        "in their blood."
-      )
-    );
+        "in their blood."));
 
     [Constructible]
     public LysanderNotebook8() : base(Utility.Random(0xFF1, 2), false)
@@ -444,11 +380,9 @@ namespace Server.Items
 
   public class LysanderNotebook11 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Lysander's Notebook", "L. Gathenwale",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Day Eleven - Day",
         "Thirteen:",
         "",
@@ -456,10 +390,8 @@ namespace Server.Items
         "Master.  I come!  The",
         "way is clear, I have",
         "found Thy path and",
-        "washed it in the blood"
-      ),
-      new BookPageInfo
-      (
+        "washed it in the blood"),
+      new BookPageInfo(
         "of the two workers",
         "that caught sight of",
         "me.  Ah, how sweet it",
@@ -467,10 +399,8 @@ namespace Server.Items
         "to see the blood pour",
         "out in great torrents, to",
         "stand in it, to revel in",
-        "it.  If only I had time"
-      ),
-      new BookPageInfo
-      (
+        "it.  If only I had time"),
+      new BookPageInfo(
         "for the Sewel woman.",
         "But there will be time",
         "enough for her.  I",
@@ -478,10 +408,8 @@ namespace Server.Items
         "Patience, Master.  I",
         "come for Thee.  I walk",
         "Thy halls in penance,",
-        "my last steps in this"
-      ),
-      new BookPageInfo
-      (
+        "my last steps in this"),
+      new BookPageInfo(
         "repulsive living",
         "frame.  I come for",
         "Thee and Thy Gifts,",
@@ -489,10 +417,8 @@ namespace Server.Items
         "Unto Thee, Khal",
         "Ankur, Keeper of the",
         "Seventh Death,",
-        "Master, Leader of the"
-      ),
-      new BookPageInfo
-      (
+        "Master, Leader of the"),
+      new BookPageInfo(
         "Chosen, the Khaldun.",
         "Praises in Thy",
         "Name, Master of Life",
@@ -500,13 +426,9 @@ namespace Server.Items
         " Khal Ankur, Master,",
         "Prophet, I join Thy",
         "ranks this night, a",
-        "member of the"
-      ),
-      new BookPageInfo
-      (
-        "Khaldun at last!"
-      )
-    );
+        "member of the"),
+      new BookPageInfo(
+        "Khaldun at last!"));
 
     [Constructible]
     public LysanderNotebook11() : base(Utility.Random(0xFF1, 2), false)

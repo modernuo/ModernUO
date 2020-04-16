@@ -7,15 +7,14 @@ namespace Server.Spells.Necromancy
 {
   public class PainSpikeSpell : NecromancerSpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Pain Spike", "In Sar",
       203,
       9031,
       Reagent.GraveDust,
-      Reagent.PigIron
-    );
+      Reagent.PigIron);
 
-    private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
+    private static readonly Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
     public PainSpikeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -42,7 +41,7 @@ namespace Server.Spells.Necromancy
       {
         SpellHelper.Turn(Caster, m);
 
-        //SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m ); //Irrelevent after AoS
+        // SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m ); //Irrelevent after AoS
 
         /* Temporarily causes intense physical pain to the target, dealing direct damage.
          * After 10 seconds the spell wears off, and if the target is still alive,
@@ -54,7 +53,7 @@ namespace Server.Spells.Necromancy
         m.PlaySound(0x210);
 
         double damage = (GetDamageSkill(Caster) - GetResistSkill(m)) / 10 + (m.Player ? 18 : 30);
-        m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); //Skill check for gain
+        m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); // Skill check for gain
 
         if (damage < 1)
           damage = 1;
@@ -81,7 +80,7 @@ namespace Server.Spells.Necromancy
         SpellHelper.DoLeech((int)damage, Caster, m);
         WeightOverloading.DFA = DFAlgorithm.Standard;
 
-        //SpellHelper.Damage( this, m, damage, 100, 0, 0, 0, 0, Misc.DFAlgorithm.PainSpike );
+        // SpellHelper.Damage( this, m, damage, 100, 0, 0, 0, 0, Misc.DFAlgorithm.PainSpike );
         HarmfulSpell(m);
       }
 
@@ -90,8 +89,8 @@ namespace Server.Spells.Necromancy
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Mobile;
-      private int m_ToRestore;
+      private readonly Mobile m_Mobile;
+      private readonly int m_ToRestore;
 
       public InternalTimer(Mobile m, double toRestore) : base(TimeSpan.FromSeconds(10.0))
       {

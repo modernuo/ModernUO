@@ -36,13 +36,13 @@ namespace Server
       Servers = new List<ServerInfo>();
     }
 
-    public NetState State{ get; }
+    public NetState State { get; }
 
-    public IAccount Account{ get; }
+    public IAccount Account { get; }
 
-    public bool Rejected{ get; set; }
+    public bool Rejected { get; set; }
 
-    public List<ServerInfo> Servers{ get; }
+    public List<ServerInfo> Servers { get; }
 
     public void AddServer(string name, IPEndPoint address)
     {

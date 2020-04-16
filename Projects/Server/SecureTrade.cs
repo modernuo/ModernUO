@@ -18,15 +18,10 @@
  *
  ***************************************************************************/
 
-#region References
-
 using System;
-using System.Collections.Generic;
 using Server.Accounting;
 using Server.Items;
 using Server.Network;
-
-#endregion
 
 namespace Server
 {
@@ -39,11 +34,11 @@ namespace Server
       From = new SecureTradeInfo(this, from, new SecureTradeContainer(this));
       To = new SecureTradeInfo(this, to, new SecureTradeContainer(this));
 
-      bool from6017 = from.NetState?.ContainerGridLines == true;
-      bool to6017 = to.NetState?.ContainerGridLines == true;
+      var from6017 = from.NetState?.ContainerGridLines == true;
+      var to6017 = to.NetState?.ContainerGridLines == true;
 
-      bool from704565 = from.NetState?.NewSecureTrading == true;
-      bool to704565 = to.NetState?.NewSecureTrading == true;
+      var from704565 = from.NetState?.NewSecureTrading == true;
+      var to704565 = to.NetState?.NewSecureTrading == true;
 
       from.Send(new MobileStatus(from, to));
       from.Send(new UpdateSecureTrade(From.Container, false, false));
@@ -91,22 +86,22 @@ namespace Server
           to.Account.TotalPlat));
     }
 
-    public SecureTradeInfo From{ get; }
+    public SecureTradeInfo From { get; }
 
-    public SecureTradeInfo To{ get; }
+    public SecureTradeInfo To { get; }
 
-    public bool Valid{ get; private set; }
+    public bool Valid { get; private set; }
 
     public void Cancel()
     {
       if (!Valid) return;
 
-      List<Item> list = From.Container.Items;
+      var list = From.Container.Items;
 
-      for (int i = list.Count - 1; i >= 0; --i)
+      for (var i = list.Count - 1; i >= 0; --i)
         if (i < list.Count)
         {
-          Item item = list[i];
+          var item = list[i];
 
           if (item == From.VirtualCheck) continue;
 
@@ -117,10 +112,10 @@ namespace Server
 
       list = To.Container.Items;
 
-      for (int i = list.Count - 1; i >= 0; --i)
+      for (var i = list.Count - 1; i >= 0; --i)
         if (i < list.Count)
         {
-          Item item = list[i];
+          var item = list[i];
 
           if (item == To.VirtualCheck) continue;
 
@@ -141,7 +136,7 @@ namespace Server
 
       Valid = false;
 
-      NetState ns = From.Mobile.NetState;
+      var ns = From.Mobile.NetState;
 
       ns?.RemoveTrade(this);
 
@@ -167,8 +162,8 @@ namespace Server
     {
       if (left.Mobile.NetState?.NewSecureTrading == true)
       {
-        int plat = left.Mobile.Account.TotalPlat;
-        int gold = left.Mobile.Account.TotalGold;
+        var plat = left.Mobile.Account.TotalPlat;
+        var gold = left.Mobile.Account.TotalGold;
 
         left.Mobile.Send(new UpdateSecureTrade(left.Container, TradeFlag.UpdateLedger, gold, plat));
       }
@@ -183,14 +178,14 @@ namespace Server
 
       if (!From.IsDisposed && From.Accepted && !To.IsDisposed && To.Accepted)
       {
-        List<Item> list = From.Container.Items;
+        var list = From.Container.Items;
 
-        bool allowed = true;
+        var allowed = true;
 
-        for (int i = list.Count - 1; allowed && i >= 0; --i)
+        for (var i = list.Count - 1; allowed && i >= 0; --i)
           if (i < list.Count)
           {
-            Item item = list[i];
+            var item = list[i];
 
             if (item == From.VirtualCheck) continue;
 
@@ -199,10 +194,10 @@ namespace Server
 
         list = To.Container.Items;
 
-        for (int i = list.Count - 1; allowed && i >= 0; --i)
+        for (var i = list.Count - 1; allowed && i >= 0; --i)
           if (i < list.Count)
           {
-            Item item = list[i];
+            var item = list[i];
 
             if (item == To.VirtualCheck) continue;
 
@@ -213,8 +208,8 @@ namespace Server
         {
           if (From.Mobile.Account != null)
           {
-            int totalPlat = From.Mobile.Account.TotalPlat;
-            int totalGold = From.Mobile.Account.TotalGold;
+            var totalPlat = From.Mobile.Account.TotalPlat;
+            var totalGold = From.Mobile.Account.TotalGold;
 
             if (totalPlat < From.Plat || totalGold < From.Gold)
             {
@@ -225,8 +220,8 @@ namespace Server
 
           if (To.Mobile.Account != null)
           {
-            int totalPlat = To.Mobile.Account.TotalPlat;
-            int totalGold = To.Mobile.Account.TotalGold;
+            var totalPlat = To.Mobile.Account.TotalPlat;
+            var totalGold = To.Mobile.Account.TotalGold;
 
             if (totalPlat < To.Plat || totalGold < To.Gold)
             {
@@ -252,10 +247,10 @@ namespace Server
 
         list = From.Container.Items;
 
-        for (int i = list.Count - 1; i >= 0; --i)
+        for (var i = list.Count - 1; i >= 0; --i)
           if (i < list.Count)
           {
-            Item item = list[i];
+            var item = list[i];
 
             if (item == From.VirtualCheck) continue;
 
@@ -266,10 +261,10 @@ namespace Server
 
         list = To.Container.Items;
 
-        for (int i = list.Count - 1; i >= 0; --i)
+        for (var i = list.Count - 1; i >= 0; --i)
           if (i < list.Count)
           {
-            Item item = list[i];
+            var item = list[i];
 
             if (item == To.VirtualCheck) continue;
 
@@ -292,28 +287,28 @@ namespace Server
       int fromPlatSend = 0, fromGoldSend = 0, fromPlatRecv = 0, fromGoldRecv = 0;
       int toPlatSend = 0, toGoldSend = 0, toPlatRecv = 0, toGoldRecv = 0;
 
-      if (From.Plat > 0 & From.Mobile.Account.WithdrawPlat(From.Plat))
+      if ((From.Plat > 0) & From.Mobile.Account.WithdrawPlat(From.Plat))
       {
         fromPlatSend = From.Plat;
 
         if (To.Mobile.Account.DepositPlat(From.Plat)) toPlatRecv = fromPlatSend;
       }
 
-      if (From.Gold > 0 & From.Mobile.Account.WithdrawGold(From.Gold))
+      if ((From.Gold > 0) & From.Mobile.Account.WithdrawGold(From.Gold))
       {
         fromGoldSend = From.Gold;
 
         if (To.Mobile.Account.DepositGold(From.Gold)) toGoldRecv = fromGoldSend;
       }
 
-      if (To.Plat > 0 & To.Mobile.Account.WithdrawPlat(To.Plat))
+      if ((To.Plat > 0) & To.Mobile.Account.WithdrawPlat(To.Plat))
       {
         toPlatSend = To.Plat;
 
         if (From.Mobile.Account.DepositPlat(To.Plat)) fromPlatRecv = toPlatSend;
       }
 
-      if (To.Gold > 0 & To.Mobile.Account.WithdrawGold(To.Gold))
+      if ((To.Gold > 0) & To.Mobile.Account.WithdrawGold(To.Gold))
       {
         toGoldSend = To.Gold;
 
@@ -368,10 +363,10 @@ namespace Server
       Container.DropItem(VirtualCheck);
     }
 
-    public SecureTrade Owner{ get; private set; }
-    public Mobile Mobile{ get; private set; }
-    public SecureTradeContainer Container{ get; private set; }
-    public VirtualCheck VirtualCheck{ get; private set; }
+    public SecureTrade Owner { get; private set; }
+    public Mobile Mobile { get; private set; }
+    public SecureTradeContainer Container { get; private set; }
+    public VirtualCheck VirtualCheck { get; private set; }
 
     public int Gold
     {
@@ -385,9 +380,9 @@ namespace Server
       set => VirtualCheck.Plat = value;
     }
 
-    public bool Accepted{ get; set; }
+    public bool Accepted { get; set; }
 
-    public bool IsDisposed{ get; private set; }
+    public bool IsDisposed { get; private set; }
 
     public void Dispose()
     {

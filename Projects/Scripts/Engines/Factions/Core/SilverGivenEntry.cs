@@ -12,9 +12,9 @@ namespace Server.Factions
       TimeOfGift = DateTime.UtcNow;
     }
 
-    public Mobile GivenTo{ get; }
+    public Mobile GivenTo { get; }
 
-    public DateTime TimeOfGift{ get; }
+    public DateTime TimeOfGift { get; }
 
     public bool IsExpired => TimeOfGift + ExpirePeriod < DateTime.UtcNow;
   }

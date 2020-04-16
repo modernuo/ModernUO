@@ -6,8 +6,6 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Definitions
 {
-  #region Quests
-
   public class TheAncientWorld : MLQuest
   {
     public TheAncientWorld()
@@ -104,10 +102,6 @@ namespace Server.Engines.MLQuests.Definitions
     public override bool IsChainTriggered => true;
   }
 
-  #endregion
-
-  #region Mobiles
-
   [QuesterName("Broolol (The Heartwood)")]
   public class LorekeeperBroolol : BaseCreature
   {
@@ -161,6 +155,4 @@ namespace Server.Engines.MLQuests.Definitions
       int version = reader.ReadInt();
     }
   }
-
-  #endregion
 }

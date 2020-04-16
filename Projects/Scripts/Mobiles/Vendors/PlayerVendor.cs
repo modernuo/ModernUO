@@ -31,9 +31,9 @@ namespace Server.Mobiles
       Valid = true;
     }
 
-    public Item Item{ get; }
+    public Item Item { get; }
 
-    public int Price{ get; }
+    public int Price { get; }
 
     public string FormattedPrice
     {
@@ -58,12 +58,12 @@ namespace Server.Mobiles
       }
     }
 
-    public DateTime Created{ get; }
+    public DateTime Created { get; }
 
     public bool IsForSale => Price >= 0;
     public bool IsForFree => Price == 0;
 
-    public bool Valid{ get; private set; }
+    public bool Valid { get; private set; }
 
     public void Invalidate()
     {
@@ -215,7 +215,7 @@ namespace Server.Mobiles
 
     private class BuyEntry : ContextMenuEntry
     {
-      private Item m_Item;
+      private readonly Item m_Item;
 
       public BuyEntry(Item item) : base(6103) => m_Item = item;
 
@@ -282,13 +282,13 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Owner{ get; set; }
+    public Mobile Owner { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int BankAccount{ get; set; }
+    public int BankAccount { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int HoldGold{ get; set; }
+    public int HoldGold { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public string ShopName
@@ -303,9 +303,9 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime NextPayTime{ get; private set; }
+    public DateTime NextPayTime { get; private set; }
 
-    public PlayerVendorPlaceholder Placeholder{ get; set; }
+    public PlayerVendorPlaceholder Placeholder { get; set; }
 
     public BaseHouse House
     {
@@ -394,41 +394,41 @@ namespace Server.Mobiles
       {
         case 2:
         case 1:
-        {
-          newVendorSystem = reader.ReadBool();
-          m_ShopName = reader.ReadString();
-          NextPayTime = reader.ReadDeltaTime();
-          House = (BaseHouse)reader.ReadItem();
-
-          goto case 0;
-        }
-        case 0:
-        {
-          Owner = reader.ReadMobile();
-          BankAccount = reader.ReadInt();
-          HoldGold = reader.ReadInt();
-
-          int count = reader.ReadInt();
-
-          m_SellItems = new Dictionary<Item, VendorItem>(count);
-
-          for (int i = 0; i < count; i++)
           {
-            Item item = reader.ReadItem();
+            newVendorSystem = reader.ReadBool();
+            m_ShopName = reader.ReadString();
+            NextPayTime = reader.ReadDeltaTime();
+            House = (BaseHouse)reader.ReadItem();
 
-            int price = reader.ReadInt();
-            if (price > 100000000)
-              price = 100000000;
-
-            string description = reader.ReadString();
-
-            DateTime created = version < 1 ? DateTime.UtcNow : reader.ReadDateTime();
-
-            if (item != null) SetVendorItem(item, version < 1 && price <= 0 ? -1 : price, description, created);
+            goto case 0;
           }
+        case 0:
+          {
+            Owner = reader.ReadMobile();
+            BankAccount = reader.ReadInt();
+            HoldGold = reader.ReadInt();
 
-          break;
-        }
+            int count = reader.ReadInt();
+
+            m_SellItems = new Dictionary<Item, VendorItem>(count);
+
+            for (int i = 0; i < count; i++)
+            {
+              Item item = reader.ReadItem();
+
+              int price = reader.ReadInt();
+              if (price > 100000000)
+                price = 100000000;
+
+              string description = reader.ReadString();
+
+              DateTime created = version < 1 ? DateTime.UtcNow : reader.ReadDateTime();
+
+              if (item != null) SetVendorItem(item, version < 1 && price <= 0 ? -1 : price, description, created);
+            }
+
+            break;
+          }
       }
 
       bool newVendorSystemActivated = BaseHouse.NewVendorSystem && !newVendorSystem;
@@ -601,8 +601,7 @@ namespace Server.Mobiles
             House.VendorInventories.Add(inventory);
           }
         }
-        else if ((toBackpack || House?.IsAosRules != true) && Map != Map.Internal
-        ) // Case 3 - Move to backpack
+        else if ((toBackpack || House?.IsAosRules != true) && Map != Map.Internal) // Case 3 - Move to backpack
         {
           Container backpack = new Backpack();
 
@@ -1103,7 +1102,7 @@ namespace Server.Mobiles
       if (e.Handled || !from.Alive || from.GetDistanceToSqrt(this) > 3)
         return;
 
-      if (e.HasKeyword(0x3C) || e.HasKeyword(0x171) && WasNamed(e.Speech)) // vendor buy, *buy*
+      if (e.HasKeyword(0x3C) || (e.HasKeyword(0x171) && WasNamed(e.Speech))) // vendor buy, *buy*
       {
         if (IsOwner(from))
         {
@@ -1117,7 +1116,7 @@ namespace Server.Mobiles
           e.Handled = true;
         }
       }
-      else if (e.HasKeyword(0x3D) || e.HasKeyword(0x172) && WasNamed(e.Speech)) // vendor browse, *browse
+      else if (e.HasKeyword(0x3D) || (e.HasKeyword(0x172) && WasNamed(e.Speech))) // vendor browse, *browse
       {
         if (House?.IsBanned(from) == true && !IsOwner(from))
         {
@@ -1143,7 +1142,7 @@ namespace Server.Mobiles
           e.Handled = true;
         }
       }
-      else if (e.HasKeyword(0x3E) || e.HasKeyword(0x173) && WasNamed(e.Speech)) // vendor collect, *collect
+      else if (e.HasKeyword(0x3E) || (e.HasKeyword(0x173) && WasNamed(e.Speech))) // vendor collect, *collect
       {
         if (IsOwner(from))
         {
@@ -1152,7 +1151,7 @@ namespace Server.Mobiles
           e.Handled = true;
         }
       }
-      else if (e.HasKeyword(0x3F) || e.HasKeyword(0x174) && WasNamed(e.Speech)) // vendor status, *status
+      else if (e.HasKeyword(0x3F) || (e.HasKeyword(0x174) && WasNamed(e.Speech))) // vendor status, *status
       {
         if (IsOwner(from))
         {
@@ -1165,7 +1164,7 @@ namespace Server.Mobiles
           SayTo(from, 503226); // What do you care? You don't run this shop.
         }
       }
-      else if (e.HasKeyword(0x40) || e.HasKeyword(0x175) && WasNamed(e.Speech)) // vendor dismiss, *dismiss
+      else if (e.HasKeyword(0x40) || (e.HasKeyword(0x175) && WasNamed(e.Speech))) // vendor dismiss, *dismiss
       {
         if (IsOwner(from))
         {
@@ -1174,7 +1173,7 @@ namespace Server.Mobiles
           e.Handled = true;
         }
       }
-      else if (e.HasKeyword(0x41) || e.HasKeyword(0x176) && WasNamed(e.Speech)) // vendor cycle, *cycle
+      else if (e.HasKeyword(0x41) || (e.HasKeyword(0x176) && WasNamed(e.Speech))) // vendor cycle, *cycle
       {
         if (IsOwner(from))
         {
@@ -1189,7 +1188,7 @@ namespace Server.Mobiles
 
     private class ReturnVendorEntry : ContextMenuEntry
     {
-      private PlayerVendor m_Vendor;
+      private readonly PlayerVendor m_Vendor;
 
       public ReturnVendorEntry(PlayerVendor vendor) : base(6214) => m_Vendor = vendor;
 
@@ -1204,7 +1203,7 @@ namespace Server.Mobiles
 
     private class PayTimer : Timer
     {
-      private PlayerVendor m_Vendor;
+      private readonly PlayerVendor m_Vendor;
 
       public PayTimer(PlayerVendor vendor, TimeSpan delay) : base(delay, GetInterval())
       {
@@ -1276,8 +1275,8 @@ namespace Server.Mobiles
 
     private class VendorPricePrompt : Prompt
     {
-      private PlayerVendor m_Vendor;
-      private VendorItem m_VI;
+      private readonly PlayerVendor m_Vendor;
+      private readonly VendorItem m_VI;
 
       public VendorPricePrompt(PlayerVendor vendor, VendorItem vi)
       {
@@ -1373,7 +1372,7 @@ namespace Server.Mobiles
 
     private class CollectGoldPrompt : Prompt
     {
-      private PlayerVendor m_Vendor;
+      private readonly PlayerVendor m_Vendor;
 
       public CollectGoldPrompt(PlayerVendor vendor) => m_Vendor = vendor;
 
@@ -1409,7 +1408,7 @@ namespace Server.Mobiles
 
     private class VendorNamePrompt : Prompt
     {
-      private PlayerVendor m_Vendor;
+      private readonly PlayerVendor m_Vendor;
 
       public VendorNamePrompt(PlayerVendor vendor) => m_Vendor = vendor;
 
@@ -1436,7 +1435,7 @@ namespace Server.Mobiles
 
     private class ShopNamePrompt : Prompt
     {
-      private PlayerVendor m_Vendor;
+      private readonly PlayerVendor m_Vendor;
 
       public ShopNamePrompt(PlayerVendor vendor) => m_Vendor = vendor;
 
@@ -1462,7 +1461,7 @@ namespace Server.Mobiles
 
   public class PlayerVendorPlaceholder : Item
   {
-    private ExpireTimer m_Timer;
+    private readonly ExpireTimer m_Timer;
 
     public PlayerVendorPlaceholder(PlayerVendor vendor) : base(0x1F28)
     {
@@ -1480,7 +1479,7 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public PlayerVendor Vendor{ get; private set; }
+    public PlayerVendor Vendor { get; private set; }
 
     public override void GetProperties(ObjectPropertyList list)
     {
@@ -1527,7 +1526,7 @@ namespace Server.Mobiles
 
     private class ExpireTimer : Timer
     {
-      private PlayerVendorPlaceholder m_Placeholder;
+      private readonly PlayerVendorPlaceholder m_Placeholder;
 
       public ExpireTimer(PlayerVendorPlaceholder placeholder) : base(TimeSpan.FromMinutes(2.0))
       {

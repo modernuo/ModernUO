@@ -60,11 +60,11 @@ namespace Server.Items
       {
         case 1:
         case 0:
-        {
-          m_Type = (ChampionSkullType)reader.ReadInt();
+          {
+            m_Type = (ChampionSkullType)reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (version == 0)

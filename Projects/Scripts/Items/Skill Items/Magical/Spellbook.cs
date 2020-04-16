@@ -30,9 +30,9 @@ namespace Server.Items
 
   public class Spellbook : Item, ICraftable, ISlayer
   {
-    private static Dictionary<Mobile, List<Spellbook>> m_Table = new Dictionary<Mobile, List<Spellbook>>();
+    private static readonly Dictionary<Mobile, List<Spellbook>> m_Table = new Dictionary<Mobile, List<Spellbook>>();
 
-    private static int[] m_LegendPropertyCounts =
+    private static readonly int[] m_LegendPropertyCounts =
     {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 properties : 21/52 : 40%
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 1 property   : 15/52 : 29%
@@ -40,7 +40,7 @@ namespace Server.Items
       3, 3, 3, 3, 3, 3 // 3 properties :  6/52 : 12%
     };
 
-    private static int[] m_ElderPropertyCounts =
+    private static readonly int[] m_ElderPropertyCounts =
     {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 properties : 15/34 : 44%
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 1 property   : 10/34 : 29%
@@ -48,7 +48,7 @@ namespace Server.Items
       3, 3, 3 // 3 properties :  3/34 :  9%
     };
 
-    private static int[] m_GrandPropertyCounts =
+    private static readonly int[] m_GrandPropertyCounts =
     {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 properties : 10/20 : 50%
       1, 1, 1, 1, 1, 1, // 1 property   :  6/20 : 30%
@@ -56,14 +56,14 @@ namespace Server.Items
       3 // 3 properties :  1/20 :  5%
     };
 
-    private static int[] m_MasterPropertyCounts =
+    private static readonly int[] m_MasterPropertyCounts =
     {
       0, 0, 0, 0, 0, 0, // 0 properties : 6/10 : 60%
       1, 1, 1, // 1 property   : 3/10 : 30%
       2 // 2 properties : 1/10 : 10%
     };
 
-    private static int[] m_AdeptPropertyCounts =
+    private static readonly int[] m_AdeptPropertyCounts =
     {
       0, 0, 0, // 0 properties : 3/4 : 75%
       1 // 1 property   : 1/4 : 25%
@@ -74,7 +74,6 @@ namespace Server.Items
     private Mobile m_Crafter;
     private string m_EngravedText;
     private BookQuality m_Quality;
-
 
     private SlayerName m_Slayer;
     private SlayerName m_Slayer2;
@@ -121,10 +120,10 @@ namespace Server.Items
     public override bool DisplayWeight => false;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosAttributes Attributes{ get; private set; }
+    public AosAttributes Attributes { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosSkillBonuses SkillBonuses{ get; private set; }
+    public AosSkillBonuses SkillBonuses { get; private set; }
 
     public virtual SpellbookType SpellbookType => SpellbookType.Regular;
     public virtual int BookOffset => 0;
@@ -154,7 +153,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int SpellCount{ get; private set; }
+    public int SpellCount { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Mobile Crafter
@@ -217,7 +216,7 @@ namespace Server.Items
 
       return quality;
     }
-    //Currently though there are no dual slayer spellbooks, OSI has a habit of putting dual slayer stuff in later
+    // Currently though there are no dual slayer spellbooks, OSI has a habit of putting dual slayer stuff in later
 
     [CommandProperty(AccessLevel.GameMaster)]
     public SlayerName Slayer
@@ -432,7 +431,7 @@ namespace Server.Items
 
         Spellbook book = list[i];
 
-        if (!book.Deleted && (book.Parent == from || pack != null && book.Parent == pack) &&
+        if (!book.Deleted && (book.Parent == from || (pack != null && book.Parent == pack)) &&
             ValidateSpellbook(book, spellID, type))
           return book;
 
@@ -704,7 +703,7 @@ namespace Server.Items
       if ((prop = Attributes.RegenMana) != 0)
         list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
 
-      if ((Attributes.NightSight) != 0)
+      if (Attributes.NightSight != 0)
         list.Add(1060441); // night sight
 
       if ((prop = Attributes.ReflectPhysical) != 0)
@@ -716,7 +715,7 @@ namespace Server.Items
       if ((prop = Attributes.RegenHits) != 0)
         list.Add(1060444, prop.ToString()); // hit point regeneration ~1_val~
 
-      if ((Attributes.SpellChanneling) != 0)
+      if (Attributes.SpellChanneling != 0)
         list.Add(1060482); // spell channeling
 
       if ((prop = Attributes.SpellDamage) != 0)
@@ -751,7 +750,7 @@ namespace Server.Items
     {
       Container pack = from.Backpack;
 
-      if (Parent == from || pack != null && Parent == pack)
+      if (Parent == from || (pack != null && Parent == pack))
         DisplayTo(from);
       else
         from.SendLocalizedMessage(
@@ -789,42 +788,42 @@ namespace Server.Items
       switch (version)
       {
         case 5:
-        {
-          m_Quality = (BookQuality)reader.ReadByte();
+          {
+            m_Quality = (BookQuality)reader.ReadByte();
 
-          goto case 4;
-        }
+            goto case 4;
+          }
         case 4:
-        {
-          m_EngravedText = reader.ReadString();
+          {
+            m_EngravedText = reader.ReadString();
 
-          goto case 3;
-        }
+            goto case 3;
+          }
         case 3:
-        {
-          m_Crafter = reader.ReadMobile();
-          goto case 2;
-        }
+          {
+            m_Crafter = reader.ReadMobile();
+            goto case 2;
+          }
         case 2:
-        {
-          m_Slayer = (SlayerName)reader.ReadInt();
-          m_Slayer2 = (SlayerName)reader.ReadInt();
-          goto case 1;
-        }
+          {
+            m_Slayer = (SlayerName)reader.ReadInt();
+            m_Slayer2 = (SlayerName)reader.ReadInt();
+            goto case 1;
+          }
         case 1:
-        {
-          Attributes = new AosAttributes(this, reader);
-          SkillBonuses = new AosSkillBonuses(this, reader);
+          {
+            Attributes = new AosAttributes(this, reader);
+            SkillBonuses = new AosSkillBonuses(this, reader);
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          m_Content = reader.ReadULong();
-          SpellCount = reader.ReadInt();
+          {
+            m_Content = reader.ReadULong();
+            SpellCount = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
 
       Attributes ??= new AosAttributes(this);

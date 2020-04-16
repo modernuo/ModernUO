@@ -4,7 +4,7 @@ namespace Server.Items
 {
   public class ClothingBlessTarget : Target // Create our targeting class (which we derive from the base target class)
   {
-    private ClothingBlessDeed m_Deed;
+    private readonly ClothingBlessDeed m_Deed;
 
     public ClothingBlessTarget(ClothingBlessDeed deed) : base(1, false, TargetFlags.None) => m_Deed = deed;
 
@@ -21,8 +21,7 @@ namespace Server.Items
           return;
         }
 
-        if (item.LootType == LootType.Blessed || item.BlessedFor == from || Mobile.InsuranceEnabled && item.Insured
-        ) // Check if its already newbied (blessed)
+        if (item.LootType == LootType.Blessed || item.BlessedFor == from || (Mobile.InsuranceEnabled && item.Insured)) // Check if its already newbied (blessed)
         {
           from.SendLocalizedMessage(1045113); // That item is already blessed
         }

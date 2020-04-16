@@ -31,15 +31,15 @@ namespace Server.Mobiles
 
     public virtual bool CanCacheDisplay => false;
 
-    public Type Type{ get; set; }
+    public Type Type { get; set; }
 
-    public int DefaultPrice{ get; private set; }
+    public int DefaultPrice { get; private set; }
 
-    public object[] Args{ get; set; }
+    public object[] Args { get; set; }
 
     public virtual int ControlSlots => 0;
 
-    public string Name{ get; set; }
+    public string Name { get; set; }
 
     public int PriceScalar
     {
@@ -75,9 +75,9 @@ namespace Server.Mobiles
       set => m_Price = value;
     }
 
-    public int ItemID{ get; set; }
+    public int ItemID { get; set; }
 
-    public int Hue{ get; set; }
+    public int Hue { get; set; }
 
     public int Amount
     {
@@ -89,19 +89,19 @@ namespace Server.Mobiles
       }
     }
 
-    public int MaxAmount{ get; set; }
+    public int MaxAmount { get; set; }
 
-    //get a new instance of an object (we just bought it)
+    // get a new instance of an object (we just bought it)
     public virtual IEntity GetEntity()
     {
       if (Args == null || Args.Length == 0)
         return (IEntity)ActivatorUtil.CreateInstance(Type);
 
       return (IEntity)ActivatorUtil.CreateInstance(Type, Args);
-      //return (Item)ActivatorUtil.CreateInstance( m_Type );
+      // return (Item)ActivatorUtil.CreateInstance( m_Type );
     }
 
-    //Attempt to restock with item, (return true if restock successful)
+    // Attempt to restock with item, (return true if restock successful)
     public bool Restock(Item item, int amount) => false;
 
     public void OnRestock()

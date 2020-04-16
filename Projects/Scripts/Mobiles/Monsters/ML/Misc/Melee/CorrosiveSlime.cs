@@ -39,7 +39,7 @@ namespace Server.Mobiles
       MinTameSkill = 23.1;
     }
 
-    //TODO: Damage weapon via acid
+    // TODO: Damage weapon via acid
 
     public CorrosiveSlime(Serial serial) : base(serial)
     {

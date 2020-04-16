@@ -8,8 +8,8 @@ namespace Server.Items
     public static readonly TimeSpan AttackEffectDuration = TimeSpan.FromSeconds(10.0);
     public static readonly TimeSpan DefenseEffectDuration = TimeSpan.FromSeconds(8.0);
 
-    private static HashSet<Mobile> m_AttackTable = new HashSet<Mobile>();
-    private static HashSet<Mobile> m_DefenseTable = new HashSet<Mobile>();
+    private static readonly HashSet<Mobile> m_AttackTable = new HashSet<Mobile>();
+    private static readonly HashSet<Mobile> m_DefenseTable = new HashSet<Mobile>();
 
     public static bool IsUnderAttackEffect(Mobile m) => m_AttackTable.Contains(m);
 
@@ -53,7 +53,7 @@ namespace Server.Items
 
     private class AttackTimer : Timer
     {
-      private Mobile m_Player;
+      private readonly Mobile m_Player;
 
       public AttackTimer(Mobile player) : base(AttackEffectDuration)
       {
@@ -69,7 +69,7 @@ namespace Server.Items
 
     private class DefenseTimer : Timer
     {
-      private Mobile m_Player;
+      private readonly Mobile m_Player;
 
       public DefenseTimer(Mobile player) : base(DefenseEffectDuration)
       {

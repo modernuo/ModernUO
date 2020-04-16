@@ -5,9 +5,9 @@ namespace Server.Mobiles
 {
   public class SBTinker : SBInfo
   {
-    public override IShopSellInfo SellInfo{ get; } = new InternalSellInfo();
+    public override IShopSellInfo SellInfo { get; } = new InternalSellInfo();
 
-    public override List<GenericBuyInfo> BuyInfo{ get; } = new InternalBuyInfo();
+    public override List<GenericBuyInfo> BuyInfo { get; } = new InternalBuyInfo();
 
     public class InternalBuyInfo : List<GenericBuyInfo>
     {
@@ -61,7 +61,6 @@ namespace Server.Mobiles
         Add(new GenericBuyInfo(typeof(SmoothingPlane), 11, 20, 0x1032, 0));
 
         Add(new GenericBuyInfo(typeof(Pickaxe), 25, 20, 0xE86, 0));
-
 
         Add(new GenericBuyInfo(typeof(Drums), 21, 20, 0x0E9C, 0));
         Add(new GenericBuyInfo(typeof(Tambourine), 21, 20, 0x0E9E, 0));

@@ -4,7 +4,7 @@ namespace Server.Engines.Quests
 {
   public class QuestCallbackEntry : ContextMenuEntry
   {
-    private QuestCallback m_Callback;
+    private readonly QuestCallback m_Callback;
 
     public QuestCallbackEntry(int number, QuestCallback callback) : this(number, -1, callback)
     {

@@ -6,13 +6,12 @@ namespace Server.Spells.Bushido
 {
   public class CounterAttack : SamuraiSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "CounterAttack", null,
       -1,
-      9002
-    );
+      9002);
 
-    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+    private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     public CounterAttack(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -87,7 +86,7 @@ namespace Server.Spells.Bushido
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public InternalTimer(Mobile m) : base(TimeSpan.FromSeconds(30.0))
       {

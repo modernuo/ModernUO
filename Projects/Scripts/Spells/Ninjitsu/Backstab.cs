@@ -38,7 +38,7 @@ namespace Server.Spells.Ninjitsu
       if (valid)
       {
         attacker.BeginAction<Stealth>();
-        Timer.DelayCall(TimeSpan.FromSeconds(5.0), delegate { attacker.EndAction<Stealth>(); });
+        Timer.DelayCall(TimeSpan.FromSeconds(5.0), attacker.EndAction<Stealth>);
       }
 
       return valid;
@@ -46,7 +46,7 @@ namespace Server.Spells.Ninjitsu
 
     public override void OnHit(Mobile attacker, Mobile defender, int damage)
     {
-      //Validates before swing
+      // Validates before swing
 
       ClearCurrentMove(attacker);
 

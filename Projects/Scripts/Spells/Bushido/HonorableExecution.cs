@@ -5,7 +5,7 @@ namespace Server.Spells.Bushido
 {
   public class HonorableExecution : SamuraiMove
   {
-    private static Dictionary<Mobile, HonorableExecutionInfo> m_Table = new Dictionary<Mobile, HonorableExecutionInfo>();
+    private static readonly Dictionary<Mobile, HonorableExecutionInfo> m_Table = new Dictionary<Mobile, HonorableExecutionInfo>();
 
     public override int BaseMana => 0;
     public override double RequiredSkill => 25.0;
@@ -90,10 +90,10 @@ namespace Server.Spells.Bushido
 
     private class HonorableExecutionInfo
     {
-      public Mobile m_Mobile;
-      public List<object> m_Mods;
-      public bool m_Penalty;
-      public int m_SwingBonus;
+      public readonly Mobile m_Mobile;
+      public readonly List<object> m_Mods;
+      public readonly bool m_Penalty;
+      public readonly int m_SwingBonus;
       public Timer m_Timer;
 
       public HonorableExecutionInfo(Mobile from, List<object> mods) : this(from, 0, mods, mods != null)

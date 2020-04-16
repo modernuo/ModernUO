@@ -19,11 +19,11 @@ namespace Server.Engines.Mahjong
       Second = reader.ReadInt();
     }
 
-    public MahjongGame Game{ get; }
+    public MahjongGame Game { get; }
 
-    public int First{ get; private set; }
+    public int First { get; private set; }
 
-    public int Second{ get; private set; }
+    public int Second { get; private set; }
 
     public void RollDices(Mobile from)
     {

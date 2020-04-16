@@ -11,13 +11,12 @@ namespace Server.Spells.Third
 {
   public class TeleportSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Teleport", "Rel Por",
       215,
       9031,
       Reagent.Bloodmoss,
-      Reagent.MandrakeRoot
-    );
+      Reagent.MandrakeRoot);
 
     public TeleportSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

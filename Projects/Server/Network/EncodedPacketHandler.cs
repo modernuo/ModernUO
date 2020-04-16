@@ -31,10 +31,10 @@ namespace Server.Network
       OnReceive = onReceive;
     }
 
-    public int PacketID{ get; }
+    public int PacketID { get; }
 
-    public OnEncodedPacketReceive OnReceive{ get; }
+    public OnEncodedPacketReceive OnReceive { get; }
 
-    public bool Ingame{ get; }
+    public bool Ingame { get; }
   }
 }

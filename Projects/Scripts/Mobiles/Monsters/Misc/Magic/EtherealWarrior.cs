@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
   public class EtherealWarrior : BaseCreature
   {
-    private static TimeSpan ResurrectDelay = TimeSpan.FromSeconds(2.0);
+    private static readonly TimeSpan ResurrectDelay = TimeSpan.FromSeconds(2.0);
 
     private DateTime m_NextResurrect;
 

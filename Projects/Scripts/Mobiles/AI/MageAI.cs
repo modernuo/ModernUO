@@ -19,7 +19,7 @@ namespace Server.Mobiles
     private const double TeleportChance = 0.05; // 5% chance to teleport at gm magery
     private const double DispelChance = 0.75; // 75% chance to dispel at gm magery
 
-    private static int[] m_Offsets =
+    private static readonly int[] m_Offsets =
     {
       -1, -1,
       -1, 0,
@@ -392,64 +392,64 @@ namespace Server.Mobiles
         {
           case 0:
           case 1: // Poison them
-          {
-            if (c.Poisoned)
-              goto default;
+            {
+              if (c.Poisoned)
+                goto default;
 
-            m_Mobile.DebugSay("Attempting to poison");
+              m_Mobile.DebugSay("Attempting to poison");
 
-            spell = new PoisonSpell(m_Mobile);
-            break;
-          }
+              spell = new PoisonSpell(m_Mobile);
+              break;
+            }
           case 2: // Bless ourselves
-          {
-            m_Mobile.DebugSay("Blessing myself");
+            {
+              m_Mobile.DebugSay("Blessing myself");
 
-            spell = new BlessSpell(m_Mobile);
-            break;
-          }
+              spell = new BlessSpell(m_Mobile);
+              break;
+            }
           case 3:
           case 4: // Curse them
-          {
-            m_Mobile.DebugSay("Attempting to curse");
+            {
+              m_Mobile.DebugSay("Attempting to curse");
 
-            spell = GetRandomCurseSpell();
-            break;
-          }
+              spell = GetRandomCurseSpell();
+              break;
+            }
           case 5: // Paralyze them
-          {
-            if (c.Paralyzed || m_Mobile.Skills.Magery.Value <= 50.0)
-              goto default;
+            {
+              if (c.Paralyzed || m_Mobile.Skills.Magery.Value <= 50.0)
+                goto default;
 
-            m_Mobile.DebugSay("Attempting to paralyze");
+              m_Mobile.DebugSay("Attempting to paralyze");
 
-            spell = new ParalyzeSpell(m_Mobile);
-            break;
-          }
+              spell = new ParalyzeSpell(m_Mobile);
+              break;
+            }
           case 6: // Drain mana
-          {
-            m_Mobile.DebugSay("Attempting to drain mana");
+            {
+              m_Mobile.DebugSay("Attempting to drain mana");
 
-            spell = GetRandomManaDrainSpell();
-            break;
-          }
+              spell = GetRandomManaDrainSpell();
+              break;
+            }
           case 7: // Invis ourselves
-          {
-            if (Utility.RandomBool())
-              goto default;
+            {
+              if (Utility.RandomBool())
+                goto default;
 
-            m_Mobile.DebugSay("Attempting to invis myself");
+              m_Mobile.DebugSay("Attempting to invis myself");
 
-            spell = new InvisibilitySpell(m_Mobile);
-            break;
-          }
+              spell = new InvisibilitySpell(m_Mobile);
+              break;
+            }
           default: // Damage them
-          {
-            m_Mobile.DebugSay("Just doing damage");
+            {
+              m_Mobile.DebugSay("Just doing damage");
 
-            spell = GetRandomDamageSpell();
-            break;
-          }
+              spell = GetRandomDamageSpell();
+              break;
+            }
         }
 
         return spell;
@@ -463,50 +463,50 @@ namespace Server.Mobiles
       switch (Utility.Random(3))
       {
         case 0: // Poison them
-        {
-          if (c.Poisoned)
-            goto case 1;
+          {
+            if (c.Poisoned)
+              goto case 1;
 
-          spell = new PoisonSpell(m_Mobile);
-          break;
-        }
+            spell = new PoisonSpell(m_Mobile);
+            break;
+          }
         case 1: // Deal some damage
-        {
-          spell = GetRandomDamageSpell();
+          {
+            spell = GetRandomDamageSpell();
 
-          break;
-        }
+            break;
+          }
         default: // Set up a combo
-        {
-          if (m_Mobile.Mana > 15 && m_Mobile.Mana < 40)
           {
-            if (c.Paralyzed && !c.Poisoned && !m_Mobile.Meditating)
+            if (m_Mobile.Mana > 15 && m_Mobile.Mana < 40)
             {
-              m_Mobile.DebugSay("I am going to meditate");
+              if (c.Paralyzed && !c.Poisoned && !m_Mobile.Meditating)
+              {
+                m_Mobile.DebugSay("I am going to meditate");
 
-              m_Mobile.UseSkill(SkillName.Meditation);
+                m_Mobile.UseSkill(SkillName.Meditation);
+              }
+              else if (!c.Poisoned)
+              {
+                spell = new ParalyzeSpell(m_Mobile);
+              }
             }
-            else if (!c.Poisoned)
+            else if (m_Mobile.Mana > 60)
             {
-              spell = new ParalyzeSpell(m_Mobile);
+              if (Utility.RandomBool() && !c.Paralyzed && !c.Frozen && !c.Poisoned)
+              {
+                m_Combo = 0;
+                spell = new ParalyzeSpell(m_Mobile);
+              }
+              else
+              {
+                m_Combo = 1;
+                spell = new ExplosionSpell(m_Mobile);
+              }
             }
-          }
-          else if (m_Mobile.Mana > 60)
-          {
-            if (Utility.RandomBool() && !c.Paralyzed && !c.Frozen && !c.Poisoned)
-            {
-              m_Combo = 0;
-              spell = new ParalyzeSpell(m_Mobile);
-            }
-            else
-            {
-              m_Combo = 1;
-              spell = new ExplosionSpell(m_Mobile);
-            }
-          }
 
-          break;
-        }
+            break;
+          }
       }
 
       return spell;
@@ -541,34 +541,34 @@ namespace Server.Mobiles
         switch (Utility.Random(IsNecromancer ? 4 : 3))
         {
           case 0:
-          {
-            if (c.Int < c.Dex)
-              spell = new FeeblemindSpell(m_Mobile);
-            else
-              spell = new ClumsySpell(m_Mobile);
+            {
+              if (c.Int < c.Dex)
+                spell = new FeeblemindSpell(m_Mobile);
+              else
+                spell = new ClumsySpell(m_Mobile);
 
-            ++m_Combo; // Move to next spell
+              ++m_Combo; // Move to next spell
 
-            break;
-          }
+              break;
+            }
           case 1:
-          {
-            spell = new EnergyBoltSpell(m_Mobile);
-            m_Combo = -1; // Reset combo state
-            break;
-          }
+            {
+              spell = new EnergyBoltSpell(m_Mobile);
+              m_Combo = -1; // Reset combo state
+              break;
+            }
           case 2:
-          {
-            spell = new FlameStrikeSpell(m_Mobile);
-            m_Combo = -1; // Reset combo state
-            break;
-          }
+            {
+              spell = new FlameStrikeSpell(m_Mobile);
+              m_Combo = -1; // Reset combo state
+              break;
+            }
           default:
-          {
-            spell = new PainSpikeSpell(m_Mobile);
-            m_Combo = -1; // Reset combo state
-            break;
-          }
+            {
+              spell = new PainSpikeSpell(m_Mobile);
+              m_Combo = -1; // Reset combo state
+              break;
+            }
         }
       }
       else if (m_Combo == 4 && spell == null)
@@ -711,8 +711,7 @@ namespace Server.Mobiles
         {
           spell = DoCombo(c);
         }
-        else if (SmartAI && (c.Spell is HealSpell || c.Spell is GreaterHealSpell) && !c.Poisoned
-        ) // They have a heal spell out
+        else if (SmartAI && (c.Spell is HealSpell || c.Spell is GreaterHealSpell) && !c.Poisoned) // They have a heal spell out
         {
           spell = new PoisonSpell(m_Mobile);
         }

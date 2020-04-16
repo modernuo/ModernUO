@@ -40,7 +40,7 @@ namespace Server
 
       info.size = size;
 
-      info.typeCode = serializable.TypeReference; //For guilds, this will automagically be zero.
+      info.typeCode = serializable.TypeReference; // For guilds, this will automagically be zero.
       info.serial = serializable.SerialIdentity;
 
       _orderedIndexInfo.Add(info);
@@ -50,26 +50,26 @@ namespace Server
     {
       Flush();
 
-      int memLength = (int)_memStream.Position;
+      var memLength = (int)_memStream.Position;
 
       if (memLength > 0)
       {
-        byte[] memBuffer = _memStream.GetBuffer();
+        var memBuffer = _memStream.GetBuffer();
 
-        long actualPosition = dataFile.Position;
+        var actualPosition = dataFile.Position;
 
-        dataFile.Write(memBuffer, 0, memLength); //The buffer contains the data from many items.
+        dataFile.Write(memBuffer, 0, memLength); // The buffer contains the data from many items.
 
-        //Console.WriteLine("Writing {0} bytes starting at {1}, with {2} things", memLength, actualPosition, _orderedIndexInfo.Count);
+        // Console.WriteLine("Writing {0} bytes starting at {1}, with {2} things", memLength, actualPosition, _orderedIndexInfo.Count);
 
-        byte[] indexBuffer = new byte[20];
+        var indexBuffer = new byte[20];
 
-        //int indexWritten = _orderedIndexInfo.Count * indexBuffer.Length;
-        //int totalWritten = memLength + indexWritten
+        // int indexWritten = _orderedIndexInfo.Count * indexBuffer.Length;
+        // int totalWritten = memLength + indexWritten
 
-        for (int i = 0; i < _orderedIndexInfo.Count; i++)
+        for (var i = 0; i < _orderedIndexInfo.Count; i++)
         {
-          IndexInfo info = _orderedIndexInfo[i];
+          var info = _orderedIndexInfo[i];
 
           indexBuffer[0] = (byte)info.typeCode;
           indexBuffer[1] = (byte)(info.typeCode >> 8);
@@ -101,7 +101,7 @@ namespace Server
         }
       }
 
-      Close(); //We're done with this writer.
+      Close(); // We're done with this writer.
     }
 
     private struct IndexInfo

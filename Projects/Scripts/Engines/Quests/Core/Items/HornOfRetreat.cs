@@ -23,10 +23,10 @@ namespace Server.Engines.Quests
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D DestLoc{ get; set; }
+    public Point3D DestLoc { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Map DestMap{ get; set; }
+    public Map DestMap { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Charges
@@ -120,19 +120,19 @@ namespace Server.Engines.Quests
       switch (version)
       {
         case 0:
-        {
-          DestLoc = reader.ReadPoint3D();
-          DestMap = reader.ReadMap();
-          m_Charges = reader.ReadInt();
-          break;
-        }
+          {
+            DestLoc = reader.ReadPoint3D();
+            DestMap = reader.ReadMap();
+            m_Charges = reader.ReadInt();
+            break;
+          }
       }
     }
   }
 
   public class HornOfRetreatMoongate : Moongate
   {
-    private Mobile m_Caster;
+    private readonly Mobile m_Caster;
 
     public HornOfRetreatMoongate(Point3D destLoc, Map destMap, Mobile caster, int hue)
     {

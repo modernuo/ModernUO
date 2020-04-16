@@ -79,6 +79,7 @@ namespace System.Buffers
           // Cast-away readonly to initialize lazy field
           Volatile.Write(ref Unsafe.AsRef(length), sequence.Length);
         }
+
         return length;
       }
     }
@@ -159,7 +160,7 @@ namespace System.Buffers
       currentPosition = sequence.Start;
       nextPosition = currentPosition;
 
-      if (sequence.TryGet(ref nextPosition, out ReadOnlyMemory<T> memory))
+      if (sequence.TryGet(ref nextPosition, out var memory))
       {
         moreData = true;
 
@@ -187,8 +188,8 @@ namespace System.Buffers
       Debug.Assert(usingSequence, "usingSequence");
       if (!sequence.IsSingleSegment)
       {
-        SequencePosition previousNextPosition = nextPosition;
-        while (sequence.TryGet(ref nextPosition, out ReadOnlyMemory<T> memory))
+        var previousNextPosition = nextPosition;
+        while (sequence.TryGet(ref nextPosition, out var memory))
         {
           currentPosition = previousNextPosition;
           if (memory.Length > 0)
@@ -203,6 +204,7 @@ namespace System.Buffers
           previousNextPosition = nextPosition;
         }
       }
+
       moreData = false;
     }
 
@@ -240,7 +242,7 @@ namespace System.Buffers
       Consumed += count;
       while (moreData)
       {
-        int remaining = CurrentSpan.Length - CurrentSpanIndex;
+        var remaining = CurrentSpan.Length - CurrentSpanIndex;
 
         if (remaining > count)
         {
@@ -275,7 +277,7 @@ namespace System.Buffers
       // We don't provide an advance option to allow easier utilizing of stack allocated destination spans.
       // (Because we can make this method readonly we can guarantee that we won't capture the span.)
 
-      ReadOnlySpan<T> firstSpan = UnreadSpan;
+      var firstSpan = UnreadSpan;
       if (firstSpan.Length >= destination.Length)
       {
         firstSpan.Slice(0, destination.Length).CopyTo(destination);
@@ -292,17 +294,17 @@ namespace System.Buffers
       if (Remaining < destination.Length)
         return false;
 
-      ReadOnlySpan<T> firstSpan = UnreadSpan;
+      var firstSpan = UnreadSpan;
       Debug.Assert(firstSpan.Length < destination.Length);
       firstSpan.CopyTo(destination);
-      int copied = firstSpan.Length;
+      var copied = firstSpan.Length;
 
-      SequencePosition next = nextPosition;
-      while (sequence.TryGet(ref next, out ReadOnlyMemory<T> nextSegment))
+      var next = nextPosition;
+      while (sequence.TryGet(ref next, out var nextSegment))
         if (nextSegment.Length > 0)
         {
-          ReadOnlySpan<T> nextSpan = nextSegment.Span;
-          int toCopy = Math.Min(nextSpan.Length, destination.Length - copied);
+          var nextSpan = nextSegment.Span;
+          var toCopy = Math.Min(nextSpan.Length, destination.Length - copied);
           nextSpan.Slice(0, toCopy).CopyTo(destination.Slice(copied));
           copied += toCopy;
           if (copied >= destination.Length) break;

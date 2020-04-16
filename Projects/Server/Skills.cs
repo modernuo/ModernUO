@@ -113,39 +113,39 @@ namespace Server
       switch (version)
       {
         case 0:
-        {
-          m_Base = reader.ReadUShort();
-          m_Cap = reader.ReadUShort();
-          Lock = (SkillLock)reader.ReadByte();
-
-          break;
-        }
-        case 0xFF:
-        {
-          m_Base = 0;
-          m_Cap = 1000;
-          Lock = SkillLock.Up;
-
-          break;
-        }
-        default:
-        {
-          if ((version & 0xC0) == 0x00)
           {
-            if ((version & 0x1) != 0)
-              m_Base = reader.ReadUShort();
+            m_Base = reader.ReadUShort();
+            m_Cap = reader.ReadUShort();
+            Lock = (SkillLock)reader.ReadByte();
 
-            if ((version & 0x2) != 0)
-              m_Cap = reader.ReadUShort();
-            else
-              m_Cap = 1000;
-
-            if ((version & 0x4) != 0)
-              Lock = (SkillLock)reader.ReadByte();
+            break;
           }
+        case 0xFF:
+          {
+            m_Base = 0;
+            m_Cap = 1000;
+            Lock = SkillLock.Up;
 
-          break;
-        }
+            break;
+          }
+        default:
+          {
+            if ((version & 0xC0) == 0x00)
+            {
+              if ((version & 0x1) != 0)
+                m_Base = reader.ReadUShort();
+
+              if ((version & 0x2) != 0)
+                m_Cap = reader.ReadUShort();
+              else
+                m_Cap = 1000;
+
+              if ((version & 0x4) != 0)
+                Lock = (SkillLock)reader.ReadByte();
+            }
+
+            break;
+          }
       }
 
       if (Lock < SkillLock.Up || Lock > SkillLock.Locked)
@@ -164,7 +164,7 @@ namespace Server
       Lock = skillLock;
     }
 
-    public Skills Owner{ get; }
+    public Skills Owner { get; }
 
     public SkillName SkillName => (SkillName)Info.SkillID;
 
@@ -173,10 +173,10 @@ namespace Server
     [CommandProperty(AccessLevel.Counselor)]
     public string Name => Info.Name;
 
-    public SkillInfo Info{ get; }
+    public SkillInfo Info { get; }
 
     [CommandProperty(AccessLevel.Counselor)]
-    public SkillLock Lock{ get; private set; }
+    public SkillLock Lock { get; private set; }
 
     public int BaseFixedPoint
     {
@@ -188,7 +188,7 @@ namespace Server
         else if (value >= 0x10000)
           value = 0xFFFF;
 
-        ushort sv = (ushort)value;
+        var sv = (ushort)value;
 
         int oldBase = m_Base;
 
@@ -200,7 +200,7 @@ namespace Server
 
           Owner.OnSkillChange(this);
 
-          Mobile m = Owner.Owner;
+          var m = Owner.Owner;
 
           m?.OnSkillChange(SkillName, (double)oldBase / 10);
         }
@@ -224,7 +224,7 @@ namespace Server
         else if (value >= 0x10000)
           value = 0xFFFF;
 
-        ushort sv = (ushort)value;
+        var sv = (ushort)value;
 
         if (m_Cap != sv)
         {
@@ -242,7 +242,7 @@ namespace Server
       set => CapFixedPoint = (int)(value * 10.0);
     }
 
-    public static bool UseStatMods{ get; set; }
+    public static bool UseStatMods { get; set; }
 
     public int Fixed => (int)(Value * 10);
 
@@ -251,10 +251,10 @@ namespace Server
     {
       get
       {
-        //There has to be this distinction between the racial values and not to account for gaining skills and these skills aren't displayed nor Totaled up.
-        double value = NonRacialValue;
+        // There has to be this distinction between the racial values and not to account for gaining skills and these skills aren't displayed nor Totaled up.
+        var value = NonRacialValue;
 
-        double raceBonus = Owner.Owner.RacialSkillBonus;
+        var raceBonus = Owner.Owner.RacialSkillBonus;
 
         if (raceBonus > value)
           value = raceBonus;
@@ -268,34 +268,34 @@ namespace Server
     {
       get
       {
-        double baseValue = Base;
-        double inv = 100.0 - baseValue;
+        var baseValue = Base;
+        var inv = 100.0 - baseValue;
 
         if (inv < 0.0) inv = 0.0;
 
         inv /= 100.0;
 
-        double statsOffset = (UseStatMods ? Owner.Owner.Str : Owner.Owner.RawStr) * Info.StrScale +
-                             (UseStatMods ? Owner.Owner.Dex : Owner.Owner.RawDex) * Info.DexScale +
-                             (UseStatMods ? Owner.Owner.Int : Owner.Owner.RawInt) * Info.IntScale;
-        double statTotal = Info.StatTotal * inv;
+        var statsOffset = (UseStatMods ? Owner.Owner.Str : Owner.Owner.RawStr) * Info.StrScale +
+                          (UseStatMods ? Owner.Owner.Dex : Owner.Owner.RawDex) * Info.DexScale +
+                          (UseStatMods ? Owner.Owner.Int : Owner.Owner.RawInt) * Info.IntScale;
+        var statTotal = Info.StatTotal * inv;
 
         statsOffset *= inv;
 
         if (statsOffset > statTotal)
           statsOffset = statTotal;
 
-        double value = baseValue + statsOffset;
+        var value = baseValue + statsOffset;
 
         Owner.Owner.ValidateSkillMods();
 
-        List<SkillMod> mods = Owner.Owner.SkillMods;
+        var mods = Owner.Owner.SkillMods;
 
         double bonusObey = 0.0, bonusNotObey = 0.0;
 
-        for (int i = 0; i < mods.Count; ++i)
+        for (var i = 0; i < mods.Count; ++i)
         {
-          SkillMod mod = mods[i];
+          var mod = mods[i];
 
           if (mod.Skill == (SkillName)Info.SkillID)
           {
@@ -347,7 +347,7 @@ namespace Server
       }
       else
       {
-        int flags = 0x0;
+        var flags = 0x0;
 
         if (m_Base != 0)
           flags |= 0x1;
@@ -397,31 +397,32 @@ namespace Server
       StatTotal = strScale + dexScale + intScale;
     }
 
-    public SkillUseCallback Callback{ get; set; }
+    public SkillUseCallback Callback { get; set; }
 
-    public int SkillID{ get; }
+    public int SkillID { get; }
 
-    public string Name{ get; set; }
+    public string Name { get; set; }
 
-    public string Title{ get; set; }
+    public string Title { get; set; }
 
-    public double StrScale{ get; set; }
+    public double StrScale { get; set; }
 
-    public double DexScale{ get; set; }
+    public double DexScale { get; set; }
 
-    public double IntScale{ get; set; }
+    public double IntScale { get; set; }
 
-    public double StatTotal{ get; set; }
+    public double StatTotal { get; set; }
 
-    public double StrGain{ get; set; }
+    public double StrGain { get; set; }
 
-    public double DexGain{ get; set; }
+    public double DexGain { get; set; }
 
-    public double IntGain{ get; set; }
+    public double IntGain { get; set; }
 
-    public double GainFactor{ get; set; }
+    public double GainFactor { get; set; }
 
-    public static SkillInfo[] Table{ get; set; } = {
+    public static SkillInfo[] Table { get; set; } =
+    {
       new SkillInfo(0, "Alchemy", 0.0, 5.0, 5.0, "Alchemist", null, 0.0, 0.5, 0.5, 1.0),
       new SkillInfo(1, "Anatomy", 0.0, 0.0, 0.0, "Biologist", null, 0.15, 0.15, 0.7, 1.0),
       new SkillInfo(2, "Animal Lore", 0.0, 0.0, 0.0, "Naturalist", null, 0.0, 0.0, 1.0, 1.0),
@@ -494,80 +495,81 @@ namespace Server
       Owner = owner;
       Cap = 7000;
 
-      SkillInfo[] info = SkillInfo.Table;
+      var info = SkillInfo.Table;
 
       m_Skills = new Skill[info.Length];
 
-      //for ( int i = 0; i < info.Length; ++i )
-      //	m_Skills[i] = new Skill( this, info[i], 0, 1000, SkillLock.Up );
+      // for ( int i = 0; i < info.Length; ++i )
+      // m_Skills[i] = new Skill( this, info[i], 0, 1000, SkillLock.Up );
     }
 
     public Skills(Mobile owner, IGenericReader reader)
     {
       Owner = owner;
 
-      int version = reader.ReadInt();
+      var version = reader.ReadInt();
 
       switch (version)
       {
         case 3:
         case 2:
-        {
-          Cap = reader.ReadInt();
+          {
+            Cap = reader.ReadInt();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          if (version < 2)
-            Cap = 7000;
+          {
+            if (version < 2)
+              Cap = 7000;
 
-          if (version < 3)
-            /*m_Total =*/ reader.ReadInt();
+            if (version < 3)
+              /*m_Total =*/
+              reader.ReadInt();
 
-          SkillInfo[] info = SkillInfo.Table;
+            var info = SkillInfo.Table;
 
-          m_Skills = new Skill[info.Length];
+            m_Skills = new Skill[info.Length];
 
-          int count = reader.ReadInt();
+            var count = reader.ReadInt();
 
-          for (int i = 0; i < count; ++i)
-            if (i < info.Length)
-            {
-              Skill sk = new Skill(this, info[i], reader);
-
-              if (sk.BaseFixedPoint != 0 || sk.CapFixedPoint != 1000 || sk.Lock != SkillLock.Up)
+            for (var i = 0; i < count; ++i)
+              if (i < info.Length)
               {
-                m_Skills[i] = sk;
-                Total += sk.BaseFixedPoint;
+                var sk = new Skill(this, info[i], reader);
+
+                if (sk.BaseFixedPoint != 0 || sk.CapFixedPoint != 1000 || sk.Lock != SkillLock.Up)
+                {
+                  m_Skills[i] = sk;
+                  Total += sk.BaseFixedPoint;
+                }
               }
-            }
-            else
-            {
-              // Will be discarded
-              new Skill(this, null, reader);
-            }
+              else
+              {
+                // Will be discarded
+                new Skill(this, null, reader);
+              }
 
-          //for ( int i = count; i < info.Length; ++i )
-          //	m_Skills[i] = new Skill( this, info[i], 0, 1000, SkillLock.Up );
+            // for ( int i = count; i < info.Length; ++i )
+            // m_Skills[i] = new Skill( this, info[i], 0, 1000, SkillLock.Up );
 
-          break;
-        }
+            break;
+          }
         case 0:
-        {
-          reader.ReadInt();
+          {
+            reader.ReadInt();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
       }
     }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-    public int Cap{ get; set; }
+    public int Cap { get; set; }
 
-    public int Total{ get; set; }
+    public int Total { get; set; }
 
-    public Mobile Owner{ get; }
+    public Mobile Owner { get; }
 
     public int Length => m_Skills.Length;
 
@@ -580,7 +582,7 @@ namespace Server
         if (skillID < 0 || skillID >= m_Skills.Length)
           return null;
 
-        Skill sk = m_Skills[skillID];
+        var sk = m_Skills[skillID];
 
         if (sk == null)
           m_Skills[skillID] = sk = new Skill(this, SkillInfo.Table[skillID], 0, 1000, SkillLock.Up);
@@ -596,11 +598,11 @@ namespace Server
         if (m_Highest == null)
         {
           Skill highest = null;
-          int value = int.MinValue;
+          var value = int.MinValue;
 
-          for (int i = 0; i < m_Skills.Length; ++i)
+          for (var i = 0; i < m_Skills.Length; ++i)
           {
-            Skill sk = m_Skills[i];
+            var sk = m_Skills[i];
 
             if (sk != null && sk.BaseFixedPoint > value)
             {
@@ -644,7 +646,7 @@ namespace Server
 
       if (skillID >= 0 && skillID < SkillInfo.Table.Length)
       {
-        SkillInfo info = SkillInfo.Table[skillID];
+        var info = SkillInfo.Table[skillID];
 
         if (info.Callback != null)
         {
@@ -677,9 +679,9 @@ namespace Server
       writer.Write(Cap);
       writer.Write(m_Skills.Length);
 
-      for (int i = 0; i < m_Skills.Length; ++i)
+      for (var i = 0; i < m_Skills.Length; ++i)
       {
-        Skill sk = m_Skills[i];
+        var sk = m_Skills[i];
 
         if (sk == null)
         {
@@ -703,8 +705,6 @@ namespace Server
       Owner.OnSkillInvalidated(skill);
       Owner.NetState?.Send(new SkillChange(skill));
     }
-
-    #region Skill Getters & Setters
 
     [CommandProperty(AccessLevel.Counselor)]
     public Skill Alchemy => this[SkillName.Alchemy];
@@ -879,7 +879,5 @@ namespace Server
 
     [CommandProperty(AccessLevel.Counselor)]
     public Skill Throwing => this[SkillName.Throwing];
-
-    #endregion
   }
 }

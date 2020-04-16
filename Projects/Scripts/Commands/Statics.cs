@@ -28,7 +28,7 @@ namespace Server
                                                "It is strongly recommended that you make backup of the data files mentioned above.  " +
                                                "Do you wish to proceed?";
 
-    private static Point3D NullP3D = new Point3D(int.MinValue, int.MinValue, int.MinValue);
+    private static readonly Point3D NullP3D = new Point3D(int.MinValue, int.MinValue, int.MinValue);
 
     private static byte[] m_Buffer;
 
@@ -45,7 +45,7 @@ namespace Server
       CommandSystem.Register("UnfreezeWorld", AccessLevel.Administrator, UnfreezeWorld_OnCommand);
     }
 
-    public delegate void FreezeCallback( Mobile from, bool okay, StateInfo si );
+    public delegate void FreezeCallback(Mobile from, bool okay, StateInfo si);
 
     [Usage("Freeze")]
     [Description("Makes a targeted area of dynamic items static.")]
@@ -361,79 +361,79 @@ namespace Server
       BinaryWriter mulWriter = new BinaryWriter(mulStream);
 
       for (int x = xStartBlock; x <= xEndBlock; ++x)
-      for (int y = yStartBlock; y <= yEndBlock; ++y)
-      {
-        StaticTile[] oldTiles = ReadStaticBlock(idxReader, mulStream, x, y, matrix.BlockWidth,
-          matrix.BlockHeight, out int oldTileCount);
-
-        if (oldTileCount < 0)
-          continue;
-
-        int newTileCount = 0;
-        StaticTile[] newTiles = new StaticTile[oldTileCount];
-
-        int baseX = (x << 3) - xTileStart, baseY = (y << 3) - yTileStart;
-
-        for (int i = 0; i < oldTileCount; ++i)
+        for (int y = yStartBlock; y <= yEndBlock; ++y)
         {
-          StaticTile oldTile = oldTiles[i];
+          StaticTile[] oldTiles = ReadStaticBlock(idxReader, mulStream, x, y, matrix.BlockWidth,
+            matrix.BlockHeight, out int oldTileCount);
 
-          int px = baseX + oldTile.X;
-          int py = baseY + oldTile.Y;
+          if (oldTileCount < 0)
+            continue;
 
-          if (px < 0 || px >= xTileWidth || py < 0 || py >= yTileHeight)
+          int newTileCount = 0;
+          StaticTile[] newTiles = new StaticTile[oldTileCount];
+
+          int baseX = (x << 3) - xTileStart, baseY = (y << 3) - yTileStart;
+
+          for (int i = 0; i < oldTileCount; ++i)
           {
-            newTiles[newTileCount++] = oldTile;
+            StaticTile oldTile = oldTiles[i];
+
+            int px = baseX + oldTile.X;
+            int py = baseY + oldTile.Y;
+
+            if (px < 0 || px >= xTileWidth || py < 0 || py >= yTileHeight)
+            {
+              newTiles[newTileCount++] = oldTile;
+            }
+            else
+            {
+              ++totalUnfrozen;
+
+              Item item = new Static(oldTile.ID);
+
+              item.Hue = oldTile.Hue;
+
+              item.MoveToWorld(new Point3D(px + xTileStart, py + yTileStart, oldTile.Z), map);
+            }
           }
-          else
+
+          int mulPos = -1;
+          int length = -1;
+          int extra = 0;
+
+          if (newTileCount > 0)
           {
-            ++totalUnfrozen;
+            mulWriter.Seek(0, SeekOrigin.End);
 
-            Item item = new Static(oldTile.ID);
+            mulPos = (int)mulWriter.BaseStream.Position;
+            length = newTileCount * 7;
+            extra = 1;
 
-            item.Hue = oldTile.Hue;
+            for (int i = 0; i < newTileCount; ++i)
+            {
+              StaticTile toWrite = newTiles[i];
 
-            item.MoveToWorld(new Point3D(px + xTileStart, py + yTileStart, oldTile.Z), map);
+              mulWriter.Write((ushort)toWrite.ID);
+              mulWriter.Write((byte)toWrite.X);
+              mulWriter.Write((byte)toWrite.Y);
+              mulWriter.Write((sbyte)toWrite.Z);
+              mulWriter.Write((short)toWrite.Hue);
+            }
+
+            mulWriter.Flush();
           }
+
+          int idxPos = (x * matrix.BlockHeight + y) * 12;
+
+          idxWriter.Seek(idxPos, SeekOrigin.Begin);
+          idxWriter.Write(mulPos);
+          idxWriter.Write(length);
+          idxWriter.Write(extra);
+
+          idxWriter.Flush();
+
+          matrix.SetStaticBlock(x, y, null);
         }
-
-        int mulPos = -1;
-        int length = -1;
-        int extra = 0;
-
-        if (newTileCount > 0)
-        {
-          mulWriter.Seek(0, SeekOrigin.End);
-
-          mulPos = (int)mulWriter.BaseStream.Position;
-          length = newTileCount * 7;
-          extra = 1;
-
-          for (int i = 0; i < newTileCount; ++i)
-          {
-            StaticTile toWrite = newTiles[i];
-
-            mulWriter.Write((ushort)toWrite.ID);
-            mulWriter.Write((byte)toWrite.X);
-            mulWriter.Write((byte)toWrite.Y);
-            mulWriter.Write((sbyte)toWrite.Z);
-            mulWriter.Write((short)toWrite.Hue);
-          }
-
-          mulWriter.Flush();
-        }
-
-        int idxPos = (x * matrix.BlockHeight + y) * 12;
-
-        idxWriter.Seek(idxPos, SeekOrigin.Begin);
-        idxWriter.Write(mulPos);
-        idxWriter.Write(length);
-        idxWriter.Write(extra);
-
-        idxWriter.Flush();
-
-        matrix.SetStaticBlock(x, y, null);
-      }
     }
 
     public static void DoUnfreeze(Map map, ref bool badDataFile, ref int totalUnfrozen)
@@ -551,8 +551,9 @@ namespace Server
 
     private class DeltaState
     {
-      public List<Item> m_List;
-      public int m_X, m_Y;
+      public readonly List<Item> m_List;
+      public readonly int m_X;
+      public readonly int m_Y;
 
       public DeltaState(Point2D p)
       {

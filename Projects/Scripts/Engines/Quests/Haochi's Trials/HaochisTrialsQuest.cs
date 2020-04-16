@@ -5,7 +5,7 @@ namespace Server.Engines.Quests.Samurai
 {
   public class HaochisTrialsQuest : QuestSystem
   {
-    private static Type[] m_TypeReferenceTable =
+    private static readonly Type[] m_TypeReferenceTable =
     {
       typeof(AcceptConversation),
       typeof(RadarConversation),

@@ -20,8 +20,7 @@ namespace Server.Ethics.Hero
           new HolyShield(),
           new HolySteed(),
           new HolyWord()
-        }
-      );
+        });
     }
 
     public override bool IsEligible(Mobile mob)

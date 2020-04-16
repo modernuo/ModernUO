@@ -23,16 +23,16 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Item Target{ get; set; }
+    public Item Target { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public SecureLevel Level{ get; set; }
+    public SecureLevel Level { get; set; }
 
     public bool CheckAccess(Mobile m)
     {
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      return (house == null || house.Public && !house.IsBanned(m) || house.HasAccess(m)) &&
+      return (house == null || (house.Public && !house.IsBanned(m)) || house.HasAccess(m)) &&
              house?.HasSecureAccess(m, Level) == true;
     }
 
@@ -82,28 +82,28 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          Level = (SecureLevel)reader.ReadInt();
-          goto case 0;
-        }
+          {
+            Level = (SecureLevel)reader.ReadInt();
+            goto case 0;
+          }
         case 0:
-        {
-          Target = reader.ReadItem();
+          {
+            Target = reader.ReadItem();
 
-          if (version < 0)
-            Level = SecureLevel.Anyone;
+            if (version < 0)
+              Level = SecureLevel.Anyone;
 
-          break;
-        }
+            break;
+          }
       }
     }
 
     private class EffectTimer : Timer
     {
-      private int m_EffectID;
-      private Point3D m_Location;
-      private Map m_Map;
-      private int m_SoundID;
+      private readonly int m_EffectID;
+      private readonly Point3D m_Location;
+      private readonly Map m_Map;
+      private readonly int m_SoundID;
 
       public EffectTimer(Point3D p, Map map, int effectID, int soundID, TimeSpan delay) : base(delay)
       {
@@ -125,8 +125,8 @@ namespace Server.Items
 
     private class DelayTimer : Timer
     {
-      private Mobile m_Mobile;
-      private HouseTeleporter m_Teleporter;
+      private readonly Mobile m_Mobile;
+      private readonly HouseTeleporter m_Teleporter;
 
       public DelayTimer(HouseTeleporter tp, Mobile m) : base(TimeSpan.FromSeconds(1.0))
       {

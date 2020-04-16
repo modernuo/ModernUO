@@ -4,7 +4,7 @@ namespace Server.Engines.CannedEvil
 {
   public class RestartTimer : Timer
   {
-    private ChampionSpawn m_Spawn;
+    private readonly ChampionSpawn m_Spawn;
 
     public RestartTimer(ChampionSpawn spawn, TimeSpan delay) : base(delay)
     {

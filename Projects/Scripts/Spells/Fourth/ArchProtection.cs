@@ -9,17 +9,16 @@ namespace Server.Spells.Fourth
 {
   public class ArchProtectionSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Arch Protection", "Vas Uus Sanct",
       Core.AOS ? 239 : 215,
       9011,
       Reagent.Garlic,
       Reagent.Ginseng,
       Reagent.MandrakeRoot,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
-    private static Dictionary<Mobile, int> _Table = new Dictionary<Mobile, int>();
+    private static readonly Dictionary<Mobile, int> _Table = new Dictionary<Mobile, int>();
 
     public ArchProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -108,7 +107,7 @@ namespace Server.Spells.Fourth
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Owner;
+      private readonly Mobile m_Owner;
 
       public InternalTimer(Mobile target, Mobile caster) : base(TimeSpan.FromSeconds(0))
       {

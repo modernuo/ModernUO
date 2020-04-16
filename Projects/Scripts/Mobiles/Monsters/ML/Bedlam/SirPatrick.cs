@@ -88,7 +88,7 @@ namespace Server.Mobiles
 
       foreach (Mobile m in GetMobilesInRange(2))
       {
-        if (m == this || !CanBeHarmful(m, false) || Core.AOS && !InLOS(m))
+        if (m == this || !CanBeHarmful(m, false) || (Core.AOS && !InLOS(m)))
           continue;
 
         if (m is BaseCreature bc)

@@ -8,7 +8,7 @@ namespace Server.Items
 {
   public class SpecialFishingNet : Item
   {
-    private static int[] m_Hues =
+    private static readonly int[] m_Hues =
     {
       0x09B,
       0x0CD,
@@ -26,13 +26,13 @@ namespace Server.Items
       0x8AA
     };
 
-    private static int[] m_WaterTiles =
+    private static readonly int[] m_WaterTiles =
     {
       0x00A8, 0x00AB,
       0x0136, 0x0137
     };
 
-    private static int[] m_UndeepWaterTiles =
+    private static readonly int[] m_UndeepWaterTiles =
     {
       0x1797, 0x179C
     };
@@ -42,7 +42,7 @@ namespace Server.Items
     {
       Weight = 1.0;
 
-      if (0.01 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.01)
         Hue = Utility.RandomList(m_Hues);
       else
         Hue = 0x8A0;
@@ -55,7 +55,7 @@ namespace Server.Items
     public override int LabelNumber => 1041079; // a special fishing net
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool InUse{ get; set; }
+    public bool InUse { get; set; }
 
     public virtual bool RequireDeepWater => true;
 
@@ -90,14 +90,14 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          InUse = reader.ReadBool();
+          {
+            InUse = reader.ReadBool();
 
-          if (InUse)
-            Delete();
+            if (InUse)
+              Delete();
 
-          break;
-        }
+            break;
+          }
       }
 
       Stackable = false;
@@ -276,7 +276,7 @@ namespace Server.Items
 
         LandTile t = map.Tiles.GetLandTile(tx, ty);
 
-        if (t.Z == p.Z && (t.ID >= 0xA8 && t.ID <= 0xAB || t.ID >= 0x136 && t.ID <= 0x137) &&
+        if (t.Z == p.Z && ((t.ID >= 0xA8 && t.ID <= 0xAB) || (t.ID >= 0x136 && t.ID <= 0x137)) &&
             !SpellHelper.CheckMulti(new Point3D(tx, ty, p.Z), map))
         {
           x = tx;
@@ -287,7 +287,7 @@ namespace Server.Items
 
       spawn.MoveToWorld(new Point3D(x, y, p.Z), map);
 
-      if (spawn is Kraken && 0.2 > Utility.RandomDouble())
+      if (spawn is Kraken && Utility.RandomDouble() < 0.2)
         spawn.PackItem(new MessageInABottle(map == Map.Felucca ? Map.Felucca : Map.Trammel));
     }
 

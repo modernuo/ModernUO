@@ -42,7 +42,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D TeleOffset{ get; set; }
+    public Point3D TeleOffset { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Point3D TelePoint
@@ -164,15 +164,15 @@ namespace Server.Items
     public SHTeleporter(Serial serial) : base(serial) => m_Changing = false;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool External{ get; private set; }
+    public bool External { get; private set; }
 
-    public SHTeleComponent UpTele{ get; private set; }
+    public SHTeleComponent UpTele { get; private set; }
 
-    public SHTeleComponent RightTele{ get; private set; }
+    public SHTeleComponent RightTele { get; private set; }
 
-    public SHTeleComponent DownTele{ get; private set; }
+    public SHTeleComponent DownTele { get; private set; }
 
-    public SHTeleComponent LeftTele{ get; private set; }
+    public SHTeleComponent LeftTele { get; private set; }
 
     public override bool ShareHue => false;
 

@@ -11,7 +11,7 @@ namespace Server.Items
     private static bool m_IsRunicTool;
     private static int m_LuckChance;
 
-    private static SkillName[] m_PossibleBonusSkills =
+    private static readonly SkillName[] m_PossibleBonusSkills =
     {
       SkillName.Swords,
       SkillName.Fencing,
@@ -43,7 +43,7 @@ namespace Server.Items
       SkillName.Ninjitsu
     };
 
-    private static SkillName[] m_PossibleSpellbookSkills =
+    private static readonly SkillName[] m_PossibleSpellbookSkills =
     {
       SkillName.Magery,
       SkillName.Meditation,
@@ -51,8 +51,8 @@ namespace Server.Items
       SkillName.MagicResist
     };
 
-    private static BitArray m_Props = new BitArray(MaxProperties);
-    private static int[] m_Possible = new int[MaxProperties];
+    private static readonly BitArray m_Props = new BitArray(MaxProperties);
+    private static readonly int[] m_Possible = new int[MaxProperties];
     private CraftResource m_Resource;
 
     public BaseRunicTool(CraftResource resource, int itemID) : base(itemID) => m_Resource = resource;
@@ -92,10 +92,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Resource = (CraftResource)reader.ReadInt();
-          break;
-        }
+          {
+            m_Resource = (CraftResource)reader.ReadInt();
+            break;
+          }
       }
     }
 
@@ -291,62 +291,62 @@ namespace Server.Items
         switch (random)
         {
           case 0:
-          {
-            switch (Utility.Random(5))
             {
-              case 0:
-                ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitPhysicalArea, 2, 50, 2);
-                break;
-              case 1:
-                ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitFireArea, 2, 50, 2);
-                break;
-              case 2:
-                ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitColdArea, 2, 50, 2);
-                break;
-              case 3:
-                ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitPoisonArea, 2, 50, 2);
-                break;
-              case 4:
-                ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitEnergyArea, 2, 50, 2);
-                break;
-            }
+              switch (Utility.Random(5))
+              {
+                case 0:
+                  ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitPhysicalArea, 2, 50, 2);
+                  break;
+                case 1:
+                  ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitFireArea, 2, 50, 2);
+                  break;
+                case 2:
+                  ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitColdArea, 2, 50, 2);
+                  break;
+                case 3:
+                  ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitPoisonArea, 2, 50, 2);
+                  break;
+                case 4:
+                  ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitEnergyArea, 2, 50, 2);
+                  break;
+              }
 
-            break;
-          }
+              break;
+            }
           case 1:
-          {
-            switch (Utility.Random(4))
             {
-              case 0:
-                ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitMagicArrow, 2, 50, 2);
-                break;
-              case 1:
-                ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitHarm, 2, 50, 2);
-                break;
-              case 2:
-                ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitFireball, 2, 50, 2);
-                break;
-              case 3:
-                ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitLightning, 2, 50, 2);
-                break;
-            }
+              switch (Utility.Random(4))
+              {
+                case 0:
+                  ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitMagicArrow, 2, 50, 2);
+                  break;
+                case 1:
+                  ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitHarm, 2, 50, 2);
+                  break;
+                case 2:
+                  ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitFireball, 2, 50, 2);
+                  break;
+                case 3:
+                  ApplyAttribute(secondary, min, max, AosWeaponAttribute.HitLightning, 2, 50, 2);
+                  break;
+              }
 
-            break;
-          }
+              break;
+            }
           case 2:
-          {
-            switch (Utility.Random(2))
             {
-              case 0:
-                ApplyAttribute(secondary, min, max, AosWeaponAttribute.UseBestSkill, 1, 1);
-                break;
-              case 1:
-                ApplyAttribute(secondary, min, max, AosWeaponAttribute.MageWeapon, 1, 10);
-                break;
-            }
+              switch (Utility.Random(2))
+              {
+                case 0:
+                  ApplyAttribute(secondary, min, max, AosWeaponAttribute.UseBestSkill, 1, 1);
+                  break;
+                case 1:
+                  ApplyAttribute(secondary, min, max, AosWeaponAttribute.MageWeapon, 1, 10);
+                  break;
+              }
 
-            break;
-          }
+              break;
+            }
           case 3:
             ApplyAttribute(primary, min, max, AosAttribute.WeaponDamage, 1, 50);
             break;
@@ -446,7 +446,6 @@ namespace Server.Items
           attrs[rand] = temp;
         }
 
-
       /*
       totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Cold,		totalDamage );
       totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Energy,	totalDamage );
@@ -459,9 +458,8 @@ namespace Server.Items
       for (int i = 0; i < attrs.Length; i++)
         totalDamage = AssignElementalDamage(weapon, attrs[i], totalDamage);
 
-
-      //Order is Cold, Energy, Fire, Poison -> Physical left
-      //Cannot be looped, AoselementAttribute is 'out of order'
+      // Order is Cold, Energy, Fire, Poison -> Physical left
+      // Cannot be looped, AoselementAttribute is 'out of order'
 
       weapon.Hue = weapon.GetElementalDamageHue();
     }
@@ -489,10 +487,10 @@ namespace Server.Items
       SlayerGroup
         group = groups[
           Utility.Random(groups.Length -
-                         1)]; //-1 To Exclude the Fey Slayer which appears ONLY on a certain artifact.
+                         1)]; // -1 To Exclude the Fey Slayer which appears ONLY on a certain artifact.
       SlayerEntry entry;
 
-      if (10 > Utility.Random(100)) // 10% chance to do super slayer
+      if (Utility.Random(100) < 10) // 10% chance to do super slayer
       {
         entry = group.Super;
       }
@@ -646,7 +644,7 @@ namespace Server.Items
           case 23:
             ApplyResistance(armor, min, max, ResistanceType.Energy, 1, 15);
             break;
-          /* End Armor */
+            /* End Armor */
         }
       }
     }
@@ -869,14 +867,14 @@ namespace Server.Items
           case 1:
           case 2:
           case 3:
-          {
-            ApplyAttribute(primary, min, max, AosAttribute.BonusInt, 1, 8);
+            {
+              ApplyAttribute(primary, min, max, AosAttribute.BonusInt, 1, 8);
 
-            for (int j = 0; j < 4; ++j)
-              m_Props.Set(j, true);
+              for (int j = 0; j < 4; ++j)
+                m_Props.Set(j, true);
 
-            break;
-          }
+              break;
+            }
           case 4:
             ApplyAttribute(primary, min, max, AosAttribute.BonusMana, 1, 8);
             break;

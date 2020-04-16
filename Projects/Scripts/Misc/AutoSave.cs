@@ -5,10 +5,10 @@ namespace Server.Misc
 {
   public class AutoSave : Timer
   {
-    private static TimeSpan m_Delay = TimeSpan.FromMinutes(5.0);
-    private static TimeSpan m_Warning = TimeSpan.Zero;
+    private static readonly TimeSpan m_Delay = TimeSpan.FromMinutes(5.0);
+    private static readonly TimeSpan m_Warning = TimeSpan.Zero;
 
-    private static string[] m_Backups =
+    private static readonly string[] m_Backups =
     {
       "Third Backup",
       "Second Backup",
@@ -17,8 +17,8 @@ namespace Server.Misc
 
     public AutoSave() : base(m_Delay - m_Warning, m_Delay) => Priority = TimerPriority.OneMinute;
 
-    public static bool SavesEnabled{ get; set; } = true;
-    //private static TimeSpan m_Warning = TimeSpan.FromSeconds( 15.0 );
+    public static bool SavesEnabled { get; set; } = true;
+    // private static TimeSpan m_Warning = TimeSpan.FromSeconds( 15.0 );
 
     public static void Initialize()
     {

@@ -4,7 +4,7 @@ namespace Server.Engines.Help
 {
   public class PagePrompt : Prompt
   {
-    private PageType m_Type;
+    private readonly PageType m_Type;
 
     public PagePrompt(PageType type) => m_Type = type;
 

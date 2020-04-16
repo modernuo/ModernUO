@@ -28,7 +28,7 @@ namespace Server.Factions
 
     public Faction() => State = new FactionState(this);
 
-    public StrongholdRegion StrongholdRegion{ get; set; }
+    public StrongholdRegion StrongholdRegion { get; set; }
 
     public FactionDefinition Definition
     {
@@ -40,7 +40,7 @@ namespace Server.Factions
       }
     }
 
-    public FactionState State{ get; set; }
+    public FactionState State { get; set; }
 
     public Election Election
     {
@@ -312,8 +312,8 @@ namespace Server.Factions
 
       int killPoints = pl.KillPoints;
 
-      //Ordinarily, through normal faction removal, this will never find any sigils.
-      //Only with a leave delay less than the ReturnPeriod or a Faction Kick/Ban, will this ever do anything
+      // Ordinarily, through normal faction removal, this will never find any sigils.
+      // Only with a leave delay less than the ReturnPeriod or a Faction Kick/Ban, will this ever do anything
       mob.Backpack?.FindItemsByType<Sigil>().ForEach(sigil => sigil.ReturnHome());
 
       if (pl.RankIndex != -1)
@@ -451,8 +451,7 @@ namespace Server.Factions
           pm.SendLocalizedMessage(
             1042161); // You cannot join a faction because your guild is an Order or Chaos type.
         }
-        else if (!Guild.NewGuildSystem && guild.Enemies?.Count > 0
-        ) //CAN join w/wars in new system
+        else if (!Guild.NewGuildSystem && guild.Enemies?.Count > 0) // CAN join w/wars in new system
         {
           pm.SendLocalizedMessage(1005056); // You cannot join a faction with active Wars
         }
@@ -735,7 +734,7 @@ namespace Server.Factions
 
         if (faction != null)
           from.SendGump(new ElectionManagementGump(faction.Election));
-        //from.SendGump( new Gumps.PropertiesGump( from, faction.Election ) );
+        // from.SendGump( new Gumps.PropertiesGump( from, faction.Election ) );
         else
           from.SendMessage("That stone has no faction assigned.");
       }
@@ -944,8 +943,6 @@ namespace Server.Factions
               silver.ToString("N0")); // Thou hast earned ~1_AMOUNT~ silver for vanquishing the vile creature.
         }
 
-        #region Ethics
-
         if (bc.Map == Facet && bc.GetEthicAllegiance(killer) == BaseCreature.Allegiance.Enemy)
         {
           Player killerEPL = Player.Find(killer);
@@ -957,8 +954,6 @@ namespace Server.Factions
           }
         }
 
-        #endregion
-
         return;
       }
 
@@ -967,12 +962,8 @@ namespace Server.Factions
       if (victimState == null)
         return;
 
-      #region Dueling
-
       if (victim.Region.IsPartOf<SafeZone>())
         return;
-
-      #endregion
 
       if (killer == victim || killerState.Faction != victimState.Faction)
         ApplySkillLoss(victim);
@@ -982,8 +973,6 @@ namespace Server.Factions
         if (victimState.KillPoints <= -6)
         {
           killer?.SendLocalizedMessage(501693); // This victim is not worth enough to get kill points from.
-
-          #region Ethics
 
           Player killerEPL = Player.Find(killer);
           Player victimEPL = Player.Find(victim);
@@ -1005,8 +994,6 @@ namespace Server.Factions
               victimState.OnGivenSilverTo(killer);
             }
           }
-
-          #endregion
         }
         else
         {
@@ -1023,7 +1010,7 @@ namespace Server.Factions
             {
               victimState.IsActive = true;
 
-              if (1 > Utility.Random(3))
+              if (Utility.Random(3) < 1)
                 killerState.IsActive = true;
 
               int silver = killerState.Faction.AwardSilver(killer, award * 40);
@@ -1045,8 +1032,6 @@ namespace Server.Factions
             victim.SendLocalizedMessage(1042738 + offset,
               args); // Thou has lost ~1_KILL_POINTS~ kill point(s) to ~3_ATTACKER_NAME~ for being vanquished!
 
-            #region Ethics
-
             Player killerEPL = Player.Find(killer);
             Player victimEPL = Player.Find(victim);
 
@@ -1065,8 +1050,6 @@ namespace Server.Factions
                 killerEPL.History += powerTransfer;
               }
             }
-
-            #endregion
 
             victimState.OnGivenSilverTo(killer);
           }
@@ -1139,7 +1122,7 @@ namespace Server.Factions
 
     private class BroadcastPrompt : Prompt
     {
-      private Faction m_Faction;
+      private readonly Faction m_Faction;
 
       public BroadcastPrompt(Faction faction) => m_Faction = faction;
 
@@ -1149,12 +1132,10 @@ namespace Server.Factions
       }
     }
 
-    #region Skill Loss
-
     public const double SkillLossFactor = 1.0 / 3;
     public static readonly TimeSpan SkillLossPeriod = TimeSpan.FromMinutes(20.0);
 
-    private static Dictionary<Mobile, SkillLossContext> m_SkillLoss = new Dictionary<Mobile, SkillLossContext>();
+    private static readonly Dictionary<Mobile, SkillLossContext> m_SkillLoss = new Dictionary<Mobile, SkillLossContext>();
 
     private class SkillLossContext
     {
@@ -1207,8 +1188,6 @@ namespace Server.Factions
 
       return true;
     }
-
-    #endregion
   }
 
   public enum FactionKickType
@@ -1220,7 +1199,7 @@ namespace Server.Factions
 
   public class FactionKickCommand : BaseCommand
   {
-    private FactionKickType m_KickType;
+    private readonly FactionKickType m_KickType;
 
     public FactionKickCommand(FactionKickType kickType)
     {
@@ -1233,28 +1212,28 @@ namespace Server.Factions
       switch (m_KickType)
       {
         case FactionKickType.Kick:
-        {
-          Commands = new[] { "FactionKick" };
-          Usage = "FactionKick";
-          Description =
-            "Kicks the targeted player out of his current faction. This does not prevent them from rejoining.";
-          break;
-        }
+          {
+            Commands = new[] { "FactionKick" };
+            Usage = "FactionKick";
+            Description =
+              "Kicks the targeted player out of his current faction. This does not prevent them from rejoining.";
+            break;
+          }
         case FactionKickType.Ban:
-        {
-          Commands = new[] { "FactionBan" };
-          Usage = "FactionBan";
-          Description =
-            "Bans the account of a targeted player from joining factions. All players on the account are removed from their current faction, if any.";
-          break;
-        }
+          {
+            Commands = new[] { "FactionBan" };
+            Usage = "FactionBan";
+            Description =
+              "Bans the account of a targeted player from joining factions. All players on the account are removed from their current faction, if any.";
+            break;
+          }
         case FactionKickType.Unban:
-        {
-          Commands = new[] { "FactionUnban" };
-          Usage = "FactionUnban";
-          Description = "Unbans the account of a targeted player from joining factions.";
-          break;
-        }
+          {
+            Commands = new[] { "FactionUnban" };
+            Usage = "FactionUnban";
+            Description = "Unbans the account of a targeted player from joining factions.";
+            break;
+          }
       }
     }
 
@@ -1265,81 +1244,81 @@ namespace Server.Factions
       switch (m_KickType)
       {
         case FactionKickType.Kick:
-        {
-          PlayerState pl = PlayerState.Find(mob);
+          {
+            PlayerState pl = PlayerState.Find(mob);
 
-          if (pl != null)
-          {
-            pl.Faction.RemoveMember(mob);
-            mob.SendMessage("You have been kicked from your faction.");
-            AddResponse("They have been kicked from their faction.");
-          }
-          else
-          {
-            LogFailure("They are not in a faction.");
-          }
-
-          break;
-        }
-        case FactionKickType.Ban:
-        {
-          if (mob.Account is Account acct)
-          {
-            if (acct.GetTag("FactionBanned") == null)
+            if (pl != null)
             {
-              acct.SetTag("FactionBanned", "true");
-              AddResponse("The account has been banned from joining factions.");
+              pl.Faction.RemoveMember(mob);
+              mob.SendMessage("You have been kicked from your faction.");
+              AddResponse("They have been kicked from their faction.");
             }
             else
             {
-              AddResponse("The account is already banned from joining factions.");
+              LogFailure("They are not in a faction.");
             }
 
-            for (int i = 0; i < acct.Length; ++i)
+            break;
+          }
+        case FactionKickType.Ban:
+          {
+            if (mob.Account is Account acct)
             {
-              mob = acct[i];
-
-              if (mob != null)
+              if (acct.GetTag("FactionBanned") == null)
               {
-                PlayerState pl = PlayerState.Find(mob);
+                acct.SetTag("FactionBanned", "true");
+                AddResponse("The account has been banned from joining factions.");
+              }
+              else
+              {
+                AddResponse("The account is already banned from joining factions.");
+              }
 
-                if (pl != null)
+              for (int i = 0; i < acct.Length; ++i)
+              {
+                mob = acct[i];
+
+                if (mob != null)
                 {
-                  pl.Faction.RemoveMember(mob);
-                  mob.SendMessage("You have been kicked from your faction.");
-                  AddResponse("They have been kicked from their faction.");
+                  PlayerState pl = PlayerState.Find(mob);
+
+                  if (pl != null)
+                  {
+                    pl.Faction.RemoveMember(mob);
+                    mob.SendMessage("You have been kicked from your faction.");
+                    AddResponse("They have been kicked from their faction.");
+                  }
                 }
               }
             }
-          }
-          else
-          {
-            LogFailure("They have no assigned account.");
-          }
-
-          break;
-        }
-        case FactionKickType.Unban:
-        {
-          if (mob.Account is Account acct)
-          {
-            if (acct.GetTag("FactionBanned") == null)
+            else
             {
-              AddResponse("The account is not already banned from joining factions.");
+              LogFailure("They have no assigned account.");
+            }
+
+            break;
+          }
+        case FactionKickType.Unban:
+          {
+            if (mob.Account is Account acct)
+            {
+              if (acct.GetTag("FactionBanned") == null)
+              {
+                AddResponse("The account is not already banned from joining factions.");
+              }
+              else
+              {
+                acct.RemoveTag("FactionBanned");
+                AddResponse("The account may now freely join factions.");
+              }
             }
             else
             {
-              acct.RemoveTag("FactionBanned");
-              AddResponse("The account may now freely join factions.");
+              LogFailure("They have no assigned account.");
             }
-          }
-          else
-          {
-            LogFailure("They have no assigned account.");
-          }
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

@@ -15,14 +15,14 @@ namespace Server.Ethics
       Powers = powers;
     }
 
-    public int PrimaryHue{ get; }
+    public int PrimaryHue { get; }
 
-    public TextDefinition Title{ get; }
+    public TextDefinition Title { get; }
 
-    public TextDefinition Adjunct{ get; }
+    public TextDefinition Adjunct { get; }
 
-    public TextDefinition JoinPhrase{ get; }
+    public TextDefinition JoinPhrase { get; }
 
-    public Power[] Powers{ get; }
+    public Power[] Powers { get; }
   }
 }

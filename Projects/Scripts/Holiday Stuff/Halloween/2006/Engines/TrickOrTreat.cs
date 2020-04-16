@@ -139,8 +139,6 @@ namespace Server.Engines.Events
 
         DateTime now = DateTime.UtcNow;
 
-
-
         if (CheckMobile(begged))
         {
           if (begged.NextTrickOrTreat > now)
@@ -202,7 +200,7 @@ namespace Server.Engines.Events
 
   public class NaughtyTwin : BaseCreature
   {
-    private static Point3D[] Felucca_Locations =
+    private static readonly Point3D[] Felucca_Locations =
     {
       new Point3D(4467, 1283, 5), // Moonglow
       new Point3D(1336, 1997, 5), // Britain
@@ -214,13 +212,13 @@ namespace Server.Engines.Events
       new Point3D(3563, 2139, Map.Trammel.GetAverageZ(3563, 2139)) // (New) Magincia
     };
 
-    private static Point3D[] Malas_Locations =
+    private static readonly Point3D[] Malas_Locations =
     {
       new Point3D(1015, 527, -65), // Luna
       new Point3D(1997, 1386, -85) // Umbra
     };
 
-    private static Point3D[] Ilshenar_Locations =
+    private static readonly Point3D[] Ilshenar_Locations =
     {
       new Point3D(1215, 467, -13), // Compassion
       new Point3D(722, 1366, -60), // Honesty
@@ -233,14 +231,14 @@ namespace Server.Engines.Events
       new Point3D(1721, 218, 96) // Chaos
     };
 
-    private static Point3D[] Tokuno_Locations =
+    private static readonly Point3D[] Tokuno_Locations =
     {
       new Point3D(1169, 998, 41), // Isamu-Jima
       new Point3D(802, 1204, 25), // Makoto-Jima
       new Point3D(270, 628, 15) // Homare-Jima
     };
 
-    private Mobile m_From;
+    private readonly Mobile m_From;
 
     public NaughtyTwin(Mobile from)
       : base(AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4)

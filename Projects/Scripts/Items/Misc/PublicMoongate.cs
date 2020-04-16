@@ -156,9 +156,9 @@ namespace Server.Items
       Number = number;
     }
 
-    public Point3D Location{ get; }
+    public Point3D Location { get; }
 
-    public int Number{ get; }
+    public int Number { get; }
   }
 
   public class PMList
@@ -241,20 +241,20 @@ namespace Server.Items
       Entries = entries;
     }
 
-    public int Number{ get; }
+    public int Number { get; }
 
-    public int SelNumber{ get; }
+    public int SelNumber { get; }
 
-    public Map Map{ get; }
+    public Map Map { get; }
 
-    public PMEntry[] Entries{ get; }
+    public PMEntry[] Entries { get; }
   }
 
   public class MoongateGump : Gump
   {
-    private PMList[] m_Lists;
-    private Mobile m_Mobile;
-    private Item m_Moongate;
+    private readonly PMList[] m_Lists;
+    private readonly Mobile m_Mobile;
+    private readonly Item m_Moongate;
 
     public MoongateGump(Mobile mobile, Item moongate) : base(100, 100)
     {

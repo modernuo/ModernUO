@@ -19,7 +19,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Cut{ get; set; }
+    public bool Cut { get; set; }
 
     public override string DefaultName => "a plague beast mutation core";
 

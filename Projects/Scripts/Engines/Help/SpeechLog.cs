@@ -19,23 +19,15 @@ namespace Server.Engines.Help
     // What is the maximum number of entries a log can contain? (0 -> no limit)
     public static readonly int MaxLength = 0;
 
-    private Queue<SpeechLogEntry> m_Queue;
+    private readonly Queue<SpeechLogEntry> m_Queue;
 
     public SpeechLog() => m_Queue = new Queue<SpeechLogEntry>();
 
     public int Count => m_Queue.Count;
 
-    #region IEnumerable<SpeechLogEntry> Members
-
     IEnumerator<SpeechLogEntry> IEnumerable<SpeechLogEntry>.GetEnumerator() => m_Queue.GetEnumerator();
 
-    #endregion
-
-    #region IEnumerable Members
-
     IEnumerator IEnumerable.GetEnumerator() => m_Queue.GetEnumerator();
-
-    #endregion
 
     public static void Initialize()
     {
@@ -127,10 +119,10 @@ namespace Server.Engines.Help
       Created = DateTime.UtcNow;
     }
 
-    public Mobile From{ get; }
+    public Mobile From { get; }
 
-    public string Speech{ get; }
+    public string Speech { get; }
 
-    public DateTime Created{ get; }
+    public DateTime Created { get; }
   }
 }

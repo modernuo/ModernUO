@@ -15,7 +15,7 @@ namespace Server.Guilds
   public class GuildDiplomacyGump : BaseGuildListGump<Guild>
   {
     private GuildDisplayType m_Display;
-    private TextDefinition m_LowerText;
+    private readonly TextDefinition m_LowerText;
 
     public GuildDiplomacyGump(PlayerMobile pm, Guild g)
       : this(pm, g, NameComparer.Instance, true, "", 0, GuildDisplayType.All,
@@ -49,9 +49,9 @@ namespace Server.Guilds
       : base(pm, g, list, currentComparer, ascending, filter, startNumber,
         new[]
         {
-          new InfoField<Guild>(1062954, 280, NameComparer.Instance), //Guild Name
-          new InfoField<Guild>(1062957, 50, AbbrevComparer.Instance), //Abbrev
-          new InfoField<Guild>(1062958, 120, new StatusComparer(g)) //Guild Title
+          new InfoField<Guild>(1062954, 280, NameComparer.Instance), // Guild Name
+          new InfoField<Guild>(1062957, 50, AbbrevComparer.Instance), // Abbrev
+          new InfoField<Guild>(1062958, 120, new StatusComparer(g)) // Guild Title
         })
     {
       m_Display = display;
@@ -86,8 +86,7 @@ namespace Server.Guilds
       defs[0] = g == guild ? Color(g.Name, 0x006600) : g.Name;
       defs[1] = g.Abbreviation;
 
-      defs[2] = 3000085; //Peace
-
+      defs[2] = 3000085; // Peace
 
       if (guild.IsAlly(g))
       {
@@ -120,7 +119,7 @@ namespace Server.Guilds
 
         if (leader != null)
         {
-          if (guild == leader && alliance.IsPendingMember(g) || g == leader && alliance.IsPendingMember(guild))
+          if ((guild == leader && alliance.IsPendingMember(g)) || (g == leader && alliance.IsPendingMember(guild)))
             return true;
         }
         else if (alliance.IsPendingMember(g))
@@ -134,8 +133,8 @@ namespace Server.Guilds
 
     public override void DrawEndingEntry(int itemNumber)
     {
-      //AddHtmlLocalized( 66, 153 + itemNumber * 28, 280, 26, 1063136 + (int)m_Display, 0xF, false, false ); // Showing All Guilds/Awaiting Action/ w/Relation Ship
-      //AddHtmlText( 66, 153 + itemNumber * 28, 280, 26, m_LowerText, false, false );
+      // AddHtmlLocalized( 66, 153 + itemNumber * 28, 280, 26, 1063136 + (int)m_Display, 0xF, false, false ); // Showing All Guilds/Awaiting Action/ w/Relation Ship
+      // AddHtmlText( 66, 153 + itemNumber * 28, 280, 26, m_LowerText, false, false );
 
       if (m_LowerText?.Number > 0)
         AddHtmlLocalized(66, 153 + itemNumber * 28, 280, 26, m_LowerText.Number, 0xF);
@@ -150,7 +149,6 @@ namespace Server.Guilds
       }
     }
 
-
     protected override bool IsFiltered(Guild g, string filter)
     {
       if (g == null)
@@ -159,24 +157,22 @@ namespace Server.Guilds
       switch (m_Display)
       {
         case GuildDisplayType.Relations:
-        {
-          //if ( !( guild.IsWar( g ) || guild.IsAlly( g ) ) )
+          {
+            // if ( !( guild.IsWar( g ) || guild.IsAlly( g ) ) )
 
-          if (!(guild.FindActiveWar(g) != null || guild.IsAlly(g))
-          ) //As per OSI, only the guild leader wars show up under the sorting by relation
-            return true;
+            if (!(guild.FindActiveWar(g) != null || guild.IsAlly(g))) // As per OSI, only the guild leader wars show up under the sorting by relation
+              return true;
 
-          return false;
-        }
+            return false;
+          }
         case GuildDisplayType.AwaitingAction:
-        {
-          return !HasRelationship(g);
-        }
+          {
+            return !HasRelationship(g);
+          }
       }
 
       return !(Insensitive.Contains(g.Name, filter) || Insensitive.Contains(g.Abbreviation, filter));
     }
-
 
     public override Gump GetResentGump(PlayerMobile pm, Guild g, IComparer<Guild> comparer, bool ascending,
       string filter, int startNumber) =>
@@ -207,8 +203,6 @@ namespace Server.Guilds
       ResendGump();
     }
 
-    #region Comparers
-
     private class NameComparer : IComparer<Guild>
     {
       public static readonly IComparer<Guild> Instance = new NameComparer();
@@ -228,7 +222,7 @@ namespace Server.Guilds
 
     private class StatusComparer : IComparer<Guild>
     {
-      private Guild m_Guild;
+      private readonly Guild m_Guild;
 
       public StatusComparer(Guild g) => m_Guild = g;
 
@@ -248,7 +242,6 @@ namespace Server.Guilds
           aStatus = GuildCompareStatus.Ally;
         else if (m_Guild.IsWar(x))
           aStatus = GuildCompareStatus.War;
-
 
         if (m_Guild.IsAlly(y))
           bStatus = GuildCompareStatus.Ally;
@@ -282,7 +275,5 @@ namespace Server.Guilds
         return Insensitive.Compare(x.Abbreviation, y.Abbreviation);
       }
     }
-
-    #endregion
   }
 }

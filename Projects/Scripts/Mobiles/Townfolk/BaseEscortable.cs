@@ -24,7 +24,7 @@ namespace Server.Mobiles
 
     // Classic list
     // Used when: !MLQuestSystem.Enabled && !Core.ML
-    private static string[] m_TownNames =
+    private static readonly string[] m_TownNames =
     {
       "Cove", "Britain", "Jhelom",
       "Minoc", "Ocllo", "Trinsic",
@@ -34,7 +34,7 @@ namespace Server.Mobiles
 
     // ML list, pre-ML quest system
     // Used when: !MLQuestSystem.Enabled && Core.ML
-    private static string[] m_MLTownNames =
+    private static readonly string[] m_MLTownNames =
     {
       "Cove", "Serpent's Hold", "Jhelom",
       "Nujel'm"
@@ -42,7 +42,7 @@ namespace Server.Mobiles
 
     // ML quest system general list
     // Used when: MLQuestSystem.Enabled && !Region.IsPartOf( "Haven Island" )
-    private static Type[] m_MLQuestTypes =
+    private static readonly Type[] m_MLQuestTypes =
     {
       typeof(EscortToYew),
       typeof(EscortToVesper),
@@ -57,12 +57,12 @@ namespace Server.Mobiles
       typeof(EscortToCove),
       typeof(EscortToBritain)
       // Ocllo was removed in pub 56
-      //typeof( EscortToOcllo )
+      // typeof( EscortToOcllo )
     };
 
     // ML quest system New Haven list
     // Used when: MLQuestSystem.Enabled && Region.IsPartOf( "Haven Island" )
-    private static Type[] m_MLQuestTypesNH =
+    private static readonly Type[] m_MLQuestTypesNH =
     {
       typeof(EscortToNHAlchemist),
       typeof(EscortToNHBard),
@@ -73,7 +73,7 @@ namespace Server.Mobiles
       typeof(EscortToNHMage),
       typeof(EscortToNHInn),
       // Farm destination was removed
-      //typeof( EscortToNHFarm ),
+      // typeof( EscortToNHFarm ),
       typeof(EscortToNHDocks),
       typeof(EscortToNHBowyer),
       typeof(EscortToNHBank)
@@ -127,7 +127,7 @@ namespace Server.Mobiles
       }
     }
 
-    public static Dictionary<Mobile, BaseEscortable> EscortTable{ get; } = new Dictionary<Mobile, BaseEscortable>();
+    public static Dictionary<Mobile, BaseEscortable> EscortTable { get; } = new Dictionary<Mobile, BaseEscortable>();
 
     protected override List<MLQuest> ConstructQuestList()
     {
@@ -615,7 +615,7 @@ namespace Server.Mobiles
 
     private class DeleteTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public DeleteTimer(Mobile m, TimeSpan delay)
         : base(delay)
@@ -642,9 +642,9 @@ namespace Server.Mobiles
       Region = region;
     }
 
-    public string Name{ get; }
+    public string Name { get; }
 
-    public Region Region{ get; }
+    public Region Region { get; }
 
     public bool Contains(Point3D p) => Region.Contains(p);
 
@@ -677,8 +677,8 @@ namespace Server.Mobiles
 
   public class AskDestinationEntry : ContextMenuEntry
   {
-    private Mobile m_From;
-    private BaseEscortable m_Mobile;
+    private readonly Mobile m_From;
+    private readonly BaseEscortable m_Mobile;
 
     public AskDestinationEntry(BaseEscortable m, Mobile from)
       : base(6100, 3)
@@ -695,8 +695,8 @@ namespace Server.Mobiles
 
   public class AcceptEscortEntry : ContextMenuEntry
   {
-    private Mobile m_From;
-    private BaseEscortable m_Mobile;
+    private readonly Mobile m_From;
+    private readonly BaseEscortable m_Mobile;
 
     public AcceptEscortEntry(BaseEscortable m, Mobile from)
       : base(6101, 3)
@@ -713,7 +713,7 @@ namespace Server.Mobiles
 
   public class AbandonEscortEntry : ContextMenuEntry
   {
-    private BaseEscortable m_Mobile;
+    private readonly BaseEscortable m_Mobile;
 
     public AbandonEscortEntry(BaseEscortable m)
       : base(6102, 3) =>

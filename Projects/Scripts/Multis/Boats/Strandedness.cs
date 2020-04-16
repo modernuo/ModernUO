@@ -2,7 +2,7 @@ namespace Server.Misc
 {
   public class Strandedness
   {
-    private static Point2D[] m_Felucca =
+    private static readonly Point2D[] m_Felucca =
     {
       new Point2D(2528, 3568), new Point2D(2376, 3400), new Point2D(2528, 3896),
       new Point2D(2168, 3904), new Point2D(1136, 3416), new Point2D(1432, 3648),
@@ -37,9 +37,9 @@ namespace Server.Misc
       new Point2D(1840, 2640), new Point2D(1928, 2952), new Point2D(2120, 2712)
     };
 
-    private static Point2D[] m_Trammel = m_Felucca;
+    private static readonly Point2D[] m_Trammel = m_Felucca;
 
-    private static Point2D[] m_Ilshenar =
+    private static readonly Point2D[] m_Ilshenar =
     {
       new Point2D(1252, 1180), new Point2D(1562, 1090), new Point2D(1444, 1016),
       new Point2D(1324, 968), new Point2D(1418, 806), new Point2D(1722, 874),
@@ -49,9 +49,9 @@ namespace Server.Misc
       new Point2D(1358, 866), new Point2D(510, 302), new Point2D(510, 392)
     };
 
-    private static Point2D[] m_Tokuno =
+    private static readonly Point2D[] m_Tokuno =
     {
-      //Makoto-Jima
+      // Makoto-Jima
       new Point2D(837, 1351), new Point2D(941, 1241), new Point2D(959, 1185),
       new Point2D(923, 1091), new Point2D(904, 983), new Point2D(845, 944),
       new Point2D(829, 896), new Point2D(794, 852), new Point2D(766, 821),
@@ -61,7 +61,7 @@ namespace Server.Misc
       new Point2D(526, 1271), new Point2D(562, 1295), new Point2D(616, 1335),
       new Point2D(789, 1347), new Point2D(712, 1359),
 
-      //Homare-Jima
+      // Homare-Jima
       new Point2D(202, 498), new Point2D(116, 600), new Point2D(107, 699),
       new Point2D(162, 799), new Point2D(158, 889), new Point2D(169, 989),
       new Point2D(194, 1101), new Point2D(250, 1163), new Point2D(295, 1176),
@@ -72,7 +72,7 @@ namespace Server.Misc
       new Point2D(672, 379), new Point2D(626, 332), new Point2D(494, 291),
       new Point2D(371, 336), new Point2D(324, 334), new Point2D(270, 362),
 
-      //Isamu-Jima
+      // Isamu-Jima
       new Point2D(1240, 1076), new Point2D(1189, 1115), new Point2D(1046, 1039),
       new Point2D(1025, 885), new Point2D(907, 809), new Point2D(840, 506),
       new Point2D(799, 396), new Point2D(720, 258), new Point2D(744, 158),
@@ -101,8 +101,8 @@ namespace Server.Misc
       {
         int id = tile.ID;
 
-        return id >= 168 && id <= 171
-               || id >= 310 && id <= 311;
+        return (id >= 168 && id <= 171)
+               || (id >= 310 && id <= 311);
       }
 
       if (surface is StaticTile staticTile)
@@ -157,17 +157,17 @@ namespace Server.Misc
       canFit = map.CanSpawnMobile(x, y, z);
 
       for (int i = 1; !canFit && i <= 40; i += 2)
-      for (int xo = -1; !canFit && xo <= 1; ++xo)
-      for (int yo = -1; !canFit && yo <= 1; ++yo)
-      {
-        if (xo == 0 && yo == 0)
-          continue;
+        for (int xo = -1; !canFit && xo <= 1; ++xo)
+          for (int yo = -1; !canFit && yo <= 1; ++yo)
+          {
+            if (xo == 0 && yo == 0)
+              continue;
 
-        x = p.X + xo * i;
-        y = p.Y + yo * i;
-        z = map.GetAverageZ(x, y);
-        canFit = map.CanSpawnMobile(x, y, z);
-      }
+            x = p.X + xo * i;
+            y = p.Y + yo * i;
+            z = map.GetAverageZ(x, y);
+            canFit = map.CanSpawnMobile(x, y, z);
+          }
 
       if (canFit)
         from.Location = new Point3D(x, y, z);

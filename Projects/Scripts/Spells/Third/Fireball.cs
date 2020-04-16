@@ -4,12 +4,11 @@ namespace Server.Spells.Third
 {
   public class FireballSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Fireball", "Vas Flam",
       203,
       9041,
-      Reagent.BlackPearl
-    );
+      Reagent.BlackPearl);
 
     public FireballSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

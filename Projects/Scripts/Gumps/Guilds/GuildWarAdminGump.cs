@@ -5,8 +5,8 @@ namespace Server.Gumps
 {
   public class GuildWarAdminGump : Gump
   {
-    private Guild m_Guild;
-    private Mobile m_Mobile;
+    private readonly Guild m_Guild;
+    private readonly Mobile m_Mobile;
 
     public GuildWarAdminGump(Mobile from, Guild guild) : base(20, 30)
     {
@@ -71,47 +71,47 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 1: // Declare war
-        {
-          m_Mobile.SendLocalizedMessage(1018001); // Declare war through search - Enter Guild Name:
-          m_Mobile.Prompt = new GuildDeclareWarPrompt(m_Mobile, m_Guild);
+          {
+            m_Mobile.SendLocalizedMessage(1018001); // Declare war through search - Enter Guild Name:
+            m_Mobile.Prompt = new GuildDeclareWarPrompt(m_Mobile, m_Guild);
 
-          break;
-        }
+            break;
+          }
         case 2: // Declare peace
-        {
-          GuildGump.EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildDeclarePeaceGump(m_Mobile, m_Guild));
+          {
+            GuildGump.EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildDeclarePeaceGump(m_Mobile, m_Guild));
 
-          break;
-        }
+            break;
+          }
         case 3: // Accept war
-        {
-          GuildGump.EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildAcceptWarGump(m_Mobile, m_Guild));
+          {
+            GuildGump.EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildAcceptWarGump(m_Mobile, m_Guild));
 
-          break;
-        }
+            break;
+          }
         case 4: // Reject war
-        {
-          GuildGump.EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildRejectWarGump(m_Mobile, m_Guild));
+          {
+            GuildGump.EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildRejectWarGump(m_Mobile, m_Guild));
 
-          break;
-        }
+            break;
+          }
         case 5: // Rescind declarations
-        {
-          GuildGump.EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildRescindDeclarationGump(m_Mobile, m_Guild));
+          {
+            GuildGump.EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildRescindDeclarationGump(m_Mobile, m_Guild));
 
-          break;
-        }
+            break;
+          }
         case 6: // Return
-        {
-          GuildGump.EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+          {
+            GuildGump.EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

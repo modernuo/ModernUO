@@ -4,13 +4,12 @@ namespace Server.Spells.Necromancy
 {
   public class HorrificBeastSpell : TransformationSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Horrific Beast", "Rel Xen Vas Bal",
       203,
       9031,
       Reagent.BatWing,
-      Reagent.DaemonBlood
-    );
+      Reagent.DaemonBlood);
 
     public HorrificBeastSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

@@ -2,11 +2,9 @@ namespace Server.Items
 {
   public class TranslatedGargoyleJournal : BlueBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Translated Journal", "Velis",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "This text has been",
         "translated from a",
         "gargoyle's journal",
@@ -14,10 +12,8 @@ namespace Server.Items
         "and subsequent",
         "reeducation.",
         "",
-        "          -Velis"
-      ),
-      new BookPageInfo
-      (
+        "          -Velis"),
+      new BookPageInfo(
         "I write this in the",
         "hopes that someday a",
         "soul of pure heart and",
@@ -25,10 +21,8 @@ namespace Server.Items
         "are not the evil beings",
         "that our cousin",
         "gargoyles have made",
-        "us out to be.  We"
-      ),
-      new BookPageInfo
-      (
+        "us out to be.  We"),
+      new BookPageInfo(
         "consider them",
         "uncivilized and they",
         "have no concept of the",
@@ -36,10 +30,8 @@ namespace Server.Items
         "who reads this, I beg",
         "for your help in",
         "saving my brethern",
-        "and preserving my"
-      ),
-      new BookPageInfo
-      (
+        "and preserving my"),
+      new BookPageInfo(
         "race.  We stand at the",
         "edge of destruction as",
         "does the rest of the",
@@ -47,10 +39,8 @@ namespace Server.Items
         "written law that we",
         "would not allow the",
         "knowledge of our",
-        "civilization to spread"
-      ),
-      new BookPageInfo
-      (
+        "civilization to spread"),
+      new BookPageInfo(
         "into the world, no we",
         "are left with little",
         "choice...contact the",
@@ -58,10 +48,8 @@ namespace Server.Items
         "of finding help to save",
         "it or becoming the",
         "unwilling bringers of",
-        "its damnation."
-      ),
-      new BookPageInfo
-      (
+        "its damnation."),
+      new BookPageInfo(
         "   I fear my capture is",
         "certain, the",
         "controllers grow ever",
@@ -69,10 +57,8 @@ namespace Server.Items
         "place and I know if",
         "they discover me, my",
         "fate will be as that of",
-        "my brothers."
-      ),
-      new BookPageInfo
-      (
+        "my brothers."),
+      new BookPageInfo(
         "Although we resisted",
         "with all our strength",
         "it is now clear that we",
@@ -80,10 +66,8 @@ namespace Server.Items
         "or our people will be",
         "gone.  And if our",
         "oppressor achieves",
-        "his goals our race will"
-      ),
-      new BookPageInfo
-      (
+        "his goals our race will"),
+      new BookPageInfo(
         "surely be joined buy",
         "others.",
         "   Those of us who",
@@ -91,10 +75,8 @@ namespace Server.Items
         "taken hope to open a",
         "path from the outside",
         "world into the city.",
-        "We believe we have"
-      ),
-      new BookPageInfo
-      (
+        "We believe we have"),
+      new BookPageInfo(
         "found weak areas in",
         "the mountains that we",
         "can successfully",
@@ -102,26 +84,16 @@ namespace Server.Items
         "our limited supplies.",
         "We will have to work",
         "quickly and the risk",
-        "of being discovered is"
-      ),
-      new BookPageInfo
-      (
+        "of being discovered is"),
+      new BookPageInfo(
         "great, but no choice",
-        "remains..."
-      ),
-      new BookPageInfo
-      (
-      ),
-      new BookPageInfo
-      (
-      ),
-      new BookPageInfo
-      (
+        "remains..."),
+      new BookPageInfo(),
+      new BookPageInfo(),
+      new BookPageInfo(
         "Kai Hohiro, 12pm.",
         "10.11.2001",
-        "first one to be here"
-      )
-    );
+        "first one to be here"));
 
     [Constructible]
     public TranslatedGargoyleJournal() : base(false)

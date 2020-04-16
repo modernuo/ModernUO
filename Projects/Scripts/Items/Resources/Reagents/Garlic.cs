@@ -14,7 +14,6 @@ namespace Server.Items
     int ICommodity.DescriptionNumber => LabelNumber;
     bool ICommodity.IsDeedable => true;
 
-
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);

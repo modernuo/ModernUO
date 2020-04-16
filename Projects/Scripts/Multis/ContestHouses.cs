@@ -148,12 +148,12 @@ namespace Server.Multis
         }
 
       foreach (var door in Doors)
-      foreach (var check in Doors.Where(d => d != door))
-        if (door.InRange(check.Location, 1))
-        {
-          door.Link = check;
-          check.Link = door;
-        }
+        foreach (var check in Doors.Where(d => d != door))
+          if (door.InRange(check.Location, 1))
+          {
+            door.Link = check;
+            check.Link = door;
+          }
 
       foreach (var (key, value) in teleporters)
       {
@@ -169,8 +169,7 @@ namespace Server.Multis
         AddTeleporters(
           key,
           new Point3D(value[0].m_OffsetX, value[0].m_OffsetY, value[0].m_OffsetZ),
-          new Point3D(value[1].m_OffsetX, value[1].m_OffsetY, value[1].m_OffsetZ)
-        );
+          new Point3D(value[1].m_OffsetX, value[1].m_OffsetY, value[1].m_OffsetZ));
       }
 
       teleporters.Clear();
@@ -202,7 +201,7 @@ namespace Server.Multis
 
       int count = reader.ReadInt();
 
-      for(int i = 0; i < count; i++)
+      for (int i = 0; i < count; i++)
         AddFixture(reader.ReadItem());
     }
   }

@@ -5,7 +5,7 @@ namespace Server
 {
   public class DoorGenerator
   {
-    private static Rectangle2D[] m_BritRegions =
+    private static readonly Rectangle2D[] m_BritRegions =
     {
       new Rectangle2D(new Point2D(250, 750), new Point2D(775, 1330)),
       new Rectangle2D(new Point2D(525, 2095), new Point2D(925, 2430)),
@@ -25,17 +25,17 @@ namespace Server
       new Rectangle2D(new Point2D(5120, 2300), new Point2D(6143, 4095))
     };
 
-    private static Rectangle2D[] m_IlshRegions =
+    private static readonly Rectangle2D[] m_IlshRegions =
     {
       new Rectangle2D(new Point2D(0, 0), new Point2D(288 * 8, 200 * 8))
     };
 
-    private static Rectangle2D[] m_MalasRegions =
+    private static readonly Rectangle2D[] m_MalasRegions =
     {
       new Rectangle2D(new Point2D(0, 0), new Point2D(320 * 8, 256 * 8))
     };
 
-    private static int[] m_SouthFrames =
+    private static readonly int[] m_SouthFrames =
     {
       0x0006,
       0x0008,
@@ -109,7 +109,7 @@ namespace Server
       0x020A
     };
 
-    private static int[] m_NorthFrames =
+    private static readonly int[] m_NorthFrames =
     {
       0x0006,
       0x0008,
@@ -182,7 +182,7 @@ namespace Server
       0x020A
     };
 
-    private static int[] m_EastFrames =
+    private static readonly int[] m_EastFrames =
     {
       0x0007,
       0x000A,
@@ -256,7 +256,7 @@ namespace Server
       0x0209
     };
 
-    private static int[] m_WestFrames =
+    private static readonly int[] m_WestFrames =
     {
       0x0007,
       0x000C,
@@ -475,70 +475,70 @@ namespace Server
     public static void Generate(Rectangle2D region)
     {
       for (int rx = 0; rx < region.Width; ++rx)
-      for (int ry = 0; ry < region.Height; ++ry)
-      {
-        int vx = rx + region.X;
-        int vy = ry + region.Y;
-
-        StaticTile[] tiles = m_Map.Tiles.GetStaticTiles(vx, vy);
-
-        for (int i = 0; i < tiles.Length; ++i)
+        for (int ry = 0; ry < region.Height; ++ry)
         {
-          StaticTile tile = tiles[i];
+          int vx = rx + region.X;
+          int vy = ry + region.Y;
 
-          int id = tile.ID;
-          int z = tile.Z;
+          StaticTile[] tiles = m_Map.Tiles.GetStaticTiles(vx, vy);
 
-          if (IsWestFrame(id))
+          for (int i = 0; i < tiles.Length; ++i)
           {
-            if (IsEastFrame(vx + 2, vy, z))
-            {
-              AddDoor(vx + 1, vy, z, DoorFacing.WestCW);
-            }
-            else if (IsEastFrame(vx + 3, vy, z))
-            {
-              BaseDoor first = AddDoor(vx + 1, vy, z, DoorFacing.WestCW);
-              BaseDoor second = AddDoor(vx + 2, vy, z, DoorFacing.EastCCW);
+            StaticTile tile = tiles[i];
 
-              if (first != null && second != null)
+            int id = tile.ID;
+            int z = tile.Z;
+
+            if (IsWestFrame(id))
+            {
+              if (IsEastFrame(vx + 2, vy, z))
               {
-                first.Link = second;
-                second.Link = first;
+                AddDoor(vx + 1, vy, z, DoorFacing.WestCW);
               }
-              else
+              else if (IsEastFrame(vx + 3, vy, z))
               {
-                first?.Delete();
+                BaseDoor first = AddDoor(vx + 1, vy, z, DoorFacing.WestCW);
+                BaseDoor second = AddDoor(vx + 2, vy, z, DoorFacing.EastCCW);
 
-                second?.Delete();
+                if (first != null && second != null)
+                {
+                  first.Link = second;
+                  second.Link = first;
+                }
+                else
+                {
+                  first?.Delete();
+
+                  second?.Delete();
+                }
               }
             }
-          }
-          else if (IsNorthFrame(id))
-          {
-            if (IsSouthFrame(vx, vy + 2, z))
+            else if (IsNorthFrame(id))
             {
-              AddDoor(vx, vy + 1, z, DoorFacing.SouthCW);
-            }
-            else if (IsSouthFrame(vx, vy + 3, z))
-            {
-              BaseDoor first = AddDoor(vx, vy + 1, z, DoorFacing.NorthCCW);
-              BaseDoor second = AddDoor(vx, vy + 2, z, DoorFacing.SouthCW);
-
-              if (first != null && second != null)
+              if (IsSouthFrame(vx, vy + 2, z))
               {
-                first.Link = second;
-                second.Link = first;
+                AddDoor(vx, vy + 1, z, DoorFacing.SouthCW);
               }
-              else
+              else if (IsSouthFrame(vx, vy + 3, z))
               {
-                first?.Delete();
+                BaseDoor first = AddDoor(vx, vy + 1, z, DoorFacing.NorthCCW);
+                BaseDoor second = AddDoor(vx, vy + 2, z, DoorFacing.SouthCW);
 
-                second?.Delete();
+                if (first != null && second != null)
+                {
+                  first.Link = second;
+                  second.Link = first;
+                }
+                else
+                {
+                  first?.Delete();
+
+                  second?.Delete();
+                }
               }
             }
           }
         }
-      }
     }
   }
 }

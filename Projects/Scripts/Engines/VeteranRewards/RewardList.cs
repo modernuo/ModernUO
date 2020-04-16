@@ -13,8 +13,8 @@ namespace Server.Engines.VeteranRewards
         entries[i].List = this;
     }
 
-    public TimeSpan Age{ get; }
+    public TimeSpan Age { get; }
 
-    public RewardEntry[] Entries{ get; }
+    public RewardEntry[] Entries { get; }
   }
 }

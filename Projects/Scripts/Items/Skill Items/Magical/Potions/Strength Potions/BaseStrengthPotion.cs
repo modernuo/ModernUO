@@ -14,8 +14,8 @@ namespace Server.Items
     {
     }
 
-    public abstract int StrOffset{ get; }
-    public abstract TimeSpan Duration{ get; }
+    public abstract int StrOffset { get; }
+    public abstract TimeSpan Duration { get; }
 
     public override void Serialize(IGenericWriter writer)
     {

@@ -6,7 +6,7 @@ namespace Server.Targets
 {
   public class AIControlMobileTarget : Target
   {
-    private List<BaseAI> m_List;
+    private readonly List<BaseAI> m_List;
 
     public AIControlMobileTarget(BaseAI ai, OrderType order) : base(-1, false,
       order == OrderType.Attack ? TargetFlags.Harmful : TargetFlags.None)
@@ -17,7 +17,7 @@ namespace Server.Targets
       AddAI(ai);
     }
 
-    public OrderType Order{ get; }
+    public OrderType Order { get; }
 
     public void AddAI(BaseAI ai)
     {

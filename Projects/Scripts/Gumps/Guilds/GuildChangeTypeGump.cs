@@ -8,8 +8,8 @@ namespace Server.Gumps
 {
   public class GuildChangeTypeGump : Gump
   {
-    private Guild m_Guild;
-    private Mobile m_Mobile;
+    private readonly Guild m_Guild;
+    private readonly Mobile m_Mobile;
 
     public GuildChangeTypeGump(Mobile from, Guild guild) : base(20, 30)
     {
@@ -43,8 +43,8 @@ namespace Server.Gumps
 
     public override void OnResponse(NetState state, RelayInfo info)
     {
-      if (Guild.NewGuildSystem && !BaseGuildGump.IsLeader(m_Mobile, m_Guild) ||
-          !Guild.NewGuildSystem && GuildGump.BadLeader(m_Mobile, m_Guild))
+      if ((Guild.NewGuildSystem && !BaseGuildGump.IsLeader(m_Mobile, m_Guild)) ||
+          (!Guild.NewGuildSystem && GuildGump.BadLeader(m_Mobile, m_Guild)))
         return;
 
       var newType = info.ButtonID switch

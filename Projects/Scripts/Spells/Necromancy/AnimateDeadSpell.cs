@@ -11,15 +11,14 @@ namespace Server.Spells.Necromancy
 {
   public class AnimateDeadSpell : NecromancerSpell, ISpellTargetingItem
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Animate Dead", "Uus Corp",
       203,
       9031,
       Reagent.GraveDust,
-      Reagent.DaemonBlood
-    );
+      Reagent.DaemonBlood);
 
-    private static CreatureGroup[] m_Groups =
+    private static readonly CreatureGroup[] m_Groups =
     {
       // Undead group--empty
       new CreatureGroup(SlayerGroup.GetEntryByName(SlayerName.Silver).Types, new SummonEntry[0]),
@@ -93,7 +92,7 @@ namespace Server.Spells.Necromancy
       })
     };
 
-    private static Dictionary<Mobile, List<Mobile>> m_Table = new Dictionary<Mobile, List<Mobile>>();
+    private static readonly Dictionary<Mobile, List<Mobile>> m_Table = new Dictionary<Mobile, List<Mobile>>();
 
     public AnimateDeadSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -164,8 +163,8 @@ namespace Server.Spells.Necromancy
         if (c.Owner != null) type = c.Owner.GetType();
 
         if (c.ItemID != 0x2006 || c.Animated || type == typeof(PlayerMobile) || type == null ||
-            c.Owner != null && c.Owner.Fame < 100 || c.Owner is BaseCreature creature &&
-            (creature.Summoned || creature.IsBonded))
+            (c.Owner != null && c.Owner.Fame < 100) || (c.Owner is BaseCreature creature &&
+            (creature.Summoned || creature.IsBonded)))
         {
           Caster.SendLocalizedMessage(1061085); // There's not enough life force there to animate.
         }
@@ -350,8 +349,8 @@ namespace Server.Spells.Necromancy
 
     private class CreatureGroup
     {
-      public SummonEntry[] m_Entries;
-      public Type[] m_Types;
+      public readonly SummonEntry[] m_Entries;
+      public readonly Type[] m_Types;
 
       public CreatureGroup(Type[] types, SummonEntry[] entries)
       {
@@ -362,8 +361,8 @@ namespace Server.Spells.Necromancy
 
     private class SummonEntry
     {
-      public int m_Requirement;
-      public Type[] m_ToSummon;
+      public readonly int m_Requirement;
+      public readonly Type[] m_ToSummon;
 
       public SummonEntry(int requirement, params Type[] toSummon)
       {

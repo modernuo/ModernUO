@@ -5,8 +5,6 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Definitions
 {
-  #region Quests
-
   public class Momento : MLQuest
   {
     public Momento()
@@ -81,10 +79,6 @@ namespace Server.Engines.MLQuests.Definitions
       Rewards.Add(ItemReward.LargeBagOfTreasure);
     }
   }
-
-  #endregion
-
-  #region Mobiles
 
   [QuesterName("Kia (Bedlam)")]
   public class Kia : BaseCreature
@@ -225,6 +219,4 @@ namespace Server.Engines.MLQuests.Definitions
       int version = reader.ReadInt();
     }
   }
-
-  #endregion
 }

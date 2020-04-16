@@ -80,7 +80,7 @@ namespace Server.Items
 
   public class DeathRobe : Robe
   {
-    private static TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(1.0);
+    private static readonly TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(1.0);
     private DateTime m_DecayTime;
     private Timer m_DecayTimer;
 
@@ -165,22 +165,22 @@ namespace Server.Items
       switch (version)
       {
         case 2:
-        {
-          if (reader.ReadBool())
           {
-            m_DecayTime = reader.ReadDeltaTime();
-            BeginDecay(m_DecayTime - DateTime.UtcNow);
-          }
+            if (reader.ReadBool())
+            {
+              m_DecayTime = reader.ReadDeltaTime();
+              BeginDecay(m_DecayTime - DateTime.UtcNow);
+            }
 
-          break;
-        }
+            break;
+          }
         case 1:
         case 0:
-        {
-          if (Parent == null)
-            BeginDecay(m_DefaultDecayTime);
-          break;
-        }
+          {
+            if (Parent == null)
+              BeginDecay(m_DefaultDecayTime);
+            break;
+          }
       }
 
       if (version < 1 && Hue == 0)
@@ -189,7 +189,7 @@ namespace Server.Items
 
     private class InternalTimer : Timer
     {
-      private DeathRobe m_Robe;
+      private readonly DeathRobe m_Robe;
 
       public InternalTimer(DeathRobe c, TimeSpan delay) : base(delay)
       {
@@ -250,7 +250,7 @@ namespace Server.Items
     public override int BasePhysicalResistance => 3;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsRewardItem{ get; set; }
+    public bool IsRewardItem { get; set; }
 
     public override void OnAdded(IEntity parent)
     {
@@ -310,11 +310,11 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_LabelNumber = reader.ReadInt();
-          IsRewardItem = reader.ReadBool();
-          break;
-        }
+          {
+            m_LabelNumber = reader.ReadInt();
+            IsRewardItem = reader.ReadBool();
+            break;
+          }
       }
 
       if (Parent is Mobile mobile)
@@ -365,7 +365,7 @@ namespace Server.Items
     public override int BasePhysicalResistance => 3;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsRewardItem{ get; set; }
+    public bool IsRewardItem { get; set; }
 
     public override void OnAdded(IEntity parent)
     {
@@ -425,11 +425,11 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_LabelNumber = reader.ReadInt();
-          IsRewardItem = reader.ReadBool();
-          break;
-        }
+          {
+            m_LabelNumber = reader.ReadInt();
+            IsRewardItem = reader.ReadBool();
+            break;
+          }
       }
 
       if (Parent is Mobile mobile)
@@ -474,22 +474,20 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          if (reader.ReadBool())
           {
-            m_CurArcaneCharges = reader.ReadInt();
-            m_MaxArcaneCharges = reader.ReadInt();
+            if (reader.ReadBool())
+            {
+              m_CurArcaneCharges = reader.ReadInt();
+              m_MaxArcaneCharges = reader.ReadInt();
 
-            if (Hue == 2118)
-              Hue = ArcaneGem.DefaultArcaneHue;
+              if (Hue == 2118)
+                Hue = ArcaneGem.DefaultArcaneHue;
+            }
+
+            break;
           }
-
-          break;
-        }
       }
     }
-
-    #region Arcane Impl
 
     private int m_MaxArcaneCharges, m_CurArcaneCharges;
 
@@ -554,8 +552,6 @@ namespace Server.Items
       else if (ItemID == 0x1F04)
         ItemID = 0x1F03;
     }
-
-    #endregion
   }
 
   public class MonkRobe : BaseOuterTorso

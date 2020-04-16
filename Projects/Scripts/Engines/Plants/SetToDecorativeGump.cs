@@ -5,7 +5,7 @@ namespace Server.Engines.Plants
 {
   public class SetToDecorativeGump : Gump
   {
-    private PlantItem m_Plant;
+    private readonly PlantItem m_Plant;
 
     public SetToDecorativeGump(PlantItem plant) : base(20, 20)
     {
@@ -57,27 +57,27 @@ namespace Server.Engines.Plants
       switch (info.ButtonID)
       {
         case 1: // Cancel
-        {
-          from.SendGump(new ReproductionGump(m_Plant));
+          {
+            from.SendGump(new ReproductionGump(m_Plant));
 
-          break;
-        }
+            break;
+          }
         case 2: // Help
-        {
-          from.Send(new DisplayHelpTopic(70, true)); // DECORATIVE MODE
+          {
+            from.Send(new DisplayHelpTopic(70, true)); // DECORATIVE MODE
 
-          from.SendGump(new SetToDecorativeGump(m_Plant));
+            from.SendGump(new SetToDecorativeGump(m_Plant));
 
-          break;
-        }
+            break;
+          }
         case 3: // Ok
-        {
-          m_Plant.PlantStatus = PlantStatus.DecorativePlant;
-          m_Plant.LabelTo(from,
-            1053077); // You prune the plant. This plant will no longer produce resources or seeds, but will require no upkeep.
+          {
+            m_Plant.PlantStatus = PlantStatus.DecorativePlant;
+            m_Plant.LabelTo(from,
+              1053077); // You prune the plant. This plant will no longer produce resources or seeds, but will require no upkeep.
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

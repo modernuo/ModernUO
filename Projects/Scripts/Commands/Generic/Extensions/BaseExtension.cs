@@ -17,18 +17,18 @@ namespace Server.Commands.Generic
       Constructor = constructor;
     }
 
-    public static Dictionary<string, ExtensionInfo> Table{ get; } =
+    public static Dictionary<string, ExtensionInfo> Table { get; } =
       new Dictionary<string, ExtensionInfo>(StringComparer.InvariantCultureIgnoreCase);
 
-    public int Order{ get; }
+    public int Order { get; }
 
-    public string Name{ get; }
+    public string Name { get; }
 
-    public int Size{ get; }
+    public int Size { get; }
 
     public bool IsFixedSize => Size >= 0;
 
-    public ExtensionConstructor Constructor{ get; }
+    public ExtensionConstructor Constructor { get; }
 
     public static void Register(ExtensionInfo ext)
     {
@@ -103,7 +103,7 @@ namespace Server.Commands.Generic
 
   public abstract class BaseExtension
   {
-    public abstract ExtensionInfo Info{ get; }
+    public abstract ExtensionInfo Info { get; }
 
     public string Name => Info.Name;
 

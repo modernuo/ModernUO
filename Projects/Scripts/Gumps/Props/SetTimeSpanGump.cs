@@ -49,12 +49,12 @@ namespace Server.Gumps
 
     private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
     private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
-    private List<object> m_List;
-    private Mobile m_Mobile;
-    private object m_Object;
-    private int m_Page;
-    private PropertyInfo m_Property;
-    private Stack<StackEntry> m_Stack;
+    private readonly List<object> m_List;
+    private readonly Mobile m_Mobile;
+    private readonly object m_Object;
+    private readonly int m_Page;
+    private readonly PropertyInfo m_Property;
+    private readonly Stack<StackEntry> m_Stack;
 
     public SetTimeSpanGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, List<object> list)
       : base(GumpOffsetX, GumpOffsetY)
@@ -115,99 +115,99 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 1: // Zero
-        {
-          toSet = TimeSpan.Zero;
-          shouldSet = true;
-          shouldSend = true;
-
-          break;
-        }
-        case 2: // From H:M:S
-        {
-          bool successfulParse = false;
-          if (h != null && m != null && s != null)
-            successfulParse = TimeSpan.TryParse($"{h.Text}:{m.Text}:{s.Text}", out toSet);
-          else
+          {
             toSet = TimeSpan.Zero;
+            shouldSet = true;
+            shouldSend = true;
 
-          shouldSet = shouldSend = successfulParse;
+            break;
+          }
+        case 2: // From H:M:S
+          {
+            bool successfulParse = false;
+            if (h != null && m != null && s != null)
+              successfulParse = TimeSpan.TryParse($"{h.Text}:{m.Text}:{s.Text}", out toSet);
+            else
+              toSet = TimeSpan.Zero;
 
-          break;
-        }
+            shouldSet = shouldSend = successfulParse;
+
+            break;
+          }
         case 3: // From H
-        {
-          if (h != null)
-            try
-            {
-              toSet = TimeSpan.FromHours(Utility.ToDouble(h.Text));
-              shouldSet = true;
-              shouldSend = true;
+          {
+            if (h != null)
+              try
+              {
+                toSet = TimeSpan.FromHours(Utility.ToDouble(h.Text));
+                shouldSet = true;
+                shouldSend = true;
 
-              break;
-            }
-            catch
-            {
-              // ignored
-            }
+                break;
+              }
+              catch
+              {
+                // ignored
+              }
 
-          toSet = TimeSpan.Zero;
-          shouldSet = false;
-          shouldSend = false;
+            toSet = TimeSpan.Zero;
+            shouldSet = false;
+            shouldSend = false;
 
-          break;
-        }
+            break;
+          }
         case 4: // From M
-        {
-          if (m != null)
-            try
-            {
-              toSet = TimeSpan.FromMinutes(Utility.ToDouble(m.Text));
-              shouldSet = true;
-              shouldSend = true;
+          {
+            if (m != null)
+              try
+              {
+                toSet = TimeSpan.FromMinutes(Utility.ToDouble(m.Text));
+                shouldSet = true;
+                shouldSend = true;
 
-              break;
-            }
-            catch
-            {
-              // ignored
-            }
+                break;
+              }
+              catch
+              {
+                // ignored
+              }
 
-          toSet = TimeSpan.Zero;
-          shouldSet = false;
-          shouldSend = false;
+            toSet = TimeSpan.Zero;
+            shouldSet = false;
+            shouldSend = false;
 
-          break;
-        }
+            break;
+          }
         case 5: // From S
-        {
-          if (s != null)
-            try
-            {
-              toSet = TimeSpan.FromSeconds(Utility.ToDouble(s.Text));
-              shouldSet = true;
-              shouldSend = true;
+          {
+            if (s != null)
+              try
+              {
+                toSet = TimeSpan.FromSeconds(Utility.ToDouble(s.Text));
+                shouldSet = true;
+                shouldSend = true;
 
-              break;
-            }
-            catch
-            {
-              // ignored
-            }
+                break;
+              }
+              catch
+              {
+                // ignored
+              }
 
-          toSet = TimeSpan.Zero;
-          shouldSet = false;
-          shouldSend = false;
+            toSet = TimeSpan.Zero;
+            shouldSet = false;
+            shouldSend = false;
 
-          break;
-        }
+            break;
+          }
         default:
-        {
-          toSet = TimeSpan.Zero;
-          shouldSet = false;
-          shouldSend = true;
+          {
+            toSet = TimeSpan.Zero;
+            shouldSet = false;
+            shouldSend = true;
 
-          break;
-        }
+            break;
+          }
       }
 
       if (shouldSet)

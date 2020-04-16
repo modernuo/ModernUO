@@ -13,8 +13,7 @@ namespace Server.Items
   {
 
     [Constructible]
-    public Moongate(bool dispellable = true) :
-      this(Point3D.Zero, null, dispellable)
+    public Moongate(bool dispellable = true) : this(Point3D.Zero, null, dispellable)
     {
     }
 
@@ -34,13 +33,13 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D Target{ get; set; }
+    public Point3D Target { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Map TargetMap{ get; set; }
+    public Map TargetMap { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Dispellable{ get; set; }
+    public bool Dispellable { get; set; }
 
     public virtual bool ShowFeluccaWarning => false;
 
@@ -65,12 +64,8 @@ namespace Server.Items
 
     public virtual void CheckGate(Mobile m, int range)
     {
-      #region Mondain's Legacy
-
       if (m.Hidden && m.AccessLevel == AccessLevel.Player && Core.ML)
         m.RevealingAction();
-
-      #endregion
 
       new DelayTimer(m, this, range).Start();
     }
@@ -91,10 +86,10 @@ namespace Server.Items
       {
         mobile.SendLocalizedMessage(1049543); // You decide against traveling to Felucca while you are still young.
       }
-      else if (m.Kills >= 5 && TargetMap != Map.Felucca ||
-               TargetMap == Map.Tokuno && (flags & ClientFlags.Tokuno) == 0 ||
-               TargetMap == Map.Malas && (flags & ClientFlags.Malas) == 0 ||
-               TargetMap == Map.Ilshenar && (flags & ClientFlags.Ilshenar) == 0)
+      else if ((m.Kills >= 5 && TargetMap != Map.Felucca) ||
+               (TargetMap == Map.Tokuno && (flags & ClientFlags.Tokuno) == 0) ||
+               (TargetMap == Map.Malas && (flags & ClientFlags.Malas) == 0) ||
+               (TargetMap == Map.Ilshenar && (flags & ClientFlags.Ilshenar) == 0))
       {
         m.SendLocalizedMessage(1019004); // You are not allowed to travel there.
       }
@@ -163,8 +158,8 @@ namespace Server.Items
 
     public virtual void BeginConfirmation(Mobile from)
     {
-      if (IsInTown(from.Location, from.Map) && !IsInTown(Target, TargetMap) ||
-          from.Map != Map.Felucca && TargetMap == Map.Felucca && ShowFeluccaWarning)
+      if ((IsInTown(from.Location, from.Map) && !IsInTown(Target, TargetMap)) ||
+          (from.Map != Map.Felucca && TargetMap == Map.Felucca && ShowFeluccaWarning))
       {
         if (from.AccessLevel == AccessLevel.Player || !from.Hidden)
           from.Send(new PlaySound(0x20E, from.Location));
@@ -200,9 +195,9 @@ namespace Server.Items
 
     private class DelayTimer : Timer
     {
-      private Mobile m_From;
-      private Moongate m_Gate;
-      private int m_Range;
+      private readonly Mobile m_From;
+      private readonly Moongate m_Gate;
+      private readonly int m_Range;
 
       public DelayTimer(Mobile from, Moongate gate, int range) : base(TimeSpan.FromSeconds(1.0))
       {
@@ -235,25 +230,25 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int GumpWidth{ get; set; }
+    public int GumpWidth { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int GumpHeight{ get; set; }
+    public int GumpHeight { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int TitleColor{ get; set; }
+    public int TitleColor { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int MessageColor{ get; set; }
+    public int MessageColor { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int TitleNumber{ get; set; }
+    public int TitleNumber { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int MessageNumber{ get; set; }
+    public int MessageNumber { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string MessageString{ get; set; }
+    public string MessageString { get; set; }
 
     public virtual void Warning_Callback(Mobile from, bool okay)
     {
@@ -303,28 +298,28 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          GumpWidth = reader.ReadEncodedInt();
-          GumpHeight = reader.ReadEncodedInt();
+          {
+            GumpWidth = reader.ReadEncodedInt();
+            GumpHeight = reader.ReadEncodedInt();
 
-          TitleColor = reader.ReadEncodedInt();
-          MessageColor = reader.ReadEncodedInt();
+            TitleColor = reader.ReadEncodedInt();
+            MessageColor = reader.ReadEncodedInt();
 
-          TitleNumber = reader.ReadEncodedInt();
-          MessageNumber = reader.ReadEncodedInt();
+            TitleNumber = reader.ReadEncodedInt();
+            MessageNumber = reader.ReadEncodedInt();
 
-          MessageString = reader.ReadString();
+            MessageString = reader.ReadString();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
 
   public class MoongateConfirmGump : Gump
   {
-    private Mobile m_From;
-    private Moongate m_Gate;
+    private readonly Mobile m_From;
+    private readonly Moongate m_Gate;
 
     public MoongateConfirmGump(Mobile from, Moongate gate) : base(Core.AOS ? 110 : 20, Core.AOS ? 100 : 30)
     {

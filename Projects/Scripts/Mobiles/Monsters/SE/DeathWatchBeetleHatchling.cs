@@ -36,7 +36,6 @@ namespace Server.Mobiles
       Fame = 700;
       Karma = -700;
 
-
       if (Utility.RandomBool())
       {
         Item i = Loot.RandomReagent();

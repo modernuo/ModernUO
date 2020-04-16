@@ -5,7 +5,7 @@ namespace Server.Gumps
 {
   public class ConfirmBreakCrystalGump : BaseConfirmGump
   {
-    private BaseImprisonedMobile m_Item;
+    private readonly BaseImprisonedMobile m_Item;
 
     public ConfirmBreakCrystalGump(BaseImprisonedMobile item) => m_Item = item;
 

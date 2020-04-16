@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
   public class BaseTalismanSummon : BaseCreature
   {
-    //public override bool IsInvulnerable => true; // TODO: Wailing banshees are NOT invulnerable, are any of the others?
+    // public override bool IsInvulnerable => true; // TODO: Wailing banshees are NOT invulnerable, are any of the others?
 
     public BaseTalismanSummon() : base(AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4)
     {
@@ -43,7 +43,7 @@ namespace Server.Mobiles
 
     private class TalismanReleaseEntry : ContextMenuEntry
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public TalismanReleaseEntry(Mobile m) : base(6118, 3) => m_Mobile = m;
 
@@ -508,7 +508,6 @@ namespace Server.Mobiles
     }
 
     public override string DefaultName => "a sheep";
-
 
     public override void Serialize(IGenericWriter writer)
     {

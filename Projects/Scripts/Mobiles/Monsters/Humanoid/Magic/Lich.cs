@@ -28,7 +28,6 @@ namespace Server.Mobiles
       SetResistance(ResistanceType.Poison, 55, 65);
       SetResistance(ResistanceType.Energy, 40, 50);
 
-
       SetSkill(SkillName.Necromancy, 89, 99.1);
       SetSkill(SkillName.SpiritSpeak, 90.0, 99.0);
 

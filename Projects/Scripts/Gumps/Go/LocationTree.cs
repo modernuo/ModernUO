@@ -23,11 +23,11 @@ namespace Server.Gumps
       }
     }
 
-    public Dictionary<Mobile, ParentNode> LastBranch{ get; }
+    public Dictionary<Mobile, ParentNode> LastBranch { get; }
 
-    public Map Map{ get; }
+    public Map Map { get; }
 
-    public ParentNode Root{ get; }
+    public ParentNode Root { get; }
 
     private ParentNode Parse(XmlTextReader xml)
     {

@@ -119,7 +119,7 @@ namespace Server.Items
     {
       base.Deserialize(reader);
 
-      int version = InheritsItem ? 0 : reader.ReadInt(); //Required for SpecialScroll insertion
+      int version = InheritsItem ? 0 : reader.ReadInt(); // Required for SpecialScroll insertion
 
       LootType = LootType.Cursed;
       Insured = false;

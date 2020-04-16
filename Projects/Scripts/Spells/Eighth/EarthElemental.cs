@@ -5,15 +5,14 @@ namespace Server.Spells.Eighth
 {
   public class EarthElementalSpell : MagerySpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Earth Elemental", "Kal Vas Xen Ylem",
       269,
       9020,
       false,
       Reagent.Bloodmoss,
       Reagent.MandrakeRoot,
-      Reagent.SpidersSilk
-    );
+      Reagent.SpidersSilk);
 
     public EarthElementalSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

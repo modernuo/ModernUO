@@ -42,10 +42,10 @@ namespace Server.Network
 
     public void DoWork()
     {
-      int count = 0;
+      var count = 0;
       while (!m_WorkQueue.IsEmpty && count++ < 250)
       {
-        if (!m_WorkQueue.TryDequeue(out Work work))
+        if (!m_WorkQueue.TryDequeue(out var work))
           break;
 
         work.OnReceive(work.State, new PacketReader(new ReadOnlySequence<byte>(work.MemoryOwner.Memory)));
@@ -56,6 +56,7 @@ namespace Server.Network
     private class Work
     {
       public readonly NetState State;
+
       // TODO: Force dispose?
       public readonly IMemoryOwner<byte> MemoryOwner;
       public readonly OnPacketReceive OnReceive;

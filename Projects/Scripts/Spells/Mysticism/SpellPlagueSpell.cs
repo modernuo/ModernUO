@@ -6,17 +6,16 @@ namespace Server.Spells.Mysticism
 {
   public class SpellPlagueSpell : MysticSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Spell Plague", "Vas Rel Jux Ort",
       -1,
       9002,
       Reagent.DaemonBone,
       Reagent.DragonsBlood,
       Reagent.Nightshade,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
-    private static Dictionary<Mobile, SpellPlagueContext> m_Table = new Dictionary<Mobile, SpellPlagueContext>();
+    private static readonly Dictionary<Mobile, SpellPlagueContext> m_Table = new Dictionary<Mobile, SpellPlagueContext>();
 
     public SpellPlagueSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
@@ -111,8 +110,8 @@ namespace Server.Spells.Mysticism
       private int m_Explosions;
       private DateTime m_LastExploded;
       private SpellPlagueContext m_Next;
-      private SpellPlagueSpell m_Owner;
-      private Mobile m_Target;
+      private readonly SpellPlagueSpell m_Owner;
+      private readonly Mobile m_Target;
       private Timer m_Timer;
 
       public SpellPlagueContext(SpellPlagueSpell owner, Mobile target)
@@ -191,7 +190,7 @@ namespace Server.Spells.Mysticism
 
     private class InternalTarget : Target
     {
-      private SpellPlagueSpell m_Owner;
+      private readonly SpellPlagueSpell m_Owner;
 
       public InternalTarget(SpellPlagueSpell owner)
         : base(12, false, TargetFlags.Harmful) =>

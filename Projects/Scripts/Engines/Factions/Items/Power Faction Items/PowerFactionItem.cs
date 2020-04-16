@@ -9,7 +9,7 @@ namespace Server
 {
   public abstract class PowerFactionItem : Item
   {
-    private static WeightedItem[] _items =
+    private static readonly WeightedItem[] _items =
     {
       new WeightedItem(30, typeof(GemOfEmpowerment)),
       new WeightedItem(25, typeof(BloodRose)),
@@ -61,8 +61,7 @@ namespace Server
                   killer.SendSound(1470);
                   killer.LocalOverheadMessage(
                     MessageType.Regular, 2119, false,
-                    "You notice a strange item on the corpse, and decide to pick it up."
-                  );
+                    "You notice a strange item on the corpse, and decide to pick it up.");
 
                   try
                   {
@@ -101,19 +100,16 @@ namespace Server
           "The object vanishes from your hands as you touch it.");
 
         Timer.DelayCall(TimeSpan.FromSeconds(1.0),
-          delegate
-          {
-            from.LocalOverheadMessage(MessageType.Regular, 2118, false,
-              "You feel a strange tingling sensation throughout your body.");
-          });
+          () => from.LocalOverheadMessage(MessageType.Regular, 2118, false,
+            "You feel a strange tingling sensation throughout your body."));
 
         Timer.DelayCall(TimeSpan.FromSeconds(4.0),
-          delegate { from.LocalOverheadMessage(MessageType.Regular, 2118, false, "Your skin begins to burn."); });
+          () => { from.LocalOverheadMessage(MessageType.Regular, 2118, false, "Your skin begins to burn."); });
 
         new DestructionTimer(from).Start();
         Delete();
 
-        //from.SendMessage( "You must be in a faction to use this item." );
+        // from.SendMessage( "You must be in a faction to use this item." );
       }
       else if (Use(from))
       {
@@ -138,7 +134,7 @@ namespace Server
 
     private sealed class DestructionTimer : Timer
     {
-      private Mobile _mobile;
+      private readonly Mobile _mobile;
 
       private bool _screamed;
 
@@ -171,9 +167,9 @@ namespace Server
         Type = type;
       }
 
-      public int Weight{ get; }
+      public int Weight { get; }
 
-      public Type Type{ get; }
+      public Type Type { get; }
 
       public Item Construct() => ActivatorUtil.CreateInstance(Type) as Item;
     }

@@ -20,7 +20,7 @@ namespace Server.Items
     public const double SecondsPerUOMinute = 5.0;
     public const double MinutesPerUODay = SecondsPerUOMinute * 24;
 
-    private static DateTime WorldStart = new DateTime(1997, 9, 1);
+    private static readonly DateTime WorldStart = new DateTime(1997, 9, 1);
 
     [Constructible]
     public Clock(int itemID = 0x104B) : base(itemID) => Weight = 3.0;
@@ -29,7 +29,7 @@ namespace Server.Items
     {
     }
 
-    public static DateTime ServerStart{ get; private set; }
+    public static DateTime ServerStart { get; private set; }
 
     public static void Initialize()
     {

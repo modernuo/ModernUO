@@ -15,7 +15,7 @@
     }
 
     public override int Hue => 1150;
-    public override int LabelNumber => 1075239; //Lucky Necklace	1075239
+    public override int LabelNumber => 1075239; // Lucky Necklace	1075239
 
     public override void Serialize(IGenericWriter writer)
     {

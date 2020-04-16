@@ -6,8 +6,7 @@ namespace Server.Mobiles
   public class FireSteed : BaseMount
   {
     [Constructible]
-    public FireSteed(string name = "a fire steed") :
-      base(name, 0xBE, 0x3E9E, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    public FireSteed(string name = "a fire steed") : base(name, 0xBE, 0x3E9E, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
       BaseSoundID = 0xA8;
 

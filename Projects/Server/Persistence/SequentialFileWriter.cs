@@ -38,8 +38,7 @@ namespace Server
 
       fileQueue = new FileQueue(
         Math.Max(1, FileOperations.Concurrency),
-        FileCallback
-      );
+        FileCallback);
     }
 
     public override long Position
@@ -74,7 +73,7 @@ namespace Server
 
     private void OnWrite(IAsyncResult asyncResult)
     {
-      FileQueue.Chunk chunk = asyncResult.AsyncState as FileQueue.Chunk;
+      var chunk = asyncResult.AsyncState as FileQueue.Chunk;
 
       fileStream.EndWrite(asyncResult);
 

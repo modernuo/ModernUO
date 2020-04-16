@@ -6,8 +6,8 @@ namespace Server.Multis
 {
   public class ComponentVerification
   {
-    private int[] m_ItemTable;
-    private int[] m_MultiTable;
+    private readonly int[] m_ItemTable;
+    private readonly int[] m_MultiTable;
 
     public ComponentVerification()
     {
@@ -90,7 +90,7 @@ namespace Server.Multis
 
   public class Spreadsheet
   {
-    private ColumnInfo[] m_Columns;
+    private readonly ColumnInfo[] m_Columns;
 
     public Spreadsheet(string path)
     {
@@ -118,15 +118,15 @@ namespace Server.Multis
           switch (ci.m_Type)
           {
             case "int":
-            {
-              data[i] = Utility.ToInt32(values[ci.m_DataIndex]);
-              break;
-            }
+              {
+                data[i] = Utility.ToInt32(values[ci.m_DataIndex]);
+                break;
+              }
             case "string":
-            {
-              data[i] = values[ci.m_DataIndex];
-              break;
-            }
+              {
+                data[i] = values[ci.m_DataIndex];
+                break;
+              }
           }
         }
 
@@ -136,7 +136,7 @@ namespace Server.Multis
       Records = records.ToArray();
     }
 
-    public DataRecord[] Records{ get; }
+    public DataRecord[] Records { get; }
 
     public int GetColumnID(string name)
     {
@@ -160,10 +160,10 @@ namespace Server.Multis
 
     private class ColumnInfo
     {
-      public int m_DataIndex;
-      public string m_Name;
+      public readonly int m_DataIndex;
+      public readonly string m_Name;
 
-      public string m_Type;
+      public readonly string m_Type;
 
       public ColumnInfo(int dataIndex, string type, string name)
       {
@@ -183,9 +183,9 @@ namespace Server.Multis
       Data = data;
     }
 
-    public Spreadsheet Spreadsheet{ get; }
+    public Spreadsheet Spreadsheet { get; }
 
-    public object[] Data{ get; }
+    public object[] Data { get; }
 
     public object this[string name] => this[Spreadsheet.GetColumnID(name)];
 

@@ -6,8 +6,8 @@ namespace Server.Gumps
 {
   public class GuildWarGump : Gump
   {
-    private Guild m_Guild;
-    private Mobile m_Mobile;
+    private readonly Guild m_Guild;
+    private readonly Mobile m_Mobile;
 
     public GuildWarGump(Mobile from, Guild guild) : base(20, 30)
     {

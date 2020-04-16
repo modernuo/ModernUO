@@ -5,7 +5,7 @@ namespace Server.Items
 {
   public class PlagueBeastBlood : PlagueBeastComponent
   {
-    private Timer m_Timer;
+    private readonly Timer m_Timer;
 
     public PlagueBeastBlood() : base(0x122C, 0) => m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1.5), TimeSpan.FromSeconds(1.5), 3, Hemorrhage);
 

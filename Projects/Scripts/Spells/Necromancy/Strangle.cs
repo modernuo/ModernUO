@@ -6,15 +6,14 @@ namespace Server.Spells.Necromancy
 {
   public class StrangleSpell : NecromancerSpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Strangle", "In Bal Nox",
       209,
       9031,
       Reagent.DaemonBlood,
-      Reagent.NoxCrystal
-    );
+      Reagent.NoxCrystal);
 
-    private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
+    private static readonly Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
     public StrangleSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -39,7 +38,7 @@ namespace Server.Spells.Necromancy
       {
         SpellHelper.Turn(Caster, m);
 
-        //SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m );	//Irrelevent after AoS
+        // SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m );	//Irrelevent after AoS
 
         /* Temporarily chokes off the air suply of the target with poisonous fumes.
          * The target is inflicted with poison damage over time.
@@ -70,7 +69,7 @@ namespace Server.Spells.Necromancy
         HarmfulSpell(m);
       }
 
-      //Calculations for the buff bar
+      // Calculations for the buff bar
       double spiritlevel = Caster.Skills.SpiritSpeak.Value / 10;
       if (spiritlevel < 4)
         spiritlevel = 4;
@@ -123,12 +122,15 @@ namespace Server.Spells.Necromancy
 
     private class InternalTimer : Timer
     {
-      private int m_Count, m_MaxCount;
+      private int m_Count;
+      private readonly int m_MaxCount;
       private int m_HitDelay;
-      private double m_MinBaseDamage, m_MaxBaseDamage;
+      private readonly double m_MinBaseDamage;
+      private readonly double m_MaxBaseDamage;
 
       private DateTime m_NextHit;
-      private Mobile m_Target, m_From;
+      private readonly Mobile m_Target;
+      private readonly Mobile m_From;
 
       public InternalTimer(Mobile target, Mobile from) : base(TimeSpan.FromSeconds(0.1), TimeSpan.FromSeconds(0.1))
       {
@@ -205,8 +207,7 @@ namespace Server.Spells.Necromancy
 
           AOS.Damage(m_Target, m_From, (int)damage, 0, 0, 0, 100, 0);
 
-          if (0.60 <= Utility.RandomDouble()
-          ) // OSI: randomly revealed between first and third damage tick, guessing 60% chance
+          if (Utility.RandomDouble() >= 0.60) // OSI: randomly revealed between first and third damage tick, guessing 60% chance
             m_Target.RevealingAction();
         }
       }

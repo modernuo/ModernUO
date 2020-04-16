@@ -19,7 +19,7 @@ namespace Server.Misc
       "Nullifier"
     };
 
-    private static string[,] m_Levels =
+    private static readonly string[,] m_Levels =
     {
       { "Neophyte", "Neophyte", "Neophyte" },
       { "Novice", "Novice", "Novice" },
@@ -33,7 +33,7 @@ namespace Server.Misc
       { "Legendary", "Kengo", "Ka-ge" }
     };
 
-    private static FameEntry[] m_FameEntries =
+    private static readonly FameEntry[] m_FameEntries =
     {
       new FameEntry(1249, new[]
       {

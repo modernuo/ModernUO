@@ -194,7 +194,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private FlamingHeadDeed m_Head;
+      private readonly FlamingHeadDeed m_Head;
 
       public InternalTarget(FlamingHeadDeed head) : base(-1, true, TargetFlags.None) => m_Head = head;
 

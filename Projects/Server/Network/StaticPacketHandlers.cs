@@ -25,18 +25,26 @@ namespace Server.Network
 {
   public static class StaticPacketHandlers
   {
-    private static readonly ConcurrentDictionary<IPropertyListObject,OPLInfo> OPLInfoPackets = new ConcurrentDictionary<IPropertyListObject,OPLInfo>();
-    private static readonly ConcurrentDictionary<IEntity,RemoveEntity> RemoveEntityPackets = new ConcurrentDictionary<IEntity,RemoveEntity>();
+    private static readonly ConcurrentDictionary<IPropertyListObject, OPLInfo> OPLInfoPackets =
+      new ConcurrentDictionary<IPropertyListObject, OPLInfo>();
 
-    private static readonly ConcurrentDictionary<Item,WorldItem> WorldItemPackets = new ConcurrentDictionary<Item,WorldItem>();
-    private static readonly ConcurrentDictionary<Item,WorldItemSA> WorldItemSAPackets = new ConcurrentDictionary<Item,WorldItemSA>();
-    private static readonly ConcurrentDictionary<Item,WorldItemHS> WorldItemHSPackets = new ConcurrentDictionary<Item,WorldItemHS>();
+    private static readonly ConcurrentDictionary<IEntity, RemoveEntity> RemoveEntityPackets =
+      new ConcurrentDictionary<IEntity, RemoveEntity>();
+
+    private static readonly ConcurrentDictionary<Item, WorldItem> WorldItemPackets =
+      new ConcurrentDictionary<Item, WorldItem>();
+
+    private static readonly ConcurrentDictionary<Item, WorldItemSA> WorldItemSAPackets =
+      new ConcurrentDictionary<Item, WorldItemSA>();
+
+    private static readonly ConcurrentDictionary<Item, WorldItemHS> WorldItemHSPackets =
+      new ConcurrentDictionary<Item, WorldItemHS>();
 
     public static OPLInfo GetOPLInfoPacket(IPropertyListObject obj)
     {
       return OPLInfoPackets.GetOrAdd(obj, value =>
       {
-        OPLInfo packet = new OPLInfo(value.PropertyList.Entity.Serial, value.PropertyList.Hash);
+        var packet = new OPLInfo(value.PropertyList.Entity.Serial, value.PropertyList.Hash);
         packet.SetStatic();
         return packet;
       });
@@ -44,7 +52,7 @@ namespace Server.Network
 
     public static OPLInfo FreeOPLInfoPacket(IPropertyListObject obj)
     {
-      if (OPLInfoPackets.TryRemove(obj, out OPLInfo p))
+      if (OPLInfoPackets.TryRemove(obj, out var p))
         Packet.Release(p);
 
       return p;
@@ -54,7 +62,7 @@ namespace Server.Network
     {
       return RemoveEntityPackets.GetOrAdd(entity, value =>
       {
-        RemoveEntity packet = new RemoveEntity(value);
+        var packet = new RemoveEntity(value);
         packet.SetStatic();
         return packet;
       });
@@ -62,7 +70,7 @@ namespace Server.Network
 
     public static void FreeRemoveItemPacket(IEntity entity)
     {
-      if (RemoveEntityPackets.TryRemove(entity, out RemoveEntity p))
+      if (RemoveEntityPackets.TryRemove(entity, out var p))
         Packet.Release(p);
     }
 
@@ -70,7 +78,7 @@ namespace Server.Network
     {
       return WorldItemPackets.GetOrAdd(item, value =>
       {
-        WorldItem packet = new WorldItem(value);
+        var packet = new WorldItem(value);
         packet.SetStatic();
         return packet;
       });
@@ -80,7 +88,7 @@ namespace Server.Network
     {
       return WorldItemSAPackets.GetOrAdd(item, value =>
       {
-        WorldItemSA packet = new WorldItemSA(value);
+        var packet = new WorldItemSA(value);
         packet.SetStatic();
         return packet;
       });
@@ -90,7 +98,7 @@ namespace Server.Network
     {
       return WorldItemHSPackets.GetOrAdd(item, value =>
       {
-        WorldItemHS packet = new WorldItemHS(value);
+        var packet = new WorldItemHS(value);
         packet.SetStatic();
         return packet;
       });
@@ -98,13 +106,13 @@ namespace Server.Network
 
     public static void FreeWorldItemPackets(Item item)
     {
-      if (WorldItemPackets.TryRemove(item, out WorldItem wi))
+      if (WorldItemPackets.TryRemove(item, out var wi))
         Packet.Release(wi);
 
-      if (WorldItemSAPackets.TryRemove(item, out WorldItemSA wisa))
+      if (WorldItemSAPackets.TryRemove(item, out var wisa))
         Packet.Release(wisa);
 
-      if (WorldItemHSPackets.TryRemove(item, out WorldItemHS wihs))
+      if (WorldItemHSPackets.TryRemove(item, out var wihs))
         Packet.Release(wihs);
     }
   }

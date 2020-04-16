@@ -57,7 +57,7 @@ namespace Server.Accounting
     ///   0 to 999,999,999 by default.
     /// </summary>
     [CommandProperty(AccessLevel.Administrator)]
-    int TotalGold{ get; }
+    int TotalGold { get; }
 
     /// <summary>
     ///   This amount represents the current amount of Platinum owned by the player.
@@ -66,7 +66,7 @@ namespace Server.Accounting
     ///   One Platinum represents the value of CurrencyThreshold in Gold.
     /// </summary>
     [CommandProperty(AccessLevel.Administrator)]
-    int TotalPlat{ get; }
+    int TotalPlat { get; }
 
     /// <summary>
     ///   Attempts to deposit the given amount of Gold into this account.
@@ -110,14 +110,14 @@ namespace Server.Accounting
 
   public interface IAccount : IGoldAccount, IComparable<IAccount>
   {
-    string Username{ get; set; }
-    string Email{ get; set; }
-    AccessLevel AccessLevel{ get; set; }
+    string Username { get; set; }
+    string Email { get; set; }
+    AccessLevel AccessLevel { get; set; }
 
-    int Length{ get; }
-    int Limit{ get; }
-    int Count{ get; }
-    Mobile this[int index]{ get; set; }
+    int Length { get; }
+    int Limit { get; }
+    int Count { get; }
+    Mobile this[int index] { get; set; }
 
     void Delete();
     void SetPassword(string password);

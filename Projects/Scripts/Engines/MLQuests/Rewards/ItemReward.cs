@@ -37,9 +37,9 @@ namespace Server.Engines.MLQuests.Rewards
     public static readonly ItemReward
       TinkerSatchel = new ItemReward(1074282, typeof(TinkerSatchel)); // Craftsman's Satchel
 
-    private int m_Amount;
+    private readonly int m_Amount;
 
-    private Type m_Type;
+    private readonly Type m_Type;
 
     public ItemReward(TextDefinition name = null, Type type = null, int amount = 1)
       : base(name)

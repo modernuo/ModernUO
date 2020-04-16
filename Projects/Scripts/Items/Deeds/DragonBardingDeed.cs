@@ -54,8 +54,6 @@ namespace Server.Items
       }
     }
 
-    #region ICraftable Members
-
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
     {
@@ -75,8 +73,6 @@ namespace Server.Items
 
       return quality;
     }
-
-    #endregion
 
     public override void GetProperties(ObjectPropertyList list)
     {
@@ -153,16 +149,16 @@ namespace Server.Items
       {
         case 1:
         case 0:
-        {
-          m_Exceptional = reader.ReadBool();
-          m_Crafter = reader.ReadMobile();
+          {
+            m_Exceptional = reader.ReadBool();
+            m_Crafter = reader.ReadMobile();
 
-          if (version < 1)
-            reader.ReadInt();
+            if (version < 1)
+              reader.ReadInt();
 
-          m_Resource = (CraftResource)reader.ReadInt();
-          break;
-        }
+            m_Resource = (CraftResource)reader.ReadInt();
+            break;
+          }
       }
     }
   }

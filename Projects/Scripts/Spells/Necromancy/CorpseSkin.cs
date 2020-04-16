@@ -6,15 +6,14 @@ namespace Server.Spells.Necromancy
 {
   public class CorpseSkinSpell : NecromancerSpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Corpse Skin", "In Agle Corp Ylem",
       203,
       9051,
       Reagent.BatWing,
-      Reagent.GraveDust
-    );
+      Reagent.GraveDust);
 
-    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+    private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     public CorpseSkinSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -63,7 +62,7 @@ namespace Server.Spells.Necromancy
 
         double ss = GetDamageSkill(Caster);
         double mr = Caster == m ? 0.0 : GetResistSkill(m);
-        m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); //Skill check for gain
+        m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); // Skill check for gain
 
         TimeSpan duration = TimeSpan.FromSeconds((ss - mr) / 2.5 + 40.0);
 
@@ -102,8 +101,8 @@ namespace Server.Spells.Necromancy
 
     private class ExpireTimer : Timer
     {
-      private Mobile m_Mobile;
-      private ResistanceMod[] m_Mods;
+      private readonly Mobile m_Mobile;
+      private readonly ResistanceMod[] m_Mods;
 
       public ExpireTimer(Mobile m, ResistanceMod[] mods, TimeSpan delay) : base(delay)
       {

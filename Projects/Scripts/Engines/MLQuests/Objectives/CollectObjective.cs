@@ -23,11 +23,11 @@ namespace Server.Engines.MLQuests.Objectives
       }
     }
 
-    public int DesiredAmount{ get; set; }
+    public int DesiredAmount { get; set; }
 
-    public Type AcceptedType{ get; set; }
+    public Type AcceptedType { get; set; }
 
-    public TextDefinition Name{ get; set; }
+    public TextDefinition Name { get; set; }
 
     public virtual bool ShowDetailed => true;
 
@@ -75,8 +75,6 @@ namespace Server.Engines.MLQuests.Objectives
     public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance) => new CollectObjectiveInstance(this, instance);
   }
 
-  #region Timed
-
   public class TimedCollectObjective : CollectObjective
   {
     public TimedCollectObjective(TimeSpan duration, int amount, Type type, TextDefinition name)
@@ -84,10 +82,8 @@ namespace Server.Engines.MLQuests.Objectives
       Duration = duration;
 
     public override bool IsTimed => true;
-    public override TimeSpan Duration{ get; }
+    public override TimeSpan Duration { get; }
   }
-
-  #endregion
 
   public class CollectObjectiveInstance : BaseObjectiveInstance
   {
@@ -95,7 +91,7 @@ namespace Server.Engines.MLQuests.Objectives
       : base(instance, objective) =>
       Objective = objective;
 
-    public CollectObjective Objective{ get; set; }
+    public CollectObjective Objective { get; set; }
 
     private int GetCurrentTotal()
     {
@@ -124,8 +120,7 @@ namespace Server.Engines.MLQuests.Objectives
       Item[] items = pack.FindItemsByType(checkType, false);
 
       foreach (Item item in items)
-        if (item.QuestItem && !MLQuestSystem.CanMarkQuestItem(pm, item, checkType)
-        ) // does another quest still need this item? (OSI just unmarks everything)
+        if (item.QuestItem && !MLQuestSystem.CanMarkQuestItem(pm, item, checkType)) // does another quest still need this item? (OSI just unmarks everything)
           item.QuestItem = false;
     }
 

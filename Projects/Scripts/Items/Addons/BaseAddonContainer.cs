@@ -64,7 +64,7 @@ namespace Server.Items
     public virtual Point3D WallPosition => Point3D.Zero;
     public virtual BaseAddonContainerDeed Deed => null;
 
-    public List<AddonContainerComponent> Components{ get; private set; }
+    public List<AddonContainerComponent> Components { get; private set; }
 
     Item IAddon.Deed => Deed;
 
@@ -269,7 +269,7 @@ namespace Server.Items
 
             if (Utility.InRange(doorLoc, addonLoc, 1) &&
                 (addonLoc.Z == doorLoc.Z ||
-                 addonLoc.Z + addonHeight > doorLoc.Z && doorLoc.Z + doorHeight > addonLoc.Z))
+                 (addonLoc.Z + addonHeight > doorLoc.Z && doorLoc.Z + doorHeight > addonLoc.Z)))
               return AddonFitResult.DoorTooClose;
           }
 
@@ -277,7 +277,7 @@ namespace Server.Items
           addonHeight = ItemData.CalcHeight;
 
           if (Utility.InRange(doorLoc, addonLo, 1) &&
-              (addonLo.Z == doorLoc.Z || addonLo.Z + addonHeight > doorLoc.Z && doorLoc.Z + doorHeight > addonLo.Z))
+              (addonLo.Z == doorLoc.Z || (addonLo.Z + addonHeight > doorLoc.Z && doorLoc.Z + doorHeight > addonLo.Z)))
             return AddonFitResult.DoorTooClose;
         }
       }

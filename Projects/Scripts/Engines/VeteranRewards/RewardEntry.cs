@@ -1,5 +1,5 @@
-using Server.Utilities;
 using System;
+using Server.Utilities;
 
 namespace Server.Engines.VeteranRewards
 {
@@ -47,19 +47,19 @@ namespace Server.Engines.VeteranRewards
       category.Entries.Add(this);
     }
 
-    public RewardList List{ get; set; }
+    public RewardList List { get; set; }
 
-    public RewardCategory Category{ get; }
+    public RewardCategory Category { get; }
 
-    public Type ItemType{ get; }
+    public Type ItemType { get; }
 
-    public Expansion RequiredExpansion{ get; }
+    public Expansion RequiredExpansion { get; }
 
-    public int Name{ get; }
+    public int Name { get; }
 
-    public string NameString{ get; }
+    public string NameString { get; }
 
-    public object[] Args{ get; }
+    public object[] Args { get; }
 
     public Item Construct()
     {

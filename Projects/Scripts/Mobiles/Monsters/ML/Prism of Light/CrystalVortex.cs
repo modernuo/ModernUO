@@ -51,7 +51,7 @@ namespace Server.Mobiles
     {
       AddLoot(LootPack.FilthyRich, 2);
       // TODO: uncomment once added
-      //AddLoot( LootPack.Parrot );
+      // AddLoot( LootPack.Parrot );
     }
 
     /*

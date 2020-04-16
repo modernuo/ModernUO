@@ -42,7 +42,7 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private int[][] ElvenArray =
+      private readonly int[][] ElvenArray =
       {
         new[] { 0 },
         new[] { 1011064, 1011064, 0, 0, 0, 0 }, // bald
@@ -56,10 +56,10 @@ namespace Server.Items
         new[] { 1074393, 1074390, 0x2fd0, 0x2fcd, 0xedde, 0xc6cb } // buns, long
       };
 
-/*
-		racial arrays are: cliloc_F, cliloc_M, ItemID_F, ItemID_M, gump_img_F, gump_img_M
-*/
-      private int[][] HumanArray = /* why on earth cant these utilies be consistent with hex/dec */
+      /*
+          racial arrays are: cliloc_F, cliloc_M, ItemID_F, ItemID_M, gump_img_F, gump_img_M
+      */
+      private readonly int[][] HumanArray = /* why on earth cant these utilies be consistent with hex/dec */
       {
         new[] { 0 },
         new[] { 1011064, 1011064, 0, 0, 0, 0 }, // bald
@@ -73,11 +73,11 @@ namespace Server.Items
         new[] { 1011050, 1011050, 0x204A, 0x204A, 0xED29, 0xED29 }, // Topknot
         new[] { 1011396, 1011396, 0x2047, 0x2047, 0xed25, 0xc618 } // Curly
       };
-/*
-		gump data: bgX, bgY, htmlX, htmlY, imgX, imgY, butX, butY
-*/
+      /*
+          gump data: bgX, bgY, htmlX, htmlY, imgX, imgY, butX, butY
+      */
 
-      private int[][] LayoutArray =
+      private readonly int[][] LayoutArray =
       {
         new[] { 0 }, /* padding: its more efficient than code to ++ the index/buttonid */
         new[] { 425, 280, 342, 295, 000, 000, 310, 292 },
@@ -92,8 +92,8 @@ namespace Server.Items
         new[] { 235, 280, 150, 295, 168, 245, 118, 292 } // slot 10, Curly - N/A for elfs.
       };
 
-      private HairRestylingDeed m_Deed;
-      private Mobile m_From;
+      private readonly HairRestylingDeed m_Deed;
+      private readonly Mobile m_From;
 
       public InternalGump(Mobile from, HairRestylingDeed deed) : base(50, 50)
       {

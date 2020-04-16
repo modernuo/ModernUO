@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
   public class GypsyMaiden : BaseVendor
   {
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public GypsyMaiden() : base("the gypsy maiden")

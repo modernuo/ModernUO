@@ -5,7 +5,7 @@ namespace Server.Engines.Plants
 {
   public class EmptyTheBowlGump : Gump
   {
-    private PlantItem m_Plant;
+    private readonly PlantItem m_Plant;
 
     public EmptyTheBowlGump(PlantItem plant) : base(20, 20)
     {
@@ -68,53 +68,53 @@ namespace Server.Engines.Plants
       switch (info.ButtonID)
       {
         case 1: // Cancel
-        {
-          from.SendGump(new MainPlantGump(m_Plant));
-
-          break;
-        }
-        case 2: // Help
-        {
-          from.Send(new DisplayHelpTopic(71, true)); // EMPTYING THE BOWL
-
-          from.SendGump(new EmptyTheBowlGump(m_Plant));
-
-          break;
-        }
-        case 3: // Ok
-        {
-          PlantBowl bowl = new PlantBowl();
-
-          if (!from.PlaceInBackpack(bowl))
           {
-            bowl.Delete();
-
-            m_Plant.LabelTo(from, 1053047); // You cannot empty a bowl with a full pack!
             from.SendGump(new MainPlantGump(m_Plant));
 
             break;
           }
-
-          if (m_Plant.PlantStatus != PlantStatus.BowlOfDirt && m_Plant.PlantStatus < PlantStatus.Plant)
+        case 2: // Help
           {
-            Seed seed = new Seed(m_Plant.PlantType, m_Plant.PlantHue, m_Plant.ShowType);
+            from.Send(new DisplayHelpTopic(71, true)); // EMPTYING THE BOWL
 
-            if (!from.PlaceInBackpack(seed))
+            from.SendGump(new EmptyTheBowlGump(m_Plant));
+
+            break;
+          }
+        case 3: // Ok
+          {
+            PlantBowl bowl = new PlantBowl();
+
+            if (!from.PlaceInBackpack(bowl))
             {
               bowl.Delete();
-              seed.Delete();
 
               m_Plant.LabelTo(from, 1053047); // You cannot empty a bowl with a full pack!
               from.SendGump(new MainPlantGump(m_Plant));
 
               break;
             }
+
+            if (m_Plant.PlantStatus != PlantStatus.BowlOfDirt && m_Plant.PlantStatus < PlantStatus.Plant)
+            {
+              Seed seed = new Seed(m_Plant.PlantType, m_Plant.PlantHue, m_Plant.ShowType);
+
+              if (!from.PlaceInBackpack(seed))
+              {
+                bowl.Delete();
+                seed.Delete();
+
+                m_Plant.LabelTo(from, 1053047); // You cannot empty a bowl with a full pack!
+                from.SendGump(new MainPlantGump(m_Plant));
+
+                break;
+              }
+            }
+
+            m_Plant.Delete();
+
+            break;
           }
-
-          m_Plant.Delete();
-
-          break;
-        }
       }
     }
   }

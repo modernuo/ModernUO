@@ -44,7 +44,7 @@ namespace Server.Items
 
   public class HairDyeGump : Gump
   {
-    private static HairDyeEntry[] m_Entries =
+    private static readonly HairDyeEntry[] m_Entries =
     {
       new HairDyeEntry("*****", 1602, 26),
       new HairDyeEntry("*****", 1628, 27),
@@ -60,7 +60,7 @@ namespace Server.Items
       new HairDyeEntry("*****", 1134, 16)
     };
 
-    private HairDye m_HairDye;
+    private readonly HairDye m_HairDye;
 
     public HairDyeGump(HairDye dye) : base(50, 50)
     {
@@ -106,7 +106,7 @@ namespace Server.Items
 
       if (!m_HairDye.IsChildOf(m.Backpack))
       {
-        m.SendLocalizedMessage(1042010); //You must have the objectin your backpack to use it.
+        m.SendLocalizedMessage(1042010); // You must have the objectin your backpack to use it.
         return;
       }
 
@@ -156,11 +156,11 @@ namespace Server.Items
         HueCount = hueCount;
       }
 
-      public string Name{ get; }
+      public string Name { get; }
 
-      public int HueStart{ get; }
+      public int HueStart { get; }
 
-      public int HueCount{ get; }
+      public int HueCount { get; }
     }
   }
 }

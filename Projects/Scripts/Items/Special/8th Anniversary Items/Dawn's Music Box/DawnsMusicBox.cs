@@ -76,10 +76,10 @@ namespace Server.Items
 
     public override int LabelNumber => 1075198; // Dawn�s Music Box
 
-    public List<MusicName> Tracks{ get; private set; }
+    public List<MusicName> Tracks { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public SecureLevel Level{ get; set; }
+    public SecureLevel Level { get; set; }
 
     public override void OnAfterDuped(Item newItem)
     {

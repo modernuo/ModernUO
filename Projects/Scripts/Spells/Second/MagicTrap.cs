@@ -5,14 +5,13 @@ namespace Server.Spells.Second
 {
   public class MagicTrapSpell : MagerySpell, ISpellTargetingItem
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Magic Trap", "In Jux",
       212,
       9001,
       Reagent.Garlic,
       Reagent.SpidersSilk,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public MagicTrapSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

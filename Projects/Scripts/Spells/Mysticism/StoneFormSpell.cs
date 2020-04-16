@@ -10,16 +10,15 @@ namespace Server.Spells.Mysticism
 {
   public class StoneFormSpell : MysticSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Stone Form", "In Rel Ylem",
       -1,
       9002,
       Reagent.Bloodmoss,
       Reagent.FertileDirt,
-      Reagent.Garlic
-    );
+      Reagent.Garlic);
 
-    private static Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
+    private static readonly Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
 
     public StoneFormSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
@@ -77,7 +76,7 @@ namespace Server.Spells.Mysticism
       {
         Caster.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
       }
-      else if (!Caster.CanBeginAction<IncognitoSpell>() || Caster.IsBodyMod && !UnderEffect(Caster))
+      else if (!Caster.CanBeginAction<IncognitoSpell>() || (Caster.IsBodyMod && !UnderEffect(Caster)))
       {
         Caster.SendLocalizedMessage(1063218); // You cannot use that ability in this form.
       }

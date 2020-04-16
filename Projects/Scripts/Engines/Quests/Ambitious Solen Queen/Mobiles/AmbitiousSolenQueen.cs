@@ -13,7 +13,7 @@ namespace Server.Engines.Quests.Ambitious
     {
     }
 
-    public abstract bool RedSolen{ get; }
+    public abstract bool RedSolen { get; }
     public override string DefaultName => "an ambitious solen queen";
     public override bool DisallowAllMoves => false;
 
@@ -54,7 +54,7 @@ namespace Server.Engines.Quests.Ambitious
           else
           {
             GetRewardObjective lastObj = qs.FindObjective<GetRewardObjective>();
-            
+
             if (lastObj?.Completed == false)
             {
               bool bagOfSending = lastObj.BagOfSending;

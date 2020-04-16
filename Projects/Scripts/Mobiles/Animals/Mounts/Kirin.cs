@@ -7,8 +7,7 @@ namespace Server.Mobiles
   public class Kirin : BaseMount
   {
     [Constructible]
-    public Kirin(string name = "a ki-rin") :
-      base(name, 132, 0x3EAD, AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4)
+    public Kirin(string name = "a ki-rin") : base(name, 132, 0x3EAD, AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4)
     {
       BaseSoundID = 0x3C5;
 
@@ -72,16 +71,15 @@ namespace Server.Mobiles
 
     public override bool DoMountAbility(int damage, Mobile attacker)
     {
-      if (Rider == null || attacker == null) //sanity
+      if (Rider == null || attacker == null) // sanity
         return false;
 
-      if (Rider.Hits - damage < 30 && Rider.Map == attacker.Map && Rider.InRange(attacker, 18)
-      ) //Range and map checked here instead of other base fuction because of abiliites that don't need to check this
+      if (Rider.Hits - damage < 30 && Rider.Map == attacker.Map && Rider.InRange(attacker, 18)) // Range and map checked here instead of other base fuction because of abiliites that don't need to check this
       {
         attacker.BoltEffect(0);
         // 35~100 damage, unresistable, by the Ki-rin.
         attacker.Damage(Utility.RandomMinMax(35, 100), this,
-          false); //Don't inform mount about this damage, Still unsure wether or not it's flagged as the mount doing damage or the player.  If changed to player, without the extra bool it'd be an infinite loop
+          false); // Don't inform mount about this damage, Still unsure wether or not it's flagged as the mount doing damage or the player.  If changed to player, without the extra bool it'd be an infinite loop
 
         Rider.LocalOverheadMessage(MessageType.Regular, 0x3B2,
           1042534); // Your mount calls down the forces of nature on your opponent.

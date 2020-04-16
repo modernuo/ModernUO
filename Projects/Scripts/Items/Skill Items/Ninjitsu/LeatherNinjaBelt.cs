@@ -27,11 +27,11 @@ namespace Server.Items
 
     public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
-    public virtual int WrongAmmoMessage => 1063301; //You can only place shuriken in a ninja belt.
-    public virtual int NoFreeHandMessage => 1063299; //You must have a free hand to throw shuriken.
-    public virtual int EmptyWeaponMessage => 1063297; //You have no shuriken in your ninja belt!
-    public virtual int RecentlyUsedMessage => 1063298; //You cannot throw another shuriken yet.
-    public virtual int FullWeaponMessage => 1063302; //You cannot add any more shuriken.
+    public virtual int WrongAmmoMessage => 1063301; // You can only place shuriken in a ninja belt.
+    public virtual int NoFreeHandMessage => 1063299; // You must have a free hand to throw shuriken.
+    public virtual int EmptyWeaponMessage => 1063297; // You have no shuriken in your ninja belt!
+    public virtual int RecentlyUsedMessage => 1063298; // You cannot throw another shuriken yet.
+    public virtual int FullWeaponMessage => 1063302; // You cannot add any more shuriken.
 
     public virtual int WeaponMinRange => 2;
     public virtual int WeaponMaxRange => 10;
@@ -145,14 +145,14 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_UsesRemaining = reader.ReadInt();
+          {
+            m_UsesRemaining = reader.ReadInt();
 
-          m_Poison = Poison.Deserialize(reader);
-          m_PoisonCharges = reader.ReadInt();
+            m_Poison = Poison.Deserialize(reader);
+            m_PoisonCharges = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

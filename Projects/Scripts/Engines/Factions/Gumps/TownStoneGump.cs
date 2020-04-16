@@ -7,9 +7,9 @@ namespace Server.Factions
 {
   public class TownStoneGump : FactionGump
   {
-    private Faction m_Faction;
-    private PlayerMobile m_From;
-    private Town m_Town;
+    private readonly Faction m_Faction;
+    private readonly PlayerMobile m_From;
+    private readonly Town m_Town;
 
     public TownStoneGump(PlayerMobile from, Faction faction, Town town) : base(50, 50)
     {
@@ -51,65 +51,65 @@ namespace Server.Factions
       switch (info.ButtonID)
       {
         case 1: // hire sheriff
-        {
-          if (m_Town.Sheriff != null)
           {
-            m_From.SendLocalizedMessage(1010342); // You must fire your Sheriff before you can elect a new one
-          }
-          else
-          {
-            m_From.SendLocalizedMessage(1010347); // Who shall be your new sheriff
-            m_From.BeginTarget(12, false, TargetFlags.None, HireSheriff_OnTarget);
-          }
+            if (m_Town.Sheriff != null)
+            {
+              m_From.SendLocalizedMessage(1010342); // You must fire your Sheriff before you can elect a new one
+            }
+            else
+            {
+              m_From.SendLocalizedMessage(1010347); // Who shall be your new sheriff
+              m_From.BeginTarget(12, false, TargetFlags.None, HireSheriff_OnTarget);
+            }
 
-          break;
-        }
+            break;
+          }
         case 2: // hire finance minister
-        {
-          if (m_Town.Finance != null)
           {
-            m_From.SendLocalizedMessage(
-              1010345); // You must fire your finance minister before you can elect a new one
-          }
-          else
-          {
-            m_From.SendLocalizedMessage(1010348); // Who shall be your new Minister of Finances?
-            m_From.BeginTarget(12, false, TargetFlags.None, HireFinanceMinister_OnTarget);
-          }
+            if (m_Town.Finance != null)
+            {
+              m_From.SendLocalizedMessage(
+                1010345); // You must fire your finance minister before you can elect a new one
+            }
+            else
+            {
+              m_From.SendLocalizedMessage(1010348); // Who shall be your new Minister of Finances?
+              m_From.BeginTarget(12, false, TargetFlags.None, HireFinanceMinister_OnTarget);
+            }
 
-          break;
-        }
+            break;
+          }
         case 3: // fire sheriff
-        {
-          if (m_Town.Sheriff == null)
           {
-            m_From.SendLocalizedMessage(1010350); // You need to elect a sheriff before you can fire one
-          }
-          else
-          {
-            m_From.SendLocalizedMessage(1010349); // You have fired your sheriff
-            m_Town.Sheriff.SendLocalizedMessage(1010270); // You have been fired as Sheriff
-            m_Town.Sheriff = null;
-          }
+            if (m_Town.Sheriff == null)
+            {
+              m_From.SendLocalizedMessage(1010350); // You need to elect a sheriff before you can fire one
+            }
+            else
+            {
+              m_From.SendLocalizedMessage(1010349); // You have fired your sheriff
+              m_Town.Sheriff.SendLocalizedMessage(1010270); // You have been fired as Sheriff
+              m_Town.Sheriff = null;
+            }
 
-          break;
-        }
+            break;
+          }
         case 4: // fire finance minister
-        {
-          if (m_Town.Finance == null)
           {
-            m_From.SendLocalizedMessage(
-              1010352); // You need to elect a financial minister before you can fire one
-          }
-          else
-          {
-            m_From.SendLocalizedMessage(1010351); // You have fired your financial Minister
-            m_Town.Finance.SendLocalizedMessage(1010151); // You have been fired as Finance Minister
-            m_Town.Finance = null;
-          }
+            if (m_Town.Finance == null)
+            {
+              m_From.SendLocalizedMessage(
+                1010352); // You need to elect a financial minister before you can fire one
+            }
+            else
+            {
+              m_From.SendLocalizedMessage(1010351); // You have fired your financial Minister
+              m_Town.Finance.SendLocalizedMessage(1010151); // You have been fired as Finance Minister
+              m_Town.Finance = null;
+            }
 
-          break;
-        }
+            break;
+          }
       }
     }
 

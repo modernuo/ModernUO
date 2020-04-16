@@ -62,10 +62,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Worth = reader.ReadInt();
-          break;
-        }
+          {
+            m_Worth = reader.ReadInt();
+            break;
+          }
       }
     }
 

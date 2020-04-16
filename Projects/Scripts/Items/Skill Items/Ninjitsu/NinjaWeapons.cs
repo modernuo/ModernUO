@@ -18,23 +18,23 @@ namespace Server.Items
 {
   public interface INinjaAmmo : IUsesRemaining
   {
-    int PoisonCharges{ get; set; }
-    Poison Poison{ get; set; }
+    int PoisonCharges { get; set; }
+    Poison Poison { get; set; }
   }
 
   public interface INinjaWeapon : IUsesRemaining
   {
-    int NoFreeHandMessage{ get; }
-    int EmptyWeaponMessage{ get; }
-    int RecentlyUsedMessage{ get; }
-    int FullWeaponMessage{ get; }
-    int WrongAmmoMessage{ get; }
-    Type AmmoType{ get; }
-    int PoisonCharges{ get; set; }
-    Poison Poison{ get; set; }
-    int WeaponDamage{ get; }
-    int WeaponMinRange{ get; }
-    int WeaponMaxRange{ get; }
+    int NoFreeHandMessage { get; }
+    int EmptyWeaponMessage { get; }
+    int RecentlyUsedMessage { get; }
+    int FullWeaponMessage { get; }
+    int WrongAmmoMessage { get; }
+    Type AmmoType { get; }
+    int PoisonCharges { get; set; }
+    Poison Poison { get; set; }
+    int WeaponDamage { get; }
+    int WeaponMinRange { get; }
+    int WeaponMaxRange { get; }
 
     void AttackAnimation(Mobile from, Mobile to);
   }
@@ -114,8 +114,8 @@ namespace Server.Items
           else
           {
             if (weapon.UsesRemaining > 0)
-              if (weapon.Poison == null && ammo.Poison != null
-                  || weapon.Poison != null && ammo.Poison != null && weapon.Poison.Level != ammo.Poison.Level)
+              if ((weapon.Poison == null && ammo.Poison != null)
+                  || (weapon.Poison != null && ammo.Poison != null && weapon.Poison.Level != ammo.Poison.Level))
               {
                 Unload(from, weapon);
                 need = Math.Min(MaxUses, ammo.UsesRemaining);
@@ -276,7 +276,7 @@ namespace Server.Items
 
     public class LoadEntry : ContextMenuEntry
     {
-      private INinjaWeapon weapon;
+      private readonly INinjaWeapon weapon;
 
       public LoadEntry(INinjaWeapon wep, int entry)
         : base(entry, 0) =>
@@ -291,7 +291,7 @@ namespace Server.Items
 
     public class UnloadEntry : ContextMenuEntry
     {
-      private INinjaWeapon weapon;
+      private readonly INinjaWeapon weapon;
 
       public UnloadEntry(INinjaWeapon wep, int entry)
         : base(entry, 0)

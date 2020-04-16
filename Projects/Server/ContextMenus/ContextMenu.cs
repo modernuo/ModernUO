@@ -45,35 +45,35 @@ namespace Server.ContextMenus
       From = from;
       Target = target;
 
-      List<ContextMenuEntry> list = new List<ContextMenuEntry>();
+      var list = new List<ContextMenuEntry>();
 
       if (target is Mobile mobile)
         mobile.GetContextMenuEntries(from, list);
       else if (target is Item item)
         item.GetContextMenuEntries(from, list);
 
-      //m_Entries = (ContextMenuEntry[])list.ToArray( typeof( ContextMenuEntry ) );
+      // m_Entries = (ContextMenuEntry[])list.ToArray( typeof( ContextMenuEntry ) );
 
       Entries = list.ToArray();
 
-      for (int i = 0; i < Entries.Length; ++i)
+      for (var i = 0; i < Entries.Length; ++i)
         Entries[i].Owner = this;
     }
 
     /// <summary>
     ///   Gets the <see cref="Mobile" /> who opened this ContextMenu.
     /// </summary>
-    public Mobile From{ get; }
+    public Mobile From { get; }
 
     /// <summary>
     ///   Gets an object of the <see cref="Mobile" /> or <see cref="Item" /> for which this ContextMenu is on.
     /// </summary>
-    public object Target{ get; }
+    public object Target { get; }
 
     /// <summary>
     ///   Gets the list of <see cref="ContextMenuEntry">entries</see> contained in this ContextMenu.
     /// </summary>
-    public ContextMenuEntry[] Entries{ get; }
+    public ContextMenuEntry[] Entries { get; }
 
     /// <summary>
     ///   Returns true if this ContextMenu requires packet version 2.
@@ -82,7 +82,7 @@ namespace Server.ContextMenus
     {
       get
       {
-        for (int i = 0; i < Entries.Length; ++i)
+        for (var i = 0; i < Entries.Length; ++i)
           if (Entries[i].Number < 3000000 || Entries[i].Number > 3032767)
             return true;
 

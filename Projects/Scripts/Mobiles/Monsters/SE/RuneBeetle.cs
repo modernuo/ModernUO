@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
   public class RuneBeetle : BaseCreature
   {
-    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+    private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public RuneBeetle() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -41,7 +41,6 @@ namespace Server.Mobiles
 
       Fame = 15000;
       Karma = -15000;
-
 
       if (Utility.RandomDouble() < .25)
         PackItem(Seed.RandomBonsaiSeed());
@@ -119,7 +118,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.05 <= Utility.RandomDouble())
+      if (Utility.RandomDouble() >= 0.05)
         return;
 
       /* Rune Corruption
@@ -212,8 +211,8 @@ namespace Server.Mobiles
 
     private class ExpireTimer : Timer
     {
-      private Mobile m_Mobile;
-      private List<ResistanceMod> m_Mods;
+      private readonly Mobile m_Mobile;
+      private readonly List<ResistanceMod> m_Mods;
 
       public ExpireTimer(Mobile m, List<ResistanceMod> mods, TimeSpan delay) : base(delay)
       {

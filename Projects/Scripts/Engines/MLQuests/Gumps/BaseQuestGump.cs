@@ -29,11 +29,11 @@ namespace Server.Engines.MLQuests.Gumps
   {
     private struct ButtonInfo
     {
-      public ButtonPosition Position{ get; }
+      public ButtonPosition Position { get; }
 
-      public ButtonGraphic Graphic{ get; }
+      public ButtonGraphic Graphic { get; }
 
-      public int ButtonID{ get; }
+      public int ButtonID { get; }
 
       public ButtonInfo(ButtonPosition position, ButtonGraphic graphic, int buttonID)
       {
@@ -47,7 +47,7 @@ namespace Server.Engines.MLQuests.Gumps
     private int m_MaxPages;
     private int m_Label;
     private string m_Title;
-    private List<ButtonInfo> m_Buttons;
+    private readonly List<ButtonInfo> m_Buttons;
 
     // RunUO optimized version
     public BaseQuestGump(int label)
@@ -76,7 +76,7 @@ namespace Server.Engines.MLQuests.Gumps
       AddImageTiled(51, 479, 392, 17, 0x2775);
       AddImageTiled(415, 29, 44, 450, 0xA2D);
       AddImageTiled(415, 29, 30, 450, 0x28DC);
-      //AddLabel( 100, 50, 0x481, "" );
+      // AddLabel( 100, 50, 0x481, "" );
       AddImage(370, 50, 0x589);
       AddImage(379, 60, 0x15A9);
       AddImage(425, 0, 0x28C9);
@@ -122,8 +122,6 @@ namespace Server.Engines.MLQuests.Gumps
     {
       m_Buttons.Add(new ButtonInfo(position, graphic, buttonID));
     }
-
-    #region Elaborate Formatting Shortcuts
 
     public void AddDescription(MLQuest quest)
     {
@@ -212,8 +210,6 @@ namespace Server.Engines.MLQuests.Gumps
       TextDefinition.AddHtmlText(this, 98, 140, 312, 180, text, false, true, 0x15F90, 0xBDE784);
     }
 
-    #endregion
-
     /* OSI gump IDs:
      * 800 - QuestOfferGump
      * 801 - QuestCancelConfirmGump
@@ -233,7 +229,7 @@ namespace Server.Engines.MLQuests.Gumps
       pm.CloseGump<QuestRewardGump>();
       pm.CloseGump<QuestConversationGump>();
       pm.CloseGump<QuestReportBackGump>();
-      //pm.CloseGump( typeof( UnknownGump807 ) );
+      // pm.CloseGump( typeof( UnknownGump807 ) );
       pm.CloseGump<QuestCancelConfirmGump>();
     }
   }

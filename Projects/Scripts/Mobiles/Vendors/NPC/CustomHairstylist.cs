@@ -13,7 +13,7 @@ namespace Server.Mobiles
     public static readonly object Vendor = new object();
     public static readonly object Price = new object();
 
-    private static HairstylistBuyInfo[] m_SellList =
+    private static readonly HairstylistBuyInfo[] m_SellList =
     {
       new HairstylistBuyInfo(1018357, 50000, false, typeof(ChangeHairstyleGump), new[]
         { From, Vendor, Price, false, ChangeHairstyleEntry.HairEntries }),
@@ -42,7 +42,7 @@ namespace Server.Mobiles
     {
     }
 
-    protected override List<SBInfo> SBInfos{ get; } = new List<SBInfo>();
+    protected override List<SBInfo> SBInfos { get; } = new List<SBInfo>();
 
     public override bool ClickTitle => false;
 
@@ -106,24 +106,24 @@ namespace Server.Mobiles
       GumpArgs = args;
     }
 
-    public int Title{ get; }
+    public int Title { get; }
 
-    public string TitleString{ get; }
+    public string TitleString { get; }
 
-    public int Price{ get; }
+    public int Price { get; }
 
-    public bool FacialHair{ get; }
+    public bool FacialHair { get; }
 
-    public Type GumpType{ get; }
+    public Type GumpType { get; }
 
-    public object[] GumpArgs{ get; }
+    public object[] GumpArgs { get; }
   }
 
   public class HairstylistBuyGump : Gump
   {
-    private Mobile m_From;
-    private HairstylistBuyInfo[] m_SellList;
-    private Mobile m_Vendor;
+    private readonly Mobile m_From;
+    private readonly HairstylistBuyInfo[] m_SellList;
+    private readonly Mobile m_Vendor;
 
     public HairstylistBuyGump(Mobile from, Mobile vendor, HairstylistBuyInfo[] sellList) : base(50, 50)
     {
@@ -254,19 +254,19 @@ namespace Server.Mobiles
         Hues[i] = start + i;
     }
 
-    public string Name{ get; }
+    public string Name { get; }
 
-    public int[] Hues{ get; }
+    public int[] Hues { get; }
   }
 
   public class ChangeHairHueGump : Gump
   {
-    private ChangeHairHueEntry[] m_Entries;
-    private bool m_FacialHair;
-    private Mobile m_From;
-    private bool m_Hair;
-    private int m_Price;
-    private Mobile m_Vendor;
+    private readonly ChangeHairHueEntry[] m_Entries;
+    private readonly bool m_FacialHair;
+    private readonly Mobile m_From;
+    private readonly bool m_Hair;
+    private readonly int m_Price;
+    private readonly Mobile m_Vendor;
 
     public ChangeHairHueGump(Mobile from, Mobile vendor, int price, bool hair, bool facialHair,
       ChangeHairHueEntry[] entries) : base(50, 50)
@@ -330,7 +330,7 @@ namespace Server.Mobiles
           if (index >= 0 && index < m_Entries.Length)
             if (offset >= 0 && offset < m_Entries[index].Hues.Length)
             {
-              if (m_Hair && m_From.HairItemID > 0 || m_FacialHair && m_From.FacialHairItemID > 0)
+              if ((m_Hair && m_From.HairItemID > 0) || (m_FacialHair && m_From.FacialHairItemID > 0))
               {
                 if (!Banker.Withdraw(m_From, m_Price))
                 {
@@ -404,25 +404,24 @@ namespace Server.Mobiles
       ItemID = itemID;
     }
 
-    public int ItemID{ get; }
+    public int ItemID { get; }
 
-    public int GumpID{ get; }
+    public int GumpID { get; }
 
-    public int X{ get; }
+    public int X { get; }
 
-    public int Y{ get; }
+    public int Y { get; }
   }
 
   public class ChangeHairstyleGump : Gump
   {
-    private ChangeHairstyleEntry[] m_Entries;
-    private bool m_FacialHair;
-    private Mobile m_From;
-    private int m_Price;
-    private Mobile m_Vendor;
+    private readonly ChangeHairstyleEntry[] m_Entries;
+    private readonly bool m_FacialHair;
+    private readonly Mobile m_From;
+    private readonly int m_Price;
+    private readonly Mobile m_Vendor;
 
-    public ChangeHairstyleGump(Mobile from, Mobile vendor, int price, bool facialHair, ChangeHairstyleEntry[] entries) :
-      base(50, 50)
+    public ChangeHairstyleGump(Mobile from, Mobile vendor, int price, bool facialHair, ChangeHairstyleEntry[] entries) : base(50, 50)
     {
       m_From = from;
       m_Vendor = vendor;

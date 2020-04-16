@@ -197,7 +197,7 @@ namespace Server.Engines.Quests.Collector
 
     private class DisassembleEntry : ContextMenuEntry
     {
-      private Obsidian m_Obsidian;
+      private readonly Obsidian m_Obsidian;
 
       public DisassembleEntry(Obsidian obsidian) : base(6142) => m_Obsidian = obsidian;
 
@@ -217,7 +217,7 @@ namespace Server.Engines.Quests.Collector
 
     private class InternalTarget : Target
     {
-      private Obsidian m_Obsidian;
+      private readonly Obsidian m_Obsidian;
 
       public InternalTarget(Obsidian obsidian) : base(-1, false, TargetFlags.None) => m_Obsidian = obsidian;
 

@@ -36,7 +36,7 @@ namespace Server.Mobiles
 
       VirtualArmor = 18;
 
-      if (0.25 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.25)
         PackItem(new Board(10));
       else
         PackItem(new Log(10));

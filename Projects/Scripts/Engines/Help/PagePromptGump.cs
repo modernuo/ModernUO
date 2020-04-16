@@ -5,8 +5,8 @@ namespace Server.Engines.Help
 {
   public class PagePromptGump : Gump
   {
-    private Mobile m_From;
-    private PageType m_Type;
+    private readonly Mobile m_From;
+    private readonly PageType m_Type;
 
     public PagePromptGump(Mobile from, PageType type) : base(0, 0)
     {
@@ -47,10 +47,10 @@ namespace Server.Engines.Help
         }
         else
         {
-          m_From.SendLocalizedMessage(501234, "",
-            0x35); /* The next available Counselor/Game Master will respond as soon as possible.
-																	  * Please check your Journal for messages every few minutes.
-																	  */
+          /* The next available Counselor/Game Master will respond as soon as possible.
+           * Please check your Journal for messages every few minutes.
+           */
+          m_From.SendLocalizedMessage(501234, "", 0x35);
 
           PageQueue.Enqueue(new PageEntry(m_From, text, m_Type));
         }

@@ -10,8 +10,8 @@ namespace Server.Spells.Bushido
     {
     }
 
-    public abstract double RequiredSkill{ get; }
-    public abstract int RequiredMana{ get; }
+    public abstract double RequiredSkill { get; }
+    public abstract int RequiredMana { get; }
 
     public override SkillName CastSkill => SkillName.Bushido;
     public override SkillName DamageSkill => SkillName.Bushido;
@@ -20,7 +20,7 @@ namespace Server.Spells.Bushido
     public override bool BlocksMovement => false;
     public override bool ShowHandMovement => false;
 
-    //public override int CastDelayBase => 1;
+    // public override int CastDelayBase => 1;
     public override double CastDelayFastScalar => 0;
 
     public override int CastRecoveryBase => 7;
@@ -86,7 +86,7 @@ namespace Server.Spells.Bushido
 
     public override void GetCastSkills(out double min, out double max)
     {
-      min = RequiredSkill - 12.5; //per 5 on friday, 2/16/07
+      min = RequiredSkill - 12.5; // per 5 on friday, 2/16/07
       max = RequiredSkill + 37.5;
     }
 

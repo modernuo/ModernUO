@@ -14,16 +14,16 @@ namespace Server.Misc
       Int
     }
 
-    public const int Allowance = 3; //How many times may we use the same location/target for gain
+    public const int Allowance = 3; // How many times may we use the same location/target for gain
 
     private const int
-      LocationSize = 5; //The size of eeach location, make this smaller so players dont have to move as far
+      LocationSize = 5; // The size of eeach location, make this smaller so players dont have to move as far
 
-    private static readonly bool AntiMacroCode = !Core.ML; //Change this to false to disable anti-macro code
+    private static readonly bool AntiMacroCode = !Core.ML; // Change this to false to disable anti-macro code
 
-    public static TimeSpan AntiMacroExpire = TimeSpan.FromMinutes(5.0); //How long do we remember targets/locations?
+    public static TimeSpan AntiMacroExpire = TimeSpan.FromMinutes(5.0); // How long do we remember targets/locations?
 
-    private static bool[] UseAntiMacro =
+    private static readonly bool[] UseAntiMacro =
     {
       // true if this skill uses the anti-macro code, false if it does not
       false, // Alchemy = 0,
@@ -79,12 +79,12 @@ namespace Server.Misc
       false, // Focus = 50,
       true, // Chivalry = 51
       true, // Bushido = 52
-      true, //Ninjitsu = 53
+      true, // Ninjitsu = 53
       true // Spellweaving
     };
 
-    private static TimeSpan m_StatGainDelay = TimeSpan.FromMinutes(Core.ML ? 0.05 : 15);
-    private static TimeSpan m_PetStatGainDelay = TimeSpan.FromMinutes(5.0);
+    private static readonly TimeSpan m_StatGainDelay = TimeSpan.FromMinutes(Core.ML ? 0.05 : 15);
+    private static readonly TimeSpan m_PetStatGainDelay = TimeSpan.FromMinutes(5.0);
 
     public static void Initialize()
     {
@@ -152,7 +152,7 @@ namespace Server.Misc
       if (from is BaseCreature creature && creature.Controlled)
         gc *= 2;
 
-      if (from.Alive && (gc >= Utility.RandomDouble() && AllowGain(from, skill, amObj) || skill.Base < 10.0))
+      if (from.Alive && ((gc >= Utility.RandomDouble() && AllowGain(from, skill, amObj)) || skill.Base < 10.0))
         Gain(from, skill);
 
       return success;
@@ -195,7 +195,7 @@ namespace Server.Misc
 
     private static bool AllowGain(Mobile from, Skill skill, object obj)
     {
-      if (Core.AOS && Faction.InSkillLoss(from)) //Changed some time between the introduction of AoS and SE.
+      if (Core.AOS && Faction.InSkillLoss(from)) // Changed some time between the introduction of AoS and SE.
         return false;
 
       if (AntiMacroCode && from is PlayerMobile mobile && UseAntiMacro[skill.Info.SkillID])
@@ -224,7 +224,7 @@ namespace Server.Misc
 
         Skills skills = from.Skills;
 
-        if (from.Player && skills.Total / skills.Cap >= Utility.RandomDouble()) //( skills.Total >= skills.Cap )
+        if (from.Player && skills.Total / skills.Cap >= Utility.RandomDouble()) // ( skills.Total >= skills.Cap )
           for (int i = 0; i < skills.Length; ++i)
           {
             Skill toLower = skills[i];
@@ -236,13 +236,9 @@ namespace Server.Misc
             }
           }
 
-        #region Scroll of Alacrity
-
         if (from is PlayerMobile pm && skill.SkillName == pm.AcceleratedSkill &&
             pm.AcceleratedStart > DateTime.UtcNow)
           toGain *= Utility.RandomMinMax(2, 5);
-
-        #endregion
 
         if (!from.Player || skills.Total + toGain <= skills.Cap) skill.BaseFixedPoint += toGain;
       }
@@ -264,9 +260,9 @@ namespace Server.Misc
     {
       return stat switch
       {
-        Stat.Str => (from.StrLock == StatLockType.Down && from.RawStr > 10),
-        Stat.Dex => (from.DexLock == StatLockType.Down && from.RawDex > 10),
-        Stat.Int => (from.IntLock == StatLockType.Down && from.RawInt > 10),
+        Stat.Str => from.StrLock == StatLockType.Down && from.RawStr > 10,
+        Stat.Dex => from.DexLock == StatLockType.Down && from.RawDex > 10,
+        Stat.Int => from.IntLock == StatLockType.Down && from.RawInt > 10,
         _ => false
       };
     }
@@ -279,9 +275,9 @@ namespace Server.Misc
 
       return stat switch
       {
-        Stat.Str => (from.StrLock == StatLockType.Up && from.RawStr < 125),
-        Stat.Dex => (from.DexLock == StatLockType.Up && from.RawDex < 125),
-        Stat.Int => (from.IntLock == StatLockType.Up && from.RawInt < 125),
+        Stat.Str => from.StrLock == StatLockType.Up && from.RawStr < 125,
+        Stat.Dex => from.DexLock == StatLockType.Up && from.RawDex < 125,
+        Stat.Int => from.IntLock == StatLockType.Up && from.RawInt < 125,
         _ => false
       };
     }
@@ -293,50 +289,50 @@ namespace Server.Misc
       switch (stat)
       {
         case Stat.Str:
-        {
-          if (atrophy)
           {
-            if (CanLower(from, Stat.Dex) && (from.RawDex < from.RawInt || !CanLower(from, Stat.Int)))
-              --from.RawDex;
-            else if (CanLower(from, Stat.Int))
-              --from.RawInt;
+            if (atrophy)
+            {
+              if (CanLower(from, Stat.Dex) && (from.RawDex < from.RawInt || !CanLower(from, Stat.Int)))
+                --from.RawDex;
+              else if (CanLower(from, Stat.Int))
+                --from.RawInt;
+            }
+
+            if (CanRaise(from, Stat.Str))
+              ++from.RawStr;
+
+            break;
           }
-
-          if (CanRaise(from, Stat.Str))
-            ++from.RawStr;
-
-          break;
-        }
         case Stat.Dex:
-        {
-          if (atrophy)
           {
-            if (CanLower(from, Stat.Str) && (from.RawStr < from.RawInt || !CanLower(from, Stat.Int)))
-              --from.RawStr;
-            else if (CanLower(from, Stat.Int))
-              --from.RawInt;
+            if (atrophy)
+            {
+              if (CanLower(from, Stat.Str) && (from.RawStr < from.RawInt || !CanLower(from, Stat.Int)))
+                --from.RawStr;
+              else if (CanLower(from, Stat.Int))
+                --from.RawInt;
+            }
+
+            if (CanRaise(from, Stat.Dex))
+              ++from.RawDex;
+
+            break;
           }
-
-          if (CanRaise(from, Stat.Dex))
-            ++from.RawDex;
-
-          break;
-        }
         case Stat.Int:
-        {
-          if (atrophy)
           {
-            if (CanLower(from, Stat.Str) && (from.RawStr < from.RawDex || !CanLower(from, Stat.Dex)))
-              --from.RawStr;
-            else if (CanLower(from, Stat.Dex))
-              --from.RawDex;
+            if (atrophy)
+            {
+              if (CanLower(from, Stat.Str) && (from.RawStr < from.RawDex || !CanLower(from, Stat.Dex)))
+                --from.RawStr;
+              else if (CanLower(from, Stat.Dex))
+                --from.RawDex;
+            }
+
+            if (CanRaise(from, Stat.Int))
+              ++from.RawInt;
+
+            break;
           }
-
-          if (CanRaise(from, Stat.Int))
-            ++from.RawInt;
-
-          break;
-        }
       }
     }
 
@@ -345,51 +341,51 @@ namespace Server.Misc
       switch (stat)
       {
         case Stat.Str:
-        {
-          if (from is BaseCreature creature && creature.Controlled)
           {
-            if (creature.LastStrGain + m_PetStatGainDelay >= DateTime.UtcNow)
+            if (from is BaseCreature creature && creature.Controlled)
+            {
+              if (creature.LastStrGain + m_PetStatGainDelay >= DateTime.UtcNow)
+                return;
+            }
+            else if (from.LastStrGain + m_StatGainDelay >= DateTime.UtcNow)
+            {
               return;
-          }
-          else if (from.LastStrGain + m_StatGainDelay >= DateTime.UtcNow)
-          {
-            return;
-          }
+            }
 
-          from.LastStrGain = DateTime.UtcNow;
-          break;
-        }
+            from.LastStrGain = DateTime.UtcNow;
+            break;
+          }
         case Stat.Dex:
-        {
-          if (from is BaseCreature creature && creature.Controlled)
           {
-            if (creature.LastDexGain + m_PetStatGainDelay >= DateTime.UtcNow)
+            if (from is BaseCreature creature && creature.Controlled)
+            {
+              if (creature.LastDexGain + m_PetStatGainDelay >= DateTime.UtcNow)
+                return;
+            }
+            else if (from.LastDexGain + m_StatGainDelay >= DateTime.UtcNow)
+            {
               return;
-          }
-          else if (from.LastDexGain + m_StatGainDelay >= DateTime.UtcNow)
-          {
-            return;
-          }
+            }
 
-          from.LastDexGain = DateTime.UtcNow;
-          break;
-        }
+            from.LastDexGain = DateTime.UtcNow;
+            break;
+          }
         case Stat.Int:
-        {
-          if (from is BaseCreature creature && creature.Controlled)
           {
-            if (creature.LastIntGain + m_PetStatGainDelay >= DateTime.UtcNow)
+            if (from is BaseCreature creature && creature.Controlled)
+            {
+              if (creature.LastIntGain + m_PetStatGainDelay >= DateTime.UtcNow)
+                return;
+            }
+
+            else if (from.LastIntGain + m_StatGainDelay >= DateTime.UtcNow)
+            {
               return;
-          }
+            }
 
-          else if (from.LastIntGain + m_StatGainDelay >= DateTime.UtcNow)
-          {
-            return;
+            from.LastIntGain = DateTime.UtcNow;
+            break;
           }
-
-          from.LastIntGain = DateTime.UtcNow;
-          break;
-        }
       }
 
       bool atrophy = from.RawStatTotal / (double)from.StatCap >= Utility.RandomDouble();

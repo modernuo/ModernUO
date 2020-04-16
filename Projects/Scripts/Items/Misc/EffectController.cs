@@ -38,23 +38,22 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public ECEffectType EffectType{ get; set; }
+    public ECEffectType EffectType { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public EffectTriggerType TriggerType{ get; set; }
+    public EffectTriggerType TriggerType { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public EffectLayer EffectLayer{ get; set; }
+    public EffectLayer EffectLayer { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan EffectDelay{ get; set; }
+    public TimeSpan EffectDelay { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan TriggerDelay{ get; set; }
+    public TimeSpan TriggerDelay { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan SoundDelay{ get; set; }
-
+    public TimeSpan SoundDelay { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Item SourceItem
@@ -80,7 +79,6 @@ namespace Server.Items
       }
     }
 
-
     [CommandProperty(AccessLevel.GameMaster)]
     public Item TargetItem
     {
@@ -105,53 +103,50 @@ namespace Server.Items
       }
     }
 
+    [CommandProperty(AccessLevel.GameMaster)]
+    public EffectController Sequence { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public EffectController Sequence{ get; set; }
-
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    private bool FixedDirection{ get; set; }
+    private bool FixedDirection { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    private bool Explodes{ get; set; }
+    private bool Explodes { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    private bool PlaySoundAtTrigger{ get; set; }
-
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int EffectItemID{ get; set; }
+    private bool PlaySoundAtTrigger { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int EffectHue{ get; set; }
+    public int EffectItemID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int RenderMode{ get; set; }
+    public int EffectHue { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Speed{ get; set; }
+    public int RenderMode { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Duration{ get; set; }
+    public int Speed { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ParticleEffect{ get; set; }
+    public int Duration { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ExplodeParticleEffect{ get; set; }
+    public int ParticleEffect { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ExplodeSound{ get; set; }
+    public int ExplodeParticleEffect { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Unknown{ get; set; }
+    public int ExplodeSound { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int SoundID{ get; set; }
+    public int Unknown { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int TriggerRange{ get; set; }
+    public int SoundID { get; set; }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int TriggerRange { get; set; }
 
     public override string DefaultName => "Effect Controller";
 
@@ -225,37 +220,37 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          EffectDelay = reader.ReadTimeSpan();
-          TriggerDelay = reader.ReadTimeSpan();
-          SoundDelay = reader.ReadTimeSpan();
+          {
+            EffectDelay = reader.ReadTimeSpan();
+            TriggerDelay = reader.ReadTimeSpan();
+            SoundDelay = reader.ReadTimeSpan();
 
-          m_Source = ReadEntity(reader);
-          m_Target = ReadEntity(reader);
-          Sequence = reader.ReadItem() as EffectController;
+            m_Source = ReadEntity(reader);
+            m_Target = ReadEntity(reader);
+            Sequence = reader.ReadItem() as EffectController;
 
-          FixedDirection = reader.ReadBool();
-          Explodes = reader.ReadBool();
-          PlaySoundAtTrigger = reader.ReadBool();
+            FixedDirection = reader.ReadBool();
+            Explodes = reader.ReadBool();
+            PlaySoundAtTrigger = reader.ReadBool();
 
-          EffectType = (ECEffectType)reader.ReadEncodedInt();
-          EffectLayer = (EffectLayer)reader.ReadEncodedInt();
-          TriggerType = (EffectTriggerType)reader.ReadEncodedInt();
+            EffectType = (ECEffectType)reader.ReadEncodedInt();
+            EffectLayer = (EffectLayer)reader.ReadEncodedInt();
+            TriggerType = (EffectTriggerType)reader.ReadEncodedInt();
 
-          EffectItemID = reader.ReadEncodedInt();
-          EffectHue = reader.ReadEncodedInt();
-          RenderMode = reader.ReadEncodedInt();
-          Speed = reader.ReadEncodedInt();
-          Duration = reader.ReadEncodedInt();
-          ParticleEffect = reader.ReadEncodedInt();
-          ExplodeParticleEffect = reader.ReadEncodedInt();
-          ExplodeSound = reader.ReadEncodedInt();
-          Unknown = reader.ReadEncodedInt();
-          SoundID = reader.ReadEncodedInt();
-          TriggerRange = reader.ReadEncodedInt();
+            EffectItemID = reader.ReadEncodedInt();
+            EffectHue = reader.ReadEncodedInt();
+            RenderMode = reader.ReadEncodedInt();
+            Speed = reader.ReadEncodedInt();
+            Duration = reader.ReadEncodedInt();
+            ParticleEffect = reader.ReadEncodedInt();
+            ExplodeParticleEffect = reader.ReadEncodedInt();
+            ExplodeSound = reader.ReadEncodedInt();
+            Unknown = reader.ReadEncodedInt();
+            SoundID = reader.ReadEncodedInt();
+            TriggerRange = reader.ReadEncodedInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -292,34 +287,34 @@ namespace Server.Items
       switch (EffectType)
       {
         case ECEffectType.Lightning:
-        {
-          Effects.SendBoltEffect(from, false, EffectHue);
-          break;
-        }
+          {
+            Effects.SendBoltEffect(from, false, EffectHue);
+            break;
+          }
         case ECEffectType.Location:
-        {
-          Effects.SendLocationParticles(EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration),
-            EffectItemID, Speed, Duration, EffectHue, RenderMode, ParticleEffect, Unknown);
-          break;
-        }
+          {
+            Effects.SendLocationParticles(EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration),
+              EffectItemID, Speed, Duration, EffectHue, RenderMode, ParticleEffect, Unknown);
+            break;
+          }
         case ECEffectType.Moving:
-        {
-          if (from == this)
-            from = EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration);
+          {
+            if (from == this)
+              from = EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration);
 
-          if (to == this)
-            to = EffectItem.Create(to.Location, to.Map, EffectItem.DefaultDuration);
+            if (to == this)
+              to = EffectItem.Create(to.Location, to.Map, EffectItem.DefaultDuration);
 
-          Effects.SendMovingParticles(from, to, EffectItemID, Speed, Duration, FixedDirection, Explodes, EffectHue,
-            RenderMode, ParticleEffect, ExplodeParticleEffect, ExplodeSound, EffectLayer, Unknown);
-          break;
-        }
+            Effects.SendMovingParticles(from, to, EffectItemID, Speed, Duration, FixedDirection, Explodes, EffectHue,
+              RenderMode, ParticleEffect, ExplodeParticleEffect, ExplodeSound, EffectLayer, Unknown);
+            break;
+          }
         case ECEffectType.Target:
-        {
-          Effects.SendTargetParticles(from, EffectItemID, Speed, Duration, EffectHue, RenderMode, ParticleEffect,
-            EffectLayer, Unknown);
-          break;
-        }
+          {
+            Effects.SendTargetParticles(from, EffectItemID, Speed, Duration, EffectHue, RenderMode, ParticleEffect,
+              EffectLayer, Unknown);
+            break;
+          }
       }
     }
   }

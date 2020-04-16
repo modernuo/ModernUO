@@ -105,11 +105,11 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_RecipeID = reader.ReadInt();
+          {
+            m_RecipeID = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

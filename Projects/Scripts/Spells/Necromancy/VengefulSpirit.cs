@@ -6,14 +6,13 @@ namespace Server.Spells.Necromancy
 {
   public class VengefulSpiritSpell : NecromancerSpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Vengeful Spirit", "Kal Xen Bal Beh",
       203,
       9031,
       Reagent.BatWing,
       Reagent.GraveDust,
-      Reagent.PigIron
-    );
+      Reagent.PigIron);
 
     public VengefulSpiritSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

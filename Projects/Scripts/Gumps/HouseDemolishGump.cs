@@ -8,8 +8,8 @@ namespace Server.Gumps
 {
   public class HouseDemolishGump : Gump
   {
-    private BaseHouse m_House;
-    private Mobile m_Mobile;
+    private readonly BaseHouse m_House;
+    private readonly Mobile m_Mobile;
 
     public HouseDemolishGump(Mobile mobile, BaseHouse house) : base(110, 100)
     {
@@ -89,7 +89,6 @@ namespace Server.Gumps
               1062681); // You cannot do that that while you still have unclaimed contract vendor inventory in your house.
             return;
           }
-
 
           if (m_Mobile.AccessLevel >= AccessLevel.GameMaster)
           {

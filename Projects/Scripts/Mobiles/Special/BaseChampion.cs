@@ -7,8 +7,7 @@ namespace Server.Mobiles
 {
   public abstract class BaseChampion : BaseCreature
   {
-    public BaseChampion(AIType aiType, FightMode mode = FightMode.Closest) :
-      base(aiType, mode, 18, 1, 0.1, 0.2)
+    public BaseChampion(AIType aiType, FightMode mode = FightMode.Closest) : base(aiType, mode, 18, 1, 0.1, 0.2)
     {
     }
 
@@ -19,12 +18,12 @@ namespace Server.Mobiles
     public override bool CanMoveOverObstacles => true;
     public override bool CanDestroyObstacles => true;
 
-    public abstract ChampionSkullType SkullType{ get; }
+    public abstract ChampionSkullType SkullType { get; }
 
-    public abstract Type[] UniqueList{ get; }
-    public abstract Type[] SharedList{ get; }
-    public abstract Type[] DecorativeList{ get; }
-    public abstract MonsterStatuetteType[] StatueTypes{ get; }
+    public abstract Type[] UniqueList { get; }
+    public abstract Type[] SharedList { get; }
+    public abstract Type[] DecorativeList { get; }
+    public abstract MonsterStatuetteType[] StatueTypes { get; }
 
     public virtual bool NoGoodies => false;
 
@@ -45,11 +44,11 @@ namespace Server.Mobiles
     public Item GetArtifact()
     {
       double random = Utility.RandomDouble();
-      if (0.05 >= random)
+      if (random <= 0.05)
         return CreateArtifact(UniqueList);
-      if (0.15 >= random)
+      if (random <= 0.15)
         return CreateArtifact(SharedList);
-      if (0.30 >= random)
+      if (random <= 0.30)
         return CreateArtifact(DecorativeList);
 
       return null;
@@ -80,9 +79,9 @@ namespace Server.Mobiles
       int level;
       double random = Utility.RandomDouble();
 
-      if (0.05 >= random)
+      if (random <= 0.05)
         level = 20;
-      else if (0.4 >= random)
+      else if (random <= 0.4)
         level = 15;
       else
         level = 10;
@@ -127,7 +126,7 @@ namespace Server.Mobiles
           else
             m.SendLocalizedMessage(1054030); // You have gained in Valor!
 
-          //No delay on Valor gains
+          // No delay on Valor gains
         }
       }
 
@@ -152,7 +151,7 @@ namespace Server.Mobiles
 
     public static void GivePowerScrollTo(Mobile m, PowerScroll ps)
     {
-      if (ps == null || m == null) //sanity
+      if (ps == null || m == null) // sanity
         return;
 
       m.SendLocalizedMessage(1049524); // You have received a scroll of power!
@@ -221,13 +220,13 @@ namespace Server.Mobiles
 
         if (map != null)
           for (int x = -12; x <= 12; ++x)
-          for (int y = -12; y <= 12; ++y)
-          {
-            double dist = Math.Sqrt(x * x + y * y);
+            for (int y = -12; y <= 12; ++y)
+            {
+              double dist = Math.Sqrt(x * x + y * y);
 
-            if (dist <= 12)
-              new GoodiesTimer(map, X + x, Y + y).Start();
-          }
+              if (dist <= 12)
+                new GoodiesTimer(map, X + x, Y + y).Start();
+            }
       }
 
       return base.OnBeforeDeath();
@@ -237,7 +236,7 @@ namespace Server.Mobiles
     {
       if (Map == Map.Felucca)
       {
-        //TODO: Confirm SE change or AoS one too?
+        // TODO: Confirm SE change or AoS one too?
         List<DamageStore> rights = GetLootingRights(DamageEntries, HitsMax);
         List<Mobile> toGive = new List<Mobile>();
 
@@ -260,8 +259,9 @@ namespace Server.Mobiles
 
     private class GoodiesTimer : Timer
     {
-      private Map m_Map;
-      private int m_X, m_Y;
+      private readonly Map m_Map;
+      private readonly int m_X;
+      private readonly int m_Y;
 
       public GoodiesTimer(Map map, int x, int y) : base(TimeSpan.FromSeconds(Utility.RandomDouble() * 10.0))
       {
@@ -290,32 +290,32 @@ namespace Server.Mobiles
 
         g.MoveToWorld(new Point3D(m_X, m_Y, z), m_Map);
 
-        if (0.5 >= Utility.RandomDouble())
+        if (Utility.RandomDouble() <= 0.5)
           switch (Utility.Random(3))
           {
             case 0: // Fire column
-            {
-              Effects.SendLocationParticles(EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
-                0x3709, 10, 30, 5052);
-              Effects.PlaySound(g, g.Map, 0x208);
+              {
+                Effects.SendLocationParticles(EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
+                  0x3709, 10, 30, 5052);
+                Effects.PlaySound(g, g.Map, 0x208);
 
-              break;
-            }
+                break;
+              }
             case 1: // Explosion
-            {
-              Effects.SendLocationParticles(EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
-                0x36BD, 20, 10, 5044);
-              Effects.PlaySound(g, g.Map, 0x307);
+              {
+                Effects.SendLocationParticles(EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
+                  0x36BD, 20, 10, 5044);
+                Effects.PlaySound(g, g.Map, 0x307);
 
-              break;
-            }
+                break;
+              }
             case 2: // Ball of fire
-            {
-              Effects.SendLocationParticles(EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
-                0x36FE, 10, 10, 5052);
+              {
+                Effects.SendLocationParticles(EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
+                  0x36FE, 10, 10, 5052);
 
-              break;
-            }
+                break;
+              }
           }
       }
     }

@@ -51,13 +51,13 @@ namespace Server.Gumps
 
     private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
     private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
-    private List<object> m_List;
-    private Mobile m_Mobile;
-    private object m_Object;
-    private int m_Page;
-    private PropertyInfo m_Property;
-    private Stack<StackEntry> m_Stack;
-    private Type m_Type;
+    private readonly List<object> m_List;
+    private readonly Mobile m_Mobile;
+    private readonly object m_Object;
+    private readonly int m_Page;
+    private readonly PropertyInfo m_Property;
+    private readonly Stack<StackEntry> m_Stack;
+    private readonly Type m_Type;
 
     public SetObjectGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, Type type, int page,
       List<object> list) : base(GumpOffsetX, GumpOffsetY)
@@ -145,53 +145,53 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 0: // closed
-        {
-          m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
-          shouldSend = false;
-          break;
-        }
+          {
+            m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+            shouldSend = false;
+            break;
+          }
         case 1: // Change by Target
-        {
-          m_Mobile.Target = new SetObjectTarget(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List);
-          shouldSend = false;
-          break;
-        }
+          {
+            m_Mobile.Target = new SetObjectTarget(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List);
+            shouldSend = false;
+            break;
+          }
         case 2: // Change by Serial
-        {
-          shouldSend = false;
+          {
+            shouldSend = false;
 
-          m_Mobile.SendMessage("Enter the serial you wish to find:");
-          m_Mobile.Prompt = new InternalPrompt(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List);
+            m_Mobile.SendMessage("Enter the serial you wish to find:");
+            m_Mobile.Prompt = new InternalPrompt(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List);
 
-          break;
-        }
+            break;
+          }
         case 3: // Nullify
-        {
-          try
           {
-            CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, "(null)");
-            m_Property.SetValue(m_Object, null, null);
-            PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+            try
+            {
+              CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, "(null)");
+              m_Property.SetValue(m_Object, null, null);
+              PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+            }
+            catch
+            {
+              m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
+            }
+            break;
           }
-          catch
-          {
-            m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
-          }
-          break;
-        }
         case 4: // View Properties
-        {
-          object obj = m_Property.GetValue(m_Object, null);
+          {
+            object obj = m_Property.GetValue(m_Object, null);
 
-          if (obj == null)
-            m_Mobile.SendMessage("The property is null and so you cannot view its properties.");
-          else if (!BaseCommand.IsAccessible(m_Mobile, obj))
-            m_Mobile.SendMessage("You may not view their properties.");
-          else
-            viewProps = obj;
+            if (obj == null)
+              m_Mobile.SendMessage("The property is null and so you cannot view its properties.");
+            else if (!BaseCommand.IsAccessible(m_Mobile, obj))
+              m_Mobile.SendMessage("You may not view their properties.");
+            else
+              viewProps = obj;
 
-          break;
-        }
+            break;
+          }
       }
 
       if (shouldSend)
@@ -203,13 +203,13 @@ namespace Server.Gumps
 
     private class InternalPrompt : Prompt
     {
-      private List<object> m_List;
-      private Mobile m_Mobile;
-      private object m_Object;
-      private int m_Page;
-      private PropertyInfo m_Property;
-      private Stack<StackEntry> m_Stack;
-      private Type m_Type;
+      private readonly List<object> m_List;
+      private readonly Mobile m_Mobile;
+      private readonly object m_Object;
+      private readonly int m_Page;
+      private readonly PropertyInfo m_Property;
+      private readonly Stack<StackEntry> m_Stack;
+      private readonly Type m_Type;
 
       public InternalPrompt(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, Type type, int page,
         List<object> list)

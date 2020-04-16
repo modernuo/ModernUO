@@ -4,16 +4,15 @@ namespace Server.Spells.Fifth
 {
   public class MagicReflectSpell : MagerySpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Magic Reflection", "In Jux Sanct",
       242,
       9012,
       Reagent.Garlic,
       Reagent.MandrakeRoot,
-      Reagent.SpidersSilk
-    );
+      Reagent.SpidersSilk);
 
-    private static Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
+    private static readonly Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
 
     public MagicReflectSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -113,7 +112,7 @@ namespace Server.Spells.Fifth
           if (Caster.BeginAction<DefensiveSpell>())
           {
             int value = (int)(Caster.Skills.Magery.Value + Caster.Skills.Inscribe.Value);
-            value = (int)(8 + value / 200.0 * 7.0); //absorb from 8 to 15 "circles"
+            value = (int)(8 + value / 200.0 * 7.0); // absorb from 8 to 15 "circles"
 
             Caster.MagicDamageAbsorb = value;
 

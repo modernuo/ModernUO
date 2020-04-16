@@ -7,16 +7,16 @@ namespace Server.Items
   [AttributeUsage(AttributeTargets.Class)]
   public class FlippableAddonAttribute : Attribute
   {
-    private static string m_MethodName = "Flip";
+    private static readonly string m_MethodName = "Flip";
 
-    private static Type[] m_Params =
+    private static readonly Type[] m_Params =
     {
       typeof(Mobile), typeof(Direction)
     };
 
     public FlippableAddonAttribute(params Direction[] directions) => Directions = directions;
 
-    public Direction[] Directions{ get; }
+    public Direction[] Directions { get; }
 
     public virtual void Flip(Mobile from, Item addon)
     {

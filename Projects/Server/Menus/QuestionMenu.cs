@@ -39,9 +39,9 @@ namespace Server.Menus.Questions
       } while (m_Serial == 0);
     }
 
-    public string Question{ get; set; }
+    public string Question { get; set; }
 
-    public string[] Answers{ get; }
+    public string[] Answers { get; }
 
     int IMenu.Serial => m_Serial;
 

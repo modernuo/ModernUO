@@ -8,7 +8,7 @@ namespace Server.Items
   [Flippable(0x1EBA, 0x1EBB)]
   public class TaxidermyKit : Item
   {
-    private static TrophyInfo[] m_Table =
+    private static readonly TrophyInfo[] m_Table =
     {
       new TrophyInfo(typeof(BrownBear), 0x1E60, 1041093, 1041107),
       new TrophyInfo(typeof(GreatHart), 0x1E61, 1041095, 1041109),
@@ -69,19 +69,18 @@ namespace Server.Items
         AddonNumber = addonNum;
       }
 
-      public Type CreatureType{ get; }
+      public Type CreatureType { get; }
 
-      public int NorthID{ get; }
+      public int NorthID { get; }
 
-      public int DeedNumber{ get; }
+      public int DeedNumber { get; }
 
-      public int AddonNumber{ get; }
+      public int AddonNumber { get; }
     }
-
 
     private class CorpseTarget : Target
     {
-      private TaxidermyKit m_Kit;
+      private readonly TaxidermyKit m_Kit;
 
       public CorpseTarget(TaxidermyKit kit) : base(3, false, TargetFlags.None) => m_Kit = kit;
 
@@ -136,7 +135,6 @@ namespace Server.Items
                 fish.Consume();
               }
 
-
               from.AddToBackpack(new TrophyDeed(t, hunter, weight));
 
               if (corpse != null)
@@ -186,13 +184,13 @@ namespace Server.Items
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int WestID{ get; set; }
+    public int WestID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int NorthID{ get; set; }
+    public int NorthID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int DeedNumber{ get; set; }
+    public int DeedNumber { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int AddonNumber
@@ -278,19 +276,19 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Hunter = reader.ReadMobile();
-          m_AnimalWeight = reader.ReadInt();
-          goto case 0;
-        }
+          {
+            m_Hunter = reader.ReadMobile();
+            m_AnimalWeight = reader.ReadInt();
+            goto case 0;
+          }
         case 0:
-        {
-          WestID = reader.ReadInt();
-          NorthID = reader.ReadInt();
-          DeedNumber = reader.ReadInt();
-          m_AddonNumber = reader.ReadInt();
-          break;
-        }
+          {
+            WestID = reader.ReadInt();
+            NorthID = reader.ReadInt();
+            DeedNumber = reader.ReadInt();
+            m_AddonNumber = reader.ReadInt();
+            break;
+          }
       }
 
       Timer.DelayCall(TimeSpan.Zero, FixMovingCrate);
@@ -367,10 +365,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int WestID{ get; set; }
+    public int WestID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int NorthID{ get; set; }
+    public int NorthID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int DeedNumber
@@ -384,7 +382,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int AddonNumber{ get; set; }
+    public int AddonNumber { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Mobile Hunter
@@ -447,19 +445,19 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Hunter = reader.ReadMobile();
-          m_AnimalWeight = reader.ReadInt();
-          goto case 0;
-        }
+          {
+            m_Hunter = reader.ReadMobile();
+            m_AnimalWeight = reader.ReadInt();
+            goto case 0;
+          }
         case 0:
-        {
-          WestID = reader.ReadInt();
-          NorthID = reader.ReadInt();
-          m_DeedNumber = reader.ReadInt();
-          AddonNumber = reader.ReadInt();
-          break;
-        }
+          {
+            WestID = reader.ReadInt();
+            NorthID = reader.ReadInt();
+            m_DeedNumber = reader.ReadInt();
+            AddonNumber = reader.ReadInt();
+            break;
+          }
       }
     }
 

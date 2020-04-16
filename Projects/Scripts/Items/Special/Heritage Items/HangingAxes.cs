@@ -89,7 +89,7 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private HangingAxesDeed m_Deed;
+      private readonly HangingAxesDeed m_Deed;
 
       public InternalGump(HangingAxesDeed deed) : base(60, 36)
       {

@@ -6,8 +6,8 @@ namespace Server.Engines.MLQuests.Gumps
 {
   public class QuestOfferGump : BaseQuestGump
   {
-    private MLQuest m_Quest;
-    private IQuestGiver m_Quester;
+    private readonly MLQuest m_Quest;
+    private readonly IQuestGiver m_Quester;
 
     public QuestOfferGump(MLQuest quest, IQuestGiver quester, PlayerMobile pm)
       : base(1049010) // Quest Offer
@@ -42,15 +42,15 @@ namespace Server.Engines.MLQuests.Gumps
       switch (info.ButtonID)
       {
         case 1: // Accept
-        {
-          m_Quest.OnAccept(m_Quester, pm);
-          break;
-        }
+          {
+            m_Quest.OnAccept(m_Quester, pm);
+            break;
+          }
         case 2: // Refuse
-        {
-          m_Quest.OnRefuse(m_Quester, pm);
-          break;
-        }
+          {
+            m_Quest.OnRefuse(m_Quester, pm);
+            break;
+          }
       }
     }
   }

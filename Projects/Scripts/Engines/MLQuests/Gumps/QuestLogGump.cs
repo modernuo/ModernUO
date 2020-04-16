@@ -7,8 +7,8 @@ namespace Server.Engines.MLQuests.Gumps
 {
   public class QuestLogGump : BaseQuestGump
   {
-    private bool m_CloseGumps;
-    private PlayerMobile m_Owner;
+    private readonly bool m_CloseGumps;
+    private readonly PlayerMobile m_Owner;
 
     public QuestLogGump(PlayerMobile pm, bool closeGumps = true)
       : base(1046026) // Quest Log

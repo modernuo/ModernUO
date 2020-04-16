@@ -52,12 +52,12 @@ namespace Server.Engines.ConPVP
     private const int LabelColor32 = 0xFFFFFF;
     private const int BlackColor32 = 0x000000;
 
-    //    private DDGame m_Game;
+    // private DDGame m_Game;
 
     public DDBoardGump(Mobile mob, DDGame game, DDTeamInfo section = null)
       : base(60, 60)
     {
-      //      m_Game = game;
+      // m_Game = game;
 
       DDTeamInfo ourTeam = game.GetTeamInfo(mob);
 
@@ -76,7 +76,7 @@ namespace Server.Engines.ConPVP
           if (player.Score > 0)
             entries.Add(player);
 
-      entries.Sort(delegate(IRankedCTF a, IRankedCTF b) { return b.Score - a.Score; });
+      entries.Sort((a, b) => b.Score - a.Score);
 
       int height = 0;
 
@@ -97,7 +97,7 @@ namespace Server.Engines.ConPVP
       AddAlphaRegion(16, 15, 369, height - 29);
 
       AddImage(215, -45, 0xEE40);
-      //AddImage( 330, 141, 0x8BA );
+      // AddImage( 330, 141, 0x8BA );
 
       AddBorderedText(22, 22, 294, 20, Center("DD Scoreboard"), LabelColor32, BlackColor32);
 
@@ -204,7 +204,7 @@ namespace Server.Engines.ConPVP
     private int m_Kills;
 
     private int m_Score;
-    private DDTeamInfo m_TeamInfo;
+    private readonly DDTeamInfo m_TeamInfo;
 
     public DDPlayerInfo(DDTeamInfo teamInfo, Mobile player)
     {
@@ -212,7 +212,7 @@ namespace Server.Engines.ConPVP
       Player = player;
     }
 
-    public Mobile Player{ get; }
+    public Mobile Player { get; }
 
     public string Name => Player.Name;
 
@@ -269,26 +269,26 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 0:
-        {
-          Board = ip.ReadItem() as DDBoard;
-          TeamName = ip.ReadString();
-          Color = ip.ReadEncodedInt();
-          Origin = ip.ReadPoint3D();
-          break;
-        }
+          {
+            Board = ip.ReadItem() as DDBoard;
+            TeamName = ip.ReadString();
+            Color = ip.ReadEncodedInt();
+            Origin = ip.ReadPoint3D();
+            break;
+          }
       }
     }
 
-    public DDGame Game{ get; set; }
+    public DDGame Game { get; set; }
 
-    public int TeamID{ get; }
+    public int TeamID { get; }
 
-    public DDPlayerInfo Leader{ get; set; }
+    public DDPlayerInfo Leader { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DDBoard Board{ get; set; }
+    public DDBoard Board { get; set; }
 
-    public Dictionary<Mobile, DDPlayerInfo> Players{ get; }
+    public Dictionary<Mobile, DDPlayerInfo> Players { get; }
 
     public DDPlayerInfo this[Mobile mob]
     {
@@ -305,21 +305,21 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Color{ get; set; }
+    public int Color { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string TeamName{ get; set; }
+    public string TeamName { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D Origin{ get; set; }
+    public Point3D Origin { get; set; }
 
     public string Name => $"{TeamName} Team";
 
-    public int Kills{ get; set; }
+    public int Kills { get; set; }
 
-    public int Captures{ get; set; }
+    public int Captures { get; set; }
 
-    public int Score{ get; set; }
+    public int Score { get; set; }
 
     public void Reset()
     {
@@ -370,7 +370,7 @@ namespace Server.Engines.ConPVP
     {
     }
 
-    public DDTeamInfo[] TeamInfo{ get; private set; }
+    public DDTeamInfo[] TeamInfo { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public DDTeamInfo Team1 => TeamInfo[0];
@@ -379,13 +379,13 @@ namespace Server.Engines.ConPVP
     public DDTeamInfo Team2 => TeamInfo[1];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DDWayPoint PointA{ get; set; }
+    public DDWayPoint PointA { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DDWayPoint PointB{ get; set; }
+    public DDWayPoint PointB { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan Duration{ get; set; }
+    public TimeSpan Duration { get; set; }
 
     public override string Title => "DoubleDom";
 
@@ -421,18 +421,18 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 0:
-        {
-          Duration = reader.ReadTimeSpan();
-          TeamInfo = new DDTeamInfo[reader.ReadEncodedInt()];
+          {
+            Duration = reader.ReadTimeSpan();
+            TeamInfo = new DDTeamInfo[reader.ReadEncodedInt()];
 
-          for (int i = 0; i < TeamInfo.Length; ++i)
-            TeamInfo[i] = new DDTeamInfo(i, reader);
+            for (int i = 0; i < TeamInfo.Length; ++i)
+              TeamInfo[i] = new DDTeamInfo(i, reader);
 
-          PointA = reader.ReadItem() as DDWayPoint;
-          PointB = reader.ReadItem() as DDWayPoint;
+            PointA = reader.ReadItem() as DDWayPoint;
+            PointB = reader.ReadItem() as DDWayPoint;
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
@@ -449,7 +449,7 @@ namespace Server.Engines.ConPVP
 
     public DDGame(DDController controller, DuelContext context) : base(context) => Controller = controller;
 
-    public DDController Controller{ get; }
+    public DDController Controller { get; }
 
     public Map Facet
     {
@@ -693,7 +693,7 @@ namespace Server.Engines.ConPVP
           if (mob == null)
             continue;
 
-          //"Red v Blue DD Champion"
+          // "Red v Blue DD Champion"
 
           sb = new StringBuilder();
 
@@ -1071,7 +1071,7 @@ namespace Server.Engines.ConPVP
       {
         base.Serialize(writer);
 
-        writer.Write(0); //version
+        writer.Write(0); // version
       }
 
       public override bool OnMoveOver(Mobile m) => Addon.OnMoveOver(m);

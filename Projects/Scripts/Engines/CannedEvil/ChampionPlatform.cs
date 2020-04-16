@@ -11,12 +11,12 @@ namespace Server.Engines.CannedEvil
       m_Spawn = spawn;
 
       for (int x = -2; x <= 2; ++x)
-      for (int y = -2; y <= 2; ++y)
-        AddComponent(0x750, x, y, -5);
+        for (int y = -2; y <= 2; ++y)
+          AddComponent(0x750, x, y, -5);
 
       for (int x = -1; x <= 1; ++x)
-      for (int y = -1; y <= 1; ++y)
-        AddComponent(0x750, x, y, 0);
+        for (int y = -1; y <= 1; ++y)
+          AddComponent(0x750, x, y, 0);
 
       for (int i = -1; i <= 1; ++i)
       {
@@ -71,14 +71,14 @@ namespace Server.Engines.CannedEvil
       switch (version)
       {
         case 0:
-        {
-          m_Spawn = reader.ReadItem() as ChampionSpawn;
+          {
+            m_Spawn = reader.ReadItem() as ChampionSpawn;
 
-          if (m_Spawn == null)
-            Delete();
+            if (m_Spawn == null)
+              Delete();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

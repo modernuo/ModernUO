@@ -18,7 +18,7 @@ namespace Server.Items
     private static Point2D[] m_Locations;
     private static Point2D[] m_HavenLocations;
 
-    private static Type[][] m_SpawnTypes =
+    private static readonly Type[][] m_SpawnTypes =
     {
       new[] { typeof(HeadlessOne), typeof(Skeleton) },
       new[] { typeof(Mongbat), typeof(Ratman), typeof(HeadlessOne), typeof(Skeleton), typeof(Zombie) },
@@ -139,7 +139,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point2D ChestLocation{ get; set; }
+    public Point2D ChestLocation { get; set; }
 
     public override int LabelNumber
     {
@@ -528,24 +528,24 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_CompletedBy = reader.ReadMobile();
+          {
+            m_CompletedBy = reader.ReadMobile();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          m_Level = reader.ReadInt();
-          m_Completed = reader.ReadBool();
-          m_Decoder = reader.ReadMobile();
-          m_Map = reader.ReadMap();
-          ChestLocation = reader.ReadPoint2D();
+          {
+            m_Level = reader.ReadInt();
+            m_Completed = reader.ReadBool();
+            m_Decoder = reader.ReadMobile();
+            m_Map = reader.ReadMap();
+            ChestLocation = reader.ReadPoint2D();
 
-          if (version == 0 && m_Completed)
-            m_CompletedBy = m_Decoder;
+            if (version == 0 && m_Completed)
+              m_CompletedBy = m_Decoder;
 
-          break;
-        }
+            break;
+          }
       }
 
       if (Core.AOS && m_Decoder != null && LootType == LootType.Regular)
@@ -554,7 +554,7 @@ namespace Server.Items
 
     private class DigTarget : Target
     {
-      private TreasureMap m_Map;
+      private readonly TreasureMap m_Map;
 
       public DigTarget(TreasureMap map) : base(6, true, TargetFlags.None) => m_Map = map;
 
@@ -679,16 +679,16 @@ namespace Server.Items
 
       private TreasureChestDirt m_Dirt1;
       private TreasureChestDirt m_Dirt2;
-      private Mobile m_From;
-      private long m_LastMoveTime;
+      private readonly Mobile m_From;
+      private readonly long m_LastMoveTime;
 
       private Point3D m_Location;
-      private Map m_Map;
-      private long m_NextActionTime;
+      private readonly Map m_Map;
+      private readonly long m_NextActionTime;
 
-      private long m_NextSkillTime;
-      private long m_NextSpellTime;
-      private TreasureMap m_TreasureMap;
+      private readonly long m_NextSkillTime;
+      private readonly long m_NextSpellTime;
+      private readonly TreasureMap m_TreasureMap;
 
       public DigTimer(Mobile from, TreasureMap treasureMap, Point3D location, Map map) : base(TimeSpan.Zero,
         TimeSpan.FromSeconds(1.0))
@@ -827,8 +827,8 @@ namespace Server.Items
 
       private class SoundTimer : Timer
       {
-        private Mobile m_From;
-        private int m_SoundID;
+        private readonly Mobile m_From;
+        private readonly int m_SoundID;
 
         public SoundTimer(Mobile from, int soundID) : base(TimeSpan.FromSeconds(0.9))
         {
@@ -847,7 +847,7 @@ namespace Server.Items
 
     private class DecodeMapEntry : ContextMenuEntry
     {
-      private TreasureMap m_Map;
+      private readonly TreasureMap m_Map;
 
       public DecodeMapEntry(TreasureMap map) : base(6147, 2) => m_Map = map;
 
@@ -860,7 +860,7 @@ namespace Server.Items
 
     private class OpenMapEntry : ContextMenuEntry
     {
-      private TreasureMap m_Map;
+      private readonly TreasureMap m_Map;
 
       public OpenMapEntry(TreasureMap map) : base(6150, 2) => m_Map = map;
 
@@ -873,7 +873,7 @@ namespace Server.Items
 
     private class DigEntry : ContextMenuEntry
     {
-      private TreasureMap m_Map;
+      private readonly TreasureMap m_Map;
 
       public DigEntry(TreasureMap map, bool enabled) : base(6148, 2)
       {

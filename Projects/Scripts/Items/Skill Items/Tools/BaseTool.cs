@@ -57,9 +57,7 @@ namespace Server.Items
 
     public virtual bool BreakOnDepletion => true;
 
-    public abstract CraftSystem CraftSystem{ get; }
-
-    #region ICraftable Members
+    public abstract CraftSystem CraftSystem { get; }
 
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
@@ -72,8 +70,6 @@ namespace Server.Items
       return quality;
     }
 
-    #endregion
-
     [CommandProperty(AccessLevel.GameMaster)]
     public int UsesRemaining
     {
@@ -85,7 +81,7 @@ namespace Server.Items
       }
     }
 
-    private bool ShowUsesRemaining{ get; set; } = true;
+    private bool ShowUsesRemaining { get; set; } = true;
 
     bool IUsesRemaining.ShowUsesRemaining
     {
@@ -117,8 +113,8 @@ namespace Server.Items
       base.GetProperties(list);
 
       // Makers mark not displayed on OSI
-      //if ( m_Crafter != null )
-      //	list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
+      // if ( m_Crafter != null )
+      // list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
 
       if (m_Quality == ToolQuality.Exceptional)
         list.Add(1060636); // exceptional
@@ -163,8 +159,7 @@ namespace Server.Items
 
         int num = system.CanCraft(from, this, null);
 
-        if (num > 0 && (num != 1044267 || !Core.SE)
-        ) // Blacksmithing shows the gump regardless of proximity of an anvil and forge after SE
+        if (num > 0 && (num != 1044267 || !Core.SE)) // Blacksmithing shows the gump regardless of proximity of an anvil and forge after SE
         {
           from.SendLocalizedMessage(num);
         }
@@ -202,16 +197,16 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Crafter = reader.ReadMobile();
-          m_Quality = (ToolQuality)reader.ReadInt();
-          goto case 0;
-        }
+          {
+            m_Crafter = reader.ReadMobile();
+            m_Quality = (ToolQuality)reader.ReadInt();
+            goto case 0;
+          }
         case 0:
-        {
-          m_UsesRemaining = reader.ReadInt();
-          break;
-        }
+          {
+            m_UsesRemaining = reader.ReadInt();
+            break;
+          }
       }
     }
   }

@@ -104,7 +104,6 @@ namespace Server.SkillHandlers
               from.SendLocalizedMessage(1038285 + hp);
             }
 
-
             from.SendLocalizedMessage(1038295 + (int)Math.Ceiling(Math.Min(arm.ArmorRating, 35) / 5.0));
             /*
             if ( arm.ArmorRating < 1 )

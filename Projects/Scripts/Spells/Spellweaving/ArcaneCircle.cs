@@ -8,10 +8,9 @@ namespace Server.Spells.Spellweaving
 {
   public class ArcaneCircleSpell : ArcanistSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Arcane Circle", "Myrshalee",
-      -1
-    );
+      -1);
 
     public ArcaneCircleSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
@@ -34,7 +33,7 @@ namespace Server.Spells.Spellweaving
 
       if (GetArcanists().Count < 2)
       {
-        Caster.SendLocalizedMessage(1080452); //There are not enough spellweavers present to create an Arcane Focus.
+        Caster.SendLocalizedMessage(1080452); // There are not enough spellweavers present to create an Arcane Focus.
         return false;
       }
 
@@ -56,7 +55,7 @@ namespace Server.Spells.Spellweaving
           Math.Min(Arcanists.Count,
             IsSanctuary(Caster.Location, Caster.Map)
               ? 6
-              : 5); //The Sanctuary is a special, single location place
+              : 5); // The Sanctuary is a special, single location place
 
         for (int i = 0; i < Arcanists.Count; i++)
           GiveArcaneFocus(Arcanists[i], duration, strengthBonus);
@@ -108,7 +107,7 @@ namespace Server.Spells.Spellweaving
     {
       List<Mobile> weavers = new List<Mobile> { Caster };
 
-      //OSI Verified: Even enemies/combatants count
+      // OSI Verified: Even enemies/combatants count
       // Everyone gets the Arcane Focus, power capped elsewhere
       weavers.AddRange(Caster.GetMobilesInRange(1)
         .Where(m => m != Caster && m is PlayerMobile && Caster.CanBeBeneficial(m, false) &&
@@ -119,7 +118,7 @@ namespace Server.Spells.Spellweaving
 
     private void GiveArcaneFocus(Mobile to, TimeSpan duration, int strengthBonus)
     {
-      if (to == null) //Sanity
+      if (to == null) // Sanity
         return;
 
       ArcaneFocus focus = FindArcaneFocus(to);
@@ -137,7 +136,7 @@ namespace Server.Spells.Spellweaving
           focus.Delete();
         }
       }
-      else //OSI renewal rules: the new one will override the old one, always.
+      else // OSI renewal rules: the new one will override the old one, always.
       {
         to.SendLocalizedMessage(1072828); // Your arcane focus is renewed.
         focus.LifeSpan = duration;

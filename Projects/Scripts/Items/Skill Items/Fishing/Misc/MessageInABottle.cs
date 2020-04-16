@@ -27,7 +27,7 @@ namespace Server.Items
     public override int LabelNumber => 1041080; // a message in a bottle
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Map TargetMap{ get; set; }
+    public Map TargetMap { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Level
@@ -38,7 +38,7 @@ namespace Server.Items
 
     public static int GetRandomLevel()
     {
-      if (Core.AOS && 1 > Utility.Random(25))
+      if (Core.AOS && Utility.Random(25) < 1)
         return 4; // ancient
 
       return Utility.RandomMinMax(1, 3);
@@ -65,20 +65,20 @@ namespace Server.Items
       {
         case 3:
         case 2:
-        {
-          m_Level = reader.ReadInt();
-          goto case 1;
-        }
+          {
+            m_Level = reader.ReadInt();
+            goto case 1;
+          }
         case 1:
-        {
-          TargetMap = reader.ReadMap();
-          break;
-        }
+          {
+            TargetMap = reader.ReadMap();
+            break;
+          }
         case 0:
-        {
-          TargetMap = Map.Trammel;
-          break;
-        }
+          {
+            TargetMap = Map.Trammel;
+            break;
+          }
       }
 
       if (version < 2)

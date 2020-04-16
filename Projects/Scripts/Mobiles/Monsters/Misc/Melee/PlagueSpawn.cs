@@ -7,8 +7,7 @@ namespace Server.Mobiles
   public class PlagueSpawn : BaseCreature
   {
     [Constructible]
-    public PlagueSpawn(Mobile owner = null) :
-      base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    public PlagueSpawn(Mobile owner = null) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
       Owner = owner;
       ExpireTime = DateTime.UtcNow + TimeSpan.FromMinutes(1.0);
@@ -75,10 +74,10 @@ namespace Server.Mobiles
     public override string CorpseName => "a plague spawn corpse";
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Owner{ get; set; }
+    public Mobile Owner { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime ExpireTime{ get; set; }
+    public DateTime ExpireTime { get; set; }
 
     public override bool AlwaysMurderer => true;
 

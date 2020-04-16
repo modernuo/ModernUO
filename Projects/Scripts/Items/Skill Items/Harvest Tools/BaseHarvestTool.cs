@@ -10,8 +10,8 @@ namespace Server.Items
 {
   public interface IUsesRemaining
   {
-    int UsesRemaining{ get; set; }
-    bool ShowUsesRemaining{ get; set; }
+    int UsesRemaining { get; set; }
+    bool ShowUsesRemaining { get; set; }
   }
 
   public abstract class BaseHarvestTool : Item, IUsesRemaining, ICraftable
@@ -54,9 +54,7 @@ namespace Server.Items
       }
     }
 
-    public abstract HarvestSystem HarvestSystem{ get; }
-
-    #region ICraftable Members
+    public abstract HarvestSystem HarvestSystem { get; }
 
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
@@ -68,8 +66,6 @@ namespace Server.Items
 
       return quality;
     }
-
-    #endregion
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int UsesRemaining
@@ -112,8 +108,8 @@ namespace Server.Items
       base.GetProperties(list);
 
       // Makers mark not displayed on OSI
-      //if ( m_Crafter != null )
-      //	list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
+      // if ( m_Crafter != null )
+      // list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
 
       if (m_Quality == ToolQuality.Exceptional)
         list.Add(1060636); // exceptional
@@ -188,23 +184,23 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Crafter = reader.ReadMobile();
-          m_Quality = (ToolQuality)reader.ReadInt();
-          goto case 0;
-        }
+          {
+            m_Crafter = reader.ReadMobile();
+            m_Quality = (ToolQuality)reader.ReadInt();
+            goto case 0;
+          }
         case 0:
-        {
-          m_UsesRemaining = reader.ReadInt();
-          break;
-        }
+          {
+            m_UsesRemaining = reader.ReadInt();
+            break;
+          }
       }
     }
 
     private class ToggleMiningStoneEntry : ContextMenuEntry
     {
-      private PlayerMobile m_Mobile;
-      private bool m_Value;
+      private readonly PlayerMobile m_Mobile;
+      private readonly bool m_Value;
 
       public ToggleMiningStoneEntry(PlayerMobile mobile, bool value, int number) : base(number)
       {
@@ -213,7 +209,7 @@ namespace Server.Items
 
         bool stoneMining = mobile.StoneMining && mobile.Skills.Mining.Base >= 100.0;
 
-        if (mobile.ToggleMiningStone == value || value && !stoneMining)
+        if (mobile.ToggleMiningStone == value || (value && !stoneMining))
           Flags |= CMEFlags.Disabled;
       }
 

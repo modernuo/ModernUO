@@ -62,29 +62,29 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Resource = (CraftResource)reader.ReadInt();
-          break;
-        }
-        case 0:
-        {
-          var info = reader.ReadInt() switch
           {
-            0 => OreInfo.Iron,
-            1 => OreInfo.DullCopper,
-            2 => OreInfo.ShadowIron,
-            3 => OreInfo.Copper,
-            4 => OreInfo.Bronze,
-            5 => OreInfo.Gold,
-            6 => OreInfo.Agapite,
-            7 => OreInfo.Verite,
-            8 => OreInfo.Valorite,
-            _ => null
-          };
+            m_Resource = (CraftResource)reader.ReadInt();
+            break;
+          }
+        case 0:
+          {
+            var info = reader.ReadInt() switch
+            {
+              0 => OreInfo.Iron,
+              1 => OreInfo.DullCopper,
+              2 => OreInfo.ShadowIron,
+              3 => OreInfo.Copper,
+              4 => OreInfo.Bronze,
+              5 => OreInfo.Gold,
+              6 => OreInfo.Agapite,
+              7 => OreInfo.Verite,
+              8 => OreInfo.Valorite,
+              _ => null
+            };
 
-          m_Resource = CraftResources.GetFromOreInfo(info);
-          break;
-        }
+            m_Resource = CraftResources.GetFromOreInfo(info);
+            break;
+          }
       }
     }
 

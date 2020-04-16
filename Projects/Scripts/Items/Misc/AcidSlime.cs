@@ -6,12 +6,12 @@ namespace Server.Items
 {
   public class AcidSlime : Item
   {
-    private DateTime m_Created;
+    private readonly DateTime m_Created;
     private bool m_Drying;
-    private TimeSpan m_Duration;
-    private int m_MaxDamage;
-    private int m_MinDamage;
-    private Timer m_Timer;
+    private readonly TimeSpan m_Duration;
+    private readonly int m_MaxDamage;
+    private readonly int m_MinDamage;
+    private readonly Timer m_Timer;
 
     [Constructible]
     public AcidSlime() : this(TimeSpan.FromSeconds(10.0), 5, 10)

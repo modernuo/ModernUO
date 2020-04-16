@@ -8,9 +8,9 @@ namespace Server.Factions
 {
   public class SheriffGump : FactionGump
   {
-    private Faction m_Faction;
-    private PlayerMobile m_From;
-    private Town m_Town;
+    private readonly Faction m_Faction;
+    private readonly PlayerMobile m_From;
+    private readonly Town m_Town;
 
     public SheriffGump(PlayerMobile from, Faction faction, Town town) : base(50, 50)
     {
@@ -18,13 +18,10 @@ namespace Server.Factions
       m_Faction = faction;
       m_Town = town;
 
-
       AddPage(0);
 
       AddBackground(0, 0, 320, 410, 5054);
       AddBackground(10, 10, 300, 390, 3000);
-
-      #region General
 
       AddPage(1);
 
@@ -38,10 +35,6 @@ namespace Server.Factions
 
       AddHtmlLocalized(55, 360, 200, 25, 1011441); // Exit
       AddButton(20, 360, 4005, 4007, 0);
-
-      #endregion
-
-      #region Finances
 
       AddPage(2);
 
@@ -70,10 +63,6 @@ namespace Server.Factions
       AddHtmlLocalized(55, 360, 200, 25, 1011067); // Previous page
       AddButton(20, 360, 4005, 4007, 0, GumpButtonType.Page, 1);
 
-      #endregion
-
-      #region Hire Guards
-
       AddPage(3);
 
       AddHtmlLocalized(20, 30, 300, 25, 1011494); // HIRE GUARDS
@@ -92,10 +81,6 @@ namespace Server.Factions
 
       AddHtmlLocalized(55, 360, 200, 25, 1011067); // Previous page
       AddButton(20, 360, 4005, 4007, 0, GumpButtonType.Page, 1);
-
-      #endregion
-
-      #region Guard Pages
 
       for (int i = 0; i < guardLists.Count; ++i)
       {
@@ -130,8 +115,6 @@ namespace Server.Factions
         AddHtmlLocalized(55, 360, 200, 25, 1011067); // Previous page
         AddButton(20, 360, 4005, 4007, 0, GumpButtonType.Page, 3);
       }
-
-      #endregion
     }
 
     private void CenterItem(int itemID, int x, int y, int w, int h)

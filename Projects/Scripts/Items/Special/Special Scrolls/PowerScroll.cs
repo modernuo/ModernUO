@@ -4,7 +4,7 @@ namespace Server.Items
 {
   public class PowerScroll : SpecialScroll
   {
-    private static SkillName[] m_Skills =
+    private static readonly SkillName[] m_Skills =
     {
       SkillName.Blacksmith,
       SkillName.Tailoring,
@@ -30,7 +30,7 @@ namespace Server.Items
       SkillName.Peacemaking
     };
 
-    private static SkillName[] m_AOSSkills =
+    private static readonly SkillName[] m_AOSSkills =
     {
       SkillName.Chivalry,
       SkillName.Focus,
@@ -40,13 +40,13 @@ namespace Server.Items
       SkillName.SpiritSpeak
     };
 
-    private static SkillName[] m_SESkills =
+    private static readonly SkillName[] m_SESkills =
     {
       SkillName.Ninjitsu,
       SkillName.Bushido
     };
 
-    private static SkillName[] m_MLSkills =
+    private static readonly SkillName[] m_MLSkills =
     {
       SkillName.Spellweaving
     };
@@ -65,7 +65,7 @@ namespace Server.Items
       };
     */
 
-    private static List<SkillName> _Skills = new List<SkillName>();
+    private static readonly List<SkillName> _Skills = new List<SkillName>();
 
     [Constructible]
     public PowerScroll(SkillName skill = SkillName.Alchemy, double value = 0.0) : base(skill, value)

@@ -9,7 +9,7 @@ namespace Server.Commands.Generic
 
     private IComparer<object> m_Comparer;
 
-    private List<OrderInfo> m_Orders;
+    private readonly List<OrderInfo> m_Orders;
 
     public SortExtension() => m_Orders = new List<OrderInfo>();
 

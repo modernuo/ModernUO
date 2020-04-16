@@ -5,13 +5,12 @@ namespace Server.Spells.First
 {
   public class WeakenSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Weaken", "Des Mani",
       212,
       9031,
       Reagent.Garlic,
-      Reagent.Nightshade
-    );
+      Reagent.Nightshade);
 
     public WeakenSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

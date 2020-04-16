@@ -2,13 +2,13 @@ namespace Server.Items
 {
   internal interface IDurability
   {
-    bool CanFortify{ get; }
+    bool CanFortify { get; }
 
-    int InitMinHits{ get; }
-    int InitMaxHits{ get; }
+    int InitMinHits { get; }
+    int InitMaxHits { get; }
 
-    int HitPoints{ get; set; }
-    int MaxHitPoints{ get; set; }
+    int HitPoints { get; set; }
+    int MaxHitPoints { get; set; }
 
     void ScaleDurability();
     void UnscaleDurability();

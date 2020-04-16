@@ -6,8 +6,6 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Definitions
 {
-  #region Human To Elf Quests
-
   public class Seasons : MLQuest
   {
     public Seasons()
@@ -256,10 +254,6 @@ namespace Server.Engines.MLQuests.Definitions
         new Point3D(1585, 1212, -13), Map.Ilshenar);
     }
   }
-
-  #endregion
-
-  #region Human To Elf Mobiles
 
   [QuesterName("Maul")]
   public class MaulTheBear : GrizzlyBear
@@ -522,10 +516,6 @@ namespace Server.Engines.MLQuests.Definitions
     }
   }
 
-  #endregion
-
-  #region Elf To Human Quests
-
   public class Ingenuity : MLQuest
   {
     public Ingenuity()
@@ -664,10 +654,6 @@ namespace Server.Engines.MLQuests.Definitions
     }
   }
 
-  #endregion
-
-  #region Elf To Human Mobiles
-
   [QuesterName("Sledge (Buc's Den)")]
   public class Sledge : BaseCreature
   {
@@ -700,8 +686,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
       MLQuestSystem.Tell(this, pm, Utility.RandomList(
         1074188, // Weakling! You are not up to the task I have.
-        1074195 // You there, in the stupid hat!   Come here.
-      ));
+        1074195)); // You there, in the stupid hat!   Come here.
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -813,6 +798,4 @@ namespace Server.Engines.MLQuests.Definitions
       int version = reader.ReadInt();
     }
   }
-
-  #endregion
 }

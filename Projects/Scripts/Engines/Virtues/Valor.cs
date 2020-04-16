@@ -8,7 +8,7 @@ namespace Server
   public class ValorVirtue
   {
     private const int LossAmount = 250;
-    private static TimeSpan LossDelay = TimeSpan.FromDays(7.0);
+    private static readonly TimeSpan LossDelay = TimeSpan.FromDays(7.0);
 
     public static void Initialize()
     {
@@ -64,34 +64,34 @@ namespace Server
         VirtueLevel vl = VirtueHelper.GetLevel(from, VirtueName.Valor);
         if (idol.Spawn.Active)
         {
-          if (idol.Spawn.Champion != null) //TODO: Message?
+          if (idol.Spawn.Champion != null) // TODO: Message?
             return;
 
           int needed, consumed;
           switch (idol.Spawn.GetSubLevel())
           {
             case 0:
-            {
-              needed = consumed = 2500;
-              break;
-            }
+              {
+                needed = consumed = 2500;
+                break;
+              }
             case 1:
-            {
-              needed = consumed = 5000;
-              break;
-            }
+              {
+                needed = consumed = 5000;
+                break;
+              }
             case 2:
-            {
-              needed = 10000;
-              consumed = 7500;
-              break;
-            }
+              {
+                needed = 10000;
+                consumed = 7500;
+                break;
+              }
             default:
-            {
-              needed = 20000;
-              consumed = 10000;
-              break;
-            }
+              {
+                needed = 20000;
+                consumed = 10000;
+                break;
+              }
           }
 
           if (from.Virtues.GetValue((int)VirtueName.Valor) >= needed)

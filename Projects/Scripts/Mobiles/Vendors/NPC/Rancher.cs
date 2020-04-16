@@ -4,7 +4,7 @@ namespace Server.Mobiles
 {
   public class Rancher : BaseVendor
   {
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public Rancher() : base("the rancher")

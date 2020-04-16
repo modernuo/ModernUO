@@ -74,7 +74,7 @@ namespace Server.Mobiles
           break;
       }
 
-      if (0.025 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.025)
         PackItem(new GlacialStaff());
     }
 

@@ -33,7 +33,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private Scales m_Item;
+      private readonly Scales m_Item;
 
       public InternalTarget(Scales item) : base(1, false, TargetFlags.None) => m_Item = item;
 
@@ -49,7 +49,7 @@ namespace Server.Items
         {
           IEntity root = item.RootParent;
 
-          if (root != null && root != from || item.Parent == from)
+          if ((root != null && root != from) || item.Parent == from)
           {
             message = "You decide that item's current location is too awkward to get an accurate result.";
           }

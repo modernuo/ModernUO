@@ -49,7 +49,7 @@ namespace Server.Items
 
     private class ConfirmGump : BaseConfirmGump
     {
-      private Item m_Item;
+      private readonly Item m_Item;
 
       public ConfirmGump(Item item) => m_Item = item;
 

@@ -16,16 +16,16 @@ namespace Server.Engines.Craft
 
     private const int GreyLabelColor = 0x3DEF;
 
-    private static Type typeofBlankScroll = typeof(BlankScroll);
-    private static Type typeofSpellScroll = typeof(SpellScroll);
-    private CraftItem m_CraftItem;
-    private CraftSystem m_CraftSystem;
-    private Mobile m_From;
+    private static readonly Type typeofBlankScroll = typeof(BlankScroll);
+    private static readonly Type typeofSpellScroll = typeof(SpellScroll);
+    private readonly CraftItem m_CraftItem;
+    private readonly CraftSystem m_CraftSystem;
+    private readonly Mobile m_From;
 
     private int m_OtherCount;
 
     private bool m_ShowExceptionalChance;
-    private BaseTool m_Tool;
+    private readonly BaseTool m_Tool;
 
     public CraftGumpItem(Mobile from, CraftSystem craftSystem, CraftItem craftItem, BaseTool tool) : base(40, 40)
     {

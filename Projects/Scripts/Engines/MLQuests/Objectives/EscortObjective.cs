@@ -9,12 +9,12 @@ namespace Server.Engines.MLQuests.Objectives
   {
     public EscortObjective(QuestArea destination = null) => Destination = destination;
 
-    public QuestArea Destination{ get; set; }
+    public QuestArea Destination { get; set; }
 
     public override bool CanOffer(IQuestGiver quester, PlayerMobile pm, bool message)
     {
-      if (quester is BaseCreature creature && creature.Controlled ||
-          quester is BaseEscortable escortable && escortable.IsBeingDeleted)
+      if ((quester is BaseCreature creature && creature.Controlled) ||
+          (quester is BaseEscortable escortable && escortable.IsBeingDeleted))
         return false;
 
       MLQuestContext context = MLQuestSystem.GetContext(pm);
@@ -73,9 +73,9 @@ namespace Server.Engines.MLQuests.Objectives
 
   public class EscortObjectiveInstance : BaseObjectiveInstance
   {
-    private BaseCreature m_Escort;
+    private readonly BaseCreature m_Escort;
     private DateTime m_LastSeenEscorter;
-    private EscortObjective m_Objective;
+    private readonly EscortObjective m_Objective;
     private Timer m_Timer;
 
     public EscortObjectiveInstance(EscortObjective objective, MLQuestInstance instance)
@@ -92,7 +92,7 @@ namespace Server.Engines.MLQuests.Objectives
           instance.Quester.GetType().Name);
     }
 
-    public bool HasCompleted{ get; set; }
+    public bool HasCompleted { get; set; }
 
     public override DataType ExtraDataType => DataType.EscortObjective;
 
@@ -212,7 +212,7 @@ namespace Server.Engines.MLQuests.Objectives
       }
 
       // Note: this sound is sent twice on OSI (once here and once in Cancel())
-      //m_Player.SendSound( 0x5B3 ); // private sound
+      // m_Player.SendSound( 0x5B3 ); // private sound
       pm.SendLocalizedMessage(1071194); // You have failed your escort quest...
 
       if (!instance.Removed)

@@ -6,7 +6,7 @@ namespace Server.Spells.Seventh
 {
   public class ChainLightningSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Chain Lightning", "Vas Ort Grav",
       209,
       9022,
@@ -14,8 +14,7 @@ namespace Server.Spells.Seventh
       Reagent.BlackPearl,
       Reagent.Bloodmoss,
       Reagent.MandrakeRoot,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public ChainLightningSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -55,7 +54,7 @@ namespace Server.Spells.Seventh
 
           targets.AddRange(eable.Where(m =>
           {
-            if (Core.AOS && (m == Caster || !Caster.InLOS(m)) || !SpellHelper.ValidIndirectTarget(Caster, m) ||
+            if ((Core.AOS && (m == Caster || !Caster.InLOS(m))) || !SpellHelper.ValidIndirectTarget(Caster, m) ||
                 !Caster.CanBeHarmful(m, false))
               return false;
 

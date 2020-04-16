@@ -31,7 +31,7 @@ namespace Server.Engines.ConPVP
 
       AddButton(240, 25, 0xFB1, 0xFB3, 3);
 
-      //AddButton( 223, 54, 0x265A, 0x265A, 4, );
+      // AddButton( 223, 54, 0x265A, 0x265A, 4, );
 
       AddHtml(35, 25, 230, 20, Center("Participant Setup"));
 
@@ -58,11 +58,11 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public Mobile From{ get; }
+    public Mobile From { get; }
 
-    public DuelContext Context{ get; }
+    public DuelContext Context { get; }
 
-    public Participant Participant{ get; }
+    public Participant Participant { get; }
 
     public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
@@ -178,9 +178,9 @@ namespace Server.Engines.ConPVP
 
     private class ParticipantTarget : Target
     {
-      private DuelContext m_Context;
-      private int m_Index;
-      private Participant m_Participant;
+      private readonly DuelContext m_Context;
+      private readonly int m_Index;
+      private readonly Participant m_Participant;
 
       public ParticipantTarget(DuelContext context, Participant p, int index) : base(12, false, TargetFlags.None)
       {

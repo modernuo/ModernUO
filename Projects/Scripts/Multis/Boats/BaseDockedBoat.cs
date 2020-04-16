@@ -24,10 +24,10 @@ namespace Server.Multis
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int MultiID{ get; set; }
+    public int MultiID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D Offset{ get; set; }
+    public Point3D Offset { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public string ShipName
@@ -40,7 +40,7 @@ namespace Server.Multis
       }
     }
 
-    public abstract BaseBoat Boat{ get; }
+    public abstract BaseBoat Boat { get; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -63,16 +63,16 @@ namespace Server.Multis
       {
         case 1:
         case 0:
-        {
-          MultiID = reader.ReadInt();
-          Offset = reader.ReadPoint3D();
-          m_ShipName = reader.ReadString();
+          {
+            MultiID = reader.ReadInt();
+            Offset = reader.ReadPoint3D();
+            m_ShipName = reader.ReadString();
 
-          if (version == 0)
-            reader.ReadUInt();
+            if (version == 0)
+              reader.ReadUInt();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (LootType == LootType.Newbied)
@@ -163,7 +163,7 @@ namespace Server.Multis
 
     private class InternalTarget : MultiTarget
     {
-      private BaseDockedBoat m_Model;
+      private readonly BaseDockedBoat m_Model;
 
       public InternalTarget(BaseDockedBoat model) : base(model.MultiID, model.Offset) => m_Model = model;
 

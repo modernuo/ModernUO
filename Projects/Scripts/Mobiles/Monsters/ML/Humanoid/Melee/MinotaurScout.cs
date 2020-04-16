@@ -25,10 +25,10 @@ namespace Server.Mobiles
       SetResistance(ResistanceType.Poison, 30, 40);
       SetResistance(ResistanceType.Energy, 30, 40);
 
-      //SetSkill( SkillName.Meditation, Unknown );
-      //SetSkill( SkillName.EvalInt, Unknown );
-      //SetSkill( SkillName.Magery, Unknown );
-      //SetSkill( SkillName.Poisoning, Unknown );
+      // SetSkill( SkillName.Meditation, Unknown );
+      // SetSkill( SkillName.EvalInt, Unknown );
+      // SetSkill( SkillName.Magery, Unknown );
+      // SetSkill( SkillName.Poisoning, Unknown );
       SetSkill(SkillName.Anatomy, 0);
       SetSkill(SkillName.MagicResist, 60.6, 67.5);
       SetSkill(SkillName.Tactics, 86.9, 103.6);

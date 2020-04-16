@@ -49,11 +49,11 @@ namespace Server.Gumps
     private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
     private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
 
-    private Mobile m_From;
+    private readonly Mobile m_From;
 
-    private SkillsGumpGroup m_Selected;
-    private Skill m_Skill;
-    private Mobile m_Target;
+    private readonly SkillsGumpGroup m_Selected;
+    private readonly Skill m_Skill;
+    private readonly Mobile m_Target;
 
     public EditSkillGump(Mobile from, Mobile target, Skill skill, SkillsGumpGroup selected) : base(GumpOffsetX,
       GumpOffsetY)
@@ -190,11 +190,11 @@ namespace Server.Gumps
 
     private static readonly int IndentWidth = 12;
 
-    private Mobile m_From;
+    private readonly Mobile m_From;
 
-    private SkillsGumpGroup[] m_Groups;
-    private SkillsGumpGroup m_Selected;
-    private Mobile m_Target;
+    private readonly SkillsGumpGroup[] m_Groups;
+    private readonly SkillsGumpGroup m_Selected;
+    private readonly Mobile m_Target;
 
     public SkillsGump(Mobile from, Mobile target, SkillsGumpGroup selected = null) : base(GumpOffsetX, GumpOffsetY)
     {
@@ -363,78 +363,78 @@ namespace Server.Gumps
       switch (type)
       {
         case 0:
-        {
-          if (index >= 0 && index < m_Groups.Length)
           {
-            SkillsGumpGroup newSelection = m_Groups[index];
-
-            if (m_Selected != newSelection)
-              m_From.SendGump(new SkillsGump(m_From, m_Target, newSelection));
-            else
-              m_From.SendGump(new SkillsGump(m_From, m_Target));
-          }
-
-          break;
-        }
-        case 1:
-        {
-          if (m_Selected != null && index >= 0 && index < m_Selected.Skills.Length)
-          {
-            Skill sk = m_Target.Skills[m_Selected.Skills[index]];
-
-            if (sk != null)
+            if (index >= 0 && index < m_Groups.Length)
             {
-              if (m_From.AccessLevel >= AccessLevel.GameMaster)
+              SkillsGumpGroup newSelection = m_Groups[index];
+
+              if (m_Selected != newSelection)
+                m_From.SendGump(new SkillsGump(m_From, m_Target, newSelection));
+              else
+                m_From.SendGump(new SkillsGump(m_From, m_Target));
+            }
+
+            break;
+          }
+        case 1:
+          {
+            if (m_Selected != null && index >= 0 && index < m_Selected.Skills.Length)
+            {
+              Skill sk = m_Target.Skills[m_Selected.Skills[index]];
+
+              if (sk != null)
               {
-                m_From.SendGump(new EditSkillGump(m_From, m_Target, sk, m_Selected));
+                if (m_From.AccessLevel >= AccessLevel.GameMaster)
+                {
+                  m_From.SendGump(new EditSkillGump(m_From, m_Target, sk, m_Selected));
+                }
+                else
+                {
+                  m_From.SendMessage("You may not change that.");
+                  m_From.SendGump(new SkillsGump(m_From, m_Target, m_Selected));
+                }
               }
               else
               {
-                m_From.SendMessage("You may not change that.");
                 m_From.SendGump(new SkillsGump(m_From, m_Target, m_Selected));
               }
             }
-            else
-            {
-              m_From.SendGump(new SkillsGump(m_From, m_Target, m_Selected));
-            }
-          }
 
-          break;
-        }
+            break;
+          }
         case 2:
-        {
-          if (m_Selected != null && index >= 0 && index < m_Selected.Skills.Length)
           {
-            Skill sk = m_Target.Skills[m_Selected.Skills[index]];
-
-            if (sk != null)
+            if (m_Selected != null && index >= 0 && index < m_Selected.Skills.Length)
             {
-              if (m_From.AccessLevel >= AccessLevel.GameMaster)
-                switch (sk.Lock)
-                {
-                  case SkillLock.Up:
-                    sk.SetLockNoRelay(SkillLock.Down);
-                    sk.Update();
-                    break;
-                  case SkillLock.Down:
-                    sk.SetLockNoRelay(SkillLock.Locked);
-                    sk.Update();
-                    break;
-                  case SkillLock.Locked:
-                    sk.SetLockNoRelay(SkillLock.Up);
-                    sk.Update();
-                    break;
-                }
-              else
-                m_From.SendMessage("You may not change that.");
+              Skill sk = m_Target.Skills[m_Selected.Skills[index]];
 
-              m_From.SendGump(new SkillsGump(m_From, m_Target, m_Selected));
+              if (sk != null)
+              {
+                if (m_From.AccessLevel >= AccessLevel.GameMaster)
+                  switch (sk.Lock)
+                  {
+                    case SkillLock.Up:
+                      sk.SetLockNoRelay(SkillLock.Down);
+                      sk.Update();
+                      break;
+                    case SkillLock.Down:
+                      sk.SetLockNoRelay(SkillLock.Locked);
+                      sk.Update();
+                      break;
+                    case SkillLock.Locked:
+                      sk.SetLockNoRelay(SkillLock.Up);
+                      sk.Update();
+                      break;
+                  }
+                else
+                  m_From.SendMessage("You may not change that.");
+
+                m_From.SendGump(new SkillsGump(m_From, m_Target, m_Selected));
+              }
             }
-          }
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -451,11 +451,11 @@ namespace Server.Gumps
       Array.Sort(Skills, new SkillNameComparer());
     }
 
-    public string Name{ get; }
+    public string Name { get; }
 
-    public SkillName[] Skills{ get; }
+    public SkillName[] Skills { get; }
 
-    public static SkillsGumpGroup[] Groups{ get; } =
+    public static SkillsGumpGroup[] Groups { get; } =
     {
       new SkillsGumpGroup("Crafting", new[]
       {

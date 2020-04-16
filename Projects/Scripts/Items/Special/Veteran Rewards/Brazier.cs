@@ -7,7 +7,7 @@ namespace Server.Items
 {
   public class RewardBrazier : Item, IRewardItem
   {
-    private static int[] m_Art =
+    private static readonly int[] m_Art =
     {
       0x19AA, 0x19BB
     };
@@ -204,7 +204,7 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private RewardBrazierDeed m_Brazier;
+      private readonly RewardBrazierDeed m_Brazier;
 
       public InternalGump(RewardBrazierDeed brazier) : base(100, 200)
       {

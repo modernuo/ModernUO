@@ -4,13 +4,12 @@ namespace Server.Spells.Sixth
 {
   public class EnergyBoltSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Energy Bolt", "Corp Por",
       230,
       9022,
       Reagent.BlackPearl,
-      Reagent.Nightshade
-    );
+      Reagent.Nightshade);
 
     public EnergyBoltSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

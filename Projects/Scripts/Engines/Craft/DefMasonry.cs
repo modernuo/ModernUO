@@ -39,9 +39,9 @@ namespace Server.Engines.Craft
     public override void PlayCraftEffect(Mobile from)
     {
       // no effects
-      //if ( from.Body.Type == BodyType.Human && !from.Mounted )
-      //	from.Animate( 9, 5, 1, true, false, 0 );
-      //new InternalTimer( from ).Start();
+      // if ( from.Body.Type == BodyType.Human && !from.Mounted )
+      // from.Animate( 9, 5, 1, true, false, 0 );
+      // new InternalTimer( from ).Start();
     }
 
     public override int PlayEndingEffect(Mobile from, bool failed, bool lostMaterial, bool toolBroken, int quality,
@@ -111,7 +111,7 @@ namespace Server.Engines.Craft
     // Delay to synchronize the sound with the hit on the anvil
     private class InternalTimer : Timer
     {
-      private Mobile m_From;
+      private readonly Mobile m_From;
 
       public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(0.7)) => m_From = from;
 

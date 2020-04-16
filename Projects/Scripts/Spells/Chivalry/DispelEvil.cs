@@ -9,11 +9,10 @@ namespace Server.Spells.Chivalry
 {
   public class DispelEvilSpell : PaladinSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Dispel Evil", "Dispiro Malas",
       -1,
-      9002
-    );
+      9002);
 
     public DispelEvilSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -82,7 +81,7 @@ namespace Server.Spells.Chivalry
           }
 
           TransformContext context = TransformationSpellHelper.GetContext(m);
-          if (context?.Spell is NecromancerSpell) //Trees are not evil!	TODO: OSI confirm?
+          if (context?.Spell is NecromancerSpell) // Trees are not evil!	TODO: OSI confirm?
           {
             // transformed ..
 

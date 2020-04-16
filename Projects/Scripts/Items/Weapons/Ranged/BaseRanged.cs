@@ -20,9 +20,9 @@ namespace Server.Items
     {
     }
 
-    public abstract int EffectID{ get; }
-    public abstract Type AmmoType{ get; }
-    public abstract Item Ammo{ get; }
+    public abstract int EffectID { get; }
+    public abstract Type AmmoType { get; }
+    public abstract Item Ammo { get; }
 
     public override int DefHitSound => 0x234;
     public override int DefMissSound => 0x238;
@@ -61,7 +61,7 @@ namespace Server.Items
 
       // Make sure we've been standing still for .25/.5/1 second depending on Era
       if (Core.TickCount - attacker.LastMoveTime >= (Core.SE ? 250 : Core.AOS ? 500 : 1000) ||
-          Core.AOS && WeaponAbility.GetCurrentAbility(attacker) is MovingShot)
+          (Core.AOS && WeaponAbility.GetCurrentAbility(attacker) is MovingShot))
       {
         bool canSwing = true;
 
@@ -73,10 +73,8 @@ namespace Server.Items
             canSwing = !(attacker.Spell is Spell sp) || !sp.IsCasting || !sp.BlocksMovement;
         }
 
-        #region Dueling
         if ((attacker as PlayerMobile)?.DuelContext?.CheckItemEquip(attacker, this) == false)
           canSwing = false;
-        #endregion
 
         if (canSwing && attacker.HarmfulCheck(defender))
         {
@@ -105,7 +103,7 @@ namespace Server.Items
     public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
     {
       if (attacker.Player && !defender.Player && (defender.Body.IsAnimal || defender.Body.IsMonster) &&
-          0.4 >= Utility.RandomDouble())
+          Utility.RandomDouble() <= 0.4)
         defender.AddToBackpack(Ammo);
 
       if (Core.ML && m_Velocity > 0)
@@ -129,7 +127,7 @@ namespace Server.Items
 
     public override void OnMiss(Mobile attacker, Mobile defender)
     {
-      if (attacker.Player && 0.4 >= Utility.RandomDouble())
+      if (attacker.Player && Utility.RandomDouble() <= 0.4)
       {
         if (Core.SE)
         {
@@ -208,23 +206,23 @@ namespace Server.Items
       switch (version)
       {
         case 3:
-        {
-          m_Balanced = reader.ReadBool();
-          m_Velocity = reader.ReadInt();
+          {
+            m_Balanced = reader.ReadBool();
+            m_Velocity = reader.ReadInt();
 
-          goto case 2;
-        }
+            goto case 2;
+          }
         case 2:
         case 1:
-        {
-          break;
-        }
+          {
+            break;
+          }
         case 0:
-        {
-          /*m_EffectID =*/
-          reader.ReadInt();
-          break;
-        }
+          {
+            /*m_EffectID =*/
+            reader.ReadInt();
+            break;
+          }
       }
 
       if (version < 2)

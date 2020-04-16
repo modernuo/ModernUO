@@ -46,8 +46,8 @@ namespace Server
 
     public DateTime ReadDeltaTime()
     {
-      long ticks = m_File.ReadInt64();
-      long now = DateTime.UtcNow.Ticks;
+      var ticks = m_File.ReadInt64();
+      var now = DateTime.UtcNow.Ticks;
 
       if (ticks > 0 && ticks + now < 0)
         return DateTime.MaxValue;
@@ -85,8 +85,8 @@ namespace Server
 
     public DateTimeOffset ReadDateTimeOffset()
     {
-      long ticks = m_File.ReadInt64();
-      TimeSpan offset = new TimeSpan(m_File.ReadInt64());
+      var ticks = m_File.ReadInt64();
+      var offset = new TimeSpan(m_File.ReadInt64());
 
       return new DateTimeOffset(ticks, offset);
     }
@@ -151,13 +151,13 @@ namespace Server
 
     public List<T> ReadStrongItemList<T>() where T : Item
     {
-      int count = ReadInt();
+      var count = ReadInt();
 
       if (count > 0)
       {
-        List<T> list = new List<T>(count);
+        var list = new List<T>(count);
 
-        for (int i = 0; i < count; ++i)
+        for (var i = 0; i < count; ++i)
           if (ReadItem() is T item)
             list.Add(item);
 
@@ -171,13 +171,13 @@ namespace Server
 
     public HashSet<T> ReadItemSet<T>() where T : Item
     {
-      int count = ReadInt();
+      var count = ReadInt();
 
       if (count > 0)
       {
-        HashSet<T> set = new HashSet<T>();
+        var set = new HashSet<T>();
 
-        for (int i = 0; i < count; ++i)
+        for (var i = 0; i < count; ++i)
           if (ReadItem() is T item)
             set.Add(item);
 
@@ -191,13 +191,13 @@ namespace Server
 
     public List<T> ReadStrongMobileList<T>() where T : Mobile
     {
-      int count = ReadInt();
+      var count = ReadInt();
 
       if (count > 0)
       {
-        List<T> list = new List<T>(count);
+        var list = new List<T>(count);
 
-        for (int i = 0; i < count; ++i)
+        for (var i = 0; i < count; ++i)
           if (ReadMobile() is T m)
             list.Add(m);
 
@@ -211,13 +211,13 @@ namespace Server
 
     public HashSet<T> ReadMobileSet<T>() where T : Mobile
     {
-      int count = ReadInt();
+      var count = ReadInt();
 
       if (count > 0)
       {
-        HashSet<T> set = new HashSet<T>();
+        var set = new HashSet<T>();
 
-        for (int i = 0; i < count; ++i)
+        for (var i = 0; i < count; ++i)
           if (ReadMobile() is T item)
             set.Add(item);
 
@@ -231,13 +231,13 @@ namespace Server
 
     public List<T> ReadStrongGuildList<T>() where T : BaseGuild
     {
-      int count = ReadInt();
+      var count = ReadInt();
 
       if (count > 0)
       {
-        List<T> list = new List<T>(count);
+        var list = new List<T>(count);
 
-        for (int i = 0; i < count; ++i)
+        for (var i = 0; i < count; ++i)
           if (ReadGuild() is T g)
             list.Add(g);
 
@@ -251,13 +251,13 @@ namespace Server
 
     public HashSet<T> ReadGuildSet<T>() where T : BaseGuild
     {
-      int count = ReadInt();
+      var count = ReadInt();
 
       if (count > 0)
       {
-        HashSet<T> set = new HashSet<T>();
+        var set = new HashSet<T>();
 
-        for (int i = 0; i < count; ++i)
+        for (var i = 0; i < count; ++i)
           if (ReadGuild() is T item)
             set.Add(item);
 
@@ -271,5 +271,4 @@ namespace Server
 
     public bool End() => m_File.PeekChar() == -1;
   }
-
 }

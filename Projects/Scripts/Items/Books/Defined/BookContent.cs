@@ -9,11 +9,11 @@ namespace Server.Items
       Pages = pages;
     }
 
-    public string Title{ get; }
+    public string Title { get; }
 
-    public string Author{ get; }
+    public string Author { get; }
 
-    public BookPageInfo[] Pages{ get; }
+    public BookPageInfo[] Pages { get; }
 
     public BookPageInfo[] Copy()
     {

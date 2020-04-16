@@ -6,15 +6,14 @@ namespace Server.Spells.Mysticism
 {
   public class HailStormSpell : MysticSpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Hail Storm", "Kal Des Ylem",
       -1,
       9002,
       Reagent.DragonsBlood,
       Reagent.Bloodmoss,
       Reagent.BlackPearl,
-      Reagent.MandrakeRoot
-    );
+      Reagent.MandrakeRoot);
 
     public HailStormSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)

@@ -45,7 +45,7 @@ namespace Server.Items
 
   public class NameChangeDeedGump : Gump
   {
-    private Item m_Sender;
+    private readonly Item m_Sender;
 
     public NameChangeDeedGump(Item sender) : base(50, 50)
     {
@@ -98,7 +98,6 @@ namespace Server.Items
       TextRelay nameEntry = info.GetTextEntry(0);
 
       string newName = nameEntry?.Text.Trim();
-
 
       if (!NameVerification.Validate(newName, 2, 16, true, false, true, 1, NameVerification.SpaceDashPeriodQuote))
       {

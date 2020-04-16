@@ -17,9 +17,9 @@ namespace Server.Items
 
   public interface IArcaneEquip
   {
-    bool IsArcane{ get; }
-    int CurArcaneCharges{ get; set; }
-    int MaxArcaneCharges{ get; set; }
+    bool IsArcane { get; }
+    int CurArcaneCharges { get; set; }
+    int MaxArcaneCharges { get; set; }
   }
 
   public abstract class BaseClothing : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability
@@ -86,7 +86,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool PlayerConstructed{ get; set; }
+    public bool PlayerConstructed { get; set; }
 
     public virtual CraftResource DefaultResource => CraftResource.None;
 
@@ -103,16 +103,16 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosAttributes Attributes{ get; private set; }
+    public AosAttributes Attributes { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosArmorAttributes ClothingAttributes{ get; private set; }
+    public AosArmorAttributes ClothingAttributes { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosSkillBonuses SkillBonuses{ get; private set; }
+    public AosSkillBonuses SkillBonuses { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosElementAttributes Resistances{ get; private set; }
+    public AosElementAttributes Resistances { get; private set; }
 
     public virtual int BasePhysicalResistance => 0;
     public virtual int BaseFireResistance => 0;
@@ -140,8 +140,6 @@ namespace Server.Items
     public virtual bool AllowMaleWearer => true;
     public virtual bool AllowFemaleWearer => true;
     public virtual bool CanBeBlessed => true;
-
-    #region ICraftable Members
 
     public virtual int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes,
       BaseTool tool, CraftItem craftItem, int resHue)
@@ -171,8 +169,6 @@ namespace Server.Items
 
       return quality;
     }
-
-    #endregion
 
     public virtual bool Dye(Mobile from, DyeTub sender)
     {
@@ -273,7 +269,7 @@ namespace Server.Items
       if (damageTaken < 0)
         damageTaken = 0;
 
-      if (25 > Utility.Random(100)) // 25% chance to lower durability
+      if (Utility.Random(100) < 25) // 25% chance to lower durability
       {
         if (Core.AOS && ClothingAttributes.SelfRepair > Utility.Random(10))
         {
@@ -404,7 +400,7 @@ namespace Server.Items
     {
       int v;
 
-      //if ( type == StatType.Str )
+      // if ( type == StatType.Str )
       v = StrRequirement;
 
       return AOS.Scale(v, 100 - GetLowerStatReq());
@@ -600,12 +596,8 @@ namespace Server.Items
       if (m_Crafter != null)
         list.Add(1050043, m_Crafter.Name); // crafted by ~1_NAME~
 
-      #region Factions
-
       if (m_FactionState != null)
         list.Add(1041350); // faction item
-
-      #endregion
 
       if (m_Quality == ClothingQuality.Exceptional)
         list.Add(1060636); // exceptional
@@ -749,12 +741,8 @@ namespace Server.Items
           attrs.Add(new EquipInfoAttribute(1049643)); // cursed
       }
 
-      #region Factions
-
       if (m_FactionState != null)
         attrs.Add(new EquipInfoAttribute(1041350)); // faction item
-
-      #endregion
 
       if (m_Quality == ClothingQuality.Exceptional)
         attrs.Add(new EquipInfoAttribute(1018305 - (int)m_Quality));
@@ -785,8 +773,6 @@ namespace Server.Items
       InvalidateProperties();
     }
 
-    #region Factions
-
     private FactionItem m_FactionState;
 
     public FactionItem FactionItemState
@@ -802,10 +788,6 @@ namespace Server.Items
         LootType = m_FactionState == null ? LootType.Regular : LootType.Blessed;
       }
     }
-
-    #endregion
-
-    #region Serialization
 
     private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
     {
@@ -894,90 +876,90 @@ namespace Server.Items
       switch (version)
       {
         case 5:
-        {
-          SaveFlag flags = (SaveFlag)reader.ReadEncodedInt();
+          {
+            SaveFlag flags = (SaveFlag)reader.ReadEncodedInt();
 
-          if (GetSaveFlag(flags, SaveFlag.Resource))
-            m_Resource = (CraftResource)reader.ReadEncodedInt();
-          else
-            m_Resource = DefaultResource;
+            if (GetSaveFlag(flags, SaveFlag.Resource))
+              m_Resource = (CraftResource)reader.ReadEncodedInt();
+            else
+              m_Resource = DefaultResource;
 
-          if (GetSaveFlag(flags, SaveFlag.Attributes))
-            Attributes = new AosAttributes(this, reader);
-          else
-            Attributes = new AosAttributes(this);
+            if (GetSaveFlag(flags, SaveFlag.Attributes))
+              Attributes = new AosAttributes(this, reader);
+            else
+              Attributes = new AosAttributes(this);
 
-          if (GetSaveFlag(flags, SaveFlag.ClothingAttributes))
-            ClothingAttributes = new AosArmorAttributes(this, reader);
-          else
-            ClothingAttributes = new AosArmorAttributes(this);
+            if (GetSaveFlag(flags, SaveFlag.ClothingAttributes))
+              ClothingAttributes = new AosArmorAttributes(this, reader);
+            else
+              ClothingAttributes = new AosArmorAttributes(this);
 
-          if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
-            SkillBonuses = new AosSkillBonuses(this, reader);
-          else
-            SkillBonuses = new AosSkillBonuses(this);
+            if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
+              SkillBonuses = new AosSkillBonuses(this, reader);
+            else
+              SkillBonuses = new AosSkillBonuses(this);
 
-          if (GetSaveFlag(flags, SaveFlag.Resistances))
-            Resistances = new AosElementAttributes(this, reader);
-          else
-            Resistances = new AosElementAttributes(this);
+            if (GetSaveFlag(flags, SaveFlag.Resistances))
+              Resistances = new AosElementAttributes(this, reader);
+            else
+              Resistances = new AosElementAttributes(this);
 
-          if (GetSaveFlag(flags, SaveFlag.MaxHitPoints))
-            m_MaxHitPoints = reader.ReadEncodedInt();
+            if (GetSaveFlag(flags, SaveFlag.MaxHitPoints))
+              m_MaxHitPoints = reader.ReadEncodedInt();
 
-          if (GetSaveFlag(flags, SaveFlag.HitPoints))
-            m_HitPoints = reader.ReadEncodedInt();
+            if (GetSaveFlag(flags, SaveFlag.HitPoints))
+              m_HitPoints = reader.ReadEncodedInt();
 
-          if (GetSaveFlag(flags, SaveFlag.Crafter))
-            m_Crafter = reader.ReadMobile();
+            if (GetSaveFlag(flags, SaveFlag.Crafter))
+              m_Crafter = reader.ReadMobile();
 
-          if (GetSaveFlag(flags, SaveFlag.Quality))
-            m_Quality = (ClothingQuality)reader.ReadEncodedInt();
-          else
-            m_Quality = ClothingQuality.Regular;
+            if (GetSaveFlag(flags, SaveFlag.Quality))
+              m_Quality = (ClothingQuality)reader.ReadEncodedInt();
+            else
+              m_Quality = ClothingQuality.Regular;
 
-          if (GetSaveFlag(flags, SaveFlag.StrReq))
-            m_StrReq = reader.ReadEncodedInt();
-          else
-            m_StrReq = -1;
+            if (GetSaveFlag(flags, SaveFlag.StrReq))
+              m_StrReq = reader.ReadEncodedInt();
+            else
+              m_StrReq = -1;
 
-          if (GetSaveFlag(flags, SaveFlag.PlayerConstructed))
-            PlayerConstructed = true;
+            if (GetSaveFlag(flags, SaveFlag.PlayerConstructed))
+              PlayerConstructed = true;
 
-          break;
-        }
+            break;
+          }
         case 4:
-        {
-          m_Resource = (CraftResource)reader.ReadInt();
+          {
+            m_Resource = (CraftResource)reader.ReadInt();
 
-          goto case 3;
-        }
+            goto case 3;
+          }
         case 3:
-        {
-          Attributes = new AosAttributes(this, reader);
-          ClothingAttributes = new AosArmorAttributes(this, reader);
-          SkillBonuses = new AosSkillBonuses(this, reader);
-          Resistances = new AosElementAttributes(this, reader);
+          {
+            Attributes = new AosAttributes(this, reader);
+            ClothingAttributes = new AosArmorAttributes(this, reader);
+            SkillBonuses = new AosSkillBonuses(this, reader);
+            Resistances = new AosElementAttributes(this, reader);
 
-          goto case 2;
-        }
+            goto case 2;
+          }
         case 2:
-        {
-          PlayerConstructed = reader.ReadBool();
-          goto case 1;
-        }
+          {
+            PlayerConstructed = reader.ReadBool();
+            goto case 1;
+          }
         case 1:
-        {
-          m_Crafter = reader.ReadMobile();
-          m_Quality = (ClothingQuality)reader.ReadInt();
-          break;
-        }
+          {
+            m_Crafter = reader.ReadMobile();
+            m_Quality = (ClothingQuality)reader.ReadInt();
+            break;
+          }
         case 0:
-        {
-          m_Crafter = null;
-          m_Quality = ClothingQuality.Regular;
-          break;
-        }
+          {
+            m_Crafter = null;
+            m_Quality = ClothingQuality.Regular;
+            break;
+          }
       }
 
       if (version < 2)
@@ -1006,7 +988,5 @@ namespace Server.Items
         parent.CheckStatTimers();
       }
     }
-
-    #endregion
   }
 }

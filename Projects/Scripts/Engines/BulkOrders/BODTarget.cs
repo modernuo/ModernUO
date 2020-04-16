@@ -4,7 +4,7 @@ namespace Server.Engines.BulkOrders
 {
   public class BODTarget : Target
   {
-    private BaseBOD m_Deed;
+    private readonly BaseBOD m_Deed;
 
     public BODTarget(BaseBOD deed) : base(18, false, TargetFlags.None) => m_Deed = deed;
 
@@ -15,7 +15,7 @@ namespace Server.Engines.BulkOrders
 
       if (!(targeted is Item item && item.IsChildOf(from.Backpack)))
       {
-        from.SendLocalizedMessage( 1045158 ); // You must have the item in your backpack to target it.
+        from.SendLocalizedMessage(1045158); // You must have the item in your backpack to target it.
         return;
       }
 

@@ -58,7 +58,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime NextUse{ get; set; }
+    public DateTime NextUse { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Mobile Crafter
@@ -83,16 +83,16 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int CurCharges{ get; set; }
+    public int CurCharges { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int MaxCharges{ get; set; }
+    public int MaxCharges { get; set; }
 
-    public List<Mobile> Openers{ get; set; } = new List<Mobile>();
+    public List<Mobile> Openers { get; set; } = new List<Mobile>();
 
     public override int LabelNumber => 1041267; // runebook
 
-    public List<RunebookEntry> Entries{ get; private set; }
+    public List<RunebookEntry> Entries { get; private set; }
 
     public RunebookEntry Default
     {
@@ -114,8 +114,6 @@ namespace Server.Items
 
     public override bool DisplayLootType => Core.AOS;
 
-    #region ICraftable Members
-
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
     {
@@ -134,10 +132,8 @@ namespace Server.Items
       return quality;
     }
 
-    #endregion
-
     [CommandProperty(AccessLevel.GameMaster)]
-    public SecureLevel Level{ get; set; }
+    public SecureLevel Level { get; set; }
 
     public override bool AllowEquippedCast(Mobile from) => true;
 
@@ -184,36 +180,36 @@ namespace Server.Items
       switch (version)
       {
         case 3:
-        {
-          m_Quality = (BookQuality)reader.ReadByte();
-          goto case 2;
-        }
+          {
+            m_Quality = (BookQuality)reader.ReadByte();
+            goto case 2;
+          }
         case 2:
-        {
-          m_Crafter = reader.ReadMobile();
-          goto case 1;
-        }
+          {
+            m_Crafter = reader.ReadMobile();
+            goto case 1;
+          }
         case 1:
-        {
-          Level = (SecureLevel)reader.ReadInt();
-          goto case 0;
-        }
+          {
+            Level = (SecureLevel)reader.ReadInt();
+            goto case 0;
+          }
         case 0:
-        {
-          int count = reader.ReadInt();
+          {
+            int count = reader.ReadInt();
 
-          Entries = new List<RunebookEntry>(count);
+            Entries = new List<RunebookEntry>(count);
 
-          for (int i = 0; i < count; ++i)
-            Entries.Add(new RunebookEntry(reader));
+            for (int i = 0; i < count; ++i)
+              Entries.Add(new RunebookEntry(reader));
 
-          m_Description = reader.ReadString();
-          CurCharges = reader.ReadInt();
-          MaxCharges = reader.ReadInt();
-          m_DefaultIndex = reader.ReadInt();
+            m_Description = reader.ReadString();
+            CurCharges = reader.ReadInt();
+            MaxCharges = reader.ReadInt();
+            m_DefaultIndex = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -346,7 +342,7 @@ namespace Server.Items
 
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      return (house?.IsAosRules != true || house.Public && !house.IsBanned(m) || house.HasAccess(m)) &&
+      return (house?.IsAosRules != true || (house.Public && !house.IsBanned(m)) || house.HasAccess(m)) &&
              house?.HasSecureAccess(m, Level) == true;
     }
 
@@ -437,28 +433,28 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          House = reader.ReadItem() as BaseHouse;
-          goto case 0;
-        }
+          {
+            House = reader.ReadItem() as BaseHouse;
+            goto case 0;
+          }
         case 0:
-        {
-          Location = reader.ReadPoint3D();
-          Map = reader.ReadMap();
-          Description = reader.ReadString();
+          {
+            Location = reader.ReadPoint3D();
+            Map = reader.ReadMap();
+            Description = reader.ReadString();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public Point3D Location{ get; }
+    public Point3D Location { get; }
 
-    public Map Map{ get; }
+    public Map Map { get; }
 
-    public string Description{ get; }
+    public string Description { get; }
 
-    public BaseHouse House{ get; }
+    public BaseHouse House { get; }
 
     public void Serialize(IGenericWriter writer)
     {

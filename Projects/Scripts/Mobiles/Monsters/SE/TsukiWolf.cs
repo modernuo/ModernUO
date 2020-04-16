@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
   public class TsukiWolf : BaseCreature
   {
-    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+    private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public TsukiWolf()
@@ -102,7 +102,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 <= Utility.RandomDouble())
+      if (Utility.RandomDouble() >= 0.1)
         return;
 
       /* Blood Bath
@@ -155,8 +155,8 @@ namespace Server.Mobiles
     private class ExpireTimer : Timer
     {
       private int m_Count;
-      private Mobile m_From;
-      private Mobile m_Mobile;
+      private readonly Mobile m_From;
+      private readonly Mobile m_Mobile;
 
       public ExpireTimer(Mobile m, Mobile from)
         : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))

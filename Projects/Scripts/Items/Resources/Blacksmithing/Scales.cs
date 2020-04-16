@@ -53,10 +53,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Resource = (CraftResource)reader.ReadInt();
-          break;
-        }
+          {
+            m_Resource = (CraftResource)reader.ReadInt();
+            break;
+          }
       }
     }
   }

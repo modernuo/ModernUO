@@ -27,7 +27,6 @@ namespace Server.Mobiles
         AddItem(new LongPants(Utility.RandomNeutralHue()));
       }
 
-
       AddItem(new Doublet(Utility.RandomNeutralHue()));
       AddItem(new HalfApron());
 

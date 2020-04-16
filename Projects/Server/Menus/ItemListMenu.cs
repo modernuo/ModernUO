@@ -31,11 +31,11 @@ namespace Server.Menus.ItemLists
       Hue = hue;
     }
 
-    public string Name{ get; }
+    public string Name { get; }
 
-    public int ItemID{ get; }
+    public int ItemID { get; }
 
-    public int Hue{ get; }
+    public int Hue { get; }
   }
 
   public class ItemListMenu : IMenu
@@ -57,9 +57,9 @@ namespace Server.Menus.ItemLists
       m_Serial = (int)((uint)m_Serial | 0x80000000);
     }
 
-    public string Question{ get; }
+    public string Question { get; }
 
-    public ItemListEntry[] Entries{ get; set; }
+    public ItemListEntry[] Entries { get; set; }
 
     int IMenu.Serial => m_Serial;
 

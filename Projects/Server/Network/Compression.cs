@@ -48,7 +48,8 @@ namespace Server.Network
     // If our input exceeds this length, we may potentially overflow the buffer
     private const int PossibleOverflow = (BufferSize * 8 - TerminalCodeLength) / MaximalCodeLength;
 
-    private static readonly int[] _huffmanTable = {
+    private static readonly int[] _huffmanTable =
+    {
       0x2, 0x000, 0x5, 0x01F, 0x6, 0x022, 0x7, 0x034, 0x7, 0x075, 0x6, 0x028, 0x6, 0x03B, 0x7, 0x032,
       0x8, 0x0E0, 0x8, 0x062, 0x7, 0x056, 0x8, 0x079, 0x9, 0x19D, 0x8, 0x097, 0x6, 0x02A, 0x7, 0x057,
       0x8, 0x071, 0x8, 0x05B, 0x9, 0x1CC, 0x8, 0x0A7, 0x7, 0x025, 0x7, 0x04F, 0x8, 0x066, 0x8, 0x07D,
@@ -106,8 +107,8 @@ namespace Server.Network
 
       if (count > DefiniteOverflow) return;
 
-      int bitCount = 0;
-      int bitValue = 0;
+      var bitCount = 0;
+      var bitValue = 0;
 
       fixed (int* pTable = _huffmanTable)
       {
@@ -185,10 +186,11 @@ namespace Server.Network
 
     public static unsafe ZLibError Pack(Span<byte> dest, ref int destLength, ReadOnlySpan<byte> source, int sourceLength)
     {
-      ulong destLengthLong = (ulong)destLength;
+      var destLengthLong = (ulong)destLength;
       fixed (byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
       {
-        ZLibError e = Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLengthLong, Unsafe.AsRef<int>(sPtr), (ulong)sourceLength);
+        var e = Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLengthLong, Unsafe.AsRef<int>(sPtr),
+          (ulong)sourceLength);
         destLength = (int)destLengthLong;
         return e;
       }
@@ -196,21 +198,24 @@ namespace Server.Network
 
     public static unsafe ZLibError Pack(Span<byte> dest, ref int destLength, ReadOnlySpan<byte> source, ZLibQuality quality)
     {
-      ulong destLengthLong = (ulong)destLength;
+      var destLengthLong = (ulong)destLength;
       fixed (byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
       {
-        ZLibError e = Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLengthLong, Unsafe.AsRef<int>(sPtr), (ulong)source.Length, quality);
+        var e = Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLengthLong, Unsafe.AsRef<int>(sPtr),
+          (ulong)source.Length, quality);
         destLength = (int)destLengthLong;
         return e;
       }
     }
 
-    public static unsafe ZLibError Pack(Span<byte> dest, ref int destLength, ReadOnlySpan<byte> source, int sourceLength, ZLibQuality quality)
+    public static unsafe ZLibError Pack(Span<byte> dest, ref int destLength, ReadOnlySpan<byte> source, int sourceLength,
+      ZLibQuality quality)
     {
-      ulong destLengthLong = (ulong)destLength;
+      var destLengthLong = (ulong)destLength;
       fixed (byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
       {
-        ZLibError e = Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLengthLong, Unsafe.AsRef<int>(sPtr), (ulong)sourceLength, quality);
+        var e = Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLengthLong, Unsafe.AsRef<int>(sPtr),
+          (ulong)sourceLength, quality);
         destLength = (int)destLengthLong;
         return e;
       }
@@ -218,10 +223,11 @@ namespace Server.Network
 
     public static unsafe ZLibError Unpack(Span<byte> dest, ref int destLength, ReadOnlySpan<byte> source, int sourceLength)
     {
-      ulong destLengthLong = (ulong)destLength;
+      var destLengthLong = (ulong)destLength;
       fixed (byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
       {
-        ZLibError e = Compressor.Decompress(Unsafe.AsRef<int>(dPtr), ref destLengthLong, Unsafe.AsRef<int>(sPtr), (ulong)sourceLength);
+        var e = Compressor.Decompress(Unsafe.AsRef<int>(dPtr), ref destLengthLong, Unsafe.AsRef<int>(sPtr),
+          (ulong)sourceLength);
         destLength = (int)destLengthLong;
         return e;
       }
@@ -231,26 +237,38 @@ namespace Server.Network
 
     public static unsafe ZLibError Pack(Span<byte> dest, ref ulong destLength, ReadOnlySpan<byte> source, ulong sourceLength)
     {
-      fixed(byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+      fixed (byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+      {
         return Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLength, Unsafe.AsRef<int>(sPtr), sourceLength);
+      }
     }
 
-    public static unsafe ZLibError Pack(Span<byte> dest, ref ulong destLength, ReadOnlySpan<byte> source, ZLibQuality quality)
+    public static unsafe ZLibError Pack(Span<byte> dest, ref ulong destLength, ReadOnlySpan<byte> source,
+      ZLibQuality quality)
     {
-      fixed(byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
-        return Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLength, Unsafe.AsRef<int>(sPtr), (ulong)source.Length, quality);
+      fixed (byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+      {
+        return Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLength, Unsafe.AsRef<int>(sPtr), (ulong)source.Length,
+          quality);
+      }
     }
 
-    public static unsafe ZLibError Pack(Span<byte> dest, ref ulong destLength, ReadOnlySpan<byte> source, ulong sourceLength, ZLibQuality quality)
+    public static unsafe ZLibError Pack(Span<byte> dest, ref ulong destLength, ReadOnlySpan<byte> source, ulong sourceLength,
+      ZLibQuality quality)
     {
-      fixed(byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+      fixed (byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+      {
         return Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLength, Unsafe.AsRef<int>(sPtr), sourceLength, quality);
+      }
     }
 
-    public static unsafe ZLibError Unpack(Span<byte> dest, ref ulong destLength, ReadOnlySpan<byte> source, ulong sourceLength)
+    public static unsafe ZLibError Unpack(Span<byte> dest, ref ulong destLength, ReadOnlySpan<byte> source,
+      ulong sourceLength)
     {
-      fixed(byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+      fixed (byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+      {
         return Compressor.Decompress(Unsafe.AsRef<int>(dPtr), ref destLength, Unsafe.AsRef<int>(sPtr), sourceLength);
+      }
     }
   }
 

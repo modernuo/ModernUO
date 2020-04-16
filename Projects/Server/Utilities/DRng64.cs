@@ -69,7 +69,10 @@ namespace Server
     public override unsafe void GetBytes(Span<byte> data)
     {
       if (data.Length > 0)
-        fixed (byte* ptr = data) GetBytes(ptr, data.Length);
+        fixed (byte* ptr = data)
+        {
+          GetBytes(ptr, data.Length);
+        }
     }
 
     public override void GetNonZeroBytes(byte[] data)
@@ -86,8 +89,8 @@ namespace Server
         GetBytes(data);
 
         // Find the first zero in the remaining portion.
-        int indexOfFirst0Byte = data.Length;
-        for (int i = 0; i < data.Length; i++)
+        var indexOfFirst0Byte = data.Length;
+        for (var i = 0; i < data.Length; i++)
           if (data[i] == 0)
           {
             indexOfFirst0Byte = i;
@@ -95,8 +98,9 @@ namespace Server
           }
 
         // If there were any zeros, shift down all non-zeros.
-        for (int i = indexOfFirst0Byte + 1; i < data.Length; i++)
-          if (data[i] != 0) data[indexOfFirst0Byte++] = data[i];
+        for (var i = indexOfFirst0Byte + 1; i < data.Length; i++)
+          if (data[i] != 0)
+            data[indexOfFirst0Byte++] = data[i];
 
         // Request new random bytes if necessary; dont re-use
         // existing bytes since they were shifted down.

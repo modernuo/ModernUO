@@ -139,7 +139,6 @@ namespace Server.Items
           AddComponent(new WallBannerComponent(0x159D), 2, 0, 0);
           break;
 
-
         case 17:
           AddComponent(new WallBannerComponent(0x1610), 0, 0, 0);
           AddComponent(new WallBannerComponent(0x160F), 0, 1, 0);
@@ -350,7 +349,7 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private WallBannerDeed m_WallBanner;
+      private readonly WallBannerDeed m_WallBanner;
 
       public InternalGump(WallBannerDeed WallBanner) : base(150, 50)
       {

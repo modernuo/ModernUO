@@ -68,7 +68,7 @@ namespace Server.Mobiles
     {
       AddLoot(LootPack.FilthyRich, 4);
       // TODO: uncomment once added
-      //AddLoot( LootPack.Parrot );
+      // AddLoot( LootPack.Parrot );
       AddLoot(LootPack.Gems);
     }
 
@@ -95,35 +95,35 @@ namespace Server.Mobiles
       switch (Utility.Random(3))
       {
         case 0:
-        {
-          Say(1042156); // I can grant life, and I can sap it as easily.
-          PlaySound(0x1E6);
+          {
+            Say(1042156); // I can grant life, and I can sap it as easily.
+            PlaySound(0x1E6);
 
-          toDrain = Utility.RandomMinMax(3, 6);
-          Hits += toDrain;
-          m.Hits -= toDrain;
-          break;
-        }
+            toDrain = Utility.RandomMinMax(3, 6);
+            Hits += toDrain;
+            m.Hits -= toDrain;
+            break;
+          }
         case 1:
-        {
-          Say(1042157); // You'll go nowhere, unless I deem it should be so.
-          PlaySound(0x1DF);
+          {
+            Say(1042157); // You'll go nowhere, unless I deem it should be so.
+            PlaySound(0x1DF);
 
-          toDrain = Utility.RandomMinMax(10, 25);
-          Stam += toDrain;
-          m.Stam -= toDrain;
-          break;
-        }
+            toDrain = Utility.RandomMinMax(10, 25);
+            Stam += toDrain;
+            m.Stam -= toDrain;
+            break;
+          }
         case 2:
-        {
-          Say(1042155); // Your power is mine to use as I will.
-          PlaySound(0x1F8);
+          {
+            Say(1042155); // Your power is mine to use as I will.
+            PlaySound(0x1F8);
 
-          toDrain = Utility.RandomMinMax(15, 25);
-          Mana += toDrain;
-          m.Mana -= toDrain;
-          break;
-        }
+            toDrain = Utility.RandomMinMax(15, 25);
+            Mana += toDrain;
+            m.Mana -= toDrain;
+            break;
+          }
       }
     }
 

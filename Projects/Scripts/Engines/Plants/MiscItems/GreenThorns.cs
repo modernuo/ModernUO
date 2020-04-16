@@ -58,7 +58,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private GreenThorns m_Thorn;
+      private readonly GreenThorns m_Thorn;
 
       public InternalTarget(GreenThorns thorn) : base(3, true, TargetFlags.None) => m_Thorn = thorn;
 
@@ -126,7 +126,7 @@ namespace Server.Items
 
     private class EndActionTimer : Timer
     {
-      private Mobile m_From;
+      private readonly Mobile m_From;
 
       public EndActionTimer(Mobile from) : base(TimeSpan.FromMinutes(3.0))
       {
@@ -143,7 +143,7 @@ namespace Server.Items
 
   public abstract class GreenThornsEffect : Timer
   {
-    private static TilesAndEffect[] m_Table =
+    private static readonly TilesAndEffect[] m_Table =
     {
       new TilesAndEffect(new[]
         {
@@ -258,11 +258,11 @@ namespace Server.Items
       Priority = TimerPriority.TwoFiftyMS;
     }
 
-    public Point3D Location{ get; }
+    public Point3D Location { get; }
 
-    public Map Map{ get; }
+    public Map Map { get; }
 
-    public Mobile From{ get; }
+    public Mobile From { get; }
 
     public static GreenThornsEffect Create(Mobile from, LandTarget land)
     {
@@ -361,9 +361,9 @@ namespace Server.Items
         Effect = effect;
       }
 
-      public int[] Tiles{ get; }
+      public int[] Tiles { get; }
 
-      public Type Effect{ get; }
+      public Type Effect { get; }
     }
   }
 
@@ -378,65 +378,65 @@ namespace Server.Items
       switch (step)
       {
         case 0:
-        {
-          Effects.PlaySound(Location, Map, 0x106);
-          Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3735, 1,
-            182, 0xBE3);
+          {
+            Effects.PlaySound(Location, Map, 0x106);
+            Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3735, 1,
+              182, 0xBE3);
 
-          return TimeSpan.FromSeconds(4.0);
-        }
+            return TimeSpan.FromSeconds(4.0);
+          }
         case 1:
-        {
-          Effects.PlaySound(Location, Map, 0x222);
+          {
+            Effects.PlaySound(Location, Map, 0x222);
 
-          return TimeSpan.FromSeconds(4.0);
-        }
+            return TimeSpan.FromSeconds(4.0);
+          }
         case 2:
-        {
-          Effects.PlaySound(Location, Map, 0x21F);
+          {
+            Effects.PlaySound(Location, Map, 0x21F);
 
-          return TimeSpan.FromSeconds(5.0);
-        }
+            return TimeSpan.FromSeconds(5.0);
+          }
         case 3:
-        {
-          EffectItem dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
-          dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, true,
-            "* The ground erupts with chaotic growth! *");
+          {
+            EffectItem dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
+            dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, true,
+              "* The ground erupts with chaotic growth! *");
 
-          Effects.PlaySound(Location, Map, 0x12D);
+            Effects.PlaySound(Location, Map, 0x12D);
 
-          SpawnReagents();
-          SpawnReagents();
+            SpawnReagents();
+            SpawnReagents();
 
-          return TimeSpan.FromSeconds(2.0);
-        }
+            return TimeSpan.FromSeconds(2.0);
+          }
         case 4:
-        {
-          Effects.PlaySound(Location, Map, 0x12D);
+          {
+            Effects.PlaySound(Location, Map, 0x12D);
 
-          SpawnReagents();
-          SpawnReagents();
+            SpawnReagents();
+            SpawnReagents();
 
-          return TimeSpan.FromSeconds(2.0);
-        }
+            return TimeSpan.FromSeconds(2.0);
+          }
         case 5:
-        {
-          Effects.PlaySound(Location, Map, 0x12D);
+          {
+            Effects.PlaySound(Location, Map, 0x12D);
 
-          SpawnReagents();
-          SpawnReagents();
+            SpawnReagents();
+            SpawnReagents();
 
-          return TimeSpan.FromSeconds(3.0);
-        }
+            return TimeSpan.FromSeconds(3.0);
+          }
         default:
-        {
-          Effects.PlaySound(Location, Map, 0x12D);
+          {
+            Effects.PlaySound(Location, Map, 0x12D);
 
-          SpawnReagents();
-          SpawnReagents();
+            SpawnReagents();
+            SpawnReagents();
 
-          return TimeSpan.Zero;
-        }
+            return TimeSpan.Zero;
+          }
       }
     }
 
@@ -474,40 +474,40 @@ namespace Server.Items
       switch (step)
       {
         case 0:
-        {
-          Effects.PlaySound(Location, Map, 0x106);
-          Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3735, 1,
-            182, 0xBE3);
+          {
+            Effects.PlaySound(Location, Map, 0x106);
+            Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3735, 1,
+              182, 0xBE3);
 
-          return TimeSpan.FromSeconds(4.0);
-        }
+            return TimeSpan.FromSeconds(4.0);
+          }
         case 1:
-        {
-          EffectItem hole = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(10.0));
-          hole.ItemID = 0x913;
+          {
+            EffectItem hole = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(10.0));
+            hole.ItemID = 0x913;
 
-          Effects.PlaySound(Location, Map, 0x222);
+            Effects.PlaySound(Location, Map, 0x222);
 
-          return TimeSpan.FromSeconds(4.0);
-        }
+            return TimeSpan.FromSeconds(4.0);
+          }
         case 2:
-        {
-          Effects.PlaySound(Location, Map, 0x21F);
+          {
+            Effects.PlaySound(Location, Map, 0x21F);
 
-          return TimeSpan.FromSeconds(4.0);
-        }
+            return TimeSpan.FromSeconds(4.0);
+          }
         default:
-        {
-          EffectItem dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
-          dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, true,
-            "* A magical bunny leaps out of its hole, disturbed by the thorn's effect! *");
+          {
+            EffectItem dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
+            dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, true,
+              "* A magical bunny leaps out of its hole, disturbed by the thorn's effect! *");
 
-          BaseCreature spawn = new VorpalBunny();
-          if (!SpawnCreature(spawn))
-            spawn.Delete();
+            BaseCreature spawn = new VorpalBunny();
+            if (!SpawnCreature(spawn))
+              spawn.Delete();
 
-          return TimeSpan.Zero;
-        }
+            return TimeSpan.Zero;
+          }
       }
     }
   }
@@ -523,38 +523,38 @@ namespace Server.Items
       switch (step)
       {
         case 0:
-        {
-          Effects.PlaySound(Location, Map, 0x106);
-          Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3735, 1,
-            182, 0xBE3);
+          {
+            Effects.PlaySound(Location, Map, 0x106);
+            Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3735, 1,
+              182, 0xBE3);
 
-          return TimeSpan.FromSeconds(4.0);
-        }
+            return TimeSpan.FromSeconds(4.0);
+          }
         case 1:
-        {
-          Effects.PlaySound(Location, Map, 0x222);
+          {
+            Effects.PlaySound(Location, Map, 0x222);
 
-          return TimeSpan.FromSeconds(4.0);
-        }
+            return TimeSpan.FromSeconds(4.0);
+          }
         case 2:
-        {
-          Effects.PlaySound(Location, Map, 0x21F);
+          {
+            Effects.PlaySound(Location, Map, 0x21F);
 
-          return TimeSpan.FromSeconds(1.0);
-        }
+            return TimeSpan.FromSeconds(1.0);
+          }
         default:
-        {
-          EffectItem dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
-          dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, true,
-            "* Strange green tendrils rise from the ground, whipping wildly! *");
-          Effects.PlaySound(Location, Map, 0x2B0);
+          {
+            EffectItem dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
+            dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, true,
+              "* Strange green tendrils rise from the ground, whipping wildly! *");
+            Effects.PlaySound(Location, Map, 0x2B0);
 
-          BaseCreature spawn = new WhippingVine();
-          if (!SpawnCreature(spawn))
-            spawn.Delete();
+            BaseCreature spawn = new WhippingVine();
+            if (!SpawnCreature(spawn))
+              spawn.Delete();
 
-          return TimeSpan.Zero;
-        }
+            return TimeSpan.Zero;
+          }
       }
     }
   }
@@ -570,44 +570,44 @@ namespace Server.Items
       switch (step)
       {
         case 0:
-        {
-          Effects.PlaySound(Location, Map, 0x106);
-          Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3735, 1,
-            182, 0xBE3);
-
-          return TimeSpan.FromSeconds(4.0);
-        }
-        case 1:
-        {
-          Effects.PlaySound(Location, Map, 0x222);
-
-          return TimeSpan.FromSeconds(4.0);
-        }
-        case 2:
-        {
-          Effects.PlaySound(Location, Map, 0x21F);
-
-          return TimeSpan.FromSeconds(4.0);
-        }
-        default:
-        {
-          EffectItem dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
-          dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, true,
-            "* Slithering ice serpents rise to the surface to investigate the disturbance! *");
-
-          BaseCreature spawn = new GiantIceWorm();
-          if (!SpawnCreature(spawn))
-            spawn.Delete();
-
-          for (int i = 0; i < 3; i++)
           {
-            BaseCreature snake = new IceSnake();
-            if (!SpawnCreature(snake))
-              snake.Delete();
-          }
+            Effects.PlaySound(Location, Map, 0x106);
+            Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3735, 1,
+              182, 0xBE3);
 
-          return TimeSpan.Zero;
-        }
+            return TimeSpan.FromSeconds(4.0);
+          }
+        case 1:
+          {
+            Effects.PlaySound(Location, Map, 0x222);
+
+            return TimeSpan.FromSeconds(4.0);
+          }
+        case 2:
+          {
+            Effects.PlaySound(Location, Map, 0x21F);
+
+            return TimeSpan.FromSeconds(4.0);
+          }
+        default:
+          {
+            EffectItem dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
+            dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, true,
+              "* Slithering ice serpents rise to the surface to investigate the disturbance! *");
+
+            BaseCreature spawn = new GiantIceWorm();
+            if (!SpawnCreature(spawn))
+              spawn.Delete();
+
+            for (int i = 0; i < 3; i++)
+            {
+              BaseCreature snake = new IceSnake();
+              if (!SpawnCreature(snake))
+                snake.Delete();
+            }
+
+            return TimeSpan.Zero;
+          }
       }
     }
   }
@@ -623,35 +623,35 @@ namespace Server.Items
       switch (step)
       {
         case 0:
-        {
-          Effects.PlaySound(Location, Map, 0x106);
-          Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3735, 1,
-            182, 0xBE3);
+          {
+            Effects.PlaySound(Location, Map, 0x106);
+            Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3735, 1,
+              182, 0xBE3);
 
-          return TimeSpan.FromSeconds(4.0);
-        }
+            return TimeSpan.FromSeconds(4.0);
+          }
         case 1:
-        {
-          Effects.PlaySound(Location, Map, 0x222);
+          {
+            Effects.PlaySound(Location, Map, 0x222);
 
-          return TimeSpan.FromSeconds(4.0);
-        }
+            return TimeSpan.FromSeconds(4.0);
+          }
         case 2:
-        {
-          Effects.PlaySound(Location, Map, 0x21F);
+          {
+            Effects.PlaySound(Location, Map, 0x21F);
 
-          return TimeSpan.FromSeconds(5.0);
-        }
+            return TimeSpan.FromSeconds(5.0);
+          }
         default:
-        {
-          EffectItem dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
-          dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, true,
-            "* The sand collapses, revealing a dark hole. *");
+          {
+            EffectItem dummy = EffectItem.Create(Location, Map, TimeSpan.FromSeconds(20.0));
+            dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, true,
+              "* The sand collapses, revealing a dark hole. *");
 
-          GreenThornsSHTeleporter.Create(Location, Map);
+            GreenThornsSHTeleporter.Create(Location, Map);
 
-          return TimeSpan.Zero;
-        }
+            return TimeSpan.Zero;
+          }
       }
     }
   }
@@ -713,7 +713,7 @@ namespace Server.Items
 
     private class InternalTimer : Timer
     {
-      private GreenThornsSHTeleporter m_Teleporter;
+      private readonly GreenThornsSHTeleporter m_Teleporter;
 
       public InternalTimer(GreenThornsSHTeleporter teleporter) : base(TimeSpan.FromMinutes(1.0))
       {

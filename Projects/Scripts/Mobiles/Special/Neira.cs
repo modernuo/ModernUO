@@ -61,7 +61,7 @@ namespace Server.Mobiles
 
       AddItem(weapon);
 
-      //new SkeletalMount().Rider = this;
+      // new SkeletalMount().Rider = this;
       AddItem(new VirtualMountItem(this));
     }
 
@@ -142,7 +142,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 >= Utility.RandomDouble()) // 10% chance to drop or throw an unholy bone
+      if (Utility.RandomDouble() <= 0.1) // 10% chance to drop or throw an unholy bone
         AddUnholyBone(defender, 0.25);
 
       CheckSpeedBoost();
@@ -152,7 +152,7 @@ namespace Server.Mobiles
     {
       base.OnGotMeleeAttack(attacker);
 
-      if (0.1 >= Utility.RandomDouble()) // 10% chance to drop or throw an unholy bone
+      if (Utility.RandomDouble() <= 0.1) // 10% chance to drop or throw an unholy bone
         AddUnholyBone(attacker, 0.25);
     }
 
@@ -160,7 +160,7 @@ namespace Server.Mobiles
     {
       base.AlterDamageScalarFrom(caster, ref scalar);
 
-      if (0.1 >= Utility.RandomDouble()) // 10% chance to throw an unholy bone
+      if (Utility.RandomDouble() <= 0.1) // 10% chance to throw an unholy bone
         AddUnholyBone(caster, 1.0);
     }
 
@@ -198,16 +198,16 @@ namespace Server.Mobiles
       switch (version)
       {
         case 1:
-        {
-          m_SpeedBoost = reader.ReadBool();
-          break;
-        }
+          {
+            m_SpeedBoost = reader.ReadBool();
+            break;
+          }
       }
     }
 
     private class VirtualMount : IMount
     {
-      private VirtualMountItem m_Item;
+      private readonly VirtualMountItem m_Item;
 
       public VirtualMount(VirtualMountItem item) => m_Item = item;
 
@@ -224,7 +224,7 @@ namespace Server.Mobiles
 
     private class VirtualMountItem : Item, IMountItem
     {
-      private VirtualMount m_Mount;
+      private readonly VirtualMount m_Mount;
 
       public VirtualMountItem(Mobile mob)
         : base(0x3EBB)
@@ -241,7 +241,7 @@ namespace Server.Mobiles
         : base(serial) =>
         m_Mount = new VirtualMount(this);
 
-      public Mobile Rider{ get; private set; }
+      public Mobile Rider { get; private set; }
 
       public IMount Mount => m_Mount;
 
@@ -269,8 +269,8 @@ namespace Server.Mobiles
 
     private class DelayTimer : Timer
     {
-      private Mobile m_Mobile;
-      private Mobile m_Target;
+      private readonly Mobile m_Mobile;
+      private readonly Mobile m_Target;
 
       public DelayTimer(Mobile m, Mobile target) : base(TimeSpan.FromSeconds(1.0))
       {

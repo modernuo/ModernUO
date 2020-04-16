@@ -21,7 +21,7 @@ namespace Server.Engines.Quests.Naturalist
         new Rectangle2D(5672, 1857, 6, 20))
     };
 
-    private Rectangle2D[] m_Rects;
+    private readonly Rectangle2D[] m_Rects;
 
     private NestArea(bool special, params Rectangle2D[] rects)
     {
@@ -31,7 +31,7 @@ namespace Server.Engines.Quests.Naturalist
 
     public static int NonSpecialCount => m_Areas.Count(area => !area.Special);
 
-    public bool Special{ get; }
+    public bool Special { get; }
 
     public int ID
     {

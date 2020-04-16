@@ -13,9 +13,9 @@
     {
     }
 
-    public abstract int voidItem_ID{ get; }
-    public abstract int fullItem_ID{ get; }
-    public abstract int MaxQuantity{ get; }
+    public abstract int voidItem_ID { get; }
+    public abstract int fullItem_ID { get; }
+    public abstract int MaxQuantity { get; }
 
     public override int DefaultGumpID => 0x3e;
 

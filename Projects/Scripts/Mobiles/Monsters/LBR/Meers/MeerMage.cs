@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
   public class MeerMage : BaseCreature
   {
-    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+    private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     private DateTime m_NextAbilityTime;
 
@@ -121,7 +121,7 @@ namespace Server.Mobiles
               rabid.MoveToWorld(loc, combatant.Map);
             }
 
-            Say(1071932); //Creatures of the forest, I call to thee!  Aid me in the fight against all that is evil!
+            Say(1071932); // Creatures of the forest, I call to thee!  Aid me in the fight against all that is evil!
           }
           else if (combatant.Player)
           {

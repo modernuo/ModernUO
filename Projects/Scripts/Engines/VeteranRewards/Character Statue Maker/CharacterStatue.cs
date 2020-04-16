@@ -115,12 +115,12 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime SculptedOn{ get; set; }
+    public DateTime SculptedOn { get; set; }
 
-    public CharacterStatuePlinth Plinth{ get; set; }
+    public CharacterStatuePlinth Plinth { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsRewardItem{ get; set; }
+    public bool IsRewardItem { get; set; }
 
     public override void OnDoubleClick(Mobile from)
     {
@@ -385,7 +385,7 @@ namespace Server.Mobiles
 
     private class DemolishEntry : ContextMenuEntry
     {
-      private CharacterStatue m_Statue;
+      private readonly CharacterStatue m_Statue;
 
       public DemolishEntry(CharacterStatue statue) : base(6275, 2) => m_Statue = statue;
 
@@ -442,7 +442,7 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CharacterStatue Statue{ get; set; }
+    public CharacterStatue Statue { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public StatueType StatueType
@@ -547,8 +547,8 @@ namespace Server.Mobiles
 
   public class CharacterStatueTarget : Target
   {
-    private Item m_Maker;
-    private StatueType m_Type;
+    private readonly Item m_Maker;
+    private readonly StatueType m_Type;
 
     public CharacterStatueTarget(Item maker, StatueType type) : base(-1, true, TargetFlags.None)
     {
@@ -651,7 +651,7 @@ namespace Server.Mobiles
         int doorHeight = door.ItemData.CalcHeight;
 
         if (Utility.InRange(doorLoc, p, 1) &&
-            (p.Z == doorLoc.Z || p.Z + height > doorLoc.Z && doorLoc.Z + doorHeight > p.Z))
+            (p.Z == doorLoc.Z || (p.Z + height > doorLoc.Z && doorLoc.Z + doorHeight > p.Z)))
           return AddonFitResult.DoorTooClose;
       }
 

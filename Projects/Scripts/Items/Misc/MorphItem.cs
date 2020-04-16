@@ -29,10 +29,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int InactiveItemID{ get; set; }
+    public int InactiveItemID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ActiveItemID{ get; set; }
+    public int ActiveItemID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int InsideRange
@@ -101,21 +101,21 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_OutsideRange = reader.ReadInt();
-          goto case 0;
-        }
+          {
+            m_OutsideRange = reader.ReadInt();
+            goto case 0;
+          }
         case 0:
-        {
-          InactiveItemID = reader.ReadInt();
-          ActiveItemID = reader.ReadInt();
-          m_InsideRange = reader.ReadInt();
+          {
+            InactiveItemID = reader.ReadInt();
+            ActiveItemID = reader.ReadInt();
+            m_InsideRange = reader.ReadInt();
 
-          if (version < 1)
-            m_OutsideRange = m_InsideRange;
+            if (version < 1)
+              m_OutsideRange = m_InsideRange;
 
-          break;
-        }
+            break;
+          }
       }
 
       Timer.DelayCall(TimeSpan.Zero, Refresh);

@@ -6,9 +6,9 @@ namespace Server.Mobiles
 {
   public class SBInnKeeper : SBInfo
   {
-    public override IShopSellInfo SellInfo{ get; } = new InternalSellInfo();
+    public override IShopSellInfo SellInfo { get; } = new InternalSellInfo();
 
-    public override List<GenericBuyInfo> BuyInfo{ get; } = new InternalBuyInfo();
+    public override List<GenericBuyInfo> BuyInfo { get; } = new InternalBuyInfo();
 
     public class InternalBuyInfo : List<GenericBuyInfo>
     {
@@ -44,7 +44,7 @@ namespace Server.Mobiles
         Add(new GenericBuyInfo(typeof(WoodenBowlOfStew), 3, 20, 0x1604, 0));
         Add(new GenericBuyInfo(typeof(WoodenBowlOfTomatoSoup), 3, 20, 0x1606, 0));
 
-        Add(new GenericBuyInfo(typeof(ApplePie), 7, 20, 0x1041, 0)); //OSI just has Pie, not Apple/Fruit/Meat
+        Add(new GenericBuyInfo(typeof(ApplePie), 7, 20, 0x1041, 0)); // OSI just has Pie, not Apple/Fruit/Meat
 
         Add(new GenericBuyInfo(typeof(Peach), 3, 20, 0x9D2, 0));
         Add(new GenericBuyInfo(typeof(Pear), 3, 20, 0x994, 0));

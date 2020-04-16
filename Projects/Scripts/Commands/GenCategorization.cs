@@ -13,9 +13,9 @@ namespace Server.Commands
   {
     private static CategoryEntry m_RootItems, m_RootMobiles;
 
-    private static Type typeofItem = typeof(Item);
-    private static Type typeofMobile = typeof(Mobile);
-    private static Type typeofConstructible = typeof(ConstructibleAttribute);
+    private static readonly Type typeofItem = typeof(Item);
+    private static readonly Type typeofMobile = typeof(Mobile);
+    private static readonly Type typeofConstructible = typeof(ConstructibleAttribute);
 
     public static CategoryEntry Items
     {
@@ -275,9 +275,9 @@ namespace Server.Commands
       Object = ActivatorUtil.CreateInstance(type);
     }
 
-    public Type Type{ get; }
+    public Type Type { get; }
 
-    public object Object{ get; }
+    public object Object { get; }
   }
 
   public class CategoryEntry
@@ -342,15 +342,15 @@ namespace Server.Commands
       Matched = new List<CategoryTypeEntry>();
     }
 
-    public string Title{ get; }
+    public string Title { get; }
 
-    public Type[] Matches{ get; }
+    public Type[] Matches { get; }
 
-    public CategoryEntry Parent{ get; }
+    public CategoryEntry Parent { get; }
 
-    public CategoryEntry[] SubCategories{ get; }
+    public CategoryEntry[] SubCategories { get; }
 
-    public List<CategoryTypeEntry> Matched{ get; }
+    public List<CategoryTypeEntry> Matched { get; }
 
     public bool IsMatch(Type type)
     {
@@ -380,9 +380,9 @@ namespace Server.Commands
       Text = input.Substring(index);
     }
 
-    public int Indentation{ get; }
+    public int Indentation { get; }
 
-    public string Text{ get; }
+    public string Text { get; }
 
     public static CategoryLine[] Load(string path)
     {

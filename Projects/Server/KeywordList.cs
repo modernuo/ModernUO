@@ -31,13 +31,13 @@ namespace Server
       Count = 0;
     }
 
-    public int Count{ get; private set; }
+    public int Count { get; private set; }
 
     public bool Contains(int keyword)
     {
-      bool contains = false;
+      var contains = false;
 
-      for (int i = 0; !contains && i < Count; ++i)
+      for (var i = 0; !contains && i < Count; ++i)
         contains = keyword == m_Keywords[i];
 
       return contains;
@@ -47,10 +47,10 @@ namespace Server
     {
       if (Count + 1 > m_Keywords.Length)
       {
-        int[] old = m_Keywords;
+        var old = m_Keywords;
         m_Keywords = new int[old.Length * 2];
 
-        for (int i = 0; i < old.Length; ++i)
+        for (var i = 0; i < old.Length; ++i)
           m_Keywords[i] = old[i];
       }
 
@@ -62,9 +62,9 @@ namespace Server
       if (Count == 0)
         return m_EmptyInts;
 
-      int[] keywords = new int[Count];
+      var keywords = new int[Count];
 
-      for (int i = 0; i < Count; ++i)
+      for (var i = 0; i < Count; ++i)
         keywords[i] = m_Keywords[i];
 
       Count = 0;

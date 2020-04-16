@@ -11,7 +11,7 @@ namespace Server.Items
       stew = new AddonComponent(2416);
       stew.Name = "stew";
       stew.Visible = true;
-      AddComponent(stew, 0, 0, -7); //stew
+      AddComponent(stew, 0, 0, -7); // stew
     }
 
     public HagStew(Serial serial) : base(serial)
@@ -28,7 +28,7 @@ namespace Server.Items
       {
         stew.Visible = false;
 
-        BreadLoaf hagstew = new BreadLoaf(); //this decides your fillrate
+        BreadLoaf hagstew = new BreadLoaf(); // this decides your fillrate
         hagstew.Eat(from);
 
         Timer m_timer = new ShowStew(stew);
@@ -52,7 +52,7 @@ namespace Server.Items
 
     public class ShowStew : Timer
     {
-      private AddonComponent stew;
+      private readonly AddonComponent stew;
 
       public ShowStew(AddonComponent ac) : base(TimeSpan.FromSeconds(30))
       {

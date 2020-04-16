@@ -7,14 +7,14 @@ namespace Server.Factions
 {
   public class FactionImbueGump : FactionGump
   {
-    private CraftSystem m_CraftSystem;
+    private readonly CraftSystem m_CraftSystem;
 
-    private FactionItemDefinition m_Definition;
-    private Faction m_Faction;
-    private Item m_Item;
-    private Mobile m_Mobile;
-    private object m_Notice;
-    private BaseTool m_Tool;
+    private readonly FactionItemDefinition m_Definition;
+    private readonly Faction m_Faction;
+    private readonly Item m_Item;
+    private readonly Mobile m_Mobile;
+    private readonly object m_Notice;
+    private readonly BaseTool m_Tool;
 
     public FactionImbueGump(int quality, Item item, Mobile from, CraftSystem craftSystem, BaseTool tool, object notice,
       int availableSilver, Faction faction, FactionItemDefinition def) : base(100, 200)
@@ -34,16 +34,14 @@ namespace Server.Factions
 
       AddHtmlLocalized(20, 20, 210, 25, 1011569); // Imbue with Faction properties?
 
-
       AddHtmlLocalized(20, 60, 170, 25, 1018302); // Item quality:
-      AddHtmlLocalized(175, 60, 100, 25, 1018305 - quality); //	Exceptional, Average, Low
+      AddHtmlLocalized(175, 60, 100, 25, 1018305 - quality); // Exceptional, Average, Low
 
       AddHtmlLocalized(20, 80, 170, 25, 1011572); // Item Cost :
       AddLabel(175, 80, 0x34, def.SilverCost.ToString("N0")); // NOTE: Added 'N0'
 
       AddHtmlLocalized(20, 100, 170, 25, 1011573); // Your Silver :
       AddLabel(175, 100, 0x34, availableSilver.ToString("N0")); // NOTE: Added 'N0'
-
 
       AddRadio(20, 140, 210, 211, true, 1);
       AddLabel(55, 140, m_Faction.Definition.HuePrimary - 1, "*****");
@@ -52,7 +50,6 @@ namespace Server.Factions
       AddRadio(20, 160, 210, 211, false, 2);
       AddLabel(55, 160, m_Faction.Definition.HueSecondary - 1, "*****");
       AddHtmlLocalized(150, 160, 150, 25, 1011571); // Secondary Color
-
 
       AddHtmlLocalized(55, 200, 200, 25, 1011011); // CONTINUE
       AddButton(20, 200, 4005, 4007, 1);

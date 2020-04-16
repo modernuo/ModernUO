@@ -8,7 +8,9 @@ namespace Server.Utilities
   /// Disposing the reference is expected to return itself back into the
   /// original pool that created it.
   /// </remarks>
-  public interface IRef : IDisposable { }
+  public interface IRef : IDisposable
+  {
+  }
 
   /// <summary>
   /// Base implementation of the <see cref="IRef"/> interface.
@@ -23,6 +25,7 @@ namespace Server.Utilities
     private readonly RefPool<TDerived> m_Pool;
     public BaseRef(RefPool<TDerived> pool) => m_Pool = pool;
     protected abstract void OnDispose();
+
     public void Dispose()
     {
       OnDispose();
@@ -37,6 +40,7 @@ namespace Server.Utilities
   public class RefPool<TRef> where TRef : IRef
   {
     public delegate TRef Generator(RefPool<TRef> targetPool);
+
     public const int DEFAULT_RESOURCE_RETENTION = 10;
 
     private readonly Stack<TRef> m_Resources = new Stack<TRef>();
@@ -68,12 +72,14 @@ namespace Server.Utilities
       m_MaxRefrenceRetention = maxRefrenceRetention;
       while (--preGenerateCount >= 0) m_Resources.Push(generator(this));
     }
+
     /// <summary>
     /// Retrieves a resource reference that is managed by this <see cref="RefPool{TRef}"/>. If the pool is has unused resources,
     /// it will remove one from the pool and return it; otherwise, a new resource will be generated.
     /// </summary>
     /// <returns>Unused resource, or a new resource if no unused resources available.</returns>
-    public TRef Get() => m_Resources.TryPop(out TRef item) ? item : m_Generator(this);
+    public TRef Get() => m_Resources.TryPop(out var item) ? item : m_Generator(this);
+
     /// <summary>
     /// Returns a resource reference to the pool of unused resources.
     /// </summary>
@@ -84,6 +90,7 @@ namespace Server.Utilities
         m_Resources.Push(queueRef);
     }
   }
+
   /// <inheritdoc/>
   public class QueueRef<T> : Queue<T>, IRef
   {
@@ -91,12 +98,18 @@ namespace Server.Utilities
     private QueueRef(RefPool<QueueRef<T>> pool) => m_Pool = pool;
 
     /// <summary>Clears the queue and returns this resource to its parent resource pool.</summary>
-    public void Dispose() { Clear(); m_Pool.Return(this); }
+    public void Dispose()
+    {
+      Clear();
+      m_Pool.Return(this);
+    }
+
     /// <summary>
     /// Generator function for creating instances of the <see cref="QueueRef{T}"/> resource.
     /// </summary>
     public static RefPool<QueueRef<T>>.Generator Generate = (targetPool) => new QueueRef<T>(targetPool);
   }
+
   /// <inheritdoc/>
   public class StackRef<T> : Stack<T>, IRef
   {
@@ -104,7 +117,12 @@ namespace Server.Utilities
     private StackRef(RefPool<StackRef<T>> pool) => m_Pool = pool;
 
     /// <summary>Clears the stack and returns this resource to its parent resource pool.</summary>
-    public void Dispose() { Clear(); m_Pool.Return(this); }
+    public void Dispose()
+    {
+      Clear();
+      m_Pool.Return(this);
+    }
+
     /// <summary>
     /// Generator function for creating instances of the <see cref="StackRef{T}"/> resource.
     /// </summary>

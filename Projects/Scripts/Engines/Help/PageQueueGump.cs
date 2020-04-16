@@ -8,8 +8,9 @@ namespace Server.Engines.Help
 {
   public class MessageSentGump : Gump
   {
-    private Mobile m_Mobile;
-    private string m_Name, m_Text;
+    private readonly Mobile m_Mobile;
+    private readonly string m_Name;
+    private readonly string m_Text;
 
     public MessageSentGump(Mobile mobile, string name, string text) : base(30, 30)
     {
@@ -36,19 +37,19 @@ namespace Server.Engines.Help
     {
       m_Mobile.SendGump(new PageResponseGump(m_Mobile, m_Name, m_Text));
 
-      //m_Mobile.SendMessage( 0x482, "{0} tells you:", m_Name );
-      //m_Mobile.SendMessage( 0x482, m_Text );
+      // m_Mobile.SendMessage( 0x482, "{0} tells you:", m_Name );
+      // m_Mobile.SendMessage( 0x482, m_Text );
     }
   }
 
   public class PageQueueGump : Gump
   {
-    private PageEntry[] m_List;
+    private readonly PageEntry[] m_List;
 
     public PageQueueGump() : base(30, 30)
     {
       Add(new GumpPage(0));
-      //Add( new GumpBackground( 0, 0, 410, 448, 9200 ) );
+      // Add( new GumpBackground( 0, 0, 410, 448, 9200 ) );
       Add(new GumpImageTiled(0, 0, 410, 448, 0xA40));
       Add(new GumpAlphaRegion(1, 1, 408, 446));
 
@@ -56,7 +57,7 @@ namespace Server.Engines.Help
 
       List<PageEntry> list = PageQueue.List;
 
-      for (int i = 0;i < list.Count;)
+      for (int i = 0; i < list.Count;)
       {
         PageEntry e = list[i];
 
@@ -127,11 +128,11 @@ namespace Server.Engines.Help
       Message = message;
     }
 
-    public string Title{ get; set; }
+    public string Title { get; set; }
 
-    public string Message{ get; set; }
+    public string Message { get; set; }
 
-    public static List<PredefinedResponse> List{ get; private set; } = Load();
+    public static List<PredefinedResponse> List { get; private set; } = Load();
 
     public static PredefinedResponse Add(string title, string message)
     {
@@ -203,8 +204,8 @@ namespace Server.Engines.Help
   {
     private const int LabelColor32 = 0xFFFFFF;
 
-    private Mobile m_From;
-    private PredefinedResponse m_Response;
+    private readonly Mobile m_From;
+    private readonly PredefinedResponse m_Response;
 
     public PredefGump(Mobile from, PredefinedResponse response) : base(30, 30)
     {
@@ -343,36 +344,36 @@ namespace Server.Engines.Help
             switch (type)
             {
               case 0: // edit
-              {
-                m_From.SendGump(new PredefGump(m_From, resp));
-                break;
-              }
+                {
+                  m_From.SendGump(new PredefGump(m_From, resp));
+                  break;
+                }
               case 1: // move up
-              {
-                if (index > 0)
                 {
-                  list.RemoveAt(index);
-                  list.Insert(index - 1, resp);
+                  if (index > 0)
+                  {
+                    list.RemoveAt(index);
+                    list.Insert(index - 1, resp);
 
-                  PredefinedResponse.Save();
-                  m_From.SendGump(new PredefGump(m_From, null));
+                    PredefinedResponse.Save();
+                    m_From.SendGump(new PredefGump(m_From, null));
+                  }
+
+                  break;
                 }
-
-                break;
-              }
               case 2: // move down
-              {
-                if (index < list.Count - 1)
                 {
-                  list.RemoveAt(index);
-                  list.Insert(index + 1, resp);
+                  if (index < list.Count - 1)
+                  {
+                    list.RemoveAt(index);
+                    list.Insert(index + 1, resp);
 
-                  PredefinedResponse.Save();
-                  m_From.SendGump(new PredefGump(m_From, null));
+                    PredefinedResponse.Save();
+                    m_From.SendGump(new PredefGump(m_From, null));
+                  }
+
+                  break;
                 }
-
-                break;
-              }
             }
           }
         }
@@ -384,37 +385,37 @@ namespace Server.Engines.Help
         switch (info.ButtonID)
         {
           case 1:
-          {
-            list.Remove(m_Response);
+            {
+              list.Remove(m_Response);
 
-            PredefinedResponse.Save();
-            m_From.SendGump(new PredefGump(m_From, null));
-            break;
-          }
+              PredefinedResponse.Save();
+              m_From.SendGump(new PredefGump(m_From, null));
+              break;
+            }
           case 2:
-          {
-            TextRelay te = info.GetTextEntry(0);
+            {
+              TextRelay te = info.GetTextEntry(0);
 
-            if (te != null)
-              m_Response.Title = te.Text;
+              if (te != null)
+                m_Response.Title = te.Text;
 
-            PredefinedResponse.Save();
-            m_From.SendGump(new PredefGump(m_From, m_Response));
+              PredefinedResponse.Save();
+              m_From.SendGump(new PredefGump(m_From, m_Response));
 
-            break;
-          }
+              break;
+            }
           case 3:
-          {
-            TextRelay te = info.GetTextEntry(1);
+            {
+              TextRelay te = info.GetTextEntry(1);
 
-            if (te != null)
-              m_Response.Message = te.Text;
+              if (te != null)
+                m_Response.Message = te.Text;
 
-            PredefinedResponse.Save();
-            m_From.SendGump(new PredefGump(m_From, m_Response));
+              PredefinedResponse.Save();
+              m_From.SendGump(new PredefGump(m_From, m_Response));
 
-            break;
-          }
+              break;
+            }
         }
       }
     }
@@ -422,7 +423,7 @@ namespace Server.Engines.Help
 
   public class PageEntryGump : Gump
   {
-    private static int[] m_AccessLevelHues =
+    private static readonly int[] m_AccessLevelHues =
     {
       2100,
       2122,
@@ -433,8 +434,8 @@ namespace Server.Engines.Help
       2415
     };
 
-    private PageEntry m_Entry;
-    private Mobile m_Mobile;
+    private readonly PageEntry m_Entry;
+    private readonly Mobile m_Mobile;
 
     public PageEntryGump(Mobile m, PageEntry entry) : base(30, 30)
     {
@@ -564,217 +565,217 @@ namespace Server.Engines.Help
       switch (info.ButtonID)
       {
         case 0: // close
-        {
-          if (m_Entry.Handler != state.Mobile)
           {
-            PageQueueGump g = new PageQueueGump();
+            if (m_Entry.Handler != state.Mobile)
+            {
+              PageQueueGump g = new PageQueueGump();
 
-            g.SendTo(state);
+              g.SendTo(state);
+            }
+
+            break;
           }
-
-          break;
-        }
         case 1: // go to sender
-        {
-          Mobile m = state.Mobile;
-
-          if (m_Entry.Sender.Deleted)
           {
-            m.SendMessage("That character no longer exists.");
-          }
-          else if (m_Entry.Sender.Map == null || m_Entry.Sender.Map == Map.Internal)
-          {
-            m.SendMessage("That character is not in the world.");
-          }
-          else
-          {
-            // m_Entry.AddResponse(state.Mobile, "[Go Sender]");
-            m.MoveToWorld(m_Entry.Sender.Location, m_Entry.Sender.Map);
+            Mobile m = state.Mobile;
 
-            m.SendMessage("You have been teleported to that page's sender.");
-
-            Resend(state);
-          }
-
-          break;
-        }
-        case 2: // go to handler
-        {
-          Mobile m = state.Mobile;
-          Mobile h = m_Entry.Handler;
-
-          if (h != null)
-          {
-            if (h.Deleted)
+            if (m_Entry.Sender.Deleted)
             {
               m.SendMessage("That character no longer exists.");
             }
-            else if (h.Map == null || h.Map == Map.Internal)
+            else if (m_Entry.Sender.Map == null || m_Entry.Sender.Map == Map.Internal)
             {
               m.SendMessage("That character is not in the world.");
             }
             else
             {
-              // m_Entry.AddResponse(state.Mobile, "[Go Handler]");
-              m.MoveToWorld(h.Location, h.Map);
+              // m_Entry.AddResponse(state.Mobile, "[Go Sender]");
+              m.MoveToWorld(m_Entry.Sender.Location, m_Entry.Sender.Map);
 
-              m.SendMessage("You have been teleported to that page's handler.");
+              m.SendMessage("You have been teleported to that page's sender.");
+
               Resend(state);
             }
-          }
-          else
-          {
-            m.SendMessage("Nobody is handling that page.");
-            Resend(state);
-          }
 
-          break;
-        }
+            break;
+          }
+        case 2: // go to handler
+          {
+            Mobile m = state.Mobile;
+            Mobile h = m_Entry.Handler;
+
+            if (h != null)
+            {
+              if (h.Deleted)
+              {
+                m.SendMessage("That character no longer exists.");
+              }
+              else if (h.Map == null || h.Map == Map.Internal)
+              {
+                m.SendMessage("That character is not in the world.");
+              }
+              else
+              {
+                // m_Entry.AddResponse(state.Mobile, "[Go Handler]");
+                m.MoveToWorld(h.Location, h.Map);
+
+                m.SendMessage("You have been teleported to that page's handler.");
+                Resend(state);
+              }
+            }
+            else
+            {
+              m.SendMessage("Nobody is handling that page.");
+              Resend(state);
+            }
+
+            break;
+          }
         case 3: // go to page location
-        {
-          Mobile m = state.Mobile;
-
-          if (m_Entry.PageMap == null || m_Entry.PageMap == Map.Internal)
           {
-            m.SendMessage("That location is not in the world.");
+            Mobile m = state.Mobile;
+
+            if (m_Entry.PageMap == null || m_Entry.PageMap == Map.Internal)
+            {
+              m.SendMessage("That location is not in the world.");
+            }
+            else
+            {
+              // m_Entry.AddResponse(state.Mobile, "[Go PageLoc]");
+              m.MoveToWorld(m_Entry.PageLocation, m_Entry.PageMap);
+
+              state.Mobile.SendMessage("You have been teleported to the original page location.");
+
+              Resend(state);
+            }
+
+            break;
           }
-          else
-          {
-            // m_Entry.AddResponse(state.Mobile, "[Go PageLoc]");
-            m.MoveToWorld(m_Entry.PageLocation, m_Entry.PageMap);
-
-            state.Mobile.SendMessage("You have been teleported to the original page location.");
-
-            Resend(state);
-          }
-
-          break;
-        }
         case 4: // handle page
-        {
-          if (m_Entry.Handler == null)
           {
-            // m_Entry.AddResponse(state.Mobile, "[Handling]");
-            m_Entry.Handler = state.Mobile;
+            if (m_Entry.Handler == null)
+            {
+              // m_Entry.AddResponse(state.Mobile, "[Handling]");
+              m_Entry.Handler = state.Mobile;
 
-            state.Mobile.SendMessage("You are now handling the page.");
+              state.Mobile.SendMessage("You are now handling the page.");
+            }
+            else
+            {
+              state.Mobile.SendMessage("Someone is already handling that page.");
+            }
+
+            Resend(state);
+
+            break;
           }
-          else
-          {
-            state.Mobile.SendMessage("Someone is already handling that page.");
-          }
-
-          Resend(state);
-
-          break;
-        }
         case 5: // delete page
-        {
-          if (m_Entry.Handler == null)
           {
-            // m_Entry.AddResponse(state.Mobile, "[Deleting]");
-            PageQueue.Remove(m_Entry);
+            if (m_Entry.Handler == null)
+            {
+              // m_Entry.AddResponse(state.Mobile, "[Deleting]");
+              PageQueue.Remove(m_Entry);
 
-            state.Mobile.SendMessage("You delete the page.");
+              state.Mobile.SendMessage("You delete the page.");
 
-            PageQueueGump g = new PageQueueGump();
+              PageQueueGump g = new PageQueueGump();
 
-            g.SendTo(state);
+              g.SendTo(state);
+            }
+            else
+            {
+              state.Mobile.SendMessage("Someone is handling that page, it can not be deleted.");
+
+              Resend(state);
+            }
+
+            break;
           }
-          else
-          {
-            state.Mobile.SendMessage("Someone is handling that page, it can not be deleted.");
-
-            Resend(state);
-          }
-
-          break;
-        }
         case 6: // abandon page
-        {
-          if (m_Entry.Handler == state.Mobile)
           {
-            // m_Entry.AddResponse(state.Mobile, "[Abandoning]");
-            state.Mobile.SendMessage("You abandon the page.");
+            if (m_Entry.Handler == state.Mobile)
+            {
+              // m_Entry.AddResponse(state.Mobile, "[Abandoning]");
+              state.Mobile.SendMessage("You abandon the page.");
 
-            m_Entry.Handler = null;
-          }
-          else
-          {
-            state.Mobile.SendMessage("You are not handling that page.");
-          }
-
-          Resend(state);
-
-          break;
-        }
-        case 7: // page handled
-        {
-          if (m_Entry.Handler == state.Mobile)
-          {
-            // m_Entry.AddResponse(state.Mobile, "[Handled]");
-            PageQueue.Remove(m_Entry);
-
-            m_Entry.Handler = null;
-
-            state.Mobile.SendMessage("You mark the page as handled, and remove it from the queue.");
-
-            PageQueueGump g = new PageQueueGump();
-
-            g.SendTo(state);
-          }
-          else
-          {
-            state.Mobile.SendMessage("You are not handling that page.");
+              m_Entry.Handler = null;
+            }
+            else
+            {
+              state.Mobile.SendMessage("You are not handling that page.");
+            }
 
             Resend(state);
+
+            break;
           }
+        case 7: // page handled
+          {
+            if (m_Entry.Handler == state.Mobile)
+            {
+              // m_Entry.AddResponse(state.Mobile, "[Handled]");
+              PageQueue.Remove(m_Entry);
 
-          break;
-        }
+              m_Entry.Handler = null;
+
+              state.Mobile.SendMessage("You mark the page as handled, and remove it from the queue.");
+
+              PageQueueGump g = new PageQueueGump();
+
+              g.SendTo(state);
+            }
+            else
+            {
+              state.Mobile.SendMessage("You are not handling that page.");
+
+              Resend(state);
+            }
+
+            break;
+          }
         case 8: // Send message
-        {
-          TextRelay text = info.GetTextEntry(0);
+          {
+            TextRelay text = info.GetTextEntry(0);
 
-          if (text != null)
-            // m_Entry.AddResponse(state.Mobile, "[Response] " + text.Text);
-            m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender, state.Mobile.Name, text.Text));
-          //m_Entry.Sender.SendMessage( 0x482, "{0} tells you:", state.Mobile.Name );
-          //m_Entry.Sender.SendMessage( 0x482, text.Text );
+            if (text != null)
+              // m_Entry.AddResponse(state.Mobile, "[Response] " + text.Text);
+              m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender, state.Mobile.Name, text.Text));
+            // m_Entry.Sender.SendMessage( 0x482, "{0} tells you:", state.Mobile.Name );
+            // m_Entry.Sender.SendMessage( 0x482, text.Text );
 
-          Resend(state);
+            Resend(state);
 
-          break;
-        }
+            break;
+          }
         case 9: // predef overview
-        {
-          Resend(state);
-          state.Mobile.SendGump(new PredefGump(state.Mobile, null));
+          {
+            Resend(state);
+            state.Mobile.SendGump(new PredefGump(state.Mobile, null));
 
-          break;
-        }
+            break;
+          }
         case 10: // View Speech Log
-        {
-          Resend(state);
+          {
+            Resend(state);
 
-          if (m_Entry.SpeechLog != null) state.Mobile.SendGump(new SpeechLogGump(m_Entry.Sender, m_Entry.SpeechLog));
+            if (m_Entry.SpeechLog != null) state.Mobile.SendGump(new SpeechLogGump(m_Entry.Sender, m_Entry.SpeechLog));
 
-          break;
-        }
+            break;
+          }
         default:
-        {
-          int index = info.ButtonID - 100;
-          List<PredefinedResponse> preresp = PredefinedResponse.List;
+          {
+            int index = info.ButtonID - 100;
+            List<PredefinedResponse> preresp = PredefinedResponse.List;
 
-          if (index >= 0 && index < preresp.Count)
-            // m_Entry.AddResponse(state.Mobile, "[PreDef] " + preresp[index].Title);
-            m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender, state.Mobile.Name,
-              preresp[index].Message));
+            if (index >= 0 && index < preresp.Count)
+              // m_Entry.AddResponse(state.Mobile, "[PreDef] " + preresp[index].Title);
+              m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender, state.Mobile.Name,
+                preresp[index].Message));
 
-          Resend(state);
+            Resend(state);
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

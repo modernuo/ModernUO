@@ -31,7 +31,7 @@ namespace Server
       Count = 0;
     }
 
-    public int Count{ get; private set; }
+    public int Count { get; private set; }
 
     public Point3D Last => m_List[Count - 1];
 
@@ -46,10 +46,10 @@ namespace Server
     {
       if (Count + 1 > m_List.Length)
       {
-        Point3D[] old = m_List;
+        var old = m_List;
         m_List = new Point3D[old.Length * 2];
 
-        for (int i = 0; i < old.Length; ++i)
+        for (var i = 0; i < old.Length; ++i)
           m_List[i] = old[i];
       }
 
@@ -63,10 +63,10 @@ namespace Server
     {
       if (Count + 1 > m_List.Length)
       {
-        Point3D[] old = m_List;
+        var old = m_List;
         m_List = new Point3D[old.Length * 2];
 
-        for (int i = 0; i < old.Length; ++i)
+        for (var i = 0; i < old.Length; ++i)
           m_List[i] = old[i];
       }
 
@@ -81,9 +81,9 @@ namespace Server
       if (Count == 0)
         return m_EmptyList;
 
-      Point3D[] list = new Point3D[Count];
+      var list = new Point3D[Count];
 
-      for (int i = 0; i < Count; ++i)
+      for (var i = 0; i < Count; ++i)
         list[i] = m_List[i];
 
       Count = 0;

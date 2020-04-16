@@ -6,7 +6,7 @@ namespace Server.Items
   {
     [Constructible]
     public JackOLantern()
-      : this(1 > Utility.Random(2))
+      : this(Utility.Random(2) < 1)
     {
     }
 
@@ -16,7 +16,7 @@ namespace Server.Items
       AddComponent(new AddonComponent(5703), 0, 0, +0);
 
       int hue = 1161;
-      //( 1 > Utility.Random( 5 ) ? 2118 : 1161 );
+      // ( 1 > Utility.Random( 5 ) ? 2118 : 1161 );
 
       if (!south)
       {
@@ -63,7 +63,7 @@ namespace Server.Items
       int version = reader.ReadByte();
 
       if (version == 0)
-        Timer.DelayCall(TimeSpan.Zero, delegate
+        Timer.DelayCall(TimeSpan.Zero, () =>
         {
           for (int i = 0; i < Components.Count; ++i)
             if (Components[i] is AddonComponent ac && ac.Hue == 2118)
@@ -71,7 +71,7 @@ namespace Server.Items
         });
 
       if (version <= 1)
-        Timer.DelayCall(TimeSpan.Zero, delegate
+        Timer.DelayCall(TimeSpan.Zero, () =>
         {
           for (int i = 0; i < Components.Count; ++i)
             if (Components[i] is AddonComponent ac)

@@ -4,7 +4,7 @@ namespace Server.Spells.Sixth
 {
   public class MassCurseSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Mass Curse", "Vas Des Sanct",
       218,
       9031,
@@ -12,8 +12,7 @@ namespace Server.Spells.Sixth
       Reagent.Garlic,
       Reagent.Nightshade,
       Reagent.MandrakeRoot,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public MassCurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

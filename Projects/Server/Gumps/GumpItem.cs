@@ -63,8 +63,7 @@ namespace Server.Gumps
     }
 
     public override string Compile(NetState ns) =>
-      m_Hue == 0 ? $"{{ tilepic {m_X} {m_Y} {m_ItemID} }}" :
-        $"{{ tilepichue {m_X} {m_Y} {m_ItemID} {m_Hue} }}";
+      m_Hue == 0 ? $"{{ tilepic {m_X} {m_Y} {m_ItemID} }}" : $"{{ tilepichue {m_X} {m_Y} {m_ItemID} {m_Hue} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

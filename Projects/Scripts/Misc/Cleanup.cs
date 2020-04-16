@@ -44,8 +44,8 @@ namespace Server.Misc
               validItems.Add(item1);
 
           foreach (VendorInventory inventory in house.VendorInventories)
-          foreach (Item subItem in inventory.Items)
-            validItems.Add(subItem);
+            foreach (Item subItem in inventory.Items)
+              validItems.Add(subItem);
         }
         else if (item is BankBox box)
         {
@@ -133,11 +133,7 @@ namespace Server.Misc
                              || item is TreasureMap || item is MessageInABottle
                              || item is BaseArmor || item is BaseWeapon
                              || item is BaseClothing
-                             || item is BaseJewel && Core.AOS
-
-                             #region Champion artifacts
-
-                             || item is SkullPole
+                             || (item is BaseJewel && Core.AOS) || item is SkullPole
                              || item is EvilIdolSkull
                              || item is MonsterStatuette
                              || item is Pier
@@ -154,9 +150,6 @@ namespace Server.Misc
                              || item is WindSpirit
                              || item is DirtPatch
                              || item is Futon)
-
-        #endregion
-
         return true;
 
       return false;

@@ -9,7 +9,6 @@ namespace Server.Items
       LootType = LootType.Blessed;
     }
 
-
     public WhiteLeatherDyeTub(Serial serial)
       : base(serial)
     {

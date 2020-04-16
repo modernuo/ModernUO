@@ -29,102 +29,98 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 0:
-        {
-          GuildGump.EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+          {
+            GuildGump.EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
 
-          break;
-        }
+            break;
+          }
         case 1: // Accept
-        {
-          int[] switches = info.Switches;
-
-          if (switches.Length > 0)
           {
-            int index = switches[0];
+            int[] switches = info.Switches;
 
-            if (index >= 0 && index < m_List.Count)
+            if (switches.Length > 0)
             {
-              Mobile m = m_List[index];
+              int index = switches[0];
 
-              if (m?.Deleted == false)
+              if (index >= 0 && index < m_List.Count)
               {
-                #region Factions
+                Mobile m = m_List[index];
 
-                PlayerState guildState = PlayerState.Find(m_Guild.Leader);
-                PlayerState targetState = PlayerState.Find(m);
-
-                Faction guildFaction = guildState?.Faction;
-                Faction targetFaction = targetState?.Faction;
-
-                if (guildFaction != targetFaction)
+                if (m?.Deleted == false)
                 {
-                  if (guildFaction == null)
-                    m_Mobile.SendLocalizedMessage(
-                      1013027); // That player cannot join a non-faction guild.
-                  else if (targetFaction == null)
-                    m_Mobile.SendLocalizedMessage(
-                      1013026); // That player must be in a faction before joining this guild.
+                  PlayerState guildState = PlayerState.Find(m_Guild.Leader);
+                  PlayerState targetState = PlayerState.Find(m);
+
+                  Faction guildFaction = guildState?.Faction;
+                  Faction targetFaction = targetState?.Faction;
+
+                  if (guildFaction != targetFaction)
+                  {
+                    if (guildFaction == null)
+                      m_Mobile.SendLocalizedMessage(
+                        1013027); // That player cannot join a non-faction guild.
+                    else if (targetFaction == null)
+                      m_Mobile.SendLocalizedMessage(
+                        1013026); // That player must be in a faction before joining this guild.
+                    else
+                      m_Mobile.SendLocalizedMessage(
+                        1013028); // That person has a different faction affiliation.
+
+                    break;
+                  }
+
+                  if (targetState?.IsLeaving == true)
+                  {
+                    // OSI does this quite strangely, so we'll just do it this way
+                    m_Mobile.SendMessage(
+                      "That person is quitting their faction and so you may not recruit them.");
+                    break;
+                  }
+
+                  m_Guild.Candidates.Remove(m);
+                  m_Guild.Accepted.Add(m);
+
+                  GuildGump.EnsureClosed(m_Mobile);
+
+                  if (m_Guild.Candidates.Count > 0)
+                    m_Mobile.SendGump(new GuildAdminCandidatesGump(m_Mobile, m_Guild));
                   else
-                    m_Mobile.SendLocalizedMessage(
-                      1013028); // That person has a different faction affiliation.
-
-                  break;
+                    m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
                 }
-
-                if (targetState?.IsLeaving == true)
-                {
-                  // OSI does this quite strangely, so we'll just do it this way
-                  m_Mobile.SendMessage(
-                    "That person is quitting their faction and so you may not recruit them.");
-                  break;
-                }
-
-                #endregion
-
-                m_Guild.Candidates.Remove(m);
-                m_Guild.Accepted.Add(m);
-
-                GuildGump.EnsureClosed(m_Mobile);
-
-                if (m_Guild.Candidates.Count > 0)
-                  m_Mobile.SendGump(new GuildAdminCandidatesGump(m_Mobile, m_Guild));
-                else
-                  m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
               }
             }
-          }
 
-          break;
-        }
+            break;
+          }
         case 2: // Refuse
-        {
-          int[] switches = info.Switches;
-
-          if (switches.Length > 0)
           {
-            int index = switches[0];
+            int[] switches = info.Switches;
 
-            if (index >= 0 && index < m_List.Count)
+            if (switches.Length > 0)
             {
-              Mobile m = m_List[index];
+              int index = switches[0];
 
-              if (m?.Deleted == false)
+              if (index >= 0 && index < m_List.Count)
               {
-                m_Guild.Candidates.Remove(m);
+                Mobile m = m_List[index];
 
-                GuildGump.EnsureClosed(m_Mobile);
+                if (m?.Deleted == false)
+                {
+                  m_Guild.Candidates.Remove(m);
 
-                if (m_Guild.Candidates.Count > 0)
-                  m_Mobile.SendGump(new GuildAdminCandidatesGump(m_Mobile, m_Guild));
-                else
-                  m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                  GuildGump.EnsureClosed(m_Mobile);
+
+                  if (m_Guild.Candidates.Count > 0)
+                    m_Mobile.SendGump(new GuildAdminCandidatesGump(m_Mobile, m_Guild));
+                  else
+                    m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                }
               }
             }
-          }
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

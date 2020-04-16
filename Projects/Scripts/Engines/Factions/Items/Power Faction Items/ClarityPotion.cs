@@ -40,7 +40,7 @@ namespace Server
         from.PlaySound(0x1EE);
         from.AddStatMod(new StatMod(StatType.Int, "clarity-potion", amount, TimeSpan.FromMinutes(time)));
 
-        Timer.DelayCall(TimeSpan.FromMinutes(time), delegate { from.EndAction<ClarityPotion>(); });
+        Timer.DelayCall(TimeSpan.FromMinutes(time), from.EndAction<ClarityPotion>);
 
         return true;
       }

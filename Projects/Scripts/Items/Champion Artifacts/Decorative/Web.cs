@@ -2,7 +2,7 @@ namespace Server.Items
 {
   public class Web : Item
   {
-    private static int[] m_itemids =
+    private static readonly int[] m_itemids =
     {
       0x10d7, 0x10d8, 0x10dd
     };

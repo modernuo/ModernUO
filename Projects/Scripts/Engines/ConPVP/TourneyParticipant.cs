@@ -18,11 +18,11 @@ namespace Server.Engines.ConPVP
       Players = players;
     }
 
-    public List<Mobile> Players{ get; set; }
+    public List<Mobile> Players { get; set; }
 
-    public List<string> Log{ get; set; }
+    public List<string> Log { get; set; }
 
-    public int FreeAdvances{ get; set; }
+    public int FreeAdvances { get; set; }
 
     public int TotalLadderXP
     {

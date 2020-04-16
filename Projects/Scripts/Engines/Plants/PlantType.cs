@@ -61,7 +61,7 @@ namespace Server.Engines.Plants
 
   public class PlantTypeInfo
   {
-    private static PlantTypeInfo[] m_Table =
+    private static readonly PlantTypeInfo[] m_Table =
     {
       new PlantTypeInfo(0xC83, 0, 0, PlantType.CampionFlowers, false, true, true, true, PlantCategory.Default),
       new PlantTypeInfo(0xC86, 0, 0, PlantType.Poppies, false, true, true, true, PlantCategory.Default),
@@ -115,14 +115,14 @@ namespace Server.Engines.Plants
         1080536, 1080536, 1080534, 1080531, 1080533, 1113716)
     };
 
-    private int m_PlantLabelDecorative;
-    private int m_PlantLabelFullGrown;
-    private int m_PlantLabelPlant;
+    private readonly int m_PlantLabelDecorative;
+    private readonly int m_PlantLabelFullGrown;
+    private readonly int m_PlantLabelPlant;
 
     // Cliloc overrides
-    private int m_PlantLabelSeed;
-    private int m_SeedLabel;
-    private int m_SeedLabelPlural;
+    private readonly int m_PlantLabelSeed;
+    private readonly int m_SeedLabel;
+    private readonly int m_SeedLabelPlural;
 
     private PlantTypeInfo(int itemID, int offsetX, int offsetY, PlantType plantType, bool containsPlant, bool flowery,
       bool crossable, bool reproduces, PlantCategory plantCategory, int plantLabelSeed = -1, int plantLabelPlant = -1,
@@ -145,25 +145,25 @@ namespace Server.Engines.Plants
       m_SeedLabelPlural = seedLabelPlural;
     }
 
-    public int ItemID{ get; }
+    public int ItemID { get; }
 
-    public int OffsetX{ get; }
+    public int OffsetX { get; }
 
-    public int OffsetY{ get; }
+    public int OffsetY { get; }
 
-    public PlantType PlantType{ get; }
+    public PlantType PlantType { get; }
 
-    public PlantCategory PlantCategory{ get; }
+    public PlantCategory PlantCategory { get; }
 
     public int Name => ItemID < 0x4000 ? 1020000 + ItemID : 1078872 + ItemID;
 
-    public bool ContainsPlant{ get; }
+    public bool ContainsPlant { get; }
 
-    public bool Flowery{ get; }
+    public bool Flowery { get; }
 
-    public bool Crossable{ get; }
+    public bool Crossable { get; }
 
-    public bool Reproduces{ get; }
+    public bool Reproduces { get; }
 
     public static PlantTypeInfo GetInfo(PlantType plantType)
     {

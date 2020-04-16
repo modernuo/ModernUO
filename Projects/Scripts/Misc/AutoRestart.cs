@@ -6,13 +6,13 @@ namespace Server.Misc
   {
     public static bool Enabled; // is the script enabled?
 
-    private static TimeSpan RestartTime = TimeSpan.FromHours(2.0); // time of day at which to restart
+    private static readonly TimeSpan RestartTime = TimeSpan.FromHours(2.0); // time of day at which to restart
 
-    private static TimeSpan
+    private static readonly TimeSpan
       RestartDelay =
         TimeSpan.Zero; // how long the server should remain active before restart (period of 'server wars')
 
-    private static TimeSpan
+    private static readonly TimeSpan
       WarningDelay = TimeSpan.FromMinutes(1.0); // at what interval should the shutdown message be displayed?
 
     private static DateTime m_RestartTime;
@@ -27,7 +27,7 @@ namespace Server.Misc
         m_RestartTime += TimeSpan.FromDays(1.0);
     }
 
-    public static bool Restarting{ get; private set; }
+    public static bool Restarting { get; private set; }
 
     public static void Initialize()
     {

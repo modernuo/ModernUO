@@ -7,15 +7,14 @@ namespace Server.Spells.Necromancy
 {
   public class BloodOathSpell : NecromancerSpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Blood Oath", "In Jux Mani Xen",
       203,
       9031,
-      Reagent.DaemonBlood
-    );
+      Reagent.DaemonBlood);
 
-    private static Dictionary<Mobile, Mobile> m_OathTable = new Dictionary<Mobile, Mobile>();
-    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+    private static readonly Dictionary<Mobile, Mobile> m_OathTable = new Dictionary<Mobile, Mobile>();
+    private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     public BloodOathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -76,7 +75,7 @@ namespace Server.Spells.Necromancy
         m.FixedParticles(0x3728, 1, 13, 9502, 33, 7, (EffectLayer)255);
 
         TimeSpan duration = TimeSpan.FromSeconds((GetDamageSkill(Caster) - GetResistSkill(m)) / 8 + 8);
-        m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); //Skill check for gain
+        m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); // Skill check for gain
 
         timer = new ExpireTimer(Caster, m, duration);
         timer.Start();
@@ -97,13 +96,13 @@ namespace Server.Spells.Necromancy
       t?.DoExpire();
     }
 
-    public static Mobile GetBloodOath(Mobile m) => m == null || m_OathTable.TryGetValue(m, out Mobile oath) && oath == m ? null : oath;
+    public static Mobile GetBloodOath(Mobile m) => m == null || (m_OathTable.TryGetValue(m, out Mobile oath) && oath == m) ? null : oath;
 
     private class ExpireTimer : Timer
     {
-      private Mobile m_Caster;
-      private DateTime m_End;
-      private Mobile m_Target;
+      private readonly Mobile m_Caster;
+      private readonly DateTime m_End;
+      private readonly Mobile m_Target;
 
       public ExpireTimer(Mobile caster, Mobile target, TimeSpan delay) : base(TimeSpan.FromSeconds(1.0),
         TimeSpan.FromSeconds(1.0))

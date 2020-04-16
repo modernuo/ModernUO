@@ -81,7 +81,7 @@ namespace Server.Engines.ConPVP
           if (player.Score > 0)
             entries.Add(player);
 
-      entries.Sort(delegate(IRankedCTF a, IRankedCTF b) { return b.Score - a.Score; });
+      entries.Sort((a, b) => b.Score - a.Score);
 
       int height = 0;
 
@@ -102,7 +102,7 @@ namespace Server.Engines.ConPVP
       AddAlphaRegion(16, 15, 369, height - 29);
 
       AddImage(215, -45, 0xEE40);
-      //AddImage( 330, 141, 0x8BA );
+      // AddImage( 330, 141, 0x8BA );
 
       AddBorderedText(22, 22, 294, 20, Center("CTF Scoreboard"), LabelColor32, BlackColor32);
 
@@ -345,27 +345,27 @@ namespace Server.Engines.ConPVP
         case 3:
         case 2:
         case 1:
-        {
-          owner?.SendMessage(0x26, "You have {0} {1} to capture the cookies!", m_ReturnCount,
-            m_ReturnCount == 1 ? "second" : "seconds");
-
-          break;
-        }
-
-        case 0:
-        {
-          if (owner != null)
           {
-            owner.SendMessage(0x26, "You have taken too long to capture the cookies!");
-            owner.Kill();
+            owner?.SendMessage(0x26, "You have {0} {1} to capture the cookies!", m_ReturnCount,
+              m_ReturnCount == 1 ? "second" : "seconds");
+
+            break;
           }
 
-          SendHome();
+        case 0:
+          {
+            if (owner != null)
+            {
+              owner.SendMessage(0x26, "You have taken too long to capture the cookies!");
+              owner.Kill();
+            }
 
-          m_TeamInfo?.Game?.Alert("The {0} cookies have been returned.", m_TeamInfo.Name);
+            SendHome();
 
-          return;
-        }
+            m_TeamInfo?.Game?.Alert("The {0} cookies have been returned.", m_TeamInfo.Name);
+
+            return;
+          }
       }
 
       --m_ReturnCount;
@@ -497,10 +497,10 @@ namespace Server.Engines.ConPVP
 
   public interface IRankedCTF
   {
-    int Kills{ get; }
-    int Captures{ get; }
-    int Score{ get; }
-    string Name{ get; }
+    int Kills { get; }
+    int Captures { get; }
+    int Score { get; }
+    string Name { get; }
   }
 
   public sealed class CTFPlayerInfo : IRankedCTF
@@ -510,7 +510,7 @@ namespace Server.Engines.ConPVP
     private int m_Kills;
 
     private int m_Score;
-    private CTFTeamInfo m_TeamInfo;
+    private readonly CTFTeamInfo m_TeamInfo;
 
     public CTFPlayerInfo(CTFTeamInfo teamInfo, Mobile player)
     {
@@ -518,7 +518,7 @@ namespace Server.Engines.ConPVP
       Player = player;
     }
 
-    public Mobile Player{ get; }
+    public Mobile Player { get; }
 
     string IRankedCTF.Name => Player.Name;
 
@@ -575,38 +575,38 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 2:
-        {
-          Board = ip.ReadItem() as CTFBoard;
+          {
+            Board = ip.ReadItem() as CTFBoard;
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          Name = ip.ReadString();
+          {
+            Name = ip.ReadString();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          Color = ip.ReadEncodedInt();
+          {
+            Color = ip.ReadEncodedInt();
 
-          Flag = ip.ReadItem() as CTFFlag;
-          Origin = ip.ReadPoint3D();
-          break;
-        }
+            Flag = ip.ReadItem() as CTFFlag;
+            Origin = ip.ReadPoint3D();
+            break;
+          }
       }
     }
 
-    public CTFGame Game{ get; set; }
+    public CTFGame Game { get; set; }
 
-    public int TeamID{ get; }
+    public int TeamID { get; }
 
-    public CTFPlayerInfo Leader{ get; set; }
+    public CTFPlayerInfo Leader { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFBoard Board{ get; set; }
+    public CTFBoard Board { get; set; }
 
-    public Dictionary<Mobile, CTFPlayerInfo> Players{ get; }
+    public Dictionary<Mobile, CTFPlayerInfo> Players { get; }
 
     public CTFPlayerInfo this[Mobile mob]
     {
@@ -623,24 +623,24 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Color{ get; set; }
+    public int Color { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string Name{ get; set; }
+    public string Name { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFFlag Flag{ get; set; }
+    public CTFFlag Flag { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D Origin{ get; set; }
+    public Point3D Origin { get; set; }
 
     string IRankedCTF.Name => $"{Name} Team";
 
-    public int Kills{ get; set; }
+    public int Kills { get; set; }
 
-    public int Captures{ get; set; }
+    public int Captures { get; set; }
 
-    public int Score{ get; set; }
+    public int Score { get; set; }
 
     public void Reset()
     {
@@ -702,7 +702,7 @@ namespace Server.Engines.ConPVP
     {
     }
 
-    public CTFTeamInfo[] TeamInfo{ get; private set; }
+    public CTFTeamInfo[] TeamInfo { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public CTFTeamInfo Team1 => TeamInfo[0];
@@ -729,7 +729,7 @@ namespace Server.Engines.ConPVP
     public CTFTeamInfo Team8 => TeamInfo[7];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan Duration{ get; set; }
+    public TimeSpan Duration { get; set; }
 
     public override string Title => "CTF";
 
@@ -760,29 +760,29 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 2:
-        {
-          Duration = reader.ReadTimeSpan();
+          {
+            Duration = reader.ReadTimeSpan();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          TeamInfo = new CTFTeamInfo[reader.ReadEncodedInt()];
+          {
+            TeamInfo = new CTFTeamInfo[reader.ReadEncodedInt()];
 
-          for (int i = 0; i < TeamInfo.Length; ++i)
-            TeamInfo[i] = new CTFTeamInfo(i, reader);
+            for (int i = 0; i < TeamInfo.Length; ++i)
+              TeamInfo[i] = new CTFTeamInfo(i, reader);
 
-          break;
-        }
+            break;
+          }
         case 0:
-        {
-          TeamInfo = new CTFTeamInfo[8];
+          {
+            TeamInfo = new CTFTeamInfo[8];
 
-          for (int i = 0; i < TeamInfo.Length; ++i)
-            TeamInfo[i] = new CTFTeamInfo(i);
+            for (int i = 0; i < TeamInfo.Length; ++i)
+              TeamInfo[i] = new CTFTeamInfo(i);
 
-          break;
-        }
+            break;
+          }
       }
 
       if (version < 2)
@@ -796,7 +796,7 @@ namespace Server.Engines.ConPVP
 
     public CTFGame(CTFController controller, DuelContext context) : base(context) => Controller = controller;
 
-    public CTFController Controller{ get; }
+    public CTFController Controller { get; }
 
     public Map Facet
     {
@@ -999,7 +999,7 @@ namespace Server.Engines.ConPVP
         teams.Add(teamInfo);
       }
 
-      teams.Sort(delegate(CTFTeamInfo a, CTFTeamInfo b) { return b.Score - a.Score; });
+      teams.Sort((a, b) => b.Score - a.Score);
 
       Tournament tourney = m_Context.m_Tournament;
 
@@ -1063,7 +1063,7 @@ namespace Server.Engines.ConPVP
           if (mob == null)
             continue;
 
-          //"Red v Blue CTF Champion"
+          // "Red v Blue CTF Champion"
 
           sb = new StringBuilder();
 

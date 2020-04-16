@@ -5,11 +5,11 @@ namespace Server.Engines.ConPVP
 {
   public class PickRulesetGump : Gump
   {
-    private DuelContext m_Context;
-    private Ruleset[] m_Defaults;
-    private Ruleset[] m_Flavors;
-    private Mobile m_From;
-    private Ruleset m_Ruleset;
+    private readonly DuelContext m_Context;
+    private readonly Ruleset[] m_Defaults;
+    private readonly Ruleset[] m_Flavors;
+    private readonly Mobile m_From;
+    private readonly Ruleset m_Ruleset;
 
     public PickRulesetGump(Mobile from, DuelContext context, Ruleset ruleset) : base(50, 50)
     {
@@ -80,43 +80,43 @@ namespace Server.Engines.ConPVP
       switch (info.ButtonID)
       {
         case 0: // closed
-        {
-          if (m_Context != null)
-            m_From.SendGump(new DuelContextGump(m_From, m_Context));
-
-          break;
-        }
-        case 1: // customize
-        {
-          m_From.SendGump(new RulesetGump(m_From, m_Ruleset, m_Ruleset.Layout, m_Context));
-          break;
-        }
-        default:
-        {
-          int idx = info.ButtonID - 2;
-
-          if (idx >= 0 && idx < m_Defaults.Length)
           {
-            m_Ruleset.ApplyDefault(m_Defaults[idx]);
-            m_From.SendGump(new PickRulesetGump(m_From, m_Context, m_Ruleset));
+            if (m_Context != null)
+              m_From.SendGump(new DuelContextGump(m_From, m_Context));
+
+            break;
           }
-          else
+        case 1: // customize
           {
-            idx -= m_Defaults.Length;
+            m_From.SendGump(new RulesetGump(m_From, m_Ruleset, m_Ruleset.Layout, m_Context));
+            break;
+          }
+        default:
+          {
+            int idx = info.ButtonID - 2;
 
-            if (idx >= 0 && idx < m_Flavors.Length)
+            if (idx >= 0 && idx < m_Defaults.Length)
             {
-              if (m_Ruleset.Flavors.Contains(m_Flavors[idx]))
-                m_Ruleset.RemoveFlavor(m_Flavors[idx]);
-              else
-                m_Ruleset.AddFlavor(m_Flavors[idx]);
-
+              m_Ruleset.ApplyDefault(m_Defaults[idx]);
               m_From.SendGump(new PickRulesetGump(m_From, m_Context, m_Ruleset));
             }
-          }
+            else
+            {
+              idx -= m_Defaults.Length;
 
-          break;
-        }
+              if (idx >= 0 && idx < m_Flavors.Length)
+              {
+                if (m_Ruleset.Flavors.Contains(m_Flavors[idx]))
+                  m_Ruleset.RemoveFlavor(m_Flavors[idx]);
+                else
+                  m_Ruleset.AddFlavor(m_Flavors[idx]);
+
+                m_From.SendGump(new PickRulesetGump(m_From, m_Context, m_Ruleset));
+              }
+            }
+
+            break;
+          }
       }
     }
   }

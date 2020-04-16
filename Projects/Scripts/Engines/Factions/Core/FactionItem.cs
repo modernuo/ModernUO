@@ -4,7 +4,7 @@ namespace Server.Factions
 {
   public interface IFactionItem
   {
-    FactionItem FactionItemState{ get; set; }
+    FactionItem FactionItemState { get; set; }
   }
 
   public class FactionItem
@@ -24,21 +24,21 @@ namespace Server.Factions
       switch (version)
       {
         case 0:
-        {
-          Item = reader.ReadItem();
-          Expiration = reader.ReadDateTime();
-          break;
-        }
+          {
+            Item = reader.ReadItem();
+            Expiration = reader.ReadDateTime();
+            break;
+          }
       }
 
       Faction = faction;
     }
 
-    public Item Item{ get; }
+    public Item Item { get; }
 
-    public Faction Faction{ get; }
+    public Faction Faction { get; }
 
-    public DateTime Expiration{ get; private set; }
+    public DateTime Expiration { get; private set; }
 
     public bool HasExpired
     {

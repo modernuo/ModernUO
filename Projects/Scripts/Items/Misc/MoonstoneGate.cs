@@ -5,7 +5,7 @@ namespace Server.Items
 {
   public class MoonstoneGate : Moongate
   {
-    private Mobile m_Caster;
+    private readonly Mobile m_Caster;
 
     public MoonstoneGate(Point3D loc, Map map, Map targetMap, Mobile caster, int hue) : base(loc, targetMap)
     {
@@ -32,7 +32,7 @@ namespace Server.Items
       Party casterParty = Party.Get(m_Caster);
       Party userParty = Party.Get(m);
 
-      if (m == m_Caster || casterParty != null && userParty == casterParty)
+      if (m == m_Caster || (casterParty != null && userParty == casterParty))
         base.CheckGate(m, range);
     }
 
@@ -44,7 +44,7 @@ namespace Server.Items
       Party casterParty = Party.Get(m_Caster);
       Party userParty = Party.Get(m);
 
-      if (m == m_Caster || casterParty != null && userParty == casterParty)
+      if (m == m_Caster || (casterParty != null && userParty == casterParty))
         base.UseGate(m);
     }
 
@@ -66,7 +66,7 @@ namespace Server.Items
 
     private class InternalTimer : Timer
     {
-      private Item m_Item;
+      private readonly Item m_Item;
 
       public InternalTimer(Item item) : base(TimeSpan.FromSeconds(30.0))
       {

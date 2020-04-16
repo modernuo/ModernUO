@@ -25,20 +25,18 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Protected{ get; set; }
+    public bool Protected { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Rectangle2D Bounds{ get; set; }
+    public Rectangle2D Bounds { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Width{ get; set; }
+    public int Width { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Height{ get; set; }
+    public int Height { get; set; }
 
-    public List<Point2D> Pins{ get; } = new List<Point2D>();
-
-    #region ICraftable Members
+    public List<Point2D> Pins { get; } = new List<Point2D>();
 
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
@@ -46,8 +44,6 @@ namespace Server.Items
       CraftInit(from);
       return 1;
     }
-
-    #endregion
 
     public virtual void CraftInit(Mobile from)
     {
@@ -249,20 +245,20 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          Bounds = reader.ReadRect2D();
+          {
+            Bounds = reader.ReadRect2D();
 
-          Width = reader.ReadInt();
-          Height = reader.ReadInt();
+            Width = reader.ReadInt();
+            Height = reader.ReadInt();
 
-          Protected = reader.ReadBool();
+            Protected = reader.ReadBool();
 
-          int count = reader.ReadInt();
-          for (int i = 0; i < count; i++)
-            Pins.Add(reader.ReadPoint2D());
+            int count = reader.ReadInt();
+            for (int i = 0; i < count; i++)
+              Pins.Add(reader.ReadPoint2D());
 
-          break;
-        }
+            break;
+          }
       }
     }
 

@@ -105,7 +105,7 @@ namespace Server.Items
 
     private class InternalTimer : Timer
     {
-      private AwesomeDisturbingPortraitComponent m_Component;
+      private readonly AwesomeDisturbingPortraitComponent m_Component;
 
       public InternalTimer(AwesomeDisturbingPortraitComponent c, TimeSpan delay) : base(delay,
         TimeSpan.FromMinutes(10))

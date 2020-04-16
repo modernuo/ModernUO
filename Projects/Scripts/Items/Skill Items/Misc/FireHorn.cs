@@ -89,14 +89,13 @@ namespace Server.Items
       List<Mobile> targets = eable.Where(m =>
       {
         if (from == m || !SpellHelper.ValidIndirectTarget(from, m) || !from.CanBeHarmful(m, false)
-            || Core.AOS && !from.InLOS(m))
+            || (Core.AOS && !from.InLOS(m)))
           return false;
 
         if (m.Player)
           playerVsPlayer = true;
 
         return true;
-
       }).ToList();
 
       eable.Free();
@@ -194,7 +193,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private FireHorn m_Horn;
+      private readonly FireHorn m_Horn;
 
       public InternalTarget(FireHorn horn) : base(Core.AOS ? 3 : 2, true, TargetFlags.Harmful) => m_Horn = horn;
 

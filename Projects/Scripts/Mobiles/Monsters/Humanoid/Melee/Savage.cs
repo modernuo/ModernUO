@@ -35,18 +35,18 @@ namespace Server.Mobiles
 
       PackItem(new Bandage(Utility.RandomMinMax(1, 15)));
 
-      if (Female && 0.1 > Utility.RandomDouble())
+      if (Female && Utility.RandomDouble() < 0.1)
         PackItem(new TribalBerry());
-      else if (!Female && 0.1 > Utility.RandomDouble())
+      else if (!Female && Utility.RandomDouble() < 0.1)
         PackItem(new BolaBall());
 
       AddItem(new Spear());
       AddItem(new BoneArms());
       AddItem(new BoneLegs());
 
-      if (0.5 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.5)
         AddItem(new SavageMask());
-      else if (0.1 > Utility.RandomDouble())
+      else if (Utility.RandomDouble() < 0.1)
         AddItem(new OrcishKinMask());
     }
 

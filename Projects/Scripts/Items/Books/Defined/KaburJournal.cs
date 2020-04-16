@@ -2,11 +2,9 @@ namespace Server.Items
 {
   public class KaburJournal : RedBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Journal", "Kabur",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "The campaign to slaughter",
         "the Meer goes well.",
         "Although they seem to",
@@ -14,10 +12,8 @@ namespace Server.Items
         "ours at every turn, we",
         "still defeat them in",
         "combat.  Spies of the",
-        "Meer have been found and"
-      ),
-      new BookPageInfo
-      (
+        "Meer have been found and"),
+      new BookPageInfo(
         "slain outside of the",
         "fortress of ours.  The",
         "fools underestimate us.",
@@ -25,10 +21,8 @@ namespace Server.Items
         "Lord Exodus behind us.",
         "Soon they will learn to",
         "serve the Juka and I",
-        "shall carry the head of"
-      ),
-      new BookPageInfo
-      (
+        "shall carry the head of"),
+      new BookPageInfo(
         "the wench, Dasha, on a",
         "spike for all the warriors",
         "of ours to share triumph",
@@ -36,10 +30,8 @@ namespace Server.Items
         "",
         "One of the warriors of",
         "the Juka died today.",
-        "During the training"
-      ),
-      new BookPageInfo
-      (
+        "During the training"),
+      new BookPageInfo(
         "exercises of ours he",
         "spoke out in favor of",
         "the warriors of the",
@@ -47,10 +39,8 @@ namespace Server.Items
         "were indeed powerful and",
         "would provide a challenge",
         "to the Juka.  A Juka in",
-        "fear is no Juka.  I gave"
-      ),
-      new BookPageInfo
-      (
+        "fear is no Juka.  I gave"),
+      new BookPageInfo(
         "him the death of a",
         "coward, outside of battle.",
         "",
@@ -58,10 +48,8 @@ namespace Server.Items
         "have been found around",
         "the fortress of ours.",
         "Many have been seen and",
-        "escaped the wrath of the"
-      ),
-      new BookPageInfo
-      (
+        "escaped the wrath of the"),
+      new BookPageInfo(
         "warriors of ours.  Those",
         "who have been captured",
         "and tortured have",
@@ -69,10 +57,8 @@ namespace Server.Items
         "even when subjected to",
         "the spells of the females.",
         " I know the Meer must",
-        "have plans against us if"
-      ),
-      new BookPageInfo
-      (
+        "have plans against us if"),
+      new BookPageInfo(
         "they send so many spies.",
         " I may send the troops",
         "of the Juka to invade",
@@ -80,10 +66,8 @@ namespace Server.Items
         "warning.",
         "",
         "I have met Dasha in",
-        "battle this day.  The"
-      ),
-      new BookPageInfo
-      (
+        "battle this day.  The"),
+      new BookPageInfo(
         "efforts of hers to draw",
         "me into a Black Duel",
         "were foolish.   Had we",
@@ -91,10 +75,8 @@ namespace Server.Items
         "the cave I would have",
         "ended the life of hers",
         "but I will have to wait",
-        "for another battle.  Lord"
-      ),
-      new BookPageInfo
-      (
+        "for another battle.  Lord"),
+      new BookPageInfo(
         "Exodus has ordered more",
         "patrols around the",
         "fortress of ours.  If",
@@ -102,10 +84,8 @@ namespace Server.Items
         "the Meer will strike soon.",
         "",
         "More Meer stand outside",
-        "of the fortress of ours"
-      ),
-      new BookPageInfo
-      (
+        "of the fortress of ours"),
+      new BookPageInfo(
         "than I have ever seen at",
         "once.  They must seek",
         "vengeance for the",
@@ -113,10 +93,8 @@ namespace Server.Items
         "forest.  Many Juka stand",
         "ready at the base of the",
         "mountain to face the",
-        "forces of theirs but"
-      ),
-      new BookPageInfo
-      (
+        "forces of theirs but"),
+      new BookPageInfo(
         "today may be the final",
         "battle.  Exodus has",
         "summoned me, I must",
@@ -124,10 +102,8 @@ namespace Server.Items
         "",
         "Dusk has passed and the",
         "Juka now live in a new",
-        "age, a later time.  I have"
-      ),
-      new BookPageInfo
-      (
+        "age, a later time.  I have"),
+      new BookPageInfo(
         "just returned from",
         "exploring the new world",
         "that surrounds the",
@@ -135,10 +111,8 @@ namespace Server.Items
         "During the attack of the",
         "Meer the madman",
         "Adranath tried to destroy",
-        "the fortress of ours"
-      ),
-      new BookPageInfo
-      (
+        "the fortress of ours"),
+      new BookPageInfo(
         "with great magic.  At",
         "once he was still and",
         "light surrounded the",
@@ -146,10 +120,8 @@ namespace Server.Items
         "faded from view.  When I",
         "regained the senses of",
         "mine I saw no sign of",
-        "the Meer but Dasha."
-      ),
-      new BookPageInfo
-      (
+        "the Meer but Dasha."),
+      new BookPageInfo(
         "She has not been found",
         "since this new being,",
         "Blackthorn, blasted her",
@@ -157,10 +129,8 @@ namespace Server.Items
         "fortress.",
         "The forest was gone, now",
         "replaced by grasslands.",
-        "In the far distance I"
-      ),
-      new BookPageInfo
-      (
+        "In the far distance I"),
+      new BookPageInfo(
         "could see humans that",
         "had covered the bodies of",
         "theirs in marks.  Even",
@@ -168,10 +138,8 @@ namespace Server.Items
         "place.  Exodus has",
         "explained to me that the",
         "Juka and the fortress of",
-        "ours have been pulled"
-      ),
-      new BookPageInfo
-      (
+        "ours have been pulled"),
+      new BookPageInfo(
         "forward in time.  The",
         "world we knew is now",
         "thousands of years in the",
@@ -179,20 +147,16 @@ namespace Server.Items
         "he has has saved the",
         "Juka from extinction.  I",
         "do not want to believe",
-        "him.  I asked this"
-      ),
-      new BookPageInfo
-      (
+        "him.  I asked this"),
+      new BookPageInfo(
         "stranger about the Meer,",
         "but he tells me a new",
         "enemy remains to be",
         "destroyed.  It seems the",
         "enemies of ours have",
         "passed away to dust like",
-        "the forest."
-      ),
-      new BookPageInfo
-      (
+        "the forest."),
+      new BookPageInfo(
         "I have spoken with other",
         "Juka and I suspect I have",
         "been told the truth.  All",
@@ -200,10 +164,8 @@ namespace Server.Items
         "dreams.  In the dreams",
         "of ours the Meer invaded",
         "the fortress of ours and",
-        "a great battle took place."
-      ),
-      new BookPageInfo
-      (
+        "a great battle took place."),
+      new BookPageInfo(
         " All the Juka and all the",
         "Meer perished and the",
         "fortress was destroyed",
@@ -211,10 +173,8 @@ namespace Server.Items
         "would not like to believe",
         "that the Meer could ever",
         "destroy us, but now it",
-        "seems we have seen a"
-      ),
-      new BookPageInfo
-      (
+        "seems we have seen a"),
+      new BookPageInfo(
         "vision of the fate of",
         "ours now lost in time.  I",
         "must now wonder if the",
@@ -222,9 +182,7 @@ namespace Server.Items
         "battle with the Juka, how",
         "did they die?  And more",
         "importantly, where is",
-        "Dasha?"
-      )
-    );
+        "Dasha?"));
 
     [Constructible]
     public KaburJournal() : base(false)

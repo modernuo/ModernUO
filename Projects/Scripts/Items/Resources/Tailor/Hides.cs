@@ -61,17 +61,17 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Resource = (CraftResource)reader.ReadInt();
-          break;
-        }
+          {
+            m_Resource = (CraftResource)reader.ReadInt();
+            break;
+          }
         case 0:
-        {
-          OreInfo info = new OreInfo(reader.ReadInt(), reader.ReadInt(), reader.ReadString());
+          {
+            OreInfo info = new OreInfo(reader.ReadInt(), reader.ReadInt(), reader.ReadString());
 
-          m_Resource = CraftResources.GetFromOreInfo(info);
-          break;
-        }
+            m_Resource = CraftResources.GetFromOreInfo(info);
+            break;
+          }
       }
     }
 

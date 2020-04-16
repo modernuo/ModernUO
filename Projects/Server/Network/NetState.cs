@@ -22,7 +22,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Pipelines;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -202,11 +201,11 @@ namespace Server.Network
 
     public void ValidateAllTrades()
     {
-      for (int i = Trades.Count - 1; i >= 0; --i)
+      for (var i = Trades.Count - 1; i >= 0; --i)
       {
         if (i >= Trades.Count) continue;
 
-        SecureTrade trade = Trades[i];
+        var trade = Trades[i];
 
         if (trade.From.Mobile.Deleted || trade.To.Mobile.Deleted || !trade.From.Mobile.Alive ||
             !trade.To.Mobile.Alive || !trade.From.Mobile.InRange(trade.To.Mobile, 2) ||
@@ -216,7 +215,7 @@ namespace Server.Network
 
     public void CancelAllTrades()
     {
-      for (int i = Trades.Count - 1; i >= 0; --i)
+      for (var i = Trades.Count - 1; i >= 0; --i)
         if (i < Trades.Count)
           Trades[i].Cancel();
     }
@@ -228,9 +227,9 @@ namespace Server.Network
 
     public SecureTrade FindTrade(Mobile m)
     {
-      for (int i = 0; i < Trades.Count; ++i)
+      for (var i = 0; i < Trades.Count; ++i)
       {
-        SecureTrade trade = Trades[i];
+        var trade = Trades[i];
 
         if (trade.From.Mobile == m || trade.To.Mobile == m) return trade;
       }
@@ -240,12 +239,12 @@ namespace Server.Network
 
     public SecureTradeContainer FindTradeContainer(Mobile m)
     {
-      for (int i = 0; i < Trades.Count; ++i)
+      for (var i = 0; i < Trades.Count; ++i)
       {
-        SecureTrade trade = Trades[i];
+        var trade = Trades[i];
 
-        SecureTradeInfo from = trade.From;
-        SecureTradeInfo to = trade.To;
+        var from = trade.From;
+        var to = trade.To;
 
         if (from.Mobile == Mobile && to.Mobile == m) return from.Container;
 
@@ -257,7 +256,7 @@ namespace Server.Network
 
     public SecureTradeContainer AddTrade(NetState state)
     {
-      SecureTrade newTrade = new SecureTrade(Mobile, state.Mobile);
+      var newTrade = new SecureTrade(Mobile, state.Mobile);
 
       Trades.Add(newTrade);
       state.Trades.Add(newTrade);
@@ -300,7 +299,9 @@ namespace Server.Network
       Menus ??= new List<IMenu>();
 
       if (Menus.Count < MenuCap)
+      {
         Menus.Add(menu);
+      }
       else
       {
         WriteConsole("Exceeded menu cap, disconnecting...");
@@ -328,7 +329,9 @@ namespace Server.Network
       HuePickers ??= new List<HuePicker>();
 
       if (HuePickers.Count < HuePickerCap)
+      {
         HuePickers.Add(huePicker);
+      }
       else
       {
         WriteConsole("Exceeded hue picker cap, disconnecting...");
@@ -356,7 +359,9 @@ namespace Server.Network
       Gumps ??= new List<Gump>();
 
       if (Gumps.Count < GumpCap)
+      {
         Gumps.Add(gump);
+      }
       else
       {
         WriteConsole("Exceeded gump cap, disconnecting...");
@@ -394,6 +399,7 @@ namespace Server.Network
     public IAccount Account { get; set; }
 
     public override string ToString() => m_ToString;
+
     public NetState(ConnectionContext connection)
 
     {
@@ -443,13 +449,13 @@ namespace Server.Network
 
       try
       {
-        //TODO: Rented memory
-        ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out int length);
+        // TODO: Rented memory
+        ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out var length);
 
         if (buffer.Length > 0 && length > 0)
           try
           {
-            FlushResult result = await outPipe.WriteAsync(buffer.Slice(0, length));
+            var result = await outPipe.WriteAsync(buffer.Slice(0, length));
 
             if (result.IsCanceled || result.IsCompleted)
             {
@@ -491,8 +497,7 @@ namespace Server.Network
     }
 
     public PacketHandler GetHandler(int packetID) =>
-      ContainerGridLines ? PacketHandlers.Get6017Handler(packetID) :
-        PacketHandlers.GetHandler(packetID);
+      ContainerGridLines ? PacketHandlers.Get6017Handler(packetID) : PacketHandlers.GetHandler(packetID);
 
     public static void TraceException(Exception ex)
     {
@@ -501,7 +506,7 @@ namespace Server.Network
 
       try
       {
-        using StreamWriter op = new StreamWriter("network-errors.log", true);
+        using var op = new StreamWriter("network-errors.log", true);
         op.WriteLine("# {0}", DateTime.UtcNow);
 
         op.WriteLine(ex);
@@ -523,7 +528,7 @@ namespace Server.Network
 
     public virtual void Dispose()
     {
-      int disposing = Interlocked.Exchange(ref m_Disposing, 1);
+      var disposing = Interlocked.Exchange(ref m_Disposing, 1);
       if (disposing == 1)
         return;
 
@@ -545,15 +550,15 @@ namespace Server.Network
 
     public static void ProcessDisposedQueue()
     {
-      int breakout = 0;
+      var breakout = 0;
 
       while (breakout++ < 200)
       {
-        if (!m_Disposed.TryDequeue(out NetState ns))
+        if (!m_Disposed.TryDequeue(out var ns))
           break;
 
-        Mobile m = ns.Mobile;
-        IAccount a = ns.Account;
+        var m = ns.Mobile;
+        var a = ns.Account;
 
         if (m != null)
         {
@@ -579,11 +584,11 @@ namespace Server.Network
     {
       get
       {
-        for (int i = ExpansionInfo.Table.Length - 1; i >= 0; i--)
+        for (var i = ExpansionInfo.Table.Length - 1; i >= 0; i--)
         {
-          ExpansionInfo info = ExpansionInfo.Table[i];
+          var info = ExpansionInfo.Table[i];
 
-          if (info.RequiredClient != null && Version >= info.RequiredClient || (Flags & info.ClientFlags) != 0)
+          if ((info.RequiredClient != null && Version >= info.RequiredClient) || (Flags & info.ClientFlags) != 0)
             return info;
         }
 
@@ -597,13 +602,14 @@ namespace Server.Network
 
     public bool SupportsExpansion(ExpansionInfo info, bool checkCoreExpansion = true)
     {
-      if (info == null || checkCoreExpansion && (int)Core.Expansion < info.ID)
+      if (info == null || (checkCoreExpansion && (int)Core.Expansion < info.ID))
         return false;
 
       return info.RequiredClient != null ? Version >= info.RequiredClient : (Flags & info.ClientFlags) != 0;
     }
 
-    public bool SupportsExpansion(Expansion ex, bool checkCoreExpansion = true) => SupportsExpansion(ExpansionInfo.GetInfo(ex), checkCoreExpansion);
+    public bool SupportsExpansion(Expansion ex, bool checkCoreExpansion = true) =>
+      SupportsExpansion(ExpansionInfo.GetInfo(ex), checkCoreExpansion);
 
     public int CompareTo(NetState other) => other == null ? 1 : m_ToString.CompareTo(other.m_ToString);
   }

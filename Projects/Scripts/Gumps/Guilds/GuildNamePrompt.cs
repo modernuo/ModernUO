@@ -5,8 +5,8 @@ namespace Server.Gumps
 {
   public class GuildNamePrompt : Prompt
   {
-    private Guild m_Guild;
-    private Mobile m_Mobile;
+    private readonly Guild m_Guild;
+    private readonly Mobile m_Mobile;
 
     public GuildNamePrompt(Mobile m, Guild g)
     {

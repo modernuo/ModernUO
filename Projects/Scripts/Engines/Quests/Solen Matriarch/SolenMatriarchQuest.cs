@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Matriarch
 {
   public class SolenMatriarchQuest : QuestSystem
   {
-    private static Type[] m_TypeReferenceTable =
+    private static readonly Type[] m_TypeReferenceTable =
     {
       typeof(DontOfferConversation),
       typeof(AcceptConversation),
@@ -74,7 +74,7 @@ namespace Server.Engines.Quests.Matriarch
 
     public override int Picture => 0x15C9;
 
-    public bool RedSolen{ get; private set; }
+    public bool RedSolen { get; private set; }
 
     public override void ChildDeserialize(IGenericReader reader)
     {

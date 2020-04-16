@@ -16,7 +16,7 @@ namespace Server.Items
     {
     }
 
-    public override int LabelNumber => 1073381; //Mace And Shield Reading Glasses
+    public override int LabelNumber => 1073381; // Mace And Shield Reading Glasses
 
     public override int BasePhysicalResistance => 25;
     public override int BaseFireResistance => 10;

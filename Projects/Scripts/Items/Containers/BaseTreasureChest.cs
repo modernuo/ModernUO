@@ -32,13 +32,13 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TreasureLevel Level{ get; set; }
+    public TreasureLevel Level { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public short MaxSpawnTime{ get; set; } = 60;
+    public short MaxSpawnTime { get; set; } = 60;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public short MinSpawnTime{ get; set; } = 10;
+    public short MinSpawnTime { get; set; } = 10;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public override bool Locked
@@ -97,12 +97,12 @@ namespace Server.Items
     {
       RequiredSkill = Level switch
       {
-        TreasureLevel.Level1 => (LockLevel = 5),
-        TreasureLevel.Level2 => (LockLevel = 20),
-        TreasureLevel.Level3 => (LockLevel = 50),
-        TreasureLevel.Level4 => (LockLevel = 70),
-        TreasureLevel.Level5 => (LockLevel = 90),
-        TreasureLevel.Level6 => (LockLevel = 100),
+        TreasureLevel.Level1 => LockLevel = 5,
+        TreasureLevel.Level2 => LockLevel = 20,
+        TreasureLevel.Level3 => LockLevel = 50,
+        TreasureLevel.Level4 => LockLevel = 70,
+        TreasureLevel.Level5 => LockLevel = 90,
+        TreasureLevel.Level6 => LockLevel = 100,
         _ => RequiredSkill
       };
     }
@@ -178,7 +178,7 @@ namespace Server.Items
 
     private class TreasureResetTimer : Timer
     {
-      private BaseTreasureChest m_Chest;
+      private readonly BaseTreasureChest m_Chest;
 
       public TreasureResetTimer(BaseTreasureChest chest) : base(
         TimeSpan.FromMinutes(Utility.Random(chest.MinSpawnTime, chest.MaxSpawnTime)))

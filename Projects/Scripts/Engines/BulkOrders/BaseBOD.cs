@@ -12,9 +12,9 @@ namespace Server.Engines.BulkOrders
     {
       double random = Utility.RandomDouble();
 
-      for ( int i = 0; i < chances.Length; ++i )
+      for (int i = 0; i < chances.Length; ++i)
       {
-        if ( random < chances[i] )
+        if (random < chances[i])
           return i == 0 ? BulkMaterialType.None : start + (i - 1);
 
         random -= chances[i];
@@ -41,30 +41,30 @@ namespace Server.Engines.BulkOrders
     {
     }
 
-    public abstract bool Complete{ get; }
+    public abstract bool Complete { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public sealed override int Hue{ get; set; }
+    public sealed override int Hue { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int AmountMax
     {
       get => m_AmountMax;
-      set{ m_AmountMax = value; InvalidateProperties(); }
+      set { m_AmountMax = value; InvalidateProperties(); }
     }
 
-    [CommandProperty( AccessLevel.GameMaster )]
+    [CommandProperty(AccessLevel.GameMaster)]
     public bool RequireExceptional
     {
       get => m_RequireExceptional;
-      set{ m_RequireExceptional = value; InvalidateProperties(); }
+      set { m_RequireExceptional = value; InvalidateProperties(); }
     }
 
-    [CommandProperty( AccessLevel.GameMaster )]
+    [CommandProperty(AccessLevel.GameMaster)]
     public BulkMaterialType Material
     {
       get => m_Material;
-      set{ m_Material = value; InvalidateProperties(); }
+      set { m_Material = value; InvalidateProperties(); }
     }
 
     public abstract RewardGroup GetRewardGroup();
@@ -118,35 +118,35 @@ namespace Server.Engines.BulkOrders
         from.Target = new BODTarget(this);
     }
 
-    public override void Serialize(IGenericWriter writer )
+    public override void Serialize(IGenericWriter writer)
     {
-      base.Serialize( writer );
+      base.Serialize(writer);
 
-      writer.WriteEncodedInt( 0 ); // version
+      writer.WriteEncodedInt(0); // version
 
-      writer.Write( m_AmountMax );
-      writer.Write( m_RequireExceptional );
-      writer.Write( (int) m_Material );
+      writer.Write(m_AmountMax);
+      writer.Write(m_RequireExceptional);
+      writer.Write((int)m_Material);
     }
 
-    public override void Deserialize( IGenericReader reader )
+    public override void Deserialize(IGenericReader reader)
     {
-      base.Deserialize( reader );
+      base.Deserialize(reader);
 
       int version = reader.ReadEncodedInt();
 
-      switch ( version )
+      switch (version)
       {
         case 0:
-        {
-          m_AmountMax = reader.ReadInt();
-          m_RequireExceptional = reader.ReadBool();
-          m_Material = (BulkMaterialType)reader.ReadInt();
-          break;
-        }
+          {
+            m_AmountMax = reader.ReadInt();
+            m_RequireExceptional = reader.ReadBool();
+            m_Material = (BulkMaterialType)reader.ReadInt();
+            break;
+          }
       }
 
-      if ( Parent == null && Map == Map.Internal && Location == Point3D.Zero )
+      if (Parent == null && Map == Map.Internal && Location == Point3D.Zero)
         Delete();
     }
   }

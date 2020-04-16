@@ -147,10 +147,10 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Title = reader.ReadString();
-          break;
-        }
+          {
+            m_Title = reader.ReadString();
+            break;
+          }
       }
 
       Utility.Intern(ref m_Title);

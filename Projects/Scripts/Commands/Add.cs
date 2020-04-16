@@ -9,20 +9,20 @@ namespace Server.Commands
 {
   public class Add
   {
-    private static Type m_EntityType = typeof(IEntity);
+    private static readonly Type m_EntityType = typeof(IEntity);
 
-    private static Type m_ConstructibleType = typeof(ConstructibleAttribute);
+    private static readonly Type m_ConstructibleType = typeof(ConstructibleAttribute);
 
-    private static Type m_EnumType = typeof(Enum);
+    private static readonly Type m_EnumType = typeof(Enum);
 
-    private static Type m_TypeType = typeof(Type);
+    private static readonly Type m_TypeType = typeof(Type);
 
-    private static Type m_ParsableType = typeof(ParsableAttribute);
+    private static readonly Type m_ParsableType = typeof(ParsableAttribute);
 
-    private static Type[] m_ParseTypes = { typeof(string) };
-    private static object[] m_ParseArgs = new object[1];
+    private static readonly Type[] m_ParseTypes = { typeof(string) };
+    private static readonly object[] m_ParseArgs = new object[1];
 
-    private static Type[] m_SignedNumerics =
+    private static readonly Type[] m_SignedNumerics =
     {
       typeof(long),
       typeof(int),
@@ -30,7 +30,7 @@ namespace Server.Commands
       typeof(sbyte)
     };
 
-    private static Type[] m_UnsignedNumerics =
+    private static readonly Type[] m_UnsignedNumerics =
     {
       typeof(ulong),
       typeof(uint),
@@ -198,7 +198,6 @@ namespace Server.Commands
           if (!paramList[j].HasDefaultValue)
             totalParams += 1;
 
-
         if (args.Length >= totalParams && args.Length <= paramList.Length)
         {
           object[] paramValues = ParseValues(paramList, args);
@@ -348,23 +347,23 @@ namespace Server.Commands
           int z = start.Z;
 
           for (int x = start.X; x <= end.X; ++x)
-          for (int y = start.Y; y <= end.Y; ++y)
-          {
-            if (outline && x != start.X && x != end.X && y != start.Y && y != end.Y)
-              continue;
+            for (int y = start.Y; y <= end.Y; ++y)
+            {
+              if (outline && x != start.X && x != end.X && y != start.Y && y != end.Y)
+                continue;
 
-            if (mapAvg)
-              z = map.GetAverageZ(x, y);
+              if (mapAvg)
+                z = map.GetAverageZ(x, y);
 
-            IEntity built = Build(from, ctor, values, props, realProps, ref sendError);
+              IEntity built = Build(from, ctor, values, props, realProps, ref sendError);
 
-            sb.AppendFormat("0x{0:X}; ", built.Serial.Value);
+              sb.AppendFormat("0x{0:X}; ", built.Serial.Value);
 
-            if (built is Item item)
-              item.MoveToWorld(new Point3D(x, y, z), map);
-            else if (built is Mobile m)
-              m.MoveToWorld(new Point3D(x, y, z), map);
-          }
+              if (built is Item item)
+                item.MoveToWorld(new Point3D(x, y, z), map);
+              else if (built is Mobile m)
+                m.MoveToWorld(new Point3D(x, y, z), map);
+            }
         }
 
         CommandLogging.WriteLine(from, sb.ToString());
@@ -433,15 +432,15 @@ namespace Server.Commands
       switch (ts.m_ZType)
       {
         case TileZType.Fixed:
-        {
-          start.Z = end.Z = ts.m_FixedZ;
-          break;
-        }
+          {
+            start.Z = end.Z = ts.m_FixedZ;
+            break;
+          }
         case TileZType.MapAverage:
-        {
-          mapAvg = true;
-          break;
-        }
+          {
+            mapAvg = true;
+            break;
+          }
       }
 
       Invoke(from, start, end, ts.m_Args, null, ts.m_Outline, mapAvg);
@@ -667,10 +666,10 @@ namespace Server.Commands
 
     private class TileState
     {
-      public string[] m_Args;
-      public int m_FixedZ;
-      public bool m_Outline;
-      public TileZType m_ZType;
+      public readonly string[] m_Args;
+      public readonly int m_FixedZ;
+      public readonly bool m_Outline;
+      public readonly TileZType m_ZType;
 
       public TileState(TileZType zType, int fixedZ, string[] args, bool outline)
       {

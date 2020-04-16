@@ -155,15 +155,15 @@ namespace Server.Multis
       switch (version)
       {
         case 0:
-        {
-          m_Items = reader.ReadStrongItemList();
-          m_Mobiles = reader.ReadStrongMobileList();
-          m_DecayTime = reader.ReadDeltaTime();
+          {
+            m_Items = reader.ReadStrongItemList();
+            m_Mobiles = reader.ReadStrongMobileList();
+            m_DecayTime = reader.ReadDeltaTime();
 
-          RefreshDecay(false);
+            RefreshDecay(false);
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

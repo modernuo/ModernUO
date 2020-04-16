@@ -5,8 +5,9 @@ namespace Server.Gumps
 {
   public class HouseTransferGump : Gump
   {
-    private Mobile m_From, m_To;
-    private BaseHouse m_House;
+    private readonly Mobile m_From;
+    private readonly Mobile m_To;
+    private readonly BaseHouse m_House;
 
     public HouseTransferGump(Mobile from, Mobile to, BaseHouse house) : base(110, 100)
     {

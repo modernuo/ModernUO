@@ -17,7 +17,7 @@ namespace Server.Items
     [Constructible]
     public Firebomb(int itemID = 0x99B) : base(itemID)
     {
-      //Name = "a firebomb";
+      // Name = "a firebomb";
       Weight = 2.0;
       Hue = 1260;
     }
@@ -90,64 +90,64 @@ namespace Server.Items
         case 0:
         case 1:
         case 2:
-        {
-          ++m_Ticks;
+          {
+            ++m_Ticks;
 
-          if (HeldBy != null)
-            HeldBy.PublicOverheadMessage(MessageType.Regular, 957, false, m_Ticks.ToString());
-          else if (RootParent == null)
-            PublicOverheadMessage(MessageType.Regular, 957, false, m_Ticks.ToString());
-          else if (RootParent is Mobile mobile)
-            mobile.PublicOverheadMessage(MessageType.Regular, 957, false, m_Ticks.ToString());
+            if (HeldBy != null)
+              HeldBy.PublicOverheadMessage(MessageType.Regular, 957, false, m_Ticks.ToString());
+            else if (RootParent == null)
+              PublicOverheadMessage(MessageType.Regular, 957, false, m_Ticks.ToString());
+            else if (RootParent is Mobile mobile)
+              mobile.PublicOverheadMessage(MessageType.Regular, 957, false, m_Ticks.ToString());
 
-          break;
-        }
+            break;
+          }
         default:
-        {
-          HeldBy?.DropHolding();
-
-          if (m_Users != null)
           {
-            foreach (Mobile m in m_Users)
-              if (m.Target is ThrowTarget targ && targ.Bomb == this)
-                Target.Cancel(m);
+            HeldBy?.DropHolding();
 
-            m_Users.Clear();
-            m_Users = null;
-          }
-
-          if (RootParent is Mobile parent)
-          {
-            parent.SendLocalizedMessage(1060583); // The firebomb explodes in your hand!
-            AOS.Damage(parent, Utility.Random(3) + 4, 0, 100, 0, 0, 0);
-          }
-          else if (RootParent == null)
-          {
-            IPooledEnumerable<Mobile> eable = Map.GetMobilesInRange(Location, 1);
-            List<Mobile> toDamage = eable.ToList();
-
-            eable.Free();
-
-            for (int i = 0; i < toDamage.Count; ++i)
+            if (m_Users != null)
             {
-              Mobile victim = toDamage[i];
+              foreach (Mobile m in m_Users)
+                if (m.Target is ThrowTarget targ && targ.Bomb == this)
+                  Target.Cancel(m);
 
-              if (m_LitBy == null || SpellHelper.ValidIndirectTarget(m_LitBy, victim) &&
-                  m_LitBy.CanBeHarmful(victim, false))
-              {
-                m_LitBy?.DoHarmful(victim);
-
-                AOS.Damage(victim, m_LitBy, Utility.Random(3) + 4, 0, 100, 0, 0, 0);
-              }
+              m_Users.Clear();
+              m_Users = null;
             }
 
-            new FirebombField(m_LitBy, toDamage).MoveToWorld(Location, Map);
-          }
+            if (RootParent is Mobile parent)
+            {
+              parent.SendLocalizedMessage(1060583); // The firebomb explodes in your hand!
+              AOS.Damage(parent, Utility.Random(3) + 4, 0, 100, 0, 0, 0);
+            }
+            else if (RootParent == null)
+            {
+              IPooledEnumerable<Mobile> eable = Map.GetMobilesInRange(Location, 1);
+              List<Mobile> toDamage = eable.ToList();
 
-          m_Timer.Stop();
-          Delete();
-          break;
-        }
+              eable.Free();
+
+              for (int i = 0; i < toDamage.Count; ++i)
+              {
+                Mobile victim = toDamage[i];
+
+                if (m_LitBy == null || (SpellHelper.ValidIndirectTarget(m_LitBy, victim) &&
+                    m_LitBy.CanBeHarmful(victim, false)))
+                {
+                  m_LitBy?.DoHarmful(victim);
+
+                  AOS.Damage(victim, m_LitBy, Utility.Random(3) + 4, 0, 100, 0, 0, 0);
+                }
+              }
+
+              new FirebombField(m_LitBy, toDamage).MoveToWorld(Location, Map);
+            }
+
+            m_Timer.Stop();
+            Delete();
+            break;
+          }
       }
     }
 
@@ -185,7 +185,7 @@ namespace Server.Items
         : base(12, true, TargetFlags.None) =>
         Bomb = bomb;
 
-      public Firebomb Bomb{ get; }
+      public Firebomb Bomb { get; }
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -196,10 +196,10 @@ namespace Server.Items
 
   public class FirebombField : Item
   {
-    private List<Mobile> m_Burning;
-    private DateTime m_Expire;
-    private Mobile m_LitBy;
-    private Timer m_Timer;
+    private readonly List<Mobile> m_Burning;
+    private readonly DateTime m_Expire;
+    private readonly Mobile m_LitBy;
+    private readonly Timer m_Timer;
 
     public FirebombField(Mobile litBy, List<Mobile> toDamage) : base(0x376A)
     {
@@ -225,8 +225,8 @@ namespace Server.Items
 
     public override bool OnMoveOver(Mobile m)
     {
-      if (ItemID == 0x398C && m_LitBy == null ||
-          SpellHelper.ValidIndirectTarget(m_LitBy, m) && m_LitBy.CanBeHarmful(m, false))
+      if ((ItemID == 0x398C && m_LitBy == null) ||
+          (SpellHelper.ValidIndirectTarget(m_LitBy, m) && m_LitBy.CanBeHarmful(m, false)))
       {
         m_LitBy?.DoHarmful(m);
 
@@ -259,8 +259,8 @@ namespace Server.Items
         Mobile victim = m_Burning[i];
 
         if (victim.Location == Location && victim.Map == Map &&
-            (m_LitBy == null || SpellHelper.ValidIndirectTarget(m_LitBy, victim) &&
-             m_LitBy.CanBeHarmful(victim, false)))
+            (m_LitBy == null || (SpellHelper.ValidIndirectTarget(m_LitBy, victim) &&
+             m_LitBy.CanBeHarmful(victim, false))))
         {
           m_LitBy?.DoHarmful(victim);
 

@@ -7,10 +7,10 @@ namespace Server.Commands
 {
   public class CommandLogging
   {
-    private static char[] m_NotSafe = { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
-    public static bool Enabled{ get; set; } = true;
+    private static readonly char[] m_NotSafe = { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
+    public static bool Enabled { get; set; } = true;
 
-    public static StreamWriter Output{ get; private set; }
+    public static StreamWriter Output { get; private set; }
 
     public static void Initialize()
     {

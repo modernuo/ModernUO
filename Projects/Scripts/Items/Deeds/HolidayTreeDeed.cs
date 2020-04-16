@@ -117,8 +117,8 @@ namespace Server.Items
 
   public class HolidayTreeChoiceGump : Gump
   {
-    private HolidayTreeDeed m_Deed;
-    private Mobile m_From;
+    private readonly HolidayTreeDeed m_Deed;
+    private readonly Mobile m_From;
 
     public HolidayTreeChoiceGump(Mobile from, HolidayTreeDeed deed) : base(200, 200)
     {
@@ -145,15 +145,15 @@ namespace Server.Items
       switch (info.ButtonID)
       {
         case 1:
-        {
-          m_Deed.BeginPlace(m_From, HolidayTreeType.Classic);
-          break;
-        }
+          {
+            m_Deed.BeginPlace(m_From, HolidayTreeType.Classic);
+            break;
+          }
         case 2:
-        {
-          m_Deed.BeginPlace(m_From, HolidayTreeType.Modern);
-          break;
-        }
+          {
+            m_Deed.BeginPlace(m_From, HolidayTreeType.Modern);
+            break;
+          }
       }
     }
   }

@@ -51,50 +51,50 @@ namespace Server
       Race = race;
     }
 
-    public NetState State{ get; }
+    public NetState State { get; }
 
-    public IAccount Account{ get; }
+    public IAccount Account { get; }
 
-    public Mobile Mobile{ get; set; }
+    public Mobile Mobile { get; set; }
 
-    public string Name{ get; }
+    public string Name { get; }
 
-    public bool Female{ get; }
+    public bool Female { get; }
 
-    public int Hue{ get; }
+    public int Hue { get; }
 
-    public int Str{ get; }
+    public int Str { get; }
 
-    public int Dex{ get; }
+    public int Dex { get; }
 
-    public int Int{ get; }
+    public int Int { get; }
 
-    public CityInfo City{ get; }
+    public CityInfo City { get; }
 
-    public SkillNameValue[] Skills{ get; }
+    public SkillNameValue[] Skills { get; }
 
-    public int ShirtHue{ get; }
+    public int ShirtHue { get; }
 
-    public int PantsHue{ get; }
+    public int PantsHue { get; }
 
-    public int HairID{ get; }
+    public int HairID { get; }
 
-    public int HairHue{ get; }
+    public int HairHue { get; }
 
-    public int BeardID{ get; }
+    public int BeardID { get; }
 
-    public int BeardHue{ get; }
+    public int BeardHue { get; }
 
-    public int Profession{ get; set; }
+    public int Profession { get; set; }
 
-    public Race Race{ get; }
+    public Race Race { get; }
   }
 
   public struct SkillNameValue
   {
-    public SkillName Name{ get; }
+    public SkillName Name { get; }
 
-    public int Value{ get; }
+    public int Value { get; }
 
     public SkillNameValue(SkillName name, int value)
     {
@@ -103,7 +103,8 @@ namespace Server
     }
   }
 
-  public static partial class EventSink {
+  public static partial class EventSink
+  {
     public static event Action<CharacterCreatedEventArgs> CharacterCreated;
     public static void InvokeCharacterCreated(CharacterCreatedEventArgs e) => CharacterCreated?.Invoke(e);
   }

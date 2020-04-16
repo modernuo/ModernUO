@@ -26,8 +26,8 @@ namespace Server.Engines.ConPVP
 
   public class DuelContext
   {
-    private static TimeSpan CombatDelay = TimeSpan.FromSeconds(30.0);
-    private static TimeSpan AutoTieDelay = TimeSpan.FromMinutes(15.0);
+    private static readonly TimeSpan CombatDelay = TimeSpan.FromSeconds(30.0);
+    private static readonly TimeSpan AutoTieDelay = TimeSpan.FromMinutes(15.0);
 
     private Timer m_AutoTieTimer;
 
@@ -44,7 +44,7 @@ namespace Server.Engines.ConPVP
     private Timer m_SDWarnTimer, m_SDActivateTimer;
     public Tournament m_Tournament;
 
-    private List<Item> m_Walls = new List<Item>();
+    private readonly List<Item> m_Walls = new List<Item>();
 
     private bool m_Yielding;
 
@@ -63,36 +63,36 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public bool Rematch{ get; private set; }
+    public bool Rematch { get; private set; }
 
-    public bool ReadyWait{ get; private set; }
+    public bool ReadyWait { get; private set; }
 
-    public int ReadyCount{ get; private set; }
+    public int ReadyCount { get; private set; }
 
-    public bool Registered{ get; private set; } = true;
+    public bool Registered { get; private set; } = true;
 
-    public bool Finished{ get; private set; }
+    public bool Finished { get; private set; }
 
-    public bool Started{ get; private set; }
+    public bool Started { get; private set; }
 
-    public Mobile Initiator{ get; }
+    public Mobile Initiator { get; }
 
-    public List<Participant> Participants{ get; }
+    public List<Participant> Participants { get; }
 
-    public Ruleset Ruleset{ get; private set; }
+    public Ruleset Ruleset { get; private set; }
 
-    public Arena Arena{ get; private set; }
+    public Arena Arena { get; private set; }
 
-    public bool Tied{ get; private set; }
+    public bool Tied { get; private set; }
 
-    public bool IsSuddenDeath{ get; set; }
+    public bool IsSuddenDeath { get; set; }
 
     public bool IsOneVsOne => Participants.Count == 2 && Participants[0].Players.Length == 1 &&
                               Participants[1].Players.Length == 1;
 
-    public bool StartedBeginCountdown{ get; private set; }
+    public bool StartedBeginCountdown { get; private set; }
 
-    public bool StartedReadyCountdown{ get; private set; }
+    public bool StartedReadyCountdown { get; private set; }
 
     public Tournament Tournament => m_Tournament;
 
@@ -138,7 +138,6 @@ namespace Server.Engines.ConPVP
         title = "Bushido";
       else if (move is SamuraiMove)
         title = "Ninjitsu";
-
 
       if (title == null || name == null || Ruleset.GetOption(title, name))
         return true;
@@ -1202,7 +1201,7 @@ namespace Server.Engines.ConPVP
 
           if (instance == null)
           {
-            //pm.SendMessage( "Ladder not yet initialized." );
+            // pm.SendMessage( "Ladder not yet initialized." );
           }
           else
           {
@@ -1218,8 +1217,8 @@ namespace Server.Engines.ConPVP
             pm.NonlocalOverheadMessage(MessageType.Regular, pm.SpeechHue, true,
               string.Format(text, pm.Name, "is"));
 
-            //pm.PublicOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( "Level {0} with {1} win{2} and {3} loss{4}.", Ladder.GetLevel( entry.Experience ), entry.Wins, entry.Wins==1?"":"s", entry.Losses, entry.Losses==1?"":"es" ) );
-            //pm.PublicOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( "Level {0} with {1} win{2} and {3} loss{4}.", Ladder.GetLevel( entry.Experience ), entry.Wins, entry.Wins==1?"":"s", entry.Losses, entry.Losses==1?"":"es" ) );
+            // pm.PublicOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( "Level {0} with {1} win{2} and {3} loss{4}.", Ladder.GetLevel( entry.Experience ), entry.Wins, entry.Wins==1?"":"s", entry.Losses, entry.Losses==1?"":"es" ) );
+            // pm.PublicOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( "Level {0} with {1} win{2} and {3} loss{4}.", Ladder.GetLevel( entry.Experience ), entry.Wins, entry.Wins==1?"":"s", entry.Losses, entry.Losses==1?"":"es" ) );
           }
         }
       }
@@ -1236,7 +1235,7 @@ namespace Server.Engines.ConPVP
 
           if (instance == null)
           {
-            //pm.SendMessage( "Ladder not yet initialized." );
+            // pm.SendMessage( "Ladder not yet initialized." );
           }
           else
           {
@@ -2210,11 +2209,11 @@ namespace Server.Engines.ConPVP
         m_Expire = DateTime.UtcNow + TimeSpan.FromMinutes(30.0);
       }
 
-      public Mobile Mobile{ get; }
+      public Mobile Mobile { get; }
 
-      public Point3D Location{ get; private set; }
+      public Point3D Location { get; private set; }
 
-      public Map Facet{ get; private set; }
+      public Map Facet { get; private set; }
 
       public bool Expired => DateTime.UtcNow >= m_Expire;
 
@@ -2351,29 +2350,29 @@ namespace Server.Engines.ConPVP
         switch (version)
         {
           case 0:
-          {
-            int count = reader.ReadEncodedInt();
-
-            m_Entries = new List<ReturnEntry>(count);
-
-            for (int i = 0; i < count; ++i)
             {
-              Mobile mob = reader.ReadMobile();
-              Point3D loc = reader.ReadPoint3D();
-              Map map = reader.ReadMap();
+              int count = reader.ReadEncodedInt();
 
-              m_Entries.Add(new ReturnEntry(mob, loc, map));
+              m_Entries = new List<ReturnEntry>(count);
+
+              for (int i = 0; i < count; ++i)
+              {
+                Mobile mob = reader.ReadMobile();
+                Point3D loc = reader.ReadPoint3D();
+                Map map = reader.ReadMap();
+
+                m_Entries.Add(new ReturnEntry(mob, loc, map));
+              }
+
+              break;
             }
-
-            break;
-          }
         }
       }
     }
 
     private class ArenaMoongate : ConfirmationMoongate
     {
-      private ExitTeleporter m_Teleporter;
+      private readonly ExitTeleporter m_Teleporter;
 
       public ArenaMoongate(Point3D target, Map map, ExitTeleporter tp) : base(target, map)
       {
