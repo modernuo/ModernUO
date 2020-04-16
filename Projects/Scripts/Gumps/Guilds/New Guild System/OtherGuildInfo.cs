@@ -50,9 +50,8 @@ namespace Server.Guilds
 
       AddHtmlLocalized(20, 80, 120, 26, 1063025, 0x0, true); // <i>Alliance</i>
 
-      if (otherAlliance != null)
-        if (otherAlliance.IsMember(m_Other))
-          AddHtml(150, 83, 360, 26, otherAlliance.Name);
+      if (otherAlliance?.IsMember(m_Other) == true)
+        AddHtml(150, 83, 360, 26, otherAlliance.Name);
 
       AddHtmlLocalized(20, 110, 120, 26, 1063139, 0x0, true); // <i>Abbreviation</i>
       AddHtml(150, 113, 120, 26, m_Other.Abbreviation);
@@ -72,7 +71,6 @@ namespace Server.Guilds
         if (activeWar.WarLength != TimeSpan.Zero && activeWar.WarBeginning + activeWar.WarLength > DateTime.UtcNow)
           timeRemaining = activeWar.WarBeginning + activeWar.WarLength - DateTime.UtcNow;
 
-        // time = String.Format( "{0:D2}:{1:D2}", timeRemaining.Hours.ToString(), timeRemaining.Subtract( TimeSpan.FromHours( timeRemaining.Hours ) ).Minutes );	//Is there a formatter for htis? it's 2AM and I'm tired and can't find it
         time = $"{timeRemaining.Hours:D2}:{DateTime.MinValue + timeRemaining:mm}";
 
         otherWar = m_Other.FindActiveWar(guild);
@@ -581,9 +579,11 @@ namespace Server.Guilds
             else if (alliance != null && otherAlliance != null && alliance.Leader == m_Other &&
                      otherAlliance.IsPendingMember(guild))
             {
-              pm.SendLocalizedMessage(1070752); // The proposal has been updated.
-                                                // m_Other.GuildMessage( 1070782 ); // ~1_val~ has responded to your proposal.	//Per OSI commented out.
-
+              // The proposal has been updated.
+              // m_Other.GuildMessage( 1070782 );
+              // // ~1_val~ has responded to your proposal.
+              // //Per OSI commented out.
+              pm.SendLocalizedMessage(1070752);
               guild.Alliance = null;
             }
 
@@ -614,7 +614,8 @@ namespace Server.Guilds
 
     public void CreateAlliance_Callback(Mobile from, string text)
     {
-      PlayerMobile pm = from as PlayerMobile;
+      if (!(from is PlayerMobile pm))
+        return;
 
       AllianceInfo alliance = guild.Alliance;
       AllianceInfo otherAlliance = m_Other.Alliance;
