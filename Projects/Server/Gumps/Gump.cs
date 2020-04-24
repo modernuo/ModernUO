@@ -76,7 +76,6 @@ namespace Server.Gumps
         if (m_Serial != value)
         {
           m_Serial = value;
-          Invalidate();
         }
       }
     }
@@ -89,7 +88,6 @@ namespace Server.Gumps
         if (m_X != value)
         {
           m_X = value;
-          Invalidate();
         }
       }
     }
@@ -102,7 +100,6 @@ namespace Server.Gumps
         if (m_Y != value)
         {
           m_Y = value;
-          Invalidate();
         }
       }
     }
@@ -115,7 +112,6 @@ namespace Server.Gumps
         if (m_Disposable != value)
         {
           m_Disposable = value;
-          Invalidate();
         }
       }
     }
@@ -128,7 +124,6 @@ namespace Server.Gumps
         if (m_Resizable != value)
         {
           m_Resizable = value;
-          Invalidate();
         }
       }
     }
@@ -141,7 +136,6 @@ namespace Server.Gumps
         if (m_Draggable != value)
         {
           m_Draggable = value;
-          Invalidate();
         }
       }
     }
@@ -154,18 +148,11 @@ namespace Server.Gumps
         if (m_Closable != value)
         {
           m_Closable = value;
-          Invalidate();
         }
       }
     }
 
     public static int GetTypeID(Type type) => type?.FullName?.GetHashCode() ?? -1;
-
-    public void Invalidate()
-    {
-      // if ( m_Strings.Count > 0 )
-      // m_Strings.Clear();
-    }
 
     public void AddPage(int page)
     {
@@ -286,7 +273,6 @@ namespace Server.Gumps
       }
       else if (!Entries.Contains(g))
       {
-        Invalidate();
         Entries.Add(g);
       }
     }
@@ -296,7 +282,6 @@ namespace Server.Gumps
       if (g == null || !Entries.Contains(g))
         return;
 
-      Invalidate();
       Entries.Remove(g);
       g.Parent = null;
     }
@@ -307,7 +292,6 @@ namespace Server.Gumps
 
       if (indexOf >= 0) return indexOf;
 
-      Invalidate();
       m_Strings.Add(value);
       return m_Strings.Count - 1;
     }

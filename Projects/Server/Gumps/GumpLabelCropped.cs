@@ -25,69 +25,41 @@ namespace Server.Gumps
   public class GumpLabelCropped : GumpEntry
   {
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer("croppedtext");
-    private int m_Hue;
-    private string m_Text;
-    private int m_Width, m_Height;
-    private int m_X, m_Y;
 
     public GumpLabelCropped(int x, int y, int width, int height, int hue, string text)
     {
-      m_X = x;
-      m_Y = y;
-      m_Width = width;
-      m_Height = height;
-      m_Hue = hue;
-      m_Text = text;
+      X = x;
+      Y = y;
+      Width = width;
+      Height = height;
+      Hue = hue;
+      Text = text;
     }
 
-    public int X
-    {
-      get => m_X;
-      set => Delta(ref m_X, value);
-    }
+    public int X { get; set; }
 
-    public int Y
-    {
-      get => m_Y;
-      set => Delta(ref m_Y, value);
-    }
+    public int Y { get; set; }
 
-    public int Width
-    {
-      get => m_Width;
-      set => Delta(ref m_Width, value);
-    }
+    public int Width { get; set; }
 
-    public int Height
-    {
-      get => m_Height;
-      set => Delta(ref m_Height, value);
-    }
+    public int Height { get; set; }
 
-    public int Hue
-    {
-      get => m_Hue;
-      set => Delta(ref m_Hue, value);
-    }
+    public int Hue { get; set; }
 
-    public string Text
-    {
-      get => m_Text;
-      set => Delta(ref m_Text, value);
-    }
+    public string Text { get; set; }
 
     public override string Compile(NetState ns) =>
-      $"{{ croppedtext {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {Parent.Intern(m_Text)} }}";
+      $"{{ croppedtext {X} {Y} {Width} {Height} {Hue} {Parent.Intern(Text)} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {
       disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_Width);
-      disp.AppendLayout(m_Height);
-      disp.AppendLayout(m_Hue);
-      disp.AppendLayout(Parent.Intern(m_Text));
+      disp.AppendLayout(X);
+      disp.AppendLayout(Y);
+      disp.AppendLayout(Width);
+      disp.AppendLayout(Height);
+      disp.AppendLayout(Hue);
+      disp.AppendLayout(Parent.Intern(Text));
     }
   }
 }

@@ -25,7 +25,6 @@ namespace Server.Gumps
   public class GumpImageTiled : GumpEntry
   {
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer("gumppictiled");
-    private int m_GumpID;
     private int m_Width, m_Height;
     private int m_X, m_Y;
 
@@ -35,40 +34,20 @@ namespace Server.Gumps
       m_Y = y;
       m_Width = width;
       m_Height = height;
-      m_GumpID = gumpID;
+      GumpID = gumpID;
     }
 
-    public int X
-    {
-      get => m_X;
-      set => Delta(ref m_X, value);
-    }
+    public int X { get; set; }
 
-    public int Y
-    {
-      get => m_Y;
-      set => Delta(ref m_Y, value);
-    }
+    public int Y { get; set; }
 
-    public int Width
-    {
-      get => m_Width;
-      set => Delta(ref m_Width, value);
-    }
+    public int Width { get; set; }
 
-    public int Height
-    {
-      get => m_Height;
-      set => Delta(ref m_Height, value);
-    }
+    public int Height { get; set; }
 
-    public int GumpID
-    {
-      get => m_GumpID;
-      set => Delta(ref m_GumpID, value);
-    }
+    public int GumpID { get; set; }
 
-    public override string Compile(NetState ns) => $"{{ gumppictiled {m_X} {m_Y} {m_Width} {m_Height} {m_GumpID} }}";
+    public override string Compile(NetState ns) => $"{{ gumppictiled {X} {Y} {Width} {Height} {GumpID} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {
@@ -77,7 +56,7 @@ namespace Server.Gumps
       disp.AppendLayout(m_Y);
       disp.AppendLayout(m_Width);
       disp.AppendLayout(m_Height);
-      disp.AppendLayout(m_GumpID);
+      disp.AppendLayout(GumpID);
     }
   }
 }

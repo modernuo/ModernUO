@@ -25,10 +25,6 @@ namespace Server.Gumps
   public class GumpTextEntryLimited : GumpEntry
   {
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer("textentrylimited");
-    private int m_EntryID;
-    private int m_Hue;
-    private string m_InitialText;
-    private int m_Size;
     private int m_Width, m_Height;
     private int m_X, m_Y;
 
@@ -38,62 +34,30 @@ namespace Server.Gumps
       m_Y = y;
       m_Width = width;
       m_Height = height;
-      m_Hue = hue;
-      m_EntryID = entryID;
-      m_InitialText = initialText;
-      m_Size = size;
+      Hue = hue;
+      EntryID = entryID;
+      InitialText = initialText;
+      Size = size;
     }
 
-    public int X
-    {
-      get => m_X;
-      set => Delta(ref m_X, value);
-    }
+    public int X { get; set; }
 
-    public int Y
-    {
-      get => m_Y;
-      set => Delta(ref m_Y, value);
-    }
+    public int Y { get; set; }
 
-    public int Width
-    {
-      get => m_Width;
-      set => Delta(ref m_Width, value);
-    }
+    public int Width { get; set; }
 
-    public int Height
-    {
-      get => m_Height;
-      set => Delta(ref m_Height, value);
-    }
+    public int Height { get; set; }
 
-    public int Hue
-    {
-      get => m_Hue;
-      set => Delta(ref m_Hue, value);
-    }
+    public int Hue { get; set; }
 
-    public int EntryID
-    {
-      get => m_EntryID;
-      set => Delta(ref m_EntryID, value);
-    }
+    public int EntryID { get; set; }
 
-    public string InitialText
-    {
-      get => m_InitialText;
-      set => Delta(ref m_InitialText, value);
-    }
+    public string InitialText { get; set; }
 
-    public int Size
-    {
-      get => m_Size;
-      set => Delta(ref m_Size, value);
-    }
+    public int Size { get; set; }
 
     public override string Compile(NetState ns) =>
-      $"{{ textentrylimited {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {m_EntryID} {Parent.Intern(m_InitialText)} {m_Size} }}";
+      $"{{ textentrylimited {X} {Y} {Width} {Height} {Hue} {EntryID} {Parent.Intern(InitialText)} {Size} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {
@@ -102,10 +66,10 @@ namespace Server.Gumps
       disp.AppendLayout(m_Y);
       disp.AppendLayout(m_Width);
       disp.AppendLayout(m_Height);
-      disp.AppendLayout(m_Hue);
-      disp.AppendLayout(m_EntryID);
-      disp.AppendLayout(Parent.Intern(m_InitialText));
-      disp.AppendLayout(m_Size);
+      disp.AppendLayout(Hue);
+      disp.AppendLayout(EntryID);
+      disp.AppendLayout(Parent.Intern(InitialText));
+      disp.AppendLayout(Size);
 
       disp.TextEntries++;
     }

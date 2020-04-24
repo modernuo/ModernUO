@@ -25,22 +25,17 @@ namespace Server.Gumps
   public class GumpTooltip : GumpEntry
   {
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer("tooltip");
-    private int m_Number;
 
-    public GumpTooltip(int number) => m_Number = number;
+    public GumpTooltip(int number) => Number = number;
 
-    public int Number
-    {
-      get => m_Number;
-      set => Delta(ref m_Number, value);
-    }
+    public int Number { get; set; }
 
-    public override string Compile(NetState ns) => $"{{ tooltip {m_Number} }}";
+    public override string Compile(NetState ns) => $"{{ tooltip {Number} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {
       disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_Number);
+      disp.AppendLayout(Number);
     }
   }
 }
