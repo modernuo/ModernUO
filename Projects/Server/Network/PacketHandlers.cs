@@ -66,24 +66,9 @@ namespace Server.Network
     private static readonly EncodedPacketHandler[] m_EncodedHandlersLow;
     private static readonly Dictionary<int, EncodedPacketHandler> m_EncodedHandlersHigh;
 
-    private static readonly int[] m_EmptyInts = new int[0];
+    private static readonly int[] m_EmptyInts = Array.Empty<int>();
 
     private static readonly KeywordList m_KeywordList = new KeywordList();
-
-    public static int[] m_ValidAnimations =
-    {
-      6, 21, 32, 33,
-      100, 101, 102,
-      103, 104, 105,
-      106, 107, 108,
-      109, 110, 111,
-      112, 113, 114,
-      115, 116, 117,
-      118, 119, 120,
-      121, 123, 124,
-      125, 126, 127,
-      128
-    };
 
     public static PlayCharCallback ThirdPartyAuthCallback = null, ThirdPartyHackedCallback = null;
 
@@ -192,11 +177,20 @@ namespace Server.Network
 
     public static bool SingleClickProps { get; set; }
 
-    public static int[] ValidAnimations
-    {
-      get => m_ValidAnimations;
-      set => m_ValidAnimations = value;
-    }
+    // TODO: Change to outside configuration
+    public static int[] ValidAnimations { get; set; } = {
+      6, 21, 32, 33,
+      100, 101, 102,
+      103, 104, 105,
+      106, 107, 108,
+      109, 110, 111,
+      112, 113, 114,
+      115, 116, 117,
+      118, 119, 120,
+      121, 123, 124,
+      125, 126, 127,
+      128
+    };
 
     public static bool ClientVerification { get; set; } = true;
 
@@ -575,10 +569,10 @@ namespace Server.Network
         for (var i = 0; i < count; i++)
         {
           var item = World.FindItem(pvSrc.ReadUInt32());
-          int Amount = pvSrc.ReadInt16();
+          int amount = pvSrc.ReadInt16();
 
-          if (item != null && Amount > 0)
-            sellList.Add(new SellItemResponse(item, Amount));
+          if (item != null && amount > 0)
+            sellList.Add(new SellItemResponse(item, amount));
         }
 
         if (sellList.Count > 0 && vendor is IVendor v && v.OnSellItems(state.Mobile, sellList))
@@ -1350,7 +1344,7 @@ namespace Server.Network
 
         if ((value & ~0x7FFFFFFF) != 0)
         {
-          @from.OnPaperdollRequest();
+          from.OnPaperdollRequest();
         }
         else
         {
@@ -1376,7 +1370,7 @@ namespace Server.Network
       }
       else
       {
-        @from.SendActionMessage();
+        from.SendActionMessage();
       }
     }
 
@@ -1394,7 +1388,7 @@ namespace Server.Network
         {
           if (SingleClickProps)
           {
-            m.OnAosSingleClick(@from);
+            m.OnAosSingleClick(from);
           }
           else
           {
@@ -1412,7 +1406,7 @@ namespace Server.Network
         {
           if (SingleClickProps)
           {
-            item.OnAosSingleClick(@from);
+            item.OnAosSingleClick(from);
           }
           else if (from.Region.OnSingleClick(from, item))
           {
@@ -1468,8 +1462,8 @@ namespace Server.Network
 
       var ok = false;
 
-      for (var i = 0; !ok && i < m_ValidAnimations.Length; ++i)
-        ok = action == m_ValidAnimations[i];
+      for (var i = 0; !ok && i < ValidAnimations.Length; ++i)
+        ok = action == ValidAnimations[i];
 
       if (from != null && ok && from.Alive && from.Body.IsHuman && !from.Mounted)
         from.Animate(action, 7, 1, true, false, 0);

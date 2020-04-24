@@ -1021,7 +1021,7 @@ namespace Server.Items
 
       IPooledEnumerable<BaseCreature> eable = defender.GetMobilesInRange<BaseCreature>(1);
       int inPack = 1 + eable.Where(m => m != attacker && (m.PackInstinct & bc.PackInstinct) != 0 && (m.Controlled || m.Summoned))
-                     .Count(m => master == (m.ControlMaster ?? m.SummonMaster) && m.Combatant == defender);
+        .Count(m => master == (m.ControlMaster ?? m.SummonMaster) && m.Combatant == defender);
 
       eable.Free();
 
@@ -1150,7 +1150,7 @@ namespace Server.Items
         damage = 1;
       else if (Core.AOS && damage == 0) // parried
         if (a?.Validate(attacker) == true) /*&& a.CheckMana( attacker, true )*/
-         // Parried special moves have no mana cost
+          // Parried special moves have no mana cost
         {
           a = null;
           WeaponAbility.ClearCurrentAbility(attacker);
@@ -1410,12 +1410,11 @@ namespace Server.Items
     public virtual double GetAosDamage(Mobile attacker, int bonus, uint dice, uint sides)
     {
       int damage = Utility.Dice(dice, sides, bonus) * 100;
-      int damageBonus = 0;
 
       // Inscription bonus
       int inscribeSkill = attacker.Skills.Inscribe.Fixed;
 
-      damageBonus += inscribeSkill / 200;
+      var damageBonus = inscribeSkill / 200;
 
       if (inscribeSkill >= 1000)
         damageBonus += 5;
@@ -2068,7 +2067,7 @@ namespace Server.Items
           list.Add(entry.Title);
       }
 
-      base.AddResistanceProperties(list);
+      this.AddResistanceProperties(list);
 
       int prop;
 

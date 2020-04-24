@@ -1553,7 +1553,7 @@ namespace Server.Gumps
         if (ips.Length != 0 && AccountHandler.IPTable.ContainsKey(ips[0]))
           --AccountHandler.IPTable[ips[0]];
 
-        a.LoginIPs = new IPAddress[0];
+        a.LoginIPs = Array.Empty<IPAddress>();
 
         notice = "All addresses in the list have been removed.";
       }

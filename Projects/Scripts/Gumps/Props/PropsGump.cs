@@ -436,10 +436,10 @@ namespace Server.Gumps
       object[] attrs = type.GetCustomAttributes(typeofCustomEnum, false);
 
       if (attrs.Length == 0)
-        return new string[0];
+        return Array.Empty<string>();
 
       if (!(attrs[0] is CustomEnumAttribute ce))
-        return new string[0];
+        return Array.Empty<string>();
 
       return ce.Names;
     }

@@ -60,7 +60,7 @@ namespace Server.Gumps
     private CAGCategory()
     {
       Title = "no data";
-      Nodes = new CAGNode[0];
+      Nodes = Array.Empty<CAGNode>();
     }
 
     public CAGCategory(CAGCategory parent, XmlTextReader xml)
@@ -77,7 +77,7 @@ namespace Server.Gumps
 
       if (xml.IsEmptyElement)
       {
-        Nodes = new CAGNode[0];
+        Nodes = Array.Empty<CAGNode>();
       }
       else
       {

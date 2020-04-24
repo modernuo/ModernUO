@@ -66,7 +66,7 @@ namespace Server.Mobiles
 
         if (balance > int.MaxValue)
         {
-          gold = checks = new Item[0];
+          gold = checks = Array.Empty<Item>();
           return int.MaxValue;
         }
       }
@@ -84,7 +84,7 @@ namespace Server.Mobiles
       }
       else
       {
-        gold = checks = new Item[0];
+        gold = checks = Array.Empty<Item>();
       }
 
       return Math.Max(0, (int)Math.Min(int.MaxValue, balance));

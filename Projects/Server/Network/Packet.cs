@@ -164,7 +164,7 @@ namespace Server.Network
               }
             }
 
-            m_CompiledBuffer = new byte[0];
+            m_CompiledBuffer = Array.Empty<byte>();
             m_CompiledLength = 0;
 
             length = m_CompiledLength;

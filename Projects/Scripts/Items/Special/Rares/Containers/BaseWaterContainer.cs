@@ -4,8 +4,8 @@
   {
     private int m_Quantity;
 
-    public BaseWaterContainer(int Item_Id, bool filled)
-      : base(Item_Id) =>
+    public BaseWaterContainer(int item_Id, bool filled)
+      : base(item_Id) =>
       m_Quantity = filled ? MaxQuantity : 0;
 
     public BaseWaterContainer(Serial serial)

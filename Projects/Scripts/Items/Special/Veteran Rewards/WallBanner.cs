@@ -351,9 +351,9 @@ namespace Server.Items
     {
       private readonly WallBannerDeed m_WallBanner;
 
-      public InternalGump(WallBannerDeed WallBanner) : base(150, 50)
+      public InternalGump(WallBannerDeed wallBanner) : base(150, 50)
       {
-        m_WallBanner = WallBanner;
+        m_WallBanner = wallBanner;
 
         Closable = true;
         Disposable = true;

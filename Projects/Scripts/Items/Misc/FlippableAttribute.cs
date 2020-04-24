@@ -64,7 +64,7 @@ namespace Server.Items
       {
         try
         {
-          item.GetType().GetMethod("Flip", Type.EmptyTypes)?.Invoke(item, new object[0]);
+          item.GetType().GetMethod("Flip", Type.EmptyTypes)?.Invoke(item, Array.Empty<object>());
         }
         catch
         {

@@ -7,21 +7,21 @@ namespace Server.Engines.ConPVP
   {
     private static RulesetLayout m_Root;
 
-    public RulesetLayout(string title, string[] options) : this(title, title, new RulesetLayout[0], options)
+    public RulesetLayout(string title, string[] options) : this(title, title, Array.Empty<RulesetLayout>(), options)
     {
     }
 
     public RulesetLayout(string title, string description, string[] options) : this(title, description,
-      new RulesetLayout[0], options)
+      Array.Empty<RulesetLayout>(), options)
     {
     }
 
-    public RulesetLayout(string title, RulesetLayout[] children) : this(title, title, children, new string[0])
+    public RulesetLayout(string title, RulesetLayout[] children) : this(title, title, children, Array.Empty<string>())
     {
     }
 
     public RulesetLayout(string title, string description, RulesetLayout[] children) : this(title, description, children,
-      new string[0])
+      Array.Empty<string>())
     {
     }
 

@@ -7,7 +7,7 @@ using Server.Network;
 
 namespace Server.Misc
 {
-  public class CharacterCreation
+  public static class CharacterCreation
   {
     private static readonly CityInfo m_NewHavenInfo =
       new CityInfo("New Haven", "The Bountiful Harvest Inn", 3503, 2574, 14, Map.Trammel);
@@ -213,7 +213,7 @@ namespace Server.Misc
       cont.Name = "Spell Casting Stuff";
 
       PlaceItemIn(cont, 45, 105, new Spellbook(ulong.MaxValue));
-      PlaceItemIn(cont, 65, 105, new NecromancerSpellbook((ulong)0xFFFF));
+      PlaceItemIn(cont, 65, 105, new NecromancerSpellbook(0xFFFFUL));
       PlaceItemIn(cont, 85, 105, new BookOfChivalry());
       PlaceItemIn(cont, 105, 105, new BookOfBushido()); // Default ctor = full
       PlaceItemIn(cont, 125, 105, new BookOfNinjitsu()); // Default ctor = full
@@ -730,6 +730,7 @@ namespace Server.Misc
 
             useHaven = true;
 
+            // ReSharper disable once CA1806
             new BadStartMessage(m, 1062205);
             /*
              * Unfortunately you are playing on a *NON-Age-Of-Shadows* game
@@ -752,6 +753,7 @@ namespace Server.Misc
 
             useHaven = true;
 
+            // ReSharper disable once CA1806
             new BadStartMessage(m, 1063487);
             /*
              * Unfortunately you are playing on a *NON-Samurai-Empire* game
@@ -889,11 +891,11 @@ namespace Server.Misc
           {
             skills = new[]
             {
-            new SkillNameValue(SkillName.Anatomy, 30),
-            new SkillNameValue(SkillName.Healing, 45),
-            new SkillNameValue(SkillName.Swords, 35),
-            new SkillNameValue(SkillName.Tactics, 50)
-          };
+              new SkillNameValue(SkillName.Anatomy, 30),
+              new SkillNameValue(SkillName.Healing, 45),
+              new SkillNameValue(SkillName.Swords, 35),
+              new SkillNameValue(SkillName.Tactics, 50)
+            };
 
             break;
           }
@@ -901,11 +903,11 @@ namespace Server.Misc
           {
             skills = new[]
             {
-            new SkillNameValue(SkillName.EvalInt, 30),
-            new SkillNameValue(SkillName.Wrestling, 30),
-            new SkillNameValue(SkillName.Magery, 50),
-            new SkillNameValue(SkillName.Meditation, 50)
-          };
+              new SkillNameValue(SkillName.EvalInt, 30),
+              new SkillNameValue(SkillName.Wrestling, 30),
+              new SkillNameValue(SkillName.Magery, 50),
+              new SkillNameValue(SkillName.Meditation, 50)
+            };
 
             break;
           }
@@ -913,11 +915,11 @@ namespace Server.Misc
           {
             skills = new[]
             {
-            new SkillNameValue(SkillName.Mining, 30),
-            new SkillNameValue(SkillName.ArmsLore, 30),
-            new SkillNameValue(SkillName.Blacksmith, 50),
-            new SkillNameValue(SkillName.Tinkering, 50)
-          };
+              new SkillNameValue(SkillName.Mining, 30),
+              new SkillNameValue(SkillName.ArmsLore, 30),
+              new SkillNameValue(SkillName.Blacksmith, 50),
+              new SkillNameValue(SkillName.Tinkering, 50)
+            };
 
             break;
           }
@@ -925,12 +927,12 @@ namespace Server.Misc
           {
             skills = new[]
             {
-            new SkillNameValue(SkillName.Necromancy, 50),
-            new SkillNameValue(SkillName.Focus, 30),
-            new SkillNameValue(SkillName.SpiritSpeak, 30),
-            new SkillNameValue(SkillName.Swords, 30),
-            new SkillNameValue(SkillName.Tactics, 20)
-          };
+              new SkillNameValue(SkillName.Necromancy, 50),
+              new SkillNameValue(SkillName.Focus, 30),
+              new SkillNameValue(SkillName.SpiritSpeak, 30),
+              new SkillNameValue(SkillName.Swords, 30),
+              new SkillNameValue(SkillName.Tactics, 20)
+            };
 
             break;
           }
@@ -938,11 +940,11 @@ namespace Server.Misc
           {
             skills = new[]
             {
-            new SkillNameValue(SkillName.Chivalry, 51),
-            new SkillNameValue(SkillName.Swords, 49),
-            new SkillNameValue(SkillName.Focus, 30),
-            new SkillNameValue(SkillName.Tactics, 30)
-          };
+              new SkillNameValue(SkillName.Chivalry, 51),
+              new SkillNameValue(SkillName.Swords, 49),
+              new SkillNameValue(SkillName.Focus, 30),
+              new SkillNameValue(SkillName.Tactics, 30)
+            };
 
             break;
           }
@@ -950,22 +952,22 @@ namespace Server.Misc
           {
             skills = new[]
             {
-            new SkillNameValue(SkillName.Bushido, 50),
-            new SkillNameValue(SkillName.Swords, 50),
-            new SkillNameValue(SkillName.Anatomy, 30),
-            new SkillNameValue(SkillName.Healing, 30)
-          };
+              new SkillNameValue(SkillName.Bushido, 50),
+              new SkillNameValue(SkillName.Swords, 50),
+              new SkillNameValue(SkillName.Anatomy, 30),
+              new SkillNameValue(SkillName.Healing, 30)
+            };
             break;
           }
         case 7: // Ninja
           {
             skills = new[]
             {
-            new SkillNameValue(SkillName.Ninjitsu, 50),
-            new SkillNameValue(SkillName.Hiding, 50),
-            new SkillNameValue(SkillName.Fencing, 30),
-            new SkillNameValue(SkillName.Stealth, 30)
-          };
+              new SkillNameValue(SkillName.Ninjitsu, 50),
+              new SkillNameValue(SkillName.Hiding, 50),
+              new SkillNameValue(SkillName.Fencing, 30),
+              new SkillNameValue(SkillName.Stealth, 30)
+            };
             break;
           }
         default:
@@ -1717,23 +1719,23 @@ namespace Server.Misc
           }
       }
     }
+  }
 
-    private class BadStartMessage : Timer
+  class BadStartMessage : Timer
+  {
+    private readonly int m_Message;
+    private readonly Mobile m_Mobile;
+
+    public BadStartMessage(Mobile m, int message) : base(TimeSpan.FromSeconds(3.5))
     {
-      private readonly int m_Message;
-      private readonly Mobile m_Mobile;
+      m_Mobile = m;
+      m_Message = message;
+      Start();
+    }
 
-      public BadStartMessage(Mobile m, int message) : base(TimeSpan.FromSeconds(3.5))
-      {
-        m_Mobile = m;
-        m_Message = message;
-        Start();
-      }
-
-      protected override void OnTick()
-      {
-        m_Mobile.SendLocalizedMessage(m_Message);
-      }
+    protected override void OnTick()
+    {
+      m_Mobile.SendLocalizedMessage(m_Message);
     }
   }
 }

@@ -51,11 +51,13 @@ namespace Server.Items
       return damage;
     }
 
+    // ReSharper disable once RedundantOverriddenMember
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
     }
 
+    // ReSharper disable once RedundantOverriddenMember
     public override void Deserialize(IGenericReader reader)
     {
       base.Deserialize(reader);

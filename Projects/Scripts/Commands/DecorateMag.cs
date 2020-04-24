@@ -70,7 +70,7 @@ namespace Server.Commands
 
     private static readonly Queue m_DeleteQueue = new Queue();
 
-    private static readonly string[] m_EmptyParams = new string[0];
+    private static readonly string[] m_EmptyParams = Array.Empty<string>();
     private List<DecorationEntryMag> m_Entries;
     private int m_ItemID;
     private string[] m_Params;

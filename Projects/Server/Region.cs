@@ -591,8 +591,8 @@ namespace Server
 
     public virtual bool OnTarget(Mobile m, Target t, object o) => Parent?.OnTarget(m, t, o) != false;
 
-    public virtual bool OnCombatantChange(Mobile m, Mobile Old, Mobile New) =>
-      Parent?.OnCombatantChange(m, Old, New) != false;
+    public virtual bool OnCombatantChange(Mobile m, Mobile old, Mobile @new) =>
+      Parent?.OnCombatantChange(m, old, @new) != false;
 
     public virtual bool AllowHousing(Mobile from, Point3D p) => Parent?.AllowHousing(from, p) != false;
 
@@ -638,7 +638,7 @@ namespace Server
       Parent?.OnSpeech(args);
     }
 
-    public virtual bool OnSkillUse(Mobile m, int Skill) => Parent?.OnSkillUse(m, Skill) != false;
+    public virtual bool OnSkillUse(Mobile m, int skill) => Parent?.OnSkillUse(m, skill) != false;
 
     public virtual bool OnBeginSpellCast(Mobile m, ISpell s) => Parent?.OnBeginSpellCast(m, s) != false;
 
@@ -656,9 +656,9 @@ namespace Server
       Parent?.OnDeath(m);
     }
 
-    public virtual bool OnDamage(Mobile m, ref int Damage) => Parent?.OnDamage(m, ref Damage) != false;
+    public virtual bool OnDamage(Mobile m, ref int damage) => Parent?.OnDamage(m, ref damage) != false;
 
-    public virtual bool OnHeal(Mobile m, ref int Heal) => Parent?.OnHeal(m, ref Heal) != false;
+    public virtual bool OnHeal(Mobile m, ref int heal) => Parent?.OnHeal(m, ref heal) != false;
 
     public virtual bool OnDoubleClick(Mobile m, object o) => Parent?.OnDoubleClick(m, o) != false;
 

@@ -31,7 +31,7 @@ namespace Server
               SpellHelper.GetSurfaceTop(ref pt);
 
               Point3D origin = new Point3D(pt);
-              Map facet = @from.Map;
+              Map facet = from.Map;
 
               if (facet?.CanFit(pt.X, pt.Y, pt.Z, 16, false, false) != true)
                 return;
@@ -39,7 +39,7 @@ namespace Server
               Movable = false;
 
               Effects.SendMovingEffect(
-                @from, new Entity(Serial.Zero, origin, facet),
+                from, new Entity(Serial.Zero, origin, facet),
                 ItemID & 0x3FFF, 7, 0, false, false, Hue - 1);
 
               Timer.DelayCall(TimeSpan.FromSeconds(0.5), () =>
@@ -56,7 +56,7 @@ namespace Server
                 Timer.DelayCall(TimeSpan.FromSeconds(1.0), () =>
                 {
                   List<Mobile> targets = facet.GetMobilesInRange(origin, 12).Where(mob =>
-                    @from.CanBeHarmful(mob, false) && mob.InLOS(new Point3D(origin, origin.Z + 1)) &&
+                    from.CanBeHarmful(mob, false) && mob.InLOS(new Point3D(origin, origin.Z + 1)) &&
                     Faction.Find(mob) != null).ToList();
 
                   foreach (Mobile mob in targets)
@@ -72,13 +72,13 @@ namespace Server
                       new Entity(Serial.Zero, new Point3D(origin, origin.Z + 4), facet), mob,
                       14068, 1, 32, false, false, 1111, 2);
 
-                    @from.DoHarmful(mob);
+                    from.DoHarmful(mob);
 
-                    SpellHelper.Damage(TimeSpan.FromSeconds(0.50), mob, @from, damage / 3.0, 0, 0, 0, 0,
+                    SpellHelper.Damage(TimeSpan.FromSeconds(0.50), mob, from, damage / 3.0, 0, 0, 0, 0,
                       100);
-                    SpellHelper.Damage(TimeSpan.FromSeconds(0.70), mob, @from, damage / 3.0, 0, 0, 0, 0,
+                    SpellHelper.Damage(TimeSpan.FromSeconds(0.70), mob, from, damage / 3.0, 0, 0, 0, 0,
                       100);
-                    SpellHelper.Damage(TimeSpan.FromSeconds(1.00), mob, @from, damage / 3.0, 0, 0, 0, 0,
+                    SpellHelper.Damage(TimeSpan.FromSeconds(1.00), mob, from, damage / 3.0, 0, 0, 0, 0,
                       100);
 
                     Timer.DelayCall(TimeSpan.FromSeconds(0.50), mob.PlaySound, 0x1FB);

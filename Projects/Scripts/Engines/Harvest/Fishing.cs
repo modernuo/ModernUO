@@ -53,7 +53,7 @@ namespace Server.Engines.Harvest
         ConsumedPerHarvest = 1,
         ConsumedPerFeluccaHarvest = 1,
         EffectActions = new[] { 12 },
-        EffectSounds = new int[0],
+        EffectSounds = Array.Empty<int>(),
         EffectCounts = new[] { 1 },
         EffectDelay = TimeSpan.Zero,
         EffectSoundDelay = TimeSpan.FromSeconds(8.0),

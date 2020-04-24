@@ -11,7 +11,7 @@ namespace Server.Items
 {
   public class BookPageInfo
   {
-    public BookPageInfo() => Lines = new string[0];
+    public BookPageInfo() => Lines = Array.Empty<string>();
 
     public BookPageInfo(params string[] lines) => Lines = lines;
 
@@ -229,7 +229,7 @@ namespace Server.Items
               if (content != null)
                 Pages = content.Copy();
               else
-                Pages = new BookPageInfo[0];
+                Pages = Array.Empty<BookPageInfo>();
             }
 
             break;
@@ -255,7 +255,7 @@ namespace Server.Items
               if (content != null)
                 Pages = content.Copy();
               else
-                Pages = new BookPageInfo[0];
+                Pages = Array.Empty<BookPageInfo>();
             }
 
             break;

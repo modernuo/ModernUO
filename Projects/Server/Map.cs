@@ -337,8 +337,7 @@ namespace Server
 
     public Region DefaultRegion
     {
-      get => m_DefaultRegion ??
-             (m_DefaultRegion = new Region(null, this, 0, new Rectangle3D[0]));
+      get => m_DefaultRegion ??= new Region(null, this, 0, Array.Empty<Rectangle3D>());
       set => m_DefaultRegion = value;
     }
 

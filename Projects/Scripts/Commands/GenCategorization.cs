@@ -286,8 +286,8 @@ namespace Server.Commands
     {
       Parent = parent;
       Title = title;
-      SubCategories = subCats ?? new CategoryEntry[0];
-      Matches = new Type[0];
+      SubCategories = subCats ?? Array.Empty<CategoryEntry>();
+      Matches = Array.Empty<Type>();
       Matched = new List<CategoryTypeEntry>();
     }
 

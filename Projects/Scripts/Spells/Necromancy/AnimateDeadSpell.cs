@@ -21,7 +21,7 @@ namespace Server.Spells.Necromancy
     private static readonly CreatureGroup[] m_Groups =
     {
       // Undead group--empty
-      new CreatureGroup(SlayerGroup.GetEntryByName(SlayerName.Silver).Types, new SummonEntry[0]),
+      new CreatureGroup(SlayerGroup.GetEntryByName(SlayerName.Silver).Types, Array.Empty<SummonEntry>()),
       // Insects
       new CreatureGroup(new[]
         {
@@ -80,7 +80,7 @@ namespace Server.Spells.Necromancy
         new SummonEntry(0, typeof(PatchworkSkeleton))
       }),
       // Default group
-      new CreatureGroup(new Type[0], new[]
+      new CreatureGroup(Array.Empty<Type>(), new[]
       {
         new SummonEntry(18000, typeof(LichLord)),
         new SummonEntry(10000, typeof(FleshGolem)),
@@ -163,8 +163,8 @@ namespace Server.Spells.Necromancy
         if (c.Owner != null) type = c.Owner.GetType();
 
         if (c.ItemID != 0x2006 || c.Animated || type == typeof(PlayerMobile) || type == null ||
-            (c.Owner != null && c.Owner.Fame < 100) || (c.Owner is BaseCreature creature &&
-            (creature.Summoned || creature.IsBonded)))
+            (c.Owner != null && c.Owner.Fame < 100) ||
+            (c.Owner is BaseCreature creature && (creature.Summoned || creature.IsBonded)))
         {
           Caster.SendLocalizedMessage(1061085); // There's not enough life force there to animate.
         }

@@ -37,9 +37,9 @@ namespace Server.Guilds
 
     private static uint m_NextID = 1;
 
-    protected BaseGuild(uint Id) // serialization ctor
+    protected BaseGuild(uint id) // serialization ctor
     {
-      this.Id = Id;
+      this.Id = id;
       List.Add(this.Id, this);
       if (this.Id + 1 > m_NextID)
         m_NextID = this.Id + 1;

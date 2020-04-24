@@ -246,18 +246,18 @@ namespace Server.Mobiles
           return;
         }
 
-        if ((SolenHelper.CheckRedFriendship(from) &&
+        if (SolenHelper.CheckRedFriendship(from) &&
             (target is RedSolenInfiltratorQueen
              || target is RedSolenInfiltratorWarrior
              || target is RedSolenQueen
              || target is RedSolenWarrior
-             || target is RedSolenWorker))
-            || (SolenHelper.CheckBlackFriendship(from) &&
+             || target is RedSolenWorker)
+            || SolenHelper.CheckBlackFriendship(from) &&
             (target is BlackSolenInfiltratorQueen
              || target is BlackSolenInfiltratorWarrior
              || target is BlackSolenQueen
              || target is BlackSolenWarrior
-             || target is BlackSolenWorker)))
+             || target is BlackSolenWorker))
         {
           from.SendAsciiMessage("You can not force your pet to attack a creature you are protected from.");
           return;
@@ -1341,7 +1341,7 @@ namespace Server.Mobiles
           if (attacker?.Deleted == false &&
               attacker.GetDistanceToSqrt(m_Mobile) <= m_Mobile.RangePerception)
             if (combatant == null || attacker.GetDistanceToSqrt(controlMaster) <
-                combatant.GetDistanceToSqrt(controlMaster))
+              combatant.GetDistanceToSqrt(controlMaster))
               combatant = attacker;
         }
 

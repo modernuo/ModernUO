@@ -480,8 +480,8 @@ namespace Server
 
     private MultiComponentList()
     {
-      Tiles = new StaticTile[0][][];
-      List = new MultiTileEntry[0];
+      Tiles = Array.Empty<StaticTile[][]>();
+      List = Array.Empty<MultiTileEntry>();
     }
 
     public static bool PostHSFormat { get; set; }
@@ -684,7 +684,7 @@ namespace Server
           if (x < oldWidth && y < oldHeight)
             newTiles[x][y] = oldTiles[x][y];
           else
-            newTiles[x][y] = new StaticTile[0];
+            newTiles[x][y] = Array.Empty<StaticTile>();
 
           totalLength += newTiles[x][y].Length;
         }

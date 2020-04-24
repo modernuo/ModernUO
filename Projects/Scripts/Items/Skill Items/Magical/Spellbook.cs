@@ -317,7 +317,7 @@ namespace Server.Items
       if (move != null)
         SpecialMove.SetCurrentMove(from, move);
       else
-        SpellRegistry.NewSpell(spellId, @from, null)?.Cast();
+        SpellRegistry.NewSpell(spellId, from, null)?.Cast();
     }
 
     private static void EventSink_CastSpellRequest(Mobile from, int spellID, Item item)

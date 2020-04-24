@@ -529,8 +529,8 @@ namespace Server.Accounting
 
       m_Mobiles = new Mobile[7];
 
-      IPRestrictions = new string[0];
-      LoginIPs = new IPAddress[0];
+      IPRestrictions = Array.Empty<string>();
+      LoginIPs = Array.Empty<IPAddress>();
 
       Accounts.Add(this);
     }
@@ -644,7 +644,7 @@ namespace Server.Accounting
       }
       else
       {
-        stringList = new string[0];
+        stringList = Array.Empty<string>();
       }
 
       return stringList;
@@ -687,7 +687,7 @@ namespace Server.Accounting
       }
       else
       {
-        list = new IPAddress[0];
+        list = Array.Empty<IPAddress>();
       }
 
       return list;

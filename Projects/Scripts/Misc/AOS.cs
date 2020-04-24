@@ -1249,7 +1249,7 @@ namespace Server
   [PropertyObject]
   public abstract class BaseAttributes
   {
-    private static readonly int[] m_Empty = new int[0];
+    private static readonly int[] m_Empty = Array.Empty<int>();
     private uint m_Names;
     private int[] m_Values;
 

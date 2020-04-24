@@ -128,7 +128,7 @@ namespace Server
         EmptyStaticBlock[i] = new StaticTile[8][];
 
         for (var j = 0; j < 8; ++j)
-          EmptyStaticBlock[i][j] = new StaticTile[0];
+          EmptyStaticBlock[i][j] = Array.Empty<StaticTile>();
       }
 
       m_InvalidLandBlock = new LandTile[196];

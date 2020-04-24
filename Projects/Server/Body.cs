@@ -69,7 +69,7 @@ namespace Server
       {
         Console.WriteLine("Warning: Data/bodyTable.cfg does not exist");
 
-        m_Types = new BodyType[0];
+        m_Types = Array.Empty<BodyType>();
       }
     }
 

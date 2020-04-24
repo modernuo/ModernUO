@@ -302,7 +302,7 @@ namespace Server.Items
       if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
         list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
 
-      base.AddResistanceProperties(list);
+      this.AddResistanceProperties(list);
 
       if (m_HitPoints >= 0 && m_MaxHitPoints > 0)
         list.Add(1060639, "{0}\t{1}", m_HitPoints, m_MaxHitPoints); // durability ~1_val~ / ~2_val~

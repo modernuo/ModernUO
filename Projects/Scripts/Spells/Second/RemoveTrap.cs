@@ -34,7 +34,7 @@ namespace Server.Spells.Second
       }
       else if (cont.TrapType != TrapType.None && cont.TrapType != TrapType.MagicTrap)
       {
-        base.DoFizzle();
+        this.DoFizzle();
       }
       else if (CheckSequence())
       {

@@ -7,7 +7,7 @@ namespace Server.Misc
       ' ', '-', '.', '\''
     };
 
-    public static readonly char[] Empty = new char[0];
+    public static readonly char[] Empty = System.Array.Empty<char>();
 
     public static string[] StartDisallowed { get; } =
     {

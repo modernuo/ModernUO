@@ -159,7 +159,7 @@ namespace Server.Spells.Necromancy
       else if (map == Map.Malas)
         locList = m_MalasLocs;
       else
-        locList = new Point3D[0];
+        locList = Array.Empty<Point3D>();
 
       Point3D closest = Point3D.Zero;
       double minDist = double.MaxValue;

@@ -191,12 +191,12 @@ namespace Server.Engines.Doom
         e.Mobile.SendMessage("Lamp room puzzle successfully generated.");
     }
 
-    public static Item AddLeverPuzzlePart(int[] Loc, Item newitem)
+    public static Item AddLeverPuzzlePart(int[] loc, Item newitem)
     {
       if (newitem?.Deleted != false)
         installed = false;
       else
-        newitem.MoveToWorld(new Point3D(Loc[0], Loc[1], Loc[2]), Map.Malas);
+        newitem.MoveToWorld(new Point3D(loc[0], loc[1], loc[2]), Map.Malas);
 
       return newitem;
     }
@@ -382,7 +382,7 @@ namespace Server.Engines.Doom
 
     public static bool AniSafe(Mobile m) => m?.BodyMod == 0 && m.Alive && !TransformationSpellHelper.UnderTransformation(m);
 
-    public static IEntity ZAdjustedIEFromMobile(Mobile m, int ZDelta) => new Entity(Serial.Zero, new Point3D(m.X, m.Y, m.Z + ZDelta), m.Map);
+    public static IEntity ZAdjustedIEFromMobile(Mobile m, int zDelta) => new Entity(Serial.Zero, new Point3D(m.X, m.Y, m.Z + zDelta), m.Map);
 
     public static void DoDamage(Mobile m, int min, int max, bool poison)
     {
@@ -472,12 +472,12 @@ namespace Server.Engines.Doom
       private LeverPuzzleController m_Controller;
       private readonly Mobile m_Player;
 
-      public RockTimer(Mobile player, LeverPuzzleController Controller)
+      public RockTimer(Mobile player, LeverPuzzleController controller)
         : base(TimeSpan.Zero, TimeSpan.FromSeconds(.25))
       {
         Count = 0;
         m_Player = player;
-        m_Controller = Controller;
+        m_Controller = controller;
       }
 
       private int Rock() => 0x1363 + Utility.Random(0, 11);

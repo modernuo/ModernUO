@@ -190,54 +190,49 @@ namespace Server
       if (File.Exists(MobileIndexPath) && File.Exists(MobileTypesPath))
       {
         using var idx = new FileStream(MobileIndexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-        var idxReader = new BinaryReader(idx);
+        using var idxReader = new BinaryReader(idx);
+        using var tdb = new FileStream(MobileTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        using var tdbReader = new BinaryReader(tdb);
+        var types = ReadTypes(tdbReader);
 
-        using (var tdb = new FileStream(MobileTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+        mobileCount = idxReader.ReadInt32();
+
+        Mobiles = new Dictionary<Serial, Mobile>(mobileCount);
+
+        for (var i = 0; i < mobileCount; ++i)
         {
-          var tdbReader = new BinaryReader(tdb);
+          var typeID = idxReader.ReadInt32();
+          var serial = idxReader.ReadUInt32();
+          var pos = idxReader.ReadInt64();
+          var length = idxReader.ReadInt32();
 
-          var types = ReadTypes(tdbReader);
+          var objs = types[typeID];
 
-          mobileCount = idxReader.ReadInt32();
+          if (objs == null)
+            continue;
 
-          Mobiles = new Dictionary<Serial, Mobile>(mobileCount);
+          Mobile m = null;
+          var ctor = objs.Item1;
+          var typeName = objs.Item2;
 
-          for (var i = 0; i < mobileCount; ++i)
+          try
           {
-            var typeID = idxReader.ReadInt32();
-            var serial = idxReader.ReadUInt32();
-            var pos = idxReader.ReadInt64();
-            var length = idxReader.ReadInt32();
-
-            var objs = types[typeID];
-
-            if (objs == null)
-              continue;
-
-            Mobile m = null;
-            var ctor = objs.Item1;
-            var typeName = objs.Item2;
-
-            try
-            {
-              ctorArgs[0] = (Serial)serial;
-              m = (Mobile)ctor.Invoke(ctorArgs);
-            }
-            catch
-            {
-              // ignored
-            }
-
-            if (m != null)
-            {
-              mobiles.Add(new MobileEntry(m, typeID, typeName, pos, length));
-              AddMobile(m);
-            }
+            ctorArgs[0] = (Serial)serial;
+            m = (Mobile)ctor.Invoke(ctorArgs);
+          }
+          catch
+          {
+            // ignored
           }
 
-          tdbReader.Close();
+          if (m != null)
+          {
+            mobiles.Add(new MobileEntry(m, typeID, typeName, pos, length));
+            AddMobile(m);
+          }
         }
 
+        tdbReader.Close();
         idxReader.Close();
       }
       else
@@ -248,54 +243,51 @@ namespace Server
       if (File.Exists(ItemIndexPath) && File.Exists(ItemTypesPath))
       {
         using var idx = new FileStream(ItemIndexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-        var idxReader = new BinaryReader(idx);
+        using var idxReader = new BinaryReader(idx);
 
-        using (var tdb = new FileStream(ItemTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+        var tdb = new FileStream(ItemTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        using var tdbReader = new BinaryReader(tdb);
+
+        var types = ReadTypes(tdbReader);
+
+        itemCount = idxReader.ReadInt32();
+
+        Items = new Dictionary<Serial, Item>(itemCount);
+
+        for (var i = 0; i < itemCount; ++i)
         {
-          var tdbReader = new BinaryReader(tdb);
+          var typeID = idxReader.ReadInt32();
+          var serial = idxReader.ReadUInt32();
+          var pos = idxReader.ReadInt64();
+          var length = idxReader.ReadInt32();
 
-          var types = ReadTypes(tdbReader);
+          var objs = types[typeID];
 
-          itemCount = idxReader.ReadInt32();
+          if (objs == null)
+            continue;
 
-          Items = new Dictionary<Serial, Item>(itemCount);
+          Item item = null;
+          var ctor = objs.Item1;
+          var typeName = objs.Item2;
 
-          for (var i = 0; i < itemCount; ++i)
+          try
           {
-            var typeID = idxReader.ReadInt32();
-            var serial = idxReader.ReadUInt32();
-            var pos = idxReader.ReadInt64();
-            var length = idxReader.ReadInt32();
-
-            var objs = types[typeID];
-
-            if (objs == null)
-              continue;
-
-            Item item = null;
-            var ctor = objs.Item1;
-            var typeName = objs.Item2;
-
-            try
-            {
-              ctorArgs[0] = (Serial)serial;
-              item = (Item)ctor.Invoke(ctorArgs);
-            }
-            catch
-            {
-              // ignored
-            }
-
-            if (item != null)
-            {
-              items.Add(new ItemEntry(item, typeID, typeName, pos, length));
-              AddItem(item);
-            }
+            ctorArgs[0] = (Serial)serial;
+            item = (Item)ctor.Invoke(ctorArgs);
+          }
+          catch
+          {
+            // ignored
           }
 
-          tdbReader.Close();
+          if (item != null)
+          {
+            items.Add(new ItemEntry(item, typeID, typeName, pos, length));
+            AddItem(item);
+          }
         }
 
+        tdbReader.Close();
         idxReader.Close();
       }
       else

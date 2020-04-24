@@ -112,7 +112,7 @@ namespace Server.Items
         return false;
       }
 
-      base.ScissorHelper(from, item, 1, false);
+      this.ScissorHelper(from, item, 1, false);
       return true;
     }
   }

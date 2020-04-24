@@ -25,34 +25,34 @@ namespace Server.Spells.Bushido
 
     public override bool CheckCast() => VerifyCast(Caster, true) && base.CheckCast();
 
-    public static bool VerifyCast(Mobile Caster, bool messages)
+    public static bool VerifyCast(Mobile caster, bool messages)
     {
-      if (Caster == null) // Sanity
+      if (caster == null) // Sanity
         return false;
 
-      if (!(Caster.FindItemOnLayer(Layer.OneHanded) is BaseWeapon weap))
-        weap = Caster.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon;
+      if (!(caster.FindItemOnLayer(Layer.OneHanded) is BaseWeapon weap))
+        weap = caster.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon;
 
       if (weap != null)
       {
-        if (Core.ML && Caster.Skills[weap.Skill].Base < 50)
+        if (Core.ML && caster.Skills[weap.Skill].Base < 50)
         {
           if (messages)
-            Caster.SendLocalizedMessage(
+            caster.SendLocalizedMessage(
               1076206); // Your skill with your equipped weapon must be 50 or higher to use Evasion.
           return false;
         }
       }
-      else if (!(Caster.FindItemOnLayer(Layer.TwoHanded) is BaseShield))
+      else if (!(caster.FindItemOnLayer(Layer.TwoHanded) is BaseShield))
       {
         if (messages)
-          Caster.SendLocalizedMessage(1062944); // You must have a weapon or a shield equipped to use this ability!
+          caster.SendLocalizedMessage(1062944); // You must have a weapon or a shield equipped to use this ability!
         return false;
       }
 
-      if (!Caster.CanBeginAction<Evasion>())
+      if (!caster.CanBeginAction<Evasion>())
       {
-        if (messages) Caster.SendLocalizedMessage(501789); // You must wait before trying again.
+        if (messages) caster.SendLocalizedMessage(501789); // You must wait before trying again.
         return false;
       }
 

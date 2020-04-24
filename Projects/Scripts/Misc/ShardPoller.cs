@@ -19,8 +19,8 @@ namespace Server.Misc
     public ShardPoller() : base(0x1047)
     {
       Duration = TimeSpan.FromHours(24.0);
-      Options = new ShardPollOption[0];
-      Addresses = new IPAddress[0];
+      Options = Array.Empty<ShardPollOption>();
+      Addresses = Array.Empty<IPAddress>();
 
       Movable = false;
     }
@@ -255,7 +255,7 @@ namespace Server.Misc
     {
       m_Title = title;
       LineBreaks = GetBreaks(m_Title);
-      Voters = new IPAddress[0];
+      Voters = Array.Empty<IPAddress>();
     }
 
     public ShardPollOption(IGenericReader reader)

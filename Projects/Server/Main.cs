@@ -453,7 +453,7 @@ namespace Server
       EventSink.InvokeServerStarted();
 
       // Start net socket server
-      var host = TcpServer.CreateWebHostBuilder(new string[0]).Build();
+      var host = TcpServer.CreateWebHostBuilder().Build();
       var life = host.Services.GetRequiredService<IHostApplicationLifetime>();
       life.ApplicationStopping.Register(() => { Kill(); });
 

@@ -34,7 +34,7 @@ namespace Server.Items
     {
       if (Deleted || !from.CanSee(this)) return false;
 
-      base.ScissorHelper(from, new Bandage(), 1);
+      this.ScissorHelper(from, new Bandage(), 1);
 
       return true;
     }

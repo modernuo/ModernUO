@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Xml;
 
@@ -29,7 +30,7 @@ namespace Server.Gumps
       Name = xml.MoveToAttribute("name") ? xml.Value : "empty";
 
       if (xml.IsEmptyElement)
-        Children = new IGoNode[0];
+        Children = Array.Empty<IGoNode>();
       else
       {
         List<IGoNode> children = new List<IGoNode>();

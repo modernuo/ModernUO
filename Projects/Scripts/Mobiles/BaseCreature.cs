@@ -1594,7 +1594,7 @@ namespace Server.Mobiles
       return base.OnDragDrop(from, dropped);
     }
 
-    public void ChangeAIType(AIType NewAI)
+    public void ChangeAIType(AIType newAI)
     {
       AIObject?.m_Timer.Stop();
 
@@ -1604,7 +1604,7 @@ namespace Server.Mobiles
         return;
       }
 
-      AIObject = NewAI switch
+      AIObject = newAI switch
       {
         AIType.AI_Melee => (BaseAI)new MeleeAI(this),
         AIType.AI_Animal => new AnimalAI(this),
@@ -2044,7 +2044,7 @@ namespace Server.Mobiles
     public virtual void CheckedAnimate(int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
     {
       if (!Mounted)
-        base.Animate(action, frameCount, repeatCount, forward, repeat, delay);
+        this.Animate(action, frameCount, repeatCount, forward, repeat, delay);
     }
 
     private void CheckAIActive()

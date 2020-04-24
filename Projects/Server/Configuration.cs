@@ -32,9 +32,11 @@ namespace Server
 
     public static Configuration Instance => m_Configuration ??= ReadConfiguration();
 
-    [JsonPropertyName("dataDirectories")] public List<string> DataDirectories { get; set; } = new List<string>();
+    [JsonPropertyName("dataDirectories")]
+    public List<string> DataDirectories { get; set; } = new List<string>();
 
-    [JsonPropertyName("emailSettings")] public EmailSettings emailSettings { get; set; } = new EmailSettings();
+    [JsonPropertyName("emailSettings")]
+    public EmailSettings emailSettings { get; set; } = new EmailSettings();
 
     private static string FilePath => Path.Join(Core.BaseDirectory, "Data/modernuo.json");
 
@@ -98,10 +100,14 @@ namespace Server
   // TODO: Make configuration pluggable. Move this to scripts
   public class EmailSettings
   {
-    [JsonPropertyName("fromAddress")] public string FromAddress { get; set; }
-    [JsonPropertyName("fromName")] public string FromName { get; set; }
-    [JsonPropertyName("crashAddress")] public string crashAddress { get; set; }
-    [JsonPropertyName("crashName")] public string crashName { get; set; }
+    [JsonPropertyName("fromAddress")]
+    public string FromAddress { get; set; }
+    [JsonPropertyName("fromName")]
+    public string FromName { get; set; }
+    [JsonPropertyName("crashAddress")]
+    public string crashAddress { get; set; }
+    [JsonPropertyName("crashName")]
+    public string crashName { get; set; }
 
     [JsonPropertyName("speechLogPageAddress")]
     public string speechLogPageAddress { get; set; }
@@ -109,9 +115,13 @@ namespace Server
     [JsonPropertyName("speechLogPageName")]
     public string speechLogPageName { get; set; }
 
-    [JsonPropertyName("emailServer")] public string emailServer { get; set; }
-    [JsonPropertyName("emailPort")] public int emailPort { get; set; }
-    [JsonPropertyName("emailUsername")] public string emailUsername { get; set; }
-    [JsonPropertyName("emailPassword")] public string emailPassword { get; set; }
+    [JsonPropertyName("emailServer")]
+    public string emailServer { get; set; }
+    [JsonPropertyName("emailPort")]
+    public int emailPort { get; set; }
+    [JsonPropertyName("emailUsername")]
+    public string emailUsername { get; set; }
+    [JsonPropertyName("emailPassword")]
+    public string emailPassword { get; set; }
   }
 }

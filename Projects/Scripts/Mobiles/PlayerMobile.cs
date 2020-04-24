@@ -2592,7 +2592,7 @@ namespace Server.Mobiles
     public virtual void CheckedAnimate(int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
     {
       if (!Mounted)
-        base.Animate(action, frameCount, repeatCount, forward, repeat, delay);
+        this.Animate(action, frameCount, repeatCount, forward, repeat, delay);
     }
 
     public override bool CanSee(Item item) => DesignContext?.Foundation.IsHiddenToCustomizer(item) != true && base.CanSee(item);

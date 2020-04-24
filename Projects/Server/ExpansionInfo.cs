@@ -117,11 +117,11 @@ namespace Server
     NewMovementSystem = 0x00004000,
     NewFeluccaAreas = 0x00008000,
 
-    ExpansionNone = ContextMenus, //
-    ExpansionT2A = ContextMenus, //
-    ExpansionUOR = ContextMenus, // None
-    ExpansionUOTD = ContextMenus, //
-    ExpansionLBR = ContextMenus, //
+    ExpansionNone = ContextMenus,
+    ExpansionT2A = ContextMenus,
+    ExpansionUOR = ContextMenus,
+    ExpansionUOTD = ContextMenus,
+    ExpansionLBR = ContextMenus,
     ExpansionAOS = ContextMenus | AOS,
     ExpansionSE = ExpansionAOS | SE,
     ExpansionML = ExpansionSE | ML,

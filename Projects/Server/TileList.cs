@@ -22,7 +22,7 @@ namespace Server
 {
   public class TileList
   {
-    private static readonly StaticTile[] m_EmptyTiles = new StaticTile[0];
+    private static readonly StaticTile[] m_EmptyTiles = System.Array.Empty<StaticTile>();
     private StaticTile[] m_Tiles;
 
     public TileList()

@@ -14,7 +14,7 @@ namespace Server.Items
     [Constructible]
     public BallotBox() : base(0x9A8)
     {
-      Topic = new string[0];
+      Topic = Array.Empty<string>();
       Yes = new List<Mobile>();
       No = new List<Mobile>();
     }
@@ -33,7 +33,7 @@ namespace Server.Items
 
     public void ClearTopic()
     {
-      Topic = new string[0];
+      Topic = Array.Empty<string>();
 
       ClearVotes();
     }

@@ -217,7 +217,7 @@ namespace Server
       typeof(ExorcismScroll)
     };
 
-    public static Type[] PaladinScrollTypes { get; } = new Type[0];
+    public static Type[] PaladinScrollTypes { get; } = Array.Empty<Type>();
 
     public static Type[] ArcanistScrollTypes { get; } =
     {

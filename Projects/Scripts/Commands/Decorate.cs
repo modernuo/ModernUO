@@ -10,7 +10,7 @@ using Server.Utilities;
 
 namespace Server.Commands
 {
-  public class Decorate
+  public static class Decorate
   {
     private static Mobile m_Mobile;
     private static int m_Count;
@@ -73,7 +73,7 @@ namespace Server.Commands
 
     private static readonly Queue<Item> m_DeleteQueue = new Queue<Item>();
 
-    private static readonly string[] m_EmptyParams = new string[0];
+    private static readonly string[] m_EmptyParams = Array.Empty<string>();
     private List<DecorationEntry> m_Entries;
     private int m_ItemID;
     private string[] m_Params;
@@ -932,14 +932,13 @@ namespace Server.Commands
 
         for (int j = 0; j < maps.Length; ++j)
         {
-
           try
           {
             item ??= Construct();
           }
           catch (TypeInitializationException e)
           {
-            Console.WriteLine($"{nameof(Generate)}() failed to load type: {e.TypeName}: {e.InnerException.Message}");
+            Console.WriteLine($"{nameof(Generate)}() failed to load type: {e.TypeName}: {e.InnerException?.Message}");
             continue;
           }
 
@@ -1085,7 +1084,7 @@ namespace Server.Commands
 
     public string Extra { get; }
 
-    public void Pop(out string v, ref string line)
+    public static void Pop(out string v, ref string line)
     {
       int space = line.IndexOf(' ');
 

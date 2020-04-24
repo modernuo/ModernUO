@@ -37,7 +37,7 @@ namespace Server.Multis
     private Point3D m_RelativeBanLocation;
     private TrashBarrel m_Trash;
 
-    public BaseHouse(int multiID, Mobile owner, int MaxLockDown, int MaxSecure) : base(multiID)
+    public BaseHouse(int multiID, Mobile owner, int maxLockDown, int maxSecure) : base(multiID)
     {
       AllHouses.Add(this);
 
@@ -61,8 +61,8 @@ namespace Server.Multis
 
       m_Owner = owner;
 
-      MaxLockDowns = MaxLockDown;
-      MaxSecures = MaxSecure;
+      MaxLockDowns = maxLockDown;
+      MaxSecures = maxSecure;
 
       m_RelativeBanLocation = BaseBanLocation;
 
@@ -1261,9 +1261,9 @@ namespace Server.Multis
       if (LockDowns == null)
         return;
 
-      int x = base.Location.X - oldLocation.X;
-      int y = base.Location.Y - oldLocation.Y;
-      int z = base.Location.Z - oldLocation.Z;
+      int x = this.Location.X - oldLocation.X;
+      int y = this.Location.Y - oldLocation.Y;
+      int z = this.Location.Z - oldLocation.Z;
 
       if (Sign?.Deleted == false)
         Sign.Location = new Point3D(Sign.X + x, Sign.Y + y, Sign.Z + z);
@@ -1548,7 +1548,7 @@ namespace Server.Multis
 
       if (door != null)
       {
-        if (from != null) door.KeyValue = CreateKeys(@from);
+        if (from != null) door.KeyValue = CreateKeys(from);
 
         AddDoor(door, xOffset, yOffset, zOffset);
       }

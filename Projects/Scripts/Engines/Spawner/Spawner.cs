@@ -81,7 +81,7 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.Developer)]
-    public WayPoint WayPoint { get; set; }
+    public virtual WayPoint WayPoint { get; set; }
 
     [CommandProperty(AccessLevel.Developer)]
     public bool Running
@@ -454,7 +454,7 @@ namespace Server.Mobiles
           string[] propargs;
 
           if (string.IsNullOrEmpty(entry.Properties))
-            propargs = new string[0];
+            propargs = Array.Empty<string>();
           else
             propargs = CommandSystem.Split(entry.Properties.Trim());
 
@@ -469,7 +469,7 @@ namespace Server.Mobiles
           }
 
           if (string.IsNullOrEmpty(entry.Parameters))
-            paramargs = new string[0];
+            paramargs = Array.Empty<string>();
           else
             paramargs = entry.Parameters.Trim().Split(' ');
 
@@ -542,7 +542,7 @@ namespace Server.Mobiles
               int walkrange = GetWalkingRange();
 
               c.RangeHome = walkrange >= 0 ? walkrange : m_HomeRange;
-              c.CurrentWayPoint = GetWayPoint();
+              c.CurrentWayPoint = WayPoint;
 
               if (m_Team > 0)
                 c.Team = m_Team;
@@ -590,8 +590,6 @@ namespace Server.Mobiles
     }
 
     public virtual int GetWalkingRange() => m_WalkingRange;
-
-    public virtual WayPoint GetWayPoint() => WayPoint;
 
     public virtual Point3D GetSpawnPosition(ISpawnable spawned, Map map)
     {

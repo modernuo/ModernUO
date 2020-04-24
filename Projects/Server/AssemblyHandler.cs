@@ -114,7 +114,7 @@ namespace Server
     public IEnumerable<string> Names => m_NameMap.Keys;
 
     public IEnumerable<Type> this[string name] =>
-      m_NameMap.TryGetValue(name, out var value) ? value.Select(x => m_Types[x]) : new Type[0];
+      m_NameMap.TryGetValue(name, out var value) ? value.Select(x => m_Types[x]) : Array.Empty<Type>();
 
     public TypeCache(Assembly asm)
     {

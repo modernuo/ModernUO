@@ -437,9 +437,9 @@ namespace Server.Mobiles
           1062317); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
     }
 
-    public bool IsEligible(Mobile m, Item Artifact) =>
+    public bool IsEligible(Mobile m, Item artifact) =>
       m.Player && m.Alive && m.InRange(Location, 32) &&
-      m.Backpack?.CheckHold(m, Artifact, false) == true;
+      m.Backpack?.CheckHold(m, artifact, false) == true;
 
     public Item GetArtifact()
     {

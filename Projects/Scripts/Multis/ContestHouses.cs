@@ -31,8 +31,8 @@ namespace Server.Multis
       }
     }
 
-    public BaseContestHouse(ContestHouseType type, int multiID, Mobile owner, int MaxLockDown, int MaxSecure)
-      : base(multiID, owner, MaxLockDown, MaxSecure)
+    public BaseContestHouse(ContestHouseType type, int multiID, Mobile owner, int maxLockDown, int maxSecure)
+      : base(multiID, owner, maxLockDown, maxSecure)
     {
       HouseType = type;
 
@@ -71,9 +71,9 @@ namespace Server.Multis
     {
       base.OnLocationChange(oldLocation);
 
-      int x = base.Location.X - oldLocation.X;
-      int y = base.Location.Y - oldLocation.Y;
-      int z = base.Location.Z - oldLocation.Z;
+      int x = this.Location.X - oldLocation.X;
+      int y = this.Location.Y - oldLocation.Y;
+      int z = this.Location.Z - oldLocation.Z;
 
       if (Fixtures == null) return;
 

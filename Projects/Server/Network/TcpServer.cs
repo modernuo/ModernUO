@@ -37,7 +37,7 @@ namespace Server.Network
     // Make this thread safe
     public static List<NetState> Instances { get; } = new List<NetState>();
 
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+    public static IWebHostBuilder CreateWebHostBuilder(string[] args = null) =>
       WebHost.CreateDefaultBuilder(args)
         .UseSetting(WebHostDefaults.SuppressStatusMessagesKey, "True")
         .ConfigureServices(services => { services.AddSingleton<IMessagePumpService>(new MessagePumpService()); })

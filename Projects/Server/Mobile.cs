@@ -40,8 +40,6 @@ using Server.Utilities;
 
 namespace Server
 {
-  #region Callbacks
-
   public delegate void TargetCallback(Mobile from, object targeted);
 
   public delegate void TargetStateCallback<in T>(Mobile from, object targeted, T state);
@@ -49,10 +47,6 @@ namespace Server
   public delegate void PromptCallback(Mobile from, string text);
 
   public delegate void PromptStateCallback<in T>(Mobile from, string text, T state);
-
-  #endregion
-
-  #region [...]Mods
 
   public class TimedSkillMod : SkillMod
   {
@@ -281,8 +275,6 @@ namespace Server
     }
   }
 
-  #endregion
-
   public class DamageEntry
   {
     public DamageEntry(Mobile damager) => Damager = damager;
@@ -299,8 +291,6 @@ namespace Server
 
     public static TimeSpan ExpireDelay { get; set; } = TimeSpan.FromMinutes(2.0);
   }
-
-  #region Enums
 
   [Flags]
   public enum StatType
@@ -405,8 +395,6 @@ namespace Server
     Cured
   }
 
-  #endregion
-
   [Serializable]
   public class MobileNotConnectedException : Exception
   {
@@ -415,9 +403,7 @@ namespace Server
       Source = source.ToString();
   }
 
-  #region Delegates
-
-  public delegate bool SkillCheckTargetHandler(Mobile from, SkillName skill, object target, double minSkill,
+    public delegate bool SkillCheckTargetHandler(Mobile from, SkillName skill, object target, double minSkill,
     double maxSkill);
 
   public delegate bool SkillCheckLocationHandler(Mobile from, SkillName skill, double minSkill, double maxSkill);
@@ -437,12 +423,11 @@ namespace Server
 
   public delegate int AOSStatusHandler(Mobile from, int index);
 
-  #endregion
 
-  /// <summary>
-  ///   Base class representing players, npcs, and creatures.
-  /// </summary>
-  public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable, IPropertyListObject
+    /// <summary>
+    ///   Base class representing players, npcs, and creatures.
+    /// </summary>
+    public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable, IPropertyListObject
   {
     private readonly BufferWriter m_SaveBuffer;
     public BufferWriter SaveBuffer => m_SaveBuffer;
@@ -4991,7 +4976,7 @@ namespace Server
         SpeechEventArgs mutatedArgs = null;
 
         if (MutateSpeech(hears, ref mutatedText, ref mutateContext))
-          mutatedArgs = new SpeechEventArgs(this, mutatedText, type, hue, new int[0]);
+          mutatedArgs = new SpeechEventArgs(this, mutatedText, type, hue, Array.Empty<int>());
 
         CheckSpeechManifest();
 
@@ -7113,7 +7098,7 @@ namespace Server
     /// <summary>
     ///   Overridable. Virtual event invoked when <see cref="Region" /> changes.
     /// </summary>
-    public virtual void OnRegionChange(Region Old, Region New)
+    public virtual void OnRegionChange(Region old, Region @new)
     {
     }
 
@@ -7728,7 +7713,7 @@ namespace Server
         if (m_CallbackHandlesCancel && m_Callback != null)
           m_Callback(from, "");
         else
-          m_CancelCallback?.Invoke(@from, "");
+          m_CancelCallback?.Invoke(from, "");
       }
     }
 

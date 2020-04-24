@@ -1584,7 +1584,7 @@ namespace Server.Items
       if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
         list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
 
-      base.AddResistanceProperties(list);
+      this.AddResistanceProperties(list);
 
       if ((prop = GetDurabilityBonus()) > 0)
         list.Add(1060410, prop.ToString()); // durability ~1_val~%

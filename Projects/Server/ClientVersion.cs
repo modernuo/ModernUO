@@ -42,7 +42,7 @@ namespace Server
       Patch = pat;
       Type = type;
 
-      SourceString = _ToStringImpl();
+      SourceString = ToStringImpl();
     }
 
     public ClientVersion(string fmt)
@@ -158,7 +158,7 @@ namespace Server
              && Type == v.Type;
     }
 
-    private string _ToStringImpl()
+    private string ToStringImpl()
     {
       var builder = new StringBuilder(16);
 
@@ -188,7 +188,7 @@ namespace Server
       return builder.ToString();
     }
 
-    public override string ToString() => _ToStringImpl();
+    public override string ToString() => ToStringImpl();
 
     public static bool IsNull(object x) => ReferenceEquals(x, null);
 

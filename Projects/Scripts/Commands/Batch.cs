@@ -199,7 +199,7 @@ namespace Server.Commands
       {
         argString = "";
         command = Command.ToLower();
-        args = new string[0];
+        args = Array.Empty<string>();
       }
     }
   }

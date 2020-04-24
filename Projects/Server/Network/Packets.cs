@@ -369,7 +369,7 @@ namespace Server.Network
     {
       EnsureCapacity(256);
 
-      m_Stream.Write(!(vendor.FindItemOnLayer(Layer.ShopBuy) is Container BuyPack) ? Serial.MinusOne : BuyPack.Serial);
+      m_Stream.Write(!(vendor.FindItemOnLayer(Layer.ShopBuy) is Container buyPack) ? Serial.MinusOne : buyPack.Serial);
 
       m_Stream.Write((byte)list.Count);
 
@@ -417,20 +417,20 @@ namespace Server.Network
 
   public sealed class EndVendorSell : Packet
   {
-    public EndVendorSell(Mobile Vendor) : base(0x3B, 8)
+    public EndVendorSell(Mobile vendor) : base(0x3B, 8)
     {
       m_Stream.Write((ushort)8); // length
-      m_Stream.Write(Vendor.Serial);
+      m_Stream.Write(vendor.Serial);
       m_Stream.Write((byte)0);
     }
   }
 
   public sealed class EndVendorBuy : Packet
   {
-    public EndVendorBuy(Mobile Vendor) : base(0x3B, 8)
+    public EndVendorBuy(Mobile vendor) : base(0x3B, 8)
     {
       m_Stream.Write((ushort)8); // length
-      m_Stream.Write(Vendor.Serial);
+      m_Stream.Write(vendor.Serial);
       m_Stream.Write((byte)0);
     }
   }

@@ -80,11 +80,13 @@ namespace Server.Items
     {
     }
 
+    /* Using a scroll increases the maximum amount of a specific skill or your maximum statistics.
+     * When used, the effect is not immediately seen without a gain of points with that skill or statistics.
+     * You can view your maximum skill values in your skills window.
+     * You can view your maximum statistic value in your statistics window.
+     */
     public override int Message =>
-      1049469; /* Using a scroll increases the maximum amount of a specific skill or your maximum statistics.
-																* When used, the effect is not immediately seen without a gain of points with that skill or statistics.
-																* You can view your maximum skill values in your skills window.
-																* You can view your maximum statistic value in your statistics window. */
+      1049469;
 
     public override int Title
     {
@@ -92,11 +94,13 @@ namespace Server.Items
       {
         double level = (Value - 105.0) / 5.0;
 
+        /* Wonderous Scroll (105 Skill): OR
+         * Exalted Scroll (110 Skill): OR
+         * Mythical Scroll (115 Skill): OR
+         * Legendary Scroll (120 Skill):
+         */
         if (level >= 0.0 && level <= 3.0 && Value % 5.0 == 0.0)
-          return 1049635 + (int)level; /* Wonderous Scroll (105 Skill): OR
-													* Exalted Scroll (110 Skill): OR
-													* Mythical Scroll (115 Skill): OR
-													* Legendary Scroll (120 Skill): */
+          return 1049635 + (int)level;
 
         return 0;
       }

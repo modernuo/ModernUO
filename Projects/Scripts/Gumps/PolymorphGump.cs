@@ -25,13 +25,13 @@ namespace Server.Gumps
     public static readonly PolymorphEntry Ettin = new PolymorphEntry(8408, 0x02, 1015252, 25, 8);
     public static readonly PolymorphEntry Daemon = new PolymorphEntry(8403, 0x09, 1015253, 25, 8);
 
-    private PolymorphEntry(int Art, int Body, int LocNum, int X, int Y)
+    private PolymorphEntry(int art, int body, int locNum, int x, int y)
     {
-      ArtID = Art;
-      BodyID = Body;
-      LocNumber = LocNum;
-      this.X = X;
-      this.Y = Y;
+      ArtID = art;
+      BodyID = body;
+      LocNumber = locNum;
+      this.X = x;
+      this.Y = y;
     }
 
     public int ArtID { get; }
