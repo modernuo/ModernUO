@@ -36,27 +36,20 @@ namespace Server.Gumps
     private static readonly byte[] m_NoClose = StringToBuffer("{ noclose }");
     private static readonly byte[] m_NoDispose = StringToBuffer("{ nodispose }");
     private static readonly byte[] m_NoResize = StringToBuffer("{ noresize }");
-    private bool m_Closable = true;
-    private bool m_Disposable = true;
 
-    private bool m_Draggable = true;
-    private bool m_Resizable = true;
-
-    private uint m_Serial;
     private readonly List<string> m_Strings;
 
     internal int m_TextEntries, m_Switches;
-    private int m_X, m_Y;
 
     public Gump(int x, int y)
     {
       do
       {
-        m_Serial = m_NextSerial++;
-      } while (m_Serial == 0); // standard client apparently doesn't send a gump response packet if serial == 0
+        Serial = m_NextSerial++;
+      } while (Serial == 0); // standard client apparently doesn't send a gump response packet if serial == 0
 
-      m_X = x;
-      m_Y = y;
+      X = x;
+      Y = y;
 
       TypeID = GetTypeID(GetType());
 
@@ -64,108 +57,25 @@ namespace Server.Gumps
       m_Strings = new List<string>();
     }
 
-    public int TypeID{ get; }
+    public int TypeID { get; }
 
-    public List<GumpEntry> Entries{ get; }
+    public List<GumpEntry> Entries { get; }
 
-    public uint Serial
-    {
-      get => m_Serial;
-      set
-      {
-        if (m_Serial != value)
-        {
-          m_Serial = value;
-          Invalidate();
-        }
-      }
-    }
+    public uint Serial { get; set; }
 
-    public int X
-    {
-      get => m_X;
-      set
-      {
-        if (m_X != value)
-        {
-          m_X = value;
-          Invalidate();
-        }
-      }
-    }
+    public int X { get; set; }
 
-    public int Y
-    {
-      get => m_Y;
-      set
-      {
-        if (m_Y != value)
-        {
-          m_Y = value;
-          Invalidate();
-        }
-      }
-    }
+    public int Y { get; set; }
 
-    public bool Disposable
-    {
-      get => m_Disposable;
-      set
-      {
-        if (m_Disposable != value)
-        {
-          m_Disposable = value;
-          Invalidate();
-        }
-      }
-    }
+    public bool Disposable { get; set; } = true;
 
-    public bool Resizable
-    {
-      get => m_Resizable;
-      set
-      {
-        if (m_Resizable != value)
-        {
-          m_Resizable = value;
-          Invalidate();
-        }
-      }
-    }
+    public bool Resizable { get; set; } = true;
 
-    public bool Draggable
-    {
-      get => m_Draggable;
-      set
-      {
-        if (m_Draggable != value)
-        {
-          m_Draggable = value;
-          Invalidate();
-        }
-      }
-    }
+    public bool Draggable { get; set; } = true;
 
-    public bool Closable
-    {
-      get => m_Closable;
-      set
-      {
-        if (m_Closable != value)
-        {
-          m_Closable = value;
-          Invalidate();
-        }
-      }
-    }
+    public bool Closable { get; set; } = true;
 
     public static int GetTypeID(Type type) => type?.FullName?.GetHashCode() ?? -1;
-
-    public void Invalidate()
-    {
-      //if ( m_Strings.Count > 0 )
-      //	m_Strings.Clear();
-    }
 
     public void AddPage(int page)
     {
@@ -208,7 +118,8 @@ namespace Server.Gumps
       Add(new GumpHtml(x, y, width, height, text, background, scrollbar));
     }
 
-    public void AddHtmlLocalized(int x, int y, int width, int height, int number, bool background = false, bool scrollbar = false)
+    public void AddHtmlLocalized(int x, int y, int width, int height, int number, bool background = false,
+      bool scrollbar = false)
     {
       Add(new GumpHtmlLocalized(x, y, width, height, number, background, scrollbar));
     }
@@ -264,7 +175,7 @@ namespace Server.Gumps
 
     public void AddTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText)
     {
-      Add( new GumpTextEntry(x, y, width, height, hue, entryID, initialText));
+      Add(new GumpTextEntry(x, y, width, height, hue, entryID, initialText));
     }
 
     public void AddTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText, int size)
@@ -277,6 +188,26 @@ namespace Server.Gumps
       Add(new GumpItemProperty(serial));
     }
 
+    public void AddSpriteImage(int x, int y, int gumpID, int width, int height, int sx, int sy)
+    {
+      Add(new GumpSpriteImage(x, y, gumpID, width, height, sx, sy));
+    }
+
+    public void AddECHandleInput()
+    {
+      Add(new GumpECHandleInput());
+    }
+
+    public void AddTooltip(int number, params TextDefinition[] args)
+    {
+      Add(new GumpTooltip(number, args));
+    }
+
+    public void AddGumpIDOverride(int gumpID)
+    {
+      Add(new GumpMasterGump(gumpID));
+    }
+
     public void Add(GumpEntry g)
     {
       if (g.Parent != this)
@@ -285,7 +216,6 @@ namespace Server.Gumps
       }
       else if (!Entries.Contains(g))
       {
-        Invalidate();
         Entries.Add(g);
       }
     }
@@ -295,18 +225,16 @@ namespace Server.Gumps
       if (g == null || !Entries.Contains(g))
         return;
 
-      Invalidate();
       Entries.Remove(g);
       g.Parent = null;
     }
 
     public int Intern(string value)
     {
-      int indexOf = m_Strings.IndexOf(value);
+      var indexOf = m_Strings.IndexOf(value);
 
       if (indexOf >= 0) return indexOf;
 
-      Invalidate();
       m_Strings.Add(value);
       return m_Strings.Count - 1;
     }
@@ -328,23 +256,23 @@ namespace Server.Gumps
       else
         disp = new DisplayGumpFast(this);
 
-      if (!m_Draggable)
+      if (!Draggable)
         disp.AppendLayout(m_NoMove);
 
-      if (!m_Closable)
+      if (!Closable)
         disp.AppendLayout(m_NoClose);
 
-      if (!m_Disposable)
+      if (!Disposable)
         disp.AppendLayout(m_NoDispose);
 
-      if (!m_Resizable)
+      if (!Resizable)
         disp.AppendLayout(m_NoResize);
 
-      int count = Entries.Count;
+      var count = Entries.Count;
 
-      for (int i = 0; i < count; ++i)
+      for (var i = 0; i < count; ++i)
       {
-        GumpEntry e = Entries[i];
+        var e = Entries[i];
 
         disp.AppendLayout(m_BeginLayout);
         e.AppendTo(ns, disp);

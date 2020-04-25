@@ -26,57 +26,37 @@ namespace Server.Gumps
   {
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer("gumppic");
     private static readonly byte[] m_HueEquals = Gump.StringToBuffer(" hue=");
-    private int m_GumpID;
-    private int m_Hue;
-    private int m_X, m_Y;
 
     public GumpImage(int x, int y, int gumpID, int hue = 0)
     {
-      m_X = x;
-      m_Y = y;
-      m_GumpID = gumpID;
-      m_Hue = hue;
+      X = x;
+      Y = y;
+      GumpID = gumpID;
+      Hue = hue;
     }
 
-    public int X
-    {
-      get => m_X;
-      set => Delta(ref m_X, value);
-    }
+    public int X { get; set; }
 
-    public int Y
-    {
-      get => m_Y;
-      set => Delta(ref m_Y, value);
-    }
+    public int Y { get; set; }
 
-    public int GumpID
-    {
-      get => m_GumpID;
-      set => Delta(ref m_GumpID, value);
-    }
+    public int GumpID { get; set; }
 
-    public int Hue
-    {
-      get => m_Hue;
-      set => Delta(ref m_Hue, value);
-    }
+    public int Hue { get; set; }
 
     public override string Compile(NetState ns) =>
-      m_Hue == 0 ? $"{{ gumppic {m_X} {m_Y} {m_GumpID} }}" :
-        $"{{ gumppic {m_X} {m_Y} {m_GumpID} hue={m_Hue} }}";
+      Hue == 0 ? $"{{ gumppic {X} {Y} {GumpID} }}" : $"{{ gumppic {X} {Y} {GumpID} hue={Hue} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {
       disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_GumpID);
+      disp.AppendLayout(X);
+      disp.AppendLayout(Y);
+      disp.AppendLayout(GumpID);
 
-      if (m_Hue != 0)
+      if (Hue != 0)
       {
         disp.AppendLayout(m_HueEquals);
-        disp.AppendLayoutNS(m_Hue);
+        disp.AppendLayoutNS(Hue);
       }
     }
   }
