@@ -79,13 +79,13 @@ namespace Server.Engines.Harvest
 
         veins = new[]
         {
-          new HarvestVein(49.0, 0.0, res[0], null), // Ordinary Logs
-          new HarvestVein(30.0, 0.5, res[1], res[0]), // Oak
-          new HarvestVein(10.0, 0.5, res[2], res[0]), // Ash
-          new HarvestVein(05.0, 0.5, res[3], res[0]), // Yew
-          new HarvestVein(03.0, 0.5, res[4], res[0]), // Heartwood
-          new HarvestVein(02.0, 0.5, res[5], res[0]), // Bloodwood
-          new HarvestVein(01.0, 0.5, res[6], res[0]) // Frostwood
+          new HarvestVein(490, 0.0, res[0], null), // Ordinary Logs
+          new HarvestVein(300, 0.5, res[1], res[0]), // Oak
+          new HarvestVein(100, 0.5, res[2], res[0]), // Ash
+          new HarvestVein(050, 0.5, res[3], res[0]), // Yew
+          new HarvestVein(030, 0.5, res[4], res[0]), // Heartwood
+          new HarvestVein(020, 0.5, res[5], res[0]), // Bloodwood
+          new HarvestVein(010, 0.5, res[6], res[0]) // Frostwood
         };
 
         lumber.BonusResources = new[]
@@ -107,7 +107,7 @@ namespace Server.Engines.Harvest
 
         veins = new[]
         {
-          new HarvestVein(100.0, 0.0, res[0], null)
+          new HarvestVein(1000, 0.0, res[0], null)
         };
       }
 

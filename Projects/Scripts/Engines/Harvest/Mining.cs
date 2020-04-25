@@ -72,15 +72,15 @@ namespace Server.Engines.Harvest
       };
 
       HarvestVein[] veins = {
-        new HarvestVein(49.6, 0.0, res[0], null), // Iron
-        new HarvestVein(11.2, 0.5, res[1], res[0]), // Dull Copper
-        new HarvestVein(09.8, 0.5, res[2], res[0]), // Shadow Iron
-        new HarvestVein(08.4, 0.5, res[3], res[0]), // Copper
-        new HarvestVein(07.0, 0.5, res[4], res[0]), // Bronze
-        new HarvestVein(05.6, 0.5, res[5], res[0]), // Gold
-        new HarvestVein(04.2, 0.5, res[6], res[0]), // Agapite
-        new HarvestVein(02.8, 0.5, res[7], res[0]), // Verite
-        new HarvestVein(01.4, 0.5, res[8], res[0]) // Valorite
+        new HarvestVein(496, 0.0, res[0], null), // Iron
+        new HarvestVein(112, 0.5, res[1], res[0]), // Dull Copper
+        new HarvestVein(098, 0.5, res[2], res[0]), // Shadow Iron
+        new HarvestVein(084, 0.5, res[3], res[0]), // Copper
+        new HarvestVein(070, 0.5, res[4], res[0]), // Bronze
+        new HarvestVein(056, 0.5, res[5], res[0]), // Gold
+        new HarvestVein(042, 0.5, res[6], res[0]), // Agapite
+        new HarvestVein(028, 0.5, res[7], res[0]), // Verite
+        new HarvestVein(014, 0.5, res[8], res[0]) // Valorite
       };
 
       OreAndStone.Resources = res;
@@ -137,7 +137,7 @@ namespace Server.Engines.Harvest
 
       veins = new[]
       {
-        new HarvestVein(100.0, 0.0, res[0], null)
+        new HarvestVein(1000, 0.0, res[0], null)
       };
 
       Sand.Resources = res;

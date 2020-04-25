@@ -2,7 +2,7 @@ namespace Server.Engines.Harvest
 {
   public class HarvestVein
   {
-    public HarvestVein(double veinChance, double chanceToFallback, HarvestResource primaryResource,
+    public HarvestVein(uint veinChance, double chanceToFallback, HarvestResource primaryResource,
       HarvestResource fallbackResource)
     {
       VeinChance = veinChance;
@@ -11,7 +11,7 @@ namespace Server.Engines.Harvest
       FallbackResource = fallbackResource;
     }
 
-    public double VeinChance { get; set; }
+    public uint VeinChance { get; set; }
 
     public double ChanceToFallback { get; set; }
 

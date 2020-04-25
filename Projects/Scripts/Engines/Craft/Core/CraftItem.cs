@@ -301,7 +301,7 @@ namespace Server.Engines.Craft
       return false;
     }
 
-    public bool Find(int itemID, int[] itemIDs)
+    public static bool Find(int itemID, int[] itemIDs)
     {
       bool contains = false;
 
@@ -311,19 +311,8 @@ namespace Server.Engines.Craft
       return contains;
     }
 
-    public bool IsQuantityType(Type[][] types)
-    {
-      for (int i = 0; i < types.Length; ++i)
-      {
-        Type[] check = types[i];
-
-        for (int j = 0; j < check.Length; ++j)
-          if (typeof(IHasQuantity).IsAssignableFrom(check[j]))
-            return true;
-      }
-
-      return false;
-    }
+    public bool IsQuantityType(Type[][] types) =>
+      types.Any(check => check.Any(t => typeof(IHasQuantity).IsAssignableFrom(t)));
 
     public int ConsumeQuantity(Container cont, Type[][] types, int[] amounts)
     {
@@ -460,6 +449,7 @@ namespace Server.Engines.Craft
 
       CraftSubResCol resCol = UseSubRes2 ? craftSystem.CraftSubRes2 : craftSystem.CraftSubRes;
 
+      CraftRes res;
       for (int i = 0; i < types.Length; ++i)
       {
         CraftRes craftRes = Resources.GetAt(i);
@@ -500,7 +490,7 @@ namespace Server.Engines.Craft
 
             if (maxAmount == 0)
             {
-              CraftRes res = Resources.GetAt(i);
+              res = Resources.GetAt(i);
 
               if (res.MessageNumber > 0)
                 message = res.MessageNumber;
@@ -556,7 +546,6 @@ namespace Server.Engines.Craft
 
         resHue = m_ResHue;
       }
-
       // Consume Half ( for use all resource craft type )
       else if (consumeType == ConsumeType.Half)
       {
@@ -579,7 +568,6 @@ namespace Server.Engines.Craft
 
         resHue = m_ResHue;
       }
-
       else // ConstumeType.None ( it's basically used to know if the crafter has enough resource before starting the process )
       {
         index = -1;
@@ -611,18 +599,16 @@ namespace Server.Engines.Craft
         return true;
       }
 
-      {
-        CraftRes res = Resources.GetAt(index);
+      res = Resources.GetAt(index);
 
-        if (res.MessageNumber > 0)
-          message = res.MessageNumber;
-        else if (!string.IsNullOrEmpty(res.MessageString))
-          message = res.MessageString;
-        else
-          message = 502925; // You don't have the resources required to make that item.
+      if (res.MessageNumber > 0)
+        message = res.MessageNumber;
+      else if (!string.IsNullOrEmpty(res.MessageString))
+        message = res.MessageString;
+      else
+        message = 502925; // You don't have the resources required to make that item.
 
-        return false;
-      }
+      return false;
     }
 
     private void OnResourceConsumed(Item item, int amount)
@@ -730,7 +716,7 @@ namespace Server.Engines.Craft
 
       if (allRequiredSkills)
         chance = craftSystem.GetChanceAtMin(this) + (valMainSkill - minMainSkill) / (maxMainSkill - minMainSkill) *
-                 (1.0 - craftSystem.GetChanceAtMin(this));
+          (1.0 - craftSystem.GetChanceAtMin(this));
       else
         chance = 0.0;
 
@@ -832,7 +818,7 @@ namespace Server.Engines.Craft
     {
       return expansion switch
       {
-        Expansion.SE => (object)1063307, // The "Samurai Empire" expansion is required to attempt this item.
+        Expansion.SE => 1063307, // The "Samurai Empire" expansion is required to attempt this item.
         Expansion.ML => 1072650, // The "Mondain's Legacy" expansion is required to attempt this item.
         _ => $"The \"{ExpansionInfo.GetInfo(expansion).Name}\" expansion is required to attempt this item."
       };

@@ -902,7 +902,7 @@ namespace Server
 
     public static int Random(int count) => (int)RandomImpl.Next((uint)count);
 
-    public static int Random(uint count) => (int)RandomImpl.Next(count);
+    public static uint Random(uint count) => RandomImpl.Next(count);
 
     public static void RandomBytes(byte[] buffer) => RandomImpl.GetBytes(buffer);
 

@@ -70,7 +70,7 @@ namespace Server.Engines.Harvest
       };
 
       HarvestVein[] veins = {
-        new HarvestVein(100.0, 0.0, res[0], null)
+        new HarvestVein(1000, 0.0, res[0], null)
       };
 
       fish.Resources = res;
@@ -83,13 +83,10 @@ namespace Server.Engines.Harvest
           new BonusHarvestResource(80.0, .6, 1072597, typeof(WhitePearl))
         };
 
-      Definition = fish;
       Definitions.Add(fish);
     }
 
     public static Fishing System => m_System ?? (m_System = new Fishing());
-
-    public HarvestDefinition Definition { get; }
 
     public override void OnConcurrentHarvest(Mobile from, Item tool, HarvestDefinition def, object toHarvest)
     {
@@ -202,11 +199,11 @@ namespace Server.Engines.Harvest
                 {
                   int[] list =
                   {
-                  0x1CDD, 0x1CE5, // arm
-                  0x1CE0, 0x1CE8, // torso
-                  0x1CE1, 0x1CE9, // head
-                  0x1CE2, 0x1CEC // leg
-                };
+                    0x1CDD, 0x1CE5, // arm
+                    0x1CE0, 0x1CE8, // torso
+                    0x1CE1, 0x1CE9, // head
+                    0x1CE2, 0x1CEC // leg
+                  };
 
                   preLoot = new ShipwreckedItem(Utility.RandomList(list));
                   break;
@@ -215,10 +212,10 @@ namespace Server.Engines.Harvest
                 {
                   int[] list =
                   {
-                  0x1AE0, 0x1AE1, 0x1AE2, 0x1AE3, 0x1AE4, // skulls
-                  0x1B09, 0x1B0A, 0x1B0B, 0x1B0C, 0x1B0D, 0x1B0E, 0x1B0F, 0x1B10, // bone piles
-                  0x1B15, 0x1B16 // pelvis bones
-                };
+                    0x1AE0, 0x1AE1, 0x1AE2, 0x1AE3, 0x1AE4, // skulls
+                    0x1B09, 0x1B0A, 0x1B0B, 0x1B0C, 0x1B0D, 0x1B0E, 0x1B0F, 0x1B10, // bone piles
+                    0x1B15, 0x1B16 // pelvis bones
+                  };
 
                   preLoot = new ShipwreckedItem(Utility.RandomList(list));
                   break;
@@ -251,12 +248,12 @@ namespace Server.Engines.Harvest
                 {
                   int[] list =
                   {
-                  0x1EB5, // unfinished barrel
-                  0xA2A, // stool
-                  0xC1F, // broken clock
-                  0x1047, 0x1048, // globe
-                  0x1EB1, 0x1EB2, 0x1EB3, 0x1EB4 // barrel staves
-                };
+                    0x1EB5, // unfinished barrel
+                    0xA2A, // stool
+                    0xC1F, // broken clock
+                    0x1047, 0x1048, // globe
+                    0x1EB1, 0x1EB2, 0x1EB3, 0x1EB4 // barrel staves
+                  };
 
                   if (Utility.Random(list.Length + 1) == 0)
                     preLoot = new Candelabra();

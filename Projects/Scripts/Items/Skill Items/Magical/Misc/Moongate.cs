@@ -262,7 +262,7 @@ namespace Server.Items
       {
         from.CloseGump<WarningGump>();
         from.SendGump(new WarningGump(TitleNumber, TitleColor,
-          MessageString == null ? MessageNumber : (object)MessageString, MessageColor, GumpWidth, GumpHeight,
+          MessageString ?? (object)MessageNumber, MessageColor, GumpWidth, GumpHeight,
           okay => Warning_Callback(from, okay)));
       }
       else
