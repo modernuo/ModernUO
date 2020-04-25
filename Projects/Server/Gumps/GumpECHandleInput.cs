@@ -2,7 +2,8 @@
  * ModernUO                                                              *
  * Copyright (C) 2020 - ModernUO Development Team                        *
  * Email: hi@modernuo.com                                                *
- * File: GumpTooltip.cs - Created: 2020/04/24 - Updated: 2020/04/24      *
+ * File: GumpECHandleInput.cs                                            *
+ * Created: 2020/04/24 - Updated: 2020/04/24                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -22,27 +23,15 @@ using Server.Network;
 
 namespace Server.Gumps
 {
-  public class GumpTooltip : GumpEntry
+  public class GumpECHandleInput : GumpEntry
   {
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("tooltip");
+    public override string Compile(NetState ns) => "{ echandleinput }";
 
-    public GumpTooltip(int number, string args)
-    {
-      Number = number;
-      Args = args;
-    }
-
-    public int Number { get; set; }
-
-    public string Args { get; set; }
-
-    public override string Compile(NetState ns) => $"{{ tooltip {Number} @{Args}@ }}";
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("echandleinput");
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {
       disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(Number);
-      disp.AppendLayout(Args);
     }
   }
 }

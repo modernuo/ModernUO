@@ -35,7 +35,6 @@ namespace Server.Gumps
     private static readonly byte[] m_LayoutNameColor = Gump.StringToBuffer("xmfhtmlgumpcolor");
     private static readonly byte[] m_LayoutNameArgs = Gump.StringToBuffer("xmfhtmltok");
 
-    private GumpHtmlLocalizedType m_Type;
     private int m_Width, m_Height;
     private int m_X, m_Y;
 
@@ -50,7 +49,7 @@ namespace Server.Gumps
       Background = background;
       Scrollbar = scrollbar;
 
-      m_Type = GumpHtmlLocalizedType.Plain;
+      Type = GumpHtmlLocalizedType.Plain;
     }
 
     public GumpHtmlLocalized(int x, int y, int width, int height, int number, int color,
@@ -65,7 +64,7 @@ namespace Server.Gumps
       Background = background;
       Scrollbar = scrollbar;
 
-      m_Type = GumpHtmlLocalizedType.Color;
+      Type = GumpHtmlLocalizedType.Color;
     }
 
     public GumpHtmlLocalized(int x, int y, int width, int height, int number, string args, int color,
@@ -83,7 +82,7 @@ namespace Server.Gumps
       Background = background;
       Scrollbar = scrollbar;
 
-      m_Type = GumpHtmlLocalizedType.Args;
+      Type = GumpHtmlLocalizedType.Args;
     }
 
     public int X { get; set; }
@@ -104,21 +103,11 @@ namespace Server.Gumps
 
     public bool Scrollbar { get; set; }
 
-    public GumpHtmlLocalizedType Type
-    {
-      get => m_Type;
-      set
-      {
-        if (m_Type != value)
-        {
-          m_Type = value;
-        }
-      }
-    }
+    public GumpHtmlLocalizedType Type { get; set; }
 
     public override string Compile(NetState ns)
     {
-      return m_Type switch
+      return Type switch
       {
         GumpHtmlLocalizedType.Plain =>
         $"{{ xmfhtmlgump {X} {Y} {Width} {Height} {Number} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} }}",
@@ -131,7 +120,7 @@ namespace Server.Gumps
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {
-      switch (m_Type)
+      switch (Type)
       {
         case GumpHtmlLocalizedType.Plain:
           {
