@@ -53,10 +53,7 @@ namespace Server.Gumps
     {
       StringBuilder builder = new StringBuilder();
       for (int i = 0; i < m_Args.Length; i++)
-      {
-        TextDefinition arg = m_Args[i];
-        builder.AppendFormat("@{0}", arg);
-      }
+        builder.AppendFormat("@{0}", m_Args[i]);
 
       return builder.ToString();
     }
