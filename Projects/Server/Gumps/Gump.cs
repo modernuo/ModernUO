@@ -108,9 +108,9 @@ namespace Server.Gumps
       Add(new GumpGroup(group));
     }
 
-    public void AddTooltip(int number)
+    public void AddTooltip(int number, params TextDefinition[] args)
     {
-      Add(new GumpTooltip(number));
+      Add(new GumpTooltip(number, args));
     }
 
     public void AddHtml(int x, int y, int width, int height, string text, bool background = false, bool scrollbar = false)
@@ -196,11 +196,6 @@ namespace Server.Gumps
     public void AddECHandleInput()
     {
       Add(new GumpECHandleInput());
-    }
-
-    public void AddTooltip(int number, params TextDefinition[] args)
-    {
-      Add(new GumpTooltip(number, args));
     }
 
     public void AddGumpIDOverride(int gumpID)
