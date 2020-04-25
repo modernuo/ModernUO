@@ -14,7 +14,6 @@ namespace Server.Commands.Generic
         "__distinct",
         TypeAttributes.Public,
         typeof(object));
-
       {
         ConstructorBuilder ctor = typeBuilder.DefineConstructor(
           MethodAttributes.Public,
@@ -35,7 +34,6 @@ namespace Server.Commands.Generic
       typeBuilder.AddInterfaceImplementation(typeof(IComparer<T>));
 
       MethodBuilder compareMethod;
-
       {
         MethodEmitter emitter = new MethodEmitter(typeBuilder);
 
@@ -108,7 +106,6 @@ namespace Server.Commands.Generic
       }
 
       typeBuilder.AddInterfaceImplementation(typeof(IEqualityComparer<T>));
-
       {
         MethodEmitter emitter = new MethodEmitter(typeBuilder);
 

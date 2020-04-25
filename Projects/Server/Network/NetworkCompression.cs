@@ -27,7 +27,7 @@ namespace Server.Network
   /// <summary>
   ///   Handles outgoing packet compression for the network.
   /// </summary>
-  public static class Compression
+  public static class NetworkCompression
   {
     private const int CountIndex = 0;
     private const int ValueIndex = 1;
@@ -87,7 +87,7 @@ namespace Server.Network
 
     public static readonly ICompressor Compressor;
 
-    static Compression()
+    static NetworkCompression()
     {
       if (Core.Unix)
         Compressor = new UnixCompressor();

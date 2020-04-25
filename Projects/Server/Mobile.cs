@@ -528,9 +528,6 @@ namespace Server
     private int m_SolidHueOverride = -1;
 
     private StatLockType m_StrLock, m_DexLock, m_IntLock;
-
-    internal int m_TypeRef;
-
     private IWeapon m_Weapon;
 
     private bool m_YellowHealthbar;
@@ -545,12 +542,12 @@ namespace Server
       DamageEntries = new List<DamageEntry>();
 
       var ourType = GetType();
-      m_TypeRef = World.m_MobileTypes.IndexOf(ourType);
+      TypeRef = World.m_MobileTypes.IndexOf(ourType);
 
-      if (m_TypeRef == -1)
+      if (TypeRef == -1)
       {
         World.m_MobileTypes.Add(ourType);
-        m_TypeRef = World.m_MobileTypes.Count - 1;
+        TypeRef = World.m_MobileTypes.Count - 1;
       }
 
       m_SaveBuffer = new BufferWriter(true);
@@ -566,12 +563,12 @@ namespace Server
       World.AddMobile(this);
 
       var ourType = GetType();
-      m_TypeRef = World.m_MobileTypes.IndexOf(ourType);
+      TypeRef = World.m_MobileTypes.IndexOf(ourType);
 
-      if (m_TypeRef == -1)
+      if (TypeRef == -1)
       {
         World.m_MobileTypes.Add(ourType);
-        m_TypeRef = World.m_MobileTypes.Count - 1;
+        TypeRef = World.m_MobileTypes.Count - 1;
       }
 
       m_SaveBuffer = new BufferWriter(true);
@@ -2630,9 +2627,7 @@ namespace Server
 
     public virtual int HuedItemID => m_Female ? 0x2107 : 0x2106;
 
-    int ISerializable.TypeReference => m_TypeRef;
-
-    uint ISerializable.SerialIdentity => Serial;
+    public int TypeRef { get; }
 
     public void Serialize()
     {
@@ -6026,8 +6021,6 @@ namespace Server
           // } else {
           if (p == null)
           {
-            #region SA
-
             if (Body.IsGargoyle)
             {
               frameCount = 10;
@@ -6055,8 +6048,6 @@ namespace Server
                 else if (action >= 260 && action <= 270) action = 16;
               }
             }
-
-            #endregion
 
             p = Packet.Acquire(new MobileAnimation(this, action, frameCount, repeatCount, forward, repeat,
               delay));
@@ -7347,8 +7338,6 @@ namespace Server
 
     public int CompareTo(Mobile other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
-    #region Handlers
-
     public static AllowBeneficialHandler AllowBeneficialHandler { get; set; }
 
     public static AllowHarmfulHandler AllowHarmfulHandler { get; set; }
@@ -7362,10 +7351,6 @@ namespace Server
     public static SkillCheckDirectLocationHandler SkillCheckDirectLocationHandler { get; set; }
 
     public static AOSStatusHandler AOSStatusHandler { get; set; }
-
-    #endregion
-
-    #region Regeneration
 
     public static RegenRateHandler HitsRegenRateHandler { get; set; }
 
@@ -7399,10 +7384,6 @@ namespace Server
         return DefaultManaRate;
       return ManaRegenRateHandler(m);
     }
-
-    #endregion
-
-    #region Var declarations
 
     private Map m_Map;
     private Point3D m_Location;
@@ -7457,10 +7438,6 @@ namespace Server
     private int m_VirtualArmorMod;
     private Body m_BodyMod;
     private Race m_Race;
-
-    #endregion
-
-    #region Timers
 
     private class ManaTimer : Timer
     {
@@ -7681,10 +7658,6 @@ namespace Server
       }
     }
 
-    #endregion
-
-    #region Prompts
-
     private class SimplePrompt : Prompt
     {
       private readonly PromptCallback m_Callback;
@@ -7795,10 +7768,6 @@ namespace Server
       }
     }
 
-    #endregion
-
-    #region Get*Sound
-
     public virtual int GetAngerSound()
     {
       if (BaseSoundID != 0)
@@ -7838,10 +7807,6 @@ namespace Server
       if (m_Body.IsHuman) return Utility.Random(m_Female ? 0x314 : 0x423, m_Female ? 4 : 5);
       return -1;
     }
-
-    #endregion
-
-    #region Get*InRange
 
     public IPooledEnumerable<Item> GetItemsInRange(int range) => GetItemsInRange<Item>(range);
 
@@ -7886,10 +7851,6 @@ namespace Server
 
       return map.GetClientsInRange(m_Location, range);
     }
-
-    #endregion
-
-    #region Say/SayTo/Emote/Whisper/Yell
 
     public void SayTo(Mobile to, bool ascii, string text)
     {
@@ -7991,10 +7952,6 @@ namespace Server
       PublicOverheadMessage(MessageType.Yell, YellHue, number, args);
     }
 
-    #endregion
-
-    #region Gumps/Menus
-
     public bool SendHuePicker(HuePicker p, bool throwOnOffline = false)
     {
       if (m_NetState != null)
@@ -8072,10 +8029,6 @@ namespace Server
       return true;
     }
 
-    #endregion
-
-    #region Beneficial Checks/Actions
-
     public virtual bool CanBeBeneficial(Mobile target) => CanBeBeneficial(target, true, false);
 
     public virtual bool CanBeBeneficial(Mobile target, bool message) => CanBeBeneficial(target, message, false);
@@ -8152,10 +8105,6 @@ namespace Server
 
       return false;
     }
-
-    #endregion
-
-    #region Harmful Checks/Actions
 
     public virtual bool CanBeHarmful(Mobile target) => CanBeHarmful(target, true);
 
@@ -8242,10 +8191,6 @@ namespace Server
 
       return false;
     }
-
-    #endregion
-
-    #region Stats
 
     /// <summary>
     ///   Gets a list of all <see cref="StatMod">StatMod's</see> currently active for the Mobile.
@@ -8785,10 +8730,6 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual int ManaMax => Int;
 
-    #endregion
-
-    #region Poison/Curing
-
     public Timer PoisonTimer { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -8993,10 +8934,6 @@ namespace Server
       return false;
     }
 
-    #endregion
-
-    #region Hair
-
     private HairInfo m_Hair;
     private FacialHairInfo m_FacialHair;
 
@@ -9067,10 +9004,6 @@ namespace Server
         }
       }
     }
-
-    #endregion
-
-    #region Effects & Particles
 
     public void MovingEffect(IEntity to, int itemID, int speed, int duration, bool fixedDirection, bool explodes,
       int hue, int renderMode)
@@ -9148,10 +9081,6 @@ namespace Server
       Effects.SendBoltEffect(this, true, hue);
     }
 
-    #endregion
-
-    #region GetDirectionTo[..]
-
     public Direction GetDirectionTo(int x, int y)
     {
       var dx = m_Location.m_X - x;
@@ -9192,10 +9121,6 @@ namespace Server
 
       return GetDirectionTo(p.X, p.Y);
     }
-
-    #endregion
-
-    #region Overhead messages
 
     public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text, bool noLineOfSight = true)
     {
@@ -9336,10 +9261,6 @@ namespace Server
       eable.Free();
     }
 
-    #endregion
-
-    #region SendLocalizedMessage
-
     public void SendLocalizedMessage(int number)
     {
       m_NetState?.Send(MessageLocalized.InstantiateGeneric(number));
@@ -9358,10 +9279,6 @@ namespace Server
       m_NetState?.Send(new MessageLocalizedAffix(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System",
         (append ? AffixType.Append : AffixType.Prepend) | AffixType.System, affix, args));
     }
-
-    #endregion
-
-    #region Send[ASCII]Message
 
     public void SendMessage(string text)
     {
@@ -9403,10 +9320,6 @@ namespace Server
       SendAsciiMessage(hue, string.Format(format, args));
     }
 
-    #endregion
-
-    #region InRange
-
     public virtual bool InRange(Point2D p, int range) =>
       p.m_X >= Location.m_X - range
       && p.m_X <= Location.m_X + range
@@ -9424,10 +9337,6 @@ namespace Server
       && p.X <= Location.m_X + range
       && p.Y >= Location.m_Y - range
       && p.Y <= Location.m_Y + range;
-
-    #endregion
-
-    #region OnDoubleClick[..]
 
     /// <summary>
     ///   Overridable. Event invoked when the Mobile is double clicked. By default, this method can either dismount or open the
@@ -9481,10 +9390,6 @@ namespace Server
         DisplayPaperdollTo(from);
     }
 
-    #endregion
-
-    #region Armor
-
     public Item ShieldArmor => FindItemOnLayer(Layer.TwoHanded);
 
     public Item NeckArmor => FindItemOnLayer(Layer.Neck);
@@ -9500,7 +9405,5 @@ namespace Server
     public Item ChestArmor => FindItemOnLayer(Layer.InnerTorso) ?? FindItemOnLayer(Layer.Shirt);
 
     public Item Talisman => FindItemOnLayer(Layer.Talisman);
-
-    #endregion
   }
 }

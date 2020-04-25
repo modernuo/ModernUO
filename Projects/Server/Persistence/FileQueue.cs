@@ -47,10 +47,12 @@ namespace Server
 
     public FileQueue(int concurrentWrites, FileCommitCallback callback)
     {
-      if (concurrentWrites < 1) throw new ArgumentOutOfRangeException("concurrentWrites");
+      if (concurrentWrites < 1) throw new ArgumentOutOfRangeException(nameof(concurrentWrites));
 
       if (bufferSize < 1)
-        throw new ArgumentOutOfRangeException("bufferSize");
+#pragma warning disable CA2208 // Instantiate argument exceptions correctly
+        throw new ArgumentOutOfRangeException(nameof(FileOperations.BufferSize));
+#pragma warning restore CA2208 // Instantiate argument exceptions correctly
 
       syncRoot = new object();
 
@@ -128,7 +130,7 @@ namespace Server
 
     private void Commit(Chunk chunk, int slot)
     {
-      if (slot < 0 || slot >= active.Length) throw new ArgumentOutOfRangeException("slot");
+      if (slot < 0 || slot >= active.Length) throw new ArgumentOutOfRangeException(nameof(slot));
 
       lock (syncRoot)
       {
@@ -157,10 +159,10 @@ namespace Server
 
     public void Enqueue(byte[] buffer, int offset, int size)
     {
-      if (buffer == null) throw new ArgumentNullException("buffer");
+      if (buffer == null) throw new ArgumentNullException(nameof(buffer));
 
-      if (offset < 0) throw new ArgumentOutOfRangeException("offset");
-      if (size < 0) throw new ArgumentOutOfRangeException("size");
+      if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+      if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
       if (buffer.Length - offset < size) throw new ArgumentException();
 
       Position += size;

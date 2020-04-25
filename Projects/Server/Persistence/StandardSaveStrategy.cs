@@ -95,7 +95,7 @@ namespace Server
         {
           var start = bin.Position;
 
-          idx.Write(m.m_TypeRef);
+          idx.Write(m.TypeRef);
           idx.Write(m.Serial);
           idx.Write(start);
           idx.Write((int)m.SaveBuffer.Position);
@@ -158,7 +158,7 @@ namespace Server
 
           var start = bin.Position;
 
-          idx.Write(item.m_TypeRef);
+          idx.Write(item.TypeRef);
           idx.Write(item.Serial);
           idx.Write(start);
           idx.Write((int)item.SaveBuffer.Position);
@@ -199,7 +199,7 @@ namespace Server
           var start = bin.Position;
 
           idx.Write(0); // guilds have no typeid
-          idx.Write(guild.Id);
+          idx.Write(guild.Serial);
           idx.Write(start);
           idx.Write((int)guild.SaveBuffer.Position);
 

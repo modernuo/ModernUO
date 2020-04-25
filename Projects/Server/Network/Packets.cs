@@ -2093,6 +2093,10 @@ namespace Server.Network
 
   public sealed class LaunchBrowser : Packet
   {
+    public LaunchBrowser(Uri uri) : this(uri.AbsoluteUri)
+    {
+    }
+
     public LaunchBrowser(string url) : base(0xA5)
     {
       url ??= "";
@@ -2445,7 +2449,7 @@ namespace Server.Network
 
       var packLength = wantLength;
 
-      Compression.Pack(packBuffer, ref packLength, buffer, length, ZLibQuality.Default);
+      NetworkCompression.Pack(packBuffer, ref packLength, buffer, length, ZLibQuality.Default);
 
       m_Stream.Write(4 + packLength);
       m_Stream.Write(length);

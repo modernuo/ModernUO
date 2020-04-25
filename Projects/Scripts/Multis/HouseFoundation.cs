@@ -2324,7 +2324,7 @@ namespace Server.Multis
         byte[] inflatedBuffer = m_PlaneBuffers[i];
 
         int deflatedLength = m_DeflatedBuffer.Length;
-        ZLibError ce = Compression.Pack(m_DeflatedBuffer, ref deflatedLength, inflatedBuffer, size,
+        ZLibError ce = NetworkCompression.Pack(m_DeflatedBuffer, ref deflatedLength, inflatedBuffer, size,
           ZLibQuality.Default);
 
         if (ce != ZLibError.Okay)
@@ -2360,7 +2360,7 @@ namespace Server.Multis
         byte[] inflatedBuffer = m_StairBuffers[i];
 
         int deflatedLength = m_DeflatedBuffer.Length;
-        ZLibError ce = Compression.Pack(m_DeflatedBuffer, ref deflatedLength, inflatedBuffer, size,
+        ZLibError ce = NetworkCompression.Pack(m_DeflatedBuffer, ref deflatedLength, inflatedBuffer, size,
           ZLibQuality.Default);
 
         if (ce != ZLibError.Okay)

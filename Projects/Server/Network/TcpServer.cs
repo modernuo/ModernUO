@@ -30,7 +30,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Server.Network
 {
-  public class TcpServer
+  public static class TcpServer
   {
     public static List<IPEndPoint> Listeners { get; } = new List<IPEndPoint>();
 

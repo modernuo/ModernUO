@@ -479,8 +479,7 @@ namespace Server
     public static LootPack SuperBoss => Core.SE ? SeSuperBoss : Core.AOS ? AosSuperBoss : OldSuperBoss;
 
     /*
-    // TODO: Uncomment once added
-    #region Mondain's Legacy
+    // TODO: Uncomment once added Legacy
     public static readonly LootPackItem[] ParrotItem = new LootPackItem[]
       {
         new LootPackItem( typeof( ParrotItem ), 1 )
@@ -490,7 +489,6 @@ namespace Server
       {
         new LootPackEntry( false, ParrotItem, 10.00, 1 )
       } );
-    #endregion
     */
   }
 

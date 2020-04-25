@@ -102,10 +102,13 @@ namespace Server
   {
     [JsonPropertyName("fromAddress")]
     public string FromAddress { get; set; }
+
     [JsonPropertyName("fromName")]
     public string FromName { get; set; }
+
     [JsonPropertyName("crashAddress")]
     public string crashAddress { get; set; }
+
     [JsonPropertyName("crashName")]
     public string crashName { get; set; }
 
@@ -117,10 +120,13 @@ namespace Server
 
     [JsonPropertyName("emailServer")]
     public string emailServer { get; set; }
+
     [JsonPropertyName("emailPort")]
     public int emailPort { get; set; }
+
     [JsonPropertyName("emailUsername")]
     public string emailUsername { get; set; }
+
     [JsonPropertyName("emailPassword")]
     public string emailPassword { get; set; }
   }

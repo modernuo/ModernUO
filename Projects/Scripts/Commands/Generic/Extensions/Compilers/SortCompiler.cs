@@ -52,7 +52,6 @@ namespace Server.Commands.Generic
         "__sort",
         TypeAttributes.Public,
         typeof(T));
-
       {
         ConstructorBuilder ctor = typeBuilder.DefineConstructor(
           MethodAttributes.Public,
@@ -71,7 +70,6 @@ namespace Server.Commands.Generic
       }
 
       typeBuilder.AddInterfaceImplementation(typeof(IComparer<T>));
-
       {
         MethodEmitter emitter = new MethodEmitter(typeBuilder);
 

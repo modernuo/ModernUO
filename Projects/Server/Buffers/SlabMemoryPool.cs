@@ -103,7 +103,9 @@ namespace System.Buffers
     /// </summary>
     private MemoryPoolBlock AllocateSlab()
     {
+#pragma warning disable CA2000 // Dispose objects before losing scope
       var slab = MemoryPoolSlab.Create(_slabLength);
+#pragma warning restore CA2000 // Dispose objects before losing scope
       _slabs.Push(slab);
 
       var basePtr = slab.NativePointer;

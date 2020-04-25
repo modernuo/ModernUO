@@ -174,7 +174,7 @@ namespace Server
           if (compressionMethod == 1)
           {
             data = new byte[decompressedSize];
-            Compression.Unpack(data, ref decompressedSize, sourceData, compressedSize);
+            NetworkCompression.Unpack(data, ref decompressedSize, sourceData, compressedSize);
           }
           else
           {

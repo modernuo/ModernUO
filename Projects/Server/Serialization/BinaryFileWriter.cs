@@ -456,7 +456,7 @@ namespace Server
       if (value == null)
         Write(0);
       else
-        Write(value.Id);
+        Write(value.Serial);
     }
 
     public void WriteItem<T>(T value) where T : Item

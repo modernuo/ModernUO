@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
  *                            QueuedMemoryWriter.cs
  *                            -------------------
  *   begin                : December 16, 2010
@@ -40,13 +40,13 @@ namespace Server
 
       info.size = size;
 
-      info.typeCode = serializable.TypeReference; // For guilds, this will automagically be zero.
-      info.serial = serializable.SerialIdentity;
+      info.typeCode = serializable.TypeRef; // For guilds, this will automagically be zero.
+      info.serial = serializable.Serial;
 
       _orderedIndexInfo.Add(info);
     }
 
-    public void CommitTo(SequentialFileWriter dataFile, SequentialFileWriter indexFile)
+    public void CommitTo(SequentialFileWriterStream dataFile, SequentialFileWriterStream indexFile)
     {
       Flush();
 

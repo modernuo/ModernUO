@@ -441,7 +441,6 @@ namespace Server.Commands.Generic
         $"__conditional{index}",
         TypeAttributes.Public,
         typeof(object));
-
       {
         ConstructorBuilder ctor = typeBuilder.DefineConstructor(
           MethodAttributes.Public,
@@ -464,7 +463,6 @@ namespace Server.Commands.Generic
       typeBuilder.AddInterfaceImplementation(typeof(IConditional));
 
       MethodBuilder compareMethod;
-
       {
         MethodEmitter emitter = new MethodEmitter(typeBuilder);
 

@@ -427,7 +427,7 @@ namespace Server
               g.Deserialize(reader);
 
               if (reader.Position != entry.Position + entry.Length)
-                throw new Exception($"***** Bad serialize on Guild {g.Id} *****");
+                throw new Exception($"***** Bad serialize on Guild {g.Serial} *****");
             }
             catch (Exception e)
             {
@@ -436,8 +436,8 @@ namespace Server
               failed = e;
               failedGuilds = true;
               failedType = typeof(BaseGuild);
-              failedTypeID = (int)g.Id;
-              failedSerial = g.Id;
+              failedTypeID = (int)g.Serial;
+              failedSerial = g.Serial;
 
               break;
             }
@@ -623,7 +623,7 @@ namespace Server
         Broadcast(0x35, true, "The world is saving, please wait.");
 
       var strategy = SaveStrategy.Acquire();
-      Console.WriteLine("Core: Using {0} save strategy", strategy.Name.ToLowerInvariant());
+      Console.WriteLine("Core: Using {0} save strategy", strategy.Name.ToLower());
 
       Console.Write($"[{DateTime.UtcNow.ToLongTimeString()}] World: Saving...");
 
@@ -746,7 +746,7 @@ namespace Server
 
       public BaseGuild Guild { get; }
 
-      public Serial Serial => Guild?.Id ?? 0;
+      public Serial Serial => Guild?.Serial ?? 0;
 
       public int TypeID => 0;
 

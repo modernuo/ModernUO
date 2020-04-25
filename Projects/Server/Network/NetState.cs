@@ -401,7 +401,6 @@ namespace Server.Network
     public override string ToString() => m_ToString;
 
     public NetState(ConnectionContext connection)
-
     {
       Connection = connection;
       Seeded = false;

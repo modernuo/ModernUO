@@ -58,34 +58,26 @@ namespace Server.Network
     private const int BadUOTD = unchecked((int)0xFFCEFFCE);
 
     private const int m_AuthIDWindowSize = 128;
-    private static readonly PacketHandler[] m_6017Handlers;
+    private static readonly PacketHandler[] m_6017Handlers = new PacketHandler[0x100];
 
-    private static readonly PacketHandler[] m_ExtendedHandlersLow;
-    private static readonly Dictionary<int, PacketHandler> m_ExtendedHandlersHigh;
+    private static readonly PacketHandler[] m_ExtendedHandlersLow = new PacketHandler[0x100];
+    private static readonly Dictionary<int, PacketHandler> m_ExtendedHandlersHigh = new Dictionary<int, PacketHandler>();
 
-    private static readonly EncodedPacketHandler[] m_EncodedHandlersLow;
-    private static readonly Dictionary<int, EncodedPacketHandler> m_EncodedHandlersHigh;
+    private static readonly EncodedPacketHandler[] m_EncodedHandlersLow = new EncodedPacketHandler[0x100];
+    private static readonly Dictionary<int, EncodedPacketHandler> m_EncodedHandlersHigh = new Dictionary<int, EncodedPacketHandler>();
 
     private static readonly int[] m_EmptyInts = Array.Empty<int>();
 
     private static readonly KeywordList m_KeywordList = new KeywordList();
 
-    public static PlayCharCallback ThirdPartyAuthCallback = null, ThirdPartyHackedCallback = null;
+    public static PlayCharCallback ThirdPartyAuthCallback { get; set; }
+    public static PlayCharCallback ThirdPartyHackedCallback { get; set; }
 
     private static readonly Dictionary<int, AuthIDPersistence> m_AuthIDWindow =
       new Dictionary<int, AuthIDPersistence>(m_AuthIDWindowSize);
 
     static PacketHandlers()
     {
-      Handlers = new PacketHandler[0x100];
-      m_6017Handlers = new PacketHandler[0x100];
-
-      m_ExtendedHandlersLow = new PacketHandler[0x100];
-      m_ExtendedHandlersHigh = new Dictionary<int, PacketHandler>();
-
-      m_EncodedHandlersLow = new EncodedPacketHandler[0x100];
-      m_EncodedHandlersHigh = new Dictionary<int, EncodedPacketHandler>();
-
       Register(0x00, 104, false, CreateCharacter);
       Register(0x01, 5, false, Disconnect);
       Register(0x02, 7, true, MovementReq);
@@ -173,7 +165,7 @@ namespace Server.Network
       RegisterEncoded(0x32, true, QuestGumpRequest);
     }
 
-    public static PacketHandler[] Handlers { get; }
+    public static PacketHandler[] Handlers { get; } = new PacketHandler[0x100];
 
     public static bool SingleClickProps { get; set; }
 

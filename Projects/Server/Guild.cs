@@ -35,26 +35,26 @@ namespace Server.Guilds
     private readonly BufferWriter m_SaveBuffer;
     public BufferWriter SaveBuffer => m_SaveBuffer;
 
-    private static uint m_NextID = 1;
+    private static Serial m_NextID = 1;
 
     protected BaseGuild(uint id) // serialization ctor
     {
-      this.Id = id;
-      List.Add(this.Id, this);
-      if (this.Id + 1 > m_NextID)
-        m_NextID = this.Id + 1;
+      this.Serial = id;
+      List.Add(this.Serial, this);
+      if (this.Serial + 1 > m_NextID)
+        m_NextID = this.Serial + 1;
       m_SaveBuffer = new BufferWriter(true);
     }
 
     protected BaseGuild()
     {
-      Id = m_NextID++;
-      List.Add(Id, this);
+      Serial = m_NextID++;
+      List.Add(Serial, this);
       m_SaveBuffer = new BufferWriter(true);
     }
 
     [CommandProperty(AccessLevel.Counselor)]
-    public uint Id { get; }
+    public Serial Serial { get; }
 
     public abstract string Abbreviation { get; set; }
     public abstract string Name { get; set; }
@@ -63,9 +63,7 @@ namespace Server.Guilds
 
     public static Dictionary<uint, BaseGuild> List { get; } = new Dictionary<uint, BaseGuild>();
 
-    int ISerializable.TypeReference => 0;
-
-    uint ISerializable.SerialIdentity => Id;
+    public int TypeRef => 0;
 
     public void Serialize()
     {
@@ -105,6 +103,6 @@ namespace Server.Guilds
       return results;
     }
 
-    public override string ToString() => $"0x{Id:X} \"{Name} [{Abbreviation}]\"";
+    public override string ToString() => $"0x{Serial:X} \"{Name} [{Abbreviation}]\"";
   }
 }

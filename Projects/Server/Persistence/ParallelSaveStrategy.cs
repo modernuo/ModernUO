@@ -26,7 +26,7 @@ using Server.Guilds;
 
 namespace Server
 {
-  public sealed class ParallelSaveStrategy : SaveStrategy
+  public sealed class ParallelSaveStrategy : SaveStrategy, IDisposable
   {
     private readonly Queue<Item> _decayQueue;
 
@@ -34,11 +34,11 @@ namespace Server
     private int cycle;
 
     private bool finished;
-    private SequentialFileWriter guildData, guildIndex;
+    private SequentialFileWriterStream guildData, guildIndex;
 
-    private SequentialFileWriter itemData, itemIndex;
+    private SequentialFileWriterStream itemData, itemIndex;
 
-    private SequentialFileWriter mobileData, mobileIndex;
+    private SequentialFileWriterStream mobileData, mobileIndex;
 
     private readonly int processorCount;
 
@@ -113,21 +113,21 @@ namespace Server
 
     private void OpenFiles()
     {
-      itemData = new SequentialFileWriter(World.ItemDataPath);
-      itemIndex = new SequentialFileWriter(World.ItemIndexPath);
+      itemData = new SequentialFileWriterStream(World.ItemDataPath);
+      itemIndex = new SequentialFileWriterStream(World.ItemIndexPath);
 
-      mobileData = new SequentialFileWriter(World.MobileDataPath);
-      mobileIndex = new SequentialFileWriter(World.MobileIndexPath);
+      mobileData = new SequentialFileWriterStream(World.MobileDataPath);
+      mobileIndex = new SequentialFileWriterStream(World.MobileIndexPath);
 
-      guildData = new SequentialFileWriter(World.GuildDataPath);
-      guildIndex = new SequentialFileWriter(World.GuildIndexPath);
+      guildData = new SequentialFileWriterStream(World.GuildDataPath);
+      guildIndex = new SequentialFileWriterStream(World.GuildIndexPath);
 
       WriteCount(itemIndex, World.Items.Count);
       WriteCount(mobileIndex, World.Mobiles.Count);
       WriteCount(guildIndex, BaseGuild.List.Count);
     }
 
-    private void WriteCount(SequentialFileWriter indexFile, int count)
+    private void WriteCount(SequentialFileWriterStream indexFile, int count)
     {
       var buffer = new byte[4];
 
@@ -168,7 +168,7 @@ namespace Server
 
     private void Save(Item item, BinaryMemoryWriter writer)
     {
-      writer.CommitTo(itemData, itemIndex, item.m_TypeRef, item.Serial);
+      writer.CommitTo(itemData, itemIndex, item.TypeRef, item.Serial);
 
       if (item.Decays && item.Parent == null && item.Map != Map.Internal &&
           DateTime.UtcNow > item.LastMoved + item.DecayTime) _decayQueue.Enqueue(item);
@@ -176,12 +176,12 @@ namespace Server
 
     private void Save(Mobile mob, BinaryMemoryWriter writer)
     {
-      writer.CommitTo(mobileData, mobileIndex, mob.m_TypeRef, mob.Serial);
+      writer.CommitTo(mobileData, mobileIndex, mob.TypeRef, mob.Serial);
     }
 
     private void Save(BaseGuild guild, BinaryMemoryWriter writer)
     {
-      writer.CommitTo(guildData, guildIndex, 0, guild.Id);
+      writer.CommitTo(guildData, guildIndex, 0, guild.Serial);
     }
 
     private bool Enqueue(ISerializable value)
@@ -313,6 +313,40 @@ namespace Server
           ++done;
         }
       }
+    }
+
+    private bool disposedValue = false; // To detect redundant calls
+
+    public void Dispose(bool disposing)
+    {
+      if (!disposedValue)
+      {
+        if (disposing)
+        {
+          // TODO: dispose managed state (managed objects).
+        }
+
+        // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+        // TODO: set large fields to null.
+
+        disposedValue = true;
+      }
+    }
+
+    // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+    // ~ParallelSaveStrategy()
+    // {
+    //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+    //   Dispose(false);
+    // }
+
+    // This code added to correctly implement the disposable pattern.
+    public void Dispose()
+    {
+      // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+      Dispose(true);
+      // TODO: uncomment the following line if the finalizer is overridden above.
+      // GC.SuppressFinalize(this);
     }
   }
 }

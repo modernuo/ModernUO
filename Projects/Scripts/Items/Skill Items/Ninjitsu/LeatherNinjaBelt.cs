@@ -15,7 +15,6 @@ namespace Server.Items
 
     [Constructible]
     public LeatherNinjaBelt() : base(0x2790)
-
     {
       Weight = 1.0;
       Layer = Layer.Waist;

@@ -205,7 +205,7 @@ namespace Server.Network
       {
         var buffer = ArrayPool<byte>.Shared.Rent(CompressorBufferSize);
 
-        Compression.Compress(m_CompiledBuffer, 0, length, buffer, out length);
+        NetworkCompression.Compress(m_CompiledBuffer, 0, length, buffer, out length);
 
         if (length <= 0)
         {

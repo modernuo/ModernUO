@@ -29,14 +29,14 @@ namespace Server
   public sealed class DynamicSaveStrategy : SaveStrategy
   {
     private readonly ConcurrentBag<Item> _decayBag;
-    private SequentialFileWriter _guildData, _guildIndex;
+    private SequentialFileWriterStream _guildData, _guildIndex;
     private readonly BlockingCollection<QueuedMemoryWriter> _guildThreadWriters;
 
-    private SequentialFileWriter _itemData, _itemIndex;
+    private SequentialFileWriterStream _itemData, _itemIndex;
 
     private readonly BlockingCollection<QueuedMemoryWriter> _itemThreadWriters;
 
-    private SequentialFileWriter _mobileData, _mobileIndex;
+    private SequentialFileWriterStream _mobileData, _mobileIndex;
     private readonly BlockingCollection<QueuedMemoryWriter> _mobileThreadWriters;
 
     public DynamicSaveStrategy()
@@ -78,8 +78,8 @@ namespace Server
       }
     }
 
-    private Task StartCommitTask(BlockingCollection<QueuedMemoryWriter> threadWriter, SequentialFileWriter data,
-      SequentialFileWriter index)
+    private Task StartCommitTask(BlockingCollection<QueuedMemoryWriter> threadWriter, SequentialFileWriterStream data,
+      SequentialFileWriterStream index)
     {
       var commitTask = Task.Factory.StartNew(() =>
       {
@@ -216,14 +216,14 @@ namespace Server
 
     private void OpenFiles()
     {
-      _itemData = new SequentialFileWriter(World.ItemDataPath);
-      _itemIndex = new SequentialFileWriter(World.ItemIndexPath);
+      _itemData = new SequentialFileWriterStream(World.ItemDataPath);
+      _itemIndex = new SequentialFileWriterStream(World.ItemIndexPath);
 
-      _mobileData = new SequentialFileWriter(World.MobileDataPath);
-      _mobileIndex = new SequentialFileWriter(World.MobileIndexPath);
+      _mobileData = new SequentialFileWriterStream(World.MobileDataPath);
+      _mobileIndex = new SequentialFileWriterStream(World.MobileIndexPath);
 
-      _guildData = new SequentialFileWriter(World.GuildDataPath);
-      _guildIndex = new SequentialFileWriter(World.GuildIndexPath);
+      _guildData = new SequentialFileWriterStream(World.GuildDataPath);
+      _guildIndex = new SequentialFileWriterStream(World.GuildIndexPath);
 
       WriteCount(_itemIndex, World.Items.Count);
       WriteCount(_mobileIndex, World.Mobiles.Count);
@@ -242,7 +242,7 @@ namespace Server
       _guildIndex.Close();
     }
 
-    private void WriteCount(SequentialFileWriter indexFile, int count)
+    private void WriteCount(SequentialFileWriterStream indexFile, int count)
     {
       // Equiv to GenericWriter.Write( (int)count );
       var buffer = new byte[4];

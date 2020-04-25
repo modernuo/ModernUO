@@ -218,8 +218,6 @@ namespace Server
     private ItemDelta m_DeltaFlags;
     private ImplFlag m_Flags;
 
-    internal int m_TypeRef;
-
     [Constructible]
     public Item(int itemID = 0)
     {
@@ -237,12 +235,12 @@ namespace Server
       World.AddItem(this);
 
       var ourType = GetType();
-      m_TypeRef = World.m_ItemTypes.IndexOf(ourType);
+      TypeRef = World.m_ItemTypes.IndexOf(ourType);
 
-      if (m_TypeRef == -1)
+      if (TypeRef == -1)
       {
         World.m_ItemTypes.Add(ourType);
-        m_TypeRef = World.m_ItemTypes.Count - 1;
+        TypeRef = World.m_ItemTypes.Count - 1;
       }
 
       m_SaveBuffer = new BufferWriter(true);
@@ -253,12 +251,12 @@ namespace Server
       Serial = serial;
 
       var ourType = GetType();
-      m_TypeRef = World.m_ItemTypes.IndexOf(ourType);
+      TypeRef = World.m_ItemTypes.IndexOf(ourType);
 
-      if (m_TypeRef == -1)
+      if (TypeRef == -1)
       {
         World.m_ItemTypes.Add(ourType);
-        m_TypeRef = World.m_ItemTypes.Count - 1;
+        TypeRef = World.m_ItemTypes.Count - 1;
       }
 
       m_SaveBuffer = new BufferWriter(true);
@@ -1157,10 +1155,7 @@ namespace Server
 
     public virtual int HuedItemID => m_ItemID;
 
-    int ISerializable.TypeReference => m_TypeRef;
-
-    uint ISerializable.SerialIdentity => Serial;
-
+    public int TypeRef { get; }
     public void Serialize()
     {
       SaveBuffer.Flush();

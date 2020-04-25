@@ -16,14 +16,12 @@ namespace Server.Engines.BulkOrders
       { 1018333, 5 }, // Shadow Iron
       { 1018334, 6 }, // Copper
       { 1018335, 7 }, // Bronze
-
       { 0, 0 }, // --Blank--
       { 1018336, 8 }, // Golden
       { 1018337, 9 }, // Agapite
       { 1018338, 10 }, // Verite
       { 1018339, 11 }, // Valorite
       { 0, 0 }, // --Blank--
-
       { 1044094, 2 }, // Tailoring
       { 1044286, 12 }, // Cloth
       { 1062235, 13 }, // Leather

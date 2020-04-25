@@ -689,6 +689,9 @@ namespace Server
 
     public static List<TOutput> SafeConvertList<TInput, TOutput>(List<TInput> list) where TOutput : class
     {
+      if ((list?.Capacity ?? 0) == 0)
+        return new List<TOutput>();
+
       var output = new List<TOutput>(list.Capacity);
       output.AddRange(list.OfType<TOutput>());
 
@@ -697,21 +700,27 @@ namespace Server
 
     public static bool ToBoolean(string value)
     {
+#pragma warning disable CA1806 // Do not ignore method results
       bool.TryParse(value, out var b);
+#pragma warning restore CA1806 // Do not ignore method results
 
       return b;
     }
 
     public static double ToDouble(string value)
     {
+#pragma warning disable CA1806 // Do not ignore method results
       double.TryParse(value, out var d);
+#pragma warning restore CA1806 // Do not ignore method results
 
       return d;
     }
 
     public static TimeSpan ToTimeSpan(string value)
     {
+#pragma warning disable CA1806 // Do not ignore method results
       TimeSpan.TryParse(value, out var t);
+#pragma warning restore CA1806 // Do not ignore method results
 
       return t;
     }
@@ -720,10 +729,12 @@ namespace Server
     {
       int i;
 
+#pragma warning disable CA1806 // Do not ignore method results
       if (value.StartsWith("0x"))
         int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
       else
         int.TryParse(value, out i);
+#pragma warning restore CA1806 // Do not ignore method results
 
       return i;
     }
@@ -732,13 +743,25 @@ namespace Server
     {
       uint i;
 
+#pragma warning disable CA1806 // Do not ignore method results
       if (value.StartsWith("0x"))
         uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
       else
         uint.TryParse(value, out i);
+#pragma warning restore CA1806 // Do not ignore method results
 
       return i;
     }
+
+    public static bool ToInt32(string value, out int i) =>
+      value.StartsWith("0x")
+        ? int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i)
+        : int.TryParse(value, out i);
+
+    public static bool ToUInt32(string value, out uint i) =>
+      value.StartsWith("0x")
+        ? uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i)
+        : uint.TryParse(value, out i);
 
     public static double GetXMLDouble(string doubleString, double defaultValue)
     {

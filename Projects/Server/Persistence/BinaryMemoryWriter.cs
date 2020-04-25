@@ -33,7 +33,7 @@ namespace Server
 
     protected override int BufferSize => 512;
 
-    public int CommitTo(SequentialFileWriter dataFile, SequentialFileWriter indexFile, int typeCode, uint serial)
+    public int CommitTo(SequentialFileWriterStream dataFile, SequentialFileWriterStream indexFile, int typeCode, uint serial)
     {
       Flush();
 

@@ -615,7 +615,7 @@ namespace Server.Guilds
     {
       m_Leader = null;
 
-      List.Remove(Id);
+      List.Remove(Serial);
 
       foreach (Mobile m in Members)
       {
