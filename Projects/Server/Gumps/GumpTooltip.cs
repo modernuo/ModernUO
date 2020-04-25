@@ -34,7 +34,6 @@ namespace Server.Gumps
     {
       Number = number;
       Args = args;
-      m_ArgsString = BuildStringArgs();
     }
 
     public int Number { get; set; }
