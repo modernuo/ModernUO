@@ -5,7 +5,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-  public class TrashBarrel : Container, IChopable
+  public class TrashBarrel : Container, IChoppable
   {
     private Timer m_Timer;
 

@@ -12,6 +12,7 @@ namespace Server.Misc
 
   public static class ProfanityProtection
   {
+    // TODO: Move this to configuration
     private static readonly bool Enabled = false;
 
     private static readonly ProfanityAction

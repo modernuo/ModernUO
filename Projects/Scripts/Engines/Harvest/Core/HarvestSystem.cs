@@ -15,7 +15,7 @@ namespace Server.Engines.Harvest
 
     public virtual bool CheckTool(Mobile from, Item tool)
     {
-      bool wornOut = tool?.Deleted != false || (tool is IUsesRemaining remaining && remaining.UsesRemaining <= 0);
+      bool wornOut = tool?.Deleted != false || (tool as IUsesRemaining)?.UsesRemaining <= 0;
 
       if (wornOut)
         from.SendLocalizedMessage(1044038); // You have worn out your tool!
@@ -348,10 +348,10 @@ namespace Server.Engines.Harvest
         from.Animate(Utility.RandomList(def.EffectActions), 5, 1, true, false, 0);
     }
 
-    public virtual HarvestDefinition GetDefinition(int tileID)
-    {
-      return Definitions.FirstOrDefault(check => check.Validate(tileID));
-    }
+    public virtual HarvestDefinition GetDefinition() => Definitions.First();
+
+    public virtual HarvestDefinition GetDefinition(int tileID) =>
+      Definitions.FirstOrDefault(check => check.Validate(tileID));
 
     public virtual void StartHarvesting(Mobile from, Item tool, object toHarvest)
     {
@@ -422,19 +422,5 @@ namespace Server.Engines.Harvest
 
       return map != null && map != Map.Internal;
     }
-  }
-}
-
-namespace Server
-{
-  public interface IChopable
-  {
-    void OnChop(Mobile from);
-  }
-
-  [AttributeUsage(AttributeTargets.Class)]
-  public class FurnitureAttribute : Attribute
-  {
-    public static bool Check(Item item) => item?.GetType().IsDefined(typeof(FurnitureAttribute), false) == true;
   }
 }

@@ -47,7 +47,7 @@ namespace Server.Engines.Harvest
           }
       }
 
-      if (m_System is Lumberjacking && targeted is IChopable chopable)
+      if (m_System is Lumberjacking && targeted is IChoppable chopable)
       {
         chopable.OnChop(from);
       }

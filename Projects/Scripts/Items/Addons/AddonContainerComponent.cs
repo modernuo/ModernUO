@@ -3,7 +3,7 @@ using Server.ContextMenus;
 
 namespace Server.Items
 {
-  public class AddonContainerComponent : Item, IChopable
+  public class AddonContainerComponent : Item, IChoppable
   {
     [Constructible]
     public AddonContainerComponent(int itemID) : base(itemID)

@@ -5,7 +5,7 @@ using Server.Multis;
 namespace Server.Items
 {
   [Flippable(0xE80, 0x9A8)]
-  public class StrongBox : BaseContainer, IChopable
+  public class StrongBox : BaseContainer, IChoppable
   {
     private BaseHouse m_House;
     private Mobile m_Owner;

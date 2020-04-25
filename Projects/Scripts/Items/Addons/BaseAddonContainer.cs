@@ -3,7 +3,7 @@ using Server.Multis;
 
 namespace Server.Items
 {
-  public abstract class BaseAddonContainer : BaseContainer, IChopable, IAddon
+  public abstract class BaseAddonContainer : BaseContainer, IChoppable, IAddon
   {
     private CraftResource m_Resource;
 

@@ -106,7 +106,7 @@ namespace Server.Items
     }
   }
 
-  public class AddonComponent : Item, IChopable
+  public class AddonComponent : Item, IChoppable
   {
     private static readonly LightEntry[] m_Entries =
     {

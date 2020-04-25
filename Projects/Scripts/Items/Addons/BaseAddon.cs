@@ -20,7 +20,7 @@ namespace Server.Items
     bool CouldFit(IPoint3D p, Map map);
   }
 
-  public abstract class BaseAddon : Item, IChopable, IAddon
+  public abstract class BaseAddon : Item, IChoppable, IAddon
   {
     public BaseAddon() : base(1)
     {

@@ -612,7 +612,7 @@ namespace Server.Gumps
           {
             cat -= 100;
 
-            if (cat < Categories.Length && cat >= 0)
+            if (cat < Categories.Length)
             {
               CustomCategory category = Categories[cat];
 
@@ -949,7 +949,7 @@ namespace Server.Gumps
           }
         default:
           {
-            int hairhue = 0;
+            int hairhue;
 
             if ((info.ButtonID & 0x100) != 0) // Hair style selected
             {

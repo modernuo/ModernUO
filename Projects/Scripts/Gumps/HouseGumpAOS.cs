@@ -572,7 +572,7 @@ namespace Server.Gumps
       }
     }
 
-    public int GetButtonID(int type, int index) => 1 + index * 15 + type;
+    public static int GetButtonID(int type, int index) => 1 + index * 15 + type;
 
     public static void PublicPrivateNotice_Callback(Mobile from, BaseHouse house)
     {
@@ -799,7 +799,7 @@ namespace Server.Gumps
 
       if (m_Page == HouseGumpPageAOS.Vendors)
       {
-        if (index >= 0 && index < m_List.Count)
+        if (index < m_List.Count)
         {
           PlayerVendor vendor = (PlayerVendor)m_List[index];
 
@@ -1097,11 +1097,9 @@ namespace Server.Gumps
                     if (m_House.HasRentedVendors)
                       from.SendGump(new NoticeGump(1060637, 30720, 1062395, 32512, 320, 180,
                         () => CustomizeNotice_Callback(from, m_House)));
-
                     else if (m_House.HasAddonContainers)
                       from.SendGump(new NoticeGump(1060637, 30720, 1074863, 32512, 320, 180,
                         () => CustomizeNotice_Callback(from, m_House)));
-
                     else
                       foundation.BeginCustomize(from);
                   }
@@ -1228,7 +1226,7 @@ namespace Server.Gumps
           }
         case 7:
           {
-            if (isOwner && isCustomizable && index >= 0 && index < m_HangerNumbers.Length)
+            if (isOwner && isCustomizable && index < m_HangerNumbers.Length)
             {
               Item hanger = foundation.SignHanger;
 
@@ -1307,7 +1305,7 @@ namespace Server.Gumps
           }
         case 9:
           {
-            if (isOwner && m_House.Public && index >= 0 && index < _HouseSigns.Count)
+            if (isOwner && m_House.Public && index < _HouseSigns.Count)
             {
               m_House.ChangeSignType(_HouseSigns[index]);
               from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Customize, from, m_House));
@@ -1317,7 +1315,7 @@ namespace Server.Gumps
           }
         case 10:
           {
-            if (isOwner && m_List != null && index >= 0 && index < m_List.Count)
+            if (isOwner && index < m_List?.Count)
             {
               m_House.RemoveCoOwner(from, m_List[index]);
 
@@ -1331,7 +1329,7 @@ namespace Server.Gumps
           }
         case 11:
           {
-            if (isCoOwner && m_List != null && index >= 0 && index < m_List.Count)
+            if (isCoOwner && index < m_List?.Count)
             {
               m_House.RemoveFriend(from, m_List[index]);
 
@@ -1345,7 +1343,7 @@ namespace Server.Gumps
           }
         case 12:
           {
-            if (m_List != null && index >= 0 && index < m_List.Count)
+            if (index < m_List?.Count)
             {
               m_House.RemoveBan(from, m_List[index]);
 
@@ -1359,7 +1357,7 @@ namespace Server.Gumps
           }
         case 13:
           {
-            if (m_List != null && index >= 0 && index < m_List.Count)
+            if (index < m_List?.Count)
             {
               m_House.RemoveAccess(from, m_List[index]);
 
@@ -1373,7 +1371,7 @@ namespace Server.Gumps
           }
         case 14:
           {
-            if (isOwner && isCustomizable && index >= 0 && index < m_PostNumbers.Length)
+            if (isOwner && isCustomizable && index < m_PostNumbers.Length)
             {
               foundation.SignpostGraphic = m_PostNumbers[index];
               foundation.CheckSignpost();
@@ -1399,7 +1397,7 @@ namespace Server.Gumps
       {
         string val = values[i];
 
-        string v = current.Length == 0 ? val : $"{current}{' '}{val}";
+        string v = current.Length == 0 ? val : $"{current} {val}";
 
         if (v.Length < 10)
         {

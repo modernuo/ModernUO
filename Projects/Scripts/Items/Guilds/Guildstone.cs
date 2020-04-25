@@ -8,7 +8,7 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-  public class Guildstone : Item, IAddon, IChopable
+  public class Guildstone : Item, IAddon, IChoppable
   {
     private bool m_BeforeChangeover;
     private string m_GuildAbbrev;
