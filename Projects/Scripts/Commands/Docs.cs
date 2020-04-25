@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using Server.Commands.Generic;
@@ -2638,7 +2639,7 @@ namespace Server.Commands
       return Body == e?.Body && BodyType == e.BodyType && Name == e.Name;
     }
 
-    public override int GetHashCode() => Body.BodyID ^ (int)BodyType ^ Name.GetHashCode();
+    public override int GetHashCode() => Utility.HashArray(Body.BodyID, (int)BodyType, Name);
   }
 
   public class BodyEntrySorter : IComparer<BodyEntry>

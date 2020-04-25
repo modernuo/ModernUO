@@ -1105,5 +1105,18 @@ namespace Server
         RandomList(0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59);
 
     #endregion
+
+    #region Hash of Array
+    public static int HashArray(params object[] values)
+    {
+      if (values == null) return 0;
+
+      int result = 1;
+
+      foreach (object element in values) result = 31 * result + (element?.GetHashCode() ?? 0);
+
+      return result;
+    }
+    #endregion
   }
 }

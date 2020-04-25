@@ -83,7 +83,7 @@ namespace Server
 
     public override bool Equals(object o) => o is IPoint2D p && m_X == p.X && m_Y == p.Y;
 
-    public override int GetHashCode() => m_X ^ m_Y;
+    public override int GetHashCode() => Utility.HashArray(m_X, m_Y);
 
     public static bool operator ==(Point2D l, Point2D r) => l.m_X == r.m_X && l.m_Y == r.m_Y;
 
@@ -169,7 +169,7 @@ namespace Server
 
     public override bool Equals(object o) => o is IPoint3D p && m_X == p.X && m_Y == p.Y && m_Z == p.Z;
 
-    public override int GetHashCode() => m_X ^ m_Y ^ m_Z;
+    public override int GetHashCode() => Utility.HashArray(m_X, m_Y, m_Z);
 
     public static Point3D Parse(string value)
     {
