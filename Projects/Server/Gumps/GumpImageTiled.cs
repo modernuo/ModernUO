@@ -25,15 +25,13 @@ namespace Server.Gumps
   public class GumpImageTiled : GumpEntry
   {
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer("gumppictiled");
-    private int m_Width, m_Height;
-    private int m_X, m_Y;
 
     public GumpImageTiled(int x, int y, int width, int height, int gumpID)
     {
-      m_X = x;
-      m_Y = y;
-      m_Width = width;
-      m_Height = height;
+      X = x;
+      Y = y;
+      Width = width;
+      Height = height;
       GumpID = gumpID;
     }
 
@@ -52,10 +50,10 @@ namespace Server.Gumps
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {
       disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_Width);
-      disp.AppendLayout(m_Height);
+      disp.AppendLayout(X);
+      disp.AppendLayout(Y);
+      disp.AppendLayout(Width);
+      disp.AppendLayout(Height);
       disp.AppendLayout(GumpID);
     }
   }
