@@ -36,27 +36,20 @@ namespace Server.Gumps
     private static readonly byte[] m_NoClose = StringToBuffer("{ noclose }");
     private static readonly byte[] m_NoDispose = StringToBuffer("{ nodispose }");
     private static readonly byte[] m_NoResize = StringToBuffer("{ noresize }");
-    private bool m_Closable = true;
-    private bool m_Disposable = true;
 
-    private bool m_Draggable = true;
-    private bool m_Resizable = true;
-
-    private uint m_Serial;
     private readonly List<string> m_Strings;
 
     internal int m_TextEntries, m_Switches;
-    private int m_X, m_Y;
 
     public Gump(int x, int y)
     {
       do
       {
-        m_Serial = m_NextSerial++;
-      } while (m_Serial == 0); // standard client apparently doesn't send a gump response packet if serial == 0
+        Serial = m_NextSerial++;
+      } while (Serial == 0); // standard client apparently doesn't send a gump response packet if serial == 0
 
-      m_X = x;
-      m_Y = y;
+      X = x;
+      Y = y;
 
       TypeID = GetTypeID(GetType());
 
@@ -68,89 +61,19 @@ namespace Server.Gumps
 
     public List<GumpEntry> Entries { get; }
 
-    public uint Serial
-    {
-      get => m_Serial;
-      set
-      {
-        if (m_Serial != value)
-        {
-          m_Serial = value;
-        }
-      }
-    }
+    public uint Serial { get; set; }
 
-    public int X
-    {
-      get => m_X;
-      set
-      {
-        if (m_X != value)
-        {
-          m_X = value;
-        }
-      }
-    }
+    public int X { get; set; }
 
-    public int Y
-    {
-      get => m_Y;
-      set
-      {
-        if (m_Y != value)
-        {
-          m_Y = value;
-        }
-      }
-    }
+    public int Y { get; set; }
 
-    public bool Disposable
-    {
-      get => m_Disposable;
-      set
-      {
-        if (m_Disposable != value)
-        {
-          m_Disposable = value;
-        }
-      }
-    }
+    public bool Disposable { get; set; } = true;
 
-    public bool Resizable
-    {
-      get => m_Resizable;
-      set
-      {
-        if (m_Resizable != value)
-        {
-          m_Resizable = value;
-        }
-      }
-    }
+    public bool Resizable { get; set; } = true;
 
-    public bool Draggable
-    {
-      get => m_Draggable;
-      set
-      {
-        if (m_Draggable != value)
-        {
-          m_Draggable = value;
-        }
-      }
-    }
+    public bool Draggable { get; set; } = true;
 
-    public bool Closable
-    {
-      get => m_Closable;
-      set
-      {
-        if (m_Closable != value)
-        {
-          m_Closable = value;
-        }
-      }
-    }
+    public bool Closable { get; set; } = true;
 
     public static int GetTypeID(Type type) => type?.FullName?.GetHashCode() ?? -1;
 
@@ -313,16 +236,16 @@ namespace Server.Gumps
       else
         disp = new DisplayGumpFast(this);
 
-      if (!m_Draggable)
+      if (!Draggable)
         disp.AppendLayout(m_NoMove);
 
-      if (!m_Closable)
+      if (!Closable)
         disp.AppendLayout(m_NoClose);
 
-      if (!m_Disposable)
+      if (!Disposable)
         disp.AppendLayout(m_NoDispose);
 
-      if (!m_Resizable)
+      if (!Resizable)
         disp.AppendLayout(m_NoResize);
 
       var count = Entries.Count;
