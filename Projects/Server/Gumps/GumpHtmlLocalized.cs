@@ -35,16 +35,13 @@ namespace Server.Gumps
     private static readonly byte[] m_LayoutNameColor = Gump.StringToBuffer("xmfhtmlgumpcolor");
     private static readonly byte[] m_LayoutNameArgs = Gump.StringToBuffer("xmfhtmltok");
 
-    private int m_Width, m_Height;
-    private int m_X, m_Y;
-
     public GumpHtmlLocalized(int x, int y, int width, int height, int number,
       bool background = false, bool scrollbar = false)
     {
-      m_X = x;
-      m_Y = y;
-      m_Width = width;
-      m_Height = height;
+      X = x;
+      Y = y;
+      Width = width;
+      Height = height;
       Number = number;
       Background = background;
       Scrollbar = scrollbar;
@@ -55,10 +52,10 @@ namespace Server.Gumps
     public GumpHtmlLocalized(int x, int y, int width, int height, int number, int color,
       bool background = false, bool scrollbar = false)
     {
-      m_X = x;
-      m_Y = y;
-      m_Width = width;
-      m_Height = height;
+      X = x;
+      Y = y;
+      Width = width;
+      Height = height;
       Number = number;
       Color = color;
       Background = background;
@@ -72,10 +69,10 @@ namespace Server.Gumps
     {
       // Are multiple arguments unsupported? And what about non ASCII arguments?
 
-      m_X = x;
-      m_Y = y;
-      m_Width = width;
-      m_Height = height;
+      X = x;
+      Y = y;
+      Width = width;
+      Height = height;
       Number = number;
       Args = args;
       Color = color;
@@ -126,10 +123,10 @@ namespace Server.Gumps
           {
             disp.AppendLayout(m_LayoutNamePlain);
 
-            disp.AppendLayout(m_X);
-            disp.AppendLayout(m_Y);
-            disp.AppendLayout(m_Width);
-            disp.AppendLayout(m_Height);
+            disp.AppendLayout(X);
+            disp.AppendLayout(Y);
+            disp.AppendLayout(Width);
+            disp.AppendLayout(Height);
             disp.AppendLayout(Number);
             disp.AppendLayout(Background);
             disp.AppendLayout(Scrollbar);
@@ -141,10 +138,10 @@ namespace Server.Gumps
           {
             disp.AppendLayout(m_LayoutNameColor);
 
-            disp.AppendLayout(m_X);
-            disp.AppendLayout(m_Y);
-            disp.AppendLayout(m_Width);
-            disp.AppendLayout(m_Height);
+            disp.AppendLayout(X);
+            disp.AppendLayout(Y);
+            disp.AppendLayout(Width);
+            disp.AppendLayout(Height);
             disp.AppendLayout(Number);
             disp.AppendLayout(Background);
             disp.AppendLayout(Scrollbar);
@@ -157,10 +154,10 @@ namespace Server.Gumps
           {
             disp.AppendLayout(m_LayoutNameArgs);
 
-            disp.AppendLayout(m_X);
-            disp.AppendLayout(m_Y);
-            disp.AppendLayout(m_Width);
-            disp.AppendLayout(m_Height);
+            disp.AppendLayout(X);
+            disp.AppendLayout(Y);
+            disp.AppendLayout(Width);
+            disp.AppendLayout(Height);
             disp.AppendLayout(Background);
             disp.AppendLayout(Scrollbar);
             disp.AppendLayout(Color);
