@@ -18,7 +18,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Text;
 using Server.Network;
 
 namespace Server.Gumps
@@ -27,10 +26,7 @@ namespace Server.Gumps
   {
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer("tooltip");
 
-    private string m_ArgsString;
-    private TextDefinition[] m_Args;
-
-    public GumpTooltip(int number, params TextDefinition[] args)
+    public GumpTooltip(int number, string args)
     {
       Number = number;
       Args = args;
@@ -38,33 +34,15 @@ namespace Server.Gumps
 
     public int Number { get; set; }
 
-    public TextDefinition[] Args
-    {
-      get => m_Args;
-      set
-      {
-        m_Args = value;
-        // Implementor should not assign if m_Args hasn't changed.
-        m_ArgsString = BuildStringArgs();
-      }
-    }
+    public string Args { get; set; }
 
-    private string BuildStringArgs()
-    {
-      StringBuilder builder = new StringBuilder();
-      for (int i = 0; i < m_Args.Length; i++)
-        builder.AppendFormat("@{0}", m_Args[i]);
-
-      return builder.ToString();
-    }
-
-    public override string Compile(NetState ns) => $"{{ tooltip {Number} {m_ArgsString} }}";
+    public override string Compile(NetState ns) => $"{{ tooltip {Number} @{Args}@ }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {
       disp.AppendLayout(m_LayoutName);
       disp.AppendLayout(Number);
-      disp.AppendLayout(m_ArgsString);
+      disp.AppendLayout(Args);
     }
   }
 }

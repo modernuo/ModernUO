@@ -108,7 +108,7 @@ namespace Server.Gumps
       Add(new GumpGroup(group));
     }
 
-    public void AddTooltip(int number, params TextDefinition[] args)
+    public void AddTooltip(int number, string args)
     {
       Add(new GumpTooltip(number, args));
     }
