@@ -25,22 +25,17 @@ namespace Server.Gumps
   public class GumpGroup : GumpEntry
   {
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer("group");
-    private int m_Group;
 
-    public GumpGroup(int group) => m_Group = group;
+    public GumpGroup(int group) => Group = group;
 
-    public int Group
-    {
-      get => m_Group;
-      set => Delta(ref m_Group, value);
-    }
+    public int Group { get; set; }
 
-    public override string Compile(NetState ns) => $"{{ group {m_Group} }}";
+    public override string Compile(NetState ns) => $"{{ group {Group} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {
       disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_Group);
+      disp.AppendLayout(Group);
     }
   }
 }

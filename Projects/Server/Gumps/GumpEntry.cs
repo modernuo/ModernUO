@@ -42,31 +42,6 @@ namespace Server.Gumps
       }
     }
 
-    protected void Delta(ref uint var, uint val)
-    {
-      var = val;
-    }
-
-    protected void Delta(ref int var, int val)
-    {
-      var = val;
-    }
-
-    protected void Delta(ref bool var, bool val)
-    {
-      var = val;
-    }
-
-    protected void Delta(ref string var, string val)
-    {
-      var = val;
-    }
-
-    protected void Delta(ref object[] var, object[] val)
-    {
-      var = val;
-    }
-
     public abstract string Compile(NetState ns);
     public abstract void AppendTo(NetState ns, IGumpWriter disp);
   }

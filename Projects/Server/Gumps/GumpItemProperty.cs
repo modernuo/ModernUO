@@ -25,22 +25,17 @@ namespace Server.Gumps
   public class GumpItemProperty : GumpEntry
   {
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer("itemproperty");
-    private uint m_Serial;
 
-    public GumpItemProperty(uint serial) => m_Serial = serial;
+    public GumpItemProperty(uint serial) => Serial = serial;
 
-    public uint Serial
-    {
-      get => m_Serial;
-      set => Delta(ref m_Serial, value);
-    }
+    public uint Serial { get; set; }
 
-    public override string Compile(NetState ns) => $"{{ itemproperty {m_Serial} }}";
+    public override string Compile(NetState ns) => $"{{ itemproperty {Serial} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {
       disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_Serial);
+      disp.AppendLayout(Serial);
     }
   }
 }

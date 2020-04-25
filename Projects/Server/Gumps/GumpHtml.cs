@@ -25,76 +25,45 @@ namespace Server.Gumps
   public class GumpHtml : GumpEntry
   {
     private static readonly byte[] m_LayoutName = Gump.StringToBuffer("htmlgump");
-    private bool m_Background, m_Scrollbar;
-    private string m_Text;
-    private int m_Width, m_Height;
-    private int m_X, m_Y;
 
     public GumpHtml(int x, int y, int width, int height, string text, bool background, bool scrollbar)
     {
-      m_X = x;
-      m_Y = y;
-      m_Width = width;
-      m_Height = height;
-      m_Text = text;
-      m_Background = background;
-      m_Scrollbar = scrollbar;
+      X = x;
+      Y = y;
+      Width = width;
+      Height = height;
+      Text = text;
+      Background = background;
+      Scrollbar = scrollbar;
     }
 
-    public int X
-    {
-      get => m_X;
-      set => Delta(ref m_X, value);
-    }
+    public int X { get; set; }
 
-    public int Y
-    {
-      get => m_Y;
-      set => Delta(ref m_Y, value);
-    }
+    public int Y { get; set; }
 
-    public int Width
-    {
-      get => m_Width;
-      set => Delta(ref m_Width, value);
-    }
+    public int Width { get; set; }
 
-    public int Height
-    {
-      get => m_Height;
-      set => Delta(ref m_Height, value);
-    }
+    public int Height { get; set; }
 
-    public string Text
-    {
-      get => m_Text;
-      set => Delta(ref m_Text, value);
-    }
+    public string Text { get; set; }
 
-    public bool Background
-    {
-      get => m_Background;
-      set => Delta(ref m_Background, value);
-    }
+    public bool Background { get; set; }
 
-    public bool Scrollbar
-    {
-      get => m_Scrollbar;
-      set => Delta(ref m_Scrollbar, value);
-    }
+    public bool Scrollbar { get; set; }
 
-    public override string Compile(NetState ns) => $"{{ htmlgump {m_X} {m_Y} {m_Width} {m_Height} {Parent.Intern(m_Text)} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} }}";
+    public override string Compile(NetState ns) =>
+      $"{{ htmlgump {X} {Y} {Width} {Height} {Parent.Intern(Text)} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {
       disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_Width);
-      disp.AppendLayout(m_Height);
-      disp.AppendLayout(Parent.Intern(m_Text));
-      disp.AppendLayout(m_Background);
-      disp.AppendLayout(m_Scrollbar);
+      disp.AppendLayout(X);
+      disp.AppendLayout(Y);
+      disp.AppendLayout(Width);
+      disp.AppendLayout(Height);
+      disp.AppendLayout(Parent.Intern(Text));
+      disp.AppendLayout(Background);
+      disp.AppendLayout(Scrollbar);
     }
   }
 }
