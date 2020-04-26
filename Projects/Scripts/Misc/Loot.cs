@@ -224,7 +224,7 @@ namespace Server
       typeof(ArcaneCircleScroll), typeof(GiftOfRenewalScroll), typeof(ImmolatingWeaponScroll),
       typeof(AttuneWeaponScroll),
       typeof(ThunderstormScroll),
-      typeof(NatureFuryScroll), /*typeof( SummonFeyScroll ),			typeof( SummonFiendScroll ),*/
+      typeof(NatureFuryScroll), /*typeof( SummonFeyScroll ), typeof( SummonFiendScroll ),*/
       typeof(ReaperFormScroll), typeof(WildfireScroll), typeof(EssenceOfWindScroll), typeof(DryadAllureScroll),
       typeof(EtherealVoyageScroll), typeof(WordOfDeathScroll), typeof(GiftOfLifeScroll),
       typeof(ArcaneEmpowermentScroll)

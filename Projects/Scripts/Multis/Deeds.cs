@@ -109,9 +109,10 @@ namespace Server.Multis.Deeds
       }
       else
       {
-        from.SendLocalizedMessage(1010433); /* House placement cancellation could result in a
-													   * 60 second delay in the return of your deed.
-													   */
+        /* House placement cancellation could result in a
+         * 60 second delay in the return of your deed.
+         */
+        from.SendLocalizedMessage(1010433);
 
         from.Target = new HousePlacementTarget(this);
       }

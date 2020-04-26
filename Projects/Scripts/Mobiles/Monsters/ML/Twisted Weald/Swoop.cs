@@ -54,7 +54,7 @@ namespace Server.Mobiles
         {
           case 0: c.DropItem( new AssassinChest() ); break;
           case 1: c.DropItem( new AssassinArms() ); break;
-          case 2: c.DropItem( new DeathChest() );	break;
+          case 2: c.DropItem( new DeathChest() ); break;
           case 3: c.DropItem( new MyrmidonArms() ); break;
           case 4: c.DropItem( new MyrmidonLegs() ); break;
           case 5: c.DropItem( new MyrmidonGorget() ); break;

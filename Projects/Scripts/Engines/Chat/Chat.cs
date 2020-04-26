@@ -128,9 +128,10 @@ namespace Server.Engines.Chat
           Channel channel = user.CurrentChannel;
 
           if (handler.RequireConference && channel == null)
-            user.SendMessage(31); /* You must be in a conference to do this.
-												 * To join a conference, select one from the Conference menu.
-												 */
+            /* You must be in a conference to do this.
+             * To join a conference, select one from the Conference menu.
+             */
+            user.SendMessage(31);
           else if (handler.RequireModerator && !user.IsModerator)
             user.SendMessage(29); // You must have operator status to do this.
           else

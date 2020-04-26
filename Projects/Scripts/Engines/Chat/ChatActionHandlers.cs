@@ -111,9 +111,10 @@ namespace Server.Engines.Chat
     public static void DisallowPrivateMessages(ChatUser from, Channel channel, string param)
     {
       from.IgnorePrivateMessage = true;
-      from.SendMessage(38); /* You will no longer receive private messages.
-									 * Those who send you a message will be notified that you are blocking incoming messages.
-									 */
+      /* You will no longer receive private messages.
+       * Those who send you a message will be notified that you are blocking incoming messages.
+       */
+      from.SendMessage(38);
     }
 
     public static void TogglePrivateMessages(ChatUser from, Channel channel, string param)

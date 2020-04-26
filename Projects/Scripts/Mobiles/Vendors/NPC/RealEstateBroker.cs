@@ -77,7 +77,7 @@ namespace Server.Mobiles
         {
           if (Banker.Deposit(from, price))
           {
-            // For the deed I have placed gold in your bankbox : 
+            // For the deed I have placed gold in your bankbox :
             PublicOverheadMessage(MessageType.Regular, 0x3B2, 1008000, AffixType.Append, price.ToString());
 
             deed.Delete();
@@ -103,7 +103,7 @@ namespace Server.Mobiles
 
         if (price > 0)
         {
-          // I will pay you gold for this deed : 
+          // I will pay you gold for this deed :
           PublicOverheadMessage(MessageType.Regular, 0x3B2, 1008001, AffixType.Append, price.ToString());
 
           PublicOverheadMessage(MessageType.Regular, 0x3B2,

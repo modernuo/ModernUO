@@ -447,12 +447,12 @@ namespace Server.Items
         }
 
       /*
-      totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Cold,		totalDamage );
-      totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Energy,	totalDamage );
-      totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Fire,		totalDamage );
-      totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Poison,	totalDamage );
+        totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Cold, totalDamage );
+        totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Energy, totalDamage );
+        totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Fire, totalDamage );
+        totalDamage = AssignElementalDamage( weapon, AosElementAttribute.Poison, totalDamage );
 
-      weapon.AosElementDamages[AosElementAttribute.Physical] = 100 - totalDamage;
+        weapon.AosElementDamages[AosElementAttribute.Physical] = 100 - totalDamage;
        * */
 
       for (int i = 0; i < attrs.Length; i++)

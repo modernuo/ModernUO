@@ -15,10 +15,10 @@ namespace Server.Engines.Help
 
     public override void OnResponse(Mobile from, string text)
     {
-      from.SendLocalizedMessage(501234, "",
-        0x35); /* The next available Counselor/Game Master will respond as soon as possible.
-															* Please check your Journal for messages every few minutes.
-															*/
+      /* The next available Counselor/Game Master will respond as soon as possible.
+       * Please check your Journal for messages every few minutes.
+       */
+      from.SendLocalizedMessage(501234, "", 0x35);
 
       PageQueue.Enqueue(new PageEntry(from, text, m_Type));
     }

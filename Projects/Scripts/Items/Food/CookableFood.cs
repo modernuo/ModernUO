@@ -42,16 +42,6 @@ namespace Server.Items
       }
     }
 
-#if false
-		public override void OnDoubleClick( Mobile from )
-		{
-			if (!Movable)
-				return;
-
-			from.Target = new InternalTarget( this );
-		}
-#endif
-
     public static bool IsHeatSource(object targeted)
     {
       int itemID;

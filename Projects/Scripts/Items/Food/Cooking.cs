@@ -46,16 +46,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-#if false
-		public override void OnDoubleClick( Mobile from )
-		{
-			if (!Movable)
-				return;
-
-			from.Target = new InternalTarget( this );
-		}
-#endif
-
     private class InternalTarget : Target
     {
       private readonly Dough m_Item;
@@ -133,16 +123,6 @@ namespace Server.Items
       if (Hue == 51)
         Hue = 150;
     }
-
-#if false
-		public override void OnDoubleClick( Mobile from )
-		{
-			if (!Movable)
-				return;
-
-			from.Target = new InternalTarget( this );
-		}
-#endif
 
     private class InternalTarget : Target
     {
@@ -452,12 +432,6 @@ namespace Server.Items
 
       if (ItemID == 0x1039 || ItemID == 0x1045)
         ++ItemID;
-
-#if false
-			this.Delete();
-
-			from.AddToBackpack( new SackFlourOpen() );
-#endif
     }
   }
 

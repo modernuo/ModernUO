@@ -174,10 +174,10 @@ namespace Server.Misc
             from.SendMessage(
               "Your IP address does not match that which created this account.  A page has been entered into the help system on your behalf.");
 
-            from.SendLocalizedMessage(501234, "",
-              0x35); /* The next available Counselor/Game Master will respond as soon as possible.
-																	    * Please check your Journal for messages every few minutes.
-																	    */
+            /* The next available Counselor/Game Master will respond as soon as possible.
+             * Please check your Journal for messages every few minutes.
+             */
+            from.SendLocalizedMessage(501234, "", 0x35);
 
             PageQueue.Enqueue(new PageEntry(from,
               $"[Automated: Change Password]<br>Desired password: {pass}<br>Current IP address: {ipAddress}<br>Account IP address: {accessList[0]}",

@@ -8,12 +8,12 @@ namespace Server.Items
      * to do with piers. The three items here are basically
      * permutations of the same "drop", or item that
      * will be randomly selected when the item drops.
-     * 
+     *
      * It was either this, or make 2
      * new classes named to reflect that they are rocks
      * in water, or put them all in one class. Either
      * is kind of senseless, so it is what it is.
-     * 
+     *
      */
 
     private static readonly int[] m_itemids =

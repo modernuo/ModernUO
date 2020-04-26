@@ -158,10 +158,12 @@ namespace Server.Items
       double level = (Value - 105.0) / 5.0;
 
       if (level >= 0.0 && level <= 3.0 && Value % 5.0 == 0.0)
-        list.Add(1049639 + (int)level, GetNameLocalized()); /* a wonderous scroll of ~1_type~ (105 Skill) OR
-																		* an exalted scroll of ~1_type~ (110 Skill) OR
-																		* a mythical scroll of ~1_type~ (115 Skill) OR
-																		* a legendary scroll of ~1_type~ (120 Skill) */
+        /* a wonderous scroll of ~1_type~ (105 Skill) OR
+         * an exalted scroll of ~1_type~ (110 Skill) OR
+         * a mythical scroll of ~1_type~ (115 Skill) OR
+         * a legendary scroll of ~1_type~ (120 Skill)
+         */
+        list.Add(1049639 + (int)level, GetNameLocalized());
       else
         list.Add("a power scroll of {0} ({1} Skill)", GetName(), Value);
     }

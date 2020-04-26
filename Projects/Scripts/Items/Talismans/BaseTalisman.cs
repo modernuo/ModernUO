@@ -991,7 +991,7 @@ namespace Server.Items
       typeof(Crane), typeof(SnowLeopard), typeof(IceFiend), typeof(FrostOoze), typeof(FrostTroll),
       typeof(IceElemental), typeof(SnowElemental), typeof(GiantIceWorm), typeof(LadyOfTheSnow), typeof(FireElemental),
       typeof(FireSteed), typeof(HellHound), typeof(HellCat), typeof(PredatorHellCat), typeof(LavaLizard),
-      typeof(FireBeetle), typeof(Cow), typeof(Bull), typeof(Gaman) // ,			typeof( Minotaur)
+      typeof(FireBeetle), typeof(Cow), typeof(Bull), typeof(Gaman) // , typeof( Minotaur)
       // TODO Meraktus, Tormented Minotaur, Minotaur
     };
 

@@ -73,8 +73,7 @@ namespace Server.Items
         },
         [TalismanSlayerName.Bovine] = new[]
         {
-          typeof(Cow), typeof(Bull), typeof(Gaman) /*, typeof( MinotaurCaptain ),
-				  typeof( MinotaurScout ), typeof( Minotaur )*/
+          typeof(Cow), typeof(Bull), typeof(Gaman) /*, typeof( MinotaurCaptain ), typeof( MinotaurScout ), typeof( Minotaur ) */
           // TODO TormentedMinotaur
         }
       };
