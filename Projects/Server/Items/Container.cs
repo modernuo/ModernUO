@@ -707,7 +707,7 @@ namespace Server.Items
     {
       base.GetProperties(list);
 
-      if (DisplaysContent) // CheckContentDisplay( from ) )
+      if (DisplaysContent) // CheckContentDisplay( from ))
       {
         if (Core.ML)
         {
@@ -769,7 +769,7 @@ namespace Server.Items
     public bool ConsumeTotalGrouped(Type type, int amount, bool recurse, OnItemConsumed callback, CheckItemGroup grouper)
     {
       if (grouper == null)
-        throw new ArgumentNullException();
+        throw new ArgumentNullException(nameof(grouper));
 
       var typedItems = FindItemsByType(type, recurse);
 
@@ -855,9 +855,9 @@ namespace Server.Items
       CheckItemGroup grouper)
     {
       if (types.Length != amounts.Length)
-        throw new ArgumentException();
+        throw new ArgumentException("length of types and amounts must match");
       if (grouper == null)
-        throw new ArgumentNullException();
+        throw new ArgumentNullException(nameof(grouper));
 
       var items = new Item[types.Length][][];
       var totals = new int[types.Length][];
@@ -950,9 +950,9 @@ namespace Server.Items
       CheckItemGroup grouper)
     {
       if (types.Length != amounts.Length)
-        throw new ArgumentException();
+        throw new ArgumentException("length of types and amounts must match");
       if (grouper == null)
-        throw new ArgumentNullException();
+        throw new ArgumentNullException(nameof(grouper));
 
       var items = new Item[types.Length][][];
       var totals = new int[types.Length][];
@@ -1044,7 +1044,7 @@ namespace Server.Items
     public int ConsumeTotal(Type[][] types, int[] amounts, bool recurse = true, OnItemConsumed callback = null)
     {
       if (types.Length != amounts.Length)
-        throw new ArgumentException();
+        throw new ArgumentException("length of types and amounts must match");
 
       var items = new Item[types.Length][];
       var totals = new int[types.Length];
@@ -1093,7 +1093,7 @@ namespace Server.Items
     public int ConsumeTotal(Type[] types, int[] amounts, bool recurse = true, OnItemConsumed callback = null)
     {
       if (types.Length != amounts.Length)
-        throw new ArgumentException();
+        throw new ArgumentException("length of types and amounts must match");
 
       var items = new Item[types.Length][];
       var totals = new int[types.Length];
@@ -1236,7 +1236,7 @@ namespace Server.Items
     public int GetBestGroupAmount(Type type, bool recurse, CheckItemGroup grouper)
     {
       if (grouper == null)
-        throw new ArgumentNullException();
+        throw new ArgumentNullException(nameof(grouper));
 
       var best = 0;
 
@@ -1287,7 +1287,7 @@ namespace Server.Items
     public int GetBestGroupAmount(Type[] types, bool recurse, CheckItemGroup grouper)
     {
       if (grouper == null)
-        throw new ArgumentNullException();
+        throw new ArgumentNullException(nameof(grouper));
 
       var best = 0;
 
@@ -1334,7 +1334,7 @@ namespace Server.Items
     public int GetBestGroupAmount(Type[][] types, bool recurse, CheckItemGroup grouper)
     {
       if (grouper == null)
-        throw new ArgumentNullException();
+        throw new ArgumentNullException(nameof(grouper));
 
       var best = 0;
 

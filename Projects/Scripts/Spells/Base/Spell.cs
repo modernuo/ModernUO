@@ -239,7 +239,7 @@ namespace Server.Spells
         double targetRS = target.Skills.MagicResist.Value;
 
         /*
-        if ( Core.AOS )
+        if (Core.AOS)
           targetRS = 0;
         */
 
@@ -429,11 +429,9 @@ namespace Server.Spells
       {
         mobile.SendLocalizedMessage(1072060); // You cannot cast a spell while calmed.
       }
-
       else if ((Caster as PlayerMobile)?.DuelContext?.AllowSpellCast(Caster, this) == false)
       {
       }
-
       else if (Caster.Mana >= ScaleMana(GetMana()))
       {
         if (Caster.Spell == null && Caster.CheckSpellCast(this) && CheckCast() &&

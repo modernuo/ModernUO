@@ -49,7 +49,7 @@ namespace Server.Items
 #if false
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( !Movable )
+			if (!Movable)
 				return;
 
 			from.Target = new InternalTarget( this );
@@ -137,7 +137,7 @@ namespace Server.Items
 #if false
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( !Movable )
+			if (!Movable)
 				return;
 
 			from.Target = new InternalTarget( this );
@@ -234,7 +234,7 @@ namespace Server.Items
 
     /*public override void OnDoubleClick( Mobile from )
     {
-      if ( !Movable )
+      if (!Movable)
         return;
 
       from.Target = new InternalTarget( this );
@@ -348,7 +348,7 @@ namespace Server.Items
 
     public override void OnDoubleClick( Mobile from )
     {
-      if ( !Movable )
+      if (!Movable)
         return;
 
       from.Target = new InternalTarget( this );
@@ -365,9 +365,9 @@ namespace Server.Items
 
       protected override void OnTarget( Mobile from, object targeted )
       {
-        if ( m_Item.Deleted ) return;
+        if (m_Item.Deleted ) return;
 
-        if ( targeted is BowlFlour )
+        if (targeted is BowlFlour)
         {
           m_Item.Delete();
           ((BowlFlour)targeted).Delete();

@@ -64,12 +64,12 @@ namespace Server
      * enabling the usage of DateTime.UtcNow instead.
      */
 
-    private static readonly bool _HighRes = Stopwatch.IsHighResolution;
+    private static readonly bool m_HighRes = Stopwatch.IsHighResolution;
 
-    private static readonly double _HighFrequency = 1000.0 / Stopwatch.Frequency;
-    private static readonly double _LowFrequency = 1000.0 / TimeSpan.TicksPerSecond;
+    private static readonly double m_HighFrequency = 1000.0 / Stopwatch.Frequency;
+    private static readonly double m_LowFrequency = 1000.0 / TimeSpan.TicksPerSecond;
 
-    private static bool _UseHRT;
+    private static bool m_UseHRT;
 
     public static readonly bool Is64Bit = Environment.Is64BitProcess;
     internal static ConsoleEventHandler m_ConsoleEventHandler;
@@ -126,7 +126,7 @@ namespace Server
 
     public static MultiTextWriter MultiConsoleOut { get; private set; }
 
-    public static bool UsingHighResolutionTiming => _UseHRT && _HighRes && !Unix;
+    public static bool UsingHighResolutionTiming => m_UseHRT && m_HighRes && !Unix;
 
     public static long TickCount => (long)Ticks;
 
@@ -134,9 +134,9 @@ namespace Server
     {
       get
       {
-        if (_UseHRT && _HighRes && !Unix) return Stopwatch.GetTimestamp() * _HighFrequency;
+        if (m_UseHRT && m_HighRes && !Unix) return Stopwatch.GetTimestamp() * m_HighFrequency;
 
-        return DateTime.UtcNow.Ticks * _LowFrequency;
+        return DateTime.UtcNow.Ticks * m_LowFrequency;
       }
     }
 
@@ -200,7 +200,7 @@ namespace Server
         if (HaltOnWarning)
           Utility.Separate(sb, "-haltonwarning", " ");
 
-        if (_UseHRT)
+        if (m_UseHRT)
           Utility.Separate(sb, "-usehrt", " ");
 
         return sb.ToString();
@@ -347,7 +347,7 @@ namespace Server
         else if (Insensitive.Equals(a, "-haltonwarning"))
           HaltOnWarning = true;
         else if (Insensitive.Equals(a, "-usehrt"))
-          _UseHRT = true;
+          m_UseHRT = true;
 
       try
       {
@@ -426,7 +426,7 @@ namespace Server
       if (GCSettings.IsServerGC)
         Console.WriteLine("Core: Server garbage collection mode enabled");
 
-      if (_UseHRT)
+      if (m_UseHRT)
         Console.WriteLine("Core: Requested high resolution timing ({0})",
           UsingHighResolutionTiming ? "Supported" : "Unsupported");
 
@@ -615,7 +615,7 @@ namespace Server
   {
     public const string DateFormat = "[MMMM dd hh:mm:ss.f tt]: ";
 
-    private bool _NewLine;
+    private bool m_NewLine;
 
     public FileLogger(string file, bool append = false)
     {
@@ -631,7 +631,7 @@ namespace Server
         // f = Tuesday, April 10, 2001 3:51 PM
       }
 
-      _NewLine = true;
+      m_NewLine = true;
     }
 
     public string FileName { get; }
@@ -642,10 +642,10 @@ namespace Server
     {
       using var writer =
         new StreamWriter(new FileStream(FileName, FileMode.Append, FileAccess.Write, FileShare.Read));
-      if (_NewLine)
+      if (m_NewLine)
       {
         writer.Write(DateTime.UtcNow.ToString(DateFormat));
-        _NewLine = false;
+        m_NewLine = false;
       }
 
       writer.Write(ch);
@@ -655,10 +655,10 @@ namespace Server
     {
       using var writer =
         new StreamWriter(new FileStream(FileName, FileMode.Append, FileAccess.Write, FileShare.Read));
-      if (_NewLine)
+      if (m_NewLine)
       {
         writer.Write(DateTime.UtcNow.ToString(DateFormat));
-        _NewLine = false;
+        m_NewLine = false;
       }
 
       writer.Write(str);
@@ -668,44 +668,44 @@ namespace Server
     {
       using var writer =
         new StreamWriter(new FileStream(FileName, FileMode.Append, FileAccess.Write, FileShare.Read));
-      if (_NewLine) writer.Write(DateTime.UtcNow.ToString(DateFormat));
+      if (m_NewLine) writer.Write(DateTime.UtcNow.ToString(DateFormat));
 
       writer.WriteLine(line);
-      _NewLine = true;
+      m_NewLine = true;
     }
   }
 
   public class MultiTextWriter : TextWriter
   {
-    private readonly List<TextWriter> _Streams;
+    private readonly List<TextWriter> m_Streams;
 
     public MultiTextWriter(params TextWriter[] streams)
     {
-      _Streams = new List<TextWriter>(streams);
+      m_Streams = new List<TextWriter>(streams);
 
-      if (_Streams.Count < 0) throw new ArgumentException("You must specify at least one stream.");
+      if (m_Streams.Count < 0) throw new ArgumentException("You must specify at least one stream.");
     }
 
     public override Encoding Encoding => Encoding.Default;
 
     public void Add(TextWriter tw)
     {
-      _Streams.Add(tw);
+      m_Streams.Add(tw);
     }
 
     public void Remove(TextWriter tw)
     {
-      _Streams.Remove(tw);
+      m_Streams.Remove(tw);
     }
 
     public override void Write(char ch)
     {
-      foreach (var t in _Streams) t.Write(ch);
+      foreach (var t in m_Streams) t.Write(ch);
     }
 
     public override void WriteLine(string line)
     {
-      foreach (var t in _Streams) t.WriteLine(line);
+      foreach (var t in m_Streams) t.WriteLine(line);
     }
 
     public override void WriteLine(string line, params object[] args)

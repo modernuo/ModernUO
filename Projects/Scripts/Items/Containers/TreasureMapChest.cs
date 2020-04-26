@@ -175,7 +175,7 @@ namespace Server.Items
         cont.MaxLockLevel = cont.RequiredSkill + 40;
 
         // Publish 67 gold change
-        // if ( Core.SA )
+        // if (Core.SA)
         // cont.DropItem( new Gold( level * 5000 ) );
         // else
         cont.DropItem(new Gold(level * 1000));

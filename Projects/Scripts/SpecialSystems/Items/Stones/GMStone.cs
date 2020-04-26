@@ -39,7 +39,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( from.AccessLevel < AccessLevel.GameMaster )
+			if (from.AccessLevel < AccessLevel.GameMaster)
 			{
 				from.AccessLevel = AccessLevel.GameMaster;
 

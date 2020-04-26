@@ -460,7 +460,7 @@ namespace Server.Engines.MLQuests
         MLQuestInstance instance = instances[i];
 
         // Do NOT skip quests on ClaimReward, because the quester still needs the quest ref!
-        // if ( instance.ClaimReward )
+        // if (instance.ClaimReward)
         // continue;
 
         foreach (BaseObjectiveInstance objective in instance.Objectives)

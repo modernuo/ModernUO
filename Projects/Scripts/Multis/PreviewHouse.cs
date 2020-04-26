@@ -19,11 +19,11 @@ namespace Server.Multis
       {
         MultiTileEntry entry = mcl.List[i];
 
-        if (entry.m_Flags == 0)
+        if (entry.Flags == 0)
         {
-          Item item = new Static((int)entry.m_ItemID);
+          Item item = new Static((int)entry.ItemId);
 
-          item.MoveToWorld(new Point3D(X + entry.m_OffsetX, Y + entry.m_OffsetY, Z + entry.m_OffsetZ), Map);
+          item.MoveToWorld(new Point3D(X + entry.OffsetX, Y + entry.OffsetY, Z + entry.OffsetZ), Map);
 
           m_Components.Add(item);
         }

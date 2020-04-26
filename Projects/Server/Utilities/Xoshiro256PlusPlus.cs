@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019 - ModernUO Development Team                        *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: Xoshiro256PlusPlus.cs                                           *
  * Created: 2019/12/29 - Updated: 2019/12/30                             *
@@ -57,7 +57,7 @@ namespace Server
     {
       if (max <= 1u << 12)
       {
-        if (max == 0) throw new ArgumentOutOfRangeException();
+        if (max == 0) throw new ArgumentOutOfRangeException(nameof(max));
         return (uint)(((ulong)NextUInt32() * max) >> 32);
       }
 

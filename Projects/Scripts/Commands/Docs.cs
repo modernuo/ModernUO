@@ -243,7 +243,7 @@ namespace Server.Commands
 
             nameBuilder.Append(sanitizedName);
             fnamBuilder.Append("T");
-            if (DontLink(typeArguments[i])) // if ( DontLink( typeArguments[i].Name ) )
+            if (DontLink(typeArguments[i]))
               linkBuilder.Append($"<font color=\"blue\">{aliasedName}</font>");
             else
               linkBuilder.Append(
@@ -312,7 +312,7 @@ namespace Server.Commands
     public static bool DontLink( string name )
     {
       foreach( string dontLink in m_DontLink )
-        if ( dontLink == name ) return true;
+        if (dontLink == name ) return true;
       return false;
     }
     */

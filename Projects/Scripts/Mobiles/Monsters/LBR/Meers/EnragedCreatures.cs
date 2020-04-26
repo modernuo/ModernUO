@@ -190,7 +190,6 @@ namespace Server.Mobiles
         given "come" command, ie they wander towards their summoner,
         but never actually "follow".
       */
-
       else if (!Combat(this))
       {
         AIObject?.MoveTo(SummonMaster, false, 5);
@@ -201,7 +200,6 @@ namespace Server.Mobiles
         is a player or controlled/summoned, and the summoner is not already
         engaged in combat.
       */
-
       else if (!Combat(SummonMaster))
       {
         if (Combatant.Player || (Combatant is BaseCreature bc && (bc.Controlled || bc.SummonMaster != null)))

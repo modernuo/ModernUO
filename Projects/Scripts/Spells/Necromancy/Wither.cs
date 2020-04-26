@@ -92,7 +92,7 @@ namespace Server.Spells.Necromancy
             damage /= 100;
 
             // TODO: cap?
-            // if ( damage > 40 )
+            // if (damage > 40)
             // damage = 40;
 
             SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);

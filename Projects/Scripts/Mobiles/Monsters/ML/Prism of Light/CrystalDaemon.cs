@@ -47,7 +47,7 @@ namespace Server.Mobiles
     {
       base.OnDeath( c );
 
-      if ( Utility.RandomDouble() < 0.4 )
+      if (Utility.RandomDouble() < 0.4)
         c.DropItem( new ScatteredCrystals() );
     }
     */

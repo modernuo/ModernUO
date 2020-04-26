@@ -278,13 +278,13 @@ namespace Server.Items
     {
       base.GetProperties( list );
 
-      if ( m_Title?.Length > 0 )
+      if (m_Title?.Length > 0)
         list.Add( 1060658, "Title\t{0}", m_Title ); // ~1_val~: ~2_val~
 
-      if ( m_Author?.Length > 0 )
+      if (m_Author?.Length > 0)
         list.Add( 1060659, "Author\t{0}", m_Author ); // ~1_val~: ~2_val~
 
-      if ( m_Pages?.Length > 0 )
+      if (m_Pages?.Length > 0)
         list.Add( 1060660, "Pages\t{0}", m_Pages.Length ); // ~1_val~: ~2_val~
     }*/
 
@@ -420,22 +420,22 @@ namespace Server.Items
     {
       EnsureCapacity(256);
 
-      m_Stream.Write(book.Serial);
-      m_Stream.Write((ushort)book.PagesCount);
+      Stream.Write(book.Serial);
+      Stream.Write((ushort)book.PagesCount);
 
       for (int i = 0; i < book.PagesCount; ++i)
       {
         BookPageInfo page = book.Pages[i];
 
-        m_Stream.Write((ushort)(i + 1));
-        m_Stream.Write((ushort)page.Lines.Length);
+        Stream.Write((ushort)(i + 1));
+        Stream.Write((ushort)page.Lines.Length);
 
         for (int j = 0; j < page.Lines.Length; ++j)
         {
           byte[] buffer = Utility.UTF8.GetBytes(page.Lines[j]);
 
-          m_Stream.Write(buffer, 0, buffer.Length);
-          m_Stream.Write((byte)0);
+          Stream.Write(buffer, 0, buffer.Length);
+          Stream.Write((byte)0);
         }
       }
     }
@@ -453,18 +453,18 @@ namespace Server.Items
 
       EnsureCapacity(15 + titleBuffer.Length + authorBuffer.Length);
 
-      m_Stream.Write(book.Serial);
-      m_Stream.Write(true);
-      m_Stream.Write(book.Writable && from.InRange(book.GetWorldLocation(), 1));
-      m_Stream.Write((ushort)book.PagesCount);
+      Stream.Write(book.Serial);
+      Stream.Write(true);
+      Stream.Write(book.Writable && from.InRange(book.GetWorldLocation(), 1));
+      Stream.Write((ushort)book.PagesCount);
 
-      m_Stream.Write((ushort)(titleBuffer.Length + 1));
-      m_Stream.Write(titleBuffer, 0, titleBuffer.Length);
-      m_Stream.Write((byte)0); // terminate
+      Stream.Write((ushort)(titleBuffer.Length + 1));
+      Stream.Write(titleBuffer, 0, titleBuffer.Length);
+      Stream.Write((byte)0); // terminate
 
-      m_Stream.Write((ushort)(authorBuffer.Length + 1));
-      m_Stream.Write(authorBuffer, 0, authorBuffer.Length);
-      m_Stream.Write((byte)0); // terminate
+      Stream.Write((ushort)(authorBuffer.Length + 1));
+      Stream.Write(authorBuffer, 0, authorBuffer.Length);
+      Stream.Write((byte)0); // terminate
     }
   }
 }

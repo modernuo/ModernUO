@@ -160,7 +160,7 @@ namespace Server.Guilds
             {
               pm.SendLocalizedMessage(1063158); // You have cleared your vote for guild leader.
             }
-            else if (guild.CanVote(m_Member)) // ( playerRank.GetFlag( RankFlags.CanVote ) )
+            else if (guild.CanVote(m_Member))
             {
               if (m_Member == guild.Leader)
               {

@@ -50,7 +50,7 @@ namespace Server.Mobiles
       if (Utility.RandomDouble() < 0.2)
         PackItem(new TreasureMap(5, Map.Trammel));
 
-      // if ( Utility.RandomDouble() < 0.1 )
+      // if (Utility.RandomDouble() < 0.1)
       // PackItem( new ParrotItem() );
 
       PackGold(500, 800);

@@ -37,8 +37,6 @@ namespace Server.Network
     private readonly int m_Length;
     private State m_State;
 
-    protected PacketWriter m_Stream;
-
     protected Packet(int packetID)
     {
       PacketID = packetID;
@@ -55,8 +53,8 @@ namespace Server.Network
       PacketID = packetID;
       m_Length = length;
 
-      m_Stream = PacketWriter.CreateInstance(length); // new PacketWriter( length );
-      m_Stream.Write((byte)packetID);
+      Stream = PacketWriter.CreateInstance(length); // new PacketWriter( length );
+      Stream.Write((byte)packetID);
 
       if (Core.Profiling)
       {
@@ -67,13 +65,13 @@ namespace Server.Network
 
     public int PacketID { get; }
 
-    public PacketWriter UnderlyingStream => m_Stream;
+    public PacketWriter Stream { get; protected set; }
 
     public void EnsureCapacity(int length)
     {
-      m_Stream = PacketWriter.CreateInstance(length); // new PacketWriter( length );
-      m_Stream.Write((byte)PacketID);
-      m_Stream.Write((short)0);
+      Stream = PacketWriter.CreateInstance(length); // new PacketWriter( length );
+      Stream.Write((byte)PacketID);
+      Stream.Write((short)0);
     }
 
     public static Packet SetStatic(Packet p)
@@ -183,20 +181,20 @@ namespace Server.Network
     {
       if (m_Length == 0)
       {
-        var streamLen = m_Stream.Length;
+        var streamLen = Stream.Length;
 
-        m_Stream.Seek(1, SeekOrigin.Begin);
-        m_Stream.Write((ushort)streamLen);
+        Stream.Seek(1, SeekOrigin.Begin);
+        Stream.Write((ushort)streamLen);
       }
-      else if (m_Stream.Length != m_Length)
+      else if (Stream.Length != m_Length)
       {
-        var diff = (int)m_Stream.Length - m_Length;
+        var diff = (int)Stream.Length - m_Length;
 
         Console.WriteLine("Packet: 0x{0:X2}: Bad packet length! ({1}{2} bytes)", PacketID, diff >= 0 ? "+" : "",
           diff);
       }
 
-      var ms = m_Stream.UnderlyingStream;
+      var ms = Stream.UnderlyingStream;
 
       m_CompiledBuffer = ms.GetBuffer();
       var length = (int)ms.Length;
@@ -251,8 +249,8 @@ namespace Server.Network
         Buffer.BlockCopy(old, 0, m_CompiledBuffer, 0, length);
       }
 
-      PacketWriter.ReleaseInstance(m_Stream);
-      m_Stream = null;
+      PacketWriter.ReleaseInstance(Stream);
+      Stream = null;
     }
 
     [Flags]

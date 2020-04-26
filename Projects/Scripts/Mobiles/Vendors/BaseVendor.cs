@@ -812,7 +812,7 @@ namespace Server.Mobiles
       }
 
       // one (not all) of the packets uses a byte to describe number of items in the list.  Osi = dumb.
-      // if ( list.Count > 255 )
+      // if (list.Count > 255)
       // Console.WriteLine( "Vendor Warning: Vendor {0} has more than 255 buy items, may cause client errors!", this );
 
       if (list.Count <= 0)

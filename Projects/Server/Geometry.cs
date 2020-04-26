@@ -23,7 +23,7 @@ using System;
 namespace Server
 {
   [Parsable]
-  public struct Point2D : IPoint2D, IComparable<Point2D>
+  public struct Point2D : IPoint2D, IComparable<Point2D>, IEquatable<object>, IEquatable<Point2D>
   {
     internal int m_X;
     internal int m_Y;
@@ -83,6 +83,8 @@ namespace Server
 
     public override bool Equals(object o) => o is IPoint2D p && m_X == p.X && m_Y == p.Y;
 
+    public bool Equals(Point2D p) => m_X == p.X && m_Y == p.Y;
+
     public override int GetHashCode() => m_X ^ m_Y;
 
     public static bool operator ==(Point2D l, Point2D r) => l.m_X == r.m_X && l.m_Y == r.m_Y;
@@ -119,7 +121,7 @@ namespace Server
   }
 
   [Parsable]
-  public struct Point3D : IPoint3D, IComparable<Point3D>
+  public struct Point3D : IPoint3D, IComparable<Point3D>, IEquatable<object>, IEquatable<Point3D>
   {
     internal int m_X;
     internal int m_Y;
@@ -168,6 +170,8 @@ namespace Server
     public override string ToString() => $"({m_X}, {m_Y}, {m_Z})";
 
     public override bool Equals(object o) => o is IPoint3D p && m_X == p.X && m_Y == p.Y && m_Z == p.Z;
+
+    public bool Equals(Point3D p) => m_X == p.X && m_Y == p.Y && m_Z == p.Z;
 
     public override int GetHashCode() => m_X ^ m_Y ^ m_Z;
 

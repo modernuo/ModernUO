@@ -276,48 +276,48 @@ namespace Server.Mobiles
           Stop();
         } // </instakill>
 
-        /*else if ( !m_Owner.InRange( target, 20 ) )
+        /*else if (!m_Owner.InRange( target, 20 ))
         {
           m_Shooting = false;
           m_Owner.Focus = null;
         }
-        else if ( !m_Owner.InLOS( target ) )
+        else if (!m_Owner.InLOS( target ))
         {
           m_Shooting = false;
           TeleportTo( target );
         }
-        else if ( !m_Owner.CanSee( target ) )
+        else if (!m_Owner.CanSee( target ))
         {
           m_Shooting = false;
 
-          if ( !m_Owner.InRange( target, 2 ) )
+          if (!m_Owner.InRange( target, 2 ))
           {
-            if ( !m_Owner.Move( m_Owner.GetDirectionTo( target ) | Direction.Running ) && OutOfMaxDistance( target ) )
+            if (!m_Owner.Move( m_Owner.GetDirectionTo( target ) | Direction.Running ) && OutOfMaxDistance( target ))
               TeleportTo( target );
           }
           else
           {
-            if ( !m_Owner.UseSkill( SkillName.DetectHidden ) && Utility.Random( 50 ) == 0 )
+            if (!m_Owner.UseSkill( SkillName.DetectHidden ) && Utility.Random( 50 ) == 0)
               m_Owner.Say( "Reveal!" );
           }
         }
         else
         {
-          if ( m_Shooting && (TimeToSpare() || OutOfMaxDistance( target )) )
+          if (m_Shooting && (TimeToSpare() || OutOfMaxDistance( target )))
             m_Shooting = false;
-          else if ( !m_Shooting && InMinDistance( target ) )
+          else if (!m_Shooting && InMinDistance( target ))
             m_Shooting = true;
 
-          if ( !m_Shooting )
+          if (!m_Shooting)
           {
-            if ( m_Owner.InRange( target, 1 ) )
+            if (m_Owner.InRange( target, 1 ))
             {
-              if ( !m_Owner.Move( (Direction)(m_Owner.GetDirectionTo( target ) - 4) | Direction.Running ) && OutOfMaxDistance( target ) ) // Too close, move away
-                TeleportTo( target );
+              if (!m_Owner.Move( (Direction)(m_Owner.GetDirectionTo( target ) - 4) | Direction.Running ) && OutOfMaxDistance( target ))
+                TeleportTo( target ); // Too close, move away
             }
-            else if ( !m_Owner.InRange( target, 2 ) )
+            else if (!m_Owner.InRange( target, 2 ))
             {
-              if ( !m_Owner.Move( m_Owner.GetDirectionTo( target ) | Direction.Running ) && OutOfMaxDistance( target ) )
+              if (!m_Owner.Move( m_Owner.GetDirectionTo( target ) | Direction.Running ) && OutOfMaxDistance( target ))
                 TeleportTo( target );
             }
           }

@@ -32,7 +32,7 @@ namespace Server.Engines.Craft
     public override void PlayCraftEffect(Mobile from)
     {
       // no animation
-      // if ( from.Body.Type == BodyType.Human && !from.Mounted )
+      // if (from.Body.Type == BodyType.Human && !from.Mounted)
       // from.Animate( 9, 5, 1, true, false, 0 );
 
       from.PlaySound(0x23D);

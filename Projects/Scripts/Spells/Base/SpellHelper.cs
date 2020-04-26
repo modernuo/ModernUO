@@ -102,10 +102,10 @@ namespace Server.Spells
       IsMLDungeon
     };
 
-    // TODO: Find a better way
+    // TODO: Move to configuration
     private static readonly bool[,] m_Rules =
     {
-      /*T2A(Fel),	Khaldun,	Ilshenar,	Wind(Tram),	Wind(Fel),	Dungeons(Fel),	Solen(Tram),	Solen(Fel),	CrystalCave(Malas),	Gauntlet(Malas),	Gauntlet(Ferry),	SafeZone,	Stronghold,	ChampionSpawn,	Dungeons(Tokuno[Malas]),	LampRoom(Doom),	GuardianRoom(Doom),	Heartwood,	MLDungeons */
+      /* T2A(Fel), Khaldun, Ilshenar, Wind(Tram), Wind(Fel), Dungeons(Fel), Solen(Tram), Solen(Fel), CrystalCave(Malas), Gauntlet(Malas), Gauntlet(Ferry), SafeZone, Stronghold, ChampionSpawn, Dungeons(Tokuno[Malas]), LampRoom(Doom), GuardianRoom(Doom), Heartwood, MLDungeons */
       /* Recall From */
       {
         false, false, true, true, false, false, true, false, false, false, false, true, true, false, true, false,
@@ -498,7 +498,7 @@ namespace Server.Spells
         int x = caster.X + m_Offsets[(offset + i) % m_Offsets.Length];
         int y = caster.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];
 
-        if ( map.CanSpawnMobile( x, y, caster.Z ) )
+        if (map.CanSpawnMobile( x, y, caster.Z ))
         {
           BaseCreature.Summon( creature, caster, new Point3D( x, y, caster.Z ), sound, duration );
           return;
@@ -507,7 +507,7 @@ namespace Server.Spells
         {
           int z = map.GetAverageZ( x, y );
 
-          if ( map.CanSpawnMobile( x, y, z ) )
+          if (map.CanSpawnMobile( x, y, z ))
           {
             BaseCreature.Summon( creature, caster, new Point3D( x, y, z ), sound, duration );
             return;

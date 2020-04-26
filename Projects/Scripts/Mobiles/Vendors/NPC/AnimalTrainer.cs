@@ -196,7 +196,7 @@ namespace Server.Mobiles
         SayTo(from, 502673); // I can not stable summoned creatures.
       }
       /*
-            else if ( pet.Allured )
+            else if (pet.Allured)
             {
               SayTo( from, 1048053 ); // You can't stable that!
             }

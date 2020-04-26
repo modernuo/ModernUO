@@ -46,7 +46,9 @@ namespace Server.Spells.Necromancy
          * One tile from main target receives 50% damage, two tiles from target receives 33% damage.
          */
 
-        // CheckResisted( m ); // Check magic resist for skill, but do not use return value	//reports from OSI:  Necro spells don't give Resist gain
+        // CheckResisted( m );
+        // Check magic resist for skill, but do not use return value
+        // reports from OSI:  Necro spells don't give Resist gain
 
         Effects.SendLocationParticles(EffectItem.Create(m.Location, m.Map, EffectItem.DefaultDuration), 0x36B0, 1,
           14, 63, 7, 9915, 0);

@@ -25,8 +25,6 @@ namespace System.Buffers
     private static unsafe bool TryReadMultisegment<T>(ref BufferReader<byte> reader, out T value)
       where T : unmanaged
     {
-      Debug.Assert(reader.UnreadSpan.Length < sizeof(T), "reader.UnreadSpan.Length < sizeof(T)");
-
       // Not enough data in the current segment, try to peek for the data we need.
       T buffer = default;
       var tempSpan = new Span<byte>(&buffer, sizeof(T));

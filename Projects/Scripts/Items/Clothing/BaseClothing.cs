@@ -400,7 +400,7 @@ namespace Server.Items
     {
       int v;
 
-      // if ( type == StatType.Str )
+      // if (type == StatType.Str)
       v = StrRequirement;
 
       return AOS.Scale(v, 100 - GetLowerStatReq());

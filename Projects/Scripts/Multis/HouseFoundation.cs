@@ -307,7 +307,7 @@ namespace Server.Multis
       for (int i = 0; i < list.Length; ++i)
       {
         MultiTileEntry mte = list[i];
-        int itemID = mte.m_ItemID;
+        int itemID = mte.ItemId;
 
         if (itemID >= 0x181D && itemID < 0x1829)
         {
@@ -463,8 +463,8 @@ namespace Server.Multis
           else if (itemID >= 0x436E && itemID < 0x437E)
           {
             /* These ones had to be different...
-             * Offset		0	2	4	6	8	10	12	14
-             * DoorFacing	2	3	2	3	6	7	6	7
+             * Offset 0 2 4 6 8 10 12 14
+             * DoorFacing 2 3 2 3 6 7 6 7
              */
             int offset = itemID - 0x436E;
             DoorFacing facing = (DoorFacing)((offset / 2 + 2 * ((1 + offset / 4) % 2)) % 8);
@@ -499,7 +499,7 @@ namespace Server.Multis
             door.Locked = true;
             door.KeyValue = keyValue;
 
-            AddDoor(door, mte.m_OffsetX, mte.m_OffsetY, mte.m_OffsetZ);
+            AddDoor(door, mte.OffsetX, mte.OffsetY, mte.OffsetZ);
             Fixtures.Add(door);
           }
         }
@@ -607,7 +607,7 @@ namespace Server.Multis
     public void AddFixture(Item item, MultiTileEntry mte)
     {
       Fixtures.Add(item);
-      item.MoveToWorld(new Point3D(X + mte.m_OffsetX, Y + mte.m_OffsetY, Z + mte.m_OffsetZ), Map);
+      item.MoveToWorld(new Point3D(X + mte.OffsetX, Y + mte.OffsetY, Z + mte.OffsetZ), Map);
     }
 
     public static void GetFoundationGraphics(FoundationType type, out int east, out int south, out int post,
@@ -1471,8 +1471,8 @@ namespace Server.Multis
       {
         MultiTileEntry entry = stairs.List[i];
 
-        if (entry.m_ItemID != 1)
-          mcl.Add(entry.m_ItemID, x + entry.m_OffsetX, y + entry.m_OffsetY, z + entry.m_OffsetZ);
+        if (entry.ItemId != 1)
+          mcl.Add(entry.ItemId, x + entry.OffsetX, y + entry.OffsetY, z + entry.OffsetZ);
       }
 
       // Update revision
@@ -1658,10 +1658,10 @@ namespace Server.Multis
       {
         MultiTileEntry mte = list[i];
 
-        if (mte.m_OffsetX == x && mte.m_OffsetY == y &&
-            GetZLevel(mte.m_OffsetZ, context.Foundation) == context.Level &&
-            (TileData.ItemTable[mte.m_ItemID & TileData.MaxItemValue].Flags & TileFlag.Roof) != 0)
-          mcl.Remove(mte.m_ItemID, x, y, mte.m_OffsetZ);
+        if (mte.OffsetX == x && mte.OffsetY == y &&
+            GetZLevel(mte.OffsetZ, context.Foundation) == context.Level &&
+            (TileData.ItemTable[mte.ItemId & TileData.MaxItemValue].Flags & TileFlag.Roof) != 0)
+          mcl.Remove(mte.ItemId, x, y, mte.OffsetZ);
       }
 
       mcl.Add(itemID, x, y, z);
@@ -1741,11 +1741,11 @@ namespace Server.Multis
 
             for (int i = 0; i < length; ++i)
             {
-              Fixtures[i].m_ItemID = reader.ReadUShort();
-              Fixtures[i].m_OffsetX = reader.ReadShort();
-              Fixtures[i].m_OffsetY = reader.ReadShort();
-              Fixtures[i].m_OffsetZ = reader.ReadShort();
-              Fixtures[i].m_Flags = (TileFlag)reader.ReadInt();
+              Fixtures[i].ItemId = reader.ReadUShort();
+              Fixtures[i].OffsetX = reader.ReadShort();
+              Fixtures[i].OffsetY = reader.ReadShort();
+              Fixtures[i].OffsetZ = reader.ReadShort();
+              Fixtures[i].Flags = (TileFlag)reader.ReadInt();
             }
 
             Revision = reader.ReadInt();
@@ -1789,11 +1789,11 @@ namespace Server.Multis
       {
         MultiTileEntry ent = Fixtures[i];
 
-        writer.Write(ent.m_ItemID);
-        writer.Write(ent.m_OffsetX);
-        writer.Write(ent.m_OffsetY);
-        writer.Write(ent.m_OffsetZ);
-        writer.Write((int)ent.m_Flags);
+        writer.Write(ent.ItemId);
+        writer.Write(ent.OffsetX);
+        writer.Write(ent.OffsetY);
+        writer.Write(ent.OffsetZ);
+        writer.Write((int)ent.Flags);
       }
 
       writer.Write(Revision);
@@ -1836,7 +1836,7 @@ namespace Server.Multis
       {
         MultiTileEntry mte = Fixtures[i];
 
-        Components.Add(mte.m_ItemID, mte.m_OffsetX, mte.m_OffsetY, mte.m_OffsetZ);
+        Components.Add(mte.ItemId, mte.OffsetX, mte.OffsetY, mte.OffsetZ);
       }
 
       Fixtures = Array.Empty<MultiTileEntry>();
@@ -1853,7 +1853,7 @@ namespace Server.Multis
       {
         MultiTileEntry mte = list[i];
 
-        if (IsFixture(mte.m_ItemID))
+        if (IsFixture(mte.ItemId))
           ++length;
       }
 
@@ -1863,10 +1863,10 @@ namespace Server.Multis
       {
         MultiTileEntry mte = list[i];
 
-        if (IsFixture(mte.m_ItemID))
+        if (IsFixture(mte.ItemId))
         {
           Fixtures[--length] = mte;
-          Components.Remove(mte.m_ItemID, mte.m_OffsetX, mte.m_OffsetY, mte.m_OffsetZ);
+          Components.Remove(mte.ItemId, mte.OffsetX, mte.OffsetY, mte.OffsetZ);
         }
       }
     }
@@ -2111,13 +2111,13 @@ namespace Server.Multis
     {
       EnsureCapacity(17);
 
-      m_Stream.Write((short)0x20);
-      m_Stream.Write(house.Serial);
-      m_Stream.Write((byte)0x04);
-      m_Stream.Write((ushort)0x0000);
-      m_Stream.Write((ushort)0xFFFF);
-      m_Stream.Write((ushort)0xFFFF);
-      m_Stream.Write((byte)0xFF);
+      Stream.Write((short)0x20);
+      Stream.Write(house.Serial);
+      Stream.Write((byte)0x04);
+      Stream.Write((ushort)0x0000);
+      Stream.Write((ushort)0xFFFF);
+      Stream.Write((ushort)0xFFFF);
+      Stream.Write((byte)0xFF);
     }
   }
 
@@ -2128,13 +2128,13 @@ namespace Server.Multis
     {
       EnsureCapacity(17);
 
-      m_Stream.Write((short)0x20);
-      m_Stream.Write(house.Serial);
-      m_Stream.Write((byte)0x05);
-      m_Stream.Write((ushort)0x0000);
-      m_Stream.Write((ushort)0xFFFF);
-      m_Stream.Write((ushort)0xFFFF);
-      m_Stream.Write((byte)0xFF);
+      Stream.Write((short)0x20);
+      Stream.Write(house.Serial);
+      Stream.Write((byte)0x05);
+      Stream.Write((ushort)0x0000);
+      Stream.Write((ushort)0xFFFF);
+      Stream.Write((ushort)0xFFFF);
+      Stream.Write((byte)0xFF);
     }
   }
 
@@ -2145,9 +2145,9 @@ namespace Server.Multis
     {
       EnsureCapacity(13);
 
-      m_Stream.Write((short)0x1D);
-      m_Stream.Write(house.Serial);
-      m_Stream.Write(state.Revision);
+      Stream.Write((short)0x1D);
+      Stream.Write(house.Serial);
+      Stream.Write(state.Revision);
     }
   }
 
@@ -2213,10 +2213,10 @@ namespace Server.Multis
       for (int i = 0; i < tiles.Length; ++i)
       {
         MultiTileEntry mte = tiles[i];
-        int x = mte.m_OffsetX - xMin;
-        int y = mte.m_OffsetY - yMin;
-        int z = mte.m_OffsetZ;
-        bool floor = TileData.ItemTable[mte.m_ItemID & TileData.MaxItemValue].Height <= 0;
+        int x = mte.OffsetX - xMin;
+        int y = mte.OffsetY - yMin;
+        int z = mte.OffsetZ;
+        bool floor = TileData.ItemTable[mte.ItemId & TileData.MaxItemValue].Height <= 0;
         int plane, size;
 
         switch (z)
@@ -2243,12 +2243,12 @@ namespace Server.Multis
 
               int byteIndex = totalStairsUsed % MaxItemsPerStairBuffer * 5;
 
-              stairBuffer[byteIndex++] = (byte)(mte.m_ItemID >> 8);
-              stairBuffer[byteIndex++] = (byte)mte.m_ItemID;
+              stairBuffer[byteIndex++] = (byte)(mte.ItemId >> 8);
+              stairBuffer[byteIndex++] = (byte)mte.ItemId;
 
-              stairBuffer[byteIndex++] = (byte)mte.m_OffsetX;
-              stairBuffer[byteIndex++] = (byte)mte.m_OffsetY;
-              stairBuffer[byteIndex++] = (byte)mte.m_OffsetZ;
+              stairBuffer[byteIndex++] = (byte)mte.OffsetX;
+              stairBuffer[byteIndex++] = (byte)mte.OffsetY;
+              stairBuffer[byteIndex++] = (byte)mte.OffsetZ;
 
               ++totalStairsUsed;
 
@@ -2281,20 +2281,20 @@ namespace Server.Multis
 
           int byteIndex = totalStairsUsed % MaxItemsPerStairBuffer * 5;
 
-          stairBuffer[byteIndex++] = (byte)(mte.m_ItemID >> 8);
-          stairBuffer[byteIndex++] = (byte)mte.m_ItemID;
+          stairBuffer[byteIndex++] = (byte)(mte.ItemId >> 8);
+          stairBuffer[byteIndex++] = (byte)mte.ItemId;
 
-          stairBuffer[byteIndex++] = (byte)mte.m_OffsetX;
-          stairBuffer[byteIndex++] = (byte)mte.m_OffsetY;
-          stairBuffer[byteIndex++] = (byte)mte.m_OffsetZ;
+          stairBuffer[byteIndex++] = (byte)mte.OffsetX;
+          stairBuffer[byteIndex++] = (byte)mte.OffsetY;
+          stairBuffer[byteIndex++] = (byte)mte.OffsetZ;
 
           ++totalStairsUsed;
         }
         else
         {
           m_PlaneUsed[plane] = true;
-          m_PlaneBuffers[plane][index] = (byte)(mte.m_ItemID >> 8);
-          m_PlaneBuffers[plane][index + 1] = (byte)mte.m_ItemID;
+          m_PlaneBuffers[plane][index] = (byte)(mte.ItemId >> 8);
+          m_PlaneBuffers[plane][index + 1] = (byte)mte.ItemId;
         }
       }
 
@@ -2384,7 +2384,7 @@ namespace Server.Multis
 
       ArrayPool<byte>.Shared.Return(m_DeflatedBuffer);
 
-      m_Stream.Seek(15, SeekOrigin.Begin);
+      Stream.Seek(15, SeekOrigin.Begin);
 
       Write((short)totalLength); // Buffer length
       Write((byte)planeCount); // Plane count
@@ -2397,7 +2397,7 @@ namespace Server.Multis
       m_PrimBuffer[2] = (byte)(value >> 8);
       m_PrimBuffer[3] = (byte)value;
 
-      m_Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 4);
+      Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 4);
     }
 
     public void Write(uint value)
@@ -2407,7 +2407,7 @@ namespace Server.Multis
       m_PrimBuffer[2] = (byte)(value >> 8);
       m_PrimBuffer[3] = (byte)value;
 
-      m_Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 4);
+      Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 4);
     }
 
     public void Write(short value)
@@ -2415,17 +2415,17 @@ namespace Server.Multis
       m_PrimBuffer[0] = (byte)(value >> 8);
       m_PrimBuffer[1] = (byte)value;
 
-      m_Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 2);
+      Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 2);
     }
 
     public void Write(byte value)
     {
-      m_Stream.UnderlyingStream.WriteByte(value);
+      Stream.UnderlyingStream.WriteByte(value);
     }
 
     public void Write(byte[] buffer, int offset, int size)
     {
-      m_Stream.UnderlyingStream.Write(buffer, offset, size);
+      Stream.UnderlyingStream.Write(buffer, offset, size);
     }
 
     public static void Clear(byte[] buffer, int size)

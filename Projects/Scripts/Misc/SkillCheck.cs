@@ -224,7 +224,7 @@ namespace Server.Misc
 
         Skills skills = from.Skills;
 
-        if (from.Player && skills.Total / skills.Cap >= Utility.RandomDouble()) // ( skills.Total >= skills.Cap )
+        if (from.Player && skills.Total / skills.Cap >= Utility.RandomDouble())
           for (int i = 0; i < skills.Length; ++i)
           {
             Skill toLower = skills[i];
@@ -377,7 +377,6 @@ namespace Server.Misc
               if (creature.LastIntGain + m_PetStatGainDelay >= DateTime.UtcNow)
                 return;
             }
-
             else if (from.LastIntGain + m_StatGainDelay >= DateTime.UtcNow)
             {
               return;

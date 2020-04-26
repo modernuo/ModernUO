@@ -436,7 +436,7 @@ namespace Server
               failed = e;
               failedGuilds = true;
               failedType = typeof(BaseGuild);
-              failedTypeID = (int)g.Serial;
+              failedTypeID = g.Serial.ToInt32();
               failedSerial = g.Serial;
 
               break;

@@ -38,13 +38,7 @@ namespace System.Buffers
     private static ObjectDisposedException GetObjectDisposedException(ExceptionArgument argument) =>
       new ObjectDisposedException(GetArgumentName(argument));
 
-    private static string GetArgumentName(ExceptionArgument argument)
-    {
-      Debug.Assert(Enum.IsDefined(typeof(ExceptionArgument), argument),
-        "The enum value is not defined, please check the ExceptionArgument Enum.");
-
-      return argument.ToString();
-    }
+    private static string GetArgumentName(ExceptionArgument argument) => argument.ToString();
 
     public enum ExceptionArgument
     {

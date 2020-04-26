@@ -1,22 +1,23 @@
-/***************************************************************************
- *                             Serialization.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright (C) 2020 - ModernUO Development Team                        *
+ * Email: hi@modernuo.com                                                *
+ * File: AsyncWriter.cs                                                  *
+ * Created: 2020/12/30 - Updated: 2020/04/25                             *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
 
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace Server
 {
   public sealed class AsyncWriter : IGenericWriter
   {
-    private readonly int BufferSize;
+    private readonly int m_BufferSize;
     private BinaryWriter m_Bin;
     private bool m_Closed;
     private readonly FileStream m_File;
@@ -40,7 +41,7 @@ namespace Server
     private Thread m_WorkerThread;
 
     private readonly Queue<MemoryStream> m_WriteQueue;
-    private readonly bool PrefixStrings;
+    private readonly bool m_PrefixStrings;
 
     public AsyncWriter(string filename, bool prefix)
       : this(filename, 1048576, prefix) // 1 mb buffer
@@ -49,13 +50,13 @@ namespace Server
 
     public AsyncWriter(string filename, int buffSize, bool prefix)
     {
-      PrefixStrings = prefix;
+      m_PrefixStrings = prefix;
       m_Closed = false;
       m_WriteQueue = new Queue<MemoryStream>();
-      BufferSize = buffSize;
+      m_BufferSize = buffSize;
 
       m_File = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
-      m_Mem = new MemoryStream(BufferSize + 1024);
+      m_Mem = new MemoryStream(m_BufferSize + 1024);
       m_Bin = new BinaryWriter(m_Mem, Utility.UTF8WithEncoding);
     }
 
@@ -98,10 +99,10 @@ namespace Server
       var curlen = m_Mem.Length;
       m_CurPos += curlen - m_LastPos;
       m_LastPos = curlen;
-      if (curlen >= BufferSize)
+      if (curlen >= m_BufferSize)
       {
         Enqueue(m_Mem);
-        m_Mem = new MemoryStream(BufferSize + 1024);
+        m_Mem = new MemoryStream(m_BufferSize + 1024);
         m_Bin = new BinaryWriter(m_Mem, Utility.UTF8WithEncoding);
         m_LastPos = 0;
       }
@@ -121,7 +122,7 @@ namespace Server
 
     public void Write(string value)
     {
-      if (PrefixStrings)
+      if (m_PrefixStrings)
       {
         if (value == null)
         {

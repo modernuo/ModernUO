@@ -33,7 +33,8 @@ namespace Server
       Threaded
     }
 
-    public static SaveOption SaveType = SaveOption.Normal;
+    // TODO: Move to configuration
+    public static SaveOption SaveType => SaveOption.Normal;
 
     private readonly Queue<Item> _decayQueue;
 
@@ -49,7 +50,9 @@ namespace Server
     {
       PermitBackgroundWrite = permitBackgroundWrite;
 
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler        *
       Task.WaitAll(Task.Factory.StartNew(SaveMobiles), Task.Factory.StartNew(SaveItems), Task.Factory.StartNew(SaveGuilds));
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
 
       if (permitBackgroundWrite && UseSequentialWriters) // If we're permitted to write in the background, but we don't anyways, then notify.
         World.NotifyDiskWriteComplete();
@@ -75,7 +78,7 @@ namespace Server
         tdb = new AsyncWriter(World.MobileTypesPath, false);
         bin = new AsyncWriter(World.MobileDataPath, true);
       }
-
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler        *
       Task.Factory.StartNew(() =>
       {
         tdb.Write(World.m_MobileTypes.Count);
@@ -85,9 +88,10 @@ namespace Server
 
         tdb.Close();
       });
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
 
       Parallel.ForEach(mobiles.Values, mobile => mobile.Serialize());
-
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler        *
       Task.Factory.StartNew(() =>
       {
         idx.Write(mobiles.Count);
@@ -107,6 +111,7 @@ namespace Server
         idx.Close();
         bin.Close();
       });
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
     }
 
     protected void SaveItems()
@@ -130,6 +135,7 @@ namespace Server
         bin = new AsyncWriter(World.ItemDataPath, true);
       }
 
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler        *
       Task.Factory.StartNew(() =>
       {
         tdb.Write(World.m_ItemTypes.Count);
@@ -139,13 +145,14 @@ namespace Server
 
         tdb.Close();
       });
-
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
       Parallel.ForEach(items.Values, item => item.Serialize());
 
       idx.Write(items.Count);
 
       var n = DateTime.UtcNow;
 
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler        *
       Task.Factory.StartNew(() =>
       {
         foreach (var item in items.Values)
@@ -170,6 +177,7 @@ namespace Server
         idx.Close();
         bin.Close();
       });
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
     }
 
     protected void SaveGuilds()
@@ -191,7 +199,7 @@ namespace Server
       Parallel.ForEach(BaseGuild.List.Values, guild => guild.Serialize());
 
       idx.Write(BaseGuild.List.Count);
-
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler        *
       Task.Factory.StartNew(() =>
       {
         foreach (var guild in BaseGuild.List.Values)
@@ -209,6 +217,7 @@ namespace Server
         idx.Close();
         bin.Close();
       });
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
     }
 
     public override void ProcessDecay()

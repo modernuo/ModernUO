@@ -28,7 +28,7 @@ namespace Server.Spells.Seventh
 
     public override bool CheckCast()
     {
-      /*if ( Caster.Mounted )
+      /*if (Caster.Mounted)
       {
         Caster.SendLocalizedMessage( 1042561 ); //Please dismount first.
         return false;
@@ -80,7 +80,7 @@ namespace Server.Spells.Seventh
 
     public override void OnCast()
     {
-      /*if ( Caster.Mounted )
+      /*if (Caster.Mounted)
       {
         Caster.SendLocalizedMessage( 1042561 ); //Please dismount first.
       }

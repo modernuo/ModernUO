@@ -64,7 +64,7 @@ namespace Server.Gumps
             return;
           }
 
-          /*else if ( m_House.PlayerVendors.Count > 0 )
+          /*else if (m_House.PlayerVendors.Count > 0)
           {
             m_Mobile.SendLocalizedMessage( 503236 ); // You need to collect your vendor's belongings before moving.
             return;

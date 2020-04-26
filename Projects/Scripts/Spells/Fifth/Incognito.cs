@@ -140,7 +140,7 @@ namespace Server.Spells.Fifth
         /*
         int val = ((6 * owner.Skills.Magery.Fixed) / 50) + 1;
 
-        if ( val > 144 )
+        if (val > 144)
           val = 144;
 
         Delay = TimeSpan.FromSeconds( val );

@@ -102,7 +102,7 @@ namespace Server.Commands.Generic
           if (i > 0)
           {
             emitter.LoadLocal(v);
-            emitter.BranchIfTrue(end); // if ( v != 0 ) return v;
+            emitter.BranchIfTrue(end);
           }
 
           OrderInfo orderInfo = orders[i];

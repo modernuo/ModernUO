@@ -93,7 +93,7 @@ namespace Server.Engines.Craft
       DrawResource();
 
       /*
-      if ( craftItem.RequiresSE )
+      if (craftItem.RequiresSE)
         AddHtmlLocalized( 170, 302 + (m_OtherCount++ * 20), 310, 18, 1063363, LabelColor, false, false ); //* Requires the "Samurai Empire" expansion
        * */
 

@@ -134,7 +134,6 @@ namespace Server.Guilds
       {
         pm.SendLocalizedMessage(1063052, targ.Name); // ~1_val~ is currently considering another guild invitation.
       }
-
       else if (targ.Young && guildFaction != null)
       {
         pm.SendLocalizedMessage(1070766); // You cannot invite a young player to your faction-aligned guild.
@@ -153,7 +152,6 @@ namespace Server.Guilds
         // OSI does this quite strangely, so we'll just do it this way
         pm.SendMessage("That person is quitting their faction and so you may not recruit them.");
       }
-
       else
       {
         pm.SendLocalizedMessage(1063053, targ.Name); // You invite ~1_val~ to join your guild.

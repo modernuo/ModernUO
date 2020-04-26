@@ -47,7 +47,7 @@ namespace Server.Misc
       // ..
       new CityInfo( "Haven", "Buckler's Hideaway", 3667, 2625, 0 )
 
-      if ( Core.AOS )
+      if (Core.AOS)
       {
         //CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3618, 2591, 0 );
         CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3503, 2574, 14 );

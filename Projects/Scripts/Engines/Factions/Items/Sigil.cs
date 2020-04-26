@@ -275,7 +275,6 @@ namespace Server.Factions
           from.SendLocalizedMessage(1005221); // You cannot give the sigil to them
         }
       }
-
       else if (obj is BaseMonolith)
       {
         if (obj is StrongholdMonolith sm)
@@ -321,7 +320,6 @@ namespace Server.Factions
             PurificationStart = DateTime.MinValue;
           }
         }
-
         else if (obj is TownMonolith tm)
         {
           if (tm.Town == null || tm.Town != m_Town)

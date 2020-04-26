@@ -22,7 +22,7 @@ using System;
 
 namespace Server
 {
-  public struct Serial : IComparable<Serial>, IComparable<uint>
+  public readonly struct Serial : IComparable<Serial>, IComparable<uint>, IEquatable<Serial>
   {
     public static readonly Serial MinusOne = new Serial(0xFFFFFFFF);
     public static readonly Serial Zero = new Serial(0);
@@ -97,5 +97,9 @@ namespace Server
     public static implicit operator uint(Serial a) => a.Value;
 
     public static implicit operator Serial(uint a) => new Serial(a);
+
+    public bool Equals(Serial other) => Value == other.Value;
+
+    public int ToInt32() => (int)Value;
   }
 }

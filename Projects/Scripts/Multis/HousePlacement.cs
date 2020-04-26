@@ -182,7 +182,7 @@ namespace Server.Multis
               if ((id.Impassable || (id.Surface && (id.Flags & TileFlag.Background) == 0)) &&
                   addTileTop > oldTile.Z && oldTile.Z + id.CalcHeight > addTileZ)
                 return HousePlacementResult.BadStatic; // Broke rule #2
-              /*else if ( isFoundation && !hasSurface && (id.Flags & TileFlag.Surface) != 0 && (oldTile.Z + id.CalcHeight) == center.Z )
+              /*else if (isFoundation && !hasSurface && (id.Flags & TileFlag.Surface) != 0 && (oldTile.Z + id.CalcHeight) == center.Z)
                   hasSurface = true;*/
             }
 
@@ -199,7 +199,7 @@ namespace Server.Multis
                   return HousePlacementResult.BadItem; // Broke rule #2
               }
 
-              /*else if ( isFoundation && !hasSurface && (id.Flags & TileFlag.Surface) != 0 && (item.Z + id.CalcHeight) == center.Z )
+              /*else if (isFoundation && !hasSurface && (id.Flags & TileFlag.Surface) != 0 && (item.Z + id.CalcHeight) == center.Z)
                 {
                   hasSurface = true;
                 }*/
@@ -345,7 +345,7 @@ namespace Server.Multis
         {
           for ( int j = 0; j < tile.Length; ++j )
           {
-            if ( (TileData.ItemTable[tile[j].ID & TileData.MaxItemValue].Flags & (TileFlag.Impassable | TileFlag.Surface)) != 0 )
+            if ((TileData.ItemTable[tile[j].ID & TileData.MaxItemValue].Flags & (TileFlag.Impassable | TileFlag.Surface)) != 0)
             {
               eable.Free();
               return HousePlacementResult.BadStatic; // Broke rule #3

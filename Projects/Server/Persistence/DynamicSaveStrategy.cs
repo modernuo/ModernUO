@@ -63,6 +63,7 @@ namespace Server
 
       if (permitBackgroundWrite)
       {
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
         // This option makes it finish the writing to disk in the background, continuing even after Save() returns.
         Task.Factory.ContinueWhenAll(saveTasks, _ =>
         {
@@ -70,6 +71,7 @@ namespace Server
 
           World.NotifyDiskWriteComplete();
         });
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
       }
       else
       {
@@ -81,6 +83,7 @@ namespace Server
     private Task StartCommitTask(BlockingCollection<QueuedMemoryWriter> threadWriter, SequentialFileWriterStream data,
       SequentialFileWriterStream index)
     {
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler        *
       var commitTask = Task.Factory.StartNew(() =>
       {
         while (!threadWriter.IsCompleted)
@@ -100,6 +103,7 @@ namespace Server
           writer.CommitTo(data, index);
         }
       });
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
 
       return commitTask;
     }

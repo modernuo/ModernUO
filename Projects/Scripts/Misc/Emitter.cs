@@ -511,14 +511,14 @@ namespace Server
 
         StoreLocal(bValue);
 
-        /* if ( aValue == null )
+        /* if (aValue == null)
          * {
-         *    if ( bValue == null )
+         *    if (bValue == null)
          *       v = 0;
          *    else
          *       v = +1;
          * }
-         * else if ( bValue == null )
+         * else if (bValue == null)
          * {
          *    v = -1;
          * }
@@ -534,13 +534,13 @@ namespace Server
 
         LoadLocal(aValue);
         BranchIfTrue(aNotNull);
-        // if ( aValue == null )
+        // if (aValue == null)
         {
           Label bNotNull = CreateLabel();
 
           LoadLocal(bValue);
           BranchIfTrue(bNotNull);
-          // if ( bValue == null )
+          // if (bValue == null)
           {
             Load(0);
             Pop(typeof(int));

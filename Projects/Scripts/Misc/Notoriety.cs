@@ -50,7 +50,7 @@ namespace Server.Misc
 
     /*private static bool CheckHarmfulStatus( GuildStatus from, GuildStatus target )
     {
-      if ( from == GuildStatus.Waring && target == GuildStatus.Waring )
+      if (from == GuildStatus.Waring && target == GuildStatus.Waring)
         return true;
 
       return false;

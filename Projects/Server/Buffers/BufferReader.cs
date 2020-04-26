@@ -75,7 +75,6 @@ namespace System.Buffers
       {
         if (length < 0)
         {
-          Debug.Assert(usingSequence, "usingSequence");
           // Cast-away readonly to initialize lazy field
           Volatile.Write(ref Unsafe.AsRef(length), sequence.Length);
         }
@@ -140,21 +139,19 @@ namespace System.Buffers
       }
       else
       {
-        throw new ArgumentOutOfRangeException($"Rewind went past the start of the memory by {count}.", nameof(count));
+        throw new ArgumentOutOfRangeException(nameof(count), $"Rewind went past the start of the memory by {count}.");
       }
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     private void RetreatToPreviousSpan(long consumed)
     {
-      Debug.Assert(usingSequence, "usingSequence");
       ResetReader();
       Advance(consumed);
     }
 
     private void ResetReader()
     {
-      Debug.Assert(usingSequence, "usingSequence");
       CurrentSpanIndex = 0;
       Consumed = 0;
       currentPosition = sequence.Start;
@@ -185,7 +182,6 @@ namespace System.Buffers
 
     private void GetNextSpan()
     {
-      Debug.Assert(usingSequence, "usingSequence");
       if (!sequence.IsSingleSegment)
       {
         var previousNextPosition = nextPosition;
@@ -236,7 +232,6 @@ namespace System.Buffers
 
     private void AdvanceToNextSpan(long count)
     {
-      Debug.Assert(usingSequence, "usingSequence");
       if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
 
       Consumed += count;
@@ -255,7 +250,6 @@ namespace System.Buffers
         // push the current index to the end of the span.
         CurrentSpanIndex += remaining;
         count -= remaining;
-        Debug.Assert(count >= 0);
 
         GetNextSpan();
 
@@ -295,7 +289,6 @@ namespace System.Buffers
         return false;
 
       var firstSpan = UnreadSpan;
-      Debug.Assert(firstSpan.Length < destination.Length);
       firstSpan.CopyTo(destination);
       var copied = firstSpan.Length;
 

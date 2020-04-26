@@ -454,7 +454,7 @@ namespace Server.Mobiles
             {
               int[] itemIDs = fp.ItemIDs;
 
-              Point3D oldWorldLoc = bi.m_WorldLoc;
+              Point3D oldWorldLoc = bi.WorldLoc;
               Point3D newWorldLoc = location;
 
               if (oldWorldLoc.X != newWorldLoc.X || oldWorldLoc.Y != newWorldLoc.Y)
@@ -1046,7 +1046,7 @@ namespace Server.Mobiles
 
       if (!Hidden)
         RemoveBuff(BuffIcon.HidingAndOrStealth);
-      else // if ( !InvisibilitySpell.HasTimer( this ) )
+      else // if (!InvisibilitySpell.HasTimer( this ))
         BuffInfo.AddBuff(this,
           new BuffInfo(BuffIcon.HidingAndOrStealth, 1075655)); // Hidden/Stealthing & You Are Hidden
     }
@@ -1458,12 +1458,12 @@ namespace Server.Mobiles
 
         if (bounce != null)
         {
-          if (bounce.m_Parent is Item parent)
+          if (bounce.Parent is Item parent)
           {
             if (parent == Backpack || parent.IsChildOf(Backpack))
               return true;
           }
-          else if (bounce.m_Parent == this)
+          else if (bounce.Parent == this)
           {
             return true;
           }
@@ -1559,7 +1559,7 @@ namespace Server.Mobiles
       {
         BounceInfo bounce = item.GetBounce();
 
-        if (bounce?.m_Parent is Item parent && (parent == pack || parent.IsChildOf(pack)))
+        if (bounce?.Parent is Item parent && (parent == pack || parent.IsChildOf(pack)))
           return true;
 
         SendLocalizedMessage(1004041); // You can't do that while you have a trade pending.
@@ -3926,7 +3926,7 @@ namespace Server.Mobiles
       else
         FacialHairItemID = 0;
 
-      // if ( id != 0 )
+      // if (id != 0)
       CreateHair(hair, id, hue);
 
       id = -1;

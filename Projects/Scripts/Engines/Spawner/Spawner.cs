@@ -1161,7 +1161,7 @@ namespace Server.Mobiles
             if (c.Controlled || c.IsStabled)
               remove = true;
             /*
-                        else if ( c.Combatant == null && ( c.GetDistanceToSqrt( Location ) > (c.RangeHome * 4) ) )
+                        else if (c.Combatant == null && ( c.GetDistanceToSqrt( Location ) > (c.RangeHome * 4) ))
                         {
                           //m_Spawned[i].Delete();
                           m_Spawned.RemoveAt( i );

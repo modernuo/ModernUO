@@ -95,7 +95,7 @@ namespace Server.Mobiles
       if (item.Nontransferable)
         return false;
 
-      // if ( item.Hue != 0 )
+      // if (item.Hue != 0)
       // return false;
 
       return IsInList(item.GetType());
@@ -106,7 +106,7 @@ namespace Server.Mobiles
       if (item.Nontransferable)
         return false;
 
-      // if ( item.Hue != 0 )
+      // if (item.Hue != 0)
       // return false;
 
       return IsInList(item.GetType());

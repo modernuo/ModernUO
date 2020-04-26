@@ -107,24 +107,25 @@ namespace Server
 
   public class BounceInfo
   {
-    public Point3D m_Location, m_WorldLoc;
-    public Map m_Map;
-    public IEntity m_Parent;
+    public Point3D Location { get; set; }
+    public Point3D WorldLoc { get; set; }
+    public Map Map { get; set; }
+    public IEntity Parent { get; set; }
 
     public BounceInfo(Item item)
     {
-      m_Map = item.Map;
-      m_Location = item.Location;
-      m_WorldLoc = item.GetWorldLocation();
-      m_Parent = item.Parent;
+      Map = item.Map;
+      Location = item.Location;
+      WorldLoc = item.GetWorldLocation();
+      Parent = item.Parent;
     }
 
     private BounceInfo(Map map, Point3D loc, Point3D worldLoc, IEntity parent)
     {
-      m_Map = map;
-      m_Location = loc;
-      m_WorldLoc = worldLoc;
-      m_Parent = parent;
+      Map = map;
+      Location = loc;
+      WorldLoc = worldLoc;
+      Parent = parent;
     }
 
     public static BounceInfo Deserialize(IGenericReader reader)
@@ -162,13 +163,13 @@ namespace Server
       {
         writer.Write(true);
 
-        writer.Write(info.m_Map);
-        writer.Write(info.m_Location);
-        writer.Write(info.m_WorldLoc);
+        writer.Write(info.Map);
+        writer.Write(info.Location);
+        writer.Write(info.WorldLoc);
 
-        if (info.m_Parent is Mobile mobile)
+        if (info.Parent is Mobile mobile)
           writer.Write(mobile);
-        else if (info.m_Parent is Item item)
+        else if (info.Parent is Item item)
           writer.Write(item);
         else
           writer.Write((Serial)0);
@@ -1217,7 +1218,7 @@ namespace Server
         flags |= SaveFlag.Items;
       if (m_Map != Map.Internal)
         flags |= SaveFlag.Map;
-      // if ( m_InsuredFor != null && !m_InsuredFor.Deleted )
+      // if (m_InsuredFor != null && !m_InsuredFor.Deleted)
       // flags |= SaveFlag.InsuredFor;
 
       if (info != null)
@@ -1501,12 +1502,12 @@ namespace Server
 
       info.m_Bounce = null;
 
-      if (bounce.m_Parent is Item parentItem)
+      if (bounce.Parent is Item parentItem)
       {
         if (!parentItem.Deleted)
           parentItem.OnItemBounceCleared(this);
       }
-      else if (bounce.m_Parent is Mobile parentMobile)
+      else if (bounce.Parent is Mobile parentMobile)
       {
         if (!parentMobile.Deleted)
           parentMobile.OnItemBounceCleared(this);
@@ -1762,11 +1763,11 @@ namespace Server
 
       if (bounce != null)
       {
-        var parent = bounce.m_Parent;
+        var parent = bounce.Parent;
 
         if (parent?.Deleted != false)
         {
-          MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
+          MoveToWorld(bounce.WorldLoc, bounce.Map);
         }
         else if (parent is Item p)
         {
@@ -1775,7 +1776,7 @@ namespace Server
           if (p.IsAccessibleTo(from) &&
               (!(root is Mobile mobileRoot) || mobileRoot.CheckNonlocalDrop(from, this, p)))
           {
-            Location = bounce.m_Location;
+            Location = bounce.Location;
             p.AddItem(this);
           }
           else
@@ -1786,11 +1787,11 @@ namespace Server
         else if (parent is Mobile parentMobile)
         {
           if (!parentMobile.EquipItem(this))
-            MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
+            MoveToWorld(bounce.WorldLoc, bounce.Map);
         }
         else
         {
-          MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
+          MoveToWorld(bounce.WorldLoc, bounce.Map);
         }
 
         ClearBounce();
@@ -1808,13 +1809,13 @@ namespace Server
     /// <returns>True if it may, false if not.</returns>
     /// <example>
     ///   <code>
-    /// 	public override bool AllowEquippedCast( Mobile from )
-    /// 	{
-    /// 		if ( from.Int &gt;= 100 )
-    /// 			return true;
+    ///   public override bool AllowEquippedCast( Mobile from )
+    ///   {
+    ///     if (from.Int &gt;= 100)
+    ///       return true;
     ///
-    /// 		return base.AllowEquippedCast( from );
-    ///  }</code>
+    ///     return base.AllowEquippedCast( from );
+    ///   }</code>
     ///   When placed in an Item script, the item may be cast when equipped if the <paramref name="from" /> has 100 or more
     ///   intelligence. Otherwise, it will drop to their backpack.
     /// </example>
@@ -2560,7 +2561,7 @@ namespace Server
       if (HeldBy != null)
         Timer.DelayCall(TimeSpan.Zero, FixHolding_Sandbox);
 
-      // if ( version < 9 )
+      // if (version < 9)
       VerifyCompactInfo();
     }
 
@@ -3365,7 +3366,7 @@ namespace Server
 
       /*SecureTradeContainer cont = GetSecureTradeCont();
 
-      if ( cont != null && !cont.IsChildOf( check ) )
+      if (cont != null && !cont.IsChildOf( check ))
         return false;
 
       return true;*/

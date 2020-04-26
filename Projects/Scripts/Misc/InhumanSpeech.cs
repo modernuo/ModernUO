@@ -320,7 +320,7 @@ namespace Server.Misc
 
       for (int i = 0; i < wordCount; ++i)
       {
-        if (i > 0) // not first word )
+        if (i > 0) // not first word)
         {
           int random = Utility.RandomMinMax(1, 15);
 

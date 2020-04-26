@@ -91,7 +91,6 @@ namespace Server.Utilities
     }
   }
 
-  /// <inheritdoc/>
   public class QueueRef<T> : Queue<T>, IRef
   {
     private readonly RefPool<QueueRef<T>> m_Pool;
@@ -107,10 +106,9 @@ namespace Server.Utilities
     /// <summary>
     /// Generator function for creating instances of the <see cref="QueueRef{T}"/> resource.
     /// </summary>
-    public static RefPool<QueueRef<T>>.Generator Generate = (targetPool) => new QueueRef<T>(targetPool);
+    public static RefPool<QueueRef<T>>.Generator Generate = targetPool => new QueueRef<T>(targetPool);
   }
 
-  /// <inheritdoc/>
   public class StackRef<T> : Stack<T>, IRef
   {
     private readonly RefPool<StackRef<T>> m_Pool;

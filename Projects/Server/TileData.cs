@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using System;
+using System.Buffers.Binary;
 using System.IO;
 using System.Text;
 
@@ -191,7 +192,10 @@ namespace Server
         Console.WriteLine("After pressing return an exception will be thrown and the server will terminate");
         Console.ResetColor();
 
-        throw new Exception($"TileData: {filePath} not found");
+        Utility.PushColor(ConsoleColor.Red);
+        Console.WriteLine($"TileData: {filePath} not found");
+        Utility.PopColor();
+        return;
       }
 
       using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -312,11 +316,17 @@ namespace Server
     {
       bin.Read(m_StringBuffer, 0, 20);
 
-      int count;
+      int count = 0;
 
-      for (count = 0; count < 20 && m_StringBuffer[count] != 0; ++count);
+      while (count < 20)
+      {
+        if (m_StringBuffer[count] == 0)
+          break;
 
-      return Encoding.ASCII.GetString(m_StringBuffer, 0, count);
+        count++;
+      }
+
+      return Encoding.ASCII.GetString(new ReadOnlySpan<byte>(m_StringBuffer, 0, count));
     }
   }
 }

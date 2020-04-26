@@ -111,8 +111,6 @@ namespace System.Buffers
       var basePtr = slab.NativePointer;
       // Page align the blocks
       var offset = (int)((((ulong)basePtr + _blockSize - 1) & ~((uint)_blockSize - 1)) - (ulong)basePtr);
-      // Ensure page aligned
-      Debug.Assert(((ulong)basePtr + (uint)offset) % _blockSize == 0);
 
       var blockCount = (_slabLength - offset) / _blockSize;
       Interlocked.Add(ref _totalAllocatedBlocks, blockCount);
@@ -147,12 +145,6 @@ namespace System.Buffers
     /// <param name="block">The block to return. It must have been acquired by calling Lease on the same memory pool instance.</param>
     internal void Return(MemoryPoolBlock block)
     {
-#if BLOCK_LEASE_TRACKING
-            Debug.Assert(block.Pool == this, "Returned block was not leased from this pool");
-            Debug.Assert(block.IsLeased, $"Block being returned to pool twice: {block.Leaser}{Environment.NewLine}");
-            block.IsLeased = false;
-#endif
-
       if (!_isDisposed)
         _blocks.Enqueue(block);
       else

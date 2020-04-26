@@ -158,7 +158,7 @@ namespace Server.Guilds
       {
         case GuildDisplayType.Relations:
           {
-            // if ( !( guild.IsWar( g ) || guild.IsAlly( g ) ) )
+            // if (!( guild.IsWar( g ) || guild.IsAlly( g ) ))
 
             if (!(guild.FindActiveWar(g) != null || guild.IsAlly(g))) // As per OSI, only the guild leader wars show up under the sorting by relation
               return true;

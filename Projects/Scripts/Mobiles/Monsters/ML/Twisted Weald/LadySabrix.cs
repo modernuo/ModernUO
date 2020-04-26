@@ -52,10 +52,10 @@ namespace Server.Mobiles
     {
       base.OnDeath( c );
 
-      if ( Utility.RandomDouble() < 0.2 )
+      if (Utility.RandomDouble() < 0.2)
         c.DropItem( new SabrixsEye() );
 
-      if ( Utility.RandomDouble() < 0.25 )
+      if (Utility.RandomDouble() < 0.25)
       {
         switch ( Utility.Random( 2 ) )
         {
@@ -64,7 +64,7 @@ namespace Server.Mobiles
         }
       }
 
-      if ( Utility.RandomDouble() < 0.1 )
+      if (Utility.RandomDouble() < 0.1)
         c.DropItem( new ParrotItem() );
     }
     */

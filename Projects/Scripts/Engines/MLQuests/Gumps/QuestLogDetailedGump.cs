@@ -53,7 +53,7 @@ namespace Server.Engines.MLQuests.Gumps
         case 1: // Resign
           {
             // TODO: Custom reward loss protection? OSI doesn't have this
-            // if ( m_Instance.ClaimReward )
+            // if (m_Instance.ClaimReward)
             // pm.SendMessage( "You cannot cancel a quest with rewards pending." );
             // else
 

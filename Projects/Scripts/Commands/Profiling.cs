@@ -6,7 +6,7 @@ using Server.Diagnostics;
 
 namespace Server.Commands
 {
-  public class Profiling
+  public static class Profiling
   {
     public static void Initialize()
     {
@@ -168,10 +168,10 @@ namespace Server.Commands
           if ((flags & ExpandFlag.Blessed) != 0)
             ++countTable[4];
 
-          /*if ( ( flags & ExpandFlag.TempFlag ) != 0 )
+          /*if (( flags & ExpandFlag.TempFlag ) != 0)
             ++countTable[5];
 
-          if ( ( flags & ExpandFlag.SaveFlag ) != 0 )
+          if (( flags & ExpandFlag.SaveFlag ) != 0)
             ++countTable[6];*/
 
           if ((flags & ExpandFlag.Weight) != 0)

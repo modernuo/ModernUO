@@ -118,7 +118,7 @@ namespace Server.Engines.ConPVP
         {
           /*Container cont = m_Participant.Stakes;
 
-          if ( cont != null )
+          if (cont != null)
             cont.Delete();*/
 
           Context.Participants.Remove(Participant);
@@ -130,13 +130,13 @@ namespace Server.Engines.ConPVP
           From.SendGump(new ParticipantGump(From, Context, Participant));
         }
       }
-      /*else if ( bid == 4 )
+      /*else if (bid == 4)
       {
         m_From.SendGump( new ParticipantGump( m_From, m_Context, m_Participant ) );
 
         Container cont = m_Participant.Stakes;
 
-        if ( cont != null && !cont.Deleted )
+        if (cont != null && !cont.Deleted)
         {
           cont.DisplayTo( m_From );
 

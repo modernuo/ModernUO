@@ -102,7 +102,6 @@ namespace Server.Items
             1005422); // Hmmmm... this does not need to be cleaned.
         }
       }
-
       else if (obj is BaseBeverage beverage)
       {
         if (beverage.Content == BeverageType.Liquor)
@@ -120,7 +119,6 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(1060579); // That is already a firebomb!
       }
-
       else
       {
         from.SendLocalizedMessage(1005426); // The cloth will not work on that.

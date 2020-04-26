@@ -131,7 +131,7 @@ namespace Server.Engines.VeteranRewards
       if (!(mob.Account is Account acct))
         return false;
 
-      // if ( mob.AccessLevel < AccessLevel.GameMaster )
+      // if (mob.AccessLevel < AccessLevel.GameMaster)
       acct.SetTag("numRewardsChosen", (cur + 1).ToString());
 
       return true;

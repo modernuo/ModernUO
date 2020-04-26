@@ -436,7 +436,6 @@ namespace Server.Guilds
                 pm.BeginPrompt(CreateAlliance_Callback);
               }
             }
-
             else
             {
               if (!playerRank.GetFlag(RankFlags.AllianceControl))

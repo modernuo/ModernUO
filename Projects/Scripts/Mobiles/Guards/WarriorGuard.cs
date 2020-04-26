@@ -308,22 +308,22 @@ namespace Server.Mobiles
           Stop();
         } // </instakill>
 
-        /*else if ( !m_Owner.InRange( target, 20 ) )
+        /*else if (!m_Owner.InRange( target, 20 ))
         {
           m_Owner.Focus = null;
         }
-        else if ( !m_Owner.InRange( target, 10 ) || !m_Owner.InLOS( target ) )
+        else if (!m_Owner.InRange( target, 10 ) || !m_Owner.InLOS( target ))
         {
           TeleportTo( target );
         }
-        else if ( !m_Owner.InRange( target, 1 ) )
+        else if (!m_Owner.InRange( target, 1 ))
         {
-          if ( !m_Owner.Move( m_Owner.GetDirectionTo( target ) | Direction.Running ) )
+          if (!m_Owner.Move( m_Owner.GetDirectionTo( target ) | Direction.Running ))
             TeleportTo( target );
         }
-        else if ( !m_Owner.CanSee( target ) )
+        else if (!m_Owner.CanSee( target ))
         {
-          if ( !m_Owner.UseSkill( SkillName.DetectHidden ) && Utility.Random( 50 ) == 0 )
+          if (!m_Owner.UseSkill( SkillName.DetectHidden ) && Utility.Random( 50 ) == 0)
             m_Owner.Say( "Reveal!" );
         }*/
       }

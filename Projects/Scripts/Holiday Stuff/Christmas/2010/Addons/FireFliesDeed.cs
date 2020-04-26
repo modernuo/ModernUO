@@ -253,7 +253,6 @@ namespace Server.Items
 
                   m_FirefliesDeed.Delete();
                 }
-
                 else
                 {
                   from.SendLocalizedMessage(1150065); // Holiday fireflies must be placed next to a wall.

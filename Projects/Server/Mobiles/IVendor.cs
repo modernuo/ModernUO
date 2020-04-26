@@ -1,9 +1,9 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright (C) 2020 - ModernUO Development Team                        *
  * Email: hi@modernuo.com                                                *
- * File: ISerializable.cs                                                *
- * Created: 2019/12/30 - Updated: 2020/01/18                             *
+ * File: IVendor.cs                                                      *
+ * Created: 2020/04/25 - Updated: 2020/04/25                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -19,14 +19,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-namespace Server
+using System;
+using System.Collections.Generic;
+using Server;
+
+public interface IVendor
 {
-  public interface ISerializable
-  {
-    BufferWriter SaveBuffer { get; }
-    int TypeRef { get; }
-    Serial Serial { get; }
-    void Serialize();
-    void Serialize(IGenericWriter writer);
-  }
+  DateTime LastRestock { get; set; }
+  TimeSpan RestockDelay { get; }
+  bool OnBuyItems(Mobile from, List<BuyItemResponse> list);
+  bool OnSellItems(Mobile from, List<SellItemResponse> list);
+  void Restock();
 }

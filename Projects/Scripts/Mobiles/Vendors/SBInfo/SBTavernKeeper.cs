@@ -56,7 +56,7 @@ namespace Server.Mobiles
         if (BaseHouse.NewVendorSystem)
           Add(new GenericBuyInfo("1062332", typeof(VendorRentalContract), 1252, 20, 0x14F0, 0x672));
 
-        /*if ( Map == Tokuno )
+        /*if (Map == Tokuno)
           {
             Add( new GenericBuyInfo( typeof( Wasabi ), 2, 20, 0x24E8, 0 ) );
             Add( new GenericBuyInfo( typeof( Wasabi ), 2, 20, 0x24E9, 0 ) );

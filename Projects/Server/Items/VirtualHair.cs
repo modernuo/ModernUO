@@ -108,12 +108,12 @@ namespace Server
     {
       var hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.HairHue;
 
-      m_Stream.Write(HairInfo.FakeSerial(parent));
-      m_Stream.Write((short)parent.HairItemID);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)Layer.Hair);
-      m_Stream.Write(parent.Serial);
-      m_Stream.Write((short)hue);
+      Stream.Write(HairInfo.FakeSerial(parent));
+      Stream.Write((short)parent.HairItemID);
+      Stream.Write((byte)0);
+      Stream.Write((byte)Layer.Hair);
+      Stream.Write(parent.Serial);
+      Stream.Write((short)hue);
     }
   }
 
@@ -124,12 +124,12 @@ namespace Server
     {
       var hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.FacialHairHue;
 
-      m_Stream.Write(FacialHairInfo.FakeSerial(parent));
-      m_Stream.Write((short)parent.FacialHairItemID);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)Layer.FacialHair);
-      m_Stream.Write(parent.Serial);
-      m_Stream.Write((short)hue);
+      Stream.Write(FacialHairInfo.FakeSerial(parent));
+      Stream.Write((short)parent.FacialHairItemID);
+      Stream.Write((byte)0);
+      Stream.Write((byte)Layer.FacialHair);
+      Stream.Write(parent.Serial);
+      Stream.Write((short)hue);
     }
   }
 
@@ -138,7 +138,7 @@ namespace Server
     public RemoveHair(Mobile parent)
       : base(0x1D, 5)
     {
-      m_Stream.Write(HairInfo.FakeSerial(parent));
+      Stream.Write(HairInfo.FakeSerial(parent));
     }
   }
 
@@ -147,7 +147,7 @@ namespace Server
     public RemoveFacialHair(Mobile parent)
       : base(0x1D, 5)
     {
-      m_Stream.Write(FacialHairInfo.FakeSerial(parent));
+      Stream.Write(FacialHairInfo.FakeSerial(parent));
     }
   }
 }

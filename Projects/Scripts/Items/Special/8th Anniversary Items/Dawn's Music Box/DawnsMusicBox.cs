@@ -13,7 +13,7 @@ namespace Server.Items
 
     public StopMusic() : base(0x6D, 3)
     {
-      m_Stream.Write((short)0x1FFF);
+      Stream.Write((short)0x1FFF);
     }
   }
 

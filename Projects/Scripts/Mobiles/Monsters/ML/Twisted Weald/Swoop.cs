@@ -48,7 +48,7 @@ namespace Server.Mobiles
     {
       base.OnDeath( c );
 
-      if ( Utility.RandomDouble() < 0.025 )
+      if (Utility.RandomDouble() < 0.025)
       {
         switch ( Utility.Random( 18 ) )
         {
@@ -73,7 +73,7 @@ namespace Server.Mobiles
         }
       }
 
-      if ( Utility.RandomDouble() < 0.1 )
+      if (Utility.RandomDouble() < 0.1)
         c.DropItem( new ParrotItem() );
     }
     */

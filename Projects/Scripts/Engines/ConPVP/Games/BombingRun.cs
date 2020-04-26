@@ -261,7 +261,7 @@ namespace Server.Engines.ConPVP
 
       org.Z += 10; // always add 10 at the start cause we're coming from a mobile's eye level
 
-      /*if ( org.X > dest.X || ( org.X == dest.X && org.Y > dest.Y ) || ( org.X == dest.X && org.Y == dest.Y && org.Z > dest.Z ) )
+      /*if (org.X > dest.X || ( org.X == dest.X && org.Y > dest.Y ) || ( org.X == dest.X && org.Y == dest.Y && org.Z > dest.Z ))
       {
         Point3D swap = org;
         org = dest;
@@ -310,12 +310,12 @@ namespace Server.Engines.ConPVP
       if (list.Count > 0 && list[list.Count - 1] != dest)
         list.Add(dest);
 
-      /*if ( dist3d > 4 && ( dest.X != org.X || dest.Y != org.Y ) )
+      /*if (dist3d > 4 && ( dest.X != org.X || dest.Y != org.Y ))
       {
         int count = list.Count;
         int i;
         int climb = count / 2;
-        if ( climb > 3 )
+        if (climb > 3)
           climb = 3;
 
         for ( i = 0; i < climb; i++ )

@@ -40,7 +40,7 @@ namespace Server.Engines.Craft
     {
       from.PlaySound(0x2B); // bellows
 
-      // if ( from.Body.Type == BodyType.Human && !from.Mounted )
+      // if (from.Body.Type == BodyType.Human && !from.Mounted)
       // from.Animate( 9, 5, 1, true, false, 0 );
 
       // new InternalTimer( from ).Start();

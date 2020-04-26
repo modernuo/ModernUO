@@ -113,7 +113,6 @@ namespace Server.SkillHandlers
         {
           m_Thief.SendLocalizedMessage(1048147); // Your backpack can't hold anything else.
         }
-
         else if (toSteal is Sigil sig)
         {
           PlayerState pl = PlayerState.Find(m_Thief);
@@ -200,7 +199,6 @@ namespace Server.SkillHandlers
             m_Thief.SendLocalizedMessage(1005588); // You must join a faction to do that
           }
         }
-
         else if (si == null && (toSteal.Parent == null || !toSteal.Movable))
         {
           m_Thief.SendLocalizedMessage(502710); // You can't steal that!

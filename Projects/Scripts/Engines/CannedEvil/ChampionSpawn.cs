@@ -188,7 +188,7 @@ namespace Server.Engines.CannedEvil
       }
 
       /*
-      if ( m_Region == null )
+      if (m_Region == null)
       {
         m_Region = new ChampionSpawnRegion( this );
       }

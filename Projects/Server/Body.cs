@@ -33,9 +33,9 @@ namespace Server
     Equipment
   }
 
-  public struct Body
+  public readonly struct Body : IEquatable<object>, IEquatable<Body>, IEquatable<int>
   {
-    private static readonly BodyType[] m_Types;
+    private static readonly BodyType[] m_Types = Array.Empty<BodyType>();
 
     static Body()
     {
@@ -68,8 +68,6 @@ namespace Server
       else
       {
         Console.WriteLine("Warning: Data/bodyTable.cfg does not exist");
-
-        m_Types = Array.Empty<BodyType>();
       }
     }
 
@@ -152,6 +150,10 @@ namespace Server
     public override int GetHashCode() => BodyID.GetHashCode();
 
     public override bool Equals(object o) => o is Body b && b.BodyID == BodyID;
+
+    public bool Equals(Body b) => b.BodyID == BodyID;
+
+    public bool Equals(int number) => number == BodyID;
 
     public static bool operator ==(Body l, Body r) => l.BodyID == r.BodyID;
 

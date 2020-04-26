@@ -101,7 +101,7 @@ namespace Server.Network
 
       if (offset < 0 || offset >= input.Length) throw new ArgumentOutOfRangeException(nameof(offset));
       if (count < 0 || count > input.Length) throw new ArgumentOutOfRangeException(nameof(count));
-      if (input.Length - offset < count) throw new ArgumentException();
+      if (input.Length - offset < count) throw new ArgumentOutOfRangeException(nameof(offset));
 
       length = 0;
 
@@ -283,66 +283,72 @@ namespace Server.Network
 
   public class Compressor : ICompressor
   {
-    public string Version => zlibVersion();
+    public string Version => SafeNativeMethods.zlibVersion();
 
     public ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength) =>
-      compress(dest, ref destLength, source, sourceLength);
+      SafeNativeMethods.compress(dest, ref destLength, source, sourceLength);
 
     public ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength,
-      ZLibQuality quality) => compress2(dest, ref destLength, source, sourceLength, quality);
+      ZLibQuality quality) => SafeNativeMethods.compress2(dest, ref destLength, source, sourceLength, quality);
 
     public ZLibError Decompress(in int dest, ref ulong destLength, in int source, ulong sourceLength) =>
-      uncompress(dest, ref destLength, source, sourceLength);
+      SafeNativeMethods.uncompress(dest, ref destLength, source, sourceLength);
 
-    public ulong CompressBound(ulong sourceLength) => compressBound(sourceLength);
+    public ulong CompressBound(ulong sourceLength) => SafeNativeMethods.compressBound(sourceLength);
 
-    [DllImport("zlib")]
-    private static extern string zlibVersion();
+    private static class SafeNativeMethods
+    {
+      [DllImport("zlib", CharSet = CharSet.Unicode)]
+      internal static extern string zlibVersion();
 
-    [DllImport("zlib")]
-    private static extern ZLibError compress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
+      [DllImport("zlib")]
+      internal static extern ZLibError compress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
 
-    [DllImport("zlib")]
-    private static extern ZLibError compress2(in int dest, ref ulong destLength, in int source, ulong sourceLength,
-      ZLibQuality quality);
+      [DllImport("zlib")]
+      internal static extern ZLibError compress2(in int dest, ref ulong destLength, in int source, ulong sourceLength,
+        ZLibQuality quality);
 
-    [DllImport("zlib")]
-    private static extern ZLibError uncompress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
+      [DllImport("zlib")]
+      internal static extern ZLibError uncompress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
 
-    [DllImport("zlib")]
-    private static extern ulong compressBound(ulong sourceLen);
+      [DllImport("zlib")]
+      internal static extern ulong compressBound(ulong sourceLen);
+    }
   }
 
   public class UnixCompressor : ICompressor
   {
-    public string Version => zlibVersion();
+    public string Version => SafeNativeMethods.zlibVersion();
 
     public ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength) =>
-      compress(dest, ref destLength, source, sourceLength);
+      SafeNativeMethods.compress(dest, ref destLength, source, sourceLength);
 
     public ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength,
-      ZLibQuality quality) => compress2(dest, ref destLength, source, sourceLength, quality);
+      ZLibQuality quality) => SafeNativeMethods.compress2(dest, ref destLength, source, sourceLength, quality);
 
     public ZLibError Decompress(in int dest, ref ulong destLength, in int source, ulong sourceLength) =>
-      uncompress(dest, ref destLength, source, sourceLength);
+      SafeNativeMethods.uncompress(dest, ref destLength, source, sourceLength);
 
-    public ulong CompressBound(ulong sourceLength) => compressBound(sourceLength);
+    public ulong CompressBound(ulong sourceLength) => SafeNativeMethods.compressBound(sourceLength);
 
-    [DllImport("libz")]
-    private static extern string zlibVersion();
+    internal static class SafeNativeMethods
+    {
+      [DllImport("libz", CharSet = CharSet.Unicode)]
+      internal static extern string zlibVersion();
 
-    [DllImport("libz")]
-    private static extern ZLibError compress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
+      [DllImport("libz")]
+      internal static extern ZLibError compress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
 
-    [DllImport("libz")]
-    private static extern ZLibError compress2(in int dest, ref ulong destLength, in int source, ulong sourceLength,
-      ZLibQuality quality);
+      [DllImport("libz")]
+      internal static extern ZLibError compress2(in int dest, ref ulong destLength, in int source, ulong sourceLength,
+        ZLibQuality quality);
 
-    [DllImport("libz")]
-    private static extern ZLibError uncompress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
+      [DllImport("libz")]
+      internal static extern ZLibError uncompress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
 
-    [DllImport("libz")]
-    private static extern ulong compressBound(ulong sourceLen);
+      [DllImport("libz")]
+      internal static extern ulong compressBound(ulong sourceLen);
+    }
   }
 
   public enum ZLibError

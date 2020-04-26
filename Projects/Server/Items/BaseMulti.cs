@@ -57,7 +57,7 @@ namespace Server.Items
 
         if (mcl.List.Length > 0)
         {
-          int id = mcl.List[0].m_ItemID;
+          int id = mcl.List[0].ItemId;
 
           if (id < 0x4000)
             return 1020000 + id;

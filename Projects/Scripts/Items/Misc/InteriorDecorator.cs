@@ -84,7 +84,7 @@ namespace Server.Items
 
     public static bool CheckUse(InteriorDecorator tool, Mobile from)
     {
-      /*if ( tool.Deleted || !tool.IsChildOf( from.Backpack ) )
+      /*if (tool.Deleted || !tool.IsChildOf( from.Backpack ))
         from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
       else*/
       if (!InHouse(from))

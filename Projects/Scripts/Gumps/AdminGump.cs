@@ -250,7 +250,7 @@ namespace Server.Gumps
 
             AddButtonLabeled(20, 150, GetButtonID(3, 200), "Save");
 
-            /*if ( !Core.Service )
+            /*if (!Core.Service)
             {*/
             AddButtonLabeled(20, 180, GetButtonID(3, 201), "Shutdown (With Save)");
             AddButtonLabeled(20, 200, GetButtonID(3, 202), "Shutdown (Without Save)");

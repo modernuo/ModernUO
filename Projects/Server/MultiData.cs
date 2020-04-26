@@ -243,17 +243,19 @@ namespace Server
 
   public struct MultiTileEntry
   {
-    public ushort m_ItemID;
-    public short m_OffsetX, m_OffsetY, m_OffsetZ;
-    public TileFlag m_Flags;
+    public ushort ItemId { get; set; }
+    public short OffsetX { get; set; }
+    public short OffsetY { get; set; }
+    public short OffsetZ { get; set; }
+    public TileFlag Flags { get; set; }
 
     public MultiTileEntry(ushort itemID, short xOffset, short yOffset, short zOffset, TileFlag flags)
     {
-      m_ItemID = itemID;
-      m_OffsetX = xOffset;
-      m_OffsetY = yOffset;
-      m_OffsetZ = zOffset;
-      m_Flags = flags;
+      ItemId = itemID;
+      OffsetX = xOffset;
+      OffsetY = yOffset;
+      OffsetZ = zOffset;
+      Flags = flags;
     }
   }
 
@@ -315,20 +317,20 @@ namespace Server
           if (id >= 0x4000)
             id -= 0x4000;
 
-          allTiles[i].m_ItemID = (ushort)id;
-          allTiles[i].m_OffsetX = reader.ReadShort();
-          allTiles[i].m_OffsetY = reader.ReadShort();
-          allTiles[i].m_OffsetZ = reader.ReadShort();
-          allTiles[i].m_Flags = (TileFlag)reader.ReadInt();
+          allTiles[i].ItemId = (ushort)id;
+          allTiles[i].OffsetX = reader.ReadShort();
+          allTiles[i].OffsetY = reader.ReadShort();
+          allTiles[i].OffsetZ = reader.ReadShort();
+          allTiles[i].Flags = (TileFlag)reader.ReadInt();
         }
       else
         for (var i = 0; i < length; ++i)
         {
-          allTiles[i].m_ItemID = reader.ReadUShort();
-          allTiles[i].m_OffsetX = reader.ReadShort();
-          allTiles[i].m_OffsetY = reader.ReadShort();
-          allTiles[i].m_OffsetZ = reader.ReadShort();
-          allTiles[i].m_Flags = (TileFlag)reader.ReadInt();
+          allTiles[i].ItemId = reader.ReadUShort();
+          allTiles[i].OffsetX = reader.ReadShort();
+          allTiles[i].OffsetY = reader.ReadShort();
+          allTiles[i].OffsetZ = reader.ReadShort();
+          allTiles[i].Flags = (TileFlag)reader.ReadInt();
         }
 
       var tiles = new TileList[Width][];
@@ -344,12 +346,12 @@ namespace Server
       }
 
       for (var i = 0; i < allTiles.Length; ++i)
-        if (i == 0 || allTiles[i].m_Flags != 0)
+        if (i == 0 || allTiles[i].Flags != 0)
         {
-          var xOffset = allTiles[i].m_OffsetX + Center.m_X;
-          var yOffset = allTiles[i].m_OffsetY + Center.m_Y;
+          var xOffset = allTiles[i].OffsetX + Center.m_X;
+          var yOffset = allTiles[i].OffsetY + Center.m_Y;
 
-          tiles[xOffset][yOffset].Add(allTiles[i].m_ItemID, (sbyte)allTiles[i].m_OffsetZ);
+          tiles[xOffset][yOffset].Add(allTiles[i].ItemId, (sbyte)allTiles[i].OffsetZ);
         }
 
       for (var x = 0; x < Width; ++x)
@@ -363,31 +365,31 @@ namespace Server
 
       for (var i = 0; i < count; ++i)
       {
-        allTiles[i].m_ItemID = reader.ReadUInt16();
-        allTiles[i].m_OffsetX = reader.ReadInt16();
-        allTiles[i].m_OffsetY = reader.ReadInt16();
-        allTiles[i].m_OffsetZ = reader.ReadInt16();
+        allTiles[i].ItemId = reader.ReadUInt16();
+        allTiles[i].OffsetX = reader.ReadInt16();
+        allTiles[i].OffsetY = reader.ReadInt16();
+        allTiles[i].OffsetZ = reader.ReadInt16();
 
         if (PostHSFormat)
-          allTiles[i].m_Flags = (TileFlag)reader.ReadUInt64();
+          allTiles[i].Flags = (TileFlag)reader.ReadUInt64();
         else
-          allTiles[i].m_Flags = (TileFlag)reader.ReadUInt32();
+          allTiles[i].Flags = (TileFlag)reader.ReadUInt32();
 
         var e = allTiles[i];
 
-        if (i == 0 || e.m_Flags != 0)
+        if (i == 0 || e.Flags != 0)
         {
-          if (e.m_OffsetX < m_Min.m_X)
-            m_Min.m_X = e.m_OffsetX;
+          if (e.OffsetX < m_Min.m_X)
+            m_Min.m_X = e.OffsetX;
 
-          if (e.m_OffsetY < m_Min.m_Y)
-            m_Min.m_Y = e.m_OffsetY;
+          if (e.OffsetY < m_Min.m_Y)
+            m_Min.m_Y = e.OffsetY;
 
-          if (e.m_OffsetX > m_Max.m_X)
-            m_Max.m_X = e.m_OffsetX;
+          if (e.OffsetX > m_Max.m_X)
+            m_Max.m_X = e.OffsetX;
 
-          if (e.m_OffsetY > m_Max.m_Y)
-            m_Max.m_Y = e.m_OffsetY;
+          if (e.OffsetY > m_Max.m_Y)
+            m_Max.m_Y = e.OffsetY;
         }
       }
 
@@ -408,12 +410,12 @@ namespace Server
       }
 
       for (var i = 0; i < allTiles.Length; ++i)
-        if (i == 0 || allTiles[i].m_Flags != 0)
+        if (i == 0 || allTiles[i].Flags != 0)
         {
-          var xOffset = allTiles[i].m_OffsetX + Center.m_X;
-          var yOffset = allTiles[i].m_OffsetY + Center.m_Y;
+          var xOffset = allTiles[i].OffsetX + Center.m_X;
+          var yOffset = allTiles[i].OffsetY + Center.m_Y;
 
-          tiles[xOffset][yOffset].Add(allTiles[i].m_ItemID, (sbyte)allTiles[i].m_OffsetZ);
+          tiles[xOffset][yOffset].Add(allTiles[i].ItemId, (sbyte)allTiles[i].OffsetZ);
         }
 
       for (var x = 0; x < Width; ++x)
@@ -427,24 +429,24 @@ namespace Server
 
       for (var i = 0; i < list.Count; ++i)
       {
-        allTiles[i].m_ItemID = list[i].m_ItemID;
-        allTiles[i].m_OffsetX = list[i].m_OffsetX;
-        allTiles[i].m_OffsetY = list[i].m_OffsetY;
-        allTiles[i].m_OffsetZ = list[i].m_OffsetZ;
+        allTiles[i].ItemId = list[i].ItemId;
+        allTiles[i].OffsetX = list[i].OffsetX;
+        allTiles[i].OffsetY = list[i].OffsetY;
+        allTiles[i].OffsetZ = list[i].OffsetZ;
 
-        allTiles[i].m_Flags = list[i].m_Flags;
+        allTiles[i].Flags = list[i].Flags;
 
         var e = allTiles[i];
 
-        if (i == 0 || e.m_Flags != 0)
+        if (i == 0 || e.Flags != 0)
         {
-          if (e.m_OffsetX < m_Min.m_X) m_Min.m_X = e.m_OffsetX;
+          if (e.OffsetX < m_Min.m_X) m_Min.m_X = e.OffsetX;
 
-          if (e.m_OffsetY < m_Min.m_Y) m_Min.m_Y = e.m_OffsetY;
+          if (e.OffsetY < m_Min.m_Y) m_Min.m_Y = e.OffsetY;
 
-          if (e.m_OffsetX > m_Max.m_X) m_Max.m_X = e.m_OffsetX;
+          if (e.OffsetX > m_Max.m_X) m_Max.m_X = e.OffsetX;
 
-          if (e.m_OffsetY > m_Max.m_Y) m_Max.m_Y = e.m_OffsetY;
+          if (e.OffsetY > m_Max.m_Y) m_Max.m_Y = e.OffsetY;
         }
       }
 
@@ -464,13 +466,13 @@ namespace Server
       }
 
       for (var i = 0; i < allTiles.Length; ++i)
-        if (i == 0 || allTiles[i].m_Flags != 0)
+        if (i == 0 || allTiles[i].Flags != 0)
         {
-          var xOffset = allTiles[i].m_OffsetX + Center.m_X;
-          var yOffset = allTiles[i].m_OffsetY + Center.m_Y;
-          var itemID = (allTiles[i].m_ItemID & TileData.MaxItemValue) | 0x10000;
+          var xOffset = allTiles[i].OffsetX + Center.m_X;
+          var yOffset = allTiles[i].OffsetY + Center.m_Y;
+          var itemID = (allTiles[i].ItemId & TileData.MaxItemValue) | 0x10000;
 
-          tiles[xOffset][yOffset].Add((ushort)itemID, (sbyte)allTiles[i].m_OffsetZ);
+          tiles[xOffset][yOffset].Add((ushort)itemID, (sbyte)allTiles[i].OffsetZ);
         }
 
       for (var x = 0; x < Width; ++x)
@@ -593,8 +595,8 @@ namespace Server
         {
           var tile = oldList[i];
 
-          if (tile.m_OffsetX == (short)x && tile.m_OffsetY == (short)y && tile.m_OffsetZ == (short)z &&
-              TileData.ItemTable[tile.m_ItemID & TileData.MaxItemValue].Height >= minHeight)
+          if (tile.OffsetX == (short)x && tile.OffsetY == (short)y && tile.OffsetZ == (short)z &&
+              TileData.ItemTable[tile.ItemId & TileData.MaxItemValue].Height >= minHeight)
           {
             var newList = new MultiTileEntry[oldList.Length - 1];
 
@@ -647,8 +649,8 @@ namespace Server
         {
           var tile = oldList[i];
 
-          if (tile.m_ItemID == itemID && tile.m_OffsetX == (short)x && tile.m_OffsetY == (short)y &&
-              tile.m_OffsetZ == (short)z)
+          if (tile.ItemId == itemID && tile.OffsetX == (short)x && tile.OffsetY == (short)y &&
+              tile.OffsetZ == (short)z)
           {
             var newList = new MultiTileEntry[oldList.Length - 1];
 
@@ -746,11 +748,11 @@ namespace Server
       {
         var ent = List[i];
 
-        writer.Write(ent.m_ItemID);
-        writer.Write(ent.m_OffsetX);
-        writer.Write(ent.m_OffsetY);
-        writer.Write(ent.m_OffsetZ);
-        writer.Write((int)ent.m_Flags);
+        writer.Write(ent.ItemId);
+        writer.Write(ent.OffsetX);
+        writer.Write(ent.OffsetY);
+        writer.Write(ent.OffsetZ);
+        writer.Write((int)ent.Flags);
       }
     }
   }

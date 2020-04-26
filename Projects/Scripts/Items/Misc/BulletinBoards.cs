@@ -460,19 +460,19 @@ namespace Server.Items
 
       byte[] buffer = Utility.UTF8.GetBytes(board.BoardName ?? "");
 
-      m_Stream.Write((byte)0x00); // PacketID
-      m_Stream.Write(board.Serial); // Bulletin board serial
+      Stream.Write((byte)0x00); // PacketID
+      Stream.Write(board.Serial); // Bulletin board serial
 
       // Bulletin board name
       if (buffer.Length >= 29)
       {
-        m_Stream.Write(buffer, 0, 29);
-        m_Stream.Write((byte)0);
+        Stream.Write(buffer, 0, 29);
+        Stream.Write((byte)0);
       }
       else
       {
-        m_Stream.Write(buffer, 0, buffer.Length);
-        m_Stream.Fill(30 - buffer.Length);
+        Stream.Write(buffer, 0, buffer.Length);
+        Stream.Fill(30 - buffer.Length);
       }
     }
   }
@@ -487,16 +487,16 @@ namespace Server.Items
 
       EnsureCapacity(22 + poster.Length + subject.Length + time.Length);
 
-      m_Stream.Write((byte)0x01); // PacketID
-      m_Stream.Write(board.Serial); // Bulletin board serial
-      m_Stream.Write(msg.Serial); // Message serial
+      Stream.Write((byte)0x01); // PacketID
+      Stream.Write(board.Serial); // Bulletin board serial
+      Stream.Write(msg.Serial); // Message serial
 
       BulletinMessage thread = msg.Thread;
 
       if (thread == null)
-        m_Stream.Write(0); // Thread serial--root
+        Stream.Write(0); // Thread serial--root
       else
-        m_Stream.Write(thread.Serial); // Thread serial--parent
+        Stream.Write(thread.Serial); // Thread serial--parent
 
       WriteString(poster);
       WriteString(subject);
@@ -511,9 +511,9 @@ namespace Server.Items
       if (len > 255)
         len = 255;
 
-      m_Stream.Write((byte)len);
-      m_Stream.Write(buffer, 0, len - 1);
-      m_Stream.Write((byte)0);
+      Stream.Write((byte)len);
+      Stream.Write(buffer, 0, len - 1);
+      Stream.Write((byte)0);
     }
 
     public string SafeString(string v) => v ?? string.Empty;
@@ -529,30 +529,30 @@ namespace Server.Items
 
       EnsureCapacity(22 + poster.Length + subject.Length + time.Length);
 
-      m_Stream.Write((byte)0x02); // PacketID
-      m_Stream.Write(board.Serial); // Bulletin board serial
-      m_Stream.Write(msg.Serial); // Message serial
+      Stream.Write((byte)0x02); // PacketID
+      Stream.Write(board.Serial); // Bulletin board serial
+      Stream.Write(msg.Serial); // Message serial
 
       WriteString(poster);
       WriteString(subject);
       WriteString(time);
 
-      m_Stream.Write((short)msg.PostedBody);
-      m_Stream.Write((short)msg.PostedHue);
+      Stream.Write((short)msg.PostedBody);
+      Stream.Write((short)msg.PostedHue);
 
       int len = msg.PostedEquip.Length;
 
       if (len > 255)
         len = 255;
 
-      m_Stream.Write((byte)len);
+      Stream.Write((byte)len);
 
       for (int i = 0; i < len; ++i)
       {
         BulletinEquip eq = msg.PostedEquip[i];
 
-        m_Stream.Write((short)eq.itemID);
-        m_Stream.Write((short)eq.hue);
+        Stream.Write((short)eq.itemID);
+        Stream.Write((short)eq.hue);
       }
 
       len = msg.Lines.Length;
@@ -560,7 +560,7 @@ namespace Server.Items
       if (len > 255)
         len = 255;
 
-      m_Stream.Write((byte)len);
+      Stream.Write((byte)len);
 
       for (int i = 0; i < len; ++i)
         WriteString(msg.Lines[i], true);
@@ -580,13 +580,13 @@ namespace Server.Items
       if (len > 255)
         len = 255;
 
-      m_Stream.Write((byte)len);
-      m_Stream.Write(buffer, 0, len - tail);
+      Stream.Write((byte)len);
+      Stream.Write(buffer, 0, len - tail);
 
       if (padding)
-        m_Stream.Write((short)0); // padding compensates for a client bug
+        Stream.Write((short)0); // padding compensates for a client bug
       else
-        m_Stream.Write((byte)0);
+        Stream.Write((byte)0);
     }
 
     public string SafeString(string v)

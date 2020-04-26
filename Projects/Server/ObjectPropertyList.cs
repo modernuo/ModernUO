@@ -53,11 +53,11 @@ namespace Server
 
       Entity = e;
 
-      m_Stream.Write((short)1);
-      m_Stream.Write(e.Serial);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)0);
-      m_Stream.Write(e.Serial);
+      Stream.Write((short)1);
+      Stream.Write(e.Serial);
+      Stream.Write((byte)0);
+      Stream.Write((byte)0);
+      Stream.Write(e.Serial);
     }
 
     public IEntity Entity { get; }
@@ -83,16 +83,16 @@ namespace Server
         HeaderArgs = "";
       }
 
-      m_Stream.Write(number);
-      m_Stream.Write((short)0);
+      Stream.Write(number);
+      Stream.Write((short)0);
     }
 
     public void Terminate()
     {
-      m_Stream.Write(0);
+      Stream.Write(0);
 
-      m_Stream.Seek(11, SeekOrigin.Begin);
-      m_Stream.Write(m_Hash);
+      Stream.Seek(11, SeekOrigin.Begin);
+      Stream.Write(m_Hash);
     }
 
     public void AddHash(int val)
@@ -117,7 +117,7 @@ namespace Server
       AddHash(number);
       AddHash(arguments.GetHashCode());
 
-      m_Stream.Write(number);
+      Stream.Write(number);
 
       var byteCount = m_Encoding.GetByteCount(arguments);
 
@@ -126,8 +126,8 @@ namespace Server
 
       byteCount = m_Encoding.GetBytes(arguments, 0, arguments.Length, m_Buffer, 0);
 
-      m_Stream.Write((short)byteCount);
-      m_Stream.Write(m_Buffer, 0, byteCount);
+      Stream.Write((short)byteCount);
+      Stream.Write(m_Buffer, 0, byteCount);
     }
 
     public void Add(int number, string format, object arg0)
@@ -191,8 +191,8 @@ namespace Server
 
     public OPLInfo(Serial serial, int hash) : base(0xDC, 9)
     {
-      m_Stream.Write(serial);
-      m_Stream.Write(hash);
+      Stream.Write(serial);
+      Stream.Write(hash);
     }
   }
 }

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Server.Accounting;
@@ -401,9 +402,17 @@ namespace Server
     public MobileNotConnectedException(Mobile source, string message)
       : base(message) =>
       Source = source.ToString();
+
+    public MobileNotConnectedException(Mobile source, string message, Exception innerException)
+      : base(message, innerException) =>
+      Source = source.ToString();
+
+    protected MobileNotConnectedException(SerializationInfo info, StreamingContext context) : base(info, context)
+    {
+    }
   }
 
-    public delegate bool SkillCheckTargetHandler(Mobile from, SkillName skill, object target, double minSkill,
+  public delegate bool SkillCheckTargetHandler(Mobile from, SkillName skill, object target, double minSkill,
     double maxSkill);
 
   public delegate bool SkillCheckLocationHandler(Mobile from, SkillName skill, double minSkill, double maxSkill);
@@ -423,11 +432,10 @@ namespace Server
 
   public delegate int AOSStatusHandler(Mobile from, int index);
 
-
-    /// <summary>
-    ///   Base class representing players, npcs, and creatures.
-    /// </summary>
-    public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable, IPropertyListObject
+  /// <summary>
+  ///   Base class representing players, npcs, and creatures.
+  /// </summary>
+  public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable, IPropertyListObject
   {
     private readonly BufferWriter m_SaveBuffer;
     public BufferWriter SaveBuffer => m_SaveBuffer;
@@ -451,8 +459,6 @@ namespace Server
 
     private static readonly List<Mobile> m_Hears = new List<Mobile>();
     private static readonly List<IEntity> m_OnSpeech = new List<IEntity>();
-
-    public static bool m_DefaultShowVisibleDamage, m_DefaultCanSeeVisibleDamage;
 
     private static readonly string[] m_AccessLevelNames =
     {
@@ -507,7 +513,7 @@ namespace Server
     /* Logout:
      *
      * When a client logs into mobile x
-     *  - if ( x is Internalized ) move x to logout location and map
+     *  - if (x is Internalized ) move x to logout location and map
      *
      * When a client attached to a mobile disconnects
      *  - LogoutTimer is started
@@ -1109,20 +1115,12 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public Mobile LastKiller { get; set; }
 
-    public static bool DefaultShowVisibleDamage
-    {
-      get => m_DefaultShowVisibleDamage;
-      set => m_DefaultShowVisibleDamage = value;
-    }
+    public static bool DefaultShowVisibleDamage { get; set; }
 
-    public static bool DefaultCanSeeVisibleDamage
-    {
-      get => m_DefaultCanSeeVisibleDamage;
-      set => m_DefaultCanSeeVisibleDamage = value;
-    }
+    public static bool DefaultCanSeeVisibleDamage { get; set; }
 
-    public virtual bool ShowVisibleDamage => m_DefaultShowVisibleDamage;
-    public virtual bool CanSeeVisibleDamage => m_DefaultCanSeeVisibleDamage;
+    public virtual bool ShowVisibleDamage => DefaultShowVisibleDamage;
+    public virtual bool CanSeeVisibleDamage => DefaultCanSeeVisibleDamage;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Squelched { get; set; }
@@ -1144,7 +1142,7 @@ namespace Server
 
           CheckLightLevels(false);
 
-          /*if ( m_NetState != null )
+          /*if (m_NetState != null)
             m_NetState.Send( new PersonalLightLevel( this ) );*/
         }
       }
@@ -1426,7 +1424,7 @@ namespace Server
 
           m_Spell?.OnConnectionChanged();
 
-          // if ( m_Spell != null )
+          // if (m_Spell != null)
           // m_Spell.FinishSequence();
 
           m_NetState?.CancelAllTrades();
@@ -2339,12 +2337,12 @@ namespace Server
         sendIncoming = true;
       }
 
-      /*if ( (delta & MobileDelta.Hue) != 0 )
+      /*if ((delta & MobileDelta.Hue) != 0)
         {
           sendNonlocalIncoming = true;
           sendUpdate = true;
         }
-        else if ( (delta & (MobileDelta.Direction | MobileDelta.Body)) != 0 )
+        else if ((delta & (MobileDelta.Direction | MobileDelta.Body)) != 0)
         {
           sendNonlocalMoving = true;
           sendUpdate = true;
@@ -2385,7 +2383,7 @@ namespace Server
         sendFacialHair = true;
       }
 
-      var cache = new Packet[][] { new Packet[8], new Packet[8] };
+      var cache = new[] { new Packet[8], new Packet[8] };
 
       var ourState = m.m_NetState;
 
@@ -4293,7 +4291,7 @@ namespace Server
       for ( int i = 0; c != null && i < content.Count; ++i )
         c.DropItem( (Item)content[i] );
 
-      if ( c != null )
+      if (c != null)
         c.MoveToWorld( this.Location, this.Map );*/
 
       if (m_Map != null)
@@ -5225,7 +5223,7 @@ namespace Server
 
         m_Spell?.OnCasterHurt();
 
-        // if ( m_Spell != null && m_Spell.State == SpellState.Casting )
+        // if (m_Spell != null && m_Spell.State == SpellState.Casting)
         // m_Spell.Disturb( DisturbType.Hurt, false, true );
 
         if (from != null)
@@ -5770,11 +5768,6 @@ namespace Server
 
       Utility.Intern(ref m_Title);
       Utility.Intern(ref m_Language);
-
-      /*	//Moved into cleanup in scripts.
-      if ( version < 30 )
-        Timer.DelayCall( TimeSpan.Zero, new TimerCallback( ConvertHair ) );
-       * */
     }
 
     public void ConvertHair()
@@ -6013,8 +6006,8 @@ namespace Server
         {
           state.Mobile.ProcessDelta();
 
-          // if ( state.StygianAbyss ) {
-          // if ( pNew == null )
+          // if (state.StygianAbyss ) {
+          // if (pNew == null)
           // pNew = Packet.Acquire( new NewMobileAnimation( this, action, frameCount, delay ) );
 
           // state.Send( pNew );
@@ -6587,10 +6580,10 @@ namespace Server
 
                 if (m.m_NetState.StygianAbyss)
                 {
-                  // if ( m_Poison != null )
+                  // if (m_Poison != null)
                   m.m_NetState.Send(new HealthbarPoison(this));
 
-                  // if ( m_Blessed || m_YellowHealthbar )
+                  // if (m_Blessed || m_YellowHealthbar)
                   m.m_NetState.Send(new HealthbarYellow(this));
                 }
 
@@ -6607,10 +6600,10 @@ namespace Server
 
               if (ourState.StygianAbyss)
               {
-                // if ( m.Poisoned )
+                // if (m.Poisoned)
                 ourState.Send(new HealthbarPoison(m));
 
-                // if ( m.Blessed || m.YellowHealthbar )
+                // if (m.Blessed || m.YellowHealthbar)
                 ourState.Send(new HealthbarYellow(m));
               }
 
@@ -6635,10 +6628,10 @@ namespace Server
 
               if (ns.StygianAbyss)
               {
-                // if ( m_Poison != null )
+                // if (m_Poison != null)
                 ns.Send(new HealthbarPoison(this));
 
-                // if ( m_Blessed || m_YellowHealthbar )
+                // if (m_Blessed || m_YellowHealthbar)
                 ns.Send(new HealthbarYellow(this));
               }
 
@@ -6836,13 +6829,13 @@ namespace Server
     ///   <code>
     ///   public override bool OnDragLift( Item item )
     ///   {
-    ///  		if ( item is Pickaxe &amp;&amp; this.Str &lt; 60 )
-    ///  		{
-    ///  			SendMessage( "That is too heavy for you to lift." );
-    ///  			return false;
-    ///  		}
+    ///     if (item is Pickaxe &amp;&amp; this.Str &lt; 60)
+    ///     {
+    ///       SendMessage( "That is too heavy for you to lift." );
+    ///       return false;
+    ///     }
     ///
-    ///  		return base.OnDragLift( item );
+    ///     return base.OnDragLift( item );
     ///   }</code>
     /// </example>
     public virtual bool OnDragLift(Item item) => true;
@@ -6926,7 +6919,7 @@ namespace Server
         if (m_Spell?.OnCasterEquipping(item) == false)
           return false;
 
-        // if ( m_Spell != null && m_Spell.State == SpellState.Casting )
+        // if (m_Spell != null && m_Spell.State == SpellState.Casting)
         // m_Spell.Disturb( DisturbType.EquipRequest );
 
         AddItem(item);
@@ -7452,7 +7445,7 @@ namespace Server
 
       protected override void OnTick()
       {
-        if (m_Owner.CanRegenMana) // m_Owner.Alive )
+        if (m_Owner.CanRegenMana)
           m_Owner.Mana++;
 
         Delay = Interval = GetManaRegenRate(m_Owner);
@@ -7472,7 +7465,7 @@ namespace Server
 
       protected override void OnTick()
       {
-        if (m_Owner.CanRegenHits) // m_Owner.Alive && !m_Owner.Poisoned )
+        if (m_Owner.CanRegenHits)
           m_Owner.Hits++;
 
         Delay = Interval = GetHitsRegenRate(m_Owner);
@@ -7492,7 +7485,7 @@ namespace Server
 
       protected override void OnTick()
       {
-        if (m_Owner.CanRegenStam) // m_Owner.Alive )
+        if (m_Owner.CanRegenStam)
           m_Owner.Stam++;
 
         Delay = Interval = GetStamRegenRate(m_Owner);
@@ -8050,10 +8043,10 @@ namespace Server
       if (target == this)
         return true;
 
-      if ( /*m_Player &&*/!Region.AllowBeneficial(this, target))
+      if (/*m_Player &&*/!Region.AllowBeneficial(this, target))
       {
         // TODO: Pets
-        // if ( !(target.m_Player || target.Body.IsHuman || target.Body.IsAnimal) )
+        // if (!(target.m_Player || target.Body.IsHuman || target.Body.IsAnimal))
         // {
         if (message)
           SendLocalizedMessage(1001017); // You can not perform beneficial acts on your target.
@@ -8128,7 +8121,7 @@ namespace Server
         return true;
 
       // TODO: Pets
-      if ( /*m_Player &&*/
+      if (/*m_Player &&*/
         !Region.AllowHarmful(this, target)) // (target.m_Player || target.Body.IsHuman) && !Region.AllowHarmful( this, target )  )
       {
         if (message)
@@ -8738,7 +8731,7 @@ namespace Server
       get => m_Poison;
       set
       {
-        /*if ( m_Poison != value && (m_Poison == null || value == null || m_Poison.Level < value.Level) )
+        /*if (m_Poison != value && (m_Poison == null || value == null || m_Poison.Level < value.Level))
         {*/
         m_Poison = value;
         Delta(MobileDelta.HealthbarPoison);

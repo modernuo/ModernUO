@@ -113,7 +113,7 @@ namespace Server.Items
       base.GetProperties(list);
 
       // Makers mark not displayed on OSI
-      // if ( m_Crafter != null )
+      // if (m_Crafter != null)
       // list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
 
       if (m_Quality == ToolQuality.Exceptional)

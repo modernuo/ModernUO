@@ -25,7 +25,6 @@ namespace Server.Menus.Questions
   public class QuestionMenu : IMenu
   {
     private static int m_NextSerial;
-    private readonly int m_Serial;
 
     public QuestionMenu(string question, string[] answers)
     {
@@ -34,18 +33,18 @@ namespace Server.Menus.Questions
 
       do
       {
-        m_Serial = ++m_NextSerial;
-        m_Serial &= 0x7FFFFFFF;
-      } while (m_Serial == 0);
+        Serial = ++m_NextSerial;
+        Serial &= 0x7FFFFFFF;
+      } while (Serial == 0);
     }
 
     public string Question { get; set; }
 
     public string[] Answers { get; }
 
-    int IMenu.Serial => m_Serial;
+    public int Serial { get; }
 
-    int IMenu.EntryLength => Answers.Length;
+    public int EntryLength => Answers.Length;
 
     public virtual void OnCancel(NetState state)
     {

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019 - ModernUO Development Team                        *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: ServerConnectionHandler.cs                                      *
  * Created: 2020/04/12 - Updated: 2020/04/12                             *
@@ -53,7 +53,7 @@ namespace Server.Network
 
       connection.ConnectionClosed.Register(() => { TcpServer.Instances.Remove(ns); });
 
-      await ProcessIncoming(ns);
+      await ProcessIncoming(ns).ConfigureAwait(false);
     }
 
     private async Task ProcessIncoming(NetState ns)

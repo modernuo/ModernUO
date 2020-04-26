@@ -261,11 +261,11 @@ namespace Server
   {
     public const int SectorSize = 16;
     public const int SectorShift = 4;
-    public static int SectorActiveRange = 2;
+    public static readonly int SectorActiveRange = 2;
 
-    private static readonly Queue<List<Item>> _FixPool = new Queue<List<Item>>(128);
+    private static readonly Queue<List<Item>> m_FixPool = new Queue<List<Item>>(128);
 
-    private static readonly List<Item> _EmptyFixItems = new List<Item>();
+    private static readonly List<Item> m_EmptyFixItems = new List<Item>();
     private Region m_DefaultRegion;
 
     private readonly int m_FileIndex;
@@ -452,14 +452,14 @@ namespace Server
     private static List<Item> AcquireFixItems(Map map, int x, int y)
     {
       if (map == null || map == Internal || x < 0 || x > map.Width || y < 0 || y > map.Height)
-        return _EmptyFixItems;
+        return m_EmptyFixItems;
 
       List<Item> pool = null;
 
-      lock (_FixPool)
+      lock (m_FixPool)
       {
-        if (_FixPool.Count > 0)
-          pool = _FixPool.Dequeue();
+        if (m_FixPool.Count > 0)
+          pool = m_FixPool.Dequeue();
       }
 
       pool ??= new List<Item>(128); // Arbitrary limit
@@ -478,15 +478,15 @@ namespace Server
 
     private static void FreeFixItems(List<Item> pool)
     {
-      if (pool == _EmptyFixItems)
+      if (pool == m_EmptyFixItems)
         return;
 
       pool.Clear();
 
-      lock (_FixPool)
+      lock (m_FixPool)
       {
-        if (_FixPool.Count < 128)
-          _FixPool.Enqueue(pool);
+        if (m_FixPool.Count < 128)
+          m_FixPool.Enqueue(pool);
       }
     }
 
@@ -557,21 +557,21 @@ namespace Server
     {
       List<Tile> list = new List<Tile>();
 
-      if ( this == Internal )
+      if (this == Internal)
         return list;
 
-      if ( land )
+      if (land)
         list.Add( Tiles.GetLandTile( p.m_X, p.m_Y ) );
 
-      if ( statics )
+      if (statics)
         list.AddRange( Tiles.GetStaticTiles( p.m_X, p.m_Y, true ) );
 
-      if ( items )
+      if (items)
       {
         Sector sector = GetSector( p );
 
         foreach ( Item item in sector.Items )
-          if ( item.AtWorldPoint( p.m_X, p.m_Y ) )
+          if (item.AtWorldPoint( p.m_X, p.m_Y ))
             list.Add( new StaticTile( (ushort)item.ItemID, (sbyte) item.Z ) );
       }
 
@@ -927,13 +927,13 @@ namespace Server
     {
       public static readonly NullEnumerable<T> Instance = new NullEnumerable<T>();
 
-      private readonly IEnumerable<T> _Empty;
+      private readonly IEnumerable<T> m_Empty;
 
-      private NullEnumerable() => _Empty = Enumerable.Empty<T>();
+      private NullEnumerable() => m_Empty = Enumerable.Empty<T>();
 
-      IEnumerator IEnumerable.GetEnumerator() => _Empty.GetEnumerator();
+      IEnumerator IEnumerable.GetEnumerator() => m_Empty.GetEnumerator();
 
-      public IEnumerator<T> GetEnumerator() => _Empty.GetEnumerator();
+      public IEnumerator<T> GetEnumerator() => m_Empty.GetEnumerator();
 
       public void Free()
       {
@@ -944,35 +944,35 @@ namespace Server
     {
       private static readonly Queue<PooledEnumerable<T>> _Buffer = new Queue<PooledEnumerable<T>>(0x400);
 
-      private bool _IsDisposed;
+      private bool m_IsDisposed;
 
-      private List<T> _Pool = new List<T>(0x40);
+      private List<T> m_Pool = new List<T>(0x40);
 
       public PooledEnumerable(IEnumerable<T> pool)
       {
-        _Pool.AddRange(pool);
+        m_Pool.AddRange(pool);
       }
 
       public void Dispose()
       {
-        _IsDisposed = true;
+        m_IsDisposed = true;
 
-        _Pool.Clear();
-        _Pool.TrimExcess();
-        _Pool = null;
+        m_Pool.Clear();
+        m_Pool.TrimExcess();
+        m_Pool = null;
       }
 
-      IEnumerator IEnumerable.GetEnumerator() => _Pool.GetEnumerator();
+      IEnumerator IEnumerable.GetEnumerator() => m_Pool.GetEnumerator();
 
-      public IEnumerator<T> GetEnumerator() => _Pool.GetEnumerator();
+      public IEnumerator<T> GetEnumerator() => m_Pool.GetEnumerator();
 
       public void Free()
       {
-        if (_IsDisposed)
+        if (m_IsDisposed)
           return;
 
-        _Pool.Clear();
-        _Pool.Capacity = Math.Max(_Pool.Capacity, 0x100);
+        m_Pool.Clear();
+        m_Pool.Capacity = Math.Max(m_Pool.Capacity, 0x100);
 
         lock (((ICollection)_Buffer).SyncRoot)
         {
@@ -980,6 +980,7 @@ namespace Server
         }
       }
 
+#pragma warning disable CA1000 // Do not declare static members on generic types
       public static PooledEnumerable<T> Instantiate(Map map, Rectangle2D bounds, PooledEnumeration.Selector<T> selector)
       {
         PooledEnumerable<T> e = null;
@@ -995,10 +996,11 @@ namespace Server
         if (e == null)
           return new PooledEnumerable<T>(pool);
 
-        e._Pool.AddRange(pool);
+        e.m_Pool.AddRange(pool);
         return e;
       }
     }
+#pragma warning restore CA1000 // Do not declare static members on generic types
 
     public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p) => GetObjectsInRange(p, Core.GlobalMaxUpdateRange);
 
@@ -1262,7 +1264,7 @@ namespace Server
 
         /* --Do land tiles need to be checked?  There is never land between two people, always statics.--
         LandTile landTile = Tiles.GetLandTile( point.X, point.Y );
-        if ( landTile.Z-1 >= point.Z && landTile.Z+1 <= point.Z && (TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags & TileFlag.Impassable) != 0 )
+        if (landTile.Z-1 >= point.Z && landTile.Z+1 <= point.Z && (TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags & TileFlag.Impassable) != 0)
           return false;
         */
 
@@ -1303,11 +1305,11 @@ namespace Server
             return false;
           }
 
-          /*if ( t.Z <= point.Z && t.Z+height >= point.Z && (flags&TileFlag.Window)==0 && (flags&TileFlag.NoShoot)!=0
+          /*if (t.Z <= point.Z && t.Z+height >= point.Z && (flags&TileFlag.Window)==0 && (flags&TileFlag.NoShoot)!=0
             && ( (flags&TileFlag.Wall)!=0 || (flags&TileFlag.Roof)!=0 || (((flags&TileFlag.Surface)!=0 && zd != 0)) ) )*/
           /*{
             //Console.WriteLine( "LoS: Blocked by Static \"{0}\" Z:{1} T:{3} P:{2} F:x{4:X}", TileData.ItemTable[t.ID&TileData.MaxItemValue].Name, t.Z, point, t.Z+height, flags );
-            //Console.WriteLine( "if ( {0} && {1} && {2} && ( {3} || {4} || {5} || ({6} && {7} && {8}) ) )", t.Z <= point.Z, t.Z+height >= point.Z, (flags&TileFlag.Window)==0, (flags&TileFlag.Impassable)!=0, (flags&TileFlag.Wall)!=0, (flags&TileFlag.Roof)!=0, (flags&TileFlag.Surface)!=0, t.Z != dest.Z, zd != 0 ) ;
+            //Console.WriteLine( "if ({0} && {1} && {2} && ( {3} || {4} || {5} || ({6} && {7} && {8}) ) )", t.Z <= point.Z, t.Z+height >= point.Z, (flags&TileFlag.Window)==0, (flags&TileFlag.Impassable)!=0, (flags&TileFlag.Wall)!=0, (flags&TileFlag.Roof)!=0, (flags&TileFlag.Surface)!=0, t.Z != dest.Z, zd != 0 ) ;
             return false;
           }*/
         }
@@ -1343,7 +1345,7 @@ namespace Server
           var pointTop = point.m_Z + 1;
           var loc = i.Location;
 
-          // if ( t.Z <= point.Z && t.Z+height >= point.Z && ( height != 0 || ( t.Z == dest.Z && zd != 0 ) ) )
+          // if (t.Z <= point.Z && t.Z+height >= point.Z && ( height != 0 || ( t.Z == dest.Z && zd != 0 ) ))
           if (loc.m_X == point.m_X && loc.m_Y == point.m_Y && loc.m_Z <= pointTop && loc.m_Z + height >= point.m_Z)
             if (loc.m_X != end.m_X || loc.m_Y != end.m_Y || loc.m_Z > endTop || loc.m_Z + height < end.m_Z)
             {
@@ -1358,10 +1360,10 @@ namespace Server
         area.Free();
         return false;
 
-        /*if ( (flags & (TileFlag.Impassable | TileFlag.Surface | TileFlag.Roof)) != 0 )
+        /*if ((flags & (TileFlag.Impassable | TileFlag.Surface | TileFlag.Roof)) != 0)
 
         //flags = TileData.ItemTable[i.ItemID&TileData.MaxItemValue].Flags;
-        //if ( (flags&TileFlag.Window)==0 && (flags&TileFlag.NoShoot)!=0 && ( (flags&TileFlag.Wall)!=0 || (flags&TileFlag.Roof)!=0 || (((flags&TileFlag.Surface)!=0 && zd != 0)) ) )
+        //if ((flags&TileFlag.Window)==0 && (flags&TileFlag.NoShoot)!=0 && ( (flags&TileFlag.Wall)!=0 || (flags&TileFlag.Roof)!=0 || (((flags&TileFlag.Surface)!=0 && zd != 0)) ))
         {
           //height = TileData.ItemTable[i.ItemID&TileData.MaxItemValue].Height;
           //Console.WriteLine( "LoS: Blocked by ITEM \"{0}\" P:{1} T:{2} F:x{3:X}", TileData.ItemTable[i.ItemID&TileData.MaxItemValue].Name, i.Location, i.Location.Z+height, flags );

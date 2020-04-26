@@ -41,7 +41,7 @@ namespace Server.Multis
     {
       base.AddNameProperties( list );
 
-      if ( House != null && House.InternalizedVendors.Count > 0 )
+      if (House != null && House.InternalizedVendors.Count > 0)
         list.Add( 1061833, House.InternalizedVendors.Count.ToString() ); // This packing crate contains ~1_COUNT~ vendors/barkeepers.
     }
     */

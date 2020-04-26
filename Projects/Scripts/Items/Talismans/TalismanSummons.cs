@@ -377,7 +377,7 @@ namespace Server.Mobiles
     public override void OnThink()
     {
       /*
-      if ( m_NextWave < DateTime.UtcNow )
+      if (m_NextWave < DateTime.UtcNow)
         AreaHeatDamage();
       */
     }
@@ -405,11 +405,11 @@ namespace Server.Mobiles
     {
       Mobile mob = ControlMaster;
 
-      if ( mob != null )
+      if (mob != null)
       {
-        if ( mob.InRange( Location, 2 ) )
+        if (mob.InRange( Location, 2 ))
         {
-          if ( mob.AccessLevel != AccessLevel.Player )
+          if (mob.AccessLevel != AccessLevel.Player)
           {
             AOS.Damage( mob, Utility.Random( 2, 3 ), 0, 100, 0, 0, 0 );
             mob.SendLocalizedMessage( 1008112 ); // The intense heat is damaging you!
@@ -418,11 +418,11 @@ namespace Server.Mobiles
 
         GuardedRegion r = Region as GuardedRegion;
 
-        if ( r != null && mob.Alive )
+        if (r != null && mob.Alive)
         {
           foreach ( Mobile m in GetMobilesInRange( 2 ) )
           {
-            if ( !mob.CanBeHarmful( m ) )
+            if (!mob.CanBeHarmful( m ))
               mob.CriminalAction( false );
           }
         }

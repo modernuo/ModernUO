@@ -62,7 +62,7 @@ namespace Server.Items
         if (m_Item.Deleted)
           return;
 
-        /*if ( targeted is Item && !((Item)targeted).IsStandardLoot() )
+        /*if (targeted is Item && !((Item)targeted).IsStandardLoot())
         {
           from.SendLocalizedMessage( 502440 ); // Scissors can not be used on that to produce anything.
         }

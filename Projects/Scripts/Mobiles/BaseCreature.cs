@@ -2469,7 +2469,6 @@ namespace Server.Mobiles
         if (MondainsLegacy.CheckArtifactChance(mob, this))
           MondainsLegacy.GiveArtifactTo(mob);
       }
-
       else if (m_Paragon)
       {
         if (Paragon.CheckArtifactChance(mob, this))
@@ -3869,7 +3868,7 @@ namespace Server.Mobiles
                   m_Loyalty += 10;
             }
 
-            /* if ( happier )*/
+            /* if (happier )*/
             // looks like in OSI pets say they are happier even if they are at maximum loyalty
             SayTo(from, 502060); // Your pet looks happier.
 

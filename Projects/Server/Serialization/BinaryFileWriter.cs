@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019 - ModernUO Development Team                        *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: BinaryFileWriter.cs                                             *
  * Created: 2019/12/30 - Updated: 2020/01/18                             *
@@ -45,11 +45,11 @@ namespace Server
     private long m_Position;
 
     private readonly char[] m_SingleCharBuffer = new char[1];
-    private readonly bool PrefixStrings;
+    private readonly bool m_PrefixStrings;
 
     public BinaryFileWriter(Stream strm, bool prefixStr)
     {
-      PrefixStrings = prefixStr;
+      m_PrefixStrings = prefixStr;
       m_Encoding = Utility.UTF8;
       m_Buffer = new byte[BufferSize];
       m_File = strm;
@@ -57,7 +57,7 @@ namespace Server
 
     public BinaryFileWriter(string filename, bool prefixStr)
     {
-      PrefixStrings = prefixStr;
+      m_PrefixStrings = prefixStr;
       m_Buffer = new byte[BufferSize];
       m_File = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
       m_Encoding = Utility.UTF8WithEncoding;
@@ -162,7 +162,7 @@ namespace Server
 
     public void Write(string value)
     {
-      if (PrefixStrings)
+      if (m_PrefixStrings)
       {
         if (value == null)
         {

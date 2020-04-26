@@ -50,7 +50,6 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(1010097); // You cannot use this while mounted.
       }
-
       else if (from.CanBeginAction<SnowPile>())
       {
         from.SendLocalizedMessage(1005575); // You carefully pack the snow into a ball...

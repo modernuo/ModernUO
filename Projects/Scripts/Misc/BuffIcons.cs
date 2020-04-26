@@ -212,43 +212,43 @@ namespace Server
       bool hasArgs = args != null;
 
       EnsureCapacity(hasArgs ? 48 + args.ToString().Length * 2 : 44);
-      m_Stream.Write(mob.Serial);
+      Stream.Write(mob.Serial);
 
-      m_Stream.Write((short)iconID); // ID
-      m_Stream.Write((short)0x1); // Type 0 for removal. 1 for add 2 for Data
+      Stream.Write((short)iconID); // ID
+      Stream.Write((short)0x1); // Type 0 for removal. 1 for add 2 for Data
 
-      m_Stream.Fill(4);
+      Stream.Fill(4);
 
-      m_Stream.Write((short)iconID); // ID
-      m_Stream.Write((short)0x01); // Type 0 for removal. 1 for add 2 for Data
+      Stream.Write((short)iconID); // ID
+      Stream.Write((short)0x01); // Type 0 for removal. 1 for add 2 for Data
 
-      m_Stream.Fill(4);
+      Stream.Fill(4);
 
       if (length < TimeSpan.Zero)
         length = TimeSpan.Zero;
 
-      m_Stream.Write((short)length.TotalSeconds); // Time in seconds
+      Stream.Write((short)length.TotalSeconds); // Time in seconds
 
-      m_Stream.Fill(3);
-      m_Stream.Write(titleCliloc);
-      m_Stream.Write(secondaryCliloc);
+      Stream.Fill(3);
+      Stream.Write(titleCliloc);
+      Stream.Write(secondaryCliloc);
 
       if (!hasArgs)
       {
         // m_Stream.Fill( 2 );
-        m_Stream.Fill(10);
+        Stream.Fill(10);
       }
       else
       {
-        m_Stream.Fill(4);
-        m_Stream.Write((short)0x1); // Unknown -> Possibly something saying 'hey, I have more data!'?
-        m_Stream.Fill(2);
+        Stream.Fill(4);
+        Stream.Write((short)0x1); // Unknown -> Possibly something saying 'hey, I have more data!'?
+        Stream.Fill(2);
 
         // m_Stream.WriteLittleUniNull( "\t#1018280" );
-        m_Stream.WriteLittleUniNull($"\t{args}");
+        Stream.WriteLittleUniNull($"\t{args}");
 
-        m_Stream.Write((short)0x1); // Even more Unknown -> Possibly something saying 'hey, I have more data!'?
-        m_Stream.Fill(2);
+        Stream.Write((short)0x1); // Even more Unknown -> Possibly something saying 'hey, I have more data!'?
+        Stream.Fill(2);
       }
     }
   }
@@ -264,12 +264,12 @@ namespace Server
       : base(0xDF)
     {
       EnsureCapacity(13);
-      m_Stream.Write(mob.Serial);
+      Stream.Write(mob.Serial);
 
-      m_Stream.Write((short)iconID); // ID
-      m_Stream.Write((short)0x0); // Type 0 for removal. 1 for add 2 for Data
+      Stream.Write((short)iconID); // ID
+      Stream.Write((short)0x0); // Type 0 for removal. 1 for add 2 for Data
 
-      m_Stream.Fill(4);
+      Stream.Fill(4);
     }
   }
 }

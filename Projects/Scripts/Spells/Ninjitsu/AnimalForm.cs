@@ -197,7 +197,7 @@ namespace Server.Spells.Ninjitsu
       }
 
       /*
-      if ( !m.CheckSkill( SkillName.Ninjitsu, entry.ReqSkill, entry.ReqSkill + 37.5 ) )
+      if (!m.CheckSkill( SkillName.Ninjitsu, entry.ReqSkill, entry.ReqSkill + 37.5 ))
         return MorphResult.Fail;
        *
        * On OSI,it seems you can only gain starting at '0' using Animal form.
@@ -451,7 +451,6 @@ namespace Server.Spells.Ninjitsu
           if ((m_Caster as PlayerMobile)?.DuelContext?.AllowSpellCast(m_Caster, m_Spell) == false)
           {
           }
-
           else if (Morph(m_Caster, entryID) == MorphResult.Fail)
           {
             m_Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502632); // The spell fizzles.

@@ -1506,8 +1506,8 @@ namespace Server.Multis
       else if (itemID >= 0x436E && itemID < 0x437E)
       {
         /* These ones had to be different...
-        * Offset		0	2	4	6	8	10	12	14
-        * DoorFacing	2	3	2	3	6	7	6	7
+        * Offset 0 2 4 6 8 10 12 14
+        * DoorFacing 2 3 2 3 6 7 6 7
         */
         int offset = itemID - 0x436E;
         DoorFacing facing = (DoorFacing)((offset / 2 + 2 * ((1 + offset / 4) % 2)) % 8);
@@ -1560,13 +1560,10 @@ namespace Server.Multis
       return door;
     }
 
-    private static DoorFacing GetSADoorFacing(int offset)
-    {
-      /* Offset		0	2	4	6
-      * DoorFacing	2	3	6	7
-      */
-      return (DoorFacing)((offset / 2 + 2 * (1 + offset / 4)) % 8);
-    }
+    /* Offset 0 2 4 6
+     * DoorFacing 2 3 6 7
+     */
+    private static DoorFacing GetSADoorFacing(int offset) => (DoorFacing)((offset / 2 + 2 * (1 + offset / 4)) % 8);
 
     public uint CreateKeys(Mobile m)
     {
@@ -1649,9 +1646,11 @@ namespace Server.Multis
         m_Trash = new TrashBarrel { Movable = false };
         m_Trash.MoveToWorld(from.Location, from.Map);
 
-        from.SendLocalizedMessage(502121); /* You have a new trash barrel.
-													  * Three minutes after you put something in the barrel, the trash will be emptied.
-													  * Be forewarned, this is permanent! */
+        /* You have a new trash barrel.
+         * Three minutes after you put something in the barrel, the trash will be emptied.
+         * Be forewarned, this is permanent!
+         */
+        from.SendLocalizedMessage(502121);
       }
       else
       {
@@ -2159,9 +2158,10 @@ namespace Server.Multis
         targ.MoveToWorld(BanLocation, Map);
 
         from.SendLocalizedMessage(1042840, targ.Name); // ~1_PLAYER NAME~ has been ejected from this house.
-        targ.SendLocalizedMessage(501341); /* You have been ejected from this house.
-													  * If you persist in entering, you may be banned from the house.
-													  */
+        /* You have been ejected from this house.
+         * If you persist in entering, you may be banned from the house.
+         */
+        targ.SendLocalizedMessage(501341);
       }
     }
 
@@ -3163,10 +3163,12 @@ namespace Server.Multis
           return;
 
         from.SendLocalizedMessage(501338); // You have transferred ownership of the house.
-        to.SendLocalizedMessage(501339); /* You are now the owner of this house.
-													* The house's co-owner, friend, ban, and access lists have been cleared.
-													* You should double-check the security settings on any doors and teleporters in the house.
-													*/
+
+        /* You are now the owner of this house.
+         * The house's co-owner, friend, ban, and access lists have been cleared.
+         * You should double-check the security settings on any doors and teleporters in the house.
+         */
+        to.SendLocalizedMessage(501339);
 
         m_House.RemoveKeys(from);
         m_House.Owner = to;

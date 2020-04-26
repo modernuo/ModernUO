@@ -247,9 +247,9 @@ namespace Server.Engines.MLQuests.Gumps
     {
       EnsureCapacity(7);
 
-      m_Stream.Write((short)0x2A);
-      m_Stream.Write((byte)(female ? 1 : 0));
-      m_Stream.Write((byte)(targetRace.RaceID + 1));
+      Stream.Write((short)0x2A);
+      Stream.Write((byte)(female ? 1 : 0));
+      Stream.Write((byte)(targetRace.RaceID + 1));
     }
   }
 
@@ -262,9 +262,9 @@ namespace Server.Engines.MLQuests.Gumps
     {
       EnsureCapacity(7);
 
-      m_Stream.Write((short)0x2A);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)0xFF);
+      Stream.Write((short)0x2A);
+      Stream.Write((byte)0);
+      Stream.Write((byte)0xFF);
     }
   }
 

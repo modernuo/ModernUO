@@ -9,9 +9,9 @@ namespace Server.Engines.Mahjong
     {
       EnsureCapacity(9);
 
-      m_Stream.Write(game.Serial);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)0x19);
+      Stream.Write(game.Serial);
+      Stream.Write((byte)0);
+      Stream.Write((byte)0x19);
     }
   }
 
@@ -23,12 +23,12 @@ namespace Server.Engines.Mahjong
 
       EnsureCapacity(11 + 45 * players.Seats);
 
-      m_Stream.Write(game.Serial);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)0x2);
+      Stream.Write(game.Serial);
+      Stream.Write((byte)0);
+      Stream.Write((byte)0x2);
 
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)players.Seats);
+      Stream.Write((byte)0);
+      Stream.Write((byte)players.Seats);
 
       int n = 0;
       for (int i = 0; i < players.Seats; i++)
@@ -37,40 +37,40 @@ namespace Server.Engines.Mahjong
 
         if (mobile != null)
         {
-          m_Stream.Write(mobile.Serial);
-          m_Stream.Write(players.DealerPosition == i ? (byte)0x1 : (byte)0x2);
-          m_Stream.Write((byte)i);
+          Stream.Write(mobile.Serial);
+          Stream.Write(players.DealerPosition == i ? (byte)0x1 : (byte)0x2);
+          Stream.Write((byte)i);
 
           if (game.ShowScores || mobile == to)
-            m_Stream.Write(players.GetScore(i));
+            Stream.Write(players.GetScore(i));
           else
-            m_Stream.Write(0);
+            Stream.Write(0);
 
-          m_Stream.Write((short)0);
-          m_Stream.Write((byte)0);
+          Stream.Write((short)0);
+          Stream.Write((byte)0);
 
-          m_Stream.Write(players.IsPublic(i));
+          Stream.Write(players.IsPublic(i));
 
-          m_Stream.WriteAsciiFixed(mobile.Name, 30);
-          m_Stream.Write(!players.IsInGamePlayer(i));
+          Stream.WriteAsciiFixed(mobile.Name, 30);
+          Stream.Write(!players.IsInGamePlayer(i));
 
           n++;
         }
         else if (game.ShowScores)
         {
-          m_Stream.Write(0);
-          m_Stream.Write((byte)0x2);
-          m_Stream.Write((byte)i);
+          Stream.Write(0);
+          Stream.Write((byte)0x2);
+          Stream.Write((byte)i);
 
-          m_Stream.Write(players.GetScore(i));
+          Stream.Write(players.GetScore(i));
 
-          m_Stream.Write((short)0);
-          m_Stream.Write((byte)0);
+          Stream.Write((short)0);
+          Stream.Write((byte)0);
 
-          m_Stream.Write(players.IsPublic(i));
+          Stream.Write(players.IsPublic(i));
 
-          m_Stream.WriteAsciiFixed("", 30);
-          m_Stream.Write(true);
+          Stream.WriteAsciiFixed("", 30);
+          Stream.Write(true);
 
           n++;
         }
@@ -78,8 +78,8 @@ namespace Server.Engines.Mahjong
 
       if (n != players.Seats)
       {
-        m_Stream.Seek(10, SeekOrigin.Begin);
-        m_Stream.Write((byte)n);
+        Stream.Seek(10, SeekOrigin.Begin);
+        Stream.Write((byte)n);
       }
     }
   }
@@ -90,25 +90,25 @@ namespace Server.Engines.Mahjong
     {
       EnsureCapacity(13);
 
-      m_Stream.Write(game.Serial);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)0x5);
+      Stream.Write(game.Serial);
+      Stream.Write((byte)0);
+      Stream.Write((byte)0x5);
 
-      m_Stream.Write((short)0);
-      m_Stream.Write((byte)0);
+      Stream.Write((short)0);
+      Stream.Write((byte)0);
 
-      m_Stream.Write((byte)((game.ShowScores ? 0x1 : 0x0) | (game.SpectatorVision ? 0x2 : 0x0)));
+      Stream.Write((byte)((game.ShowScores ? 0x1 : 0x0) | (game.SpectatorVision ? 0x2 : 0x0)));
 
-      m_Stream.Write((byte)game.Dices.First);
-      m_Stream.Write((byte)game.Dices.Second);
+      Stream.Write((byte)game.Dices.First);
+      Stream.Write((byte)game.Dices.Second);
 
-      m_Stream.Write((byte)game.DealerIndicator.Wind);
-      m_Stream.Write((short)game.DealerIndicator.Position.Y);
-      m_Stream.Write((short)game.DealerIndicator.Position.X);
-      m_Stream.Write((byte)game.DealerIndicator.Direction);
+      Stream.Write((byte)game.DealerIndicator.Wind);
+      Stream.Write((short)game.DealerIndicator.Position.Y);
+      Stream.Write((short)game.DealerIndicator.Position.X);
+      Stream.Write((byte)game.DealerIndicator.Direction);
 
-      m_Stream.Write((short)game.WallBreakIndicator.Position.Y);
-      m_Stream.Write((short)game.WallBreakIndicator.Position.X);
+      Stream.Write((short)game.WallBreakIndicator.Position.Y);
+      Stream.Write((short)game.WallBreakIndicator.Position.X);
     }
   }
 
@@ -121,15 +121,15 @@ namespace Server.Engines.Mahjong
 
       EnsureCapacity(11 + 9 * tiles.Length);
 
-      m_Stream.Write(game.Serial);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)0x4);
+      Stream.Write(game.Serial);
+      Stream.Write((byte)0);
+      Stream.Write((byte)0x4);
 
-      m_Stream.Write((short)tiles.Length);
+      Stream.Write((short)tiles.Length);
 
       foreach (MahjongTile tile in tiles)
       {
-        m_Stream.Write((byte)tile.Number);
+        Stream.Write((byte)tile.Number);
 
         if (tile.Flipped)
         {
@@ -137,21 +137,21 @@ namespace Server.Engines.Mahjong
 
           if (hand < 0 || players.IsPublic(hand) || players.GetPlayer(hand) == to ||
               (game.SpectatorVision && players.IsSpectator(to)))
-            m_Stream.Write((byte)tile.Value);
+            Stream.Write((byte)tile.Value);
           else
-            m_Stream.Write((byte)0);
+            Stream.Write((byte)0);
         }
         else
         {
-          m_Stream.Write((byte)0);
+          Stream.Write((byte)0);
         }
 
-        m_Stream.Write((short)tile.Position.Y);
-        m_Stream.Write((short)tile.Position.X);
-        m_Stream.Write((byte)tile.StackLevel);
-        m_Stream.Write((byte)tile.Direction);
+        Stream.Write((short)tile.Position.Y);
+        Stream.Write((short)tile.Position.X);
+        Stream.Write((byte)tile.StackLevel);
+        Stream.Write((byte)tile.Direction);
 
-        m_Stream.Write(tile.Flipped ? (byte)0x10 : (byte)0x0);
+        Stream.Write(tile.Flipped ? (byte)0x10 : (byte)0x0);
       }
     }
   }
@@ -165,11 +165,11 @@ namespace Server.Engines.Mahjong
 
       EnsureCapacity(18);
 
-      m_Stream.Write(tile.Game.Serial);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)0x3);
+      Stream.Write(tile.Game.Serial);
+      Stream.Write((byte)0);
+      Stream.Write((byte)0x3);
 
-      m_Stream.Write((byte)tile.Number);
+      Stream.Write((byte)tile.Number);
 
       if (tile.Flipped)
       {
@@ -177,21 +177,21 @@ namespace Server.Engines.Mahjong
 
         if (hand < 0 || players.IsPublic(hand) || players.GetPlayer(hand) == to ||
             (game.SpectatorVision && players.IsSpectator(to)))
-          m_Stream.Write((byte)tile.Value);
+          Stream.Write((byte)tile.Value);
         else
-          m_Stream.Write((byte)0);
+          Stream.Write((byte)0);
       }
       else
       {
-        m_Stream.Write((byte)0);
+        Stream.Write((byte)0);
       }
 
-      m_Stream.Write((short)tile.Position.Y);
-      m_Stream.Write((short)tile.Position.X);
-      m_Stream.Write((byte)tile.StackLevel);
-      m_Stream.Write((byte)tile.Direction);
+      Stream.Write((short)tile.Position.Y);
+      Stream.Write((short)tile.Position.X);
+      Stream.Write((byte)tile.StackLevel);
+      Stream.Write((byte)tile.Direction);
 
-      m_Stream.Write(tile.Flipped ? (byte)0x10 : (byte)0x0);
+      Stream.Write(tile.Flipped ? (byte)0x10 : (byte)0x0);
     }
   }
 
@@ -201,9 +201,9 @@ namespace Server.Engines.Mahjong
     {
       EnsureCapacity(9);
 
-      m_Stream.Write(game.Serial);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)0x1A);
+      Stream.Write(game.Serial);
+      Stream.Write((byte)0);
+      Stream.Write((byte)0x1A);
     }
   }
 }

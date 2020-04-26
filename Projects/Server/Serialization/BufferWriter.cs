@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019 - ModernUO Development Team                        *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: BufferWriter.cs                                                 *
  * Created: 2019/12/30 - Updated: 2020/01/18                             *
@@ -41,11 +41,11 @@ namespace Server
     private int m_MaxBufferChars;
 
     private readonly char[] m_SingleCharBuffer = new char[1];
-    private readonly bool PrefixStrings;
+    private readonly bool m_PrefixStrings;
 
     public BufferWriter(bool prefixStr)
     {
-      PrefixStrings = prefixStr;
+      m_PrefixStrings = prefixStr;
       m_Encoding = Utility.UTF8;
       m_Buffer = new byte[BufferSize];
     }
@@ -137,7 +137,7 @@ namespace Server
 
     public void Write(string value)
     {
-      if (PrefixStrings)
+      if (m_PrefixStrings)
       {
         if (value == null)
         {

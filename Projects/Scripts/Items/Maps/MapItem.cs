@@ -307,14 +307,14 @@ namespace Server.Items
     {
       public MapDetails(MapItem map) : base(0x90, 19)
       {
-        m_Stream.Write(map.Serial);
-        m_Stream.Write((short)0x139D);
-        m_Stream.Write((short)map.Bounds.Start.X);
-        m_Stream.Write((short)map.Bounds.Start.Y);
-        m_Stream.Write((short)map.Bounds.End.X);
-        m_Stream.Write((short)map.Bounds.End.Y);
-        m_Stream.Write((short)map.Width);
-        m_Stream.Write((short)map.Height);
+        Stream.Write(map.Serial);
+        Stream.Write((short)0x139D);
+        Stream.Write((short)map.Bounds.Start.X);
+        Stream.Write((short)map.Bounds.Start.Y);
+        Stream.Write((short)map.Bounds.End.X);
+        Stream.Write((short)map.Bounds.End.Y);
+        Stream.Write((short)map.Width);
+        Stream.Write((short)map.Height);
       }
     }
 
@@ -340,11 +340,11 @@ namespace Server.Items
     {
       public MapCommand(MapItem map, int command, int number, int x, int y) : base(0x56, 11)
       {
-        m_Stream.Write(map.Serial);
-        m_Stream.Write((byte)command);
-        m_Stream.Write((byte)number);
-        m_Stream.Write((short)x);
-        m_Stream.Write((short)y);
+        Stream.Write(map.Serial);
+        Stream.Write((byte)command);
+        Stream.Write((byte)number);
+        Stream.Write((short)x);
+        Stream.Write((short)y);
       }
     }
 

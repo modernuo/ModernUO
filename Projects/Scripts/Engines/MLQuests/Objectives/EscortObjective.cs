@@ -230,7 +230,7 @@ namespace Server.Engines.MLQuests.Objectives
     public override void OnPlayerDeath()
     {
       // Note: OSI also cancels it when the quest is already complete
-      if ( /*IsCompleted() ||*/ Instance.Removed)
+      if (/*IsCompleted() ||*/ Instance.Removed)
         return;
 
       Instance.Cancel();

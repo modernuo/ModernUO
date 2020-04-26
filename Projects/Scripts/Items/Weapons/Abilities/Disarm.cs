@@ -15,15 +15,15 @@ namespace Server.Items
     // No longer active in pub21:
     /*public override bool CheckSkills( Mobile from )
     {
-      if ( !base.CheckSkills( from ) )
+      if (!base.CheckSkills( from ))
         return false;
 
-      if ( !(from.Weapon is Fists) )
+      if (!(from.Weapon is Fists))
         return true;
 
       Skill skill = from.Skills.ArmsLore;
 
-      if ( skill?.Base >= 80.0 )
+      if (skill?.Base >= 80.0)
         return true;
 
       from.SendLocalizedMessage( 1061812 ); // You lack the required skill in armslore to perform that attack!

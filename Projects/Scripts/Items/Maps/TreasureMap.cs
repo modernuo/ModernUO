@@ -312,7 +312,7 @@ namespace Server.Items
         from.SendLocalizedMessage(1046447); // Only a young player may use this treasure map.
       }
       /*
-      else if ( from != m_Decoder )
+      else if (from != m_Decoder)
       {
         from.SendLocalizedMessage( 503016 ); // Only the person who decoded this map may actually dig up the treasure.
       }
@@ -570,7 +570,7 @@ namespace Server.Items
           from.SendLocalizedMessage(503028); // The treasure for this map has already been found.
         }
         /*
-        else if ( from != m_Map.m_Decoder )
+        else if (from != m_Map.m_Decoder)
         {
           from.SendLocalizedMessage( 503016 ); // Only the person who decoded this map may actually dig up the treasure.
         }

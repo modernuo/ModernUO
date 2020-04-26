@@ -11,8 +11,7 @@ namespace Server.Items
   [DispellableField]
   public class Moongate : Item
   {
-
-    [Constructible]
+[Constructible]
     public Moongate(bool dispellable = true) : this(Point3D.Zero, null, dispellable)
     {
     }

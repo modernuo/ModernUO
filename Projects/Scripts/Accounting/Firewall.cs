@@ -30,7 +30,7 @@ namespace Server
             object toAdd;
 
             IPAddress addr;
-            if ( IPAddress.TryParse( line, out addr ) )
+            if (IPAddress.TryParse( line, out addr ))
               toAdd = addr;
             else
               toAdd = line;
@@ -147,15 +147,15 @@ namespace Server
 
       for ( int i = 0; !contains && i < m_Blocked.Count; ++i )
       {
-        if ( m_Blocked[i] is IPAddress )
+        if (m_Blocked[i] is IPAddress)
           contains = ip.Equals( m_Blocked[i] );
-                else if ( m_Blocked[i] is String )
+                else if (m_Blocked[i] is String)
                 {
                     string s = (string)m_Blocked[i];
 
                     contains = Utility.IPMatchCIDR( s, ip );
 
-                    if ( !contains )
+                    if (!contains)
                         contains = Utility.IPMatch( s, ip );
                 }
       }

@@ -149,7 +149,7 @@ namespace Server.Mobiles
         c.DropItem(new GrizzledBones());
 
         // TODO: Parrots
-        /*if ( Utility.RandomDouble() < 0.6 )
+        /*if (Utility.RandomDouble() < 0.6)
           c.DropItem( new ParrotItem() ); */
 
         if (Utility.RandomDouble() < 0.05)
@@ -159,7 +159,7 @@ namespace Server.Mobiles
           c.DropItem(new CrimsonCincture());
 
         // TODO: Armor sets
-        /*if ( Utility.RandomDouble() < 0.05 )
+        /*if (Utility.RandomDouble() < 0.05)
         {
           switch ( Utility.Random(5) )
           {

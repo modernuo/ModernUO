@@ -62,10 +62,10 @@ namespace Server.Mobiles
     {
       base.OnDeath( c );
 
-      if ( Utility.RandomDouble() < 0.05 )
+      if (Utility.RandomDouble() < 0.05)
         c.DropItem( new ParrotItem() );
 
-      if ( Utility.RandomDouble() < 0.15 )
+      if (Utility.RandomDouble() < 0.15)
         c.DropItem( new DisintegratingThesisNotes() );
     }
     */

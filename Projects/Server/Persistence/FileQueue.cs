@@ -108,12 +108,12 @@ namespace Server
       }
 
       /*lock ( syncRoot ) {
-        if ( pending.Count > 0 ) {
+        if (pending.Count > 0 ) {
           idle.Reset();
         }
 
         for ( int slot = 0; slot < active.Length && pending.Count > 0; ++slot ) {
-          if ( active[slot] == null ) {
+          if (active[slot] == null ) {
             Page page = pending.Dequeue();
 
             active[slot] = new Chunk( this, slot, page.buffer, 0, page.length );
@@ -134,7 +134,7 @@ namespace Server
 
       lock (syncRoot)
       {
-        if (active[slot] != chunk) throw new ArgumentException();
+        if (active[slot] != chunk) throw new ArgumentException("active slot is not the current chunk");
 
         ArrayPool<byte>.Shared.Return(chunk.Buffer);
 
@@ -163,7 +163,7 @@ namespace Server
 
       if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
       if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
-      if (buffer.Length - offset < size) throw new ArgumentException();
+      if (buffer.Length - offset < size) throw new ArgumentOutOfRangeException(nameof(offset));
 
       Position += size;
 
@@ -194,29 +194,28 @@ namespace Server
 
     public sealed class Chunk
     {
-      private int offset;
-      private readonly FileQueue owner;
-      private readonly int slot;
+      private readonly FileQueue m_Owner;
+      private readonly int m_Slot;
 
       public Chunk(FileQueue owner, int slot, byte[] buffer, int offset, int size)
       {
-        this.owner = owner;
-        this.slot = slot;
+        m_Owner = owner;
+        m_Slot = slot;
 
         Buffer = buffer;
-        this.offset = offset;
+        Offset = offset;
         Size = size;
       }
 
       public byte[] Buffer { get; }
 
-      public int Offset => 0;
+      public int Offset { get; }
 
       public int Size { get; }
 
       public void Commit()
       {
-        owner.Commit(this, slot);
+        m_Owner.Commit(this, m_Slot);
       }
     }
 

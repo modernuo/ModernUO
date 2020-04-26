@@ -117,7 +117,7 @@ namespace Server.Engines.Craft
     public override void PlayCraftEffect(Mobile from)
     {
       // no animation, instant sound
-      // if ( from.Body.Type == BodyType.Human && !from.Mounted )
+      // if (from.Body.Type == BodyType.Human && !from.Mounted)
       // from.Animate( 9, 5, 1, true, false, 0 );
       // new InternalTimer( from ).Start();
 

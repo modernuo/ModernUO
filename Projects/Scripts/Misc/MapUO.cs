@@ -25,7 +25,7 @@ namespace Server.Misc
       {
         Packets.PartyTrack packet = new Packets.PartyTrack(from, party);
 
-        if (packet.UnderlyingStream.Length > 8)
+        if (packet.Stream.Length > 8)
           state.Send(packet);
       }
     }
@@ -40,7 +40,7 @@ namespace Server.Misc
 
         Packets.GuildTrack packet = new Packets.GuildTrack(from, guild, locations);
 
-        if (packet.UnderlyingStream.Length > (locations ? 9 : 5))
+        if (packet.Stream.Length > (locations ? 9 : 5))
           state.Send(packet);
       }
       else
@@ -74,13 +74,13 @@ namespace Server.Misc
             if (Utility.InUpdateRange(from, mob) && from.CanSee(mob))
               continue;
 
-            m_Stream.Write(mob.Serial);
-            m_Stream.Write((short)mob.X);
-            m_Stream.Write((short)mob.Y);
-            m_Stream.Write((byte)(mob.Map?.MapID ?? 0));
+            Stream.Write(mob.Serial);
+            Stream.Write((short)mob.X);
+            Stream.Write((short)mob.Y);
+            Stream.Write((byte)(mob.Map?.MapID ?? 0));
           }
 
-          m_Stream.Write(0);
+          Stream.Write(0);
         }
       }
 
@@ -88,14 +88,14 @@ namespace Server.Misc
       {
         public GuildTrack() : base(0x02, 5)
         {
-          m_Stream.Write((byte)0);
-          m_Stream.Write(0);
+          Stream.Write((byte)0);
+          Stream.Write(0);
         }
 
         public GuildTrack(Mobile from, Guild guild, bool locations) : base(0x02,
           (guild.Members.Count - 1) * (locations ? 10 : 4) + 5)
         {
-          m_Stream.Write((byte)(locations ? 1 : 0));
+          Stream.Write((byte)(locations ? 1 : 0));
 
           for (int i = 0; i < guild.Members.Count; ++i)
           {
@@ -107,22 +107,22 @@ namespace Server.Misc
             if (locations && Utility.InUpdateRange(from, mob) && from.CanSee(mob))
               continue;
 
-            m_Stream.Write(mob.Serial);
+            Stream.Write(mob.Serial);
 
             if (locations)
             {
-              m_Stream.Write((short)mob.X);
-              m_Stream.Write((short)mob.Y);
-              m_Stream.Write((byte)(mob.Map?.MapID ?? 0));
+              Stream.Write((short)mob.X);
+              Stream.Write((short)mob.Y);
+              Stream.Write((byte)(mob.Map?.MapID ?? 0));
 
               if (Settings.GuildHitsPercent && mob.Alive)
-                m_Stream.Write((byte)(mob.Hits / Math.Max(mob.HitsMax, 1.0) * 100));
+                Stream.Write((byte)(mob.Hits / Math.Max(mob.HitsMax, 1.0) * 100));
               else
-                m_Stream.Write((byte)0);
+                Stream.Write((byte)0);
             }
           }
 
-          m_Stream.Write(0);
+          Stream.Write(0);
         }
       }
     }

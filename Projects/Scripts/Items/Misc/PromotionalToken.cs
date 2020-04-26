@@ -116,8 +116,7 @@ namespace Server.Items
 
   public class SoulstoneFragmentToken : PromotionalToken
   {
-
-    public override Item CreateItemFor(Mobile from)
+public override Item CreateItemFor(Mobile from)
     {
       if (from?.Account != null)
         return new SoulstoneFragment(from.Account.ToString());

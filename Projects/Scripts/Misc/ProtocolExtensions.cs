@@ -58,7 +58,7 @@ namespace Server.Misc
     {
       EnsureCapacity(4 + capacity);
 
-      m_Stream.Write((byte)packetID);
+      Stream.Write((byte)packetID);
     }
   }
 }

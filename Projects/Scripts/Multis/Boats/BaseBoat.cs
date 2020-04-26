@@ -1205,7 +1205,7 @@ namespace Server.Multis
 
           // map.GetAverageZ( tx, ty, ref landZ, ref landAvg, ref landTop );
 
-          // if ( !landTile.Ignored && top > landZ && landTop > z )
+          // if (!landTile.Ignored && top > landZ && landTop > z)
           // return false;
 
           for (int i = 0; i < tiles.Length; ++i)
@@ -1744,7 +1744,7 @@ namespace Server.Multis
     /*
     protected override Packet GetWorldPacketFor( NetState state )
     {
-      if ( NewBoatMovement && state.HighSeas )
+      if (NewBoatMovement && state.HighSeas)
         return new DisplayBoatHS( state.Mobile, this );
       else
         return base.GetWorldPacketFor( state );
@@ -1759,14 +1759,14 @@ namespace Server.Multis
       {
         EnsureCapacity(3 + 15 + ents.Count * 10);
 
-        m_Stream.Write(boat.Serial);
-        m_Stream.Write((byte)speed);
-        m_Stream.Write((byte)d);
-        m_Stream.Write((byte)boat.Facing);
-        m_Stream.Write((short)(boat.X + xOffset));
-        m_Stream.Write((short)(boat.Y + yOffset));
-        m_Stream.Write((short)boat.Z);
-        m_Stream.Write((short)0); // count placeholder
+        Stream.Write(boat.Serial);
+        Stream.Write((byte)speed);
+        Stream.Write((byte)d);
+        Stream.Write((byte)boat.Facing);
+        Stream.Write((short)(boat.X + xOffset));
+        Stream.Write((short)(boat.Y + yOffset));
+        Stream.Write((short)boat.Z);
+        Stream.Write((short)0); // count placeholder
 
         int count = 0;
 
@@ -1775,15 +1775,15 @@ namespace Server.Multis
           if (!beholder.CanSee(ent))
             continue;
 
-          m_Stream.Write(ent.Serial);
-          m_Stream.Write((short)(ent.X + xOffset));
-          m_Stream.Write((short)(ent.Y + yOffset));
-          m_Stream.Write((short)ent.Z);
+          Stream.Write(ent.Serial);
+          Stream.Write((short)(ent.X + xOffset));
+          Stream.Write((short)(ent.Y + yOffset));
+          Stream.Write((short)ent.Z);
           ++count;
         }
 
-        m_Stream.Seek(16, SeekOrigin.Begin);
-        m_Stream.Write((short)count);
+        Stream.Seek(16, SeekOrigin.Begin);
+        Stream.Write((short)count);
       }
     }
 
@@ -1803,7 +1803,7 @@ namespace Server.Multis
 
         EnsureCapacity(3 + 2 + ents.Count * 26);
 
-        m_Stream.Write((short)0); // count placeholder
+        Stream.Write((short)0); // count placeholder
 
         int count = 0;
 
@@ -1813,71 +1813,71 @@ namespace Server.Multis
             continue;
 
           // Embedded WorldItemHS packets
-          m_Stream.Write((byte)0xF3);
-          m_Stream.Write((short)0x1);
+          Stream.Write((byte)0xF3);
+          Stream.Write((short)0x1);
 
           if (ent is BaseMulti bm)
           {
-            m_Stream.Write((byte)0x02);
-            m_Stream.Write(bm.Serial);
+            Stream.Write((byte)0x02);
+            Stream.Write(bm.Serial);
             // TODO: Mask no longer needed, merge with Item case?
-            m_Stream.Write((ushort)(bm.ItemID & 0x3FFF));
-            m_Stream.Write((byte)0);
+            Stream.Write((ushort)(bm.ItemID & 0x3FFF));
+            Stream.Write((byte)0);
 
-            m_Stream.Write((short)bm.Amount);
-            m_Stream.Write((short)bm.Amount);
+            Stream.Write((short)bm.Amount);
+            Stream.Write((short)bm.Amount);
 
-            m_Stream.Write((short)(bm.X & 0x7FFF));
-            m_Stream.Write((short)(bm.Y & 0x3FFF));
-            m_Stream.Write((sbyte)bm.Z);
+            Stream.Write((short)(bm.X & 0x7FFF));
+            Stream.Write((short)(bm.Y & 0x3FFF));
+            Stream.Write((sbyte)bm.Z);
 
-            m_Stream.Write((byte)bm.Light);
-            m_Stream.Write((short)bm.Hue);
-            m_Stream.Write((byte)bm.GetPacketFlags());
+            Stream.Write((byte)bm.Light);
+            Stream.Write((short)bm.Hue);
+            Stream.Write((byte)bm.GetPacketFlags());
           }
           else if (ent is Mobile m)
           {
-            m_Stream.Write((byte)0x01);
-            m_Stream.Write(m.Serial);
-            m_Stream.Write((short)m.Body);
-            m_Stream.Write((byte)0);
+            Stream.Write((byte)0x01);
+            Stream.Write(m.Serial);
+            Stream.Write((short)m.Body);
+            Stream.Write((byte)0);
 
-            m_Stream.Write((short)1);
-            m_Stream.Write((short)1);
+            Stream.Write((short)1);
+            Stream.Write((short)1);
 
-            m_Stream.Write((short)(m.X & 0x7FFF));
-            m_Stream.Write((short)(m.Y & 0x3FFF));
-            m_Stream.Write((sbyte)m.Z);
+            Stream.Write((short)(m.X & 0x7FFF));
+            Stream.Write((short)(m.Y & 0x3FFF));
+            Stream.Write((sbyte)m.Z);
 
-            m_Stream.Write((byte)m.Direction);
-            m_Stream.Write((short)m.Hue);
-            m_Stream.Write((byte)m.GetPacketFlags());
+            Stream.Write((byte)m.Direction);
+            Stream.Write((short)m.Hue);
+            Stream.Write((byte)m.GetPacketFlags());
           }
           else if (ent is Item item)
           {
-            m_Stream.Write((byte)0x00);
-            m_Stream.Write(item.Serial);
-            m_Stream.Write((ushort)(item.ItemID & 0xFFFF));
-            m_Stream.Write((byte)0);
+            Stream.Write((byte)0x00);
+            Stream.Write(item.Serial);
+            Stream.Write((ushort)(item.ItemID & 0xFFFF));
+            Stream.Write((byte)0);
 
-            m_Stream.Write((short)item.Amount);
-            m_Stream.Write((short)item.Amount);
+            Stream.Write((short)item.Amount);
+            Stream.Write((short)item.Amount);
 
-            m_Stream.Write((short)(item.X & 0x7FFF));
-            m_Stream.Write((short)(item.Y & 0x3FFF));
-            m_Stream.Write((sbyte)item.Z);
+            Stream.Write((short)(item.X & 0x7FFF));
+            Stream.Write((short)(item.Y & 0x3FFF));
+            Stream.Write((sbyte)item.Z);
 
-            m_Stream.Write((byte)item.Light);
-            m_Stream.Write((short)item.Hue);
-            m_Stream.Write((byte)item.GetPacketFlags());
+            Stream.Write((byte)item.Light);
+            Stream.Write((short)item.Hue);
+            Stream.Write((byte)item.GetPacketFlags());
           }
 
-          m_Stream.Write((short)0x00);
+          Stream.Write((short)0x00);
           ++count;
         }
 
-        m_Stream.Seek(3, SeekOrigin.Begin);
-        m_Stream.Write((short)count);
+        Stream.Seek(3, SeekOrigin.Begin);
+        Stream.Write((short)count);
       }
     }
   }

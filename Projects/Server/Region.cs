@@ -178,8 +178,7 @@ namespace Server
       var area = new List<Rectangle3D>();
       foreach (XmlElement xmlRect in xml.SelectNodes("rect"))
       {
-        var rect = new Rectangle3D();
-        if (ReadRectangle3D(xmlRect, minZ, maxZ, ref rect))
+        if (ReadRectangle3D(xmlRect, minZ, maxZ, out var rect))
           area.Add(rect);
       }
 
@@ -1016,13 +1015,15 @@ namespace Server
       return false;
     }
 
-    public static bool ReadRectangle3D(XmlElement xml, int defaultMinZ, int defaultMaxZ, ref Rectangle3D value) =>
-      ReadRectangle3D(xml, defaultMinZ, defaultMaxZ, ref value, true);
+    public static bool ReadRectangle3D(XmlElement xml, int defaultMinZ, int defaultMaxZ, out Rectangle3D value) =>
+      ReadRectangle3D(xml, defaultMinZ, defaultMaxZ, out value, true);
 
-    public static bool ReadRectangle3D(XmlElement xml, int defaultMinZ, int defaultMaxZ, ref Rectangle3D value,
+    public static bool ReadRectangle3D(XmlElement xml, int defaultMinZ, int defaultMaxZ, out Rectangle3D value,
       bool mandatory)
     {
       int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+      var z1 = defaultMinZ;
+      var z2 = defaultMaxZ;
 
       if (xml.HasAttribute("x"))
       {
@@ -1036,6 +1037,7 @@ namespace Server
         }
         else
         {
+          value = new Rectangle3D(new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
           return false;
         }
       }
@@ -1045,11 +1047,11 @@ namespace Server
             | !ReadInt32(xml, "y1", ref y1, mandatory)
             | !ReadInt32(xml, "x2", ref x2, mandatory)
             | !ReadInt32(xml, "y2", ref y2, mandatory))
+        {
+          value = new Rectangle3D(new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
           return false;
+        }
       }
-
-      var z1 = defaultMinZ;
-      var z2 = defaultMaxZ;
 
       ReadInt32(xml, "zmin", ref z1, false);
       ReadInt32(xml, "zmax", ref z2, false);

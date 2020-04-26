@@ -70,7 +70,7 @@ namespace Server.Engines.Craft
       Mobile m = e.Mobile;
       m.SendMessage("Target a player to have them forget all of the recipes they've learned.");
 
-      m.BeginTarget(-1, false, TargetFlags.None, delegate (Mobile from, object targeted)
+      m.BeginTarget(-1, false, TargetFlags.None, delegate(Mobile from, object targeted)
       {
         if (targeted is PlayerMobile mobile)
         {

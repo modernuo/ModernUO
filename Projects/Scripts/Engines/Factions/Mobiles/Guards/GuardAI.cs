@@ -342,11 +342,11 @@ namespace Server.Factions
 
     public void RunTo(Mobile m)
     {
-      /*if ( m.Paralyzed || m.Frozen )
+      /*if (m.Paralyzed || m.Frozen)
       {
-        if ( m_Mobile.InRange( m, 1 ) )
+        if (m_Mobile.InRange( m, 1 ))
           RunFrom( m );
-        else if ( !m_Mobile.InRange( m, m_Mobile.RangeFight > 2 ? m_Mobile.RangeFight : 2 ) && !MoveTo( m, true, 1 ) )
+        else if (!m_Mobile.InRange( m, m_Mobile.RangeFight > 2 ? m_Mobile.RangeFight : 2 ) && !MoveTo( m, true, 1 ))
           OnFailedMove();
       }
       else
@@ -371,9 +371,9 @@ namespace Server.Factions
 
     public void OnFailedMove()
     {
-      /*if ( !m_Mobile.DisallowAllMoves && 20 > Utility.Random( 100 ) && IsAllowed( GuardAI.Magic ) )
+      /*if (!m_Mobile.DisallowAllMoves && 20 > Utility.Random( 100 ) && IsAllowed( GuardAI.Magic ))
       {
-        if ( m_Mobile.Target != null )
+        if (m_Mobile.Target != null)
           m_Mobile.Target.Cancel( m_Mobile, TargetCancelType.Canceled );
 
         new TeleportSpell( m_Mobile, null ).Cast();

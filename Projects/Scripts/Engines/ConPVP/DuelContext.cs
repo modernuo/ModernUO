@@ -1764,7 +1764,7 @@ namespace Server.Engines.ConPVP
 
         BounceInfo bi = inHand.GetBounce();
 
-        if (bi.m_Parent == mob)
+        if (bi.Parent == mob)
           pack.DropItem(inHand);
         else
           inHand.Bounce(mob);
