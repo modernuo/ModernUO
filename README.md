@@ -25,7 +25,7 @@ Ultima Online Server Emulator for the modern era!
 - Windows `./Tools/publish-windows.sh` or `Tools/publish-windows.cmd`
 
 ## Deploying / Running Server
-- Follow the build instructions
+- Follow the [publish](https://github.com/modernuo/ModernUO#publishing-a-build) instructions
 - Copy `Distribution` directory to production server
 
 #### Requirements
@@ -33,7 +33,7 @@ Ultima Online Server Emulator for the modern era!
 - Zlib
   - Linux: `apt get zlib` or equiv for that distribution
   - OSX: `brew install zlib`
-  - Windows is included during publishing
+  - Windows: Included during publishing
 - Optional: compile and install [Intel DRNG](https://github.com/modernuo/libdrng)
 
 #### Windows
