@@ -62,11 +62,11 @@
     <CodeAnalysisRuleSet>$(SolutionDir)\Rules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Assemblies\libdrng.dll" Condition="'$(OS)' == 'Windows_NT'">
+    <Content Include="Assemblies\libdrng.dll" Condition="'$(RuntimeIdentifier)' == 'win-x64'">
       <Link>libdrng.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assemblies\zlib.dll" Condition="'$(OS)' == 'Windows_NT'">
+    <Content Include="Assemblies\zlib.dll" Condition="'$(RuntimeIdentifier)' == 'win-x64'">
       <Link>zlib.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -37,6 +37,8 @@ namespace Server.Network
     // Make this thread safe
     public static List<NetState> Instances { get; } = new List<NetState>();
 
+    private static IPAddress[] m_ListeningAddresses;
+
     public static IWebHostBuilder CreateWebHostBuilder(string[] args = null) =>
       WebHost.CreateDefaultBuilder(args)
         .UseSetting(WebHostDefaults.SuppressStatusMessagesKey, "True")
@@ -46,6 +48,7 @@ namespace Server.Network
           foreach (var ipep in Listeners)
           {
             options.Listen(ipep, builder => { builder.UseConnectionHandler<ServerConnectionHandler>(); });
+            m_ListeningAddresses = GetListeningAddresses(ipep);
             DisplayListener(ipep);
           }
 
@@ -54,23 +57,30 @@ namespace Server.Network
         .UseLibuv()
         .UseStartup<ServerStartup>();
 
+    public static IPAddress[] GetListeningAddresses(IPEndPoint ipep)
+    {
+      if (m_ListeningAddresses != null)
+        return m_ListeningAddresses;
+
+      var list = new List<IPAddress>();
+      foreach (var adapter in NetworkInterface.GetAllNetworkInterfaces())
+      {
+        var properties = adapter.GetIPProperties();
+        foreach (var unicast in properties.UnicastAddresses)
+          if (ipep.AddressFamily == unicast.Address.AddressFamily)
+            list.Add(unicast.Address);
+      }
+
+      return list.ToArray();
+    }
+
     private static void DisplayListener(IPEndPoint ipep)
     {
       if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
-      {
-        var adapters = NetworkInterface.GetAllNetworkInterfaces();
-        foreach (var adapter in adapters)
-        {
-          var properties = adapter.GetIPProperties();
-          foreach (var unicast in properties.UnicastAddresses)
-            if (ipep.AddressFamily == unicast.Address.AddressFamily)
-              Console.WriteLine("Listening: {0}:{1}", unicast.Address, ipep.Port);
-        }
-      }
+        foreach (var ip in m_ListeningAddresses)
+          Console.WriteLine("Listening: {0}:{1}", ip, ipep.Port);
       else
-      {
         Console.WriteLine("Listening: {0}:{1}", ipep.Address, ipep.Port);
-      }
     }
   }
 }

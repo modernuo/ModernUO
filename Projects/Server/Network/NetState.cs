@@ -423,6 +423,12 @@ namespace Server.Network
 
       ConnectedOn = DateTime.UtcNow;
 
+      connection.ConnectionClosed.Register(() =>
+      {
+        TcpServer.Instances.Remove(this);
+        Dispose();
+      });
+
       CreatedCallback?.Invoke(this);
     }
 
@@ -482,6 +488,41 @@ namespace Server.Network
       }
     }
 
+    public async Task ProcessIncoming(IMessagePumpService messagePumpService)
+    {
+      var inPipe = Connection.Transport.Input;
+
+      while (true)
+      {
+        if (AsyncState.Paused)
+          continue;
+
+        try
+        {
+          var result = await inPipe.ReadAsync();
+          if (result.IsCanceled || result.IsCompleted)
+            return;
+
+          var seq = result.Buffer;
+
+          if (seq.IsEmpty)
+            break;
+
+          var pos = PacketHandlers.ProcessPacket(messagePumpService, this, seq);
+
+          if (pos <= 0)
+            break;
+
+          inPipe.AdvanceTo(seq.Slice(0, pos).End);
+        }
+        catch
+        {
+          // ignored
+          break;
+        }
+      }
+    }
+
     public bool CheckEncrypted(int packetID)
     {
       if (!SentFirstPacket && packetID != 0xF0 && packetID != 0xF1 && packetID != 0xCF && packetID != 0x80 &&
@@ -533,6 +574,8 @@ namespace Server.Network
 
       try
       {
+        Connection.Transport.Input.Complete();
+        Connection.Transport.Output.Complete();
         Connection.Abort();
         Task.Run(Connection.DisposeAsync).Wait();
       }
