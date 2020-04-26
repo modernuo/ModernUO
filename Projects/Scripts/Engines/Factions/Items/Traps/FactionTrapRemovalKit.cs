@@ -14,7 +14,7 @@ namespace Server.Factions
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Charges{ get; set; }
+    public int Charges { get; set; }
 
     public override int LabelNumber => 1041508; // a faction trap removal kit
 
@@ -56,15 +56,15 @@ namespace Server.Factions
       switch (version)
       {
         case 1:
-        {
-          Charges = reader.ReadEncodedInt();
-          break;
-        }
+          {
+            Charges = reader.ReadEncodedInt();
+            break;
+          }
         case 0:
-        {
-          Charges = 25;
-          break;
-        }
+          {
+            Charges = 25;
+            break;
+          }
       }
     }
   }

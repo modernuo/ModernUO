@@ -10,7 +10,6 @@ namespace Server.Items
       Amount = amount;
     }
 
-
     public Rope(Serial serial) : base(serial)
     {
     }
@@ -39,7 +38,6 @@ namespace Server.Items
       Weight = 5.0;
       Amount = amount;
     }
-
 
     public IronWire(Serial serial) : base(serial)
     {
@@ -73,7 +71,6 @@ namespace Server.Items
       Amount = amount;
     }
 
-
     public SilverWire(Serial serial) : base(serial)
     {
     }
@@ -105,7 +102,6 @@ namespace Server.Items
       Weight = 5.0;
       Amount = amount;
     }
-
 
     public GoldWire(Serial serial) : base(serial)
     {
@@ -139,7 +135,6 @@ namespace Server.Items
       Amount = amount;
     }
 
-
     public CopperWire(Serial serial) : base(serial)
     {
     }
@@ -172,7 +167,6 @@ namespace Server.Items
       Amount = amount;
     }
 
-
     public WhiteDriedFlowers(Serial serial) : base(serial)
     {
     }
@@ -201,7 +195,6 @@ namespace Server.Items
       Weight = 1.0;
       Amount = amount;
     }
-
 
     public GreenDriedFlowers(Serial serial) : base(serial)
     {
@@ -232,7 +225,6 @@ namespace Server.Items
       Amount = amount;
     }
 
-
     public DriedOnions(Serial serial) : base(serial)
     {
     }
@@ -261,7 +253,6 @@ namespace Server.Items
       Weight = 1.0;
       Amount = amount;
     }
-
 
     public DriedHerbs(Serial serial) : base(serial)
     {

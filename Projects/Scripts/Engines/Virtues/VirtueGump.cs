@@ -8,9 +8,9 @@ namespace Server
 
   public class VirtueGump : Gump
   {
-    private static Dictionary<int, OnVirtueUsed> m_Callbacks = new Dictionary<int, OnVirtueUsed>();
+    private static readonly Dictionary<int, OnVirtueUsed> m_Callbacks = new Dictionary<int, OnVirtueUsed>();
 
-    private static int[] m_Table = {
+    private static readonly int[] m_Table = {
       0x0481, 0x0963, 0x0965,
       0x060A, 0x060F, 0x002A,
       0x08A4, 0x08A7, 0x0034,
@@ -21,7 +21,8 @@ namespace Server
       0x0543, 0x0547, 0x0061
     };
 
-    private Mobile m_Beholder, m_Beheld;
+    private readonly Mobile m_Beholder;
+    private readonly Mobile m_Beheld;
 
     public VirtueGump(Mobile beholder, Mobile beheld) : base(0, 0)
     {
@@ -83,7 +84,6 @@ namespace Server
         beholder.SendLocalizedMessage(1052066); // That virtue is not active yet.
     }
 
-
     private static void EventSink_VirtueMacroRequest(Mobile beholder, int virtue)
     {
       var virtueID = virtue switch
@@ -121,8 +121,7 @@ namespace Server
         return 2402;
 
       if (value >= 30000)
-        value = 20000; //Sanity
-
+        value = 20000; // Sanity
 
       int vl;
 
@@ -137,7 +136,6 @@ namespace Server
       else
         vl = 1;
 
-
       return m_Table[index * 3 + vl];
     }
 
@@ -149,7 +147,7 @@ namespace Server
 
     private class InternalEntry : GumpImage
     {
-      private static byte[] m_Class = StringToBuffer(" class=VirtueGumpItem");
+      private static readonly byte[] m_Class = StringToBuffer(" class=VirtueGumpItem");
 
       public InternalEntry(int x, int y, int gumpID, int hue) : base(x, y, gumpID, hue)
       {

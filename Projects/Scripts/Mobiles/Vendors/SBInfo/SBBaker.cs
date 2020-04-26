@@ -5,9 +5,9 @@ namespace Server.Mobiles
 {
   public class SBBaker : SBInfo
   {
-    public override IShopSellInfo SellInfo{ get; } = new InternalSellInfo();
+    public override IShopSellInfo SellInfo { get; } = new InternalSellInfo();
 
-    public override List<GenericBuyInfo> BuyInfo{ get; } = new InternalBuyInfo();
+    public override List<GenericBuyInfo> BuyInfo { get; } = new InternalBuyInfo();
 
     public class InternalBuyInfo : List<GenericBuyInfo>
     {
@@ -15,7 +15,7 @@ namespace Server.Mobiles
       {
         Add(new GenericBuyInfo(typeof(BreadLoaf), 6, 20, 0x103B, 0));
         Add(new GenericBuyInfo(typeof(BreadLoaf), 5, 20, 0x103C, 0));
-        Add(new GenericBuyInfo(typeof(ApplePie), 7, 20, 0x1041, 0)); //OSI just has Pie, not Apple/Fruit/Meat
+        Add(new GenericBuyInfo(typeof(ApplePie), 7, 20, 0x1041, 0)); // OSI just has Pie, not Apple/Fruit/Meat
         Add(new GenericBuyInfo(typeof(Cake), 13, 20, 0x9E9, 0));
         Add(new GenericBuyInfo(typeof(Muffins), 3, 20, 0x9EA, 0));
         Add(new GenericBuyInfo(typeof(SackFlour), 3, 20, 0x1039, 0));

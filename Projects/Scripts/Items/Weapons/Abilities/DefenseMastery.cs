@@ -9,7 +9,7 @@ namespace Server.Items
   /// </summary>
   public class DefenseMastery : WeaponAbility
   {
-    private static Dictionary<Mobile, DefenseMasteryInfo> m_Table = new Dictionary<Mobile, DefenseMasteryInfo>();
+    private static readonly Dictionary<Mobile, DefenseMasteryInfo> m_Table = new Dictionary<Mobile, DefenseMasteryInfo>();
 
     public override int BaseMana => 30;
 
@@ -80,9 +80,9 @@ namespace Server.Items
 
     private class DefenseMasteryInfo
     {
-      public int m_DamageMalus;
-      public Mobile m_From;
-      public ResistanceMod m_Mod;
+      public readonly int m_DamageMalus;
+      public readonly Mobile m_From;
+      public readonly ResistanceMod m_Mod;
       public Timer m_Timer;
 
       public DefenseMasteryInfo(Mobile from, int damageMalus, ResistanceMod mod)

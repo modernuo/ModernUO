@@ -8,11 +8,11 @@ namespace Server
   public class SpeedInfo
   {
     // Should we use the new method of speeds?
-    private static bool Enabled = true;
+    private static readonly bool Enabled = true;
 
     private static Dictionary<Type, SpeedInfo> m_Table;
 
-    private static SpeedInfo[] m_Speeds =
+    private static readonly SpeedInfo[] m_Speeds =
     {
       /* Slow */
       new SpeedInfo(0.3, 0.6, new[]
@@ -43,11 +43,7 @@ namespace Server
         typeof(DemonKnight), typeof(GiantBlackWidow), typeof(SummonedAirElemental),
         typeof(LesserHiryu), typeof(Hiryu), typeof(LadyOfTheSnow),
         typeof(RaiJu), typeof(Ronin), typeof(RuneBeetle),
-        typeof(Changeling),
-
-        #region ML named mobs - before Paragon speedboost
-
-        typeof(LadyJennifyr), typeof(LadyMarai), typeof(MasterJonath),
+        typeof(Changeling), typeof(LadyJennifyr), typeof(LadyMarai), typeof(MasterJonath),
         typeof(MasterMikael), typeof(MasterTheophilus), typeof(RedDeath),
         typeof(SirPatrick), typeof(Miasma), typeof(Rend),
         typeof(Grobu), typeof(Gnaw), typeof(Guile),
@@ -55,8 +51,6 @@ namespace Server
         typeof(LadySabrix), typeof(Malefic), typeof(Silk),
         typeof(Virulent)
         // TODO: Where to put Lurg, Putrefier, Swoop and Pyre? They seem slower.
-
-        #endregion
       }),
       /* Very Fast */
       new SpeedInfo(0.175, 0.350, new[]
@@ -155,11 +149,11 @@ namespace Server
       Types = types;
     }
 
-    public double ActiveSpeed{ get; set; }
+    public double ActiveSpeed { get; set; }
 
-    public double PassiveSpeed{ get; set; }
+    public double PassiveSpeed { get; set; }
 
-    public Type[] Types{ get; set; }
+    public Type[] Types { get; set; }
 
     public static bool Contains(object obj)
     {

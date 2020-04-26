@@ -31,18 +31,18 @@ namespace Server.Factions.AI
       switch (version)
       {
         case 0:
-        {
-          Faction = Faction.ReadReference(reader);
-          Type = (ReactionType)reader.ReadEncodedInt();
+          {
+            Faction = Faction.ReadReference(reader);
+            Type = (ReactionType)reader.ReadEncodedInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public Faction Faction{ get; }
+    public Faction Faction { get; }
 
-    public ReactionType Type{ get; set; }
+    public ReactionType Type { get; set; }
 
     public void Serialize(IGenericWriter writer)
     {
@@ -55,7 +55,7 @@ namespace Server.Factions.AI
 
   public class Orders
   {
-    private List<Reaction> m_Reactions;
+    private readonly List<Reaction> m_Reactions;
 
     public Orders(BaseFactionGuard guard)
     {
@@ -73,30 +73,30 @@ namespace Server.Factions.AI
       switch (version)
       {
         case 1:
-        {
-          Follow = reader.ReadMobile();
-          goto case 0;
-        }
+          {
+            Follow = reader.ReadMobile();
+            goto case 0;
+          }
         case 0:
-        {
-          int count = reader.ReadEncodedInt();
-          m_Reactions = new List<Reaction>(count);
+          {
+            int count = reader.ReadEncodedInt();
+            m_Reactions = new List<Reaction>(count);
 
-          for (int i = 0; i < count; ++i)
-            m_Reactions.Add(new Reaction(reader));
+            for (int i = 0; i < count; ++i)
+              m_Reactions.Add(new Reaction(reader));
 
-          Movement = (MovementType)reader.ReadEncodedInt();
+            Movement = (MovementType)reader.ReadEncodedInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public BaseFactionGuard Guard{ get; }
+    public BaseFactionGuard Guard { get; }
 
-    public MovementType Movement{ get; set; }
+    public MovementType Movement { get; set; }
 
-    public Mobile Follow{ get; set; }
+    public Mobile Follow { get; set; }
 
     public Reaction GetReaction(Faction faction)
     {

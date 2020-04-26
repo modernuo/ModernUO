@@ -40,7 +40,7 @@ namespace Server.Mobiles
 
       VirtualArmor = 50;
 
-      if (0.2 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.2)
         PackItem(new GargoylesPickaxe());
     }
 
@@ -65,7 +65,7 @@ namespace Server.Mobiles
 
     public override void OnDamagedBySpell(Mobile from)
     {
-      if (from?.Alive == true && 0.4 > Utility.RandomDouble())
+      if (from?.Alive == true && Utility.RandomDouble() < 0.4)
         ThrowHatchet(from);
     }
 
@@ -73,7 +73,7 @@ namespace Server.Mobiles
     {
       base.OnGotMeleeAttack(attacker);
 
-      if (attacker?.Alive == true && attacker.Weapon is BaseRanged && 0.4 > Utility.RandomDouble())
+      if (attacker?.Alive == true && attacker.Weapon is BaseRanged && Utility.RandomDouble() < 0.4)
         ThrowHatchet(attacker);
     }
 

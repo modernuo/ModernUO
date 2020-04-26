@@ -19,7 +19,7 @@ namespace Server.Items
     {
     }
 
-    public abstract int LitItemID{ get; }
+    public abstract int LitItemID { get; }
 
     public virtual int UnlitItemID => 0;
     public virtual int BurntOutItemID => 0;
@@ -43,10 +43,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool BurntOut{ get; set; }
+    public bool BurntOut { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Protected{ get; set; }
+    public bool Protected { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public TimeSpan Duration
@@ -76,7 +76,6 @@ namespace Server.Items
 
       if (BurntOut && BurntOutSound != 0)
         sound = BurntOutSound;
-
 
       if (sound != 0)
       {
@@ -182,23 +181,23 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          BurntOut = reader.ReadBool();
-          m_Burning = reader.ReadBool();
-          m_Duration = reader.ReadTimeSpan();
-          Protected = reader.ReadBool();
+          {
+            BurntOut = reader.ReadBool();
+            m_Burning = reader.ReadBool();
+            m_Duration = reader.ReadTimeSpan();
+            Protected = reader.ReadBool();
 
-          if (m_Burning && m_Duration != TimeSpan.Zero)
-            DoTimer(reader.ReadDeltaTime() - DateTime.UtcNow);
+            if (m_Burning && m_Duration != TimeSpan.Zero)
+              DoTimer(reader.ReadDeltaTime() - DateTime.UtcNow);
 
-          break;
-        }
+            break;
+          }
       }
     }
 
     private class InternalTimer : Timer
     {
-      private BaseLight m_Light;
+      private readonly BaseLight m_Light;
 
       public InternalTimer(BaseLight light, TimeSpan delay) : base(delay)
       {

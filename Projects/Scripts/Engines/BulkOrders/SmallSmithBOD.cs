@@ -153,7 +153,6 @@ namespace Server.Engines.BulkOrders
 
       SmallBulkEntry entry = validEntries[Utility.Random(validEntries.Count)];
       return new SmallSmithBOD(entry, material, amountMax, reqExceptional);
-
     }
 
     public override void Serialize(IGenericWriter writer)

@@ -9,7 +9,7 @@ namespace Server.Mobiles
 {
   public class AnimalTrainer : BaseVendor
   {
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public AnimalTrainer() : base("the animal trainer")
@@ -195,12 +195,12 @@ namespace Server.Mobiles
       {
         SayTo(from, 502673); // I can not stable summoned creatures.
       }
-/*
-			else if ( pet.Allured )
-			{
-				SayTo( from, 1048053 ); // You can't stable that!
-			}
-*/
+      /*
+            else if (pet.Allured)
+            {
+              SayTo( from, 1048053 ); // You can't stable that!
+            }
+      */
       else if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack?.Items.Count > 0)
       {
         SayTo(from, 1042563); // You need to unload your pet.
@@ -368,8 +368,8 @@ namespace Server.Mobiles
 
     private class StableEntry : ContextMenuEntry
     {
-      private Mobile m_From;
-      private AnimalTrainer m_Trainer;
+      private readonly Mobile m_From;
+      private readonly AnimalTrainer m_Trainer;
 
       public StableEntry(AnimalTrainer trainer, Mobile from) : base(6126, 12)
       {
@@ -385,9 +385,9 @@ namespace Server.Mobiles
 
     private class ClaimListGump : Gump
     {
-      private Mobile m_From;
-      private List<BaseCreature> m_List;
-      private AnimalTrainer m_Trainer;
+      private readonly Mobile m_From;
+      private readonly List<BaseCreature> m_List;
+      private readonly AnimalTrainer m_Trainer;
 
       public ClaimListGump(AnimalTrainer trainer, Mobile from, List<BaseCreature> list) : base(50, 50)
       {
@@ -427,8 +427,8 @@ namespace Server.Mobiles
 
     private class ClaimAllEntry : ContextMenuEntry
     {
-      private Mobile m_From;
-      private AnimalTrainer m_Trainer;
+      private readonly Mobile m_From;
+      private readonly AnimalTrainer m_Trainer;
 
       public ClaimAllEntry(AnimalTrainer trainer, Mobile from) : base(6127, 12)
       {
@@ -444,7 +444,7 @@ namespace Server.Mobiles
 
     private class StableTarget : Target
     {
-      private AnimalTrainer m_Trainer;
+      private readonly AnimalTrainer m_Trainer;
 
       public StableTarget(AnimalTrainer trainer) : base(12, false, TargetFlags.None) => m_Trainer = trainer;
 

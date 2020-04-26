@@ -27,9 +27,9 @@ namespace Server
   {
     public ServerCrashedEventArgs(Exception e) => Exception = e;
 
-    public Exception Exception{ get; }
+    public Exception Exception { get; }
 
-    public bool Close{ get; set; }
+    public bool Close { get; set; }
   }
 
   public static partial class EventSink

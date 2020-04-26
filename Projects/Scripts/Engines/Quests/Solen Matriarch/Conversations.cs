@@ -142,7 +142,7 @@ namespace Server.Engines.Quests.Matriarch
 
   public class FullBackpackConversation : QuestConversation
   {
-    private bool m_Logged;
+    private readonly bool m_Logged;
 
     public FullBackpackConversation(bool logged) => m_Logged = logged;
 

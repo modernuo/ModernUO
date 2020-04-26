@@ -8,7 +8,7 @@ namespace Server.Gumps
 {
   public class CommentsGump : Gump
   {
-    private Account m_Acct;
+    private readonly Account m_Acct;
 
     public CommentsGump(Account acct) : base(30, 30)
     {
@@ -89,7 +89,7 @@ namespace Server.Gumps
 
     public class CommentPrompt : Prompt
     {
-      private Account m_Acct;
+      private readonly Account m_Acct;
 
       public CommentPrompt(Account acct) => m_Acct = acct;
 
@@ -104,7 +104,7 @@ namespace Server.Gumps
       {
         base.OnResponse(from, text);
         from.SendMessage("Comment added.");
-        //m_Acct.AddComment( from.Name, text );
+        // m_Acct.AddComment( from.Name, text );
         m_Acct.Comments.Add(new AccountComment(from.Name, text));
         from.CloseGump<CommentsGump>();
         from.SendGump(new CommentsGump(m_Acct));

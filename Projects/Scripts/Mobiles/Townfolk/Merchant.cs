@@ -54,9 +54,8 @@ namespace Server.Mobiles
       if (!Female)
         AddItem(new BodySash(lowHue));
 
-
-      //if ( !Female )
-      //AddItem( new Longsword() );
+      // if (!Female)
+      // AddItem( new Longsword() );
 
       Utility.AssignRandomHair(this);
 

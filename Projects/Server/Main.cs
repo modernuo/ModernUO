@@ -64,12 +64,12 @@ namespace Server
      * enabling the usage of DateTime.UtcNow instead.
      */
 
-    private static readonly bool _HighRes = Stopwatch.IsHighResolution;
+    private static readonly bool m_HighRes = Stopwatch.IsHighResolution;
 
-    private static readonly double _HighFrequency = 1000.0 / Stopwatch.Frequency;
-    private static readonly double _LowFrequency = 1000.0 / TimeSpan.TicksPerSecond;
+    private static readonly double m_HighFrequency = 1000.0 / Stopwatch.Frequency;
+    private static readonly double m_LowFrequency = 1000.0 / TimeSpan.TicksPerSecond;
 
-    private static bool _UseHRT;
+    private static bool m_UseHRT;
 
     public static readonly bool Is64Bit = Environment.Is64BitProcess;
     internal static ConsoleEventHandler m_ConsoleEventHandler;
@@ -111,22 +111,22 @@ namespace Server
       }
     }
 
-    public static bool Service{ get; private set; }
+    public static bool Service { get; private set; }
 
     public static bool Debug { get; private set; }
 
-    internal static bool HaltOnWarning{ get; private set; }
+    internal static bool HaltOnWarning { get; private set; }
 
-    public static Assembly Assembly{ get; set; }
+    public static Assembly Assembly { get; set; }
 
     public static Version Version => Assembly.GetName().Version;
-    public static Process Process{ get; private set; }
+    public static Process Process { get; private set; }
 
-    public static Thread Thread{ get; private set; }
+    public static Thread Thread { get; private set; }
 
-    public static MultiTextWriter MultiConsoleOut{ get; private set; }
+    public static MultiTextWriter MultiConsoleOut { get; private set; }
 
-    public static bool UsingHighResolutionTiming => _UseHRT && _HighRes && !Unix;
+    public static bool UsingHighResolutionTiming => m_UseHRT && m_HighRes && !Unix;
 
     public static long TickCount => (long)Ticks;
 
@@ -134,15 +134,15 @@ namespace Server
     {
       get
       {
-        if (_UseHRT && _HighRes && !Unix) return Stopwatch.GetTimestamp() * _HighFrequency;
+        if (m_UseHRT && m_HighRes && !Unix) return Stopwatch.GetTimestamp() * m_HighFrequency;
 
-        return DateTime.UtcNow.Ticks * _LowFrequency;
+        return DateTime.UtcNow.Ticks * m_LowFrequency;
       }
     }
 
-    public static bool MultiProcessor{ get; private set; }
+    public static bool MultiProcessor { get; private set; }
 
-    public static int ProcessorCount{ get; private set; }
+    public static int ProcessorCount { get; private set; }
 
     public static bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
     public static bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
@@ -173,7 +173,7 @@ namespace Server
       }
     }
 
-    public static bool Closing{ get; private set; }
+    public static bool Closing { get; private set; }
 
     public static float CyclesPerSecond => m_CyclesPerSecond[(m_CycleIndex - 1) % m_CyclesPerSecond.Length];
 
@@ -183,7 +183,7 @@ namespace Server
     {
       get
       {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
 
         if (Debug)
           Utility.Separate(sb, "-debug", " ");
@@ -200,30 +200,30 @@ namespace Server
         if (HaltOnWarning)
           Utility.Separate(sb, "-haltonwarning", " ");
 
-        if (_UseHRT)
+        if (m_UseHRT)
           Utility.Separate(sb, "-usehrt", " ");
 
         return sb.ToString();
       }
     }
 
-    public static int GlobalUpdateRange{ get; set; } = 18;
+    public static int GlobalUpdateRange { get; set; } = 18;
 
-    public static int GlobalMaxUpdateRange{ get; set; } = 24;
+    public static int GlobalMaxUpdateRange { get; set; } = 24;
 
     public static int ScriptItems => m_ItemCount;
     public static int ScriptMobiles => m_MobileCount;
 
     public static string FindDataFile(string path)
     {
-      Configuration config = Configuration.Instance;
+      var config = Configuration.Instance;
       if (config.DataDirectories.Count == 0)
         throw new InvalidOperationException(
           "Attempted to FindDataFile before DataDirectories list has been filled.");
 
       string fullPath = null;
 
-      foreach (string p in config.DataDirectories)
+      foreach (var p in config.DataDirectories)
       {
         fullPath = Path.Combine(p, path);
 
@@ -247,11 +247,11 @@ namespace Server
       {
         m_Crashed = true;
 
-        bool close = false;
+        var close = false;
 
         try
         {
-          ServerCrashedEventArgs args = new ServerCrashedEventArgs(e.ExceptionObject as Exception);
+          var args = new ServerCrashedEventArgs(e.ExceptionObject as Exception);
 
           EventSink.InvokeServerCrashed(args);
 
@@ -283,10 +283,10 @@ namespace Server
 
     private static bool OnConsoleEvent(ConsoleEventType type)
     {
-      if (World.Saving || Service && type == ConsoleEventType.CTRL_LOGOFF_EVENT)
+      if (World.Saving || (Service && type == ConsoleEventType.CTRL_LOGOFF_EVENT))
         return true;
 
-      Kill(); //Kill -> HandleClosed will handle waiting for the completion of flushing to disk
+      Kill(); // Kill -> HandleClosed will handle waiting for the completion of flushing to disk
 
       return true;
     }
@@ -335,7 +335,7 @@ namespace Server
       AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
       AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
-      foreach (string a in args)
+      foreach (var a in args)
         if (Insensitive.Equals(a, "-debug"))
           Debug = true;
         else if (Insensitive.Equals(a, "-service"))
@@ -347,7 +347,7 @@ namespace Server
         else if (Insensitive.Equals(a, "-haltonwarning"))
           HaltOnWarning = true;
         else if (Insensitive.Equals(a, "-usehrt"))
-          _UseHRT = true;
+          m_UseHRT = true;
 
       try
       {
@@ -378,32 +378,32 @@ namespace Server
       if (BaseDirectory.Length > 0)
         Directory.SetCurrentDirectory(BaseDirectory);
 
-
-      Version ver = Assembly.GetName().Version;
+      var ver = Assembly.GetName().Version;
 
       Console.ForegroundColor = ConsoleColor.Green;
       // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
-      Console.WriteLine("ModernUO - [https://github.com/kamronbatman/ModernUO] Version {0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build,
+      Console.WriteLine("ModernUO - [https://github.com/kamronbatman/ModernUO] Version {0}.{1}.{2}.{3}", ver.Major,
+        ver.Minor, ver.Build,
         ver.Revision);
       Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
       Console.ResetColor();
       Console.WriteLine();
 
-      Configuration config = Configuration.Instance;
-      foreach (string dir in config.DataDirectories.Where(dir => !Directory.Exists(dir)))
+      var config = Configuration.Instance;
+      foreach (var dir in config.DataDirectories.Where(dir => !Directory.Exists(dir)))
       {
         Console.ForegroundColor = ConsoleColor.DarkYellow;
         Console.WriteLine("Core: Config directory {0} does not exist.", dir);
         Console.ResetColor();
       }
 
-      Timer.TimerThread ttObj = new Timer.TimerThread();
+      var ttObj = new Timer.TimerThread();
       timerThread = new Thread(ttObj.TimerMain)
       {
         Name = "Timer Thread"
       };
 
-      string s = Arguments;
+      var s = Arguments;
 
       if (s.Length > 0)
         Console.WriteLine("Core: Running with arguments: {0}", s);
@@ -426,7 +426,7 @@ namespace Server
       if (GCSettings.IsServerGC)
         Console.WriteLine("Core: Server garbage collection mode enabled");
 
-      if (_UseHRT)
+      if (m_UseHRT)
         Console.WriteLine("Core: Requested high resolution timing ({0})",
           UsingHighResolutionTiming ? "Supported" : "Unsupported");
 
@@ -447,13 +447,13 @@ namespace Server
 
       timerThread.Start();
 
-      foreach (Map m in Map.AllMaps)
+      foreach (var m in Map.AllMaps)
         m.Tiles.Force();
 
       EventSink.InvokeServerStarted();
 
       // Start net socket server
-      var host = TcpServer.CreateWebHostBuilder(new string[0]).Build();
+      var host = TcpServer.CreateWebHostBuilder().Build();
       var life = host.Services.GetRequiredService<IHostApplicationLifetime>();
       life.ApplicationStopping.Register(() => { Kill(); });
 
@@ -464,7 +464,7 @@ namespace Server
     {
       try
       {
-        long last = TickCount;
+        var last = TickCount;
 
         const int sampleInterval = 100;
         const float ticksPerSecond = 1000.0f * sampleInterval;
@@ -477,8 +477,7 @@ namespace Server
 
           Task.WaitAll(
             Task.Run(Mobile.ProcessDeltaQueue),
-            Task.Run(Item.ProcessDeltaQueue)
-          );
+            Task.Run(Item.ProcessDeltaQueue));
 
           Timer.Slice();
           messagePumpService.DoWork();
@@ -490,7 +489,7 @@ namespace Server
           if (sample++ % sampleInterval != 0)
             continue;
 
-          long now = TickCount;
+          var now = TickCount;
           m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
           last = now;
         }
@@ -506,16 +505,16 @@ namespace Server
       m_ItemCount = 0;
       m_MobileCount = 0;
 
-      Assembly ca = Assembly.GetCallingAssembly();
+      var ca = Assembly.GetCallingAssembly();
 
       VerifySerialization(ca);
 
-      foreach (Assembly a in AssemblyHandler.Assemblies.Where(a => a != ca)) VerifySerialization(a);
+      foreach (var a in AssemblyHandler.Assemblies.Where(a => a != ca)) VerifySerialization(a);
     }
 
     private static void VerifyType(Type t)
     {
-      bool isItem = t.IsSubclassOf(typeof(Item));
+      var isItem = t.IsSubclassOf(typeof(Item));
 
       if (!isItem && !t.IsSubclassOf(typeof(Mobile))) return;
 
@@ -587,9 +586,7 @@ namespace Server
       internal static extern bool SetConsoleCtrlHandler(ConsoleEventHandler callback, bool add);
     }
 
-    #region Expansions
-
-    public static Expansion Expansion{ get; set; }
+    public static Expansion Expansion { get; set; }
 
     public static bool T2A => Expansion >= Expansion.T2A;
 
@@ -612,45 +609,43 @@ namespace Server
     public static bool TOL => Expansion >= Expansion.TOL;
 
     public static bool EJ => Expansion >= Expansion.EJ;
-
-    #endregion
   }
 
   public class FileLogger : TextWriter
   {
     public const string DateFormat = "[MMMM dd hh:mm:ss.f tt]: ";
 
-    private bool _NewLine;
+    private bool m_NewLine;
 
     public FileLogger(string file, bool append = false)
     {
       FileName = file;
 
       using (
-        StreamWriter writer =
+        var writer =
           new StreamWriter(
             new FileStream(FileName, append ? FileMode.Append : FileMode.Create, FileAccess.Write,
               FileShare.Read)))
       {
         writer.WriteLine(">>>Logging started on {0}.", DateTime.UtcNow.ToString("f"));
-        //f = Tuesday, April 10, 2001 3:51 PM
+        // f = Tuesday, April 10, 2001 3:51 PM
       }
 
-      _NewLine = true;
+      m_NewLine = true;
     }
 
-    public string FileName{ get; }
+    public string FileName { get; }
 
     public override Encoding Encoding => Encoding.Default;
 
     public override void Write(char ch)
     {
-      using StreamWriter writer =
+      using var writer =
         new StreamWriter(new FileStream(FileName, FileMode.Append, FileAccess.Write, FileShare.Read));
-      if (_NewLine)
+      if (m_NewLine)
       {
         writer.Write(DateTime.UtcNow.ToString(DateFormat));
-        _NewLine = false;
+        m_NewLine = false;
       }
 
       writer.Write(ch);
@@ -658,12 +653,12 @@ namespace Server
 
     public override void Write(string str)
     {
-      using StreamWriter writer =
+      using var writer =
         new StreamWriter(new FileStream(FileName, FileMode.Append, FileAccess.Write, FileShare.Read));
-      if (_NewLine)
+      if (m_NewLine)
       {
         writer.Write(DateTime.UtcNow.ToString(DateFormat));
-        _NewLine = false;
+        m_NewLine = false;
       }
 
       writer.Write(str);
@@ -671,46 +666,46 @@ namespace Server
 
     public override void WriteLine(string line)
     {
-      using StreamWriter writer =
+      using var writer =
         new StreamWriter(new FileStream(FileName, FileMode.Append, FileAccess.Write, FileShare.Read));
-      if (_NewLine) writer.Write(DateTime.UtcNow.ToString(DateFormat));
+      if (m_NewLine) writer.Write(DateTime.UtcNow.ToString(DateFormat));
 
       writer.WriteLine(line);
-      _NewLine = true;
+      m_NewLine = true;
     }
   }
 
   public class MultiTextWriter : TextWriter
   {
-    private readonly List<TextWriter> _Streams;
+    private readonly List<TextWriter> m_Streams;
 
     public MultiTextWriter(params TextWriter[] streams)
     {
-      _Streams = new List<TextWriter>(streams);
+      m_Streams = new List<TextWriter>(streams);
 
-      if (_Streams.Count < 0) throw new ArgumentException("You must specify at least one stream.");
+      if (m_Streams.Count < 0) throw new ArgumentException("You must specify at least one stream.");
     }
 
     public override Encoding Encoding => Encoding.Default;
 
     public void Add(TextWriter tw)
     {
-      _Streams.Add(tw);
+      m_Streams.Add(tw);
     }
 
     public void Remove(TextWriter tw)
     {
-      _Streams.Remove(tw);
+      m_Streams.Remove(tw);
     }
 
     public override void Write(char ch)
     {
-      foreach (TextWriter t in _Streams) t.Write(ch);
+      foreach (var t in m_Streams) t.Write(ch);
     }
 
     public override void WriteLine(string line)
     {
-      foreach (TextWriter t in _Streams) t.WriteLine(line);
+      foreach (var t in m_Streams) t.WriteLine(line);
     }
 
     public override void WriteLine(string line, params object[] args)

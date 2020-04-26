@@ -23,23 +23,22 @@ using System.IO;
 
 namespace Server
 {
-  public sealed class SequentialFileWriter : Stream
+  public sealed class SequentialFileWriterStream : Stream
   {
     private FileQueue fileQueue;
     private FileStream fileStream;
 
     private AsyncCallback writeCallback;
 
-    public SequentialFileWriter(string path)
+    public SequentialFileWriterStream(string path)
     {
-      if (path == null) throw new ArgumentNullException("path");
+      if (path == null) throw new ArgumentNullException(nameof(path));
 
       fileStream = FileOperations.OpenSequentialStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
 
       fileQueue = new FileQueue(
         Math.Max(1, FileOperations.Concurrency),
-        FileCallback
-      );
+        FileCallback);
     }
 
     public override long Position
@@ -74,7 +73,7 @@ namespace Server
 
     private void OnWrite(IAsyncResult asyncResult)
     {
-      FileQueue.Chunk chunk = asyncResult.AsyncState as FileQueue.Chunk;
+      var chunk = asyncResult.AsyncState as FileQueue.Chunk;
 
       fileStream.EndWrite(asyncResult);
 

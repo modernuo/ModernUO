@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
   public class Ferret : BaseCreature
   {
-    private static string[] m_Vocabulary =
+    private static readonly string[] m_Vocabulary =
     {
       "dook",
       "dook dook",
@@ -77,11 +77,11 @@ namespace Server.Mobiles
         Say(m_Vocabulary[Utility.Random(m_Vocabulary.Length)]);
 
         if (to != null && Utility.RandomBool())
-          Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(5, 8)), delegate { to.Talk(); });
+          Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(5, 8)), to.Talk);
 
         m_CanTalk = false;
 
-        Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(20, 30)), delegate { m_CanTalk = true; });
+        Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(20, 30)), () => { m_CanTalk = true; });
       }
     }
 

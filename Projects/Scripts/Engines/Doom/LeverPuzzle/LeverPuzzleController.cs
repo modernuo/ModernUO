@@ -5,11 +5,6 @@ using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
 
-/*
-	this is From me to you, Under no terms, Conditions...   K?  to apply you
-	just simply Unpatch/delete, Stick these in, Same location.. Restart
-	*/
-
 namespace Server.Engines.Doom
 {
   public class LeverPuzzleController : Item
@@ -96,12 +91,12 @@ namespace Server.Engines.Doom
 
     /* SOUNDS */
 
-    private static int[] fs = { 0x144, 0x154 };
-    private static int[] ms = { 0x144, 0x14B };
-    private static int[] fs2 = { 0x13F, 0x154 };
-    private static int[] ms2 = { 0x13F, 0x14B };
-    private static int[] cs1 = { 0x244 };
-    private static int[] exp = { 0x307 };
+    private static readonly int[] fs = { 0x144, 0x154 };
+    private static readonly int[] ms = { 0x144, 0x14B };
+    private static readonly int[] fs2 = { 0x13F, 0x154 };
+    private static readonly int[] ms2 = { 0x13F, 0x14B };
+    private static readonly int[] cs1 = { 0x244 };
+    private static readonly int[] exp = { 0x307 };
     private Timer l_Timer;
     private LampRoomBox m_Box;
     private Region m_LampRoom;
@@ -151,15 +146,15 @@ namespace Server.Engines.Doom
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public ushort MyKey{ get; set; }
+    public ushort MyKey { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public ushort TheirKey{ get; set; }
+    public ushort TheirKey { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Enabled{ get; set; }
+    public bool Enabled { get; set; }
 
-    public Mobile Successful{ get; private set; }
+    public Mobile Successful { get; private set; }
 
     public bool CircleComplete
     {
@@ -196,12 +191,12 @@ namespace Server.Engines.Doom
         e.Mobile.SendMessage("Lamp room puzzle successfully generated.");
     }
 
-    public static Item AddLeverPuzzlePart(int[] Loc, Item newitem)
+    public static Item AddLeverPuzzlePart(int[] loc, Item newitem)
     {
       if (newitem?.Deleted != false)
         installed = false;
       else
-        newitem.MoveToWorld(new Point3D(Loc[0], Loc[1], Loc[2]), Map.Malas);
+        newitem.MoveToWorld(new Point3D(loc[0], loc[1], loc[2]), Map.Malas);
 
       return newitem;
     }
@@ -369,8 +364,8 @@ namespace Server.Engines.Doom
 
     private static bool IsValidDamagable(Mobile m) =>
       m?.Deleted == false &&
-      (m.Player && m.Alive ||
-       m is BaseCreature bc && (bc.Controlled || bc.Summoned) && !bc.IsDeadBondedPet);
+      ((m.Player && m.Alive) ||
+       (m is BaseCreature bc && (bc.Controlled || bc.Summoned) && !bc.IsDeadBondedPet));
 
     public static void MoveMobileOut(Mobile m)
     {
@@ -387,7 +382,7 @@ namespace Server.Engines.Doom
 
     public static bool AniSafe(Mobile m) => m?.BodyMod == 0 && m.Alive && !TransformationSpellHelper.UnderTransformation(m);
 
-    public static IEntity ZAdjustedIEFromMobile(Mobile m, int ZDelta) => new Entity(Serial.Zero, new Point3D(m.X, m.Y, m.Z + ZDelta), m.Map);
+    public static IEntity ZAdjustedIEFromMobile(Mobile m, int zDelta) => new Entity(Serial.Zero, new Point3D(m.X, m.Y, m.Z + zDelta), m.Map);
 
     public static void DoDamage(Mobile m, int min, int max, bool poison)
     {
@@ -475,14 +470,14 @@ namespace Server.Engines.Doom
     {
       private int Count;
       private LeverPuzzleController m_Controller;
-      private Mobile m_Player;
+      private readonly Mobile m_Player;
 
-      public RockTimer(Mobile player, LeverPuzzleController Controller)
+      public RockTimer(Mobile player, LeverPuzzleController controller)
         : base(TimeSpan.Zero, TimeSpan.FromSeconds(.25))
       {
         Count = 0;
         m_Player = player;
-        m_Controller = Controller;
+        m_Controller = controller;
       }
 
       private int Rock() => 0x1363 + Utility.Random(0, 11);
@@ -547,7 +542,7 @@ namespace Server.Engines.Doom
 
     public class LampRoomKickTimer : Timer
     {
-      private Mobile m;
+      private readonly Mobile m;
 
       public LampRoomKickTimer(Mobile player)
         : base(TimeSpan.FromSeconds(.25)) =>

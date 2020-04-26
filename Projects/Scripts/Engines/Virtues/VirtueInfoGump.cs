@@ -5,10 +5,10 @@ namespace Server
 {
   public class VirtueInfoGump : Gump
   {
-    private Mobile m_Beholder;
-    private int m_Desc;
-    private string m_Page;
-    private VirtueName m_Virtue;
+    private readonly Mobile m_Beholder;
+    private readonly int m_Desc;
+    private readonly string m_Page;
+    private readonly VirtueName m_Virtue;
 
     public VirtueInfoGump(Mobile beholder, VirtueName virtue, int description, string webPage = null) : base(0, 0)
     {
@@ -47,7 +47,6 @@ namespace Server
       for (int i = 0; i < 10; ++i)
         AddImage(95 + i * 17, 50, i < dots ? 2362 : 2360);
 
-
       if (value < 1)
         valueDesc = 1052044; // You have not started on the path of this Virtue.
       else if (value < 400)
@@ -67,7 +66,6 @@ namespace Server
       else
         valueDesc = 1052050; // You have achieved the highest path in this Virtue.
 
-
       AddHtmlLocalized(157, 73, 200, 40, 1051000 + (int)virtue);
       AddHtmlLocalized(75, 95, 220, 140, description);
       AddHtmlLocalized(70, 224, 229, 60, valueDesc);
@@ -84,18 +82,18 @@ namespace Server
       switch (info.ButtonID)
       {
         case 1:
-        {
-          m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, m_Virtue, m_Desc, m_Page));
+          {
+            m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, m_Virtue, m_Desc, m_Page));
 
-          if (m_Page != null)
-            state.Send(new LaunchBrowser(m_Page)); //No message about web browser starting on OSI
-          break;
-        }
+            if (m_Page != null)
+              state.Send(new LaunchBrowser(m_Page)); // No message about web browser starting on OSI
+            break;
+          }
         case 2:
-        {
-          m_Beholder.SendGump(new VirtueStatusGump(m_Beholder));
-          break;
-        }
+          {
+            m_Beholder.SendGump(new VirtueStatusGump(m_Beholder));
+            break;
+          }
       }
     }
   }

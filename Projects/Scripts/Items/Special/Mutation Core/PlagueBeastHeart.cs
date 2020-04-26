@@ -42,7 +42,7 @@ namespace Server.Items
     private class InternalTimer : Timer
     {
       private bool m_Delay;
-      private PlagueBeastHeart m_Heart;
+      private readonly PlagueBeastHeart m_Heart;
 
       public InternalTimer(PlagueBeastHeart heart) : base(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5)) => m_Heart = heart;
 

@@ -5,15 +5,14 @@ namespace Server.Spells.Fifth
 {
   public class MindBlastSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Mind Blast", "Por Corp Wis",
       218,
       Core.AOS ? 9002 : 9032,
       Reagent.BlackPearl,
       Reagent.MandrakeRoot,
       Reagent.Nightshade,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public MindBlastSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

@@ -5,7 +5,7 @@ namespace Server.Items
 {
   public class ValentinesCard : Item
   {
-    private static string Unsigned = "___";
+    private static readonly string Unsigned = "___";
     private string m_From;
 
     private int m_LabelNumber;
@@ -73,7 +73,7 @@ namespace Server.Items
         {
           from.BeginTarget(10, false, TargetFlags.None, OnTarget);
 
-          from.SendLocalizedMessage(1077497); //To whom do you wish to give this card?
+          from.SendLocalizedMessage(1077497); // To whom do you wish to give this card?
         }
         else
         {
@@ -95,22 +95,22 @@ namespace Server.Items
               m_From = from.Name;
               m_To = to.Name;
               from.SendLocalizedMessage(
-                1077498); //You fill out the card. Hopefully the other person actually likes you...
+                1077498); // You fill out the card. Hopefully the other person actually likes you...
               InvalidateProperties();
             }
             else
             {
-              from.SendLocalizedMessage(1077495); //You can't give yourself a card, silly!
+              from.SendLocalizedMessage(1077495); // You can't give yourself a card, silly!
             }
           }
           else
           {
-            from.SendLocalizedMessage(1077496); //You can't possibly be THAT lonely!
+            from.SendLocalizedMessage(1077496); // You can't possibly be THAT lonely!
           }
         }
         else
         {
-          from.SendLocalizedMessage(1077488); //That's not another player!
+          from.SendLocalizedMessage(1077488); // That's not another player!
         }
       }
     }

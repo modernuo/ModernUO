@@ -47,7 +47,7 @@ namespace Server.Mobiles
       if (Utility.RandomDouble() < .05)
         PackItem(new MessageInABottle());
 
-      PackItem(new SpecialFishingNet()); //Confirm?
+      PackItem(new SpecialFishingNet()); // Confirm?
     }
 
     public Kraken(Serial serial) : base(serial)

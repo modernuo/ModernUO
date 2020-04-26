@@ -10,11 +10,11 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class AnimalTaming
+  public static class AnimalTaming
   {
-    private static HashSet<Mobile> m_BeingTamed = new HashSet<Mobile>();
+    private static readonly HashSet<Mobile> m_BeingTamed = new HashSet<Mobile>();
 
-    public static bool DisableMessage{ get; set; }
+    public static bool DisableMessage { get; set; }
 
     public static void Initialize()
     {
@@ -191,7 +191,7 @@ namespace Server.SkillHandlers
           creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502802,
             from.NetState); // Someone else is already taming this.
         }
-        else if (creature.CanAngerOnTame && 0.95 >= Utility.RandomDouble())
+        else if (creature.CanAngerOnTame && Utility.RandomDouble() <= 0.95)
         {
           creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502805,
             from.NetState); // You seem to anger the beast!
@@ -230,11 +230,11 @@ namespace Server.SkillHandlers
       private class InternalTimer : Timer
       {
         private int m_Count;
-        private BaseCreature m_Creature;
-        private int m_MaxCount;
+        private readonly BaseCreature m_Creature;
+        private readonly int m_MaxCount;
         private bool m_Paralyzed;
-        private DateTime m_StartTime;
-        private Mobile m_Tamer;
+        private readonly DateTime m_StartTime;
+        private readonly Mobile m_Tamer;
 
         public InternalTimer(Mobile tamer, BaseCreature creature, int count) : base(TimeSpan.FromSeconds(3.0),
           TimeSpan.FromSeconds(3.0), count)

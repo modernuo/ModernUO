@@ -11,7 +11,7 @@ namespace Server.Items
     SouthCCW,
     NorthCW,
 
-    //Sliding Doors
+    // Sliding Doors
     SouthSW,
     SouthSE,
     WestSS,

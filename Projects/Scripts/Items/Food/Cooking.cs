@@ -46,19 +46,9 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-#if false
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( !Movable )
-				return;
-
-			from.Target = new InternalTarget( this );
-		}
-#endif
-
     private class InternalTarget : Target
     {
-      private Dough m_Item;
+      private readonly Dough m_Item;
 
       public InternalTarget(Dough item) : base(1, false, TargetFlags.None) => m_Item = item;
 
@@ -134,19 +124,9 @@ namespace Server.Items
         Hue = 150;
     }
 
-#if false
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( !Movable )
-				return;
-
-			from.Target = new InternalTarget( this );
-		}
-#endif
-
     private class InternalTarget : Target
     {
-      private SweetDough m_Item;
+      private readonly SweetDough m_Item;
 
       public InternalTarget(SweetDough item) : base(1, false, TargetFlags.None) => m_Item = item;
 
@@ -172,8 +152,8 @@ namespace Server.Items
 
       private class InternalTimer : Timer
       {
-        private Campfire m_Campfire;
-        private Mobile m_From;
+        private readonly Campfire m_Campfire;
+        private readonly Mobile m_From;
 
         public InternalTimer(Mobile from, Campfire campfire) : base(TimeSpan.FromSeconds(5.0))
         {
@@ -234,7 +214,7 @@ namespace Server.Items
 
     /*public override void OnDoubleClick( Mobile from )
     {
-      if ( !Movable )
+      if (!Movable)
         return;
 
       from.Target = new InternalTarget( this );
@@ -242,7 +222,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private JarHoney m_Item;
+      private readonly JarHoney m_Item;
 
       public InternalTarget(JarHoney item) : base(1, false, TargetFlags.None) => m_Item = item;
 
@@ -348,7 +328,7 @@ namespace Server.Items
 
     public override void OnDoubleClick( Mobile from )
     {
-      if ( !Movable )
+      if (!Movable)
         return;
 
       from.Target = new InternalTarget( this );
@@ -365,9 +345,9 @@ namespace Server.Items
 
       protected override void OnTarget( Mobile from, object targeted )
       {
-        if ( m_Item.Deleted ) return;
+        if (m_Item.Deleted ) return;
 
-        if ( targeted is BowlFlour )
+        if (targeted is BowlFlour)
         {
           m_Item.Delete();
           ((BowlFlour)targeted).Delete();
@@ -430,15 +410,15 @@ namespace Server.Items
       {
         case 2:
         case 1:
-        {
-          m_Quantity = reader.ReadInt();
-          break;
-        }
+          {
+            m_Quantity = reader.ReadInt();
+            break;
+          }
         case 0:
-        {
-          m_Quantity = 20;
-          break;
-        }
+          {
+            m_Quantity = 20;
+            break;
+          }
       }
 
       if (version < 2 && Weight == 1.0)
@@ -452,12 +432,6 @@ namespace Server.Items
 
       if (ItemID == 0x1039 || ItemID == 0x1045)
         ++ItemID;
-
-#if false
-			this.Delete();
-
-			from.AddToBackpack( new SackFlourOpen() );
-#endif
     }
   }
 

@@ -9,8 +9,7 @@ namespace Server.Mobiles
     private bool m_Stunning;
 
     [Constructible]
-    public Golem(bool summoned = false, double scalar = 1.0) :
-      base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8)
+    public Golem(bool summoned = false, double scalar = 1.0) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8)
     {
       Body = 752;
 
@@ -57,16 +56,16 @@ namespace Server.Mobiles
       {
         PackItem(new IronIngot(Utility.RandomMinMax(13, 21)));
 
-        if (0.1 > Utility.RandomDouble())
+        if (Utility.RandomDouble() < 0.1)
           PackItem(new PowerCrystal());
 
-        if (0.15 > Utility.RandomDouble())
+        if (Utility.RandomDouble() < 0.15)
           PackItem(new ClockworkAssembly());
 
-        if (0.2 > Utility.RandomDouble())
+        if (Utility.RandomDouble() < 0.2)
           PackItem(new ArcaneGem());
 
-        if (0.25 > Utility.RandomDouble())
+        if (Utility.RandomDouble() < 0.25)
           PackItem(new Gears());
       }
 
@@ -102,11 +101,11 @@ namespace Server.Mobiles
     {
       base.OnDeath(c);
 
-      if (0.05 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.05)
       {
         if (!IsParagon)
         {
-          if (0.75 > Utility.RandomDouble())
+          if (Utility.RandomDouble() < 0.75)
             c.DropItem(DawnsMusicGear.RandomCommon);
           else
             c.DropItem(DawnsMusicGear.RandomUncommon);
@@ -150,7 +149,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (!m_Stunning && 0.3 > Utility.RandomDouble())
+      if (!m_Stunning && Utility.RandomDouble() < 0.3)
       {
         m_Stunning = true;
 

@@ -42,8 +42,8 @@ namespace Server.Items
     }
 
     public bool CouldFit(IPoint3D p, Map map) =>
-      map?.CanFit(p.X, p.Y, p.Z, ItemData.Height) == true && (FacingSouth
-                                                              && BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map)
+      map?.CanFit(p.X, p.Y, p.Z, ItemData.Height) == true && ((FacingSouth
+                                                              && BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map))
                                                               || BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map));
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -185,7 +185,7 @@ namespace Server.Items
         0x1583 => 0x1634,
         0x1584 => 0x1637,
         0x1585 => 0x1636,
-        _ => (east + 1)
+        _ => east + 1
       };
     }
 
@@ -195,7 +195,7 @@ namespace Server.Items
       public const int End = 0x1585;
       private int m_Page;
 
-      private DecorativeShieldDeed m_Shield;
+      private readonly DecorativeShieldDeed m_Shield;
 
       public InternalGump(DecorativeShieldDeed shield, int page = 1) : base(150, 50)
       {
@@ -243,8 +243,8 @@ namespace Server.Items
       public override void OnResponse(NetState sender, RelayInfo info)
       {
         if (m_Shield?.Deleted != false || info.ButtonID < Start || info.ButtonID > End ||
-            ((info.ButtonID & 0x1) != 0 || info.ButtonID >= 0x1582) &&
-            (info.ButtonID < 0x1582 || info.ButtonID > 0x1585))
+            (((info.ButtonID & 0x1) != 0 || info.ButtonID >= 0x1582) &&
+            (info.ButtonID < 0x1582 || info.ButtonID > 0x1585)))
           return;
 
         sender.Mobile.SendLocalizedMessage(1049780); // Where would you like to place this decoration?
@@ -254,8 +254,8 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private int m_ItemID;
-      private DecorativeShieldDeed m_Shield;
+      private readonly int m_ItemID;
+      private readonly DecorativeShieldDeed m_Shield;
 
       public InternalTarget(DecorativeShieldDeed shield, int itemID) : base(-1, true, TargetFlags.None)
       {
@@ -332,10 +332,10 @@ namespace Server.Items
 
       private class FacingGump : Gump
       {
-        private BaseHouse m_House;
-        private int m_ItemID;
-        private Point3D m_Location;
-        private DecorativeShieldDeed m_Shield;
+        private readonly BaseHouse m_House;
+        private readonly int m_ItemID;
+        private readonly Point3D m_Location;
+        private readonly DecorativeShieldDeed m_Shield;
 
         public FacingGump(DecorativeShieldDeed shield, int itemID, Point3D location, BaseHouse house) : base(150, 50)
         {

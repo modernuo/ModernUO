@@ -8,14 +8,13 @@ namespace Server.Spells.First
 {
   public class HealSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Heal", "In Mani",
       224,
       9061,
       Reagent.Garlic,
       Reagent.Ginseng,
-      Reagent.SpidersSilk
-    );
+      Reagent.SpidersSilk);
 
     public HealSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -84,7 +83,7 @@ namespace Server.Spells.First
           toHeal += Utility.Random(1, 5);
         }
 
-        //m.Heal( toHeal, Caster );
+        // m.Heal( toHeal, Caster );
         SpellHelper.Heal(toHeal, m, Caster);
 
         m.FixedParticles(0x376A, 9, 32, 5005, EffectLayer.Waist);

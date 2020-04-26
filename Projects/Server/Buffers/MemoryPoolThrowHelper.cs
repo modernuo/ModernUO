@@ -3,7 +3,6 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace System.Buffers
 {
@@ -16,7 +15,9 @@ namespace System.Buffers
 
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(int sourceLength, int offset) =>
-      (uint)offset > (uint)sourceLength ? new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.offset)) : new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.length));
+      (uint)offset > (uint)sourceLength
+        ? new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.offset))
+        : new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.length));
 
     public static void ThrowArgumentOutOfRangeException_BufferRequestTooLarge(int maxSize)
     {
@@ -29,17 +30,15 @@ namespace System.Buffers
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private static ArgumentOutOfRangeException GetArgumentOutOfRangeException_BufferRequestTooLarge(int maxSize) => new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.size), $"Cannot allocate more than {maxSize} bytes in a single buffer");
+    private static ArgumentOutOfRangeException GetArgumentOutOfRangeException_BufferRequestTooLarge(int maxSize) =>
+      new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.size),
+        $"Cannot allocate more than {maxSize} bytes in a single buffer");
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private static ObjectDisposedException GetObjectDisposedException(ExceptionArgument argument) => new ObjectDisposedException(GetArgumentName(argument));
+    private static ObjectDisposedException GetObjectDisposedException(ExceptionArgument argument) =>
+      new ObjectDisposedException(GetArgumentName(argument));
 
-    private static string GetArgumentName(ExceptionArgument argument)
-    {
-      Debug.Assert(Enum.IsDefined(typeof(ExceptionArgument), argument), "The enum value is not defined, please check the ExceptionArgument Enum.");
-
-      return argument.ToString();
-    }
+    private static string GetArgumentName(ExceptionArgument argument) => argument.ToString();
 
     public enum ExceptionArgument
     {

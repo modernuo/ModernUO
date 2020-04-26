@@ -4,7 +4,7 @@ namespace Server.Multis
 {
   public class RenameBoatPrompt : Prompt
   {
-    private BaseBoat m_Boat;
+    private readonly BaseBoat m_Boat;
 
     public RenameBoatPrompt(BaseBoat boat) => m_Boat = boat;
 

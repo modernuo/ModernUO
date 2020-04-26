@@ -21,13 +21,13 @@ namespace Server.Engines.Quests.Doom
     public override int LabelNumber => 1050018; // bell of the dead
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public Chyloth Chyloth{ get; set; }
+    public Chyloth Chyloth { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public SkeletalDragon Dragon{ get; set; }
+    public SkeletalDragon Dragon { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public bool Summoning{ get; set; }
+    public bool Summoning { get; set; }
 
     public override void OnDoubleClick(Mobile from)
     {

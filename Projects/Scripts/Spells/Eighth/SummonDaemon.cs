@@ -5,7 +5,7 @@ namespace Server.Spells.Eighth
 {
   public class SummonDaemonSpell : MagerySpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Summon Daemon", "Kal Vas Xen Corp",
       269,
       9050,
@@ -13,8 +13,7 @@ namespace Server.Spells.Eighth
       Reagent.Bloodmoss,
       Reagent.MandrakeRoot,
       Reagent.SpidersSilk,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public SummonDaemonSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

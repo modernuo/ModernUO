@@ -51,7 +51,7 @@ namespace Server.Mobiles
     {
       AddLoot(LootPack.FilthyRich, 2);
       // TODO: uncomment once added
-      //AddLoot( LootPack.Parrot );
+      // AddLoot( LootPack.Parrot );
     }
 
     /*
@@ -60,10 +60,10 @@ namespace Server.Mobiles
     {
       base.OnDeath( c );
 
-      if ( Utility.RandomDouble() < 0.75 )
+      if (Utility.RandomDouble() < 0.75)
         c.DropItem( new CrystallineFragments() );
 
-      if ( Utility.RandomDouble() < 0.06 )
+      if (Utility.RandomDouble() < 0.06)
         c.DropItem( new JaggedCrystals() );
     }
     */

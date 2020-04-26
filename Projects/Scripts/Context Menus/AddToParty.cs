@@ -4,8 +4,8 @@ namespace Server.ContextMenus
 {
   public class AddToPartyEntry : ContextMenuEntry
   {
-    private Mobile m_From;
-    private Mobile m_Target;
+    private readonly Mobile m_From;
+    private readonly Mobile m_Target;
 
     public AddToPartyEntry(Mobile from, Mobile target) : base(0197, 12)
     {

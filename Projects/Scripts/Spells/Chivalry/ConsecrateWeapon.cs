@@ -6,13 +6,12 @@ namespace Server.Spells.Chivalry
 {
   public class ConsecrateWeaponSpell : PaladinSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Consecrate Weapon", "Consecrus Arma",
       -1,
-      9002
-    );
+      9002);
 
-    private static Dictionary<BaseWeapon, ExpireTimer> m_Table = new Dictionary<BaseWeapon, ExpireTimer>();
+    private static readonly Dictionary<BaseWeapon, ExpireTimer> m_Table = new Dictionary<BaseWeapon, ExpireTimer>();
 
     public ConsecrateWeaponSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -92,7 +91,7 @@ namespace Server.Spells.Chivalry
 
     private class ExpireTimer : Timer
     {
-      private BaseWeapon m_Weapon;
+      private readonly BaseWeapon m_Weapon;
 
       public ExpireTimer(BaseWeapon weapon, TimeSpan delay) : base(delay)
       {

@@ -17,7 +17,7 @@ namespace Server.Engines.ConPVP
     {
     }
 
-    public abstract string Title{ get; }
+    public abstract string Title { get; }
     public abstract EventGame Construct(DuelContext dc);
 
     public abstract string GetTeamName(int teamID);

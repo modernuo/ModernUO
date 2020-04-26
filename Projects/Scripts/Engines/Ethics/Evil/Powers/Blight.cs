@@ -12,8 +12,7 @@ namespace Server.Ethics.Evil
         15,
         "Blight",
         "Velgo Ontawl",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

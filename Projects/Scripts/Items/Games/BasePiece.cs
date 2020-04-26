@@ -8,7 +8,7 @@ namespace Server.Items
     {
     }
 
-    public BaseBoard Board{ get; set; }
+    public BaseBoard Board { get; set; }
 
     public override bool IsVirtualItem => true;
 
@@ -31,14 +31,14 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          Board = (BaseBoard)reader.ReadItem();
+          {
+            Board = (BaseBoard)reader.ReadItem();
 
-          if (Board == null || Parent == null)
-            Delete();
+            if (Board == null || Parent == null)
+              Delete();
 
-          break;
-        }
+            break;
+          }
       }
     }
 

@@ -6,7 +6,7 @@ namespace Server.Gumps
 {
   public class RewardDemolitionGump : Gump
   {
-    private IAddon m_Addon;
+    private readonly IAddon m_Addon;
 
     public RewardDemolitionGump(IAddon addon, int question) : base(150, 50)
     {

@@ -14,7 +14,6 @@ namespace Server.Items
 
     public override double DefaultWeight => 1.0;
 
-
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);

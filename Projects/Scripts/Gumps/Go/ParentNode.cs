@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Xml;
 
@@ -5,31 +6,31 @@ namespace Server.Gumps
 {
   public interface IGoNode
   {
-    ParentNode Parent{ get; }
-    string Name{ get; }
+    ParentNode Parent { get; }
+    string Name { get; }
   }
-  
+
   public class ParentNode : IGoNode
   {
     public ParentNode(XmlTextReader xml, ParentNode parent)
     {
       Parent = parent;
-      
+
       Parse(xml);
     }
 
-    public ParentNode Parent{ get; }
+    public ParentNode Parent { get; }
 
-    public IGoNode[] Children{ get; private set; }
+    public IGoNode[] Children { get; private set; }
 
-    public string Name{ get; private set; }
+    public string Name { get; private set; }
 
     private void Parse(XmlTextReader xml)
     {
       Name = xml.MoveToAttribute("name") ? xml.Value : "empty";
 
       if (xml.IsEmptyElement)
-        Children = new IGoNode[0];
+        Children = Array.Empty<IGoNode>();
       else
       {
         List<IGoNode> children = new List<IGoNode>();

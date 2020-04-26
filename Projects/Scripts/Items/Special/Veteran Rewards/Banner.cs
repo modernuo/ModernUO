@@ -201,7 +201,7 @@ namespace Server.Items
       public const int Start = 0x15AE;
       public const int End = 0x15F4;
 
-      private BannerDeed m_Banner;
+      private readonly BannerDeed m_Banner;
 
       public InternalGump(BannerDeed banner) : base(100, 200)
       {
@@ -216,7 +216,6 @@ namespace Server.Items
 
         AddBackground(25, 0, 520, 230, 0xA28);
         AddLabel(70, 12, 0x3E3, "Choose a Banner:");
-
 
         int itemID = Start;
 
@@ -254,8 +253,8 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private BannerDeed m_Banner;
-      private int m_ItemID;
+      private readonly BannerDeed m_Banner;
+      private readonly int m_ItemID;
 
       public InternalTarget(BannerDeed banner, int itemID) : base(-1, true, TargetFlags.None)
       {
@@ -336,10 +335,10 @@ namespace Server.Items
 
       private class FacingGump : Gump
       {
-        private BannerDeed m_Banner;
-        private BaseHouse m_House;
-        private int m_ItemID;
-        private Point3D m_Location;
+        private readonly BannerDeed m_Banner;
+        private readonly BaseHouse m_House;
+        private readonly int m_ItemID;
+        private readonly Point3D m_Location;
 
         public FacingGump(BannerDeed banner, int itemID, Point3D location, BaseHouse house) : base(150, 50)
         {

@@ -16,19 +16,50 @@
     <UseNETCoreGenerator>true</UseNETCoreGenerator>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>8.0</LangVersion>
-    <PublishDir>..\..\Distribution</PublishDir>
-    <OutDir>..\..\Distribution</OutDir>
-    <OutputPath>..\..\Distribution</OutputPath>
+    <PublishDir>$(SolutionDir)\Distribution</PublishDir>
+    <OutDir>$(SolutionDir)\Distribution</OutDir>
+    <OutputPath>$(SolutionDir)\Distribution</OutputPath>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Configurations>Debug;Release;Analyze</Configurations>
   </PropertyGroup>
+  <Target Name="CleanPub" AfterTargets="Clean">
+    <Message Text="Removing distribution files..." />
+    <Delete Files="$(SolutionDir)\Distribution\libuv.dylib" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.AspNetCore.Connections.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.AspNetCore.Http.Features.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.Configuration.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.DependencyInjection.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.FileProviders.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.Hosting.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.Logging.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.Options.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.Primitives.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName)" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).dll.config" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).exe" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).pdb" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\System.IO.Pipelines.dll" ContinueOnError="true" />
+  </Target>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Analyze|AnyCPU'">
+    <Optimize>true</Optimize>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+    <CodeAnalysisRuleSet>$(SolutionDir)\Rules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Assemblies\libdrng.dll" Condition="'$(OS)' == 'Windows_NT'">
@@ -54,5 +85,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Kestrel\Transport.Libuv\**" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Analyze|AnyCPU'">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="all" />
+    <AdditionalFiles Include="$(SolutionDir)\stylecop.json" Link="stylecop.json" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <AdditionalFiles Include="$(SolutionDir)\Rules.ruleset" Link="Rules.rulest" />
   </ItemGroup>
 </Project>

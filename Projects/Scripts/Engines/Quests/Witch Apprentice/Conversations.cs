@@ -99,7 +99,7 @@ namespace Server.Engines.Quests.Hag
 
     public override void OnRead()
     {
-      System.AddObjective(new FindIngredientObjective(new Ingredient[0]));
+      System.AddObjective(new FindIngredientObjective(global::System.Array.Empty<Ingredient>()));
     }
   }
 

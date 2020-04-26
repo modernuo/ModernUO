@@ -54,7 +54,7 @@ namespace Server.Items
 
     private class PickWheelTarget : Target
     {
-      private Flax m_Flax;
+      private readonly Flax m_Flax;
 
       public PickWheelTarget(Flax flax) : base(3, false, TargetFlags.None) => m_Flax = flax;
 

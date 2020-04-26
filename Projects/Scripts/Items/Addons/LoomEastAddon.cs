@@ -2,7 +2,7 @@ namespace Server.Items
 {
   public interface ILoom
   {
-    int Phase{ get; set; }
+    int Phase { get; set; }
   }
 
   public class LoomEastAddon : BaseAddon, ILoom
@@ -20,7 +20,7 @@ namespace Server.Items
 
     public override BaseAddonDeed Deed => new LoomEastDeed();
 
-    public int Phase{ get; set; }
+    public int Phase { get; set; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -40,10 +40,10 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          Phase = reader.ReadInt();
-          break;
-        }
+          {
+            Phase = reader.ReadInt();
+            break;
+          }
       }
     }
   }

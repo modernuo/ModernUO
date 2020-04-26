@@ -64,25 +64,23 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          if (reader.ReadBool())
           {
-            m_CurArcaneCharges = reader.ReadInt();
-            m_MaxArcaneCharges = reader.ReadInt();
+            if (reader.ReadBool())
+            {
+              m_CurArcaneCharges = reader.ReadInt();
+              m_MaxArcaneCharges = reader.ReadInt();
 
-            if (Hue == 2118)
-              Hue = ArcaneGem.DefaultArcaneHue;
+              if (Hue == 2118)
+                Hue = ArcaneGem.DefaultArcaneHue;
+            }
+
+            break;
           }
-
-          break;
-        }
       }
 
       if (Weight == 4.0)
         Weight = 5.0;
     }
-
-    #region Arcane Impl
 
     private int m_MaxArcaneCharges, m_CurArcaneCharges;
 
@@ -147,8 +145,6 @@ namespace Server.Items
       else if (ItemID == 0x1530)
         ItemID = 0x1515;
     }
-
-    #endregion
   }
 
   [Flippable]
@@ -194,7 +190,7 @@ namespace Server.Items
     public override int BasePhysicalResistance => 3;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsRewardItem{ get; set; }
+    public bool IsRewardItem { get; set; }
 
     public override void OnAdded(IEntity parent)
     {
@@ -254,11 +250,11 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_LabelNumber = reader.ReadInt();
-          IsRewardItem = reader.ReadBool();
-          break;
-        }
+          {
+            m_LabelNumber = reader.ReadInt();
+            IsRewardItem = reader.ReadBool();
+            break;
+          }
       }
 
       if (Parent is Mobile mobile)

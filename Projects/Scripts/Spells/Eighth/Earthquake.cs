@@ -6,7 +6,7 @@ namespace Server.Spells.Eighth
 {
   public class EarthquakeSpell : MagerySpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Earthquake", "In Vas Por",
       233,
       9012,
@@ -14,8 +14,7 @@ namespace Server.Spells.Eighth
       Reagent.Bloodmoss,
       Reagent.Ginseng,
       Reagent.MandrakeRoot,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public EarthquakeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

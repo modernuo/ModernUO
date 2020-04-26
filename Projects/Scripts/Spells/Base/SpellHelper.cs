@@ -28,7 +28,7 @@ namespace Server
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public InternalTimer(Mobile m)
         : base(TimeSpan.FromMinutes(1.0))
@@ -61,13 +61,13 @@ namespace Server.Spells
 
   public class SpellHelper
   {
-    private static TimeSpan AosDamageDelay = TimeSpan.FromSeconds(1.0);
-    private static TimeSpan OldDamageDelay = TimeSpan.FromSeconds(0.5);
+    private static readonly TimeSpan AosDamageDelay = TimeSpan.FromSeconds(1.0);
+    private static readonly TimeSpan OldDamageDelay = TimeSpan.FromSeconds(0.5);
 
-    private static TimeSpan CombatHeatDelay = TimeSpan.FromSeconds(30.0);
-    private static bool RestrictTravelCombat = true;
+    private static readonly TimeSpan CombatHeatDelay = TimeSpan.FromSeconds(30.0);
+    private static readonly bool RestrictTravelCombat = true;
 
-    private static int[] m_Offsets =
+    private static readonly int[] m_Offsets =
     {
       -1, -1,
       -1, 0,
@@ -79,7 +79,7 @@ namespace Server.Spells
       1, 1
     };
 
-    private static TravelValidator[] m_Validators =
+    private static readonly TravelValidator[] m_Validators =
     {
       IsFeluccaT2A,
       IsKhaldun,
@@ -102,10 +102,10 @@ namespace Server.Spells
       IsMLDungeon
     };
 
-    // TODO: Find a better way
-    private static bool[,] m_Rules =
+    // TODO: Move to configuration
+    private static readonly bool[,] m_Rules =
     {
-      /*T2A(Fel),	Khaldun,	Ilshenar,	Wind(Tram),	Wind(Fel),	Dungeons(Fel),	Solen(Tram),	Solen(Fel),	CrystalCave(Malas),	Gauntlet(Malas),	Gauntlet(Ferry),	SafeZone,	Stronghold,	ChampionSpawn,	Dungeons(Tokuno[Malas]),	LampRoom(Doom),	GuardianRoom(Doom),	Heartwood,	MLDungeons */
+      /* T2A(Fel), Khaldun, Ilshenar, Wind(Tram), Wind(Fel), Dungeons(Fel), Solen(Tram), Solen(Fel), CrystalCave(Malas), Gauntlet(Malas), Gauntlet(Ferry), SafeZone, Stronghold, ChampionSpawn, Dungeons(Tokuno[Malas]), LampRoom(Doom), GuardianRoom(Doom), Heartwood, MLDungeons */
       /* Recall From */
       {
         false, false, true, true, false, false, true, false, false, false, false, true, true, false, true, false,
@@ -146,7 +146,7 @@ namespace Server.Spells
     private static Mobile m_TravelCaster;
     private static TravelCheckType m_TravelType;
 
-    public static bool DisableSkillCheck{ get; set; }
+    public static bool DisableSkillCheck { get; set; }
 
     public static TimeSpan GetDamageDelayForSpell(Spell sp)
     {
@@ -169,7 +169,7 @@ namespace Server.Spells
 
         if (multi is BaseHouse bh)
         {
-          if (houses && bh.IsInside(p, 16) || housingrange > 0 && bh.InRange(p, housingrange))
+          if ((houses && bh.IsInside(p, 16)) || (housingrange > 0 && bh.InRange(p, housingrange)))
             return true;
         }
         else if (multi.Contains(p))
@@ -405,8 +405,6 @@ namespace Server.Spells
       BaseCreature bcFrom = from as BaseCreature;
       BaseCreature bcTarg = to as BaseCreature;
 
-      #region Dueling
-
       PlayerMobile pmFrom;
       PlayerMobile pmTarg;
 
@@ -423,8 +421,6 @@ namespace Server.Spells
       if (pmFrom?.DuelContext != null && pmFrom.DuelContext == pmTarg?.DuelContext && pmFrom.DuelContext.Started &&
           pmFrom.DuelPlayer != null && pmTarg?.DuelPlayer != null)
         return pmFrom.DuelPlayer.Participant != pmTarg.DuelPlayer.Participant;
-
-      #endregion
 
       Guild fromGuild = GetGuildFor(from);
       Guild toGuild = GetGuildFor(to);
@@ -457,7 +453,7 @@ namespace Server.Spells
           return false;
       }
 
-      return bcTarg?.Controlled == false && bcTarg.InitialInnocent ||
+      return (bcTarg?.Controlled == false && bcTarg.InitialInnocent) ||
              Notoriety.Compute(from, to) != Notoriety.Innocent || from.Kills >= 5;
     }
 
@@ -494,7 +490,6 @@ namespace Server.Spells
         return;
       }
 
-
       /*
       int offset = Utility.Random( 8 ) * 2;
 
@@ -503,7 +498,7 @@ namespace Server.Spells
         int x = caster.X + m_Offsets[(offset + i) % m_Offsets.Length];
         int y = caster.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];
 
-        if ( map.CanSpawnMobile( x, y, caster.Z ) )
+        if (map.CanSpawnMobile( x, y, caster.Z ))
         {
           BaseCreature.Summon( creature, caster, new Point3D( x, y, caster.Z ), sound, duration );
           return;
@@ -512,7 +507,7 @@ namespace Server.Spells
         {
           int z = map.GetAverageZ( x, y );
 
-          if ( map.CanSpawnMobile( x, y, z ) )
+          if (map.CanSpawnMobile( x, y, z ))
           {
             BaseCreature.Summon( creature, caster, new Point3D( x, y, z ), sound, duration );
             return;
@@ -527,12 +522,12 @@ namespace Server.Spells
 
     public static bool FindValidSpawnLocation(Map map, ref Point3D p, bool surroundingsOnly)
     {
-      if (map == null) //sanity
+      if (map == null) // sanity
         return false;
 
       if (!surroundingsOnly)
       {
-        if (map.CanSpawnMobile(p)) //p's fine.
+        if (map.CanSpawnMobile(p)) // p's fine.
         {
           p = new Point3D(p);
           return true;
@@ -674,21 +669,18 @@ namespace Server.Spells
 
       int x = loc.X, y = loc.Y;
 
-      return x >= 1182 && y >= 437 && x < 1211 && y < 470
-             || x >= 1156 && y >= 470 && x < 1211 && y < 503
-             || x >= 1176 && y >= 503 && x < 1208 && y < 509
-             || x >= 1188 && y >= 509 && x < 1201 && y < 513;
+      return (x >= 1182 && y >= 437 && x < 1211 && y < 470)
+             || (x >= 1156 && y >= 470 && x < 1211 && y < 503)
+             || (x >= 1176 && y >= 503 && x < 1208 && y < 509)
+             || (x >= 1188 && y >= 509 && x < 1201 && y < 513);
     }
 
     public static bool IsSafeZone(Map map, Point3D loc)
     {
-      #region Duels
       if (Region.Find(loc, map).IsPartOf<SafeZone>() &&
           (m_TravelType == TravelCheckType.TeleportTo || m_TravelType == TravelCheckType.TeleportFrom)
           && (m_TravelCaster as PlayerMobile)?.DuelPlayer?.Eliminated == false)
         return true;
-
-      #endregion
 
       return false;
     }
@@ -715,7 +707,7 @@ namespace Server.Spells
 
     public static bool IsTokunoDungeon(Map map, Point3D loc)
     {
-      //The tokuno dungeons are really inside malas
+      // The tokuno dungeons are really inside malas
       if (map != Map.Malas)
         return false;
 
@@ -776,7 +768,7 @@ namespace Server.Spells
       return x < 0 || y < 0 || x >= map.Width || y >= map.Height;
     }
 
-    //towns
+    // towns
     public static bool IsTown(IPoint3D ip, Mobile caster)
     {
       if (ip is Item item)
@@ -792,12 +784,9 @@ namespace Server.Spells
       if (map == null)
         return false;
 
-      #region Dueling
       if (Region.Find(loc, map).GetRegion<SafeZone>() != null)
         if (caster is PlayerMobile pm && (pm.DuelContext?.Started != true || pm.DuelPlayer?.Eliminated != false))
           return true;
-
-      #endregion
 
       GuardedRegion reg = Region.Find(loc, map).GetRegion<GuardedRegion>();
 
@@ -823,7 +812,7 @@ namespace Server.Spells
       return true;
     }
 
-    //magic reflection
+    // magic reflection
     public static void CheckReflect(int circle, Mobile caster, ref Mobile target)
     {
       CheckReflect(circle, ref caster, ref target);
@@ -994,7 +983,7 @@ namespace Server.Spells
 
     public static void Heal(int amount, Mobile target, Mobile from, bool message = true)
     {
-      //TODO: All Healing *spells* go through ArcaneEmpowerment
+      // TODO: All Healing *spells* go through ArcaneEmpowerment
       target.Heal(amount, from, message);
     }
 
@@ -1003,8 +992,9 @@ namespace Server.Spells
     private class SpellDamageTimer : Timer
     {
       private int m_Damage;
-      private Spell m_Spell;
-      private Mobile m_Target, m_From;
+      private readonly Spell m_Spell;
+      private readonly Mobile m_Target;
+      private readonly Mobile m_From;
 
       public SpellDamageTimer(Spell s, Mobile target, Mobile from, int damage, TimeSpan delay)
         : base(delay)
@@ -1034,10 +1024,16 @@ namespace Server.Spells
     private class SpellDamageTimerAOS : Timer
     {
       private int m_Damage;
-      private DFAlgorithm m_DFA;
-      private int m_Phys, m_Fire, m_Cold, m_Pois, m_Nrgy, m_Chaos;
-      private Spell m_Spell;
-      private Mobile m_Target, m_From;
+      private readonly DFAlgorithm m_DFA;
+      private readonly int m_Phys;
+      private readonly int m_Fire;
+      private readonly int m_Cold;
+      private readonly int m_Pois;
+      private readonly int m_Nrgy;
+      private readonly int m_Chaos;
+      private readonly Spell m_Spell;
+      private readonly Mobile m_Target;
+      private readonly Mobile m_From;
 
       public SpellDamageTimerAOS(Spell s, TimeSpan delay, Mobile target, Mobile from, int damage, int phys, int fire, int cold,
         int pois, int nrgy, int chaos, DFAlgorithm dfa)
@@ -1138,7 +1134,7 @@ namespace Server.Spells
       {
         caster.SendLocalizedMessage(1061091); // You cannot cast that spell in this form.
       }
-      else if (!caster.CanBeginAction<IncognitoSpell>() || caster.IsBodyMod && GetContext(caster) == null)
+      else if (!caster.CanBeginAction<IncognitoSpell>() || (caster.IsBodyMod && GetContext(caster) == null))
       {
         spell.DoFizzle();
       }
@@ -1207,9 +1203,7 @@ namespace Server.Spells
       return false;
     }
 
-    #region Context Stuff
-
-    private static Dictionary<Mobile, TransformContext> m_Table = new Dictionary<Mobile, TransformContext>();
+    private static readonly Dictionary<Mobile, TransformContext> m_Table = new Dictionary<Mobile, TransformContext>();
 
     public static void AddContext(Mobile m, TransformContext context)
     {
@@ -1256,28 +1250,25 @@ namespace Server.Spells
     public static bool UnderTransformation(Mobile m) => GetContext(m) != null;
 
     public static bool UnderTransformation(Mobile m, Type type) => GetContext(m)?.Type == type;
-
-    #endregion
   }
 
   public interface ITransformationSpell
   {
-    int Body{ get; }
-    int Hue{ get; }
+    int Body { get; }
+    int Hue { get; }
 
-    int PhysResistOffset{ get; }
-    int FireResistOffset{ get; }
-    int ColdResistOffset{ get; }
-    int PoisResistOffset{ get; }
-    int NrgyResistOffset{ get; }
+    int PhysResistOffset { get; }
+    int FireResistOffset { get; }
+    int ColdResistOffset { get; }
+    int PoisResistOffset { get; }
+    int NrgyResistOffset { get; }
 
-    double TickRate{ get; }
+    double TickRate { get; }
     void OnTick(Mobile m);
 
     void DoEffect(Mobile m);
     void RemoveEffect(Mobile m);
   }
-
 
   public class TransformContext
   {
@@ -1289,19 +1280,19 @@ namespace Server.Spells
       Spell = spell;
     }
 
-    public Timer Timer{ get; }
+    public Timer Timer { get; }
 
-    public List<ResistanceMod> Mods{ get; }
+    public List<ResistanceMod> Mods { get; }
 
-    public Type Type{ get; }
+    public Type Type { get; }
 
-    public ITransformationSpell Spell{ get; }
+    public ITransformationSpell Spell { get; }
   }
 
   public class TransformTimer : Timer
   {
-    private Mobile m_Mobile;
-    private ITransformationSpell m_Spell;
+    private readonly Mobile m_Mobile;
+    private readonly ITransformationSpell m_Spell;
 
     public TransformTimer(Mobile from, ITransformationSpell spell)
       : base(TimeSpan.FromSeconds(spell.TickRate), TimeSpan.FromSeconds(spell.TickRate))

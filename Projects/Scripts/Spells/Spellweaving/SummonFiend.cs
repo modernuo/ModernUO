@@ -6,10 +6,9 @@ namespace Server.Spells.Spellweaving
 {
   public class SummonFiendSpell : ArcaneSummon<ArcaneFiend>
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Summon Fiend", "Nylisstra",
-      -1
-    );
+      -1);
 
     public SummonFiendSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)

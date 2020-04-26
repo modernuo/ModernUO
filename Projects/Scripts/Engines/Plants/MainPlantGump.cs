@@ -7,7 +7,7 @@ namespace Server.Engines.Plants
 {
   public class MainPlantGump : Gump
   {
-    private PlantItem m_Plant;
+    private readonly PlantItem m_Plant;
 
     public MainPlantGump(PlantItem plant) : base(20, 20)
     {
@@ -138,41 +138,41 @@ namespace Server.Engines.Plants
         switch (m_Plant.PlantSystem.Health)
         {
           case PlantHealth.Dying:
-          {
-            AddItem(92, 167, 0x1B9D);
-            AddItem(161, 167, 0x1B9D);
+            {
+              AddItem(92, 167, 0x1B9D);
+              AddItem(161, 167, 0x1B9D);
 
-            AddHtmlLocalized(136, 167, 42, 20, message, 0x00FC00);
+              AddHtmlLocalized(136, 167, 42, 20, message, 0x00FC00);
 
-            break;
-          }
+              break;
+            }
           case PlantHealth.Wilted:
-          {
-            AddItem(91, 164, 0x18E6);
-            AddItem(161, 164, 0x18E6);
+            {
+              AddItem(91, 164, 0x18E6);
+              AddItem(161, 164, 0x18E6);
 
-            AddHtmlLocalized(132, 167, 42, 20, message, 0x00C207);
+              AddHtmlLocalized(132, 167, 42, 20, message, 0x00C207);
 
-            break;
-          }
+              break;
+            }
           case PlantHealth.Healthy:
-          {
-            AddItem(96, 168, 0xC61);
-            AddItem(162, 168, 0xC61);
+            {
+              AddItem(96, 168, 0xC61);
+              AddItem(162, 168, 0xC61);
 
-            AddHtmlLocalized(129, 167, 42, 20, message, 0x008200);
+              AddHtmlLocalized(129, 167, 42, 20, message, 0x008200);
 
-            break;
-          }
+              break;
+            }
           case PlantHealth.Vibrant:
-          {
-            AddItem(93, 162, 0x1A99);
-            AddItem(162, 162, 0x1A99);
+            {
+              AddItem(93, 162, 0x1A99);
+              AddItem(162, 162, 0x1A99);
 
-            AddHtmlLocalized(129, 167, 42, 20, message, 0x0083E0);
+              AddHtmlLocalized(129, 167, 42, 20, message, 0x0083E0);
 
-            break;
-          }
+              break;
+            }
         }
       }
     }
@@ -246,7 +246,7 @@ namespace Server.Engines.Plants
       if (info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus >= PlantStatus.DecorativePlant)
         return;
 
-      if ((info.ButtonID >= 6 && info.ButtonID <= 10 || info.ButtonID == 12) &&
+      if (((info.ButtonID >= 6 && info.ButtonID <= 10) || info.ButtonID == 12) &&
           !from.InRange(m_Plant.GetWorldLocation(), 3))
       {
         from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 500446); // That is too far away.
@@ -262,110 +262,110 @@ namespace Server.Engines.Plants
       switch (info.ButtonID)
       {
         case 1: // Reproduction menu
-        {
-          if (m_Plant.PlantStatus > PlantStatus.BowlOfDirt)
           {
-            from.SendGump(new ReproductionGump(m_Plant));
+            if (m_Plant.PlantStatus > PlantStatus.BowlOfDirt)
+            {
+              from.SendGump(new ReproductionGump(m_Plant));
+            }
+            else
+            {
+              from.SendLocalizedMessage(1061885); // You need to plant a seed in the bowl first.
+
+              from.SendGump(new MainPlantGump(m_Plant));
+            }
+
+            break;
           }
-          else
+        case 2: // Infestation
           {
-            from.SendLocalizedMessage(1061885); // You need to plant a seed in the bowl first.
+            from.Send(new DisplayHelpTopic(54, true)); // INFESTATION LEVEL
 
             from.SendGump(new MainPlantGump(m_Plant));
+
+            break;
           }
-
-          break;
-        }
-        case 2: // Infestation
-        {
-          from.Send(new DisplayHelpTopic(54, true)); // INFESTATION LEVEL
-
-          from.SendGump(new MainPlantGump(m_Plant));
-
-          break;
-        }
         case 3: // Fungus
-        {
-          from.Send(new DisplayHelpTopic(56, true)); // FUNGUS LEVEL
+          {
+            from.Send(new DisplayHelpTopic(56, true)); // FUNGUS LEVEL
 
-          from.SendGump(new MainPlantGump(m_Plant));
+            from.SendGump(new MainPlantGump(m_Plant));
 
-          break;
-        }
+            break;
+          }
         case 4: // Poison
-        {
-          from.Send(new DisplayHelpTopic(58, true)); // POISON LEVEL
+          {
+            from.Send(new DisplayHelpTopic(58, true)); // POISON LEVEL
 
-          from.SendGump(new MainPlantGump(m_Plant));
+            from.SendGump(new MainPlantGump(m_Plant));
 
-          break;
-        }
+            break;
+          }
         case 5: // Disease
-        {
-          from.Send(new DisplayHelpTopic(60, true)); // DISEASE LEVEL
+          {
+            from.Send(new DisplayHelpTopic(60, true)); // DISEASE LEVEL
 
-          from.SendGump(new MainPlantGump(m_Plant));
+            from.SendGump(new MainPlantGump(m_Plant));
 
-          break;
-        }
+            break;
+          }
         case 6: // Water
-        {
-          BaseBeverage bev = from.Backpack.FindItemsByType<BaseBeverage>().Find(beverage =>
-            beverage.IsEmpty && beverage.Pourable && beverage.Content == BeverageType.Water);
-
-          if (bev == null)
           {
-            from.Target = new PlantPourTarget(m_Plant);
-            from.SendLocalizedMessage(1060808,
-              $"#{m_Plant.GetLocalizedPlantStatus()}"); // Target the container you wish to use to water the ~1_val~.
-          }
-          else
-          {
-            m_Plant.Pour(from, bev);
-          }
+            BaseBeverage bev = from.Backpack.FindItemsByType<BaseBeverage>().Find(beverage =>
+              beverage.IsEmpty && beverage.Pourable && beverage.Content == BeverageType.Water);
 
-          from.SendGump(new MainPlantGump(m_Plant));
+            if (bev == null)
+            {
+              from.Target = new PlantPourTarget(m_Plant);
+              from.SendLocalizedMessage(1060808,
+                $"#{m_Plant.GetLocalizedPlantStatus()}"); // Target the container you wish to use to water the ~1_val~.
+            }
+            else
+            {
+              m_Plant.Pour(from, bev);
+            }
 
-          break;
-        }
+            from.SendGump(new MainPlantGump(m_Plant));
+
+            break;
+          }
         case 7: // Poison potion
-        {
-          AddPotion(from, PotionEffect.PoisonGreater, PotionEffect.PoisonDeadly);
+          {
+            AddPotion(from, PotionEffect.PoisonGreater, PotionEffect.PoisonDeadly);
 
-          break;
-        }
+            break;
+          }
         case 8: // Cure potion
-        {
-          AddPotion(from, PotionEffect.CureGreater);
+          {
+            AddPotion(from, PotionEffect.CureGreater);
 
-          break;
-        }
+            break;
+          }
         case 9: // Heal potion
-        {
-          AddPotion(from, PotionEffect.HealGreater);
+          {
+            AddPotion(from, PotionEffect.HealGreater);
 
-          break;
-        }
+            break;
+          }
         case 10: // Strength potion
-        {
-          AddPotion(from, PotionEffect.StrengthGreater);
+          {
+            AddPotion(from, PotionEffect.StrengthGreater);
 
-          break;
-        }
+            break;
+          }
         case 11: // Help
-        {
-          from.Send(new DisplayHelpTopic(48, true)); // PLANT GROWING
+          {
+            from.Send(new DisplayHelpTopic(48, true)); // PLANT GROWING
 
-          from.SendGump(new MainPlantGump(m_Plant));
+            from.SendGump(new MainPlantGump(m_Plant));
 
-          break;
-        }
+            break;
+          }
         case 12: // Empty the bowl
-        {
-          from.SendGump(new EmptyTheBowlGump(m_Plant));
+          {
+            from.SendGump(new EmptyTheBowlGump(m_Plant));
 
-          break;
-        }
+            break;
+          }
       }
     }
 

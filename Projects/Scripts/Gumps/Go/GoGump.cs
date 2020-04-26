@@ -44,7 +44,8 @@ namespace Server.Gumps
     public static readonly int EntryHeight = PropsConfig.EntryHeight;
     public static readonly int BorderSize = PropsConfig.BorderSize;
 
-    private static bool PrevLabel = false, NextLabel = false;
+    private static readonly bool PrevLabel = false;
+    private static readonly bool NextLabel = false;
 
     private static readonly int PrevLabelOffsetX = PrevWidth + 1;
     private static readonly int PrevLabelOffsetY = 0;
@@ -60,10 +61,10 @@ namespace Server.Gumps
 
     private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
     private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
-    private ParentNode m_Node;
-    private int m_Page;
+    private readonly ParentNode m_Node;
+    private readonly int m_Page;
 
-    private LocationTree m_Tree;
+    private readonly LocationTree m_Tree;
 
     private GoGump(int page, Mobile from, LocationTree tree, ParentNode node) : base(50, 50)
     {
@@ -194,42 +195,42 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 1:
-        {
-          if (m_Node.Parent != null)
-            from.SendGump(new GoGump(0, from, m_Tree, m_Node.Parent));
-
-          break;
-        }
-        case 2:
-        {
-          if (m_Page > 0)
-            from.SendGump(new GoGump(m_Page - 1, from, m_Tree, m_Node));
-
-          break;
-        }
-        case 3:
-        {
-          if ((m_Page + 1) * EntryCount < m_Node.Children.Length)
-            from.SendGump(new GoGump(m_Page + 1, from, m_Tree, m_Node));
-
-          break;
-        }
-        default:
-        {
-          int index = info.ButtonID - 4;
-
-          if (index >= 0 && index < m_Node.Children.Length)
           {
-            IGoNode o = m_Node.Children[index];
+            if (m_Node.Parent != null)
+              from.SendGump(new GoGump(0, from, m_Tree, m_Node.Parent));
 
-            if (o is ParentNode node)
-              from.SendGump(new GoGump(0, from, m_Tree, node));
-            else
-              from.MoveToWorld(((ChildNode)o).Location, m_Tree.Map);
+            break;
           }
+        case 2:
+          {
+            if (m_Page > 0)
+              from.SendGump(new GoGump(m_Page - 1, from, m_Tree, m_Node));
 
-          break;
-        }
+            break;
+          }
+        case 3:
+          {
+            if ((m_Page + 1) * EntryCount < m_Node.Children.Length)
+              from.SendGump(new GoGump(m_Page + 1, from, m_Tree, m_Node));
+
+            break;
+          }
+        default:
+          {
+            int index = info.ButtonID - 4;
+
+            if (index >= 0 && index < m_Node.Children.Length)
+            {
+              IGoNode o = m_Node.Children[index];
+
+              if (o is ParentNode node)
+                from.SendGump(new GoGump(0, from, m_Tree, node));
+              else
+                from.MoveToWorld(((ChildNode)o).Location, m_Tree.Map);
+            }
+
+            break;
+          }
       }
     }
   }

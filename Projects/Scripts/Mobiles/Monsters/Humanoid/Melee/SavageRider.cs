@@ -36,7 +36,7 @@ namespace Server.Mobiles
 
       PackItem(new Bandage(Utility.RandomMinMax(1, 15)));
 
-      if (0.1 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.1)
         PackItem(new BolaBall());
 
       AddItem(new TribalSpear());

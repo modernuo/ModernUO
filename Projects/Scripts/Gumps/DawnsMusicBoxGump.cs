@@ -5,7 +5,7 @@ namespace Server.Gumps
 {
   public class DawnsMusicBoxGump : Gump
   {
-    private DawnsMusicBox m_Box;
+    private readonly DawnsMusicBox m_Box;
 
     public DawnsMusicBoxGump(DawnsMusicBox box)
       : base(60, 36)

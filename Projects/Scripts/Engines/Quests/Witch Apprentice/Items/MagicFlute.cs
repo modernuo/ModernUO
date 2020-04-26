@@ -32,7 +32,7 @@ namespace Server.Engines.Quests.Hag
           FindZeefzorpulObjective obj = qs.FindObjective<FindZeefzorpulObjective>();
           if (obj?.Completed == false)
           {
-            if (player.Map != Map.Trammel && player.Map != Map.Felucca || !player.InRange(obj.ImpLocation, 8))
+            if ((player.Map != Map.Trammel && player.Map != Map.Felucca) || !player.InRange(obj.ImpLocation, 8))
             {
               player.SendLocalizedMessage(
                 1055053); // Nothing happens. Zeefzorpul must not be hiding in this area.

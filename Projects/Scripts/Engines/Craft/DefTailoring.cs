@@ -7,7 +7,7 @@ namespace Server.Engines.Craft
   {
     private static CraftSystem m_CraftSystem;
 
-    private static Type[] m_TailorColorables =
+    private static readonly Type[] m_TailorColorables =
     {
       typeof(GozaMatEastDeed), typeof(GozaMatSouthDeed),
       typeof(SquareGozaMatEastDeed), typeof(SquareGozaMatSouthDeed),
@@ -85,8 +85,6 @@ namespace Server.Engines.Craft
     {
       int index;
 
-      #region Hats
-
       AddCraft(typeof(SkullCap), 1011375, 1025444, 0.0, 25.0, typeof(Cloth), 1044286, 2, 1044287);
       AddCraft(typeof(Bandana), 1011375, 1025440, 0.0, 25.0, typeof(Cloth), 1044286, 2, 1044287);
       AddCraft(typeof(FloppyHat), 1011375, 1025907, 6.2, 31.2, typeof(Cloth), 1044286, 11, 1044287);
@@ -111,10 +109,6 @@ namespace Server.Engines.Craft
         index = AddCraft(typeof(Kasa), 1011375, 1030211, 60.0, 85.0, typeof(Cloth), 1044286, 12, 1044287);
         SetNeededExpansion(index, Expansion.SE);
       }
-
-      #endregion
-
-      #region Shirts
 
       AddCraft(typeof(Doublet), 1015269, 1028059, 0, 25.0, typeof(Cloth), 1044286, 8, 1044287);
       AddCraft(typeof(Shirt), 1015269, 1025399, 20.7, 45.7, typeof(Cloth), 1044286, 8, 1044287);
@@ -151,10 +145,6 @@ namespace Server.Engines.Craft
         SetNeededExpansion(index, Expansion.SE);
       }
 
-      #endregion
-
-      #region Pants
-
       AddCraft(typeof(ShortPants), 1015279, 1025422, 24.8, 49.8, typeof(Cloth), 1044286, 6, 1044287);
       AddCraft(typeof(LongPants), 1015279, 1025433, 24.8, 49.8, typeof(Cloth), 1044286, 8, 1044287);
       AddCraft(typeof(Kilt), 1015279, 1025431, 20.7, 45.7, typeof(Cloth), 1044286, 8, 1044287);
@@ -170,10 +160,6 @@ namespace Server.Engines.Craft
         index = AddCraft(typeof(TattsukeHakama), 1015279, 1030214, 50.0, 75.0, typeof(Cloth), 1044286, 16, 1044287);
         SetNeededExpansion(index, Expansion.SE);
       }
-
-      #endregion
-
-      #region Misc
 
       AddCraft(typeof(BodySash), 1015283, 1025441, 4.1, 29.1, typeof(Cloth), 1044286, 4, 1044287);
       AddCraft(typeof(HalfApron), 1015283, 1025435, 20.7, 45.7, typeof(Cloth), 1044286, 6, 1044287);
@@ -243,10 +229,6 @@ namespace Server.Engines.Craft
         SetNeededExpansion(index, Expansion.SE);
       }
 
-      #endregion
-
-      #region Footwear
-
       if (Core.AOS)
         AddCraft(typeof(FurBoots), 1015288, 1028967, 50.0, 75.0, typeof(Cloth), 1044286, 12, 1044287);
 
@@ -262,10 +244,6 @@ namespace Server.Engines.Craft
       AddCraft(typeof(Shoes), 1015288, 1025904, 16.5, 41.5, typeof(Leather), 1044462, 6, 1044463);
       AddCraft(typeof(Boots), 1015288, 1025899, 33.1, 58.1, typeof(Leather), 1044462, 8, 1044463);
       AddCraft(typeof(ThighBoots), 1015288, 1025906, 41.4, 66.4, typeof(Leather), 1044462, 10, 1044463);
-
-      #endregion
-
-      #region Leather Armor
 
       if (Core.ML)
       {
@@ -338,10 +316,6 @@ namespace Server.Engines.Craft
         SetNeededExpansion(index, Expansion.SE);
       }
 
-      #endregion
-
-      #region Studded Armor
-
       AddCraft(typeof(StuddedGorget), 1015300, 1025078, 78.8, 103.8, typeof(Leather), 1044462, 6, 1044463);
       AddCraft(typeof(StuddedGloves), 1015300, 1025077, 82.9, 107.9, typeof(Leather), 1044462, 8, 1044463);
       AddCraft(typeof(StuddedArms), 1015300, 1025076, 87.1, 112.1, typeof(Leather), 1044462, 10, 1044463);
@@ -365,20 +339,12 @@ namespace Server.Engines.Craft
         SetNeededExpansion(index, Expansion.SE);
       }
 
-      #endregion
-
-      #region Female Armor
-
       AddCraft(typeof(LeatherShorts), 1015306, 1027168, 62.2, 87.2, typeof(Leather), 1044462, 8, 1044463);
       AddCraft(typeof(LeatherSkirt), 1015306, 1027176, 58.0, 83.0, typeof(Leather), 1044462, 6, 1044463);
       AddCraft(typeof(LeatherBustierArms), 1015306, 1027178, 58.0, 83.0, typeof(Leather), 1044462, 6, 1044463);
       AddCraft(typeof(StuddedBustierArms), 1015306, 1027180, 82.9, 107.9, typeof(Leather), 1044462, 8, 1044463);
       AddCraft(typeof(FemaleLeatherChest), 1015306, 1027174, 62.2, 87.2, typeof(Leather), 1044462, 8, 1044463);
       AddCraft(typeof(FemaleStuddedChest), 1015306, 1027170, 87.1, 112.1, typeof(Leather), 1044462, 10, 1044463);
-
-      #endregion
-
-      #region Bone Armor
 
       index = AddCraft(typeof(BoneHelm), 1049149, 1025206, 85.0, 110.0, typeof(Leather), 1044462, 4, 1044463);
       AddRes(index, typeof(Bone), 1049064, 2, 1049063);
@@ -397,8 +363,6 @@ namespace Server.Engines.Craft
 
       index = AddCraft(typeof(OrcHelm), 1049149, 1027947, 90.0, 115.0, typeof(Leather), 1044462, 6, 1044463);
       AddRes(index, typeof(Bone), 1049064, 4, 1049063);
-
-      #endregion
 
       // Set the overridable material
       SetSubRes(typeof(Leather), 1049150);

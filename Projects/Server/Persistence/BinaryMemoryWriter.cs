@@ -33,14 +33,14 @@ namespace Server
 
     protected override int BufferSize => 512;
 
-    public int CommitTo(SequentialFileWriter dataFile, SequentialFileWriter indexFile, int typeCode, uint serial)
+    public int CommitTo(SequentialFileWriterStream dataFile, SequentialFileWriterStream indexFile, int typeCode, uint serial)
     {
       Flush();
 
-      byte[] buffer = stream.GetBuffer();
-      int length = (int)stream.Length;
+      var buffer = stream.GetBuffer();
+      var length = (int)stream.Length;
 
-      long position = dataFile.Position;
+      var position = dataFile.Position;
 
       dataFile.Write(buffer, 0, length);
 

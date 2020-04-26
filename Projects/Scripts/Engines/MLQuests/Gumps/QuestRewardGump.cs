@@ -6,7 +6,7 @@ namespace Server.Engines.MLQuests.Gumps
 {
   public class QuestRewardGump : BaseQuestGump
   {
-    private MLQuestInstance m_Instance;
+    private readonly MLQuestInstance m_Instance;
 
     public QuestRewardGump(MLQuestInstance instance)
       : base(1072201) // Reward

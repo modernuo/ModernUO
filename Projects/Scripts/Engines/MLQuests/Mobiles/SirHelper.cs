@@ -83,7 +83,7 @@ namespace Server.Engines.MLQuests.Mobiles
       from.SendGump(m_Gump);
 
       // Paperdoll doesn't open
-      //base.OnDoubleClick( from );
+      // base.OnDoubleClick( from );
     }
 
     public override void OnThink()

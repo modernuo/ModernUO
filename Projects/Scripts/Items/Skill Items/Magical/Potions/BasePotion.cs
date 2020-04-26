@@ -72,8 +72,6 @@ namespace Server.Items
     int ICommodity.DescriptionNumber => LabelNumber;
     bool ICommodity.IsDeedable => Core.ML;
 
-    #region ICraftable Members
-
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
     {
@@ -93,8 +91,8 @@ namespace Server.Items
             PotionKeg keg = kegs[i];
 
             // Should never happen
-//            if (keg == null)
-//              continue;
+            //            if (keg == null)
+            //              continue;
 
             if (keg.Held <= 0 || keg.Held >= 100)
               continue;
@@ -114,8 +112,6 @@ namespace Server.Items
 
       return 1;
     }
-
-    #endregion
 
     public static bool HasFreeHand(Mobile m)
     {
@@ -187,10 +183,10 @@ namespace Server.Items
       {
         case 1:
         case 0:
-        {
-          m_PotionEffect = (PotionEffect)reader.ReadInt();
-          break;
-        }
+          {
+            m_PotionEffect = (PotionEffect)reader.ReadInt();
+            break;
+          }
       }
 
       if (version == 0)
@@ -205,12 +201,8 @@ namespace Server.Items
 
       m.PlaySound(0x2D6);
 
-      #region Dueling
-
       if (!DuelContext.IsFreeConsume(m))
         m.AddToBackpack(new Bottle());
-
-      #endregion
 
       if (m.Body.IsHuman && !m.Mounted)
         m.Animate(34, 5, 1, true, false, 0);

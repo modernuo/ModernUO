@@ -84,7 +84,7 @@ namespace Server.Items
 
     public static bool CheckUse(InteriorDecorator tool, Mobile from)
     {
-      /*if ( tool.Deleted || !tool.IsChildOf( from.Backpack ) )
+      /*if (tool.Deleted || !tool.IsChildOf( from.Backpack ))
         from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
       else*/
       if (!InHouse(from))
@@ -97,7 +97,7 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private InteriorDecorator m_Decorator;
+      private readonly InteriorDecorator m_Decorator;
 
       public InternalGump(InteriorDecorator decorator) : base(150, 50)
       {
@@ -140,7 +140,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private InteriorDecorator m_Decorator;
+      private readonly InteriorDecorator m_Decorator;
 
       public InternalTarget(InteriorDecorator decorator) : base(-1, false, TargetFlags.None)
       {

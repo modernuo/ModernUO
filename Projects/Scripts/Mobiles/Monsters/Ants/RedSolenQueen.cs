@@ -50,7 +50,7 @@ namespace Server.Mobiles
     }
 
     public override string CorpseName => "a solen queen corpse";
-    public bool BurstSac{ get; private set; }
+    public bool BurstSac { get; private set; }
 
     public override string DefaultName => "a red solen queen";
 
@@ -68,7 +68,6 @@ namespace Server.Mobiles
     {
       AddLoot(LootPack.Rich);
     }
-
 
     public override bool IsEnemy(Mobile m)
     {
@@ -122,10 +121,10 @@ namespace Server.Mobiles
       switch (version)
       {
         case 1:
-        {
-          BurstSac = reader.ReadBool();
-          break;
-        }
+          {
+            BurstSac = reader.ReadBool();
+            break;
+          }
       }
     }
   }

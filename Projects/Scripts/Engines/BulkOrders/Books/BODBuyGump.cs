@@ -7,11 +7,11 @@ namespace Server.Engines.BulkOrders
 {
   public class BODBuyGump : Gump
   {
-    private BulkOrderBook m_Book;
-    private PlayerMobile m_From;
-    private IBOBEntry m_Entry;
-    private int m_Page;
-    private int m_Price;
+    private readonly BulkOrderBook m_Book;
+    private readonly PlayerMobile m_From;
+    private readonly IBOBEntry m_Entry;
+    private readonly int m_Page;
+    private readonly int m_Price;
 
     public BODBuyGump(PlayerMobile from, BulkOrderBook book, IBOBEntry entry, int page, int price) : base(100, 200)
     {

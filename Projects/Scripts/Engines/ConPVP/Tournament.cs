@@ -54,55 +54,55 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 5:
-        {
-          FactionRestricted = reader.ReadBool();
+          {
+            FactionRestricted = reader.ReadBool();
 
-          goto case 4;
-        }
+            goto case 4;
+          }
         case 4:
-        {
-          EventController = reader.ReadItem() as EventController;
+          {
+            EventController = reader.ReadItem() as EventController;
 
-          goto case 3;
-        }
+            goto case 3;
+          }
         case 3:
-        {
-          SuddenDeathRounds = reader.ReadEncodedInt();
+          {
+            SuddenDeathRounds = reader.ReadEncodedInt();
 
-          goto case 2;
-        }
+            goto case 2;
+          }
         case 2:
-        {
-          TourneyType = (TourneyType)reader.ReadEncodedInt();
+          {
+            TourneyType = (TourneyType)reader.ReadEncodedInt();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          GroupType = (GroupingType)reader.ReadEncodedInt();
-          TieType = (TieType)reader.ReadEncodedInt();
-          SignupPeriod = reader.ReadTimeSpan();
+          {
+            GroupType = (GroupingType)reader.ReadEncodedInt();
+            TieType = (TieType)reader.ReadEncodedInt();
+            SignupPeriod = reader.ReadTimeSpan();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          if (version < 3)
-            SuddenDeathRounds = 3;
+          {
+            if (version < 3)
+              SuddenDeathRounds = 3;
 
-          m_ParticipantsPerMatch = reader.ReadEncodedInt();
-          m_PlayersPerParticipant = reader.ReadEncodedInt();
-          SignupPeriod = reader.ReadTimeSpan();
-          CurrentStage = TournamentStage.Inactive;
-          Pyramid = new TourneyPyramid();
-          Ruleset = new Ruleset(RulesetLayout.Root);
-          Ruleset.ApplyDefault(Ruleset.Layout.Defaults[0]);
-          Participants = new List<TourneyParticipant>();
-          Undefeated = new List<TourneyParticipant>();
-          Arenas = new List<Arena>();
+            m_ParticipantsPerMatch = reader.ReadEncodedInt();
+            m_PlayersPerParticipant = reader.ReadEncodedInt();
+            SignupPeriod = reader.ReadTimeSpan();
+            CurrentStage = TournamentStage.Inactive;
+            Pyramid = new TourneyPyramid();
+            Ruleset = new Ruleset(RulesetLayout.Root);
+            Ruleset.ApplyDefault(Ruleset.Layout.Defaults[0]);
+            Participants = new List<TourneyParticipant>();
+            Undefeated = new List<TourneyParticipant>();
+            Arenas = new List<Arena>();
 
-          break;
-        }
+            break;
+          }
       }
 
       Timer.DelayCall(SliceInterval, SliceInterval, Slice);
@@ -126,24 +126,24 @@ namespace Server.Engines.ConPVP
     public bool IsNotoRestricted => TourneyType != TourneyType.Standard;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public EventController EventController{ get; set; }
+    public EventController EventController { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int SuddenDeathRounds{ get; set; }
+    public int SuddenDeathRounds { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TourneyType TourneyType{ get; set; }
+    public TourneyType TourneyType { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public GroupingType GroupType{ get; set; }
+    public GroupingType GroupType { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TieType TieType{ get; set; }
+    public TieType TieType { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan SuddenDeath{ get; set; }
+    public TimeSpan SuddenDeath { get; set; }
 
-    public Ruleset Ruleset{ get; set; }
+    public Ruleset Ruleset { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int ParticipantsPerMatch
@@ -170,19 +170,19 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int LevelRequirement{ get; set; }
+    public int LevelRequirement { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool FactionRestricted{ get; set; }
+    public bool FactionRestricted { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan SignupPeriod{ get; set; }
+    public TimeSpan SignupPeriod { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime SignupStart{ get; set; }
+    public DateTime SignupStart { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TournamentStage CurrentStage{ get; private set; }
+    public TournamentStage CurrentStage { get; private set; }
 
     public TournamentStage Stage
     {
@@ -190,13 +190,13 @@ namespace Server.Engines.ConPVP
       set => CurrentStage = value;
     }
 
-    public TourneyPyramid Pyramid{ get; set; }
+    public TourneyPyramid Pyramid { get; set; }
 
-    public List<Arena> Arenas{ get; set; }
+    public List<Arena> Arenas { get; set; }
 
-    public List<TourneyParticipant> Participants{ get; set; }
+    public List<TourneyParticipant> Participants { get; set; }
 
-    public List<TourneyParticipant> Undefeated{ get; set; }
+    public List<TourneyParticipant> Undefeated { get; set; }
 
     public bool IsFactionRestricted => FactionRestricted || TourneyType == TourneyType.Faction;
 
@@ -280,76 +280,76 @@ namespace Server.Engines.ConPVP
       switch (tieType)
       {
         case TieType.FullAdvancement:
-        {
-          sb.AppendFormat("In accordance with the rules, {0} parties are advanced.", whole);
-          break;
-        }
+          {
+            sb.AppendFormat("In accordance with the rules, {0} parties are advanced.", whole);
+            break;
+          }
         case TieType.FullElimination:
-        {
-          for (int j = 0; j < remaining.Count; ++j)
-            Undefeated.Remove(remaining[j]);
+          {
+            for (int j = 0; j < remaining.Count; ++j)
+              Undefeated.Remove(remaining[j]);
 
-          sb.AppendFormat("In accordance with the rules, {0} parties are eliminated.", whole);
-          break;
-        }
+            sb.AppendFormat("In accordance with the rules, {0} parties are eliminated.", whole);
+            break;
+          }
         case TieType.Random:
-        {
-          TourneyParticipant advanced = remaining[Utility.Random(remaining.Count)];
+          {
+            TourneyParticipant advanced = remaining[Utility.Random(remaining.Count)];
 
-          for (int i = 0; i < remaining.Count; ++i)
-            if (remaining[i] != advanced)
-              Undefeated.Remove(remaining[i]);
+            for (int i = 0; i < remaining.Count; ++i)
+              if (remaining[i] != advanced)
+                Undefeated.Remove(remaining[i]);
 
-          if (advanced != null)
-            sb.AppendFormat("In accordance with the rules, {0} {1} advanced.", advanced.NameList,
-              advanced.Players.Count == 1 ? "is" : "are");
+            if (advanced != null)
+              sb.AppendFormat("In accordance with the rules, {0} {1} advanced.", advanced.NameList,
+                advanced.Players.Count == 1 ? "is" : "are");
 
-          break;
-        }
+            break;
+          }
         case TieType.Highest:
-        {
-          TourneyParticipant advanced = null;
-
-          for (int i = 0; i < remaining.Count; ++i)
           {
-            TourneyParticipant part = remaining[i];
+            TourneyParticipant advanced = null;
 
-            if (advanced == null || part.TotalLadderXP > advanced.TotalLadderXP)
-              advanced = part;
+            for (int i = 0; i < remaining.Count; ++i)
+            {
+              TourneyParticipant part = remaining[i];
+
+              if (advanced == null || part.TotalLadderXP > advanced.TotalLadderXP)
+                advanced = part;
+            }
+
+            for (int i = 0; i < remaining.Count; ++i)
+              if (remaining[i] != advanced)
+                Undefeated.Remove(remaining[i]);
+
+            if (advanced != null)
+              sb.AppendFormat("In accordance with the rules, {0} {1} advanced.", advanced.NameList,
+                advanced.Players.Count == 1 ? "is" : "are");
+
+            break;
           }
-
-          for (int i = 0; i < remaining.Count; ++i)
-            if (remaining[i] != advanced)
-              Undefeated.Remove(remaining[i]);
-
-          if (advanced != null)
-            sb.AppendFormat("In accordance with the rules, {0} {1} advanced.", advanced.NameList,
-              advanced.Players.Count == 1 ? "is" : "are");
-
-          break;
-        }
         case TieType.Lowest:
-        {
-          TourneyParticipant advanced = null;
-
-          for (int i = 0; i < remaining.Count; ++i)
           {
-            TourneyParticipant part = remaining[i];
+            TourneyParticipant advanced = null;
 
-            if (advanced == null || part.TotalLadderXP < advanced.TotalLadderXP)
-              advanced = part;
+            for (int i = 0; i < remaining.Count; ++i)
+            {
+              TourneyParticipant part = remaining[i];
+
+              if (advanced == null || part.TotalLadderXP < advanced.TotalLadderXP)
+                advanced = part;
+            }
+
+            for (int i = 0; i < remaining.Count; ++i)
+              if (remaining[i] != advanced)
+                Undefeated.Remove(remaining[i]);
+
+            if (advanced != null)
+              sb.AppendFormat("In accordance with the rules, {0} {1} advanced.", advanced.NameList,
+                advanced.Players.Count == 1 ? "is" : "are");
+
+            break;
           }
-
-          for (int i = 0; i < remaining.Count; ++i)
-            if (remaining[i] != advanced)
-              Undefeated.Remove(remaining[i]);
-
-          if (advanced != null)
-            sb.AppendFormat("In accordance with the rules, {0} {1} advanced.", advanced.NameList,
-              advanced.Players.Count == 1 ? "is" : "are");
-
-          break;
-        }
       }
 
       Alert(arena, sb.ToString());
@@ -429,69 +429,69 @@ namespace Server.Engines.ConPVP
       switch (TourneyType)
       {
         case TourneyType.FreeForAll:
-        {
-          if (Pyramid.Levels.Count < 1)
+          {
+            if (Pyramid.Levels.Count < 1)
+              break;
+
+            PyramidLevel top = Pyramid.Levels[Pyramid.Levels.Count - 1];
+
+            if (top.FreeAdvance != null || top.Matches.Count != 1)
+              break;
+
+            TourneyMatch match = top.Matches[0];
+            TourneyParticipant winner = match.Winner;
+
+            if (winner != null)
+              GiveAwards(winner.Players, TrophyRank.Gold, ComputeCashAward());
+
             break;
-
-          PyramidLevel top = Pyramid.Levels[Pyramid.Levels.Count - 1];
-
-          if (top.FreeAdvance != null || top.Matches.Count != 1)
-            break;
-
-          TourneyMatch match = top.Matches[0];
-          TourneyParticipant winner = match.Winner;
-
-          if (winner != null)
-            GiveAwards(winner.Players, TrophyRank.Gold, ComputeCashAward());
-
-          break;
-        }
+          }
         case TourneyType.Standard:
-        {
-          if (Pyramid.Levels.Count < 2)
-            break;
-
-          PyramidLevel top = Pyramid.Levels[Pyramid.Levels.Count - 1];
-
-          if (top.FreeAdvance != null || top.Matches.Count != 1)
-            break;
-
-          int cash = ComputeCashAward();
-
-          TourneyMatch match = top.Matches[0];
-          TourneyParticipant winner = match.Winner;
-
-          for (int i = 0; i < match.Participants.Count; ++i)
           {
-            TourneyParticipant part = match.Participants[i];
+            if (Pyramid.Levels.Count < 2)
+              break;
 
-            if (part == winner)
-              GiveAwards(part.Players, TrophyRank.Gold, cash);
-            else
-              GiveAwards(part.Players, TrophyRank.Silver, cash / 2);
-          }
+            PyramidLevel top = Pyramid.Levels[Pyramid.Levels.Count - 1];
 
-          PyramidLevel next = Pyramid.Levels[Pyramid.Levels.Count - 2];
+            if (top.FreeAdvance != null || top.Matches.Count != 1)
+              break;
 
-          if (next.Matches.Count > 2)
-            break;
+            int cash = ComputeCashAward();
 
-          for (int i = 0; i < next.Matches.Count; ++i)
-          {
-            match = next.Matches[i];
-            winner = match.Winner;
+            TourneyMatch match = top.Matches[0];
+            TourneyParticipant winner = match.Winner;
 
-            for (int j = 0; j < match.Participants.Count; ++j)
+            for (int i = 0; i < match.Participants.Count; ++i)
             {
-              TourneyParticipant part = match.Participants[j];
+              TourneyParticipant part = match.Participants[i];
 
-              if (part != winner)
-                GiveAwards(part.Players, TrophyRank.Bronze, cash / 4);
+              if (part == winner)
+                GiveAwards(part.Players, TrophyRank.Gold, cash);
+              else
+                GiveAwards(part.Players, TrophyRank.Silver, cash / 2);
             }
-          }
 
-          break;
-        }
+            PyramidLevel next = Pyramid.Levels[Pyramid.Levels.Count - 2];
+
+            if (next.Matches.Count > 2)
+              break;
+
+            for (int i = 0; i < next.Matches.Count; ++i)
+            {
+              match = next.Matches[i];
+              winner = match.Winner;
+
+              for (int j = 0; j < match.Participants.Count; ++j)
+              {
+                TourneyParticipant part = match.Participants[j];
+
+                if (part != winner)
+                  GiveAwards(part.Players, TrophyRank.Bronze, cash / 4);
+              }
+            }
+
+            break;
+          }
       }
     }
 
@@ -682,25 +682,25 @@ namespace Server.Engines.ConPVP
                   winner))
                 {
                   case 0:
-                  {
-                    name = "Minax";
-                    break;
-                  }
+                    {
+                      name = "Minax";
+                      break;
+                    }
                   case 1:
-                  {
-                    name = "Council of Mages";
-                    break;
-                  }
+                    {
+                      name = "Council of Mages";
+                      break;
+                    }
                   case 2:
-                  {
-                    name = "True Britannians";
-                    break;
-                  }
+                    {
+                      name = "True Britannians";
+                      break;
+                    }
                   case 3:
-                  {
-                    name = "Shadowlords";
-                    break;
-                  }
+                    {
+                      name = "Shadowlords";
+                      break;
+                    }
                 }
 
                 Alert("The tournament has completed!", $"The {name} team has won!");
@@ -817,25 +817,25 @@ namespace Server.Engines.ConPVP
                         .Participants.IndexOf(winner))
                       {
                         case 0:
-                        {
-                          name = "Minax";
-                          break;
-                        }
+                          {
+                            name = "Minax";
+                            break;
+                          }
                         case 1:
-                        {
-                          name = "Council of Mages";
-                          break;
-                        }
+                          {
+                            name = "Council of Mages";
+                            break;
+                          }
                         case 2:
-                        {
-                          name = "True Britannians";
-                          break;
-                        }
+                          {
+                            name = "True Britannians";
+                            break;
+                          }
                         case 3:
-                        {
-                          name = "Shadowlords";
-                          break;
-                        }
+                          {
+                            name = "Shadowlords";
+                            break;
+                          }
                       }
 
                       Alert("The tournament has completed!", $"The {name} team has won!");
@@ -873,7 +873,6 @@ namespace Server.Engines.ConPVP
                 Undefeated.Clear();
                 break;
               }
-
             }
 
             if (Undefeated.Count > 1)

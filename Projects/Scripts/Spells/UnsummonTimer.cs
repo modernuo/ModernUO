@@ -6,7 +6,7 @@ namespace Server.Spells
   internal class UnsummonTimer : Timer
   {
     private Mobile m_Caster;
-    private BaseCreature m_Creature;
+    private readonly BaseCreature m_Creature;
 
     public UnsummonTimer(Mobile caster, BaseCreature creature, TimeSpan delay) : base(delay)
     {

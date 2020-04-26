@@ -7,13 +7,12 @@ namespace Server.Spells.Third
 {
   public class UnlockSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Unlock Spell", "Ex Por",
       215,
       9001,
       Reagent.Bloodmoss,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public UnlockSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

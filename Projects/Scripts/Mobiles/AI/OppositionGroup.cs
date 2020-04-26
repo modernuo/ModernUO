@@ -5,11 +5,11 @@ namespace Server
 {
   public class OppositionGroup
   {
-    private Type[][] m_Types;
+    private readonly Type[][] m_Types;
 
     public OppositionGroup(Type[][] types) => m_Types = types;
 
-    public static OppositionGroup TerathansAndOphidians{ get; } = new OppositionGroup(new[]
+    public static OppositionGroup TerathansAndOphidians { get; } = new OppositionGroup(new[]
     {
       new[]
       {
@@ -28,7 +28,7 @@ namespace Server
       }
     });
 
-    public static OppositionGroup SavagesAndOrcs{ get; } = new OppositionGroup(new[]
+    public static OppositionGroup SavagesAndOrcs { get; } = new OppositionGroup(new[]
     {
       new[]
       {
@@ -49,7 +49,7 @@ namespace Server
       }
     });
 
-    public static OppositionGroup FeyAndUndead{ get; } = new OppositionGroup(new[]
+    public static OppositionGroup FeyAndUndead { get; } = new OppositionGroup(new[]
     {
       new[]
       {

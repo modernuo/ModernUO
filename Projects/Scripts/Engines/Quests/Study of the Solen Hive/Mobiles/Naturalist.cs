@@ -32,7 +32,6 @@ namespace Server.Engines.Quests.Naturalist
       AddItem(new LongPants(0x59B));
       AddItem(new Boots());
 
-
       Utility.AssignRandomHair(this);
       Utility.AssignRandomFacialHair(this, HairHue);
     }
@@ -44,7 +43,7 @@ namespace Server.Engines.Quests.Naturalist
         StudyNestsObjective study = qs.FindObjective<StudyNestsObjective>();
         if (study == null)
           return;
-        
+
         if (!study.Completed)
         {
           PlaySound(0x41F);

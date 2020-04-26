@@ -15,7 +15,7 @@ namespace Server.Items
     {
     }
 
-    public override int LabelNumber => 1073377; //Necromantic Reading Glasses
+    public override int LabelNumber => 1073377; // Necromantic Reading Glasses
 
     public override int BasePhysicalResistance => 0;
     public override int BaseFireResistance => 0;

@@ -46,7 +46,6 @@ namespace Server.Mobiles
       helm.Hue = 0x966;
       AddItem(helm);
 
-
       Bow bow = new Bow();
 
       bow.Movable = false;
@@ -73,7 +72,7 @@ namespace Server.Mobiles
     {
       base.Serialize(writer);
 
-      writer.Write(0); // version 
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)

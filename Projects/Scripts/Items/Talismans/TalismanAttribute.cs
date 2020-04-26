@@ -43,13 +43,13 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Type Type{ get; set; }
+    public Type Type { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TextDefinition Name{ get; set; }
+    public TextDefinition Name { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Amount{ get; set; }
+    public int Amount { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsEmpty => Type == null;

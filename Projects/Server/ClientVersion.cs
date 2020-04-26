@@ -42,7 +42,7 @@ namespace Server
       Patch = pat;
       Type = type;
 
-      SourceString = _ToStringImpl();
+      SourceString = ToStringImpl();
     }
 
     public ClientVersion(string fmt)
@@ -53,10 +53,10 @@ namespace Server
       {
         fmt = fmt.ToLower();
 
-        int br1 = fmt.IndexOf('.');
-        int br2 = fmt.IndexOf('.', br1 + 1);
+        var br1 = fmt.IndexOf('.');
+        var br2 = fmt.IndexOf('.', br1 + 1);
 
-        int br3 = br2 + 1;
+        var br3 = br2 + 1;
         while (br3 < fmt.Length && char.IsDigit(fmt, br3))
           br3++;
 
@@ -66,7 +66,7 @@ namespace Server
 
         if (br3 < fmt.Length)
         {
-          if (Major <= 5 && Minor <= 0 && Revision <= 6) //Anything before 5.0.7
+          if (Major <= 5 && Minor <= 0 && Revision <= 6) // Anything before 5.0.7
           {
             if (!char.IsWhiteSpace(fmt, br3))
               Patch = fmt[br3] - 'a' + 1;
@@ -95,17 +95,17 @@ namespace Server
       }
     }
 
-    public int Major{ get; }
+    public int Major { get; }
 
-    public int Minor{ get; }
+    public int Minor { get; }
 
-    public int Revision{ get; }
+    public int Revision { get; }
 
-    public int Patch{ get; }
+    public int Patch { get; }
 
-    public ClientType Type{ get; }
+    public ClientType Type { get; }
 
-    public string SourceString{ get; }
+    public string SourceString { get; }
 
     public int CompareTo(ClientVersion o)
     {
@@ -149,7 +149,7 @@ namespace Server
 
     public override bool Equals(object obj)
     {
-      ClientVersion v = obj as ClientVersion;
+      var v = obj as ClientVersion;
 
       return Major == v?.Major
              && Minor == v.Minor
@@ -158,9 +158,9 @@ namespace Server
              && Type == v.Type;
     }
 
-    private string _ToStringImpl()
+    private string ToStringImpl()
     {
-      StringBuilder builder = new StringBuilder(16);
+      var builder = new StringBuilder(16);
 
       builder.Append(Major);
       builder.Append('.');
@@ -168,7 +168,7 @@ namespace Server
       builder.Append('.');
       builder.Append(Revision);
 
-      if (Major <= 5 && Minor <= 0 && Revision <= 6) //Anything before 5.0.7
+      if (Major <= 5 && Minor <= 0 && Revision <= 6) // Anything before 5.0.7
       {
         if (Patch > 0)
           builder.Append((char)('a' + (Patch - 1)));
@@ -188,7 +188,7 @@ namespace Server
       return builder.ToString();
     }
 
-    public override string ToString() => _ToStringImpl();
+    public override string ToString() => ToStringImpl();
 
     public static bool IsNull(object x) => ReferenceEquals(x, null);
 

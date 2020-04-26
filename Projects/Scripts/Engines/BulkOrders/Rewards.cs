@@ -13,9 +13,9 @@ namespace Server.Engines.BulkOrders
       Types = types;
     }
 
-    public int Points{ get; }
+    public int Points { get; }
 
-    public Type[] Types{ get; }
+    public Type[] Types { get; }
 
     public bool Contains(Type type)
     {
@@ -36,11 +36,11 @@ namespace Server.Engines.BulkOrders
       Type = type;
     }
 
-    public int Weight{ get; }
+    public int Weight { get; }
 
-    public ConstructCallback Constructor{ get; }
+    public ConstructCallback Constructor { get; }
 
-    public int Type{ get; }
+    public int Type { get; }
 
     public Item Construct()
     {
@@ -63,9 +63,9 @@ namespace Server.Engines.BulkOrders
       Items = items;
     }
 
-    public int Points{ get; }
+    public int Points { get; }
 
-    public RewardItem[] Items{ get; }
+    public RewardItem[] Items { get; }
 
     public RewardItem AcquireItem()
     {
@@ -97,7 +97,7 @@ namespace Server.Engines.BulkOrders
 
   public abstract class RewardCalculator
   {
-    public RewardGroup[] Groups{ get; set; }
+    public RewardGroup[] Groups { get; set; }
 
     public abstract int ComputePoints(int quantity, bool exceptional, BulkMaterialType material, int itemCount,
       Type type);
@@ -165,7 +165,7 @@ namespace Server.Engines.BulkOrders
     private static readonly ConstructCallback AncientHammer = CreateAncientHammer;
     public static readonly SmithRewardCalculator Instance = new SmithRewardCalculator();
 
-    private static int[][][] m_GoldTable =
+    private static readonly int[][][] m_GoldTable =
     {
       new[] // 1-part (regular)
       {
@@ -253,7 +253,7 @@ namespace Server.Engines.BulkOrders
       }
     };
 
-    private RewardType[] m_Types =
+    private readonly RewardType[] m_Types =
     {
       // Armors
       new RewardType(200, typeof(RingmailGloves), typeof(RingmailChest), typeof(RingmailArms), typeof(RingmailLegs)),
@@ -264,7 +264,7 @@ namespace Server.Engines.BulkOrders
       // Weapons
       new RewardType(200, typeof(Bardiche), typeof(Halberd)),
       new RewardType(300, typeof(Dagger), typeof(ShortSpear), typeof(Spear), typeof(WarFork),
-        typeof(Kryss)), //OSI put the dagger in there.  Odd, ain't it.
+        typeof(Kryss)), // OSI put the dagger in there.  Odd, ain't it.
       new RewardType(350, typeof(Axe), typeof(BattleAxe), typeof(DoubleAxe), typeof(ExecutionersAxe),
         typeof(LargeBattleAxe), typeof(TwoHandedAxe)),
       new RewardType(350, typeof(Broadsword), typeof(Cutlass), typeof(Katana), typeof(Longsword),
@@ -379,8 +379,6 @@ namespace Server.Engines.BulkOrders
       return Utility.RandomMinMax(min, max);
     }
 
-    #region Constructors
-
     private static Item CreateSturdyShovel(int type) => new SturdyShovel();
 
     private static Item CreateSturdyPickaxe(int type) => new SturdyPickaxe();
@@ -427,8 +425,6 @@ namespace Server.Engines.BulkOrders
 
       throw new InvalidOperationException();
     }
-
-    #endregion
   }
 
   public sealed class TailorRewardCalculator : RewardCalculator
@@ -443,7 +439,7 @@ namespace Server.Engines.BulkOrders
     private static readonly ConstructCallback ClothingBlessDeed = CreateCBD;
     public static readonly TailorRewardCalculator Instance = new TailorRewardCalculator();
 
-    private static int[][][] m_AosGoldTable =
+    private static readonly int[][][] m_AosGoldTable =
     {
       new[] // 1-part (regular)
       {
@@ -495,7 +491,7 @@ namespace Server.Engines.BulkOrders
       }
     };
 
-    private static int[][][] m_OldGoldTable =
+    private static readonly int[][][] m_OldGoldTable =
     {
       new[] // 1-part (regular)
       {
@@ -612,7 +608,7 @@ namespace Server.Engines.BulkOrders
         4 => 1,
         _ => 0
       } * 2 + (exceptional ? 1 : 0);
-      
+
       int quanIndex = quantity switch
       {
         20 => 2,
@@ -636,9 +632,7 @@ namespace Server.Engines.BulkOrders
       return Utility.RandomMinMax(min, max);
     }
 
-    #region Constructors
-
-    private static int[][] m_ClothHues =
+    private static readonly int[][] m_ClothHues =
     {
       new[] { 0x483, 0x48C, 0x488, 0x48A },
       new[] { 0x495, 0x48B, 0x486, 0x485 },
@@ -659,7 +653,7 @@ namespace Server.Engines.BulkOrders
       throw new InvalidOperationException();
     }
 
-    private static int[] m_SandalHues =
+    private static readonly int[] m_SandalHues =
     {
       0x489, 0x47F, 0x482,
       0x47E, 0x48F, 0x494,
@@ -718,7 +712,5 @@ namespace Server.Engines.BulkOrders
     }
 
     private static Item CreateCBD(int type) => new ClothingBlessDeed();
-
-    #endregion
   }
 }

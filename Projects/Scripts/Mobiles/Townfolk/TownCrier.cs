@@ -10,7 +10,7 @@ namespace Server.Mobiles
 {
   public interface ITownCrierEntryList
   {
-    List<TownCrierEntry> Entries{ get; }
+    List<TownCrierEntry> Entries { get; }
     TownCrierEntry GetRandomEntry();
     TownCrierEntry AddEntry(string[] lines, TimeSpan duration);
     void RemoveEntry(TownCrierEntry entry);
@@ -24,7 +24,7 @@ namespace Server.Mobiles
 
     public bool IsEmpty => Entries == null || Entries.Count == 0;
 
-    public List<TownCrierEntry> Entries{ get; private set; }
+    public List<TownCrierEntry> Entries { get; private set; }
 
     public TownCrierEntry GetRandomEntry()
     {
@@ -102,16 +102,16 @@ namespace Server.Mobiles
       ExpireTime = DateTime.UtcNow + duration;
     }
 
-    public string[] Lines{ get; }
+    public string[] Lines { get; }
 
-    public DateTime ExpireTime{ get; }
+    public DateTime ExpireTime { get; }
 
     public bool Expired => DateTime.UtcNow >= ExpireTime;
   }
 
   public class TownCrierDurationPrompt : Prompt
   {
-    private ITownCrierEntryList m_Owner;
+    private readonly ITownCrierEntryList m_Owner;
 
     public TownCrierDurationPrompt(ITownCrierEntryList owner) => m_Owner = owner;
 
@@ -142,10 +142,10 @@ namespace Server.Mobiles
 
   public class TownCrierLinesPrompt : Prompt
   {
-    private TimeSpan m_Duration;
-    private TownCrierEntry m_Entry;
-    private List<string> m_Lines;
-    private ITownCrierEntryList m_Owner;
+    private readonly TimeSpan m_Duration;
+    private readonly TownCrierEntry m_Entry;
+    private readonly List<string> m_Lines;
+    private readonly ITownCrierEntryList m_Owner;
 
     public TownCrierLinesPrompt(ITownCrierEntryList owner, TownCrierEntry entry, List<string> lines, TimeSpan duration)
     {
@@ -187,8 +187,8 @@ namespace Server.Mobiles
 
   public class TownCrierGump : Gump
   {
-    private Mobile m_From;
-    private ITownCrierEntryList m_Owner;
+    private readonly Mobile m_From;
+    private readonly ITownCrierEntryList m_Owner;
 
     public TownCrierGump(Mobile from, ITownCrierEntryList owner) : base(50, 50)
     {
@@ -347,9 +347,9 @@ namespace Server.Mobiles
       Instances.Add(this);
     }
 
-    public static List<TownCrier> Instances{ get; } = new List<TownCrier>();
+    public static List<TownCrier> Instances { get; } = new List<TownCrier>();
 
-    public List<TownCrierEntry> Entries{ get; private set; }
+    public List<TownCrierEntry> Entries { get; private set; }
 
     public TownCrierEntry GetRandomEntry()
     {

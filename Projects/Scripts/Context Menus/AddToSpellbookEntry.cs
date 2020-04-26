@@ -18,7 +18,7 @@ namespace Server.ContextMenus
 
     private class InternalTarget : Target
     {
-      private SpellScroll m_Scroll;
+      private readonly SpellScroll m_Scroll;
 
       public InternalTarget(SpellScroll scroll) : base(3, false, TargetFlags.None) => m_Scroll = scroll;
 

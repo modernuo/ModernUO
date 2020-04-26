@@ -7,11 +7,10 @@ namespace Server.Spells.Chivalry
 {
   public class HolyLightSpell : PaladinSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Holy Light", "Augus Luminos",
       -1,
-      9002
-    );
+      9002);
 
     public HolyLightSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

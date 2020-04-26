@@ -5,13 +5,12 @@ namespace Server.Spells.Sixth
 {
   public class ExplosionSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Explosion", "Vas Ort Flam",
       230,
       9041,
       Reagent.Bloodmoss,
-      Reagent.MandrakeRoot
-    );
+      Reagent.MandrakeRoot);
 
     public ExplosionSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
@@ -55,9 +54,10 @@ namespace Server.Spells.Sixth
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Attacker, m_Defender;
-      private MagerySpell m_Spell;
-      private Mobile m_Target;
+      private readonly Mobile m_Attacker;
+      private readonly Mobile m_Defender;
+      private readonly MagerySpell m_Spell;
+      private readonly Mobile m_Target;
 
       public InternalTimer(MagerySpell spell, Mobile attacker, Mobile defender, Mobile target)
         : base(TimeSpan.FromSeconds(Core.AOS ? 3.0 : 2.5))

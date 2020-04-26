@@ -60,7 +60,7 @@ namespace Server.Mobiles
 
       c.DropItem( new SpleenOfThePutrefier() );
 
-      if ( Utility.RandomDouble() < 0.6 )
+      if (Utility.RandomDouble() < 0.6)
         c.DropItem( new ParrotItem() );
     }
     */

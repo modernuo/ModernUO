@@ -98,13 +98,13 @@ namespace Server.Engines.Plants
         m_SeedHue |= PlantHue.Reproduces;
     }
 
-    public PlantItem Plant{ get; }
+    public PlantItem Plant { get; }
 
-    public bool FertileDirt{ get; set; }
+    public bool FertileDirt { get; set; }
 
-    public DateTime NextGrowth{ get; private set; }
+    public DateTime NextGrowth { get; private set; }
 
-    public PlantGrowthIndicator GrowthIndicator{ get; private set; }
+    public PlantGrowthIndicator GrowthIndicator { get; private set; }
 
     public bool IsFullWater => m_Water >= 4;
 
@@ -288,7 +288,7 @@ namespace Server.Engines.Plants
 
     public bool PollenProducing => Plant.IsCrossable && Plant.PlantStatus >= PlantStatus.FullGrownPlant;
 
-    public bool Pollinated{ get; set; }
+    public bool Pollinated { get; set; }
 
     public PlantType SeedType
     {
@@ -623,7 +623,6 @@ namespace Server.Engines.Plants
 
       if (Utility.RandomDouble() < infestationChance)
         Infestation++;
-
 
       double fungusChance = 0.15 - StrengthPotion * 0.075 + (Water - 2) * 0.10;
 

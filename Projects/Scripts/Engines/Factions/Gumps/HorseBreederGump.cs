@@ -7,8 +7,8 @@ namespace Server.Factions
 {
   public class HorseBreederGump : FactionGump
   {
-    private Faction m_Faction;
-    private PlayerMobile m_From;
+    private readonly Faction m_Faction;
+    private readonly PlayerMobile m_From;
 
     public HorseBreederGump(PlayerMobile from, Faction faction) : base(20, 30)
     {

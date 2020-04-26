@@ -10,12 +10,12 @@ namespace Server.Factions
       Monoliths = monoliths;
     }
 
-    public Rectangle2D[] Area{ get; }
+    public Rectangle2D[] Area { get; }
 
-    public Point3D JoinStone{ get; }
+    public Point3D JoinStone { get; }
 
-    public Point3D FactionStone{ get; }
+    public Point3D FactionStone { get; }
 
-    public Point3D[] Monoliths{ get; }
+    public Point3D[] Monoliths { get; }
   }
 }

@@ -4,24 +4,27 @@ using Server.Mobiles;
 
 namespace Server.SkillHandlers
 {
+  // Stealth cannot be static because its used as a generic for CanBeginAction.
+#pragma warning disable CA1052 // Static holder types should be Static or NotInheritable
   public class Stealth
   {
     public static double HidingRequirement => Core.ML ? 30.0 : Core.SE ? 50.0 : 80.0;
 
-    public static int[,] ArmorTable{ get; } =
+    // TODO: Move to configuration
+    public static int[,] ArmorTable { get; } =
     {
-      //	Gorget	Gloves	Helmet	Arms	Legs	Chest	Shield
-      /* Cloth	*/ { 0, 0, 0, 0, 0, 0, 0 },
-      /* Leather	*/ { 0, 0, 0, 0, 0, 0, 0 },
-      /* Studded	*/ { 2, 2, 0, 4, 6, 10, 0 },
-      /* Bone		*/ { 0, 5, 10, 10, 15, 25, 0 },
-      /* Spined	*/ { 0, 0, 0, 0, 0, 0, 0 },
-      /* Horned	*/ { 0, 0, 0, 0, 0, 0, 0 },
-      /* Barbed	*/ { 0, 0, 0, 0, 0, 0, 0 },
-      /* Ring		*/ { 0, 5, 0, 10, 15, 25, 0 },
-      /* Chain	*/ { 0, 0, 10, 0, 15, 25, 0 },
-      /* Plate	*/ { 5, 5, 10, 10, 15, 25, 0 },
-      /* Dragon	*/ { 0, 5, 10, 10, 15, 25, 0 }
+      // Gorget Glove Helmet Arms Legs Chest Shield
+      /* Cloth */ { 0, 0, 0, 0, 0, 0, 0 },
+      /* Leather */ { 0, 0, 0, 0, 0, 0, 0 },
+      /* Studded */ { 2, 2, 0, 4, 6, 10, 0 },
+      /* Bone */ { 0, 5, 10, 10, 15, 25, 0 },
+      /* Spined */ { 0, 0, 0, 0, 0, 0, 0 },
+      /* Horned */ { 0, 0, 0, 0, 0, 0, 0 },
+      /* Barbed */ { 0, 0, 0, 0, 0, 0, 0 },
+      /* Ring */ { 0, 5, 0, 10, 15, 25, 0 },
+      /* Chain */ { 0, 0, 10, 0, 15, 25, 0 },
+      /* Plate */ { 5, 5, 10, 10, 15, 25, 0 },
+      /* Dragon */ { 0, 5, 10, 10, 15, 25, 0 }
     };
 
     public static void Initialize()
@@ -74,7 +77,7 @@ namespace Server.SkillHandlers
       {
         int armorRating = GetArmorRating(m);
 
-        if (armorRating >= (Core.AOS ? 42 : 26)) //I have a hunch '42' was chosen cause someone's a fan of DNA
+        if (armorRating >= (Core.AOS ? 42 : 26)) // I have a hunch '42' was chosen cause someone's a fan of DNA
         {
           m.SendLocalizedMessage(502727); // You could not hope to move quietly wearing this much armor.
           m.RevealingAction();
@@ -106,4 +109,5 @@ namespace Server.SkillHandlers
       return TimeSpan.FromSeconds(10.0);
     }
   }
+#pragma warning restore CA1052 // Static holder types should be Static or NotInheritable
 }

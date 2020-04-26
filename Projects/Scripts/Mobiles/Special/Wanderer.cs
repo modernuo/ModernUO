@@ -4,7 +4,7 @@ namespace Server.Mobiles
 {
   public class Wanderer : Mobile
   {
-    private Timer m_Timer;
+    private readonly Timer m_Timer;
 
     [Constructible]
     public Wanderer()
@@ -47,7 +47,7 @@ namespace Server.Mobiles
     private class InternalTimer : Timer
     {
       private int m_Count;
-      private Wanderer m_Owner;
+      private readonly Wanderer m_Owner;
 
       public InternalTimer(Wanderer owner) : base(TimeSpan.FromSeconds(0.1), TimeSpan.FromSeconds(0.1)) => m_Owner = owner;
 

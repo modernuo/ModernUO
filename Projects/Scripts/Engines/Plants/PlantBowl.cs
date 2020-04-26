@@ -6,7 +6,7 @@ namespace Server.Engines.Plants
 {
   public class PlantBowl : Item
   {
-    private static int[] m_DirtPatchTiles =
+    private static readonly int[] m_DirtPatchTiles =
     {
       0x9, 0x15,
       0x71, 0x7C,
@@ -105,7 +105,7 @@ namespace Server.Engines.Plants
 
     private class InternalTarget : Target
     {
-      private PlantBowl m_PlantBowl;
+      private readonly PlantBowl m_PlantBowl;
 
       public InternalTarget(PlantBowl plantBowl) : base(3, true, TargetFlags.None) => m_PlantBowl = plantBowl;
 

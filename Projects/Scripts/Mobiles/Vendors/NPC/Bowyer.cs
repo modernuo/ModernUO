@@ -6,7 +6,7 @@ namespace Server.Mobiles
   [TypeAlias("Server.Mobiles.Bower")]
   public class Bowyer : BaseVendor
   {
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public Bowyer() : base("the bowyer")

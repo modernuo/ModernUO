@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019 - ModernUO Development Team                        *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: Configuration.cs - Created: 2019/10/04 - Updated: 2020/01/19    *
  *                                                                       *
@@ -56,13 +56,13 @@ namespace Server
 
     private static Configuration ReadConfiguration()
     {
-      string relPath = new Uri($"{Core.BaseDirectory}/").MakeRelativeUri(new Uri(FilePath)).ToString();
+      var relPath = new Uri($"{Core.BaseDirectory}/").MakeRelativeUri(new Uri(FilePath)).ToString();
       Console.Write($"Reading configuration from {relPath}...");
       Configuration config;
 
       if (File.Exists(FilePath))
       {
-        using FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        using var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         Span<byte> configBytes = stackalloc byte[(int)fs.Length];
         fs.Read(configBytes);
         config = JsonSerializer.Deserialize<Configuration>(Utility.UTF8WithEncoding.GetString(configBytes));
@@ -86,10 +86,10 @@ namespace Server
 
     public void Flush()
     {
-      using FileStream fs = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write);
-      string configJson = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+      using var fs = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write);
+      var configJson = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
       Span<byte> data = stackalloc byte[Utility.UTF8WithEncoding.GetMaxByteCount(configJson.Length)];
-      int bytesWritten = Utility.UTF8WithEncoding.GetBytes(configJson, data);
+      var bytesWritten = Utility.UTF8WithEncoding.GetBytes(configJson, data);
       fs.Write(data.Slice(0, bytesWritten));
       Console.ForegroundColor = ConsoleColor.Green;
       Console.WriteLine($"Configuration saved to {FilePath}");
@@ -102,22 +102,31 @@ namespace Server
   {
     [JsonPropertyName("fromAddress")]
     public string FromAddress { get; set; }
+
     [JsonPropertyName("fromName")]
     public string FromName { get; set; }
+
     [JsonPropertyName("crashAddress")]
     public string crashAddress { get; set; }
+
     [JsonPropertyName("crashName")]
     public string crashName { get; set; }
+
     [JsonPropertyName("speechLogPageAddress")]
     public string speechLogPageAddress { get; set; }
+
     [JsonPropertyName("speechLogPageName")]
     public string speechLogPageName { get; set; }
+
     [JsonPropertyName("emailServer")]
     public string emailServer { get; set; }
+
     [JsonPropertyName("emailPort")]
     public int emailPort { get; set; }
+
     [JsonPropertyName("emailUsername")]
     public string emailUsername { get; set; }
+
     [JsonPropertyName("emailPassword")]
     public string emailPassword { get; set; }
   }

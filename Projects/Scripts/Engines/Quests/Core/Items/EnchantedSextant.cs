@@ -8,7 +8,7 @@ namespace Server.Items
 
     private const double m_ShortDistance = 5.0;
 
-    //TODO: Trammel/Haven
+    // TODO: Trammel/Haven
     private static readonly Point2D[] m_TrammelBanks =
     {
       new Point2D(652, 820),
@@ -99,8 +99,8 @@ namespace Server.Items
       else if (from.Map == Map.Ilshenar)
       {
 #if false
-				banks = m_IlshenarBanks;
-				moongates = PMList.Ilshenar;
+        banks = m_IlshenarBanks;
+        moongates = PMList.Ilshenar;
 #else
         from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, 0x482, 3, 1061684, "",
           "")); // The magic of the sextant fails...

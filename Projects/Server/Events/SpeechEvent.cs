@@ -14,23 +14,23 @@ namespace Server
       Keywords = keywords;
     }
 
-    public Mobile Mobile{ get; }
+    public Mobile Mobile { get; }
 
-    public string Speech{ get; set; }
+    public string Speech { get; set; }
 
-    public MessageType Type{ get; }
+    public MessageType Type { get; }
 
-    public int Hue{ get; }
+    public int Hue { get; }
 
-    public int[] Keywords{ get; }
+    public int[] Keywords { get; }
 
-    public bool Handled{ get; set; }
+    public bool Handled { get; set; }
 
-    public bool Blocked{ get; set; }
+    public bool Blocked { get; set; }
 
     public bool HasKeyword(int keyword)
     {
-      for (int i = 0; i < Keywords.Length; ++i)
+      for (var i = 0; i < Keywords.Length; ++i)
         if (Keywords[i] == keyword)
           return true;
 

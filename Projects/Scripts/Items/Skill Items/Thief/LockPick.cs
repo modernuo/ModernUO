@@ -5,15 +5,14 @@ namespace Server.Items
 {
   public interface ILockpickable : IPoint2D
   {
-    int LockLevel{ get; set; }
-    bool Locked{ get; set; }
-    Mobile Picker{ get; set; }
-    int MaxLockLevel{ get; set; }
-    int RequiredSkill{ get; set; }
+    int LockLevel { get; set; }
+    bool Locked { get; set; }
+    Mobile Picker { get; set; }
+    int MaxLockLevel { get; set; }
+    int RequiredSkill { get; set; }
 
     void LockPick(Mobile from);
   }
-
 
   [Flippable(0x14fc, 0x14fb)]
   public class Lockpick : Item
@@ -54,7 +53,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private Lockpick m_Item;
+      private readonly Lockpick m_Item;
 
       public InternalTarget(Lockpick item) : base(1, false, TargetFlags.None) => m_Item = item;
 
@@ -88,9 +87,9 @@ namespace Server.Items
 
       private class InternalTimer : Timer
       {
-        private Mobile m_From;
-        private ILockpickable m_Item;
-        private Lockpick m_Lockpick;
+        private readonly Mobile m_From;
+        private readonly ILockpickable m_Item;
+        private readonly Lockpick m_Lockpick;
 
         public InternalTimer(Mobile from, ILockpickable item, Lockpick lockpick) : base(TimeSpan.FromSeconds(3.0))
         {

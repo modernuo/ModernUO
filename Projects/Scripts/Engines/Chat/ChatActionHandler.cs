@@ -11,10 +11,10 @@ namespace Server.Engines.Chat
       Callback = callback;
     }
 
-    public bool RequireModerator{ get; }
+    public bool RequireModerator { get; }
 
-    public bool RequireConference{ get; }
+    public bool RequireConference { get; }
 
-    public OnChatAction Callback{ get; }
+    public OnChatAction Callback { get; }
   }
 }

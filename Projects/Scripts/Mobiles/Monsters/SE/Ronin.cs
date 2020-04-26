@@ -75,7 +75,6 @@ namespace Server.Mobiles
           break;
       }
 
-
       if (Utility.RandomDouble() > .2)
         AddItem(new NoDachi());
       else

@@ -7,14 +7,13 @@ namespace Server.Spells.Necromancy
 {
   public class WitherSpell : NecromancerSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Wither", "Kal Vas An Flam",
       203,
       9031,
       Reagent.NoxCrystal,
       Reagent.GraveDust,
-      Reagent.PigIron
-    );
+      Reagent.PigIron);
 
     public WitherSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
@@ -93,8 +92,8 @@ namespace Server.Spells.Necromancy
             damage /= 100;
 
             // TODO: cap?
-            //if ( damage > 40 )
-            //	damage = 40;
+            // if (damage > 40)
+            // damage = 40;
 
             SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);
           }

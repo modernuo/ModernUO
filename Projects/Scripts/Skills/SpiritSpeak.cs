@@ -6,7 +6,7 @@ using Server.Spells;
 
 namespace Server.SkillHandlers
 {
-  internal class SpiritSpeak
+  public static class SpiritSpeak
   {
     public static void Initialize()
     {
@@ -39,17 +39,17 @@ namespace Server.SkillHandlers
           if (secs < 15)
             secs = 15;
 
-          t.Delay = TimeSpan.FromSeconds(secs); //15seconds to 3 minutes
+          t.Delay = TimeSpan.FromSeconds(secs); // 15seconds to 3 minutes
           t.Start();
           m.CanHearGhosts = true;
         }
 
         m.PlaySound(0x24A);
-        m.SendLocalizedMessage(502444); //You contact the neitherworld.
+        m.SendLocalizedMessage(502444); // You contact the neitherworld.
       }
       else
       {
-        m.SendLocalizedMessage(502443); //You fail to contact the neitherworld.
+        m.SendLocalizedMessage(502443); // You fail to contact the neitherworld.
         m.CanHearGhosts = false;
       }
 
@@ -58,7 +58,7 @@ namespace Server.SkillHandlers
 
     private class SpiritSpeakTimer : Timer
     {
-      private Mobile m_Owner;
+      private readonly Mobile m_Owner;
 
       public SpiritSpeakTimer(Mobile m) : base(TimeSpan.FromMinutes(2.0))
       {
@@ -69,13 +69,13 @@ namespace Server.SkillHandlers
       protected override void OnTick()
       {
         m_Owner.CanHearGhosts = false;
-        m_Owner.SendLocalizedMessage(502445); //You feel your contact with the neitherworld fading.
+        m_Owner.SendLocalizedMessage(502445); // You feel your contact with the neitherworld fading.
       }
     }
 
     private class SpiritSpeakSpell : Spell
     {
-      private static SpellInfo m_Info = new SpellInfo("Spirit Speak", "", 269);
+      private static readonly SpellInfo m_Info = new SpellInfo("Spirit Speak", "", 269);
 
       public SpiritSpeakSpell(Mobile caster) : base(caster, null, m_Info)
       {

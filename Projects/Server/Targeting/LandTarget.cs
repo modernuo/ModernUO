@@ -42,7 +42,7 @@ namespace Server.Targeting
     public TileFlag Flags => TileData.LandTable[TileID].Flags;
 
     [CommandProperty(AccessLevel.Counselor)]
-    public int TileID{ get; }
+    public int TileID { get; }
 
     [CommandProperty(AccessLevel.Counselor)]
     public Point3D Location => m_Location;

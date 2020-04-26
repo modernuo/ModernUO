@@ -40,7 +40,7 @@ namespace Server.Mobiles
 
       PackReg(6);
 
-      if (0.02 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.02)
         PackStatue();
     }
 

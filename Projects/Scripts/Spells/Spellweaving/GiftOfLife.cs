@@ -8,12 +8,11 @@ namespace Server.Spells.Spellweaving
 {
   public class GiftOfLifeSpell : ArcanistSpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Gift of Life", "Illorae",
-      -1
-    );
+      -1);
 
-    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+    private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     public GiftOfLifeSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
@@ -62,7 +61,6 @@ namespace Server.Spells.Spellweaving
           Caster.SendLocalizedMessage(1074775); // You weave powerful magic, protecting your pet from death.
           SpellHelper.Turn(Caster, m);
         }
-
 
         m.PlaySound(0x244);
         m.FixedParticles(0x3709, 1, 30, 0x26ED, 5, 2, EffectLayer.Waist);
@@ -128,7 +126,7 @@ namespace Server.Spells.Spellweaving
         m.SendGump(new ResurrectGump(m, hitsScalar));
       }
 
-      //Per OSI, buff is removed when gump sent, irregardless of online status or acceptance
+      // Per OSI, buff is removed when gump sent, irregardless of online status or acceptance
       timer.DoExpire();
     }
 
@@ -142,7 +140,7 @@ namespace Server.Spells.Spellweaving
 
     private class ExpireTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public ExpireTimer(Mobile m, TimeSpan delay, GiftOfLifeSpell spell)
         : base(delay)
@@ -151,7 +149,7 @@ namespace Server.Spells.Spellweaving
         Spell = spell;
       }
 
-      public GiftOfLifeSpell Spell{ get; }
+      public GiftOfLifeSpell Spell { get; }
 
       protected override void OnTick()
       {

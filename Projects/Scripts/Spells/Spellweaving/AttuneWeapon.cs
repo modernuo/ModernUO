@@ -5,12 +5,11 @@ namespace Server.Spells.Spellweaving
 {
   public class AttuneWeaponSpell : ArcanistSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Attune Weapon", "Haeldril",
-      -1
-    );
+      -1);
 
-    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+    private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     public AttuneWeaponSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
@@ -35,7 +34,6 @@ namespace Server.Spells.Spellweaving
 
       Caster.SendLocalizedMessage(1075124); // You must wait before casting that spell again.
       return false;
-
     }
 
     public override void OnCast()
@@ -94,7 +92,7 @@ namespace Server.Spells.Spellweaving
 
     private class ExpireTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public ExpireTimer(Mobile m, TimeSpan delay)
         : base(delay) =>
@@ -119,7 +117,7 @@ namespace Server.Spells.Spellweaving
 
         m_Table.Remove(m_Mobile);
 
-        DelayCall(TimeSpan.FromSeconds(120), delegate { m_Mobile.EndAction<AttuneWeaponSpell>(); });
+        DelayCall(TimeSpan.FromSeconds(120), m_Mobile.EndAction<AttuneWeaponSpell>);
         BuffInfo.RemoveBuff(m_Mobile, BuffIcon.AttuneWeapon);
       }
     }

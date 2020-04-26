@@ -9,15 +9,15 @@ namespace Server.Factions
 {
   public class FinanceGump : FactionGump
   {
-    private static int[] m_PriceOffsets =
+    private static readonly int[] m_PriceOffsets =
     {
       -30, -25, -20, -15, -10, -5,
       +50, +100, +150, +200, +250, +300
     };
 
-    private Faction m_Faction;
-    private PlayerMobile m_From;
-    private Town m_Town;
+    private readonly Faction m_Faction;
+    private readonly PlayerMobile m_From;
+    private readonly Town m_Town;
 
     public FinanceGump(PlayerMobile from, Faction faction, Town town) : base(50, 50)
     {
@@ -25,18 +25,14 @@ namespace Server.Factions
       m_Faction = faction;
       m_Town = town;
 
-
       AddPage(0);
 
       AddBackground(0, 0, 320, 410, 5054);
       AddBackground(10, 10, 300, 390, 3000);
 
-      #region General
-
       AddPage(1);
 
       AddHtmlLocalized(20, 30, 260, 25, 1011541); // FINANCE MINISTER
-
 
       AddHtmlLocalized(55, 90, 200, 25, 1011539); // CHANGE PRICES
       AddButton(20, 90, 4005, 4007, 0, GumpButtonType.Page, 2);
@@ -49,10 +45,6 @@ namespace Server.Factions
 
       AddHtmlLocalized(55, 360, 200, 25, 1011441); // EXIT
       AddButton(20, 360, 4005, 4007, 0);
-
-      #endregion
-
-      #region Change Prices
 
       AddPage(2);
 
@@ -82,10 +74,6 @@ namespace Server.Factions
       AddHtmlLocalized(55, 360, 200, 25, 1011067); // Previous page
       AddButton(20, 360, 4005, 4007, 0, GumpButtonType.Page, 1);
 
-      #endregion
-
-      #region Buy Shopkeepers
-
       AddPage(3);
 
       AddHtmlLocalized(20, 30, 200, 25, 1011540); // BUY SHOPKEEPERS
@@ -101,12 +89,8 @@ namespace Server.Factions
         AddHtmlText(100, 90 + i * 40, 200, 25, list.Definition.Label, false, false);
       }
 
-      AddHtmlLocalized(55, 360, 200, 25, 1011067); //	Previous page
+      AddHtmlLocalized(55, 360, 200, 25, 1011067); // Previous page
       AddButton(20, 360, 4005, 4007, 0, GumpButtonType.Page, 1);
-
-      #endregion
-
-      #region View Finances
 
       AddPage(4);
 
@@ -114,7 +98,6 @@ namespace Server.Factions
       int sheriffUpkeep = town.SheriffUpkeep;
       int dailyIncome = town.DailyIncome;
       int netCashFlow = town.NetCashFlow;
-
 
       AddHtmlLocalized(20, 30, 300, 25, 1011524); // FINANCE STATEMENT
 
@@ -135,10 +118,6 @@ namespace Server.Factions
 
       AddHtmlLocalized(55, 360, 200, 25, 1011067); // Previous page
       AddButton(20, 360, 4005, 4007, 0, GumpButtonType.Page, 1);
-
-      #endregion
-
-      #region Shopkeeper Pages
 
       for (int i = 0; i < vendorLists.Count; ++i)
       {
@@ -176,8 +155,6 @@ namespace Server.Factions
         AddHtmlLocalized(55, 360, 200, 25, 1011067); // Previous page
         AddButton(20, 360, 4005, 4007, 0, GumpButtonType.Page, 3);
       }
-
-      #endregion
     }
 
     public override int ButtonTypes => 2;
@@ -196,96 +173,96 @@ namespace Server.Factions
       switch (type)
       {
         case 0: // general
-        {
-          switch (index)
           {
-            case 0: // set price
+            switch (index)
             {
-              int[] switches = info.Switches;
+              case 0: // set price
+                {
+                  int[] switches = info.Switches;
 
-              if (switches.Length == 0)
-                break;
+                  if (switches.Length == 0)
+                    break;
 
-              int opt = switches[0];
-              int newTax = 0;
+                  int opt = switches[0];
+                  int newTax = 0;
 
-              if (opt >= 1 && opt <= m_PriceOffsets.Length)
-                newTax = m_PriceOffsets[opt - 1];
+                  if (opt >= 1 && opt <= m_PriceOffsets.Length)
+                    newTax = m_PriceOffsets[opt - 1];
 
-              if (m_Town.Tax == newTax)
-                break;
+                  if (m_Town.Tax == newTax)
+                    break;
 
-              if (m_From.AccessLevel == AccessLevel.Player && !m_Town.TaxChangeReady)
-              {
-                TimeSpan remaining = DateTime.UtcNow - (m_Town.LastTaxChange + Town.TaxChangePeriod);
+                  if (m_From.AccessLevel == AccessLevel.Player && !m_Town.TaxChangeReady)
+                  {
+                    TimeSpan remaining = DateTime.UtcNow - (m_Town.LastTaxChange + Town.TaxChangePeriod);
 
-                if (remaining.TotalMinutes < 4)
-                  m_From.SendLocalizedMessage(
-                    1042165); // You must wait a short while before changing prices again.
-                else if (remaining.TotalMinutes < 10)
-                  m_From.SendLocalizedMessage(
-                    1042166); // You must wait several minutes before changing prices again.
-                else if (remaining.TotalHours < 1)
-                  m_From.SendLocalizedMessage(
-                    1042167); // You must wait up to an hour before changing prices again.
-                else if (remaining.TotalHours < 4)
-                  m_From.SendLocalizedMessage(
-                    1042168); // You must wait a few hours before changing prices again.
-                else
-                  m_From.SendLocalizedMessage(
-                    1042169); // You must wait several hours before changing prices again.
-              }
-              else
-              {
-                m_Town.Tax = newTax;
+                    if (remaining.TotalMinutes < 4)
+                      m_From.SendLocalizedMessage(
+                        1042165); // You must wait a short while before changing prices again.
+                    else if (remaining.TotalMinutes < 10)
+                      m_From.SendLocalizedMessage(
+                        1042166); // You must wait several minutes before changing prices again.
+                    else if (remaining.TotalHours < 1)
+                      m_From.SendLocalizedMessage(
+                        1042167); // You must wait up to an hour before changing prices again.
+                    else if (remaining.TotalHours < 4)
+                      m_From.SendLocalizedMessage(
+                        1042168); // You must wait a few hours before changing prices again.
+                    else
+                      m_From.SendLocalizedMessage(
+                        1042169); // You must wait several hours before changing prices again.
+                  }
+                  else
+                  {
+                    m_Town.Tax = newTax;
 
-                if (m_From.AccessLevel == AccessLevel.Player)
-                  m_Town.LastTaxChange = DateTime.UtcNow;
-              }
+                    if (m_From.AccessLevel == AccessLevel.Player)
+                      m_Town.LastTaxChange = DateTime.UtcNow;
+                  }
 
-              break;
+                  break;
+                }
             }
-          }
 
-          break;
-        }
+            break;
+          }
         case 1: // make vendor
-        {
-          List<VendorList> vendorLists = m_Town.VendorLists;
-
-          if (index >= 0 && index < vendorLists.Count)
           {
-            VendorList vendorList = vendorLists[index];
+            List<VendorList> vendorLists = m_Town.VendorLists;
 
-            if (Town.FromRegion(m_From.Region) != m_Town)
+            if (index >= 0 && index < vendorLists.Count)
             {
-              m_From.SendLocalizedMessage(1010305); // You must be in your controlled city to buy Items
-            }
-            else if (vendorList.Vendors.Count >= vendorList.Definition.Maximum)
-            {
-              m_From.SendLocalizedMessage(
-                1010306); // You currently have too many of this enhancement type to place another
-            }
-            else if (BaseBoat.FindBoatAt(m_From.Location, m_From.Map) != null)
-            {
-              m_From.SendMessage("You cannot place a vendor here");
-            }
-            else if (m_Town.Silver >= vendorList.Definition.Price)
-            {
-              BaseFactionVendor vendor = vendorList.Construct(m_Town, m_Faction);
+              VendorList vendorList = vendorLists[index];
 
-              if (vendor != null)
+              if (Town.FromRegion(m_From.Region) != m_Town)
               {
-                m_Town.Silver -= vendorList.Definition.Price;
+                m_From.SendLocalizedMessage(1010305); // You must be in your controlled city to buy Items
+              }
+              else if (vendorList.Vendors.Count >= vendorList.Definition.Maximum)
+              {
+                m_From.SendLocalizedMessage(
+                  1010306); // You currently have too many of this enhancement type to place another
+              }
+              else if (BaseBoat.FindBoatAt(m_From.Location, m_From.Map) != null)
+              {
+                m_From.SendMessage("You cannot place a vendor here");
+              }
+              else if (m_Town.Silver >= vendorList.Definition.Price)
+              {
+                BaseFactionVendor vendor = vendorList.Construct(m_Town, m_Faction);
 
-                vendor.MoveToWorld(m_From.Location, m_From.Map);
-                vendor.Home = vendor.Location;
+                if (vendor != null)
+                {
+                  m_Town.Silver -= vendorList.Definition.Price;
+
+                  vendor.MoveToWorld(m_From.Location, m_From.Map);
+                  vendor.Home = vendor.Location;
+                }
               }
             }
-          }
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

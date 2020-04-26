@@ -5,13 +5,12 @@ namespace Server.Spells.Second
 {
   public class RemoveTrapSpell : MagerySpell, ISpellTargetingItem
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Remove Trap", "An Jux",
       212,
       9001,
       Reagent.Bloodmoss,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public RemoveTrapSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -35,7 +34,7 @@ namespace Server.Spells.Second
       }
       else if (cont.TrapType != TrapType.None && cont.TrapType != TrapType.MagicTrap)
       {
-        base.DoFizzle();
+        this.DoFizzle();
       }
       else if (CheckSequence())
       {

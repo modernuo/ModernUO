@@ -53,7 +53,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string PetName{ get; private set; }
+    public string PetName { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Charges
@@ -134,8 +134,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (RootParent != from
-      ) // TODO: Previous implementation allowed use on ground, without house protection checks. What is the correct behavior?
+      if (RootParent != from) // TODO: Previous implementation allowed use on ground, without house protection checks. What is the correct behavior?
       {
         from.LocalOverheadMessage(MessageType.Regular, 0x3B2,
           1042001); // That must be in your pack for you to use it.
@@ -221,7 +220,6 @@ namespace Server.Items
       }
     }
 
-
     public void SummonPet(Mobile from)
     {
       BaseCreature pet = Pet;
@@ -300,17 +298,17 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Recharges = reader.ReadEncodedInt();
-          goto case 0;
-        }
+          {
+            m_Recharges = reader.ReadEncodedInt();
+            goto case 0;
+          }
         case 0:
-        {
-          m_Charges = Math.Min(reader.ReadEncodedInt(), MaxCharges);
-          Pet = (BaseCreature)reader.ReadMobile();
-          PetName = reader.ReadString();
-          break;
-        }
+          {
+            m_Charges = Math.Min(reader.ReadEncodedInt(), MaxCharges);
+            Pet = (BaseCreature)reader.ReadMobile();
+            PetName = reader.ReadString();
+            break;
+          }
       }
     }
 
@@ -318,7 +316,7 @@ namespace Server.Items
 
     private class BallEntry : ContextMenuEntry
     {
-      private BallCallback m_Callback;
+      private readonly BallCallback m_Callback;
 
       public BallEntry(BallCallback callback, int number) : base(number, 2) => m_Callback = callback;
 
@@ -333,7 +331,7 @@ namespace Server.Items
 
     private class PetLinkTarget : Target
     {
-      private BallOfSummoning m_Ball;
+      private readonly BallOfSummoning m_Ball;
 
       public PetLinkTarget(BallOfSummoning ball) : base(-1, false, TargetFlags.None) => m_Ball = ball;
 
@@ -382,10 +380,10 @@ namespace Server.Items
 
     private class PetSummoningSpell : Spell
     {
-      private static SpellInfo m_Info = new SpellInfo("Ball Of Summoning", "", 230);
+      private static readonly SpellInfo m_Info = new SpellInfo("Ball Of Summoning", "", 230);
 
-      private BallOfSummoning m_Ball;
-      private Mobile m_Caster;
+      private readonly BallOfSummoning m_Ball;
+      private readonly Mobile m_Caster;
 
       private bool m_Stop;
 

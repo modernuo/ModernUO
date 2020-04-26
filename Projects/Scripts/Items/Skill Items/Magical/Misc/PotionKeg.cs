@@ -82,12 +82,12 @@ namespace Server.Items
       {
         case 1:
         case 0:
-        {
-          m_Type = (PotionEffect)reader.ReadInt();
-          m_Held = reader.ReadInt();
+          {
+            m_Type = (PotionEffect)reader.ReadInt();
+            m_Held = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (version < 1)
@@ -220,15 +220,11 @@ namespace Server.Items
 
       if (m_Held == 0)
       {
-        #region Mondain's Legacy
-
         if ((int)pot.PotionEffect >= (int)PotionEffect.Invisibility)
         {
           from.SendLocalizedMessage(502232); // The keg is not designed to hold that type of object.
           return false;
         }
-
-        #endregion
 
         if (GiveBottle(from, toHold))
         {

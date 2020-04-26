@@ -18,14 +18,14 @@ namespace Server.Misc
 
   public class AccountHandler
   {
-    private static int MaxAccountsPerIP = 1;
-    private static bool AutoAccountCreation = true;
-    private static bool RestrictDeletion = !TestCenter.Enabled;
-    private static TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
+    private static readonly int MaxAccountsPerIP = 1;
+    private static readonly bool AutoAccountCreation = true;
+    private static readonly bool RestrictDeletion = !TestCenter.Enabled;
+    private static readonly TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
 
     public static PasswordProtection ProtectPasswords = PasswordProtection.NewCrypt;
 
-    private static CityInfo[] StartingCities =
+    private static readonly CityInfo[] StartingCities =
     {
       new CityInfo("New Haven", "New Haven Bank", 1150168, 3667, 2625, 0),
       new CityInfo("Yew", "The Empath Abbey", 1075072, 633, 858, 0),
@@ -47,7 +47,7 @@ namespace Server.Misc
       // ..
       new CityInfo( "Haven", "Buckler's Hideaway", 3667, 2625, 0 )
 
-      if ( Core.AOS )
+      if (Core.AOS)
       {
         //CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3618, 2591, 0 );
         CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3503, 2574, 14 );
@@ -55,7 +55,7 @@ namespace Server.Misc
       }
     */
 
-    private static bool PasswordCommandEnabled = false;
+    private static readonly bool PasswordCommandEnabled = false;
 
     private static Dictionary<IPAddress, int> m_IPTable;
 
@@ -64,7 +64,7 @@ namespace Server.Misc
       '<', '>', ':', '"', '/', '\\', '|', '?', '*'
     };
 
-    public static AccessLevel LockdownLevel{ get; set; }
+    public static AccessLevel LockdownLevel { get; set; }
 
     public static Dictionary<IPAddress, int> IPTable
     {
@@ -174,10 +174,10 @@ namespace Server.Misc
             from.SendMessage(
               "Your IP address does not match that which created this account.  A page has been entered into the help system on your behalf.");
 
-            from.SendLocalizedMessage(501234, "",
-              0x35); /* The next available Counselor/Game Master will respond as soon as possible.
-																	    * Please check your Journal for messages every few minutes.
-																	    */
+            /* The next available Counselor/Game Master will respond as soon as possible.
+             * Please check your Journal for messages every few minutes.
+             */
+            from.SendLocalizedMessage(501234, "", 0x35);
 
             PageQueue.Enqueue(new PageEntry(from,
               $"[Automated: Change Password]<br>Desired password: {pass}<br>Current IP address: {ipAddress}<br>Account IP address: {accessList[0]}",
@@ -222,8 +222,7 @@ namespace Server.Misc
           state.Send(new CharacterListUpdate(acct));
         }
         else if (m.AccessLevel == AccessLevel.Player &&
-                 Region.Find(m.LogoutLocation, m.LogoutMap).IsPartOf<Jail>()
-        ) //Don't need to check current location, if netstate is null, they're logged out
+                 Region.Find(m.LogoutLocation, m.LogoutMap).IsPartOf<Jail>()) // Don't need to check current location, if netstate is null, they're logged out
         {
           state.Send(new DeleteResult(DeleteResultType.BadRequest));
           state.Send(new CharacterListUpdate(acct));

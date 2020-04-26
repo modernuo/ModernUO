@@ -89,7 +89,7 @@ namespace Server.Engines.Quests.Necro
 
     private class CallingTimer : Timer
     {
-      private PlayerMobile m_Player;
+      private readonly PlayerMobile m_Player;
       private int m_Step;
 
       public CallingTimer(PlayerMobile player) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0), 6)

@@ -8,7 +8,7 @@ namespace Server.Engines.MLQuests.Rewards
   {
     public BaseReward(TextDefinition name) => Name = name;
 
-    public TextDefinition Name{ get; set; }
+    public TextDefinition Name { get; set; }
 
     protected virtual int LabelHeight => 16;
 

@@ -32,13 +32,13 @@ namespace Server.Mobiles
     {
       base.OnDeath( c );
 
-      if ( Utility.RandomDouble() < 0.05 )
+      if (Utility.RandomDouble() < 0.05)
         c.DropItem( new CrushedCrystals() );
 
-      if ( Utility.RandomDouble() < 0.1 )
+      if (Utility.RandomDouble() < 0.1)
         c.DropItem( new IcyHeart() );
 
-      if ( Utility.RandomDouble() < 0.1 )
+      if (Utility.RandomDouble() < 0.1)
         c.DropItem( new LuckyDagger() );
     }
     */

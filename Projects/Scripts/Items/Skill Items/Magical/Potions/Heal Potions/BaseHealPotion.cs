@@ -14,9 +14,9 @@ namespace Server.Items
     {
     }
 
-    public abstract int MinHeal{ get; }
-    public abstract int MaxHeal{ get; }
-    public abstract double Delay{ get; }
+    public abstract int MinHeal { get; }
+    public abstract int MaxHeal { get; }
+    public abstract double Delay { get; }
 
     public override void Serialize(IGenericWriter writer)
     {

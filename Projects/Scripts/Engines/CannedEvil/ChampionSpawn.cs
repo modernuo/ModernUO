@@ -26,7 +26,7 @@ namespace Server.Engines.CannedEvil
     private List<Item> m_RedSkulls;
     private ChampionSpawnRegion m_Region;
 
-    //private int m_SpawnRange;
+    // private int m_SpawnRange;
     private Rectangle2D m_SpawnArea;
     private int m_SPawnSzMod;
 
@@ -68,13 +68,13 @@ namespace Server.Engines.CannedEvil
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool ConfinedRoaming{ get; set; }
+    public bool ConfinedRoaming { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool HasBeenAdvanced{ get; set; }
+    public bool HasBeenAdvanced { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool RandomizeType{ get; set; }
+    public bool RandomizeType { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Kills
@@ -100,16 +100,16 @@ namespace Server.Engines.CannedEvil
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan RestartDelay{ get; set; }
+    public TimeSpan RestartDelay { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime RestartTime{ get; private set; }
+    public DateTime RestartTime { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan ExpireDelay{ get; set; }
+    public TimeSpan ExpireDelay { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime ExpireTime{ get; set; }
+    public DateTime ExpireTime { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public ChampionSpawnType Type
@@ -138,7 +138,7 @@ namespace Server.Engines.CannedEvil
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Champion{ get; set; }
+    public Mobile Champion { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Level
@@ -173,7 +173,7 @@ namespace Server.Engines.CannedEvil
 
     public void SetInitialSpawnArea()
     {
-      //Previous default used to be 24;
+      // Previous default used to be 24;
       SpawnArea = new Rectangle2D(new Point2D(X - 24, Y - 24), new Point2D(X + 24, Y + 24));
     }
 
@@ -188,7 +188,7 @@ namespace Server.Engines.CannedEvil
       }
 
       /*
-      if ( m_Region == null )
+      if (m_Region == null)
       {
         m_Region = new ChampionSpawnRegion( this );
       }
@@ -307,8 +307,6 @@ namespace Server.Engines.CannedEvil
       Start();
     }
 
-    #region Scroll of Transcendence
-
     private ScrollofTranscendence CreateRandomSoT(bool felucca)
     {
       int level = Utility.RandomMinMax(1, 5);
@@ -319,11 +317,9 @@ namespace Server.Engines.CannedEvil
       return ScrollofTranscendence.CreateRandom(level, level);
     }
 
-    #endregion
-
     public static void GiveScrollTo(Mobile killer, SpecialScroll scroll)
     {
-      if (scroll == null || killer == null) //sanity
+      if (scroll == null || killer == null) // sanity
         return;
 
       if (scroll is ScrollofTranscendence)
@@ -437,8 +433,6 @@ namespace Server.Engines.CannedEvil
 
             if (killer is PlayerMobile pm)
             {
-              #region Scroll of Transcendence
-
               if (Core.ML)
               {
                 if (Map == Map.Felucca)
@@ -467,8 +461,6 @@ namespace Server.Engines.CannedEvil
                   }
               }
 
-              #endregion
-
               int mobSubLevel = GetSubLevelFor(m) + 1;
 
               if (mobSubLevel >= 0)
@@ -484,7 +476,7 @@ namespace Server.Engines.CannedEvil
                   else
                     m.SendLocalizedMessage(1054030); // You have gained in Valor!
 
-                  //No delay on Valor gains
+                  // No delay on Valor gains
                 }
 
                 PlayerMobile.ChampionTitleInfo info = pm.ChampionTitles;
@@ -790,7 +782,7 @@ namespace Server.Engines.CannedEvil
         list.Add(1060659, "Level\t{0}", Level); // ~1_val~: ~2_val~
         list.Add(1060660, "Kills\t{0} of {1} ({2:F1}%)", m_Kills, MaxKills,
           100.0 * ((double)m_Kills / MaxKills)); // ~1_val~: ~2_val~
-        //list.Add( 1060661, "Spawn Range\t{0}", m_SpawnRange ); // ~1_val~: ~2_val~
+        // list.Add( 1060661, "Spawn Range\t{0}", m_SpawnRange ); // ~1_val~: ~2_val~
       }
       else
       {
@@ -988,9 +980,9 @@ namespace Server.Engines.CannedEvil
           1062317); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
     }
 
-    public bool IsEligible(Mobile m, Item Artifact) =>
+    public bool IsEligible(Mobile m, Item artifact) =>
       m.Player && m.Alive && m.Region != null && m.Region == m_Region &&
-      m.Backpack?.CheckHold(m, Artifact, false) == true;
+      m.Backpack?.CheckHold(m, artifact, false) == true;
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -1013,7 +1005,7 @@ namespace Server.Engines.CannedEvil
 
       writer.Write(RandomizeType);
 
-      //			writer.Write( m_SpawnRange );
+      // writer.Write( m_SpawnRange );
       writer.Write(m_Kills);
 
       writer.Write(m_Active);
@@ -1045,97 +1037,97 @@ namespace Server.Engines.CannedEvil
       switch (version)
       {
         case 6:
-        {
-          m_SPawnSzMod = reader.ReadInt();
-          goto case 5;
-        }
+          {
+            m_SPawnSzMod = reader.ReadInt();
+            goto case 5;
+          }
         case 5:
-        {
-          int entries = reader.ReadInt();
-          for (int i = 0; i < entries; ++i)
           {
-            Mobile m = reader.ReadMobile();
-            int damage = reader.ReadInt();
+            int entries = reader.ReadInt();
+            for (int i = 0; i < entries; ++i)
+            {
+              Mobile m = reader.ReadMobile();
+              int damage = reader.ReadInt();
 
-            if (m == null)
-              continue;
+              if (m == null)
+                continue;
 
-            m_DamageEntries.Add(m, damage);
+              m_DamageEntries.Add(m, damage);
+            }
+
+            goto case 4;
           }
-
-          goto case 4;
-        }
         case 4:
-        {
-          ConfinedRoaming = reader.ReadBool();
-          m_Idol = reader.ReadItem<IdolOfTheChampion>();
-          HasBeenAdvanced = reader.ReadBool();
+          {
+            ConfinedRoaming = reader.ReadBool();
+            m_Idol = reader.ReadItem<IdolOfTheChampion>();
+            HasBeenAdvanced = reader.ReadBool();
 
-          goto case 3;
-        }
+            goto case 3;
+          }
         case 3:
-        {
-          m_SpawnArea = reader.ReadRect2D();
+          {
+            m_SpawnArea = reader.ReadRect2D();
 
-          goto case 2;
-        }
+            goto case 2;
+          }
         case 2:
-        {
-          RandomizeType = reader.ReadBool();
+          {
+            RandomizeType = reader.ReadBool();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          if (version < 3)
           {
-            int oldRange = reader.ReadInt();
+            if (version < 3)
+            {
+              int oldRange = reader.ReadInt();
 
-            m_SpawnArea = new Rectangle2D(new Point2D(X - oldRange, Y - oldRange),
-              new Point2D(X + oldRange, Y + oldRange));
+              m_SpawnArea = new Rectangle2D(new Point2D(X - oldRange, Y - oldRange),
+                new Point2D(X + oldRange, Y + oldRange));
+            }
+
+            m_Kills = reader.ReadInt();
+
+            goto case 0;
           }
-
-          m_Kills = reader.ReadInt();
-
-          goto case 0;
-        }
         case 0:
-        {
-          if (version < 1)
-            m_SpawnArea =
-              new Rectangle2D(new Point2D(X - 24, Y - 24), new Point2D(X + 24, Y + 24)); //Default was 24
-
-          bool active = reader.ReadBool();
-          m_Type = (ChampionSpawnType)reader.ReadInt();
-          m_Creatures = reader.ReadStrongMobileList();
-          m_RedSkulls = reader.ReadStrongItemList();
-          m_WhiteSkulls = reader.ReadStrongItemList();
-          m_Platform = reader.ReadItem<ChampionPlatform>();
-          m_Altar = reader.ReadItem<ChampionAltar>();
-          ExpireDelay = reader.ReadTimeSpan();
-          ExpireTime = reader.ReadDeltaTime();
-          Champion = reader.ReadMobile();
-          RestartDelay = reader.ReadTimeSpan();
-
-          if (reader.ReadBool())
           {
-            RestartTime = reader.ReadDeltaTime();
-            BeginRestart(RestartTime - DateTime.UtcNow);
+            if (version < 1)
+              m_SpawnArea =
+                new Rectangle2D(new Point2D(X - 24, Y - 24), new Point2D(X + 24, Y + 24)); // Default was 24
+
+            bool active = reader.ReadBool();
+            m_Type = (ChampionSpawnType)reader.ReadInt();
+            m_Creatures = reader.ReadStrongMobileList();
+            m_RedSkulls = reader.ReadStrongItemList();
+            m_WhiteSkulls = reader.ReadStrongItemList();
+            m_Platform = reader.ReadItem<ChampionPlatform>();
+            m_Altar = reader.ReadItem<ChampionAltar>();
+            ExpireDelay = reader.ReadTimeSpan();
+            ExpireTime = reader.ReadDeltaTime();
+            Champion = reader.ReadMobile();
+            RestartDelay = reader.ReadTimeSpan();
+
+            if (reader.ReadBool())
+            {
+              RestartTime = reader.ReadDeltaTime();
+              BeginRestart(RestartTime - DateTime.UtcNow);
+            }
+
+            if (version < 4)
+            {
+              m_Idol = new IdolOfTheChampion(this);
+              m_Idol.MoveToWorld(new Point3D(X, Y, Z - 15), Map);
+            }
+
+            if (m_Platform == null || m_Altar == null || m_Idol == null)
+              Delete();
+            else if (active)
+              Start();
+
+            break;
           }
-
-          if (version < 4)
-          {
-            m_Idol = new IdolOfTheChampion(this);
-            m_Idol.MoveToWorld(new Point3D(X, Y, Z - 15), Map);
-          }
-
-          if (m_Platform == null || m_Altar == null || m_Idol == null)
-            Delete();
-          else if (active)
-            Start();
-
-          break;
-        }
       }
 
       Timer.DelayCall(TimeSpan.Zero, UpdateRegion);
@@ -1150,7 +1142,7 @@ namespace Server.Engines.CannedEvil
 
     public override bool YoungProtected => false;
 
-    public ChampionSpawn ChampionSpawn{ get; }
+    public ChampionSpawn ChampionSpawn { get; }
 
     public override bool AllowHousing(Mobile from, Point3D p) => false;
 
@@ -1159,7 +1151,7 @@ namespace Server.Engines.CannedEvil
       base.AlterLightLevel(m, ref global, ref personal);
       global = Math.Max(global,
         1 + ChampionSpawn
-          .Level); //This is a guesstimate.  TODO: Verify & get exact values // OSI testing: at 2 red skulls, light = 0x3 ; 1 red = 0x3.; 3 = 8; 9 = 0xD 8 = 0xD 12 = 0x12 10 = 0xD
+          .Level); // This is a guesstimate.  TODO: Verify & get exact values // OSI testing: at 2 red skulls, light = 0x3 ; 1 red = 0x3.; 3 = 8; 9 = 0xD 8 = 0xD 12 = 0x12 10 = 0xD
     }
   }
 
@@ -1175,7 +1167,7 @@ namespace Server.Engines.CannedEvil
     {
     }
 
-    public ChampionSpawn Spawn{ get; private set; }
+    public ChampionSpawn Spawn { get; private set; }
 
     public override string DefaultName => "Idol of the Champion";
 
@@ -1204,14 +1196,14 @@ namespace Server.Engines.CannedEvil
       switch (version)
       {
         case 0:
-        {
-          Spawn = reader.ReadItem() as ChampionSpawn;
+          {
+            Spawn = reader.ReadItem() as ChampionSpawn;
 
-          if (Spawn == null)
-            Delete();
+            if (Spawn == null)
+              Delete();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

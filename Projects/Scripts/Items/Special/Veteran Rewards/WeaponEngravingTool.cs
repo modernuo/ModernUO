@@ -189,7 +189,7 @@ namespace Server.Items
 
     private class TargetWeapon : Target
     {
-      private WeaponEngravingTool m_Tool;
+      private readonly WeaponEngravingTool m_Tool;
 
       public TargetWeapon(WeaponEngravingTool tool) : base(-1, true, TargetFlags.None) => m_Tool = tool;
 
@@ -212,8 +212,8 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private BaseWeapon m_Target;
-      private WeaponEngravingTool m_Tool;
+      private readonly BaseWeapon m_Target;
+      private readonly WeaponEngravingTool m_Tool;
 
       public InternalGump(WeaponEngravingTool tool, BaseWeapon target) : base(0, 0)
       {
@@ -285,8 +285,8 @@ namespace Server.Items
 
     public class ConfirmGump : Gump
     {
-      private WeaponEngravingTool m_Engraver;
-      private Mobile m_Guildmaster;
+      private readonly WeaponEngravingTool m_Engraver;
+      private readonly Mobile m_Guildmaster;
 
       public ConfirmGump(WeaponEngravingTool engraver, Mobile guildmaster) : base(200, 200)
       {

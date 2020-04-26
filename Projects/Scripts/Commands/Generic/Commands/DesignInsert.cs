@@ -35,7 +35,7 @@ namespace Server.Commands.Generic
     {
       house = null;
 
-      if (item == null || item is BaseMulti || item is HouseSign || staticsOnly && !(item is Static))
+      if (item == null || item is BaseMulti || item is HouseSign || (staticsOnly && !(item is Static)))
         return DesignInsertResult.InvalidItem;
 
       house = BaseHouse.FindHouseAt(item) as HouseFoundation;
@@ -69,8 +69,6 @@ namespace Server.Commands.Generic
       return true;
     }
 
-    #region Single targeting mode
-
     public override void Execute(CommandEventArgs e, object obj)
     {
       Target t = new DesignInsertTarget(new List<HouseFoundation>(), e.Length < 1 || !e.GetBoolean(0));
@@ -79,8 +77,8 @@ namespace Server.Commands.Generic
 
     private class DesignInsertTarget : Target
     {
-      private List<HouseFoundation> m_Foundations;
-      private bool m_StaticsOnly;
+      private readonly List<HouseFoundation> m_Foundations;
+      private readonly bool m_StaticsOnly;
 
       public DesignInsertTarget(List<HouseFoundation> foundations, bool staticsOnly)
         : base(-1, false, TargetFlags.None)
@@ -107,38 +105,34 @@ namespace Server.Commands.Generic
         switch (result)
         {
           case DesignInsertResult.Valid:
-          {
-            if (m_Foundations.Count == 0)
-              from.SendMessage(
-                "The item has been inserted into the house design. Press ESC when you are finished.");
-            else
-              from.SendMessage("The item has been inserted into the house design.");
+            {
+              if (m_Foundations.Count == 0)
+                from.SendMessage(
+                  "The item has been inserted into the house design. Press ESC when you are finished.");
+              else
+                from.SendMessage("The item has been inserted into the house design.");
 
-            if (!m_Foundations.Contains(house))
-              m_Foundations.Add(house);
+              if (!m_Foundations.Contains(house))
+                m_Foundations.Add(house);
 
-            break;
-          }
+              break;
+            }
           case DesignInsertResult.InvalidItem:
-          {
-            from.SendMessage("That cannot be inserted. Try again.");
-            break;
-          }
+            {
+              from.SendMessage("That cannot be inserted. Try again.");
+              break;
+            }
           case DesignInsertResult.NotInHouse:
           case DesignInsertResult.OutsideHouseBounds:
-          {
-            from.SendMessage("That item is not inside a customizable house. Try again.");
-            break;
-          }
+            {
+              from.SendMessage("That item is not inside a customizable house. Try again.");
+              break;
+            }
         }
 
         from.Target = new DesignInsertTarget(m_Foundations, m_StaticsOnly);
       }
     }
-
-    #endregion
-
-    #region Area targeting mode
 
     public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
@@ -165,25 +159,25 @@ namespace Server.Commands.Generic
           switch (result)
           {
             case DesignInsertResult.Valid:
-            {
-              AddResponse("The item has been inserted into the house design.");
+              {
+                AddResponse("The item has been inserted into the house design.");
 
-              if (!foundations.Contains(house))
-                foundations.Add(house);
+                if (!foundations.Contains(house))
+                  foundations.Add(house);
 
-              break;
-            }
+                break;
+              }
             case DesignInsertResult.InvalidItem:
-            {
-              LogFailure("That cannot be inserted.");
-              break;
-            }
+              {
+                LogFailure("That cannot be inserted.");
+                break;
+              }
             case DesignInsertResult.NotInHouse:
             case DesignInsertResult.OutsideHouseBounds:
-            {
-              LogFailure("That item is not inside a customizable house.");
-              break;
-            }
+              {
+                LogFailure("That item is not inside a customizable house.");
+                break;
+              }
           }
         }
 
@@ -197,7 +191,5 @@ namespace Server.Commands.Generic
 
       Flush(from, flushToLog);
     }
-
-    #endregion
   }
 }

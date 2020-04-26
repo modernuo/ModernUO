@@ -78,8 +78,6 @@ namespace Server.Mobiles
       int version = reader.ReadInt();
     }
 
-    #region Pack Animal Methods
-
     public override bool OnBeforeDeath()
     {
       if (!base.OnBeforeDeath())
@@ -129,14 +127,12 @@ namespace Server.Mobiles
 
       PackAnimal.GetContextMenuEntries(this, from, list);
     }
-
-    #endregion
   }
 
   public class PackAnimalBackpackEntry : ContextMenuEntry
   {
-    private BaseCreature m_Animal;
-    private Mobile m_From;
+    private readonly BaseCreature m_Animal;
+    private readonly Mobile m_From;
 
     public PackAnimalBackpackEntry(BaseCreature animal, Mobile from) : base(6145, 3)
     {

@@ -6,14 +6,13 @@ namespace Server.Spells.Eighth
 {
   public class ResurrectionSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Resurrection", "An Corp",
       245,
       9062,
       Reagent.Bloodmoss,
       Reagent.Garlic,
-      Reagent.Ginseng
-    );
+      Reagent.Ginseng);
 
     public ResurrectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

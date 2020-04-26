@@ -20,8 +20,8 @@ namespace Server.Engines.ConPVP
     {
     }
 
-    [CommandProperty( AccessLevel.Administrator )]
-    public Ladder Ladder{ get; private set; }
+    [CommandProperty(AccessLevel.Administrator)]
+    public Ladder Ladder { get; private set; }
 
     public override string DefaultName => "ladder controller";
 
@@ -54,21 +54,21 @@ namespace Server.Engines.ConPVP
       {
         case 1:
         case 0:
-        {
-          Ladder = new Ladder(reader);
+          {
+            Ladder = new Ladder(reader);
 
-          if (version < 1 || reader.ReadBool())
-            Ladder.Instance = Ladder;
+            if (version < 1 || reader.ReadBool())
+              Ladder.Instance = Ladder;
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
 
   public class Ladder
   {
-    private static int[] m_ShortLevels =
+    private static readonly int[] m_ShortLevels =
     {
       1,
       2,
@@ -81,12 +81,12 @@ namespace Server.Engines.ConPVP
       9, 9, 9, 9, 9
     };
 
-    private static int[] m_BaseXP =
+    private static readonly int[] m_BaseXP =
     {
       0, 100, 200, 400, 600, 900, 1200, 1600, 2000, 2500
     };
 
-    private static int[] m_LossFactors =
+    private static readonly int[] m_LossFactors =
     {
       10,
       11, 11,
@@ -95,7 +95,7 @@ namespace Server.Engines.ConPVP
       67, 67
     };
 
-    private static int[,] m_OffsetScalar =
+    private static readonly int[,] m_OffsetScalar =
     {
       /* { win, los } */
       /* -6 */ { 175, 25 },
@@ -113,9 +113,9 @@ namespace Server.Engines.ConPVP
       /* +6 */ { 40, 160 }
     };
 
-    public List<LadderEntry> Entries{ get; } = new List<LadderEntry>();
+    public List<LadderEntry> Entries { get; } = new List<LadderEntry>();
 
-    private Dictionary<Mobile, LadderEntry> m_Table;
+    private readonly Dictionary<Mobile, LadderEntry> m_Table;
 
     public Ladder() => m_Table = new Dictionary<Mobile, LadderEntry>();
 
@@ -127,42 +127,42 @@ namespace Server.Engines.ConPVP
       {
         case 1:
         case 0:
-        {
-          int count = reader.ReadEncodedInt();
-
-          m_Table = new Dictionary<Mobile, LadderEntry>(count);
-          Entries = new List<LadderEntry>(count);
-
-          for (int i = 0; i < count; ++i)
           {
-            LadderEntry entry = new LadderEntry(reader, this, version);
+            int count = reader.ReadEncodedInt();
 
-            if (entry.Mobile != null)
+            m_Table = new Dictionary<Mobile, LadderEntry>(count);
+            Entries = new List<LadderEntry>(count);
+
+            for (int i = 0; i < count; ++i)
             {
-              m_Table[entry.Mobile] = entry;
-              entry.Index = Entries.Count;
-              Entries.Add(entry);
+              LadderEntry entry = new LadderEntry(reader, this, version);
+
+              if (entry.Mobile != null)
+              {
+                m_Table[entry.Mobile] = entry;
+                entry.Index = Entries.Count;
+                Entries.Add(entry);
+              }
             }
-          }
 
-          if (version == 0)
-          {
-            Entries.Sort();
-
-            for (int i = 0; i < Entries.Count; ++i)
+            if (version == 0)
             {
-              LadderEntry entry = Entries[i];
+              Entries.Sort();
 
-              entry.Index = i;
+              for (int i = 0; i < Entries.Count; ++i)
+              {
+                LadderEntry entry = Entries[i];
+
+                entry.Index = i;
+              }
             }
-          }
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public static Ladder Instance{ get; set; }
+    public static Ladder Instance { get; set; }
 
     public static int GetLevel(int xp)
     {
@@ -295,7 +295,7 @@ namespace Server.Engines.ConPVP
   public class LadderEntry : IComparable<LadderEntry>
   {
     private int m_Experience;
-    private Ladder m_Ladder;
+    private readonly Ladder m_Ladder;
 
     public LadderEntry(Mobile mob, Ladder ladder)
     {
@@ -311,18 +311,18 @@ namespace Server.Engines.ConPVP
       {
         case 1:
         case 0:
-        {
-          Mobile = reader.ReadMobile();
-          m_Experience = reader.ReadEncodedInt();
-          Wins = reader.ReadEncodedInt();
-          Losses = reader.ReadEncodedInt();
+          {
+            Mobile = reader.ReadMobile();
+            m_Experience = reader.ReadEncodedInt();
+            Wins = reader.ReadEncodedInt();
+            Losses = reader.ReadEncodedInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public Mobile Mobile{ get; }
+    public Mobile Mobile { get; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
     public int Experience
@@ -336,12 +336,12 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public int Wins{ get; set; }
+    public int Wins { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public int Losses{ get; set; }
+    public int Losses { get; set; }
 
-    public int Index{ get; set; }
+    public int Index { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Rank => Index;

@@ -7,7 +7,7 @@ namespace Server.Engines.Quests
 {
   public class CancelQuestRegion : BaseRegion
   {
-    private Type m_Quest;
+    private readonly Type m_Quest;
 
     public CancelQuestRegion(XmlElement xml, Map map, Region parent) : base(xml, map, parent)
     {

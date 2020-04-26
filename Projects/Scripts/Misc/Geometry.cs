@@ -211,11 +211,11 @@ namespace Server.Misc
         Quadrant = quadrant;
       }
 
-      public Point2D Point{ get; }
+      public Point2D Point { get; }
 
-      public int Angle{ get; }
+      public int Angle { get; }
 
-      public int Quadrant{ get; }
+      public int Quadrant { get; }
     }
   }
 }

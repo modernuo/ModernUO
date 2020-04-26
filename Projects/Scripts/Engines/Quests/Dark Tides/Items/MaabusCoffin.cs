@@ -24,10 +24,10 @@ namespace Server.Engines.Quests.Necro
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Maabus Maabus{ get; private set; }
+    public Maabus Maabus { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D SpawnLocation{ get; set; }
+    public Point3D SpawnLocation { get; set; }
 
     public void Awake(Mobile caller)
     {

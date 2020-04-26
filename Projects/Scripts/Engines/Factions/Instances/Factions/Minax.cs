@@ -74,10 +74,9 @@ namespace Server.Factions
               new TextDefinition(1011505, "BERSERKER"), new TextDefinition(1011499, "Hire Berserker")),
             new GuardDefinition(typeof(FactionDragoon), 0x1439, 8000, 4000, 10,
               new TextDefinition(1011506, "DRAGOON"), new TextDefinition(1011500, "Hire Dragoon"))
-          }
-        );
+          });
     }
 
-    public static Faction Instance{ get; private set; }
+    public static Faction Instance { get; private set; }
   }
 }

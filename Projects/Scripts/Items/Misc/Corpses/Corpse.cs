@@ -69,8 +69,8 @@ namespace Server.Items
 
     public static readonly TimeSpan InstancedCorpseTime = TimeSpan.FromMinutes(3.0);
 
-    private static TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(7.0);
-    private static TimeSpan m_BoneDecayTime = TimeSpan.FromMinutes(7.0);
+    private static readonly TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(7.0);
+    private static readonly TimeSpan m_BoneDecayTime = TimeSpan.FromMinutes(7.0);
 
     private string
       m_CorpseName; // Value of the CorpseNameAttribute attached to the owner when he died -or- null if the owner had no CorpseNameAttribute; use "the remains of ~name~"
@@ -131,7 +131,7 @@ namespace Server.Items
       EquipItems = equipItems;
 
       Aggressors = new List<Mobile>(owner.Aggressors.Count + owner.Aggressed.Count);
-      //bool addToAggressors = !( owner is BaseCreature );
+      // bool addToAggressors = !( owner is BaseCreature );
 
       bool isBaseCreature = owner is BaseCreature;
 
@@ -198,13 +198,13 @@ namespace Server.Items
     public override bool IsDecoContainer => false;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime TimeOfDeath{ get; set; }
+    public DateTime TimeOfDeath { get; set; }
 
     public override bool DisplayWeight => false;
 
-    public HairInfo Hair{ get; }
+    public HairInfo Hair { get; }
 
-    public FacialHairInfo FacialHair{ get; }
+    public FacialHairInfo FacialHair { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsBones => GetFlag(CorpseFlag.IsBones);
@@ -248,23 +248,23 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AccessLevel AccessLevel{ get; private set; }
+    public AccessLevel AccessLevel { get; private set; }
 
-    public List<Mobile> Aggressors{ get; private set; }
+    public List<Mobile> Aggressors { get; private set; }
 
-    public List<Mobile> Looters{ get; private set; }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Killer{ get; private set; }
-
-    public List<Item> EquipItems{ get; private set; }
-
-    public List<Item> RestoreEquip{ get; set; }
-
-    public Guild Guild{ get; }
+    public List<Mobile> Looters { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Kills{ get; set; }
+    public Mobile Killer { get; private set; }
+
+    public List<Item> EquipItems { get; private set; }
+
+    public List<Item> RestoreEquip { get; set; }
+
+    public Guild Guild { get; }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Kills { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Criminal
@@ -274,7 +274,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Owner{ get; private set; }
+    public Mobile Owner { get; private set; }
 
     public override bool DisplaysContent => false;
 
@@ -330,7 +330,7 @@ namespace Server.Items
 
     public override bool IsChildVisibleTo(Mobile m, Item child) =>
       !m.Player || m.AccessLevel > AccessLevel.Player || m_InstancedItems == null ||
-      !m_InstancedItems.TryGetValue(child, out InstancedItemInfo info) || !InstancedCorpse && !info.Perpetual
+      !m_InstancedItems.TryGetValue(child, out InstancedItemInfo info) || (!InstancedCorpse && !info.Perpetual)
       || info.IsOwner(m);
 
     private void AssignInstancedLoot()
@@ -347,7 +347,7 @@ namespace Server.Items
       {
         Item item = Items[i];
 
-        if (item.LootType != LootType.Cursed) //Don't have cursed items take up someone's item spot.. (?)
+        if (item.LootType != LootType.Cursed) // Don't have cursed items take up someone's item spot.. (?)
         {
           if (item.Stackable)
             m_Stackables.Add(item);
@@ -358,7 +358,7 @@ namespace Server.Items
 
       List<Mobile> attackers = new List<Mobile>(Aggressors);
 
-      for (int i = 1; i < attackers.Count - 1; i++) //randomize
+      for (int i = 1; i < attackers.Count - 1; i++) // randomize
       {
         int rand = Utility.Random(i + 1);
 
@@ -383,11 +383,11 @@ namespace Server.Items
             Item splitItem =
               Mobile.LiftItemDupe(item,
                 item.Amount -
-                amountPerAttacker); //LiftItemDupe automagically adds it as a child item to the corpse
+                amountPerAttacker); // LiftItemDupe automagically adds it as a child item to the corpse
 
             m_InstancedItems.Add(splitItem, new InstancedItemInfo(splitItem, attackers[j]));
 
-            //What happens to the remaining portion?  TEMP FOR NOW UNTIL OSI VERIFICATION:  Treat as Single Item.
+            // What happens to the remaining portion?  TEMP FOR NOW UNTIL OSI VERIFICATION:  Treat as Single Item.
           }
 
           if (remainder == 0)
@@ -397,7 +397,7 @@ namespace Server.Items
         }
         else
         {
-          //What happens in this case?  TEMP FOR NOW UNTIL OSI VERIFICATION:  Treat as Single Item.
+          // What happens in this case?  TEMP FOR NOW UNTIL OSI VERIFICATION:  Treat as Single Item.
           m_Unstackables.Add(item);
         }
       }
@@ -579,144 +579,144 @@ namespace Server.Items
       switch (version)
       {
         case 12:
-        {
-          if (reader.ReadBool())
-            RestoreEquip = reader.ReadStrongItemList();
+          {
+            if (reader.ReadBool())
+              RestoreEquip = reader.ReadStrongItemList();
 
-          goto case 11;
-        }
+            goto case 11;
+          }
         case 11:
-        {
-          // Version 11, we move all bools to a CorpseFlag
-          m_Flags = (CorpseFlag)reader.ReadInt();
-
-          TimeOfDeath = reader.ReadDeltaTime();
-
-          int count = reader.ReadInt();
-
-          for (int i = 0; i < count; ++i)
           {
-            Item item = reader.ReadItem();
+            // Version 11, we move all bools to a CorpseFlag
+            m_Flags = (CorpseFlag)reader.ReadInt();
+
+            TimeOfDeath = reader.ReadDeltaTime();
+
+            int count = reader.ReadInt();
+
+            for (int i = 0; i < count; ++i)
+            {
+              Item item = reader.ReadItem();
+
+              if (reader.ReadBool())
+                SetRestoreInfo(item, reader.ReadPoint3D());
+              else if (item != null)
+                SetRestoreInfo(item, item.Location);
+            }
 
             if (reader.ReadBool())
-              SetRestoreInfo(item, reader.ReadPoint3D());
-            else if (item != null)
-              SetRestoreInfo(item, item.Location);
+              BeginDecay(reader.ReadDeltaTime() - DateTime.UtcNow);
+
+            Looters = reader.ReadStrongMobileList();
+            Killer = reader.ReadMobile();
+
+            Aggressors = reader.ReadStrongMobileList();
+            Owner = reader.ReadMobile();
+
+            m_CorpseName = reader.ReadString();
+
+            AccessLevel = (AccessLevel)reader.ReadInt();
+            reader.ReadInt(); // guild reserve
+            Kills = reader.ReadInt();
+
+            EquipItems = reader.ReadStrongItemList();
+            break;
           }
-
-          if (reader.ReadBool())
-            BeginDecay(reader.ReadDeltaTime() - DateTime.UtcNow);
-
-          Looters = reader.ReadStrongMobileList();
-          Killer = reader.ReadMobile();
-
-          Aggressors = reader.ReadStrongMobileList();
-          Owner = reader.ReadMobile();
-
-          m_CorpseName = reader.ReadString();
-
-          AccessLevel = (AccessLevel)reader.ReadInt();
-          reader.ReadInt(); // guild reserve
-          Kills = reader.ReadInt();
-
-          EquipItems = reader.ReadStrongItemList();
-          break;
-        }
         case 10:
-        {
-          TimeOfDeath = reader.ReadDeltaTime();
-
-          goto case 9;
-        }
-        case 9:
-        {
-          int count = reader.ReadInt();
-
-          for (int i = 0; i < count; ++i)
           {
-            Item item = reader.ReadItem();
+            TimeOfDeath = reader.ReadDeltaTime();
 
-            if (reader.ReadBool())
-              SetRestoreInfo(item, reader.ReadPoint3D());
-            else if (item != null)
-              SetRestoreInfo(item, item.Location);
+            goto case 9;
           }
+        case 9:
+          {
+            int count = reader.ReadInt();
 
-          goto case 8;
-        }
+            for (int i = 0; i < count; ++i)
+            {
+              Item item = reader.ReadItem();
+
+              if (reader.ReadBool())
+                SetRestoreInfo(item, reader.ReadPoint3D());
+              else if (item != null)
+                SetRestoreInfo(item, item.Location);
+            }
+
+            goto case 8;
+          }
         case 8:
-        {
-          SetFlag(CorpseFlag.VisitedByTaxidermist, reader.ReadBool());
+          {
+            SetFlag(CorpseFlag.VisitedByTaxidermist, reader.ReadBool());
 
-          goto case 7;
-        }
+            goto case 7;
+          }
         case 7:
-        {
-          if (reader.ReadBool())
-            BeginDecay(reader.ReadDeltaTime() - DateTime.UtcNow);
+          {
+            if (reader.ReadBool())
+              BeginDecay(reader.ReadDeltaTime() - DateTime.UtcNow);
 
-          goto case 6;
-        }
+            goto case 6;
+          }
         case 6:
-        {
-          Looters = reader.ReadStrongMobileList();
-          Killer = reader.ReadMobile();
+          {
+            Looters = reader.ReadStrongMobileList();
+            Killer = reader.ReadMobile();
 
-          goto case 5;
-        }
+            goto case 5;
+          }
         case 5:
-        {
-          SetFlag(CorpseFlag.Carved, reader.ReadBool());
+          {
+            SetFlag(CorpseFlag.Carved, reader.ReadBool());
 
-          goto case 4;
-        }
+            goto case 4;
+          }
         case 4:
-        {
-          Aggressors = reader.ReadStrongMobileList();
+          {
+            Aggressors = reader.ReadStrongMobileList();
 
-          goto case 3;
-        }
+            goto case 3;
+          }
         case 3:
-        {
-          Owner = reader.ReadMobile();
+          {
+            Owner = reader.ReadMobile();
 
-          goto case 2;
-        }
+            goto case 2;
+          }
         case 2:
-        {
-          SetFlag(CorpseFlag.NoBones, reader.ReadBool());
+          {
+            SetFlag(CorpseFlag.NoBones, reader.ReadBool());
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          m_CorpseName = reader.ReadString();
+          {
+            m_CorpseName = reader.ReadString();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          if (version < 10)
-            TimeOfDeath = DateTime.UtcNow;
+          {
+            if (version < 10)
+              TimeOfDeath = DateTime.UtcNow;
 
-          if (version < 7)
-            BeginDecay(m_DefaultDecayTime);
+            if (version < 7)
+              BeginDecay(m_DefaultDecayTime);
 
-          if (version < 6)
-            Looters = new List<Mobile>();
+            if (version < 6)
+              Looters = new List<Mobile>();
 
-          if (version < 4)
-            Aggressors = new List<Mobile>();
+            if (version < 4)
+              Aggressors = new List<Mobile>();
 
-          AccessLevel = (AccessLevel)reader.ReadInt();
-          reader.ReadInt(); // guild reserve
-          Kills = reader.ReadInt();
-          SetFlag(CorpseFlag.Criminal, reader.ReadBool());
+            AccessLevel = (AccessLevel)reader.ReadInt();
+            reader.ReadInt(); // guild reserve
+            Kills = reader.ReadInt();
+            SetFlag(CorpseFlag.Criminal, reader.ReadBool());
 
-          EquipItems = reader.ReadStrongItemList();
+            EquipItems = reader.ReadStrongItemList();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -865,8 +865,6 @@ namespace Server.Items
         return;
       }
 
-      #region Self Looting
-
       if (checkSelfLoot && from == Owner && !GetFlag(CorpseFlag.SelfLooted) && Items.Count != 0)
       {
         if (from.FindItemOnLayer(Layer.OuterTorso) is DeathRobe robe)
@@ -947,12 +945,8 @@ namespace Server.Items
         SetFlag(CorpseFlag.SelfLooted, true);
       }
 
-      #endregion
-
       if (!CheckLoot(from, null))
         return;
-
-      #region Quests
 
       if (!(from is PlayerMobile player)) return;
 
@@ -1007,8 +1001,6 @@ namespace Server.Items
         }
       }
 
-      #endregion
-
       base.OnDoubleClick(from);
     }
 
@@ -1062,8 +1054,8 @@ namespace Server.Items
 
     private class InstancedItemInfo
     {
-      private Item m_Item;
-      private Mobile m_Mobile;
+      private readonly Item m_Item;
+      private readonly Mobile m_Mobile;
 
       public InstancedItemInfo(Item i, Mobile m)
       {
@@ -1071,15 +1063,15 @@ namespace Server.Items
         m_Mobile = m;
       }
 
-      public bool Perpetual{ get; set; }
+      public bool Perpetual { get; set; }
 
       public bool IsOwner(Mobile m)
       {
-        if (m_Item.LootType == LootType.Cursed) //Cursed Items are part of everyone's instanced corpse... (?)
+        if (m_Item.LootType == LootType.Cursed) // Cursed Items are part of everyone's instanced corpse... (?)
           return true;
 
         if (m == null)
-          return false; //sanity
+          return false; // sanity
 
         if (m_Mobile == m)
           return true;
@@ -1092,7 +1084,7 @@ namespace Server.Items
 
     private class InternalTimer : Timer
     {
-      private Corpse m_Corpse;
+      private readonly Corpse m_Corpse;
 
       public InternalTimer(Corpse c, TimeSpan delay) : base(delay)
       {

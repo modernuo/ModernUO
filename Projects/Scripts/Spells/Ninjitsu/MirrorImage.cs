@@ -10,13 +10,12 @@ namespace Server.Spells.Ninjitsu
 {
   public class MirrorImage : NinjaSpell
   {
-    private static Dictionary<Mobile, int> m_CloneCount = new Dictionary<Mobile, int>();
+    private static readonly Dictionary<Mobile, int> m_CloneCount = new Dictionary<Mobile, int>();
 
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Mirror Image", null,
       -1,
-      9002
-    );
+      9002);
 
     public MirrorImage(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -224,7 +223,6 @@ namespace Server.Mobiles
     }
   }
 }
-
 
 namespace Server.Mobiles
 {

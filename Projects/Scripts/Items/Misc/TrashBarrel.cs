@@ -5,7 +5,7 @@ using Server.Network;
 
 namespace Server.Items
 {
-  public class TrashBarrel : Container, IChopable
+  public class TrashBarrel : Container, IChoppable
   {
     private Timer m_Timer;
 
@@ -130,7 +130,7 @@ namespace Server.Items
 
     private class EmptyTimer : Timer
     {
-      private TrashBarrel m_Barrel;
+      private readonly TrashBarrel m_Barrel;
 
       public EmptyTimer(TrashBarrel barrel) : base(TimeSpan.FromMinutes(3.0))
       {

@@ -72,11 +72,11 @@ namespace Server.Engines.ConPVP
 
   public class ArenaGump : Gump
   {
-    private List<Arena> m_Arenas;
+    private readonly List<Arena> m_Arenas;
 
     private int m_ColumnX = 12;
-    private Mobile m_From;
-    private ArenasMoongate m_Gate;
+    private readonly Mobile m_From;
+    private readonly ArenasMoongate m_Gate;
 
     public ArenaGump(Mobile from, ArenasMoongate gate) : base(50, 50)
     {

@@ -6,9 +6,9 @@ namespace Server.Mobiles
 {
   public class SBBarkeeper : SBInfo
   {
-    public override IShopSellInfo SellInfo{ get; } = new InternalSellInfo();
+    public override IShopSellInfo SellInfo { get; } = new InternalSellInfo();
 
-    public override List<GenericBuyInfo> BuyInfo{ get; } = new InternalBuyInfo();
+    public override List<GenericBuyInfo> BuyInfo { get; } = new InternalBuyInfo();
 
     public class InternalBuyInfo : List<GenericBuyInfo>
     {
@@ -42,7 +42,7 @@ namespace Server.Mobiles
         Add(new GenericBuyInfo(typeof(WoodenBowlOfStew), 3, 20, 0x1604, 0));
         Add(new GenericBuyInfo(typeof(WoodenBowlOfTomatoSoup), 3, 20, 0x1606, 0));
 
-        Add(new GenericBuyInfo(typeof(ApplePie), 7, 20, 0x1041, 0)); //OSI just has Pie, not Apple/Fruit/Meat
+        Add(new GenericBuyInfo(typeof(ApplePie), 7, 20, 0x1041, 0)); // OSI just has Pie, not Apple/Fruit/Meat
 
         Add(new GenericBuyInfo("1016450", typeof(Chessboard), 2, 20, 0xFA6, 0));
         Add(new GenericBuyInfo("1016449", typeof(CheckerBoard), 2, 20, 0xFA6, 0));
@@ -53,7 +53,7 @@ namespace Server.Mobiles
         if (BaseHouse.NewVendorSystem)
           Add(new GenericBuyInfo("1062332", typeof(VendorRentalContract), 1252, 20, 0x14F0, 0x672));
 
-        /*if ( Map == Tokuno )
+        /*if (Map == Tokuno)
           {
             Add( new GenericBuyInfo( typeof( Wasabi ), 2, 20, 0x24E8, 0 ) );
             Add( new GenericBuyInfo( typeof( Wasabi ), 2, 20, 0x24E9, 0 ) );

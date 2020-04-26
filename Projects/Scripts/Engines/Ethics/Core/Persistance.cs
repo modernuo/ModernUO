@@ -18,7 +18,7 @@ namespace Server.Ethics
       : base(serial) =>
       Instance = this;
 
-    public static EthicsPersistance Instance{ get; private set; }
+    public static EthicsPersistance Instance { get; private set; }
 
     public override string DefaultName => "Ethics Persistance - Internal";
 
@@ -41,12 +41,12 @@ namespace Server.Ethics
       switch (version)
       {
         case 0:
-        {
-          for (int i = 0; i < Ethic.Ethics.Length; ++i)
-            Ethic.Ethics[i].Deserialize(reader);
+          {
+            for (int i = 0; i < Ethic.Ethics.Length; ++i)
+              Ethic.Ethics[i].Deserialize(reader);
 
-          break;
-        }
+            break;
+          }
       }
     }
 

@@ -39,13 +39,13 @@ namespace Server.Items
         typeof(PestilentBandage), typeof(Revenant), typeof(RevenantLion), typeof(RottingCorpse), typeof(Shade),
         typeof(ShadowKnight), typeof(SkeletalKnight), typeof(SkeletalMage), typeof(SkeletalMount), typeof(Skeleton),
         typeof(Spectre), typeof(Wraith), typeof(Zombie));
-      undead.Entries = new SlayerEntry[0];
+      undead.Entries = Array.Empty<SlayerEntry>();
 
       fey.Opposition = new[] { abyss };
       fey.Super = new SlayerEntry(SlayerName.Fey, typeof(Centaur), typeof(CuSidhe), typeof(EtherealWarrior),
         typeof(Kirin), typeof(LordOaks), typeof(Pixie), typeof(Silvani), typeof(Treefellow), typeof(Unicorn),
         typeof(Wisp), typeof(MLDryad), typeof(Satyr));
-      fey.Entries = new SlayerEntry[0];
+      fey.Entries = Array.Empty<SlayerEntry>();
 
       elemental.Opposition = new[] { abyss };
       elemental.FoundOn = new[] { typeof(Balron), typeof(Daemon) };
@@ -163,17 +163,17 @@ namespace Server.Items
       TotalEntries = CompileEntries(Groups);
     }
 
-    public static SlayerEntry[] TotalEntries{ get; }
+    public static SlayerEntry[] TotalEntries { get; }
 
-    public static SlayerGroup[] Groups{ get; }
+    public static SlayerGroup[] Groups { get; }
 
-    public SlayerGroup[] Opposition{ get; set; }
+    public SlayerGroup[] Opposition { get; set; }
 
-    public SlayerEntry Super{ get; set; }
+    public SlayerEntry Super { get; set; }
 
-    public SlayerEntry[] Entries{ get; set; }
+    public SlayerEntry[] Entries { get; set; }
 
-    public Type[] FoundOn{ get; set; }
+    public Type[] FoundOn { get; set; }
 
     public static SlayerEntry GetEntryByName(SlayerName name)
     {

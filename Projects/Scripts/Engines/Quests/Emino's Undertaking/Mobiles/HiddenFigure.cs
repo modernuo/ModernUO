@@ -20,7 +20,7 @@ namespace Server.Engines.Quests.Ninja
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Message{ get; set; }
+    public int Message { get; set; }
 
     public override int TalkNumber => -1;
 

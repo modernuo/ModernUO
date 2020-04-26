@@ -30,34 +30,34 @@ namespace Server.Factions
       switch (version)
       {
         case 0:
-        {
-          Faction = Faction.ReadReference(reader);
-
-          LastStateTime = reader.ReadDateTime();
-          CurrentState = (ElectionState)reader.ReadEncodedInt();
-
-          Candidates = new List<Candidate>();
-
-          int count = reader.ReadEncodedInt();
-
-          for (int i = 0; i < count; ++i)
           {
-            Candidate cd = new Candidate(reader);
+            Faction = Faction.ReadReference(reader);
 
-            if (cd.Mobile != null)
-              Candidates.Add(cd);
+            LastStateTime = reader.ReadDateTime();
+            CurrentState = (ElectionState)reader.ReadEncodedInt();
+
+            Candidates = new List<Candidate>();
+
+            int count = reader.ReadEncodedInt();
+
+            for (int i = 0; i < count; ++i)
+            {
+              Candidate cd = new Candidate(reader);
+
+              if (cd.Mobile != null)
+                Candidates.Add(cd);
+            }
+
+            break;
           }
-
-          break;
-        }
       }
 
       StartTimer();
     }
 
-    public Faction Faction{ get; }
+    public Faction Faction { get; }
 
-    public List<Candidate> Candidates{ get; }
+    public List<Candidate> Candidates { get; }
 
     public ElectionState State
     {
@@ -69,10 +69,10 @@ namespace Server.Factions
       }
     }
 
-    public DateTime LastStateTime{ get; private set; }
+    public DateTime LastStateTime { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public ElectionState CurrentState{ get; private set; }
+    public ElectionState CurrentState { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
     public TimeSpan NextStateTime
@@ -263,100 +263,100 @@ namespace Server.Factions
       switch (CurrentState)
       {
         case ElectionState.Pending:
-        {
-          if (LastStateTime + PendingPeriod > DateTime.UtcNow)
-            break;
-
-          Faction.Broadcast(1038023); // Campaigning for the Faction Commander election has begun.
-
-          Candidates.Clear();
-          State = ElectionState.Campaign;
-
-          break;
-        }
-        case ElectionState.Campaign:
-        {
-          if (LastStateTime + CampaignPeriod > DateTime.UtcNow)
-            break;
-
-          if (Candidates.Count == 0)
           {
-            Faction.Broadcast(1038025); // Nobody ran for office.
-            State = ElectionState.Pending;
+            if (LastStateTime + PendingPeriod > DateTime.UtcNow)
+              break;
+
+            Faction.Broadcast(1038023); // Campaigning for the Faction Commander election has begun.
+
+            Candidates.Clear();
+            State = ElectionState.Campaign;
+
+            break;
           }
-          else if (Candidates.Count == 1)
+        case ElectionState.Campaign:
           {
-            Faction.Broadcast(1038029); // Only one member ran for office.
+            if (LastStateTime + CampaignPeriod > DateTime.UtcNow)
+              break;
 
-            Candidate winner = Candidates[0];
+            if (Candidates.Count == 0)
+            {
+              Faction.Broadcast(1038025); // Nobody ran for office.
+              State = ElectionState.Pending;
+            }
+            else if (Candidates.Count == 1)
+            {
+              Faction.Broadcast(1038029); // Only one member ran for office.
 
-            Mobile mob = winner.Mobile;
-            PlayerState pl = PlayerState.Find(mob);
+              Candidate winner = Candidates[0];
 
-            if (pl == null || pl.Faction != Faction || mob == Faction.Commander)
+              Mobile mob = winner.Mobile;
+              PlayerState pl = PlayerState.Find(mob);
+
+              if (pl == null || pl.Faction != Faction || mob == Faction.Commander)
+              {
+                Faction.Broadcast(1038026); // Faction leadership has not changed.
+              }
+              else
+              {
+                Faction.Broadcast(1038028); // The faction has a new commander.
+                Faction.Commander = mob;
+              }
+
+              Candidates.Clear();
+              State = ElectionState.Pending;
+            }
+            else
+            {
+              Faction.Broadcast(1038030);
+              State = ElectionState.Election;
+            }
+
+            break;
+          }
+        case ElectionState.Election:
+          {
+            if (LastStateTime + VotingPeriod > DateTime.UtcNow)
+              break;
+
+            Faction.Broadcast(1038024); // The results for the Faction Commander election are in
+
+            Candidate winner = null;
+
+            for (int i = 0; i < Candidates.Count; ++i)
+            {
+              Candidate cd = Candidates[i];
+
+              PlayerState pl = PlayerState.Find(cd.Mobile);
+
+              if (pl == null || pl.Faction != Faction)
+                continue;
+
+              // cd.CleanMuleVotes();
+
+              if (winner == null || cd.Votes > winner.Votes)
+                winner = cd;
+            }
+
+            if (winner == null)
             {
               Faction.Broadcast(1038026); // Faction leadership has not changed.
+            }
+            else if (winner.Mobile == Faction.Commander)
+            {
+              Faction.Broadcast(1038027); // The incumbent won the election.
             }
             else
             {
               Faction.Broadcast(1038028); // The faction has a new commander.
-              Faction.Commander = mob;
+              Faction.Commander = winner.Mobile;
             }
 
             Candidates.Clear();
             State = ElectionState.Pending;
-          }
-          else
-          {
-            Faction.Broadcast(1038030);
-            State = ElectionState.Election;
-          }
 
-          break;
-        }
-        case ElectionState.Election:
-        {
-          if (LastStateTime + VotingPeriod > DateTime.UtcNow)
             break;
-
-          Faction.Broadcast(1038024); // The results for the Faction Commander election are in
-
-          Candidate winner = null;
-
-          for (int i = 0; i < Candidates.Count; ++i)
-          {
-            Candidate cd = Candidates[i];
-
-            PlayerState pl = PlayerState.Find(cd.Mobile);
-
-            if (pl == null || pl.Faction != Faction)
-              continue;
-
-            //cd.CleanMuleVotes();
-
-            if (winner == null || cd.Votes > winner.Votes)
-              winner = cd;
           }
-
-          if (winner == null)
-          {
-            Faction.Broadcast(1038026); // Faction leadership has not changed.
-          }
-          else if (winner.Mobile == Faction.Commander)
-          {
-            Faction.Broadcast(1038027); // The incumbent won the election.
-          }
-          else
-          {
-            Faction.Broadcast(1038028); // The faction has a new commander.
-            Faction.Commander = winner.Mobile;
-          }
-
-          Candidates.Clear();
-          State = ElectionState.Pending;
-
-          break;
-        }
       }
     }
   }
@@ -385,23 +385,23 @@ namespace Server.Factions
       switch (version)
       {
         case 0:
-        {
-          From = reader.ReadMobile();
-          Address = Utility.Intern(reader.ReadIPAddress());
-          Time = reader.ReadDateTime();
+          {
+            From = reader.ReadMobile();
+            Address = Utility.Intern(reader.ReadIPAddress());
+            Time = reader.ReadDateTime();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public Mobile From{ get; }
+    public Mobile From { get; }
 
-    public Mobile Candidate{ get; }
+    public Mobile Candidate { get; }
 
-    public IPAddress Address{ get; }
+    public IPAddress Address { get; }
 
-    public DateTime Time{ get; }
+    public DateTime Time { get; }
 
     public object[] AcquireFields()
     {
@@ -458,40 +458,40 @@ namespace Server.Factions
       switch (version)
       {
         case 1:
-        {
-          Mobile = reader.ReadMobile();
-
-          int count = reader.ReadEncodedInt();
-          Voters = new List<Voter>(count);
-
-          for (int i = 0; i < count; ++i)
           {
-            Voter voter = new Voter(reader, Mobile);
+            Mobile = reader.ReadMobile();
 
-            if (voter.From != null)
-              Voters.Add(voter);
+            int count = reader.ReadEncodedInt();
+            Voters = new List<Voter>(count);
+
+            for (int i = 0; i < count; ++i)
+            {
+              Voter voter = new Voter(reader, Mobile);
+
+              if (voter.From != null)
+                Voters.Add(voter);
+            }
+
+            break;
           }
-
-          break;
-        }
         case 0:
-        {
-          Mobile = reader.ReadMobile();
+          {
+            Mobile = reader.ReadMobile();
 
-          List<Mobile> mobs = reader.ReadStrongMobileList();
-          Voters = new List<Voter>(mobs.Count);
+            List<Mobile> mobs = reader.ReadStrongMobileList();
+            Voters = new List<Voter>(mobs.Count);
 
-          for (int i = 0; i < mobs.Count; ++i)
-            Voters.Add(new Voter(mobs[i], Mobile));
+            for (int i = 0; i < mobs.Count; ++i)
+              Voters.Add(new Voter(mobs[i], Mobile));
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public Mobile Mobile{ get; }
+    public Mobile Mobile { get; }
 
-    public List<Voter> Voters{ get; }
+    public List<Voter> Voters { get; }
 
     public int Votes => Voters.Count;
 

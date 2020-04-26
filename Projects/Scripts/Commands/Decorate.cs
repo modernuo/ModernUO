@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Server.Engines.Quests.Haven;
 using Server.Engines.Quests.Necro;
 using Server.Items;
@@ -12,7 +10,7 @@ using Server.Utilities;
 
 namespace Server.Commands
 {
-  public class Decorate
+  public static class Decorate
   {
     private static Mobile m_Mobile;
     private static int m_Count;
@@ -60,22 +58,22 @@ namespace Server.Commands
 
   public class DecorationList
   {
-    private static Type typeofStatic = typeof(Static);
-    private static Type typeofLocalizedStatic = typeof(LocalizedStatic);
-    private static Type typeofBaseDoor = typeof(BaseDoor);
-    private static Type typeofAnkhWest = typeof(AnkhWest);
-    private static Type typeofAnkhNorth = typeof(AnkhNorth);
-    private static Type typeofBeverage = typeof(BaseBeverage);
-    private static Type typeofLocalizedSign = typeof(LocalizedSign);
-    private static Type typeofMarkContainer = typeof(MarkContainer);
-    private static Type typeofWarningItem = typeof(WarningItem);
-    private static Type typeofHintItem = typeof(HintItem);
-    private static Type typeofCannon = typeof(Cannon);
-    private static Type typeofSerpentPillar = typeof(SerpentPillar);
+    private static readonly Type typeofStatic = typeof(Static);
+    private static readonly Type typeofLocalizedStatic = typeof(LocalizedStatic);
+    private static readonly Type typeofBaseDoor = typeof(BaseDoor);
+    private static readonly Type typeofAnkhWest = typeof(AnkhWest);
+    private static readonly Type typeofAnkhNorth = typeof(AnkhNorth);
+    private static readonly Type typeofBeverage = typeof(BaseBeverage);
+    private static readonly Type typeofLocalizedSign = typeof(LocalizedSign);
+    private static readonly Type typeofMarkContainer = typeof(MarkContainer);
+    private static readonly Type typeofWarningItem = typeof(WarningItem);
+    private static readonly Type typeofHintItem = typeof(HintItem);
+    private static readonly Type typeofCannon = typeof(Cannon);
+    private static readonly Type typeofSerpentPillar = typeof(SerpentPillar);
 
-    private static Queue<Item> m_DeleteQueue = new Queue<Item>();
+    private static readonly Queue<Item> m_DeleteQueue = new Queue<Item>();
 
-    private static string[] m_EmptyParams = new string[0];
+    private static readonly string[] m_EmptyParams = Array.Empty<string>();
     private List<DecorationEntry> m_Entries;
     private int m_ItemID;
     private string[] m_Params;
@@ -934,14 +932,13 @@ namespace Server.Commands
 
         for (int j = 0; j < maps.Length; ++j)
         {
-
           try
           {
             item ??= Construct();
           }
-          catch(TypeInitializationException e)
+          catch (TypeInitializationException e)
           {
-            Console.WriteLine($"{nameof(Generate)}() failed to load type: {e.TypeName}: {e.InnerException.Message}");
+            Console.WriteLine($"{nameof(Generate)}() failed to load type: {e.TypeName}: {e.InnerException?.Message}");
             continue;
           }
 
@@ -1083,11 +1080,11 @@ namespace Server.Commands
       Extra = line;
     }
 
-    public Point3D Location{ get; }
+    public Point3D Location { get; }
 
-    public string Extra{ get; }
+    public string Extra { get; }
 
-    public void Pop(out string v, ref string line)
+    public static void Pop(out string v, ref string line)
     {
       int space = line.IndexOf(' ');
 

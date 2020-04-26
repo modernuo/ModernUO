@@ -117,11 +117,11 @@ namespace Server
     NewMovementSystem = 0x00004000,
     NewFeluccaAreas = 0x00008000,
 
-    ExpansionNone = ContextMenus, //
-    ExpansionT2A = ContextMenus, //
-    ExpansionUOR = ContextMenus, // None
-    ExpansionUOTD = ContextMenus, //
-    ExpansionLBR = ContextMenus, //
+    ExpansionNone = ContextMenus,
+    ExpansionT2A = ContextMenus,
+    ExpansionUOR = ContextMenus,
+    ExpansionUOTD = ContextMenus,
+    ExpansionLBR = ContextMenus,
     ExpansionAOS = ContextMenus | AOS,
     ExpansionSE = ExpansionAOS | SE,
     ExpansionML = ExpansionSE | ML,
@@ -169,96 +169,84 @@ namespace Server
           ClientFlags.None,
           FeatureFlags.ExpansionNone,
           CharacterListFlags.ExpansionNone,
-          HousingFlags.None
-        ),
+          HousingFlags.None),
         new ExpansionInfo(
           1,
           "The Second Age",
           ClientFlags.Felucca,
           FeatureFlags.ExpansionT2A,
           CharacterListFlags.ExpansionT2A,
-          HousingFlags.None
-        ),
+          HousingFlags.None),
         new ExpansionInfo(
           2,
           "Renaissance",
           ClientFlags.Trammel,
           FeatureFlags.ExpansionUOR,
           CharacterListFlags.ExpansionUOR,
-          HousingFlags.None
-        ),
+          HousingFlags.None),
         new ExpansionInfo(
           3,
           "Third Dawn",
           ClientFlags.Ilshenar,
           FeatureFlags.ExpansionUOTD,
           CharacterListFlags.ExpansionUOTD,
-          HousingFlags.None
-        ),
+          HousingFlags.None),
         new ExpansionInfo(
           4,
           "Blackthorn's Revenge",
           ClientFlags.Ilshenar,
           FeatureFlags.ExpansionLBR,
           CharacterListFlags.ExpansionLBR,
-          HousingFlags.None
-        ),
+          HousingFlags.None),
         new ExpansionInfo(
           5,
           "Age of Shadows",
           ClientFlags.Malas,
           FeatureFlags.ExpansionAOS,
           CharacterListFlags.ExpansionAOS,
-          HousingFlags.HousingAOS
-        ),
+          HousingFlags.HousingAOS),
         new ExpansionInfo(
           6,
           "Samurai Empire",
           ClientFlags.Tokuno,
           FeatureFlags.ExpansionSE,
           CharacterListFlags.ExpansionSE,
-          HousingFlags.HousingSE
-        ),
+          HousingFlags.HousingSE),
         new ExpansionInfo(
           7,
           "Mondain's Legacy",
           new ClientVersion("5.0.0a"),
           FeatureFlags.ExpansionML,
           CharacterListFlags.ExpansionML,
-          HousingFlags.HousingML
-        ),
+          HousingFlags.HousingML),
         new ExpansionInfo(
           8,
           "Stygian Abyss",
           ClientFlags.TerMur,
           FeatureFlags.ExpansionSA,
           CharacterListFlags.ExpansionSA,
-          HousingFlags.HousingSA
-        ),
+          HousingFlags.HousingSA),
         new ExpansionInfo(
           9,
           "High Seas",
           new ClientVersion("7.0.9.0"),
           FeatureFlags.ExpansionHS,
           CharacterListFlags.ExpansionHS,
-          HousingFlags.HousingHS
-        ),
+          HousingFlags.HousingHS),
         new ExpansionInfo(
           10,
           "Time of Legends",
           new ClientVersion("7.0.45.65"),
           FeatureFlags.ExpansionTOL,
           CharacterListFlags.ExpansionTOL,
-          HousingFlags.HousingTOL
-        ),
+          HousingFlags.HousingTOL),
         new ExpansionInfo(
           11,
           "Endless Journey",
           new ClientVersion("7.0.61.0"),
           FeatureFlags.ExpansionEJ,
           CharacterListFlags.ExpansionEJ,
-          HousingFlags.HousingEJ
-        )
+          HousingFlags.HousingEJ)
       };
     }
 
@@ -299,20 +287,20 @@ namespace Server
 
     public static ExpansionInfo CoreExpansion => GetInfo(Core.Expansion);
 
-    public static ExpansionInfo[] Table{ get; }
+    public static ExpansionInfo[] Table { get; }
 
-    public int ID{ get; }
-    public string Name{ get; set; }
+    public int ID { get; }
+    public string Name { get; set; }
 
-    public ClientFlags ClientFlags{ get; set; }
-    public FeatureFlags SupportedFeatures{ get; set; }
-    public CharacterListFlags CharacterListFlags{ get; set; }
-    public ClientVersion RequiredClient{ get; set; }
-    public HousingFlags CustomHousingFlag{ get; set; }
+    public ClientFlags ClientFlags { get; set; }
+    public FeatureFlags SupportedFeatures { get; set; }
+    public CharacterListFlags CharacterListFlags { get; set; }
+    public ClientVersion RequiredClient { get; set; }
+    public HousingFlags CustomHousingFlag { get; set; }
 
     public static FeatureFlags GetFeatures(Expansion ex)
     {
-      ExpansionInfo info = GetInfo(ex);
+      var info = GetInfo(ex);
 
       if (info != null) return info.SupportedFeatures;
 
@@ -338,7 +326,7 @@ namespace Server
 
     public static ExpansionInfo GetInfo(int ex)
     {
-      int v = ex;
+      var v = ex;
 
       if (v < 0 || v >= Table.Length) v = 0;
 

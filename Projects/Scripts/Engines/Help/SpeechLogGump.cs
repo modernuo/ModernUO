@@ -10,10 +10,10 @@ namespace Server.Engines.Help
   public class SpeechLogGump : Gump
   {
     public static readonly int MaxEntriesPerPage = 30;
-    private List<SpeechLogEntry> m_Log;
-    private int m_Page;
+    private readonly List<SpeechLogEntry> m_Log;
+    private readonly int m_Page;
 
-    private Mobile m_Player;
+    private readonly Mobile m_Player;
 
     public SpeechLogGump(Mobile player, SpeechLog log)
       : this(player, new List<SpeechLogEntry>(log))
@@ -94,19 +94,19 @@ namespace Server.Engines.Help
       switch (info.ButtonID)
       {
         case 1: // Previous page
-        {
-          if (m_Page - 1 >= 0)
-            from.SendGump(new SpeechLogGump(m_Player, m_Log, m_Page - 1));
+          {
+            if (m_Page - 1 >= 0)
+              from.SendGump(new SpeechLogGump(m_Player, m_Log, m_Page - 1));
 
-          break;
-        }
+            break;
+          }
         case 2: // Next page
-        {
-          if ((m_Page + 1) * MaxEntriesPerPage < m_Log.Count)
-            from.SendGump(new SpeechLogGump(m_Player, m_Log, m_Page + 1));
+          {
+            if ((m_Page + 1) * MaxEntriesPerPage < m_Log.Count)
+              from.SendGump(new SpeechLogGump(m_Player, m_Log, m_Page + 1));
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

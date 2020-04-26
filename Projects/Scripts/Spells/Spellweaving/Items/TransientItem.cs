@@ -22,10 +22,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan LifeSpan{ get; set; }
+    public TimeSpan LifeSpan { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime CreationTime{ get; set; }
+    public DateTime CreationTime { get; set; }
 
     public override bool Nontransferable => true;
 
@@ -38,7 +38,6 @@ namespace Server.Items
 
       Delete();
     }
-
 
     public virtual void Expire(Mobile parent)
     {

@@ -30,7 +30,7 @@ namespace Server.Items
     public static DawnsMusicGear RandomRare => new DawnsMusicGear(DawnsMusicBox.RandomTrack(DawnsMusicRarity.Rare));
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public MusicName Music{ get; set; }
+    public MusicName Music { get; set; }
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
@@ -76,10 +76,10 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          Music = (MusicName)reader.ReadInt();
-          break;
-        }
+          {
+            Music = (MusicName)reader.ReadInt();
+            break;
+          }
       }
 
       if (version == 0) // Music wasn't serialized in version 0, pick a new track of random rarity
@@ -100,7 +100,7 @@ namespace Server.Items
 
     public class InternalTarget : Target
     {
-      private DawnsMusicGear m_Gear;
+      private readonly DawnsMusicGear m_Gear;
 
       public InternalTarget(DawnsMusicGear gear) : base(2, false, TargetFlags.None) => m_Gear = gear;
 

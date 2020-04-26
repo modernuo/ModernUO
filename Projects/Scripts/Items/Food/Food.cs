@@ -17,13 +17,13 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Poisoner{ get; set; }
+    public Mobile Poisoner { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Poison Poison{ get; set; }
+    public Poison Poison { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int FillFactor{ get; set; }
+    public int FillFactor { get; set; }
 
     public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
     {
@@ -121,35 +121,35 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          Poison = reader.ReadInt() switch
           {
-            0 => null,
-            1 => Poison.Lesser,
-            2 => Poison.Regular,
-            3 => Poison.Greater,
-            4 => Poison.Deadly,
-            _ => Poison
-          };
+            Poison = reader.ReadInt() switch
+            {
+              0 => null,
+              1 => Poison.Lesser,
+              2 => Poison.Regular,
+              3 => Poison.Greater,
+              4 => Poison.Deadly,
+              _ => Poison
+            };
 
-          break;
-        }
+            break;
+          }
         case 2:
-        {
-          Poison = Poison.Deserialize(reader);
-          break;
-        }
+          {
+            Poison = Poison.Deserialize(reader);
+            break;
+          }
         case 3:
-        {
-          Poison = Poison.Deserialize(reader);
-          FillFactor = reader.ReadInt();
-          break;
-        }
+          {
+            Poison = Poison.Deserialize(reader);
+            FillFactor = reader.ReadInt();
+            break;
+          }
         case 4:
-        {
-          Poisoner = reader.ReadMobile();
-          goto case 3;
-        }
+          {
+            Poisoner = reader.ReadMobile();
+            goto case 3;
+          }
       }
     }
   }
@@ -369,7 +369,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
   }
-
 
   public class FriedEggs : Food
   {

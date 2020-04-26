@@ -1,8 +1,3 @@
-//
-// This is a first simple AI
-//
-//
-
 namespace Server.Mobiles
 {
   public class MeleeAI : BaseAI
@@ -70,9 +65,9 @@ namespace Server.Mobiles
         }
       }
 
-      /*if ( !m_Mobile.InLOS( combatant ) )
+      /*if (!m_Mobile.InLOS( combatant ))
       {
-        if ( AcquireFocusMob( m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true ) )
+        if (AcquireFocusMob( m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true ))
         {
           m_Mobile.Combatant = combatant = m_Mobile.FocusMob;
           m_Mobile.FocusMob = null;

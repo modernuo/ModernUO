@@ -21,7 +21,7 @@ namespace Server.Items
     {
     }
 
-    public int SpellID{ get; private set; }
+    public int SpellID { get; private set; }
 
     int ICommodity.DescriptionNumber => LabelNumber;
     bool ICommodity.IsDeedable => Core.ML;
@@ -44,11 +44,11 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          SpellID = reader.ReadInt();
+          {
+            SpellID = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 

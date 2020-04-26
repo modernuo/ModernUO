@@ -37,14 +37,14 @@ namespace Server.Engines.CannedEvil
       switch (version)
       {
         case 0:
-        {
-          m_Spawn = reader.ReadItem() as ChampionSpawn;
+          {
+            m_Spawn = reader.ReadItem() as ChampionSpawn;
 
-          if (m_Spawn == null)
-            Delete();
+            if (m_Spawn == null)
+              Delete();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

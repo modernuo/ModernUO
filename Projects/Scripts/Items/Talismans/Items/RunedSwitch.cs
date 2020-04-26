@@ -42,7 +42,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private RunedSwitch m_Item;
+      private readonly RunedSwitch m_Item;
 
       public InternalTarget(RunedSwitch item) : base(0, false, TargetFlags.None) => m_Item = item;
 

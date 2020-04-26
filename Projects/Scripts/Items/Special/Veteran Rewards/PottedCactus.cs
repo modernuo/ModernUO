@@ -100,7 +100,6 @@ namespace Server.Items
       }
     }
 
-
     public override void GetProperties(ObjectPropertyList list)
     {
       base.GetProperties(list);
@@ -129,7 +128,7 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private PottedCactusDeed m_Cactus;
+      private readonly PottedCactusDeed m_Cactus;
 
       public InternalGump(PottedCactusDeed cactus) : base(100, 200)
       {

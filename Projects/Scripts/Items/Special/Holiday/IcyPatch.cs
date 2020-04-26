@@ -23,7 +23,7 @@ namespace Server.Items
     {
     }
 
-    public override int LabelNumber => 1095159; //An Icy Patch
+    public override int LabelNumber => 1095159; // An Icy Patch
     public override double DefaultWeight => 5.0;
 
     public override bool OnMoveOver(Mobile m)
@@ -33,13 +33,13 @@ namespace Server.Items
         {
           case 0:
             RunSequence(m, 1095160, false);
-            break; //You steadily walk over the slippery surface.
+            break; // You steadily walk over the slippery surface.
           case 1:
             RunSequence(m, 1095161, true);
-            break; //You skillfully manage to maintain your balance.
+            break; // You skillfully manage to maintain your balance.
           default:
             RunSequence(m, 1095162, true);
-            break; //You lose your footing and ungracefully splatter on the ground.
+            break; // You lose your footing and ungracefully splatter on the ground.
         }
       return base.OnMoveOver(m);
     }
@@ -53,7 +53,7 @@ namespace Server.Items
       }
 
       m.SendLocalizedMessage(message);
-      
+
       int action = 0;
       int sound = 0;
 
@@ -84,7 +84,7 @@ namespace Server.Items
     {
       if (!m.Mounted)
         m.Animate(action, 1, 1, false, true, 0);
-      
+
       m.PlaySound(sound);
     }
 

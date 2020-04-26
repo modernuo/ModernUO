@@ -8,7 +8,7 @@ namespace Server.Items
   /// </summary>
   public class DualWield : WeaponAbility
   {
-    public static Dictionary<Mobile, DualWieldTimer> Registry{ get; } = new Dictionary<Mobile, DualWieldTimer>();
+    public static Dictionary<Mobile, DualWieldTimer> Registry { get; } = new Dictionary<Mobile, DualWieldTimer>();
 
     public override int BaseMana => 30;
 
@@ -41,7 +41,7 @@ namespace Server.Items
       attacker.FixedParticles(0x3779, 1, 15, 0x7F6, 0x3E8, 3, EffectLayer.LeftHand);
 
       timer = new DualWieldTimer(attacker,
-        (int)(20.0 + 3.0 * (attacker.Skills.Ninjitsu.Value - 50.0) / 7.0)); //20-50 % increase
+        (int)(20.0 + 3.0 * (attacker.Skills.Ninjitsu.Value - 50.0) / 7.0)); // 20-50 % increase
 
       timer.Start();
       Registry.Add(attacker, timer);
@@ -49,7 +49,7 @@ namespace Server.Items
 
     public class DualWieldTimer : Timer
     {
-      private Mobile m_Owner;
+      private readonly Mobile m_Owner;
 
       public DualWieldTimer(Mobile owner, int bonusSwingSpeed)
         : base(TimeSpan.FromSeconds(6.0))
@@ -59,7 +59,7 @@ namespace Server.Items
         Priority = TimerPriority.FiftyMS;
       }
 
-      public int BonusSwingSpeed{ get; }
+      public int BonusSwingSpeed { get; }
 
       protected override void OnTick()
       {

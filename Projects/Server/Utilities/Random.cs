@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019 - ModernUO Development Team                        *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: Random.cs - Created: 2019/12/30 - Updated: 2019/01/05           *
  *                                                                       *

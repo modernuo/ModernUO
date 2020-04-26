@@ -31,8 +31,8 @@ namespace Server.Multis
       }
     }
 
-    public BaseContestHouse(ContestHouseType type, int multiID, Mobile owner, int MaxLockDown, int MaxSecure)
-      : base(multiID, owner, MaxLockDown, MaxSecure)
+    public BaseContestHouse(ContestHouseType type, int multiID, Mobile owner, int maxLockDown, int maxSecure)
+      : base(multiID, owner, maxLockDown, maxSecure)
     {
       HouseType = type;
 
@@ -71,9 +71,9 @@ namespace Server.Multis
     {
       base.OnLocationChange(oldLocation);
 
-      int x = base.Location.X - oldLocation.X;
-      int y = base.Location.Y - oldLocation.Y;
-      int z = base.Location.Z - oldLocation.Z;
+      int x = this.Location.X - oldLocation.X;
+      int y = this.Location.Y - oldLocation.Y;
+      int z = this.Location.Z - oldLocation.Z;
 
       if (Fixtures == null) return;
 
@@ -122,38 +122,38 @@ namespace Server.Multis
 
       var teleporters = new Dictionary<int, List<MultiTileEntry>>();
 
-      foreach (var entry in components.List.Where(e => e.m_Flags == 0))
+      foreach (var entry in components.List.Where(e => e.Flags == 0))
         // Teleporters
-        if (entry.m_ItemID >= 0x181D && entry.m_ItemID <= 0x1828)
+        if (entry.ItemId >= 0x181D && entry.ItemId <= 0x1828)
         {
-          if (teleporters.ContainsKey(entry.m_ItemID))
-            teleporters[entry.m_ItemID].Add(entry);
+          if (teleporters.ContainsKey(entry.ItemId))
+            teleporters[entry.ItemId].Add(entry);
           else
-            teleporters[entry.m_ItemID] = new List<MultiTileEntry> { entry };
+            teleporters[entry.ItemId] = new List<MultiTileEntry> { entry };
         }
         else
         {
-          ItemData data = TileData.ItemTable[entry.m_ItemID & TileData.MaxItemValue];
+          ItemData data = TileData.ItemTable[entry.ItemId & TileData.MaxItemValue];
 
           // door
           if ((data.Flags & TileFlag.Door) != 0)
-            AddDoor(entry.m_ItemID, entry.m_OffsetX, entry.m_OffsetY, entry.m_OffsetZ);
+            AddDoor(entry.ItemId, entry.OffsetX, entry.OffsetY, entry.OffsetZ);
           else
           {
-            Item st = new Static((int)entry.m_ItemID);
+            Item st = new Static((int)entry.ItemId);
 
-            st.MoveToWorld(new Point3D(X + entry.m_OffsetX, Y + entry.m_OffsetY, entry.m_OffsetZ), Map);
+            st.MoveToWorld(new Point3D(X + entry.OffsetX, Y + entry.OffsetY, entry.OffsetZ), Map);
             AddFixture(st);
           }
         }
 
       foreach (var door in Doors)
-      foreach (var check in Doors.Where(d => d != door))
-        if (door.InRange(check.Location, 1))
-        {
-          door.Link = check;
-          check.Link = door;
-        }
+        foreach (var check in Doors.Where(d => d != door))
+          if (door.InRange(check.Location, 1))
+          {
+            door.Link = check;
+            check.Link = door;
+          }
 
       foreach (var (key, value) in teleporters)
       {
@@ -168,9 +168,8 @@ namespace Server.Multis
 
         AddTeleporters(
           key,
-          new Point3D(value[0].m_OffsetX, value[0].m_OffsetY, value[0].m_OffsetZ),
-          new Point3D(value[1].m_OffsetX, value[1].m_OffsetY, value[1].m_OffsetZ)
-        );
+          new Point3D(value[0].OffsetX, value[0].OffsetY, value[0].OffsetZ),
+          new Point3D(value[1].OffsetX, value[1].OffsetY, value[1].OffsetZ));
       }
 
       teleporters.Clear();
@@ -202,7 +201,7 @@ namespace Server.Multis
 
       int count = reader.ReadInt();
 
-      for(int i = 0; i < count; i++)
+      for (int i = 0; i < count; i++)
         AddFixture(reader.ReadItem());
     }
   }

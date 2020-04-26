@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019 - ModernUO Development Team                        *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: Xoshiro256PlusPlus.cs                                           *
  * Created: 2019/12/29 - Updated: 2019/12/30                             *
@@ -36,7 +36,7 @@ namespace Server
     public Xoshiro256PlusPlus(ulong seed)
     {
       var mix = new SplitMix64(seed);
-      ulong[] state = new ulong[4];
+      var state = new ulong[4];
       mix.FillArray(state);
       _s0 = state[0];
       _s1 = state[1];
@@ -57,7 +57,7 @@ namespace Server
     {
       if (max <= 1u << 12)
       {
-        if (max == 0) throw new ArgumentOutOfRangeException();
+        if (max == 0) throw new ArgumentOutOfRangeException(nameof(max));
         return (uint)(((ulong)NextUInt32() * max) >> 32);
       }
 
@@ -77,11 +77,11 @@ namespace Server
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ulong NextUInt64()
     {
-      ulong r1 = (_s1 << 2) + _s1;
-      ulong r2 = (r1 << 7) | (r1 >> 57);
-      ulong rslt = (r2 << 3) + r2;
+      var r1 = (_s1 << 2) + _s1;
+      var r2 = (r1 << 7) | (r1 >> 57);
+      var rslt = (r2 << 3) + r2;
 
-      ulong t = _s1 << 17;
+      var t = _s1 << 17;
 
       _s2 ^= _s0;
       _s3 ^= _s1;
@@ -100,7 +100,7 @@ namespace Server
     {
       if (max <= uint.MaxValue) return Next((uint)max);
 
-      if (max <= 1ul << 38) return ((NextUInt32() * max >> 32) + (NextUInt32() & ((1u << 26) - 1)) * max) >> 26;
+      if (max <= 1ul << 38) return (((NextUInt32() * max) >> 32) + (NextUInt32() & ((1u << 26) - 1)) * max) >> 26;
 
       ulong r, v, limit = (ulong)-(long)max;
       do
@@ -112,6 +112,7 @@ namespace Server
       return v;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool NextBool() => NextUInt64() < 1ul << 63;
 
     public override void GetBytes(byte[] data)
@@ -124,24 +125,24 @@ namespace Server
     {
       if (b.Length == 0) return;
 
-      ulong s0 = _s0;
-      ulong s1 = _s1;
-      ulong s2 = _s2;
-      ulong s3 = _s3;
+      var s0 = _s0;
+      var s1 = _s1;
+      var s2 = _s2;
+      var s3 = _s3;
 
-      int i = 0;
+      var i = 0;
 
       fixed (byte* pBuffer = b)
       {
-        ulong* pULong = (ulong*)pBuffer;
+        var pULong = (ulong*)pBuffer;
 
-        for (int bound = b.Length / sizeof(ulong); i < bound; i++)
+        for (var bound = b.Length / sizeof(ulong); i < bound; i++)
         {
-          ulong r1 = (s1 << 2) + s1;
-          ulong r2 = (r1 << 7) | (r1 >> 57);
+          var r1 = (s1 << 2) + s1;
+          var r2 = (r1 << 7) | (r1 >> 57);
           pULong[i] = (r2 << 3) + r2;
 
-          ulong t = s1 << 17;
+          var t = s1 << 17;
           s2 ^= s0;
           s3 ^= s1;
           s1 ^= s2;
@@ -157,11 +158,11 @@ namespace Server
 
       if (i < b.Length)
       {
-        ulong r1 = (s1 << 2) + s1;
-        ulong r2 = (r1 << 7) | (r1 >> 57);
-        ulong rslt = (r2 << 3) + r2;
+        var r1 = (s1 << 2) + s1;
+        var r2 = (r1 << 7) | (r1 >> 57);
+        var rslt = (r2 << 3) + r2;
 
-        ulong t = s1 << 17;
+        var t = s1 << 17;
 
         s2 ^= s0;
         s3 ^= s1;
@@ -188,10 +189,10 @@ namespace Server
     public double NextDouble() => (NextUInt64() >> 11) * (1.0 / (1ul << 53));
 
     private static readonly ulong[] JUMP =
-      {0x180ec6d33cfd0aba, 0xd5a61266f0c9392c, 0xa9582618e03fc9aa, 0x39abdc4529b1661c};
+      { 0x180ec6d33cfd0aba, 0xd5a61266f0c9392c, 0xa9582618e03fc9aa, 0x39abdc4529b1661c };
 
     private static readonly ulong[] LONG_JUMP =
-      {0x76e15d3efefdcbbf, 0xc5004e441c522fb3, 0x77710069854ee241, 0x39109bb02acbe635};
+      { 0x76e15d3efefdcbbf, 0xc5004e441c522fb3, 0x77710069854ee241, 0x39109bb02acbe635 };
 
     public void Jump() => Jump(JUMP);
 
@@ -204,19 +205,19 @@ namespace Server
       ulong s2 = 0;
       ulong s3 = 0;
 
-      for (int i = 0; i < jumps.Length; i++)
-      for (int b = 0; b < 64; b++)
-      {
-        if ((jumps[i] & 1ul << b) != 0)
+      for (var i = 0; i < jumps.Length; i++)
+        for (var b = 0; b < 64; b++)
         {
-          s0 ^= _s0;
-          s1 ^= _s1;
-          s2 ^= _s2;
-          s3 ^= _s3;
-        }
+          if ((jumps[i] & (1ul << b)) != 0)
+          {
+            s0 ^= _s0;
+            s1 ^= _s1;
+            s2 ^= _s2;
+            s3 ^= _s3;
+          }
 
-        NextUInt64();
-      }
+          NextUInt64();
+        }
 
       _s0 = s0;
       _s1 = s1;
@@ -226,14 +227,14 @@ namespace Server
 
     public Xoshiro256PlusPlus Split()
     {
-      Xoshiro256PlusPlus rng = new Xoshiro256PlusPlus(_s0, _s1, _s2, _s3);
+      var rng = new Xoshiro256PlusPlus(_s0, _s1, _s2, _s3);
       rng.Jump();
       return rng;
     }
 
     public Xoshiro256PlusPlus LongSplit()
     {
-      Xoshiro256PlusPlus rng = new Xoshiro256PlusPlus(_s0, _s1, _s2, _s3);
+      var rng = new Xoshiro256PlusPlus(_s0, _s1, _s2, _s3);
       rng.LongJump();
       return rng;
     }
@@ -248,7 +249,7 @@ namespace Server
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ulong Next()
     {
-      ulong z = x += 0x9e3779b97f4a7c15;
+      var z = x += 0x9e3779b97f4a7c15;
       z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
       z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
       return z ^ (z >> 31);
@@ -257,7 +258,7 @@ namespace Server
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void FillArray(ulong[] arr)
     {
-      for (int i = 0; i < arr.Length; i++) arr[i] = Next();
+      for (var i = 0; i < arr.Length; i++) arr[i] = Next();
     }
   }
 }

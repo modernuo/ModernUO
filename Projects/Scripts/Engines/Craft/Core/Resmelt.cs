@@ -32,8 +32,8 @@ namespace Server.Engines.Craft
 
     private class InternalTarget : Target
     {
-      private CraftSystem m_CraftSystem;
-      private BaseTool m_Tool;
+      private readonly CraftSystem m_CraftSystem;
+      private readonly BaseTool m_Tool;
 
       public InternalTarget(CraftSystem craftSystem, BaseTool tool) : base(2, false, TargetFlags.None)
       {
@@ -85,9 +85,9 @@ namespace Server.Engines.Craft
           Type resourceType = info.ResourceTypes[0];
           Item ingot = (Item)ActivatorUtil.CreateInstance(resourceType);
 
-          if (item is DragonBardingDeed || item is BaseArmor armor && armor.PlayerConstructed ||
-              item is BaseWeapon weapon && weapon.PlayerConstructed ||
-              item is BaseClothing clothing && clothing.PlayerConstructed)
+          if (item is DragonBardingDeed || (item is BaseArmor armor && armor.PlayerConstructed) ||
+              (item is BaseWeapon weapon && weapon.PlayerConstructed) ||
+              (item is BaseClothing clothing && clothing.PlayerConstructed))
             ingot.Amount = craftResource.Amount / 2;
           else
             ingot.Amount = 1;
@@ -151,7 +151,7 @@ namespace Server.Engines.Craft
           {
             SmeltResult.Invalid => 1044272,
             SmeltResult.NoSkill => 1044269,
-            SmeltResult.Success => (isStoreBought ? 500418 : 1044270),
+            SmeltResult.Success => isStoreBought ? 500418 : 1044270,
             _ => 1044272
           };
 

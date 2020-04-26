@@ -1,6 +1,6 @@
-using Server.Utilities;
 using System;
 using System.Collections.Generic;
+using Server.Utilities;
 
 namespace Server.Items
 {
@@ -27,7 +27,7 @@ namespace Server.Items
 
     public StealableArtifactsSpawner(Serial serial) : base(serial) => Instance = this;
 
-    public static StealableEntry[] Entries{ get; } =
+    public static StealableEntry[] Entries { get; } =
     {
       // Doom - Artifact rarity 1
       new StealableEntry(Map.Malas, new Point3D(317, 56, -1), 72, 108, typeof(RockArtifact)),
@@ -151,18 +151,17 @@ namespace Server.Items
       }
     }
 
-    public static StealableArtifactsSpawner Instance{ get; private set; }
+    public static StealableArtifactsSpawner Instance { get; private set; }
 
     public override string DefaultName => "Stealable Artifacts Spawner - Internal";
 
     private static int GetLampPostHue()
     {
-      if (0.9 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.9)
         return 0;
 
       return Utility.RandomList(0x455, 0x47E, 0x482, 0x486, 0x48F, 0x4F2, 0x58C, 0x66C);
     }
-
 
     public static void Initialize()
     {
@@ -303,17 +302,17 @@ namespace Server.Items
         Hue = hue;
       }
 
-      public Map Map{ get; }
+      public Map Map { get; }
 
-      public Point3D Location{ get; }
+      public Point3D Location { get; }
 
-      public int MinDelay{ get; }
+      public int MinDelay { get; }
 
-      public int MaxDelay{ get; }
+      public int MaxDelay { get; }
 
-      public Type Type{ get; }
+      public Type Type { get; }
 
-      public int Hue{ get; }
+      public int Hue { get; }
 
       public Item CreateInstance()
       {
@@ -328,7 +327,6 @@ namespace Server.Items
         return item;
       }
     }
-
 
     public class StealableInstance
     {
@@ -345,7 +343,7 @@ namespace Server.Items
         Entry = entry;
       }
 
-      public StealableEntry Entry{ get; }
+      public StealableEntry Entry { get; }
 
       public Item Item
       {
@@ -371,7 +369,7 @@ namespace Server.Items
         }
       }
 
-      public DateTime NextRespawn{ get; set; }
+      public DateTime NextRespawn { get; set; }
 
       public void CheckRespawn()
       {

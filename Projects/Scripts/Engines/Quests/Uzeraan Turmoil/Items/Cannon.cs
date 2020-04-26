@@ -20,37 +20,37 @@ namespace Server.Engines.Quests.Haven
       switch (direction)
       {
         case CannonDirection.North:
-        {
-          AddComponent(new CannonComponent(0xE8D), 0, 0, 0);
-          AddComponent(new CannonComponent(0xE8C), 0, 1, 0);
-          AddComponent(new CannonComponent(0xE8B), 0, 2, 0);
+          {
+            AddComponent(new CannonComponent(0xE8D), 0, 0, 0);
+            AddComponent(new CannonComponent(0xE8C), 0, 1, 0);
+            AddComponent(new CannonComponent(0xE8B), 0, 2, 0);
 
-          break;
-        }
+            break;
+          }
         case CannonDirection.East:
-        {
-          AddComponent(new CannonComponent(0xE96), 0, 0, 0);
-          AddComponent(new CannonComponent(0xE95), -1, 0, 0);
-          AddComponent(new CannonComponent(0xE94), -2, 0, 0);
+          {
+            AddComponent(new CannonComponent(0xE96), 0, 0, 0);
+            AddComponent(new CannonComponent(0xE95), -1, 0, 0);
+            AddComponent(new CannonComponent(0xE94), -2, 0, 0);
 
-          break;
-        }
+            break;
+          }
         case CannonDirection.South:
-        {
-          AddComponent(new CannonComponent(0xE91), 0, 0, 0);
-          AddComponent(new CannonComponent(0xE92), 0, -1, 0);
-          AddComponent(new CannonComponent(0xE93), 0, -2, 0);
+          {
+            AddComponent(new CannonComponent(0xE91), 0, 0, 0);
+            AddComponent(new CannonComponent(0xE92), 0, -1, 0);
+            AddComponent(new CannonComponent(0xE93), 0, -2, 0);
 
-          break;
-        }
+            break;
+          }
         default:
-        {
-          AddComponent(new CannonComponent(0xE8E), 0, 0, 0);
-          AddComponent(new CannonComponent(0xE8F), 1, 0, 0);
-          AddComponent(new CannonComponent(0xE90), 2, 0, 0);
+          {
+            AddComponent(new CannonComponent(0xE8E), 0, 0, 0);
+            AddComponent(new CannonComponent(0xE8F), 1, 0, 0);
+            AddComponent(new CannonComponent(0xE90), 2, 0, 0);
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -59,10 +59,10 @@ namespace Server.Engines.Quests.Haven
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CannonDirection CannonDirection{ get; private set; }
+    public CannonDirection CannonDirection { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public MilitiaCanoneer Canoneer{ get; set; }
+    public MilitiaCanoneer Canoneer { get; set; }
 
     public override bool HandlesOnMovement => Canoneer?.Deleted == false && Canoneer.Active;
 
@@ -97,10 +97,10 @@ namespace Server.Engines.Quests.Haven
 
       var canFire = CannonDirection switch
       {
-        CannonDirection.North => (m.X >= X - 7 && m.X <= X + 7 && m.Y == Y - 7 && oldLocation.Y < Y - 7),
-        CannonDirection.East => (m.Y >= Y - 7 && m.Y <= Y + 7 && m.X == X + 7 && oldLocation.X > X + 7),
-        CannonDirection.South => (m.X >= X - 7 && m.X <= X + 7 && m.Y == Y + 7 && oldLocation.Y > Y + 7),
-        _ => (m.Y >= Y - 7 && m.Y <= Y + 7 && m.X == X - 7 && oldLocation.X < X - 7)
+        CannonDirection.North => m.X >= X - 7 && m.X <= X + 7 && m.Y == Y - 7 && oldLocation.Y < Y - 7,
+        CannonDirection.East => m.Y >= Y - 7 && m.Y <= Y + 7 && m.X == X + 7 && oldLocation.X > X + 7,
+        CannonDirection.South => m.X >= X - 7 && m.X <= X + 7 && m.Y == Y + 7 && oldLocation.Y > Y + 7,
+        _ => m.Y >= Y - 7 && m.Y <= Y + 7 && m.X == X - 7 && oldLocation.X < X - 7
       };
 
       if (canFire && Canoneer.WillFire(this, m))

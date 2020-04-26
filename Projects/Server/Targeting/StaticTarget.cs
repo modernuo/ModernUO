@@ -41,7 +41,7 @@ namespace Server.Targeting
     public TileFlag Flags => TileData.ItemTable[ItemID].Flags;
 
     [CommandProperty(AccessLevel.Counselor)]
-    public int ItemID{ get; }
+    public int ItemID { get; }
 
     [CommandProperty(AccessLevel.Counselor)]
     public int X => m_Location.X;

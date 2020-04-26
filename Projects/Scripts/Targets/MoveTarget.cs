@@ -6,7 +6,7 @@ namespace Server.Targets
 {
   public class MoveTarget : Target
   {
-    private object m_Object;
+    private readonly object m_Object;
 
     public MoveTarget(object o) : base(-1, true, TargetFlags.None) => m_Object = o;
 

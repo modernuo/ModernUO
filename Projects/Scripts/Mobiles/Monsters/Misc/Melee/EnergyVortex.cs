@@ -10,7 +10,7 @@ namespace Server.Mobiles
     public EnergyVortex()
       : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
-      if (Core.SE && 0.002 > Utility.RandomDouble()) // Per OSI FoF, it's a 1/500 chance.
+      if (Core.SE && Utility.RandomDouble() < 0.002) // Per OSI FoF, it's a 1/500 chance.
       {
         // Llama vortex!
         Body = 0xDC;
@@ -50,7 +50,6 @@ namespace Server.Mobiles
       VirtualArmor = 40;
       ControlSlots = Core.SE ? 2 : 1;
     }
-
 
     public EnergyVortex(Serial serial)
       : base(serial)

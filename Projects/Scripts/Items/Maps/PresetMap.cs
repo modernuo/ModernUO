@@ -52,10 +52,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_LabelNumber = reader.ReadInt();
-          break;
-        }
+          {
+            m_LabelNumber = reader.ReadInt();
+            break;
+          }
       }
     }
   }
@@ -70,15 +70,15 @@ namespace Server.Items
       Bounds = new Rectangle2D(xLeft, yTop, xRight - xLeft, yBottom - yTop);
     }
 
-    public int Name{ get; }
+    public int Name { get; }
 
-    public int Width{ get; }
+    public int Width { get; }
 
-    public int Height{ get; }
+    public int Height { get; }
 
-    public Rectangle2D Bounds{ get; }
+    public Rectangle2D Bounds { get; }
 
-    public static PresetMapEntry[] Table{ get; } =
+    public static PresetMapEntry[] Table { get; } =
     {
       new PresetMapEntry(1041189, 200, 200, 1092, 1396, 1736, 1924), // map of Britain
       new PresetMapEntry(1041203, 200, 200, 0256, 1792, 1736, 2560), // map of Britain to Skara Brae

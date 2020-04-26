@@ -9,7 +9,7 @@ namespace Server.Factions
   {
     private Faction m_Faction;
 
-    public BaseFactionTrapDeed(int itemID= 0x14F0) : base(itemID)
+    public BaseFactionTrapDeed(int itemID = 0x14F0) : base(itemID)
     {
       Weight = 1.0;
       LootType = LootType.Blessed;
@@ -19,7 +19,7 @@ namespace Server.Factions
     {
     }
 
-    public abstract Type TrapType{ get; }
+    public abstract Type TrapType { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Faction Faction
@@ -34,8 +34,6 @@ namespace Server.Factions
       }
     }
 
-    #region ICraftable Members
-
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
     {
@@ -44,8 +42,6 @@ namespace Server.Factions
 
       return 1;
     }
-
-    #endregion
 
     public virtual BaseFactionTrap Construct(Mobile from)
     {

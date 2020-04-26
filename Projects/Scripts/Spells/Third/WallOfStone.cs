@@ -7,14 +7,13 @@ namespace Server.Spells.Third
 {
   public class WallOfStoneSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Wall of Stone", "In Sanct Ylem",
       227,
       9011,
       false,
       Reagent.Bloodmoss,
-      Reagent.Garlic
-    );
+      Reagent.Garlic);
 
     public WallOfStoneSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -62,7 +61,7 @@ namespace Server.Spells.Third
           Point3D loc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
           bool canFit = SpellHelper.AdjustField(ref loc, Caster.Map, 22, true);
 
-          //Effects.SendLocationParticles( EffectItem.Create( loc, Caster.Map, EffectItem.DefaultDuration ), 0x376A, 9, 10, 5025 );
+          // Effects.SendLocationParticles( EffectItem.Create( loc, Caster.Map, EffectItem.DefaultDuration ), 0x376A, 9, 10, 5025 );
 
           if (!canFit)
             continue;
@@ -71,7 +70,7 @@ namespace Server.Spells.Third
 
           Effects.SendLocationParticles(item, 0x376A, 9, 10, 5025);
 
-          //new InternalItem( loc, Caster.Map, Caster );
+          // new InternalItem( loc, Caster.Map, Caster );
         }
       }
 
@@ -81,7 +80,7 @@ namespace Server.Spells.Third
     [DispellableField]
     private class InternalItem : Item
     {
-      private Mobile m_Caster;
+      private readonly Mobile m_Caster;
       private DateTime m_End;
       private Timer m_Timer;
 
@@ -132,25 +131,25 @@ namespace Server.Spells.Third
         switch (version)
         {
           case 1:
-          {
-            m_End = reader.ReadDeltaTime();
+            {
+              m_End = reader.ReadDeltaTime();
 
-            m_Timer = new InternalTimer(this, m_End - DateTime.UtcNow);
-            m_Timer.Start();
+              m_Timer = new InternalTimer(this, m_End - DateTime.UtcNow);
+              m_Timer.Start();
 
-            break;
-          }
+              break;
+            }
           case 0:
-          {
-            TimeSpan duration = TimeSpan.FromSeconds(10.0);
+            {
+              TimeSpan duration = TimeSpan.FromSeconds(10.0);
 
-            m_Timer = new InternalTimer(this, duration);
-            m_Timer.Start();
+              m_Timer = new InternalTimer(this, duration);
+              m_Timer.Start();
 
-            m_End = DateTime.UtcNow + duration;
+              m_End = DateTime.UtcNow + duration;
 
-            break;
-          }
+              break;
+            }
         }
       }
 
@@ -175,7 +174,7 @@ namespace Server.Spells.Third
 
       private class InternalTimer : Timer
       {
-        private InternalItem m_Item;
+        private readonly InternalItem m_Item;
 
         public InternalTimer(InternalItem item, TimeSpan duration) : base(duration)
         {

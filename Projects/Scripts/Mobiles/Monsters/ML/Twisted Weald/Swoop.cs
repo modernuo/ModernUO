@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
   public class Swoop : Eagle
   {
-    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+    private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public Swoop()
@@ -48,13 +48,13 @@ namespace Server.Mobiles
     {
       base.OnDeath( c );
 
-      if ( Utility.RandomDouble() < 0.025 )
+      if (Utility.RandomDouble() < 0.025)
       {
         switch ( Utility.Random( 18 ) )
         {
           case 0: c.DropItem( new AssassinChest() ); break;
           case 1: c.DropItem( new AssassinArms() ); break;
-          case 2: c.DropItem( new DeathChest() );	break;
+          case 2: c.DropItem( new DeathChest() ); break;
           case 3: c.DropItem( new MyrmidonArms() ); break;
           case 4: c.DropItem( new MyrmidonLegs() ); break;
           case 5: c.DropItem( new MyrmidonGorget() ); break;
@@ -73,7 +73,7 @@ namespace Server.Mobiles
         }
       }
 
-      if ( Utility.RandomDouble() < 0.1 )
+      if (Utility.RandomDouble() < 0.1)
         c.DropItem( new ParrotItem() );
     }
     */
@@ -100,7 +100,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 <= Utility.RandomDouble())
+      if (Utility.RandomDouble() >= 0.1)
         return;
 
       if (m_Table.TryGetValue(defender, out ExpireTimer timer))
@@ -142,8 +142,8 @@ namespace Server.Mobiles
 
     private class ExpireTimer : Timer
     {
-      private Mobile m_Mobile;
-      private ResistanceMod m_Mod;
+      private readonly Mobile m_Mobile;
+      private readonly ResistanceMod m_Mod;
 
       public ExpireTimer(Mobile m, ResistanceMod mod, TimeSpan delay)
         : base(delay)

@@ -13,9 +13,9 @@ namespace Server.Engines.Craft
 
   public abstract class CraftSystem
   {
-    private Dictionary<Mobile, CraftContext> m_ContextTable = new Dictionary<Mobile, CraftContext>();
-    private List<int> m_RareRecipes;
-    private List<int> m_Recipes;
+    private readonly Dictionary<Mobile, CraftContext> m_ContextTable = new Dictionary<Mobile, CraftContext>();
+    private readonly List<int> m_RareRecipes;
+    private readonly List<int> m_Recipes;
 
     public CraftSystem(int minCraftEffect, int maxCraftEffect, double delay)
     {
@@ -34,34 +34,34 @@ namespace Server.Engines.Craft
       InitCraftList();
     }
 
-    public int MinCraftEffect{ get; }
+    public int MinCraftEffect { get; }
 
-    public int MaxCraftEffect{ get; }
+    public int MaxCraftEffect { get; }
 
-    public double Delay{ get; }
+    public double Delay { get; }
 
-    public CraftItemCol CraftItems{ get; }
+    public CraftItemCol CraftItems { get; }
 
-    public CraftGroupCol CraftGroups{ get; }
+    public CraftGroupCol CraftGroups { get; }
 
-    public CraftSubResCol CraftSubRes{ get; }
+    public CraftSubResCol CraftSubRes { get; }
 
-    public CraftSubResCol CraftSubRes2{ get; }
+    public CraftSubResCol CraftSubRes2 { get; }
 
-    public abstract SkillName MainSkill{ get; }
+    public abstract SkillName MainSkill { get; }
 
     public virtual int GumpTitleNumber => 0;
     public virtual string GumpTitleString => "";
 
     public virtual CraftECA ECA => CraftECA.ChanceMinusSixty;
 
-    public bool Resmelt{ get; set; }
+    public bool Resmelt { get; set; }
 
-    public bool Repair{ get; set; }
+    public bool Repair { get; set; }
 
-    public bool MarkOption{ get; set; }
+    public bool MarkOption { get; set; }
 
-    public bool CanEnhance{ get; set; }
+    public bool CanEnhance { get; set; }
 
     public abstract double GetChanceAtMin(CraftItem item);
 
@@ -114,7 +114,6 @@ namespace Server.Engines.Craft
       return m_RareRecipes[Utility.Random(m_RareRecipes.Count)];
     }
 
-
     public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, double minSkill, double maxSkill,
       Type typeRes, TextDefinition nameRes, int amount) =>
       AddCraft(typeItem, group, name, MainSkill, minSkill, maxSkill, typeRes, nameRes, amount, "");
@@ -138,7 +137,6 @@ namespace Server.Engines.Craft
       return CraftItems.Add(craftItem);
     }
 
-
     private void DoGroup(TextDefinition groupName, CraftItem craftItem)
     {
       int index = CraftGroups.SearchFor(groupName);
@@ -154,7 +152,6 @@ namespace Server.Engines.Craft
         CraftGroups.GetAt(index).AddCraftItem(craftItem);
       }
     }
-
 
     public void SetItemHue(int index, int hue)
     {
@@ -268,7 +265,6 @@ namespace Server.Engines.Craft
       craftItem.ForceNonExceptional = true;
     }
 
-
     public void SetSubRes(Type type, string name)
     {
       CraftSubRes.ResType = type;
@@ -300,7 +296,6 @@ namespace Server.Engines.Craft
       CraftSubRes craftSubRes = new CraftSubRes(type, name, reqSkill, message);
       CraftSubRes.Add(craftSubRes);
     }
-
 
     public void SetSubRes2(Type type, string name)
     {

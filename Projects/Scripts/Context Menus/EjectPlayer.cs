@@ -4,9 +4,9 @@ namespace Server.ContextMenus
 {
   public class EjectPlayerEntry : ContextMenuEntry
   {
-    private Mobile m_From;
-    private Mobile m_Target;
-    private BaseHouse m_TargetHouse;
+    private readonly Mobile m_From;
+    private readonly Mobile m_Target;
+    private readonly BaseHouse m_TargetHouse;
 
     public EjectPlayerEntry(Mobile from, Mobile target) : base(6206, 12)
     {

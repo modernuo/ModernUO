@@ -18,7 +18,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.Administrator)]
-    public AccessLevel AccessLevel{ get; set; }
+    public AccessLevel AccessLevel { get; set; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -38,10 +38,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          AccessLevel = (AccessLevel)reader.ReadInt();
-          break;
-        }
+          {
+            AccessLevel = (AccessLevel)reader.ReadInt();
+            break;
+          }
       }
     }
 
@@ -52,7 +52,6 @@ namespace Server.Items
 
       Delete();
       return false;
-
     }
 
     public override void OnSingleClick(Mobile from)

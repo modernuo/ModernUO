@@ -6,8 +6,8 @@ namespace Server.Factions
 {
   public class VoteGump : FactionGump
   {
-    private Election m_Election;
-    private PlayerMobile m_From;
+    private readonly Election m_Election;
+    private readonly PlayerMobile m_From;
 
     public VoteGump(PlayerMobile from, Election election) : base(50, 50)
     {

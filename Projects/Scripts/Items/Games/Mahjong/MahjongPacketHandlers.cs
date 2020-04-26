@@ -6,7 +6,7 @@ namespace Server.Engines.Mahjong
 
   public sealed class MahjongPacketHandlers
   {
-    private static OnMahjongPacketReceive[] m_SubCommandDelegates = new OnMahjongPacketReceive[0x100];
+    private static readonly OnMahjongPacketReceive[] m_SubCommandDelegates = new OnMahjongPacketReceive[0x100];
 
     public static void RegisterSubCommand(int subCmd, OnMahjongPacketReceive onReceive)
     {

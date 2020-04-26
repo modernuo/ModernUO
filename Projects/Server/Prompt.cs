@@ -32,7 +32,7 @@ namespace Server.Prompts
       } while (Serial == 0);
     }
 
-    public int Serial{ get; }
+    public int Serial { get; }
 
     public virtual void OnCancel(Mobile from)
     {

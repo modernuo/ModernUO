@@ -8,15 +8,14 @@ namespace Server.Spells.Sixth
 {
   public class ParalyzeFieldSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Paralyze Field", "In Ex Grav",
       230,
       9012,
       false,
       Reagent.BlackPearl,
       Reagent.Ginseng,
-      Reagent.SpidersSilk
-    );
+      Reagent.SpidersSilk);
 
     public ParalyzeFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -144,15 +143,15 @@ namespace Server.Spells.Sixth
         switch (version)
         {
           case 0:
-          {
-            m_Caster = reader.ReadMobile();
-            m_End = reader.ReadDeltaTime();
+            {
+              m_Caster = reader.ReadMobile();
+              m_End = reader.ReadDeltaTime();
 
-            m_Timer = new InternalTimer(this, m_End - DateTime.UtcNow);
-            m_Timer.Start();
+              m_Timer = new InternalTimer(this, m_End - DateTime.UtcNow);
+              m_Timer.Start();
 
-            break;
-          }
+              break;
+            }
         }
       }
 
@@ -197,7 +196,7 @@ namespace Server.Spells.Sixth
 
       private class InternalTimer : Timer
       {
-        private Item m_Item;
+        private readonly Item m_Item;
 
         public InternalTimer(Item item, TimeSpan duration) : base(duration)
         {

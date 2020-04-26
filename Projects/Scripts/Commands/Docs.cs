@@ -243,7 +243,7 @@ namespace Server.Commands
 
             nameBuilder.Append(sanitizedName);
             fnamBuilder.Append("T");
-            if (DontLink(typeArguments[i])) //if ( DontLink( typeArguments[i].Name ) )
+            if (DontLink(typeArguments[i]))
               linkBuilder.Append($"<font color=\"blue\">{aliasedName}</font>");
             else
               linkBuilder.Append(
@@ -270,7 +270,7 @@ namespace Server.Commands
       else
         linkName = link;
 
-      //Console.WriteLine( typeName+":"+fileName+":"+linkName );
+      // Console.WriteLine( typeName+":"+fileName+":"+linkName );
     }
 
     public static string SanitizeType(string name)
@@ -312,7 +312,7 @@ namespace Server.Commands
     public static bool DontLink( string name )
     {
       foreach( string dontLink in m_DontLink )
-        if ( dontLink == name ) return true;
+        if (dontLink == name ) return true;
       return false;
     }
     */
@@ -416,9 +416,13 @@ namespace Server.Commands
     private class TypeInfo
     {
       public List<TypeInfo> m_Derived, m_Nested;
-      private string m_FileName, m_TypeName, m_LinkName;
-      public Type[] m_Interfaces;
-      public Type m_Type, m_BaseType, m_Declaring;
+      private readonly string m_FileName;
+      private readonly string m_TypeName;
+      private readonly string m_LinkName;
+      public readonly Type[] m_Interfaces;
+      public readonly Type m_Type;
+      public readonly Type m_BaseType;
+      public readonly Type m_Declaring;
 
       public TypeInfo(Type type)
       {
@@ -436,8 +440,6 @@ namespace Server.Commands
 
       public string LinkName(string dirRoot) => m_LinkName.Replace("@directory@", dirRoot);
     }
-
-    #region FileSystem
 
     private static readonly char[] ReplaceChars = "<>".ToCharArray();
 
@@ -460,7 +462,7 @@ namespace Server.Commands
       return file;
     }
 
-    private static string m_RootDirectory = Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
+    private static readonly string m_RootDirectory = Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
 
     private static void EnsureDirectory(string path)
     {
@@ -482,11 +484,7 @@ namespace Server.Commands
 
     private static StreamWriter GetWriter(string path) => new StreamWriter(Path.Combine(m_RootDirectory, path));
 
-    #endregion
-
-    #region GetPair
-
-    private static string[,] m_Aliases =
+    private static readonly string[,] m_Aliases =
     {
       { "System.Object", "<font color=\"blue\">object</font>" },
       { "System.String", "<font color=\"blue\">string</font>" },
@@ -506,7 +504,7 @@ namespace Server.Commands
       { "System.Void", "<font color=\"blue\">void</font>" }
     };
 
-    private static int m_AliasLength = m_Aliases.GetLength(0);
+    private static readonly int m_AliasLength = m_Aliases.GetLength(0);
 
     public static string GetPair(Type varType, string name, bool ignoreRef)
     {
@@ -600,10 +598,6 @@ namespace Server.Commands
       return string.Concat(prepend, aliased, append, name);
     }
 
-    #endregion
-
-    #region Root documentation
-
     private static bool Document()
     {
       try
@@ -633,7 +627,6 @@ namespace Server.Commands
       m_Namespaces = new Dictionary<string, List<TypeInfo>>();
 
       List<Assembly> assemblies = new List<Assembly> { Core.Assembly };
-
 
       foreach (Assembly asm in AssemblyHandler.Assemblies)
         assemblies.Add(asm);
@@ -713,10 +706,6 @@ namespace Server.Commands
       html.WriteLine("</html>");
     }
 
-    #endregion
-
-    #region BODs
-
     private const int Iron = 0xCCCCDD;
     private const int DullCopper = 0xAAAAAA;
     private const int ShadowIron = 0x777799;
@@ -762,7 +751,6 @@ namespace Server.Commands
 
         html.WriteLine("      <br><br>");
         html.WriteLine("      <br><br>");
-
 
         sbod.Type = typeof(PlateArms);
 
@@ -922,8 +910,6 @@ namespace Server.Commands
         html.WriteLine("</html>");
       }
     }
-
-    #region Tailor Bods
 
     private static void WriteTailorLBOD(StreamWriter html, string name, SmallBulkEntry[] entries, bool expandCloth,
       bool expandPlain)
@@ -1221,20 +1207,20 @@ namespace Server.Commands
       switch (material)
       {
         case BulkMaterialType.None:
-        {
-          if (type.IsSubclassOf(typeof(BaseArmor)) || type.IsSubclassOf(typeof(BaseShoes)))
           {
-            style = "pl";
-            name = "Plain";
-          }
-          else
-          {
-            style = "cl";
-            name = "Cloth";
-          }
+            if (type.IsSubclassOf(typeof(BaseArmor)) || type.IsSubclassOf(typeof(BaseShoes)))
+            {
+              style = "pl";
+              name = "Plain";
+            }
+            else
+            {
+              style = "cl";
+              name = "Cloth";
+            }
 
-          break;
-        }
+            break;
+          }
         case BulkMaterialType.Spined:
           style = "sp";
           name = "Spined";
@@ -1280,10 +1266,6 @@ namespace Server.Commands
 
       html.WriteLine("         </tr>");
     }
-
-    #endregion
-
-    #region Smith Bods
 
     private static void WriteSmithLBOD(StreamWriter html, string name, SmallBulkEntry[] entries)
     {
@@ -1564,12 +1546,6 @@ namespace Server.Commands
       html.WriteLine("         </tr>");
     }
 
-    #endregion
-
-    #endregion
-
-    #region Bodies
-
     public static List<BodyEntry> LoadBodies()
     {
       List<BodyEntry> list = new List<BodyEntry>();
@@ -1689,10 +1665,6 @@ namespace Server.Commands
       html.WriteLine("</html>");
     }
 
-    #endregion
-
-    #region Speech
-
     private static void DocumentKeywords()
     {
       List<Dictionary<int, SpeechEntry>> tables = LoadSpeechFile();
@@ -1728,7 +1700,7 @@ namespace Server.Commands
 
           html.Write("         <tr><td class=\"lentry\">0x{0:X4}</td><td class=\"rentry\">", entry.Index);
 
-          entry.Strings.Sort(); //( new EnglishPrioStringSorter() );
+          entry.Strings.Sort(); // ( new EnglishPrioStringSorter() );
 
           for (int j = 0; j < entry.Strings.Count; ++j)
           {
@@ -1776,9 +1748,9 @@ namespace Server.Commands
         Strings = new List<string>();
       }
 
-      public int Index{ get; }
+      public int Index { get; }
 
-      public List<string> Strings{ get; }
+      public List<string> Strings { get; }
     }
 
     private class SpeechEntrySorter : IComparer<SpeechEntry>
@@ -1833,10 +1805,6 @@ namespace Server.Commands
       return tables;
     }
 
-    #endregion
-
-    #region Commands
-
     public class DocCommandEntry
     {
       public DocCommandEntry(AccessLevel accessLevel, string name, string[] aliases, string usage, string description)
@@ -1848,15 +1816,15 @@ namespace Server.Commands
         Description = description;
       }
 
-      public AccessLevel AccessLevel{ get; }
+      public AccessLevel AccessLevel { get; }
 
-      public string Name{ get; }
+      public string Name { get; }
 
-      public string[] Aliases{ get; }
+      public string[] Aliases { get; }
 
-      public string Usage{ get; }
+      public string Usage { get; }
 
-      public string Description{ get; }
+      public string Description { get; }
     }
 
     public class CommandEntrySorter : IComparer<DocCommandEntry>
@@ -2112,12 +2080,10 @@ namespace Server.Commands
       html.WriteLine("</tr>");
     }
 
-    #endregion
-
-    #region Constructible Objects
-
-    private static Type typeofItem = typeof(Item), typeofMobile = typeof(Mobile), typeofMap = typeof(Map);
-    private static Type typeofCustomEnum = typeof(CustomEnumAttribute);
+    private static readonly Type typeofItem = typeof(Item);
+    private static readonly Type typeofMobile = typeof(Mobile);
+    private static readonly Type typeofMap = typeof(Map);
+    private static readonly Type typeofCustomEnum = typeof(CustomEnumAttribute);
 
     private static bool IsConstructible(Type t, out bool isItem) => (isItem = typeofItem.IsAssignableFrom(t)) || typeofMobile.IsAssignableFrom(t);
 
@@ -2226,13 +2192,9 @@ namespace Server.Commands
       html.WriteLine("</td></tr>");
     }
 
-    #endregion
-
-    #region Tooltips
-
     private const string HtmlNewLine = "&#13;";
 
-    private static object[,] m_Tooltips =
+    private static readonly object[,] m_Tooltips =
     {
       { typeof(byte), "Numeric value in the range from 0 to 255, inclusive." },
       { typeof(sbyte), "Numeric value in the range from negative 128 to positive 127, inclusive." },
@@ -2319,10 +2281,6 @@ namespace Server.Commands
       return "";
     }
 
-    #endregion
-
-    #region Const Strings
-
     private const string RefString = "<font color=\"blue\">ref</font> ";
     private const string GetString = " <font color=\"blue\">get</font>;";
     private const string SetString = " <font color=\"blue\">set</font>;";
@@ -2333,10 +2291,6 @@ namespace Server.Commands
     private const string VirtString = "<font color=\"blue\">virtual</font> ";
     private const string CtorString = "(<font color=\"blue\">ctor</font>) ";
     private const string StaticString = "(<font color=\"blue\">static</font>) ";
-
-    #endregion
-
-    #region Write[...]
 
     private static void WriteEnum(TypeInfo info, StreamWriter typeHtml)
     {
@@ -2381,7 +2335,7 @@ namespace Server.Commands
         if (decInfo == null)
           typeHtml.Write(decType.Name);
         else
-          //typeHtml.Write( "<a href=\"{0}\">{1}</a>", decInfo.m_FileName, decInfo.m_TypeName );
+          // typeHtml.Write( "<a href=\"{0}\">{1}</a>", decInfo.m_FileName, decInfo.m_TypeName );
           typeHtml.Write(decInfo.LinkName(null));
 
         typeHtml.Write(") - ");
@@ -2452,7 +2406,7 @@ namespace Server.Commands
           if (i != 0)
             typeHtml.Write(", ");
 
-          //typeHtml.Write( "<a href=\"{0}\">{1}</a>", derivedInfo.m_FileName, derivedInfo.m_TypeName );
+          // typeHtml.Write( "<a href=\"{0}\">{1}</a>", derivedInfo.m_FileName, derivedInfo.m_TypeName );
           typeHtml.Write($"<!-- DBG-3 -->{derivedInfo.LinkName(null)}");
         }
 
@@ -2474,7 +2428,7 @@ namespace Server.Commands
           if (i != 0)
             typeHtml.Write(", ");
 
-          //typeHtml.Write( "<a href=\"{0}\">{1}</a>", nestedInfo.m_FileName, nestedInfo.m_TypeName );
+          // typeHtml.Write( "<a href=\"{0}\">{1}</a>", nestedInfo.m_FileName, nestedInfo.m_TypeName );
           typeHtml.Write($"<!-- DBG-4 -->{nestedInfo.LinkName(null)}");
         }
 
@@ -2600,11 +2554,7 @@ namespace Server.Commands
 
       html.WriteLine(")<br>");
     }
-
-    #endregion
   }
-
-  #region BodyEntry & BodyType
 
   public enum ModelBodyType
   {
@@ -2625,11 +2575,11 @@ namespace Server.Commands
       Name = name;
     }
 
-    public Body Body{ get; }
+    public Body Body { get; }
 
-    public ModelBodyType BodyType{ get; }
+    public ModelBodyType BodyType { get; }
 
-    public string Name{ get; }
+    public string Name { get; }
 
     public override bool Equals(object obj)
     {
@@ -2657,6 +2607,4 @@ namespace Server.Commands
       return a?.Name.CompareTo(b?.Name) ?? 1;
     }
   }
-
-  #endregion
 }

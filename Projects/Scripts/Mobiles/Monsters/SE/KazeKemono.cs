@@ -5,8 +5,8 @@ namespace Server.Mobiles
 {
   public class KazeKemono : BaseCreature
   {
-    private static Dictionary<Mobile, ExpireTimer> m_FlurryOfTwigsTable = new Dictionary<Mobile, ExpireTimer>();
-    private static Dictionary<Mobile, ExpireTimer> m_ChlorophylBlastTable = new Dictionary<Mobile, ExpireTimer>();
+    private static readonly Dictionary<Mobile, ExpireTimer> m_FlurryOfTwigsTable = new Dictionary<Mobile, ExpireTimer>();
+    private static readonly Dictionary<Mobile, ExpireTimer> m_ChlorophylBlastTable = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public KazeKemono()
@@ -54,7 +54,6 @@ namespace Server.Mobiles
 
     public override bool BleedImmune => true;
 
-
     public override void GenerateLoot()
     {
       AddLoot(LootPack.Rich, 3);
@@ -64,7 +63,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.1)
       {
         /* Flurry of Twigs
          * Start cliloc: 1070850
@@ -97,7 +96,7 @@ namespace Server.Mobiles
         return;
       }
 
-      if (0.05 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.05)
       {
         /* Chlorophyl Blast
          * Start cliloc: 1070827
@@ -144,9 +143,9 @@ namespace Server.Mobiles
 
     private class ExpireTimer : Timer
     {
-      private Mobile m_Mobile;
-      private ResistanceMod m_Mod;
-      private Dictionary<Mobile, ExpireTimer> m_Table;
+      private readonly Mobile m_Mobile;
+      private readonly ResistanceMod m_Mod;
+      private readonly Dictionary<Mobile, ExpireTimer> m_Table;
 
       public ExpireTimer(Mobile m, ResistanceMod mod, Dictionary<Mobile, ExpireTimer> table, TimeSpan delay)
         : base(delay)

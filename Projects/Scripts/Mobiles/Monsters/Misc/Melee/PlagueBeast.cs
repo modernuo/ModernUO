@@ -57,7 +57,7 @@ namespace Server.Mobiles
     public override string CorpseName => "a plague beast corpse";
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int TotalDevoured{ get; set; }
+    public int TotalDevoured { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int DevourGoal
@@ -67,14 +67,12 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool HasMetalChest{ get; private set; }
+    public bool HasMetalChest { get; private set; }
 
     public override string DefaultName => "a plague beast";
 
     public override bool AutoDispel => true;
     public override Poison PoisonImmune => Poison.Lethal;
-
-    #region IDevourer Members
 
     public bool Devour(Corpse corpse)
     {
@@ -99,8 +97,6 @@ namespace Server.Mobiles
       return true;
     }
 
-    #endregion
-
     public override void GenerateLoot()
     {
       AddLoot(LootPack.FilthyRich);
@@ -119,7 +115,7 @@ namespace Server.Mobiles
 
     public override void OnDamagedBySpell(Mobile caster)
     {
-      if (Map != null && caster != this && 0.25 > Utility.RandomDouble())
+      if (Map != null && caster != this && Utility.RandomDouble() < 0.25)
       {
         BaseCreature spawn = new PlagueSpawn(this);
 
@@ -135,7 +131,7 @@ namespace Server.Mobiles
 
     public override void OnGotMeleeAttack(Mobile attacker)
     {
-      if (Map != null && attacker != this && 0.25 > Utility.RandomDouble())
+      if (Map != null && attacker != this && Utility.RandomDouble() < 0.25)
       {
         BaseCreature spawn = new PlagueSpawn(this);
 
@@ -175,12 +171,12 @@ namespace Server.Mobiles
       switch (version)
       {
         case 1:
-        {
-          HasMetalChest = reader.ReadBool();
-          TotalDevoured = reader.ReadInt();
-          m_DevourGoal = reader.ReadInt();
-          break;
-        }
+          {
+            HasMetalChest = reader.ReadBool();
+            TotalDevoured = reader.ReadInt();
+            m_DevourGoal = reader.ReadInt();
+            break;
+          }
       }
     }
 

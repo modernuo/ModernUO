@@ -40,13 +40,13 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Maintain{ get; set; }
+    public int Maintain { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Improve{ get; set; }
+    public int Improve { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Added{ get; set; }
+    public int Added { get; set; }
 
     public override string ToString() => "...";
 

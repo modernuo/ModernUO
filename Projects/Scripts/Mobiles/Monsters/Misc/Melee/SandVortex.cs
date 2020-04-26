@@ -93,7 +93,8 @@ namespace Server.Mobiles
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Mobile, m_From;
+      private readonly Mobile m_Mobile;
+      private readonly Mobile m_From;
 
       public InternalTimer(Mobile m, Mobile from) : base(TimeSpan.FromSeconds(1.0))
       {

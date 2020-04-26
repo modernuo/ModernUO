@@ -51,20 +51,20 @@ namespace Server.Spells
         Amounts[i] = 1;
     }
 
-    public int Action{ get; set; }
+    public int Action { get; set; }
 
-    public bool AllowTown{ get; set; }
+    public bool AllowTown { get; set; }
 
-    public int[] Amounts{ get; set; }
+    public int[] Amounts { get; set; }
 
-    public string Mantra{ get; set; }
+    public string Mantra { get; set; }
 
-    public string Name{ get; set; }
+    public string Name { get; set; }
 
-    public Type[] Reagents{ get; set; }
+    public Type[] Reagents { get; set; }
 
-    public int LeftHandEffect{ get; set; }
+    public int LeftHandEffect { get; set; }
 
-    public int RightHandEffect{ get; set; }
+    public int RightHandEffect { get; set; }
   }
 }

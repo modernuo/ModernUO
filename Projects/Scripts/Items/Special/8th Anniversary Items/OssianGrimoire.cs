@@ -23,7 +23,7 @@
     {
       base.Serialize(writer);
 
-      writer.WriteEncodedInt(1); //version
+      writer.WriteEncodedInt(1); // version
     }
 
     public override void Deserialize(IGenericReader reader)

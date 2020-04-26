@@ -45,10 +45,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_LabelNumber = reader.ReadInt();
-          break;
-        }
+          {
+            m_LabelNumber = reader.ReadInt();
+            break;
+          }
       }
     }
   }

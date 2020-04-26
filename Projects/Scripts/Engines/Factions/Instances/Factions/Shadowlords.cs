@@ -74,10 +74,9 @@ namespace Server.Factions
               new TextDefinition(1011512, "DEATH KNIGHT"), new TextDefinition(1011503, "Hire Death Knight")),
             new GuardDefinition(typeof(FactionNecromancer), 0x13F8, 8000, 4000, 10,
               new TextDefinition(1011513, "SHADOW MAGE"), new TextDefinition(1011504, "Hire Shadow Mage"))
-          }
-        );
+          });
     }
 
-    public static Faction Instance{ get; private set; }
+    public static Faction Instance { get; private set; }
   }
 }

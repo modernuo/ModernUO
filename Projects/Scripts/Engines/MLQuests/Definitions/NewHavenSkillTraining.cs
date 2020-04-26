@@ -6,8 +6,6 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Definitions
 {
-  #region Quests
-
   public class CleansingOldHaven : MLQuest
   {
     public CleansingOldHaven()
@@ -822,10 +820,6 @@ namespace Server.Engines.MLQuests.Definitions
       PutSpawner(new Spawner(1, 5, 10, 0, 0, "GeorgeHephaestus"), new Point3D(3471, 2542, 36), Map.Trammel);
     }
   }
-
-  #endregion
-
-  #region Mobiles
 
   public class Aelorn : KeeperOfChivalry
   {
@@ -1949,7 +1943,7 @@ namespace Server.Engines.MLQuests.Definitions
 
   public class Ryuichi : BaseVendor
   {
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public Ryuichi()
@@ -2172,8 +2166,7 @@ namespace Server.Engines.MLQuests.Definitions
       MLQuestSystem.Tell(this, pm, Utility.RandomList(
         1078213, // I don't sleep. I wait.
         1078212, // There is no theory of evolution. Just a list of creatures I allow to live.
-        1078214 // I can lead a horse to water and make it drink.
-      ));
+        1078214)); // I can lead a horse to water and make it drink.
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -2193,7 +2186,7 @@ namespace Server.Engines.MLQuests.Definitions
 
   public class Hamato : BaseVendor
   {
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public Hamato()
@@ -2525,6 +2518,4 @@ namespace Server.Engines.MLQuests.Definitions
       int version = reader.ReadInt();
     }
   }
-
-  #endregion
 }

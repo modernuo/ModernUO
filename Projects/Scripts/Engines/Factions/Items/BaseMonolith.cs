@@ -64,7 +64,7 @@ namespace Server.Factions
       }
     }
 
-    public static List<BaseMonolith> Monoliths{ get; set; } = new List<BaseMonolith>();
+    public static List<BaseMonolith> Monoliths { get; set; } = new List<BaseMonolith>();
 
     public override void OnLocationChange(Point3D oldLocation)
     {
@@ -117,12 +117,12 @@ namespace Server.Factions
       switch (version)
       {
         case 0:
-        {
-          Town = Town.ReadReference(reader);
-          Faction = Faction.ReadReference(reader);
-          m_Sigil = reader.ReadItem() as Sigil;
-          break;
-        }
+          {
+            Town = Town.ReadReference(reader);
+            Faction = Faction.ReadReference(reader);
+            m_Sigil = reader.ReadItem() as Sigil;
+            break;
+          }
       }
     }
   }

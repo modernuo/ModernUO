@@ -41,7 +41,7 @@ namespace Server.Items
     {
       base.Serialize(writer);
 
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override bool OnEquip(Mobile from) => Validate(from) && base.OnEquip(from);

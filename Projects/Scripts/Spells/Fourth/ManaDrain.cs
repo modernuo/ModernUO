@@ -6,16 +6,15 @@ namespace Server.Spells.Fourth
 {
   public class ManaDrainSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Mana Drain", "Ort Rel",
       215,
       9031,
       Reagent.BlackPearl,
       Reagent.MandrakeRoot,
-      Reagent.SpidersSilk
-    );
+      Reagent.SpidersSilk);
 
-    private static HashSet<Mobile> m_Table = new HashSet<Mobile>();
+    private static readonly HashSet<Mobile> m_Table = new HashSet<Mobile>();
 
     public ManaDrainSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

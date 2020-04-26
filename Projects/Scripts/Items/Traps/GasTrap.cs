@@ -30,7 +30,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Poison Poison{ get; set; }
+    public Poison Poison { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public GasTrapType Type
@@ -95,10 +95,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          Poison = Poison.Deserialize(reader);
-          break;
-        }
+          {
+            Poison = Poison.Deserialize(reader);
+            break;
+          }
       }
     }
   }

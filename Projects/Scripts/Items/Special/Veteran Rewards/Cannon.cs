@@ -47,7 +47,7 @@ namespace Server.Items
 
   public class CannonAddon : BaseAddon
   {
-    private static int[] m_Effects =
+    private static readonly int[] m_Effects =
     {
       0x36B0, 0x3728, 0x3709, 0x36FE
     };
@@ -63,37 +63,37 @@ namespace Server.Items
       switch (direction)
       {
         case CannonDirection.North:
-        {
-          AddComponent(new CannonAddonComponent(0xE8D), 0, 0, 0);
-          AddComponent(new CannonAddonComponent(0xE8C), 0, 1, 0);
-          AddComponent(new CannonAddonComponent(0xE8B), 0, 2, 0);
+          {
+            AddComponent(new CannonAddonComponent(0xE8D), 0, 0, 0);
+            AddComponent(new CannonAddonComponent(0xE8C), 0, 1, 0);
+            AddComponent(new CannonAddonComponent(0xE8B), 0, 2, 0);
 
-          break;
-        }
+            break;
+          }
         case CannonDirection.East:
-        {
-          AddComponent(new CannonAddonComponent(0xE96), 0, 0, 0);
-          AddComponent(new CannonAddonComponent(0xE95), -1, 0, 0);
-          AddComponent(new CannonAddonComponent(0xE94), -2, 0, 0);
+          {
+            AddComponent(new CannonAddonComponent(0xE96), 0, 0, 0);
+            AddComponent(new CannonAddonComponent(0xE95), -1, 0, 0);
+            AddComponent(new CannonAddonComponent(0xE94), -2, 0, 0);
 
-          break;
-        }
+            break;
+          }
         case CannonDirection.South:
-        {
-          AddComponent(new CannonAddonComponent(0xE91), 0, 0, 0);
-          AddComponent(new CannonAddonComponent(0xE92), 0, -1, 0);
-          AddComponent(new CannonAddonComponent(0xE93), 0, -2, 0);
+          {
+            AddComponent(new CannonAddonComponent(0xE91), 0, 0, 0);
+            AddComponent(new CannonAddonComponent(0xE92), 0, -1, 0);
+            AddComponent(new CannonAddonComponent(0xE93), 0, -2, 0);
 
-          break;
-        }
+            break;
+          }
         default:
-        {
-          AddComponent(new CannonAddonComponent(0xE8E), 0, 0, 0);
-          AddComponent(new CannonAddonComponent(0xE8F), 1, 0, 0);
-          AddComponent(new CannonAddonComponent(0xE90), 2, 0, 0);
+          {
+            AddComponent(new CannonAddonComponent(0xE8E), 0, 0, 0);
+            AddComponent(new CannonAddonComponent(0xE8F), 1, 0, 0);
+            AddComponent(new CannonAddonComponent(0xE90), 2, 0, 0);
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -114,7 +114,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CannonDirection CannonDirection{ get; private set; }
+    public CannonDirection CannonDirection { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Charges
@@ -245,7 +245,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private CannonAddon m_Cannon;
+      private readonly CannonAddon m_Cannon;
 
       public InternalTarget(CannonAddon cannon) : base(12, true, TargetFlags.None) => m_Cannon = cannon;
 
@@ -314,8 +314,8 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private CannonAddon m_Cannon;
-      private PotionKeg m_Keg;
+      private readonly CannonAddon m_Cannon;
+      private readonly PotionKeg m_Keg;
 
       public InternalGump(CannonAddon cannon, PotionKeg keg) : base(50, 50)
       {
@@ -373,7 +373,8 @@ namespace Server.Items
 
     public override BaseAddon Addon => new CannonAddon(m_Direction)
     {
-      Charges = m_Charges, IsRewardItem = m_IsRewardItem
+      Charges = m_Charges,
+      IsRewardItem = m_IsRewardItem
     };
 
     [CommandProperty(AccessLevel.GameMaster)]

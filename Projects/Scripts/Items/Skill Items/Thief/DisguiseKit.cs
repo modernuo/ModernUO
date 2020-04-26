@@ -71,7 +71,7 @@ namespace Server.Items
 
   public class DisguiseGump : Gump
   {
-    private static DisguiseEntry[] m_HairEntries =
+    private static readonly DisguiseEntry[] m_HairEntries =
     {
       new DisguiseEntry(8251, 50700, 0, 5, 1011052), // Short
       new DisguiseEntry(8261, 60710, 0, 3, 1011047), // Pageboy
@@ -85,7 +85,7 @@ namespace Server.Items
       new DisguiseEntry(0, 0, 0, 0, 1011051) // None
     };
 
-    private static DisguiseEntry[] m_BeardEntries =
+    private static readonly DisguiseEntry[] m_BeardEntries =
     {
       new DisguiseEntry(8269, 50906, 0, 0, 1011401), // Vandyke
       new DisguiseEntry(8257, 50808, 0, -2, 1011062), // Mustache
@@ -97,9 +97,9 @@ namespace Server.Items
       new DisguiseEntry(0, 0, 0, 0, 1011051) // None
     };
 
-    private Mobile m_From;
-    private DisguiseKit m_Kit;
-    private bool m_Used;
+    private readonly Mobile m_From;
+    private readonly DisguiseKit m_Kit;
+    private readonly bool m_Used;
 
     public DisguiseGump(Mobile from, DisguiseKit kit, bool startAtHair, bool used) : base(50, 50)
     {
@@ -228,11 +228,11 @@ namespace Server.Items
 
     private class DisguiseEntry
     {
-      public int m_GumpID;
-      public int m_ItemID;
-      public int m_Number;
-      public int m_OffsetX;
-      public int m_OffsetY;
+      public readonly int m_GumpID;
+      public readonly int m_ItemID;
+      public readonly int m_Number;
+      public readonly int m_OffsetX;
+      public readonly int m_OffsetY;
 
       public DisguiseEntry(int itemID, int gumpID, int ox, int oy, int name)
       {
@@ -247,7 +247,7 @@ namespace Server.Items
 
   public class DisguiseTimers
   {
-    public static Dictionary<Mobile, Timer> Timers{ get; } = new Dictionary<Mobile, Timer>();
+    public static Dictionary<Mobile, Timer> Timers { get; } = new Dictionary<Mobile, Timer>();
 
     public static void Initialize()
     {
@@ -294,7 +294,7 @@ namespace Server.Items
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Player;
+      private readonly Mobile m_Player;
 
       public InternalTimer(Mobile m, TimeSpan delay) : base(delay)
       {

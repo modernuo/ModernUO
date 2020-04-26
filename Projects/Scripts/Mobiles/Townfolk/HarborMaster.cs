@@ -12,11 +12,9 @@ namespace Server.Mobiles
 
       SetSkill(SkillName.Mining, 36, 68);
 
-
       SpeechHue = Utility.RandomDyedHue();
       Hue = Race.Human.RandomSkinHue();
       Blessed = true;
-
 
       if (Female = Utility.RandomBool())
       {
@@ -46,7 +44,6 @@ namespace Server.Mobiles
 
       AddItem(pack);
     }
-
 
     public HarborMaster(Serial serial)
       : base(serial)

@@ -74,7 +74,7 @@ namespace Server.Mobiles
 
     public override void OnDamage(int amount, Mobile from, bool willKill)
     {
-      if (!willKill && amount > 5 && from?.Player == true && 5 > Utility.Random(100))
+      if (!willKill && amount > 5 && from?.Player == true && Utility.Random(100) < 5)
       {
         string[] toSay =
         {

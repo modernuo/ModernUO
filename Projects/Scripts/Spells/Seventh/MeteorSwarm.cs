@@ -6,7 +6,7 @@ namespace Server.Spells.Seventh
 {
   public class MeteorSwarmSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Meteor Swarm", "Flam Kal Des Ylem",
       233,
       9042,
@@ -14,8 +14,7 @@ namespace Server.Spells.Seventh
       Reagent.Bloodmoss,
       Reagent.MandrakeRoot,
       Reagent.SulfurousAsh,
-      Reagent.SpidersSilk
-    );
+      Reagent.SpidersSilk);
 
     public MeteorSwarmSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -56,7 +55,7 @@ namespace Server.Spells.Seventh
           targets = eable.Where(m =>
           {
             if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanBeHarmful(m, false) ||
-                Core.AOS && !Caster.InLOS(m))
+                (Core.AOS && !Caster.InLOS(m)))
               return false;
 
             if (m.Player)

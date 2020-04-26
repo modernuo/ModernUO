@@ -170,22 +170,22 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Recharges = reader.ReadEncodedInt();
-          goto case 0;
-        }
+          {
+            m_Recharges = reader.ReadEncodedInt();
+            goto case 0;
+          }
         case 0:
-        {
-          m_Charges = Math.Min(reader.ReadEncodedInt(), MaxCharges);
-          m_BagOfSendingHue = (BagOfSendingHue)reader.ReadEncodedInt();
-          break;
-        }
+          {
+            m_Charges = Math.Min(reader.ReadEncodedInt(), MaxCharges);
+            m_BagOfSendingHue = (BagOfSendingHue)reader.ReadEncodedInt();
+            break;
+          }
       }
     }
 
     private class UseBagEntry : ContextMenuEntry
     {
-      private BagOfSending m_Bag;
+      private readonly BagOfSending m_Bag;
 
       public UseBagEntry(BagOfSending bag, bool enabled) : base(6189)
       {
@@ -209,7 +209,7 @@ namespace Server.Items
 
     private class SendTarget : Target
     {
-      private BagOfSending m_Bag;
+      private readonly BagOfSending m_Bag;
 
       public SendTarget(BagOfSending bag) : base(-1, false, TargetFlags.None) => m_Bag = bag;
 
@@ -265,7 +265,7 @@ namespace Server.Items
           }
           else if (Core.ML && reqCharges > m_Bag.Charges)
           {
-            from.SendLocalizedMessage(1079932); //You don't have enough charges to send that much weight
+            from.SendLocalizedMessage(1079932); // You don't have enough charges to send that much weight
           }
           else
           {

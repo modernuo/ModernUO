@@ -18,23 +18,19 @@ namespace Server.Items
     {
     }
 
-    #region Old Item Serialization Vars
-
     /* DO NOT USE! Only used in serialization of special scrolls that originally derived from Item */
 
-    protected bool InheritsItem{ get; private set; }
+    protected bool InheritsItem { get; private set; }
 
-    #endregion
-
-    public abstract int Message{ get; }
+    public abstract int Message { get; }
     public virtual int Title => 0;
-    public abstract string DefaultTitle{ get; }
+    public abstract string DefaultTitle { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public SkillName Skill{ get; set; }
+    public SkillName Skill { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public double Value{ get; set; }
+    public double Value { get; set; }
 
     public virtual string GetNameLocalized() => $"#{AosSkillBonuses.GetLabel(Skill)}";
 
@@ -94,36 +90,36 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          Skill = (SkillName)reader.ReadInt();
-          Value = reader.ReadDouble();
-          break;
-        }
-        case 0:
-        {
-          InheritsItem = true;
-
-          if (!(this is StatCapScroll))
+          {
             Skill = (SkillName)reader.ReadInt();
-          else
-            Skill = SkillName.Alchemy;
-
-          if (this is ScrollofAlacrity)
-            Value = 0.0;
-          else if (this is StatCapScroll)
-            Value = reader.ReadInt();
-          else
             Value = reader.ReadDouble();
+            break;
+          }
+        case 0:
+          {
+            InheritsItem = true;
 
-          break;
-        }
+            if (!(this is StatCapScroll))
+              Skill = (SkillName)reader.ReadInt();
+            else
+              Skill = SkillName.Alchemy;
+
+            if (this is ScrollofAlacrity)
+              Value = 0.0;
+            else if (this is StatCapScroll)
+              Value = reader.ReadInt();
+            else
+              Value = reader.ReadDouble();
+
+            break;
+          }
       }
     }
 
     public class InternalGump : Gump
     {
-      private Mobile m_Mobile;
-      private SpecialScroll m_Scroll;
+      private readonly Mobile m_Mobile;
+      private readonly SpecialScroll m_Scroll;
 
       public InternalGump(Mobile mobile, SpecialScroll scroll) : base(25, 50)
       {

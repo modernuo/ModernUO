@@ -1,6 +1,6 @@
 namespace Server.Engines.BulkOrders
 {
-  public class BOBLargeEntry: IBOBEntry
+  public class BOBLargeEntry : IBOBEntry
   {
     public BOBLargeEntry(LargeBOD bod)
     {
@@ -27,36 +27,36 @@ namespace Server.Engines.BulkOrders
       switch (version)
       {
         case 0:
-        {
-          RequireExceptional = reader.ReadBool();
+          {
+            RequireExceptional = reader.ReadBool();
 
-          DeedType = (BODType)reader.ReadEncodedInt();
+            DeedType = (BODType)reader.ReadEncodedInt();
 
-          Material = (BulkMaterialType)reader.ReadEncodedInt();
-          AmountMax = reader.ReadEncodedInt();
-          Price = reader.ReadEncodedInt();
+            Material = (BulkMaterialType)reader.ReadEncodedInt();
+            AmountMax = reader.ReadEncodedInt();
+            Price = reader.ReadEncodedInt();
 
-          Entries = new BOBLargeSubEntry[reader.ReadEncodedInt()];
+            Entries = new BOBLargeSubEntry[reader.ReadEncodedInt()];
 
-          for (int i = 0; i < Entries.Length; ++i)
-            Entries[i] = new BOBLargeSubEntry(reader);
+            for (int i = 0; i < Entries.Length; ++i)
+              Entries[i] = new BOBLargeSubEntry(reader);
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public bool RequireExceptional{ get; }
+    public bool RequireExceptional { get; }
 
-    public BODType DeedType{ get; }
+    public BODType DeedType { get; }
 
-    public BulkMaterialType Material{ get; }
+    public BulkMaterialType Material { get; }
 
-    public int AmountMax{ get; }
+    public int AmountMax { get; }
 
-    public int Price{ get; set; }
+    public int Price { get; set; }
 
-    public BOBLargeSubEntry[] Entries{ get; }
+    public BOBLargeSubEntry[] Entries { get; }
 
     public Item Reconstruct()
     {
@@ -79,7 +79,8 @@ namespace Server.Engines.BulkOrders
 
       for (int i = 0; i < Entries.Length; ++i)
         entries[i] = new LargeBulkEntry(null,
-          new SmallBulkEntry(Entries[i].ItemType, Entries[i].Number, Entries[i].Graphic)) { Amount = Entries[i].AmountCur };
+          new SmallBulkEntry(Entries[i].ItemType, Entries[i].Number, Entries[i].Graphic))
+        { Amount = Entries[i].AmountCur };
 
       return entries;
     }

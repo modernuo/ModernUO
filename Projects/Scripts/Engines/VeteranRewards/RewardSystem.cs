@@ -46,7 +46,7 @@ namespace Server.Engines.VeteranRewards
       List<RewardEntry> entries = category.Entries;
 
       for (int j = 0; j < entries.Count; ++j)
-        //RewardEntry entry = entries[j];
+        // RewardEntry entry = entries[j];
         if (HasAccess(mob, entries[j]))
           return true;
       return false;
@@ -131,7 +131,7 @@ namespace Server.Engines.VeteranRewards
       if (!(mob.Account is Account acct))
         return false;
 
-      //if ( mob.AccessLevel < AccessLevel.GameMaster )
+      // if (mob.AccessLevel < AccessLevel.GameMaster)
       acct.SetTag("numRewardsChosen", (cur + 1).ToString());
 
       return true;
@@ -192,14 +192,13 @@ namespace Server.Engines.VeteranRewards
 
           if (args == null && entries[j].Args.Length == 0)
           {
-            if (isRelaxedRules && i <= 0 || HasAccess(from, list, out TimeSpan ts))
+            if ((isRelaxedRules && i <= 0) || HasAccess(from, list, out TimeSpan ts))
               return true;
 
             from.SendLocalizedMessage(1008126, true,
               Math.Ceiling(ts.TotalDays / 30.0)
                 .ToString()); // Your account is not old enough to use this item. Months until you can use this item :
             return false;
-
           }
 
           if (args?.Length != entries[j].Args.Length)
@@ -212,7 +211,7 @@ namespace Server.Engines.VeteranRewards
 
           if (match)
           {
-            if (isRelaxedRules && i <= 0 || HasAccess(from, list, out TimeSpan ts))
+            if ((isRelaxedRules && i <= 0) || HasAccess(from, list, out TimeSpan ts))
               return true;
 
             from.SendLocalizedMessage(1008126, true,
@@ -501,6 +500,6 @@ namespace Server.Engines.VeteranRewards
 
   public interface IRewardItem
   {
-    bool IsRewardItem{ get; set; }
+    bool IsRewardItem { get; set; }
   }
 }

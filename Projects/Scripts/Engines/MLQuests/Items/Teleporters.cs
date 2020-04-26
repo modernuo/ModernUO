@@ -40,7 +40,7 @@ namespace Server.Engines.MLQuests.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TextDefinition Message{ get; set; }
+    public TextDefinition Message { get; set; }
 
     public override bool CanTeleport(Mobile m)
     {
@@ -135,7 +135,7 @@ namespace Server.Engines.MLQuests.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TextDefinition Message{ get; set; }
+    public TextDefinition Message { get; set; }
 
     public override bool CanTeleport(Mobile m)
     {

@@ -113,7 +113,7 @@ namespace Server.Items
     private class InternalTimer : Timer
     {
       private Point3D m_Location;
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public InternalTimer(Mobile m)
         : base(TimeSpan.Zero, TimeSpan.FromSeconds(1), 5)

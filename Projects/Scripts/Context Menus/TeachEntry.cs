@@ -5,9 +5,9 @@ namespace Server.ContextMenus
 {
   public class TeachEntry : ContextMenuEntry
   {
-    private Mobile m_From;
-    private BaseCreature m_Mobile;
-    private SkillName m_Skill;
+    private readonly Mobile m_From;
+    private readonly BaseCreature m_Mobile;
+    private readonly SkillName m_Skill;
 
     public TeachEntry(SkillName skill, BaseCreature m, Mobile from, bool enabled) : base(6000 + (int)skill)
     {

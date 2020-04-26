@@ -5,12 +5,11 @@ namespace Server.Spells.Third
 {
   public class PoisonSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Poison", "In Nox",
       203,
       9051,
-      Reagent.Nightshade
-    );
+      Reagent.Nightshade);
 
     public PoisonSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -70,9 +69,7 @@ namespace Server.Spells.Third
           }
           else
           {
-            //double total = Caster.Skills.Magery.Value + Caster.Skills.Poisoning.Value;
-
-            #region Dueling
+            // double total = Caster.Skills.Magery.Value + Caster.Skills.Poisoning.Value;
 
             double total = Caster.Skills.Magery.Value;
 
@@ -86,14 +83,12 @@ namespace Server.Spells.Third
               total += Caster.Skills.Poisoning.Value;
             }
 
-            #endregion
-
             double dist = Caster.GetDistanceToSqrt(m);
 
             if (dist >= 3.0)
               total -= (dist - 3.0) * 10.0;
 
-            if (total >= 200.0 && 1 > Utility.Random(10))
+            if (total >= 200.0 && Utility.Random(10) < 1)
               level = 3;
             else if (total > (Core.AOS ? 170.1 : 170.0))
               level = 2;

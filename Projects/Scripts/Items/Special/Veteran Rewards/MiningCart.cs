@@ -88,16 +88,16 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public MiningCartType CartType{ get; private set; }
+    public MiningCartType CartType { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Gems{ get; set; }
+    public int Gems { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Ore{ get; set; }
+    public int Ore { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsRewardItem{ get; set; }
+    public bool IsRewardItem { get; set; }
 
     private void GiveResources()
     {
@@ -236,11 +236,7 @@ namespace Server.Items
 
       writer.WriteEncodedInt(1); // version
 
-      #region version 1
-
       writer.Write((int)CartType);
-
-      #endregion
 
       writer.Write(IsRewardItem);
       writer.Write(Gems);
@@ -308,10 +304,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Gems{ get; set; }
+    public int Gems { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Ore{ get; set; }
+    public int Ore { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsRewardItem

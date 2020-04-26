@@ -7,8 +7,8 @@ namespace Server.Gumps
 {
   public class ConfirmHouseResize : Gump
   {
-    private BaseHouse m_House;
-    private Mobile m_Mobile;
+    private readonly BaseHouse m_House;
+    private readonly Mobile m_Mobile;
 
     public ConfirmHouseResize(Mobile mobile, BaseHouse house) : base(110, 100)
     {
@@ -65,7 +65,7 @@ namespace Server.Gumps
             return;
           }
 
-          /*else if ( m_House.PlayerVendors.Count > 0 )
+          /*else if (m_House.PlayerVendors.Count > 0)
           {
             m_Mobile.SendLocalizedMessage( 503236 ); // You need to collect your vendor's belongings before moving.
             return;

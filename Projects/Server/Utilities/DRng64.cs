@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019 - ModernUO Development Team                        *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: DRng64.cs - Created: 2019/12/30 - Updated: 2019/12/30           *
  *                                                                       *
@@ -21,6 +21,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using Server.Network;
 
 namespace Server
 {
@@ -38,21 +39,15 @@ namespace Server
       Success = 1
     }
 
-    [DllImport("libdrng", CallingConvention = CallingConvention.Cdecl)]
-    internal static extern RDRandError rdrand_64(ref ulong rand, bool retry);
-
-    [DllImport("libdrng", CallingConvention = CallingConvention.Cdecl)]
-    internal static extern unsafe RDRandError rdrand_get_bytes(int n, byte* buffer);
-
     public bool IsSupported()
     {
       ulong r = 0;
-      return rdrand_64(ref r, true) == RDRandError.Success;
+      return SafeNativeMethods.rdrand_64(ref r, true) == RDRandError.Success;
     }
 
     private static unsafe void GetBytes(byte* pBuffer, int count)
     {
-      rdrand_get_bytes(count, pBuffer);
+      SafeNativeMethods.rdrand_get_bytes(count, pBuffer);
     }
 
     public override void GetBytes(byte[] data)
@@ -69,7 +64,10 @@ namespace Server
     public override unsafe void GetBytes(Span<byte> data)
     {
       if (data.Length > 0)
-        fixed (byte* ptr = data) GetBytes(ptr, data.Length);
+        fixed (byte* ptr = data)
+        {
+          GetBytes(ptr, data.Length);
+        }
     }
 
     public override void GetNonZeroBytes(byte[] data)
@@ -86,8 +84,8 @@ namespace Server
         GetBytes(data);
 
         // Find the first zero in the remaining portion.
-        int indexOfFirst0Byte = data.Length;
-        for (int i = 0; i < data.Length; i++)
+        var indexOfFirst0Byte = data.Length;
+        for (var i = 0; i < data.Length; i++)
           if (data[i] == 0)
           {
             indexOfFirst0Byte = i;
@@ -95,13 +93,23 @@ namespace Server
           }
 
         // If there were any zeros, shift down all non-zeros.
-        for (int i = indexOfFirst0Byte + 1; i < data.Length; i++)
-          if (data[i] != 0) data[indexOfFirst0Byte++] = data[i];
+        for (var i = indexOfFirst0Byte + 1; i < data.Length; i++)
+          if (data[i] != 0)
+            data[indexOfFirst0Byte++] = data[i];
 
         // Request new random bytes if necessary; dont re-use
         // existing bytes since they were shifted down.
         data = data.Slice(indexOfFirst0Byte);
       }
+    }
+
+    internal class SafeNativeMethods
+    {
+      [DllImport("libdrng", CallingConvention = CallingConvention.Cdecl)]
+      internal static extern RDRandError rdrand_64(ref ulong rand, bool retry);
+
+      [DllImport("libdrng", CallingConvention = CallingConvention.Cdecl)]
+      internal static extern unsafe RDRandError rdrand_get_bytes(int n, byte* buffer);
     }
   }
 }

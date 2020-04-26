@@ -13,7 +13,7 @@ namespace Server.Items
     {
     }
 
-    public override int LabelNumber => 1073362; //Reading Glasses of the Trades
+    public override int LabelNumber => 1073362; // Reading Glasses of the Trades
 
     public override int BasePhysicalResistance => 10;
     public override int BaseFireResistance => 10;

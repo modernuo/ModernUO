@@ -79,7 +79,7 @@ namespace Server.Engines.Quests.Doom
     {
     }
 
-    public Corpse CorpseWithSkull{ get; set; }
+    public Corpse CorpseWithSkull { get; set; }
 
     public override object Message => 1050037;
 

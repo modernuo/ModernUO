@@ -54,7 +54,7 @@ namespace Server.Engines.Quests.Collector
 
     private class InternalTarget : Target
     {
-      private EnchantedPaints m_Paints;
+      private readonly EnchantedPaints m_Paints;
 
       public InternalTarget(EnchantedPaints paints) : base(-1, false, TargetFlags.None)
       {
@@ -78,7 +78,7 @@ namespace Server.Engines.Quests.Collector
 
           if (obj?.Completed != false)
             return;
-          
+
           if (targeted is Mobile)
           {
             CaptureResponse response = obj.CaptureImage(
@@ -89,27 +89,27 @@ namespace Server.Engines.Quests.Collector
             switch (response)
             {
               case CaptureResponse.Valid:
-              {
-                player.SendLocalizedMessage(
-                  1055125); // The enchanted paints swirl for a moment then an image begins to take shape. *Click*
-                player.AddToBackpack(new PaintedImage(image));
+                {
+                  player.SendLocalizedMessage(
+                    1055125); // The enchanted paints swirl for a moment then an image begins to take shape. *Click*
+                  player.AddToBackpack(new PaintedImage(image));
 
-                break;
-              }
+                  break;
+                }
               case CaptureResponse.AlreadyDone:
-              {
-                player.SendAsciiMessage(0x2C,
-                  "You have already captured the image of this creature");
+                {
+                  player.SendAsciiMessage(0x2C,
+                    "You have already captured the image of this creature");
 
-                break;
-              }
+                  break;
+                }
               case CaptureResponse.Invalid:
-              {
-                player.SendLocalizedMessage(
-                  1055124); // You have no interest in capturing the image of this creature.
+                {
+                  player.SendLocalizedMessage(
+                    1055124); // You have no interest in capturing the image of this creature.
 
-                break;
-              }
+                  break;
+                }
             }
           }
           else

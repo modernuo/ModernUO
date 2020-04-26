@@ -7,8 +7,7 @@ namespace Server.Ethics.Hero
         10,
         "Holy Blade",
         "Erstok Reyam",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

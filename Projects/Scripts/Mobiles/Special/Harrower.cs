@@ -8,7 +8,7 @@ namespace Server.Mobiles
 {
   public class Harrower : BaseCreature
   {
-    private static SpawnEntry[] m_Entries =
+    private static readonly SpawnEntry[] m_Entries =
     {
       new SpawnEntry(new Point3D(5242, 945, -40), new Point3D(1176, 2638, 0)), // Destard
       new SpawnEntry(new Point3D(5225, 798, 0), new Point3D(1176, 2638, 0)), // Destard
@@ -93,7 +93,7 @@ namespace Server.Mobiles
     public Type[] SharedList => new[] { typeof(TheRobeOfBritanniaAri) };
     public Type[] DecorativeList => new[] { typeof(EvilIdolSkull), typeof(SkullPole) };
 
-    public static List<Harrower> Instances{ get; } = new List<Harrower>();
+    public static List<Harrower> Instances { get; } = new List<Harrower>();
 
     public static bool CanSpawn => Instances.Count == 0;
 
@@ -219,16 +219,16 @@ namespace Server.Mobiles
       switch (version)
       {
         case 0:
-        {
-          m_TrueForm = reader.ReadBool();
-          m_GateItem = reader.ReadItem();
-          m_Tentacles = reader.ReadStrongMobileList<HarrowerTentacles>();
+          {
+            m_TrueForm = reader.ReadBool();
+            m_GateItem = reader.ReadItem();
+            m_Tentacles = reader.ReadStrongMobileList<HarrowerTentacles>();
 
-          m_Timer = new TeleportTimer(this);
-          m_Timer.Start();
+            m_Timer = new TeleportTimer(this);
+            m_Timer.Start();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -262,13 +262,13 @@ namespace Server.Mobiles
         int level;
         double random = Utility.RandomDouble();
 
-        if (0.1 >= random)
+        if (random <= 0.1)
           level = 25;
-        else if (0.25 >= random)
+        else if (random <= 0.25)
           level = 20;
-        else if (0.45 >= random)
+        else if (random <= 0.45)
           level = 15;
-        else if (0.70 >= random)
+        else if (random <= 0.70)
           level = 10;
         else
           level = 5;
@@ -326,13 +326,13 @@ namespace Server.Mobiles
 
           if (map != null)
             for (int x = -16; x <= 16; ++x)
-            for (int y = -16; y <= 16; ++y)
-            {
-              double dist = Math.Sqrt(x * x + y * y);
+              for (int y = -16; y <= 16; ++y)
+              {
+                double dist = Math.Sqrt(x * x + y * y);
 
-              if (dist <= 16)
-                new GoodiesTimer(map, X + x, Y + y).Start();
-            }
+                if (dist <= 16)
+                  new GoodiesTimer(map, X + x, Y + y).Start();
+              }
 
           m_DamageEntries = new Dictionary<Mobile, int>();
 
@@ -437,18 +437,18 @@ namespace Server.Mobiles
           1062317); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
     }
 
-    public bool IsEligible(Mobile m, Item Artifact) =>
+    public bool IsEligible(Mobile m, Item artifact) =>
       m.Player && m.Alive && m.InRange(Location, 32) &&
-      m.Backpack?.CheckHold(m, Artifact, false) == true;
+      m.Backpack?.CheckHold(m, artifact, false) == true;
 
     public Item GetArtifact()
     {
       double random = Utility.RandomDouble();
-      if (0.05 >= random)
+      if (random <= 0.05)
         return CreateArtifact(UniqueList);
-      if (0.15 >= random)
+      if (random <= 0.15)
         return CreateArtifact(SharedList);
-      if (0.30 >= random)
+      if (random <= 0.30)
         return CreateArtifact(DecorativeList);
 
       return null;
@@ -468,8 +468,8 @@ namespace Server.Mobiles
 
     private class SpawnEntry
     {
-      public Point3D m_Entrance;
-      public Point3D m_Location;
+      public readonly Point3D m_Entrance;
+      public readonly Point3D m_Location;
 
       public SpawnEntry(Point3D loc, Point3D ent)
       {
@@ -480,7 +480,7 @@ namespace Server.Mobiles
 
     private class TeleportTimer : Timer
     {
-      private static int[] m_Offsets =
+      private static readonly int[] m_Offsets =
       {
         -1, -1,
         -1, 0,
@@ -492,7 +492,7 @@ namespace Server.Mobiles
         1, 1
       };
 
-      private Mobile m_Owner;
+      private readonly Mobile m_Owner;
 
       public TeleportTimer(Mobile owner) : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0))
       {
@@ -514,7 +514,7 @@ namespace Server.Mobiles
         if (map == null)
           return;
 
-        if (0.25 < Utility.RandomDouble())
+        if (Utility.RandomDouble() > 0.25)
           return;
 
         Mobile toTeleport = m_Owner.GetMobilesInRange(16)
@@ -571,8 +571,9 @@ namespace Server.Mobiles
 
     private class GoodiesTimer : Timer
     {
-      private Map m_Map;
-      private int m_X, m_Y;
+      private readonly Map m_Map;
+      private readonly int m_X;
+      private readonly int m_Y;
 
       public GoodiesTimer(Map map, int x, int y) : base(TimeSpan.FromSeconds(Utility.RandomDouble() * 10.0))
       {
@@ -603,32 +604,32 @@ namespace Server.Mobiles
 
         g.MoveToWorld(new Point3D(m_X, m_Y, z), m_Map);
 
-        if (0.5 >= Utility.RandomDouble())
+        if (Utility.RandomDouble() <= 0.5)
           switch (Utility.Random(3))
           {
             case 0: // Fire column
-            {
-              Effects.SendLocationParticles(EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
-                0x3709, 10, 30, 5052);
-              Effects.PlaySound(g, g.Map, 0x208);
+              {
+                Effects.SendLocationParticles(EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
+                  0x3709, 10, 30, 5052);
+                Effects.PlaySound(g, g.Map, 0x208);
 
-              break;
-            }
+                break;
+              }
             case 1: // Explosion
-            {
-              Effects.SendLocationParticles(EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
-                0x36BD, 20, 10, 5044);
-              Effects.PlaySound(g, g.Map, 0x307);
+              {
+                Effects.SendLocationParticles(EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
+                  0x36BD, 20, 10, 5044);
+                Effects.PlaySound(g, g.Map, 0x307);
 
-              break;
-            }
+                break;
+              }
             case 2: // Ball of fire
-            {
-              Effects.SendLocationParticles(EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
-                0x36FE, 10, 10, 5052);
+              {
+                Effects.SendLocationParticles(EffectItem.Create(g.Location, g.Map, EffectItem.DefaultDuration),
+                  0x36FE, 10, 10, 5052);
 
-              break;
-            }
+                break;
+              }
           }
       }
     }

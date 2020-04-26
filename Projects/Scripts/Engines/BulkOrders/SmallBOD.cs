@@ -38,7 +38,7 @@ namespace Server.Engines.BulkOrders
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Type Type{ get; set; }
+    public Type Type { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Number
@@ -52,7 +52,7 @@ namespace Server.Engines.BulkOrders
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Graphic{ get; set; }
+    public int Graphic { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public override bool Complete => m_AmountCur == AmountMax;
@@ -121,8 +121,8 @@ namespace Server.Engines.BulkOrders
         from.SendLocalizedMessage(
           1045166); // The maximum amount of requested items have already been combined to this deed.
       }
-      else if (Type == null || objectType != Type && !objectType.IsSubclassOf(Type) ||
-               !(item is BaseWeapon) && !(item is BaseArmor) && !(item is BaseClothing))
+      else if (Type == null || (objectType != Type && !objectType.IsSubclassOf(Type)) ||
+               (!(item is BaseWeapon) && !(item is BaseArmor) && !(item is BaseClothing)))
       {
         from.SendLocalizedMessage(1045169); // The item is not in the request.
       }
@@ -194,18 +194,18 @@ namespace Server.Engines.BulkOrders
       switch (version)
       {
         case 0:
-        {
-          m_AmountCur = reader.ReadInt();
+          {
+            m_AmountCur = reader.ReadInt();
 
-          string type = reader.ReadString();
+            string type = reader.ReadString();
 
-          if (type != null)
-            Type = AssemblyHandler.FindFirstTypeForName(type);
+            if (type != null)
+              Type = AssemblyHandler.FindFirstTypeForName(type);
 
-          m_Number = reader.ReadInt();
-          Graphic = reader.ReadInt();
-          break;
-        }
+            m_Number = reader.ReadInt();
+            Graphic = reader.ReadInt();
+            break;
+          }
       }
     }
   }

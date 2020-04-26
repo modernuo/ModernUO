@@ -28,12 +28,12 @@ namespace Server.Accounting
     /// <summary>
     ///   Gets or sets the name of this tag.
     /// </summary>
-    public string Name{ get; set; }
+    public string Name { get; set; }
 
     /// <summary>
     ///   Gets or sets the value of this tag.
     /// </summary>
-    public string Value{ get; set; }
+    public string Value { get; set; }
 
     /// <summary>
     ///   Serializes this AccountTag instance to an XmlTextWriter.

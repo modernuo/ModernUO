@@ -71,18 +71,18 @@ namespace Server.Items
         else
           serial &= 0x7FFFFFFF;
 
-        m_Stream.Write(serial);
-        m_Stream.Write((short)(itemID & 0x7FFF));
+        Stream.Write(serial);
+        Stream.Write((short)(itemID & 0x7FFF));
 
         if (amount != 0)
-          m_Stream.Write((short)amount);
+          Stream.Write((short)amount);
 
         x &= 0x7FFF;
 
         if (direction != 0)
           x |= 0x8000;
 
-        m_Stream.Write((short)x);
+        Stream.Write((short)x);
 
         y &= 0x3FFF;
 
@@ -92,18 +92,18 @@ namespace Server.Items
         if (flags != 0)
           y |= 0x4000;
 
-        m_Stream.Write((short)y);
+        Stream.Write((short)y);
 
         if (direction != 0)
-          m_Stream.Write((byte)direction);
+          Stream.Write((byte)direction);
 
-        m_Stream.Write((sbyte)loc.Z);
+        Stream.Write((sbyte)loc.Z);
 
         if (hue != 0)
-          m_Stream.Write((ushort)hue);
+          Stream.Write((ushort)hue);
 
         if (flags != 0)
-          m_Stream.Write((byte)flags);
+          Stream.Write((byte)flags);
       }
     }
   }

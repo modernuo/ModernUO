@@ -9,7 +9,7 @@ namespace Server.Engines.PartySystem
   public class Party : IParty
   {
     public const int Capacity = 10;
-    private List<Mobile> m_Listeners; // staff listening
+    private readonly List<Mobile> m_Listeners; // staff listening
 
     public Party(Mobile leader)
     {
@@ -24,11 +24,11 @@ namespace Server.Engines.PartySystem
 
     public int Count => Members.Count;
     public bool Active => Members.Count > 1;
-    public Mobile Leader{ get; }
+    public Mobile Leader { get; }
 
-    public List<PartyMemberInfo> Members{ get; }
+    public List<PartyMemberInfo> Members { get; }
 
-    public List<Mobile> Candidates{ get; }
+    public List<Mobile> Candidates { get; }
 
     public PartyMemberInfo this[int index] => Members[index];
 
@@ -217,7 +217,7 @@ namespace Server.Engines.PartySystem
       if (!force && ourFaction != null && theirFaction != null && ourFaction != theirFaction)
         return;
 
-      //  : joined the party.
+      // : joined the party.
       SendToAll(new MessageLocalizedAffix(Serial.MinusOne, -1, MessageType.Label, 0x3B2, 3, 1008094, "",
         AffixType.Prepend | AffixType.System, from.Name, ""));
 
@@ -229,7 +229,7 @@ namespace Server.Engines.PartySystem
 
     public void OnDecline(Mobile from, Mobile leader)
     {
-      //  : Does not wish to join the party.
+      // : Does not wish to join the party.
       leader.SendLocalizedMessage(1008091, false, from.Name);
 
       from.SendLocalizedMessage(1008092); // You notify them that you do not wish to join the party.
@@ -316,7 +316,7 @@ namespace Server.Engines.PartySystem
       if (!p.Candidates.Contains(target))
         p.Candidates.Add(target);
 
-      //  : You are invited to join the party. Type /accept to join or /decline to decline the offer.
+      // : You are invited to join the party. Type /accept to join or /decline to decline the offer.
       target.Send(new MessageLocalizedAffix(Serial.MinusOne, -1, MessageType.Label, 0x3B2, 3, 1008089, "",
         AffixType.Prepend | AffixType.System, from.Name, ""));
 
@@ -421,7 +421,7 @@ namespace Server.Engines.PartySystem
 
     private class RejoinTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public RejoinTimer(Mobile m) : base(TimeSpan.FromSeconds(1.0)) => m_Mobile = m;
 

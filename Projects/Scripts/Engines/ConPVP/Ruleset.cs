@@ -11,17 +11,17 @@ namespace Server.Engines.ConPVP
       Options = new BitArray(layout.TotalLength);
     }
 
-    public RulesetLayout Layout{ get; }
+    public RulesetLayout Layout { get; }
 
-    public BitArray Options{ get; private set; }
+    public BitArray Options { get; private set; }
 
-    public string Title{ get; set; }
+    public string Title { get; set; }
 
-    public Ruleset Base{ get; private set; }
+    public Ruleset Base { get; private set; }
 
-    public List<Ruleset> Flavors{ get; } = new List<Ruleset>();
+    public List<Ruleset> Flavors { get; } = new List<Ruleset>();
 
-    public bool Changed{ get; set; }
+    public bool Changed { get; set; }
 
     public void ApplyDefault(Ruleset newDefault)
     {

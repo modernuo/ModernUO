@@ -10,7 +10,7 @@ namespace Server.Accounting
   {
     public static bool Enabled = true;
 
-    private static List<InvalidAccountAccessLog> m_List = new List<InvalidAccountAccessLog>();
+    private static readonly List<InvalidAccountAccessLog> m_List = new List<InvalidAccountAccessLog>();
 
     public static void Initialize()
     {
@@ -75,8 +75,7 @@ namespace Server.Accounting
             "{0}\t{1}\t{2}",
             DateTime.UtcNow,
             ns,
-            accessLog.Counts
-          );
+            accessLog.Counts);
         }
         catch
         {
@@ -113,13 +112,13 @@ namespace Server.Accounting
       RefreshAccessTime();
     }
 
-    public IPAddress Address{ get; set; }
+    public IPAddress Address { get; set; }
 
-    public DateTime LastAccessTime{ get; set; }
+    public DateTime LastAccessTime { get; set; }
 
     public bool HasExpired => DateTime.UtcNow >= LastAccessTime + TimeSpan.FromHours(1.0);
 
-    public int Counts{ get; set; }
+    public int Counts { get; set; }
 
     public void RefreshAccessTime()
     {

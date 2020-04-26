@@ -56,7 +56,7 @@ namespace Server.Mobiles
     }
 
     public override string CorpseName => "a minion's corpse";
-    public bool FieldActive{ get; private set; }
+    public bool FieldActive { get; private set; }
 
     public bool CanUseField // TODO: an OSI bug prevents to verify this
       => Hits >= HitsMax * 9 / 10;
@@ -100,7 +100,7 @@ namespace Server.Mobiles
 
     public override void OnDamagedBySpell(Mobile from)
     {
-      if (from?.Alive == true && 0.4 > Utility.RandomDouble()) SendEBolt(from);
+      if (from?.Alive == true && Utility.RandomDouble() < 0.4) SendEBolt(from);
 
       if (!FieldActive)
       {
@@ -129,7 +129,7 @@ namespace Server.Mobiles
         attacker.SendAsciiMessage("Your weapon cannot penetrate the creature's magical barrier");
       }
 
-      if (attacker?.Alive == true && attacker.Weapon is BaseRanged && 0.4 > Utility.RandomDouble())
+      if (attacker?.Alive == true && attacker.Weapon is BaseRanged && Utility.RandomDouble() < 0.4)
         SendEBolt(attacker);
     }
 

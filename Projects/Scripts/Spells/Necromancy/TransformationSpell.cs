@@ -7,7 +7,7 @@ namespace Server.Spells.Necromancy
     }
 
     public override bool BlockedByHorrificBeast => false;
-    public abstract int Body{ get; }
+    public abstract int Body { get; }
     public virtual int Hue => 0;
 
     public virtual int PhysResistOffset => 0;

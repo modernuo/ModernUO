@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class DetectHidden
+  public static class DetectHidden
   {
     public static void Initialize()
     {
@@ -15,7 +15,7 @@ namespace Server.SkillHandlers
 
     public static TimeSpan OnUse(Mobile src)
     {
-      src.SendLocalizedMessage(500819); //Where will you search?
+      src.SendLocalizedMessage(500819); // Where will you search?
       src.Target = new InternalTarget();
 
       return TimeSpan.FromSeconds(6.0);
@@ -64,7 +64,7 @@ namespace Server.SkillHandlers
               double ss = srcSkill + Utility.Random(21) - 10;
               double ts = trg.Skills.Hiding.Value + Utility.Random(21) - 10;
 
-              if (src.AccessLevel >= trg.AccessLevel && (ss >= ts || inHouse && house.IsInside(trg)))
+              if (src.AccessLevel >= trg.AccessLevel && (ss >= ts || (inHouse && house.IsInside(trg))))
               {
                 if (trg is ShadowKnight && (trg.X != p.X || trg.Y != p.Y))
                   continue;

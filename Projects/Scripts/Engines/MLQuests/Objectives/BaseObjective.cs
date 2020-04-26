@@ -34,13 +34,13 @@ namespace Server.Engines.MLQuests.Objectives
         EndTime = DateTime.UtcNow + obj.Duration;
     }
 
-    public MLQuestInstance Instance{ get; }
+    public MLQuestInstance Instance { get; }
 
     public bool IsTimed => EndTime != DateTime.MinValue;
 
-    public DateTime EndTime{ get; set; }
+    public DateTime EndTime { get; set; }
 
-    public bool Expired{ get; set; }
+    public bool Expired { get; set; }
 
     public virtual DataType ExtraDataType => DataType.None;
 
@@ -142,32 +142,32 @@ namespace Server.Engines.MLQuests.Objectives
       switch (extraDataType)
       {
         case DataType.EscortObjective:
-        {
-          bool completed = reader.ReadBool();
+          {
+            bool completed = reader.ReadBool();
 
-          if (objInstance is EscortObjectiveInstance instance)
-            instance.HasCompleted = completed;
+            if (objInstance is EscortObjectiveInstance instance)
+              instance.HasCompleted = completed;
 
-          break;
-        }
+            break;
+          }
         case DataType.KillObjective:
-        {
-          int slain = reader.ReadInt();
+          {
+            int slain = reader.ReadInt();
 
-          if (objInstance is KillObjectiveInstance instance)
-            instance.Slain = slain;
+            if (objInstance is KillObjectiveInstance instance)
+              instance.Slain = slain;
 
-          break;
-        }
+            break;
+          }
         case DataType.DeliverObjective:
-        {
-          bool completed = reader.ReadBool();
+          {
+            bool completed = reader.ReadBool();
 
-          if (objInstance is DeliverObjectiveInstance instance)
-            instance.HasCompleted = completed;
+            if (objInstance is DeliverObjectiveInstance instance)
+              instance.HasCompleted = completed;
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

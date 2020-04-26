@@ -36,7 +36,6 @@ namespace Server.Mobiles
       Fame = 12000;
       Karma = -12000;
 
-
       PackItem(new GreenGourd());
       PackItem(new ExecutionersAxe());
 
@@ -86,7 +85,6 @@ namespace Server.Mobiles
 
     public override WeaponAbility GetWeaponAbility() => WeaponAbility.DoubleStrike;
 
-
     public override void GenerateLoot()
     {
       AddLoot(LootPack.FilthyRich, 3);
@@ -99,7 +97,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.1)
       {
         /* Maniacal laugh
          * Cliloc: 1070840

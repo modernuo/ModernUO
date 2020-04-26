@@ -96,16 +96,16 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Boat = reader.ReadItem() as BaseBoat;
+          {
+            m_Boat = reader.ReadItem() as BaseBoat;
 
-          if (m_Boat == null || Parent != null)
-            Delete();
+            if (m_Boat == null || Parent != null)
+              Delete();
 
-          Movable = false;
+            Movable = false;
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

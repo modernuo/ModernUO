@@ -155,8 +155,8 @@ namespace Server.Mobiles
 
     private class ReleaseEntry : ContextMenuEntry
     {
-      private BaseFamiliar m_Familiar;
-      private Mobile m_From;
+      private readonly BaseFamiliar m_Familiar;
+      private readonly Mobile m_From;
 
       public ReleaseEntry(Mobile from, BaseFamiliar familiar) : base(6118, 14)
       {

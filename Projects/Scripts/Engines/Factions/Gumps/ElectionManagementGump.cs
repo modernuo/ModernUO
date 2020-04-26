@@ -8,10 +8,10 @@ namespace Server.Factions
   public class ElectionManagementGump : Gump
   {
     public const int LabelColor = 0xFFFFFF;
-    private Candidate m_Candidate;
+    private readonly Candidate m_Candidate;
 
-    private Election m_Election;
-    private int m_Page;
+    private readonly Election m_Election;
+    private readonly int m_Page;
 
     public ElectionManagementGump(Election election, Candidate candidate = null, int page = 0) : base(40, 40)
     {
@@ -52,7 +52,6 @@ namespace Server.Factions
           AddButton(414, 104, 0x15E1, 0x15E5, 3);
         else
           AddImage(414, 104, 0x25E6);
-
 
         AddHtml(14, 120, 30, 20, Color(Center("DEL"), LabelColor));
         AddHtml(47, 120, 150, 20, Color("Name", LabelColor));

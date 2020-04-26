@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using System;
+using System.Buffers.Binary;
 using System.IO;
 using System.Text;
 
@@ -32,9 +33,9 @@ namespace Server
       Flags = flags;
     }
 
-    public string Name{ get; set; }
+    public string Name { get; set; }
 
-    public TileFlag Flags{ get; set; }
+    public TileFlag Flags { get; set; }
   }
 
   public struct ItemData
@@ -56,9 +57,9 @@ namespace Server
       m_Height = (byte)height;
     }
 
-    public string Name{ get; set; }
+    public string Name { get; set; }
 
-    public TileFlag Flags{ get; set; }
+    public TileFlag Flags { get; set; }
 
     public bool Bridge
     {
@@ -181,7 +182,7 @@ namespace Server
 
     static TileData()
     {
-      string filePath = Core.FindDataFile("tiledata.mul");
+      var filePath = Core.FindDataFile("tiledata.mul");
 
       if (!File.Exists(filePath))
       {
@@ -191,22 +192,25 @@ namespace Server
         Console.WriteLine("After pressing return an exception will be thrown and the server will terminate");
         Console.ResetColor();
 
-        throw new Exception($"TileData: {filePath} not found");
+        Utility.PushColor(ConsoleColor.Red);
+        Console.WriteLine($"TileData: {filePath} not found");
+        Utility.PopColor();
+        return;
       }
 
-      using FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-      BinaryReader bin = new BinaryReader(fs);
+      using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+      var bin = new BinaryReader(fs);
 
       if (fs.Length == 3188736)
       {
         // 7.0.9.0
         LandTable = new LandData[0x4000];
 
-        for (int i = 0; i < 0x4000; ++i)
+        for (var i = 0; i < 0x4000; ++i)
         {
-          if (i == 1 || i > 0 && (i & 0x1F) == 0) bin.ReadInt32(); // header
+          if (i == 1 || (i > 0 && (i & 0x1F) == 0)) bin.ReadInt32(); // header
 
-          TileFlag flags = (TileFlag)bin.ReadInt64();
+          var flags = (TileFlag)bin.ReadInt64();
           bin.ReadInt16(); // skip 2 bytes -- textureID
 
           LandTable[i] = new LandData(ReadNameString(bin), flags);
@@ -214,11 +218,11 @@ namespace Server
 
         ItemTable = new ItemData[0x10000];
 
-        for (int i = 0; i < 0x10000; ++i)
+        for (var i = 0; i < 0x10000; ++i)
         {
           if ((i & 0x1F) == 0) bin.ReadInt32(); // header
 
-          TileFlag flags = (TileFlag)bin.ReadInt64();
+          var flags = (TileFlag)bin.ReadInt64();
           int weight = bin.ReadByte();
           int quality = bin.ReadByte();
           bin.ReadInt16();
@@ -237,11 +241,11 @@ namespace Server
       {
         LandTable = new LandData[0x4000];
 
-        for (int i = 0; i < 0x4000; ++i)
+        for (var i = 0; i < 0x4000; ++i)
         {
           if ((i & 0x1F) == 0) bin.ReadInt32(); // header
 
-          TileFlag flags = (TileFlag)bin.ReadInt32();
+          var flags = (TileFlag)bin.ReadInt32();
           bin.ReadInt16(); // skip 2 bytes -- textureID
 
           LandTable[i] = new LandData(ReadNameString(bin), flags);
@@ -252,11 +256,11 @@ namespace Server
           // 7.0.0.0
           ItemTable = new ItemData[0x8000];
 
-          for (int i = 0; i < 0x8000; ++i)
+          for (var i = 0; i < 0x8000; ++i)
           {
             if ((i & 0x1F) == 0) bin.ReadInt32(); // header
 
-            TileFlag flags = (TileFlag)bin.ReadInt32();
+            var flags = (TileFlag)bin.ReadInt32();
             int weight = bin.ReadByte();
             int quality = bin.ReadByte();
             bin.ReadInt16();
@@ -275,11 +279,11 @@ namespace Server
         {
           ItemTable = new ItemData[0x4000];
 
-          for (int i = 0; i < 0x4000; ++i)
+          for (var i = 0; i < 0x4000; ++i)
           {
             if ((i & 0x1F) == 0) bin.ReadInt32(); // header
 
-            TileFlag flags = (TileFlag)bin.ReadInt32();
+            var flags = (TileFlag)bin.ReadInt32();
             int weight = bin.ReadByte();
             int quality = bin.ReadByte();
             bin.ReadInt16();
@@ -300,23 +304,29 @@ namespace Server
       MaxItemValue = ItemTable.Length - 1;
     }
 
-    public static LandData[] LandTable{ get; }
+    public static LandData[] LandTable { get; }
 
-    public static ItemData[] ItemTable{ get; }
+    public static ItemData[] ItemTable { get; }
 
-    public static int MaxLandValue{ get; }
+    public static int MaxLandValue { get; }
 
-    public static int MaxItemValue{ get; }
+    public static int MaxItemValue { get; }
 
     private static string ReadNameString(BinaryReader bin)
     {
       bin.Read(m_StringBuffer, 0, 20);
 
-      int count;
+      int count = 0;
 
-      for (count = 0; count < 20 && m_StringBuffer[count] != 0; ++count) ;
+      while (count < 20)
+      {
+        if (m_StringBuffer[count] == 0)
+          break;
 
-      return Encoding.ASCII.GetString(m_StringBuffer, 0, count);
+        count++;
+      }
+
+      return Encoding.ASCII.GetString(new ReadOnlySpan<byte>(m_StringBuffer, 0, count));
     }
   }
 }

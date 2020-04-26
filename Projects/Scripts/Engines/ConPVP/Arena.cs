@@ -24,14 +24,14 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Arena Arena{ get; private set; }
+    public Arena Arena { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsPrivate{ get; set; }
+    public bool IsPrivate { get; set; }
 
     public override string DefaultName => "arena controller";
 
-    public static List<ArenaController> Instances{ get; set; } = new List<ArenaController>();
+    public static List<ArenaController> Instances { get; set; } = new List<ArenaController>();
 
     public override void OnDelete()
     {
@@ -67,16 +67,16 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 1:
-        {
-          IsPrivate = reader.ReadBool();
+          {
+            IsPrivate = reader.ReadBool();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          Arena = new Arena(reader);
-          break;
-        }
+          {
+            Arena = new Arena(reader);
+            break;
+          }
       }
 
       Instances.Add(this);
@@ -96,7 +96,7 @@ namespace Server.Engines.ConPVP
         Points[i] = reader.ReadPoint3D();
     }
 
-    public Point3D[] Points{ get; }
+    public Point3D[] Points { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Point3D EdgeWest
@@ -194,74 +194,74 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 7:
-        {
-          m_IsGuarded = reader.ReadBool();
+          {
+            m_IsGuarded = reader.ReadBool();
 
-          goto case 6;
-        }
+            goto case 6;
+          }
         case 6:
-        {
-          Ladder = reader.ReadItem() as LadderController;
+          {
+            Ladder = reader.ReadItem() as LadderController;
 
-          goto case 5;
-        }
+            goto case 5;
+          }
         case 5:
-        {
-          m_Tournament = reader.ReadItem() as TournamentController;
-          Announcer = reader.ReadMobile();
+          {
+            m_Tournament = reader.ReadItem() as TournamentController;
+            Announcer = reader.ReadMobile();
 
-          goto case 4;
-        }
+            goto case 4;
+          }
         case 4:
-        {
-          m_Name = reader.ReadString();
+          {
+            m_Name = reader.ReadString();
 
-          goto case 3;
-        }
+            goto case 3;
+          }
         case 3:
-        {
-          m_Zone = reader.ReadRect2D();
+          {
+            m_Zone = reader.ReadRect2D();
 
-          goto case 2;
-        }
+            goto case 2;
+          }
         case 2:
-        {
-          GateIn = reader.ReadPoint3D();
-          m_GateOut = reader.ReadPoint3D();
-          Teleporter = reader.ReadItem();
+          {
+            GateIn = reader.ReadPoint3D();
+            m_GateOut = reader.ReadPoint3D();
+            Teleporter = reader.ReadItem();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          Players = reader.ReadStrongMobileList();
+          {
+            Players = reader.ReadStrongMobileList();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          m_Facet = reader.ReadMap();
-          m_Bounds = reader.ReadRect2D();
-          Outside = reader.ReadPoint3D();
-          Wall = reader.ReadPoint3D();
-
-          if (version == 0)
           {
-            reader.ReadBool();
-            Players = new List<Mobile>();
+            m_Facet = reader.ReadMap();
+            m_Bounds = reader.ReadRect2D();
+            Outside = reader.ReadPoint3D();
+            Wall = reader.ReadPoint3D();
+
+            if (version == 0)
+            {
+              reader.ReadBool();
+              Players = new List<Mobile>();
+            }
+
+            m_Active = reader.ReadBool();
+            Points = new ArenaStartPoints(reader);
+
+            if (m_Active)
+            {
+              Arenas.Add(this);
+              Arenas.Sort();
+            }
+
+            break;
           }
-
-          m_Active = reader.ReadBool();
-          Points = new ArenaStartPoints(reader);
-
-          if (m_Active)
-          {
-            Arenas.Add(this);
-            Arenas.Sort();
-          }
-
-          break;
-        }
       }
 
       if (m_Zone.Start != Point2D.Zero && m_Zone.End != Point2D.Zero && m_Facet != null)
@@ -275,7 +275,7 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public LadderController Ladder{ get; set; }
+    public LadderController Ladder { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsGuarded
@@ -305,7 +305,7 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Announcer{ get; set; }
+    public Mobile Announcer { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public string Name
@@ -385,10 +385,10 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D Outside{ get; set; }
+    public Point3D Outside { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D GateIn{ get; set; }
+    public Point3D GateIn { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Point3D GateOut
@@ -403,17 +403,17 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D Wall{ get; set; }
+    public Point3D Wall { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsOccupied => Players.Count > 0;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public ArenaStartPoints Points{ get; private set; }
+    public ArenaStartPoints Points { get; private set; }
 
-    public Item Teleporter{ get; set; }
+    public Item Teleporter { get; set; }
 
-    public List<Mobile> Players{ get; }
+    public List<Mobile> Players { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Active
@@ -448,7 +448,7 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public static List<Arena> Arenas{ get; } = new List<Arena>();
+    public static List<Arena> Arenas { get; } = new List<Arena>();
 
     public int CompareTo(Arena c)
     {
@@ -738,7 +738,7 @@ namespace Server.Engines.ConPVP
 
     private class ArenaEntry
     {
-      public Arena m_Arena;
+      public readonly Arena m_Arena;
       public int m_VotesAgainst;
       public int m_VotesFor;
 
@@ -747,9 +747,7 @@ namespace Server.Engines.ConPVP
       public int Value => m_VotesFor;
     }
 
-    #region Offsets & Rotation
-
-    private static Point2D[] m_EdgeOffsets =
+    private static readonly Point2D[] m_EdgeOffsets =
     {
       /*
        *        /\
@@ -772,7 +770,7 @@ namespace Server.Engines.ConPVP
     };
 
     // nw corner
-    private static Point2D[] m_CornerOffsets =
+    private static readonly Point2D[] m_CornerOffsets =
     {
       /*
        *         /\
@@ -793,7 +791,7 @@ namespace Server.Engines.ConPVP
       new Point2D(3, 0)
     };
 
-    private static int[][,] m_Rotate =
+    private static readonly int[][,] m_Rotate =
     {
       new[,] { { +1, 0 }, { 0, +1 } }, // west
       new[,] { { -1, 0 }, { 0, -1 } }, // east
@@ -804,7 +802,5 @@ namespace Server.Engines.ConPVP
       new[,] { { 0, +1 }, { +1, 0 } }, // sw
       new[,] { { 0, -1 }, { -1, 0 } } // ne
     };
-
-    #endregion
   }
 }

@@ -42,16 +42,16 @@ namespace Server.Engines.Doom
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string TypeName{ get; set; }
+    public string TypeName { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public BaseDoor Door{ get; set; }
+    public BaseDoor Door { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public BaseAddon Addon{ get; set; }
+    public BaseAddon Addon { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public GauntletSpawner Sequence{ get; set; }
+    public GauntletSpawner Sequence { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool HasCompleted
@@ -74,7 +74,7 @@ namespace Server.Engines.Doom
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Rectangle2D RegionBounds{ get; set; }
+    public Rectangle2D RegionBounds { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public GauntletSpawnerState State
@@ -145,11 +145,11 @@ namespace Server.Engines.Doom
       }
     }
 
-    public List<Mobile> Creatures{ get; set; }
+    public List<Mobile> Creatures { get; set; }
 
-    public List<BaseTrap> Traps{ get; set; }
+    public List<BaseTrap> Traps { get; set; }
 
-    public Region Region{ get; set; }
+    public Region Region { get; set; }
 
     public override string DefaultName => "doom spawner";
 
@@ -199,13 +199,13 @@ namespace Server.Engines.Doom
 
       int random = Utility.Random(100);
 
-      if (22 > random)
+      if (random < 22)
         trap = new SawTrap(Utility.RandomBool() ? SawTrapType.WestFloor : SawTrapType.NorthFloor);
-      else if (44 > random)
+      else if (random < 44)
         trap = new SpikeTrap(Utility.RandomBool() ? SpikeTrapType.WestFloor : SpikeTrapType.NorthFloor);
-      else if (66 > random)
+      else if (random < 66)
         trap = new GasTrap(Utility.RandomBool() ? GasTrapType.NorthWall : GasTrapType.WestWall);
-      else if (88 > random)
+      else if (random < 88)
         trap = new FireColumnTrap();
       else
         trap = new MushroomTrap();
@@ -382,31 +382,31 @@ namespace Server.Engines.Doom
       switch (version)
       {
         case 1:
-        {
-          RegionBounds = reader.ReadRect2D();
-          Traps = reader.ReadStrongItemList<BaseTrap>();
-
-          goto case 0;
-        }
-        case 0:
-        {
-          if (version < 1)
           {
-            Traps = new List<BaseTrap>();
-            RegionBounds = new Rectangle2D(X - 40, Y - 40, 80, 80);
+            RegionBounds = reader.ReadRect2D();
+            Traps = reader.ReadStrongItemList<BaseTrap>();
+
+            goto case 0;
           }
+        case 0:
+          {
+            if (version < 1)
+            {
+              Traps = new List<BaseTrap>();
+              RegionBounds = new Rectangle2D(X - 40, Y - 40, 80, 80);
+            }
 
-          Creatures = reader.ReadStrongMobileList();
+            Creatures = reader.ReadStrongMobileList();
 
-          TypeName = reader.ReadString();
-          Door = reader.ReadItem<BaseDoor>();
-          Addon = reader.ReadItem<BaseAddon>();
-          Sequence = reader.ReadItem<GauntletSpawner>();
+            TypeName = reader.ReadString();
+            Door = reader.ReadItem<BaseDoor>();
+            Addon = reader.ReadItem<BaseAddon>();
+            Sequence = reader.ReadItem<GauntletSpawner>();
 
-          State = (GauntletSpawnerState)reader.ReadInt();
+            State = (GauntletSpawnerState)reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -557,13 +557,13 @@ namespace Server.Engines.Doom
       CreateVarietyDealer(492, 369);
 
       for (int x = 434; x <= 478; ++x)
-      for (int y = 371; y <= 372; ++y)
-      {
-        Static item = new Static(0x524);
+        for (int y = 371; y <= 372; ++y)
+        {
+          Static item = new Static(0x524);
 
-        item.Hue = 1;
-        item.MoveToWorld(new Point3D(x, y, -1), Map.Malas);
-      }
+          item.Hue = 1;
+          item.MoveToWorld(new Point3D(x, y, -1), Map.Malas);
+        }
       /* End supply room */
 
       /* Begin gauntlet cycle */
@@ -613,7 +613,6 @@ namespace Server.Engines.Doom
       /* End exit gate */
     }
   }
-
 
   public class GauntletRegion : BaseRegion
   {

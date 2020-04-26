@@ -17,11 +17,9 @@ namespace Server.Items
     public override bool TrapOnOpen => !TrapOnLockpick;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool TrapOnLockpick{ get; set; }
+    public bool TrapOnLockpick { get; set; }
 
     public override bool DisplaysContent => !m_Locked;
-
-    #region ICraftable Members
 
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
@@ -61,8 +59,6 @@ namespace Server.Items
       return 1;
     }
 
-    #endregion
-
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual bool Locked
     {
@@ -79,19 +75,19 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public uint KeyValue{ get; set; }
+    public uint KeyValue { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Picker{ get; set; }
+    public Mobile Picker { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int MaxLockLevel{ get; set; }
+    public int MaxLockLevel { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int LockLevel{ get; set; }
+    public int LockLevel { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int RequiredSkill{ get; set; }
+    public int RequiredSkill { get; set; }
 
     public virtual void LockPick(Mobile from)
     {
@@ -101,12 +97,8 @@ namespace Server.Items
       if (TrapOnLockpick && ExecuteTrap(from)) TrapOnLockpick = false;
     }
 
-    #region IShipwreckedItem Members
-
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsShipwreckedItem{ get; set; }
-
-    #endregion
+    public bool IsShipwreckedItem { get; set; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -136,64 +128,64 @@ namespace Server.Items
       switch (version)
       {
         case 6:
-        {
-          IsShipwreckedItem = reader.ReadBool();
-
-          goto case 5;
-        }
-        case 5:
-        {
-          TrapOnLockpick = reader.ReadBool();
-
-          goto case 4;
-        }
-        case 4:
-        {
-          RequiredSkill = reader.ReadInt();
-
-          goto case 3;
-        }
-        case 3:
-        {
-          MaxLockLevel = reader.ReadInt();
-
-          goto case 2;
-        }
-        case 2:
-        {
-          KeyValue = reader.ReadUInt();
-
-          goto case 1;
-        }
-        case 1:
-        {
-          LockLevel = reader.ReadInt();
-
-          goto case 0;
-        }
-        case 0:
-        {
-          if (version < 3)
-            MaxLockLevel = 100;
-
-          if (version < 4)
           {
-            if (MaxLockLevel - LockLevel == 40)
-            {
-              RequiredSkill = LockLevel + 6;
-              LockLevel = RequiredSkill - 10;
-              MaxLockLevel = RequiredSkill + 39;
-            }
-            else
-            {
-              RequiredSkill = LockLevel;
-            }
+            IsShipwreckedItem = reader.ReadBool();
+
+            goto case 5;
           }
+        case 5:
+          {
+            TrapOnLockpick = reader.ReadBool();
 
-          m_Locked = reader.ReadBool();
+            goto case 4;
+          }
+        case 4:
+          {
+            RequiredSkill = reader.ReadInt();
 
-          break;
-        }
+            goto case 3;
+          }
+        case 3:
+          {
+            MaxLockLevel = reader.ReadInt();
+
+            goto case 2;
+          }
+        case 2:
+          {
+            KeyValue = reader.ReadUInt();
+
+            goto case 1;
+          }
+        case 1:
+          {
+            LockLevel = reader.ReadInt();
+
+            goto case 0;
+          }
+        case 0:
+          {
+            if (version < 3)
+              MaxLockLevel = 100;
+
+            if (version < 4)
+            {
+              if (MaxLockLevel - LockLevel == 40)
+              {
+                RequiredSkill = LockLevel + 6;
+                LockLevel = RequiredSkill - 10;
+                MaxLockLevel = RequiredSkill + 39;
+              }
+              else
+              {
+                RequiredSkill = LockLevel;
+              }
+            }
+
+            m_Locked = reader.ReadBool();
+
+            break;
+          }
       }
     }
 
@@ -320,7 +312,7 @@ namespace Server.Items
       base.OnSingleClick(from);
 
       if (IsShipwreckedItem)
-        LabelTo(from, 1041645); //recovered from a shipwreck
+        LabelTo(from, 1041645); // recovered from a shipwreck
     }
   }
 }

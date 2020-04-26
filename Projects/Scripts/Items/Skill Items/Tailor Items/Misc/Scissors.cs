@@ -53,7 +53,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private Scissors m_Item;
+      private readonly Scissors m_Item;
 
       public InternalTarget(Scissors item) : base(2, false, TargetFlags.None) => m_Item = item;
 
@@ -62,7 +62,7 @@ namespace Server.Items
         if (m_Item.Deleted)
           return;
 
-        /*if ( targeted is Item && !((Item)targeted).IsStandardLoot() )
+        /*if (targeted is Item && !((Item)targeted).IsStandardLoot())
         {
           from.SendLocalizedMessage( 502440 ); // Scissors can not be used on that to produce anything.
         }
@@ -71,7 +71,7 @@ namespace Server.Items
         {
           from.SendLocalizedMessage(
             1062845 + Utility
-              .Random(3)); //"That doesn't seem like the smartest thing to do." / "That was an encounter you don't wish to repeat." / "Ha! You missed!"
+              .Random(3)); // "That doesn't seem like the smartest thing to do." / "That was an encounter you don't wish to repeat." / "Ha! You missed!"
         }
         else if (Core.SE && Utility.RandomDouble() > .20 && (from.Direction & Direction.Running) != 0 &&
                  Core.TickCount - from.LastMoveTime < from.ComputeMovementSpeed(from.Direction))

@@ -13,7 +13,7 @@ namespace Server.Engines.Help
 {
   public class ContainedMenu : QuestionMenu
   {
-    private Mobile m_From;
+    private readonly Mobile m_From;
 
     public ContainedMenu(Mobile from) : base(
       "You already have an open help request. We will have someone assist you as soon as possible.  What would you like to do?",
@@ -141,50 +141,54 @@ namespace Server.Engines.Help
       AddPage(3);
 
       AddButton(80, 90, 5540, 5541, 7);
+
+      /* <U><CENTER>Another player is harassing me (or Exploiting).</CENTER></U><BR>
+       * VERBAL HARASSMENT<BR>
+       * Use this option when another player is verbally harassing your character.
+       * Verbal harassment behaviors include but are not limited to, using bad language, threats etc..
+       * Before you submit a complaint be sure you understand what constitutes harassment
+       * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=40">� what is verbal harassment? -</A>
+       * and that you have followed these steps:<BR>
+       * 1. You have asked the player to stop and they have continued.<BR>
+       * 2. You have tried to remove yourself from the situation.<BR>
+       * 3. You have done nothing to instigate or further encourage the harassment.<BR>
+       * 4. You have added the player to your ignore list.
+       * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=138">- How do I ignore a player?</A><BR>
+       * 5. You have read and understand Origin�s definition of harassment.<BR>
+       * 6. Your account information is up to date. (Including a current email address)<BR>
+       * *If these steps have not been taken, GMs may be unable to take action against the offending player.<BR>
+       * **A chat log will be review by a GM to assess the validity of this complaint.
+       * Abuse of this system is a violation of the Rules of Conduct.<BR>
+       * EXPLOITING<BR>
+       * Use this option to report someone who may be exploiting or cheating.
+       * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=41">� What constitutes an exploit?</a>
+       */
       AddHtmlLocalized(110, 90, 450, 145, 1062572, true,
-        true); /* <U><CENTER>Another player is harassing me (or Exploiting).</CENTER></U><BR>
-																		 * VERBAL HARASSMENT<BR>
-																		 * Use this option when another player is verbally harassing your character.
-																		 * Verbal harassment behaviors include but are not limited to, using bad language, threats etc..
-																		 * Before you submit a complaint be sure you understand what constitutes harassment
-																		 * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=40">� what is verbal harassment? -</A>
-																		 * and that you have followed these steps:<BR>
-																		 * 1. You have asked the player to stop and they have continued.<BR>
-																		 * 2. You have tried to remove yourself from the situation.<BR>
-																		 * 3. You have done nothing to instigate or further encourage the harassment.<BR>
-																		 * 4. You have added the player to your ignore list.
-																		 * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=138">- How do I ignore a player?</A><BR>
-																		 * 5. You have read and understand Origin�s definition of harassment.<BR>
-																		 * 6. Your account information is up to date. (Including a current email address)<BR>
-																		 * *If these steps have not been taken, GMs may be unable to take action against the offending player.<BR>
-																		 * **A chat log will be review by a GM to assess the validity of this complaint.
-																		 * Abuse of this system is a violation of the Rules of Conduct.<BR>
-																		 * EXPLOITING<BR>
-																		 * Use this option to report someone who may be exploiting or cheating.
-																		 * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=41">� What constitutes an exploit?</a>
-																		 */
+        true);
 
       AddButton(80, 240, 5540, 5541, 8);
+
+      /* <U><CENTER>Another player is harassing me using game mechanics.</CENTER></U><BR>
+       * <BR>
+       * PHYSICAL HARASSMENT<BR>
+       * Use this option when another player is harassing your character using game mechanics.
+       * Physical harassment includes but is not limited to luring, Kill Stealing, and any act that causes a players death in Trammel.
+       * Before you submit a complaint be sure you understand what constitutes harassment
+       * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=59"> � what is physical harassment?</A>
+       * and that you have followed these steps:<BR>
+       * 1. You have asked the player to stop and they have continued.<BR>
+       * 2. You have tried to remove yourself from the situation.<BR>
+       * 3. You have done nothing to instigate or further encourage the harassment.<BR>
+       * 4. You have added the player to your ignore list.
+       * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=138"> - how do I ignore a player?</A><BR>
+       * 5. You have read and understand Origin�s definition of harassment.<BR>
+       * 6. Your account information is up to date. (Including a current email address)<BR>
+       * *If these steps have not been taken, GMs may be unable to take action against the offending player.<BR>
+       * **This issue will be reviewed by a GM to assess the validity of this complaint.
+       * Abuse of this system is a violation of the Rules of Conduct.
+       */
       AddHtmlLocalized(110, 240, 450, 145, 1062573, true,
-        true); /* <U><CENTER>Another player is harassing me using game mechanics.</CENTER></U><BR>
-																		  * <BR>
-																		  * PHYSICAL HARASSMENT<BR>
-																		  * Use this option when another player is harassing your character using game mechanics.
-																		  * Physical harassment includes but is not limited to luring, Kill Stealing, and any act that causes a players death in Trammel.
-																		  * Before you submit a complaint be sure you understand what constitutes harassment
-																		  * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=59"> � what is physical harassment?</A>
-																		  * and that you have followed these steps:<BR>
-																		  * 1. You have asked the player to stop and they have continued.<BR>
-																		  * 2. You have tried to remove yourself from the situation.<BR>
-																		  * 3. You have done nothing to instigate or further encourage the harassment.<BR>
-																		  * 4. You have added the player to your ignore list.
-																		  * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=138"> - how do I ignore a player?</A><BR>
-																		  * 5. You have read and understand Origin�s definition of harassment.<BR>
-																		  * 6. Your account information is up to date. (Including a current email address)<BR>
-																		  * *If these steps have not been taken, GMs may be unable to take action against the offending player.<BR>
-																		  * **This issue will be reviewed by a GM to assess the validity of this complaint.
-																		  * Abuse of this system is a violation of the Rules of Conduct.
-																		  */
+        true);
 
       AddButton(150, 390, 5540, 5541, 0, GumpButtonType.Page, 1);
       AddHtmlLocalized(180, 390, 335, 40, 1001015); // NO  - I meant to ask for help with another matter.
@@ -232,93 +236,93 @@ namespace Server.Engines.Help
       switch (info.ButtonID)
       {
         case 0: // Close/Cancel
-        {
-          from.SendLocalizedMessage(501235, "", 0x35); // Help request aborted.
+          {
+            from.SendLocalizedMessage(501235, "", 0x35); // Help request aborted.
 
-          break;
-        }
+            break;
+          }
         case 1: // General question
-        {
-          type = PageType.Question;
-          break;
-        }
+          {
+            type = PageType.Question;
+            break;
+          }
         case 2: // Stuck
-        {
-          BaseHouse house = BaseHouse.FindHouseAt(from);
+          {
+            BaseHouse house = BaseHouse.FindHouseAt(from);
 
-          if (house?.IsAosRules == true && !from.Region.IsPartOf<SafeZone>()) // Dueling
-          {
-            from.Location = house.BanLocation;
-          }
-          else if (from.Region.IsPartOf<Jail>())
-          {
-            from.SendLocalizedMessage(1114345, "", 0x35); // You'll need a better jailbreak plan than that!
-          }
-          else if (Sigil.ExistsOn(from))
-          {
-            from.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
-          }
-          else if (from is PlayerMobile mobile && mobile.CanUseStuckMenu() &&
-                   mobile.Region.CanUseStuckMenu(mobile) && !CheckCombat(mobile) && !mobile.Frozen &&
-                   !mobile.Criminal && (Core.AOS || mobile.Kills < 5))
-          {
-            StuckMenu menu = new StuckMenu(mobile, mobile, true);
-
-            menu.BeginClose();
-
-            mobile.SendGump(menu);
-          }
-          else
-          {
-            type = PageType.Stuck;
-          }
-
-          break;
-        }
-        case 3: // Report bug or contact Origin
-        {
-          type = PageType.Bug;
-          break;
-        }
-        case 4: // Game suggestion
-        {
-          type = PageType.Suggestion;
-          break;
-        }
-        case 5: // Account management
-        {
-          type = PageType.Account;
-          break;
-        }
-        case 6: // Other
-        {
-          type = PageType.Other;
-          break;
-        }
-        case 7: // Harassment: verbal/exploit
-        {
-          type = PageType.VerbalHarassment;
-          break;
-        }
-        case 8: // Harassment: physical
-        {
-          type = PageType.PhysicalHarassment;
-          break;
-        }
-        case 9: // Young player transport
-        {
-          if (IsYoung(from))
-          {
-            if (from.Region.IsPartOf<Jail>())
+            if (house?.IsAosRules == true && !from.Region.IsPartOf<SafeZone>()) // Dueling
+            {
+              from.Location = house.BanLocation;
+            }
+            else if (from.Region.IsPartOf<Jail>())
+            {
               from.SendLocalizedMessage(1114345, "", 0x35); // You'll need a better jailbreak plan than that!
-            else if (from.Region.IsPartOf("Haven Island"))
-              from.SendLocalizedMessage(1041529); // You're already in Haven
-            else
-              from.MoveToWorld(new Point3D(3503, 2574, 14), Map.Trammel);
-          }
+            }
+            else if (Sigil.ExistsOn(from))
+            {
+              from.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
+            }
+            else if (from is PlayerMobile mobile && mobile.CanUseStuckMenu() &&
+                     mobile.Region.CanUseStuckMenu(mobile) && !CheckCombat(mobile) && !mobile.Frozen &&
+                     !mobile.Criminal && (Core.AOS || mobile.Kills < 5))
+            {
+              StuckMenu menu = new StuckMenu(mobile, mobile, true);
 
-          break;
-        }
+              menu.BeginClose();
+
+              mobile.SendGump(menu);
+            }
+            else
+            {
+              type = PageType.Stuck;
+            }
+
+            break;
+          }
+        case 3: // Report bug or contact Origin
+          {
+            type = PageType.Bug;
+            break;
+          }
+        case 4: // Game suggestion
+          {
+            type = PageType.Suggestion;
+            break;
+          }
+        case 5: // Account management
+          {
+            type = PageType.Account;
+            break;
+          }
+        case 6: // Other
+          {
+            type = PageType.Other;
+            break;
+          }
+        case 7: // Harassment: verbal/exploit
+          {
+            type = PageType.VerbalHarassment;
+            break;
+          }
+        case 8: // Harassment: physical
+          {
+            type = PageType.PhysicalHarassment;
+            break;
+          }
+        case 9: // Young player transport
+          {
+            if (IsYoung(from))
+            {
+              if (from.Region.IsPartOf<Jail>())
+                from.SendLocalizedMessage(1114345, "", 0x35); // You'll need a better jailbreak plan than that!
+              else if (from.Region.IsPartOf("Haven Island"))
+                from.SendLocalizedMessage(1041529); // You're already in Haven
+              else
+                from.MoveToWorld(new Point3D(3503, 2574, 14), Map.Trammel);
+            }
+
+            break;
+          }
       }
 
       if (type != (PageType)(-1) && PageQueue.CheckAllowedToPage(from))

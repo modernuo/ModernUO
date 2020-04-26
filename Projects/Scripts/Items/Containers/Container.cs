@@ -66,8 +66,8 @@ namespace Server.Items
 
       if (house?.HasLockedDownItem(this) == true)
       {
-        if (dropped is VendorRentalContract || dropped is Container container &&
-            container.FindItemByType<VendorRentalContract>() != null)
+        if (dropped is VendorRentalContract || (dropped is Container container &&
+            container.FindItemByType<VendorRentalContract>() != null))
         {
           from.SendLocalizedMessage(1062492); // You cannot place a rental contract in a locked down container.
           return false;
@@ -101,8 +101,8 @@ namespace Server.Items
 
       if (house?.HasLockedDownItem(this) == true)
       {
-        if (item is VendorRentalContract || item is Container container &&
-            container.FindItemByType<VendorRentalContract>() != null)
+        if (item is VendorRentalContract || (item is Container container &&
+            container.FindItemByType<VendorRentalContract>() != null))
         {
           from.SendLocalizedMessage(1062492); // You cannot place a rental contract in a locked down container.
           return false;
@@ -153,7 +153,7 @@ namespace Server.Items
     }
   }
 
-  public class CreatureBackpack : Backpack //Used on BaseCreature
+  public class CreatureBackpack : Backpack // Used on BaseCreature
   {
     [Constructible]
     public CreatureBackpack(string name)
@@ -215,7 +215,7 @@ namespace Server.Items
     }
   }
 
-  public class StrongBackpack : Backpack //Used on Pack animals
+  public class StrongBackpack : Backpack // Used on Pack animals
   {
     [Constructible]
     public StrongBackpack()
@@ -233,7 +233,7 @@ namespace Server.Items
     public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight) => base.CheckHold(m, item, false, checkItems, plusItems, plusWeight);
 
     public override bool CheckContentDisplay(Mobile from) =>
-      RootParent is BaseCreature creature && creature.Controlled && creature.ControlMaster == from ||
+      (RootParent is BaseCreature creature && creature.Controlled && creature.ControlMaster == from) ||
       base.CheckContentDisplay(from);
 
     public override void Serialize(IGenericWriter writer)

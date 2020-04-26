@@ -7,8 +7,7 @@ namespace Server.Mobiles
   public class Beetle : BaseMount
   {
     [Constructible]
-    public Beetle(string name = "a giant beetle") :
-      base(name, 0x317, 0x3EBC, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.25, 0.5)
+    public Beetle(string name = "a giant beetle") : base(name, 0x317, 0x3EBC, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.25, 0.5)
     {
       SetStr(300);
       SetDex(100);
@@ -95,8 +94,6 @@ namespace Server.Mobiles
       int version = reader.ReadInt();
     }
 
-    #region Pack Animal Methods
-
     public override bool OnBeforeDeath()
     {
       if (!base.OnBeforeDeath())
@@ -141,7 +138,5 @@ namespace Server.Mobiles
 
       PackAnimal.GetContextMenuEntries(this, from, list);
     }
-
-    #endregion
   }
 }

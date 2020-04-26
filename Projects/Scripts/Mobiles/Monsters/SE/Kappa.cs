@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
   public class Kappa : BaseCreature
   {
-    private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
+    private static readonly Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
     [Constructible]
     public Kappa() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -170,8 +170,8 @@ namespace Server.Mobiles
     private class InternalTimer : Timer
     {
       private int m_Count;
-      private Mobile m_From;
-      private Mobile m_Mobile;
+      private readonly Mobile m_From;
+      private readonly Mobile m_Mobile;
 
       public InternalTimer(Mobile from, Mobile m) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
       {

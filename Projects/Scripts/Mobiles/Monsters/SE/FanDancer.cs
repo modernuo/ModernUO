@@ -8,7 +8,7 @@ namespace Server.Mobiles
 {
   public class FanDancer : BaseCreature
   {
-    private static HashSet<Mobile> m_Table = new HashSet<Mobile>();
+    private static readonly HashSet<Mobile> m_Table = new HashSet<Mobile>();
 
     [Constructible]
     public FanDancer() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -48,7 +48,7 @@ namespace Server.Mobiles
 
       AddItem(new Tessen());
 
-      if (0.02 >= Utility.RandomDouble())
+      if (Utility.RandomDouble() <= 0.02)
         PackItem(new OrigamiPaper());
     }
 
@@ -60,7 +60,6 @@ namespace Server.Mobiles
     public override string DefaultName => "a fan dancer";
 
     public override bool Uncalmable => true;
-
 
     public override void GenerateLoot()
     {
@@ -79,7 +78,7 @@ namespace Server.Mobiles
     {
       base.OnDamagedBySpell(attacker);
 
-      if (0.8 > Utility.RandomDouble() && !attacker.InRange(this, 1))
+      if (Utility.RandomDouble() < 0.8 && !attacker.InRange(this, 1))
       {
         /* Fan Throw
          * Effect: - To: "0x57D4F5B" - ItemId: "0x27A3" - ItemIdName: "Tessen" - FromLocation: "(992 299, 24)" - ToLocation: "(992 308, 22)" - Speed: "10" - Duration: "0" - FixedDirection: "False" - Explode: "False" - Hue: "0x0" - Render: "0x0"
@@ -96,7 +95,7 @@ namespace Server.Mobiles
     {
       base.OnGotMeleeAttack(attacker);
 
-      if (0.8 > Utility.RandomDouble() && !attacker.InRange(this, 1))
+      if (Utility.RandomDouble() < 0.8 && !attacker.InRange(this, 1))
       {
         /* Fan Throw
          * Effect: - To: "0x57D4F5B" - ItemId: "0x27A3" - ItemIdName: "Tessen" - FromLocation: "(992 299, 24)" - ToLocation: "(992 308, 22)" - Speed: "10" - Duration: "0" - FixedDirection: "False" - Explode: "False" - Hue: "0x0" - Render: "0x0"
@@ -113,7 +112,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (!IsFanned(defender) && 0.05 > Utility.RandomDouble())
+      if (!IsFanned(defender) && Utility.RandomDouble() < 0.05)
       {
         /* Fanning Fire
          * Graphic: Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x3709" ItemIdName: "fire column" FromLocation: "(994 325, 16)" ToLocation: "(994 325, 16)" Speed: "10" Duration: "30" FixedDirection: "True" Explode: "False" Hue: "0x0" RenderMode: "0x0" Effect: "0x34" ExplodeEffect: "0x1" ExplodeSound: "0x0" Serial: "0x57D4F5B" Layer: "5" Unknown: "0x0"
@@ -136,7 +135,7 @@ namespace Server.Mobiles
         defender.PlaySound(0x208);
 
         // This should be done in place of the normal attack damage.
-        //AOS.Damage( defender, this, Utility.RandomMinMax( 35, 45 ), 0, 100, 0, 0, 0 );
+        // AOS.Damage( defender, this, Utility.RandomMinMax( 35, 45 ), 0, 100, 0, 0, 0 );
 
         defender.AddResistanceMod(mod);
 
@@ -164,8 +163,8 @@ namespace Server.Mobiles
 
     private class ExpireTimer : Timer
     {
-      private Mobile m_Mobile;
-      private ResistanceMod m_Mod;
+      private readonly Mobile m_Mobile;
+      private readonly ResistanceMod m_Mod;
 
       public ExpireTimer(Mobile m, ResistanceMod mod, TimeSpan delay) : base(delay)
       {

@@ -18,7 +18,6 @@ namespace Server
       new LootPackItem(typeof(BaseInstrument), 1)
     };
 
-
     public static readonly LootPackItem[] LowScrollItems =
     {
       new LootPackItem(typeof(ClumsyScroll), 1)
@@ -49,8 +48,6 @@ namespace Server
       new LootPackItem(typeof(LesserPoisonPotion), 1)
     };
 
-    #region Old Magic Items
-
     public static readonly LootPackItem[] OldMagicItems =
     {
       new LootPackItem(typeof(BaseJewel), 1),
@@ -59,8 +56,6 @@ namespace Server
       new LootPackItem(typeof(BaseRanged), 1),
       new LootPackItem(typeof(BaseShield), 1)
     };
-
-    #endregion
 
     public static readonly LootPack LowScrolls = new LootPack(new[]
     {
@@ -87,7 +82,7 @@ namespace Server
       new LootPackEntry(false, PotionItems, 100.00, 1)
     });
 
-    private LootPackEntry[] m_Entries;
+    private readonly LootPackEntry[] m_Entries;
 
     public LootPack(LootPackEntry[] entries) => m_Entries = entries;
 
@@ -165,8 +160,6 @@ namespace Server
       }
     }
 
-    #region ML definitions
-
     public static readonly LootPackItem[] AosMagicItemsRichType1 =
     {
       new LootPackItem(typeof(BaseWeapon), 211),
@@ -184,10 +177,6 @@ namespace Server
       new LootPackEntry(false, AosMagicItemsRichType1, 60.00, 1, 5, 0, 100),
       new LootPackEntry(false, Instruments, 1.00, 1)
     });
-
-    #endregion
-
-    #region AOS Magic Items
 
     public static readonly LootPackItem[] AosMagicItemsPoor =
     {
@@ -234,7 +223,6 @@ namespace Server
       new LootPackItem(typeof(BaseJewel), 40)
     };
 
-
     public static readonly LootPackItem[] AosMagicItemsRichType2 =
     {
       new LootPackItem(typeof(BaseWeapon), 170),
@@ -270,10 +258,6 @@ namespace Server
       new LootPackItem(typeof(BaseShield), 52),
       new LootPackItem(typeof(BaseJewel), 207)
     };
-
-    #endregion
-
-    #region SE definitions
 
     public static readonly LootPack SePoor = new LootPack(new[]
     {
@@ -344,10 +328,6 @@ namespace Server
       new LootPackEntry(false, AosMagicItemsUltraRich, 100.00, 1, 5, 50, 100),
       new LootPackEntry(false, Instruments, 2.00, 1)
     });
-
-    #endregion
-
-    #region AOS definitions
 
     public static readonly LootPack AosPoor = new LootPack(new[]
     {
@@ -420,10 +400,6 @@ namespace Server
       new LootPackEntry(false, Instruments, 2.00, 1)
     });
 
-    #endregion
-
-    #region Pre-AOS definitions
-
     public static readonly LootPack OldPoor = new LootPack(new[]
     {
       new LootPackEntry(true, Gold, 100.00, "1d25"),
@@ -494,10 +470,6 @@ namespace Server
       new LootPackEntry(false, OldMagicItems, 100.00, 1, 1, 70, 100)
     });
 
-    #endregion
-
-    #region Generic accessors
-
     public static LootPack Poor => Core.SE ? SePoor : Core.AOS ? AosPoor : OldPoor;
     public static LootPack Meager => Core.SE ? SeMeager : Core.AOS ? AosMeager : OldMeager;
     public static LootPack Average => Core.SE ? SeAverage : Core.AOS ? AosAverage : OldAverage;
@@ -506,11 +478,8 @@ namespace Server
     public static LootPack UltraRich => Core.SE ? SeUltraRich : Core.AOS ? AosUltraRich : OldUltraRich;
     public static LootPack SuperBoss => Core.SE ? SeSuperBoss : Core.AOS ? AosSuperBoss : OldSuperBoss;
 
-    #endregion
-
     /*
-    // TODO: Uncomment once added
-    #region Mondain's Legacy
+    // TODO: Uncomment once added Legacy
     public static readonly LootPackItem[] ParrotItem = new LootPackItem[]
       {
         new LootPackItem( typeof( ParrotItem ), 1 )
@@ -520,13 +489,12 @@ namespace Server
       {
         new LootPackEntry( false, ParrotItem, 10.00, 1 )
       } );
-    #endregion
     */
   }
 
   public class LootPackEntry
   {
-    private bool m_AtSpawnTime;
+    private readonly bool m_AtSpawnTime;
 
     public LootPackEntry(bool atSpawnTime, LootPackItem[] items, double chance, string quantity) : this(atSpawnTime,
       items, chance, new LootPackDice(quantity))
@@ -562,17 +530,17 @@ namespace Server
       MaxIntensity = maxIntensity;
     }
 
-    public int Chance{ get; set; }
+    public int Chance { get; set; }
 
-    public LootPackDice Quantity{ get; set; }
+    public LootPackDice Quantity { get; set; }
 
-    public int MaxProps{ get; set; }
+    public int MaxProps { get; set; }
 
-    public int MinIntensity{ get; set; }
+    public int MinIntensity { get; set; }
 
-    public int MaxIntensity{ get; set; }
+    public int MaxIntensity { get; set; }
 
-    public LootPackItem[] Items{ get; set; }
+    public LootPackItem[] Items { get; set; }
 
     private static bool IsInTokuno(Mobile m)
     {
@@ -585,11 +553,7 @@ namespace Server
       return m.Map == Map.Tokuno;
     }
 
-    #region Mondain's Legacy
-
     private static bool IsMondain(Mobile m) => MondainsLegacy.IsMLRegion(m.Region);
-
-    #endregion
 
     public Item Construct(Mobile from, int luckChance, bool spawning)
     {
@@ -620,19 +584,19 @@ namespace Server
     {
       int rnd = Utility.RandomMinMax(MinIntensity, MaxIntensity);
 
-      if (50 > rnd)
+      if (rnd < 50)
         return 1;
       rnd -= 50;
 
-      if (25 > rnd)
+      if (rnd < 25)
         return 2;
       rnd -= 25;
 
-      if (14 > rnd)
+      if (rnd < 14)
         return 3;
       rnd -= 14;
 
-      if (8 > rnd)
+      if (rnd < 8)
         return 4;
 
       return 5;
@@ -642,7 +606,7 @@ namespace Server
     {
       if (item != null)
       {
-        if (item is BaseWeapon && 1 > Utility.Random(100))
+        if (item is BaseWeapon && Utility.Random(100) < 1)
         {
           item.Delete();
           item = new FireHorn();
@@ -680,28 +644,28 @@ namespace Server
           {
             if (item is BaseWeapon weapon)
             {
-              if (80 > Utility.Random(100))
+              if (Utility.Random(100) < 80)
                 weapon.AccuracyLevel = (WeaponAccuracyLevel)GetRandomOldBonus();
 
-              if (60 > Utility.Random(100))
+              if (Utility.Random(100) < 60)
                 weapon.DamageLevel = (WeaponDamageLevel)GetRandomOldBonus();
 
-              if (40 > Utility.Random(100))
+              if (Utility.Random(100) < 40)
                 weapon.DurabilityLevel = (WeaponDurabilityLevel)GetRandomOldBonus();
 
-              if (5 > Utility.Random(100))
+              if (Utility.Random(100) < 5)
                 weapon.Slayer = SlayerName.Silver;
 
               if (from != null && weapon.AccuracyLevel == 0 && weapon.DamageLevel == 0 &&
-                  weapon.DurabilityLevel == 0 && weapon.Slayer == SlayerName.None && 5 > Utility.Random(100))
+                  weapon.DurabilityLevel == 0 && weapon.Slayer == SlayerName.None && Utility.Random(100) < 5)
                 weapon.Slayer = SlayerGroup.GetLootSlayerType(from.GetType());
             }
             else if (item is BaseArmor armor)
             {
-              if (80 > Utility.Random(100))
+              if (Utility.Random(100) < 80)
                 armor.ProtectionLevel = (ArmorProtectionLevel)GetRandomOldBonus();
 
-              if (40 > Utility.Random(100))
+              if (Utility.Random(100) < 40)
                 armor.Durability = (ArmorDurabilityLevel)GetRandomOldBonus();
             }
           }
@@ -798,9 +762,9 @@ namespace Server
 
   public class LootPackItem
   {
-    private static Type[] m_BlankTypes = { typeof(BlankScroll) };
+    private static readonly Type[] m_BlankTypes = { typeof(BlankScroll) };
 
-    private static Type[][] m_NecroTypes =
+    private static readonly Type[][] m_NecroTypes =
     {
       new[] // low
       {
@@ -830,9 +794,9 @@ namespace Server
       Chance = chance;
     }
 
-    public Type Type{ get; set; }
+    public Type Type { get; set; }
 
-    public int Chance{ get; set; }
+    public int Chance { get; set; }
 
     public static Item RandomScroll(int index, int minCircle, int maxCircle)
     {
@@ -944,11 +908,11 @@ namespace Server
       Bonus = bonus;
     }
 
-    public int Count{ get; set; }
+    public int Count { get; set; }
 
-    public int Sides{ get; set; }
+    public int Sides { get; set; }
 
-    public int Bonus{ get; set; }
+    public int Bonus { get; set; }
 
     public int Roll()
     {

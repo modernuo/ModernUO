@@ -100,7 +100,7 @@ namespace Server.Items
       if (IsExpired)
         list.Add(1150487); // [Expired]
 
-      //list.Add( 1060660, "shard\t{0}", ServerList.ServerName ); // ~1_val~: ~2_val~
+      // list.Add( 1060660, "shard\t{0}", ServerList.ServerName ); // ~1_val~: ~2_val~
     }
 
     public override void OnDoubleClick(Mobile from)
@@ -140,19 +140,19 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Stone = reader.ReadItem<HouseRaffleStone>();
+          {
+            m_Stone = reader.ReadItem<HouseRaffleStone>();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          m_PlotLocation = reader.ReadPoint3D();
-          m_Facet = reader.ReadMap();
-          m_AwardedTo = reader.ReadMobile();
+          {
+            m_PlotLocation = reader.ReadPoint3D();
+            m_Facet = reader.ReadMap();
+            m_AwardedTo = reader.ReadMobile();
 
-          break;
-        }
+            break;
+          }
       }
     }
 

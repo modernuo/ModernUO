@@ -9,7 +9,7 @@ namespace Server.Mobiles
 {
   public class Ilhenir : BaseChampion
   {
-    private static HashSet<Mobile> m_Table = new HashSet<Mobile>();
+    private static readonly HashSet<Mobile> m_Table = new HashSet<Mobile>();
 
     [Constructible]
     public Ilhenir()
@@ -92,7 +92,7 @@ namespace Server.Mobiles
 
     public override Poison PoisonImmune => Poison.Lethal;
 
-    //public override bool GivesMLMinorArtifact => true; // TODO: Needs verification
+    // public override bool GivesMLMinorArtifact => true; // TODO: Needs verification
     public override int TreasureMapLevel => 5;
 
     public virtual void PackResources(int amount)
@@ -149,7 +149,7 @@ namespace Server.Mobiles
         c.DropItem(new GrizzledBones());
 
         // TODO: Parrots
-        /*if ( Utility.RandomDouble() < 0.6 )
+        /*if (Utility.RandomDouble() < 0.6)
           c.DropItem( new ParrotItem() ); */
 
         if (Utility.RandomDouble() < 0.05)
@@ -159,7 +159,7 @@ namespace Server.Mobiles
           c.DropItem(new CrimsonCincture());
 
         // TODO: Armor sets
-        /*if ( Utility.RandomDouble() < 0.05 )
+        /*if (Utility.RandomDouble() < 0.05)
         {
           switch ( Utility.Random(5) )
           {
@@ -303,7 +303,7 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Corrosive{ get; set; }
+    public bool Corrosive { get; set; }
 
     public override void OnAfterDelete()
     {

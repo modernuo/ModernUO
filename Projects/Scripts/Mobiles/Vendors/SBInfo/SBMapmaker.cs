@@ -5,9 +5,9 @@ namespace Server.Mobiles
 {
   public class SBMapmaker : SBInfo
   {
-    public override IShopSellInfo SellInfo{ get; } = new InternalSellInfo();
+    public override IShopSellInfo SellInfo { get; } = new InternalSellInfo();
 
-    public override List<GenericBuyInfo> BuyInfo{ get; } = new InternalBuyInfo();
+    public override List<GenericBuyInfo> BuyInfo { get; } = new InternalBuyInfo();
 
     public class InternalBuyInfo : List<GenericBuyInfo>
     {
@@ -33,7 +33,7 @@ namespace Server.Mobiles
         Add(typeof(LocalMap), 3);
         Add(typeof(WorldMap), 3);
         Add(typeof(PresetMapEntry), 3);
-        //TODO: Buy back maps that the mapmaker sells!!!
+        // TODO: Buy back maps that the mapmaker sells!!!
       }
     }
   }

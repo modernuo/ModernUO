@@ -18,7 +18,7 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Price{ get; set; }
+    public int Price { get; set; }
 
     public override bool IsInvulnerable => true;
 
@@ -59,10 +59,10 @@ namespace Server.Mobiles
       switch (version)
       {
         case 0:
-        {
-          Price = reader.ReadInt();
-          break;
-        }
+          {
+            Price = reader.ReadInt();
+            break;
+          }
       }
     }
   }

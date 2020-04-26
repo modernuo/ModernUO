@@ -9,16 +9,15 @@ namespace Server.Spells.Fifth
 {
   public class IncognitoSpell : MagerySpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Incognito", "Kal In Ex",
       206,
       9002,
       Reagent.Bloodmoss,
       Reagent.Garlic,
-      Reagent.Nightshade
-    );
+      Reagent.Nightshade);
 
-    private static Dictionary<Mobile, InternalTimer> m_Timers = new Dictionary<Mobile, InternalTimer>();
+    private static readonly Dictionary<Mobile, InternalTimer> m_Timers = new Dictionary<Mobile, InternalTimer>();
 
     public IncognitoSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -97,14 +96,12 @@ namespace Server.Spells.Fifth
 
           StopTimer(Caster);
 
-
           int timeVal = 6 * Caster.Skills.Magery.Fixed / 50 + 1;
 
           if (timeVal > 144)
             timeVal = 144;
 
           TimeSpan length = TimeSpan.FromSeconds(timeVal);
-
 
           InternalTimer t = new InternalTimer(Caster, length);
           m_Timers[Caster] = t;
@@ -134,7 +131,7 @@ namespace Server.Spells.Fifth
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Owner;
+      private readonly Mobile m_Owner;
 
       public InternalTimer(Mobile owner, TimeSpan length) : base(length)
       {
@@ -143,7 +140,7 @@ namespace Server.Spells.Fifth
         /*
         int val = ((6 * owner.Skills.Magery.Fixed) / 50) + 1;
 
-        if ( val > 144 )
+        if (val > 144)
           val = 144;
 
         Delay = TimeSpan.FromSeconds( val );

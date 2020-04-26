@@ -53,7 +53,7 @@ namespace Server.Engines.MLQuests
         m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), Slice);
     }
 
-    public MLQuest Quest{ get; set; }
+    public MLQuest Quest { get; set; }
 
     public IQuestGiver Quester
     {
@@ -65,13 +65,13 @@ namespace Server.Engines.MLQuests
       }
     }
 
-    public Type QuesterType{ get; private set; }
+    public Type QuesterType { get; private set; }
 
-    public PlayerMobile Player{ get; set; }
+    public PlayerMobile Player { get; set; }
 
     public MLQuestContext PlayerContext => MLQuestSystem.GetOrCreateContext(Player);
 
-    public DateTime Accepted{ get; set; }
+    public DateTime Accepted { get; set; }
 
     public bool ClaimReward
     {
@@ -91,7 +91,7 @@ namespace Server.Engines.MLQuests
       set => SetFlag(MLQuestInstanceFlags.Failed, value);
     }
 
-    public BaseObjectiveInstance[] Objectives{ get; set; }
+    public BaseObjectiveInstance[] Objectives { get; set; }
 
     public bool SkipReportBack => TextDefinition.IsNullOrEmpty(Quest.CompletionMessage);
 
@@ -158,8 +158,7 @@ namespace Server.Engines.MLQuests
          * For quests that require collections, this is done later when
          * the player double clicks the quester.
          */
-        if (!Removed && SkipReportBack && !Quest.RequiresCollection
-        ) // An OnQuestCompleted can potentially have removed this instance already
+        if (!Removed && SkipReportBack && !Quest.RequiresCollection) // An OnQuestCompleted can potentially have removed this instance already
           ContinueReportBack(false);
       }
     }
@@ -198,7 +197,7 @@ namespace Server.Engines.MLQuests
           }
         }
 
-      if (Quest.ObjectiveType == ObjectiveType.All && hasAnyFails || !hasAnyLeft)
+      if ((Quest.ObjectiveType == ObjectiveType.All && hasAnyFails) || !hasAnyLeft)
         Fail();
 
       if (!hasAnyLeft)

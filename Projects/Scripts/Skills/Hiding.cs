@@ -6,9 +6,9 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class Hiding
+  public static class Hiding
   {
-    public static bool CombatOverride{ get; set; }
+    public static bool CombatOverride { get; set; }
 
     public static void Initialize()
     {
@@ -42,9 +42,9 @@ namespace Server.SkillHandlers
           bonus = 50.0;
       }
 
-      //int range = 18 - (int)(m.Skills.Hiding.Value / 10);
+      // int range = 18 - (int)(m.Skills.Hiding.Value / 10);
       int range = Math.Min((int)((100 - m.Skills.Hiding.Value) / 2) + 8,
-        18); //Cap of 18 not OSI-exact, intentional difference
+        18); // Cap of 18 not OSI-exact, intentional difference
 
       bool badCombat = !CombatOverride && m.Combatant != null && m.InRange(m.Combatant.Location, range) &&
                        m.Combatant.InLOS(m);

@@ -122,7 +122,7 @@ namespace Server.Mobiles
     public IMount Mount => this;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsRewardItem{ get; set; }
+    public bool IsRewardItem { get; set; }
 
     public override void GetProperties(ObjectPropertyList list)
     {
@@ -161,7 +161,7 @@ namespace Server.Mobiles
         return false;
       }
 
-      if (IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this) || !BaseMount.CheckMountAllowed(from))
+      if ((IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this)) || !BaseMount.CheckMountAllowed(from))
         return false;
 
       if (from.Mounted)
@@ -228,29 +228,29 @@ namespace Server.Mobiles
       switch (version)
       {
         case 3:
-        {
-          m_IsDonationItem = reader.ReadBool();
-          goto case 2;
-        }
+          {
+            m_IsDonationItem = reader.ReadBool();
+            goto case 2;
+          }
         case 2:
-        {
-          IsRewardItem = reader.ReadBool();
-          goto case 0;
-        }
+          {
+            IsRewardItem = reader.ReadBool();
+            goto case 0;
+          }
         case 1:
           reader.ReadInt();
           goto case 0;
         case 0:
-        {
-          m_MountedID = reader.ReadInt();
-          m_RegularID = reader.ReadInt();
-          m_Rider = reader.ReadMobile();
+          {
+            m_MountedID = reader.ReadInt();
+            m_RegularID = reader.ReadInt();
+            m_Rider = reader.ReadMobile();
 
-          if (m_MountedID == 0x3EA2)
-            m_MountedID = 0x3EAA;
+            if (m_MountedID == 0x3EA2)
+              m_MountedID = 0x3EAA;
 
-          break;
-        }
+            break;
+          }
       }
 
       AddFollowers();
@@ -261,7 +261,7 @@ namespace Server.Mobiles
 
     public override DeathMoveResult OnParentDeath(Mobile parent)
     {
-      Rider = null; //get off, move to pack
+      Rider = null; // get off, move to pack
 
       return DeathMoveResult.RemainEquipped;
     }
@@ -327,10 +327,10 @@ namespace Server.Mobiles
 
     private class EtherealSpell : Spell
     {
-      private static SpellInfo m_Info = new SpellInfo("Ethereal Mount", "", 230);
+      private static readonly SpellInfo m_Info = new SpellInfo("Ethereal Mount", "", 230);
 
-      private EtherealMount m_Mount;
-      private Mobile m_Rider;
+      private readonly EtherealMount m_Mount;
+      private readonly Mobile m_Rider;
 
       private bool m_Stop;
 
@@ -390,7 +390,7 @@ namespace Server.Mobiles
           Caster.SendLocalizedMessage(
             1049455); // You have been disrupted while attempting to summon your ethereal mount!
 
-        //m_Mount.UnmountMe();
+        // m_Mount.UnmountMe();
       }
 
       public override void OnCast()

@@ -16,7 +16,7 @@ namespace Server.Items
     {
     }
 
-    //TODO: Pre-AoS stuff
+    // TODO: Pre-AoS stuff
     public override int LabelNumber => 1017413; // Glacial Staff
 
     public override void Serialize(IGenericWriter writer)

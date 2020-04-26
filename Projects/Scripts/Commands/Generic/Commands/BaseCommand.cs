@@ -12,22 +12,22 @@ namespace Server.Commands.Generic
 
   public abstract class BaseCommand
   {
-    private List<MessageEntry> m_Responses = new List<MessageEntry>();
-    private List<MessageEntry> m_Failures = new List<MessageEntry>();
+    private readonly List<MessageEntry> m_Responses = new List<MessageEntry>();
+    private readonly List<MessageEntry> m_Failures = new List<MessageEntry>();
 
-    public bool ListOptimized{ get; set; }
+    public bool ListOptimized { get; set; }
 
-    public string[] Commands{ get; set; }
+    public string[] Commands { get; set; }
 
-    public string Usage{ get; set; }
+    public string Usage { get; set; }
 
-    public string Description{ get; set; }
+    public string Description { get; set; }
 
-    public AccessLevel AccessLevel{ get; set; }
+    public AccessLevel AccessLevel { get; set; }
 
-    public ObjectTypes ObjectTypes{ get; set; }
+    public ObjectTypes ObjectTypes { get; set; }
 
-    public CommandSupport Supports{ get; set; }
+    public CommandSupport Supports { get; set; }
 
     public static bool IsAccessible(Mobile from, object obj)
     {
@@ -117,7 +117,7 @@ namespace Server.Commands.Generic
     private class MessageEntry
     {
       public int m_Count;
-      public string m_Message;
+      public readonly string m_Message;
 
       public MessageEntry(string message)
       {

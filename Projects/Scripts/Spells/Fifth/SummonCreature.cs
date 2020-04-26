@@ -6,18 +6,17 @@ namespace Server.Spells.Fifth
 {
   public class SummonCreatureSpell : MagerySpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Summon Creature", "Kal Xen",
       16,
       false,
       Reagent.Bloodmoss,
       Reagent.MandrakeRoot,
-      Reagent.SpidersSilk
-    );
+      Reagent.SpidersSilk);
 
     // NOTE: Creature list based on 1hr of summon/release on OSI.
 
-    private static Type[] m_Types =
+    private static readonly Type[] m_Types =
     {
       typeof(PolarBear),
       typeof(GrizzlyBear),
@@ -66,7 +65,7 @@ namespace Server.Spells.Fifth
         {
           BaseCreature creature = (BaseCreature)ActivatorUtil.CreateInstance(m_Types[Utility.Random(m_Types.Length)]);
 
-          //creature.ControlSlots = 2;
+          // creature.ControlSlots = 2;
 
           TimeSpan duration;
 

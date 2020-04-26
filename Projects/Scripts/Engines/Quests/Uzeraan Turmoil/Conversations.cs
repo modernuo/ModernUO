@@ -22,7 +22,7 @@ namespace Server.Engines.Quests.Haven
 
   public class UzeraanFirstTaskConversation : QuestConversation
   {
-    private static QuestItemInfo[] m_Info =
+    private static readonly QuestItemInfo[] m_Info =
     {
       new QuestItemInfo(1023676, 0xE68) // glowing rune
     };
@@ -36,29 +36,29 @@ namespace Server.Engines.Quests.Haven
 
         if (System.From.Profession == 2) // magician
           return 1049386;
-/* <I>Uzeraan nods at you with approval and begins to speak...</I><BR><BR>
-					 *
-					 * Now that you are ready, let me give you your first task.<BR><BR>
-					 *
-					 * As I mentioned earlier, we have been trying to fight back the wicked
-					 * <I>Horde Minions</I> which have recently begun attacking our cities
-					 * - but to no avail. Our need is great!<BR><BR>
-					 *
-					 * Your first task will be to assess the situation in the mountain pass,
-					 * and help our troops defeat the Horde Minions there.<BR><BR>
-					 *
-					 * Take the road marked with glowing runes, that starts just outside of this mansion.
-					 * Before you go into battle, it would be prudent to
-					 * <a href="?ForceTopic27">review combat techniques</a> as well as
-					 * <a href = "?ForceTopic29">information on healing yourself,
-					 * using your Paladin ability 'Close Wounds'</a>.<BR><BR>
-					 *
-					 * To aid you in your fight, you may also wish to
-					 * <a href = "?ForceTopic33">purchase equipment</a> from Frank the Blacksmith,
-					 * who is standing just <a href = "?ForceTopic13">South</a> of here.<BR><BR>
-					 *
-					 * Good luck young Paladin!
-					 */
+        /* <I>Uzeraan nods at you with approval and begins to speak...</I><BR><BR>
+                   *
+                   * Now that you are ready, let me give you your first task.<BR><BR>
+                   *
+                   * As I mentioned earlier, we have been trying to fight back the wicked
+                   * <I>Horde Minions</I> which have recently begun attacking our cities
+                   * - but to no avail. Our need is great!<BR><BR>
+                   *
+                   * Your first task will be to assess the situation in the mountain pass,
+                   * and help our troops defeat the Horde Minions there.<BR><BR>
+                   *
+                   * Take the road marked with glowing runes, that starts just outside of this mansion.
+                   * Before you go into battle, it would be prudent to
+                   * <a href="?ForceTopic27">review combat techniques</a> as well as
+                   * <a href = "?ForceTopic29">information on healing yourself,
+                   * using your Paladin ability 'Close Wounds'</a>.<BR><BR>
+                   *
+                   * To aid you in your fight, you may also wish to
+                   * <a href = "?ForceTopic33">purchase equipment</a> from Frank the Blacksmith,
+                   * who is standing just <a href = "?ForceTopic13">South</a> of here.<BR><BR>
+                   *
+                   * Good luck young Paladin!
+                   */
         return 1060388;
       }
     }
@@ -73,7 +73,7 @@ namespace Server.Engines.Quests.Haven
 
   public class UzeraanReportConversation : QuestConversation
   {
-    private static QuestItemInfo[] m_Info =
+    private static readonly QuestItemInfo[] m_Info =
     {
       new QuestItemInfo(1026153, 0x1822), // teleporter
       new QuestItemInfo(1048032, 0xE76) // a bag
@@ -126,7 +126,7 @@ namespace Server.Engines.Quests.Haven
 
   public class SchmendrickConversation : QuestConversation
   {
-    private static QuestItemInfo[] m_Info =
+    private static readonly QuestItemInfo[] m_Info =
     {
       new QuestItemInfo(1023637, 0xE34) // scroll
     };
@@ -169,7 +169,7 @@ namespace Server.Engines.Quests.Haven
 
   public class UzeraanScrollOfPowerConversation : QuestConversation
   {
-    private static QuestItemInfo[] m_Info =
+    private static readonly QuestItemInfo[] m_Info =
     {
       new QuestItemInfo(1048030, 0x14EB), // a Treasure Map
       new QuestItemInfo(1023969, 0xF81), // Fertile Dirt
@@ -198,7 +198,7 @@ namespace Server.Engines.Quests.Haven
 
   public class UzeraanFertileDirtConversation : QuestConversation
   {
-    private static QuestItemInfo[] m_Info =
+    private static readonly QuestItemInfo[] m_Info =
     {
       new QuestItemInfo(1023965, 0xF7D), // Daemon Blood
       new QuestItemInfo(1022581, 0xA22) // lantern
@@ -245,12 +245,12 @@ namespace Server.Engines.Quests.Haven
 
   public class UzeraanDaemonBloodConversation : QuestConversation
   {
-    private static QuestItemInfo[] m_Info =
+    private static readonly QuestItemInfo[] m_Info =
     {
       new QuestItemInfo(1017412, 0xF80) // Daemon Bone
     };
 
-    private static QuestItemInfo[] m_InfoPaladin =
+    private static readonly QuestItemInfo[] m_InfoPaladin =
     {
       new QuestItemInfo(1017412, 0xF80), // Daemon Bone
       new QuestItemInfo(1060577, 0x1F14) // Recall Rune

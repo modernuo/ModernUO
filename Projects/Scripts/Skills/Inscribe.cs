@@ -6,9 +6,9 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class Inscribe
+  public static class Inscribe
   {
-    private static Dictionary<BaseBook, Mobile> m_UseTable = new Dictionary<BaseBook, Mobile>();
+    private static readonly Dictionary<BaseBook, Mobile> m_UseTable = new Dictionary<BaseBook, Mobile>();
 
     public static void Initialize()
     {
@@ -106,7 +106,7 @@ namespace Server.SkillHandlers
 
     private class InternalTargetDst : Target
     {
-      private BaseBook m_BookSrc;
+      private readonly BaseBook m_BookSrc;
 
       public InternalTargetDst(BaseBook bookSrc) : base(3, false, TargetFlags.None) => m_BookSrc = bookSrc;
 

@@ -10,7 +10,6 @@ namespace Server.Engines.Quests.Samurai
     {
     }
 
-
     public Relnia(Serial serial) : base(serial)
     {
     }

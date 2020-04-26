@@ -5,10 +5,10 @@ namespace Server.Items
 {
   public class MetallicHuePicker<T> : Gump
   {
-    private CustomHuePickerCallback<T> m_Callback;
+    private readonly CustomHuePickerCallback<T> m_Callback;
 
-    private Mobile m_From;
-    private T m_State;
+    private readonly Mobile m_From;
+    private readonly T m_State;
 
     public MetallicHuePicker(Mobile from, CustomHuePickerCallback<T> callback, T state)
       : base(450, 450)
@@ -61,16 +61,16 @@ namespace Server.Items
       switch (info.ButtonID)
       {
         case 1: // Okay
-        {
-          if (info.Switches.Length > 0) m_Callback(m_From, m_State, info.Switches[0]);
-          break;
-        }
+          {
+            if (info.Switches.Length > 0) m_Callback(m_From, m_State, info.Switches[0]);
+            break;
+          }
         case 2: // Default
-        {
-          m_Callback(m_From, m_State, 0);
+          {
+            m_Callback(m_From, m_State, 0);
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

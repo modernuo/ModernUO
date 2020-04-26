@@ -19,10 +19,9 @@ namespace Server.Misc
    * If you do not see the above chars, please
    * enable showing of unicode control chars
    **/
-
   public class LanguageStatistics
   {
-    private static InternationalCode[] InternationalCodes =
+    private static readonly InternationalCode[] InternationalCodes =
     {
       new InternationalCode("ARA", "Arabic", "Saudi Arabia", "العربية", "السعودية"),
       new InternationalCode("ARI", "Arabic", "Iraq", "العربية", "العراق"),
@@ -161,9 +160,9 @@ namespace Server.Misc
       new InternationalCode("KOK", "Konkani", "India", "कोंकणी", "भारत")
     };
 
-    private static bool DefaultLocalNames = false;
-    private static bool ShowAlternatives = true;
-    private static bool CountAccounts = true; // will consider only first character's valid language
+    private static readonly bool DefaultLocalNames = false;
+    private static readonly bool ShowAlternatives = true;
+    private static readonly bool CountAccounts = true; // will consider only first character's valid language
 
     private static string GetFormattedInfo(string code)
     {
@@ -244,17 +243,17 @@ namespace Server.Misc
 
     private struct InternationalCode
     {
-      private bool m_HasLocalInfo;
+      private readonly bool m_HasLocalInfo;
 
-      public string Code{ get; }
+      public string Code { get; }
 
-      public string Language{ get; }
+      public string Language { get; }
 
-      public string Country{ get; }
+      public string Country { get; }
 
-      public string Language_LocalName{ get; }
+      public string Language_LocalName { get; }
 
-      public string Country_LocalName{ get; }
+      public string Country_LocalName { get; }
 
       public InternationalCode(string code, string language, string country) : this(code, language, country, null,
         null) =>
@@ -301,9 +300,9 @@ namespace Server.Misc
         Count = 1;
       }
 
-      public string Code{ get; }
+      public string Code { get; }
 
-      public int Count{ get; private set; }
+      public int Count { get; private set; }
 
       public void Increase()
       {
@@ -324,7 +323,6 @@ namespace Server.Misc
         ca = x.Count;
         b = y.Code;
         cb = y.Count;
-
 
         if (ca > cb)
           return -1;

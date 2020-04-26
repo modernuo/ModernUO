@@ -13,7 +13,6 @@ namespace Server.Mobiles
     {
       Body = 768;
 
-
       SetStr(301, 400);
       SetDex(51, 70);
       SetInt(51, 100);
@@ -42,10 +41,10 @@ namespace Server.Mobiles
 
       VirtualArmor = 70;
 
-      if (0.1 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.1)
         PackItem(new PowerCrystal());
 
-      if (0.4 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.4)
         PackItem(new ClockworkAssembly());
     }
 
@@ -68,11 +67,11 @@ namespace Server.Mobiles
     {
       base.OnDeath(c);
 
-      if (0.05 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.05)
       {
         if (!IsParagon)
         {
-          if (0.75 > Utility.RandomDouble())
+          if (Utility.RandomDouble() < 0.75)
             c.DropItem(DawnsMusicGear.RandomCommon);
           else
             c.DropItem(DawnsMusicGear.RandomUncommon);
@@ -100,7 +99,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (!m_Stunning && 0.3 > Utility.RandomDouble())
+      if (!m_Stunning && Utility.RandomDouble() < 0.3)
       {
         m_Stunning = true;
 

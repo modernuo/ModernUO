@@ -49,12 +49,12 @@ namespace Server.Gumps
 
     private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
     private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
-    private List<object> m_List;
-    private Mobile m_Mobile;
-    private object m_Object;
-    private int m_Page;
-    private PropertyInfo m_Property;
-    private Stack<StackEntry> m_Stack;
+    private readonly List<object> m_List;
+    private readonly Mobile m_Mobile;
+    private readonly object m_Object;
+    private readonly int m_Page;
+    private readonly PropertyInfo m_Property;
+    private readonly Stack<StackEntry> m_Stack;
 
     public SetGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, List<object> list) : base(
       GumpOffsetX, GumpOffsetY)
@@ -163,65 +163,65 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 1:
-        {
-          TextRelay text = info.GetTextEntry(0);
-
-          if (text != null)
           {
-            try
+            TextRelay text = info.GetTextEntry(0);
+
+            if (text != null)
             {
-              toSet = PropertiesGump.GetObjectFromString(m_Property.PropertyType, text.Text);
-              shouldSet = true;
+              try
+              {
+                toSet = PropertiesGump.GetObjectFromString(m_Property.PropertyType, text.Text);
+                shouldSet = true;
+              }
+              catch
+              {
+                toSet = null;
+                shouldSet = false;
+                m_Mobile.SendMessage("Bad format");
+              }
             }
-            catch
+            else
             {
               toSet = null;
               shouldSet = false;
-              m_Mobile.SendMessage("Bad format");
             }
+
+            break;
           }
-          else
+        case 2: // Null
+          {
+            toSet = null;
+            shouldSet = true;
+
+            break;
+          }
+        case 3: // Hue Picker
           {
             toSet = null;
             shouldSet = false;
+            shouldSend = false;
+
+            m_Mobile.SendHuePicker(new InternalPicker(m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List));
+
+            break;
           }
-
-          break;
-        }
-        case 2: // Null
-        {
-          toSet = null;
-          shouldSet = true;
-
-          break;
-        }
-        case 3: // Hue Picker
-        {
-          toSet = null;
-          shouldSet = false;
-          shouldSend = false;
-
-          m_Mobile.SendHuePicker(new InternalPicker(m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List));
-
-          break;
-        }
         case 4: // Body Picker
-        {
-          toSet = null;
-          shouldSet = false;
-          shouldSend = false;
+          {
+            toSet = null;
+            shouldSet = false;
+            shouldSend = false;
 
-          m_Mobile.SendGump(new SetBodyGump(m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List));
+            m_Mobile.SendGump(new SetBodyGump(m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List));
 
-          break;
-        }
+            break;
+          }
         default:
-        {
-          toSet = null;
-          shouldSet = false;
+          {
+            toSet = null;
+            shouldSet = false;
 
-          break;
-        }
+            break;
+          }
       }
 
       if (shouldSet)
@@ -243,12 +243,12 @@ namespace Server.Gumps
 
     private class InternalPicker : HuePicker
     {
-      private List<object> m_List;
-      private Mobile m_Mobile;
-      private object m_Object;
-      private int m_Page;
-      private PropertyInfo m_Property;
-      private Stack<StackEntry> m_Stack;
+      private readonly List<object> m_List;
+      private readonly Mobile m_Mobile;
+      private readonly object m_Object;
+      private readonly int m_Page;
+      private readonly PropertyInfo m_Property;
+      private readonly Stack<StackEntry> m_Stack;
 
       public InternalPicker(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page,
         List<object> list) : base(((IHued)o).HuedItemID)

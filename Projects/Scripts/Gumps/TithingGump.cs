@@ -5,7 +5,7 @@ namespace Server.Gumps
 {
   public class TithingGump : Gump
   {
-    private Mobile m_From;
+    private readonly Mobile m_From;
     private int m_Offer;
 
     public TithingGump(Mobile from, int offer) : base(160, 40)
@@ -56,66 +56,66 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 0:
-        {
-          // You have decided to tithe no gold to the shrine.
-          m_From.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1060193);
-          break;
-        }
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        {
-          var offer = info.ButtonID switch
-          {
-            1 => (m_Offer - 100),
-            2 => 0,
-            3 => (m_Offer + 100),
-            4 => m_From.TotalGold,
-            _ => 0
-          };
-
-          m_From.SendGump(new TithingGump(m_From, offer));
-          break;
-        }
-        case 5:
-        {
-          int totalGold = m_From.TotalGold;
-
-          if (m_Offer > totalGold)
-            m_Offer = totalGold;
-          else if (m_Offer < 0)
-            m_Offer = 0;
-
-          if (m_From.TithingPoints + m_Offer > 100000) // TODO: What's the maximum?
-            m_Offer = 100000 - m_From.TithingPoints;
-
-          if (m_Offer <= 0)
           {
             // You have decided to tithe no gold to the shrine.
             m_From.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1060193);
             break;
           }
-
-          Container pack = m_From.Backpack;
-
-          if (pack?.ConsumeTotal(typeof(Gold), m_Offer) == true)
+        case 1:
+        case 2:
+        case 3:
+        case 4:
           {
-            // You tithe gold to the shrine as a sign of devotion.
-            m_From.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1060195);
-            m_From.TithingPoints += m_Offer;
+            var offer = info.ButtonID switch
+            {
+              1 => m_Offer - 100,
+              2 => 0,
+              3 => m_Offer + 100,
+              4 => m_From.TotalGold,
+              _ => 0
+            };
 
-            m_From.PlaySound(0x243);
-            m_From.PlaySound(0x2E6);
+            m_From.SendGump(new TithingGump(m_From, offer));
+            break;
           }
-          else
+        case 5:
           {
-            // You do not have enough gold to tithe that amount!
-            m_From.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1060194);
-          }
+            int totalGold = m_From.TotalGold;
 
-          break;
-        }
+            if (m_Offer > totalGold)
+              m_Offer = totalGold;
+            else if (m_Offer < 0)
+              m_Offer = 0;
+
+            if (m_From.TithingPoints + m_Offer > 100000) // TODO: What's the maximum?
+              m_Offer = 100000 - m_From.TithingPoints;
+
+            if (m_Offer <= 0)
+            {
+              // You have decided to tithe no gold to the shrine.
+              m_From.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1060193);
+              break;
+            }
+
+            Container pack = m_From.Backpack;
+
+            if (pack?.ConsumeTotal(typeof(Gold), m_Offer) == true)
+            {
+              // You tithe gold to the shrine as a sign of devotion.
+              m_From.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1060195);
+              m_From.TithingPoints += m_Offer;
+
+              m_From.PlaySound(0x243);
+              m_From.PlaySound(0x2E6);
+            }
+            else
+            {
+              // You do not have enough gold to tithe that amount!
+              m_From.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1060194);
+            }
+
+            break;
+          }
       }
     }
   }

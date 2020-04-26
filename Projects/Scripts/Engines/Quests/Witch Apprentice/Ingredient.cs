@@ -24,7 +24,7 @@ namespace Server.Engines.Quests.Hag
 
   public class IngredientInfo
   {
-    private static IngredientInfo[] m_Table =
+    private static readonly IngredientInfo[] m_Table =
     {
       // sheep liver
       new IngredientInfo(1055020, 5, typeof(Sheep)),
@@ -65,11 +65,11 @@ namespace Server.Engines.Quests.Hag
       Quantity = quantity;
     }
 
-    public int Name{ get; }
+    public int Name { get; }
 
-    public Type[] Creatures{ get; }
+    public Type[] Creatures { get; }
 
-    public int Quantity{ get; }
+    public int Quantity { get; }
 
     public static IngredientInfo Get(Ingredient ingredient)
     {

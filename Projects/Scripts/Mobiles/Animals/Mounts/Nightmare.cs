@@ -5,8 +5,7 @@ namespace Server.Mobiles
   public class Nightmare : BaseMount
   {
     [Constructible]
-    public Nightmare(string name = "a nightmare") :
-      base(name, 0x74, 0x3EA7, AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+    public Nightmare(string name = "a nightmare") : base(name, 0x74, 0x3EA7, AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
       BaseSoundID = Core.AOS ? 0xA8 : 0x16A;
 
@@ -46,23 +45,23 @@ namespace Server.Mobiles
       switch (Utility.Random(3))
       {
         case 0:
-        {
-          BodyValue = 116;
-          ItemID = 16039;
-          break;
-        }
+          {
+            BodyValue = 116;
+            ItemID = 16039;
+            break;
+          }
         case 1:
-        {
-          BodyValue = 178;
-          ItemID = 16041;
-          break;
-        }
+          {
+            BodyValue = 178;
+            ItemID = 16041;
+            break;
+          }
         case 2:
-        {
-          BodyValue = 179;
-          ItemID = 16055;
-          break;
-        }
+          {
+            BodyValue = 179;
+            ItemID = 16055;
+            break;
+          }
       }
 
       PackItem(new SulfurousAsh(Utility.RandomMinMax(3, 5)));

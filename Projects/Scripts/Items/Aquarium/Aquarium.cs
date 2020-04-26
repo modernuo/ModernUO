@@ -60,7 +60,7 @@ namespace Server.Items
     // items info
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int LiveCreatures{ get; private set; }
+    public int LiveCreatures { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int DeadCreatures
@@ -136,7 +136,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public bool OptimalState => m_Food.State == (int)FoodState.Full && m_Water.State == (int)WaterState.Strong;
 
-    public List<int> Events{ get; private set; }
+    public List<int> Events { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool RewardAvailable
@@ -178,8 +178,7 @@ namespace Server.Items
     public virtual bool HasAccess(Mobile from) =>
       from?.Deleted == false && (
         from.AccessLevel >= AccessLevel.GameMaster ||
-        BaseHouse.FindHouseAt(this)?.IsCoOwner(from) == true
-      );
+        BaseHouse.FindHouseAt(this)?.IsCoOwner(from) == true);
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {
@@ -451,38 +450,38 @@ namespace Server.Items
         case 3:
         case 2:
         case 1:
-        {
-          DateTime next = reader.ReadDateTime();
+          {
+            DateTime next = reader.ReadDateTime();
 
-          if (next < DateTime.UtcNow)
-            next = DateTime.UtcNow;
+            if (next < DateTime.UtcNow)
+              next = DateTime.UtcNow;
 
-          m_Timer = Timer.DelayCall(next - DateTime.UtcNow, EvaluationInterval, Evaluate);
+            m_Timer = Timer.DelayCall(next - DateTime.UtcNow, EvaluationInterval, Evaluate);
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          LiveCreatures = reader.ReadInt();
-          m_VacationLeft = reader.ReadInt();
+          {
+            LiveCreatures = reader.ReadInt();
+            m_VacationLeft = reader.ReadInt();
 
-          m_Food = new AquariumState();
-          m_Water = new AquariumState();
+            m_Food = new AquariumState();
+            m_Water = new AquariumState();
 
-          m_Food.Deserialize(reader);
-          m_Water.Deserialize(reader);
+            m_Food.Deserialize(reader);
+            m_Water.Deserialize(reader);
 
-          Events = new List<int>();
+            Events = new List<int>();
 
-          int count = reader.ReadInt();
+            int count = reader.ReadInt();
 
-          for (int i = 0; i < count; i++)
-            Events.Add(reader.ReadInt());
+            for (int i = 0; i < count; i++)
+              Events.Add(reader.ReadInt());
 
-          m_RewardAvailable = reader.ReadBool();
+            m_RewardAvailable = reader.ReadBool();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (version < 2)
@@ -511,8 +510,6 @@ namespace Server.Items
       RecountLiveCreatures();
     }
 
-    #region Members
-
     public int FoodNumber()
     {
       if (m_Food.State == (int)FoodState.Full)
@@ -525,10 +522,6 @@ namespace Server.Items
     }
 
     public int WaterNumber() => 1074242 + m_Water.State;
-
-    #endregion
-
-    #region Virtual members
 
     public virtual void KillFish(int amount)
     {
@@ -574,17 +567,15 @@ namespace Server.Items
 
         // food events
         if (
-          m_Food.Added < m_Food.Maintain && m_Food.State != (int)FoodState.Overfed &&
-          m_Food.State != (int)FoodState.Dead ||
-          m_Food.Added >= m_Food.Improve && m_Food.State == (int)FoodState.Full
-        )
+          (m_Food.Added < m_Food.Maintain && m_Food.State != (int)FoodState.Overfed &&
+          m_Food.State != (int)FoodState.Dead) ||
+          (m_Food.Added >= m_Food.Improve && m_Food.State == (int)FoodState.Full))
           Events.Add(1074368); // The tank looks worse than it did yesterday.
 
         if (
-          m_Food.Added >= m_Food.Improve && m_Food.State != (int)FoodState.Full &&
-          m_Food.State != (int)FoodState.Overfed ||
-          m_Food.Added < m_Food.Maintain && m_Food.State == (int)FoodState.Overfed
-        )
+          (m_Food.Added >= m_Food.Improve && m_Food.State != (int)FoodState.Full &&
+          m_Food.State != (int)FoodState.Overfed) ||
+          (m_Food.Added < m_Food.Maintain && m_Food.State == (int)FoodState.Overfed))
           Events.Add(1074367); // The tank looks healthier today.
 
         // water events
@@ -613,41 +604,41 @@ namespace Server.Items
             switch (Utility.Random(6))
             {
               case 0:
-              {
-                message = 1074371; // Brine shrimp have hatched overnight in the tank.
-                fish = new BrineShrimp();
-                break;
-              }
+                {
+                  message = 1074371; // Brine shrimp have hatched overnight in the tank.
+                  fish = new BrineShrimp();
+                  break;
+                }
               case 1:
-              {
-                message = 1074365; // A new creature has hatched overnight in the tank.
-                fish = new Coral();
-                break;
-              }
+                {
+                  message = 1074365; // A new creature has hatched overnight in the tank.
+                  fish = new Coral();
+                  break;
+                }
               case 2:
-              {
-                message = 1074365; // A new creature has hatched overnight in the tank.
-                fish = new FullMoonFish();
-                break;
-              }
+                {
+                  message = 1074365; // A new creature has hatched overnight in the tank.
+                  fish = new FullMoonFish();
+                  break;
+                }
               case 3:
-              {
-                message = 1074373; // A sea horse has hatched overnight in the tank.
-                fish = new SeaHorseFish();
-                break;
-              }
+                {
+                  message = 1074373; // A sea horse has hatched overnight in the tank.
+                  fish = new SeaHorseFish();
+                  break;
+                }
               case 4:
-              {
-                message = 1074365; // A new creature has hatched overnight in the tank.
-                fish = new StrippedFlakeFish();
-                break;
-              }
+                {
+                  message = 1074365; // A new creature has hatched overnight in the tank.
+                  fish = new StrippedFlakeFish();
+                  break;
+                }
               case 5:
-              {
-                message = 1074365; // A new creature has hatched overnight in the tank.
-                fish = new StrippedSosarianSwill();
-                break;
-              }
+                {
+                  message = 1074365; // A new creature has hatched overnight in the tank.
+                  fish = new StrippedSosarianSwill();
+                  break;
+                }
             }
 
             if (Utility.RandomDouble() < 0.05)
@@ -876,16 +867,12 @@ namespace Server.Items
       return true;
     }
 
-    #endregion
-
-    #region Static members
-
     public static FishBowl GetEmptyBowl(Mobile from)
     {
       return from?.Backpack?.FindItemsByType<FishBowl>().Find(bowl => bowl.Empty);
     }
 
-    private static Type[] m_Decorations =
+    private static readonly Type[] m_Decorations =
     {
       typeof(FishBones),
       typeof(WaterloggedBoots),
@@ -912,18 +899,14 @@ namespace Server.Items
       return false;
     }
 
-    public static int[] FishHues{ get; } =
+    public static int[] FishHues { get; } =
     {
       0x1C2, 0x1C3, 0x2A3, 0x47E, 0x51D
     };
 
-    #endregion
-
-    #region Context entries
-
     private class ExamineEntry : ContextMenuEntry
     {
-      private Aquarium m_Aquarium;
+      private readonly Aquarium m_Aquarium;
 
       public ExamineEntry(Aquarium aquarium) : base(6235, 2) // Examine Aquarium
         =>
@@ -940,7 +923,7 @@ namespace Server.Items
 
     private class CollectRewardEntry : ContextMenuEntry
     {
-      private Aquarium m_Aquarium;
+      private readonly Aquarium m_Aquarium;
 
       public CollectRewardEntry(Aquarium aquarium) : base(6237, 2) // Collect Reward
         =>
@@ -957,7 +940,7 @@ namespace Server.Items
 
     private class ViewEventEntry : ContextMenuEntry
     {
-      private Aquarium m_Aquarium;
+      private readonly Aquarium m_Aquarium;
 
       public ViewEventEntry(Aquarium aquarium) : base(6239, 2) // View events
         =>
@@ -980,7 +963,7 @@ namespace Server.Items
 
     private class CancelVacationMode : ContextMenuEntry
     {
-      private Aquarium m_Aquarium;
+      private readonly Aquarium m_Aquarium;
 
       public CancelVacationMode(Aquarium aquarium) : base(6240, 2) // Cancel vacation mode
         =>
@@ -1000,7 +983,7 @@ namespace Server.Items
     // GM context entries
     private class GMAddFood : ContextMenuEntry
     {
-      private Aquarium m_Aquarium;
+      private readonly Aquarium m_Aquarium;
 
       public GMAddFood(Aquarium aquarium) : base(6231) // GM Add Food
         =>
@@ -1018,7 +1001,7 @@ namespace Server.Items
 
     private class GMAddWater : ContextMenuEntry
     {
-      private Aquarium m_Aquarium;
+      private readonly Aquarium m_Aquarium;
 
       public GMAddWater(Aquarium aquarium) : base(6232) // GM Add Water
         =>
@@ -1036,7 +1019,7 @@ namespace Server.Items
 
     private class GMForceEvaluate : ContextMenuEntry
     {
-      private Aquarium m_Aquarium;
+      private readonly Aquarium m_Aquarium;
 
       public GMForceEvaluate(Aquarium aquarium) : base(6233) // GM Force Evaluate
         =>
@@ -1053,7 +1036,7 @@ namespace Server.Items
 
     private class GMOpen : ContextMenuEntry
     {
-      private Aquarium m_Aquarium;
+      private readonly Aquarium m_Aquarium;
 
       public GMOpen(Aquarium aquarium) : base(6234) // GM Open Container
         =>
@@ -1070,7 +1053,7 @@ namespace Server.Items
 
     private class GMFill : ContextMenuEntry
     {
-      private Aquarium m_Aquarium;
+      private readonly Aquarium m_Aquarium;
 
       public GMFill(Aquarium aquarium) : base(6236) // GM Fill Food and Water
         =>
@@ -1086,8 +1069,6 @@ namespace Server.Items
         m_Aquarium.InvalidateProperties();
       }
     }
-
-    #endregion
   }
 
   public class AquariumEastDeed : BaseAddonContainerDeed

@@ -7,8 +7,8 @@ namespace Server.Gumps
 {
   public class ConfirmHeritageGump : Gump
   {
-    private Type[] m_Selected;
-    private HeritageToken m_Token;
+    private readonly Type[] m_Selected;
+    private readonly HeritageToken m_Token;
 
     public ConfirmHeritageGump(HeritageToken token, Type[] selected, int cliloc) : base(60, 36)
     {

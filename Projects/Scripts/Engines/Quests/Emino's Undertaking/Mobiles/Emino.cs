@@ -151,7 +151,7 @@ namespace Server.Engines.Quests.Ninja
                       bool stolenTreasure = false;
 
                       HallwayWalkObjective walk = qs.FindObjective<HallwayWalkObjective>();
-                      
+
                       if (walk != null)
                         stolenTreasure = walk.StolenTreasure;
 

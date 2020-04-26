@@ -6,15 +6,14 @@ namespace Server.Mobiles
 {
   public class BeverageBuyInfo : GenericBuyInfo
   {
-    private BeverageType m_Content;
+    private readonly BeverageType m_Content;
 
     public BeverageBuyInfo(Type type, BeverageType content, int price, int amount, int itemID, int hue) : this(null,
       type, content, price, amount, itemID, hue)
     {
     }
 
-    public BeverageBuyInfo(string name, Type type, BeverageType content, int price, int amount, int itemID, int hue) :
-      base(name, type, price, amount, itemID, hue)
+    public BeverageBuyInfo(string name, Type type, BeverageType content, int price, int amount, int itemID, int hue) : base(name, type, price, amount, itemID, hue)
     {
       m_Content = content;
 

@@ -12,7 +12,7 @@ namespace Server.Items
     {
     }
 
-    public abstract double Refresh{ get; }
+    public abstract double Refresh { get; }
 
     public override void Serialize(IGenericWriter writer)
     {

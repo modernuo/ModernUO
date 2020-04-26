@@ -5,7 +5,7 @@ namespace Server.Mobiles
   [TypeAlias("Server.Mobiles.GargoyleAlchemist")]
   public class Glassblower : BaseVendor
   {
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public Glassblower() : base("the alchemist")

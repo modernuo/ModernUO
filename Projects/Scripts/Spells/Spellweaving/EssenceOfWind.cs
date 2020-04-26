@@ -5,9 +5,9 @@ namespace Server.Spells.Spellweaving
 {
   public class EssenceOfWindSpell : ArcanistSpell
   {
-    private static SpellInfo m_Info = new SpellInfo("Essence of Wind", "Anathrae", -1);
+    private static readonly SpellInfo m_Info = new SpellInfo("Essence of Wind", "Anathrae", -1);
 
-    private static Dictionary<Mobile, EssenceOfWindInfo> m_Table = new Dictionary<Mobile, EssenceOfWindInfo>();
+    private static readonly Dictionary<Mobile, EssenceOfWindInfo> m_Table = new Dictionary<Mobile, EssenceOfWindInfo>();
 
     public EssenceOfWindSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -85,18 +85,18 @@ namespace Server.Spells.Spellweaving
         Timer.Start();
       }
 
-      public Mobile Defender{ get; }
+      public Mobile Defender { get; }
 
-      public int FCMalus{ get; }
+      public int FCMalus { get; }
 
-      public int SSIMalus{ get; }
+      public int SSIMalus { get; }
 
-      public ExpireTimer Timer{ get; }
+      public ExpireTimer Timer { get; }
     }
 
     private class ExpireTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public ExpireTimer(Mobile m, TimeSpan delay) : base(delay) => m_Mobile = m;
 

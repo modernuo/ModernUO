@@ -5,7 +5,7 @@ namespace Server.Spells.Eighth
 {
   public class EnergyVortexSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Energy Vortex", "Vas Corp Por",
       260,
       9032,
@@ -13,8 +13,7 @@ namespace Server.Spells.Eighth
       Reagent.Bloodmoss,
       Reagent.BlackPearl,
       Reagent.MandrakeRoot,
-      Reagent.Nightshade
-    );
+      Reagent.Nightshade);
 
     public EnergyVortexSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

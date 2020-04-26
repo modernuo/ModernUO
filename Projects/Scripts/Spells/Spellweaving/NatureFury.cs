@@ -7,11 +7,10 @@ namespace Server.Spells.Spellweaving
 {
   public class NatureFurySpell : ArcanistSpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Nature's Fury", "Rauvvrae",
       -1,
-      false
-    );
+      false);
 
     public NatureFurySpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
@@ -72,7 +71,7 @@ namespace Server.Spells.Spellweaving
 
     private class InternalTimer : Timer
     {
-      private NatureFury m_NatureFury;
+      private readonly NatureFury m_NatureFury;
 
       public InternalTimer(NatureFury nf)
         : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0)) =>

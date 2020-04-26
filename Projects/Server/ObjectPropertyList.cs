@@ -27,7 +27,7 @@ namespace Server
   public interface IPropertyListObject : IEntity
   {
     ObjectPropertyList PropertyList { get; }
-    OPLInfo OPLPacket { get;  }
+    OPLInfo OPLPacket { get; }
 
     void GetProperties(ObjectPropertyList list);
   }
@@ -53,22 +53,22 @@ namespace Server
 
       Entity = e;
 
-      m_Stream.Write((short)1);
-      m_Stream.Write(e.Serial);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)0);
-      m_Stream.Write(e.Serial);
+      Stream.Write((short)1);
+      Stream.Write(e.Serial);
+      Stream.Write((byte)0);
+      Stream.Write((byte)0);
+      Stream.Write(e.Serial);
     }
 
-    public IEntity Entity{ get; }
+    public IEntity Entity { get; }
 
     public int Hash => 0x40000000 + m_Hash;
 
-    public int Header{ get; set; }
+    public int Header { get; set; }
 
-    public string HeaderArgs{ get; set; }
+    public string HeaderArgs { get; set; }
 
-    public static bool Enabled{ get; set; }
+    public static bool Enabled { get; set; }
 
     public void Add(int number)
     {
@@ -83,22 +83,22 @@ namespace Server
         HeaderArgs = "";
       }
 
-      m_Stream.Write(number);
-      m_Stream.Write((short)0);
+      Stream.Write(number);
+      Stream.Write((short)0);
     }
 
     public void Terminate()
     {
-      m_Stream.Write(0);
+      Stream.Write(0);
 
-      m_Stream.Seek(11, SeekOrigin.Begin);
-      m_Stream.Write(m_Hash);
+      Stream.Seek(11, SeekOrigin.Begin);
+      Stream.Write(m_Hash);
     }
 
     public void AddHash(int val)
     {
       m_Hash ^= val & 0x3FFFFFF;
-      m_Hash ^= val >> 26 & 0x3F;
+      m_Hash ^= (val >> 26) & 0x3F;
     }
 
     public void Add(int number, string arguments)
@@ -117,17 +117,17 @@ namespace Server
       AddHash(number);
       AddHash(arguments.GetHashCode());
 
-      m_Stream.Write(number);
+      Stream.Write(number);
 
-      int byteCount = m_Encoding.GetByteCount(arguments);
+      var byteCount = m_Encoding.GetByteCount(arguments);
 
       if (byteCount > m_Buffer.Length)
         m_Buffer = new byte[byteCount];
 
       byteCount = m_Encoding.GetBytes(arguments, 0, arguments.Length, m_Buffer, 0);
 
-      m_Stream.Write((short)byteCount);
-      m_Stream.Write(m_Buffer, 0, byteCount);
+      Stream.Write((short)byteCount);
+      Stream.Write(m_Buffer, 0, byteCount);
     }
 
     public void Add(int number, string format, object arg0)
@@ -191,8 +191,8 @@ namespace Server
 
     public OPLInfo(Serial serial, int hash) : base(0xDC, 9)
     {
-      m_Stream.Write(serial);
-      m_Stream.Write(hash);
+      Stream.Write(serial);
+      Stream.Write(hash);
     }
   }
 }

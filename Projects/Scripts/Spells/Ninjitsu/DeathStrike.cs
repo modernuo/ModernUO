@@ -7,7 +7,7 @@ namespace Server.Spells.Ninjitsu
 {
   public class DeathStrike : NinjaMove
   {
-    private static Dictionary<Mobile, DeathStrikeInfo> m_Table = new Dictionary<Mobile, DeathStrikeInfo>();
+    private static readonly Dictionary<Mobile, DeathStrikeInfo> m_Table = new Dictionary<Mobile, DeathStrikeInfo>();
 
     public override int BaseMana => 30;
     public override double RequiredSkill => 85.0;
@@ -31,7 +31,7 @@ namespace Server.Spells.Ninjitsu
       // TODO: should be defined onHit method, what if the player hit and remove the weapon before process? ;)
       bool isRanged = attacker.Weapon is BaseRanged;
 
-      if (ninjitsu < 100) //This formula is an approximation from OSI data.  TODO: find correct formula
+      if (ninjitsu < 100) // This formula is an approximation from OSI data.  TODO: find correct formula
         chance = 30 + (ninjitsu - 85) * 2.2;
       else
         chance = 63 + (ninjitsu - 100) * 1.1;
@@ -130,11 +130,11 @@ namespace Server.Spells.Ninjitsu
 
     private class DeathStrikeInfo
     {
-      public Mobile m_Attacker;
-      public int m_DamageBonus;
-      public bool m_isRanged;
+      public readonly Mobile m_Attacker;
+      public readonly int m_DamageBonus;
+      public readonly bool m_isRanged;
       public int m_Steps;
-      public Mobile m_Target;
+      public readonly Mobile m_Target;
       public Timer m_Timer;
 
       public DeathStrikeInfo(Mobile target, Mobile attacker, int damageBonus, bool isRanged)

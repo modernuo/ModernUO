@@ -36,23 +36,23 @@ namespace Server.Diagnostics
       _stopwatch = new Stopwatch();
     }
 
-    public string Name{ get; }
+    public string Name { get; }
 
-    public long Count{ get; private set; }
+    public long Count { get; private set; }
 
     public TimeSpan AverageTime => TimeSpan.FromTicks(TotalTime.Ticks / Math.Max(1, Count));
 
-    public TimeSpan PeakTime{ get; private set; }
+    public TimeSpan PeakTime { get; private set; }
 
-    public TimeSpan TotalTime{ get; private set; }
+    public TimeSpan TotalTime { get; private set; }
 
     public static void WriteAll<T>(TextWriter op, IEnumerable<T> profiles) where T : BaseProfile
     {
-      List<T> list = new List<T>(profiles);
+      var list = new List<T>(profiles);
 
-      list.Sort(delegate(T a, T b) { return -a.TotalTime.CompareTo(b.TotalTime); });
+      list.Sort((a, b) => -a.TotalTime.CompareTo(b.TotalTime));
 
-      foreach (T prof in list)
+      foreach (var prof in list)
       {
         prof.WriteTo(op);
         op.WriteLine();
@@ -68,7 +68,7 @@ namespace Server.Diagnostics
 
     public virtual void Finish()
     {
-      TimeSpan elapsed = _stopwatch.Elapsed;
+      var elapsed = _stopwatch.Elapsed;
 
       TotalTime += elapsed;
 

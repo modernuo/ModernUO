@@ -33,37 +33,37 @@ namespace Server
 
       switch (version)
       {
-        case 1: //Changed the values throughout the virtue system
+        case 1: // Changed the values throughout the virtue system
         case 0:
-        {
-          int mask = reader.ReadByte();
-
-          if (mask != 0)
           {
-            Values = new int[8];
+            int mask = reader.ReadByte();
 
-            for (int i = 0; i < 8; ++i)
-              if ((mask & 1 << i) != 0)
-                Values[i] = reader.ReadInt();
+            if (mask != 0)
+            {
+              Values = new int[8];
+
+              for (var i = 0; i < 8; ++i)
+                if ((mask & (1 << i)) != 0)
+                  Values[i] = reader.ReadInt();
+            }
+
+            break;
           }
-
-          break;
-        }
       }
 
       if (version == 0)
       {
         Compassion *= 200;
-        Sacrifice *= 250; //Even though 40 (the max) only gives 10k, It's because it was formerly too easy
+        Sacrifice *= 250; // Even though 40 (the max) only gives 10k, It's because it was formerly too easy
 
-        //No direct conversion factor for Justice, this is just an approximation
+        // No direct conversion factor for Justice, this is just an approximation
         Justice *= 500;
 
-        //All the other virtues haven't been defined at 'version 0' point in time in the scripts.
+        // All the other virtues haven't been defined at 'version 0' point in time in the scripts.
       }
     }
 
-    public int[] Values{ get; private set; }
+    public int[] Values { get; private set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public int Humility
@@ -141,15 +141,15 @@ namespace Server
       }
       else
       {
-        int mask = 0;
+        var mask = 0;
 
-        for (int i = 0; i < 8; ++i)
+        for (var i = 0; i < 8; ++i)
           if (info.Values[i] != 0)
             mask |= 1 << i;
 
         writer.Write((byte)mask);
 
-        for (int i = 0; i < 8; ++i)
+        for (var i = 0; i < 8; ++i)
           if (info.Values[i] != 0)
             writer.Write(info.Values[i]);
       }

@@ -18,7 +18,7 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TournamentController Tournament{ get; set; }
+    public TournamentController Tournament { get; set; }
 
     private void Announce_Callback()
     {
@@ -81,10 +81,10 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 0:
-        {
-          Tournament = reader.ReadItem() as TournamentController;
-          break;
-        }
+          {
+            Tournament = reader.ReadItem() as TournamentController;
+            break;
+          }
       }
 
       Timer.DelayCall(TimeSpan.FromSeconds(30.0), TimeSpan.FromSeconds(30.0), Announce_Callback);

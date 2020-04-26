@@ -134,8 +134,6 @@ namespace Server
           totalDamage += totalDamage * quiver.DamageIncrease / 100;
       }
 
-      #region Dragon Barding
-
       if (from?.Player != true && m.Player && m.Mount is SwampDragon pet)
         if (pet.HasBarding)
         {
@@ -153,8 +151,6 @@ namespace Server
             m.SendLocalizedMessage(1053031); // Your dragon's barding has been destroyed!
           }
         }
-
-      #endregion
 
       if (keepAlive && totalDamage > m.Hits)
         totalDamage = m.Hits;
@@ -921,7 +917,6 @@ namespace Server
     {
     }
 
-
     [CommandProperty(AccessLevel.GameMaster)]
     public double Skill_1_Value
     {
@@ -1006,7 +1001,7 @@ namespace Server
         SkillName.EvalInt => 1002070, // Evaluate Intelligence
         SkillName.Forensics => 1002078, // Forensic Evaluation
         SkillName.Lockpicking => 1002097, // Lockpicking
-        _ => (1044060 + (int)skill)
+        _ => 1044060 + (int)skill
       };
     }
 
@@ -1254,7 +1249,7 @@ namespace Server
   [PropertyObject]
   public abstract class BaseAttributes
   {
-    private static int[] m_Empty = new int[0];
+    private static readonly int[] m_Empty = Array.Empty<int>();
     private uint m_Names;
     private int[] m_Values;
 
@@ -1281,30 +1276,30 @@ namespace Server
       switch (version)
       {
         case 1:
-        {
-          m_Names = reader.ReadUInt();
-          m_Values = new int[reader.ReadEncodedInt()];
+          {
+            m_Names = reader.ReadUInt();
+            m_Values = new int[reader.ReadEncodedInt()];
 
-          for (int i = 0; i < m_Values.Length; ++i)
-            m_Values[i] = reader.ReadEncodedInt();
+            for (int i = 0; i < m_Values.Length; ++i)
+              m_Values[i] = reader.ReadEncodedInt();
 
-          break;
-        }
+            break;
+          }
         case 0:
-        {
-          m_Names = reader.ReadUInt();
-          m_Values = new int[reader.ReadInt()];
+          {
+            m_Names = reader.ReadUInt();
+            m_Values = new int[reader.ReadInt()];
 
-          for (int i = 0; i < m_Values.Length; ++i)
-            m_Values[i] = reader.ReadInt();
+            for (int i = 0; i < m_Values.Length; ++i)
+              m_Values[i] = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
     public bool IsEmpty => m_Names == 0;
-    public Item Owner{ get; }
+    public Item Owner { get; }
 
     public void Serialize(IGenericWriter writer)
     {

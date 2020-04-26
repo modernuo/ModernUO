@@ -61,8 +61,8 @@ namespace Server.Mobiles
       foreach (Mobile m in eable)
       {
         if (m == this || !CanBeHarmful(m) ||
-            !(m.Player || m is BaseCreature creature &&
-              (creature.Controlled || creature.Summoned || creature.Team != Team)))
+            !(m.Player || (m is BaseCreature creature &&
+              (creature.Controlled || creature.Summoned || creature.Team != Team))))
           continue;
 
         DoHarmful(m);
@@ -70,7 +70,7 @@ namespace Server.Mobiles
         m.FixedParticles(0x374A, 10, 15, 5013, 0x496, 0, EffectLayer.Waist);
         m.PlaySound(0x231);
 
-        //m.SendMessage( "You feel the life drain out of you!" );
+        // m.SendMessage( "You feel the life drain out of you!" );
 
         int toDrain = Utility.RandomMinMax(10, 40);
 
@@ -85,7 +85,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 >= Utility.RandomDouble())
+      if (Utility.RandomDouble() <= 0.1)
         DrainLife();
     }
 
@@ -93,7 +93,7 @@ namespace Server.Mobiles
     {
       base.OnGotMeleeAttack(attacker);
 
-      if (0.1 >= Utility.RandomDouble())
+      if (Utility.RandomDouble() <= 0.1)
         DrainLife();
     }
 

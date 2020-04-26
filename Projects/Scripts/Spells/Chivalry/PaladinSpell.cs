@@ -9,17 +9,17 @@ namespace Server.Spells.Chivalry
     {
     }
 
-    public abstract double RequiredSkill{ get; }
-    public abstract int RequiredMana{ get; }
-    public abstract int RequiredTithing{ get; }
-    public abstract int MantraNumber{ get; }
+    public abstract double RequiredSkill { get; }
+    public abstract int RequiredMana { get; }
+    public abstract int RequiredTithing { get; }
+    public abstract int MantraNumber { get; }
 
     public override SkillName CastSkill => SkillName.Chivalry;
     public override SkillName DamageSkill => SkillName.Chivalry;
 
     public override bool ClearHandsOnCast => false;
 
-    //public override int CastDelayBase => 1;
+    // public override int CastDelayBase => 1;
 
     public override int CastRecoveryBase => 7;
 

@@ -9,7 +9,7 @@ namespace Server
 {
   public class UOAMVendorGenerator
   {
-    //configuration
+    // configuration
     private const int
       NPCCount = 2; // 2 npcs per type (so a mage spawner will spawn 2 npcs, a alchemist and herbalist spawner will spawn 4 npcs total)
 
@@ -17,8 +17,8 @@ namespace Server
     private const bool TotalRespawn = true; // Should we spawn them up right away?
     private const int Team = 0; // "team" the npcs are on
     private static int m_Count;
-    private static TimeSpan MinTime = TimeSpan.FromMinutes(2.5); //min spawn time
-    private static TimeSpan MaxTime = TimeSpan.FromMinutes(10.0); //max spawn time
+    private static readonly TimeSpan MinTime = TimeSpan.FromMinutes(2.5); // min spawn time
+    private static readonly TimeSpan MaxTime = TimeSpan.FromMinutes(10.0); // max spawn time
 
     public static void Initialize()
     {
@@ -164,7 +164,6 @@ namespace Server
               PlaceNPC(split[1], split[2], split[3], "Beekeeper");
               break;
 
-
             // Guilds & Misc
             case "-tinkers guild:":
               PlaceNPC(split[1], split[2], split[3], "TinkerGuildmaster");
@@ -231,9 +230,9 @@ namespace Server
             case "+Island:":
             case "+town:":
               break;
-            /*default:
-                Console.WriteLine(split[0]);
-                break;*/
+              /*default:
+                  Console.WriteLine(split[0]);
+                  break;*/
           }
         }
       }
@@ -252,11 +251,11 @@ namespace Server
 
       switch (map)
       {
-        case 0: //Trammel and Felucca
+        case 0: // Trammel and Felucca
           MakeSpawner(types, x, y, Map.Felucca);
           MakeSpawner(types, x, y, Map.Trammel);
           break;
-        case 1: //Felucca
+        case 1: // Felucca
           MakeSpawner(types, x, y, Map.Felucca);
           break;
         case 2:

@@ -35,7 +35,7 @@ namespace Server
       m_Rect = rect;
     }
 
-    public Region Region{ get; }
+    public Region Region { get; }
 
     public Rectangle3D Rect => m_Rect;
 
@@ -43,7 +43,6 @@ namespace Server
 
     public bool Contains(Point3D loc) => m_Rect.Contains(loc);
   }
-
 
   public class Sector
   {
@@ -83,11 +82,11 @@ namespace Server
 
     public bool Active => m_Active && Owner != Map.Internal;
 
-    public Map Owner{ get; }
+    public Map Owner { get; }
 
-    public int X{ get; }
+    public int X { get; }
 
-    public int Y{ get; }
+    public int Y { get; }
 
     private void Add<T>(ref List<T> list, T value)
     {
@@ -110,7 +109,7 @@ namespace Server
     {
       if (oldValue != null && newValue != null)
       {
-        int index = list?.IndexOf(oldValue) ?? -1;
+        var index = list?.IndexOf(oldValue) ?? -1;
 
         if (index >= 0)
           list[index] = newValue;
@@ -183,9 +182,9 @@ namespace Server
     {
       if (m_RegionRects != null)
       {
-        for (int i = m_RegionRects.Count - 1; i >= 0; i--)
+        for (var i = m_RegionRects.Count - 1; i >= 0; i--)
         {
-          RegionRect regRect = m_RegionRects[i];
+          var regRect = m_RegionRects[i];
 
           if (regRect.Region == region) m_RegionRects.RemoveAt(i);
         }
@@ -200,9 +199,9 @@ namespace Server
     {
       if (m_Mobiles != null)
       {
-        List<Mobile> sandbox = new List<Mobile>(m_Mobiles);
+        var sandbox = new List<Mobile>(m_Mobiles);
 
-        foreach (Mobile mob in sandbox) mob.UpdateRegion();
+        foreach (var mob in sandbox) mob.UpdateRegion();
       }
     }
 
@@ -221,11 +220,11 @@ namespace Server
       if (!Active && Owner != Map.Internal)
       {
         if (m_Items != null)
-          foreach (Item item in m_Items)
+          foreach (var item in m_Items)
             item.OnSectorActivate();
 
         if (m_Mobiles != null)
-          foreach (Mobile mob in m_Mobiles)
+          foreach (var mob in m_Mobiles)
             mob.OnSectorActivate();
 
         m_Active = true;
@@ -237,11 +236,11 @@ namespace Server
       if (Active)
       {
         if (m_Items != null)
-          foreach (Item item in m_Items)
+          foreach (var item in m_Items)
             item.OnSectorDeactivate();
 
         if (m_Mobiles != null)
-          foreach (Mobile mob in m_Mobiles)
+          foreach (var mob in m_Mobiles)
             mob.OnSectorDeactivate();
 
         m_Active = false;

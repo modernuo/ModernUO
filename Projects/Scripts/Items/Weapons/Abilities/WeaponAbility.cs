@@ -12,7 +12,7 @@ namespace Server.Items
 {
   public abstract class WeaponAbility
   {
-    public static WeaponAbility[] Abilities{ get; } = {
+    public static WeaponAbility[] Abilities { get; } = {
       null,
       new ArmorIgnore(),
       new BleedAttack(),
@@ -81,7 +81,7 @@ namespace Server.Items
 
     public static readonly WeaponAbility Disrobe = Abilities[30];
 
-    private static Dictionary<Mobile, WeaponAbilityContext> m_PlayersTable = new Dictionary<Mobile, WeaponAbilityContext>();
+    private static readonly Dictionary<Mobile, WeaponAbilityContext> m_PlayersTable = new Dictionary<Mobile, WeaponAbilityContext>();
 
     public virtual int BaseMana => 0;
 
@@ -90,7 +90,7 @@ namespace Server.Items
 
     public virtual bool RequiresSE => false;
 
-    public static Dictionary<Mobile, WeaponAbility> Table{ get; } = new Dictionary<Mobile, WeaponAbility>();
+    public static Dictionary<Mobile, WeaponAbility> Table { get; } = new Dictionary<Mobile, WeaponAbility>();
 
     public virtual bool ValidatesDuringHit => true;
 
@@ -254,8 +254,6 @@ namespace Server.Items
         return false;
       }
 
-      #region Dueling
-
       string option = null;
 
       if (this is ArmorIgnore)
@@ -305,18 +303,15 @@ namespace Server.Items
       else if (this is ArmorPierce)
         option = "Armor Pierce";
 
-
       if (option != null && !DuelContext.AllowSpecialAbility(from, option, true))
         return false;
-
-      #endregion
 
       return CheckSkills(from) && CheckMana(from, false);
     }
 
     public static bool IsWeaponAbility(Mobile m, WeaponAbility a) =>
-      a == null || !m.Player || m.Weapon is BaseWeapon weapon &&
-      (weapon.PrimaryAbility == a || weapon.SecondaryAbility == a);
+      a == null || !m.Player || (m.Weapon is BaseWeapon weapon &&
+      (weapon.PrimaryAbility == a || weapon.SecondaryAbility == a));
 
     public static WeaponAbility GetCurrentAbility(Mobile m)
     {
@@ -425,7 +420,7 @@ namespace Server.Items
 
     private class WeaponAbilityTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public WeaponAbilityTimer(Mobile from) : base(TimeSpan.FromSeconds(3.0))
       {
@@ -444,7 +439,7 @@ namespace Server.Items
     {
       public WeaponAbilityContext(Timer timer) => Timer = timer;
 
-      public Timer Timer{ get; }
+      public Timer Timer { get; }
     }
   }
 }

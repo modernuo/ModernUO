@@ -9,8 +9,7 @@ namespace Server.Ethics.Evil
         20,
         "Unholy Shield",
         "Velgo K'blac",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

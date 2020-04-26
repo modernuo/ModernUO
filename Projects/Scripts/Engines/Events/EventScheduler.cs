@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Server.Engines.Events
 {
@@ -14,7 +13,7 @@ namespace Server.Engines.Events
     public DateTime NextOccurrence { get; private set; }
     public TimeSpan Interval { get; private set; }
     private TimeSpan _offset;
-    private IEvent _event;
+    private readonly IEvent _event;
 
     public EventScheduleEntry(IEvent e, DateTime firstSpawn, TimeSpan interval, TimeSpan offset)
     {
@@ -39,7 +38,7 @@ namespace Server.Engines.Events
   public class EventScheduler : Timer
   {
     private static EventScheduler _instance;
-    private List<EventScheduleEntry> _schedule = new List<EventScheduleEntry>();
+    private readonly List<EventScheduleEntry> _schedule = new List<EventScheduleEntry>();
 
     public static EventScheduler Instance => _instance ??= new EventScheduler();
     public static List<IEvent> AvailableEvents { get; } = new List<IEvent>();

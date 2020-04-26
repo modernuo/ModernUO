@@ -1,16 +1,16 @@
 using Server.Gumps;
-using Server.Items;
 using Server.Network;
 
-namespace Server
+namespace Server.Items
 {
   public sealed class VirtualCheck : Item
   {
+    // TODO: Move to configuration
     public static bool UseEditGump = false;
 
-    private int _Gold;
+    private int m_Gold;
 
-    private int _Plat;
+    private int m_Plat;
 
     public VirtualCheck(int plat = 0, int gold = 0)
       : base(0x14F0)
@@ -35,15 +35,15 @@ namespace Server
 
     public override string DefaultName => "Offer Of Currency";
 
-    public EditGump Editor{ get; private set; }
+    public EditGump Editor { get; private set; }
 
     [CommandProperty(AccessLevel.Administrator)]
     public int Plat
     {
-      get => _Plat;
+      get => m_Plat;
       set
       {
-        _Plat = value;
+        m_Plat = value;
         InvalidateProperties();
       }
     }
@@ -51,17 +51,17 @@ namespace Server
     [CommandProperty(AccessLevel.Administrator)]
     public int Gold
     {
-      get => _Gold;
+      get => m_Gold;
       set
       {
-        _Gold = value;
+        m_Gold = value;
         InvalidateProperties();
       }
     }
 
     public override bool IsAccessibleTo(Mobile check)
     {
-      SecureTradeContainer c = GetSecureTradeCont();
+      var c = GetSecureTradeCont();
 
       if (check == null || c == null) return base.IsAccessibleTo(check);
 
@@ -108,7 +108,7 @@ namespace Server
 
     public void UpdateTrade(Mobile user)
     {
-      SecureTradeContainer c = GetSecureTradeCont();
+      var c = GetSecureTradeCont();
 
       if (c?.Trade == null) return;
 
@@ -150,7 +150,7 @@ namespace Server
         AllGold
       }
 
-      private int _Plat, _Gold;
+      private int m_Plat, m_Gold;
 
       public EditGump(Mobile user, VirtualCheck check)
         : base(50, 50)
@@ -158,8 +158,8 @@ namespace Server
         User = user;
         Check = check;
 
-        _Plat = Check.Plat;
-        _Gold = Check.Gold;
+        m_Plat = Check.Plat;
+        m_Gold = Check.Gold;
 
         Closable = true;
         Disposable = true;
@@ -171,8 +171,8 @@ namespace Server
         CompileLayout();
       }
 
-      public Mobile User{ get; }
-      public VirtualCheck Check{ get; private set; }
+      public Mobile User { get; }
+      public VirtualCheck Check { get; private set; }
 
       public override void OnServerClose(NetState owner)
       {
@@ -232,7 +232,7 @@ namespace Server
         AddImage(10, 8, 113);
         AddImage(360, 8, 113);
 
-        string title =
+        var title =
           $"<BASEFONT COLOR=#FF2F4F4F><CENTER>BANK OF {User.RawName.ToUpper()}</CENTER>";
 
         AddHtml(40, 15, 320, 20, title);
@@ -247,7 +247,7 @@ namespace Server
 
         AddBackground(210, 60, 175, 20, 9300);
         AddBackground(215, 45, 165, 30, 9350);
-        AddTextEntry(225, 50, 145, 20, 0, 0, _Plat.ToString(), User.Account.TotalPlat.ToString().Length);
+        AddTextEntry(225, 50, 145, 20, 0, 0, m_Plat.ToString(), User.Account.TotalPlat.ToString().Length);
 
         // Gold Row
         AddBackground(15, 100, 175, 20, 9300);
@@ -259,7 +259,7 @@ namespace Server
 
         AddBackground(210, 100, 175, 20, 9300);
         AddBackground(215, 85, 165, 30, 9350);
-        AddTextEntry(225, 90, 145, 20, 0, 1, _Gold.ToString(), User.Account.TotalGold.ToString().Length);
+        AddTextEntry(225, 90, 145, 20, 0, 1, m_Gold.ToString(), User.Account.TotalGold.ToString().Length);
 
         // Buttons
         AddButton(20, 128, 12006, 12007, (int)Buttons.Close);
@@ -282,58 +282,58 @@ namespace Server
           case Buttons.Close:
             break;
           case Buttons.Clear:
-          {
-            _Plat = _Gold = 0;
-            refresh = true;
-          }
+            {
+              m_Plat = m_Gold = 0;
+              refresh = true;
+            }
             break;
           case Buttons.Accept:
-          {
-            string platText = info.GetTextEntry(0).Text;
-            string goldText = info.GetTextEntry(1).Text;
+            {
+              var platText = info.GetTextEntry(0).Text;
+              var goldText = info.GetTextEntry(1).Text;
 
-            if (!int.TryParse(platText, out _Plat))
-            {
-              User.SendMessage("That is not a valid amount of platinum.");
-              refresh = true;
-            }
-            else if (!int.TryParse(goldText, out _Gold))
-            {
-              User.SendMessage("That is not a valid amount of gold.");
-              refresh = true;
-            }
-            else
-            {
-              int totalPlat = User.Account.TotalPlat;
-              int totalGold = User.Account.TotalGold;
-
-              if (totalPlat < _Plat || totalGold < _Gold)
+              if (!int.TryParse(platText, out m_Plat))
               {
-                _Plat = User.Account.TotalPlat;
-                _Gold = User.Account.TotalGold;
-                User.SendMessage("You do not have that much currency.");
+                User.SendMessage("That is not a valid amount of platinum.");
+                refresh = true;
+              }
+              else if (!int.TryParse(goldText, out m_Gold))
+              {
+                User.SendMessage("That is not a valid amount of gold.");
                 refresh = true;
               }
               else
               {
-                Check.Plat = _Plat;
-                Check.Gold = _Gold;
-                updated = true;
+                var totalPlat = User.Account.TotalPlat;
+                var totalGold = User.Account.TotalGold;
+
+                if (totalPlat < m_Plat || totalGold < m_Gold)
+                {
+                  m_Plat = User.Account.TotalPlat;
+                  m_Gold = User.Account.TotalGold;
+                  User.SendMessage("You do not have that much currency.");
+                  refresh = true;
+                }
+                else
+                {
+                  Check.Plat = m_Plat;
+                  Check.Gold = m_Gold;
+                  updated = true;
+                }
               }
             }
-          }
             break;
           case Buttons.AllPlat:
-          {
-            _Plat = User.Account.TotalPlat;
-            refresh = true;
-          }
+            {
+              m_Plat = User.Account.TotalPlat;
+              refresh = true;
+            }
             break;
           case Buttons.AllGold:
-          {
-            _Gold = User.Account.TotalGold;
-            refresh = true;
-          }
+            {
+              m_Gold = User.Account.TotalGold;
+              refresh = true;
+            }
             break;
         }
 

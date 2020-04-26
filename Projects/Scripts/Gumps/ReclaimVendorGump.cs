@@ -7,8 +7,8 @@ namespace Server.Gumps
 {
   public class ReclaimVendorGump : Gump
   {
-    private BaseHouse m_House;
-    private List<Mobile> m_Vendors;
+    private readonly BaseHouse m_House;
+    private readonly List<Mobile> m_Vendors;
 
     public ReclaimVendorGump(BaseHouse house) : base(50, 50)
     {

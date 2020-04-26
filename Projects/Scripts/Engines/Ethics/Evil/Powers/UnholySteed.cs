@@ -11,8 +11,7 @@ namespace Server.Ethics.Evil
         30,
         "Unholy Steed",
         "Trubechs Yeliab",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

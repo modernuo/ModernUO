@@ -18,18 +18,18 @@ namespace Server.Factions
       Label = label;
     }
 
-    public Type Type{ get; }
+    public Type Type { get; }
 
-    public int Price{ get; }
+    public int Price { get; }
 
-    public int Upkeep{ get; }
+    public int Upkeep { get; }
 
-    public int Maximum{ get; }
+    public int Maximum { get; }
 
-    public int ItemID{ get; }
+    public int ItemID { get; }
 
-    public TextDefinition Header{ get; }
+    public TextDefinition Header { get; }
 
-    public TextDefinition Label{ get; }
+    public TextDefinition Label { get; }
   }
 }

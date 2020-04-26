@@ -5,7 +5,7 @@ namespace Server.Engines.VeteranRewards
 {
   public class RewardNoticeGump : Gump
   {
-    private Mobile m_From;
+    private readonly Mobile m_From;
 
     public RewardNoticeGump(Mobile from) : base(0, 0)
     {

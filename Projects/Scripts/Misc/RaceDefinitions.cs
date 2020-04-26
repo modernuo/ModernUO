@@ -35,8 +35,8 @@ namespace Server.Misc
         if (itemID == 0)
           return true;
 
-        if (female && itemID == 0x2048 || !female && itemID == 0x2046)
-          return false; //Buns & Receding Hair
+        if ((female && itemID == 0x2048) || (!female && itemID == 0x2046))
+          return false; // Buns & Receding Hair
 
         if (itemID >= 0x203B && itemID <= 0x203D)
           return true;
@@ -47,19 +47,19 @@ namespace Server.Misc
         return false;
       }
 
-      public override int RandomHair(bool female) //Random hair doesn't include baldness
+      public override int RandomHair(bool female) // Random hair doesn't include baldness
       {
         return Utility.Random(9) switch
         {
-          0 => 0x203B, //Short
-          1 => 0x203C, //Long
-          2 => 0x203D, //Pony Tail
-          3 => 0x2044, //Mohawk
-          4 => 0x2045, //Pageboy
-          5 => 0x2047, //Afro
-          6 => 0x2049, //Pig tails
-          7 => 0x204A, //Krisna
-          _ => (female ? 0x2046 : 0x2048)
+          0 => 0x203B, // Short
+          1 => 0x203C, // Long
+          2 => 0x203D, // Pony Tail
+          3 => 0x2044, // Mohawk
+          4 => 0x2045, // Pageboy
+          5 => 0x2047, // Afro
+          6 => 0x2049, // Pig tails
+          7 => 0x204A, // Krisna
+          _ => female ? 0x2046 : 0x2048
         };
       }
 
@@ -115,7 +115,7 @@ namespace Server.Misc
 
     private class Elf : Race
     {
-      private static int[] m_SkinHues =
+      private static readonly int[] m_SkinHues =
       {
         0x0BF, 0x24D, 0x24E, 0x24F, 0x353, 0x361, 0x367, 0x374,
         0x375, 0x376, 0x381, 0x382, 0x383, 0x384, 0x385, 0x389,
@@ -123,7 +123,7 @@ namespace Server.Misc
         0x51D, 0x53F, 0x579, 0x76B, 0x76C, 0x76D, 0x835, 0x903
       };
 
-      private static int[] m_HairHues =
+      private static readonly int[] m_HairHues =
       {
         0x034, 0x035, 0x036, 0x037, 0x038, 0x039, 0x058, 0x08E,
         0x08F, 0x090, 0x091, 0x092, 0x101, 0x159, 0x15A, 0x15B,
@@ -144,7 +144,7 @@ namespace Server.Misc
         if (itemID == 0)
           return true;
 
-        if (female && (itemID == 0x2FCD || itemID == 0x2FBF) || !female && (itemID == 0x2FCC || itemID == 0x2FD0))
+        if ((female && (itemID == 0x2FCD || itemID == 0x2FBF)) || (!female && (itemID == 0x2FCC || itemID == 0x2FD0)))
           return false;
 
         if (itemID >= 0x2FBF && itemID <= 0x2FC2)
@@ -156,18 +156,18 @@ namespace Server.Misc
         return false;
       }
 
-      public override int RandomHair(bool female) //Random hair doesn't include baldness
+      public override int RandomHair(bool female) // Random hair doesn't include baldness
       {
         return Utility.Random(8) switch
         {
-          0 => 0x2FC0, //Long Feather
-          1 => 0x2FC1, //Short
-          2 => 0x2FC2, //Mullet
-          3 => 0x2FCE, //Knob
-          4 => 0x2FCF, //Braided
-          5 => 0x2FD1, //Spiked
-          6 => (female ? 0x2FCC : 0x2FBF), //Flower or Mid-long
-          _ => (female ? 0x2FD0 : 0x2FCD)
+          0 => 0x2FC0, // Long Feather
+          1 => 0x2FC1, // Short
+          2 => 0x2FC2, // Mullet
+          3 => 0x2FCE, // Knob
+          4 => 0x2FCF, // Braided
+          5 => 0x2FD1, // Spiked
+          6 => female ? 0x2FCC : 0x2FBF, // Flower or Mid-long
+          _ => female ? 0x2FD0 : 0x2FCD
         };
       }
 
@@ -198,8 +198,6 @@ namespace Server.Misc
       public override int RandomHairHue() => m_HairHues[Utility.Random(m_HairHues.Length)];
     }
 
-    #region SA
-
     private class Gargoyle : Race
     {
       // Todo Finish body hues
@@ -229,7 +227,7 @@ namespace Server.Misc
       {
         if (female == false) return itemID >= 0x4258 && itemID <= 0x425F;
 
-        return itemID == 0x4261 || itemID == 0x4262 || itemID >= 0x4273 && itemID <= 0x4275 || itemID == 0x42B0 ||
+        return itemID == 0x4261 || itemID == 0x4262 || (itemID >= 0x4273 && itemID <= 0x4275) || itemID == 0x42B0 ||
                itemID == 0x42B1 || itemID == 0x42AA || itemID == 0x42AB;
       }
 
@@ -273,7 +271,5 @@ namespace Server.Misc
 
       public override int RandomHairHue() => m_HornHues[Utility.Random(m_HornHues.Length)];
     }
-
-    #endregion
   }
 }

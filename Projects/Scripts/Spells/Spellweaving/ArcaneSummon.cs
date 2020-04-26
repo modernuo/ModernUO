@@ -11,7 +11,7 @@ namespace Server.Spells.Spellweaving
     {
     }
 
-    public abstract int Sound{ get; }
+    public abstract int Sound { get; }
 
     public override bool CheckCast()
     {

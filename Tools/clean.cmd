@@ -1,3 +1,5 @@
+del /f .\Projects\*\obj
+
 del /f .\Distribution\Assemblies\BouncyCastle.Crypto.dll
 del /f .\Distribution\Assemblies\MailKit.dll
 del /f .\Distribution\Assemblies\Microsoft.AspNetCore.Connections.Abstractions.dll

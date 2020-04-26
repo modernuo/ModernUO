@@ -41,7 +41,7 @@ namespace Server.Engines.Quests.Ninja
 
   public class SneakPastGuardiansObjective : QuestObjective
   {
-    public bool TaughtHowToUseSkills{ get; set; }
+    public bool TaughtHowToUseSkills { get; set; }
 
     public override object Message => 1063261;
 
@@ -131,7 +131,7 @@ namespace Server.Engines.Quests.Ninja
 
   public class HallwayWalkObjective : QuestObjective
   {
-    public bool StolenTreasure{ get; set; }
+    public bool StolenTreasure { get; set; }
 
     public override object Message => 1063202;
 

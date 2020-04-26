@@ -33,15 +33,15 @@ namespace Server
     Equipment
   }
 
-  public struct Body
+  public readonly struct Body : IEquatable<object>, IEquatable<Body>, IEquatable<int>
   {
-    private static readonly BodyType[] m_Types;
+    private static readonly BodyType[] m_Types = Array.Empty<BodyType>();
 
     static Body()
     {
       if (File.Exists("Data/bodyTable.cfg"))
       {
-        using StreamReader ip = new StreamReader("Data/bodyTable.cfg");
+        using var ip = new StreamReader("Data/bodyTable.cfg");
         m_Types = new BodyType[0x1000];
 
         string line;
@@ -51,9 +51,9 @@ namespace Server
           if (line.Length == 0 || line.StartsWith("#"))
             continue;
 
-          string[] split = line.Split('\t');
+          var split = line.Split('\t');
 
-          if (int.TryParse(split[0], out int bodyID) && Enum.TryParse(split[1], true, out BodyType type) && bodyID >= 0 &&
+          if (int.TryParse(split[0], out var bodyID) && Enum.TryParse(split[1], true, out BodyType type) && bodyID >= 0 &&
               bodyID < m_Types.Length)
           {
             m_Types[bodyID] = type;
@@ -68,8 +68,6 @@ namespace Server
       else
       {
         Console.WriteLine("Warning: Data/bodyTable.cfg does not exist");
-
-        m_Types = new BodyType[0];
       }
     }
 
@@ -141,7 +139,7 @@ namespace Server
                                && BodyID < m_Types.Length
                                && m_Types[BodyID] == BodyType.Equipment;
 
-    public int BodyID{ get; }
+    public int BodyID { get; }
 
     public static implicit operator int(Body a) => a.BodyID;
 
@@ -152,6 +150,10 @@ namespace Server
     public override int GetHashCode() => BodyID.GetHashCode();
 
     public override bool Equals(object o) => o is Body b && b.BodyID == BodyID;
+
+    public bool Equals(Body b) => b.BodyID == BodyID;
+
+    public bool Equals(int number) => number == BodyID;
 
     public static bool operator ==(Body l, Body r) => l.BodyID == r.BodyID;
 

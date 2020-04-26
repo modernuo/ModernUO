@@ -44,7 +44,7 @@ namespace Server.Items
 
     public void Use(Mobile attacker, Mobile defender)
     {
-      if (!Validate(attacker) || !CheckMana(attacker, true) || attacker.Weapon == null) //sanity
+      if (!Validate(attacker) || !CheckMana(attacker, true) || attacker.Weapon == null) // sanity
         return;
 
       ClearCurrentAbility(attacker);

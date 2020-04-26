@@ -5,7 +5,7 @@ namespace Server.Engines.Plants
 {
   public class ReproductionGump : Gump
   {
-    private PlantItem m_Plant;
+    private readonly PlantItem m_Plant;
 
     public ReproductionGump(PlantItem plant) : base(20, 20)
     {
@@ -125,138 +125,138 @@ namespace Server.Engines.Plants
       switch (info.ButtonID)
       {
         case 1: // Main menu
-        {
-          from.SendGump(new MainPlantGump(m_Plant));
-
-          break;
-        }
-        case 2: // Set to decorative
-        {
-          if (m_Plant.PlantStatus == PlantStatus.Stage9) from.SendGump(new SetToDecorativeGump(m_Plant));
-
-          break;
-        }
-        case 3: // Pollination
-        {
-          from.Send(new DisplayHelpTopic(67, true)); // POLLINATION STATE
-
-          from.SendGump(new ReproductionGump(m_Plant));
-
-          break;
-        }
-        case 4: // Resources
-        {
-          from.Send(new DisplayHelpTopic(69, true)); // RESOURCE PRODUCTION
-
-          from.SendGump(new ReproductionGump(m_Plant));
-
-          break;
-        }
-        case 5: // Seeds
-        {
-          from.Send(new DisplayHelpTopic(68, true)); // SEED PRODUCTION
-
-          from.SendGump(new ReproductionGump(m_Plant));
-
-          break;
-        }
-        case 6: // Gather pollen
-        {
-          if (!m_Plant.IsCrossable)
           {
-            m_Plant.LabelTo(from, 1053050); // You cannot gather pollen from a mutated plant!
-          }
-          else if (!m_Plant.PlantSystem.PollenProducing)
-          {
-            m_Plant.LabelTo(from,
-              1053051); // You cannot gather pollen from a plant in this stage of development!
-          }
-          else if (m_Plant.PlantSystem.Health < PlantHealth.Healthy)
-          {
-            m_Plant.LabelTo(from, 1053052); // You cannot gather pollen from an unhealthy plant!
-          }
-          else
-          {
-            from.Target = new PollinateTarget(m_Plant);
-            from.SendLocalizedMessage(1053054); // Target the plant you wish to cross-pollinate to.
+            from.SendGump(new MainPlantGump(m_Plant));
 
             break;
           }
+        case 2: // Set to decorative
+          {
+            if (m_Plant.PlantStatus == PlantStatus.Stage9) from.SendGump(new SetToDecorativeGump(m_Plant));
 
-          from.SendGump(new ReproductionGump(m_Plant));
+            break;
+          }
+        case 3: // Pollination
+          {
+            from.Send(new DisplayHelpTopic(67, true)); // POLLINATION STATE
 
-          break;
-        }
+            from.SendGump(new ReproductionGump(m_Plant));
+
+            break;
+          }
+        case 4: // Resources
+          {
+            from.Send(new DisplayHelpTopic(69, true)); // RESOURCE PRODUCTION
+
+            from.SendGump(new ReproductionGump(m_Plant));
+
+            break;
+          }
+        case 5: // Seeds
+          {
+            from.Send(new DisplayHelpTopic(68, true)); // SEED PRODUCTION
+
+            from.SendGump(new ReproductionGump(m_Plant));
+
+            break;
+          }
+        case 6: // Gather pollen
+          {
+            if (!m_Plant.IsCrossable)
+            {
+              m_Plant.LabelTo(from, 1053050); // You cannot gather pollen from a mutated plant!
+            }
+            else if (!m_Plant.PlantSystem.PollenProducing)
+            {
+              m_Plant.LabelTo(from,
+                1053051); // You cannot gather pollen from a plant in this stage of development!
+            }
+            else if (m_Plant.PlantSystem.Health < PlantHealth.Healthy)
+            {
+              m_Plant.LabelTo(from, 1053052); // You cannot gather pollen from an unhealthy plant!
+            }
+            else
+            {
+              from.Target = new PollinateTarget(m_Plant);
+              from.SendLocalizedMessage(1053054); // Target the plant you wish to cross-pollinate to.
+
+              break;
+            }
+
+            from.SendGump(new ReproductionGump(m_Plant));
+
+            break;
+          }
         case 7: // Gather resources
-        {
-          PlantResourceInfo resInfo = PlantResourceInfo.GetInfo(m_Plant.PlantType, m_Plant.PlantHue);
-          PlantSystem system = m_Plant.PlantSystem;
-
-          if (resInfo == null)
           {
-            if (m_Plant.IsCrossable)
+            PlantResourceInfo resInfo = PlantResourceInfo.GetInfo(m_Plant.PlantType, m_Plant.PlantHue);
+            PlantSystem system = m_Plant.PlantSystem;
+
+            if (resInfo == null)
+            {
+              if (m_Plant.IsCrossable)
+                m_Plant.LabelTo(from, 1053056); // This plant has no resources to gather!
+              else
+                m_Plant.LabelTo(from, 1053055); // Mutated plants do not produce resources!
+            }
+            else if (system.AvailableResources == 0)
+            {
               m_Plant.LabelTo(from, 1053056); // This plant has no resources to gather!
-            else
-              m_Plant.LabelTo(from, 1053055); // Mutated plants do not produce resources!
-          }
-          else if (system.AvailableResources == 0)
-          {
-            m_Plant.LabelTo(from, 1053056); // This plant has no resources to gather!
-          }
-          else
-          {
-            Item resource = resInfo.CreateResource();
-
-            if (from.PlaceInBackpack(resource))
-            {
-              system.AvailableResources--;
-              m_Plant.LabelTo(from, 1053059); // You gather resources from the plant.
             }
             else
             {
-              resource.Delete();
-              m_Plant.LabelTo(from,
-                1053058); // You attempt to gather as many resources as you can hold, but your backpack is full.
+              Item resource = resInfo.CreateResource();
+
+              if (from.PlaceInBackpack(resource))
+              {
+                system.AvailableResources--;
+                m_Plant.LabelTo(from, 1053059); // You gather resources from the plant.
+              }
+              else
+              {
+                resource.Delete();
+                m_Plant.LabelTo(from,
+                  1053058); // You attempt to gather as many resources as you can hold, but your backpack is full.
+              }
             }
+
+            from.SendGump(new ReproductionGump(m_Plant));
+
+            break;
           }
-
-          from.SendGump(new ReproductionGump(m_Plant));
-
-          break;
-        }
         case 8: // Gather seeds
-        {
-          PlantSystem system = m_Plant.PlantSystem;
+          {
+            PlantSystem system = m_Plant.PlantSystem;
 
-          if (!m_Plant.Reproduces)
-          {
-            m_Plant.LabelTo(from, 1053060); // Mutated plants do not produce seeds!
-          }
-          else if (system.AvailableSeeds == 0)
-          {
-            m_Plant.LabelTo(from, 1053061); // This plant has no seeds to gather!
-          }
-          else
-          {
-            Seed seed = new Seed(system.SeedType, system.SeedHue, true);
-
-            if (from.PlaceInBackpack(seed))
+            if (!m_Plant.Reproduces)
             {
-              system.AvailableSeeds--;
-              m_Plant.LabelTo(from, 1053063); // You gather seeds from the plant.
+              m_Plant.LabelTo(from, 1053060); // Mutated plants do not produce seeds!
+            }
+            else if (system.AvailableSeeds == 0)
+            {
+              m_Plant.LabelTo(from, 1053061); // This plant has no seeds to gather!
             }
             else
             {
-              seed.Delete();
-              m_Plant.LabelTo(from,
-                1053062); // You attempt to gather as many seeds as you can hold, but your backpack is full.
+              Seed seed = new Seed(system.SeedType, system.SeedHue, true);
+
+              if (from.PlaceInBackpack(seed))
+              {
+                system.AvailableSeeds--;
+                m_Plant.LabelTo(from, 1053063); // You gather seeds from the plant.
+              }
+              else
+              {
+                seed.Delete();
+                m_Plant.LabelTo(from,
+                  1053062); // You attempt to gather as many seeds as you can hold, but your backpack is full.
+              }
             }
+
+            from.SendGump(new ReproductionGump(m_Plant));
+
+            break;
           }
-
-          from.SendGump(new ReproductionGump(m_Plant));
-
-          break;
-        }
       }
     }
   }

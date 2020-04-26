@@ -8,8 +8,8 @@ namespace Server.Engines.ConPVP
 {
   public class ReadyUpGump : Gump
   {
-    private DuelContext m_Context;
-    private Mobile m_From;
+    private readonly DuelContext m_Context;
+    private readonly Mobile m_From;
 
     public ReadyUpGump(Mobile from, DuelContext context) : base(50, 50)
     {
@@ -33,8 +33,6 @@ namespace Server.Engines.ConPVP
       }
       else
       {
-        #region Participants
-
         AddPage(1);
 
         List<Participant> parts = context.Participants;
@@ -97,10 +95,6 @@ namespace Server.Engines.ConPVP
 
         AddButton(102, y, 247, 248, 0, GumpButtonType.Page, 2);
         AddButton(169, y, 242, 241, 2);
-
-        #endregion
-
-        #region Rules
 
         AddPage(2);
 
@@ -184,8 +178,6 @@ namespace Server.Engines.ConPVP
 
         AddButton(102, y, 247, 248, 1);
         AddButton(169, y, 242, 241, 3);
-
-        #endregion
       }
     }
 
@@ -205,25 +197,25 @@ namespace Server.Engines.ConPVP
       switch (info.ButtonID)
       {
         case 1: // okay
-        {
-          if (!(m_From is PlayerMobile pm))
+          {
+            if (!(m_From is PlayerMobile pm))
+              break;
+
+            pm.DuelPlayer.Ready = true;
+            m_Context.SendReadyGump();
+
             break;
-
-          pm.DuelPlayer.Ready = true;
-          m_Context.SendReadyGump();
-
-          break;
-        }
+          }
         case 2: // reject participants
-        {
-          m_Context.RejectReady(m_From, "participants");
-          break;
-        }
+          {
+            m_Context.RejectReady(m_From, "participants");
+            break;
+          }
         case 3: // reject rules
-        {
-          m_Context.RejectReady(m_From, "rules");
-          break;
-        }
+          {
+            m_Context.RejectReady(m_From, "rules");
+            break;
+          }
       }
     }
   }

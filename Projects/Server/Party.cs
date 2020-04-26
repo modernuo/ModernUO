@@ -22,7 +22,7 @@ namespace Server
 {
   public abstract class PartyCommands
   {
-    public static PartyCommands Handler{ get; set; }
+    public static PartyCommands Handler { get; set; }
 
     public abstract void OnAdd(Mobile from);
     public abstract void OnRemove(Mobile from, Mobile target);

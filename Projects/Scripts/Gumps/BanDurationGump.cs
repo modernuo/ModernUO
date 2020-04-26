@@ -7,9 +7,9 @@ namespace Server.Gumps
 {
   public class BanDurationGump : Gump
   {
-    private List<Account> m_List;
+    private readonly List<Account> m_List;
 
-    public BanDurationGump(Account a) : this(new List<Account>{ a })
+    public BanDurationGump(Account a) : this(new List<Account> { a })
     {
     }
 
@@ -24,12 +24,12 @@ namespace Server.Gumps
 
       AddBackground(0, 0, width, height, 5054);
 
-      //AddImageTiled( 10, 10, width - 20, 20, 2624 );
-      //AddAlphaRegion( 10, 10, width - 20, 20 );
+      // AddImageTiled( 10, 10, width - 20, 20, 2624 );
+      // AddAlphaRegion( 10, 10, width - 20, 20 );
       AddHtml(10, 10, width - 20, 20, "<CENTER>Ban Duration</CENTER>");
 
-      //AddImageTiled( 10, 40, width - 20, height - 50, 2624 );
-      //AddAlphaRegion( 10, 40, width - 20, height - 50 );
+      // AddImageTiled( 10, 40, width - 20, height - 50, 2624 );
+      // AddAlphaRegion( 10, 40, width - 20, height - 50 );
 
       AddButtonLabeled(15, 45, 1, "Infinite");
       AddButtonLabeled(15, 65, 2, "From D:H:M:S");
@@ -84,124 +84,124 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 0:
-        {
-          for (int i = 0; i < m_List.Count; ++i)
           {
-            Account a = m_List[i];
+            for (int i = 0; i < m_List.Count; ++i)
+            {
+              Account a = m_List[i];
 
-            a.SetUnspecifiedBan(from);
+              a.SetUnspecifiedBan(from);
+            }
+
+            from.SendMessage("Duration unspecified.");
+            return;
           }
-
-          from.SendMessage("Duration unspecified.");
-          return;
-        }
         case 1: // infinite
-        {
-          duration = TimeSpan.MaxValue;
-          shouldSet = true;
-          break;
-        }
+          {
+            duration = TimeSpan.MaxValue;
+            shouldSet = true;
+            break;
+          }
         case 2: // From D:H:M:S
-        {
-          if (d != null && h != null && m != null && s != null)
-            try
-            {
-              duration = new TimeSpan(Utility.ToInt32(d.Text), Utility.ToInt32(h.Text),
-                Utility.ToInt32(m.Text), Utility.ToInt32(s.Text));
-              shouldSet = true;
+          {
+            if (d != null && h != null && m != null && s != null)
+              try
+              {
+                duration = new TimeSpan(Utility.ToInt32(d.Text), Utility.ToInt32(h.Text),
+                  Utility.ToInt32(m.Text), Utility.ToInt32(s.Text));
+                shouldSet = true;
 
-              break;
-            }
-            catch
-            {
-              // ignored
-            }
+                break;
+              }
+              catch
+              {
+                // ignored
+              }
 
-          duration = TimeSpan.Zero;
-          shouldSet = false;
+            duration = TimeSpan.Zero;
+            shouldSet = false;
 
-          break;
-        }
+            break;
+          }
         case 3: // From D
-        {
-          if (d != null)
-            try
-            {
-              duration = TimeSpan.FromDays(Utility.ToDouble(d.Text));
-              shouldSet = true;
+          {
+            if (d != null)
+              try
+              {
+                duration = TimeSpan.FromDays(Utility.ToDouble(d.Text));
+                shouldSet = true;
 
-              break;
-            }
-            catch
-            {
-              // ignored
-            }
+                break;
+              }
+              catch
+              {
+                // ignored
+              }
 
-          duration = TimeSpan.Zero;
-          shouldSet = false;
+            duration = TimeSpan.Zero;
+            shouldSet = false;
 
-          break;
-        }
+            break;
+          }
         case 4: // From H
-        {
-          if (h != null)
-            try
-            {
-              duration = TimeSpan.FromHours(Utility.ToDouble(h.Text));
-              shouldSet = true;
+          {
+            if (h != null)
+              try
+              {
+                duration = TimeSpan.FromHours(Utility.ToDouble(h.Text));
+                shouldSet = true;
 
-              break;
-            }
-            catch
-            {
-              // ignored
-            }
+                break;
+              }
+              catch
+              {
+                // ignored
+              }
 
-          duration = TimeSpan.Zero;
-          shouldSet = false;
+            duration = TimeSpan.Zero;
+            shouldSet = false;
 
-          break;
-        }
+            break;
+          }
         case 5: // From M
-        {
-          if (m != null)
-            try
-            {
-              duration = TimeSpan.FromMinutes(Utility.ToDouble(m.Text));
-              shouldSet = true;
+          {
+            if (m != null)
+              try
+              {
+                duration = TimeSpan.FromMinutes(Utility.ToDouble(m.Text));
+                shouldSet = true;
 
-              break;
-            }
-            catch
-            {
-              // ignored
-            }
+                break;
+              }
+              catch
+              {
+                // ignored
+              }
 
-          duration = TimeSpan.Zero;
-          shouldSet = false;
+            duration = TimeSpan.Zero;
+            shouldSet = false;
 
-          break;
-        }
+            break;
+          }
         case 6: // From S
-        {
-          if (s != null)
-            try
-            {
-              duration = TimeSpan.FromSeconds(Utility.ToDouble(s.Text));
-              shouldSet = true;
+          {
+            if (s != null)
+              try
+              {
+                duration = TimeSpan.FromSeconds(Utility.ToDouble(s.Text));
+                shouldSet = true;
 
-              break;
-            }
-            catch
-            {
-              // ignored
-            }
+                break;
+              }
+              catch
+              {
+                // ignored
+              }
 
-          duration = TimeSpan.Zero;
-          shouldSet = false;
+            duration = TimeSpan.Zero;
+            shouldSet = false;
 
-          break;
-        }
+            break;
+          }
         default: return;
       }
 

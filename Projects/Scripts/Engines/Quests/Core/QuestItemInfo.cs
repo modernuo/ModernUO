@@ -8,9 +8,9 @@ namespace Server.Engines.Quests
       ItemID = itemID;
     }
 
-    public object Name{ get; set; }
+    public object Name { get; set; }
 
-    public int ItemID{ get; set; }
+    public int ItemID { get; set; }
   }
 
   public class QuestItemInfoGump : BaseQuestGump

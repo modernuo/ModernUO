@@ -12,7 +12,7 @@ namespace Server.Items
     {
       Hue = 0x498;
       Visible = false;
-      //this.Movable = false;
+      // this.Movable = false;
       if (prev != null)
         prev.NextPoint = this;
     }
@@ -74,10 +74,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Next = reader.ReadItem() as WayPoint;
-          break;
-        }
+          {
+            m_Next = reader.ReadItem() as WayPoint;
+            break;
+          }
       }
     }
 
@@ -93,7 +93,7 @@ namespace Server.Items
 
   public class NextPointTarget : Target
   {
-    private WayPoint m_Point;
+    private readonly WayPoint m_Point;
 
     public NextPointTarget(WayPoint pt) : base(-1, false, TargetFlags.None) => m_Point = pt;
 
@@ -108,7 +108,7 @@ namespace Server.Items
 
   public class WayPointSeqTarget : Target
   {
-    private WayPoint m_Last;
+    private readonly WayPoint m_Last;
 
     public WayPointSeqTarget(WayPoint last) : base(-1, true, TargetFlags.None) => m_Last = last;
 

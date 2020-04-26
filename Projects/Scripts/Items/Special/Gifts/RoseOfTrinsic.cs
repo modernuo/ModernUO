@@ -59,7 +59,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public SecureLevel Level{ get; set; }
+    public SecureLevel Level { get; set; }
 
     public override void GetProperties(ObjectPropertyList list)
     {
@@ -134,7 +134,7 @@ namespace Server.Items
 
     private class SpawnTimer : Timer
     {
-      private RoseOfTrinsic m_Rose;
+      private readonly RoseOfTrinsic m_Rose;
 
       public SpawnTimer(RoseOfTrinsic rose, TimeSpan delay) : base(delay)
       {
@@ -171,7 +171,6 @@ namespace Server.Items
     }
 
     public override int LabelNumber => 1062926; // Petal of the Rose of Trinsic
-
 
     public override void OnDoubleClick(Mobile from)
     {

@@ -7,7 +7,7 @@ namespace Server.Gumps
 {
   public class HeritageTokenGump : Gump
   {
-    private HeritageToken m_Token;
+    private readonly HeritageToken m_Token;
 
     public HeritageTokenGump(HeritageToken token) : base(60, 36)
     {

@@ -6,8 +6,8 @@ namespace Server.Engines.VeteranRewards
 {
   public class RewardConfirmGump : Gump
   {
-    private RewardEntry m_Entry;
-    private Mobile m_From;
+    private readonly RewardEntry m_Entry;
+    private readonly Mobile m_From;
 
     public RewardConfirmGump(Mobile from, RewardEntry entry) : base(0, 0)
     {

@@ -73,13 +73,13 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.Player)]
-    public AosAttributes Attributes{ get; private set; }
+    public AosAttributes Attributes { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosElementAttributes Resistances{ get; private set; }
+    public AosElementAttributes Resistances { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosSkillBonuses SkillBonuses{ get; private set; }
+    public AosSkillBonuses SkillBonuses { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public CraftResource Resource
@@ -126,8 +126,6 @@ namespace Server.Items
 
     public virtual int ArtifactRarity => 0;
 
-    #region ICraftable Members
-
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
     {
@@ -140,7 +138,7 @@ namespace Server.Items
       if (context?.DoNotColor == true)
         Hue = 0;
 
-      if (1 < craftItem.Resources.Count)
+      if (craftItem.Resources.Count > 1)
       {
         resourceType = craftItem.Resources.GetAt(1).ItemType;
 
@@ -166,8 +164,6 @@ namespace Server.Items
 
       return 1;
     }
-
-    #endregion
 
     public override void OnAfterDuped(Item newItem)
     {
@@ -306,7 +302,7 @@ namespace Server.Items
       if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
         list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
 
-      base.AddResistanceProperties(list);
+      this.AddResistanceProperties(list);
 
       if (m_HitPoints >= 0 && m_MaxHitPoints > 0)
         list.Add(1060639, "{0}\t{1}", m_HitPoints, m_MaxHitPoints); // durability ~1_val~ / ~2_val~
@@ -338,60 +334,60 @@ namespace Server.Items
       switch (version)
       {
         case 3:
-        {
-          m_MaxHitPoints = reader.ReadEncodedInt();
-          m_HitPoints = reader.ReadEncodedInt();
-
-          goto case 2;
-        }
-        case 2:
-        {
-          m_Resource = (CraftResource)reader.ReadEncodedInt();
-          m_GemType = (GemType)reader.ReadEncodedInt();
-
-          goto case 1;
-        }
-        case 1:
-        {
-          Attributes = new AosAttributes(this, reader);
-          Resistances = new AosElementAttributes(this, reader);
-          SkillBonuses = new AosSkillBonuses(this, reader);
-
-          Mobile m = Parent as Mobile;
-
-          if (Core.AOS && m != null)
-            SkillBonuses.AddTo(m);
-
-          int strBonus = Attributes.BonusStr;
-          int dexBonus = Attributes.BonusDex;
-          int intBonus = Attributes.BonusInt;
-
-          if (m != null && (strBonus != 0 || dexBonus != 0 || intBonus != 0))
           {
-            string modName = Serial.ToString();
+            m_MaxHitPoints = reader.ReadEncodedInt();
+            m_HitPoints = reader.ReadEncodedInt();
 
-            if (strBonus != 0)
-              m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
-
-            if (dexBonus != 0)
-              m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
-
-            if (intBonus != 0)
-              m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+            goto case 2;
           }
+        case 2:
+          {
+            m_Resource = (CraftResource)reader.ReadEncodedInt();
+            m_GemType = (GemType)reader.ReadEncodedInt();
 
-          m?.CheckStatTimers();
+            goto case 1;
+          }
+        case 1:
+          {
+            Attributes = new AosAttributes(this, reader);
+            Resistances = new AosElementAttributes(this, reader);
+            SkillBonuses = new AosSkillBonuses(this, reader);
 
-          break;
-        }
+            Mobile m = Parent as Mobile;
+
+            if (Core.AOS && m != null)
+              SkillBonuses.AddTo(m);
+
+            int strBonus = Attributes.BonusStr;
+            int dexBonus = Attributes.BonusDex;
+            int intBonus = Attributes.BonusInt;
+
+            if (m != null && (strBonus != 0 || dexBonus != 0 || intBonus != 0))
+            {
+              string modName = Serial.ToString();
+
+              if (strBonus != 0)
+                m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
+
+              if (dexBonus != 0)
+                m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
+
+              if (intBonus != 0)
+                m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
+            }
+
+            m?.CheckStatTimers();
+
+            break;
+          }
         case 0:
-        {
-          Attributes = new AosAttributes(this);
-          Resistances = new AosElementAttributes(this);
-          SkillBonuses = new AosSkillBonuses(this);
+          {
+            Attributes = new AosAttributes(this);
+            Resistances = new AosElementAttributes(this);
+            SkillBonuses = new AosSkillBonuses(this);
 
-          break;
-        }
+            break;
+          }
       }
 
       if (version < 2)

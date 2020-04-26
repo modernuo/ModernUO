@@ -6,8 +6,7 @@ namespace Server.Mobiles
   public class Leviathan : BaseCreature
   {
     [Constructible]
-    public Leviathan(Mobile fisher = null) :
-      base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+    public Leviathan(Mobile fisher = null) : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
       Fisher = fisher;
 
@@ -66,7 +65,7 @@ namespace Server.Mobiles
 
     public override string CorpseName => "a leviathan corpse";
 
-    public Mobile Fisher{ get; set; }
+    public Mobile Fisher { get; set; }
 
     public override string DefaultName => "a leviathan";
 
@@ -81,7 +80,7 @@ namespace Server.Mobiles
 
     public override int TreasureMapLevel => 5;
 
-    public static Type[] Artifacts{ get; } =
+    public static Type[] Artifacts { get; } =
     {
       // Decorations
       typeof(CandelabraOfSouls),
@@ -161,7 +160,7 @@ namespace Server.Mobiles
     {
       base.OnDeath(c);
 
-      if (Fisher != null && 25 > Utility.Random(100))
+      if (Fisher != null && Utility.Random(100) < 25)
         GiveArtifactTo(Fisher);
 
       Fisher = null;

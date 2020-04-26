@@ -73,9 +73,9 @@ namespace Server.Misc
         Map = map;
       }
 
-      public Point3D Location{ get; }
+      public Point3D Location { get; }
 
-      public Map Map{ get; }
+      public Map Map { get; }
     }
   }
 }

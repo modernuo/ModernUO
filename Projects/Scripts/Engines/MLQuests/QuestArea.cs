@@ -4,7 +4,6 @@ namespace Server.Engines.MLQuests
 {
   public class QuestArea
   {
-
     public QuestArea(TextDefinition name, string region, Map forceMap = null)
     {
       Name = name;
@@ -15,17 +14,17 @@ namespace Server.Engines.MLQuests
         ValidationQueue<QuestArea>.Add(this);
     }
 
-    public TextDefinition Name{ get; set; }
+    public TextDefinition Name { get; set; }
 
-    public string RegionName{ get; set; }
+    public string RegionName { get; set; }
 
-    public Map ForceMap{ get; set; }
+    public Map ForceMap { get; set; }
 
     public bool Contains(Mobile mob) => Contains(mob.Region);
 
     public bool Contains(Region reg)
     {
-      if (reg == null || ForceMap != null && reg.Map != ForceMap)
+      if (reg == null || (ForceMap != null && reg.Map != ForceMap))
         return false;
 
       return reg.IsPartOf(RegionName);

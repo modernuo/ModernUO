@@ -33,7 +33,6 @@ namespace Server.Commands
       Generate("Data/Decoration/RuinedMaginciaTram", Map.Trammel);
       Generate("Data/Decoration/RuinedMaginciaFel", Map.Felucca);
 
-
       m_Mobile.SendMessage("World generating complete. {0} items were generated.", m_Count);
     }
 
@@ -56,22 +55,22 @@ namespace Server.Commands
 
   public class DecorationListMag
   {
-    private static Type typeofStatic = typeof(Static);
-    private static Type typeofLocalizedStatic = typeof(LocalizedStatic);
-    private static Type typeofBaseDoor = typeof(BaseDoor);
-    private static Type typeofAnkhWest = typeof(AnkhWest);
-    private static Type typeofAnkhNorth = typeof(AnkhNorth);
-    private static Type typeofBeverage = typeof(BaseBeverage);
-    private static Type typeofLocalizedSign = typeof(LocalizedSign);
-    private static Type typeofMarkContainer = typeof(MarkContainer);
-    private static Type typeofWarningItem = typeof(WarningItem);
-    private static Type typeofHintItem = typeof(HintItem);
-    private static Type typeofCannon = typeof(Cannon);
-    private static Type typeofSerpentPillar = typeof(SerpentPillar);
+    private static readonly Type typeofStatic = typeof(Static);
+    private static readonly Type typeofLocalizedStatic = typeof(LocalizedStatic);
+    private static readonly Type typeofBaseDoor = typeof(BaseDoor);
+    private static readonly Type typeofAnkhWest = typeof(AnkhWest);
+    private static readonly Type typeofAnkhNorth = typeof(AnkhNorth);
+    private static readonly Type typeofBeverage = typeof(BaseBeverage);
+    private static readonly Type typeofLocalizedSign = typeof(LocalizedSign);
+    private static readonly Type typeofMarkContainer = typeof(MarkContainer);
+    private static readonly Type typeofWarningItem = typeof(WarningItem);
+    private static readonly Type typeofHintItem = typeof(HintItem);
+    private static readonly Type typeofCannon = typeof(Cannon);
+    private static readonly Type typeofSerpentPillar = typeof(SerpentPillar);
 
-    private static Queue m_DeleteQueue = new Queue();
+    private static readonly Queue m_DeleteQueue = new Queue();
 
-    private static string[] m_EmptyParams = new string[0];
+    private static readonly string[] m_EmptyParams = Array.Empty<string>();
     private List<DecorationEntryMag> m_Entries;
     private int m_ItemID;
     private string[] m_Params;
@@ -1070,9 +1069,9 @@ namespace Server.Commands
       Extra = line;
     }
 
-    public Point3D Location{ get; }
+    public Point3D Location { get; }
 
-    public string Extra{ get; }
+    public string Extra { get; }
 
     public void Pop(out string v, ref string line)
     {

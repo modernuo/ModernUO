@@ -80,8 +80,8 @@ namespace Server.Items
 
     private class ResurrectEntry : ContextMenuEntry
     {
-      private AnkhOfSacrificeAddon m_Ankh;
-      private Mobile m_Mobile;
+      private readonly AnkhOfSacrificeAddon m_Ankh;
+      private readonly Mobile m_Mobile;
 
       public ResurrectEntry(Mobile mobile, AnkhOfSacrificeAddon ankh) : base(6195, 2)
       {
@@ -100,8 +100,8 @@ namespace Server.Items
 
     private class LockKarmaEntry : ContextMenuEntry
     {
-      private AnkhOfSacrificeAddon m_Ankh;
-      private PlayerMobile m_Mobile;
+      private readonly AnkhOfSacrificeAddon m_Ankh;
+      private readonly PlayerMobile m_Mobile;
 
       public LockKarmaEntry(PlayerMobile mobile, AnkhOfSacrificeAddon ankh) : base(mobile.KarmaLocked ? 6197 : 6196, 2)
       {

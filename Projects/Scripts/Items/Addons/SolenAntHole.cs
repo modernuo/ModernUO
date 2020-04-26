@@ -49,7 +49,6 @@ namespace Server.Items
     }
   }
 
-
   public class SolenAntHole : BaseAddon
   {
     private List<Mobile> m_Spawned;
@@ -90,7 +89,7 @@ namespace Server.Items
         for (int i = 0; i < count; i++)
           SpawnAnt();
 
-        if (0.05 > Utility.RandomDouble())
+        if (Utility.RandomDouble() < 0.05)
           SpawnAnt(new Beetle());
       }
     }

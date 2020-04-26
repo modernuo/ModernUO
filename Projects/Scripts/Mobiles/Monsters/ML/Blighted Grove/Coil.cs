@@ -71,7 +71,7 @@ namespace Server.Mobiles
 
       /*
       // TODO: uncomment once added
-      if ( Utility.RandomDouble() < 0.025 )
+      if (Utility.RandomDouble() < 0.025)
       {
         switch ( Utility.Random( 5 ) )
         {

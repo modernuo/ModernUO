@@ -23,7 +23,7 @@ namespace Server.Items
     {
     }
 
-    public abstract BaseAddonContainer Addon{ get; }
+    public abstract BaseAddonContainer Addon { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public CraftResource Resource
@@ -41,8 +41,6 @@ namespace Server.Items
       }
     }
 
-    #region ICraftable
-
     public virtual int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes,
       BaseTool tool, CraftItem craftItem, int resHue)
     {
@@ -57,8 +55,6 @@ namespace Server.Items
 
       return quality;
     }
-
-    #endregion
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -101,7 +97,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private BaseAddonContainerDeed m_Deed;
+      private readonly BaseAddonContainerDeed m_Deed;
 
       public InternalTarget(BaseAddonContainerDeed deed) : base(-1, true, TargetFlags.None)
       {

@@ -4,14 +4,13 @@ namespace Server.Spells.Necromancy
 {
   public class LichFormSpell : TransformationSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Lich Form", "Rel Xen Corp Ort",
       203,
       9031,
       Reagent.GraveDust,
       Reagent.DaemonBlood,
-      Reagent.NoxCrystal
-    );
+      Reagent.NoxCrystal);
 
     public LichFormSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

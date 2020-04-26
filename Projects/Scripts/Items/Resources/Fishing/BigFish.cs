@@ -10,7 +10,7 @@ namespace Server.Items
     public BigFish() : base(0x09CC)
     {
       Weight = Utility.RandomMinMax(3,
-        200); //TODO: Find correct formula.  max on OSI currently 200, OSI dev says it's not 200 as max, and ~ 1/1,000,000 chance to get highest
+        200); // TODO: Find correct formula.  max on OSI currently 200, OSI dev says it's not 200 as max, and ~ 1/1,000,000 chance to get highest
       Hue = Utility.RandomBool() ? 0x847 : 0x58C;
     }
 
@@ -33,7 +33,7 @@ namespace Server.Items
 
     public void Carve(Mobile from, Item item)
     {
-      base.ScissorHelper(from, new RawFishSteak(), Math.Max(16, (int)Weight) / 4, false);
+      this.ScissorHelper(from, new RawFishSteak(), Math.Max(16, (int)Weight) / 4, false);
     }
 
     public override void GetProperties(ObjectPropertyList list)
@@ -67,15 +67,15 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Fisher = reader.ReadMobile();
-          break;
-        }
+          {
+            m_Fisher = reader.ReadMobile();
+            break;
+          }
         case 0:
-        {
-          Weight = Utility.RandomMinMax(3, 200);
-          break;
-        }
+          {
+            Weight = Utility.RandomMinMax(3, 200);
+            break;
+          }
       }
     }
   }

@@ -7,7 +7,7 @@ namespace Server.Engines.ConPVP
 {
   public class TournamentController : Item
   {
-    private static List<TournamentController> m_Instances = new List<TournamentController>();
+    private static readonly List<TournamentController> m_Instances = new List<TournamentController>();
 
     [Constructible]
     public TournamentController() : base(0x1B7A)
@@ -24,7 +24,7 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Tournament Tournament{ get; private set; }
+    public Tournament Tournament { get; private set; }
 
     public static bool IsActive
     {
@@ -86,10 +86,10 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 0:
-        {
-          Tournament = new Tournament(reader);
-          break;
-        }
+          {
+            Tournament = new Tournament(reader);
+            break;
+          }
       }
 
       m_Instances.Add(this);
@@ -104,7 +104,7 @@ namespace Server.Engines.ConPVP
 
     private class EditEntry : ContextMenuEntry
     {
-      private Tournament m_Tournament;
+      private readonly Tournament m_Tournament;
 
       public EditEntry(Tournament tourney) : base(5101) => m_Tournament = tourney;
 
@@ -116,7 +116,7 @@ namespace Server.Engines.ConPVP
 
     private class StartEntry : ContextMenuEntry
     {
-      private Tournament m_Tournament;
+      private readonly Tournament m_Tournament;
 
       public StartEntry(Tournament tourney) : base(5113) => m_Tournament = tourney;
 

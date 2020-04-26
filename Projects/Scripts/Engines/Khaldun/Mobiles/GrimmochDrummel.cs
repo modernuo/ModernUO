@@ -12,7 +12,7 @@ namespace Server.Mobiles
       Hue = 0x8596;
       Body = 0x190;
 
-      HairItemID = 0x204A; //Krisna
+      HairItemID = 0x204A; // Krisna
 
       Bow bow = new Bow();
       bow.Movable = false;
@@ -59,10 +59,10 @@ namespace Server.Mobiles
 
       PackItem(new Arrow(40));
 
-      if (3 > Utility.Random(100))
+      if (Utility.Random(100) < 3)
         PackItem(new FireHorn());
 
-      if (1 > Utility.Random(3))
+      if (Utility.Random(3) < 1)
         PackItem(Loot.RandomGrimmochJournal());
     }
 

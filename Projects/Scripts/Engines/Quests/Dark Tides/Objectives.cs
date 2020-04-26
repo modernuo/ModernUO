@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Necro
 {
   public class AnimateMaabusCorpseObjective : QuestObjective
   {
-    private static QuestItemInfo[] m_Info =
+    private static readonly QuestItemInfo[] m_Info =
     {
       new QuestItemInfo(1023643, 8787) // spellbook
     };
@@ -91,7 +91,7 @@ namespace Server.Engines.Quests.Necro
 
   public class FindVaultOfSecretsObjective : QuestObjective
   {
-    private static QuestItemInfo[] m_Info =
+    private static readonly QuestItemInfo[] m_Info =
     {
       new QuestItemInfo(1023676, 3679) // glowing rune
     };
@@ -156,7 +156,7 @@ namespace Server.Engines.Quests.Necro
 
   public class ReturnToCrystalCaveObjective : QuestObjective
   {
-    private static QuestItemInfo[] m_Info =
+    private static readonly QuestItemInfo[] m_Info =
     {
       new QuestItemInfo(1026153, 6178) // teleporter
     };

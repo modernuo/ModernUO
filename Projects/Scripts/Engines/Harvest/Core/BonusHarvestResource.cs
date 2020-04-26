@@ -13,13 +13,13 @@ namespace Server.Engines.Harvest
       SuccessMessage = message;
     }
 
-    public Type Type{ get; set; }
+    public Type Type { get; set; }
 
-    public double ReqSkill{ get; set; }
+    public double ReqSkill { get; set; }
 
-    public double Chance{ get; set; }
+    public double Chance { get; set; }
 
-    public TextDefinition SuccessMessage{ get; }
+    public TextDefinition SuccessMessage { get; }
 
     public void SendSuccessTo(Mobile m)
     {

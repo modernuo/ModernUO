@@ -56,22 +56,20 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          if (reader.ReadBool())
           {
-            m_CurArcaneCharges = reader.ReadInt();
-            m_MaxArcaneCharges = reader.ReadInt();
+            if (reader.ReadBool())
+            {
+              m_CurArcaneCharges = reader.ReadInt();
+              m_MaxArcaneCharges = reader.ReadInt();
 
-            if (Hue == 2118)
-              Hue = ArcaneGem.DefaultArcaneHue;
+              if (Hue == 2118)
+                Hue = ArcaneGem.DefaultArcaneHue;
+            }
+
+            break;
           }
-
-          break;
-        }
       }
     }
-
-    #region Arcane Impl
 
     private int m_MaxArcaneCharges, m_CurArcaneCharges;
 
@@ -136,7 +134,5 @@ namespace Server.Items
       else if (ItemID == 0x13CE)
         ItemID = 0x13C6;
     }
-
-    #endregion
   }
 }

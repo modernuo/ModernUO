@@ -76,39 +76,39 @@ namespace Server.Items
       switch (res)
       {
         case 0:
-        {
-          from.SendMessage("You must have a power crystal to construct the golem.");
-          break;
-        }
-        case 1:
-        {
-          from.SendMessage("You must have 50 iron ingots to construct the golem.");
-          break;
-        }
-        case 2:
-        {
-          from.SendMessage("You must have 50 bronze ingots to construct the golem.");
-          break;
-        }
-        case 3:
-        {
-          from.SendMessage("You must have 5 gears to construct the golem.");
-          break;
-        }
-        default:
-        {
-          Golem g = new Golem(true, scalar);
-
-          if (g.SetControlMaster(from))
           {
-            Delete();
-
-            g.MoveToWorld(from.Location, from.Map);
-            from.PlaySound(0x241);
+            from.SendMessage("You must have a power crystal to construct the golem.");
+            break;
           }
+        case 1:
+          {
+            from.SendMessage("You must have 50 iron ingots to construct the golem.");
+            break;
+          }
+        case 2:
+          {
+            from.SendMessage("You must have 50 bronze ingots to construct the golem.");
+            break;
+          }
+        case 3:
+          {
+            from.SendMessage("You must have 5 gears to construct the golem.");
+            break;
+          }
+        default:
+          {
+            Golem g = new Golem(true, scalar);
 
-          break;
-        }
+            if (g.SetControlMaster(from))
+            {
+              Delete();
+
+              g.MoveToWorld(from.Location, from.Map);
+              from.PlaySound(0x241);
+            }
+
+            break;
+          }
       }
     }
 

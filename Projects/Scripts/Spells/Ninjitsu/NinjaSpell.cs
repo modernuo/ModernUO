@@ -8,8 +8,8 @@ namespace Server.Spells.Ninjitsu
     {
     }
 
-    public abstract double RequiredSkill{ get; }
-    public abstract int RequiredMana{ get; }
+    public abstract double RequiredSkill { get; }
+    public abstract int RequiredMana { get; }
 
     public override SkillName CastSkill => SkillName.Ninjitsu;
     public override SkillName DamageSkill => SkillName.Ninjitsu;
@@ -20,7 +20,7 @@ namespace Server.Spells.Ninjitsu
 
     public override bool BlocksMovement => false;
 
-    //public override int CastDelayBase => 1;
+    // public override int CastDelayBase => 1;
 
     public override int CastRecoveryBase => 7;
 
@@ -85,7 +85,7 @@ namespace Server.Spells.Ninjitsu
 
     public override void GetCastSkills(out double min, out double max)
     {
-      min = RequiredSkill - 12.5; //Per 5 on friday 2/16/07
+      min = RequiredSkill - 12.5; // Per 5 on friday 2/16/07
       max = RequiredSkill + 37.5;
     }
 

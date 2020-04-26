@@ -6,16 +6,15 @@ namespace Server.Spells.Necromancy
 {
   public class MindRotSpell : NecromancerSpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Mind Rot", "Wis An Ben",
       203,
       9031,
       Reagent.BatWing,
       Reagent.PigIron,
-      Reagent.DaemonBlood
-    );
+      Reagent.DaemonBlood);
 
-    private static Dictionary<Mobile, MRBucket> m_Table = new Dictionary<Mobile, MRBucket>();
+    private static readonly Dictionary<Mobile, MRBucket> m_Table = new Dictionary<Mobile, MRBucket>();
 
     public MindRotSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -55,7 +54,7 @@ namespace Server.Spells.Necromancy
         TimeSpan duration =
           TimeSpan.FromSeconds(
             ((GetDamageSkill(Caster) - GetResistSkill(m)) / 5.0 + 20.0) * (m.Player ? 1.0 : 2.0));
-        m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); //Skill check for gain
+        m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); // Skill check for gain
 
         SetMindRotScalar(Caster, m, m.Player ? 1.25 : 2.00, duration);
 
@@ -104,8 +103,8 @@ namespace Server.Spells.Necromancy
 
   public class MRExpireTimer : Timer
   {
-    private DateTime m_End;
-    private Mobile m_Target;
+    private readonly DateTime m_End;
+    private readonly Mobile m_Target;
 
     public MRExpireTimer(Mobile caster, Mobile target, TimeSpan delay) : base(TimeSpan.FromSeconds(1.0),
       TimeSpan.FromSeconds(1.0))

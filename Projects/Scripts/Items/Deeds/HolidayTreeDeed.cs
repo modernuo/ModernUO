@@ -91,11 +91,12 @@ namespace Server.Items
       Point3D loc = new Point3D(p);
 
       if (p is StaticTarget target)
+        /* NOTE: OSI does not properly normalize Z positioning here.
+         * A side affect is that you can only place on floors (due to the CanFit call).
+         * That functionality may be desired. And so, it's included in this script.
+         */
         loc.Z -= TileData.ItemTable[target.ItemID]
-          .CalcHeight; /* NOTE: OSI does not properly normalize Z positioning here.
-													* A side affect is that you can only place on floors (due to the CanFit call).
-													* That functionality may be desired. And so, it's included in this script.
-													*/
+          .CalcHeight;
 
       if (ValidatePlacement(from, loc))
         EndPlace(from, type, loc);
@@ -117,8 +118,8 @@ namespace Server.Items
 
   public class HolidayTreeChoiceGump : Gump
   {
-    private HolidayTreeDeed m_Deed;
-    private Mobile m_From;
+    private readonly HolidayTreeDeed m_Deed;
+    private readonly Mobile m_From;
 
     public HolidayTreeChoiceGump(Mobile from, HolidayTreeDeed deed) : base(200, 200)
     {
@@ -145,15 +146,15 @@ namespace Server.Items
       switch (info.ButtonID)
       {
         case 1:
-        {
-          m_Deed.BeginPlace(m_From, HolidayTreeType.Classic);
-          break;
-        }
+          {
+            m_Deed.BeginPlace(m_From, HolidayTreeType.Classic);
+            break;
+          }
         case 2:
-        {
-          m_Deed.BeginPlace(m_From, HolidayTreeType.Modern);
-          break;
-        }
+          {
+            m_Deed.BeginPlace(m_From, HolidayTreeType.Modern);
+            break;
+          }
       }
     }
   }

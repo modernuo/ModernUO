@@ -15,8 +15,8 @@
       Rarity = rarity;
     }
 
-    public int Name{ get; }
+    public int Name { get; }
 
-    public DawnsMusicRarity Rarity{ get; }
+    public DawnsMusicRarity Rarity { get; }
   }
 }

@@ -10,18 +10,17 @@ namespace Server.Spells.Seventh
 {
   public class PolymorphSpell : MagerySpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Polymorph", "Vas Ylem Rel",
       221,
       9002,
       Reagent.Bloodmoss,
       Reagent.SpidersSilk,
-      Reagent.MandrakeRoot
-    );
+      Reagent.MandrakeRoot);
 
-    private static Dictionary<Mobile, InternalTimer> m_Timers = new Dictionary<Mobile, InternalTimer>();
+    private static readonly Dictionary<Mobile, InternalTimer> m_Timers = new Dictionary<Mobile, InternalTimer>();
 
-    private int m_NewBody;
+    private readonly int m_NewBody;
 
     public PolymorphSpell(Mobile caster, Item scroll, int body = 0) : base(caster, scroll, m_Info) => m_NewBody = body;
 
@@ -29,7 +28,7 @@ namespace Server.Spells.Seventh
 
     public override bool CheckCast()
     {
-      /*if ( Caster.Mounted )
+      /*if (Caster.Mounted)
       {
         Caster.SendLocalizedMessage( 1042561 ); //Please dismount first.
         return false;
@@ -81,7 +80,7 @@ namespace Server.Spells.Seventh
 
     public override void OnCast()
     {
-      /*if ( Caster.Mounted )
+      /*if (Caster.Mounted)
       {
         Caster.SendLocalizedMessage( 1042561 ); //Please dismount first.
       }
@@ -182,7 +181,7 @@ namespace Server.Spells.Seventh
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Owner;
+      private readonly Mobile m_Owner;
 
       public InternalTimer(Mobile owner) : base(TimeSpan.FromSeconds(0))
       {

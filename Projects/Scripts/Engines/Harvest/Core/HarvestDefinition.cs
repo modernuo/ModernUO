@@ -1,71 +1,84 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Engines.Harvest
 {
   public class HarvestDefinition
   {
-    public int BankWidth{ get; set; }
+    public int BankWidth { get; set; }
 
-    public int BankHeight{ get; set; }
+    public int BankHeight { get; set; }
 
-    public int MinTotal{ get; set; }
+    public int MinTotal { get; set; }
 
-    public int MaxTotal{ get; set; }
+    public int MaxTotal { get; set; }
 
-    public int[] Tiles{ get; set; }
+    public int[] Tiles { get; set; }
 
-    public bool RangedTiles{ get; set; }
+    public bool RangedTiles { get; set; }
 
-    public TimeSpan MinRespawn{ get; set; }
+    public TimeSpan MinRespawn { get; set; }
 
-    public TimeSpan MaxRespawn{ get; set; }
+    public TimeSpan MaxRespawn { get; set; }
 
-    public int MaxRange{ get; set; }
+    public int MaxRange { get; set; }
 
-    public int ConsumedPerHarvest{ get; set; }
+    public int ConsumedPerHarvest { get; set; }
 
-    public int ConsumedPerFeluccaHarvest{ get; set; }
+    public int ConsumedPerFeluccaHarvest { get; set; }
 
-    public bool PlaceAtFeetIfFull{ get; set; }
+    public bool PlaceAtFeetIfFull { get; set; }
 
-    public SkillName Skill{ get; set; }
+    public SkillName Skill { get; set; }
 
-    public int[] EffectActions{ get; set; }
+    public int[] EffectActions { get; set; }
 
-    public int[] EffectCounts{ get; set; }
+    public int[] EffectCounts { get; set; }
 
-    public int[] EffectSounds{ get; set; }
+    public int[] EffectSounds { get; set; }
 
-    public TimeSpan EffectSoundDelay{ get; set; }
+    public TimeSpan EffectSoundDelay { get; set; }
 
-    public TimeSpan EffectDelay{ get; set; }
+    public TimeSpan EffectDelay { get; set; }
 
-    public object NoResourcesMessage{ get; set; }
+    public TextDefinition NoResourcesMessage { get; set; }
 
-    public object OutOfRangeMessage{ get; set; }
+    public TextDefinition OutOfRangeMessage { get; set; }
 
-    public object TimedOutOfRangeMessage{ get; set; }
+    public TextDefinition TimedOutOfRangeMessage { get; set; }
 
-    public object DoubleHarvestMessage{ get; set; }
+    public TextDefinition DoubleHarvestMessage { get; set; }
 
-    public object FailMessage{ get; set; }
+    public TextDefinition FailMessage { get; set; }
 
-    public object PackFullMessage{ get; set; }
+    public TextDefinition PackFullMessage { get; set; }
 
-    public object ToolBrokeMessage{ get; set; }
+    public TextDefinition ToolBrokeMessage { get; set; }
 
-    public HarvestResource[] Resources{ get; set; }
+    public HarvestResource[] Resources { get; set; }
 
-    public HarvestVein[] Veins{ get; set; }
+    private HarvestVein[] m_Veins;
 
-    public BonusHarvestResource[] BonusResources{ get; set; }
+    public HarvestVein[] Veins
+    {
+      get => m_Veins;
+      set
+      {
+        m_Veins = value;
+        VeinWeights = m_Veins.Aggregate<HarvestVein, uint>(0, (current, t) => current + t.VeinChance);
+      }
+    }
 
-    public bool RaceBonus{ get; set; }
+    public BonusHarvestResource[] BonusResources { get; set; }
 
-    public bool RandomizeVeins{ get; set; }
+    public bool RaceBonus { get; set; }
 
-    public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks{ get; }
+    public bool RandomizeVeins { get; set; }
+
+    public uint VeinWeights { get; private set; }
+
+    public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks { get; }
       = new Dictionary<Map, Dictionary<Point2D, HarvestBank>>();
 
     public void SendMessageTo(Mobile from, object message)
@@ -100,27 +113,17 @@ namespace Server.Engines.Harvest
       if (Veins.Length == 1)
         return Veins[0];
 
-      double randomValue;
+      if (RandomizeVeins) return GetVeinFrom(Utility.Random(1000u));
 
-      if (RandomizeVeins)
-      {
-        randomValue = Utility.RandomDouble();
-      }
-      else
-      {
-        Random random = new Random(x * 17 + y * 11 + map.MapID * 3);
-        randomValue = random.NextDouble();
-      }
-
-      return GetVeinFrom(randomValue);
+      // TODO: Introduce pulling primes from a config and writing them if they don't exist to the config
+      using Xoshiro256PlusPlus random = new Xoshiro256PlusPlus((ulong)(x * 17 + y * 11 + map.MapID * 3));
+      return GetVeinFrom(random.Next(VeinWeights));
     }
 
-    public HarvestVein GetVeinFrom(double randomValue)
+    public HarvestVein GetVeinFrom(uint randomValue)
     {
       if (Veins.Length == 1)
         return Veins[0];
-
-      randomValue *= 100;
 
       for (int i = 0; i < Veins.Length; ++i)
       {

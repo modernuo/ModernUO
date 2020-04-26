@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class AnimalLore
+  public static class AnimalLore
   {
     public static void Initialize()
     {
@@ -102,9 +102,6 @@ namespace Server.SkillHandlers
       int pages = Core.AOS ? 5 : 3;
       int page = 0;
 
-
-      #region Attributes
-
       AddPage(++page);
 
       AddImage(128, 152, 2086);
@@ -163,10 +160,6 @@ namespace Server.SkillHandlers
       AddButton(340, 358, 5601, 5605, 0, GumpButtonType.Page, page + 1);
       AddButton(317, 358, 5603, 5607, 0, GumpButtonType.Page, pages);
 
-      #endregion
-
-      #region Resistances
-
       if (Core.AOS)
       {
         AddPage(++page);
@@ -193,10 +186,6 @@ namespace Server.SkillHandlers
         AddButton(317, 358, 5603, 5607, 0, GumpButtonType.Page, page - 1);
       }
 
-      #endregion
-
-      #region Damage
-
       if (Core.AOS)
       {
         AddPage(++page);
@@ -219,23 +208,15 @@ namespace Server.SkillHandlers
         AddHtmlLocalized(153, 240, 160, 18, 1061650, LabelColor); // Energy
         AddHtml(320, 240, 35, 18, FormatElement(c.EnergyDamage));
 
-        #region Mondain's Legacy
-
         if (Core.ML)
         {
           AddHtmlLocalized(153, 258, 160, 18, 1076750, LabelColor); // Base Damage
           AddHtml(300, 258, 55, 18, FormatDamage(c.DamageMin, c.DamageMax));
         }
 
-        #endregion
-
         AddButton(340, 358, 5601, 5605, 0, GumpButtonType.Page, page + 1);
         AddButton(317, 358, 5603, 5607, 0, GumpButtonType.Page, page - 1);
       }
-
-      #endregion
-
-      #region Skills
 
       AddPage(++page);
 
@@ -254,8 +235,6 @@ namespace Server.SkillHandlers
       AddHtmlLocalized(153, 222, 160, 18, 1044061, LabelColor); // Anatomy
       AddHtml(320, 222, 35, 18, FormatSkill(c, SkillName.Anatomy));
 
-      #region Mondain's Legacy
-
       if (c is CuSidhe)
       {
         AddHtmlLocalized(153, 240, 160, 18, 1044077, LabelColor); // Healing
@@ -266,8 +245,6 @@ namespace Server.SkillHandlers
         AddHtmlLocalized(153, 240, 160, 18, 1044090, LabelColor); // Poisoning
         AddHtml(320, 240, 35, 18, FormatSkill(c, SkillName.Poisoning));
       }
-
-      #endregion
 
       AddImage(128, 260, 2086);
       AddHtmlLocalized(147, 258, 160, 18, 3001032, 200); // Lore & Knowledge
@@ -283,10 +260,6 @@ namespace Server.SkillHandlers
 
       AddButton(340, 358, 5601, 5605, 0, GumpButtonType.Page, page + 1);
       AddButton(317, 358, 5603, 5607, 0, GumpButtonType.Page, page - 1);
-
-      #endregion
-
-      #region Misc
 
       AddPage(++page);
 
@@ -343,8 +316,6 @@ namespace Server.SkillHandlers
 
       AddButton(340, 358, 5601, 5605, 0, GumpButtonType.Page, 1);
       AddButton(317, 358, 5603, 5607, 0, GumpButtonType.Page, page - 1);
-
-      #endregion
     }
 
     private static string FormatSkill(BaseCreature c, SkillName name)
@@ -389,8 +360,6 @@ namespace Server.SkillHandlers
       return $"<div align=right>{val}%</div>";
     }
 
-    #region Mondain's Legacy
-
     private static string FormatDamage(int min, int max)
     {
       if (min <= 0 || max <= 0)
@@ -398,7 +367,5 @@ namespace Server.SkillHandlers
 
       return $"<div align=right>{min}-{max}</div>";
     }
-
-    #endregion
   }
 }

@@ -15,15 +15,15 @@ namespace Server.Items
     // No longer active in pub21:
     /*public override bool CheckSkills( Mobile from )
     {
-      if ( !base.CheckSkills( from ) )
+      if (!base.CheckSkills( from ))
         return false;
 
-      if ( !(from.Weapon is Fists) )
+      if (!(from.Weapon is Fists))
         return true;
 
       Skill skill = from.Skills.ArmsLore;
 
-      if ( skill?.Base >= 80.0 )
+      if (skill?.Base >= 80.0)
         return true;
 
       from.SendLocalizedMessage( 1061812 ); // You lack the required skill in armslore to perform that attack!
@@ -57,7 +57,7 @@ namespace Server.Items
       {
         attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
       }
-      else if (!Core.ML && toDisarm == null || toDisarm is BaseShield || toDisarm is Spellbook)
+      else if ((!Core.ML && toDisarm == null) || toDisarm is BaseShield || toDisarm is Spellbook)
       {
         attacker.SendLocalizedMessage(1060849); // Your target is already unarmed!
       }

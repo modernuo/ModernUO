@@ -70,7 +70,7 @@ namespace Server.Network
 
     public static PacketWriter CreateInstance(int capacity = 32)
     {
-      if (m_Pool.TryDequeue(out PacketWriter pw))
+      if (m_Pool.TryDequeue(out var pw))
       {
         pw.m_Capacity = capacity;
         pw.UnderlyingStream.SetLength(0);
@@ -177,7 +177,7 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length;
+      var length = value.Length;
 
       UnderlyingStream.SetLength(UnderlyingStream.Length + size);
 
@@ -204,7 +204,7 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length;
+      var length = value.Length;
 
       UnderlyingStream.SetLength(UnderlyingStream.Length + length + 1);
 
@@ -223,11 +223,12 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length;
+      var length = value.Length;
 
       UnderlyingStream.SetLength(UnderlyingStream.Length + (length + 1) * 2);
 
-      UnderlyingStream.Position += Encoding.Unicode.GetBytes(value, 0, length, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
+      UnderlyingStream.Position +=
+        Encoding.Unicode.GetBytes(value, 0, length, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
       UnderlyingStream.Position += 2;
     }
 
@@ -243,7 +244,7 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length;
+      var length = value.Length;
       size *= 2;
 
       UnderlyingStream.SetLength(UnderlyingStream.Length + size);
@@ -271,7 +272,7 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length;
+      var length = value.Length;
 
       UnderlyingStream.SetLength(UnderlyingStream.Length + (length + 1) * 2);
 
@@ -292,15 +293,16 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length;
+      var length = value.Length;
       size *= 2;
 
       UnderlyingStream.SetLength(UnderlyingStream.Length + size);
 
-      if (length * 2 >= size )
+      if (length * 2 >= size)
       {
         UnderlyingStream.Position +=
-          Encoding.BigEndianUnicode.GetBytes(value, 0, size / 2, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
+          Encoding.BigEndianUnicode.GetBytes(value, 0, size / 2, UnderlyingStream.GetBuffer(),
+            (int)UnderlyingStream.Position);
       }
       else
       {

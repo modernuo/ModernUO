@@ -13,7 +13,7 @@ namespace Server.Spells
     private ISpellTargetingPoint3D m_Spell;
     public ISpell Spell => m_Spell;
 
-    private bool m_CheckLOS;
+    private readonly bool m_CheckLOS;
 
     public SpellTargetPoint3D(ISpellTargetingPoint3D spell, TargetFlags flags = TargetFlags.None, int range = 12, bool checkLOS = true) : base(range, true, flags)
     {

@@ -8,9 +8,9 @@ using Server.Spells.Necromancy;
 
 namespace Server.SkillHandlers
 {
-  public class Tracking
+  public static class Tracking
   {
-    private static Dictionary<Mobile, TrackingInfo> m_Table = new Dictionary<Mobile, TrackingInfo>();
+    private static readonly Dictionary<Mobile, TrackingInfo> m_Table = new Dictionary<Mobile, TrackingInfo>();
 
     public static void Initialize()
     {
@@ -44,11 +44,10 @@ namespace Server.SkillHandlers
 
       double bonus = Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
 
-      m_Table.Remove(tracker); //Reset as of Pub 40, counting it as bug for Core.SE.
+      m_Table.Remove(tracker); // Reset as of Pub 40, counting it as bug for Core.SE.
 
       return Core.ML ? Math.Min(bonus, 10 + tracker.Skills.Tracking.Value / 10) : bonus;
     }
-
 
     public static void ClearTrackingInfo(Mobile tracker)
     {
@@ -74,8 +73,8 @@ namespace Server.SkillHandlers
 
   public class TrackWhatGump : Gump
   {
-    private Mobile m_From;
-    private bool m_Success;
+    private readonly Mobile m_From;
+    private readonly bool m_Success;
 
     public TrackWhatGump(Mobile from) : base(20, 30)
     {
@@ -117,7 +116,7 @@ namespace Server.SkillHandlers
 
   public class TrackWhoGump : Gump
   {
-    private static TrackTypeDelegate[] m_Delegates =
+    private static readonly TrackTypeDelegate[] m_Delegates =
     {
       IsAnimal,
       IsMonster,
@@ -125,10 +124,10 @@ namespace Server.SkillHandlers
       IsPlayer
     };
 
-    private Mobile m_From;
+    private readonly Mobile m_From;
 
-    private List<Mobile> m_List;
-    private int m_Range;
+    private readonly List<Mobile> m_List;
+    private readonly int m_Range;
 
     private TrackWhoGump(Mobile from, List<Mobile> list, int range) : base(20, 30)
     {
@@ -218,12 +217,11 @@ namespace Server.SkillHandlers
       if (!Core.AOS || !m.Player)
         return true;
 
-
       int tracking = from.Skills.Tracking.Fixed;
       int detectHidden = from.Skills.DetectHidden.Fixed;
 
       if (Core.ML && m.Race == Race.Elf)
-        tracking /= 2; //The 'Guide' says that it requires twice as Much tracking SKILL to track an elf.  Not the total difficulty to track.
+        tracking /= 2; // The 'Guide' says that it requires twice as Much tracking SKILL to track an elf.  Not the total difficulty to track.
 
       int hiding = m.Skills.Hiding.Fixed;
       int stealth = m.Skills.Stealth.Fixed;
@@ -278,7 +276,7 @@ namespace Server.SkillHandlers
 
     private class InternalSorter : IComparer<Mobile>
     {
-      private Mobile m_From;
+      private readonly Mobile m_From;
 
       public InternalSorter(Mobile from) => m_From = from;
 
@@ -299,7 +297,7 @@ namespace Server.SkillHandlers
   public class TrackArrow : QuestArrow
   {
     private Mobile m_From;
-    private Timer m_Timer;
+    private readonly Timer m_Timer;
 
     public TrackArrow(Mobile from, Mobile target, int range) : base(from, target)
     {
@@ -335,10 +333,11 @@ namespace Server.SkillHandlers
 
   public class TrackTimer : Timer
   {
-    private QuestArrow m_Arrow;
-    private Mobile m_From, m_Target;
+    private readonly QuestArrow m_Arrow;
+    private readonly Mobile m_From;
+    private readonly Mobile m_Target;
     private int m_LastX, m_LastY;
-    private int m_Range;
+    private readonly int m_Range;
 
     public TrackTimer(Mobile from, Mobile target, int range, QuestArrow arrow) : base(TimeSpan.FromSeconds(0.25),
       TimeSpan.FromSeconds(2.5))
@@ -359,7 +358,7 @@ namespace Server.SkillHandlers
       }
 
       if (m_From.NetState == null || m_From.Deleted || m_Target.Deleted || m_From.Map != m_Target.Map ||
-          !m_From.InRange(m_Target, m_Range) || m_Target.Hidden && m_Target.AccessLevel > m_From.AccessLevel)
+          !m_From.InRange(m_Target, m_Range) || (m_Target.Hidden && m_Target.AccessLevel > m_From.AccessLevel))
       {
         m_Arrow.Stop();
         Stop();

@@ -34,7 +34,7 @@ namespace Server.Items
       DropItem(new Gold(Utility.Random(30, 100)));
 
       // Drop bolts
-      //DropItem( new Bolt( 10 ) );
+      // DropItem( new Bolt( 10 ) );
 
       // Gems
       if (Utility.RandomBool())

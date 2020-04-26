@@ -40,7 +40,7 @@ namespace Server.Commands.Generic
         from.SendMessage("That is not a container.");
         return;
       }
-      
+
       try
       {
         Extensions ext = Extensions.Parse(from, ref args);

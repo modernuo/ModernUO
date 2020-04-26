@@ -27,7 +27,7 @@ namespace Server.Items
     public override TimeSpan DecayTime => TimeSpan.FromDays(1.0);
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public SecureLevel Level{ get; set; }
+    public SecureLevel Level { get; set; }
 
     public abstract void CreatePieces();
 
@@ -101,15 +101,15 @@ namespace Server.Items
     }
 
     public static bool ValidateDefault(Mobile from, BaseBoard board) =>
-      !board.Deleted && (from.AccessLevel >= AccessLevel.GameMaster || from.Alive &&
-                         (board.IsChildOf(from.Backpack) || !(board.RootParent is Mobile) &&
+      !board.Deleted && (from.AccessLevel >= AccessLevel.GameMaster || (from.Alive &&
+                         (board.IsChildOf(from.Backpack) || (!(board.RootParent is Mobile) &&
                           board.Map == from.Map && from.InRange(board.GetWorldLocation(), 1) &&
-                          BaseHouse.FindHouseAt(board)?.IsOwner(from) == true));
+                          BaseHouse.FindHouseAt(board)?.IsOwner(from) == true))));
 
     public class DefaultEntry : ContextMenuEntry
     {
-      private BaseBoard m_Board;
-      private Mobile m_From;
+      private readonly BaseBoard m_Board;
+      private readonly Mobile m_From;
 
       public DefaultEntry(Mobile from, BaseBoard board) : base(6162,
         from.AccessLevel >= AccessLevel.GameMaster ? -1 : 1)

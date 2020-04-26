@@ -6,8 +6,8 @@ namespace Server.Factions
 {
   public class JoinStoneGump : FactionGump
   {
-    private Faction m_Faction;
-    private PlayerMobile m_From;
+    private readonly Faction m_Faction;
+    private readonly PlayerMobile m_From;
 
     public JoinStoneGump(PlayerMobile from, Faction faction) : base(20, 30)
     {
@@ -19,10 +19,8 @@ namespace Server.Factions
       AddBackground(0, 0, 550, 440, 5054);
       AddBackground(10, 10, 530, 420, 3000);
 
-
       AddHtmlText(20, 30, 510, 20, faction.Definition.Header, false, false);
       AddHtmlText(20, 130, 510, 100, faction.Definition.About, true, true);
-
 
       AddHtmlLocalized(20, 60, 100, 20, 1011429); // Led By :
       AddHtml(125, 60, 200, 20, faction.Commander != null ? faction.Commander.Name : "Nobody");
@@ -32,7 +30,6 @@ namespace Server.Factions
         AddHtmlLocalized(125, 80, 350, 20, 1011480 + faction.Tithe / 10);
       else
         AddHtml(125, 80, 350, 20, $"{faction.Tithe}%");
-
 
       AddButton(20, 400, 4005, 4007, 1);
       AddHtmlLocalized(55, 400, 200, 20, 1011425); // JOIN THIS FACTION

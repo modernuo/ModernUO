@@ -5,7 +5,7 @@ namespace Server
 {
   public class SocketOptions
   {
-    private static IPEndPoint[] m_ListenerEndPoints =
+    private static readonly IPEndPoint[] m_ListenerEndPoints =
     {
       new IPEndPoint(IPAddress.Any, 2593) // Default: Listen on port 2593 on all IP addresses
 

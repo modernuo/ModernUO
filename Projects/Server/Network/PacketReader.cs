@@ -36,19 +36,19 @@ namespace Server.Network
 
     public PacketReader(ReadOnlySequence<byte> seq) => m_Reader = new SequenceReader<byte>(seq);
 
-    public byte Peek() => m_Reader.TryPeek(out byte value) ? value : (byte)0;
+    public byte Peek() => m_Reader.TryPeek(out var value) ? value : (byte)0;
 
     public void Trace(NetState state)
     {
       try
       {
-        using StreamWriter sw = new StreamWriter("Packets.log", true);
-        byte[] buffer = m_Reader.Sequence.ToArray();
+        using var sw = new StreamWriter("Packets.log", true);
+        var buffer = m_Reader.Sequence.ToArray();
 
         if (buffer.Length > 0)
           sw.WriteLine("Client: {0}: Unhandled packet 0x{1:X2}", state, buffer[0]);
 
-        using (MemoryStream ms = new MemoryStream(buffer))
+        using (var ms = new MemoryStream(buffer))
         {
           Utility.FormatBuffer(sw, ms, buffer.Length);
         }
@@ -79,7 +79,7 @@ namespace Server.Network
             m_Reader.Advance(Math.Min(m_Reader.Remaining, offset));
           break;
         case SeekOrigin.End:
-          long count = m_Reader.Remaining - offset;
+          var count = m_Reader.Remaining - offset;
           if (count < 0)
             m_Reader.Rewind(count * -1);
           else if (count > 0)
@@ -96,7 +96,7 @@ namespace Server.Network
 
     public short ReadInt16() => m_Reader.TryReadBigEndian(out short value) ? value : (short)0;
 
-    public byte ReadByte() => m_Reader.TryRead(out byte value) ? value : (byte)0;
+    public byte ReadByte() => m_Reader.TryRead(out var value) ? value : (byte)0;
 
     public uint ReadUInt32() => (uint)ReadInt32();
 
@@ -108,7 +108,7 @@ namespace Server.Network
 
     public string ReadUnicodeStringLE()
     {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
 
       while (m_Reader.TryReadLittleEndian(out short c) && c != 0)
         sb.Append((char)c);
@@ -118,7 +118,7 @@ namespace Server.Network
 
     public string ReadUnicodeStringLE(int fixedLength)
     {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
 
       while (fixedLength-- > 0 && m_Reader.TryReadLittleEndian(out short c) && c != 0)
         sb.Append((char)c);
@@ -131,7 +131,7 @@ namespace Server.Network
 
     public string ReadUnicodeStringLESafe(int fixedLength)
     {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
 
       while (fixedLength-- > 0 && m_Reader.TryReadLittleEndian(out short c) && c != 0)
         if (IsSafeChar(c))
@@ -145,7 +145,7 @@ namespace Server.Network
 
     public string ReadUnicodeStringLESafe()
     {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
 
       while (m_Reader.TryReadLittleEndian(out short c) && c != 0)
         if (IsSafeChar(c))
@@ -156,7 +156,7 @@ namespace Server.Network
 
     public string ReadUnicodeStringSafe()
     {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
 
       while (m_Reader.TryReadBigEndian(out short c) && c != 0)
         if (IsSafeChar(c))
@@ -167,7 +167,7 @@ namespace Server.Network
 
     public string ReadUnicodeString()
     {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
 
       while (m_Reader.TryReadBigEndian(out short c) && c != 0)
         sb.Append((char)c);
@@ -182,17 +182,19 @@ namespace Server.Network
       string s;
 
       if (m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0'))
+      {
         s = Utility.UTF8.GetString(span.Length > fixedLength ? span.Slice(0, fixedLength) : span);
+      }
       else
       {
-        long size = Math.Min(m_Reader.Remaining, fixedLength);
+        var size = Math.Min(m_Reader.Remaining, fixedLength);
         s = Utility.UTF8.GetString(m_Reader.Sequence.Slice(m_Reader.Position, size).ToArray());
         m_Reader.Advance(size);
       }
 
-      StringBuilder sb = new StringBuilder(s.Length);
+      var sb = new StringBuilder(s.Length);
 
-      for (int i = 0; i < s.Length; ++i)
+      for (var i = 0; i < s.Length; ++i)
         if (IsSafeChar(s[i]))
           sb.Append(s[i]);
 
@@ -204,16 +206,18 @@ namespace Server.Network
       string s;
 
       if (m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0'))
+      {
         s = Utility.UTF8.GetString(span);
+      }
       else
       {
         s = Utility.UTF8.GetString(m_Reader.Sequence.Slice(m_Reader.Position, m_Reader.Remaining).ToArray());
         m_Reader.Advance(m_Reader.Remaining);
       }
 
-      StringBuilder sb = new StringBuilder(s.Length);
+      var sb = new StringBuilder(s.Length);
 
-      for (int i = 0; i < s.Length; ++i)
+      for (var i = 0; i < s.Length; ++i)
         if (IsSafeChar(s[i]))
           sb.Append(s[i]);
 
@@ -222,15 +226,15 @@ namespace Server.Network
 
     public string ReadUTF8String() =>
       Utility.UTF8.GetString(
-        m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0') ? span :
-          m_Reader.Sequence.Slice(m_Reader.Position, m_Reader.Remaining).ToArray()
-      );
+        m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0')
+          ? span
+          : m_Reader.Sequence.Slice(m_Reader.Position, m_Reader.Remaining).ToArray());
 
     public string ReadString()
     {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
 
-      while (m_Reader.TryRead(out byte c))
+      while (m_Reader.TryRead(out var c))
         sb.Append((char)c);
 
       return sb.ToString();
@@ -238,9 +242,9 @@ namespace Server.Network
 
     public string ReadStringSafe()
     {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
 
-      while (m_Reader.TryRead(out byte c))
+      while (m_Reader.TryRead(out var c))
         if (IsSafeChar(c))
           sb.Append((char)c);
 
@@ -249,7 +253,7 @@ namespace Server.Network
 
     public string ReadUnicodeStringSafe(int fixedLength)
     {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
 
       while (fixedLength-- > 0 && m_Reader.TryReadBigEndian(out short c) && c != 0)
         if (IsSafeChar(c))
@@ -263,7 +267,7 @@ namespace Server.Network
 
     public string ReadUnicodeString(int fixedLength)
     {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
 
       while (fixedLength-- > 0 && m_Reader.TryReadBigEndian(out short c) && c != 0)
         sb.Append((char)c);
@@ -276,9 +280,9 @@ namespace Server.Network
 
     public string ReadStringSafe(int fixedLength)
     {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
 
-      while (fixedLength-- > 0 && m_Reader.TryRead(out byte c) && c != 0)
+      while (fixedLength-- > 0 && m_Reader.TryRead(out var c) && c != 0)
         if (IsSafeChar(c))
           sb.Append((char)c);
 
@@ -290,9 +294,9 @@ namespace Server.Network
 
     public string ReadString(int fixedLength)
     {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
 
-      while (fixedLength-- > 0 && m_Reader.TryRead(out byte c) && c != 0)
+      while (fixedLength-- > 0 && m_Reader.TryRead(out var c) && c != 0)
         sb.Append((char)c);
 
       if (fixedLength > 0)

@@ -52,35 +52,35 @@ namespace Server.Commands.Generic
       switch (command.ObjectTypes)
       {
         case ObjectTypes.Both:
-        {
-          if (!(targeted is Item) && !(targeted is Mobile))
           {
-            from.SendMessage("This command does not work on that.");
-            return;
-          }
+            if (!(targeted is Item) && !(targeted is Mobile))
+            {
+              from.SendMessage("This command does not work on that.");
+              return;
+            }
 
-          break;
-        }
+            break;
+          }
         case ObjectTypes.Items:
-        {
-          if (!(targeted is Item))
           {
-            from.SendMessage("This command only works on items.");
-            return;
-          }
+            if (!(targeted is Item))
+            {
+              from.SendMessage("This command only works on items.");
+              return;
+            }
 
-          break;
-        }
+            break;
+          }
         case ObjectTypes.Mobiles:
-        {
-          if (!(targeted is Mobile))
           {
-            from.SendMessage("This command only works on mobiles.");
-            return;
-          }
+            if (!(targeted is Mobile))
+            {
+              from.SendMessage("This command only works on mobiles.");
+              return;
+            }
 
-          break;
-        }
+            break;
+          }
       }
 
       RunCommand(from, targeted, command, args);

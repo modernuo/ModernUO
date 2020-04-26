@@ -30,8 +30,8 @@ namespace Server.Mobiles
       SetSkill(SkillName.MagicResist, 32.8, 54.6);
       SetSkill(SkillName.Anatomy, 0, 0);
 
-      Fame = 10000; //Guessing here
-      Karma = 10000; //Guessing here
+      Fame = 10000; // Guessing here
+      Karma = 10000; // Guessing here
 
       VirtualArmor = 24;
 

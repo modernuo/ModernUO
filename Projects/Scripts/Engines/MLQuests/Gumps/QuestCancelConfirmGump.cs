@@ -5,8 +5,8 @@ namespace Server.Engines.MLQuests.Gumps
 {
   public class QuestCancelConfirmGump : Gump
   {
-    private bool m_CloseGumps;
-    private MLQuestInstance m_Instance;
+    private readonly bool m_CloseGumps;
+    private readonly MLQuestInstance m_Instance;
 
     public QuestCancelConfirmGump(MLQuestInstance instance, bool closeGumps = true)
       : base(120, 50)
@@ -82,15 +82,15 @@ namespace Server.Engines.MLQuests.Gumps
       switch (info.ButtonID)
       {
         case 7: // Okay
-        {
-          if (info.IsSwitched(2))
-            m_Instance.Cancel(true);
-          else if (info.IsSwitched(1))
-            m_Instance.Cancel(false);
+          {
+            if (info.IsSwitched(2))
+              m_Instance.Cancel(true);
+            else if (info.IsSwitched(1))
+              m_Instance.Cancel(false);
 
-          sender.Mobile.SendGump(new QuestLogGump(m_Instance.Player, m_CloseGumps));
-          break;
-        }
+            sender.Mobile.SendGump(new QuestLogGump(m_Instance.Player, m_CloseGumps));
+            break;
+          }
       }
     }
   }

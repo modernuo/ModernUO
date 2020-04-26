@@ -50,7 +50,7 @@ namespace Server.Misc
 
     /*private static bool CheckHarmfulStatus( GuildStatus from, GuildStatus target )
     {
-      if ( from == GuildStatus.Waring && target == GuildStatus.Waring )
+      if (from == GuildStatus.Waring && target == GuildStatus.Waring)
         return true;
 
       return false;
@@ -61,8 +61,6 @@ namespace Server.Misc
       if (from == null || target == null || from.AccessLevel > AccessLevel.Player ||
           target.AccessLevel > AccessLevel.Player)
         return true;
-
-      #region Dueling
 
       PlayerMobile pmFrom = from as PlayerMobile;
       PlayerMobile pmTarg = target as PlayerMobile;
@@ -80,7 +78,7 @@ namespace Server.Misc
           return false;
 
         if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext &&
-            (pmFrom.DuelContext.StartedReadyCountdown && !pmFrom.DuelContext.Started || pmFrom.DuelContext.Tied ||
+            ((pmFrom.DuelContext.StartedReadyCountdown && !pmFrom.DuelContext.Started) || pmFrom.DuelContext.Tied ||
              pmFrom.DuelPlayer.Eliminated || pmTarg.DuelPlayer.Eliminated))
           return false;
 
@@ -103,20 +101,13 @@ namespace Server.Misc
       if (from.Region.IsPartOf<SafeZone>() || target.Region.IsPartOf<SafeZone>())
         return false;
 
-      #endregion
-
       Map map = from.Map;
-
-      #region Factions
 
       Faction targetFaction = Faction.Find(target, true);
 
       if ((!Core.ML || map == Faction.Facet) && targetFaction != null)
         if (Faction.Find(from, true) != targetFaction)
           return false;
-
-      #endregion
-
 
       if ((map?.Rules & MapRules.BeneficialRestrictions) == 0)
         return true; // In felucca, anything goes
@@ -143,8 +134,6 @@ namespace Server.Misc
           target.AccessLevel > AccessLevel.Player)
         return true;
 
-      #region Dueling
-
       PlayerMobile pmFrom = from as PlayerMobile;
       PlayerMobile pmTarg = target as PlayerMobile;
       BaseCreature bcTarg = target as BaseCreature;
@@ -162,7 +151,7 @@ namespace Server.Misc
           return false;
 
         if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext &&
-            (pmFrom.DuelContext.StartedReadyCountdown && !pmFrom.DuelContext.Started || pmFrom.DuelContext.Tied ||
+            ((pmFrom.DuelContext.StartedReadyCountdown && !pmFrom.DuelContext.Started) || pmFrom.DuelContext.Tied ||
              pmFrom.DuelPlayer.Eliminated || pmTarg.DuelPlayer.Eliminated))
           return false;
 
@@ -172,7 +161,7 @@ namespace Server.Misc
             pmFrom.DuelPlayer.Participant == pmTarg.DuelPlayer.Participant)
           return false;
 
-        if ( pmFrom.DuelContext?.Started == true && pmFrom.DuelContext == pmTarg.DuelContext)
+        if (pmFrom.DuelContext?.Started == true && pmFrom.DuelContext == pmTarg.DuelContext)
           return true;
       }
 
@@ -181,8 +170,6 @@ namespace Server.Misc
 
       if (from.Region.IsPartOf<SafeZone>() || target.Region.IsPartOf<SafeZone>())
         return false;
-
-      #endregion
 
       Map map = from.Map;
 
@@ -206,7 +193,7 @@ namespace Server.Misc
           (fromGuild == targetGuild || fromGuild.IsAlly(targetGuild) || fromGuild.IsEnemy(targetGuild)))
         return true; // Guild allies or enemies can be harmful
 
-      if (bcTarg?.Controlled == true || bcTarg?.Summoned == true && bcTarg?.SummonMaster != from)
+      if (bcTarg?.Controlled == true || (bcTarg?.Summoned == true && bcTarg?.SummonMaster != from))
         return false; // Cannot harm other controlled mobiles
 
       if (target.Player)
@@ -265,7 +252,7 @@ namespace Server.Misc
 
         int actual = Notoriety.CanBeAttacked;
 
-        if (target.Kills >= 5 || body.IsMonster && IsSummoned(creature) || creature.AlwaysMurderer ||
+        if (target.Kills >= 5 || (body.IsMonster && IsSummoned(creature)) || creature.AlwaysMurderer ||
             creature.IsAnimatedDead)
           actual = Notoriety.Murderer;
 
@@ -275,7 +262,7 @@ namespace Server.Misc
         Party sourceParty = Party.Get(source);
 
         for (int i = 0; i < list.Count; ++i)
-          if (list[i] == source || sourceParty != null && Party.Get(list[i]) == sourceParty)
+          if (list[i] == source || (sourceParty != null && Party.Get(list[i]) == sourceParty))
             return actual;
 
         return Notoriety.Innocent;
@@ -317,13 +304,9 @@ namespace Server.Misc
       PlayerMobile pmFrom = source as PlayerMobile;
       PlayerMobile pmTarg = target as PlayerMobile;
 
-      #region Dueling
-
       if (pmFrom != null && pmTarg != null)
         if (pmFrom.DuelContext?.StartedBeginCountdown == true && !pmFrom.DuelContext.Finished && pmFrom.DuelContext == pmTarg.DuelContext)
           return pmFrom.DuelContext.IsAlly(pmFrom, pmTarg) ? Notoriety.Ally : Notoriety.Enemy;
-
-      #endregion
 
       if (target.AccessLevel > AccessLevel.Player)
         return Notoriety.CanBeAttacked;
@@ -339,7 +322,7 @@ namespace Server.Misc
 
         if (Core.ML && master != null)
         {
-          if (source == master && CheckAggressor(bcTarg.Aggressors, source) ||
+          if ((source == master && CheckAggressor(bcTarg.Aggressors, source)) ||
               CheckAggressor(source.Aggressors, bcTarg))
             return Notoriety.CanBeAttacked;
 
@@ -351,8 +334,8 @@ namespace Server.Misc
       }
 
       if (target.Kills >= 5 ||
-          target.Body.IsMonster && IsSummoned(bcTarg) && !(target is BaseFamiliar) && !(target is ArcaneFey) &&
-          !(target is Golem) || bcTarg?.AlwaysMurderer == true || bcTarg?.IsAnimatedDead == true)
+          (target.Body.IsMonster && IsSummoned(bcTarg) && !(target is BaseFamiliar) && !(target is ArcaneFey) &&
+          !(target is Golem)) || bcTarg?.AlwaysMurderer == true || bcTarg?.IsAnimatedDead == true)
         return Notoriety.Murderer;
 
       if (target.Criminal)
@@ -385,8 +368,8 @@ namespace Server.Misc
         return Notoriety.CanBeAttacked;
 
       if (bcTarg?.InitialInnocent != true)
-        if (!target.Body.IsHuman && !target.Body.IsGhost && !IsPet(bcTarg) && pmTarg == null ||
-            !Core.ML && !target.CanBeginAction<PolymorphSpell>())
+        if ((!target.Body.IsHuman && !target.Body.IsGhost && !IsPet(bcTarg) && pmTarg == null) ||
+            (!Core.ML && !target.CanBeginAction<PolymorphSpell>()))
           return Notoriety.CanBeAttacked;
 
       if (CheckAggressor(source.Aggressors, target))

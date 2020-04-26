@@ -6,13 +6,12 @@ namespace Server.Spells.Second
 {
   public class AgilitySpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Agility", "Ex Uus",
       212,
       9061,
       Reagent.Bloodmoss,
-      Reagent.MandrakeRoot
-    );
+      Reagent.MandrakeRoot);
 
     public AgilitySpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

@@ -51,8 +51,8 @@ namespace Server.Mobiles
 
     private class RechargeEntry : ContextMenuEntry
     {
-      private Mobile m_From;
-      private Mobile m_Vendor;
+      private readonly Mobile m_From;
+      private readonly Mobile m_Vendor;
 
       public RechargeEntry(Mobile from, Mobile vendor) : base(6271, 6)
       {

@@ -76,7 +76,7 @@ namespace Server.Items
     {
     }
 
-    public PlagueBeastOrgan Organ{ get; set; }
+    public PlagueBeastOrgan Organ { get; set; }
 
     public bool IsBrain => ItemID == 0x1CF0;
 
@@ -95,7 +95,7 @@ namespace Server.Items
     public override bool OnDragDrop(Mobile from, Item dropped)
     {
       if (Organ?.OnDropped(from, dropped, this) == true && dropped is PlagueBeastComponent component)
-          Organ.Components.Add(component);
+        Organ.Components.Add(component);
 
       return true;
     }

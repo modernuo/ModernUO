@@ -14,7 +14,7 @@ namespace Server.Items
     {
     }
 
-    public abstract BaseCreature Summon{ get; }
+    public abstract BaseCreature Summon { get; }
 
     public override void OnDoubleClick(Mobile from)
     {

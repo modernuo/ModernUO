@@ -1,10 +1,10 @@
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MimeKit;
 using Server.Accounting;
 using Server.Engines.Help;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace Server.Misc
 {
@@ -67,7 +67,6 @@ namespace Server.Misc
           TextBody = writer.ToString(),
           HtmlBody = null
         }.ToMessageBody();
-
       }
       SendAsync(message);
     }

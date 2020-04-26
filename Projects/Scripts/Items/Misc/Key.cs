@@ -14,8 +14,8 @@ namespace Server.Items
 
   public interface ILockable
   {
-    bool Locked{ get; set; }
-    uint KeyValue{ get; set; }
+    bool Locked { get; set; }
+    uint KeyValue { get; set; }
   }
 
   public class Key : Item
@@ -53,7 +53,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int MaxRange{ get; set; }
+    public int MaxRange { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public uint KeyValue
@@ -68,7 +68,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Item Link{ get; set; }
+    public Item Link { get; set; }
 
     public static uint RandomValue() => (uint)(0xFFFFFFFE * Utility.RandomDouble()) + 1;
 
@@ -149,28 +149,28 @@ namespace Server.Items
       switch (version)
       {
         case 2:
-        {
-          MaxRange = reader.ReadInt();
+          {
+            MaxRange = reader.ReadInt();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          Link = reader.ReadItem();
+          {
+            Link = reader.ReadItem();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          if (version < 2 || MaxRange == 0)
-            MaxRange = 3;
+          {
+            if (version < 2 || MaxRange == 0)
+              MaxRange = 3;
 
-          m_Description = reader.ReadString();
+            m_Description = reader.ReadString();
 
-          m_KeyVal = reader.ReadUInt();
+            m_KeyVal = reader.ReadUInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -268,7 +268,7 @@ namespace Server.Items
 
     private class RenamePrompt : Prompt
     {
-      private Key m_Key;
+      private readonly Key m_Key;
 
       public RenamePrompt(Key key) => m_Key = key;
 
@@ -286,7 +286,7 @@ namespace Server.Items
 
     private class UnlockTarget : Target
     {
-      private Key m_Key;
+      private readonly Key m_Key;
 
       public UnlockTarget(Key key) : base(key.MaxRange, false, TargetFlags.None)
       {
@@ -328,7 +328,7 @@ namespace Server.Items
 
     private class CopyTarget : Target
     {
-      private Key m_Key;
+      private readonly Key m_Key;
 
       public CopyTarget(Key key) : base(3, false, TargetFlags.None) => m_Key = key;
 

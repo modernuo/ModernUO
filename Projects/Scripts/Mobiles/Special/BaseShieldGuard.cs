@@ -91,10 +91,10 @@ namespace Server.Mobiles
     {
     }
 
-    public abstract int Keyword{ get; }
-    public abstract BaseShield Shield{ get; }
-    public abstract int SignupNumber{ get; }
-    public abstract GuildType Type{ get; }
+    public abstract int Keyword { get; }
+    public abstract BaseShield Shield { get; }
+    public abstract int SignupNumber { get; }
+    public abstract GuildType Type { get; }
 
     public override bool HandlesOnSpeech(Mobile from)
     {
@@ -123,7 +123,7 @@ namespace Server.Mobiles
           Item twoHanded = from.FindItemOnLayer(Layer.TwoHanded);
 
           if (pack?.FindItemByType(shield.GetType()) != null ||
-              twoHanded != null && shield.GetType().IsInstanceOfType(twoHanded))
+              (twoHanded != null && shield.GetType().IsInstanceOfType(twoHanded)))
           {
             Say(1007110); // Why dost thou ask about virtue guards when thou art one?
             shield.Delete();

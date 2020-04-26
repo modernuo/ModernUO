@@ -14,7 +14,7 @@ namespace Server.Misc
 
     public TreasuresOfTokunoPersistance(Serial serial) : base(serial) => Instance = this;
 
-    public static TreasuresOfTokunoPersistance Instance{ get; private set; }
+    public static TreasuresOfTokunoPersistance Instance { get; private set; }
 
     public override string DefaultName => "TreasuresOfTokuno Persistance - Internal";
 
@@ -43,12 +43,12 @@ namespace Server.Misc
       switch (version)
       {
         case 0:
-        {
-          TreasuresOfTokuno.RewardEra = (TreasuresOfTokunoEra)reader.ReadEncodedInt();
-          TreasuresOfTokuno.DropEra = (TreasuresOfTokunoEra)reader.ReadEncodedInt();
+          {
+            TreasuresOfTokuno.RewardEra = (TreasuresOfTokunoEra)reader.ReadEncodedInt();
+            TreasuresOfTokuno.DropEra = (TreasuresOfTokunoEra)reader.ReadEncodedInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 

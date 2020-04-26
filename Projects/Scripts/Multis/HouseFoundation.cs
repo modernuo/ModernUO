@@ -35,7 +35,7 @@ namespace Server.Multis
     /* Stair block IDs
      * (sorted ascending)
      */
-    private static int[] m_BlockIDs =
+    private static readonly int[] m_BlockIDs =
     {
       0x3EE, 0x709, 0x71E, 0x721,
       0x738, 0x750, 0x76C, 0x788,
@@ -47,7 +47,7 @@ namespace Server.Multis
      * (sorted ascending)
      * Use this for stairs in the proper N,W,S,E sequence
      */
-    private static int[] m_StairSeqs =
+    private static readonly int[] m_StairSeqs =
     {
       0x3EF, 0x70A, 0x722, 0x739,
       0x751, 0x76D, 0x789, 0x7A4
@@ -57,7 +57,7 @@ namespace Server.Multis
      * Listed in order: north, west, south, east
      * Use this for stairs not in the proper sequence
      */
-    private static int[] m_StairIDs =
+    private static readonly int[] m_StairIDs =
     {
       0x71F, 0x736, 0x737, 0x749,
       0x35D4, 0x35D3, 0x35D6, 0x35D5,
@@ -99,19 +99,19 @@ namespace Server.Multis
     {
     }
 
-    public FoundationType Type{ get; set; }
+    public FoundationType Type { get; set; }
 
-    public int LastRevision{ get; set; }
+    public int LastRevision { get; set; }
 
-    public List<Item> Fixtures{ get; private set; }
+    public List<Item> Fixtures { get; private set; }
 
-    public Item SignHanger{ get; private set; }
+    public Item SignHanger { get; private set; }
 
-    public Item Signpost{ get; private set; }
+    public Item Signpost { get; private set; }
 
-    public int SignpostGraphic{ get; set; }
+    public int SignpostGraphic { get; set; }
 
-    public Mobile Customizer{ get; set; }
+    public Mobile Customizer { get; set; }
 
     public override bool IsAosRules => true;
 
@@ -307,7 +307,7 @@ namespace Server.Multis
       for (int i = 0; i < list.Length; ++i)
       {
         MultiTileEntry mte = list[i];
-        int itemID = mte.m_ItemID;
+        int itemID = mte.ItemId;
 
         if (itemID >= 0x181D && itemID < 0x1829)
         {
@@ -375,13 +375,13 @@ namespace Server.Multis
           }
           else if (itemID >= 0x241F && itemID < 0x2421)
           {
-            //DoorFacing facing = (DoorFacing)(((itemID - 0x241F) / 2) % 8);
+            // DoorFacing facing = (DoorFacing)(((itemID - 0x241F) / 2) % 8);
             door = new GenericHouseDoor(DoorFacing.NorthCCW, 0x2415, -1, -1);
           }
           else if (itemID >= 0x2423 && itemID < 0x2425)
           {
-            //DoorFacing facing = (DoorFacing)(((itemID - 0x241F) / 2) % 8);
-            //This one and the above one are 'special' cases, ie: OSI had the ItemID pattern discombobulated for these
+            // DoorFacing facing = (DoorFacing)(((itemID - 0x241F) / 2) % 8);
+            // This one and the above one are 'special' cases, ie: OSI had the ItemID pattern discombobulated for these
             door = new GenericHouseDoor(DoorFacing.WestCW, 0x2423, -1, -1);
           }
           else if (itemID >= 0x2A05 && itemID < 0x2A1D)
@@ -415,7 +415,7 @@ namespace Server.Multis
           }
           else if (itemID >= 0x319C && itemID < 0x31AE)
           {
-            //special case for 0x31aa <-> 0x31a8 (a9)
+            // special case for 0x31aa <-> 0x31a8 (a9)
 
             int mod = (itemID - 0x319C) / 2 % 2;
 
@@ -463,8 +463,8 @@ namespace Server.Multis
           else if (itemID >= 0x436E && itemID < 0x437E)
           {
             /* These ones had to be different...
-             * Offset		0	2	4	6	8	10	12	14
-             * DoorFacing	2	3	2	3	6	7	6	7
+             * Offset 0 2 4 6 8 10 12 14
+             * DoorFacing 2 3 2 3 6 7 6 7
              */
             int offset = itemID - 0x436E;
             DoorFacing facing = (DoorFacing)((offset / 2 + 2 * ((1 + offset / 4) % 2)) % 8);
@@ -499,7 +499,7 @@ namespace Server.Multis
             door.Locked = true;
             door.KeyValue = keyValue;
 
-            AddDoor(door, mte.m_OffsetX, mte.m_OffsetY, mte.m_OffsetZ);
+            AddDoor(door, mte.OffsetX, mte.OffsetY, mte.OffsetZ);
             Fixtures.Add(door);
           }
         }
@@ -607,7 +607,7 @@ namespace Server.Multis
     public void AddFixture(Item item, MultiTileEntry mte)
     {
       Fixtures.Add(item);
-      item.MoveToWorld(new Point3D(X + mte.m_OffsetX, Y + mte.m_OffsetY, Z + mte.m_OffsetZ), Map);
+      item.MoveToWorld(new Point3D(X + mte.OffsetX, Y + mte.OffsetY, Z + mte.OffsetZ), Map);
     }
 
     public static void GetFoundationGraphics(FoundationType type, out int east, out int south, out int post,
@@ -847,48 +847,48 @@ namespace Server.Multis
       {
         case 5:
         case 4:
-        {
-          Signpost = reader.ReadItem();
-          SignpostGraphic = reader.ReadInt();
+          {
+            Signpost = reader.ReadItem();
+            SignpostGraphic = reader.ReadInt();
 
-          goto case 3;
-        }
+            goto case 3;
+          }
         case 3:
-        {
-          Type = (FoundationType)reader.ReadInt();
+          {
+            Type = (FoundationType)reader.ReadInt();
 
-          goto case 2;
-        }
+            goto case 2;
+          }
         case 2:
-        {
-          SignHanger = reader.ReadItem();
+          {
+            SignHanger = reader.ReadItem();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          if (version < 5)
-            m_DefaultPrice = reader.ReadInt();
+          {
+            if (version < 5)
+              m_DefaultPrice = reader.ReadInt();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          if (version < 3)
-            Type = FoundationType.Stone;
+          {
+            if (version < 3)
+              Type = FoundationType.Stone;
 
-          if (version < 4)
-            SignpostGraphic = 9;
+            if (version < 4)
+              SignpostGraphic = 9;
 
-          LastRevision = reader.ReadInt();
-          Fixtures = reader.ReadStrongItemList();
+            LastRevision = reader.ReadInt();
+            Fixtures = reader.ReadStrongItemList();
 
-          m_Current = new DesignState(this, reader);
-          m_Design = new DesignState(this, reader);
-          m_Backup = new DesignState(this, reader);
+            m_Current = new DesignState(this, reader);
+            m_Design = new DesignState(this, reader);
+            m_Backup = new DesignState(this, reader);
 
-          break;
-        }
+            break;
+          }
       }
 
       base.Deserialize(reader);
@@ -1216,7 +1216,7 @@ namespace Server.Multis
 
     public static bool IsStair(int id, ref int dir)
     {
-      //dir n=0 w=1 s=2 e=3
+      // dir n=0 w=1 s=2 e=3
       int delta = -4;
 
       for (int i = 0; delta < -3 && i < m_StairSeqs.Length; ++i)
@@ -1281,37 +1281,37 @@ namespace Server.Multis
       switch (dir)
       {
         default:
-        {
-          xStart = x;
-          yStart = y + height;
-          xInc = 0;
-          yInc = -1;
-          break;
-        }
+          {
+            xStart = x;
+            yStart = y + height;
+            xInc = 0;
+            yInc = -1;
+            break;
+          }
         case 1: // West
-        {
-          xStart = x + height;
-          yStart = y;
-          xInc = -1;
-          yInc = 0;
-          break;
-        }
+          {
+            xStart = x + height;
+            yStart = y;
+            xInc = -1;
+            yInc = 0;
+            break;
+          }
         case 2: // South
-        {
-          xStart = x;
-          yStart = y - height;
-          xInc = 0;
-          yInc = 1;
-          break;
-        }
+          {
+            xStart = x;
+            yStart = y - height;
+            xInc = 0;
+            yInc = 1;
+            break;
+          }
         case 3: // East
-        {
-          xStart = x - height;
-          yStart = y;
-          xInc = 1;
-          yInc = 0;
-          break;
-        }
+          {
+            xStart = x - height;
+            yStart = y;
+            xInc = 1;
+            yInc = 0;
+            break;
+          }
       }
 
       int zStart = z - height * 5;
@@ -1471,8 +1471,8 @@ namespace Server.Multis
       {
         MultiTileEntry entry = stairs.List[i];
 
-        if (entry.m_ItemID != 1)
-          mcl.Add(entry.m_ItemID, x + entry.m_OffsetX, y + entry.m_OffsetY, z + entry.m_OffsetZ);
+        if (entry.ItemId != 1)
+          mcl.Add(entry.ItemId, x + entry.OffsetX, y + entry.OffsetY, z + entry.OffsetZ);
       }
 
       // Update revision
@@ -1628,7 +1628,7 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (context == null || !Core.SE && from.AccessLevel < AccessLevel.GameMaster)
+      if (context == null || (!Core.SE && from.AccessLevel < AccessLevel.GameMaster))
         return;
 
       // Read data detailing component graphic and location
@@ -1658,10 +1658,10 @@ namespace Server.Multis
       {
         MultiTileEntry mte = list[i];
 
-        if (mte.m_OffsetX == x && mte.m_OffsetY == y &&
-            GetZLevel(mte.m_OffsetZ, context.Foundation) == context.Level &&
-            (TileData.ItemTable[mte.m_ItemID & TileData.MaxItemValue].Flags & TileFlag.Roof) != 0)
-          mcl.Remove(mte.m_ItemID, x, y, mte.m_OffsetZ);
+        if (mte.OffsetX == x && mte.OffsetY == y &&
+            GetZLevel(mte.OffsetZ, context.Foundation) == context.Level &&
+            (TileData.ItemTable[mte.ItemId & TileData.MaxItemValue].Flags & TileFlag.Roof) != 0)
+          mcl.Remove(mte.ItemId, x, y, mte.OffsetZ);
       }
 
       mcl.Add(itemID, x, y, z);
@@ -1709,7 +1709,7 @@ namespace Server.Multis
     {
       Foundation = foundation;
       Components = components;
-      Fixtures = new MultiTileEntry[0];
+      Fixtures = Array.Empty<MultiTileEntry>();
     }
 
     public DesignState(DesignState toCopy)
@@ -1732,26 +1732,26 @@ namespace Server.Multis
       switch (version)
       {
         case 0:
-        {
-          Components = new MultiComponentList(reader);
-
-          int length = reader.ReadInt();
-
-          Fixtures = new MultiTileEntry[length];
-
-          for (int i = 0; i < length; ++i)
           {
-            Fixtures[i].m_ItemID = reader.ReadUShort();
-            Fixtures[i].m_OffsetX = reader.ReadShort();
-            Fixtures[i].m_OffsetY = reader.ReadShort();
-            Fixtures[i].m_OffsetZ = reader.ReadShort();
-            Fixtures[i].m_Flags = (TileFlag)reader.ReadInt();
+            Components = new MultiComponentList(reader);
+
+            int length = reader.ReadInt();
+
+            Fixtures = new MultiTileEntry[length];
+
+            for (int i = 0; i < length; ++i)
+            {
+              Fixtures[i].ItemId = reader.ReadUShort();
+              Fixtures[i].OffsetX = reader.ReadShort();
+              Fixtures[i].OffsetY = reader.ReadShort();
+              Fixtures[i].OffsetZ = reader.ReadShort();
+              Fixtures[i].Flags = (TileFlag)reader.ReadInt();
+            }
+
+            Revision = reader.ReadInt();
+
+            break;
           }
-
-          Revision = reader.ReadInt();
-
-          break;
-        }
       }
     }
 
@@ -1769,13 +1769,13 @@ namespace Server.Multis
       }
     }
 
-    public HouseFoundation Foundation{ get; }
+    public HouseFoundation Foundation { get; }
 
-    public MultiComponentList Components{ get; }
+    public MultiComponentList Components { get; }
 
-    public MultiTileEntry[] Fixtures{ get; private set; }
+    public MultiTileEntry[] Fixtures { get; private set; }
 
-    public int Revision{ get; set; }
+    public int Revision { get; set; }
 
     public void Serialize(IGenericWriter writer)
     {
@@ -1789,11 +1789,11 @@ namespace Server.Multis
       {
         MultiTileEntry ent = Fixtures[i];
 
-        writer.Write(ent.m_ItemID);
-        writer.Write(ent.m_OffsetX);
-        writer.Write(ent.m_OffsetY);
-        writer.Write(ent.m_OffsetZ);
-        writer.Write((int)ent.m_Flags);
+        writer.Write(ent.ItemId);
+        writer.Write(ent.OffsetX);
+        writer.Write(ent.OffsetY);
+        writer.Write(ent.OffsetZ);
+        writer.Write((int)ent.Flags);
       }
 
       writer.Write(Revision);
@@ -1836,10 +1836,10 @@ namespace Server.Multis
       {
         MultiTileEntry mte = Fixtures[i];
 
-        Components.Add(mte.m_ItemID, mte.m_OffsetX, mte.m_OffsetY, mte.m_OffsetZ);
+        Components.Add(mte.ItemId, mte.OffsetX, mte.OffsetY, mte.OffsetZ);
       }
 
-      Fixtures = new MultiTileEntry[0];
+      Fixtures = Array.Empty<MultiTileEntry>();
     }
 
     public void MeltFixtures()
@@ -1853,7 +1853,7 @@ namespace Server.Multis
       {
         MultiTileEntry mte = list[i];
 
-        if (IsFixture(mte.m_ItemID))
+        if (IsFixture(mte.ItemId))
           ++length;
       }
 
@@ -1863,10 +1863,10 @@ namespace Server.Multis
       {
         MultiTileEntry mte = list[i];
 
-        if (IsFixture(mte.m_ItemID))
+        if (IsFixture(mte.ItemId))
         {
           Fixtures[--length] = mte;
-          Components.Remove(mte.m_ItemID, mte.m_OffsetX, mte.m_OffsetY, mte.m_OffsetZ);
+          Components.Remove(mte.ItemId, mte.OffsetX, mte.OffsetY, mte.OffsetZ);
         }
       }
     }
@@ -1937,7 +1937,7 @@ namespace Server.Multis
 
   public class ConfirmCommitGump : Gump
   {
-    private HouseFoundation m_Foundation;
+    private readonly HouseFoundation m_Foundation;
 
     public ConfirmCommitGump(Mobile from, HouseFoundation foundation, int bankBalance, int oldPrice, int newPrice)
       : base(50, 50)
@@ -2000,13 +2000,13 @@ namespace Server.Multis
       Level = 1;
     }
 
-    public HouseFoundation Foundation{ get; }
+    public HouseFoundation Foundation { get; }
 
-    public int Level{ get; set; }
+    public int Level { get; set; }
 
     public int MaxLevels => Foundation.MaxLevels;
 
-    public static Dictionary<Mobile, DesignContext> Table{ get; } = new Dictionary<Mobile, DesignContext>();
+    public static Dictionary<Mobile, DesignContext> Table { get; } = new Dictionary<Mobile, DesignContext>();
 
     public static DesignContext Find(Mobile from)
     {
@@ -2025,7 +2025,6 @@ namespace Server.Multis
 
       m.SendLocalizedMessage(1062206); // You cannot do that while customizing a house.
       return false;
-
     }
 
     public static void Add(Mobile from, HouseFoundation foundation)
@@ -2112,13 +2111,13 @@ namespace Server.Multis
     {
       EnsureCapacity(17);
 
-      m_Stream.Write((short)0x20);
-      m_Stream.Write(house.Serial);
-      m_Stream.Write((byte)0x04);
-      m_Stream.Write((ushort)0x0000);
-      m_Stream.Write((ushort)0xFFFF);
-      m_Stream.Write((ushort)0xFFFF);
-      m_Stream.Write((byte)0xFF);
+      Stream.Write((short)0x20);
+      Stream.Write(house.Serial);
+      Stream.Write((byte)0x04);
+      Stream.Write((ushort)0x0000);
+      Stream.Write((ushort)0xFFFF);
+      Stream.Write((ushort)0xFFFF);
+      Stream.Write((byte)0xFF);
     }
   }
 
@@ -2129,13 +2128,13 @@ namespace Server.Multis
     {
       EnsureCapacity(17);
 
-      m_Stream.Write((short)0x20);
-      m_Stream.Write(house.Serial);
-      m_Stream.Write((byte)0x05);
-      m_Stream.Write((ushort)0x0000);
-      m_Stream.Write((ushort)0xFFFF);
-      m_Stream.Write((ushort)0xFFFF);
-      m_Stream.Write((byte)0xFF);
+      Stream.Write((short)0x20);
+      Stream.Write(house.Serial);
+      Stream.Write((byte)0x05);
+      Stream.Write((ushort)0x0000);
+      Stream.Write((ushort)0xFFFF);
+      Stream.Write((ushort)0xFFFF);
+      Stream.Write((byte)0xFF);
     }
   }
 
@@ -2146,9 +2145,9 @@ namespace Server.Multis
     {
       EnsureCapacity(13);
 
-      m_Stream.Write((short)0x1D);
-      m_Stream.Write(house.Serial);
-      m_Stream.Write(state.Revision);
+      Stream.Write((short)0x1D);
+      Stream.Write(house.Serial);
+      Stream.Write(state.Revision);
     }
   }
 
@@ -2156,14 +2155,14 @@ namespace Server.Multis
   {
     public const int MaxItemsPerStairBuffer = 750;
 
-    private static ConcurrentQueue<SendQueueEntry> m_SendQueue;
-    private static AutoResetEvent m_Sync;
+    private static readonly ConcurrentQueue<SendQueueEntry> m_SendQueue;
+    private static readonly AutoResetEvent m_Sync;
 
-    private byte[][] m_PlaneBuffers;
+    private readonly byte[][] m_PlaneBuffers;
 
-    private bool[] m_PlaneUsed = new bool[9];
-    private byte[] m_PrimBuffer = new byte[4];
-    private byte[][] m_StairBuffers;
+    private readonly bool[] m_PlaneUsed = new bool[9];
+    private readonly byte[] m_PrimBuffer = new byte[4];
+    private readonly byte[][] m_StairBuffers;
 
     static DesignStateDetailed()
     {
@@ -2214,10 +2213,10 @@ namespace Server.Multis
       for (int i = 0; i < tiles.Length; ++i)
       {
         MultiTileEntry mte = tiles[i];
-        int x = mte.m_OffsetX - xMin;
-        int y = mte.m_OffsetY - yMin;
-        int z = mte.m_OffsetZ;
-        bool floor = TileData.ItemTable[mte.m_ItemID & TileData.MaxItemValue].Height <= 0;
+        int x = mte.OffsetX - xMin;
+        int y = mte.OffsetY - yMin;
+        int z = mte.OffsetZ;
+        bool floor = TileData.ItemTable[mte.ItemId & TileData.MaxItemValue].Height <= 0;
         int plane, size;
 
         switch (z)
@@ -2238,23 +2237,23 @@ namespace Server.Multis
             plane = 4;
             break;
           default:
-          {
-            int stairBufferIndex = totalStairsUsed / MaxItemsPerStairBuffer;
-            byte[] stairBuffer = m_StairBuffers[stairBufferIndex];
+            {
+              int stairBufferIndex = totalStairsUsed / MaxItemsPerStairBuffer;
+              byte[] stairBuffer = m_StairBuffers[stairBufferIndex];
 
-            int byteIndex = totalStairsUsed % MaxItemsPerStairBuffer * 5;
+              int byteIndex = totalStairsUsed % MaxItemsPerStairBuffer * 5;
 
-            stairBuffer[byteIndex++] = (byte)(mte.m_ItemID >> 8);
-            stairBuffer[byteIndex++] = (byte)mte.m_ItemID;
+              stairBuffer[byteIndex++] = (byte)(mte.ItemId >> 8);
+              stairBuffer[byteIndex++] = (byte)mte.ItemId;
 
-            stairBuffer[byteIndex++] = (byte)mte.m_OffsetX;
-            stairBuffer[byteIndex++] = (byte)mte.m_OffsetY;
-            stairBuffer[byteIndex++] = (byte)mte.m_OffsetZ;
+              stairBuffer[byteIndex++] = (byte)mte.OffsetX;
+              stairBuffer[byteIndex++] = (byte)mte.OffsetY;
+              stairBuffer[byteIndex++] = (byte)mte.OffsetZ;
 
-            ++totalStairsUsed;
+              ++totalStairsUsed;
 
-            continue;
-          }
+              continue;
+            }
         }
 
         if (plane == 0)
@@ -2282,20 +2281,20 @@ namespace Server.Multis
 
           int byteIndex = totalStairsUsed % MaxItemsPerStairBuffer * 5;
 
-          stairBuffer[byteIndex++] = (byte)(mte.m_ItemID >> 8);
-          stairBuffer[byteIndex++] = (byte)mte.m_ItemID;
+          stairBuffer[byteIndex++] = (byte)(mte.ItemId >> 8);
+          stairBuffer[byteIndex++] = (byte)mte.ItemId;
 
-          stairBuffer[byteIndex++] = (byte)mte.m_OffsetX;
-          stairBuffer[byteIndex++] = (byte)mte.m_OffsetY;
-          stairBuffer[byteIndex++] = (byte)mte.m_OffsetZ;
+          stairBuffer[byteIndex++] = (byte)mte.OffsetX;
+          stairBuffer[byteIndex++] = (byte)mte.OffsetY;
+          stairBuffer[byteIndex++] = (byte)mte.OffsetZ;
 
           ++totalStairsUsed;
         }
         else
         {
           m_PlaneUsed[plane] = true;
-          m_PlaneBuffers[plane][index] = (byte)(mte.m_ItemID >> 8);
-          m_PlaneBuffers[plane][index + 1] = (byte)mte.m_ItemID;
+          m_PlaneBuffers[plane][index] = (byte)(mte.ItemId >> 8);
+          m_PlaneBuffers[plane][index + 1] = (byte)mte.ItemId;
         }
       }
 
@@ -2325,7 +2324,7 @@ namespace Server.Multis
         byte[] inflatedBuffer = m_PlaneBuffers[i];
 
         int deflatedLength = m_DeflatedBuffer.Length;
-        ZLibError ce = Compression.Pack(m_DeflatedBuffer, ref deflatedLength, inflatedBuffer, size,
+        ZLibError ce = NetworkCompression.Pack(m_DeflatedBuffer, ref deflatedLength, inflatedBuffer, size,
           ZLibQuality.Default);
 
         if (ce != ZLibError.Okay)
@@ -2361,7 +2360,7 @@ namespace Server.Multis
         byte[] inflatedBuffer = m_StairBuffers[i];
 
         int deflatedLength = m_DeflatedBuffer.Length;
-        ZLibError ce = Compression.Pack(m_DeflatedBuffer, ref deflatedLength, inflatedBuffer, size,
+        ZLibError ce = NetworkCompression.Pack(m_DeflatedBuffer, ref deflatedLength, inflatedBuffer, size,
           ZLibQuality.Default);
 
         if (ce != ZLibError.Okay)
@@ -2385,7 +2384,7 @@ namespace Server.Multis
 
       ArrayPool<byte>.Shared.Return(m_DeflatedBuffer);
 
-      m_Stream.Seek(15, SeekOrigin.Begin);
+      Stream.Seek(15, SeekOrigin.Begin);
 
       Write((short)totalLength); // Buffer length
       Write((byte)planeCount); // Plane count
@@ -2398,7 +2397,7 @@ namespace Server.Multis
       m_PrimBuffer[2] = (byte)(value >> 8);
       m_PrimBuffer[3] = (byte)value;
 
-      m_Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 4);
+      Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 4);
     }
 
     public void Write(uint value)
@@ -2408,7 +2407,7 @@ namespace Server.Multis
       m_PrimBuffer[2] = (byte)(value >> 8);
       m_PrimBuffer[3] = (byte)value;
 
-      m_Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 4);
+      Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 4);
     }
 
     public void Write(short value)
@@ -2416,17 +2415,17 @@ namespace Server.Multis
       m_PrimBuffer[0] = (byte)(value >> 8);
       m_PrimBuffer[1] = (byte)value;
 
-      m_Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 2);
+      Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 2);
     }
 
     public void Write(byte value)
     {
-      m_Stream.UnderlyingStream.WriteByte(value);
+      Stream.UnderlyingStream.WriteByte(value);
     }
 
     public void Write(byte[] buffer, int offset, int size)
     {
-      m_Stream.UnderlyingStream.Write(buffer, offset, size);
+      Stream.UnderlyingStream.Write(buffer, offset, size);
     }
 
     public static void Clear(byte[] buffer, int size)
@@ -2498,12 +2497,15 @@ namespace Server.Multis
 
     private class SendQueueEntry
     {
-      public NetState m_NetState;
-      public DesignState m_Root;
-      public int m_Revision;
-      public uint m_Serial;
-      public MultiTileEntry[] m_Tiles;
-      public int m_xMin, m_yMin, m_xMax, m_yMax;
+      public readonly NetState m_NetState;
+      public readonly DesignState m_Root;
+      public readonly int m_Revision;
+      public readonly uint m_Serial;
+      public readonly MultiTileEntry[] m_Tiles;
+      public readonly int m_xMin;
+      public readonly int m_yMin;
+      public readonly int m_xMax;
+      public readonly int m_yMax;
 
       public SendQueueEntry(NetState ns, HouseFoundation foundation, DesignState state)
       {

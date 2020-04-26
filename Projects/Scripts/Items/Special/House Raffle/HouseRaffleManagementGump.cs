@@ -17,11 +17,11 @@ namespace Server.Gumps
 
     public const int LabelColor = 0xFFFFFF;
     public const int HighlightColor = 0x11EE11;
-    private List<RaffleEntry> m_List;
+    private readonly List<RaffleEntry> m_List;
     private int m_Page;
-    private SortMethod m_Sort;
+    private readonly SortMethod m_Sort;
 
-    private HouseRaffleStone m_Stone;
+    private readonly HouseRaffleStone m_Stone;
 
     public HouseRaffleManagementGump(HouseRaffleStone stone, SortMethod sort = SortMethod.Default,
       int page = 0) : base(40, 40)
@@ -35,23 +35,23 @@ namespace Server.Gumps
       switch (m_Sort)
       {
         case SortMethod.Name:
-        {
-          m_List.Sort(NameComparer.Instance);
+          {
+            m_List.Sort(NameComparer.Instance);
 
-          break;
-        }
+            break;
+          }
         case SortMethod.Account:
-        {
-          m_List.Sort(AccountComparer.Instance);
+          {
+            m_List.Sort(AccountComparer.Instance);
 
-          break;
-        }
+            break;
+          }
         case SortMethod.Address:
-        {
-          m_List.Sort(AddressComparer.Instance);
+          {
+            m_List.Sort(AddressComparer.Instance);
 
-          break;
-        }
+            break;
+          }
       }
 
       AddPage(0);
@@ -158,57 +158,57 @@ namespace Server.Gumps
       switch (buttonId)
       {
         case 1: // Previous
-        {
-          if (m_Page > 0)
-            m_Page--;
-
-          from.SendGump(new HouseRaffleManagementGump(m_Stone, m_Sort, m_Page));
-
-          break;
-        }
-        case 2: // Next
-        {
-          if ((m_Page + 1) * 10 < m_Stone.Entries.Count)
-            m_Page++;
-
-          from.SendGump(new HouseRaffleManagementGump(m_Stone, m_Sort, m_Page));
-
-          break;
-        }
-        case 3: // Sort by name
-        {
-          from.SendGump(new HouseRaffleManagementGump(m_Stone, SortMethod.Name));
-
-          break;
-        }
-        case 4: // Sort by account
-        {
-          from.SendGump(new HouseRaffleManagementGump(m_Stone, SortMethod.Account));
-
-          break;
-        }
-        case 5: // Sort by address
-        {
-          from.SendGump(new HouseRaffleManagementGump(m_Stone, SortMethod.Address));
-
-          break;
-        }
-        default: // Delete
-        {
-          buttonId -= 6;
-
-          if (buttonId >= 0 && buttonId < m_List.Count)
           {
-            m_Stone.Entries.Remove(m_List[buttonId]);
-
-            if (m_Page > 0 && m_Page * 10 >= m_List.Count - 1)
+            if (m_Page > 0)
               m_Page--;
 
             from.SendGump(new HouseRaffleManagementGump(m_Stone, m_Sort, m_Page));
-          }
 
-          break;
-        }
+            break;
+          }
+        case 2: // Next
+          {
+            if ((m_Page + 1) * 10 < m_Stone.Entries.Count)
+              m_Page++;
+
+            from.SendGump(new HouseRaffleManagementGump(m_Stone, m_Sort, m_Page));
+
+            break;
+          }
+        case 3: // Sort by name
+          {
+            from.SendGump(new HouseRaffleManagementGump(m_Stone, SortMethod.Name));
+
+            break;
+          }
+        case 4: // Sort by account
+          {
+            from.SendGump(new HouseRaffleManagementGump(m_Stone, SortMethod.Account));
+
+            break;
+          }
+        case 5: // Sort by address
+          {
+            from.SendGump(new HouseRaffleManagementGump(m_Stone, SortMethod.Address));
+
+            break;
+          }
+        default: // Delete
+          {
+            buttonId -= 6;
+
+            if (buttonId >= 0 && buttonId < m_List.Count)
+            {
+              m_Stone.Entries.Remove(m_List[buttonId]);
+
+              if (m_Page > 0 && m_Page * 10 >= m_List.Count - 1)
+                m_Page--;
+
+              from.SendGump(new HouseRaffleManagementGump(m_Stone, m_Sort, m_Page));
+            }
+
+            break;
+          }
       }
     }
 

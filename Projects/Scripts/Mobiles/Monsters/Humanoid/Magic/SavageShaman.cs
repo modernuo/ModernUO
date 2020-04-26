@@ -47,7 +47,7 @@ namespace Server.Mobiles
       PackReg(10, 15);
       PackItem(new Bandage(Utility.RandomMinMax(1, 15)));
 
-      if (0.1 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.1)
         PackItem(new TribalBerry());
 
       AddItem(new BoneArms());
@@ -109,7 +109,7 @@ namespace Server.Mobiles
     {
       base.OnGotMeleeAttack(attacker);
 
-      if (0.1 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.1)
         BeginSavageDance();
     }
 
@@ -151,116 +151,116 @@ namespace Server.Mobiles
         return;
 
       IPooledEnumerable<Mobile> eable = GetMobilesInRange(8);
-      
+
       switch (Utility.Random(3))
       {
         case 0: /* greater heal */
-        {
-          foreach (Mobile m in eable)
           {
-            bool isFriendly = m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback;
+            foreach (Mobile m in eable)
+            {
+              bool isFriendly = m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback;
 
-            if (!isFriendly)
-              continue;
+              if (!isFriendly)
+                continue;
 
-            if (m.Poisoned || MortalStrike.IsWounded(m) || !CanBeBeneficial(m))
-              continue;
+              if (m.Poisoned || MortalStrike.IsWounded(m) || !CanBeBeneficial(m))
+                continue;
 
-            DoBeneficial(m);
+              DoBeneficial(m);
 
-            // Algorithm: (40% of magery) + (1-10)
+              // Algorithm: (40% of magery) + (1-10)
 
-            int toHeal = (int)(Skills.Magery.Value * 0.4);
-            toHeal += Utility.Random(1, 10);
+              int toHeal = (int)(Skills.Magery.Value * 0.4);
+              toHeal += Utility.Random(1, 10);
 
-            m.Heal(toHeal, this);
+              m.Heal(toHeal, this);
 
-            m.FixedParticles(0x376A, 9, 32, 5030, EffectLayer.Waist);
-            m.PlaySound(0x202);
+              m.FixedParticles(0x376A, 9, 32, 5030, EffectLayer.Waist);
+              m.PlaySound(0x202);
+            }
+
+            break;
           }
-
-          break;
-        }
         case 1: /* lightning */
-        {
-          foreach (Mobile m in eable)
           {
-            bool isFriendly = m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback;
-
-            if (isFriendly)
-              continue;
-
-            if (!CanBeHarmful(m))
-              continue;
-
-            DoHarmful(m);
-
-            double damage;
-
-            if (Core.AOS)
+            foreach (Mobile m in eable)
             {
-              int baseDamage = 6 + (int)(Skills.EvalInt.Value / 5.0);
+              bool isFriendly = m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback;
 
-              damage = Utility.RandomMinMax(baseDamage, baseDamage + 3);
+              if (isFriendly)
+                continue;
+
+              if (!CanBeHarmful(m))
+                continue;
+
+              DoHarmful(m);
+
+              double damage;
+
+              if (Core.AOS)
+              {
+                int baseDamage = 6 + (int)(Skills.EvalInt.Value / 5.0);
+
+                damage = Utility.RandomMinMax(baseDamage, baseDamage + 3);
+              }
+              else
+              {
+                damage = Utility.Random(12, 9);
+              }
+
+              m.BoltEffect(0);
+
+              SpellHelper.Damage(TimeSpan.FromSeconds(0.25), m, this, damage, 0, 0, 0, 0, 100);
             }
-            else
-            {
-              damage = Utility.Random(12, 9);
-            }
 
-            m.BoltEffect(0);
-
-            SpellHelper.Damage(TimeSpan.FromSeconds(0.25), m, this, damage, 0, 0, 0, 0, 100);
+            break;
           }
-
-          break;
-        }
         case 2: /* poison */
-        {
-          foreach (Mobile m in eable)
           {
-            bool isFriendly = m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback;
+            foreach (Mobile m in eable)
+            {
+              bool isFriendly = m is Savage || m is SavageRider || m is SavageShaman || m is SavageRidgeback;
 
-            if (isFriendly)
-              continue;
+              if (isFriendly)
+                continue;
 
-            if (!CanBeHarmful(m))
-              continue;
+              if (!CanBeHarmful(m))
+                continue;
 
-            DoHarmful(m);
+              DoHarmful(m);
 
-            m.Spell?.OnCasterHurt();
+              m.Spell?.OnCasterHurt();
 
-            m.Paralyzed = false;
+              m.Paralyzed = false;
 
-            double total = Skills.Magery.Value + Skills.Poisoning.Value;
+              double total = Skills.Magery.Value + Skills.Poisoning.Value;
 
-            double dist = GetDistanceToSqrt(m);
+              double dist = GetDistanceToSqrt(m);
 
-            if (dist >= 3.0)
-              total -= (dist - 3.0) * 10.0;
+              if (dist >= 3.0)
+                total -= (dist - 3.0) * 10.0;
 
-            int level;
+              int level;
 
-            if (total >= 200.0 && Utility.Random(1, 100) <= 10)
-              level = 3;
-            else if (total > 170.0)
-              level = 2;
-            else if (total > 130.0)
-              level = 1;
-            else
-              level = 0;
+              if (total >= 200.0 && Utility.Random(1, 100) <= 10)
+                level = 3;
+              else if (total > 170.0)
+                level = 2;
+              else if (total > 130.0)
+                level = 1;
+              else
+                level = 0;
 
-            m.ApplyPoison(this, Poison.GetPoison(level));
+              m.ApplyPoison(this, Poison.GetPoison(level));
 
-            m.FixedParticles(0x374A, 10, 15, 5021, EffectLayer.Waist);
-            m.PlaySound(0x474);
+              m.FixedParticles(0x374A, 10, 15, 5021, EffectLayer.Waist);
+              m.PlaySound(0x474);
+            }
+
+            break;
           }
-
-          break;
-        }
       }
-      
+
       eable.Free();
     }
 

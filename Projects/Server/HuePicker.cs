@@ -36,9 +36,9 @@ namespace Server.HuePickers
       ItemID = itemID;
     }
 
-    public int Serial{ get; }
+    public int Serial { get; }
 
-    public int ItemID{ get; }
+    public int ItemID { get; }
 
     public virtual void OnResponse(int hue)
     {

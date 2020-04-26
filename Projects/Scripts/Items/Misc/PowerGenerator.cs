@@ -57,7 +57,7 @@ namespace Server.Items
   {
     private static readonly TimeSpan m_UseTimeout = TimeSpan.FromMinutes(2.0);
 
-    private HashSet<Mobile> m_DamageTable = new HashSet<Mobile>();
+    private readonly HashSet<Mobile> m_DamageTable = new HashSet<Mobile>();
     private DateTime m_LastUse;
 
     private int m_SideLength;
@@ -94,7 +94,7 @@ namespace Server.Items
       }
     }
 
-    public Node[] Path{ get; private set; }
+    public Node[] Path { get; private set; }
 
     public override string DefaultName => "a control panel";
 
@@ -275,9 +275,9 @@ namespace Server.Items
 
     public struct Node
     {
-      public int X{ get; set; }
+      public int X { get; set; }
 
-      public int Y{ get; set; }
+      public int Y { get; set; }
 
       public Node(int x, int y)
       {
@@ -296,10 +296,10 @@ namespace Server.Items
 
     private class GameGump : Gump
     {
-      private Mobile m_From;
+      private readonly Mobile m_From;
 
-      private ControlPanel m_Panel;
-      private int m_Step;
+      private readonly ControlPanel m_Panel;
+      private readonly int m_Step;
 
       public GameGump(ControlPanel panel, Mobile from, int step, bool hint) : base(5, 30)
       {
@@ -341,12 +341,12 @@ namespace Server.Items
         AddBackground(100, 125, 10 + 40 * sideLength, 10 + 40 * sideLength, 0x1400);
 
         for (int i = 0; i < sideLength; i++)
-        for (int j = 0; j < sideLength - 1; j++)
-          AddImage(120 + 40 * i, 162 + 40 * j, 0x13F9);
+          for (int j = 0; j < sideLength - 1; j++)
+            AddImage(120 + 40 * i, 162 + 40 * j, 0x13F9);
 
         for (int i = 0; i < sideLength - 1; i++)
-        for (int j = 0; j < sideLength; j++)
-          AddImage(138 + 40 * i, 147 + 40 * j, 0x13FD);
+          for (int j = 0; j < sideLength; j++)
+            AddImage(138 + 40 * i, 147 + 40 * j, 0x13FD);
 
         Node[] path = panel.Path;
 
@@ -362,8 +362,8 @@ namespace Server.Items
         hues[lastNode.X, lastNode.Y] = NodeHue.Red;
 
         for (int i = 0; i < sideLength; i++)
-        for (int j = 0; j < sideLength; j++)
-          AddNode(110 + 40 * i, 135 + 40 * j, hues[i, j]);
+          for (int j = 0; j < sideLength; j++)
+            AddNode(110 + 40 * i, 135 + 40 * j, hues[i, j]);
 
         Node curNode = path[step];
         AddImage(118 + 40 * curNode.X, 143 + 40 * curNode.Y, 0x13A8);
@@ -490,9 +490,9 @@ namespace Server.Items
 
     private class DamageTimer : Timer
     {
-      private ControlPanel m_Panel;
+      private readonly ControlPanel m_Panel;
       private int m_Step;
-      private Mobile m_To;
+      private readonly Mobile m_To;
 
       public DamageTimer(ControlPanel panel, Mobile to) : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0))
       {

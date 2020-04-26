@@ -8,7 +8,7 @@ namespace Server.Items
       Hue = 0x4F5;
       ArmorAttributes.DurabilityBonus = 100;
       HitPoints = MaxHitPoints =
-        255; //Cause the Durability bonus and such and the min/max hits as well as all other hits being whole #'s...
+        255; // Cause the Durability bonus and such and the min/max hits as well as all other hits being whole #'s...
       Attributes.BonusStam = 8;
       Attributes.AttackChance = 20;
     }

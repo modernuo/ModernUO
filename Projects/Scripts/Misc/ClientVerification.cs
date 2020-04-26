@@ -9,28 +9,28 @@ namespace Server.Misc
 {
   public class ClientVerification
   {
-    private static bool m_DetectClientRequirement = true;
-    private static OldClientResponse m_OldClientResponse = OldClientResponse.LenientKick;
+    private static readonly bool m_DetectClientRequirement = true;
+    private static readonly OldClientResponse m_OldClientResponse = OldClientResponse.LenientKick;
 
-    private static TimeSpan m_AgeLeniency = TimeSpan.FromDays(10);
-    private static TimeSpan m_GameTimeLeniency = TimeSpan.FromHours(25);
+    private static readonly TimeSpan m_AgeLeniency = TimeSpan.FromDays(10);
+    private static readonly TimeSpan m_GameTimeLeniency = TimeSpan.FromHours(25);
 
-    public static ClientVersion Required{ get; set; }
+    public static ClientVersion Required { get; set; }
 
-    public static bool AllowRegular{ get; set; } = true;
+    public static bool AllowRegular { get; set; } = true;
 
-    public static bool AllowUOTD{ get; set; } = true;
+    public static bool AllowUOTD { get; set; } = true;
 
-    public static bool AllowGod{ get; set; } = true;
+    public static bool AllowGod { get; set; } = true;
 
-    public static TimeSpan KickDelay{ get; set; } = TimeSpan.FromSeconds(20.0);
+    public static TimeSpan KickDelay { get; set; } = TimeSpan.FromSeconds(20.0);
 
     public static void Initialize()
     {
       EventSink.ClientVersionReceived += EventSink_ClientVersionReceived;
 
-      //ClientVersion.Required = null;
-      //Required = new ClientVersion( "6.0.0.0" );
+      // ClientVersion.Required = null;
+      // Required = new ClientVersion( "6.0.0.0" );
 
       if (m_DetectClientRequirement)
       {
@@ -64,10 +64,10 @@ namespace Server.Misc
         return;
 
       if (Required != null && version < Required && (m_OldClientResponse == OldClientResponse.Kick ||
-                                                     m_OldClientResponse == OldClientResponse.LenientKick &&
+                                                     (m_OldClientResponse == OldClientResponse.LenientKick &&
                                                      DateTime.UtcNow - state.Mobile.CreationTime > m_AgeLeniency &&
                                                      state.Mobile is PlayerMobile mobile &&
-                                                     mobile.GameTime > m_GameTimeLeniency))
+                                                     mobile.GameTime > m_GameTimeLeniency)))
       {
         kickMessage = $"This server requires your client version be at least {Required}.";
       }
@@ -104,7 +104,7 @@ namespace Server.Misc
         state.Mobile.SendMessage(0x22, kickMessage);
         state.Mobile.SendMessage(0x22, "You will be disconnected in {0} seconds.", KickDelay.TotalSeconds);
 
-        Timer.DelayCall(KickDelay, delegate
+        Timer.DelayCall(KickDelay, () =>
         {
           if (state.Connection != null)
           {
@@ -118,18 +118,18 @@ namespace Server.Misc
         switch (m_OldClientResponse)
         {
           case OldClientResponse.Warn:
-          {
-            state.Mobile.SendMessage(0x22, "Your client is out of date. Please update your client.", Required);
-            state.Mobile.SendMessage(0x22, "This server recommends that your client version be at least {0}.",
-              Required);
-            break;
-          }
+            {
+              state.Mobile.SendMessage(0x22, "Your client is out of date. Please update your client.", Required);
+              state.Mobile.SendMessage(0x22, "This server recommends that your client version be at least {0}.",
+                Required);
+              break;
+            }
           case OldClientResponse.LenientKick:
           case OldClientResponse.Annoy:
-          {
-            SendAnnoyGump(state.Mobile);
-            break;
-          }
+            {
+              SendAnnoyGump(state.Mobile);
+              break;
+            }
         }
       }
     }

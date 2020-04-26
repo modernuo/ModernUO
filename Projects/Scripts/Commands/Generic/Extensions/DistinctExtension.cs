@@ -10,7 +10,7 @@ namespace Server.Commands.Generic
 
     private IComparer<object> m_Comparer;
 
-    private List<Property> m_Properties;
+    private readonly List<Property> m_Properties;
 
     public DistinctExtension() => m_Properties = new List<Property>();
 

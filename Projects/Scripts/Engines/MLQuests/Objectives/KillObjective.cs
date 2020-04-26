@@ -6,8 +6,7 @@ namespace Server.Engines.MLQuests.Objectives
 {
   public class KillObjective : BaseObjective
   {
-
-    public KillObjective(
+public KillObjective(
       int amount = 0, Type[] types = null, TextDefinition name = null, QuestArea area = null)
     {
       DesiredAmount = amount;
@@ -16,13 +15,13 @@ namespace Server.Engines.MLQuests.Objectives
       Area = area;
     }
 
-    public int DesiredAmount{ get; set; }
+    public int DesiredAmount { get; set; }
 
-    public Type[] AcceptedTypes{ get; set; }
+    public Type[] AcceptedTypes { get; set; }
 
-    public TextDefinition Name{ get; set; }
+    public TextDefinition Name { get; set; }
 
-    public QuestArea Area{ get; set; }
+    public QuestArea Area { get; set; }
 
     public override void WriteToGump(Gump g, ref int y)
     {
@@ -38,8 +37,6 @@ namespace Server.Engines.MLQuests.Objectives
 
       y += 16;
 
-      #region Location
-
       if (Area != null)
       {
         g.AddHtmlLocalized(103, y, 312, 20, 1018327, 0x15F90); // Location
@@ -51,14 +48,10 @@ namespace Server.Engines.MLQuests.Objectives
 
         y += 16;
       }
-
-      #endregion
     }
 
     public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance) => new KillObjectiveInstance(this, instance);
   }
-
-  #region Timed
 
   public class TimedKillObjective : KillObjective
   {
@@ -67,10 +60,8 @@ namespace Server.Engines.MLQuests.Objectives
       Duration = duration;
 
     public override bool IsTimed => true;
-    public override TimeSpan Duration{ get; }
+    public override TimeSpan Duration { get; }
   }
-
-  #endregion
 
   public class KillObjectiveInstance : BaseObjectiveInstance
   {
@@ -81,9 +72,9 @@ namespace Server.Engines.MLQuests.Objectives
       Slain = 0;
     }
 
-    public KillObjective Objective{ get; set; }
+    public KillObjective Objective { get; set; }
 
-    public int Slain{ get; set; }
+    public int Slain { get; set; }
 
     public override DataType ExtraDataType => DataType.KillObjective;
 

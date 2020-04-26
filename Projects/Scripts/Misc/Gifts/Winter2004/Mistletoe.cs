@@ -117,8 +117,8 @@ namespace Server.Items
 
     private class MistletoeAddonGump : Gump
     {
-      private MistletoeAddon m_Addon;
-      private Mobile m_From;
+      private readonly MistletoeAddon m_Addon;
+      private readonly Mobile m_From;
 
       public MistletoeAddonGump(Mobile from, MistletoeAddon addon) : base(150, 50)
       {
@@ -282,9 +282,9 @@ namespace Server.Items
 
     private class MistletoeDeedGump : Gump
     {
-      private MistletoeDeed m_Deed;
-      private Mobile m_From;
-      private Point3D m_Loc;
+      private readonly MistletoeDeed m_Deed;
+      private readonly Mobile m_From;
+      private readonly Point3D m_Loc;
 
       public MistletoeDeedGump(Mobile from, Point3D loc, MistletoeDeed deed) : base(150, 50)
       {

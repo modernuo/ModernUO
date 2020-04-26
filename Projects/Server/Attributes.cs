@@ -49,7 +49,7 @@ namespace Server
   {
     public CallPriorityAttribute(int priority) => Priority = priority;
 
-    public int Priority{ get; set; }
+    public int Priority { get; set; }
   }
 
   public class CallPriorityComparer : IComparer<MethodInfo>
@@ -65,8 +65,8 @@ namespace Server
       if (y == null)
         return -1;
 
-      int xPriority = GetPriority(x);
-      int yPriority = GetPriority(y);
+      var xPriority = GetPriority(x);
+      var yPriority = GetPriority(y);
 
       if (xPriority > yPriority)
         return 1;
@@ -79,7 +79,7 @@ namespace Server
 
     private int GetPriority(MethodInfo mi)
     {
-      object[] objs = mi.GetCustomAttributes(typeof(CallPriorityAttribute), true);
+      var objs = mi.GetCustomAttributes(typeof(CallPriorityAttribute), true);
 
       if (objs.Length == 0)
         return 0;
@@ -96,7 +96,7 @@ namespace Server
   {
     public TypeAliasAttribute(params string[] aliases) => Aliases = aliases;
 
-    public string[] Aliases{ get; }
+    public string[] Aliases { get; }
   }
 
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
@@ -109,20 +109,19 @@ namespace Server
   {
     public CustomEnumAttribute(string[] names) => Names = names;
 
-    public string[] Names{ get; }
+    public string[] Names { get; }
   }
 
   [AttributeUsage(AttributeTargets.Constructor)]
   public class ConstructibleAttribute : Attribute
   {
-    public ConstructibleAttribute() :
-      this(AccessLevel.Player) //Lowest accesslevel for current functionality (Level determined by access to [add)
+    public ConstructibleAttribute() : this(AccessLevel.Player) // Lowest accesslevel for current functionality (Level determined by access to [add)
     {
     }
 
     public ConstructibleAttribute(AccessLevel accessLevel) => AccessLevel = accessLevel;
 
-    public AccessLevel AccessLevel{ get; set; }
+    public AccessLevel AccessLevel { get; set; }
   }
 
   [AttributeUsage(AttributeTargets.Property)]
@@ -144,10 +143,10 @@ namespace Server
       WriteLevel = writeLevel;
     }
 
-    public AccessLevel ReadLevel{ get; }
+    public AccessLevel ReadLevel { get; }
 
-    public AccessLevel WriteLevel{ get; }
+    public AccessLevel WriteLevel { get; }
 
-    public bool ReadOnly{ get; }
+    public bool ReadOnly { get; }
   }
 }

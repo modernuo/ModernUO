@@ -11,7 +11,7 @@ namespace Server.Engines.MLQuests
 
     public QuesterNameAttribute(string questerName) => QuesterName = questerName;
 
-    public string QuesterName{ get; }
+    public string QuesterName { get; }
 
     public static string GetQuesterNameFor(Type t)
     {

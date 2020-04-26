@@ -11,8 +11,7 @@ namespace Server.Ethics.Hero
         0,
         "Holy Sense",
         "Drewrok Erstok",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

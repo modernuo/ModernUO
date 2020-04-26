@@ -86,13 +86,11 @@ namespace Server.Mobiles
       int version = reader.ReadInt();
     }
 
-    #region Area Peace
-
     private DateTime m_NextPeace;
 
     public void AreaPeace()
     {
-      if (Combatant == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || 0.1 < Utility.RandomDouble())
+      if (Combatant == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || Utility.RandomDouble() > 0.1)
         return;
 
       TimeSpan duration = TimeSpan.FromSeconds(Utility.RandomMinMax(20, 80));
@@ -118,15 +116,11 @@ namespace Server.Mobiles
       m?.PeacedUntil < DateTime.UtcNow && !m.Hidden && m.AccessLevel == AccessLevel.Player &&
       CanBeHarmful(m);
 
-    #endregion
-
-    #region Undress
-
     private DateTime m_NextUndress;
 
     public void AreaUndress()
     {
-      if (Combatant == null || Deleted || !Alive || m_NextUndress > DateTime.UtcNow || 0.005 < Utility.RandomDouble())
+      if (Combatant == null || Deleted || !Alive || m_NextUndress > DateTime.UtcNow || Utility.RandomDouble() > 0.005)
         return;
 
       foreach (Mobile m in GetMobilesInRange(RangePerception))
@@ -153,7 +147,5 @@ namespace Server.Mobiles
       if (item?.Movable == true)
         m.PlaceInBackpack(item);
     }
-
-    #endregion
   }
 }

@@ -5,8 +5,9 @@ namespace Server.Engines.PartySystem
 {
   public class DeclineTimer : Timer
   {
-    private static Dictionary<Mobile, DeclineTimer> m_Table = new Dictionary<Mobile, DeclineTimer>();
-    private Mobile m_Mobile, m_Leader;
+    private static readonly Dictionary<Mobile, DeclineTimer> m_Table = new Dictionary<Mobile, DeclineTimer>();
+    private readonly Mobile m_Mobile;
+    private readonly Mobile m_Leader;
 
     private DeclineTimer(Mobile m, Mobile leader) : base(TimeSpan.FromSeconds(30.0))
     {

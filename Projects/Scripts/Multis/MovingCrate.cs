@@ -29,7 +29,7 @@ namespace Server.Multis
 
     public override int LabelNumber => 1061690; // Packing Crate
 
-    public BaseHouse House{ get; set; }
+    public BaseHouse House { get; set; }
 
     public override int DefaultMaxItems => 0;
     public override int DefaultMaxWeight => 0;
@@ -41,7 +41,7 @@ namespace Server.Multis
     {
       base.AddNameProperties( list );
 
-      if ( House != null && House.InternalizedVendors.Count > 0 )
+      if (House != null && House.InternalizedVendors.Count > 0)
         list.Add( 1061833, House.InternalizedVendors.Count.ToString() ); // This packing crate contains ~1_COUNT~ vendors/barkeepers.
     }
     */
@@ -116,14 +116,14 @@ namespace Server.Multis
         }
 
       for (int i = 0; i < Rows; i++)
-      for (int j = 0; j < Columns; j++)
-        if (!positions[i, j])
-        {
-          int x = Bounds.X + j * HorizontalSpacing;
-          int y = Bounds.Y + i * VerticalSpacing;
+        for (int j = 0; j < Columns; j++)
+          if (!positions[i, j])
+          {
+            int x = Bounds.X + j * HorizontalSpacing;
+            int y = Bounds.Y + i * VerticalSpacing;
 
-          return new Point3D(x, y, 0);
-        }
+            return new Point3D(x, y, 0);
+          }
 
       return Point3D.Zero;
     }
@@ -230,7 +230,7 @@ namespace Server.Multis
 
     public class InternalizeTimer : Timer
     {
-      private MovingCrate m_Crate;
+      private readonly MovingCrate m_Crate;
 
       public InternalizeTimer(MovingCrate crate) : base(TimeSpan.FromMinutes(5.0))
       {

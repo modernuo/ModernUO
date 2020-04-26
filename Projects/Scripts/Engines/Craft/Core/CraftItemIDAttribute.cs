@@ -7,6 +7,6 @@ namespace Server.Engines.Craft
   {
     public CraftItemIDAttribute(int itemID) => ItemID = itemID;
 
-    public int ItemID{ get; }
+    public int ItemID { get; }
   }
 }

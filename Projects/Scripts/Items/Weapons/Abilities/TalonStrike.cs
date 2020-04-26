@@ -8,7 +8,7 @@ namespace Server.Items
   /// </summary>
   public class TalonStrike : WeaponAbility
   {
-    private static HashSet<Mobile> m_Table = new HashSet<Mobile>();
+    private static readonly HashSet<Mobile> m_Table = new HashSet<Mobile>();
 
     public override int BaseMana => 30;
     public override double DamageScalar => 1.2;
@@ -38,7 +38,7 @@ namespace Server.Items
       defender.FixedParticles(0x373A, 1, 17, 0x26BC, 0x662, 0, EffectLayer.Waist);
 
       InternalTimer timer = new InternalTimer(defender,
-        (int)(10.0 * (attacker.Skills.Ninjitsu.Value - 50.0) / 70.0 + 5)); //5 - 15 damage
+        (int)(10.0 * (attacker.Skills.Ninjitsu.Value - 50.0) / 70.0 + 5)); // 5 - 15 damage
 
       timer.Start();
 
@@ -50,7 +50,7 @@ namespace Server.Items
       private readonly double DamagePerTick;
       private double m_DamageRemaining;
       private double m_DamageToDo;
-      private Mobile m_Defender;
+      private readonly Mobile m_Defender;
 
       public InternalTimer(Mobile defender, int totalDamage)
         : base(TimeSpan.Zero, TimeSpan.FromSeconds(0.25),
@@ -76,14 +76,14 @@ namespace Server.Items
         m_DamageToDo += DamagePerTick;
 
         if (m_DamageRemaining <= 0 && m_DamageToDo < 1)
-          m_DamageToDo = 1.0; //Confirm this 'round up' at the end
+          m_DamageToDo = 1.0; // Confirm this 'round up' at the end
 
         int damage = (int)m_DamageToDo;
 
         if (damage > 0)
         {
-          //m_Defender.Damage( damage, m_Attacker, false );
-          m_Defender.Hits -= damage; //Don't show damage, don't disrupt
+          // m_Defender.Damage( damage, m_Attacker, false );
+          m_Defender.Hits -= damage; // Don't show damage, don't disrupt
           m_DamageToDo -= damage;
         }
 

@@ -4,7 +4,7 @@ namespace Server.Targeting
 {
   public class WandTarget : Target
   {
-    private BaseWand m_Item;
+    private readonly BaseWand m_Item;
 
     public WandTarget(BaseWand item) : base(6, false, TargetFlags.None) => m_Item = item;
 

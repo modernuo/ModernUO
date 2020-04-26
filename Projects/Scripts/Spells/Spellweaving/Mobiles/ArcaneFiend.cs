@@ -45,7 +45,7 @@ namespace Server.Mobiles
     public override double DispelFocus => 20.0;
 
     public override PackInstinct PackInstinct => PackInstinct.Daemon;
-    public override bool BleedImmune => true; //TODO: Verify on OSI.  Guide says this.
+    public override bool BleedImmune => true; // TODO: Verify on OSI.  Guide says this.
     public override string DefaultName => "an imp";
 
     public override void Serialize(IGenericWriter writer)

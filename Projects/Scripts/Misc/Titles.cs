@@ -19,7 +19,7 @@ namespace Server.Misc
       "Nullifier"
     };
 
-    private static string[,] m_Levels =
+    private static readonly string[,] m_Levels =
     {
       { "Neophyte", "Neophyte", "Neophyte" },
       { "Novice", "Novice", "Novice" },
@@ -33,7 +33,7 @@ namespace Server.Misc
       { "Legendary", "Kengo", "Ka-ge" }
     };
 
-    private static FameEntry[] m_FameEntries =
+    private static readonly FameEntry[] m_FameEntries =
     {
       new FameEntry(1249, new[]
       {
@@ -232,7 +232,7 @@ namespace Server.Misc
 
       bool showSkillTitle = beheld.ShowFameTitle && (beholder == beheld || fame >= 5000);
 
-      /*if ( beheld.Kills >= 5 )
+      /*if (beheld.Kills >= 5)
       {
         title.AppendFormat( beheld.Fame >= 10000 ? "The Murderer {1} {0}" : "The Murderer {0}", beheld.Name, beheld.Female ? "Lady" : "Lord" );
       }

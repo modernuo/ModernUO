@@ -38,7 +38,7 @@ namespace Server.Items
 
     private class InternalTimer : Timer
     {
-      private Item m_Blood;
+      private readonly Item m_Blood;
 
       public InternalTimer(Item blood) : base(TimeSpan.FromSeconds(5.0))
       {

@@ -7,14 +7,13 @@ namespace Server.Spells.Third
 {
   public class MagicLockSpell : MagerySpell, ISpellTargetingItem
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Magic Lock", "An Por",
       215,
       9001,
       Reagent.Garlic,
       Reagent.Bloodmoss,
-      Reagent.SulfurousAsh
-    );
+      Reagent.SulfurousAsh);
 
     public MagicLockSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

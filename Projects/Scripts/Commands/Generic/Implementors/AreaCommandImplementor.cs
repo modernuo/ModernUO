@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Server.Commands.Generic
 {
@@ -19,7 +18,7 @@ namespace Server.Commands.Generic
       Instance = this;
     }
 
-    public static AreaCommandImplementor Instance{ get; private set; }
+    public static AreaCommandImplementor Instance { get; private set; }
 
     public override void Process(Mobile from, BaseCommand command, string[] args)
     {
@@ -47,7 +46,6 @@ namespace Server.Commands.Generic
         foreach (IEntity obj in eable)
           if ((!mobiles || obj is Mobile) && BaseCommand.IsAccessible(from, obj) && ext.IsValid(obj))
             objs.Add(obj);
-
 
         eable.Free();
         ext.Filter(objs);

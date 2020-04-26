@@ -6,7 +6,7 @@ namespace Server.Mobiles
   {
     public static readonly List<SBInfo> Empty = new List<SBInfo>();
 
-    public abstract IShopSellInfo SellInfo{ get; }
-    public abstract List<GenericBuyInfo> BuyInfo{ get; }
+    public abstract IShopSellInfo SellInfo { get; }
+    public abstract List<GenericBuyInfo> BuyInfo { get; }
   }
 }

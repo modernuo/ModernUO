@@ -38,74 +38,74 @@ namespace Server.Guilds
     public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (!(sender.Mobile is PlayerMobile pm) || pm.Guild != null)
-        return; //Sanity
+        return; // Sanity
 
       switch (info.ButtonID)
       {
         case 1:
-        {
-          TextRelay tName = info.GetTextEntry(5);
-          TextRelay tAbbrev = info.GetTextEntry(6);
+          {
+            TextRelay tName = info.GetTextEntry(5);
+            TextRelay tAbbrev = info.GetTextEntry(6);
 
-          string guildName = tName == null ? "" : tName.Text;
-          string guildAbbrev = tAbbrev == null ? "" : tAbbrev.Text;
+            string guildName = tName == null ? "" : tName.Text;
+            string guildAbbrev = tAbbrev == null ? "" : tAbbrev.Text;
 
-          guildName = Utility.FixHtml(guildName.Trim());
-          guildAbbrev = Utility.FixHtml(guildAbbrev.Trim());
+            guildName = Utility.FixHtml(guildName.Trim());
+            guildAbbrev = Utility.FixHtml(guildAbbrev.Trim());
 
-          if (guildName.Length <= 0)
-          {
-            pm.SendLocalizedMessage(1070884); // Guild name cannot be blank.
-          }
-          else if (guildAbbrev.Length <= 0)
-          {
-            pm.SendLocalizedMessage(1070885); // You must provide a guild abbreviation.
-          }
-          else if (guildName.Length > Guild.NameLimit)
-          {
-            pm.SendLocalizedMessage(1063036,
-              Guild.NameLimit.ToString()); // A guild name cannot be more than ~1_val~ characters in length.
-          }
-          else if (guildAbbrev.Length > Guild.AbbrevLimit)
-          {
-            pm.SendLocalizedMessage(1063037,
-              Guild.AbbrevLimit.ToString()); // An abbreviation cannot exceed ~1_val~ characters in length.
-          }
-          else if (BaseGuild.FindByAbbrev(guildAbbrev) != null || !BaseGuildGump.CheckProfanity(guildAbbrev))
-          {
-            pm.SendLocalizedMessage(501153); // That abbreviation is not available.
-          }
-          else if (BaseGuild.FindByName(guildName) != null || !BaseGuildGump.CheckProfanity(guildName))
-          {
-            pm.SendLocalizedMessage(1063000); // That guild name is not available.
-          }
-          else if (!Banker.Withdraw(pm, Guild.RegistrationFee))
-          {
-            pm.SendLocalizedMessage(1063001,
-              Guild.RegistrationFee
-                .ToString()); // You do not possess the ~1_val~ gold piece fee required to create a guild.
-          }
-          else
-          {
-            pm.SendLocalizedMessage(1060398,
-              Guild.RegistrationFee.ToString()); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-            pm.SendLocalizedMessage(1063238); // Your new guild has been founded.
-            pm.Guild = new Guild(pm, guildName, guildAbbrev);
-          }
+            if (guildName.Length <= 0)
+            {
+              pm.SendLocalizedMessage(1070884); // Guild name cannot be blank.
+            }
+            else if (guildAbbrev.Length <= 0)
+            {
+              pm.SendLocalizedMessage(1070885); // You must provide a guild abbreviation.
+            }
+            else if (guildName.Length > Guild.NameLimit)
+            {
+              pm.SendLocalizedMessage(1063036,
+                Guild.NameLimit.ToString()); // A guild name cannot be more than ~1_val~ characters in length.
+            }
+            else if (guildAbbrev.Length > Guild.AbbrevLimit)
+            {
+              pm.SendLocalizedMessage(1063037,
+                Guild.AbbrevLimit.ToString()); // An abbreviation cannot exceed ~1_val~ characters in length.
+            }
+            else if (BaseGuild.FindByAbbrev(guildAbbrev) != null || !BaseGuildGump.CheckProfanity(guildAbbrev))
+            {
+              pm.SendLocalizedMessage(501153); // That abbreviation is not available.
+            }
+            else if (BaseGuild.FindByName(guildName) != null || !BaseGuildGump.CheckProfanity(guildName))
+            {
+              pm.SendLocalizedMessage(1063000); // That guild name is not available.
+            }
+            else if (!Banker.Withdraw(pm, Guild.RegistrationFee))
+            {
+              pm.SendLocalizedMessage(1063001,
+                Guild.RegistrationFee
+                  .ToString()); // You do not possess the ~1_val~ gold piece fee required to create a guild.
+            }
+            else
+            {
+              pm.SendLocalizedMessage(1060398,
+                Guild.RegistrationFee.ToString()); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+              pm.SendLocalizedMessage(1063238); // Your new guild has been founded.
+              pm.Guild = new Guild(pm, guildName, guildAbbrev);
+            }
 
-          break;
-        }
+            break;
+          }
         case 2:
-        {
-          pm.AcceptGuildInvites = !pm.AcceptGuildInvites;
+          {
+            pm.AcceptGuildInvites = !pm.AcceptGuildInvites;
 
-          if (pm.AcceptGuildInvites)
-            pm.SendLocalizedMessage(1070699); // You are now accepting guild invitations.
-          else
-            pm.SendLocalizedMessage(1070698); // You are now ignoring guild invitations.
+            if (pm.AcceptGuildInvites)
+              pm.SendLocalizedMessage(1070699); // You are now accepting guild invitations.
+            else
+              pm.SendLocalizedMessage(1070698); // You are now ignoring guild invitations.
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

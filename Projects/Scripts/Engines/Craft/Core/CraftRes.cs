@@ -16,17 +16,17 @@ namespace Server.Engines.Craft
       MessageString = message;
     }
 
-    public Type ItemType{ get; }
+    public Type ItemType { get; }
 
-    public string MessageString{ get; }
+    public string MessageString { get; }
 
-    public int MessageNumber{ get; }
+    public int MessageNumber { get; }
 
-    public string NameString{ get; }
+    public string NameString { get; }
 
-    public int NameNumber{ get; }
+    public int NameNumber { get; }
 
-    public int Amount{ get; }
+    public int Amount { get; }
 
     public void SendMessage(Mobile from)
     {

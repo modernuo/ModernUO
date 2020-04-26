@@ -6,7 +6,7 @@ using Server.Regions;
 
 namespace Server.SkillHandlers
 {
-  public class Snooping
+  public static class Snooping
   {
     public static void Configure()
     {
@@ -28,7 +28,7 @@ namespace Server.SkillHandlers
       if (reg?.IsDisabled() != true)
         return true; // not in town? we can snoop any npc
 
-      return !to.Body.IsHuman || to is BaseCreature cret && (cret.AlwaysAttackable || cret.AlwaysMurderer);
+      return !to.Body.IsHuman || (to is BaseCreature cret && (cret.AlwaysAttackable || cret.AlwaysMurderer));
     }
 
     public static void Container_Snoop(Container cont, Mobile from)

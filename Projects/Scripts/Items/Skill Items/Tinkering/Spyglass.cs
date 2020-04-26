@@ -33,7 +33,7 @@ namespace Server.Items
           return;
 
         FindIngredientObjective obj = qs.FindObjective<FindIngredientObjective>();
-        
+
         if (obj?.Completed == false && obj.Ingredient == Ingredient.StarChart)
         {
           Clock.GetTime(from.Map, from.X, from.Y, out int hours, out int _);

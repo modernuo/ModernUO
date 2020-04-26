@@ -28,9 +28,9 @@ namespace Server
   {
     public CreateGuildEventArgs(uint id) => Id = id;
 
-    public uint Id{ get; set; }
+    public uint Id { get; set; }
 
-    public BaseGuild Guild{ get; set; }
+    public BaseGuild Guild { get; set; }
   }
 
   public static partial class EventSink

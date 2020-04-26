@@ -12,7 +12,7 @@ namespace Server.Items
   {
     public override int BaseMana => 30;
 
-    public static Dictionary<Mobile, FrenziedWirlwindTimer> Registry{ get; } = new Dictionary<Mobile, FrenziedWirlwindTimer>();
+    public static Dictionary<Mobile, FrenziedWirlwindTimer> Registry { get; } = new Dictionary<Mobile, FrenziedWirlwindTimer>();
 
     public override bool CheckSkills(Mobile from)
     {
@@ -28,7 +28,7 @@ namespace Server.Items
 
     public override void OnHit(Mobile attacker, Mobile defender, int damage)
     {
-      if (!Validate(attacker)) //Mana check after check that there are targets
+      if (!Validate(attacker)) // Mana check after check that there are targets
         return;
 
       ClearCurrentAbility(attacker);
@@ -81,10 +81,10 @@ namespace Server.Items
     public class FrenziedWirlwindTimer : Timer
     {
       private readonly double DamagePerTick;
-      private Mobile m_Attacker;
+      private readonly Mobile m_Attacker;
       private double m_DamageRemaining;
       private double m_DamageToDo;
-      private Mobile m_Defender;
+      private readonly Mobile m_Defender;
 
       public FrenziedWirlwindTimer(Mobile attacker, Mobile defender, int totalDamage)
         : base(TimeSpan.Zero, TimeSpan.FromSeconds(0.25),
@@ -112,7 +112,7 @@ namespace Server.Items
         m_DamageToDo += DamagePerTick;
 
         if (m_DamageRemaining <= 0 && m_DamageToDo < 1)
-          m_DamageToDo = 1.0; //Confirm this 'round up' at the end
+          m_DamageToDo = 1.0; // Confirm this 'round up' at the end
 
         int damage = (int)m_DamageToDo;
 

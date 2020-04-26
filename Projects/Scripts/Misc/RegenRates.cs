@@ -55,13 +55,13 @@ namespace Server.Misc
       if (bc?.IsParagon == true || from is Leviathan)
         points += 40;
 
-      if (Core.ML && from.Race == Race.Human) //Is this affected by the cap?
+      if (Core.ML && from.Race == Race.Human) // Is this affected by the cap?
         points += 2;
 
       if (points < 0)
         points = 0;
 
-      if (Core.ML && from is PlayerMobile) //does racial bonus go before/after?
+      if (Core.ML && from is PlayerMobile) // does racial bonus go before/after?
         points = Math.Min(points, 18);
 
       if (CheckTransform(from, typeof(HorrificBeastSpell)))
@@ -82,7 +82,7 @@ namespace Server.Misc
 
       int points = (int)(from.Skills.Focus.Value * 0.1);
 
-      if (from is BaseCreature creature && creature.IsParagon || from is Leviathan)
+      if ((from is BaseCreature creature && creature.IsParagon) || from is Leviathan)
         points += 40;
 
       int cappedPoints = AosAttributes.GetValue(from, AosAttribute.RegenStam);
@@ -130,7 +130,7 @@ namespace Server.Misc
 
         double totalPoints = focusPoints + medPoints + (from.Meditating ? medPoints > 13.0 ? 13.0 : medPoints : 0.0);
 
-        if (from is BaseCreature creature && creature.IsParagon || from is Leviathan)
+        if ((from is BaseCreature creature && creature.IsParagon) || from is Leviathan)
           totalPoints += 40;
 
         int cappedPoints = AosAttributes.GetValue(from, AosAttribute.RegenMana);
@@ -205,7 +205,7 @@ namespace Server.Misc
       return ar.MeditationAllowance switch
       {
         ArmorMeditationAllowance.None => ar.BaseArmorRatingScaled,
-        ArmorMeditationAllowance.Half => (ar.BaseArmorRatingScaled / 2.0),
+        ArmorMeditationAllowance.Half => ar.BaseArmorRatingScaled / 2.0,
         ArmorMeditationAllowance.All => 0.0,
         _ => ar.BaseArmorRatingScaled
       };

@@ -44,13 +44,13 @@ namespace Server.Mobiles
       else
         AddItem(new Shoes(lowHue));
 
-      //if ( !Female )
-      //AddItem( new BodySash( lowHue ) );
+      // if (!Female)
+      // AddItem( new BodySash( lowHue ) );
 
-      //AddItem( new Cloak( GetRandomHue() ) );
+      // AddItem( new Cloak( GetRandomHue() ) );
 
-      //if ( !Female )
-      //AddItem( new Longsword() );
+      // if (!Female)
+      // AddItem( new Longsword() );
 
       Utility.AssignRandomHair(this);
 

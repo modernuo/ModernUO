@@ -6,7 +6,7 @@ namespace Server.Multis.Deeds
 {
   public class HousePlacementTarget : MultiTarget
   {
-    private HouseDeed m_Deed;
+    private readonly HouseDeed m_Deed;
 
     public HousePlacementTarget(HouseDeed deed) : base(deed.MultiID, deed.Offset) => m_Deed = deed;
 
@@ -53,12 +53,12 @@ namespace Server.Multis.Deeds
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int MultiID{ get; set; }
+    public int MultiID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D Offset{ get; set; }
+    public Point3D Offset { get; set; }
 
-    public abstract Rectangle2D[] Area{ get; }
+    public abstract Rectangle2D[] Area { get; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -80,17 +80,17 @@ namespace Server.Multis.Deeds
       switch (version)
       {
         case 1:
-        {
-          Offset = reader.ReadPoint3D();
+          {
+            Offset = reader.ReadPoint3D();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          MultiID = reader.ReadInt();
+          {
+            MultiID = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (Weight == 0.0)
@@ -109,9 +109,10 @@ namespace Server.Multis.Deeds
       }
       else
       {
-        from.SendLocalizedMessage(1010433); /* House placement cancellation could result in a
-													   * 60 second delay in the return of your deed.
-													   */
+        /* House placement cancellation could result in a
+         * 60 second delay in the return of your deed.
+         */
+        from.SendLocalizedMessage(1010433);
 
         from.Target = new HousePlacementTarget(this);
       }
@@ -140,55 +141,55 @@ namespace Server.Multis.Deeds
         switch (res)
         {
           case HousePlacementResult.Valid:
-          {
-            BaseHouse house = GetHouse(from);
-            house.MoveToWorld(center, from.Map);
-            Delete();
-
-            for (int i = 0; i < toMove.Count; ++i)
             {
-              object o = toMove[i];
+              BaseHouse house = GetHouse(from);
+              house.MoveToWorld(center, from.Map);
+              Delete();
 
-              if (o is Mobile mobile)
-                mobile.Location = house.BanLocation;
-              else if (o is Item item)
-                item.Location = house.BanLocation;
+              for (int i = 0; i < toMove.Count; ++i)
+              {
+                object o = toMove[i];
+
+                if (o is Mobile mobile)
+                  mobile.Location = house.BanLocation;
+                else if (o is Item item)
+                  item.Location = house.BanLocation;
+              }
+
+              break;
             }
-
-            break;
-          }
           case HousePlacementResult.BadItem:
           case HousePlacementResult.BadLand:
           case HousePlacementResult.BadStatic:
           case HousePlacementResult.BadRegionHidden:
-          {
-            from.SendLocalizedMessage(
-              1043287); // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
-            break;
-          }
+            {
+              from.SendLocalizedMessage(
+                1043287); // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
+              break;
+            }
           case HousePlacementResult.NoSurface:
-          {
-            from.SendMessage(
-              "The house could not be created here.  Part of the foundation would not be on any surface.");
-            break;
-          }
+            {
+              from.SendMessage(
+                "The house could not be created here.  Part of the foundation would not be on any surface.");
+              break;
+            }
           case HousePlacementResult.BadRegion:
-          {
-            from.SendLocalizedMessage(501265); // Housing cannot be created in this area.
-            break;
-          }
+            {
+              from.SendLocalizedMessage(501265); // Housing cannot be created in this area.
+              break;
+            }
           case HousePlacementResult.BadRegionTemp:
-          {
-            from.SendLocalizedMessage(
-              501270); //Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
-            break;
-          }
+            {
+              from.SendLocalizedMessage(
+                501270); // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
+              break;
+            }
           case HousePlacementResult.BadRegionRaffle:
-          {
-            from.SendLocalizedMessage(
-              1150493); // You must have a deed for this plot of land in order to build here.
-            break;
-          }
+            {
+              from.SendLocalizedMessage(
+                1150493); // You must have a deed for this plot of land in order to build here.
+              break;
+            }
         }
       }
     }

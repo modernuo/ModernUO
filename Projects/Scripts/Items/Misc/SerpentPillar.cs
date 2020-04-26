@@ -23,13 +23,13 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Active{ get; set; }
+    public bool Active { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string Word{ get; set; }
+    public string Word { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Rectangle2D Destination{ get; set; }
+    public Rectangle2D Destination { get; set; }
 
     public override bool HandlesOnSpeech => true;
 

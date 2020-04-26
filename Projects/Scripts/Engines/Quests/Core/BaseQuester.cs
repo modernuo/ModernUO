@@ -7,7 +7,7 @@ namespace Server.Engines.Quests
 {
   public class TalkEntry : ContextMenuEntry
   {
-    private BaseQuester m_Quester;
+    private readonly BaseQuester m_Quester;
 
     public TalkEntry(BaseQuester quester) : base(quester.TalkNumber) => m_Quester = quester;
 

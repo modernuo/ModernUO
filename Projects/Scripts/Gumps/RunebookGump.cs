@@ -32,7 +32,7 @@ namespace Server.Gumps
       }
     }
 
-    public Runebook Book{ get; }
+    public Runebook Book { get; }
 
     public int GetMapHue(Map map)
     {
@@ -243,138 +243,22 @@ namespace Server.Gumps
           switch (type)
           {
             case 0: // Use charges
-            {
-              if (Book.CurCharges <= 0)
               {
-                from.CloseGump<RunebookGump>();
-                from.SendGump(new RunebookGump(from, Book));
-
-                from.SendLocalizedMessage(502412); // There are no charges left on that item.
-              }
-              else
-              {
-                int xLong = 0, yLat = 0;
-                int xMins = 0, yMins = 0;
-                bool xEast = false, ySouth = false;
-
-                if (Sextant.Format(e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast,
-                  ref ySouth))
+                if (Book.CurCharges <= 0)
                 {
-                  string location =
-                    $"{yLat}� {yMins}'{(ySouth ? "S" : "N")}, {xLong}� {xMins}'{(xEast ? "E" : "W")}";
-                  from.SendMessage(location);
-                }
-
-                Book.OnTravel();
-                new RecallSpell(from, e, Book, Book).Cast();
-
-                Book.Openers.Remove(from);
-              }
-
-              break;
-            }
-            case 1: // Drop rune
-            {
-              if (!Book.IsLockedDown || from.AccessLevel >= AccessLevel.GameMaster)
-              {
-                Book.DropRune(from, e, index);
-
-                from.CloseGump<RunebookGump>();
-                if (!Core.ML)
+                  from.CloseGump<RunebookGump>();
                   from.SendGump(new RunebookGump(from, Book));
-              }
-              else
-              {
-                Book.Openers.Remove(from);
 
-                from.SendLocalizedMessage(502413, null,
-                  0x35); // That cannot be done while the book is locked down.
-              }
-
-              break;
-            }
-            case 2: // Set default
-            {
-              if (Book.CheckAccess(from))
-              {
-                Book.Default = e;
-
-                from.CloseGump<RunebookGump>();
-                from.SendGump(new RunebookGump(from, Book));
-
-                from.SendLocalizedMessage(502417); // New default location set.
-              }
-
-              break;
-            }
-            case 3: // Recall
-            {
-              if (HasSpell(from, 31))
-              {
-                int xLong = 0, yLat = 0;
-                int xMins = 0, yMins = 0;
-                bool xEast = false, ySouth = false;
-
-                if (Sextant.Format(e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast,
-                  ref ySouth))
-                {
-                  string location =
-                    $"{yLat}� {yMins}'{(ySouth ? "S" : "N")}, {xLong}� {xMins}'{(xEast ? "E" : "W")}";
-                  from.SendMessage(location);
+                  from.SendLocalizedMessage(502412); // There are no charges left on that item.
                 }
-
-                Book.OnTravel();
-                new RecallSpell(from, e).Cast();
-              }
-              else
-              {
-                from.SendLocalizedMessage(500015); // You do not have that spell!
-              }
-
-              Book.Openers.Remove(from);
-
-              break;
-            }
-            case 4: // Gate
-            {
-              if (HasSpell(from, 51))
-              {
-                int xLong = 0, yLat = 0;
-                int xMins = 0, yMins = 0;
-                bool xEast = false, ySouth = false;
-
-                if (Sextant.Format(e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast,
-                  ref ySouth))
-                {
-                  string location =
-                    $"{yLat}� {yMins}'{(ySouth ? "S" : "N")}, {xLong}� {xMins}'{(xEast ? "E" : "W")}";
-                  from.SendMessage(location);
-                }
-
-                Book.OnTravel();
-                new GateTravelSpell(from, e).Cast();
-              }
-              else
-              {
-                from.SendLocalizedMessage(500015); // You do not have that spell!
-              }
-
-              Book.Openers.Remove(from);
-
-              break;
-            }
-            case 5: // Sacred Journey
-            {
-              if (Core.AOS)
-              {
-                if (HasSpell(from, 209))
+                else
                 {
                   int xLong = 0, yLat = 0;
                   int xMins = 0, yMins = 0;
                   bool xEast = false, ySouth = false;
 
-                  if (Sextant.Format(e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins,
-                    ref xEast, ref ySouth))
+                  if (Sextant.Format(e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast,
+                    ref ySouth))
                   {
                     string location =
                       $"{yLat}� {yMins}'{(ySouth ? "S" : "N")}, {xLong}� {xMins}'{(xEast ? "E" : "W")}";
@@ -382,18 +266,134 @@ namespace Server.Gumps
                   }
 
                   Book.OnTravel();
-                  new SacredJourneySpell(from, e).Cast();
+                  new RecallSpell(from, e, Book, Book).Cast();
+
+                  Book.Openers.Remove(from);
+                }
+
+                break;
+              }
+            case 1: // Drop rune
+              {
+                if (!Book.IsLockedDown || from.AccessLevel >= AccessLevel.GameMaster)
+                {
+                  Book.DropRune(from, e, index);
+
+                  from.CloseGump<RunebookGump>();
+                  if (!Core.ML)
+                    from.SendGump(new RunebookGump(from, Book));
+                }
+                else
+                {
+                  Book.Openers.Remove(from);
+
+                  from.SendLocalizedMessage(502413, null,
+                    0x35); // That cannot be done while the book is locked down.
+                }
+
+                break;
+              }
+            case 2: // Set default
+              {
+                if (Book.CheckAccess(from))
+                {
+                  Book.Default = e;
+
+                  from.CloseGump<RunebookGump>();
+                  from.SendGump(new RunebookGump(from, Book));
+
+                  from.SendLocalizedMessage(502417); // New default location set.
+                }
+
+                break;
+              }
+            case 3: // Recall
+              {
+                if (HasSpell(from, 31))
+                {
+                  int xLong = 0, yLat = 0;
+                  int xMins = 0, yMins = 0;
+                  bool xEast = false, ySouth = false;
+
+                  if (Sextant.Format(e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast,
+                    ref ySouth))
+                  {
+                    string location =
+                      $"{yLat}� {yMins}'{(ySouth ? "S" : "N")}, {xLong}� {xMins}'{(xEast ? "E" : "W")}";
+                    from.SendMessage(location);
+                  }
+
+                  Book.OnTravel();
+                  new RecallSpell(from, e).Cast();
                 }
                 else
                 {
                   from.SendLocalizedMessage(500015); // You do not have that spell!
                 }
+
+                Book.Openers.Remove(from);
+
+                break;
               }
+            case 4: // Gate
+              {
+                if (HasSpell(from, 51))
+                {
+                  int xLong = 0, yLat = 0;
+                  int xMins = 0, yMins = 0;
+                  bool xEast = false, ySouth = false;
 
-              Book.Openers.Remove(from);
+                  if (Sextant.Format(e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast,
+                    ref ySouth))
+                  {
+                    string location =
+                      $"{yLat}� {yMins}'{(ySouth ? "S" : "N")}, {xLong}� {xMins}'{(xEast ? "E" : "W")}";
+                    from.SendMessage(location);
+                  }
 
-              break;
-            }
+                  Book.OnTravel();
+                  new GateTravelSpell(from, e).Cast();
+                }
+                else
+                {
+                  from.SendLocalizedMessage(500015); // You do not have that spell!
+                }
+
+                Book.Openers.Remove(from);
+
+                break;
+              }
+            case 5: // Sacred Journey
+              {
+                if (Core.AOS)
+                {
+                  if (HasSpell(from, 209))
+                  {
+                    int xLong = 0, yLat = 0;
+                    int xMins = 0, yMins = 0;
+                    bool xEast = false, ySouth = false;
+
+                    if (Sextant.Format(e.Location, e.Map, ref xLong, ref yLat, ref xMins, ref yMins,
+                      ref xEast, ref ySouth))
+                    {
+                      string location =
+                        $"{yLat}� {yMins}'{(ySouth ? "S" : "N")}, {xLong}� {xMins}'{(xEast ? "E" : "W")}";
+                      from.SendMessage(location);
+                    }
+
+                    Book.OnTravel();
+                    new SacredJourneySpell(from, e).Cast();
+                  }
+                  else
+                  {
+                    from.SendLocalizedMessage(500015); // You do not have that spell!
+                  }
+                }
+
+                Book.Openers.Remove(from);
+
+                break;
+              }
           }
         }
         else
@@ -405,7 +405,7 @@ namespace Server.Gumps
 
     private class InternalPrompt : Prompt
     {
-      private Runebook m_Book;
+      private readonly Runebook m_Book;
 
       public InternalPrompt(Runebook book) => m_Book = book;
 

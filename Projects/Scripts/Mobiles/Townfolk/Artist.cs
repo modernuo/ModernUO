@@ -12,11 +12,9 @@ namespace Server.Mobiles
 
       SetSkill(SkillName.Healing, 36, 68);
 
-
       SpeechHue = Utility.RandomDyedHue();
       Title = "the artist";
       Hue = Race.Human.RandomSkinHue();
-
 
       if (Female = Utility.RandomBool())
       {
@@ -44,7 +42,6 @@ namespace Server.Mobiles
 
       AddItem(pack);
     }
-
 
     public Artist(Serial serial)
       : base(serial)

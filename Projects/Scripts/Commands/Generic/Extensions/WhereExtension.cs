@@ -8,7 +8,7 @@ namespace Server.Commands.Generic
 
     public override ExtensionInfo Info => ExtInfo;
 
-    public ObjectConditional Conditional{ get; private set; }
+    public ObjectConditional Conditional { get; private set; }
 
     public static void Initialize()
     {

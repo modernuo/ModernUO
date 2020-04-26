@@ -86,10 +86,10 @@ namespace Server.Items
 
     private class SpinTimer : Timer
     {
-      private SpinCallback m_Callback;
-      private Mobile m_From;
-      private int m_Hue;
-      private SpinningwheelSouthAddon m_Wheel;
+      private readonly SpinCallback m_Callback;
+      private readonly Mobile m_From;
+      private readonly int m_Hue;
+      private readonly SpinningwheelSouthAddon m_Wheel;
 
       public SpinTimer(SpinningwheelSouthAddon wheel, SpinCallback callback, Mobile from, int hue) : base(
         TimeSpan.FromSeconds(3.0))

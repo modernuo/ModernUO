@@ -57,7 +57,7 @@ namespace Server.Engines.Plants
     {
     }
 
-    public PlantSystem PlantSystem{ get; private set; }
+    public PlantSystem PlantSystem { get; private set; }
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
@@ -139,7 +139,6 @@ namespace Server.Engines.Plants
         if (IsLockedDown && RootParent == null)
           return true;
 
-
         if (!(RootParent is Mobile owner))
           return false;
 
@@ -156,10 +155,10 @@ namespace Server.Engines.Plants
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Reproduces => PlantHueInfo.CanReproduce(PlantHue) && PlantTypeInfo.CanReproduce(PlantType);
 
-    public static List<PlantItem> Plants{ get; } = new List<PlantItem>();
+    public static List<PlantItem> Plants { get; } = new List<PlantItem>();
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public SecureLevel Level{ get; set; }
+    public SecureLevel Level { get; set; }
 
     public override void OnSingleClick(Mobile from)
     {
@@ -281,8 +280,8 @@ namespace Server.Engines.Plants
     }
 
     public bool IsUsableBy(Mobile from) =>
-      IsChildOf(from.Backpack) || IsChildOf(from.FindBankNoCreate()) || IsLockedDown && IsAccessibleTo(from) ||
-      RootParent is Item root && root.IsSecure && root.IsAccessibleTo(from);
+      IsChildOf(from.Backpack) || IsChildOf(from.FindBankNoCreate()) || (IsLockedDown && IsAccessibleTo(from)) ||
+      (RootParent is Item root && root.IsSecure && root.IsAccessibleTo(from));
 
     public override void OnDoubleClick(Mobile from)
     {
@@ -515,28 +514,28 @@ namespace Server.Engines.Plants
       {
         case 2:
         case 1:
-        {
-          Level = (SecureLevel)reader.ReadInt();
-          goto case 0;
-        }
+          {
+            Level = (SecureLevel)reader.ReadInt();
+            goto case 0;
+          }
         case 0:
-        {
-          if (version < 1)
-            Level = SecureLevel.CoOwners;
+          {
+            if (version < 1)
+              Level = SecureLevel.CoOwners;
 
-          m_PlantStatus = (PlantStatus)reader.ReadInt();
-          m_PlantType = (PlantType)reader.ReadInt();
-          m_PlantHue = (PlantHue)reader.ReadInt();
-          m_ShowType = reader.ReadBool();
+            m_PlantStatus = (PlantStatus)reader.ReadInt();
+            m_PlantType = (PlantType)reader.ReadInt();
+            m_PlantHue = (PlantHue)reader.ReadInt();
+            m_ShowType = reader.ReadBool();
 
-          if (m_PlantStatus < PlantStatus.DecorativePlant)
-            PlantSystem = new PlantSystem(this, reader);
+            if (m_PlantStatus < PlantStatus.DecorativePlant)
+              PlantSystem = new PlantSystem(this, reader);
 
-          if (version < 2 && PlantHueInfo.IsCrossable(m_PlantHue))
-            m_PlantHue |= PlantHue.Reproduces;
+            if (version < 2 && PlantHueInfo.IsCrossable(m_PlantHue))
+              m_PlantHue |= PlantHue.Reproduces;
 
-          break;
-        }
+            break;
+          }
       }
 
       Plants.Add(this);

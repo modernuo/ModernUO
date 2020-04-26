@@ -24,9 +24,9 @@ namespace Server.Mobiles
       Name = name;
     }
 
-    public TimeSpan Duration{ get; }
+    public TimeSpan Duration { get; }
 
-    public int Name{ get; }
+    public int Name { get; }
 
     public int ID
     {
@@ -64,33 +64,33 @@ namespace Server.Mobiles
     {
     }
 
-    public VendorRentalDuration RentalDuration{ get; private set; }
+    public VendorRentalDuration RentalDuration { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int RentalPrice{ get; set; }
+    public int RentalPrice { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool LandlordRenew{ get; set; }
+    public bool LandlordRenew { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool RenterRenew{ get; set; }
+    public bool RenterRenew { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Renew => LandlordRenew && RenterRenew && House != null && House.DecayType != DecayType.Condemned;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int RenewalPrice{ get; set; }
+    public int RenewalPrice { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int RentalGold{ get; set; }
+    public int RentalGold { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime RentalExpireTime{ get; private set; }
+    public DateTime RentalExpireTime { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Mobile Landlord => House?.Owner;
 
-    public override bool IsOwner(Mobile m) => m == Owner || m.AccessLevel >= AccessLevel.GameMaster || Core.ML && AccountHandler.CheckAccount(m, Owner);
+    public override bool IsOwner(Mobile m) => m == Owner || m.AccessLevel >= AccessLevel.GameMaster || (Core.ML && AccountHandler.CheckAccount(m, Owner));
 
     public bool IsLandlord(Mobile m) => House?.IsOwner(m) == true;
 
@@ -205,7 +205,7 @@ namespace Server.Mobiles
 
     private class ContractOptionsEntry : ContextMenuEntry
     {
-      private RentedVendor m_Vendor;
+      private readonly RentedVendor m_Vendor;
 
       public ContractOptionsEntry(RentedVendor vendor) : base(6209) => m_Vendor = vendor;
 
@@ -235,7 +235,7 @@ namespace Server.Mobiles
 
     private class CollectRentEntry : ContextMenuEntry
     {
-      private RentedVendor m_Vendor;
+      private readonly RentedVendor m_Vendor;
 
       public CollectRentEntry(RentedVendor vendor) : base(6212) => m_Vendor = vendor;
 
@@ -263,7 +263,7 @@ namespace Server.Mobiles
 
     private class TerminateContractEntry : ContextMenuEntry
     {
-      private RentedVendor m_Vendor;
+      private readonly RentedVendor m_Vendor;
 
       public TerminateContractEntry(RentedVendor vendor) : base(6218) => m_Vendor = vendor;
 
@@ -282,7 +282,7 @@ namespace Server.Mobiles
 
     private class RefundOfferPrompt : Prompt
     {
-      private RentedVendor m_Vendor;
+      private readonly RentedVendor m_Vendor;
 
       public RefundOfferPrompt(RentedVendor vendor) => m_Vendor = vendor;
 
@@ -325,7 +325,7 @@ namespace Server.Mobiles
 
     private class RentalExpireTimer : Timer
     {
-      private RentedVendor m_Vendor;
+      private readonly RentedVendor m_Vendor;
 
       public RentalExpireTimer(RentedVendor vendor, TimeSpan delay) : base(delay, vendor.RentalDuration.Duration)
       {

@@ -63,29 +63,29 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Resource = (CraftResource)reader.ReadInt();
-          break;
-        }
-        case 0:
-        {
-          var info = reader.ReadInt() switch
           {
-            0 => OreInfo.Iron,
-            1 => OreInfo.DullCopper,
-            2 => OreInfo.ShadowIron,
-            3 => OreInfo.Copper,
-            4 => OreInfo.Bronze,
-            5 => OreInfo.Gold,
-            6 => OreInfo.Agapite,
-            7 => OreInfo.Verite,
-            8 => OreInfo.Valorite,
-            _ => null
-          };
+            m_Resource = (CraftResource)reader.ReadInt();
+            break;
+          }
+        case 0:
+          {
+            var info = reader.ReadInt() switch
+            {
+              0 => OreInfo.Iron,
+              1 => OreInfo.DullCopper,
+              2 => OreInfo.ShadowIron,
+              3 => OreInfo.Copper,
+              4 => OreInfo.Bronze,
+              5 => OreInfo.Gold,
+              6 => OreInfo.Agapite,
+              7 => OreInfo.Verite,
+              8 => OreInfo.Valorite,
+              _ => null
+            };
 
-          m_Resource = CraftResources.GetFromOreInfo(info);
-          break;
-        }
+            m_Resource = CraftResources.GetFromOreInfo(info);
+            break;
+          }
       }
     }
 
@@ -152,7 +152,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private BaseOre m_Ore;
+      private readonly BaseOre m_Ore;
 
       public InternalTarget(BaseOre ore) : base(2, false, TargetFlags.None) => m_Ore = ore;
 
@@ -171,7 +171,7 @@ namespace Server.Items
         else if (obj is StaticTarget target)
           itemID = target.ItemID;
 
-        return itemID == 4017 || itemID >= 6522 && itemID <= 6569;
+        return itemID == 4017 || (itemID >= 6522 && itemID <= 6569);
       }
 
       protected override void OnTarget(Mobile from, object targeted)
@@ -184,8 +184,6 @@ namespace Server.Items
           from.SendLocalizedMessage(501976); // The ore is too far away.
           return;
         }
-
-        #region Combine Ore
 
         if (targeted is BaseOre ore)
         {
@@ -243,9 +241,9 @@ namespace Server.Items
             }
           }
 
-          if (ore.ItemID == 0x19B9 && worth > 120000 ||
-              (ore.ItemID == 0x19B8 || ore.ItemID == 0x19BA) && worth > 60000 ||
-              ore.ItemID == 0x19B7 && worth > 30000)
+          if ((ore.ItemID == 0x19B9 && worth > 120000) ||
+              ((ore.ItemID == 0x19B8 || ore.ItemID == 0x19BA) && worth > 60000) ||
+              (ore.ItemID == 0x19B7 && worth > 30000))
           {
             from.SendLocalizedMessage(1062844); // There is too much ore to combine.
             return;
@@ -270,8 +268,6 @@ namespace Server.Items
           m_Ore.Delete();
           return;
         }
-
-        #endregion
 
         if (IsForge(targeted))
         {
@@ -341,7 +337,7 @@ namespace Server.Items
 
               m_Ore.Consume(toConsume);
               from.AddToBackpack(ingot);
-              //from.PlaySound( 0x57 );
+              // from.PlaySound( 0x57 );
 
               from.SendLocalizedMessage(
                 501988); // You smelt the ore removing the impurities and put the metal in your backpack.

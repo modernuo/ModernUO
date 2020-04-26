@@ -1,11 +1,11 @@
-﻿//using System.Collections.Generic;
+﻿// using System.Collections.Generic;
 
 namespace Server.Items.Holiday
 {
   [TypeAlias("Server.Items.ClownMask", "Server.Items.DaemonMask", "Server.Items.PlagueMask")]
   public class BasePaintedMask : Item
   {
-    private static string[] m_Staffers =
+    private static readonly string[] m_Staffers =
     {
       "Ryan",
       "Mark",

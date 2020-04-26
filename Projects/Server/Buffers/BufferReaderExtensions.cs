@@ -14,7 +14,7 @@ namespace System.Buffers
     private static unsafe bool TryRead<T>(ref this BufferReader<byte> reader, out T value)
       where T : unmanaged
     {
-      ReadOnlySpan<byte> span = reader.UnreadSpan;
+      var span = reader.UnreadSpan;
       if (span.Length < sizeof(T)) return TryReadMultisegment(ref reader, out value);
 
       value = Unsafe.ReadUnaligned<T>(ref MemoryMarshal.GetReference(span));
@@ -25,11 +25,9 @@ namespace System.Buffers
     private static unsafe bool TryReadMultisegment<T>(ref BufferReader<byte> reader, out T value)
       where T : unmanaged
     {
-      Debug.Assert(reader.UnreadSpan.Length < sizeof(T), "reader.UnreadSpan.Length < sizeof(T)");
-
       // Not enough data in the current segment, try to peek for the data we need.
       T buffer = default;
-      Span<byte> tempSpan = new Span<byte>(&buffer, sizeof(T));
+      var tempSpan = new Span<byte>(&buffer, sizeof(T));
 
       if (!reader.TryCopyTo(tempSpan))
       {
@@ -152,7 +150,6 @@ namespace System.Buffers
 
       return false;
     }
-
 
     public static bool TryReadLittleEndian(ref this BufferReader<byte> reader, out ulong value)
     {

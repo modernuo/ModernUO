@@ -109,16 +109,16 @@ namespace Server.Engines.CannedEvil
       switch (version)
       {
         case 0:
-        {
-          m_Power = reader.ReadItem() as ChampionSkullBrazier;
-          m_Enlightenment = reader.ReadItem() as ChampionSkullBrazier;
-          m_Venom = reader.ReadItem() as ChampionSkullBrazier;
-          m_Pain = reader.ReadItem() as ChampionSkullBrazier;
-          m_Greed = reader.ReadItem() as ChampionSkullBrazier;
-          m_Death = reader.ReadItem() as ChampionSkullBrazier;
+          {
+            m_Power = reader.ReadItem() as ChampionSkullBrazier;
+            m_Enlightenment = reader.ReadItem() as ChampionSkullBrazier;
+            m_Venom = reader.ReadItem() as ChampionSkullBrazier;
+            m_Pain = reader.ReadItem() as ChampionSkullBrazier;
+            m_Greed = reader.ReadItem() as ChampionSkullBrazier;
+            m_Death = reader.ReadItem() as ChampionSkullBrazier;
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

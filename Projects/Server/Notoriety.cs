@@ -32,9 +32,9 @@ namespace Server
     public const int Murderer = 6;
     public const int Invulnerable = 7;
 
-    public static NotorietyHandler Handler{ get; set; }
+    public static NotorietyHandler Handler { get; set; }
 
-    public static int[] Hues{ get; set; } =
+    public static int[] Hues { get; set; } =
     {
       0x000,
       0x059,

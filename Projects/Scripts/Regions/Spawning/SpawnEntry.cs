@@ -9,7 +9,6 @@ namespace Server.Regions
     public static readonly TimeSpan DefaultMinSpawnTime = TimeSpan.FromMinutes(2.0);
     public static readonly TimeSpan DefaultMaxSpawnTime = TimeSpan.FromMinutes(5.0);
 
-
     public static readonly Direction InvalidDirection = Direction.Running;
 
     private static List<IEntity> m_RemoveList;
@@ -38,8 +37,7 @@ namespace Server.Regions
         Table[id] = this;
     }
 
-    public static Dictionary<int, SpawnEntry> Table{ get; } = new Dictionary<int, SpawnEntry>();
-
+    public static Dictionary<int, SpawnEntry> Table { get; } = new Dictionary<int, SpawnEntry>();
 
     // When a creature's AI is deactivated (PlayerRangeSensitive optimization) does it return home?
     public bool ReturnOnDeactivate => true;
@@ -47,23 +45,23 @@ namespace Server.Regions
     // Are unlinked and untamed creatures removed after 20 hours?
     public bool RemoveIfUntamed => true;
 
-    public int ID{ get; }
+    public int ID { get; }
 
-    public BaseRegion Region{ get; }
+    public BaseRegion Region { get; }
 
-    public Direction Direction{ get; }
+    public Direction Direction { get; }
 
-    public SpawnDefinition Definition{ get; }
+    public SpawnDefinition Definition { get; }
 
-    public List<ISpawnable> SpawnedObjects{ get; }
+    public List<ISpawnable> SpawnedObjects { get; }
 
-    public int Max{ get; private set; }
+    public int Max { get; private set; }
 
-    public TimeSpan MinSpawnTime{ get; }
+    public TimeSpan MinSpawnTime { get; }
 
-    public TimeSpan MaxSpawnTime{ get; }
+    public TimeSpan MaxSpawnTime { get; }
 
-    public bool Running{ get; private set; }
+    public bool Running { get; private set; }
 
     public bool Complete => SpawnedObjects.Count >= Max;
     public bool Spawning => Running && !Complete;
@@ -72,9 +70,9 @@ namespace Server.Regions
     public bool UnlinkOnTaming => false;
 
     Region ISpawner.Region => Region;
-    public Point3D HomeLocation{ get; }
+    public Point3D HomeLocation { get; }
 
-    public int HomeRange{ get; }
+    public int HomeRange { get; }
 
     void ISpawner.Remove(ISpawnable spawn)
     {

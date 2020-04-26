@@ -97,10 +97,9 @@ namespace Server.Factions
               new TextDefinition(1011507, "SORCERESS"), new TextDefinition(1011501, "Hire Sorceress")),
             new GuardDefinition(typeof(FactionWizard), 0x13F8, 8000, 4000, 10,
               new TextDefinition(1011508, "ELDER WIZARD"), new TextDefinition(1011502, "Hire Elder Wizard"))
-          }
-        );
+          });
     }
 
-    public static Faction Instance{ get; private set; }
+    public static Faction Instance { get; private set; }
   }
 }

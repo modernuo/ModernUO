@@ -41,7 +41,7 @@ namespace Server.Mobiles
 
       /*
       // TODO: uncomment once added
-      if ( Utility.RandomDouble() < 0.1 )
+      if (Utility.RandomDouble() < 0.1)
         PackItem( new ParrotItem() );
       */
     }

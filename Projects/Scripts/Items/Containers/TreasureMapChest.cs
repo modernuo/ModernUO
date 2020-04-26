@@ -40,7 +40,7 @@ namespace Server.Items
 
     public override int LabelNumber => 3000541;
 
-    public static Type[] Artifacts{ get; } =
+    public static Type[] Artifacts { get; } =
     {
       typeof(CandelabraOfSouls), typeof(GoldBricks), typeof(PhillipsWoodenSteed),
       typeof(ArcticDeathDealer), typeof(BlazeOfDeath), typeof(BurglarsBandana),
@@ -52,18 +52,18 @@ namespace Server.Items
     };
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Level{ get; set; }
+    public int Level { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Owner{ get; set; }
+    public Mobile Owner { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime DeleteTime{ get; private set; }
+    public DateTime DeleteTime { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Temporary{ get; set; }
+    public bool Temporary { get; set; }
 
-    public List<Mobile> Guardians{ get; private set; }
+    public List<Mobile> Guardians { get; private set; }
 
     public override bool IsDecoContainer => false;
 
@@ -174,10 +174,10 @@ namespace Server.Items
         cont.LockLevel = cont.RequiredSkill - 10;
         cont.MaxLockLevel = cont.RequiredSkill + 40;
 
-        //Publish 67 gold change
-        //if ( Core.SA )
-        //	cont.DropItem( new Gold( level * 5000 ) );
-        //else
+        // Publish 67 gold change
+        // if (Core.SA)
+        // cont.DropItem( new Gold( level * 5000 ) );
+        // else
         cont.DropItem(new Gold(level * 1000));
 
         for (int i = 0; i < level * 5; ++i)
@@ -353,7 +353,7 @@ namespace Server.Items
       {
         m_Lifted.Add(item);
 
-        if (0.1 >= Utility.RandomDouble()) // 10% chance to spawn a new monster
+        if (Utility.RandomDouble() <= 0.1) // 10% chance to spawn a new monster
           TreasureMap.Spawn(Level, GetWorldLocation(), Map, from, false);
       }
 
@@ -396,29 +396,29 @@ namespace Server.Items
       switch (version)
       {
         case 2:
-        {
-          Guardians = reader.ReadStrongMobileList();
-          Temporary = reader.ReadBool();
+          {
+            Guardians = reader.ReadStrongMobileList();
+            Temporary = reader.ReadBool();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          Owner = reader.ReadMobile();
+          {
+            Owner = reader.ReadMobile();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          Level = reader.ReadInt();
-          DeleteTime = reader.ReadDeltaTime();
-          m_Lifted = reader.ReadStrongItemList();
+          {
+            Level = reader.ReadInt();
+            DeleteTime = reader.ReadDeltaTime();
+            m_Lifted = reader.ReadStrongItemList();
 
-          if (version < 2)
-            Guardians = new List<Mobile>();
+            if (version < 2)
+              Guardians = new List<Mobile>();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (!Temporary)
@@ -469,8 +469,8 @@ namespace Server.Items
 
     private class RemoveGump : Gump
     {
-      private TreasureMapChest m_Chest;
-      private Mobile m_From;
+      private readonly TreasureMapChest m_Chest;
+      private readonly Mobile m_From;
 
       public RemoveGump(Mobile from, TreasureMapChest chest) : base(15, 15)
       {
@@ -503,8 +503,8 @@ namespace Server.Items
 
     private class RemoveEntry : ContextMenuEntry
     {
-      private TreasureMapChest m_Chest;
-      private Mobile m_From;
+      private readonly TreasureMapChest m_Chest;
+      private readonly Mobile m_From;
 
       public RemoveEntry(Mobile from, TreasureMapChest chest) : base(6149, 3)
       {
@@ -525,7 +525,7 @@ namespace Server.Items
 
     private class DeleteTimer : Timer
     {
-      private Item m_Item;
+      private readonly Item m_Item;
 
       public DeleteTimer(Item item, DateTime time) : base(time - DateTime.UtcNow)
       {

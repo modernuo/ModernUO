@@ -31,17 +31,16 @@ namespace Server.Menus.ItemLists
       Hue = hue;
     }
 
-    public string Name{ get; }
+    public string Name { get; }
 
-    public int ItemID{ get; }
+    public int ItemID { get; }
 
-    public int Hue{ get; }
+    public int Hue { get; }
   }
 
   public class ItemListMenu : IMenu
   {
     private static int m_NextSerial;
-    private readonly int m_Serial;
 
     public ItemListMenu(string question, ItemListEntry[] entries)
     {
@@ -50,20 +49,20 @@ namespace Server.Menus.ItemLists
 
       do
       {
-        m_Serial = m_NextSerial++;
-        m_Serial &= 0x7FFFFFFF;
-      } while (m_Serial == 0);
+        Serial = m_NextSerial++;
+        Serial &= 0x7FFFFFFF;
+      } while (Serial == 0);
 
-      m_Serial = (int)((uint)m_Serial | 0x80000000);
+      Serial = (int)((uint)Serial | 0x80000000);
     }
 
-    public string Question{ get; }
+    public string Question { get; }
 
-    public ItemListEntry[] Entries{ get; set; }
+    public ItemListEntry[] Entries { get; set; }
 
-    int IMenu.Serial => m_Serial;
+    public int Serial { get; }
 
-    int IMenu.EntryLength => Entries.Length;
+    public int EntryLength => Entries.Length;
 
     public virtual void OnCancel(NetState state)
     {

@@ -8,18 +8,16 @@ namespace Server.Spells.Chivalry
 {
   public class SacredJourneySpell : PaladinSpell, IRecallSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Sacred Journey", "Sanctum Viatas",
       -1,
-      9002
-    );
+      9002);
 
-    private Runebook m_Book;
+    private readonly Runebook m_Book;
 
-    private RunebookEntry m_Entry;
+    private readonly RunebookEntry m_Entry;
 
-    public SacredJourneySpell(Mobile caster, RunebookEntry entry = null, Runebook book = null, Item scroll = null) :
-      base(caster, scroll, m_Info)
+    public SacredJourneySpell(Mobile caster, RunebookEntry entry = null, Runebook book = null, Item scroll = null) : base(caster, scroll, m_Info)
     {
       m_Entry = entry;
       m_Book = book;
@@ -79,7 +77,7 @@ namespace Server.Spells.Chivalry
       {
         Caster.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
       }
-      else if (map == null || !Core.AOS && Caster.Map != map)
+      else if (map == null || (!Core.AOS && Caster.Map != map))
       {
         Caster.SendLocalizedMessage(1005569); // You can not recall to another facet.
       }

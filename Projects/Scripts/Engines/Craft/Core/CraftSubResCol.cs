@@ -7,13 +7,13 @@ namespace Server.Engines.Craft
   {
     public CraftSubResCol() => Init = false;
 
-    public bool Init{ get; set; }
+    public bool Init { get; set; }
 
-    public Type ResType{ get; set; }
+    public Type ResType { get; set; }
 
-    public string NameString{ get; set; }
+    public string NameString { get; set; }
 
-    public int NameNumber{ get; set; }
+    public int NameNumber { get; set; }
 
     public void Add(CraftSubRes craftSubRes)
     {

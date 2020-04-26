@@ -14,7 +14,7 @@ namespace Server.Items
     [Constructible]
     public BallotBox() : base(0x9A8)
     {
-      Topic = new string[0];
+      Topic = Array.Empty<string>();
       Yes = new List<Mobile>();
       No = new List<Mobile>();
     }
@@ -25,15 +25,15 @@ namespace Server.Items
 
     public override int LabelNumber => 1041006; // a ballot box
 
-    public string[] Topic{ get; private set; }
+    public string[] Topic { get; private set; }
 
-    public List<Mobile> Yes{ get; private set; }
+    public List<Mobile> Yes { get; private set; }
 
-    public List<Mobile> No{ get; private set; }
+    public List<Mobile> No { get; private set; }
 
     public void ClearTopic()
     {
-      Topic = new string[0];
+      Topic = Array.Empty<string>();
 
       ClearVotes();
     }
@@ -120,7 +120,7 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private BallotBox m_Box;
+      private readonly BallotBox m_Box;
 
       public InternalGump(BallotBox box, bool isOwner) : base(110, 70)
       {
@@ -199,74 +199,74 @@ namespace Server.Items
         switch (info.ButtonID)
         {
           case 1: // change topic
-          {
-            if (isOwner)
             {
-              m_Box.ClearTopic();
+              if (isOwner)
+              {
+                m_Box.ClearTopic();
 
-              from.SendLocalizedMessage(500370, "",
-                0x35); // Enter a line of text for your ballot, and hit ENTER. Hit ESC after the last line is entered.
-              from.Prompt = new TopicPrompt(m_Box);
+                from.SendLocalizedMessage(500370, "",
+                  0x35); // Enter a line of text for your ballot, and hit ENTER. Hit ESC after the last line is entered.
+                from.Prompt = new TopicPrompt(m_Box);
+              }
+
+              break;
             }
-
-            break;
-          }
           case 2: // reset votes
-          {
-            if (isOwner)
             {
-              m_Box.ClearVotes();
-              from.SendLocalizedMessage(500371); // Votes zeroed out.
-            }
+              if (isOwner)
+              {
+                m_Box.ClearVotes();
+                from.SendLocalizedMessage(500371); // Votes zeroed out.
+              }
 
-            goto default;
-          }
+              goto default;
+            }
           case 3: // aye
-          {
-            if (!isOwner)
             {
-              if (m_Box.HasVoted(from))
+              if (!isOwner)
               {
-                from.SendLocalizedMessage(500374); // You have already voted on this ballot.
+                if (m_Box.HasVoted(from))
+                {
+                  from.SendLocalizedMessage(500374); // You have already voted on this ballot.
+                }
+                else
+                {
+                  m_Box.Yes.Add(from);
+                  from.SendLocalizedMessage(500373); // Your vote has been registered.
+                }
               }
-              else
-              {
-                m_Box.Yes.Add(from);
-                from.SendLocalizedMessage(500373); // Your vote has been registered.
-              }
-            }
 
-            goto default;
-          }
+              goto default;
+            }
           case 4: // nay
-          {
-            if (!isOwner)
             {
-              if (m_Box.HasVoted(from))
+              if (!isOwner)
               {
-                from.SendLocalizedMessage(500374); // You have already voted on this ballot.
+                if (m_Box.HasVoted(from))
+                {
+                  from.SendLocalizedMessage(500374); // You have already voted on this ballot.
+                }
+                else
+                {
+                  m_Box.No.Add(from);
+                  from.SendLocalizedMessage(500373); // Your vote has been registered.
+                }
               }
-              else
-              {
-                m_Box.No.Add(from);
-                from.SendLocalizedMessage(500373); // Your vote has been registered.
-              }
-            }
 
-            goto default;
-          }
+              goto default;
+            }
           default:
-          {
-            from.SendGump(new InternalGump(m_Box, isOwner));
-            break;
-          }
+            {
+              from.SendGump(new InternalGump(m_Box, isOwner));
+              break;
+            }
         }
       }
     }
 
     private class TopicPrompt : Prompt
     {
-      private BallotBox m_Box;
+      private readonly BallotBox m_Box;
 
       public TopicPrompt(BallotBox box) => m_Box = box;
 

@@ -2,7 +2,7 @@ namespace Server.Items
 {
   public interface IShipwreckedItem
   {
-    bool IsShipwreckedItem{ get; set; }
+    bool IsShipwreckedItem { get; set; }
   }
 
   public class ShipwreckedItem : Item, IDyable, IShipwreckedItem
@@ -36,15 +36,11 @@ namespace Server.Items
       return false;
     }
 
-    #region IShipwreckedItem Members
-
     bool IShipwreckedItem.IsShipwreckedItem
     {
       get => true;
       set { }
     }
-
-    #endregion
 
     public override void OnSingleClick(Mobile from)
     {

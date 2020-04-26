@@ -19,7 +19,7 @@ namespace Server.Items
     {
     }
 
-    public List<Key> Keys{ get; private set; }
+    public List<Key> Keys { get; private set; }
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {
@@ -150,7 +150,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private KeyRing m_KeyRing;
+      private readonly KeyRing m_KeyRing;
 
       public InternalTarget(KeyRing keyRing) : base(-1, false, TargetFlags.None) => m_KeyRing = keyRing;
 

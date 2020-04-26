@@ -11,8 +11,7 @@ namespace Server.Ethics.Hero
         30,
         "Holy Steed",
         "Trubechs Yeliab",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

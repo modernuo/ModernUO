@@ -147,15 +147,15 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          Item item = reader.ReadItem();
+          {
+            Item item = reader.ReadItem();
 
-          item?.Delete();
+            item?.Delete();
 
-          CheckTimer();
+            CheckTimer();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

@@ -17,9 +17,9 @@ namespace Server
       String = text;
     }
 
-    public int Number{ get; }
+    public int Number { get; }
 
-    public string String{ get; }
+    public string String { get; }
 
     public bool IsEmpty => Number <= 0 && String == null;
 

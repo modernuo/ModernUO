@@ -22,20 +22,20 @@ namespace Server.Factions
       Assigned = assigned;
     }
 
-    public SkillName Skill{ get; }
+    public SkillName Skill { get; }
 
-    public double Requirement{ get; }
+    public double Requirement { get; }
 
-    public TextDefinition Title{ get; }
+    public TextDefinition Title { get; }
 
-    public TextDefinition Label{ get; }
+    public TextDefinition Label { get; }
 
-    public TextDefinition Assigned{ get; }
+    public TextDefinition Assigned { get; }
   }
 
   public class MerchantTitles
   {
-    public static MerchantTitleInfo[] Info{ get; } =
+    public static MerchantTitleInfo[] Info { get; } =
     {
       new MerchantTitleInfo(SkillName.Inscribe, 90.0, new TextDefinition(1060773, "Scribe"),
         new TextDefinition(1011468, "SCRIBE"),

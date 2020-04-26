@@ -1,5 +1,5 @@
-using Server.Utilities;
 using System;
+using Server.Utilities;
 
 namespace Server.Engines.Quests
 {
@@ -45,27 +45,27 @@ namespace Server.Engines.Quests
       switch (encoding)
       {
         default:
-        {
-          return null;
-        }
-        case 0x01: // indexed
-        {
-          int index = reader.ReadEncodedInt();
-
-          if (index >= 0 && index < referenceTable.Length)
-            return referenceTable[index];
-
-          return null;
-        }
-        case 0x02: // by name
-        {
-          string fullName = reader.ReadString();
-
-          if (fullName == null)
+          {
             return null;
+          }
+        case 0x01: // indexed
+          {
+            int index = reader.ReadEncodedInt();
 
-          return AssemblyHandler.FindFirstTypeForName(fullName, false);
-        }
+            if (index >= 0 && index < referenceTable.Length)
+              return referenceTable[index];
+
+            return null;
+          }
+        case 0x02: // by name
+          {
+            string fullName = reader.ReadString();
+
+            if (fullName == null)
+              return null;
+
+            return AssemblyHandler.FindFirstTypeForName(fullName, false);
+          }
       }
     }
 
@@ -76,19 +76,19 @@ namespace Server.Engines.Quests
       switch (encoding)
       {
         default:
-        {
-          return null;
-        }
+          {
+            return null;
+          }
         case 0x01:
-        {
-          Type type = ReadType(QuestSystem.QuestTypes, reader);
+          {
+            Type type = ReadType(QuestSystem.QuestTypes, reader);
 
-          QuestSystem qs = Construct(type) as QuestSystem;
+            QuestSystem qs = Construct(type) as QuestSystem;
 
-          qs?.BaseDeserialize(reader);
+            qs?.BaseDeserialize(reader);
 
-          return qs;
-        }
+            return qs;
+          }
       }
     }
 
@@ -115,19 +115,19 @@ namespace Server.Engines.Quests
       switch (encoding)
       {
         default:
-        {
-          return null;
-        }
+          {
+            return null;
+          }
         case 0x01:
-        {
-          Type type = ReadType(referenceTable, reader);
+          {
+            Type type = ReadType(referenceTable, reader);
 
-          QuestObjective obj = Construct(type) as QuestObjective;
+            QuestObjective obj = Construct(type) as QuestObjective;
 
-          obj?.BaseDeserialize(reader);
+            obj?.BaseDeserialize(reader);
 
-          return obj;
-        }
+            return obj;
+          }
       }
     }
 
@@ -154,19 +154,19 @@ namespace Server.Engines.Quests
       switch (encoding)
       {
         default:
-        {
-          return null;
-        }
+          {
+            return null;
+          }
         case 0x01:
-        {
-          Type type = ReadType(referenceTable, reader);
+          {
+            Type type = ReadType(referenceTable, reader);
 
-          QuestConversation conv = Construct(type) as QuestConversation;
+            QuestConversation conv = Construct(type) as QuestConversation;
 
-          conv?.BaseDeserialize(reader);
+            conv?.BaseDeserialize(reader);
 
-          return conv;
-        }
+            return conv;
+          }
       }
     }
 

@@ -43,10 +43,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Map TargetMap{ get; set; }
+    public Map TargetMap { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D Target{ get; set; }
+    public Point3D Target { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Bone
@@ -60,7 +60,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string Description{ get; set; }
+    public string Description { get; set; }
 
     public override bool IsDecoContainer => false;
 
@@ -217,9 +217,9 @@ namespace Server.Items
         Start();
       }
 
-      public MarkContainer Container{ get; }
+      public MarkContainer Container { get; }
 
-      public DateTime RelockTime{ get; }
+      public DateTime RelockTime { get; }
 
       protected override void OnTick()
       {

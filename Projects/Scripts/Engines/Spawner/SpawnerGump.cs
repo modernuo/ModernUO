@@ -9,7 +9,7 @@ namespace Server.Mobiles
   {
     private SpawnerEntry m_Entry;
     private int m_Page;
-    private Spawner m_Spawner;
+    private readonly Spawner m_Spawner;
 
     public SpawnerGump(Spawner spawner, SpawnerEntry focusentry = null, int page = 0) : base(50, 50)
     {
@@ -25,7 +25,7 @@ namespace Server.Mobiles
       AddHtml(245, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>#</BASEFONT>");
       AddHtml(282, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Prb</BASEFONT>");
 
-      //AddLabel( 95, 1, 0, "Creatures List" );
+      // AddLabel( 95, 1, 0, "Creatures List" );
 
       int offset = 0;
 
@@ -41,21 +41,21 @@ namespace Server.Mobiles
 
         if (entry == null || m_Entry != entry)
           AddButton(5, 22 * i + 21 + offset, entry != null ? 0xFBA : 0xFA5, entry != null ? 0xFBC : 0xFA7,
-            GetButtonID(2, i * 2)); //Expand
+            GetButtonID(2, i * 2)); // Expand
         else
           AddButton(5, 22 * i + 21 + offset, 0xFBB, 0xFBC,
-            GetButtonID(2, i * 2)); //Unexpand
+            GetButtonID(2, i * 2)); // Unexpand
 
-        AddButton(38, 22 * i + 21 + offset, 0xFA2, 0xFA4, GetButtonID(2, 1 + i * 2)); //Delete
+        AddButton(38, 22 * i + 21 + offset, 0xFA2, 0xFA4, GetButtonID(2, 1 + i * 2)); // Delete
 
-        AddImageTiled(71, 22 * i + 20 + offset, 161, 23, 0xA40); //creature text box
-        AddImageTiled(72, 22 * i + 21 + offset, 159, 21, 0xBBC); //creature text box
+        AddImageTiled(71, 22 * i + 20 + offset, 161, 23, 0xA40); // creature text box
+        AddImageTiled(72, 22 * i + 21 + offset, 159, 21, 0xBBC); // creature text box
 
-        AddImageTiled(235, 22 * i + 20 + offset, 35, 23, 0xA40); //maxcount text box
-        AddImageTiled(236, 22 * i + 21 + offset, 33, 21, 0xBBC); //maxcount text box
+        AddImageTiled(235, 22 * i + 20 + offset, 35, 23, 0xA40); // maxcount text box
+        AddImageTiled(236, 22 * i + 21 + offset, 33, 21, 0xBBC); // maxcount text box
 
-        AddImageTiled(273, 22 * i + 20 + offset, 35, 23, 0xA40); //probability text box
-        AddImageTiled(274, 22 * i + 21 + offset, 33, 21, 0xBBC); //probability text box
+        AddImageTiled(273, 22 * i + 20 + offset, 35, 23, 0xA40); // probability text box
+        AddImageTiled(274, 22 * i + 21 + offset, 33, 21, 0xBBC); // probability text box
 
         string name = "";
         string probability = "";
@@ -73,24 +73,24 @@ namespace Server.Mobiles
         }
 
         AddTextEntry(75, 22 * i + 21 + offset, 156, 21, (flags & EntryFlags.InvalidType) != 0 ? 33 : 0, textindex,
-          name); //creature
-        AddTextEntry(239, 22 * i + 21 + offset, 30, 21, 0, textindex + 1, maxcount); //max count
-        AddTextEntry(277, 22 * i + 21 + offset, 30, 21, 0, textindex + 2, probability); //probability
+          name); // creature
+        AddTextEntry(239, 22 * i + 21 + offset, 30, 21, 0, textindex + 1, maxcount); // max count
+        AddTextEntry(277, 22 * i + 21 + offset, 30, 21, 0, textindex + 2, probability); // probability
 
         if (entry != null && m_Entry == entry)
         {
           AddLabel(5, 22 * i + 42, 0x384, "Params");
-          AddImageTiled(55, 22 * i + 42, 253, 23, 0xA40); //Parameters
-          AddImageTiled(56, 22 * i + 43, 251, 21, 0xBBC); //Parameters
+          AddImageTiled(55, 22 * i + 42, 253, 23, 0xA40); // Parameters
+          AddImageTiled(56, 22 * i + 43, 251, 21, 0xBBC); // Parameters
 
           AddLabel(5, 22 * i + 64, 0x384, "Props");
-          AddImageTiled(55, 22 * i + 64, 253, 23, 0xA40); //Properties
-          AddImageTiled(56, 22 * i + 65, 251, 21, 0xBBC); //Properties
+          AddImageTiled(55, 22 * i + 64, 253, 23, 0xA40); // Properties
+          AddImageTiled(56, 22 * i + 65, 251, 21, 0xBBC); // Properties
 
           AddTextEntry(59, 22 * i + 42, 248, 21, (flags & EntryFlags.InvalidParams) != 0 ? 33 : 0, textindex + 3,
-            entry.Parameters); //parameters
+            entry.Parameters); // parameters
           AddTextEntry(59, 22 * i + 62, 248, 21, (flags & EntryFlags.InvalidProps) != 0 ? 33 : 0, textindex + 4,
-            entry.Properties); //properties
+            entry.Properties); // properties
 
           offset += 44;
         }
@@ -218,73 +218,73 @@ namespace Server.Mobiles
 
       switch (type)
       {
-        case 0: //Cancel
+        case 0: // Cancel
           return;
         case 1:
-        {
-          switch (index)
           {
-            case 0:
+            switch (index)
             {
-              if (m_Spawner.Entries != null && m_Page > 0)
-              {
-                m_Page--;
-                m_Entry = null;
-              }
+              case 0:
+                {
+                  if (m_Spawner.Entries != null && m_Page > 0)
+                  {
+                    m_Page--;
+                    m_Entry = null;
+                  }
 
-              break;
-            }
-            case 1:
-            {
-              if ((m_Page + 1) * 13 <= m_Spawner.Entries?.Count)
-              {
-                m_Page++;
-                m_Entry = null;
-              }
+                  break;
+                }
+              case 1:
+                {
+                  if ((m_Page + 1) * 13 <= m_Spawner.Entries?.Count)
+                  {
+                    m_Page++;
+                    m_Entry = null;
+                  }
 
-              break;
+                  break;
+                }
+              case 2: // Okay
+                {
+                  CreateArray(info, state.Mobile, m_Spawner);
+                  return;
+                }
+              case 3:
+                {
+                  m_Spawner.BringToHome();
+                  break;
+                }
+              case 4: // Complete respawn
+                {
+                  m_Spawner.Respawn();
+                  break;
+                }
+              case 5:
+                {
+                  CreateArray(info, state.Mobile, m_Spawner);
+                  break;
+                }
             }
-            case 2: //Okay
-            {
-              CreateArray(info, state.Mobile, m_Spawner);
-              return;
-            }
-            case 3:
-            {
-              m_Spawner.BringToHome();
-              break;
-            }
-            case 4: // Complete respawn
-            {
-              m_Spawner.Respawn();
-              break;
-            }
-            case 5:
-            {
-              CreateArray(info, state.Mobile, m_Spawner);
-              break;
-            }
+
+            break;
           }
-
-          break;
-        }
         case 2:
-        {
-          int entryindex = index / 2 + m_Page * 13;
-          int buttontype = index % 2;
-
-          if (entryindex >= 0 && entryindex < m_Spawner.Entries.Count)
           {
-            SpawnerEntry entry = m_Spawner.Entries[entryindex];
-            if (buttontype == 0) // Spawn creature
-              m_Entry = m_Entry != entry ? entry : null;
-            else // Remove creatures
-              m_Spawner.RemoveSpawn(entryindex);
-          }
+            int entryindex = index / 2 + m_Page * 13;
+            int buttontype = index % 2;
 
-          CreateArray(info, state.Mobile, m_Spawner);
-          break;
-        }
+            if (entryindex >= 0 && entryindex < m_Spawner.Entries.Count)
+            {
+              SpawnerEntry entry = m_Spawner.Entries[entryindex];
+              if (buttontype == 0) // Spawn creature
+                m_Entry = m_Entry != entry ? entry : null;
+              else // Remove creatures
+                m_Spawner.RemoveSpawn(entryindex);
+            }
+
+            CreateArray(info, state.Mobile, m_Spawner);
+            break;
+          }
       }
 
       if (m_Entry != null && m_Spawner.Entries?.Contains(m_Entry) == true)

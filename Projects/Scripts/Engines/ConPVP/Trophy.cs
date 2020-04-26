@@ -31,7 +31,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public string Title{ get; set; }
+    public string Title { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public TrophyRank Rank
@@ -45,10 +45,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Owner{ get; set; }
+    public Mobile Owner { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime Date{ get; private set; }
+    public DateTime Date { get; private set; }
 
     public override void Serialize(IGenericWriter writer)
     {

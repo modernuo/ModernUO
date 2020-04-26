@@ -54,7 +54,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.Average);
       AddLoot(LootPack.Gems);
 
-      if (0.02 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.02)
         switch (Utility.Random(5))
         {
           case 0:

@@ -13,6 +13,6 @@ namespace Server.Mobiles
       name, type, price, amount, itemID, hue) =>
       ControlSlots = controlSlots;
 
-    public override int ControlSlots{ get; }
+    public override int ControlSlots { get; }
   }
 }

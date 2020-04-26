@@ -5,15 +5,14 @@ namespace Server.Spells.Eighth
 {
   public class AirElementalSpell : MagerySpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Air Elemental", "Kal Vas Xen Hur",
       269,
       9010,
       false,
       Reagent.Bloodmoss,
       Reagent.MandrakeRoot,
-      Reagent.SpidersSilk
-    );
+      Reagent.SpidersSilk);
 
     public AirElementalSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

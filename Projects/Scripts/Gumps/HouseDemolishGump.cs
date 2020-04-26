@@ -8,8 +8,8 @@ namespace Server.Gumps
 {
   public class HouseDemolishGump : Gump
   {
-    private BaseHouse m_House;
-    private Mobile m_Mobile;
+    private readonly BaseHouse m_House;
+    private readonly Mobile m_Mobile;
 
     public HouseDemolishGump(Mobile mobile, BaseHouse house) : base(110, 100)
     {
@@ -32,13 +32,14 @@ namespace Server.Gumps
       AddImageTiled(10, 40, 400, 200, 2624);
       AddAlphaRegion(10, 40, 400, 200);
 
-      AddHtmlLocalized(10, 40, 400, 200, 1061795, 32512, false, true); /* You are about to demolish your house.
-																				* You will be refunded the house's value directly to your bank box.
-																				* All items in the house will remain behind and can be freely picked up by anyone.
-																				* Once the house is demolished, anyone can attempt to place a new house on the vacant land.
-																				* This action will not un-condemn any other houses on your account, nor will it end your 7-day waiting period (if it applies to you).
-																				* Are you sure you wish to continue?
-																				*/
+      /* You are about to demolish your house.
+       * You will be refunded the house's value directly to your bank box.
+       * All items in the house will remain behind and can be freely picked up by anyone.
+       * Once the house is demolished, anyone can attempt to place a new house on the vacant land.
+       * This action will not un-condemn any other houses on your account, nor will it end your 7-day waiting period (if it applies to you).
+       * Are you sure you wish to continue?
+      */
+      AddHtmlLocalized(10, 40, 400, 200, 1061795, 32512, false, true);
 
       AddImageTiled(10, 250, 400, 20, 2624);
       AddAlphaRegion(10, 250, 400, 20);
@@ -64,7 +65,7 @@ namespace Server.Gumps
             return;
           }
 
-          /*else if ( m_House.PlayerVendors.Count > 0 )
+          /*else if (m_House.PlayerVendors.Count > 0)
           {
             m_Mobile.SendLocalizedMessage( 503236 ); // You need to collect your vendor's belongings before moving.
             return;
@@ -89,7 +90,6 @@ namespace Server.Gumps
               1062681); // You cannot do that that while you still have unclaimed contract vendor inventory in your house.
             return;
           }
-
 
           if (m_Mobile.AccessLevel >= AccessLevel.GameMaster)
           {

@@ -8,8 +8,8 @@ namespace Server.Engines.PartySystem
       CanLoot = !Core.ML;
     }
 
-    public Mobile Mobile{ get; }
+    public Mobile Mobile { get; }
 
-    public bool CanLoot{ get; set; }
+    public bool CanLoot { get; set; }
   }
 }

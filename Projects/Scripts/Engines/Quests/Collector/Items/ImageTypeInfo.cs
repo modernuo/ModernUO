@@ -66,13 +66,13 @@ namespace Server.Engines.Quests.Collector
       Y = y;
     }
 
-    public int Figurine{ get; }
+    public int Figurine { get; }
 
-    public Type Type{ get; }
+    public Type Type { get; }
 
     public int Name => Figurine < 0x4000 ? 1020000 + Figurine : 1078872 + Figurine;
-    public int X{ get; }
-    public int Y{ get; }
+    public int X { get; }
+    public int Y { get; }
 
     public static ImageTypeInfo Get(ImageType image)
     {
@@ -88,7 +88,7 @@ namespace Server.Engines.Quests.Collector
         for (int i = 0; i < m_Table.Length; i++)
           m_ImageTypeList[i] = (ImageType)i;
       }
-      
+
       ImageType[] array = m_ImageTypeList.ToArray();
       Utility.Shuffle(array);
       return array.Take(count).ToArray();

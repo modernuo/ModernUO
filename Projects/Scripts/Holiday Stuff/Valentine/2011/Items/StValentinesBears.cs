@@ -79,7 +79,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime EditLimit{ get; set; }
+    public DateTime EditLimit { get; set; }
 
     public bool IsSigned => m_Line1 != null || m_Line2 != null || m_Line3 != null;
 
@@ -158,7 +158,7 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private StValentinesBear m_Bear;
+      private readonly StValentinesBear m_Bear;
 
       public InternalGump(StValentinesBear bear)
         : base(50, 50)

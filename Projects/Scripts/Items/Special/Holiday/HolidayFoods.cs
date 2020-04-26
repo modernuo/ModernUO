@@ -22,7 +22,7 @@ namespace Server.Items
     {
     }
 
-    private static Dictionary<Mobile, CandyCaneTimer> m_ToothAches = new Dictionary<Mobile, CandyCaneTimer>();
+    private static readonly Dictionary<Mobile, CandyCaneTimer> m_ToothAches = new Dictionary<Mobile, CandyCaneTimer>();
 
     private static CandyCaneTimer EnsureTimer(Mobile from)
     {
@@ -69,9 +69,9 @@ namespace Server.Items
         Start();
       }
 
-      public Mobile Eater{ get; }
+      public Mobile Eater { get; }
 
-      public int Eaten{ get; set; }
+      public int Eaten { get; set; }
 
       protected override void OnTick()
       {

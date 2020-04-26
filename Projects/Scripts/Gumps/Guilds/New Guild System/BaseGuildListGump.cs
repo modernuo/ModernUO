@@ -10,9 +10,9 @@ namespace Server.Guilds
   {
     private const int itemsPerPage = 8;
     private bool m_Ascending;
-    private IComparer<T> m_Comparer;
-    private InfoField<T>[] m_Fields;
-    private string m_Filter;
+    private readonly IComparer<T> m_Comparer;
+    private readonly InfoField<T>[] m_Fields;
+    private readonly string m_Filter;
     private List<T> m_List;
     private int m_StartNumber;
 
@@ -51,10 +51,9 @@ namespace Server.Guilds
       m_List.Sort(m_Comparer);
       m_StartNumber = Math.Max(Math.Min(m_StartNumber, m_List.Count - 1), 0);
 
-
       AddBackground(130, 75, 385, 30, 0xBB8);
       AddTextEntry(135, 80, 375, 30, 0x481, 1, m_Filter);
-      AddButton(520, 75, 0x867, 0x868, 5); //Filter Button
+      AddButton(520, 75, 0x867, 0x868, 5); // Filter Button
 
       int width = 0;
       for (int i = 0; i < m_Fields.Length; i++)
@@ -84,13 +83,12 @@ namespace Server.Guilds
       else
         AddButton(95, 80, 0x15E1, 0x15E5, 7); // Forward
 
-
       int itemNumber = 0;
 
       if (m_Ascending)
         for (int i = m_StartNumber; i < m_StartNumber + itemsPerPage && i < m_List.Count; i++)
           DrawEntry(m_List[i], i, itemNumber++);
-      else //descending, go from bottom of list to the top
+      else // descending, go from bottom of list to the top
         for (int i = m_List.Count - 1 - m_StartNumber;
           i >= 0 && i >= m_List.Count - itemsPerPage - m_StartNumber;
           i--)
@@ -121,9 +119,9 @@ namespace Server.Guilds
       }
 
       if (HasRelationship(o))
-        AddButton(40, 143 + itemNumber * 28, 0x8AF, 0x8AF, 200 + index); //Info Button
+        AddButton(40, 143 + itemNumber * 28, 0x8AF, 0x8AF, 200 + index); // Info Button
       else
-        AddButton(40, 143 + itemNumber * 28, 0x4B9, 0x4BA, 200 + index); //Info Button
+        AddButton(40, 143 + itemNumber * 28, 0x4B9, 0x4BA, 200 + index); // Info Button
     }
 
     protected abstract TextDefinition[] GetValuesFor(T o, int aryLength);
@@ -140,24 +138,24 @@ namespace Server.Guilds
 
       switch (id)
       {
-        case 5: //Filter
-        {
-          TextRelay t = info.GetTextEntry(1);
-          pm.SendGump(GetResentGump(player, guild, m_Comparer, m_Ascending, t == null ? "" : t.Text, 0));
-          break;
-        }
-        case 6: //Back
-        {
-          pm.SendGump(
-            GetResentGump(player, guild, m_Comparer, m_Ascending, m_Filter, m_StartNumber - itemsPerPage));
-          break;
-        }
-        case 7: //Forward
-        {
-          pm.SendGump(
-            GetResentGump(player, guild, m_Comparer, m_Ascending, m_Filter, m_StartNumber + itemsPerPage));
-          break;
-        }
+        case 5: // Filter
+          {
+            TextRelay t = info.GetTextEntry(1);
+            pm.SendGump(GetResentGump(player, guild, m_Comparer, m_Ascending, t == null ? "" : t.Text, 0));
+            break;
+          }
+        case 6: // Back
+          {
+            pm.SendGump(
+              GetResentGump(player, guild, m_Comparer, m_Ascending, m_Filter, m_StartNumber - itemsPerPage));
+            break;
+          }
+        case 7: // Forward
+          {
+            pm.SendGump(
+              GetResentGump(player, guild, m_Comparer, m_Ascending, m_Filter, m_StartNumber + itemsPerPage));
+            break;
+          }
       }
 
       if (id >= 100 && id < 100 + m_Fields.Length)
@@ -175,7 +173,6 @@ namespace Server.Guilds
       }
     }
 
-
     public abstract Gump GetResentGump(PlayerMobile pm, Guild g, IComparer<T> comparer, bool ascending, string filter,
       int startNumber);
 
@@ -189,11 +186,11 @@ namespace Server.Guilds
 
   public struct InfoField<T>
   {
-    public TextDefinition Name{ get; }
+    public TextDefinition Name { get; }
 
-    public int Width{ get; }
+    public int Width { get; }
 
-    public IComparer<T> Comparer{ get; }
+    public IComparer<T> Comparer { get; }
 
     public InfoField(TextDefinition name, int width, IComparer<T> comparer)
     {

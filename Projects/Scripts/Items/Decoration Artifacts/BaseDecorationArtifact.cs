@@ -8,7 +8,7 @@ namespace Server.Items
     {
     }
 
-    public abstract int ArtifactRarity{ get; }
+    public abstract int ArtifactRarity { get; }
 
     public override bool ForceShowProperties => true;
 
@@ -42,7 +42,7 @@ namespace Server.Items
     {
     }
 
-    public abstract int ArtifactRarity{ get; }
+    public abstract int ArtifactRarity { get; }
 
     public override bool ForceShowProperties => true;
 

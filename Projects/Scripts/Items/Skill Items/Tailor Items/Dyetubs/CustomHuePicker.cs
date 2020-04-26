@@ -17,11 +17,11 @@ namespace Server.Items
       Hues = hues;
     }
 
-    public int Name{ get; }
+    public int Name { get; }
 
-    public string NameString{ get; }
+    public string NameString { get; }
 
-    public int[] Hues{ get; }
+    public int[] Hues { get; }
   }
 
   public class CustomHuePicker
@@ -94,26 +94,25 @@ namespace Server.Items
       TitleString = title;
     }
 
-    public bool DefaultSupported{ get; }
+    public bool DefaultSupported { get; }
 
-    public CustomHueGroup[] Groups{ get; }
+    public CustomHueGroup[] Groups { get; }
 
-    public int Title{ get; }
+    public int Title { get; }
 
-    public string TitleString{ get; }
+    public string TitleString { get; }
   }
 
   public delegate void CustomHuePickerCallback<in T>(Mobile from, T state, int hue);
 
   public class CustomHuePickerGump<T> : Gump
   {
-    private CustomHuePickerCallback<T> m_Callback;
-    private CustomHuePicker m_Definition;
-    private Mobile m_From;
-    private T m_State;
+    private readonly CustomHuePickerCallback<T> m_Callback;
+    private readonly CustomHuePicker m_Definition;
+    private readonly Mobile m_From;
+    private readonly T m_State;
 
-    public CustomHuePickerGump(Mobile from, CustomHuePicker definition, CustomHuePickerCallback<T> callback, T state) :
-      base(50, 50)
+    public CustomHuePickerGump(Mobile from, CustomHuePicker definition, CustomHuePickerCallback<T> callback, T state) : base(50, 50)
     {
       m_From = from;
       m_Definition = definition;
@@ -181,34 +180,34 @@ namespace Server.Items
       switch (info.ButtonID)
       {
         case 1: // Okay
-        {
-          int[] switches = info.Switches;
-
-          if (switches.Length > 0)
           {
-            int index = switches[0];
+            int[] switches = info.Switches;
 
-            int group = index % m_Definition.Groups.Length;
-            index /= m_Definition.Groups.Length;
-
-            if (group >= 0 && group < m_Definition.Groups.Length)
+            if (switches.Length > 0)
             {
-              int[] hues = m_Definition.Groups[group].Hues;
+              int index = switches[0];
 
-              if (index >= 0 && index < hues.Length)
-                m_Callback(m_From, m_State, hues[index]);
+              int group = index % m_Definition.Groups.Length;
+              index /= m_Definition.Groups.Length;
+
+              if (group >= 0 && group < m_Definition.Groups.Length)
+              {
+                int[] hues = m_Definition.Groups[group].Hues;
+
+                if (index >= 0 && index < hues.Length)
+                  m_Callback(m_From, m_State, hues[index]);
+              }
             }
+
+            break;
           }
-
-          break;
-        }
         case 2: // Default
-        {
-          if (m_Definition.DefaultSupported)
-            m_Callback(m_From, m_State, 0);
+          {
+            if (m_Definition.DefaultSupported)
+              m_Callback(m_From, m_State, 0);
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

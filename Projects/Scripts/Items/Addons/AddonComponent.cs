@@ -98,17 +98,17 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_LabelNumber = reader.ReadInt();
-          break;
-        }
+          {
+            m_LabelNumber = reader.ReadInt();
+            break;
+          }
       }
     }
   }
 
-  public class AddonComponent : Item, IChopable
+  public class AddonComponent : Item, IChoppable
   {
-    private static LightEntry[] m_Entries =
+    private static readonly LightEntry[] m_Entries =
     {
       new LightEntry(LightType.WestSmall, 1122, 1123, 1124, 1141, 1142, 1143, 1144, 1145, 1146, 2347, 2359, 2360, 2361,
         2362, 2363, 2364, 2387, 2388, 2389, 2390, 2391, 2392),
@@ -130,10 +130,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public BaseAddon Addon{ get; set; }
+    public BaseAddon Addon { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D Offset{ get; set; }
+    public Point3D Offset { get; set; }
 
     [Hue]
     [CommandProperty(AccessLevel.GameMaster)]
@@ -204,16 +204,16 @@ namespace Server.Items
       {
         case 1:
         case 0:
-        {
-          Addon = reader.ReadItem() as BaseAddon;
-          Offset = reader.ReadPoint3D();
+          {
+            Addon = reader.ReadItem() as BaseAddon;
+            Offset = reader.ReadPoint3D();
 
-          Addon?.OnComponentLoaded(this);
+            Addon?.OnComponentLoaded(this);
 
-          ApplyLightTo(this);
+            ApplyLightTo(this);
 
-          break;
-        }
+            break;
+          }
       }
 
       if (version < 1 && Weight == 0)
@@ -246,8 +246,8 @@ namespace Server.Items
 
     private class LightEntry
     {
-      public int[] m_ItemIDs;
-      public LightType m_Light;
+      public readonly int[] m_ItemIDs;
+      public readonly LightType m_Light;
 
       public LightEntry(LightType light, params int[] itemIDs)
       {

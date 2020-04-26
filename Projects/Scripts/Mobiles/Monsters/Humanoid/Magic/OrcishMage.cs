@@ -38,10 +38,9 @@ namespace Server.Mobiles
 
       VirtualArmor = 30;
 
-
       PackReg(6);
 
-      if (0.05 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.05)
         PackItem(new OrcishKinMask());
     }
 

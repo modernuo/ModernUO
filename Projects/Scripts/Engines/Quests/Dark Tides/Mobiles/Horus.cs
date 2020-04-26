@@ -166,8 +166,8 @@ namespace Server.Engines.Quests.Necro
 
     private class SpeakPasswordEntry : ContextMenuEntry
     {
-      private PlayerMobile m_From;
-      private Horus m_Horus;
+      private readonly PlayerMobile m_From;
+      private readonly Horus m_Horus;
 
       public SpeakPasswordEntry(Horus horus, PlayerMobile from, bool enabled) : base(6193, 3)
       {

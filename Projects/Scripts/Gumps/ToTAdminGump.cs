@@ -6,30 +6,30 @@ namespace Server.Gumps
 {
   public class ToTAdminGump : Gump
   {
-    private static string[] m_ToTInfo =
+    private static readonly string[] m_ToTInfo =
     {
-      //Opening Message
+      // Opening Message
       "<center>Treasures of Tokuno Admin</center><br>" +
       "-Use the gems to switch eras<br>" +
       "-Drop era and Reward era can be changed seperately<br>" +
       "-Drop era can be deactivated, Reward era is always activated",
-      //Treasures of Tokuno 1 message
+      // Treasures of Tokuno 1 message
       "<center>Treasures of Tokuno 1</center><br>" +
       "-10 charge Bleach Pigment can drop as a Lesser Artifact<br>" +
       "-50 charge Neon Pigments available as a reward<br>",
-      //Treasures of Tokuno 2 message
+      // Treasures of Tokuno 2 message
       "<center>Treasures of Tokuno 2</center><br>" +
       "-30 types of 1 charge Metallic Pigments drop as Lesser Artifacts<br>" +
       "-1 charge Bleach Pigment can drop as a Lesser Artifact<br>" +
       "-10 charge Greater Metallic Pigments available as a reward",
-      //Treasures of Tokuno 3 message
+      // Treasures of Tokuno 3 message
       "<center>Treasures of Tokuno 3</center><br>" +
       "-10 types of 1 charge Fresh Pigments drop as Lesser Artifacts<br>" +
       "-1 charge Bleach Pigment can drop as a Lesser Artifact<br>" +
       "-Leurocian's Mempo Of Fortune can drop as a Lesser Artifact"
     };
 
-    private int m_ToTEras;
+    private readonly int m_ToTEras;
 
     public ToTAdminGump() : base(30, 50)
     {

@@ -4,7 +4,7 @@ using Server.Misc;
 
 namespace Server.SkillHandlers
 {
-  internal class Meditation
+  internal static class Meditation
   {
     public static void Initialize()
     {

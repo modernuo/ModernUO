@@ -9,8 +9,8 @@ namespace Server.Gumps
 {
   public class VendorInventoryGump : Gump
   {
-    private BaseHouse m_House;
-    private List<VendorInventory> m_Inventories;
+    private readonly BaseHouse m_House;
+    private readonly List<VendorInventory> m_Inventories;
 
     public VendorInventoryGump(BaseHouse house, Mobile from) : base(50, 50)
     {

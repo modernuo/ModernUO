@@ -16,6 +16,7 @@ namespace System.Buffers
     /// relocated and enables any subsections of the array to be used as native memory pointers to P/Invoked API calls.
     /// </summary>
     private GCHandle _gcHandle;
+
     private bool _isDisposed;
 
     public MemoryPoolSlab(byte[] data)

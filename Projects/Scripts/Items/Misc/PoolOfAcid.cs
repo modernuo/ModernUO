@@ -1,28 +1,28 @@
 using System;
-using Server.Mobiles;
 using System.Collections.Generic;
+using Server.Mobiles;
 
 namespace Server.Items
 {
   public class PoolOfAcid : Item
   {
-    private TimeSpan m_Duration;
-    private int m_MinDamage;
-    private int m_MaxDamage;
-    private DateTime m_Created;
+    private readonly TimeSpan m_Duration;
+    private readonly int m_MinDamage;
+    private readonly int m_MaxDamage;
+    private readonly DateTime m_Created;
     private bool m_Drying;
-    private Timer m_Timer;
+    private readonly Timer m_Timer;
 
     [Constructible]
-    public PoolOfAcid() : this( TimeSpan.FromSeconds( 10.0 ), 2, 5 )
+    public PoolOfAcid() : this(TimeSpan.FromSeconds(10.0), 2, 5)
     {
     }
 
     public override string DefaultName => "a pool of acid";
 
     [Constructible]
-    public PoolOfAcid( TimeSpan duration, int minDamage, int maxDamage )
-      : base( 0x122A )
+    public PoolOfAcid(TimeSpan duration, int minDamage, int maxDamage)
+      : base(0x122A)
     {
       Hue = 0x3F;
       Movable = false;
@@ -32,7 +32,7 @@ namespace Server.Items
       m_Created = DateTime.UtcNow;
       m_Duration = duration;
 
-      m_Timer = Timer.DelayCall( TimeSpan.Zero, TimeSpan.FromSeconds( 1 ), OnTick );
+      m_Timer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick);
     }
 
     public override void OnAfterDelete()
@@ -45,10 +45,13 @@ namespace Server.Items
       DateTime now = DateTime.UtcNow;
       TimeSpan age = now - m_Created;
 
-      if ( age > m_Duration ) {
+      if (age > m_Duration)
+      {
         Delete();
-      } else {
-        if ( !m_Drying && age > m_Duration - age )
+      }
+      else
+      {
+        if (!m_Drying && age > m_Duration - age)
         {
           m_Drying = true;
           ItemID = 0x122B;
@@ -56,35 +59,35 @@ namespace Server.Items
 
         List<Mobile> toDamage = new List<Mobile>();
 
-        foreach( Mobile m in GetMobilesInRange( 0 ) )
-          if ( m.Alive && !m.IsDeadBondedPet && (!(m is BaseCreature bc) || bc.Controlled || bc.Summoned) )
-            toDamage.Add( m );
+        foreach (Mobile m in GetMobilesInRange(0))
+          if (m.Alive && !m.IsDeadBondedPet && (!(m is BaseCreature bc) || bc.Controlled || bc.Summoned))
+            toDamage.Add(m);
 
-        for ( int i = 0; i < toDamage.Count; i++ )
-          Damage( toDamage[i] );
+        for (int i = 0; i < toDamage.Count; i++)
+          Damage(toDamage[i]);
       }
     }
-    public override bool OnMoveOver( Mobile m )
+    public override bool OnMoveOver(Mobile m)
     {
-      Damage( m );
+      Damage(m);
       return true;
     }
 
-    public void Damage ( Mobile m )
+    public void Damage(Mobile m)
     {
-      m.Damage( Utility.RandomMinMax( m_MinDamage, m_MaxDamage ) );
+      m.Damage(Utility.RandomMinMax(m_MinDamage, m_MaxDamage));
     }
 
-    public PoolOfAcid( Serial serial ) : base( serial )
+    public PoolOfAcid(Serial serial) : base(serial)
     {
     }
 
-    public override void Serialize(IGenericWriter writer )
+    public override void Serialize(IGenericWriter writer)
     {
-      //Don't serialize these
+      // Don't serialize these
     }
 
-    public override void Deserialize( IGenericReader reader )
+    public override void Deserialize(IGenericReader reader)
     {
     }
   }

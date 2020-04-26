@@ -1,14 +1,10 @@
 namespace Server.Items
 {
-  #region A Grammar of Orcish
-
   public class GrammarOfOrcish : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "A Grammar of Orcish", "Yorick of Yew",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "This volume, and",
         "others in the series,",
         "are sponsored by",
@@ -16,10 +12,8 @@ namespace Server.Items
         "Blackthorn, ever a",
         "supporter of",
         "understanding the",
-        "other sentient races"
-      ),
-      new BookPageInfo
-      (
+        "other sentient races"),
+      new BookPageInfo(
         "of Britannia.",
         "-",
         "",
@@ -27,10 +21,8 @@ namespace Server.Items
         "may fall unpleasingly",
         "'pon the ear, yet it",
         "has within it a",
-        "complex grammar oft"
-      ),
-      new BookPageInfo
-      (
+        "complex grammar oft"),
+      new BookPageInfo(
         "misunderstood by",
         "those who merely",
         "hear the few broken",
@@ -38,10 +30,8 @@ namespace Server.Items
         "orcish brothers",
         "manage without",
         "education.",
-        "  These are the basic"
-      ),
-      new BookPageInfo
-      (
+        "  These are the basic"),
+      new BookPageInfo(
         "rules of orcish:",
         "  Orcish has five",
         "tenses: present, past,",
@@ -49,10 +39,8 @@ namespace Server.Items
         "present interjectional,",
         "and prehensile.",
         "  Examples: gugroflu,",
-        "gugrofloog, gugrobo,"
-      ),
-      new BookPageInfo
-      (
+        "gugrofloog, gugrobo,"),
+      new BookPageInfo(
         "gugroglu!, gugrogug.",
         "  All transitive verbs",
         "in the prehensile",
@@ -60,10 +48,8 @@ namespace Server.Items
         "  Examples:",
         "urgleighug,",
         "biggugdaghgug,",
-        "curdakalmug."
-      ),
-      new BookPageInfo
-      (
+        "curdakalmug."),
+      new BookPageInfo(
         "  All present",
         "interjectional",
         "conjugations start",
@@ -71,10 +57,8 @@ namespace Server.Items
         "unless the contain the",
         "third declensive",
         "accent of the letter U.",
-        "  Examples:"
-      ),
-      new BookPageInfo
-      (
+        "  Examples:"),
+      new BookPageInfo(
         "ghothudunglug, but not",
         "azhbuugub.",
         "  The past tense can",
@@ -82,10 +66,8 @@ namespace Server.Items
         "since the last meal,",
         "but the prehensile",
         "tense can refer to",
-        "any event within"
-      ),
-      new BookPageInfo
-      (
+        "any event within"),
+      new BookPageInfo(
         "reach.",
         "  The present tense",
         "is conjugated like the",
@@ -93,10 +75,8 @@ namespace Server.Items
         "tense, when the",
         "interrogative mode is",
         "used by pitching the",
-        "sound a quarter-tone"
-      ),
-      new BookPageInfo
-      (
+        "sound a quarter-tone"),
+      new BookPageInfo(
         "higher.",
         "Orcish hath no",
         "concept of person, as",
@@ -104,10 +84,8 @@ namespace Server.Items
         "person, I, we, etc.",
         "  Orcish grammar",
         "relies upon the three",
-        "cardinal rules of"
-      ),
-      new BookPageInfo
-      (
+        "cardinal rules of"),
+      new BookPageInfo(
         "accretion, prefixing,",
         "and agglutination, in",
         "addition to pitch. In",
@@ -115,10 +93,8 @@ namespace Server.Items
         "combine into larger",
         "words which may",
         "contain full phrasal",
-        "significance. In the"
-      ),
-      new BookPageInfo
-      (
+        "significance. In the"),
+      new BookPageInfo(
         "second, prefixing",
         "specific phonetic",
         "sounds changes the",
@@ -126,10 +102,8 @@ namespace Server.Items
         "sentence into object,",
         "interrogative,",
         "addressed individual,",
-        "or dinner."
-      ),
-      new BookPageInfo
-      (
+        "or dinner."),
+      new BookPageInfo(
         "  Agglutination occurs",
         "whenever four of the",
         "same letter are",
@@ -137,10 +111,8 @@ namespace Server.Items
         "which case, any two",
         "of them may be",
         "removed or slurred.",
-        "  Pitch changes the"
-      ),
-      new BookPageInfo
-      (
+        "  Pitch changes the"),
+      new BookPageInfo(
         "phoneme value of",
         "individual syllables,",
         "thus completely",
@@ -148,10 +120,8 @@ namespace Server.Items
         "may mean. The",
         "classic example is",
         "\"Aktgluthugrot",
-        "bigglogubuu"
-      ),
-      new BookPageInfo
-      (
+        "bigglogubuu"),
+      new BookPageInfo(
         "dargilgaglug lublublub\"",
         "which can mean \"You",
         "are such a pretty",
@@ -159,10 +129,8 @@ namespace Server.Items
         "your primroses,\" or",
         "\"Jellyfish nose paints",
         "alms potato,\"",
-        "depending on pitch."
-      ),
-      new BookPageInfo
-      (
+        "depending on pitch."),
+      new BookPageInfo(
         "  Orcish poetry often",
         "relies upon repeating",
         "the same phrase in",
@@ -170,10 +138,8 @@ namespace Server.Items
         "changing pitch",
         "midword. None of",
         "this great art is",
-        "translatable."
-      ),
-      new BookPageInfo
-      (
+        "translatable."),
+      new BookPageInfo(
         "  The orcish language",
         "uses the following",
         "vowels: ab, ad, ag, akt,",
@@ -181,10 +147,8 @@ namespace Server.Items
         "i, o, oo, u, uu. The",
         "vowel sound a is not",
         "recognized as a vowel",
-        "and does not exist in"
-      ),
-      new BookPageInfo
-      (
+        "and does not exist in"),
+      new BookPageInfo(
         "their alphabet.",
         "The orcish alphabet is",
         "best learned using the",
@@ -192,10 +156,8 @@ namespace Server.Items
         "repeated at 23",
         "different pitches:",
         "   Lugnog ghu blat",
-        "suggaroglug,"
-      ),
-      new BookPageInfo
-      (
+        "suggaroglug,"),
+      new BookPageInfo(
         "Gaghbuu dakdar ab",
         "highugbo,",
         "  Gothnogbuim ad",
@@ -203,10 +165,8 @@ namespace Server.Items
         "Bilgeaugh thurggulg",
         "stuiggro!",
         "",
-        "A translation of the"
-      ),
-      new BookPageInfo
-      (
+        "A translation of the"),
+      new BookPageInfo(
         "first pitch:",
         "Eat food, the first",
         "letter is ab,",
@@ -214,10 +174,8 @@ namespace Server.Items
         "is ad,",
         "I forget the rest",
         "But augh is in there",
-        "somewhere!"
-      ),
-      new BookPageInfo
-      (
+        "somewhere!"),
+      new BookPageInfo(
         "",
         "  What follows is a",
         "complete phonetic",
@@ -225,10 +183,8 @@ namespace Server.Items
         "language:",
         "ab, ad, ag, akt, alm,",
         "at, augh, auh, azh,",
-        "ba, ba, bag, bar, baz,"
-      ),
-      new BookPageInfo
-      (
+        "ba, ba, bag, bar, baz,"),
+      new BookPageInfo(
         "bid, bilge, bo, bog, bog,",
         "brui, bu, buad, bug,",
         "bug, buil, buim, bum,",
@@ -236,10 +192,8 @@ namespace Server.Items
         "car, clog, cro, cuk,",
         "cur, da, dagh, dagh,",
         "dak, dar, deak, der,",
-        "dil, dit, dor, dre, dri,"
-      ),
-      new BookPageInfo
-      (
+        "dil, dit, dor, dre, dri,"),
+      new BookPageInfo(
         "dru, du, dud, duf,",
         "dug, dug, duh, dun,",
         "eag, eg, egg, eichel,",
@@ -247,10 +201,8 @@ namespace Server.Items
         "fid, flu, fog, foo,",
         "foz, fruk, fu, fub,",
         "fud, fun, fup, fur,",
-        "gaa, gag, gagh, gan,"
-      ),
-      new BookPageInfo
-      (
+        "gaa, gag, gagh, gan,"),
+      new BookPageInfo(
         "gar, gh, gha, ghat,",
         "ghed, ghig, gho, ghu,",
         "gig, gil, gka, glu, glu,",
@@ -258,9 +210,7 @@ namespace Server.Items
         "gol, gom, goth, grunt,",
         "grut, gu, gub, gub,",
         "gug, gug, gugh, guk,",
-        "guk,"
-      )
-    );
+        "guk,"));
 
     [Constructible]
     public GrammarOfOrcish() : base(Utility.Random(0xFEF, 2), false)
@@ -288,17 +238,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region A Politic Call to Anarchy
-
   public class CallToAnarchy : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "A Politic Call to Anarchy", "Lord Blackthorn",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  Let it never be said",
         "that I have aught as",
         "quarrel with my liege",
@@ -306,10 +250,8 @@ namespace Server.Items
         "indeed we be of the",
         "best of friends,",
         "sharing amicable",
-        "games of chess 'pon a"
-      ),
-      new BookPageInfo
-      (
+        "games of chess 'pon a"),
+      new BookPageInfo(
         "winter's night, and",
         "talking at length into",
         "the wee hours of the",
@@ -317,10 +259,8 @@ namespace Server.Items
         "realm of Britannia.",
         "  Yet true friendship",
         "doth not prevent true",
-        "philosophical"
-      ),
-      new BookPageInfo
-      (
+        "philosophical"),
+      new BookPageInfo(
         "disagreement either.",
         "While I view with",
         "approval my lord's",
@@ -328,10 +268,8 @@ namespace Server.Items
         "carefully crafted",
         "philosophy of the",
         "Eight Virtues,",
-        "wherein moral"
-      ),
-      new BookPageInfo
-      (
+        "wherein moral"),
+      new BookPageInfo(
         "behavior is",
         "encouraged in the",
         "populace, I view with",
@@ -339,10 +277,8 @@ namespace Server.Items
         "expenditure of public",
         "funds upon the",
         "construction of",
-        "\"shrines\" to said"
-      ),
-      new BookPageInfo
-      (
+        "\"shrines\" to said"),
+      new BookPageInfo(
         "ideals.",
         "  The issue is not one",
         "of funds, however,",
@@ -350,10 +286,8 @@ namespace Server.Items
         "most intellectual over",
         "the proper way of",
         "humankind in an",
-        "ethical sense. Surely"
-      ),
-      new BookPageInfo
-      (
+        "ethical sense. Surely"),
+      new BookPageInfo(
         "freedom of decision",
         "must be regarded as",
         "paramount in any",
@@ -361,10 +295,8 @@ namespace Server.Items
         "Though none fail to",
         "censure the",
         "murderer, a subtler",
-        "question arises when"
-      ),
-      new BookPageInfo
-      (
+        "question arises when"),
+      new BookPageInfo(
         "we ask if his",
         "behavior would be",
         "ethical if he were",
@@ -372,10 +304,8 @@ namespace Server.Items
         "  I say to thee, the",
         "reader, quite flatly,",
         "that no ethical system",
-        "shall have sway over"
-      ),
-      new BookPageInfo
-      (
+        "shall have sway over"),
+      new BookPageInfo(
         "me unless it",
         "convinceth me, for",
         "that freely made",
@@ -383,10 +313,8 @@ namespace Server.Items
         "sign that the system",
         "hath validity.",
         "  Whereas the system",
-        "of \"Virtues\" that my"
-      ),
-      new BookPageInfo
-      (
+        "of \"Virtues\" that my"),
+      new BookPageInfo(
         "liege espouses is",
         "indeed a compilation",
         "of commonly approved",
@@ -394,10 +322,8 @@ namespace Server.Items
         "it. Where it seeks to",
         "control the populace",
         "and restrict their",
-        "diversity and their"
-      ),
-      new BookPageInfo
-      (
+        "diversity and their"),
+      new BookPageInfo(
         "range of behaviors, I",
         "quarrel with it. And",
         "thus do I issue this",
@@ -405,10 +331,8 @@ namespace Server.Items
         "whilst humbly",
         "begging forgiveness",
         "of Lord British for",
-        "my impertinence:"
-      ),
-      new BookPageInfo
-      (
+        "my impertinence:"),
+      new BookPageInfo(
         "  Celebrate thy",
         "differences. Take",
         "thy actions according",
@@ -416,10 +340,8 @@ namespace Server.Items
         "Question from what",
         "source a law, a rule,",
         "a judge, and a virtue",
-        "may arise. 'Twere"
-      ),
-      new BookPageInfo
-      (
+        "may arise. 'Twere"),
+      new BookPageInfo(
         "possible (though I",
         "suggest it not",
         "seriously) that a",
@@ -427,10 +349,8 @@ namespace Server.Items
         "seed of these",
         "\"Virtues\" in my Lord",
         "British's mind; 'twere",
-        "possible that the"
-      ),
-      new BookPageInfo
-      (
+        "possible that the"),
+      new BookPageInfo(
         "Shrines were but a",
         "plan to destroy this",
         "world. Thou canst not",
@@ -438,10 +358,8 @@ namespace Server.Items
         "questioneth, doubteth,",
         "and in the end,",
         "unless thou relyest",
-        "upon THYSELF and"
-      ),
-      new BookPageInfo
-      (
+        "upon THYSELF and"),
+      new BookPageInfo(
         "thy judgement.",
         "  I offer these words",
         "as mere philosophical",
@@ -449,15 +367,11 @@ namespace Server.Items
         "who seek",
         "enlightenment, for",
         "'tis the issue that",
-        "hath occupied mine"
-      ),
-      new BookPageInfo
-      (
+        "hath occupied mine"),
+      new BookPageInfo(
         "interest and that of",
         "Lord British for",
-        "some time now."
-      )
-    );
+        "some time now."));
 
     [Constructible]
     public CallToAnarchy() : base(Utility.Random(0xFEF, 2), false)
@@ -485,17 +399,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region A Primer on Arms and Weapons
-
   public class ArmsAndWeaponsPrimer : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "A Primer on Arms and Weapons", "Martin",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "    These are the",
         "basic elements to",
         "consider in assessing",
@@ -503,10 +411,8 @@ namespace Server.Items
         "all warriors who",
         "regard themselves as",
         "more than mere",
-        "mercenaries should be"
-      ),
-      new BookPageInfo
-      (
+        "mercenaries should be"),
+      new BookPageInfo(
         "aware.",
         "    First and most",
         "obvious is the amount",
@@ -514,10 +420,8 @@ namespace Server.Items
         "weapon may do",
         "against unprotected",
         "flesh. While 'tis this",
-        "which first attracts"
-      ),
-      new BookPageInfo
-      (
+        "which first attracts"),
+      new BookPageInfo(
         "the attention of the",
         "novice, 'tis a deadly",
         "mistake to regard it",
@@ -525,10 +429,8 @@ namespace Server.Items
         "weapon. While it may",
         "prove devastating",
         "indeed as a means of",
-        "causing damage, a"
-      ),
-      new BookPageInfo
-      (
+        "causing damage, a"),
+      new BookPageInfo(
         "weapon must also",
         "serve as stout shield",
         "when engaged in",
@@ -536,10 +438,8 @@ namespace Server.Items
         "    Hence the second",
         "issue to which to pay",
         "attention is the",
-        "amount of protection"
-      ),
-      new BookPageInfo
-      (
+        "amount of protection"),
+      new BookPageInfo(
         "that a weapon may",
         "offer. Pay close",
         "attention to the guard",
@@ -547,10 +447,8 @@ namespace Server.Items
         "or the stoutness of",
         "its wood if it is a pole",
         "arm.",
-        "    Oft related to this"
-      ),
-      new BookPageInfo
-      (
+        "    Oft related to this"),
+      new BookPageInfo(
         "is the weight of the",
         "weapon, for a heavy",
         "weapon is more",
@@ -558,10 +456,8 @@ namespace Server.Items
         "to block with, though",
         "it may do more",
         "damage to thy",
-        "opponent."
-      ),
-      new BookPageInfo
-      (
+        "opponent."),
+      new BookPageInfo(
         "    If a weapon is too",
         "heavy for the wielder",
         "to move it freely,",
@@ -569,10 +465,8 @@ namespace Server.Items
         "another and not",
         "attempt to prove their",
         "prowess by the size",
-        "of their sword."
-      ),
-      new BookPageInfo
-      (
+        "of their sword."),
+      new BookPageInfo(
         "    The reach of a",
         "weapon both increases",
         "its defensive ability,",
@@ -580,10 +474,8 @@ namespace Server.Items
         "useful in open spaces",
         "as it allows attack",
         "against the opponent",
-        "without the need to"
-      ),
-      new BookPageInfo
-      (
+        "without the need to"),
+      new BookPageInfo(
         "close. But be aware of",
         "the limitations of thy",
         "weapon! For a",
@@ -591,10 +483,8 @@ namespace Server.Items
         "reach may be useless",
         "in close quarters, for",
         "lack of space to",
-        "maneuver it. Should"
-      ),
-      new BookPageInfo
-      (
+        "maneuver it. Should"),
+      new BookPageInfo(
         "that dagger-wielding",
         "enemy close on thee",
         "and thy halberd, 'tis",
@@ -602,10 +492,8 @@ namespace Server.Items
         "    Lastly, a factor",
         "that must always be",
         "considered is the",
-        "condition of the"
-      ),
-      new BookPageInfo
-      (
+        "condition of the"),
+      new BookPageInfo(
         "weapon. It might be a",
         "wondrous magical",
         "blade of surpassing",
@@ -613,10 +501,8 @@ namespace Server.Items
         "leap to block blows",
         "with a mind of its",
         "own. It also might be",
-        "of such flimsy"
-      ),
-      new BookPageInfo
-      (
+        "of such flimsy"),
+      new BookPageInfo(
         "construction, or",
         "damaged to such an",
         "extent, that the first",
@@ -624,10 +510,8 @@ namespace Server.Items
         "steel, 'twill  shatter",
         "into useless shards.",
         "    Seek ye a good",
-        "blacksmith should thy"
-      ),
-      new BookPageInfo
-      (
+        "blacksmith should thy"),
+      new BookPageInfo(
         "weapon become",
         "damaged, but be",
         "aware that their",
@@ -635,10 +519,8 @@ namespace Server.Items
         "simply make the",
         "matter worse.",
         "    While mages of",
-        "some ability oft create"
-      ),
-      new BookPageInfo
-      (
+        "some ability oft create"),
+      new BookPageInfo(
         "magical weapons",
         "which enhance skill,",
         "are preternaturally",
@@ -646,10 +528,8 @@ namespace Server.Items
         "the enemy as they",
         "fall, to my mind the",
         "greatest gift that they",
-        "can grant a stout"
-      ),
-      new BookPageInfo
-      (
+        "can grant a stout"),
+      new BookPageInfo(
         "sword is to make it",
         "resistant to damage,",
         "for thy own skill can",
@@ -657,15 +537,11 @@ namespace Server.Items
         "difference. Except",
         "for the fireball, but",
         "if the corpse is",
-        "charred, then so will"
-      ),
-      new BookPageInfo
-      (
+        "charred, then so will"),
+      new BookPageInfo(
         "be the possessions,",
         "which maketh looting",
-        "difficult!"
-      )
-    );
+        "difficult!"));
 
     [Constructible]
     public ArmsAndWeaponsPrimer() : base(Utility.Random(0xFEF, 2), false)
@@ -693,17 +569,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region A Song of Samlethe
-
   public class SongOfSamlethe : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "A Song of Samlethe", "Sandra",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "The first bear did",
         "swim by day,",
         "And it did sleep by",
@@ -711,10 +581,8 @@ namespace Server.Items
         "It kept itself within",
         "its cave",
         "and ate by starry",
-        "light."
-      ),
-      new BookPageInfo
-      (
+        "light."),
+      new BookPageInfo(
         "",
         "The second bear it did",
         "cavort",
@@ -722,10 +590,8 @@ namespace Server.Items
         "trees,",
         "And danced its",
         "strange bearish sort",
-        "Of joy for all to see."
-      ),
-      new BookPageInfo
-      (
+        "Of joy for all to see."),
+      new BookPageInfo(
         "",
         "The first bear, well,",
         "'twas hunted,",
@@ -733,10 +599,8 @@ namespace Server.Items
         "floor.",
         "Its ruggish face has",
         "been dented",
-        "By footfalls and the"
-      ),
-      new BookPageInfo
-      (
+        "By footfalls and the"),
+      new BookPageInfo(
         "door.",
         "",
         "The second bear did",
@@ -744,10 +608,8 @@ namespace Server.Items
         "Into a mushroom ring,",
         "And now does dance",
         "the dunce",
-        "For wisps and"
-      ),
-      new BookPageInfo
-      (
+        "For wisps and"),
+      new BookPageInfo(
         "unseen things.",
         "",
         "So do not dance, and",
@@ -755,13 +617,9 @@ namespace Server.Items
         "Or else be led astray!",
         "For bears all end up",
         "six feet deep",
-        "At the end of"
-      ),
-      new BookPageInfo
-      (
-        "Samlethe's day."
-      )
-    );
+        "At the end of"),
+      new BookPageInfo(
+        "Samlethe's day."));
 
     [Constructible]
     public SongOfSamlethe() : base(Utility.Random(0xFEF, 2), false)
@@ -789,17 +647,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region A Tale of Three Tribes
-
   public class TaleOfThreeTribes : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "A Tale of Three Tribes", "Janet, Scribe",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  The dungeon known",
         "as Despise is in fact",
         "not a dungeon as",
@@ -807,10 +659,8 @@ namespace Server.Items
         "large natural cave.",
         "Inhospitable and",
         "unfriendly to",
-        "visitors, it is filled"
-      ),
-      new BookPageInfo
-      (
+        "visitors, it is filled"),
+      new BookPageInfo(
         "with damp spots",
         "where the deadly",
         "Exploding Red Spotted",
@@ -818,10 +668,8 @@ namespace Server.Items
         "abundance.",
         "  According to the",
         "oldest of historical",
-        "texts, in days gone"
-      ),
-      new BookPageInfo
-      (
+        "texts, in days gone"),
+      new BookPageInfo(
         "by the cave was once",
         "the home of three",
         "separate tribes who",
@@ -829,10 +677,8 @@ namespace Server.Items
         "accommodation with",
         "each other. Oddly",
         "enough, the three",
-        "tribes were of"
-      ),
-      new BookPageInfo
-      (
+        "tribes were of"),
+      new BookPageInfo(
         "dragons, lizard men,",
         "and rat men. While",
         "today few except",
@@ -840,10 +686,8 @@ namespace Server.Items
         "with Lord Blackthorn",
         "regard these latter",
         "two as being",
-        "intelligent beings,"
-      ),
-      new BookPageInfo
-      (
+        "intelligent beings,"),
+      new BookPageInfo(
         "apparently they have",
         "indeed fallen from a",
         "more evolved state",
@@ -851,10 +695,8 @@ namespace Server.Items
         "  'Tis said that these",
         "three races did dwell",
         "in relative harmony",
-        "within the vast cave,"
-      ),
-      new BookPageInfo
-      (
+        "within the vast cave,"),
+      new BookPageInfo(
         "building when they",
         "required it, and",
         "trading amongst",
@@ -862,10 +704,8 @@ namespace Server.Items
         "  But over time,",
         "something happened,",
         "and they were forced",
-        "to withdraw from"
-      ),
-      new BookPageInfo
-      (
+        "to withdraw from"),
+      new BookPageInfo(
         "their society, until",
         "today thou mayst",
         "find individuals of",
@@ -873,10 +713,8 @@ namespace Server.Items
         "the dungeon, but",
         "never again as a",
         "civilization.",
-        "  'Tis also said that"
-      ),
-      new BookPageInfo
-      (
+        "  'Tis also said that"),
+      new BookPageInfo(
         "someday the three",
         "tribes may return to",
         "Despise, to once again",
@@ -884,10 +722,8 @@ namespace Server.Items
         "  Until then, nothing",
         "remains as token of",
         "this save an oddly",
-        "intelligent skeleton,"
-      ),
-      new BookPageInfo
-      (
+        "intelligent skeleton,"),
+      new BookPageInfo(
         "magically enchanted,",
         "that doth speak when",
         "questions are asked,",
@@ -895,16 +731,12 @@ namespace Server.Items
         "obtained these tales",
         "one day, when I was",
         "pursued by evil",
-        "monsters and fled"
-      ),
-      new BookPageInfo
-      (
+        "monsters and fled"),
+      new BookPageInfo(
         "into his skeletal arms.",
         "  Fortunately, I",
         "escaped and lived to",
-        "write it all down!"
-      )
-    );
+        "write it all down!"));
 
     [Constructible]
     public TaleOfThreeTribes() : base(Utility.Random(0xFEF, 2), false)
@@ -932,17 +764,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Beltran's Guide to Guilds
-
   public class GuideToGuilds : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Beltran's Guide to Guilds", "Beltran",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  This reference",
         "work is intended",
         "merely to serve as",
@@ -950,30 +776,24 @@ namespace Server.Items
         "curious as to the full",
         "range of trades and",
         "societies extant in",
-        "Britannia and nearby"
-      ),
-      new BookPageInfo
-      (
+        "Britannia and nearby"),
+      new BookPageInfo(
         "nations. For each",
         "trade or guild, their",
         "blazon is given.",
         "",
         "  Armourer's Guild.",
         "Gold bar above black",
-        "bar."
-      ),
-      new BookPageInfo
-      (
+        "bar."),
+      new BookPageInfo(
         "  Association of",
         "Warriors. Blue cross",
         "on a red field.",
         "",
         "  Barters' Guild.",
         "Green and white",
-        "stripes, diagonal."
-      ),
-      new BookPageInfo
-      (
+        "stripes, diagonal."),
+      new BookPageInfo(
         "  Blacksmith's Guild.",
         "Gold alongside black.",
         "",
@@ -981,20 +801,16 @@ namespace Server.Items
         "Rogues and Beggars.",
         "Red above black.",
         "",
-        "  Fighters and"
-      ),
-      new BookPageInfo
-      (
+        "  Fighters and"),
+      new BookPageInfo(
         "Footmen. Blue",
         "horzontal bar on red",
         "field.",
         "",
         "  Guild of Archers.",
         "A gold swath parting",
-        "red and blue."
-      ),
-      new BookPageInfo
-      (
+        "red and blue."),
+      new BookPageInfo(
         "  Guild of",
         "Armaments. Swath of",
         "gold on black field,",
@@ -1002,10 +818,8 @@ namespace Server.Items
         "",
         "  Guild of Assassins.",
         "Black and red",
-        "quartered."
-      ),
-      new BookPageInfo
-      (
+        "quartered."),
+      new BookPageInfo(
         "",
         "  Guild of Barbers.",
         "Red and white",
@@ -1013,10 +827,8 @@ namespace Server.Items
         "",
         "  Guild of Cavalry and",
         "Horse. Vertical blue",
-        "on a red field."
-      ),
-      new BookPageInfo
-      (
+        "on a red field."),
+      new BookPageInfo(
         "",
         "  Guild of",
         "Fishermen. Blue and",
@@ -1024,10 +836,8 @@ namespace Server.Items
         "",
         "  Guild of Mages.",
         "Purple and blue, in a",
-        "crossed pennant"
-      ),
-      new BookPageInfo
-      (
+        "crossed pennant"),
+      new BookPageInfo(
         "pattern.",
         "",
         "  Guild of",
@@ -1035,20 +845,16 @@ namespace Server.Items
         "bar above green bar.",
         "",
         "  Guild of Sorcery. A",
-        "field divided"
-      ),
-      new BookPageInfo
-      (
+        "field divided"),
+      new BookPageInfo(
         "diagonally in blue and",
         "purple.",
         "",
         "  Healers Guild. Gold",
         "swath dividing green",
         "from purple, gold",
-        "accents."
-      ),
-      new BookPageInfo
-      (
+        "accents."),
+      new BookPageInfo(
         "  Lord British's",
         "Healers of Virtue.",
         "Golden ankh on dark",
@@ -1056,10 +862,8 @@ namespace Server.Items
         "",
         "  Masters of Illusion.",
         "Blue and purple",
-        "checkers."
-      ),
-      new BookPageInfo
-      (
+        "checkers."),
+      new BookPageInfo(
         "",
         "  Merchants' Guild.",
         "Gold coins on green",
@@ -1067,10 +871,8 @@ namespace Server.Items
         "",
         "  Mining Cooperative.",
         "A gold cross,",
-        "quartering blue and"
-      ),
-      new BookPageInfo
-      (
+        "quartering blue and"),
+      new BookPageInfo(
         "black.",
         "",
         "  Order of Engineers.",
@@ -1078,20 +880,16 @@ namespace Server.Items
         "vertical.",
         "",
         "  Sailors' Maritime",
-        "Association. A white"
-      ),
-      new BookPageInfo
-      (
+        "Association. A white"),
+      new BookPageInfo(
         "bar centered on a blue",
         "field.",
         "",
         "  Seamen's Chapter.",
         "Blue and white in a",
         "crossed pennant",
-        "pattern."
-      ),
-      new BookPageInfo
-      (
+        "pattern."),
+      new BookPageInfo(
         "  Society of Cooks and",
         "Chefs. White and red",
         "diagonal fields",
@@ -1099,10 +897,8 @@ namespace Server.Items
         "field.",
         "",
         "  Society of",
-        "Shipwrights. White"
-      ),
-      new BookPageInfo
-      (
+        "Shipwrights. White"),
+      new BookPageInfo(
         "diagonal above blue.",
         "",
         "  Society of Thieves.",
@@ -1110,10 +906,8 @@ namespace Server.Items
         "stripes.",
         "",
         "  Society of",
-        "Weaponsmakers. Gold"
-      ),
-      new BookPageInfo
-      (
+        "Weaponsmakers. Gold"),
+      new BookPageInfo(
         "diagonal above black.",
         "",
         "  Tailor's Hall. Purple",
@@ -1121,17 +915,13 @@ namespace Server.Items
         "",
         "  The Bardic",
         "Collegium. Purple and",
-        "red checkers on gold"
-      ),
-      new BookPageInfo
-      (
+        "red checkers on gold"),
+      new BookPageInfo(
         "field.",
         "",
         "  Traders' Guild.",
         "White bar centered",
-        "down green field."
-      )
-    );
+        "down green field."));
 
     [Constructible]
     public GuideToGuilds() : base(Utility.Random(0xFEF, 2), false)
@@ -1159,17 +949,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Birds of Britannia
-
   public class BirdsOfBritannia : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Birds of Britannia", "Thom the Heathen",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "   The WREN is a",
         "tiny insect-eating",
         "bird with a loud voice.",
@@ -1177,10 +961,8 @@ namespace Server.Items
         "of Wrens are",
         "extraordinarily",
         "varied and melodious.",
-        "    The SWALLOW"
-      ),
-      new BookPageInfo
-      (
+        "    The SWALLOW"),
+      new BookPageInfo(
         "is easily recognized",
         "by its forked tail.",
         "Swallows catch",
@@ -1188,10 +970,8 @@ namespace Server.Items
         "have squeaky,",
         "twittering songs.",
         "    The WARBLER is",
-        "an exceptional singer,"
-      ),
-      new BookPageInfo
-      (
+        "an exceptional singer,"),
+      new BookPageInfo(
         "whose extensive",
         "songs combine the",
         "best qualities of",
@@ -1199,10 +979,8 @@ namespace Server.Items
         "    The NUTHATCH",
         "climbs down trees",
         "head first, searching",
-        "for insects in the"
-      ),
-      new BookPageInfo
-      (
+        "for insects in the"),
+      new BookPageInfo(
         "bark.  It sings a",
         "repetitive series of",
         "notes with a nasal",
@@ -1210,10 +988,8 @@ namespace Server.Items
         "    The agile",
         "CHICKADEE has a",
         "buzzy",
-        "\"chick-a-dee-dee\""
-      ),
-      new BookPageInfo
-      (
+        "\"chick-a-dee-dee\""),
+      new BookPageInfo(
         "call, from which its",
         "name is derived.  Its",
         "song is a series of",
@@ -1221,10 +997,8 @@ namespace Server.Items
         "    The THRUSH is a",
         "brown bird with a",
         "spotted breast, which",
-        "eats worms and"
-      ),
-      new BookPageInfo
-      (
+        "eats worms and"),
+      new BookPageInfo(
         "snails, and has a",
         "beautiful singing",
         "voice.  Thrushes use",
@@ -1232,10 +1006,8 @@ namespace Server.Items
         "smash the shells of",
         "snails.",
         "    The little",
-        "NIGHTINGALE is"
-      ),
-      new BookPageInfo
-      (
+        "NIGHTINGALE is"),
+      new BookPageInfo(
         "also known for its",
         "beautiful song, which",
         "it sings even at night.",
@@ -1243,10 +1015,8 @@ namespace Server.Items
         "is a small dark bird",
         "with a yellow bill and",
         "a squeaky,",
-        "high-pitched song."
-      ),
-      new BookPageInfo
-      (
+        "high-pitched song."),
+      new BookPageInfo(
         "Starlings can mimic",
         "the sounds of other",
         "birds.",
@@ -1254,10 +1024,8 @@ namespace Server.Items
         "sings a series of",
         "high-pitched",
         "melodious trills in",
-        "flight."
-      ),
-      new BookPageInfo
-      (
+        "flight."),
+      new BookPageInfo(
         "    The FINCH is a",
         "small seed-eating bird",
         "with a conical beak",
@@ -1265,10 +1033,8 @@ namespace Server.Items
         "warbling song.",
         "    The CROSSBILL",
         "is a kind of Finch",
-        "with a strange"
-      ),
-      new BookPageInfo
-      (
+        "with a strange"),
+      new BookPageInfo(
         "crossed bill, which it",
         "uses to extract seeds",
         "from pine cones.",
@@ -1276,10 +1042,8 @@ namespace Server.Items
         "kind of Finch that is",
         "often kept as a pet.",
         "Miners would often",
-        "take Canaries"
-      ),
-      new BookPageInfo
-      (
+        "take Canaries"),
+      new BookPageInfo(
         "underground with",
         "them, to warn them",
         "of the presence of",
@@ -1287,10 +1051,8 @@ namespace Server.Items
         "the air.",
         "    The SPARROW",
         "weaves a nest of",
-        "grass, and has an"
-      ),
-      new BookPageInfo
-      (
+        "grass, and has an"),
+      new BookPageInfo(
         "unmusical chirp for a",
         "voice.",
         "    The TOWHEE is a",
@@ -1298,10 +1060,8 @@ namespace Server.Items
         "continually reminds",
         "listeners to drink",
         "their tea.",
-        "    The SHRIKE is a"
-      ),
-      new BookPageInfo
-      (
+        "    The SHRIKE is a"),
+      new BookPageInfo(
         "gray bird with a",
         "hooked bill.  Shrikes",
         "have the habit of",
@@ -1309,10 +1069,8 @@ namespace Server.Items
         "on thorns.",
         "    The",
         "WOODPECKER has a",
-        "pointed beak that is"
-      ),
-      new BookPageInfo
-      (
+        "pointed beak that is"),
+      new BookPageInfo(
         "suitable for pecking at",
         "wood to get at the",
         "insects inside.",
@@ -1320,10 +1078,8 @@ namespace Server.Items
         "KINGFISHER dives",
         "for fish, which it",
         "catches with its long,",
-        "pointed beak."
-      ),
-      new BookPageInfo
-      (
+        "pointed beak."),
+      new BookPageInfo(
         "    The TERN",
         "migrates over great",
         "distances, from one",
@@ -1331,10 +1087,8 @@ namespace Server.Items
         "the other each year.",
         "Terns dive from the",
         "air to catch fish.",
-        "    The PLOVER is a"
-      ),
-      new BookPageInfo
-      (
+        "    The PLOVER is a"),
+      new BookPageInfo(
         "bird that distracts",
         "predators by",
         "pretending to have a",
@@ -1342,10 +1096,8 @@ namespace Server.Items
         "    The LAPWING is",
         "a kind of Plover that",
         "has a long black crest.",
-        "    The HAWK is a"
-      ),
-      new BookPageInfo
-      (
+        "    The HAWK is a"),
+      new BookPageInfo(
         "predator that feeds on",
         "small birds, mice,",
         "squirrels, and other",
@@ -1353,10 +1105,8 @@ namespace Server.Items
         "hawks are known as",
         "Kites.",
         "    The DOVE is a",
-        "seed-eating bird with"
-      ),
-      new BookPageInfo
-      (
+        "seed-eating bird with"),
+      new BookPageInfo(
         "a peaceful reputation.",
         " Doves have a",
         "low-pitched cooing",
@@ -1364,10 +1114,8 @@ namespace Server.Items
         "    The PARROT is a",
         "brightly colored bird",
         "with a hooked bill,",
-        "favored as a"
-      ),
-      new BookPageInfo
-      (
+        "favored as a"),
+      new BookPageInfo(
         "companion by pirates.",
         " Parrots can be",
         "taught to imitate the",
@@ -1375,10 +1123,8 @@ namespace Server.Items
         "    The CUCKOO is a",
         "devious bird that lays",
         "eggs in the nests of",
-        "Warblers and other"
-      ),
-      new BookPageInfo
-      (
+        "Warblers and other"),
+      new BookPageInfo(
         "small birds.  Cuckoos",
         "have the uncanny",
         "ability to keep track",
@@ -1386,10 +1132,8 @@ namespace Server.Items
         "at the beginning of",
         "each hour.",
         "    The",
-        "ROADRUNNER is"
-      ),
-      new BookPageInfo
-      (
+        "ROADRUNNER is"),
+      new BookPageInfo(
         "an unusual bird with",
         "a long tail, which",
         "runs swiftly along",
@@ -1397,10 +1141,8 @@ namespace Server.Items
         "for lizards and",
         "snakes.",
         "    The SWIFT is a",
-        "very agile bird that"
-      ),
-      new BookPageInfo
-      (
+        "very agile bird that"),
+      new BookPageInfo(
         "spends nearly its",
         "entire life in the air.",
         "With their mouths",
@@ -1408,10 +1150,8 @@ namespace Server.Items
         "capture insects in",
         "mid-flight.",
         "    The",
-        "HUMMINGBIRD is a"
-      ),
-      new BookPageInfo
-      (
+        "HUMMINGBIRD is a"),
+      new BookPageInfo(
         "cross between a",
         "Swift and a Fairy.",
         "These tiny, brightly",
@@ -1419,10 +1159,8 @@ namespace Server.Items
         "magically near",
         "flowers, and live on",
         "the nectar they",
-        "provide."
-      ),
-      new BookPageInfo
-      (
+        "provide."),
+      new BookPageInfo(
         "    The OWL is a",
         "reputedly wise bird",
         "that is active at night,",
@@ -1430,10 +1168,8 @@ namespace Server.Items
         "Owls have excellent",
         "night vision and",
         "low-pitched hooting",
-        "calls.  Their wings"
-      ),
-      new BookPageInfo
-      (
+        "calls.  Their wings"),
+      new BookPageInfo(
         "are silent in flight.",
         "    The",
         "GOATSUCKER is a",
@@ -1441,10 +1177,8 @@ namespace Server.Items
         "that is thought to live",
         "on the milk of goats.",
         "These mysterious",
-        "birds make jarring"
-      ),
-      new BookPageInfo
-      (
+        "birds make jarring"),
+      new BookPageInfo(
         "sounds at night, for",
         "which reason they",
         "are also called",
@@ -1452,10 +1186,8 @@ namespace Server.Items
         "    The DUCK is a",
         "bird that swims more",
         "often than it flies,",
-        "and has a nasal voice"
-      ),
-      new BookPageInfo
-      (
+        "and has a nasal voice"),
+      new BookPageInfo(
         "that is described as a",
         "\"quack\".",
         "    The SWAN is a",
@@ -1463,14 +1195,10 @@ namespace Server.Items
         "Duck that is all white.",
         " Swans are usually",
         "voiceless, but they",
-        "are said to have an"
-      ),
-      new BookPageInfo
-      (
+        "are said to have an"),
+      new BookPageInfo(
         "extraordinarily",
-        "beautiful song."
-      )
-    );
+        "beautiful song."));
 
     [Constructible]
     public BirdsOfBritannia() : base(Utility.Random(0xFEF, 2), false)
@@ -1498,17 +1226,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Britannian Flora: A Casual Guide
-
   public class BritannianFlora : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Britannian Flora: A Casual Guide", "Herbert the Lost",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  Oft 'pon rambling",
         "through the woods",
         "avoiding bears have I",
@@ -1516,10 +1238,8 @@ namespace Server.Items
         "whose like I have",
         "never seen before,",
         "and concluded that I",
-        "was a blithering idiot"
-      ),
-      new BookPageInfo
-      (
+        "was a blithering idiot"),
+      new BookPageInfo(
         "for failing to notice it",
         "in the past. Equally",
         "as oft have I",
@@ -1527,10 +1247,8 @@ namespace Server.Items
         "worse idiot for not",
         "running faster from",
         "the bear.",
-        "  While not all my"
-      ),
-      new BookPageInfo
-      (
+        "  While not all my"),
+      new BookPageInfo(
         "readers may share",
         "my proclivities for",
         "tree-climbing, it",
@@ -1538,10 +1256,8 @@ namespace Server.Items
         "mayhap mine",
         "information might",
         "serve some humble",
-        "purpose."
-      ),
-      new BookPageInfo
-      (
+        "purpose."),
+      new BookPageInfo(
         "  The two most",
         "unique flowering",
         "plants in the",
@@ -1549,10 +1265,8 @@ namespace Server.Items
         "countryside are the",
         "orfleur and the",
         "whiteflower, also",
-        "called white horns."
-      ),
-      new BookPageInfo
-      (
+        "called white horns."),
+      new BookPageInfo(
         "  The orfleur is",
         "notable for its",
         "massive orange-red",
@@ -1560,10 +1274,8 @@ namespace Server.Items
         "dwarf marigolds like",
         "the sun dwarfs your",
         "common fireball spell.",
-        "The odor of said"
-      ),
-      new BookPageInfo
-      (
+        "The odor of said"),
+      new BookPageInfo(
         "blooms is best",
         "described as",
         "peppermint-apple,",
@@ -1571,10 +1283,8 @@ namespace Server.Items
         "'Tis a popular potted",
         "plant despite, or",
         "perhaps because of,",
-        "its exotic nature."
-      ),
-      new BookPageInfo
-      (
+        "its exotic nature."),
+      new BookPageInfo(
         "  Whiteflowers exude",
         "a subtle fragrance not",
         "unlike that of freshly",
@@ -1582,10 +1292,8 @@ namespace Server.Items
         "with cool lemon ice.",
         "Their tall stands",
         "always droop with the",
-        "heavy weight of the"
-      ),
-      new BookPageInfo
-      (
+        "heavy weight of the"),
+      new BookPageInfo(
         "massive blooms, oft",
         "as large as a child's",
         "head.",
@@ -1593,10 +1301,8 @@ namespace Server.Items
         "large that one may",
         "scoop out the pollen in",
         "handfuls, and during",
-        "the spring season"
-      ),
-      new BookPageInfo
-      (
+        "the spring season"),
+      new BookPageInfo(
         "many a prank hath",
         "been played by idle",
         "boys 'pon their",
@@ -1604,10 +1310,8 @@ namespace Server.Items
         "said pollen into their",
         "clothing drawers,",
         "causing sneezes for",
-        "days."
-      ),
-      new BookPageInfo
-      (
+        "days."),
+      new BookPageInfo(
         "  The most",
         "interesting native tree",
         "to Britannia is the",
@@ -1615,10 +1319,8 @@ namespace Server.Items
         "reason for its naming",
         "is obscure, but may",
         "have to do with the",
-        "twisted gray stalks"
-      ),
-      new BookPageInfo
-      (
+        "twisted gray stalks"),
+      new BookPageInfo(
         "from which the",
         "spherical canopy",
         "sprouts. 'Tis",
@@ -1626,10 +1328,8 @@ namespace Server.Items
         "misnomer to term",
         "these \"trunks\" as",
         "they are spindly and",
-        "flexible. Spider trees"
-      ),
-      new BookPageInfo
-      (
+        "flexible. Spider trees"),
+      new BookPageInfo(
         "provide a fresh,",
         "piney smell to a room",
         "and are therefore",
@@ -1637,10 +1337,8 @@ namespace Server.Items
         "  In jungle climes,",
         "one finds the blade",
         "plant, whose sharp",
-        "leaves oft collect"
-      ),
-      new BookPageInfo
-      (
+        "leaves oft collect"),
+      new BookPageInfo(
         "water for the thirsty",
         "traveler, yet can",
         "draw blood easily.",
@@ -1648,10 +1346,8 @@ namespace Server.Items
         "if you can call a",
         "fungus such, is the",
         "Exploding Red Spotted",
-        "Toadstool. No pattern"
-      ),
-      new BookPageInfo
-      (
+        "Toadstool. No pattern"),
+      new BookPageInfo(
         "can be discerned to",
         "its habitats save",
         "malice, for merely",
@@ -1659,10 +1355,8 @@ namespace Server.Items
         "the cap exploding",
         "with powder, noxious",
         "gas, and tiny painful",
-        "pellets flying in all"
-      ),
-      new BookPageInfo
-      (
+        "pellets flying in all"),
+      new BookPageInfo(
         "directions.",
         "Unfortunately, 'tis",
         "impossible to tell it",
@@ -1670,10 +1364,8 @@ namespace Server.Items
         "Ordinary Red Spotted",
         "Toadstool save through",
         "experimentation.",
-        "  Truly odd among the"
-      ),
-      new BookPageInfo
-      (
+        "  Truly odd among the"),
+      new BookPageInfo(
         "varied flora of",
         "Britannia, however,",
         "are those which bear",
@@ -1681,10 +1373,8 @@ namespace Server.Items
         "our tongue. Among",
         "these I name the",
         "Tuscany pine (for I",
-        "have never seen a"
-      ),
-      new BookPageInfo
-      (
+        "have never seen a"),
+      new BookPageInfo(
         "region of this world",
         "named Tuscany), the",
         "o'hii tree, whose very",
@@ -1692,19 +1382,15 @@ namespace Server.Items
         "some tropical isle, and",
         "the welsh poppy,",
         "which while",
-        "different from the"
-      ),
-      new BookPageInfo
-      (
+        "different from the"),
+      new BookPageInfo(
         "ordinary poppy in",
         "color and appearance,",
         "is prefaced with the",
         "odd word \"welsh,\"",
         "which as far as I",
         "know means to forgo",
-        "paying a debt."
-      )
-    );
+        "paying a debt."));
 
     [Constructible]
     public BritannianFlora() : base(Utility.Random(0xFEF, 2), false)
@@ -1732,17 +1418,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Classic Children's Tales, Volume 2
-
   public class ChildrenTalesVol2 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Classic Children's Tales, Volume 2", "Guilhem, Editor",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Clarke's Printery",
         "is Honored to",
         "Present Tales from",
@@ -1750,10 +1430,8 @@ namespace Server.Items
         "    Guilhem the",
         "Scholar Shall End",
         "EachVolume with",
-        "Staid Commentary."
-      ),
-      new BookPageInfo
-      (
+        "Staid Commentary."),
+      new BookPageInfo(
         "",
         "THE RHYME",
         "Dance in the Star",
@@ -1761,10 +1439,8 @@ namespace Server.Items
         "And Dance in the Pit",
         "And Eat of your",
         "Entrees",
-        "In the Glass House"
-      ),
-      new BookPageInfo
-      (
+        "In the Glass House"),
+      new BookPageInfo(
         "you Sit",
         "",
         "COMMENTARY",
@@ -1772,10 +1448,8 @@ namespace Server.Items
         "rhyme for little",
         "babies, 'tis thought",
         "that this little ditty is",
-        "part of the corpus of"
-      ),
-      new BookPageInfo
-      (
+        "part of the corpus of"),
+      new BookPageInfo(
         "legendary tales",
         "regarding the world",
         "before Sosaria (see",
@@ -1783,10 +1457,8 @@ namespace Server.Items
         "of Fabio the Poor for",
         "fictionalized versions",
         "of these stories, also",
-        "available from this"
-      ),
-      new BookPageInfo
-      (
+        "available from this"),
+      new BookPageInfo(
         "same publisher).",
         "    According to these",
         "old tales, which",
@@ -1794,10 +1466,8 @@ namespace Server.Items
         "hills and remote",
         "villages where Lord",
         "British is as yet a",
-        "distant and mythical"
-      ),
-      new BookPageInfo
-      (
+        "distant and mythical"),
+      new BookPageInfo(
         "ruler, the gods of old",
         "(a fanciful notion!)",
         "met to discuss the",
@@ -1805,10 +1475,8 @@ namespace Server.Items
         "the world in mystical",
         "rooms. A simple",
         "analysis reveals these",
-        "rooms to be mere"
-      ),
-      new BookPageInfo
-      (
+        "rooms to be mere"),
+      new BookPageInfo(
         "mythological",
         "generalizations.",
         "    \"The Star",
@@ -1816,10 +1484,8 @@ namespace Server.Items
         "reference to the sky.",
         "\"The Pit\" is certainly",
         "an Underworld",
-        "analogous to the"
-      ),
-      new BookPageInfo
-      (
+        "analogous to the"),
+      new BookPageInfo(
         "Snakehills of other",
         "tales, and \"the Glass",
         "House\" is no doubt the",
@@ -1827,10 +1493,8 @@ namespace Server.Items
         "which the gods",
         "observed their",
         "creation. All is simple",
-        "when seen from this"
-      ),
-      new BookPageInfo
-      (
+        "when seen from this"),
+      new BookPageInfo(
         "perspective, leaving",
         "only the mysterious",
         "reference to dinners.",
@@ -1838,12 +1502,8 @@ namespace Server.Items
         "rhyme is universally",
         "used only for",
         "midnight feedings,",
-        "never during the day."
-      ),
-      new BookPageInfo
-      (
-      )
-    );
+        "never during the day."),
+      new BookPageInfo());
 
     [Constructible]
     public ChildrenTalesVol2() : base(Utility.Random(0xFEF, 2), false)
@@ -1871,17 +1531,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Classic Tales of Vesper, Volume 1
-
   public class TalesOfVesperVol1 : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Classic Tales of Vesper, Volume 1", "Clarke's Printery",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "'Tis an Honor to",
         "present to Thee these",
         "Tales collected from",
@@ -1889,10 +1543,8 @@ namespace Server.Items
         "Inaugural Volume, we",
         "present this Verse",
         "oft Recited as a",
-        "Lullabye for sleepy"
-      ),
-      new BookPageInfo
-      (
+        "Lullabye for sleepy"),
+      new BookPageInfo(
         "Children.",
         "",
         "Preface",
@@ -1900,10 +1552,8 @@ namespace Server.Items
         "Scholar",
         "",
         "  The meaning of this",
-        "verse has oft been"
-      ),
-      new BookPageInfo
-      (
+        "verse has oft been"),
+      new BookPageInfo(
         "discussed in halls of",
         "scholarly sorts, for",
         "its mysterious",
@@ -1911,10 +1561,8 @@ namespace Server.Items
         "oddly disturbing to",
         "adult ears, though",
         "children seem to find",
-        "it restful as they"
-      ),
-      new BookPageInfo
-      (
+        "it restful as they"),
+      new BookPageInfo(
         "sleep. Perhaps it is",
         "but the remnant of a",
         "longer ballad once",
@@ -1922,10 +1570,8 @@ namespace Server.Items
         "internal indications",
         "that it once told a",
         "longer story about",
-        "ill-fated lovers, and a"
-      ),
-      new BookPageInfo
-      (
+        "ill-fated lovers, and a"),
+      new BookPageInfo(
         "magical experiment",
         "gone awry. However,",
         "poetic license and the",
@@ -1933,10 +1579,8 @@ namespace Server.Items
         "distorted the words",
         "until now the locale of",
         "the tale is no more",
-        "than \"in the wind,\""
-      ),
-      new BookPageInfo
-      (
+        "than \"in the wind,\""),
+      new BookPageInfo(
         "which while it serves",
         "a pleasingly",
         "metaphorical purpose,",
@@ -1944,10 +1588,8 @@ namespace Server.Items
         "listener as to any real",
         "locale!",
         "  Another possibility",
-        "is that this is some"
-      ),
-      new BookPageInfo
-      (
+        "is that this is some"),
+      new BookPageInfo(
         "form of creation",
         "myth explaining the",
         "genesis of the various",
@@ -1955,10 +1597,8 @@ namespace Server.Items
         "that roam the lands of",
         "Britannia. It does not",
         "take a stretch of the",
-        "imagination to name"
-      ),
-      new BookPageInfo
-      (
+        "imagination to name"),
+      new BookPageInfo(
         "the middle verse's",
         "\"girl becomes tree\" as",
         "a possible explanation",
@@ -1966,10 +1606,8 @@ namespace Server.Items
         "the area surrounding",
         "Minoc, reapers are",
         "oft referred to among",
-        "the lumberjacking"
-      ),
-      new BookPageInfo
-      (
+        "the lumberjacking"),
+      new BookPageInfo(
         "community as",
         "\"widowmakers.\" That",
         "these creatures are",
@@ -1977,10 +1615,8 @@ namespace Server.Items
         "assumed, but the",
         "verse seems to imply",
         "a long ago creator, and",
-        "uses the antique"
-      ),
-      new BookPageInfo
-      (
+        "uses the antique"),
+      new BookPageInfo(
         "magickal terminology",
         "of \"plaiting strands",
         "of ether\" that is so",
@@ -1988,10 +1624,8 @@ namespace Server.Items
         "ancient texts. In",
         "addition, the",
         "reference to",
-        "\"snakehills\" may"
-      ),
-      new BookPageInfo
-      (
+        "\"snakehills\" may"),
+      new BookPageInfo(
         "profitably be regarded",
         "as a reference to an",
         "actual location, such",
@@ -1999,10 +1633,8 @@ namespace Server.Items
         "term for the",
         "Serpent's Spine.",
         "  A commoner",
-        "interpretation is that"
-      ),
-      new BookPageInfo
-      (
+        "interpretation is that"),
+      new BookPageInfo(
         "like many nursery",
         "rhymes, it is a",
         "simple explanation",
@@ -2010,10 +1642,8 @@ namespace Server.Items
         "the wind snatches up",
         "boys and girls and",
         "when they sleep in",
-        "order to keep the"
-      ),
-      new BookPageInfo
-      (
+        "order to keep the"),
+      new BookPageInfo(
         "balance of the world.",
         "Notable tales have",
         "been written for",
@@ -2021,10 +1651,8 @@ namespace Server.Items
         "adventures in \"the",
         "Snakehills,\" which",
         "are presumed to be an",
-        "Afterworld whence"
-      ),
-      new BookPageInfo
-      (
+        "Afterworld whence"),
+      new BookPageInfo(
         "the spirit lives on. A",
         "grim lullabye, to be",
         "sure, but no worse",
@@ -2032,10 +1660,8 @@ namespace Server.Items
         "I wake\" surely.",
         "  In either case, 'tis",
         "an old favorite,",
-        "herein printed for"
-      ),
-      new BookPageInfo
-      (
+        "herein printed for"),
+      new BookPageInfo(
         "the first time for",
         "thy enjoyment and",
         "perusal!",
@@ -2043,10 +1669,8 @@ namespace Server.Items
         "In the Wind where",
         "the Balance",
         "Is Whispered in",
-        "Hallways"
-      ),
-      new BookPageInfo
-      (
+        "Hallways"),
+      new BookPageInfo(
         "In the Wind where",
         "the Magic",
         "Flows All through the",
@@ -2054,10 +1678,8 @@ namespace Server.Items
         "There live Mages and",
         "Mages",
         "With Robes made of",
-        "Whole Days"
-      ),
-      new BookPageInfo
-      (
+        "Whole Days"),
+      new BookPageInfo(
         "Reading Books full of",
         "Doings",
         "Printed on Light",
@@ -2065,10 +1687,8 @@ namespace Server.Items
         "In the Wind where",
         "the Lovers",
         "Are Crossed under",
-        "Shadows"
-      ),
-      new BookPageInfo
-      (
+        "Shadows"),
+      new BookPageInfo(
         "Where they Meet and",
         "are Parted",
         "By the Orders of",
@@ -2076,10 +1696,8 @@ namespace Server.Items
         "The Girl becomes",
         "Tree,",
         "And thus becomes",
-        "Widow"
-      ),
-      new BookPageInfo
-      (
+        "Widow"),
+      new BookPageInfo(
         "The Boy becomes",
         "Earth",
         "And Wanders Till",
@@ -2087,10 +1705,8 @@ namespace Server.Items
         "",
         "In the Wind are the",
         "Monsters",
-        "First Born First"
-      ),
-      new BookPageInfo
-      (
+        "First Born First"),
+      new BookPageInfo(
         "Created",
         "When Chanting and",
         "Ether",
@@ -2098,15 +1714,11 @@ namespace Server.Items
         "Nigh",
         "Fear going to Wind,",
         "Fear Finding its",
-        "Plaitings,"
-      ),
-      new BookPageInfo
-      (
+        "Plaitings,"),
+      new BookPageInfo(
         "Go Not to the",
         "Snakehills",
-        "Lest You Care to Die"
-      )
-    );
+        "Lest You Care to Die"));
 
     [Constructible]
     public TalesOfVesperVol1() : base(Utility.Random(0xFEF, 2), false)
@@ -2134,17 +1746,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Deceit: A Dungeon of Horrors
-
   public class DeceitDungeonOfHorror : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Deceit: A Dungeon of Horrors", "Mercenary Justin",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  My employers have",
         "oft taken me into this",
         "den of hideous",
@@ -2152,10 +1758,8 @@ namespace Server.Items
         "thought that it",
         "behooved me to write",
         "down what I know of",
-        "it, now that I am"
-      ),
-      new BookPageInfo
-      (
+        "it, now that I am"),
+      new BookPageInfo(
         "retired from the life",
         "of an adventurer for",
         "hire.",
@@ -2163,10 +1767,8 @@ namespace Server.Items
         "temple to forgotten",
         "powers of old. It was",
         "taken over by mages",
-        "who eventually were"
-      ),
-      new BookPageInfo
-      (
+        "who eventually were"),
+      new BookPageInfo(
         "driven out by the",
         "depredations of their",
         "own evil lackeys.",
@@ -2174,10 +1776,8 @@ namespace Server.Items
         "the magical traps and",
         "devices that they",
         "placed for their",
-        "defenses remain,"
-      ),
-      new BookPageInfo
-      (
+        "defenses remain,"),
+      new BookPageInfo(
         "particularly those the",
         "wizards used to",
         "protect their",
@@ -2185,10 +1785,8 @@ namespace Server.Items
         "  The dungeon is",
         "mystically linked by",
         "crystal balls placed in",
-        "different locations."
-      ),
-      new BookPageInfo
-      (
+        "different locations."),
+      new BookPageInfo(
         "These magical orbs do",
         "transmit speech, and",
         "even have memory of",
@@ -2196,10 +1794,8 @@ namespace Server.Items
         "said near them. No",
         "doubt they once",
         "served as a warning",
-        "system"
-      ),
-      new BookPageInfo
-      (
+        "system"),
+      new BookPageInfo(
         "  Be wary of a",
         "brazier that giveth",
         "warning when",
@@ -2207,10 +1803,8 @@ namespace Server.Items
         "use it to summon",
         "deadly creatures.",
         "  There be a",
-        "tantalizing chest,"
-      ),
-      new BookPageInfo
-      (
+        "tantalizing chest,"),
+      new BookPageInfo(
         "undoubtedly full of",
         "treasure, that cannot",
         "be reached save past a",
@@ -2218,10 +1812,8 @@ namespace Server.Items
         "pressure plates that",
         "trigger deadly spikes.",
         "As I never had",
-        "sufficient folk with"
-      ),
-      new BookPageInfo
-      (
+        "sufficient folk with"),
+      new BookPageInfo(
         "me to unlock the",
         "puzzle, I never",
         "obtained the riches",
@@ -2229,10 +1821,8 @@ namespace Server.Items
         "  Do not investigate",
         "iron maidens too",
         "closely, for they may",
-        "suck you within"
-      ),
-      new BookPageInfo
-      (
+        "suck you within"),
+      new BookPageInfo(
         "them!",
         "  There is one place",
         "where a deadly trap",
@@ -2240,10 +1830,8 @@ namespace Server.Items
         "by making use of a",
         "statue that cleverly",
         "conceals a lever.",
-        "  Oft one encounters"
-      ),
-      new BookPageInfo
-      (
+        "  Oft one encounters"),
+      new BookPageInfo(
         "the deadly exploding",
         "toadstool; the ones in",
         "Deceit are deadlier",
@@ -2251,10 +1839,8 @@ namespace Server.Items
         "explode continually.",
         "Likewise, the very",
         "pools of water and",
-        "slime on the floor"
-      ),
-      new BookPageInfo
-      (
+        "slime on the floor"),
+      new BookPageInfo(
         "may poison thee.",
         "  The most magical",
         "device in the dungeon",
@@ -2262,16 +1848,12 @@ namespace Server.Items
         "that can only be",
         "triggered by a level",
         "embedded in the floor.",
-        "Be wary however,"
-      ),
-      new BookPageInfo
-      (
+        "Be wary however,"),
+      new BookPageInfo(
         "for the bridge thus",
         "created doth burst",
         "into flame when one",
-        "passeth across it!"
-      )
-    );
+        "passeth across it!"));
 
     [Constructible]
     public DeceitDungeonOfHorror() : base(Utility.Random(0xFEF, 2), false)
@@ -2299,17 +1881,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Dimensional Travel, a Monograph
-
   public class DimensionalTravel : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Dimensional Travel, a Monograph", "Dryus Doost, Mage",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  'Tis beyond the",
         "scope of this small",
         "monograph to discuss",
@@ -2317,10 +1893,8 @@ namespace Server.Items
         "moongates, and the",
         "manners in which",
         "they distort the",
-        "fabric of reality in"
-      ),
-      new BookPageInfo
-      (
+        "fabric of reality in"),
+      new BookPageInfo(
         "such a manner as to",
         "permit the passage of",
         "living flesh from",
@@ -2328,10 +1902,8 @@ namespace Server.Items
         "world, or indeed from",
         "dimension to",
         "dimension.",
-        "  Instead, allow me to"
-      ),
-      new BookPageInfo
-      (
+        "  Instead, allow me to"),
+      new BookPageInfo(
         "bring thy attention,",
         "Gentle Reader, to the",
         "curious",
@@ -2339,10 +1911,8 @@ namespace Server.Items
         "are shared by certain",
         "individuals within",
         "our realm.",
-        "  Long has it been"
-      ),
-      new BookPageInfo
-      (
+        "  Long has it been"),
+      new BookPageInfo(
         "known that the blue",
         "moongate permits",
         "travel from place to",
@@ -2350,10 +1920,8 @@ namespace Server.Items
         "trouble in taking this",
         "path. Yet 'tis also",
         "known, albeit only to a",
-        "few, that certain"
-      ),
-      new BookPageInfo
-      (
+        "few, that certain"),
+      new BookPageInfo(
         "individuals are unable",
         "to traverse the black",
         "moongates that permit",
@@ -2361,10 +1929,8 @@ namespace Server.Items
         "dimension to another.",
         "  The noted mage and",
         "peer of our realm,",
-        "Lord Blackthorn, once"
-      ),
-      new BookPageInfo
-      (
+        "Lord Blackthorn, once"),
+      new BookPageInfo(
         "told me in",
         "conversation that his",
         "arcane research had",
@@ -2372,10 +1938,8 @@ namespace Server.Items
         "issue was one of",
         "conversation of ether.",
         "To wit, given the",
-        "postulate that matter"
-      ),
-      new BookPageInfo
-      (
+        "postulate that matter"),
+      new BookPageInfo(
         "within a given",
         "dimension may be but",
         "a cross-section of",
@@ -2383,10 +1947,8 @@ namespace Server.Items
         "exists in multiple",
         "dimensions, it",
         "becomes obvious that",
-        "said ethereal"
-      ),
-      new BookPageInfo
-      (
+        "said ethereal"),
+      new BookPageInfo(
         "structure cannot",
         "enter dimensions in",
         "which it is already",
@@ -2394,10 +1956,8 @@ namespace Server.Items
         "  Imagine an",
         "individual (and the",
         "Lord Blackthorn",
-        "hinted that he was"
-      ),
-      new BookPageInfo
-      (
+        "hinted that he was"),
+      new BookPageInfo(
         "one such) who exists",
         "already in some form",
         "in multiple",
@@ -2405,10 +1965,8 @@ namespace Server.Items
         "individual would not",
         "be able to cross into",
         "another dimension",
-        "because HE IS"
-      ),
-      new BookPageInfo
-      (
+        "because HE IS"),
+      new BookPageInfo(
         "ALREADY THERE.",
         "  The implications of",
         "this are staggering,",
@@ -2416,10 +1974,8 @@ namespace Server.Items
         "study. 'Tis well",
         "known by theorists in",
         "the field that",
-        "divisions in the"
-      ),
-      new BookPageInfo
-      (
+        "divisions in the"),
+      new BookPageInfo(
         "ethereal structure of",
         "an individual are",
         "already implicit at the",
@@ -2427,10 +1983,8 @@ namespace Server.Items
         "causality forces",
         "divisions upon the",
         "ether. This is the",
-        "basic operating"
-      ),
-      new BookPageInfo
-      (
+        "basic operating"),
+      new BookPageInfo(
         "mechanism by which",
         "white moongates",
         "function, permitting",
@@ -2438,10 +1992,8 @@ namespace Server.Items
         "  As time travel is",
         "not barred by the",
         "presence of an earlier",
-        "self (though"
-      ),
-      new BookPageInfo
-      (
+        "self (though"),
+      new BookPageInfo(
         "encountering said",
         "earlier self can prove",
         "arcanely perilous),",
@@ -2449,10 +2001,8 @@ namespace Server.Items
         "rigidity to the",
         "ethereal structure",
         "that bars multiple",
-        "instantiations of"
-      ),
-      new BookPageInfo
-      (
+        "instantiations of"),
+      new BookPageInfo(
         "structures from",
         "manifesting within",
         "the same context.",
@@ -2460,10 +2010,8 @@ namespace Server.Items
         "and causal bifurcation",
         "as a web, perhaps the",
         "appropriate analogy",
-        "for dimensional"
-      ),
-      new BookPageInfo
-      (
+        "for dimensional"),
+      new BookPageInfo(
         "matrices is that of a",
         "crystalline structure,",
         "with rigid linkages.",
@@ -2471,10 +2019,8 @@ namespace Server.Items
         "which an individual",
         "such as Lord",
         "Blackthorn, who",
-        "exists in multiple"
-      ),
-      new BookPageInfo
-      (
+        "exists in multiple"),
+      new BookPageInfo(
         "dimensional matrices,",
         "can cross worlds via",
         "a black moongate,",
@@ -2482,10 +2028,8 @@ namespace Server.Items
         "entire crystalline",
         "structure of the",
         "dimension to",
-        "perfectly match the"
-      ),
-      new BookPageInfo
-      (
+        "perfectly match the"),
+      new BookPageInfo(
         "ethereal resonance of",
         "the destination",
         "dimension.",
@@ -2493,10 +2037,8 @@ namespace Server.Items
         "certain individuals",
         "are already replicated",
         "in multiple crystalline",
-        "matrices is one that I"
-      ),
-      new BookPageInfo
-      (
+        "matrices is one that I"),
+      new BookPageInfo(
         "fail to provide any",
         "schema for in these",
         "poor theories. It is",
@@ -2504,9 +2046,7 @@ namespace Server.Items
         "someday someone",
         "shall conquer that",
         "thorny problem and",
-        "enlighten the world."
-      )
-    );
+        "enlighten the world."));
 
     [Constructible]
     public DimensionalTravel() : base(Utility.Random(0xFEF, 2), false)
@@ -2534,17 +2074,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Ethical Hedonism: An Introduction
-
   public class EthicalHedonism : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Ethical Hedonism: An Introduction", "Richard Garriott",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  Societies oft have",
         "common codes of",
         "conduct which it",
@@ -2552,10 +2086,8 @@ namespace Server.Items
         "to abide by. Now,",
         "while 'tis true that",
         "this can offer some",
-        "advantages, most of"
-      ),
-      new BookPageInfo
-      (
+        "advantages, most of"),
+      new BookPageInfo(
         "the codes I see today",
         "around Britannia have",
         "fatal flaws. Let us",
@@ -2563,10 +2095,8 @@ namespace Server.Items
         "  First, there is",
         "Blackthorn's code of",
         "Chaos or basically",
-        "Anarchy. Whereas"
-      ),
-      new BookPageInfo
-      (
+        "Anarchy. Whereas"),
+      new BookPageInfo(
         "this affords the",
         "individual maximum",
         "opportunity for",
@@ -2574,10 +2104,8 @@ namespace Server.Items
         "pursuit of personal",
         "happiness, it does not",
         "offer even basic",
-        "interpersonal conduct"
-      ),
-      new BookPageInfo
-      (
+        "interpersonal conduct"),
+      new BookPageInfo(
         "codes to prevent",
         "people from killing",
         "each other.",
@@ -2585,10 +2113,8 @@ namespace Server.Items
         "tenets, all the people",
         "will need to spend a",
         "significant portion of",
-        "their time and effort"
-      ),
-      new BookPageInfo
-      (
+        "their time and effort"),
+      new BookPageInfo(
         "towards personal",
         "protection and thus",
         "less time towards",
@@ -2596,10 +2122,8 @@ namespace Server.Items
         "pursuits.",
         "  Then there are the",
         "moral codes that are",
-        "so popular today."
-      ),
-      new BookPageInfo
-      (
+        "so popular today."),
+      new BookPageInfo(
         "These codes are built",
         "largely on historical",
         "tradition rather than",
@@ -2607,10 +2131,8 @@ namespace Server.Items
         "are also antiquated.",
         "For example many",
         "moral codes we see",
-        "today include"
-      ),
-      new BookPageInfo
-      (
+        "today include"),
+      new BookPageInfo(
         "statements about not",
         "eating certain foods",
         "that once were often",
@@ -2618,10 +2140,8 @@ namespace Server.Items
         "can be prepared",
         "safely.",
         "  Many forbid contact",
-        "between young people"
-      ),
-      new BookPageInfo
-      (
+        "between young people"),
+      new BookPageInfo(
         "of the opposite",
         "gender, which can in",
         "fact be hazardous; but",
@@ -2629,10 +2149,8 @@ namespace Server.Items
         "lost the context as to",
         "why this is done,",
         "instead merely calling",
-        "it amoral. In this day"
-      ),
-      new BookPageInfo
-      (
+        "it amoral. In this day"),
+      new BookPageInfo(
         "and age to call that a",
         "necessary moral",
         "would need a new",
@@ -2640,10 +2158,8 @@ namespace Server.Items
         "that tradition is not",
         "enough",
         "  Then there are",
-        "Lord British's"
-      ),
-      new BookPageInfo
-      (
+        "Lord British's"),
+      new BookPageInfo(
         "Virtues. It strikes me",
         "that while a system",
         "of virtues is",
@@ -2651,10 +2167,8 @@ namespace Server.Items
         "touchstone to guide a",
         "society to good",
         "behavior, these are",
-        "but shades of the"
-      ),
-      new BookPageInfo
-      (
+        "but shades of the"),
+      new BookPageInfo(
         "underlying truth as to",
         "why one may wish to",
         "live a life according to",
@@ -2662,10 +2176,8 @@ namespace Server.Items
         "conduct.",
         "  On the other hand,",
         "clearly the Virtues",
-        "that I have heard"
-      ),
-      new BookPageInfo
-      (
+        "that I have heard"),
+      new BookPageInfo(
         "Lord British speak of",
         "are clearly positive",
         "codes of conduct, far",
@@ -2673,10 +2185,8 @@ namespace Server.Items
         "of anarchy that Lord",
         "Blackthorn suggests.",
         "Yet, are not these",
-        "Virtues still derived"
-      ),
-      new BookPageInfo
-      (
+        "Virtues still derived"),
+      new BookPageInfo(
         "from a set of",
         "principles which",
         "though they sound",
@@ -2684,10 +2194,8 @@ namespace Server.Items
         "pin down as actual,",
         "undeniable, rational",
         "truths?",
-        "  Worse yet though"
-      ),
-      new BookPageInfo
-      (
+        "  Worse yet though"),
+      new BookPageInfo(
         "imagine a society",
         "who's code of",
         "conduct was based on",
@@ -2695,10 +2203,8 @@ namespace Server.Items
         "strongest. While this",
         "society may function",
         "and even accomplish",
-        "much, it can be"
-      ),
-      new BookPageInfo
-      (
+        "much, it can be"),
+      new BookPageInfo(
         "fairly argued that",
         "personal happiness",
         "would suffer greatly,",
@@ -2706,10 +2212,8 @@ namespace Server.Items
         "the top. To rule that",
         "out, however, we",
         "must first believe",
-        "that people have a"
-      ),
-      new BookPageInfo
-      (
+        "that people have a"),
+      new BookPageInfo(
         "right to pursue",
         "happiness.",
         "  I hope is a safe",
@@ -2717,10 +2221,8 @@ namespace Server.Items
         "beings wish to be",
         "happy; I will broadly",
         "describe this as",
-        "Hedonism. Yet, if all"
-      ),
-      new BookPageInfo
-      (
+        "Hedonism. Yet, if all"),
+      new BookPageInfo(
         "people did is live a",
         "life of hedonism,",
         "their hedonism might",
@@ -2728,10 +2230,8 @@ namespace Server.Items
         "those near them, so I",
         "will use the term",
         "Ethics to describe",
-        "limits one might put"
-      ),
-      new BookPageInfo
-      (
+        "limits one might put"),
+      new BookPageInfo(
         "on one's hedonistic",
         "tendencies to allow",
         "others to pursue their",
@@ -2739,10 +2239,8 @@ namespace Server.Items
         "  Allow me to give",
         "this example: If one",
         "were to live alone on a",
-        "desert isle, one could"
-      ),
-      new BookPageInfo
-      (
+        "desert isle, one could"),
+      new BookPageInfo(
         "live a life of pure",
         "hedonism, for no",
         "action one might take",
@@ -2750,10 +2248,8 @@ namespace Server.Items
         "another's right to",
         "pursue their",
         "happiness. Poison the",
-        "lake if you like, there"
-      ),
-      new BookPageInfo
-      (
+        "lake if you like, there"),
+      new BookPageInfo(
         "is no one to blame but",
         "yourself!",
         "  Now suppose two",
@@ -2761,10 +2257,8 @@ namespace Server.Items
         "island. Thou dost not",
         "want thy neighbor to",
         "feel free to poison the",
-        "lake. Would it not be"
-      ),
-      new BookPageInfo
-      (
+        "lake. Would it not be"),
+      new BookPageInfo(
         "better to consider it",
         "unethical to poison the",
         "lake without first",
@@ -2772,10 +2266,8 @@ namespace Server.Items
         "whose pursuit of",
         "happiness might be",
         "affected by this",
-        "action?"
-      ),
-      new BookPageInfo
-      (
+        "action?"),
+      new BookPageInfo(
         "  I put forth that it is",
         "the fact that we as a",
         "people choose to live in",
@@ -2783,10 +2275,8 @@ namespace Server.Items
         "society that causes us",
         "to compromise our",
         "pure hedonism with",
-        "logical ethics."
-      ),
-      new BookPageInfo
-      (
+        "logical ethics."),
+      new BookPageInfo(
         "Likewise we accept",
         "not being able to kill",
         "others without",
@@ -2794,10 +2284,8 @@ namespace Server.Items
         "own pursuit of",
         "happiness would be",
         "greatly interfered",
-        "with if we feared"
-      ),
-      new BookPageInfo
-      (
+        "with if we feared"),
+      new BookPageInfo(
         "others would do the",
         "same to us. From",
         "this basis of logic can",
@@ -2805,15 +2293,11 @@ namespace Server.Items
         "of Ethical Hedonism.",
         "  For more on this",
         "subject, see The",
-        "Tenants of Ethical"
-      ),
-      new BookPageInfo
-      (
+        "Tenants of Ethical"),
+      new BookPageInfo(
         "Hedonism, by",
         "Richard Garriott and",
-        "Herman Miller."
-      )
-    );
+        "Herman Miller."));
 
     [Constructible]
     public EthicalHedonism() : base(Utility.Random(0xFEF, 2), false)
@@ -2841,17 +2325,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region My Story
-
   public class MyStory : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "My Story", "Sherry the Mouse",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  'Twas on a chill",
         "night, when the moon",
         "shone pasty-faced",
@@ -2859,10 +2337,8 @@ namespace Server.Items
         "balanced on the",
         "towers of Lord",
         "British's castle, that",
-        "the events I am about"
-      ),
-      new BookPageInfo
-      (
+        "the events I am about"),
+      new BookPageInfo(
         "to relate took place,",
         "some years ago now. I",
         "witnessed them all",
@@ -2870,10 +2346,8 @@ namespace Server.Items
         "mousehole.",
         "  Milords British and",
         "Blackthorn are",
-        "accustomed to a game"
-      ),
-      new BookPageInfo
-      (
+        "accustomed to a game"),
+      new BookPageInfo(
         "of chess 'pon an",
         "evening, over which",
         "they argue the issues",
@@ -2881,10 +2355,8 @@ namespace Server.Items
         "of the realm. Lord",
         "Blackthorn was on his",
         "way to Lord British's",
-        "chambers, and Lord"
-      ),
-      new BookPageInfo
-      (
+        "chambers, and Lord"),
+      new BookPageInfo(
         "British stood by a",
         "window casement,",
         "just having finished",
@@ -2892,10 +2364,8 @@ namespace Server.Items
         "upon the board.",
         "  Suddenly the",
         "shutters blew open,",
-        "and Lord British fell"
-      ),
-      new BookPageInfo
-      (
+        "and Lord British fell"),
+      new BookPageInfo(
         "to the ground, one",
         "hand shielding his",
         "eyes. A chill wind",
@@ -2903,10 +2373,8 @@ namespace Server.Items
         "it seemed a gash was",
         "torn in the very air.",
         "Through the gash I",
-        "could see stars and"
-      ),
-      new BookPageInfo
-      (
+        "could see stars and"),
+      new BookPageInfo(
         "swirling clouds of",
         "stellar dust, and a",
         "coldness sucked all",
@@ -2914,10 +2382,8 @@ namespace Server.Items
         "air. A terrible wind",
         "tossed books and",
         "blankets across the",
-        "room, and furniture"
-      ),
-      new BookPageInfo
-      (
+        "room, and furniture"),
+      new BookPageInfo(
         "toppled.",
         "  From within this",
         "gash issued a great",
@@ -2925,10 +2391,8 @@ namespace Server.Items
         "have ever heard. And",
         "these are the words it",
         "spoke (for I",
-        "memorized them most"
-      ),
-      new BookPageInfo
-      (
+        "memorized them most"),
+      new BookPageInfo(
         "carefully):",
         "  \"Greetings, Lord",
         "British. I am the",
@@ -2936,10 +2400,8 @@ namespace Server.Items
         "from beyond your",
         "dimension, as thou",
         "art from a world",
-        "other than Sosaria. I"
-      ),
-      new BookPageInfo
-      (
+        "other than Sosaria. I"),
+      new BookPageInfo(
         "am here to bring thee",
         "warning. Dost thou",
         "recall how long ago a",
@@ -2947,10 +2409,8 @@ namespace Server.Items
         "came to Sosaria and",
         "saved the world from",
         "the evil wizard",
-        "Mondain? He"
-      ),
-      new BookPageInfo
-      (
+        "Mondain? He"),
+      new BookPageInfo(
         "shattered the Gem of",
         "Immortality, within",
         "which dwelled a",
@@ -2958,10 +2418,8 @@ namespace Server.Items
         "this world.\"",
         "  Lord British slowly",
         "stood and faced the",
-        "hole in the air. \"I"
-      ),
-      new BookPageInfo
-      (
+        "hole in the air. \"I"),
+      new BookPageInfo(
         "remember,\" he said.",
         "\"Oft have I wished",
         "that stranger would",
@@ -2969,10 +2427,8 @@ namespace Server.Items
         "  \"He hath returned,\"",
         "spoke the voice. \"But",
         "not to here. When the",
-        "Gem was shattered, a"
-      ),
-      new BookPageInfo
-      (
+        "Gem was shattered, a"),
+      new BookPageInfo(
         "thousand shards were",
         "scattered across the",
         "dimensions, and in",
@@ -2980,10 +2436,8 @@ namespace Server.Items
         "perfect likeness of",
         "this world. And thou",
         "dost live upon one",
-        "such shard, for thou"
-      ),
-      new BookPageInfo
-      (
+        "such shard, for thou"),
+      new BookPageInfo(
         "art not of the true",
         "world-thou art",
         "merely a reflection.\"",
@@ -2991,10 +2445,8 @@ namespace Server.Items
         "shaken by this, and I",
         "did not know what to",
         "think! Was I merely a",
-        "shadow of the real"
-      ),
-      new BookPageInfo
-      (
+        "shadow of the real"),
+      new BookPageInfo(
         "me, which lives still",
         "somewhere else",
         "across uncounted",
@@ -3002,10 +2454,8 @@ namespace Server.Items
         "  \"My task is to heal",
         "this shattered world,",
         "Lord British,\" said",
-        "the voice. \"And I seek"
-      ),
-      new BookPageInfo
-      (
+        "the voice. \"And I seek"),
+      new BookPageInfo(
         "to enlist thee in my",
         "cause. Be warned that",
         "in this case, healing",
@@ -3013,10 +2463,8 @@ namespace Server.Items
         "terrible price.\"",
         "  Concern warred",
         "with curiosity on my",
-        "liege's face, but ever"
-      ),
-      new BookPageInfo
-      (
+        "liege's face, but ever"),
+      new BookPageInfo(
         "one to shoulder a",
         "burden, he",
         "straightened and",
@@ -3024,10 +2472,8 @@ namespace Server.Items
         "air bravely. \"Name",
         "thy price.\"",
         "  \"A shard of a",
-        "universe is a"
-      ),
-      new BookPageInfo
-      (
+        "universe is a"),
+      new BookPageInfo(
         "powerful thing, and a",
         "universe shattered is",
         "always in danger",
@@ -3035,10 +2481,8 @@ namespace Server.Items
         "darkness. Already",
         "three shards were",
         "turned to evil, and",
-        "sent to plague the"
-      ),
-      new BookPageInfo
-      (
+        "sent to plague the"),
+      new BookPageInfo(
         "original universe in",
         "the form of",
         "Shadowlords. Many",
@@ -3046,10 +2490,8 @@ namespace Server.Items
         "the Stranger back to",
         "Britannia, to preserve",
         "it from its own folly",
-        "or from outside"
-      ),
-      new BookPageInfo
-      (
+        "or from outside"),
+      new BookPageInfo(
         "dangers. Yet as long",
         "as the world",
         "remaineth in pieces,",
@@ -3057,10 +2499,8 @@ namespace Server.Items
         "vulnerable. We must",
         "bring the shards into",
         "harmony, so that they",
-        "resonate in such a"
-      ),
-      new BookPageInfo
-      (
+        "resonate in such a"),
+      new BookPageInfo(
         "manner that matches",
         "the original universe.",
         "Then the two",
@@ -3068,10 +2508,8 @@ namespace Server.Items
         "merge, and be again",
         "as one.\"",
         "  \"But if we are only",
-        "shadows...\" Lord"
-      ),
-      new BookPageInfo
-      (
+        "shadows...\" Lord"),
+      new BookPageInfo(
         "British said",
         "wonderingly.",
         "  The light from the",
@@ -3079,10 +2517,8 @@ namespace Server.Items
         "seemed to dim.",
         "\"Indeed, the",
         "reflections shall",
-        "become one with the"
-      ),
-      new BookPageInfo
-      (
+        "become one with the"),
+      new BookPageInfo(
         "original. Thou wouldst",
         "cease to be as thou",
         "art, and become part",
@@ -3090,10 +2526,8 @@ namespace Server.Items
         "Thou shalt not die;",
         "however, uncounted",
         "generations have",
-        "passed and borne"
-      ),
-      new BookPageInfo
-      (
+        "passed and borne"),
+      new BookPageInfo(
         "children since that",
         "day, and they have no",
         "counterparts. They",
@@ -3101,10 +2535,8 @@ namespace Server.Items
         "  Lord British sagged",
         "in shock, realizing",
         "the terrible price that",
-        "would be paid to heal"
-      ),
-      new BookPageInfo
-      (
+        "would be paid to heal"),
+      new BookPageInfo(
         "the universe. \"All of",
         "my people,\" he",
         "breathed.",
@@ -3112,10 +2544,8 @@ namespace Server.Items
         "good.\"",
         "  Lord British bowed",
         "his head.",
-        "  'Twas then I saw"
-      ),
-      new BookPageInfo
-      (
+        "  'Twas then I saw"),
+      new BookPageInfo(
         "the movement by the",
         "door, half-hid by the",
         "heavy red curtains.",
@@ -3123,10 +2553,8 @@ namespace Server.Items
         "there, concealed from",
         "the rest of the room,",
         "his face white. How",
-        "long had he been"
-      ),
-      new BookPageInfo
-      (
+        "long had he been"),
+      new BookPageInfo(
         "listening? I cannot",
         "say, yet I suspect",
         "that he had heard all",
@@ -3134,10 +2562,8 @@ namespace Server.Items
         "voice had to say.",
         "  \"How then, shall I",
         "aid thee?\" Lord",
-        "British said,"
-      ),
-      new BookPageInfo
-      (
+        "British said,"),
+      new BookPageInfo(
         "weariness in his",
         "voice.",
         "  \"Aid the nobilty that",
@@ -3145,10 +2571,8 @@ namespace Server.Items
         "human heart. Protect",
         "the Virtues that so",
         "recently came to thee",
-        "in thought late at"
-      ),
-      new BookPageInfo
-      (
+        "in thought late at"),
+      new BookPageInfo(
         "night. They are the",
         "Virtues of life, as",
         "your counterpart",
@@ -3156,10 +2580,8 @@ namespace Server.Items
         "be. For when thy",
         "populace doth live and",
         "breathe these Virtues,",
-        "shall it match the"
-      ),
-      new BookPageInfo
-      (
+        "shall it match the"),
+      new BookPageInfo(
         "true Britannia, and",
         "thy shard shall",
         "rejoin with it.\"",
@@ -3167,10 +2589,8 @@ namespace Server.Items
         "began to close, and",
         "with it warmth stole",
         "back into the room.",
-        "  \"I was going to"
-      ),
-      new BookPageInfo
-      (
+        "  \"I was going to"),
+      new BookPageInfo(
         "discuss my idea with",
         "Blackthorn tonight,\"",
         "Lord British",
@@ -3178,10 +2598,8 @@ namespace Server.Items
         "thoughts that are my",
         "own? Is my life but",
         "a reflection of",
-        "another me?\""
-      ),
-      new BookPageInfo
-      (
+        "another me?\""),
+      new BookPageInfo(
         "  \"Nay,\" said the",
         "voice, smaller through",
         "the diminished",
@@ -3189,10 +2607,8 @@ namespace Server.Items
         "that you are parallel,",
         "for there is no",
         "guarantee that thou",
-        "shalt accomplish what"
-      ),
-      new BookPageInfo
-      (
+        "shalt accomplish what"),
+      new BookPageInfo(
         "I have set thee to. I",
         "speak tonight to a",
         "thousand of thee, and",
@@ -3200,10 +2616,8 @@ namespace Server.Items
         "Perhaps not all shall",
         "seek to aid me.\" And",
         "with that, the gash",
-        "closed, and the voice"
-      ),
-      new BookPageInfo
-      (
+        "closed, and the voice"),
+      new BookPageInfo(
         "was gone, leaving a",
         "room that appeare",
         "tossed by a mighty",
@@ -3211,10 +2625,8 @@ namespace Server.Items
         "  \"Destroy the world",
         "to save the universe,\"",
         "Lord British said",
-        "bitterly. \"I do not"
-      ),
-      new BookPageInfo
-      (
+        "bitterly. \"I do not"),
+      new BookPageInfo(
         "wonder that some",
         "may balk.\"",
         "  Lord Blackthorn",
@@ -3222,10 +2634,8 @@ namespace Server.Items
         "strode into the room,",
         "a decent mimicry of",
         "surprise on his face.",
-        "\"My liege! What has"
-      ),
-      new BookPageInfo
-      (
+        "\"My liege! What has"),
+      new BookPageInfo(
         "happened here?\" he",
         "exclaimed, feigning",
         "dismay well. But not",
@@ -3233,10 +2643,8 @@ namespace Server.Items
         "his old friend, whose",
         "eyes narrowed at",
         "seeing him there.",
-        "  \"How much didst"
-      ),
-      new BookPageInfo
-      (
+        "  \"How much didst"),
+      new BookPageInfo(
         "thou hear?\" demanded",
         "Lord British.",
         "  \"Why, nothing,\"",
@@ -3244,10 +2652,8 @@ namespace Server.Items
         "his head ducked away",
         "from his friend, as",
         "he bent to retrieve the",
-        "fallen chess pieces. \"I"
-      ),
-      new BookPageInfo
-      (
+        "fallen chess pieces. \"I"),
+      new BookPageInfo(
         "merely came for our",
         "game of chess.\"",
         "  Together they",
@@ -3255,10 +2661,8 @@ namespace Server.Items
         "table, and set the",
         "pieces upon the black",
         "and white squares.",
-        "\"Such simplicity to"
-      ),
-      new BookPageInfo
-      (
+        "\"Such simplicity to"),
+      new BookPageInfo(
         "the game, Blackthorn,\"",
         "mused Lord British,",
         "idly brushing one",
@@ -3266,10 +2670,8 @@ namespace Server.Items
         "board. \"Black and",
         "white, each to its own",
         "color, as if life were",
-        "so simple. What think"
-      ),
-      new BookPageInfo
-      (
+        "so simple. What think"),
+      new BookPageInfo(
         "you?\"",
         "  Blackthorn sat",
         "heavily on a hassock",
@@ -3277,10 +2679,8 @@ namespace Server.Items
         "\"I think that matters",
         "are never so simple,",
         "my liege. And that I",
-        "would regret it deeply"
-      ),
-      new BookPageInfo
-      (
+        "would regret it deeply"),
+      new BookPageInfo(
         "if someone, such as a",
         "friend, saw it thus.\"",
         "  Lord British's eyes",
@@ -3288,10 +2688,8 @@ namespace Server.Items
         "sometimes one must",
         "sacrifice a pawn to",
         "save a king.\"",
-        "  Lord Blackthorn met"
-      ),
-      new BookPageInfo
-      (
+        "  Lord Blackthorn met"),
+      new BookPageInfo(
         "his gaze squarely.",
         "\"Even pawns have",
         "lives and loves at",
@@ -3299,10 +2697,8 @@ namespace Server.Items
         "he reached out for a",
         "pawn, and firmly",
         "moved it forward two",
-        "squares. \"Shall we"
-      ),
-      new BookPageInfo
-      (
+        "squares. \"Shall we"),
+      new BookPageInfo(
         "play a game?\" he",
         "asked.",
         "  The chess game that",
@@ -3310,10 +2706,8 @@ namespace Server.Items
         "and they played",
         "grimly.",
         "  And the next day,",
-        "Lord British gathered"
-      ),
-      new BookPageInfo
-      (
+        "Lord British gathered"),
+      new BookPageInfo(
         "the nobles to proclaim",
         "the idea of a new",
         "system of Virtues,",
@@ -3321,10 +2715,8 @@ namespace Server.Items
         "shrines should be",
         "built across the land.",
         "  Lord Blackthorn",
-        "opposed it bitterly,"
-      ),
-      new BookPageInfo
-      (
+        "opposed it bitterly,"),
+      new BookPageInfo(
         "and many thought",
         "him strange for doing",
         "so, for ever had he",
@@ -3332,10 +2724,8 @@ namespace Server.Items
         "upright man, and",
         "ever had he and Lord",
         "British been in",
-        "accord. Declaring that"
-      ),
-      new BookPageInfo
-      (
+        "accord. Declaring that"),
+      new BookPageInfo(
         "he should start his",
         "own shrine, he",
         "departed the castle",
@@ -3343,10 +2733,8 @@ namespace Server.Items
         "tower in a lake on the",
         "north side of the",
         "city.",
-        "  They are still the"
-      ),
-      new BookPageInfo
-      (
+        "  They are still the"),
+      new BookPageInfo(
         "best of friends, yet a",
         "sadness hangs",
         "between them, as if",
@@ -3354,10 +2742,8 @@ namespace Server.Items
         "making choices that",
         "appealed not to them.",
         "And at night, when I",
-        "creep softly from one"
-      ),
-      new BookPageInfo
-      (
+        "creep softly from one"),
+      new BookPageInfo(
         "corner of my liege's",
         "bedchamber to",
         "another, I sometimes",
@@ -3365,10 +2751,8 @@ namespace Server.Items
         "from his night table,",
         "and hold it in his",
         "hand, and quietly",
-        "weep."
-      ),
-      new BookPageInfo
-      (
+        "weep."),
+      new BookPageInfo(
         "  But I am but a",
         "mouse, and none hear",
         "me. This tale goes",
@@ -3376,16 +2760,12 @@ namespace Server.Items
         "my writing these",
         "enormous letters with",
         "mine ink-stained tiny",
-        "paws for thee to"
-      ),
-      new BookPageInfo
-      (
+        "paws for thee to"),
+      new BookPageInfo(
         "read, for I fear",
         "indeed for our world",
         "and for our people in",
-        "these perilous times."
-      )
-    );
+        "these perilous times."));
 
     [Constructible]
     public MyStory() : base(Utility.Random(0xFEF, 2), false)
@@ -3413,17 +2793,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region On the Diversity of Our Land
-
   public class DiversityOfOurLand : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "On the Diversity of Our Land", "Lord Blackthorn",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  While I deplore the",
         "depredations of the",
         "misguided and",
@@ -3431,10 +2805,8 @@ namespace Server.Items
         "which we share our",
         "fair Britannia, and",
         "alongside the populace,",
-        "do mourn the needless"
-      ),
-      new BookPageInfo
-      (
+        "do mourn the needless"),
+      new BookPageInfo(
         "deaths that their",
         "raids cause, I cannot",
         "countenance the policy",
@@ -3442,10 +2814,8 @@ namespace Server.Items
         "of these races that",
         "seems to be the habit",
         "of our soldierly",
-        "element."
-      ),
-      new BookPageInfo
-      (
+        "element."),
+      new BookPageInfo(
         "  Can we not regard",
         "the ratmen, lizard",
         "men, and orcs are",
@@ -3453,10 +2823,8 @@ namespace Server.Items
         "beings with whom we",
         "share a planet? Why",
         "must we slay them",
-        "on sight, rather than"
-      ),
-      new BookPageInfo
-      (
+        "on sight, rather than"),
+      new BookPageInfo(
         "attempt to engage",
         "them in dialogue?",
         "There is no policy of",
@@ -3464,10 +2832,8 @@ namespace Server.Items
         "when they grace us",
         "with their presence",
         "(not that an arrow",
-        "could do much to"
-      ),
-      new BookPageInfo
-      (
+        "could do much to"),
+      new BookPageInfo(
         "pierce them!).",
         "  To view these",
         "creatures as vermin",
@@ -3475,10 +2841,8 @@ namespace Server.Items
         "intelligence, and we",
         "cannot underestimate",
         "the repercussions",
-        "that their slaughter"
-      ),
-      new BookPageInfo
-      (
+        "that their slaughter"),
+      new BookPageInfo(
         "may have. If we",
         "regard the slaying of",
         "fellow humans as a",
@@ -3486,10 +2850,8 @@ namespace Server.Items
         "regard the killing of",
         "an orc.",
         "  At the same time,",
-        "should a lizardman"
-      ),
-      new BookPageInfo
-      (
+        "should a lizardman"),
+      new BookPageInfo(
         "slay a human, should",
         "we not forgive their",
         "ignorance and",
@@ -3497,10 +2859,8 @@ namespace Server.Items
         "not surrender the",
         "high moral ground by",
         "descending to",
-        "bestiality."
-      ),
-      new BookPageInfo
-      (
+        "bestiality."),
+      new BookPageInfo(
         "  Now, I say not that",
         "we should fail to",
         "defend ourselves in",
@@ -3508,10 +2868,8 @@ namespace Server.Items
         "even amongst humans",
         "we see war, we see",
         "famine, and we see",
-        "assault (though we"
-      ),
-      new BookPageInfo
-      (
+        "assault (though we"),
+      new BookPageInfo(
         "owe a debt of",
         "gratitude to our Lord",
         "British for",
@@ -3519,10 +2877,8 @@ namespace Server.Items
         "the worst of these!).",
         "However, incursions",
         "such as the recent",
-        "tragedy which cost us"
-      ),
-      new BookPageInfo
-      (
+        "tragedy which cost us"),
+      new BookPageInfo(
         "the life of Japheth,",
         "Guildmaster of",
         "Trinsic's Paladins,",
@@ -3530,10 +2886,8 @@ namespace Server.Items
         "  I had met Japheth,",
         "and like all paladins,",
         "he burned with an",
-        "inner fire. Yet"
-      ),
-      new BookPageInfo
-      (
+        "inner fire. Yet"),
+      new BookPageInfo(
         "though I had the",
         "utmost respect for",
         "him, none could deny",
@@ -3541,10 +2895,8 @@ namespace Server.Items
         "flashed in his eyes at",
         "the mere mention of",
         "orcs. And thus he",
-        "carried his battle to"
-      ),
-      new BookPageInfo
-      (
+        "carried his battle to"),
+      new BookPageInfo(
         "the orc camps, and",
         "died there, unable to",
         "rise above his own",
@@ -3552,10 +2904,8 @@ namespace Server.Items
         "depicted in his book,",
         "\"The Burning of",
         "Trinsic.\" 'Tis a",
-        "shame that even our"
-      ),
-      new BookPageInfo
-      (
+        "shame that even our"),
+      new BookPageInfo(
         "mightiest men fall",
         "prey to this",
         "ignorance!",
@@ -3563,10 +2913,8 @@ namespace Server.Items
         "legends of orcs",
         "adopting human",
         "children to raise as",
-        "their own? Tales of"
-      ),
-      new BookPageInfo
-      (
+        "their own? Tales of"),
+      new BookPageInfo(
         "complex societies built",
         "underground by races",
         "we regard as bestial?",
@@ -3574,17 +2922,13 @@ namespace Server.Items
         "the mistake of",
         "Japheth of the",
         "Paladins, and let us",
-        "cease to persecute the"
-      ),
-      new BookPageInfo
-      (
+        "cease to persecute the"),
+      new BookPageInfo(
         "nonhuman races,",
         "before we discover",
         "that we are harming",
         "ourselves in the",
-        "process."
-      )
-    );
+        "process."));
 
     [Constructible]
     public DiversityOfOurLand() : base(Utility.Random(0xFEF, 2), false)
@@ -3612,17 +2956,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Quest of the Virtues
-
   public class QuestOfVirtues : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Quest of the Virtues", "Autenil",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "Volume 1",
         "Chapter 1: Starting out",
         "I begin my Quest in the",
@@ -3630,10 +2968,8 @@ namespace Server.Items
         "My Quest is to travel by",
         "foot to the eight shrines",
         "of Britannia. Although",
-        "this may sound easy, it"
-      ),
-      new BookPageInfo
-      (
+        "this may sound easy, it"),
+      new BookPageInfo(
         "is hampered because I",
         "have forsaken my abilities",
         "and worldly possessions.",
@@ -3641,10 +2977,8 @@ namespace Server.Items
         "to live by are a set of",
         "plain clothes, a ship to",
         "sail the seas and my",
-        "diary in which to record"
-      ),
-      new BookPageInfo
-      (
+        "diary in which to record"),
+      new BookPageInfo(
         "my adventures.  Onward",
         "Ho towards the Shrine of",
         "Spirituality!",
@@ -3652,10 +2986,8 @@ namespace Server.Items
         "Chapter 2: The Road to",
         "Spirituality",
         "",
-        "Since I have forsaken"
-      ),
-      new BookPageInfo
-      (
+        "Since I have forsaken"),
+      new BookPageInfo(
         "magic as a form of",
         "travel, I must find a way",
         "to the mainland from this",
@@ -3663,10 +2995,8 @@ namespace Server.Items
         "I was able to barter a",
         "ride from the ferryman.",
         "Upon reaching the",
-        "mainland, I followed the"
-      ),
-      new BookPageInfo
-      (
+        "mainland, I followed the"),
+      new BookPageInfo(
         "road until it turned",
         "North, yet I must",
         "continue Eastward. I",
@@ -3674,10 +3004,8 @@ namespace Server.Items
         "pleasant sounds of the",
         "birds chirping and enjoyed",
         "the peace away from the",
-        "busy life. Upon reaching"
-      ),
-      new BookPageInfo
-      (
+        "busy life. Upon reaching"),
+      new BookPageInfo(
         "the Hedge Maze I recalled",
         "a story about the mage",
         "Relvinian in the days of",
@@ -3685,10 +3013,8 @@ namespace Server.Items
         "go around it. Possessing",
         "no weapons and having",
         "forsaken my training, I",
-        "heeded the sign that said,"
-      ),
-      new BookPageInfo
-      (
+        "heeded the sign that said,"),
+      new BookPageInfo(
         "\"Enter and Become One",
         "Among Ghosts.\" The River",
         "forced me to turn South",
@@ -3696,10 +3022,8 @@ namespace Server.Items
         "",
         "Chapter 3: Spirituality",
         "",
-        "Spirituality is the leader"
-      ),
-      new BookPageInfo
-      (
+        "Spirituality is the leader"),
+      new BookPageInfo(
         "of the Virtues. It is the",
         "meditation and",
         "understanding of all other",
@@ -3707,10 +3031,8 @@ namespace Server.Items
         "Spirituality, one cannot",
         "completely follow the",
         "Virtues, for It is the",
-        "dedication and adherance"
-      ),
-      new BookPageInfo
-      (
+        "dedication and adherance"),
+      new BookPageInfo(
         "to them.",
         "",
         "Chapter 4: Finding Honor",
@@ -3718,10 +3040,8 @@ namespace Server.Items
         "My next visit will be to",
         "the Shrine of Honor,",
         "which lies a fair distance",
-        "to the South. There is a"
-      ),
-      new BookPageInfo
-      (
+        "to the South. There is a"),
+      new BookPageInfo(
         "road to my East that I",
         "will follow to the town",
         "of Trinsic. I found a",
@@ -3729,10 +3049,8 @@ namespace Server.Items
         "Traveller's Inn, and woke",
         "refreshed in the morning",
         "to hear the sounds of",
-        "nature as I prepared to"
-      ),
-      new BookPageInfo
-      (
+        "nature as I prepared to"),
+      new BookPageInfo(
         "continue my journeys. I",
         "thanked the kind innkeeper",
         "and headed out of Trinsic",
@@ -3740,10 +3058,8 @@ namespace Server.Items
         "briefly with one lucky",
         "enough to own a house in",
         "the beautiful country and",
-        "he bade me good fortune"
-      ),
-      new BookPageInfo
-      (
+        "he bade me good fortune"),
+      new BookPageInfo(
         "on my travels. I used my",
         "rusty blade to cut",
         "through dense jungles",
@@ -3751,10 +3067,8 @@ namespace Server.Items
         "realm, now inhabited only",
         "by the Undead. Many a",
         "mongbat did hamper my",
-        "journey, but finally I"
-      ),
-      new BookPageInfo
-      (
+        "journey, but finally I"),
+      new BookPageInfo(
         "arrived at the Shrine of",
         "Honor.",
         "",
@@ -3762,10 +3076,8 @@ namespace Server.Items
         "",
         "Many link Honor and",
         "battle, but it can be",
-        "used with any aspect of"
-      ),
-      new BookPageInfo
-      (
+        "used with any aspect of"),
+      new BookPageInfo(
         "Life. Honor is to abide",
         "by the rules, dishonor is",
         "to cheat; to seek the",
@@ -3773,10 +3085,8 @@ namespace Server.Items
         "to always live life with",
         "Honor.",
         "",
-        "Chapter 6: Seeking Valor"
-      ),
-      new BookPageInfo
-      (
+        "Chapter 6: Seeking Valor"),
+      new BookPageInfo(
         "I must now embark on my",
         "trusty small ship, the",
         "Hollandia, to the South",
@@ -3784,10 +3094,8 @@ namespace Server.Items
         "island where few have",
         "travelled. I know not yet",
         "what I will encounter at",
-        "sea, so I bid the Virtues"
-      ),
-      new BookPageInfo
-      (
+        "sea, so I bid the Virtues"),
+      new BookPageInfo(
         "grant me safety. So",
         "begins my voyage. I",
         "managed to sail unnoticed",
@@ -3795,10 +3103,8 @@ namespace Server.Items
         "elementals which took a",
         "fair bit of navigation",
         "from my tillerman.",
-        "However, I arrived without"
-      ),
-      new BookPageInfo
-      (
+        "However, I arrived without"),
+      new BookPageInfo(
         "incident.",
         "",
         "Chapter 7: Valor",
@@ -3806,10 +3112,8 @@ namespace Server.Items
         "The Shrine of Valor is",
         "protected by many a",
         "beast far too poisonous",
-        "and foul for myself to"
-      ),
-      new BookPageInfo
-      (
+        "and foul for myself to"),
+      new BookPageInfo(
         "vanquish. One mush show",
         "Valor to approach the",
         "Shrine! Valor is often",
@@ -3817,10 +3121,8 @@ namespace Server.Items
         "to fight what maybe a",
         "losing battle upon which",
         "he believes. It takes",
-        "Valor to stand your"
-      ),
-      new BookPageInfo
-      (
+        "Valor to stand your"),
+      new BookPageInfo(
         "ground against the many",
         "murderers and lawbreakers",
         "in our lands. You may",
@@ -3828,10 +3130,8 @@ namespace Server.Items
         "in that you fight that",
         "which must be opposed.",
         "Fight the fights you",
-        "believe in, not just the"
-      ),
-      new BookPageInfo
-      (
+        "believe in, not just the"),
+      new BookPageInfo(
         "fights you think you can",
         "win.",
         "",
@@ -3839,10 +3139,8 @@ namespace Server.Items
         "Humility",
         "",
         "My journey will continue",
-        "to the East towards the"
-      ),
-      new BookPageInfo
-      (
+        "to the East towards the"),
+      new BookPageInfo(
         "Shrine of Humility. I",
         "launch my boat from the",
         "West side of the Island",
@@ -3850,10 +3148,8 @@ namespace Server.Items
         "my daring escape from",
         "the many Giant Serpents",
         "chasing me with their",
-        "poisonous venom and"
-      ),
-      new BookPageInfo
-      (
+        "poisonous venom and"),
+      new BookPageInfo(
         "hissing tongues. Beautiful",
         "blue waves washed over",
         "the bow of the boat as",
@@ -3861,10 +3157,8 @@ namespace Server.Items
         "leading me on. The voyage",
         "is long and the water",
         "turbulent but finally land",
-        "was struck. Quickly I ran,"
-      ),
-      new BookPageInfo
-      (
+        "was struck. Quickly I ran,"),
+      new BookPageInfo(
         "eager to find my final",
         "destination for the day.",
         "",
@@ -3872,10 +3166,8 @@ namespace Server.Items
         "",
         "The Shrine of Humility is",
         "surprisingly spartan; it is",
-        "merely a grove of stone"
-      ),
-      new BookPageInfo
-      (
+        "merely a grove of stone"),
+      new BookPageInfo(
         "pillars with an ankh and",
         "the Humility stone at its",
         "center. I would",
@@ -3883,10 +3175,8 @@ namespace Server.Items
         "this Quest; returning to",
         "my roots in this world. I",
         "have rejected my",
-        "possessions and my wealth"
-      ),
-      new BookPageInfo
-      (
+        "possessions and my wealth"),
+      new BookPageInfo(
         "in order to rely only",
         "upon my cunning and",
         "instincts. No longer have",
@@ -3894,19 +3184,15 @@ namespace Server.Items
         "Glorious to others, but I",
         "have only that which I",
         "need to survive. I may no",
-        "longer rely upon myself, I"
-      ),
-      new BookPageInfo
-      (
+        "longer rely upon myself, I"),
+      new BookPageInfo(
         "must rely upon others",
         "for my survival. My",
         "journey to Humility has",
         "only made me realize even",
         "more how Blessed I have",
-        "been."
-      ),
-      new BookPageInfo
-      (
+        "been."),
+      new BookPageInfo(
         "Chapter 10: Onward to",
         "Honesty",
         "",
@@ -3914,10 +3200,8 @@ namespace Server.Items
         "South towards the Island",
         "of Ice. However, my",
         "voyages and excursions",
-        "into the jungle have made"
-      ),
-      new BookPageInfo
-      (
+        "into the jungle have made"),
+      new BookPageInfo(
         "me quite tired, so I will",
         "camp here beside a river",
         "near the Shrine of",
@@ -3925,10 +3209,8 @@ namespace Server.Items
         "awake the next morning",
         "refreshed and invigorated,",
         "but also under attack! A",
-        "Headless One has noticed"
-      ),
-      new BookPageInfo
-      (
+        "Headless One has noticed"),
+      new BookPageInfo(
         "my rise from slumber and",
         "attacks viciously. My",
         "trusty cleaver was in my",
@@ -3936,10 +3218,8 @@ namespace Server.Items
         "lack of skill with the",
         "weapon delayed the death",
         "of the creature. I",
-        "launched the Hollandia and"
-      ),
-      new BookPageInfo
-      (
+        "launched the Hollandia and"),
+      new BookPageInfo(
         "set sail for the Island of",
         "Ice, seeking the Shrine of",
         "Honesty. As I sail the",
@@ -3947,10 +3227,8 @@ namespace Server.Items
         "desiring the company of",
         "my fellow man. Hopefully I",
         "shall meet some kind of",
-        "traveller with whom I may"
-      ),
-      new BookPageInfo
-      (
+        "traveller with whom I may"),
+      new BookPageInfo(
         "exchange a few words.",
         "Shortly I was landing my",
         "boat on the North end of",
@@ -3958,10 +3236,8 @@ namespace Server.Items
         "quickly made my way",
         "through snow across the",
         "frigid tundra while trying",
-        "to keep warm. The Shrine"
-      ),
-      new BookPageInfo
-      (
+        "to keep warm. The Shrine"),
+      new BookPageInfo(
         "of Honesty bid me",
         "welcome as I felth the",
         "warmth radiate throughout",
@@ -3969,10 +3245,8 @@ namespace Server.Items
         "",
         "Chapter 11: Honesty",
         "",
-        "Honesty is to uphold and"
-      ),
-      new BookPageInfo
-      (
+        "Honesty is to uphold and"),
+      new BookPageInfo(
         "defend the truth at all",
         "times. Furthermore,",
         "Honesty requires us to",
@@ -3980,10 +3254,8 @@ namespace Server.Items
         "fellow man; not taking",
         "undue advantage. Honesty",
         "is a Virtue often lacking",
-        "in today's world. It seems"
-      ),
-      new BookPageInfo
-      (
+        "in today's world. It seems"),
+      new BookPageInfo(
         "as though people are out",
         "to gain wealth with no",
         "regard to Honesty",
@@ -3991,10 +3263,8 @@ namespace Server.Items
         "Honesty is the foundation",
         "upon which trust is built.",
         "If the foundation",
-        "crumbles, everything built"
-      ),
-      new BookPageInfo
-      (
+        "crumbles, everything built"),
+      new BookPageInfo(
         "upon it must fall. The",
         "cold environment which",
         "houses the Shrine of",
@@ -4002,20 +3272,16 @@ namespace Server.Items
         "to its value in today's",
         "society. The symbolic cold",
         "and secluded location",
-        "shows us that only the"
-      ),
-      new BookPageInfo
-      (
+        "shows us that only the"),
+      new BookPageInfo(
         "most dedicated to",
         "pursuing Honesty will",
         "achieve it. May we all be",
         "Honest with our fellow",
         "man and remember to",
         "treat them how we would",
-        "like to be treated."
-      ),
-      new BookPageInfo
-      (
+        "like to be treated."),
+      new BookPageInfo(
         "Chapter 12: The Path to",
         "Sacrifice.",
         "",
@@ -4023,10 +3289,8 @@ namespace Server.Items
         "West side of the Island",
         "of Ice. From there I",
         "launch the Hollandia and",
-        "sail slightly to the North"
-      ),
-      new BookPageInfo
-      (
+        "sail slightly to the North"),
+      new BookPageInfo(
         "and West. I land my boat",
         "just East of the Shrine",
         "of Sacrifice, so my road",
@@ -4034,9 +3298,7 @@ namespace Server.Items
         "the sea, I am happy to",
         "be back on the mainland",
         "for the final three",
-        "Shrines."
-      )
-    );
+        "Shrines."));
 
     [Constructible]
     public QuestOfVirtues() : base(Utility.Random(0xFEF, 2), false)
@@ -4064,17 +3326,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Regarding Llamas
-
   public class RegardingLlamas : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Regarding Llamas", "Simon",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  Llamas are curious",
         "beasts, shaggy and",
         "sought after for their",
@@ -4082,10 +3338,8 @@ namespace Server.Items
         "curiously arrogant",
         "disposition reflected",
         "in their eyes. They",
-        "live in mountainous"
-      ),
-      new BookPageInfo
-      (
+        "live in mountainous"),
+      new BookPageInfo(
         "areas, though who",
         "may have first tamed",
         "them is lost in the",
@@ -4093,10 +3347,8 @@ namespace Server.Items
         "  'Tis a well-known",
         "fact that llamas can",
         "indeed be tamed, and",
-        "used as grazing"
-      ),
-      new BookPageInfo
-      (
+        "used as grazing"),
+      new BookPageInfo(
         "animals, for their",
         "meat, and of course",
         "for their wool. Yet",
@@ -4104,18 +3356,14 @@ namespace Server.Items
         "their ornery",
         "disposition and",
         "tendency to spit at",
-        "those they dislike"
-      ),
-      new BookPageInfo
-      (
+        "those they dislike"),
+      new BookPageInfo(
         "makes them appealing",
         "guard creatures as",
         "well, though they",
         "have little sound with",
         "which to sound an",
-        "alarum."
-      )
-    );
+        "alarum."));
 
     [Constructible]
     public RegardingLlamas() : base(Utility.Random(0xFEF, 2), false)
@@ -4143,17 +3391,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Talking to Wisps
-
   public class TalkingToWisps : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Talking to Wisps", "Yorick ofMoonglow",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "This volume was",
         "sponsored by",
         "donations from Lord",
@@ -4161,10 +3403,8 @@ namespace Server.Items
         "supporter of",
         "understanding the",
         "other sentient races",
-        "of Britannia."
-      ),
-      new BookPageInfo
-      (
+        "of Britannia."),
+      new BookPageInfo(
         "-",
         "  Wisps are the most",
         "intelligent of the",
@@ -4172,10 +3412,8 @@ namespace Server.Items
         "inhabiting Britannia.",
         "'Tis claimed by the",
         "great sages that",
-        "someday we shall be"
-      ),
-      new BookPageInfo
-      (
+        "someday we shall be"),
+      new BookPageInfo(
         "able to converse with",
         "them openly in our",
         "native",
@@ -4183,10 +3421,8 @@ namespace Server.Items
         "must hope that wisps",
         "learn our language,",
         "for it is not possible",
-        "for humans to"
-      ),
-      new BookPageInfo
-      (
+        "for humans to"),
+      new BookPageInfo(
         "pronounce wispish!",
         "  The wispish",
         "language seems to",
@@ -4194,10 +3430,8 @@ namespace Server.Items
         "vowel, the letter Y.",
         "However, the letters",
         "W, C, M, and L seem",
-        "to be treated"
-      ),
-      new BookPageInfo
-      (
+        "to be treated"),
+      new BookPageInfo(
         "grammatically as",
         "vowels, and in",
         "addition every letter",
@@ -4205,10 +3439,8 @@ namespace Server.Items
         "sounds to the human",
         "ear like a glottal stop.",
         "It is possible that the",
-        "glottal stop is"
-      ),
-      new BookPageInfo
-      (
+        "glottal stop is"),
+      new BookPageInfo(
         "considered a vowel as",
         "well.",
         "  Wisps do make use",
@@ -4216,10 +3448,8 @@ namespace Server.Items
         "like pitch and",
         "emphasis shifts",
         "similar to",
-        "exclamations and"
-      ),
-      new BookPageInfo
-      (
+        "exclamations and"),
+      new BookPageInfo(
         "questions.",
         "  The average word is",
         "wispish seems to",
@@ -4227,10 +3457,8 @@ namespace Server.Items
         "phonemes and three",
         "glottal stops, plus",
         "possibly a pitch shift.",
-        "It often sounds like a"
-      ),
-      new BookPageInfo
-      (
+        "It often sounds like a"),
+      new BookPageInfo(
         "fire burning or",
         "crackling. Some have",
         "speculated that what",
@@ -4238,14 +3466,10 @@ namespace Server.Items
         "in fact nothing more",
         "than the very air",
         "crackling near the",
-        "wisp's glow, and not"
-      ),
-      new BookPageInfo
-      (
+        "wisp's glow, and not"),
+      new BookPageInfo(
         "language, but this is",
-        "of course unlikely."
-      )
-    );
+        "of course unlikely."));
 
     [Constructible]
     public TalkingToWisps() : base(Utility.Random(0xFEF, 2), false)
@@ -4273,17 +3497,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Taming Dragons
-
   public class TamingDragons : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Taming Dragons", "Wyrd Beastmaster",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  I have not much to",
         "tell about dragons. The",
         "sole time I approached",
@@ -4291,10 +3509,8 @@ namespace Server.Items
         "towards taming it,",
         "my initial attempts at",
         "calming it met with",
-        "failure. It fixed a"
-      ),
-      new BookPageInfo
-      (
+        "failure. It fixed a"),
+      new BookPageInfo(
         "massive beady eye",
         "upon me, and began",
         "its slithering",
@@ -4302,10 +3518,8 @@ namespace Server.Items
         "doubt to insert me",
         "into its maw and bear",
         "down with its teeth.",
-        "  However, as I was"
-      ),
-      new BookPageInfo
-      (
+        "  However, as I was"),
+      new BookPageInfo(
         "engaged in what",
         "remains to this day",
         "the most terrifying",
@@ -4313,10 +3527,8 @@ namespace Server.Items
         "the dragon suddenly",
         "whirled as if in a",
         "panic, ran a short",
-        "distance, took off into"
-      ),
-      new BookPageInfo
-      (
+        "distance, took off into"),
+      new BookPageInfo(
         "the air, then",
         "transformed into a",
         "whirlwind. Lastly, it",
@@ -4324,10 +3536,8 @@ namespace Server.Items
         "gouts of black blood",
         "and heaving, stinking",
         "flesh upon miles of",
-        "countryside. The"
-      ),
-      new BookPageInfo
-      (
+        "countryside. The"),
+      new BookPageInfo(
         "fireball was massive,",
         "enough to light a city,",
         "I should surmise.",
@@ -4335,10 +3545,8 @@ namespace Server.Items
         "the exact cause of",
         "this strange behavior,",
         "except to assume that",
-        "it was not typical for"
-      ),
-      new BookPageInfo
-      (
+        "it was not typical for"),
+      new BookPageInfo(
         "this reptilian species.",
         "My best guesses",
         "revolve around a",
@@ -4346,10 +3554,8 @@ namespace Server.Items
         "the nature of reality,",
         "which is far too",
         "esoteric a territory",
-        "for one of my limited"
-      ),
-      new BookPageInfo
-      (
+        "for one of my limited"),
+      new BookPageInfo(
         "scholarship.",
         "  Hence my basic",
         "advice to those who",
@@ -4357,14 +3563,10 @@ namespace Server.Items
         "dragon-be sure that",
         "thou hast mastered",
         "the twin skills of",
-        "taming animals, and"
-      ),
-      new BookPageInfo
-      (
+        "taming animals, and"),
+      new BookPageInfo(
         "running away very",
-        "very fast."
-      )
-    );
+        "very fast."));
 
     [Constructible]
     public TamingDragons() : base(Utility.Random(0xFEF, 2), false)
@@ -4392,17 +3594,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region The Bold Stranger
-
   public class BoldStranger : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "The Bold Stranger", "Old Fabio the Poor",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "    In a time before",
         "time, the Gods that Be",
         "assembled a group of",
@@ -4410,10 +3606,8 @@ namespace Server.Items
         "and lore masters",
         "(for, yes, even in",
         "those days, art",
-        "existed) to create the"
-      ),
-      new BookPageInfo
-      (
+        "existed) to create the"),
+      new BookPageInfo(
         "world of Sosaria. To",
         "this group, the gods",
         "gave a tiny world,",
@@ -4421,10 +3615,8 @@ namespace Server.Items
         "test their works, to",
         "see if they were of",
         "the quality desired",
-        "for the true world in"
-      ),
-      new BookPageInfo
-      (
+        "for the true world in"),
+      new BookPageInfo(
         "which they would be",
         "placed. And though",
         "the gods were tight",
@@ -4432,10 +3624,8 @@ namespace Server.Items
         "this small crew",
         "worked hard and long,",
         "and were happy in",
-        "their tasks."
-      ),
-      new BookPageInfo
-      (
+        "their tasks."),
+      new BookPageInfo(
         "    A small corner of",
         "Rytabul had been",
         "claimed by the artisan",
@@ -4443,10 +3633,8 @@ namespace Server.Items
         "Though he was not",
         "the fastest of the",
         "assembled workers,",
-        "the gods smiled upon"
-      ),
-      new BookPageInfo
-      (
+        "the gods smiled upon"),
+      new BookPageInfo(
         "his work, even",
         "presenting him with",
         "a mystic talisman",
@@ -4454,10 +3642,8 @@ namespace Server.Items
         "the best among the",
         "newer artisans. And",
         "so Selrahc went about",
-        "his business, creating"
-      ),
-      new BookPageInfo
-      (
+        "his business, creating"),
+      new BookPageInfo(
         "hundreds of designs",
         "which would one day",
         "add color and variety",
@@ -4465,10 +3651,8 @@ namespace Server.Items
         "    One day a",
         "stranger appeared to",
         "Selrahc. His chest",
-        "was bare and he wore"
-      ),
-      new BookPageInfo
-      (
+        "was bare and he wore"),
+      new BookPageInfo(
         "trousers of the",
         "brightest green, and",
         "wherever he went,",
@@ -4476,10 +3660,8 @@ namespace Server.Items
         "footsteps. This",
         "caused Selrahc no end",
         "of trouble, the",
-        "stranger always"
-      ),
-      new BookPageInfo
-      (
+        "stranger always"),
+      new BookPageInfo(
         "looking over his",
         "shoulder, and the",
         "plants sprouting in",
@@ -4487,10 +3669,8 @@ namespace Server.Items
         "required to ply his",
         "art. And so Selrahc",
         "approached the",
-        "stranger and bade"
-      ),
-      new BookPageInfo
-      (
+        "stranger and bade"),
+      new BookPageInfo(
         "him speak. But this",
         "man in green",
         "remained silent.",
@@ -4498,10 +3678,8 @@ namespace Server.Items
         "the stranger to give",
         "his name, and would",
         "he please leave",
-        "Selrahc to his work."
-      ),
-      new BookPageInfo
-      (
+        "Selrahc to his work."),
+      new BookPageInfo(
         "But this mysterious",
         "stranger remained",
         "mute.",
@@ -4509,10 +3687,8 @@ namespace Server.Items
         "Selrahc mightily. Who",
         "was this silent man,",
         "interfering with",
-        "tasks the gods"
-      ),
-      new BookPageInfo
-      (
+        "tasks the gods"),
+      new BookPageInfo(
         "themselves had",
         "entrusted to Selrahc?",
         "In an attempt to",
@@ -4520,10 +3696,8 @@ namespace Server.Items
         "interloper, Selrahc",
         "stole his green",
         "trousers, leaving him",
-        "naked and open to"
-      ),
-      new BookPageInfo
-      (
+        "naked and open to"),
+      new BookPageInfo(
         "comments about his",
         "very manhood, and",
         "still the stranger",
@@ -4531,10 +3705,8 @@ namespace Server.Items
         "would not leave this",
         "tiny corner of",
         "Rytabul.",
-        "    Vexed to his very"
-      ),
-      new BookPageInfo
-      (
+        "    Vexed to his very"),
+      new BookPageInfo(
         "limits, Selrahc took",
         "his war axe and",
         "smote the silent one",
@@ -4542,17 +3714,13 @@ namespace Server.Items
         "again, until the silent",
         "stranger ran away,",
         "having never said a",
-        "word, and never"
-      ),
-      new BookPageInfo
-      (
+        "word, and never"),
+      new BookPageInfo(
         "showed himself in",
         "Rytabul again.",
         "    Thus endeth the",
         "tale of the bold",
-        "stranger."
-      )
-    );
+        "stranger."));
 
     [Constructible]
     public BoldStranger() : base(Utility.Random(0xFEF, 2), false)
@@ -4580,17 +3748,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region The Burning of Trinsic
-
   public class BurningOfTrinsic : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "The Burning of Trinsic", "Japheth of Trinsic",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "    'Twas a sight to",
         "see, the sunlight",
         "falling lightly on the",
@@ -4598,10 +3760,8 @@ namespace Server.Items
         "Trinsic 'pon a",
         "morning in spring.",
         "    Children ran along",
-        "the parapets and"
-      ),
-      new BookPageInfo
-      (
+        "the parapets and"),
+      new BookPageInfo(
         "walkways, their",
         "laughter and running",
         "providing music to the",
@@ -4609,10 +3769,8 @@ namespace Server.Items
         "their oft-ragged",
         "clothing.",
         "    And I was one of",
-        "those young ones,"
-      ),
-      new BookPageInfo
-      (
+        "those young ones,"),
+      new BookPageInfo(
         "letting my joy rise",
         "up to the skies.",
         "    Little did we all",
@@ -4620,10 +3778,8 @@ namespace Server.Items
         "days that would lie",
         "ahead, for we were",
         "too young.",
-        "    Had we but gained"
-      ),
-      new BookPageInfo
-      (
+        "    Had we but gained"),
+      new BookPageInfo(
         "access to the quiet",
         "councils held in the",
         "Paladin tower as it",
@@ -4631,10 +3787,8 @@ namespace Server.Items
         "councils lit by",
         "candlelight and",
         "worry, we would",
-        "have learned more of"
-      ),
-      new BookPageInfo
-      (
+        "have learned more of"),
+      new BookPageInfo(
         "the fears of",
         "imminent attack from",
         "the forest, where",
@@ -4642,10 +3796,8 @@ namespace Server.Items
         "of dank caves and",
         "darkness were",
         "marauding ever more",
-        "often into the lands"
-      ),
-      new BookPageInfo
-      (
+        "often into the lands"),
+      new BookPageInfo(
         "around Trinsic's",
         "moat.",
         "    But we were",
@@ -4653,10 +3805,8 @@ namespace Server.Items
         "parapets and the moat",
         "were places to play,",
         "not stout defenses,",
-        "and we gave no"
-      ),
-      new BookPageInfo
-      (
+        "and we gave no"),
+      new BookPageInfo(
         "thought to the",
         "necessities that must",
         "have required their",
@@ -4664,10 +3814,8 @@ namespace Server.Items
         "    We used to reach",
         "the sheltered",
         "orchards on the lee",
-        "side of the parapet"
-      ),
-      new BookPageInfo
-      (
+        "side of the parapet"),
+      new BookPageInfo(
         "walls, where the",
         "southern river cut",
         "through the city, by",
@@ -4675,10 +3823,8 @@ namespace Server.Items
         "water.",
         "    The rich folk who",
         "lived in the great",
-        "manses there would"
-      ),
-      new BookPageInfo
-      (
+        "manses there would"),
+      new BookPageInfo(
         "shout from their",
         "windows and shake",
         "their fists, for we",
@@ -4686,10 +3832,8 @@ namespace Server.Items
         "their gardens and",
         "tear up the delicate",
         "foxgloves and",
-        "orfleurs with our"
-      ),
-      new BookPageInfo
-      (
+        "orfleurs with our"),
+      new BookPageInfo(
         "unshod dirty feet.",
         "Then we would dive",
         "into the water and",
@@ -4697,10 +3841,8 @@ namespace Server.Items
         "fruit trees.",
         "    The southern",
         "river lazily slid",
-        "under the an ungated"
-      ),
-      new BookPageInfo
-      (
+        "under the an ungated"),
+      new BookPageInfo(
         "arch in the mighty",
         "wall, and we would",
         "lay on the grassy",
@@ -4708,10 +3850,8 @@ namespace Server.Items
         "gurgle by the lily",
         "pads.",
         "    That spring that",
-        "pleasant spot became"
-      ),
-      new BookPageInfo
-      (
+        "pleasant spot became"),
+      new BookPageInfo(
         "the doorway through",
         "which our city of",
         "Trinsic let in the",
@@ -4719,10 +3859,8 @@ namespace Server.Items
         "humanoids that",
         "savaged us. I lay upon",
         "that grassy bank and",
-        "watched them wade"
-      ),
-      new BookPageInfo
-      (
+        "watched them wade"),
+      new BookPageInfo(
         "in, their coarse hair",
         "wet and matted, algae",
         "and muck festooning",
@@ -4730,10 +3868,8 @@ namespace Server.Items
         "    They caught sight",
         "of a quicksilver girl",
         "with bright blond hair",
-        "and lively eyes. Her"
-      ),
-      new BookPageInfo
-      (
+        "and lively eyes. Her"),
+      new BookPageInfo(
         "name was Leyla, and",
         "that spring I had held",
         "fond dreams of",
@@ -4741,10 +3877,8 @@ namespace Server.Items
         "sharing flavored ice",
         "while dangling our",
         "feet off the small",
-        "bridge by Smugglers"
-      ),
-      new BookPageInfo
-      (
+        "bridge by Smugglers"),
+      new BookPageInfo(
         "Gate.",
         "    And I said nothing",
         "when they caught",
@@ -4752,10 +3886,8 @@ namespace Server.Items
         "out when they",
         "dragged her off",
         "through that breach in",
-        "our wall, and did not"
-      ),
-      new BookPageInfo
-      (
+        "our wall, and did not"),
+      new BookPageInfo(
         "warn the city when I",
         "saw the helmeted orc",
         "captains call the",
@@ -4763,10 +3895,8 @@ namespace Server.Items
         "mansions.",
         "    Blame me not, for",
         "I was but a child, and",
-        "one who hid in the"
-      ),
-      new BookPageInfo
-      (
+        "one who hid in the"),
+      new BookPageInfo(
         "branches of the peach",
         "trees, all a-tremble",
         "whilst I watched the",
@@ -4774,10 +3904,8 @@ namespace Server.Items
         "the tailor's, and fire",
         "lash out at the roof of",
         "witchy Eleanor's",
-        "tavern."
-      ),
-      new BookPageInfo
-      (
+        "tavern."),
+      new BookPageInfo(
         "    To this day I have",
         "had no word of",
         "Leyla, and to this",
@@ -4785,10 +3913,8 @@ namespace Server.Items
         "burning wood can",
         "conjure terrible",
         "dreams. Yet with the",
-        "eyes of adulthood, 'tis"
-      ),
-      new BookPageInfo
-      (
+        "eyes of adulthood, 'tis"),
+      new BookPageInfo(
         "possible to examine",
         "the flaws in the",
         "defense of Trinsic on",
@@ -4796,10 +3922,8 @@ namespace Server.Items
         "the reasons why our",
         "walls are now",
         "double-thick, and",
-        "why our buildings"
-      ),
-      new BookPageInfo
-      (
+        "why our buildings"),
+      new BookPageInfo(
         "are now built as",
         "fortresses within a",
         "somber fortified city.",
@@ -4807,10 +3931,8 @@ namespace Server.Items
         "out from the top of",
         "the new Paladin",
         "tower, and spy the",
-        "mighty white sails"
-      ),
-      new BookPageInfo
-      (
+        "mighty white sails"),
+      new BookPageInfo(
         "across the barrier",
         "island, and can",
         "descry the small",
@@ -4818,10 +3940,8 @@ namespace Server.Items
         "city where gypsies",
         "are wont to camp, I",
         "can also envision the",
-        "city as it might be"
-      ),
-      new BookPageInfo
-      (
+        "city as it might be"),
+      new BookPageInfo(
         "burning, and I bless",
         "the bargain we made:",
         "space for safety,",
@@ -4829,18 +3949,14 @@ namespace Server.Items
         "and wood for stone.",
         "    Whilst I live, I",
         "shall not see Trinsic",
-        "burn, and no more"
-      ),
-      new BookPageInfo
-      (
+        "burn, and no more"),
+      new BookPageInfo(
         "cries of little girls",
         "will haunt the sleep",
         "of our fair citizens.",
         "    - Japheth, Paladin",
         "Guildmaster of the",
-        "City of Trinsic"
-      )
-    );
+        "City of Trinsic"));
 
     [Constructible]
     public BurningOfTrinsic() : base(Utility.Random(0xFEF, 2), false)
@@ -4868,17 +3984,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region The Fight
-
   public class TheFight : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "The Fight", "M. de la Garza",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "    A cold autumn's",
         "morning with misty",
         "fog secures a dozen",
@@ -4886,10 +3996,8 @@ namespace Server.Items
         "supplying hidden",
         "shelter from prying",
         "eyes deep in the",
-        "foothills of the"
-      ),
-      new BookPageInfo
-      (
+        "foothills of the"),
+      new BookPageInfo(
         "vibrant valley.",
         "Dragons soar like",
         "fierce warriors,",
@@ -4897,10 +4005,8 @@ namespace Server.Items
         "around, then roaring",
         "like thunder, rallying",
         "all that listen.  The",
-        "dragons land swiftly"
-      ),
-      new BookPageInfo
-      (
+        "dragons land swiftly"),
+      new BookPageInfo(
         "beside the proud",
         "warriors, bending",
         "necks and extending",
@@ -4908,10 +4014,8 @@ namespace Server.Items
         "claws and allowing",
         "valiant fighters to",
         "ride forth and win an",
-        "arisen battle.  The"
-      ),
-      new BookPageInfo
-      (
+        "arisen battle.  The"),
+      new BookPageInfo(
         "increasing winds",
         "silence the sounds of",
         "combat, and they",
@@ -4919,10 +4023,8 @@ namespace Server.Items
         "ground like mothers",
         "protecting their",
         "childern, bright",
-        "armor flashing as"
-      ),
-      new BookPageInfo
-      (
+        "armor flashing as"),
+      new BookPageInfo(
         "each one falls.",
         "    A cold autumn's",
         "evening with misty",
@@ -4930,10 +4032,8 @@ namespace Server.Items
         "battered corpses of",
         "knights, creasing",
         "them in currents of",
-        "winds that run deep"
-      ),
-      new BookPageInfo
-      (
+        "winds that run deep"),
+      new BookPageInfo(
         "in the foothills of the",
         "desolate valley.",
         "Dragons glide like",
@@ -4941,10 +4041,8 @@ namespace Server.Items
         "around and around,",
         "then calling like",
         "banshees; keening",
-        "cries of mourning."
-      ),
-      new BookPageInfo
-      (
+        "cries of mourning."),
+      new BookPageInfo(
         "The dragons land",
         "heavily beside the",
         "peaceful bodies,",
@@ -4952,10 +4050,8 @@ namespace Server.Items
         "extending wings,",
         "lifting black claws",
         "and allowing valiant",
-        "fighters to ride forth"
-      ),
-      new BookPageInfo
-      (
+        "fighters to ride forth"),
+      new BookPageInfo(
         "and win an arisen",
         "battle.  The increasing",
         "winds silence the",
@@ -4963,10 +4059,8 @@ namespace Server.Items
         "they fight, standing",
         "their ground like",
         "mothers protecting",
-        "their childern, bright"
-      ),
-      new BookPageInfo
-      (
+        "their childern, bright"),
+      new BookPageInfo(
         "armor flashing as",
         "each one falls.",
         "    A cold autumn's",
@@ -4974,10 +4068,8 @@ namespace Server.Items
         "fog cradles a dozen",
         "battered corpses of",
         "knights, creasing",
-        "them in currents of"
-      ),
-      new BookPageInfo
-      (
+        "them in currents of"),
+      new BookPageInfo(
         "winds that run deep",
         "in the foothills of the",
         "desolate valley.",
@@ -4985,10 +4077,8 @@ namespace Server.Items
         "silent angels, circling",
         "around and around,",
         "then calling like",
-        "banshees; keening"
-      ),
-      new BookPageInfo
-      (
+        "banshees; keening"),
+      new BookPageInfo(
         "cries of mourning.",
         "The dragons land",
         "heavily beside the",
@@ -4996,10 +4086,8 @@ namespace Server.Items
         "bending necks and",
         "extending wings,",
         "lifting black claws",
-        "and pinching the"
-      ),
-      new BookPageInfo
-      (
+        "and pinching the"),
+      new BookPageInfo(
         "sacred ground and",
         "new eternal home.",
         "The dying winds",
@@ -5007,16 +4095,12 @@ namespace Server.Items
         "dead in somber",
         "procession, and they",
         "lie, grasping weapons",
-        "to protect themselves"
-      ),
-      new BookPageInfo
-      (
+        "to protect themselves"),
+      new BookPageInfo(
         "like knights still in",
         "battle, shattered",
         "armor shining like",
-        "newly born stars."
-      )
-    );
+        "newly born stars."));
 
     [Constructible]
     public TheFight() : base(Utility.Random(0xFEF, 2), false)
@@ -5044,17 +4128,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region The Life of a Travelling Minstrel
-
   public class LifeOfATravellingMinstrel : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "The Life of a Travelling Minstrel", "Sarah of Yew",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  While 'tis true that",
         "the musician who",
         "seeketh only to make",
@@ -5062,10 +4140,8 @@ namespace Server.Items
         "herself and for",
         "others needs little",
         "more than some",
-        "talent, and stern"
-      ),
-      new BookPageInfo
-      (
+        "talent, and stern"),
+      new BookPageInfo(
         "practice at the chosen",
         "instrument, those of",
         "us who seek the open",
@@ -5073,10 +4149,8 @@ namespace Server.Items
         "that a greater skill is",
         "required. Herein",
         "discover those secrets",
-        "which I have learned"
-      ),
-      new BookPageInfo
-      (
+        "which I have learned"),
+      new BookPageInfo(
         "over the years as an",
         "itinerant performer...",
         "  Once I was in",
@@ -5084,10 +4158,8 @@ namespace Server.Items
         "accidentally angered a",
         "bravo of some local",
         "repute, whose blade",
-        "flickered all too"
-      ),
-      new BookPageInfo
-      (
+        "flickered all too"),
+      new BookPageInfo(
         "eagerly near my",
         "slender neck (for I",
         "was young then).",
@@ -5095,10 +4167,8 @@ namespace Server.Items
         "to \"ruin my pretty",
         "face\" this bravo",
         "grabbed my arm in a",
-        "most unseemly"
-      ),
-      new BookPageInfo
-      (
+        "most unseemly"),
+      new BookPageInfo(
         "fashion and tossed",
         "me into a barbaric",
         "enclosure locally",
@@ -5106,10 +4176,8 @@ namespace Server.Items
         "My plaintive cries",
         "for help went",
         "unheeded by the",
-        "guards, for the"
-      ),
-      new BookPageInfo
-      (
+        "guards, for the"),
+      new BookPageInfo(
         "inhabitants of Jhelom",
         "are eager indeed to",
         "measure fighting",
@@ -5117,10 +4185,8 @@ namespace Server.Items
         "  What saved me was",
         "the ability to",
         "improvise a melody",
-        "and tune that"
-      ),
-      new BookPageInfo
-      (
+        "and tune that"),
+      new BookPageInfo(
         "satirized the",
         "proceedings, and",
         "sufficiently angered",
@@ -5128,10 +4194,8 @@ namespace Server.Items
         "him to coming to my",
         "defense. Once that",
         "fight was underway,",
-        "I was able to make"
-      ),
-      new BookPageInfo
-      (
+        "I was able to make"),
+      new BookPageInfo(
         "good my escape.",
         "Hence, I regard the",
         "ability to incite fights",
@@ -5139,10 +4203,8 @@ namespace Server.Items
         "the prudent bard.",
         "  Upon another",
         "occasion, 'twas the",
-        "obverse side of that"
-      ),
-      new BookPageInfo
-      (
+        "obverse side of that"),
+      new BookPageInfo(
         "coin which saved me,",
         "for I was being held",
         "prisoner by a",
@@ -5150,10 +4212,8 @@ namespace Server.Items
         "band of ruffians who",
         "had seized me",
         "unawares from the",
-        "road to Vesper."
-      ),
-      new BookPageInfo
-      (
+        "road to Vesper."),
+      new BookPageInfo(
         "  They had worked",
         "themselves into a",
         "frenzy and were",
@@ -5161,10 +4221,8 @@ namespace Server.Items
         "fear, tear me limb",
         "from limb, when I",
         "began to sing",
-        "frantically, tapping"
-      ),
-      new BookPageInfo
-      (
+        "frantically, tapping"),
+      new BookPageInfo(
         "my falled drum with",
         "my tied up feet. The",
         "melody developed into",
@@ -5172,10 +4230,8 @@ namespace Server.Items
         "the brigands slowly",
         "calmed down to the",
         "extent of apologizing,",
-        "and they let me go!"
-      ),
-      new BookPageInfo
-      (
+        "and they let me go!"),
+      new BookPageInfo(
         "  A final example I",
         "would pray you grant",
         "your attention: once I",
@@ -5183,10 +4239,8 @@ namespace Server.Items
         "isle far to the east of",
         "the mainland, well",
         "beyond Serpent's",
-        "Hold, where lava"
-      ),
-      new BookPageInfo
-      (
+        "Hold, where lava"),
+      new BookPageInfo(
         "made its sluggish",
         "way across the",
         "surface landscape.",
@@ -5194,10 +4248,8 @@ namespace Server.Items
         "land was filled with",
         "vile beasts and",
         "cunning dragons.",
-        "  I was being pursued"
-      ),
-      new BookPageInfo
-      (
+        "  I was being pursued"),
+      new BookPageInfo(
         "by one of said fell",
         "dragons when I found",
         "myself trapped. I",
@@ -5205,10 +4257,8 @@ namespace Server.Items
         "bubbling pool of molten",
         "rock and attempted to",
         "hide.",
-        "  The dragon scented"
-      ),
-      new BookPageInfo
-      (
+        "  The dragon scented"),
+      new BookPageInfo(
         "me and was",
         "preparing to skirt the",
         "pool, when I began to",
@@ -5216,10 +4266,8 @@ namespace Server.Items
         "upon my lute that",
         "attracted its attention.",
         "Mesmerized and",
-        "enticed by the"
-      ),
-      new BookPageInfo
-      (
+        "enticed by the"),
+      new BookPageInfo(
         "melody, it stepped",
         "directly toward sme,",
         "and into the",
@@ -5227,10 +4275,8 @@ namespace Server.Items
         "was so burned that it",
         "quickly hopped away,",
         "undignified and",
-        "annoyed."
-      ),
-      new BookPageInfo
-      (
+        "annoyed."),
+      new BookPageInfo(
         "  'Tis my fond hope",
         "that other travelling",
         "minstrels shall learn",
@@ -5238,13 +4284,9 @@ namespace Server.Items
         "and apply themselves",
         "to practicing these",
         "skills in order to",
-        "preserve life and"
-      ),
-      new BookPageInfo
-      (
-        "limb."
-      )
-    );
+        "preserve life and"),
+      new BookPageInfo(
+        "limb."));
 
     [Constructible]
     public LifeOfATravellingMinstrel() : base(Utility.Random(0xFEF, 2), false)
@@ -5272,17 +4314,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region The Major Trade Associations
-
   public class MajorTradeAssociation : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "The Major Trade Associations", "Pieter of Vesper",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  There are ten major",
         "trade associations that",
         "operate legitimately in",
@@ -5290,10 +4326,8 @@ namespace Server.Items
         "and among its trading",
         "partners. Many of",
         "these guilds are",
-        "divided into local or"
-      ),
-      new BookPageInfo
-      (
+        "divided into local or"),
+      new BookPageInfo(
         "specialty subguilds,",
         "who use the same",
         "colors but vary the",
@@ -5301,10 +4335,8 @@ namespace Server.Items
         "  There are many",
         "lesser trade",
         "associations that have",
-        "closed membership,"
-      ),
-      new BookPageInfo
-      (
+        "closed membership,"),
+      new BookPageInfo(
         "and one can join them",
         "only by invitation.",
         "Beltran's Guide to",
@@ -5312,10 +4344,8 @@ namespace Server.Items
         "definitive text on the",
         "full range of guilds",
         "and other associations",
-        "in Britannia, and I"
-      ),
-      new BookPageInfo
-      (
+        "in Britannia, and I"),
+      new BookPageInfo(
         "heartily recommend",
         "it.",
         "  In what follows I",
@@ -5323,10 +4353,8 @@ namespace Server.Items
         "bring together the",
         "known information",
         "regarding these",
-        "guilds. I offer thee"
-      ),
-      new BookPageInfo
-      (
+        "guilds. I offer thee"),
+      new BookPageInfo(
         "the name, typical",
         "membership, heraldic",
         "colors, known",
@@ -5334,10 +4362,8 @@ namespace Server.Items
         "organizations within",
         "the larger guild, and",
         "any known",
-        "affiliations to other"
-      ),
-      new BookPageInfo
-      (
+        "affiliations to other"),
+      new BookPageInfo(
         "guilds, which often",
         "occur because of",
         "trade reasons.",
@@ -5345,10 +4371,8 @@ namespace Server.Items
         "The Guild of Arcane",
         "Arts",
         "Members: alchemists",
-        "and wizards"
-      ),
-      new BookPageInfo
-      (
+        "and wizards"),
+      new BookPageInfo(
         "Colors: blue and purple",
         "Subguilds: Illusionists,",
         "Mages, Wizards",
@@ -5356,10 +4380,8 @@ namespace Server.Items
         "Guild",
         "",
         "The Warrior's Guild",
-        "Members:"
-      ),
-      new BookPageInfo
-      (
+        "Members:"),
+      new BookPageInfo(
         "mercenaries,",
         "soldiery, guardsmen,",
         "weapons masters,",
@@ -5367,10 +4389,8 @@ namespace Server.Items
         "Colors: Blue and red",
         "Subguilds: Cavalry,",
         "Fighters, Warriors",
-        "Affiliations: League"
-      ),
-      new BookPageInfo
-      (
+        "Affiliations: League"),
+      new BookPageInfo(
         "of Rangers",
         "",
         "League of Rangers",
@@ -5378,30 +4398,24 @@ namespace Server.Items
         "bowyers, animal",
         "trainers",
         "Colors: Red, gold and",
-        "blue"
-      ),
-      new BookPageInfo
-      (
+        "blue"),
+      new BookPageInfo(
         "",
         "Guild of Healers",
         "Members: healers",
         "Colors: Green, gold,",
         "and purple",
         "Affiliations: Guild of",
-        "Arcane Arts"
-      ),
-      new BookPageInfo
-      (
+        "Arcane Arts"),
+      new BookPageInfo(
         "Mining Cooperative",
         "Members: miners",
         "Colors: blue and black",
         "checkers, with a gold",
         "cross",
         "Affiliations: Order of",
-        "Engineers"
-      ),
-      new BookPageInfo
-      (
+        "Engineers"),
+      new BookPageInfo(
         "Merchants'",
         "Association",
         "Members:",
@@ -5409,30 +4423,24 @@ namespace Server.Items
         "tavernkeepers,",
         "jewelers,",
         "provisioners",
-        "Colors: gold coins on a"
-      ),
-      new BookPageInfo
-      (
+        "Colors: gold coins on a"),
+      new BookPageInfo(
         "green field for",
         "Merchants.  White",
         "and green for the",
         "others.",
         "Subguilds: Barters,",
         "Provisioners,",
-        "Traders, Merchants"
-      ),
-      new BookPageInfo
-      (
+        "Traders, Merchants"),
+      new BookPageInfo(
         "Order of Engineers",
         "Members: tinkers and",
         "engineers",
         "Colors: Blue, gold, and",
         "purple vertical bars",
         "Affiliations: Mining",
-        "Cooperative"
-      ),
-      new BookPageInfo
-      (
+        "Cooperative"),
+      new BookPageInfo(
         "Society of Clothiers",
         "Members: tailors and",
         "weavers",
@@ -5440,30 +4448,24 @@ namespace Server.Items
         "and red horizontal",
         "bars",
         "",
-        "Maritime Guild"
-      ),
-      new BookPageInfo
-      (
+        "Maritime Guild"),
+      new BookPageInfo(
         "Members: fishermen,",
         "sailors, mapmakers,",
         "shipwrights",
         "Colors: blue and white",
         "Subguilds:",
         "Fishermen, Sailors,",
-        "Shipwrights"
-      ),
-      new BookPageInfo
-      (
+        "Shipwrights"),
+      new BookPageInfo(
         "Bardic Collegium",
         "Members: bards,",
         "musicians,",
         "storytellers, and other",
         "performers",
         "Colors: Purple, red",
-        "and gold checkerboard"
-      ),
-      new BookPageInfo
-      (
+        "and gold checkerboard"),
+      new BookPageInfo(
         "Society of Thieves",
         "Members: beggars,",
         "cutpurses, assassins,",
@@ -5471,9 +4473,7 @@ namespace Server.Items
         "Colors: red and black",
         "Subguilds: Rogues",
         "(beggars), Assassins,",
-        "Thieves"
-      )
-    );
+        "Thieves"));
 
     [Constructible]
     public MajorTradeAssociation() : base(Utility.Random(0xFEF, 2), false)
@@ -5501,17 +4501,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region The Rankings of Trades
-
   public class RankingsOfTrades : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "The Rankings of Trades", "Lord Higginbotham",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  Whilst 'tis true that",
         "within each trade, one",
         "finds differing titles",
@@ -5519,10 +4513,8 @@ namespace Server.Items
         "to the members of a",
         "given guild,",
         "nonetheless for the",
-        "betterment of trade"
-      ),
-      new BookPageInfo
-      (
+        "betterment of trade"),
+      new BookPageInfo(
         "and understanding,",
         "we must have a",
         "commonality of",
@@ -5530,10 +4522,8 @@ namespace Server.Items
         "  For those who may",
         "find themselves",
         "ignorant of the finer",
-        "distinctions between a"
-      ),
-      new BookPageInfo
-      (
+        "distinctions between a"),
+      new BookPageInfo(
         "three-knot member of",
         "the Sailors' Maritime",
         "Association and a",
@@ -5541,10 +4531,8 @@ namespace Server.Items
         "this book shall serve",
         "as a simple",
         "introduction to the",
-        "common cant used"
-      ),
-      new BookPageInfo
-      (
+        "common cant used"),
+      new BookPageInfo(
         "when members of",
         "differing guilds and",
         "trade organizations",
@@ -5552,10 +4540,8 @@ namespace Server.Items
         "other and must",
         "establish relative",
         "credentials.",
-        "  Neophyte"
-      ),
-      new BookPageInfo
-      (
+        "  Neophyte"),
+      new BookPageInfo(
         "Has shown interest",
         "in learning the craft",
         "and some meager",
@@ -5563,10 +4549,8 @@ namespace Server.Items
         "  Novice",
         "Is practicing basic",
         "skills but has not been",
-        "admitted to full"
-      ),
-      new BookPageInfo
-      (
+        "admitted to full"),
+      new BookPageInfo(
         "standing.",
         "  Apprentice",
         "A student of the",
@@ -5574,10 +4558,8 @@ namespace Server.Items
         "  Journeyman",
         "Warranted to practice",
         "the discipline under",
-        "the eyes of a tutor."
-      ),
-      new BookPageInfo
-      (
+        "the eyes of a tutor."),
+      new BookPageInfo(
         "  Expert",
         "A full member of the",
         "guild.",
@@ -5585,10 +4567,8 @@ namespace Server.Items
         "A member of the",
         "guild qualified to",
         "teach others.",
-        "  Master"
-      ),
-      new BookPageInfo
-      (
+        "  Master"),
+      new BookPageInfo(
         "Acknowledged as",
         "qualified to lead a hall",
         "or business.",
@@ -5596,15 +4576,11 @@ namespace Server.Items
         "Rarely a permanent",
         "title, granted in",
         "common parlance to",
-        "those who have"
-      ),
-      new BookPageInfo
-      (
+        "those who have"),
+      new BookPageInfo(
         "shown extreme",
         "mastery of their",
-        "craft recently."
-      )
-    );
+        "craft recently."));
 
     [Constructible]
     public RankingsOfTrades() : base(Utility.Random(0xFEF, 2), false)
@@ -5632,17 +4608,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region The Wild Girl of the Forest
-
   public class WildGirlOfTheForest : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "The Wild Girl of the Forest", "Horace the Trader",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "    Her name was",
         "Leyla, she said, and",
         "her hair was braided",
@@ -5650,10 +4620,8 @@ namespace Server.Items
         "and thorns. I",
         "marveled that they",
         "did not hurt her, but",
-        "when I asked, she but"
-      ),
-      new BookPageInfo
-      (
+        "when I asked, she but"),
+      new BookPageInfo(
         "shrugged and let her",
         "eyes roam once more",
         "across the woods.",
@@ -5661,10 +4629,8 @@ namespace Server.Items
         "hands securely",
         "fastened by her",
         "ropes, I itched to",
-        "reach out and comb"
-      ),
-      new BookPageInfo
-      (
+        "reach out and comb"),
+      new BookPageInfo(
         "that unruly golden",
         "mane, dirtied and",
         "leaf-ridden.",
@@ -5672,10 +4638,8 @@ namespace Server.Items
         "she told me over",
         "nights illumined by",
         "campfires, was once",
-        "the city of Trinsic."
-      ),
-      new BookPageInfo
-      (
+        "the city of Trinsic."),
+      new BookPageInfo(
         "She claimed to have",
         "been kidnapped and",
         "raised by orcs, which",
@@ -5683,10 +4647,8 @@ namespace Server.Items
         "tale, for all know orcs",
         "delight in eating the",
         "meat of honest folk.",
-        "When I told her this,"
-      ),
-      new BookPageInfo
-      (
+        "When I told her this,"),
+      new BookPageInfo(
         "she laughed a fey",
         "laugh, and gaily",
         "admitted that honest",
@@ -5694,10 +4656,8 @@ namespace Server.Items
         "had she stolen folk",
         "away from caravans",
         "to loot their",
-        "possessions from an"
-      ),
-      new BookPageInfo
-      (
+        "possessions from an"),
+      new BookPageInfo(
         "unconscious body!",
         "    At this, I began to",
         "fear for my life, and",
@@ -5705,10 +4665,8 @@ namespace Server.Items
         "of teeth sharper than",
         "a human ought to",
         "have, for the tale of",
-        "orcish raising had"
-      ),
-      new BookPageInfo
-      (
+        "orcish raising had"),
+      new BookPageInfo(
         "struck fear into the",
         "marrow of my bones.",
         "\"Wilt thou eat me?\" I",
@@ -5716,10 +4674,8 @@ namespace Server.Items
         "fearing the answer.",
         "    And she cocked",
         "her head at me, like a",
-        "wild animal facing a"
-      ),
-      new BookPageInfo
-      (
+        "wild animal facing a"),
+      new BookPageInfo(
         "word that it dost not",
         "understand, and the",
         "fixity in her eyes",
@@ -5727,10 +4683,8 @@ namespace Server.Items
         "the deeper reaches of",
         "the Abyss. But she",
         "finally grunted, and",
-        "said, \"Nay,\" in a"
-      ),
-      new BookPageInfo
-      (
+        "said, \"Nay,\" in a"),
+      new BookPageInfo(
         "voice that recalled to",
         "me a child. \"Nay,\"",
         "she said, \"for thou",
@@ -5738,10 +4692,8 @@ namespace Server.Items
         "boy I knew once,",
         "when I was a girl",
         "who played in a city",
-        "of great sandstone"
-      ),
-      new BookPageInfo
-      (
+        "of great sandstone"),
+      new BookPageInfo(
         "walls, before I was",
         "taken. He had sandy",
         "hair like thee, and I",
@@ -5749,10 +4701,8 @@ namespace Server.Items
         "holding his hand and",
         "sharing flavored ice.",
         "His name was",
-        "Japheth.\""
-      ),
-      new BookPageInfo
-      (
+        "Japheth.\""),
+      new BookPageInfo(
         "    The next morning",
         "she let me go,",
         "stripped of my pouch",
@@ -5760,10 +4710,8 @@ namespace Server.Items
         "me run through the",
         "woods, and to fear",
         "recapture, for surely",
-        "her heart would not"
-      ),
-      new BookPageInfo
-      (
+        "her heart would not"),
+      new BookPageInfo(
         "soften again. 'Twas a",
         "fearful run, and I",
         "came to the road to",
@@ -5771,10 +4719,8 @@ namespace Server.Items
         "scratches run",
         "rampant crost my",
         "skin, but I did not see",
-        "her again."
-      ),
-      new BookPageInfo
-      (
+        "her again."),
+      new BookPageInfo(
         "    Oft have I",
         "wondered of the boy",
         "named Japheth, and",
@@ -5782,10 +4728,8 @@ namespace Server.Items
         "remembers a girl who",
         "lived in sandstone",
         "walls. The only",
-        "Japheth I know is the"
-      ),
-      new BookPageInfo
-      (
+        "Japheth I know is the"),
+      new BookPageInfo(
         "Guildmaster of",
         "Paladins who died",
         "last year warring",
@@ -5793,10 +4737,8 @@ namespace Server.Items
         "though he had indeed",
         "sandy hair, I cannot",
         "picture him side by",
-        "side with a feral girl"
-      ),
-      new BookPageInfo
-      (
+        "side with a feral girl"),
+      new BookPageInfo(
         "whose tongue has",
         "tasted of human",
         "flesh.",
@@ -5804,18 +4746,14 @@ namespace Server.Items
         "fate are strange",
         "indeed, and I suppose",
         "'tis possible that this",
-        "paladin died"
-      ),
-      new BookPageInfo
-      (
+        "paladin died"),
+      new BookPageInfo(
         "defending his",
         "remembered lady's",
         "honor, unknowingly",
         "struck down by the",
         "orc that she called",
-        "father."
-      )
-    );
+        "father."));
 
     [Constructible]
     public WildGirlOfTheForest() : base(Utility.Random(0xFEF, 2), false)
@@ -5843,17 +4781,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Treatise on Alchemy
-
   public class TreatiseOnAlchemy : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Treatise on Alchemy", "Felicia Hierophant",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "    The alchemical",
         "arts are notable for",
         "their deceptive",
@@ -5861,10 +4793,8 @@ namespace Server.Items
         "that to our best",
         "knowledge currently,",
         "there are but eight",
-        "valid potions that can"
-      ),
-      new BookPageInfo
-      (
+        "valid potions that can"),
+      new BookPageInfo(
         "be made (though I",
         "emphasize that new",
         "discoveries may",
@@ -5872,10 +4802,8 @@ namespace Server.Items
         "However, the delicate",
         "balance of confecting",
         "the potions is",
-        "difficult indeed, and"
-      ),
-      new BookPageInfo
-      (
+        "difficult indeed, and"),
+      new BookPageInfo(
         "requires great skill.",
         "    To give thee an",
         "example of the",
@@ -5883,10 +4811,8 @@ namespace Server.Items
         "can be created by",
         "those well-versed in",
         "the subtleties of",
-        "alchemy:"
-      ),
-      new BookPageInfo
-      (
+        "alchemy:"),
+      new BookPageInfo(
         "    Black pearl, that",
         "rare substance that is",
         "oft found lying",
@@ -5894,10 +4820,8 @@ namespace Server.Items
         "surface of the",
         "ground, when",
         "properly crushed",
-        "with mortar and"
-      ),
-      new BookPageInfo
-      (
+        "with mortar and"),
+      new BookPageInfo(
         "pestle, can yield a",
         "fine powder. Said",
         "powder in the proper",
@@ -5905,10 +4829,8 @@ namespace Server.Items
         "mixed via the",
         "alchemical arts can",
         "yield a wonderfully",
-        "refreshing drink."
-      ),
-      new BookPageInfo
-      (
+        "refreshing drink."),
+      new BookPageInfo(
         "    The revolting blood",
         "moss so gingerly",
         "scraped off of",
@@ -5916,10 +4838,8 @@ namespace Server.Items
         "fastidious housewives",
         "is but a tiny cousin to",
         "the wilder version,",
-        "which when properly"
-      ),
-      new BookPageInfo
-      (
+        "which when properly"),
+      new BookPageInfo(
         "prepared yields a",
         "magical liquid that for",
         "a time can make the",
@@ -5927,10 +4847,8 @@ namespace Server.Items
         "and dextrous",
         "individual.",
         "    However, beware",
-        "of the deadly"
-      ),
-      new BookPageInfo
-      (
+        "of the deadly"),
+      new BookPageInfo(
         "nightshade, for it",
         "yields a deceptively",
         "sweet-tasting poison",
@@ -5938,10 +4856,8 @@ namespace Server.Items
         "fatal to the drinker,",
         "and in fact is also",
         "used by assassins to",
-        "coat their blades."
-      ),
-      new BookPageInfo
-      (
+        "coat their blades."),
+      new BookPageInfo(
         "Fortunately, this",
         "latter art of poisoning",
         "is little known!",
@@ -5949,10 +4865,8 @@ namespace Server.Items
         "reward the student of",
         "alchemy, indeed. The",
         "rumours of longtime",
-        "alchemists losing"
-      ),
-      new BookPageInfo
-      (
+        "alchemists losing"),
+      new BookPageInfo(
         "their hair and",
         "acquiring an",
         "unhealthy pallor, not",
@@ -5960,10 +4874,8 @@ namespace Server.Items
         "blotches upon their",
         "once-fair skin, are",
         "unhappily, true. Yet",
-        "the joys of the mind"
-      ),
-      new BookPageInfo
-      (
+        "the joys of the mind"),
+      new BookPageInfo(
         "make up for the",
         "complete loss of",
         "interest that others",
@@ -5971,13 +4883,9 @@ namespace Server.Items
         "an object of",
         "courtship, and I have",
         "never regretted that",
-        "choice. Honestly,"
-      ),
-      new BookPageInfo
-      (
-        "truly. Not once."
-      )
-    );
+        "choice. Honestly,"),
+      new BookPageInfo(
+        "truly. Not once."));
 
     [Constructible]
     public TreatiseOnAlchemy() : base(Utility.Random(0xFEF, 2), false)
@@ -6005,17 +4913,11 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region Virtue
-
   public class VirtueBook : BaseBook
   {
-    public static readonly BookContent Content = new BookContent
-    (
+    public static readonly BookContent Content = new BookContent(
       "Virtue", "Lord British",
-      new BookPageInfo
-      (
+      new BookPageInfo(
         "  Within this world",
         "live people with many",
         "different ideals, and",
@@ -6023,10 +4925,8 @@ namespace Server.Items
         "is it within the people",
         "of our land that sorts",
         "out the good from the",
-        "evil, the cherished"
-      ),
-      new BookPageInfo
-      (
+        "evil, the cherished"),
+      new BookPageInfo(
         "form the disdained?",
         "Virtue, I say it is,",
         "and virtue is the",
@@ -6034,10 +4934,8 @@ namespace Server.Items
         "people who wish to",
         "live together in a",
         "bonded society.",
-        "  For without Virtues"
-      ),
-      new BookPageInfo
-      (
+        "  For without Virtues"),
+      new BookPageInfo(
         "as a code of conduct",
         "which people maintain",
         "in their relations",
@@ -6045,10 +4943,8 @@ namespace Server.Items
         "fabric of that society",
         "will become weakened.",
         "For a society to grow",
-        "and prosper for all,"
-      ),
-      new BookPageInfo
-      (
+        "and prosper for all,"),
+      new BookPageInfo(
         "each must grant the",
         "others a common base",
         "of consideration.",
@@ -6056,10 +4952,8 @@ namespace Server.Items
         "Virtues. For though",
         "one person might gain",
         "personal advantage by",
-        "breaching such a"
-      ),
-      new BookPageInfo
-      (
+        "breaching such a"),
+      new BookPageInfo(
         "code, the society as a",
         "whole would suffer.",
         "  There are three",
@@ -6067,10 +4961,8 @@ namespace Server.Items
         "should guide people to",
         "enlightenment. These",
         "are: Truth, Love and",
-        "Courage. From all the"
-      ),
-      new BookPageInfo
-      (
+        "Courage. From all the"),
+      new BookPageInfo(
         "infinite reasons one",
         "may have to found an",
         "action, such as greed",
@@ -6078,10 +4970,8 @@ namespace Server.Items
         "pity, the three",
         "Principle Virtues",
         "stand out.",
-        "  In fact all other"
-      ),
-      new BookPageInfo
-      (
+        "  In fact all other"),
+      new BookPageInfo(
         "virtues and vices can",
         "be show to be built",
         "from these principles",
@@ -6089,10 +4979,8 @@ namespace Server.Items
         "corruption's of",
         "Falsehood, Hatred and",
         "Cowardice. These",
-        "three Principles can"
-      ),
-      new BookPageInfo
-      (
+        "three Principles can"),
+      new BookPageInfo(
         "be combined in eight",
         "ways, which I will",
         "call the eight virtues.",
@@ -6100,10 +4988,8 @@ namespace Server.Items
         "which we should",
         "build our society upon",
         "follow.",
-        " Truth alone becomes"
-      ),
-      new BookPageInfo
-      (
+        " Truth alone becomes"),
+      new BookPageInfo(
         "Honesty, for without",
         "honesty between our",
         "people, how can we",
@@ -6111,10 +4997,8 @@ namespace Server.Items
         "is needed to",
         "maximize our",
         "successes.",
-        " Love alone becomes"
-      ),
-      new BookPageInfo
-      (
+        " Love alone becomes"),
+      new BookPageInfo(
         "compassion, for at",
         "some time or another",
         "all of us will need the",
@@ -6122,10 +5006,8 @@ namespace Server.Items
         "and most likely",
         "compassion will be",
         "shown to those who",
-        "have shown it."
-      ),
-      new BookPageInfo
-      (
+        "have shown it."),
+      new BookPageInfo(
         " Courage alone",
         "becomes Valor,",
         "without valor our",
@@ -6133,10 +5015,8 @@ namespace Server.Items
         "reach into the",
         "unknown or to the",
         "risky and will never",
-        "achieve."
-      ),
-      new BookPageInfo
-      (
+        "achieve."),
+      new BookPageInfo(
         " Truth tempered by",
         "Love give us Justice,",
         "for only in a loving",
@@ -6144,10 +5024,8 @@ namespace Server.Items
         "can one dispense fair",
         "Justice, rather than",
         "create a cold and",
-        "callous people."
-      ),
-      new BookPageInfo
-      (
+        "callous people."),
+      new BookPageInfo(
         " Love and Courage",
         "give us Sacrifice, for",
         "a people who love each",
@@ -6155,10 +5033,8 @@ namespace Server.Items
         "to make personal",
         "sacrifices to help",
         "other in need, which",
-        "one day, may be"
-      ),
-      new BookPageInfo
-      (
+        "one day, may be"),
+      new BookPageInfo(
         "needed in return.",
         " Courage and Truth",
         "give us Honor, great",
@@ -6166,10 +5042,8 @@ namespace Server.Items
         "well, that chivalric",
         "honor can be found",
         "by adhering to this",
-        "code of conduct."
-      ),
-      new BookPageInfo
-      (
+        "code of conduct."),
+      new BookPageInfo(
         " Combining Truth,",
         "Love and Courage",
         "suggest the virtue of",
@@ -6177,10 +5051,8 @@ namespace Server.Items
         "that causes one to be",
         "introspective, to",
         "wonder about ones",
-        "place in this world"
-      ),
-      new BookPageInfo
-      (
+        "place in this world"),
+      new BookPageInfo(
         "and whether one's",
         "deeds will be recorded",
         "as a gift to the world",
@@ -6188,10 +5060,8 @@ namespace Server.Items
         " The final Virtue is",
         "more complicated. For",
         "the eighth combination",
-        "is that devoid of"
-      ),
-      new BookPageInfo
-      (
+        "is that devoid of"),
+      new BookPageInfo(
         "Truth, Love or",
         "Courage which can",
         "only exist in a state",
@@ -6199,10 +5069,8 @@ namespace Server.Items
         "of course is not a",
         "virtue at all. Perhaps",
         "this trick of fate is a",
-        "test to see if one can"
-      ),
-      new BookPageInfo
-      (
+        "test to see if one can"),
+      new BookPageInfo(
         "realize that the true",
         "virtue is that of",
         "Humility. I feel that",
@@ -6210,10 +5078,8 @@ namespace Server.Items
         "Magincia fail to see",
         "this to such a degree",
         "that I would not be",
-        "surprised if some ill"
-      ),
-      new BookPageInfo
-      (
+        "surprised if some ill"),
+      new BookPageInfo(
         "fate awaited their",
         "future.",
         " Thus from the",
@@ -6221,18 +5087,14 @@ namespace Server.Items
         "which spawned the",
         "Three Principles of",
         "Truth, Love and",
-        "Courage, come the"
-      ),
-      new BookPageInfo
-      (
+        "Courage, come the"),
+      new BookPageInfo(
         "Eight Virtues of",
         "Honesty, Compassion,",
         "Valor, Justice,",
         "Sacrifice, Honor,",
         "Spirituality, and",
-        "Humility."
-      )
-    );
+        "Humility."));
 
     [Constructible]
     public VirtueBook() : base(Utility.Random(0xFEF, 2), false)
@@ -6259,6 +5121,4 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
 }

@@ -53,7 +53,6 @@ namespace Server.Mobiles
     public virtual double BoostedSpeed => 0.1;
     public override bool ReduceSpeedWithDamage => false;
 
-
     public override int Meat => 16;
     public override FoodType FavoriteFood => FoodType.Meat;
 

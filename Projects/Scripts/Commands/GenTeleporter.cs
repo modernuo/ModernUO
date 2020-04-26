@@ -1,10 +1,10 @@
-using Server.Items;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Server.Items;
 using Server.Json;
 
 namespace Server.Commands
@@ -122,7 +122,7 @@ namespace Server.Commands
       public int Count { get; private set; }
       public int DelCount { get; private set; }
 
-      private static bool IsWithinZ(int delta) => -12 <= delta && delta <= 12;
+      private static bool IsWithinZ(int delta) => delta >= -12 && delta <= 12;
 
       public static int DeleteTeleporters(Location location)
       {

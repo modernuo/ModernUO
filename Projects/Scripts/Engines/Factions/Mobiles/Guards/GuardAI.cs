@@ -39,11 +39,11 @@ namespace Server.Factions
       Hold = hold;
     }
 
-    public Type Spell{ get; }
+    public Type Spell { get; }
 
-    public TimeSpan Hold{ get; }
+    public TimeSpan Hold { get; }
 
-    public int Chance{ get; }
+    public int Chance { get; }
   }
 
   public class SpellCombo
@@ -52,8 +52,7 @@ namespace Server.Factions
       new ComboEntry(typeof(ParalyzeSpell), 20),
       new ComboEntry(typeof(ExplosionSpell), 100, TimeSpan.FromSeconds(2.8)),
       new ComboEntry(typeof(PoisonSpell), 30),
-      new ComboEntry(typeof(EnergyBoltSpell))
-    );
+      new ComboEntry(typeof(EnergyBoltSpell)));
 
     public static readonly SpellCombo Strong = new SpellCombo(90,
       new ComboEntry(typeof(ParalyzeSpell), 20),
@@ -62,8 +61,7 @@ namespace Server.Factions
       new ComboEntry(typeof(ExplosionSpell), 100, TimeSpan.FromSeconds(2.8)),
       new ComboEntry(typeof(EnergyBoltSpell)),
       new ComboEntry(typeof(PoisonSpell), 30),
-      new ComboEntry(typeof(EnergyBoltSpell))
-    );
+      new ComboEntry(typeof(EnergyBoltSpell)));
 
     public SpellCombo(int mana, params ComboEntry[] entries)
     {
@@ -71,9 +69,9 @@ namespace Server.Factions
       Entries = entries;
     }
 
-    public int Mana{ get; }
+    public int Mana { get; }
 
-    public ComboEntry[] Entries{ get; }
+    public ComboEntry[] Entries { get; }
 
     public static Spell Process(Mobile mob, Mobile targ, ref SpellCombo combo, ref int index, ref DateTime releaseTime)
     {
@@ -106,7 +104,7 @@ namespace Server.Factions
 
     private SpellCombo m_Combo;
     private int m_ComboIndex = -1;
-    private BaseFactionGuard m_Guard;
+    private readonly BaseFactionGuard m_Guard;
     private DateTime m_ReleaseTarget;
 
     public FactionGuardAI(BaseFactionGuard guard) : base(guard) => m_Guard = guard;
@@ -344,11 +342,11 @@ namespace Server.Factions
 
     public void RunTo(Mobile m)
     {
-      /*if ( m.Paralyzed || m.Frozen )
+      /*if (m.Paralyzed || m.Frozen)
       {
-        if ( m_Mobile.InRange( m, 1 ) )
+        if (m_Mobile.InRange( m, 1 ))
           RunFrom( m );
-        else if ( !m_Mobile.InRange( m, m_Mobile.RangeFight > 2 ? m_Mobile.RangeFight : 2 ) && !MoveTo( m, true, 1 ) )
+        else if (!m_Mobile.InRange( m, m_Mobile.RangeFight > 2 ? m_Mobile.RangeFight : 2 ) && !MoveTo( m, true, 1 ))
           OnFailedMove();
       }
       else
@@ -373,9 +371,9 @@ namespace Server.Factions
 
     public void OnFailedMove()
     {
-      /*if ( !m_Mobile.DisallowAllMoves && 20 > Utility.Random( 100 ) && IsAllowed( GuardAI.Magic ) )
+      /*if (!m_Mobile.DisallowAllMoves && 20 > Utility.Random( 100 ) && IsAllowed( GuardAI.Magic ))
       {
-        if ( m_Mobile.Target != null )
+        if (m_Mobile.Target != null)
           m_Mobile.Target.Cancel( m_Mobile, TargetCancelType.Canceled );
 
         new TeleportSpell( m_Mobile, null ).Cast();
@@ -590,7 +588,7 @@ namespace Server.Factions
         else if (dispelTarget != null &&
                  (IsAllowed(GuardAI.Magic) || IsAllowed(GuardAI.Bless) || IsAllowed(GuardAI.Curse)))
         {
-          if (!dispelTarget.Paralyzed && m_Guard.Mana > ManaReserve + 20 && 40 > Utility.Random(100))
+          if (!dispelTarget.Paralyzed && m_Guard.Mana > ManaReserve + 20 && Utility.Random(100) < 40)
             spell = new ParalyzeSpell(m_Guard);
           else
             spell = new DispelSpell(m_Guard);
@@ -610,9 +608,9 @@ namespace Server.Factions
               m_ComboIndex = -1;
             }
           }
-          else if (20 > Utility.Random(100) && IsAllowed(GuardAI.Magic))
+          else if (Utility.Random(100) < 20 && IsAllowed(GuardAI.Magic))
           {
-            if (80 > Utility.Random(100))
+            if (Utility.Random(100) < 80)
             {
               m_Combo = IsAllowed(GuardAI.Smart) ? SpellCombo.Simple : SpellCombo.Strong;
               m_ComboIndex = -1;
@@ -635,7 +633,7 @@ namespace Server.Factions
             }
           }
 
-          if (spell == null && 2 > Utility.Random(100) && m_Guard.Mana >= ManaReserve + 10)
+          if (spell == null && Utility.Random(100) < 2 && m_Guard.Mana >= ManaReserve + 10)
           {
             int strMod = GetStatMod(m_Guard, StatType.Str);
             int dexMod = GetStatMod(m_Guard, StatType.Dex);
@@ -668,10 +666,10 @@ namespace Server.Factions
             }
           }
 
-          if (spell == null && 2 > Utility.Random(100) && m_Guard.Mana >= ManaReserve + 10 &&
+          if (spell == null && Utility.Random(100) < 2 && m_Guard.Mana >= ManaReserve + 10 &&
               IsAllowed(GuardAI.Curse))
           {
-            if (!combatant.Poisoned && 40 > Utility.Random(100))
+            if (!combatant.Poisoned && Utility.Random(100) < 40)
             {
               spell = new PoisonSpell(m_Guard);
             }

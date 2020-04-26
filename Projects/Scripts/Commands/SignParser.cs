@@ -6,7 +6,7 @@ namespace Server.Commands
 {
   public class SignParser
   {
-    private static Queue<Item> m_ToDelete = new Queue<Item>();
+    private static readonly Queue<Item> m_ToDelete = new Queue<Item>();
 
     public static void Initialize()
     {
@@ -119,10 +119,10 @@ namespace Server.Commands
 
     private class SignEntry
     {
-      public int m_ItemID;
-      public Point3D m_Location;
-      public int m_Map;
-      public string m_Text;
+      public readonly int m_ItemID;
+      public readonly Point3D m_Location;
+      public readonly int m_Map;
+      public readonly string m_Text;
 
       public SignEntry(string text, Point3D pt, int itemID, int mapLoc)
       {

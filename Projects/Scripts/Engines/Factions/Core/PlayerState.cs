@@ -36,32 +36,32 @@ namespace Server.Factions
       switch (version)
       {
         case 1:
-        {
-          IsActive = reader.ReadBool();
-          LastHonorTime = reader.ReadDateTime();
-          goto case 0;
-        }
+          {
+            IsActive = reader.ReadBool();
+            LastHonorTime = reader.ReadDateTime();
+            goto case 0;
+          }
         case 0:
-        {
-          Mobile = reader.ReadMobile();
+          {
+            Mobile = reader.ReadMobile();
 
-          m_KillPoints = reader.ReadEncodedInt();
-          m_MerchantTitle = (MerchantTitle)reader.ReadEncodedInt();
+            m_KillPoints = reader.ReadEncodedInt();
+            m_MerchantTitle = (MerchantTitle)reader.ReadEncodedInt();
 
-          Leaving = reader.ReadDateTime();
+            Leaving = reader.ReadDateTime();
 
-          break;
-        }
+            break;
+          }
       }
 
       Attach();
     }
 
-    public Mobile Mobile{ get; }
+    public Mobile Mobile { get; }
 
-    public Faction Faction{ get; }
+    public Faction Faction { get; }
 
-    public List<PlayerState> Owner{ get; }
+    public List<PlayerState> Owner { get; }
 
     public MerchantTitle MerchantTitle
     {
@@ -93,7 +93,7 @@ namespace Server.Factions
       }
     }
 
-    public List<SilverGivenEntry> SilverGiven{ get; private set; }
+    public List<SilverGivenEntry> SilverGiven { get; private set; }
 
     public int KillPoints
     {
@@ -233,13 +233,13 @@ namespace Server.Factions
       }
     }
 
-    public DateTime LastHonorTime{ get; set; }
+    public DateTime LastHonorTime { get; set; }
 
-    public DateTime Leaving{ get; set; }
+    public DateTime Leaving { get; set; }
 
     public bool IsLeaving => Leaving > DateTime.MinValue;
 
-    public bool IsActive{ get; set; }
+    public bool IsActive { get; set; }
 
     public int CompareTo(PlayerState ps) => (ps?.m_KillPoints ?? 0) - m_KillPoints;
 

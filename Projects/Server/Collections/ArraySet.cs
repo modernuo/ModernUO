@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019 - ModernUO Development Team                        *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: ArraySet.cs - Created: 2019/10/04 - Updated: 2019/12/30         *
  *                                                                       *
@@ -28,7 +28,11 @@ namespace Server.Collections
   {
     private readonly List<T> m_List = new List<T>();
 
-    public T this[int index] { get => m_List[index]; set => m_List[index] = value; }
+    public T this[int index]
+    {
+      get => m_List[index];
+      set => m_List[index] = value;
+    }
 
     public int Count => m_List.Count;
 
@@ -36,7 +40,7 @@ namespace Server.Collections
 
     public int Add(T item)
     {
-      int indexOf = m_List.IndexOf(item);
+      var indexOf = m_List.IndexOf(item);
 
       if (indexOf >= 0) return indexOf;
 

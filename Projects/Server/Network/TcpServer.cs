@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019 - ModernUO Development Team                        *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: TcpServer.cs                                                    *
  * Created: 2020/04/12 - Updated: 2020/04/12                             *
@@ -30,19 +30,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Server.Network
 {
-  public class TcpServer
+  public static class TcpServer
   {
     public static List<IPEndPoint> Listeners { get; } = new List<IPEndPoint>();
+
     // Make this thread safe
     public static List<NetState> Instances { get; } = new List<NetState>();
 
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+    public static IWebHostBuilder CreateWebHostBuilder(string[] args = null) =>
       WebHost.CreateDefaultBuilder(args)
         .UseSetting(WebHostDefaults.SuppressStatusMessagesKey, "True")
-        .ConfigureServices(services =>
-        {
-          services.AddSingleton<IMessagePumpService>(new MessagePumpService());
-        })
+        .ConfigureServices(services => { services.AddSingleton<IMessagePumpService>(new MessagePumpService()); })
         .UseKestrel(options =>
         {
           foreach (var ipep in Listeners)
@@ -60,17 +58,19 @@ namespace Server.Network
     {
       if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
       {
-        NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
-        foreach (NetworkInterface adapter in adapters)
+        var adapters = NetworkInterface.GetAllNetworkInterfaces();
+        foreach (var adapter in adapters)
         {
-          IPInterfaceProperties properties = adapter.GetIPProperties();
-          foreach (UnicastIPAddressInformation unicast in properties.UnicastAddresses)
+          var properties = adapter.GetIPProperties();
+          foreach (var unicast in properties.UnicastAddresses)
             if (ipep.AddressFamily == unicast.Address.AddressFamily)
               Console.WriteLine("Listening: {0}:{1}", unicast.Address, ipep.Port);
         }
       }
       else
+      {
         Console.WriteLine("Listening: {0}:{1}", ipep.Address, ipep.Port);
+      }
     }
   }
 }

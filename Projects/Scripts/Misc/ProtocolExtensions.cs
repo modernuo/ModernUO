@@ -5,7 +5,7 @@ namespace Server.Misc
 {
   public class ProtocolExtensions
   {
-    private static PacketHandler[] m_Handlers = new PacketHandler[0x100];
+    private static readonly PacketHandler[] m_Handlers = new PacketHandler[0x100];
 
     public static void Initialize()
     {
@@ -58,7 +58,7 @@ namespace Server.Misc
     {
       EnsureCapacity(4 + capacity);
 
-      m_Stream.Write((byte)packetID);
+      Stream.Write((byte)packetID);
     }
   }
 }

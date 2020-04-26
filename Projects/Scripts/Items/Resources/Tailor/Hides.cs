@@ -61,17 +61,17 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Resource = (CraftResource)reader.ReadInt();
-          break;
-        }
+          {
+            m_Resource = (CraftResource)reader.ReadInt();
+            break;
+          }
         case 0:
-        {
-          OreInfo info = new OreInfo(reader.ReadInt(), reader.ReadInt(), reader.ReadString());
+          {
+            OreInfo info = new OreInfo(reader.ReadInt(), reader.ReadInt(), reader.ReadString());
 
-          m_Resource = CraftResources.GetFromOreInfo(info);
-          break;
-        }
+            m_Resource = CraftResources.GetFromOreInfo(info);
+            break;
+          }
       }
     }
 
@@ -121,7 +121,7 @@ namespace Server.Items
         return false;
       }
 
-      base.ScissorHelper(from, new Leather(), 1);
+      this.ScissorHelper(from, new Leather(), 1);
 
       return true;
     }
@@ -163,7 +163,7 @@ namespace Server.Items
         return false;
       }
 
-      base.ScissorHelper(from, new SpinedLeather(), 1);
+      this.ScissorHelper(from, new SpinedLeather(), 1);
 
       return true;
     }
@@ -205,7 +205,7 @@ namespace Server.Items
         return false;
       }
 
-      base.ScissorHelper(from, new HornedLeather(), 1);
+      this.ScissorHelper(from, new HornedLeather(), 1);
 
       return true;
     }
@@ -247,7 +247,7 @@ namespace Server.Items
         return false;
       }
 
-      base.ScissorHelper(from, new BarbedLeather(), 1);
+      this.ScissorHelper(from, new BarbedLeather(), 1);
 
       return true;
     }

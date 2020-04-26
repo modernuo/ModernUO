@@ -46,7 +46,7 @@ namespace Server.Gumps
               {
                 m_Mobile.SendLocalizedMessage(501184); // You cannot declare war against yourself!
               }
-              else if (g.WarInvitations.Contains(m_Guild) && m_Guild.WarDeclarations.Contains(g) ||
+              else if ((g.WarInvitations.Contains(m_Guild) && m_Guild.WarDeclarations.Contains(g)) ||
                        m_Guild.IsWar(g))
               {
                 m_Mobile.SendLocalizedMessage(501183); // You are already at war with that guild.

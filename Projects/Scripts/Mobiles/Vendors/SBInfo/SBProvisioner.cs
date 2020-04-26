@@ -9,20 +9,16 @@ namespace Server.Mobiles
 {
   public class SBProvisioner : SBInfo
   {
-    public override IShopSellInfo SellInfo{ get; } = new InternalSellInfo();
+    public override IShopSellInfo SellInfo { get; } = new InternalSellInfo();
 
-    public override List<GenericBuyInfo> BuyInfo{ get; } = new InternalBuyInfo();
+    public override List<GenericBuyInfo> BuyInfo { get; } = new InternalBuyInfo();
 
     public class InternalBuyInfo : List<GenericBuyInfo>
     {
       public InternalBuyInfo()
       {
-        #region Salvage Bag
-
         if (Core.ML)
           Add(new GenericBuyInfo("1079931", typeof(SalvageBag), 1255, 20, 0xE76, Utility.RandomBlueHue()));
-
-        #endregion
 
         Add(new GenericBuyInfo("1060834", typeof(PlantBowl), 2, 20, 0x15FD, 0));
 
@@ -37,7 +33,7 @@ namespace Server.Mobiles
         Add(new GenericBuyInfo(typeof(Torch), 8, 20, 0xF6B, 0));
         Add(new GenericBuyInfo(typeof(Lantern), 2, 20, 0xA25, 0));
 
-        //TODO: Oil Flask @ 8GP
+        // TODO: Oil Flask @ 8GP
 
         Add(new GenericBuyInfo(typeof(Lockpick), 12, 20, 0x14FC, 0));
 

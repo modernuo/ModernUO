@@ -6,12 +6,12 @@ namespace Server.Factions
 {
   public class FactionItemDefinition
   {
-    private static FactionItemDefinition m_MetalArmor = new FactionItemDefinition(1000, typeof(Blacksmith));
-    private static FactionItemDefinition m_Weapon = new FactionItemDefinition(1000, typeof(Blacksmith));
-    private static FactionItemDefinition m_RangedWeapon = new FactionItemDefinition(1000, typeof(Bowyer));
-    private static FactionItemDefinition m_LeatherArmor = new FactionItemDefinition(750, typeof(Tailor));
-    private static FactionItemDefinition m_Clothing = new FactionItemDefinition(200, typeof(Tailor));
-    private static FactionItemDefinition m_Scroll = new FactionItemDefinition(500, typeof(Mage));
+    private static readonly FactionItemDefinition m_MetalArmor = new FactionItemDefinition(1000, typeof(Blacksmith));
+    private static readonly FactionItemDefinition m_Weapon = new FactionItemDefinition(1000, typeof(Blacksmith));
+    private static readonly FactionItemDefinition m_RangedWeapon = new FactionItemDefinition(1000, typeof(Bowyer));
+    private static readonly FactionItemDefinition m_LeatherArmor = new FactionItemDefinition(750, typeof(Tailor));
+    private static readonly FactionItemDefinition m_Clothing = new FactionItemDefinition(200, typeof(Tailor));
+    private static readonly FactionItemDefinition m_Scroll = new FactionItemDefinition(500, typeof(Mage));
 
     public FactionItemDefinition(int silverCost, Type vendorType)
     {
@@ -19,9 +19,9 @@ namespace Server.Factions
       VendorType = vendorType;
     }
 
-    public int SilverCost{ get; }
+    public int SilverCost { get; }
 
-    public Type VendorType{ get; }
+    public Type VendorType { get; }
 
     public static FactionItemDefinition Identify(Item item)
     {

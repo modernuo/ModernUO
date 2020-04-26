@@ -133,7 +133,7 @@ namespace Server.Mobiles
           if (!(m is MeerWarrior) || !IsFriend(m) || !CanBeBeneficial(m) || m.Hits >= m.HitsMax || m.Poisoned ||
               MortalStrike.IsWounded(m))
             continue;
-          
+
           DoBeneficial(m);
 
           int toHeal = Utility.RandomMinMax(20, 30);
@@ -145,7 +145,7 @@ namespace Server.Mobiles
           m.FixedParticles(0x376A, 9, 32, 5030, EffectLayer.Waist);
           m.PlaySound(0x202);
         }
-        
+
         eable.Free();
       }
 

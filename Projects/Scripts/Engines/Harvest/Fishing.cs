@@ -14,7 +14,7 @@ namespace Server.Engines.Harvest
   {
     private static Fishing m_System;
 
-    private static MutateEntry[] m_MutateTable =
+    private static readonly MutateEntry[] m_MutateTable =
     {
       new MutateEntry(80.0, 80.0, 4080.0, true, typeof(SpecialFishingNet)),
       new MutateEntry(80.0, 80.0, 4080.0, true, typeof(BigFish)),
@@ -26,7 +26,7 @@ namespace Server.Engines.Harvest
       new MutateEntry(0.0, 200.0, -200.0, false, new Type[] { null })
     };
 
-    private static int[] m_WaterTiles =
+    private static readonly int[] m_WaterTiles =
     {
       0x00A8, 0x00AB,
       0x0136, 0x0137,
@@ -53,7 +53,7 @@ namespace Server.Engines.Harvest
         ConsumedPerHarvest = 1,
         ConsumedPerFeluccaHarvest = 1,
         EffectActions = new[] { 12 },
-        EffectSounds = new int[0],
+        EffectSounds = Array.Empty<int>(),
         EffectCounts = new[] { 1 },
         EffectDelay = TimeSpan.Zero,
         EffectSoundDelay = TimeSpan.FromSeconds(8.0),
@@ -70,7 +70,7 @@ namespace Server.Engines.Harvest
       };
 
       HarvestVein[] veins = {
-        new HarvestVein(100.0, 0.0, res[0], null)
+        new HarvestVein(1000, 0.0, res[0], null)
       };
 
       fish.Resources = res;
@@ -79,17 +79,14 @@ namespace Server.Engines.Harvest
       if (Core.ML)
         fish.BonusResources = new[]
         {
-          new BonusHarvestResource(0, 99.4, null, null), //set to same chance as mining ml gems
+          new BonusHarvestResource(0, 99.4, null, null), // set to same chance as mining ml gems
           new BonusHarvestResource(80.0, .6, 1072597, typeof(WhitePearl))
         };
 
-      Definition = fish;
       Definitions.Add(fish);
     }
 
     public static Fishing System => m_System ?? (m_System = new Fishing());
-
-    public HarvestDefinition Definition{ get; }
 
     public override void OnConcurrentHarvest(Mobile from, Item tool, HarvestDefinition def, object toHarvest)
     {
@@ -199,72 +196,72 @@ namespace Server.Engines.Harvest
             switch (Utility.Random(8))
             {
               case 0: // Body parts
-              {
-                int[] list =
                 {
-                  0x1CDD, 0x1CE5, // arm
-                  0x1CE0, 0x1CE8, // torso
-                  0x1CE1, 0x1CE9, // head
-                  0x1CE2, 0x1CEC // leg
-                };
+                  int[] list =
+                  {
+                    0x1CDD, 0x1CE5, // arm
+                    0x1CE0, 0x1CE8, // torso
+                    0x1CE1, 0x1CE9, // head
+                    0x1CE2, 0x1CEC // leg
+                  };
 
-                preLoot = new ShipwreckedItem(Utility.RandomList(list));
-                break;
-              }
-              case 1: // Bone parts
-              {
-                int[] list =
-                {
-                  0x1AE0, 0x1AE1, 0x1AE2, 0x1AE3, 0x1AE4, // skulls
-                  0x1B09, 0x1B0A, 0x1B0B, 0x1B0C, 0x1B0D, 0x1B0E, 0x1B0F, 0x1B10, // bone piles
-                  0x1B15, 0x1B16 // pelvis bones
-                };
-
-                preLoot = new ShipwreckedItem(Utility.RandomList(list));
-                break;
-              }
-              case 2: // Paintings and portraits
-              {
-                preLoot = new ShipwreckedItem(Utility.Random(0xE9F, 10));
-                break;
-              }
-              case 3: // Pillows
-              {
-                preLoot = new ShipwreckedItem(Utility.Random(0x13A4, 11));
-                break;
-              }
-              case 4: // Shells
-              {
-                preLoot = new ShipwreckedItem(Utility.Random(0xFC4, 9));
-                break;
-              }
-              case 5: //Hats
-              {
-                if (Utility.RandomBool())
-                  preLoot = new SkullCap();
-                else
-                  preLoot = new TricorneHat();
-
-                break;
-              }
-              case 6: // Misc
-              {
-                int[] list =
-                {
-                  0x1EB5, // unfinished barrel
-                  0xA2A, // stool
-                  0xC1F, // broken clock
-                  0x1047, 0x1048, // globe
-                  0x1EB1, 0x1EB2, 0x1EB3, 0x1EB4 // barrel staves
-                };
-
-                if (Utility.Random(list.Length + 1) == 0)
-                  preLoot = new Candelabra();
-                else
                   preLoot = new ShipwreckedItem(Utility.RandomList(list));
+                  break;
+                }
+              case 1: // Bone parts
+                {
+                  int[] list =
+                  {
+                    0x1AE0, 0x1AE1, 0x1AE2, 0x1AE3, 0x1AE4, // skulls
+                    0x1B09, 0x1B0A, 0x1B0B, 0x1B0C, 0x1B0D, 0x1B0E, 0x1B0F, 0x1B10, // bone piles
+                    0x1B15, 0x1B16 // pelvis bones
+                  };
 
-                break;
-              }
+                  preLoot = new ShipwreckedItem(Utility.RandomList(list));
+                  break;
+                }
+              case 2: // Paintings and portraits
+                {
+                  preLoot = new ShipwreckedItem(Utility.Random(0xE9F, 10));
+                  break;
+                }
+              case 3: // Pillows
+                {
+                  preLoot = new ShipwreckedItem(Utility.Random(0x13A4, 11));
+                  break;
+                }
+              case 4: // Shells
+                {
+                  preLoot = new ShipwreckedItem(Utility.Random(0xFC4, 9));
+                  break;
+                }
+              case 5: // Hats
+                {
+                  if (Utility.RandomBool())
+                    preLoot = new SkullCap();
+                  else
+                    preLoot = new TricorneHat();
+
+                  break;
+                }
+              case 6: // Misc
+                {
+                  int[] list =
+                  {
+                    0x1EB5, // unfinished barrel
+                    0xA2A, // stool
+                    0xC1F, // broken clock
+                    0x1047, 0x1048, // globe
+                    0x1EB1, 0x1EB2, 0x1EB3, 0x1EB4 // barrel staves
+                  };
+
+                  if (Utility.Random(list.Length + 1) == 0)
+                    preLoot = new Candelabra();
+                  else
+                    preLoot = new ShipwreckedItem(Utility.RandomList(list));
+
+                  break;
+                }
             }
 
             if (preLoot != null)
@@ -309,7 +306,7 @@ namespace Server.Engines.Harvest
       {
         BaseCreature serp;
 
-        if (0.25 > Utility.RandomDouble())
+        if (Utility.RandomDouble() < 0.25)
           serp = new DeepSeaSerpent();
         else
           serp = new SeaSerpent();
@@ -325,7 +322,7 @@ namespace Server.Engines.Harvest
 
           LandTile t = map.Tiles.GetLandTile(tx, ty);
 
-          if (t.Z == -5 && (t.ID >= 0xA8 && t.ID <= 0xAB || t.ID >= 0x136 && t.ID <= 0x137) &&
+          if (t.Z == -5 && ((t.ID >= 0xA8 && t.ID <= 0xAB) || (t.ID >= 0x136 && t.ID <= 0x137)) &&
               !SpellHelper.CheckMulti(new Point3D(tx, ty, -5), map))
           {
             x = tx;
@@ -425,7 +422,7 @@ namespace Server.Engines.Harvest
 
       if (GetHarvestDetails(from, tool, toHarvest, out _, out Map map, out Point3D loc))
         Timer.DelayCall(TimeSpan.FromSeconds(1.5),
-          delegate
+          () =>
           {
             if (Core.ML)
               from.RevealingAction();
@@ -485,9 +482,11 @@ namespace Server.Engines.Harvest
 
     private class MutateEntry
     {
-      public bool m_DeepWater;
-      public double m_ReqSkill, m_MinSkill, m_MaxSkill;
-      public Type[] m_Types;
+      public readonly bool m_DeepWater;
+      public readonly double m_ReqSkill;
+      public readonly double m_MinSkill;
+      public readonly double m_MaxSkill;
+      public readonly Type[] m_Types;
 
       public MutateEntry(double reqSkill, double minSkill, double maxSkill, bool deepWater, params Type[] types)
       {

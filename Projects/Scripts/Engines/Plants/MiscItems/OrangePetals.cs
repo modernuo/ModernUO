@@ -6,7 +6,7 @@ namespace Server.Items
 {
   public class OrangePetals : Item
   {
-    private static Dictionary<Mobile, OrangePetalsContext> m_Table = new Dictionary<Mobile, OrangePetalsContext>();
+    private static readonly Dictionary<Mobile, OrangePetalsContext> m_Table = new Dictionary<Mobile, OrangePetalsContext>();
 
     [Constructible]
     public OrangePetals(int amount = 1) : base(0x1021)
@@ -103,7 +103,7 @@ namespace Server.Items
 
     private class OrangePetalsTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public OrangePetalsTimer(Mobile from) : base(TimeSpan.FromMinutes(5.0)) => m_Mobile = from;
 
@@ -121,7 +121,7 @@ namespace Server.Items
     {
       public OrangePetalsContext(Timer timer) => Timer = timer;
 
-      public Timer Timer{ get; }
+      public Timer Timer { get; }
     }
   }
 }

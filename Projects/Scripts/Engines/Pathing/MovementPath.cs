@@ -38,17 +38,17 @@ namespace Server
       }
     }
 
-    public Map Map{ get; }
+    public Map Map { get; }
 
-    public Point3D Start{ get; }
+    public Point3D Start { get; }
 
-    public Point3D Goal{ get; }
+    public Point3D Goal { get; }
 
-    public Direction[] Directions{ get; }
+    public Direction[] Directions { get; }
 
     public bool Success => Directions?.Length > 0;
 
-    public static PathAlgorithm OverrideAlgorithm{ get; set; }
+    public static PathAlgorithm OverrideAlgorithm { get; set; }
 
     public static void Initialize()
     {

@@ -159,22 +159,22 @@ namespace Server.Mobiles
       switch (version)
       {
         case 0:
-        {
-          m_Focus = reader.ReadMobile();
-
-          if (m_Focus != null)
           {
-            m_AttackTimer = new AttackTimer(this);
-            m_AttackTimer.Start();
-          }
-          else
-          {
-            m_IdleTimer = new IdleTimer(this);
-            m_IdleTimer.Start();
-          }
+            m_Focus = reader.ReadMobile();
 
-          break;
-        }
+            if (m_Focus != null)
+            {
+              m_AttackTimer = new AttackTimer(this);
+              m_AttackTimer.Start();
+            }
+            else
+            {
+              m_IdleTimer = new IdleTimer(this);
+              m_IdleTimer.Start();
+            }
+
+            break;
+          }
       }
     }
 
@@ -197,10 +197,9 @@ namespace Server.Mobiles
 
     private class AvengeTimer : Timer
     {
-      private Mobile m_Focus;
+      private readonly Mobile m_Focus;
 
-      public AvengeTimer(Mobile focus) :
-        base(TimeSpan.FromSeconds(2.5), TimeSpan.FromSeconds(1.0),
+      public AvengeTimer(Mobile focus) : base(TimeSpan.FromSeconds(2.5), TimeSpan.FromSeconds(1.0),
           3) // After 2.5 seconds, one guard will spawn every 1.0 second, three times
         =>
           m_Focus = focus;
@@ -213,8 +212,8 @@ namespace Server.Mobiles
 
     private class AttackTimer : Timer
     {
-      private ArcherGuard m_Owner;
-      //	private bool m_Shooting;
+      private readonly ArcherGuard m_Owner;
+      // private bool m_Shooting;
 
       public AttackTimer(ArcherGuard owner) : base(TimeSpan.FromSeconds(0.25), TimeSpan.FromSeconds(0.1)) => m_Owner = owner;
 
@@ -277,48 +276,48 @@ namespace Server.Mobiles
           Stop();
         } // </instakill>
 
-        /*else if ( !m_Owner.InRange( target, 20 ) )
+        /*else if (!m_Owner.InRange( target, 20 ))
         {
           m_Shooting = false;
           m_Owner.Focus = null;
         }
-        else if ( !m_Owner.InLOS( target ) )
+        else if (!m_Owner.InLOS( target ))
         {
           m_Shooting = false;
           TeleportTo( target );
         }
-        else if ( !m_Owner.CanSee( target ) )
+        else if (!m_Owner.CanSee( target ))
         {
           m_Shooting = false;
 
-          if ( !m_Owner.InRange( target, 2 ) )
+          if (!m_Owner.InRange( target, 2 ))
           {
-            if ( !m_Owner.Move( m_Owner.GetDirectionTo( target ) | Direction.Running ) && OutOfMaxDistance( target ) )
+            if (!m_Owner.Move( m_Owner.GetDirectionTo( target ) | Direction.Running ) && OutOfMaxDistance( target ))
               TeleportTo( target );
           }
           else
           {
-            if ( !m_Owner.UseSkill( SkillName.DetectHidden ) && Utility.Random( 50 ) == 0 )
+            if (!m_Owner.UseSkill( SkillName.DetectHidden ) && Utility.Random( 50 ) == 0)
               m_Owner.Say( "Reveal!" );
           }
         }
         else
         {
-          if ( m_Shooting && (TimeToSpare() || OutOfMaxDistance( target )) )
+          if (m_Shooting && (TimeToSpare() || OutOfMaxDistance( target )))
             m_Shooting = false;
-          else if ( !m_Shooting && InMinDistance( target ) )
+          else if (!m_Shooting && InMinDistance( target ))
             m_Shooting = true;
 
-          if ( !m_Shooting )
+          if (!m_Shooting)
           {
-            if ( m_Owner.InRange( target, 1 ) )
+            if (m_Owner.InRange( target, 1 ))
             {
-              if ( !m_Owner.Move( (Direction)(m_Owner.GetDirectionTo( target ) - 4) | Direction.Running ) && OutOfMaxDistance( target ) ) // Too close, move away
-                TeleportTo( target );
+              if (!m_Owner.Move( (Direction)(m_Owner.GetDirectionTo( target ) - 4) | Direction.Running ) && OutOfMaxDistance( target ))
+                TeleportTo( target ); // Too close, move away
             }
-            else if ( !m_Owner.InRange( target, 2 ) )
+            else if (!m_Owner.InRange( target, 2 ))
             {
-              if ( !m_Owner.Move( m_Owner.GetDirectionTo( target ) | Direction.Running ) && OutOfMaxDistance( target ) )
+              if (!m_Owner.Move( m_Owner.GetDirectionTo( target ) | Direction.Running ) && OutOfMaxDistance( target ))
                 TeleportTo( target );
             }
           }
@@ -349,7 +348,7 @@ namespace Server.Mobiles
 
     private class IdleTimer : Timer
     {
-      private ArcherGuard m_Owner;
+      private readonly ArcherGuard m_Owner;
       private int m_Stage;
 
       public IdleTimer(ArcherGuard owner) : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.5)) => m_Owner = owner;

@@ -80,10 +80,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_LabelNumber = reader.ReadEncodedInt();
-          break;
-        }
+          {
+            m_LabelNumber = reader.ReadEncodedInt();
+            break;
+          }
       }
     }
   }

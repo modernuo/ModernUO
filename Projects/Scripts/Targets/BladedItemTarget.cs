@@ -9,7 +9,7 @@ namespace Server.Targets
 {
   public class BladedItemTarget : Target
   {
-    private Item m_Item;
+    private readonly Item m_Item;
 
     public BladedItemTarget(Item item) : base(2, false, TargetFlags.None) => m_Item = item;
 
@@ -63,7 +63,7 @@ namespace Server.Targets
         }
 
         HarvestSystem system = Lumberjacking.System;
-        HarvestDefinition def = Lumberjacking.System.Definition;
+        HarvestDefinition def = Lumberjacking.System.GetDefinition();
 
         if (!system.GetHarvestDetails(from, m_Item, targeted, out int tileID, out Map map, out Point3D loc))
         {

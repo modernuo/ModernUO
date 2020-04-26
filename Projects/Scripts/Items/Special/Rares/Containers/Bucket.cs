@@ -2,8 +2,8 @@
 {
   internal class Bucket : BaseWaterContainer
   {
-    private static int vItemID = 0x14e0;
-    private static int fItemID = 0x2004;
+    private static readonly int vItemID = 0x14e0;
+    private static readonly int fItemID = 0x2004;
 
     [Constructible]
     public Bucket(bool filled = false)

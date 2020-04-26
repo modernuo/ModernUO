@@ -32,7 +32,7 @@ namespace Server.Diagnostics
     {
     }
 
-    public long TotalLength{ get; private set; }
+    public long TotalLength { get; private set; }
 
     public double AverageLength => (double)TotalLength / Math.Max(1, Count);
 
@@ -66,7 +66,7 @@ namespace Server.Diagnostics
     [MethodImpl(MethodImplOptions.Synchronized)]
     public static PacketSendProfile Acquire(Type type)
     {
-      if (!_profiles.TryGetValue(type, out PacketSendProfile prof))
+      if (!_profiles.TryGetValue(type, out var prof))
         _profiles.Add(type, prof = new PacketSendProfile(type));
 
       return prof;
@@ -99,7 +99,7 @@ namespace Server.Diagnostics
     [MethodImpl(MethodImplOptions.Synchronized)]
     public static PacketReceiveProfile Acquire(int packetId)
     {
-      if (!_profiles.TryGetValue(packetId, out PacketReceiveProfile prof))
+      if (!_profiles.TryGetValue(packetId, out var prof))
         _profiles.Add(packetId, prof = new PacketReceiveProfile(packetId));
 
       return prof;

@@ -50,7 +50,7 @@ namespace Server.Mobiles
     public override Poison PoisonImmune => Poison.Lethal;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile OpenedBy{ get; set; }
+    public Mobile OpenedBy { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsBleeding
@@ -268,7 +268,7 @@ namespace Server.Mobiles
 
     private class DecayTimer : Timer
     {
-      private PlagueBeastLord m_Lord;
+      private readonly PlagueBeastLord m_Lord;
 
       public DecayTimer(PlagueBeastLord lord, int count = 0, int deadline = 120) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1))
       {
@@ -277,9 +277,9 @@ namespace Server.Mobiles
         Deadline = deadline;
       }
 
-      public int Count{ get; private set; }
+      public int Count { get; private set; }
 
-      public int Deadline{ get; private set; }
+      public int Deadline { get; private set; }
 
       protected override void OnTick()
       {

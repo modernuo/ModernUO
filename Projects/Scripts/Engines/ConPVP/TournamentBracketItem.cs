@@ -12,7 +12,7 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TournamentController Tournament{ get; set; }
+    public TournamentController Tournament { get; set; }
 
     public override string DefaultName => "tournament bracket";
 
@@ -52,10 +52,10 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 0:
-        {
-          Tournament = reader.ReadItem() as TournamentController;
-          break;
-        }
+          {
+            Tournament = reader.ReadItem() as TournamentController;
+            break;
+          }
       }
     }
   }

@@ -5,7 +5,7 @@ namespace Server.Items
 {
   public class InvisibilityPotion : BasePotion
   {
-    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+    private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     [Constructible]
     public InvisibilityPotion() : base(0xF0A, PotionEffect.Invisibility) => Hue = 0x48D;
@@ -44,7 +44,7 @@ namespace Server.Items
       m.Hidden = true;
 
       BuffInfo.RemoveBuff(m, BuffIcon.HidingAndOrStealth);
-      BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Invisibility, 1075825)); //Invisibility/Invisible
+      BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Invisibility, 1075825)); // Invisibility/Invisible
 
       RemoveTimer(m);
 

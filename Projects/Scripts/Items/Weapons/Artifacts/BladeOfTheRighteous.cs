@@ -6,7 +6,7 @@ namespace Server.Items
     public BladeOfTheRighteous()
     {
       Hue = 0x47E;
-      //Slayer = SlayerName.DaemonDismissal;
+      // Slayer = SlayerName.DaemonDismissal;
       Slayer = SlayerName.Exorcism;
       WeaponAttributes.HitLeechHits = 50;
       WeaponAttributes.UseBestSkill = 1;

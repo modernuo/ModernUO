@@ -11,12 +11,12 @@ namespace Server.Ethics
       Description = description;
     }
 
-    public int Power{ get; }
+    public int Power { get; }
 
-    public TextDefinition Name{ get; }
+    public TextDefinition Name { get; }
 
-    public TextDefinition Phrase{ get; }
+    public TextDefinition Phrase { get; }
 
-    public TextDefinition Description{ get; }
+    public TextDefinition Description { get; }
   }
 }

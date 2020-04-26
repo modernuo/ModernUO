@@ -51,21 +51,21 @@ namespace Server.Engines.Quests
     {
     }
 
-    public abstract object Name{ get; }
-    public abstract object OfferMessage{ get; }
+    public abstract object Name { get; }
+    public abstract object OfferMessage { get; }
 
-    public abstract int Picture{ get; }
+    public abstract int Picture { get; }
 
-    public abstract bool IsTutorial{ get; }
-    public abstract TimeSpan RestartDelay{ get; }
+    public abstract bool IsTutorial { get; }
+    public abstract TimeSpan RestartDelay { get; }
 
-    public abstract Type[] TypeReferenceTable{ get; }
+    public abstract Type[] TypeReferenceTable { get; }
 
-    public PlayerMobile From{ get; set; }
+    public PlayerMobile From { get; set; }
 
-    public List<QuestObjective> Objectives{ get; set; }
+    public List<QuestObjective> Objectives { get; set; }
 
-    public List<QuestConversation> Conversations{ get; set; }
+    public List<QuestConversation> Conversations { get; set; }
 
     public virtual void StartTimer()
     {
@@ -126,39 +126,39 @@ namespace Server.Engines.Quests
       switch (version)
       {
         case 0:
-        {
-          int count = reader.ReadEncodedInt();
-
-          Objectives = new List<QuestObjective>(count);
-
-          for (int i = 0; i < count; ++i)
           {
-            QuestObjective obj = QuestSerializer.DeserializeObjective(referenceTable, reader);
+            int count = reader.ReadEncodedInt();
 
-            if (obj != null)
+            Objectives = new List<QuestObjective>(count);
+
+            for (int i = 0; i < count; ++i)
             {
-              obj.System = this;
-              Objectives.Add(obj);
+              QuestObjective obj = QuestSerializer.DeserializeObjective(referenceTable, reader);
+
+              if (obj != null)
+              {
+                obj.System = this;
+                Objectives.Add(obj);
+              }
             }
-          }
 
-          count = reader.ReadEncodedInt();
+            count = reader.ReadEncodedInt();
 
-          Conversations = new List<QuestConversation>(count);
+            Conversations = new List<QuestConversation>(count);
 
-          for (int i = 0; i < count; ++i)
-          {
-            QuestConversation conv = QuestSerializer.DeserializeConversation(referenceTable, reader);
-
-            if (conv != null)
+            for (int i = 0; i < count; ++i)
             {
-              conv.System = this;
-              Conversations.Add(conv);
-            }
-          }
+              QuestConversation conv = QuestSerializer.DeserializeConversation(referenceTable, reader);
 
-          break;
-        }
+              if (conv != null)
+              {
+                conv.System = this;
+                Conversations.Add(conv);
+              }
+            }
+
+            break;
+          }
       }
 
       ChildDeserialize(reader);
@@ -324,7 +324,7 @@ namespace Server.Engines.Quests
 
         TimeSpan restartDelay = RestartDelay;
 
-        if (completed && restartDelay > TimeSpan.Zero || !completed && restartDelay == TimeSpan.MaxValue)
+        if ((completed && restartDelay > TimeSpan.Zero) || (!completed && restartDelay == TimeSpan.MaxValue))
         {
           From.DoneQuests ??= new List<QuestRestartInfo>();
 
@@ -405,8 +405,7 @@ namespace Server.Engines.Quests
       if (questType == typeof(DarkTidesQuest) && pm.Profession != 4) // necromancer
         return false;
 
-      if (questType == typeof(UzeraanTurmoilQuest) && pm.Profession != 1 && pm.Profession != 2 && pm.Profession != 5
-      ) // warrior / magician / paladin
+      if (questType == typeof(UzeraanTurmoilQuest) && pm.Profession != 1 && pm.Profession != 2 && pm.Profession != 5) // warrior / magician / paladin
         return false;
 
       if (questType == typeof(HaochisTrialsQuest) && pm.Profession != 6) // samurai
@@ -463,7 +462,7 @@ namespace Server.Engines.Quests
 
     public static int RandomBrightHue()
     {
-      if (0.1 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.1)
         return Utility.RandomList(0x62, 0x71);
 
       return Utility.RandomList(0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59);
@@ -472,7 +471,7 @@ namespace Server.Engines.Quests
 
   public class QuestCancelGump : BaseQuestGump
   {
-    private QuestSystem m_System;
+    private readonly QuestSystem m_System;
 
     public QuestCancelGump(QuestSystem system) : base(120, 50)
     {
@@ -542,7 +541,7 @@ namespace Server.Engines.Quests
 
   public class QuestOfferGump : BaseQuestGump
   {
-    private QuestSystem m_System;
+    private readonly QuestSystem m_System;
 
     public QuestOfferGump(QuestSystem system) : base(75, 25)
     {

@@ -129,7 +129,7 @@ namespace Server.Mobiles
       if (map == null)
         return;
 
-      IPooledEnumerable <BaseCreature> eable = GetMobilesInRange<BaseCreature>(10);
+      IPooledEnumerable<BaseCreature> eable = GetMobilesInRange<BaseCreature>(10);
       int rats = eable.Aggregate(0, (c, m) => c + (m is Ratman || m is RatmanArcher || m is RatmanMage ? 1 : 0));
       eable.Free();
 
@@ -158,13 +158,13 @@ namespace Server.Mobiles
 
     public void DoSpecialAbility(Mobile target)
     {
-      if (target?.Deleted != false) //sanity
+      if (target?.Deleted != false) // sanity
         return;
 
-      if (0.6 >= Utility.RandomDouble()) // 60% chance to polymorph attacker into a ratman
+      if (Utility.RandomDouble() <= 0.6) // 60% chance to polymorph attacker into a ratman
         Polymorph(target);
 
-      if (0.2 >= Utility.RandomDouble()) // 20% chance to more ratmen
+      if (Utility.RandomDouble() <= 0.2) // 20% chance to more ratmen
         SpawnRatmen(target);
 
       if (Hits < 500 && !IsBodyMod) // Baracoon is low on life, polymorph into a ratman
@@ -201,7 +201,7 @@ namespace Server.Mobiles
 
     private class ExpirePolymorphTimer : Timer
     {
-      private Mobile m_Owner;
+      private readonly Mobile m_Owner;
 
       public ExpirePolymorphTimer(Mobile owner) : base(TimeSpan.FromMinutes(3.0))
       {

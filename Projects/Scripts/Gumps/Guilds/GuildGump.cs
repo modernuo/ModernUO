@@ -1,4 +1,3 @@
-using System;
 using Server.Guilds;
 using Server.Network;
 
@@ -6,8 +5,8 @@ namespace Server.Gumps
 {
   public class GuildGump : Gump
   {
-    private Guild m_Guild;
-    private Mobile m_Mobile;
+    private readonly Guild m_Guild;
+    private readonly Mobile m_Mobile;
 
     public GuildGump(Mobile beholder, Guild guild) : base(20, 30)
     {
@@ -122,7 +121,7 @@ namespace Server.Gumps
 
     public static bool BadLeader(Mobile m, Guild g)
     {
-      if (m.Deleted || g.Disbanded || m.AccessLevel < AccessLevel.GameMaster && g.Leader != m)
+      if (m.Deleted || g.Disbanded || (m.AccessLevel < AccessLevel.GameMaster && g.Leader != m))
         return true;
 
       Item stone = g.Guildstone;
@@ -132,7 +131,7 @@ namespace Server.Gumps
 
     public static bool BadMember(Mobile m, Guild g)
     {
-      if (m.Deleted || g.Disbanded || m.AccessLevel < AccessLevel.GameMaster && !g.IsMember(m))
+      if (m.Deleted || g.Disbanded || (m.AccessLevel < AccessLevel.GameMaster && !g.IsMember(m)))
         return true;
 
       Item stone = g.Guildstone;
@@ -148,71 +147,71 @@ namespace Server.Gumps
       switch (info.ButtonID)
       {
         case 1: // Loyalty
-        {
-          EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new DeclareFealtyGump(m_Mobile, m_Guild));
-
-          break;
-        }
-        case 2: // Toggle display abbreviation
-        {
-          m_Mobile.DisplayGuildTitle = !m_Mobile.DisplayGuildTitle;
-
-          EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildGump(m_Mobile, m_Guild));
-
-          break;
-        }
-        case 3: // View the current roster
-        {
-          EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildRosterGump(m_Mobile, m_Guild));
-
-          break;
-        }
-        case 4: // Recruit
-        {
-          m_Mobile.Target = new GuildRecruitTarget(m_Mobile, m_Guild);
-
-          break;
-        }
-        case 5: // Membership candidates
-        {
-          EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildCandidatesGump(m_Mobile, m_Guild));
-
-          break;
-        }
-        case 6: // View charter
-        {
-          EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildCharterGump(m_Mobile, m_Guild));
-
-          break;
-        }
-        case 7: // Resign
-        {
-          m_Guild.RemoveMember(m_Mobile);
-
-          break;
-        }
-        case 8: // View wars
-        {
-          EnsureClosed(m_Mobile);
-          m_Mobile.SendGump(new GuildWarGump(m_Mobile, m_Guild));
-
-          break;
-        }
-        case 9: // Guildmaster functions
-        {
-          if (m_Mobile.AccessLevel >= AccessLevel.GameMaster || m_Guild.Leader == m_Mobile)
           {
             EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
-          }
+            m_Mobile.SendGump(new DeclareFealtyGump(m_Mobile, m_Guild));
 
-          break;
-        }
+            break;
+          }
+        case 2: // Toggle display abbreviation
+          {
+            m_Mobile.DisplayGuildTitle = !m_Mobile.DisplayGuildTitle;
+
+            EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildGump(m_Mobile, m_Guild));
+
+            break;
+          }
+        case 3: // View the current roster
+          {
+            EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildRosterGump(m_Mobile, m_Guild));
+
+            break;
+          }
+        case 4: // Recruit
+          {
+            m_Mobile.Target = new GuildRecruitTarget(m_Mobile, m_Guild);
+
+            break;
+          }
+        case 5: // Membership candidates
+          {
+            EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildCandidatesGump(m_Mobile, m_Guild));
+
+            break;
+          }
+        case 6: // View charter
+          {
+            EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildCharterGump(m_Mobile, m_Guild));
+
+            break;
+          }
+        case 7: // Resign
+          {
+            m_Guild.RemoveMember(m_Mobile);
+
+            break;
+          }
+        case 8: // View wars
+          {
+            EnsureClosed(m_Mobile);
+            m_Mobile.SendGump(new GuildWarGump(m_Mobile, m_Guild));
+
+            break;
+          }
+        case 9: // Guildmaster functions
+          {
+            if (m_Mobile.AccessLevel >= AccessLevel.GameMaster || m_Guild.Leader == m_Mobile)
+            {
+              EnsureClosed(m_Mobile);
+              m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+            }
+
+            break;
+          }
       }
     }
   }

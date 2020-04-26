@@ -14,14 +14,14 @@ namespace Server.Menus.Questions
       Locations = locations;
     }
 
-    public int Name{ get; }
+    public int Name { get; }
 
-    public Point3D[] Locations{ get; }
+    public Point3D[] Locations { get; }
   }
 
   public class StuckMenu : Gump
   {
-    private static StuckMenuEntry[] m_Entries =
+    private static readonly StuckMenuEntry[] m_Entries =
     {
       // Britain
       new StuckMenuEntry(1011028, new[]
@@ -84,7 +84,7 @@ namespace Server.Menus.Questions
       })
     };
 
-    private static StuckMenuEntry[] m_T2AEntries =
+    private static readonly StuckMenuEntry[] m_T2AEntries =
     {
       // Papua
       new StuckMenuEntry(1011057, new[]
@@ -107,9 +107,10 @@ namespace Server.Menus.Questions
       })
     };
 
-    private bool m_MarkUse;
+    private readonly bool m_MarkUse;
 
-    private Mobile m_Mobile, m_Sender;
+    private readonly Mobile m_Mobile;
+    private readonly Mobile m_Sender;
 
     private Timer m_Timer;
 
@@ -143,7 +144,7 @@ namespace Server.Menus.Questions
 
     private static bool IsInSecondAgeArea(Mobile m) =>
       (m.Map == Map.Trammel || m.Map == Map.Felucca) &&
-      (m.X >= 5120 && m.Y >= 2304 || m.Region.IsPartOf("Terathan Keep"));
+      ((m.X >= 5120 && m.Y >= 2304) || m.Region.IsPartOf("Terathan Keep"));
 
     public void BeginClose()
     {
@@ -204,8 +205,8 @@ namespace Server.Menus.Questions
 
     private class CloseTimer : Timer
     {
-      private DateTime m_End;
-      private Mobile m_Mobile;
+      private readonly DateTime m_End;
+      private readonly Mobile m_Mobile;
 
       public CloseTimer(Mobile m) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0))
       {
@@ -231,9 +232,9 @@ namespace Server.Menus.Questions
 
     private class TeleportTimer : Timer
     {
-      private StuckMenuEntry m_Destination;
-      private DateTime m_End;
-      private Mobile m_Mobile;
+      private readonly StuckMenuEntry m_Destination;
+      private readonly DateTime m_End;
+      private readonly Mobile m_Mobile;
 
       public TeleportTimer(Mobile mobile, StuckMenuEntry destination, TimeSpan delay) : base(TimeSpan.Zero,
         TimeSpan.FromSeconds(1.0))

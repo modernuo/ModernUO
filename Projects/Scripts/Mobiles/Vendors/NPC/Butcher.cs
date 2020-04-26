@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
   public class Butcher : BaseVendor
   {
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public Butcher() : base("the butcher")
@@ -36,7 +36,7 @@ namespace Server.Mobiles
     {
       base.Serialize(writer);
 
-      writer.Write(0); // version 
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)

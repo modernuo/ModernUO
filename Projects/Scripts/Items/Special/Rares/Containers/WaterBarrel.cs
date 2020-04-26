@@ -2,8 +2,8 @@
 {
   internal class WaterBarrel : BaseWaterContainer
   {
-    private static int vItemID = 0xe77;
-    private static int fItemID = 0x154d;
+    private static readonly int vItemID = 0xe77;
+    private static readonly int fItemID = 0x154d;
 
     [Constructible]
     public WaterBarrel(bool filled = false)

@@ -40,11 +40,11 @@ namespace Server.Items
 
     public override bool IsVirtualItem => true;
 
-    public Mobile Owner{ get; private set; }
+    public Mobile Owner { get; private set; }
 
-    public bool Opened{ get; private set; }
+    public bool Opened { get; private set; }
 
-    public static bool SendDeleteOnClose{ get; set; }
+    public static bool SendDeleteOnClose { get; set; }
 
     public void Open()
     {
@@ -73,20 +73,20 @@ namespace Server.Items
     {
       base.Deserialize(reader);
 
-      int version = reader.ReadInt();
+      var version = reader.ReadInt();
 
       switch (version)
       {
         case 0:
-        {
-          Owner = reader.ReadMobile();
-          Opened = reader.ReadBool();
+          {
+            Owner = reader.ReadMobile();
+            Opened = reader.ReadBool();
 
-          if (Owner == null)
-            Delete();
+            if (Owner == null)
+              Delete();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (ItemID == 0xE41)
@@ -111,12 +111,14 @@ namespace Server.Items
 
     public override DeathMoveResult OnParentDeath(Mobile parent) => DeathMoveResult.RemainEquipped;
 
-    public override bool IsAccessibleTo(Mobile check) => (check == Owner && Opened || check.AccessLevel >= AccessLevel.GameMaster) && base.IsAccessibleTo(check);
+    public override bool IsAccessibleTo(Mobile check) =>
+      ((check == Owner && Opened) || check.AccessLevel >= AccessLevel.GameMaster) && base.IsAccessibleTo(check);
 
-    public override bool OnDragDrop(Mobile from, Item dropped) => (from == Owner && Opened || from.AccessLevel >= AccessLevel.GameMaster) && base.OnDragDrop(from, dropped);
+    public override bool OnDragDrop(Mobile from, Item dropped) =>
+      ((from == Owner && Opened) || from.AccessLevel >= AccessLevel.GameMaster) && base.OnDragDrop(from, dropped);
 
     public override bool OnDragDropInto(Mobile from, Item item, Point3D p) =>
-      (from == Owner && Opened || from.AccessLevel >= AccessLevel.GameMaster) &&
+      ((from == Owner && Opened) || from.AccessLevel >= AccessLevel.GameMaster) &&
       base.OnDragDropInto(from, item, p);
 
     public override int GetTotal(TotalType type)

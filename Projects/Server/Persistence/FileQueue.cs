@@ -47,10 +47,12 @@ namespace Server
 
     public FileQueue(int concurrentWrites, FileCommitCallback callback)
     {
-      if (concurrentWrites < 1) throw new ArgumentOutOfRangeException("concurrentWrites");
+      if (concurrentWrites < 1) throw new ArgumentOutOfRangeException(nameof(concurrentWrites));
 
       if (bufferSize < 1)
-        throw new ArgumentOutOfRangeException("bufferSize");
+#pragma warning disable CA2208 // Instantiate argument exceptions correctly
+        throw new ArgumentOutOfRangeException(nameof(FileOperations.BufferSize));
+#pragma warning restore CA2208 // Instantiate argument exceptions correctly
 
       syncRoot = new object();
 
@@ -62,7 +64,7 @@ namespace Server
       idle = new ManualResetEvent(true);
     }
 
-    public long Position{ get; private set; }
+    public long Position { get; private set; }
 
     public void Dispose()
     {
@@ -81,7 +83,7 @@ namespace Server
 
         ++activeCount;
 
-        for (int slot = 0; slot < active.Length; ++slot)
+        for (var slot = 0; slot < active.Length; ++slot)
           if (active[slot] == null)
           {
             active[slot] = new Chunk(this, slot, page.buffer, 0, page.length);
@@ -106,12 +108,12 @@ namespace Server
       }
 
       /*lock ( syncRoot ) {
-        if ( pending.Count > 0 ) {
+        if (pending.Count > 0 ) {
           idle.Reset();
         }
 
         for ( int slot = 0; slot < active.Length && pending.Count > 0; ++slot ) {
-          if ( active[slot] == null ) {
+          if (active[slot] == null ) {
             Page page = pending.Dequeue();
 
             active[slot] = new Chunk( this, slot, page.buffer, 0, page.length );
@@ -128,17 +130,17 @@ namespace Server
 
     private void Commit(Chunk chunk, int slot)
     {
-      if (slot < 0 || slot >= active.Length) throw new ArgumentOutOfRangeException("slot");
+      if (slot < 0 || slot >= active.Length) throw new ArgumentOutOfRangeException(nameof(slot));
 
       lock (syncRoot)
       {
-        if (active[slot] != chunk) throw new ArgumentException();
+        if (active[slot] != chunk) throw new ArgumentException("active slot is not the current chunk");
 
         ArrayPool<byte>.Shared.Return(chunk.Buffer);
 
         if (pending.Count > 0)
         {
-          Page page = pending.Dequeue();
+          var page = pending.Dequeue();
 
           active[slot] = new Chunk(this, slot, page.buffer, 0, page.length);
 
@@ -157,11 +159,11 @@ namespace Server
 
     public void Enqueue(byte[] buffer, int offset, int size)
     {
-      if (buffer == null) throw new ArgumentNullException("buffer");
+      if (buffer == null) throw new ArgumentNullException(nameof(buffer));
 
-      if (offset < 0) throw new ArgumentOutOfRangeException("offset");
-      if (size < 0) throw new ArgumentOutOfRangeException("size");
-      if (buffer.Length - offset < size) throw new ArgumentException();
+      if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+      if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
+      if (buffer.Length - offset < size) throw new ArgumentOutOfRangeException(nameof(offset));
 
       Position += size;
 
@@ -169,9 +171,9 @@ namespace Server
       {
         buffered.buffer ??= ArrayPool<byte>.Shared.Rent(bufferSize);
 
-        byte[] page = buffered.buffer; // buffer page
-        int pageSpace = page.Length - buffered.length; // available bytes in page
-        int byteCount = size > pageSpace ? pageSpace : size; // how many bytes we can copy over
+        var page = buffered.buffer; // buffer page
+        var pageSpace = page.Length - buffered.length; // available bytes in page
+        var byteCount = size > pageSpace ? pageSpace : size; // how many bytes we can copy over
 
         Buffer.BlockCopy(buffer, offset, page, buffered.length, byteCount);
 
@@ -192,29 +194,28 @@ namespace Server
 
     public sealed class Chunk
     {
-      private int offset;
-      private readonly FileQueue owner;
-      private readonly int slot;
+      private readonly FileQueue m_Owner;
+      private readonly int m_Slot;
 
       public Chunk(FileQueue owner, int slot, byte[] buffer, int offset, int size)
       {
-        this.owner = owner;
-        this.slot = slot;
+        m_Owner = owner;
+        m_Slot = slot;
 
         Buffer = buffer;
-        this.offset = offset;
+        Offset = offset;
         Size = size;
       }
 
-      public byte[] Buffer{ get; }
+      public byte[] Buffer { get; }
 
-      public int Offset => 0;
+      public int Offset { get; }
 
-      public int Size{ get; }
+      public int Size { get; }
 
       public void Commit()
       {
-        owner.Commit(this, slot);
+        m_Owner.Commit(this, m_Slot);
       }
     }
 

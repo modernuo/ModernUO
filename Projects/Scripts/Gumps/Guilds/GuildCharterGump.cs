@@ -6,8 +6,8 @@ namespace Server.Gumps
   public class GuildCharterGump : Gump
   {
     private const string DefaultWebsite = "https://github.com/runuo/";
-    private Guild m_Guild;
-    private Mobile m_Mobile;
+    private readonly Guild m_Guild;
+    private readonly Mobile m_Mobile;
 
     public GuildCharterGump(Mobile from, Guild guild) : base(20, 30)
     {
@@ -51,15 +51,15 @@ namespace Server.Gumps
         case 0: return; // Close
         case 1: break; // Return to main menu
         case 2:
-        {
-          string website;
+          {
+            string website;
 
-          if ((website = m_Guild.Website) == null || (website = website.Trim()).Length <= 0)
-            website = DefaultWebsite;
+            if ((website = m_Guild.Website) == null || (website = website.Trim()).Length <= 0)
+              website = DefaultWebsite;
 
-          m_Mobile.LaunchBrowser(website);
-          break;
-        }
+            m_Mobile.LaunchBrowser(website);
+            break;
+          }
       }
 
       GuildGump.EnsureClosed(m_Mobile);

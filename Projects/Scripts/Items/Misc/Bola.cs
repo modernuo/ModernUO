@@ -145,7 +145,7 @@ namespace Server.Items
 
     public class BolaTarget : Target
     {
-      private Bola m_Bola;
+      private readonly Bola m_Bola;
 
       public BolaTarget(Bola bola) : base(8, false, TargetFlags.Harmful) => m_Bola = bola;
 

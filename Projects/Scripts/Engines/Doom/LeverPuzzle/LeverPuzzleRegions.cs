@@ -5,7 +5,7 @@ namespace Server.Engines.Doom
 {
   public class LampRoomRegion : BaseRegion
   {
-    private LeverPuzzleController m_Controller;
+    private readonly LeverPuzzleController m_Controller;
 
     public LampRoomRegion(LeverPuzzleController controller)
       : base(null, Map.Malas, Find(LeverPuzzleController.lr_Enter, Map.Malas), LeverPuzzleController.lr_Rect)
@@ -43,7 +43,7 @@ namespace Server.Engines.Doom
         {
           if (m == m_Controller.Successful) return;
         }
-        else if (m is BaseCreature bc && (bc.Controlled && bc.ControlMaster == m_Controller.Successful ||
+        else if (m is BaseCreature bc && ((bc.Controlled && bc.ControlMaster == m_Controller.Successful) ||
                                           bc.Summoned))
         {
           return;

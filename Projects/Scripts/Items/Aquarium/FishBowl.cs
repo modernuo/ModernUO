@@ -133,7 +133,7 @@ namespace Server.Items
 
     private class RemoveCreature : ContextMenuEntry
     {
-      private FishBowl m_Bowl;
+      private readonly FishBowl m_Bowl;
 
       public RemoveCreature(FishBowl bowl) : base(6242, 3) // Remove creature
         =>

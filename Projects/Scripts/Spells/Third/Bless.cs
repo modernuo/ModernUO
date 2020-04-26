@@ -6,13 +6,12 @@ namespace Server.Spells.Third
 {
   public class BlessSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Bless", "Rel Sanct",
       203,
       9061,
       Reagent.Garlic,
-      Reagent.MandrakeRoot
-    );
+      Reagent.MandrakeRoot);
 
     public BlessSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

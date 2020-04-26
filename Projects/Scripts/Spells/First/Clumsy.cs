@@ -5,13 +5,12 @@ namespace Server.Spells.First
 {
   public class ClumsySpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Clumsy", "Uus Jux",
       212,
       9031,
       Reagent.Bloodmoss,
-      Reagent.Nightshade
-    );
+      Reagent.Nightshade);
 
     public ClumsySpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

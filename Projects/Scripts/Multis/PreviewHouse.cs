@@ -19,11 +19,11 @@ namespace Server.Multis
       {
         MultiTileEntry entry = mcl.List[i];
 
-        if (entry.m_Flags == 0)
+        if (entry.Flags == 0)
         {
-          Item item = new Static((int)entry.m_ItemID);
+          Item item = new Static((int)entry.ItemId);
 
-          item.MoveToWorld(new Point3D(X + entry.m_OffsetX, Y + entry.m_OffsetY, Z + entry.m_OffsetZ), Map);
+          item.MoveToWorld(new Point3D(X + entry.OffsetX, Y + entry.OffsetY, Z + entry.OffsetZ), Map);
 
           m_Components.Add(item);
         }
@@ -113,11 +113,11 @@ namespace Server.Multis
       switch (version)
       {
         case 0:
-        {
-          m_Components = reader.ReadStrongItemList();
+          {
+            m_Components = reader.ReadStrongItemList();
 
-          break;
-        }
+            break;
+          }
       }
 
       Timer.DelayCall(TimeSpan.Zero, Delete);
@@ -125,7 +125,7 @@ namespace Server.Multis
 
     private class DecayTimer : Timer
     {
-      private Item m_Item;
+      private readonly Item m_Item;
 
       public DecayTimer(Item item) : base(TimeSpan.FromSeconds(20.0))
       {

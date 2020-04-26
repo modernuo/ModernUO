@@ -45,13 +45,13 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          Resistances.Physical = 0;
-          Resistances.Fire = 0;
-          Resistances.Cold = 0;
-          Resistances.Energy = 0;
-          break;
-        }
+          {
+            Resistances.Physical = 0;
+            Resistances.Fire = 0;
+            Resistances.Cold = 0;
+            Resistances.Energy = 0;
+            break;
+          }
       }
     }
   }

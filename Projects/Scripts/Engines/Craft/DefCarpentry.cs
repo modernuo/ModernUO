@@ -32,8 +32,8 @@ namespace Server.Engines.Craft
     public override void PlayCraftEffect(Mobile from)
     {
       // no animation
-      //if ( from.Body.Type == BodyType.Human && !from.Mounted )
-      //	from.Animate( 9, 5, 1, true, false, 0 );
+      // if (from.Body.Type == BodyType.Human && !from.Mounted)
+      // from.Animate( 9, 5, 1, true, false, 0 );
 
       from.PlaySound(0x23D);
     }
@@ -99,10 +99,10 @@ namespace Server.Engines.Craft
         SetNeededExpansion(index, Expansion.SE);
       }
 
-      if (Core.AOS) //Duplicate Entries to preserve ordering depending on era
+      if (Core.AOS) // Duplicate Entries to preserve ordering depending on era
       {
         index = AddCraft(typeof(FishingPole), 1044294, 1023519, 68.4, 93.4, typeof(Log), 1044041, 5,
-          1044351); //This is in the categor of Other during AoS
+          1044351); // This is in the categor of Other during AoS
         AddSkill(index, SkillName.Tailoring, 40.0, 45.0);
         AddRes(index, typeof(Cloth), 1044286, 5, 1044287);
       }
@@ -288,10 +288,10 @@ namespace Server.Engines.Craft
       AddCraft(typeof(WoodenShield), Core.ML ? 1062760 : 1044295, 1027034, 52.6, 77.6, typeof(Log), 1044041, 9,
         1044351);
 
-      if (!Core.AOS) //Duplicate Entries to preserve ordering depending on era
+      if (!Core.AOS) // Duplicate Entries to preserve ordering depending on era
       {
         index = AddCraft(typeof(FishingPole), Core.ML ? 1044294 : 1044295, 1023519, 68.4, 93.4, typeof(Log), 1044041,
-          5, 1044351); //This is in the categor of Other during AoS
+          5, 1044351); // This is in the categor of Other during AoS
         AddSkill(index, SkillName.Tailoring, 40.0, 45.0);
         AddRes(index, typeof(Cloth), 1044286, 5, 1044287);
       }

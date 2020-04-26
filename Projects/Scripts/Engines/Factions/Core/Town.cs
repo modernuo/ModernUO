@@ -23,7 +23,7 @@ namespace Server.Factions
       StartIncomeTimer();
     }
 
-    public TownDefinition Definition{ get; set; }
+    public TownDefinition Definition { get; set; }
 
     public TownState State
     {
@@ -125,9 +125,9 @@ namespace Server.Factions
       set => m_State.LastIncome = value;
     }
 
-    public List<VendorList> VendorLists{ get; set; }
+    public List<VendorList> VendorLists { get; set; }
 
-    public List<GuardList> GuardLists{ get; set; }
+    public List<GuardList> GuardLists { get; set; }
 
     public static List<Town> Towns => Reflector.Towns;
 

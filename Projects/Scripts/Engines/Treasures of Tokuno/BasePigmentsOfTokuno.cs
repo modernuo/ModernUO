@@ -7,7 +7,7 @@ namespace Server.Items
 {
   public abstract class BasePigmentsOfTokuno : Item, IUsesRemaining
   {
-    private static Type[] m_Glasses =
+    private static readonly Type[] m_Glasses =
     {
       typeof(MaritimeGlasses),
       typeof(WizardsGlasses),
@@ -23,7 +23,7 @@ namespace Server.Items
       typeof(AnthropomorphistGlasses)
     };
 
-    private static Type[] m_Replicas =
+    private static readonly Type[] m_Replicas =
     {
       typeof(ANecromancerShroud),
       typeof(BraveKnightOfTheBritannia),
@@ -50,7 +50,7 @@ namespace Server.Items
       typeof(Subdue)
     };
 
-    private static Type[] m_DyableHeritageItems =
+    private static readonly Type[] m_DyableHeritageItems =
     {
       typeof(ChargerOfTheFallen),
       typeof(SamuraiHelm),
@@ -91,13 +91,9 @@ namespace Server.Items
       }
     }
 
-    #region Old Item Serialization Vars
-
     /* DO NOT USE! Only used in serialization of pigments that originally derived from Item */
 
-    protected bool InheritsItem{ get; private set; }
-
-    #endregion
+    protected bool InheritsItem { get; private set; }
 
     public override void GetProperties(ObjectPropertyList list)
     {
@@ -124,8 +120,7 @@ namespace Server.Items
 
     private void InternalCallback(Mobile from, object targeted)
     {
-      
-      if (Deleted || UsesRemaining <= 0 || !from.InRange(GetWorldLocation(), 3) ||
+if (Deleted || UsesRemaining <= 0 || !from.InRange(GetWorldLocation(), 3) ||
           !IsAccessibleTo(from))
         return;
 
@@ -169,7 +164,7 @@ namespace Server.Items
       }
       else
       {
-        //Notes: on OSI there IS no hue check to see if it's already hued.  and no messages on successful hue either
+        // Notes: on OSI there IS no hue check to see if it's already hued.  and no messages on successful hue either
         i.Hue = Hue;
 
         if (--UsesRemaining <= 0)
@@ -242,29 +237,27 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_UsesRemaining = reader.ReadEncodedInt();
-          break;
-        }
+          {
+            m_UsesRemaining = reader.ReadEncodedInt();
+            break;
+          }
         case 0: // Old pigments that inherited from item
-        {
-          InheritsItem = true;
+          {
+            InheritsItem = true;
 
-          if (this is LesserPigmentsOfTokuno)
-            ((LesserPigmentsOfTokuno)this).Type = (LesserPigmentType)reader.ReadEncodedInt();
-          else if (this is PigmentsOfTokuno)
-            ((PigmentsOfTokuno)this).Type = (PigmentType)reader.ReadEncodedInt();
-          else if (this is MetalPigmentsOfTokuno)
-            reader.ReadEncodedInt();
+            if (this is LesserPigmentsOfTokuno)
+              ((LesserPigmentsOfTokuno)this).Type = (LesserPigmentType)reader.ReadEncodedInt();
+            else if (this is PigmentsOfTokuno)
+              ((PigmentsOfTokuno)this).Type = (PigmentType)reader.ReadEncodedInt();
+            else if (this is MetalPigmentsOfTokuno)
+              reader.ReadEncodedInt();
 
-          m_UsesRemaining = reader.ReadEncodedInt();
+            m_UsesRemaining = reader.ReadEncodedInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
-
-    #region IUsesRemaining Members
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int UsesRemaining
@@ -282,7 +275,5 @@ namespace Server.Items
       get => true;
       set { }
     }
-
-    #endregion
   }
 }

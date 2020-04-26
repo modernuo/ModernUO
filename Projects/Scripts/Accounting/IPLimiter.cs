@@ -13,7 +13,7 @@ namespace Server.Misc
 
     public static IPAddress[] Exemptions =
     {
-      //IPAddress.Parse( "127.0.0.1" ),
+      // IPAddress.Parse( "127.0.0.1" ),
     };
 
     public static bool IsExempt(IPAddress ip)

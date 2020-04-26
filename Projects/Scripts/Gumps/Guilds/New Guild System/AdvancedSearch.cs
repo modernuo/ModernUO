@@ -8,8 +8,8 @@ namespace Server.Guilds
 
   public class GuildAdvancedSearchGump : BaseGuildGump
   {
-    private SearchSelectionCallback m_Callback;
-    private GuildDisplayType m_Display;
+    private readonly SearchSelectionCallback m_Callback;
+    private readonly GuildDisplayType m_Display;
 
     public GuildAdvancedSearchGump(PlayerMobile pm, Guild g, GuildDisplayType display, SearchSelectionCallback callback)
       : base(pm, g)
@@ -44,7 +44,6 @@ namespace Server.Guilds
       AddButton(345, 375, 0x845, 0x846, 0);
       AddHtmlLocalized(370, 373, 60, 26, 1006045, 0x0); // Cancel
     }
-
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {

@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Server.Engines.Events
 {
   public class BroadcastEvent : IEvent
   {
-    private int _hue = 0;
-    private string _text = "";
+    private readonly int _hue = 0;
+    private readonly string _text = "";
     public static void Initialize()
     {
       /*

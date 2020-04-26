@@ -11,7 +11,7 @@ namespace Server.Spells
 {
   public abstract class SpecialMove
   {
-    private static Dictionary<Mobile, SpecialMoveContext> m_PlayersTable = new Dictionary<Mobile, SpecialMoveContext>();
+    private static readonly Dictionary<Mobile, SpecialMoveContext> m_PlayersTable = new Dictionary<Mobile, SpecialMoveContext>();
 
     public virtual int BaseMana => 0;
 
@@ -23,7 +23,7 @@ namespace Server.Spells
     public virtual bool BlockedByAnimalForm => true;
     public virtual bool DelayedContext => false;
 
-    public static Dictionary<Mobile, SpecialMove> Table{ get; } = new Dictionary<Mobile, SpecialMove>();
+    public static Dictionary<Mobile, SpecialMove> Table { get; } = new Dictionary<Mobile, SpecialMove>();
 
     public virtual bool ValidatesDuringHit => true;
 
@@ -145,8 +145,6 @@ namespace Server.Spells
         return false;
       }
 
-      #region Dueling
-
       string option = null;
 
       if (this is Backstab)
@@ -168,8 +166,6 @@ namespace Server.Spells
 
       if (option != null && !DuelContext.AllowSpecialMove(from, option, this))
         return false;
-
-      #endregion
 
       return CheckSkills(from) && CheckMana(from, false);
     }
@@ -286,7 +282,7 @@ namespace Server.Spells
 
     private class SpecialMoveTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public SpecialMoveTimer(Mobile from) : base(TimeSpan.FromSeconds(3.0))
       {
@@ -309,9 +305,9 @@ namespace Server.Spells
         Type = type;
       }
 
-      public Timer Timer{ get; }
+      public Timer Timer { get; }
 
-      public Type Type{ get; }
+      public Type Type { get; }
     }
   }
 }

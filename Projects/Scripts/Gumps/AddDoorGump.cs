@@ -15,7 +15,7 @@ namespace Server.Gumps
       new DoorInfo(typeof(StrongWoodDoor), 0x6E5)
     };
 
-    private int m_Type;
+    private readonly int m_Type;
 
     public AddDoorGump(int type = -1) : base(50, 40)
     {

@@ -13,7 +13,7 @@ namespace Server.Items
     {
     }
 
-    public bool Cut{ get; private set; }
+    public bool Cut { get; private set; }
 
     public override bool Scissor(Mobile from, Scissors scissors)
     {

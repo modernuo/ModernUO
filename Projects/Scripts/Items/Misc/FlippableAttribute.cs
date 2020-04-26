@@ -56,7 +56,7 @@ namespace Server.Items
   {
     public FlippableAttribute(params int[] itemIDs) => ItemIDs = itemIDs;
 
-    public int[] ItemIDs{ get; }
+    public int[] ItemIDs { get; }
 
     public virtual void Flip(Item item)
     {
@@ -64,7 +64,7 @@ namespace Server.Items
       {
         try
         {
-          item.GetType().GetMethod("Flip", Type.EmptyTypes)?.Invoke(item, new object[0]);
+          item.GetType().GetMethod("Flip", Type.EmptyTypes)?.Invoke(item, Array.Empty<object>());
         }
         catch
         {

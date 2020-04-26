@@ -33,8 +33,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (!IsChildOf(from.Backpack) && Parent != from
-      ) // TODO: These checks don't match EA, but they match BaseTool for now
+      if (!IsChildOf(from.Backpack) && Parent != from) // TODO: These checks don't match EA, but they match BaseTool for now
         from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
       else if (UsesRemaining <= 0)
         from.SendLocalizedMessage(1072306); // You must wait a moment for it to recharge.
@@ -45,7 +44,7 @@ namespace Server.Items
     private void StartRechargeTimer()
     {
       // TODO: Needs work
-      //Timer.DelayCall( RechargeDelay, RechargeDelay, new TimerCallback( Recharge ) );
+      // Timer.DelayCall( RechargeDelay, RechargeDelay, new TimerCallback( Recharge ) );
     }
 
     public void Recharge()

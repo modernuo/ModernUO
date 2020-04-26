@@ -16,42 +16,42 @@ namespace Server.Factions
       switch (version)
       {
         case 3:
-        {
-          LastIncome = reader.ReadDateTime();
+          {
+            LastIncome = reader.ReadDateTime();
 
-          goto case 2;
-        }
+            goto case 2;
+          }
         case 2:
-        {
-          Tax = reader.ReadEncodedInt();
-          LastTaxChange = reader.ReadDateTime();
+          {
+            Tax = reader.ReadEncodedInt();
+            LastTaxChange = reader.ReadDateTime();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          Silver = reader.ReadEncodedInt();
+          {
+            Silver = reader.ReadEncodedInt();
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          Town = Town.ReadReference(reader);
-          Owner = Faction.ReadReference(reader);
+          {
+            Town = Town.ReadReference(reader);
+            Owner = Faction.ReadReference(reader);
 
-          m_Sheriff = reader.ReadMobile();
-          m_Finance = reader.ReadMobile();
+            m_Sheriff = reader.ReadMobile();
+            m_Finance = reader.ReadMobile();
 
-          Town.State = this;
+            Town.State = this;
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public Town Town{ get; set; }
+    public Town Town { get; set; }
 
-    public Faction Owner{ get; set; }
+    public Faction Owner { get; set; }
 
     public Mobile Sheriff
     {
@@ -103,13 +103,13 @@ namespace Server.Factions
       }
     }
 
-    public int Silver{ get; set; }
+    public int Silver { get; set; }
 
-    public int Tax{ get; set; }
+    public int Tax { get; set; }
 
-    public DateTime LastTaxChange{ get; set; }
+    public DateTime LastTaxChange { get; set; }
 
-    public DateTime LastIncome{ get; set; }
+    public DateTime LastIncome { get; set; }
 
     public void Serialize(IGenericWriter writer)
     {

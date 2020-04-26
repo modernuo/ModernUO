@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-  public class ItemIdentification
+  public static class ItemIdentification
   {
     public static void Initialize()
     {

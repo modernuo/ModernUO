@@ -44,7 +44,7 @@ namespace Server.Multis
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -88,7 +88,7 @@ namespace Server.Multis
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -137,7 +137,7 @@ namespace Server.Multis
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -185,7 +185,7 @@ namespace Server.Multis
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -195,7 +195,7 @@ namespace Server.Multis
     }
   }
 
-  public class Keep : BaseHouse //warning: ODD shape!
+  public class Keep : BaseHouse // warning: ODD shape!
   {
     public static Rectangle2D[] AreaArray =
     {
@@ -227,7 +227,7 @@ namespace Server.Multis
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -268,7 +268,7 @@ namespace Server.Multis
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -312,7 +312,7 @@ namespace Server.Multis
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -352,7 +352,7 @@ namespace Server.Multis
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -391,7 +391,7 @@ namespace Server.Multis
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -432,7 +432,7 @@ namespace Server.Multis
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -472,7 +472,7 @@ namespace Server.Multis
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -514,7 +514,7 @@ namespace Server.Multis
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -543,7 +543,7 @@ namespace Server.Multis
 
       AddDoor(door, -2, 0, id == 0xA2 ? 24 : 27);
 
-      //AddSouthDoor( false, -2, 0, 27 - (id == 0xA2 ? 3 : 0), keyValue );
+      // AddSouthDoor( false, -2, 0, 27 - (id == 0xA2 ? 3 : 0), keyValue );
 
       SetSign(3, 4, 7 - (id == 0xA2 ? 2 : 0));
     }
@@ -572,7 +572,7 @@ namespace Server.Multis
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);
-      writer.Write(0); //version
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)

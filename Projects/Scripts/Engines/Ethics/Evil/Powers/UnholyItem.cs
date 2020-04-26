@@ -11,8 +11,7 @@ namespace Server.Ethics.Evil
         5,
         "Unholy Item",
         "Vidda K'balc",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

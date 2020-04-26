@@ -24,10 +24,10 @@ namespace Server.Mobiles
   {
     private const int MaxSell = 500;
 
-    private static TimeSpan InventoryDecayTime = TimeSpan.FromHours(1.0);
+    private static readonly TimeSpan InventoryDecayTime = TimeSpan.FromHours(1.0);
 
-    private List<IBuyItemInfo> m_ArmorBuyInfo = new List<IBuyItemInfo>();
-    private List<IShopSellInfo> m_ArmorSellInfo = new List<IShopSellInfo>();
+    private readonly List<IBuyItemInfo> m_ArmorBuyInfo = new List<IBuyItemInfo>();
+    private readonly List<IShopSellInfo> m_ArmorSellInfo = new List<IShopSellInfo>();
 
     public BaseVendor(string title = null)
       : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
@@ -38,7 +38,7 @@ namespace Server.Mobiles
       InitBody();
       InitOutfit();
 
-      //these packs MUST exist, or the client will crash when the packets are sent
+      // these packs MUST exist, or the client will crash when the packets are sent
       Container pack = new Backpack { Layer = Layer.ShopBuy, Movable = false, Visible = false };
       AddItem(pack);
 
@@ -53,7 +53,7 @@ namespace Server.Mobiles
     {
     }
 
-    protected abstract List<SBInfo> SBInfos{ get; }
+    protected abstract List<SBInfo> SBInfos { get; }
 
     public override bool CanTeach => true;
 
@@ -69,7 +69,7 @@ namespace Server.Mobiles
 
     public override bool IsInvulnerable => true;
 
-    public virtual DateTime NextTrickOrTreat{ get; set; }
+    public virtual DateTime NextTrickOrTreat { get; set; }
 
     public override bool ShowFameTitle => false;
 
@@ -91,7 +91,7 @@ namespace Server.Mobiles
 
     public virtual VendorShoeType ShoeType => VendorShoeType.Shoes;
 
-    public DateTime LastRestock{ get; set; }
+    public DateTime LastRestock { get; set; }
 
     public virtual TimeSpan RestockDelay => TimeSpan.FromHours(1);
 
@@ -178,7 +178,7 @@ namespace Server.Mobiles
           if (gbi != null)
             ProcessSinglePurchase(buy, gbi, validBuy, ref controlSlots, ref fullPurchase, ref totalCost);
         }
-      } //foreach
+      } // foreach
 
       if (fullPurchase && validBuy.Count == 0)
         SayTo(buyer, 500190); // Thou hast bought nothing!
@@ -209,7 +209,7 @@ namespace Server.Mobiles
         }
         else
         {
-          SayTo(buyer, 500191); //Begging thy pardon, but thy bank account lacks these funds.
+          SayTo(buyer, 500191); // Begging thy pardon, but thy bank account lacks these funds.
         }
       }
 
@@ -275,7 +275,7 @@ namespace Server.Mobiles
           if (gbi != null)
             ProcessValidPurchase(amount, gbi, buyer, cont);
         }
-      } //foreach
+      } // foreach
 
       if (fullPurchase)
       {
@@ -284,10 +284,10 @@ namespace Server.Mobiles
         else if (fromBank)
           SayTo(buyer, 1151638,
             totalCost
-              .ToString()); //The total of your purchase is ~1_val~ gold, which has been drawn from your bank account.  My thanks for the patronage.
+              .ToString()); // The total of your purchase is ~1_val~ gold, which has been drawn from your bank account.  My thanks for the patronage.
         else
           SayTo(buyer, 1151639,
-            totalCost.ToString()); //The total of your purchase is ~1_val~ gold.  My thanks for the patronage.
+            totalCost.ToString()); // The total of your purchase is ~1_val~ gold.  My thanks for the patronage.
       }
       else
       {
@@ -331,7 +331,7 @@ namespace Server.Mobiles
       foreach (SellItemResponse resp in list)
       {
         if (resp.Item.RootParent != seller || resp.Amount <= 0 || !resp.Item.IsStandardLoot() ||
-            !resp.Item.Movable || resp.Item is Container container && container.Items.Count != 0)
+            !resp.Item.Movable || (resp.Item is Container container && container.Items.Count != 0))
           continue;
 
         foreach (IShopSellInfo ssi in info)
@@ -353,7 +353,7 @@ namespace Server.Mobiles
       foreach (SellItemResponse resp in list)
       {
         if (resp.Item.RootParent != seller || resp.Amount <= 0 || !resp.Item.IsStandardLoot() ||
-            !resp.Item.Movable || resp.Item is Container container && container.Items.Count != 0)
+            !resp.Item.Movable || (resp.Item is Container container && container.Items.Count != 0))
           continue;
 
         foreach (IShopSellInfo ssi in info)
@@ -426,7 +426,7 @@ namespace Server.Mobiles
 
         seller.AddToBackpack(new Gold(GiveGold));
 
-        seller.PlaySound(0x0037); //Gold dropping sound
+        seller.PlaySound(0x0037); // Gold dropping sound
 
         if (SupportsBulkOrders(seller))
         {
@@ -438,8 +438,8 @@ namespace Server.Mobiles
             seller.SendGump(new SmallBODAcceptGump(seller, smallBod));
         }
       }
-      //no cliloc for this?
-      //SayTo( seller, true, "Thank you! I bought {0} item{1}. Here is your {2}gp.", Sold, (Sold > 1 ? "s" : ""), GiveGold );
+      // no cliloc for this?
+      // SayTo( seller, true, "Thank you! I bought {0} item{1}. Here is your {2}gp.", Sold, (Sold > 1 ? "s" : ""), GiveGold );
 
       return true;
     }
@@ -515,7 +515,7 @@ namespace Server.Mobiles
       };
     }
 
-    public virtual int GetShoeHue() => 0.1 > Utility.RandomDouble() ? 0 : Utility.RandomNeutralHue();
+    public virtual int GetShoeHue() => Utility.RandomDouble() < 0.1 ? 0 : Utility.RandomNeutralHue();
 
     public virtual void CheckMorph()
     {
@@ -811,9 +811,9 @@ namespace Server.Mobiles
         }
       }
 
-      //one (not all) of the packets uses a byte to describe number of items in the list.  Osi = dumb.
-      //if ( list.Count > 255 )
-      //	Console.WriteLine( "Vendor Warning: Vendor {0} has more than 255 buy items, may cause client errors!", this );
+      // one (not all) of the packets uses a byte to describe number of items in the list.  Osi = dumb.
+      // if (list.Count > 255)
+      // Console.WriteLine( "Vendor Warning: Vendor {0} has more than 255 buy items, may cause client errors!", this );
 
       if (list.Count <= 0)
         return;
@@ -839,7 +839,7 @@ namespace Server.Mobiles
       else
         from.Send(new DisplayBuyList(this));
 
-      from.Send(new MobileStatusExtended(from)); //make sure their gold amount is sent
+      from.Send(new MobileStatusExtended(from)); // make sure their gold amount is sent
 
       for (int i = 0; i < opls.Count; ++i)
         from.Send(opls[i]);
@@ -899,14 +899,14 @@ namespace Server.Mobiles
       List<SellItemState> list = new List<SellItemState>();
 
       foreach (IShopSellInfo ssi in info)
-      foreach (Item item in pack.FindItemsByType(ssi.Types))
-      {
-        if (item is Container container && container.Items.Count != 0)
-          continue;
+        foreach (Item item in pack.FindItemsByType(ssi.Types))
+        {
+          if (item is Container container && container.Items.Count != 0)
+            continue;
 
-        if (item.IsStandardLoot() && item.Movable && ssi.IsSellable(item))
-          list.Add(new SellItemState(item, ssi.GetSellPriceFor(item), ssi.GetNameFor(item)));
-      }
+          if (item.IsStandardLoot() && item.Movable && ssi.IsSellable(item))
+            list.Add(new SellItemState(item, ssi.GetSellPriceFor(item), ssi.GetNameFor(item)));
+        }
 
       if (list.Count > 0)
       {
@@ -1086,7 +1086,7 @@ namespace Server.Mobiles
 
     public virtual bool CheckVendorAccess(Mobile from) =>
       Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false ||
-      Region != from.Region && from.Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false;
+      (Region != from.Region && from.Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false);
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -1142,47 +1142,47 @@ namespace Server.Mobiles
       switch (version)
       {
         case 1:
-        {
-          int index;
-
-          while ((index = reader.ReadEncodedInt()) > 0)
           {
-            int doubled = reader.ReadEncodedInt();
+            int index;
 
-            if (sbInfos != null)
+            while ((index = reader.ReadEncodedInt()) > 0)
             {
-              index -= 1;
-              int sbInfoIndex = index % sbInfos.Count;
-              int buyInfoIndex = index / sbInfos.Count;
+              int doubled = reader.ReadEncodedInt();
 
-              if (sbInfoIndex >= 0 && sbInfoIndex < sbInfos.Count)
+              if (sbInfos != null)
               {
-                SBInfo sbInfo = sbInfos[sbInfoIndex];
-                List<GenericBuyInfo> buyInfo = sbInfo.BuyInfo;
+                index -= 1;
+                int sbInfoIndex = index % sbInfos.Count;
+                int buyInfoIndex = index / sbInfos.Count;
 
-                if (buyInfo != null && buyInfoIndex >= 0 && buyInfoIndex < buyInfo.Count)
+                if (sbInfoIndex >= 0 && sbInfoIndex < sbInfos.Count)
                 {
-                  GenericBuyInfo gbi = buyInfo[buyInfoIndex];
+                  SBInfo sbInfo = sbInfos[sbInfoIndex];
+                  List<GenericBuyInfo> buyInfo = sbInfo.BuyInfo;
 
-                  var amount = doubled switch
+                  if (buyInfo != null && buyInfoIndex >= 0 && buyInfoIndex < buyInfo.Count)
                   {
-                    1 => 40,
-                    2 => 80,
-                    3 => 160,
-                    4 => 320,
-                    5 => 640,
-                    6 => 999,
-                    _ => 20
-                  };
+                    GenericBuyInfo gbi = buyInfo[buyInfoIndex];
 
-                  gbi.Amount = gbi.MaxAmount = amount;
+                    var amount = doubled switch
+                    {
+                      1 => 40,
+                      2 => 80,
+                      3 => 160,
+                      4 => 320,
+                      5 => 640,
+                      6 => 999,
+                      _ => 20
+                    };
+
+                    gbi.Amount = gbi.MaxAmount = amount;
+                  }
                 }
               }
             }
-          }
 
-          break;
-        }
+            break;
+          }
       }
 
       if (IsParagon)
@@ -1214,8 +1214,8 @@ namespace Server.Mobiles
 
     private class BulkOrderInfoEntry : ContextMenuEntry
     {
-      private Mobile m_From;
-      private BaseVendor m_Vendor;
+      private readonly Mobile m_From;
+      private readonly BaseVendor m_Vendor;
 
       public BulkOrderInfoEntry(Mobile from, BaseVendor vendor)
         : base(6152)
@@ -1266,8 +1266,6 @@ namespace Server.Mobiles
       }
     }
 
-    #region Faction
-
     public virtual int GetPriceScalar() => 100 + Town.FromRegion(Region)?.Tax ?? 0;
 
     public void UpdateBuyInfo()
@@ -1277,8 +1275,6 @@ namespace Server.Mobiles
       foreach (IBuyItemInfo info in m_ArmorBuyInfo.ToArray())
         info.PriceScalar = priceScalar;
     }
-
-    #endregion
   }
 }
 
@@ -1286,7 +1282,7 @@ namespace Server.ContextMenus
 {
   public class VendorBuyEntry : ContextMenuEntry
   {
-    private BaseVendor m_Vendor;
+    private readonly BaseVendor m_Vendor;
 
     public VendorBuyEntry(Mobile from, BaseVendor vendor)
       : base(6103, 8)
@@ -1303,7 +1299,7 @@ namespace Server.ContextMenus
 
   public class VendorSellEntry : ContextMenuEntry
   {
-    private BaseVendor m_Vendor;
+    private readonly BaseVendor m_Vendor;
 
     public VendorSellEntry(Mobile from, BaseVendor vendor)
       : base(6104, 8)
@@ -1323,56 +1319,56 @@ namespace Server
 {
   public interface IShopSellInfo
   {
-    //What do we sell?
-    Type[] Types{ get; }
+    // What do we sell?
+    Type[] Types { get; }
 
-    //get display name for an item
+    // get display name for an item
     string GetNameFor(Item item);
 
-    //get price for an item which the player is selling
+    // get price for an item which the player is selling
     int GetSellPriceFor(Item item);
 
-    //get price for an item which the player is buying
+    // get price for an item which the player is buying
     int GetBuyPriceFor(Item item);
 
-    //can we sell this item to this vendor?
+    // can we sell this item to this vendor?
     bool IsSellable(Item item);
 
-    //does the vendor resell this item?
+    // does the vendor resell this item?
     bool IsResellable(Item item);
   }
 
   public interface IBuyItemInfo
   {
-    int ControlSlots{ get; }
+    int ControlSlots { get; }
 
-    int PriceScalar{ get; set; }
+    int PriceScalar { get; set; }
 
-    //display price of the item
-    int Price{ get; }
+    // display price of the item
+    int Price { get; }
 
-    //display name of the item
-    string Name{ get; }
+    // display name of the item
+    string Name { get; }
 
-    //display hue
-    int Hue{ get; }
+    // display hue
+    int Hue { get; }
 
-    //display id
-    int ItemID{ get; }
+    // display id
+    int ItemID { get; }
 
-    //amount in stock
-    int Amount{ get; set; }
+    // amount in stock
+    int Amount { get; set; }
 
-    //max amount in stock
-    int MaxAmount{ get; }
+    // max amount in stock
+    int MaxAmount { get; }
 
-    //get a new instance of an object (we just bought it)
+    // get a new instance of an object (we just bought it)
     IEntity GetEntity();
 
-    //Attempt to restock with item, (return true if restock successful)
+    // Attempt to restock with item, (return true if restock successful)
     bool Restock(Item item, int amount);
 
-    //called when its time for the whole shop to restock
+    // called when its time for the whole shop to restock
     void OnRestock();
   }
 }

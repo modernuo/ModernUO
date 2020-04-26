@@ -69,7 +69,7 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
       }
-      else if (from.Map == GetTargetMap() || from.Map != Map.Trammel && from.Map != Map.Felucca)
+      else if (from.Map == GetTargetMap() || (from.Map != Map.Trammel && from.Map != Map.Felucca))
       {
         from.SendLocalizedMessage(1005401); // You cannot bury the stone here.
       }
@@ -126,21 +126,22 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Type = (MoonstoneType)reader.ReadInt();
+          {
+            m_Type = (MoonstoneType)reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
     private class SettleTimer : Timer
     {
-      private Mobile m_Caster;
+      private readonly Mobile m_Caster;
       private int m_Count;
-      private Point3D m_Location;
-      private Map m_Map, m_TargetMap;
-      private Item m_Stone;
+      private readonly Point3D m_Location;
+      private readonly Map m_Map;
+      private readonly Map m_TargetMap;
+      private readonly Item m_Stone;
 
       public SettleTimer(Item stone, Point3D loc, Map map, Map targetMap, Mobile caster) : base(
         TimeSpan.FromSeconds(2.5), TimeSpan.FromSeconds(1.0))

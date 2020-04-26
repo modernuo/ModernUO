@@ -27,15 +27,15 @@ namespace Server.Engines.MLQuests.Objectives
       }
     }
 
-    public Type Delivery{ get; set; }
+    public Type Delivery { get; set; }
 
-    public int Amount{ get; set; }
+    public int Amount { get; set; }
 
-    public TextDefinition Name{ get; set; }
+    public TextDefinition Name { get; set; }
 
-    public Type Destination{ get; set; }
+    public Type Destination { get; set; }
 
-    public bool SpawnsDelivery{ get; set; }
+    public bool SpawnsDelivery { get; set; }
 
     public virtual void SpawnDelivery(Container pack)
     {
@@ -90,8 +90,6 @@ namespace Server.Engines.MLQuests.Objectives
     public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance) => new DeliverObjectiveInstance(this, instance);
   }
 
-  #region Timed
-
   public class TimedDeliverObjective : DeliverObjective
   {
     public TimedDeliverObjective(TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination,
@@ -100,10 +98,8 @@ namespace Server.Engines.MLQuests.Objectives
       Duration = duration;
 
     public override bool IsTimed => true;
-    public override TimeSpan Duration{ get; }
+    public override TimeSpan Duration { get; }
   }
-
-  #endregion
 
   public class DeliverObjectiveInstance : BaseObjectiveInstance
   {
@@ -111,9 +107,9 @@ namespace Server.Engines.MLQuests.Objectives
       : base(instance, objective) =>
       Objective = objective;
 
-    public DeliverObjective Objective{ get; set; }
+    public DeliverObjective Objective { get; set; }
 
-    public bool HasCompleted{ get; set; }
+    public bool HasCompleted { get; set; }
 
     public override DataType ExtraDataType => DataType.DeliverObjective;
 

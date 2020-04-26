@@ -26,7 +26,7 @@ using Server.Guilds;
 
 namespace Server
 {
-  public sealed class ParallelSaveStrategy : SaveStrategy
+  public sealed class ParallelSaveStrategy : SaveStrategy, IDisposable
   {
     private readonly Queue<Item> _decayQueue;
 
@@ -34,11 +34,11 @@ namespace Server
     private int cycle;
 
     private bool finished;
-    private SequentialFileWriter guildData, guildIndex;
+    private SequentialFileWriterStream guildData, guildIndex;
 
-    private SequentialFileWriter itemData, itemIndex;
+    private SequentialFileWriterStream itemData, itemIndex;
 
-    private SequentialFileWriter mobileData, mobileIndex;
+    private SequentialFileWriterStream mobileData, mobileIndex;
 
     private readonly int processorCount;
 
@@ -59,11 +59,11 @@ namespace Server
 
       consumers = new Consumer[GetThreadCount()];
 
-      for (int i = 0; i < consumers.Length; ++i) consumers[i] = new Consumer(this, 256);
+      for (var i = 0; i < consumers.Length; ++i) consumers[i] = new Consumer(this, 256);
 
       IEnumerable<ISerializable> collection = new Producer();
 
-      foreach (ISerializable value in collection)
+      foreach (var value in collection)
         while (!Enqueue(value))
           if (!Commit())
             Thread.Sleep(0);
@@ -75,9 +75,7 @@ namespace Server
       WaitHandle.WaitAll(
         Array.ConvertAll<Consumer, WaitHandle>(
           consumers,
-          input => input.completionEvent
-        )
-      );
+          input => input.completionEvent));
 
       Commit();
 
@@ -88,7 +86,7 @@ namespace Server
     {
       while (_decayQueue.Count > 0)
       {
-        Item item = _decayQueue.Dequeue();
+        var item = _decayQueue.Dequeue();
 
         if (item.OnDecay()) item.Delete();
       }
@@ -102,11 +100,11 @@ namespace Server
 
     private void SaveTypeDatabase(string path, List<Type> types)
     {
-      BinaryFileWriter bfw = new BinaryFileWriter(path, false);
+      var bfw = new BinaryFileWriter(path, false);
 
       bfw.Write(types.Count);
 
-      foreach (Type type in types) bfw.Write(type.FullName);
+      foreach (var type in types) bfw.Write(type.FullName);
 
       bfw.Flush();
 
@@ -115,23 +113,23 @@ namespace Server
 
     private void OpenFiles()
     {
-      itemData = new SequentialFileWriter(World.ItemDataPath);
-      itemIndex = new SequentialFileWriter(World.ItemIndexPath);
+      itemData = new SequentialFileWriterStream(World.ItemDataPath);
+      itemIndex = new SequentialFileWriterStream(World.ItemIndexPath);
 
-      mobileData = new SequentialFileWriter(World.MobileDataPath);
-      mobileIndex = new SequentialFileWriter(World.MobileIndexPath);
+      mobileData = new SequentialFileWriterStream(World.MobileDataPath);
+      mobileIndex = new SequentialFileWriterStream(World.MobileIndexPath);
 
-      guildData = new SequentialFileWriter(World.GuildDataPath);
-      guildIndex = new SequentialFileWriter(World.GuildIndexPath);
+      guildData = new SequentialFileWriterStream(World.GuildDataPath);
+      guildIndex = new SequentialFileWriterStream(World.GuildIndexPath);
 
       WriteCount(itemIndex, World.Items.Count);
       WriteCount(mobileIndex, World.Mobiles.Count);
       WriteCount(guildIndex, BaseGuild.List.Count);
     }
 
-    private void WriteCount(SequentialFileWriter indexFile, int count)
+    private void WriteCount(SequentialFileWriterStream indexFile, int count)
     {
-      byte[] buffer = new byte[4];
+      var buffer = new byte[4];
 
       buffer[0] = (byte)count;
       buffer[1] = (byte)(count >> 8);
@@ -157,8 +155,8 @@ namespace Server
 
     private void OnSerialized(ConsumableEntry entry)
     {
-      ISerializable value = entry.value;
-      BinaryMemoryWriter writer = entry.writer;
+      var value = entry.value;
+      var writer = entry.writer;
 
       if (value is Item item)
         Save(item, writer);
@@ -170,7 +168,7 @@ namespace Server
 
     private void Save(Item item, BinaryMemoryWriter writer)
     {
-      writer.CommitTo(itemData, itemIndex, item.m_TypeRef, item.Serial);
+      writer.CommitTo(itemData, itemIndex, item.TypeRef, item.Serial);
 
       if (item.Decays && item.Parent == null && item.Map != Map.Internal &&
           DateTime.UtcNow > item.LastMoved + item.DecayTime) _decayQueue.Enqueue(item);
@@ -178,19 +176,19 @@ namespace Server
 
     private void Save(Mobile mob, BinaryMemoryWriter writer)
     {
-      writer.CommitTo(mobileData, mobileIndex, mob.m_TypeRef, mob.Serial);
+      writer.CommitTo(mobileData, mobileIndex, mob.TypeRef, mob.Serial);
     }
 
     private void Save(BaseGuild guild, BinaryMemoryWriter writer)
     {
-      writer.CommitTo(guildData, guildIndex, 0, guild.Id);
+      writer.CommitTo(guildData, guildIndex, 0, guild.Serial);
     }
 
     private bool Enqueue(ISerializable value)
     {
-      for (int i = 0; i < consumers.Length; ++i)
+      for (var i = 0; i < consumers.Length; ++i)
       {
-        Consumer consumer = consumers[cycle++ % consumers.Length];
+        var consumer = consumers[cycle++ % consumers.Length];
 
         if (consumer.tail - consumer.head < consumer.buffer.Length)
         {
@@ -206,11 +204,11 @@ namespace Server
 
     private bool Commit()
     {
-      bool committed = false;
+      var committed = false;
 
-      for (int i = 0; i < consumers.Length; ++i)
+      for (var i = 0; i < consumers.Length; ++i)
       {
-        Consumer consumer = consumers[i];
+        var consumer = consumers[i];
 
         while (consumer.head < consumer.done)
         {
@@ -239,11 +237,11 @@ namespace Server
 
       public IEnumerator<ISerializable> GetEnumerator()
       {
-        foreach (Item item in items) yield return item;
+        foreach (var item in items) yield return item;
 
-        foreach (Mobile mob in mobiles) yield return mob;
+        foreach (var mob in mobiles) yield return mob;
 
-        foreach (BaseGuild guild in guilds) yield return guild;
+        foreach (var guild in guilds) yield return guild;
       }
 
       IEnumerator IEnumerable.GetEnumerator() => throw new NotImplementedException();
@@ -271,7 +269,7 @@ namespace Server
 
         buffer = new ConsumableEntry[bufferSize];
 
-        for (int i = 0; i < buffer.Length; ++i) buffer[i].writer = new BinaryMemoryWriter();
+        for (var i = 0; i < buffer.Length; ++i) buffer[i].writer = new BinaryMemoryWriter();
 
         completionEvent = new ManualResetEvent(false);
 
@@ -315,6 +313,40 @@ namespace Server
           ++done;
         }
       }
+    }
+
+    private bool disposedValue = false; // To detect redundant calls
+
+    public void Dispose(bool disposing)
+    {
+      if (!disposedValue)
+      {
+        if (disposing)
+        {
+          // TODO: dispose managed state (managed objects).
+        }
+
+        // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+        // TODO: set large fields to null.
+
+        disposedValue = true;
+      }
+    }
+
+    // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+    // ~ParallelSaveStrategy()
+    // {
+    //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+    //   Dispose(false);
+    // }
+
+    // This code added to correctly implement the disposable pattern.
+    public void Dispose()
+    {
+      // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+      Dispose(true);
+      // TODO: uncomment the following line if the finalizer is overridden above.
+      // GC.SuppressFinalize(this);
     }
   }
 }

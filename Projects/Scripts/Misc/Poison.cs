@@ -10,17 +10,19 @@ namespace Server
 {
   public class PoisonImpl : Poison
   {
-    private int m_Count, m_MessageInterval;
+    private readonly int m_Count;
+    private readonly int m_MessageInterval;
 
     // Timers
-    private TimeSpan m_Delay;
-    private TimeSpan m_Interval;
+    private readonly TimeSpan m_Delay;
+    private readonly TimeSpan m_Interval;
 
     // Info
 
     // Damage
-    private int m_Minimum, m_Maximum;
-    private double m_Scalar;
+    private readonly int m_Minimum;
+    private readonly int m_Maximum;
+    private readonly double m_Scalar;
 
     public PoisonImpl(string name, int level, int min, int max, double percent, double delay, double interval, int count,
       int messageInterval)
@@ -36,9 +38,9 @@ namespace Server
       m_MessageInterval = messageInterval;
     }
 
-    public override string Name{ get; }
+    public override string Name { get; }
 
-    public override int Level{ get; }
+    public override int Level { get; }
 
     [CallPriority(10)]
     public static void Configure()
@@ -74,8 +76,8 @@ namespace Server
     {
       private int m_Index;
       private int m_LastDamage;
-      private Mobile m_Mobile;
-      private PoisonImpl m_Poison;
+      private readonly Mobile m_Mobile;
+      private readonly PoisonImpl m_Poison;
 
       public PoisonTimer(Mobile m, PoisonImpl p) : base(p.m_Delay, p.m_Interval)
       {
@@ -84,13 +86,13 @@ namespace Server
         m_Poison = p;
       }
 
-      public Mobile From{ get; set; }
+      public Mobile From { get; set; }
 
       protected override void OnTick()
       {
-        if (Core.AOS && m_Poison.Level < 4 &&
-            TransformationSpellHelper.UnderTransformation(m_Mobile, typeof(VampiricEmbraceSpell)) ||
-            m_Poison.Level < 3 && OrangePetals.UnderEffect(m_Mobile) ||
+        if ((Core.AOS && m_Poison.Level < 4 &&
+            TransformationSpellHelper.UnderTransformation(m_Mobile, typeof(VampiricEmbraceSpell))) ||
+            (m_Poison.Level < 3 && OrangePetals.UnderEffect(m_Mobile)) ||
             AnimalForm.UnderTransformation(m_Mobile, typeof(Unicorn)))
           if (m_Mobile.CurePoison(m_Mobile))
           {
@@ -138,8 +140,7 @@ namespace Server
 
         AOS.Damage(m_Mobile, From, damage, 0, 0, 0, 100, 0);
 
-        if (0.60 <= Utility.RandomDouble()
-        ) // OSI: randomly revealed between first and third damage tick, guessing 60% chance
+        if (Utility.RandomDouble() >= 0.60) // OSI: randomly revealed between first and third damage tick, guessing 60% chance
           m_Mobile.RevealingAction();
 
         if (m_Index % m_Poison.m_MessageInterval == 0)

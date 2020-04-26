@@ -241,7 +241,7 @@ namespace Server.Engines.Quests.Collector
 
   public class FullEndConversation : QuestConversation
   {
-    private bool m_Logged;
+    private readonly bool m_Logged;
 
     public FullEndConversation(bool logged) => m_Logged = logged;
 

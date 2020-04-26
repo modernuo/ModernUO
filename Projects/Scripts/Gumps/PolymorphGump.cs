@@ -25,31 +25,29 @@ namespace Server.Gumps
     public static readonly PolymorphEntry Ettin = new PolymorphEntry(8408, 0x02, 1015252, 25, 8);
     public static readonly PolymorphEntry Daemon = new PolymorphEntry(8403, 0x09, 1015253, 25, 8);
 
-
-    private PolymorphEntry(int Art, int Body, int LocNum, int X, int Y)
+    private PolymorphEntry(int art, int body, int locNum, int x, int y)
     {
-      ArtID = Art;
-      BodyID = Body;
-      LocNumber = LocNum;
-      this.X = X;
-      this.Y = Y;
+      ArtID = art;
+      BodyID = body;
+      LocNumber = locNum;
+      this.X = x;
+      this.Y = y;
     }
 
-    public int ArtID{ get; }
+    public int ArtID { get; }
 
-    public int BodyID{ get; }
+    public int BodyID { get; }
 
-    public int LocNumber{ get; }
+    public int LocNumber { get; }
 
-    public int X{ get; }
+    public int X { get; }
 
-    public int Y{ get; }
+    public int Y { get; }
   }
-
 
   public class PolymorphGump : Gump
   {
-    private static PolymorphCategory[] Categories =
+    private static readonly PolymorphCategory[] Categories =
     {
       new PolymorphCategory(1015235, // Animals
         PolymorphEntry.Chicken,
@@ -74,9 +72,8 @@ namespace Server.Gumps
         PolymorphEntry.HumanFemale)
     };
 
-
-    private Mobile m_Caster;
-    private Item m_Scroll;
+    private readonly Mobile m_Caster;
+    private readonly Item m_Scroll;
 
     public PolymorphGump(Mobile caster, Item scroll) : base(50, 50)
     {
@@ -145,9 +142,9 @@ namespace Server.Gumps
         Entries = entries;
       }
 
-      public PolymorphEntry[] Entries{ get; }
+      public PolymorphEntry[] Entries { get; }
 
-      public int LocNumber{ get; }
+      public int LocNumber { get; }
     }
   }
 
@@ -175,8 +172,8 @@ namespace Server.Gumps
       PolymorphEntry.Daemon
     };
 
-    private Mobile m_Caster;
-    private Item m_Scroll;
+    private readonly Mobile m_Caster;
+    private readonly Item m_Scroll;
 
     public NewPolymorphGump(Mobile caster, Item scroll) : base(0, 0)
     {

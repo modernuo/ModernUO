@@ -6,11 +6,11 @@ namespace Server
   public class PathFollower
   {
     // Should we use pathfinding? 'false' for not
-    private static bool Enabled = true;
+    private static readonly bool Enabled = true;
 
-    private static TimeSpan RepathDelay = TimeSpan.FromSeconds(2.0);
+    private static readonly TimeSpan RepathDelay = TimeSpan.FromSeconds(2.0);
 
-    private Mobile m_From;
+    private readonly Mobile m_From;
     private int m_Index;
     private DateTime m_LastPathTime;
     private Point3D m_Next, m_LastGoalLoc;
@@ -22,9 +22,9 @@ namespace Server
       Goal = goal;
     }
 
-    public MoveMethod Mover{ get; set; }
+    public MoveMethod Mover { get; set; }
 
-    public IPoint3D Goal{ get; }
+    public IPoint3D Goal { get; }
 
     public MoveResult Move(Direction d)
     {
@@ -72,7 +72,7 @@ namespace Server
 
       Point3D goal = GetGoalLocation();
 
-      if (m_Path != null && (m_Path.Success && goal == m_LastGoalLoc || m_LastPathTime + RepathDelay > DateTime.Now) &&
+      if (m_Path != null && ((m_Path.Success && goal == m_LastGoalLoc) || m_LastPathTime + RepathDelay > DateTime.Now) &&
           !(m_Path.Success && Check(m_From.Location, m_LastGoalLoc, 0)))
         return false;
 
@@ -87,7 +87,6 @@ namespace Server
       Advance(ref m_Next, m_Index);
 
       return true;
-
     }
 
     public bool Check(Point3D loc, Point3D goal, int range) => Utility.InRange(loc, goal, range) && (range > 1 || Math.Abs(loc.Z - goal.Z) < 16);

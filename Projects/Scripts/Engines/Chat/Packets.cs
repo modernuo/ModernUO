@@ -11,15 +11,15 @@ namespace Server.Engines.Chat
 
       EnsureCapacity(13 + (param1.Length + param2.Length) * 2);
 
-      m_Stream.Write((ushort)(number - 20));
+      Stream.Write((ushort)(number - 20));
 
       if (who != null)
-        m_Stream.WriteAsciiFixed(who.Language, 4);
+        Stream.WriteAsciiFixed(who.Language, 4);
       else
-        m_Stream.Write(0);
+        Stream.Write(0);
 
-      m_Stream.WriteBigUniNull(param1);
-      m_Stream.WriteBigUniNull(param2);
+      Stream.WriteBigUniNull(param1);
+      Stream.WriteBigUniNull(param2);
     }
   }
 }

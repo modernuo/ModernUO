@@ -16,7 +16,7 @@ namespace Server.Items
     {
     }
 
-    public override int LabelNumber => 1073380; //Folded Steel Reading Glasses
+    public override int LabelNumber => 1073380; // Folded Steel Reading Glasses
 
     public override int BasePhysicalResistance => 20;
     public override int BaseFireResistance => 10;

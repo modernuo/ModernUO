@@ -6,7 +6,7 @@ namespace Server.Engines.Quests.Doom
 {
   public class TheSummoningQuest : QuestSystem
   {
-    private static Type[] m_TypeReferenceTable =
+    private static readonly Type[] m_TypeReferenceTable =
     {
       typeof(AcceptConversation),
       typeof(CollectBonesObjective),
@@ -22,9 +22,9 @@ namespace Server.Engines.Quests.Doom
 
     public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
-    public Victoria Victoria{ get; private set; }
+    public Victoria Victoria { get; private set; }
 
-    public bool WaitForSummon{ get; set; }
+    public bool WaitForSummon { get; set; }
 
     public override object Name => 1050025;
 

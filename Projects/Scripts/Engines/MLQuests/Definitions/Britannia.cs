@@ -6,8 +6,6 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Definitions
 {
-  #region Quests
-
   public class Aemaeth1 : MLQuest
   {
     public Aemaeth1()
@@ -111,10 +109,6 @@ namespace Server.Engines.MLQuests.Definitions
     }
   }
 
-  #endregion
-
-  #region Mobiles
-
   public class Aurelia : BaseCreature
   {
     [Constructible]
@@ -199,6 +193,4 @@ namespace Server.Engines.MLQuests.Definitions
       int version = reader.ReadInt();
     }
   }
-
-  #endregion
 }

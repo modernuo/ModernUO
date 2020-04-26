@@ -18,7 +18,7 @@ namespace Server.Engines.Mahjong
       }
     }
 
-    public List<MahjongTileType> LeftTileTypes{ get; }
+    public List<MahjongTileType> LeftTileTypes { get; }
 
     public MahjongTileType Next()
     {

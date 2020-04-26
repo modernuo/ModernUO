@@ -20,7 +20,7 @@ namespace Server.Mobiles
     {
     }
 
-    public abstract Mobile Focus{ get; set; }
+    public abstract Mobile Focus { get; set; }
 
     public static void Spawn(Mobile caller, Mobile target, int amount = 1, bool onlyAdditional = false)
     {

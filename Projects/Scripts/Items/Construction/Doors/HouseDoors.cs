@@ -102,10 +102,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DoorFacing Facing{ get; set; }
+    public DoorFacing Facing { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public SecureLevel Level{ get; set; }
+    public SecureLevel Level { get; set; }
 
     public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
     {
@@ -182,18 +182,18 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          Level = (SecureLevel)reader.ReadInt();
-          goto case 0;
-        }
+          {
+            Level = (SecureLevel)reader.ReadInt();
+            goto case 0;
+          }
         case 0:
-        {
-          if (version < 1)
-            Level = SecureLevel.Anyone;
+          {
+            if (version < 1)
+              Level = SecureLevel.Anyone;
 
-          Facing = (DoorFacing)reader.ReadInt();
-          break;
-        }
+            Facing = (DoorFacing)reader.ReadInt();
+            break;
+          }
       }
     }
 
@@ -239,7 +239,7 @@ namespace Server.Items
           h = bs;
           break;
 
-        //No way to test the 'insideness' of SE Sliding doors on OSI, so leaving them default to false until further information gained
+        // No way to test the 'insideness' of SE Sliding doors on OSI, so leaving them default to false until further information gained
 
         default: return false;
       }

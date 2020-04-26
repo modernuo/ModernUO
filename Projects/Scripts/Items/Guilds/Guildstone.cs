@@ -8,7 +8,7 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-  public class Guildstone : Item, IAddon, IChopable
+  public class Guildstone : Item, IAddon, IChoppable
   {
     private bool m_BeforeChangeover;
     private string m_GuildAbbrev;
@@ -54,11 +54,9 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Guild Guild{ get; private set; }
+    public Guild Guild { get; private set; }
 
     public override int LabelNumber => 1041429; // a guildstone
-
-    #region IChopable Members
 
     public void OnChop(Mobile from)
     {
@@ -69,7 +67,7 @@ namespace Server.Items
 
       bool contains = false;
 
-      if (house == null && m_BeforeChangeover || house?.IsOwner(from) == true && (contains = house.Addons.Contains(this)))
+      if ((house == null && m_BeforeChangeover) || (house?.IsOwner(from) == true && (contains = house.Addons.Contains(this))))
       {
         Effects.PlaySound(GetWorldLocation(), Map, 0x3B3);
         from.SendLocalizedMessage(500461); // You destroy the item.
@@ -85,8 +83,6 @@ namespace Server.Items
           from.AddToBackpack(deed);
       }
     }
-
-    #endregion
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -117,27 +113,27 @@ namespace Server.Items
       switch (version)
       {
         case 3:
-        {
-          m_BeforeChangeover = reader.ReadBool();
-          goto case 2;
-        }
+          {
+            m_BeforeChangeover = reader.ReadBool();
+            goto case 2;
+          }
         case 2:
-        {
-          m_GuildName = reader.ReadString();
-          m_GuildAbbrev = reader.ReadString();
+          {
+            m_GuildName = reader.ReadString();
+            m_GuildAbbrev = reader.ReadString();
 
-          goto case 1;
-        }
+            goto case 1;
+          }
         case 1:
-        {
-          Guild = reader.ReadGuild() as Guild;
+          {
+            Guild = reader.ReadGuild() as Guild;
 
-          goto case 0;
-        }
+            goto case 0;
+          }
         case 0:
-        {
-          break;
-        }
+          {
+            break;
+          }
       }
 
       if (Guild.NewGuildSystem && ItemID == 0xED4)
@@ -179,7 +175,7 @@ namespace Server.Items
         if ((abbr = Guild.Abbreviation) == null || (abbr = abbr.Trim()).Length <= 0)
           abbr = "";
 
-        //list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
+        // list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
         list.Add(1060802, $"{Utility.FixHtml(name)} [{Utility.FixHtml(abbr)}]");
       }
       else if (m_GuildName != null && m_GuildAbbrev != null)
@@ -228,8 +224,6 @@ namespace Server.Items
       }
       else if (Guild.Accepted.Contains(from))
       {
-        #region Factions
-
         PlayerState guildState = PlayerState.Find(Guild.Leader);
         PlayerState targetState = PlayerState.Find(from);
 
@@ -241,8 +235,6 @@ namespace Server.Items
 
         if (guildState != null && targetState != null)
           targetState.Leaving = guildState.Leaving;
-
-        #endregion
 
         Guild.Accepted.Remove(from);
         Guild.AddMember(from);
@@ -262,13 +254,9 @@ namespace Server.Items
       }
     }
 
-    #region IAddon Members
-
     public Item Deed => new GuildstoneDeed(Guild, m_GuildName, m_GuildAbbrev);
 
     public bool CouldFit(IPoint3D p, Map map) => map.CanFit(p.X, p.Y, p.Z, ItemData.Height);
-
-    #endregion
   }
 
   [Flippable(0x14F0, 0x14EF)]
@@ -279,8 +267,7 @@ namespace Server.Items
     private string m_GuildName;
 
     [Constructible]
-    public GuildstoneDeed(Guild g = null, string guildName = null, string abbrev = null) :
-      base(0x14F0)
+    public GuildstoneDeed(Guild g = null, string guildName = null, string abbrev = null) : base(0x14F0)
     {
       Guild = g;
       m_GuildName = guildName;
@@ -318,7 +305,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Guild Guild{ get; private set; }
+    public Guild Guild { get; private set; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -347,14 +334,14 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_GuildName = reader.ReadString();
-          m_GuildAbbrev = reader.ReadString();
+          {
+            m_GuildName = reader.ReadString();
+            m_GuildAbbrev = reader.ReadString();
 
-          Guild = reader.ReadGuild() as Guild;
+            Guild = reader.ReadGuild() as Guild;
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -373,7 +360,7 @@ namespace Server.Items
         if ((abbr = Guild.Abbreviation) == null || (abbr = abbr.Trim()).Length <= 0)
           abbr = "";
 
-        //list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
+        // list.Add( 1060802, Utility.FixHtml( name ) ); // Guild name: ~1_val~
         list.Add(1060802, $"{Utility.FixHtml(name)} [{Utility.FixHtml(abbr)}]");
       }
       else if (m_GuildName != null && m_GuildAbbrev != null)

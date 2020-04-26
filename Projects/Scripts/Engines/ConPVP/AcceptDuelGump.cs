@@ -11,13 +11,14 @@ namespace Server.Engines.ConPVP
     private const int LabelColor32 = 0xFFFFFF;
     private const int BlackColor32 = 0x000008;
 
-    private static Dictionary<Mobile, List<IgnoreEntry>> m_IgnoreLists = new Dictionary<Mobile, List<IgnoreEntry>>();
+    private static readonly Dictionary<Mobile, List<IgnoreEntry>> m_IgnoreLists = new Dictionary<Mobile, List<IgnoreEntry>>();
 
     private bool m_Active = true;
-    private Mobile m_Challenger, m_Challenged;
-    private DuelContext m_Context;
-    private Participant m_Participant;
-    private int m_Slot;
+    private readonly Mobile m_Challenger;
+    private readonly Mobile m_Challenged;
+    private readonly DuelContext m_Context;
+    private readonly Participant m_Participant;
+    private readonly int m_Slot;
 
     public AcceptDuelGump(Mobile challenger, Mobile challenged, DuelContext context, Participant p, int slot) : base(50,
       50)
@@ -34,15 +35,15 @@ namespace Server.Engines.ConPVP
 
       AddPage(0);
 
-      //AddBackground( 0, 0, 400, 220, 9150 );
+      // AddBackground( 0, 0, 400, 220, 9150 );
       AddBackground(1, 1, 398, 218, 3600);
-      //AddBackground( 16, 15, 369, 189, 9100 );
+      // AddBackground( 16, 15, 369, 189, 9100 );
 
       AddImageTiled(16, 15, 369, 189, 3604);
       AddAlphaRegion(16, 15, 369, 189);
 
       AddImage(215, -43, 0xEE40);
-      //AddImage( 330, 141, 0x8BA );
+      // AddImage( 330, 141, 0x8BA );
 
       AddHtml(22 - 1, 22, 294, 20, Color(Center("Duel Challenge"), BlackColor32));
       AddHtml(22 + 1, 22, 294, 20, Color(Center("Duel Challenge"), BlackColor32));
@@ -251,9 +252,9 @@ namespace Server.Engines.ConPVP
 
     private class IgnoreEntry
     {
-      private static TimeSpan ExpireDelay = TimeSpan.FromMinutes(15.0);
+      private static readonly TimeSpan ExpireDelay = TimeSpan.FromMinutes(15.0);
       public DateTime m_Expire;
-      public Mobile m_Ignored;
+      public readonly Mobile m_Ignored;
 
       public IgnoreEntry(Mobile ignored)
       {

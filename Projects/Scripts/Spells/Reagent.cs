@@ -5,7 +5,7 @@ namespace Server.Spells
 {
   public class Reagent
   {
-    private static Type[] m_Types =
+    private static readonly Type[] m_Types =
     {
       typeof(BlackPearl),
       typeof(Bloodmoss),

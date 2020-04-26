@@ -287,7 +287,7 @@ namespace Server.Commands
 
         foreach (Mobile m in World.Mobiles.Values)
           if (m is BaseCreature bc)
-            if (bc.Controlled && bc.ControlMaster == master || bc.Summoned && bc.SummonMaster == master)
+            if ((bc.Controlled && bc.ControlMaster == master) || (bc.Summoned && bc.SummonMaster == master))
               pets.Add(bc);
 
         if (pets.Count > 0)
@@ -408,7 +408,7 @@ namespace Server.Commands
       AutoSave.Save(true);
     }
 
-    private static bool FixMap(ref Map map, ref Point3D loc, Item item) => map != null && map != Map.Internal || item.RootParent is Mobile m && FixMap(ref map, ref loc, m);
+    private static bool FixMap(ref Map map, ref Point3D loc, Item item) => (map != null && map != Map.Internal) || (item.RootParent is Mobile m && FixMap(ref map, ref loc, m));
 
     private static bool FixMap(ref Map map, ref Point3D loc, Mobile m)
     {
@@ -782,7 +782,7 @@ namespace Server.Commands
 
       private class EquipMenu : ItemListMenu
       {
-        private Mobile m_Mobile;
+        private readonly Mobile m_Mobile;
 
         public EquipMenu(Mobile from, Mobile m, ItemListEntry[] entries) : base("Equipment", entries)
         {
@@ -804,8 +804,8 @@ namespace Server.Commands
 
         private class EquipDetailsMenu : QuestionMenu
         {
-          private Item m_Item;
-          private Mobile m_Mobile;
+          private readonly Item m_Item;
+          private readonly Mobile m_Mobile;
 
           public EquipDetailsMenu(Mobile m, Item item) : base($"{item.Layer}: {item.GetType().Name}",
             new[] { "Move", "Delete", "Props" })

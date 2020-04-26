@@ -33,7 +33,7 @@ namespace Server.Items
       if (Deleted || !from.CanSee(this))
         return false;
 
-      base.ScissorHelper(from, new Bandage(), 1);
+      this.ScissorHelper(from, new Bandage(), 1);
 
       return true;
     }
@@ -102,9 +102,6 @@ namespace Server.Items
             1005422); // Hmmmm... this does not need to be cleaned.
         }
       }
-
-      #region Firebomb
-
       else if (obj is BaseBeverage beverage)
       {
         if (beverage.Content == BeverageType.Liquor)
@@ -122,9 +119,6 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(1060579); // That is already a firebomb!
       }
-
-      #endregion
-
       else
       {
         from.SendLocalizedMessage(1005426); // The cloth will not work on that.

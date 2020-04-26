@@ -7,7 +7,7 @@ namespace Server.Mobiles
 {
   public class LesserHiryu : BaseMount
   {
-    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+    private static readonly Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public LesserHiryu()
@@ -72,12 +72,12 @@ namespace Server.Mobiles
 
       /*
 
-      500	527	No Hue Color	94.88%	0
-      10	527	Green			1.90%	0x8295
-      10	527	Green			1.90%	0x8163	(Very Close to Above Green)	//this one is an approximation
-      5	527	Dark Green		0.95%	0x87D4
-      1	527	Valorite		0.19%	0x88AB
-      1	527	Midnight Blue	0.19%	0x8258
+      500 527 No Hue Color 94.88% 0
+      10 527 Green   1.90% 0x8295
+      10 527 Green   1.90% 0x8163 (Very Close to Above Green) //this one is an approximation
+      5 527 Dark Green  0.95% 0x87D4
+      1 527 Valorite  0.19% 0x88AB
+      1 527 Midnight Blue 0.19% 0x8258
 
        * */
 
@@ -92,10 +92,8 @@ namespace Server.Mobiles
       if (rand <= 26)
         return 0x8295;
 
-
       return 0;
     }
-
 
     public override bool OverrideBondingReqs()
     {
@@ -142,7 +140,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 <= Utility.RandomDouble())
+      if (Utility.RandomDouble() >= 0.1)
         return;
 
       /* Grasping Claw
@@ -187,10 +185,10 @@ namespace Server.Mobiles
       int version = reader.ReadInt();
 
       if (version == 0)
-        Timer.DelayCall(TimeSpan.Zero, delegate { Hue = GetHue(); });
+        Timer.DelayCall(TimeSpan.Zero, () => Hue = GetHue());
 
       if (version <= 1)
-        Timer.DelayCall(TimeSpan.Zero, delegate
+        Timer.DelayCall(TimeSpan.Zero, () =>
         {
           if (InternalItem != null) InternalItem.Hue = Hue;
         });
@@ -206,8 +204,8 @@ namespace Server.Mobiles
 
     private class ExpireTimer : Timer
     {
-      private Mobile m_Mobile;
-      private ResistanceMod m_Mod;
+      private readonly Mobile m_Mobile;
+      private readonly ResistanceMod m_Mod;
 
       public ExpireTimer(Mobile m, ResistanceMod mod, TimeSpan delay)
         : base(delay)

@@ -42,10 +42,10 @@ namespace Server.Mobiles
       PackItem(ore);
       PackItem(new IronIngot(10));
 
-      if (0.05 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.05)
         PackItem(new OrcishKinMask());
 
-      if (0.2 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.2)
         PackItem(new BolaBall());
     }
 
@@ -113,7 +113,7 @@ namespace Server.Mobiles
 
       if (eable.Count() < 10)
       {
-        BaseCreature orc = new SpawnedOrcishLord{ Team = Team };
+        BaseCreature orc = new SpawnedOrcishLord { Team = Team };
 
         orc.MoveToWorld(map.GetRandomNearbyLocation(target.Location), map);
         orc.Combatant = target;

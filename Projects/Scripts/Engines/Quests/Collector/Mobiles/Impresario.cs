@@ -152,7 +152,6 @@ namespace Server.Engines.Quests.Collector
           {
             if (player.FindBankNoCreate()?.ConsumeTotal(typeof(Gold), 10) == true)
               obj.Complete();
-
             else
               player.SendLocalizedMessage(
                 1055108); // You don't have enough gold to buy the sheet music.

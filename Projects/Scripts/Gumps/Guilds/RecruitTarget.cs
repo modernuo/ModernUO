@@ -6,8 +6,8 @@ namespace Server.Gumps
 {
   public class GuildRecruitTarget : Target
   {
-    private Guild m_Guild;
-    private Mobile m_Mobile;
+    private readonly Guild m_Guild;
+    private readonly Mobile m_Mobile;
 
     public GuildRecruitTarget(Mobile m, Guild guild) : base(10, false, TargetFlags.None)
     {
@@ -53,9 +53,6 @@ namespace Server.Gumps
         {
           m_Mobile.SendLocalizedMessage(501166); // You can only recruit candidates who are not already in a guild.
         }
-
-        #region Factions
-
         else if (guildFaction != targetFaction)
         {
           if (guildFaction == null)
@@ -71,9 +68,6 @@ namespace Server.Gumps
           // OSI does this quite strangely, so we'll just do it this way
           m_Mobile.SendMessage("That person is quitting their faction and so you may not recruit them.");
         }
-
-        #endregion
-
         else if (m_Mobile.AccessLevel >= AccessLevel.GameMaster || m_Guild.Leader == m_Mobile)
         {
           m_Guild.Accepted.Add(m);

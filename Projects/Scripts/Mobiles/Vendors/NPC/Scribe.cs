@@ -10,7 +10,7 @@ namespace Server.Mobiles
     public static readonly TimeSpan ShushDelay = TimeSpan.FromMinutes(1);
 
     private DateTime m_NextShush;
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public Scribe() : base("the scribe")

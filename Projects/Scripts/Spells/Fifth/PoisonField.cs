@@ -9,15 +9,14 @@ namespace Server.Spells.Fifth
 {
   public class PoisonFieldSpell : MagerySpell, ISpellTargetingPoint3D
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Poison Field", "In Nox Grav",
       230,
       9052,
       false,
       Reagent.BlackPearl,
       Reagent.Nightshade,
-      Reagent.SpidersSilk
-    );
+      Reagent.SpidersSilk);
 
     public PoisonFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -132,20 +131,20 @@ namespace Server.Spells.Fifth
         switch (version)
         {
           case 1:
-          {
-            m_Caster = reader.ReadMobile();
+            {
+              m_Caster = reader.ReadMobile();
 
-            goto case 0;
-          }
+              goto case 0;
+            }
           case 0:
-          {
-            m_End = reader.ReadDeltaTime();
+            {
+              m_End = reader.ReadDeltaTime();
 
-            m_Timer = new InternalTimer(this, TimeSpan.Zero, true, true);
-            m_Timer.Start();
+              m_Timer = new InternalTimer(this, TimeSpan.Zero, true, true);
+              m_Timer.Start();
 
-            break;
-          }
+              break;
+            }
         }
       }
 
@@ -197,9 +196,10 @@ namespace Server.Spells.Fifth
 
       private class InternalTimer : Timer
       {
-        private static Queue<Mobile> m_Queue = new Queue<Mobile>();
-        private bool m_InLOS, m_CanFit;
-        private InternalItem m_Item;
+        private static readonly Queue<Mobile> m_Queue = new Queue<Mobile>();
+        private readonly bool m_InLOS;
+        private readonly bool m_CanFit;
+        private readonly InternalItem m_Item;
 
         public InternalTimer(InternalItem item, TimeSpan delay, bool inLOS, bool canFit) : base(delay,
           TimeSpan.FromSeconds(1.5))

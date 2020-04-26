@@ -6,7 +6,7 @@ namespace Server.Items
   public abstract class CookableFood : Item
   {
     [CommandProperty(AccessLevel.GameMaster)]
-    public int CookingLevel{ get; set; }
+    public int CookingLevel { get; set; }
 
     public CookableFood(int itemID, int cookingLevel) : base(itemID) => CookingLevel = cookingLevel;
 
@@ -34,23 +34,13 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          CookingLevel = reader.ReadInt();
+          {
+            CookingLevel = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
-
-#if false
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( !Movable )
-				return;
-
-			from.Target = new InternalTarget( this );
-		}
-#endif
 
     public static bool IsHeatSource(object targeted)
     {
@@ -83,7 +73,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private CookableFood m_Item;
+      private readonly CookableFood m_Item;
 
       public InternalTarget(CookableFood item) : base(1, false, TargetFlags.None) => m_Item = item;
 
@@ -111,10 +101,10 @@ namespace Server.Items
 
       private class InternalTimer : Timer
       {
-        private CookableFood m_CookableFood;
-        private Mobile m_From;
-        private Map m_Map;
-        private IPoint3D m_Point;
+        private readonly CookableFood m_CookableFood;
+        private readonly Mobile m_From;
+        private readonly Map m_Map;
+        private readonly IPoint3D m_Point;
 
         public InternalTimer(Mobile from, IPoint3D p, Map map, CookableFood cookableFood) : base(
           TimeSpan.FromSeconds(5.0))
@@ -129,7 +119,7 @@ namespace Server.Items
         {
           m_From.EndAction<CookableFood>();
 
-          if (m_From.Map != m_Map || m_Point != null && m_From.GetDistanceToSqrt(m_Point) > 3)
+          if (m_From.Map != m_Map || (m_Point != null && m_From.GetDistanceToSqrt(m_Point) > 3))
           {
             m_From.SendLocalizedMessage(500686); // You burn the food to a crisp! It's ruined.
             return;
@@ -182,7 +172,6 @@ namespace Server.Items
 
     public override Food Cook() => new Ribs();
   }
-
 
   // ********** RawLambLeg **********
   public class RawLambLeg : CookableFood
@@ -249,7 +238,6 @@ namespace Server.Items
     public override Food Cook() => new ChickenLeg();
   }
 
-
   // ********** RawBird **********
   public class RawBird : CookableFood
   {
@@ -281,7 +269,6 @@ namespace Server.Items
 
     public override Food Cook() => new CookedBird();
   }
-
 
   // ********** UnbakedPeachCobbler **********
   public class UnbakedPeachCobbler : CookableFood

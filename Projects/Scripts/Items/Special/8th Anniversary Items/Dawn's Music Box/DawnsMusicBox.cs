@@ -13,7 +13,7 @@ namespace Server.Items
 
     public StopMusic() : base(0x6D, 3)
     {
-      m_Stream.Write((short)0x1FFF);
+      Stream.Write((short)0x1FFF);
     }
   }
 
@@ -76,10 +76,10 @@ namespace Server.Items
 
     public override int LabelNumber => 1075198; // Dawn�s Music Box
 
-    public List<MusicName> Tracks{ get; private set; }
+    public List<MusicName> Tracks { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public SecureLevel Level{ get; set; }
+    public SecureLevel Level { get; set; }
 
     public override void OnAfterDuped(Item newItem)
     {

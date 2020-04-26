@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class Poisoning
+  public static class Poisoning
   {
     public static void Initialize()
     {
@@ -43,7 +43,7 @@ namespace Server.SkillHandlers
 
       private class InternalTarget : Target
       {
-        private BasePoisonPotion m_Potion;
+        private readonly BasePoisonPotion m_Potion;
 
         public InternalTarget(BasePoisonPotion potion) : base(2, false, TargetFlags.None) => m_Potion = potion;
 
@@ -92,10 +92,11 @@ namespace Server.SkillHandlers
 
         private class InternalTimer : Timer
         {
-          private Mobile m_From;
-          private double m_MinSkill, m_MaxSkill;
-          private Poison m_Poison;
-          private Item m_Target;
+          private readonly Mobile m_From;
+          private readonly double m_MinSkill;
+          private readonly double m_MaxSkill;
+          private readonly Poison m_Poison;
+          private readonly Item m_Target;
 
           public InternalTimer(Mobile from, Item target, BasePoisonPotion potion) : base(TimeSpan.FromSeconds(2.0))
           {

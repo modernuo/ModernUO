@@ -24,8 +24,8 @@ namespace Server.Engines.ConPVP
     {
     }
 
-    [CommandProperty( AccessLevel.Administrator )]
-    public Preferences Preferences{ get; private set; }
+    [CommandProperty(AccessLevel.Administrator)]
+    public Preferences Preferences { get; private set; }
 
     public override string DefaultName => "preferences controller";
 
@@ -53,18 +53,18 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 0:
-        {
-          Preferences = new Preferences(reader);
-          Preferences.Instance = Preferences;
-          break;
-        }
+          {
+            Preferences = new Preferences(reader);
+            Preferences.Instance = Preferences;
+            break;
+          }
       }
     }
   }
 
   public class Preferences
   {
-    private Dictionary<Mobile, PreferencesEntry> m_Table;
+    private readonly Dictionary<Mobile, PreferencesEntry> m_Table;
 
     public Preferences()
     {
@@ -79,31 +79,31 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 0:
-        {
-          int count = reader.ReadEncodedInt();
-
-          m_Table = new Dictionary<Mobile, PreferencesEntry>(count);
-          Entries = new List<PreferencesEntry>(count);
-
-          for (int i = 0; i < count; ++i)
           {
-            PreferencesEntry entry = new PreferencesEntry(reader, version);
+            int count = reader.ReadEncodedInt();
 
-            if (entry.Mobile != null)
+            m_Table = new Dictionary<Mobile, PreferencesEntry>(count);
+            Entries = new List<PreferencesEntry>(count);
+
+            for (int i = 0; i < count; ++i)
             {
-              m_Table[entry.Mobile] = entry;
-              Entries.Add(entry);
-            }
-          }
+              PreferencesEntry entry = new PreferencesEntry(reader, version);
 
-          break;
-        }
+              if (entry.Mobile != null)
+              {
+                m_Table[entry.Mobile] = entry;
+                Entries.Add(entry);
+              }
+            }
+
+            break;
+          }
       }
     }
 
-    public List<PreferencesEntry> Entries{ get; }
+    public List<PreferencesEntry> Entries { get; }
 
-    public static Preferences Instance{ get; set; }
+    public static Preferences Instance { get; set; }
 
     public PreferencesEntry Find(Mobile mob)
     {
@@ -140,24 +140,24 @@ namespace Server.Engines.ConPVP
       switch (version)
       {
         case 0:
-        {
-          Mobile = reader.ReadMobile();
+          {
+            Mobile = reader.ReadMobile();
 
-          int count = reader.ReadEncodedInt();
+            int count = reader.ReadEncodedInt();
 
-          Disliked = new List<string>(count);
+            Disliked = new List<string>(count);
 
-          for (int i = 0; i < count; ++i)
-            Disliked.Add(reader.ReadString());
+            for (int i = 0; i < count; ++i)
+              Disliked.Add(reader.ReadString());
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public Mobile Mobile{ get; }
+    public Mobile Mobile { get; }
 
-    public List<string> Disliked{ get; }
+    public List<string> Disliked { get; }
 
     public void Serialize(IGenericWriter writer)
     {
@@ -173,7 +173,7 @@ namespace Server.Engines.ConPVP
   public class PreferencesGump : Gump
   {
     private int m_ColumnX = 12;
-    private PreferencesEntry m_Entry;
+    private readonly PreferencesEntry m_Entry;
 
     public PreferencesGump(Mobile from, Preferences prefs) : base(50, 50)
     {

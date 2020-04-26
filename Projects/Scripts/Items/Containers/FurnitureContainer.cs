@@ -51,7 +51,6 @@ namespace Server.Items
     }
   }
 
-
   [Furniture]
   [Flippable(0x2857, 0x2858)]
   public class RedArmoire : BaseContainer
@@ -316,7 +315,7 @@ namespace Server.Items
 
   public class DynamicFurniture
   {
-    private static Dictionary<Container, Timer> m_Table = new Dictionary<Container, Timer>();
+    private static readonly Dictionary<Container, Timer> m_Table = new Dictionary<Container, Timer>();
 
     public static bool Open(Container c, Mobile m)
     {
@@ -370,8 +369,8 @@ namespace Server.Items
 
   public class FurnitureTimer : Timer
   {
-    private Container m_Container;
-    private Mobile m_Mobile;
+    private readonly Container m_Container;
+    private readonly Mobile m_Mobile;
 
     public FurnitureTimer(Container c, Mobile m) : base(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5))
     {

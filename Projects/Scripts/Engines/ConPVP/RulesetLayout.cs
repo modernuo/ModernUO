@@ -7,21 +7,21 @@ namespace Server.Engines.ConPVP
   {
     private static RulesetLayout m_Root;
 
-    public RulesetLayout(string title, string[] options) : this(title, title, new RulesetLayout[0], options)
+    public RulesetLayout(string title, string[] options) : this(title, title, Array.Empty<RulesetLayout>(), options)
     {
     }
 
     public RulesetLayout(string title, string description, string[] options) : this(title, description,
-      new RulesetLayout[0], options)
+      Array.Empty<RulesetLayout>(), options)
     {
     }
 
-    public RulesetLayout(string title, RulesetLayout[] children) : this(title, title, children, new string[0])
+    public RulesetLayout(string title, RulesetLayout[] children) : this(title, title, children, Array.Empty<string>())
     {
     }
 
     public RulesetLayout(string title, string description, RulesetLayout[] children) : this(title, description, children,
-      new string[0])
+      Array.Empty<string>())
     {
     }
 
@@ -356,8 +356,6 @@ namespace Server.Engines.ConPVP
 
         if (!Core.AOS)
         {
-          #region Mage 5x
-
           Ruleset m5x = new Ruleset(m_Root);
 
           m5x.Title = "Mage 5x";
@@ -403,10 +401,6 @@ namespace Server.Engines.ConPVP
           m5x.SetOption("Skills", "Evaluating Intelligence", true);
 
           m5x.SetOption("Items", "Trapped Containers", true);
-
-          #endregion
-
-          #region Mage 7x
 
           Ruleset m7x = new Ruleset(m_Root);
 
@@ -459,10 +453,6 @@ namespace Server.Engines.ConPVP
           m7x.SetOption("Items", "Trapped Containers", true);
           m7x.SetOption("Items", "Bandages", true);
 
-          #endregion
-
-          #region Standard 7x
-
           Ruleset s7x = new Ruleset(m_Root);
 
           s7x.Title = "Standard 7x";
@@ -514,18 +504,13 @@ namespace Server.Engines.ConPVP
           s7x.SetOption("Items", "Bandages", true);
           s7x.SetOption("Items", "Trapped Containers", true);
 
-          #endregion
-
           m_Root.Defaults = new[] { m5x, m7x, s7x };
         }
         else
         {
-          #region Standard All Skills
-
           Ruleset all = new Ruleset(m_Root);
 
           all.Title = "Standard All Skills";
-
 
           all.SetOptionRange("Spells", true);
 
@@ -606,14 +591,11 @@ namespace Server.Engines.ConPVP
           all.SetOption("Items", "Trapped Containers", true);
 
           m_Root.Defaults = new[] { all };
-
-          #endregion
         }
 
         // Set up flavors
 
         Ruleset pots = new Ruleset(m_Root) { Title = "Potions" };
-
 
         pots.SetOptionRange("Potions", true);
         pots.SetOption("Potions", "Explosion", false);
@@ -663,23 +645,23 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public string Title{ get; }
+    public string Title { get; }
 
-    public string Description{ get; }
+    public string Description { get; }
 
-    public string[] Options{ get; }
+    public string[] Options { get; }
 
-    public int Offset{ get; private set; }
+    public int Offset { get; private set; }
 
-    public int TotalLength{ get; private set; }
+    public int TotalLength { get; private set; }
 
-    public RulesetLayout Parent{ get; private set; }
+    public RulesetLayout Parent { get; private set; }
 
-    public RulesetLayout[] Children{ get; }
+    public RulesetLayout[] Children { get; }
 
-    public Ruleset[] Defaults{ get; set; }
+    public Ruleset[] Defaults { get; set; }
 
-    public Ruleset[] Flavors{ get; set; }
+    public Ruleset[] Flavors { get; set; }
 
     public RulesetLayout FindByTitle(string title)
     {

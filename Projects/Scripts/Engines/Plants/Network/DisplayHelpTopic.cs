@@ -6,10 +6,10 @@ namespace Server.Network
     {
       EnsureCapacity(11);
 
-      m_Stream.Write((short)0x17);
-      m_Stream.Write((byte)1);
-      m_Stream.Write(topicID);
-      m_Stream.Write(display);
+      Stream.Write((short)0x17);
+      Stream.Write((byte)1);
+      Stream.Write(topicID);
+      Stream.Write(display);
     }
   }
 }

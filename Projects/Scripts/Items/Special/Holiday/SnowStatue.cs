@@ -171,7 +171,7 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private SnowStatueDeed m_Deed;
+      private readonly SnowStatueDeed m_Deed;
 
       public InternalGump(SnowStatueDeed deed) : base(100, 200)
       {

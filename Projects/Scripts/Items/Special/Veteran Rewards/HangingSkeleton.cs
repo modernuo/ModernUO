@@ -202,13 +202,13 @@ namespace Server.Items
       {
         0x1B1E => 0x1B1D,
         0x1B7F => 0x1B7C,
-        _ => (south + 1)
+        _ => south + 1
       };
     }
 
     private class InternalGump : Gump
     {
-      private HangingSkeletonDeed m_Skeleton;
+      private readonly HangingSkeletonDeed m_Skeleton;
 
       public InternalGump(HangingSkeletonDeed skeleton) : base(100, 200)
       {
@@ -243,8 +243,8 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if (m_Skeleton?.Deleted != false || info.ButtonID != 0x1A03 && info.ButtonID != 0x1A05 &&
-            info.ButtonID != 0x1A09 && info.ButtonID != 0x1B1E && info.ButtonID != 0x1B7F)
+        if (m_Skeleton?.Deleted != false || (info.ButtonID != 0x1A03 && info.ButtonID != 0x1A05 &&
+            info.ButtonID != 0x1A09 && info.ButtonID != 0x1B1E && info.ButtonID != 0x1B7F))
           return;
 
         sender.Mobile.SendLocalizedMessage(1049780); // Where would you like to place this decoration?
@@ -254,8 +254,8 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private int m_ItemID;
-      private HangingSkeletonDeed m_Skeleton;
+      private readonly int m_ItemID;
+      private readonly HangingSkeletonDeed m_Skeleton;
 
       public InternalTarget(HangingSkeletonDeed banner, int itemID) : base(-1, true, TargetFlags.None)
       {
@@ -332,10 +332,10 @@ namespace Server.Items
 
       private class FacingGump : Gump
       {
-        private BaseHouse m_House;
-        private int m_ItemID;
-        private Point3D m_Location;
-        private HangingSkeletonDeed m_Skeleton;
+        private readonly BaseHouse m_House;
+        private readonly int m_ItemID;
+        private readonly Point3D m_Location;
+        private readonly HangingSkeletonDeed m_Skeleton;
 
         public FacingGump(HangingSkeletonDeed banner, int itemID, Point3D location, BaseHouse house) : base(150, 50)
         {

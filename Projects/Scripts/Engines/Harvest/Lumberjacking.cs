@@ -9,9 +9,7 @@ namespace Server.Engines.Harvest
   {
     private static Lumberjacking m_System;
 
-    #region Tile lists
-
-    private static int[] m_TreeTiles =
+    private static readonly int[] m_TreeTiles =
     {
       0x4CCA, 0x4CCB, 0x4CCC, 0x4CCD, 0x4CD0, 0x4CD3, 0x4CD6, 0x4CD8,
       0x4CDA, 0x4CDD, 0x4CE0, 0x4CE3, 0x4CE6, 0x4CF8, 0x4CFB, 0x4CFE,
@@ -35,8 +33,6 @@ namespace Server.Engines.Harvest
       0x52BE, 0x52BF, 0x52C0, 0x52C1, 0x52C2, 0x52C3, 0x52C4, 0x52C5,
       0x52C6, 0x52C7
     };
-
-    #endregion
 
     private Lumberjacking()
     {
@@ -81,21 +77,20 @@ namespace Server.Engines.Harvest
           new HarvestResource(100.0, 60.0, 140.0, 1072546, typeof(FrostwoodLog))
         };
 
-
         veins = new[]
         {
-          new HarvestVein(49.0, 0.0, res[0], null), // Ordinary Logs
-          new HarvestVein(30.0, 0.5, res[1], res[0]), // Oak
-          new HarvestVein(10.0, 0.5, res[2], res[0]), // Ash
-          new HarvestVein(05.0, 0.5, res[3], res[0]), // Yew
-          new HarvestVein(03.0, 0.5, res[4], res[0]), // Heartwood
-          new HarvestVein(02.0, 0.5, res[5], res[0]), // Bloodwood
-          new HarvestVein(01.0, 0.5, res[6], res[0]) // Frostwood
+          new HarvestVein(490, 0.0, res[0], null), // Ordinary Logs
+          new HarvestVein(300, 0.5, res[1], res[0]), // Oak
+          new HarvestVein(100, 0.5, res[2], res[0]), // Ash
+          new HarvestVein(050, 0.5, res[3], res[0]), // Yew
+          new HarvestVein(030, 0.5, res[4], res[0]), // Heartwood
+          new HarvestVein(020, 0.5, res[5], res[0]), // Bloodwood
+          new HarvestVein(010, 0.5, res[6], res[0]) // Frostwood
         };
 
         lumber.BonusResources = new[]
         {
-          new BonusHarvestResource(0, 83.9, null, null), //Nothing
+          new BonusHarvestResource(0, 83.9, null, null), // Nothing
           new BonusHarvestResource(100, 10.0, 1072548, typeof(BarkFragment)),
           new BonusHarvestResource(100, 03.0, 1072550, typeof(LuminescentFungi)),
           new BonusHarvestResource(100, 02.0, 1072547, typeof(SwitchItem)),
@@ -112,7 +107,7 @@ namespace Server.Engines.Harvest
 
         veins = new[]
         {
-          new HarvestVein(100.0, 0.0, res[0], null)
+          new HarvestVein(1000, 0.0, res[0], null)
         };
       }
 
@@ -122,13 +117,10 @@ namespace Server.Engines.Harvest
       lumber.RaceBonus = Core.ML;
       lumber.RandomizeVeins = Core.ML;
 
-      Definition = lumber;
       Definitions.Add(lumber);
     }
 
     public static Lumberjacking System => m_System ?? (m_System = new Lumberjacking());
-
-    public HarvestDefinition Definition{ get; }
 
     public override bool CheckHarvest(Mobile from, Item tool)
     {

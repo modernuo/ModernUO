@@ -41,7 +41,6 @@ namespace Server.Mobiles
       SetSkill(SkillName.Swords, 95.0, 120.0);
       SetSkill(SkillName.Ninjitsu, 95.0, 120.0);
 
-
       Fame = 8500;
       Karma = -8500;
 
@@ -52,7 +51,6 @@ namespace Server.Mobiles
           Can use Ninjitsu Abilities
           Can change weapons during a fight
       */
-
 
       AddItem(new NinjaTabi());
       AddItem(new LeatherNinjaJacket());

@@ -18,7 +18,6 @@
  *
  ***************************************************************************/
 
-
 using System;
 using System.IO;
 #if !MONO
@@ -34,11 +33,11 @@ namespace Server
     public const int KB = 1024;
     public const int MB = 1024 * KB;
 
-    public static int BufferSize{ get; set; } = 1 * MB;
+    public static int BufferSize { get; set; } = 1 * MB;
 
-    public static int Concurrency{ get; set; } = 1;
+    public static int Concurrency { get; set; } = 1;
 
-    public static bool Unbuffered{ get; set; } = true;
+    public static bool Unbuffered { get; set; } = true;
 
     public static bool AreSynchronous => Concurrency < 1;
 
@@ -46,7 +45,7 @@ namespace Server
 
     public static FileStream OpenSequentialStream(string path, FileMode mode, FileAccess access, FileShare share)
     {
-      FileOptions options = FileOptions.SequentialScan;
+      var options = FileOptions.SequentialScan;
 
       if (Concurrency > 0)
         options |= FileOptions.Asynchronous;
@@ -59,7 +58,7 @@ namespace Server
       else
         return new FileStream(path, mode, access, share, BufferSize, options);
 
-      SafeFileHandle fileHandle =
+      var fileHandle =
         UnsafeNativeMethods.CreateFile(path, (int)access, share, IntPtr.Zero, mode, (int)options, IntPtr.Zero);
 
       if (fileHandle.IsInvalid) throw new IOException();

@@ -48,7 +48,7 @@ namespace Server.Items
 
   public class SpecialBeardDyeGump : Gump
   {
-    private static SpecialBeardDyeEntry[] m_Entries =
+    private static readonly SpecialBeardDyeEntry[] m_Entries =
     {
       new SpecialBeardDyeEntry("*****", 12, 10),
       new SpecialBeardDyeEntry("*****", 32, 5),
@@ -60,7 +60,7 @@ namespace Server.Items
       new SpecialBeardDyeEntry("*****", 1153, 2)
     };
 
-    private SpecialBeardDye m_SpecialBeardDye;
+    private readonly SpecialBeardDye m_SpecialBeardDye;
 
     public SpecialBeardDyeGump(SpecialBeardDye dye) : base(0, 0)
     {
@@ -103,7 +103,7 @@ namespace Server.Items
 
       if (!m_SpecialBeardDye.IsChildOf(m.Backpack))
       {
-        m.SendLocalizedMessage(1042010); //You must have the objectin your backpack to use it.
+        m.SendLocalizedMessage(1042010); // You must have the objectin your backpack to use it.
         return;
       }
 
@@ -152,11 +152,11 @@ namespace Server.Items
         HueCount = hueCount;
       }
 
-      public string Name{ get; }
+      public string Name { get; }
 
-      public int HueStart{ get; }
+      public int HueStart { get; }
 
-      public int HueCount{ get; }
+      public int HueCount { get; }
     }
   }
 }

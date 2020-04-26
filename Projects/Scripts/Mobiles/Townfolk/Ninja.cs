@@ -43,7 +43,6 @@ namespace Server.Mobiles
 
       int hairHue = Utility.RandomNondyedHue();
 
-
       Utility.AssignRandomHair(this, hairHue);
 
       if (Utility.Random(7) != 0)

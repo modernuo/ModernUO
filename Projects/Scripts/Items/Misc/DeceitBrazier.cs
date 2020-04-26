@@ -23,94 +23,38 @@ namespace Server.Items
     {
     }
 
-    public static Type[] Creatures{ get; } =
+    public static Type[] Creatures { get; } =
     {
-      #region Animals
-
-      typeof(FireSteed), //Set the tents up people!
-
-      #endregion
-
-      #region Undead
+      typeof(FireSteed), // Set the tents up people!
 
       typeof(Skeleton), typeof(SkeletalKnight), typeof(SkeletalMage), typeof(Mummy),
       typeof(BoneKnight), typeof(Lich), typeof(LichLord), typeof(BoneMagi),
       typeof(Wraith), typeof(Shade), typeof(Spectre), typeof(Zombie),
-      typeof(RottingCorpse), typeof(Ghoul),
-
-      #endregion
-
-      #region Demons
-
-      typeof(Balron), typeof(Daemon), typeof(Imp), typeof(GreaterMongbat),
+      typeof(RottingCorpse), typeof(Ghoul), typeof(Balron), typeof(Daemon), typeof(Imp), typeof(GreaterMongbat),
       typeof(Mongbat), typeof(IceFiend), typeof(Gargoyle), typeof(StoneGargoyle),
-      typeof(FireGargoyle), typeof(HordeMinion),
-
-      #endregion
-
-      #region Gazers
-
-      typeof(Gazer), typeof(ElderGazer), typeof(GazerLarva),
-
-      #endregion
-
-      #region Uncategorized
-
-      typeof(Harpy), typeof(StoneHarpy), typeof(HeadlessOne), typeof(HellHound),
+      typeof(FireGargoyle), typeof(HordeMinion), typeof(Gazer), typeof(ElderGazer), typeof(GazerLarva), typeof(Harpy), typeof(StoneHarpy), typeof(HeadlessOne), typeof(HellHound),
       typeof(HellCat), typeof(Phoenix), typeof(LavaLizard), typeof(SandVortex),
-      typeof(ShadowWisp), typeof(SwampTentacle), typeof(PredatorHellCat), typeof(Wisp),
-
-      #endregion
-
-      #region Arachnid
-
-      typeof(GiantSpider), typeof(DreadSpider), typeof(FrostSpider), typeof(Scorpion),
-
-      #endregion
-
-      #region Repond
-
-      typeof(ArcticOgreLord), typeof(Cyclops), typeof(Ettin), typeof(EvilMage),
+      typeof(ShadowWisp), typeof(SwampTentacle), typeof(PredatorHellCat), typeof(Wisp), typeof(GiantSpider), typeof(DreadSpider), typeof(FrostSpider), typeof(Scorpion), typeof(ArcticOgreLord), typeof(Cyclops), typeof(Ettin), typeof(EvilMage),
       typeof(FrostTroll), typeof(Ogre), typeof(OgreLord), typeof(Orc),
       typeof(OrcishLord), typeof(OrcishMage), typeof(OrcBrute), typeof(Ratman),
       typeof(RatmanMage), typeof(OrcCaptain), typeof(Troll), typeof(Titan),
-      typeof(EvilMageLord), typeof(OrcBomber), typeof(RatmanArcher),
-
-      #endregion
-
-      #region Reptilian
-
-      typeof(Dragon), typeof(Drake), typeof(Snake), typeof(GreaterDragon),
+      typeof(EvilMageLord), typeof(OrcBomber), typeof(RatmanArcher), typeof(Dragon), typeof(Drake), typeof(Snake), typeof(GreaterDragon),
       typeof(IceSerpent), typeof(GiantSerpent), typeof(IceSnake), typeof(LavaSerpent),
       typeof(Lizardman), typeof(Wyvern), typeof(WhiteWyrm),
-      typeof(ShadowWyrm), typeof(SilverSerpent), typeof(LavaSnake),
-
-      #endregion
-
-      #region Elementals
-
-      typeof(EarthElemental), typeof(PoisonElemental), typeof(FireElemental), typeof(SnowElemental),
+      typeof(ShadowWyrm), typeof(SilverSerpent), typeof(LavaSnake), typeof(EarthElemental), typeof(PoisonElemental), typeof(FireElemental), typeof(SnowElemental),
       typeof(IceElemental), typeof(AcidElemental), typeof(WaterElemental), typeof(Efreet),
-      typeof(AirElemental), typeof(Golem),
-
-      #endregion
-
-      #region Random Critters
-
-      typeof(SewerRat), typeof(GiantRat), typeof(DireWolf), typeof(TimberWolf),
+      typeof(AirElemental), typeof(Golem), typeof(SewerRat), typeof(GiantRat), typeof(DireWolf), typeof(TimberWolf),
       typeof(Cougar), typeof(Alligator)
-
-      #endregion
     };
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime NextSpawn{ get; private set; }
+    public DateTime NextSpawn { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int SpawnRange{ get; set; }
+    public int SpawnRange { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public TimeSpan NextSpawnDelay{ get; set; }
+    public TimeSpan NextSpawnDelay { get; set; }
 
     public override int LabelNumber => 1023633; // Brazier
 
@@ -202,7 +146,7 @@ namespace Server.Items
 
             DoEffect(spawnLoc, map);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(1), delegate
+            Timer.DelayCall(TimeSpan.FromSeconds(1), () =>
             {
               bc.Home = Location;
               bc.RangeHome = SpawnRange;

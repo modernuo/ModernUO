@@ -99,10 +99,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Bonus = reader.ReadInt();
-          break;
-        }
+          {
+            m_Bonus = reader.ReadInt();
+            break;
+          }
       }
 
       if (m_Bonus != 0 && Parent is Mobile mobile)

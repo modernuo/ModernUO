@@ -28,45 +28,45 @@ namespace Server.Engines.BulkOrders
       switch (version)
       {
         case 0:
-        {
-          string type = reader.ReadString();
+          {
+            string type = reader.ReadString();
 
-          if (type != null)
-            ItemType = AssemblyHandler.FindFirstTypeForName(type);
+            if (type != null)
+              ItemType = AssemblyHandler.FindFirstTypeForName(type);
 
-          RequireExceptional = reader.ReadBool();
+            RequireExceptional = reader.ReadBool();
 
-          DeedType = (BODType)reader.ReadEncodedInt();
+            DeedType = (BODType)reader.ReadEncodedInt();
 
-          Material = (BulkMaterialType)reader.ReadEncodedInt();
-          AmountCur = reader.ReadEncodedInt();
-          AmountMax = reader.ReadEncodedInt();
-          Number = reader.ReadEncodedInt();
-          Graphic = reader.ReadEncodedInt();
-          Price = reader.ReadEncodedInt();
+            Material = (BulkMaterialType)reader.ReadEncodedInt();
+            AmountCur = reader.ReadEncodedInt();
+            AmountMax = reader.ReadEncodedInt();
+            Number = reader.ReadEncodedInt();
+            Graphic = reader.ReadEncodedInt();
+            Price = reader.ReadEncodedInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
-    public Type ItemType{ get; }
+    public Type ItemType { get; }
 
-    public bool RequireExceptional{ get; }
+    public bool RequireExceptional { get; }
 
-    public BODType DeedType{ get; }
+    public BODType DeedType { get; }
 
-    public BulkMaterialType Material{ get; }
+    public BulkMaterialType Material { get; }
 
-    public int AmountCur{ get; }
+    public int AmountCur { get; }
 
-    public int AmountMax{ get; }
+    public int AmountMax { get; }
 
-    public int Number{ get; }
+    public int Number { get; }
 
-    public int Graphic{ get; }
+    public int Graphic { get; }
 
-    public int Price{ get; set; }
+    public int Price { get; set; }
 
     public Item Reconstruct()
     {

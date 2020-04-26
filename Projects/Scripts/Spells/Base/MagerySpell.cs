@@ -7,14 +7,14 @@ namespace Server.Spells
   {
     private const double ChanceOffset = 20.0, ChanceLength = 100.0 / 7.0;
 
-    private static int[] m_ManaTable = { 4, 6, 9, 11, 14, 20, 40, 50 };
+    private static readonly int[] m_ManaTable = { 4, 6, 9, 11, 14, 20, 40, 50 };
 
     public MagerySpell(Mobile caster, Item scroll, SpellInfo info)
       : base(caster, scroll, info)
     {
     }
 
-    public abstract SpellCircle Circle{ get; }
+    public abstract SpellCircle Circle { get; }
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds((3 + (int)Circle) * CastDelaySecondsPerTick);
 

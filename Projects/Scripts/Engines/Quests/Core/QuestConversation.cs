@@ -6,14 +6,14 @@ namespace Server.Engines.Quests
 {
   public abstract class QuestConversation
   {
-    public abstract object Message{ get; }
+    public abstract object Message { get; }
 
     public virtual QuestItemInfo[] Info => null;
     public virtual bool Logged => true;
 
-    public QuestSystem System{ get; set; }
+    public QuestSystem System { get; set; }
 
-    public bool HasBeenRead{ get; set; }
+    public bool HasBeenRead { get; set; }
 
     public virtual void BaseDeserialize(IGenericReader reader)
     {
@@ -22,11 +22,11 @@ namespace Server.Engines.Quests
       switch (version)
       {
         case 0:
-        {
-          HasBeenRead = reader.ReadBool();
+          {
+            HasBeenRead = reader.ReadBool();
 
-          break;
-        }
+            break;
+          }
       }
 
       ChildDeserialize(reader);
@@ -58,9 +58,9 @@ namespace Server.Engines.Quests
 
   public class QuestConversationsGump : BaseQuestGump
   {
-    private List<QuestConversation> m_Conversations;
+    private readonly List<QuestConversation> m_Conversations;
 
-    public QuestConversationsGump(QuestConversation conv) : this(new List<QuestConversation>{ conv })
+    public QuestConversationsGump(QuestConversation conv) : this(new List<QuestConversation> { conv })
     {
     }
 

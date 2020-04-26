@@ -30,18 +30,18 @@ namespace Server.Engines.Mahjong
       Flipped = reader.ReadBool();
     }
 
-    public MahjongGame Game{ get; }
+    public MahjongGame Game { get; }
 
-    public int Number{ get; }
+    public int Number { get; }
 
-    public MahjongTileType Value{ get; }
+    public MahjongTileType Value { get; }
 
     public Point2D Position => m_Position;
-    public int StackLevel{ get; private set; }
+    public int StackLevel { get; private set; }
 
-    public MahjongPieceDirection Direction{ get; private set; }
+    public MahjongPieceDirection Direction { get; private set; }
 
-    public bool Flipped{ get; private set; }
+    public bool Flipped { get; private set; }
 
     public MahjongPieceDim Dimensions => GetDimensions(m_Position, Direction);
 
@@ -60,8 +60,8 @@ namespace Server.Engines.Mahjong
       int curHandArea = Dimensions.GetHandArea();
       int newHandArea = dim.GetHandArea();
 
-      if (!IsMovable || !dim.IsValid() || validHandArea >= 0 &&
-          (curHandArea >= 0 && curHandArea != validHandArea || newHandArea >= 0 && newHandArea != validHandArea))
+      if (!IsMovable || !dim.IsValid() || (validHandArea >= 0 &&
+          ((curHandArea >= 0 && curHandArea != validHandArea) || (newHandArea >= 0 && newHandArea != validHandArea))))
         return;
 
       m_Position = position;

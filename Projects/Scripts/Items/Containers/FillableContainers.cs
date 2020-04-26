@@ -151,7 +151,7 @@ namespace Server.Items
         RequiredSkill = difficulty;
       }
 
-      if (IsTrappable && (m_Content.Level > 1 || 4 > Utility.Random(5)))
+      if (IsTrappable && (m_Content.Level > 1 || Utility.Random(5) < 4))
       {
         if (m_Content.Level > Utility.Random(5))
           TrapType = TrapType.PoisonTrap;
@@ -240,26 +240,26 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          m_Content = FillableContent.Lookup((FillableContentType)reader.ReadInt());
-          goto case 0;
-        }
+          {
+            m_Content = FillableContent.Lookup((FillableContentType)reader.ReadInt());
+            goto case 0;
+          }
         case 0:
-        {
-          if (reader.ReadBool())
           {
-            m_NextRespawnTime = reader.ReadDeltaTime();
+            if (reader.ReadBool())
+            {
+              m_NextRespawnTime = reader.ReadDeltaTime();
 
-            TimeSpan delay = m_NextRespawnTime - DateTime.UtcNow;
-            m_RespawnTimer = Timer.DelayCall(delay > TimeSpan.Zero ? delay : TimeSpan.Zero, Respawn);
-          }
-          else
-          {
-            CheckRespawn();
-          }
+              TimeSpan delay = m_NextRespawnTime - DateTime.UtcNow;
+              m_RespawnTimer = Timer.DelayCall(delay > TimeSpan.Zero ? delay : TimeSpan.Zero, Respawn);
+            }
+            else
+            {
+              CheckRespawn();
+            }
 
-          break;
-        }
+            break;
+          }
       }
     }
   }
@@ -621,7 +621,7 @@ namespace Server.Items
       : base(weight, type) =>
       Content = content;
 
-    public BeverageType Content{ get; }
+    public BeverageType Content { get; }
 
     public override Item Construct()
     {
@@ -802,7 +802,7 @@ namespace Server.Items
         new FillableEntry(8, typeof(SmithHammer)),
         new FillableEntry(8, typeof(Tongs)),
         new FillableEntry(8, typeof(SledgeHammer)),
-        //new FillableEntry( 8, typeof( IronOre ) ), TODO: Smaller ore
+        // new FillableEntry( 8, typeof( IronOre ) ), TODO: Smaller ore
         new FillableEntry(8, typeof(IronIngot)),
         new FillableEntry(1, typeof(IronWire)),
         new FillableEntry(1, typeof(SilverWire)),
@@ -893,10 +893,10 @@ namespace Server.Items
         new FillableEntry(1, typeof(LightYarnUnraveled)),
         new FillableEntry(1, typeof(SpoolOfThread)),
         // Four different types
-        //new FillableEntry( 1, typeof( FoldedCloth ) ),
-        //new FillableEntry( 1, typeof( FoldedCloth ) ),
-        //new FillableEntry( 1, typeof( FoldedCloth ) ),
-        //new FillableEntry( 1, typeof( FoldedCloth ) ),
+        // new FillableEntry( 1, typeof( FoldedCloth ) ),
+        // new FillableEntry( 1, typeof( FoldedCloth ) ),
+        // new FillableEntry( 1, typeof( FoldedCloth ) ),
+        // new FillableEntry( 1, typeof( FoldedCloth ) ),
         new FillableEntry(1, typeof(Dyes)),
         new FillableEntry(2, typeof(Leather))
       });
@@ -926,8 +926,8 @@ namespace Server.Items
       {
         new FillableEntry(1, typeof(FishingPole)),
         // Two different types
-        //new FillableEntry( 1, typeof( SmallFish ) ),
-        //new FillableEntry( 1, typeof( SmallFish ) ),
+        // new FillableEntry( 1, typeof( SmallFish ) ),
+        // new FillableEntry( 1, typeof( SmallFish ) ),
         new FillableEntry(4, typeof(Fish))
       });
 
@@ -1163,7 +1163,7 @@ namespace Server.Items
         new FillableEntry(2, typeof(Pickaxe)),
         new FillableEntry(2, typeof(Shovel)),
         new FillableEntry(2, typeof(IronIngot)),
-        //new FillableEntry( 2, typeof( IronOre ) ),	TODO: Smaller Ore
+        // new FillableEntry( 2, typeof( IronOre ) ),	TODO: Smaller Ore
         new FillableEntry(1, typeof(ForgedMetal))
       });
 
@@ -1302,7 +1302,7 @@ namespace Server.Items
       },
       new[]
       {
-        //new FillableEntry( 1, typeof( Wheat ) ),
+        // new FillableEntry( 1, typeof( Wheat ) ),
         new FillableEntry(1, typeof(Carrot))
       });
 
@@ -1369,13 +1369,13 @@ namespace Server.Items
       new[]
       {
         new FillableEntry(1, typeof(Lockpick)),
-        //new FillableEntry( 1, typeof( KeyRing ) ),
+        // new FillableEntry( 1, typeof( KeyRing ) ),
         new FillableEntry(2, typeof(Clock)),
         new FillableEntry(2, typeof(ClockParts)),
         new FillableEntry(2, typeof(AxleGears)),
         new FillableEntry(2, typeof(Gears)),
         new FillableEntry(2, typeof(Hinge)),
-        //new FillableEntry( 1, typeof( ArrowShafts ) ),
+        // new FillableEntry( 1, typeof( ArrowShafts ) ),
         new FillableEntry(2, typeof(Sextant)),
         new FillableEntry(2, typeof(SextantParts)),
         new FillableEntry(2, typeof(Axle)),
@@ -1398,7 +1398,7 @@ namespace Server.Items
         new FillableEntry(1, typeof(Bandage)),
         new FillableEntry(1, typeof(MortarPestle)),
         new FillableEntry(1, typeof(LesserHealPotion)),
-        //new FillableEntry( 1, typeof( Wheat ) ),
+        // new FillableEntry( 1, typeof( Wheat ) ),
         new FillableEntry(1, typeof(Carrot))
       });
 
@@ -1416,7 +1416,7 @@ namespace Server.Items
 
     private static Dictionary<Type, FillableContent> m_AcquireTable;
 
-    private static FillableContent[] m_ContentTypes =
+    private static readonly FillableContent[] m_ContentTypes =
     {
       Weaponsmith, Provisioner, Mage,
       Alchemist, Armorer, ArtisanGuild,
@@ -1432,8 +1432,8 @@ namespace Server.Items
       Tinker, Veterinarian
     };
 
-    private FillableEntry[] m_Entries;
-    private int m_Weight;
+    private readonly FillableEntry[] m_Entries;
+    private readonly int m_Weight;
 
     public FillableContent(int level, Type[] vendors, FillableEntry[] entries)
     {
@@ -1445,9 +1445,9 @@ namespace Server.Items
         m_Weight += entries[i].Weight;
     }
 
-    public int Level{ get; }
+    public int Level { get; }
 
-    public Type[] Vendors{ get; }
+    public Type[] Vendors { get; }
 
     public FillableContentType TypeID => Lookup(this);
 

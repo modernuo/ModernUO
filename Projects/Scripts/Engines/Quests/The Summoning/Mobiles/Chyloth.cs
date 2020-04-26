@@ -9,7 +9,7 @@ namespace Server.Engines.Quests.Doom
 {
   public class Chyloth : BaseQuester
   {
-    private static int[] m_Offsets =
+    private static readonly int[] m_Offsets =
     {
       -1, -1,
       -1, 0,
@@ -32,9 +32,9 @@ namespace Server.Engines.Quests.Doom
 
     public override string DefaultName => "Chyloth";
 
-    public BellOfTheDead Bell{ get; set; }
+    public BellOfTheDead Bell { get; set; }
 
-    public Mobile AngryAt{ get; set; }
+    public Mobile AngryAt { get; set; }
 
     public override void InitBody()
     {
@@ -226,8 +226,8 @@ namespace Server.Engines.Quests.Doom
 
   public class ChylothPartyGump : Gump
   {
-    private Mobile m_Leader;
-    private Mobile m_Member;
+    private readonly Mobile m_Leader;
+    private readonly Mobile m_Member;
 
     public ChylothPartyGump(Mobile leader, Mobile member) : base(150, 50)
     {

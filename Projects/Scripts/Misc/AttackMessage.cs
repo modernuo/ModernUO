@@ -10,7 +10,7 @@ namespace Server.Misc
     private const string AggressedFormat = "{0} is attacking you!";
     private const int Hue = 0x22;
 
-    private static TimeSpan Delay = TimeSpan.FromMinutes(1.0);
+    private static readonly TimeSpan Delay = TimeSpan.FromMinutes(1.0);
 
     public static void Initialize()
     {

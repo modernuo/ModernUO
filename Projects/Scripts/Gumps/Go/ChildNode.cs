@@ -11,11 +11,11 @@ namespace Server.Gumps
       Parse(xml);
     }
 
-    public ParentNode Parent{ get; }
+    public ParentNode Parent { get; }
 
-    public string Name{ get; private set; }
+    public string Name { get; private set; }
 
-    public Point3D Location{ get; private set; }
+    public Point3D Location { get; private set; }
 
     private void Parse(XmlTextReader xml)
     {

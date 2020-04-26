@@ -89,7 +89,7 @@ namespace Server.Items
 
       private class InternalPicker : HuePicker
       {
-        private DyeTub m_Tub;
+        private readonly DyeTub m_Tub;
 
         public InternalPicker(DyeTub tub) : base(tub.ItemID) => m_Tub = tub;
 

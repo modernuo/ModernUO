@@ -7,8 +7,7 @@ namespace Server.Ethics.Evil
         10,
         "Vile Blade",
         "Velgo Reyam",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

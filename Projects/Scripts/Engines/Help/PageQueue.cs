@@ -79,9 +79,9 @@ namespace Server.Engines.Help
 
     private class InternalTimer : Timer
     {
-      private static TimeSpan StatusDelay = TimeSpan.FromMinutes(2.0);
+      private static readonly TimeSpan StatusDelay = TimeSpan.FromMinutes(2.0);
 
-      private PageEntry m_Entry;
+      private readonly PageEntry m_Entry;
 
       public InternalTimer(PageEntry entry) : base(TimeSpan.FromSeconds(1.0), StatusDelay) => m_Entry = entry;
 
@@ -112,8 +112,8 @@ namespace Server.Engines.Help
 
   public class PageQueue
   {
-    private static Dictionary<Mobile, PageEntry> m_KeyedByHandler = new Dictionary<Mobile, PageEntry>();
-    private static Dictionary<Mobile, PageEntry> m_KeyedBySender = new Dictionary<Mobile, PageEntry>();
+    private static readonly Dictionary<Mobile, PageEntry> m_KeyedByHandler = new Dictionary<Mobile, PageEntry>();
+    private static readonly Dictionary<Mobile, PageEntry> m_KeyedBySender = new Dictionary<Mobile, PageEntry>();
 
     public static List<PageEntry> List { get; } = new List<PageEntry>();
 
@@ -204,7 +204,6 @@ namespace Server.Engines.Help
       Remove(GetEntry(sender));
     }
 
-
     public static void Enqueue(PageEntry entry)
     {
       List.Add(entry);
@@ -231,6 +230,5 @@ namespace Server.Engines.Help
       if (Email.FROM_ADDRESS != null && Email.SPEECH_LOG_PAGE_ADDRESS != null && entry.SpeechLog != null)
         Email.SendQueueEmail(entry, GetPageTypeName(entry.Type));
     }
-
   }
 }

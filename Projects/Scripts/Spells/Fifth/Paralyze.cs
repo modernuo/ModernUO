@@ -7,14 +7,13 @@ namespace Server.Spells.Fifth
 {
   public class ParalyzeSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Paralyze", "An Ex Por",
       218,
       9012,
       Reagent.Garlic,
       Reagent.MandrakeRoot,
-      Reagent.SpidersSilk
-    );
+      Reagent.SpidersSilk);
 
     public ParalyzeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -35,7 +34,7 @@ namespace Server.Spells.Fifth
       if (!Caster.CanSee(m))
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
       else if (Core.AOS && (m.Frozen || m.Paralyzed ||
-                            m.Spell?.IsCasting == true && !(m.Spell is PaladinSpell)))
+                            (m.Spell?.IsCasting == true && !(m.Spell is PaladinSpell))))
       {
         Caster.SendLocalizedMessage(1061923); // The target is already frozen.
       }

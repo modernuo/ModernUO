@@ -25,71 +25,71 @@ namespace Server.Items
       switch (type)
       {
         case HolidayTreeType.Classic:
-        {
-          ItemID = 0xCD7;
+          {
+            ItemID = 0xCD7;
 
-          AddItem(0, 0, 0, new TreeTrunk(this, 0xCD6));
+            AddItem(0, 0, 0, new TreeTrunk(this, 0xCD6));
 
-          AddOrnament(0, 0, 2, 0xF22);
-          AddOrnament(0, 0, 9, 0xF18);
-          AddOrnament(0, 0, 15, 0xF20);
-          AddOrnament(0, 0, 19, 0xF17);
-          AddOrnament(0, 0, 20, 0xF24);
-          AddOrnament(0, 0, 20, 0xF1F);
-          AddOrnament(0, 0, 20, 0xF19);
-          AddOrnament(0, 0, 21, 0xF1B);
-          AddOrnament(0, 0, 28, 0xF2F);
-          AddOrnament(0, 0, 30, 0xF23);
-          AddOrnament(0, 0, 32, 0xF2A);
-          AddOrnament(0, 0, 33, 0xF30);
-          AddOrnament(0, 0, 34, 0xF29);
-          AddOrnament(0, 1, 7, 0xF16);
-          AddOrnament(0, 1, 7, 0xF1E);
-          AddOrnament(0, 1, 12, 0xF0F);
-          AddOrnament(0, 1, 13, 0xF13);
-          AddOrnament(0, 1, 18, 0xF12);
-          AddOrnament(0, 1, 19, 0xF15);
-          AddOrnament(0, 1, 25, 0xF28);
-          AddOrnament(0, 1, 29, 0xF1A);
-          AddOrnament(0, 1, 37, 0xF2B);
-          AddOrnament(1, 0, 13, 0xF10);
-          AddOrnament(1, 0, 14, 0xF1C);
-          AddOrnament(1, 0, 16, 0xF14);
-          AddOrnament(1, 0, 17, 0xF26);
-          AddOrnament(1, 0, 22, 0xF27);
+            AddOrnament(0, 0, 2, 0xF22);
+            AddOrnament(0, 0, 9, 0xF18);
+            AddOrnament(0, 0, 15, 0xF20);
+            AddOrnament(0, 0, 19, 0xF17);
+            AddOrnament(0, 0, 20, 0xF24);
+            AddOrnament(0, 0, 20, 0xF1F);
+            AddOrnament(0, 0, 20, 0xF19);
+            AddOrnament(0, 0, 21, 0xF1B);
+            AddOrnament(0, 0, 28, 0xF2F);
+            AddOrnament(0, 0, 30, 0xF23);
+            AddOrnament(0, 0, 32, 0xF2A);
+            AddOrnament(0, 0, 33, 0xF30);
+            AddOrnament(0, 0, 34, 0xF29);
+            AddOrnament(0, 1, 7, 0xF16);
+            AddOrnament(0, 1, 7, 0xF1E);
+            AddOrnament(0, 1, 12, 0xF0F);
+            AddOrnament(0, 1, 13, 0xF13);
+            AddOrnament(0, 1, 18, 0xF12);
+            AddOrnament(0, 1, 19, 0xF15);
+            AddOrnament(0, 1, 25, 0xF28);
+            AddOrnament(0, 1, 29, 0xF1A);
+            AddOrnament(0, 1, 37, 0xF2B);
+            AddOrnament(1, 0, 13, 0xF10);
+            AddOrnament(1, 0, 14, 0xF1C);
+            AddOrnament(1, 0, 16, 0xF14);
+            AddOrnament(1, 0, 17, 0xF26);
+            AddOrnament(1, 0, 22, 0xF27);
 
-          break;
-        }
+            break;
+          }
         case HolidayTreeType.Modern:
-        {
-          ItemID = 0x1B7E;
+          {
+            ItemID = 0x1B7E;
 
-          AddOrnament(0, 0, 2, 0xF2F);
-          AddOrnament(0, 0, 2, 0xF20);
-          AddOrnament(0, 0, 2, 0xF22);
-          AddOrnament(0, 0, 5, 0xF30);
-          AddOrnament(0, 0, 5, 0xF15);
-          AddOrnament(0, 0, 5, 0xF1F);
-          AddOrnament(0, 0, 5, 0xF2B);
-          AddOrnament(0, 0, 6, 0xF0F);
-          AddOrnament(0, 0, 7, 0xF1E);
-          AddOrnament(0, 0, 7, 0xF24);
-          AddOrnament(0, 0, 8, 0xF29);
-          AddOrnament(0, 0, 9, 0xF18);
-          AddOrnament(0, 0, 14, 0xF1C);
-          AddOrnament(0, 0, 15, 0xF13);
-          AddOrnament(0, 0, 15, 0xF20);
-          AddOrnament(0, 0, 16, 0xF26);
-          AddOrnament(0, 0, 17, 0xF12);
-          AddOrnament(0, 0, 18, 0xF17);
-          AddOrnament(0, 0, 20, 0xF1B);
-          AddOrnament(0, 0, 23, 0xF28);
-          AddOrnament(0, 0, 25, 0xF18);
-          AddOrnament(0, 0, 25, 0xF2A);
-          AddOrnament(0, 1, 7, 0xF16);
+            AddOrnament(0, 0, 2, 0xF2F);
+            AddOrnament(0, 0, 2, 0xF20);
+            AddOrnament(0, 0, 2, 0xF22);
+            AddOrnament(0, 0, 5, 0xF30);
+            AddOrnament(0, 0, 5, 0xF15);
+            AddOrnament(0, 0, 5, 0xF1F);
+            AddOrnament(0, 0, 5, 0xF2B);
+            AddOrnament(0, 0, 6, 0xF0F);
+            AddOrnament(0, 0, 7, 0xF1E);
+            AddOrnament(0, 0, 7, 0xF24);
+            AddOrnament(0, 0, 8, 0xF29);
+            AddOrnament(0, 0, 9, 0xF18);
+            AddOrnament(0, 0, 14, 0xF1C);
+            AddOrnament(0, 0, 15, 0xF13);
+            AddOrnament(0, 0, 15, 0xF20);
+            AddOrnament(0, 0, 16, 0xF26);
+            AddOrnament(0, 0, 17, 0xF12);
+            AddOrnament(0, 0, 18, 0xF17);
+            AddOrnament(0, 0, 20, 0xF1B);
+            AddOrnament(0, 0, 23, 0xF28);
+            AddOrnament(0, 0, 25, 0xF18);
+            AddOrnament(0, 0, 25, 0xF2A);
+            AddOrnament(0, 1, 7, 0xF16);
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -98,7 +98,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Placer{ get; set; }
+    public Mobile Placer { get; set; }
 
     public override int LabelNumber => 1041117; // a tree for the holidays
 
@@ -147,27 +147,27 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-        {
-          Placer = reader.ReadMobile();
-
-          goto case 0;
-        }
-        case 0:
-        {
-          int count = reader.ReadInt();
-
-          m_Components = new List<Item>(count);
-
-          for (int i = 0; i < count; ++i)
           {
-            Item item = reader.ReadItem();
+            Placer = reader.ReadMobile();
 
-            if (item != null)
-              m_Components.Add(item);
+            goto case 0;
           }
+        case 0:
+          {
+            int count = reader.ReadInt();
 
-          break;
-        }
+            m_Components = new List<Item>(count);
+
+            for (int i = 0; i < count; ++i)
+            {
+              Item item = reader.ReadItem();
+
+              if (item != null)
+                m_Components.Add(item);
+            }
+
+            break;
+          }
       }
 
       Timer.DelayCall(TimeSpan.Zero, ValidatePlacement);
@@ -182,7 +182,6 @@ namespace Server.Items
         Delete();
       }
     }
-
 
     public override void OnDoubleClick(Mobile from)
     {
@@ -279,14 +278,14 @@ namespace Server.Items
         switch (version)
         {
           case 0:
-          {
-            m_Tree = reader.ReadItem() as HolidayTree;
+            {
+              m_Tree = reader.ReadItem() as HolidayTree;
 
-            if (m_Tree == null)
-              Delete();
+              if (m_Tree == null)
+                Delete();
 
-            break;
-          }
+              break;
+            }
         }
       }
     }

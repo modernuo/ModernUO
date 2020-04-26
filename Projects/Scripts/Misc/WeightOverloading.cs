@@ -14,7 +14,7 @@ namespace Server.Misc
   {
     public const int OverloadAllowance = 4; // We can be four stones overweight without getting fatigued
 
-    public static DFAlgorithm DFA{ get; set; }
+    public static DFAlgorithm DFA { get; set; }
 
     public static void Initialize()
     {
@@ -28,15 +28,15 @@ namespace Server.Misc
       switch (DFA)
       {
         case DFAlgorithm.Standard:
-        {
-          fatigue = damage * (100.0 / m.Hits) * ((double)m.Stam / 100) - 5.0;
-          break;
-        }
+          {
+            fatigue = damage * (100.0 / m.Hits) * ((double)m.Stam / 100) - 5.0;
+            break;
+          }
         case DFAlgorithm.PainSpike:
-        {
-          fatigue = damage * (100.0 / m.Hits + (50.0 + m.Stam) / 100 - 1.0) - 5.0;
-          break;
-        }
+          {
+            fatigue = damage * (100.0 / m.Hits + (50.0 + m.Stam) / 100 - 1.0) - 5.0;
+            break;
+          }
       }
 
       if (fatigue > 0)

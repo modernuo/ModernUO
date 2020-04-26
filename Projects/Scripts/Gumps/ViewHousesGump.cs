@@ -12,9 +12,9 @@ namespace Server.Gumps
     private const int White16 = 0x7FFF;
     private const int White = 0xFFFFFF;
 
-    private Mobile m_From;
-    private List<BaseHouse> m_List;
-    private BaseHouse m_Selection;
+    private readonly Mobile m_From;
+    private readonly List<BaseHouse> m_List;
+    private readonly BaseHouse m_Selection;
 
     public ViewHousesGump(Mobile from, List<BaseHouse> list, BaseHouse sel) : base(50, 40)
     {
@@ -186,46 +186,46 @@ namespace Server.Gumps
         switch (info.ButtonID)
         {
           case 0:
-          {
-            m_From.SendGump(new ViewHousesGump(m_From, m_List, null));
-            break;
-          }
+            {
+              m_From.SendGump(new ViewHousesGump(m_From, m_List, null));
+              break;
+            }
           case 1:
-          {
-            Map map = m_Selection.Map;
+            {
+              Map map = m_Selection.Map;
 
-            if (map != null && map != Map.Internal)
-              m_From.MoveToWorld(m_Selection.BanLocation, map);
+              if (map != null && map != Map.Internal)
+                m_From.MoveToWorld(m_Selection.BanLocation, map);
 
-            m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
+              m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
 
-            break;
-          }
+              break;
+            }
           case 2:
-          {
-            m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
+            {
+              m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
 
-            HouseSign sign = m_Selection.Sign;
+              HouseSign sign = m_Selection.Sign;
 
-            if (sign?.Deleted == false)
-              sign.OnDoubleClick(m_From);
+              if (sign?.Deleted == false)
+                sign.OnDoubleClick(m_From);
 
-            break;
-          }
+              break;
+            }
           case 3:
-          {
-            m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
-            m_From.SendGump(new HouseDemolishGump(m_From, m_Selection));
+            {
+              m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
+              m_From.SendGump(new HouseDemolishGump(m_From, m_Selection));
 
-            break;
-          }
+              break;
+            }
           case 4:
-          {
-            m_Selection.RefreshDecay();
-            m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
+            {
+              m_Selection.RefreshDecay();
+              m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
 
-            break;
-          }
+              break;
+            }
         }
       }
     }

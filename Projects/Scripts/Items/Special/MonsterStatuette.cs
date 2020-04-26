@@ -51,7 +51,7 @@ namespace Server.Items
 
   public class MonsterStatuetteInfo
   {
-    private static MonsterStatuetteInfo[] m_Table =
+    private static readonly MonsterStatuetteInfo[] m_Table =
     {
       /* Crocodile */ new MonsterStatuetteInfo(1041249, 0x20DA, 660),
       /* Daemon */ new MonsterStatuetteInfo(1041250, 0x20D3, 357),
@@ -109,11 +109,11 @@ namespace Server.Items
       Sounds = sounds;
     }
 
-    public int LabelNumber{ get; }
+    public int LabelNumber { get; }
 
-    public int ItemID{ get; }
+    public int ItemID { get; }
 
-    public int[] Sounds{ get; }
+    public int[] Sounds { get; }
 
     public static MonsterStatuetteInfo GetInfo(MonsterStatuetteType type)
     {
@@ -132,8 +132,7 @@ namespace Server.Items
     private MonsterStatuetteType m_Type;
 
     [Constructible]
-    public MonsterStatuette(MonsterStatuetteType type = MonsterStatuetteType.Crocodile) :
-      base(MonsterStatuetteInfo.GetInfo(type).ItemID)
+    public MonsterStatuette(MonsterStatuetteType type = MonsterStatuetteType.Crocodile) : base(MonsterStatuetteInfo.GetInfo(type).ItemID)
     {
       LootType = LootType.Blessed;
 
@@ -191,7 +190,7 @@ namespace Server.Items
     public override bool HandlesOnMovement => m_TurnedOn && IsLockedDown;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsRewardItem{ get; set; }
+    public bool IsRewardItem { get; set; }
 
     public override void OnMovement(Mobile m, Point3D oldLocation)
     {
@@ -255,18 +254,18 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Type = (MonsterStatuetteType)reader.ReadEncodedInt();
-          m_TurnedOn = reader.ReadBool();
-          IsRewardItem = reader.ReadBool();
-          break;
-        }
+          {
+            m_Type = (MonsterStatuetteType)reader.ReadEncodedInt();
+            m_TurnedOn = reader.ReadBool();
+            IsRewardItem = reader.ReadBool();
+            break;
+          }
       }
     }
 
     private class OnOffGump : Gump
     {
-      private MonsterStatuette m_Statuette;
+      private readonly MonsterStatuette m_Statuette;
 
       public OnOffGump(MonsterStatuette statuette) : base(150, 200)
       {

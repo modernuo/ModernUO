@@ -4,7 +4,7 @@ namespace Server.Mobiles
     "Server.Mobiles.TanHorse")]
   public class Horse : BaseMount
   {
-    private static int[] m_IDs =
+    private static readonly int[] m_IDs =
     {
       0xC8, 0x3E9F,
       0xE2, 0x3EA0,
@@ -13,8 +13,7 @@ namespace Server.Mobiles
     };
 
     [Constructible]
-    public Horse(string name = "a horse") :
-      base(name, 0xE2, 0x3EA0, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    public Horse(string name = "a horse") : base(name, 0xE2, 0x3EA0, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
       int random = Utility.Random(4);
 

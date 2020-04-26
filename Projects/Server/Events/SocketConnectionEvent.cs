@@ -32,9 +32,9 @@ namespace Server
       AllowConnection = true;
     }
 
-    public ConnectionContext Context{ get; }
+    public ConnectionContext Context { get; }
 
-    public bool AllowConnection{ get; set; }
+    public bool AllowConnection { get; set; }
   }
 
   public static partial class EventSink

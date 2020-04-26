@@ -6,14 +6,13 @@ namespace Server.Spells.Necromancy
 {
   public class CurseWeaponSpell : NecromancerSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Curse Weapon", "An Sanct Gra Char",
       203,
       9031,
-      Reagent.PigIron
-    );
+      Reagent.PigIron);
 
-    private static Dictionary<BaseWeapon, ExpireTimer> m_Table = new Dictionary<BaseWeapon, ExpireTimer>();
+    private static readonly Dictionary<BaseWeapon, ExpireTimer> m_Table = new Dictionary<BaseWeapon, ExpireTimer>();
 
     public CurseWeaponSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -63,7 +62,7 @@ namespace Server.Spells.Necromancy
 
     private class ExpireTimer : Timer
     {
-      private BaseWeapon m_Weapon;
+      private readonly BaseWeapon m_Weapon;
 
       public ExpireTimer(BaseWeapon weapon, TimeSpan delay) : base(delay)
       {
@@ -81,7 +80,7 @@ namespace Server.Spells.Necromancy
 
     private class SoundEffectTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public SoundEffectTimer(Mobile m) : base(TimeSpan.FromSeconds(0.75))
       {

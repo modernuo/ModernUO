@@ -51,7 +51,7 @@ namespace Server.Factions
       }
     }
 
-    protected override List<SBInfo> SBInfos{ get; } = new List<SBInfo>();
+    protected override List<SBInfo> SBInfos { get; } = new List<SBInfo>();
 
     public void Register()
     {
@@ -104,12 +104,12 @@ namespace Server.Factions
       switch (version)
       {
         case 0:
-        {
-          m_Town = Town.ReadReference(reader);
-          m_Faction = Faction.ReadReference(reader);
-          Register();
-          break;
-        }
+          {
+            m_Town = Town.ReadReference(reader);
+            m_Faction = Faction.ReadReference(reader);
+            Register();
+            break;
+          }
       }
 
       Frozen = true;

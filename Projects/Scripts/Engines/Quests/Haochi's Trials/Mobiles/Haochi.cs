@@ -117,7 +117,7 @@ namespace Server.Engines.Quests.Samurai
           HaochisKatana katana = player.Backpack?.FindItemByType<HaochisKatana>();
           if (katana == null)
             return;
-          
+
           katana.Delete();
           obj.Complete();
 

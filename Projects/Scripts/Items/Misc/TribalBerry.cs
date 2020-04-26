@@ -17,7 +17,6 @@ namespace Server.Items
 
     public override int LabelNumber => 1040001; // tribal berry
 
-
     public override void Serialize(IGenericWriter writer)
     {
       base.Serialize(writer);

@@ -44,7 +44,6 @@ namespace Server.Mobiles
       PackItem(new Eggs(2));
     }
 
-
     public Yamandon(Serial serial) : base(serial)
     {
     }
@@ -89,7 +88,7 @@ namespace Server.Mobiles
       if (attacker is BaseCreature creature && creature.BardProvoked)
         return;
 
-      if (0.2 > Utility.RandomDouble())
+      if (Utility.RandomDouble() < 0.2)
       {
         /* Counterattack with Hit Poison Area
          * 20-25 damage, unresistable
@@ -117,7 +116,7 @@ namespace Server.Mobiles
 
         foreach (Mobile m in eable)
         {
-          if (m == this || !(CanBeHarmful(m) || m.Player && m.Alive))
+          if (m == this || !(CanBeHarmful(m) || (m.Player && m.Alive)))
             continue;
 
           if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != Team))

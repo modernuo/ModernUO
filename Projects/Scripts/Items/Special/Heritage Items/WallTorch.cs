@@ -51,7 +51,6 @@ namespace Server.Items
     }
   }
 
-
   public class WallTorchAddon : BaseAddon
   {
     public WallTorchAddon()

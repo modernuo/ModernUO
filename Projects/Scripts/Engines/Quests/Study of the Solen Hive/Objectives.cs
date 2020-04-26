@@ -8,7 +8,7 @@ namespace Server.Engines.Quests.Naturalist
   {
     private NestArea m_CurrentNest;
 
-    private List<NestArea> m_StudiedNests = new List<NestArea>();
+    private readonly List<NestArea> m_StudiedNests = new List<NestArea>();
     private DateTime m_StudyBegin;
     private StudyState m_StudyState;
 
@@ -16,7 +16,7 @@ namespace Server.Engines.Quests.Naturalist
 
     public override int MaxProgress => NestArea.NonSpecialCount;
 
-    public bool StudiedSpecialNest{ get; private set; }
+    public bool StudiedSpecialNest { get; private set; }
 
     public override bool GetTimerEvent() => true;
 

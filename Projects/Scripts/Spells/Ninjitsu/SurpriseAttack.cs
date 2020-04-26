@@ -6,7 +6,7 @@ namespace Server.Spells.Ninjitsu
 {
   public class SurpriseAttack : NinjaMove
   {
-    private static Dictionary<Mobile, SurpriseAttackInfo> m_Table = new Dictionary<Mobile, SurpriseAttackInfo>();
+    private static readonly Dictionary<Mobile, SurpriseAttackInfo> m_Table = new Dictionary<Mobile, SurpriseAttackInfo>();
 
     public override int BaseMana => 20;
     public override double RequiredSkill => Core.ML ? 60.0 : 30.0;
@@ -33,7 +33,7 @@ namespace Server.Spells.Ninjitsu
       if (valid)
       {
         attacker.BeginAction<Stealth>();
-        Timer.DelayCall(TimeSpan.FromSeconds(5.0), delegate { attacker.EndAction<Stealth>(); });
+        Timer.DelayCall(TimeSpan.FromSeconds(5.0), attacker.EndAction<Stealth>);
       }
 
       return valid;
@@ -41,7 +41,7 @@ namespace Server.Spells.Ninjitsu
 
     public override void OnHit(Mobile attacker, Mobile defender, int damage)
     {
-      //Validates before swing
+      // Validates before swing
 
       ClearCurrentMove(attacker);
 
@@ -99,8 +99,8 @@ namespace Server.Spells.Ninjitsu
 
     private class SurpriseAttackInfo
     {
-      public int m_Malus;
-      public Mobile m_Target;
+      public readonly int m_Malus;
+      public readonly Mobile m_Target;
       public Timer m_Timer;
 
       public SurpriseAttackInfo(Mobile target, int effect)

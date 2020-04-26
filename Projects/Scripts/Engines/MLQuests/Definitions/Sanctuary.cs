@@ -6,8 +6,6 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Definitions
 {
-  #region Quests
-
   public class BrokenShaft : MLQuest
   {
     public BrokenShaft()
@@ -720,10 +718,6 @@ namespace Server.Engines.MLQuests.Definitions
     }
   }
 
-  #endregion
-
-  #region Mobiles
-
   [QuesterName("Beotham (Sanctuary)")]
   public class Beotham : BaseCreature
   {
@@ -768,8 +762,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
       MLQuestSystem.Tell(this, pm, Utility.RandomList(
         1074187, // Want a job?
-        1074184 // Come here, I have work for you.
-      ));
+        1074184)); // Come here, I have work for you.
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -883,8 +876,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
       MLQuestSystem.Tell(this, pm, Utility.RandomList(
         1074188, // Weakling! You are not up to the task I have.
-        1074211 // I could use some help.
-      ));
+        1074211)); // I could use some help.
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -951,8 +943,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
       MLQuestSystem.Tell(this, pm, Utility.RandomList(
         1074214, // Knave! Come here right now!
-        1074218 // Hey!� I want to talk to you, now.
-      ));
+        1074218)); // Hey!� I want to talk to you, now.
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -1072,8 +1063,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
       MLQuestSystem.Tell(this, pm, Utility.RandomList(
         1074196, // Excuse me! I�m sorry to interrupt but I urgently need some assistance.
-        1074197 // Pardon me, but if you could spare some time I�d greatly appreciate it.
-      ));
+        1074197)); // Pardon me, but if you could spare some time I�d greatly appreciate it.
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -1131,8 +1121,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
       MLQuestSystem.Tell(this, pm, Utility.RandomList(
         1074185, // Hey you! Want to help me out?
-        1074195 // You there, in the stupid hat!   Come here.
-      ));
+        1074195)); // You there, in the stupid hat!   Come here.
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -1189,8 +1178,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
       MLQuestSystem.Tell(this, pm, Utility.RandomList(
         1074193, // You there! Yes you. Stop looking about like a toadie and come here.
-        1074186 // Come here, I have a task.
-      ));
+        1074186)); // Come here, I have a task.
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -1291,8 +1279,7 @@ namespace Server.Engines.MLQuests.Definitions
     {
       MLQuestSystem.Tell(this, pm, Utility.RandomList(
         1074217, // I want to make you an offer you�d be a fool to �refuse.
-        1074218 // Hey!� I want to talk to you, now.
-      ));
+        1074218)); // Hey!� I want to talk to you, now.
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -1309,6 +1296,4 @@ namespace Server.Engines.MLQuests.Definitions
       int version = reader.ReadInt();
     }
   }
-
-  #endregion
 }

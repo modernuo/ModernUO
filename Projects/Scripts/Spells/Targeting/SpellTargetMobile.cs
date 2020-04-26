@@ -9,7 +9,7 @@ namespace Server.Spells
 
   public class SpellTargetMobile : Target, ISpellTarget
   {
-    private ISpellTargetingMobile m_Spell;
+    private readonly ISpellTargetingMobile m_Spell;
     public ISpell Spell => m_Spell;
 
     public SpellTargetMobile(ISpellTargetingMobile spell, TargetFlags flags, int range = 12) : base(range, false, flags) => m_Spell = spell;

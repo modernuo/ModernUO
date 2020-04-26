@@ -4,7 +4,7 @@ namespace Server.Mobiles
 {
   public class PresetMapBuyInfo : GenericBuyInfo
   {
-    private PresetMapEntry m_Entry;
+    private readonly PresetMapEntry m_Entry;
 
     public PresetMapBuyInfo(PresetMapEntry entry, int price, int amount) : base(entry.Name.ToString(), null, price,
       amount, 0x14EC, 0) =>

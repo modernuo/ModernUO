@@ -1,5 +1,3 @@
-#region References
-
 using System;
 using System.IO;
 using System.Linq;
@@ -7,8 +5,6 @@ using System.Net;
 using System.Text;
 using Server.Guilds;
 using Server.Network;
-
-#endregion
 
 namespace Server.Misc
 {
@@ -19,7 +15,7 @@ namespace Server.Misc
     private static HttpListener _Listener;
 
     private static string _StatusPage = string.Empty;
-    private static byte[] _StatusBuffer = new byte[0];
+    private static byte[] _StatusBuffer = Array.Empty<byte>();
 
     private static readonly object _StatusLock = new object();
 

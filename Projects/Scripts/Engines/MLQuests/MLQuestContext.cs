@@ -17,7 +17,7 @@ namespace Server.Engines.MLQuests
   [PropertyObject]
   public class MLQuestContext
   {
-    private List<MLDoneQuestInfo> m_DoneQuests;
+    private readonly List<MLDoneQuestInfo> m_DoneQuests;
     private MLQuestFlag m_Flags;
 
     public MLQuestContext(PlayerMobile owner)
@@ -69,11 +69,11 @@ namespace Server.Engines.MLQuests
       m_Flags = (MLQuestFlag)reader.ReadEncodedInt();
     }
 
-    public PlayerMobile Owner{ get; }
+    public PlayerMobile Owner { get; }
 
-    public List<MLQuestInstance> QuestInstances{ get; }
+    public List<MLQuestInstance> QuestInstances { get; }
 
-    public List<MLQuest> ChainOffers{ get; }
+    public List<MLQuest> ChainOffers { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsFull => QuestInstances.Count >= MLQuestSystem.MaxConcurrentQuests;
@@ -240,7 +240,7 @@ namespace Server.Engines.MLQuests
     private class MLDoneQuestInfo
     {
       public DateTime m_NextAvailable;
-      public MLQuest m_Quest;
+      public readonly MLQuest m_Quest;
 
       public MLDoneQuestInfo(MLQuest quest, DateTime nextAvailable)
       {

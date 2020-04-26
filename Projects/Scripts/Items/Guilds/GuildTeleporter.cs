@@ -43,11 +43,11 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Stone = reader.ReadItem();
+          {
+            m_Stone = reader.ReadItem();
 
-          break;
-        }
+            break;
+          }
       }
 
       if (Weight == 0.0)
@@ -83,7 +83,7 @@ namespace Server.Items
         }
         else if (house.FindGuildstone() != null)
         {
-          from.SendLocalizedMessage(501142); //Only one guildstone may reside in a given house.
+          from.SendLocalizedMessage(501142); // Only one guildstone may reside in a given house.
         }
         else
         {

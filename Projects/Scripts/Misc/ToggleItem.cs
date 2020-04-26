@@ -21,13 +21,13 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int InactiveItemID{ get; set; }
+    public int InactiveItemID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ActiveItemID{ get; set; }
+    public int ActiveItemID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool PlayersCanToggle{ get; set; }
+    public bool PlayersCanToggle { get; set; }
 
     public static void Initialize()
     {

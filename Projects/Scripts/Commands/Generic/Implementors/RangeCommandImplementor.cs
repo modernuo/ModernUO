@@ -15,7 +15,7 @@ namespace Server.Commands.Generic
       Instance = this;
     }
 
-    public static RangeCommandImplementor Instance{ get; private set; }
+    public static RangeCommandImplementor Instance { get; private set; }
 
     public override void Execute(CommandEventArgs e)
     {

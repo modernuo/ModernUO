@@ -25,7 +25,7 @@ namespace Server.Regions
       set => m_EntranceLocation = value;
     }
 
-    public Map EntranceMap{ get; set; }
+    public Map EntranceMap { get; set; }
 
     public override bool AllowHousing(Mobile from, Point3D p) => false;
 

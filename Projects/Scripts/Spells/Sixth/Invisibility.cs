@@ -9,15 +9,14 @@ namespace Server.Spells.Sixth
 {
   public class InvisibilitySpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Invisibility", "An Lor Xen",
       206,
       9002,
       Reagent.Bloodmoss,
-      Reagent.Nightshade
-    );
+      Reagent.Nightshade);
 
-    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+    private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     public InvisibilitySpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -74,7 +73,7 @@ namespace Server.Spells.Sixth
         Timer t = new InternalTimer(m, duration);
 
         BuffInfo.RemoveBuff(m, BuffIcon.HidingAndOrStealth);
-        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Invisibility, 1075825, duration, m)); //Invisibility/Invisible
+        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Invisibility, 1075825, duration, m)); // Invisibility/Invisible
 
         m_Table[m] = t;
 
@@ -97,7 +96,7 @@ namespace Server.Spells.Sixth
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public InternalTimer(Mobile m, TimeSpan duration) : base(duration)
       {

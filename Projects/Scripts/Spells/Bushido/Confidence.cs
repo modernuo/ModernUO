@@ -5,14 +5,13 @@ namespace Server.Spells.Bushido
 {
   public class Confidence : SamuraiSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Confidence", null,
       -1,
-      9002
-    );
+      9002);
 
-    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
-    private static Dictionary<Mobile, Timer> m_RegenTable = new Dictionary<Mobile, Timer>();
+    private static readonly Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+    private static readonly Dictionary<Mobile, Timer> m_RegenTable = new Dictionary<Mobile, Timer>();
 
     public Confidence(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -93,7 +92,7 @@ namespace Server.Spells.Bushido
 
     private class InternalTimer : Timer
     {
-      private Mobile m_Mobile;
+      private readonly Mobile m_Mobile;
 
       public InternalTimer(Mobile m) : base(TimeSpan.FromSeconds(15.0))
       {
@@ -110,8 +109,8 @@ namespace Server.Spells.Bushido
 
     private class RegenTimer : Timer
     {
-      private int m_Hits;
-      private Mobile m_Mobile;
+      private readonly int m_Hits;
+      private readonly Mobile m_Mobile;
       private int m_Ticks;
 
       public RegenTimer(Mobile m) : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))

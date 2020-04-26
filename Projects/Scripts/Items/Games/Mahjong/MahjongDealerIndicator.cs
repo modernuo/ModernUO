@@ -21,13 +21,13 @@ namespace Server.Engines.Mahjong
       Wind = (MahjongWind)reader.ReadInt();
     }
 
-    public MahjongGame Game{ get; }
+    public MahjongGame Game { get; }
 
-    public Point2D Position{ get; private set; }
+    public Point2D Position { get; private set; }
 
-    public MahjongPieceDirection Direction{ get; private set; }
+    public MahjongPieceDirection Direction { get; private set; }
 
-    public MahjongWind Wind{ get; private set; }
+    public MahjongWind Wind { get; private set; }
 
     public MahjongPieceDim Dimensions => GetDimensions(Position, Direction);
 

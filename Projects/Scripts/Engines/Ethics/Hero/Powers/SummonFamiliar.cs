@@ -11,8 +11,7 @@ namespace Server.Ethics.Hero
         5,
         "Summon Familiar",
         "Trubechs Vingir",
-        ""
-      );
+        "");
 
     public override void BeginInvoke(Player from)
     {

@@ -11,9 +11,9 @@ namespace Server.Commands
 {
   public class HelpInfo
   {
-    public static Dictionary<string, CommandInfo> HelpInfos{ get; } = new Dictionary<string, CommandInfo>();
+    public static Dictionary<string, CommandInfo> HelpInfos { get; } = new Dictionary<string, CommandInfo>();
 
-    public static List<CommandInfo> SortedHelpInfo{ get; private set; } = new List<CommandInfo>();
+    public static List<CommandInfo> SortedHelpInfo { get; private set; } = new List<CommandInfo>();
 
     [CallPriority(100)]
     public static void Initialize()
@@ -105,7 +105,6 @@ namespace Server.Commands
           }
         }
       }
-
 
       for (int i = 0; i < TargetCommands.AllCommands.Count; ++i)
       {
@@ -221,9 +220,9 @@ namespace Server.Commands
     public class CommandListGump : BaseGridGump
     {
       private const int EntriesPerPage = 15;
-      private List<CommandInfo> m_List;
+      private readonly List<CommandInfo> m_List;
 
-      private int m_Page;
+      private readonly int m_Page;
 
       public CommandListGump(int page, Mobile from, List<CommandInfo> list)
         : base(30, 30)
@@ -290,50 +289,49 @@ namespace Server.Commands
         switch (info.ButtonID)
         {
           case 0:
-          {
-            m.CloseGump<CommandInfoGump>();
-            break;
-          }
-          case 1:
-          {
-            if (m_Page > 0)
-              m.SendGump(new CommandListGump(m_Page - 1, m, m_List));
-
-            break;
-          }
-          case 2:
-          {
-            if ((m_Page + 1) * EntriesPerPage < SortedHelpInfo.Count)
-              m.SendGump(new CommandListGump(m_Page + 1, m, m_List));
-
-            break;
-          }
-          default:
-          {
-            int v = info.ButtonID - 3;
-
-            if (v >= 0 && v < m_List.Count)
             {
-              CommandInfo c = m_List[v];
-
-              if (m.AccessLevel >= c.AccessLevel)
-              {
-                m.SendGump(new CommandInfoGump(c));
-                m.SendGump(new CommandListGump(m_Page, m, m_List));
-              }
-              else
-              {
-                m.SendMessage("You no longer have access to that command.");
-                m.SendGump(new CommandListGump(m_Page, m, null));
-              }
+              m.CloseGump<CommandInfoGump>();
+              break;
             }
+          case 1:
+            {
+              if (m_Page > 0)
+                m.SendGump(new CommandListGump(m_Page - 1, m, m_List));
 
-            break;
-          }
+              break;
+            }
+          case 2:
+            {
+              if ((m_Page + 1) * EntriesPerPage < SortedHelpInfo.Count)
+                m.SendGump(new CommandListGump(m_Page + 1, m, m_List));
+
+              break;
+            }
+          default:
+            {
+              int v = info.ButtonID - 3;
+
+              if (v >= 0 && v < m_List.Count)
+              {
+                CommandInfo c = m_List[v];
+
+                if (m.AccessLevel >= c.AccessLevel)
+                {
+                  m.SendGump(new CommandInfoGump(c));
+                  m.SendGump(new CommandListGump(m_Page, m, m_List));
+                }
+                else
+                {
+                  m.SendMessage("You no longer have access to that command.");
+                  m.SendGump(new CommandListGump(m_Page, m, null));
+                }
+              }
+
+              break;
+            }
         }
       }
     }
-
 
     public class CommandInfoGump : Gump
     {
@@ -344,13 +342,13 @@ namespace Server.Commands
 
         AddBackground(0, 0, width, height, 5054);
 
-        //AddImageTiled( 10, 10, width - 20, 20, 2624 );
-        //AddAlphaRegion( 10, 10, width - 20, 20 );
-        //AddHtmlLocalized( 10, 10, width - 20, 20, header, headerColor, false, false );
+        // AddImageTiled( 10, 10, width - 20, 20, 2624 );
+        // AddAlphaRegion( 10, 10, width - 20, 20 );
+        // AddHtmlLocalized( 10, 10, width - 20, 20, header, headerColor, false, false );
         AddHtml(10, 10, width - 20, 20, Color(Center(info.Name), 0xFF0000));
 
-        //AddImageTiled( 10, 40, width - 20, height - 80, 2624 );
-        //AddAlphaRegion( 10, 40, width - 20, height - 80 );
+        // AddImageTiled( 10, 40, width - 20, height - 80, 2624 );
+        // AddAlphaRegion( 10, 40, width - 20, height - 80 );
 
         StringBuilder sb = new StringBuilder();
 
@@ -384,8 +382,8 @@ namespace Server.Commands
 
         AddHtml(10, 40, width - 20, height - 80, sb.ToString(), false, true);
 
-        //AddImageTiled( 10, height - 30, width - 20, 20, 2624 );
-        //AddAlphaRegion( 10, height - 30, width - 20, 20 );
+        // AddImageTiled( 10, height - 30, width - 20, 20, 2624 );
+        // AddAlphaRegion( 10, height - 30, width - 20, 20 );
       }
 
       public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";

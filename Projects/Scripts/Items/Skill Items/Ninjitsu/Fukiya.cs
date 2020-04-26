@@ -24,11 +24,11 @@ namespace Server.Items
     {
     }
 
-    public virtual int WrongAmmoMessage => 1063329; //You can only load fukiya darts
-    public virtual int NoFreeHandMessage => 1063327; //You must have a free hand to use a fukiya.
-    public virtual int EmptyWeaponMessage => 1063325; //You have no fukiya darts!
-    public virtual int RecentlyUsedMessage => 1063326; //You are already using that fukiya.
-    public virtual int FullWeaponMessage => 1063330; //You can only load fukiya darts
+    public virtual int WrongAmmoMessage => 1063329; // You can only load fukiya darts
+    public virtual int NoFreeHandMessage => 1063327; // You must have a free hand to use a fukiya.
+    public virtual int EmptyWeaponMessage => 1063325; // You have no fukiya darts!
+    public virtual int RecentlyUsedMessage => 1063326; // You are already using that fukiya.
+    public virtual int FullWeaponMessage => 1063330; // You can only load fukiya darts
 
     public virtual int WeaponMinRange => 0;
     public virtual int WeaponMaxRange => 6;
@@ -131,14 +131,14 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_UsesRemaining = reader.ReadInt();
+          {
+            m_UsesRemaining = reader.ReadInt();
 
-          m_Poison = Poison.Deserialize(reader);
-          m_PoisonCharges = reader.ReadInt();
+            m_Poison = Poison.Deserialize(reader);
+            m_PoisonCharges = reader.ReadInt();
 
-          break;
-        }
+            break;
+          }
       }
     }
   }

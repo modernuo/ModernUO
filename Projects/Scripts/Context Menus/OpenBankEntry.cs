@@ -2,7 +2,7 @@ namespace Server.ContextMenus
 {
   public class OpenBankEntry : ContextMenuEntry
   {
-    private Mobile m_Banker;
+    private readonly Mobile m_Banker;
 
     public OpenBankEntry(Mobile from, Mobile banker) : base(6105, 12) => m_Banker = banker;
 

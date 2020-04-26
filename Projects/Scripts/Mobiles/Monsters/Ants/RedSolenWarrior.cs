@@ -38,7 +38,7 @@ namespace Server.Mobiles
       VirtualArmor = 35;
 
       SolenHelper.PackPicnicBasket(this);
-      PackItem(new ZoogiFungus(0.05 < Utility.RandomDouble() ? 3 : 13));
+      PackItem(new ZoogiFungus(Utility.RandomDouble() > 0.05 ? 3 : 13));
 
       if (Utility.RandomDouble() < 0.05)
         PackItem(new BraceletOfBinding());
@@ -49,7 +49,7 @@ namespace Server.Mobiles
     }
 
     public override string CorpseName => "a solen warrior corpse";
-    public bool BurstSac{ get; private set; }
+    public bool BurstSac { get; private set; }
 
     public override string DefaultName => "a red solen warrior";
 
@@ -121,10 +121,10 @@ namespace Server.Mobiles
       switch (version)
       {
         case 1:
-        {
-          BurstSac = reader.ReadBool();
-          break;
-        }
+          {
+            BurstSac = reader.ReadBool();
+            break;
+          }
       }
     }
   }

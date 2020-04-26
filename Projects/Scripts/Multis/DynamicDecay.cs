@@ -5,7 +5,7 @@ namespace Server.Multis
 {
   public class DynamicDecay
   {
-    private static Dictionary<DecayLevel, DecayStageInfo> m_Stages;
+    private static readonly Dictionary<DecayLevel, DecayStageInfo> m_Stages;
 
     static DynamicDecay()
     {
@@ -48,8 +48,8 @@ namespace Server.Multis
       MaxDuration = max;
     }
 
-    public TimeSpan MinDuration{ get; }
+    public TimeSpan MinDuration { get; }
 
-    public TimeSpan MaxDuration{ get; }
+    public TimeSpan MaxDuration { get; }
   }
 }

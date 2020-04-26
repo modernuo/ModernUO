@@ -14,7 +14,7 @@ namespace Server.Commands.Generic
 {
   public class TargetCommands
   {
-    public static List<BaseCommand> AllCommands{ get; } = new List<BaseCommand>();
+    public static List<BaseCommand> AllCommands { get; } = new List<BaseCommand>();
 
     public static void Initialize()
     {
@@ -348,7 +348,7 @@ namespace Server.Commands.Generic
 
   public class TellCommand : BaseCommand
   {
-    private bool m_InGump;
+    private readonly bool m_InGump;
 
     public TellCommand(bool inGump)
     {
@@ -511,7 +511,7 @@ namespace Server.Commands.Generic
 
       SpellHelper.GetSurfaceTop(ref p);
 
-      //CommandLogging.WriteLine( from, "{0} {1} teleporting to {2}", from.AccessLevel, CommandLogging.Format( from ), new Point3D( p ) );
+      // CommandLogging.WriteLine( from, "{0} {1} teleporting to {2}", from.AccessLevel, CommandLogging.Format( from ), new Point3D( p ) );
 
       Point3D fromLoc = from.Location;
       Point3D toLoc = new Point3D(p);
@@ -683,8 +683,8 @@ namespace Server.Commands.Generic
 
   public class AliasedSetCommand : BaseCommand
   {
-    private string m_Name;
-    private string m_Value;
+    private readonly string m_Name;
+    private readonly string m_Value;
 
     public AliasedSetCommand(AccessLevel level, string command, string name, string value, ObjectTypes objects)
     {
@@ -830,7 +830,7 @@ namespace Server.Commands.Generic
 
   public class KillCommand : BaseCommand
   {
-    private bool m_Value;
+    private readonly bool m_Value;
 
     public KillCommand(bool value)
     {
@@ -916,7 +916,7 @@ namespace Server.Commands.Generic
 
   public class HideCommand : BaseCommand
   {
-    private bool m_Value;
+    private readonly bool m_Value;
 
     public HideCommand(bool value)
     {
@@ -1011,7 +1011,7 @@ namespace Server.Commands.Generic
 
   public class KickCommand : BaseCommand
   {
-    private bool m_Ban;
+    private readonly bool m_Ban;
 
     public KickCommand(bool ban)
     {

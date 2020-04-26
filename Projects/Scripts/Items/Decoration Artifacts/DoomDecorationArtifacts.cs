@@ -1,7 +1,5 @@
 namespace Server.Items
 {
-  #region BackpackArtifact
-
   public class BackpackArtifact : BaseDecorationContainerArtifact
   {
     [Constructible]
@@ -29,10 +27,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region BloodyWaterArtifact
 
   public class BloodyWaterArtifact : BaseDecorationArtifact
   {
@@ -62,10 +56,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region BooksWestArtifact
-
   public class BooksWestArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -93,10 +83,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region BooksNorthArtifact
 
   public class BooksNorthArtifact : BaseDecorationArtifact
   {
@@ -126,10 +112,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region BooksFaceDownArtifact
-
   public class BooksFaceDownArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -157,10 +139,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region BottleArtifact
 
   public class BottleArtifact : BaseDecorationArtifact
   {
@@ -190,10 +168,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region BrazierArtifact
-
   public class BrazierArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -219,10 +193,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region CocoonArtifact
 
   public class CocoonArtifact : BaseDecorationArtifact
   {
@@ -252,10 +222,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region DamagedBooksArtifact
-
   public class DamagedBooksArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -283,10 +249,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region EggCaseArtifact
 
   public class EggCaseArtifact : BaseDecorationArtifact
   {
@@ -316,10 +278,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region GruesomeStandardArtifact
-
   public class GruesomeStandardArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -348,10 +306,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region LampPostArtifact
-
   public class LampPostArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -377,10 +331,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region LeatherTunicArtifact
 
   public class LeatherTunicArtifact : BaseDecorationArtifact
   {
@@ -410,10 +360,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region RockArtifact
-
   public class RockArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -441,10 +387,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region RuinedPaintingArtifact
 
   public class RuinedPaintingArtifact : BaseDecorationArtifact
   {
@@ -474,10 +416,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region SaddleArtifact
-
   public class SaddleArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -505,10 +443,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region SkinnedDeerArtifact
 
   public class SkinnedDeerArtifact : BaseDecorationArtifact
   {
@@ -538,10 +472,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region SkinnedGoatArtifact
-
   public class SkinnedGoatArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -570,10 +500,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region SkullCandleArtifact
-
   public class SkullCandleArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -599,10 +525,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region StretchedHideArtifact
 
   public class StretchedHideArtifact : BaseDecorationArtifact
   {
@@ -632,10 +554,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region StuddedLeggingsArtifact
-
   public class StuddedLeggingsArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -663,10 +581,6 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
-
-  #region StuddedTunicArtifact
 
   public class StuddedTunicArtifact : BaseDecorationArtifact
   {
@@ -696,10 +610,6 @@ namespace Server.Items
     }
   }
 
-  #endregion
-
-  #region TarotCardsArtifact
-
   public class TarotCardsArtifact : BaseDecorationArtifact
   {
     [Constructible]
@@ -727,6 +637,4 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
   }
-
-  #endregion
 }

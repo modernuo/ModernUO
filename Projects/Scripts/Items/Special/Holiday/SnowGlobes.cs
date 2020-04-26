@@ -102,10 +102,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Type = (SnowGlobeTypeOne)reader.ReadEncodedInt();
-          break;
-        }
+          {
+            m_Type = (SnowGlobeTypeOne)reader.ReadEncodedInt();
+            break;
+          }
       }
     }
   }
@@ -216,10 +216,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Type = (SnowGlobeTypeTwo)reader.ReadEncodedInt();
-          break;
-        }
+          {
+            m_Type = (SnowGlobeTypeTwo)reader.ReadEncodedInt();
+            break;
+          }
       }
     }
   }
@@ -301,10 +301,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Type = (SnowGlobeTypeThree)reader.ReadEncodedInt();
-          break;
-        }
+          {
+            m_Type = (SnowGlobeTypeThree)reader.ReadEncodedInt();
+            break;
+          }
       }
     }
   }

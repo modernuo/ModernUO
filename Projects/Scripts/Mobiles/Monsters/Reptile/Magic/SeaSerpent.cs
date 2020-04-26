@@ -47,7 +47,7 @@ namespace Server.Mobiles
 
       PackItem(new RawFishSteak());
 
-      //PackItem( new SpecialFishingNet() );
+      // PackItem( new SpecialFishingNet() );
     }
 
     public SeaSerpent(Serial serial) : base(serial)

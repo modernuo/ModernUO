@@ -5,7 +5,7 @@ namespace Server.Mobiles
 {
   public class Waiter : BaseVendor
   {
-    private List<SBInfo> m_SBInfos = new List<SBInfo>();
+    private readonly List<SBInfo> m_SBInfos = new List<SBInfo>();
 
     [Constructible]
     public Waiter() : base("the waiter")

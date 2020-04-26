@@ -11,9 +11,9 @@ namespace Server.Engines.BulkOrders
   public class BOBGump : Gump
   {
     private const int LabelColor = 0x7FFF;
-    private BulkOrderBook m_Book;
-    private PlayerMobile m_From;
-    private List<IBOBEntry> m_List;
+    private readonly BulkOrderBook m_Book;
+    private readonly PlayerMobile m_From;
+    private readonly List<IBOBEntry> m_List;
 
     private int m_Page;
 
@@ -173,7 +173,7 @@ namespace Server.Engines.BulkOrders
           if (canDrop)
             AddButton(35, y + 2, 5602, 5606, 5 + i * 2);
 
-          if (canDrop || canBuy && entry.Price > 0)
+          if (canDrop || (canBuy && entry.Price > 0))
           {
             AddButton(579, y + 2, 2117, 2118, 6 + i * 2);
             AddLabel(495, y, 1152, entry.Price.ToString());
@@ -214,7 +214,7 @@ namespace Server.Engines.BulkOrders
           if (canDrop)
             AddButton(35, y + 2, 5602, 5606, 5 + i * 2);
 
-          if (canDrop || canBuy && smallEntry.Price > 0)
+          if (canDrop || (canBuy && smallEntry.Price > 0))
           {
             AddButton(579, y + 2, 2117, 2118, 6 + i * 2);
             AddLabel(495, y, 1152, smallEntry.Price.ToString());
@@ -281,22 +281,22 @@ namespace Server.Engines.BulkOrders
 
       return f.Material switch
       {
-        1 => (deedType == BODType.Smith),
-        2 => (deedType == BODType.Tailor),
-        3 => (mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Iron),
-        4 => (mat == BulkMaterialType.DullCopper),
-        5 => (mat == BulkMaterialType.ShadowIron),
-        6 => (mat == BulkMaterialType.Copper),
-        7 => (mat == BulkMaterialType.Bronze),
-        8 => (mat == BulkMaterialType.Gold),
-        9 => (mat == BulkMaterialType.Agapite),
-        10 => (mat == BulkMaterialType.Verite),
-        11 => (mat == BulkMaterialType.Valorite),
-        12 => (mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Cloth),
-        13 => (mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Leather),
-        14 => (mat == BulkMaterialType.Spined),
-        15 => (mat == BulkMaterialType.Horned),
-        16 => (mat == BulkMaterialType.Barbed),
+        1 => deedType == BODType.Smith,
+        2 => deedType == BODType.Tailor,
+        3 => mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Iron,
+        4 => mat == BulkMaterialType.DullCopper,
+        5 => mat == BulkMaterialType.ShadowIron,
+        6 => mat == BulkMaterialType.Copper,
+        7 => mat == BulkMaterialType.Bronze,
+        8 => mat == BulkMaterialType.Gold,
+        9 => mat == BulkMaterialType.Agapite,
+        10 => mat == BulkMaterialType.Verite,
+        11 => mat == BulkMaterialType.Valorite,
+        12 => mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Cloth,
+        13 => mat == BulkMaterialType.None && BGTClassifier.Classify(deedType, itemType) == BulkGenericType.Leather,
+        14 => mat == BulkMaterialType.Spined,
+        15 => mat == BulkMaterialType.Horned,
+        16 => mat == BulkMaterialType.Barbed,
         _ => true
       };
     }
@@ -391,46 +391,45 @@ namespace Server.Engines.BulkOrders
       return page;
     }
 
-
     public object GetMaterialName(BulkMaterialType mat, BODType type, Type itemType)
     {
       switch (type)
       {
         case BODType.Smith:
-        {
-          switch (mat)
           {
-            case BulkMaterialType.None: return 1062226;
-            case BulkMaterialType.DullCopper: return 1018332;
-            case BulkMaterialType.ShadowIron: return 1018333;
-            case BulkMaterialType.Copper: return 1018334;
-            case BulkMaterialType.Bronze: return 1018335;
-            case BulkMaterialType.Gold: return 1018336;
-            case BulkMaterialType.Agapite: return 1018337;
-            case BulkMaterialType.Verite: return 1018338;
-            case BulkMaterialType.Valorite: return 1018339;
-          }
-
-          break;
-        }
-        case BODType.Tailor:
-        {
-          switch (mat)
-          {
-            case BulkMaterialType.None:
+            switch (mat)
             {
-              if (itemType.IsSubclassOf(typeof(BaseArmor)) || itemType.IsSubclassOf(typeof(BaseShoes)))
-                return 1062235;
-
-              return 1044286;
+              case BulkMaterialType.None: return 1062226;
+              case BulkMaterialType.DullCopper: return 1018332;
+              case BulkMaterialType.ShadowIron: return 1018333;
+              case BulkMaterialType.Copper: return 1018334;
+              case BulkMaterialType.Bronze: return 1018335;
+              case BulkMaterialType.Gold: return 1018336;
+              case BulkMaterialType.Agapite: return 1018337;
+              case BulkMaterialType.Verite: return 1018338;
+              case BulkMaterialType.Valorite: return 1018339;
             }
-            case BulkMaterialType.Spined: return 1062236;
-            case BulkMaterialType.Horned: return 1062237;
-            case BulkMaterialType.Barbed: return 1062238;
-          }
 
-          break;
-        }
+            break;
+          }
+        case BODType.Tailor:
+          {
+            switch (mat)
+            {
+              case BulkMaterialType.None:
+                {
+                  if (itemType.IsSubclassOf(typeof(BaseArmor)) || itemType.IsSubclassOf(typeof(BaseShoes)))
+                    return 1062235;
+
+                  return 1044286;
+                }
+              case BulkMaterialType.Spined: return 1062236;
+              case BulkMaterialType.Horned: return 1062237;
+              case BulkMaterialType.Barbed: return 1062238;
+            }
+
+            break;
+          }
       }
 
       return "Invalid";
@@ -443,148 +442,148 @@ namespace Server.Engines.BulkOrders
       switch (index)
       {
         case 0: // EXIT
-        {
-          break;
-        }
+          {
+            break;
+          }
         case 1: // Set Filter
-        {
-          m_From.SendGump(new BOBFilterGump(m_From, m_Book));
+          {
+            m_From.SendGump(new BOBFilterGump(m_From, m_Book));
 
-          break;
-        }
+            break;
+          }
         case 2: // Previous page
-        {
-          if (m_Page > 0)
-            m_From.SendGump(new BOBGump(m_From, m_Book, m_Page - 1, m_List));
+          {
+            if (m_Page > 0)
+              m_From.SendGump(new BOBGump(m_From, m_Book, m_Page - 1, m_List));
 
-          return;
-        }
+            return;
+          }
         case 3: // Next page
-        {
-          if (GetIndexForPage(m_Page + 1) < m_List.Count)
-            m_From.SendGump(new BOBGump(m_From, m_Book, m_Page + 1, m_List));
+          {
+            if (GetIndexForPage(m_Page + 1) < m_List.Count)
+              m_From.SendGump(new BOBGump(m_From, m_Book, m_Page + 1, m_List));
 
-          break;
-        }
+            break;
+          }
         case 4: // Price all
-        {
-          if (m_Book.IsChildOf(m_From.Backpack))
           {
-            m_From.Prompt = new SetPricePrompt(m_Book, null, m_Page, m_List);
-            m_From.SendMessage("Type in a price for all deeds in the book:");
-          }
+            if (m_Book.IsChildOf(m_From.Backpack))
+            {
+              m_From.Prompt = new SetPricePrompt(m_Book, null, m_Page, m_List);
+              m_From.SendMessage("Type in a price for all deeds in the book:");
+            }
 
-          break;
-        }
+            break;
+          }
         default:
-        {
-          index -= 5;
-
-          int type = index % 2;
-          index /= 2;
-
-          if (index < 0 || index >= m_List.Count)
-            break;
-
-          IBOBEntry bobEntry = m_List[index];
-
-          if (!m_Book.Entries.Contains(bobEntry))
           {
-            m_From.SendLocalizedMessage(1062382); // The deed selected is not available.
-            break;
-          }
+            index -= 5;
 
-          if (type == 0) // Drop
-          {
-            if (m_Book.IsChildOf(m_From.Backpack))
+            int type = index % 2;
+            index /= 2;
+
+            if (index < 0 || index >= m_List.Count)
+              break;
+
+            IBOBEntry bobEntry = m_List[index];
+
+            if (!m_Book.Entries.Contains(bobEntry))
             {
-              Item item = bobEntry.Reconstruct();
-
-              Container pack = m_From.Backpack;
-              if (pack?.CheckHold(m_From, item, true, true, 0,
-                    item.PileWeight + item.TotalWeight) != true)
-              {
-                m_From.SendLocalizedMessage(503204); // You do not have room in your backpack for this
-                m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));
-              }
-              else
-              {
-                if (m_Book.IsChildOf(m_From.Backpack))
-                {
-                  int sizeOfDroppedBod = bobEntry is BOBLargeEntry entry ? entry.Entries.Length : 1;
-
-                  m_From.AddToBackpack(item);
-                  m_From.SendLocalizedMessage(
-                    1045152); // The bulk order deed has been placed in your backpack.
-                  m_Book.Entries.Remove(bobEntry);
-                  m_Book.InvalidateProperties();
-
-                  if (m_Book.Entries.Count / 5 < m_Book.ItemCount)
-                  {
-                    m_Book.ItemCount--;
-                    m_Book.InvalidateItems();
-                  }
-
-                  if (m_Book.Entries.Count > 0)
-                  {
-                    m_Page = GetPageForIndex(index, sizeOfDroppedBod);
-                    m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));
-                  }
-                  else
-                  {
-                    m_From.SendLocalizedMessage(1062381); // The book is empty.
-                  }
-                }
-              }
+              m_From.SendLocalizedMessage(1062382); // The deed selected is not available.
+              break;
             }
-          }
-          else // Set Price | Buy
-          {
-            if (m_Book.IsChildOf(m_From.Backpack))
+
+            if (type == 0) // Drop
             {
-              m_From.Prompt = new SetPricePrompt(m_Book, bobEntry, m_Page, m_List);
-              m_From.SendLocalizedMessage(1062383); // Type in a price for the deed:
-            }
-            else if (m_Book.RootParent is PlayerVendor pv)
-            {
-              VendorItem vi = pv.GetVendorItem(m_Book);
-
-              if (vi?.IsForSale != false)
-                return;
-
-              int sizeOfDroppedBod = bobEntry is BOBLargeEntry largeEntry ? largeEntry.Entries.Length : 1;
-              int price = bobEntry.Price;
-
-              if (price == 0)
+              if (m_Book.IsChildOf(m_From.Backpack))
               {
-                m_From.SendLocalizedMessage(1062382); // The deed selected is not available.
-              }
-              else
-              {
-                if (m_Book.Entries.Count > 0)
+                Item item = bobEntry.Reconstruct();
+
+                Container pack = m_From.Backpack;
+                if (pack?.CheckHold(m_From, item, true, true, 0,
+                  item.PileWeight + item.TotalWeight) != true)
                 {
-                  m_Page = GetPageForIndex(index, sizeOfDroppedBod);
-                  m_From.SendGump(new BODBuyGump(m_From, m_Book, bobEntry, m_Page, price));
+                  m_From.SendLocalizedMessage(503204); // You do not have room in your backpack for this
+                  m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));
                 }
                 else
                 {
-                  m_From.SendLocalizedMessage(1062381); // The book is emptz
+                  if (m_Book.IsChildOf(m_From.Backpack))
+                  {
+                    int sizeOfDroppedBod = bobEntry is BOBLargeEntry entry ? entry.Entries.Length : 1;
+
+                    m_From.AddToBackpack(item);
+                    m_From.SendLocalizedMessage(
+                      1045152); // The bulk order deed has been placed in your backpack.
+                    m_Book.Entries.Remove(bobEntry);
+                    m_Book.InvalidateProperties();
+
+                    if (m_Book.Entries.Count / 5 < m_Book.ItemCount)
+                    {
+                      m_Book.ItemCount--;
+                      m_Book.InvalidateItems();
+                    }
+
+                    if (m_Book.Entries.Count > 0)
+                    {
+                      m_Page = GetPageForIndex(index, sizeOfDroppedBod);
+                      m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));
+                    }
+                    else
+                    {
+                      m_From.SendLocalizedMessage(1062381); // The book is empty.
+                    }
+                  }
                 }
               }
             }
-          }
+            else // Set Price | Buy
+            {
+              if (m_Book.IsChildOf(m_From.Backpack))
+              {
+                m_From.Prompt = new SetPricePrompt(m_Book, bobEntry, m_Page, m_List);
+                m_From.SendLocalizedMessage(1062383); // Type in a price for the deed:
+              }
+              else if (m_Book.RootParent is PlayerVendor pv)
+              {
+                VendorItem vi = pv.GetVendorItem(m_Book);
 
-          break;
-        }
+                if (vi?.IsForSale != false)
+                  return;
+
+                int sizeOfDroppedBod = bobEntry is BOBLargeEntry largeEntry ? largeEntry.Entries.Length : 1;
+                int price = bobEntry.Price;
+
+                if (price == 0)
+                {
+                  m_From.SendLocalizedMessage(1062382); // The deed selected is not available.
+                }
+                else
+                {
+                  if (m_Book.Entries.Count > 0)
+                  {
+                    m_Page = GetPageForIndex(index, sizeOfDroppedBod);
+                    m_From.SendGump(new BODBuyGump(m_From, m_Book, bobEntry, m_Page, price));
+                  }
+                  else
+                  {
+                    m_From.SendLocalizedMessage(1062381); // The book is emptz
+                  }
+                }
+              }
+            }
+
+            break;
+          }
       }
     }
 
     private class SetPricePrompt : Prompt
     {
-      private BulkOrderBook m_Book;
-      private List<IBOBEntry> m_List;
-      private IBOBEntry m_Entry;
-      private int m_Page;
+      private readonly BulkOrderBook m_Book;
+      private readonly List<IBOBEntry> m_List;
+      private readonly IBOBEntry m_Entry;
+      private readonly int m_Page;
 
       public SetPricePrompt(BulkOrderBook book, IBOBEntry entry, int page, List<IBOBEntry> list)
       {

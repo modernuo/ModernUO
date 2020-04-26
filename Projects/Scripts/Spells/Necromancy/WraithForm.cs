@@ -5,13 +5,12 @@ namespace Server.Spells.Necromancy
 {
   public class WraithFormSpell : TransformationSpell
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Wraith Form", "Rel Xen Um",
       203,
       9031,
       Reagent.NoxCrystal,
-      Reagent.PigIron
-    );
+      Reagent.PigIron);
 
     public WraithFormSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

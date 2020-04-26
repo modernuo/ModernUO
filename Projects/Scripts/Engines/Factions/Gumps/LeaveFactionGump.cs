@@ -9,7 +9,7 @@ namespace Server.Factions
   public class LeaveFactionGump : FactionGump
   {
     private Faction m_Faction;
-    private PlayerMobile m_From;
+    private readonly PlayerMobile m_From;
 
     public LeaveFactionGump(PlayerMobile from, Faction faction) : base(20, 30)
     {
@@ -37,56 +37,56 @@ namespace Server.Factions
       switch (info.ButtonID)
       {
         case 1: // continue
-        {
-          if (!(m_From.Guild is Guild guild))
           {
-            PlayerState pl = PlayerState.Find(m_From);
-
-            if (pl != null)
+            if (!(m_From.Guild is Guild guild))
             {
-              pl.Leaving = DateTime.UtcNow;
-
-              if (Faction.LeavePeriod == TimeSpan.FromDays(3.0))
-                m_From.SendLocalizedMessage(1005065); // You will be removed from the faction in 3 days
-              else
-                m_From.SendMessage("You will be removed from the faction in {0} days.",
-                  Faction.LeavePeriod.TotalDays);
-            }
-          }
-          else if (guild.Leader != m_From)
-          {
-            m_From.SendLocalizedMessage(
-              1005061); // You cannot quit the faction because you are not the guild master
-          }
-          else
-          {
-            m_From.SendLocalizedMessage(1042285); // Your guild is now quitting the faction.
-
-            for (int i = 0; i < guild.Members.Count; ++i)
-            {
-              Mobile mob = guild.Members[i];
-              PlayerState pl = PlayerState.Find(mob);
+              PlayerState pl = PlayerState.Find(m_From);
 
               if (pl != null)
               {
                 pl.Leaving = DateTime.UtcNow;
 
-                if (Faction.LeavePeriod == TimeSpan.FromDays(3.0))
-                  mob.SendLocalizedMessage(1005060); // Your guild will quit the faction in 3 days
+                if (TimeSpan.FromDays(3.0) == Faction.LeavePeriod)
+                  m_From.SendLocalizedMessage(1005065); // You will be removed from the faction in 3 days
                 else
-                  mob.SendMessage("Your guild will quit the faction in {0} days.",
+                  m_From.SendMessage("You will be removed from the faction in {0} days.",
                     Faction.LeavePeriod.TotalDays);
               }
             }
-          }
+            else if (guild.Leader != m_From)
+            {
+              m_From.SendLocalizedMessage(
+                1005061); // You cannot quit the faction because you are not the guild master
+            }
+            else
+            {
+              m_From.SendLocalizedMessage(1042285); // Your guild is now quitting the faction.
 
-          break;
-        }
+              for (int i = 0; i < guild.Members.Count; ++i)
+              {
+                Mobile mob = guild.Members[i];
+                PlayerState pl = PlayerState.Find(mob);
+
+                if (pl != null)
+                {
+                  pl.Leaving = DateTime.UtcNow;
+
+                  if (TimeSpan.FromDays(3.0) == Faction.LeavePeriod)
+                    mob.SendLocalizedMessage(1005060); // Your guild will quit the faction in 3 days
+                  else
+                    mob.SendMessage("Your guild will quit the faction in {0} days.",
+                      Faction.LeavePeriod.TotalDays);
+                }
+              }
+            }
+
+            break;
+          }
         case 2: // cancel
-        {
-          m_From.SendLocalizedMessage(500737); // Canceled resignation.
-          break;
-        }
+          {
+            m_From.SendLocalizedMessage(500737); // Canceled resignation.
+            break;
+          }
       }
     }
   }

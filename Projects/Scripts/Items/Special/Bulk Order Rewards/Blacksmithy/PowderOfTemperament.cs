@@ -55,10 +55,10 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_UsesRemaining = reader.ReadInt();
-          break;
-        }
+          {
+            m_UsesRemaining = reader.ReadInt();
+            break;
+          }
       }
     }
 
@@ -91,7 +91,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private PowderOfTemperament m_Powder;
+      private readonly PowderOfTemperament m_Powder;
 
       public InternalTarget(PowderOfTemperament powder) : base(2, false, TargetFlags.None) => m_Powder = powder;
 
@@ -111,7 +111,7 @@ namespace Server.Items
             return;
           }
 
-          if ((item.IsChildOf(from.Backpack) || Core.ML && item.Parent == from) &&
+          if ((item.IsChildOf(from.Backpack) || (Core.ML && item.Parent == from)) &&
               m_Powder.IsChildOf(from.Backpack))
           {
             int origMaxHP = wearable.MaxHitPoints;

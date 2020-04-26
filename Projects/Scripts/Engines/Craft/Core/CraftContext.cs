@@ -19,17 +19,17 @@ namespace Server.Engines.Craft
       LastGroupIndex = -1;
     }
 
-    public List<CraftItem> Items{ get; }
+    public List<CraftItem> Items { get; }
 
-    public int LastResourceIndex{ get; set; }
+    public int LastResourceIndex { get; set; }
 
-    public int LastResourceIndex2{ get; set; }
+    public int LastResourceIndex2 { get; set; }
 
-    public int LastGroupIndex{ get; set; }
+    public int LastGroupIndex { get; set; }
 
-    public bool DoNotColor{ get; set; }
+    public bool DoNotColor { get; set; }
 
-    public CraftMarkOption MarkOption{ get; set; }
+    public CraftMarkOption MarkOption { get; set; }
 
     public CraftItem LastMade
     {

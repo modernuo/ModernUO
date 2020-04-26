@@ -16,8 +16,8 @@ namespace Server.Items
     {
     }
 
-    public abstract override BaseAddonDeed Deed{ get; }
-    public abstract Item Fruit{ get; }
+    public abstract override BaseAddonDeed Deed { get; }
+    public abstract Item Fruit { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Fruits

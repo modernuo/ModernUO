@@ -48,7 +48,7 @@ namespace Server.Items
 
     private class InternalTarget : Target
     {
-      private RedLeaves m_RedLeaves;
+      private readonly RedLeaves m_RedLeaves;
 
       public InternalTarget(RedLeaves redLeaves) : base(3, false, TargetFlags.None) => m_RedLeaves = redLeaves;
 

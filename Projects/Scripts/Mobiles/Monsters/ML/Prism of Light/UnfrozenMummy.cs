@@ -47,10 +47,10 @@ namespace Server.Mobiles
     {
       base.OnDeath( c );
 
-      if ( Utility.RandomDouble() < 0.6 )
+      if (Utility.RandomDouble() < 0.6)
         c.DropItem( new BrokenCrystals() );
 
-      if ( Utility.RandomDouble() < 0.1 )
+      if (Utility.RandomDouble() < 0.1)
         c.DropItem( new ParrotItem() );
     }
     */
@@ -67,7 +67,7 @@ namespace Server.Mobiles
     {
       AddLoot(LootPack.UltraRich, 2);
       // TODO: uncomment once added
-      //AddLoot( LootPack.Parrot );
+      // AddLoot( LootPack.Parrot );
     }
 
     public override void Serialize(IGenericWriter writer)

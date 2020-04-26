@@ -8,7 +8,7 @@ namespace Server.Engines.ConPVP
   {
     public TourneyPyramid() => Levels = new List<PyramidLevel>();
 
-    public List<PyramidLevel> Levels{ get; set; }
+    public List<PyramidLevel> Levels { get; set; }
 
     public void AddLevel(int partsPerMatch, List<TourneyParticipant> participants, GroupingType groupType, TourneyType tourneyType)
     {
@@ -22,150 +22,150 @@ namespace Server.Engines.ConPVP
       switch (tourneyType)
       {
         case TourneyType.RedVsBlue:
-        {
-          TourneyParticipant[] parts = new TourneyParticipant[2];
-
-          for (int i = 0; i < parts.Length; ++i)
-            parts[i] = new TourneyParticipant(new List<Mobile>());
-
-          for (int i = 0; i < copy.Count; ++i)
           {
-            List<Mobile> players = copy[i].Players;
+            TourneyParticipant[] parts = new TourneyParticipant[2];
 
-            for (int j = 0; j < players.Count; ++j)
+            for (int i = 0; i < parts.Length; ++i)
+              parts[i] = new TourneyParticipant(new List<Mobile>());
+
+            for (int i = 0; i < copy.Count; ++i)
             {
-              Mobile mob = players[j];
+              List<Mobile> players = copy[i].Players;
 
-              if (mob.Kills >= 5)
-                parts[0].Players.Add(mob);
-              else
-                parts[1].Players.Add(mob);
+              for (int j = 0; j < players.Count; ++j)
+              {
+                Mobile mob = players[j];
+
+                if (mob.Kills >= 5)
+                  parts[0].Players.Add(mob);
+                else
+                  parts[1].Players.Add(mob);
+              }
             }
-          }
 
-          level.Matches.Add(new TourneyMatch(new List<TourneyParticipant>(parts)));
-          break;
-        }
+            level.Matches.Add(new TourneyMatch(new List<TourneyParticipant>(parts)));
+            break;
+          }
         case TourneyType.Faction:
-        {
-          TourneyParticipant[] parts = new TourneyParticipant[partsPerMatch];
-
-          for (int i = 0; i < parts.Length; ++i)
-            parts[i] = new TourneyParticipant(new List<Mobile>());
-
-          for (int i = 0; i < copy.Count; ++i)
           {
-            List<Mobile> players = copy[i].Players;
+            TourneyParticipant[] parts = new TourneyParticipant[partsPerMatch];
 
-            for (int j = 0; j < players.Count; ++j)
+            for (int i = 0; i < parts.Length; ++i)
+              parts[i] = new TourneyParticipant(new List<Mobile>());
+
+            for (int i = 0; i < copy.Count; ++i)
             {
-              Mobile mob = players[j];
+              List<Mobile> players = copy[i].Players;
 
-              int index = -1;
-
-              if (partsPerMatch == 4)
+              for (int j = 0; j < players.Count; ++j)
               {
-                Faction fac = Faction.Find(mob);
+                Mobile mob = players[j];
 
-                if (fac != null)
-                  index = fac.Definition.Sort;
+                int index = -1;
+
+                if (partsPerMatch == 4)
+                {
+                  Faction fac = Faction.Find(mob);
+
+                  if (fac != null)
+                    index = fac.Definition.Sort;
+                }
+                else if (partsPerMatch == 2)
+                {
+                  if (Ethic.Evil.IsEligible(mob))
+                    index = 0;
+                  else if (Ethic.Hero.IsEligible(mob)) index = 1;
+                }
+
+                if (index < 0 || index >= partsPerMatch) index = i % partsPerMatch;
+
+                parts[index].Players.Add(mob);
               }
-              else if (partsPerMatch == 2)
-              {
-                if (Ethic.Evil.IsEligible(mob))
-                  index = 0;
-                else if (Ethic.Hero.IsEligible(mob)) index = 1;
-              }
-
-              if (index < 0 || index >= partsPerMatch) index = i % partsPerMatch;
-
-              parts[index].Players.Add(mob);
             }
-          }
 
-          level.Matches.Add(new TourneyMatch(new List<TourneyParticipant>(parts)));
-          break;
-        }
+            level.Matches.Add(new TourneyMatch(new List<TourneyParticipant>(parts)));
+            break;
+          }
         case TourneyType.RandomTeam:
-        {
-          TourneyParticipant[] parts = new TourneyParticipant[partsPerMatch];
-
-          for (int i = 0; i < partsPerMatch; ++i)
-            parts[i] = new TourneyParticipant(new List<Mobile>());
-
-          for (int i = 0; i < copy.Count; ++i)
-            parts[i % parts.Length].Players.AddRange(copy[i].Players);
-
-          level.Matches.Add(new TourneyMatch(new List<TourneyParticipant>(parts)));
-          break;
-        }
-        case TourneyType.FreeForAll:
-        {
-          level.Matches.Add(new TourneyMatch(copy));
-          break;
-        }
-        case TourneyType.Standard:
-        {
-          if (partsPerMatch >= 2 && participants.Count % partsPerMatch == 1)
           {
-            int lowAdvances = int.MaxValue;
-
-            for (int i = 0; i < participants.Count; ++i)
-            {
-              TourneyParticipant p = participants[i];
-
-              if (p.FreeAdvances < lowAdvances)
-                lowAdvances = p.FreeAdvances;
-            }
-
-            List<TourneyParticipant> toAdvance = new List<TourneyParticipant>();
-
-            for (int i = 0; i < participants.Count; ++i)
-            {
-              TourneyParticipant p = participants[i];
-
-              if (p.FreeAdvances == lowAdvances)
-                toAdvance.Add(p);
-            }
-
-            if (toAdvance.Count == 0)
-              toAdvance = copy; // sanity
-
-            int idx = Utility.Random(toAdvance.Count);
-
-            toAdvance[idx].AddLog(
-              "Advanced automatically due to an odd number of challengers.");
-            level.FreeAdvance = toAdvance[idx];
-            ++level.FreeAdvance.FreeAdvances;
-            copy.Remove(toAdvance[idx]);
-          }
-
-          while (copy.Count >= partsPerMatch)
-          {
-            List<TourneyParticipant> thisMatch = new List<TourneyParticipant>();
+            TourneyParticipant[] parts = new TourneyParticipant[partsPerMatch];
 
             for (int i = 0; i < partsPerMatch; ++i)
-            {
-              var idx = groupType switch
-              {
-                GroupingType.HighVsLow => (i * (copy.Count - 1) / (partsPerMatch - 1)),
-                GroupingType.Nearest => 0,
-                GroupingType.Random => Utility.Random(copy.Count),
-                _ => 0
-              };
+              parts[i] = new TourneyParticipant(new List<Mobile>());
 
-              thisMatch.Add(copy[idx]);
-              copy.RemoveAt(idx);
+            for (int i = 0; i < copy.Count; ++i)
+              parts[i % parts.Length].Players.AddRange(copy[i].Players);
+
+            level.Matches.Add(new TourneyMatch(new List<TourneyParticipant>(parts)));
+            break;
+          }
+        case TourneyType.FreeForAll:
+          {
+            level.Matches.Add(new TourneyMatch(copy));
+            break;
+          }
+        case TourneyType.Standard:
+          {
+            if (partsPerMatch >= 2 && participants.Count % partsPerMatch == 1)
+            {
+              int lowAdvances = int.MaxValue;
+
+              for (int i = 0; i < participants.Count; ++i)
+              {
+                TourneyParticipant p = participants[i];
+
+                if (p.FreeAdvances < lowAdvances)
+                  lowAdvances = p.FreeAdvances;
+              }
+
+              List<TourneyParticipant> toAdvance = new List<TourneyParticipant>();
+
+              for (int i = 0; i < participants.Count; ++i)
+              {
+                TourneyParticipant p = participants[i];
+
+                if (p.FreeAdvances == lowAdvances)
+                  toAdvance.Add(p);
+              }
+
+              if (toAdvance.Count == 0)
+                toAdvance = copy; // sanity
+
+              int idx = Utility.Random(toAdvance.Count);
+
+              toAdvance[idx].AddLog(
+                "Advanced automatically due to an odd number of challengers.");
+              level.FreeAdvance = toAdvance[idx];
+              ++level.FreeAdvance.FreeAdvances;
+              copy.Remove(toAdvance[idx]);
             }
 
-            level.Matches.Add(new TourneyMatch(thisMatch));
+            while (copy.Count >= partsPerMatch)
+            {
+              List<TourneyParticipant> thisMatch = new List<TourneyParticipant>();
+
+              for (int i = 0; i < partsPerMatch; ++i)
+              {
+                var idx = groupType switch
+                {
+                  GroupingType.HighVsLow => i * (copy.Count - 1) / (partsPerMatch - 1),
+                  GroupingType.Nearest => 0,
+                  GroupingType.Random => Utility.Random(copy.Count),
+                  _ => 0
+                };
+
+                thisMatch.Add(copy[idx]);
+                copy.RemoveAt(idx);
+              }
+
+              level.Matches.Add(new TourneyMatch(thisMatch));
+            }
+
+            if (copy.Count > 1)
+              level.Matches.Add(new TourneyMatch(copy));
+
+            break;
           }
-
-          if (copy.Count > 1)
-            level.Matches.Add(new TourneyMatch(copy));
-
-          break;
-        }
       }
 
       Levels.Add(level);
@@ -174,7 +174,7 @@ namespace Server.Engines.ConPVP
 
   public class PyramidLevel
   {
-    public List<TourneyMatch> Matches{ get; set; } = new List<TourneyMatch>();
-    public TourneyParticipant FreeAdvance{ get; set; }
+    public List<TourneyMatch> Matches { get; set; } = new List<TourneyMatch>();
+    public TourneyParticipant FreeAdvance { get; set; }
   }
 }

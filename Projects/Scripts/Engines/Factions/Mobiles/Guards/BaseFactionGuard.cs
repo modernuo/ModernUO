@@ -11,7 +11,7 @@ namespace Server.Factions
   {
     private const int ListenRange = 12;
 
-    private static Type[] m_StrongPotions =
+    private static readonly Type[] m_StrongPotions =
     {
       typeof(GreaterHealPotion), typeof(GreaterHealPotion), typeof(GreaterHealPotion),
       typeof(GreaterCurePotion), typeof(GreaterCurePotion), typeof(GreaterCurePotion),
@@ -21,7 +21,7 @@ namespace Server.Factions
       typeof(GreaterExplosionPotion)
     };
 
-    private static Type[] m_WeakPotions =
+    private static readonly Type[] m_WeakPotions =
     {
       typeof(HealPotion), typeof(HealPotion), typeof(HealPotion),
       typeof(CurePotion), typeof(CurePotion), typeof(CurePotion),
@@ -62,7 +62,7 @@ namespace Server.Factions
       }
     }
 
-    public Orders Orders{ get; private set; }
+    public Orders Orders { get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
     public Town Town
@@ -76,7 +76,7 @@ namespace Server.Factions
       }
     }
 
-    public abstract GuardAI GuardAI{ get; }
+    public abstract GuardAI GuardAI { get; }
 
     protected override BaseAI ForcedAI => new FactionGuardAI(this);
 
@@ -443,7 +443,7 @@ namespace Server.Factions
 
   public class VirtualMount : IMount
   {
-    private VirtualMountItem m_Item;
+    private readonly VirtualMountItem m_Item;
 
     public VirtualMount(VirtualMountItem item) => m_Item = item;
 
@@ -460,7 +460,7 @@ namespace Server.Factions
 
   public class VirtualMountItem : Item, IMountItem
   {
-    private VirtualMount m_Mount;
+    private readonly VirtualMount m_Mount;
 
     public VirtualMountItem(Mobile mob) : base(0x3EA0)
     {
@@ -472,7 +472,7 @@ namespace Server.Factions
 
     public VirtualMountItem(Serial serial) : base(serial) => m_Mount = new VirtualMount(this);
 
-    public Mobile Rider{ get; private set; }
+    public Mobile Rider { get; private set; }
 
     public IMount Mount => m_Mount;
 

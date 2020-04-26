@@ -51,10 +51,10 @@ namespace Server.Mobiles
     {
       base.OnDeath( c );
 
-      if ( Utility.RandomDouble() < 0.15 )
+      if (Utility.RandomDouble() < 0.15)
         c.DropItem( new DisintegratingThesisNotes() );
 
-      if ( Utility.RandomDouble() < 0.05 )
+      if (Utility.RandomDouble() < 0.05)
         c.DropItem( new AssassinChest() );
     }
     */
@@ -88,7 +88,7 @@ namespace Server.Mobiles
 
       foreach (Mobile m in GetMobilesInRange(2))
       {
-        if (m == this || !CanBeHarmful(m, false) || Core.AOS && !InLOS(m))
+        if (m == this || !CanBeHarmful(m, false) || (Core.AOS && !InLOS(m)))
           continue;
 
         if (m is BaseCreature bc)

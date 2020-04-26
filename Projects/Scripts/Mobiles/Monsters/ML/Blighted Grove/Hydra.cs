@@ -65,10 +65,10 @@ namespace Server.Mobiles
 
       /*
       // TODO: uncomment once added
-      if ( Utility.RandomDouble() < 0.2 )
+      if (Utility.RandomDouble() < 0.2)
         c.DropItem( new ParrotItem() );
 
-      if ( Utility.RandomDouble() < 0.05 )
+      if (Utility.RandomDouble() < 0.05)
         c.DropItem( new ThorvaldsMedallion() );
       */
     }

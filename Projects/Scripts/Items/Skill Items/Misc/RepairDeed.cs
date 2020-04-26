@@ -23,8 +23,7 @@ namespace Server.Items
     private double m_SkillLevel;
 
     [Constructible]
-    public RepairDeed(RepairSkillType skill, double level, bool normalizeLevel) :
-      this(skill, level, null, normalizeLevel)
+    public RepairDeed(RepairSkillType skill, double level, bool normalizeLevel) : this(skill, level, null, normalizeLevel)
     {
     }
 
@@ -95,7 +94,7 @@ namespace Server.Items
       if (m_Crafter != null)
         list.Add(1050043, m_Crafter.Name); // crafted by ~1_NAME~
 
-      //On OSI it says it's exceptional.  Intentional difference.
+      // On OSI it says it's exceptional.  Intentional difference.
     }
 
     public override void OnSingleClick(Mobile from)
@@ -176,13 +175,13 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Skill = (RepairSkillType)reader.ReadInt();
-          m_SkillLevel = reader.ReadDouble();
-          m_Crafter = reader.ReadMobile();
+          {
+            m_Skill = (RepairSkillType)reader.ReadInt();
+            m_SkillLevel = reader.ReadDouble();
+            m_Crafter = reader.ReadMobile();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
@@ -202,16 +201,15 @@ namespace Server.Items
       {
       }
 
-      public TextDefinition NotNearbyMessage{ get; }
+      public TextDefinition NotNearbyMessage { get; }
 
-      public TextDefinition Name{ get; }
+      public TextDefinition Name { get; }
 
+      public CraftSystem System { get; }
 
-      public CraftSystem System{ get; }
+      public Type[] NearbyTypes { get; }
 
-      public Type[] NearbyTypes{ get; }
-
-      public static RepairSkillInfo[] Table{ get; } =
+      public static RepairSkillInfo[] Table { get; } =
       {
         new RepairSkillInfo(DefBlacksmithy.CraftSystem, typeof(Blacksmith), 1047013, 1023015),
         new RepairSkillInfo(DefTailoring.CraftSystem, typeof(Tailor), 1061132, 1022981),

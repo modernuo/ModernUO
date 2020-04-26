@@ -7,7 +7,7 @@ namespace Server.Items
 {
   public abstract class BaseDoor : Item, ILockable, ITelekinesisable
   {
-    private static Point3D[] m_Offsets =
+    private static readonly Point3D[] m_Offsets =
     {
       new Point3D(-1, 1, 0),
       new Point3D(1, 1, 0),
@@ -74,19 +74,19 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int OpenedID{ get; set; }
+    public int OpenedID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ClosedID{ get; set; }
+    public int ClosedID { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int OpenedSound{ get; set; }
+    public int OpenedSound { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int ClosedSound{ get; set; }
+    public int ClosedSound { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Point3D Offset{ get; set; }
+    public Point3D Offset { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public BaseDoor Link
@@ -104,10 +104,10 @@ namespace Server.Items
     public virtual bool UseChainedFunctionality => false;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool Locked{ get; set; }
+    public bool Locked { get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public uint KeyValue{ get; set; }
+    public uint KeyValue { get; set; }
 
     public void OnTelekinesis(Mobile from)
     {
@@ -376,7 +376,7 @@ namespace Server.Items
         {
           from.LocalOverheadMessage(MessageType.Regular, 0x3B2,
             502502); // That is locked, but you open it with your godly powers.
-          //from.Send( new MessageLocalized( Serial, ItemID, MessageType.Regular, 0x3B2, 3, 502502, "", "" ) ); // That is locked, but you open it with your godly powers.
+          // from.Send( new MessageLocalized( Serial, ItemID, MessageType.Regular, 0x3B2, 3, 502502, "", "" ) ); // That is locked, but you open it with your godly powers.
         }
         else if (Key.ContainsKey(from.Backpack, KeyValue))
         {
@@ -470,30 +470,30 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          KeyValue = reader.ReadUInt();
-          m_Open = reader.ReadBool();
-          Locked = reader.ReadBool();
-          OpenedID = reader.ReadInt();
-          ClosedID = reader.ReadInt();
-          OpenedSound = reader.ReadInt();
-          ClosedSound = reader.ReadInt();
-          Offset = reader.ReadPoint3D();
-          m_Link = reader.ReadItem() as BaseDoor;
+          {
+            KeyValue = reader.ReadUInt();
+            m_Open = reader.ReadBool();
+            Locked = reader.ReadBool();
+            OpenedID = reader.ReadInt();
+            ClosedID = reader.ReadInt();
+            OpenedSound = reader.ReadInt();
+            ClosedSound = reader.ReadInt();
+            Offset = reader.ReadPoint3D();
+            m_Link = reader.ReadItem() as BaseDoor;
 
-          m_Timer = new InternalTimer(this);
+            m_Timer = new InternalTimer(this);
 
-          if (m_Open)
-            m_Timer.Start();
+            if (m_Open)
+              m_Timer.Start();
 
-          break;
-        }
+            break;
+          }
       }
     }
 
     private class InternalTimer : Timer
     {
-      private BaseDoor m_Door;
+      private readonly BaseDoor m_Door;
 
       public InternalTimer(BaseDoor door) : base(TimeSpan.FromSeconds(20.0), TimeSpan.FromSeconds(10.0))
       {

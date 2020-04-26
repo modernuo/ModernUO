@@ -51,7 +51,7 @@ namespace Server.Mobiles
     }
 
     public override string CorpseName => "a solen queen corpse";
-    public bool BurstSac{ get; private set; }
+    public bool BurstSac { get; private set; }
 
     public override string DefaultName => "a black solen queen";
 
@@ -122,10 +122,10 @@ namespace Server.Mobiles
       switch (version)
       {
         case 1:
-        {
-          BurstSac = reader.ReadBool();
-          break;
-        }
+          {
+            BurstSac = reader.ReadBool();
+            break;
+          }
       }
     }
   }

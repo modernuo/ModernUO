@@ -15,7 +15,7 @@ namespace Server.Items
     {
     }
 
-    public override int LabelNumber => 1073376; //Poisoned Reading Glasses
+    public override int LabelNumber => 1073376; // Poisoned Reading Glasses
 
     public override int BasePhysicalResistance => 10;
     public override int BaseFireResistance => 10;

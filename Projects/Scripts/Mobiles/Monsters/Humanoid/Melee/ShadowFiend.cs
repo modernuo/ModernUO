@@ -100,7 +100,7 @@ namespace Server.Mobiles
 
     private class UnhideTimer : Timer
     {
-      private ShadowFiend m_Owner;
+      private readonly ShadowFiend m_Owner;
 
       public UnhideTimer(ShadowFiend owner) : base(TimeSpan.FromSeconds(30.0))
       {

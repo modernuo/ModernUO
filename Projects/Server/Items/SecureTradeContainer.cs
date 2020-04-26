@@ -36,13 +36,13 @@ namespace Server.Items
     {
     }
 
-    public SecureTrade Trade{ get; }
+    public SecureTrade Trade { get; }
 
     public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
     {
       if (item == Trade.From.VirtualCheck || item == Trade.To.VirtualCheck) return true;
 
-      Mobile to = Trade.From.Container != this ? Trade.From.Mobile : Trade.To.Mobile;
+      var to = Trade.From.Container != this ? Trade.From.Mobile : Trade.To.Mobile;
 
       return m.CheckTrade(to, item, this, message, checkItems, plusItems, plusWeight);
     }
@@ -53,7 +53,8 @@ namespace Server.Items
       return false;
     }
 
-    public override bool IsAccessibleTo(Mobile check) => IsChildOf(check) && Trade?.Valid == true && base.IsAccessibleTo(check);
+    public override bool IsAccessibleTo(Mobile check) =>
+      IsChildOf(check) && Trade?.Valid == true && base.IsAccessibleTo(check);
 
     public override void OnItemAdded(Item item)
     {
@@ -109,7 +110,7 @@ namespace Server.Items
     {
       base.Deserialize(reader);
 
-      int version = reader.ReadInt();
+      var version = reader.ReadInt();
     }
   }
 }

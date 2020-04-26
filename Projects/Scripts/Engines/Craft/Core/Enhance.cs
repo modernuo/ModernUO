@@ -182,43 +182,43 @@ namespace Server.Engines.Craft
       switch (res)
       {
         case EnhanceResult.Broken:
-        {
-          if (!craftItem.ConsumeRes(from, resType, craftSystem, ref resHue, ref maxAmount, ConsumeType.Half,
-            ref resMessage))
-            return EnhanceResult.NoResources;
+          {
+            if (!craftItem.ConsumeRes(from, resType, craftSystem, ref resHue, ref maxAmount, ConsumeType.Half,
+              ref resMessage))
+              return EnhanceResult.NoResources;
 
-          item.Delete();
-          break;
-        }
+            item.Delete();
+            break;
+          }
         case EnhanceResult.Success:
-        {
-          if (!craftItem.ConsumeRes(from, resType, craftSystem, ref resHue, ref maxAmount, ConsumeType.All,
-            ref resMessage))
-            return EnhanceResult.NoResources;
-
-          if (item is BaseWeapon w)
           {
-            w.Resource = resource;
+            if (!craftItem.ConsumeRes(from, resType, craftSystem, ref resHue, ref maxAmount, ConsumeType.All,
+              ref resMessage))
+              return EnhanceResult.NoResources;
 
-            int hue = w.GetElementalDamageHue();
-            if (hue > 0)
-              w.Hue = hue;
-          }
-          else
-          {
-            ((BaseArmor)item).Resource = resource;
-          }
+            if (item is BaseWeapon w)
+            {
+              w.Resource = resource;
 
-          break;
-        }
+              int hue = w.GetElementalDamageHue();
+              if (hue > 0)
+                w.Hue = hue;
+            }
+            else
+            {
+              ((BaseArmor)item).Resource = resource;
+            }
+
+            break;
+          }
         case EnhanceResult.Failure:
-        {
-          if (!craftItem.ConsumeRes(from, resType, craftSystem, ref resHue, ref maxAmount, ConsumeType.Half,
-            ref resMessage))
-            return EnhanceResult.NoResources;
+          {
+            if (!craftItem.ConsumeRes(from, resType, craftSystem, ref resHue, ref maxAmount, ConsumeType.Half,
+              ref resMessage))
+              return EnhanceResult.NoResources;
 
-          break;
-        }
+            break;
+          }
       }
 
       return res;
@@ -231,7 +231,7 @@ namespace Server.Engines.Craft
 
       int random = Utility.Random(100);
 
-      if (10 > random)
+      if (random < 10)
         res = EnhanceResult.Failure;
       else if (chance > random)
         res = EnhanceResult.Broken;
@@ -281,10 +281,10 @@ namespace Server.Engines.Craft
 
     private class InternalTarget : Target
     {
-      private CraftSystem m_CraftSystem;
-      private CraftResource m_Resource;
-      private Type m_ResourceType;
-      private BaseTool m_Tool;
+      private readonly CraftSystem m_CraftSystem;
+      private readonly CraftResource m_Resource;
+      private readonly Type m_ResourceType;
+      private readonly BaseTool m_Tool;
 
       public InternalTarget(CraftSystem craftSystem, BaseTool tool, Type resourceType, CraftResource resource) : base(
         2, false, TargetFlags.None)

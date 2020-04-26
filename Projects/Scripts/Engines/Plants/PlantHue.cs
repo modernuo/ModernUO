@@ -39,7 +39,7 @@ namespace Server.Engines.Plants
 
   public class PlantHueInfo
   {
-    private static Dictionary<PlantHue, PlantHueInfo> m_Table;
+    private static readonly Dictionary<PlantHue, PlantHueInfo> m_Table;
 
     static PlantHueInfo() =>
       m_Table = new Dictionary<PlantHue, PlantHueInfo>
@@ -77,13 +77,13 @@ namespace Server.Engines.Plants
       GumpHue = gumpHue;
     }
 
-    public int Hue{ get; }
+    public int Hue { get; }
 
-    public int Name{ get; }
+    public int Name { get; }
 
-    public PlantHue PlantHue{ get; }
+    public PlantHue PlantHue { get; }
 
-    public int GumpHue{ get; }
+    public int GumpHue { get; }
 
     public static PlantHueInfo GetInfo(PlantHue plantHue) => m_Table.TryGetValue(plantHue, out PlantHueInfo info) ? info : m_Table[PlantHue.Plain];
 

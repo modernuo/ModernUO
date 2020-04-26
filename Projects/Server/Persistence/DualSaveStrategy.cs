@@ -30,7 +30,7 @@ namespace Server
     {
       PermitBackgroundWrite = permitBackgroundWrite;
 
-      Thread saveThread = new Thread(delegate() { SaveItems(); });
+      var saveThread = new Thread(SaveItems);
 
       saveThread.Name = "Item Save Subset";
       saveThread.Start();
@@ -40,8 +40,7 @@ namespace Server
 
       saveThread.Join();
 
-      if (permitBackgroundWrite && UseSequentialWriters
-      ) //If we're permitted to write in the background, but we don't anyways, then notify.
+      if (permitBackgroundWrite && UseSequentialWriters) // If we're permitted to write in the background, but we don't anyways, then notify.
         World.NotifyDiskWriteComplete();
     }
   }

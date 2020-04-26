@@ -70,7 +70,7 @@ namespace Server.Engines.Quests.Haven
 
     public KillHordeMinionsObjective(KillHordeMinionsStep step) => Step = step;
 
-    public KillHordeMinionsStep Step{ get; private set; }
+    public KillHordeMinionsStep Step { get; private set; }
 
     public override object Message
     {
@@ -168,24 +168,24 @@ namespace Server.Engines.Quests.Haven
         switch (Step)
         {
           case KillHordeMinionsStep.First:
-          {
-            QuestObjective obj = new KillHordeMinionsObjective(KillHordeMinionsStep.LearnKarma);
-            System.AddObjective(obj);
-            obj.CurProgress = CurProgress;
-            break;
-          }
+            {
+              QuestObjective obj = new KillHordeMinionsObjective(KillHordeMinionsStep.LearnKarma);
+              System.AddObjective(obj);
+              obj.CurProgress = CurProgress;
+              break;
+            }
           case KillHordeMinionsStep.LearnKarma:
-          {
-            QuestObjective obj = new KillHordeMinionsObjective(KillHordeMinionsStep.Others);
-            System.AddObjective(obj);
-            obj.CurProgress = CurProgress;
-            break;
-          }
+            {
+              QuestObjective obj = new KillHordeMinionsObjective(KillHordeMinionsStep.Others);
+              System.AddObjective(obj);
+              obj.CurProgress = CurProgress;
+              break;
+            }
           default:
-          {
-            System.AddObjective(new FindUzeraanAboutReportObjective());
-            break;
-          }
+            {
+              System.AddObjective(new FindUzeraanAboutReportObjective());
+              break;
+            }
         }
       else
         System.AddObjective(new FindUzeraanAboutReportObjective());
@@ -338,7 +338,7 @@ namespace Server.Engines.Quests.Haven
 
   public class GetDaemonBoneObjective : QuestObjective
   {
-    public Container CorpseWithBone{ get; set; }
+    public Container CorpseWithBone { get; set; }
 
     public override object Message
     {

@@ -33,7 +33,8 @@ namespace Server
       Threaded
     }
 
-    public static SaveOption SaveType = SaveOption.Normal;
+    // TODO: Move to configuration
+    public static SaveOption SaveType => SaveOption.Normal;
 
     private readonly Queue<Item> _decayQueue;
 
@@ -41,7 +42,7 @@ namespace Server
 
     public override string Name => "Standard";
 
-    protected bool PermitBackgroundWrite{ get; set; }
+    protected bool PermitBackgroundWrite { get; set; }
 
     protected bool UseSequentialWriters => SaveType == SaveOption.Normal || !PermitBackgroundWrite;
 
@@ -49,16 +50,17 @@ namespace Server
     {
       PermitBackgroundWrite = permitBackgroundWrite;
 
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler        *
       Task.WaitAll(Task.Factory.StartNew(SaveMobiles), Task.Factory.StartNew(SaveItems), Task.Factory.StartNew(SaveGuilds));
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
 
-      if (permitBackgroundWrite && UseSequentialWriters
-      ) //If we're permitted to write in the background, but we don't anyways, then notify.
+      if (permitBackgroundWrite && UseSequentialWriters) // If we're permitted to write in the background, but we don't anyways, then notify.
         World.NotifyDiskWriteComplete();
     }
 
     protected void SaveMobiles()
     {
-      Dictionary<Serial, Mobile> mobiles = World.Mobiles;
+      var mobiles = World.Mobiles;
 
       IGenericWriter idx;
       IGenericWriter tdb;
@@ -76,27 +78,28 @@ namespace Server
         tdb = new AsyncWriter(World.MobileTypesPath, false);
         bin = new AsyncWriter(World.MobileDataPath, true);
       }
-
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler        *
       Task.Factory.StartNew(() =>
       {
         tdb.Write(World.m_MobileTypes.Count);
 
-        for (int i = 0; i < World.m_MobileTypes.Count; ++i)
+        for (var i = 0; i < World.m_MobileTypes.Count; ++i)
           tdb.Write(World.m_MobileTypes[i].FullName);
 
         tdb.Close();
       });
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
 
       Parallel.ForEach(mobiles.Values, mobile => mobile.Serialize());
-
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler        *
       Task.Factory.StartNew(() =>
       {
         idx.Write(mobiles.Count);
-        foreach (Mobile m in mobiles.Values)
+        foreach (var m in mobiles.Values)
         {
-          long start = bin.Position;
+          var start = bin.Position;
 
-          idx.Write(m.m_TypeRef);
+          idx.Write(m.TypeRef);
           idx.Write(m.Serial);
           idx.Write(start);
           idx.Write((int)m.SaveBuffer.Position);
@@ -108,11 +111,12 @@ namespace Server
         idx.Close();
         bin.Close();
       });
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
     }
 
     protected void SaveItems()
     {
-      Dictionary<Serial, Item> items = World.Items;
+      var items = World.Items;
 
       IGenericWriter idx;
       IGenericWriter tdb;
@@ -131,24 +135,27 @@ namespace Server
         bin = new AsyncWriter(World.ItemDataPath, true);
       }
 
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler        *
       Task.Factory.StartNew(() =>
       {
         tdb.Write(World.m_ItemTypes.Count);
 
-        for (int i = 0; i < World.m_ItemTypes.Count; ++i)
+        for (var i = 0; i < World.m_ItemTypes.Count; ++i)
           tdb.Write(World.m_ItemTypes[i].FullName);
 
         tdb.Close();
       });
-
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
       Parallel.ForEach(items.Values, item => item.Serialize());
 
       idx.Write(items.Count);
 
-      DateTime n = DateTime.UtcNow;
+      var n = DateTime.UtcNow;
 
-      Task.Factory.StartNew(() => {
-        foreach (Item item in items.Values)
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler        *
+      Task.Factory.StartNew(() =>
+      {
+        foreach (var item in items.Values)
         {
           if (item.Decays && item.Parent == null && item.Map != Map.Internal && item.LastMoved + item.DecayTime <= n)
           {
@@ -156,9 +163,9 @@ namespace Server
             _decayQueue.Enqueue(item);
           }
 
-          long start = bin.Position;
+          var start = bin.Position;
 
-          idx.Write(item.m_TypeRef);
+          idx.Write(item.TypeRef);
           idx.Write(item.Serial);
           idx.Write(start);
           idx.Write((int)item.SaveBuffer.Position);
@@ -170,7 +177,9 @@ namespace Server
         idx.Close();
         bin.Close();
       });
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
     }
+
     protected void SaveGuilds()
     {
       IGenericWriter idx;
@@ -190,15 +199,15 @@ namespace Server
       Parallel.ForEach(BaseGuild.List.Values, guild => guild.Serialize());
 
       idx.Write(BaseGuild.List.Count);
-
+#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler        *
       Task.Factory.StartNew(() =>
       {
-        foreach (BaseGuild guild in BaseGuild.List.Values)
+        foreach (var guild in BaseGuild.List.Values)
         {
-          long start = bin.Position;
+          var start = bin.Position;
 
-          idx.Write(0); //guilds have no typeid
-          idx.Write(guild.Id);
+          idx.Write(0); // guilds have no typeid
+          idx.Write(guild.Serial);
           idx.Write(start);
           idx.Write((int)guild.SaveBuffer.Position);
 
@@ -208,13 +217,14 @@ namespace Server
         idx.Close();
         bin.Close();
       });
+#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler        *
     }
 
     public override void ProcessDecay()
     {
       while (_decayQueue.Count > 0)
       {
-        Item item = _decayQueue.Dequeue();
+        var item = _decayQueue.Dequeue();
 
         if (item.OnDecay())
           item.Delete();

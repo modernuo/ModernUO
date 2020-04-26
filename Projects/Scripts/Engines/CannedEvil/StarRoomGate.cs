@@ -65,25 +65,25 @@ namespace Server.Items
       switch (version)
       {
         case 0:
-        {
-          m_Decays = reader.ReadBool();
-
-          if (m_Decays)
           {
-            m_DecayTime = reader.ReadDeltaTime();
+            m_Decays = reader.ReadBool();
 
-            m_Timer = new InternalTimer(this, m_DecayTime);
-            m_Timer.Start();
+            if (m_Decays)
+            {
+              m_DecayTime = reader.ReadDeltaTime();
+
+              m_Timer = new InternalTimer(this, m_DecayTime);
+              m_Timer.Start();
+            }
+
+            break;
           }
-
-          break;
-        }
       }
     }
 
     private class InternalTimer : Timer
     {
-      private Item m_Item;
+      private readonly Item m_Item;
 
       public InternalTimer(Item item, DateTime end) : base(end - DateTime.UtcNow) => m_Item = item;
 

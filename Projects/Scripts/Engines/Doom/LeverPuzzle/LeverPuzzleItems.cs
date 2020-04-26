@@ -116,7 +116,7 @@ namespace Server.Engines.Doom
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public ushort Code{ get; private set; }
+    public ushort Code { get; private set; }
 
     public override void OnDoubleClick(Mobile m)
     {

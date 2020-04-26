@@ -11,9 +11,9 @@ namespace Server.Items
   {
     private const int ExplosionRange = 2; // How long is the blast radius?
 
-    private static bool LeveledExplosion = false; // Should explosion potions explode other nearby potions?
-    private static bool InstantExplosion = false; // Should explosion potions explode on impact?
-    private static bool RelativeLocation = false; // Is the explosion target location relative for mobiles?
+    private static readonly bool LeveledExplosion = false; // Should explosion potions explode other nearby potions?
+    private static readonly bool InstantExplosion = false; // Should explosion potions explode on impact?
+    private static readonly bool RelativeLocation = false; // Is the explosion target location relative for mobiles?
 
     private Timer m_Timer;
 
@@ -25,12 +25,12 @@ namespace Server.Items
     {
     }
 
-    public abstract int MinDamage{ get; }
-    public abstract int MaxDamage{ get; }
+    public abstract int MinDamage { get; }
+    public abstract int MaxDamage { get; }
 
     public override bool RequireFreeHand => false;
 
-    public List<Mobile> Users{ get; private set; }
+    public List<Mobile> Users { get; private set; }
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -179,8 +179,8 @@ namespace Server.Items
 
       List<IEntity> toExplode = eable.Where(o =>
       {
-        if (!(o is Mobile mobile) || from != null &&
-            (!SpellHelper.ValidIndirectTarget(from, mobile) || !from.CanBeHarmful(mobile, false)))
+        if (!(o is Mobile mobile) || (from != null &&
+            (!SpellHelper.ValidIndirectTarget(from, mobile) || !from.CanBeHarmful(mobile, false))))
           return o is BaseExplosionPotion && o != this;
 
         ++toDamage;
@@ -222,7 +222,7 @@ namespace Server.Items
     {
       public ThrowTarget(BaseExplosionPotion potion) : base(12, true, TargetFlags.None) => Potion = potion;
 
-      public BaseExplosionPotion Potion{ get; }
+      public BaseExplosionPotion Potion { get; }
 
       protected override void OnTarget(Mobile from, object targeted)
       {

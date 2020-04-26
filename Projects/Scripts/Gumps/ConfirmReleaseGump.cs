@@ -5,8 +5,8 @@ namespace Server.Gumps
 {
   public class ConfirmReleaseGump : Gump
   {
-    private Mobile m_From;
-    private BaseCreature m_Pet;
+    private readonly Mobile m_From;
+    private readonly BaseCreature m_Pet;
 
     public ConfirmReleaseGump(Mobile from, BaseCreature pet) : base(50, 50)
     {

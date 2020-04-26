@@ -64,7 +64,6 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(1010097); // You cannot use this while mounted.
       }
-
       else if (from.CanBeginAction<SnowPile>())
       {
         from.SendLocalizedMessage(1005575); // You carefully pack the snow into a ball...
@@ -78,7 +77,7 @@ namespace Server.Items
 
     private class InternalTimer : Timer
     {
-      private Mobile m_From;
+      private readonly Mobile m_From;
 
       public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(5.0)) => m_From = from;
 

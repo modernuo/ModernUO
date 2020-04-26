@@ -4,15 +4,14 @@ namespace Server.Spells.Seventh
 {
   public class ManaVampireSpell : MagerySpell, ISpellTargetingMobile
   {
-    private static SpellInfo m_Info = new SpellInfo(
+    private static readonly SpellInfo m_Info = new SpellInfo(
       "Mana Vampire", "Ort Sanct",
       221,
       9032,
       Reagent.BlackPearl,
       Reagent.Bloodmoss,
       Reagent.MandrakeRoot,
-      Reagent.SpidersSilk
-    );
+      Reagent.SpidersSilk);
 
     public ManaVampireSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {

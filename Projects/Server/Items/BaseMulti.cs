@@ -38,7 +38,7 @@ namespace Server.Items
       {
         if (base.ItemID != value)
         {
-          Map facet = Parent == null ? Map : null;
+          var facet = Parent == null ? Map : null;
 
           facet?.OnLeave(this);
 
@@ -53,11 +53,11 @@ namespace Server.Items
     {
       get
       {
-        MultiComponentList mcl = Components;
+        var mcl = Components;
 
         if (mcl.List.Length > 0)
         {
-          int id = mcl.List[0].m_ItemID;
+          int id = mcl.List[0].ItemId;
 
           if (id < 0x4000)
             return 1020000 + id;
@@ -77,7 +77,7 @@ namespace Server.Items
     {
       if (Parent == null)
       {
-        Map facet = Map;
+        var facet = Map;
 
         if (facet != null)
         {
@@ -99,7 +99,7 @@ namespace Server.Items
 
     public virtual bool Contains(int x, int y)
     {
-      MultiComponentList mcl = Components;
+      var mcl = Components;
 
       x -= X + mcl.Min.m_X;
       y -= Y + mcl.Min.m_Y;
@@ -126,7 +126,7 @@ namespace Server.Items
     {
       base.Deserialize(reader);
 
-      int version = reader.ReadInt();
+      var version = reader.ReadInt();
 
       if (version == 0)
         if (ItemID >= 0x4000)
