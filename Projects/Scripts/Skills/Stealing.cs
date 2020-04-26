@@ -13,7 +13,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class Stealing
+  public static class Stealing
   {
     public static readonly bool ClassicMode = false;
     public static readonly bool SuspendOnMurder = false;

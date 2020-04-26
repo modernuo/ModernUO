@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class Begging
+  public static class Begging
   {
     public static void Initialize()
     {

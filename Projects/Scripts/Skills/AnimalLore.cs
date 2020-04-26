@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class AnimalLore
+  public static class AnimalLore
   {
     public static void Initialize()
     {

@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class EvalInt
+  public static class EvalInt
   {
     public static void Initialize()
     {

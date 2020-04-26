@@ -4,6 +4,8 @@ using Server.Mobiles;
 
 namespace Server.SkillHandlers
 {
+  // Stealth cannot be static because its used as a generic for CanBeginAction.
+#pragma warning disable CA1052 // Static holder types should be Static or NotInheritable
   public class Stealth
   {
     public static double HidingRequirement => Core.ML ? 30.0 : Core.SE ? 50.0 : 80.0;
@@ -107,4 +109,5 @@ namespace Server.SkillHandlers
       return TimeSpan.FromSeconds(10.0);
     }
   }
+#pragma warning restore CA1052 // Static holder types should be Static or NotInheritable
 }

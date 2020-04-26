@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class ArmsLore
+  public static class ArmsLore
   {
     public static void Initialize()
     {

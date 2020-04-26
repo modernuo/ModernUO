@@ -6,7 +6,7 @@ using Server.Spells;
 
 namespace Server.SkillHandlers
 {
-  internal class SpiritSpeak
+  public static class SpiritSpeak
   {
     public static void Initialize()
     {

@@ -8,7 +8,7 @@ using Server.Spells.Necromancy;
 
 namespace Server.SkillHandlers
 {
-  public class Tracking
+  public static class Tracking
   {
     private static readonly Dictionary<Mobile, TrackingInfo> m_Table = new Dictionary<Mobile, TrackingInfo>();
 

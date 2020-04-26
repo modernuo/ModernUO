@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class Hiding
+  public static class Hiding
   {
     public static bool CombatOverride { get; set; }
 

@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class Anatomy
+  public static class Anatomy
   {
     public static void Initialize()
     {

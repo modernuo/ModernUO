@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class TasteID
+  public static class TasteID
   {
     public static void Initialize()
     {

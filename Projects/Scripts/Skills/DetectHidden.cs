@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class DetectHidden
+  public static class DetectHidden
   {
     public static void Initialize()
     {

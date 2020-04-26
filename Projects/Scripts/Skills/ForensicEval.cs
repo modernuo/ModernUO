@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class ForensicEvaluation
+  public static class ForensicEvaluation
   {
     public static void Initialize()
     {

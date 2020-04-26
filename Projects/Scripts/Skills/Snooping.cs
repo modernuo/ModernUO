@@ -6,7 +6,7 @@ using Server.Regions;
 
 namespace Server.SkillHandlers
 {
-  public class Snooping
+  public static class Snooping
   {
     public static void Configure()
     {

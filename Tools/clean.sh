@@ -1,3 +1,5 @@
+rm -rf Projects/*/obj
+
 rm -f Distribution/Assemblies/BouncyCastle.Crypto.dll
 rm -f Distribution/Assemblies/MailKit.dll
 rm -f Distribution/Assemblies/Microsoft.AspNetCore.Connections.Abstractions.dll

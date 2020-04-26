@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class Peacemaking
+  public static class Peacemaking
   {
     public static void Initialize()
     {

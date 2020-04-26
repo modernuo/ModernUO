@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class Poisoning
+  public static class Poisoning
   {
     public static void Initialize()
     {

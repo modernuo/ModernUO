@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class Provocation
+  public static class Provocation
   {
     public static void Initialize()
     {

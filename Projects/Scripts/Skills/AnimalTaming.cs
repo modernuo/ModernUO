@@ -10,7 +10,7 @@ using Server.Targeting;
 
 namespace Server.SkillHandlers
 {
-  public class AnimalTaming
+  public static class AnimalTaming
   {
     private static readonly HashSet<Mobile> m_BeingTamed = new HashSet<Mobile>();
 

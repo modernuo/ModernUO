@@ -1,8 +1,3 @@
-//
-// This is a first simple AI
-//
-//
-
 namespace Server.Mobiles
 {
   public class MeleeAI : BaseAI

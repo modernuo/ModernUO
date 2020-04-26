@@ -1,9 +1,3 @@
-/*
- * PredatorAI, its an animal that can attack
- *	Dont flee but dont attack if not hurt or attacked
- *
- */
-
 namespace Server.Mobiles
 {
   public class PredatorAI : BaseAI
