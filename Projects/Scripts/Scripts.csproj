@@ -20,7 +20,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release;Analyze</Configurations>
   </PropertyGroup>
-  <Target Name="BeforeClean">
+  <Target Name="CleanPub" AfterTargets="Clean">
+    <Message Text="Removing distribution assemblies..." />
     <Delete Files="$(SolutionDir)\Distribution\Assemblies\BouncyCastle.Crypto.dll" ContinueOnError="true" />
     <Delete Files="$(SolutionDir)\Distribution\Assemblies\MailKit.dll" ContinueOnError="true" />
     <Delete Files="$(SolutionDir)\Distribution\Assemblies\Microsoft.AspNetCore.Connections.Abstractions.dll" ContinueOnError="true" />
@@ -34,7 +35,7 @@
     <Delete Files="$(SolutionDir)\Distribution\Assemblies\MimeKit.dll" ContinueOnError="true" />
     <Delete Files="$(SolutionDir)\Distribution\Assemblies\$(AssemblyName).dll" ContinueOnError="true" />
     <Delete Files="$(SolutionDir)\Distribution\Assemblies\$(AssemblyName).deps.json" ContinueOnError="true" />
-    <Delete Files="$(SolutionDir)\Distribution\Assemblies\$(AssemblyName).pdg" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Assemblies\$(AssemblyName).pdb" ContinueOnError="true" />
     <Delete Files="$(SolutionDir)\Distribution\Assemblies\System.IO.Pipelines.dll" ContinueOnError="true" />
   </Target>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

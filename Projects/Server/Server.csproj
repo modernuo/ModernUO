@@ -25,6 +25,29 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Configurations>Debug;Release;Analyze</Configurations>
   </PropertyGroup>
+  <Target Name="CleanPub" AfterTargets="Clean">
+    <Message Text="Removing distribution files..." />
+    <Delete Files="$(SolutionDir)\Distribution\libuv.dylib" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.AspNetCore.Connections.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.AspNetCore.Http.Features.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.Configuration.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.DependencyInjection.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.FileProviders.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.Hosting.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.Logging.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.Options.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\Microsoft.Extensions.Primitives.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName)" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).dll.config" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).exe" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).pdb" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\System.IO.Pipelines.dll" ContinueOnError="true" />
+  </Target>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <Optimize>false</Optimize>

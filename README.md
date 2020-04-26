@@ -17,13 +17,12 @@ Ultima Online Server Emulator for the modern era!
 - [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
 #### Cleaning
-- Linux or OSX: `./clean.sh`
-- Windows: `clean.cmd`
+- `dotnet clean`
 
 #### Publishing
-- Linux: `./publish-linux.sh` or `publish-linux.cmd`
-- OSX: `./publish-osx.sh` or `publish-osx.cmd`
-- Windows `./publish-windows.sh` or `publish-windows.cmd`
+- Linux: `./Tools/publish-linux.sh` or `Tools/publish-linux.cmd`
+- OSX: `./Tools/publish-osx.sh` or `Tools/publish-osx.cmd`
+- Windows `./Tools/publish-windows.sh` or `Tools/publish-windows.cmd`
 
 ## Deploying / Running Server
 - Follow the build instructions
