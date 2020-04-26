@@ -117,22 +117,6 @@ namespace Server
     public AccessLevel AccessLevel { get; }
 
     public int CompareTo(CommandEntry e) => e == null ? 1 : Command.CompareTo(e.Command);
-
-    public override bool Equals(object obj) => obj is CommandEntry e && CompareTo(e) == 0;
-
-    public override int GetHashCode() => Command.GetHashCode();
-
-    public static bool operator ==(CommandEntry left, CommandEntry right) => left.CompareTo(right) == 0;
-
-    public static bool operator !=(CommandEntry left, CommandEntry right) => left.CompareTo(right) != 0;
-
-    public static bool operator <(CommandEntry left, CommandEntry right) => left.CompareTo(right) < 0;
-
-    public static bool operator <=(CommandEntry left, CommandEntry right) => left.CompareTo(right) <= 0;
-
-    public static bool operator >(CommandEntry left, CommandEntry right) => left.CompareTo(right) > 0;
-
-    public static bool operator >=(CommandEntry left, CommandEntry right) => left.CompareTo(right) >= 0;
   }
 
   public static class CommandSystem
