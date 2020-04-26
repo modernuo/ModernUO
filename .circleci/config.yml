@@ -1,0 +1,23 @@
+version: 2.1
+jobs:
+  build:
+    description: Build application
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
+    working_directory: /mnt/ramdisk
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dotnet-packages-v1-{{ checksum "Projcts/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+      - run:
+          name: Install ModernUO dependencies
+          command: dotnet restore
+      - save_cache:
+          paths:
+            - ~/.nuget/packages
+          keys:
+            - dotnet-packages-v1-{{ checksum "Projcts/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+      - run:
+          name: Building ModernUO for Linux (Debug)
+          command: dotnet -c Debug /p:PublishProfile=Linux
