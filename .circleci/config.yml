@@ -19,4 +19,4 @@ jobs:
           key: dotnet-packages-v1-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
       - run:
           name: Building ModernUO for Linux (Debug)
-          command: dotnet -c Debug /p:PublishProfile=Linux
+          command: dotnet build -c Debug /p:PublishProfile=Linux
