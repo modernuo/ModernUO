@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  windows: circleci/windows@2.4.0
+  win: circleci/windows@2.4.0
 
 executors:
   linux-build:
@@ -15,7 +15,7 @@ jobs:
     description: Build ModernUO with Debian
     executor: linux-build
     steps:
-      - run: rm -rf /home/circleci/project/.git # CircleCI git caching is likely broken
+      - run: rm -rf ~/project/.git # CircleCI git caching is likely broken
       - checkout
       - restore_cache:
           keys:
@@ -32,9 +32,8 @@ jobs:
           command: dotnet build -c Release /p:PublishProfile=Linux
   build_windows:
     description: Build application
-    executor: windows/default
+    executor: win/default
     steps:
-      - run: rm -rf /home/circleci/project/.git # CircleCI git caching is likely broken
       - checkout
       - restore_cache:
           keys:
@@ -53,7 +52,7 @@ jobs:
     description: Code analysis
     executor: linux-build
     steps:
-      - run: rm -rf /home/circleci/project/.git # CircleCI git caching is likely broken
+      - run: rm -rf ~/project/.git # CircleCI git caching is likely broken
       - checkout
       - restore_cache:
           keys:
@@ -68,3 +67,10 @@ jobs:
       - run:
           name: Building with Analyzers
           command: dotnet build -c Analyze /p:PublishProfile=Linux
+
+workflows:
+  build-and-test:
+    jobs:
+      - build_linux
+      - build_windows
+      - code_styling
