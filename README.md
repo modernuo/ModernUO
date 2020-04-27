@@ -1,10 +1,15 @@
 ModernUO
 =====
-##### Ultima Online Server Emulator for the modern era!
 
+##### Ultima Online Server Emulator for the modern era!
+[![.NET Core](https://img.shields.io/badge/.NET-Core%203.1-5C2D91)](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+![Windows](https://img.shields.io/badge/-server%202019-0078D6?logo=windows)
+![OSX](https://img.shields.io/badge/-catalina-222222?logo=apple&logoColor=white)
+![Debian](https://img.shields.io/badge/-buster-A81D33?logo=debian)
+![Ubuntu](https://img.shields.io/badge/-16LTS-E95420?logo=ubuntu&logoColor=white)
+<br/>
 [![GitHub stars](https://img.shields.io/github/stars/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/issues)
-![Platforms](https://img.shields.io/badge/platforms-linux%20%7C%20osx%20%7C%20windows-lightgrey)
 ![Build status](https://img.shields.io/circleci/build/gh/modernuo/ModernUO/master?logo=circleci)
 [![GitHub license](https://img.shields.io/github/license/modernuo/ModernUO?color=blue)](https://github.com/modernuo/ModernUO/blob/master/LICENSE)
 ![Discord](https://img.shields.io/discord/458277173208547350?logo=discord)
