@@ -1,4 +1,4 @@
-ModernUO
+ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=discord&style=social)](https://discord.gg/VdyCpjQ) ![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/modernuo?style=social&label=/r/modernuo) ![Twitter Follow](https://img.shields.io/twitter/follow/modernuo?label=@modernuo&style=social)
 =====
 
 ##### Ultima Online Server Emulator for the modern era!
@@ -12,12 +12,6 @@ ModernUO
 [![GitHub issues](https://img.shields.io/github/issues/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/issues)
 ![Build status](https://img.shields.io/circleci/build/gh/modernuo/ModernUO/master?logo=circleci)
 [![GitHub license](https://img.shields.io/github/license/modernuo/ModernUO?color=blue)](https://github.com/modernuo/ModernUO/blob/master/LICENSE)
-![Discord](https://img.shields.io/discord/458277173208547350?logo=discord)
-
-## Join and Follow!
-- [Discord](https://discord.gg/VdyCpjQ)
-- [Twitter](https://www.twitter.com/modernuo)
-- [Reddit](https://www.reddit.com/r/modernuo)
 
 ## Goals
 - See [Goals](./GOALS.md)
