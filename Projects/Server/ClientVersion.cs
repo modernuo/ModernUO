@@ -143,7 +143,16 @@ namespace Server
 
     public static bool operator <(ClientVersion l, ClientVersion r) => Compare(l, r) < 0;
 
-    public override int GetHashCode() => Utility.HashArray(Major, Minor, Revision, Patch, (int)Type);
+    public override int GetHashCode()
+    {
+      int[] values = {Major, Minor, Revision, Patch, (int) Type};
+
+      int result = 1;
+
+      foreach (int element in values) result = 31 * result + element;
+
+      return result;
+    }
 
     int IComparer<ClientVersion>.Compare(ClientVersion x, ClientVersion y) => Compare(x, y);
 

@@ -1106,17 +1106,5 @@ namespace Server
 
     #endregion
 
-    #region Hash of Array
-    public static int HashArray(params object[] values)
-    {
-      if (values == null) return 0;
-
-      int result = 1;
-
-      foreach (object element in values) result = 31 * result + (element?.GetHashCode() ?? 0);
-
-      return result;
-    }
-    #endregion
   }
 }

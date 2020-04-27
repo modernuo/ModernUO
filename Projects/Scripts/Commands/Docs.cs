@@ -2639,7 +2639,7 @@ namespace Server.Commands
       return Body == e?.Body && BodyType == e.BodyType && Name == e.Name;
     }
 
-    public override int GetHashCode() => Utility.HashArray(Body.BodyID, (int)BodyType, Name);
+    public override int GetHashCode() => Body.BodyID ^ (int)BodyType ^ Name.GetHashCode();
   }
 
   public class BodyEntrySorter : IComparer<BodyEntry>
