@@ -1,16 +1,21 @@
 ModernUO
 =====
+##### Ultima Online Server Emulator for the modern era!
 
-Ultima Online Server Emulator for the modern era!
+[![GitHub stars](https://img.shields.io/github/stars/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/issues)
+![Platforms](https://img.shields.io/badge/platforms-linux%20%7C%20osx%20%7C%20windows-lightgrey)
+![Build status](https://img.shields.io/circleci/build/gh/modernuo/ModernUO/master?logo=circleci)
+[![GitHub license](https://img.shields.io/github/license/modernuo/ModernUO?color=blue)](https://github.com/modernuo/ModernUO/blob/master/LICENSE)
+![Discord](https://img.shields.io/discord/458277173208547350?logo=discord)
 
 ## Join and Follow!
-- [Discord Channel](https://discord.gg/VdyCpjQ)
+- [Discord](https://discord.gg/VdyCpjQ)
 - [Twitter](https://www.twitter.com/modernuo)
 - [Reddit](https://www.reddit.com/r/modernuo)
 
 ## Goals
 - See [Goals](./GOALS.md)
-
 
 ## Publishing a build
 #### Requirements
