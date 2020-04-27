@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Building ModernUO for Linux (Debug)
           command: dotnet build -c Release /p:PublishProfile=Linux
-  build-windows:
+  build_windows:
     description: Build application
     executor: windows-build
     steps:
