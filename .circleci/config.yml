@@ -1,22 +1,80 @@
 version: 2.1
-jobs:
-  build:
-    description: Build application
+
+executors:
+  linux-build:
+    description: "Executor using Debian and .NET Core 3.1"
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
     working_directory: /mnt/ramdisk
+  windows-build:
+    description: "Executor using Windows 2019 build 1909 and .NET Core 3.1"
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1-nanoserver-1909
+    working_directory: /mnt/ramdisk
+
+jobs:
+  build_linux:
+    description: Build ModernUO with Debian
+    executor: linux-buid
     steps:
+      - run: rm -rf /home/circleci/project/.git # CircleCI git caching is likely broken
       - checkout
       - restore_cache:
           keys:
-            - dotnet-packages-v1-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+            - dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
       - run:
           name: Install ModernUO dependencies
           command: dotnet restore
       - save_cache:
           paths:
             - ~/.nuget/packages
-          key: dotnet-packages-v1-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+          key: dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
       - run:
           name: Building ModernUO for Linux (Debug)
-          command: dotnet build -c Debug /p:PublishProfile=Linux
+          command: dotnet build -c Release /p:PublishProfile=Linux
+  build-windows:
+    description: Build application
+    executor: windows-build
+    steps:
+      - run: rm -rf /home/circleci/project/.git # CircleCI git caching is likely broken
+      - checkout
+      - restore_cache:
+          keys:
+            - dotnet-packages-windows-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+      - run:
+          name: Install ModernUO dependencies
+          command: dotnet restore
+      - save_cache:
+          paths:
+            - ~/.nuget/packages
+          key: dotnet-packages-windows-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+      - run:
+          name: Building ModernUO for Linux (Debug)
+          command: dotnet build -c Release /p:PublishProfile=Windows
+  code_styling:
+    description: Code analysis
+    executor: linux-build
+    steps:
+      - run: rm -rf /home/circleci/project/.git # CircleCI git caching is likely broken
+      - checkout
+      - restore_cache:
+          keys:
+            - dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+      - run:
+          name: Install ModernUO dependencies
+          command: dotnet restore
+      - save_cache:
+          paths:
+            - ~/.nuget/packages
+          key: dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+      - run:
+          name: Building with Analyzers
+          command: dotnet build -c Analyze /p:PublishProfile=Linux
+
+workflows:
+  version: 2
+  all:
+    jobs:
+      -  build_linux
+      -  build_windows
+      -  code_styling
