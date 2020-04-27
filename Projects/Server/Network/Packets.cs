@@ -70,13 +70,17 @@ namespace Server.Network
 
   public sealed class DamagePacketOld : Packet
   {
-    public DamagePacketOld(Mobile m, int amount) : base(0xBF)
+    public DamagePacketOld(Mobile m, int amount) : this(m.Serial, amount)
+    {
+    }
+
+    public DamagePacketOld(Serial s, int amount) : base(0xBF)
     {
       EnsureCapacity(11);
 
       Stream.Write((short)0x22);
       Stream.Write((byte)1);
-      Stream.Write(m.Serial);
+      Stream.Write(s);
 
       if (amount > 255)
         amount = 255;
