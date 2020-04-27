@@ -15,7 +15,7 @@ executors:
 jobs:
   build_linux:
     description: Build ModernUO with Debian
-    executor: linux-buid
+    executor: linux-build
     steps:
       - run: rm -rf /home/circleci/project/.git # CircleCI git caching is likely broken
       - checkout
