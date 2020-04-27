@@ -46,7 +46,7 @@ jobs:
             - ~/.nuget/packages
           key: dotnet-packages-windows-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
       - run:
-          name: Building ModernUO for Linux (Debug)
+          name: Building ModernUO for Windows (Debug)
           command: dotnet build -c Release /p:PublishProfile=Windows
   code_styling:
     description: Code analysis
