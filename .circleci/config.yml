@@ -67,10 +67,29 @@ jobs:
       - run:
           name: Building with Analyzers
           command: dotnet build -c Analyze /p:PublishProfile=Linux
-
+  tests:
+    description: Unit Tests
+    executor: linux-build
+    steps:
+      - run: rm -rf ~/project/.git # CircleCI git caching is likely broken
+      - checkout
+      - restore_cache:
+          keys:
+            - dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+      - run:
+          name: Install ModernUO dependencies
+          command: dotnet restore
+      - save_cache:
+          paths:
+            - ~/.nuget/packages
+          key: dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+      - run:
+          name: Running unit tests
+          command: dotnet test
 workflows:
   build-and-test:
     jobs:
       - build_linux
       - build_windows
       - code_styling
+      - tests
