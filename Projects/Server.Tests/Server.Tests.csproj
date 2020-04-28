@@ -10,6 +10,7 @@
     <PackageReference Include="coverlet.collector" Version="1.2.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Projects\Server\Server.csproj" />
+    <ProjectReference Include="..\Scripts\Scripts.csproj" />
+    <ProjectReference Include="..\Server\Server.csproj" />
   </ItemGroup>
 </Project>

@@ -1130,13 +1130,8 @@ namespace Server
 
     public bool CanSpawnMobile(Point2D p, int z) => CanSpawnMobile(p.m_X, p.m_Y, z);
 
-    public bool CanSpawnMobile(int x, int y, int z)
-    {
-      if (!Region.Find(new Point3D(x, y, z), this).AllowSpawn())
-        return false;
-
-      return CanFit(x, y, z, 16);
-    }
+    public bool CanSpawnMobile(int x, int y, int z) =>
+      Region.Find(new Point3D(x, y, z), this).AllowSpawn() && CanFit(x, y, z, 16);
 
     public Sector GetSector(Point3D p) => InternalGetSector(p.m_X >> SectorShift, p.m_Y >> SectorShift);
 
