@@ -85,13 +85,7 @@ jobs:
           key: dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
       - run:
           name: Running unit tests
-          command: dotnet.exe test -v n --results-directory:test_coverage --collect:"Code Coverage"
-      - run:
-          name: Print Working Directory
-          command: pwd
-      - store_artifacts:
-          path:
-            - ~/project/test_coverage
+          command: dotnet test -v n --results-directory:test_coverage --collect:"Code Coverage"
 workflows:
   build-and-test:
     jobs:
