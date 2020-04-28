@@ -15,7 +15,7 @@ namespace Server.Tests.Network.Packets
     [InlineData(10, 10)]
     [InlineData(-5, 0)]
     [InlineData(1024, 255)]
-    public void TestDamagePacketOld(int inputAmount, int expectedAmount)
+    public void TestDamagePacketOld(int inputAmount, byte expectedAmount)
     {
       DamagePacketOld packet = new DamagePacketOld(mobile, inputAmount);
 
@@ -27,7 +27,7 @@ namespace Server.Tests.Network.Packets
         0x00, 0x22, // Sub-packet
         0x01, // Command
         0x00, 0x00, 0x00, 0x01, // Serial
-        (byte)expectedAmount // Amount
+        expectedAmount // Amount
       };
 
       Assert.Equal(data.ToArray(), expectedData);
