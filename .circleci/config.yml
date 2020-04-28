@@ -89,8 +89,8 @@ jobs:
       - run:
           name: "Print Working Directory"
           command: pwd
-            - store_artifacts:
-                path: ~/project/test_coverage
+      - store_artifacts:
+        path: ~/project/test_coverage
 workflows:
   build-and-test:
     jobs:
