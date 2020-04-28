@@ -18,36 +18,36 @@ jobs:
       - run: rm -rf ~/project/.git # CircleCI git caching is likely broken
       - checkout
       - restore_cache:
-          keys:
-            - dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+        keys:
+          - dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
       - run:
-          name: Install ModernUO dependencies
-          command: dotnet restore
+        name: Install ModernUO dependencies
+        command: dotnet restore
       - save_cache:
-          paths:
-            - ~/.nuget/packages
-          key: dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+        paths:
+          - ~/.nuget/packages
+        key: dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
       - run:
-          name: Building ModernUO for Linux (Debug)
-          command: dotnet build -c Release /p:PublishProfile=Linux
+        name: Building ModernUO for Linux (Debug)
+        command: dotnet build -c Release /p:PublishProfile=Linux
   build_windows:
     description: Build application
     executor: win/default
     steps:
       - checkout
       - restore_cache:
-          keys:
-            - dotnet-packages-windows-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+        keys:
+          - dotnet-packages-windows-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
       - run:
-          name: Install ModernUO dependencies
-          command: dotnet restore
+        name: Install ModernUO dependencies
+        command: dotnet restore
       - save_cache:
-          paths:
-            - ~/.nuget/packages
-          key: dotnet-packages-windows-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+        paths:
+          - ~/.nuget/packages
+        key: dotnet-packages-windows-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
       - run:
-          name: Building ModernUO for Windows (Debug)
-          command: dotnet build -c Release /p:PublishProfile=Windows
+        name: Building ModernUO for Windows (Debug)
+        command: dotnet build -c Release /p:PublishProfile=Windows
   code_styling:
     description: Code analysis
     executor: linux-build
@@ -55,18 +55,18 @@ jobs:
       - run: rm -rf ~/project/.git # CircleCI git caching is likely broken
       - checkout
       - restore_cache:
-          keys:
-            - dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+        keys:
+          - dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
       - run:
-          name: Install ModernUO dependencies
-          command: dotnet restore
+        name: Install ModernUO dependencies
+        command: dotnet restore
       - save_cache:
-          paths:
-            - ~/.nuget/packages
-          key: dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+        paths:
+          - ~/.nuget/packages
+        key: dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
       - run:
-          name: Building with Analyzers
-          command: dotnet build -c Analyze /p:PublishProfile=Linux
+        name: Building with Analyzers
+        command: dotnet build -c Analyze /p:PublishProfile=Linux
   tests:
     description: Unit Tests
     executor: linux-build
@@ -74,23 +74,24 @@ jobs:
       - run: rm -rf ~/project/.git # CircleCI git caching is likely broken
       - checkout
       - restore_cache:
-          keys:
-            - dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+        keys:
+          - dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
       - run:
-          name: Install ModernUO dependencies
-          command: dotnet restore
+        name: Install ModernUO dependencies
+        command: dotnet restore
       - save_cache:
-          paths:
-            - ~/.nuget/packages
-          key: dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+        paths:
+          - ~/.nuget/packages
+        key: dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
       - run:
-          name: Running unit tests
-          command: dotnet.exe test -v n --results-directory:test_coverage --collect:"Code Coverage"
+        name: Running unit tests
+        command: dotnet.exe test -v n --results-directory:test_coverage --collect:"Code Coverage"
       - run:
-          name: "Print Working Directory"
-          command: pwd
+        name: Print Working Directory
+        command: pwd
       - store_artifacts:
-        path: ~/project/test_coverage
+          path:
+            - ~/project/test_coverage
 workflows:
   build-and-test:
     jobs:
