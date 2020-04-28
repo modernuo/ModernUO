@@ -11,61 +11,26 @@ namespace Server.Tests.Network.Packets
 
     public DamageOldPacketTests(ServerFixture fixture) => mobile = fixture.mobile;
 
-    [Fact]
-    public void TestDamagePacketOld()
+    [Theory]
+    [InlineData(10, 10)]
+    [InlineData(-5, 0)]
+    [InlineData(1024, 255)]
+    public void TestDamagePacketOld(int inputAmount, int expectedAmount)
     {
-      DamagePacketOld packet = new DamagePacketOld(mobile, 10);
+      DamagePacketOld packet = new DamagePacketOld(mobile, inputAmount);
 
       Span<byte> data = packet.Compile(false, out int length).AsSpan(0, length);
 
-      byte[] expected = {
+      byte[] expectedData = {
         0xBF, // Packet
         0x00, 0x0B, // Length
         0x00, 0x22, // Sub-packet
         0x01, // Command
         0x00, 0x00, 0x00, 0x01, // Serial
-        0x0A, // Amount
+        (byte)expectedAmount // Amount
       };
 
-      Assert.Equal(data.ToArray(), expected);
-    }
-
-    [Fact]
-    public void TestDamagePacketOldBelowZero()
-    {
-      DamagePacketOld packet = new DamagePacketOld(mobile, -1);
-
-      Span<byte> data = packet.Compile(false, out int length).AsSpan(0, length);
-
-      byte[] expected = {
-        0xBF, // Packet
-        0x00, 0x0B, // Length
-        0x00, 0x22, // Sub-packet
-        0x01, // Command
-        0x00, 0x00, 0x00, 0x01, // Serial
-        0x00, // Amount
-      };
-
-      Assert.Equal(data.ToArray(), expected);
-    }
-
-    [Fact]
-    public void TestDamagePacketOldAboveOneByte()
-    {
-      DamagePacketOld packet = new DamagePacketOld(mobile, 1024);
-
-      Span<byte> data = packet.Compile(false, out int length).AsSpan(0, length);
-
-      byte[] expected = {
-        0xBF, // Packet
-        0x00, 0x0B, // Length
-        0x00, 0x22, // Sub-packet
-        0x01, // Command
-        0x00, 0x00, 0x00, 0x01, // Serial
-        0xFF // Amount
-      };
-
-      Assert.Equal(data.ToArray(), expected);
+      Assert.Equal(data.ToArray(), expectedData);
     }
   }
 }
