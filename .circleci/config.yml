@@ -97,3 +97,4 @@ workflows:
       - build_linux
       - build_windows
       - code_styling
+      - tests
