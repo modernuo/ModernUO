@@ -63,7 +63,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonContainerDeed Deed => new FountainOfLifeDeed(m_Charges);
+    public override BaseAddonContainerDeed AddonContainerDeed => new FountainOfLifeDeed(m_Charges);
 
     public virtual TimeSpan RechargeTime => TimeSpan.FromDays(1);
 

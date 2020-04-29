@@ -53,7 +53,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new WoodenCoffinDeed();
+    public override BaseAddonDeed AddonDeed => new WoodenCoffinDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

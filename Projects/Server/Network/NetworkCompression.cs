@@ -43,7 +43,7 @@ namespace Server.Network
     // If our input exceeds this length, we cannot possibly compress it within the buffer
     private const int DefiniteOverflow = (BufferSize * 8 - TerminalCodeLength) / MinimalCodeLength;
 
-    private static readonly int[] _huffmanTable =
+    private static readonly int[] m_HuffmanTable =
     {
       0x2, 0x000, 0x5, 0x01F, 0x6, 0x022, 0x7, 0x034, 0x7, 0x075, 0x6, 0x028, 0x6, 0x03B, 0x7, 0x032,
       0x8, 0x0E0, 0x8, 0x062, 0x7, 0x056, 0x8, 0x079, 0x9, 0x19D, 0x8, 0x097, 0x6, 0x02A, 0x7, 0x057,
@@ -95,7 +95,7 @@ namespace Server.Network
       var bitCount = 0;
       var bitValue = 0;
 
-      fixed (int* pTable = _huffmanTable)
+      fixed (int* pTable = m_HuffmanTable)
       {
         fixed (byte* pInputBuffer = input)
         {

@@ -47,7 +47,7 @@ namespace Server.Regions
 
     public int ID { get; }
 
-    public BaseRegion Region { get; }
+    public Region Region { get; }
 
     public Direction Direction { get; }
 
@@ -68,8 +68,6 @@ namespace Server.Regions
 
     // Are creatures unlinked on taming (true) or should they also go out of the region (false)?
     public bool UnlinkOnTaming => false;
-
-    Region ISpawner.Region => Region;
     public Point3D HomeLocation { get; }
 
     public int HomeRange { get; }
@@ -81,7 +79,7 @@ namespace Server.Regions
       CheckTimer();
     }
 
-    public Point3D RandomSpawnLocation(int spawnHeight, bool land, bool water) => Region.RandomSpawnLocation(spawnHeight, land, water, HomeLocation, HomeRange);
+    public Point3D RandomSpawnLocation(int spawnHeight, bool land, bool water) => ((BaseRegion)Region).RandomSpawnLocation(spawnHeight, land, water, HomeLocation, HomeRange);
 
     public void Start()
     {

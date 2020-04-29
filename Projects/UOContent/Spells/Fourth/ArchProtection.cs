@@ -18,7 +18,7 @@ namespace Server.Spells.Fourth
       Reagent.MandrakeRoot,
       Reagent.SulfurousAsh);
 
-    private static readonly Dictionary<Mobile, int> _Table = new Dictionary<Mobile, int>();
+    private static readonly Dictionary<Mobile, int> m_Table = new Dictionary<Mobile, int>();
 
     public ArchProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -90,14 +90,14 @@ namespace Server.Spells.Fourth
 
     private static void AddEntry(Mobile m, int v)
     {
-      _Table[m] = v;
+      m_Table[m] = v;
     }
 
     public static void RemoveEntry(Mobile m)
     {
-      if (_Table.TryGetValue(m, out int v))
+      if (m_Table.TryGetValue(m, out int v))
       {
-        _Table.Remove(m);
+        m_Table.Remove(m);
         m.EndAction<ArchProtectionSpell>();
         m.VirtualArmorMod -= v;
         if (m.VirtualArmorMod < 0)

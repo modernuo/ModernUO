@@ -53,54 +53,54 @@ namespace Server.Diagnostics
 
   public class PacketSendProfile : BasePacketProfile
   {
-    private static readonly Dictionary<Type, PacketSendProfile> _profiles = new Dictionary<Type, PacketSendProfile>();
+    private static readonly Dictionary<Type, PacketSendProfile> m_Profiles = new Dictionary<Type, PacketSendProfile>();
 
-    private long _created;
+    private long m_Created;
 
     public PacketSendProfile(Type type) : base(type.FullName)
     {
     }
 
-    public static IEnumerable<PacketSendProfile> Profiles => _profiles.Values;
+    public static IEnumerable<PacketSendProfile> Profiles => m_Profiles.Values;
 
     [MethodImpl(MethodImplOptions.Synchronized)]
     public static PacketSendProfile Acquire(Type type)
     {
-      if (!_profiles.TryGetValue(type, out var prof))
-        _profiles.Add(type, prof = new PacketSendProfile(type));
+      if (!m_Profiles.TryGetValue(type, out var prof))
+        m_Profiles.Add(type, prof = new PacketSendProfile(type));
 
       return prof;
     }
 
     public void Increment()
     {
-      Interlocked.Increment(ref _created);
+      Interlocked.Increment(ref m_Created);
     }
 
     public override void WriteTo(TextWriter op)
     {
       base.WriteTo(op);
 
-      op.Write("\t{0,12:N0}", _created);
+      op.Write("\t{0,12:N0}", m_Created);
     }
   }
 
   public class PacketReceiveProfile : BasePacketProfile
   {
-    private static readonly Dictionary<int, PacketReceiveProfile> _profiles = new Dictionary<int, PacketReceiveProfile>();
+    private static readonly Dictionary<int, PacketReceiveProfile> m_Profiles = new Dictionary<int, PacketReceiveProfile>();
 
     public PacketReceiveProfile(int packetId)
       : base($"0x{packetId:X2}")
     {
     }
 
-    public static IEnumerable<PacketReceiveProfile> Profiles => _profiles.Values;
+    public static IEnumerable<PacketReceiveProfile> Profiles => m_Profiles.Values;
 
     [MethodImpl(MethodImplOptions.Synchronized)]
     public static PacketReceiveProfile Acquire(int packetId)
     {
-      if (!_profiles.TryGetValue(packetId, out var prof))
-        _profiles.Add(packetId, prof = new PacketReceiveProfile(packetId));
+      if (!m_Profiles.TryGetValue(packetId, out var prof))
+        m_Profiles.Add(packetId, prof = new PacketReceiveProfile(packetId));
 
       return prof;
     }

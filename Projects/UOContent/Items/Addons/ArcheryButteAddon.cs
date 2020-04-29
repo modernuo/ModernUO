@@ -269,7 +269,7 @@ namespace Server.Items
 
   public class ArcheryButteAddon : BaseAddon
   {
-    public override BaseAddonDeed Deed => new ArcheryButteDeed();
+    public override BaseAddonDeed AddonDeed => new ArcheryButteDeed();
 
     [Constructible]
     public ArcheryButteAddon()

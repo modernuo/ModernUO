@@ -360,9 +360,7 @@ namespace Server.Multis
     {
       get
       {
-        int count = 0;
-
-        count += GetLockdowns();
+        int count = GetLockdowns();
 
         if (Secures != null)
           for (int i = 0; i < Secures.Count; ++i)
@@ -516,7 +514,7 @@ namespace Server.Multis
         return;
 
       if (Core.ML)
-        new TempNoHousingRegion(this, null);
+        _ = new TempNoHousingRegion(this, null);
 
       KillVendors();
       Delete();
@@ -996,9 +994,7 @@ namespace Server.Multis
 
     public virtual int GetAosCurLockdowns()
     {
-      int v = 0;
-
-      v += GetLockdowns();
+      int v = GetLockdowns();
 
       if (Secures != null)
         v += Secures.Count;

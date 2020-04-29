@@ -235,15 +235,15 @@ namespace Server.Movement
         if (m.Player && m.AccessLevel < AccessLevel.GameMaster)
         {
           if (!(Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk,
-                  out _) && Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
-                  m.CantWalk, out _)))
+            out _) && Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
+            m.CantWalk, out _)))
             moveIsOk = false;
         }
         else
         {
           if (!(Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk,
-                  out _) || Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
-                  m.CantWalk, out _)))
+            out _) || Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
+            m.CantWalk, out _)))
             moveIsOk = false;
         }
 

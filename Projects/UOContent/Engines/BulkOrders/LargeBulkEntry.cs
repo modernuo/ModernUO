@@ -12,7 +12,10 @@ namespace Server.Engines.BulkOrders
     public int Amount
     {
       get => m_Amount;
-      set { m_Amount = value; Owner?.InvalidateProperties(); }
+      set {
+        m_Amount = value;
+        Owner?.InvalidateProperties();
+      }
     }
     public SmallBulkEntry Details { get; }
 

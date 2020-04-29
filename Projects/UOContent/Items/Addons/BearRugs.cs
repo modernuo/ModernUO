@@ -20,7 +20,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new BrownBearRugEastDeed();
+    public override BaseAddonDeed AddonDeed => new BrownBearRugEastDeed();
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -86,7 +86,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new BrownBearRugSouthDeed();
+    public override BaseAddonDeed AddonDeed => new BrownBearRugSouthDeed();
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -152,7 +152,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new PolarBearRugEastDeed();
+    public override BaseAddonDeed AddonDeed => new PolarBearRugEastDeed();
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -218,7 +218,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new PolarBearRugSouthDeed();
+    public override BaseAddonDeed AddonDeed => new PolarBearRugSouthDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

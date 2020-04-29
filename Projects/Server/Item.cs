@@ -210,7 +210,7 @@ namespace Server
 
     private static readonly List<Item> m_DeltaQueue = new List<Item>();
 
-    private static bool _processing;
+    private static bool m_Processing;
 
     private static int m_OpenSlots;
 
@@ -2702,7 +2702,7 @@ namespace Server
       {
         SetFlag(ImplFlag.InQueue, true);
 
-        if (_processing)
+        if (m_Processing)
           try
           {
             using var op = new StreamWriter("delta-recursion.log", true);
@@ -2729,7 +2729,7 @@ namespace Server
       {
         SetFlag(ImplFlag.InQueue, false);
 
-        if (_processing)
+        if (m_Processing)
           try
           {
             using var op = new StreamWriter("delta-recursion.log", true);
@@ -2748,7 +2748,7 @@ namespace Server
 
     public static void ProcessDeltaQueue()
     {
-      _processing = true;
+      m_Processing = true;
 
       if (m_DeltaQueue.Count >= 512)
         Parallel.ForEach(m_DeltaQueue, i => i.ProcessDelta());
@@ -2758,7 +2758,7 @@ namespace Server
 
       m_DeltaQueue.Clear();
 
-      _processing = false;
+      m_Processing = false;
     }
 
     public virtual void OnDelete()

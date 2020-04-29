@@ -25,14 +25,14 @@ namespace Server.Diagnostics
 {
   public class TimerProfile : BaseProfile
   {
-    private static readonly Dictionary<string, TimerProfile> _profiles = new Dictionary<string, TimerProfile>();
+    private static readonly Dictionary<string, TimerProfile> m_Profiles = new Dictionary<string, TimerProfile>();
 
     public TimerProfile(string name)
       : base(name)
     {
     }
 
-    public static IEnumerable<TimerProfile> Profiles => _profiles.Values;
+    public static IEnumerable<TimerProfile> Profiles => m_Profiles.Values;
 
     public long Created { get; set; }
 
@@ -45,8 +45,8 @@ namespace Server.Diagnostics
       if (!Core.Profiling)
         return null;
 
-      if (!_profiles.TryGetValue(name, out var prof))
-        _profiles.Add(name, prof = new TimerProfile(name));
+      if (!m_Profiles.TryGetValue(name, out var prof))
+        m_Profiles.Add(name, prof = new TimerProfile(name));
 
       return prof;
     }

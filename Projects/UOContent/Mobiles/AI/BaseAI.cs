@@ -2051,12 +2051,12 @@ namespace Server.Mobiles
     }
 
     /*
-     *  Walk at range distance from mobile
+     * Walk at range distance from mobile
      *
-     *	iSteps : Number of steps
-     *	bRun   : Do we run
-     *	iWantDistMin : The minimum distance we want to be
-     *  iWantDistMax : The maximum distance we want to be
+     * iSteps : Number of steps
+     * bRun   : Do we run
+     * iWantDistMin : The minimum distance we want to be
+     * iWantDistMax : The maximum distance we want to be
      *
      */
     public virtual bool WalkMobileRange(Mobile m, int iSteps, bool bRun, int iWantDistMin, int iWantDistMax)

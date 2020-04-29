@@ -15,7 +15,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new LargeForgeSouthDeed();
+    public override BaseAddonDeed AddonDeed => new LargeForgeSouthDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

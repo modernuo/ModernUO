@@ -25,22 +25,22 @@ namespace Server.Diagnostics
 {
   public class TargetProfile : BaseProfile
   {
-    private static readonly Dictionary<Type, TargetProfile> _profiles = new Dictionary<Type, TargetProfile>();
+    private static readonly Dictionary<Type, TargetProfile> m_Profiles = new Dictionary<Type, TargetProfile>();
 
     public TargetProfile(Type type)
       : base(type.FullName)
     {
     }
 
-    public static IEnumerable<TargetProfile> Profiles => _profiles.Values;
+    public static IEnumerable<TargetProfile> Profiles => m_Profiles.Values;
 
     public static TargetProfile Acquire(Type type)
     {
       if (!Core.Profiling)
         return null;
 
-      if (!_profiles.TryGetValue(type, out var prof))
-        _profiles.Add(type, prof = new TargetProfile(type));
+      if (!m_Profiles.TryGetValue(type, out var prof))
+        m_Profiles.Add(type, prof = new TargetProfile(type));
 
       return prof;
     }

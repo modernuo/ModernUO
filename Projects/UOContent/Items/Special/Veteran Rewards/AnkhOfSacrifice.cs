@@ -188,7 +188,7 @@ namespace Server.Items
 
     public override bool HandlesOnMovement => true;
 
-    public override BaseAddonDeed Deed
+    public override BaseAddonDeed AddonDeed
     {
       get
       {

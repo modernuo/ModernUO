@@ -1,3 +1,4 @@
+using System;
 using Server.Network;
 using Server.Prompts;
 using Server.Targeting;
@@ -81,12 +82,14 @@ namespace Server.Items
       RemoveKeys(m.BankBox, keyValue);
     }
 
+    private static Type[] keyTypes = { typeof(Key), typeof(KeyRing) };
+
     public static void RemoveKeys(Container cont, uint keyValue)
     {
       if (cont == null || keyValue == 0)
         return;
 
-      Item[] items = cont.FindItemsByType(new[] { typeof(Key), typeof(KeyRing) });
+      Item[] items = cont.FindItemsByType(keyTypes);
 
       foreach (Item item in items)
         if (item is Key key)
@@ -107,7 +110,7 @@ namespace Server.Items
       if (cont == null)
         return false;
 
-      Item[] items = cont.FindItemsByType(new[] { typeof(Key), typeof(KeyRing) });
+      Item[] items = cont.FindItemsByType(keyTypes);
 
       foreach (Item item in items)
         if (item is Key key)

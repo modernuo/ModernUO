@@ -62,11 +62,11 @@ namespace Server.Items
     public virtual bool NeedsWall => false;
     public virtual bool ShareHue => true;
     public virtual Point3D WallPosition => Point3D.Zero;
-    public virtual BaseAddonContainerDeed Deed => null;
+    public virtual BaseAddonContainerDeed AddonContainerDeed => null;
 
     public List<AddonContainerComponent> Components { get; private set; }
 
-    Item IAddon.Deed => Deed;
+    public Item Deed => Deed;
 
     public bool CouldFit(IPoint3D p, Map map)
     {
@@ -103,7 +103,7 @@ namespace Server.Items
 
           house.Addons.Remove(this);
 
-          BaseAddonContainerDeed deed = Deed;
+          BaseAddonContainerDeed deed = AddonContainerDeed;
 
           if (deed != null)
           {

@@ -71,7 +71,7 @@ namespace Server.Mobiles
       typeof(DirtPatch)
     };
 
-    public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
+    public override MonsterStatuetteType[] StatueTypes => Array.Empty<MonsterStatuetteType>();
 
     public override string DefaultName => "Lord Oaks";
 

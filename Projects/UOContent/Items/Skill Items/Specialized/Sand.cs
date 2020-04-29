@@ -15,8 +15,8 @@ namespace Server.Items
     }
 
     public override int LabelNumber => 1044626; // sand
-    int ICommodity.DescriptionNumber => LabelNumber;
-    bool ICommodity.IsDeedable => true;
+    public int DescriptionNumber => LabelNumber;
+    public bool IsDeedable => true;
 
     public override void Serialize(IGenericWriter writer)
     {

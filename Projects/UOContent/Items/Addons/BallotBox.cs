@@ -323,7 +323,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new BallotBoxDeed();
+    public override BaseAddonDeed AddonDeed => new BallotBoxDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

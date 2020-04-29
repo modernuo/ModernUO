@@ -13,7 +13,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new LightFlowerTapestryEastDeed();
+    public override BaseAddonDeed AddonDeed => new LightFlowerTapestryEastDeed();
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -72,7 +72,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new LightFlowerTapestrySouthDeed();
+    public override BaseAddonDeed AddonDeed => new LightFlowerTapestrySouthDeed();
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -131,7 +131,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new DarkFlowerTapestryEastDeed();
+    public override BaseAddonDeed AddonDeed => new DarkFlowerTapestryEastDeed();
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -190,7 +190,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new DarkFlowerTapestrySouthDeed();
+    public override BaseAddonDeed AddonDeed => new DarkFlowerTapestrySouthDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

@@ -70,11 +70,12 @@ namespace Server.Misc
       if (state.Mobile?.AccessLevel != AccessLevel.Player)
         return;
 
-      if (Required != null && version < Required && (m_OldClientResponse == OldClientResponse.Kick ||
-                                                     (m_OldClientResponse == OldClientResponse.LenientKick &&
-                                                     DateTime.UtcNow - state.Mobile.CreationTime > m_AgeLeniency &&
-                                                     state.Mobile is PlayerMobile mobile &&
-                                                     mobile.GameTime > m_GameTimeLeniency)))
+      if (Required != null && version < Required &&
+          (m_OldClientResponse == OldClientResponse.Kick ||
+           m_OldClientResponse == OldClientResponse.LenientKick &&
+           DateTime.UtcNow - state.Mobile.CreationTime > m_AgeLeniency &&
+           state.Mobile is PlayerMobile mobile &&
+           mobile.GameTime > m_GameTimeLeniency))
       {
         kickMessage = $"This server requires your client version be at least {Required}.";
       }

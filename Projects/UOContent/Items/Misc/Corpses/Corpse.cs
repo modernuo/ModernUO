@@ -72,8 +72,8 @@ namespace Server.Items
     private static readonly TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(7.0);
     private static readonly TimeSpan m_BoneDecayTime = TimeSpan.FromMinutes(7.0);
 
-    private string
-      m_CorpseName; // Value of the CorpseNameAttribute attached to the owner when he died -or- null if the owner had no CorpseNameAttribute; use "the remains of ~name~"
+    // Value of the CorpseNameAttribute attached to the owner when he died -or- null if the owner had no CorpseNameAttribute; use "the remains of ~name~"
+    private string m_CorpseName;
 
     private DateTime m_DecayTime;
 

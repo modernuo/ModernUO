@@ -40,7 +40,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new ScarecrowDeed();
+    public override BaseAddonDeed AddonDeed => new ScarecrowDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

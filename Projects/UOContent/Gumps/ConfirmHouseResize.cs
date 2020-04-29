@@ -95,7 +95,7 @@ namespace Server.Gumps
           {
             m_Mobile.SendMessage("You do not get a refund for your house as you are not a player");
             m_House.RemoveKeys(m_Mobile);
-            new TempNoHousingRegion(m_House, m_Mobile);
+            _ = new TempNoHousingRegion(m_House, m_Mobile);
             m_House.Delete();
           }
           else
@@ -128,7 +128,7 @@ namespace Server.Gumps
                     check.Worth.ToString()); // ~1_AMOUNT~ gold has been deposited into your bank box.
 
                 m_House.RemoveKeys(m_Mobile);
-                new TempNoHousingRegion(m_House, m_Mobile);
+                _ = new TempNoHousingRegion(m_House, m_Mobile);
                 m_House.Delete();
               }
               else

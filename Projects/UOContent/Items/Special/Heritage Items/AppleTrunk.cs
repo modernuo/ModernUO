@@ -12,7 +12,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new AppleTrunkDeed();
+    public override BaseAddonDeed AddonDeed => new AppleTrunkDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

@@ -212,10 +212,6 @@ namespace Server.Guilds
         AllianceMessage(1070764, g.Name); // A Guild has left your Alliance: ~1_GUILDNAME~
       }
 
-      // g.Alliance = null;	//NO G.Alliance call here.  Set the Guild's Alliance to null, if you JUST use RemoveGuild, it removes it from the alliance, but doesn't remove the link from the guild to the alliance.  setting g.Alliance will call this method.
-      // to check on OSI: have 3 guilds, make 2 of them a member, one pending.  remove one of the memebers.  alliance still exist?
-      // ANSWER: NO
-
       if (g == m_Leader) CalculateAllianceLeader();
 
       if (m_Members.Count < 2)
@@ -972,8 +968,6 @@ namespace Server.Guilds
         m_AllianceInfo.Serialize(writer);
       else
         writer.Write(m_AllianceLeader);
-
-      //
 
       writer.WriteGuildList(AllyDeclarations, true);
       writer.WriteGuildList(AllyInvitations, true);

@@ -14,7 +14,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new FancyElvenTableSouthDeed();
+    public override BaseAddonDeed AddonDeed => new FancyElvenTableSouthDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

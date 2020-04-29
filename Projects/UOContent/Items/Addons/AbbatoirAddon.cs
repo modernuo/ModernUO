@@ -20,7 +20,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new AbbatoirDeed();
+    public override BaseAddonDeed AddonDeed => new AbbatoirDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

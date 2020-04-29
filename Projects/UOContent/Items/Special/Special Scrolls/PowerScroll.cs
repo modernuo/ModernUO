@@ -4,7 +4,7 @@ namespace Server.Items
 {
   public class PowerScroll : SpecialScroll
   {
-    private static readonly SkillName[] m_Skills =
+    private static readonly SkillName[] m_PreAOSSkills =
     {
       SkillName.Blacksmith,
       SkillName.Tailoring,
@@ -65,7 +65,7 @@ namespace Server.Items
       };
     */
 
-    private static readonly List<SkillName> _Skills = new List<SkillName>();
+    private static readonly List<SkillName> m_Skills = new List<SkillName>();
 
     [Constructible]
     public PowerScroll(SkillName skill = SkillName.Alchemy, double value = 0.0) : base(skill, value)
@@ -85,8 +85,7 @@ namespace Server.Items
      * You can view your maximum skill values in your skills window.
      * You can view your maximum statistic value in your statistics window.
      */
-    public override int Message =>
-      1049469;
+    public override int Message => 1049469;
 
     public override int Title
     {
@@ -112,21 +111,21 @@ namespace Server.Items
     {
       get
       {
-        if (_Skills.Count == 0)
+        if (m_Skills.Count == 0)
         {
-          _Skills.AddRange(m_Skills);
+          m_Skills.AddRange(m_PreAOSSkills);
           if (Core.AOS)
           {
-            _Skills.AddRange(m_AOSSkills);
+            m_Skills.AddRange(m_AOSSkills);
             if (Core.SE)
             {
-              _Skills.AddRange(m_SESkills);
-              if (Core.ML) _Skills.AddRange(m_MLSkills);
+              m_Skills.AddRange(m_SESkills);
+              if (Core.ML) m_Skills.AddRange(m_MLSkills);
             }
           }
         }
 
-        return _Skills;
+        return m_Skills;
       }
     }
 

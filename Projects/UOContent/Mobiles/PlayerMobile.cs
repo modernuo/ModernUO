@@ -1102,9 +1102,13 @@ namespace Server.Mobiles
 
       if (item is BaseArmor || item is BaseWeapon)
       {
+        // Assigning for side effects
+        // TODO: Extract the side effects
+#pragma warning disable CA2245 // Do not assign a property to itself
         Hits = Hits;
         Stam = Stam;
         Mana = Mana;
+#pragma warning restore CA2245 // Do not assign a property to itself
       }
 
       if (NetState != null)
@@ -1117,9 +1121,13 @@ namespace Server.Mobiles
 
       if (item is BaseArmor || item is BaseWeapon)
       {
+        // Assigning for side effects
+        // TODO: Extract the side effects
+#pragma warning disable CA2245 // Do not assign a property to itself
         Hits = Hits;
         Stam = Stam;
         Mana = Mana;
+#pragma warning restore CA2245 // Do not assign a property to itself
       }
 
       if (NetState != null)

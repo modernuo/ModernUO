@@ -89,7 +89,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new CurtainsDeed();
+    public override BaseAddonDeed AddonDeed => new CurtainsDeed();
     public override bool RetainDeedHue => true;
 
     public override void Serialize(IGenericWriter writer)

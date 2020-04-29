@@ -15,15 +15,15 @@ namespace System.Buffers
     /// This handle pins the managed array in memory until the slab is disposed. This prevents it from being
     /// relocated and enables any subsections of the array to be used as native memory pointers to P/Invoked API calls.
     /// </summary>
-    private GCHandle _gcHandle;
+    private GCHandle m_GcHandle;
 
-    private bool _isDisposed;
+    private bool m_IsDisposed;
 
     public MemoryPoolSlab(byte[] data)
     {
       Array = data;
-      _gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
-      NativePointer = _gcHandle.AddrOfPinnedObject();
+      m_GcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
+      NativePointer = m_GcHandle.AddrOfPinnedObject();
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ namespace System.Buffers
     /// collected and the slab is no longer references the slab will be garbage collected and the memory unpinned will
     /// be unpinned by the slab's Dispose.
     /// </summary>
-    public bool IsActive => !_isDisposed;
+    public bool IsActive => !m_IsDisposed;
 
     public IntPtr NativePointer { get; private set; }
 
@@ -51,14 +51,14 @@ namespace System.Buffers
 
     protected void Dispose(bool disposing)
     {
-      if (_isDisposed) return;
+      if (m_IsDisposed) return;
 
-      _isDisposed = true;
+      m_IsDisposed = true;
 
       Array = null;
       NativePointer = IntPtr.Zero;
 
-      if (_gcHandle.IsAllocated) _gcHandle.Free();
+      if (m_GcHandle.IsAllocated) m_GcHandle.Free();
     }
 
     ~MemoryPoolSlab()

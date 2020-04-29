@@ -12,7 +12,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new ParrotPerchDeed();
+    public override BaseAddonDeed AddonDeed => new ParrotPerchDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

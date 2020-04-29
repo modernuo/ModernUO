@@ -149,7 +149,7 @@ namespace Server.Items
       }
     }
 
-    public override BaseAddonContainerDeed Deed
+    public override BaseAddonContainerDeed AddonContainerDeed
     {
       get
       {

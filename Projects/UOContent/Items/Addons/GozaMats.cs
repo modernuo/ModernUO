@@ -14,7 +14,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new GozaMatEastDeed();
+    public override BaseAddonDeed AddonDeed => new GozaMatEastDeed();
 
     public override bool RetainDeedHue => true;
 
@@ -76,7 +76,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new GozaMatSouthDeed();
+    public override BaseAddonDeed AddonDeed => new GozaMatSouthDeed();
 
     public override bool RetainDeedHue => true;
 
@@ -137,7 +137,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new SquareGozaMatEastDeed();
+    public override BaseAddonDeed AddonDeed => new SquareGozaMatEastDeed();
     public override int LabelNumber => 1030688; // goza mat
 
     public override bool RetainDeedHue => true;
@@ -199,7 +199,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new SquareGozaMatSouthDeed();
+    public override BaseAddonDeed AddonDeed => new SquareGozaMatSouthDeed();
 
     public override bool RetainDeedHue => true;
 
@@ -261,7 +261,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new BrocadeGozaMatEastDeed();
+    public override BaseAddonDeed AddonDeed => new BrocadeGozaMatEastDeed();
 
     public override bool RetainDeedHue => true;
 
@@ -323,7 +323,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new BrocadeGozaMatSouthDeed();
+    public override BaseAddonDeed AddonDeed => new BrocadeGozaMatSouthDeed();
 
     public override bool RetainDeedHue => true;
 
@@ -384,7 +384,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new BrocadeSquareGozaMatEastDeed();
+    public override BaseAddonDeed AddonDeed => new BrocadeSquareGozaMatEastDeed();
 
     public override bool RetainDeedHue => true;
 
@@ -445,7 +445,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new BrocadeSquareGozaMatSouthDeed();
+    public override BaseAddonDeed AddonDeed => new BrocadeSquareGozaMatSouthDeed();
 
     public override bool RetainDeedHue => true;
 

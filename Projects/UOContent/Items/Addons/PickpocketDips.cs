@@ -152,7 +152,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new PickpocketDipEastDeed();
+    public override BaseAddonDeed AddonDeed => new PickpocketDipEastDeed();
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -210,7 +210,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new PickpocketDipSouthDeed();
+    public override BaseAddonDeed AddonDeed => new PickpocketDipSouthDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

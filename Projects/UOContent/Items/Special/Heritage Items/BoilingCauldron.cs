@@ -14,7 +14,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonContainerDeed Deed => new BoilingCauldronDeed();
+    public override BaseAddonContainerDeed AddonContainerDeed => new BoilingCauldronDeed();
     public override int LabelNumber => 1076267; // Boiling Cauldron
     public override int DefaultGumpID => 0x9;
     public override int DefaultDropSound => 0x42;

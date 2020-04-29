@@ -12,7 +12,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new TableWithRedClothDeed();
+    public override BaseAddonDeed AddonDeed => new TableWithRedClothDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

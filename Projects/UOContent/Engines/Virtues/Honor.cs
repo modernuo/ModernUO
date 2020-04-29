@@ -141,7 +141,7 @@ namespace Server
 
       source.SentHonorContext?.Cancel();
 
-      new HonorContext(source, target);
+      _ = new HonorContext(source, target);
 
       source.Direction = source.GetDirectionTo(target);
 

@@ -43,7 +43,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new BrokenFallenChairDeed();
+    public override BaseAddonDeed AddonDeed => new BrokenFallenChairDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

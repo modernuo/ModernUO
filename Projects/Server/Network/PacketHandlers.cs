@@ -264,7 +264,7 @@ namespace Server.Network
         ph.ThrottleCallback = t;
     }
 
-    private static readonly MemoryPool<byte> _memoryPool = SlabMemoryPoolFactory.Create();
+    private static readonly MemoryPool<byte> m_MemoryPool = SlabMemoryPoolFactory.Create();
 
     public static int ProcessPacket(IMessagePumpService pump, NetState ns, in ReadOnlySequence<byte> seq)
     {
@@ -348,7 +348,7 @@ namespace Server.Network
         ns.ThrottledUntil = DateTime.UtcNow + throttled;
 
       var packet = seq.Slice(r.Position);
-      var memOwner = _memoryPool.Rent((int)packet.Length);
+      var memOwner = m_MemoryPool.Rent((int)packet.Length);
 
       packet.CopyTo(memOwner.Memory.Span);
 

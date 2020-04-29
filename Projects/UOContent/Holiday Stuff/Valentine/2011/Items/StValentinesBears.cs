@@ -24,15 +24,7 @@ namespace Server.Items
     {
     }
 
-    public override string DefaultName
-    {
-      get
-      {
-        if (m_Owner != null)
-          return $"{m_Owner}'s St. Valentine Bear";
-        return "St. Valentine Bear";
-      }
-    }
+    public override string DefaultName => m_Owner != null ? $"{m_Owner}'s St. Valentine Bear" : "St. Valentine Bear";
 
     [CommandProperty(AccessLevel.GameMaster)]
     public string Owner
@@ -223,12 +215,7 @@ namespace Server.Items
         from.SendMessage("You add the personalized greeting to your St. Valentine Bear.");
       }
 
-      private static string GetLine(RelayInfo info, int idx)
-      {
-        TextRelay tr = info.GetTextEntry(idx);
-
-        return tr?.Text;
-      }
+      private static string GetLine(RelayInfo info, int idx) => info.GetTextEntry(idx)?.Text;
     }
   }
 

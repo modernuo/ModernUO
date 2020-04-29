@@ -16,7 +16,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new ElvenSpinningwheelSouthDeed();
+    public override BaseAddonDeed AddonDeed => new ElvenSpinningwheelSouthDeed();
 
     public bool Spinning => m_Timer != null;
 

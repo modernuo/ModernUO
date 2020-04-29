@@ -9,7 +9,11 @@ namespace Server.Engines.BulkOrders
     public LargeBulkEntry[] Entries
     {
       get => m_Entries;
-      set { m_Entries = value; InvalidateProperties(); }
+      set
+      {
+        m_Entries = value;
+        InvalidateProperties();
+      }
     }
 
     [CommandProperty(AccessLevel.GameMaster)]

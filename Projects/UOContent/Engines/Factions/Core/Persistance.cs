@@ -61,10 +61,10 @@ namespace Server.Factions
               switch (type)
               {
                 case PersistedType.Faction:
-                  new FactionState(reader);
+                  _ = new FactionState(reader);
                   break;
                 case PersistedType.Town:
-                  new TownState(reader);
+                  _ = new TownState(reader);
                   break;
               }
 

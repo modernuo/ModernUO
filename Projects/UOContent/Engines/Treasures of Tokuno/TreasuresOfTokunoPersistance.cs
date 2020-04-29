@@ -21,7 +21,7 @@ namespace Server.Misc
     public static void Initialize()
     {
       if (Instance == null)
-        new TreasuresOfTokunoPersistance();
+        _ = new TreasuresOfTokunoPersistance();
     }
 
     public override void Serialize(IGenericWriter writer)

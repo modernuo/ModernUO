@@ -24,7 +24,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new SpinningwheelEastDeed();
+    public override BaseAddonDeed AddonDeed => new SpinningwheelEastDeed();
 
     public bool Spinning => m_Timer != null;
 

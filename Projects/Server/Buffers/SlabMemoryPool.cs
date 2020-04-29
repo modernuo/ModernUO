@@ -15,51 +15,51 @@ namespace System.Buffers
     /// <summary>
     /// The size of a block. 4096 is chosen because most operating systems use 4k pages.
     /// </summary>
-    private const int _blockSize = 4096;
+    private const int m_BlockSize = 4096;
 
     /// <summary>
     /// Allocating 32 contiguous blocks per slab makes the slab size 128k. This is larger than the 85k size which will place the memory
     /// in the large object heap. This means the GC will not try to relocate this array, so the fact it remains pinned does not negatively
     /// affect memory management's compactification.
     /// </summary>
-    private const int _blockCount = 32;
+    private const int m_BlockCount = 32;
 
     /// <summary>
     /// Max allocation block size for pooled blocks,
     /// larger values can be leased but they will be disposed after use rather than returned to the pool.
     /// </summary>
-    public override int MaxBufferSize { get; } = _blockSize;
+    public override int MaxBufferSize { get; } = m_BlockSize;
 
     /// <summary>
     /// The size of a block. 4096 is chosen because most operating systems use 4k pages.
     /// </summary>
-    public static int BlockSize => _blockSize;
+    public static int BlockSize => m_BlockSize;
 
     /// <summary>
     /// 4096 * 32 gives you a slabLength of 128k contiguous bytes allocated per slab
     /// </summary>
-    private static readonly int _slabLength = _blockSize * _blockCount;
+    private static readonly int m_SlabLength = m_BlockSize * m_BlockCount;
 
     /// <summary>
     /// Thread-safe collection of blocks which are currently in the pool. A slab will pre-allocate all of the block tracking objects
     /// and add them to this collection. When memory is requested it is taken from here first, and when it is returned it is re-added.
     /// </summary>
-    private readonly ConcurrentQueue<MemoryPoolBlock> _blocks = new ConcurrentQueue<MemoryPoolBlock>();
+    private readonly ConcurrentQueue<MemoryPoolBlock> m_Blocks = new ConcurrentQueue<MemoryPoolBlock>();
 
     /// <summary>
     /// Thread-safe collection of slabs which have been allocated by this pool. As long as a slab is in this collection and slab.IsActive,
     /// the blocks will be added to _blocks when returned.
     /// </summary>
-    private readonly ConcurrentStack<MemoryPoolSlab> _slabs = new ConcurrentStack<MemoryPoolSlab>();
+    private readonly ConcurrentStack<MemoryPoolSlab> m_Slabs = new ConcurrentStack<MemoryPoolSlab>();
 
     /// <summary>
     /// This is part of implementing the IDisposable pattern.
     /// </summary>
-    private bool _isDisposed; // To detect redundant calls
+    private bool m_IsDisposed; // To detect redundant calls
 
-    private int _totalAllocatedBlocks;
+    private int m_TotalAllocatedBlocks;
 
-    private readonly object _disposeSync = new object();
+    private readonly object m_DisposeSync = new object();
 
     /// <summary>
     /// This default value passed in to Rent to use the default value for the pool.
@@ -68,7 +68,7 @@ namespace System.Buffers
 
     public override IMemoryOwner<byte> Rent(int size = AnySize)
     {
-      if (size > _blockSize) MemoryPoolThrowHelper.ThrowArgumentOutOfRangeException_BufferRequestTooLarge(_blockSize);
+      if (size > m_BlockSize) MemoryPoolThrowHelper.ThrowArgumentOutOfRangeException_BufferRequestTooLarge(m_BlockSize);
 
       var block = Lease();
       return block;
@@ -80,10 +80,10 @@ namespace System.Buffers
     /// <returns>The block that is reserved for the called. It must be passed to Return when it is no longer being used.</returns>
     private MemoryPoolBlock Lease()
     {
-      if (_isDisposed)
+      if (m_IsDisposed)
         MemoryPoolThrowHelper.ThrowObjectDisposedException(MemoryPoolThrowHelper.ExceptionArgument.MemoryPool);
 
-      if (_blocks.TryDequeue(out var block))
+      if (m_Blocks.TryDequeue(out var block))
       {
         // block successfully taken from the stack - return it
 
@@ -104,22 +104,22 @@ namespace System.Buffers
     private MemoryPoolBlock AllocateSlab()
     {
 #pragma warning disable CA2000 // Dispose objects before losing scope
-      var slab = MemoryPoolSlab.Create(_slabLength);
+      var slab = MemoryPoolSlab.Create(m_SlabLength);
 #pragma warning restore CA2000 // Dispose objects before losing scope
-      _slabs.Push(slab);
+      m_Slabs.Push(slab);
 
       var basePtr = slab.NativePointer;
       // Page align the blocks
-      var offset = (int)((((ulong)basePtr + _blockSize - 1) & ~((uint)_blockSize - 1)) - (ulong)basePtr);
+      var offset = (int)((((ulong)basePtr + m_BlockSize - 1) & ~((uint)m_BlockSize - 1)) - (ulong)basePtr);
 
-      var blockCount = (_slabLength - offset) / _blockSize;
-      Interlocked.Add(ref _totalAllocatedBlocks, blockCount);
+      var blockCount = (m_SlabLength - offset) / m_BlockSize;
+      Interlocked.Add(ref m_TotalAllocatedBlocks, blockCount);
 
       MemoryPoolBlock block = null;
 
       for (var i = 0; i < blockCount; i++)
       {
-        block = new MemoryPoolBlock(this, slab, offset, _blockSize);
+        block = new MemoryPoolBlock(this, slab, offset, m_BlockSize);
 
         if (i != blockCount - 1) // last block
         {
@@ -129,7 +129,7 @@ namespace System.Buffers
           Return(block);
         }
 
-        offset += _blockSize;
+        offset += m_BlockSize;
       }
 
       return block;
@@ -145,8 +145,8 @@ namespace System.Buffers
     /// <param name="block">The block to return. It must have been acquired by calling Lease on the same memory pool instance.</param>
     internal void Return(MemoryPoolBlock block)
     {
-      if (!_isDisposed)
-        _blocks.Enqueue(block);
+      if (!m_IsDisposed)
+        m_Blocks.Enqueue(block);
       else
         GC.SuppressFinalize(block);
     }
@@ -154,9 +154,9 @@ namespace System.Buffers
     // This method can ONLY be called from the finalizer of MemoryPoolBlock
     internal void RefreshBlock(MemoryPoolSlab slab, int offset, int length)
     {
-      lock (_disposeSync)
+      lock (m_DisposeSync)
       {
-        if (!_isDisposed && slab?.IsActive == true)
+        if (!m_IsDisposed && slab?.IsActive == true)
           // Need to make a new object because this one is being finalized
           // Note, this must be called within the _disposeSync lock because the block
           // could be disposed at the same time as the finalizer.
@@ -166,19 +166,19 @@ namespace System.Buffers
 
     protected override void Dispose(bool disposing)
     {
-      if (_isDisposed) return;
+      if (m_IsDisposed) return;
 
-      lock (_disposeSync)
+      lock (m_DisposeSync)
       {
-        _isDisposed = true;
+        m_IsDisposed = true;
 
         if (disposing)
-          while (_slabs.TryPop(out var slab))
+          while (m_Slabs.TryPop(out var slab))
             // dispose managed state (managed objects).
             slab.Dispose();
 
         // Discard blocks in pool
-        while (_blocks.TryDequeue(out var block)) GC.SuppressFinalize(block);
+        while (m_Blocks.TryDequeue(out var block)) GC.SuppressFinalize(block);
       }
     }
   }

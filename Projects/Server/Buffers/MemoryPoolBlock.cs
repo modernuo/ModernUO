@@ -11,21 +11,21 @@ namespace System.Buffers
   /// </summary>
   public sealed class MemoryPoolBlock : IMemoryOwner<byte>
   {
-    private readonly int _offset;
-    private readonly int _length;
+    private readonly int m_Offset;
+    private readonly int m_Length;
 
     /// <summary>
     /// This object cannot be instantiated outside of the static Create method
     /// </summary>
     internal MemoryPoolBlock(SlabMemoryPool pool, MemoryPoolSlab slab, int offset, int length)
     {
-      _offset = offset;
-      _length = length;
+      m_Offset = offset;
+      m_Length = length;
 
       Pool = pool;
       Slab = slab;
 
-      Memory = MemoryMarshal.CreateFromPinnedArray(slab.Array, _offset, _length);
+      Memory = MemoryMarshal.CreateFromPinnedArray(slab.Array, m_Offset, m_Length);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ namespace System.Buffers
 
     ~MemoryPoolBlock()
     {
-      Pool.RefreshBlock(Slab, _offset, _length);
+      Pool.RefreshBlock(Slab, m_Offset, m_Length);
     }
 
     public void Dispose()

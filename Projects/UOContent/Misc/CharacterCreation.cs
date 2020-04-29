@@ -731,7 +731,7 @@ namespace Server.Misc
             useHaven = true;
 
             // ReSharper disable once CA1806
-            new BadStartMessage(m, 1062205);
+            _ = new BadStartMessage(m, 1062205);
             /*
              * Unfortunately you are playing on a *NON-Age-Of-Shadows* game
              * installation and cannot be transported to Malas.
@@ -754,7 +754,7 @@ namespace Server.Misc
             useHaven = true;
 
             // ReSharper disable once CA1806
-            new BadStartMessage(m, 1063487);
+            _ = new BadStartMessage(m, 1063487);
             /*
              * Unfortunately you are playing on a *NON-Samurai-Empire* game
              * installation and cannot be transported to Tokuno.
@@ -772,7 +772,7 @@ namespace Server.Misc
 
             useHaven = true;
 
-            new BadStartMessage(m, 1063487);
+            _ = new BadStartMessage(m, 1063487);
             /*
              * Unfortunately you are playing on a *NON-Samurai-Empire* game
              * installation and cannot be transported to Tokuno.
@@ -1031,7 +1031,7 @@ namespace Server.Misc
 
             Spellbook
               book = new NecromancerSpellbook(
-                (ulong)0x8981); // animate dead, evil omen, pain spike, summon familiar, wraith form
+                0x8981UL); // animate dead, evil omen, pain spike, summon familiar, wraith form
 
             PackItem(book);
 
@@ -1573,7 +1573,7 @@ namespace Server.Misc
             PackScroll(1);
             PackScroll(2);
 
-            Spellbook book = new Spellbook((ulong)0x382A8C38);
+            Spellbook book = new Spellbook(0x382A8C38UL);
 
             EquipItem(book);
 

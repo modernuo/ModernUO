@@ -120,7 +120,7 @@ namespace Server.Items
 
     private void InternalCallback(Mobile from, object targeted)
     {
-if (Deleted || UsesRemaining <= 0 || !from.InRange(GetWorldLocation(), 3) ||
+      if (Deleted || UsesRemaining <= 0 || !from.InRange(GetWorldLocation(), 3) ||
           !IsAccessibleTo(from))
         return;
 
@@ -160,7 +160,7 @@ if (Deleted || UsesRemaining <= 0 || !from.InRange(GetWorldLocation(), 3) ||
       else if (!IsValidItem(i))
       {
         from.SendLocalizedMessage(
-          1070931); // You can only dye artifacts and enhanced magic items with this tub.	//Yes, it says tub on OSI.  Don't ask me why ;p
+          1070931); // You can only dye artifacts and enhanced magic items with this tub.
       }
       else
       {
@@ -270,7 +270,7 @@ if (Deleted || UsesRemaining <= 0 || !from.InRange(GetWorldLocation(), 3) ||
       }
     }
 
-    bool IUsesRemaining.ShowUsesRemaining
+    public bool ShowUsesRemaining
     {
       get => true;
       set { }

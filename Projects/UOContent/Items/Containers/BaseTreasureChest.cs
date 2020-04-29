@@ -119,43 +119,43 @@ namespace Server.Items
 
     protected virtual void GenerateTreasure()
     {
-      int MinGold = 1;
-      int MaxGold = 2;
+      int minGold = 1;
+      int maxGold = 2;
 
       switch (Level)
       {
         case TreasureLevel.Level1:
-          MinGold = 100;
-          MaxGold = 300;
+          minGold = 100;
+          maxGold = 300;
           break;
 
         case TreasureLevel.Level2:
-          MinGold = 300;
-          MaxGold = 600;
+          minGold = 300;
+          maxGold = 600;
           break;
 
         case TreasureLevel.Level3:
-          MinGold = 600;
-          MaxGold = 900;
+          minGold = 600;
+          maxGold = 900;
           break;
 
         case TreasureLevel.Level4:
-          MinGold = 900;
-          MaxGold = 1200;
+          minGold = 900;
+          maxGold = 1200;
           break;
 
         case TreasureLevel.Level5:
-          MinGold = 1200;
-          MaxGold = 5000;
+          minGold = 1200;
+          maxGold = 5000;
           break;
 
         case TreasureLevel.Level6:
-          MinGold = 5000;
-          MaxGold = 9000;
+          minGold = 5000;
+          maxGold = 9000;
           break;
       }
 
-      DropItem(new Gold(MinGold, MaxGold));
+      DropItem(new Gold(minGold, maxGold));
     }
 
     public void ClearContents()
@@ -167,9 +167,8 @@ namespace Server.Items
 
     public void Reset()
     {
-      if (m_ResetTimer != null)
-        if (m_ResetTimer.Running)
-          m_ResetTimer.Stop();
+      if (m_ResetTimer?.Running == true)
+        m_ResetTimer.Stop();
 
       Locked = true;
       ClearContents();

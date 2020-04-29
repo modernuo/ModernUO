@@ -27,7 +27,7 @@ namespace Server
 {
   public class Xoshiro256PlusPlus : RandomNumberGenerator
   {
-    private ulong _s0, _s1, _s2, _s3;
+    private ulong m_S0, m_S1, m_S2, m_S3;
 
     public Xoshiro256PlusPlus() : this((ulong)Environment.TickCount64)
     {
@@ -38,18 +38,18 @@ namespace Server
       var mix = new SplitMix64(seed);
       var state = new ulong[4];
       mix.FillArray(state);
-      _s0 = state[0];
-      _s1 = state[1];
-      _s2 = state[2];
-      _s3 = state[3];
+      m_S0 = state[0];
+      m_S1 = state[1];
+      m_S2 = state[2];
+      m_S3 = state[3];
     }
 
     private Xoshiro256PlusPlus(ulong s0, ulong s1, ulong s2, ulong s3)
     {
-      _s0 = s0;
-      _s1 = s1;
-      _s2 = s2;
-      _s3 = s3;
+      m_S0 = s0;
+      m_S1 = s1;
+      m_S2 = s2;
+      m_S3 = s3;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -77,20 +77,20 @@ namespace Server
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ulong NextUInt64()
     {
-      var r1 = (_s1 << 2) + _s1;
+      var r1 = (m_S1 << 2) + m_S1;
       var r2 = (r1 << 7) | (r1 >> 57);
       var rslt = (r2 << 3) + r2;
 
-      var t = _s1 << 17;
+      var t = m_S1 << 17;
 
-      _s2 ^= _s0;
-      _s3 ^= _s1;
-      _s1 ^= _s2;
-      _s0 ^= _s3;
+      m_S2 ^= m_S0;
+      m_S3 ^= m_S1;
+      m_S1 ^= m_S2;
+      m_S0 ^= m_S3;
 
-      _s2 ^= t;
+      m_S2 ^= t;
 
-      _s3 = (_s3 << 45) | (_s3 >> 19);
+      m_S3 = (m_S3 << 45) | (m_S3 >> 19);
 
       return rslt;
     }
@@ -125,10 +125,10 @@ namespace Server
     {
       if (b.Length == 0) return;
 
-      var s0 = _s0;
-      var s1 = _s1;
-      var s2 = _s2;
-      var s3 = _s3;
+      var s0 = m_S0;
+      var s1 = m_S1;
+      var s2 = m_S2;
+      var s3 = m_S3;
 
       var i = 0;
 
@@ -180,10 +180,10 @@ namespace Server
         }
       }
 
-      _s0 = s0;
-      _s1 = s1;
-      _s2 = s2;
-      _s3 = s3;
+      m_S0 = s0;
+      m_S1 = s1;
+      m_S2 = s2;
+      m_S3 = s3;
     }
 
     public double NextDouble() => (NextUInt64() >> 11) * (1.0 / (1ul << 53));
@@ -210,31 +210,31 @@ namespace Server
         {
           if ((jumps[i] & (1ul << b)) != 0)
           {
-            s0 ^= _s0;
-            s1 ^= _s1;
-            s2 ^= _s2;
-            s3 ^= _s3;
+            s0 ^= m_S0;
+            s1 ^= m_S1;
+            s2 ^= m_S2;
+            s3 ^= m_S3;
           }
 
           NextUInt64();
         }
 
-      _s0 = s0;
-      _s1 = s1;
-      _s2 = s2;
-      _s3 = s3;
+      m_S0 = s0;
+      m_S1 = s1;
+      m_S2 = s2;
+      m_S3 = s3;
     }
 
     public Xoshiro256PlusPlus Split()
     {
-      var rng = new Xoshiro256PlusPlus(_s0, _s1, _s2, _s3);
+      var rng = new Xoshiro256PlusPlus(m_S0, m_S1, m_S2, m_S3);
       rng.Jump();
       return rng;
     }
 
     public Xoshiro256PlusPlus LongSplit()
     {
-      var rng = new Xoshiro256PlusPlus(_s0, _s1, _s2, _s3);
+      var rng = new Xoshiro256PlusPlus(m_S0, m_S1, m_S2, m_S3);
       rng.LongJump();
       return rng;
     }

@@ -396,12 +396,17 @@ namespace Server.Engines.Plants
       from.SendGump(new MainPlantGump(m_Plant));
     }
 
+    private static Type[] potionTypes =
+    {
+      typeof(BasePotion), typeof(PotionKeg)
+    };
+
     public static Item GetPotion(Mobile from, PotionEffect[] effects)
     {
       if (from.Backpack == null)
         return null;
 
-      Item[] items = from.Backpack.FindItemsByType(new[] { typeof(BasePotion), typeof(PotionKeg) });
+      Item[] items = from.Backpack.FindItemsByType(potionTypes);
 
       foreach (Item item in items)
         if (item is BasePotion potion)

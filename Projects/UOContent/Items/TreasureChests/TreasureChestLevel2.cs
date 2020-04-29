@@ -38,32 +38,32 @@ namespace Server.Items
       // Reagents
       for (int i = Utility.Random(1, m_Level); i > 1; i--)
       {
-        Item ReagentLoot = Loot.RandomReagent();
-        ReagentLoot.Amount = Utility.Random(1, m_Level);
-        DropItem(ReagentLoot);
+        Item reagentLoot = Loot.RandomReagent();
+        reagentLoot.Amount = Utility.Random(1, m_Level);
+        DropItem(reagentLoot);
       }
 
       // Scrolls
       for (int i = Utility.Random(1, m_Level); i > 1; i--)
       {
-        Item ScrollLoot = Loot.RandomScroll(0, 39, SpellbookType.Regular);
-        ScrollLoot.Amount = Utility.Random(1, 8);
-        DropItem(ScrollLoot);
+        Item scrollLoot = Loot.RandomScroll(0, 39, SpellbookType.Regular);
+        scrollLoot.Amount = Utility.Random(1, 8);
+        DropItem(scrollLoot);
       }
 
       // Potions
       for (int i = Utility.Random(1, m_Level); i > 1; i--)
       {
-        Item PotionLoot = Loot.RandomPotion();
-        DropItem(PotionLoot);
+        Item potionLoot = Loot.RandomPotion();
+        DropItem(potionLoot);
       }
 
       // Gems
       for (int i = Utility.Random(1, m_Level); i > 1; i--)
       {
-        Item GemLoot = Loot.RandomGem();
-        GemLoot.Amount = Utility.Random(1, 6);
-        DropItem(GemLoot);
+        Item gemLoot = Loot.RandomGem();
+        gemLoot.Amount = Utility.Random(1, 6);
+        DropItem(gemLoot);
       }
     }
 
@@ -86,37 +86,37 @@ namespace Server.Items
 
     private void SetChestAppearance()
     {
-      bool UseFirstItemId = Utility.RandomBool();
+      bool useFirstItemId = Utility.RandomBool();
 
       switch (Utility.RandomList(0, 1, 2, 3, 4, 5, 6, 7))
       {
         case 0: // Large Crate
-          ItemID = UseFirstItemId ? 0xe3c : 0xe3d;
+          ItemID = useFirstItemId ? 0xe3c : 0xe3d;
           GumpID = 0x44;
           break;
 
         case 1: // Medium Crate
-          ItemID = UseFirstItemId ? 0xe3e : 0xe3f;
+          ItemID = useFirstItemId ? 0xe3e : 0xe3f;
           GumpID = 0x44;
           break;
 
         case 2: // Small Crate
-          ItemID = UseFirstItemId ? 0x9a9 : 0xe7e;
+          ItemID = useFirstItemId ? 0x9a9 : 0xe7e;
           GumpID = 0x44;
           break;
 
         case 3: // Wooden Chest
-          ItemID = UseFirstItemId ? 0xe42 : 0xe43;
+          ItemID = useFirstItemId ? 0xe42 : 0xe43;
           GumpID = 0x49;
           break;
 
         case 4: // Metal Chest
-          ItemID = UseFirstItemId ? 0x9ab : 0xe7c;
+          ItemID = useFirstItemId ? 0x9ab : 0xe7c;
           GumpID = 0x4A;
           break;
 
         case 5: // Metal Golden Chest
-          ItemID = UseFirstItemId ? 0xe40 : 0xe41;
+          ItemID = useFirstItemId ? 0xe40 : 0xe41;
           GumpID = 0x42;
           break;
 

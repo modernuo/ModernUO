@@ -50,11 +50,11 @@ namespace Server.Engines.Plants
   public enum PlantCategory
   {
     Default,
-    Common = 1063335, //
-    Uncommon = 1063336, //
+    Common = 1063335,
+    Uncommon = 1063336,
     Rare = 1063337, // Bonsai
-    Exceptional = 1063341, //
-    Exotic = 1063342, //
+    Exceptional = 1063341,
+    Exotic = 1063342,
     Peculiar = 1080528,
     Fragrant = 1080529
   }

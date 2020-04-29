@@ -28,7 +28,7 @@ namespace Server
 {
   public sealed class ParallelSaveStrategy : SaveStrategy, IDisposable
   {
-    private readonly Queue<Item> _decayQueue;
+    private readonly Queue<Item> m_DecayQueue;
 
     private Consumer[] consumers;
     private int cycle;
@@ -46,7 +46,7 @@ namespace Server
     {
       this.processorCount = processorCount;
 
-      _decayQueue = new Queue<Item>();
+      m_DecayQueue = new Queue<Item>();
     }
 
     public override string Name => "Parallel";
@@ -84,9 +84,9 @@ namespace Server
 
     public override void ProcessDecay()
     {
-      while (_decayQueue.Count > 0)
+      while (m_DecayQueue.Count > 0)
       {
-        var item = _decayQueue.Dequeue();
+        var item = m_DecayQueue.Dequeue();
 
         if (item.OnDecay()) item.Delete();
       }
@@ -171,7 +171,7 @@ namespace Server
       writer.CommitTo(itemData, itemIndex, item.TypeRef, item.Serial);
 
       if (item.Decays && item.Parent == null && item.Map != Map.Internal &&
-          DateTime.UtcNow > item.LastMoved + item.DecayTime) _decayQueue.Enqueue(item);
+          DateTime.UtcNow > item.LastMoved + item.DecayTime) m_DecayQueue.Enqueue(item);
     }
 
     private void Save(Mobile mob, BinaryMemoryWriter writer)

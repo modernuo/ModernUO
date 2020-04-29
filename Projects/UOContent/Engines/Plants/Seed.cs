@@ -74,7 +74,7 @@ namespace Server.Engines.Plants
 
     public static Seed RandomPeculiarSeed(int group)
     {
-      return @group switch
+      return group switch
       {
         1 => new Seed(PlantTypeInfo.RandomPeculiarGroupOne(), PlantHue.Plain),
         2 => new Seed(PlantTypeInfo.RandomPeculiarGroupTwo(), PlantHue.Plain),

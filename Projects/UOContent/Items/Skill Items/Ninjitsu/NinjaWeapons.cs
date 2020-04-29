@@ -39,7 +39,7 @@ namespace Server.Items
     void AttackAnimation(Mobile from, Mobile to);
   }
 
-  public class NinjaWeapon
+  public static class NinjaWeapon
   {
     private const int MaxUses = 10;
 
@@ -86,7 +86,7 @@ namespace Server.Items
     {
       if (weapon.UsesRemaining > 0)
       {
-        INinjaAmmo ammo = ActivatorUtil.CreateInstance(weapon.AmmoType, weapon.UsesRemaining) as INinjaAmmo;
+        INinjaAmmo ammo = (INinjaAmmo)ActivatorUtil.CreateInstance(weapon.AmmoType, weapon.UsesRemaining);
 
         ammo.Poison = weapon.Poison;
         ammo.PoisonCharges = weapon.PoisonCharges;
@@ -114,8 +114,8 @@ namespace Server.Items
           else
           {
             if (weapon.UsesRemaining > 0)
-              if ((weapon.Poison == null && ammo.Poison != null)
-                  || (weapon.Poison != null && ammo.Poison != null && weapon.Poison.Level != ammo.Poison.Level))
+              if (weapon.Poison == null && ammo.Poison != null
+                  || weapon.Poison != null && ammo.Poison != null && weapon.Poison.Level != ammo.Poison.Level)
               {
                 Unload(from, weapon);
                 need = Math.Min(MaxUses, ammo.UsesRemaining);
@@ -263,16 +263,11 @@ namespace Server.Items
         else if (targeted.GetType() == weapon.AmmoType)
           Reload(player, weapon, (INinjaAmmo)targeted);
         else
-          player.SendLocalizedMessage(weapon.WrongAmmoMessage);
+          from.SendLocalizedMessage(weapon.WrongAmmoMessage);
       }
     }
 
-    private static bool WeaponIsValid(INinjaWeapon weapon, Mobile from)
-    {
-      Item item = weapon as Item;
-
-      return !item.Deleted && item.RootParent == from;
-    }
+    private static bool WeaponIsValid(INinjaWeapon weapon, Mobile from) => weapon is Item item && !item.Deleted && item.RootParent == from;
 
     public class LoadEntry : ContextMenuEntry
     {

@@ -62,7 +62,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new WallTorchDeed();
+    public override BaseAddonDeed AddonDeed => new WallTorchDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

@@ -200,7 +200,7 @@ namespace Server.Mobiles
       private readonly Mobile m_Focus;
 
       public AvengeTimer(Mobile focus) : base(TimeSpan.FromSeconds(2.5), TimeSpan.FromSeconds(1.0),
-          3) // After 2.5 seconds, one guard will spawn every 1.0 second, three times
+        3) // After 2.5 seconds, one guard will spawn every 1.0 second, three times
         =>
           m_Focus = focus;
 

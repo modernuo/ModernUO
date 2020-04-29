@@ -11,14 +11,14 @@ namespace Server.Engines.Events
   public class EventScheduleEntry
   {
     public DateTime NextOccurrence { get; private set; }
-    public TimeSpan Interval { get; private set; }
-    private TimeSpan _offset;
-    private readonly IEvent _event;
+    public TimeSpan Interval { get; }
+    private TimeSpan m_Offset;
+    private readonly IEvent m_Event;
 
     public EventScheduleEntry(IEvent e, DateTime firstSpawn, TimeSpan interval, TimeSpan offset)
     {
-      _offset = offset;
-      _event = e;
+      m_Offset = offset;
+      m_Event = e;
       Interval = interval;
       NextOccurrence = firstSpawn;
     }
@@ -27,21 +27,20 @@ namespace Server.Engines.Events
     {
       NextOccurrence += Interval;
 
-      _event?.OnEventScheduled();
+      m_Event?.OnEventScheduled();
     }
 
     public override string ToString()
     {
-      return _event?.ToString();
+      return m_Event?.ToString();
     }
   }
   public class EventScheduler : Timer
   {
-    private static EventScheduler _instance;
-    private readonly List<EventScheduleEntry> _schedule = new List<EventScheduleEntry>();
+    private readonly List<EventScheduleEntry> m_Schedule = new List<EventScheduleEntry>();
 
-    public static EventScheduler Instance => _instance ??= new EventScheduler();
-    public static List<IEvent> AvailableEvents { get; } = new List<IEvent>();
+    public static EventScheduler Instance => new EventScheduler();
+    public static List<IEvent> AvailableEvents => new List<IEvent>();
 
     private EventScheduler() : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0))
     {
@@ -70,17 +69,17 @@ namespace Server.Engines.Events
 
     public void ScheduleEvent(EventScheduleEntry e)
     {
-      _schedule.Add(e);
+      m_Schedule.Add(e);
     }
 
     public void RemoveEvent(EventScheduleEntry entry)
     {
-      _schedule.Remove(entry);
+      m_Schedule.Remove(entry);
     }
 
     protected override void OnTick()
     {
-      foreach (EventScheduleEntry entry in _schedule)
+      foreach (EventScheduleEntry entry in m_Schedule)
         if (entry.NextOccurrence <= DateTime.UtcNow)
           entry.Occur();
     }

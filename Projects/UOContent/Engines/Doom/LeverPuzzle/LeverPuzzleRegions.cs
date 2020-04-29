@@ -22,11 +22,7 @@ namespace Server.Engines.Doom
     public static void OnLogin(Mobile m)
     {
       Rectangle2D rect = LeverPuzzleController.lr_Rect;
-      if (m.X >= rect.X && m.X <= rect.X + 10 && m.Y >= rect.Y && m.Y <= rect.Y + 10 && m.Map == Map.Internal)
-      {
-        Timer kick = new LeverPuzzleController.LampRoomKickTimer(m);
-        kick.Start();
-      }
+      if (m.X >= rect.X && m.X <= rect.X + 10 && m.Y >= rect.Y && m.Y <= rect.Y + 10 && m.Map == Map.Internal) new LeverPuzzleController.LampRoomKickTimer(m).Start();
     }
 
     public override void OnEnter(Mobile m)
@@ -43,7 +39,7 @@ namespace Server.Engines.Doom
         {
           if (m == m_Controller.Successful) return;
         }
-        else if (m is BaseCreature bc && ((bc.Controlled && bc.ControlMaster == m_Controller.Successful) ||
+        else if (m is BaseCreature bc && (bc.Controlled && bc.ControlMaster == m_Controller.Successful ||
                                           bc.Summoned))
         {
           return;
@@ -64,11 +60,11 @@ namespace Server.Engines.Doom
     {
       if (m?.Deleted != false || m is WandererOfTheVoid)
         return;
-      Timer kick = new LeverPuzzleController.LampRoomKickTimer(m);
-      kick.Start();
+
+      new LeverPuzzleController.LampRoomKickTimer(m).Start();
     }
 
-    public override bool OnSkillUse(Mobile m, int Skill) /* just in case */ => m_Controller.Successful != null && (m.AccessLevel != AccessLevel.Player || m == m_Controller.Successful);
+    public override bool OnSkillUse(Mobile m, int skill) => m_Controller.Successful != null && (m.AccessLevel != AccessLevel.Player || m == m_Controller.Successful);
   }
 
   public class LeverPuzzleRegion : BaseRegion

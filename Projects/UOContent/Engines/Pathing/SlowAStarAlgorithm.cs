@@ -48,12 +48,12 @@ namespace Server.PathAlgorithms.SlowAStar
 
       PathNode curNode;
 
-      PathNode goalNode = new PathNode();
+      PathNode goalNode = default;
       goalNode.x = goal.X;
       goalNode.y = goal.Y;
       goalNode.z = goal.Z;
 
-      PathNode startNode = new PathNode();
+      PathNode startNode = default;
       startNode.x = start.X;
       startNode.y = start.Y;
       startNode.z = start.Z;

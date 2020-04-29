@@ -14,7 +14,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new MediumStoneTableSouthDeed();
+    public override BaseAddonDeed AddonDeed => new MediumStoneTableSouthDeed();
 
     public override bool RetainDeedHue => true;
 

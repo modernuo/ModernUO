@@ -95,7 +95,7 @@ namespace Server.Items
       : base(0xEDD)
     {
       m_Region = null;
-      m_Bounds = new Rectangle2D();
+      m_Bounds = default;
       m_Facet = null;
 
       m_Winner = null;

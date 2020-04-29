@@ -20,7 +20,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new PentagramDeed();
+    public override BaseAddonDeed AddonDeed => new PentagramDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

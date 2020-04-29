@@ -6,7 +6,7 @@ namespace Server.Engines.MLQuests.Objectives
 {
   public class KillObjective : BaseObjective
   {
-public KillObjective(
+    public KillObjective(
       int amount = 0, Type[] types = null, TextDefinition name = null, QuestArea area = null)
     {
       DesiredAmount = amount;

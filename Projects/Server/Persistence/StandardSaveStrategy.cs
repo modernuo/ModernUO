@@ -36,9 +36,9 @@ namespace Server
     // TODO: Move to configuration
     public static SaveOption SaveType => SaveOption.Normal;
 
-    private readonly Queue<Item> _decayQueue;
+    private readonly Queue<Item> m_DecayQueue;
 
-    public StandardSaveStrategy() => _decayQueue = new Queue<Item>();
+    public StandardSaveStrategy() => m_DecayQueue = new Queue<Item>();
 
     public override string Name => "Standard";
 
@@ -160,7 +160,7 @@ namespace Server
           if (item.Decays && item.Parent == null && item.Map != Map.Internal && item.LastMoved + item.DecayTime <= n)
           {
             Console.WriteLine($"Decay Item {item.Name ?? item.DefaultName} ({item.GetType().FullName})");
-            _decayQueue.Enqueue(item);
+            m_DecayQueue.Enqueue(item);
           }
 
           var start = bin.Position;
@@ -222,9 +222,9 @@ namespace Server
 
     public override void ProcessDecay()
     {
-      while (_decayQueue.Count > 0)
+      while (m_DecayQueue.Count > 0)
       {
-        var item = _decayQueue.Dequeue();
+        var item = m_DecayQueue.Dequeue();
 
         if (item.OnDecay())
           item.Delete();

@@ -84,8 +84,8 @@ namespace Server.Items
         AddHtmlLocalized(15, 15, 210, 75, 1070972, 0x0, true); // Click "OKAY" to redeem the following promotional item:
         TextDefinition.AddHtmlText(this, 15, 60, 210, 75, m_Token.ItemGumpName, false, false);
 
-        AddButton(160, 95, 0xF7, 0xF8, 1);	// Okay
-        AddButton(90, 95, 0xF2, 0xF1, 0);	// Cancel
+        AddButton(160, 95, 0xF7, 0xF8, 1); // Okay
+        AddButton(90, 95, 0xF2, 0xF1, 0); // Cancel
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
@@ -116,16 +116,10 @@ namespace Server.Items
 
   public class SoulstoneFragmentToken : PromotionalToken
   {
-public override Item CreateItemFor(Mobile from)
-    {
-      if (from?.Account != null)
-        return new SoulstoneFragment(from.Account.ToString());
+    public override Item CreateItemFor(Mobile from) => from?.Account != null ? new SoulstoneFragment(from.Account.ToString()) : null;
 
-      return null;
-    }
-
-    public override TextDefinition ItemGumpName => 1070999;// <center>Soulstone Fragment</center>
-    public override TextDefinition ItemName => 1071000;// soulstone fragment
+    public override TextDefinition ItemGumpName => 1070999; // <center>Soulstone Fragment</center>
+    public override TextDefinition ItemName => 1071000; // soulstone fragment
     public override TextDefinition ItemReceiveMessage => 1070976; // A soulstone fragment has been created in your bank box.
 
     [Constructible]

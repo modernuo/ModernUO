@@ -67,7 +67,7 @@ namespace Server.Mobiles
     public override string CorpseName => "a corpse of Ilhenir";
     public override ChampionSkullType SkullType => ChampionSkullType.Pain;
 
-    public override Type[] UniqueList => new Type[] { };
+    public override Type[] UniqueList => Array.Empty<Type>();
 
     public override Type[] SharedList => new[]
     {

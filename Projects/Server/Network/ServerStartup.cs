@@ -27,8 +27,8 @@ namespace Server.Network
 {
   public class ServerStartup
   {
-    private readonly IMessagePumpService _messagePumpService;
-    public ServerStartup(IMessagePumpService messagePumpService) => _messagePumpService = messagePumpService;
+    private readonly IMessagePumpService m_MessagePumpService;
+    public ServerStartup(IMessagePumpService messagePumpService) => m_MessagePumpService = messagePumpService;
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -37,7 +37,7 @@ namespace Server.Network
     public void Configure(IApplicationBuilder app)
     {
       // Run async?
-      Task.Run(() => Core.RunEventLoop(_messagePumpService));
+      Task.Run(() => Core.RunEventLoop(m_MessagePumpService));
     }
   }
 }

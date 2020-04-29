@@ -13,7 +13,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new StoneOvenSouthDeed();
+    public override BaseAddonDeed AddonDeed => new StoneOvenSouthDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

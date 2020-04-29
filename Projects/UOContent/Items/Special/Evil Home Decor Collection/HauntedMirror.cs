@@ -63,7 +63,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new HaunterMirrorDeed();
+    public override BaseAddonDeed AddonDeed => new HaunterMirrorDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

@@ -262,9 +262,9 @@ namespace Server.Items
 
     public virtual int OnHit(BaseWeapon weapon, int damageTaken)
     {
-      int Absorbed = Utility.RandomMinMax(1, 4);
+      int absorbed = Utility.RandomMinMax(1, 4);
 
-      damageTaken -= Absorbed;
+      damageTaken -= absorbed;
 
       if (damageTaken < 0)
         damageTaken = 0;
@@ -280,7 +280,7 @@ namespace Server.Items
           int wear;
 
           if (weapon.Type == WeaponType.Bashing)
-            wear = Absorbed / 2;
+            wear = absorbed / 2;
           else
             wear = Utility.Random(2);
 

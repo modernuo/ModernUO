@@ -69,8 +69,8 @@ namespace Server.Items
 
     public virtual bool RequireFreeHand => true;
 
-    int ICommodity.DescriptionNumber => LabelNumber;
-    bool ICommodity.IsDeedable => Core.ML;
+    public int DescriptionNumber => LabelNumber;
+    public bool IsDeedable => Core.ML;
 
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
@@ -140,7 +140,7 @@ namespace Server.Items
           {
             BasePotion pot = (BasePotion)ActivatorUtil.CreateInstance(GetType());
 
-            Amount--;
+            Consume();
 
             if (from.Backpack?.Deleted != false)
               from.Backpack.DropItem(pot);
@@ -210,13 +210,13 @@ namespace Server.Items
 
     public static int EnhancePotions(Mobile m)
     {
-      int EP = AosAttributes.GetValue(m, AosAttribute.EnhancePotions);
+      int eP = AosAttributes.GetValue(m, AosAttribute.EnhancePotions);
       int skillBonus = m.Skills.Alchemy.Fixed / 330 * 10;
 
-      if (Core.ML && EP > 50 && m.AccessLevel <= AccessLevel.Player)
-        EP = 50;
+      if (Core.ML && eP > 50 && m.AccessLevel <= AccessLevel.Player)
+        eP = 50;
 
-      return EP + skillBonus;
+      return eP + skillBonus;
     }
 
     public static TimeSpan Scale(Mobile m, TimeSpan v)
@@ -239,13 +239,7 @@ namespace Server.Items
       return v * scalar;
     }
 
-    public static int Scale(Mobile m, int v)
-    {
-      if (!Core.AOS)
-        return v;
-
-      return AOS.Scale(v, 100 + EnhancePotions(m));
-    }
+    public static int Scale(Mobile m, int v) => !Core.AOS ? v : AOS.Scale(v, 100 + EnhancePotions(m));
 
     public override bool StackWith(Mobile from, Item dropped, bool playSound) =>
       dropped is BasePotion potion && potion.m_PotionEffect == m_PotionEffect &&

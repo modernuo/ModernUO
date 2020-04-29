@@ -67,7 +67,7 @@ namespace Server.Spells.Fifth
         {
           Point3D loc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
 
-          new InternalItem(itemID, loc, Caster, Caster.Map, duration, i);
+          _ = new InternalItem(itemID, loc, Caster, Caster.Map, duration, i);
         }
       }
 

@@ -43,32 +43,32 @@ namespace Server.Items
       // Reagents
       for (int i = Utility.Random(1, m_Level); i > 1; i--)
       {
-        Item ReagentLoot = Loot.RandomReagent();
-        ReagentLoot.Amount = Utility.Random(1, 9);
-        DropItem(ReagentLoot);
+        Item reagentLoot = Loot.RandomReagent();
+        reagentLoot.Amount = Utility.Random(1, 9);
+        DropItem(reagentLoot);
       }
 
       // Scrolls
       for (int i = Utility.Random(1, m_Level); i > 1; i--)
       {
-        Item ScrollLoot = Loot.RandomScroll(0, 47, SpellbookType.Regular);
-        ScrollLoot.Amount = Utility.Random(1, 12);
-        DropItem(ScrollLoot);
+        Item scrollLoot = Loot.RandomScroll(0, 47, SpellbookType.Regular);
+        scrollLoot.Amount = Utility.Random(1, 12);
+        DropItem(scrollLoot);
       }
 
       // Potions
       for (int i = Utility.Random(1, m_Level); i > 1; i--)
       {
-        Item PotionLoot = Loot.RandomPotion();
-        DropItem(PotionLoot);
+        Item potionLoot = Loot.RandomPotion();
+        DropItem(potionLoot);
       }
 
       // Gems
       for (int i = Utility.Random(1, m_Level); i > 1; i--)
       {
-        Item GemLoot = Loot.RandomGem();
-        GemLoot.Amount = Utility.Random(1, 9);
-        DropItem(GemLoot);
+        Item gemLoot = Loot.RandomGem();
+        gemLoot.Amount = Utility.Random(1, 9);
+        DropItem(gemLoot);
       }
 
       // Magic Wand
@@ -125,21 +125,21 @@ namespace Server.Items
 
     private void SetChestAppearance()
     {
-      bool UseFirstItemId = Utility.RandomBool();
+      bool useFirstItemId = Utility.RandomBool();
       switch (Utility.RandomList(0, 1, 2))
       {
         case 0: // Wooden Chest
-          ItemID = UseFirstItemId ? 0xe42 : 0xe43;
+          ItemID = useFirstItemId ? 0xe42 : 0xe43;
           GumpID = 0x49;
           break;
 
         case 1: // Metal Chest
-          ItemID = UseFirstItemId ? 0x9ab : 0xe7c;
+          ItemID = useFirstItemId ? 0x9ab : 0xe7c;
           GumpID = 0x4A;
           break;
 
         case 2: // Metal Golden Chest
-          ItemID = UseFirstItemId ? 0xe40 : 0xe41;
+          ItemID = useFirstItemId ? 0xe40 : 0xe41;
           GumpID = 0x42;
           break;
       }

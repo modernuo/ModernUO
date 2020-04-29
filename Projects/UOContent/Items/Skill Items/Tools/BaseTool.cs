@@ -81,13 +81,8 @@ namespace Server.Items
       }
     }
 
-    private bool ShowUsesRemaining { get; set; } = true;
-
-    bool IUsesRemaining.ShowUsesRemaining
-    {
-      get => ShowUsesRemaining;
-      set => ShowUsesRemaining = value;
-    }
+    [CommandProperty(AccessLevel.GameMaster)]
+    public virtual bool ShowUsesRemaining { get; set; }
 
     public void ScaleUses()
     {

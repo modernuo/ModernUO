@@ -8,7 +8,7 @@ using Server.Targeting;
 
 namespace Server.Engines.Help
 {
-  public class SpeechLog : IEnumerable<SpeechLogEntry>
+  public sealed class SpeechLog : IEnumerable<SpeechLogEntry>
   {
     // Are speech logs enabled?
     public static readonly bool Enabled = true;

@@ -178,7 +178,7 @@ namespace Server.Mobiles
       }
     }
 
-    Region ISpawner.Region => Region.Find(Location, Map);
+    public Region Region => Region.Find(Location, Map);
 
     public void Remove(ISpawnable spawn)
     {

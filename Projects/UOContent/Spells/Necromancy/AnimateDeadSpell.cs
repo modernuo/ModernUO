@@ -190,7 +190,7 @@ namespace Server.Spells.Necromancy
                   1, 40, 0x3F, 3, 9907, 0);
 
                 Timer.DelayCall(TimeSpan.FromSeconds(2.0),
-                  () => SummonDelay_Callback(Caster, c, p, map, group));
+                  m => SummonDelay_Callback(m, c, p, map, group), Caster);
               }
             }
           }
@@ -262,9 +262,7 @@ namespace Server.Spells.Necromancy
       double necromancy = caster.Skills.Necromancy.Value;
       double spiritSpeak = caster.Skills.SpiritSpeak.Value;
 
-      int casterAbility = 0;
-
-      casterAbility += (int)(necromancy * 30);
+      int casterAbility = (int)(necromancy * 30);
       casterAbility += (int)(spiritSpeak * 70);
       casterAbility /= 10;
       casterAbility *= 18;
@@ -287,7 +285,7 @@ namespace Server.Spells.Necromancy
 
         Type[] animates = entry.m_ToSummon;
 
-        if (animates.Length >= 0)
+        if (animates.Length > 0)
           toSummon = animates[Utility.Random(animates.Length)];
       }
 

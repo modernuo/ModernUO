@@ -13,7 +13,7 @@ namespace Server.Factions
 
     public static void GenerateFactions_OnCommand(CommandEventArgs e)
     {
-      new FactionPersistance();
+      _ = new FactionPersistance();
 
       List<Faction> factions = Faction.Factions;
 

@@ -11,7 +11,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new FountainDeed();
+    public override BaseAddonDeed AddonDeed => new FountainDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

@@ -104,7 +104,7 @@ namespace Server.Items
 
     public bool CouldFit(IPoint3D p, Map map) => map.CanFit((Point3D)p, 20);
 
-    Item IAddon.Deed => new HolidayTreeDeed();
+    public Item Deed => new HolidayTreeDeed();
 
     public override void OnAfterDelete()
     {

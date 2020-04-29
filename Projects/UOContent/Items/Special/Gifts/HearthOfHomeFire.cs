@@ -24,7 +24,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new HearthOfHomeFireDeed();
+    public override BaseAddonDeed AddonDeed => new HearthOfHomeFireDeed();
 
     private void AddLightComponent(AddonComponent component, int x, int y, int z)
     {

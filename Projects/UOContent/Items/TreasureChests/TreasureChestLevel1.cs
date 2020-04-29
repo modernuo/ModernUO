@@ -39,9 +39,9 @@ namespace Server.Items
       // Gems
       if (Utility.RandomBool())
       {
-        Item GemLoot = Loot.RandomGem();
-        GemLoot.Amount = Utility.Random(1, 3);
-        DropItem(GemLoot);
+        Item gemLoot = Loot.RandomGem();
+        gemLoot.Amount = Utility.Random(1, 3);
+        DropItem(gemLoot);
       }
 
       // Weapon
@@ -80,22 +80,22 @@ namespace Server.Items
 
     private void SetChestAppearance()
     {
-      bool UseFirstItemId = Utility.RandomBool();
+      bool useFirstItemId = Utility.RandomBool();
 
       switch (Utility.RandomList(0, 1, 2))
       {
         case 0: // Large Crate
-          ItemID = UseFirstItemId ? 0xe3c : 0xe3d;
+          ItemID = useFirstItemId ? 0xe3c : 0xe3d;
           GumpID = 0x44;
           break;
 
         case 1: // Medium Crate
-          ItemID = UseFirstItemId ? 0xe3e : 0xe3f;
+          ItemID = useFirstItemId ? 0xe3e : 0xe3f;
           GumpID = 0x44;
           break;
 
         case 2: // Small Crate
-          ItemID = UseFirstItemId ? 0x9a9 : 0xe7e;
+          ItemID = useFirstItemId ? 0x9a9 : 0xe7e;
           GumpID = 0x44;
           break;
       }

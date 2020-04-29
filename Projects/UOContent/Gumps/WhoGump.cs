@@ -84,7 +84,7 @@ namespace Server.Gumps
       public int Compare(Mobile x, Mobile y)
       {
         if (x == null || y == null)
-          throw new ArgumentException();
+          throw new ArgumentException("x and y cannot both be null");
 
         if (x.AccessLevel > y.AccessLevel)
           return -1;

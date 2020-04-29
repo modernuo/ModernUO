@@ -40,7 +40,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new LargeFishingNetDeed();
+    public override BaseAddonDeed AddonDeed => new LargeFishingNetDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

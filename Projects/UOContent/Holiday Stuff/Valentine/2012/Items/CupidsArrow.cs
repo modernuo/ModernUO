@@ -6,7 +6,6 @@ namespace Server.Items
   public class CupidsArrow : Item
   {
     // TODO: Check messages
-
     public override int LabelNumber => 1152270; // Cupid's Arrow 2012
 
     private string m_From;
@@ -16,14 +15,22 @@ namespace Server.Items
     public string From
     {
       get => m_From;
-      set { m_From = value; InvalidateProperties(); }
+      set
+      {
+        m_From = value;
+        InvalidateProperties();
+      }
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public string To
     {
       get => m_To;
-      set { m_To = value; InvalidateProperties(); }
+      set
+      {
+        m_To = value;
+        InvalidateProperties();
+      }
     }
 
     public bool IsSigned => m_From != null && m_To != null;

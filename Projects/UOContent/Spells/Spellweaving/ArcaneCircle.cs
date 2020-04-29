@@ -47,18 +47,16 @@ namespace Server.Spells.Spellweaving
         Caster.FixedParticles(0x3779, 10, 20, 0x0, EffectLayer.Waist);
         Caster.PlaySound(0x5C0);
 
-        List<Mobile> Arcanists = GetArcanists();
+        List<Mobile> arcanists = GetArcanists();
 
         TimeSpan duration = TimeSpan.FromHours(Math.Max(1, (int)(Caster.Skills.Spellweaving.Value / 24)));
 
+        // The Sanctuary is a special, single location place
         int strengthBonus =
-          Math.Min(Arcanists.Count,
-            IsSanctuary(Caster.Location, Caster.Map)
-              ? 6
-              : 5); // The Sanctuary is a special, single location place
+          Math.Min(arcanists.Count, IsSanctuary(Caster.Location, Caster.Map) ? 6 : 5);
 
-        for (int i = 0; i < Arcanists.Count; i++)
-          GiveArcaneFocus(Arcanists[i], duration, strengthBonus);
+        for (int i = 0; i < arcanists.Count; i++)
+          GiveArcaneFocus(arcanists[i], duration, strengthBonus);
       }
 
       FinishSequence();

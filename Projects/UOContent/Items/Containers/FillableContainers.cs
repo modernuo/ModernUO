@@ -733,9 +733,7 @@ namespace Server.Items
 
     public static FillableContent ArtisanGuild = new FillableContent(
       1,
-      new Type[]
-      {
-      },
+      Array.Empty<Type>(),
       new[]
       {
         new FillableEntry(1, typeof(PaintsAndBrush)),
@@ -802,7 +800,8 @@ namespace Server.Items
         new FillableEntry(8, typeof(SmithHammer)),
         new FillableEntry(8, typeof(Tongs)),
         new FillableEntry(8, typeof(SledgeHammer)),
-        // new FillableEntry( 8, typeof( IronOre ) ), TODO: Smaller ore
+        // TODO: Smaller ore
+        // new FillableEntry( 8, typeof( IronOre ) ),
         new FillableEntry(8, typeof(IronIngot)),
         new FillableEntry(1, typeof(IronWire)),
         new FillableEntry(1, typeof(SilverWire)),
@@ -976,9 +975,7 @@ namespace Server.Items
 
     public static FillableContent Guard = new FillableContent(
       3,
-      new Type[]
-      {
-      },
+      Array.Empty<Type>(),
       new[]
       {
         new FillableEntry(12, Loot.ArmorTypes),
@@ -1021,9 +1018,7 @@ namespace Server.Items
 
     public static FillableContent Inn = new FillableContent(
       1,
-      new Type[]
-      {
-      },
+      Array.Empty<Type>(),
       new[]
       {
         new FillableEntry(1, typeof(Candle)),
@@ -1144,9 +1139,7 @@ namespace Server.Items
 
     public static FillableContent Mill = new FillableContent(
       1,
-      new Type[]
-      {
-      },
+      Array.Empty<Type>(),
       new[]
       {
         new FillableEntry(1, typeof(SackFlour))
@@ -1163,15 +1156,14 @@ namespace Server.Items
         new FillableEntry(2, typeof(Pickaxe)),
         new FillableEntry(2, typeof(Shovel)),
         new FillableEntry(2, typeof(IronIngot)),
-        // new FillableEntry( 2, typeof( IronOre ) ),	TODO: Smaller Ore
+        // TODO: Smaller Ore
+        // new FillableEntry( 2, typeof( IronOre ) ),
         new FillableEntry(1, typeof(ForgedMetal))
       });
 
     public static FillableContent Observatory = new FillableContent(
       1,
-      new Type[]
-      {
-      },
+      Array.Empty<Type>(),
       new[]
       {
         new FillableEntry(2, typeof(Sextant)),
@@ -1181,9 +1173,7 @@ namespace Server.Items
 
     public static FillableContent Painter = new FillableContent(
       1,
-      new Type[]
-      {
-      },
+      Array.Empty<Type>(),
       new[]
       {
         new FillableEntry(1, typeof(PaintsAndBrush)),

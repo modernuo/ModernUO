@@ -28,23 +28,23 @@ namespace Server
 {
   public sealed class DynamicSaveStrategy : SaveStrategy
   {
-    private readonly ConcurrentBag<Item> _decayBag;
-    private SequentialFileWriterStream _guildData, _guildIndex;
-    private readonly BlockingCollection<QueuedMemoryWriter> _guildThreadWriters;
+    private readonly ConcurrentBag<Item> m_DecayBag;
+    private SequentialFileWriterStream m_GuildData, m_GuildIndex;
+    private readonly BlockingCollection<QueuedMemoryWriter> m_GuildThreadWriters;
 
-    private SequentialFileWriterStream _itemData, _itemIndex;
+    private SequentialFileWriterStream m_ItemData, m_ItemIndex;
 
-    private readonly BlockingCollection<QueuedMemoryWriter> _itemThreadWriters;
+    private readonly BlockingCollection<QueuedMemoryWriter> m_ItemThreadWriters;
 
-    private SequentialFileWriterStream _mobileData, _mobileIndex;
-    private readonly BlockingCollection<QueuedMemoryWriter> _mobileThreadWriters;
+    private SequentialFileWriterStream m_MobileData, m_MobileIndex;
+    private readonly BlockingCollection<QueuedMemoryWriter> m_MobileThreadWriters;
 
     public DynamicSaveStrategy()
     {
-      _decayBag = new ConcurrentBag<Item>();
-      _itemThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
-      _mobileThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
-      _guildThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
+      m_DecayBag = new ConcurrentBag<Item>();
+      m_ItemThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
+      m_MobileThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
+      m_GuildThreadWriters = new BlockingCollection<QueuedMemoryWriter>();
     }
 
     public override string Name => "Dynamic";
@@ -111,7 +111,7 @@ namespace Server
     private Task SaveItems()
     {
       // Start the blocking consumer; this runs in background.
-      var commitTask = StartCommitTask(_itemThreadWriters, _itemData, _itemIndex);
+      var commitTask = StartCommitTask(m_ItemThreadWriters, m_ItemData, m_ItemIndex);
 
       IEnumerable<Item> items = World.Items.Values;
 
@@ -128,7 +128,7 @@ namespace Server
           writer.QueueForIndex(item, size);
 
           if (item.Decays && item.Parent == null && item.Map != Map.Internal &&
-              DateTime.UtcNow > item.LastMoved + item.DecayTime) _decayBag.Add(item);
+              DateTime.UtcNow > item.LastMoved + item.DecayTime) m_DecayBag.Add(item);
 
           return writer;
         },
@@ -136,10 +136,10 @@ namespace Server
         {
           writer.Flush();
 
-          _itemThreadWriters.Add(writer);
+          m_ItemThreadWriters.Add(writer);
         });
 
-      _itemThreadWriters.CompleteAdding(); // We only get here after the Parallel.ForEach completes.  Lets our task
+      m_ItemThreadWriters.CompleteAdding(); // We only get here after the Parallel.ForEach completes.  Lets our task
 
       return commitTask;
     }
@@ -147,7 +147,7 @@ namespace Server
     private Task SaveMobiles()
     {
       // Start the blocking consumer; this runs in background.
-      var commitTask = StartCommitTask(_mobileThreadWriters, _mobileData, _mobileIndex);
+      var commitTask = StartCommitTask(m_MobileThreadWriters, m_MobileData, m_MobileIndex);
 
       IEnumerable<Mobile> mobiles = World.Mobiles.Values;
 
@@ -169,10 +169,10 @@ namespace Server
         {
           writer.Flush();
 
-          _mobileThreadWriters.Add(writer);
+          m_MobileThreadWriters.Add(writer);
         });
 
-      _mobileThreadWriters
+      m_MobileThreadWriters
         .CompleteAdding(); // We only get here after the Parallel.ForEach completes.  Lets our task tell the consumer that we're done
 
       return commitTask;
@@ -181,7 +181,7 @@ namespace Server
     private Task SaveGuilds()
     {
       // Start the blocking consumer; this runs in background.
-      var commitTask = StartCommitTask(_guildThreadWriters, _guildData, _guildIndex);
+      var commitTask = StartCommitTask(m_GuildThreadWriters, m_GuildData, m_GuildIndex);
 
       IEnumerable<BaseGuild> guilds = BaseGuild.List.Values;
 
@@ -203,47 +203,47 @@ namespace Server
         {
           writer.Flush();
 
-          _guildThreadWriters.Add(writer);
+          m_GuildThreadWriters.Add(writer);
         });
 
-      _guildThreadWriters.CompleteAdding(); // We only get here after the Parallel.ForEach completes.  Lets our task
+      m_GuildThreadWriters.CompleteAdding(); // We only get here after the Parallel.ForEach completes.  Lets our task
 
       return commitTask;
     }
 
     public override void ProcessDecay()
     {
-      while (_decayBag.TryTake(out var item))
+      while (m_DecayBag.TryTake(out var item))
         if (item.OnDecay())
           item.Delete();
     }
 
     private void OpenFiles()
     {
-      _itemData = new SequentialFileWriterStream(World.ItemDataPath);
-      _itemIndex = new SequentialFileWriterStream(World.ItemIndexPath);
+      m_ItemData = new SequentialFileWriterStream(World.ItemDataPath);
+      m_ItemIndex = new SequentialFileWriterStream(World.ItemIndexPath);
 
-      _mobileData = new SequentialFileWriterStream(World.MobileDataPath);
-      _mobileIndex = new SequentialFileWriterStream(World.MobileIndexPath);
+      m_MobileData = new SequentialFileWriterStream(World.MobileDataPath);
+      m_MobileIndex = new SequentialFileWriterStream(World.MobileIndexPath);
 
-      _guildData = new SequentialFileWriterStream(World.GuildDataPath);
-      _guildIndex = new SequentialFileWriterStream(World.GuildIndexPath);
+      m_GuildData = new SequentialFileWriterStream(World.GuildDataPath);
+      m_GuildIndex = new SequentialFileWriterStream(World.GuildIndexPath);
 
-      WriteCount(_itemIndex, World.Items.Count);
-      WriteCount(_mobileIndex, World.Mobiles.Count);
-      WriteCount(_guildIndex, BaseGuild.List.Count);
+      WriteCount(m_ItemIndex, World.Items.Count);
+      WriteCount(m_MobileIndex, World.Mobiles.Count);
+      WriteCount(m_GuildIndex, BaseGuild.List.Count);
     }
 
     private void CloseFiles()
     {
-      _itemData.Close();
-      _itemIndex.Close();
+      m_ItemData.Close();
+      m_ItemIndex.Close();
 
-      _mobileData.Close();
-      _mobileIndex.Close();
+      m_MobileData.Close();
+      m_MobileIndex.Close();
 
-      _guildData.Close();
-      _guildIndex.Close();
+      m_GuildData.Close();
+      m_GuildIndex.Close();
     }
 
     private void WriteCount(SequentialFileWriterStream indexFile, int count)

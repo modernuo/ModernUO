@@ -447,7 +447,7 @@ namespace Server.Factions
 
     public VirtualMount(VirtualMountItem item) => m_Item = item;
 
-    Mobile IMount.Rider
+    public Mobile Rider
     {
       get => m_Item.Rider;
       set { }

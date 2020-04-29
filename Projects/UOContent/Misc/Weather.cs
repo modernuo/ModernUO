@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Network;
 
@@ -54,7 +55,7 @@ namespace Server.Misc
     {
       for (int i = 0; i < m_Facets.Length; ++i)
       {
-        Rectangle2D area = new Rectangle2D();
+        Rectangle2D area = default;
         bool isValid = false;
 
         for (int j = 0; j < 10; ++j)
@@ -71,35 +72,19 @@ namespace Server.Misc
         if (!isValid)
           continue;
 
-        new Weather(m_Facets[i], new[] { area }, temperature, chanceOfPercipitation, chanceOfExtremeTemperature,
-          TimeSpan.FromSeconds(30.0))
-        { Bounds = bounds, MoveSpeed = moveSpeed };
+        _ = new Weather(m_Facets[i], new[] { area }, temperature, chanceOfPercipitation, chanceOfExtremeTemperature,
+          TimeSpan.FromSeconds(30.0)) { Bounds = bounds, MoveSpeed = moveSpeed };
       }
     }
 
     public static void AddWeather(int temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, params Rectangle2D[] area)
     {
       for (int i = 0; i < m_Facets.Length; ++i)
-        new Weather(m_Facets[i], area, temperature, chanceOfPercipitation, chanceOfExtremeTemperature, TimeSpan.FromSeconds(30.0));
+        _ = new Weather(m_Facets[i], area, temperature, chanceOfPercipitation, chanceOfExtremeTemperature, TimeSpan.FromSeconds(30.0));
     }
 
-    public static bool CheckWeatherConflict(Map facet, Weather exclude, Rectangle2D area)
-    {
-      List<Weather> list = GetWeatherList(facet);
-
-      if (list == null)
-        return false;
-
-      for (int i = 0; i < list.Count; ++i)
-      {
-        Weather w = list[i];
-
-        if (w != exclude && w.IntersectsWith(area))
-          return true;
-      }
-
-      return false;
-    }
+    public static bool CheckWeatherConflict(Map facet, Weather exclude, Rectangle2D area) =>
+      GetWeatherList(facet)?.Any(w => w != exclude && w.IntersectsWith(area)) == true;
 
     public Map Facet { get; }
 
@@ -127,14 +112,7 @@ namespace Server.Misc
       small.X >= big.X && small.Y >= big.Y && small.X + small.Width <= big.X + big.Width
       && small.Y + small.Height <= big.Y + big.Height;
 
-    public virtual bool IntersectsWith(Rectangle2D area)
-    {
-      for (int i = 0; i < Area.Length; ++i)
-        if (CheckIntersection(area, Area[i]))
-          return true;
-
-      return false;
-    }
+    public virtual bool IntersectsWith(Rectangle2D area) => Area.Any(t => CheckIntersection(area, t));
 
     public Weather(Map facet, Rectangle2D[] area, int temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, TimeSpan interval)
     {
@@ -159,7 +137,7 @@ namespace Server.Misc
       int width = Area[0].Width;
       int height = Area[0].Height;
 
-      Rectangle2D area = new Rectangle2D();
+      Rectangle2D area = default;
       bool isValid = false;
 
       for (int j = 0; j < 10; ++j)

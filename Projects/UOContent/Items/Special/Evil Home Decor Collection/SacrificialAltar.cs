@@ -19,7 +19,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonContainerDeed Deed => new SacrificialAltarDeed();
+    public override BaseAddonContainerDeed AddonContainerDeed => new SacrificialAltarDeed();
     public override int LabelNumber => 1074818; // Sacrificial Altar
     public override int DefaultMaxWeight => 0;
     public override int DefaultGumpID => 0x107;

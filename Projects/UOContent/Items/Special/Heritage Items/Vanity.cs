@@ -18,7 +18,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonContainerDeed Deed => new VanityDeed();
+    public override BaseAddonContainerDeed AddonContainerDeed => new VanityDeed();
     public override int LabelNumber => 1074027; // Vanity
     public override int DefaultGumpID => 0x51;
     public override int DefaultDropSound => 0x42;

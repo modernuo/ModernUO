@@ -135,7 +135,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new AwesomeDisturbingPortraitDeed();
+    public override BaseAddonDeed AddonDeed => new AwesomeDisturbingPortraitDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

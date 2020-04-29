@@ -590,8 +590,8 @@ namespace Server
 
     public virtual bool OnTarget(Mobile m, Target t, object o) => Parent?.OnTarget(m, t, o) != false;
 
-    public virtual bool OnCombatantChange(Mobile m, Mobile old, Mobile @new) =>
-      Parent?.OnCombatantChange(m, old, @new) != false;
+    public virtual bool OnCombatantChange(Mobile m, Mobile oldM, Mobile newM) =>
+      Parent?.OnCombatantChange(m, oldM, newM) != false;
 
     public virtual bool AllowHousing(Mobile from, Point3D p) => Parent?.AllowHousing(from, p) != false;
 
@@ -670,13 +670,9 @@ namespace Server
       Parent?.AlterLightLevel(m, ref global, ref personal);
     }
 
-    public virtual TimeSpan GetLogoutDelay(Mobile m)
-    {
-      if (Parent != null)
-        return Parent.GetLogoutDelay(m);
-
-      return m.AccessLevel > AccessLevel.Player ? StaffLogoutDelay : DefaultLogoutDelay;
-    }
+    public virtual TimeSpan GetLogoutDelay(Mobile m) =>
+      Parent != null ? Parent.GetLogoutDelay(m) :
+      m.AccessLevel > AccessLevel.Player ? StaffLogoutDelay : DefaultLogoutDelay;
 
     internal static bool CanMove(Mobile m, Direction d, Point3D newLocation, Point3D oldLocation, Map map)
     {

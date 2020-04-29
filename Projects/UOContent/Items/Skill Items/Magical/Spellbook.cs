@@ -500,7 +500,7 @@ namespace Server.Items
 
         if (val >= 0 && val < BookCount)
         {
-          m_Content |= (ulong)1 << val;
+          m_Content |= 1ul << val;
           ++SpellCount;
 
           InvalidateProperties();
@@ -572,7 +572,7 @@ namespace Server.Items
     {
       spellID -= BookOffset;
 
-      return spellID >= 0 && spellID < BookCount && (m_Content & (ulong)1 << spellID) != 0;
+      return spellID >= 0 && spellID < BookCount && (m_Content & 1ul << spellID) != 0;
     }
 
     public void DisplayTo(Mobile to)

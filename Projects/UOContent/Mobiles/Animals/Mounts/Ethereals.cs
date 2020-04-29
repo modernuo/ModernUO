@@ -135,7 +135,7 @@ namespace Server.Mobiles
       }
 
       if (Core.ML && IsRewardItem)
-        list.Add(RewardSystem.GetRewardYearLabel(this, new object[] { })); // X Year Veteran Reward
+        list.Add(RewardSystem.GetRewardYearLabel(this, null)); // X Year Veteran Reward
     }
 
     public void RemoveFollowers()

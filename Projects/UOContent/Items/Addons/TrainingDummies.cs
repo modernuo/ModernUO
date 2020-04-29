@@ -157,7 +157,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new TrainingDummyEastDeed();
+    public override BaseAddonDeed AddonDeed => new TrainingDummyEastDeed();
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -215,7 +215,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new TrainingDummySouthDeed();
+    public override BaseAddonDeed AddonDeed => new TrainingDummySouthDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

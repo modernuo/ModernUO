@@ -42,9 +42,9 @@ namespace Server.Items
     }
 
     public bool CouldFit(IPoint3D p, Map map) =>
-      map?.CanFit(p.X, p.Y, p.Z, ItemData.Height) == true && ((FacingSouth
-                                                              && BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map))
-                                                              || BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map));
+      map?.CanFit(p.X, p.Y, p.Z, ItemData.Height) == true &&
+      (FacingSouth && BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map) ||
+       BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map));
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsRewardItem
@@ -243,8 +243,8 @@ namespace Server.Items
       public override void OnResponse(NetState sender, RelayInfo info)
       {
         if (m_Shield?.Deleted != false || info.ButtonID < Start || info.ButtonID > End ||
-            (((info.ButtonID & 0x1) != 0 || info.ButtonID >= 0x1582) &&
-            (info.ButtonID < 0x1582 || info.ButtonID > 0x1585)))
+            ((info.ButtonID & 0x1) != 0 || info.ButtonID >= 0x1582) &&
+            (info.ButtonID < 0x1582 || info.ButtonID > 0x1585))
           return;
 
         sender.Mobile.SendLocalizedMessage(1049780); // Where would you like to place this decoration?

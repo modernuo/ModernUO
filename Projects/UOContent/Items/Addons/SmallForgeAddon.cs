@@ -12,7 +12,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new SmallForgeDeed();
+    public override BaseAddonDeed AddonDeed => new SmallForgeDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

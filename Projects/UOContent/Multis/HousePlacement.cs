@@ -313,47 +313,30 @@ namespace Server.Multis
         }
       }
 
-      List<Sector> _sectors = new List<Sector>();
-      List<BaseHouse> _houses = new List<BaseHouse>();
+      List<Sector> sectors = new List<Sector>();
+      List<BaseHouse> houses = new List<BaseHouse>();
 
       for (int i = 0; i < yard.Count; i++)
       {
         Sector sector = map.GetSector(yard[i]);
 
-        if (!_sectors.Contains(sector))
+        if (!sectors.Contains(sector))
         {
-          _sectors.Add(sector);
+          sectors.Add(sector);
 
           for (int j = 0; j < sector.Multis?.Count; j++)
             if (sector.Multis[j] is BaseHouse)
             {
-              BaseHouse _house = (BaseHouse)sector.Multis[j];
-              if (!_houses.Contains(_house)) _houses.Add(_house);
+              BaseHouse house = (BaseHouse)sector.Multis[j];
+              if (!houses.Contains(house)) houses.Add(house);
             }
         }
       }
 
       for (int i = 0; i < yard.Count; ++i)
-        foreach (BaseHouse b in _houses)
+        foreach (BaseHouse b in houses)
           if (b.Contains(yard[i]))
             return HousePlacementResult.BadStatic; // Broke rule #3
-      /*Point2D yardPoint = yard[i];
-
-        IPooledEnumerable eable = map.GetMultiTilesAt( yardPoint.X, yardPoint.Y );
-
-        foreach ( StaticTile[] tile in eable )
-        {
-          for ( int j = 0; j < tile.Length; ++j )
-          {
-            if ((TileData.ItemTable[tile[j].ID & TileData.MaxItemValue].Flags & (TileFlag.Impassable | TileFlag.Surface)) != 0)
-            {
-              eable.Free();
-              return HousePlacementResult.BadStatic; // Broke rule #3
-            }
-          }
-        }
-
-        eable.Free();*/
 
       return HousePlacementResult.Valid;
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
 using Server.Factions;
@@ -325,30 +326,26 @@ namespace Server.Mobiles
 
       IShopSellInfo[] info = GetSellInfo();
       IBuyItemInfo[] buyInfo = GetBuyInfo();
-      int GiveGold = 0;
-      int Sold = 0;
+      int giveGold = 0;
+      int sold = 0;
 
       foreach (SellItemResponse resp in list)
       {
         if (resp.Item.RootParent != seller || resp.Amount <= 0 || !resp.Item.IsStandardLoot() ||
-            !resp.Item.Movable || (resp.Item is Container container && container.Items.Count != 0))
+            !resp.Item.Movable || resp.Item is Container container && container.Items.Count != 0)
           continue;
 
-        foreach (IShopSellInfo ssi in info)
-          if (ssi.IsSellable(resp.Item))
-          {
-            Sold++;
-            break;
-          }
+        if (info.Any(ssi => ssi.IsSellable(resp.Item)))
+          sold++;
       }
 
-      if (Sold > MaxSell)
+      if (sold > MaxSell)
       {
         SayTo(seller, true, "You may only sell {0} items at a time!", MaxSell);
         return false;
       }
 
-      if (Sold == 0) return true;
+      if (sold == 0) return true;
 
       foreach (SellItemResponse resp in list)
       {
@@ -411,20 +408,20 @@ namespace Server.Mobiles
                 resp.Item.Delete();
             }
 
-            GiveGold += ssi.GetSellPriceFor(resp.Item) * amount;
+            giveGold += ssi.GetSellPriceFor(resp.Item) * amount;
             break;
           }
       }
 
-      if (GiveGold > 0)
+      if (giveGold > 0)
       {
-        while (GiveGold > 60000)
+        while (giveGold > 60000)
         {
           seller.AddToBackpack(new Gold(60000));
-          GiveGold -= 60000;
+          giveGold -= 60000;
         }
 
-        seller.AddToBackpack(new Gold(GiveGold));
+        seller.AddToBackpack(new Gold(giveGold));
 
         seller.PlaySound(0x0037); // Gold dropping sound
 

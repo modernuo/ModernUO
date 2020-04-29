@@ -941,7 +941,7 @@ namespace Server
 
     public sealed class PooledEnumerable<T> : IPooledEnumerable<T>, IDisposable
     {
-      private static readonly Queue<PooledEnumerable<T>> _Buffer = new Queue<PooledEnumerable<T>>(0x400);
+      private static readonly Queue<PooledEnumerable<T>> m_Buffer = new Queue<PooledEnumerable<T>>(0x400);
 
       private bool m_IsDisposed;
 
@@ -973,9 +973,9 @@ namespace Server
         m_Pool.Clear();
         m_Pool.Capacity = Math.Max(m_Pool.Capacity, 0x100);
 
-        lock (((ICollection)_Buffer).SyncRoot)
+        lock (((ICollection)m_Buffer).SyncRoot)
         {
-          _Buffer.Enqueue(this);
+          m_Buffer.Enqueue(this);
         }
       }
 
@@ -984,10 +984,10 @@ namespace Server
       {
         PooledEnumerable<T> e = null;
 
-        lock (((ICollection)_Buffer).SyncRoot)
+        lock (((ICollection)m_Buffer).SyncRoot)
         {
-          if (_Buffer.Count > 0)
-            e = _Buffer.Dequeue();
+          if (m_Buffer.Count > 0)
+            e = m_Buffer.Dequeue();
         }
 
         var pool = PooledEnumeration.EnumerateSectors(map, bounds).SelectMany(s => selector(s, bounds));

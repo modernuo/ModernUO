@@ -29,15 +29,15 @@ namespace Server.Network
 {
   public class ServerConnectionHandler : ConnectionHandler
   {
-    private readonly IMessagePumpService _messagePumpService;
-    private readonly ILogger<ServerConnectionHandler> _logger;
+    private readonly IMessagePumpService m_MessagePumpService;
+    private readonly ILogger<ServerConnectionHandler> m_Logger;
 
     public ServerConnectionHandler(
       IMessagePumpService messagePumpService,
       ILogger<ServerConnectionHandler> logger)
     {
-      _messagePumpService = messagePumpService;
-      _logger = logger;
+      m_MessagePumpService = messagePumpService;
+      m_Logger = logger;
     }
 
     public override async Task OnConnectedAsync(ConnectionContext connection)
@@ -52,7 +52,7 @@ namespace Server.Network
       TcpServer.Instances.Add(ns);
       Console.WriteLine($"Client: {ns}: Connected. [{TcpServer.Instances.Count} Online]");
 
-      await ns.ProcessIncoming(_messagePumpService).ConfigureAwait(false);
+      await ns.ProcessIncoming(m_MessagePumpService).ConfigureAwait(false);
     }
 
     private static bool VerifySocket(ConnectionContext connection)

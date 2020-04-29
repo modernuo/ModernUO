@@ -34,7 +34,7 @@ namespace Server
   {
     private static Encoding m_UTF8, m_UTF8WithEncoding;
 
-    private static Dictionary<IPAddress, IPAddress> _ipAddressTable;
+    private static Dictionary<IPAddress, IPAddress> m_IpAddressTable;
 
     private static readonly SkillName[] m_AllSkills =
     {
@@ -139,12 +139,12 @@ namespace Server
 
     public static IPAddress Intern(IPAddress ipAddress)
     {
-      _ipAddressTable ??= new Dictionary<IPAddress, IPAddress>();
+      m_IpAddressTable ??= new Dictionary<IPAddress, IPAddress>();
 
-      if (!_ipAddressTable.TryGetValue(ipAddress, out var interned))
+      if (!m_IpAddressTable.TryGetValue(ipAddress, out var interned))
       {
         interned = ipAddress;
-        _ipAddressTable[ipAddress] = interned;
+        m_IpAddressTable[ipAddress] = interned;
       }
 
       return interned;

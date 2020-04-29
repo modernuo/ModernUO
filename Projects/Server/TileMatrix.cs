@@ -183,7 +183,7 @@ namespace Server
 
           lock (shared)
           {
-            if (x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight)
+            if (x < shared.BlockWidth && y < shared.BlockHeight)
             {
               var theirTiles = shared.m_StaticTiles[x];
 
@@ -277,7 +277,7 @@ namespace Server
 
           lock (shared)
           {
-            if (x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight)
+            if (x < shared.BlockWidth && y < shared.BlockHeight)
             {
               var theirTiles = shared.m_LandTiles[x];
 

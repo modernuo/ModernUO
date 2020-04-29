@@ -41,17 +41,17 @@ namespace Server.Items
       // Reagents
       for (int i = Utility.Random(1, m_Level); i > 1; i--)
       {
-        Item ReagentLoot = Loot.RandomReagent();
-        ReagentLoot.Amount = 12;
-        DropItem(ReagentLoot);
+        Item reagentLoot = Loot.RandomReagent();
+        reagentLoot.Amount = 12;
+        DropItem(reagentLoot);
       }
 
       // Scrolls
       for (int i = Utility.Random(1, m_Level); i > 1; i--)
       {
-        Item ScrollLoot = Loot.RandomScroll(0, 47, SpellbookType.Regular);
-        ScrollLoot.Amount = 16;
-        DropItem(ScrollLoot);
+        Item scrollLoot = Loot.RandomScroll(0, 47, SpellbookType.Regular);
+        scrollLoot.Amount = 16;
+        DropItem(scrollLoot);
       }
 
       // Drop blank scrolls
@@ -60,16 +60,16 @@ namespace Server.Items
       // Potions
       for (int i = Utility.Random(1, m_Level); i > 1; i--)
       {
-        Item PotionLoot = Loot.RandomPotion();
-        DropItem(PotionLoot);
+        Item potionLoot = Loot.RandomPotion();
+        DropItem(potionLoot);
       }
 
       // Gems
       for (int i = Utility.Random(1, m_Level); i > 1; i--)
       {
-        Item GemLoot = Loot.RandomGem();
-        GemLoot.Amount = 12;
-        DropItem(GemLoot);
+        Item gemLoot = Loot.RandomGem();
+        gemLoot.Amount = 12;
+        DropItem(gemLoot);
       }
 
       // Magic Wand
@@ -128,22 +128,22 @@ namespace Server.Items
 
     private void SetChestAppearance()
     {
-      bool UseFirstItemId = Utility.RandomBool();
+      bool useFirstItemId = Utility.RandomBool();
 
       switch (Utility.Random(4))
       {
         case 0: // Wooden Chest
-          ItemID = UseFirstItemId ? 0xe42 : 0xe43;
+          ItemID = useFirstItemId ? 0xe42 : 0xe43;
           GumpID = 0x49;
           break;
 
         case 1: // Metal Chest
-          ItemID = UseFirstItemId ? 0x9ab : 0xe7c;
+          ItemID = useFirstItemId ? 0x9ab : 0xe7c;
           GumpID = 0x4A;
           break;
 
         case 2: // Metal Golden Chest
-          ItemID = UseFirstItemId ? 0xe40 : 0xe41;
+          ItemID = useFirstItemId ? 0xe40 : 0xe41;
           GumpID = 0x42;
           break;
 

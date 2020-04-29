@@ -2628,7 +2628,7 @@ namespace Server.Gumps
                     {
                       string check = Firewall.List[i].ToString();
 
-                      if (check.IndexOf(match) >= 0)
+                      if (check?.IndexOf(match) >= 0)
                         results.Add(Firewall.List[i]);
                     }
 
@@ -2866,7 +2866,7 @@ namespace Server.Gumps
           }
         case 8:
           {
-            if (m_List != null && index >= 0 && index < m_List.Count)
+            if (m_List != null && index < m_List.Count)
             {
               if (!(m_State is Account a))
                 break;
@@ -2892,7 +2892,7 @@ namespace Server.Gumps
           }
         case 9:
           {
-            if (m_List != null && index >= 0 && index < m_List.Count)
+            if (m_List != null && index < m_List.Count)
               if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
               {
                 object obj = m_List[index];
@@ -2917,7 +2917,7 @@ namespace Server.Gumps
           }
         case 10:
           {
-            if (m_List != null && index >= 0 && index < m_List.Count)
+            if (m_List != null && index < m_List.Count)
               if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
               {
                 IPAddress ip = m_List[index] as IPAddress;

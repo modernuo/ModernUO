@@ -404,7 +404,7 @@ namespace Server.Mobiles
       Summoned && m_ControlMaster != null &&
       SummonFamiliarSpell.Table.TryGetValue(m_ControlMaster, out BaseCreature bc) && bc == this;
 
-    public virtual bool DeleteCorpseOnDeath => !Core.AOS && m_bSummoned;
+    public virtual bool DeleteCorpseOnDeath => !Core.AOS && m_Summoned;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Loyalty
@@ -709,15 +709,15 @@ namespace Server.Mobiles
     [CommandProperty(AccessLevel.Administrator)]
     public bool Summoned
     {
-      get => m_bSummoned;
+      get => m_Summoned;
       set
       {
-        if (m_bSummoned == value)
+        if (m_Summoned == value)
           return;
 
         NextReacquireTime = Core.TickCount;
 
-        m_bSummoned = value;
+        m_Summoned = value;
         Delta(MobileDelta.Noto);
 
         InvalidateProperties();
@@ -738,7 +738,7 @@ namespace Server.Mobiles
 
     public virtual bool CanRummageCorpses => false;
 
-    public virtual bool DeleteOnRelease => m_bSummoned;
+    public virtual bool DeleteOnRelease => m_Summoned;
 
     public virtual bool CanDrop => IsBonded;
 
@@ -818,7 +818,7 @@ namespace Server.Mobiles
       if ((FightMode == FightMode.Evil && m.Karma < 0) || (c.FightMode == FightMode.Evil && Karma < 0))
         return true;
 
-      return m_Team != c.m_Team || (m_bSummoned || m_Controlled) != (c.m_bSummoned || c.m_Controlled);
+      return m_Team != c.m_Team || (m_Summoned || m_Controlled) != (c.m_Summoned || c.m_Controlled);
     }
 
     public override string ApplyNameSuffix(string suffix)
@@ -851,13 +851,13 @@ namespace Server.Mobiles
 
     public virtual double GetControlChance(Mobile m, bool useBaseSkill = false)
     {
-      if (MinTameSkill <= 29.1 || m_bSummoned || m.AccessLevel >= AccessLevel.GameMaster)
+      if (MinTameSkill <= 29.1 || Summoned || m.AccessLevel >= AccessLevel.GameMaster)
         return 1.0;
 
-      double dMinTameSkill = MinTameSkill;
+      double minTameSkill = MinTameSkill;
 
-      if (dMinTameSkill > -24.9 && AnimalTaming.CheckMastery(m, this))
-        dMinTameSkill = -24.9;
+      if (minTameSkill > -24.9 && AnimalTaming.CheckMastery(m, this))
+        minTameSkill = -24.9;
 
       int taming =
         (int)((useBaseSkill ? m.Skills.AnimalTaming.Base : m.Skills.AnimalTaming.Value) * 10);
@@ -867,24 +867,25 @@ namespace Server.Mobiles
 
       if (Core.ML)
       {
-        int SkillBonus = taming - (int)(dMinTameSkill * 10);
-        int LoreBonus = lore - (int)(dMinTameSkill * 10);
+        int skillBonus = taming - (int)(minTameSkill * 10);
+        int loreBonus = lore - (int)(minTameSkill * 10);
 
-        int SkillMod = 6, LoreMod = 6;
+        var skillMod = 6;
+        var loreMod = 6;
 
-        if (SkillBonus < 0)
-          SkillMod = 28;
-        if (LoreBonus < 0)
-          LoreMod = 14;
+        if (skillBonus < 0)
+          skillMod = 28;
+        if (loreBonus < 0)
+          loreMod = 14;
 
-        SkillBonus *= SkillMod;
-        LoreBonus *= LoreMod;
+        skillBonus *= skillMod;
+        loreBonus *= loreMod;
 
-        bonus = (SkillBonus + LoreBonus) / 2;
+        bonus = (skillBonus + loreBonus) / 2;
       }
       else
       {
-        int difficulty = (int)(dMinTameSkill * 10);
+        int difficulty = (int)(minTameSkill * 10);
         int weighted = (taming * 4 + lore) / 5;
         bonus = weighted - difficulty;
 
@@ -1237,9 +1238,9 @@ namespace Server.Mobiles
       // Removed in version 9
       // writer.Write( (double) m_dMaxTameSkill );
       writer.Write(m_bTamable);
-      writer.Write(m_bSummoned);
+      writer.Write(m_Summoned);
 
-      if (m_bSummoned)
+      if (m_Summoned)
         writer.WriteDeltaTime(SummonEnd);
 
       writer.Write(ControlSlots);
@@ -1382,9 +1383,9 @@ namespace Server.Mobiles
           reader.ReadDouble();
 
         m_bTamable = reader.ReadBool();
-        m_bSummoned = reader.ReadBool();
+        m_Summoned = reader.ReadBool();
 
-        if (m_bSummoned)
+        if (m_Summoned)
         {
           SummonEnd = reader.ReadDeltaTime();
           new UnsummonTimer(m_ControlMaster, this, SummonEnd - DateTime.UtcNow).Start();
@@ -1615,7 +1616,7 @@ namespace Server.Mobiles
         AIType.AI_Mage => new MageAI(this),
         AIType.AI_Predator =>
         // m_AI = new PredatorAI(this);
-        new MeleeAI(this),
+        _ = new MeleeAI(this),
         AIType.AI_Thief => new ThiefAI(this),
         _ => null
       };
@@ -1830,7 +1831,7 @@ namespace Server.Mobiles
           pl.FinishShield();
       }
 
-      if (aggressor.ChangingCombatant && (m_Controlled || m_bSummoned) &&
+      if (aggressor.ChangingCombatant && (m_Controlled || m_Summoned) &&
           (ct == OrderType.Come || (!Core.ML && ct == OrderType.Stay) || ct == OrderType.Stop || ct == OrderType.None ||
            ct == OrderType.Follow))
       {
@@ -2742,11 +2743,11 @@ namespace Server.Mobiles
       return true;
     }
 
-    public override void OnRegionChange(Region Old, Region New)
+    public override void OnRegionChange(Region oldRegion, Region newRegion)
     {
-      base.OnRegionChange(Old, New);
+      base.OnRegionChange(oldRegion, newRegion);
 
-      if (Controlled && Spawner is SpawnEntry se && !se.UnlinkOnTaming && New?.AcceptsSpawnsFrom(se.Region) != true)
+      if (Controlled && Spawner is SpawnEntry se && !se.UnlinkOnTaming && newRegion?.AcceptsSpawnsFrom(se.Region) != true)
       {
         Spawner.Remove(this);
         Spawner = null;
@@ -2926,7 +2927,7 @@ namespace Server.Mobiles
         return BardMaster;
       if (m_Controlled && m_ControlMaster != null)
         return m_ControlMaster;
-      if (m_bSummoned && m_SummonMaster != null)
+      if (m_Summoned && m_SummonMaster != null)
         return m_SummonMaster;
 
       return base.GetDamageMaster(damagee);
@@ -3182,7 +3183,7 @@ namespace Server.Mobiles
 
     private bool m_bTamable;
 
-    private bool m_bSummoned;
+    private bool m_Summoned;
 
     private Mobile m_SummonMaster;
 
@@ -3695,7 +3696,7 @@ namespace Server.Mobiles
 
     public virtual bool IsFriend(Mobile m) =>
       OppositionGroup?.IsEnemy(this, m) != true && m is BaseCreature c && m_Team == c.m_Team
-      && (m_bSummoned || m_Controlled) == (c.m_bSummoned || c.m_Controlled);
+      && (m_Summoned || m_Controlled) == (c.m_Summoned || c.m_Controlled);
 
     public virtual Ethic EthicAllegiance => null;
 

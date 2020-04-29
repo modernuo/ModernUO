@@ -18,7 +18,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new LoomEastDeed();
+    public override BaseAddonDeed AddonDeed => new LoomEastDeed();
 
     public int Phase { get; set; }
 

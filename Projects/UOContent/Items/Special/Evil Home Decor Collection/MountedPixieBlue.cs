@@ -49,7 +49,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new MountedPixieBlueDeed();
+    public override BaseAddonDeed AddonDeed => new MountedPixieBlueDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

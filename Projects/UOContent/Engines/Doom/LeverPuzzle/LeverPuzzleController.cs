@@ -348,24 +348,24 @@ namespace Server.Engines.Doom
 
     public virtual void GenKey() /* Shuffle & build key */
     {
-      ushort[] CA = { 1, 2, 4, 8 };
+      ushort[] cA = { 1, 2, 4, 8 };
       for (int i = 0; i < 4; i++)
       {
         int n = (n = Utility.Random(0, 3)) == i ? n & ~i : n;
-        ushort tmp = CA[i];
-        CA[i] = CA[n];
-        CA[n] = tmp;
+        ushort tmp = cA[i];
+        cA[i] = cA[n];
+        cA[n] = tmp;
       }
 
-      for (int i = 0; i < 4; MyKey = (ushort)(CA[i++] | (MyKey <<= 4)))
+      for (int i = 0; i < 4; MyKey = (ushort)(cA[i++] | (MyKey <<= 4)))
       {
       }
     }
 
     private static bool IsValidDamagable(Mobile m) =>
       m?.Deleted == false &&
-      ((m.Player && m.Alive) ||
-       (m is BaseCreature bc && (bc.Controlled || bc.Summoned) && !bc.IsDeadBondedPet));
+      (m.Player && m.Alive ||
+       m is BaseCreature bc && (bc.Controlled || bc.Summoned) && !bc.IsDeadBondedPet);
 
     public static void MoveMobileOut(Mobile m)
     {

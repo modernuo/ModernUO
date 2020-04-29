@@ -72,7 +72,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new UnsettlingPortraitDeed();
+    public override BaseAddonDeed AddonDeed => new UnsettlingPortraitDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

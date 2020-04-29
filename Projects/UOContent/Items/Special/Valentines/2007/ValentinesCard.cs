@@ -44,11 +44,11 @@ namespace Server.Items
     /*
      * Five possible messages to be signed:
      *
-     * To my one true love, ~1_target_player~. Signed: ~2_player~	1077589
-     * You’ve pwnd my heart, ~1_target_player~. Signed: ~2_player~	1077590
-     * Happy Valentine’s Day, ~1_target_player~. Signed: ~2_player~	1077591
-     * Blackrock has driven me crazy... for ~1_target_player~! Signed: ~2_player~	1077592
-     * You light my Candle of Love, ~1_target_player~! Signed: ~2_player~	1077593
+     * To my one true love, ~1_target_player~. Signed: ~2_player~ 1077589
+     * You’ve pwnd my heart, ~1_target_player~. Signed: ~2_player~ 1077590
+     * Happy Valentine’s Day, ~1_target_player~. Signed: ~2_player~ 1077591
+     * Blackrock has driven me crazy... for ~1_target_player~! Signed: ~2_player~ 1077592
+     * You light my Candle of Love, ~1_target_player~! Signed: ~2_player~ 1077593
      *
      */
 

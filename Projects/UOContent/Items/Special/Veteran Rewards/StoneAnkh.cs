@@ -61,7 +61,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed
+    public override BaseAddonDeed AddonDeed
     {
       get
       {

@@ -102,7 +102,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new DartBoardEastDeed();
+    public override BaseAddonDeed AddonDeed => new DartBoardEastDeed();
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -160,7 +160,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new DartBoardSouthDeed();
+    public override BaseAddonDeed AddonDeed => new DartBoardSouthDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

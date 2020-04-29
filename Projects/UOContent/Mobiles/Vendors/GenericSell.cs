@@ -52,11 +52,20 @@ namespace Server.Mobiles
         int price1 = price, price2 = price;
 
         if (bev is Pitcher)
-        { price1 = 3; price2 = 5; }
+        {
+          price1 = 3;
+          price2 = 5;
+        }
         else if (bev is BeverageBottle)
-        { price1 = 3; price2 = 3; }
+        {
+          price1 = 3;
+          price2 = 3;
+        }
         else if (bev is Jug)
-        { price1 = 6; price2 = 6; }
+        {
+          price1 = 6;
+          price2 = 6;
+        }
 
         if (bev.IsEmpty || bev.Content == BeverageType.Milk)
           price = price1;
@@ -83,34 +92,11 @@ namespace Server.Mobiles
       }
     }
 
-    public string GetNameFor(Item item)
-    {
-      if (item.Name != null)
-        return item.Name;
-      return item.LabelNumber.ToString();
-    }
+    public string GetNameFor(Item item) => item.Name ?? item.LabelNumber.ToString();
 
-    public bool IsSellable(Item item)
-    {
-      if (item.Nontransferable)
-        return false;
+    public bool IsSellable(Item item) => !item.Nontransferable && IsInList(item.GetType());
 
-      // if (item.Hue != 0)
-      // return false;
-
-      return IsInList(item.GetType());
-    }
-
-    public bool IsResellable(Item item)
-    {
-      if (item.Nontransferable)
-        return false;
-
-      // if (item.Hue != 0)
-      // return false;
-
-      return IsInList(item.GetType());
-    }
+    public bool IsResellable(Item item) => !item.Nontransferable && IsInList(item.GetType());
 
     public bool IsInList(Type type) => m_Table.ContainsKey(type);
   }

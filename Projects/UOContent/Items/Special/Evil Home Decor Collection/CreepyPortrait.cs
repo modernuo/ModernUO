@@ -88,7 +88,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new CreepyPortraitDeed();
+    public override BaseAddonDeed AddonDeed => new CreepyPortraitDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

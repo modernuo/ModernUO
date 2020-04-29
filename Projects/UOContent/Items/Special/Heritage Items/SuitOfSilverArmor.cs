@@ -40,7 +40,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new SuitOfSilverArmorDeed();
+    public override BaseAddonDeed AddonDeed => new SuitOfSilverArmorDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

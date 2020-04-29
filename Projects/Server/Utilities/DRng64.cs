@@ -21,7 +21,6 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using Server.Network;
 
 namespace Server
 {

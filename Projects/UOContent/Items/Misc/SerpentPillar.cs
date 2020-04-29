@@ -5,7 +5,7 @@ namespace Server.Items
   public class SerpentPillar : Item
   {
     [Constructible]
-    public SerpentPillar() : this(null, new Rectangle2D(), false)
+    public SerpentPillar() : this(null, default, false)
     {
     }
 

@@ -36,10 +36,11 @@ namespace Server.Guilds
 
       AllianceInfo alliance = guild.Alliance;
       AllianceInfo otherAlliance = m_Other.Alliance;
+
       // NOTE TO SELF: Only only alliance leader can see pending guild alliance statuses
 
-      bool PendingWar = war != null;
-      bool ActiveWar = activeWar != null;
+      bool pendingWar = war != null;
+      bool hasActiveWar = activeWar != null;
       AddPage(0);
 
       AddBackground(0, 0, 520, 335, 0x242C);
@@ -62,7 +63,7 @@ namespace Server.Guilds
 
       WarDeclaration otherWar;
 
-      if (ActiveWar)
+      if (hasActiveWar)
       {
         kills = $"{activeWar.Kills}/{activeWar.MaxKills}";
 
@@ -77,7 +78,7 @@ namespace Server.Guilds
         if (otherWar != null)
           otherKills = $"{otherWar.Kills}/{otherWar.MaxKills}";
       }
-      else if (PendingWar)
+      else if (pendingWar)
       {
         kills = Color($"{war.Kills}/{war.MaxKills}", 0x990000);
         // time = Color( String.Format( "{0}:{1}", war.WarLength.Hours, ((TimeSpan)(war.WarLength - TimeSpan.FromHours( war.WarLength.Hours ))).Minutes ), 0xFF0000 );
@@ -101,7 +102,7 @@ namespace Server.Guilds
 
       int number = 1062973; // <div align=center>You are at peace with this guild.</div>
 
-      if (PendingWar)
+      if (pendingWar)
       {
         if (war.WarRequester)
         {
@@ -117,7 +118,7 @@ namespace Server.Guilds
 
         AddButtonAndBackground(20, 290, 7, 1062982); // Dismiss Challenge
       }
-      else if (ActiveWar)
+      else if (hasActiveWar)
       {
         number = 1062965; // <div align=center>You are at war with this guild!</div>
         AddButtonAndBackground(20, 290, 8, 1062980); // Surrender
@@ -131,9 +132,10 @@ namespace Server.Guilds
           if (alliance.Leader == guild)
           {
             AddButtonAndBackground(20, 260, 12, 1062984); // Remove Guild from Alliance
-            AddButtonAndBackground(275, 260, 13,
-              1063433); // Promote to Alliance Leader	//Note: No 'confirmation' like the other leader guild promotion things
-            // Remove guild from alliance	//Promote to Alliance Leader
+            AddButtonAndBackground(275, 260, 13, 1063433); // Promote to Alliance Leader
+            // Note: No 'confirmation' like the other leader guild promotion things
+            // Remove guild from alliance
+            // Promote to Alliance Leader
           }
 
           // Show roster, Centered, up
@@ -674,7 +676,7 @@ namespace Server.Guilds
 
           m_Other.GuildMessage(1070780, guild.Name); // ~1_val~ has proposed an alliance.
 
-          new AllianceInfo(guild, name, m_Other);
+          _ = new AllianceInfo(guild, name, m_Other);
         }
       }
     }

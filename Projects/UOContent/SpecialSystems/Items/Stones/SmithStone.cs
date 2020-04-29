@@ -17,10 +17,10 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      SmithBag SmithBag = new SmithBag();
+      SmithBag smithBag = new SmithBag();
 
-      if (!from.AddToBackpack(SmithBag))
-        SmithBag.Delete();
+      if (!from.AddToBackpack(smithBag))
+        smithBag.Delete();
     }
 
     public override void Serialize(IGenericWriter writer)

@@ -14,24 +14,24 @@ namespace System.Buffers
     /// <summary>
     /// The underlying <see cref="IBufferWriter{T}"/>.
     /// </summary>
-    private T _output;
+    private T m_Output;
 
     /// <summary>
     /// The result of the last call to <see cref="IBufferWriter{T}.GetSpan(int)"/>, less any bytes already "consumed" with <see cref="Advance(int)"/>.
     /// Backing field for the <see cref="Span"/> property.
     /// </summary>
-    private Span<byte> _span;
+    private Span<byte> m_Span;
 
     /// <summary>
     /// The number of uncommitted bytes (all the calls to <see cref="Advance(int)"/> since the last call to <see cref="Commit"/>).
     /// </summary>
-    private int _buffered;
+    private int m_Buffered;
 
     /// <summary>
     /// The total number of bytes written with this writer.
     /// Backing field for the <see cref="BytesCommitted"/> property.
     /// </summary>
-    private long _bytesCommitted;
+    private long m_BytesCommitted;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BufferWriter{T}"/> struct.
@@ -40,21 +40,21 @@ namespace System.Buffers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public BufferWriter(T output)
     {
-      _buffered = 0;
-      _bytesCommitted = 0;
-      _output = output;
-      _span = output.GetSpan();
+      m_Buffered = 0;
+      m_BytesCommitted = 0;
+      m_Output = output;
+      m_Span = output.GetSpan();
     }
 
     /// <summary>
     /// Gets the result of the last call to <see cref="IBufferWriter{T}.GetSpan(int)"/>.
     /// </summary>
-    public Span<byte> Span => _span;
+    public Span<byte> Span => m_Span;
 
     /// <summary>
     /// Gets the total number of bytes written with this writer.
     /// </summary>
-    public long BytesCommitted => _bytesCommitted;
+    public long BytesCommitted => m_BytesCommitted;
 
     /// <summary>
     /// Calls <see cref="IBufferWriter{T}.Advance(int)"/> on the underlying writer
@@ -63,12 +63,12 @@ namespace System.Buffers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Commit()
     {
-      var buffered = _buffered;
+      var buffered = m_Buffered;
       if (buffered > 0)
       {
-        _bytesCommitted += buffered;
-        _buffered = 0;
-        _output.Advance(buffered);
+        m_BytesCommitted += buffered;
+        m_Buffered = 0;
+        m_Output.Advance(buffered);
       }
     }
 
@@ -79,8 +79,8 @@ namespace System.Buffers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Advance(int count)
     {
-      _buffered += count;
-      _span = _span.Slice(count);
+      m_Buffered += count;
+      m_Span = m_Span.Slice(count);
     }
 
     /// <summary>
@@ -90,9 +90,9 @@ namespace System.Buffers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(ReadOnlySpan<byte> source)
     {
-      if (_span.Length >= source.Length)
+      if (m_Span.Length >= source.Length)
       {
-        source.CopyTo(_span);
+        source.CopyTo(m_Span);
         Advance(source.Length);
       }
       else
@@ -108,7 +108,7 @@ namespace System.Buffers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Ensure(int count = 1)
     {
-      if (_span.Length < count) EnsureMore(count);
+      if (m_Span.Length < count) EnsureMore(count);
     }
 
     /// <summary>
@@ -118,9 +118,9 @@ namespace System.Buffers
     [MethodImpl(MethodImplOptions.NoInlining)]
     private void EnsureMore(int count = 0)
     {
-      if (_buffered > 0) Commit();
+      if (m_Buffered > 0) Commit();
 
-      _span = _output.GetSpan(count);
+      m_Span = m_Output.GetSpan(count);
     }
 
     /// <summary>
@@ -131,10 +131,10 @@ namespace System.Buffers
     {
       while (source.Length > 0)
       {
-        if (_span.Length == 0) EnsureMore();
+        if (m_Span.Length == 0) EnsureMore();
 
-        var writable = Math.Min(source.Length, _span.Length);
-        source.Slice(0, writable).CopyTo(_span);
+        var writable = Math.Min(source.Length, m_Span.Length);
+        source.Slice(0, writable).CopyTo(m_Span);
         source = source.Slice(writable);
         Advance(writable);
       }

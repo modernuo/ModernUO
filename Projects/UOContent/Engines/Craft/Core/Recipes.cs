@@ -32,7 +32,7 @@ namespace Server.Engines.Craft
 
     public int ID { get; }
 
-    public TextDefinition TextDefinition => m_TD ?? (m_TD = new TextDefinition(CraftItem.NameNumber, CraftItem.NameString));
+    public TextDefinition TextDefinition => m_TD ??= new TextDefinition(CraftItem.NameNumber, CraftItem.NameString);
 
     public static void Initialize()
     {
@@ -70,19 +70,19 @@ namespace Server.Engines.Craft
       Mobile m = e.Mobile;
       m.SendMessage("Target a player to have them forget all of the recipes they've learned.");
 
-      m.BeginTarget(-1, false, TargetFlags.None, delegate(Mobile from, object targeted)
+      m.BeginTarget(-1, false, TargetFlags.None, (from, targeted, mob) =>
       {
         if (targeted is PlayerMobile mobile)
         {
           mobile.ResetRecipes();
 
-          m.SendMessage("They forget all their recipes.");
+          mob.SendMessage("They forget all their recipes.");
         }
         else
         {
-          m.SendMessage("That is not a player!");
+          mob.SendMessage("That is not a player!");
         }
-      });
+      }, m);
     }
   }
 }

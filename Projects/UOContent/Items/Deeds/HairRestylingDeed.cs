@@ -42,7 +42,7 @@ namespace Server.Items
 
     private class InternalGump : Gump
     {
-      private readonly int[][] ElvenArray =
+      private static readonly int[][] elvenArray =
       {
         new[] { 0 },
         new[] { 1011064, 1011064, 0, 0, 0, 0 }, // bald
@@ -59,7 +59,7 @@ namespace Server.Items
       /*
           racial arrays are: cliloc_F, cliloc_M, ItemID_F, ItemID_M, gump_img_F, gump_img_M
       */
-      private readonly int[][] HumanArray = /* why on earth cant these utilies be consistent with hex/dec */
+      private static readonly int[][] humanArray = /* why on earth cant these utilies be consistent with hex/dec */
       {
         new[] { 0 },
         new[] { 1011064, 1011064, 0, 0, 0, 0 }, // bald
@@ -77,7 +77,7 @@ namespace Server.Items
           gump data: bgX, bgY, htmlX, htmlY, imgX, imgY, butX, butY
       */
 
-      private readonly int[][] LayoutArray =
+      private static readonly int[][] layoutArray =
       {
         new[] { 0 }, /* padding: its more efficient than code to ++ the index/buttonid */
         new[] { 425, 280, 342, 295, 000, 000, 310, 292 },
@@ -109,19 +109,19 @@ namespace Server.Items
 
         AddHtmlLocalized(210, 342, 90, 35, 1011012); // <CENTER>HAIRSTYLE SELECTION MENU</center>
 
-        int[][] RacialData = from.Race == Race.Human ? HumanArray : ElvenArray;
+        int[][] racialData = from.Race == Race.Human ? humanArray : elvenArray;
 
-        for (int i = 1; i < RacialData.Length; i++)
+        for (int i = 1; i < racialData.Length; i++)
         {
-          AddHtmlLocalized(LayoutArray[i][2], LayoutArray[i][3], i == 1 ? 125 : 80, i == 1 ? 70 : 35,
-            m_From.Female ? RacialData[i][0] : RacialData[i][1]);
-          if (LayoutArray[i][4] != 0)
+          AddHtmlLocalized(layoutArray[i][2], layoutArray[i][3], i == 1 ? 125 : 80, i == 1 ? 70 : 35,
+            m_From.Female ? racialData[i][0] : racialData[i][1]);
+          if (layoutArray[i][4] != 0)
           {
-            AddBackground(LayoutArray[i][0], LayoutArray[i][1], 50, 50, 0xA3C);
-            AddImage(LayoutArray[i][4], LayoutArray[i][5], m_From.Female ? RacialData[i][4] : RacialData[i][5]);
+            AddBackground(layoutArray[i][0], layoutArray[i][1], 50, 50, 0xA3C);
+            AddImage(layoutArray[i][4], layoutArray[i][5], m_From.Female ? racialData[i][4] : racialData[i][5]);
           }
 
-          AddButton(LayoutArray[i][6], LayoutArray[i][7], 0xFA5, 0xFA7, i);
+          AddButton(layoutArray[i][6], layoutArray[i][7], 0xFA5, 0xFA7, i);
         }
       }
 
@@ -136,12 +136,12 @@ namespace Server.Items
         if (info.ButtonID < 1 || info.ButtonID > 10)
           return;
 
-        int[][] RacialData = m_From.Race == Race.Human ? HumanArray : ElvenArray;
+        int[][] racialData = m_From.Race == Race.Human ? humanArray : elvenArray;
 
         if (m_From is PlayerMobile pm)
         {
           pm.SetHairMods(-1, -1); // clear any hairmods (disguise kit, incognito)
-          pm.HairItemID = pm.Female ? RacialData[info.ButtonID][2] : RacialData[info.ButtonID][3];
+          pm.HairItemID = pm.Female ? racialData[info.ButtonID][2] : racialData[info.ButtonID][3];
           m_Deed.Delete();
         }
       }

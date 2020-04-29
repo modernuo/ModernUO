@@ -12,7 +12,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new AnvilEastDeed();
+    public override BaseAddonDeed AddonDeed => new AnvilEastDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

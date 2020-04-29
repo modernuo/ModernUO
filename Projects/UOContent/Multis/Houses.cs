@@ -31,7 +31,7 @@ namespace Server.Multis
     {
       return ItemID switch
       {
-        0x64 => (HouseDeed)new StonePlasterHouseDeed(),
+        0x64 => new StonePlasterHouseDeed(),
         0x66 => new FieldStoneHouseDeed(),
         0x68 => new SmallBrickHouseDeed(),
         0x6A => new WoodHouseDeed(),
@@ -128,7 +128,7 @@ namespace Server.Multis
     {
       return ItemID switch
       {
-        0x76 => (HouseDeed)new TwoStoryWoodPlasterHouseDeed(),
+        0x76 => new TwoStoryWoodPlasterHouseDeed(),
         0x78 => new TwoStoryStonePlasterHouseDeed(),
         _ => new TwoStoryStonePlasterHouseDeed()
       };
@@ -563,7 +563,7 @@ namespace Server.Multis
     {
       return ItemID switch
       {
-        0xA0 => (HouseDeed)new StoneWorkshopDeed(),
+        0xA0 => new StoneWorkshopDeed(),
         0xA2 => new MarbleWorkshopDeed(),
         _ => new MarbleWorkshopDeed()
       };

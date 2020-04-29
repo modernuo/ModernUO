@@ -27,13 +27,13 @@ namespace Server.Diagnostics
 {
   public abstract class BaseProfile
   {
-    private readonly Stopwatch _stopwatch;
+    private readonly Stopwatch m_Stopwatch;
 
     protected BaseProfile(string name)
     {
       Name = name;
 
-      _stopwatch = new Stopwatch();
+      m_Stopwatch = new Stopwatch();
     }
 
     public string Name { get; }
@@ -61,14 +61,14 @@ namespace Server.Diagnostics
 
     public virtual void Start()
     {
-      if (_stopwatch.IsRunning) _stopwatch.Reset();
+      if (m_Stopwatch.IsRunning) m_Stopwatch.Reset();
 
-      _stopwatch.Start();
+      m_Stopwatch.Start();
     }
 
     public virtual void Finish()
     {
-      var elapsed = _stopwatch.Elapsed;
+      var elapsed = m_Stopwatch.Elapsed;
 
       TotalTime += elapsed;
 
@@ -76,7 +76,7 @@ namespace Server.Diagnostics
 
       Count++;
 
-      _stopwatch.Reset();
+      m_Stopwatch.Reset();
     }
 
     public virtual void WriteTo(TextWriter op)

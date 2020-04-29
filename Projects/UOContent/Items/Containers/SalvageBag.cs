@@ -124,10 +124,10 @@ namespace Server.Items
     private bool Resmeltables() // Where context menu checks for metal items and dragon barding deeds
     {
       foreach (Item i in Items)
-        return i?.Deleted == false && (
-                 (i is BaseWeapon weapon && CraftResources.GetType(weapon.Resource) == CraftResourceType.Metal) ||
-                 (i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Metal) ||
-                 i is DragonBardingDeed);
+        return i?.Deleted == false &&
+               (!(i is BaseWeapon weapon) || CraftResources.GetType(weapon.Resource) != CraftResourceType.Metal) &&
+               (!(i is BaseArmor armor) || CraftResources.GetType(armor.Resource) != CraftResourceType.Metal) &&
+               !(i is DragonBardingDeed);
 
       return false;
     }
@@ -140,7 +140,7 @@ namespace Server.Items
           continue;
 
         if (i is BaseClothing || i is Cloth || i is BoltOfCloth || i is Hides || i is BonePile ||
-            (i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Leather))
+            i is BaseArmor armor && CraftResources.GetType(armor.Resource) == CraftResourceType.Leather)
           return true;
       }
 
@@ -175,8 +175,8 @@ namespace Server.Items
         if (item?.Deleted != false)
           continue;
 
-        if ((item is BaseArmor armor && Resmelt(from, armor, armor.Resource)) ||
-            (item is BaseWeapon weapon && Resmelt(from, weapon, weapon.Resource)) ||
+        if (item is BaseArmor armor && Resmelt(from, armor, armor.Resource) ||
+            item is BaseWeapon weapon && Resmelt(from, weapon, weapon.Resource) ||
             item is DragonBardingDeed)
           salvaged++;
         else
@@ -194,6 +194,11 @@ namespace Server.Items
           $"{salvaged}\t{salvaged + notSalvaged}"); // Salvaged: ~1_COUNT~/~2_NUM~ blacksmithed items
       }
     }
+
+    private static Type[] clothTypes = {
+      typeof(Leather), typeof(Cloth), typeof(SpinedLeather), typeof(HornedLeather), typeof(BarbedLeather),
+      typeof(Bandage), typeof(Bone)
+    };
 
     private void SalvageCloth(Mobile from)
     {
@@ -228,10 +233,7 @@ namespace Server.Items
       from.SendLocalizedMessage(1079974,
         $"{salvaged}\t{salvaged + notSalvaged}"); // Salvaged: ~1_COUNT~/~2_NUM~ tailored items
 
-      Item[] items = FindItemsByType(new[]{
-        typeof(Leather), typeof(Cloth), typeof(SpinedLeather), typeof(HornedLeather), typeof(BarbedLeather),
-        typeof(Bandage), typeof(Bone)
-      });
+      Item[] items = FindItemsByType(clothTypes);
 
       for (int i = 0; i < items.Length; i++) from.AddToBackpack(items[i]);
     }

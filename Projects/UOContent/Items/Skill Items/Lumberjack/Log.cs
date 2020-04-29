@@ -51,11 +51,11 @@ namespace Server.Items
       return true;
     }
 
-    int ICommodity.DescriptionNumber => CraftResources.IsStandard(m_Resource)
+    public int DescriptionNumber => CraftResources.IsStandard(m_Resource)
       ? LabelNumber
       : 1075062 + ((int)m_Resource - (int)CraftResource.RegularWood);
 
-    bool ICommodity.IsDeedable => true;
+    public bool IsDeedable => true;
 
     public override void GetProperties(ObjectPropertyList list)
     {

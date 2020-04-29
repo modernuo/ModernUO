@@ -483,7 +483,7 @@ namespace Server
     private static readonly Queue<Mobile> m_DeltaQueue = new Queue<Mobile>();
     private static readonly Queue<Mobile> m_DeltaQueueR = new Queue<Mobile>();
 
-    private static bool _processing;
+    private static bool m_Processing;
 
     private static readonly string[] m_GuildTypes =
     {
@@ -3189,15 +3189,15 @@ namespace Server
 
     public bool BeginAction(object toLock)
     {
-      if (_actions == null)
+      if (m_Actions == null)
       {
-        _actions = new List<object> { toLock };
+        m_Actions = new List<object> { toLock };
         return true;
       }
 
-      if (!_actions.Contains(toLock))
+      if (!m_Actions.Contains(toLock))
       {
-        _actions.Add(toLock);
+        m_Actions.Add(toLock);
         return true;
       }
 
@@ -3206,17 +3206,17 @@ namespace Server
 
     public bool CanBeginAction<T>() => CanBeginAction(typeof(T));
 
-    public bool CanBeginAction(object toLock) => _actions?.Contains(toLock) != true;
+    public bool CanBeginAction(object toLock) => m_Actions?.Contains(toLock) != true;
 
     public void EndAction<T>() => EndAction(typeof(T));
 
     public void EndAction(object toLock)
     {
-      if (_actions != null)
+      if (m_Actions != null)
       {
-        _actions.Remove(toLock);
+        m_Actions.Remove(toLock);
 
-        if (_actions.Count == 0) _actions = null;
+        if (m_Actions.Count == 0) m_Actions = null;
       }
     }
 
@@ -6427,11 +6427,11 @@ namespace Server
       if (Deleted || m.Deleted || m_Map == Map.Internal || m.m_Map == Map.Internal)
         return false;
 
-      return this == m || (m.m_Map == m_Map &&
-        (!m.Hidden || (m_AccessLevel != AccessLevel.Player &&
-          (m_AccessLevel >= m.AccessLevel || m_AccessLevel >= AccessLevel.Administrator))) &&
-        (m.Alive || (Core.SE && Skills.SpiritSpeak.Value >= 100.0) || !Alive ||
-         m_AccessLevel > AccessLevel.Player || m.Warmode));
+      return this == m || m.m_Map == m_Map &&
+        (!m.Hidden || m_AccessLevel != AccessLevel.Player &&
+          (m_AccessLevel >= m.AccessLevel || m_AccessLevel >= AccessLevel.Administrator)) &&
+        (m.Alive || Core.SE && Skills.SpiritSpeak.Value >= 100.0 || !Alive ||
+         m_AccessLevel > AccessLevel.Player || m.Warmode);
     }
 
     public virtual bool CanBeRenamedBy(Mobile from) =>
@@ -6966,7 +6966,7 @@ namespace Server
       {
         m_InDeltaQueue = true;
 
-        if (_processing)
+        if (m_Processing)
           lock (m_DeltaQueueR)
           {
             m_DeltaQueueR.Enqueue(this);
@@ -6994,7 +6994,7 @@ namespace Server
 
     public static void ProcessDeltaQueue()
     {
-      _processing = true;
+      m_Processing = true;
 
       if (m_DeltaQueue.Count >= 512)
       {
@@ -7007,7 +7007,7 @@ namespace Server
           m.ProcessDelta();
       }
 
-      _processing = false;
+      m_Processing = false;
 
       while (m_DeltaQueueR.TryDequeue(out var m))
         m.ProcessDelta();
@@ -7429,7 +7429,7 @@ namespace Server
     private Region m_Region;
     private int m_VirtualArmor;
     private int m_Followers, m_FollowersMax;
-    private List<object> _actions;
+    private List<object> m_Actions;
     private Queue<MovementRecord> m_MoveRecords;
     private int m_WarmodeChanges;
     private DateTime m_NextWarmodeChange;

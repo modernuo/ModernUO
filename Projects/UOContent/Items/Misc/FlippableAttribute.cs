@@ -33,12 +33,12 @@ namespace Server.Items
 
           Type type = item.GetType();
 
-          FlippableAttribute[] AttributeArray =
+          FlippableAttribute[] attributeArray =
             (FlippableAttribute[])type.GetCustomAttributes(typeof(FlippableAttribute), false);
 
-          if (AttributeArray.Length == 0) return;
+          if (attributeArray.Length == 0) return;
 
-          FlippableAttribute fa = AttributeArray[0];
+          FlippableAttribute fa = attributeArray[0];
 
           fa.Flip(item);
         }

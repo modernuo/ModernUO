@@ -43,7 +43,7 @@ namespace Server.ContextMenus
 
               if (val >= 0 && val < book.BookCount)
               {
-                book.Content |= (ulong)1 << val;
+                book.Content |= 1ul << val;
 
                 m_Scroll.Consume();
 

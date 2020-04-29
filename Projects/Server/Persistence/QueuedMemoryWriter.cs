@@ -25,12 +25,12 @@ namespace Server
 {
   public sealed class QueuedMemoryWriter : BinaryFileWriter
   {
-    private readonly MemoryStream _memStream;
-    private readonly List<IndexInfo> _orderedIndexInfo = new List<IndexInfo>();
+    private readonly MemoryStream m_MemoryStream;
+    private readonly List<IndexInfo> m_OrderedIndexInfo = new List<IndexInfo>();
 
     public QueuedMemoryWriter()
       : base(new MemoryStream(1024 * 1024), true) =>
-      _memStream = UnderlyingStream as MemoryStream;
+      m_MemoryStream = UnderlyingStream as MemoryStream;
 
     protected override int BufferSize => 512;
 
@@ -43,18 +43,18 @@ namespace Server
       info.typeCode = serializable.TypeRef; // For guilds, this will automagically be zero.
       info.serial = serializable.Serial;
 
-      _orderedIndexInfo.Add(info);
+      m_OrderedIndexInfo.Add(info);
     }
 
     public void CommitTo(SequentialFileWriterStream dataFile, SequentialFileWriterStream indexFile)
     {
       Flush();
 
-      var memLength = (int)_memStream.Position;
+      var memLength = (int)m_MemoryStream.Position;
 
       if (memLength > 0)
       {
-        var memBuffer = _memStream.GetBuffer();
+        var memBuffer = m_MemoryStream.GetBuffer();
 
         var actualPosition = dataFile.Position;
 
@@ -67,9 +67,9 @@ namespace Server
         // int indexWritten = _orderedIndexInfo.Count * indexBuffer.Length;
         // int totalWritten = memLength + indexWritten
 
-        for (var i = 0; i < _orderedIndexInfo.Count; i++)
+        for (var i = 0; i < m_OrderedIndexInfo.Count; i++)
         {
-          var info = _orderedIndexInfo[i];
+          var info = m_OrderedIndexInfo[i];
 
           indexBuffer[0] = (byte)info.typeCode;
           indexBuffer[1] = (byte)(info.typeCode >> 8);

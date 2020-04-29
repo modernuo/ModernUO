@@ -28,40 +28,40 @@ namespace Server
   /// </summary>
   public static class RandomImpl
   {
-    private static readonly Xoshiro256PlusPlus _Random = new Xoshiro256PlusPlus();
+    private static readonly Xoshiro256PlusPlus m_Random = new Xoshiro256PlusPlus();
 
-    public static uint Next(uint c) => _Random.Next(c);
+    public static uint Next(uint c) => m_Random.Next(c);
 
-    public static bool NextBool() => _Random.NextBool();
+    public static bool NextBool() => m_Random.NextBool();
 
-    public static void GetBytes(Span<byte> b) => _Random.GetBytes(b);
+    public static void GetBytes(Span<byte> b) => m_Random.GetBytes(b);
 
-    public static double NextDouble() => _Random.NextDouble();
+    public static double NextDouble() => m_Random.NextDouble();
   }
 
   public static class SecureRandomImpl
   {
-    public static readonly RandomNumberGenerator _Random;
+    public static readonly RandomNumberGenerator m_Random;
 
     static SecureRandomImpl()
     {
       try
       {
-        _Random = new DRng64();
-        if (_Random is IHardwareRNG rng && rng?.IsSupported() != true)
-          _Random = new RNGCryptoServiceProvider();
+        m_Random = new DRng64();
+        if (m_Random is IHardwareRNG rng && rng?.IsSupported() != true)
+          m_Random = new RNGCryptoServiceProvider();
       }
       catch (Exception)
       {
-        _Random = new RNGCryptoServiceProvider();
+        m_Random = new RNGCryptoServiceProvider();
       }
     }
 
-    public static bool IsHardwareRNG => _Random is IHardwareRNG;
+    public static bool IsHardwareRNG => m_Random is IHardwareRNG;
 
-    public static string Name => _Random.GetType().Name;
+    public static string Name => m_Random.GetType().Name;
 
-    public static void GetBytes(Span<byte> buffer) => _Random.GetBytes(buffer);
+    public static void GetBytes(Span<byte> buffer) => m_Random.GetBytes(buffer);
   }
 
   public interface IHardwareRNG

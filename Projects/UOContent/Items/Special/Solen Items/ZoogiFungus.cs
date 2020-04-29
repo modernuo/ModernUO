@@ -14,8 +14,8 @@ namespace Server.Items
     {
     }
 
-    int ICommodity.DescriptionNumber => LabelNumber;
-    bool ICommodity.IsDeedable => Core.ML;
+    public int DescriptionNumber => LabelNumber;
+    public bool IsDeedable => Core.ML;
 
     public override void Serialize(IGenericWriter writer)
     {

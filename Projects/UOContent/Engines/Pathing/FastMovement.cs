@@ -14,7 +14,7 @@ namespace Server.Movement
     private const TileFlag ImpassableSurface = TileFlag.Impassable | TileFlag.Surface;
     public static bool Enabled = false;
 
-    private static IMovementImpl _Successor;
+    private static IMovementImpl m_Successor;
 
     private FastMovementImpl()
     {
@@ -22,7 +22,7 @@ namespace Server.Movement
 
     public bool CheckMovement(Mobile m, Map map, Point3D loc, Direction d, out int newZ)
     {
-      if (!Enabled && _Successor != null) return _Successor.CheckMovement(m, map, loc, d, out newZ);
+      if (!Enabled && m_Successor != null) return m_Successor.CheckMovement(m, map, loc, d, out newZ);
 
       if (map == null || map == Map.Internal)
       {
@@ -127,13 +127,13 @@ namespace Server.Movement
     }
 
     public bool CheckMovement(Mobile m, Direction d, out int newZ) =>
-      !Enabled && _Successor != null
-        ? _Successor.CheckMovement(m, d, out newZ)
+      !Enabled && m_Successor != null
+        ? m_Successor.CheckMovement(m, d, out newZ)
         : CheckMovement(m, m.Map, m.Location, d, out newZ);
 
     public static void Initialize()
     {
-      _Successor = Movement.Impl;
+      m_Successor = Movement.Impl;
       Movement.Impl = new FastMovementImpl();
     }
 
@@ -490,15 +490,15 @@ namespace Server.Movement
 
     private static class MovementPool
     {
-      private static readonly object _MovePoolLock = new object();
-      private static readonly Queue<List<Item>> _MoveCachePool = new Queue<List<Item>>(0x400);
+      private static readonly object m_MovePoolLock = new object();
+      private static readonly Queue<List<Item>> m_MoveCachePool = new Queue<List<Item>>(0x400);
 
       public static void AcquireMoveCache(ref List<Item> cache, IEnumerable<Item> items)
       {
         if (cache == null)
-          lock (_MovePoolLock)
+          lock (m_MovePoolLock)
           {
-            cache = _MoveCachePool.Count > 0 ? _MoveCachePool.Dequeue() : new List<Item>(0x10);
+            cache = m_MoveCachePool.Count > 0 ? m_MoveCachePool.Dequeue() : new List<Item>(0x10);
           }
         else
           cache.Clear();
@@ -512,9 +512,9 @@ namespace Server.Movement
 
         if (!free) return;
 
-        lock (_MovePoolLock)
+        lock (m_MovePoolLock)
         {
-          if (_MoveCachePool.Count < 0x400) _MoveCachePool.Enqueue(cache);
+          if (m_MoveCachePool.Count < 0x400) m_MoveCachePool.Enqueue(cache);
         }
 
         cache = null;

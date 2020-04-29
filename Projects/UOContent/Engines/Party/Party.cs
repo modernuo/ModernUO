@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Factions;
 using Server.Network;
 using Server.Targeting;
@@ -32,17 +33,7 @@ namespace Server.Engines.PartySystem
 
     public PartyMemberInfo this[int index] => Members[index];
 
-    public PartyMemberInfo this[Mobile m]
-    {
-      get
-      {
-        for (int i = 0; i < Members.Count; ++i)
-          if (Members[i].Mobile == m)
-            return Members[i];
-
-        return null;
-      }
-    }
+    public PartyMemberInfo this[Mobile m] => Members.FirstOrDefault(t => t.Mobile == m);
 
     public void OnStamChanged(Mobile m)
     {
@@ -74,8 +65,7 @@ namespace Server.Engines.PartySystem
 
         if (c != m && m.Map == c.Map && Utility.InUpdateRange(c, m) && c.CanSee(m))
         {
-          if (p == null)
-            p = Packet.Acquire(new MobileManaN(m));
+          p ??= Packet.Acquire(new MobileManaN(m));
 
           c.Send(p);
         }
@@ -163,9 +153,7 @@ namespace Server.Engines.PartySystem
 
     public static void EventSink_Logout(Mobile from)
     {
-      Party p = Get(from);
-
-      p?.Remove(from);
+      Get(from)?.Remove(from);
 
       from.Party = null;
     }
@@ -333,12 +321,7 @@ namespace Server.Engines.PartySystem
       SendToAll(number, "", 0x3B2);
     }
 
-    public void SendToAll(int number, string args)
-    {
-      SendToAll(number, args, 0x3B2);
-    }
-
-    public void SendToAll(int number, string args, int hue)
+    public void SendToAll(int number, string args, int hue = 0x3B2)
     {
       SendToAll(new MessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args));
     }
@@ -384,9 +367,8 @@ namespace Server.Engines.PartySystem
         if (mob?.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel &&
             mob.Party != this && !m_Listeners.Contains(mob))
         {
-          if (p == null)
-            p = Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Regular, from.SpeechHue, 3,
-              from.Language, from.Name, text));
+          p ??= Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Regular, from.SpeechHue, 3,
+            from.Language, from.Name, text));
 
           ns.Send(p);
         }

@@ -398,7 +398,7 @@ namespace Server.Engines.CannedEvil
             m_Altar.Hue = 0;
 
             if (!Core.ML || Map == Map.Felucca)
-              new StarRoomGate(m_Altar.Location, m_Altar.Map, true);
+              _ = new StarRoomGate(m_Altar.Location, m_Altar.Map, true);
           }
 
           Champion = null;
@@ -441,23 +441,16 @@ namespace Server.Engines.CannedEvil
                     double random = Utility.Random(49);
 
                     if (random <= 24)
-                    {
-                      ScrollofTranscendence SoTF = CreateRandomSoT(true);
-                      GiveScrollTo(pm, SoTF);
-                    }
+                      GiveScrollTo(pm, CreateRandomSoT(true));
                     else
-                    {
-                      PowerScroll PS = PowerScroll.CreateRandomNoCraft(5, 5);
-                      GiveScrollTo(pm, PS);
-                    }
+                      GiveScrollTo(pm, PowerScroll.CreateRandomNoCraft(5, 5));
                   }
 
                 if (Map == Map.Ilshenar || Map == Map.Tokuno || Map == Map.Malas)
                   if (Utility.RandomDouble() < 0.0015)
                   {
                     pm.SendLocalizedMessage(1094936); // You have received a Scroll of Transcendence!
-                    ScrollofTranscendence SoTT = CreateRandomSoT(false);
-                    pm.AddToBackpack(SoTT);
+                    pm.AddToBackpack(CreateRandomSoT(false));
                   }
               }
 

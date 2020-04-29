@@ -66,9 +66,9 @@ namespace Server.Guilds
 
         bool isComparer = m_Fields[i].Comparer.GetType() == m_Comparer.GetType();
 
-        int ButtonID = isComparer ? m_Ascending ? 0x983 : 0x985 : 0x2716;
+        int buttonId = isComparer ? m_Ascending ? 0x983 : 0x985 : 0x2716;
 
-        AddButton(59 + width + f.Width, 117, ButtonID, ButtonID + (isComparer ? 1 : 0), 100 + i);
+        AddButton(59 + width + f.Width, 117, buttonId, buttonId + (isComparer ? 1 : 0), 100 + i);
 
         width += f.Width + 12;
       }

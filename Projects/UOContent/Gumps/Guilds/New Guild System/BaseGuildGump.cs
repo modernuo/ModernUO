@@ -76,7 +76,8 @@ namespace Server.Guilds
 
     public static bool CheckProfanity(string s, int maxLength = 50)
     {
-      // return NameVerification.Validate( s, 1, 50, true, true, false, int.MaxValue, ProfanityProtection.Exceptions, ProfanityProtection.Disallowed, ProfanityProtection.StartDisallowed );	//What am I doing wrong, this still allows chars like the <3 symbol... 3 AM.  someone change this to use this
+      // return NameVerification.Validate( s, 1, 50, true, true, false, int.MaxValue, ProfanityProtection.Exceptions, ProfanityProtection.Disallowed, ProfanityProtection.StartDisallowed );
+      // What am I doing wrong, this still allows chars like the <3 symbol... 3 AM.  someone change this to use this
 
       // With testing on OSI, Guild stuff seems to follow a 'simpler' method of profanity protection
       if (s.Length < 1 || s.Length > maxLength)

@@ -36,7 +36,7 @@ namespace Server.Items
       return false;
     }
 
-    bool IShipwreckedItem.IsShipwreckedItem
+    public bool IsShipwreckedItem
     {
       get => true;
       set { }

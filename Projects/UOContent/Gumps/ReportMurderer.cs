@@ -150,10 +150,10 @@ namespace Server.Gumps
               if (killer is PlayerMobile pk)
               {
                 pk.ResetKillTime();
-                pk.SendLocalizedMessage(1049067);// You have been reported for murder!
+                pk.SendLocalizedMessage(1049067); // You have been reported for murder!
 
                 if (pk.Kills == 5)
-                  pk.SendLocalizedMessage(502134);// You are now known as a murderer!
+                  pk.SendLocalizedMessage(502134); // You are now known as a murderer!
                 else if (SkillHandlers.Stealing.SuspendOnMurder && pk.Kills == 1 && pk.NpcGuild == NpcGuild.ThievesGuild) pk.SendLocalizedMessage(501562); // You have been suspended by the Thieves Guild.
               }
             }

@@ -16,7 +16,7 @@ namespace Server.Items
     {
     }
 
-    public abstract override BaseAddonDeed Deed { get; }
+    public abstract override BaseAddonDeed AddonDeed { get; }
     public abstract Item Fruit { get; }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -107,7 +107,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new AppleTreeDeed();
+    public override BaseAddonDeed AddonDeed => new AppleTreeDeed();
     public override Item Fruit => new Apple();
 
     public override void Serialize(IGenericWriter writer)
@@ -165,7 +165,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new PeachTreeDeed();
+    public override BaseAddonDeed AddonDeed => new PeachTreeDeed();
     public override Item Fruit => new Peach();
 
     public override void Serialize(IGenericWriter writer)

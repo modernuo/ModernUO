@@ -13,7 +13,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new CherryBlossomTreeDeed();
+    public override BaseAddonDeed AddonDeed => new CherryBlossomTreeDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

@@ -83,7 +83,7 @@ namespace Server.Items
           Point3D p = new Point3D(loc.X + i, loc.Y + j, loc.Z);
 
           if (map.CanFit(p, 12, true, false) && from.InLOS(p))
-            new InternalItem(from, p, map, MinDamage, MaxDamage);
+            _ = new InternalItem(from, p, map, MinDamage, MaxDamage);
         }
     }
 
@@ -162,7 +162,7 @@ namespace Server.Items
 
       private void SetDamage(int min, int max)
       {
-        /* 	new way to apply alchemy bonus according to Stratics' calculator.
+        /* new way to apply alchemy bonus according to Stratics' calculator.
           this gives a mean to values 25, 50, 75 and 100. Stratics' calculator is outdated.
           Those goals will give 2 to alchemy bonus. It's not really OSI-like but it's an approximation. */
 

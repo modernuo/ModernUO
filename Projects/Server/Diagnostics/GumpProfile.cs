@@ -25,21 +25,21 @@ namespace Server.Diagnostics
 {
   public class GumpProfile : BaseProfile
   {
-    private static readonly Dictionary<Type, GumpProfile> _profiles = new Dictionary<Type, GumpProfile>();
+    private static readonly Dictionary<Type, GumpProfile> m_Profiles = new Dictionary<Type, GumpProfile>();
 
     public GumpProfile(Type type) : base(type.FullName)
     {
     }
 
-    public static IEnumerable<GumpProfile> Profiles => _profiles.Values;
+    public static IEnumerable<GumpProfile> Profiles => m_Profiles.Values;
 
     public static GumpProfile Acquire(Type type)
     {
       if (!Core.Profiling)
         return null;
 
-      if (!_profiles.TryGetValue(type, out var prof))
-        _profiles.Add(type, prof = new GumpProfile(type));
+      if (!m_Profiles.TryGetValue(type, out var prof))
+        m_Profiles.Add(type, prof = new GumpProfile(type));
 
       return prof;
     }

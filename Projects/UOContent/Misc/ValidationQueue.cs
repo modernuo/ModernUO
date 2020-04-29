@@ -13,14 +13,16 @@ namespace Server
     public static void Initialize()
     {
       StartValidation?.Invoke();
-
       StartValidation = null;
     }
   }
 
   public static class ValidationQueue<T>
   {
+    // TODO: Find a better way
+#pragma warning disable CA1000 // Do not declare static members on generic types
     private static List<T> m_Queue;
+#pragma warning restore CA1000 // Do not declare static members on generic types
 
     static ValidationQueue()
     {
@@ -28,10 +30,12 @@ namespace Server
       ValidationQueue.StartValidation += ValidateAll;
     }
 
+#pragma warning disable CA1000 // Do not declare static members on generic types
     public static void Add(T obj)
     {
       m_Queue.Add(obj);
     }
+#pragma warning restore CA1000 // Do not declare static members on generic types
 
     private static void ValidateAll()
     {

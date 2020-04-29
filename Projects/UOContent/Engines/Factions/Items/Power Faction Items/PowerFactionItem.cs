@@ -9,7 +9,7 @@ namespace Server
 {
   public abstract class PowerFactionItem : Item
   {
-    private static readonly WeightedItem[] _items =
+    private static readonly WeightedItem[] m_Items =
     {
       new WeightedItem(30, typeof(GemOfEmpowerment)),
       new WeightedItem(25, typeof(BloodRose)),
@@ -44,11 +44,11 @@ namespace Server
           {
             int weight = 0;
 
-            foreach (WeightedItem item in _items) weight += item.Weight;
+            foreach (WeightedItem item in m_Items) weight += item.Weight;
 
             weight = Utility.Random(weight);
 
-            foreach (WeightedItem item in _items)
+            foreach (WeightedItem item in m_Items)
             {
               if (weight < item.Weight)
               {
@@ -134,27 +134,27 @@ namespace Server
 
     private sealed class DestructionTimer : Timer
     {
-      private readonly Mobile _mobile;
+      private readonly Mobile m_Mobile;
 
-      private bool _screamed;
+      private bool m_Screamed;
 
       public DestructionTimer(Mobile mob)
         : base(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(0.1), 10) =>
-        _mobile = mob;
+        m_Mobile = mob;
 
       protected override void OnTick()
       {
-        if (_mobile.Alive)
+        if (m_Mobile.Alive)
         {
-          if (!_screamed)
+          if (!m_Screamed)
           {
-            _screamed = true;
+            m_Screamed = true;
 
-            _mobile.PlaySound(_mobile.Female ? 814 : 1088);
-            _mobile.PublicOverheadMessage(MessageType.Regular, 2118, false, "Aaaaah!");
+            m_Mobile.PlaySound(m_Mobile.Female ? 814 : 1088);
+            m_Mobile.PublicOverheadMessage(MessageType.Regular, 2118, false, "Aaaaah!");
           }
 
-          _mobile.Damage(Utility.Dice(2, 6, 0));
+          m_Mobile.Damage(Utility.Dice(2, 6, 0));
         }
       }
     }

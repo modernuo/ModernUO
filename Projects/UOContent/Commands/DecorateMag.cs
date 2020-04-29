@@ -291,7 +291,7 @@ namespace Server.Commands
         else if (m_Type == typeofSerpentPillar)
         {
           string word = null;
-          Rectangle2D destination = new Rectangle2D();
+          Rectangle2D destination = default;
 
           for (int i = 0; i < m_Params.Length; ++i)
             if (m_Params[i].StartsWith("Word"))

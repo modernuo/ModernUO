@@ -15,7 +15,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new IronMaidenDeed();
+    public override BaseAddonDeed AddonDeed => new IronMaidenDeed();
 
     public override void OnComponentUsed(AddonComponent c, Mobile from)
     {

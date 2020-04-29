@@ -28,7 +28,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new FlourMillSouthDeed();
+    public override BaseAddonDeed AddonDeed => new FlourMillSouthDeed();
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool HasFlour => m_Flour > 0;

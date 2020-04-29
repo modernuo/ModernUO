@@ -50,21 +50,33 @@ namespace Server.Engines.BulkOrders
     public int AmountMax
     {
       get => m_AmountMax;
-      set { m_AmountMax = value; InvalidateProperties(); }
+      set
+      {
+        m_AmountMax = value;
+        InvalidateProperties();
+      }
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool RequireExceptional
     {
       get => m_RequireExceptional;
-      set { m_RequireExceptional = value; InvalidateProperties(); }
+      set
+      {
+        m_RequireExceptional = value;
+        InvalidateProperties();
+      }
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public BulkMaterialType Material
     {
       get => m_Material;
-      set { m_Material = value; InvalidateProperties(); }
+      set
+      {
+        m_Material = value;
+        InvalidateProperties();
+      }
     }
 
     public abstract RewardGroup GetRewardGroup();

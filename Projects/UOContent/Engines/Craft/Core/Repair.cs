@@ -201,8 +201,9 @@ namespace Server.Engines.Craft
 
             if (skillValue < 60.0)
             {
+              //TODO: How does OSI handle this with deeds with golems?
               number =
-                1044153; // You don't have the required skills to attempt this item.	//TODO: How does OSI handle this with deeds with golems?
+                1044153; // You don't have the required skills to attempt this item.
             }
             else if (!from.CanBeginAction<Golem>())
             {

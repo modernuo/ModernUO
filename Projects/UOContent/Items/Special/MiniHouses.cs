@@ -29,7 +29,7 @@ namespace Server.Items
       }
     }
 
-    public override BaseAddonDeed Deed => new MiniHouseDeed(m_Type);
+    public override BaseAddonDeed AddonDeed => new MiniHouseDeed(m_Type);
 
     public void Construct()
     {

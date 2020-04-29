@@ -24,7 +24,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new HangingSwordsDeed();
+    public override BaseAddonDeed AddonDeed => new HangingSwordsDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

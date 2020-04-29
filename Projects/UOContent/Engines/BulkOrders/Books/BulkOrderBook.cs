@@ -16,7 +16,11 @@ namespace Server.Engines.BulkOrders
     public string BookName
     {
       get => m_BookName;
-      set { m_BookName = value; InvalidateProperties(); }
+      set
+      {
+        m_BookName = value;
+        InvalidateProperties();
+      }
     }
 
     [CommandProperty(AccessLevel.GameMaster)]

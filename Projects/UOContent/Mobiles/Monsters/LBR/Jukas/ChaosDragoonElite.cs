@@ -56,41 +56,18 @@ namespace Server.Mobiles
       {
         0 => (BaseWeapon)new Kryss(),
         1 => new Broadsword(),
-        2 => new Katana(),
-        _ => null
+        _ => new Katana()
       };
 
       melee.Movable = false;
       AddItem(melee);
 
-      DragonChest Tunic = new DragonChest();
-      Tunic.Resource = res;
-      Tunic.Movable = false;
-      AddItem(Tunic);
-
-      DragonLegs Legs = new DragonLegs();
-      Legs.Resource = res;
-      Legs.Movable = false;
-      AddItem(Legs);
-
-      DragonArms Arms = new DragonArms();
-      Arms.Resource = res;
-      Arms.Movable = false;
-      AddItem(Arms);
-
-      DragonGloves Gloves = new DragonGloves();
-      Gloves.Resource = res;
-      Gloves.Movable = false;
-      AddItem(Gloves);
-
-      DragonHelm Helm = new DragonHelm();
-      Helm.Resource = res;
-      Helm.Movable = false;
-      AddItem(Helm);
-
-      ChaosShield shield = new ChaosShield();
-      shield.Movable = false;
-      AddItem(shield);
+      AddItem(new DragonChest { Resource = res, Movable = false });
+      AddItem(new DragonLegs { Resource = res, Movable = false });
+      AddItem(new DragonArms { Resource = res, Movable = false });
+      AddItem(new DragonGloves { Resource = res, Movable = false });
+      AddItem(new DragonHelm { Resource = res, Movable = false });
+      AddItem(new ChaosShield { Movable = false });
 
       AddItem(new Boots(0x455));
       AddItem(new Shirt(Utility.RandomMetalHue()));
@@ -133,11 +110,8 @@ namespace Server.Mobiles
         _ => res
       };
 
-      SwampDragon mt = new SwampDragon();
-      mt.HasBarding = true;
-      mt.BardingResource = res;
+      SwampDragon mt = new SwampDragon { HasBarding = true, BardingResource = res, Rider = this };
       mt.BardingHP = mt.BardingMaxHP;
-      mt.Rider = this;
     }
 
     public ChaosDragoonElite(Serial serial)

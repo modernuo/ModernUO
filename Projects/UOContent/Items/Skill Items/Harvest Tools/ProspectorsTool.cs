@@ -45,7 +45,7 @@ namespace Server.Items
       }
     }
 
-    bool IUsesRemaining.ShowUsesRemaining
+    public bool ShowUsesRemaining
     {
       get => true;
       set { }

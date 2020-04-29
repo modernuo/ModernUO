@@ -16,7 +16,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new GingerBreadHouseDeed();
+    public override BaseAddonDeed AddonDeed => new GingerBreadHouseDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

@@ -24,7 +24,7 @@ namespace Server.Engines.Craft
 
   public class CraftItem
   {
-    private static readonly Dictionary<Type, int> _itemIds = new Dictionary<Type, int>();
+    private static readonly Dictionary<Type, int> m_ItemIds = new Dictionary<Type, int>();
     private int m_ResAmount;
 
     private int m_ResHue;
@@ -112,7 +112,7 @@ namespace Server.Engines.Craft
 
     public static int ItemIDOf(Type type)
     {
-      if (_itemIds.TryGetValue(type, out int itemId))
+      if (m_ItemIds.TryGetValue(type, out int itemId))
         return itemId;
 
       if (type == typeof(FactionExplosionTrap))
@@ -154,7 +154,7 @@ namespace Server.Engines.Craft
         }
       }
 
-      _itemIds[type] = itemId;
+      m_ItemIds[type] = itemId;
 
       return itemId;
     }
@@ -317,7 +317,7 @@ namespace Server.Engines.Craft
     public int ConsumeQuantity(Container cont, Type[][] types, int[] amounts)
     {
       if (types.Length != amounts.Length)
-        throw new ArgumentException();
+        throw new ArgumentException("Types array length must match amounts array length");
 
       Item[][] items = new Item[types.Length][];
       int[] totals = new int[types.Length];

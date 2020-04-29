@@ -39,7 +39,7 @@ namespace Server.Regions
       return from.AccessLevel > AccessLevel.Player;
     }
 
-    public override bool OnSkillUse(Mobile from, int Skill)
+    public override bool OnSkillUse(Mobile from, int skill)
     {
       if (from.AccessLevel == AccessLevel.Player)
         from.SendMessage("You may not use skills in jail.");
@@ -47,6 +47,6 @@ namespace Server.Regions
       return from.AccessLevel > AccessLevel.Player;
     }
 
-    public override bool OnCombatantChange(Mobile from, Mobile Old, Mobile New) => from.AccessLevel > AccessLevel.Player;
+    public override bool OnCombatantChange(Mobile from, Mobile oldM, Mobile newM) => from.AccessLevel > AccessLevel.Player;
   }
 }

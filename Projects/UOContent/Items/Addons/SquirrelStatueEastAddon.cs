@@ -12,7 +12,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new SquirrelStatueEastDeed();
+    public override BaseAddonDeed AddonDeed => new SquirrelStatueEastDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

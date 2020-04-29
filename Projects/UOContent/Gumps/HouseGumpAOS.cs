@@ -68,7 +68,7 @@ namespace Server.Gumps
       974, 982
     };
 
-    private static readonly List<int> _HouseSigns = new List<int>();
+    private static readonly List<int> m_HouseSigns = new List<int>();
     private readonly BaseHouse m_House;
 
     private List<Mobile> m_List;
@@ -372,14 +372,14 @@ namespace Server.Gumps
           {
             int index = 0;
 
-            if (_HouseSigns.Count == 0)
+            if (m_HouseSigns.Count == 0)
             {
               // Add standard signs
-              for (int i = 0; i < 54; ++i) _HouseSigns.Add(2980 + i * 2);
+              for (int i = 0; i < 54; ++i) m_HouseSigns.Add(2980 + i * 2);
 
               // Add library and beekeeper signs ( ML )
-              _HouseSigns.Add(2966);
-              _HouseSigns.Add(3140);
+              m_HouseSigns.Add(2966);
+              m_HouseSigns.Add(3140);
             }
 
             int signsPerPage = Core.ML ? 24 : 18;
@@ -398,7 +398,7 @@ namespace Server.Gumps
                 int y = 130 + j / 6 * 60;
 
                 AddButton(x, y, 4005, 4007, GetButtonID(9, index));
-                AddItem(x + 20, y, _HouseSigns[index++]);
+                AddItem(x + 20, y, m_HouseSigns[index++]);
               }
             }
 
@@ -1305,9 +1305,9 @@ namespace Server.Gumps
           }
         case 9:
           {
-            if (isOwner && m_House.Public && index < _HouseSigns.Count)
+            if (isOwner && m_House.Public && index < m_HouseSigns.Count)
             {
-              m_House.ChangeSignType(_HouseSigns[index]);
+              m_House.ChangeSignType(m_HouseSigns[index]);
               from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Customize, from, m_House));
             }
 

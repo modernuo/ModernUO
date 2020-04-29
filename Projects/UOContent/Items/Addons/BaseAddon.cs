@@ -36,7 +36,7 @@ namespace Server.Items
 
     public virtual bool RetainDeedHue => false;
 
-    public virtual BaseAddonDeed Deed => null;
+    public virtual BaseAddonDeed AddonDeed => null;
 
     public List<AddonComponent> Components { get; private set; }
 
@@ -60,7 +60,7 @@ namespace Server.Items
       }
     }
 
-    Item IAddon.Deed => Deed;
+    public Item Deed => AddonDeed;
 
     public bool CouldFit(IPoint3D p, Map map)
     {
@@ -92,7 +92,7 @@ namespace Server.Items
 
         house.Addons.Remove(this);
 
-        BaseAddonDeed deed = Deed;
+        BaseAddonDeed deed = AddonDeed;
 
         if (deed != null)
         {

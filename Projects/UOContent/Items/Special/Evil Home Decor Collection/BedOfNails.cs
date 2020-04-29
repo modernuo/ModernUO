@@ -60,7 +60,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new BedOfNailsDeed();
+    public override BaseAddonDeed AddonDeed => new BedOfNailsDeed();
 
     public override bool OnMoveOver(Mobile m)
     {

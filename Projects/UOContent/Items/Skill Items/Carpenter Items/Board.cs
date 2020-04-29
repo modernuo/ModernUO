@@ -38,7 +38,7 @@ namespace Server.Items
       }
     }
 
-    int ICommodity.DescriptionNumber
+    public int DescriptionNumber
     {
       get
       {
@@ -55,7 +55,7 @@ namespace Server.Items
       }
     }
 
-    bool ICommodity.IsDeedable => true;
+    public bool IsDeedable => true;
 
     public override void GetProperties(ObjectPropertyList list)
     {

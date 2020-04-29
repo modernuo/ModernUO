@@ -40,7 +40,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new BrokenArmoireDeed();
+    public override BaseAddonDeed AddonDeed => new BrokenArmoireDeed();
 
     public override void Serialize(IGenericWriter writer)
     {

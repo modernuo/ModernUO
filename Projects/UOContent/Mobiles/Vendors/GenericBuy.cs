@@ -115,9 +115,7 @@ namespace Server.Mobiles
           changed until there is a better solution.
         */
 
-        object Obj_Disp = GetDisplayEntity();
-
-        if (Core.ML && Obj_Disp is Item item && !item.Stackable)
+        if (Core.ML && GetDisplayEntity() is Item item && !item.Stackable)
           MaxAmount = Math.Min(20, MaxAmount);
         else
           MaxAmount = Math.Min(999, MaxAmount * 2);

@@ -12,7 +12,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new SmallStretchedHideEastDeed();
+    public override BaseAddonDeed AddonDeed => new SmallStretchedHideEastDeed();
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -70,7 +70,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new SmallStretchedHideSouthDeed();
+    public override BaseAddonDeed AddonDeed => new SmallStretchedHideSouthDeed();
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -128,7 +128,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new MediumStretchedHideEastDeed();
+    public override BaseAddonDeed AddonDeed => new MediumStretchedHideEastDeed();
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -186,7 +186,7 @@ namespace Server.Items
     {
     }
 
-    public override BaseAddonDeed Deed => new MediumStretchedHideSouthDeed();
+    public override BaseAddonDeed AddonDeed => new MediumStretchedHideSouthDeed();
 
     public override void Serialize(IGenericWriter writer)
     {
