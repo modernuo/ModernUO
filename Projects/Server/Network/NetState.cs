@@ -458,21 +458,15 @@ namespace Server.Network
         ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out var length);
 
         if (buffer.Length > 0 && length > 0)
-          try
-          {
-            var result = await outPipe.WriteAsync(buffer.Slice(0, length));
+        {
+          var result = await outPipe.WriteAsync(buffer.Slice(0, length));
 
-            if (result.IsCanceled || result.IsCompleted)
-            {
-              Dispose();
-              return;
-            }
-          }
-          catch
+          if (result.IsCanceled || result.IsCompleted)
           {
             Dispose();
-            // ignored
+            return;
           }
+        }
 
         p.OnSend();
       }
@@ -485,6 +479,7 @@ namespace Server.Network
       catch (Exception ex)
       {
         Console.WriteLine(ex);
+        Dispose();
       }
     }
 
@@ -492,13 +487,13 @@ namespace Server.Network
     {
       var inPipe = Connection.Transport.Input;
 
-      while (true)
+      try
       {
-        if (AsyncState.Paused)
-          continue;
-
-        try
+        while (true)
         {
+          if (AsyncState.Paused)
+            continue;
+
           var result = await inPipe.ReadAsync();
           if (result.IsCanceled || result.IsCompleted)
             return;
@@ -515,11 +510,19 @@ namespace Server.Network
 
           inPipe.AdvanceTo(seq.Slice(0, pos).End);
         }
-        catch
-        {
-          // ignored
-          break;
-        }
+      }
+      catch (SocketException ex)
+      {
+        Console.WriteLine(ex);
+        TraceException(ex);
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine(ex);
+      }
+      finally
+      {
+        Dispose();
       }
     }
 
