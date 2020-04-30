@@ -1,7 +1,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Security.Cryptography;
-using System.Text;
+using Server.Misc;
 
 namespace Server.Accounting
 {
@@ -26,13 +26,13 @@ namespace Server.Accounting
       rfc2898.Salt.CopyTo(output.Slice(2, m_SaltSize));
       rfc2898.GetBytes(m_HashSize).CopyTo(output.Slice(m_SaltSize + 2));
 
-      return Encoding.Unicode.GetString(output);
+      return HexStringConverter.GetString(output);
     }
 
     public bool ValidatePassword(string encryptedPassword, string plainPassword)
     {
       Span<byte> encryptedBytes = stackalloc byte[m_OutputSize];
-      Encoding.Unicode.GetBytes(encryptedPassword, encryptedBytes);
+      HexStringConverter.GetBytes(encryptedPassword, encryptedBytes);
 
       ushort iterations = BinaryPrimitives.ReadUInt16LittleEndian(encryptedBytes.Slice(0, 2));
       Span<byte> salt = encryptedBytes.Slice(2, m_SaltSize);
