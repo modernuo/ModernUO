@@ -39,3 +39,6 @@
 /.vs
 
 .DS_Store
+
+/packages/*
+!/packages/do_not_delete

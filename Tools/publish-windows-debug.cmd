@@ -1,1 +1,1 @@
-dotnet publish -c Debug /p:PublishProfile=Windows
+dotnet publish -c Debug -r win-x64 --self-contained=false

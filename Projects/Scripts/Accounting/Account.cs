@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Xml;
+using Server.Accounting.Security;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Multis;
@@ -297,13 +298,9 @@ namespace Server.Accounting
 
     public bool GetBanTags(out DateTime banTime, out TimeSpan banDuration)
     {
-      string tagTime = GetTag("BanTime");
       string tagDuration = GetTag("BanDuration");
 
-      if (tagTime != null)
-        banTime = Utility.GetXMLDateTime(tagTime, DateTime.MinValue);
-      else
-        banTime = DateTime.MinValue;
+      banTime = Utility.GetXMLDateTime(GetTag("BanTime"), DateTime.MinValue);
 
       if (tagDuration == "Infinite")
         banDuration = TimeSpan.MaxValue;
@@ -323,7 +320,9 @@ namespace Server.Accounting
 
     public bool CheckPassword(string plainPassword)
     {
-      bool ok = AccountSecurity.GetPasswordProtection(m_PasswordAlgorithm).ValidatePassword(Password, plainPassword);
+      string phrase = m_PasswordAlgorithm == PasswordProtectionAlgorithm.SHA1 ? $"{Username}{plainPassword}" : plainPassword;
+
+      bool ok = AccountSecurity.GetPasswordProtection(m_PasswordAlgorithm).ValidatePassword(Password, phrase);
       if (!ok)
         return false;
 
@@ -459,6 +458,24 @@ namespace Server.Accounting
       // TODO: Offload passwords to its own module so it can be easily written/upgraded
       Password = Utility.GetText(node["password"], null);
       Enum.TryParse(Utility.GetText(node["passwordAlgorithm"], null), true, out m_PasswordAlgorithm);
+
+      if (m_PasswordAlgorithm == PasswordProtectionAlgorithm.None)
+      {
+        string md5Password = Utility.GetText(node["cryptPassword"], null);
+        string sha1Password = Utility.GetText(node["newCryptPassword"], null);
+
+        if (sha1Password != null)
+        {
+          Password = sha1Password;
+          m_PasswordAlgorithm = PasswordProtectionAlgorithm.SHA1;
+        }
+        else if (md5Password != null)
+        {
+          Password = md5Password;
+          m_PasswordAlgorithm = PasswordProtectionAlgorithm.MD5;
+        }
+      }
+
       Enum.TryParse(Utility.GetText(node["accessLevel"], "Player"), true, out m_AccessLevel);
       Flags = Utility.GetXMLInt32(Utility.GetText(node["flags"], "0"), 0);
       Created = Utility.GetXMLDateTime(Utility.GetText(node["created"], null), DateTime.UtcNow);

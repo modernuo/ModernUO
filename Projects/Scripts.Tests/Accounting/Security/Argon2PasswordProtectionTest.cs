@@ -1,16 +1,16 @@
+using Server.Accounting.Security;
 using Xunit;
-using Server.Accounting;
 
-namespace Server.Tests.Accounting
+namespace Server.Tests.Accounting.Security
 {
-  public class PBKDF2PasswordProtectionTest
+  public class Argon2PasswordProtectionTest
   {
     private const string plainPassword = "hello-good-sir";
 
     [Fact]
     public void TestValidates()
     {
-      var passwordProtection = new PBKDF2PasswordProtection();
+      var passwordProtection = new Argon2PasswordProtection();
 
       string encryptedPassword = passwordProtection.EncryptPassword(plainPassword);
 
@@ -20,7 +20,7 @@ namespace Server.Tests.Accounting
     [Fact]
     public void TestPasswordDoesNotValidate()
     {
-      var passwordProtection = new PBKDF2PasswordProtection();
+      var passwordProtection = new Argon2PasswordProtection();
 
       string encryptedPassword = passwordProtection.EncryptPassword(plainPassword);
 

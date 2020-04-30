@@ -3,11 +3,11 @@ using System.Buffers.Binary;
 using System.Security.Cryptography;
 using Server.Misc;
 
-namespace Server.Accounting
+namespace Server.Accounting.Security
 {
   public class PBKDF2PasswordProtection : IPasswordProtection
   {
-    public static PBKDF2PasswordProtection Instance = new PBKDF2PasswordProtection();
+    public static IPasswordProtection Instance = new PBKDF2PasswordProtection();
 
     private const ushort m_MinIterations = 1024;
     private const ushort m_MaxIterations = 1536;
