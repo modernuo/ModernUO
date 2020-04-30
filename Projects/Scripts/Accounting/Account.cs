@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using System.Xml;
 using Server.Misc;
 using Server.Mobiles;
@@ -14,9 +12,7 @@ namespace Server.Accounting
   public class Account : IAccount, IComparable<Account>
   {
     public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
-
     public static readonly TimeSpan InactiveDuration = TimeSpan.FromDays(180.0);
-
     public static readonly TimeSpan EmptyInactiveDuration = TimeSpan.FromDays(30.0);
 
     private AccessLevel m_AccessLevel;
@@ -24,6 +20,7 @@ namespace Server.Accounting
     private List<AccountComment> m_Comments;
     private List<AccountTag> m_Tags;
     private readonly Mobile[] m_Mobiles;
+    private PasswordProtectionAlgorithm m_PasswordAlgorithm;
 
     /// <summary>
     /// Deletes the account, all characters of the account, and all houses of those characters
@@ -90,19 +87,9 @@ namespace Server.Accounting
     public string Email { get; set; }
 
     /// <summary>
-    /// Account password. Plain text. Case sensitive validation. May be null.
+    /// Account username and password. May be null.
     /// </summary>
-    public string PlainPassword { get; set; }
-
-    /// <summary>
-    /// Account password. Hashed with MD5. May be null.
-    /// </summary>
-    public string CryptPassword { get; set; }
-
-    /// <summary>
-    /// Account username and password hashed with SHA1. May be null.
-    /// </summary>
-    public string NewCryptPassword { get; set; }
+    public string Password { get; set; }
 
     /// <summary>
     /// Initial AccessLevel for new characters created on this account.
@@ -328,94 +315,23 @@ namespace Server.Accounting
       return banTime != DateTime.MinValue && banDuration != TimeSpan.Zero;
     }
 
-    private static MD5CryptoServiceProvider m_MD5HashProvider;
-    private static SHA1CryptoServiceProvider m_SHA1HashProvider;
-    private static byte[] m_HashBuffer;
-
-    public static string HashMD5(string phrase)
-    {
-      if (m_MD5HashProvider == null)
-        m_MD5HashProvider = new MD5CryptoServiceProvider();
-
-      if (m_HashBuffer == null)
-        m_HashBuffer = new byte[256];
-
-      int length = Encoding.ASCII.GetBytes(phrase, 0, phrase.Length > 256 ? 256 : phrase.Length, m_HashBuffer, 0);
-      byte[] hashed = m_MD5HashProvider.ComputeHash(m_HashBuffer, 0, length);
-
-      return BitConverter.ToString(hashed);
-    }
-
-    public static string HashSHA1(string phrase)
-    {
-      if (m_SHA1HashProvider == null)
-        m_SHA1HashProvider = new SHA1CryptoServiceProvider();
-
-      if (m_HashBuffer == null)
-        m_HashBuffer = new byte[256];
-
-      int length = Encoding.ASCII.GetBytes(phrase, 0, phrase.Length > 256 ? 256 : phrase.Length, m_HashBuffer, 0);
-      byte[] hashed = m_SHA1HashProvider.ComputeHash(m_HashBuffer, 0, length);
-
-      return BitConverter.ToString(hashed);
-    }
-
     public void SetPassword(string plainPassword)
     {
-      switch (AccountHandler.ProtectPasswords)
-      {
-        case PasswordProtection.None:
-          {
-            PlainPassword = plainPassword;
-            CryptPassword = null;
-            NewCryptPassword = null;
-
-            break;
-          }
-        case PasswordProtection.Crypt:
-          {
-            PlainPassword = null;
-            CryptPassword = HashMD5(plainPassword);
-            NewCryptPassword = null;
-
-            break;
-          }
-        default: // PasswordProtection.NewCrypt
-          {
-            PlainPassword = null;
-            CryptPassword = null;
-            NewCryptPassword = HashSHA1(Username + plainPassword);
-
-            break;
-          }
-      }
+      Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(plainPassword);
+      m_PasswordAlgorithm = AccountSecurity.AlgorithmName;
     }
 
     public bool CheckPassword(string plainPassword)
     {
-      bool ok;
-      PasswordProtection curProt;
+      bool ok = AccountSecurity.GetPasswordProtection(m_PasswordAlgorithm).ValidatePassword(Password, plainPassword);
+      if (!ok)
+        return false;
 
-      if (PlainPassword != null)
-      {
-        ok = PlainPassword == plainPassword;
-        curProt = PasswordProtection.None;
-      }
-      else if (CryptPassword != null)
-      {
-        ok = CryptPassword == HashMD5(plainPassword);
-        curProt = PasswordProtection.Crypt;
-      }
-      else
-      {
-        ok = NewCryptPassword == HashSHA1(Username + plainPassword);
-        curProt = PasswordProtection.NewCrypt;
-      }
-
-      if (ok && curProt != AccountHandler.ProtectPasswords)
+      // Upgrade the password protection in case we change the algorithm
+      if (m_PasswordAlgorithm != AccountSecurity.AlgorithmName)
         SetPassword(plainPassword);
 
-      return ok;
+      return true;
     }
 
     private Timer m_YoungTimer;
@@ -539,53 +455,10 @@ namespace Server.Accounting
     {
       Username = Utility.GetText(node["username"], "empty");
 
-      string plainPassword = Utility.GetText(node["password"], null);
-      string cryptPassword = Utility.GetText(node["cryptPassword"], null);
-      string newCryptPassword = Utility.GetText(node["newCryptPassword"], null);
-
-      switch (AccountHandler.ProtectPasswords)
-      {
-        case PasswordProtection.None:
-          {
-            if (plainPassword != null)
-              SetPassword(plainPassword);
-            else if (newCryptPassword != null)
-              NewCryptPassword = newCryptPassword;
-            else if (cryptPassword != null)
-              CryptPassword = cryptPassword;
-            else
-              SetPassword("empty");
-
-            break;
-          }
-        case PasswordProtection.Crypt:
-          {
-            if (cryptPassword != null)
-              CryptPassword = cryptPassword;
-            else if (plainPassword != null)
-              SetPassword(plainPassword);
-            else if (newCryptPassword != null)
-              NewCryptPassword = newCryptPassword;
-            else
-              SetPassword("empty");
-
-            break;
-          }
-        default: // PasswordProtection.NewCrypt
-          {
-            if (newCryptPassword != null)
-              NewCryptPassword = newCryptPassword;
-            else if (plainPassword != null)
-              SetPassword(plainPassword);
-            else if (cryptPassword != null)
-              CryptPassword = cryptPassword;
-            else
-              SetPassword("empty");
-
-            break;
-          }
-      }
-
+      // Note: ModernUO doesn't support plain passwords, MD5, or SHA1.
+      // TODO: Offload passwords to its own module so it can be easily written/upgraded
+      Password = Utility.GetText(node["password"], null);
+      Enum.TryParse(Utility.GetText(node["passwordAlgorithm"], null), true, out m_PasswordAlgorithm);
       Enum.TryParse(Utility.GetText(node["accessLevel"], "Player"), true, out m_AccessLevel);
       Flags = Utility.GetXMLInt32(Utility.GetText(node["flags"], "0"), 0);
       Created = Utility.GetXMLDateTime(Utility.GetText(node["created"], null), DateTime.UtcNow);
@@ -883,26 +756,13 @@ namespace Server.Accounting
       xml.WriteString(Username);
       xml.WriteEndElement();
 
-      if (PlainPassword != null)
-      {
-        xml.WriteStartElement("password");
-        xml.WriteString(PlainPassword);
-        xml.WriteEndElement();
-      }
+      xml.WriteStartElement("passwordAlgorithm");
+      xml.WriteString(m_PasswordAlgorithm.ToString());
+      xml.WriteEndElement();
 
-      if (CryptPassword != null)
-      {
-        xml.WriteStartElement("cryptPassword");
-        xml.WriteString(CryptPassword);
-        xml.WriteEndElement();
-      }
-
-      if (NewCryptPassword != null)
-      {
-        xml.WriteStartElement("newCryptPassword");
-        xml.WriteString(NewCryptPassword);
-        xml.WriteEndElement();
-      }
+      xml.WriteStartElement("password");
+      xml.WriteString(Password);
+      xml.WriteEndElement();
 
       if (m_AccessLevel != AccessLevel.Player)
       {
@@ -931,8 +791,6 @@ namespace Server.Accounting
       xml.WriteEndElement();
 
       xml.WriteStartElement("chars");
-
-      // xml.WriteAttributeString( "length", m_Mobiles.Length.ToString() );	//Legacy, Not used anymore
 
       for (int i = 0; i < m_Mobiles.Length; ++i)
       {

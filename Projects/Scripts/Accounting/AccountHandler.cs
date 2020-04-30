@@ -9,21 +9,12 @@ using Server.Regions;
 
 namespace Server.Misc
 {
-  public enum PasswordProtection
-  {
-    None,
-    Crypt,
-    NewCrypt
-  }
-
   public class AccountHandler
   {
     private static readonly int MaxAccountsPerIP = 1;
     private static readonly bool AutoAccountCreation = true;
     private static readonly bool RestrictDeletion = !TestCenter.Enabled;
     private static readonly TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
-
-    public static PasswordProtection ProtectPasswords = PasswordProtection.NewCrypt;
 
     private static readonly CityInfo[] StartingCities =
     {
