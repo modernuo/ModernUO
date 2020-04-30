@@ -9,4 +9,8 @@
       <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
       <PackageReference Include="coverlet.collector" Version="1.2.1" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Server\Server.csproj" />
+      <ProjectReference Include="..\Scripts\Scripts.csproj" />
+    </ItemGroup>
 </Project>
