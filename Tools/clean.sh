@@ -1,4 +1,5 @@
 rm -rf Projects/*/obj
+rm -rf Projects/*/bin
 
 rm -f Distribution/Assemblies/BouncyCastle.Crypto.dll
 rm -f Distribution/Assemblies/MailKit.dll
@@ -12,10 +13,15 @@ rm -f Distribution/Assemblies/Microsoft.Extensions.Logging.Abstractions.dll
 rm -f Distribution/Assemblies/Microsoft.Extensions.Primitives.dll
 rm -f Distribution/Assemblies/MimeKit.dll
 rm -f Distribution/Assemblies/System.IO.Pipelines.dll
+rm -f Distribution/Assemblies/Argon2.Bindings.dll
+rm -f Distribution/Assemblies/libargon2.so
+rm -f Distribution/Assemblies/libargon2.dylib
+rm -f Distribution/Assemblies/argon2.dll
 
 rm -f Distribution/libdrng.dll
 rm -f Distribution/libuv.dll
 rm -f Distribution/libuv.so
+rm -f Distribution/libuv.dylib
 rm -f Distribution/Microsoft.AspNetCore.Connections.Abstractions.dll
 rm -f Distribution/Microsoft.AspNetCore.Http.Features.dll
 rm -f Distribution/Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll

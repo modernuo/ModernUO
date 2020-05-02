@@ -1,1 +1,2 @@
-dotnet publish -c Debug /p:PublishProfile=Linux
+dotnet build -c Debug -r linux-x64 Projects/Argon2/Argon2.csproj
+dotnet publish -c Debug -r linux-x64 --self-contained=false

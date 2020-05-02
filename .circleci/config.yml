@@ -19,17 +19,20 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+            - dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
+      - run:
+          name: Build Argon2
+          command: dotnet build -c Release -r linux-x64 Projects/Argon2/Argon2.csproj
       - run:
           name: Install ModernUO dependencies
           command: dotnet restore
       - save_cache:
           paths:
-            - ~/.nuget/packages
-          key: dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+            - /mnt/ramdisk/packages
+          key: dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
       - run:
           name: Building ModernUO for Linux (Debug)
-          command: dotnet build -c Release /p:PublishProfile=Linux
+          command: dotnet build -c Debug -r linux-x64
   build_windows:
     description: Build application
     executor: win/default
@@ -37,17 +40,20 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dotnet-packages-windows-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+            - dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
+      - run:
+          name: Build Argon2
+          command: dotnet build -c Debug -r win-x64 Projects/Argon2/Argon2.csproj
       - run:
           name: Install ModernUO dependencies
           command: dotnet restore
       - save_cache:
           paths:
-            - ~/.nuget/packages
-          key: dotnet-packages-windows-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+            - /mnt/ramdisk/packages
+          key: dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
       - run:
           name: Building ModernUO for Windows (Debug)
-          command: dotnet build -c Release /p:PublishProfile=Windows
+          command: dotnet build -c Debug -r win-x64
   code_styling:
     description: Code analysis
     executor: linux-build
@@ -56,17 +62,20 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+            - dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
+      - run:
+          name: Build Argon2
+          command: dotnet build -c Debug -r linux-x64 Projects/Argon2/Argon2.csproj
       - run:
           name: Install ModernUO dependencies
           command: dotnet restore
       - save_cache:
           paths:
-            - ~/.nuget/packages
-          key: dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+            - /mnt/ramdisk/packages
+          key: dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
       - run:
           name: Building with Analyzers
-          command: dotnet build -c Analyze /p:PublishProfile=Linux
+          command: dotnet build -c Analyze -r linux-x64
   tests:
     description: Unit Tests
     executor: linux-build
@@ -75,17 +84,20 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+            - dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
+      - run:
+          name: Build Argon2
+          command: dotnet build -c Debug -r linux-x64 Projects/Argon2/Argon2.csproj
       - run:
           name: Install ModernUO dependencies
           command: dotnet restore
       - save_cache:
           paths:
-            - ~/.nuget/packages
-          key: dotnet-packages-linux-{{ checksum "Projects/Server/Server.csproj" }}-{{ checksum "Projects/Scripts/Scripts.csproj" }}
+            - /mnt/ramdisk/packages
+          key: dotnet-packages-linux-{{ checksum ".circleci/checksum.txt" }}
       - run:
           name: Running unit tests
-          command: dotnet test
+          command: dotnet test -r linux-x64
 workflows:
   build-and-test:
     jobs:
