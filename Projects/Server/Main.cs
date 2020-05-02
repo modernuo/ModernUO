@@ -45,8 +45,6 @@ namespace Server
     private static string m_BaseDirectory;
     private static string m_ExePath;
 
-    private static bool m_Cache = true;
-
     private static bool m_Profiling;
     private static DateTime m_ProfileStart;
     private static TimeSpan m_ProfileTime;
@@ -69,9 +67,6 @@ namespace Server
     private static readonly double m_HighFrequency = 1000.0 / Stopwatch.Frequency;
     private static readonly double m_LowFrequency = 1000.0 / TimeSpan.TicksPerSecond;
 
-    private static bool m_UseHRT;
-
-    public static readonly bool Is64Bit = Environment.Is64BitProcess;
     internal static ConsoleEventHandler m_ConsoleEventHandler;
 
     private static int m_CycleIndex = 1;
@@ -111,8 +106,6 @@ namespace Server
       }
     }
 
-    public static bool Service { get; private set; }
-
     public static bool Debug { get; private set; }
 
     internal static bool HaltOnWarning { get; private set; }
@@ -126,7 +119,7 @@ namespace Server
 
     public static MultiTextWriter MultiConsoleOut { get; private set; }
 
-    public static bool UsingHighResolutionTiming => m_UseHRT && m_HighRes && !Unix;
+    public static bool UsingHighResolutionTiming => m_HighRes && !Unix;
 
     public static long TickCount => (long)Ticks;
 
@@ -134,7 +127,7 @@ namespace Server
     {
       get
       {
-        if (m_UseHRT && m_HighRes && !Unix) return Stopwatch.GetTimestamp() * m_HighFrequency;
+        if (m_HighRes && !Unix) return Stopwatch.GetTimestamp() * m_HighFrequency;
 
         return DateTime.UtcNow.Ticks * m_LowFrequency;
       }
@@ -188,20 +181,11 @@ namespace Server
         if (Debug)
           Utility.Separate(sb, "-debug", " ");
 
-        if (Service)
-          Utility.Separate(sb, "-service", " ");
-
         if (m_Profiling)
           Utility.Separate(sb, "-profile", " ");
 
-        if (!m_Cache)
-          Utility.Separate(sb, "-nocache", " ");
-
         if (HaltOnWarning)
           Utility.Separate(sb, "-haltonwarning", " ");
-
-        if (m_UseHRT)
-          Utility.Separate(sb, "-usehrt", " ");
 
         return sb.ToString();
       }
@@ -216,14 +200,9 @@ namespace Server
 
     public static string FindDataFile(string path)
     {
-      var config = Configuration.Instance;
-      if (config.DataDirectories.Count == 0)
-        throw new InvalidOperationException(
-          "Attempted to FindDataFile before DataDirectories list has been filled.");
-
       string fullPath = null;
 
-      foreach (var p in config.DataDirectories)
+      foreach (var p in ServerConfiguration.DataDirectories)
       {
         fullPath = Path.Combine(p, path);
 
@@ -262,7 +241,7 @@ namespace Server
           // ignored
         }
 
-        if (!close && !Service)
+        if (!close)
         {
           try
           {
@@ -283,7 +262,7 @@ namespace Server
 
     private static bool OnConsoleEvent(ConsoleEventType type)
     {
-      if (World.Saving || (Service && type == ConsoleEventType.CTRL_LOGOFF_EVENT))
+      if (World.Saving || type == ConsoleEventType.CTRL_LOGOFF_EVENT)
         return true;
 
       Kill(); // Kill -> HandleClosed will handle waiting for the completion of flushing to disk
@@ -338,39 +317,17 @@ namespace Server
       foreach (var a in args)
         if (Insensitive.Equals(a, "-debug"))
           Debug = true;
-        else if (Insensitive.Equals(a, "-service"))
-          Service = true;
         else if (Insensitive.Equals(a, "-profile"))
           Profiling = true;
-        else if (Insensitive.Equals(a, "-nocache"))
-          m_Cache = false;
         else if (Insensitive.Equals(a, "-haltonwarning"))
           HaltOnWarning = true;
-        else if (Insensitive.Equals(a, "-usehrt"))
-          m_UseHRT = true;
-
-      try
-      {
-        if (Service)
-        {
-          if (!Directory.Exists("Logs"))
-            Directory.CreateDirectory("Logs");
-
-          Console.SetOut(MultiConsoleOut = new MultiTextWriter(new FileLogger("Logs/Console.log")));
-        }
-        else
-        {
-          Console.SetOut(MultiConsoleOut = new MultiTextWriter(Console.Out));
-        }
-      }
-      catch
-      {
-        // ignored
-      }
 
       Thread = Thread.CurrentThread;
       Process = Process.GetCurrentProcess();
       Assembly = Assembly.GetEntryAssembly();
+
+      if (Assembly == null)
+        throw new Exception("Core: Assembly entry is missing.");
 
       if (Thread != null)
         Thread.Name = "Core Thread";
@@ -378,7 +335,7 @@ namespace Server
       if (BaseDirectory.Length > 0)
         Directory.SetCurrentDirectory(BaseDirectory);
 
-      var ver = Assembly.GetName().Version;
+      var ver = Assembly.GetName().Version ?? new Version();
 
       Console.ForegroundColor = ConsoleColor.Green;
       // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
@@ -388,14 +345,6 @@ namespace Server
       Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
       Console.ResetColor();
       Console.WriteLine();
-
-      var config = Configuration.Instance;
-      foreach (var dir in config.DataDirectories.Where(dir => !Directory.Exists(dir)))
-      {
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.WriteLine("Core: Config directory {0} does not exist.", dir);
-        Console.ResetColor();
-      }
 
       var ttObj = new Timer.TimerThread();
       timerThread = new Thread(ttObj.TimerMain)
@@ -413,9 +362,8 @@ namespace Server
       if (ProcessorCount > 1)
         MultiProcessor = true;
 
-      if (MultiProcessor || Is64Bit)
-        Console.WriteLine("Core: Optimizing for {0} {2}processor{1}", ProcessorCount, ProcessorCount == 1 ? "" : "s",
-          Is64Bit ? "64-bit " : "");
+      if (MultiProcessor)
+        Console.WriteLine("Core: Optimizing for {0} processor{1}", ProcessorCount, ProcessorCount == 1 ? "" : "s");
 
       if (IsWindows)
       {
@@ -426,12 +374,13 @@ namespace Server
       if (GCSettings.IsServerGC)
         Console.WriteLine("Core: Server garbage collection mode enabled");
 
-      if (m_UseHRT)
-        Console.WriteLine("Core: Requested high resolution timing ({0})",
-          UsingHighResolutionTiming ? "Supported" : "Unsupported");
+      Console.WriteLine("Core: High resolution timing ({0})",
+        UsingHighResolutionTiming ? "Supported" : "Unsupported");
 
       Console.WriteLine("SecureRandomImpl: {0} ({1})", SecureRandomImpl.Name,
         SecureRandomImpl.IsHardwareRNG ? "Hardware" : "Software");
+
+      ServerConfiguration.ReadServerConfiguration();
 
       // Load Assembly Scripts.CS.dll
       AssemblyHandler.LoadScripts();

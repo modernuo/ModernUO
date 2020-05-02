@@ -2,6 +2,7 @@
 /Distribution/ModernUO
 /Distribution/ModernUO.*
 /Distribution/Assemblies
+/Distribution/Configuration
 /Distribution/Logs
 /Distribution/Backups
 /Distribution/Saves
@@ -41,4 +42,4 @@
 .DS_Store
 
 /packages/*
-!/packages/do_not_delete
+!do_not_delete
