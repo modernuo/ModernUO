@@ -28,22 +28,24 @@ namespace Server
 {
   public static class ServerConfiguration
   {
-    public static readonly List<string> DataDirectories = new List<string>();
+    private const string m_RelPath = "Configuration/modernuo.json";
+    private static readonly string m_FilePath = Path.Join(Core.BaseDirectory, m_RelPath);
+    private static ServerSettings m_Settings;
+
+    public static List<string> DataDirectories => m_Settings.dataDirectories;
+    public static Dictionary<string, string> Settings => m_Settings.settings;
+    public static Dictionary<string, object> Metadata => m_Settings.metadata;
 
     public static void ReadServerConfiguration()
     {
-      const string relPath = "Configuration/modernuo.json";
-      string filePath = Path.Join(Core.BaseDirectory, relPath);
-
-      Settings settings;
       bool updated = false;
 
-      if (File.Exists(filePath))
+      if (File.Exists(m_FilePath))
       {
-        Console.Write($"Core: Reading configuration from {relPath}...");
-        settings = JsonConfig.Deserialize<Settings>(filePath);
+        Console.Write($"Core: Reading configuration from {m_RelPath}...");
+        m_Settings = JsonConfig.Deserialize<ServerSettings>(m_FilePath);
 
-        if (settings == null)
+        if (m_Settings == null)
         {
           Console.ForegroundColor = ConsoleColor.Red;
           Console.WriteLine("failed");
@@ -52,36 +54,36 @@ namespace Server
         }
 
         Console.WriteLine("done");
+
+        Console.WriteLine("Settings: {0}", m_Settings.settings["stuff"]);
       }
       else
       {
-        Console.WriteLine($"Core: Creating server configuration at {relPath}.");
         updated = true;
-        settings = new Settings();
+        m_Settings = new ServerSettings();
       }
 
-      if (settings.dataDirectories.Count == 0)
+      if (m_Settings.dataDirectories.Count == 0)
       {
         updated = true;
         Console.WriteLine("Core: Server configuration is missing data directories.");
-        settings.dataDirectories.Add(GetDataDirectory());
+        m_Settings.dataDirectories.Add(GetDataDirectory());
       }
 
       if (updated)
-      {
-        JsonConfig.Serialize(filePath, settings);
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"Core: Configuration saved to {relPath}");
-        Console.ResetColor();
-      }
-
-      DataDirectories.AddRange(settings.dataDirectories);
+        SaveSettings();
     }
 
-    internal class Settings
+    internal class ServerSettings
     {
       [JsonPropertyName("dataDirectories")]
       public List<string> dataDirectories { get; set; } = new List<string>();
+
+      [JsonPropertyName("settings")]
+      public Dictionary<string, string> settings { get; set; } = new Dictionary<string, string>();
+
+      [JsonExtensionData]
+      public Dictionary<string, object> metadata { get; set; } = new Dictionary<string, object>();
     }
 
     private static string GetDataDirectory()
@@ -96,6 +98,14 @@ namespace Server
       } while (!Directory.Exists(directory));
 
       return directory;
+    }
+
+    public static void SaveSettings()
+    {
+      JsonConfig.Serialize(m_FilePath, m_Settings);
+      Console.ForegroundColor = ConsoleColor.Green;
+      Console.WriteLine($"Core: Configuration saved to {m_RelPath}.");
+      Console.ResetColor();
     }
   }
 }
