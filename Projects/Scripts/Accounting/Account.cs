@@ -450,6 +450,17 @@ namespace Server.Accounting
       Accounts.Add(this);
     }
 
+    private string SetPasswordAlgorithm(string password, PasswordProtectionAlgorithm algorithm)
+    {
+      if (password != null)
+      {
+        m_PasswordAlgorithm = algorithm;
+        return password?.Replace("-", string.Empty);
+      }
+
+      return null;
+    }
+
     public Account(XmlElement node)
     {
       Username = Utility.GetText(node["username"], "empty");
@@ -459,22 +470,12 @@ namespace Server.Accounting
       Password = Utility.GetText(node["password"], null);
       Enum.TryParse(Utility.GetText(node["passwordAlgorithm"], null), true, out m_PasswordAlgorithm);
 
+      // Backwards compatibility with RunUO/ServUO
       if (m_PasswordAlgorithm == PasswordProtectionAlgorithm.None)
-      {
-        string md5Password = Utility.GetText(node["cryptPassword"], null);
-        string sha1Password = Utility.GetText(node["newCryptPassword"], null);
-
-        if (sha1Password != null)
-        {
-          Password = sha1Password;
-          m_PasswordAlgorithm = PasswordProtectionAlgorithm.SHA1;
-        }
-        else if (md5Password != null)
-        {
-          Password = md5Password;
-          m_PasswordAlgorithm = PasswordProtectionAlgorithm.MD5;
-        }
-      }
+        Password =
+          SetPasswordAlgorithm(Utility.GetText(node["newSecureCryptPassword"], null), PasswordProtectionAlgorithm.SHA2) ??
+          SetPasswordAlgorithm(Utility.GetText(node["newCryptPassword"], null), PasswordProtectionAlgorithm.SHA1) ??
+          SetPasswordAlgorithm(Utility.GetText(node["cryptPassword"], null), PasswordProtectionAlgorithm.MD5);
 
       Enum.TryParse(Utility.GetText(node["accessLevel"], "Player"), true, out m_AccessLevel);
       Flags = Utility.GetXMLInt32(Utility.GetText(node["flags"], "0"), 0);
