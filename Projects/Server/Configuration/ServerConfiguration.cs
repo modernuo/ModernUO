@@ -36,7 +36,7 @@ namespace Server
     public static Dictionary<string, string> Settings => m_Settings.settings;
     public static Dictionary<string, object> Metadata => m_Settings.metadata;
 
-    public static void ReadServerConfiguration()
+    public static void LoadConfiguration()
     {
       bool updated = false;
 
@@ -54,7 +54,6 @@ namespace Server
         }
 
         Console.WriteLine("done");
-
         Console.WriteLine("Settings: {0}", m_Settings.settings["stuff"]);
       }
       else
@@ -71,7 +70,7 @@ namespace Server
       }
 
       if (updated)
-        SaveSettings();
+        SaveConfiguration();
     }
 
     internal class ServerSettings
@@ -100,7 +99,7 @@ namespace Server
       return directory;
     }
 
-    public static void SaveSettings()
+    public static void SaveConfiguration()
     {
       JsonConfig.Serialize(m_FilePath, m_Settings);
       Console.ForegroundColor = ConsoleColor.Green;
