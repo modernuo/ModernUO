@@ -1,7 +1,7 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using Server.Misc;
 
 namespace Server.Accounting.Security
 {
@@ -16,7 +16,7 @@ namespace Server.Accounting.Security
       byte[] bytes = new byte[Encoding.ASCII.GetByteCount(password)];
       Encoding.ASCII.GetBytes(password, bytes);
 
-      return BitConverter.ToString(m_MD5HashProvider.ComputeHash(bytes));
+      return HexStringConverter.GetString(m_MD5HashProvider.ComputeHash(bytes));
     }
 
     public bool ValidatePassword(string encryptedPassword, string plainPassword) =>

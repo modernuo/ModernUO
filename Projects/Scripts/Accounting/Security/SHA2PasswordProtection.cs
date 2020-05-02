@@ -5,10 +5,10 @@ using Server.Misc;
 
 namespace Server.Accounting.Security
 {
-  public class SHA1PasswordProtection : IPasswordProtection
+  public class SHA2PasswordProtection : IPasswordProtection
   {
-    public static IPasswordProtection Instance = new SHA1PasswordProtection();
-    private SHA1CryptoServiceProvider m_SHA1HashProvider = new SHA1CryptoServiceProvider();
+    public static IPasswordProtection Instance = new SHA2PasswordProtection();
+    private SHA512CryptoServiceProvider m_SHA2HashProvider = new SHA512CryptoServiceProvider();
 
     public string EncryptPassword(string plainPassword)
     {
@@ -16,7 +16,7 @@ namespace Server.Accounting.Security
       byte[] bytes = new byte[Encoding.ASCII.GetByteCount(password)];
       Encoding.ASCII.GetBytes(password, bytes);
 
-      return HexStringConverter.GetString(m_SHA1HashProvider.ComputeHash(bytes));
+      return HexStringConverter.GetString(m_SHA2HashProvider.ComputeHash(bytes));
     }
 
     public bool ValidatePassword(string encryptedPassword, string plainPassword) =>

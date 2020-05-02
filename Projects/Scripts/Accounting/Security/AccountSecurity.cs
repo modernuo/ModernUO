@@ -4,13 +4,14 @@ namespace Server.Accounting.Security
 {
   public enum PasswordProtectionAlgorithm
   {
-    // Obsolete algorithms. These are not secure!
+    // Obsolete algorithms from RunUO. These are not secure!
     // They are included for password upgrades only.
     None,
     MD5,
     SHA1,
 
-    // Support algorithms
+    // Supported algorithms
+    SHA2, // ServUO compatibility
     PBKDF2,
     Argon2 // Recommended algorithm for real security.
   }
@@ -24,7 +25,7 @@ namespace Server.Accounting.Security
 
     public static void Configure()
     {
-      if (AlgorithmName < PasswordProtectionAlgorithm.PBKDF2)
+      if (AlgorithmName < PasswordProtectionAlgorithm.SHA2)
         throw new Exception($"Security: {AlgorithmName} is obselete and not secure. Do not use it.");
     }
 
@@ -34,6 +35,7 @@ namespace Server.Accounting.Security
       {
         PasswordProtectionAlgorithm.MD5 => MD5PasswordProtection.Instance,
         PasswordProtectionAlgorithm.SHA1 => SHA1PasswordProtection.Instance,
+        PasswordProtectionAlgorithm.SHA2 => SHA2PasswordProtection.Instance,
         PasswordProtectionAlgorithm.PBKDF2 => PBKDF2PasswordProtection.Instance,
         PasswordProtectionAlgorithm.Argon2 => Argon2PasswordProtection.Instance,
         _ => null

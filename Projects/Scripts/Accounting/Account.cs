@@ -450,31 +450,35 @@ namespace Server.Accounting
       Accounts.Add(this);
     }
 
+    private bool UpgradePassword(string password, PasswordProtectionAlgorithm algorithm)
+    {
+      if (password == null || algorithm < m_PasswordAlgorithm) return false;
+
+      m_PasswordAlgorithm = algorithm;
+      Password = password?.Replace("-", string.Empty);
+      return true;
+    }
+
     public Account(XmlElement node)
     {
       Username = Utility.GetText(node["username"], "empty");
 
-      // Note: ModernUO doesn't support plain passwords, MD5, or SHA1.
-      // TODO: Offload passwords to its own module so it can be easily written/upgraded
-      Password = Utility.GetText(node["password"], null);
       Enum.TryParse(Utility.GetText(node["passwordAlgorithm"], null), true, out m_PasswordAlgorithm);
 
+      // Backward compatibility with RunUO/ServUO
       if (m_PasswordAlgorithm == PasswordProtectionAlgorithm.None)
       {
-        string md5Password = Utility.GetText(node["cryptPassword"], null);
-        string sha1Password = Utility.GetText(node["newCryptPassword"], null);
+        bool upgraded =
+          UpgradePassword(Utility.GetText(node["newSecureCryptPassword"], null), PasswordProtectionAlgorithm.SHA2) ||
+          UpgradePassword(Utility.GetText(node["newCryptPassword"], null), PasswordProtectionAlgorithm.SHA1) ||
+          UpgradePassword(Utility.GetText(node["cryptPassword"], null), PasswordProtectionAlgorithm.MD5);
 
-        if (sha1Password != null)
-        {
-          Password = sha1Password;
-          m_PasswordAlgorithm = PasswordProtectionAlgorithm.SHA1;
-        }
-        else if (md5Password != null)
-        {
-          Password = md5Password;
-          m_PasswordAlgorithm = PasswordProtectionAlgorithm.MD5;
-        }
+        // Automatically upgrade plain passwords to current algorithm.
+        if (!upgraded)
+          SetPassword(Utility.GetText(node["password"], null));
       }
+      else
+        Password = Utility.GetText(node["password"], null);
 
       Enum.TryParse(Utility.GetText(node["accessLevel"], "Player"), true, out m_AccessLevel);
       Flags = Utility.GetXMLInt32(Utility.GetText(node["flags"], "0"), 0);
