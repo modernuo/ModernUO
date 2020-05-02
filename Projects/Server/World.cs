@@ -130,23 +130,16 @@ namespace Server
         {
           Console.WriteLine("failed");
 
-          if (!Core.Service)
-          {
-            Console.WriteLine("Error: Type '{0}' was not found. Delete all of those types? (y/n)", typeName);
+          Console.WriteLine("Error: Type '{0}' was not found. Delete all of those types? (y/n)", typeName);
 
-            if (Console.ReadKey(true).Key == ConsoleKey.Y)
-            {
-              types.Add(null);
-              Console.Write("World: Loading...");
-              continue;
-            }
-
-            Console.WriteLine("Types will not be deleted. An exception will be thrown.");
-          }
-          else
+          if (Console.ReadKey(true).Key == ConsoleKey.Y)
           {
-            Console.WriteLine("Error: Type '{0}' was not found.", typeName);
+            types.Add(null);
+            Console.Write("World: Loading...");
+            continue;
           }
+
+          Console.WriteLine("Types will not be deleted. An exception will be thrown.");
 
           throw new Exception($"Bad type '{typeName}'");
         }
@@ -454,45 +447,38 @@ namespace Server
         Console.WriteLine(" - Type: {0}", failedType);
         Console.WriteLine(" - Serial: {0}", failedSerial);
 
-        if (!Core.Service)
+        Console.WriteLine("Delete the object? (y/n)");
+
+        if (Console.ReadKey(true).Key == ConsoleKey.Y)
         {
-          Console.WriteLine("Delete the object? (y/n)");
-
-          if (Console.ReadKey(true).Key == ConsoleKey.Y)
+          if (failedType != typeof(BaseGuild))
           {
-            if (failedType != typeof(BaseGuild))
+            Console.WriteLine("Delete all objects of that type? (y/n)");
+
+            if (Console.ReadKey(true).Key == ConsoleKey.Y)
             {
-              Console.WriteLine("Delete all objects of that type? (y/n)");
-
-              if (Console.ReadKey(true).Key == ConsoleKey.Y)
-              {
-                if (failedMobiles)
-                  for (var i = 0; i < mobiles.Count;)
-                    if (mobiles[i].TypeID == failedTypeID)
-                      mobiles.RemoveAt(i);
-                    else
-                      ++i;
-                else if (failedItems)
-                  for (var i = 0; i < items.Count;)
-                    if (items[i].TypeID == failedTypeID)
-                      items.RemoveAt(i);
-                    else
-                      ++i;
-              }
+              if (failedMobiles)
+                for (var i = 0; i < mobiles.Count;)
+                  if (mobiles[i].TypeID == failedTypeID)
+                    mobiles.RemoveAt(i);
+                  else
+                    ++i;
+              else if (failedItems)
+                for (var i = 0; i < items.Count;)
+                  if (items[i].TypeID == failedTypeID)
+                    items.RemoveAt(i);
+                  else
+                    ++i;
             }
-
-            SaveIndex(mobiles, MobileIndexPath);
-            SaveIndex(items, ItemIndexPath);
-            SaveIndex(guilds, GuildIndexPath);
           }
 
-          Console.WriteLine("After pressing return an exception will be thrown and the server will terminate.");
-          Console.ReadLine();
+          SaveIndex(mobiles, MobileIndexPath);
+          SaveIndex(items, ItemIndexPath);
+          SaveIndex(guilds, GuildIndexPath);
         }
-        else
-        {
-          Console.WriteLine("An exception will be thrown and the server will terminate.");
-        }
+
+        Console.WriteLine("After pressing return an exception will be thrown and the server will terminate.");
+        Console.ReadLine();
 
         throw new Exception(
           $"Load failed (items={failedItems}, mobiles={failedMobiles}, guilds={failedGuilds}, type={failedType}, serial={failedSerial})",

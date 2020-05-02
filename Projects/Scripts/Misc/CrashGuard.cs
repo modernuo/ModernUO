@@ -41,8 +41,7 @@ namespace Server.Misc
     {
       Console.Write("Crash: Sending email...");
 
-      if (Email.FROM_ADDRESS != null && Email.CRASH_ADDRESS != null)
-        Email.SendCrashEmail(filePath);
+      Email.SendCrashEmail(filePath);
     }
 
     private static string GetRoot()
@@ -229,8 +228,7 @@ namespace Server.Misc
 
         Console.WriteLine("done");
 
-        if (Email.FROM_ADDRESS != null && Email.CRASH_ADDRESS != null)
-          SendEmail(filePath);
+        SendEmail(filePath);
       }
       catch
       {

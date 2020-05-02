@@ -4,22 +4,13 @@ using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MimeKit;
 using Server.Accounting;
+using Server.Configurations;
 using Server.Engines.Help;
 
 namespace Server.Misc
 {
   public static class Email
   {
-    public static readonly MailboxAddress FROM_ADDRESS = new MailboxAddress(Configuration.Instance.emailSettings.FromName, Configuration.Instance.emailSettings.FromAddress);
-    public static readonly MailboxAddress CRASH_ADDRESS = new MailboxAddress(Configuration.Instance.emailSettings.crashName, Configuration.Instance.emailSettings.crashAddress);
-    public static readonly MailboxAddress SPEECH_LOG_PAGE_ADDRESS = new MailboxAddress(Configuration.Instance.emailSettings.speechLogPageName, Configuration.Instance.emailSettings.speechLogPageAddress);
-    public static readonly string EMAIL_SERVER = Configuration.Instance.emailSettings.emailServer;
-    public static readonly int EMAIL_PORT = Configuration.Instance.emailSettings.emailPort;
-    public static readonly string EMAIL_SERVER_USERNAME = Configuration.Instance.emailSettings.emailUsername;
-    public static readonly string EMAIL_SERVER_PASSWORD = Configuration.Instance.emailSettings.emailPassword;
-    public static readonly int RETRY_SEND_EMAIL_COUNT = 5;
-    public static readonly int SEND_DELAY_SECONDS = 2;
-
     /// <summary>
     /// Sends Queue-Page request using Email
     /// </summary>
@@ -27,12 +18,14 @@ namespace Server.Misc
     /// <param name="pageType"></param>
     public static void SendQueueEmail(PageEntry entry, string pageType)
     {
+      if (!EmailConfiguration.EmailEnabled) return;
+
       Mobile sender = entry.Sender;
       DateTime time = DateTime.UtcNow;
 
       var message = new MimeMessage();
-      message.From.Add(FROM_ADDRESS);
-      message.To.Add(SPEECH_LOG_PAGE_ADDRESS);
+      message.From.Add(EmailConfiguration.FromAddress);
+      message.To.Add(EmailConfiguration.SpeechLogPageAddress);
       message.Subject = "ModernUO Speech Log Page Forwarding";
 
       using (StringWriter writer = new StringWriter())
@@ -77,9 +70,11 @@ namespace Server.Misc
     /// <param name="filePath"></param>
     public static void SendCrashEmail(string filePath)
     {
+      if (EmailConfiguration.EmailEnabled) return;
+
       var message = new MimeMessage();
-      message.From.Add(FROM_ADDRESS);
-      message.To.Add(CRASH_ADDRESS);
+      message.From.Add(EmailConfiguration.FromAddress);
+      message.To.Add(EmailConfiguration.CrashAddress);
       message.Subject = "Automated ModernUO Crash Report";
       var builder = new BodyBuilder
       {
@@ -96,19 +91,21 @@ namespace Server.Misc
     /// <param name="message"></param>
     private static async void SendAsync(MimeMessage message)
     {
+      if (!EmailConfiguration.EmailEnabled) return;
+
       DateTime now = DateTime.UtcNow;
-      string messageID = $"<{now:yyyyMMdd}.{now:HHmmssff}@{EMAIL_SERVER}>";
+      string messageID = $"<{now:yyyyMMdd}.{now:HHmmssff}@{EmailConfiguration.EmailServer}>";
       message.Headers.Add("Message-ID", messageID);
-      message.From.Add(FROM_ADDRESS);
+      message.From.Add(EmailConfiguration.FromAddress);
 
-      int delay = SEND_DELAY_SECONDS;
+      int delay = EmailConfiguration.EmailSendRetryDelay;
 
-      for (int i = 0; i < RETRY_SEND_EMAIL_COUNT; i++)
+      for (int i = 0; i < EmailConfiguration.EmailSendRetryCount; i++)
         try
         {
           using SmtpClient client = new SmtpClient();
-          await client.ConnectAsync(EMAIL_SERVER, EMAIL_PORT, true);
-          await client.AuthenticateAsync(EMAIL_SERVER_USERNAME, EMAIL_SERVER_PASSWORD);
+          await client.ConnectAsync(EmailConfiguration.EmailServer, EmailConfiguration.EmailPort, true);
+          await client.AuthenticateAsync(EmailConfiguration.EmailServerUsername, EmailConfiguration.EmailServerPassword);
           await client.SendAsync(message);
           await client.DisconnectAsync(true);
           return;

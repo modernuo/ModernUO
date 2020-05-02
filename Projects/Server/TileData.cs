@@ -208,7 +208,7 @@ namespace Server
 
         for (var i = 0; i < 0x4000; ++i)
         {
-          if (i == 1 || (i > 0 && (i & 0x1F) == 0)) bin.ReadInt32(); // header
+          if (i == 1 || i > 0 && (i & 0x1F) == 0) bin.ReadInt32(); // header
 
           var flags = (TileFlag)bin.ReadInt64();
           bin.ReadInt16(); // skip 2 bytes -- textureID
