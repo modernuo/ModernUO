@@ -8,8 +8,12 @@ namespace Server.Misc
 {
   public class TestCenter
   {
-    private const bool m_Enabled = false;
-    public static bool Enabled => m_Enabled;
+    public static bool Enabled { get; private set; }
+
+    public static void Configure()
+    {
+      Enabled = ServerConfiguration.GetOrUpdateSetting("testCenter.enabled", false);
+    }
 
     public static void Initialize()
     {

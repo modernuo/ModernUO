@@ -34,8 +34,104 @@ namespace Server
     private static ServerSettings m_Settings;
 
     public static List<string> DataDirectories => m_Settings.dataDirectories;
-    public static Dictionary<string, string> Settings => m_Settings.settings;
-    public static Dictionary<string, object> Metadata => m_Settings.metadata;
+
+    public static string GetSetting(string key, string defaultValue)
+    {
+      m_Settings.settings.TryGetValue(key, out string value);
+      return value == "(-null-)" ? null : value ?? defaultValue;
+    }
+
+    public static int GetSetting(string key, int defaultValue)
+    {
+      m_Settings.settings.TryGetValue(key, out string strValue);
+      return int.TryParse(strValue, out int value) ? value : defaultValue;
+    }
+
+    public static bool GetSetting(string key, bool defaultValue)
+    {
+      m_Settings.settings.TryGetValue(key, out string strValue);
+      return bool.TryParse(strValue, out bool value) ? value : defaultValue;
+    }
+
+    public static T GetSetting<T>(string key, T defaultValue) where T : struct, Enum
+    {
+      m_Settings.settings.TryGetValue(key, out string strValue);
+      return Enum.TryParse(strValue, out T value) ? value : defaultValue;
+    }
+
+    public static string GetOrUpdateSetting(string key, string defaultValue)
+    {
+      if (m_Settings.settings.TryGetValue(key, out string value))
+        return value;
+
+      SetSetting(key, value = defaultValue);
+      return value;
+    }
+
+    public static int GetOrUpdateSetting(string key, int defaultValue)
+    {
+      int value;
+
+      if (m_Settings.settings.TryGetValue(key, out string strValue))
+        value = int.TryParse(strValue, out value) ? value : defaultValue;
+      else
+        SetSetting(key, (value = defaultValue).ToString());
+
+      return value;
+    }
+
+    public static bool GetOrUpdateSetting(string key, bool defaultValue)
+    {
+      bool value;
+
+      if (m_Settings.settings.TryGetValue(key, out string strValue))
+        value = bool.TryParse(strValue, out value) ? value : defaultValue;
+      else
+        SetSetting(key, (value = defaultValue).ToString());
+
+      return value;
+    }
+
+    public static TimeSpan GetOrUpdateSetting(string key, TimeSpan defaultValue)
+    {
+      TimeSpan value;
+
+      if (m_Settings.settings.TryGetValue(key, out string strValue))
+        value = TimeSpan.TryParse(strValue, out value) ? value : defaultValue;
+      else
+        SetSetting(key, (value = defaultValue).ToString());
+
+      return value;
+    }
+
+    public static T GetOrUpdateSetting<T>(string key, T defaultValue) where T : struct, Enum
+    {
+      T value;
+
+      if (m_Settings.settings.TryGetValue(key, out string strValue))
+        value = Enum.TryParse(strValue, out value) ? value : defaultValue;
+      else
+        SetSetting(key, (value = defaultValue).ToString());
+
+      return value;
+    }
+
+    public static void SetSetting(string key, string value)
+    {
+      m_Settings.settings[key] = value;
+      SaveConfiguration();
+    }
+
+    public static T GetMetadata<T>(string key) where T : class
+    {
+      m_Settings.metadata.TryGetValue(key, out object value);
+      return value as T;
+    }
+
+    public static void SetMetadata(string key, object value)
+    {
+      m_Settings.metadata[key] = value;
+    }
 
     public static void LoadConfiguration()
     {
@@ -70,7 +166,12 @@ namespace Server
       }
 
       if (updated)
+      {
         SaveConfiguration();
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"Core: Configuration saved to {m_RelPath}.");
+        Console.ResetColor();
+      }
     }
 
     internal class ServerSettings
@@ -102,9 +203,6 @@ namespace Server
     public static void SaveConfiguration()
     {
       JsonConfig.Serialize(m_FilePath, m_Settings);
-      Console.ForegroundColor = ConsoleColor.Green;
-      Console.WriteLine($"Core: Configuration saved to {m_RelPath}.");
-      Console.ResetColor();
     }
   }
 }

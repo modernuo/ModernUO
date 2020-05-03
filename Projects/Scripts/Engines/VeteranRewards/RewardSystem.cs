@@ -11,11 +11,10 @@ namespace Server.Engines.VeteranRewards
     private static RewardCategory[] m_Categories;
     private static RewardList[] m_Lists;
 
-    public static bool Enabled = true; // change to true to enable vet rewards
+    public static bool Enabled { get; private set; }
 
-    public static bool
-      SkillCapRewards =
-        true; // assuming vet rewards are enabled, should total skill cap bonuses be awarded? (720 skills total at 4th level)
+    // assuming vet rewards are enabled, should total skill cap bonuses be awarded? (720 skills total at 4th level)
+    public static bool SkillCapRewards { get; private set; }
 
     public static TimeSpan RewardInterval = TimeSpan.FromDays(30.0);
 
@@ -173,16 +172,13 @@ namespace Server.Engines.VeteranRewards
 
     public static bool CheckIsUsableBy(Mobile from, Item item, object[] args = null)
     {
-      if (m_Lists == null)
-        SetupRewardTables();
-
       bool isRelaxedRules = item is DyeTub || item is MonsterStatuette;
 
       Type type = item.GetType();
 
-      for (int i = 0; i < m_Lists.Length; ++i)
+      for (int i = 0; i < Lists.Length; ++i)
       {
-        RewardList list = m_Lists[i];
+        RewardList list = Lists[i];
         RewardEntry[] entries = list.Entries;
 
         for (int j = 0; j < entries.Length; ++j)
@@ -235,14 +231,11 @@ namespace Server.Engines.VeteranRewards
 
     public static int GetRewardYear(Item item, object[] args)
     {
-      if (m_Lists == null)
-        SetupRewardTables();
-
       Type type = item.GetType();
 
-      for (int i = 0; i < m_Lists.Length; ++i)
+      for (int i = 0; i < Lists.Length; ++i)
       {
-        RewardList list = m_Lists[i];
+        RewardList list = Lists[i];
         RewardEntry[] entries = list.Entries;
 
         for (int j = 0; j < entries.Length; ++j)
@@ -462,6 +455,9 @@ namespace Server.Engines.VeteranRewards
 
     public static void Initialize()
     {
+      Enabled = ServerConfiguration.GetOrUpdateSetting("vetRewards.enabled", true);
+      SkillCapRewards = ServerConfiguration.GetOrUpdateSetting("vetReards.skillCapRewards", true);
+
       if (Enabled)
         EventSink.Login += EventSink_Login;
     }

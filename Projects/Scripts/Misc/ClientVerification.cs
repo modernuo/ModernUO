@@ -9,11 +9,11 @@ namespace Server.Misc
 {
   public class ClientVerification
   {
-    private static readonly bool m_DetectClientRequirement = true;
-    private static readonly OldClientResponse m_OldClientResponse = OldClientResponse.LenientKick;
+    private static bool m_DetectClientRequirement;
+    private static OldClientResponse m_OldClientResponse;
 
-    private static readonly TimeSpan m_AgeLeniency = TimeSpan.FromDays(10);
-    private static readonly TimeSpan m_GameTimeLeniency = TimeSpan.FromHours(25);
+    private static TimeSpan m_AgeLeniency;
+    private static TimeSpan m_GameTimeLeniency;
 
     public static ClientVersion Required { get; set; }
 
@@ -23,10 +23,17 @@ namespace Server.Misc
 
     public static bool AllowGod { get; set; } = true;
 
-    public static TimeSpan KickDelay { get; set; } = TimeSpan.FromSeconds(20.0);
+    public static TimeSpan KickDelay { get; set; }
 
     public static void Initialize()
     {
+      m_DetectClientRequirement = ServerConfiguration.GetOrUpdateSetting("clientVerification.enabled", true);
+      m_OldClientResponse =
+        ServerConfiguration.GetOrUpdateSetting("clientVerification.oldClientResponse", OldClientResponse.Kick);
+      m_AgeLeniency = ServerConfiguration.GetOrUpdateSetting("clientVerification.ageLeniency", TimeSpan.FromDays(10));
+      m_GameTimeLeniency = ServerConfiguration.GetOrUpdateSetting("clientVerification.gameTimeLeniency", TimeSpan.FromHours(25));
+      KickDelay = ServerConfiguration.GetOrUpdateSetting("clientVerification.kickDelay", TimeSpan.FromSeconds(20.0));
+
       EventSink.ClientVersionReceived += EventSink_ClientVersionReceived;
 
       // ClientVersion.Required = null;

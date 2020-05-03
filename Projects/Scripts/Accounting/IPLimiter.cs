@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Server.Network;
 
@@ -6,24 +7,23 @@ namespace Server.Misc
 {
   public class IPLimiter
   {
-    public static bool Enabled = true;
-    public static bool SocketBlock = true; // true to block at connection, false to block at login request
+    public static bool Enabled { get; private set; }
+    public static bool SocketBlock { get; private set; }
+    public static int MaxAddresses { get; private set; }
 
-    public static int MaxAddresses = 10;
+    public static void Configure()
+    {
+      Enabled = ServerConfiguration.GetOrUpdateSetting("ipLImiter.enabled", true);
+      SocketBlock = ServerConfiguration.GetOrUpdateSetting("ipLImiter.blockAtConnection", true);
+      MaxAddresses = ServerConfiguration.GetOrUpdateSetting("ipLimiter.maxConnectionsPerIP", 10);
+    }
 
     public static IPAddress[] Exemptions =
     {
       // IPAddress.Parse( "127.0.0.1" ),
     };
 
-    public static bool IsExempt(IPAddress ip)
-    {
-      for (int i = 0; i < Exemptions.Length; i++)
-        if (ip.Equals(Exemptions[i]))
-          return true;
-
-      return false;
-    }
+    public static bool IsExempt(IPAddress ip) => Exemptions.Contains(ip);
 
     public static bool Verify(IPAddress ourAddress)
     {

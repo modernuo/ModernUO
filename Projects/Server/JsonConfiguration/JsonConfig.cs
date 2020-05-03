@@ -30,6 +30,7 @@ namespace Server.Json
       ReadCommentHandling = JsonCommentHandling.Skip,
       WriteIndented = true,
       AllowTrailingCommas = true,
+      IgnoreNullValues = true
     };
 
     public static T Deserialize<T>(string filePath, JsonSerializerOptions options = null)

@@ -3266,7 +3266,12 @@ namespace Server.Mobiles
     {
     }
 
-    public const bool BondingEnabled = true;
+    public static void Initialize()
+    {
+      BondingEnabled = ServerConfiguration.GetOrUpdateSetting("taming.enableBonding", true);
+    }
+
+    public static bool BondingEnabled { get; private set; }
 
     public virtual bool IsBondable => BondingEnabled && !Summoned;
     public virtual TimeSpan BondingDelay => TimeSpan.FromDays(7.0);

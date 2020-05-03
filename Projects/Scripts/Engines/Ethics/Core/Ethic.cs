@@ -9,7 +9,7 @@ namespace Server.Ethics
 {
   public abstract class Ethic
   {
-    public static readonly bool Enabled = false;
+    public static bool Enabled { get; private set; }
 
     public static readonly Ethic Hero = new HeroEthic();
     public static readonly Ethic Evil = new EvilEthic();
@@ -98,6 +98,8 @@ namespace Server.Ethics
 
     public static void Initialize()
     {
+      Enabled = ServerConfiguration.GetOrUpdateSetting("ethics.enabled", false);
+
       if (Enabled)
         EventSink.Speech += EventSink_Speech;
     }

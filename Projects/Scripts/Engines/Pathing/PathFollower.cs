@@ -5,9 +5,7 @@ namespace Server
 {
   public class PathFollower
   {
-    // Should we use pathfinding? 'false' for not
-    private static readonly bool Enabled = true;
-
+    private static bool Enabled;
     private static readonly TimeSpan RepathDelay = TimeSpan.FromSeconds(2.0);
 
     private readonly Mobile m_From;
@@ -15,6 +13,11 @@ namespace Server
     private DateTime m_LastPathTime;
     private Point3D m_Next, m_LastGoalLoc;
     private MovementPath m_Path;
+
+    public static void Initialize()
+    {
+      Enabled = ServerConfiguration.GetOrUpdateSetting("pathfinding.enabled", true);
+    }
 
     public PathFollower(Mobile from, IPoint3D goal)
     {
