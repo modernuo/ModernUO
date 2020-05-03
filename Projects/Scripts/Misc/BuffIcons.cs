@@ -6,10 +6,12 @@ namespace Server
 {
   public class BuffInfo
   {
-    public static bool Enabled => Core.ML;
+    public static bool Enabled { get; private set; }
 
     public static void Initialize()
     {
+      Enabled = ServerConfiguration.GetSetting("buffInfo", Core.ML);
+
       if (Enabled)
         EventSink.ClientVersionReceived += ResendBuffsOnClientVersionReceived;
     }

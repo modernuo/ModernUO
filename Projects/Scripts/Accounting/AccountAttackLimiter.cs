@@ -8,7 +8,11 @@ namespace Server.Accounting
 {
   public class AccountAttackLimiter
   {
-    public static bool Enabled = true;
+    public static bool Enabled;
+    public static void Configure()
+    {
+      Enabled = ServerConfiguration.GetOrUpdateSetting("accountAttackLimiter.enabled", true);
+    }
 
     private static readonly List<InvalidAccountAccessLog> m_List = new List<InvalidAccountAccessLog>();
 

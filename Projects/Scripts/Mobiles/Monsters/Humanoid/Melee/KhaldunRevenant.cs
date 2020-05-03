@@ -67,7 +67,7 @@ namespace Server.Mobiles
     public override bool BardImmune => true;
     public override Poison PoisonImmune => Poison.Lethal;
 
-    public static void Initialize()
+    public static new void Initialize()
     {
       EventSink.PlayerDeath += EventSink_PlayerDeath;
     }

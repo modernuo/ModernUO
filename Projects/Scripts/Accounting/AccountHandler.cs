@@ -11,10 +11,18 @@ namespace Server.Misc
 {
   public class AccountHandler
   {
-    private static readonly int MaxAccountsPerIP = 1;
-    private static readonly bool AutoAccountCreation = true;
-    private static readonly bool RestrictDeletion = !TestCenter.Enabled;
-    private static readonly TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
+    private static int MaxAccountsPerIP;
+    private static bool AutoAccountCreation;
+    private static bool RestrictDeletion = !TestCenter.Enabled;
+    private static TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
+    private static bool PasswordCommandEnabled;
+
+    public static void Configure()
+    {
+      MaxAccountsPerIP = ServerConfiguration.GetOrUpdateSetting("accountHandler.maxAccountsPerIP", 1);
+      AutoAccountCreation = ServerConfiguration.GetOrUpdateSetting("accountHandler.autoAccountCreation", true);
+      PasswordCommandEnabled = ServerConfiguration.GetOrUpdateSetting("accountHandler.enablePlayerPasswordCommand", false);
+    }
 
     private static readonly CityInfo[] StartingCities =
     {
@@ -45,8 +53,6 @@ namespace Server.Misc
         StartingCities[StartingCities.Length - 1] = haven;
       }
     */
-
-    private static readonly bool PasswordCommandEnabled = false;
 
     private static Dictionary<IPAddress, int> m_IPTable;
 

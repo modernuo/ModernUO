@@ -22,8 +22,9 @@ namespace Server.Engines.MLQuests
     public static readonly bool Debug = false;
 
     public static readonly List<MLQuest> EmptyList = new List<MLQuest>();
-
     private static readonly List<MLQuest> m_EligiblePool = new List<MLQuest>();
+
+    public static bool Enabled { get; private set; }
 
     static MLQuestSystem()
     {
@@ -94,8 +95,6 @@ namespace Server.Engines.MLQuests
       }
     }
 
-    public static bool Enabled => Core.ML;
-
     public static Dictionary<Type, MLQuest> Quests { get; }
 
     public static Dictionary<Type, List<MLQuest>> QuestGivers { get; }
@@ -125,6 +124,8 @@ namespace Server.Engines.MLQuests
 
     public static void Initialize()
     {
+      Enabled = ServerConfiguration.GetOrUpdateSetting("questSystem.enableMLQuests", Core.ML);
+
       if (!Enabled)
         return;
 

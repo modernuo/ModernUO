@@ -36,18 +36,21 @@ namespace Server.Misc
      * IP address or hostname, whichever is applicable. Loopback clients will be directed to loopback.
      *
      * If you would like to listen on additional ports (i.e. 22, 23, 80, for clients behind highly restrictive egress
-     * firewalls) or specific IP adddresses you can do so by modifying the file SocketOptions.cs found in this directory.
+     * firewalls) or specific IP addresses you can do so by modifying the file SocketOptions.cs found in this directory.
      */
 
-    public static readonly string Address = null;
-    public const string ServerName = "ModernUO TC";
+    public static string Address { get; private set; }
+    public static string ServerName { get; private set; }
 
-    public const bool AutoDetect = true;
+    public static bool AutoDetect { get; private set; }
 
     private static IPAddress m_PublicAddress;
 
     public static void Initialize()
     {
+      Address = ServerConfiguration.GetOrUpdateSetting("serverListing.address", "(-null-)");
+      AutoDetect = ServerConfiguration.GetOrUpdateSetting("serverListing.autoDetect", true);
+
       if (Address == null)
       {
         if (AutoDetect)
