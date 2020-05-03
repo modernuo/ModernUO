@@ -54,7 +54,6 @@ namespace Server
         }
 
         Console.WriteLine("done");
-        Console.WriteLine("Settings: {0}", m_Settings.settings["stuff"]);
       }
       else
       {
