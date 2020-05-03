@@ -2,7 +2,8 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: MapConverter.cs - Created: 2020/04/12 - Updated: 2020/05/02     *
+ * File: Point3dConverter.cs                                             *
+ * Created: 2020/04/12 - Updated: 2020/05/02                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *

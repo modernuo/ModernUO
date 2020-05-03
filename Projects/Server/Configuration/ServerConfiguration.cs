@@ -2,7 +2,8 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: Configuration.cs - Created: 2019/10/04 - Updated: 2020/01/19    *
+ * File: ServerConfiguration.cs                                          *
+ * Created: 2019/10/04 - Updated: 2020/05/02                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
