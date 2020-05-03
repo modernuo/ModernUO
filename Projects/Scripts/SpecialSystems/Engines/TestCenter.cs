@@ -12,7 +12,7 @@ namespace Server.Misc
 
     public static void Configure()
     {
-      Enabled = ServerConfiguration.GetOrUpdateSetting("testCenter.enabled", false);
+      Enabled = ServerConfiguration.GetOrUpdateSetting("testCenter.enable", false);
     }
 
     public static void Initialize()

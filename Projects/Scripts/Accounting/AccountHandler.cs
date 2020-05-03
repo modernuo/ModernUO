@@ -20,7 +20,7 @@ namespace Server.Misc
     public static void Configure()
     {
       MaxAccountsPerIP = ServerConfiguration.GetOrUpdateSetting("accountHandler.maxAccountsPerIP", 1);
-      AutoAccountCreation = ServerConfiguration.GetOrUpdateSetting("accountHandler.autoAccountCreation", true);
+      AutoAccountCreation = ServerConfiguration.GetOrUpdateSetting("accountHandler.enableAutoAccountCreation", true);
       PasswordCommandEnabled = ServerConfiguration.GetOrUpdateSetting("accountHandler.enablePlayerPasswordCommand", false);
     }
 

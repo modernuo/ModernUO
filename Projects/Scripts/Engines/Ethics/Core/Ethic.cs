@@ -98,7 +98,7 @@ namespace Server.Ethics
 
     public static void Initialize()
     {
-      Enabled = ServerConfiguration.GetOrUpdateSetting("ethics.enabled", false);
+      Enabled = ServerConfiguration.GetOrUpdateSetting("ethics.enable", false);
 
       if (Enabled)
         EventSink.Speech += EventSink_Speech;

@@ -13,8 +13,8 @@ namespace Server.Misc
 
     public static void Configure()
     {
-      Enabled = ServerConfiguration.GetOrUpdateSetting("ipLImiter.enabled", true);
-      SocketBlock = ServerConfiguration.GetOrUpdateSetting("ipLImiter.blockAtConnection", true);
+      Enabled = ServerConfiguration.GetOrUpdateSetting("ipLimiter.enable", true);
+      SocketBlock = ServerConfiguration.GetOrUpdateSetting("ipLimiter.blockAtConnection", true);
       MaxAddresses = ServerConfiguration.GetOrUpdateSetting("ipLimiter.maxConnectionsPerIP", 10);
     }
 

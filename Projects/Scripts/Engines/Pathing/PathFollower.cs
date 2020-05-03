@@ -16,7 +16,7 @@ namespace Server
 
     public static void Initialize()
     {
-      Enabled = ServerConfiguration.GetOrUpdateSetting("pathfinding.enabled", true);
+      Enabled = ServerConfiguration.GetOrUpdateSetting("pathfinding.enable", true);
     }
 
     public PathFollower(Mobile from, IPoint3D goal)

@@ -40,14 +40,17 @@ namespace Server.Accounting.Security
   public static class AccountSecurity
   {
     // TODO: Put it in a configuration
-    public const PasswordProtectionAlgorithm AlgorithmName = PasswordProtectionAlgorithm.Argon2;
+    public static PasswordProtectionAlgorithm CurrentAlgorithm { get; set; }
 
-    public static readonly IPasswordProtection CurrentPasswordProtection = GetPasswordProtection(AlgorithmName);
+    public static readonly IPasswordProtection CurrentPasswordProtection = GetPasswordProtection(CurrentAlgorithm);
 
     public static void Configure()
     {
-      if (AlgorithmName < PasswordProtectionAlgorithm.SHA2)
-        throw new Exception($"Security: {AlgorithmName} is obselete and not secure. Do not use it.");
+      CurrentAlgorithm =
+        ServerConfiguration.GetOrUpdateSetting("accountSecurity.encryptionAlgorithm", PasswordProtectionAlgorithm.Argon2);
+
+      if (CurrentAlgorithm < PasswordProtectionAlgorithm.SHA2)
+        throw new Exception($"Security: {CurrentAlgorithm} is obselete and not secure. Do not use it.");
     }
 
     public static IPasswordProtection GetPasswordProtection(PasswordProtectionAlgorithm algorithm)
