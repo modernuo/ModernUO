@@ -16,7 +16,7 @@ namespace Server.Engines.VeteranRewards
     // assuming vet rewards are enabled, should total skill cap bonuses be awarded? (720 skills total at 4th level)
     public static bool SkillCapRewards { get; private set; }
 
-    public static TimeSpan RewardInterval = TimeSpan.FromDays(30.0);
+    public static TimeSpan RewardInterval { get; private set; }
 
     public static RewardCategory[] Categories
     {
@@ -455,8 +455,9 @@ namespace Server.Engines.VeteranRewards
 
     public static void Initialize()
     {
-      Enabled = ServerConfiguration.GetOrUpdateSetting("vetRewards.enabled", true);
-      SkillCapRewards = ServerConfiguration.GetOrUpdateSetting("vetReards.skillCapRewards", true);
+      Enabled = ServerConfiguration.GetOrUpdateSetting("vetRewards.enable", true);
+      SkillCapRewards = ServerConfiguration.GetOrUpdateSetting("vetRewards.skillCapRewards", true);
+      RewardInterval = ServerConfiguration.GetOrUpdateSetting("vetRewards.rewardInterval", TimeSpan.FromDays(30.0));
 
       if (Enabled)
         EventSink.Login += EventSink_Login;

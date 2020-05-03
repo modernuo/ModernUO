@@ -27,7 +27,7 @@ namespace Server.Misc
 
     public static void Initialize()
     {
-      m_DetectClientRequirement = ServerConfiguration.GetOrUpdateSetting("clientVerification.enabled", true);
+      m_DetectClientRequirement = ServerConfiguration.GetOrUpdateSetting("clientVerification.enable", true);
       m_OldClientResponse =
         ServerConfiguration.GetOrUpdateSetting("clientVerification.oldClientResponse", OldClientResponse.Kick);
       m_AgeLeniency = ServerConfiguration.GetOrUpdateSetting("clientVerification.ageLeniency", TimeSpan.FromDays(10));

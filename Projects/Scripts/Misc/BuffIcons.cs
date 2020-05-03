@@ -10,7 +10,7 @@ namespace Server
 
     public static void Initialize()
     {
-      Enabled = ServerConfiguration.GetOrUpdateSetting("buffIcons.enabled", Core.ML);
+      Enabled = ServerConfiguration.GetOrUpdateSetting("buffIcons.enable", Core.ML);
 
       if (Enabled)
         EventSink.ClientVersionReceived += ResendBuffsOnClientVersionReceived;

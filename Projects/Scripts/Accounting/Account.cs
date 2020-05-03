@@ -315,7 +315,7 @@ namespace Server.Accounting
     public void SetPassword(string plainPassword)
     {
       Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(plainPassword);
-      m_PasswordAlgorithm = AccountSecurity.AlgorithmName;
+      m_PasswordAlgorithm = AccountSecurity.CurrentAlgorithm;
     }
 
     public bool CheckPassword(string plainPassword)
@@ -327,7 +327,7 @@ namespace Server.Accounting
         return false;
 
       // Upgrade the password protection in case we change the algorithm
-      if (m_PasswordAlgorithm != AccountSecurity.AlgorithmName)
+      if (m_PasswordAlgorithm != AccountSecurity.CurrentAlgorithm)
         SetPassword(plainPassword);
 
       return true;

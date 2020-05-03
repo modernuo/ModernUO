@@ -11,13 +11,13 @@ namespace Server
     {
       Core.Expansion = ServerConfiguration.GetOrUpdateSetting("currentExpansion", Expansion.TOL);
 
-      AccountGold.Enabled = ServerConfiguration.GetSetting("accountGold.enabled", Core.TOL);
+      AccountGold.Enabled = ServerConfiguration.GetSetting("accountGold.enable", Core.TOL);
       AccountGold.ConvertOnBank = ServerConfiguration.GetSetting("accountGold.convertOnBank", true);
       AccountGold.ConvertOnTrade = ServerConfiguration.GetSetting("accountGold.convertOnTrade", false);
       VirtualCheck.UseEditGump = ServerConfiguration.GetSetting("virtualChecks.useEditGump", true);
 
-      Mobile.InsuranceEnabled = ServerConfiguration.GetSetting("insurance.enabled", Core.AOS);
-      ObjectPropertyList.Enabled = ServerConfiguration.GetSetting("opl.enabled", Core.AOS);
+      Mobile.InsuranceEnabled = ServerConfiguration.GetSetting("insurance.enable", Core.AOS);
+      ObjectPropertyList.Enabled = ServerConfiguration.GetSetting("opl.enable", Core.AOS);
       bool visibleDamage = ServerConfiguration.GetSetting("visibleDamage", Core.AOS);
       Mobile.VisibleDamageType = visibleDamage ? VisibleDamageType.Related : VisibleDamageType.None;
       Mobile.GuildClickMessage = ServerConfiguration.GetSetting("guildClickMessage", !Core.AOS);

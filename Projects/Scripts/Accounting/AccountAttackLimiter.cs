@@ -11,7 +11,7 @@ namespace Server.Accounting
     public static bool Enabled;
     public static void Configure()
     {
-      Enabled = ServerConfiguration.GetOrUpdateSetting("accountAttackLimiter.enabled", true);
+      Enabled = ServerConfiguration.GetOrUpdateSetting("accountAttackLimiter.enable", true);
     }
 
     private static readonly List<InvalidAccountAccessLog> m_List = new List<InvalidAccountAccessLog>();
