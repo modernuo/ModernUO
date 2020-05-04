@@ -8,10 +8,10 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 ![Debian](https://img.shields.io/badge/-buster-A81D33?logo=debian)
 ![Ubuntu](https://img.shields.io/badge/-16LTS-E95420?logo=ubuntu&logoColor=white)
 <br/>
+[![GitHub license](https://img.shields.io/github/license/modernuo/ModernUO?color=blue)](https://github.com/modernuo/ModernUO/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/issues)
-![Build status](https://img.shields.io/circleci/build/gh/modernuo/ModernUO/master?logo=circleci)
-[![GitHub license](https://img.shields.io/github/license/modernuo/ModernUO?color=blue)](https://github.com/modernuo/ModernUO/blob/master/LICENSE)
+[![Build status](https://img.shields.io/circleci/build/gh/modernuo/ModernUO/master?logo=circleci)](https://circleci.com/gh/modernuo/ModernUO)
 
 ## Goals
 - See [Goals](./GOALS.md)
