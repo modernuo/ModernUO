@@ -380,7 +380,7 @@ namespace Server
       Console.WriteLine("SecureRandomImpl: {0} ({1})", SecureRandomImpl.Name,
         SecureRandomImpl.IsHardwareRNG ? "Hardware" : "Software");
 
-      ServerConfiguration.LoadConfiguration();
+      ServerConfiguration.Load();
 
       // Load Assembly Scripts.CS.dll
       AssemblyHandler.LoadScripts();

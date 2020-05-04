@@ -2063,7 +2063,10 @@ namespace Server
           {
             ns.Sequence = 0;
             ns.Send(new MapChange(this));
-            ns.Send(new MapPatches());
+
+            if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
+              ns.Send(new MapPatches());
+
             ns.Send(SeasonChange.Instantiate(GetSeason(), true));
 
             if (ns.StygianAbyss)
@@ -2185,7 +2188,10 @@ namespace Server
         {
           ns.Sequence = 0;
           ns.Send(new MapChange(this));
-          ns.Send(new MapPatches());
+
+          if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
+            ns.Send(new MapPatches());
+
           ns.Send(SeasonChange.Instantiate(GetSeason(), true));
 
           if (ns.StygianAbyss)

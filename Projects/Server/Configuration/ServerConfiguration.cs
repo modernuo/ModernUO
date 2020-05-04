@@ -32,6 +32,7 @@ namespace Server
     private const string m_RelPath = "Configuration/modernuo.json";
     private static readonly string m_FilePath = Path.Join(Core.BaseDirectory, m_RelPath);
     private static ServerSettings m_Settings;
+    private static bool m_Mocked;
 
     public static List<string> DataDirectories => m_Settings.dataDirectories;
 
@@ -119,7 +120,7 @@ namespace Server
     public static void SetSetting(string key, string value)
     {
       m_Settings.settings[key] = value;
-      SaveConfiguration();
+      Save();
     }
 
     public static T GetMetadata<T>(string key) where T : class
@@ -133,8 +134,10 @@ namespace Server
       m_Settings.metadata[key] = value;
     }
 
-    public static void LoadConfiguration()
+    // If mock is enabled we skip the console readline.
+    public static void Load(bool mocked = false)
     {
+      m_Mocked = mocked;
       bool updated = false;
 
       if (File.Exists(m_FilePath))
@@ -158,6 +161,9 @@ namespace Server
         m_Settings = new ServerSettings();
       }
 
+      if (mocked)
+        return;
+
       if (m_Settings.dataDirectories.Count == 0)
       {
         updated = true;
@@ -167,7 +173,7 @@ namespace Server
 
       if (updated)
       {
-        SaveConfiguration();
+        Save();
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"Core: Configuration saved to {m_RelPath}.");
         Console.ResetColor();
@@ -200,8 +206,10 @@ namespace Server
       return directory;
     }
 
-    public static void SaveConfiguration()
+    public static void Save()
     {
+      if (m_Mocked) return;
+
       JsonConfig.Serialize(m_FilePath, m_Settings);
     }
   }
