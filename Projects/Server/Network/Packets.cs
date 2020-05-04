@@ -254,7 +254,7 @@ namespace Server.Network
   {
     public MapPatches() : base(0xBF)
     {
-      EnsureCapacity(9 + 3 * 8);
+      EnsureCapacity(9 + 4 * 8);
 
       Stream.Write((short)0x0018);
 

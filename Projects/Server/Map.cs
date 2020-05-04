@@ -256,7 +256,6 @@ namespace Server
   }
 
   [Parsable]
-  // [CustomEnum( new string[]{ "Felucca", "Trammel", "Ilshenar", "Malas", "Internal" } )]
   public sealed class Map : IComparable<Map>
   {
     public const int SectorSize = 16;
