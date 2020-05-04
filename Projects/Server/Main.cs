@@ -292,7 +292,7 @@ namespace Server
 
       Closing = true;
 
-      Console.WriteLine("Exiting...");
+      Console.Write("Exiting...");
 
       World.WaitForWriteCompletion();
 
@@ -458,7 +458,8 @@ namespace Server
 
       VerifySerialization(ca);
 
-      foreach (var a in AssemblyHandler.Assemblies.Where(a => a != ca)) VerifySerialization(a);
+      foreach (var a in AssemblyHandler.Assemblies)
+        if (a != ca) VerifySerialization(a);
     }
 
     private static void VerifyType(Type t)
@@ -479,7 +480,6 @@ namespace Server
         if (t.GetConstructor(m_SerialTypeArray) == null)
         {
           warningSb = new StringBuilder();
-
           warningSb.AppendLine("       - No serialization constructor");
         }
 
@@ -490,18 +490,15 @@ namespace Server
           null)
         {
           warningSb ??= new StringBuilder();
-
           warningSb.AppendLine("       - No Serialize() method");
         }
 
-        if (
-          t.GetMethod(
-            "Deserialize",
-            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) ==
-          null)
+        if (t.GetMethod(
+              "Deserialize",
+              BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) ==
+            null)
         {
           warningSb ??= new StringBuilder();
-
           warningSb.AppendLine("       - No Deserialize() method");
         }
 
@@ -589,8 +586,7 @@ namespace Server
 
     public override void Write(char ch)
     {
-      using var writer =
-        new StreamWriter(new FileStream(FileName, FileMode.Append, FileAccess.Write, FileShare.Read));
+      using var writer = new StreamWriter(new FileStream(FileName, FileMode.Append, FileAccess.Write, FileShare.Read));
       if (m_NewLine)
       {
         writer.Write(DateTime.UtcNow.ToString(DateFormat));

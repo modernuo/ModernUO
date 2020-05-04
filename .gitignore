@@ -15,6 +15,7 @@
 /Distribution/System.Runtime.CompilerServices.Unsafe.dll
 /Distribution/Data/modernuo.json
 /Distribution/runtimes
+/Distribution/nohup.out
 
 # LibUv Dependencies
 /Distribution/libuv.dylib

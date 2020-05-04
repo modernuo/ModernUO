@@ -55,10 +55,6 @@ namespace Server.Network
 
       Stream.Write((short)list.Count);
 
-      // The client sorts these by their X/Y value.
-      // OSI sends these in weird order.  X/Y highest to lowest and serial loewst to highest
-      // These are already sorted by serial (done by the vendor class) but we have to send them by x/y
-      // (the x74 packet is sent in 'correct' order.)
       for (var i = list.Count - 1; i >= 0; --i)
       {
         var bis = list[i];
