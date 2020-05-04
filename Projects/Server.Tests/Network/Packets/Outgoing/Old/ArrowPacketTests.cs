@@ -30,18 +30,15 @@ namespace Server.Tests.Network.Packets
     {
       Span<byte> data = new SetArrow(x, y).Compile();
 
-      Span<byte> expectedXBytes = stackalloc byte[2];
-      BinaryPrimitives.WriteUInt16BigEndian(expectedXBytes, (ushort)x);
-
-      Span<byte> expectedYBytes = stackalloc byte[2];
-      BinaryPrimitives.WriteUInt16BigEndian(expectedYBytes, (ushort)y);
-
       Span<byte> expectedData = stackalloc byte[] {
         0xBA, // Packet
         0x01, // Command
-        expectedXBytes[0], expectedXBytes[1], // X
-        expectedYBytes[0], expectedYBytes[1] // Y
+        0x00, 0x00, // X
+        0x00, 0x00 // Y
       };
+
+      x.CopyTo(expectedData.Slice(2, 2));
+      y.CopyTo(expectedData.Slice(4, 2));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -54,19 +51,16 @@ namespace Server.Tests.Network.Packets
     {
       Span<byte> data = new CancelArrowHS(x, y, 0x1).Compile();
 
-      Span<byte> expectedXBytes = stackalloc byte[2];
-      BinaryPrimitives.WriteUInt16BigEndian(expectedXBytes, (ushort)x);
-
-      Span<byte> expectedYBytes = stackalloc byte[2];
-      BinaryPrimitives.WriteUInt16BigEndian(expectedYBytes, (ushort)y);
-
       Span<byte> expectedData = stackalloc byte[] {
         0xBA, // Packet
         0x00, // Command
-        expectedXBytes[0], expectedXBytes[1], // X
-        expectedYBytes[0], expectedYBytes[1], // Y
+        0x00, 0x00, // X
+        0x00, 0x00,// Y
         0x00, 0x00, 0x00, 0x01 // Serial
       };
+
+      x.CopyTo(expectedData.Slice(2, 2));
+      y.CopyTo(expectedData.Slice(4, 2));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -79,19 +73,16 @@ namespace Server.Tests.Network.Packets
     {
       Span<byte> data = new SetArrowHS(x, y, 0x1).Compile();
 
-      Span<byte> expectedXBytes = stackalloc byte[2];
-      BinaryPrimitives.WriteUInt16BigEndian(expectedXBytes, (ushort)x);
-
-      Span<byte> expectedYBytes = stackalloc byte[2];
-      BinaryPrimitives.WriteUInt16BigEndian(expectedYBytes, (ushort)y);
-
       Span<byte> expectedData = stackalloc byte[] {
         0xBA, // Packet
         0x01, // Command
-        expectedXBytes[0], expectedXBytes[1], // X
-        expectedYBytes[0], expectedYBytes[1], // Y
+        0x00, 0x00, // X
+        0x00, 0x00,// Y
         0x00, 0x00, 0x00, 0x01 // Serial
       };
+
+      x.CopyTo(expectedData.Slice(2, 2));
+      y.CopyTo(expectedData.Slice(4, 2));
 
       AssertThat.Equal(data, expectedData);
     }

@@ -46,7 +46,7 @@ namespace Server.Tests.Network.Packets
         0x00, 0x00 // Amount
       };
 
-      mobile.Serial.CopyTo(expectedData.Slice(6, 4));
+      mobile.Serial.CopyTo(expectedData.Slice(1, 4));
       expectedAmount.CopyTo(expectedData.Slice(5, 2));
 
       AssertThat.Equal(data, expectedData);
