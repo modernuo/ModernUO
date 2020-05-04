@@ -36,8 +36,8 @@ namespace Server.Tests.Network.Packets
         0x00, 0x00 // Y
       };
 
-      x.CopyTo(expectedData.Slice(2, 2));
-      y.CopyTo(expectedData.Slice(4, 2));
+      ((ushort)x).CopyTo(expectedData.Slice(2, 2));
+      ((ushort)y).CopyTo(expectedData.Slice(4, 2));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -58,8 +58,8 @@ namespace Server.Tests.Network.Packets
         0x00, 0x00, 0x00, 0x01 // Serial
       };
 
-      x.CopyTo(expectedData.Slice(2, 2));
-      y.CopyTo(expectedData.Slice(4, 2));
+      ((ushort)x).CopyTo(expectedData.Slice(2, 2));
+      ((ushort)y).CopyTo(expectedData.Slice(4, 2));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -80,8 +80,8 @@ namespace Server.Tests.Network.Packets
         0x00, 0x00, 0x00, 0x01 // Serial
       };
 
-      x.CopyTo(expectedData.Slice(2, 2));
-      y.CopyTo(expectedData.Slice(4, 2));
+      ((ushort)x).CopyTo(expectedData.Slice(2, 2));
+      ((ushort)y).CopyTo(expectedData.Slice(4, 2));
 
       AssertThat.Equal(data, expectedData);
     }
