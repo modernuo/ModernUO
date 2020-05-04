@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Server.Items;
 using Server.Misc;
 
@@ -23,7 +24,11 @@ namespace Server.Tests
       World.Load();
 
       fromMobile = new Mobile(Serial.NewMobile);
+      fromMobile.DefaultMobileInit();
+
       toMobile = new Mobile(Serial.NewMobile);
+      toMobile.DefaultMobileInit();
+
       fromCont = new Container(Serial.NewItem);
       toCont = new Container(Serial.NewItem);
       itemInFromCont = new Item(Serial.NewItem) { Parent = fromCont };
