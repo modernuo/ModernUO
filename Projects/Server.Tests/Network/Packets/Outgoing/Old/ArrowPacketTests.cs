@@ -1,5 +1,4 @@
 using System;
-using System.Buffers.Binary;
 using Server.Network;
 using Xunit;
 
@@ -55,7 +54,7 @@ namespace Server.Tests.Network.Packets
         0xBA, // Packet
         0x00, // Command
         0x00, 0x00, // X
-        0x00, 0x00,// Y
+        0x00, 0x00, // Y
         0x00, 0x00, 0x00, 0x01 // Serial
       };
 
@@ -77,7 +76,7 @@ namespace Server.Tests.Network.Packets
         0xBA, // Packet
         0x01, // Command
         0x00, 0x00, // X
-        0x00, 0x00,// Y
+        0x00, 0x00, // Y
         0x00, 0x00, 0x00, 0x01 // Serial
       };
 
