@@ -1940,7 +1940,8 @@ namespace Server.Network
       if (m.Map != null)
         state.Send(new MapChange(m));
 
-      state.Send(new MapPatches());
+      if (!Core.SE && state.ProtocolChanges < ProtocolChanges.Version6000)
+        state.Send(new MapPatches());
 
       state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
 

@@ -9,6 +9,9 @@ namespace Server.Tests
 
     public ServerFixture()
     {
+      // Load Configurations
+      ServerConfiguration.Load(true);
+
       // Configure / Initialize
       MapDefinitions.Configure();
 

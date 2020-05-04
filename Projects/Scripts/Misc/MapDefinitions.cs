@@ -1,6 +1,6 @@
 namespace Server.Misc
 {
-  public class MapDefinitions
+  public static class MapDefinitions
   {
     public static void Configure()
     {
@@ -33,11 +33,12 @@ namespace Server.Misc
        *  - <season> : Season of the map. 0 = Spring, 1 = Summer, 2 = Fall, 3 = Winter, 4 = Desolation
        *  - <name> : Reference name for the map, used in props gump, get/set commands, region loading, etc
        *  - <rules> : Rules and restrictions associated with the map. See documentation for details
-      */
+       */
 
-      TileMatrixPatch.Enabled = false; // OSI Client Patch 6.0.0.0
+      // Using this requires the old mapDif files to be present. Only needed to support Clients < 6.0.0.0
+      TileMatrixPatch.Enabled = ServerConfiguration.GetOrUpdateSetting("maps.enableTileMatrixPatches", !Core.SE);
 
-      MultiComponentList.PostHSFormat = true; // OSI Client Patch 7.0.9.0
+      MultiComponentList.PostHSFormat = ServerConfiguration.GetOrUpdateSetting("maps.enablePostHSMultiComponentFormat", true); // OSI Client Patch 7.0.9.0
     }
 
     public static void RegisterMap(int mapIndex, int mapID, int fileIndex, int width, int height, int season,
