@@ -1,5 +1,4 @@
 using System;
-using System.Buffers.Binary;
 using Server.Network;
 using Xunit;
 
