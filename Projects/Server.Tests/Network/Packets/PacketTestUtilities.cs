@@ -33,8 +33,7 @@ namespace Server.Tests.Network.Packets
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CopyASCIITo(this string str, int max, Span<byte> bytes) => Encoding.ASCII.GetBytes(str.AsSpan(0, Math.Min(str.Length, max)), bytes);
 
-
-    // Ref Positions
+    // With Position Reference
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CopyTo(this ushort number, ref int pos, Span<byte> bytes)
     {
