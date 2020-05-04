@@ -1,3 +1,23 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Email: hi@modernuo.com                                                *
+ * File: VendorBuyPackets.cs - Created: 2020/05/03 - Updated: 2020/05/03 *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System.Collections.Generic;
 using Server.Items;
 
@@ -11,10 +31,6 @@ namespace Server.Network
 
       Stream.Write((short)list.Count);
 
-      // The client sorts these by their X/Y value.
-      // OSI sends these in weird order. X/Y highest to lowest and serial lowest to highest
-      // These are already sorted by serial (done by the vendor class) but we have to send them by x/y
-      // (the x74 packet is sent in 'correct' order.)
       for (var i = list.Count - 1; i >= 0; --i)
       {
         var bis = list[i];
