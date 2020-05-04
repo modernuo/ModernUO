@@ -57,30 +57,6 @@ namespace Server.Network
     Inspecific = 5
   }
 
-  public sealed class MapPatches : Packet
-  {
-    public MapPatches() : base(0xBF)
-    {
-      EnsureCapacity(9 + 3 * 8);
-
-      Stream.Write((short)0x0018);
-
-      Stream.Write(4);
-
-      Stream.Write(Map.Felucca.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Felucca.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Trammel.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Trammel.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Ilshenar.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Ilshenar.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Malas.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Malas.Tiles.Patch.LandBlocks);
-    }
-  }
-
   public sealed class ObjectHelpResponse : Packet
   {
     public ObjectHelpResponse(IEntity e, string text) : base(0xB7)

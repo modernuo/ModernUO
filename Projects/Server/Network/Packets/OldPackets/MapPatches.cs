@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: ArrowPackets.cs - Created: 2020/05/03 - Updated: 2020/05/03     *
+ * File: MapPatches.cs - Created: 2020/05/03 - Updated: 2020/05/03       *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -20,45 +20,34 @@
 
 namespace Server.Network
 {
-  public sealed class CancelArrow : Packet
+  public sealed class MapPatches : Packet
   {
-    public CancelArrow() : base(0xBA, 6)
+    // TODO: Base this on the client version and expansion
+    public MapPatches() : base(0xBF)
     {
-      Stream.Write((byte)0);
-      Stream.Write((short)-1);
-      Stream.Write((short)-1);
-    }
-  }
+      EnsureCapacity(9 + 6 * 8);
 
-  public sealed class SetArrow : Packet
-  {
-    public SetArrow(int x, int y) : base(0xBA, 6)
-    {
-      Stream.Write((byte)1);
-      Stream.Write((short)x);
-      Stream.Write((short)y);
-    }
-  }
+      Stream.Write((short)0x0018);
 
-  public sealed class CancelArrowHS : Packet
-  {
-    public CancelArrowHS(int x, int y, Serial s) : base(0xBA, 10)
-    {
-      Stream.Write((byte)0);
-      Stream.Write((short)x);
-      Stream.Write((short)y);
-      Stream.Write(s);
-    }
-  }
+      Stream.Write(6);
 
-  public sealed class SetArrowHS : Packet
-  {
-    public SetArrowHS(int x, int y, Serial s) : base(0xBA, 10)
-    {
-      Stream.Write((byte)1);
-      Stream.Write((short)x);
-      Stream.Write((short)y);
-      Stream.Write(s);
+      Stream.Write(Map.Felucca.Tiles.Patch.StaticBlocks);
+      Stream.Write(Map.Felucca.Tiles.Patch.LandBlocks);
+
+      Stream.Write(Map.Trammel.Tiles.Patch.StaticBlocks);
+      Stream.Write(Map.Trammel.Tiles.Patch.LandBlocks);
+
+      Stream.Write(Map.Ilshenar.Tiles.Patch.StaticBlocks);
+      Stream.Write(Map.Ilshenar.Tiles.Patch.LandBlocks);
+
+      Stream.Write(Map.Malas.Tiles.Patch.StaticBlocks);
+      Stream.Write(Map.Malas.Tiles.Patch.LandBlocks);
+
+      Stream.Write(Map.Tokuno.Tiles.Patch.StaticBlocks);
+      Stream.Write(Map.Tokuno.Tiles.Patch.LandBlocks);
+
+      Stream.Write(Map.TerMur.Tiles.Patch.StaticBlocks);
+      Stream.Write(Map.TerMur.Tiles.Patch.LandBlocks);
     }
   }
 }
