@@ -25,11 +25,11 @@ namespace Server.Network
     // TODO: Base this on the client version and expansion
     public MapPatches() : base(0xBF)
     {
-      EnsureCapacity(9 + 6 * 8);
+      EnsureCapacity(9 + 4 * 8);
 
       Stream.Write((short)0x0018);
 
-      Stream.Write(6);
+      Stream.Write(4);
 
       Stream.Write(Map.Felucca.Tiles.Patch.StaticBlocks);
       Stream.Write(Map.Felucca.Tiles.Patch.LandBlocks);
@@ -42,12 +42,6 @@ namespace Server.Network
 
       Stream.Write(Map.Malas.Tiles.Patch.StaticBlocks);
       Stream.Write(Map.Malas.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Tokuno.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Tokuno.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.TerMur.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.TerMur.Tiles.Patch.LandBlocks);
     }
   }
 }
