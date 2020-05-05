@@ -6,7 +6,8 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 ![Windows](https://img.shields.io/badge/-server%202019-0078D6?logo=windows)
 ![OSX](https://img.shields.io/badge/-catalina-222222?logo=apple&logoColor=white)
 ![Debian](https://img.shields.io/badge/-buster-A81D33?logo=debian)
-![Ubuntu](https://img.shields.io/badge/-16LTS-E95420?logo=ubuntu&logoColor=white)
+![Ubuntu](https://img.shields.io/badge/-20LTS-E95420?logo=ubuntu&logoColor=white)
+![CentOS](https://img.shields.io/badge/-8.1-262577?logo=centos&logoColor=white)
 <br/>
 [![GitHub license](https://img.shields.io/github/license/modernuo/ModernUO?color=blue)](https://github.com/modernuo/ModernUO/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/stargazers)
