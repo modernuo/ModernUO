@@ -26,6 +26,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using Server.Accounting;
+using Server.Compression;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.HuePickers;
@@ -2119,7 +2120,7 @@ namespace Server.Network
 
       var packLength = wantLength;
 
-      NetworkCompression.Pack(packBuffer, ref packLength, buffer, length, ZLibQuality.Default);
+      ZLib.Pack(packBuffer, ref packLength, buffer, length, ZLibQuality.Default);
 
       Stream.Write(4 + packLength);
       Stream.Write(length);

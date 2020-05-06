@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -25,7 +24,7 @@ namespace Server.Accounting.Security
 
     static Argon2()
     {
-      if (RuntimeUtility.Unix)
+      if (RuntimeUtility.IsUnix)
         Library = new UnixArgon2();
       else
         Library = new WindowsArgon2();
