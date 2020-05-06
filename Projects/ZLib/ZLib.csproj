@@ -33,6 +33,6 @@
     </Content>
   </ItemGroup>
   <Target Name="CopyPackage" AfterTargets="Pack">
-    <Exec Command="dotnet nuget push $(OutputPath)..\..\$(PackageId).$(PackageVersion).nupkg -s local" />
+    <Exec Command="dotnet nuget push $(OutputPath)..\$(PackageId).$(PackageVersion).nupkg -s local" />
   </Target>
 </Project>
