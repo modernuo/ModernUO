@@ -29,6 +29,11 @@
   <Target Name="CleanPub" AfterTargets="Clean">
     <Message Text="Removing distribution files..." />
     <Delete Files="$(SolutionDir)\Distribution\libuv.dylib" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\libuv.so" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\libuv.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\zlib.dll" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\libz.dylib" ContinueOnError="true" />
+    <Delete Files="$(SolutionDir)\Distribution\libz.so" ContinueOnError="true" />
     <Delete Files="$(SolutionDir)\Distribution\Microsoft.AspNetCore.Connections.Abstractions.dll" ContinueOnError="true" />
     <Delete Files="$(SolutionDir)\Distribution\Microsoft.AspNetCore.Http.Features.dll" ContinueOnError="true" />
     <Delete Files="$(SolutionDir)\Distribution\Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll" ContinueOnError="true" />
