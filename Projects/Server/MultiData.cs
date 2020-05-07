@@ -22,7 +22,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using Server.Network;
+using Server.Compression;
 
 namespace Server
 {
@@ -174,7 +174,7 @@ namespace Server
           if (compressionMethod == 1)
           {
             data = new byte[decompressedSize];
-            NetworkCompression.Unpack(data, ref decompressedSize, sourceData, compressedSize);
+            ZLib.Unpack(data, ref decompressedSize, sourceData, compressedSize);
           }
           else
           {

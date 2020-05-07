@@ -10,9 +10,12 @@
 /Distribution/System.IO.Pipelines.dll
 /Distribution/libdrng.dll
 /Distribution/zlib.dll
+/Distribution/libz.dylib
+/Distribution/libz.so
 /Distribution/Microsoft.Bcl.AsyncInterfaces.dll
 /Distribution/System.ComponentModel.Annotations.dll
 /Distribution/System.Runtime.CompilerServices.Unsafe.dll
+/Distribution/ZLib.Bindings.dll
 /Distribution/Data/modernuo.json
 /Distribution/runtimes
 /Distribution/nohup.out
