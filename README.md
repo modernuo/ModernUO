@@ -22,7 +22,11 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 - [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
 #### Publishing
-`Tools/publish.sh <linux|osx|win> [Release|Debug]`
+OSX/Linux
+- `./Tools/publish.sh [linux|osx|win] [Release|Debug (default: Release)]`
+
+Windows
+- `Tools\publish.cmd [linux|osx|win] [Release|Debug (default: Release)]`
 
 ## Deploying / Running Server
 - Follow the [publish](https://github.com/modernuo/ModernUO#publishing-a-build) instructions
