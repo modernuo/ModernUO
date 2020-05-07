@@ -21,13 +21,8 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 #### Requirements
 - [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
-#### Cleaning
-- `dotnet clean`
-
 #### Publishing
-- Linux: `./Tools/publish-linux.sh` or `Tools/publish-linux.cmd`
-- OSX: `./Tools/publish-osx.sh` or `Tools/publish-osx.cmd`
-- Windows `./Tools/publish-windows.sh` or `Tools/publish-windows.cmd`
+`Tools/publish.sh <linux|osx|win> [Release|Debug]`
 
 ## Deploying / Running Server
 - Follow the [publish](https://github.com/modernuo/ModernUO#publishing-a-build) instructions
@@ -35,10 +30,6 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 
 #### Requirements
 - [.NET Core 3.1 Runtime](https://dotnet.microsoft.com/download/dotnet-core/3.1)
-- Zlib
-  - Linux: `apt get zlib` or equiv for that distribution
-  - OSX: `brew install zlib`
-  - Windows: Included during publishing
 - Optional: compile and install [Intel DRNG](https://github.com/modernuo/libdrng)
 
 #### Windows
@@ -46,6 +37,9 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 
 #### OSX and Linux
 - Run `./ModernUO` or `dotnet ./ModernUO.dll`
+
+#### Cleaning Distribution
+- `dotnet clean`
 
 ## Thanks
 - RunUO Team & Community

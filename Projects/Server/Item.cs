@@ -2323,20 +2323,11 @@ namespace Server
                 AcquireCompactInfo().m_Weight = weight;
             }
 
-            if (GetSaveFlag(flags, SaveFlag.Map))
-              m_Map = reader.ReadMap();
-            else
-              m_Map = Map.Internal;
+            m_Map = GetSaveFlag(flags, SaveFlag.Map) ? reader.ReadMap() : Map.Internal;
 
-            if (GetSaveFlag(flags, SaveFlag.Visible))
-              SetFlag(ImplFlag.Visible, reader.ReadBool());
-            else
-              SetFlag(ImplFlag.Visible, true);
+            SetFlag(ImplFlag.Visible, !GetSaveFlag(flags, SaveFlag.Visible) || reader.ReadBool());
 
-            if (GetSaveFlag(flags, SaveFlag.Movable))
-              SetFlag(ImplFlag.Movable, reader.ReadBool());
-            else
-              SetFlag(ImplFlag.Movable, true);
+            SetFlag(ImplFlag.Movable, !GetSaveFlag(flags, SaveFlag.Movable) || reader.ReadBool());
 
             if (GetSaveFlag(flags, SaveFlag.Stackable))
               SetFlag(ImplFlag.Stackable, reader.ReadBool());
@@ -3614,7 +3605,7 @@ namespace Server
     }
 
     [Flags]
-    private enum SaveFlag
+    private enum SaveFlag : uint
     {
       None = 0x00000000,
       Direction = 0x00000001,
