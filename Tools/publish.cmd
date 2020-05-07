@@ -13,11 +13,20 @@ else
   c=-c $2
 fi
 
-if [[ $2 ]]
+if [[ $1 ]]
 then
-  o=" -r $1-x64"
+  o="-r $1-x64"
+else
+  if [[ $(uname) = "Darwin" ]]
+  then
+    o="-r osx-x64"
+  else
+    o="-r linux-x64"
+  fi
 fi
-dotnet publish ${c}${o} --self-contained=false
+
+echo dotnet publish ${c} ${o} --self-contained=false
+dotnet publish ${c} ${o} --self-contained=false
 exit $?
 
 :CMDSCRIPT
@@ -30,7 +39,9 @@ IF "%~2" == "" (
 )
 
 IF "%~1" != "" (
-  SET o = " -r %~1-x64"
+  SET o = "-r %~1-x64"
+) ELSE (
+  SET o = "-r win-x64"
 )
 
-dotnet publish %c%%o% --self-contained=false
+dotnet publish %c% %o% --self-contained=false
