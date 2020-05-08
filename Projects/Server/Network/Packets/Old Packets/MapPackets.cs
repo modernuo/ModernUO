@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: MapPatches.cs - Created: 2020/05/03 - Updated: 2020/05/03       *
+ * File: MapPackets.cs - Created: 2020/05/03 - Updated: 2020/05/08       *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -42,6 +42,13 @@ namespace Server.Network
 
       Stream.Write(Map.Malas.Tiles.Patch.StaticBlocks);
       Stream.Write(Map.Malas.Tiles.Patch.LandBlocks);
+    }
+  }
+
+  public sealed class InvalidMapEnable : Packet
+  {
+    public InvalidMapEnable() : base(0xC6, 1)
+    {
     }
   }
 }

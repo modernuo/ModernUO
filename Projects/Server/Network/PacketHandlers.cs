@@ -636,7 +636,7 @@ namespace Server.Network
     public static void HuePickerResponse(NetState state, PacketReader pvSrc)
     {
       var serial = pvSrc.ReadUInt32();
-      int value = pvSrc.ReadInt16();
+      _ = pvSrc.ReadInt16(); // Item ID
       var hue = pvSrc.ReadInt16() & 0x3FFF;
 
       hue = Utility.ClipDyedHue(hue);

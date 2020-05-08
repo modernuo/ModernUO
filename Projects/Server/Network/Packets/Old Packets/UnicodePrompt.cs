@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: MobilePackets.cs - Created: 2020/05/07 - Updated: 2020/05/07    *
+ * File: UnicodePrompt.cs - Created: 2020/05/08 - Updated: 2020/05/08    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,15 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Server.Prompts;
+
 namespace Server.Network
 {
-  public sealed class DeathAnimation : Packet
+  public sealed class UnicodePrompt : Packet
   {
-    public DeathAnimation(Mobile killed, Item corpse) : base(0xAF, 13)
+    public UnicodePrompt(Prompt prompt) : base(0xC2)
     {
-      Stream.Write(killed.Serial);
-      Stream.Write(corpse?.Serial ?? Serial.Zero);
+      EnsureCapacity(21);
+
+      Stream.Write(prompt.Serial); // TODO: Does this value even matter?
+      Stream.Write(prompt.Serial);
       Stream.Write(0);
+      Stream.Write(0);
+      Stream.Write((short)0);
     }
   }
 }

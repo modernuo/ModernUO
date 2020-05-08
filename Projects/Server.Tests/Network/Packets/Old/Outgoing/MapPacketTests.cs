@@ -11,7 +11,8 @@ namespace Server.Tests.Network.Packets
     {
       Span<byte> data = new MapPatches().Compile();
 
-      Span<byte> expectedData = stackalloc byte[] {
+      Span<byte> expectedData = stackalloc byte[]
+      {
         0xBF, // Packet
         0x00, 0x29, // Length
         0x00, 0x18, // Sub-packet
@@ -24,6 +25,19 @@ namespace Server.Tests.Network.Packets
         0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, // Malas
         0x00, 0x00, 0x00, 0x00
+      };
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestInvalidMapEnable()
+    {
+      Span<byte> data = new InvalidMapEnable().Compile();
+
+      Span<byte> expectedData = stackalloc byte[]
+      {
+        0xC6 // Packet ID
       };
 
       AssertThat.Equal(data, expectedData);

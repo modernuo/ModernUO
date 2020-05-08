@@ -2,7 +2,8 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: MobilePackets.cs - Created: 2020/05/07 - Updated: 2020/05/07    *
+ * File: DisplayHuePicker.cs                                             *
+ * Created: 2020/05/08 - Updated: 2020/05/08                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,15 +19,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Server.HuePickers;
+
 namespace Server.Network
 {
-  public sealed class DeathAnimation : Packet
+  public sealed class DisplayHuePicker : Packet
   {
-    public DeathAnimation(Mobile killed, Item corpse) : base(0xAF, 13)
+    public DisplayHuePicker(HuePicker huePicker) : base(0x95, 9)
     {
-      Stream.Write(killed.Serial);
-      Stream.Write(corpse?.Serial ?? Serial.Zero);
-      Stream.Write(0);
+      Stream.Write(huePicker.Serial);
+      Stream.Write((short)0);
+      Stream.Write((short)huePicker.ItemID);
     }
   }
 }

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: PlayerPackets.cs - Created: 2020/05/07 - Updated: 2020/05/07    *                          *
+ * File: PlayerPackets.cs - Created: 2020/05/07 - Updated: 2020/05/07    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -20,8 +20,80 @@
 
 namespace Server.Network
 {
-  public class PlayerPackets
+  public sealed class StatLockInfo : Packet
   {
+    public StatLockInfo(Mobile m) : base(0xBF)
+    {
+      EnsureCapacity(12);
 
+      Stream.Write((short)0x19);
+      Stream.Write((byte)2);
+      Stream.Write(m.Serial);
+      Stream.Write((byte)0);
+
+      var lockBits = ((int)m.StrLock << 4) | ((int)m.DexLock << 2) | (int)m.IntLock;
+
+      Stream.Write((byte)lockBits);
+    }
+  }
+
+  public sealed class ChangeCombatant : Packet
+  {
+    public ChangeCombatant(Mobile combatant) : base(0xAA, 5)
+    {
+      Stream.Write(combatant?.Serial ?? Serial.Zero);
+    }
+  }
+
+  public sealed class ChangeUpdateRange : Packet
+  {
+    private static readonly ChangeUpdateRange[] m_Cache = new ChangeUpdateRange[0x100];
+
+    public ChangeUpdateRange(int range) : base(0xC8, 2)
+    {
+      Stream.Write((byte)range);
+    }
+
+    public static ChangeUpdateRange Instantiate(int range)
+    {
+      var idx = (byte)range;
+      var p = m_Cache[idx];
+
+      if (p == null)
+      {
+        m_Cache[idx] = p = new ChangeUpdateRange(range);
+        p.SetStatic();
+      }
+
+      return p;
+    }
+  }
+
+  public sealed class DeathStatus : Packet
+  {
+    public static readonly Packet Dead = SetStatic(new DeathStatus(true));
+    public static readonly Packet Alive = SetStatic(new DeathStatus(false));
+
+    public DeathStatus(bool dead) : base(0x2C, 2)
+    {
+      Stream.Write((byte)(dead ? 0 : 2));
+    }
+
+    public static Packet Instantiate(bool dead) => dead ? Dead : Alive;
+  }
+
+  public sealed class SpeedControl : Packet
+  {
+    public static readonly Packet WalkSpeed = SetStatic(new SpeedControl(2));
+    public static readonly Packet MountSpeed = SetStatic(new SpeedControl(1));
+    public static readonly Packet Disable = SetStatic(new SpeedControl(0));
+
+    public SpeedControl(int speedControl) : base(0xBF)
+    {
+      EnsureCapacity(3);
+
+      Stream.Write((short)0x26);
+      Stream.Write((byte)speedControl);
+    }
   }
 }
