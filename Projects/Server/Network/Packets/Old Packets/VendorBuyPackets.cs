@@ -109,9 +109,20 @@ namespace Server.Network
 
         var desc = bis.Description ?? "";
 
+        // TODO: Test if this is actually WriteAsciiFixed and the extra null doesn't matter.
         Stream.Write((byte)(desc.Length + 1));
         Stream.WriteAsciiNull(desc);
       }
+    }
+  }
+
+  public sealed class EndVendorBuy : Packet
+  {
+    public EndVendorBuy(Mobile vendor) : base(0x3B, 8)
+    {
+      Stream.Write((ushort)8); // length
+      Stream.Write(vendor.Serial);
+      Stream.Write((byte)0);
     }
   }
 }

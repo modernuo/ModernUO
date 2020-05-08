@@ -4,7 +4,6 @@ using System.Linq;
 using Server.Items;
 using Server.Network;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Server.Tests.Network.Packets
 {
@@ -151,6 +150,24 @@ namespace Server.Tests.Network.Packets
         desc.CopyASCIITo(ref pos, expectedData);
         pos++;
       }
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestEndVendorBuy()
+    {
+      Span<byte> data = new EndVendorBuy(vendor).Compile();
+
+      Span<byte> expectedData = stackalloc byte[]
+      {
+        0x3B, // Packet ID
+        0x00, 0x08, // Length
+        0x00, 0x00, 0x00, 0x00, // Vendor Serial
+        0x00
+      };
+
+      vendor.Serial.CopyTo(expectedData.Slice(3, 4));
 
       AssertThat.Equal(data, expectedData);
     }

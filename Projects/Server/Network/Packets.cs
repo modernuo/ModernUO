@@ -58,157 +58,6 @@ namespace Server.Network
     Inspecific = 5
   }
 
-  public sealed class VendorSellList : Packet
-  {
-    public VendorSellList(Mobile shopkeeper, ICollection<SellItemState> sis) : base(0x9E)
-    {
-      EnsureCapacity(256);
-
-      Stream.Write(shopkeeper.Serial);
-
-      Stream.Write((ushort)sis.Count);
-
-      foreach (var state in sis)
-      {
-        Stream.Write(state.Item.Serial);
-        Stream.Write((ushort)state.Item.ItemID);
-        Stream.Write((ushort)state.Item.Hue);
-        Stream.Write((ushort)state.Item.Amount);
-        Stream.Write((ushort)state.Price);
-
-        var name = state.Item.Name?.Trim();
-        if (string.IsNullOrWhiteSpace(name))
-          name = state.Name ?? "";
-
-        Stream.Write((ushort)name.Length);
-        Stream.WriteAsciiFixed(name, (ushort)name.Length);
-      }
-    }
-  }
-
-  public sealed class EndVendorSell : Packet
-  {
-    public EndVendorSell(Mobile vendor) : base(0x3B, 8)
-    {
-      Stream.Write((ushort)8); // length
-      Stream.Write(vendor.Serial);
-      Stream.Write((byte)0);
-    }
-  }
-
-  public sealed class EndVendorBuy : Packet
-  {
-    public EndVendorBuy(Mobile vendor) : base(0x3B, 8)
-    {
-      Stream.Write((ushort)8); // length
-      Stream.Write(vendor.Serial);
-      Stream.Write((byte)0);
-    }
-  }
-
-  public sealed class DeathAnimation : Packet
-  {
-    public DeathAnimation(Mobile killed, Item corpse) : base(0xAF, 13)
-    {
-      Stream.Write(killed.Serial);
-      Stream.Write(corpse?.Serial ?? Serial.Zero);
-      Stream.Write(0);
-    }
-  }
-
-  public sealed class StatLockInfo : Packet
-  {
-    public StatLockInfo(Mobile m) : base(0xBF)
-    {
-      EnsureCapacity(12);
-
-      Stream.Write((short)0x19);
-      Stream.Write((byte)2);
-      Stream.Write(m.Serial);
-      Stream.Write((byte)0);
-
-      var lockBits = ((int)m.StrLock << 4) | ((int)m.DexLock << 2) | (int)m.IntLock;
-
-      Stream.Write((byte)lockBits);
-    }
-  }
-
-  public class EquipInfoAttribute
-  {
-    public EquipInfoAttribute(int number, int charges = -1)
-    {
-      Number = number;
-      Charges = charges;
-    }
-
-    public int Number { get; }
-
-    public int Charges { get; }
-  }
-
-  public class EquipmentInfo
-  {
-    public EquipmentInfo(int number, Mobile crafter, bool unidentified, EquipInfoAttribute[] attributes)
-    {
-      Number = number;
-      Crafter = crafter;
-      Unidentified = unidentified;
-      Attributes = attributes;
-    }
-
-    public int Number { get; }
-
-    public Mobile Crafter { get; }
-
-    public bool Unidentified { get; }
-
-    public EquipInfoAttribute[] Attributes { get; }
-  }
-
-  public sealed class DisplayEquipmentInfo : Packet
-  {
-    public DisplayEquipmentInfo(Item item, EquipmentInfo info) : base(0xBF)
-    {
-      var attrs = info.Attributes;
-
-      EnsureCapacity(17 + (info.Crafter?.Name.Length ?? 0) +
-                     (info.Unidentified ? 4 : 0) + attrs.Length * 6);
-
-      Stream.Write((short)0x10);
-      Stream.Write(item.Serial);
-
-      Stream.Write(info.Number);
-
-      if (info.Crafter != null)
-      {
-        var name = info.Crafter.Name;
-
-        Stream.Write(-3);
-
-        if (name == null)
-        {
-          Stream.Write((ushort)0);
-        }
-        else
-        {
-          var length = name.Length;
-          Stream.Write((ushort)length);
-          Stream.WriteAsciiFixed(name, length);
-        }
-      }
-
-      if (info.Unidentified) Stream.Write(-4);
-
-      for (var i = 0; i < attrs.Length; ++i)
-      {
-        Stream.Write(attrs[i].Number);
-        Stream.Write((short)attrs[i].Charges);
-      }
-
-      Stream.Write(-1);
-    }
-  }
-
   public sealed class ChangeUpdateRange : Packet
   {
     private static readonly ChangeUpdateRange[] m_Cache = new ChangeUpdateRange[0x100];
@@ -248,24 +97,6 @@ namespace Server.Network
       Stream.Write(huePicker.Serial);
       Stream.Write((short)0);
       Stream.Write((short)huePicker.ItemID);
-    }
-  }
-
-  public sealed class TripTimeResponse : Packet
-  {
-    public TripTimeResponse(int unk) : base(0xC9, 6)
-    {
-      Stream.Write((byte)unk);
-      Stream.Write(Environment.TickCount);
-    }
-  }
-
-  public sealed class UTripTimeResponse : Packet
-  {
-    public UTripTimeResponse(int unk) : base(0xCA, 6)
-    {
-      Stream.Write((byte)unk);
-      Stream.Write(Environment.TickCount);
     }
   }
 
@@ -671,38 +502,6 @@ namespace Server.Network
     }
   }
 
-  public sealed class EquipUpdate : Packet
-  {
-    public EquipUpdate(Item item) : base(0x2E, 15)
-    {
-      Serial parentSerial;
-
-      var parent = item.Parent as Mobile;
-
-      if (parent != null)
-      {
-        parentSerial = parent.Serial;
-      }
-      else
-      {
-        Console.WriteLine("Warning: EquipUpdate on item with !(parent is Mobile)");
-        parentSerial = Serial.Zero;
-      }
-
-      var hue = item.Hue;
-
-      if (parent?.SolidHueOverride >= 0)
-        hue = parent.SolidHueOverride;
-
-      Stream.Write(item.Serial);
-      Stream.Write((short)item.ItemID);
-      Stream.Write((byte)0);
-      Stream.Write((byte)item.Layer);
-      Stream.Write(parentSerial);
-      Stream.Write((short)hue);
-    }
-  }
-
   public sealed class WorldItem : Packet
   {
     public WorldItem(Item item) : base(0x1A)
@@ -909,80 +708,6 @@ namespace Server.Network
     }
   }
 
-  public sealed class UnkD3 : Packet
-  {
-    public UnkD3(Mobile beholder, Mobile beheld) : base(0xD3)
-    {
-      EnsureCapacity(256);
-
-      // int
-      // short
-      // short
-      // short
-      // byte
-      // byte
-      // short
-      // byte
-      // byte
-      // short
-      // short
-      // short
-      // while ( int != 0 )
-      // {
-      // short
-      // byte
-      // short
-      // }
-
-      Stream.Write(beheld.Serial);
-      Stream.Write((short)beheld.Body);
-      Stream.Write((short)beheld.X);
-      Stream.Write((short)beheld.Y);
-      Stream.Write((sbyte)beheld.Z);
-      Stream.Write((byte)beheld.Direction);
-      Stream.Write((ushort)beheld.Hue);
-      Stream.Write((byte)beheld.GetPacketFlags());
-      Stream.Write((byte)Notoriety.Compute(beholder, beheld));
-
-      Stream.Write((short)0);
-      Stream.Write((short)0);
-      Stream.Write((short)0);
-
-      Stream.Write(0);
-    }
-  }
-
-  public sealed class GQRequest : Packet
-  {
-    public GQRequest() : base(0xC3)
-    {
-      EnsureCapacity(256);
-
-      Stream.Write(1);
-      Stream.Write(2); // ID
-      Stream.Write(3); // Customer ? (this)
-      Stream.Write(4); // Customer this (?)
-      Stream.Write(0);
-      Stream.Write((short)0);
-      Stream.Write((short)6);
-      Stream.Write((byte)'r');
-      Stream.Write((byte)'e');
-      Stream.Write((byte)'g');
-      Stream.Write((byte)'i');
-      Stream.Write((byte)'o');
-      Stream.Write((byte)'n');
-      Stream.Write(7); // Call time in seconds
-      Stream.Write((short)2); // Map (0=fel,1=tram,2=ilsh)
-      Stream.Write(8); // X
-      Stream.Write(9); // Y
-      Stream.Write(10); // Z
-      Stream.Write(11); // Volume
-      Stream.Write(12); // Rank
-      Stream.Write(-1);
-      Stream.Write(1); // type
-    }
-  }
-
   /// <summary>
   ///   Causes the client to walk in a given direction. It does not send a movement request.
   /// </summary>
@@ -997,18 +722,6 @@ namespace Server.Network
   }
 
   /// <summary>
-  ///   Displays a message "There are currently [count] available calls in the global queue.".
-  /// </summary>
-  public sealed class GQCount : Packet
-  {
-    public GQCount(int unk, int count) : base(0xCB, 7)
-    {
-      Stream.Write((short)unk);
-      Stream.Write(count);
-    }
-  }
-
-  /// <summary>
   ///   Asks the client for it's version
   /// </summary>
   public sealed class ClientVersionReq : Packet
@@ -1016,19 +729,6 @@ namespace Server.Network
     public ClientVersionReq() : base(0xBD)
     {
       EnsureCapacity(3);
-    }
-  }
-
-  /// <summary>
-  ///   Asks the client for it's "assist version". (Perhaps for UOAssist?)
-  /// </summary>
-  public sealed class AssistVersionReq : Packet
-  {
-    public AssistVersionReq(int unk) : base(0xBE)
-    {
-      EnsureCapacity(7);
-
-      Stream.Write(unk);
     }
   }
 
@@ -3444,70 +3144,6 @@ namespace Server.Network
     }
   }
 
-  [Flags]
-  public enum ThirdPartyFeature : ulong
-  {
-    FilterWeather = 1,
-    FilterLight = 1 << 1,
-
-    SmartTarget = 1 << 2,
-    RangedTarget = 1 << 3,
-
-    AutoOpenDoors = 1 << 4,
-
-    DequipOnCast = 1 << 5,
-    AutoPotionEquip = 1 << 6,
-
-    ProtectHeals = 1 << 7,
-
-    LoopedMacros = 1 << 8,
-
-    UseOnceAgent = 1 << 9,
-    RestockAgent = 1 << 10,
-    SellAgent = 1 << 11,
-    BuyAgent = 1 << 12,
-
-    PotionHotkeys = 1 << 13,
-
-    RandomTargets = 1 << 14,
-    ClosestTargets = 1 << 15, // All closest target hotkeys
-    OverheadHealth = 1 << 16, // Health and Mana/Stam messages shown over player's heads
-
-    AutolootAgent = 1 << 17,
-    BoneCutterAgent = 1 << 18,
-    AdvancedMacros = 1 << 19,
-    AutoRemount = 1 << 20,
-    AutoBandage = 1 << 21,
-    EnemyTargetShare = 1 << 22,
-    FilterSeason = 1 << 23,
-    SpellTargetShare = 1 << 24,
-
-    All = ulong.MaxValue
-  }
-
-  public static class FeatureProtection
-  {
-    public static ThirdPartyFeature DisabledFeatures { get; private set; } = 0;
-
-    public static void Disable(ThirdPartyFeature feature)
-    {
-      SetDisabled(feature, true);
-    }
-
-    public static void Enable(ThirdPartyFeature feature)
-    {
-      SetDisabled(feature, false);
-    }
-
-    public static void SetDisabled(ThirdPartyFeature feature, bool value)
-    {
-      if (value)
-        DisabledFeatures |= feature;
-      else
-        DisabledFeatures &= ~feature;
-    }
-  }
-
   public sealed class CharacterList : Packet
   {
     // private static MD5CryptoServiceProvider m_MD5Provider;
@@ -3568,35 +3204,6 @@ namespace Server.Network
       Stream.Write((int)(flags | AdditionalFlags)); // Additional Flags
 
       Stream.Write((short)-1);
-
-      /*ThirdPartyFeature disabled = FeatureProtection.DisabledFeatures;
-
-      if (disabled != 0)
-      {
-        if (m_MD5Provider == null)
-          m_MD5Provider = new MD5CryptoServiceProvider();
-
-        m_Stream.UnderlyingStream.Flush();
-
-        byte[] hashCode = m_MD5Provider.ComputeHash(m_Stream.UnderlyingStream.GetBuffer(), 0,
-          (int)m_Stream.UnderlyingStream.Length);
-        byte[] buffer = new byte[28];
-
-        for (int i = 0; i < count; ++i)
-        {
-          Utility.RandomBytes(buffer);
-
-          m_Stream.Seek(35 + i * 60, SeekOrigin.Begin);
-          m_Stream.Write(buffer, 0, buffer.Length);
-        }
-
-        m_Stream.Seek(35, SeekOrigin.Begin);
-        m_Stream.Write((int)((long)disabled >> 32));
-        m_Stream.Write((int)disabled);
-
-        m_Stream.Seek(95, SeekOrigin.Begin);
-        m_Stream.Write(hashCode, 0, hashCode.Length);
-      }*/
     }
 
     public static CharacterListFlags AdditionalFlags { get; set; }
