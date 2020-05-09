@@ -3,6 +3,7 @@
       <TargetFramework>netcoreapp3.1</TargetFramework>
       <Platforms>x64</Platforms>
       <DefineConstants Condition="'$(RuntimeIdentifier)' == 'win-x64'">WINDOWS</DefineConstants>
+      <RootNamespace>Scripts.Tests</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
@@ -12,6 +13,6 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Server\Server.csproj" />
-      <ProjectReference Include="..\Scripts\Scripts.csproj" />
+      <ProjectReference Include="..\UOContent\UOContent.csproj" />
     </ItemGroup>
 </Project>

@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Server.Json;
 using Server.Network;
 
 namespace Server
@@ -116,8 +117,6 @@ namespace Server
     public static Process Process { get; private set; }
 
     public static Thread Thread { get; private set; }
-
-    public static MultiTextWriter MultiConsoleOut { get; private set; }
 
     public static bool UsingHighResolutionTiming => m_HighRes && !Unix;
 
@@ -309,6 +308,8 @@ namespace Server
       m_Signal.Set();
     }
 
+    private static string assembliesConfiguration = "Configuration/assemblies.json";
+
     public static void Main(string[] args)
     {
       AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -382,8 +383,13 @@ namespace Server
 
       ServerConfiguration.Load();
 
-      // Load Assembly Scripts.CS.dll
-      AssemblyHandler.LoadScripts();
+      // Load UOContent.dll
+      string[] assemblyFiles = JsonConfig.Deserialize<List<string>>(
+        Path.Join(BaseDirectory, assembliesConfiguration)
+      ).Select(t => Path.Join(BaseDirectory, "Assemblies", t)).ToArray();
+      AssemblyHandler.LoadScripts(assemblyFiles);
+
+      VerifySerialization();
 
       AssemblyHandler.Invoke("Configure");
 

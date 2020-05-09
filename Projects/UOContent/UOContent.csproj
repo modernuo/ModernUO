@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+  <PropertyGroup>
+    <RootNamespace>Server</RootNamespace>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>UOContent</AssemblyName>
+    <Authors>Kamron Batman</Authors>
+    <Company>ModernUO</Company>
+    <Product>ModernUO Content</Product>
+    <Copyright>2019-2020</Copyright>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <UseNETCoreGenerator>true</UseNETCoreGenerator>
+    <WarningsAsErrors />
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>8.0</LangVersion>
+    <PublishDir>..\..\Distribution\Assemblies</PublishDir>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Configurations>Debug;Release;Analyze</Configurations>
+    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('win'))">WINDOWS</DefineConstants>
+    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith(`win`))!=true">UNIX</DefineConstants>
+    <Platforms>x64</Platforms>
+  </PropertyGroup>
+  <Target Name="CleanPub" AfterTargets="Clean">
+    <Message Text="Removing distribution assemblies..." />
+    <Delete Files="..\..\Distribution\Assemblies\Argon2.Bindings.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\BouncyCastle.Crypto.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\MailKit.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\Microsoft.AspNetCore.Connections.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\Microsoft.AspNetCore.Http.Features.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\Microsoft.Extensions.Configuration.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\Microsoft.Extensions.DependencyInjection.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\Microsoft.Extensions.FileProviders.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\Microsoft.Extensions.Hosting.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\Microsoft.Extensions.Logging.Abstractions.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\Microsoft.Extensions.Primitives.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\MimeKit.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).deps.json" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).pdb" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\System.IO.Pipelines.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\argon2.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\argon2.dylib" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\argon2.so" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\zlib.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\libz.dylib" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\libz.so" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\Zlib.Bindings.dll" ContinueOnError="true" />
+  </Target>
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\Rules.ruleset">
+      <Link>Rules.rulest</Link>
+    </AdditionalFiles>
+    <AdditionalFiles Include="..\..\stylecop.json">
+      <Link>stylecop.json</Link>
+    </AdditionalFiles>
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineConstants>TRACE;DEBUG;$(DefineConstants)</DefineConstants>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Analyze'">
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+    <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="SpecialSystems\README.TXT" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
+      <IncludeInPackage>false</IncludeInPackage>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="2.6.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.3" />
+    <PackageReference Include="Argon2.Bindings" Version="1.1.0" />
+    <PackageReference Include="Zlib.Bindings" Version="1.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Analyze'">
+    <PackageReference Include="StyleCop.Analyzers">
+      <Version>1.1.118</Version>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
+      <Version>2.9.8</Version>
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: AssemblyHandler.cs - Created: 2019/08/02 - Updated: 2020/01/19  *
+ * File: AssemblyHandler.cs - Created: 2019/08/02 - Updated: 2020/05/09  *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -33,21 +33,14 @@ namespace Server
     private static TypeCache m_NullCache;
     public static Assembly[] Assemblies { get; set; }
 
-    public static readonly string AssembliesPath = EnsureDirectory("Assemblies");
+    public static void LoadScripts(string[] files)
+    {
+      var assemblies = new Assembly[files.Length];
 
-    public static void LoadScripts(string path = null) =>
-      Assemblies = Directory.GetFiles(path ?? AssembliesPath, "*.dll")
-        .Select(t =>
-        {
-          try
-          {
-            return AssemblyLoadContext.Default.LoadFromAssemblyPath(t);
-          } catch (BadImageFormatException)
-          {
-            // ignored
-            return null;
-          }
-        }).Where(t => t != null).ToArray();
+      for (int i = 0; i < files.Length; i++) assemblies[i] = AssemblyLoadContext.Default.LoadFromAssemblyPath(files[i]);
+
+      Assemblies = assemblies;
+    }
 
     public static void Invoke(string method)
     {
