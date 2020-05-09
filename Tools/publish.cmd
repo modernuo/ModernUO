@@ -26,7 +26,7 @@ else
 fi
 
 dotnet publish ${c} ${r} --self-contained=false -o Distribution Projects/Server/Server.csproj
-dotnet publish ${c} ${r} --self-contained=false -o Distribution/Assemblies Projects/Scripts/Scripts.csproj
+dotnet publish ${c} ${r} --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
 exit $?
 
 :CMDSCRIPT
@@ -45,6 +45,5 @@ IF "%~1" == "" (
   SET r=-r %~1-x64
 )
 
-echo dotnet publish %c% %r% --self-contained=false -o Distribution Projects\Server\Server.csproj
 dotnet publish %c% %r% --self-contained=false -o Distribution Projects\Server\Server.csproj
-dotnet publish %c% %r% --self-contained=false -o Distribution\Assemblies Projects\Scripts\Scripts.csproj
+dotnet publish %c% %r% --self-contained=false -o Distribution\Assemblies Projects\UOContent\UOContent.csproj
