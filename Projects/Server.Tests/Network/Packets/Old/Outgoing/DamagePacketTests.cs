@@ -6,17 +6,16 @@ namespace Server.Tests.Network.Packets
 {
   public class DamagePacketTests : IClassFixture<ServerFixture>
   {
-    private readonly Mobile mobile;
-
-    public DamagePacketTests(ServerFixture fixture) => mobile = fixture.fromMobile;
-
     [Theory]
     [InlineData(10, 10)]
     [InlineData(-5, 0)]
     [InlineData(1024, 0xFF)]
     public void TestDamagePacketOld(int inputAmount, byte expectedAmount)
     {
-      Span<byte> data = new DamagePacketOld(mobile, inputAmount).Compile();
+      var m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      Span<byte> data = new DamagePacketOld(m, inputAmount).Compile();
 
       Span<byte> expectedData = stackalloc byte[]
       {
@@ -28,7 +27,7 @@ namespace Server.Tests.Network.Packets
         expectedAmount // Amount
       };
 
-      mobile.Serial.CopyTo(expectedData.Slice(6, 4));
+      m.Serial.CopyTo(expectedData.Slice(6, 4));
       AssertThat.Equal(data, expectedData);
     }
 
@@ -39,7 +38,10 @@ namespace Server.Tests.Network.Packets
     [InlineData(100000, 0xFFFF)]
     public void TestDamagePacket(int inputAmount, ushort expectedAmount)
     {
-      Span<byte> data = new DamagePacket(mobile, inputAmount).Compile();
+      var m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      Span<byte> data = new DamagePacket(m, inputAmount).Compile();
 
       Span<byte> expectedData = stackalloc byte[]
       {
@@ -48,7 +50,7 @@ namespace Server.Tests.Network.Packets
         0x00, 0x00 // Amount
       };
 
-      mobile.Serial.CopyTo(expectedData.Slice(1, 4));
+      m.Serial.CopyTo(expectedData.Slice(1, 4));
       expectedAmount.CopyTo(expectedData.Slice(5, 2));
 
       AssertThat.Equal(data, expectedData);

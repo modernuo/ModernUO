@@ -6,21 +6,17 @@ namespace Server.Tests.Network.Packets
 {
   public class TestEquipmentPackets : IClassFixture<ServerFixture>
   {
-    private readonly Mobile mobile;
-    private readonly Item item;
-
-    public TestEquipmentPackets(ServerFixture fixture)
-    {
-      mobile = fixture.fromMobile;
-      item = fixture.item1;
-    }
-
     [Fact]
     public void TestDisplayEquipmentInfo()
     {
+      var m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      var item = new Item(Serial.LastItem + 1);
+
       var info = new EquipmentInfo(
         500000,
-        mobile,
+        m,
         false,
         new []
         {
@@ -71,6 +67,8 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestEquipUpdate()
     {
+      var item = new Item(Serial.LastItem + 1);
+
       Span<byte> data = new EquipUpdate(item).Compile();
 
       Span<byte> expectedData = stackalloc byte[]

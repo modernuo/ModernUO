@@ -8,25 +8,23 @@ namespace Server.Tests.Network.Packets
 {
   public class VendorSellPacketTests : IClassFixture<ServerFixture>
   {
-    private readonly Mobile vendor;
-
-    private readonly List<SellItemState> sellStates;
-
-    public VendorSellPacketTests(ServerFixture fixture)
-    {
-      vendor = fixture.fromMobile;
-
-      sellStates = new List<SellItemState>
-      {
-        new SellItemState(fixture.item1, 100, "Item 1"),
-        new SellItemState(fixture.item2, 100000, "Item 2"),
-        new SellItemState(fixture.item3, 1, "Item 3")
-      };
-    }
-
     [Fact]
     public void TestVendorSellList()
     {
+      var vendor = new Mobile(0x1);
+      vendor.DefaultMobileInit();
+
+      var item1 = new Item(Serial.LastItem + 1);
+      var item2 = new Item(Serial.LastItem + 2) { Name = "Second Item" };
+      var item3 = new Item(Serial.LastItem + 3);
+
+      var sellStates = new List<SellItemState>
+      {
+        new SellItemState(item1, 100, "Item 1"),
+        new SellItemState(item2, 100000, "Item 2"),
+        new SellItemState(item3, 1, "Item 3")
+      };
+
       Span<byte> data = new VendorSellList(vendor, sellStates).Compile();
 
       int length = 9 + 14 * 3 + sellStates.Sum(state =>
@@ -60,6 +58,9 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestEndVendorSell()
     {
+      var vendor = new Mobile(0x1);
+      vendor.DefaultMobileInit();
+
       Span<byte> data = new EndVendorBuy(vendor).Compile();
 
       Span<byte> expectedData = stackalloc byte[]

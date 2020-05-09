@@ -96,4 +96,59 @@ namespace Server.Network
       Stream.Write((byte)speedControl);
     }
   }
+
+  public sealed class ToggleSpecialAbility : Packet
+  {
+    public ToggleSpecialAbility(int abilityID, bool active) : base(0xBF)
+    {
+      EnsureCapacity(7);
+
+      Stream.Write((short)0x25);
+
+      Stream.Write((short)abilityID);
+      Stream.Write(active);
+    }
+  }
+
+  public sealed class GlobalLightLevel : Packet
+  {
+    private static readonly GlobalLightLevel[] m_Cache = new GlobalLightLevel[0x100];
+
+    public GlobalLightLevel(int level) : base(0x4F, 2)
+    {
+      Stream.Write((sbyte)level);
+    }
+
+    public static GlobalLightLevel Instantiate(int level)
+    {
+      var lvl = (byte)level;
+      var p = m_Cache[lvl];
+
+      if (p == null)
+      {
+        m_Cache[lvl] = p = new GlobalLightLevel(level);
+        p.SetStatic();
+      }
+
+      return p;
+    }
+  }
+
+  public sealed class PersonalLightLevel : Packet
+  {
+    public PersonalLightLevel(Mobile m, int level) : base(0x4E, 6)
+    {
+      Stream.Write(m.Serial);
+      Stream.Write((sbyte)level);
+    }
+  }
+
+  public sealed class PersonalLightLevelZero : Packet
+  {
+    public PersonalLightLevelZero(Mobile m) : base(0x4E, 6)
+    {
+      Stream.Write(m.Serial);
+      Stream.Write((sbyte)0);
+    }
+  }
 }
