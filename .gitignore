@@ -35,6 +35,9 @@
 /Distribution/Microsoft.Extensions.Options.dll
 /Distribution/Microsoft.Extensions.Primitives.dll
 
+# Configuration Files
+!/Distribution/Configuration/assemblies.json
+
 /Projects/*/obj
 /Projects/*/bin
 

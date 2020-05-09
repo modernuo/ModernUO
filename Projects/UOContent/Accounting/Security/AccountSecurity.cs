@@ -39,10 +39,9 @@ namespace Server.Accounting.Security
 
   public static class AccountSecurity
   {
-    // TODO: Put it in a configuration
     public static PasswordProtectionAlgorithm CurrentAlgorithm { get; set; }
 
-    public static readonly IPasswordProtection CurrentPasswordProtection = GetPasswordProtection(CurrentAlgorithm);
+    public static IPasswordProtection CurrentPasswordProtection => GetPasswordProtection(CurrentAlgorithm);
 
     public static void Configure()
     {
@@ -50,7 +49,7 @@ namespace Server.Accounting.Security
         ServerConfiguration.GetOrUpdateSetting("accountSecurity.encryptionAlgorithm", PasswordProtectionAlgorithm.Argon2);
 
       if (CurrentAlgorithm < PasswordProtectionAlgorithm.SHA2)
-        throw new Exception($"Security: {CurrentAlgorithm} is obselete and not secure. Do not use it.");
+        throw new Exception($"Security: {CurrentAlgorithm} is obsolete and not secure. Do not use it.");
     }
 
     public static IPasswordProtection GetPasswordProtection(PasswordProtectionAlgorithm algorithm)
@@ -62,7 +61,8 @@ namespace Server.Accounting.Security
         PasswordProtectionAlgorithm.SHA2 => SHA2PasswordProtection.Instance,
         PasswordProtectionAlgorithm.PBKDF2 => PBKDF2PasswordProtection.Instance,
         PasswordProtectionAlgorithm.Argon2 => Argon2PasswordProtection.Instance,
-        _ => null
+        PasswordProtectionAlgorithm.None => throw new Exception("Do not use PasswordProtectionAlgorithm.None"),
+        _ => throw new Exception("No algorithm")
       };
 
       return passwordProtection;
