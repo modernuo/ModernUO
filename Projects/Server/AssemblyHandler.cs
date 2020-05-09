@@ -37,7 +37,17 @@ namespace Server
 
     public static void LoadScripts(string path = null) =>
       Assemblies = Directory.GetFiles(path ?? AssembliesPath, "*.dll")
-        .Select(t => AssemblyLoadContext.Default.LoadFromAssemblyPath(t)).ToArray();
+        .Select(t =>
+        {
+          try
+          {
+            return AssemblyLoadContext.Default.LoadFromAssemblyPath(t);
+          } catch (BadImageFormatException)
+          {
+            // ignored
+            return null;
+          }
+        }).Where(t => t != null).ToArray();
 
     public static void Invoke(string method)
     {
