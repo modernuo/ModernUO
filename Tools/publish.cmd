@@ -11,6 +11,7 @@ else
 fi
 
 Tools/build-native-libraries.cmd $2
+dotnet restore
 
 if [[ $1 ]]
 then
@@ -36,6 +37,7 @@ IF "%~2" == "" (
 )
 
 CALL Tools\build-native-libraries.cmd %~2
+dotnet restore
 
 IF "%~1" == "" (
   SET r=-r win-x64
