@@ -18,16 +18,16 @@ jobs:
       - run: rm -rf ~/project/.git # CircleCI git caching is likely broken
       - checkout
       - run:
-          name: Building ModernUO for Linux (Debug)
-          command: Tools/publish.cmd linux Debug
+          name: Building ModernUO for Linux
+          command: Tools/publish.cmd linux
   build_windows:
     description: Build application
     executor: win/default
     steps:
       - checkout
       - run:
-          name: Building ModernUO for Windows (Debug)
-          command: Tools/publish.cmd win Debug
+          name: Building ModernUO for Windows
+          command: Tools/publish.cmd win
   code_styling:
     description: Code analysis
     executor: linux-build
