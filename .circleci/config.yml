@@ -18,24 +18,16 @@ jobs:
       - run: rm -rf ~/project/.git # CircleCI git caching is likely broken
       - checkout
       - run:
-          name: Build native libraries
-          command: /mnt/ramdisk/Tools/build-native-libraries.sh
-      - save_cache:
-      - run:
           name: Building ModernUO for Linux (Debug)
-          command: dotnet build -c Debug -r linux-x64
+          command: Tools/publish.cmd linux Debug
   build_windows:
     description: Build application
     executor: win/default
     steps:
       - checkout
-      - restore_cache:
-      - run:
-          name: Build native libraries
-          command: Tools\build-native-libraries.cmd
       - run:
           name: Building ModernUO for Windows (Debug)
-          command: dotnet build -c Debug -r win-x64
+          command: Tools/publish.cmd win Debug
   code_styling:
     description: Code analysis
     executor: linux-build
@@ -43,11 +35,8 @@ jobs:
       - run: rm -rf ~/project/.git # CircleCI git caching is likely broken
       - checkout
       - run:
-          name: Build native libraries
-          command: /mnt/ramdisk/Tools/build-native-libraries.sh
-      - run:
           name: Building with Analyzers
-          command: dotnet build -c Analyze -r linux-x64
+          command: Tools/publish.cmd linux Analyze
   tests:
     description: Unit Tests
     executor: linux-build
