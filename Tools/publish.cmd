@@ -1,16 +1,16 @@
-dotnet clean
 :<<"::SHELLSCRIPT"
 @ECHO OFF
 GOTO :CMDSCRIPT
-::SHELLSCRIPT
-Tools/build-native-libraries.cmd
 
+::SHELLSCRIPT
 if [[ -z $2 ]]
 then
   c="-c Release"
 else
   c=-c $2
 fi
+
+Tools/build-native-libraries.cmd $2
 
 if [[ $1 ]]
 then
@@ -24,24 +24,25 @@ else
   fi
 fi
 
-dotnet publish Projects/Server/Server.csproj ${c} ${r} --self-contained=false -o Distribution
-dotnet publish Projects/Scripts/Scripts.csproj ${c} ${r} --self-contained=false -o Distribution/Assemblies
+dotnet publish ${c} ${r} --self-contained=false -o Distribution Projects/Server/Server.csproj
+dotnet publish ${c} ${r} --self-contained=false -o Distribution/Assemblies Projects/Scripts/Scripts.csproj
 exit $?
 
 :CMDSCRIPT
-CALL Tools\build-native-libraries.cmd
-
 IF "%~2" == "" (
-  SET c =-c Release
+  SET c=-c Release
 ) ELSE (
-  SET c =-c %~2
+  SET c=-c %~2
 )
 
-IF NOT "%~1" == "" (
-  SET r =-r %~1-x64
+CALL Tools\build-native-libraries.cmd %~2
+
+IF "%~1" == "" (
+  SET r=-r win-x64
 ) ELSE (
-  SET r =-r win-x64
+  SET r=-r %~1-x64
 )
 
-dotnet publish Projects\Server\Server.csproj %c% %r% --self-contained=false -o Distribution
-dotnet publish Projects\Scripts\Scripts.csproj %c% %r% --self-contained=false -o Distribution\Assemblies
+echo dotnet publish %c% %r% --self-contained=false -o Distribution Projects\Server\Server.csproj
+dotnet publish %c% %r% --self-contained=false -o Distribution Projects\Server\Server.csproj
+dotnet publish %c% %r% --self-contained=false -o Distribution\Assemblies Projects\Scripts\Scripts.csproj
