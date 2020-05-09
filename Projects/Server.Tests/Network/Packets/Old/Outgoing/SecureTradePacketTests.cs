@@ -7,25 +7,18 @@ namespace Server.Tests.Network.Packets
 {
   public class SecureTradePacketTests : IClassFixture<ServerFixture>
   {
-    private readonly Mobile to;
-    private readonly Container firstCont;
-    private readonly Container secondCont;
-    private readonly Item itemInFirstCont;
-
-    public SecureTradePacketTests(ServerFixture fixture)
-    {
-      to = fixture.toMobile;
-      firstCont = fixture.fromCont;
-      secondCont = fixture.toCont;
-      itemInFirstCont = fixture.itemInFromCont;
-    }
-
     [Theory]
     [InlineData("short-name")]
     [InlineData("this is a really long name that is more than 30 characters, probably")]
     public void TestDisplaySecureTrade(string name)
     {
-      Span<byte> data = new DisplaySecureTrade(to, firstCont, secondCont, name).Compile();
+      var m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      var firstCont = new Container(Serial.LastItem + 1);
+      var secondCont = new Container(Serial.LastItem + 2);
+
+      Span<byte> data = new DisplaySecureTrade(m, firstCont, secondCont, name).Compile();
 
       Span<byte> expectedData = stackalloc byte[]
       {
@@ -42,7 +35,7 @@ namespace Server.Tests.Network.Packets
       };
 
       int pos = 4;
-      to.Serial.CopyTo(ref pos, expectedData);
+      m.Serial.CopyTo(ref pos, expectedData);
       firstCont.Serial.CopyTo(ref pos, expectedData);
       secondCont.Serial.CopyTo(ref pos, expectedData);
       pos++;
@@ -54,7 +47,9 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestCloseSecureTrade()
     {
-      Span<byte> data = new CloseSecureTrade(firstCont).Compile();
+      var cont = new Container(Serial.LastItem + 1);
+
+      Span<byte> data = new CloseSecureTrade(cont).Compile();
 
       Span<byte> expectedData = stackalloc byte[]
       {
@@ -64,7 +59,7 @@ namespace Server.Tests.Network.Packets
         0x00, 0x00, 0x00, 0x00 // Container Serial
       };
 
-      firstCont.Serial.CopyTo(expectedData.Slice(4, 4));
+      cont.Serial.CopyTo(expectedData.Slice(4, 4));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -74,6 +69,9 @@ namespace Server.Tests.Network.Packets
     [InlineData(false, true)] // Update second
     public void TestUpdateSecureTrade(bool first, bool second)
     {
+      var firstCont = new Container(Serial.LastItem + 1);
+      var secondCont = new Container(Serial.LastItem + 2);
+
       Container cont = first ? firstCont : secondCont;
       Span<byte> data = new UpdateSecureTrade(cont, first, second).Compile();
 
@@ -97,7 +95,8 @@ namespace Server.Tests.Network.Packets
     [InlineData(250000, 50000, TradeFlag.UpdateLedger)]
     public void TestUpdateGoldSecureTrade(int gold, int plat, TradeFlag flag)
     {
-      Span<byte> data = new UpdateSecureTrade(firstCont, flag, gold, plat).Compile();
+      var cont = new Container(Serial.LastItem + 1);
+      Span<byte> data = new UpdateSecureTrade(cont, flag, gold, plat).Compile();
       Span<byte> expectedData = stackalloc byte[]
       {
         0x6F, // Packet ID
@@ -109,7 +108,7 @@ namespace Server.Tests.Network.Packets
       };
 
       int pos = 4;
-      firstCont.Serial.CopyTo(ref pos, expectedData);
+      cont.Serial.CopyTo(ref pos, expectedData);
       gold.CopyTo(ref pos, expectedData);
       plat.CopyTo(ref pos, expectedData);
 
@@ -119,7 +118,13 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestSecureTradeEquip()
     {
-      Span<byte> data = new SecureTradeEquip(itemInFirstCont, to).Compile();
+      var m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      var cont = new Container(Serial.LastItem + 1);
+      var itemInCont = new Item(Serial.LastItem + 2) { Parent = cont };
+
+      Span<byte> data = new SecureTradeEquip(itemInCont, m).Compile();
       Span<byte> expectedData = stackalloc byte[]
       {
         0x25, // Packet ID
@@ -134,14 +139,14 @@ namespace Server.Tests.Network.Packets
       };
 
       int pos = 1;
-      itemInFirstCont.Serial.CopyTo(ref pos, expectedData);
-      ((short)itemInFirstCont.ItemID).CopyTo(ref pos, expectedData);
-      pos++;
-      ((short)itemInFirstCont.Amount).CopyTo(ref pos, expectedData);
-      ((short)itemInFirstCont.X).CopyTo(ref pos, expectedData);
-      ((short)itemInFirstCont.Y).CopyTo(ref pos, expectedData);
-      to.Serial.CopyTo(ref pos, expectedData);
-      ((short)itemInFirstCont.Hue).CopyTo(ref pos, expectedData);
+      itemInCont.Serial.CopyTo(ref pos, expectedData);
+      ((short)itemInCont.ItemID).CopyTo(ref pos, expectedData);
+      pos++; // expectedData[pos++] = 0x0;
+      ((short)itemInCont.Amount).CopyTo(ref pos, expectedData);
+      ((short)itemInCont.X).CopyTo(ref pos, expectedData);
+      ((short)itemInCont.Y).CopyTo(ref pos, expectedData);
+      m.Serial.CopyTo(ref pos, expectedData);
+      ((short)itemInCont.Hue).CopyTo(ref pos, expectedData);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -149,7 +154,13 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestSecureTradeEquip6017()
     {
-      Span<byte> data = new SecureTradeEquip6017(itemInFirstCont, to).Compile();
+      var m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      var cont = new Container(Serial.LastItem + 1);
+      var itemInCont = new Item(Serial.LastItem + 2) { Parent = cont };
+
+      Span<byte> data = new SecureTradeEquip6017(itemInCont, m).Compile();
       Span<byte> expectedData = stackalloc byte[]
       {
         0x25, // Packet ID
@@ -165,15 +176,15 @@ namespace Server.Tests.Network.Packets
       };
 
       int pos = 1;
-      itemInFirstCont.Serial.CopyTo(ref pos, expectedData);
-      ((short)itemInFirstCont.ItemID).CopyTo(ref pos, expectedData);
+      itemInCont.Serial.CopyTo(ref pos, expectedData);
+      ((short)itemInCont.ItemID).CopyTo(ref pos, expectedData);
       pos++;
-      ((short)itemInFirstCont.Amount).CopyTo(ref pos, expectedData);
-      ((short)itemInFirstCont.X).CopyTo(ref pos, expectedData);
-      ((short)itemInFirstCont.Y).CopyTo(ref pos, expectedData);
+      ((short)itemInCont.Amount).CopyTo(ref pos, expectedData);
+      ((short)itemInCont.X).CopyTo(ref pos, expectedData);
+      ((short)itemInCont.Y).CopyTo(ref pos, expectedData);
       pos++;
-      to.Serial.CopyTo(ref pos, expectedData);
-      ((short)itemInFirstCont.Hue).CopyTo(ref pos, expectedData);
+      m.Serial.CopyTo(ref pos, expectedData);
+      ((short)itemInCont.Hue).CopyTo(ref pos, expectedData);
 
       AssertThat.Equal(data, expectedData);
     }

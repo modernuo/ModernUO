@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.ContextMenus
 {
@@ -40,7 +41,7 @@ namespace Server.ContextMenus
     ///   The <see cref="Mobile" /> or <see cref="Item" /> for which this ContextMenu is on.
     ///   <seealso cref="Target" />
     /// </param>
-    public ContextMenu(Mobile from, object target)
+    public ContextMenu(Mobile from, IEntity target)
     {
       From = from;
       Target = target;
@@ -51,8 +52,6 @@ namespace Server.ContextMenus
         mobile.GetContextMenuEntries(from, list);
       else if (target is Item item)
         item.GetContextMenuEntries(from, list);
-
-      // m_Entries = (ContextMenuEntry[])list.ToArray( typeof( ContextMenuEntry ) );
 
       Entries = list.ToArray();
 
@@ -68,7 +67,7 @@ namespace Server.ContextMenus
     /// <summary>
     ///   Gets an object of the <see cref="Mobile" /> or <see cref="Item" /> for which this ContextMenu is on.
     /// </summary>
-    public object Target { get; }
+    public IEntity Target { get; }
 
     /// <summary>
     ///   Gets the list of <see cref="ContextMenuEntry">entries</see> contained in this ContextMenu.
@@ -78,16 +77,7 @@ namespace Server.ContextMenus
     /// <summary>
     ///   Returns true if this ContextMenu requires packet version 2.
     /// </summary>
-    public bool RequiresNewPacket
-    {
-      get
-      {
-        for (var i = 0; i < Entries.Length; ++i)
-          if (Entries[i].Number < 3000000 || Entries[i].Number > 3032767)
-            return true;
-
-        return false;
-      }
-    }
+    public bool RequiresNewPacket =>
+      Entries.Any(t => t.Number < 3000000 || t.Number > 3032767);
   }
 }

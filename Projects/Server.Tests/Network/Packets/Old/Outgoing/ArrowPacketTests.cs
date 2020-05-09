@@ -11,7 +11,8 @@ namespace Server.Tests.Network.Packets
     {
       Span<byte> data = new CancelArrow().Compile();
 
-      Span<byte> expectedData = stackalloc byte[] {
+      Span<byte> expectedData = stackalloc byte[]
+      {
         0xBA, // Packet
         0x00, // Command
         0xFF, 0xFF, // X
@@ -29,7 +30,8 @@ namespace Server.Tests.Network.Packets
     {
       Span<byte> data = new SetArrow(x, y).Compile();
 
-      Span<byte> expectedData = stackalloc byte[] {
+      Span<byte> expectedData = stackalloc byte[]
+      {
         0xBA, // Packet
         0x01, // Command
         0x00, 0x00, // X
@@ -50,7 +52,8 @@ namespace Server.Tests.Network.Packets
     {
       Span<byte> data = new CancelArrowHS(x, y, 0x1).Compile();
 
-      Span<byte> expectedData = stackalloc byte[] {
+      Span<byte> expectedData = stackalloc byte[]
+      {
         0xBA, // Packet
         0x00, // Command
         0x00, 0x00, // X
@@ -72,7 +75,8 @@ namespace Server.Tests.Network.Packets
     {
       Span<byte> data = new SetArrowHS(x, y, 0x1).Compile();
 
-      Span<byte> expectedData = stackalloc byte[] {
+      Span<byte> expectedData = stackalloc byte[]
+      {
         0xBA, // Packet
         0x01, // Command
         0x00, 0x00, // X

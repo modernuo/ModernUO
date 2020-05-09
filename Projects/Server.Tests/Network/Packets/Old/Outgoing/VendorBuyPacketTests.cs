@@ -4,33 +4,23 @@ using System.Linq;
 using Server.Items;
 using Server.Network;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Server.Tests.Network.Packets
 {
   public class VendorBuyPacketTests : IClassFixture<ServerFixture>
   {
-    private readonly Mobile vendor;
-    private readonly Container cont;
-
-    private readonly List<BuyItemState> buyStates;
-
-    public VendorBuyPacketTests(ServerFixture fixture)
+    [Fact]
+    public void TestVendorBuyContent()
     {
-      vendor = fixture.fromMobile;
-      cont = fixture.fromCont;
+      var cont = new Container(Serial.LastItem + 1);
 
-      buyStates = new List<BuyItemState>
+      var buyStates = new List<BuyItemState>
       {
         new BuyItemState("First Item", cont.Serial, Serial.NewItem, 10, 1, 0x01, 0),
         new BuyItemState("Second Item", cont.Serial, Serial.NewItem, 20, 2, 0x0A, 0),
         new BuyItemState("Third Item", cont.Serial, Serial.NewItem, 30, 10, 0x0F, 0)
       };
-    }
 
-    [Fact]
-    public void TestVendorBuyContent()
-    {
       Span<byte> data = new VendorBuyContent(buyStates).Compile();
 
       Span<byte> expectedData = stackalloc byte[5 + buyStates.Count * 19];
@@ -62,6 +52,15 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestVendorBuyContent6017()
     {
+      var cont = new Container(Serial.LastItem + 1);
+
+      var buyStates = new List<BuyItemState>
+      {
+        new BuyItemState("First Item", cont.Serial, Serial.NewItem, 10, 1, 0x01, 0),
+        new BuyItemState("Second Item", cont.Serial, Serial.NewItem, 20, 2, 0x0A, 0),
+        new BuyItemState("Third Item", cont.Serial, Serial.NewItem, 30, 10, 0x0F, 0)
+      };
+
       Span<byte> data = new VendorBuyContent6017(buyStates).Compile();
 
       Span<byte> expectedData = stackalloc byte[5 + buyStates.Count * 20];
@@ -94,6 +93,9 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestDisplayBuyList()
     {
+      var vendor = new Mobile(0x1);
+      vendor.DefaultMobileInit();
+
       Span<byte> data = new DisplayBuyList(vendor).Compile();
 
       Span<byte> expectedData = stackalloc byte[]
@@ -111,6 +113,9 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestDisplayBuyListHS()
     {
+      var vendor = new Mobile(0x1);
+      vendor.DefaultMobileInit();
+
       Span<byte> data = new DisplayBuyListHS(vendor).Compile();
 
       Span<byte> expectedData = stackalloc byte[]
@@ -129,6 +134,18 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestVendorBuyList()
     {
+      var vendor = new Mobile(0x1);
+      vendor.DefaultMobileInit();
+
+      var cont = new Container(Serial.LastItem + 1);
+
+      var buyStates = new List<BuyItemState>
+      {
+        new BuyItemState("First Item", cont.Serial, Serial.NewItem, 10, 1, 0x01, 0),
+        new BuyItemState("Second Item", cont.Serial, Serial.NewItem, 20, 2, 0x0A, 0),
+        new BuyItemState("Third Item", cont.Serial, Serial.NewItem, 30, 10, 0x0F, 0)
+      };
+
       Span<byte> data = new VendorBuyList(vendor, buyStates).Compile();
 
       int length = 8 + 5 * 3 + buyStates.Sum(state => state.Description.Length + 1);
@@ -151,6 +168,27 @@ namespace Server.Tests.Network.Packets
         desc.CopyASCIITo(ref pos, expectedData);
         pos++;
       }
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestEndVendorBuy()
+    {
+      var vendor = new Mobile(0x1);
+      vendor.DefaultMobileInit();
+
+      Span<byte> data = new EndVendorBuy(vendor).Compile();
+
+      Span<byte> expectedData = stackalloc byte[]
+      {
+        0x3B, // Packet ID
+        0x00, 0x08, // Length
+        0x00, 0x00, 0x00, 0x00, // Vendor Serial
+        0x00
+      };
+
+      vendor.Serial.CopyTo(expectedData.Slice(3, 4));
 
       AssertThat.Equal(data, expectedData);
     }

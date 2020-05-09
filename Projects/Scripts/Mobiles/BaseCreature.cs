@@ -3036,7 +3036,7 @@ namespace Server.Mobiles
 
       IsDeadPet = false;
 
-      Effects.SendPacket(Location, Map, new BondedStatus(0, Serial, 0));
+      Effects.SendPacket(Location, Map, new BondedStatus(Serial, false));
 
       SendIncomingPacket();
       SendIncomingPacket();

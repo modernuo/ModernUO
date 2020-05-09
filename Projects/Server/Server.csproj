@@ -17,8 +17,8 @@
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>8.0</LangVersion>
     <PublishDir>$(SolutionDir)\Distribution</PublishDir>
-    <!-- <OutDir>$(SolutionDir)\Distribution</OutDir>
-    <OutputPath>$(SolutionDir)\Distribution</OutputPath> -->
+<!--    <OutDir>$(SolutionDir)\Distribution</OutDir>-->
+<!--    <OutputPath>$(SolutionDir)\Distribution</OutputPath>-->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

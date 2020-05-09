@@ -15,7 +15,7 @@ namespace Server.Tests
       return builder.ToString();
     }
 
-    public static void Equal(ReadOnlySpan<byte> expected, ReadOnlySpan<byte> actual) =>
+    public static void Equal(ReadOnlySpan<byte> actual, ReadOnlySpan<byte> expected) =>
       Xunit.Assert.True(
         MemoryExtensions.SequenceEqual(expected, actual),
         $"Expected does not match actual.\nExpected:\t{SpanToString(expected)}\nActual:\t\t{SpanToString(actual)}"

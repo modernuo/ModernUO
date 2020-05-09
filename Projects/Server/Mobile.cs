@@ -889,7 +889,7 @@ namespace Server
           ++m_ChangingCombatant;
           m_Combatant = value;
 
-          if ((m_Combatant != null && !CanBeHarmful(m_Combatant, false)) ||
+          if (m_Combatant != null && !CanBeHarmful(m_Combatant, false) ||
               !Region.OnCombatantChange(this, old, m_Combatant))
           {
             m_Combatant = old;
@@ -2519,7 +2519,7 @@ namespace Server
 
               if (m.IsDeadBondedPet)
               {
-                deadPacket ??= Packet.Acquire(new BondedStatus(0, m.Serial, 1));
+                deadPacket ??= Packet.Acquire(new BondedStatus(m.Serial, true));
 
                 state.Send(deadPacket);
               }
@@ -6231,7 +6231,7 @@ namespace Server
               }
 
               if (m.IsDeadBondedPet)
-                ns.Send(new BondedStatus(0, m.Serial, 1));
+                ns.Send(new BondedStatus(m.Serial, true));
 
               if (ObjectPropertyList.Enabled) ns.Send(m.OPLPacket);
             }
@@ -6356,7 +6356,7 @@ namespace Server
           state.Send(MobileIncoming.Create(state, state.Mobile, this));
 
           if (IsDeadBondedPet)
-            state.Send(new BondedStatus(0, Serial, 1));
+            state.Send(new BondedStatus(Serial, true));
 
           if (ObjectPropertyList.Enabled) state.Send(OPLPacket);
         }
@@ -6594,7 +6594,7 @@ namespace Server
                 }
 
                 if (IsDeadBondedPet)
-                  m.m_NetState.Send(new BondedStatus(0, Serial, 1));
+                  m.m_NetState.Send(new BondedStatus(Serial, true));
 
                 if (ObjectPropertyList.Enabled) m.m_NetState.Send(OPLPacket);
               }
@@ -6614,7 +6614,7 @@ namespace Server
               }
 
               if (m.IsDeadBondedPet)
-                ourState.Send(new BondedStatus(0, m.Serial, 1));
+                ourState.Send(new BondedStatus(m.Serial, true));
 
               if (ObjectPropertyList.Enabled) ourState.Send(m.OPLPacket);
             }
@@ -6642,7 +6642,7 @@ namespace Server
               }
 
               if (IsDeadBondedPet)
-                ns.Send(new BondedStatus(0, Serial, 1));
+                ns.Send(new BondedStatus(Serial, true));
 
               if (ObjectPropertyList.Enabled) ns.Send(OPLPacket);
             }
@@ -6712,7 +6712,7 @@ namespace Server
           }
 
           if (IsDeadBondedPet)
-            state.Send(new BondedStatus(0, Serial, 1));
+            state.Send(new BondedStatus(Serial, true));
 
           if (ObjectPropertyList.Enabled) state.Send(OPLPacket);
         }
