@@ -14,8 +14,8 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>8.0</LangVersion>
-    <OutDir>$(SolutionDir)\Distribution\Assemblies</OutDir>
-    <OutputPath>$(SolutionDir)\Distribution\Assemblies</OutputPath>
+<!--    <OutDir>$(SolutionDir)\Distribution\Assemblies</OutDir>-->
+<!--    <OutputPath>$(SolutionDir)\Distribution\Assemblies</OutputPath>-->
     <PublishDir>$(SolutionDir)\Distribution\Assemblies</PublishDir>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release;Analyze</Configurations>

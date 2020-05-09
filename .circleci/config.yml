@@ -17,19 +17,10 @@ jobs:
     steps:
       - run: rm -rf ~/project/.git # CircleCI git caching is likely broken
       - checkout
-      - restore_cache:
-          keys:
-            - dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
       - run:
           name: Build native libraries
           command: /mnt/ramdisk/Tools/build-native-libraries.sh
       - save_cache:
-          paths:
-            - /mnt/ramdisk/packages
-          key: dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
-      - run:
-          name: Install ModernUO dependencies
-          command: dotnet restore
       - run:
           name: Building ModernUO for Linux (Debug)
           command: dotnet build -c Debug -r linux-x64
@@ -39,18 +30,9 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys:
-            - dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
       - run:
           name: Build native libraries
           command: Tools\build-native-libraries.cmd
-      - save_cache:
-          paths:
-            - packages
-          key: dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
-      - run:
-          name: Install ModernUO dependencies
-          command: dotnet restore
       - run:
           name: Building ModernUO for Windows (Debug)
           command: dotnet build -c Debug -r win-x64
@@ -60,19 +42,9 @@ jobs:
     steps:
       - run: rm -rf ~/project/.git # CircleCI git caching is likely broken
       - checkout
-      - restore_cache:
-          keys:
-            - dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
       - run:
           name: Build native libraries
           command: /mnt/ramdisk/Tools/build-native-libraries.sh
-      - save_cache:
-          paths:
-            - /mnt/ramdisk/packages
-          key: dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
-      - run:
-          name: Install ModernUO dependencies
-          command: dotnet restore
       - run:
           name: Building with Analyzers
           command: dotnet build -c Analyze -r linux-x64
@@ -82,19 +54,9 @@ jobs:
     steps:
       - run: rm -rf ~/project/.git # CircleCI git caching is likely broken
       - checkout
-      - restore_cache:
-          keys:
-            - dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
       - run:
           name: Build native libraries
           command: /mnt/ramdisk/Tools/build-native-libraries.sh
-      - save_cache:
-          paths:
-            - /mnt/ramdisk/packages
-          key: dotnet-packages-v1-{{ arch }}-{{ checksum ".circleci/checksum.txt" }}
-      - run:
-          name: Install ModernUO dependencies
-          command: dotnet restore
       - run:
           name: Running unit tests
           command: dotnet test -r linux-x64

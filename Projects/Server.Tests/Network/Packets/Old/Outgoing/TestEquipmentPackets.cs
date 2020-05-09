@@ -67,7 +67,10 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestEquipUpdate()
     {
-      var item = new Item(Serial.LastItem + 1);
+      var m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      var item = new Item(Serial.LastItem + 1) { Parent = m };
 
       Span<byte> data = new EquipUpdate(item).Compile();
 
@@ -83,7 +86,7 @@ namespace Server.Tests.Network.Packets
 
       item.Serial.CopyTo(expectedData.Slice(1, 4));
       ((ushort)item.ItemID).CopyTo(expectedData.Slice(5, 2));
-      (item.Parent?.Serial ?? Serial.Zero).CopyTo(expectedData.Slice(9, 4));
+      item.Parent.Serial.CopyTo(expectedData.Slice(9, 4));
       ((ushort)item.Hue).CopyTo(expectedData.Slice(13, 2));
 
       AssertThat.Equal(data, expectedData);
