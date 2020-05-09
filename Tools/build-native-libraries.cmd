@@ -23,7 +23,7 @@ IF "%~1" == "" (
   SET c=-c %~1
 )
 
-ECHO dotnet build %c% Projects\Argon2\Argon2.csproj
-ECHO dotnet pack -o packages Projects\Argon2\Argon2.csproj
-ECHO dotnet build %c% Projects\ZLib\ZLib.csproj
-ECHO dotnet pack -o packages Projects\ZLib\ZLib.csproj
+dotnet build %c% Projects\Argon2\Argon2.csproj
+dotnet pack -o packages Projects\Argon2\Argon2.csproj
+dotnet build %c% Projects\ZLib\ZLib.csproj
+dotnet pack -o packages Projects\ZLib\ZLib.csproj
