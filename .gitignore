@@ -2,7 +2,7 @@
 /Distribution/ModernUO
 /Distribution/ModernUO.*
 /Distribution/Assemblies
-/Distribution/Configuration
+/Distribution/Configuration/modernuo.json
 /Distribution/Logs
 /Distribution/Backups
 /Distribution/Saves
@@ -34,9 +34,6 @@
 /Distribution/Microsoft.Extensions.Logging.Abstractions.dll
 /Distribution/Microsoft.Extensions.Options.dll
 /Distribution/Microsoft.Extensions.Primitives.dll
-
-# Configuration Files
-!assemblies.json
 
 /Projects/*/obj
 /Projects/*/bin
