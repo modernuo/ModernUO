@@ -47,4 +47,3 @@
 .DS_Store
 
 /packages/*
-!do_not_delete
