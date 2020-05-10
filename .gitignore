@@ -2,7 +2,7 @@
 /Distribution/ModernUO
 /Distribution/ModernUO.*
 /Distribution/Assemblies
-/Distribution/Configuration
+/Distribution/Configuration/modernuo.json
 /Distribution/Logs
 /Distribution/Backups
 /Distribution/Saves
@@ -35,9 +35,6 @@
 /Distribution/Microsoft.Extensions.Options.dll
 /Distribution/Microsoft.Extensions.Primitives.dll
 
-# Configuration Files
-!/Distribution/Configuration/assemblies.json
-
 /Projects/*/obj
 /Projects/*/bin
 
@@ -45,8 +42,8 @@
 *.user
 /.idea
 /.vs
+/.vscode
 
 .DS_Store
 
 /packages/*
-!do_not_delete
