@@ -36,7 +36,7 @@
 /Distribution/Microsoft.Extensions.Primitives.dll
 
 # Configuration Files
-!/Distribution/Configuration/assemblies.json
+!assemblies.json
 
 /Projects/*/obj
 /Projects/*/bin
@@ -45,6 +45,7 @@
 *.user
 /.idea
 /.vs
+/.vscode
 
 .DS_Store
 
