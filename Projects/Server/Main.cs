@@ -37,8 +37,6 @@ using Server.Network;
 
 namespace Server
 {
-  public delegate void Slice();
-
   public static class Core
   {
     private static bool m_Crashed;
@@ -50,20 +48,15 @@ namespace Server
     private static DateTime m_ProfileStart;
     private static TimeSpan m_ProfileTime;
 
-    public static Slice Slice;
-
     /*
      * DateTime.Now and DateTime.UtcNow are based on actual system clock time.
      * The resolution is acceptable but large clock jumps are possible and cause issues.
      * GetTickCount and GetTickCount64 have poor resolution.
-     * GetTickCount64 is unavailable on Windows XP and Windows Server 2003.
      * Stopwatch.GetTimestamp() (QueryPerformanceCounter) is high resolution, but
      * somewhat expensive to call because of its difference to DateTime.Now,
      * which is why Stopwatch has been used to verify HRT before calling GetTimestamp(),
      * enabling the usage of DateTime.UtcNow instead.
      */
-
-    private static readonly bool m_HighRes = Stopwatch.IsHighResolution;
 
     private static readonly double m_HighFrequency = 1000.0 / Stopwatch.Frequency;
     private static readonly double m_LowFrequency = 1000.0 / TimeSpan.TicksPerSecond;
@@ -107,8 +100,6 @@ namespace Server
       }
     }
 
-    public static bool Debug { get; private set; }
-
     internal static bool HaltOnWarning { get; private set; }
 
     public static Assembly Assembly { get; set; }
@@ -118,19 +109,12 @@ namespace Server
 
     public static Thread Thread { get; private set; }
 
-    public static bool UsingHighResolutionTiming => m_HighRes && !Unix;
-
     public static long TickCount => (long)Ticks;
 
-    public static double Ticks
-    {
-      get
-      {
-        if (m_HighRes && !Unix) return Stopwatch.GetTimestamp() * m_HighFrequency;
-
-        return DateTime.UtcNow.Ticks * m_LowFrequency;
-      }
-    }
+    public static double Ticks =>
+      Stopwatch.IsHighResolution
+        ? Stopwatch.GetTimestamp() * m_HighFrequency
+        : DateTime.UtcNow.Ticks * m_LowFrequency;
 
     public static bool MultiProcessor { get; private set; }
 
@@ -176,9 +160,6 @@ namespace Server
       get
       {
         var sb = new StringBuilder();
-
-        if (Debug)
-          Utility.Separate(sb, "-debug", " ");
 
         if (m_Profiling)
           Utility.Separate(sb, "-profile", " ");
@@ -316,9 +297,7 @@ namespace Server
       AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
       foreach (var a in args)
-        if (Insensitive.Equals(a, "-debug"))
-          Debug = true;
-        else if (Insensitive.Equals(a, "-profile"))
+        if (Insensitive.Equals(a, "-profile"))
           Profiling = true;
         else if (Insensitive.Equals(a, "-haltonwarning"))
           HaltOnWarning = true;
@@ -376,7 +355,7 @@ namespace Server
         Console.WriteLine("Core: Server garbage collection mode enabled");
 
       Console.WriteLine("Core: High resolution timing ({0})",
-        UsingHighResolutionTiming ? "Supported" : "Unsupported");
+        Stopwatch.IsHighResolution ? "Supported" : "Unsupported");
 
       Console.WriteLine("SecureRandomImpl: {0} ({1})", SecureRandomImpl.Name,
         SecureRandomImpl.IsHardwareRNG ? "Hardware" : "Software");
@@ -438,8 +417,6 @@ namespace Server
           messagePumpService.DoWork();
 
           NetState.ProcessDisposedQueue();
-
-          Slice?.Invoke();
 
           if (sample++ % sampleInterval != 0)
             continue;
@@ -561,107 +538,5 @@ namespace Server
     public static bool TOL => Expansion >= Expansion.TOL;
 
     public static bool EJ => Expansion >= Expansion.EJ;
-  }
-
-  public class FileLogger : TextWriter
-  {
-    public const string DateFormat = "[MMMM dd hh:mm:ss.f tt]: ";
-
-    private bool m_NewLine;
-
-    public FileLogger(string file, bool append = false)
-    {
-      FileName = file;
-
-      using (
-        var writer =
-          new StreamWriter(
-            new FileStream(FileName, append ? FileMode.Append : FileMode.Create, FileAccess.Write,
-              FileShare.Read)))
-      {
-        writer.WriteLine(">>>Logging started on {0}.", DateTime.UtcNow.ToString("f"));
-        // f = Tuesday, April 10, 2001 3:51 PM
-      }
-
-      m_NewLine = true;
-    }
-
-    public string FileName { get; }
-
-    public override Encoding Encoding => Encoding.Default;
-
-    public override void Write(char ch)
-    {
-      using var writer = new StreamWriter(new FileStream(FileName, FileMode.Append, FileAccess.Write, FileShare.Read));
-      if (m_NewLine)
-      {
-        writer.Write(DateTime.UtcNow.ToString(DateFormat));
-        m_NewLine = false;
-      }
-
-      writer.Write(ch);
-    }
-
-    public override void Write(string str)
-    {
-      using var writer =
-        new StreamWriter(new FileStream(FileName, FileMode.Append, FileAccess.Write, FileShare.Read));
-      if (m_NewLine)
-      {
-        writer.Write(DateTime.UtcNow.ToString(DateFormat));
-        m_NewLine = false;
-      }
-
-      writer.Write(str);
-    }
-
-    public override void WriteLine(string line)
-    {
-      using var writer =
-        new StreamWriter(new FileStream(FileName, FileMode.Append, FileAccess.Write, FileShare.Read));
-      if (m_NewLine) writer.Write(DateTime.UtcNow.ToString(DateFormat));
-
-      writer.WriteLine(line);
-      m_NewLine = true;
-    }
-  }
-
-  public class MultiTextWriter : TextWriter
-  {
-    private readonly List<TextWriter> m_Streams;
-
-    public MultiTextWriter(params TextWriter[] streams)
-    {
-      m_Streams = new List<TextWriter>(streams);
-
-      if (m_Streams.Count < 0) throw new ArgumentException("You must specify at least one stream.");
-    }
-
-    public override Encoding Encoding => Encoding.Default;
-
-    public void Add(TextWriter tw)
-    {
-      m_Streams.Add(tw);
-    }
-
-    public void Remove(TextWriter tw)
-    {
-      m_Streams.Remove(tw);
-    }
-
-    public override void Write(char ch)
-    {
-      foreach (var t in m_Streams) t.Write(ch);
-    }
-
-    public override void WriteLine(string line)
-    {
-      foreach (var t in m_Streams) t.WriteLine(line);
-    }
-
-    public override void WriteLine(string line, params object[] args)
-    {
-      WriteLine(string.Format(line, args));
-    }
   }
 }

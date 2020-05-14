@@ -122,12 +122,7 @@ namespace System.Buffers
         block = new MemoryPoolBlock(this, slab, offset, _blockSize);
 
         if (i != blockCount - 1) // last block
-        {
-#if BLOCK_LEASE_TRACKING
-          block.IsLeased = true;
-#endif
           Return(block);
-        }
 
         offset += _blockSize;
       }
