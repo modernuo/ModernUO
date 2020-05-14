@@ -318,8 +318,6 @@ namespace Server.Commands
     */
     public static bool DontLink(Type type)
     {
-      // MONO: type.Namespace is null/empty for generic arguments
-
       if (type.Name == "T" || string.IsNullOrEmpty(type.Namespace) || m_Namespaces == null)
         return true;
 

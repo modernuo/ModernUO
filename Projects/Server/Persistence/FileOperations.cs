@@ -18,12 +18,11 @@
  *
  ***************************************************************************/
 
-using System;
 using System.IO;
-#if !MONO
+#if WINDOWS
+using System;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
-
 #endif
 
 namespace Server
@@ -37,11 +36,11 @@ namespace Server
 
     public static int Concurrency { get; set; } = 1;
 
+#if WINDOWS
     public static bool Unbuffered { get; set; } = true;
+#endif
 
     public static bool AreSynchronous => Concurrency < 1;
-
-    public static bool AreAsynchronous => Concurrency > 0;
 
     public static FileStream OpenSequentialStream(string path, FileMode mode, FileAccess access, FileShare share)
     {
@@ -50,7 +49,7 @@ namespace Server
       if (Concurrency > 0)
         options |= FileOptions.Asynchronous;
 
-#if MONO
+#if !WINDOWS
       return new FileStream( path, mode, access, share, BufferSize, options );
 #else
       if (Unbuffered)
@@ -67,7 +66,7 @@ namespace Server
 #endif
     }
 
-#if !MONO
+#if WINDOWS
     private class UnbufferedFileStream : FileStream
     {
       private readonly SafeFileHandle fileHandle;
@@ -94,7 +93,7 @@ namespace Server
     }
 #endif
 
-#if !MONO
+#if WINDOWS
     private const FileOptions NoBuffering = (FileOptions)0x20000000;
 
     internal static class UnsafeNativeMethods

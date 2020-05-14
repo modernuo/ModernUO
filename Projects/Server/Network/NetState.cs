@@ -544,9 +544,6 @@ namespace Server.Network
 
     public static void TraceException(Exception ex)
     {
-      if (!Core.Debug)
-        return;
-
       try
       {
         using var op = new StreamWriter("network-errors.log", true);
