@@ -1,6 +1,7 @@
 using System;
+using Server.Mobiles;
 
-namespace Server.Mobiles
+namespace Server.Engines.Spawners
 {
   public class ProximitySpawner : Spawner
   {

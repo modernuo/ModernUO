@@ -1,6 +1,6 @@
 using System;
 
-namespace Server.Mobiles
+namespace Server.Engines.Spawners
 {
   public class SpawnerType
   {

@@ -71,14 +71,17 @@ namespace Server
     void OnStatsQuery(Mobile beholder, Mobile beheld);
   }
 
-  public interface ISpawner
+  // TODO: Add SpawnMap and change Spawner.Map to use it
+  public interface ISpawner : IEntity
   {
     bool UnlinkOnTaming { get; }
     Point3D HomeLocation { get; }
     int HomeRange { get; }
     Region Region { get; }
+    bool ReturnOnDeactivate { get; }
 
     void Remove(ISpawnable spawn);
+    Point3D GetSpawnPosition(ISpawnable spawned, Map map);
   }
 
   public interface ISpawnable : IEntity

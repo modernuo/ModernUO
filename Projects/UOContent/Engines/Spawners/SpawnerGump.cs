@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using Server.Gumps;
 using Server.Network;
 
-namespace Server.Mobiles
+namespace Server.Engines.Spawners
 {
   public class SpawnerGump : Gump
   {
     private SpawnerEntry m_Entry;
     private int m_Page;
-    private readonly Spawner m_Spawner;
+    private readonly BaseSpawner m_Spawner;
 
-    public SpawnerGump(Spawner spawner, SpawnerEntry focusentry = null, int page = 0) : base(50, 50)
+    public SpawnerGump(BaseSpawner spawner, SpawnerEntry focusentry = null, int page = 0) : base(50, 50)
     {
       m_Spawner = spawner;
       m_Entry = focusentry;
@@ -124,7 +124,7 @@ namespace Server.Mobiles
 
     public int GetButtonID(int type, int index) => 1 + index * 10 + type;
 
-    public void CreateArray(RelayInfo info, Mobile from, Spawner spawner)
+    public void CreateArray(RelayInfo info, Mobile from, BaseSpawner spawner)
     {
       int ocount = spawner.Entries.Count;
 

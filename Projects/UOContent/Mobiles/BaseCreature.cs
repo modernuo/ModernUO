@@ -9,6 +9,7 @@ using Server.Engines.PartySystem;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Doom;
 using Server.Engines.Quests.Haven;
+using Server.Engines.Spawners;
 using Server.Ethics;
 using Server.Factions;
 using Server.Items;
@@ -2746,7 +2747,7 @@ namespace Server.Mobiles
     {
       base.OnRegionChange(Old, New);
 
-      if (Controlled && Spawner is SpawnEntry se && !se.UnlinkOnTaming && New?.AcceptsSpawnsFrom(se.Region) != true)
+      if (Controlled && Spawner?.UnlinkOnTaming == false && New?.AcceptsSpawnsFrom(Spawner.Region) != true)
       {
         Spawner.Remove(this);
         Spawner = null;

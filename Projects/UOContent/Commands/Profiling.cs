@@ -340,7 +340,7 @@ namespace Server.Commands
 
         int v = -aCount.CompareTo(bCount);
 
-        return v != 0 ? v : x.Key.FullName.CompareTo(y.Key.FullName);
+        return v != 0 ? v : x.Key.FullName?.CompareTo(y.Key.FullName) ?? -1;
       }
     }
 
@@ -353,7 +353,7 @@ namespace Server.Commands
 
         int v = -aCount.CompareTo(bCount);
 
-        return v != 0 ? v : x.Key.FullName.CompareTo(y.Key.FullName);
+        return v != 0 ? v : x.Key.FullName?.CompareTo(y.Key.FullName) ?? 1;
       }
     }
   }

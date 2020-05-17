@@ -4,11 +4,11 @@ using System.IO;
 using Server.ContextMenus;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Necro;
+using Server.Engines.Spawners;
 using Server.Factions;
 using Server.Gumps;
 using Server.Items;
 using Server.Network;
-using Server.Regions;
 using Server.Spells;
 using Server.Spells.Spellweaving;
 using Server.Targets;
@@ -1461,10 +1461,12 @@ namespace Server.Mobiles
       m_Mobile.OwnerAbandonTime = DateTime.MinValue;
       m_Mobile.IsBonded = false;
 
-      if (m_Mobile.Spawner is SpawnEntry se && se.HomeLocation != Point3D.Zero)
+      var spawner = m_Mobile.Spawner;
+
+      if (spawner != null && spawner.HomeLocation != Point3D.Zero)
       {
-        m_Mobile.Home = se.HomeLocation;
-        m_Mobile.RangeHome = se.HomeRange;
+        m_Mobile.Home = spawner.HomeLocation;
+        m_Mobile.RangeHome = spawner.HomeRange;
       }
 
       if (m_Mobile.DeleteOnRelease || m_Mobile.IsDeadPet)
@@ -1923,9 +1925,9 @@ namespace Server.Mobiles
 
       if (m_Mobile.Home == Point3D.Zero)
       {
-        if (m_Mobile.Spawner is SpawnEntry entry)
+        if (m_Mobile.Spawner is RegionSpawner rs)
         {
-          Region region = entry.Region;
+          Region region = rs.SpawnRegion;
 
           if (m_Mobile.Region.AcceptsSpawnsFrom(region))
           {
@@ -2375,13 +2377,15 @@ namespace Server.Mobiles
       {
         m_Timer.Stop();
 
-        if (m_Mobile.Spawner is SpawnEntry se && se.ReturnOnDeactivate && !m_Mobile.Controlled)
+        var spawner = m_Mobile.Spawner;
+
+        if (spawner?.ReturnOnDeactivate == true && !m_Mobile.Controlled)
         {
-          if (se.HomeLocation == Point3D.Zero)
+          if (spawner.HomeLocation == Point3D.Zero)
           {
-            if (!m_Mobile.Region.AcceptsSpawnsFrom(se.Region)) Timer.DelayCall(TimeSpan.Zero, ReturnToHome);
+            if (!m_Mobile.Region.AcceptsSpawnsFrom(spawner.Region)) Timer.DelayCall(TimeSpan.Zero, ReturnToHome);
           }
-          else if (!m_Mobile.InRange(se.HomeLocation, se.HomeRange))
+          else if (!m_Mobile.InRange(spawner.HomeLocation, spawner.HomeRange))
           {
             Timer.DelayCall(TimeSpan.Zero, ReturnToHome);
           }
@@ -2391,11 +2395,11 @@ namespace Server.Mobiles
 
     private void ReturnToHome()
     {
-      if (m_Mobile.Spawner is SpawnEntry se)
+      if (m_Mobile.Spawner != null)
       {
-        Point3D loc = se.RandomSpawnLocation(16, !m_Mobile.CantWalk, m_Mobile.CanSwim);
+        Point3D loc = m_Mobile.Spawner.GetSpawnPosition(m_Mobile, m_Mobile.Spawner.Map);
 
-        if (loc != Point3D.Zero) m_Mobile.MoveToWorld(loc, se.Region.Map);
+        if (loc != Point3D.Zero) m_Mobile.MoveToWorld(loc, m_Mobile.Spawner.Map);
       }
     }
 

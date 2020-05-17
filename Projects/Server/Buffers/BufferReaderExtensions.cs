@@ -3,7 +3,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Buffers.Binary;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
