@@ -241,15 +241,6 @@
   },
   {
     "type": "RegionSpawner",
-    "count": "1",
-    "entries": [{ "maxCount": 1, "name": "CrystalFieldTele", "probability": 100 }],
-    "minDelay": "00:00:10",
-    "maxDelay": "00:00:30",
-    "location": [6506, 83, -4],
-    "map": "Trammel"
-  },
-  {
-    "type": "RegionSpawner",
     "region": "A Wheatfield in Britain 1",
     "count": "8",
     "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
