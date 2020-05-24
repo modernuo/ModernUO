@@ -1,1338 +1,734 @@
 [
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "BlackSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5677,
-    "y": 2027,
-    "z": 3
+    "location": [5677, 2027, 3],
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "BlackSolenWorker", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 10,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5672,
-    "y": 1844,
-    "z": 2
+    "location": [5672, 1844, 2],
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "BlackSolenWorker", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 8,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5920,
-    "y": 1814,
-    "z": 1
+    "location": [5920, 1814, 1],
+    "map": "Felucca"
   },
   {
     "count": 3,
     "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenQueen",
-        "probability": 100
-      },
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
+      { "maxCount": 1, "name": "BlackSolenQueen", "probability": 100 },
+      { "maxCount": 2, "name": "BlackSolenWorker", "probability": 100 }
     ],
     "homeRange": 12,
     "walkingRange": 12,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5737,
-    "y": 1941,
-    "z": 3
+    "location": [5737, 1941, 3],
+    "map": "Felucca"
   },
   {
     "count": 3,
     "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenQueen",
-        "probability": 100
-      },
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
+      { "maxCount": 1, "name": "BlackSolenQueen", "probability": 100 },
+      { "maxCount": 2, "name": "BlackSolenWorker", "probability": 100 }
     ],
     "homeRange": 8,
     "walkingRange": 8,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5874,
-    "y": 1798,
-    "z": 0
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "BlackSolenWarrior", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 25,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5830,
-    "y": 1862,
-    "z": 3
+    "location": [5830, 1862, 3],
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "BlackSolenWorker", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 15,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5819,
-    "y": 1973,
-    "z": 3
+    "location": [5819, 1973, 3],
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "AntLion",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "AntLion", "probability": 100 }],
     "homeRange": 7,
     "walkingRange": 9,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5783,
-    "y": 2021,
-    "z": -14
+    "location": [5783, 2021, -14],
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "BlackSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 15,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5699,
-    "y": 2025,
-    "z": 4
+    "location": [5699, 2025, 4],
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "BlackSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 8,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5832,
-    "y": 1803,
-    "z": 0
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "BlackSolenWarrior", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 12,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5793,
-    "y": 1855,
-    "z": 2
+    "location": [5793, 1855, 2],
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "BlackSolenWarrior", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 20,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5860,
-    "y": 1959,
-    "z": 2
+    "location": [5860, 1959, 2],
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "BlackSolenWarrior", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 15,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5698,
-    "y": 1894,
-    "z": 1
+    "location": [5698, 1894, 1],
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "AntLion",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "AntLion", "probability": 100 }],
     "homeRange": 15,
     "walkingRange": 25,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5887,
-    "y": 1840,
-    "z": -18
+    "location": [5887, 1840, -18],
+    "map": "Felucca"
   },
   {
     "count": 3,
-    "entries": [
-      {
-        "maxCount": 3,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 3, "name": "BlackSolenWorker", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 25,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5914,
-    "y": 1991,
-    "z": 4
+    "location": [5914, 1991, 4],
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "BlackSolenWarrior", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5657,
-    "y": 1989,
-    "z": 1
+    "location": [5657, 1989, 1],
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "BlackSolenWorker", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 12,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5813,
-    "y": 1945,
-    "z": 2
+    "location": [5813, 1945, 2],
+    "map": "Felucca"
   },
   {
     "count": 2,
     "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenWarrior",
-        "probability": 100
-      },
-      {
-        "maxCount": 1,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
+      { "maxCount": 1, "name": "BlackSolenWarrior", "probability": 100 },
+      { "maxCount": 1, "name": "BlackSolenWorker", "probability": 100 }
     ],
     "homeRange": 10,
     "walkingRange": 20,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5788,
-    "y": 1796,
-    "z": 1
+    "location": [5788, 1796, 1],
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "Beetle",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "Beetle", "probability": 100 }],
     "homeRange": 12,
     "walkingRange": 15,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5836,
-    "y": 1994,
-    "z": 0
+    "map": "Felucca"
   },
   {
     "count": 3,
     "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenQueen",
-        "probability": 100
-      },
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
+      { "maxCount": 1, "name": "BlackSolenQueen", "probability": 100 },
+      { "maxCount": 2, "name": "BlackSolenWorker", "probability": 100 }
     ],
     "homeRange": 16,
     "walkingRange": 14,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5665,
-    "y": 1869,
-    "z": 10
+    "location": [5665, 1869, 10],
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "BlackSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5718,
-    "y": 1819,
-    "z": 3
+    "location": [5718, 1819, 3],
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "BlackSolenWorker", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 8,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5919,
-    "y": 1833,
-    "z": 1
+    "location": [5919, 1833, 1],
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "BlackSolenWarrior", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5721,
-    "y": 1993,
-    "z": 0
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "BlackSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5708,
-    "y": 1800,
-    "z": 2
+    "location": [5708, 1800, 2],
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "BlackSolenWarrior", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 15,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5860,
-    "y": 1979,
-    "z": 4
+    "location": [5860, 1979, 4],
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "Beetle",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "Beetle", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 15,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5831,
-    "y": 1910,
-    "z": 3
+    "location": [5831, 1910, 3],
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "BlackSolenWarrior", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 12,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5725,
-    "y": 1915,
-    "z": 5
+    "location": [5725, 1915, 5],
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackAmbitiousSolenQueen",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "BlackAmbitiousSolenQueen", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 20,
-    "map": 0,
     "maxDelay": "00:00:05",
     "minDelay": "00:00:01",
-    "x": 5790,
-    "y": 1985,
-    "z": 5
+    "location": [5790, 1985, 5],
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "BlackSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "BlackSolenWarrior", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 25,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5835,
-    "y": 1936,
-    "z": 0
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenMatriarch",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "BlackSolenMatriarch", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 20,
-    "map": 0,
     "maxDelay": "00:00:05",
     "minDelay": "00:00:01",
-    "x": 5775,
-    "y": 1897,
-    "z": 22
+    "location": [5775, 1897, 22],
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "AntLion",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "AntLion", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 12,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5885,
-    "y": 1920,
-    "z": -17
+    "location": [5885, 1920, -17],
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "BlackSolenWarrior", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5707,
-    "y": 1874,
-    "z": 0
+    "map": "Felucca"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "DreadSpider",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "DreadSpider", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 20,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5770,
-    "y": 1956,
-    "z": 1
+    "location": [5770, 1956, 1],
+    "map": "Felucca"
   },
   {
     "count": 3,
-    "entries": [
-      {
-        "maxCount": 3,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 3, "name": "BlackSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5847,
-    "y": 2020,
-    "z": 10
+    "location": [5847, 2020, 10],
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "BlackSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 8,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5657,
-    "y": 1824,
-    "z": 1
+    "location": [5657, 1824, 1],
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "BlackSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "BlackSolenWarrior", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 0,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5684,
-    "y": 1985,
-    "z": 3
+    "location": [5684, 1985, 3],
+    "map": "Felucca"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "RedSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5677,
-    "y": 2027,
-    "z": 3
+    "location": [5677, 2027, 3],
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "RedSolenWorker", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 10,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5672,
-    "y": 1844,
-    "z": 2
+    "location": [5672, 1844, 2],
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "RedSolenWorker", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 8,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5920,
-    "y": 1814,
-    "z": 1
+    "location": [5920, 1814, 1],
+    "map": "Trammel"
   },
   {
     "count": 3,
     "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenQueen",
-        "probability": 100
-      },
-      {
-        "maxCount": 2,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
+      { "maxCount": 1, "name": "RedSolenQueen", "probability": 100 },
+      { "maxCount": 2, "name": "RedSolenWorker", "probability": 100 }
     ],
     "homeRange": 12,
     "walkingRange": 12,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5737,
-    "y": 1941,
-    "z": 3
+    "location": [5737, 1941, 3],
+    "map": "Trammel"
   },
   {
     "count": 3,
     "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenQueen",
-        "probability": 100
-      },
-      {
-        "maxCount": 2,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
+      { "maxCount": 1, "name": "RedSolenQueen", "probability": 100 },
+      { "maxCount": 2, "name": "RedSolenWorker", "probability": 100 }
     ],
     "homeRange": 8,
     "walkingRange": 8,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5874,
-    "y": 1798,
-    "z": 0
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "RedSolenWarrior", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 25,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5830,
-    "y": 1862,
-    "z": 3
+    "location": [5830, 1862, 3],
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "RedSolenWorker", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 15,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5819,
-    "y": 1973,
-    "z": 3
+    "location": [5819, 1973, 3],
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "AntLion",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "AntLion", "probability": 100 }],
     "homeRange": 7,
     "walkingRange": 9,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5783,
-    "y": 2021,
-    "z": -14
+    "location": [5783, 2021, -14],
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "RedSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 15,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5699,
-    "y": 2025,
-    "z": 4
+    "location": [5699, 2025, 4],
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "RedSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 8,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5832,
-    "y": 1803,
-    "z": 0
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "RedSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "RedSolenWarrior", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 12,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5793,
-    "y": 1855,
-    "z": 2
+    "location": [5793, 1855, 2],
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "RedSolenWarrior", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 20,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5860,
-    "y": 1959,
-    "z": 2
+    "location": [5860, 1959, 2],
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "RedSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "RedSolenWarrior", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 15,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5698,
-    "y": 1894,
-    "z": 1
+    "location": [5698, 1894, 1],
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "AntLion",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "AntLion", "probability": 100 }],
     "homeRange": 15,
     "walkingRange": 25,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5887,
-    "y": 1840,
-    "z": -18
+    "location": [5887, 1840, -18],
+    "map": "Trammel"
   },
   {
     "count": 3,
-    "entries": [
-      {
-        "maxCount": 3,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 3, "name": "RedSolenWorker", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 25,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5914,
-    "y": 1991,
-    "z": 4
+    "location": [5914, 1991, 4],
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "RedSolenWarrior", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5657,
-    "y": 1989,
-    "z": 1
+    "location": [5657, 1989, 1],
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "RedSolenWorker", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 12,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5813,
-    "y": 1945,
-    "z": 2
+    "location": [5813, 1945, 2],
+    "map": "Trammel"
   },
   {
     "count": 2,
     "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenWarrior",
-        "probability": 100
-      },
-      {
-        "maxCount": 1,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
+      { "maxCount": 1, "name": "RedSolenWarrior", "probability": 100 },
+      { "maxCount": 1, "name": "RedSolenWorker", "probability": 100 }
     ],
     "homeRange": 10,
     "walkingRange": 20,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5788,
-    "y": 1796,
-    "z": 1
+    "location": [5788, 1796, 1],
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "Beetle",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "Beetle", "probability": 100 }],
     "homeRange": 12,
     "walkingRange": 15,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5836,
-    "y": 1994,
-    "z": 0
+    "map": "Trammel"
   },
   {
     "count": 3,
     "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenQueen",
-        "probability": 100
-      },
-      {
-        "maxCount": 2,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
+      { "maxCount": 1, "name": "RedSolenQueen", "probability": 100 },
+      { "maxCount": 2, "name": "RedSolenWorker", "probability": 100 }
     ],
     "homeRange": 16,
     "walkingRange": 14,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5665,
-    "y": 1869,
-    "z": 10
+    "location": [5665, 1869, 10],
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "RedSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5718,
-    "y": 1819,
-    "z": 3
+    "location": [5718, 1819, 3],
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "RedSolenWorker", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 8,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5919,
-    "y": 1833,
-    "z": 1
+    "location": [5919, 1833, 1],
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "RedSolenWarrior", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5721,
-    "y": 1993,
-    "z": 0
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "RedSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5708,
-    "y": 1800,
-    "z": 2
+    "location": [5708, 1800, 2],
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "RedSolenWarrior", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 15,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5860,
-    "y": 1979,
-    "z": 4
+    "location": [5860, 1979, 4],
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "Beetle",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "Beetle", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 15,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5831,
-    "y": 1910,
-    "z": 3
+    "location": [5831, 1910, 3],
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "RedSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "RedSolenWarrior", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 12,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5725,
-    "y": 1915,
-    "z": 5
+    "location": [5725, 1915, 5],
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedAmbitiousSolenQueen",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "RedAmbitiousSolenQueen", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 20,
-    "map": 1,
     "maxDelay": "00:00:05",
     "minDelay": "00:00:01",
-    "x": 5790,
-    "y": 1985,
-    "z": 5
+    "location": [5790, 1985, 5],
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "RedSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "RedSolenWarrior", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 25,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5835,
-    "y": 1936,
-    "z": 0
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenMatriarch",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "RedSolenMatriarch", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 20,
-    "map": 1,
     "maxDelay": "00:00:05",
     "minDelay": "00:00:01",
-    "x": 5775,
-    "y": 1897,
-    "z": 22
+    "location": [5775, 1897, 22],
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "AntLion",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "AntLion", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 12,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5885,
-    "y": 1920,
-    "z": -17
+    "location": [5885, 1920, -17],
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "RedSolenWarrior", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5707,
-    "y": 1874,
-    "z": 0
+    "map": "Trammel"
   },
   {
     "count": 2,
-    "entries": [
-      {
-        "maxCount": 2,
-        "name": "DreadSpider",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 2, "name": "DreadSpider", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 20,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5770,
-    "y": 1956,
-    "z": 1
+    "location": [5770, 1956, 1],
+    "map": "Trammel"
   },
   {
     "count": 3,
-    "entries": [
-      {
-        "maxCount": 3,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 3, "name": "RedSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5847,
-    "y": 2020,
-    "z": 10
+    "location": [5847, 2020, 10],
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenWorker",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "RedSolenWorker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 8,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5657,
-    "y": 1824,
-    "z": 1
+    "location": [5657, 1824, 1],
+    "map": "Trammel"
   },
   {
     "count": 1,
-    "entries": [
-      {
-        "maxCount": 1,
-        "name": "RedSolenWarrior",
-        "probability": 100
-      }
-    ],
+    "entries": [{ "maxCount": 1, "name": "RedSolenWarrior", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
-    "map": 1,
     "maxDelay": "00:03:00",
     "minDelay": "00:00:01",
-    "x": 5684,
-    "y": 1985,
-    "z": 3
+    "location": [5684, 1985, 3],
+    "map": "Trammel"
   }
 ]

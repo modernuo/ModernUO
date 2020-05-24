@@ -7,7 +7,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1135, 1791, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -17,7 +17,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1199, 1823, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -27,7 +27,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1231, 1887, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -37,7 +37,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1215, 1723, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -47,7 +47,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1231, 1723, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -57,7 +57,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1183, 1683, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -67,7 +67,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1199, 1683, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -77,7 +77,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1120, 1624, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -87,7 +87,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1152, 1576, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -97,7 +97,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1216, 1604, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -107,7 +107,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1232, 1604, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -117,7 +117,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [675, 939, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -127,7 +127,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [675, 1179, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -137,7 +137,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [571, 1099, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -147,7 +147,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [567, 1239, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -157,7 +157,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [375, 1191, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -167,7 +167,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [4567, 1475, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -177,7 +177,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [813, 2163, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -187,7 +187,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [823, 2254, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -197,7 +197,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [823, 2264, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -207,7 +207,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [823, 2264, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -217,7 +217,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [823, 2274, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -227,7 +227,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [843, 2352, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -237,7 +237,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [823, 2355, 0],
-    "map": 0
+    "map": "Felucca"
   },
   {
     "type": "RegionSpawner",
@@ -246,7 +246,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [6506, 83, -4],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -256,7 +256,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1135, 1791, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -266,7 +266,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1199, 1823, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -276,7 +276,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1231, 1887, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -286,7 +286,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1215, 1723, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -296,7 +296,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1231, 1723, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -306,7 +306,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1183, 1683, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -316,7 +316,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1199, 1683, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -326,7 +326,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1120, 1624, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -336,7 +336,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1152, 1576, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -346,7 +346,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1216, 1604, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -356,7 +356,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [1232, 1604, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -366,7 +366,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [675, 939, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -376,7 +376,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [675, 1179, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -386,7 +386,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [571, 1099, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -396,7 +396,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [567, 1239, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -406,7 +406,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [375, 1191, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -416,7 +416,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [4567, 1475, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -426,7 +426,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [813, 2163, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -436,7 +436,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [823, 2254, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -446,7 +446,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [823, 2264, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -456,7 +456,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [823, 2264, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -466,7 +466,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [823, 2274, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -476,7 +476,7 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [843, 2352, 0],
-    "map": 1
+    "map": "Trammel"
   },
   {
     "type": "RegionSpawner",
@@ -486,6 +486,6 @@
     "minDelay": "00:00:10",
     "maxDelay": "00:00:30",
     "location": [823, 2355, 0],
-    "map": 1
+    "map": "Trammel"
   }
 ]
