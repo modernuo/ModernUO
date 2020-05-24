@@ -357,9 +357,6 @@ namespace Server
       Console.WriteLine("Core: High resolution timing ({0})",
         Stopwatch.IsHighResolution ? "Supported" : "Unsupported");
 
-      Console.WriteLine("SecureRandomImpl: {0} ({1})", SecureRandomImpl.Name,
-        SecureRandomImpl.IsHardwareRNG ? "Hardware" : "Software");
-
       ServerConfiguration.Load();
 
       // Load UOContent.dll

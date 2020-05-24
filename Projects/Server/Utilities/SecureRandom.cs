@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: Random.cs - Created: 2019/12/30 - Updated: 2019/01/05           *
+ * File: Random.cs - Created: 2019/12/30 - Updated: 2020/05/23           *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -23,49 +23,18 @@ using System.Security.Cryptography;
 
 namespace Server
 {
-  /// <summary>
-  ///   Handles random number generation.
-  /// </summary>
-  public static class RandomImpl
+  public class SecureRandom : RandomNumberGenerator, IRandomProvider
   {
-    private static readonly Xoshiro256PlusPlus _Random = new Xoshiro256PlusPlus();
+    private readonly RandomNumberGenerator m_Random = new RNGCryptoServiceProvider();
 
-    public static uint Next(uint c) => _Random.Next(c);
+    public override void GetBytes(byte[] data) => m_Random.GetBytes(data);
 
-    public static bool NextBool() => _Random.NextBool();
+    public override void GetBytes(Span<byte> data) => m_Random.GetBytes(data);
 
-    public static void GetBytes(Span<byte> b) => _Random.GetBytes(b);
+    public uint Next(uint c) => throw new NotImplementedException();
 
-    public static double NextDouble() => _Random.NextDouble();
-  }
+    public bool NextBool() => throw new NotImplementedException();
 
-  public static class SecureRandomImpl
-  {
-    public static readonly RandomNumberGenerator _Random;
-
-    static SecureRandomImpl()
-    {
-      try
-      {
-        _Random = new DRng64();
-        if (_Random is IHardwareRNG rng && rng?.IsSupported() != true)
-          _Random = new RNGCryptoServiceProvider();
-      }
-      catch (Exception)
-      {
-        _Random = new RNGCryptoServiceProvider();
-      }
-    }
-
-    public static bool IsHardwareRNG => _Random is IHardwareRNG;
-
-    public static string Name => _Random.GetType().Name;
-
-    public static void GetBytes(Span<byte> buffer) => _Random.GetBytes(buffer);
-  }
-
-  public interface IHardwareRNG
-  {
-    bool IsSupported();
+    public double NextDouble() => throw new NotImplementedException();
   }
 }
