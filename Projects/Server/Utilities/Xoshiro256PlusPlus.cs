@@ -3,7 +3,7 @@
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: Xoshiro256PlusPlus.cs                                           *
- * Created: 2019/12/29 - Updated: 2019/12/30                             *
+ * Created: 2019/12/29 - Updated: 2020/05/24                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -22,10 +22,11 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Server.Utilities;
 
 namespace Server
 {
-  public class Xoshiro256PlusPlus : RandomNumberGenerator
+  public class Xoshiro256PlusPlus : RandomNumberGenerator, IRandomProvider
   {
     private ulong _s0, _s1, _s2, _s3;
 
