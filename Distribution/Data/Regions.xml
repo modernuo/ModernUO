@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ServerRegions>
   <Facet name="Felucca">
-    <region type="GuardedRegion" priority="50" name="Moongates">
+    <region typeName="GuardedRegion" priority="50" name="Moongates">
       <!-- britain -->
       <rect x="1330" y="1991" width="13" height="13" />
       <!-- jhelom -->
@@ -20,34 +20,34 @@
       <rect x="3554" y="2132" width="18" height="18" />
     </region>
     <!--Mondain's Legacy-->
-    <region type="TownRegion" priority="50" name="Heartwood">
+    <region typeName="TownRegion" priority="50" name="Heartwood">
       <rect x="6911" y="255" width="257" height="257" />
       <go x="6984" y="337" z="0" />
       <entrance x="535" y="995" />
       <music name="ElfCity" />
     </region>
-    <region type="MondainRegion" priority="50" name="Sanctuary">
+    <region typeName="MondainRegion" priority="50" name="Sanctuary">
       <rect x="6157" y="4" width="242" height="251" />
       <go x="6173" y="23" z="0" />
       <entrance x="764" y="1646" />
       <music name="Dungeon9" />
     </region>
-    <region type="MondainRegion" priority="50" name="Painted Caves">
+    <region typeName="MondainRegion" priority="50" name="Painted Caves">
       <rect x="6240" y="860" width="70" height="60" />
       <go x="6308" y="892" z="-1" />
       <entrance x="1716" y="892" />
       <music name="Dungeon9" />
     </region>
-    <region type="MondainRegion" priority="50" name="Prism of Light">
+    <region typeName="MondainRegion" priority="50" name="Prism of Light">
       <rect x="6400" y="0" width="221" height="255" />
       <go x="6474" y="188" z="0" />
       <entrance x="3784" y="1097" />
       <music name="Dungeon9" />
-      <region type="CrystalField">
+      <region typeName="CrystalField">
         <rect x="6506" y="83" width="7" height="7" />
         <zrange min="-4" />
       </region>
-      <region type="IcyRiver">
+      <region typeName="IcyRiver">
         <rect x="6576" y="73" width="10" height="31" />
         <rect x="6572" y="83" width="4" height="21" />
         <rect x="6567" y="90" width="5" height="16" />
@@ -58,22 +58,22 @@
         <zrange min="0" />
       </region>
     </region>
-    <region type="MondainRegion" priority="50" name="Blighted Grove">
+    <region typeName="MondainRegion" priority="50" name="Blighted Grove">
       <rect x="6440" y="820" width="160" height="150" />
       <go x="6478" y="863" z="11" />
       <entrance x="587" y="1641" />
       <music name="MelisandesLair" />
-      <region type="PoisonedTree">
+      <region typeName="PoisonedTree">
         <rect x="6570" y="860" width="30" height="30" />
         <zrange min="0" />
       </region>
     </region>
-    <region type="MondainRegion" priority="50" name="Palace of Paroxysmus">
+    <region typeName="MondainRegion" priority="50" name="Palace of Paroxysmus">
       <rect x="6191" y="311" width="370" height="360" />
       <go x="6222" y="335" z="60" />
       <entrance x="5574" y="3024" />
       <music name="ParoxysmusLair" />
-      <region type="AcidRiver">
+      <region typeName="AcidRiver">
         <rect x="6214" y="340" width="11" height="4" />
         <rect x="6215" y="337" width="5" height="10" />
         <rect x="6216" y="335" width="3" height="13" />
@@ -235,11 +235,11 @@
         <rect x="6528" y="504" width="4" height="1" />
         <zrange min="-50" />
       </region>
-      <region type="TheLostCityEntry">
+      <region typeName="TheLostCityEntry">
         <rect x="6316" y="472" width="8" height="8" />
         <rect x="6303" y="509" width="11" height="7" />
       </region>
-      <region type="ParoxysmusBossEntry">
+      <region typeName="ParoxysmusBossEntry">
         <rect x="6516" y="493" width="5" height="7" />
       </region>
     </region>
@@ -247,13 +247,13 @@
       <rect x="1595" y="550" width="120" height="120" />
     </region>
     <!--End-->
-    <region type="TownRegion" priority="50" name="Cove">
+    <region typeName="TownRegion" priority="50" name="Cove">
       <rect x="2200" y="1110" width="50" height="50" />
       <rect x="2200" y="1160" width="86" height="86" />
       <go x="2275" y="1210" z="0" />
       <music name="Cove" />
     </region>
-    <region type="TownRegion" priority="50" name="Britain">
+    <region typeName="TownRegion" priority="50" name="Britain">
       <rect x="1416" y="1498" width="324" height="279" zmin="-10" />
       <rect x="1385" y="1538" width="31" height="239" zmin="-10" />
       <rect x="1416" y="1777" width="324" height="60" />
@@ -289,91 +289,91 @@
         <rect x="1120" y="1776" width="32" height="32" />
         <go x="1135" y="1791" z="0" />
         <spawning>
-          <object id="413" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="413" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Wheatfield in Britain 2">
         <rect x="1184" y="1808" width="32" height="32" />
         <go x="1199" y="1823" z="0" />
         <spawning>
-          <object id="414" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="414" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Wheatfield in Britain 3">
         <rect x="1216" y="1872" width="32" height="32" />
         <go x="1231" y="1887" z="0" />
         <spawning>
-          <object id="415" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="415" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Carrot Field in Britain 1">
         <rect x="1208" y="1712" width="16" height="24" />
         <go x="1215" y="1723" z="0" />
         <spawning>
-          <object id="416" type="FarmableCarrot" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="416" typeName="FarmableCarrot" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="An Onion Field in Britain 1">
         <rect x="1224" y="1712" width="16" height="24" />
         <go x="1231" y="1723" z="0" />
         <spawning>
-          <object id="417" type="FarmableOnion" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="417" typeName="FarmableOnion" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Cabbage Field in Britain 1">
         <rect x="1176" y="1672" width="16" height="23" />
         <go x="1183" y="1683" z="0" />
         <spawning>
-          <object id="418" type="FarmableCabbage" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="418" typeName="FarmableCabbage" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Turnip Field in Britain 1">
         <rect x="1192" y="1672" width="16" height="24" />
         <go x="1199" y="1683" z="0" />
         <spawning>
-          <object id="419" type="FarmableTurnip" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="419" typeName="FarmableTurnip" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Wheatfield in Britain 4">
         <rect x="1104" y="1608" width="32" height="32" />
         <go x="1120" y="1624" z="0" />
         <spawning>
-          <object id="420" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="420" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Wheatfield in Britain 5">
         <rect x="1136" y="1560" width="32" height="32" />
         <go x="1152" y="1576" z="0" />
         <spawning>
-          <object id="421" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="421" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Turnip Field in Britain 2">
         <rect x="1208" y="1592" width="16" height="24" />
         <go x="1216" y="1604" z="0" />
         <spawning>
-          <object id="422" type="FarmableTurnip" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+          <object id="422" typeName="FarmableTurnip" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
         </spawning>
       </region>
       <region name="A Carrot Field in Britain 2">
         <rect x="1224" y="1592" width="16" height="24" />
         <go x="1232" y="1604" z="0" />
         <spawning>
-          <object id="423" type="FarmableCarrot" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+          <object id="423" typeName="FarmableCarrot" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
         </spawning>
       </region>
     </region>
-    <region type="NoHousingRegion" priority="50" name="Britain Graveyard">
+    <region typeName="NoHousingRegion" priority="50" name="Britain Graveyard">
       <rect x="1333" y="1441" width="84" height="82" />
       <go x="1384" y="1492" z="10" />
     </region>
-    <region type="NoHousingRegion" priority="50" name="Jhelom Islands">
+    <region typeName="NoHousingRegion" priority="50" name="Jhelom Islands">
       <rect x="1111" y="3567" width="33" height="21" />
       <rect x="1078" y="3588" width="124" height="121" />
       <rect x="1224" y="3592" width="309" height="473" />
       <go x="1383" y="3815" z="0" />
       <music name="Jhelom" />
-      <region type="TownRegion" name="Jhelom">
+      <region typeName="TownRegion" name="Jhelom">
         <rect x="1303" y="3670" width="189" height="225" />
         <rect x="1338" y="3895" width="74" height="28" />
         <rect x="1383" y="3951" width="109" height="94" />
@@ -390,7 +390,7 @@
         </region>
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Minoc">
+    <region typeName="TownRegion" priority="50" name="Minoc">
       <rect x="2411" y="366" width="135" height="241" />
       <rect x="2548" y="495" width="72" height="55" />
       <rect x="2564" y="585" width="3" height="42" />
@@ -405,7 +405,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Ocllo">
+    <region typeName="TownRegion" priority="50" name="Ocllo">
       <rect x="3587" y="2456" width="119" height="99" />
       <rect x="3706" y="2460" width="2" height="95" />
       <rect x="3587" y="2555" width="106" height="73" />
@@ -423,7 +423,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Trinsic">
+    <region typeName="TownRegion" priority="50" name="Trinsic">
       <rect x="1856" y="2636" width="75" height="28" />
       <rect x="1816" y="2664" width="283" height="231" />
       <rect x="2099" y="2782" width="18" height="25" />
@@ -442,7 +442,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Vesper">
+    <region typeName="TownRegion" priority="50" name="Vesper">
       <rect x="2893" y="598" width="121" height="50" />
       <rect x="2816" y="648" width="249" height="365" />
       <rect x="2734" y="944" width="82" height="4" />
@@ -459,7 +459,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Yew">
+    <region typeName="TownRegion" priority="50" name="Yew">
       <rect x="92" y="656" width="349" height="225" />
       <rect x="441" y="746" width="216" height="135" />
       <rect x="258" y="881" width="399" height="380" />
@@ -479,7 +479,7 @@
         <rect x="664" y="928" width="22" height="22" />
         <go x="675" y="939" z="0" />
         <spawning>
-          <object id="301" type="Sheep" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="10" />
+          <object id="301" typeName="Sheep" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="10" />
         </spawning>
       </region>
       <region name="A Field of Sheep in Yew 2">
@@ -487,7 +487,7 @@
         <rect x="664" y="1168" width="22" height="22" />
         <go x="675" y="1179" z="0" />
         <spawning>
-          <object id="302" type="Sheep" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="10" />
+          <object id="302" typeName="Sheep" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="10" />
         </spawning>
       </region>
       <region name="A Farm in Yew">
@@ -495,7 +495,7 @@
         <rect x="560" y="1088" width="22" height="22" />
         <go x="571" y="1099" z="0" />
         <spawning>
-          <object id="303" type="Sheep" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="10" />
+          <object id="303" typeName="Sheep" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="10" />
         </spawning>
       </region>
       <region name="A Wheatfield in Yew 1">
@@ -503,7 +503,7 @@
         <rect x="560" y="1232" width="16" height="16" />
         <go x="567" y="1239" z="0" />
         <spawning>
-          <object id="304" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="5" />
+          <object id="304" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="5" />
         </spawning>
       </region>
       <region name="A Wheatfield in Yew 2">
@@ -511,11 +511,11 @@
         <rect x="368" y="1176" width="14" height="32" />
         <go x="375" y="1191" z="0" />
         <spawning>
-          <object id="305" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+          <object id="305" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
         </spawning>
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Wind">
+    <region typeName="TownRegion" priority="50" name="Wind">
       <rect x="5294" y="19" width="72" height="120" />
       <rect x="5132" y="58" width="81" height="68" />
       <rect x="5197" y="126" width="55" height="78" />
@@ -540,7 +540,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Serpent's Hold">
+    <region typeName="TownRegion" priority="50" name="Serpent's Hold">
       <rect x="2868" y="3324" width="205" height="195" />
       <go x="3010" y="3371" z="15" />
       <music name="Serpents" />
@@ -553,7 +553,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Skara Brae">
+    <region typeName="TownRegion" priority="50" name="Skara Brae">
       <rect x="538" y="2107" width="150" height="190" />
       <go x="632" y="2233" z="0" />
       <music name="Skarabra" />
@@ -566,7 +566,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Nujel'm">
+    <region typeName="TownRegion" priority="50" name="Nujel'm">
       <rect x="3475" y="1000" width="360" height="435" />
       <go x="3732" y="1279" z="0" />
       <music name="Nujelm" />
@@ -589,7 +589,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Moonglow">
+    <region typeName="TownRegion" priority="50" name="Moonglow">
       <rect x="4535" y="844" width="20" height="3" />
       <rect x="4530" y="847" width="31" height="61" />
       <rect x="4521" y="914" width="56" height="49" />
@@ -628,7 +628,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="NewMaginciaRegion" priority="50" name="Magincia">
+    <region typeName="NewMaginciaRegion" priority="50" name="Magincia">
       <rect x="3632" y="2032" width="50" height="70" />
       <rect x="3624" y="2162" width="95" height="70" />
       <rect x="3752" y="2046" width="52" height="48" />
@@ -642,7 +642,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Buccaneer's Den">
+    <region typeName="TownRegion" priority="50" name="Buccaneer's Den">
       <rect x="2612" y="2057" width="164" height="210" />
       <rect x="2604" y="2065" width="8" height="189" zmin="0" />
       <go x="2706" y="2163" z="0" />
@@ -656,66 +656,66 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="DungeonRegion" priority="50" name="Covetous">
+    <region typeName="DungeonRegion" priority="50" name="Covetous">
       <rect x="5376" y="1793" width="201" height="255" />
       <rect x="5576" y="1791" width="57" height="257" />
       <go x="5456" y="1862" z="0" />
       <music name="Dungeon9" />
       <entrance x="2499" y="916" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Deceit">
+    <region typeName="DungeonRegion" priority="50" name="Deceit">
       <rect x="5122" y="518" width="248" height="252" />
       <go x="5187" y="635" z="0" />
       <music name="Dungeon9" />
       <entrance x="4111" y="429" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Despise">
+    <region typeName="DungeonRegion" priority="50" name="Despise">
       <rect x="5377" y="516" width="254" height="506" />
       <go x="5501" y="570" z="59" />
       <music name="Dungeon9" />
       <entrance x="1296" y="1082" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Destard">
+    <region typeName="DungeonRegion" priority="50" name="Destard">
       <rect x="5120" y="770" width="251" height="258" />
       <go x="5243" y="1004" z="0" />
       <music name="Dungeon9" />
       <entrance x="1176" y="2635" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Hythloth">
+    <region typeName="DungeonRegion" priority="50" name="Hythloth">
       <rect x="5898" y="2" width="238" height="244" />
       <go x="5905" y="22" z="44" />
       <music name="Dungeon9" />
       <entrance x="4722" y="3814" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Khaldun">
+    <region typeName="DungeonRegion" priority="50" name="Khaldun">
       <rect x="5381" y="1284" width="247" height="225" />
       <go x="5571" y="1302" z="0" />
       <music name="Dungeon9" />
       <entrance x="5882" y="3819" />
     </region>
-    <region type="Jail" priority="50" name="Jail">
+    <region typeName="Jail" priority="50" name="Jail">
       <rect x="5271" y="1159" width="41" height="33" />
       <go x="5275" y="1163" z="0" />
     </region>
-    <region type="GreenAcres" priority="1" name="Green Acres">
+    <region typeName="GreenAcres" priority="1" name="Green Acres">
       <rect x="5376" y="512" width="767" height="767" />
       <go x="5445" y="1153" z="0" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Shame">
+    <region typeName="DungeonRegion" priority="50" name="Shame">
       <rect x="5377" y="2" width="257" height="260" />
       <rect x="5635" y="2" width="260" height="124" />
       <go x="5395" y="126" z="0" />
       <music name="Dungeon9" />
       <entrance x="512" y="1559" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Wrong">
+    <region typeName="DungeonRegion" priority="50" name="Wrong">
       <rect x="5633" y="511" width="253" height="510" />
       <go x="5825" y="599" z="0" />
       <music name="Dungeon9" />
       <entrance x="2042" y="226" />
-      <region type="WrongLevel3">
+      <region typeName="WrongLevel3">
         <rect x="5687" y="623" width="33" height="44" />
-        <region type="WrongJail">
+        <region typeName="WrongJail">
           <rect x="5700" y="636" width="7" height="7" />
         </region>
       </region>
@@ -805,20 +805,20 @@
       <rect x="2456" y="907" width="19" height="34" />
       <go x="2445" y="880" z="0" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Terathan Keep">
+    <region typeName="DungeonRegion" priority="50" name="Terathan Keep">
       <rect x="5404" y="3099" width="77" height="68" />
       <rect x="5120" y="1530" width="254" height="258" />
       <go x="5451" y="3143" z="-60" />
       <music name="Dungeon9" />
       <entrance x="5426" y="3120" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Fire">
+    <region typeName="DungeonRegion" priority="50" name="Fire">
       <rect x="5635" y="1285" width="245" height="235" />
       <go x="5760" y="2908" z="15" />
       <music name="Dungeon9" />
       <entrance x="2922" y="3402" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Ice">
+    <region typeName="DungeonRegion" priority="50" name="Ice">
       <rect x="5668" y="130" width="220" height="138" />
       <rect x="5800" y="319" width="63" height="65" />
       <rect x="5654" y="300" width="54" height="40" />
@@ -826,13 +826,13 @@
       <music name="Dungeon9" />
       <entrance x="1996" y="80" />
     </region>
-    <region type="BlackthornDungeon" priority="50" name="BlackthornDungeon">
+    <region typeName="BlackthornDungeon" priority="50" name="BlackthornDungeon">
       <rect x="6151" y="2301" width="413" height="539" />
       <go x="6430" y="2678" z="0" />
       <entrance x="6430" y="2678" />
       <music name="Dungeon9" />
     </region>
-    <region type="TownRegion" priority="50" name="Delucia">
+    <region typeName="TownRegion" priority="50" name="Delucia">
       <rect x="5123" y="3942" width="192" height="122" />
       <rect x="5147" y="4064" width="125" height="20" />
       <rect x="5235" y="3930" width="80" height="12" />
@@ -842,7 +842,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Papua">
+    <region typeName="TownRegion" priority="50" name="Papua">
       <rect x="5639" y="3095" width="192" height="223" />
       <rect x="5831" y="3237" width="20" height="30" />
       <go x="5769" y="3176" z="0" />
@@ -851,33 +851,33 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="NoHousingRegion" priority="50" name="Wrong Entrance">
+    <region typeName="NoHousingRegion" priority="50" name="Wrong Entrance">
       <rect x="1939" y="215" width="134" height="137" />
       <go x="2043" y="236" z="13" />
       <music name="Mountn_a" />
     </region>
-    <region type="NoHousingRegion" priority="50" name="Covetous Entrance">
+    <region typeName="NoHousingRegion" priority="50" name="Covetous Entrance">
       <rect x="2433" y="846" width="128" height="128" />
       <go x="2499" y="918" z="0" />
       <music name="Vesper" />
     </region>
-    <region type="NoHousingRegion" priority="50" name="Despise Entrance">
+    <region typeName="NoHousingRegion" priority="50" name="Despise Entrance">
       <rect x="1289" y="1064" width="32" height="37" />
       <go x="1298" y="1081" z="0" />
     </region>
-    <region type="NoHousingRegion" priority="50" name="Despise Passage">
+    <region typeName="NoHousingRegion" priority="50" name="Despise Passage">
       <rect x="1338" y="1060" width="51" height="62" />
       <rect x="1354" y="1122" width="42" height="121" />
       <rect x="1349" y="1122" width="5" height="102" />
       <go x="1380" y="1114" z="0" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Misc Dungeons">
+    <region typeName="DungeonRegion" priority="50" name="Misc Dungeons">
       <rect x="5886" y="1281" width="257" height="254" />
       <go x="6032" y="1499" z="0" />
       <music name="Dungeon9" />
       <entrance x="1492" y="1641" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Orc Cave">
+    <region typeName="DungeonRegion" priority="50" name="Orc Cave">
       <rect x1="5281" y1="1283" x2="5373" y2="1386" />
       <rect x1="5267" y1="1955" x2="5364" y2="2046" />
       <rect x1="5127" y1="1941" x2="5164" y2="2024" />
@@ -891,7 +891,7 @@
       <rect x="4557" y="1471" width="20" height="10" />
       <go x="4567" y="1475" z="0" />
       <spawning>
-        <object id="300" type="FarmableCotton" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+        <object id="300" typeName="FarmableCotton" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
       </spawning>
     </region>
     <region priority="50" name="A Wheatfield in Skara Brae 1">
@@ -899,49 +899,49 @@
       <rect x="796" y="2152" width="36" height="24" />
       <go x="813" y="2163" z="0" />
       <spawning>
-        <object id="306" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="306" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
     <region priority="50" name="A Carrot Field in Skara Brae">
       <rect x="816" y="2251" width="16" height="8" />
       <go x="823" y="2254" z="0" />
       <spawning>
-        <object id="307" type="FarmableCarrot" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="307" typeName="FarmableCarrot" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
     <region priority="50" name="An Onion Field in Skara Brae">
       <rect x="816" y="2261" width="16" height="8" />
       <go x="823" y="2264" z="0" />
       <spawning>
-        <object id="308" type="FarmableOnion" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="308" typeName="FarmableOnion" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
     <region priority="50" name="A Cabbage Field in Skara Brae 1">
       <rect x="816" y="2271" width="16" height="8" />
       <go x="823" y="2264" z="0" />
       <spawning>
-        <object id="309" type="FarmableCabbage" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="309" typeName="FarmableCabbage" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
     <region priority="50" name="A Cabbage Field in Skara Brae 2">
       <rect x="816" y="2281" width="16" height="8" />
       <go x="823" y="2274" z="0" />
       <spawning>
-        <object id="310" type="FarmableCabbage" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="310" typeName="FarmableCabbage" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
     <region priority="50" name="A Wheatfield in Skara Brae 2">
       <rect x="835" y="2344" width="16" height="16" />
       <go x="843" y="2352" z="0" />
       <spawning>
-        <object id="311" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="311" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
     <region priority="50" name="A Cotton Field in Skara Brae">
       <rect x="816" y="2344" width="16" height="24" />
       <go x="823" y="2355" z="0" />
       <spawning>
-        <object id="312" type="FarmableCotton" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="312" typeName="FarmableCotton" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
     <region priority="50" name="Shrine of Compassion">
@@ -984,34 +984,34 @@
     <region priority="50" name="South Britannian Sea">
       <rect x="688" y="3700" width="1412" height="380" />
     </region>
-    <region type="MondainRegion" priority="50" name="Paroxysmus Exit">
+    <region typeName="MondainRegion" priority="50" name="Paroxysmus Exit">
       <rect x="5620" y="3032" width="10" height="10" />
       <go x="5623" y="3038" z="15" />
     </region>
-    <region type="MondainRegion" priority="50" name="Sanctuary Entrance">
+    <region typeName="MondainRegion" priority="50" name="Sanctuary Entrance">
       <rect x="759" y="1635" width="12" height="12" />
       <go x="762" y="1645" z="0" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Solen Hives">
+    <region typeName="DungeonRegion" priority="50" name="Solen Hives">
       <rect x="5640" y="1776" width="295" height="263" />
       <go x="5774" y="1896" z="20" />
     </region>
-    <region type="SeaMarketRegion" priority="50" name="Sea Market">
+    <region typeName="SeaMarketRegion" priority="50" name="Sea Market">
       <rect x="4529" y="2296" width="45" height="112" />
       <go x="4550" y="2317" z="-2" />
     </region>
   </Facet>
   <Facet name="Trammel">
-    <region type="DungeonRegion" priority="50" name="Khaldun">
+    <region typeName="DungeonRegion" priority="50" name="Khaldun">
       <rect x="5381" y="1284" width="247" height="225" />
       <go x="5571" y="1302" z="0" />
       <music name="Dungeon9" />
       <entrance x="5882" y="3819" />
     </region>
-    <region type="NoTravelSpellsAllowed" priority="50" name="Underwater World">
+    <region typeName="NoTravelSpellsAllowed" priority="50" name="Underwater World">
       <rect x="6251" y="1613" width="222" height="200" />
     </region>
-    <region type="GuardedRegion" priority="50" name="Moongates">
+    <region typeName="GuardedRegion" priority="50" name="Moongates">
       <!-- britain -->
       <rect x="1330" y="1991" width="13" height="13" />
       <!-- jhelom -->
@@ -1030,37 +1030,37 @@
       <rect x="3554" y="2132" width="18" height="18" />
     </region>
     <!--Mondain's Legacy-->
-    <region type="TownRegion" priority="50" name="Heartwood">
+    <region typeName="TownRegion" priority="50" name="Heartwood">
       <rect x="6911" y="255" width="257" height="257" />
       <go x="6984" y="337" z="0" />
       <entrance x="535" y="995" />
       <music name="ElfCity" />
     </region>
-    <region type="MondainRegion" priority="50" name="Sanctuary">
+    <region typeName="MondainRegion" priority="50" name="Sanctuary">
       <rect x="6157" y="4" width="242" height="251" />
       <go x="6173" y="23" z="0" />
       <entrance x="764" y="1646" />
       <music name="Dungeon9" />
     </region>
-    <region type="MondainRegion" priority="50" name="Painted Caves">
+    <region typeName="MondainRegion" priority="50" name="Painted Caves">
       <rect x="6240" y="860" width="70" height="60" />
       <go x="6308" y="892" z="-1" />
       <entrance x="1716" y="892" />
       <music name="Dungeon9" />
     </region>
-    <region type="MondainRegion" priority="50" name="Prism of Light">
+    <region typeName="MondainRegion" priority="50" name="Prism of Light">
       <rect x="6400" y="0" width="221" height="255" />
       <go x="6474" y="188" z="0" />
       <entrance x="3784" y="1097" />
       <music name="Dungeon9" />
-      <region type="CrystalField">
+      <region typeName="CrystalField">
         <rect x="6506" y="83" width="7" height="7" />
         <zrange min="-4" />
         <spawning>
-          <object id="1000" type="CrystalFieldTele" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="1" />
+          <object id="1000" typeName="CrystalFieldTele" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="1" />
         </spawning>
       </region>
-      <region type="IcyRiver">
+      <region typeName="IcyRiver">
         <rect x="6576" y="73" width="10" height="31" />
         <rect x="6572" y="83" width="4" height="21" />
         <rect x="6567" y="90" width="5" height="16" />
@@ -1071,22 +1071,22 @@
         <zrange min="0" />
       </region>
     </region>
-    <region type="MondainRegion" priority="50" name="Blighted Grove">
+    <region typeName="MondainRegion" priority="50" name="Blighted Grove">
       <rect x="6440" y="820" width="160" height="150" />
       <go x="6478" y="863" z="11" />
       <entrance x="587" y="1641" />
       <music name="MelisandesLair" />
-      <region type="PoisonedTree">
+      <region typeName="PoisonedTree">
         <rect x="6570" y="860" width="30" height="30" />
         <zrange min="0" />
       </region>
     </region>
-    <region type="MondainRegion" priority="50" name="Palace of Paroxysmus">
+    <region typeName="MondainRegion" priority="50" name="Palace of Paroxysmus">
       <rect x="6191" y="311" width="370" height="360" />
       <go x="6222" y="335" z="60" />
       <entrance x="5574" y="3024" />
       <music name="ParoxysmusLair" />
-      <region type="AcidRiver">
+      <region typeName="AcidRiver">
         <rect x="6214" y="340" width="11" height="4" />
         <rect x="6215" y="337" width="5" height="10" />
         <rect x="6216" y="335" width="3" height="13" />
@@ -1248,11 +1248,11 @@
         <rect x="6528" y="504" width="4" height="1" />
         <zrange min="-50" />
       </region>
-      <region type="TheLostCityEntry">
+      <region typeName="TheLostCityEntry">
         <rect x="6316" y="472" width="8" height="8" />
         <rect x="6303" y="509" width="11" height="7" />
       </region>
-      <region type="ParoxysmusBossEntry">
+      <region typeName="ParoxysmusBossEntry">
         <rect x="6516" y="493" width="5" height="7" />
       </region>
     </region>
@@ -1263,14 +1263,14 @@
       <rect x="1595" y="550" width="120" height="120" />
     </region>
     <!--End-->
-    <region type="TownRegion" priority="50" name="Cove">
+    <region typeName="TownRegion" priority="50" name="Cove">
       <rect x="2200" y="1110" width="50" height="50" />
       <rect x="2200" y="1160" width="86" height="86" />
       <go x="2275" y="1210" z="0" />
       <music name="Cove" />
       <zrange min="0" />
     </region>
-    <region type="TownRegion" priority="50" name="Britain">
+    <region typeName="TownRegion" priority="50" name="Britain">
       <rect x="1416" y="1498" width="324" height="279" zmin="-10" />
       <rect x="1500" y="1408" width="46" height="90" />
       <rect x="1385" y="1538" width="31" height="239" zmin="-10" />
@@ -1296,7 +1296,7 @@
         <rect x="1560" y="1760" width="8" height="8" />
         <zrange min="0" />
         <logoutDelay active="false" />
-        <region type="CusteauPerronHouseRegion" name="Custeau Perron House">
+        <region typeName="CusteauPerronHouseRegion" name="Custeau Perron House">
           <rect x="1648" y="1544" width="8" height="8" />
         </region>
       </region>
@@ -1304,91 +1304,91 @@
         <rect x="1120" y="1776" width="32" height="32" />
         <go x="1135" y="1791" z="0" />
         <spawning>
-          <object id="313" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="313" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Wheatfield in Britain 2">
         <rect x="1184" y="1808" width="32" height="32" />
         <go x="1199" y="1823" z="0" />
         <spawning>
-          <object id="314" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="314" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Wheatfield in Britain 3">
         <rect x="1216" y="1872" width="32" height="32" />
         <go x="1231" y="1887" z="0" />
         <spawning>
-          <object id="315" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="315" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Carrot Field in Britain 1">
         <rect x="1208" y="1712" width="16" height="24" />
         <go x="1215" y="1723" z="0" />
         <spawning>
-          <object id="316" type="FarmableCarrot" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="316" typeName="FarmableCarrot" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="An Onion Field in Britain 1">
         <rect x="1224" y="1712" width="16" height="24" />
         <go x="1231" y="1723" z="0" />
         <spawning>
-          <object id="317" type="FarmableOnion" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="317" typeName="FarmableOnion" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Cabbage Field in Britain 1">
         <rect x="1176" y="1672" width="16" height="23" />
         <go x="1183" y="1683" z="0" />
         <spawning>
-          <object id="318" type="FarmableCabbage" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="318" typeName="FarmableCabbage" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Turnip Field in Britain 1">
         <rect x="1192" y="1672" width="16" height="24" />
         <go x="1199" y="1683" z="0" />
         <spawning>
-          <object id="319" type="FarmableTurnip" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="319" typeName="FarmableTurnip" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Wheatfield in Britain 4">
         <rect x="1104" y="1608" width="32" height="32" />
         <go x="1120" y="1624" z="0" />
         <spawning>
-          <object id="320" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="320" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Wheatfield in Britain 5">
         <rect x="1136" y="1560" width="32" height="32" />
         <go x="1152" y="1576" z="0" />
         <spawning>
-          <object id="321" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+          <object id="321" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
         </spawning>
       </region>
       <region name="A Turnip Field in Britain 2">
         <rect x="1208" y="1592" width="16" height="24" />
         <go x="1216" y="1604" z="0" />
         <spawning>
-          <object id="322" type="FarmableTurnip" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+          <object id="322" typeName="FarmableTurnip" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
         </spawning>
       </region>
       <region name="A Carrot Field in Britain 2">
         <rect x="1224" y="1592" width="16" height="24" />
         <go x="1232" y="1604" z="0" />
         <spawning>
-          <object id="323" type="FarmableCarrot" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+          <object id="323" typeName="FarmableCarrot" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
         </spawning>
       </region>
     </region>
-    <region type="NoHousingRegion" priority="50" name="Britain Graveyard">
+    <region typeName="NoHousingRegion" priority="50" name="Britain Graveyard">
       <rect x="1333" y="1441" width="84" height="82" />
       <go x="1384" y="1492" z="10" />
     </region>
-    <region type="NoHousingRegion" priority="50" name="Jhelom Islands">
+    <region typeName="NoHousingRegion" priority="50" name="Jhelom Islands">
       <rect x="1111" y="3567" width="33" height="21" />
       <rect x="1078" y="3588" width="124" height="121" />
       <rect x="1224" y="3592" width="309" height="473" />
       <go x="1383" y="3815" z="0" />
       <music name="Jhelom" />
-      <region type="TownRegion" name="Jhelom">
+      <region typeName="TownRegion" name="Jhelom">
         <rect x="1303" y="3670" width="189" height="225" />
         <rect x="1338" y="3895" width="74" height="28" />
         <rect x="1383" y="3951" width="109" height="94" />
@@ -1405,7 +1405,7 @@
         </region>
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Minoc">
+    <region typeName="TownRegion" priority="50" name="Minoc">
       <rect x="2411" y="366" width="135" height="241" />
       <rect x="2548" y="495" width="72" height="55" />
       <rect x="2564" y="585" width="3" height="42" />
@@ -1420,11 +1420,11 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="NoHousingRegion" priority="50" name="Haven Island">
+    <region typeName="NoHousingRegion" priority="50" name="Haven Island">
       <rect x="3314" y="2345" width="500" height="750" />
       <go x="3627" y="2606" z="0" />
       <smartNoHousing active="true" />
-      <region type="ApprenticeRegion" name="Enhanced Tracking Skill">
+      <region typeName="ApprenticeRegion" name="Enhanced Tracking Skill">
         <rect x="3314" y="2345" width="500" height="750" />
         <region name="the New Haven Bard">
           <rect x="3410" y="2598" width="11" height="9" />
@@ -1436,16 +1436,16 @@
         <region name="the New Haven Farm">
           <rect x="3703" y="2567" width="40" height="110" />
         </region>
-        <region type="ApprenticeRegion" name="Old Haven Training">
+        <region typeName="ApprenticeRegion" name="Old Haven Training">
           <rect x="3589" y="2443" width="115" height="100" />
         </region>
-        <region type="ApprenticeRegion" name="Haven Mountains">
+        <region typeName="ApprenticeRegion" name="Haven Mountains">
           <rect x="3426" y="2732" width="110" height="50" />
         </region>
-        <region type="GuardedRegion" name="Haven Moongate">
+        <region typeName="GuardedRegion" name="Haven Moongate">
           <rect x="3755" y="2763" width="17" height="13" />
         </region>
-        <region type="TownRegion" name="New Haven">
+        <region typeName="TownRegion" name="New Haven">
           <rune name="New Haven City" />
           <rect x="3423" y="2480" width="111" height="143" />
           <go x="3503" y="2574" z="14" />
@@ -1482,22 +1482,22 @@
           <region name="the New Haven Bank">
             <rect x="3479" y="2565" width="13" height="15" />
           </region>
-          <region type="ApprenticeRegion" name="Springs And Things Workshop">
+          <region typeName="ApprenticeRegion" name="Springs And Things Workshop">
             <rect x="3455" y="2523" width="9" height="10" />
           </region>
-          <region type="ApprenticeRegion" name="Haven Dojo">
+          <region typeName="ApprenticeRegion" name="Haven Dojo">
             <rect x="3415" y="2513" width="11" height="11" />
           </region>
-          <region type="ApprenticeRegion" name="Gorge's Shop">
+          <region typeName="ApprenticeRegion" name="Gorge's Shop">
             <rect x="3465" y="2535" width="7" height="8" />
           </region>
-          <region type="ApprenticeRegion" name="Haven Library">
+          <region typeName="ApprenticeRegion" name="Haven Library">
             <rect x="3464" y="2488" width="16" height="11" />
           </region>
         </region>
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Trinsic">
+    <region typeName="TownRegion" priority="50" name="Trinsic">
       <rect x="1856" y="2636" width="75" height="28" />
       <rect x="1816" y="2664" width="283" height="231" />
       <rect x="2099" y="2782" width="18" height="25" />
@@ -1516,7 +1516,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Vesper">
+    <region typeName="TownRegion" priority="50" name="Vesper">
       <rect x="2893" y="598" width="121" height="50" />
       <rect x="2816" y="648" width="249" height="365" />
       <rect x="2734" y="944" width="82" height="4" />
@@ -1533,7 +1533,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Yew">
+    <region typeName="TownRegion" priority="50" name="Yew">
       <rect x="92" y="656" width="349" height="225" />
       <rect x="441" y="746" width="216" height="135" />
       <rect x="258" y="881" width="399" height="380" />
@@ -1553,7 +1553,7 @@
         <rect x="664" y="928" width="22" height="22" />
         <go x="675" y="939" z="0" />
         <spawning>
-          <object id="401" type="Sheep" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="10" />
+          <object id="401" typeName="Sheep" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="10" />
         </spawning>
       </region>
       <region name="A Field of Sheep in Yew 2">
@@ -1561,7 +1561,7 @@
         <rect x="664" y="1168" width="22" height="22" />
         <go x="675" y="1179" z="0" />
         <spawning>
-          <object id="402" type="Sheep" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="10" />
+          <object id="402" typeName="Sheep" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="10" />
         </spawning>
       </region>
       <region name="A Farm in Yew">
@@ -1569,7 +1569,7 @@
         <rect x="560" y="1088" width="22" height="22" />
         <go x="571" y="1099" z="0" />
         <spawning>
-          <object id="403" type="Sheep" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="10" />
+          <object id="403" typeName="Sheep" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="10" />
         </spawning>
       </region>
       <region name="A Wheatfield in Yew 1">
@@ -1577,7 +1577,7 @@
         <rect x="560" y="1232" width="16" height="16" />
         <go x="567" y="1239" z="0" />
         <spawning>
-          <object id="404" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="5" />
+          <object id="404" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="5" />
         </spawning>
       </region>
       <region name="A Wheatfield in Yew 2">
@@ -1585,11 +1585,11 @@
         <rect x="368" y="1176" width="14" height="32" />
         <go x="375" y="1191" z="0" />
         <spawning>
-          <object id="405" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+          <object id="405" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
         </spawning>
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Wind">
+    <region typeName="TownRegion" priority="50" name="Wind">
       <rect x="5294" y="19" width="72" height="120" />
       <rect x="5132" y="58" width="81" height="68" />
       <rect x="5197" y="126" width="55" height="78" />
@@ -1614,7 +1614,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Serpent's Hold">
+    <region typeName="TownRegion" priority="50" name="Serpent's Hold">
       <rect x="2868" y="3324" width="205" height="195" />
       <go x="3010" y="3371" z="15" />
       <music name="Serpents" />
@@ -1627,7 +1627,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Skara Brae">
+    <region typeName="TownRegion" priority="50" name="Skara Brae">
       <rect x="538" y="2107" width="150" height="190" />
       <go x="632" y="2233" z="0" />
       <music name="Skarabra" />
@@ -1640,7 +1640,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Nujel'm">
+    <region typeName="TownRegion" priority="50" name="Nujel'm">
       <rect x="3475" y="1000" width="360" height="435" />
       <go x="3732" y="1279" z="0" />
       <music name="Nujelm" />
@@ -1663,7 +1663,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Moonglow">
+    <region typeName="TownRegion" priority="50" name="Moonglow">
       <rect x="4535" y="844" width="20" height="3" />
       <rect x="4530" y="847" width="31" height="61" />
       <rect x="4521" y="914" width="56" height="49" />
@@ -1702,7 +1702,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="NewMaginciaRegion" priority="50" name="Magincia">
+    <region typeName="NewMaginciaRegion" priority="50" name="Magincia">
       <rect x="3632" y="2032" width="50" height="70" />
       <rect x="3624" y="2162" width="95" height="70" />
       <rect x="3752" y="2046" width="52" height="48" />
@@ -1716,7 +1716,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Buccaneer's Den">
+    <region typeName="TownRegion" priority="50" name="Buccaneer's Den">
       <rect x="2612" y="2057" width="164" height="210" />
       <rect x="2604" y="2065" width="8" height="189" zmin="0" />
       <go x="2706" y="2163" z="0" />
@@ -1730,63 +1730,63 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="DungeonRegion" priority="50" name="Covetous">
+    <region typeName="DungeonRegion" priority="50" name="Covetous">
       <rect x="5376" y="1793" width="201" height="255" />
       <rect x="5576" y="1791" width="57" height="257" />
       <go x="5456" y="1862" z="0" />
       <entrance x="2499" y="916" />
       <music name="Dungeon9" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Deceit">
+    <region typeName="DungeonRegion" priority="50" name="Deceit">
       <rect x="5122" y="518" width="248" height="252" />
       <go x="5187" y="635" z="0" />
       <entrance x="4111" y="429" />
       <music name="Dungeon9" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Despise">
+    <region typeName="DungeonRegion" priority="50" name="Despise">
       <rect x="5377" y="516" width="254" height="506" />
       <go x="5501" y="570" z="59" />
       <entrance x="1296" y="1082" />
       <music name="Dungeon9" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Destard">
+    <region typeName="DungeonRegion" priority="50" name="Destard">
       <rect x="5120" y="770" width="251" height="258" />
       <go x="5243" y="1004" z="0" />
       <entrance x="1176" y="2635" />
       <music name="Dungeon9" />
-      <region type="ExploringDeepCreaturesRegion" name="Obsidian Wyvern">
+      <region typeName="ExploringDeepCreaturesRegion" name="Obsidian Wyvern">
         <rect x="5133" y="959" width="10" height="12" />
       </region>
     </region>
-    <region type="DungeonRegion" priority="50" name="Hythloth">
+    <region typeName="DungeonRegion" priority="50" name="Hythloth">
       <rect x="5898" y="2" width="238" height="244" />
       <go x="5905" y="22" z="44" />
       <entrance x="4722" y="3814" />
       <music name="Dungeon9" />
     </region>
-    <region type="Jail" priority="50" name="Jail">
+    <region typeName="Jail" priority="50" name="Jail">
       <rect x="5271" y="1159" width="41" height="33" />
       <go x="5275" y="1163" z="0" />
     </region>
-    <region type="GreenAcres" priority="1" name="Green Acres">
+    <region typeName="GreenAcres" priority="1" name="Green Acres">
       <rect x="5376" y="512" width="767" height="767" />
       <go x="5445" y="1153" z="0" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Shame">
+    <region typeName="DungeonRegion" priority="50" name="Shame">
       <rect x="5377" y="2" width="257" height="260" />
       <rect x="5635" y="2" width="260" height="124" />
       <go x="5395" y="126" z="0" />
       <entrance x="512" y="1559" />
       <music name="Dungeon9" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Wrong">
+    <region typeName="DungeonRegion" priority="50" name="Wrong">
       <rect x="5633" y="511" width="253" height="510" />
       <go x="5825" y="599" z="0" />
       <entrance x="2042" y="226" />
       <music name="Dungeon9" />
-      <region type="WrongLevel3">
+      <region typeName="WrongLevel3">
         <rect x="5687" y="623" width="33" height="44" />
-        <region type="WrongJail">
+        <region typeName="WrongJail">
           <rect x="5700" y="636" width="7" height="7" />
         </region>
       </region>
@@ -1876,40 +1876,40 @@
       <rect x="2456" y="907" width="19" height="34" />
       <go x="2445" y="880" z="0" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Terathan Keep">
+    <region typeName="DungeonRegion" priority="50" name="Terathan Keep">
       <rect x="5404" y="3099" width="77" height="68" />
       <rect x="5120" y="1530" width="254" height="258" />
       <go x="5451" y="3143" z="-60" />
       <entrance x="5426" y="3120" />
       <music name="Dungeon9" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Fire">
+    <region typeName="DungeonRegion" priority="50" name="Fire">
       <rect x="5635" y="1285" width="245" height="235" />
       <go x="5760" y="2908" z="15" />
       <entrance x="2922" y="3402" />
       <music name="Dungeon9" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Ice">
+    <region typeName="DungeonRegion" priority="50" name="Ice">
       <rect x="5668" y="130" width="220" height="138" />
       <rect x="5800" y="319" width="63" height="65" />
       <rect x="5654" y="300" width="54" height="40" />
       <go x="5210" y="2322" z="30" />
       <entrance x="1996" y="80" />
       <music name="Dungeon9" />
-      <region type="ExploringDeepCreaturesRegion" name="Ice Wyrm">
+      <region typeName="ExploringDeepCreaturesRegion" name="Ice Wyrm">
         <rect x="5799" y="232" width="15" height="15" />
       </region>
     </region>
-    <region type="ExploringDeepCreaturesRegion" name="Mercutio The Unsavory">
+    <region typeName="ExploringDeepCreaturesRegion" name="Mercutio The Unsavory">
       <rect x="2580" y="1112" width="8" height="13" />
     </region>
-    <region type="BlackthornDungeon" priority="50" name="BlackthornDungeon">
+    <region typeName="BlackthornDungeon" priority="50" name="BlackthornDungeon">
       <rect x="6151" y="2301" width="413" height="539" />
       <go x="6430" y="2678" z="0" />
       <entrance x="6430" y="2678" />
       <music name="Dungeon9" />
     </region>
-    <region type="BlackthornCastle" priority="51" name="Blackthorn Castle">
+    <region typeName="BlackthornCastle" priority="51" name="Blackthorn Castle">
       <rect x="1503" y="1377" width="79" height="120" />
       <rect x="1520" y="1482" width="6" height="23" />
       <rect x="1466" y="1407" width="40" height="88" />
@@ -1917,7 +1917,7 @@
       <entrance x="1522" y="1504" />
       <music name="LBCastle" />
     </region>
-    <region type="TownRegion" priority="50" name="Delucia">
+    <region typeName="TownRegion" priority="50" name="Delucia">
       <rect x="5123" y="3942" width="192" height="122" />
       <rect x="5147" y="4064" width="125" height="20" />
       <rect x="5235" y="3930" width="80" height="12" />
@@ -1927,7 +1927,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Papua">
+    <region typeName="TownRegion" priority="50" name="Papua">
       <rect x="5639" y="3095" width="192" height="223" />
       <rect x="5831" y="3237" width="20" height="30" />
       <go x="5769" y="3176" z="0" />
@@ -1936,40 +1936,40 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="NoHousingRegion" priority="50" name="Wrong Entrance">
+    <region typeName="NoHousingRegion" priority="50" name="Wrong Entrance">
       <rect x="1939" y="215" width="134" height="137" />
       <go x="2043" y="236" z="13" />
       <music name="Mountn_a" />
     </region>
-    <region type="NoHousingRegion" priority="50" name="Covetous Entrance">
+    <region typeName="NoHousingRegion" priority="50" name="Covetous Entrance">
       <rect x="2433" y="846" width="128" height="128" />
       <go x="2499" y="918" z="0" />
       <music name="Vesper" />
     </region>
-    <region type="NoHousingRegion" priority="50" name="Despise Entrance">
+    <region typeName="NoHousingRegion" priority="50" name="Despise Entrance">
       <rect x="1289" y="1064" width="32" height="37" />
       <go x="1298" y="1081" z="0" />
     </region>
-    <region type="NoHousingRegion" priority="50" name="Despise Passage">
+    <region typeName="NoHousingRegion" priority="50" name="Despise Passage">
       <rect x="1338" y="1060" width="51" height="62" />
       <rect x="1354" y="1122" width="42" height="121" />
       <rect x="1349" y="1122" width="5" height="102" />
       <go x="1380" y="1114" z="0" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Misc Dungeons">
+    <region typeName="DungeonRegion" priority="50" name="Misc Dungeons">
       <rect x="5886" y="1281" width="257" height="254" />
       <go x="6032" y="1499" z="0" />
       <entrance x="1492" y="1641" />
       <music name="Dungeon9" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Orc Cave">
+    <region typeName="DungeonRegion" priority="50" name="Orc Cave">
       <rect x1="5281" y1="1283" x2="5373" y2="1386" />
       <rect x1="5267" y1="1955" x2="5364" y2="2046" />
       <rect x1="5127" y1="1941" x2="5164" y2="2024" />
       <go x="5137" y="2015" z="0" />
       <music name="Dungeon9" />
       <entrance x="1014" y="1434" />
-      <region type="ExploringDeepCreaturesRegion" name="Orc Engineer">
+      <region typeName="ExploringDeepCreaturesRegion" name="Orc Engineer">
         <rect x="5308" y="1964" width="11" height="11" />
       </region>
     </region>
@@ -1978,7 +1978,7 @@
       <rect x="4557" y="1471" width="20" height="10" />
       <go x="4567" y="1475" z="0" />
       <spawning>
-        <object id="400" type="FarmableCotton" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
+        <object id="400" typeName="FarmableCotton" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="8" />
       </spawning>
     </region>
     <region priority="50" name="A Wheatfield in Skara Brae 1">
@@ -1986,52 +1986,52 @@
       <rect x="796" y="2152" width="36" height="24" />
       <go x="813" y="2163" z="0" />
       <spawning>
-        <object id="406" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="406" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
     <region priority="50" name="A Carrot Field in Skara Brae">
       <rect x="816" y="2251" width="16" height="8" />
       <go x="823" y="2254" z="0" />
       <spawning>
-        <object id="407" type="FarmableCarrot" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="407" typeName="FarmableCarrot" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
     <region priority="50" name="An Onion Field in Skara Brae">
       <rect x="816" y="2261" width="16" height="8" />
       <go x="823" y="2264" z="0" />
       <spawning>
-        <object id="408" type="FarmableOnion" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="408" typeName="FarmableOnion" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
     <region priority="50" name="A Cabbage Field in Skara Brae 1">
       <rect x="816" y="2271" width="16" height="8" />
       <go x="823" y="2264" z="0" />
       <spawning>
-        <object id="409" type="FarmableCabbage" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="409" typeName="FarmableCabbage" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
     <region priority="50" name="A Cabbage Field in Skara Brae 2">
       <rect x="816" y="2281" width="16" height="8" />
       <go x="823" y="2274" z="0" />
       <spawning>
-        <object id="410" type="FarmableCabbage" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="410" typeName="FarmableCabbage" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
     <region priority="50" name="A Wheatfield in Skara Brae 2">
       <rect x="835" y="2344" width="16" height="16" />
       <go x="843" y="2352" z="0" />
       <spawning>
-        <object id="411" type="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="411" typeName="FarmableWheat" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
     <region priority="50" name="A Cotton Field in Skara Brae">
       <rect x="816" y="2344" width="16" height="24" />
       <go x="823" y="2355" z="0" />
       <spawning>
-        <object id="412" type="FarmableCotton" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
+        <object id="412" typeName="FarmableCotton" minSpawnTime="PT10S" maxSpawnTime="PT30S" amount="6" />
       </spawning>
     </region>
-    <region type="NoHousingRegion" priority="50" name="FireIsleCasino">
+    <region typeName="NoHousingRegion" priority="50" name="FireIsleCasino">
       <rect x="4038" y="3303" width="60" height="64" />
       <go x="4047" y="3371" z="0" />
     </region>
@@ -2075,33 +2075,33 @@
     <region priority="50" name="South Britannian Sea">
       <rect x="688" y="3700" width="1412" height="380" />
     </region>
-    <region type="MondainRegion" priority="50" name="Paroxysmus Exit">
+    <region typeName="MondainRegion" priority="50" name="Paroxysmus Exit">
       <rect x="5620" y="3032" width="10" height="10" />
       <go x="5623" y="3038" z="15" />
     </region>
-    <region type="MondainRegion" priority="50" name="Sanctuary Entrance">
+    <region typeName="MondainRegion" priority="50" name="Sanctuary Entrance">
       <rect x="759" y="1635" width="12" height="12" />
       <go x="762" y="1645" z="0" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Solen Hives">
+    <region typeName="DungeonRegion" priority="50" name="Solen Hives">
       <rect x="5640" y="1776" width="295" height="263" />
       <go x="5774" y="1896" z="20" />
     </region>
-    <region type="SeaMarketRegion" priority="50" name="Sea Market">
+    <region typeName="SeaMarketRegion" priority="50" name="Sea Market">
       <rect x="4529" y="2296" width="45" height="112" />
       <go x="4550" y="2317" z="-2" />
     </region>
   </Facet>
   <Facet name="Ilshenar">
-    <region type="ExploringDeepCreaturesRegion" name="Djinn">
+    <region typeName="ExploringDeepCreaturesRegion" name="Djinn">
       <rect x="1724" y="508" width="18" height="22" />
     </region>
-    <region type="MondainRegion" priority="50" name="Twisted Weald">
+    <region typeName="MondainRegion" priority="50" name="Twisted Weald">
       <rect x="2107" y="1145" width="147" height="135" />
       <go x="2189" y="1253" z="0" />
       <entrance x="1450" y="1473" />
       <music name="DreadHornArea" />
-      <region type="TwistedWealdDesert" name="Twisted Weald Desert">
+      <region typeName="TwistedWealdDesert" name="Twisted Weald Desert">
         <rect x="2139" y="1187" width="13" height="7" />
         <rect x="2152" y="1164" width="38" height="30" />
         <rect x="2190" y="1164" width="35" height="48" />
@@ -2146,7 +2146,7 @@
       <rect x="528" y="376" width="96" height="88" />
       <go x="568" y="430" z="41" />
     </region>
-    <region type="VerLorRegCity" priority="50" name="Ver Lor Reg">
+    <region typeName="VerLorRegCity" priority="50" name="Ver Lor Reg">
       <rect x="824" y="552" width="32" height="176" />
       <rect x="752" y="576" width="72" height="128" />
       <rect x="856" y="576" width="48" height="128" />
@@ -2182,7 +2182,7 @@
       <rect x="1232" y="576" width="8" height="16" />
       <go x="1238" y="583" z="-19" />
     </region>
-    <region type="TownRegion" priority="41" name="Montor">
+    <region typeName="TownRegion" priority="41" name="Montor">
       <rect x="1576" y="272" width="144" height="96" />
       <rect x="1616" y="200" width="80" height="72" />
       <rect x="1696" y="144" width="40" height="128" />
@@ -2196,12 +2196,12 @@
       <rect x="1752" y="440" width="24" height="40" />
       <go x="1636" y="432" z="0" />
     </region>
-    <region type="TownRegion" priority="11" name="Ancient Citadel">
+    <region typeName="TownRegion" priority="11" name="Ancient Citadel">
       <rect x="1448" y="496" width="104" height="104" />
       <go x="1516" y="542" z="85" />
       <guards disabled="true" />
     </region>
-    <region type="TownRegion" priority="41" name="Alexandretta's Bowl">
+    <region typeName="TownRegion" priority="41" name="Alexandretta's Bowl">
       <rect x="1272" y="352" width="168" height="240" />
       <go x="1396" y="432" z="-17" />
       <guards disabled="true" />
@@ -2210,13 +2210,13 @@
       <rect x="1784" y="560" width="8" height="16" />
       <go x="1784" y="568" z="100" />
     </region>
-    <region type="DungeonRegion" priority="2" name="Rock Dungeon">
+    <region typeName="DungeonRegion" priority="2" name="Rock Dungeon">
       <rect x="2176" y="288" width="24" height="40" />
       <rect x="2088" y="8" width="160" height="176" />
       <go x="2187" y="316" z="-7" />
       <entrance x="1788" y="571" />
     </region>
-    <region type="TownRegion" priority="5" name="Lenmir Anfinmotas">
+    <region typeName="TownRegion" priority="5" name="Lenmir Anfinmotas">
       <rect x="1560" y="792" width="232" height="120" />
       <go x="1673" y="876" z="-25" />
       <guards disabled="true" />
@@ -2225,7 +2225,7 @@
       <rect x="1400" y="896" width="40" height="24" />
       <go x="1418" y="915" z="-19" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Spider Cave">
+    <region typeName="DungeonRegion" priority="50" name="Spider Cave">
       <rect x="1752" y="952" width="112" height="48" />
       <rect x="1480" y="864" width="48" height="32" />
       <go x="1785" y="991" z="-28" />
@@ -2239,7 +2239,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Reg Volon">
+    <region typeName="TownRegion" priority="50" name="Reg Volon">
       <rect x="1328" y="1008" width="80" height="112" />
       <go x="1363" y="1055" z="-13" />
       <guards disabled="true" />
@@ -2248,7 +2248,7 @@
       <rect x="1360" y="1030" width="6" height="4" />
       <go x="1363" y="1033" z="-8" />
     </region>
-    <region type="DungeonRegion" priority="2" name="Spectre Dungeon">
+    <region typeName="DungeonRegion" priority="2" name="Spectre Dungeon">
       <rect x="1936" y="1000" width="96" height="120" />
       <go x="1983" y="1107" z="-18" />
       <entrance x="1362" y="1031" />
@@ -2257,7 +2257,7 @@
       <rect x="1736" y="1224" width="24" height="16" />
       <go x="1747" y="1227" z="-1" />
     </region>
-    <region type="DungeonRegion" priority="2" name="Blood Dungeon">
+    <region typeName="DungeonRegion" priority="2" name="Blood Dungeon">
       <rect x="2032" y="808" width="168" height="256" />
       <go x="2114" y="839" z="-28" />
       <entrance x="1745" y="1236" />
@@ -2270,7 +2270,7 @@
       <rect x="1392" y="1448" width="104" height="120" />
       <go x="1476" y="1494" z="-28" />
     </region>
-    <region type="TownRegion" priority="48" name="Lake Shire">
+    <region typeName="TownRegion" priority="48" name="Lake Shire">
       <rect x="1144" y="1072" width="120" height="128" />
       <go x="1212" y="1144" z="-25" />
       <guards disabled="true" />
@@ -2288,12 +2288,12 @@
       <rect x="1152" y="1456" width="104" height="104" />
       <go x="1348" y="1511" z="-3" />
     </region>
-    <region type="TownRegion" priority="48" name="Bet-Lem Reg">
+    <region typeName="TownRegion" priority="48" name="Bet-Lem Reg">
       <rect x="1232" y="936" width="40" height="48" />
       <go x="1238" y="974" z="-34" />
       <guards disabled="true" />
     </region>
-    <region type="TownRegion" priority="48" name="Mistas">
+    <region typeName="TownRegion" priority="48" name="Mistas">
       <rect x="744" y="984" width="168" height="168" />
       <rect x="744" y="1152" width="48" height="24" />
       <go x="818" y="1073" z="-30" />
@@ -2311,7 +2311,7 @@
       <rect x="368" y="1488" width="192" height="104" />
       <go x="533" y="1526" z="-25" />
     </region>
-    <region type="DungeonRegion" priority="2" name="Ankh Dungeon">
+    <region typeName="DungeonRegion" priority="2" name="Ankh Dungeon">
       <rect x="0" y="1248" width="176" height="344" />
       <rect x="568" y="1152" width="16" height="8" />
       <go x="156" y="1484" z="-28" />
@@ -2325,7 +2325,7 @@
       <rect x="312" y="1328" width="8" height="8" />
       <go x="314" y="1331" z="-37" />
     </region>
-    <region type="DungeonRegion" priority="2" name="Wisp Dungeon">
+    <region typeName="DungeonRegion" priority="2" name="Wisp Dungeon">
       <rect x="616" y="1480" width="88" height="96" />
       <rect x="704" y="1544" width="24" height="32" />
       <rect x="704" y="1480" width="40" height="40" />
@@ -2342,7 +2342,7 @@
       <rect x="256" y="1560" width="80" height="32" />
       <go x="285" y="1585" z="-27" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Exodus Dungeon">
+    <region typeName="DungeonRegion" priority="50" name="Exodus Dungeon">
       <rect x="1832" y="16" width="248" height="200" />
       <go x="1966" y="117" z="-28" />
       <entrance x="827" y="777" />
@@ -2355,7 +2355,7 @@
       <rect x="344" y="1112" width="144" height="128" />
       <go x="416" y="1176" z="0" />
     </region>
-    <region type="DungeonRegion" priority="2" name="Sorcerer's Dungeon">
+    <region typeName="DungeonRegion" priority="2" name="Sorcerer's Dungeon">
       <rect x="368" y="0" width="120" height="120" />
       <rect x="200" y="0" width="168" height="112" />
       <rect x="256" y="120" width="32" height="32" />
@@ -2368,7 +2368,7 @@
       <rect x="936" y="488" width="8" height="8" />
       <go x="940" y="503" z="-30" />
     </region>
-    <region type="DungeonRegion" priority="2" name="Ancient Lair">
+    <region typeName="DungeonRegion" priority="2" name="Ancient Lair">
       <rect x="24" y="664" width="112" height="96" />
       <go x="86" y="744" z="-28" />
       <entrance x="938" y="494" />
@@ -2438,37 +2438,37 @@
     </region>
   </Facet>
   <Facet name="Malas">
-    <region type="Underwater" priority="50" name="Gravewater Lake [Underwater]">
+    <region typeName="Underwater" priority="50" name="Gravewater Lake [Underwater]">
       <rect x="1698" y="1567" width="5" height="60" />
       <rect x="1687" y="1627" width="26" height="26" />
     </region>
-    <region type="MondainRegion" priority="50" name="Gravewater Dock">
+    <region typeName="MondainRegion" priority="50" name="Gravewater Dock">
       <rect x="1692" y="1551" width="16" height="16" />
     </region>
-    <region type="MondainRegion" priority="50" name="Bedlam">
+    <region typeName="MondainRegion" priority="50" name="Bedlam">
       <rect x="80" y="1590" width="130" height="100" />
       <go x="117" y="1681" z="0" />
       <entrance x="2068" y="1372" />
       <music name="GrizzleDungeon" />
-      <region type="PoisonedSemetery">
+      <region typeName="PoisonedSemetery">
         <rect x="79" y="1663" width="15" height="22" />
         <rect x="94" y="1668" width="7" height="14" />
         <zrange min="0" />
       </region>
     </region>
-    <region type="MondainRegion" priority="50" name="Labyrinth">
+    <region typeName="MondainRegion" priority="50" name="Labyrinth">
       <rect x="255" y="1791" width="256" height="256" />
       <go x="331" y="1973" z="0" />
       <entrance x="1733" y="978" />
       <music name="Dungeon9" />
     </region>
-    <region type="MondainRegion" priority="50" name="TheCitadel">
+    <region typeName="MondainRegion" priority="50" name="TheCitadel">
       <rect x="65" y="1865" width="130" height="125" />
       <go x="106" y="1884" z="0" />
       <entrance x="1349" y="769" />
       <music name="Dungeon9" />
     </region>
-    <region type="TownRegion" priority="50" name="Luna">
+    <region typeName="TownRegion" priority="50" name="Luna">
       <rect x="945" y="490" width="91" height="61" />
       <go x="989" y="520" z="-50" />
       <music name="tavern04" />
@@ -2477,7 +2477,7 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="TownRegion" priority="50" name="Umbra">
+    <region typeName="TownRegion" priority="50" name="Umbra">
       <rect x="2042" y="1265" width="48" height="13" />
       <rect x="1960" y="1278" width="146" height="135" />
       <rect x="2004" y="1413" width="36" height="6" />
@@ -2487,16 +2487,16 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="DungeonRegion" priority="50" name="Doom">
+    <region typeName="DungeonRegion" priority="50" name="Doom">
       <rect x="256" y="0" width="256" height="304" />
       <go x="2366" y="1268" z="-85" />
       <entrance x="2357" y="1268" />
       <music name="Dungeon9" />
-      <region type="DoomGuardianRegion" priority="50" name="Doom Guardian Room">
+      <region typeName="DoomGuardianRegion" priority="50" name="Doom Guardian Room">
         <rect x="355" y="5" width="20" height="20" />
       </region>
     </region>
-    <region type="DungeonRegion" priority="50" name="Doom Gauntlet">
+    <region typeName="DungeonRegion" priority="50" name="Doom Gauntlet">
       <rect x="256" y="304" width="256" height="256" />
       <go x="429" y="340" z="-1" />
       <entrance x="2357" y="1268" />
@@ -2506,11 +2506,11 @@
       <rect x="1295" y="1189" width="100" height="105" />
       <go x="1340" y="1226" z="-90" />
     </region>
-    <region type="NoHousingRegion" priority="50" name="Crystal Cave Entrance">
+    <region typeName="NoHousingRegion" priority="50" name="Crystal Cave Entrance">
       <rect x="1176" y="509" width="43" height="13" />
       <go x="1195" y="515" z="-90" />
     </region>
-    <region type="NoHousingRegion" priority="50" name="Protected Island">
+    <region typeName="NoHousingRegion" priority="50" name="Protected Island">
       <rect x="1976" y="101" width="472" height="244" />
       <rect x="2051" y="345" width="305" height="37" />
       <rect x="2026" y="345" width="25" height="25" />
@@ -2520,7 +2520,7 @@
       <go x="2104" y="380" z="-90" />
       <smartNoHousing active="true" />
     </region>
-    <region type="NoHousingRegion" priority="50" name="Grand Arena">
+    <region typeName="NoHousingRegion" priority="50" name="Grand Arena">
       <rect x="919" y="622" width="43" height="30" />
       <go x="961" y="637" z="-90" />
     </region>
@@ -2531,13 +2531,13 @@
       <go x="1063" y="1435" z="-90" />
       <logoutDelay active="false" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Yomotsu Mines">
+    <region typeName="DungeonRegion" priority="50" name="Yomotsu Mines">
       <rect x="0" y="0" width="129" height="129" />
       <go x="6" y="118" z="0" />
       <entrance x="259" y="783" />
       <music name="TokunoDungeon" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Fan Dancer's Dojo">
+    <region typeName="DungeonRegion" priority="50" name="Fan Dancer's Dojo">
       <rect x="40" y="320" width="170" height="400" />
       <go x="71" y="337" z="0" />
       <entrance x="977" y="223" />
@@ -2554,19 +2554,19 @@
     <region priority="50" name="Ninja cave">
       <rect x="360" y="960" width="100" height="215" />
     </region>
-    <region type="NoHousingRegion" priority="50" name="Isle of the Divide">
+    <region typeName="NoHousingRegion" priority="50" name="Isle of the Divide">
       <rect x="1533" y="849" width="295" height="195" />
       <go x="1731" y="982" z="-80" />
       <smartNoHousing active="true" />
     </region>
   </Facet>
   <Facet name="Tokuno">
-    <region type="GuardedRegion" priority="50" name="Moongates">
+    <region typeName="GuardedRegion" priority="50" name="Moongates">
       <rect x="1167" y="996" width="4" height="4" />
       <rect x="799" y="1201" width="6" height="6" />
       <rect x="267" y="625" width="7" height="7" />
     </region>
-    <region type="TownRegion" priority="50" name="Zento">
+    <region typeName="TownRegion" priority="50" name="Zento">
       <rect x="656" y="1192" width="160" height="128" />
       <go x="736" y="1256" z="30" />
       <music name="Zento" />
@@ -2575,23 +2575,23 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="NoHousingRegion" priority="50" name="Fan Dancer's Dojo">
+    <region typeName="NoHousingRegion" priority="50" name="Fan Dancer's Dojo">
       <rect x="969" y="194" width="23" height="30" />
       <go x="977" y="223" z="23" />
       <smartNoHousing active="true" />
     </region>
-    <region type="NoHousingRegion" priority="50" name="Bushido Dojo">
+    <region typeName="NoHousingRegion" priority="50" name="Bushido Dojo">
       <rect x="283" y="361" width="68" height="102" />
       <go x="320" y="408" z="32" />
       <smartNoHousing active="true" />
     </region>
-    <region type="TokunoDocksRegion" priority="50" name="Tokuno Docks">
+    <region typeName="TokunoDocksRegion" priority="50" name="Tokuno Docks">
       <rect x="650" y="1350" width="100" height="50" />
       <go x="713" y="1360" z="26" />
     </region>
   </Facet>
   <Facet name="TerMur">
-    <region type="DungeonRegion" priority="50" name="Abyss">
+    <region typeName="DungeonRegion" priority="50" name="Abyss">
       <rect x="301" y="328" width="775" height="474" />
       <rect x="780" y="32" width="296" height="296" />
       <rect x="436" y="802" width="304" height="178" />
@@ -2706,29 +2706,29 @@
         <go x="924" y="595" z="-14" />
       </region>
     </region>
-    <region type="DungeonRegion" priority="50" name="Underworld">
+    <region typeName="DungeonRegion" priority="50" name="Underworld">
       <rect x="898" y="808" width="382" height="423" />
       <go x="1128" y="1207" z="-2" />
       <music name="HumanLevel" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Atoll Bend">
+    <region typeName="DungeonRegion" priority="50" name="Atoll Bend">
       <rect x="1027" y="3311" width="197" height="203" />
       <go x="1118" y="3408" z="-42" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Chicken Chase">
+    <region typeName="DungeonRegion" priority="50" name="Chicken Chase">
       <rune name="Chicken Chase" />
       <rect x="448" y="3352" width="165" height="128" />
       <go x="560" y="3412" z="37" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Fishermans Reach">
+    <region typeName="DungeonRegion" priority="50" name="Fishermans Reach">
       <rect x="547" y="2835" width="198" height="267" />
       <go x="631" y="3035" z="36" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Gated Isle">
+    <region typeName="DungeonRegion" priority="50" name="Gated Isle">
       <rect x="603" y="3836" width="212" height="207" />
       <go x="703" y="3934" z="-31" />
     </region>
-    <region type="DungeonRegion" priority="50" name="High Plain">
+    <region typeName="DungeonRegion" priority="50" name="High Plain">
       <rect x="748" y="2843" width="233" height="207" />
       <go x="863" y="2931" z="38" />
     </region>
@@ -2737,30 +2737,30 @@
       <go x="997" y="3869" z="-42" />
       <music name="Holycity" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Kepetch Waste">
+    <region typeName="DungeonRegion" priority="50" name="Kepetch Waste">
       <rect x="356" y="3143" width="167" height="81" />
       <go x="447" y="3188" z="20" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Lost Settlement">
+    <region typeName="DungeonRegion" priority="50" name="Lost Settlement">
       <rect x="454" y="3708" width="194" height="249" />
       <go x="526" y="3822" z="-44" />
     </region>
-    <region type="GuardedRegion" priority="50" name="Moongates">
+    <region typeName="GuardedRegion" priority="50" name="Moongates">
       <rect x="852" y="3525" width="15" height="15" />
       <rect x="925" y="3988" width="15" height="15" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Northern Steppes">
+    <region typeName="DungeonRegion" priority="50" name="Northern Steppes">
       <rect x="694" y="3020" width="260" height="128" />
       <go x="822" y="3063" z="61" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Raptor Island">
+    <region typeName="DungeonRegion" priority="50" name="Raptor Island">
       <rect x="712" y="3765" width="167" height="64" />
       <rect x="728" y="3809" width="111" height="114" />
       <rect x="769" y="3721" width="203" height="47" />
       <rect x="808" y="3692" width="122" height="40" />
       <go x="816" y="3778" z="-42" />
     </region>
-    <region type="TownRegion" priority="50" name="Royal City">
+    <region typeName="TownRegion" priority="50" name="Royal City">
       <rect x="624" y="3296" width="303" height="287" />
       <go x="750" y="3440" z="-20" />
       <music name="RoyalCity" />
@@ -2775,50 +2775,50 @@
         <logoutDelay active="false" />
       </region>
     </region>
-    <region type="DungeonRegion" priority="50" name="Royal Park">
+    <region typeName="DungeonRegion" priority="50" name="Royal Park">
       <rect x="632" y="3233" width="176" height="35" />
       <rect x="753" y="3161" width="237" height="131" />
       <go x="711" y="3255" z="-42" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Slith Valley">
+    <region typeName="DungeonRegion" priority="50" name="Slith Valley">
       <rect x="1028" y="3263" width="193" height="141" />
       <go x="1078" y="3331" z="-42" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Spider Island">
+    <region typeName="DungeonRegion" priority="50" name="Spider Island">
       <rect x="1063" y="3695" width="118" height="84" />
       <go x="1115" y="3730" z="-42" />
     </region>
-    <region type="DungeonRegion" priority="50" name="StygianDragonLair">
+    <region typeName="DungeonRegion" priority="50" name="StygianDragonLair">
       <rect x="258" y="90" width="231" height="155" />
       <go x="367" y="155" z="0" />
       <music name="StygianDragon" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Talon Point">
+    <region typeName="DungeonRegion" priority="50" name="Talon Point">
       <rect x="632" y="3830" width="98" height="55" />
       <rect x="629" y="3786" width="76" height="40" />
       <rect x="656" y="3750" width="51" height="41" />
       <go x="676" y="3831" z="-39" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Toxic Desert">
+    <region typeName="DungeonRegion" priority="50" name="Toxic Desert">
       <rune name="Toxic Desert" />
       <rect x="1010" y="2929" width="146" height="120" />
       <go x="1047" y="2980" z="62" />
       <entrance x="1051" y="3022" />
       <zrange min="37" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Void Island">
+    <region typeName="DungeonRegion" priority="50" name="Void Island">
       <rect x="314" y="3473" width="267" height="226" />
       <go x="440" y="3577" z="38" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Volcano">
+    <region typeName="DungeonRegion" priority="50" name="Volcano">
       <rect x="298" y="2895" width="201" height="222" />
       <go x="407" y="3010" z="-24" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Walled Circus">
+    <region typeName="DungeonRegion" priority="50" name="Walled Circus">
       <rect x="291" y="3207" width="154" height="147" />
       <go x="370" y="3273" z="0" />
     </region>
-    <region type="DungeonRegion" priority="50" name="Waterfall Point">
+    <region typeName="DungeonRegion" priority="50" name="Waterfall Point">
       <rect x="635" y="2862" width="96" height="64" />
       <go x="661" y="2894" z="39" />
     </region>
@@ -2827,30 +2827,30 @@
       <go x="995" y="3806" z="0" />
       <music name="CodexShrine" />
     </region>
-    <region type="TombOfKingsRegion" priority="50" name="Tomb of Kings">
+    <region typeName="TombOfKingsRegion" priority="50" name="Tomb of Kings">
       <rect x="0" y="14" width="182" height="246" />
       <go x="35" y="236" z="-5" />
-      <region type="ToKBridgeRegion" name="ToK Bridge" priority="150">
+      <region typeName="ToKBridgeRegion" name="ToK Bridge" priority="150">
         <rect x="32" y="29" width="11" height="9" />
       </region>
     </region>
-    <region type="DungeonRegion" priority="100" name="GreatApeLair">
+    <region typeName="DungeonRegion" priority="100" name="GreatApeLair">
       <rect x="832" y="1363" width="106" height="111" zmin="-25" />
       <go x="926" y="1464" z="0" />
     </region>
-    <region type="DungeonRegion" priority="100" name="ZipactriotlLair">
+    <region typeName="DungeonRegion" priority="100" name="ZipactriotlLair">
       <rect x="831" y="2239" width="128" height="128" zmin="-25" />
       <go x="896" y="2304" z="-19" />
     </region>
-    <region type="DungeonRegion" priority="100" name="MyrmidexQueenLair">
+    <region typeName="DungeonRegion" priority="100" name="MyrmidexQueenLair">
       <rect x="704" y="2248" width="124" height="115" zmin="-25" />
       <go x="766" y="2306" z="0" />
     </region>
-    <region type="BattleRegion" priority="100" name="MyrmidexBattleground">
+    <region typeName="BattleRegion" priority="100" name="MyrmidexBattleground">
       <rect x="828" y="1762" width="195" height="158" zmin="-25" />
       <go x="853" y="1784" z="0" />
     </region>
-    <region type="DungeonRegion" priority="50" name="KotlCity">
+    <region typeName="DungeonRegion" priority="50" name="KotlCity">
       <rect x="435" y="2270" width="240" height="220" zmin="-25" />
       <go x="542" y="2473" z="0" />
     </region>

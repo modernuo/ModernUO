@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
+using System.Text.Json;
+using Server.Json;
 using Server.Mobiles;
 using Server.Utilities;
 
@@ -20,15 +21,17 @@ namespace Server.Regions
       : base(name, map, priority, area) =>
       m_GuardType = DefaultGuardType;
 
-    public GuardedRegion(XmlElement xml, Map map, Region parent) : base(xml, map, parent)
+    public GuardedRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
     {
-      XmlElement el = xml["guards"];
-
-      if (ReadType(el, "type", ref m_GuardType, false))
+      if (json.GetProperty("guardsType", options, out string guardType))
       {
-        if (!typeof(Mobile).IsAssignableFrom(m_GuardType))
+        m_GuardType = AssemblyHandler.FindFirstTypeForName(guardType);
+
+        if (!typeof(BaseGuard).IsAssignableFrom(m_GuardType))
         {
+          Console.ForegroundColor = ConsoleColor.Red;
           Console.WriteLine("Invalid guard type for region '{0}'", this);
+          Console.ResetColor();
           m_GuardType = DefaultGuardType;
         }
       }
@@ -37,9 +40,7 @@ namespace Server.Regions
         m_GuardType = DefaultGuardType;
       }
 
-      bool disabled = false;
-      if (ReadBoolean(el, "disabled", ref disabled, false))
-        Disabled = disabled;
+      Disabled = json.GetProperty("guardsDisabled", options, out bool disabled) && disabled;
     }
 
     public bool Disabled { get; set; }

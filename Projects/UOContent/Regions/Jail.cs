@@ -1,10 +1,11 @@
-using System.Xml;
+using System.Text.Json;
+using Server.Json;
 
 namespace Server.Regions
 {
   public class Jail : BaseRegion
   {
-    public Jail(XmlElement xml, Map map, Region parent) : base(xml, map, parent)
+    public Jail(DynamicJson json, JsonSerializerOptions options) : base(json, options)
     {
     }
 

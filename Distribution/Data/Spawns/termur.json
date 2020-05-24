@@ -1,0 +1,1612 @@
+[
+  {
+    "count": 2,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Tailor",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 805,
+    "y": 3398,
+    "z": 0
+  },
+  {
+    "count": 34,
+    "entries": [
+      {
+        "maxCount": 5,
+        "name": "Bird",
+        "probability": 100
+      },
+      {
+        "maxCount": 7,
+        "name": "Horse",
+        "probability": 100
+      },
+      {
+        "maxCount": 7,
+        "name": "Hind",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "Rat",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "Snake",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "Rabbit",
+        "probability": 100
+      }
+    ],
+    "homeRange": 50,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 851,
+    "y": 3635,
+    "z": -43
+  },
+  {
+    "count": 24,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "SilverSerpent",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "GreaterMongbat",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "Snake",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "Horse",
+        "probability": 100
+      }
+    ],
+    "homeRange": 15,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:03:00",
+    "x": 1128,
+    "y": 3479,
+    "z": -42
+  },
+  {
+    "count": 25,
+    "entries": [
+      {
+        "maxCount": 5,
+        "name": "SilverSerpent",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "Snake",
+        "probability": 100
+      }
+    ],
+    "homeRange": 10,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 816,
+    "y": 658,
+    "z": 22
+  },
+  {
+    "count": 71,
+    "entries": [
+      {
+        "maxCount": 10,
+        "name": "LavaLizard",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "LavaSnake",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "HellHound",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "LavaSerpent",
+        "probability": 100
+      }
+    ],
+    "homeRange": 25,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:02:00",
+    "minDelay": "00:02:00",
+    "x": 581,
+    "y": 898,
+    "z": -73
+  },
+  {
+    "count": 13,
+    "entries": [
+      {
+        "maxCount": 8,
+        "name": "Pixie",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "Wisp",
+        "probability": 100
+      }
+    ],
+    "homeRange": 15,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 344,
+    "y": 618,
+    "z": 26
+  },
+  {
+    "count": 16,
+    "entries": [
+      {
+        "maxCount": 4,
+        "name": "LavaSerpent",
+        "probability": 100
+      },
+      {
+        "maxCount": 4,
+        "name": "LavaSnake",
+        "probability": 100
+      },
+      {
+        "maxCount": 4,
+        "name": "HeadlessOne",
+        "probability": 100
+      }
+    ],
+    "homeRange": 15,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 452,
+    "y": 3133,
+    "z": 38
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Healer",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 715,
+    "y": 3423,
+    "z": -20
+  },
+  {
+    "count": 7,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "FireGargoyle",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:04:00",
+    "minDelay": "00:03:00",
+    "x": 399,
+    "y": 3128,
+    "z": 37
+  },
+  {
+    "count": 10,
+    "entries": [
+      {
+        "maxCount": 10,
+        "name": "HellHound",
+        "probability": 100
+      }
+    ],
+    "homeRange": 25,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 689,
+    "y": 485,
+    "z": -15
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Carpenter",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 817,
+    "y": 3428,
+    "z": 0
+  },
+  {
+    "count": 12,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "SilverSerpent",
+        "probability": 100
+      }
+    ],
+    "homeRange": 10,
+    "walkingRange": 15,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 35,
+    "y": 99,
+    "z": -5
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Healer",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 784,
+    "y": 3490,
+    "z": -20
+  },
+  {
+    "count": 9,
+    "entries": [
+      {
+        "maxCount": 4,
+        "name": "Snake",
+        "probability": 100
+      },
+      {
+        "maxCount": 1,
+        "name": "Coil",
+        "probability": 100
+      },
+      {
+        "maxCount": 4,
+        "name": "SilverSerpent",
+        "probability": 100
+      }
+    ],
+    "homeRange": 10,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 698,
+    "y": 773,
+    "z": 28
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Tailor",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 702,
+    "y": 3434,
+    "z": -20
+  },
+  {
+    "count": 81,
+    "entries": [
+      {
+        "maxCount": 10,
+        "name": "PatchworkSkeleton",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "Skeleton",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "SkeletalKnight",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "BoneKnight",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "SkeletalMage",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "BoneMagi",
+        "probability": 100
+      }
+    ],
+    "homeRange": 25,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:05:00",
+    "minDelay": "00:05:00",
+    "x": 676,
+    "y": 831,
+    "z": -109
+  },
+  {
+    "count": 18,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Hydra",
+        "probability": 100
+      },
+      {
+        "maxCount": 3,
+        "name": "GiantSerpent",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "Snake",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "SilverSerpent",
+        "probability": 100
+      },
+      {
+        "maxCount": 4,
+        "name": "LavaSnake",
+        "probability": 100
+      }
+    ],
+    "homeRange": 15,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:02:00",
+    "minDelay": "00:02:00",
+    "x": 764,
+    "y": 746,
+    "z": 23
+  },
+  {
+    "count": 9,
+    "entries": [
+      {
+        "maxCount": 5,
+        "name": "GreaterMongbat",
+        "probability": 100
+      }
+    ],
+    "homeRange": 15,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 1152,
+    "y": 3640,
+    "z": -42
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Mage",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 772,
+    "y": 3486,
+    "z": -20
+  },
+  {
+    "count": 2,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "Baker",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 974,
+    "y": 3881,
+    "z": -42
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Farmer",
+        "probability": 100
+      }
+    ],
+    "homeRange": 1,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 716,
+    "y": 3445,
+    "z": -19
+  },
+  {
+    "count": 2,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "Farmer",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 791,
+    "y": 3448,
+    "z": -10
+  },
+  {
+    "count": 4,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "FireElemental",
+        "probability": 100
+      },
+      {
+        "maxCount": 2,
+        "name": "LavaSnake",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 20,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 432,
+    "y": 3071,
+    "z": 39
+  },
+  {
+    "count": 2,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Cook",
+        "probability": 100
+      },
+      {
+        "maxCount": 1,
+        "name": "Baker",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 806,
+    "y": 3491,
+    "z": -20
+  },
+  {
+    "count": 19,
+    "entries": [
+      {
+        "maxCount": 10,
+        "name": "Bird",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "Horse",
+        "probability": 100
+      }
+    ],
+    "homeRange": 20,
+    "walkingRange": 20,
+    "map": 5,
+    "maxDelay": "00:02:00",
+    "minDelay": "00:01:00",
+    "x": 586,
+    "y": 3283,
+    "z": 37
+  },
+  {
+    "count": 10,
+    "entries": [
+      {
+        "maxCount": 7,
+        "name": "DesertOstard",
+        "probability": 100
+      },
+      {
+        "maxCount": 7,
+        "name": "SandVortex",
+        "probability": 100
+      },
+      {
+        "maxCount": 7,
+        "name": "Scorpion",
+        "probability": 100
+      }
+    ],
+    "homeRange": 30,
+    "walkingRange": 30,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 1035,
+    "y": 2993,
+    "z": 50
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Provisioner",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 793,
+    "y": 3491,
+    "z": -20
+  },
+  {
+    "count": 7,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "FireElemental",
+        "probability": 100
+      },
+      {
+        "maxCount": 3,
+        "name": "LavaSnake",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 20,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 416,
+    "y": 2939,
+    "z": 36
+  },
+  {
+    "count": 3,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Alchemist",
+        "probability": 100
+      }
+    ],
+    "homeRange": 2,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 771,
+    "y": 3475,
+    "z": -20
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Jeweler",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 778,
+    "y": 3430,
+    "z": -10
+  },
+  {
+    "count": 15,
+    "entries": [
+      {
+        "maxCount": 12,
+        "name": "DesertOstard",
+        "probability": 100
+      },
+      {
+        "maxCount": 12,
+        "name": "SandVortex",
+        "probability": 100
+      },
+      {
+        "maxCount": 12,
+        "name": "Scorpion",
+        "probability": 100
+      }
+    ],
+    "homeRange": 30,
+    "walkingRange": 30,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 1055,
+    "y": 2987,
+    "z": 62
+  },
+  {
+    "count": 10,
+    "entries": [
+      {
+        "maxCount": 3,
+        "name": "FireGargoyle",
+        "probability": 100
+      },
+      {
+        "maxCount": 2,
+        "name": "FireElemental",
+        "probability": 100
+      }
+    ],
+    "homeRange": 20,
+    "walkingRange": 25,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 365,
+    "y": 2952,
+    "z": 40
+  },
+  {
+    "count": 2,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "Blacksmith",
+        "probability": 100
+      }
+    ],
+    "homeRange": 2,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 815,
+    "y": 3420,
+    "z": 0
+  },
+  {
+    "count": 5,
+    "entries": [
+      {
+        "maxCount": 4,
+        "name": "GiantSerpent",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:03:00",
+    "x": 775,
+    "y": 770,
+    "z": 23
+  },
+  {
+    "count": 3,
+    "entries": [
+      {
+        "maxCount": 3,
+        "name": "HeadlessOne",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 365,
+    "y": 3138,
+    "z": 36
+  },
+  {
+    "count": 15,
+    "entries": [
+      {
+        "maxCount": 12,
+        "name": "DesertOstard",
+        "probability": 100
+      },
+      {
+        "maxCount": 12,
+        "name": "SandVortex",
+        "probability": 100
+      },
+      {
+        "maxCount": 12,
+        "name": "Scorpion",
+        "probability": 100
+      }
+    ],
+    "homeRange": 30,
+    "walkingRange": 30,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 1074,
+    "y": 3008,
+    "z": 63
+  },
+  {
+    "count": 6,
+    "entries": [
+      {
+        "maxCount": 6,
+        "name": "Barkeeper",
+        "probability": 100
+      }
+    ],
+    "homeRange": 1,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 713,
+    "y": 3438,
+    "z": -19
+  },
+  {
+    "count": 5,
+    "entries": [
+      {
+        "maxCount": 4,
+        "name": "GiantSerpent",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:03:00",
+    "x": 806,
+    "y": 734,
+    "z": 22
+  },
+  {
+    "count": 12,
+    "entries": [
+      {
+        "maxCount": 4,
+        "name": "LavaSnake",
+        "probability": 100
+      },
+      {
+        "maxCount": 4,
+        "name": "LavaSerpent",
+        "probability": 100
+      }
+    ],
+    "homeRange": 15,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 511,
+    "y": 3042,
+    "z": 38
+  },
+  {
+    "count": 11,
+    "entries": [
+      {
+        "maxCount": 8,
+        "name": "DesertOstard",
+        "probability": 100
+      },
+      {
+        "maxCount": 8,
+        "name": "SandVortex",
+        "probability": 100
+      },
+      {
+        "maxCount": 8,
+        "name": "Scorpion",
+        "probability": 100
+      }
+    ],
+    "homeRange": 30,
+    "walkingRange": 30,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 1040,
+    "y": 3004,
+    "z": 50
+  },
+  {
+    "count": 11,
+    "entries": [
+      {
+        "maxCount": 3,
+        "name": "HeadlessOne",
+        "probability": 100
+      }
+    ],
+    "homeRange": 25,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 475,
+    "y": 3188,
+    "z": 37
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Tinker",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 816,
+    "y": 3438,
+    "z": 0
+  },
+  {
+    "count": 18,
+    "entries": [
+      {
+        "maxCount": 5,
+        "name": "SilverSerpent",
+        "probability": 100
+      }
+    ],
+    "homeRange": 20,
+    "walkingRange": 15,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 35,
+    "y": 159,
+    "z": 0
+  },
+  {
+    "count": 20,
+    "entries": [
+      {
+        "maxCount": 6,
+        "name": "GiantSerpent",
+        "probability": 100
+      },
+      {
+        "maxCount": 8,
+        "name": "Snake",
+        "probability": 100
+      },
+      {
+        "maxCount": 2,
+        "name": "SilverSerpent",
+        "probability": 100
+      }
+    ],
+    "homeRange": 25,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 735,
+    "y": 687,
+    "z": -47
+  },
+  {
+    "count": 18,
+    "entries": [
+      {
+        "maxCount": 4,
+        "name": "SilverSerpent",
+        "probability": 100
+      },
+      {
+        "maxCount": 4,
+        "name": "GreaterMongbat",
+        "probability": 100
+      }
+    ],
+    "homeRange": 15,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:04:00",
+    "minDelay": "00:03:00",
+    "x": 1165,
+    "y": 3366,
+    "z": -42
+  },
+  {
+    "count": 4,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Hydra",
+        "probability": 100
+      },
+      {
+        "maxCount": 3,
+        "name": "SilverSerpent",
+        "probability": 100
+      }
+    ],
+    "homeRange": 2,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:02:00",
+    "minDelay": "00:02:00",
+    "x": 795,
+    "y": 759,
+    "z": 23
+  },
+  {
+    "count": 5,
+    "entries": [
+      {
+        "maxCount": 3,
+        "name": "Efreet",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 15,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 465,
+    "y": 3042,
+    "z": 19
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Weaponsmith",
+        "probability": 100
+      }
+    ],
+    "homeRange": 1,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 726,
+    "y": 3427,
+    "z": -20
+  },
+  {
+    "count": 22,
+    "entries": [
+      {
+        "maxCount": 4,
+        "name": "SilverSerpent",
+        "probability": 100
+      },
+      {
+        "maxCount": 4,
+        "name": "Snake",
+        "probability": 100
+      },
+      {
+        "maxCount": 6,
+        "name": "Bird",
+        "probability": 100
+      }
+    ],
+    "homeRange": 10,
+    "walkingRange": 20,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 555,
+    "y": 3495,
+    "z": 38
+  },
+  {
+    "count": 48,
+    "entries": [
+      {
+        "maxCount": 7,
+        "name": "SilverSerpent",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "Horse",
+        "probability": 100
+      },
+      {
+        "maxCount": 15,
+        "name": "Bird",
+        "probability": 100
+      }
+    ],
+    "homeRange": 35,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 534,
+    "y": 3421,
+    "z": 37
+  },
+  {
+    "count": 35,
+    "entries": [
+      {
+        "maxCount": 5,
+        "name": "Horse",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "Bird",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "Hind",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "Rabbit",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "TimberWolf",
+        "probability": 100
+      }
+    ],
+    "homeRange": 50,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 808,
+    "y": 3228,
+    "z": 40
+  },
+  {
+    "count": 8,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "FireElemental",
+        "probability": 100
+      },
+      {
+        "maxCount": 3,
+        "name": "LavaLizard",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 30,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 465,
+    "y": 2977,
+    "z": 34
+  },
+  {
+    "count": 13,
+    "entries": [
+      {
+        "maxCount": 10,
+        "name": "DesertOstard",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "SandVortex",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "Scorpion",
+        "probability": 100
+      }
+    ],
+    "homeRange": 30,
+    "walkingRange": 30,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 1030,
+    "y": 2959,
+    "z": 61
+  },
+  {
+    "count": 5,
+    "entries": [
+      {
+        "maxCount": 4,
+        "name": "GiantSerpent",
+        "probability": 100
+      }
+    ],
+    "homeRange": 10,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:02:00",
+    "minDelay": "00:02:00",
+    "x": 795,
+    "y": 771,
+    "z": 22
+  },
+  {
+    "count": 21,
+    "entries": [
+      {
+        "maxCount": 5,
+        "name": "Snake",
+        "probability": 100
+      },
+      {
+        "maxCount": 10,
+        "name": "LavaSnake",
+        "probability": 100
+      },
+      {
+        "maxCount": 4,
+        "name": "GiantSerpent",
+        "probability": 100
+      }
+    ],
+    "homeRange": 20,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 649,
+    "y": 703,
+    "z": 13
+  },
+  {
+    "count": 9,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "Efreet",
+        "probability": 100
+      },
+      {
+        "maxCount": 2,
+        "name": "Phoenix",
+        "probability": 100
+      },
+      {
+        "maxCount": 3,
+        "name": "FireGargoyle",
+        "probability": 100
+      }
+    ],
+    "homeRange": 15,
+    "walkingRange": 25,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 386,
+    "y": 3062,
+    "z": 29
+  },
+  {
+    "count": 11,
+    "entries": [
+      {
+        "maxCount": 8,
+        "name": "DesertOstard",
+        "probability": 100
+      },
+      {
+        "maxCount": 8,
+        "name": "SandVortex",
+        "probability": 100
+      },
+      {
+        "maxCount": 8,
+        "name": "Scorpion",
+        "probability": 100
+      }
+    ],
+    "homeRange": 30,
+    "walkingRange": 30,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 1089,
+    "y": 2979,
+    "z": 51
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Carpenter",
+        "probability": 100
+      }
+    ],
+    "homeRange": 1,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 728,
+    "y": 3445,
+    "z": -20
+  },
+  {
+    "count": 85,
+    "entries": [
+      {
+        "maxCount": 10,
+        "name": "Horse",
+        "probability": 100
+      },
+      {
+        "maxCount": 25,
+        "name": "Mongbat",
+        "probability": 100
+      }
+    ],
+    "homeRange": 75,
+    "walkingRange": 75,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 810,
+    "y": 3800,
+    "z": -42
+  },
+  {
+    "count": 5,
+    "entries": [
+      {
+        "maxCount": 4,
+        "name": "GiantSerpent",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:03:00",
+    "x": 778,
+    "y": 732,
+    "z": 23
+  },
+  {
+    "count": 2,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Blacksmith",
+        "probability": 100
+      },
+      {
+        "maxCount": 1,
+        "name": "Armorer",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 1012,
+    "y": 3881,
+    "z": -42
+  },
+  {
+    "count": 30,
+    "entries": [
+      {
+        "maxCount": 5,
+        "name": "Bird",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "Rabbit",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "Horse",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "Rat",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "Snake",
+        "probability": 100
+      },
+      {
+        "maxCount": 5,
+        "name": "GreaterMongbat",
+        "probability": 100
+      }
+    ],
+    "homeRange": 70,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 997,
+    "y": 3904,
+    "z": -42
+  },
+  {
+    "count": 2,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "Healer",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 1018,
+    "y": 3907,
+    "z": -42
+  },
+  {
+    "count": 50,
+    "entries": [
+      {
+        "maxCount": 20,
+        "name": "GiantBlackWidow",
+        "probability": 100
+      },
+      {
+        "maxCount": 30,
+        "name": "GiantSpider",
+        "probability": 100
+      }
+    ],
+    "homeRange": 25,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 1111,
+    "y": 3733,
+    "z": -42
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Tanner",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 806,
+    "y": 3387,
+    "z": 0
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "WanderingHealer",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 487,
+    "y": 3748,
+    "z": -32
+  },
+  {
+    "count": 9,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "NetherBoltScroll",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 657,
+    "y": 2906,
+    "z": -3
+  },
+  {
+    "count": 7,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "LavaLizard",
+        "probability": 100
+      },
+      {
+        "maxCount": 3,
+        "name": "LavaSnake",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 418,
+    "y": 2982,
+    "z": 26
+  },
+  {
+    "count": 3,
+    "entries": [
+      {
+        "maxCount": 3,
+        "name": "FireGargoyle",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 375,
+    "y": 2999,
+    "z": -2
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Butcher",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 5,
+    "map": 5,
+    "maxDelay": "00:10:00",
+    "minDelay": "00:05:00",
+    "x": 911,
+    "y": 3998,
+    "z": -40
+  }
+]

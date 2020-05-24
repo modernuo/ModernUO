@@ -1,0 +1,426 @@
+[
+  {
+    "count": 5,
+    "entries": [
+      {
+        "maxCount": 5,
+        "name": "DireWolf",
+        "probability": 100
+      }
+    ],
+    "homeRange": 8,
+    "walkingRange": 8,
+    "map": 2,
+    "maxDelay": "00:01:00",
+    "minDelay": "00:00:10",
+    "x": 2131,
+    "y": 1173,
+    "z": -46
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Swoop",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 8,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2222,
+    "y": 1222,
+    "z": 9
+  },
+  {
+    "count": 2,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Corpser",
+        "probability": 100
+      },
+      {
+        "maxCount": 1,
+        "name": "WhippingVine",
+        "probability": 100
+      }
+    ],
+    "homeRange": 12,
+    "walkingRange": 25,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2166,
+    "y": 1235,
+    "z": -60
+  },
+  {
+    "count": 5,
+    "entries": [
+      {
+        "maxCount": 5,
+        "name": "CuSidhe",
+        "probability": 100
+      }
+    ],
+    "homeRange": 15,
+    "walkingRange": 15,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2210,
+    "y": 1192,
+    "z": -35
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Irk",
+        "probability": 100
+      }
+    ],
+    "homeRange": 15,
+    "walkingRange": 25,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2158,
+    "y": 1224,
+    "z": -60
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Gnaw",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 8,
+    "map": 2,
+    "maxDelay": "00:05:00",
+    "minDelay": "00:02:00",
+    "x": 2130,
+    "y": 1174,
+    "z": -46
+  },
+  {
+    "count": 2,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "Quagmire",
+        "probability": 100
+      }
+    ],
+    "homeRange": 15,
+    "walkingRange": 25,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2158,
+    "y": 1217,
+    "z": -60
+  },
+  {
+    "count": 2,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "Corpser",
+        "probability": 100
+      }
+    ],
+    "homeRange": 4,
+    "walkingRange": 5,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2137,
+    "y": 1216,
+    "z": -60
+  },
+  {
+    "count": 3,
+    "entries": [
+      {
+        "maxCount": 3,
+        "name": "MLDryad",
+        "probability": 100
+      }
+    ],
+    "homeRange": 15,
+    "walkingRange": 20,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2200,
+    "y": 1192,
+    "z": -35
+  },
+  {
+    "count": 4,
+    "entries": [
+      {
+        "maxCount": 4,
+        "name": "Changeling",
+        "probability": 100
+      }
+    ],
+    "homeRange": 20,
+    "walkingRange": 25,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2193,
+    "y": 1170,
+    "z": -36
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "MLDryad",
+        "probability": 100
+      }
+    ],
+    "homeRange": 8,
+    "walkingRange": 12,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2211,
+    "y": 1169,
+    "z": -37
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "LadySabrix",
+        "probability": 100
+      }
+    ],
+    "homeRange": 7,
+    "walkingRange": 15,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2179,
+    "y": 1214,
+    "z": -60
+  },
+  {
+    "count": 2,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "Changeling",
+        "probability": 100
+      }
+    ],
+    "homeRange": 8,
+    "walkingRange": 20,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2150,
+    "y": 1188,
+    "z": -46
+  },
+  {
+    "count": 2,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "Satyr",
+        "probability": 100
+      }
+    ],
+    "homeRange": 12,
+    "walkingRange": 20,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2207,
+    "y": 1191,
+    "z": -36
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Guile",
+        "probability": 100
+      }
+    ],
+    "homeRange": 10,
+    "walkingRange": 30,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2173,
+    "y": 1213,
+    "z": -60
+  },
+  {
+    "count": 5,
+    "entries": [
+      {
+        "maxCount": 5,
+        "name": "DireWolf",
+        "probability": 100
+      }
+    ],
+    "homeRange": 10,
+    "walkingRange": 15,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2160,
+    "y": 1178,
+    "z": -40
+  },
+  {
+    "count": 2,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "WhippingVine",
+        "probability": 100
+      }
+    ],
+    "homeRange": 18,
+    "walkingRange": 18,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2141,
+    "y": 1209,
+    "z": -60
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "LadyLissith",
+        "probability": 100
+      }
+    ],
+    "homeRange": 5,
+    "walkingRange": 15,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2174,
+    "y": 1203,
+    "z": -60
+  },
+  {
+    "count": 1,
+    "entries": [
+      {
+        "maxCount": 1,
+        "name": "Spite",
+        "probability": 100
+      }
+    ],
+    "homeRange": 10,
+    "walkingRange": 30,
+    "map": 2,
+    "maxDelay": "00:03:00",
+    "minDelay": "00:00:01",
+    "x": 2174,
+    "y": 1213,
+    "z": -60
+  },
+  {
+    "count": 4,
+    "entries": [
+      {
+        "maxCount": 4,
+        "name": "GiantBlackWidow",
+        "probability": 100
+      }
+    ],
+    "homeRange": 0,
+    "walkingRange": 5,
+    "map": 2,
+    "maxDelay": "00:02:00",
+    "minDelay": "00:00:30",
+    "x": 2137,
+    "y": 1216,
+    "z": -60
+  },
+  {
+    "count": 4,
+    "entries": [
+      {
+        "maxCount": 2,
+        "name": "Malefic",
+        "probability": 100
+      },
+      {
+        "maxCount": 2,
+        "name": "Virulent",
+        "probability": 100
+      }
+    ],
+    "homeRange": 0,
+    "walkingRange": 10,
+    "map": 2,
+    "maxDelay": "00:02:00",
+    "minDelay": "00:01:00",
+    "x": 2170,
+    "y": 1247,
+    "z": -60
+  },
+  {
+    "count": 4,
+    "entries": [
+      {
+        "maxCount": 4,
+        "name": "Silk",
+        "probability": 100
+      }
+    ],
+    "homeRange": 0,
+    "walkingRange": 5,
+    "map": 2,
+    "maxDelay": "00:01:30",
+    "minDelay": "00:00:30",
+    "x": 2177,
+    "y": 1229,
+    "z": -60
+  },
+  {
+    "count": 3,
+    "entries": [
+      {
+        "maxCount": 3,
+        "name": "Malefic",
+        "probability": 100
+      }
+    ],
+    "homeRange": 0,
+    "walkingRange": 5,
+    "map": 2,
+    "maxDelay": "00:02:00",
+    "minDelay": "00:01:00",
+    "x": 2167,
+    "y": 1266,
+    "z": -60
+  }
+]

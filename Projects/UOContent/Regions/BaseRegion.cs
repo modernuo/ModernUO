@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Xml;
+using System.Text.Json;
 using Server.Gumps;
+using Server.Json;
 using Server.Mobiles;
 
 namespace Server.Regions
@@ -35,21 +36,12 @@ namespace Server.Regions
     {
     }
 
-    public BaseRegion(XmlElement xml, Map map, Region parent) : base(xml, map, parent)
+    public BaseRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
     {
-      ReadString(xml["rune"], "name", ref m_RuneName, false);
+      if (json.data.TryGetValue("rune", out var runeName))
+        m_RuneName = runeName.GetString();
 
-      bool logoutDelayActive = true;
-      ReadBoolean(xml["logoutDelay"], "active", ref logoutDelayActive, false);
-      NoLogoutDelay = !logoutDelayActive;
-
-      XmlElement spawning = xml["spawning"];
-      if (spawning != null)
-      {
-        bool excludeFromParentSpawns = false;
-        ReadBoolean(spawning, "excludeFromParent", ref excludeFromParentSpawns, false);
-        ExcludeFromParentSpawns = excludeFromParentSpawns;
-      }
+      NoLogoutDelay = json.data.TryGetValue("logoutDelay", out var logoutDelay) && !logoutDelay.GetBoolean();
     }
 
     public virtual bool YoungProtected => true;

@@ -18,6 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+using System.Buffers;
 using System.IO;
 using System.Text.Json;
 
@@ -45,6 +47,24 @@ namespace Server.Json
       if (File.Exists(filePath)) File.Delete(filePath);
 
       File.WriteAllText(filePath, JsonSerializer.Serialize(value, options ?? Options));
+    }
+
+    public static T ToObject<T>(this ref Utf8JsonReader reader, JsonSerializerOptions options = null) =>
+      JsonSerializer.Deserialize<T>(ref reader, options);
+
+    public static T ToObject<T>(this JsonElement element, JsonSerializerOptions options = null)
+    {
+      var bufferWriter = new ArrayBufferWriter<byte>();
+      using (var writer = new Utf8JsonWriter(bufferWriter))
+        element.WriteTo(writer);
+      return JsonSerializer.Deserialize<T>(bufferWriter.WrittenSpan, options);
+    }
+
+    public static T ToObject<T>(this JsonDocument document, JsonSerializerOptions options = null)
+    {
+      if (document == null)
+        throw new ArgumentNullException(nameof(document));
+      return document.RootElement.ToObject<T>(options);
     }
   }
 }

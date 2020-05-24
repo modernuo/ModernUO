@@ -374,15 +374,9 @@ namespace Server
 
     public int CompareTo(Map other) => other == null ? -1 : MapID.CompareTo(other.MapID);
 
-    public static string[] GetMapNames()
-    {
-      return Maps.Where(m => m != null).Select(m => m.Name).ToArray();
-    }
+    public static string[] GetMapNames() => Maps.Where(m => m != null).Select(m => m.Name).ToArray();
 
-    public static Map[] GetMapValues()
-    {
-      return Maps.Where(m => m != null).ToArray();
-    }
+    public static Map[] GetMapValues() => Maps.Where(m => m != null).ToArray();
 
     public static Map Parse(string value)
     {

@@ -1,4 +1,5 @@
-using System.Xml;
+using System.Text.Json;
+using Server.Json;
 
 namespace Server.Regions
 {
@@ -9,10 +10,8 @@ namespace Server.Regions
      */
     private readonly bool m_SmartChecking;
 
-    public NoHousingRegion(XmlElement xml, Map map, Region parent) : base(xml, map, parent)
-    {
-      ReadBoolean(xml["smartNoHousing"], "active", ref m_SmartChecking, false);
-    }
+    public NoHousingRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options) =>
+      m_SmartChecking = json.GetProperty("smartNoHousing", options, out bool smartNoHousing) && smartNoHousing;
 
     public bool SmartChecking => m_SmartChecking;
 

@@ -1,4 +1,5 @@
-using System.Xml;
+using System.Text.Json;
+using Server.Json;
 using Server.Spells.Chivalry;
 using Server.Spells.Fourth;
 using Server.Spells.Seventh;
@@ -8,16 +9,11 @@ namespace Server.Regions
 {
   public class GreenAcres : BaseRegion
   {
-    public GreenAcres(XmlElement xml, Map map, Region parent) : base(xml, map, parent)
+    public GreenAcres(DynamicJson json, JsonSerializerOptions options) : base(json, options)
     {
     }
 
-    public override bool AllowHousing(Mobile from, Point3D p)
-    {
-      if (from.AccessLevel == AccessLevel.Player)
-        return false;
-      return base.AllowHousing(from, p);
-    }
+    public override bool AllowHousing(Mobile from, Point3D p) => from.AccessLevel != AccessLevel.Player && base.AllowHousing(@from, p);
 
     public override bool OnBeginSpellCast(Mobile m, ISpell s)
     {

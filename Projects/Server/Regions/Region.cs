@@ -20,11 +20,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Xml;
+using System.Text.Json;
+using Server.Json;
 using Server.Network;
 using Server.Targeting;
-using Server.Utilities;
 
 namespace Server
 {
@@ -146,10 +145,10 @@ namespace Server
       }
     }
 
-    public Region(XmlElement xml, Map map, Region parent)
+    public Region(DynamicJson json, JsonSerializerOptions options)
     {
-      Map = map;
-      Parent = parent;
+      Map = json.GetProperty("map", options, out Map map) ? map : null;
+      Parent = GetRegion(json.GetProperty("parent", options, out string parent) ? parent : null);
       Dynamic = false;
 
       if (Parent == null)
@@ -163,31 +162,21 @@ namespace Server
         m_Priority = Parent.Priority;
       }
 
-      ReadString(xml, "name", ref m_Name, false);
+      m_Name = json.GetProperty("name", options, out string name) ? name : null;
 
-      if (parent == null)
-        ReadInt32(xml, "priority", ref m_Priority, false);
+      m_Priority = json.GetProperty("priority", options, out int priority) ? priority : 0;
 
-      var minZ = MinZ;
-      var maxZ = MaxZ;
-
-      var zrange = xml["zrange"];
-      ReadInt32(zrange, "min", ref minZ, false);
-      ReadInt32(zrange, "max", ref maxZ, false);
-
-      var area = new List<Rectangle3D>();
-      foreach (XmlElement xmlRect in xml.SelectNodes("rect"))
-      {
-        if (ReadRectangle3D(xmlRect, minZ, maxZ, out var rect))
-          area.Add(rect);
-      }
-
-      Area = area.ToArray();
+      Area = json.GetProperty("rects", options, out List<Rectangle3D> rects) ?
+        rects.ToArray() : Array.Empty<Rectangle3D>();
 
       if (Area.Length == 0)
         Console.WriteLine("Empty area for region '{0}'", this);
 
-      if (!ReadPoint3D(xml["go"], map, ref m_GoLocation, false) && Area.Length > 0)
+      if (json.GetProperty("go", options, out Point3D go))
+      {
+        m_GoLocation = go;
+      }
+      else if (Area.Length > 0)
       {
         var start = Area[0].Start;
         var end = Area[0].End;
@@ -198,11 +187,7 @@ namespace Server
         m_GoLocation = new Point3D(x, y, Map.GetAverageZ(x, y));
       }
 
-      var music = DefaultMusic;
-
-      ReadEnum(xml["music"], "name", ref music, false);
-
-      Music = music;
+      Music = json.GetEnumProperty("music", options, out MusicName music) ? music : DefaultMusic;
     }
 
     public static List<Region> Regions { get; } = new List<Region>();
@@ -726,339 +711,6 @@ namespace Server
           newR = newR?.Parent;
         }
       }
-    }
-
-    internal static void Load()
-    {
-      if (!File.Exists("Data/Regions.xml"))
-      {
-        Console.WriteLine("Error: Data/Regions.xml does not exist");
-        return;
-      }
-
-      Console.Write("Regions: Loading...");
-
-      var doc = new XmlDocument();
-      doc.Load(Path.Combine(Core.BaseDirectory, "Data/Regions.xml"));
-
-      var root = doc["ServerRegions"];
-
-      if (root == null)
-      {
-        Console.WriteLine("Could not find root element 'ServerRegions' in Regions.xml");
-        return;
-      }
-
-      foreach (XmlElement facet in root.SelectNodes("Facet"))
-      {
-        Map map = null;
-        if (ReadMap(facet, "name", ref map))
-        {
-          if (map == Map.Internal)
-            Console.WriteLine("Invalid internal map in a facet element");
-          else
-            LoadRegions(facet, map, null);
-        }
-      }
-
-      Console.WriteLine("done");
-    }
-
-    private static void LoadRegions(XmlElement xml, Map map, Region parent)
-    {
-      foreach (XmlElement xmlReg in xml.SelectNodes("region"))
-      {
-        var type = DefaultRegionType;
-
-        ReadType(xmlReg, "type", ref type, false);
-
-        if (!typeof(Region).IsAssignableFrom(type))
-        {
-          Console.WriteLine("Invalid region type '{0}' in regions.xml", type.FullName);
-          continue;
-        }
-
-        Region region;
-        try
-        {
-          region = (Region)ActivatorUtil.CreateInstance(type, xmlReg, map, parent);
-        }
-        catch (Exception ex)
-        {
-          Console.WriteLine("Error during the creation of region type '{0}': {1}", type.FullName, ex);
-          continue;
-        }
-
-        region.Register();
-
-        LoadRegions(xmlReg, map, region);
-      }
-    }
-
-    protected static string GetAttribute(XmlElement xml, string attribute, bool mandatory)
-    {
-      if (xml == null)
-      {
-        if (mandatory)
-          Console.WriteLine("Missing element for attribute '{0}'", attribute);
-
-        return null;
-      }
-
-      if (xml.HasAttribute(attribute)) return xml.GetAttribute(attribute);
-      if (mandatory)
-        Console.WriteLine("Missing attribute '{0}' in element '{1}'", attribute, xml.Name);
-
-      return null;
-    }
-
-    public static bool ReadString(XmlElement xml, string attribute, ref string value) =>
-      ReadString(xml, attribute, ref value, true);
-
-    public static bool ReadString(XmlElement xml, string attribute, ref string value, bool mandatory)
-    {
-      var s = GetAttribute(xml, attribute, mandatory);
-
-      if (s == null)
-        return false;
-
-      value = s;
-      return true;
-    }
-
-    public static bool ReadInt32(XmlElement xml, string attribute, ref int value) =>
-      ReadInt32(xml, attribute, ref value, true);
-
-    public static bool ReadInt32(XmlElement xml, string attribute, ref int value, bool mandatory)
-    {
-      var s = GetAttribute(xml, attribute, mandatory);
-
-      if (s == null)
-        return false;
-
-      try
-      {
-        value = XmlConvert.ToInt32(s);
-      }
-      catch
-      {
-        Console.WriteLine("Could not parse integer attribute '{0}' in element '{1}'", attribute, xml.Name);
-        return false;
-      }
-
-      return true;
-    }
-
-    public static bool ReadBoolean(XmlElement xml, string attribute, ref bool value) =>
-      ReadBoolean(xml, attribute, ref value, true);
-
-    public static bool ReadBoolean(XmlElement xml, string attribute, ref bool value, bool mandatory)
-    {
-      var s = GetAttribute(xml, attribute, mandatory);
-
-      if (s == null)
-        return false;
-
-      try
-      {
-        value = XmlConvert.ToBoolean(s);
-      }
-      catch
-      {
-        Console.WriteLine("Could not parse boolean attribute '{0}' in element '{1}'", attribute, xml.Name);
-        return false;
-      }
-
-      return true;
-    }
-
-    public static bool ReadDateTime(XmlElement xml, string attribute, ref DateTime value) =>
-      ReadDateTime(xml, attribute, ref value, true);
-
-    public static bool ReadDateTime(XmlElement xml, string attribute, ref DateTime value, bool mandatory)
-    {
-      var s = GetAttribute(xml, attribute, mandatory);
-
-      if (s == null)
-        return false;
-
-      try
-      {
-        value = XmlConvert.ToDateTime(s, XmlDateTimeSerializationMode.Utc);
-      }
-      catch
-      {
-        Console.WriteLine("Could not parse DateTime attribute '{0}' in element '{1}'", attribute, xml.Name);
-        return false;
-      }
-
-      return true;
-    }
-
-    public static bool ReadTimeSpan(XmlElement xml, string attribute, ref TimeSpan value) =>
-      ReadTimeSpan(xml, attribute, ref value, true);
-
-    public static bool ReadTimeSpan(XmlElement xml, string attribute, ref TimeSpan value, bool mandatory)
-    {
-      var s = GetAttribute(xml, attribute, mandatory);
-
-      if (s == null)
-        return false;
-
-      try
-      {
-        value = XmlConvert.ToTimeSpan(s);
-      }
-      catch
-      {
-        Console.WriteLine("Could not parse TimeSpan attribute '{0}' in element '{1}'", attribute, xml.Name);
-        return false;
-      }
-
-      return true;
-    }
-
-    public static bool ReadEnum<T>(XmlElement xml, string attribute, ref T value) where T : struct =>
-      ReadEnum(xml, attribute, ref value, true);
-
-    public static bool ReadEnum<T>(XmlElement xml, string attribute, ref T value, bool mandatory)
-      where T : struct // We can't limit the where clause to Enums only
-    {
-      var s = GetAttribute(xml, attribute, mandatory);
-
-      if (s == null)
-        return false;
-
-      var type = typeof(T);
-
-      if (type.IsEnum && Enum.TryParse(s, true, out T tempVal))
-      {
-        value = tempVal;
-        return true;
-      }
-
-      Console.WriteLine("Could not parse {0} enum attribute '{1}' in element '{2}'", type, attribute, xml.Name);
-      return false;
-    }
-
-    public static bool ReadMap(XmlElement xml, string attribute, ref Map value) => ReadMap(xml, attribute, ref value, true);
-
-    public static bool ReadMap(XmlElement xml, string attribute, ref Map value, bool mandatory)
-    {
-      var s = GetAttribute(xml, attribute, mandatory);
-
-      if (s == null)
-        return false;
-
-      try
-      {
-        value = Map.Parse(s);
-      }
-      catch
-      {
-        Console.WriteLine("Could not parse Map attribute '{0}' in element '{1}'", attribute, xml.Name);
-        return false;
-      }
-
-      return true;
-    }
-
-    public static bool ReadType(XmlElement xml, string attribute, ref Type value) =>
-      ReadType(xml, attribute, ref value, true);
-
-    public static bool ReadType(XmlElement xml, string attribute, ref Type value, bool mandatory)
-    {
-      var s = GetAttribute(xml, attribute, mandatory);
-
-      if (s == null)
-        return false;
-
-      Type type;
-      try
-      {
-        type = AssemblyHandler.FindFirstTypeForName(s);
-      }
-      catch
-      {
-        Console.WriteLine("Could not parse Type attribute '{0}' in element '{1}'", attribute, xml.Name);
-        return false;
-      }
-
-      if (type == null)
-      {
-        Console.WriteLine("Could not find Type '{0}'", s);
-        return false;
-      }
-
-      value = type;
-      return true;
-    }
-
-    public static bool ReadPoint3D(XmlElement xml, Map map, ref Point3D value) => ReadPoint3D(xml, map, ref value, true);
-
-    public static bool ReadPoint3D(XmlElement xml, Map map, ref Point3D value, bool mandatory)
-    {
-      int x = 0, y = 0, z = 0;
-
-      var xyOk = ReadInt32(xml, "x", ref x, mandatory) & ReadInt32(xml, "y", ref y, mandatory);
-      var zOk = ReadInt32(xml, "z", ref z, mandatory && map == null);
-
-      if (xyOk && (zOk || map != null))
-      {
-        if (!zOk)
-          z = map.GetAverageZ(x, y);
-
-        value = new Point3D(x, y, z);
-        return true;
-      }
-
-      return false;
-    }
-
-    public static bool ReadRectangle3D(XmlElement xml, int defaultMinZ, int defaultMaxZ, out Rectangle3D value) =>
-      ReadRectangle3D(xml, defaultMinZ, defaultMaxZ, out value, true);
-
-    public static bool ReadRectangle3D(XmlElement xml, int defaultMinZ, int defaultMaxZ, out Rectangle3D value,
-      bool mandatory)
-    {
-      int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-      var z1 = defaultMinZ;
-      var z2 = defaultMaxZ;
-
-      if (xml.HasAttribute("x"))
-      {
-        if (ReadInt32(xml, "x", ref x1, mandatory)
-            & ReadInt32(xml, "y", ref y1, mandatory)
-            & ReadInt32(xml, "width", ref x2, mandatory)
-            & ReadInt32(xml, "height", ref y2, mandatory))
-        {
-          x2 += x1;
-          y2 += y1;
-        }
-        else
-        {
-          value = new Rectangle3D(new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
-          return false;
-        }
-      }
-      else
-      {
-        if (!ReadInt32(xml, "x1", ref x1, mandatory)
-            | !ReadInt32(xml, "y1", ref y1, mandatory)
-            | !ReadInt32(xml, "x2", ref x2, mandatory)
-            | !ReadInt32(xml, "y2", ref y2, mandatory))
-        {
-          value = new Rectangle3D(new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
-          return false;
-        }
-      }
-
-      ReadInt32(xml, "zmin", ref z1, false);
-      ReadInt32(xml, "zmax", ref z2, false);
-
-      value = new Rectangle3D(new Point3D(x1, y1, z1), new Point3D(x2, y2, z2));
-
-      return true;
     }
   }
 }

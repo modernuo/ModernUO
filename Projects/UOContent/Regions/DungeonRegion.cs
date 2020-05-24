@@ -1,29 +1,22 @@
-using System.Xml;
+using System.Text.Json;
+using Server.Json;
 
 namespace Server.Regions
 {
   public class DungeonRegion : BaseRegion
   {
-    private Point3D m_EntranceLocation;
-
-    public DungeonRegion(XmlElement xml, Map map, Region parent) : base(xml, map, parent)
+    public DungeonRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
     {
-      XmlElement entrEl = xml["entrance"];
+      if (json.GetProperty("map", options, out Map map))
+        EntranceMap = map;
 
-      Map entrMap = map;
-      ReadMap(entrEl, "map", ref entrMap, false);
-
-      if (ReadPoint3D(entrEl, entrMap, ref m_EntranceLocation, false))
-        EntranceMap = entrMap;
+      if (json.GetProperty("entrance", options, out Point3D entrance))
+        EntranceLocation = entrance;
     }
 
     public override bool YoungProtected => false;
 
-    public Point3D EntranceLocation
-    {
-      get => m_EntranceLocation;
-      set => m_EntranceLocation = value;
-    }
+    public Point3D EntranceLocation { get; set; }
 
     public Map EntranceMap { get; set; }
 
@@ -34,12 +27,6 @@ namespace Server.Regions
       global = LightCycle.DungeonLevel;
     }
 
-    public override bool CanUseStuckMenu(Mobile m)
-    {
-      if (Map == Map.Felucca)
-        return false;
-
-      return base.CanUseStuckMenu(m);
-    }
+    public override bool CanUseStuckMenu(Mobile m) => Map != Map.Felucca && base.CanUseStuckMenu(m);
   }
 }
