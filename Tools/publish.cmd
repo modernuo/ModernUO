@@ -7,7 +7,7 @@ if [[ -z $2 ]]
 then
   c="-c Release"
 else
-  c=-c $2
+  c="-c $2"
 fi
 
 Tools/build-native-libraries.cmd $2
