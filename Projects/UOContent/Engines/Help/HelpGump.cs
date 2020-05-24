@@ -254,7 +254,7 @@ namespace Server.Engines.Help
             {
               from.Location = house.BanLocation;
             }
-            else if (from.Region.IsPartOf<Jail>())
+            else if (from.Region.IsPartOf<JailRegion>())
             {
               from.SendLocalizedMessage(1114345, "", 0x35); // You'll need a better jailbreak plan than that!
             }
@@ -313,7 +313,7 @@ namespace Server.Engines.Help
           {
             if (IsYoung(from))
             {
-              if (from.Region.IsPartOf<Jail>())
+              if (from.Region.IsPartOf<JailRegion>())
                 from.SendLocalizedMessage(1114345, "", 0x35); // You'll need a better jailbreak plan than that!
               else if (from.Region.IsPartOf("Haven Island"))
                 from.SendLocalizedMessage(1041529); // You're already in Haven

@@ -4119,7 +4119,7 @@ namespace Server.Mobiles
 
     public bool YoungDeathTeleport()
     {
-      if (Region.IsPartOf<Jail>()
+      if (Region.IsPartOf<JailRegion>()
           || Region.IsPartOf("Samurai start location")
           || Region.IsPartOf("Ninja start location")
           || Region.IsPartOf("Ninja cave"))

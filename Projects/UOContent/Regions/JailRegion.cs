@@ -3,9 +3,9 @@ using Server.Json;
 
 namespace Server.Regions
 {
-  public class Jail : BaseRegion
+  public class JailRegion : BaseRegion
   {
-    public Jail(DynamicJson json, JsonSerializerOptions options) : base(json, options)
+    public JailRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
     {
     }
 

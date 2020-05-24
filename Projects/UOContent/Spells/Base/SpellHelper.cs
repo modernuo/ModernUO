@@ -591,7 +591,7 @@ namespace Server.Spells
         return false;
       }
 
-      if (caster?.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf<Jail>())
+      if (caster?.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf<JailRegion>())
       {
         caster.SendLocalizedMessage(1114345); // You'll need a better jailbreak plan than that!
         return false;
@@ -606,6 +606,15 @@ namespace Server.Spells
 
       int v = (int)type;
       bool isValid = true;
+
+      if (caster != null)
+      {
+        BaseRegion destination = Region.Find(loc, map) as BaseRegion;
+        BaseRegion current = Region.Find(caster.Location, map) as BaseRegion;
+
+        if (destination?.CheckTravel(caster, loc, type) == false || current?.CheckTravel(caster, loc, type) == false)
+          isValid = false;
+      }
 
       for (int i = 0; isValid && i < m_Validators.Length; ++i)
         isValid = m_Rules[v, i] || !m_Validators[i](map, loc);
@@ -675,15 +684,10 @@ namespace Server.Spells
              || (x >= 1188 && y >= 509 && x < 1201 && y < 513);
     }
 
-    public static bool IsSafeZone(Map map, Point3D loc)
-    {
-      if (Region.Find(loc, map).IsPartOf<SafeZone>() &&
-          (m_TravelType == TravelCheckType.TeleportTo || m_TravelType == TravelCheckType.TeleportFrom)
-          && (m_TravelCaster as PlayerMobile)?.DuelPlayer?.Eliminated == false)
-        return true;
-
-      return false;
-    }
+    public static bool IsSafeZone(Map map, Point3D loc) =>
+      Region.Find(loc, map).IsPartOf<SafeZone>() &&
+      (m_TravelType == TravelCheckType.TeleportTo || m_TravelType == TravelCheckType.TeleportFrom)
+      && (m_TravelCaster as PlayerMobile)?.DuelPlayer?.Eliminated == false;
 
     public static bool IsFactionStronghold(Map map, Point3D loc) => Region.Find(loc, map).IsPartOf<StrongholdRegion>();
 

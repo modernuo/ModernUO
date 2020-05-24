@@ -65,7 +65,8 @@ namespace Server.Utilities
       }
       catch (Exception e)
       {
-        throw new TypeInitializationException(type.ToString(), e);
+        Console.WriteLine(e);
+        throw;
       }
     }
 

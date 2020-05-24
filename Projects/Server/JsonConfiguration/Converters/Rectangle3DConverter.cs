@@ -122,7 +122,7 @@ namespace Server.Json
           throw new JsonException("Rectangle3D must have a start/end, or x/y/z/w/h/d, but not both.");
 
         objType = 1;
-        data[i / 10] = reader.GetInt32();
+        data[i - 10] = reader.GetInt32();
       }
 
       return objType == 0

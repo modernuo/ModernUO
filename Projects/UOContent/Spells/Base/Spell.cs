@@ -411,9 +411,9 @@ namespace Server.Spells
       {
         Caster.SendLocalizedMessage(502642); // You are already casting a spell.
       }
-      else if ((BlockedByHorrificBeast &&
-               TransformationSpellHelper.UnderTransformation(Caster, typeof(HorrificBeastSpell))) ||
-               (BlockedByAnimalForm && AnimalForm.UnderTransformation(Caster)))
+      else if (BlockedByHorrificBeast &&
+               TransformationSpellHelper.UnderTransformation(Caster, typeof(HorrificBeastSpell)) ||
+               BlockedByAnimalForm && AnimalForm.UnderTransformation(Caster))
       {
         Caster.SendLocalizedMessage(1061091); // You cannot cast that spell in this form.
       }

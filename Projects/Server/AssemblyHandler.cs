@@ -58,7 +58,8 @@ namespace Server
 
     public static TypeCache GetTypeCache(Assembly asm)
     {
-      if (asm == null) return m_NullCache ??= new TypeCache(null);
+      if (asm == null)
+        return m_NullCache ??= new TypeCache(null);
 
       if (m_TypeCaches.TryGetValue(asm, out var c))
         return c;
@@ -68,6 +69,8 @@ namespace Server
 
     public static Type FindFirstTypeForName(string name, bool ignoreCase = false, Func<Type, bool> predicate = null)
     {
+      if (string.IsNullOrWhiteSpace(name)) return null;
+
       var types = FindTypesByName(name, ignoreCase).ToList();
       if (types.Count == 0)
         return null;
@@ -87,14 +90,19 @@ namespace Server
              types[0];
     }
 
-    public static IEnumerable<Type> FindTypesByName(string name, bool ignoreCase = false)
+    public static List<Type> FindTypesByName(string name, bool ignoreCase = false)
     {
       var types = new List<Type>();
+
       if (ignoreCase)
         name = name.ToLower();
-      for (var i = 0; i < Assemblies.Length; i++) types.AddRange(GetTypeCache(Assemblies[i])[name]);
+
+      for (var i = 0; i < Assemblies.Length; i++)
+        types.AddRange(GetTypeCache(Assemblies[i])[name]);
+
       if (types.Count == 0)
         types.AddRange(GetTypeCache(Core.Assembly)[name]);
+
       return types;
     }
 
@@ -122,6 +130,7 @@ namespace Server
     public TypeCache(Assembly asm)
     {
       m_Types = asm?.GetTypes() ?? Type.EmptyTypes;
+
       var nameMap = new Dictionary<string, HashSet<int>>();
       HashSet<int> refs;
       Action<int, string> addToRefs = (index, key) =>
@@ -136,6 +145,7 @@ namespace Server
           nameMap.Add(key, refs);
         }
       };
+
       var aliasType = typeof(TypeAliasAttribute);
       for (var i = 0; i < m_Types.Length; i++)
       {

@@ -1148,7 +1148,7 @@ namespace Server.Engines.ConPVP
         if (!pm.CheckAlive())
         {
         }
-        else if (pm.Region.IsPartOf<Jail>())
+        else if (pm.Region.IsPartOf<JailRegion>())
         {
         }
         else if (CheckCombat(pm))
@@ -1942,7 +1942,7 @@ namespace Server.Engines.ConPVP
           if (dp == null)
             return "a slot is empty";
 
-          if (dp.Mobile.Region.IsPartOf<Jail>())
+          if (dp.Mobile.Region.IsPartOf<JailRegion>())
             return $"{dp.Mobile.Name} is in jail";
 
           if (Sigil.ExistsOn(dp.Mobile))

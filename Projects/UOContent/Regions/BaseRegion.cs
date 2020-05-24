@@ -4,6 +4,7 @@ using System.Text.Json;
 using Server.Gumps;
 using Server.Json;
 using Server.Mobiles;
+using Server.Spells;
 
 namespace Server.Regions
 {
@@ -158,5 +159,7 @@ namespace Server.Regions
     }
 
     public override string ToString() => Name ?? RuneName ?? GetType().Name;
+
+    public virtual bool CheckTravel(Mobile m, Point3D newLocation, TravelCheckType travelType) => true;
   }
 }

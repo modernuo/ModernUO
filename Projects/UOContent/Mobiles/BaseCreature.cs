@@ -2689,7 +2689,7 @@ namespace Server.Mobiles
     }
 
     public override bool CanBeRenamedBy(Mobile from) =>
-      (Controlled && from == ControlMaster && !from.Region.IsPartOf<Jail>()) ||
+      (Controlled && from == ControlMaster && !from.Region.IsPartOf<JailRegion>()) ||
       base.CanBeRenamedBy(from);
 
     public bool SetControlMaster(Mobile m)

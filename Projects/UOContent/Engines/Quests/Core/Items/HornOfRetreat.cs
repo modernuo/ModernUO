@@ -162,7 +162,7 @@ namespace Server.Engines.Quests
 
     public override void UseGate(Mobile m)
     {
-      if (m.Region.IsPartOf<Jail>())
+      if (m.Region.IsPartOf<JailRegion>())
       {
         m.SendLocalizedMessage(1114345); // You'll need a better jailbreak plan than that!
       }

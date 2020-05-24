@@ -148,7 +148,7 @@ namespace Server
     public Region(DynamicJson json, JsonSerializerOptions options)
     {
       Map = json.GetProperty("map", options, out Map map) ? map : null;
-      Parent = GetRegion(json.GetProperty("parent", options, out string parent) ? parent : null);
+      Parent = json.GetProperty("parent", options, out string parent) ? Find(parent, Map) : null;
       Dynamic = false;
 
       if (Parent == null)
@@ -184,7 +184,7 @@ namespace Server
         var x = start.X + (end.X - start.X) / 2;
         var y = start.Y + (end.Y - start.Y) / 2;
 
-        m_GoLocation = new Point3D(x, y, Map.GetAverageZ(x, y));
+        m_GoLocation = new Point3D(x, y, Map?.GetAverageZ(x, y) ?? start.Z + (end.Z - start.Z) / 2);
       }
 
       Music = json.GetEnumProperty("music", options, out MusicName music) ? music : DefaultMusic;
@@ -250,6 +250,29 @@ namespace Server
         return regPriority - thisPriority;
 
       return reg.ChildLevel - ChildLevel;
+    }
+
+    // This is not optimized. Use sparingly
+    public static Region Find(string name, Map map, bool insensitive = false)
+    {
+      if (insensitive)
+        name = name.ToLower();
+
+      for (int i = 0; i < Regions.Count; i++)
+      {
+        var region = Regions[i];
+        if (region.Map != map)
+          continue;
+
+        string rName = region.Name;
+        if (insensitive)
+          rName = rName.ToLower();
+
+        if (rName == name)
+          return region;
+      }
+
+      return null;
     }
 
     public static Region Find(Point3D p, Map map)
