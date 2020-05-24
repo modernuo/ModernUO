@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Server.Accounting.Security
+namespace System.Security.Cryptography
 {
   /// <summary>
   /// HashMetadata represents the information stored in the encoded Argon2 format

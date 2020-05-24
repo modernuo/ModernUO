@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Server.Accounting.Security
+﻿namespace System.Security.Cryptography
 {
   /// <summary>
   /// An exception class to wrap the errors returned by Daniel Dinu and Dmitry Khovratovich's Argon2 library.

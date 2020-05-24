@@ -1,10 +1,8 @@
-using System;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Text;
 // using System.Text.RegularExpressions;
 
-namespace Server.Accounting.Security
+namespace System.Security.Cryptography
 {
   /// <summary>
   /// PasswordHasher is a class for creating Argon2 hashes and verifying them. This is a wrapper around

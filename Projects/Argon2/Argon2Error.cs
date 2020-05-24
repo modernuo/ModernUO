@@ -1,4 +1,4 @@
-﻿namespace Server.Accounting.Security
+﻿namespace System.Security.Cryptography
 {
   /// <summary>
   /// An enumeration of the possible error codes which are returned from Daniel Dinu and

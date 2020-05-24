@@ -1,7 +1,6 @@
-using System;
 using System.Runtime.InteropServices;
 
-namespace Server.Accounting.Security
+namespace System.Security.Cryptography
 {
   internal interface IArgon2
   {
@@ -21,10 +20,13 @@ namespace Server.Accounting.Security
   internal static class Argon2
   {
     internal static readonly IArgon2 Library;
+    internal static readonly bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+    internal static readonly bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
+    internal static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
     static Argon2()
     {
-      if (RuntimeUtility.IsUnix)
+      if (IsLinux || IsFreeBSD || IsDarwin)
         Library = new UnixArgon2();
       else
         Library = new WindowsArgon2();
