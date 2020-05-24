@@ -1,14 +1,17 @@
 [
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 2,
     "entries": [{ "maxCount": 1, "name": "Tailor", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "TerMur"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 34,
     "entries": [
       { "maxCount": 5, "name": "Bird", "probability": 100 },
@@ -22,10 +25,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [851, 3635, -43],
-    "map": "TerMur"
+    "location": [851, 3635, -43]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 24,
     "entries": [
       { "maxCount": 2, "name": "SilverSerpent", "probability": 100 },
@@ -37,10 +41,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:03:00",
-    "location": [1128, 3479, -42],
-    "map": "TerMur"
+    "location": [1128, 3479, -42]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 25,
     "entries": [
       { "maxCount": 5, "name": "SilverSerpent", "probability": 100 },
@@ -50,10 +55,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [816, 658, 22],
-    "map": "TerMur"
+    "location": [816, 658, 22]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 71,
     "entries": [
       { "maxCount": 10, "name": "LavaLizard", "probability": 100 },
@@ -65,10 +71,11 @@
     "walkingRange": 5,
     "maxDelay": "00:02:00",
     "minDelay": "00:02:00",
-    "location": [581, 898, -73],
-    "map": "TerMur"
+    "location": [581, 898, -73]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 13,
     "entries": [
       { "maxCount": 8, "name": "Pixie", "probability": 100 },
@@ -78,10 +85,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [344, 618, 26],
-    "map": "TerMur"
+    "location": [344, 618, 26]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 16,
     "entries": [
       { "maxCount": 4, "name": "LavaSerpent", "probability": 100 },
@@ -92,69 +100,76 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [452, 3133, 38],
-    "map": "TerMur"
+    "location": [452, 3133, 38]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Healer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [715, 3423, -20],
-    "map": "TerMur"
+    "location": [715, 3423, -20]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 7,
     "entries": [{ "maxCount": 2, "name": "FireGargoyle", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:04:00",
     "minDelay": "00:03:00",
-    "location": [399, 3128, 37],
-    "map": "TerMur"
+    "location": [399, 3128, 37]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 10,
     "entries": [{ "maxCount": 10, "name": "HellHound", "probability": 100 }],
     "homeRange": 25,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [689, 485, -15],
-    "map": "TerMur"
+    "location": [689, 485, -15]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Carpenter", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "TerMur"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 12,
     "entries": [{ "maxCount": 2, "name": "SilverSerpent", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 15,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [35, 99, -5],
-    "map": "TerMur"
+    "location": [35, 99, -5]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Healer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [784, 3490, -20],
-    "map": "TerMur"
+    "location": [784, 3490, -20]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 9,
     "entries": [
       { "maxCount": 4, "name": "Snake", "probability": 100 },
@@ -165,20 +180,22 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [698, 773, 28],
-    "map": "TerMur"
+    "location": [698, 773, 28]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Tailor", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [702, 3434, -20],
-    "map": "TerMur"
+    "location": [702, 3434, -20]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 81,
     "entries": [
       { "maxCount": 10, "name": "PatchworkSkeleton", "probability": 100 },
@@ -192,10 +209,11 @@
     "walkingRange": 5,
     "maxDelay": "00:05:00",
     "minDelay": "00:05:00",
-    "location": [676, 831, -109],
-    "map": "TerMur"
+    "location": [676, 831, -109]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 18,
     "entries": [
       { "maxCount": 1, "name": "Hydra", "probability": 100 },
@@ -208,60 +226,66 @@
     "walkingRange": 5,
     "maxDelay": "00:02:00",
     "minDelay": "00:02:00",
-    "location": [764, 746, 23],
-    "map": "TerMur"
+    "location": [764, 746, 23]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 9,
     "entries": [{ "maxCount": 5, "name": "GreaterMongbat", "probability": 100 }],
     "homeRange": 15,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1152, 3640, -42],
-    "map": "TerMur"
+    "location": [1152, 3640, -42]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Mage", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [772, 3486, -20],
-    "map": "TerMur"
+    "location": [772, 3486, -20]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "Baker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [974, 3881, -42],
-    "map": "TerMur"
+    "location": [974, 3881, -42]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Farmer", "probability": 100 }],
     "homeRange": 1,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [716, 3445, -19],
-    "map": "TerMur"
+    "location": [716, 3445, -19]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "Farmer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [791, 3448, -10],
-    "map": "TerMur"
+    "location": [791, 3448, -10]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 4,
     "entries": [
       { "maxCount": 2, "name": "FireElemental", "probability": 100 },
@@ -271,10 +295,11 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [432, 3071, 39],
-    "map": "TerMur"
+    "location": [432, 3071, 39]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "Cook", "probability": 100 },
@@ -284,10 +309,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [806, 3491, -20],
-    "map": "TerMur"
+    "location": [806, 3491, -20]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 19,
     "entries": [
       { "maxCount": 10, "name": "Bird", "probability": 100 },
@@ -297,10 +323,11 @@
     "walkingRange": 20,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [586, 3283, 37],
-    "map": "TerMur"
+    "location": [586, 3283, 37]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 10,
     "entries": [
       { "maxCount": 7, "name": "DesertOstard", "probability": 100 },
@@ -311,20 +338,22 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1035, 2993, 50],
-    "map": "TerMur"
+    "location": [1035, 2993, 50]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Provisioner", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [793, 3491, -20],
-    "map": "TerMur"
+    "location": [793, 3491, -20]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "FireElemental", "probability": 100 },
@@ -334,30 +363,33 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [416, 2939, 36],
-    "map": "TerMur"
+    "location": [416, 2939, 36]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 3,
     "entries": [{ "maxCount": 1, "name": "Alchemist", "probability": 100 }],
     "homeRange": 2,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [771, 3475, -20],
-    "map": "TerMur"
+    "location": [771, 3475, -20]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Jeweler", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [778, 3430, -10],
-    "map": "TerMur"
+    "location": [778, 3430, -10]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 15,
     "entries": [
       { "maxCount": 12, "name": "DesertOstard", "probability": 100 },
@@ -368,10 +400,11 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1055, 2987, 62],
-    "map": "TerMur"
+    "location": [1055, 2987, 62]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 10,
     "entries": [
       { "maxCount": 3, "name": "FireGargoyle", "probability": 100 },
@@ -381,39 +414,43 @@
     "walkingRange": 25,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [365, 2952, 40],
-    "map": "TerMur"
+    "location": [365, 2952, 40]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "Blacksmith", "probability": 100 }],
     "homeRange": 2,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "TerMur"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 5,
     "entries": [{ "maxCount": 4, "name": "GiantSerpent", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:03:00",
     "minDelay": "00:03:00",
-    "location": [775, 770, 23],
-    "map": "TerMur"
+    "location": [775, 770, 23]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "HeadlessOne", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [365, 3138, 36],
-    "map": "TerMur"
+    "location": [365, 3138, 36]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 15,
     "entries": [
       { "maxCount": 12, "name": "DesertOstard", "probability": 100 },
@@ -424,30 +461,33 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1074, 3008, 63],
-    "map": "TerMur"
+    "location": [1074, 3008, 63]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "Barkeeper", "probability": 100 }],
     "homeRange": 1,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [713, 3438, -19],
-    "map": "TerMur"
+    "location": [713, 3438, -19]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 5,
     "entries": [{ "maxCount": 4, "name": "GiantSerpent", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:03:00",
     "minDelay": "00:03:00",
-    "location": [806, 734, 22],
-    "map": "TerMur"
+    "location": [806, 734, 22]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 12,
     "entries": [
       { "maxCount": 4, "name": "LavaSnake", "probability": 100 },
@@ -457,10 +497,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [511, 3042, 38],
-    "map": "TerMur"
+    "location": [511, 3042, 38]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 11,
     "entries": [
       { "maxCount": 8, "name": "DesertOstard", "probability": 100 },
@@ -471,38 +512,42 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1040, 3004, 50],
-    "map": "TerMur"
+    "location": [1040, 3004, 50]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 11,
     "entries": [{ "maxCount": 3, "name": "HeadlessOne", "probability": 100 }],
     "homeRange": 25,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [475, 3188, 37],
-    "map": "TerMur"
+    "location": [475, 3188, 37]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Tinker", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "TerMur"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 18,
     "entries": [{ "maxCount": 5, "name": "SilverSerpent", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 15,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "TerMur"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 20,
     "entries": [
       { "maxCount": 6, "name": "GiantSerpent", "probability": 100 },
@@ -513,10 +558,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [735, 687, -47],
-    "map": "TerMur"
+    "location": [735, 687, -47]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 18,
     "entries": [
       { "maxCount": 4, "name": "SilverSerpent", "probability": 100 },
@@ -526,10 +572,11 @@
     "walkingRange": 5,
     "maxDelay": "00:04:00",
     "minDelay": "00:03:00",
-    "location": [1165, 3366, -42],
-    "map": "TerMur"
+    "location": [1165, 3366, -42]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 4,
     "entries": [
       { "maxCount": 1, "name": "Hydra", "probability": 100 },
@@ -539,30 +586,33 @@
     "walkingRange": 5,
     "maxDelay": "00:02:00",
     "minDelay": "00:02:00",
-    "location": [795, 759, 23],
-    "map": "TerMur"
+    "location": [795, 759, 23]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 5,
     "entries": [{ "maxCount": 3, "name": "Efreet", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 15,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [465, 3042, 19],
-    "map": "TerMur"
+    "location": [465, 3042, 19]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Weaponsmith", "probability": 100 }],
     "homeRange": 1,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [726, 3427, -20],
-    "map": "TerMur"
+    "location": [726, 3427, -20]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 22,
     "entries": [
       { "maxCount": 4, "name": "SilverSerpent", "probability": 100 },
@@ -573,10 +623,11 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [555, 3495, 38],
-    "map": "TerMur"
+    "location": [555, 3495, 38]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 48,
     "entries": [
       { "maxCount": 7, "name": "SilverSerpent", "probability": 100 },
@@ -587,10 +638,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [534, 3421, 37],
-    "map": "TerMur"
+    "location": [534, 3421, 37]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 35,
     "entries": [
       { "maxCount": 5, "name": "Horse", "probability": 100 },
@@ -603,10 +655,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [808, 3228, 40],
-    "map": "TerMur"
+    "location": [808, 3228, 40]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 8,
     "entries": [
       { "maxCount": 2, "name": "FireElemental", "probability": 100 },
@@ -616,10 +669,11 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [465, 2977, 34],
-    "map": "TerMur"
+    "location": [465, 2977, 34]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 13,
     "entries": [
       { "maxCount": 10, "name": "DesertOstard", "probability": 100 },
@@ -630,20 +684,22 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1030, 2959, 61],
-    "map": "TerMur"
+    "location": [1030, 2959, 61]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 5,
     "entries": [{ "maxCount": 4, "name": "GiantSerpent", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 5,
     "maxDelay": "00:02:00",
     "minDelay": "00:02:00",
-    "location": [795, 771, 22],
-    "map": "TerMur"
+    "location": [795, 771, 22]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 21,
     "entries": [
       { "maxCount": 5, "name": "Snake", "probability": 100 },
@@ -654,10 +710,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [649, 703, 13],
-    "map": "TerMur"
+    "location": [649, 703, 13]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 9,
     "entries": [
       { "maxCount": 2, "name": "Efreet", "probability": 100 },
@@ -668,10 +725,11 @@
     "walkingRange": 25,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [386, 3062, 29],
-    "map": "TerMur"
+    "location": [386, 3062, 29]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 11,
     "entries": [
       { "maxCount": 8, "name": "DesertOstard", "probability": 100 },
@@ -682,20 +740,22 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1089, 2979, 51],
-    "map": "TerMur"
+    "location": [1089, 2979, 51]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Carpenter", "probability": 100 }],
     "homeRange": 1,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [728, 3445, -20],
-    "map": "TerMur"
+    "location": [728, 3445, -20]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 85,
     "entries": [
       { "maxCount": 10, "name": "Horse", "probability": 100 },
@@ -705,20 +765,22 @@
     "walkingRange": 75,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [810, 3800, -42],
-    "map": "TerMur"
+    "location": [810, 3800, -42]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 5,
     "entries": [{ "maxCount": 4, "name": "GiantSerpent", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:03:00",
     "minDelay": "00:03:00",
-    "location": [778, 732, 23],
-    "map": "TerMur"
+    "location": [778, 732, 23]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "Blacksmith", "probability": 100 },
@@ -728,10 +790,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1012, 3881, -42],
-    "map": "TerMur"
+    "location": [1012, 3881, -42]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 30,
     "entries": [
       { "maxCount": 5, "name": "Bird", "probability": 100 },
@@ -745,20 +808,22 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [997, 3904, -42],
-    "map": "TerMur"
+    "location": [997, 3904, -42]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "Healer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1018, 3907, -42],
-    "map": "TerMur"
+    "location": [1018, 3907, -42]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 50,
     "entries": [
       { "maxCount": 20, "name": "GiantBlackWidow", "probability": 100 },
@@ -768,39 +833,43 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1111, 3733, -42],
-    "map": "TerMur"
+    "location": [1111, 3733, -42]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Tanner", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "TerMur"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "WanderingHealer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [487, 3748, -32],
-    "map": "TerMur"
+    "location": [487, 3748, -32]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 9,
     "entries": [{ "maxCount": 1, "name": "NetherBoltScroll", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [657, 2906, -3],
-    "map": "TerMur"
+    "location": [657, 2906, -3]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "LavaLizard", "probability": 100 },
@@ -810,27 +879,28 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [418, 2982, 26],
-    "map": "TerMur"
+    "location": [418, 2982, 26]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "FireGargoyle", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [375, 2999, -2],
-    "map": "TerMur"
+    "location": [375, 2999, -2]
   },
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Butcher", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [911, 3998, -40],
-    "map": "TerMur"
+    "location": [911, 3998, -40]
   }
 ]

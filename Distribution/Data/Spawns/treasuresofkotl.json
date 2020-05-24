@@ -1,5 +1,7 @@
 [
   {
+    "type": "Spawner",
+    "map": "TerMur",
     "count": 14,
     "entries": [
       { "maxCount": 7, "name": "FireElemental", "probability": 100 },
@@ -9,7 +11,6 @@
     "walkingRange": 5,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [541, 2406, 10],
-    "map": "TerMur"
+    "location": [541, 2406, 10]
   }
 ]

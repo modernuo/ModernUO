@@ -15,10 +15,10 @@ namespace Server.Regions
     private readonly Dictionary<Mobile, GuardTimer> m_GuardCandidates = new Dictionary<Mobile, GuardTimer>();
     private readonly Type m_GuardType;
 
-    public GuardedRegion(string name, Map map, int priority, params Rectangle3D[] area) : base(name, map, priority, area) => m_GuardType = DefaultGuardType;
+    public GuardedRegion(string name, Map map, int priority, params Rectangle3D[] area) : base(name, map, priority, area) =>
+      m_GuardType = DefaultGuardType;
 
-    public GuardedRegion(string name, Map map, int priority, params Rectangle2D[] area)
-      : base(name, map, priority, area) =>
+    public GuardedRegion(string name, Map map, int priority, params Rectangle2D[] area) : base(name, map, priority, area) =>
       m_GuardType = DefaultGuardType;
 
     public GuardedRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
@@ -99,10 +99,9 @@ namespace Server.Regions
         {
           reg.Disabled = !e.GetBoolean(0);
 
-          if (reg.Disabled)
-            from.SendMessage("The guards in this region have been disabled.");
-          else
-            from.SendMessage("The guards in this region have been enabled.");
+          @from.SendMessage(reg.Disabled
+            ? "The guards in this region have been disabled."
+            : "The guards in this region have been enabled.");
         }
       }
       else
@@ -126,10 +125,9 @@ namespace Server.Regions
       {
         reg.Disabled = !reg.Disabled;
 
-        if (reg.Disabled)
-          from.SendMessage("The guards in this region have been disabled.");
-        else
-          from.SendMessage("The guards in this region have been enabled.");
+        from.SendMessage(reg.Disabled
+          ? "The guards in this region have been disabled."
+          : "The guards in this region have been enabled.");
       }
     }
 
@@ -139,13 +137,8 @@ namespace Server.Regions
       return reg;
     }
 
-    public virtual bool CheckVendorAccess(BaseVendor vendor, Mobile from)
-    {
-      if (from.AccessLevel >= AccessLevel.GameMaster || IsDisabled())
-        return true;
-
-      return from.Kills < 5;
-    }
+    public virtual bool CheckVendorAccess(BaseVendor vendor, Mobile from) =>
+      from.AccessLevel >= AccessLevel.GameMaster || IsDisabled() || from.Kills < 5;
 
     public override bool OnBeginSpellCast(Mobile m, ISpell s)
     {
@@ -299,7 +292,7 @@ namespace Server.Regions
 
       foreach (Mobile m in eable)
         if (IsGuardCandidate(m) &&
-            ((!AllowReds && m.Kills >= 5 && m.Region.IsPartOf(this)) || m_GuardCandidates.ContainsKey(m)))
+            (!AllowReds && m.Kills >= 5 && m.Region.IsPartOf(this) || m_GuardCandidates.ContainsKey(m)))
         {
           if (m_GuardCandidates.TryGetValue(m, out GuardTimer timer))
           {
@@ -315,14 +308,10 @@ namespace Server.Regions
       eable.Free();
     }
 
-    public bool IsGuardCandidate(Mobile m)
-    {
-      if (m is BaseGuard || !m.Alive || m.AccessLevel > AccessLevel.Player || m.Blessed ||
-          (m is BaseCreature creature && creature.IsInvulnerable) || IsDisabled())
-        return false;
-
-      return (!AllowReds && m.Kills >= 5) || m.Criminal;
-    }
+    public bool IsGuardCandidate(Mobile m) =>
+      !(m is BaseGuard) && m.Alive && m.AccessLevel <= AccessLevel.Player && !m.Blessed &&
+      (!(m is BaseCreature creature) || !creature.IsInvulnerable) && !IsDisabled() &&
+      (!AllowReds && m.Kills >= 5 || m.Criminal);
 
     private class GuardTimer : Timer
     {
@@ -339,11 +328,8 @@ namespace Server.Regions
 
       protected override void OnTick()
       {
-        if (m_Table.ContainsKey(m_Mobile))
-        {
-          m_Table.Remove(m_Mobile);
+        if (m_Table.Remove(m_Mobile))
           m_Mobile.SendLocalizedMessage(502276); // Guards can no longer be called on you.
-        }
       }
     }
   }

@@ -1,5 +1,7 @@
 [
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 6, "name": "TropicalBird", "probability": 100 },
@@ -9,50 +11,55 @@
     "homeRange": 12,
     "walkingRange": 12,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 1, "name": "Squirrel", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:05:00",
     "minDelay": "00:05:00",
-    "location": [382, 1932, 10],
-    "map": "Malas"
+    "location": [382, 1932, 10]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "EvilHealer", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 70,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2304, 1258, -86],
-    "map": "Malas"
+    "location": [2304, 1258, -86]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [{ "maxCount": 5, "name": "Skeleton", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 20,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [479, 168, -1],
-    "map": "Malas"
+    "location": [479, 168, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "FireBeetle", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [107, 23, -1],
-    "map": "Malas"
+    "location": [107, 23, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 2, "name": "HordeMinion", "probability": 100 },
@@ -62,20 +69,22 @@
     "walkingRange": 10,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [111, 352, -1],
-    "map": "Malas"
+    "location": [111, 352, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [{ "maxCount": 4, "name": "ElfBrigand", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [942, 1154, -90],
-    "map": "Malas"
+    "location": [942, 1154, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 3, "name": "HordeMinion", "probability": 100 },
@@ -86,29 +95,32 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [175, 660, -1],
-    "map": "Malas"
+    "location": [175, 660, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Emino", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [411, 810, -1],
-    "map": "Malas"
+    "location": [411, 810, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HiddenFigure", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "FanDancer", "probability": 100 },
@@ -118,10 +130,11 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [96, 540, -1],
-    "map": "Malas"
+    "location": [96, 540, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 13,
     "entries": [
       { "maxCount": 3, "name": "Mongbat", "probability": 100 },
@@ -134,19 +147,21 @@
     "walkingRange": 100,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1741, 1487, -110],
-    "map": "Malas"
+    "location": [1741, 1487, -110]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HiddenFigure", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 4, "name": "VampireBat", "probability": 100 },
@@ -156,20 +171,22 @@
     "walkingRange": 8,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [356, 40, -1],
-    "map": "Malas"
+    "location": [356, 40, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "FierceDragon", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [339, 741, -1],
-    "map": "Malas"
+    "location": [339, 741, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "Blacksmith", "probability": 100 },
@@ -179,10 +196,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [976, 512, -50],
-    "map": "Malas"
+    "location": [976, 512, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -196,40 +214,44 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1023, 192, -50],
-    "map": "Malas"
+    "location": [1023, 192, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 4, "name": "FanDancer", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [88, 332, -1],
-    "map": "Malas"
+    "location": [88, 332, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Banker", "probability": 100 }],
     "homeRange": 1,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1095, 1419, -83],
-    "map": "Malas"
+    "location": [1095, 1419, -83]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [367, 739, -1],
-    "map": "Malas"
+    "location": [367, 739, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 1, "name": "TavernKeeper", "probability": 100 },
@@ -241,29 +263,32 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1051, 1434, -85],
-    "map": "Malas"
+    "location": [1051, 1434, -85]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HiddenFigure", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [392, 740, -1],
-    "map": "Malas"
+    "location": [392, 740, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [
       { "maxCount": 3, "name": "Minotaur", "probability": 100 },
@@ -273,19 +298,21 @@
     "walkingRange": 10,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [384, 1932, 10],
-    "map": "Malas"
+    "location": [384, 1932, 10]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 4, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 3, "name": "Lich", "probability": 100 },
@@ -295,10 +322,11 @@
     "walkingRange": 5,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [400, 174, -1],
-    "map": "Malas"
+    "location": [400, 174, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 6, "name": "Reptalon", "probability": 100 },
@@ -307,19 +335,21 @@
     "homeRange": 20,
     "walkingRange": 20,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 0, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 20,
     "maxDelay": "00:00:00",
-    "minDelay": "00:00:00",
-    "map": "Malas"
+    "minDelay": "00:00:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 22,
     "entries": [
       { "maxCount": 6, "name": "Mongbat", "probability": 100 },
@@ -331,39 +361,43 @@
     "walkingRange": 100,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1899, 1609, -110],
-    "map": "Malas"
+    "location": [1899, 1609, -110]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HiddenFigure", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "MasterMikael", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 10,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [108, 1670, 1],
-    "map": "Malas"
+    "location": [108, 1670, 1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "Orc", "probability": 100 }],
     "homeRange": 15,
     "walkingRange": 15,
     "maxDelay": "00:15:00",
     "minDelay": "00:05:00",
-    "location": [1205, 700, -88],
-    "map": "Malas"
+    "location": [1205, 700, -88]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 8,
     "entries": [
       { "maxCount": 1, "name": "SkeletalMage", "probability": 100 },
@@ -374,88 +408,97 @@
     "homeRange": 15,
     "walkingRange": 15,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 4, "name": "OrcishLord", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 25,
     "maxDelay": "00:20:00",
     "minDelay": "00:10:00",
-    "location": [1346, 1225, -90],
-    "map": "Malas"
+    "location": [1346, 1225, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 1, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:00:00",
-    "minDelay": "00:00:00",
-    "map": "Malas"
+    "minDelay": "00:00:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "InnKeeper", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [991, 527, -30],
-    "map": "Malas"
+    "location": [991, 527, -30]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "GoreFiend", "probability": 100 }],
     "homeRange": 60,
     "walkingRange": 60,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2291, 295, -90],
-    "map": "Malas"
+    "location": [2291, 295, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Victoria", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 2,
     "maxDelay": "00:10:00",
     "minDelay": "00:01:00",
-    "location": [423, 195, -1],
-    "map": "Malas"
+    "location": [423, 195, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [{ "maxCount": 4, "name": "ElfBrigand", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1406, 422, -90],
-    "map": "Malas"
+    "location": [1406, 422, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [{ "maxCount": 1, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
     "maxDelay": "00:00:00",
-    "minDelay": "00:00:00",
-    "map": "Malas"
+    "minDelay": "00:00:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Mardoth", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2110, 1306, -50],
-    "map": "Malas"
+    "location": [2110, 1306, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 2, "name": "EarthElemental", "probability": 100 },
@@ -467,20 +510,22 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [83, 114, -1],
-    "map": "Malas"
+    "location": [83, 114, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "WanderingHealer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2194, 346, -90],
-    "map": "Malas"
+    "location": [2194, 346, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 15,
     "entries": [
       { "maxCount": 4, "name": "Cat", "probability": 100 },
@@ -504,19 +549,21 @@
     "walkingRange": 180,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1943, 1270, -90],
-    "map": "Malas"
+    "location": [1943, 1270, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Nythalia", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 2,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [
       { "maxCount": 1, "name": "FanDancer", "probability": 100 },
@@ -527,19 +574,21 @@
     "walkingRange": 10,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [110, 649, -1],
-    "map": "Malas"
+    "location": [110, 649, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HiddenFigure", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 1, "name": "AnimalTrainer", "probability": 100 },
@@ -549,10 +598,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1041, 1443, -90],
-    "map": "Malas"
+    "location": [1041, 1443, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 40,
     "entries": [
       { "maxCount": 6, "name": "Corpser", "probability": 100 },
@@ -569,10 +619,11 @@
     "walkingRange": 70,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2304, 1258, -86],
-    "map": "Malas"
+    "location": [2304, 1258, -86]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 10,
     "entries": [
       { "maxCount": 8, "name": "Orc", "probability": 100 },
@@ -582,39 +633,43 @@
     "walkingRange": 15,
     "maxDelay": "00:15:00",
     "minDelay": "00:05:00",
-    "location": [911, 194, -79],
-    "map": "Malas"
+    "location": [911, 194, -79]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "InnKeeper", "probability": 100 }],
     "homeRange": 3,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1056, 1434, -85],
-    "map": "Malas"
+    "location": [1056, 1434, -85]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "Lich", "probability": 100 }],
     "homeRange": 15,
     "walkingRange": 15,
     "maxDelay": "00:02:00",
-    "minDelay": "00:01:00",
-    "map": "Malas"
+    "minDelay": "00:01:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "Orc", "probability": 100 }],
     "homeRange": 15,
     "walkingRange": 15,
     "maxDelay": "00:15:00",
     "minDelay": "00:05:00",
-    "location": [1364, 596, -86],
-    "map": "Malas"
+    "location": [1364, 596, -86]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [
       { "maxCount": 3, "name": "Skeleton", "probability": 100 },
@@ -624,19 +679,21 @@
     "walkingRange": 8,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [487, 118, -1],
-    "map": "Malas"
+    "location": [487, 118, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 1, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 8,
     "maxDelay": "00:00:00",
-    "minDelay": "00:00:00",
-    "map": "Malas"
+    "minDelay": "00:00:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 2, "name": "HeadlessOne", "probability": 100 },
@@ -646,10 +703,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [147, 646, -1],
-    "map": "Malas"
+    "location": [147, 646, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 8,
     "entries": [
       { "maxCount": 4, "name": "Drake", "probability": 100 },
@@ -660,29 +718,32 @@
     "homeRange": 20,
     "walkingRange": 20,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HiddenFigure", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "AnimalTrainer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1027, 494, -70],
-    "map": "Malas"
+    "location": [1027, 494, -70]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [
       { "maxCount": 1, "name": "Provisioner", "probability": 100 },
@@ -693,20 +754,22 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [993, 511, -50],
-    "map": "Malas"
+    "location": [993, 511, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "Gypsy", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [796, 1446, -83],
-    "map": "Malas"
+    "location": [796, 1446, -83]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 2, "name": "EarthElemental", "probability": 100 },
@@ -718,37 +781,41 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [116, 61, -1],
-    "map": "Malas"
+    "location": [116, 61, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Miasma", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:03:00",
-    "minDelay": "00:02:00",
-    "map": "Malas"
+    "minDelay": "00:02:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Miasma", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [{ "maxCount": 1, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:00:00",
-    "minDelay": "00:00:00",
-    "map": "Malas"
+    "minDelay": "00:00:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -762,10 +829,11 @@
     "walkingRange": 40,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1274, 300, -50],
-    "map": "Malas"
+    "location": [1274, 300, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Mongbat", "probability": 100 },
@@ -778,38 +846,42 @@
     "walkingRange": 100,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1641, 1797, -110],
-    "map": "Malas"
+    "location": [1641, 1797, -110]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "MasterJonath", "probability": 100 }],
     "homeRange": 11,
     "walkingRange": 11,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [116, 1675, 1],
-    "map": "Malas"
+    "location": [116, 1675, 1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [{ "maxCount": 7, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 8,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 1, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
     "maxDelay": "00:00:00",
-    "minDelay": "00:00:00",
-    "map": "Malas"
+    "minDelay": "00:00:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 2, "name": "EarthElemental", "probability": 100 },
@@ -821,20 +893,22 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [71, 29, -1],
-    "map": "Malas"
+    "location": [71, 29, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 4, "name": "Gibberling", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 15,
     "maxDelay": "00:05:00",
     "minDelay": "00:03:00",
-    "location": [953, 1047, -90],
-    "map": "Malas"
+    "location": [953, 1047, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 4, "name": "Skeleton", "probability": 100 },
@@ -844,39 +918,43 @@
     "homeRange": 10,
     "walkingRange": 10,
     "maxDelay": "00:02:00",
-    "minDelay": "00:01:00",
-    "map": "Malas"
+    "minDelay": "00:01:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [{ "maxCount": 4, "name": "ElfBrigand", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1590, 1281, -90],
-    "map": "Malas"
+    "location": [1590, 1281, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [{ "maxCount": 5, "name": "Gypsy", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 25,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [795, 1449, -90],
-    "map": "Malas"
+    "location": [795, 1449, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "JedahEntille", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 3, "name": "PatchworkSkeleton", "probability": 100 },
@@ -886,10 +964,11 @@
     "walkingRange": 35,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [325, 172, -1],
-    "map": "Malas"
+    "location": [325, 172, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 8,
     "entries": [
       { "maxCount": 6, "name": "VampireBat", "probability": 100 },
@@ -899,40 +978,44 @@
     "walkingRange": 40,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [287, 81, -1],
-    "map": "Malas"
+    "location": [287, 81, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "Kirin", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 10,
     "maxDelay": "00:05:00",
     "minDelay": "00:03:00",
-    "location": [2179, 124, -90],
-    "map": "Malas"
+    "location": [2179, 124, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "WanderingHealer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2161, 1161, -85],
-    "map": "Malas"
+    "location": [2161, 1161, -85]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "DeadlyImp", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [342, 736, -1],
-    "map": "Malas"
+    "location": [342, 736, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 11,
     "entries": [
       { "maxCount": 6, "name": "PatchworkSkeleton", "probability": 100 },
@@ -942,50 +1025,55 @@
     "walkingRange": 30,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [442, 205, -1],
-    "map": "Malas"
+    "location": [442, 205, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "Skeleton", "probability": 100 }],
     "homeRange": 12,
     "walkingRange": 12,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [493, 202, -1],
-    "map": "Malas"
+    "location": [493, 202, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "OrcBrute", "probability": 100 }],
     "homeRange": 15,
     "walkingRange": 30,
     "maxDelay": "00:25:00",
     "minDelay": "00:15:00",
-    "location": [1364, 596, -86],
-    "map": "Malas"
+    "location": [1364, 596, -86]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "WanderingHealer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1597, 1854, -96],
-    "map": "Malas"
+    "location": [1597, 1854, -96]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Jeweler", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2045, 1397, -90],
-    "map": "Malas"
+    "location": [2045, 1397, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -999,66 +1087,73 @@
     "walkingRange": 40,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1980, 660, -50],
-    "map": "Malas"
+    "location": [1980, 660, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "Orc", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 25,
     "maxDelay": "00:15:00",
     "minDelay": "00:05:00",
-    "location": [1665, 356, -50],
-    "map": "Malas"
+    "location": [1665, 356, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 4, "name": "Gibberling", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 10,
     "maxDelay": "00:02:00",
-    "minDelay": "00:01:00",
-    "map": "Malas"
+    "minDelay": "00:01:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "Lich", "probability": 100 }],
     "homeRange": 6,
     "walkingRange": 6,
     "maxDelay": "00:03:00",
     "minDelay": "00:01:00",
-    "location": [468, 141, -1],
-    "map": "Malas"
+    "location": [468, 141, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "LichLord", "probability": 100 }],
     "homeRange": 4,
     "walkingRange": 4,
     "maxDelay": "00:02:00",
-    "minDelay": "00:01:00",
-    "map": "Malas"
+    "minDelay": "00:01:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 0, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 20,
     "maxDelay": "00:00:00",
-    "minDelay": "00:00:00",
-    "map": "Malas"
+    "minDelay": "00:00:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 1, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 6,
     "walkingRange": 8,
     "maxDelay": "00:00:00",
-    "minDelay": "00:00:00",
-    "map": "Malas"
+    "minDelay": "00:00:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 1, "name": "EarthElemental", "probability": 100 },
@@ -1070,39 +1165,43 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [54, 67, -1],
-    "map": "Malas"
+    "location": [54, 67, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HiddenFigure", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 4, "name": "VampireBat", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 8,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [395, 33, -1],
-    "map": "Malas"
+    "location": [395, 33, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "Gibberling", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 15,
     "maxDelay": "00:05:00",
     "minDelay": "00:03:00",
-    "location": [962, 743, -83],
-    "map": "Malas"
+    "location": [962, 743, -83]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 1, "name": "EarthElemental", "probability": 100 },
@@ -1114,20 +1213,22 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [25, 19, -1],
-    "map": "Malas"
+    "location": [25, 19, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [397, 749, -1],
-    "map": "Malas"
+    "location": [397, 749, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 9,
     "entries": [
       { "maxCount": 5, "name": "Sheep", "probability": 100 },
@@ -1138,19 +1239,21 @@
     "walkingRange": 130,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1347, 1739, -110],
-    "map": "Malas"
+    "location": [1347, 1739, -110]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HiddenFigure", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -1164,10 +1267,11 @@
     "walkingRange": 70,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2030, 500, -50],
-    "map": "Malas"
+    "location": [2030, 500, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 8,
     "entries": [
       { "maxCount": 2, "name": "HordeMinion", "probability": 100 },
@@ -1179,29 +1283,32 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [173, 615, -1],
-    "map": "Malas"
+    "location": [173, 615, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 1, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [398, 748, -1],
-    "map": "Malas"
+    "location": [398, 748, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -1215,10 +1322,11 @@
     "walkingRange": 60,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1482, 347, -50],
-    "map": "Malas"
+    "location": [1482, 347, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "Daemon", "probability": 100 },
@@ -1228,30 +1336,33 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [100, 499, -1],
-    "map": "Malas"
+    "location": [100, 499, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "VampireBat", "probability": 100 }],
     "homeRange": 40,
     "walkingRange": 40,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [382, 82, -1],
-    "map": "Malas"
+    "location": [382, 82, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "OrcBrute", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 20,
     "maxDelay": "00:25:00",
     "minDelay": "00:15:00",
-    "location": [1205, 700, -88],
-    "map": "Malas"
+    "location": [1205, 700, -88]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [
       { "maxCount": 1, "name": "Mage", "probability": 100 },
@@ -1262,19 +1373,21 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2023, 1379, -80],
-    "map": "Malas"
+    "location": [2023, 1379, -80]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HiddenFigure", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 4, "name": "PatchworkSkeleton", "probability": 100 },
@@ -1284,10 +1397,11 @@
     "walkingRange": 20,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [470, 30, -2],
-    "map": "Malas"
+    "location": [470, 30, -2]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 20,
     "entries": [
       { "maxCount": 4, "name": "CrystalElemental", "probability": 100 },
@@ -1301,10 +1415,11 @@
     "walkingRange": 70,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [920, 356, -85],
-    "map": "Malas"
+    "location": [920, 356, -85]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 2, "name": "PatchworkSkeleton", "probability": 100 },
@@ -1313,39 +1428,43 @@
     "homeRange": 30,
     "walkingRange": 30,
     "maxDelay": "00:02:00",
-    "minDelay": "00:01:00",
-    "map": "Malas"
+    "minDelay": "00:01:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "LadyMarai", "probability": 100 }],
     "homeRange": 11,
     "walkingRange": 11,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [104, 1659, 1],
-    "map": "Malas"
+    "location": [104, 1659, 1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "EnshroudedFigure", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Relnia", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [379, 710, -1],
-    "map": "Malas"
+    "location": [379, 710, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 2, "name": "FanDancer", "probability": 100 },
@@ -1356,39 +1475,43 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [134, 651, -1],
-    "map": "Malas"
+    "location": [134, 651, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "EvilHealer", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 100,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [743, 1280, -90],
-    "map": "Malas"
+    "location": [743, 1280, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "PatchworkSkeleton", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 8,
     "maxDelay": "00:02:00",
-    "minDelay": "00:01:00",
-    "map": "Malas"
+    "minDelay": "00:01:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "Lich", "probability": 100 }],
     "homeRange": 15,
     "walkingRange": 15,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [447, 25, -1],
-    "map": "Malas"
+    "location": [447, 25, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 20,
     "entries": [
       { "maxCount": 4, "name": "CrystalElemental", "probability": 100 },
@@ -1402,29 +1525,32 @@
     "walkingRange": 120,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1194, 638, -84],
-    "map": "Malas"
+    "location": [1194, 638, -84]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "AnimalTrainer", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1027, 494, -70],
-    "map": "Malas"
+    "location": [1027, 494, -70]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "Reptalon", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:05:00",
-    "minDelay": "00:04:00",
-    "map": "Malas"
+    "minDelay": "00:04:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 2, "name": "EarthElemental", "probability": 100 },
@@ -1436,10 +1562,11 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [16, 56, -1],
-    "map": "Malas"
+    "location": [16, 56, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -1453,20 +1580,22 @@
     "walkingRange": 60,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2233, 555, -90],
-    "map": "Malas"
+    "location": [2233, 555, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 4, "name": "HeadlessOne", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 10,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [123, 387, -1],
-    "map": "Malas"
+    "location": [123, 387, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 10,
     "entries": [
       { "maxCount": 6, "name": "Minotaur", "probability": 100 },
@@ -1477,10 +1606,11 @@
     "walkingRange": 15,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [427, 1923, 5],
-    "map": "Malas"
+    "location": [427, 1923, 5]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "HellHound", "probability": 100 },
@@ -1490,10 +1620,11 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [106, 685, -1],
-    "map": "Malas"
+    "location": [106, 685, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 40,
     "entries": [
       { "maxCount": 6, "name": "Mummy", "probability": 100 },
@@ -1507,30 +1638,33 @@
     "walkingRange": 100,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1837, 1803, -110],
-    "map": "Malas"
+    "location": [1837, 1803, -110]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "AnimalTrainer", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1992, 1315, -90],
-    "map": "Malas"
+    "location": [1992, 1315, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "WanderingHealer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1839, 1805, -90],
-    "map": "Malas"
+    "location": [1839, 1805, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 2, "name": "HordeMinion", "probability": 100 },
@@ -1540,10 +1674,11 @@
     "walkingRange": 10,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [120, 415, -1],
-    "map": "Malas"
+    "location": [120, 415, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [
       { "maxCount": 1, "name": "Tailor", "probability": 100 },
@@ -1556,10 +1691,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [976, 527, -50],
-    "map": "Malas"
+    "location": [976, 527, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 16,
     "entries": [
       { "maxCount": 5, "name": "Minotaur", "probability": 100 },
@@ -1572,20 +1708,22 @@
     "homeRange": 60,
     "walkingRange": 50,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "LichLord", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [289, 154, 5],
-    "map": "Malas"
+    "location": [289, 154, 5]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -1599,39 +1737,43 @@
     "walkingRange": 40,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1869, 480, -50],
-    "map": "Malas"
+    "location": [1869, 480, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "LichLord", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 8,
     "maxDelay": "00:02:00",
-    "minDelay": "00:01:00",
-    "map": "Malas"
+    "minDelay": "00:01:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Baker", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2017, 1356, -90],
-    "map": "Malas"
+    "location": [2017, 1356, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "KeeperOfChivalry", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1016, 514, -70],
-    "map": "Malas"
+    "location": [1016, 514, -70]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 9,
     "entries": [
       { "maxCount": 6, "name": "Orc", "probability": 100 },
@@ -1642,19 +1784,21 @@
     "walkingRange": 25,
     "maxDelay": "00:15:00",
     "minDelay": "00:05:00",
-    "location": [1598, 1819, -110],
-    "map": "Malas"
+    "location": [1598, 1819, -110]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [{ "maxCount": 7, "name": "MinotaurArtifact", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 20,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 1, "name": "Daemon", "probability": 100 },
@@ -1665,10 +1809,11 @@
     "walkingRange": 15,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [78, 546, -1],
-    "map": "Malas"
+    "location": [78, 546, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [
       { "maxCount": 1, "name": "Carpenter", "probability": 100 },
@@ -1679,30 +1824,33 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2060, 1283, -80],
-    "map": "Malas"
+    "location": [2060, 1283, -80]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [380, 727, -1],
-    "map": "Malas"
+    "location": [380, 727, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "BoneDemon", "probability": 100 }],
     "homeRange": 30,
     "walkingRange": 30,
     "maxDelay": "00:40:00",
     "minDelay": "00:20:00",
-    "location": [442, 205, -1],
-    "map": "Malas"
+    "location": [442, 205, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 4, "name": "PatchworkSkeleton", "probability": 100 },
@@ -1712,20 +1860,22 @@
     "walkingRange": 30,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [441, 78, -1],
-    "map": "Malas"
+    "location": [441, 78, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "WanderingHealer", "probability": 100 }],
     "homeRange": 3,
     "walkingRange": 3,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2355, 1276, -85],
-    "map": "Malas"
+    "location": [2355, 1276, -85]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 12,
     "entries": [
       { "maxCount": 6, "name": "FleshGolem", "probability": 100 },
@@ -1735,10 +1885,11 @@
     "walkingRange": 15,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [456, 48, -1],
-    "map": "Malas"
+    "location": [456, 48, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [
       { "maxCount": 1, "name": "Bird", "probability": 100 },
@@ -1750,10 +1901,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1558, 168, -90],
-    "map": "Malas"
+    "location": [1558, 168, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "Tanner", "probability": 100 },
@@ -1763,10 +1915,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2078, 1327, -80],
-    "map": "Malas"
+    "location": [2078, 1327, -80]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 1, "name": "LadyJennifyr", "probability": 100 },
@@ -1777,10 +1930,11 @@
     "homeRange": 15,
     "walkingRange": 15,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [
       { "maxCount": 1, "name": "Tailor", "probability": 100 },
@@ -1791,30 +1945,33 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2083, 1322, -80],
-    "map": "Malas"
+    "location": [2083, 1322, -80]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 4, "name": "Pixie", "probability": 100 }],
     "homeRange": 3,
     "walkingRange": 3,
     "maxDelay": "00:00:15",
     "minDelay": "00:00:15",
-    "location": [1265, 1744, -91],
-    "map": "Malas"
+    "location": [1265, 1744, -91]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "Skeleton", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 20,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [480, 227, -1],
-    "map": "Malas"
+    "location": [480, 227, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 1, "name": "EarthElemental", "probability": 100 },
@@ -1826,20 +1983,22 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [111, 20, -1],
-    "map": "Malas"
+    "location": [111, 20, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "WanderingHealer", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 15,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1740, 990, -80],
-    "map": "Malas"
+    "location": [1740, 990, -80]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "Blacksmith", "probability": 100 },
@@ -1849,20 +2008,22 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1977, 1365, -80],
-    "map": "Malas"
+    "location": [1977, 1365, -80]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Cat", "probability": 100 }],
     "homeRange": 2,
     "walkingRange": 3,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [652, 1434, -80],
-    "map": "Malas"
+    "location": [652, 1434, -80]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "Pyre", "probability": 100 },
@@ -1872,38 +2033,42 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [377, 1909, 5],
-    "map": "Malas"
+    "location": [377, 1909, 5]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HiddenFigure", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Kia", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 4,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [{ "maxCount": 4, "name": "ElfBrigand", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2403, 630, -90],
-    "map": "Malas"
+    "location": [2403, 630, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 15,
     "entries": [
       { "maxCount": 3, "name": "CrystalElemental", "probability": 100 },
@@ -1917,20 +2082,22 @@
     "walkingRange": 120,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1434, 607, -89],
-    "map": "Malas"
+    "location": [1434, 607, -89]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "WanderingHealer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2144, 586, -55],
-    "map": "Malas"
+    "location": [2144, 586, -55]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "Healer", "probability": 100 },
@@ -1940,10 +2107,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2068, 1372, -75],
-    "map": "Malas"
+    "location": [2068, 1372, -75]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "Healer", "probability": 100 },
@@ -1953,20 +2121,22 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [951, 521, -55],
-    "map": "Malas"
+    "location": [951, 521, -55]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Veterinarian", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1027, 498, -70],
-    "map": "Malas"
+    "location": [1027, 498, -70]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [
       { "maxCount": 1, "name": "SirPatrick", "probability": 100 },
@@ -1976,50 +2146,55 @@
     "homeRange": 15,
     "walkingRange": 15,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "Lich", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 20,
     "maxDelay": "00:05:00",
     "minDelay": "00:03:00",
-    "location": [480, 227, -1],
-    "map": "Malas"
+    "location": [480, 227, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "OrcBrute", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 25,
     "maxDelay": "00:35:00",
     "minDelay": "00:25:00",
-    "location": [1346, 1225, -90],
-    "map": "Malas"
+    "location": [1346, 1225, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "InnKeeper", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1056, 1434, -85],
-    "map": "Malas"
+    "location": [1056, 1434, -85]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "LichLord", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [480, 227, -1],
-    "map": "Malas"
+    "location": [480, 227, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "Healer", "probability": 100 },
@@ -2029,20 +2204,22 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1030, 520, -55],
-    "map": "Malas"
+    "location": [1030, 520, -55]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [{ "maxCount": 7, "name": "Zombie", "probability": 100 }],
     "homeRange": 35,
     "walkingRange": 35,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [320, 114, -1],
-    "map": "Malas"
+    "location": [320, 114, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 16,
     "entries": [
       { "maxCount": 7, "name": "PatchworkSkeleton", "probability": 100 },
@@ -2053,20 +2230,22 @@
     "walkingRange": 40,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [443, 128, -1],
-    "map": "Malas"
+    "location": [443, 128, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Zoel", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [388, 817, -1],
-    "map": "Malas"
+    "location": [388, 817, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -2080,10 +2259,11 @@
     "walkingRange": 40,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1206, 191, -50],
-    "map": "Malas"
+    "location": [1206, 191, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 29,
     "entries": [
       { "maxCount": 8, "name": "Hind", "probability": 100 },
@@ -2095,10 +2275,11 @@
     "walkingRange": 220,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [771, 1277, -90],
-    "map": "Malas"
+    "location": [771, 1277, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [
       { "maxCount": 2, "name": "OrcishLord", "probability": 100 },
@@ -2108,10 +2289,11 @@
     "walkingRange": 10,
     "maxDelay": "00:15:00",
     "minDelay": "00:10:00",
-    "location": [1665, 356, -50],
-    "map": "Malas"
+    "location": [1665, 356, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -2125,20 +2307,22 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1659, 112, -80],
-    "map": "Malas"
+    "location": [1659, 112, -80]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "Mummy", "probability": 100 }],
     "homeRange": 25,
     "walkingRange": 25,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [320, 114, -1],
-    "map": "Malas"
+    "location": [320, 114, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -2152,10 +2336,11 @@
     "walkingRange": 40,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1710, 403, -50],
-    "map": "Malas"
+    "location": [1710, 403, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 16,
     "entries": [
       { "maxCount": 12, "name": "TropicalBird", "probability": 100 },
@@ -2167,20 +2352,22 @@
     "homeRange": 15,
     "walkingRange": 15,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [367, 750, -1],
-    "map": "Malas"
+    "location": [367, 750, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -2194,19 +2381,21 @@
     "walkingRange": 40,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1137, 223, -50],
-    "map": "Malas"
+    "location": [1137, 223, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [{ "maxCount": 5, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 20,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 20,
     "entries": [
       { "maxCount": 10, "name": "PatchworkSkeleton", "probability": 100 },
@@ -2216,10 +2405,11 @@
     "walkingRange": 40,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [379, 147, -1],
-    "map": "Malas"
+    "location": [379, 147, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "Banker", "probability": 100 },
@@ -2229,10 +2419,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2048, 1343, -85],
-    "map": "Malas"
+    "location": [2048, 1343, -85]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 3, "name": "Skeleton", "probability": 100 },
@@ -2242,19 +2433,21 @@
     "walkingRange": 20,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [372, 201, -1],
-    "map": "Malas"
+    "location": [372, 201, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 0, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 15,
     "walkingRange": 25,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 9,
     "entries": [
       { "maxCount": 4, "name": "Skeleton", "probability": 100 },
@@ -2264,87 +2457,96 @@
     "walkingRange": 40,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [323, 90, -1],
-    "map": "Malas"
+    "location": [323, 90, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Emerillo", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 2,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [392, 739, -1],
-    "map": "Malas"
+    "location": [392, 739, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Horus", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1192, 513, -90],
-    "map": "Malas"
+    "location": [1192, 513, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Lich", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [400, 174, -1],
-    "map": "Malas"
+    "location": [400, 174, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "Pixie", "probability": 100 }],
     "homeRange": 30,
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [881, 927, -90],
-    "map": "Malas"
+    "location": [881, 927, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 1, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:00:00",
-    "minDelay": "00:00:00",
-    "map": "Malas"
+    "minDelay": "00:00:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [392, 731, -1],
-    "map": "Malas"
+    "location": [392, 731, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Rend", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 10,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 1, "name": "TavernKeeper", "probability": 100 },
@@ -2356,39 +2558,43 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2027, 1353, -90],
-    "map": "Malas"
+    "location": [2027, 1353, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [{ "maxCount": 4, "name": "ElfBrigand", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1668, 1512, -110],
-    "map": "Malas"
+    "location": [1668, 1512, -110]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 4, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [367, 749, -1],
-    "map": "Malas"
+    "location": [367, 749, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 1, "name": "BrownBear", "probability": 100 },
@@ -2406,10 +2612,11 @@
     "walkingRange": 180,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1943, 1270, -90],
-    "map": "Malas"
+    "location": [1943, 1270, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 33,
     "entries": [
       { "maxCount": 7, "name": "Mongbat", "probability": 100 },
@@ -2422,20 +2629,22 @@
     "walkingRange": 160,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2231, 1605, -95],
-    "map": "Malas"
+    "location": [2231, 1605, -95]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Pyre", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [415, 1897, 5],
-    "map": "Malas"
+    "location": [415, 1897, 5]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 10,
     "entries": [
       { "maxCount": 3, "name": "FanDancer", "probability": 100 },
@@ -2447,30 +2656,33 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [70, 376, -1],
-    "map": "Malas"
+    "location": [70, 376, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "MasterTheophilus", "probability": 100 }],
     "homeRange": 7,
     "walkingRange": 6,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [89, 1627, 1],
-    "map": "Malas"
+    "location": [89, 1627, 1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "HeadlessOne", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 10,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [79, 521, -1],
-    "map": "Malas"
+    "location": [79, 521, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -2484,20 +2696,22 @@
     "walkingRange": 40,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1381, 340, -50],
-    "map": "Malas"
+    "location": [1381, 340, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Haochi", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [377, 742, 1],
-    "map": "Malas"
+    "location": [377, 742, 1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 1, "name": "LichLord", "probability": 100 },
@@ -2507,20 +2721,22 @@
     "walkingRange": 30,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [427, 256, -1],
-    "map": "Malas"
+    "location": [427, 256, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "RottingCorpse", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 20,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [478, 206, -1],
-    "map": "Malas"
+    "location": [478, 206, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 2, "name": "Daemon", "probability": 100 },
@@ -2531,30 +2747,33 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [64, 488, -1],
-    "map": "Malas"
+    "location": [64, 488, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "OrcBomber", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 25,
     "maxDelay": "00:25:00",
     "minDelay": "00:15:00",
-    "location": [1346, 1225, -90],
-    "map": "Malas"
+    "location": [1346, 1225, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "Skeleton", "probability": 100 }],
     "homeRange": 30,
     "walkingRange": 30,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [287, 81, -1],
-    "map": "Malas"
+    "location": [287, 81, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 15,
     "entries": [
       { "maxCount": 4, "name": "Cat", "probability": 100 },
@@ -2578,20 +2797,22 @@
     "walkingRange": 180,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2267, 1218, -85],
-    "map": "Malas"
+    "location": [2267, 1218, -85]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "InnKeeper", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2037, 1311, -85],
-    "map": "Malas"
+    "location": [2037, 1311, -85]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -2605,29 +2826,32 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [766, 114, -90],
-    "map": "Malas"
+    "location": [766, 114, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [367, 729, -1],
-    "map": "Malas"
+    "location": [367, 729, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 4, "name": "GoreFiend", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 10,
     "maxDelay": "00:02:00",
-    "minDelay": "00:01:00",
-    "map": "Malas"
+    "minDelay": "00:01:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 16,
     "entries": [
       { "maxCount": 12, "name": "Orc", "probability": 100 },
@@ -2637,39 +2861,43 @@
     "walkingRange": 25,
     "maxDelay": "00:15:00",
     "minDelay": "00:05:00",
-    "location": [1346, 1225, -90],
-    "map": "Malas"
+    "location": [1346, 1225, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HiddenFigure", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "RedDeath", "probability": 100 }],
     "homeRange": 4,
     "walkingRange": 4,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [110, 1643, 1],
-    "map": "Malas"
+    "location": [110, 1643, 1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "KeeperOfChivalry", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 3,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [961, 517, -70],
-    "map": "Malas"
+    "location": [961, 517, -70]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "Tinker", "probability": 100 },
@@ -2679,10 +2907,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2066, 1282, -80],
-    "map": "Malas"
+    "location": [2066, 1282, -80]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -2696,19 +2925,21 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2121, 597, -50],
-    "map": "Malas"
+    "location": [2121, 597, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [{ "maxCount": 1, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:00:00",
-    "minDelay": "00:00:00",
-    "map": "Malas"
+    "minDelay": "00:00:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 9,
     "entries": [
       { "maxCount": 3, "name": "Titan", "probability": 100 },
@@ -2718,19 +2949,21 @@
     "walkingRange": 220,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [769, 1277, -90],
-    "map": "Malas"
+    "location": [769, 1277, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 25,
     "walkingRange": 25,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [
       { "maxCount": 1, "name": "Provisioner", "probability": 100 },
@@ -2740,20 +2973,22 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2011, 1326, -80],
-    "map": "Malas"
+    "location": [2011, 1326, -80]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "Unicorn", "probability": 100 }],
     "homeRange": 50,
     "walkingRange": 50,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2205, 145, -90],
-    "map": "Malas"
+    "location": [2205, 145, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 26,
     "entries": [
       { "maxCount": 4, "name": "Gazer", "probability": 100 },
@@ -2767,79 +3002,87 @@
     "walkingRange": 180,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1471, 1357, -85],
-    "map": "Malas"
+    "location": [1471, 1357, -85]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [{ "maxCount": 6, "name": "Skeleton", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 10,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [447, 25, -1],
-    "map": "Malas"
+    "location": [447, 25, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [379, 727, -1],
-    "map": "Malas"
+    "location": [379, 727, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "Lich", "probability": 100 }],
     "homeRange": 15,
     "walkingRange": 15,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [320, 207, -1],
-    "map": "Malas"
+    "location": [320, 207, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Drithen", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1984, 1364, -80],
-    "map": "Malas"
+    "location": [1984, 1364, -80]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 4, "name": "VampireBat", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 10,
     "maxDelay": "00:02:00",
-    "minDelay": "00:01:00",
-    "map": "Malas"
+    "minDelay": "00:01:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "Gibberling", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [986, 891, -90],
-    "map": "Malas"
+    "location": [986, 891, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "RottingCorpse", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 30,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [427, 256, -1],
-    "map": "Malas"
+    "location": [427, 256, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 15,
     "entries": [
       { "maxCount": 6, "name": "Minotaur", "probability": 100 },
@@ -2852,10 +3095,11 @@
     "homeRange": 20,
     "walkingRange": 20,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 8,
     "entries": [
       { "maxCount": 8, "name": "Eagle", "probability": 100 },
@@ -2867,39 +3111,43 @@
     "homeRange": 10,
     "walkingRange": 10,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "FanDancer", "probability": 100 }],
     "homeRange": 20,
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [142, 692, -1],
-    "map": "Malas"
+    "location": [142, 692, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 4, "name": "HeadlessOne", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 10,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [99, 387, -1],
-    "map": "Malas"
+    "location": [99, 387, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [{ "maxCount": 1, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:00:00",
-    "minDelay": "00:00:00",
-    "map": "Malas"
+    "minDelay": "00:00:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 10,
     "entries": [
       { "maxCount": 6, "name": "Scorpion", "probability": 100 },
@@ -2909,10 +3157,11 @@
     "walkingRange": 12,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1742, 990, -84],
-    "map": "Malas"
+    "location": [1742, 990, -84]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 3, "name": "Devourer", "probability": 100 },
@@ -2922,20 +3171,22 @@
     "walkingRange": 20,
     "maxDelay": "00:03:00",
     "minDelay": "00:02:00",
-    "location": [479, 168, -1],
-    "map": "Malas"
+    "location": [479, 168, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [392, 730, -1],
-    "map": "Malas"
+    "location": [392, 730, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 15,
     "entries": [
       { "maxCount": 3, "name": "CrystalElemental", "probability": 100 },
@@ -2949,10 +3200,11 @@
     "walkingRange": 120,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1674, 659, -84],
-    "map": "Malas"
+    "location": [1674, 659, -84]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 2, "name": "Gibberling", "probability": 100 },
@@ -2962,30 +3214,33 @@
     "homeRange": 15,
     "walkingRange": 15,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 2,
     "entries": [{ "maxCount": 2, "name": "Devourer", "probability": 100 }],
     "homeRange": 8,
     "walkingRange": 8,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [378, 236, -1],
-    "map": "Malas"
+    "location": [378, 236, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "Devourer", "probability": 100 }],
     "homeRange": 15,
     "walkingRange": 15,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [356, 234, -1],
-    "map": "Malas"
+    "location": [356, 234, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 4, "name": "Squirrel", "probability": 100 },
@@ -2994,10 +3249,11 @@
     "homeRange": 10,
     "walkingRange": 10,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [
       { "maxCount": 1, "name": "Bird", "probability": 100 },
@@ -3009,10 +3265,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1540, 153, -90],
-    "map": "Malas"
+    "location": [1540, 153, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 1, "name": "Daemon", "probability": 100 },
@@ -3023,29 +3280,32 @@
     "walkingRange": 15,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [110, 540, -1],
-    "map": "Malas"
+    "location": [110, 540, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HiddenFigure", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [367, 730, -1],
-    "map": "Malas"
+    "location": [367, 730, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 2, "name": "HordeMinion", "probability": 100 },
@@ -3056,10 +3316,11 @@
     "walkingRange": 20,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [97, 467, -1],
-    "map": "Malas"
+    "location": [97, 467, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 7,
     "entries": [
       { "maxCount": 2, "name": "Bird", "probability": 100 },
@@ -3073,49 +3334,54 @@
     "walkingRange": 40,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1587, 386, -50],
-    "map": "Malas"
+    "location": [1587, 386, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "Skeleton", "probability": 100 }],
     "homeRange": 10,
     "walkingRange": 10,
     "maxDelay": "00:02:00",
     "minDelay": "00:01:00",
-    "location": [356, 234, -1],
-    "map": "Malas"
+    "location": [356, 234, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "WanderingHealer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2351, 1146, -90],
-    "map": "Malas"
+    "location": [2351, 1146, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 8,
     "entries": [{ "maxCount": 8, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Eagle", "probability": 100 }],
     "homeRange": 200,
     "walkingRange": 200,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [761, 1283, -90],
-    "map": "Malas"
+    "location": [761, 1283, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [
       { "maxCount": 1, "name": "Gorrow", "probability": 100 },
@@ -3126,20 +3392,22 @@
     "walkingRange": 4,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [989, 519, -50],
-    "map": "Malas"
+    "location": [989, 519, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "WanderingHealer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1727, 982, -80],
-    "map": "Malas"
+    "location": [1727, 982, -80]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 1, "name": "HolyMage", "probability": 100 },
@@ -3151,10 +3419,11 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1004, 527, -50],
-    "map": "Malas"
+    "location": [1004, 527, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 6,
     "entries": [
       { "maxCount": 1, "name": "EarthElemental", "probability": 100 },
@@ -3166,10 +3435,11 @@
     "walkingRange": 30,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [102, 84, -1],
-    "map": "Malas"
+    "location": [102, 84, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 1, "name": "BrownBear", "probability": 100 },
@@ -3187,10 +3457,11 @@
     "walkingRange": 180,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2267, 1218, -85],
-    "map": "Malas"
+    "location": [2267, 1218, -85]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 9,
     "entries": [
       { "maxCount": 8, "name": "Orc", "probability": 100 },
@@ -3200,49 +3471,54 @@
     "walkingRange": 15,
     "maxDelay": "00:15:00",
     "minDelay": "00:05:00",
-    "location": [1257, 1328, -90],
-    "map": "Malas"
+    "location": [1257, 1328, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "Aernya", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [2103, 1376, -90],
-    "map": "Malas"
+    "location": [2103, 1376, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "WanderingHealer", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1356, 1269, -90],
-    "map": "Malas"
+    "location": [1356, 1269, -90]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 1,
     "entries": [{ "maxCount": 1, "name": "HaochisGuardsman", "probability": 100 }],
     "homeRange": 0,
     "walkingRange": 0,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [367, 740, -1],
-    "map": "Malas"
+    "location": [367, 740, -1]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [{ "maxCount": 4, "name": "EliteNinja", "probability": 100 }],
     "homeRange": 5,
     "walkingRange": 5,
     "maxDelay": "00:10:00",
-    "minDelay": "00:05:00",
-    "map": "Malas"
+    "minDelay": "00:05:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 5,
     "entries": [
       { "maxCount": 1, "name": "Tinker", "probability": 100 },
@@ -3255,19 +3531,21 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [1003, 513, -50],
-    "map": "Malas"
+    "location": [1003, 513, -50]
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 3,
     "entries": [{ "maxCount": 3, "name": "Devourer", "probability": 100 }],
     "homeRange": 35,
     "walkingRange": 35,
     "maxDelay": "00:02:00",
-    "minDelay": "00:01:00",
-    "map": "Malas"
+    "minDelay": "00:01:00"
   },
   {
+    "type": "Spawner",
+    "map": "Malas",
     "count": 4,
     "entries": [
       { "maxCount": 1, "name": "Mage", "probability": 100 },
@@ -3279,7 +3557,6 @@
     "walkingRange": 5,
     "maxDelay": "00:10:00",
     "minDelay": "00:05:00",
-    "location": [907, 452, -50],
-    "map": "Malas"
+    "location": [907, 452, -50]
   }
 ]
