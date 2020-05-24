@@ -21,7 +21,7 @@ namespace Server.Regions
     {
       NetState ns = m.NetState;
       if (ns != null && !TransformationSpellHelper.UnderTransformation(m, typeof(AnimalForm)) &&
-          m.AccessLevel < AccessLevel.GameMaster)
+          m.AccessLevel == AccessLevel.Player)
         ns.Send(SpeedControl.WalkSpeed);
     }
 
@@ -34,7 +34,7 @@ namespace Server.Regions
 
     private static void Desert_OnLogin(Mobile m)
     {
-      if (m.Region.IsPartOf<TwistedWealdDesertRegion>() && m.AccessLevel < AccessLevel.GameMaster)
+      if (m.Region.IsPartOf<TwistedWealdDesertRegion>() && m.AccessLevel == AccessLevel.Player)
         m.NetState.Send(SpeedControl.WalkSpeed);
     }
   }

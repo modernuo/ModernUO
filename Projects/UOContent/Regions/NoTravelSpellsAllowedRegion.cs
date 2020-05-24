@@ -10,5 +10,6 @@ public class NoTravelSpellsAllowedRegion : DungeonRegion
   {
   }
 
-  public override bool CheckTravel(Mobile m, Point3D newLocation, TravelCheckType travelType) => false;
+  public override bool CheckTravel(Mobile m, Point3D newLocation, TravelCheckType travelType) =>
+    m.AccessLevel == AccessLevel.Player;
 }

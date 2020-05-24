@@ -591,12 +591,6 @@ namespace Server.Spells
         return false;
       }
 
-      if (caster?.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf<JailRegion>())
-      {
-        caster.SendLocalizedMessage(1114345); // You'll need a better jailbreak plan than that!
-        return false;
-      }
-
       // Always allow monsters to teleport
       if (caster is BaseCreature bc && !bc.Controlled && !bc.Summoned && (type == TravelCheckType.TeleportTo || type == TravelCheckType.TeleportFrom))
         return true;
