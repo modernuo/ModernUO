@@ -875,7 +875,7 @@ namespace Server
       var sides = numSides;
 
       for (var i = 0; i < numDice; ++i)
-        total += (int)RandomImpl.Next(sides) + 1;
+        total += (int)RandomProviders.Provider.Next(sides) + 1;
 
       return total + bonus;
     }
@@ -885,7 +885,7 @@ namespace Server
       var count = list.Count;
       for (var i = count - 1; i > 0; i--)
       {
-        var r = (int)RandomImpl.Next((uint)count);
+        var r = (int)RandomProviders.Provider.Next((uint)count);
         var swap = list[r];
         list[r] = list[i];
         list[i] = swap;
@@ -896,7 +896,7 @@ namespace Server
 
     public static T RandomList<T>(IList<T> list) => list[Random(list.Count)];
 
-    public static bool RandomBool() => RandomImpl.NextBool();
+    public static bool RandomBool() => RandomProviders.Provider.NextBool();
 
     public static int RandomMinMax(int min, int max)
     {
@@ -911,27 +911,27 @@ namespace Server
         return min;
       }
 
-      return min + (int)RandomImpl.Next((uint)(max - min + 1));
+      return min + (int)RandomProviders.Provider.Next((uint)(max - min + 1));
     }
 
     public static int Random(int from, int count)
     {
       if (count == 0) return from;
 
-      if (count > 0) return (int)(from + RandomImpl.Next((uint)count));
+      if (count > 0) return (int)(from + RandomProviders.Provider.Next((uint)count));
 
-      return (int)(from - RandomImpl.Next((uint)-count));
+      return (int)(from - RandomProviders.Provider.Next((uint)-count));
     }
 
-    public static int Random(int count) => (int)RandomImpl.Next((uint)count);
+    public static int Random(int count) => (int)RandomProviders.Provider.Next((uint)count);
 
-    public static uint Random(uint count) => RandomImpl.Next(count);
+    public static uint Random(uint count) => RandomProviders.Provider.Next(count);
 
-    public static void RandomBytes(byte[] buffer) => RandomImpl.GetBytes(buffer);
+    public static void RandomBytes(byte[] buffer) => RandomProviders.Provider.GetBytes(buffer);
 
-    public static void RandomBytes(Span<byte> buffer) => RandomImpl.GetBytes(buffer);
+    public static void RandomBytes(Span<byte> buffer) => RandomProviders.Provider.GetBytes(buffer);
 
-    public static double RandomDouble() => RandomImpl.NextDouble();
+    public static double RandomDouble() => RandomProviders.Provider.NextDouble();
 
     /// <summary>
     ///   Random pink, blue, green, orange, red or yellow hue

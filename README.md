@@ -34,7 +34,6 @@ Windows
 
 #### Requirements
 - [.NET Core 3.1 Runtime](https://dotnet.microsoft.com/download/dotnet-core/3.1)
-- Optional: compile and install [Intel DRNG](https://github.com/modernuo/libdrng)
 
 #### Windows
 - Run `ModernUO.exe` or `dotnet ModernUO.dll`
