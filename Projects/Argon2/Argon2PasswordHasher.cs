@@ -75,7 +75,7 @@ namespace System.Security.Cryptography
     public string Hash(ReadOnlySpan<char> password)
     {
       Span<byte> salt = stackalloc byte[16];
-      m_Rng.GetBytes(salt);
+      Rng.GetBytes(salt);
       return Hash(password, salt);
     }
 
