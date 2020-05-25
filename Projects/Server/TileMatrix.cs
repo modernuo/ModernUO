@@ -173,16 +173,12 @@ namespace Server
     [MethodImpl(MethodImplOptions.Synchronized)]
     public StaticTile[][][] GetStaticBlock(int x, int y)
     {
-      Console.WriteLine("x {0} y {1} data {2} index {3}", x, y, DataStream != null, IndexStream != null);
-
       if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || DataStream == null || IndexStream == null)
         return EmptyStaticBlock;
 
       m_StaticTiles[x] ??= new StaticTile[BlockHeight][][][];
 
       var tiles = m_StaticTiles[x][y];
-
-      Console.WriteLine("Tiles exist? {0}", tiles?.Length);
 
       if (tiles != null)
         return tiles;
@@ -213,8 +209,6 @@ namespace Server
           }
         }
       }
-
-      Console.WriteLine("Did we get tiles? {0}", tiles?.Length);
 
       return m_StaticTiles[x][y] = tiles ?? ReadStaticBlock(x, y);
     }
