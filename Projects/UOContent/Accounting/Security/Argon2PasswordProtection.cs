@@ -3,7 +3,7 @@
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: Argon2PasswordProtection.cs                                     *
- * Created: 2020/05/01 - Updated: 2020/05/02                             *
+ * Created: 2020/05/01 - Updated: 2020/05/24                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
