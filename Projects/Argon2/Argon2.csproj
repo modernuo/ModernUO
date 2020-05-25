@@ -2,15 +2,14 @@
   <PropertyGroup>
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <PackageVersion>1.1.8</PackageVersion>
-    <RootNamespace>Server</RootNamespace>
+    <RootNamespace>System.Security.Cryptography</RootNamespace>
     <AssemblyName>Argon2.Bindings</AssemblyName>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>8.0</LangVersion>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>true</IsPackable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Configurations>Debug;Release;Analyze</Configurations>
     <AssemblyVersion>1.1.8</AssemblyVersion>
     <Platforms>x64</Platforms>

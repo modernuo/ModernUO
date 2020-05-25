@@ -69,6 +69,7 @@
     /// This will not be returned from the C# PasswordHasher wrapper
     /// </summary>
     DECODING_FAIL = -32,
+
     /// <summary>
     /// Unable to create the number of threads requested
     /// </summary>

@@ -1,6 +1,5 @@
 using System.Runtime.InteropServices;
 using System.Text;
-// using System.Text.RegularExpressions;
 
 namespace System.Security.Cryptography
 {
@@ -10,10 +9,7 @@ namespace System.Security.Cryptography
   /// </summary>
   public class Argon2PasswordHasher
   {
-    private static readonly RNGCryptoServiceProvider Rng = new RNGCryptoServiceProvider();
-
-    // private static readonly Regex HashRegex = new Regex(@"^\$argon2([di])\$v=(\d+)$m=(\d+),t=(\d+),p=(\d+)\$([A-Za-z0-9+/=]+)\$([A-Za-z0-9+/=]*)$", RegexOptions.Compiled);
-
+    private static RandomNumberGenerator m_Rng;
 
     /// <summary>
     /// How many iterations of the Argon2 hash to perform
@@ -48,13 +44,17 @@ namespace System.Security.Cryptography
     /// </summary>
     public Encoding StringEncoding { get; set; }
 
+    /// <summary>
+    /// Randomizer used to generate salts
+    /// </summary>
+    public RandomNumberGenerator Rng { get; set; }
 
     /// <summary>
     /// Initialize the Argon2 PasswordHasher with default performance and algorithm settings based upon the environment the hashing will be used in.
     /// You should perform your own profiling to determine what the parameters should be for your specific usage; however, this attempts to provide
     /// some reasonable defaults.
     /// </summary>
-    public Argon2PasswordHasher()
+    public Argon2PasswordHasher(RandomNumberGenerator rng = null)
     {
       TimeCost = 3;
       MemoryCost = 8192;
@@ -62,27 +62,8 @@ namespace System.Security.Cryptography
       ArgonType = Argon2Type.Argon2i;
       HashLength = 32;
       StringEncoding = Encoding.UTF8;
+      Rng = rng ?? (m_Rng ??= new RNGCryptoServiceProvider());
     }
-
-
-    /// <summary>
-    /// Initialize the Argon2 PasswordHasher with the performance and algorithm settings to use while hashing
-    /// <param name="timeCost">How many iterations of the Argon2 hash to perform (default: 3, must be at least 1)</param>
-    /// <param name="memoryCost">How much memory to use while hashing in kibibytes (KiB) (default: 8192 KiB [8 MiB], must be at least 8 KiB)</param>
-    /// <param name="parallelism">How many threads to use while hashing (default: 1, must be at least 1)</param>
-    /// <param name="argonType">The type of Argon2 hashing algorithm to use (Independent [default] or Dependent)</param>
-    /// <param name="hashLength">The length of the resulting hash in bytes (default: 32)</param>
-    /// </summary>
-    public Argon2PasswordHasher(uint timeCost = 3, uint memoryCost = 8192, uint parallelism = 1, Argon2Type argonType = Argon2Type.Argon2i, uint hashLength = 32)
-    {
-      TimeCost = timeCost;
-      MemoryCost = memoryCost;
-      Parallelism = parallelism;
-      ArgonType = argonType;
-      HashLength = hashLength;
-      StringEncoding = Encoding.UTF8;
-    }
-
 
     /// <summary>
     /// Hash the password using Argon2 with a cryptographically-secure, random, 16-byte salt.
@@ -94,7 +75,7 @@ namespace System.Security.Cryptography
     public string Hash(ReadOnlySpan<char> password)
     {
       Span<byte> salt = stackalloc byte[16];
-      Rng.GetBytes(salt);
+      m_Rng.GetBytes(salt);
       return Hash(password, salt);
     }
 

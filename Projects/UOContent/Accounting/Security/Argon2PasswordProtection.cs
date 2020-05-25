@@ -26,7 +26,7 @@ namespace Server.Accounting.Security
   public class Argon2PasswordProtection : IPasswordProtection
   {
     public static IPasswordProtection Instance = new Argon2PasswordProtection();
-    private Argon2PasswordHasher m_PasswordHasher = new Argon2PasswordHasher();
+    private Argon2PasswordHasher m_PasswordHasher = new Argon2PasswordHasher(RandomProviders.SecureProvider as RandomNumberGenerator);
 
     public string EncryptPassword(string plainPassword) =>
       m_PasswordHasher.Hash(plainPassword);

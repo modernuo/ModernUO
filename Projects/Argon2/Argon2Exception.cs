@@ -13,6 +13,6 @@
     /// <param name="action">Which method the Argon2Exception originated from</param>
     /// <param name="error">The error returned from the Argon2 library</param>
     /// </summary>
-    public Argon2Exception(string action, Argon2Error error) : base(string.Format("Error during Argon2 {0}: ({1}) {2}", action, (int)error, error)) {}
+    public Argon2Exception(string action, Argon2Error error) : base($"Error during Argon2 {action}: ({(int)error}) {error}") {}
   }
 }
