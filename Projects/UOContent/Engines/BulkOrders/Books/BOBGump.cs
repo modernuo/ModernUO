@@ -192,12 +192,12 @@ namespace Server.Engines.BulkOrders
             else
               AddHtmlLocalized(235, y, 80, 20, 1011542, LabelColor); // normal
 
-            object name = GetMaterialName(entry.Material, entry.DeedType, sub.ItemType);
+            TextDefinition name = GetMaterialName(entry.Material, entry.DeedType, sub.ItemType);
 
-            if (name is int intName)
-              AddHtmlLocalized(316, y, 100, 20, intName, LabelColor);
+            if (name.Number > 0)
+              AddHtmlLocalized(316, y, 100, 20, name, LabelColor);
             else
-              AddLabel(316, y, 1152, name.ToString());
+              AddLabel(316, y, 1152, name);
 
             AddLabel(421, y, 1152, $"{sub.AmountCur} / {entry.AmountMax}");
 
@@ -229,12 +229,12 @@ namespace Server.Engines.BulkOrders
           else
             AddHtmlLocalized(235, y, 80, 20, 1011542, LabelColor); // normal
 
-          object name = GetMaterialName(smallEntry.Material, smallEntry.DeedType, smallEntry.ItemType);
+          TextDefinition name = GetMaterialName(smallEntry.Material, smallEntry.DeedType, smallEntry.ItemType);
 
-          if (name is int intName)
-            AddHtmlLocalized(316, y, 100, 20, intName, LabelColor);
+          if (name.Number > 0)
+            AddHtmlLocalized(316, y, 100, 20, name, LabelColor);
           else
-            AddLabel(316, y, 1152, name.ToString());
+            AddLabel(316, y, 1152, name);
 
           AddLabel(421, y, 1152, $"{smallEntry.AmountCur} / {smallEntry.AmountMax}");
         }
@@ -391,7 +391,7 @@ namespace Server.Engines.BulkOrders
       return page;
     }
 
-    public object GetMaterialName(BulkMaterialType mat, BODType type, Type itemType)
+    public TextDefinition GetMaterialName(BulkMaterialType mat, BODType type, Type itemType)
     {
       switch (type)
       {

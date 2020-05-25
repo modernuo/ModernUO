@@ -56,14 +56,14 @@ namespace Server.Gumps
               AddButton(190, 17, 0x15E3, 0x15E7, 0, GumpButtonType.Page, page - 1);
           }
 
-          object name = FindHouseName(list[i]);
+          TextDefinition name = FindHouseName(list[i]);
 
           AddHtml(15, 40 + i % 15 * 20, 20, 20, Color($"{i + 1}.", White));
 
-          if (name is int nameInt)
-            AddHtmlLocalized(35, 40 + i % 15 * 20, 160, 20, nameInt, White16);
+          if (name.Number > 0)
+            AddHtmlLocalized(35, 40 + i % 15 * 20, 160, 20, name, White16);
           else
-            AddHtml(35, 40 + i % 15 * 20, 160, 20, Color(name.ToString(), White));
+            AddHtml(35, 40 + i % 15 * 20, 160, 20, Color(name, White));
 
           AddButton(198, 39 + i % 15 * 20, 4005, 4007, i + 1);
         }
@@ -230,7 +230,7 @@ namespace Server.Gumps
       }
     }
 
-    public object FindHouseName(BaseHouse house)
+    public static TextDefinition FindHouseName(BaseHouse house)
     {
       int multiID = house.ItemID;
       HousePlacementEntry[] entries = HousePlacementEntry.ClassicHouses;

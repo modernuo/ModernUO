@@ -147,9 +147,9 @@ namespace Server
 
         if (m_Settings == null)
         {
-          Console.ForegroundColor = ConsoleColor.Red;
+          Utility.PushColor(ConsoleColor.Red);
           Console.WriteLine("failed");
-          Console.ResetColor();
+          Utility.PopColor();
           throw new Exception("Core: Server configuration failed to deserialize.");
         }
 
@@ -174,9 +174,9 @@ namespace Server
       if (updated)
       {
         Save();
-        Console.ForegroundColor = ConsoleColor.Green;
+        Utility.PushColor(ConsoleColor.Green);
         Console.WriteLine($"Core: Configuration saved to {m_RelPath}.");
-        Console.ResetColor();
+        Utility.PopColor();
       }
     }
 

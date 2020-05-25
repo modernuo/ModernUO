@@ -92,32 +92,32 @@ namespace Server
 
       if (fileIndex != 0x7F)
       {
-        var mapPath = Core.FindDataFile("map{0}LegacyMUL.uop", fileIndex);
+        var mapPath = Core.FindDataFile($"map{fileIndex}LegacyMUL.uop", false, true);
 
-        if (File.Exists(mapPath))
+        if (mapPath != null)
         {
           m_MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
           m_MapIndex = new UOPIndex(m_MapStream);
         }
         else
         {
-          mapPath = Core.FindDataFile("map{0}.mul", fileIndex);
+          mapPath = Core.FindDataFile($"map{fileIndex}.mul", false, true);
 
-          if (File.Exists(mapPath))
+          if (mapPath != null)
             m_MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
 
-        var indexPath = Core.FindDataFile("staidx{0}.mul", fileIndex);
+        var indexPath = Core.FindDataFile($"staidx{fileIndex}.mul", false, true);
 
-        if (File.Exists(indexPath))
+        if (indexPath != null)
         {
           IndexStream = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
           m_IndexReader = new BinaryReader(IndexStream);
         }
 
-        var staticsPath = Core.FindDataFile("statics{0}.mul", fileIndex);
+        var staticsPath = Core.FindDataFile($"statics{fileIndex}.mul", false, true);
 
-        if (File.Exists(staticsPath))
+        if (staticsPath != null)
           DataStream = new FileStream(staticsPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
       }
 
@@ -183,7 +183,7 @@ namespace Server
 
           lock (shared)
           {
-            if (x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight)
+            if (x < shared.BlockWidth && y < shared.BlockHeight)
             {
               var theirTiles = shared.m_StaticTiles[x];
 
@@ -205,12 +205,7 @@ namespace Server
       return m_StaticTiles[x][y] = tiles ?? ReadStaticBlock(x, y);
     }
 
-    public StaticTile[] GetStaticTiles(int x, int y)
-    {
-      var tiles = GetStaticBlock(x >> 3, y >> 3);
-
-      return tiles[x & 0x7][y & 0x7];
-    }
+    public StaticTile[] GetStaticTiles(int x, int y) => GetStaticBlock(x >> 3, y >> 3)[x & 0x7][y & 0x7];
 
     [MethodImpl(MethodImplOptions.Synchronized)]
     public StaticTile[] GetStaticTiles(int x, int y, bool multis)
@@ -277,7 +272,7 @@ namespace Server
 
           lock (shared)
           {
-            if (x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight)
+            if (x < shared.BlockWidth && y < shared.BlockHeight)
             {
               var theirTiles = shared.m_LandTiles[x];
 
@@ -346,7 +341,7 @@ namespace Server
           while (pCur < pEnd)
           {
             lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add(pCur->m_ID, pCur->m_Z);
-            pCur = pCur + 1;
+            pCur += 1;
           }
 
           var tiles = new StaticTile[8][][];

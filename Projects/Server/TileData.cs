@@ -183,20 +183,6 @@ namespace Server
     {
       var filePath = Core.FindDataFile("tiledata.mul");
 
-      if (!File.Exists(filePath))
-      {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("tiledata.mul was not found");
-        Console.WriteLine("Make sure your modernuo.json is properly configured");
-        Console.WriteLine("After pressing return an exception will be thrown and the server will terminate");
-        Console.ResetColor();
-
-        Utility.PushColor(ConsoleColor.Red);
-        Console.WriteLine($"TileData: {filePath} not found");
-        Utility.PopColor();
-        return;
-      }
-
       using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
       var bin = new BinaryReader(fs);
 

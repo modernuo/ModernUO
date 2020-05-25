@@ -37,7 +37,7 @@ namespace Server
 
     static MultiData()
     {
-      var multiUOPPath = Core.FindDataFile("MultiCollection.uop");
+      var multiUOPPath = Core.FindDataFile("MultiCollection.uop", false);
 
       if (File.Exists(multiUOPPath))
       {
@@ -49,47 +49,40 @@ namespace Server
       var idxPath = Core.FindDataFile("multi.idx");
       var mulPath = Core.FindDataFile("multi.mul");
 
-      if (File.Exists(idxPath) && File.Exists(mulPath))
+      var idx = new FileStream(idxPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+      m_IndexReader = new BinaryReader(idx);
+
+      var stream = new FileStream(mulPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+      m_StreamReader = new BinaryReader(stream);
+
+      var vdPath = Core.FindDataFile("verdata.mul", false);
+
+      if (!File.Exists(vdPath)) return;
+
+      using var fs = new FileStream(vdPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+      var bin = new BinaryReader(fs);
+
+      var count = bin.ReadInt32();
+
+      for (var i = 0; i < count; ++i)
       {
-        var idx = new FileStream(idxPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-        m_IndexReader = new BinaryReader(idx);
+        var file = bin.ReadInt32();
+        var index = bin.ReadInt32();
+        var lookup = bin.ReadInt32();
+        var length = bin.ReadInt32();
+        bin.ReadInt32(); // extra
 
-        var stream = new FileStream(mulPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-        m_StreamReader = new BinaryReader(stream);
-
-        var vdPath = Core.FindDataFile("verdata.mul");
-
-        if (!File.Exists(vdPath)) return;
-
-        using var fs = new FileStream(vdPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-        var bin = new BinaryReader(fs);
-
-        var count = bin.ReadInt32();
-
-        for (var i = 0; i < count; ++i)
+        if (file == 14 && index >= 0 && lookup >= 0 && length > 0)
         {
-          var file = bin.ReadInt32();
-          var index = bin.ReadInt32();
-          var lookup = bin.ReadInt32();
-          var length = bin.ReadInt32();
-          bin.ReadInt32(); // extra
+          bin.BaseStream.Seek(lookup, SeekOrigin.Begin);
 
-          if (file == 14 && index >= 0 && lookup >= 0 && length > 0)
-          {
-            bin.BaseStream.Seek(lookup, SeekOrigin.Begin);
+          Components[index] = new MultiComponentList(bin, length / 12);
 
-            Components[index] = new MultiComponentList(bin, length / 12);
-
-            bin.BaseStream.Seek(24 + i * 20, SeekOrigin.Begin);
-          }
+          bin.BaseStream.Seek(24 + i * 20, SeekOrigin.Begin);
         }
+      }
 
-        bin.Close();
-      }
-      else
-      {
-        Console.WriteLine("Warning: Multi data files not found");
-      }
+      bin.Close();
     }
 
     public static MultiComponentList GetComponents(int multiID)

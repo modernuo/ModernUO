@@ -1548,7 +1548,7 @@ namespace Server.Commands
     {
       List<BodyEntry> list = new List<BodyEntry>();
 
-      string path = Core.FindDataFile("models/models.txt");
+      string path = Path.Combine(Core.BaseDirectory, "Data/models.txt");
 
       if (File.Exists(path))
       {
@@ -1681,9 +1681,6 @@ namespace Server.Commands
       {
         Dictionary<int, SpeechEntry> table = tables[p];
 
-        if (p > 0)
-          html.WriteLine("      <br>");
-
         html.WriteLine("      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
         html.WriteLine("      <tr><td class=\"tbl-border\">");
         html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
@@ -1767,7 +1764,7 @@ namespace Server.Commands
 
       Dictionary<int, SpeechEntry> table = null;
 
-      string path = Core.FindDataFile("speech.mul");
+      string path = Core.FindDataFile("speech.mul", false);
 
       if (File.Exists(path))
       {
