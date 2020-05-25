@@ -326,7 +326,7 @@ namespace Server
 
       Utility.PushColor(ConsoleColor.Green);
       // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
-      Console.WriteLine("ModernUO - [https://github.com/kamronbatman/ModernUO] Version {0}.{1}.{2}.{3}", ver.Major,
+      Console.WriteLine("ModernUO - [https://github.com/modernuo/modernuo] Version {0}.{1}.{2}.{3}", ver.Major,
         ver.Minor, ver.Build,
         ver.Revision);
       Console.WriteLine("Core: Running on {0}\n", RuntimeInformation.FrameworkDescription);
