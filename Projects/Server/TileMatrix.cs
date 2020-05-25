@@ -307,7 +307,6 @@ namespace Server
     [MethodImpl(MethodImplOptions.Synchronized)]
     private unsafe StaticTile[][][] ReadStaticBlock(int x, int y)
     {
-      Console.WriteLine("Read Static Block {0} {1}", x, y);
       try
       {
         m_IndexReader.BaseStream.Seek((x * BlockHeight + y) * 12, SeekOrigin.Begin);
@@ -362,8 +361,6 @@ namespace Server
             for (var j = 0; j < 8; ++j)
               tiles[i][j] = lists[i][j].ToArray();
           }
-
-          Console.WriteLine("Tiles Read {0}", tiles.Length);
 
           return tiles;
         }
