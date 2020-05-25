@@ -102,10 +102,10 @@ namespace System.Security.Cryptography
       );
 
       [DllImport("libargon2", EntryPoint = "argon2_verify")]
-      internal static extern unsafe Argon2Error crypto_argon2_verify(in byte encoded, in byte pwd, int pwdlen, int type);
+      internal static extern Argon2Error crypto_argon2_verify(in byte encoded, in byte pwd, int pwdlen, int type);
 
       [DllImport("libargon2", EntryPoint = "decode_string")]
-      internal static extern unsafe Argon2Error crypto_decode_string(Argon2Context ctx, in byte str, int type);
+      internal static extern Argon2Error crypto_decode_string(Argon2Context ctx, in byte str, int type);
     }
   }
 }
