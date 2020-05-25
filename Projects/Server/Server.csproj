@@ -77,7 +77,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv" Version="3.1.4" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.4" />
     <PackageReference Include="System.IO.Pipelines" Version="4.7.2" />
     <PackageReference Include="ZLib.Bindings" Version="1.0.0" />
@@ -86,6 +85,11 @@
     <PackageReference Include="StyleCop.Analyzers">
       <Version>1.1.118</Version>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
+      <Version>3.0.0</Version>
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 </Project>

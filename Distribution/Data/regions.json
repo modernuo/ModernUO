@@ -143,7 +143,7 @@
   },
   {
     "name": "A Wheatfield in Britain 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Britain",
     "rects": [{ "x1": 1120, "y1": 1776, "x2": 1152, "y2": 1808 }],
@@ -151,7 +151,7 @@
   },
   {
     "name": "A Wheatfield in Britain 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Britain",
     "rects": [{ "x1": 1184, "y1": 1808, "x2": 1216, "y2": 1840 }],
@@ -159,7 +159,7 @@
   },
   {
     "name": "A Wheatfield in Britain 3",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Britain",
     "rects": [{ "x1": 1216, "y1": 1872, "x2": 1248, "y2": 1904 }],
@@ -167,7 +167,7 @@
   },
   {
     "name": "A Carrot Field in Britain 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Britain",
     "rects": [{ "x1": 1208, "y1": 1712, "x2": 1224, "y2": 1736 }],
@@ -175,7 +175,7 @@
   },
   {
     "name": "An Onion Field in Britain 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Britain",
     "rects": [{ "x1": 1224, "y1": 1712, "x2": 1240, "y2": 1736 }],
@@ -183,7 +183,7 @@
   },
   {
     "name": "A Cabbage Field in Britain 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Britain",
     "rects": [{ "x1": 1176, "y1": 1672, "x2": 1192, "y2": 1695 }],
@@ -191,7 +191,7 @@
   },
   {
     "name": "A Turnip Field in Britain 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Britain",
     "rects": [{ "x1": 1192, "y1": 1672, "x2": 1208, "y2": 1696 }],
@@ -199,7 +199,7 @@
   },
   {
     "name": "A Wheatfield in Britain 4",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Britain",
     "rects": [{ "x1": 1104, "y1": 1608, "x2": 1136, "y2": 1640 }],
@@ -207,7 +207,7 @@
   },
   {
     "name": "A Wheatfield in Britain 5",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Britain",
     "rects": [{ "x1": 1136, "y1": 1560, "x2": 1168, "y2": 1592 }],
@@ -215,7 +215,7 @@
   },
   {
     "name": "A Turnip Field in Britain 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Britain",
     "rects": [{ "x1": 1208, "y1": 1592, "x2": 1224, "y2": 1616 }],
@@ -223,7 +223,7 @@
   },
   {
     "name": "A Carrot Field in Britain 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Britain",
     "rects": [{ "x1": 1224, "y1": 1592, "x2": 1240, "y2": 1616 }],
@@ -413,7 +413,7 @@
   },
   {
     "name": "A Field of Sheep in Yew 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Yew",
     "rune": "A Field of Sheep in Yew",
@@ -422,7 +422,7 @@
   },
   {
     "name": "A Field of Sheep in Yew 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Yew",
     "rune": "A Field of Sheep in Yew",
@@ -431,7 +431,7 @@
   },
   {
     "name": "A Farm in Yew",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Yew",
     "rune": "A Farm in Yew",
@@ -440,7 +440,7 @@
   },
   {
     "name": "A Wheatfield in Yew 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Yew",
     "rune": "A Wheatfield in Yew",
@@ -449,7 +449,7 @@
   },
   {
     "name": "A Wheatfield in Yew 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "parent": "Yew",
     "rune": "A Wheatfield in Yew",
@@ -1071,7 +1071,7 @@
   },
   {
     "name": "A Cotton Field in Moonglow",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rune": "A Cotton Field in Moonglow",
@@ -1080,7 +1080,7 @@
   },
   {
     "name": "A Wheatfield in Skara Brae 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rune": "A Wheatfield in Skara Brae",
@@ -1089,7 +1089,7 @@
   },
   {
     "name": "A Carrot Field in Skara Brae",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 816, "y1": 2251, "x2": 832, "y2": 2259 }],
@@ -1097,7 +1097,7 @@
   },
   {
     "name": "An Onion Field in Skara Brae",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 816, "y1": 2261, "x2": 832, "y2": 2269 }],
@@ -1105,7 +1105,7 @@
   },
   {
     "name": "A Cabbage Field in Skara Brae 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 816, "y1": 2271, "x2": 832, "y2": 2279 }],
@@ -1113,7 +1113,7 @@
   },
   {
     "name": "A Cabbage Field in Skara Brae 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 816, "y1": 2281, "x2": 832, "y2": 2289 }],
@@ -1121,7 +1121,7 @@
   },
   {
     "name": "A Wheatfield in Skara Brae 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 835, "y1": 2344, "x2": 851, "y2": 2360 }],
@@ -1129,7 +1129,7 @@
   },
   {
     "name": "A Cotton Field in Skara Brae",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Felucca",
     "priority": 50,
     "rects": [{ "x1": 816, "y1": 2344, "x2": 832, "y2": 2368 }],
@@ -1399,7 +1399,7 @@
   },
   {
     "name": "A Wheatfield in Britain 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Britain",
     "rects": [{ "x1": 1120, "y1": 1776, "x2": 1152, "y2": 1808 }],
@@ -1407,7 +1407,7 @@
   },
   {
     "name": "A Wheatfield in Britain 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Britain",
     "rects": [{ "x1": 1184, "y1": 1808, "x2": 1216, "y2": 1840 }],
@@ -1415,7 +1415,7 @@
   },
   {
     "name": "A Wheatfield in Britain 3",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Britain",
     "rects": [{ "x1": 1216, "y1": 1872, "x2": 1248, "y2": 1904 }],
@@ -1423,7 +1423,7 @@
   },
   {
     "name": "A Carrot Field in Britain 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Britain",
     "rects": [{ "x1": 1208, "y1": 1712, "x2": 1224, "y2": 1736 }],
@@ -1431,7 +1431,7 @@
   },
   {
     "name": "An Onion Field in Britain 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Britain",
     "rects": [{ "x1": 1224, "y1": 1712, "x2": 1240, "y2": 1736 }],
@@ -1439,7 +1439,7 @@
   },
   {
     "name": "A Cabbage Field in Britain 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Britain",
     "rects": [{ "x1": 1176, "y1": 1672, "x2": 1192, "y2": 1695 }],
@@ -1447,7 +1447,7 @@
   },
   {
     "name": "A Turnip Field in Britain 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Britain",
     "rects": [{ "x1": 1192, "y1": 1672, "x2": 1208, "y2": 1696 }],
@@ -1455,7 +1455,7 @@
   },
   {
     "name": "A Wheatfield in Britain 4",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Britain",
     "rects": [{ "x1": 1104, "y1": 1608, "x2": 1136, "y2": 1640 }],
@@ -1463,7 +1463,7 @@
   },
   {
     "name": "A Wheatfield in Britain 5",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Britain",
     "rects": [{ "x1": 1136, "y1": 1560, "x2": 1168, "y2": 1592 }],
@@ -1471,7 +1471,7 @@
   },
   {
     "name": "A Turnip Field in Britain 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Britain",
     "rects": [{ "x1": 1208, "y1": 1592, "x2": 1224, "y2": 1616 }],
@@ -1479,7 +1479,7 @@
   },
   {
     "name": "A Carrot Field in Britain 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Britain",
     "rects": [{ "x1": 1224, "y1": 1592, "x2": 1240, "y2": 1616 }],
@@ -1649,7 +1649,7 @@
   },
   {
     "name": "A Field of Sheep in Yew 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Yew",
     "rune": "A Field of Sheep in Yew",
@@ -1658,7 +1658,7 @@
   },
   {
     "name": "A Field of Sheep in Yew 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Yew",
     "rune": "A Field of Sheep in Yew",
@@ -1667,7 +1667,7 @@
   },
   {
     "name": "A Farm in Yew",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Yew",
     "rune": "A Farm in Yew",
@@ -1676,7 +1676,7 @@
   },
   {
     "name": "A Wheatfield in Yew 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Yew",
     "rune": "A Wheatfield in Yew",
@@ -1685,7 +1685,7 @@
   },
   {
     "name": "A Wheatfield in Yew 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "parent": "Yew",
     "rune": "A Wheatfield in Yew",
@@ -2298,7 +2298,7 @@
   },
   {
     "name": "A Cotton Field in Moonglow",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rune": "A Cotton Field in Moonglow",
@@ -2307,7 +2307,7 @@
   },
   {
     "name": "A Wheatfield in Skara Brae 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rune": "A Wheatfield in Skara Brae",
@@ -2316,7 +2316,7 @@
   },
   {
     "name": "A Carrot Field in Skara Brae",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 816, "y1": 2251, "x2": 832, "y2": 2259 }],
@@ -2324,7 +2324,7 @@
   },
   {
     "name": "An Onion Field in Skara Brae",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 816, "y1": 2261, "x2": 832, "y2": 2269 }],
@@ -2332,7 +2332,7 @@
   },
   {
     "name": "A Cabbage Field in Skara Brae 1",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 816, "y1": 2271, "x2": 832, "y2": 2279 }],
@@ -2340,7 +2340,7 @@
   },
   {
     "name": "A Cabbage Field in Skara Brae 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 816, "y1": 2281, "x2": 832, "y2": 2289 }],
@@ -2348,7 +2348,7 @@
   },
   {
     "name": "A Wheatfield in Skara Brae 2",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 835, "y1": 2344, "x2": 851, "y2": 2360 }],
@@ -2356,7 +2356,7 @@
   },
   {
     "name": "A Cotton Field in Skara Brae",
-    "type": "Region",
+    "type": "BaseRegion",
     "map": "Trammel",
     "priority": 50,
     "rects": [{ "x1": 816, "y1": 2344, "x2": 832, "y2": 2368 }],

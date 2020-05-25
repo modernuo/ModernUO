@@ -57,18 +57,20 @@ namespace Server.Engines.Spawners
       List<string> failures = new List<string>();
       int count = 0;
 
-      foreach (var json in spawners)
+      for (var i = 0; i < spawners.Count; i++)
       {
+        var json = spawners[i];
         Type type = AssemblyHandler.FindFirstTypeForName(json.Type);
 
-        if (json.Type == null || !typeof(BaseSpawner).IsAssignableFrom(type))
+        if (type == null || !typeof(BaseSpawner).IsAssignableFrom(type))
         {
-          string failure = $"GenerateSpawners: Invalid region type {json.Type}";
+          string failure = $"GenerateSpawners: Invalid spawner type {json.Type ?? "(-null-)"} ({i})";
           if (!failures.Contains(failure))
           {
             failures.Add(failure);
             from.SendMessage(failure);
           }
+
           continue;
         }
 
@@ -85,10 +87,16 @@ namespace Server.Engines.Spawners
 
         eable.Free();
 
-        var spawner = ActivatorUtil.CreateInstance(type, json, options) as ISpawner;
-        if (spawner == null)
+        try
         {
-          string failure = $"GenerateSpawners: Spawner type {type} is not valid";
+          var spawner = ActivatorUtil.CreateInstance(type, json, options) as ISpawner;
+
+          spawner!.MoveToWorld(location, map);
+          spawner!.Respawn();
+        }
+        catch (Exception)
+        {
+          string failure = $"GenerateSpawners: Spawner {type} failed to construct";
           if (!failures.Contains(failure))
           {
             failures.Add(failure);
@@ -98,14 +106,11 @@ namespace Server.Engines.Spawners
           continue;
         }
 
-        spawner.MoveToWorld(location, map);
-        spawner.Respawn();
-
         count++;
       }
 
       watch.Stop();
-      from.SendMessage("GenerateSpawners: Generated {0} spawners ({1:F2} seconds, {2})", count, watch.Elapsed.TotalSeconds, failures);
+      from.SendMessage("GenerateSpawners: Generated {0} spawners ({1:F2} seconds, {2} failures)", count, watch.Elapsed.TotalSeconds, failures.Count);
     }
   }
 }

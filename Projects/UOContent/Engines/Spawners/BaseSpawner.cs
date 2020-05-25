@@ -787,7 +787,7 @@ namespace Server.Engines.Spawners
         case 8:
           {
             ReturnOnDeactivate = reader.ReadBool();
-            break;
+            goto case 7;
           }
         case 7:
           {

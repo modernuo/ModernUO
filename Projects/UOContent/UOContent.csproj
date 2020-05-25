@@ -40,8 +40,8 @@
     <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).pdb" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\System.IO.Pipelines.dll" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\argon2.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Assemblies\argon2.dylib" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Assemblies\argon2.so" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\libargon2.dylib" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\libargon2.so" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\zlib.dll" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\libz.dylib" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\libz.so" ContinueOnError="true" />
@@ -78,7 +78,6 @@
   <ItemGroup>
     <PackageReference Include="MailKit" Version="2.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.4" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.4" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.4" />
     <PackageReference Include="Argon2.Bindings" Version="1.1.8" />
@@ -88,6 +87,11 @@
     <PackageReference Include="StyleCop.Analyzers">
       <Version>1.1.118</Version>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
+      <Version>3.0.0</Version>
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 </Project>

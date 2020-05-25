@@ -24,7 +24,8 @@ namespace Server
 {
   public interface IRandomProvider
   {
-    public uint Next(uint c);
+    public ulong Next(ulong max);
+    public uint Next(uint max);
     public bool NextBool();
     public void GetBytes(Span<byte> b);
     public double NextDouble();

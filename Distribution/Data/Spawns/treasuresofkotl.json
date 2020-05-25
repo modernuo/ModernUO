@@ -1,6 +1,7 @@
 [
   {
     "type": "Spawner",
+    "location": [541, 2406, 10],
     "map": "TerMur",
     "count": 14,
     "entries": [
@@ -10,7 +11,6 @@
     "homeRange": 20,
     "walkingRange": 5,
     "maxDelay": "00:02:00",
-    "minDelay": "00:01:00",
-    "location": [541, 2406, 10]
+    "minDelay": "00:01:00"
   }
 ]

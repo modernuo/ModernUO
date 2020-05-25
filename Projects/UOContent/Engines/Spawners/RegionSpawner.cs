@@ -49,7 +49,9 @@ namespace Server.Engines.Spawners
     {
       json.GetProperty("map", options, out Map map);
       json.GetProperty("region", options, out string spawnRegion);
+
       m_SpawnRegion = Region.Find(spawnRegion, map) as BaseRegion;
+      m_SpawnRegion?.InitRectangles();
     }
 
     public RegionSpawner(Serial serial) : base(serial)
@@ -60,12 +62,12 @@ namespace Server.Engines.Spawners
     {
       base.GetSpawnerProperties(list);
 
-      if (Running) list.Add(1076228, "region:\t{0}", m_SpawnRegion.Name); // ~1_DUMMY~ ~2_DUMMY~
+      if (Running && m_SpawnRegion != null) list.Add(1076228, "region:\t{0}", m_SpawnRegion.Name); // ~1_DUMMY~ ~2_DUMMY~
     }
 
     public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
     {
-      if (m_SpawnRegion == null || map == null || map == Map.Internal || map != m_SpawnRegion.Map)
+      if (m_SpawnRegion == null || map == null || map == Map.Internal || map != m_SpawnRegion.Map || m_SpawnRegion.TotalWeight <= 0)
         return Location;
 
       bool waterMob, waterOnlyMob;
@@ -133,6 +135,9 @@ namespace Server.Engines.Spawners
       base.Deserialize(reader);
 
       int version = reader.ReadEncodedInt();
+
+      m_SpawnRegion = Region.Find(reader.ReadString(), Map) as BaseRegion;
+      m_SpawnRegion?.InitRectangles();
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -140,6 +145,8 @@ namespace Server.Engines.Spawners
       base.Serialize(writer);
 
       writer.WriteEncodedInt(0); // version
+
+      writer.Write(m_SpawnRegion?.Name);
     }
   }
 }

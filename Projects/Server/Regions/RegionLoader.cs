@@ -32,7 +32,7 @@ namespace Server
       {
         Type type = AssemblyHandler.FindFirstTypeForName(json.Type);
 
-        if (json.Type == null || !typeof(Region).IsAssignableFrom(type))
+        if (type == null || !typeof(Region).IsAssignableFrom(type))
         {
           failures.Add($"\tInvalid region type {json.Type}");
           continue;
