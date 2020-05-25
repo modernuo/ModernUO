@@ -36,12 +36,9 @@ namespace Server.Misc
 
       EventSink.ClientVersionReceived += EventSink_ClientVersionReceived;
 
-      // ClientVersion.Required = null;
-      // Required = new ClientVersion( "6.0.0.0" );
-
       if (m_DetectClientRequirement)
       {
-        string path = Core.FindDataFile("client.exe");
+        string path = Core.FindDataFile("client.exe", false);
 
         if (File.Exists(path))
         {
@@ -71,10 +68,10 @@ namespace Server.Misc
         return;
 
       if (Required != null && version < Required && (m_OldClientResponse == OldClientResponse.Kick ||
-                                                     (m_OldClientResponse == OldClientResponse.LenientKick &&
+                                                     m_OldClientResponse == OldClientResponse.LenientKick &&
                                                      DateTime.UtcNow - state.Mobile.CreationTime > m_AgeLeniency &&
                                                      state.Mobile is PlayerMobile mobile &&
-                                                     mobile.GameTime > m_GameTimeLeniency)))
+                                                     mobile.GameTime > m_GameTimeLeniency))
       {
         kickMessage = $"This server requires your client version be at least {Required}.";
       }

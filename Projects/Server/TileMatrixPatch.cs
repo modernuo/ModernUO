@@ -35,15 +35,15 @@ namespace Server
       if (!Enabled)
         return;
 
-      var mapDataPath = Core.FindDataFile("mapdif{0}.mul", index);
-      var mapIndexPath = Core.FindDataFile("mapdifl{0}.mul", index);
+      var mapDataPath = Core.FindDataFile($"mapdif{index}.mul", false);
+      var mapIndexPath = Core.FindDataFile($"mapdifl{index}.mul", false);
 
       if (File.Exists(mapDataPath) && File.Exists(mapIndexPath))
         m_LandBlocks = PatchLand(matrix, mapDataPath, mapIndexPath);
 
-      var staDataPath = Core.FindDataFile("stadif{0}.mul", index);
-      var staIndexPath = Core.FindDataFile("stadifl{0}.mul", index);
-      var staLookupPath = Core.FindDataFile("stadifi{0}.mul", index);
+      var staDataPath = Core.FindDataFile($"stadif{index}.mul", false);
+      var staIndexPath = Core.FindDataFile($"stadifl{index}.mul", false);
+      var staLookupPath = Core.FindDataFile($"stadifi{index}.mul", false);
 
       if (File.Exists(staDataPath) && File.Exists(staIndexPath) && File.Exists(staLookupPath))
         m_StaticBlocks = PatchStatics(matrix, staDataPath, staIndexPath, staLookupPath);

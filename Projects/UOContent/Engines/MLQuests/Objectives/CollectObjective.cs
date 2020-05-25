@@ -14,7 +14,7 @@ namespace Server.Engines.MLQuests.Objectives
       AcceptedType = type;
       Name = name;
 
-      if (MLQuestSystem.Debug && ShowDetailed && name.Number > 0)
+      if (MLQuestSystem.Debug && ShowDetailed && name?.Number > 0)
       {
         int itemid = LabelToItemID(name.Number);
 
