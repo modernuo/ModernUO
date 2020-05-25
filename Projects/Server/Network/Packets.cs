@@ -27,13 +27,8 @@ using System.Text;
 using System.Threading;
 using Server.Accounting;
 using Server.Compression;
-using Server.ContextMenus;
 using Server.Gumps;
 using Server.Items;
-using Server.Menus;
-using Server.Menus.ItemLists;
-using Server.Menus.Questions;
-using Server.Prompts;
 using Server.Targeting;
 
 namespace Server.Network

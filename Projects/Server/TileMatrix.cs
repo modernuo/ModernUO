@@ -92,7 +92,10 @@ namespace Server
 
       if (fileIndex != 0x7F)
       {
-        var mapPath = Core.FindDataFile("map{0}LegacyMUL.uop", fileIndex);
+        var uopMapFile = $"map{fileIndex}LegacyMUL.uop";
+        var mulMapFile = $"map{fileIndex}.mul";
+
+        var mapPath = Core.FindDataFile(uopMapFile, false);
 
         if (File.Exists(mapPath))
         {
@@ -101,24 +104,29 @@ namespace Server
         }
         else
         {
-          mapPath = Core.FindDataFile("map{0}.mul", fileIndex);
+          mapPath = Core.FindDataFile(mulMapFile, false);
 
           if (File.Exists(mapPath))
             m_MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
 
-        var indexPath = Core.FindDataFile("staidx{0}.mul", fileIndex);
-
-        if (File.Exists(indexPath))
+        if (m_MapStream == null)
         {
-          IndexStream = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-          m_IndexReader = new BinaryReader(IndexStream);
+          Utility.PushColor(ConsoleColor.Red);
+          Console.WriteLine($"TileMatrix: {uopMapFile} or {mulMapFile} was not found");
+          Console.WriteLine("Make sure modernuo.json is properly configured");
+          Utility.PopColor();
+          throw new FileNotFoundException($"TileMatric: {mapPath} was not found");
         }
 
-        var staticsPath = Core.FindDataFile("statics{0}.mul", fileIndex);
+        var indexPath = Core.FindDataFile($"staidx{fileIndex}.mul");
 
-        if (File.Exists(staticsPath))
-          DataStream = new FileStream(staticsPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        IndexStream = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        m_IndexReader = new BinaryReader(IndexStream);
+
+        var staticsPath = Core.FindDataFile($"statics{fileIndex}.mul");
+
+        DataStream = new FileStream(staticsPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
       }
 
       EmptyStaticBlock = new StaticTile[8][][];
@@ -165,12 +173,16 @@ namespace Server
     [MethodImpl(MethodImplOptions.Synchronized)]
     public StaticTile[][][] GetStaticBlock(int x, int y)
     {
+      Console.WriteLine("x {0} y {1} data {2} index {3}", x, y, DataStream != null, IndexStream != null);
+
       if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || DataStream == null || IndexStream == null)
         return EmptyStaticBlock;
 
       m_StaticTiles[x] ??= new StaticTile[BlockHeight][][][];
 
       var tiles = m_StaticTiles[x][y];
+
+      Console.WriteLine("Tiles exist? {0}", tiles?.Length);
 
       if (tiles != null)
         return tiles;
@@ -183,7 +195,7 @@ namespace Server
 
           lock (shared)
           {
-            if (x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight)
+            if (x < shared.BlockWidth && y < shared.BlockHeight)
             {
               var theirTiles = shared.m_StaticTiles[x];
 
@@ -202,15 +214,12 @@ namespace Server
         }
       }
 
+      Console.WriteLine("Did we get tiles? {0}", tiles?.Length);
+
       return m_StaticTiles[x][y] = tiles ?? ReadStaticBlock(x, y);
     }
 
-    public StaticTile[] GetStaticTiles(int x, int y)
-    {
-      var tiles = GetStaticBlock(x >> 3, y >> 3);
-
-      return tiles[x & 0x7][y & 0x7];
-    }
+    public StaticTile[] GetStaticTiles(int x, int y) => GetStaticBlock(x >> 3, y >> 3)[x & 0x7][y & 0x7];
 
     [MethodImpl(MethodImplOptions.Synchronized)]
     public StaticTile[] GetStaticTiles(int x, int y, bool multis)
@@ -277,7 +286,7 @@ namespace Server
 
           lock (shared)
           {
-            if (x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight)
+            if (x < shared.BlockWidth && y < shared.BlockHeight)
             {
               var theirTiles = shared.m_LandTiles[x];
 
@@ -304,6 +313,7 @@ namespace Server
     [MethodImpl(MethodImplOptions.Synchronized)]
     private unsafe StaticTile[][][] ReadStaticBlock(int x, int y)
     {
+      Console.WriteLine("Read Static Block {0} {1}", x, y);
       try
       {
         m_IndexReader.BaseStream.Seek((x * BlockHeight + y) * 12, SeekOrigin.Begin);
@@ -346,7 +356,7 @@ namespace Server
           while (pCur < pEnd)
           {
             lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add(pCur->m_ID, pCur->m_Z);
-            pCur = pCur + 1;
+            pCur += 1;
           }
 
           var tiles = new StaticTile[8][][];
@@ -358,6 +368,8 @@ namespace Server
             for (var j = 0; j < 8; ++j)
               tiles[i][j] = lists[i][j].ToArray();
           }
+
+          Console.WriteLine("Tiles Read {0}", tiles.Length);
 
           return tiles;
         }

@@ -178,7 +178,7 @@ namespace Server
     public static int ScriptItems => m_ItemCount;
     public static int ScriptMobiles => m_MobileCount;
 
-    public static string FindDataFile(string path)
+    public static string FindDataFile(string path, bool throwNotFound = true)
     {
       string fullPath = null;
 
@@ -192,10 +192,17 @@ namespace Server
         fullPath = null;
       }
 
+      if (fullPath == null && throwNotFound)
+      {
+        Utility.PushColor(ConsoleColor.Red);
+        Console.WriteLine($"Data: {path} was not found");
+        Console.WriteLine("Make sure modernuo.json is properly configured");
+        Utility.PopColor();
+        throw new FileNotFoundException($"Data: {path} was not found");
+      }
+
       return fullPath;
     }
-
-    public static string FindDataFile(string format, params object[] args) => FindDataFile(string.Format(format, args));
 
     private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
@@ -317,14 +324,13 @@ namespace Server
 
       var ver = Assembly.GetName().Version ?? new Version();
 
-      Console.ForegroundColor = ConsoleColor.Green;
+      Utility.PushColor(ConsoleColor.Green);
       // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
       Console.WriteLine("ModernUO - [https://github.com/kamronbatman/ModernUO] Version {0}.{1}.{2}.{3}", ver.Major,
         ver.Minor, ver.Build,
         ver.Revision);
-      Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
-      Console.ResetColor();
-      Console.WriteLine();
+      Console.WriteLine("Core: Running on {0}\n", RuntimeInformation.FrameworkDescription);
+      Utility.PopColor();
 
       var ttObj = new Timer.TimerThread();
       timerThread = new Thread(ttObj.TimerMain)
