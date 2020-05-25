@@ -81,12 +81,12 @@ namespace Server.Engines.Harvest
     public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks { get; }
       = new Dictionary<Map, Dictionary<Point2D, HarvestBank>>();
 
-    public void SendMessageTo(Mobile from, object message)
+    public void SendMessageTo(Mobile from, TextDefinition message)
     {
-      if (message is int messageInt)
-        from.SendLocalizedMessage(messageInt);
+      if (message.Number > 0)
+        from.SendLocalizedMessage(message.Number);
       else
-        from.SendMessage(message.ToString());
+        from.SendMessage(message);
     }
 
     public HarvestBank GetBank(Map map, int x, int y)
