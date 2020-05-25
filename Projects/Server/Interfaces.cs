@@ -82,6 +82,7 @@ namespace Server
 
     void Remove(ISpawnable spawn);
     Point3D GetSpawnPosition(ISpawnable spawned, Map map);
+    void Respawn();
   }
 
   public interface ISpawnable : IEntity

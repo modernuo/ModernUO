@@ -148,47 +148,46 @@ namespace Server.Engines.Spawners
 
         if (str.Length > 0)
         {
-          Type type = SpawnerType.GetType(str);
+          Type type = AssemblyHandler.FindFirstTypeForName(str);
 
-          if (type != null)
+          if (type == null)
           {
-            SpawnerEntry entry;
+            from.SendMessage("{0} is not a valid type name for entry #{1}.", str, i);
+            return;
+          }
 
-            if (entryindex < ocount)
-            {
-              entry = spawner.Entries[entryindex];
-              entry.SpawnedName = str;
+          SpawnerEntry entry;
 
-              if (mte != null)
-                entry.SpawnedMaxCount = Utility.ToInt32(mte.Text.Trim());
+          if (entryindex < ocount)
+          {
+            entry = spawner.Entries[entryindex];
+            entry.SpawnedName = str;
 
-              if (poste != null)
-                entry.SpawnedProbability = Utility.ToInt32(poste.Text.Trim());
-            }
-            else
-            {
-              int maxcount = 1;
-              int probcount = 100;
+            if (mte != null)
+              entry.SpawnedMaxCount = Utility.ToInt32(mte.Text.Trim());
 
-              if (mte != null)
-                maxcount = Utility.ToInt32(mte.Text.Trim());
-
-              if (poste != null)
-                probcount = Utility.ToInt32(poste.Text.Trim());
-
-              entry = spawner.AddEntry(str, probcount, maxcount);
-            }
-
-            if (parmte != null)
-              entry.Parameters = parmte.Text.Trim();
-
-            if (propte != null)
-              entry.Properties = propte.Text.Trim();
+            if (poste != null)
+              entry.SpawnedProbability = Utility.ToInt32(poste.Text.Trim());
           }
           else
           {
-            from.SendMessage("{0} is not a valid type name for entry #{1}.", str, i);
+            int maxcount = 1;
+            int probcount = 100;
+
+            if (mte != null)
+              maxcount = Utility.ToInt32(mte.Text.Trim());
+
+            if (poste != null)
+              probcount = Utility.ToInt32(poste.Text.Trim());
+
+            entry = spawner.AddEntry(str, probcount, maxcount);
           }
+
+          if (parmte != null)
+            entry.Parameters = parmte.Text.Trim();
+
+          if (propte != null)
+            entry.Properties = propte.Text.Trim();
         }
         else if (entryindex < ocount && spawner.Entries[entryindex] != null)
         {

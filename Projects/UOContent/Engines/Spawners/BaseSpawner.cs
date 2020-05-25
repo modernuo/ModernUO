@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using Server.Commands;
 using Server.Items;
+using Server.Json;
 using Server.Mobiles;
 using Server.Utilities;
 using CPA = Server.CommandPropertyAttribute;
@@ -47,6 +49,24 @@ namespace Server.Engines.Spawners
         AddEntry(spawnedNames[i], 100, amount, false);
     }
 
+    public BaseSpawner(DynamicJson json, JsonSerializerOptions options) : base(0x1f13)
+    {
+      json.GetProperty("count", options, out int amount);
+      json.GetProperty("minDelay", options, out TimeSpan minDelay);
+      json.GetProperty("maxDelay", options, out TimeSpan maxDelay);
+      json.GetProperty("team", options, out int team);
+      json.GetProperty("homeRange", options, out int homeRange);
+      json.GetProperty("walkingRange", options, out int walkingRange);
+      m_WalkingRange = walkingRange;
+
+      InitSpawn(amount, minDelay, maxDelay, team, homeRange);
+
+      json.GetProperty("entries", options, out List<SpawnerEntry> entries);
+
+      foreach (var entry in entries)
+        AddEntry(entry.SpawnedName, entry.SpawnedProbability, entry.SpawnedMaxCount, false);
+    }
+
     public BaseSpawner(Serial serial) : base(serial)
     {
     }
@@ -71,9 +91,8 @@ namespace Server.Engines.Spawners
       {
         m_Count = value;
 
-        if (m_Timer != null)
-          if ((!IsFull && !m_Timer.Running) || (IsFull && m_Timer.Running))
-            DoTimer();
+        if (m_Timer != null && (!IsFull && !m_Timer.Running || IsFull && m_Timer.Running))
+          DoTimer();
 
         InvalidateProperties();
       }
@@ -460,7 +479,7 @@ namespace Server.Engines.Spawners
       // Defrag taken care of in Spawn(), beforehand
       // Count check taken care of in Spawn(), beforehand
 
-      Type type = SpawnerType.GetType(entry.SpawnedName);
+      Type type = AssemblyHandler.FindFirstTypeForName(entry.SpawnedName);
 
       if (type != null)
       {
@@ -859,7 +878,7 @@ namespace Server.Engines.Spawners
                 else
                   Entries[i].SpawnedName = typeName;
 
-                if (SpawnerType.GetType(typeName) == null)
+                if (AssemblyHandler.FindFirstTypeForName(typeName) == null)
                 {
                   m_WarnTimer ??= new WarnTimer();
 
@@ -878,7 +897,7 @@ namespace Server.Engines.Spawners
                   e.Spawner = this;
 
                   for (int j = 0; j < Entries.Count; j++)
-                    if (SpawnerType.GetType(Entries[j].SpawnedName) == e.GetType())
+                    if (AssemblyHandler.FindFirstTypeForName(Entries[j].SpawnedName) == e.GetType())
                     {
                       Entries[j].Spawned.Add(e);
                       Spawned.Add(e, Entries[j]);

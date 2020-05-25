@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Server.Mobiles;
 
 namespace Server.Engines.Spawners
@@ -45,18 +46,25 @@ namespace Server.Engines.Spawners
         }
     }
 
+    [JsonPropertyName("probability")]
     public int SpawnedProbability { get; set; }
 
+    [JsonPropertyName("maxCount")]
     public int SpawnedMaxCount { get; set; }
 
+    [JsonPropertyName("name")]
     public string SpawnedName { get; set; }
 
+    [JsonPropertyName("properties")]
     public string Properties { get; set; }
 
+    [JsonPropertyName("parameters")]
     public string Parameters { get; set; }
 
+    [JsonIgnore]
     public EntryFlags Valid { get; set; }
 
+    [JsonIgnore]
     public List<ISpawnable> Spawned { get; }
 
     public bool IsFull => Spawned.Count >= SpawnedMaxCount;
