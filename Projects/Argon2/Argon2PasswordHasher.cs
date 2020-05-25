@@ -135,21 +135,6 @@ namespace System.Security.Cryptography
       return Encoding.ASCII.GetString(encoded.Slice(0, firstNonNull + 1));
     }
 
-
-    /// <summary>
-    /// Hash the password using Argon2 with the specified salt. The HashRaw methods may be used for password-based key derivation.
-    /// Unless you're using HashRaw for key deriviation or for interoperability purposes, the Hash methods should be used in favor of the HashRaw methods.
-    /// <param name="password">A string representing the password to be hashed. The password is first decoded into bytes using StringEncoding (default: Encoding.UTF8)</param>
-    /// <param name="salt">A string representing the salt to be used for the hash. The salt must be at least 8 bytes. The salt is first decoded into bytes using StringEncoding (default: Encoding.UTF8)</param>
-    /// <returns>A byte array containing only the resulting hash</returns>
-    /// </summary>
-    public byte[] HashRaw(string password, string salt)
-    {
-      CheckNull("HashRaw", "password", password, "salt", salt);
-
-      return HashRaw(StringEncoding.GetBytes(password), StringEncoding.GetBytes(salt));
-    }
-
     /// <summary>
     /// Hash the password using Argon2 with the specified salt. The HashRaw methods may be used for password-based key derivation.
     /// Unless you're using HashRaw for key deriviation or for interoperability purposes, the Hash methods should be used in favor of the HashRaw methods.
@@ -157,15 +142,16 @@ namespace System.Security.Cryptography
     /// <param name="salt">The raw salt bytes to be used for the hash. The salt must be at least 8 bytes.</param>
     /// <returns>A byte array containing only the resulting hash</returns>
     /// </summary>
-    public byte[] HashRaw(byte[] password, byte[] salt)
+    public void HashRaw(ReadOnlySpan<char> password, ReadOnlySpan<byte> salt, Span<byte> hash)
     {
-      byte[] hash = new byte[(int)HashLength];
+      Span<byte> passwordBytes = stackalloc byte[StringEncoding.GetByteCount(password)];
+      StringEncoding.GetBytes(password, passwordBytes);
 
       var result = Argon2.Library.Hash(
         TimeCost,
         MemoryCost,
         Parallelism,
-        password,
+        passwordBytes,
         salt,
         hash,
         null,
@@ -175,8 +161,6 @@ namespace System.Security.Cryptography
 
       if (result != Argon2Error.OK)
         throw new Argon2Exception("raw hashing", result);
-
-      return hash;
     }
 
 
@@ -309,15 +293,6 @@ namespace System.Security.Cryptography
         Marshal.FreeHGlobal(context.Secret);
         Marshal.FreeHGlobal(context.AssocData);
       }
-    }
-
-
-    private static void CheckNull(string methodName, params object[] arguments)
-    {
-      for (var i = 0; i < arguments.Length; i += 2)
-        if (arguments[i + 1] == null)
-          throw new ArgumentNullException(arguments[i].ToString(),
-            $"Argument {arguments[i]} to method PasswordHasher.{methodName} is null");
     }
   }
 }

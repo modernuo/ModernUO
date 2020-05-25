@@ -24,6 +24,11 @@
     SALT_TOO_SHORT = -6,
 
     /// <summary>
+    /// The salt is too big
+    /// </summary>
+    SALT_TOO_LONG = -7,
+
+    /// <summary>
     /// The time cost is less than 1
     /// </summary>
     TIME_TOO_SMALL = -12,

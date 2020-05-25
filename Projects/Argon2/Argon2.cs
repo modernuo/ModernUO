@@ -19,125 +19,93 @@ namespace System.Security.Cryptography
 
   internal static class Argon2
   {
-    internal static readonly IArgon2 Library;
     internal static readonly bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
     internal static readonly bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
     internal static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
-    static Argon2()
-    {
-      if (IsLinux || IsFreeBSD || IsDarwin)
-        Library = new UnixArgon2();
-      else
-        Library = new WindowsArgon2();
-    }
+    internal static readonly IArgon2 Library =
+      IsLinux || IsFreeBSD || IsDarwin ? (IArgon2)new UnixArgon2() : new WindowsArgon2();
   }
 
   internal class WindowsArgon2 : IArgon2
   {
-    public unsafe Argon2Error Hash(uint t_cost, uint m_cost, uint parallelism,
+    public Argon2Error Hash(uint t_cost, uint m_cost, uint parallelism,
       ReadOnlySpan<byte> pwd,
       ReadOnlySpan<byte> salt,
       Span<byte> hash,
       Span<byte> encoded,
-      int type, int version)
-    {
-      fixed (byte* pwdPtr = &MemoryMarshal.GetReference(pwd))
-      fixed (byte* saltPtr = &MemoryMarshal.GetReference(salt))
-      fixed (byte* hashPtr = &MemoryMarshal.GetReference(hash))
-      fixed (byte* encodedPtr = &MemoryMarshal.GetReference(encoded))
-        return NativeMethods.crypto_argon2_hash(t_cost, m_cost, parallelism,
-          pwdPtr, pwd.Length,
-          saltPtr, salt.Length,
-          hashPtr, hash.Length,
-          encodedPtr, encoded.Length,
-          type, version
-        );
-    }
+      int type, int version) =>
+      SafeNativeMethods.crypto_argon2_hash(t_cost, m_cost, parallelism,
+        in pwd.GetPinnableReference(), pwd.Length,
+        in salt.GetPinnableReference(), salt.Length,
+        ref hash.GetPinnableReference(), hash.Length,
+        ref encoded.GetPinnableReference(), encoded.Length,
+        type, version
+      );
 
-    public unsafe Argon2Error Verify(ReadOnlySpan<byte> encoded, ReadOnlySpan<byte> pwd, int pwdlen, int type)
-    {
-      fixed (byte* encodedPtr = &MemoryMarshal.GetReference(encoded))
-      fixed (byte* pwdPtr = &MemoryMarshal.GetReference(pwd))
-        return NativeMethods.crypto_argon2_verify(encodedPtr, pwdPtr, pwdlen, type);
-    }
+    public Argon2Error Verify(ReadOnlySpan<byte> encoded, ReadOnlySpan<byte> pwd, int pwdlen, int type) =>
+      SafeNativeMethods.crypto_argon2_verify(in encoded.GetPinnableReference(), in pwd.GetPinnableReference(), pwdlen, type);
 
-    public unsafe Argon2Error Decode(Argon2Context ctx, ReadOnlySpan<byte> str, int type)
-    {
-      fixed (byte* strPtr = &MemoryMarshal.GetReference(str))
-        return NativeMethods.crypto_decode_string(ctx, strPtr, type);
-    }
+    public Argon2Error Decode(Argon2Context ctx, ReadOnlySpan<byte> str, int type) =>
+      SafeNativeMethods.crypto_decode_string(ctx, in str.GetPinnableReference(), type);
 
-    internal static class NativeMethods
+    internal static class SafeNativeMethods
     {
       [DllImport("argon2.dll", EntryPoint = "crypto_argon2_hash", CallingConvention = CallingConvention.Cdecl)]
-      internal static extern unsafe Argon2Error crypto_argon2_hash(uint t_cost, uint m_cost, uint parallelism,
-        byte* pwd, int pwdlen,
-        byte* salt, int saltlen,
-        byte* hash, int hashlen,
-        byte* encoded, int encodedlen,
+      internal static extern Argon2Error crypto_argon2_hash(uint t_cost, uint m_cost, uint parallelism,
+        in byte pwd, int pwdlen,
+        in byte salt, int saltlen,
+        ref byte hash, int hashlen,
+        ref byte encoded, int encodedlen,
         int type, int version
       );
 
       [DllImport("argon2.dll", EntryPoint = "crypto_argon2_verify", CallingConvention = CallingConvention.Cdecl)]
-      internal static extern unsafe Argon2Error crypto_argon2_verify(byte* encoded, byte* pwd, int pwdlen, int type);
+      internal static extern Argon2Error crypto_argon2_verify(in byte encoded, in byte pwd, int pwdlen, int type);
 
       [DllImport("argon2.dll", EntryPoint = "crypto_decode_string", CallingConvention = CallingConvention.Cdecl)]
-      internal static extern unsafe Argon2Error crypto_decode_string(Argon2Context ctx, byte* str, int type);
+      internal static extern Argon2Error crypto_decode_string(Argon2Context ctx, in byte str, int type);
     }
   }
 
   internal class UnixArgon2 : IArgon2
   {
-    public unsafe Argon2Error Hash(uint t_cost, uint m_cost, uint parallelism,
+    public Argon2Error Hash(uint t_cost, uint m_cost, uint parallelism,
       ReadOnlySpan<byte> pwd,
       ReadOnlySpan<byte> salt,
       Span<byte> hash,
       Span<byte> encoded,
-      int type, int version)
-    {
-      fixed (byte* pwdPtr = &MemoryMarshal.GetReference(pwd))
-      fixed (byte* saltPtr = &MemoryMarshal.GetReference(salt))
-      fixed (byte* hashPtr = &MemoryMarshal.GetReference(hash))
-      fixed (byte* encodedPtr = &MemoryMarshal.GetReference(encoded))
-        return NativeMethods.crypto_argon2_hash(t_cost, m_cost, parallelism,
-          pwdPtr, pwd.Length,
-          saltPtr, salt.Length,
-          hashPtr, hash.Length,
-          encodedPtr, encoded.Length,
-          type, version
-        );
-    }
+      int type, int version) =>
+      SafeNativeMethods.crypto_argon2_hash(t_cost, m_cost, parallelism,
+        in pwd.GetPinnableReference(), pwd.Length,
+        in salt.GetPinnableReference(), salt.Length,
+        ref hash.GetPinnableReference(), hash.Length,
+        ref encoded.GetPinnableReference(), encoded.Length,
+        type, version
+      );
 
-    public unsafe Argon2Error Verify(ReadOnlySpan<byte> encoded, ReadOnlySpan<byte> pwd, int pwdlen, int type)
-    {
-      fixed (byte* encodedPtr = &MemoryMarshal.GetReference(encoded))
-      fixed (byte* pwdPtr = &MemoryMarshal.GetReference(pwd))
-        return NativeMethods.crypto_argon2_verify(encodedPtr, pwdPtr, pwdlen, type);
-    }
+    public Argon2Error Verify(ReadOnlySpan<byte> encoded, ReadOnlySpan<byte> pwd, int pwdlen, int type) =>
+      SafeNativeMethods.crypto_argon2_verify(in encoded.GetPinnableReference(), in pwd.GetPinnableReference(), pwdlen, type);
 
-    public unsafe Argon2Error Decode(Argon2Context ctx, ReadOnlySpan<byte> str, int type)
-    {
-      fixed (byte* strPtr = &MemoryMarshal.GetReference(str))
-        return NativeMethods.crypto_decode_string(ctx, strPtr, type);
-    }
+    public Argon2Error Decode(Argon2Context ctx, ReadOnlySpan<byte> str, int type) =>
+      SafeNativeMethods.crypto_decode_string(ctx, in str.GetPinnableReference(), type);
 
-    internal static class NativeMethods
+    internal static class SafeNativeMethods
     {
       [DllImport("libargon2", EntryPoint = "argon2_hash")]
-      internal static extern unsafe Argon2Error crypto_argon2_hash(uint t_cost, uint m_cost, uint parallelism,
-        byte* pwd, int pwdlen,
-        byte* salt, int saltlen,
-        byte* hash, int hashlen,
-        byte* encoded, int encodedlen,
+      internal static extern Argon2Error crypto_argon2_hash(uint t_cost, uint m_cost, uint parallelism,
+        in byte pwd, int pwdlen,
+        in byte salt, int saltlen,
+        ref byte hash, int hashlen,
+        ref byte encoded, int encodedlen,
         int type, int version
       );
 
       [DllImport("libargon2", EntryPoint = "argon2_verify")]
-      internal static extern unsafe Argon2Error crypto_argon2_verify(byte* encoded, byte* pwd, int pwdlen, int type);
+      internal static extern unsafe Argon2Error crypto_argon2_verify(in byte encoded, in byte pwd, int pwdlen, int type);
 
       [DllImport("libargon2", EntryPoint = "decode_string")]
-      internal static extern unsafe Argon2Error crypto_decode_string(Argon2Context ctx, byte* str, int type);
+      internal static extern unsafe Argon2Error crypto_decode_string(Argon2Context ctx, in byte str, int type);
     }
   }
 }
