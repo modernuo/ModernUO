@@ -19,6 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Security.Cryptography;
+
 namespace Server.Accounting.Security
 {
   public class Argon2PasswordProtection : IPasswordProtection
