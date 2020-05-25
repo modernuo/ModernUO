@@ -178,7 +178,7 @@ namespace Server
     public static int ScriptItems => m_ItemCount;
     public static int ScriptMobiles => m_MobileCount;
 
-    public static string FindDataFile(string path, bool throwNotFound = true)
+    public static string FindDataFile(string path, bool throwNotFound = true, bool warnNotFound = false)
     {
       string fullPath = null;
 
@@ -192,13 +192,14 @@ namespace Server
         fullPath = null;
       }
 
-      if (fullPath == null && throwNotFound)
+      if (fullPath == null && (throwNotFound || warnNotFound))
       {
         Utility.PushColor(ConsoleColor.Red);
         Console.WriteLine($"Data: {path} was not found");
         Console.WriteLine("Make sure modernuo.json is properly configured");
         Utility.PopColor();
-        throw new FileNotFoundException($"Data: {path} was not found");
+        if (throwNotFound)
+          throw new FileNotFoundException($"Data: {path} was not found");
       }
 
       return fullPath;

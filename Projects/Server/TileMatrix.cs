@@ -92,41 +92,33 @@ namespace Server
 
       if (fileIndex != 0x7F)
       {
-        var uopMapFile = $"map{fileIndex}LegacyMUL.uop";
-        var mulMapFile = $"map{fileIndex}.mul";
+        var mapPath = Core.FindDataFile($"map{fileIndex}LegacyMUL.uop", false, true);
 
-        var mapPath = Core.FindDataFile(uopMapFile, false);
-
-        if (File.Exists(mapPath))
+        if (mapPath != null)
         {
           m_MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
           m_MapIndex = new UOPIndex(m_MapStream);
         }
         else
         {
-          mapPath = Core.FindDataFile(mulMapFile, false);
+          mapPath = Core.FindDataFile($"map{fileIndex}.mul", false, true);
 
-          if (File.Exists(mapPath))
+          if (mapPath != null)
             m_MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
 
-        if (m_MapStream == null)
+        var indexPath = Core.FindDataFile($"staidx{fileIndex}.mul", false, true);
+
+        if (indexPath != null)
         {
-          Utility.PushColor(ConsoleColor.Red);
-          Console.WriteLine($"TileMatrix: {uopMapFile} or {mulMapFile} was not found");
-          Console.WriteLine("Make sure modernuo.json is properly configured");
-          Utility.PopColor();
-          throw new FileNotFoundException($"TileMatric: {mapPath} was not found");
+          IndexStream = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+          m_IndexReader = new BinaryReader(IndexStream);
         }
 
-        var indexPath = Core.FindDataFile($"staidx{fileIndex}.mul");
+        var staticsPath = Core.FindDataFile($"statics{fileIndex}.mul", false, true);
 
-        IndexStream = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        m_IndexReader = new BinaryReader(IndexStream);
-
-        var staticsPath = Core.FindDataFile($"statics{fileIndex}.mul");
-
-        DataStream = new FileStream(staticsPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        if (staticsPath != null)
+          DataStream = new FileStream(staticsPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
       }
 
       EmptyStaticBlock = new StaticTile[8][][];
