@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Server.Accounting.Security
+﻿namespace System.Security.Cryptography
 {
   /// <summary>
   /// An exception class to wrap the errors returned by Daniel Dinu and Dmitry Khovratovich's Argon2 library.
@@ -15,6 +13,6 @@ namespace Server.Accounting.Security
     /// <param name="action">Which method the Argon2Exception originated from</param>
     /// <param name="error">The error returned from the Argon2 library</param>
     /// </summary>
-    public Argon2Exception(string action, Argon2Error error) : base(string.Format("Error during Argon2 {0}: ({1}) {2}", action, (int)error, error)) {}
+    public Argon2Exception(string action, Argon2Error error) : base($"Error during Argon2 {action}: ({(int)error}) {error}") {}
   }
 }

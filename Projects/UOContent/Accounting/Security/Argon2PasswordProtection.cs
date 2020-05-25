@@ -3,7 +3,7 @@
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: Argon2PasswordProtection.cs                                     *
- * Created: 2020/05/01 - Updated: 2020/05/02                             *
+ * Created: 2020/05/01 - Updated: 2020/05/24                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -19,12 +19,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Security.Cryptography;
+
 namespace Server.Accounting.Security
 {
   public class Argon2PasswordProtection : IPasswordProtection
   {
     public static IPasswordProtection Instance = new Argon2PasswordProtection();
-    private Argon2PasswordHasher m_PasswordHasher = new Argon2PasswordHasher();
+    private Argon2PasswordHasher m_PasswordHasher = new Argon2PasswordHasher(RandomProviders.SecureProvider as RandomNumberGenerator);
 
     public string EncryptPassword(string plainPassword) =>
       m_PasswordHasher.Hash(plainPassword);

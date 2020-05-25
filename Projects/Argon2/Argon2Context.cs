@@ -1,7 +1,6 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
-namespace Server.Accounting.Security
+namespace System.Security.Cryptography
 {
   [StructLayout(LayoutKind.Sequential)]
   internal class Argon2Context

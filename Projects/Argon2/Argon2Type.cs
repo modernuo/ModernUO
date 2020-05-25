@@ -1,4 +1,4 @@
-﻿namespace Server.Accounting.Security
+﻿namespace System.Security.Cryptography
 {
   /// <summary>
   /// The type of Argon2 hashing algorithm to use.
