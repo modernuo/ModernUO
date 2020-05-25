@@ -40,22 +40,20 @@ namespace Server.Engines.Spawners
       options.Converters.Add(new MapConverterFactory());
       options.Converters.Add(new Point3DConverterFactory());
       options.Converters.Add(new TimeSpanConverterFactory());
+      options.Converters.Add(new TextDefinitionConverterFactory());
 
-      Stopwatch watch = Stopwatch.StartNew();
       for (int i = 0; i < files.Length; i++)
       {
         var file = files[i];
-        from.SendMessage($"Generating spawners for {file.Name}...");
+        from.SendMessage("GenerateSpawners: Generating spawners for {0}...", file.Name);
         List<DynamicJson> spawners = JsonConfig.Deserialize<List<DynamicJson>>(file.FullName);
         ParseSpawnerList(from, spawners, options);
       }
-
-      watch.Stop();
-
     }
 
     private static void ParseSpawnerList(Mobile from, List<DynamicJson> spawners, JsonSerializerOptions options)
     {
+      Stopwatch watch = Stopwatch.StartNew();
       List<string> failures = new List<string>();
       int count = 0;
 
@@ -65,7 +63,12 @@ namespace Server.Engines.Spawners
 
         if (json.Type == null || !typeof(BaseSpawner).IsAssignableFrom(type))
         {
-          failures.Add($"\tInvalid region type {json.Type}");
+          string failure = $"GenerateSpawners: Invalid region type {json.Type}";
+          if (!failures.Contains(failure))
+          {
+            failures.Add(failure);
+            from.SendMessage(failure);
+          }
           continue;
         }
 
@@ -83,7 +86,17 @@ namespace Server.Engines.Spawners
         eable.Free();
 
         var spawner = ActivatorUtil.CreateInstance(type, json, options) as ISpawner;
-        if (spawner == null) continue;
+        if (spawner == null)
+        {
+          string failure = $"GenerateSpawners: Spawner type {type} is not valid";
+          if (!failures.Contains(failure))
+          {
+            failures.Add(failure);
+            from.SendMessage(failure);
+          }
+
+          continue;
+        }
 
         spawner.MoveToWorld(location, map);
         spawner.Respawn();
@@ -91,7 +104,8 @@ namespace Server.Engines.Spawners
         count++;
       }
 
-      from.SendMessage($"Generated {count} spawners ({failures} failures)");
+      watch.Stop();
+      from.SendMessage("GenerateSpawners: Generated {0} spawners ({1:F2} seconds, {2})", count, watch.Elapsed.TotalSeconds, failures);
     }
   }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Text.Json;
+using Server.Json;
 using Server.Regions;
 
 namespace Server.Engines.Spawners
@@ -25,19 +27,29 @@ namespace Server.Engines.Spawners
     {
     }
 
+    [Constructible(AccessLevel.Developer)]
     public RegionSpawner(string spawnedName) : base(spawnedName)
     {
     }
 
+    [Constructible(AccessLevel.Developer)]
     public RegionSpawner(int amount, int minDelay, int maxDelay, int team, int homeRange,
       params string[] spawnedNames) : this(amount, TimeSpan.FromMinutes(minDelay), TimeSpan.FromMinutes(maxDelay),
       team, homeRange, spawnedNames)
     {
     }
 
+    [Constructible(AccessLevel.Developer)]
     public RegionSpawner(int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
       params string[] spawnedNames) : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
     {
+    }
+
+    public RegionSpawner(DynamicJson json, JsonSerializerOptions options) : base(json, options)
+    {
+      json.GetProperty("map", options, out Map map);
+      json.GetProperty("region", options, out string spawnRegion);
+      m_SpawnRegion = Region.Find(spawnRegion, map) as BaseRegion;
     }
 
     public RegionSpawner(Serial serial) : base(serial)
