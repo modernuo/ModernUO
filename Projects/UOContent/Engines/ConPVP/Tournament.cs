@@ -595,7 +595,7 @@ namespace Server.Engines.ConPVP
               Mobile check = part.Players[j];
 
               if (check.Deleted || check.Map == null || check.Map == Map.Internal || !check.Alive ||
-                  Sigil.ExistsOn(check) || check.Region.IsPartOf<Jail>())
+                  Sigil.ExistsOn(check) || check.Region.IsPartOf<JailRegion>())
               {
                 bad = true;
                 break;
@@ -776,7 +776,7 @@ namespace Server.Engines.ConPVP
                 Mobile check = part.Players[j];
 
                 if (check.Deleted || check.Map == null || check.Map == Map.Internal || !check.Alive ||
-                    Sigil.ExistsOn(check) || check.Region.IsPartOf<Jail>())
+                    Sigil.ExistsOn(check) || check.Region.IsPartOf<JailRegion>())
                 {
                   bad = true;
                   break;

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using Server.Gumps;
 using Server.Network;
 
-namespace Server.Mobiles
+namespace Server.Engines.Spawners
 {
   public class SpawnerGump : Gump
   {
     private SpawnerEntry m_Entry;
     private int m_Page;
-    private readonly Spawner m_Spawner;
+    private readonly BaseSpawner m_Spawner;
 
-    public SpawnerGump(Spawner spawner, SpawnerEntry focusentry = null, int page = 0) : base(50, 50)
+    public SpawnerGump(BaseSpawner spawner, SpawnerEntry focusentry = null, int page = 0) : base(50, 50)
     {
       m_Spawner = spawner;
       m_Entry = focusentry;
@@ -124,7 +124,7 @@ namespace Server.Mobiles
 
     public int GetButtonID(int type, int index) => 1 + index * 10 + type;
 
-    public void CreateArray(RelayInfo info, Mobile from, Spawner spawner)
+    public void CreateArray(RelayInfo info, Mobile from, BaseSpawner spawner)
     {
       int ocount = spawner.Entries.Count;
 
@@ -148,47 +148,46 @@ namespace Server.Mobiles
 
         if (str.Length > 0)
         {
-          Type type = SpawnerType.GetType(str);
+          Type type = AssemblyHandler.FindFirstTypeForName(str);
 
-          if (type != null)
+          if (type == null)
           {
-            SpawnerEntry entry;
+            from.SendMessage("{0} is not a valid type name for entry #{1}.", str, i);
+            return;
+          }
 
-            if (entryindex < ocount)
-            {
-              entry = spawner.Entries[entryindex];
-              entry.SpawnedName = str;
+          SpawnerEntry entry;
 
-              if (mte != null)
-                entry.SpawnedMaxCount = Utility.ToInt32(mte.Text.Trim());
+          if (entryindex < ocount)
+          {
+            entry = spawner.Entries[entryindex];
+            entry.SpawnedName = str;
 
-              if (poste != null)
-                entry.SpawnedProbability = Utility.ToInt32(poste.Text.Trim());
-            }
-            else
-            {
-              int maxcount = 1;
-              int probcount = 100;
+            if (mte != null)
+              entry.SpawnedMaxCount = Utility.ToInt32(mte.Text.Trim());
 
-              if (mte != null)
-                maxcount = Utility.ToInt32(mte.Text.Trim());
-
-              if (poste != null)
-                probcount = Utility.ToInt32(poste.Text.Trim());
-
-              entry = spawner.AddEntry(str, probcount, maxcount);
-            }
-
-            if (parmte != null)
-              entry.Parameters = parmte.Text.Trim();
-
-            if (propte != null)
-              entry.Properties = propte.Text.Trim();
+            if (poste != null)
+              entry.SpawnedProbability = Utility.ToInt32(poste.Text.Trim());
           }
           else
           {
-            from.SendMessage("{0} is not a valid type name for entry #{1}.", str, i);
+            int maxcount = 1;
+            int probcount = 100;
+
+            if (mte != null)
+              maxcount = Utility.ToInt32(mte.Text.Trim());
+
+            if (poste != null)
+              probcount = Utility.ToInt32(poste.Text.Trim());
+
+            entry = spawner.AddEntry(str, probcount, maxcount);
           }
+
+          if (parmte != null)
+            entry.Parameters = parmte.Text.Trim();
+
+          if (propte != null)
+            entry.Properties = propte.Text.Trim();
         }
         else if (entryindex < ocount && spawner.Entries[entryindex] != null)
         {

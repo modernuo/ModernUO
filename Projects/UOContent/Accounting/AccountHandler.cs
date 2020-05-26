@@ -219,7 +219,7 @@ namespace Server.Misc
           state.Send(new CharacterListUpdate(acct));
         }
         else if (m.AccessLevel == AccessLevel.Player &&
-                 Region.Find(m.LogoutLocation, m.LogoutMap).IsPartOf<Jail>()) // Don't need to check current location, if netstate is null, they're logged out
+                 Region.Find(m.LogoutLocation, m.LogoutMap).IsPartOf<JailRegion>()) // Don't need to check current location, if netstate is null, they're logged out
         {
           state.Send(new DeleteResult(DeleteResultType.BadRequest));
           state.Send(new CharacterListUpdate(acct));

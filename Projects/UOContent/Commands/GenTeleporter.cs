@@ -11,7 +11,7 @@ namespace Server.Commands
 {
   public struct Location
   {
-    [JsonPropertyName("point"), JsonConverter(typeof(Point3dConverter))]
+    [JsonPropertyName("point"), JsonConverter(typeof(Point3DConverter))]
     public Point3D Pos { get; set; }
     [JsonPropertyName("map"), JsonConverter(typeof(MapConverter))]
     public Map Map { get; set; }

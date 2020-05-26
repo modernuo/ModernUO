@@ -132,10 +132,7 @@ namespace Server.Spells.Necromancy
         Guild mGuild = m.Guild as Guild;
         Guild cGuild = Caster.Guild as Guild;
 
-        if (mGuild.IsAlly(cGuild))
-          return false;
-
-        if (mGuild == cGuild)
+        if (mGuild?.IsAlly(cGuild) == true || mGuild == cGuild)
           return false;
       }
 

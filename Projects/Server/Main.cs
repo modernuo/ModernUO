@@ -376,7 +376,7 @@ namespace Server
 
       AssemblyHandler.Invoke("Configure");
 
-      Region.Load();
+      RegionLoader.LoadRegions();
       World.Load();
 
       AssemblyHandler.Invoke("Initialize");

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Server.Mobiles;
+using Server.Engines.Spawners;
 
 // Version 0.8
 

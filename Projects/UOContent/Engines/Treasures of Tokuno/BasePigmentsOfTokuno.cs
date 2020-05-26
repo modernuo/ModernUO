@@ -120,7 +120,7 @@ namespace Server.Items
 
     private void InternalCallback(Mobile from, object targeted)
     {
-if (Deleted || UsesRemaining <= 0 || !from.InRange(GetWorldLocation(), 3) ||
+      if (Deleted || UsesRemaining <= 0 || !from.InRange(GetWorldLocation(), 3) ||
           !IsAccessibleTo(from))
         return;
 

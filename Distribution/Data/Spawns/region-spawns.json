@@ -1,0 +1,482 @@
+[
+  {
+    "type": "RegionSpawner",
+    "location": [375, 1191, 0],
+    "map": "Felucca",
+    "region": "A Wheatfield in Yew 2",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [567, 1239, 0],
+    "map": "Felucca",
+    "region": "A Wheatfield in Yew 1",
+    "count": 5,
+    "entries": [{ "maxCount": 5, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [571, 1099, 0],
+    "map": "Felucca",
+    "region": "A Farm in Yew",
+    "count": 10,
+    "entries": [{ "maxCount": 10, "name": "Sheep", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [675, 939, 0],
+    "map": "Felucca",
+    "region": "A Field of Sheep in Yew 1",
+    "count": 10,
+    "entries": [{ "maxCount": 10, "name": "Sheep", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [675, 1179, 0],
+    "map": "Felucca",
+    "region": "A Field of Sheep in Yew 2",
+    "count": 10,
+    "entries": [{ "maxCount": 10, "name": "Sheep", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [813, 2163, 0],
+    "map": "Felucca",
+    "region": "A Wheatfield in Skara Brae 1",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [823, 2254, 0],
+    "map": "Felucca",
+    "region": "A Carrot Field in Skara Brae",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableCarrot", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [823, 2264, 0],
+    "map": "Felucca",
+    "region": "An Onion Field in Skara Brae",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableOnion", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [823, 2264, 0],
+    "map": "Felucca",
+    "region": "A Cabbage Field in Skara Brae 1",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableCabbage", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [823, 2274, 0],
+    "map": "Felucca",
+    "region": "A Cabbage Field in Skara Brae 2",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableCabbage", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [823, 2355, 0],
+    "map": "Felucca",
+    "region": "A Cotton Field in Skara Brae",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableCotton", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [843, 2352, 0],
+    "map": "Felucca",
+    "region": "A Wheatfield in Skara Brae 2",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1120, 1624, 0],
+    "map": "Felucca",
+    "region": "A Wheatfield in Britain 4",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1135, 1791, 0],
+    "map": "Felucca",
+    "region": "A Wheatfield in Britain 1",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1152, 1576, 0],
+    "map": "Felucca",
+    "region": "A Wheatfield in Britain 5",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1183, 1683, 0],
+    "map": "Felucca",
+    "region": "A Cabbage Field in Britain 1",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableCabbage", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1199, 1683, 0],
+    "map": "Felucca",
+    "region": "A Turnip Field in Britain 1",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableTurnip", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1199, 1823, 0],
+    "map": "Felucca",
+    "region": "A Wheatfield in Britain 2",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1215, 1723, 0],
+    "map": "Felucca",
+    "region": "A Carrot Field in Britain 1",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableCarrot", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1216, 1604, 0],
+    "map": "Felucca",
+    "region": "A Turnip Field in Britain 2",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableTurnip", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1231, 1723, 0],
+    "map": "Felucca",
+    "region": "An Onion Field in Britain 1",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableOnion", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1231, 1887, 0],
+    "map": "Felucca",
+    "region": "A Wheatfield in Britain 3",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1232, 1604, 0],
+    "map": "Felucca",
+    "region": "A Carrot Field in Britain 2",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableCarrot", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [4567, 1475, 0],
+    "map": "Felucca",
+    "region": "A Cotton Field in Moonglow",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableCotton", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [375, 1191, 0],
+    "map": "Trammel",
+    "region": "A Wheatfield in Yew 2",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [567, 1239, 0],
+    "map": "Trammel",
+    "region": "A Wheatfield in Yew 1",
+    "count": 5,
+    "entries": [{ "maxCount": 5, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [571, 1099, 0],
+    "map": "Trammel",
+    "region": "A Farm in Yew",
+    "count": 10,
+    "entries": [{ "maxCount": 10, "name": "Sheep", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [675, 939, 0],
+    "map": "Trammel",
+    "region": "A Field of Sheep in Yew 1",
+    "count": 10,
+    "entries": [{ "maxCount": 10, "name": "Sheep", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [675, 1179, 0],
+    "map": "Trammel",
+    "region": "A Field of Sheep in Yew 2",
+    "count": 10,
+    "entries": [{ "maxCount": 10, "name": "Sheep", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [813, 2163, 0],
+    "map": "Trammel",
+    "region": "A Wheatfield in Skara Brae 1",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [823, 2254, 0],
+    "map": "Trammel",
+    "region": "A Carrot Field in Skara Brae",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableCarrot", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [823, 2264, 0],
+    "map": "Trammel",
+    "region": "An Onion Field in Skara Brae",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableOnion", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [823, 2264, 0],
+    "map": "Trammel",
+    "region": "A Cabbage Field in Skara Brae 1",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableCabbage", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [823, 2274, 0],
+    "map": "Trammel",
+    "region": "A Cabbage Field in Skara Brae 2",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableCabbage", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [823, 2355, 0],
+    "map": "Trammel",
+    "region": "A Cotton Field in Skara Brae",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableCotton", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [843, 2352, 0],
+    "map": "Trammel",
+    "region": "A Wheatfield in Skara Brae 2",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1120, 1624, 0],
+    "map": "Trammel",
+    "region": "A Wheatfield in Britain 4",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1135, 1791, 0],
+    "map": "Trammel",
+    "region": "A Wheatfield in Britain 1",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1152, 1576, 0],
+    "map": "Trammel",
+    "region": "A Wheatfield in Britain 5",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1183, 1683, 0],
+    "map": "Trammel",
+    "region": "A Cabbage Field in Britain 1",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableCabbage", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1199, 1683, 0],
+    "map": "Trammel",
+    "region": "A Turnip Field in Britain 1",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableTurnip", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1199, 1823, 0],
+    "map": "Trammel",
+    "region": "A Wheatfield in Britain 2",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1215, 1723, 0],
+    "map": "Trammel",
+    "region": "A Carrot Field in Britain 1",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableCarrot", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1216, 1604, 0],
+    "map": "Trammel",
+    "region": "A Turnip Field in Britain 2",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableTurnip", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1231, 1723, 0],
+    "map": "Trammel",
+    "region": "An Onion Field in Britain 1",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableOnion", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1231, 1887, 0],
+    "map": "Trammel",
+    "region": "A Wheatfield in Britain 3",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableWheat", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [1232, 1604, 0],
+    "map": "Trammel",
+    "region": "A Carrot Field in Britain 2",
+    "count": 6,
+    "entries": [{ "maxCount": 6, "name": "FarmableCarrot", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  },
+  {
+    "type": "RegionSpawner",
+    "location": [4567, 1475, 0],
+    "map": "Trammel",
+    "region": "A Cotton Field in Moonglow",
+    "count": 8,
+    "entries": [{ "maxCount": 8, "name": "FarmableCotton", "probability": 100 }],
+    "minDelay": "00:00:10",
+    "maxDelay": "00:00:30"
+  }
+]

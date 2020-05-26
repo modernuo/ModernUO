@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using Server.Items;
@@ -190,13 +191,9 @@ namespace Server.Commands
         if (!IsConstructible(ctor, from.AccessLevel))
           continue;
 
-        int totalParams = 0;
-
         // Handle optional constructors
         ParameterInfo[] paramList = ctor.GetParameters();
-        for (int j = 0; j < paramList.Length; j++)
-          if (!paramList[j].HasDefaultValue)
-            totalParams += 1;
+        int totalParams = paramList.Count(t => !t.HasDefaultValue);
 
         if (args.Length >= totalParams && args.Length <= paramList.Length)
         {

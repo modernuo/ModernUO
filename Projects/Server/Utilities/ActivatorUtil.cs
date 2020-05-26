@@ -47,7 +47,7 @@ namespace Server.Utilities
             // check all given args map to params.
             for (var i = 0; i < args.Length; i++)
               // if a null reference is passed, but the type is not nullable
-              if ((args[i] == null && paramList[i].ParameterType.IsValueType)
+              if (args[i] == null && paramList[i].ParameterType.IsValueType
                   // or if an arg is not null and is not assignable to the parameter type, skip.
                   || !(args[i] == null || paramList[i].ParameterType.IsAssignableFrom(args[i])))
                 return false;
@@ -65,7 +65,8 @@ namespace Server.Utilities
       }
       catch (Exception e)
       {
-        throw new TypeInitializationException(type.ToString(), e);
+        Console.WriteLine(e);
+        throw;
       }
     }
 

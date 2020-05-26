@@ -4,6 +4,7 @@ using System.Linq;
 using Server.Engines.MLQuests.Gumps;
 using Server.Engines.MLQuests.Objectives;
 using Server.Engines.MLQuests.Rewards;
+using Server.Engines.Spawners;
 using Server.Mobiles;
 
 namespace Server.Engines.MLQuests

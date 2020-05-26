@@ -1,35 +1,25 @@
 using System;
 using System.Collections.Generic;
-using System.Xml;
+using System.Text.Json;
 using Server.Gumps;
-using Server.Items;
+using Server.Json;
 using Server.Mobiles;
+using Server.Spells;
 
 namespace Server.Regions
 {
-  public enum SpawnZLevel
-  {
-    Lowest,
-    Highest,
-    Random
-  }
-
   public class BaseRegion : Region
   {
     private static readonly List<Rectangle3D> m_RectBuffer1 = new List<Rectangle3D>();
     private static readonly List<Rectangle3D> m_RectBuffer2 = new List<Rectangle3D>();
 
-    private static readonly List<int> m_SpawnBuffer1 = new List<int>();
-    private static readonly List<Item> m_SpawnBuffer2 = new List<Item>();
-    private bool m_ExcludeFromParentSpawns;
+    public bool ExcludeFromParentSpawns { get; set; }
 
-    private Rectangle3D[] m_Rectangles;
-    private int[] m_RectangleWeights;
+    public Rectangle3D[] Rectangles { get; private set; }
+    public int[] RectangleWeights { get; private set; }
 
     private string m_RuneName;
-
-    private SpawnEntry[] m_Spawns;
-    private int m_TotalWeight;
+    public int TotalWeight { get; private set; }
 
     public BaseRegion(string name, Map map, int priority, params Rectangle2D[] area) : base(name, map, priority, area)
     {
@@ -47,63 +37,12 @@ namespace Server.Regions
     {
     }
 
-    public BaseRegion(XmlElement xml, Map map, Region parent) : base(xml, map, parent)
+    public BaseRegion(DynamicJson json, JsonSerializerOptions options) : base(json, options)
     {
-      ReadString(xml["rune"], "name", ref m_RuneName, false);
+      if (json.data.TryGetValue("rune", out var runeName))
+        m_RuneName = runeName.GetString();
 
-      bool logoutDelayActive = true;
-      ReadBoolean(xml["logoutDelay"], "active", ref logoutDelayActive, false);
-      NoLogoutDelay = !logoutDelayActive;
-
-      XmlElement spawning = xml["spawning"];
-      if (spawning != null)
-      {
-        ReadBoolean(spawning, "excludeFromParent", ref m_ExcludeFromParentSpawns, false);
-
-        SpawnZLevel zLevel = SpawnZLevel.Lowest;
-        ReadEnum(spawning, "zLevel", ref zLevel, false);
-        SpawnZLevel = zLevel;
-
-        List<SpawnEntry> list = new List<SpawnEntry>();
-
-        foreach (XmlNode node in spawning.ChildNodes)
-          if (node is XmlElement el)
-          {
-            SpawnDefinition def = SpawnDefinition.GetSpawnDefinition(el);
-            if (def == null)
-              continue;
-
-            int id = 0;
-            if (!ReadInt32(el, "id", ref id, true))
-              continue;
-
-            int amount = 0;
-            if (!ReadInt32(el, "amount", ref amount, true))
-              continue;
-
-            TimeSpan minSpawnTime = SpawnEntry.DefaultMinSpawnTime;
-            ReadTimeSpan(el, "minSpawnTime", ref minSpawnTime, false);
-
-            TimeSpan maxSpawnTime = SpawnEntry.DefaultMaxSpawnTime;
-            ReadTimeSpan(el, "maxSpawnTime", ref maxSpawnTime, false);
-
-            Point3D home = Point3D.Zero;
-            int range = 0;
-
-            XmlElement homeEl = el["home"];
-            if (ReadPoint3D(homeEl, map, ref home, false))
-              ReadInt32(homeEl, "range", ref range, false);
-
-            Direction dir = SpawnEntry.InvalidDirection;
-            ReadEnum(el["direction"], "value", ref dir, false);
-
-            SpawnEntry entry = new SpawnEntry(id, this, home, range, dir, def, amount, minSpawnTime,
-              maxSpawnTime);
-            list.Add(entry);
-          }
-
-        if (list.Count > 0) m_Spawns = list.ToArray();
-      }
+      NoLogoutDelay = json.data.TryGetValue("logoutDelay", out var logoutDelay) && !logoutDelay.GetBoolean();
     }
 
     public virtual bool YoungProtected => true;
@@ -121,37 +60,9 @@ namespace Server.Regions
 
     public bool NoLogoutDelay { get; set; }
 
-    public SpawnEntry[] Spawns
-    {
-      get => m_Spawns;
-      set
-      {
-        if (m_Spawns != null)
-          for (int i = 0; i < m_Spawns.Length; i++)
-            m_Spawns[i].Delete();
-
-        m_Spawns = value;
-      }
-    }
-
-    public SpawnZLevel SpawnZLevel { get; set; }
-
-    public bool ExcludeFromParentSpawns
-    {
-      get => m_ExcludeFromParentSpawns;
-      set => m_ExcludeFromParentSpawns = value;
-    }
-
     public static void Configure()
     {
       DefaultRegionType = typeof(BaseRegion);
-    }
-
-    public override void OnUnregister()
-    {
-      base.OnUnregister();
-
-      Spawns = null;
     }
 
     public static string GetRuneNameFor(Region region)
@@ -169,61 +80,24 @@ namespace Server.Regions
       return null;
     }
 
-    public override TimeSpan GetLogoutDelay(Mobile m)
-    {
-      if (NoLogoutDelay)
-        if (m.Aggressors.Count == 0 && m.Aggressed.Count == 0 && !m.Criminal)
-          return TimeSpan.Zero;
-
-      return base.GetLogoutDelay(m);
-    }
-
-    public static bool CanSpawn(Region region, params Type[] types)
-    {
-      while (region != null)
-      {
-        if (!region.AllowSpawn())
-          return false;
-
-        if (region is BaseRegion br)
-        {
-          if (br.Spawns != null)
-            for (int i = 0; i < br.Spawns.Length; i++)
-            {
-              SpawnEntry entry = br.Spawns[i];
-
-              if (entry.Definition.CanSpawn(types))
-                return true;
-            }
-
-          if (br.ExcludeFromParentSpawns)
-            return false;
-        }
-
-        region = region.Parent;
-      }
-
-      return false;
-    }
+    public override TimeSpan GetLogoutDelay(Mobile m) =>
+      NoLogoutDelay && m.Aggressors.Count == 0 && m.Aggressed.Count == 0 && !m.Criminal
+        ? TimeSpan.Zero
+        : base.GetLogoutDelay(m);
 
     public override void OnEnter(Mobile m)
     {
-      if (m is PlayerMobile mobile && mobile.Young)
-        if (!YoungProtected)
-          mobile.SendGump(new YoungDungeonWarning());
+      if (m is PlayerMobile mobile && mobile.Young && !YoungProtected)
+        mobile.SendGump(new YoungDungeonWarning());
     }
 
-    public override bool AcceptsSpawnsFrom(Region region)
-    {
-      if (region == this || !m_ExcludeFromParentSpawns)
-        return base.AcceptsSpawnsFrom(region);
+    public override bool AcceptsSpawnsFrom(Region region) =>
+      (region == this || !ExcludeFromParentSpawns) && base.AcceptsSpawnsFrom(region);
 
-      return false;
-    }
-
-    private void InitRectangles()
+    // TODO: Clean this up
+    public void InitRectangles()
     {
-      if (m_Rectangles != null)
+      if (Rectangles != null)
         return;
 
       // Test if area rectangles are overlapping, and in that case break them into smaller non overlapping rectangles
@@ -270,277 +144,22 @@ namespace Server.Regions
         m_RectBuffer2.Clear();
       }
 
-      m_Rectangles = m_RectBuffer1.ToArray();
+      Rectangles = m_RectBuffer1.ToArray();
       m_RectBuffer1.Clear();
 
-      m_RectangleWeights = new int[m_Rectangles.Length];
-      for (int i = 0; i < m_Rectangles.Length; i++)
+      RectangleWeights = new int[Rectangles.Length];
+      for (int i = 0; i < Rectangles.Length; i++)
       {
-        Rectangle3D rect = m_Rectangles[i];
+        Rectangle3D rect = Rectangles[i];
         int weight = rect.Width * rect.Height;
 
-        m_RectangleWeights[i] = weight;
-        m_TotalWeight += weight;
+        RectangleWeights[i] = weight;
+        TotalWeight += weight;
       }
     }
 
-    public Point3D RandomSpawnLocation(int spawnHeight, bool land, bool water, Point3D home, int range)
-    {
-      Map map = Map;
+    public override string ToString() => Name ?? RuneName ?? GetType().Name;
 
-      if (map == Map.Internal)
-        return Point3D.Zero;
-
-      InitRectangles();
-
-      if (m_TotalWeight <= 0)
-        return Point3D.Zero;
-
-      for (int i = 0; i < 10; i++) // Try 10 times
-      {
-        int x, y, minZ, maxZ;
-
-        if (home == Point3D.Zero)
-        {
-          int rand = Utility.Random(m_TotalWeight);
-
-          x = int.MinValue;
-          y = int.MinValue;
-          minZ = int.MaxValue;
-          maxZ = int.MinValue;
-          for (int j = 0; j < m_RectangleWeights.Length; j++)
-          {
-            int curWeight = m_RectangleWeights[j];
-
-            if (rand < curWeight)
-            {
-              Rectangle3D rect = m_Rectangles[j];
-
-              x = rect.Start.X + rand % rect.Width;
-              y = rect.Start.Y + rand / rect.Width;
-
-              minZ = rect.Start.Z;
-              maxZ = rect.End.Z;
-
-              break;
-            }
-
-            rand -= curWeight;
-          }
-        }
-        else
-        {
-          x = Utility.RandomMinMax(home.X - range, home.X + range);
-          y = Utility.RandomMinMax(home.Y - range, home.Y + range);
-
-          minZ = int.MaxValue;
-          maxZ = int.MinValue;
-          for (int j = 0; j < Area.Length; j++)
-          {
-            Rectangle3D rect = Area[j];
-
-            if (x >= rect.Start.X && x < rect.End.X && y >= rect.Start.Y && y < rect.End.Y)
-            {
-              minZ = rect.Start.Z;
-              maxZ = rect.End.Z;
-              break;
-            }
-          }
-
-          if (minZ == int.MaxValue)
-            continue;
-        }
-
-        if (x < 0 || y < 0 || x >= map.Width || y >= map.Height)
-          continue;
-
-        LandTile lt = map.Tiles.GetLandTile(x, y);
-
-        int ltLowZ = 0, ltAvgZ = 0, ltTopZ = 0;
-        map.GetAverageZ(x, y, ref ltLowZ, ref ltAvgZ, ref ltTopZ);
-
-        TileFlag ltFlags = TileData.LandTable[lt.ID & TileData.MaxLandValue].Flags;
-        bool ltImpassable = (ltFlags & TileFlag.Impassable) != 0;
-
-        if (!lt.Ignored && ltAvgZ >= minZ && ltAvgZ < maxZ)
-          if ((ltFlags & TileFlag.Wet) != 0)
-          {
-            if (water)
-              m_SpawnBuffer1.Add(ltAvgZ);
-          }
-          else if (land && !ltImpassable)
-          {
-            m_SpawnBuffer1.Add(ltAvgZ);
-          }
-
-        StaticTile[] staticTiles = map.Tiles.GetStaticTiles(x, y, true);
-
-        for (int j = 0; j < staticTiles.Length; j++)
-        {
-          StaticTile tile = staticTiles[j];
-          ItemData id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
-          int tileZ = tile.Z + id.CalcHeight;
-
-          if (tileZ >= minZ && tileZ < maxZ)
-            if ((id.Flags & TileFlag.Wet) != 0)
-            {
-              if (water)
-                m_SpawnBuffer1.Add(tileZ);
-            }
-            else if (land && id.Surface && !id.Impassable)
-            {
-              m_SpawnBuffer1.Add(tileZ);
-            }
-        }
-
-        Sector sector = map.GetSector(x, y);
-
-        for (int j = 0; j < sector.Items.Count; j++)
-        {
-          Item item = sector.Items[j];
-
-          if (!(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue && item.AtWorldPoint(x, y))
-          {
-            m_SpawnBuffer2.Add(item);
-
-            if (!item.Movable)
-            {
-              ItemData id = item.ItemData;
-              int itemZ = item.Z + id.CalcHeight;
-
-              if (itemZ >= minZ && itemZ < maxZ)
-                if ((id.Flags & TileFlag.Wet) != 0)
-                {
-                  if (water)
-                    m_SpawnBuffer1.Add(itemZ);
-                }
-                else if (land && id.Surface && !id.Impassable)
-                {
-                  m_SpawnBuffer1.Add(itemZ);
-                }
-            }
-          }
-        }
-
-        if (m_SpawnBuffer1.Count == 0)
-        {
-          m_SpawnBuffer1.Clear();
-          m_SpawnBuffer2.Clear();
-          continue;
-        }
-
-        int z;
-        switch (SpawnZLevel)
-        {
-          case SpawnZLevel.Lowest:
-            {
-              z = int.MaxValue;
-
-              for (int j = 0; j < m_SpawnBuffer1.Count; j++)
-              {
-                int l = m_SpawnBuffer1[j];
-
-                if (l < z)
-                  z = l;
-              }
-
-              break;
-            }
-          case SpawnZLevel.Highest:
-            {
-              z = int.MinValue;
-
-              for (int j = 0; j < m_SpawnBuffer1.Count; j++)
-              {
-                int l = m_SpawnBuffer1[j];
-
-                if (l > z)
-                  z = l;
-              }
-
-              break;
-            }
-          default: // SpawnZLevel.Random
-            {
-              int index = Utility.Random(m_SpawnBuffer1.Count);
-              z = m_SpawnBuffer1[index];
-
-              break;
-            }
-        }
-
-        m_SpawnBuffer1.Clear();
-
-        if (!Find(new Point3D(x, y, z), map).AcceptsSpawnsFrom(this))
-        {
-          m_SpawnBuffer2.Clear();
-          continue;
-        }
-
-        int top = z + spawnHeight;
-
-        bool ok = true;
-        for (int j = 0; j < m_SpawnBuffer2.Count; j++)
-        {
-          Item item = m_SpawnBuffer2[j];
-          ItemData id = item.ItemData;
-
-          if ((id.Surface || id.Impassable) && item.Z + id.CalcHeight > z && item.Z < top)
-          {
-            ok = false;
-            break;
-          }
-        }
-
-        m_SpawnBuffer2.Clear();
-
-        if (!ok)
-          continue;
-
-        if (ltImpassable && ltAvgZ > z && ltLowZ < top)
-          continue;
-
-        for (int j = 0; j < staticTiles.Length; j++)
-        {
-          StaticTile tile = staticTiles[j];
-          ItemData id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
-
-          if ((id.Surface || id.Impassable) && tile.Z + id.CalcHeight > z && tile.Z < top)
-          {
-            ok = false;
-            break;
-          }
-        }
-
-        if (!ok)
-          continue;
-
-        for (int j = 0; j < sector.Mobiles.Count; j++)
-        {
-          Mobile m = sector.Mobiles[j];
-
-          if (m.X == x && m.Y == y && (m.AccessLevel == AccessLevel.Player || !m.Hidden))
-            if (m.Z + 16 > z && m.Z < top)
-            {
-              ok = false;
-              break;
-            }
-        }
-
-        if (ok)
-          return new Point3D(x, y, z);
-      }
-
-      return Point3D.Zero;
-    }
-
-    public override string ToString()
-    {
-      if (Name != null)
-        return Name;
-      if (RuneName != null)
-        return RuneName;
-      return GetType().Name;
-    }
+    public virtual bool CheckTravel(Mobile m, Point3D newLocation, TravelCheckType travelType) => true;
   }
 }

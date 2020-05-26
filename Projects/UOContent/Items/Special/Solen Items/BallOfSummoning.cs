@@ -201,7 +201,7 @@ namespace Server.Items
           0x22); // The Crystal Ball fills with a red mist. You appear to have let your bond to your pet deteriorate.
       }
       else if (from.Map == Map.Ilshenar || from.Region.IsPartOf<DungeonRegion>() ||
-               from.Region.IsPartOf<Jail>() || from.Region.IsPartOf<SafeZone>())
+               from.Region.IsPartOf<JailRegion>() || from.Region.IsPartOf<SafeZone>())
       {
         from.Send(new AsciiMessage(Serial, ItemID, MessageType.Regular, 0x22, 3, "",
           "You cannot summon your pet to this location."));

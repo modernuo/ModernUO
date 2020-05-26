@@ -31,6 +31,8 @@ namespace Server
 
     public override void GetBytes(Span<byte> data) => m_Random.GetBytes(data);
 
+    public ulong Next(ulong c) => throw new NotImplementedException();
+
     public uint Next(uint c) => throw new NotImplementedException();
 
     public bool NextBool() => throw new NotImplementedException();
