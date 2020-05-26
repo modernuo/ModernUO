@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
-    <PackageVersion>1.1.8</PackageVersion>
+    <PackageVersion>1.2.0</PackageVersion>
     <RootNamespace>System.Security.Cryptography</RootNamespace>
     <AssemblyName>Argon2.Bindings</AssemblyName>
     <PlatformTarget>x64</PlatformTarget>
@@ -11,11 +11,11 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Configurations>Debug;Release;Analyze</Configurations>
-    <AssemblyVersion>1.1.8</AssemblyVersion>
+    <AssemblyVersion>1.2.0</AssemblyVersion>
     <Platforms>x64</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="runtimes\win-x64\native\argon2.dll">
+    <Content Include="runtimes\win-x64\native\libargon2.dll">
       <Pack>true</Pack>
       <PackagePath>runtimes/win-x64/native</PackagePath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

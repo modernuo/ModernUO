@@ -94,7 +94,7 @@ namespace System.Security.Cryptography
       Span<byte> passwordBytes = stackalloc byte[StringEncoding.GetByteCount(password)];
       StringEncoding.GetBytes(password, passwordBytes);
 
-      var result = Argon2.Library.Hash(
+      var result = Argon2.Hash(
         TimeCost,
         MemoryCost,
         Parallelism,
@@ -128,7 +128,7 @@ namespace System.Security.Cryptography
       Span<byte> passwordBytes = stackalloc byte[StringEncoding.GetByteCount(password)];
       StringEncoding.GetBytes(password, passwordBytes);
 
-      var result = Argon2.Library.Hash(
+      var result = Argon2.Hash(
         TimeCost,
         MemoryCost,
         Parallelism,
@@ -172,7 +172,7 @@ namespace System.Security.Cryptography
     /// </summary>
     public bool Verify(ReadOnlySpan<byte> expectedHash, ReadOnlySpan<byte> password)
     {
-      var result = Argon2.Library.Verify(expectedHash, password, password.Length, (int)ArgonType);
+      var result = Argon2.Verify(expectedHash, password, password.Length, (int)ArgonType);
 
       if (result == Argon2Error.OK || result == Argon2Error.VERIFY_MISMATCH || result == Argon2Error.DECODING_FAIL)
         return result == Argon2Error.OK;
@@ -246,7 +246,7 @@ namespace System.Security.Cryptography
         Span<byte> bytes = stackalloc byte[formattedHash.Length];
         Encoding.ASCII.GetBytes(formattedHash, bytes);
 
-        var result = Argon2.Library.Decode(context, bytes, (int)type);
+        var result = Argon2.Decode(context, bytes, (int)type);
 
         if (result != Argon2Error.OK)
           return null;
