@@ -39,13 +39,13 @@
     <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).deps.json" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).pdb" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\System.IO.Pipelines.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Assemblies\argon2.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\libargon2.dll" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\libargon2.dylib" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\libargon2.so" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\zlib.dll" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\libz.dylib" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\libz.so" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Assemblies\Zlib.Bindings.dll" ContinueOnError="true" />
+    <Delete Files="..\..\Distribution\Assemblies\ZLib.Bindings.dll" ContinueOnError="true" />
   </Target>
   <ItemGroup>
     <AdditionalFiles Include="..\..\Rules.ruleset">
