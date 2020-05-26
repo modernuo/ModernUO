@@ -51,7 +51,7 @@ namespace System.Security.Cryptography
 
     internal static class SafeNativeMethods
     {
-      [DllImport("argon2", EntryPoint = "argon2_hash", CallingConvention = CallingConvention.Cdecl)]
+      [DllImport("libargon2.dll", EntryPoint = "argon2_hash", CallingConvention = CallingConvention.Cdecl)]
       internal static extern Argon2Error argon2_hash(uint t_cost, uint m_cost, uint parallelism,
         in byte pwd, int pwdlen,
         in byte salt, int saltlen,
@@ -60,10 +60,10 @@ namespace System.Security.Cryptography
         int type, int version
       );
 
-      [DllImport("argon2", EntryPoint = "argon2_verify", CallingConvention = CallingConvention.Cdecl)]
+      [DllImport("libargon2.dll", EntryPoint = "argon2_verify", CallingConvention = CallingConvention.Cdecl)]
       internal static extern Argon2Error argon2_verify(in byte encoded, in byte pwd, int pwdlen, int type);
 
-      [DllImport("argon2", EntryPoint = "decode_string", CallingConvention = CallingConvention.Cdecl)]
+      [DllImport("libargon2.dll", EntryPoint = "decode_string", CallingConvention = CallingConvention.Cdecl)]
       internal static extern Argon2Error decode_string(Argon2Context ctx, in byte str, int type);
     }
   }
