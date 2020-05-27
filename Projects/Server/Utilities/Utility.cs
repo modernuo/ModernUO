@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 
@@ -763,18 +764,6 @@ namespace Server
         ? uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i)
         : uint.TryParse(value, out i);
 
-    public static double GetXMLDouble(string doubleString, double defaultValue)
-    {
-      try
-      {
-        return XmlConvert.ToDouble(doubleString);
-      }
-      catch
-      {
-        return double.TryParse(doubleString, out var val) ? val : defaultValue;
-      }
-    }
-
     public static int GetXMLInt32(string intString, int defaultValue)
     {
       try
@@ -808,18 +797,6 @@ namespace Server
       catch
       {
         return DateTime.TryParse(dateTimeString, out var d) ? d : defaultValue;
-      }
-    }
-
-    public static DateTimeOffset GetXMLDateTimeOffset(string dateTimeOffsetString, DateTimeOffset defaultValue)
-    {
-      try
-      {
-        return XmlConvert.ToDateTimeOffset(dateTimeOffsetString);
-      }
-      catch
-      {
-        return DateTimeOffset.TryParse(dateTimeOffsetString, out var d) ? d : defaultValue;
       }
     }
 
@@ -868,13 +845,15 @@ namespace Server
       && p1.Y >= p2.Y - 18
       && p1.Y <= p2.Y + 18;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Coerce(int number, int min, int max) => number < min ? min : number > max ? max : number;
+
     // 4d6+8 would be: Utility.Dice( 4, 6, 8 )
-    public static int Dice(uint numDice, uint numSides, int bonus)
+    public static int Dice(uint amount, uint sides, int bonus)
     {
       var total = 0;
-      var sides = numSides;
 
-      for (var i = 0; i < numDice; ++i)
+      for (var i = 0; i < amount; ++i)
         total += (int)RandomProviders.Provider.Next(sides) + 1;
 
       return total + bonus;

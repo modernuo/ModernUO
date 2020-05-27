@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: MenuPackets.cs - Created: 2020/05/08 - Updated: 2020/05/08      *
+ * File: MenuPackets.cs - Created: 2020/05/08 - Updated: 2020/05/26      *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using Server.ContextMenus;
 using Server.Menus;
 using Server.Menus.ItemLists;
@@ -25,6 +26,16 @@ using Server.Menus.Questions;
 
 namespace Server.Network
 {
+  [Flags]
+  public enum CMEFlags
+  {
+    None = 0x00,
+    Disabled = 0x01,
+    Arrow = 0x02,
+    Highlighted = 0x04,
+    Colored = 0x20
+  }
+
   public sealed class DisplayItemListMenu : Packet
   {
     public DisplayItemListMenu(ItemListMenu menu) : base(0x7C)
