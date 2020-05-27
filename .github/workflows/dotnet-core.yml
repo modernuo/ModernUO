@@ -1,4 +1,4 @@
-name: .NET Core
+name: Build (.NET Core 3.1)
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.4
+        dotnet-version: 3.1.300
     - name: Build ZLib
       run: |
         dotnet build -c Release Projects/ZLib/ZLib.csproj
