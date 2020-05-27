@@ -66,7 +66,7 @@ jobs:
     - name: Build Argon2
       run: dotnet build -c Release Projects/Argon2/Argon2.csproj
     - name: Install dependencies
-      if: steps.nuget-cache-v3.outputs.cache-hit != 'true' || steps.argon2-cache-v3.outputs.cache-hit != 'true' || steps.zlib-cache-v3.outputs.cache-hit != 'true'
+      if: steps.nuget-cache.outputs.cache-hit != 'true' || steps.argon2-cache.outputs.cache-hit != 'true' || steps.zlib-cache.outputs.cache-hit != 'true'
       run: dotnet restore --force-evaluate
     - name: Build Server
       run: dotnet build -c Release --no-restore Projects/Server/Server.csproj

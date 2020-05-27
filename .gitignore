@@ -45,3 +45,5 @@
 /.vscode
 
 .DS_Store
+
+/packages/*
