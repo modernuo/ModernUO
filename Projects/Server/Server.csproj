@@ -6,7 +6,7 @@
     <StartupObject>Server.Core</StartupObject>
     <AssemblyName>ModernUO</AssemblyName>
     <Win32Resource />
-    <Version>0.3.1</Version>
+    <Version>0.4.0</Version>
     <Authors>Kamron Batman</Authors>
     <Company>ModernUO</Company>
     <Product>ModernUO Server</Product>
