@@ -1,0 +1,78 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: macos-latest
+            rid: osx-x64
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.300
+    - name: NuGet Cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.nuget/packages
+          !~/.nuget/packages/argon2.bindings
+          !~/.nuget/packages/zlib.bindings
+        key: ${{ matrix.os }}-nuget-${{ hashFiles('Projects/**/*.csproj') }}
+        restore-keys: |
+          ${{ matrix.os }}-nuget-
+    - name: Argon2 Library Cache
+      id: argon2-cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.nuget/packages/argon2.bindings
+          Projects/ZLib/*
+          packages/Argon2.Bindings*.nupkg
+        key: ${{ matrix.os }}-argon2-${{ hashFiles('Projects/Argon2/*') }}
+        restore-keys: |
+          ${{ matrix.os }}-argon2-
+    - name: ZLib Library Cache
+      id: zlib-cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.nuget/packages/zlib.bindings
+          Projects/ZLib/*
+          packages/ZLib.Bindings*.nupkg
+        key: ${{ matrix.os }}-argon2-${{ hashFiles('Projects/Argon2/*') }}
+        restore-keys: |
+          ${{ matrix.os }}-argon2-
+    - name: Build ZLib
+      if: steps.zlib-cache.outputs.cache-hit != 'true'
+      run: |
+        dotnet build -c Release Projects/ZLib/ZLib.csproj
+        dotnet pack -c Release -o packages Projects/ZLib/ZLib.csproj
+    - name: Build Argon2
+      if: steps.argon2-cache.outputs.cache-hit != 'true'
+      run: |
+        dotnet build -c Release Projects/Argon2/Argon2.csproj
+        dotnet pack -c Release -o packages Projects/Argon2/Argon2.csproj
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build Server
+      run: dotnet build -c Release --no-restore Projects/Server/Server.csproj
+    - name: Build UO Content
+      run: dotnet build -c Release --no-restore Projects/UOContent/UOContent.csproj
+    - name: Test
+      run: dotnet test -r ${{ matrix.rid }} --no-restore --verbosity normal
