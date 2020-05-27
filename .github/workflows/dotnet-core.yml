@@ -24,7 +24,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.300
+        dotnet-version: 3.1.4
     - name: Build ZLib
       run: |
         dotnet build -c Release Projects/ZLib/ZLib.csproj
@@ -36,8 +36,8 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build Server
-      run: dotnet build -c Release -r ${{ matrix.rid }} --no-restore --self-contained=false Projects/Server/Server.csproj
+      run: dotnet build -c Release -r ${{ matrix.rid }} --no-restore Projects/Server/Server.csproj
     - name: Build UO Content
-      run: dotnet build -c Release -r ${{ matrix.rid }} --no-restore --self-contained=false Projects/UOContent/UOContent.csproj
+      run: dotnet build -c Release -r ${{ matrix.rid }} --no-restore Projects/UOContent/UOContent.csproj
     - name: Test
       run: dotnet test -r ${{ matrix.rid }} --no-restore --verbosity normal
