@@ -2,26 +2,10 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
     <RootNamespace>Server</RootNamespace>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>UOContent</AssemblyName>
-    <Authors>Kamron Batman</Authors>
-    <Company>ModernUO</Company>
     <Product>ModernUO Content</Product>
-    <Copyright>2019-2020</Copyright>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <UseNETCoreGenerator>true</UseNETCoreGenerator>
-    <WarningsAsErrors />
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>8.0</LangVersion>
     <PublishDir>..\..\Distribution\Assemblies</PublishDir>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release;Analyze</Configurations>
-    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('win'))">WINDOWS</DefineConstants>
-    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith(`win`))!=true">UNIX</DefineConstants>
-    <Platforms>x64</Platforms>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <RestoreLockedMode>true</RestoreLockedMode>
   </PropertyGroup>
   <Target Name="CleanPub" AfterTargets="Clean">
     <Message Text="Removing distribution assemblies..." />
