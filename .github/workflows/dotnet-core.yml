@@ -33,7 +33,7 @@ jobs:
           ~/.nuget/packages
           !~/.nuget/packages/argon2.bindings
           !~/.nuget/packages/zlib.bindings
-        key: ${{ matrix.os }}-nuget-${{ hashFiles('Projects/**/*.csproj') }}
+        key: ${{ matrix.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
         restore-keys: |
           ${{ matrix.os }}-nuget-
     - name: Argon2 Library Cache
@@ -42,7 +42,7 @@ jobs:
       with:
         path: |
           ~/.nuget/packages/argon2.bindings
-          Projects/ZLib/*
+          Projects/Argon2/*
           packages/Argon2.Bindings*.nupkg
         key: ${{ matrix.os }}-argon2-${{ hashFiles('Projects/Argon2/*') }}
         restore-keys: |
@@ -55,9 +55,9 @@ jobs:
           ~/.nuget/packages/zlib.bindings
           Projects/ZLib/*
           packages/ZLib.Bindings*.nupkg
-        key: ${{ matrix.os }}-argon2-${{ hashFiles('Projects/Argon2/*') }}
+        key: ${{ matrix.os }}-zlib-${{ hashFiles('Projects/ZLib/*') }}
         restore-keys: |
-          ${{ matrix.os }}-argon2-
+          ${{ matrix.os }}-zlib-
     - name: Build ZLib
       if: steps.zlib-cache.outputs.cache-hit != 'true'
       run: |
@@ -69,7 +69,7 @@ jobs:
         dotnet build -c Release Projects/Argon2/Argon2.csproj
         dotnet pack -c Release -o packages Projects/Argon2/Argon2.csproj
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore --use-lock-file
     - name: Build Server
       run: dotnet build -c Release --no-restore Projects/Server/Server.csproj
     - name: Build UO Content
