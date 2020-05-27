@@ -27,6 +27,7 @@ jobs:
       with:
         dotnet-version: 3.1.300
     - name: NuGet Cache
+      id: nuget-cache
       uses: actions/cache@v2
       with:
         path: |
