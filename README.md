@@ -12,14 +12,14 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 [![GitHub license](https://img.shields.io/github/license/modernuo/ModernUO?color=blue)](https://github.com/modernuo/ModernUO/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/issues)
-[![Build status](https://img.shields.io/circleci/build/gh/modernuo/ModernUO/master?logo=circleci)](https://circleci.com/gh/modernuo/ModernUO)
+[![GitHub build](https://img.shields.io/github/workflow/status/modernuo/ModernUO/Build?logo=github)](https://github.com/modernuo/ModernUO/actions)
 
 ## Goals
 - See [Goals](./GOALS.md)
 
 ## Publishing a build
 #### Requirements
-- [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+- [.NET Core 3.1.4 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
 #### Publishing
 OSX/Linux
