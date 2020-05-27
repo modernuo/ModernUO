@@ -1,4 +1,4 @@
-name: Build (.NET Core 3.1)
+name: Build
 
 on:
   push:
@@ -26,6 +26,27 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.300
+    - name: NuGet Cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.nuget/packages
+          !~/.nuget/packages/argon2.bindings
+          !~/.nuget/packages/zlib.bindings
+        key: ${{ matrix.os }}-nuget-${{ hashFiles('Projects/**/*.csproj') }}
+        restore-keys: |
+          ${{ matrix.os }}-nuget-
+    - name: Native Library Cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.nuget/packages/argon2.bindings
+          ~/.nuget/packages/zlib.bindings
+          Projects/Argon2/*
+          Projects/ZLib/*
+        key: ${{ matrix.os }}-nuget-${{ hashFiles('Projects/Argon2/*') }}-${{ hashFiles('Projects/ZLib/*') }}
+        restore-keys: |
+          ${{ matrix.os }}-nuget-
     - name: Build ZLib
       run: |
         dotnet build -c Release Projects/ZLib/ZLib.csproj
