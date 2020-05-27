@@ -33,9 +33,9 @@ jobs:
           ~/.nuget/packages
           !~/.nuget/packages/argon2.bindings
           !~/.nuget/packages/zlib.bindings
-        key: ${{ matrix.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        key: ${{ matrix.os }}-nuget-cache-v2-${{ hashFiles('**/packages.lock.json') }}
         restore-keys: |
-          ${{ matrix.os }}-nuget-
+          ${{ matrix.os }}-nuget-cache-v2
     - name: Argon2 Library Cache
       id: argon2-cache
       uses: actions/cache@v2
@@ -44,9 +44,9 @@ jobs:
           ~/.nuget/packages/argon2.bindings
           Projects/Argon2/*
           packages/Argon2.Bindings*.nupkg
-        key: ${{ matrix.os }}-argon2-${{ hashFiles('Projects/Argon2/*') }}
+        key: ${{ matrix.os }}-argon2-cache-v2-${{ hashFiles('Projects/Argon2/*') }}
         restore-keys: |
-          ${{ matrix.os }}-argon2-
+          ${{ matrix.os }}-argon2-cache-v2
     - name: ZLib Library Cache
       id: zlib-cache
       uses: actions/cache@v2
@@ -55,9 +55,9 @@ jobs:
           ~/.nuget/packages/zlib.bindings
           Projects/ZLib/*
           packages/ZLib.Bindings*.nupkg
-        key: ${{ matrix.os }}-zlib-${{ hashFiles('Projects/ZLib/*') }}
+        key: ${{ matrix.os }}-zlib-cache-v2-${{ hashFiles('Projects/ZLib/*') }}
         restore-keys: |
-          ${{ matrix.os }}-zlib-
+          ${{ matrix.os }}-zlib-cache-v2
     - name: Build ZLib
       if: steps.zlib-cache.outputs.cache-hit != 'true'
       run: |
