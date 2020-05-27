@@ -25,10 +25,16 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.300
+    - name: Build ZLib
+      run: |
+        dotnet build -c Release Projects/ZLib/ZLib.csproj
+        dotnet pack -c Release -o packages Projects/ZLib/ZLib.csproj
+    - name: Build Argon2
+      run: |
+        dotnet build -c Release Projects/Argon2/Argon2.csproj
+        dotnet pack -c Release -o packages Projects/Argon2/Argon2.csproj
     - name: Install dependencies
       run: dotnet restore
-    - name: Build Native Libraries
-      run: Tools/build-native-libraries.cmd Release
     - name: Build Server
       run: dotnet build -c Release -r ${{ matrix.rid }} --no-restore --self-contained=false Projects/Server/Server.csproj
     - name: Build UO Content
