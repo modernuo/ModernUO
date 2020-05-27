@@ -40,8 +40,8 @@
       },
       "Argon2.Bindings": {
         "type": "Transitive",
-        "resolved": "1.2.5",
-        "contentHash": "4bKIdS5YB7WTbj4FlFuqWxzbTMKKaznKyeLxZ/9XyONNwqm3nxAdz7LMtHjFl1J1Le+NqWa4clc06zsbj3uNKg=="
+        "resolved": "1.2.6",
+        "contentHash": "DGu6R+oH7zf1sBKLRYgqeXjRj68wlIsPDZhKY42WfJ4ECSU2v8qlD6zNW6TxSAERUATkq/9bH1ZxbhFdmmzCcA=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -1370,8 +1370,8 @@
       },
       "ZLib.Bindings": {
         "type": "Transitive",
-        "resolved": "1.0.0",
-        "contentHash": "MtubxQivPDqC0fRgbMrnTHXM0TQ6UcFHdq7rs6kHxRy6hJoQZ95sIn7B/PS4gIkPVUz7Xl9aj7hCDUGY8tyRBA=="
+        "resolved": "1.0.2",
+        "contentHash": "0kZN3GZFO5PCzZWQ6QILfXvTQ9YIMtOjjQj4LXzvXuGNtC4Qd2Y9cR4pcVvd9sj0/a6P+R4xV6uaJM1ns0W9Gw=="
       },
       "ModernUO": {
         "type": "Project",
@@ -1380,18 +1380,18 @@
           "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv": "3.1.4",
           "Microsoft.Extensions.Hosting.Abstractions": "3.1.4",
           "System.IO.Pipelines": "4.7.2",
-          "ZLib.Bindings": "1.0.0"
+          "ZLib.Bindings": "1.0.2"
         }
       },
       "uocontent": {
         "type": "Project",
         "dependencies": {
-          "Argon2.Bindings": "1.2.5",
+          "Argon2.Bindings": "1.2.6",
           "MailKit": "2.6.0",
           "Microsoft.AspNetCore.Connections.Abstractions": "3.1.4",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.4",
           "Microsoft.Extensions.Hosting.Abstractions": "3.1.4",
-          "Zlib.Bindings": "1.0.0"
+          "Zlib.Bindings": "1.0.2"
         }
       }
     }

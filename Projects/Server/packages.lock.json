@@ -44,9 +44,9 @@
       },
       "ZLib.Bindings": {
         "type": "Direct",
-        "requested": "[1.0.0, )",
-        "resolved": "1.0.0",
-        "contentHash": "MtubxQivPDqC0fRgbMrnTHXM0TQ6UcFHdq7rs6kHxRy6hJoQZ95sIn7B/PS4gIkPVUz7Xl9aj7hCDUGY8tyRBA=="
+        "requested": "[1.0.2, )",
+        "resolved": "1.0.2",
+        "contentHash": "0kZN3GZFO5PCzZWQ6QILfXvTQ9YIMtOjjQj4LXzvXuGNtC4Qd2Y9cR4pcVvd9sj0/a6P+R4xV6uaJM1ns0W9Gw=="
       },
       "Libuv": {
         "type": "Transitive",

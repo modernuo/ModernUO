@@ -66,8 +66,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.4" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.4" />
-    <PackageReference Include="Argon2.Bindings" Version="1.2.5" />
-    <PackageReference Include="Zlib.Bindings" Version="1.0.0" />
+    <PackageReference Include="Argon2.Bindings" Version="1.2.6" />
+    <PackageReference Include="Zlib.Bindings" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'=='Analyze'">
     <PackageReference Include="StyleCop.Analyzers">
