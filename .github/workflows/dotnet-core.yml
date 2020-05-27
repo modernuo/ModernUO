@@ -69,7 +69,7 @@ jobs:
         dotnet build -c Release Projects/Argon2/Argon2.csproj
         dotnet pack -c Release -o packages Projects/Argon2/Argon2.csproj
     - name: Install dependencies
-      run: dotnet restore --use-lock-file
+      run: dotnet restore
     - name: Build Server
       run: dotnet build -c Release --no-restore Projects/Server/Server.csproj
     - name: Build UO Content
