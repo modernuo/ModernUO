@@ -12,7 +12,7 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 [![GitHub license](https://img.shields.io/github/license/modernuo/ModernUO?color=blue)](https://github.com/modernuo/ModernUO/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/issues)
-[![GitHub build](https://img.shields.io/github/workflow/status/modernuo/ModernUO/Build%20(.NET%20Core%203.1)?logo=github)](https://github.com/modernuo/ModernUO/actions)
+[![GitHub build](https://img.shields.io/github/workflow/status/modernuo/ModernUO/Build?logo=github)](https://github.com/modernuo/ModernUO/actions)
 
 ## Goals
 - See [Goals](./GOALS.md)
