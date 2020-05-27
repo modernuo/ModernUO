@@ -20,6 +20,8 @@
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('win'))">WINDOWS</DefineConstants>
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith(`win`))!=true">UNIX</DefineConstants>
     <Platforms>x64</Platforms>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode>true</RestoreLockedMode>
   </PropertyGroup>
   <Target Name="CleanPub" AfterTargets="Clean">
     <Message Text="Removing distribution assemblies..." />
