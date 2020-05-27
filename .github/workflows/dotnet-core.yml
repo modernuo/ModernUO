@@ -27,6 +27,7 @@ jobs:
       with:
         dotnet-version: 3.1.300
     - name: NuGet Cache
+      id: nuget-cache
       uses: actions/cache@v2
       with:
         path: |
@@ -69,6 +70,7 @@ jobs:
         dotnet build -c Release Projects/Argon2/Argon2.csproj
         dotnet pack -c Release -o packages Projects/Argon2/Argon2.csproj
     - name: Install dependencies
+      if: steps.zlib-cache.outputs.cache-hit != 'true' || steps.argon2-cache.outputs.cache-hit != 'true' || steps.nuget-cache.outputs.cache-hit != 'true'
       run: dotnet restore
     - name: Build Server
       run: dotnet build -c Release --no-restore Projects/Server/Server.csproj
