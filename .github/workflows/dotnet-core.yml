@@ -1,0 +1,37 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: macos-latest
+            rid: osx-x64
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.300
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build Native Libraries
+      run: Tools/build-native-libraries.cmd Release
+    - name: Build Server
+      run: dotnet build -c Release -r ${{ matrix.rid }} --no-restore --self-contained=false Projects/Server/Server.csproj
+    - name: Build UO Content
+      run: dotnet build -c Release -r ${{ matrix.rid }} --no-restore --self-contained=false Projects/UOContent/UOContent.csproj
+    - name: Test
+      run: dotnet test -r ${{ matrix.rid }} --no-restore --verbosity normal
