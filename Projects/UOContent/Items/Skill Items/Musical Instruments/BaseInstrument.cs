@@ -237,7 +237,7 @@ namespace Server.Items
 
     public static bool IsPoisonImmune(BaseCreature bc) => bc?.PoisonImmune != null;
 
-    public static int GetPoisonLevel(BaseCreature bc) => (bc?.HitPoison.Level ?? -1) + 1;
+    public static int GetPoisonLevel(BaseCreature bc) => (bc?.HitPoison?.Level ?? -1) + 1;
 
     public static double GetBaseDifficulty(Mobile targ)
     {
