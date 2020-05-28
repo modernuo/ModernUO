@@ -2,24 +2,10 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
     <RootNamespace>Server</RootNamespace>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>UOContent</AssemblyName>
-    <Authors>Kamron Batman</Authors>
-    <Company>ModernUO</Company>
     <Product>ModernUO Content</Product>
-    <Copyright>2019-2020</Copyright>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <UseNETCoreGenerator>true</UseNETCoreGenerator>
-    <WarningsAsErrors />
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>8.0</LangVersion>
     <PublishDir>..\..\Distribution\Assemblies</PublishDir>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release;Analyze</Configurations>
-    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('win'))">WINDOWS</DefineConstants>
-    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith(`win`))!=true">UNIX</DefineConstants>
-    <Platforms>x64</Platforms>
   </PropertyGroup>
   <Target Name="CleanPub" AfterTargets="Clean">
     <Message Text="Removing distribution assemblies..." />
@@ -80,8 +66,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.4" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.4" />
-    <PackageReference Include="Argon2.Bindings" Version="1.2.5" />
-    <PackageReference Include="Zlib.Bindings" Version="1.0.0" />
+    <PackageReference Include="Argon2.Bindings" Version="1.2.6" />
+    <PackageReference Include="Zlib.Bindings" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'=='Analyze'">
     <PackageReference Include="StyleCop.Analyzers">
