@@ -27,26 +27,30 @@ jobs:
       with:
         dotnet-version: 3.1.300
     - name: NuGet Cache
+      id: nuget-cache
       uses: actions/cache@v2
       with:
         path: |
           ~/.nuget/packages
           !~/.nuget/packages/argon2.bindings
           !~/.nuget/packages/zlib.bindings
-        key: ${{ matrix.os }}-nuget-${{ hashFiles('Projects/**/*.csproj') }}
+          Projects/*/obj/project.assets.json
+          Projects/*/obj/project.nuget.cache
+          Projects/*/obj/*.csproj.nuget.*
+        key: ${{ matrix.os }}-nuget-cache-v3-${{ hashFiles('**/packages.lock.json') }}
         restore-keys: |
-          ${{ matrix.os }}-nuget-
+          ${{ matrix.os }}-nuget-cache-v3
     - name: Argon2 Library Cache
       id: argon2-cache
       uses: actions/cache@v2
       with:
         path: |
           ~/.nuget/packages/argon2.bindings
-          Projects/ZLib/*
+          Projects/Argon2/*
           packages/Argon2.Bindings*.nupkg
-        key: ${{ matrix.os }}-argon2-${{ hashFiles('Projects/Argon2/*') }}
+        key: ${{ matrix.os }}-argon2-cache-v3-${{ hashFiles('Projects/Argon2/*') }}
         restore-keys: |
-          ${{ matrix.os }}-argon2-
+          ${{ matrix.os }}-argon2-cache-v3
     - name: ZLib Library Cache
       id: zlib-cache
       uses: actions/cache@v2
@@ -55,21 +59,16 @@ jobs:
           ~/.nuget/packages/zlib.bindings
           Projects/ZLib/*
           packages/ZLib.Bindings*.nupkg
-        key: ${{ matrix.os }}-argon2-${{ hashFiles('Projects/Argon2/*') }}
+        key: ${{ matrix.os }}-zlib-cache-v3-${{ hashFiles('Projects/ZLib/*') }}
         restore-keys: |
-          ${{ matrix.os }}-argon2-
+          ${{ matrix.os }}-zlib-cache-v3
     - name: Build ZLib
-      if: steps.zlib-cache.outputs.cache-hit != 'true'
-      run: |
-        dotnet build -c Release Projects/ZLib/ZLib.csproj
-        dotnet pack -c Release -o packages Projects/ZLib/ZLib.csproj
+      run: dotnet build -c Release Projects/ZLib/ZLib.csproj
     - name: Build Argon2
-      if: steps.argon2-cache.outputs.cache-hit != 'true'
-      run: |
-        dotnet build -c Release Projects/Argon2/Argon2.csproj
-        dotnet pack -c Release -o packages Projects/Argon2/Argon2.csproj
+      run: dotnet build -c Release Projects/Argon2/Argon2.csproj
     - name: Install dependencies
-      run: dotnet restore
+      if: steps.nuget-cache.outputs.cache-hit != 'true' || steps.argon2-cache.outputs.cache-hit != 'true' || steps.zlib-cache.outputs.cache-hit != 'true'
+      run: dotnet restore --force-evaluate
     - name: Build Server
       run: dotnet build -c Release --no-restore Projects/Server/Server.csproj
     - name: Build UO Content

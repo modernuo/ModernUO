@@ -1,8 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-      <TargetFramework>netcoreapp3.1</TargetFramework>
-      <Platforms>x64</Platforms>
-      <DefineConstants Condition="'$(RuntimeIdentifier)' == 'win-x64'">WINDOWS</DefineConstants>
       <RootNamespace>Scripts.Tests</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
