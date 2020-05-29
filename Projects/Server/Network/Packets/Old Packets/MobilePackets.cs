@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: MobilePackets.cs - Created: 2020/05/07 - Updated: 2020/05/07    *
+ * File: MobilePackets.cs - Created: 2020/05/07 - Updated: 2020/05/26    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -40,6 +40,53 @@ namespace Server.Network
       Stream.Write((byte)0);
       Stream.Write(serial);
       Stream.Write((byte)(bonded ? 1 : 0));
+    }
+  }
+
+  public sealed class MobileMoving : Packet
+  {
+    public MobileMoving(Mobile m, int noto) : base(0x77, 17)
+    {
+      var loc = m.Location;
+
+      var hue = m.Hue;
+
+      if (m.SolidHueOverride >= 0)
+        hue = m.SolidHueOverride;
+
+      Stream.Write(m.Serial);
+      Stream.Write((short)m.Body);
+      Stream.Write((short)loc.m_X);
+      Stream.Write((short)loc.m_Y);
+      Stream.Write((sbyte)loc.m_Z);
+      Stream.Write((byte)m.Direction);
+      Stream.Write((short)hue);
+      Stream.Write((byte)m.GetPacketFlags());
+      Stream.Write((byte)noto);
+    }
+  }
+
+  // Pre-7.0.0.0 Mobile Moving
+  public sealed class MobileMovingOld : Packet
+  {
+    public MobileMovingOld(Mobile m, int noto) : base(0x77, 17)
+    {
+      var loc = m.Location;
+
+      var hue = m.Hue;
+
+      if (m.SolidHueOverride >= 0)
+        hue = m.SolidHueOverride;
+
+      Stream.Write(m.Serial);
+      Stream.Write((short)m.Body);
+      Stream.Write((short)loc.m_X);
+      Stream.Write((short)loc.m_Y);
+      Stream.Write((sbyte)loc.m_Z);
+      Stream.Write((byte)m.Direction);
+      Stream.Write((short)hue);
+      Stream.Write((byte)m.GetOldPacketFlags());
+      Stream.Write((byte)noto);
     }
   }
 }

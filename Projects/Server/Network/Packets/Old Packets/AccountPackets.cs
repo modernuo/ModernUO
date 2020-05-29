@@ -22,6 +22,25 @@ using Server.Accounting;
 
 namespace Server.Network
 {
+  public enum PMMessage : byte
+  {
+    CharNoExist = 1,
+    CharExists = 2,
+    CharInWorld = 5,
+    LoginSyncError = 6,
+    IdleWarning = 7
+  }
+
+  public enum DeleteResultType
+  {
+    PasswordInvalid,
+    CharNotExist,
+    CharBeingPlayed,
+    CharTooYoung,
+    CharQueued,
+    BadRequest
+  }
+
   public sealed class ChangeCharacter : Packet
   {
     public ChangeCharacter(IAccount a) : base(0x81)
@@ -54,6 +73,33 @@ namespace Server.Network
         {
           Stream.Fill(60);
         }
+    }
+  }
+
+  /// <summary>
+  ///   Asks the client for it's version
+  /// </summary>
+  public sealed class ClientVersionReq : Packet
+  {
+    public ClientVersionReq() : base(0xBD)
+    {
+      EnsureCapacity(3);
+    }
+  }
+
+  public sealed class DeleteResult : Packet
+  {
+    public DeleteResult(DeleteResultType res) : base(0x85, 2)
+    {
+      Stream.Write((byte)res);
+    }
+  }
+
+  public sealed class PopupMessage : Packet
+  {
+    public PopupMessage(PMMessage msg) : base(0x53, 2)
+    {
+      Stream.Write((byte)msg);
     }
   }
 }

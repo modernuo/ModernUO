@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Server.Tests.Network.Packets
 {
-  public class TestEquipmentPackets : IClassFixture<ServerFixture>
+  public class EquipmentPacketTests : IClassFixture<ServerFixture>
   {
     [Fact]
     public void TestDisplayEquipmentInfo()
