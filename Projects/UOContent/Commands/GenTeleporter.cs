@@ -11,7 +11,7 @@ namespace Server.Commands
 {
   public struct Location
   {
-    [JsonPropertyName("point"), JsonConverter(typeof(Point3DConverter))]
+    [JsonPropertyName("loc"), JsonConverter(typeof(Point3DConverter))]
     public Point3D Pos { get; set; }
     [JsonPropertyName("map"), JsonConverter(typeof(MapConverter))]
     public Map Map { get; set; }
@@ -21,9 +21,9 @@ namespace Server.Commands
 
   public struct TeleporterDefinition
   {
-    [JsonPropertyName("source")]
+    [JsonPropertyName("src")]
     public Location Source { get; set; }
-    [JsonPropertyName("destination")]
+    [JsonPropertyName("dst")]
     public Location Destination { get; set; }
     [JsonPropertyName("back")]
     public bool Back { get; set; }
