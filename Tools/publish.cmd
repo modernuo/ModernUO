@@ -11,7 +11,7 @@ else
 fi
 
 Tools/build-native-libraries.cmd $2
-dotnet restore  --force-evaluate
+dotnet restore --force-evaluate
 
 if [[ $1 ]]
 then
