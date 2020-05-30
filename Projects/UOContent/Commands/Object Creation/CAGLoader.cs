@@ -55,6 +55,10 @@ namespace Server.Commands
 
   public class CAGJson
   {
+    public CAGJson()
+    {
+    }
+
     [JsonPropertyName("category")]
     public string Category { get; set; }
 

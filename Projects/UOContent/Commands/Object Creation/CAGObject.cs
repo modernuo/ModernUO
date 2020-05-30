@@ -17,7 +17,7 @@ namespace Server.Commands
     public int ItemID { get; set; }
 
     [JsonPropertyName("hue")]
-    public int Hue { get; set; }
+    public int? Hue { get; set; }
 
     public CAGCategory Parent { get; set; }
 
