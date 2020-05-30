@@ -6,6 +6,11 @@
     <Product>ModernUO Content</Product>
     <PublishDir>..\..\Distribution\Assemblies</PublishDir>
     <Configurations>Debug;Release;Analyze</Configurations>
+    <UseNETCoreGenerator>true</UseNETCoreGenerator>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <Target Name="CleanPub" AfterTargets="Clean">
     <Message Text="Removing distribution assemblies..." />
@@ -33,14 +38,6 @@
     <Delete Files="..\..\Distribution\Assemblies\libz.so" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\ZLib.Bindings.dll" ContinueOnError="true" />
   </Target>
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\Rules.ruleset">
-      <Link>Rules.rulest</Link>
-    </AdditionalFiles>
-    <AdditionalFiles Include="..\..\stylecop.json">
-      <Link>stylecop.json</Link>
-    </AdditionalFiles>
-  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DefineConstants>TRACE;DEBUG;$(DefineConstants)</DefineConstants>
     <Optimize>false</Optimize>
@@ -55,13 +52,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="SpecialSystems\README.TXT" />
-  </ItemGroup>
-  <ItemGroup>
+    <AdditionalFiles Include="..\..\Rules.ruleset">
+      <Link>Rules.rulest</Link>
+    </AdditionalFiles>
+    <AdditionalFiles Include="..\..\stylecop.json">
+      <Link>stylecop.json</Link>
+    </AdditionalFiles>
     <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
       <IncludeInPackage>false</IncludeInPackage>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="MailKit" Version="2.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.4" />
