@@ -240,13 +240,12 @@ namespace Server.Commands
       string a = x?.Title;
       string b = y?.Title;
 
-      if (a == null && b == null)
-        return 0;
-
-      if (a == null)
-        return 1;
-
-      return a.CompareTo(b);
+      return a switch
+      {
+        null when b == null => 0,
+        null => 1,
+        _ => a.CompareTo(b)
+      };
     }
   }
 
@@ -257,13 +256,12 @@ namespace Server.Commands
       string a = x?.Type.Name;
       string b = y?.Type.Name;
 
-      if (a == null && b == null)
-        return 0;
-
-      if (a == null)
-        return 1;
-
-      return a.CompareTo(b);
+      return a switch
+      {
+        null when b == null => 0,
+        null => 1,
+        _ => a.CompareTo(b)
+      };
     }
   }
 

@@ -1,143 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Xml;
+using Server.Commands;
 using Server.Network;
 
 namespace Server.Gumps
 {
-  public abstract class CAGNode
-  {
-    public abstract string Caption { get; }
-    public abstract void OnClick(Mobile from, int page);
-  }
-
-  public class CAGObject : CAGNode
-  {
-    public CAGObject(CAGCategory parent, XmlTextReader xml)
-    {
-      Parent = parent;
-
-      if (xml.MoveToAttribute("type"))
-        Type = AssemblyHandler.FindFirstTypeForName(xml.Value, false);
-
-      if (xml.MoveToAttribute("gfx"))
-        ItemID = XmlConvert.ToInt32(xml.Value);
-
-      if (xml.MoveToAttribute("hue"))
-        Hue = XmlConvert.ToInt32(xml.Value);
-    }
-
-    public Type Type { get; }
-
-    public int ItemID { get; }
-
-    public int Hue { get; }
-
-    public CAGCategory Parent { get; }
-
-    public override string Caption => Type == null ? "bad type" : Type.Name;
-
-    public override void OnClick(Mobile from, int page)
-    {
-      if (Type == null)
-      {
-        from.SendMessage("That is an invalid type name.");
-      }
-      else
-      {
-        CommandSystem.Handle(from, $"{CommandSystem.Prefix}Add {Type.Name}");
-
-        from.SendGump(new CategorizedAddGump(from, Parent, page));
-      }
-    }
-  }
-
-  public class CAGCategory : CAGNode
-  {
-    private static CAGCategory m_Root;
-
-    private CAGCategory()
-    {
-      Title = "no data";
-      Nodes = Array.Empty<CAGNode>();
-    }
-
-    public CAGCategory(CAGCategory parent, XmlTextReader xml)
-    {
-      Parent = parent;
-
-      if (xml.MoveToAttribute("title"))
-        Title = xml.Value;
-      else
-        Title = "empty";
-
-      if (Title == "Docked")
-        Title = "Docked 2";
-
-      if (xml.IsEmptyElement)
-      {
-        Nodes = Array.Empty<CAGNode>();
-      }
-      else
-      {
-        List<CAGNode> nodes = new List<CAGNode>();
-
-        while (xml.Read() && xml.NodeType != XmlNodeType.EndElement)
-          if (xml.NodeType == XmlNodeType.Element && xml.Name == "object")
-          {
-            nodes.Add(new CAGObject(this, xml));
-          }
-          else if (xml.NodeType == XmlNodeType.Element && xml.Name == "category")
-          {
-            if (!xml.IsEmptyElement)
-              nodes.Add(new CAGCategory(this, xml));
-          }
-          else
-          {
-            xml.Skip();
-          }
-
-        Nodes = nodes.ToArray();
-      }
-    }
-
-    public string Title { get; }
-
-    public CAGNode[] Nodes { get; }
-
-    public CAGCategory Parent { get; }
-
-    public override string Caption => Title;
-
-    public static CAGCategory Root => m_Root ?? (m_Root = Load("Data/objects.xml"));
-
-    public override void OnClick(Mobile from, int page)
-    {
-      from.SendGump(new CategorizedAddGump(from, this));
-    }
-
-    public static CAGCategory Load(string path)
-    {
-      if (File.Exists(path))
-      {
-        XmlTextReader xml = new XmlTextReader(path) { WhitespaceHandling = WhitespaceHandling.None };
-
-        while (xml.Read())
-          if (xml.Name == "category" && xml.NodeType == XmlNodeType.Element)
-          {
-            CAGCategory cat = new CAGCategory(null, xml);
-
-            xml.Close();
-
-            return cat;
-          }
-      }
-
-      return new CAGCategory();
-    }
-  }
-
   public class CategorizedAddGump : Gump
   {
     public static bool OldStyle = PropsConfig.OldStyle;
@@ -266,7 +132,7 @@ namespace Server.Gumps
           EntryGumpID);
 
       AddHtml(x + TextOffsetX, y + (EntryHeight - 20) / 2, emptyWidth - TextOffsetX, EntryHeight,
-        $"<center>{m_Category.Caption}</center>");
+        $"<center>{m_Category.Title}</center>");
 
       x += emptyWidth + OffsetSize;
 
@@ -305,7 +171,7 @@ namespace Server.Gumps
 
         AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
         AddLabelCropped(x + TextOffsetX, y + (EntryHeight - 20) / 2, EntryWidth - TextOffsetX, EntryHeight, TextHue,
-          node.Caption);
+          node.Title);
 
         x += EntryWidth + OffsetSize;
 
