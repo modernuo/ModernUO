@@ -37,7 +37,7 @@ jobs:
           ${{ github.workspace }}/Projects/*/obj/project.assets.json
           ${{ github.workspace }}/Projects/*/obj/project.nuget.cache
           ${{ github.workspace }}/Projects/*/obj/*.csproj.nuget.*
-        key: ${{ matrix.os }}-nuget-cache-v5-${{ hashFiles('**/packages.lock.json') }}
+        key: ${{ matrix.os }}-nuget-cache-v6-${{ hashFiles('**/packages.lock.json') }}
         restore-keys: |
           ${{ matrix.os }}-nuget-cache-v3
     - name: Argon2 Library Cache
@@ -48,7 +48,7 @@ jobs:
           ~/.nuget/packages/argon2.bindings
           ${{ github.workspace }}/Projects/Argon2/**
           ${{ github.workspace }}/packages/Argon2.Bindings*.nupkg
-        key: ${{ matrix.os }}-argon2-cache-v5-${{ hashFiles('Projects/Argon2/*') }}
+        key: ${{ matrix.os }}-argon2-cache-v6-${{ hashFiles('Projects/Argon2/*') }}
         restore-keys: |
           ${{ matrix.os }}-argon2-cache-v4
     - name: ZLib Library Cache
@@ -59,7 +59,7 @@ jobs:
           ~/.nuget/packages/zlib.bindings
           ${{ github.workspace }}/Projects/ZLib/**
           ${{ github.workspace }}/packages/ZLib.Bindings*.nupkg
-        key: ${{ matrix.os }}-zlib-cache-v5-${{ hashFiles('Projects/ZLib/*') }}
+        key: ${{ matrix.os }}-zlib-cache-v6-${{ hashFiles('Projects/ZLib/*') }}
         restore-keys: |
           ${{ matrix.os }}-zlib-cache-v4
     - name: Build ZLib
@@ -79,5 +79,7 @@ jobs:
       run: dotnet build -c Release --no-restore Projects/Server/Server.csproj
     - name: Build UO Content
       run: dotnet build -c Release --no-restore Projects/UOContent/UOContent.csproj
-    - name: Test
-      run: dotnet test -r ${{ matrix.rid }} --no-restore --verbosity normal
+    - name: Test Server
+      run: dotnet test -r ${{ matrix.rid }} --no-restore Projects/Server.Tests/Server.Tests.csproj
+    - name: Test UOContent
+      run: dotnet test -r ${{ matrix.rid }} --no-restore Projects/UOContent.Tests/UOContent.Tests.csproj

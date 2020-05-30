@@ -1,5 +1,5 @@
 using System;
-using Server.Misc;
+// using Server.Misc;
 
 namespace Server.Tests
 {
@@ -13,7 +13,7 @@ namespace Server.Tests
       ServerConfiguration.Load(true);
 
       // Configure / Initialize
-      MapDefinitions.Configure();
+      TestMapDefinitions.ConfigureTestMapDefinitions();
 
       // Load the world
       World.Load();

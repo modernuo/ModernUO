@@ -11,6 +11,11 @@
     <PublishDir>..\..\Distribution</PublishDir>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Configurations>Debug;Release;Analyze</Configurations>
+    <UseNETCoreGenerator>true</UseNETCoreGenerator>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <Target Name="CleanPub" AfterTargets="Clean">
     <Message Text="Removing distribution files..." />
@@ -40,14 +45,6 @@
     <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\System.IO.Pipelines.dll" ContinueOnError="true" />
   </Target>
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\Rules.ruleset">
-      <Link>Rules.rulest</Link>
-    </AdditionalFiles>
-    <AdditionalFiles Include="..\..\stylecop.json">
-      <Link>stylecop.json</Link>
-    </AdditionalFiles>
-  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <Optimize>false</Optimize>
@@ -61,6 +58,12 @@
     <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <AdditionalFiles Include="..\..\Rules.ruleset">
+      <Link>Rules.rulest</Link>
+    </AdditionalFiles>
+    <AdditionalFiles Include="..\..\stylecop.json">
+      <Link>stylecop.json</Link>
+    </AdditionalFiles>
     <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv" Version="3.1.4" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.4" />

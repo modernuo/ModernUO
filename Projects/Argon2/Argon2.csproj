@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <PackageVersion>1.2.7</PackageVersion>
     <RootNamespace>System.Security.Cryptography</RootNamespace>
     <AssemblyName>Argon2.Bindings</AssemblyName>
@@ -13,17 +14,17 @@
     <Content Include="runtimes\win-x64\native\libargon2.dll">
       <Pack>true</Pack>
       <PackagePath>runtimes/win-x64/native</PackagePath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="runtimes\osx-x64\native\libargon2.dylib">
       <Pack>true</Pack>
       <PackagePath>runtimes/osx-x64/native</PackagePath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="runtimes\linux-x64\native\libargon2.so">
       <Pack>true</Pack>
       <PackagePath>runtimes/linux-x64/native</PackagePath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 </Project>
