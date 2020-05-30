@@ -34,10 +34,10 @@ jobs:
           ~/.nuget/packages
           !~/.nuget/packages/argon2.bindings
           !~/.nuget/packages/zlib.bindings
-          Projects/*/obj/project.assets.json
-          Projects/*/obj/project.nuget.cache
-          Projects/*/obj/*.csproj.nuget.*
-        key: ${{ matrix.os }}-nuget-cache-v3-${{ hashFiles('**/packages.lock.json') }}
+          ${{ github.workspace }}/Projects/*/obj/project.assets.json
+          ${{ github.workspace }}/Projects/*/obj/project.nuget.cache
+          ${{ github.workspace }}/Projects/*/obj/*.csproj.nuget.*
+        key: ${{ matrix.os }}-nuget-cache-v5-${{ hashFiles('**/packages.lock.json') }}
         restore-keys: |
           ${{ matrix.os }}-nuget-cache-v3
     - name: Argon2 Library Cache
@@ -46,9 +46,9 @@ jobs:
       with:
         path: |
           ~/.nuget/packages/argon2.bindings
-          Projects/Argon2/**
-          packages/Argon2.Bindings*.nupkg
-        key: ${{ matrix.os }}-argon2-cache-v4-${{ hashFiles('Projects/Argon2/*') }}
+          ${{ github.workspace }}/Projects/Argon2/**
+          ${{ github.workspace }}/packages/Argon2.Bindings*.nupkg
+        key: ${{ matrix.os }}-argon2-cache-v5-${{ hashFiles('Projects/Argon2/*') }}
         restore-keys: |
           ${{ matrix.os }}-argon2-cache-v4
     - name: ZLib Library Cache
@@ -57,9 +57,9 @@ jobs:
       with:
         path: |
           ~/.nuget/packages/zlib.bindings
-          Projects/ZLib/**
-          packages/ZLib.Bindings*.nupkg
-        key: ${{ matrix.os }}-zlib-cache-v4-${{ hashFiles('Projects/ZLib/*') }}
+          ${{ github.workspace }}/Projects/ZLib/**
+          ${{ github.workspace }}/packages/ZLib.Bindings*.nupkg
+        key: ${{ matrix.os }}-zlib-cache-v5-${{ hashFiles('Projects/ZLib/*') }}
         restore-keys: |
           ${{ matrix.os }}-zlib-cache-v4
     - name: Build ZLib
