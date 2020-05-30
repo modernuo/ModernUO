@@ -10,5 +10,10 @@
     <LangVersion>8.0</LangVersion>
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('win'))">WINDOWS</DefineConstants>
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith(`win`)) != true">UNIX</DefineConstants>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode>true</RestoreLockedMode>
+    <NoWarn>NU1603</NoWarn>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   </PropertyGroup>
 </Project>
