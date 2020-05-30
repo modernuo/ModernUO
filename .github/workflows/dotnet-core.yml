@@ -82,4 +82,4 @@ jobs:
       - name: Test Server
         run: dotnet test -r ${{ matrix.rid }} --no-restore Projects/Server.Tests/Server.Tests.csproj
       - name: Test UOContent
-        run: dotnet test -r ${{ matrix.rid }} --no-restore Projects/UOContent.Tests/UOContents.Tests.csproj
+        run: dotnet test -r ${{ matrix.rid }} --no-restore Projects/UOContent.Tests/UOContent.Tests.csproj
