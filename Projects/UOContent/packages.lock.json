@@ -4,9 +4,9 @@
     ".NETCoreApp,Version=v3.1": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.2.6, )",
-        "resolved": "1.2.6",
-        "contentHash": "DGu6R+oH7zf1sBKLRYgqeXjRj68wlIsPDZhKY42WfJ4ECSU2v8qlD6zNW6TxSAERUATkq/9bH1ZxbhFdmmzCcA=="
+        "requested": "[1.2.7, )",
+        "resolved": "1.2.7",
+        "contentHash": "6pip5MqEpx9QKXFtFYEYoHCz8rhKqw03xzNefHadFE38JZtt97l+JDif9quvpGnGyq6sGKU3BKsjLh/beyVI3w=="
       },
       "MailKit": {
         "type": "Direct",
@@ -52,7 +52,7 @@
         "type": "Direct",
         "requested": "[1.0.2, )",
         "resolved": "1.0.2",
-        "contentHash": "0kZN3GZFO5PCzZWQ6QILfXvTQ9YIMtOjjQj4LXzvXuGNtC4Qd2Y9cR4pcVvd9sj0/a6P+R4xV6uaJM1ns0W9Gw=="
+        "contentHash": "rd7gUFhwKb9Pd5ehhsUUdZiGS/AQQ1v0UItP2J+EYIfKzq7H54yDQ509qcBmbNtr6zTz7AAax4zRUcg3j9mfyQ=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -847,15 +847,15 @@
     ".NETCoreApp,Version=v3.1/linux-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.2.6, )",
-        "resolved": "1.2.6",
-        "contentHash": "DGu6R+oH7zf1sBKLRYgqeXjRj68wlIsPDZhKY42WfJ4ECSU2v8qlD6zNW6TxSAERUATkq/9bH1ZxbhFdmmzCcA=="
+        "requested": "[1.2.7, )",
+        "resolved": "1.2.7",
+        "contentHash": "6pip5MqEpx9QKXFtFYEYoHCz8rhKqw03xzNefHadFE38JZtt97l+JDif9quvpGnGyq6sGKU3BKsjLh/beyVI3w=="
       },
       "ZLib.Bindings": {
         "type": "Direct",
         "requested": "[1.0.2, )",
         "resolved": "1.0.2",
-        "contentHash": "0kZN3GZFO5PCzZWQ6QILfXvTQ9YIMtOjjQj4LXzvXuGNtC4Qd2Y9cR4pcVvd9sj0/a6P+R4xV6uaJM1ns0W9Gw=="
+        "contentHash": "rd7gUFhwKb9Pd5ehhsUUdZiGS/AQQ1v0UItP2J+EYIfKzq7H54yDQ509qcBmbNtr6zTz7AAax4zRUcg3j9mfyQ=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -1571,15 +1571,15 @@
     ".NETCoreApp,Version=v3.1/osx-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.2.6, )",
-        "resolved": "1.2.6",
-        "contentHash": "DGu6R+oH7zf1sBKLRYgqeXjRj68wlIsPDZhKY42WfJ4ECSU2v8qlD6zNW6TxSAERUATkq/9bH1ZxbhFdmmzCcA=="
+        "requested": "[1.2.7, )",
+        "resolved": "1.2.7",
+        "contentHash": "6pip5MqEpx9QKXFtFYEYoHCz8rhKqw03xzNefHadFE38JZtt97l+JDif9quvpGnGyq6sGKU3BKsjLh/beyVI3w=="
       },
       "ZLib.Bindings": {
         "type": "Direct",
         "requested": "[1.0.2, )",
         "resolved": "1.0.2",
-        "contentHash": "0kZN3GZFO5PCzZWQ6QILfXvTQ9YIMtOjjQj4LXzvXuGNtC4Qd2Y9cR4pcVvd9sj0/a6P+R4xV6uaJM1ns0W9Gw=="
+        "contentHash": "rd7gUFhwKb9Pd5ehhsUUdZiGS/AQQ1v0UItP2J+EYIfKzq7H54yDQ509qcBmbNtr6zTz7AAax4zRUcg3j9mfyQ=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -2295,15 +2295,15 @@
     ".NETCoreApp,Version=v3.1/win-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.2.6, )",
-        "resolved": "1.2.6",
-        "contentHash": "DGu6R+oH7zf1sBKLRYgqeXjRj68wlIsPDZhKY42WfJ4ECSU2v8qlD6zNW6TxSAERUATkq/9bH1ZxbhFdmmzCcA=="
+        "requested": "[1.2.7, )",
+        "resolved": "1.2.7",
+        "contentHash": "6pip5MqEpx9QKXFtFYEYoHCz8rhKqw03xzNefHadFE38JZtt97l+JDif9quvpGnGyq6sGKU3BKsjLh/beyVI3w=="
       },
       "ZLib.Bindings": {
         "type": "Direct",
         "requested": "[1.0.2, )",
         "resolved": "1.0.2",
-        "contentHash": "0kZN3GZFO5PCzZWQ6QILfXvTQ9YIMtOjjQj4LXzvXuGNtC4Qd2Y9cR4pcVvd9sj0/a6P+R4xV6uaJM1ns0W9Gw=="
+        "contentHash": "rd7gUFhwKb9Pd5ehhsUUdZiGS/AQQ1v0UItP2J+EYIfKzq7H54yDQ509qcBmbNtr6zTz7AAax4zRUcg3j9mfyQ=="
       },
       "Libuv": {
         "type": "Transitive",
