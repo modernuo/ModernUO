@@ -21,65 +21,65 @@ jobs:
             rid: osx-x64
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 3.1.300
-      - name: NuGet Cache
-        id: nuget-cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.nuget/packages
-            !~/.nuget/packages/argon2.bindings
-            !~/.nuget/packages/zlib.bindings
-            ${{ github.workspace }}/Projects/*/obj/project.assets.json
-            ${{ github.workspace }}/Projects/*/obj/project.nuget.cache
-            ${{ github.workspace }}/Projects/*/obj/*.csproj.nuget.*
-          key: ${{ matrix.os }}-nuget-cache-v6-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ matrix.os }}-nuget-cache-v3
-      - name: Argon2 Library Cache
-        id: argon2-cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.nuget/packages/argon2.bindings
-            ${{ github.workspace }}/Projects/Argon2/**
-            ${{ github.workspace }}/packages/Argon2.Bindings*.nupkg
-          key: ${{ matrix.os }}-argon2-cache-v6-${{ hashFiles('Projects/Argon2/*') }}
-          restore-keys: |
-            ${{ matrix.os }}-argon2-cache-v4
-      - name: ZLib Library Cache
-        id: zlib-cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.nuget/packages/zlib.bindings
-            ${{ github.workspace }}/Projects/ZLib/**
-            ${{ github.workspace }}/packages/ZLib.Bindings*.nupkg
-          key: ${{ matrix.os }}-zlib-cache-v6-${{ hashFiles('Projects/ZLib/*') }}
-          restore-keys: |
-            ${{ matrix.os }}-zlib-cache-v4
-      - name: Build ZLib
-        run: dotnet build -c Release Projects/ZLib/ZLib.csproj
-      - name: Pack ZLib NuGet
-        if: steps.zlib-cache.outputs.cache-hit != 'true'
-        run: dotnet pack -c Release -o packages Projects/ZLib/ZLib.csproj
-      - name: Build Argon2
-        run: dotnet build -c Release Projects/Argon2/Argon2.csproj
-      - name: Pack Argon2 NuGet
-        if: steps.argon2-cache.outputs.cache-hit != 'true'
-        run: dotnet pack -c Release -o packages Projects/Argon2/Argon2.csproj
-      - name: Restore dependencies
-        if: steps.nuget-cache.outputs.cache-hit != 'true' || steps.argon2-cache.outputs.cache-hit != 'true' || steps.zlib-cache.outputs.cache-hit != 'true'
-        run: dotnet restore --force-evaluate
-      - name: Build Server
-        run: dotnet build -c Release --no-restore Projects/Server/Server.csproj
-      - name: Build UO Content
-        run: dotnet build -c Release --no-restore Projects/UOContent/UOContent.csproj
-      - name: Test Server
-        run: dotnet test -r ${{ matrix.rid }} --no-restore Projects/Server.Tests/Server.Tests.csproj
-      - name: Test UOContent
-        run: dotnet test -r ${{ matrix.rid }} --no-restore Projects/UOContent.Tests/UOContent.Tests.csproj
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.300
+    - name: NuGet Cache
+      id: nuget-cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.nuget/packages
+          !~/.nuget/packages/argon2.bindings
+          !~/.nuget/packages/zlib.bindings
+          ${{ github.workspace }}/Projects/*/obj/project.assets.json
+          ${{ github.workspace }}/Projects/*/obj/project.nuget.cache
+          ${{ github.workspace }}/Projects/*/obj/*.csproj.nuget.*
+        key: ${{ matrix.os }}-nuget-cache-v6-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ matrix.os }}-nuget-cache-v3
+    - name: Argon2 Library Cache
+      id: argon2-cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.nuget/packages/argon2.bindings
+          ${{ github.workspace }}/Projects/Argon2/**
+          ${{ github.workspace }}/packages/Argon2.Bindings*.nupkg
+        key: ${{ matrix.os }}-argon2-cache-v6-${{ hashFiles('Projects/Argon2/*') }}
+        restore-keys: |
+          ${{ matrix.os }}-argon2-cache-v4
+    - name: ZLib Library Cache
+      id: zlib-cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.nuget/packages/zlib.bindings
+          ${{ github.workspace }}/Projects/ZLib/**
+          ${{ github.workspace }}/packages/ZLib.Bindings*.nupkg
+        key: ${{ matrix.os }}-zlib-cache-v6-${{ hashFiles('Projects/ZLib/*') }}
+        restore-keys: |
+          ${{ matrix.os }}-zlib-cache-v4
+    - name: Build ZLib
+      run: dotnet build -c Release Projects/ZLib/ZLib.csproj
+    - name: Pack ZLib NuGet
+      if: steps.zlib-cache.outputs.cache-hit != 'true'
+      run: dotnet pack -c Release -o packages Projects/ZLib/ZLib.csproj
+    - name: Build Argon2
+      run: dotnet build -c Release Projects/Argon2/Argon2.csproj
+    - name: Pack Argon2 NuGet
+      if: steps.argon2-cache.outputs.cache-hit != 'true'
+      run: dotnet pack -c Release -o packages Projects/Argon2/Argon2.csproj
+    - name: Restore dependencies
+      if: steps.nuget-cache.outputs.cache-hit != 'true' || steps.argon2-cache.outputs.cache-hit != 'true' || steps.zlib-cache.outputs.cache-hit != 'true'
+      run: dotnet restore --force-evaluate
+    - name: Build Server
+      run: dotnet build -c Release --no-restore Projects/Server/Server.csproj
+    - name: Build UO Content
+      run: dotnet build -c Release --no-restore Projects/UOContent/UOContent.csproj
+    - name: Test Server
+      run: dotnet test -r ${{ matrix.rid }} --no-restore Projects/Server.Tests/Server.Tests.csproj
+    - name: Test UOContent
+      run: dotnet test -r ${{ matrix.rid }} --no-restore Projects/UOContent.Tests/UOContent.Tests.csproj
