@@ -46,7 +46,7 @@ jobs:
       with:
         path: |
           ~/.nuget/packages/argon2.bindings
-          Projects/Argon2/*
+          Projects/Argon2/**
           packages/Argon2.Bindings*.nupkg
         key: ${{ matrix.os }}-argon2-cache-v4-${{ hashFiles('Projects/Argon2/*') }}
         restore-keys: |
@@ -57,7 +57,7 @@ jobs:
       with:
         path: |
           ~/.nuget/packages/zlib.bindings
-          Projects/ZLib/*
+          Projects/ZLib/**
           packages/ZLib.Bindings*.nupkg
         key: ${{ matrix.os }}-zlib-cache-v4-${{ hashFiles('Projects/ZLib/*') }}
         restore-keys: |
