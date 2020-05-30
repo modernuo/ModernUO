@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
+using System.Text.Json.Serialization;
+using Server.Json;
 
 namespace Server
 {
   public class NameList
   {
-    public string Type { get; }
+    [JsonPropertyName("type")]
+    public string Type { get; set; }
 
-    public string[] List { get; }
+    [JsonPropertyName("names")]
+    public string[] List { get; set; }
 
     public bool ContainsName(string name)
     {
@@ -20,22 +23,7 @@ namespace Server
       return false;
     }
 
-    public NameList(string type, XmlElement xml)
-    {
-      Type = type;
-      List = xml.InnerText.Split(',');
-
-      for (int i = 0; i < List.Length; ++i)
-        List[i] = Utility.Intern(List[i].Trim());
-    }
-
-    public string GetRandomName()
-    {
-      if (List.Length > 0)
-        return List[Utility.Random(List.Length)];
-
-      return "";
-    }
+    public string GetRandomName() => List.Length > 0 ? List[Utility.Random(List.Length)] : "";
 
     public static NameList GetNameList(string type)
     {
@@ -45,53 +33,25 @@ namespace Server
 
     public static string RandomName(string type) => GetNameList(type)?.GetRandomName() ?? "";
 
-    private static readonly Dictionary<string, NameList> m_Table;
+    private static readonly Dictionary<string, NameList> m_Table = new Dictionary<string, NameList>(StringComparer.OrdinalIgnoreCase);
 
-    static NameList()
+    public static void Configure()
     {
-      m_Table = new Dictionary<string, NameList>(StringComparer.OrdinalIgnoreCase);
+      // TODO: Turn this into a command so it can be updated in-game
+      string filePath = Path.Combine(Core.BaseDirectory, "Data/names.json");
 
-      string filePath = Path.Combine(Core.BaseDirectory, "Data/names.xml");
-
-      if (!File.Exists(filePath))
-        return;
-
-      try
+      List<NameList> nameLists = JsonConfig.Deserialize<List<NameList>>(filePath);
+      foreach (var nameList in nameLists)
       {
-        Load(filePath);
-      }
-      catch (Exception e)
-      {
-        Console.WriteLine("Warning: Exception caught loading name lists:");
-        Console.WriteLine(e);
+        nameList.FixNames();
+        m_Table.Add(nameList.Type, nameList);
       }
     }
 
-    private static void Load(string filePath)
+    private void FixNames()
     {
-      XmlDocument doc = new XmlDocument();
-      doc.Load(filePath);
-
-      XmlElement root = doc["names"];
-
-      foreach (XmlElement element in root.GetElementsByTagName("namelist"))
-      {
-        string type = element.GetAttribute("type");
-
-        if (string.IsNullOrEmpty(type))
-          continue;
-
-        try
-        {
-          NameList list = new NameList(type, element);
-
-          m_Table[type] = list;
-        }
-        catch
-        {
-          // ignored
-        }
-      }
+      for (int i = 0; i < List.Length; i++)
+        List[i] = Utility.Intern(List[i].Trim());
     }
   }
 }
