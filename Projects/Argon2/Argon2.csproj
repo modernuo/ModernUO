@@ -1,6 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <PackageVersion>1.2.6</PackageVersion>
     <RootNamespace>System.Security.Cryptography</RootNamespace>
     <AssemblyName>Argon2.Bindings</AssemblyName>

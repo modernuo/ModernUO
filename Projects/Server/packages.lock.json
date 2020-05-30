@@ -110,6 +110,54 @@
         "resolved": "1.0.1",
         "contentHash": "2G6OjjJzwBfNOO8myRV/nFrbTw5iA+DEm0N+qUqhrOmaVtn4pC77h38I1jsXGw5VH55+dPfQsqHD0We9sCl9FQ=="
       }
+    },
+    ".NETCoreApp,Version=v3.1/linux-x64": {
+      "ZLib.Bindings": {
+        "type": "Direct",
+        "requested": "[1.0.2, )",
+        "resolved": "1.0.2",
+        "contentHash": "0kZN3GZFO5PCzZWQ6QILfXvTQ9YIMtOjjQj4LXzvXuGNtC4Qd2Y9cR4pcVvd9sj0/a6P+R4xV6uaJM1ns0W9Gw=="
+      },
+      "Libuv": {
+        "type": "Transitive",
+        "resolved": "1.10.0",
+        "contentHash": "GsCf4q+eyaI49rCPlgYxdxa1SQCysXFFdSJWdstrwxytg4+VPYLYrXD4AT2rjHVJ+UF7SSWX9CapWEYaU4ejVQ==",
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.0.1"
+        }
+      }
+    },
+    ".NETCoreApp,Version=v3.1/osx-x64": {
+      "ZLib.Bindings": {
+        "type": "Direct",
+        "requested": "[1.0.2, )",
+        "resolved": "1.0.2",
+        "contentHash": "0kZN3GZFO5PCzZWQ6QILfXvTQ9YIMtOjjQj4LXzvXuGNtC4Qd2Y9cR4pcVvd9sj0/a6P+R4xV6uaJM1ns0W9Gw=="
+      },
+      "Libuv": {
+        "type": "Transitive",
+        "resolved": "1.10.0",
+        "contentHash": "GsCf4q+eyaI49rCPlgYxdxa1SQCysXFFdSJWdstrwxytg4+VPYLYrXD4AT2rjHVJ+UF7SSWX9CapWEYaU4ejVQ==",
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.0.1"
+        }
+      }
+    },
+    ".NETCoreApp,Version=v3.1/win-x64": {
+      "ZLib.Bindings": {
+        "type": "Direct",
+        "requested": "[1.0.2, )",
+        "resolved": "1.0.2",
+        "contentHash": "0kZN3GZFO5PCzZWQ6QILfXvTQ9YIMtOjjQj4LXzvXuGNtC4Qd2Y9cR4pcVvd9sj0/a6P+R4xV6uaJM1ns0W9Gw=="
+      },
+      "Libuv": {
+        "type": "Transitive",
+        "resolved": "1.10.0",
+        "contentHash": "GsCf4q+eyaI49rCPlgYxdxa1SQCysXFFdSJWdstrwxytg4+VPYLYrXD4AT2rjHVJ+UF7SSWX9CapWEYaU4ejVQ==",
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.0.1"
+        }
+      }
     }
   }
 }
