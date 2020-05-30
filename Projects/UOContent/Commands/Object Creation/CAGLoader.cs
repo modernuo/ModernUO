@@ -18,10 +18,12 @@ namespace Server.Commands
       foreach (var cag in list)
       {
         var parent = root;
+        // Navigate through the dot notation categories until we find the last one
         var categories = cag.Category.Split(".");
         for (int i = 0; i < categories.Length; i++)
         {
           var category = categories[i];
+          var oldParent = parent;
 
           for (int j = 0; j < parent.Nodes.Length; j++)
           {
@@ -31,12 +33,13 @@ namespace Server.Commands
               parent = cat;
               break;
             }
-
-            if (j == parent.Nodes.Length - 1)
-              parent = new CAGCategory(category, parent);
           }
+
+          if (parent == oldParent)
+            parent = new CAGCategory(category, parent);
         }
 
+        // Set the objects associated with the child most node
         parent.Nodes = new CAGNode[cag.Objects.Length];
         for (int i = 0; i < cag.Objects.Length; i++)
         {
