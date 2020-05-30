@@ -65,12 +65,12 @@ jobs:
     - name: Build ZLib
       run: dotnet build -c Release Projects/ZLib/ZLib.csproj
     - name: Pack ZLib NuGet
-      if: steps.nuget-cache.outputs.cache-hit != 'true'
+      if: steps.zlib-cache.outputs.cache-hit != 'true'
       run: dotnet pack -c Release -o packages Projects/ZLib/ZLib.csproj
     - name: Build Argon2
       run: dotnet build -c Release Projects/Argon2/Argon2.csproj
     - name: Pack Argon2 NuGet
-      if: steps.nuget-cache.outputs.cache-hit != 'true'
+      if: steps.argon2-cache.outputs.cache-hit != 'true'
       run: dotnet pack -c Release -o packages Projects/Argon2/Argon2.csproj
     - name: Restore dependencies
       if: steps.nuget-cache.outputs.cache-hit != 'true' || steps.argon2-cache.outputs.cache-hit != 'true' || steps.zlib-cache.outputs.cache-hit != 'true'
