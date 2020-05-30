@@ -11,7 +11,7 @@ else
 fi
 
 Tools/build-native-libraries.cmd $2
-dotnet restore
+dotnet restore --force-evaluate
 
 if [[ $1 ]]
 then
@@ -25,8 +25,8 @@ else
   fi
 fi
 
-dotnet publish ${c} ${r} --self-contained=false -o Distribution Projects/Server/Server.csproj
-dotnet publish ${c} ${r} --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
+dotnet publish ${c} ${r} --no-restore --self-contained=false -o Distribution Projects/Server/Server.csproj
+dotnet publish ${c} ${r} --no-restore --self-contained=false -o Distribution/Assemblies Projects/UOContent/UOContent.csproj
 exit $?
 
 :CMDSCRIPT
