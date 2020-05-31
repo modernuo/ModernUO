@@ -50,25 +50,31 @@ namespace Server.Commands
     {
       CategoryEntry root = new CategoryEntry(null, "Add Menu", new[] { Items, Mobiles });
 
-      Export(root, "Data/objects.json", "Items");
+      List<CategoryEntry> ceList = new List<CategoryEntry>();
+      ceList.AddRange(root.SubCategories);
+
+      Export(ceList, "Data/objects.json");
 
       e.Mobile.SendMessage("Categorization menu rebuilt.");
     }
 
-    public static void Export(CategoryEntry ce, string fileName, string category)
+    public static void Export(List<CategoryEntry> ceList, string fileName)
     {
       List<CAGJson> list = new List<CAGJson>();
-      RecurseExport(list, ce, category);
+      foreach (var ce in ceList)
+        RecurseExport(list, ce, null);
 
       JsonConfig.Serialize(fileName, list);
     }
 
-    public static void RecurseExport(List<CAGJson> list, CategoryEntry ce, string category = "")
+    public static void RecurseExport(List<CAGJson> list, CategoryEntry ce, string category)
     {
+      category = string.IsNullOrWhiteSpace(category) ? ce.Title : $"{category}{ce.Title}";
+
       if (ce.Matched.Count > 0)
         list.Add(new CAGJson
         {
-          Category = $"{category}.{ce.Title}",
+          Category = category,
           Objects = ce.Matched.Select(cte =>
           {
             if (cte.Object is Item item)
