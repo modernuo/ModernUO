@@ -19,38 +19,44 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 
 namespace Server
 {
   [Parsable]
   public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<object>, IEquatable<WorldLocation>, IEquatable<IEntity>
   {
-    internal int m_X;
-    internal int m_Y;
-    internal int m_Z;
+    internal Point3D m_Loc;
     internal Map m_Map;
 
     public static readonly WorldLocation Zero = new WorldLocation(0, 0, 0, Map.Internal);
 
     [CommandProperty(AccessLevel.Counselor)]
+    public Point3D Location
+    {
+      get => m_Loc;
+      set => m_Loc = value;
+    }
+
+    [CommandProperty(AccessLevel.Counselor)]
     public int X
     {
-      get => m_X;
-      set => m_X = value;
+      get => m_Loc.m_X;
+      set => m_Loc.m_X = value;
     }
 
     [CommandProperty(AccessLevel.Counselor)]
     public int Y
     {
-      get => m_Y;
-      set => m_Y = value;
+      get => m_Loc.m_Y;
+      set => m_Loc.m_Y = value;
     }
 
     [CommandProperty(AccessLevel.Counselor)]
     public int Z
     {
-      get => m_Z;
-      set => m_Z = value;
+      get => m_Loc.m_Z;
+      set => m_Loc.m_Z = value;
     }
 
     [CommandProperty(AccessLevel.Counselor)]
@@ -78,73 +84,66 @@ namespace Server
 
     public WorldLocation(int x, int y, int z, Map map)
     {
-      m_X = x;
-      m_Y = y;
-      m_Z = z;
+      m_Loc.m_X = x;
+      m_Loc.m_Y = y;
+      m_Loc.m_Z = z;
       m_Map = map;
     }
 
     public override string ToString() =>
-      $"({m_X}, {m_Y}, {m_Z}, {m_Map?.ToString() ?? "(-null-)"})";
+      $"({m_Loc.m_X}, {m_Loc.m_Y}, {m_Loc.m_Z}, {m_Map?.ToString() ?? "(-null-)"})";
 
     public bool Equals(WorldLocation other) =>
-      m_X == other.m_X && m_Y == other.m_Y && m_Z == other.m_Z && m_Map.MapID == other.m_Map.MapID;
+      m_Loc.Equals(other.m_Loc) && m_Map.MapID == other.m_Map.MapID;
 
     public bool Equals(IEntity other) =>
-      !ReferenceEquals(other, null) && m_X == other.X && m_Y == other.Y && m_Z == other.Z &&
+      !ReferenceEquals(other, null) && m_Loc == other.Location &&
       m_Map.MapID == other.Map.MapID;
 
     public override bool Equals(object obj) =>
       obj is WorldLocation other && Equals(other);
 
-    public override int GetHashCode() => HashCode.Combine(m_X, m_Y, m_Z, m_Map);
+    public override int GetHashCode() => HashCode.Combine(m_Loc, m_Map);
 
     public int CompareTo(WorldLocation other)
     {
-      var xComparison = m_X.CompareTo(other.m_X);
-      if (xComparison != 0) return xComparison;
-      var yComparison = m_Y.CompareTo(other.m_Y);
-      if (yComparison != 0) return yComparison;
-      var zComparison = m_Z.CompareTo(other.m_Z);
-      if (zComparison != 0) return zComparison;
-      return m_Map.MapID.CompareTo(other.m_Map);
+      var locComparison = m_Loc.CompareTo(other.m_Loc);
+      if (locComparison != 0) return locComparison;
+      return Comparer<Map>.Default.Compare(m_Map, other.m_Map);
     }
 
+    public static implicit operator Point3D(WorldLocation worldLocation) => worldLocation.Location;
+
     public static bool operator ==(WorldLocation l, WorldLocation r) =>
-      l.m_X == r.m_X && l.Y == r.m_Y && l.m_Z == r.m_Z && l.m_Map == r.m_Map;
+      l.m_Loc == r.m_Loc && l.m_Map == r.m_Map;
 
     public static bool operator ==(WorldLocation l, IEntity r) =>
-      !ReferenceEquals(r, null) && l.m_X == r.X && l.Y == r.Y && l.m_Z == r.Z && l.m_Map == r.Map;
+      !ReferenceEquals(r, null) && l.m_Loc == r.Location && l.m_Map == r.Map;
 
-    public static bool operator !=(WorldLocation l, WorldLocation r) =>
-      l.m_X != r.m_X && l.Y != r.m_Y && l.m_Z != r.m_Z && l.m_Map != r.m_Map;
+    public static bool operator !=(WorldLocation l, WorldLocation r) => l.m_Loc != r.m_Loc && l.m_Map != r.m_Map;
 
     public static bool operator !=(WorldLocation l, IEntity r) =>
-      !ReferenceEquals(r, null) && l.m_X != r.X && l.Y != r.Y && l.m_Z != r.Z && l.m_Map != r.Map;
+      !ReferenceEquals(r, null) && l.m_Loc != r.Location && l.m_Map != r.Map;
 
-    public static bool operator >(WorldLocation l, WorldLocation r) =>
-      l.m_X > r.m_X && l.Y > r.m_Y && l.m_Z > r.m_Z && l.m_Map == r.m_Map;
+    public static bool operator >(WorldLocation l, WorldLocation r) => l.m_Loc > r.m_Loc && l.m_Map == r.m_Map;
 
     public static bool operator >(WorldLocation l, IEntity r) =>
-      !ReferenceEquals(r, null) && l.m_X > r.X && l.Y > r.Y && l.m_Z > r.Z && l.m_Map == r.Map;
+      !ReferenceEquals(r, null) && l.m_Loc > r.Location && l.m_Map == r.Map;
 
-    public static bool operator <(WorldLocation l, WorldLocation r) =>
-      l.m_X < r.m_X && l.Y < r.m_Y && l.m_Z < r.m_Z && l.m_Map == r.m_Map;
+    public static bool operator <(WorldLocation l, WorldLocation r) => l.m_Loc < r.m_Loc && l.m_Map == r.m_Map;
 
     public static bool operator <(WorldLocation l, IEntity r) =>
-      !ReferenceEquals(r, null) && l.m_X < r.X && l.Y < r.Y && l.m_Z < r.Z && l.m_Map == r.Map;
+      !ReferenceEquals(r, null) && l.m_Loc < r.Location && l.m_Map == r.Map;
 
-    public static bool operator >=(WorldLocation l, WorldLocation r) =>
-      l.m_X >= r.m_X && l.Y >= r.m_Y && l.m_Z >= r.m_Z && l.m_Map == r.m_Map;
+    public static bool operator >=(WorldLocation l, WorldLocation r) => l.m_Loc >= r.m_Loc && l.m_Map == r.m_Map;
 
     public static bool operator >=(WorldLocation l, IEntity r) =>
-      !ReferenceEquals(r, null) && l.m_X >= r.X && l.Y >= r.Y && l.m_Z >= r.Z && l.m_Map == r.Map;
+      !ReferenceEquals(r, null) && l.m_Loc >= r.Location && l.m_Map == r.Map;
 
-    public static bool operator <=(WorldLocation l, WorldLocation r) =>
-      l.m_X <= r.m_X && l.Y <= r.m_Y && l.m_Z <= r.m_Z && l.m_Map == r.m_Map;
+    public static bool operator <=(WorldLocation l, WorldLocation r) => l.m_Loc <= r.m_Loc && l.m_Map == r.m_Map;
 
     public static bool operator <=(WorldLocation l, IEntity r) =>
-      !ReferenceEquals(r, null) && l.m_X <= r.X && l.Y <= r.Y && l.m_Z <= r.Z && l.m_Map == r.Map;
+      !ReferenceEquals(r, null) && l.m_Loc <= r.Location && l.m_Map == r.Map;
 
     public static WorldLocation Parse(string value)
     {
