@@ -1265,7 +1265,7 @@ namespace Server.Misc
           PackItem(new PoisonScroll());
           break;
         case 20:
-          PackItem(new TelekinisisScroll());
+          PackItem(new TelekinesisScroll());
           break;
         case 21:
           PackItem(new TeleportScroll());

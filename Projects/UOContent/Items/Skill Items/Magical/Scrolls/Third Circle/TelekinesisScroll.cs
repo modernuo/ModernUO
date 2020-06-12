@@ -1,13 +1,13 @@
 namespace Server.Items
 {
-  [Furniture]
-  [Flippable(0xF65, 0xF67, 0xF69)]
-  public class Easle : Item
+  public class TelekinesisScroll : SpellScroll
   {
     [Constructible]
-    public Easle() : base(0xF65) => Weight = 25.0;
+    public TelekinesisScroll(int amount = 1) : base(20, 0x1F41, amount)
+    {
+    }
 
-    public Easle(Serial serial) : base(serial)
+    public TelekinesisScroll(Serial serial) : base(serial)
     {
     }
 
@@ -15,7 +15,7 @@ namespace Server.Items
     {
       base.Serialize(writer);
 
-      writer.Write(0);
+      writer.Write(0); // version
     }
 
     public override void Deserialize(IGenericReader reader)
@@ -23,9 +23,6 @@ namespace Server.Items
       base.Deserialize(reader);
 
       int version = reader.ReadInt();
-
-      if (Weight == 10.0)
-        Weight = 25.0;
     }
   }
 }
