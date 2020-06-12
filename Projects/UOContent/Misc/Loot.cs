@@ -185,7 +185,7 @@ namespace Server
       typeof(AgilityScroll), typeof(CunningScroll), typeof(CureScroll), typeof(HarmScroll),
       typeof(MagicTrapScroll), typeof(MagicUnTrapScroll), typeof(ProtectionScroll), typeof(StrengthScroll),
       typeof(BlessScroll), typeof(FireballScroll), typeof(MagicLockScroll), typeof(PoisonScroll),
-      typeof(TelekinisisScroll), typeof(TeleportScroll), typeof(UnlockScroll), typeof(WallOfStoneScroll),
+      typeof(TelekinesisScroll), typeof(TeleportScroll), typeof(UnlockScroll), typeof(WallOfStoneScroll),
       typeof(ArchCureScroll), typeof(ArchProtectionScroll), typeof(CurseScroll), typeof(FireFieldScroll),
       typeof(GreaterHealScroll), typeof(LightningScroll), typeof(ManaDrainScroll), typeof(RecallScroll),
       typeof(BladeSpiritsScroll), typeof(DispelFieldScroll), typeof(IncognitoScroll), typeof(MagicReflectScroll),

@@ -75,7 +75,7 @@ namespace Server.Engines.Craft
       AddCraft(typeof(BarrelLid), 1044294, 1027608, 11.0, 36.0, typeof(Log), 1044041, 4, 1044351);
       AddCraft(typeof(ShortMusicStand), 1044294, 1044313, 78.9, 103.9, typeof(Log), 1044041, 15, 1044351);
       AddCraft(typeof(TallMusicStand), 1044294, 1044315, 81.5, 106.5, typeof(Log), 1044041, 20, 1044351);
-      AddCraft(typeof(Easle), 1044294, 1044317, 86.8, 111.8, typeof(Log), 1044041, 20, 1044351);
+      AddCraft(typeof(Easel), 1044294, 1044317, 86.8, 111.8, typeof(Log), 1044041, 20, 1044351);
 
       if (Core.SE)
       {
