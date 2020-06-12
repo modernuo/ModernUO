@@ -282,7 +282,7 @@
       "RuinedFallenChairB", "RuinedChair", "RuinedClock", "RuinedDrawers", "RuinedPainting", "WoodDebris",
       "Rope", "IronWire", "SilverWire", "GoldWire", "CopperWire", "Whip", "PaintsAndBrush", "WoodenBench",
       "FancyWoodenChairCushion", "WoodenChairCushion", "WoodenChair", "BambooChair", "Stool", "FootStool",
-      "Throne", "WoodenThrone", "LargeTable", "Nightstand", "YewWoodTable", "WritingTable", "Easle",
+      "Throne", "WoodenThrone", "LargeTable", "Nightstand", "YewWoodTable", "WritingTable", "Easel",
       "TallMusicStand", "ShortMusicStand"
     ]
   },
@@ -349,7 +349,7 @@
     "types": [
       "WoodenBench", "FancyWoodenChairCushion", "WoodenChairCushion", "WoodenChair", "BambooChair",
       "Stool", "FootStool", "Throne", "WoodenThrone", "LargeTable", "Nightstand", "YewWoodTable",
-      "WritingTable", "Easle", "TallMusicStand", "ShortMusicStand"
+      "WritingTable", "Easel", "TallMusicStand", "ShortMusicStand"
     ]
   },
   {
@@ -365,7 +365,7 @@
   },
   {
     "category": "Items.Construction.Furniture.Other",
-    "types": ["Easle", "TallMusicStand", "ShortMusicStand"]
+    "types": ["Easel", "TallMusicStand", "ShortMusicStand"]
   },
   { "category": "Items.Lights", "types": ["BaseLight"] },
   { "category": "Items.Food & Drink", "types": ["Food", "CookableFood", "BaseBeverage", "Glass"] },
@@ -455,7 +455,7 @@
   {
     "category": "Items.Magical.Scrolls.Standard.Circle #3",
     "types": [
-      "BlessScroll", "FireballScroll", "MagicLockScroll", "PoisonScroll", "TelekinisisScroll",
+      "BlessScroll", "FireballScroll", "MagicLockScroll", "PoisonScroll", "TelekinesisScroll",
       "TeleportScroll", "UnlockScroll", "WallOfStoneScroll"
     ]
   },
