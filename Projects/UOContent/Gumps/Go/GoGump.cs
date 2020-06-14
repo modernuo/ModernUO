@@ -4,11 +4,12 @@ namespace Server.Gumps
 {
   public class GoGump : Gump
   {
-    public static readonly LocationTree Felucca = new LocationTree("felucca.xml", Map.Felucca);
-    public static readonly LocationTree Trammel = new LocationTree("trammel.xml", Map.Trammel);
-    public static readonly LocationTree Ilshenar = new LocationTree("ilshenar.xml", Map.Ilshenar);
-    public static readonly LocationTree Malas = new LocationTree("malas.xml", Map.Malas);
-    public static readonly LocationTree Tokuno = new LocationTree("tokuno.xml", Map.Tokuno);
+    public static readonly LocationTree Felucca = new LocationTree("felucca", Map.Felucca);
+    public static readonly LocationTree Trammel = new LocationTree("trammel", Map.Trammel);
+    public static readonly LocationTree Ilshenar = new LocationTree("ilshenar", Map.Ilshenar);
+    public static readonly LocationTree Malas = new LocationTree("malas", Map.Malas);
+    public static readonly LocationTree Tokuno = new LocationTree("tokuno", Map.Tokuno);
+    public static readonly LocationTree TerMur = new LocationTree("termur", Map.TerMur);
 
     public static bool OldStyle = PropsConfig.OldStyle;
 
@@ -61,12 +62,12 @@ namespace Server.Gumps
 
     private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
     private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
-    private readonly ParentNode m_Node;
+    private readonly GoCategory m_Node;
     private readonly int m_Page;
 
     private readonly LocationTree m_Tree;
 
-    private GoGump(int page, Mobile from, LocationTree tree, ParentNode node) : base(50, 50)
+    private GoGump(int page, Mobile from, LocationTree tree, GoCategory node) : base(50, 50)
     {
       from.CloseGump<GoGump>();
 
@@ -79,7 +80,7 @@ namespace Server.Gumps
       int x = BorderSize + OffsetSize;
       int y = BorderSize + OffsetSize;
 
-      int count = node.Children.Length - page * EntryCount;
+      int count = node.Categories.Length + node.Locations.Length - page * EntryCount;
 
       if (count < 0)
         count = 0;
@@ -138,7 +139,7 @@ namespace Server.Gumps
       if (!OldStyle)
         AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
 
-      if ((page + 1) * EntryCount < node.Children.Length)
+      if ((page + 1) * EntryCount < node.Categories.Length + node.Locations.Length)
       {
         AddButton(x + NextOffsetX, y + NextOffsetY, NextButtonID1, NextButtonID2, 3, GumpButtonType.Reply, 1);
 
@@ -146,13 +147,14 @@ namespace Server.Gumps
           AddLabel(x + NextLabelOffsetX, y + NextLabelOffsetY, TextHue, "Next");
       }
 
-      for (int i = 0, index = page * EntryCount; i < EntryCount && index < node.Children.Length; ++i, ++index)
+      int totalEntryCount = node.Categories.Length + node.Locations.Length;
+
+      for (int i = 0, index = page * EntryCount; i < EntryCount && index < totalEntryCount; ++i, ++index)
       {
         x = BorderSize + OffsetSize;
         y += EntryHeight + OffsetSize;
 
-        IGoNode child = node.Children[index];
-        string name = child.Name;
+        string name = index >= node.Categories.Length ? node.Locations[index].Name : node.Categories[index].Name;
 
         AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
         AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, name);
@@ -181,7 +183,7 @@ namespace Server.Gumps
       else
         tree = Tokuno;
 
-      if (!tree.LastBranch.TryGetValue(from, out ParentNode branch))
+      if (!tree.LastBranch.TryGetValue(from, out GoCategory branch))
         branch = tree.Root;
 
       if (branch != null)
@@ -210,7 +212,7 @@ namespace Server.Gumps
           }
         case 3:
           {
-            if ((m_Page + 1) * EntryCount < m_Node.Children.Length)
+            if ((m_Page + 1) * EntryCount < m_Node.Categories.Length + m_Node.Locations.Length)
               from.SendGump(new GoGump(m_Page + 1, from, m_Tree, m_Node));
 
             break;
@@ -219,14 +221,18 @@ namespace Server.Gumps
           {
             int index = info.ButtonID - 4;
 
-            if (index >= 0 && index < m_Node.Children.Length)
-            {
-              IGoNode o = m_Node.Children[index];
+            if (index < 0)
+              break;
 
-              if (o is ParentNode node)
-                from.SendGump(new GoGump(0, from, m_Tree, node));
-              else
-                from.MoveToWorld(((ChildNode)o).Location, m_Tree.Map);
+            if (index < m_Node.Categories.Length)
+            {
+              from.SendGump(new GoGump(0, from, m_Tree, m_Node.Categories[index]));
+            }
+            else
+            {
+              index -= m_Node.Categories.Length;
+              if (index < m_Node.Locations.Length)
+                from.MoveToWorld(m_Node.Locations[index].Location, m_Tree.Map);
             }
 
             break;

@@ -1,0 +1,413 @@
+{
+  "name": "Felucca",
+  "categories": [
+    {
+      "name": "Factions",
+      "categories": [
+        {
+          "name": "Towns",
+          "locations": [
+            { "name": "Britain", "location": [1592, 1680, 10] },
+            { "name": "Magincia", "location": [3714, 2235, 20] },
+            { "name": "Minoc", "location": [2471, 439, 15] },
+            { "name": "Moonglow", "location": [4436, 1083, 0] },
+            { "name": "Skara Brae", "location": [576, 2200, 0] },
+            { "name": "Trinsic", "location": [1914, 2717, 20] },
+            { "name": "Vesper", "location": [2982, 818, 0] },
+            { "name": "Yew", "location": [548, 979, 0] }
+          ]
+        }
+      ],
+      "locations": [
+        { "name": "Council of Mages", "location": [3750, 2241, 20] },
+        { "name": "Minax", "location": [1172, 2593, 0] },
+        { "name": "Shadowlords", "location": [969, 768, 0] },
+        { "name": "True Britannians", "location": [1419, 1622, 20] }
+      ]
+    },
+    {
+      "name": "Dungeons",
+      "categories": [
+        { "name": "Blighted Grove", "locations": [{ "name": "Entrance", "location": [586, 1643, -5] }] },
+        {
+          "name": "Covetous",
+          "locations": [
+            { "name": "Entrance", "location": [2499, 919, 0] },
+            { "name": "Level 1", "location": [5456, 1863, 0] },
+            { "name": "Level 2", "location": [5614, 1997, 0] },
+            { "name": "Level 3", "location": [5579, 1924, 0] },
+            { "name": "Lake Cave", "location": [5467, 1805, 7] },
+            { "name": "Torture Chambers", "location": [5552, 1807, 0] }
+          ]
+        },
+        {
+          "name": "Deceit",
+          "locations": [
+            { "name": "Entrance", "location": [4111, 432, 5] },
+            { "name": "Level 1", "location": [5188, 638, 0] },
+            { "name": "Level 2", "location": [5305, 533, 2] },
+            { "name": "Level 3", "location": [5137, 650, 5] },
+            { "name": "Level 4", "location": [5306, 652, 2] }
+          ]
+        },
+        {
+          "name": "Despise",
+          "locations": [
+            { "name": "Entrance", "location": [1298, 1080, 0] },
+            { "name": "Entryway", "location": [5587, 631, 30] },
+            { "name": "Level 1", "location": [5501, 570, 59] },
+            { "name": "Level 2", "location": [5519, 673, 20] },
+            { "name": "Level 3", "location": [5407, 859, 45] }
+          ]
+        },
+        {
+          "name": "Destard",
+          "locations": [
+            { "name": "Entrance", "location": [1176, 2637, 0] },
+            { "name": "Level 1", "location": [5243, 1006, 0] },
+            { "name": "Level 2", "location": [5143, 801, 4] },
+            { "name": "Level 3", "location": [5137, 986, 5] }
+          ]
+        },
+        {
+          "name": "Hythloth",
+          "locations": [
+            { "name": "Entrance", "location": [4721, 3822, 0] },
+            { "name": "Level 1", "location": [5905, 20, 46] },
+            { "name": "Level 2", "location": [5976, 169, 0] },
+            { "name": "Level 3", "location": [6083, 145, -20] },
+            { "name": "Level 4", "location": [6059, 89, 24] }
+          ]
+        },
+        {
+          "name": "Shame",
+          "locations": [
+            { "name": "Entrance", "location": [514, 1561, 0] },
+            { "name": "Level 1", "location": [5395, 126, 0] },
+            { "name": "Level 2", "location": [5515, 11, 5] },
+            { "name": "Level 3", "location": [5514, 148, 25] },
+            { "name": "Level 4", "location": [5875, 20, -5] }
+          ]
+        },
+        {
+          "name": "Wrong",
+          "locations": [
+            { "name": "Entrance", "location": [2043, 238, 10] },
+            { "name": "Level 1", "location": [5825, 630, 0] },
+            { "name": "Level 2", "location": [5690, 569, 25] },
+            { "name": "Level 3", "location": [5703, 639, 0] }
+          ]
+        },
+        {
+          "name": "Miscellaneous",
+          "locations": [
+            { "name": "Hyloth Fire Pit", "location": [4596, 3630, 30] },
+            { "name": "Yew-Britain Brigand Camp", "location": [885, 1682, 0] },
+            { "name": "Yew Fort of the Damned", "location": [972, 768, 0] }
+          ]
+        },
+        {
+          "name": "Terathan Keep",
+          "locations": [
+            { "name": "Entrance", "location": [5451, 3143, -60] },
+            { "name": "Level 1", "location": [5342, 1601, 0] },
+            { "name": "Champion Room", "location": [5205, 1585, 0] },
+            { "name": "Starroom", "location": [5139, 1767, 0] }
+          ]
+        },
+        {
+          "name": "Fire",
+          "locations": [
+            { "name": "Entrance", "location": [5760, 2908, 15] },
+            { "name": "Brit Entrance", "location": [2923, 3407, 8] },
+            { "name": "Level 1", "location": [5790, 1416, 40] },
+            { "name": "Level 2", "location": [5702, 1316, 1] }
+          ]
+        },
+        {
+          "name": "Ice",
+          "locations": [
+            { "name": "Entrance", "location": [5210, 2322, 30] },
+            { "name": "Brit Entrance", "location": [1999, 81, 4] },
+            { "name": "Level 1", "location": [5875, 150, 15] },
+            { "name": "Ratman Room", "location": [5834, 327, 18] },
+            { "name": "Ice Demon Lair", "location": [5700, 305, 0] }
+          ]
+        },
+        {
+          "name": "Orc Cave",
+          "locations": [
+            { "name": "Entrance", "location": [1019, 1431, 0] },
+            { "name": "Level 1", "location": [5137, 2014, 0] },
+            { "name": "Level 2", "location": [5332, 1376, 0] },
+            { "name": "Level 3", "location": [5272, 2036, 0] }
+          ]
+        },
+        { "name": "Painted Caves", "locations": [{ "name": "Entrance", "location": [1716, 2993, 0] }] },
+        {
+          "name": "Palace of Paroxysmus",
+          "locations": [{ "name": "Entrance", "location": [5576, 3018, 25] }]
+        },
+        { "name": "Prism of Light", "locations": [{ "name": "Entrance", "location": [3784, 1097, 14] }] },
+        { "name": "Sanctuary", "locations": [{ "name": "Entrance", "location": [764, 1646, 0] }] },
+        {
+          "name": "Solen Hives",
+          "categories": [
+            {
+              "name": "Area A",
+              "locations": [
+                { "name": "Entrance", "location": [729, 1451, 0] },
+                { "name": "Level 1", "location": [5658, 1795, 3] },
+                { "name": "Level 2", "location": [5726, 1891, 1] }
+              ]
+            },
+            {
+              "name": "Area B",
+              "locations": [
+                { "name": "Entrance", "location": [2607, 763, 0] },
+                { "name": "Level 1", "location": [5921, 1797, 1] },
+                { "name": "Level 2", "location": [5875, 1866, 2] }
+              ]
+            },
+            {
+              "name": "Area C",
+              "locations": [
+                { "name": "Entrance", "location": [1689, 2789, 0] },
+                { "name": "Level 1", "location": [5659, 2022, 0] },
+                { "name": "Level 2", "location": [5708, 1955, 0] }
+              ]
+            },
+            {
+              "name": "Area D",
+              "locations": [
+                { "name": "Entrance", "location": [1723, 814, 0] },
+                { "name": "Level 1", "location": [5916, 2019, 3] },
+                { "name": "Level 2", "location": [5813, 2012, -1] }
+              ]
+            },
+            { "name": "Area E", "locations": [{ "name": "Entrance", "location": [5732, 1858, 0] }] }
+          ],
+          "locations": [{ "name": "Central Area", "location": [5774, 1896, 20] }]
+        },
+        {
+          "name": "Khaldun",
+          "locations": [
+            { "name": "Entrance 1", "location": [6009, 3775, 19] },
+            { "name": "Entrance 2", "location": [5882, 3819, -1] },
+            { "name": "Level 1", "location": [5571, 1302, 0] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Internal",
+      "categories": [
+        {
+          "name": "Jail Cells",
+          "locations": [
+            { "name": "Cell 1", "location": [5276, 1164, 0] },
+            { "name": "Cell 2", "location": [5286, 1164, 0] },
+            { "name": "Cell 3", "location": [5296, 1164, 0] },
+            { "name": "Cell 4", "location": [5306, 1164, 0] },
+            { "name": "Cell 5", "location": [5276, 1174, 0] },
+            { "name": "Cell 6", "location": [5286, 1174, 0] },
+            { "name": "Cell 7", "location": [5286, 1174, 0] },
+            { "name": "Cell 8", "location": [5306, 1174, 0] },
+            { "name": "Cell 9", "location": [5283, 1184, 0] },
+            { "name": "Cell 10", "location": [5304, 1184, 0] }
+          ]
+        }
+      ],
+      "locations": [{ "name": "Green Acres", "location": [5445, 1153, 0] }]
+    },
+    {
+      "name": "Shrines",
+      "locations": [
+        { "name": "Chaos", "location": [1456, 854, 0] },
+        { "name": "Compassion", "location": [1856, 872, -1] },
+        { "name": "Honesty", "location": [4217, 564, 36] },
+        { "name": "Honor", "location": [1730, 3528, 3] },
+        { "name": "Humility", "location": [4276, 3699, 0] },
+        { "name": "Justice", "location": [1301, 639, 16] },
+        { "name": "Sacrifice", "location": [3355, 299, 9] },
+        { "name": "Spirituality", "location": [1589, 2485, 5] },
+        { "name": "Valor", "location": [2496, 3932, 0] }
+      ]
+    },
+    {
+      "name": "Towns",
+      "categories": [
+        {
+          "name": "Britain",
+          "locations": [
+            { "name": "Blackthorn Castle", "location": [1533, 1415, 56] },
+            { "name": "Blackthorn Entrance", "location": [1523, 1456, 15] },
+            { "name": "British Castle", "location": [1323, 1624, 55] },
+            { "name": "British Entrance", "location": [1401, 1625, 28] },
+            { "name": "Cemetery", "location": [1384, 1497, 10] },
+            { "name": "Center", "location": [1475, 1645, 20] },
+            { "name": "Farmlands", "location": [1228, 1705, 0] },
+            { "name": "Park", "location": [1614, 1641, 35] },
+            { "name": "Suburbs", "location": [1662, 1572, 5] }
+          ]
+        },
+        {
+          "name": "Buccaneers Den",
+          "locations": [
+            { "name": "Bathhouse", "location": [2667, 2084, 5] },
+            { "name": "Docks", "location": [2736, 2166, 0] },
+            { "name": "Tunnels", "location": [2667, 2069, -20] }
+          ]
+        },
+        {
+          "name": "Cove",
+          "locations": [
+            { "name": "Cemetery", "location": [2443, 1123, 5] },
+            { "name": "Gates", "location": [2285, 1209, 0] },
+            { "name": "Guard Post", "location": [2218, 1116, 19] },
+            { "name": "Orc Fort", "location": [2171, 1332, 0] }
+          ]
+        },
+        {
+          "name": "Jhelom",
+          "locations": [
+            { "name": "Cemetery", "location": [1296, 3719, 0] },
+            { "name": "East Docks", "location": [1492, 3696, -3] },
+            { "name": "Fighting Pit", "location": [1398, 3742, -21] },
+            { "name": "Main Island", "location": [1414, 3816, 0] },
+            { "name": "Medium Island", "location": [1124, 3623, 5] },
+            { "name": "Small Island", "location": [1466, 4015, 5] }
+          ]
+        },
+        {
+          "name": "Magincia",
+          "locations": [
+            { "name": "Bank", "location": [3730, 2161, 20] },
+            { "name": "Docks", "location": [3675, 2259, 20] },
+            { "name": "Park", "location": [3719, 2063, 25] },
+            { "name": "Parliament", "location": [3792, 2248, 20] }
+          ]
+        },
+        {
+          "name": "Minoc",
+          "locations": [
+            { "name": "Bridge", "location": [2539, 501, 30] },
+            { "name": "Gypsy Camp", "location": [2540, 651, 0] },
+            { "name": "Mining Camp", "location": [2583, 528, 15] },
+            { "name": "North", "location": [2475, 417, 15] },
+            { "name": "South", "location": [2526, 583, 0] }
+          ]
+        },
+        {
+          "name": "Moonglow",
+          "locations": [
+            { "name": "Cemetery", "location": [4546, 1338, 8] },
+            { "name": "Center", "location": [4442, 1122, 5] },
+            { "name": "Docks", "location": [4406, 1045, -2] },
+            { "name": "Telescope", "location": [4707, 1124, 0] },
+            { "name": "Zoo", "location": [4549, 1378, 8] }
+          ]
+        },
+        {
+          "name": "Nujel'm",
+          "locations": [
+            { "name": "Cemetery", "location": [3536, 1156, 20] },
+            { "name": "Chess Board", "location": [3728, 1360, 5] },
+            { "name": "Docks", "location": [3803, 1279, 5] },
+            { "name": "East", "location": [3755, 1227, 0] },
+            { "name": "North", "location": [3668, 1116, 0] },
+            { "name": "Palace", "location": [3698, 1279, 20] },
+            { "name": "West", "location": [3572, 1211, 0] }
+          ]
+        },
+        {
+          "name": "Ocllo",
+          "locations": [
+            { "name": "Docks", "location": [3650, 2653, 0] },
+            { "name": "Farmlands", "location": [3722, 2647, 20] },
+            { "name": "North", "location": [3650, 2516, 0] }
+          ]
+        },
+        {
+          "name": "Serpents Hold",
+          "locations": [
+            { "name": "North", "location": [3023, 3417, 15] },
+            { "name": "South", "location": [2906, 3505, 10] },
+            { "name": "Guard Post", "location": [3011, 3526, 15] }
+          ]
+        },
+        {
+          "name": "Skara Brae",
+          "locations": [
+            { "name": "East", "location": [811, 2243, 0] },
+            { "name": "East Docks", "location": [716, 2233, -3] },
+            { "name": "North", "location": [746, 2165, 0] },
+            { "name": "South", "location": [899, 2381, 0] },
+            { "name": "West", "location": [601, 2171, 0] },
+            { "name": "West Docks", "location": [639, 2236, -3] }
+          ]
+        },
+        {
+          "name": "Trinsic",
+          "locations": [
+            { "name": "Center", "location": [1927, 2779, 0] },
+            { "name": "East Docks", "location": [2071, 2855, -3] },
+            { "name": "Island Park", "location": [2108, 2793, 2] },
+            { "name": "North", "location": [1894, 2666, 0] },
+            { "name": "South", "location": [1891, 2850, 20] },
+            { "name": "South Gate", "location": [2000, 2930, 0] },
+            { "name": "West Gate", "location": [1832, 2779, 0] }
+          ]
+        },
+        {
+          "name": "Vesper",
+          "locations": [
+            { "name": "Cemetery", "location": [2786, 867, 0] },
+            { "name": "Center", "location": [2882, 788, 0] },
+            { "name": "Docks", "location": [3013, 828, -3] },
+            { "name": "East", "location": [2760, 981, 0] },
+            { "name": "North", "location": [2907, 603, 0] }
+          ]
+        },
+        {
+          "name": "Wind",
+          "locations": [
+            { "name": "Caves", "location": [5166, 244, 15] },
+            { "name": "East", "location": [5336, 88, 15] },
+            { "name": "Entrance", "location": [1362, 896, 0] },
+            { "name": "Park", "location": [5211, 22, 15] },
+            { "name": "South", "location": [5223, 189, 5] },
+            { "name": "West", "location": [5180, 90, 25] }
+          ]
+        },
+        {
+          "name": "Yew",
+          "locations": [
+            { "name": "Cemetery", "location": [724, 1138, 0] },
+            { "name": "Center", "location": [535, 992, 0] },
+            { "name": "Courts and Prisons", "location": [354, 836, 20] },
+            { "name": "Empath Abbey", "location": [635, 860, 0] },
+            { "name": "Hidden Cave", "location": [313, 787, -24] },
+            { "name": "Orc Fort", "location": [633, 1499, 0] }
+          ]
+        },
+        {
+          "name": "Delucia",
+          "locations": [
+            { "name": "Watch Tower", "location": [5276, 3945, 37] },
+            { "name": "Center", "location": [5228, 3978, 37] },
+            { "name": "Orc Fort", "location": [5210, 3636, 3] }
+          ]
+        },
+        {
+          "name": "Papua",
+          "locations": [
+            { "name": "The Just Inn", "location": [5769, 3176, 0] },
+            { "name": "Center", "location": [5730, 3208, -4] },
+            { "name": "Docks", "location": [5825, 3256, 2] }
+          ]
+        }
+      ]
+    }
+  ]
+}

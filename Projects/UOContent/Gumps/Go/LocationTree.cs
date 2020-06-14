@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
+using Server.Json;
 
 namespace Server.Gumps
 {
@@ -8,34 +8,32 @@ namespace Server.Gumps
   {
     public LocationTree(string fileName, Map map)
     {
-      LastBranch = new Dictionary<Mobile, ParentNode>();
+      LastBranch = new Dictionary<Mobile, GoCategory>();
       Map = map;
 
       string path = Path.Combine("Data/Locations/", fileName);
 
-      if (File.Exists(path))
-      {
-        XmlTextReader xml = new XmlTextReader(new StreamReader(path)) { WhitespaceHandling = WhitespaceHandling.None };
-
-        Root = Parse(xml);
-
-        xml.Close();
-      }
+      Root = File.Exists(path) ? JsonConfig.Deserialize<GoCategory>(path) : null;
+      SetParents(Root);
     }
 
-    public Dictionary<Mobile, ParentNode> LastBranch { get; }
+    public Dictionary<Mobile, GoCategory> LastBranch { get; }
 
     public Map Map { get; }
 
-    public ParentNode Root { get; }
+    public GoCategory Root { get; }
 
-    private ParentNode Parse(XmlTextReader xml)
+    private static void SetParents(GoCategory parent)
     {
-      xml.Read();
-      xml.Read();
-      xml.Read();
+      for (int i = 0; i < parent.Categories.Length; i++)
+      {
+        GoCategory category = parent.Categories[i];
+        category.Parent = parent;
+        SetParents(category);
+      }
 
-      return new ParentNode(xml, null);
+      for (int j = 0; j < parent.Locations.Length; j++)
+        parent.Locations[j].Parent = parent;
     }
   }
 }
