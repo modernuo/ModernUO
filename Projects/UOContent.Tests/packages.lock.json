@@ -41,7 +41,7 @@
       "Argon2.Bindings": {
         "type": "Transitive",
         "resolved": "1.2.7",
-        "contentHash": "6pip5MqEpx9QKXFtFYEYoHCz8rhKqw03xzNefHadFE38JZtt97l+JDif9quvpGnGyq6sGKU3BKsjLh/beyVI3w=="
+        "contentHash": "ZmxtDx9RwHdRBHSq8d97VNHF0el1OAQzWQAtMyT+F/1KApVjBpPcqXVr4eAvAp8qQqBSl5y3WhEvBMBRBdkpgw=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -1330,7 +1330,7 @@
       "ZLib.Bindings": {
         "type": "Transitive",
         "resolved": "1.0.2",
-        "contentHash": "rd7gUFhwKb9Pd5ehhsUUdZiGS/AQQ1v0UItP2J+EYIfKzq7H54yDQ509qcBmbNtr6zTz7AAax4zRUcg3j9mfyQ=="
+        "contentHash": "oMnRfnRHzfboCS/SXUrrqbDVtM/9h5LkHkB8GuyUq70BYkJRza7CNZxLR+F6IKOTNDcDO68VVCID4DA5Sj8c4Q=="
       },
       "ModernUO": {
         "type": "Project",
@@ -1348,8 +1348,6 @@
           "Argon2.Bindings": "1.2.7",
           "MailKit": "2.7.0",
           "Microsoft.AspNetCore.Connections.Abstractions": "3.1.5",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.5",
-          "Microsoft.Extensions.Hosting.Abstractions": "3.1.5",
           "Zlib.Bindings": "1.0.2"
         }
       }
@@ -1358,7 +1356,7 @@
       "Argon2.Bindings": {
         "type": "Transitive",
         "resolved": "1.2.7",
-        "contentHash": "6pip5MqEpx9QKXFtFYEYoHCz8rhKqw03xzNefHadFE38JZtt97l+JDif9quvpGnGyq6sGKU3BKsjLh/beyVI3w=="
+        "contentHash": "ZmxtDx9RwHdRBHSq8d97VNHF0el1OAQzWQAtMyT+F/1KApVjBpPcqXVr4eAvAp8qQqBSl5y3WhEvBMBRBdkpgw=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -2241,14 +2239,14 @@
       "ZLib.Bindings": {
         "type": "Transitive",
         "resolved": "1.0.2",
-        "contentHash": "rd7gUFhwKb9Pd5ehhsUUdZiGS/AQQ1v0UItP2J+EYIfKzq7H54yDQ509qcBmbNtr6zTz7AAax4zRUcg3j9mfyQ=="
+        "contentHash": "oMnRfnRHzfboCS/SXUrrqbDVtM/9h5LkHkB8GuyUq70BYkJRza7CNZxLR+F6IKOTNDcDO68VVCID4DA5Sj8c4Q=="
       }
     },
     ".NETCoreApp,Version=v3.1/osx-x64": {
       "Argon2.Bindings": {
         "type": "Transitive",
         "resolved": "1.2.7",
-        "contentHash": "6pip5MqEpx9QKXFtFYEYoHCz8rhKqw03xzNefHadFE38JZtt97l+JDif9quvpGnGyq6sGKU3BKsjLh/beyVI3w=="
+        "contentHash": "ZmxtDx9RwHdRBHSq8d97VNHF0el1OAQzWQAtMyT+F/1KApVjBpPcqXVr4eAvAp8qQqBSl5y3WhEvBMBRBdkpgw=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -3131,14 +3129,14 @@
       "ZLib.Bindings": {
         "type": "Transitive",
         "resolved": "1.0.2",
-        "contentHash": "rd7gUFhwKb9Pd5ehhsUUdZiGS/AQQ1v0UItP2J+EYIfKzq7H54yDQ509qcBmbNtr6zTz7AAax4zRUcg3j9mfyQ=="
+        "contentHash": "oMnRfnRHzfboCS/SXUrrqbDVtM/9h5LkHkB8GuyUq70BYkJRza7CNZxLR+F6IKOTNDcDO68VVCID4DA5Sj8c4Q=="
       }
     },
     ".NETCoreApp,Version=v3.1/win-x64": {
       "Argon2.Bindings": {
         "type": "Transitive",
         "resolved": "1.2.7",
-        "contentHash": "6pip5MqEpx9QKXFtFYEYoHCz8rhKqw03xzNefHadFE38JZtt97l+JDif9quvpGnGyq6sGKU3BKsjLh/beyVI3w=="
+        "contentHash": "ZmxtDx9RwHdRBHSq8d97VNHF0el1OAQzWQAtMyT+F/1KApVjBpPcqXVr4eAvAp8qQqBSl5y3WhEvBMBRBdkpgw=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -4018,7 +4016,7 @@
       "ZLib.Bindings": {
         "type": "Transitive",
         "resolved": "1.0.2",
-        "contentHash": "rd7gUFhwKb9Pd5ehhsUUdZiGS/AQQ1v0UItP2J+EYIfKzq7H54yDQ509qcBmbNtr6zTz7AAax4zRUcg3j9mfyQ=="
+        "contentHash": "oMnRfnRHzfboCS/SXUrrqbDVtM/9h5LkHkB8GuyUq70BYkJRza7CNZxLR+F6IKOTNDcDO68VVCID4DA5Sj8c4Q=="
       }
     }
   }

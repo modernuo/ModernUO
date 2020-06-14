@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using Microsoft.AspNetCore.Connections;
 using Server.Network;
 
 namespace Server.Misc
@@ -70,16 +69,15 @@ namespace Server.Misc
       try
       {
         NetState ns = e.State;
-        ConnectionContext s = ns.Connection;
 
-        IPEndPoint ipep = (IPEndPoint)s.LocalEndPoint;
+        IPEndPoint ipep = (IPEndPoint)ns.Connection.LocalEndPoint;
 
         IPAddress localAddress = ipep.Address;
         int localPort = ipep.Port;
 
         if (IsPrivateNetwork(localAddress))
         {
-          ipep = (IPEndPoint)s.RemoteEndPoint;
+          ipep = (IPEndPoint)ns.Connection.RemoteEndPoint;
           if (!IsPrivateNetwork(ipep.Address) && m_PublicAddress != null)
             localAddress = m_PublicAddress;
         }

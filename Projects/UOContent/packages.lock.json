@@ -6,7 +6,7 @@
         "type": "Direct",
         "requested": "[1.2.7, )",
         "resolved": "1.2.7",
-        "contentHash": "6pip5MqEpx9QKXFtFYEYoHCz8rhKqw03xzNefHadFE38JZtt97l+JDif9quvpGnGyq6sGKU3BKsjLh/beyVI3w=="
+        "contentHash": "ZmxtDx9RwHdRBHSq8d97VNHF0el1OAQzWQAtMyT+F/1KApVjBpPcqXVr4eAvAp8qQqBSl5y3WhEvBMBRBdkpgw=="
       },
       "MailKit": {
         "type": "Direct",
@@ -30,29 +30,11 @@
           "System.IO.Pipelines": "4.7.1"
         }
       },
-      "Microsoft.Extensions.DependencyInjection.Abstractions": {
-        "type": "Direct",
-        "requested": "[3.1.5, )",
-        "resolved": "3.1.5",
-        "contentHash": "2VSCj2TZPMdeEi279Lawi6qJQu4+sEWizSOYrhY6hapyS1jxn1jVUZT1Ugv68bya+x8+3lD4+RqhUZql9PhISQ=="
-      },
-      "Microsoft.Extensions.Hosting.Abstractions": {
-        "type": "Direct",
-        "requested": "[3.1.5, )",
-        "resolved": "3.1.5",
-        "contentHash": "e57iK9spITqHE7qNgC3IowzK+PK5NC2rmVY4Sz+ZoDNO24nIsgllIRbanSbt2wQz7Iy/N8Jm3C1sXqKc8zEOMQ==",
-        "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "3.1.5",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.5",
-          "Microsoft.Extensions.FileProviders.Abstractions": "3.1.5",
-          "Microsoft.Extensions.Logging.Abstractions": "3.1.5"
-        }
-      },
       "ZLib.Bindings": {
         "type": "Direct",
         "requested": "[1.0.2, )",
         "resolved": "1.0.2",
-        "contentHash": "rd7gUFhwKb9Pd5ehhsUUdZiGS/AQQ1v0UItP2J+EYIfKzq7H54yDQ509qcBmbNtr6zTz7AAax4zRUcg3j9mfyQ=="
+        "contentHash": "oMnRfnRHzfboCS/SXUrrqbDVtM/9h5LkHkB8GuyUq70BYkJRza7CNZxLR+F6IKOTNDcDO68VVCID4DA5Sj8c4Q=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -90,12 +72,28 @@
           "Microsoft.Extensions.Primitives": "3.1.5"
         }
       },
+      "Microsoft.Extensions.DependencyInjection.Abstractions": {
+        "type": "Transitive",
+        "resolved": "3.1.5",
+        "contentHash": "2VSCj2TZPMdeEi279Lawi6qJQu4+sEWizSOYrhY6hapyS1jxn1jVUZT1Ugv68bya+x8+3lD4+RqhUZql9PhISQ=="
+      },
       "Microsoft.Extensions.FileProviders.Abstractions": {
         "type": "Transitive",
         "resolved": "3.1.5",
         "contentHash": "LrEQ97jhSWw84Y1m+CJfvh9qTUUswt27au54QYn2x5PCMPPgR+yAv/4VTJKMGSSI9T4scSLBXZ/fVhT4fPTCtA==",
         "dependencies": {
           "Microsoft.Extensions.Primitives": "3.1.5"
+        }
+      },
+      "Microsoft.Extensions.Hosting.Abstractions": {
+        "type": "Transitive",
+        "resolved": "3.1.5",
+        "contentHash": "e57iK9spITqHE7qNgC3IowzK+PK5NC2rmVY4Sz+ZoDNO24nIsgllIRbanSbt2wQz7Iy/N8Jm3C1sXqKc8zEOMQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "3.1.5",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.5",
+          "Microsoft.Extensions.FileProviders.Abstractions": "3.1.5",
+          "Microsoft.Extensions.Logging.Abstractions": "3.1.5"
         }
       },
       "Microsoft.Extensions.Logging.Abstractions": {
@@ -800,13 +798,13 @@
         "type": "Direct",
         "requested": "[1.2.7, )",
         "resolved": "1.2.7",
-        "contentHash": "6pip5MqEpx9QKXFtFYEYoHCz8rhKqw03xzNefHadFE38JZtt97l+JDif9quvpGnGyq6sGKU3BKsjLh/beyVI3w=="
+        "contentHash": "ZmxtDx9RwHdRBHSq8d97VNHF0el1OAQzWQAtMyT+F/1KApVjBpPcqXVr4eAvAp8qQqBSl5y3WhEvBMBRBdkpgw=="
       },
       "ZLib.Bindings": {
         "type": "Direct",
         "requested": "[1.0.2, )",
         "resolved": "1.0.2",
-        "contentHash": "rd7gUFhwKb9Pd5ehhsUUdZiGS/AQQ1v0UItP2J+EYIfKzq7H54yDQ509qcBmbNtr6zTz7AAax4zRUcg3j9mfyQ=="
+        "contentHash": "oMnRfnRHzfboCS/SXUrrqbDVtM/9h5LkHkB8GuyUq70BYkJRza7CNZxLR+F6IKOTNDcDO68VVCID4DA5Sj8c4Q=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -1503,13 +1501,13 @@
         "type": "Direct",
         "requested": "[1.2.7, )",
         "resolved": "1.2.7",
-        "contentHash": "6pip5MqEpx9QKXFtFYEYoHCz8rhKqw03xzNefHadFE38JZtt97l+JDif9quvpGnGyq6sGKU3BKsjLh/beyVI3w=="
+        "contentHash": "ZmxtDx9RwHdRBHSq8d97VNHF0el1OAQzWQAtMyT+F/1KApVjBpPcqXVr4eAvAp8qQqBSl5y3WhEvBMBRBdkpgw=="
       },
       "ZLib.Bindings": {
         "type": "Direct",
         "requested": "[1.0.2, )",
         "resolved": "1.0.2",
-        "contentHash": "rd7gUFhwKb9Pd5ehhsUUdZiGS/AQQ1v0UItP2J+EYIfKzq7H54yDQ509qcBmbNtr6zTz7AAax4zRUcg3j9mfyQ=="
+        "contentHash": "oMnRfnRHzfboCS/SXUrrqbDVtM/9h5LkHkB8GuyUq70BYkJRza7CNZxLR+F6IKOTNDcDO68VVCID4DA5Sj8c4Q=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -2206,13 +2204,13 @@
         "type": "Direct",
         "requested": "[1.2.7, )",
         "resolved": "1.2.7",
-        "contentHash": "6pip5MqEpx9QKXFtFYEYoHCz8rhKqw03xzNefHadFE38JZtt97l+JDif9quvpGnGyq6sGKU3BKsjLh/beyVI3w=="
+        "contentHash": "ZmxtDx9RwHdRBHSq8d97VNHF0el1OAQzWQAtMyT+F/1KApVjBpPcqXVr4eAvAp8qQqBSl5y3WhEvBMBRBdkpgw=="
       },
       "ZLib.Bindings": {
         "type": "Direct",
         "requested": "[1.0.2, )",
         "resolved": "1.0.2",
-        "contentHash": "rd7gUFhwKb9Pd5ehhsUUdZiGS/AQQ1v0UItP2J+EYIfKzq7H54yDQ509qcBmbNtr6zTz7AAax4zRUcg3j9mfyQ=="
+        "contentHash": "oMnRfnRHzfboCS/SXUrrqbDVtM/9h5LkHkB8GuyUq70BYkJRza7CNZxLR+F6IKOTNDcDO68VVCID4DA5Sj8c4Q=="
       },
       "Libuv": {
         "type": "Transitive",

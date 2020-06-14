@@ -6,7 +6,7 @@
     <StartupObject>Server.Core</StartupObject>
     <AssemblyName>ModernUO</AssemblyName>
     <Win32Resource />
-    <Version>0.4.0</Version>
+    <Version>0.5.0</Version>
     <Product>ModernUO Server</Product>
     <PublishDir>..\..\Distribution</PublishDir>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
