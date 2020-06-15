@@ -4,12 +4,12 @@ namespace Server.Gumps
 {
   public class GoGump : Gump
   {
-    public static readonly LocationTree Felucca = new LocationTree("felucca", Map.Felucca);
-    public static readonly LocationTree Trammel = new LocationTree("trammel", Map.Trammel);
-    public static readonly LocationTree Ilshenar = new LocationTree("ilshenar", Map.Ilshenar);
-    public static readonly LocationTree Malas = new LocationTree("malas", Map.Malas);
-    public static readonly LocationTree Tokuno = new LocationTree("tokuno", Map.Tokuno);
-    public static readonly LocationTree TerMur = new LocationTree("termur", Map.TerMur);
+    private static LocationTree Felucca;
+    private static LocationTree Trammel;
+    private static LocationTree Ilshenar;
+    private static LocationTree Malas;
+    private static LocationTree Tokuno;
+    private static LocationTree TerMur;
 
     public static bool OldStyle = PropsConfig.OldStyle;
 
@@ -67,11 +67,38 @@ namespace Server.Gumps
 
     private readonly LocationTree m_Tree;
 
+    public static void DisplayTo(Mobile from)
+    {
+      LocationTree tree;
+
+      if (from.Map == Map.Ilshenar)
+        tree = Ilshenar ??= new LocationTree("ilshenar", Map.Ilshenar);
+      else if (from.Map == Map.Felucca)
+        tree = Felucca ??= new LocationTree("felucca", Map.Felucca);
+      else if (from.Map == Map.Trammel)
+        tree = Trammel ??= new LocationTree("trammel", Map.Trammel);
+      else if (from.Map == Map.Malas)
+        tree = Malas ??= new LocationTree("malas", Map.Malas);
+      else if (from.Map == Map.Tokuno)
+        tree = Tokuno ??= new LocationTree("tokuno", Map.Tokuno);
+      else
+        tree = TerMur ??= new LocationTree("termur", Map.TerMur);
+
+      if (!tree.LastBranch.TryGetValue(from, out GoCategory branch))
+        branch = tree.Root;
+
+      if (branch != null)
+        from.SendGump(new GoGump(0, from, tree, branch));
+    }
+
     private GoGump(int page, Mobile from, LocationTree tree, GoCategory node) : base(50, 50)
     {
       from.CloseGump<GoGump>();
 
-      tree.LastBranch[from] = node;
+      if (node == tree.Root)
+        tree.LastBranch.Remove(from);
+      else
+        tree.LastBranch[from] = node;
 
       m_Page = page;
       m_Tree = tree;
@@ -166,28 +193,6 @@ namespace Server.Gumps
 
         AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, index + 4);
       }
-    }
-
-    public static void DisplayTo(Mobile from)
-    {
-      LocationTree tree;
-
-      if (from.Map == Map.Ilshenar)
-        tree = Ilshenar;
-      else if (from.Map == Map.Felucca)
-        tree = Felucca;
-      else if (from.Map == Map.Trammel)
-        tree = Trammel;
-      else if (from.Map == Map.Malas)
-        tree = Malas;
-      else
-        tree = Tokuno;
-
-      if (!tree.LastBranch.TryGetValue(from, out GoCategory branch))
-        branch = tree.Root;
-
-      if (branch != null)
-        from.SendGump(new GoGump(0, from, tree, branch));
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

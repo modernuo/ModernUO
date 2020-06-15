@@ -36,11 +36,7 @@ namespace Server.Engines.Spawners
         return;
       }
 
-      JsonSerializerOptions options = new JsonSerializerOptions();
-      options.Converters.Add(new MapConverterFactory());
-      options.Converters.Add(new Point3DConverterFactory());
-      options.Converters.Add(new TimeSpanConverterFactory());
-      options.Converters.Add(new TextDefinitionConverterFactory());
+      JsonSerializerOptions options = JsonConfig.GetOptions(new TextDefinitionConverterFactory());
 
       for (int i = 0; i < files.Length; i++)
       {

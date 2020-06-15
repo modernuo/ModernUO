@@ -1348,6 +1348,9 @@
           "Argon2.Bindings": "1.2.7",
           "MailKit": "2.7.0",
           "Microsoft.AspNetCore.Connections.Abstractions": "3.1.5",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.5",
+          "Microsoft.Extensions.Hosting.Abstractions": "3.1.5",
+          "Microsoft.Extensions.Logging.Abstractions": "3.1.5",
           "Zlib.Bindings": "1.0.2"
         }
       }
