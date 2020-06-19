@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Xml;
 using Server.Items;
+using Server.Json;
 using Server.Utilities;
 
 namespace Server.Commands
 {
-  public class Categorization
+  public static class Categorization
   {
     private static CategoryEntry m_RootItems, m_RootMobiles;
 
@@ -50,95 +50,87 @@ namespace Server.Commands
     {
       CategoryEntry root = new CategoryEntry(null, "Add Menu", new[] { Items, Mobiles });
 
-      Export(root, "Data/objects.xml", "Objects");
+      List<CategoryEntry> ceList = new List<CategoryEntry>();
+      ceList.AddRange(root.SubCategories);
+
+      Export(ceList, "Data/objects.json");
 
       e.Mobile.SendMessage("Categorization menu rebuilt.");
     }
 
-    public static void Export(CategoryEntry ce, string fileName, string title)
+    public static void Export(List<CategoryEntry> ceList, string fileName)
     {
-      XmlTextWriter xml = new XmlTextWriter(fileName, Encoding.UTF8);
+      List<CAGJson> list = new List<CAGJson>();
+      foreach (var ce in ceList)
+        RecurseExport(list, ce, null);
 
-      xml.Indentation = 1;
-      xml.IndentChar = '\t';
-      xml.Formatting = Formatting.Indented;
-
-      xml.WriteStartDocument(true);
-
-      RecurseExport(xml, ce);
-
-      xml.Flush();
-      xml.Close();
+      JsonConfig.Serialize(fileName, list);
     }
 
-    public static void RecurseExport(XmlTextWriter xml, CategoryEntry ce)
+    public static void RecurseExport(List<CAGJson> list, CategoryEntry ce, string category)
     {
-      xml.WriteStartElement("category");
+      category = string.IsNullOrWhiteSpace(category) ? ce.Title : $"{category}{ce.Title}";
 
-      xml.WriteAttributeString("title", ce.Title);
+      if (ce.Matched.Count > 0)
+        list.Add(new CAGJson
+        {
+          Category = category,
+          Objects = ce.Matched.Select(cte =>
+          {
+            if (cte.Object is Item item)
+            {
+              int itemID = item.ItemID;
+
+              if (item is BaseAddon addon && addon.Components.Count == 1)
+                itemID = addon.Components[0].ItemID;
+
+              if (itemID > TileData.MaxItemValue)
+                itemID = 1;
+
+              int? hue = item.Hue & 0x7FFF;
+
+              if ((hue & 0x4000) != 0)
+                hue = 0;
+
+              return new CAGObject
+              {
+                Type = cte.Type,
+                ItemID = itemID,
+                Hue = hue == 0 ? null : hue
+              };
+            }
+
+            if (cte.Object is Mobile m)
+            {
+              int itemID = ShrinkTable.Lookup(m, 1);
+
+              int? hue = m.Hue & 0x7FFF;
+
+              if ((hue & 0x4000) != 0)
+                hue = 0;
+
+              return new CAGObject
+              {
+                Type = cte.Type,
+                ItemID = itemID,
+                Hue = hue == 0 ? null : hue
+              };
+            }
+
+            throw new InvalidCastException($"Categorization Type Entry: {cte.Type.Name} is not a valid type.");
+          }).ToArray()
+        });
 
       List<CategoryEntry> subCats = new List<CategoryEntry>(ce.SubCategories);
 
       subCats.Sort(new CategorySorter());
 
-      for (int i = 0; i < subCats.Count; ++i)
-        RecurseExport(xml, subCats[i]);
-
-      ce.Matched.Sort(new CategoryTypeSorter());
-
-      for (int i = 0; i < ce.Matched.Count; ++i)
+      for (int i = 0; i < subCats.Count; i++)
       {
-        CategoryTypeEntry cte = ce.Matched[i];
-
-        xml.WriteStartElement("object");
-
-        xml.WriteAttributeString("type", cte.Type.ToString());
-
-        if (cte.Object is Item item)
-        {
-          int itemID = item.ItemID;
-
-          if (item is BaseAddon addon && addon.Components.Count == 1)
-            itemID = addon.Components[0].ItemID;
-
-          if (itemID > TileData.MaxItemValue)
-            itemID = 1;
-
-          xml.WriteAttributeString("gfx", XmlConvert.ToString(itemID));
-
-          int hue = item.Hue & 0x7FFF;
-
-          if ((hue & 0x4000) != 0)
-            hue = 0;
-
-          if (hue != 0)
-            xml.WriteAttributeString("hue", XmlConvert.ToString(hue));
-
-          item.Delete();
-        }
-        else if (cte.Object is Mobile mob)
-        {
-          int itemID = ShrinkTable.Lookup(mob, 1);
-
-          xml.WriteAttributeString("gfx", XmlConvert.ToString(itemID));
-
-          int hue = mob.Hue & 0x7FFF;
-
-          if ((hue & 0x4000) != 0)
-            hue = 0;
-
-          if (hue != 0)
-            xml.WriteAttributeString("hue", XmlConvert.ToString(hue));
-
-          mob.Delete();
-        }
-
-        xml.WriteEndElement();
+        var subCat = subCats[i];
+        RecurseExport(list, subCat, category);
       }
-
-      xml.WriteEndElement();
     }
-
     public static void Load()
     {
       List<Type> types = new List<Type>();
@@ -156,17 +148,15 @@ namespace Server.Commands
     {
       CategoryLine[] lines = CategoryLine.Load(config);
 
-      if (lines.Length > 0)
-      {
-        int index = 0;
-        CategoryEntry root = new CategoryEntry(null, lines, ref index);
+      if (lines.Length <= 0) return new CategoryEntry();
 
-        Fill(root, types);
+      int index = 0;
+      CategoryEntry root = new CategoryEntry(null, lines, ref index);
 
-        return root;
-      }
+      Fill(root, types);
 
-      return new CategoryEntry();
+      return root;
+
     }
 
     private static bool IsConstructible(Type type)
@@ -240,13 +230,12 @@ namespace Server.Commands
       string a = x?.Title;
       string b = y?.Title;
 
-      if (a == null && b == null)
-        return 0;
-
-      if (a == null)
-        return 1;
-
-      return a.CompareTo(b);
+      return a switch
+      {
+        null when b == null => 0,
+        null => 1,
+        _ => a.CompareTo(b)
+      };
     }
   }
 
@@ -257,13 +246,12 @@ namespace Server.Commands
       string a = x?.Type.Name;
       string b = y?.Type.Name;
 
-      if (a == null && b == null)
-        return 0;
-
-      if (a == null)
-        return 1;
-
-      return a.CompareTo(b);
+      return a switch
+      {
+        null when b == null => 0,
+        null => 1,
+        _ => a.CompareTo(b)
+      };
     }
   }
 

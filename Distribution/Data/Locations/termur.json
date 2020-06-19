@@ -1,0 +1,90 @@
+{
+  "name": "TerMur",
+  "categories": [
+    {
+      "name": "Towns",
+      "categories": [
+        {
+          "name": "Royal City",
+          "locations": [{ "name": "Royal City Moongate", "location": [855, 3526, -43] }]
+        },
+        {
+          "name": "Holy City",
+          "locations": [{ "name": "Holy City Moongate", "location": [928, 3989, -40] }]
+        },
+        { "name": "Dugan", "locations": [{ "name": "Dugan", "location": [1107, 1131, -52] }] }
+      ]
+    },
+    {
+      "name": "Dungeons",
+      "categories": [
+        {
+          "name": "Tomb of Kings",
+          "locations": [
+            { "name": "Entrance", "location": [997, 3843, -41] },
+            { "name": "Gate to Stygian Abyss", "location": [38, 29, 0] }
+          ]
+        },
+        {
+          "name": "Stygian Abyss",
+          "locations": [
+            { "name": "Exit to Tomb of Kings", "location": [946, 71, 72] },
+            { "name": "Exit to Underworld", "location": [521, 921, 36] },
+            { "name": "Abyssal Lair Entrance", "location": [985, 366, -11] },
+            { "name": "Cavern of the Discarded", "location": [912, 501, -12] },
+            { "name": "Clan Scratch", "location": [959, 548, -14] },
+            { "name": "Crimson Veins", "location": [974, 164, -11] },
+            { "name": "Enslaved Goblins", "location": [581, 815, -45] },
+            { "name": "Fairy Dragon Lair", "location": [888, 277, 3] },
+            { "name": "Fire Temple Ruins", "location": [519, 765, -92] },
+            { "name": "Hydra", "location": [793, 753, 53] },
+            { "name": "Lands of the Lich", "location": [538, 656, 8] },
+            { "name": "Lava Caldera", "location": [587, 895, -73] },
+            { "name": "Medusa's Lair", "location": [818, 755, 50] },
+            { "name": "Passage of Tears", "location": [685, 579, -15] },
+            { "name": "Secret Garden", "location": [462, 719, 22] },
+            { "name": "Serpent Lair", "location": [711, 720, -11] },
+            { "name": "Silver Sapling", "location": [341, 619, 26] },
+            { "name": "Stygian Dragon Lair Entrance", "location": [851, 279, -12] },
+            { "name": "Sutek the Mage", "location": [924, 595, -14] }
+          ]
+        },
+        { "name": "Underworld", "locations": [{ "name": "Entrance", "location": [1128, 1211, -2] }] }
+      ]
+    },
+    {
+      "name": "Sites",
+      "categories": [
+        {
+          "name": "Regions",
+          "locations": [
+            { "name": "Atoll Bend", "location": [1118, 3408, -42] },
+            { "name": "Chicken Chase", "location": [560, 3412, 37] },
+            { "name": "City Residential", "location": [952, 3531, -43] },
+            { "name": "Coral Desert", "location": [1047, 2980, 62] },
+            { "name": "Fishermans Reach", "location": [631, 3035, 36] },
+            { "name": "Gated Isle", "location": [703, 3934, -31] },
+            { "name": "High Plain", "location": [863, 2931, 38] },
+            { "name": "Holy City Island", "location": [996, 3905, -42] },
+            { "name": "Kepetch Waste", "location": [447, 3188, 20] },
+            { "name": "Lava Lake", "location": [407, 3010, -24] },
+            { "name": "Lavapit Pyramid", "location": [740, 3691, -43] },
+            { "name": "Lost Settlement", "location": [526, 3822, -44] },
+            { "name": "Northern Steppes", "location": [822, 3063, 61] },
+            { "name": "Raptor Island", "location": [816, 3778, -42] },
+            { "name": "Royal Park", "location": [711, 3255, 38] },
+            { "name": "Shrine of Singularity", "location": [995, 3814, -23] },
+            { "name": "Slith Valley", "location": [1078, 3331, -42] },
+            { "name": "Spider Island", "location": [1115, 3730, -42] },
+            { "name": "Spiders Guarde", "location": [1109, 3606, -45] },
+            { "name": "Talon Point", "location": [676, 3831, -39] },
+            { "name": "Treefellow Course", "location": [570, 2936, 39] },
+            { "name": "Void Isle", "location": [440, 3577, 38] },
+            { "name": "Walled Circus", "location": [370, 3273, 0] },
+            { "name": "Waterfall Point", "location": [661, 2894, 39] }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -14,12 +14,6 @@ namespace Server
     {
       var path = Path.Join(Core.BaseDirectory, "Data/regions.json");
 
-      // Json Deserialization options for custom objects
-      JsonSerializerOptions options = new JsonSerializerOptions();
-      options.Converters.Add(new MapConverterFactory());
-      options.Converters.Add(new Point3DConverterFactory());
-      options.Converters.Add(new Rectangle3DConverterFactory());
-
       List<string> failures = new List<string>();
       int count = 0;
 
@@ -38,7 +32,7 @@ namespace Server
           continue;
         }
 
-        var region = ActivatorUtil.CreateInstance(type, json, options) as Region;
+        var region = ActivatorUtil.CreateInstance(type, json, JsonConfig.DefaultOptions) as Region;
         region?.Register();
         count++;
       }

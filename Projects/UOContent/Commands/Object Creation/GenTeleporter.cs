@@ -5,30 +5,28 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Server.Items;
-using Server.Json;
 
 namespace Server.Commands
 {
-  public struct Location
-  {
-    [JsonPropertyName("point"), JsonConverter(typeof(Point3DConverter))]
-    public Point3D Pos { get; set; }
-    [JsonPropertyName("map"), JsonConverter(typeof(MapConverter))]
-    public Map Map { get; set; }
-    public override string ToString() => $"({Map.Name}:{Pos.X},{Pos.Y},{Pos.Z})";
-    public override int GetHashCode() => ToString().GetHashCode();
-  }
-
   public struct TeleporterDefinition
   {
-    [JsonPropertyName("source")]
-    public Location Source { get; set; }
-    [JsonPropertyName("destination")]
-    public Location Destination { get; set; }
+    [JsonPropertyName("src")]
+    public WorldLocation Source { get; set; }
+
+    [JsonPropertyName("dst")]
+    public WorldLocation Destination { get; set; }
+
     [JsonPropertyName("back")]
     public bool Back { get; set; }
+
     public override string ToString() => $"{{{Source},{Destination},{Back}}}";
-    public override int GetHashCode() => ToString().GetHashCode();
+
+    public bool Equals(TeleporterDefinition other) =>
+      Source.Equals(other.Source) && Destination.Equals(other.Destination) && Back == other.Back;
+
+    public override bool Equals(object obj) => obj is TeleporterDefinition other && Equals(other);
+
+    public override int GetHashCode() => HashCode.Combine(Source, Destination, Back);
   }
 
   public static class GenTeleporter
@@ -124,11 +122,11 @@ namespace Server.Commands
 
       private static bool IsWithinZ(int delta) => delta >= -12 && delta <= 12;
 
-      public static int DeleteTeleporters(Location location)
+      public static int DeleteTeleporters(WorldLocation worldLocation)
       {
-        IPooledEnumerable<Teleporter> eable = location.Map.GetItemsInRange<Teleporter>(location.Pos, 0);
+        IPooledEnumerable<Teleporter> eable = worldLocation.Map.GetItemsInRange<Teleporter>(worldLocation, 0);
         var items = eable
-          .Where(x => !(x is KeywordTeleporter || x is SkillTeleporter) && IsWithinZ(x.Z - location.Pos.Z));
+          .Where(x => !(x is KeywordTeleporter || x is SkillTeleporter) && IsWithinZ(x.Z - worldLocation.Z));
         int count = 0;
         foreach (var item in items)
         {
@@ -143,11 +141,11 @@ namespace Server.Commands
       {
         DelCount += DeleteTeleporters(telDef.Source);
         Count++;
-        new Teleporter(telDef.Destination.Pos, telDef.Destination.Map).MoveToWorld(telDef.Source.Pos, telDef.Source.Map);
+        new Teleporter(telDef.Destination, telDef.Destination.Map).MoveToWorld(telDef.Source, telDef.Source.Map);
         if (!telDef.Back) return;
         DelCount += DeleteTeleporters(telDef.Destination);
         Count++;
-        new Teleporter(telDef.Source.Pos, telDef.Source.Map).MoveToWorld(telDef.Destination.Pos, telDef.Destination.Map);
+        new Teleporter(telDef.Source, telDef.Source.Map).MoveToWorld(telDef.Destination, telDef.Destination.Map);
       }
     }
   }

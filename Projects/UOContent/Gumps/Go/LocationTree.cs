@@ -1,6 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
+using Server.Json;
 
 namespace Server.Gumps
 {
@@ -8,34 +9,50 @@ namespace Server.Gumps
   {
     public LocationTree(string fileName, Map map)
     {
-      LastBranch = new Dictionary<Mobile, ParentNode>();
+      LastBranch = new Dictionary<Mobile, GoCategory>();
       Map = map;
 
-      string path = Path.Combine("Data/Locations/", fileName);
+      string path = Path.Combine($"Data/Locations/{fileName}.json");
 
-      if (File.Exists(path))
+      if (!File.Exists(path))
       {
-        XmlTextReader xml = new XmlTextReader(new StreamReader(path)) { WhitespaceHandling = WhitespaceHandling.None };
+        Console.WriteLine("Go Locations: {0} does not exist", path);
+        return;
+      }
 
-        Root = Parse(xml);
-
-        xml.Close();
+      try
+      {
+        Root = JsonConfig.Deserialize<GoCategory>(path);
+        SetParents(Root);
+      }
+      catch (Exception e)
+      {
+        Console.WriteLine("Go Locations: Error in deserializing {0}", path);
+        Console.WriteLine(e);
       }
     }
 
-    public Dictionary<Mobile, ParentNode> LastBranch { get; }
+    public Dictionary<Mobile, GoCategory> LastBranch { get; }
 
     public Map Map { get; }
 
-    public ParentNode Root { get; }
+    public GoCategory Root { get; }
 
-    private ParentNode Parse(XmlTextReader xml)
+    private static void SetParents(GoCategory parent)
     {
-      xml.Read();
-      xml.Read();
-      xml.Read();
+      // Deserialization may leave these null
+      parent.Categories ??= Array.Empty<GoCategory>();
+      parent.Locations ??= Array.Empty<GoLocation>();
 
-      return new ParentNode(xml, null);
+      for (int i = 0; i < parent.Categories.Length; i++)
+      {
+        GoCategory category = parent.Categories[i];
+        category.Parent = parent;
+        SetParents(category);
+      }
+
+      for (int j = 0; j < parent.Locations.Length; j++)
+        parent.Locations[j].Parent = parent;
     }
   }
 }

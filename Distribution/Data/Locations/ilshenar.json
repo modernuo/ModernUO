@@ -1,0 +1,143 @@
+{
+  "name": "Ilshenar",
+  "categories": [
+    {
+      "name": "Cities",
+      "categories": [
+        { "name": "Ancient Citadel", "locations": [{ "name": "Entrance", "location": [1518, 568, -14] }] },
+        {
+          "name": "Gargoyle City",
+          "locations": [
+            { "name": "Bank", "location": [852, 602, -40] },
+            { "name": "Central Area", "location": [836, 641, -20] }
+          ]
+        },
+        { "name": "Lakeshire", "locations": [{ "name": "Central Area", "location": [1203, 1124, -25] }] },
+        { "name": "Mistas", "locations": [{ "name": "Central Area", "location": [820, 1073, -30] }] },
+        { "name": "Montor", "locations": [{ "name": "Central Area", "location": [1643, 310, 48] }] },
+        { "name": "Req Volon", "locations": [{ "name": "Central Area", "location": [1362, 1073, -13] }] },
+        { "name": "Savage Camp", "locations": [{ "name": "Central Area", "location": [1251, 743, -80] }] },
+        { "name": "Terort Skitas", "locations": [{ "name": "Entrance", "location": [567, 437, 21] }] }
+      ]
+    },
+    {
+      "name": "Dungeons",
+      "categories": [
+        {
+          "name": "Ankh",
+          "locations": [
+            { "name": "Entrance", "location": [576, 1150, -100] },
+            { "name": "Level 1", "location": [155, 1482, -28] },
+            { "name": "Kirin passage", "location": [11, 874, -28] },
+            { "name": "Serpentine Passage", "location": [396, 1578, -28] }
+          ]
+        },
+        {
+          "name": "Blood",
+          "locations": [
+            { "name": "Entrance", "location": [1747, 1228, -1] },
+            { "name": "Level 1", "location": [2114, 834, -28] }
+          ]
+        },
+        {
+          "name": "Exodus",
+          "locations": [
+            { "name": "Entrance", "location": [835, 777, -80] },
+            { "name": "Level 1", "location": [1974, 115, -28] }
+          ]
+        },
+        {
+          "name": "Rock",
+          "locations": [
+            { "name": "Entrance", "location": [1788, 573, 70] },
+            { "name": "Level 1", "location": [2188, 318, -7] },
+            { "name": "Level 2", "location": [2188, 28, -27] }
+          ]
+        },
+        {
+          "name": "Sorcerers",
+          "locations": [
+            { "name": "Entrance", "location": [548, 462, -53] },
+            { "name": "Level 1", "location": [428, 109, -28] },
+            { "name": "Level 2", "location": [240, 23, -18] },
+            { "name": "Level 3", "location": [272, 136, -28] },
+            { "name": "Level 4", "location": [132, 124, -28] },
+            { "name": "Level 5", "location": [236, 121, -28] }
+          ]
+        },
+        {
+          "name": "Spectre",
+          "locations": [
+            { "name": "Entrance", "location": [1363, 1033, -8] },
+            { "name": "Level 1", "location": [1982, 1103, -28] }
+          ]
+        },
+        {
+          "name": "Wisp",
+          "locations": [
+            { "name": "Entrance", "location": [651, 1302, -58] },
+            { "name": "Level 1", "location": [627, 1525, -28] },
+            { "name": "Level 2", "location": [718, 1492, -28] },
+            { "name": "Level 3", "location": [832, 1551, -28] },
+            { "name": "Level 4", "location": [960, 1428, -28] },
+            { "name": "Level 5", "location": [942, 1465, -33] },
+            { "name": "Level 6", "location": [866, 1434, -28] },
+            { "name": "Level 7", "location": [807, 1548, -28] },
+            { "name": "Level 8", "location": [754, 1479, -28] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Caves",
+      "categories": [
+        {
+          "name": "Ancient Lair",
+          "locations": [
+            { "name": "Entrance", "location": [940, 504, -30] },
+            { "name": "Level 1", "location": [85, 746, -28] }
+          ]
+        },
+        {
+          "name": "Lizard Passage",
+          "locations": [
+            { "name": "Entrance", "location": [314, 1334, -36] },
+            { "name": "Level 1", "location": [329, 1589, -18] },
+            { "name": "Level 2", "location": [227, 1337, -18] }
+          ]
+        },
+        { "name": "Mushroom Cave", "locations": [{ "name": "Entrance", "location": [1459, 1329, -24] }] },
+        {
+          "name": "Rat Cave",
+          "locations": [
+            { "name": "Entrance", "location": [1034, 1153, -23] },
+            { "name": "Level 1", "location": [1348, 1510, -3] },
+            { "name": "Level 2", "location": [1247, 1511, -28] }
+          ]
+        },
+        {
+          "name": "Spider Cave",
+          "locations": [
+            { "name": "Entrance", "location": [1421, 913, -19] },
+            { "name": "Level 1", "location": [1786, 991, -28] },
+            { "name": "Level 2", "location": [1517, 877, 10] },
+            { "name": "Ethereal Keep", "location": [1365, 1102, -26] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shrines",
+      "locations": [
+        { "name": "Compassion", "location": [1217, 469, -13] },
+        { "name": "Honesty", "location": [720, 1356, -60] },
+        { "name": "Honor", "location": [748, 728, -29] },
+        { "name": "Humility", "location": [287, 1016, 0] },
+        { "name": "Justice", "location": [987, 1007, -35] },
+        { "name": "Sacrifice", "location": [1175, 1287, -30] },
+        { "name": "Spirituality", "location": [1532, 1341, -3] },
+        { "name": "Valor", "location": [527, 218, -44] }
+      ]
+    }
+  ]
+}

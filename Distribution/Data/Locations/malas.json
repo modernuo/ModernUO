@@ -1,0 +1,108 @@
+{
+  "name": "Malas",
+  "categories": [
+    {
+      "name": "Towns",
+      "categories": [
+        {
+          "name": "Luna",
+          "locations": [
+            { "name": "Luna Moongate", "location": [1015, 527, -65] },
+            { "name": "Luna Bank", "location": [991, 519, -50] },
+            { "name": "Clothier's Colors", "location": [976, 527, -50] },
+            { "name": "Grand Arena", "location": [961, 638, -90] },
+            { "name": "Hardwoods and More", "location": [1002, 512, -50] },
+            { "name": "Paladin's Stopover", "location": [1005, 519, -30] },
+            { "name": "Proud Bridle", "location": [1023, 503, -70] },
+            { "name": "Open Market", "location": [992, 512, -50] },
+            { "name": "Sage's Refuge", "location": [1002, 527, -50] },
+            { "name": "Shining Blades", "location": [976, 512, -50] },
+            { "name": "Shrine of Wisdom", "location": [976, 510, -30] },
+            { "name": "Vault of Secrets", "location": [1072, 457, -90] }
+          ]
+        },
+        {
+          "name": "Umbra",
+          "locations": [
+            { "name": "Umbra Moongate", "location": [1998, 1387, -85] },
+            { "name": "Umbra Bridge", "location": [1941, 1321, -88] },
+            { "name": "Armoury of Souls", "location": [1984, 1367, -80] },
+            { "name": "Bloodletter's Guild", "location": [2084, 1372, -75] },
+            { "name": "Critter Pens", "location": [1992, 1326, -90] },
+            { "name": "Darkweave", "location": [2079, 1338, -81] },
+            { "name": "Ghast Refectory", "location": [2017, 1354, -90] },
+            { "name": "Gravedigger's Apparatus", "location": [2016, 1328, -80] },
+            { "name": "Lich's Hoard", "location": [2051, 1398, -90] },
+            { "name": "Necromancer Ampitheater", "location": [2024, 1383, -80] },
+            { "name": "Skeleton Swill", "location": [2030, 1350, -90] },
+            { "name": "Wailing Banshee Inn", "location": [2039, 1317, -84] },
+            { "name": "Warped Woodworks", "location": [2066, 1288, -80] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dungeons",
+      "categories": [
+        {
+          "name": "Doom",
+          "locations": [
+            { "name": "Entrance", "location": [2367, 1268, -85] },
+            { "name": "Tunnel", "location": [2352, 1267, -110] },
+            { "name": "Inside", "location": [381, 133, 33] },
+            { "name": "Gauntlet", "location": [433, 331, -2] },
+            { "name": "Guardian's Room", "location": [365, 15, -1] },
+            { "name": "Lamp Room", "location": [470, 95, -1] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Sites",
+      "categories": [
+        {
+          "name": "Points of Interest",
+          "locations": [
+            { "name": "Broken Mountains", "location": [1111, 1461, -90] },
+            { "name": "Corrupted Forest", "location": [2172, 1144, -87] },
+            { "name": "Crumbling Continent", "location": [736, 1180, -95] },
+            { "name": "Crystal Fens", "location": [1388, 616, -85] },
+            { "name": "Divide of the Abyss", "location": [1545, 877, -85] },
+            { "name": "Dry Highlands", "location": [2128, 1668, -90] },
+            { "name": "Forgotten Pyramid", "location": [1825, 1799, -50] },
+            { "name": "Gravewater Lake", "location": [1596, 1656, -115] },
+            { "name": "Grimswind Ruins", "location": [2192, 330, -90] },
+            { "name": "Northern Crags", "location": [1580, 384, -50] },
+            { "name": "Orc Fortress", "location": [1340, 1226, -90] },
+            { "name": "Hanse's Hostel", "location": [1065, 1435, -90] }
+          ]
+        },
+        {
+          "name": "Caves and Mines",
+          "locations": [
+            { "name": "Mine 1", "location": [2082, 574, -90] },
+            { "name": "Mine 2", "location": [2157, 456, -90] },
+            { "name": "Mine 3", "location": [1811, 359, -90] },
+            { "name": "Mine 4", "location": [1790, 475, -90] },
+            { "name": "Mine 5", "location": [1628, 432, -86] },
+            { "name": "Mine 6", "location": [1658, 304, -90] },
+            { "name": "Mine 7", "location": [1071, 247, -90] },
+            { "name": "Mine 8", "location": [1095, 197, -90] },
+            { "name": "Mine 9", "location": [1195, 511, -90] }
+          ]
+        },
+        {
+          "name": "Orc Forts",
+          "locations": [
+            { "name": "Fort 1", "location": [912, 193, -79] },
+            { "name": "Fort 2", "location": [1666, 362, -50] },
+            { "name": "Fort 3", "location": [1364, 599, -86] },
+            { "name": "Fort 4", "location": [1205, 705, -88] },
+            { "name": "Fort 5", "location": [1257, 1331, -90] },
+            { "name": "Fort 6", "location": [1598, 1825, -110] }
+          ]
+        }
+      ]
+    }
+  ]
+}

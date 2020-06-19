@@ -20,33 +20,50 @@
 
 using System;
 using System.Buffers;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
   public static class JsonConfig
   {
-    public static readonly JsonSerializerOptions Options = new JsonSerializerOptions
+    public static readonly JsonSerializerOptions DefaultOptions = GetOptions();
+
+    public static JsonSerializerOptions GetOptions(params JsonConverterFactory[] converters)
     {
-      ReadCommentHandling = JsonCommentHandling.Skip,
-      WriteIndented = true,
-      AllowTrailingCommas = true,
-      IgnoreNullValues = true
-    };
+      // In the future this should be optimized by cloning DefaultOptions
+      var options = new JsonSerializerOptions
+      {
+        ReadCommentHandling = JsonCommentHandling.Skip,
+        WriteIndented = true,
+        AllowTrailingCommas = true,
+        IgnoreNullValues = true
+      };
+
+      options.Converters.Add(new MapConverterFactory());
+      options.Converters.Add(new Point3DConverterFactory());
+      options.Converters.Add(new Rectangle3DConverterFactory());
+      options.Converters.Add(new TimeSpanConverterFactory());
+
+      for (int i = 0; i < converters.Length; i++) options.Converters.Add(converters[i]);
+
+      return options;
+    }
 
     public static T Deserialize<T>(string filePath, JsonSerializerOptions options = null)
     {
       if (!File.Exists(filePath)) return default;
       string text = File.ReadAllText(filePath, Utility.UTF8);
-      return JsonSerializer.Deserialize<T>(text, options ?? Options);
+      return JsonSerializer.Deserialize<T>(text, options ?? DefaultOptions);
     }
 
     public static void Serialize(string filePath, object value, JsonSerializerOptions options = null)
     {
       if (File.Exists(filePath)) File.Delete(filePath);
 
-      File.WriteAllText(filePath, JsonSerializer.Serialize(value, options ?? Options));
+      File.WriteAllText(filePath, JsonSerializer.Serialize(value, options ?? DefaultOptions));
     }
 
     public static T ToObject<T>(this ref Utf8JsonReader reader, JsonSerializerOptions options = null) =>

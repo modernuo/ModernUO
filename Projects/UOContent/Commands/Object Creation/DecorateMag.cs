@@ -11,7 +11,7 @@ using Server.Utilities;
 
 namespace Server.Commands
 {
-  public class DecorateMag
+  public static class DecorateMag
   {
     private static Mobile m_Mobile;
     private static int m_Count;
