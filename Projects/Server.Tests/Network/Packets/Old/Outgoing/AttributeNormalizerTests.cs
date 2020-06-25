@@ -32,6 +32,31 @@ namespace Server.Tests.Network.Packets
     }
 
     [Fact]
+    public void TestAttributeNormalizerReversedEnabled()
+    {
+      AttributeNormalizer.Enabled = true;
+      AttributeNormalizer.Maximum = 25;
+
+      PacketWriter stream = new PacketWriter(4);
+
+      short cur = 50;
+      short max = 100;
+
+      AttributeNormalizer.WriteReverse(stream, cur, max);
+
+      Span<byte> expectedData = stackalloc byte[]
+      {
+        0x00, 0x00, // Current Normalized
+        0x00, 0x00 // Maximum Normalized
+      };
+
+      ((short)AttributeNormalizer.Maximum).CopyTo(expectedData.Slice(2, 2));
+      ((short)(cur * 25 / max)).CopyTo(expectedData.Slice(0, 2));
+
+      AssertThat.Equal(stream.ToArray(), expectedData);
+    }
+
+    [Fact]
     public void TestAttributeNormalizerDisabled()
     {
       AttributeNormalizer.Enabled = false;
@@ -51,6 +76,30 @@ namespace Server.Tests.Network.Packets
 
       max.CopyTo(expectedData.Slice(0, 2));
       cur.CopyTo(expectedData.Slice(2, 2));
+
+      AssertThat.Equal(stream.ToArray(), expectedData);
+    }
+
+    [Fact]
+    public void TestAttributeNormalizerReversedDisabled()
+    {
+      AttributeNormalizer.Enabled = false;
+
+      PacketWriter stream = new PacketWriter(4);
+
+      short cur = 50;
+      short max = 100;
+
+      AttributeNormalizer.WriteReverse(stream, cur, max);
+
+      Span<byte> expectedData = stackalloc byte[]
+      {
+        0x00, 0x00, // Current
+        0x00, 0x00 // Maximum
+      };
+
+      max.CopyTo(expectedData.Slice(2, 2));
+      cur.CopyTo(expectedData.Slice(0, 2));
 
       AssertThat.Equal(stream.ToArray(), expectedData);
     }
