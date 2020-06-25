@@ -21,8 +21,8 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
-using Server.Compression;
 using Server.Gumps;
 
 namespace Server.Network
@@ -183,7 +183,7 @@ namespace Server.Network
 
       var packLength = wantLength;
 
-      ZLib.Pack(packBuffer, ref packLength, buffer, length, ZLibQuality.Default);
+      Zlib.Pack(packBuffer, ref packLength, buffer, length, ZlibQuality.Default);
 
       Stream.Write(4 + packLength);
       Stream.Write(length);
