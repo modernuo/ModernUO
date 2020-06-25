@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: PlayerPackets.cs - Created: 2020/05/07 - Updated: 2020/05/26    *
+ * File: PlayerPackets.cs - Created: 2020/05/07 - Updated: 2020/06/24    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -17,6 +17,8 @@
  * You should have received a copy of the GNU General Public License     *
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
+
+using System;
 
 namespace Server.Network
 {
@@ -459,6 +461,33 @@ namespace Server.Network
       }
 
       return p;
+    }
+  }
+
+  public sealed class ScrollMessage : Packet
+  {
+    public ScrollMessage(int type, int tip, string text) : base(0xA6)
+    {
+      text ??= "";
+
+      EnsureCapacity(10 + text.Length);
+
+      Stream.Write((byte)type);
+      Stream.Write(tip);
+      Stream.Write((ushort)text.Length);
+      Stream.WriteAsciiFixed(text, text.Length);
+    }
+  }
+
+  public sealed class CurrentTime : Packet
+  {
+    public CurrentTime() : base(0x5B, 4)
+    {
+      var now = DateTime.UtcNow;
+
+      Stream.Write((byte)now.Hour);
+      Stream.Write((byte)now.Minute);
+      Stream.Write((byte)now.Second);
     }
   }
 }

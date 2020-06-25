@@ -13,7 +13,7 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> expectedData = stackalloc byte[]
       {
-        0xBA, // Packet
+        0xBA, // Packet ID
         0x00, // Command
         0xFF, 0xFF, // X
         0xFF, 0xFF // Y
@@ -32,7 +32,7 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> expectedData = stackalloc byte[]
       {
-        0xBA, // Packet
+        0xBA, // Packet ID
         0x01, // Command
         0x00, 0x00, // X
         0x00, 0x00 // Y
@@ -54,7 +54,7 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> expectedData = stackalloc byte[]
       {
-        0xBA, // Packet
+        0xBA, // Packet ID
         0x00, // Command
         0x00, 0x00, // X
         0x00, 0x00, // Y
@@ -77,7 +77,7 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> expectedData = stackalloc byte[]
       {
-        0xBA, // Packet
+        0xBA, // Packet ID
         0x01, // Command
         0x00, 0x00, // X
         0x00, 0x00, // Y

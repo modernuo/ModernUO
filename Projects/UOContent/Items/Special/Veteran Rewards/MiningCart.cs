@@ -161,6 +161,7 @@ namespace Server.Items
               };
 
               int amount = Math.Min(10, Ore);
+              // ReSharper disable once PossibleNullReferenceException
               ingots.Amount = amount;
 
               if (!from.PlaceInBackpack(ingots))

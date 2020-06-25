@@ -2,7 +2,8 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: MapPackets.cs - Created: 2020/05/03 - Updated: 2020/06/24       *
+ * File: AttributeNormalizer.cs                                          *
+ * Created: 2020/06/24 - Updated: 2020/06/24                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -20,46 +21,38 @@
 
 namespace Server.Network
 {
-  public sealed class MapPatches : Packet
+  public static class AttributeNormalizer
   {
-    // TODO: Base this on the client version and expansion
-    public MapPatches() : base(0xBF)
+    public static int Maximum { get; set; } = 25;
+
+    public static bool Enabled { get; set; } = true;
+
+    public static void Write(PacketWriter stream, int cur, int max)
     {
-      EnsureCapacity(9 + 4 * 8);
-
-      Stream.Write((short)0x18);
-
-      Stream.Write(4);
-
-      Stream.Write(Map.Felucca.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Felucca.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Trammel.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Trammel.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Ilshenar.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Ilshenar.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Malas.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Malas.Tiles.Patch.LandBlocks);
+      if (Enabled && max != 0)
+      {
+        stream.Write((short)Maximum);
+        stream.Write((short)(cur * Maximum / max));
+      }
+      else
+      {
+        stream.Write((short)max);
+        stream.Write((short)cur);
+      }
     }
-  }
 
-  public sealed class InvalidMapEnable : Packet
-  {
-    public InvalidMapEnable() : base(0xC6, 1)
+    public static void WriteReverse(PacketWriter stream, int cur, int max)
     {
-    }
-  }
-
-  public sealed class MapChange : Packet
-  {
-    public MapChange(Map map) : base(0xBF)
-    {
-      EnsureCapacity(6);
-
-      Stream.Write((short)0x08);
-      Stream.Write((byte)map.MapID);
+      if (Enabled && max != 0)
+      {
+        stream.Write((short)(cur * Maximum / max));
+        stream.Write((short)Maximum);
+      }
+      else
+      {
+        stream.Write((short)cur);
+        stream.Write((short)max);
+      }
     }
   }
 }

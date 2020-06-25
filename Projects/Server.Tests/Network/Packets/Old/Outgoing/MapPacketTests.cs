@@ -13,7 +13,7 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> expectedData = stackalloc byte[]
       {
-        0xBF, // Packet
+        0xBF, // Packet ID
         0x00, 0x29, // Length
         0x00, 0x18, // Sub-packet
         0x00, 0x00, 0x00, 0x04, // 4 maps
@@ -38,6 +38,22 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[]
       {
         0xC6 // Packet ID
+      };
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestMapChange()
+    {
+      Span<byte> data = new MapChange(Map.Felucca).Compile();
+
+      Span<byte> expectedData = stackalloc byte[]
+      {
+        0xBF, // Packet ID
+        0x00, 0x06, // Length
+        0x00, 0x08, // Sub-packet
+        0x00, // Felucca
       };
 
       AssertThat.Equal(data, expectedData);

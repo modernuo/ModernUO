@@ -2062,7 +2062,8 @@ namespace Server
           if (ns != null && m_Map != null)
           {
             ns.Sequence = 0;
-            ns.Send(new MapChange(this));
+            if (Map != null)
+              ns.Send(new MapChange(Map));
 
             if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
               ns.Send(new MapPatches());
@@ -2187,7 +2188,8 @@ namespace Server
         if (ns != null && m_Map != null)
         {
           ns.Sequence = 0;
-          ns.Send(new MapChange(this));
+          if (Map != null)
+            ns.Send(new MapChange(Map));
 
           if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
             ns.Send(new MapPatches());

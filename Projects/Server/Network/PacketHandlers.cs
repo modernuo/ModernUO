@@ -1938,7 +1938,7 @@ namespace Server.Network
       state.Send(new LoginConfirm(m));
 
       if (m.Map != null)
-        state.Send(new MapChange(m));
+        state.Send(new MapChange(m.Map));
 
       if (!Core.SE && state.ProtocolChanges < ProtocolChanges.Version6000)
         state.Send(new MapPatches());
@@ -2022,7 +2022,8 @@ namespace Server.Network
       state.Send(LoginComplete.Instance);
       state.Send(new CurrentTime());
       state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
-      state.Send(new MapChange(m));
+      if (m.Map != null)
+        state.Send(new MapChange(m.Map));
 
       EventSink.InvokeLogin(m);
 

@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using Server.Engines.VeteranRewards;
 using Server.Gumps;
 using Server.Multis;
@@ -110,6 +109,7 @@ namespace Server.Items
           };
 
           int amount = Math.Min(10, m_Logs);
+          // ReSharper disable once PossibleNullReferenceException
           logs.Amount = amount;
 
           if (!from.PlaceInBackpack(logs))

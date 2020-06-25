@@ -19,7 +19,7 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> expectedData = stackalloc byte[]
       {
-        0xBF, // Packet
+        0xBF, // Packet ID
         0x00, 0x0B, // Length
         0x00, 0x22, // Sub-packet
         0x01, // Command
@@ -45,7 +45,7 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> expectedData = stackalloc byte[]
       {
-        0x0B, // Packet
+        0x0B, // Packet ID
         0x00, 0x00, 0x00, 0x00, // Mobile Serial
         0x00, 0x00 // Amount
       };
