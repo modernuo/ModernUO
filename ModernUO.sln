@@ -2,8 +2,6 @@
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Argon2", "Projects\Argon2\Argon2.csproj", "{97150E9D-5561-4D3C-9B78-E795544507D0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Projects\Server\Server.csproj", "{5E93BB35-3661-4822-9A8A-859726BAD87F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UOContent", "Projects\UOContent\UOContent.csproj", "{83CF2484-BCCB-4B7C-9C5F-7AB43AEA5E8F}"
@@ -11,8 +9,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Tests", "Projects\Server.Tests\Server.Tests.csproj", "{D7A5D3AF-D607-46EF-BAAD-0D424190311F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UOContent.Tests", "Projects\UOContent.Tests\UOContent.Tests.csproj", "{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zlib", "Projects\ZLib\ZLib.csproj", "{3B030CD2-DB29-4BC2-9C90-D90804B30757}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,18 +41,6 @@ Global
 		{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}.Debug|x64.Build.0 = Debug|x64
 		{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}.Release|x64.ActiveCfg = Release|x64
 		{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}.Release|x64.Build.0 = Release|x64
-		{97150E9D-5561-4D3C-9B78-E795544507D0}.Analyze|x64.ActiveCfg = Analyze|x64
-		{97150E9D-5561-4D3C-9B78-E795544507D0}.Analyze|x64.Build.0 = Analyze|x64
-		{97150E9D-5561-4D3C-9B78-E795544507D0}.Debug|x64.ActiveCfg = Debug|x64
-		{97150E9D-5561-4D3C-9B78-E795544507D0}.Debug|x64.Build.0 = Debug|x64
-		{97150E9D-5561-4D3C-9B78-E795544507D0}.Release|x64.ActiveCfg = Release|x64
-		{97150E9D-5561-4D3C-9B78-E795544507D0}.Release|x64.Build.0 = Release|x64
-		{3B030CD2-DB29-4BC2-9C90-D90804B30757}.Analyze|x64.ActiveCfg = Analyze|x64
-		{3B030CD2-DB29-4BC2-9C90-D90804B30757}.Analyze|x64.Build.0 = Analyze|x64
-		{3B030CD2-DB29-4BC2-9C90-D90804B30757}.Debug|x64.ActiveCfg = Debug|x64
-		{3B030CD2-DB29-4BC2-9C90-D90804B30757}.Debug|x64.Build.0 = Debug|x64
-		{3B030CD2-DB29-4BC2-9C90-D90804B30757}.Release|x64.ActiveCfg = Release|x64
-		{3B030CD2-DB29-4BC2-9C90-D90804B30757}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
