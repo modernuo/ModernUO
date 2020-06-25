@@ -10,7 +10,6 @@ else
   c="-c $2"
 fi
 
-Tools/build-native-libraries.cmd $2
 dotnet restore --force-evaluate
 
 if [[ $1 ]]
@@ -36,7 +35,6 @@ IF "%~2" == "" (
   SET c=-c %~2
 )
 
-CALL Tools\build-native-libraries.cmd %~2
 dotnet restore --force-evaluate
 
 IF "%~1" == "" (

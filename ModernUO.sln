@@ -10,8 +10,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Tests", "Projects\Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UOContent.Tests", "Projects\UOContent.Tests\UOContent.Tests.csproj", "{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zlib", "Projects\ZLib\ZLib.csproj", "{3B030CD2-DB29-4BC2-9C90-D90804B30757}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Analyze|x64 = Analyze|x64
@@ -43,12 +41,6 @@ Global
 		{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}.Debug|x64.Build.0 = Debug|x64
 		{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}.Release|x64.ActiveCfg = Release|x64
 		{3C4797F9-603E-44EF-8E8C-9275CC9EA74B}.Release|x64.Build.0 = Release|x64
-		{3B030CD2-DB29-4BC2-9C90-D90804B30757}.Analyze|x64.ActiveCfg = Analyze|x64
-		{3B030CD2-DB29-4BC2-9C90-D90804B30757}.Analyze|x64.Build.0 = Analyze|x64
-		{3B030CD2-DB29-4BC2-9C90-D90804B30757}.Debug|x64.ActiveCfg = Debug|x64
-		{3B030CD2-DB29-4BC2-9C90-D90804B30757}.Debug|x64.Build.0 = Debug|x64
-		{3B030CD2-DB29-4BC2-9C90-D90804B30757}.Release|x64.ActiveCfg = Release|x64
-		{3B030CD2-DB29-4BC2-9C90-D90804B30757}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
