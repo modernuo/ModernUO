@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: PlayerPackets.cs - Created: 2020/05/07 - Updated: 2020/06/24    *
+ * File: PlayerPackets.cs - Created: 2020/05/07 - Updated: 2020/06/25    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -22,6 +22,16 @@ using System;
 
 namespace Server.Network
 {
+  public enum LRReason : byte
+  {
+    CannotLift = 0,
+    OutOfRange = 1,
+    OutOfSight = 2,
+    TryToSteal = 3,
+    AreHolding = 4,
+    Inspecific = 5
+  }
+
   public sealed class StatLockInfo : Packet
   {
     public StatLockInfo(Mobile m) : base(0xBF)
@@ -488,6 +498,89 @@ namespace Server.Network
       Stream.Write((byte)now.Hour);
       Stream.Write((byte)now.Minute);
       Stream.Write((byte)now.Second);
+    }
+  }
+
+  public sealed class PathfindMessage : Packet
+  {
+    public PathfindMessage(IPoint3D p) : base(0x38, 7)
+    {
+      Stream.Write((short)p.X);
+      Stream.Write((short)p.Y);
+      Stream.Write((short)p.Z);
+    }
+  }
+
+  public sealed class PingAck : Packet
+  {
+    private static readonly PingAck[] m_Cache = new PingAck[0x100];
+
+    public PingAck(byte ping) : base(0x73, 2)
+    {
+      Stream.Write(ping);
+    }
+
+    public static PingAck Instantiate(byte ping)
+    {
+      var p = m_Cache[ping];
+
+      if (p == null)
+      {
+        m_Cache[ping] = p = new PingAck(ping);
+        p.SetStatic();
+      }
+
+      return p;
+    }
+  }
+
+  public sealed class MovementRej : Packet
+  {
+    public MovementRej(int seq, Mobile m) : base(0x21, 8)
+    {
+      Stream.Write((byte)seq);
+      Stream.Write((short)m.X);
+      Stream.Write((short)m.Y);
+      Stream.Write((byte)m.Direction);
+      Stream.Write((sbyte)m.Z);
+    }
+  }
+
+  public sealed class MovementAck : Packet
+  {
+    private static readonly MovementAck[] m_Cache = new MovementAck[8 * 256];
+
+    private MovementAck(int seq, int noto) : base(0x22, 3)
+    {
+      Stream.Write((byte)seq);
+      Stream.Write((byte)noto);
+    }
+
+    public static MovementAck Instantiate(int seq, Mobile m)
+    {
+      var noto = Notoriety.Compute(m, m);
+
+      var p = m_Cache[noto * seq];
+
+      if (p == null)
+      {
+        m_Cache[noto * seq] = p = new MovementAck(seq, noto);
+        p.SetStatic();
+      }
+
+      return p;
+    }
+  }
+
+  public sealed class ClearWeaponAbility : Packet
+  {
+    public static readonly Packet Instance = SetStatic(new ClearWeaponAbility());
+
+    public ClearWeaponAbility() : base(0xBF)
+    {
+      EnsureCapacity(5);
+
+      Stream.Write((short)0x21);
     }
   }
 }
