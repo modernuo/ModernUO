@@ -1,9 +1,0 @@
-{
-  "version": 1,
-  "dependencies": {
-    ".NETCoreApp,Version=v3.1": {},
-    ".NETCoreApp,Version=v3.1/linux-x64": {},
-    ".NETCoreApp,Version=v3.1/osx-x64": {},
-    ".NETCoreApp,Version=v3.1/win-x64": {}
-  }
-}
