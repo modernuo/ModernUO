@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: DamagePackets.cs - Created: 2020/05/03 - Updated: 2020/05/03    *
+ * File: CombatPackets.cs - Created: 2020/06/25 - Updated: 2020/06/25    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -20,37 +20,38 @@
 
 namespace Server.Network
 {
-  public sealed class DamagePacketOld : Packet
+  public sealed class Swing : Packet
   {
-    public DamagePacketOld(Serial mobile, int amount) : base(0xBF)
+    public Swing(Serial attacker, Serial defender) : base(0x2F, 10)
     {
-      EnsureCapacity(11);
-
-      Stream.Write((short)0x22);
-      Stream.Write((byte)1);
-      Stream.Write(mobile);
-
-      if (amount > 255)
-        amount = 255;
-      else if (amount < 0)
-        amount = 0;
-
-      Stream.Write((byte)amount);
+      Stream.Write((byte)0);
+      Stream.Write(attacker);
+      Stream.Write(defender);
     }
   }
 
-  public sealed class DamagePacket : Packet
+  public sealed class SetWarMode : Packet
   {
-    public DamagePacket(Serial mobile, int amount) : base(0x0B, 7)
+    public static readonly Packet InWarMode = SetStatic(new SetWarMode(true));
+    public static readonly Packet InPeaceMode = SetStatic(new SetWarMode(false));
+
+    public SetWarMode(bool mode) : base(0x72, 5)
     {
-      Stream.Write(mobile);
+      Stream.Write(mode);
+      Stream.Write((byte)0x00);
+      Stream.Write((byte)0x32);
+      Stream.Write((byte)0x00);
+      // m_Stream.Fill();
+    }
 
-      if (amount > 0xFFFF)
-        amount = 0xFFFF;
-      else if (amount < 0)
-        amount = 0;
+    public static Packet Instantiate(bool mode) => mode ? InWarMode : InPeaceMode;
+  }
 
-      Stream.Write((ushort)amount);
+  public sealed class ChangeCombatant : Packet
+  {
+    public ChangeCombatant(Serial combatant) : base(0xAA, 5)
+    {
+      Stream.Write(combatant);
     }
   }
 }

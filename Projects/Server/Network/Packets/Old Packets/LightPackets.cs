@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: DamagePackets.cs - Created: 2020/05/03 - Updated: 2020/05/03    *
+ * File: LightPackets.cs - Created: 2020/06/25 - Updated: 2020/06/25         *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -20,37 +20,36 @@
 
 namespace Server.Network
 {
-  public sealed class DamagePacketOld : Packet
+  public sealed class GlobalLightLevel : Packet
   {
-    public DamagePacketOld(Serial mobile, int amount) : base(0xBF)
+    private static readonly GlobalLightLevel[] m_Cache = new GlobalLightLevel[0x100];
+
+    public GlobalLightLevel(int level) : base(0x4F, 2)
     {
-      EnsureCapacity(11);
+      Stream.Write((sbyte)level);
+    }
 
-      Stream.Write((short)0x22);
-      Stream.Write((byte)1);
-      Stream.Write(mobile);
+    public static GlobalLightLevel Instantiate(int level)
+    {
+      var lvl = (byte)level;
+      var p = m_Cache[lvl];
 
-      if (amount > 255)
-        amount = 255;
-      else if (amount < 0)
-        amount = 0;
+      if (p == null)
+      {
+        m_Cache[lvl] = p = new GlobalLightLevel(level);
+        p.SetStatic();
+      }
 
-      Stream.Write((byte)amount);
+      return p;
     }
   }
 
-  public sealed class DamagePacket : Packet
+  public sealed class PersonalLightLevel : Packet
   {
-    public DamagePacket(Serial mobile, int amount) : base(0x0B, 7)
+    public PersonalLightLevel(Serial mobile, int level = 0) : base(0x4E, 6)
     {
       Stream.Write(mobile);
-
-      if (amount > 0xFFFF)
-        amount = 0xFFFF;
-      else if (amount < 0)
-        amount = 0;
-
-      Stream.Write((ushort)amount);
+      Stream.Write((sbyte)level);
     }
   }
 }

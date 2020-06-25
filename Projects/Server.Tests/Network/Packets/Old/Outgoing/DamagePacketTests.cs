@@ -15,7 +15,7 @@ namespace Server.Tests.Network.Packets
       var m = new Mobile(0x1);
       m.DefaultMobileInit();
 
-      Span<byte> data = new DamagePacketOld(m, inputAmount).Compile();
+      Span<byte> data = new DamagePacketOld(m.Serial, inputAmount).Compile();
 
       Span<byte> expectedData = stackalloc byte[]
       {
@@ -41,7 +41,7 @@ namespace Server.Tests.Network.Packets
       var m = new Mobile(0x1);
       m.DefaultMobileInit();
 
-      Span<byte> data = new DamagePacket(m, inputAmount).Compile();
+      Span<byte> data = new DamagePacket(m.Serial, inputAmount).Compile();
 
       Span<byte> expectedData = stackalloc byte[]
       {

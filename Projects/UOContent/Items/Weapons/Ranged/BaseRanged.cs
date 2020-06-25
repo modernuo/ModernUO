@@ -79,7 +79,7 @@ namespace Server.Items
         if (canSwing && attacker.HarmfulCheck(defender))
         {
           attacker.DisruptiveAction();
-          attacker.Send(new Swing(0, attacker, defender));
+          attacker.Send(new Swing(attacker.Serial, defender.Serial));
 
           if (OnFired(attacker, defender))
           {

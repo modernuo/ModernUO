@@ -24,10 +24,10 @@ namespace Server.Network
 {
   public sealed class DeathAnimation : Packet
   {
-    public DeathAnimation(Mobile killed, Item corpse) : base(0xAF, 13)
+    public DeathAnimation(Serial killed, Serial corpse) : base(0xAF, 13)
     {
-      Stream.Write(killed.Serial);
-      Stream.Write(corpse?.Serial ?? Serial.Zero);
+      Stream.Write(killed);
+      Stream.Write(corpse);
       Stream.Write(0);
     }
   }
@@ -192,9 +192,9 @@ namespace Server.Network
 
   public sealed class MobileAnimation : Packet
   {
-    public MobileAnimation(Mobile m, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay) : base(0x6E, 14)
+    public MobileAnimation(Serial mobile, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay) : base(0x6E, 14)
     {
-      Stream.Write(m.Serial);
+      Stream.Write(mobile);
       Stream.Write((short)action);
       Stream.Write((short)frameCount);
       Stream.Write((short)repeatCount);
@@ -206,9 +206,9 @@ namespace Server.Network
 
   public sealed class NewMobileAnimation : Packet
   {
-    public NewMobileAnimation(Mobile m, int action, int frameCount, int delay) : base(0xE2, 10)
+    public NewMobileAnimation(Serial mobile, int action, int frameCount, int delay) : base(0xE2, 10)
     {
-      Stream.Write(m.Serial);
+      Stream.Write(mobile);
       Stream.Write((short)action);
       Stream.Write((short)frameCount);
       Stream.Write((byte)delay);
