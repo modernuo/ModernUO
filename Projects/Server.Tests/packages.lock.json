@@ -1184,7 +1184,7 @@
       "ZLib.Bindings": {
         "type": "Transitive",
         "resolved": "1.0.2",
-        "contentHash": "oMnRfnRHzfboCS/SXUrrqbDVtM/9h5LkHkB8GuyUq70BYkJRza7CNZxLR+F6IKOTNDcDO68VVCID4DA5Sj8c4Q=="
+        "contentHash": "KlvJLY55UYpwlxbiX+lJbTuaMWBK3mja3BC3GzTlCA3uHRYxsllL9uYqpe4poFe6l8NMBS/k759+ns8pbeXeMg=="
       },
       "ModernUO": {
         "type": "Project",
@@ -2068,7 +2068,7 @@
       "ZLib.Bindings": {
         "type": "Transitive",
         "resolved": "1.0.2",
-        "contentHash": "oMnRfnRHzfboCS/SXUrrqbDVtM/9h5LkHkB8GuyUq70BYkJRza7CNZxLR+F6IKOTNDcDO68VVCID4DA5Sj8c4Q=="
+        "contentHash": "KlvJLY55UYpwlxbiX+lJbTuaMWBK3mja3BC3GzTlCA3uHRYxsllL9uYqpe4poFe6l8NMBS/k759+ns8pbeXeMg=="
       }
     },
     ".NETCoreApp,Version=v3.1/osx-x64": {
@@ -2942,7 +2942,7 @@
       "ZLib.Bindings": {
         "type": "Transitive",
         "resolved": "1.0.2",
-        "contentHash": "oMnRfnRHzfboCS/SXUrrqbDVtM/9h5LkHkB8GuyUq70BYkJRza7CNZxLR+F6IKOTNDcDO68VVCID4DA5Sj8c4Q=="
+        "contentHash": "KlvJLY55UYpwlxbiX+lJbTuaMWBK3mja3BC3GzTlCA3uHRYxsllL9uYqpe4poFe6l8NMBS/k759+ns8pbeXeMg=="
       }
     },
     ".NETCoreApp,Version=v3.1/win-x64": {
@@ -3799,7 +3799,7 @@
       "ZLib.Bindings": {
         "type": "Transitive",
         "resolved": "1.0.2",
-        "contentHash": "oMnRfnRHzfboCS/SXUrrqbDVtM/9h5LkHkB8GuyUq70BYkJRza7CNZxLR+F6IKOTNDcDO68VVCID4DA5Sj8c4Q=="
+        "contentHash": "KlvJLY55UYpwlxbiX+lJbTuaMWBK3mja3BC3GzTlCA3uHRYxsllL9uYqpe4poFe6l8NMBS/k759+ns8pbeXeMg=="
       }
     }
   }
