@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO.Pipelines;
+using System.Linq;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Http.Features;
 using Server.Accounting;
@@ -54,7 +55,7 @@ namespace Server.Tests.Network.Packets
       public string Email { get; set; }
       public AccessLevel AccessLevel { get; set; }
       public int Length { get; }
-      public int Limit { get; } = 7;
+      public int Limit { get; }
       public int Count { get; }
 
       private Mobile[] m_Mobiles;
@@ -85,7 +86,8 @@ namespace Server.Tests.Network.Packets
             mobile.Account = this;
 
         Length = mobiles.Length;
-        Count = mobiles.Length; // Assume no nulls, this is not an exhaustive check
+        Count = mobiles.Count(t => t != null);
+        Limit = mobiles.Length;
       }
     }
 
@@ -259,6 +261,64 @@ namespace Server.Tests.Network.Packets
 
       ((ushort)(map?.Width ?? Map.Felucca.Width)).CopyTo(ref pos, expectedData);
       ((ushort)(map?.Height ?? Map.Felucca.Height)).CopyTo(ref pos, expectedData);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestLoginComplete()
+    {
+      Span<byte> data = new LoginComplete().Compile();
+
+      Span<byte> expectedData = stackalloc byte[]
+      {
+        0x55 // Packet ID
+      };
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestCharacterListUpdate()
+    {
+      var firstMobile = new Mobile(0x1);
+      firstMobile.DefaultMobileInit();
+      firstMobile.Name = "Test Mobile";
+
+      var account = new TestAccount(new[]{ firstMobile, null, null, null, null });
+
+      Span<byte> data = new CharacterListUpdate(account).Compile();
+
+      Span<byte> expectedData = stackalloc byte[4 + account.Length * 60];
+
+      int pos = 0;
+      expectedData[pos++] = 0x86; // Packet ID
+      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
+
+      int highSlot = -1;
+      for (int i = account.Length - 1; i >= 0; i--)
+        if (account[i] != null)
+        {
+          highSlot = i;
+          break;
+        }
+
+      int count = Math.Max(Math.Max(highSlot + 1, account.Limit), 5);
+      expectedData[pos++] = (byte)count;
+
+      for (int i = 0; i < count; i++)
+      {
+        var m = account[i];
+        if (m != null)
+        {
+          m.Name.CopyASCIIFixedTo(ref pos, 30, expectedData);
+          expectedData.Clear(ref pos, 30);
+        }
+        else
+        {
+          expectedData.Clear(ref pos, 60);
+        }
+      }
 
       AssertThat.Equal(data, expectedData);
     }

@@ -4136,27 +4136,16 @@ namespace Server
       CheckAggrExpire();
 
       PoisonTimer?.Stop();
-
       m_HitsTimer?.Stop();
-
       m_StamTimer?.Stop();
-
       m_ManaTimer?.Stop();
-
       m_CombatTimer?.Stop();
-
       m_ExpireCombatant?.Stop();
-
       m_LogoutTimer?.Stop();
-
       m_ExpireCriminal?.Stop();
-
       m_WarmodeTimer?.Stop();
-
       m_ParaTimer?.Stop();
-
       m_FrozenTimer?.Stop();
-
       m_AutoManifestTimer?.Stop();
     }
 

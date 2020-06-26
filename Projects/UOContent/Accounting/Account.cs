@@ -898,9 +898,9 @@ namespace Server.Accounting
       {
         int count = 0;
 
-        for (int i = 0; i < Length; ++i)
+        for (int i = 0; i < Length; i++)
           if (this[i] != null)
-            ++count;
+            count++;
 
         return count;
       }
@@ -927,13 +927,13 @@ namespace Server.Accounting
         {
           Mobile m = m_Mobiles[index];
 
-          if (m?.Deleted == true)
-          {
-            m.Account = null;
-            m_Mobiles[index] = m = null;
-          }
+          if (m?.Deleted != true)
+            return m;
 
-          return m;
+          // This is the only place that clears a mobile for garbage collection
+          // outside of an entire account deletion.
+          m.Account = null;
+          m_Mobiles[index] = null;
         }
 
         return null;
