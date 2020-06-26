@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Pipelines;
 using System.Linq;
+using System.Net;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Http.Features;
 using Server.Accounting;
@@ -468,6 +469,78 @@ namespace Server.Tests.Network.Packets
                  CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
 
       ((int)flags).CopyTo(ref pos, expectedData);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestAccountLoginRej()
+    {
+      var reason = ALRReason.BadComm;
+      Span<byte> data = new AccountLoginRej(reason).Compile();
+
+      Span<byte> expectedData = stackalloc byte[]
+      {
+        0x82, // Packet ID
+        (byte)reason
+      };
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestAccountLoginAck()
+    {
+      var info = new[]
+      {
+        new ServerInfo("Test Server", 0, TimeZoneInfo.Local, IPEndPoint.Parse("127.0.0.1"))
+      };
+
+      Span<byte> data = new AccountLoginAck(info).Compile();
+
+      Span<byte> expectedData = stackalloc byte[6 + info.Length * 40];
+
+      int pos = 0;
+      expectedData[pos++] = 0xA8; // Packet ID
+      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData);
+      expectedData[pos++] = 0x5D; // Unknown
+      ((ushort)info.Length).CopyTo(ref pos, expectedData);
+
+      for (int i = 0; i < info.Length; i++)
+      {
+        var si = info[i];
+        ((ushort)i).CopyTo(ref pos, expectedData);
+        si.Name.CopyASCIIFixedTo(ref pos, 32, expectedData);
+        expectedData[pos++] = (byte)si.FullPercent;
+        expectedData[pos++] = (byte)si.TimeZone;
+        Utility.GetAddressValue(si.Address.Address).CopyTo(ref pos, expectedData);
+      }
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestPlayServerAck()
+    {
+      var si = new ServerInfo("Test Server", 0, TimeZoneInfo.Local, IPEndPoint.Parse("127.0.0.1"));
+
+      Span<byte> data = new PlayServerAck(si).Compile();
+
+      var addr = Utility.GetAddressValue(si.Address.Address);
+
+      Span<byte> expectedData = stackalloc byte[]
+      {
+        0x8C, // Packet ID
+        (byte)addr, // IP Address in LE
+        (byte)(addr >> 8),
+        (byte)(addr >> 16),
+        (byte)(addr >> 24),
+        0x00, 0x00, // Port
+        0x00, 0x00, 0x00, 0x00 // Auth ID
+      };
+
+      ((ushort)si.Address.Port).CopyTo(expectedData.Slice(5, 2));
+      (-1).CopyTo(expectedData.Slice(7, 4)); // Auth ID
 
       AssertThat.Equal(data, expectedData);
     }
