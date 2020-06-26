@@ -106,7 +106,7 @@ namespace Server.Tests.Network.Packets
       firstMobile.DefaultMobileInit();
       firstMobile.Name = "Test Mobile";
 
-      var account = new TestAccount(new[]{ firstMobile, null, null });
+      var account = new TestAccount(new[] {firstMobile, null, null});
 
       Span<byte> data = new ChangeCharacter(account).Compile();
 
@@ -285,7 +285,7 @@ namespace Server.Tests.Network.Packets
       firstMobile.DefaultMobileInit();
       firstMobile.Name = "Test Mobile";
 
-      var account = new TestAccount(new[]{ firstMobile, null, null, null, null });
+      var account = new TestAccount(new[] {firstMobile, null, null, null, null});
 
       Span<byte> data = new CharacterListUpdate(account).Compile();
 
@@ -319,6 +319,155 @@ namespace Server.Tests.Network.Packets
           expectedData.Clear(ref pos, 60);
         }
       }
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestCharacterList()
+    {
+      var firstMobile = new Mobile(0x1);
+      firstMobile.DefaultMobileInit();
+      firstMobile.Name = "Test Mobile";
+
+      var account = new TestAccount(new[] {firstMobile, null, null, null, null});
+      var info = new[]
+      {
+        new CityInfo("Test City", "Test Building", 50, 100, 10, -10)
+      };
+
+      Span<byte> data = new CharacterList(account, info).Compile();
+
+      Span<byte> expectedData = stackalloc byte[11 + account.Length * 60 + info.Length * 89];
+
+      int pos = 0;
+      expectedData[pos++] = 0xA9; // Packet ID
+      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
+
+      int highSlot = -1;
+      for (int i = account.Length - 1; i >= 0; i--)
+        if (account[i] != null)
+        {
+          highSlot = i;
+          break;
+        }
+
+      int count = Math.Max(Math.Max(highSlot + 1, account.Limit), 5);
+      expectedData[pos++] = (byte)count;
+
+      for (int i = 0; i < count; i++)
+      {
+        var m = account[i];
+        if (m != null)
+        {
+          m.Name.CopyASCIIFixedTo(ref pos, 30, expectedData);
+          expectedData.Clear(ref pos, 30);
+        }
+        else
+        {
+          expectedData.Clear(ref pos, 60);
+        }
+      }
+
+      expectedData[pos++] = (byte)info.Length;
+
+      for (int i = 0; i < info.Length; i++)
+      {
+        var ci = info[i];
+        expectedData[pos++] = (byte)i;
+        ci.City.CopyASCIIFixedTo(ref pos, 32, expectedData);
+        ci.Building.CopyASCIIFixedTo(ref pos, 32, expectedData);
+        ci.X.CopyTo(ref pos, expectedData);
+        ci.Y.CopyTo(ref pos, expectedData);
+        ci.Z.CopyTo(ref pos, expectedData);
+        ci.Map.MapID.CopyTo(ref pos, expectedData);
+        ci.Description.CopyTo(ref pos, expectedData);
+        expectedData.Clear(ref pos, 4);
+      }
+
+      var flags = ExpansionInfo.GetInfo(Expansion.EJ).CharacterListFlags;
+      if (count > 6)
+        flags |= CharacterListFlags.SeventhCharacterSlot |
+                 CharacterListFlags.SixthCharacterSlot; // 7th Character Slot
+      else if (count == 6)
+        flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
+      else if (account.Limit == 1)
+        flags |= CharacterListFlags.SlotLimit &
+                 CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
+
+      ((int)flags).CopyTo(ref pos, expectedData);
+      ((short)-1).CopyTo(ref pos, expectedData);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestCharacterListOld()
+    {
+      var firstMobile = new Mobile(0x1);
+      firstMobile.DefaultMobileInit();
+      firstMobile.Name = "Test Mobile";
+
+      var account = new TestAccount(new[] {firstMobile, null, null, null, null});
+      var info = new[]
+      {
+        new CityInfo("Test City", "Test Building", 50, 100, 10, -10)
+      };
+
+      Span<byte> data = new CharacterListOld(account, info).Compile();
+
+      Span<byte> expectedData = stackalloc byte[9 + account.Length * 60 + info.Length * 63];
+
+      int pos = 0;
+      expectedData[pos++] = 0xA9; // Packet ID
+      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
+
+      int highSlot = -1;
+      for (int i = account.Length - 1; i >= 0; i--)
+        if (account[i] != null)
+        {
+          highSlot = i;
+          break;
+        }
+
+      int count = Math.Max(Math.Max(highSlot + 1, account.Limit), 5);
+      expectedData[pos++] = (byte)count;
+
+      for (int i = 0; i < count; i++)
+      {
+        var m = account[i];
+        if (m != null)
+        {
+          m.Name.CopyASCIIFixedTo(ref pos, 30, expectedData);
+          expectedData.Clear(ref pos, 30);
+        }
+        else
+        {
+          expectedData.Clear(ref pos, 60);
+        }
+      }
+
+      expectedData[pos++] = (byte)info.Length;
+
+      for (int i = 0; i < info.Length; i++)
+      {
+        var ci = info[i];
+        expectedData[pos++] = (byte)i;
+        ci.City.CopyASCIIFixedTo(ref pos, 31, expectedData);
+        ci.Building.CopyASCIIFixedTo(ref pos, 31, expectedData);
+      }
+
+      var flags = ExpansionInfo.GetInfo(Expansion.EJ).CharacterListFlags;
+      if (count > 6)
+        flags |= CharacterListFlags.SeventhCharacterSlot |
+                 CharacterListFlags.SixthCharacterSlot; // 7th Character Slot
+      else if (count == 6)
+        flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
+      else if (account.Limit == 1)
+        flags |= CharacterListFlags.SlotLimit &
+                 CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
+
+      ((int)flags).CopyTo(ref pos, expectedData);
 
       AssertThat.Equal(data, expectedData);
     }

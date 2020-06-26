@@ -216,8 +216,6 @@ namespace Server.Network
 
   public sealed class CharacterList : Packet
   {
-    // private static MD5CryptoServiceProvider m_MD5Provider;
-
     public CharacterList(IAccount a, CityInfo[] info) : base(0xA9)
     {
       EnsureCapacity(11 + a.Length * 60 + info.Length * 89);
