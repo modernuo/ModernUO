@@ -634,9 +634,9 @@ namespace Server.Items
       if (ns != null)
       {
         if (ns.HighSeas)
-          to.Send(new ContainerDisplayHS(this));
+          to.Send(new ContainerDisplayHS(Serial, GumpID));
         else
-          to.Send(new ContainerDisplay(this));
+          to.Send(new ContainerDisplay(Serial, GumpID));
 
         SendContentTo(ns);
 

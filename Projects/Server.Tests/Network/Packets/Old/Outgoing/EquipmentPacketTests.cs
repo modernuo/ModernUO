@@ -37,7 +37,7 @@ namespace Server.Tests.Network.Packets
 
       int pos = 0;
 
-      expectedData[pos++] = 0xBF; // Packet ID
+      ((byte)0xBF).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)length).CopyTo(ref pos, expectedData); // Length
       ((ushort)0x10).CopyTo(ref pos, expectedData); // Subcommand
       item.Serial.CopyTo(ref pos, expectedData);
@@ -46,7 +46,6 @@ namespace Server.Tests.Network.Packets
       {
         var name = info.Crafter.Name ?? "";
         (-3).CopyTo(ref pos, expectedData);
-        ((ushort)name.Length).CopyTo(ref pos, expectedData);
         name.CopyASCIITo(ref pos, expectedData);
       }
 

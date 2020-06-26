@@ -114,10 +114,10 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[5 + account.Length * 60];
       int pos = 0;
 
-      expectedData[pos++] = 0x81; // Packet ID
+      ((byte)0x81).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
-      expectedData[pos++] = 1; // Count of non-null characters
-      expectedData[pos++] = 0;
+      ((byte)1).CopyTo(ref pos, expectedData); // Count of non-null characters
+      ((byte)0).CopyTo(ref pos, expectedData);
 
       for (var i = 0; i < account.Length; ++i)
       {
@@ -257,7 +257,7 @@ namespace Server.Tests.Network.Packets
       ((ushort)m.X).CopyTo(ref pos, expectedData);
       ((ushort)m.Y).CopyTo(ref pos, expectedData);
       ((ushort)m.Z).CopyTo(ref pos, expectedData);
-      expectedData[pos++] = (byte)m.Direction;
+      ((byte)m.Direction).CopyTo(ref pos, expectedData);
       pos += 9;
       var map = m.Map;
 
@@ -297,7 +297,7 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[4 + account.Length * 60];
 
       int pos = 0;
-      expectedData[pos++] = 0x86; // Packet ID
+      ((byte)0x86).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
 
       int highSlot = -1;
@@ -309,7 +309,7 @@ namespace Server.Tests.Network.Packets
         }
 
       int count = Math.Max(Math.Max(highSlot + 1, account.Limit), 5);
-      expectedData[pos++] = (byte)count;
+      ((byte)count).CopyTo(ref pos, expectedData);
 
       for (int i = 0; i < count; i++)
       {
@@ -346,7 +346,7 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[11 + account.Length * 60 + info.Length * 89];
 
       int pos = 0;
-      expectedData[pos++] = 0xA9; // Packet ID
+      ((byte)0xA9).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
 
       int highSlot = -1;
@@ -358,7 +358,7 @@ namespace Server.Tests.Network.Packets
         }
 
       int count = Math.Max(Math.Max(highSlot + 1, account.Limit), 5);
-      expectedData[pos++] = (byte)count;
+      ((byte)count).CopyTo(ref pos, expectedData);
 
       for (int i = 0; i < count; i++)
       {
@@ -374,12 +374,12 @@ namespace Server.Tests.Network.Packets
         }
       }
 
-      expectedData[pos++] = (byte)info.Length;
+      ((byte)info.Length).CopyTo(ref pos, expectedData);
 
       for (int i = 0; i < info.Length; i++)
       {
         var ci = info[i];
-        expectedData[pos++] = (byte)i;
+        ((byte)i).CopyTo(ref pos, expectedData);
         ci.City.CopyASCIIFixedTo(ref pos, 32, expectedData);
         ci.Building.CopyASCIIFixedTo(ref pos, 32, expectedData);
         ci.X.CopyTo(ref pos, expectedData);
@@ -424,7 +424,7 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[9 + account.Length * 60 + info.Length * 63];
 
       int pos = 0;
-      expectedData[pos++] = 0xA9; // Packet ID
+      ((byte)0xA9).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
 
       int highSlot = -1;
@@ -436,7 +436,7 @@ namespace Server.Tests.Network.Packets
         }
 
       int count = Math.Max(Math.Max(highSlot + 1, account.Limit), 5);
-      expectedData[pos++] = (byte)count;
+      ((byte)count).CopyTo(ref pos, expectedData);
 
       for (int i = 0; i < count; i++)
       {
@@ -452,12 +452,12 @@ namespace Server.Tests.Network.Packets
         }
       }
 
-      expectedData[pos++] = (byte)info.Length;
+      ((byte)info.Length).CopyTo(ref pos, expectedData);
 
       for (int i = 0; i < info.Length; i++)
       {
         var ci = info[i];
-        expectedData[pos++] = (byte)i;
+        ((byte)i).CopyTo(ref pos, expectedData);
         ci.City.CopyASCIIFixedTo(ref pos, 31, expectedData);
         ci.Building.CopyASCIIFixedTo(ref pos, 31, expectedData);
       }
@@ -505,9 +505,9 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[6 + info.Length * 40];
 
       int pos = 0;
-      expectedData[pos++] = 0xA8; // Packet ID
+      ((byte)0xA8).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)expectedData.Length).CopyTo(ref pos, expectedData);
-      expectedData[pos++] = 0x5D; // Unknown
+      ((byte)0x5D).CopyTo(ref pos, expectedData); // Unknown
       ((ushort)info.Length).CopyTo(ref pos, expectedData);
 
       for (int i = 0; i < info.Length; i++)
@@ -515,8 +515,8 @@ namespace Server.Tests.Network.Packets
         var si = info[i];
         ((ushort)i).CopyTo(ref pos, expectedData);
         si.Name.CopyASCIIFixedTo(ref pos, 32, expectedData);
-        expectedData[pos++] = (byte)si.FullPercent;
-        expectedData[pos++] = (byte)si.TimeZone;
+        ((byte)si.FullPercent).CopyTo(ref pos, expectedData);
+        ((byte)si.TimeZone).CopyTo(ref pos, expectedData);
         Utility.GetAddressValue(si.Address.Address).CopyTo(ref pos, expectedData);
       }
 

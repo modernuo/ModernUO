@@ -105,14 +105,6 @@ namespace Server.Network
         Stream.Write((short)itemID);
 
         Stream.Write((byte)0);
-        /*} else if ( ) {
-          m_Stream.Write( (byte) 0x01 );
-
-          m_Stream.Write( (int) item.Serial );
-
-          m_Stream.Write( (short) itemID );
-
-          m_Stream.Write( (byte) item.Direction );*/
       }
       else
       {
@@ -132,10 +124,8 @@ namespace Server.Network
       Stream.Write((short)amount);
 
       var loc = item.Location;
-      var x = loc.m_X & 0x7FFF;
-      var y = loc.m_Y & 0x3FFF;
-      Stream.Write((short)x);
-      Stream.Write((short)y);
+      Stream.Write((short)loc.m_X);
+      Stream.Write((short)loc.m_Y);
       Stream.Write((sbyte)loc.m_Z);
 
       Stream.Write((byte)item.Light);
@@ -163,14 +153,6 @@ namespace Server.Network
         Stream.Write((ushort)itemID);
 
         Stream.Write((byte)0);
-        /*} else if ( ) {
-          m_Stream.Write( (byte) 0x01 );
-
-          m_Stream.Write( (int) item.Serial );
-
-          m_Stream.Write( (ushort) itemID );
-
-          m_Stream.Write( (byte) item.Direction );*/
       }
       else
       {
@@ -190,10 +172,8 @@ namespace Server.Network
       Stream.Write((short)amount);
 
       var loc = item.Location;
-      var x = loc.m_X & 0x7FFF;
-      var y = loc.m_Y & 0x3FFF;
-      Stream.Write((short)x);
-      Stream.Write((short)y);
+      Stream.Write((short)loc.m_X);
+      Stream.Write((short)loc.m_Y);
       Stream.Write((sbyte)loc.m_Z);
 
       Stream.Write((byte)item.Light);
@@ -206,18 +186,18 @@ namespace Server.Network
 
   public sealed class DisplaySpellbook : Packet
   {
-    public DisplaySpellbook(Item book) : base(0x24, 7)
+    public DisplaySpellbook(Serial book) : base(0x24, 7)
     {
-      Stream.Write(book.Serial);
+      Stream.Write(book);
       Stream.Write((short)-1);
     }
   }
 
   public sealed class DisplaySpellbookHS : Packet
   {
-    public DisplaySpellbookHS(Item book) : base(0x24, 9)
+    public DisplaySpellbookHS(Serial book) : base(0x24, 9)
     {
-      Stream.Write(book.Serial);
+      Stream.Write(book);
       Stream.Write((short)-1);
       Stream.Write((short)0x7D);
     }
@@ -225,14 +205,14 @@ namespace Server.Network
 
   public sealed class NewSpellbookContent : Packet
   {
-    public NewSpellbookContent(Item item, int graphic, int offset, ulong content) : base(0xBF)
+    public NewSpellbookContent(Serial spellbook, int graphic, int offset, ulong content) : base(0xBF)
     {
       EnsureCapacity(23);
 
       Stream.Write((short)0x1B);
       Stream.Write((short)0x01);
 
-      Stream.Write(item.Serial);
+      Stream.Write(spellbook);
       Stream.Write((short)graphic);
       Stream.Write((short)offset);
 
@@ -243,9 +223,9 @@ namespace Server.Network
 
   public sealed class SpellbookContent : Packet
   {
-    public SpellbookContent(int count, int offset, ulong content, Item item) : base(0x3C)
+    public SpellbookContent(Serial spellbook, int offset, ulong content) : base(0x3C)
     {
-      EnsureCapacity(5 + count * 19);
+      EnsureCapacity(5 + 64 * 19);
 
       var written = 0;
 
@@ -262,7 +242,7 @@ namespace Server.Network
           Stream.Write((ushort)(i + offset));
           Stream.Write((short)0);
           Stream.Write((short)0);
-          Stream.Write(item.Serial);
+          Stream.Write(spellbook);
           Stream.Write((short)0);
 
           ++written;
@@ -275,9 +255,9 @@ namespace Server.Network
 
   public sealed class SpellbookContent6017 : Packet
   {
-    public SpellbookContent6017(int count, int offset, ulong content, Item item) : base(0x3C)
+    public SpellbookContent6017(Serial spellbook, int offset, ulong content) : base(0x3C)
     {
-      EnsureCapacity(5 + count * 20);
+      EnsureCapacity(5 + 64 * 20);
 
       var written = 0;
 
@@ -295,7 +275,7 @@ namespace Server.Network
           Stream.Write((short)0);
           Stream.Write((short)0);
           Stream.Write((byte)0); // Grid Location?
-          Stream.Write(item.Serial);
+          Stream.Write(spellbook);
           Stream.Write((short)0);
 
           ++written;
@@ -308,19 +288,19 @@ namespace Server.Network
 
   public sealed class ContainerDisplay : Packet
   {
-    public ContainerDisplay(Container c) : base(0x24, 7)
+    public ContainerDisplay(Serial cont, int gumpId) : base(0x24, 7)
     {
-      Stream.Write(c.Serial);
-      Stream.Write((short)c.GumpID);
+      Stream.Write(cont);
+      Stream.Write((short)gumpId);
     }
   }
 
   public sealed class ContainerDisplayHS : Packet
   {
-    public ContainerDisplayHS(Container c) : base(0x24, 9)
+    public ContainerDisplayHS(Serial cont, int gumpId) : base(0x24, 9)
     {
-      Stream.Write(c.Serial);
-      Stream.Write((short)c.GumpID);
+      Stream.Write(cont);
+      Stream.Write((short)gumpId);
       Stream.Write((short)0x7D);
     }
   }

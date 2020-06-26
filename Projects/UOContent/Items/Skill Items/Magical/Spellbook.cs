@@ -603,30 +603,30 @@ namespace Server.Items
       }
 
       if (ns.HighSeas)
-        to.Send(new DisplaySpellbookHS(this));
+        to.Send(new DisplaySpellbookHS(Serial));
       else
-        to.Send(new DisplaySpellbook(this));
+        to.Send(new DisplaySpellbook(Serial));
 
       if (ObjectPropertyList.Enabled)
       {
         if (ns.NewSpellbook)
         {
-          to.Send(new NewSpellbookContent(this, ItemID, BookOffset + 1, m_Content));
+          to.Send(new NewSpellbookContent(Serial, ItemID, BookOffset + 1, m_Content));
         }
         else
         {
           if (ns.ContainerGridLines)
-            to.Send(new SpellbookContent6017(SpellCount, BookOffset + 1, m_Content, this));
+            to.Send(new SpellbookContent6017(Serial, BookOffset + 1, m_Content));
           else
-            to.Send(new SpellbookContent(SpellCount, BookOffset + 1, m_Content, this));
+            to.Send(new SpellbookContent(Serial, BookOffset + 1, m_Content));
         }
       }
       else
       {
         if (ns.ContainerGridLines)
-          to.Send(new SpellbookContent6017(SpellCount, BookOffset + 1, m_Content, this));
+          to.Send(new SpellbookContent6017(Serial, BookOffset + 1, m_Content));
         else
-          to.Send(new SpellbookContent(SpellCount, BookOffset + 1, m_Content, this));
+          to.Send(new SpellbookContent(Serial, BookOffset + 1, m_Content));
       }
     }
 

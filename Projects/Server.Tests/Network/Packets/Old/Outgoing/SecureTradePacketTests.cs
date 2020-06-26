@@ -141,7 +141,7 @@ namespace Server.Tests.Network.Packets
       int pos = 1;
       itemInCont.Serial.CopyTo(ref pos, expectedData);
       ((short)itemInCont.ItemID).CopyTo(ref pos, expectedData);
-      pos++; // expectedData[pos++] = 0x0;
+      pos++;
       ((short)itemInCont.Amount).CopyTo(ref pos, expectedData);
       ((short)itemInCont.X).CopyTo(ref pos, expectedData);
       ((short)itemInCont.Y).CopyTo(ref pos, expectedData);
