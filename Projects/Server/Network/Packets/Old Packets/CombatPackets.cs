@@ -41,7 +41,6 @@ namespace Server.Network
       Stream.Write((byte)0x00);
       Stream.Write((byte)0x32);
       Stream.Write((byte)0x00);
-      // m_Stream.Fill();
     }
 
     public static Packet Instantiate(bool mode) => mode ? InWarMode : InPeaceMode;
