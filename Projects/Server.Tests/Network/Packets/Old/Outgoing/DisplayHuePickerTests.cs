@@ -10,7 +10,7 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestDisplayHuePicker()
     {
-      ushort itemID = 0xFF01;
+      const ushort itemID = 0xFF01;
       var huePicker = new HuePicker(itemID);
 
       Span<byte> data = new DisplayHuePicker(huePicker).Compile();

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: EquipmentPackets.cs - Created: 2020/05/07 - Updated: 2020/05/07 *                          *
+ * File: EquipmentPackets.cs - Created: 2020/05/07 - Updated: 2020/05/07 *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *

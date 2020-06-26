@@ -80,5 +80,24 @@ namespace Server.Tests.Network.Packets
     {
       pos += Encoding.ASCII.GetBytes(str.AsSpan(0, Math.Min(str.Length, max)), bytes.Slice(pos));
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CopyASCIIFixedTo(this string str, ref int pos, int max, Span<byte> bytes)
+    {
+      int bytesWritten = Encoding.ASCII.GetBytes(str.AsSpan(0, Math.Min(str.Length, max)), bytes.Slice(pos));
+
+      // This is not needed in the current stackalloc implementation, but not guaranteed in the future.
+      if (bytesWritten < max)
+        bytes.Slice(pos + bytesWritten, max - bytesWritten).Clear();
+
+      pos += max;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Clear(this Span<byte> span, ref int pos, int amount)
+    {
+      span.Slice(pos, amount).Clear();
+      pos += amount;
+    }
   }
 }

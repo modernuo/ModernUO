@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: MapPackets.cs - Created: 2020/05/03 - Updated: 2020/06/24       *
+ * File: ServerInfo.cs - Created: 2020/06/25 - Updated: 2020/06/25       *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,48 +18,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+using System.Net;
+
 namespace Server.Network
 {
-  public sealed class MapPatches : Packet
+  public sealed class ServerInfo
   {
-    // TODO: Base this on the client version and expansion
-    public MapPatches() : base(0xBF)
+    public ServerInfo(string name, int fullPercent, TimeZoneInfo tz, IPEndPoint address)
     {
-      EnsureCapacity(9 + 4 * 8);
-
-      Stream.Write((short)0x18);
-
-      Stream.Write(4);
-
-      Stream.Write(Map.Felucca.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Felucca.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Trammel.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Trammel.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Ilshenar.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Ilshenar.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Malas.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Malas.Tiles.Patch.LandBlocks);
+      Name = name;
+      FullPercent = fullPercent;
+      TimeZone = tz.GetUtcOffset(DateTime.Now).Hours;
+      Address = address;
     }
-  }
 
-  public sealed class InvalidMapEnable : Packet
-  {
-    public InvalidMapEnable() : base(0xC6, 1)
-    {
-    }
-  }
+    public string Name { get; set; }
 
-  public sealed class MapChange : Packet
-  {
-    public MapChange(Map map) : base(0xBF)
-    {
-      EnsureCapacity(6);
+    public int FullPercent { get; set; }
 
-      Stream.Write((short)0x08);
-      Stream.Write((byte)map.MapID);
-    }
+    public int TimeZone { get; set; }
+
+    public IPEndPoint Address { get; set; }
   }
 }

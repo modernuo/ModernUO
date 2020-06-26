@@ -685,7 +685,7 @@ namespace Server.Mobiles
       m_LastPersonalLight = personal;
 
       ns.Send(GlobalLightLevel.Instantiate(global));
-      ns.Send(new PersonalLightLevel(this, personal));
+      ns.Send(new PersonalLightLevel(this.Serial, personal));
     }
 
     public override int GetMinResistance(ResistanceType type)

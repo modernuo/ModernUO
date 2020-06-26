@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: PlayerPackets.cs - Created: 2020/05/07 - Updated: 2020/05/26    *
+ * File: PlayerPackets.cs - Created: 2020/05/07 - Updated: 2020/06/25    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,8 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+
 namespace Server.Network
 {
+  public enum LRReason : byte
+  {
+    CannotLift = 0,
+    OutOfRange = 1,
+    OutOfSight = 2,
+    TryToSteal = 3,
+    AreHolding = 4,
+    Inspecific = 5
+  }
+
   public sealed class StatLockInfo : Packet
   {
     public StatLockInfo(Mobile m) : base(0xBF)
@@ -34,14 +46,6 @@ namespace Server.Network
       var lockBits = ((int)m.StrLock << 4) | ((int)m.DexLock << 2) | (int)m.IntLock;
 
       Stream.Write((byte)lockBits);
-    }
-  }
-
-  public sealed class ChangeCombatant : Packet
-  {
-    public ChangeCombatant(Mobile combatant) : base(0xAA, 5)
-    {
-      Stream.Write(combatant?.Serial ?? Serial.Zero);
     }
   }
 
@@ -82,21 +86,6 @@ namespace Server.Network
     public static Packet Instantiate(bool dead) => dead ? Dead : Alive;
   }
 
-  public sealed class SpeedControl : Packet
-  {
-    public static readonly Packet WalkSpeed = SetStatic(new SpeedControl(2));
-    public static readonly Packet MountSpeed = SetStatic(new SpeedControl(1));
-    public static readonly Packet Disable = SetStatic(new SpeedControl(0));
-
-    public SpeedControl(int speedControl) : base(0xBF)
-    {
-      EnsureCapacity(3);
-
-      Stream.Write((short)0x26);
-      Stream.Write((byte)speedControl);
-    }
-  }
-
   public sealed class ToggleSpecialAbility : Packet
   {
     public ToggleSpecialAbility(int abilityID, bool active) : base(0xBF)
@@ -107,48 +96,6 @@ namespace Server.Network
 
       Stream.Write((short)abilityID);
       Stream.Write(active);
-    }
-  }
-
-  public sealed class GlobalLightLevel : Packet
-  {
-    private static readonly GlobalLightLevel[] m_Cache = new GlobalLightLevel[0x100];
-
-    public GlobalLightLevel(int level) : base(0x4F, 2)
-    {
-      Stream.Write((sbyte)level);
-    }
-
-    public static GlobalLightLevel Instantiate(int level)
-    {
-      var lvl = (byte)level;
-      var p = m_Cache[lvl];
-
-      if (p == null)
-      {
-        m_Cache[lvl] = p = new GlobalLightLevel(level);
-        p.SetStatic();
-      }
-
-      return p;
-    }
-  }
-
-  public sealed class PersonalLightLevel : Packet
-  {
-    public PersonalLightLevel(Mobile m, int level) : base(0x4E, 6)
-    {
-      Stream.Write(m.Serial);
-      Stream.Write((sbyte)level);
-    }
-  }
-
-  public sealed class PersonalLightLevelZero : Packet
-  {
-    public PersonalLightLevelZero(Mobile m) : base(0x4E, 6)
-    {
-      Stream.Write(m.Serial);
-      Stream.Write((sbyte)0);
     }
   }
 
@@ -192,61 +139,6 @@ namespace Server.Network
       Stream.Write((byte)type);
       Stream.Write((byte)density);
       Stream.Write((byte)temp);
-    }
-  }
-
-  /// <summary>
-  ///   Causes the client to walk in a given direction. It does not send a movement request.
-  /// </summary>
-  public sealed class MovePlayer : Packet
-  {
-    public MovePlayer(Direction d) : base(0x97, 2)
-    {
-      Stream.Write((byte)d);
-
-      // @4C63B0
-    }
-  }
-
-  public sealed class SetWarMode : Packet
-  {
-    public static readonly Packet InWarMode = SetStatic(new SetWarMode(true));
-    public static readonly Packet InPeaceMode = SetStatic(new SetWarMode(false));
-
-    public SetWarMode(bool mode) : base(0x72, 5)
-    {
-      Stream.Write(mode);
-      Stream.Write((byte)0x00);
-      Stream.Write((byte)0x32);
-      Stream.Write((byte)0x00);
-      // m_Stream.Fill();
-    }
-
-    public static Packet Instantiate(bool mode) => mode ? InWarMode : InPeaceMode;
-  }
-
-  public sealed class Swing : Packet
-  {
-    public Swing(int flag, Mobile attacker, Mobile defender) : base(0x2F, 10)
-    {
-      Stream.Write((byte)flag);
-      Stream.Write(attacker.Serial);
-      Stream.Write(defender.Serial);
-    }
-  }
-
-  public sealed class NullFastwalkStack : Packet
-  {
-    public NullFastwalkStack() : base(0xBF)
-    {
-      EnsureCapacity(256);
-      Stream.Write((short)0x1);
-      Stream.Write(0x0);
-      Stream.Write(0x0);
-      Stream.Write(0x0);
-      Stream.Write(0x0);
-      Stream.Write(0x0);
-      Stream.Write(0x0);
     }
   }
 
@@ -358,8 +250,7 @@ namespace Server.Network
 
   public sealed class SeasonChange : Packet
   {
-    private static readonly SeasonChange[][] m_Cache = new SeasonChange[][]
-    {
+    private static readonly SeasonChange[][] m_Cache = {
       new SeasonChange[2],
       new SeasonChange[2],
       new SeasonChange[2],
@@ -459,6 +350,78 @@ namespace Server.Network
       }
 
       return p;
+    }
+  }
+
+  public sealed class ScrollMessage : Packet
+  {
+    public ScrollMessage(int type, int tip, string text) : base(0xA6)
+    {
+      text ??= "";
+
+      EnsureCapacity(10 + text.Length);
+
+      Stream.Write((byte)type);
+      Stream.Write(tip);
+      Stream.Write((ushort)text.Length);
+      Stream.WriteAsciiFixed(text, text.Length);
+    }
+  }
+
+  public sealed class CurrentTime : Packet
+  {
+    public CurrentTime() : base(0x5B, 4)
+    {
+      var now = DateTime.UtcNow;
+
+      Stream.Write((byte)now.Hour);
+      Stream.Write((byte)now.Minute);
+      Stream.Write((byte)now.Second);
+    }
+  }
+
+  public sealed class PathfindMessage : Packet
+  {
+    public PathfindMessage(IPoint3D p) : base(0x38, 7)
+    {
+      Stream.Write((short)p.X);
+      Stream.Write((short)p.Y);
+      Stream.Write((short)p.Z);
+    }
+  }
+
+  public sealed class PingAck : Packet
+  {
+    private static readonly PingAck[] m_Cache = new PingAck[0x100];
+
+    public PingAck(byte ping) : base(0x73, 2)
+    {
+      Stream.Write(ping);
+    }
+
+    public static PingAck Instantiate(byte ping)
+    {
+      var p = m_Cache[ping];
+
+      if (p == null)
+      {
+        m_Cache[ping] = p = new PingAck(ping);
+        p.SetStatic();
+      }
+
+      return p;
+    }
+  }
+
+  public sealed class ClearWeaponAbility : Packet
+  {
+    public static readonly Packet Instance = SetStatic(new ClearWeaponAbility());
+
+    public ClearWeaponAbility() : base(0xBF)
+    {
+      EnsureCapacity(5);
+
+      Stream.Write((short)0x21);
     }
   }
 }

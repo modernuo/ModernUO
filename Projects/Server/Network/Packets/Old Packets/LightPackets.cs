@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: MapPackets.cs - Created: 2020/05/03 - Updated: 2020/06/24       *
+ * File: LightPackets.cs - Created: 2020/06/25 - Updated: 2020/06/25     *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -20,46 +20,36 @@
 
 namespace Server.Network
 {
-  public sealed class MapPatches : Packet
+  public sealed class GlobalLightLevel : Packet
   {
-    // TODO: Base this on the client version and expansion
-    public MapPatches() : base(0xBF)
+    private static readonly GlobalLightLevel[] m_Cache = new GlobalLightLevel[0x100];
+
+    public GlobalLightLevel(int level) : base(0x4F, 2)
     {
-      EnsureCapacity(9 + 4 * 8);
+      Stream.Write((sbyte)level);
+    }
 
-      Stream.Write((short)0x18);
+    public static GlobalLightLevel Instantiate(int level)
+    {
+      var lvl = (byte)level;
+      var p = m_Cache[lvl];
 
-      Stream.Write(4);
+      if (p == null)
+      {
+        m_Cache[lvl] = p = new GlobalLightLevel(level);
+        p.SetStatic();
+      }
 
-      Stream.Write(Map.Felucca.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Felucca.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Trammel.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Trammel.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Ilshenar.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Ilshenar.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Malas.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Malas.Tiles.Patch.LandBlocks);
+      return p;
     }
   }
 
-  public sealed class InvalidMapEnable : Packet
+  public sealed class PersonalLightLevel : Packet
   {
-    public InvalidMapEnable() : base(0xC6, 1)
+    public PersonalLightLevel(Serial mobile, int level = 0) : base(0x4E, 6)
     {
-    }
-  }
-
-  public sealed class MapChange : Packet
-  {
-    public MapChange(Map map) : base(0xBF)
-    {
-      EnsureCapacity(6);
-
-      Stream.Write((short)0x08);
-      Stream.Write((byte)map.MapID);
+      Stream.Write(mobile);
+      Stream.Write((sbyte)level);
     }
   }
 }

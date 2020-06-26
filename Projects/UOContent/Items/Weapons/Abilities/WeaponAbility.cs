@@ -310,8 +310,8 @@ namespace Server.Items
     }
 
     public static bool IsWeaponAbility(Mobile m, WeaponAbility a) =>
-      a == null || !m.Player || (m.Weapon is BaseWeapon weapon &&
-      (weapon.PrimaryAbility == a || weapon.SecondaryAbility == a));
+      a == null || !m.Player || m.Weapon is BaseWeapon weapon &&
+      (weapon.PrimaryAbility == a || weapon.SecondaryAbility == a);
 
     public static WeaponAbility GetCurrentAbility(Mobile m)
     {

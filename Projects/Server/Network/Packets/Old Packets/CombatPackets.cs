@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: MapPackets.cs - Created: 2020/05/03 - Updated: 2020/06/24       *
+ * File: CombatPackets.cs - Created: 2020/06/25 - Updated: 2020/06/25    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -20,46 +20,37 @@
 
 namespace Server.Network
 {
-  public sealed class MapPatches : Packet
+  public sealed class Swing : Packet
   {
-    // TODO: Base this on the client version and expansion
-    public MapPatches() : base(0xBF)
+    public Swing(Serial attacker, Serial defender) : base(0x2F, 10)
     {
-      EnsureCapacity(9 + 4 * 8);
-
-      Stream.Write((short)0x18);
-
-      Stream.Write(4);
-
-      Stream.Write(Map.Felucca.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Felucca.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Trammel.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Trammel.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Ilshenar.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Ilshenar.Tiles.Patch.LandBlocks);
-
-      Stream.Write(Map.Malas.Tiles.Patch.StaticBlocks);
-      Stream.Write(Map.Malas.Tiles.Patch.LandBlocks);
+      Stream.Write((byte)0);
+      Stream.Write(attacker);
+      Stream.Write(defender);
     }
   }
 
-  public sealed class InvalidMapEnable : Packet
+  public sealed class SetWarMode : Packet
   {
-    public InvalidMapEnable() : base(0xC6, 1)
+    public static readonly Packet InWarMode = SetStatic(new SetWarMode(true));
+    public static readonly Packet InPeaceMode = SetStatic(new SetWarMode(false));
+
+    public SetWarMode(bool mode) : base(0x72, 5)
     {
+      Stream.Write(mode);
+      Stream.Write((byte)0x00);
+      Stream.Write((byte)0x32);
+      Stream.Write((byte)0x00);
     }
+
+    public static Packet Instantiate(bool mode) => mode ? InWarMode : InPeaceMode;
   }
 
-  public sealed class MapChange : Packet
+  public sealed class ChangeCombatant : Packet
   {
-    public MapChange(Map map) : base(0xBF)
+    public ChangeCombatant(Serial combatant) : base(0xAA, 5)
     {
-      EnsureCapacity(6);
-
-      Stream.Write((short)0x08);
-      Stream.Write((byte)map.MapID);
+      Stream.Write(combatant);
     }
   }
 }

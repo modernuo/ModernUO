@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: MessagePackets.cs - Created: 2020/05/26 - Updated: 2020/05/26   *
+ * File: MessagePackets.cs - Created: 2020/05/26 - Updated: 2020/06/25   *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -18,8 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+
 namespace Server.Network
 {
+  [Flags]
+  public enum AffixType : byte
+  {
+    Append = 0x00,
+    Prepend = 0x01,
+    System = 0x02
+  }
+
   public sealed class MessageLocalized : Packet
   {
     private static readonly MessageLocalized[] m_Cache_IntLoc = new MessageLocalized[15000];
@@ -161,6 +171,15 @@ namespace Server.Network
       Stream.WriteAsciiFixed(lang, 4);
       Stream.WriteAsciiFixed(name, 30);
       Stream.WriteBigUniNull(text);
+    }
+  }
+
+  public sealed class FollowMessage : Packet
+  {
+    public FollowMessage(Serial serial1, Serial serial2) : base(0x15, 9)
+    {
+      Stream.Write(serial1);
+      Stream.Write(serial2);
     }
   }
 }

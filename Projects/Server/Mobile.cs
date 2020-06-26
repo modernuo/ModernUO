@@ -446,8 +446,7 @@ namespace Server
     private static readonly TimeSpan WarmodeSpamCatch = TimeSpan.FromSeconds(Core.SE ? 1.0 : 0.5);
     private static readonly TimeSpan WarmodeSpamDelay = TimeSpan.FromSeconds(Core.SE ? 4.0 : 2.0);
 
-    private static readonly Packet[][] m_MovingPacketCache = new Packet[][]
-    {
+    private static readonly Packet[][] m_MovingPacketCache = {
       new Packet[8],
       new Packet[8]
     };
@@ -897,10 +896,9 @@ namespace Server
             return;
           }
 
-          m_NetState?.Send(new ChangeCombatant(m_Combatant));
-
           if (m_Combatant == null)
           {
+            m_NetState?.Send(new ChangeCombatant(Serial.Zero));
             m_ExpireCombatant?.Stop();
             m_CombatTimer?.Stop();
 
@@ -909,18 +907,18 @@ namespace Server
           }
           else
           {
+            m_NetState?.Send(new ChangeCombatant(m_Combatant.Serial));
             m_ExpireCombatant ??= new ExpireCombatantTimer(this);
             m_ExpireCombatant.Start();
 
             m_CombatTimer ??= new CombatTimer(this);
             m_CombatTimer.Start();
-          }
 
-          if (m_Combatant != null && CanBeHarmful(m_Combatant, false))
-          {
-            DoHarmful(m_Combatant);
-
-            m_Combatant?.PlaySound(m_Combatant.GetAngerSound());
+            if (CanBeHarmful(m_Combatant, false))
+            {
+              DoHarmful(m_Combatant);
+              m_Combatant.PlaySound(m_Combatant.GetAngerSound());
+            }
           }
 
           OnCombatantChange();
@@ -2062,7 +2060,8 @@ namespace Server
           if (ns != null && m_Map != null)
           {
             ns.Sequence = 0;
-            ns.Send(new MapChange(this));
+            if (Map != null)
+              ns.Send(new MapChange(Map));
 
             if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
               ns.Send(new MapPatches());
@@ -2187,7 +2186,8 @@ namespace Server
         if (ns != null && m_Map != null)
         {
           ns.Sequence = 0;
-          ns.Send(new MapChange(this));
+          if (Map != null)
+            ns.Send(new MapChange(Map));
 
           if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
             ns.Send(new MapPatches());
@@ -4136,27 +4136,16 @@ namespace Server
       CheckAggrExpire();
 
       PoisonTimer?.Stop();
-
       m_HitsTimer?.Stop();
-
       m_StamTimer?.Stop();
-
       m_ManaTimer?.Stop();
-
       m_CombatTimer?.Stop();
-
       m_ExpireCombatant?.Stop();
-
       m_LogoutTimer?.Stop();
-
       m_ExpireCriminal?.Stop();
-
       m_WarmodeTimer?.Stop();
-
       m_ParaTimer?.Stop();
-
       m_FrozenTimer?.Stop();
-
       m_AutoManifestTimer?.Stop();
     }
 
@@ -4305,11 +4294,12 @@ namespace Server
         Packet animPacket = null;
 
         var eable = m_Map.GetClientsInRange(m_Location);
+        var corpseSerial = c?.Serial ?? Serial.Zero;
 
         foreach (var state in eable)
           if (state != m_NetState)
           {
-            animPacket ??= Packet.Acquire(new DeathAnimation(this, c));
+            animPacket ??= Packet.Acquire(new DeathAnimation(Serial, corpseSerial));
 
             state.Send(animPacket);
 
@@ -5307,8 +5297,8 @@ namespace Server
         if (ourState != null)
         {
           p = ourState.DamagePacket
-            ? Packet.Acquire(new DamagePacket(this, amount))
-            : Packet.Acquire(new DamagePacketOld(this, amount));
+            ? Packet.Acquire(new DamagePacket(Serial, amount))
+            : Packet.Acquire(new DamagePacketOld(Serial, amount));
 
           ourState.Send(p);
         }
@@ -5320,12 +5310,12 @@ namespace Server
           if (newPacket && !(p is DamagePacket))
           {
             Packet.Release(p);
-            p = Packet.Acquire(new DamagePacket(this, amount));
+            p = Packet.Acquire(new DamagePacket(Serial, amount));
           }
           else if (!newPacket && !(p is DamagePacketOld))
           {
             Packet.Release(p);
-            p = Packet.Acquire(new DamagePacketOld(this, amount));
+            p = Packet.Acquire(new DamagePacketOld(Serial, amount));
           }
 
           theirState.Send(p);
@@ -5355,13 +5345,13 @@ namespace Server
         {
           if (ns.DamagePacket)
           {
-            pNew ??= Packet.Acquire(new DamagePacket(this, amount));
+            pNew ??= Packet.Acquire(new DamagePacket(Serial, amount));
 
             ns.Send(pNew);
           }
           else
           {
-            pOld ??= Packet.Acquire(new DamagePacketOld(this, amount));
+            pOld ??= Packet.Acquire(new DamagePacketOld(Serial, amount));
 
             ns.Send(pOld);
           }
@@ -5410,17 +5400,17 @@ namespace Server
         if (damaged.CanSeeVisibleDamage && ourState != null)
         {
           if (ourState.DamagePacket)
-            ourState.Send(new DamagePacket(this, amount));
+            ourState.Send(new DamagePacket(Serial, amount));
           else
-            ourState.Send(new DamagePacketOld(this, amount));
+            ourState.Send(new DamagePacketOld(Serial, amount));
         }
 
         if (theirState != null && theirState != ourState && damager.CanSeeVisibleDamage)
         {
           if (theirState.DamagePacket)
-            theirState.Send(new DamagePacket(this, amount));
+            theirState.Send(new DamagePacket(Serial, amount));
           else
-            theirState.Send(new DamagePacketOld(this, amount));
+            theirState.Send(new DamagePacketOld(Serial, amount));
         }
       }
     }
@@ -6012,11 +6002,11 @@ namespace Server
         {
           state.Mobile.ProcessDelta();
 
-          // if (state.StygianAbyss ) {
+          // if (state.StygianAbyss) {
           // if (pNew == null)
-          // pNew = Packet.Acquire( new NewMobileAnimation( this, action, frameCount, delay ) );
+          // pNew = Packet.Acquire(new NewMobileAnimation(this.Serial, action, frameCount, delay));
 
-          // state.Send( pNew );
+          // state.Send(pNew);
           // } else {
           if (p == null)
           {
@@ -6048,7 +6038,7 @@ namespace Server
               }
             }
 
-            p = Packet.Acquire(new MobileAnimation(this, action, frameCount, repeatCount, forward, repeat,
+            p = Packet.Acquire(new MobileAnimation(Serial, action, frameCount, repeatCount, forward, repeat,
               delay));
           }
 

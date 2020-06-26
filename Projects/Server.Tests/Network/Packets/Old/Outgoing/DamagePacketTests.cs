@@ -15,11 +15,11 @@ namespace Server.Tests.Network.Packets
       var m = new Mobile(0x1);
       m.DefaultMobileInit();
 
-      Span<byte> data = new DamagePacketOld(m, inputAmount).Compile();
+      Span<byte> data = new DamagePacketOld(m.Serial, inputAmount).Compile();
 
       Span<byte> expectedData = stackalloc byte[]
       {
-        0xBF, // Packet
+        0xBF, // Packet ID
         0x00, 0x0B, // Length
         0x00, 0x22, // Sub-packet
         0x01, // Command
@@ -36,16 +36,16 @@ namespace Server.Tests.Network.Packets
     [InlineData(-5, 0)]
     [InlineData(1024, 1024)]
     [InlineData(100000, 0xFFFF)]
-    public void TestDamagePacket(int inputAmount, ushort expectedAmount)
+    public void TestDamage(int inputAmount, ushort expectedAmount)
     {
       var m = new Mobile(0x1);
       m.DefaultMobileInit();
 
-      Span<byte> data = new DamagePacket(m, inputAmount).Compile();
+      Span<byte> data = new DamagePacket(m.Serial, inputAmount).Compile();
 
       Span<byte> expectedData = stackalloc byte[]
       {
-        0x0B, // Packet
+        0x0B, // Packet ID
         0x00, 0x00, 0x00, 0x00, // Mobile Serial
         0x00, 0x00 // Amount
       };
