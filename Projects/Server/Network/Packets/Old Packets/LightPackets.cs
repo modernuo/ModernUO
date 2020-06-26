@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: LightPackets.cs - Created: 2020/06/25 - Updated: 2020/06/25         *
+ * File: LightPackets.cs - Created: 2020/06/25 - Updated: 2020/06/25     *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *

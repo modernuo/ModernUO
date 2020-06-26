@@ -19,7 +19,6 @@
  *************************************************************************/
 
 using System;
-using System.Net;
 using Server.Accounting;
 
 namespace Server.Network
@@ -166,8 +165,8 @@ namespace Server.Network
 
       Stream.Write((short)0);
       Stream.Write((short)0);
-      Stream.Write((short)(map?.Width ?? 6144));
-      Stream.Write((short)(map?.Height ?? 4096));
+      Stream.Write((short)(map?.Width ?? Map.Felucca.Width));
+      Stream.Write((short)(map?.Height ?? Map.Felucca.Height));
 
       Stream.Fill();
     }
@@ -282,8 +281,6 @@ namespace Server.Network
 
   public sealed class CharacterListOld : Packet
   {
-    // private static MD5CryptoServiceProvider m_MD5Provider;
-
     public CharacterListOld(IAccount a, CityInfo[] info) : base(0xA9)
     {
       EnsureCapacity(9 + a.Length * 60 + info.Length * 63);

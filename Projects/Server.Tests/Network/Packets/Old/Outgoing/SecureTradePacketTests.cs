@@ -39,7 +39,7 @@ namespace Server.Tests.Network.Packets
       firstCont.Serial.CopyTo(ref pos, expectedData);
       secondCont.Serial.CopyTo(ref pos, expectedData);
       pos++;
-      name.CopyASCIITo(ref pos, 30, expectedData);
+      name.CopyASCIIFixedTo(ref pos, 30, expectedData);
 
       AssertThat.Equal(data, expectedData);
     }

@@ -9,6 +9,8 @@ namespace Server.Tests
     // Global setup
     static ServerFixture()
     {
+      Core.Expansion = Expansion.EJ;
+
       // Load Configurations
       ServerConfiguration.Load(true);
 

@@ -36,7 +36,7 @@ namespace Server.Tests.Network.Packets
     [InlineData(-5, 0)]
     [InlineData(1024, 1024)]
     [InlineData(100000, 0xFFFF)]
-    public void TestDamagePacket(int inputAmount, ushort expectedAmount)
+    public void TestDamage(int inputAmount, ushort expectedAmount)
     {
       var m = new Mobile(0x1);
       m.DefaultMobileInit();

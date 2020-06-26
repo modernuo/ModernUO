@@ -14,8 +14,8 @@ namespace Server.Tests.Network.Packets
 
       PacketWriter stream = new PacketWriter(4);
 
-      short cur = 50;
-      short max = 100;
+      const short cur = 50;
+      const short max = 100;
 
       AttributeNormalizer.Write(stream, cur, max);
 
@@ -39,8 +39,8 @@ namespace Server.Tests.Network.Packets
 
       PacketWriter stream = new PacketWriter(4);
 
-      short cur = 50;
-      short max = 100;
+      const short cur = 50;
+      const short max = 100;
 
       AttributeNormalizer.WriteReverse(stream, cur, max);
 
@@ -63,8 +63,8 @@ namespace Server.Tests.Network.Packets
 
       PacketWriter stream = new PacketWriter(4);
 
-      short cur = 50;
-      short max = 100;
+      const short cur = 50;
+      const short max = 100;
 
       AttributeNormalizer.Write(stream, cur, max);
 
@@ -87,8 +87,8 @@ namespace Server.Tests.Network.Packets
 
       PacketWriter stream = new PacketWriter(4);
 
-      short cur = 50;
-      short max = 100;
+      const short cur = 50;
+      const short max = 100;
 
       AttributeNormalizer.WriteReverse(stream, cur, max);
 
