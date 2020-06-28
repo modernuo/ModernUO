@@ -180,16 +180,12 @@ namespace Server
   {
     private static readonly byte[] m_StringBuffer = new byte[20];
 
-    public static readonly bool IsRunningFromXUnit =
-      AppDomain.CurrentDomain.GetAssemblies().Any(
-        a => a.FullName?.ToLowerInvariant().StartsWith("xunit") ?? false);
-
     static TileData()
     {
       ItemTable = new ItemData[0x10000];
       LandTable = new LandData[0x4000];
 
-      if (IsRunningFromXUnit) return;
+      if (Core.IsRunningFromXUnit) return;
 
       var filePath = Core.FindDataFile("tiledata.mul");
 
