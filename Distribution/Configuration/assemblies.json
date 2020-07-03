@@ -12,6 +12,6 @@
   "Microsoft.Extensions.Primitives.dll",
   "MimeKit.dll",
   "System.IO.Pipelines.dll",
-  "ZLib.Bindings.dll",
+  "Zlib.Bindings.dll",
   "UOContent.dll"
 ]

@@ -13,6 +13,7 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 [![GitHub stars](https://img.shields.io/github/stars/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/modernuo/ModernUO?logo=github)](https://github.com/modernuo/ModernUO/issues)
 [![GitHub build](https://img.shields.io/github/workflow/status/modernuo/ModernUO/Build?logo=github)](https://github.com/modernuo/ModernUO/actions)
+[![AzurePipelines build](https://dev.azure.com/modernuo/modernuo/_apis/build/status/Build?branchName=master)](https://dev.azure.com/modernuo/modernuo/_build/latest?definitionId=1&branchName=master)
 
 ## Goals
 - See [Goals](./GOALS.md)
@@ -21,27 +22,27 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 #### Requirements
 - [.NET Core 3.1.4 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
-#### Publishing
-OSX/Linux
-- `./Tools/publish.sh [linux|osx|win] [Release|Debug (default: Release)]`
-
-Windows
-- `Tools\publish.cmd [linux|osx|win] [Release|Debug (default: Release)]`
+#### Publishing Builds
+- `./Tools/publish.cmd [os] [Release|Debug (default: Release)]`
+  - Supported `os`:
+    - `win` for Windows 8/10/2019
+    - `osx` for MacOS
+    - `ubuntu.16.04`, `ubuntu.18.04` for Ubuntu (20.04 will be supported in the next .NET Core Release)
+    - `debian.9`, `debian.10` for Debian
+    - `centos.7`, `centos.8` for CentOS
+    - If blank, will use host operating system
 
 ## Deploying / Running Server
 - Follow the [publish](https://github.com/modernuo/ModernUO#publishing-a-build) instructions
-- Copy `Distribution` directory to production server
+- Copy `Distribution` directory to the production server
 
 #### Requirements
 - [.NET Core 3.1 Runtime](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
-#### Windows
-- Run `ModernUO.exe` or `dotnet ModernUO.dll`
+#### Running
+- `dotnet ModernUO.dll`
 
-#### OSX and Linux
-- Run `./ModernUO` or `dotnet ./ModernUO.dll`
-
-#### Cleaning Distribution
+#### Cleaning
 - `dotnet clean`
 
 ## Thanks

@@ -1,0 +1,85 @@
+name: 'Build'
+
+trigger:
+- master
+
+variables:
+  buildConfiguration: 'Release'
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+- job: BuildWindows
+  displayName: 'Windows Server 2019'
+  pool:
+    vmImage: 'windows-latest'
+
+  steps:
+  - task: NuGetToolInstaller@1
+    inputs:
+      versionSpec: '5.x'
+    displayName: 'Install latest NuGet'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'custom'
+      custom: 'restore'
+      arguments: '--force-evaluate'
+    displayName: 'Restore NuGet Packages'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+      arguments: '-c $(buildConfiguration) --no-restore'
+      projects: '**/Projects/Server/Server.csproj'
+    displayName: 'Build Server'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+      arguments: '-c $(buildConfiguration) --no-restore'
+      projects: '**/Projects/UOContent/UOContent.csproj'
+    displayName: 'Build UO Content'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'test'
+      arguments: '--no-restore'
+    displayName: 'Test'
+
+- job: BuildLinux
+  strategy:
+    matrix:
+      'Debian 10':
+        containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
+      'Ubuntu 18':
+        containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-bionic
+      # 'Ubuntu 20':
+      #   containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-focal
+
+  displayName: Linux
+
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  container: $[ variables['containerImage'] ]
+
+  steps:
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'custom'
+      custom: 'restore'
+      arguments: '--force-evaluate'
+    displayName: 'Restore NuGet Packages'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+      arguments: '-c $(buildConfiguration) --no-restore'
+      projects: '**/Projects/Server/Server.csproj'
+    displayName: 'Build Server'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+      arguments: '-c $(buildConfiguration) --no-restore'
+      projects: '**/Projects/UOContent/UOContent.csproj'
+    displayName: 'Build UO Content'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'test'
+      arguments: '--no-restore'
+    displayName: 'Test'
