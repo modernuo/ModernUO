@@ -13,39 +13,19 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: windows-latest
-            rid: win-x64
-          - os: ubuntu-latest
-            rid: linux-x64
           - os: macos-latest
-            rid: osx-x64
 
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.300
-    - name: NuGet Cache
-      id: nuget-cache
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.nuget/packages
-          ${{ github.workspace }}/Projects/*/obj/project.assets.json
-          ${{ github.workspace }}/Projects/*/obj/project.nuget.cache
-          ${{ github.workspace }}/Projects/*/obj/*.csproj.nuget.*
-        key: ${{ matrix.os }}-nuget-cache-v7-${{ hashFiles('**/packages.lock.json') }}
-        restore-keys: |
-          ${{ matrix.os }}-nuget-cache-v7
-    - name: Restore dependencies
-      if: steps.nuget-cache.outputs.cache-hit != 'true' || steps.zlib-cache.outputs.cache-hit != 'true'
+        dotnet-version: 3.1.301
+    - name: Restore NuGet Packages
       run: dotnet restore --force-evaluate
     - name: Build Server
       run: dotnet build -c Release --no-restore Projects/Server/Server.csproj
     - name: Build UO Content
       run: dotnet build -c Release --no-restore Projects/UOContent/UOContent.csproj
-    - name: Test Server
-      run: dotnet test -r ${{ matrix.rid }} --no-restore Projects/Server.Tests/Server.Tests.csproj
-    - name: Test UOContent
-      run: dotnet test -r ${{ matrix.rid }} --no-restore Projects/UOContent.Tests/UOContent.Tests.csproj
+    - name: Test
+      run: dotnet test --no-restore
