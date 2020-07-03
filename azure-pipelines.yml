@@ -9,6 +9,9 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  buildConfiguration: 'Release'
+
 container: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
 
 steps:
@@ -21,6 +24,18 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: |
-      src/Projects/Server/Server.csproj
-      src/Projects/UOContent/UOContent.csproj
+    arguments: '-c $(buildConfiguration)'
+    projects: '**/Projects/Server/Server.csproj'
+  displayName: 'Build Server'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    arguments: '-c $(buildConfiguration)'
+    projects: '**/Projects/UOContent/UOContent.csproj'
+  displayName: 'Build UO Content'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+  displayName: 'Test'
