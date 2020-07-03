@@ -1,4 +1,4 @@
-name: 'Build debian'
+name: 'Build'
 
 trigger:
 - master
@@ -10,7 +10,18 @@ variables:
   buildConfiguration: 'Release'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
-container: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
+strategy:
+  matrix:
+    win2019:
+      containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1
+    debian10:
+      containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
+    ubuntu18:
+      containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-bionic
+    ubuntu20:
+      containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-focal
+
+container: $[ variables['containerImage'] ]
 
 steps:
 - task: DotNetCoreCLI@2
