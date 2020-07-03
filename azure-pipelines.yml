@@ -9,7 +9,7 @@ variables:
 
 jobs:
 - job: BuildWindows
-  displayName: Build (Server 2019)
+  displayName: 'Server 2019'
   pool:
     vmImage: 'windows-latest'
 
@@ -41,7 +41,7 @@ jobs:
     displayName: 'Test'
 
 - job: BuildMacOS
-  displayName: Build (OSX Catalina)
+  displayName: 'OSX Catalina'
   pool:
     vmImage: 'macos-latest'
 
@@ -75,17 +75,14 @@ jobs:
 - job: BuildLinux
   strategy:
     matrix:
-      debian10:
-        jobName: 'Debian 10'
+      'Debian 10':
         containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
-      ubuntu18:
-        jobName: 'Ubuntu 18'
+      'Ubuntu 18':
         containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-bionic
-      # ubuntu20:
-      #   jobName: 'Ubuntu 20'
+      # 'Ubuntu 20':
       #   containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-focal
 
-  displayName: Linux $[ variables['jobName'] ]
+  displayName: Linux
 
   pool:
     vmImage: 'ubuntu-latest'
