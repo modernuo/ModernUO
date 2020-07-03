@@ -14,7 +14,8 @@ container: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
 steps:
 - task: DotNetCoreCLI@2
   inputs:
-    command: 'restore'
+    command: 'custom'
+    custom: 'restore'
     arguments: '--force-evaluate'
 
 - task: DotNetCoreCLI@2
