@@ -14,27 +14,28 @@ jobs:
     vmImage: 'windows-latest'
 
   steps:
+  - task: NuGetToolInstaller@1
+    inputs:
+      versionSpec: '5.x'
+    displayName: 'Install latest NuGet'
   - task: DotNetCoreCLI@2
     inputs:
       command: 'custom'
       custom: 'restore'
       arguments: '--force-evaluate'
     displayName: 'Restore NuGet Packages'
-
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
       arguments: '-c $(buildConfiguration) --no-restore'
       projects: '**/Projects/Server/Server.csproj'
     displayName: 'Build Server'
-
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
       arguments: '-c $(buildConfiguration) --no-restore'
       projects: '**/Projects/UOContent/UOContent.csproj'
     displayName: 'Build UO Content'
-
   - task: DotNetCoreCLI@2
     inputs:
       command: 'test'
@@ -65,21 +66,18 @@ jobs:
       custom: 'restore'
       arguments: '--force-evaluate'
     displayName: 'Restore NuGet Packages'
-
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
       arguments: '-c $(buildConfiguration) --no-restore'
       projects: '**/Projects/Server/Server.csproj'
     displayName: 'Build Server'
-
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
       arguments: '-c $(buildConfiguration) --no-restore'
       projects: '**/Projects/UOContent/UOContent.csproj'
     displayName: 'Build UO Content'
-
   - task: DotNetCoreCLI@2
     inputs:
       command: 'test'
