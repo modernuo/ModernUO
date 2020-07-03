@@ -8,6 +8,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 container: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
 
