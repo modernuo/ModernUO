@@ -9,41 +9,9 @@ variables:
 
 jobs:
 - job: BuildWindows
-  displayName: 'Server 2019'
+  displayName: 'Windows Server 2019'
   pool:
     vmImage: 'windows-latest'
-
-  steps:
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'custom'
-      custom: 'restore'
-      arguments: '--force-evaluate'
-    displayName: 'Restore NuGet Packages'
-
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'build'
-      arguments: '-c $(buildConfiguration)'
-      projects: '**/Projects/Server/Server.csproj'
-    displayName: 'Build Server'
-
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'build'
-      arguments: '-c $(buildConfiguration)'
-      projects: '**/Projects/UOContent/UOContent.csproj'
-    displayName: 'Build UO Content'
-
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'test'
-    displayName: 'Test'
-
-- job: BuildMacOS
-  displayName: 'OSX Catalina'
-  pool:
-    vmImage: 'macos-latest'
 
   steps:
   - task: DotNetCoreCLI@2
