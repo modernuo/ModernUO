@@ -20,6 +20,7 @@ steps:
     command: 'custom'
     custom: 'restore'
     arguments: '--force-evaluate'
+  displayName: 'Restore NuGet Packages'
 
 - task: DotNetCoreCLI@2
   inputs:
