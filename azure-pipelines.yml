@@ -18,8 +18,8 @@ strategy:
       containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
     ubuntu18:
       containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-bionic
-    ubuntu20:
-      containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-focal
+    # ubuntu20:
+    #   containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-focal
 
 container: $[ variables['containerImage'] ]
 
