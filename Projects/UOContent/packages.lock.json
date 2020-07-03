@@ -56,9 +56,9 @@
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.0.3, )",
-        "resolved": "1.0.3",
-        "contentHash": "zk4N0anMKT8s25NY2Euw+Z5mwlSoh2D1XyYik0NJ2fRrSw96hP7nnu9ii2BRdl0ttdl0oflNZ9cme99JoSavyQ=="
+        "requested": "[1.1.0, )",
+        "resolved": "1.1.0",
+        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -792,7 +792,7 @@
           "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv": "3.1.5",
           "Microsoft.Extensions.Hosting.Abstractions": "3.1.5",
           "System.IO.Pipelines": "4.7.2",
-          "Zlib.Bindings": "1.0.3"
+          "Zlib.Bindings": "1.1.0"
         }
       }
     },
@@ -805,9 +805,9 @@
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.0.3, )",
-        "resolved": "1.0.3",
-        "contentHash": "zk4N0anMKT8s25NY2Euw+Z5mwlSoh2D1XyYik0NJ2fRrSw96hP7nnu9ii2BRdl0ttdl0oflNZ9cme99JoSavyQ=="
+        "requested": "[1.1.0, )",
+        "resolved": "1.1.0",
+        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -1553,9 +1553,9 @@
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.0.3, )",
-        "resolved": "1.0.3",
-        "contentHash": "zk4N0anMKT8s25NY2Euw+Z5mwlSoh2D1XyYik0NJ2fRrSw96hP7nnu9ii2BRdl0ttdl0oflNZ9cme99JoSavyQ=="
+        "requested": "[1.1.0, )",
+        "resolved": "1.1.0",
+        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -2256,9 +2256,9 @@
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.0.3, )",
-        "resolved": "1.0.3",
-        "contentHash": "zk4N0anMKT8s25NY2Euw+Z5mwlSoh2D1XyYik0NJ2fRrSw96hP7nnu9ii2BRdl0ttdl0oflNZ9cme99JoSavyQ=="
+        "requested": "[1.1.0, )",
+        "resolved": "1.1.0",
+        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -2959,9 +2959,9 @@
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.0.3, )",
-        "resolved": "1.0.3",
-        "contentHash": "zk4N0anMKT8s25NY2Euw+Z5mwlSoh2D1XyYik0NJ2fRrSw96hP7nnu9ii2BRdl0ttdl0oflNZ9cme99JoSavyQ=="
+        "requested": "[1.1.0, )",
+        "resolved": "1.1.0",
+        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -3662,9 +3662,9 @@
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.0.3, )",
-        "resolved": "1.0.3",
-        "contentHash": "zk4N0anMKT8s25NY2Euw+Z5mwlSoh2D1XyYik0NJ2fRrSw96hP7nnu9ii2BRdl0ttdl0oflNZ9cme99JoSavyQ=="
+        "requested": "[1.1.0, )",
+        "resolved": "1.1.0",
+        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -4365,9 +4365,9 @@
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.0.3, )",
-        "resolved": "1.0.3",
-        "contentHash": "zk4N0anMKT8s25NY2Euw+Z5mwlSoh2D1XyYik0NJ2fRrSw96hP7nnu9ii2BRdl0ttdl0oflNZ9cme99JoSavyQ=="
+        "requested": "[1.1.0, )",
+        "resolved": "1.1.0",
+        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -5113,9 +5113,9 @@
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.0.3, )",
-        "resolved": "1.0.3",
-        "contentHash": "zk4N0anMKT8s25NY2Euw+Z5mwlSoh2D1XyYik0NJ2fRrSw96hP7nnu9ii2BRdl0ttdl0oflNZ9cme99JoSavyQ=="
+        "requested": "[1.1.0, )",
+        "resolved": "1.1.0",
+        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -5816,9 +5816,9 @@
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.0.3, )",
-        "resolved": "1.0.3",
-        "contentHash": "zk4N0anMKT8s25NY2Euw+Z5mwlSoh2D1XyYik0NJ2fRrSw96hP7nnu9ii2BRdl0ttdl0oflNZ9cme99JoSavyQ=="
+        "requested": "[1.1.0, )",
+        "resolved": "1.1.0",
+        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
       },
       "Libuv": {
         "type": "Transitive",

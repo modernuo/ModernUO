@@ -68,7 +68,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
     <!-- Direct packages -->
     <PackageReference Include="MailKit" Version="2.7.0" />
-    <PackageReference Include="Zlib.Bindings" Version="1.0.3" />
+    <PackageReference Include="Zlib.Bindings" Version="1.1.0" />
     <PackageReference Include="Argon2.Bindings" Version="1.5.1" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'=='Analyze'">
