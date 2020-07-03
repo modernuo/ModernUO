@@ -24,20 +24,21 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
-      arguments: '-c $(buildConfiguration)'
+      arguments: '-c $(buildConfiguration) --no-restore'
       projects: '**/Projects/Server/Server.csproj'
     displayName: 'Build Server'
 
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
-      arguments: '-c $(buildConfiguration)'
+      arguments: '-c $(buildConfiguration) --no-restore'
       projects: '**/Projects/UOContent/UOContent.csproj'
     displayName: 'Build UO Content'
 
   - task: DotNetCoreCLI@2
     inputs:
       command: 'test'
+      arguments: '--no-restore'
     displayName: 'Test'
 
 - job: BuildLinux
@@ -68,18 +69,19 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
-      arguments: '-c $(buildConfiguration)'
+      arguments: '-c $(buildConfiguration) --no-restore'
       projects: '**/Projects/Server/Server.csproj'
     displayName: 'Build Server'
 
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
-      arguments: '-c $(buildConfiguration)'
+      arguments: '-c $(buildConfiguration) --no-restore'
       projects: '**/Projects/UOContent/UOContent.csproj'
     displayName: 'Build UO Content'
 
   - task: DotNetCoreCLI@2
     inputs:
       command: 'test'
+      arguments: '--no-restore'
     displayName: 'Test'
