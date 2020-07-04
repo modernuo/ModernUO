@@ -183,10 +183,19 @@ namespace Server.Tests.Network.Packets
     [InlineData(ProtocolChanges.Version6000)]
     public void TestSupportedFeatures(ProtocolChanges protocolChanges)
     {
+      var firstMobile = new Mobile(0x1);
+      firstMobile.DefaultMobileInit();
+      firstMobile.Name = "Test Mobile";
+
+      var account = new TestAccount(new[] {firstMobile, null, null, null, null});
+
       NetState ns = new NetState(new TestConnectionContext
       {
         RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
-      });
+      })
+      {
+        Account = account
+      };
 
       Span<byte> data = new SupportedFeatures(ns).Compile();
 
