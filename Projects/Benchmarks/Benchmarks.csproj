@@ -11,5 +11,4 @@
     <ProjectReference Include="..\Server\Server.csproj" />
     <ProjectReference Include="..\UOContent\UOContent.csproj" />
   </ItemGroup>
-
 </Project>

@@ -1,4 +1,4 @@
-﻿using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Running;
 
 namespace Benchmarks
 {
@@ -6,7 +6,8 @@ namespace Benchmarks
   {
     static void Main(string[] args)
     {
-      var summary = BenchmarkRunner.Run<BenchmarkFeatureFlags>();
+      // var summary = BenchmarkRunner.Run<BenchmarkFeatureFlags>();
+      var summar = BenchmarkRunner.Run<BenchmarkPacketConstruction>();
     }
   }
 }
