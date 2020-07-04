@@ -323,7 +323,7 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[5 + 64 * 19]; // Max size
       int pos = 0;
 
-      ((byte)0x3C).CopyTo(ref pos, expectedData);
+      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
       pos += 4; // Length + spell count
 
       ushort count = 0;
@@ -360,7 +360,7 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[5 + 64 * 19]; // Max size
       int pos = 0;
 
-      ((byte)0x3C).CopyTo(ref pos, expectedData);
+      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
       pos += 4; // Length + spell count
 
       ushort count = 0;
@@ -396,7 +396,7 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[20];
       int pos = 0;
 
-      ((byte)0x25).CopyTo(ref pos, expectedData);
+      ((byte)0x25).CopyTo(ref pos, expectedData); // Packet ID
       item.Serial.CopyTo(ref pos, expectedData);
       ((ushort)item.ItemID).CopyTo(ref pos, expectedData);
       ((byte)0).CopyTo(ref pos, expectedData); // signed, itemID offset
@@ -420,7 +420,7 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[21];
       int pos = 0;
 
-      ((byte)0x25).CopyTo(ref pos, expectedData);
+      ((byte)0x25).CopyTo(ref pos, expectedData); // Packet ID
       item.Serial.CopyTo(ref pos, expectedData);
       ((ushort)item.ItemID).CopyTo(ref pos, expectedData);
       ((byte)0).CopyTo(ref pos, expectedData); // signed, itemID offset
@@ -450,7 +450,7 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[5 + cont.Items.Count * 19]; // Max Size
       int pos = 0;
 
-      ((byte)0x3C).CopyTo(ref pos, expectedData);
+      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
       pos += 4; // Length + Count
 
       ushort written = 0;
@@ -497,7 +497,7 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[5 + cont.Items.Count * 20];
       int pos = 0;
 
-      ((byte)0x3C).CopyTo(ref pos, expectedData);
+      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
       pos += 4; // Length + Count
 
       ushort written = 0;
