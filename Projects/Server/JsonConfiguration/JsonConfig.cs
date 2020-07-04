@@ -46,6 +46,7 @@ namespace Server.Json
       options.Converters.Add(new Point3DConverterFactory());
       options.Converters.Add(new Rectangle3DConverterFactory());
       options.Converters.Add(new TimeSpanConverterFactory());
+      options.Converters.Add(new IPEndPointConverterFactory());
 
       for (int i = 0; i < converters.Length; i++) options.Converters.Add(converters[i]);
 

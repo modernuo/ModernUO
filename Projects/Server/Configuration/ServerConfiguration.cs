@@ -3,7 +3,7 @@
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: ServerConfiguration.cs                                          *
- * Created: 2019/10/04 - Updated: 2020/05/09                             *
+ * Created: 2019/10/04 - Updated: 2020/07/03                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text.Json.Serialization;
 using Server.Json;
 
@@ -35,6 +36,8 @@ namespace Server
     private static bool m_Mocked;
 
     public static List<string> DataDirectories => m_Settings.dataDirectories;
+
+    public static List<IPEndPoint> Listeners => m_Settings.listeners;
 
     public static string GetSetting(string key, string defaultValue)
     {
@@ -167,8 +170,19 @@ namespace Server
       if (m_Settings.dataDirectories.Count == 0)
       {
         updated = true;
+        Utility.PushColor(ConsoleColor.DarkYellow);
         Console.WriteLine("Core: Server configuration is missing data directories.");
-        m_Settings.dataDirectories.Add(GetDataDirectory());
+        Utility.PopColor();
+        m_Settings.dataDirectories.AddRange(GetDataDirectories());
+      }
+
+      if (m_Settings.listeners.Count == 0)
+      {
+        updated = true;
+        Utility.PushColor(ConsoleColor.DarkYellow);
+        Console.WriteLine("Core: Server is missing socket listener IP addresses.");
+        Utility.PopColor();
+        m_Settings.listeners.AddRange(GetListeners());
       }
 
       if (updated)
@@ -185,6 +199,9 @@ namespace Server
       [JsonPropertyName("dataDirectories")]
       public List<string> dataDirectories { get; set; } = new List<string>();
 
+      [JsonPropertyName("listeners")]
+      public List<IPEndPoint> listeners { get; set; } = new List<IPEndPoint>();
+
       [JsonPropertyName("settings")]
       public Dictionary<string, string> settings { get; set; } = new Dictionary<string, string>();
 
@@ -192,18 +209,63 @@ namespace Server
       public Dictionary<string, object> metadata { get; set; } = new Dictionary<string, object>();
     }
 
-    private static string GetDataDirectory()
+    private static List<string> GetDataDirectories()
     {
-      Console.WriteLine("Please enter the Ultima Online directory:");
+      Console.WriteLine("Please enter the absolute path to the Ultima Online data:");
 
-      string directory;
+      List<string> directories = new List<string>();
+
       do
       {
-        Console.Write("> ");
-        directory = Console.ReadLine();
-      } while (!Directory.Exists(directory));
+        Console.Write("{0}> ", directories.Count > 0 ? "[finish] " : " ");
+        var directory = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(directory)) break;
 
-      return directory;
+        if (Directory.Exists(directory))
+        {
+          directories.Add(directory);
+          Console.WriteLine("Core: Path {0} added.", directory);
+        }
+        else
+          Console.WriteLine("Core: Path does not exist. ({0})");
+
+      } while (true);
+
+      return directories;
+    }
+
+    private static List<IPEndPoint> GetListeners()
+    {
+      Console.WriteLine("Please enter the IP and ports to listen:");
+      Console.WriteLine(" - Only enter IP addresses directly bound to this machine");
+      Console.WriteLine(" - To listen to all IP addresses enter 0.0.0.0");
+
+      List<IPEndPoint> ips = new List<IPEndPoint>();
+
+      do
+      { // IP:Port?
+        Console.Write("[{0}]> ", ips.Count > 0 ? "finish" : "0.0.0.0:2593");
+        var ipStr = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(ipStr)) break;
+
+        if (ipStr.IndexOf(":", StringComparison.Ordinal) == -1)
+          ipStr += ":2593";
+
+        if (IPEndPoint.TryParse(ipStr, out var ip))
+        {
+          ips.Add(ip);
+          Console.WriteLine("Core: {0} added.", ipStr);
+        }
+        else
+        {
+          Console.WriteLine("Core: {0} is not a valid IP or port");
+        }
+      } while (true);
+
+      if (ips.Count == 0)
+        ips.Add(new IPEndPoint(IPAddress.Any, 2593));
+
+      return ips;
     }
 
     public static void Save()

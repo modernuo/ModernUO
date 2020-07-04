@@ -386,8 +386,6 @@ namespace Server
 
       AssemblyHandler.Invoke("Initialize");
 
-      AssemblyHandler.Invoke("RegisterListeners");
-
       timerThread.Start();
 
       foreach (var m in Map.AllMaps)
