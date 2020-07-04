@@ -64,7 +64,7 @@ namespace Server.Json
           break;
 
         if (reader.TokenType != JsonTokenType.PropertyName)
-          throw new JsonException("Invalid Json structure for Point3D object");
+          throw new JsonException("Invalid json structure for Point3D object");
 
         var key = reader.GetString();
 

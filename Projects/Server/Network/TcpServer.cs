@@ -32,8 +32,6 @@ namespace Server.Network
 {
   public static class TcpServer
   {
-    public static List<IPEndPoint> Listeners { get; } = new List<IPEndPoint>();
-
     // Make this thread safe
     public static List<NetState> Instances { get; } = new List<NetState>();
 
@@ -45,7 +43,7 @@ namespace Server.Network
         .ConfigureServices(services => { services.AddSingleton<IMessagePumpService>(new MessagePumpService()); })
         .UseKestrel(options =>
         {
-          foreach (var ipep in Listeners)
+          foreach (var ipep in ServerConfiguration.Listeners)
           {
             options.Listen(ipep, builder => { builder.UseConnectionHandler<ServerConnectionHandler>(); });
             m_ListeningAddresses = GetListeningAddresses(ipep);
