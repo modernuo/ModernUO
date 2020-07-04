@@ -50,8 +50,8 @@ namespace Server.Tests.Network.Packets
       ((ushort)toPoint.X).CopyTo(ref pos, expectedData);
       ((ushort)toPoint.Y).CopyTo(ref pos, expectedData);
       ((byte)toPoint.Z).CopyTo(ref pos, expectedData);
-      ((byte)speed).CopyTo(ref pos, expectedData);
-      ((byte)duration).CopyTo(ref pos, expectedData);
+      speed.CopyTo(ref pos, expectedData);
+      duration.CopyTo(ref pos, expectedData);
       expectedData.Clear(ref pos, 2);
       direction.CopyTo(ref pos, expectedData);
       explode.CopyTo(ref pos, expectedData);
@@ -61,7 +61,7 @@ namespace Server.Tests.Network.Packets
       explodeEffect.CopyTo(ref pos, expectedData);
       explodeSound.CopyTo(ref pos, expectedData);
       serial.CopyTo(ref pos, expectedData);
-      ((byte)layer).CopyTo(ref pos, expectedData);
+      layer.CopyTo(ref pos, expectedData);
       unknown.CopyTo(ref pos, expectedData);
 
       AssertThat.Equal(data, expectedData);
@@ -104,8 +104,8 @@ namespace Server.Tests.Network.Packets
       ((ushort)toPoint.X).CopyTo(ref pos, expectedData);
       ((ushort)toPoint.Y).CopyTo(ref pos, expectedData);
       ((byte)toPoint.Z).CopyTo(ref pos, expectedData);
-      ((byte)speed).CopyTo(ref pos, expectedData);
-      ((byte)duration).CopyTo(ref pos, expectedData);
+      speed.CopyTo(ref pos, expectedData);
+      duration.CopyTo(ref pos, expectedData);
       expectedData.Clear(ref pos, 2);
       direction.CopyTo(ref pos, expectedData);
       explode.CopyTo(ref pos, expectedData);

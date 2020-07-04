@@ -37,7 +37,7 @@ namespace Server.Gumps
     private static readonly byte[] m_NoDispose = StringToBuffer("{ nodispose }");
     private static readonly byte[] m_NoResize = StringToBuffer("{ noresize }");
 
-    private readonly List<string> m_Strings;
+    public List<string> Strings { get; }
 
     internal int m_TextEntries, m_Switches;
 
@@ -54,7 +54,7 @@ namespace Server.Gumps
       TypeID = GetTypeID(GetType());
 
       Entries = new List<GumpEntry>();
-      m_Strings = new List<string>();
+      Strings = new List<string>();
     }
 
     public int TypeID { get; }
@@ -206,13 +206,9 @@ namespace Server.Gumps
     public void Add(GumpEntry g)
     {
       if (g.Parent != this)
-      {
         g.Parent = this;
-      }
       else if (!Entries.Contains(g))
-      {
         Entries.Add(g);
-      }
     }
 
     public void Remove(GumpEntry g)
@@ -226,12 +222,12 @@ namespace Server.Gumps
 
     public int Intern(string value)
     {
-      var indexOf = m_Strings.IndexOf(value);
+      var indexOf = Strings.IndexOf(value);
 
       if (indexOf >= 0) return indexOf;
 
-      m_Strings.Add(value);
-      return m_Strings.Count - 1;
+      Strings.Add(value);
+      return Strings.Count - 1;
     }
 
     public void SendTo(NetState state)
@@ -242,7 +238,7 @@ namespace Server.Gumps
 
     public static byte[] StringToBuffer(string str) => Encoding.ASCII.GetBytes(str);
 
-    private Packet Compile(NetState ns = null)
+    public Packet Compile(NetState ns = null)
     {
       IGumpWriter disp;
 
@@ -274,7 +270,7 @@ namespace Server.Gumps
         disp.AppendLayout(m_EndLayout);
       }
 
-      disp.WriteStrings(m_Strings);
+      disp.WriteStrings(Strings);
 
       disp.Flush();
 

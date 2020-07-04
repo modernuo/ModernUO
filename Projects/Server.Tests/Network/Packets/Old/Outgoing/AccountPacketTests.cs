@@ -188,9 +188,6 @@ namespace Server.Tests.Network.Packets
         RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
       });
 
-      ns.ProtocolChanges = protocolChanges;
-      ns.Account = new TestAccount(new Mobile[0]);
-
       Span<byte> data = new SupportedFeatures(ns).Compile();
 
       Span<byte> expectedData = stackalloc byte[ns.ExtendedSupportedFeatures ? 5 : 3];

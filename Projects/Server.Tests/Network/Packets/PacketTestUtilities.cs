@@ -206,6 +206,38 @@ namespace Server.Tests.Network.Packets
       pos += max;
     }
 
+    // Unicode prepended with two-byte length
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CopyUnicodeBigEndianTo(this string str, ref int pos, Span<byte> bytes)
+    {
+      BinaryPrimitives.WriteUInt16BigEndian(bytes.Slice(pos, 2), (ushort)str.Length);
+      pos += 2 + Encoding.BigEndianUnicode.GetBytes(str.AsSpan(), bytes.Slice(pos + 2));
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CopyTo(this byte[] src, ref int pos, Span<byte> bytes) =>
+      src.CopyTo(bytes.Slice(pos, src.Length));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CopyTo(this byte[] src, ref int pos, int max, Span<byte> bytes) =>
+      src.CopyTo(bytes.Slice(pos, Math.Min(max, src.Length)));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CopyTo(this Span<byte> src, ref int pos, Span<byte> bytes) =>
+      src.CopyTo(bytes.Slice(pos, src.Length));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CopyTo(this Span<byte> src, ref int pos, int max, Span<byte> bytes) =>
+      src.CopyTo(bytes.Slice(pos, Math.Min(max, src.Length)));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CopyTo(this ReadOnlySpan<byte> src, ref int pos, Span<byte> bytes) =>
+      src.CopyTo(bytes.Slice(pos, src.Length));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CopyTo(this ReadOnlySpan<byte> src, ref int pos, int max, Span<byte> bytes) =>
+      src.CopyTo(bytes.Slice(pos, Math.Min(max, src.Length)));
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Clear(this Span<byte> span, ref int pos, int amount)
     {
