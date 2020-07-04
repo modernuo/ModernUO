@@ -331,14 +331,14 @@ namespace Server.Network
       unknown ??= "";
       caption ??= "";
 
-      EnsureCapacity(16 + unknown.Length + caption.Length);
+      EnsureCapacity(15 + unknown.Length + caption.Length);
 
       Stream.Write(serial);
       Stream.Write((short)gumpID);
-      Stream.Write((short)unknown.Length);
-      Stream.WriteAsciiFixed(unknown, unknown.Length);
+      Stream.Write((short)(unknown.Length + 1));
+      Stream.WriteAsciiNull(unknown);
       Stream.Write((short)(caption.Length + 1));
-      Stream.WriteAsciiFixed(caption, caption.Length + 1);
+      Stream.WriteAsciiNull(caption);
     }
   }
 }

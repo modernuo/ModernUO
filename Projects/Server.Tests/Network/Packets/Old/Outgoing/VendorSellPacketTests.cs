@@ -34,7 +34,7 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[length];
 
       int pos = 0;
-      expectedData[pos++] = 0x9E; // Packet ID
+      ((byte)0x9E).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)length).CopyTo(ref pos, expectedData);
       vendor.Serial.CopyTo(ref pos, expectedData);
       ((ushort)sellStates.Count).CopyTo(ref pos, expectedData);
@@ -48,7 +48,6 @@ namespace Server.Tests.Network.Packets
         ((ushort)state.Item.Amount).CopyTo(ref pos, expectedData);
         ((ushort)state.Price).CopyTo(ref pos, expectedData);
         string name = string.IsNullOrWhiteSpace(state.Item.Name) ? state.Name ?? "" : state.Item.Name.Trim();
-        ((ushort)name.Length).CopyTo(ref pos, expectedData);
         name.CopyASCIITo(ref pos, expectedData);
       }
 

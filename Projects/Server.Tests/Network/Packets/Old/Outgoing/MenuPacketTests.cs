@@ -51,22 +51,18 @@ namespace Server.Tests.Network.Packets
 
       int pos = 0;
 
-      expectedData[pos++] = 0x7C; // Packet ID
+      ((byte)0x7C).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)length).CopyTo(ref pos, expectedData);
       menu.Serial.CopyTo(ref pos, expectedData);
-      pos += 2; // ((ushort)0x00).CopyTo(ref pos, expectedData);
-      expectedData[pos++] = (byte)questionLength;
-      question.CopyASCIITo(ref pos, expectedData);
-      expectedData[pos++] = (byte)menu.Entries.Length;
+      ((ushort)0x00).CopyTo(ref pos, expectedData);
+      question.CopySmallASCIITo(ref pos, expectedData);
+      ((byte)menu.Entries.Length).CopyTo(ref pos, expectedData);
       for (int i = 0; i < menu.Entries.Length; i++)
       {
         var entry = menu.Entries[i];
         ((ushort)entry.ItemID).CopyTo(ref pos, expectedData);
         ((ushort)entry.Hue).CopyTo(ref pos, expectedData);
-        string name = entry.Name?.Trim() ?? "";
-
-        expectedData[pos++] = (byte)name.Length;
-        name.CopyASCIITo(ref pos, expectedData);
+        (entry.Name?.Trim() ?? "").CopySmallASCIITo(ref pos, expectedData);
       }
 
       AssertThat.Equal(data, expectedData);
@@ -96,19 +92,16 @@ namespace Server.Tests.Network.Packets
 
       int pos = 0;
 
-      expectedData[pos++] = 0x7C; // Packet ID
+      ((byte)0x7C).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)length).CopyTo(ref pos, expectedData);
       menu.Serial.CopyTo(ref pos, expectedData);
-      pos += 2; // ((ushort)0x00).CopyTo(ref pos, expectedData);
-      expectedData[pos++] = (byte)questionLength;
-      question?.CopyASCIITo(ref pos, expectedData);
-      expectedData[pos++] = (byte)menu.Answers.Length;
+      ((ushort)0x00).CopyTo(ref pos, expectedData);
+      question.CopySmallASCIITo(ref pos, expectedData);
+      ((byte)menu.Answers.Length).CopyTo(ref pos, expectedData);
       for (int i = 0; i < menu.Answers.Length; i++)
       {
-        pos += 4; // 0x0.CopyTo(ref pos, expectedData);
-        var answer = menu.Answers[i]?.Trim() ?? "";
-        expectedData[pos++] = (byte)answer.Length;
-        answer.CopyASCIITo(ref pos, expectedData);
+        0x0.CopyTo(ref pos, expectedData);
+        (menu.Answers[i]?.Trim() ?? "").CopySmallASCIITo(ref pos, expectedData);
       }
 
       AssertThat.Equal(data, expectedData);
@@ -130,14 +123,14 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[length];
 
       int pos = 0;
-      expectedData[pos++] = 0xBF; // Packet ID
+      ((byte)0xBF).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)length).CopyTo(ref pos, expectedData); // Length
       ((ushort)0x14).CopyTo(ref pos, expectedData); // Command
       ((ushort)0x02).CopyTo(ref pos, expectedData); // Subcommand
       menu.Target.Serial.CopyTo(ref pos, expectedData);
       var entries = menu.Entries;
 
-      expectedData[pos++] = (byte)entries.Length;
+      ((byte)entries.Length).CopyTo(ref pos, expectedData);
 
       for (int i = 0; i < entries.Length; i++)
       {
@@ -177,14 +170,14 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[length];
 
       int pos = 0;
-      expectedData[pos++] = 0xBF; // Packet ID
+      ((byte)0xBF).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)length).CopyTo(ref pos, expectedData); // Length
       ((ushort)0x14).CopyTo(ref pos, expectedData); // Command
       ((ushort)0x01).CopyTo(ref pos, expectedData); // Subcommand
       menu.Target.Serial.CopyTo(ref pos, expectedData);
       var entries = menu.Entries;
 
-      expectedData[pos++] = (byte)entries.Length;
+      ((byte)entries.Length).CopyTo(ref pos, expectedData);
 
       for (int i = 0; i < entries.Length; i++)
       {

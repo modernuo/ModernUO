@@ -47,6 +47,11 @@ namespace Server
     private static bool m_Profiling;
     private static DateTime m_ProfileStart;
     private static TimeSpan m_ProfileTime;
+    private static bool? m_IsRunningFromXUnit;
+
+    public static bool IsRunningFromXUnit =>
+      m_IsRunningFromXUnit ??= AppDomain.CurrentDomain.GetAssemblies().Any(
+        a => a.FullName?.ToLowerInvariant().StartsWith("xunit") ?? false);
 
     /*
      * DateTime.Now and DateTime.UtcNow are based on actual system clock time.

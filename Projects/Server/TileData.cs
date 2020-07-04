@@ -20,6 +20,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Server
@@ -181,108 +182,56 @@ namespace Server
 
     static TileData()
     {
+      ItemTable = new ItemData[0x10000];
+      LandTable = new LandData[0x4000];
+
+      if (Core.IsRunningFromXUnit) return;
+
       var filePath = Core.FindDataFile("tiledata.mul");
 
       using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
       var bin = new BinaryReader(fs);
 
-      if (fs.Length == 3188736)
+      var is7090 = fs.Length == 3188736;
+      bool is7000 = fs.Length == 1644544;
+
+      for (var i = 0; i < 0x4000; i++)
       {
-        // 7.0.9.0
-        LandTable = new LandData[0x4000];
-
-        for (var i = 0; i < 0x4000; ++i)
+        // header
+        if (is7090)
         {
-          if (i == 1 || i > 0 && (i & 0x1F) == 0) bin.ReadInt32(); // header
-
-          var flags = (TileFlag)bin.ReadInt64();
-          bin.ReadInt16(); // skip 2 bytes -- textureID
-
-          LandTable[i] = new LandData(ReadNameString(bin), flags);
+          if (i == 1 || i > 0 && (i & 0x1F) == 0)
+            bin.ReadInt32();
         }
-
-        ItemTable = new ItemData[0x10000];
-
-        for (var i = 0; i < 0x10000; ++i)
-        {
-          if ((i & 0x1F) == 0) bin.ReadInt32(); // header
-
-          var flags = (TileFlag)bin.ReadInt64();
-          int weight = bin.ReadByte();
-          int quality = bin.ReadByte();
-          bin.ReadInt16();
-          bin.ReadByte();
-          int quantity = bin.ReadByte();
+        else if ((i & 0x1F) == 0)
           bin.ReadInt32();
-          bin.ReadByte();
-          int value = bin.ReadByte();
-          int height = bin.ReadByte();
 
-          ItemTable[i] = new ItemData(ReadNameString(bin), flags, weight, quality, quantity, value,
-            height);
-        }
+        var flags = (TileFlag)(is7090 ? bin.ReadInt64() : bin.ReadInt32());
+        bin.ReadInt16(); // skip 2 bytes -- textureID
+
+        LandTable[i] = new LandData(ReadNameString(bin), flags);
       }
-      else
+
+      int length = is7090 ? 0x10000 : is7000 ? 0x8000 : 0x4000;
+
+      for (var i = 0; i < length; i++)
       {
-        LandTable = new LandData[0x4000];
+        if ((i & 0x1F) == 0) bin.ReadInt32(); // header
 
-        for (var i = 0; i < 0x4000; ++i)
-        {
-          if ((i & 0x1F) == 0) bin.ReadInt32(); // header
+        var flags = (TileFlag)(is7090 ? bin.ReadInt64() : bin.ReadInt32());
+        int weight = bin.ReadByte();
+        int quality = bin.ReadByte();
+        bin.ReadInt16();
+        bin.ReadByte();
+        int quantity = bin.ReadByte();
+        bin.ReadInt32();
+        bin.ReadByte();
+        int value = bin.ReadByte();
+        int height = bin.ReadByte();
 
-          var flags = (TileFlag)bin.ReadInt32();
-          bin.ReadInt16(); // skip 2 bytes -- textureID
-
-          LandTable[i] = new LandData(ReadNameString(bin), flags);
-        }
-
-        if (fs.Length == 1644544)
-        {
-          // 7.0.0.0
-          ItemTable = new ItemData[0x8000];
-
-          for (var i = 0; i < 0x8000; ++i)
-          {
-            if ((i & 0x1F) == 0) bin.ReadInt32(); // header
-
-            var flags = (TileFlag)bin.ReadInt32();
-            int weight = bin.ReadByte();
-            int quality = bin.ReadByte();
-            bin.ReadInt16();
-            bin.ReadByte();
-            int quantity = bin.ReadByte();
-            bin.ReadInt32();
-            bin.ReadByte();
-            int value = bin.ReadByte();
-            int height = bin.ReadByte();
-
-            ItemTable[i] = new ItemData(ReadNameString(bin), flags, weight, quality, quantity, value,
-              height);
-          }
-        }
-        else
-        {
-          ItemTable = new ItemData[0x4000];
-
-          for (var i = 0; i < 0x4000; ++i)
-          {
-            if ((i & 0x1F) == 0) bin.ReadInt32(); // header
-
-            var flags = (TileFlag)bin.ReadInt32();
-            int weight = bin.ReadByte();
-            int quality = bin.ReadByte();
-            bin.ReadInt16();
-            bin.ReadByte();
-            int quantity = bin.ReadByte();
-            bin.ReadInt32();
-            bin.ReadByte();
-            int value = bin.ReadByte();
-            int height = bin.ReadByte();
-
-            ItemTable[i] = new ItemData(ReadNameString(bin), flags, weight, quality, quantity, value,
-              height);
-          }
-        }
+        ItemTable[i] = new ItemData(
+          ReadNameString(bin), flags, weight, quality, quantity, value, height
+        );
       }
 
       MaxLandValue = LandTable.Length - 1;

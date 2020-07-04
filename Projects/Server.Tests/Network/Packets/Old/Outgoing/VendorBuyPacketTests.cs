@@ -27,7 +27,7 @@ namespace Server.Tests.Network.Packets
 
       int pos = 0;
 
-      expectedData[pos++] = 0x3C; // Packet ID
+      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
       ((ushort)buyStates.Count).CopyTo(ref pos, expectedData); // Count
 
@@ -40,8 +40,8 @@ namespace Server.Tests.Network.Packets
         pos++; // ItemID Offset
         ((ushort)buyState.Amount).CopyTo(ref pos, expectedData);
         ((ushort)(i + 1)).CopyTo(ref pos, expectedData); // X
-        expectedData[pos++] = 0;
-        expectedData[pos++] = 1; // Y
+        ((byte)0).CopyTo(ref pos, expectedData);
+        ((byte)1).CopyTo(ref pos, expectedData); // Y
         buyState.ContainerSerial.CopyTo(ref pos, expectedData);
         ((ushort)buyState.Hue).CopyTo(ref pos, expectedData);
       }
@@ -67,7 +67,7 @@ namespace Server.Tests.Network.Packets
 
       int pos = 0;
 
-      expectedData[pos++] = 0x3C; // Packet ID
+      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
       ((ushort)buyStates.Count).CopyTo(ref pos, expectedData); // Count
 
@@ -80,9 +80,9 @@ namespace Server.Tests.Network.Packets
         pos++; // ItemID Offset
         ((ushort)buyState.Amount).CopyTo(ref pos, expectedData);
         ((ushort)(i + 1)).CopyTo(ref pos, expectedData); // X
-        expectedData[pos++] = 0;
-        expectedData[pos++] = 1; // Y
-        expectedData[pos++] = 0; // Grid Location
+        ((byte)0).CopyTo(ref pos, expectedData);
+        ((byte)1).CopyTo(ref pos, expectedData); // Y
+        ((byte)0).CopyTo(ref pos, expectedData); // Grid Location
         buyState.ContainerSerial.CopyTo(ref pos, expectedData);
         ((ushort)buyState.Hue).CopyTo(ref pos, expectedData);
       }
@@ -148,25 +148,22 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new VendorBuyList(vendor, buyStates).Compile();
 
-      int length = 8 + 5 * 3 + buyStates.Sum(state => state.Description.Length + 1);
+      int length = 8 + buyStates.Sum(state => 6 + state.Description.Length);
 
       Span<byte> expectedData = stackalloc byte[length];
 
       int pos = 0;
 
-      expectedData[pos++] = 0x74; // Packet ID
+      ((byte)0x74).CopyTo(ref pos, expectedData); // Packet ID
       ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
       Serial.MinusOne.CopyTo(ref pos, expectedData); // Vendor Buy Pack Serial or -1
-      expectedData[pos++] = (byte)buyStates.Count;
+      ((byte)buyStates.Count).CopyTo(ref pos, expectedData);
 
       for (int i = 0; i < buyStates.Count; i++)
       {
         BuyItemState state = buyStates[i];
         state.Price.CopyTo(ref pos, expectedData);
-        string desc = state.Description ?? "";
-        expectedData[pos++] = (byte)(desc.Length + 1);
-        desc.CopyASCIITo(ref pos, expectedData);
-        pos++;
+        (state.Description ?? "").CopySmallASCIINullTo(ref pos, expectedData);
       }
 
       AssertThat.Equal(data, expectedData);
