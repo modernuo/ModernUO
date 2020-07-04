@@ -119,7 +119,7 @@ namespace Server.Tests.Network.Packets
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CopyRawASCIITo(this string str, ref int pos, Span<byte> bytes)
     {
-      pos += Encoding.ASCII.GetBytes(str.AsSpan(), bytes.Slice(pos));
+      pos += Encoding.ASCII.GetBytes(str, bytes.Slice(pos));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -133,7 +133,7 @@ namespace Server.Tests.Network.Packets
     public static void CopyASCIITo(this string str, ref int pos, Span<byte> bytes)
     {
       BinaryPrimitives.WriteUInt16BigEndian(bytes.Slice(pos, 2), (ushort)str.Length);
-      pos += 2 + Encoding.ASCII.GetBytes(str.AsSpan(), bytes.Slice(pos + 2));
+      pos += 2 + Encoding.ASCII.GetBytes(str, bytes.Slice(pos + 2));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -148,7 +148,7 @@ namespace Server.Tests.Network.Packets
     public static void CopyASCIINullTo(this string str, ref int pos, Span<byte> bytes)
     {
       BinaryPrimitives.WriteUInt16BigEndian(bytes.Slice(pos, 2), (ushort)(str.Length + 1));
-      pos += 3 + Encoding.ASCII.GetBytes(str.AsSpan(), bytes.Slice(pos + 2));
+      pos += 3 + Encoding.ASCII.GetBytes(str, bytes.Slice(pos + 2));
       bytes[pos - 1] = 0; // null terminator
     }
 
@@ -211,7 +211,19 @@ namespace Server.Tests.Network.Packets
     public static void CopyUnicodeBigEndianTo(this string str, ref int pos, Span<byte> bytes)
     {
       BinaryPrimitives.WriteUInt16BigEndian(bytes.Slice(pos, 2), (ushort)str.Length);
-      pos += 2 + Encoding.BigEndianUnicode.GetBytes(str.AsSpan(), bytes.Slice(pos + 2));
+      pos += 2 + Encoding.BigEndianUnicode.GetBytes(str, bytes.Slice(pos + 2));
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CopyRawUnicodeBigEndianTo(this string str, ref int pos, Span<byte> bytes)
+    {
+      pos += Encoding.BigEndianUnicode.GetBytes(str, bytes.Slice(pos));
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CopyRawUnicodeLittleEndianTo(this string str, ref int pos, Span<byte> bytes)
+    {
+      pos += Encoding.Unicode.GetBytes(str, bytes.Slice(pos));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
