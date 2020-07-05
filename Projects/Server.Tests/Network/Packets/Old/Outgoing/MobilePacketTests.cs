@@ -436,18 +436,24 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestMobileStatusExtended()
     {
-      var m = new Mobile(0x1)
+      var beholder = new Mobile(0x1)
       {
-        Name = "Random Mobile"
+        Name = "Random Mobile 1"
       };
-      m.DefaultMobileInit();
+      beholder.DefaultMobileInit();
+
+      var beheld = new Mobile(0x2)
+      {
+        Name = "Random Mobile 2"
+      };
+      beheld.DefaultMobileInit();
 
       NetState ns = new NetState(new AccountPacketTests.TestConnectionContext
       {
         RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
       });
 
-      Span<byte> data = new MobileStatusExtended(m, ns).Compile();
+      Span<byte> data = new MobileStatus(beholder, beheld, ns).Compile();
 
       Span<byte> expectedData = stackalloc byte[121]; // Max Size
       int pos = 0;
@@ -456,65 +462,71 @@ namespace Server.Tests.Network.Packets
       pos += 2; // Length
 
       int type;
+      bool notSelf = beholder != beheld;
 
-      if (Core.HS && ns.ExtendedStatus) type = 6;
+      if (notSelf) type = 0;
+      else if (Core.HS && ns.ExtendedStatus) type = 6;
       else if (Core.ML && ns.SupportsExpansion(Expansion.ML)) type = 5;
       else type = Core.AOS ? 4 : 3;
 
-      m.Serial.CopyTo(ref pos, expectedData);
-      m.Name.CopyASCIIFixedTo(ref pos, 30, expectedData);
+      beheld.Serial.CopyTo(ref pos, expectedData);
+      beheld.Name.CopyASCIIFixedTo(ref pos, 30, expectedData);
 
-      AttributeNormalizerUtilities.WriteReverse(m.Hits, m.HitsMax, false, expectedData.Slice(pos));
+      AttributeNormalizerUtilities.WriteReverse(beheld.Hits, beheld.HitsMax, notSelf, expectedData.Slice(pos));
       pos += 4;
 
-      m.CanBeRenamedBy(m).CopyTo(ref pos, expectedData);
+      beheld.CanBeRenamedBy(beheld).CopyTo(ref pos, expectedData);
       ((byte)type).CopyTo(ref pos, expectedData);
-      m.Female.CopyTo(ref pos, expectedData);
-      ((ushort)m.Str).CopyTo(ref pos, expectedData);
-      ((ushort)m.Dex).CopyTo(ref pos, expectedData);
-      ((ushort)m.Int).CopyTo(ref pos, expectedData);
 
-      AttributeNormalizerUtilities.WriteReverse(m.Stam, m.StamMax, false, expectedData.Slice(pos));
-      pos += 4;
-
-      AttributeNormalizerUtilities.WriteReverse(m.Mana, m.ManaMax, false, expectedData.Slice(pos));
-      pos += 4;
-
-      m.TotalGold.CopyTo(ref pos, expectedData);
-      ((ushort)(Core.AOS ? m.PhysicalResistance : (int)(m.ArmorRating + 0.5))).CopyTo(ref pos, expectedData);
-      ((ushort)(Mobile.BodyWeight + m.TotalWeight)).CopyTo(ref pos, expectedData);
-
-      if (type >= 5)
+      if (type > 0)
       {
-        ((ushort)m.MaxWeight).CopyTo(ref pos, expectedData);
-        ((byte)(m.Race.RaceID + 1)).CopyTo(ref pos, expectedData); // 0x00 for a non-ML enabled account
+        beheld.Female.CopyTo(ref pos, expectedData);
+        ((ushort)beheld.Str).CopyTo(ref pos, expectedData);
+        ((ushort)beheld.Dex).CopyTo(ref pos, expectedData);
+        ((ushort)beheld.Int).CopyTo(ref pos, expectedData);
+
+        AttributeNormalizerUtilities.WriteReverse(beheld.Stam, beheld.StamMax, notSelf, expectedData.Slice(pos));
+        pos += 4;
+
+        AttributeNormalizerUtilities.WriteReverse(beheld.Mana, beheld.ManaMax, notSelf, expectedData.Slice(pos));
+        pos += 4;
+
+        beheld.TotalGold.CopyTo(ref pos, expectedData);
+        ((ushort)(Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5))).CopyTo(ref pos, expectedData);
+        ((ushort)(Mobile.BodyWeight + beheld.TotalWeight)).CopyTo(ref pos, expectedData);
+
+        if (type >= 5)
+        {
+          ((ushort)beheld.MaxWeight).CopyTo(ref pos, expectedData);
+          ((byte)(beheld.Race.RaceID + 1)).CopyTo(ref pos, expectedData); // 0x00 for a non-ML enabled account
+        }
+
+        ((ushort)beheld.StatCap).CopyTo(ref pos, expectedData);
+        ((byte)beheld.Followers).CopyTo(ref pos, expectedData);
+        ((byte)beheld.FollowersMax).CopyTo(ref pos, expectedData);
+
+        if (type >= 4)
+        {
+          ((ushort)beheld.FireResistance).CopyTo(ref pos, expectedData);
+          ((ushort)beheld.ColdResistance).CopyTo(ref pos, expectedData);
+          ((ushort)beheld.PoisonResistance).CopyTo(ref pos, expectedData);
+          ((ushort)beheld.EnergyResistance).CopyTo(ref pos, expectedData);
+          ((ushort)beheld.Luck).CopyTo(ref pos, expectedData);
+        }
+
+        int min = 0;
+        int max = 0;
+        beheld.Weapon?.GetStatusDamage(beheld, out min, out max);
+
+        ((ushort)min).CopyTo(ref pos, expectedData);
+        ((ushort)max).CopyTo(ref pos, expectedData);
+
+        beheld.TithingPoints.CopyTo(ref pos, expectedData);
+
+        if (type >= 6)
+          for (var i = 0; i < 15; ++i)
+            ((ushort)beheld.GetAOSStatus(i)).CopyTo(ref pos, expectedData);
       }
-
-      ((ushort)m.StatCap).CopyTo(ref pos, expectedData);
-      ((byte)m.Followers).CopyTo(ref pos, expectedData);
-      ((byte)m.FollowersMax).CopyTo(ref pos, expectedData);
-
-      if (type >= 4)
-      {
-        ((ushort)m.FireResistance).CopyTo(ref pos, expectedData);
-        ((ushort)m.ColdResistance).CopyTo(ref pos, expectedData);
-        ((ushort)m.PoisonResistance).CopyTo(ref pos, expectedData);
-        ((ushort)m.EnergyResistance).CopyTo(ref pos, expectedData);
-        ((ushort)m.Luck).CopyTo(ref pos, expectedData);
-      }
-
-      int min = 0;
-      int max = 0;
-      m.Weapon?.GetStatusDamage(m, out min, out max);
-
-      ((ushort)min).CopyTo(ref pos, expectedData);
-      ((ushort)max).CopyTo(ref pos, expectedData);
-
-      m.TithingPoints.CopyTo(ref pos, expectedData);
-
-      if (type >= 6)
-        for (var i = 0; i < 15; ++i)
-          ((ushort)m.GetAOSStatus(i)).CopyTo(ref pos, expectedData);
 
       ((ushort)pos).CopyTo(expectedData.Slice(1)); // Length
 
