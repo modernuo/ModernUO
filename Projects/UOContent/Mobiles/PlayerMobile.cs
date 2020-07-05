@@ -3874,7 +3874,13 @@ namespace Server.Mobiles
         {
           NetState ns = NetState;
 
-          ns?.Send(new MobileMoving(m, Notoriety.Compute(this, m)));
+          if (ns != null)
+          {
+            if (ns.StygianAbyss)
+              ns.Send(new MobileMoving(m, Notoriety.Compute(this, m)));
+            else
+              ns.Send(new MobileMovingOld(m, Notoriety.Compute(this, m)));
+          }
         }
       }
     }

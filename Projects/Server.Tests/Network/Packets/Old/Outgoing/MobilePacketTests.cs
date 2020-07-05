@@ -89,6 +89,43 @@ namespace Server.Tests.Network.Packets
     }
 
     [Fact]
+    public void TestMobileMovingOld()
+    {
+      var m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      int noto = 10;
+
+      Span<byte> data = new MobileMoving(m, noto).Compile();
+
+      Span<byte> expectedData = stackalloc byte[]
+      {
+        0x77, // Packet ID
+        0x00, 0x00, 0x00, 0x00, // Serial
+        0x00, 0x00, // Body
+        0x00, 0x00, // X
+        0x00, 0x00, // Y
+        0x00, // Z
+        0x00, // Direction
+        0x00, 0x00, // Hue
+        0x00, // Flags
+        0x00 // Noto
+      };
+
+      m.Serial.CopyTo(expectedData.Slice(1, 4));
+      ((ushort)m.Body).CopyTo(expectedData.Slice(5, 2));
+      ((ushort)m.X).CopyTo(expectedData.Slice(7, 2));
+      ((ushort)m.Y).CopyTo(expectedData.Slice(9, 2));
+      expectedData[11] = (byte)m.Z;
+      expectedData[12] = (byte)m.Direction;
+      ((ushort)m.Hue).CopyTo(expectedData.Slice(13, 2));
+      expectedData[15] = (byte)m.GetOldPacketFlags();
+      expectedData[16] = (byte)noto;
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
     public void TestMobileHits()
     {
       var m = new Mobile(0x1);

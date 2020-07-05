@@ -68,6 +68,29 @@ namespace Server.Network
     }
   }
 
+  public sealed class MobileMovingOld : Packet
+  {
+    public MobileMovingOld(Mobile m, int noto) : base(0x77, 17)
+    {
+      var loc = m.Location;
+
+      var hue = m.Hue;
+
+      if (m.SolidHueOverride >= 0)
+        hue = m.SolidHueOverride;
+
+      Stream.Write(m.Serial);
+      Stream.Write((short)m.Body);
+      Stream.Write((short)loc.m_X);
+      Stream.Write((short)loc.m_Y);
+      Stream.Write((sbyte)loc.m_Z);
+      Stream.Write((byte)m.Direction);
+      Stream.Write((short)hue);
+      Stream.Write((byte)m.GetOldPacketFlags());
+      Stream.Write((byte)noto);
+    }
+  }
+
   public sealed class MobileHits : Packet
   {
     public MobileHits(Mobile m) : base(0xA1, 9)
