@@ -12,12 +12,12 @@ namespace Server.Tests.Network.Packets
         int maximum = AttributeNormalizer.Maximum;
 
         ((ushort)maximum).CopyTo(data.Slice(0, 2));
-        ((ushort)(cur * maximum / max)).CopyTo(data.Slice(2, 4));
+        ((ushort)(cur * maximum / max)).CopyTo(data.Slice(2, 2));
         return;
       }
 
       ((ushort)max).CopyTo(data.Slice(0, 2));
-      ((ushort)cur).CopyTo(data.Slice(2, 4));
+      ((ushort)cur).CopyTo(data.Slice(2, 2));
     }
 
     public static void WriteReverse(int cur, int max, bool normalize, Span<byte> data)
@@ -27,12 +27,12 @@ namespace Server.Tests.Network.Packets
         int maximum = AttributeNormalizer.Maximum;
 
         ((ushort)(cur * maximum / max)).CopyTo(data.Slice(0, 2));
-        ((ushort)maximum).CopyTo(data.Slice(2, 4));
+        ((ushort)maximum).CopyTo(data.Slice(2, 2));
         return;
       }
 
       ((ushort)cur).CopyTo(data.Slice(0, 2));
-      ((ushort)max).CopyTo(data.Slice(2, 4));
+      ((ushort)max).CopyTo(data.Slice(2, 2));
     }
   }
 }
