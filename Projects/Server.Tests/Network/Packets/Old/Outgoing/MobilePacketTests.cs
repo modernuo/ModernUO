@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using Server.Network;
 using Xunit;
 
@@ -429,6 +430,95 @@ namespace Server.Tests.Network.Packets
       pos += 4;
       canBeRenamed.CopyTo(ref pos, expectedData);
 
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestMobileStatusExtended()
+    {
+      var m = new Mobile(0x1)
+      {
+        Name = "Random Mobile"
+      };
+      m.DefaultMobileInit();
+
+      NetState ns = new NetState(new AccountPacketTests.TestConnectionContext
+      {
+        RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
+      });
+
+      Span<byte> data = new MobileStatusExtended(m, ns).Compile();
+
+      Span<byte> expectedData = stackalloc byte[121]; // Max Size
+      int pos = 0;
+
+      ((byte)0x11).CopyTo(ref pos, expectedData);
+      pos += 2; // Length
+
+      int type;
+
+      if (Core.HS && ns.ExtendedStatus) type = 6;
+      else if (Core.ML && ns.SupportsExpansion(Expansion.ML)) type = 5;
+      else type = Core.AOS ? 4 : 3;
+
+      m.Serial.CopyTo(ref pos, expectedData);
+      m.Name.CopyASCIIFixedTo(ref pos, 30, expectedData);
+
+      AttributeNormalizerUtilities.WriteReverse(m.Hits, m.HitsMax, false, expectedData.Slice(pos));
+      pos += 4;
+
+      m.CanBeRenamedBy(m).CopyTo(ref pos, expectedData);
+      ((byte)type).CopyTo(ref pos, expectedData);
+      m.Female.CopyTo(ref pos, expectedData);
+      ((ushort)m.Str).CopyTo(ref pos, expectedData);
+      ((ushort)m.Dex).CopyTo(ref pos, expectedData);
+      ((ushort)m.Int).CopyTo(ref pos, expectedData);
+
+      AttributeNormalizerUtilities.WriteReverse(m.Stam, m.StamMax, false, expectedData.Slice(pos));
+      pos += 4;
+
+      AttributeNormalizerUtilities.WriteReverse(m.Mana, m.ManaMax, false, expectedData.Slice(pos));
+      pos += 4;
+
+      m.TotalGold.CopyTo(ref pos, expectedData);
+      ((ushort)(Core.AOS ? m.PhysicalResistance : (int)(m.ArmorRating + 0.5))).CopyTo(ref pos, expectedData);
+      ((ushort)(Mobile.BodyWeight + m.TotalWeight)).CopyTo(ref pos, expectedData);
+
+      if (type >= 5)
+      {
+        ((ushort)m.MaxWeight).CopyTo(ref pos, expectedData);
+        ((byte)(m.Race.RaceID + 1)).CopyTo(ref pos, expectedData); // 0x00 for a non-ML enabled account
+      }
+
+      ((ushort)m.StatCap).CopyTo(ref pos, expectedData);
+      ((byte)m.Followers).CopyTo(ref pos, expectedData);
+      ((byte)m.FollowersMax).CopyTo(ref pos, expectedData);
+
+      if (type >= 4)
+      {
+        ((ushort)m.FireResistance).CopyTo(ref pos, expectedData);
+        ((ushort)m.ColdResistance).CopyTo(ref pos, expectedData);
+        ((ushort)m.PoisonResistance).CopyTo(ref pos, expectedData);
+        ((ushort)m.EnergyResistance).CopyTo(ref pos, expectedData);
+        ((ushort)m.Luck).CopyTo(ref pos, expectedData);
+      }
+
+      int min = 0;
+      int max = 0;
+      m.Weapon?.GetStatusDamage(m, out min, out max);
+
+      ((ushort)min).CopyTo(ref pos, expectedData);
+      ((ushort)max).CopyTo(ref pos, expectedData);
+
+      m.TithingPoints.CopyTo(ref pos, expectedData);
+
+      if (type >= 6)
+        for (var i = 0; i < 15; ++i)
+          ((ushort)m.GetAOSStatus(i)).CopyTo(ref pos, expectedData);
+
+      ((ushort)pos).CopyTo(expectedData.Slice(1)); // Length
+
+      expectedData = expectedData.Slice(0, pos);
       AssertThat.Equal(data, expectedData);
     }
   }
