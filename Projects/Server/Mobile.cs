@@ -2429,7 +2429,7 @@ namespace Server
           if (sendMoving || sendHealthbarPoison || sendHealthbarYellow)
           {
             var noto = Notoriety.Compute(m, m);
-            ourState.Send(cache[1][noto] = Packet.Acquire(new MobileMovingOld(m, noto)));
+            ourState.Send(cache[1][noto] = Packet.Acquire(new MobileMoving(m, noto)));
           }
         }
 
@@ -2562,7 +2562,7 @@ namespace Server
                 var p = cache[1][noto];
 
                 if (p == null)
-                  cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(m, noto));
+                  cache[1][noto] = p = Packet.Acquire(new MobileMoving(m, noto));
 
                 state.Send(p);
               }
@@ -3883,7 +3883,7 @@ namespace Server
               var p = cache[1][noto];
 
               if (p == null)
-                cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(this, noto));
+                cache[1][noto] = p = Packet.Acquire(new MobileMoving(this, noto));
 
               ns.Send(p);
             }
