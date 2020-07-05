@@ -419,10 +419,15 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[43];
       int pos = 0;
 
-      ((byte)0x11).CopyTo(ref pos, expectedData);
-      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData);
+      ((byte)0x11).CopyTo(ref pos, expectedData); // Packet ID
+      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
+
       m.Serial.CopyTo(ref pos, expectedData);
       (m.Name ?? "").CopyASCIIFixedTo(ref pos, 30, expectedData);
+
+      AttributeNormalizerUtilities.WriteReverse(m.Hits, m.HitsMax, true, expectedData.Slice(pos));
+      pos += 4;
+      canBeRenamed.CopyTo(ref pos, expectedData);
 
       AssertThat.Equal(data, expectedData);
     }
