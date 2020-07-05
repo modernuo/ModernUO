@@ -168,7 +168,7 @@ namespace Server.Tests.Network.Packets
       int max = AttributeNormalizer.Maximum;
 
       m.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)AttributeNormalizer.Maximum).CopyTo(expectedData.Slice(5, 2));
+      ((ushort)max).CopyTo(expectedData.Slice(5, 2));
       ((ushort)(m.Hits * max / m.HitsMax)).CopyTo(expectedData.Slice(7, 2));
 
       AssertThat.Equal(data, expectedData);
@@ -216,7 +216,7 @@ namespace Server.Tests.Network.Packets
       int max = AttributeNormalizer.Maximum;
 
       m.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)AttributeNormalizer.Maximum).CopyTo(expectedData.Slice(5, 2));
+      ((ushort)max).CopyTo(expectedData.Slice(5, 2));
       ((ushort)(m.Mana * max / m.ManaMax)).CopyTo(expectedData.Slice(7, 2));
 
       AssertThat.Equal(data, expectedData);
@@ -255,7 +255,7 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> expectedData = stackalloc byte[]
       {
-        0xA2, // Packet ID
+        0xA3, // Packet ID
         0x00, 0x00, 0x00, 0x00, // Serial
         0x00, 0x00, // Max Hits
         0x00, 0x00 // Current Hits
@@ -264,8 +264,157 @@ namespace Server.Tests.Network.Packets
       int max = AttributeNormalizer.Maximum;
 
       m.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)AttributeNormalizer.Maximum).CopyTo(expectedData.Slice(5, 2));
+      ((ushort)max).CopyTo(expectedData.Slice(5, 2));
       ((ushort)(m.Stam * max / m.StamMax)).CopyTo(expectedData.Slice(7, 2));
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestMobileAttributes()
+    {
+      var m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      Span<byte> data = new MobileAttributes(m).Compile();
+
+      Span<byte> expectedData = stackalloc byte[]
+      {
+        0x2D, // Packet ID
+        0x00, 0x00, 0x00, 0x00, // Serial
+        0x00, 0x00, // Max Hits
+        0x00, 0x00, // Current Hits
+        0x00, 0x00, // Max Mana
+        0x00, 0x00, // Current Mana
+        0x00, 0x00, // Max Stam
+        0x00, 0x00 // Current Stam
+      };
+
+      m.Serial.CopyTo(expectedData.Slice(1, 4));
+      ((ushort)m.HitsMax).CopyTo(expectedData.Slice(5, 2));
+      ((ushort)m.Hits).CopyTo(expectedData.Slice(7, 2));
+      ((ushort)m.ManaMax).CopyTo(expectedData.Slice(9, 2));
+      ((ushort)m.Mana).CopyTo(expectedData.Slice(11, 2));
+      ((ushort)m.StamMax).CopyTo(expectedData.Slice(13, 2));
+      ((ushort)m.Stam).CopyTo(expectedData.Slice(15, 2));
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestMobileAttributesN()
+    {
+      var m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      Span<byte> data = new MobileAttributesN(m).Compile();
+
+      Span<byte> expectedData = stackalloc byte[]
+      {
+        0x2D, // Packet ID
+        0x00, 0x00, 0x00, 0x00, // Serial
+        0x00, 0x00, // Max Hits
+        0x00, 0x00, // Current Hits
+        0x00, 0x00, // Max Mana
+        0x00, 0x00, // Current Mana
+        0x00, 0x00, // Max Stam
+        0x00, 0x00 // Current Stam
+      };
+
+      int max = AttributeNormalizer.Maximum;
+
+      m.Serial.CopyTo(expectedData.Slice(1, 4));
+      ((ushort)max).CopyTo(expectedData.Slice(5, 2));
+      ((ushort)(m.Hits * max / m.HitsMax)).CopyTo(expectedData.Slice(7, 2));
+      ((ushort)max).CopyTo(expectedData.Slice(9, 2));
+      ((ushort)(m.Mana * max / m.ManaMax)).CopyTo(expectedData.Slice(11, 2));
+      ((ushort)max).CopyTo(expectedData.Slice(13, 2));
+      ((ushort)(m.Stam * max / m.StamMax)).CopyTo(expectedData.Slice(15, 2));
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestMobileName()
+    {
+      var m = new Mobile(0x1)
+      {
+        Name = "Some Really Long Mobile Name That Gets Cut off",
+      };
+      m.DefaultMobileInit();
+
+      Span<byte> data = new MobileName(m).Compile();
+
+      Span<byte> expectedData = stackalloc byte[37];
+      int pos = 0;
+      ((byte)0x98).CopyTo(ref pos, expectedData);
+      ((ushort)0x25).CopyTo(ref pos, expectedData);
+      m.Serial.CopyTo(ref pos, expectedData);
+      (m.Name ?? "").CopyRawASCIITo(ref pos, 29, expectedData);
+      ((byte)0x0).CopyTo(ref pos, expectedData); // Null terminator
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestMobileAnimation()
+    {
+      Serial mobile = 0x1;
+      int action = 200;
+      int frameCount = 5;
+      int repeatCount = 1;
+      bool reverse = false;
+      bool repeat = false;
+      byte delay = 5;
+
+      Span<byte> data = new MobileAnimation(
+        mobile,
+        action,
+        frameCount,
+        repeatCount,
+        !reverse,
+        repeat,
+        delay
+      ).Compile();
+
+      Span<byte> expectedData = stackalloc byte[14];
+      int pos = 0;
+
+      ((byte)0x6E).CopyTo(ref pos, expectedData);
+      mobile.CopyTo(ref pos, expectedData);
+      ((ushort)action).CopyTo(ref pos, expectedData);
+      ((ushort)frameCount).CopyTo(ref pos, expectedData);
+      ((ushort)repeatCount).CopyTo(ref pos, expectedData);
+      reverse.CopyTo(ref pos, expectedData);
+      repeat.CopyTo(ref pos, expectedData);
+      delay.CopyTo(ref pos, expectedData);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestNewMobileAnimation()
+    {
+      Serial mobile = 0x1;
+      int action = 200;
+      int frameCount = 5;
+      byte delay = 5;
+
+      Span<byte> data = new NewMobileAnimation(
+        mobile,
+        action,
+        frameCount,
+        delay
+      ).Compile();
+
+      Span<byte> expectedData = stackalloc byte[10];
+      int pos = 0;
+
+      ((byte)0xE2).CopyTo(ref pos, expectedData);
+      mobile.CopyTo(ref pos, expectedData);
+      ((ushort)action).CopyTo(ref pos, expectedData);
+      ((ushort)frameCount).CopyTo(ref pos, expectedData);
+      delay.CopyTo(ref pos, expectedData);
 
       AssertThat.Equal(data, expectedData);
     }

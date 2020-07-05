@@ -154,7 +154,6 @@ namespace Server.Network
     }
   }
 
-  // unsure of proper format, client crashes
   public sealed class MobileName : Packet
   {
     public MobileName(Mobile m) : base(0x98)
@@ -162,7 +161,8 @@ namespace Server.Network
       EnsureCapacity(37);
 
       Stream.Write(m.Serial);
-      Stream.WriteAsciiFixed(m.Name ?? "", 30);
+      Stream.WriteAsciiFixed(m.Name ?? "", 29);
+      Stream.Write((byte)0); // Null terminator
     }
   }
 
