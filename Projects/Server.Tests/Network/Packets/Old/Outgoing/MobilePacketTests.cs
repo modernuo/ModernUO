@@ -143,8 +143,7 @@ namespace Server.Tests.Network.Packets
       };
 
       m.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)m.HitsMax).CopyTo(expectedData.Slice(5, 2));
-      ((ushort)m.Hits).CopyTo(expectedData.Slice(7, 2));
+      AttributeNormalizerUtilities.Write(m.Hits, m.HitsMax, false, expectedData.Slice(5));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -168,8 +167,7 @@ namespace Server.Tests.Network.Packets
       int max = AttributeNormalizer.Maximum;
 
       m.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)max).CopyTo(expectedData.Slice(5, 2));
-      ((ushort)(m.Hits * max / m.HitsMax)).CopyTo(expectedData.Slice(7, 2));
+      AttributeNormalizerUtilities.Write(m.Hits, m.HitsMax, true, expectedData.Slice(5));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -191,8 +189,7 @@ namespace Server.Tests.Network.Packets
       };
 
       m.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)m.ManaMax).CopyTo(expectedData.Slice(5, 2));
-      ((ushort)m.Mana).CopyTo(expectedData.Slice(7, 2));
+      AttributeNormalizerUtilities.Write(m.Mana, m.ManaMax, false, expectedData.Slice(5));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -216,8 +213,7 @@ namespace Server.Tests.Network.Packets
       int max = AttributeNormalizer.Maximum;
 
       m.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)max).CopyTo(expectedData.Slice(5, 2));
-      ((ushort)(m.Mana * max / m.ManaMax)).CopyTo(expectedData.Slice(7, 2));
+      AttributeNormalizerUtilities.Write(m.Mana, m.ManaMax, true, expectedData.Slice(5));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -239,8 +235,7 @@ namespace Server.Tests.Network.Packets
       };
 
       m.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)m.StamMax).CopyTo(expectedData.Slice(5, 2));
-      ((ushort)m.Stam).CopyTo(expectedData.Slice(7, 2));
+      AttributeNormalizerUtilities.Write(m.Stam, m.StamMax, false, expectedData.Slice(5));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -264,8 +259,7 @@ namespace Server.Tests.Network.Packets
       int max = AttributeNormalizer.Maximum;
 
       m.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)max).CopyTo(expectedData.Slice(5, 2));
-      ((ushort)(m.Stam * max / m.StamMax)).CopyTo(expectedData.Slice(7, 2));
+      AttributeNormalizerUtilities.Write(m.Stam, m.StamMax, true, expectedData.Slice(5));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -291,12 +285,9 @@ namespace Server.Tests.Network.Packets
       };
 
       m.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)m.HitsMax).CopyTo(expectedData.Slice(5, 2));
-      ((ushort)m.Hits).CopyTo(expectedData.Slice(7, 2));
-      ((ushort)m.ManaMax).CopyTo(expectedData.Slice(9, 2));
-      ((ushort)m.Mana).CopyTo(expectedData.Slice(11, 2));
-      ((ushort)m.StamMax).CopyTo(expectedData.Slice(13, 2));
-      ((ushort)m.Stam).CopyTo(expectedData.Slice(15, 2));
+      AttributeNormalizerUtilities.Write(m.Hits, m.HitsMax, false, expectedData.Slice(5));
+      AttributeNormalizerUtilities.Write(m.Mana, m.ManaMax, false, expectedData.Slice(9));
+      AttributeNormalizerUtilities.Write(m.Stam, m.StamMax, false, expectedData.Slice(13));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -324,12 +315,9 @@ namespace Server.Tests.Network.Packets
       int max = AttributeNormalizer.Maximum;
 
       m.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)max).CopyTo(expectedData.Slice(5, 2));
-      ((ushort)(m.Hits * max / m.HitsMax)).CopyTo(expectedData.Slice(7, 2));
-      ((ushort)max).CopyTo(expectedData.Slice(9, 2));
-      ((ushort)(m.Mana * max / m.ManaMax)).CopyTo(expectedData.Slice(11, 2));
-      ((ushort)max).CopyTo(expectedData.Slice(13, 2));
-      ((ushort)(m.Stam * max / m.StamMax)).CopyTo(expectedData.Slice(15, 2));
+      AttributeNormalizerUtilities.Write(m.Hits, m.HitsMax, true, expectedData.Slice(5));
+      AttributeNormalizerUtilities.Write(m.Mana, m.ManaMax, true, expectedData.Slice(9));
+      AttributeNormalizerUtilities.Write(m.Stam, m.StamMax, true, expectedData.Slice(13));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -415,6 +403,27 @@ namespace Server.Tests.Network.Packets
       ((ushort)action).CopyTo(ref pos, expectedData);
       ((ushort)frameCount).CopyTo(ref pos, expectedData);
       delay.CopyTo(ref pos, expectedData);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestMobileStatusCompact()
+    {
+      var m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      bool canBeRenamed = false;
+
+      Span<byte> data = new MobileStatusCompact(canBeRenamed, m).Compile();
+
+      Span<byte> expectedData = stackalloc byte[43];
+      int pos = 0;
+
+      ((byte)0x11).CopyTo(ref pos, expectedData);
+      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData);
+      m.Serial.CopyTo(ref pos, expectedData);
+      (m.Name ?? "").CopyASCIIFixedTo(ref pos, 30, expectedData);
 
       AssertThat.Equal(data, expectedData);
     }
