@@ -630,7 +630,7 @@ namespace Server.Network
         {
           var info = ExpansionInfo.Table[i];
 
-          if ((info.RequiredClient != null && Version >= info.RequiredClient) || (Flags & info.ClientFlags) != 0)
+          if (info.RequiredClient != null && Version >= info.RequiredClient || (Flags & info.ClientFlags) != 0)
             return info;
         }
 
@@ -642,13 +642,10 @@ namespace Server.Network
 
     public ProtocolChanges ProtocolChanges { get; set; }
 
-    public bool SupportsExpansion(ExpansionInfo info, bool checkCoreExpansion = true)
-    {
-      if (info == null || (checkCoreExpansion && (int)Core.Expansion < info.ID))
-        return false;
-
-      return info.RequiredClient != null ? Version >= info.RequiredClient : (Flags & info.ClientFlags) != 0;
-    }
+    public bool SupportsExpansion(ExpansionInfo info, bool checkCoreExpansion = true) =>
+      info != null && (!checkCoreExpansion || (int)Core.Expansion >= info.ID) && (info.RequiredClient != null
+        ? Version >= info.RequiredClient
+        : (Flags & info.ClientFlags) != 0);
 
     public bool SupportsExpansion(Expansion ex, bool checkCoreExpansion = true) =>
       SupportsExpansion(ExpansionInfo.GetInfo(ex), checkCoreExpansion);

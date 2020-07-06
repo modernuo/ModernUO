@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Server.Tests.Network.Packets
 {
-  public class ItemPacketTests
+  public class ItemPacketTests : IClassFixture<ServerFixture>
   {
     [Fact]
     public void TestWorldItemPacket()
@@ -323,7 +323,7 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[5 + 64 * 19]; // Max size
       int pos = 0;
 
-      ((byte)0x3C).CopyTo(ref pos, expectedData);
+      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
       pos += 4; // Length + spell count
 
       ushort count = 0;
@@ -360,7 +360,7 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[5 + 64 * 19]; // Max size
       int pos = 0;
 
-      ((byte)0x3C).CopyTo(ref pos, expectedData);
+      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
       pos += 4; // Length + spell count
 
       ushort count = 0;
@@ -379,6 +379,150 @@ namespace Server.Tests.Network.Packets
 
       ((ushort)pos).CopyTo(expectedData.Slice(1, 2));
       count.CopyTo(expectedData.Slice(3, 2));
+
+      expectedData = expectedData.Slice(0, pos);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestContainerContentUpdate()
+    {
+      Serial serial = 0x1;
+      Item item = new Item(serial);
+
+      Span<byte> data = new ContainerContentUpdate(item).Compile();
+
+      Span<byte> expectedData = stackalloc byte[20];
+      int pos = 0;
+
+      ((byte)0x25).CopyTo(ref pos, expectedData); // Packet ID
+      item.Serial.CopyTo(ref pos, expectedData);
+      ((ushort)item.ItemID).CopyTo(ref pos, expectedData);
+      ((byte)0).CopyTo(ref pos, expectedData); // signed, itemID offset
+      ((ushort)Math.Min(item.Amount, ushort.MaxValue)).CopyTo(ref pos, expectedData);
+      ((ushort)item.X).CopyTo(ref pos, expectedData);
+      ((ushort)item.Y).CopyTo(ref pos, expectedData);
+      (item.Parent?.Serial ?? Serial.Zero).CopyTo(ref pos, expectedData);
+      ((ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue)).CopyTo(ref pos, expectedData);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestContainerContentUpdate6017()
+    {
+      Serial serial = 0x1;
+      Item item = new Item(serial);
+
+      Span<byte> data = new ContainerContentUpdate6017(item).Compile();
+
+      Span<byte> expectedData = stackalloc byte[21];
+      int pos = 0;
+
+      ((byte)0x25).CopyTo(ref pos, expectedData); // Packet ID
+      item.Serial.CopyTo(ref pos, expectedData);
+      ((ushort)item.ItemID).CopyTo(ref pos, expectedData);
+      ((byte)0).CopyTo(ref pos, expectedData); // signed, itemID offset
+      ((ushort)Math.Min(item.Amount, ushort.MaxValue)).CopyTo(ref pos, expectedData);
+      ((ushort)item.X).CopyTo(ref pos, expectedData);
+      ((ushort)item.Y).CopyTo(ref pos, expectedData);
+      ((byte)0).CopyTo(ref pos, expectedData); // Grid Location?
+      (item.Parent?.Serial ?? Serial.Zero).CopyTo(ref pos, expectedData);
+      ((ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue)).CopyTo(ref pos, expectedData);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestContainerContent()
+    {
+      Container cont = new Container(Serial.LastItem + 1);
+      cont.AddItem(new Item(Serial.LastItem + 2));
+
+      var m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      Span<byte> data = new ContainerContent(m, cont).Compile();
+
+      int count = cont.Items.Count;
+
+      Span<byte> expectedData = stackalloc byte[5 + cont.Items.Count * 19]; // Max Size
+      int pos = 0;
+
+      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
+      pos += 4; // Length + Count
+
+      ushort written = 0;
+
+      for (var i = 0; i < count; i++)
+      {
+        var child = cont.Items[i];
+        if (child.Deleted || !m.CanSee(child))
+          continue;
+
+        child.Serial.CopyTo(ref pos, expectedData);
+        ((ushort)child.ItemID).CopyTo(ref pos, expectedData);
+        ((byte)0).CopyTo(ref pos, expectedData); // signed, itemID offset
+        ((ushort)Math.Min(child.Amount, ushort.MaxValue)).CopyTo(ref pos, expectedData);
+        ((ushort)child.X).CopyTo(ref pos, expectedData);
+        ((ushort)child.Y).CopyTo(ref pos, expectedData);
+        cont.Serial.CopyTo(ref pos, expectedData);
+        ((ushort)(child.QuestItem ? Item.QuestItemHue : child.Hue)).CopyTo(ref pos, expectedData);
+
+        written++;
+      }
+
+      ((ushort)pos).CopyTo(expectedData.Slice(1, 2));
+      written.CopyTo(expectedData.Slice(3, 2));
+
+      expectedData = expectedData.Slice(0, pos);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestContainerContent6017()
+    {
+      Container cont = new Container(Serial.LastItem + 1);
+      cont.AddItem(new Item(Serial.LastItem + 2));
+
+      var m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      Span<byte> data = new ContainerContent6017(m, cont).Compile();
+
+      int count = cont.Items.Count;
+
+      Span<byte> expectedData = stackalloc byte[5 + cont.Items.Count * 20];
+      int pos = 0;
+
+      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
+      pos += 4; // Length + Count
+
+      ushort written = 0;
+
+      for (var i = 0; i < count; i++)
+      {
+        var child = cont.Items[i];
+        if (child.Deleted || !m.CanSee(child))
+          continue;
+
+        child.Serial.CopyTo(ref pos, expectedData);
+        ((ushort)child.ItemID).CopyTo(ref pos, expectedData);
+        ((byte)0).CopyTo(ref pos, expectedData); // signed, itemID offset
+        ((ushort)Math.Min(child.Amount, ushort.MaxValue)).CopyTo(ref pos, expectedData);
+        ((ushort)child.X).CopyTo(ref pos, expectedData);
+        ((ushort)child.Y).CopyTo(ref pos, expectedData);
+        ((byte)0).CopyTo(ref pos, expectedData); // Grid Location?
+        cont.Serial.CopyTo(ref pos, expectedData);
+        ((ushort)(child.QuestItem ? Item.QuestItemHue : child.Hue)).CopyTo(ref pos, expectedData);
+
+        written++;
+      }
+
+      ((ushort)pos).CopyTo(expectedData.Slice(1, 2));
+      written.CopyTo(expectedData.Slice(3, 2));
 
       expectedData = expectedData.Slice(0, pos);
 

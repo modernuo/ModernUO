@@ -194,7 +194,8 @@ namespace Server.Tests.Network.Packets
         RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
       })
       {
-        Account = account
+        Account = account,
+        ProtocolChanges = protocolChanges
       };
 
       Span<byte> data = new SupportedFeatures(ns).Compile();

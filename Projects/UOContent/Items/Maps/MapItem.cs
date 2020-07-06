@@ -12,12 +12,13 @@ namespace Server.Items
     private bool m_Editable;
 
     [Constructible]
-    public MapItem() : base(0x14EC)
+    public MapItem(Map facet = null) : base(0x14EC)
     {
       Weight = 1.0;
 
       Width = 200;
       Height = 200;
+      Facet = facet;
     }
 
     public MapItem(Serial serial) : base(serial)
@@ -35,6 +36,9 @@ namespace Server.Items
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Height { get; set; }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Map Facet { get; set; }
 
     public List<Point2D> Pins { get; } = new List<Point2D>();
 
@@ -79,7 +83,18 @@ namespace Server.Items
 
     public virtual void DisplayTo(Mobile from)
     {
-      from.Send(new MapDetails(this));
+      NetState ns = from.NetState;
+
+      if (ns.NewCharacterList) // 7.0.13.0+ supports maps on all facets
+        from.Send(new MapDetailsNew(this));
+      else if (Facet != null && Facet != Map.Felucca && Facet != Map.Trammel) // Is it Felucca and Trammel, or just Felucca?
+      {
+        from.SendMessage("You must have client 7.0.13.0 or higher to display this map.");
+        return;
+      }
+      else
+        from.Send(new MapDetails(this));
+
       from.Send(new MapDisplay(this));
 
       for (int i = 0; i < Pins.Count; ++i)
@@ -318,23 +333,21 @@ namespace Server.Items
       }
     }
 
-    /*
     private sealed class MapDetailsNew : Packet
     {
-      public MapDetailsNew( MapItem map ) : base ( 0xF5, 21 )
+      public MapDetailsNew(MapItem map) : base(0xF5, 21)
       {
-        m_Stream.Write( (int) map.Serial );
-        m_Stream.Write( (short) 0x139D );
-        m_Stream.Write( (short) map.Bounds.Start.X );
-        m_Stream.Write( (short) map.Bounds.Start.Y );
-        m_Stream.Write( (short) map.Bounds.End.X );
-        m_Stream.Write( (short) map.Bounds.End.Y );
-        m_Stream.Write( (short) map.Width );
-        m_Stream.Write( (short) map.Height );
-        m_Stream.Write( (short) ( map.Facet == null ? 0 : map.Facet.MapID ) );
+        Stream.Write(map.Serial);
+        Stream.Write((short)0x139D);
+        Stream.Write((short)map.Bounds.Start.X);
+        Stream.Write((short)map.Bounds.Start.Y);
+        Stream.Write((short)map.Bounds.End.X);
+        Stream.Write((short)map.Bounds.End.Y);
+        Stream.Write((short)map.Width);
+        Stream.Write((short)map.Height);
+        Stream.Write((short)(map.Facet?.MapID ?? 0));
       }
     }
-    */
 
     private abstract class MapCommand : Packet
     {

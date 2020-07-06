@@ -68,7 +68,6 @@ namespace Server.Network
     }
   }
 
-  // Pre-7.0.0.0 Mobile Moving
   public sealed class MobileMovingOld : Packet
   {
     public MobileMovingOld(Mobile m, int noto) : base(0x77, 17)
@@ -178,7 +177,6 @@ namespace Server.Network
     }
   }
 
-  // unsure of proper format, client crashes
   public sealed class MobileName : Packet
   {
     public MobileName(Mobile m) : base(0x98)
@@ -186,7 +184,8 @@ namespace Server.Network
       EnsureCapacity(37);
 
       Stream.Write(m.Serial);
-      Stream.WriteAsciiFixed(m.Name ?? "", 30);
+      Stream.WriteAsciiFixed(m.Name ?? "", 29);
+      Stream.Write((byte)0); // Null terminator
     }
   }
 
