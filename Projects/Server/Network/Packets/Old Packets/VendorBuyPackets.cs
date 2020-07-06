@@ -26,9 +26,11 @@ namespace Server.Network
 
             Stream.Write((short)list.Count);
 
+      BuyItemState bis = null;
+
             for (var i = list.Count - 1; i >= 0; --i)
             {
-                var bis = list[i];
+        bis = list[i];
 
                 Stream.Write(bis.MySerial);
                 Stream.Write((ushort)bis.ItemID);
