@@ -52,3 +52,7 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 
 ## Troubleshooting / FAQ
 - See [FAQ](./FAQ.md)
+
+
+</br></br>
+<p align=center>Development Tools provided with &hearts; by <br><a href="https://www.jetbrains.com/?from=ModernUO"><img src="https://user-images.githubusercontent.com/3953314/86882249-cfb2ea00-c0a4-11ea-9cec-bf3f3bcc6f28.png" width="100px" /></a></p>
