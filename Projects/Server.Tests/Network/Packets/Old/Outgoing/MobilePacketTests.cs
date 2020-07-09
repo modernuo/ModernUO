@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Net;
 using Server.Network;
 using Xunit;
@@ -15,16 +16,15 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new DeathAnimation(killed, corpse).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xAF, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial of killed
-        0x00, 0x00, 0x00, 0x00, // Serial of corpse
-        0x00, 0x00, 0x00, 0x00
-      };
+      Span<byte> expectedData = stackalloc byte[13];
+      int pos = 0;
 
-      killed.CopyTo(expectedData.Slice(1, 4));
-      corpse.CopyTo(expectedData.Slice(5, 4));
+      expectedData.Write(ref pos, (byte)0xAF); // Packet ID
+      expectedData.Write(ref pos, killed);
+      expectedData.Write(ref pos, corpse);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, 0);
+#endif
 
       AssertThat.Equal(data, expectedData);
     }
@@ -37,17 +37,21 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new BondedStatus(petSerial, bonded).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xBF, // Packet ID
-        0x00, 0x0B, // Length
-        0x00, 0x19, // Sub-packet
-        0x00, // Sub command
-        0x00, 0x00, 0x00, 0x00, // Serial
-        (byte)(bonded ? 0x1 : 0x0)
-      };
+      Span<byte> expectedData = stackalloc byte[11];
+      int pos = 0;
 
-      petSerial.CopyTo(expectedData.Slice(6, 4));
+      expectedData.Write(ref pos, (byte)0xBF); // Packet ID
+      expectedData.Write(ref pos, (ushort)0x0B); // Length
+      expectedData.Write(ref pos, (ushort)0x19); // Sub-packet
+
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // Command
+#else
+      pos++;
+#endif
+
+      expectedData.Write(ref pos, petSerial);
+      expectedData.Write(ref pos, bonded);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -62,29 +66,19 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new MobileMoving(m, noto).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x77, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Body
-        0x00, 0x00, // X
-        0x00, 0x00, // Y
-        0x00, // Z
-        0x00, // Direction
-        0x00, 0x00, // Hue
-        0x00, // Flags
-        0x00 // Noto
-      };
+      Span<byte> expectedData = stackalloc byte[17];
+      int pos = 0;
 
-      m.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)m.Body).CopyTo(expectedData.Slice(5, 2));
-      ((ushort)m.X).CopyTo(expectedData.Slice(7, 2));
-      ((ushort)m.Y).CopyTo(expectedData.Slice(9, 2));
-      expectedData[11] = (byte)m.Z;
-      expectedData[12] = (byte)m.Direction;
-      ((ushort)m.Hue).CopyTo(expectedData.Slice(13, 2));
-      expectedData[15] = (byte)m.GetPacketFlags();
-      expectedData[16] = (byte)noto;
+      expectedData.Write(ref pos, (byte)0x77); // Packet ID
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.Write(ref pos, (ushort)m.Body);
+      expectedData.Write(ref pos, (ushort)m.X);
+      expectedData.Write(ref pos, (ushort)m.Y);
+      expectedData.Write(ref pos, (byte)m.Z);
+      expectedData.Write(ref pos, (byte)m.Direction);
+      expectedData.Write(ref pos, (ushort)m.Hue);
+      expectedData.Write(ref pos, (byte)m.GetPacketFlags());
+      expectedData.Write(ref pos, (byte)noto);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -99,29 +93,19 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new MobileMoving(m, noto).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x77, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Body
-        0x00, 0x00, // X
-        0x00, 0x00, // Y
-        0x00, // Z
-        0x00, // Direction
-        0x00, 0x00, // Hue
-        0x00, // Flags
-        0x00 // Noto
-      };
+      Span<byte> expectedData = stackalloc byte[17];
+      int pos = 0;
 
-      m.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)m.Body).CopyTo(expectedData.Slice(5, 2));
-      ((ushort)m.X).CopyTo(expectedData.Slice(7, 2));
-      ((ushort)m.Y).CopyTo(expectedData.Slice(9, 2));
-      expectedData[11] = (byte)m.Z;
-      expectedData[12] = (byte)m.Direction;
-      ((ushort)m.Hue).CopyTo(expectedData.Slice(13, 2));
-      expectedData[15] = (byte)m.GetOldPacketFlags();
-      expectedData[16] = (byte)noto;
+      expectedData.Write(ref pos, (byte)0x77); // Packet ID
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.Write(ref pos, (ushort)m.Body);
+      expectedData.Write(ref pos, (ushort)m.X);
+      expectedData.Write(ref pos, (ushort)m.Y);
+      expectedData.Write(ref pos, (byte)m.Z);
+      expectedData.Write(ref pos, (byte)m.Direction);
+      expectedData.Write(ref pos, (ushort)m.Hue);
+      expectedData.Write(ref pos, (byte)m.GetOldPacketFlags());
+      expectedData.Write(ref pos, (byte)noto);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -134,16 +118,12 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new MobileHits(m).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xA1, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Max Hits
-        0x00, 0x00 // Current Hits
-      };
+      Span<byte> expectedData = stackalloc byte[9];
+      int pos = 0;
 
-      m.Serial.CopyTo(expectedData.Slice(1, 4));
-      AttributeNormalizerUtilities.Write(m.Hits, m.HitsMax, false, expectedData.Slice(5));
+      expectedData.Write(ref pos, (byte)0xA1); // Packet ID
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.WriteAttribute(ref pos, m.Hits, m.HitsMax, false);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -156,18 +136,12 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new MobileHitsN(m).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xA1, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Max Hits
-        0x00, 0x00 // Current Hits
-      };
+      Span<byte> expectedData = stackalloc byte[9];
+      int pos = 0;
 
-      int max = AttributeNormalizer.Maximum;
-
-      m.Serial.CopyTo(expectedData.Slice(1, 4));
-      AttributeNormalizerUtilities.Write(m.Hits, m.HitsMax, true, expectedData.Slice(5));
+      expectedData.Write(ref pos, (byte)0xA1); // Packet ID
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.WriteAttribute(ref pos, m.Hits, m.HitsMax, true);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -180,16 +154,12 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new MobileMana(m).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xA2, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Max Hits
-        0x00, 0x00 // Current Hits
-      };
+      Span<byte> expectedData = stackalloc byte[9];
+      int pos = 0;
 
-      m.Serial.CopyTo(expectedData.Slice(1, 4));
-      AttributeNormalizerUtilities.Write(m.Mana, m.ManaMax, false, expectedData.Slice(5));
+      expectedData.Write(ref pos, (byte)0xA2); // Packet ID
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.WriteAttribute(ref pos, m.Mana, m.ManaMax, false);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -202,18 +172,12 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new MobileManaN(m).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xA2, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Max Hits
-        0x00, 0x00 // Current Hits
-      };
+      Span<byte> expectedData = stackalloc byte[9];
+      int pos = 0;
 
-      int max = AttributeNormalizer.Maximum;
-
-      m.Serial.CopyTo(expectedData.Slice(1, 4));
-      AttributeNormalizerUtilities.Write(m.Mana, m.ManaMax, true, expectedData.Slice(5));
+      expectedData.Write(ref pos, (byte)0xA2); // Packet ID
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.WriteAttribute(ref pos, m.Mana, m.ManaMax, true);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -226,16 +190,12 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new MobileStam(m).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xA3, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Max Hits
-        0x00, 0x00 // Current Hits
-      };
+      Span<byte> expectedData = stackalloc byte[9];
+      int pos = 0;
 
-      m.Serial.CopyTo(expectedData.Slice(1, 4));
-      AttributeNormalizerUtilities.Write(m.Stam, m.StamMax, false, expectedData.Slice(5));
+      expectedData.Write(ref pos, (byte)0xA3); // Packet ID
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.WriteAttribute(ref pos, m.Stam, m.StamMax, false);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -248,18 +208,12 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new MobileStamN(m).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xA3, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Max Hits
-        0x00, 0x00 // Current Hits
-      };
+      Span<byte> expectedData = stackalloc byte[9];
+      int pos = 0;
 
-      int max = AttributeNormalizer.Maximum;
-
-      m.Serial.CopyTo(expectedData.Slice(1, 4));
-      AttributeNormalizerUtilities.Write(m.Stam, m.StamMax, true, expectedData.Slice(5));
+      expectedData.Write(ref pos, (byte)0xA3); // Packet ID
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.WriteAttribute(ref pos, m.Stam, m.StamMax, true);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -272,22 +226,14 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new MobileAttributes(m).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x2D, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Max Hits
-        0x00, 0x00, // Current Hits
-        0x00, 0x00, // Max Mana
-        0x00, 0x00, // Current Mana
-        0x00, 0x00, // Max Stam
-        0x00, 0x00 // Current Stam
-      };
+      Span<byte> expectedData = stackalloc byte[17];
+      int pos = 0;
 
-      m.Serial.CopyTo(expectedData.Slice(1, 4));
-      AttributeNormalizerUtilities.Write(m.Hits, m.HitsMax, false, expectedData.Slice(5));
-      AttributeNormalizerUtilities.Write(m.Mana, m.ManaMax, false, expectedData.Slice(9));
-      AttributeNormalizerUtilities.Write(m.Stam, m.StamMax, false, expectedData.Slice(13));
+      expectedData.Write(ref pos, (byte)0x2D); // Packet ID
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.WriteAttribute(ref pos, m.Hits, m.HitsMax, false);
+      expectedData.WriteAttribute(ref pos, m.Mana, m.ManaMax, false);
+      expectedData.WriteAttribute(ref pos, m.Stam, m.StamMax, false);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -300,24 +246,14 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new MobileAttributesN(m).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x2D, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Max Hits
-        0x00, 0x00, // Current Hits
-        0x00, 0x00, // Max Mana
-        0x00, 0x00, // Current Mana
-        0x00, 0x00, // Max Stam
-        0x00, 0x00 // Current Stam
-      };
+      Span<byte> expectedData = stackalloc byte[17];
+      int pos = 0;
 
-      int max = AttributeNormalizer.Maximum;
-
-      m.Serial.CopyTo(expectedData.Slice(1, 4));
-      AttributeNormalizerUtilities.Write(m.Hits, m.HitsMax, true, expectedData.Slice(5));
-      AttributeNormalizerUtilities.Write(m.Mana, m.ManaMax, true, expectedData.Slice(9));
-      AttributeNormalizerUtilities.Write(m.Stam, m.StamMax, true, expectedData.Slice(13));
+      expectedData.Write(ref pos, (byte)0x2D); // Packet ID
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.WriteAttribute(ref pos, m.Hits, m.HitsMax, true);
+      expectedData.WriteAttribute(ref pos, m.Mana, m.ManaMax, true);
+      expectedData.WriteAttribute(ref pos, m.Stam, m.StamMax, true);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -335,11 +271,13 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> expectedData = stackalloc byte[37];
       int pos = 0;
-      ((byte)0x98).CopyTo(ref pos, expectedData);
-      ((ushort)0x25).CopyTo(ref pos, expectedData);
-      m.Serial.CopyTo(ref pos, expectedData);
-      (m.Name ?? "").CopyRawASCIITo(ref pos, 29, expectedData);
-      ((byte)0x0).CopyTo(ref pos, expectedData); // Null terminator
+      expectedData.Write(ref pos, (byte)0x98);
+      expectedData.Write(ref pos, (ushort)0x25);
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.WriteAsciiFixed(ref pos, m.Name ?? "", 29);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0);
+#endif
 
       AssertThat.Equal(data, expectedData);
     }
@@ -368,14 +306,14 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[14];
       int pos = 0;
 
-      ((byte)0x6E).CopyTo(ref pos, expectedData);
-      mobile.CopyTo(ref pos, expectedData);
-      ((ushort)action).CopyTo(ref pos, expectedData);
-      ((ushort)frameCount).CopyTo(ref pos, expectedData);
-      ((ushort)repeatCount).CopyTo(ref pos, expectedData);
-      reverse.CopyTo(ref pos, expectedData);
-      repeat.CopyTo(ref pos, expectedData);
-      delay.CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)0x6E);
+      expectedData.Write(ref pos, mobile);
+      expectedData.Write(ref pos, (ushort)action);
+      expectedData.Write(ref pos, (ushort)frameCount);
+      expectedData.Write(ref pos, (ushort)repeatCount);
+      expectedData.Write(ref pos, reverse);
+      expectedData.Write(ref pos, repeat);
+      expectedData.Write(ref pos, delay);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -398,11 +336,11 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[10];
       int pos = 0;
 
-      ((byte)0xE2).CopyTo(ref pos, expectedData);
-      mobile.CopyTo(ref pos, expectedData);
-      ((ushort)action).CopyTo(ref pos, expectedData);
-      ((ushort)frameCount).CopyTo(ref pos, expectedData);
-      delay.CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)0xE2);
+      expectedData.Write(ref pos, mobile);
+      expectedData.Write(ref pos, (ushort)action);
+      expectedData.Write(ref pos, (ushort)frameCount);
+      expectedData.Write(ref pos, delay);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -420,21 +358,27 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[43];
       int pos = 0;
 
-      ((byte)0x11).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
+      expectedData.Write(ref pos, (byte)0x11); // Packet ID
+      expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
 
-      m.Serial.CopyTo(ref pos, expectedData);
-      (m.Name ?? "").CopyASCIIFixedTo(ref pos, 30, expectedData);
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.WriteAsciiFixed(ref pos, m.Name ?? "", 30);
 
-      AttributeNormalizerUtilities.WriteReverse(m.Hits, m.HitsMax, true, expectedData.Slice(pos));
-      pos += 4;
-      canBeRenamed.CopyTo(ref pos, expectedData);
+      expectedData.WriteReverseAttribute(ref pos, m.Hits, m.HitsMax, true);
+      expectedData.Write(ref pos, canBeRenamed);
+
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // type
+#endif
 
       AssertThat.Equal(data, expectedData);
     }
 
-    [Fact]
-    public void TestMobileStatusExtended()
+    [Theory]
+    [InlineData(ProtocolChanges.Version70610)]
+    [InlineData(ProtocolChanges.Version400a)]
+    [InlineData(ProtocolChanges.Version502b)]
+    public void TestMobileStatusExtended(ProtocolChanges changes)
     {
       var beholder = new Mobile(0x1)
       {
@@ -451,14 +395,17 @@ namespace Server.Tests.Network.Packets
       NetState ns = new NetState(new AccountPacketTests.TestConnectionContext
       {
         RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
-      });
+      })
+      {
+        ProtocolChanges = changes
+      };
 
       Span<byte> data = new MobileStatus(beholder, beheld, ns).Compile();
 
       Span<byte> expectedData = stackalloc byte[121]; // Max Size
       int pos = 0;
 
-      ((byte)0x11).CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)0x11);
       pos += 2; // Length
 
       int type;
@@ -469,68 +416,459 @@ namespace Server.Tests.Network.Packets
       else if (Core.ML && ns.SupportsExpansion(Expansion.ML)) type = 5;
       else type = Core.AOS ? 4 : 3;
 
-      beheld.Serial.CopyTo(ref pos, expectedData);
-      beheld.Name.CopyASCIIFixedTo(ref pos, 30, expectedData);
+      expectedData.Write(ref pos, beheld.Serial);
+      expectedData.WriteAsciiFixed(ref pos, beheld.Name, 30);
 
-      AttributeNormalizerUtilities.WriteReverse(beheld.Hits, beheld.HitsMax, notSelf, expectedData.Slice(pos));
-      pos += 4;
+      expectedData.WriteReverseAttribute(ref pos, beheld.Hits, beheld.HitsMax, notSelf);
 
-      beheld.CanBeRenamedBy(beheld).CopyTo(ref pos, expectedData);
-      ((byte)type).CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, beheld.CanBeRenamedBy(beheld));
+      expectedData.Write(ref pos, (byte)type);
 
       if (type > 0)
       {
-        beheld.Female.CopyTo(ref pos, expectedData);
-        ((ushort)beheld.Str).CopyTo(ref pos, expectedData);
-        ((ushort)beheld.Dex).CopyTo(ref pos, expectedData);
-        ((ushort)beheld.Int).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, beheld.Female);
+        expectedData.Write(ref pos, (ushort)beheld.Str);
+        expectedData.Write(ref pos, (ushort)beheld.Dex);
+        expectedData.Write(ref pos, (ushort)beheld.Int);
 
-        AttributeNormalizerUtilities.WriteReverse(beheld.Stam, beheld.StamMax, notSelf, expectedData.Slice(pos));
-        pos += 4;
+        expectedData.WriteReverseAttribute(ref pos, beheld.Stam, beheld.StamMax, notSelf);
+        expectedData.WriteReverseAttribute(ref pos, beheld.Mana, beheld.ManaMax, notSelf);
 
-        AttributeNormalizerUtilities.WriteReverse(beheld.Mana, beheld.ManaMax, notSelf, expectedData.Slice(pos));
-        pos += 4;
-
-        beheld.TotalGold.CopyTo(ref pos, expectedData);
-        ((ushort)(Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5))).CopyTo(ref pos, expectedData);
-        ((ushort)(Mobile.BodyWeight + beheld.TotalWeight)).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, beheld.TotalGold);
+        expectedData.Write(ref pos, (ushort)(Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5)));
+        expectedData.Write(ref pos, (ushort)(Mobile.BodyWeight + beheld.TotalWeight));
 
         if (type >= 5)
         {
-          ((ushort)beheld.MaxWeight).CopyTo(ref pos, expectedData);
-          ((byte)(beheld.Race.RaceID + 1)).CopyTo(ref pos, expectedData); // 0x00 for a non-ML enabled account
+          expectedData.Write(ref pos, (ushort)beheld.MaxWeight);
+          expectedData.Write(ref pos, (byte)(beheld.Race.RaceID + 1)); // 0x00 for a non-ML enabled account
         }
 
-        ((ushort)beheld.StatCap).CopyTo(ref pos, expectedData);
-        ((byte)beheld.Followers).CopyTo(ref pos, expectedData);
-        ((byte)beheld.FollowersMax).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, (ushort)beheld.StatCap);
+        expectedData.Write(ref pos, (byte)beheld.Followers);
+        expectedData.Write(ref pos, (byte)beheld.FollowersMax);
 
         if (type >= 4)
         {
-          ((ushort)beheld.FireResistance).CopyTo(ref pos, expectedData);
-          ((ushort)beheld.ColdResistance).CopyTo(ref pos, expectedData);
-          ((ushort)beheld.PoisonResistance).CopyTo(ref pos, expectedData);
-          ((ushort)beheld.EnergyResistance).CopyTo(ref pos, expectedData);
-          ((ushort)beheld.Luck).CopyTo(ref pos, expectedData);
+          expectedData.Write(ref pos, (ushort)beheld.FireResistance);
+          expectedData.Write(ref pos, (ushort)beheld.ColdResistance);
+          expectedData.Write(ref pos, (ushort)beheld.PoisonResistance);
+          expectedData.Write(ref pos, (ushort)beheld.EnergyResistance);
+          expectedData.Write(ref pos, (ushort)beheld.Luck);
         }
 
         int min = 0;
         int max = 0;
         beheld.Weapon?.GetStatusDamage(beheld, out min, out max);
 
-        ((ushort)min).CopyTo(ref pos, expectedData);
-        ((ushort)max).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, (ushort)min);
+        expectedData.Write(ref pos, (ushort)max);
 
-        beheld.TithingPoints.CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, beheld.TithingPoints);
 
         if (type >= 6)
           for (var i = 0; i < 15; ++i)
-            ((ushort)beheld.GetAOSStatus(i)).CopyTo(ref pos, expectedData);
+            expectedData.Write(ref pos, (ushort)beheld.GetAOSStatus(i));
       }
 
-      ((ushort)pos).CopyTo(expectedData.Slice(1)); // Length
+      expectedData.Slice(1, 2).Write((ushort)pos); // Length
 
       expectedData = expectedData.Slice(0, pos);
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Theory]
+    [InlineData("None", 0)]
+    [InlineData("Lesser", 1)]
+    [InlineData("Lethal", 5)]
+    public void TestHealthbarPoison(string pName, int level)
+    {
+      var p = Poison.GetPoison(pName);
+      Mobile m = new Mobile(0x1);
+      m.DefaultMobileInit();
+      m.Poison = p;
+
+      Span<byte> data = new HealthbarPoison(m).Compile();
+
+      Span<byte> expectedData = stackalloc byte[12];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x17); // Packet ID
+      expectedData.Write(ref pos, (ushort)12); // Length
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.Write(ref pos, 0x10001); // Show Bar?, Poison Bar
+      expectedData.Write(ref pos, (byte)((p?.Level ?? -1) + 1));
+
+      AssertThat.Equal(data, expectedData);
+      Assert.Equal(p?.Level, m.Poison?.Level);
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public void TestYellowBar(bool isBlessed, bool isYellowHealth)
+    {
+      Mobile m = new Mobile(0x1);
+      m.DefaultMobileInit();
+      m.Blessed = isBlessed;
+      m.YellowHealthbar = isYellowHealth;
+
+      Span<byte> data = new HealthbarYellow(m).Compile();
+
+      Span<byte> expectedData = stackalloc byte[12];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x17); // Packet ID
+      expectedData.Write(ref pos, (ushort)12); // Length
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.Write(ref pos, 0x10002); // Show Bar?, Yellow Bar
+      expectedData.Write(ref pos, isBlessed || isYellowHealth);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestMobileUpdate()
+    {
+      Mobile m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      Span<byte> data = new MobileUpdate(m).Compile();
+
+      Span<byte> expectedData = stackalloc byte[19];
+      int pos = 0;
+
+      var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
+
+      expectedData.Write(ref pos, (byte)0x20); // Packet ID
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.Write(ref pos, (ushort)m.Body);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // Unknown
+#else
+      pos++;
+#endif
+      expectedData.Write(ref pos, (ushort)hue);
+      expectedData.Write(ref pos, (byte)m.GetPacketFlags());
+      expectedData.Write(ref pos, (ushort)m.X);
+      expectedData.Write(ref pos, (ushort)m.Y);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (ushort)2); // Unknown
+#else
+      pos += 2;
+#endif
+      expectedData.Write(ref pos, (byte)m.Direction);
+      expectedData.Write(ref pos, (byte)m.Z);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestMobileUpdateOld()
+    {
+      Mobile m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      Span<byte> data = new MobileUpdateOld(m).Compile();
+
+      Span<byte> expectedData = stackalloc byte[19];
+      int pos = 0;
+
+      var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
+
+      expectedData.Write(ref pos, (byte)0x20); // Packet ID
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.Write(ref pos, (ushort)m.Body);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // Unknown
+#else
+      pos++;
+#endif
+      expectedData.Write(ref pos, (ushort)hue);
+      expectedData.Write(ref pos, (byte)m.GetOldPacketFlags());
+      expectedData.Write(ref pos, (ushort)m.X);
+      expectedData.Write(ref pos, (ushort)m.Y);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (ushort)2); // Unknown
+#else
+      pos += 2;
+#endif
+      expectedData.Write(ref pos, (byte)m.Direction);
+      expectedData.Write(ref pos, (byte)m.Z);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Theory]
+    [InlineData(0, 0, 0, 0)]
+    [InlineData(10, 1024, 0, 0)]
+    [InlineData(10, 1024, 11, 2048)]
+    public void TestMobileIncoming(int hairItemId, int hairHue, int facialHairItemId, int facialHairHue)
+    {
+      var beholder = new Mobile(0x1)
+      {
+        Name = "Random Mobile 1"
+      };
+      beholder.DefaultMobileInit();
+
+      var beheld = new Mobile(0x2)
+      {
+        Name = "Random Mobile 2"
+      };
+      beheld.DefaultMobileInit();
+      beheld.AddItem(new Item((Serial)0x1000)
+      {
+        Layer = Layer.OneHanded
+      });
+
+      // Test Dupe
+      beheld.AddItem(new Item((Serial)0x1001)
+      {
+        Layer = Layer.OneHanded
+      });
+
+      beheld.HairItemID = hairItemId;
+      beheld.HairHue = hairHue;
+      beheld.FacialHairItemID = facialHairItemId;
+      beheld.FacialHairHue = facialHairHue;
+
+      Span<byte> data = new MobileIncoming(beholder, beheld).Compile();
+
+      Span<bool> layers = stackalloc bool[256];
+#if NO_LOCAL_INIT
+      layers.Clear();
+#endif
+
+      var items = beheld.Items;
+      int count = items.Count;
+
+      if (beheld.HairItemID > 0)
+        count++;
+      if (beheld.FacialHairItemID > 0)
+        count++;
+
+      int length = 23 + count * 9; // Max Size
+
+      Span<byte> expectedData = stackalloc byte[length];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x78);
+      pos += 2; // Length
+
+      var isSolidHue = beheld.SolidHueOverride >= 0;
+
+      expectedData.Write(ref pos, beheld.Serial);
+      expectedData.Write(ref pos, (ushort)beheld.Body);
+      expectedData.Write(ref pos, (ushort)beheld.X);
+      expectedData.Write(ref pos, (ushort)beheld.Y);
+      expectedData.Write(ref pos, (byte)beheld.Z);
+      expectedData.Write(ref pos, (byte)beheld.Direction);
+      expectedData.Write(ref pos, (ushort)(isSolidHue ? beheld.SolidHueOverride : beheld.Hue));
+      expectedData.Write(ref pos, (byte)beheld.GetPacketFlags());
+      expectedData.Write(ref pos, (byte)Notoriety.Compute(beholder, beheld));
+
+      byte layer;
+
+      for (int i = 0; i < items.Count; i++)
+      {
+        var item = items[i];
+
+        layer = (byte)item.Layer;
+
+        if (!item.Deleted && !layers[layer] && beholder.CanSee(item))
+        {
+          layers[layer] = true;
+
+          expectedData.Write(ref pos, item.Serial);
+          expectedData.Write(ref pos, (ushort)(item.ItemID & 0xFFFF));
+          expectedData.Write(ref pos, layer);
+          expectedData.Write(ref pos, (ushort)(isSolidHue ? beheld.SolidHueOverride : item.Hue));
+        }
+      }
+
+      layer = (byte)Layer.Hair;
+      var itemId = beheld.HairItemID & 0xFFFF;
+
+      if (itemId > 0 && !layers[layer])
+      {
+        expectedData.Write(ref pos, HairInfo.FakeSerial(beheld));
+        expectedData.Write(ref pos, (ushort)itemId);
+        expectedData.Write(ref pos, layer);
+        expectedData.Write(ref pos, (ushort)(isSolidHue ? beheld.SolidHueOverride : beheld.HairHue));
+      }
+
+      layer = (byte)Layer.FacialHair;
+      itemId = beheld.FacialHairItemID & 0xFFFF;
+
+      if (itemId > 0 && !layers[layer])
+      {
+        expectedData.Write(ref pos, FacialHairInfo.FakeSerial(beheld));
+        expectedData.Write(ref pos, (ushort)itemId);
+        expectedData.Write(ref pos, layer);
+        expectedData.Write(ref pos, (ushort)(isSolidHue ? beheld.SolidHueOverride : beheld.FacialHairHue));
+      }
+
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, 0); // Zero serial, terminate list
+#else
+      pos += 4;
+#endif
+
+      expectedData.Slice(1, 2).Write((ushort)pos); // Length
+      expectedData = expectedData.Slice(0, pos);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Theory]
+    [InlineData(ProtocolChanges.Version6000, 0, 0, 0, 0)]
+    [InlineData(ProtocolChanges.Version6000, 10, 1024, 0, 0)]
+    [InlineData(ProtocolChanges.Version6000, 10, 1024, 11, 2048)]
+    [InlineData(ProtocolChanges.Version7000, 0, 0, 0, 0)]
+    [InlineData(ProtocolChanges.Version7000, 10, 1024, 0, 0)]
+    [InlineData(ProtocolChanges.Version7000, 10, 1024, 11, 2048)]
+    public void TestMobileIncomingOld(ProtocolChanges protocolChanges, int hairItemId, int hairHue, int facialHairItemId, int facialHairHue)
+    {
+      var beholder = new Mobile(0x1)
+      {
+        Name = "Random Mobile 1"
+      };
+      beholder.DefaultMobileInit();
+
+      var beheld = new Mobile(0x2)
+      {
+        Name = "Random Mobile 2"
+      };
+      beheld.DefaultMobileInit();
+      beheld.AddItem(new Item((Serial)0x1000)
+      {
+        Layer = Layer.OneHanded
+      });
+
+      // Test Dupe
+      beheld.AddItem(new Item((Serial)0x1001)
+      {
+        Layer = Layer.OneHanded
+      });
+
+      beheld.HairItemID = hairItemId;
+      beheld.HairHue = hairHue;
+      beheld.FacialHairItemID = facialHairItemId;
+      beheld.FacialHairHue = facialHairHue;
+
+      NetState ns = new NetState(new AccountPacketTests.TestConnectionContext
+      {
+        RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
+      })
+      {
+        ProtocolChanges = protocolChanges
+      };
+
+      Span<byte> data = (ns.StygianAbyss ? (Packet)new MobileIncomingSA(beholder, beheld) : new MobileIncomingOld(beholder, beheld))
+        .Compile();
+
+      Span<bool> layers = stackalloc bool[256];
+#if NO_LOCAL_INIT
+      layers.Clear();
+#endif
+
+      var items = beheld.Items;
+      int count = items.Count;
+
+      if (beheld.HairItemID > 0)
+        count++;
+      if (beheld.FacialHairItemID > 0)
+        count++;
+
+      int length = 23 + count * 9; // Max Size
+
+      Span<byte> expectedData = stackalloc byte[length];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x78);
+      pos += 2; // Length
+
+      var isSolidHue = beheld.SolidHueOverride >= 0;
+
+      expectedData.Write(ref pos, beheld.Serial);
+      expectedData.Write(ref pos, (ushort)beheld.Body);
+      expectedData.Write(ref pos, (ushort)beheld.X);
+      expectedData.Write(ref pos, (ushort)beheld.Y);
+      expectedData.Write(ref pos, (byte)beheld.Z);
+      expectedData.Write(ref pos, (byte)beheld.Direction);
+      expectedData.Write(ref pos, (ushort)(isSolidHue ? beheld.SolidHueOverride : beheld.Hue));
+      expectedData.Write(ref pos, (byte)(ns.StygianAbyss ? beheld.GetOldPacketFlags() : beheld.GetPacketFlags()));
+      expectedData.Write(ref pos, (byte)Notoriety.Compute(beholder, beheld));
+
+      byte layer;
+      int itemId;
+      int hue;
+
+      for (int i = 0; i < items.Count; i++)
+      {
+        var item = items[i];
+
+        layer = (byte)item.Layer;
+
+        if (!item.Deleted && !layers[layer] && beholder.CanSee(item))
+        {
+          layers[layer] = true;
+          itemId = item.ItemID & 0x7FFF;
+          hue = isSolidHue ? beheld.SolidHueOverride : item.Hue;
+
+          if (hue != 0)
+            itemId |= 0x8000;
+
+          expectedData.Write(ref pos, item.Serial);
+          expectedData.Write(ref pos, (ushort)itemId);
+          expectedData.Write(ref pos, layer);
+          expectedData.Write(ref pos, (ushort)hue);
+        }
+      }
+
+      layer = (byte)Layer.Hair;
+      itemId = beheld.HairItemID & 0x7FFF;
+
+      if (itemId > 0 && !layers[layer])
+      {
+        hue = isSolidHue ? beheld.SolidHueOverride : beheld.HairHue;
+
+        if (hue != 0)
+          itemId |= 0x8000;
+
+        expectedData.Write(ref pos, HairInfo.FakeSerial(beheld));
+        expectedData.Write(ref pos, (ushort)itemId);
+        expectedData.Write(ref pos, layer);
+        expectedData.Write(ref pos, (ushort)hue);
+      }
+
+      layer = (byte)Layer.FacialHair;
+      itemId = beheld.FacialHairItemID & 0x7FFF;
+
+      if (itemId > 0 && !layers[layer])
+      {
+        hue = isSolidHue ? beheld.SolidHueOverride : beheld.FacialHairHue;
+
+        if (hue != 0)
+          itemId |= 0x8000;
+
+        expectedData.Write(ref pos, FacialHairInfo.FakeSerial(beheld));
+        expectedData.Write(ref pos, (ushort)itemId);
+        expectedData.Write(ref pos, layer);
+        expectedData.Write(ref pos, (ushort)hue);
+      }
+
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, 0); // Zero serial, terminate list
+#else
+      pos += 4;
+#endif
+
+      expectedData.Slice(1, 2).Write((ushort)pos); // Length
+      expectedData = expectedData.Slice(0, pos);
+
       AssertThat.Equal(data, expectedData);
     }
   }

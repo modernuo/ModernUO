@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using Server.ContextMenus;
@@ -40,29 +41,40 @@ namespace Server.Tests.Network.Packets
         }
       );
 
-      string question = menu.Question?.Trim() ?? "";
-      int questionLength = Math.Min(255, question.Length);
-
-      int length = 11 + questionLength + menu.Entries.Sum(entry => 5 + entry.Name?.Trim().Length ?? 0);
-
       Span<byte> data = new DisplayItemListMenu(menu).Compile();
 
-      Span<byte> expectedData = stackalloc byte[length];
+      string question = menu.Question;
+      int questionLength = Math.Min(255, question.Length);
+      int entriesCount = 0;
+      int length = 11 + questionLength;
 
+      foreach (var entry in menu.Entries)
+      {
+        length += 5 + entry.Name.Length;
+        if (entriesCount == 255)
+          break;
+
+        entriesCount++;
+      }
+
+      Span<byte> expectedData = stackalloc byte[length];
       int pos = 0;
 
-      ((byte)0x7C).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)length).CopyTo(ref pos, expectedData);
-      menu.Serial.CopyTo(ref pos, expectedData);
-      ((ushort)0x00).CopyTo(ref pos, expectedData);
-      question.CopySmallASCIITo(ref pos, expectedData);
-      ((byte)menu.Entries.Length).CopyTo(ref pos, expectedData);
-      for (int i = 0; i < menu.Entries.Length; i++)
+      expectedData.Write(ref pos, (byte)0x7C); // Packet ID
+      expectedData.Write(ref pos, (ushort)length);
+      expectedData.Write(ref pos, menu.Serial);
+      expectedData.Write(ref pos, (ushort)0x00);
+      expectedData.Write(ref pos, (byte)questionLength);
+      expectedData.WriteAscii(ref pos, question, 255);
+      expectedData.Write(ref pos, (byte)entriesCount);
+      for (int i = 0; i < entriesCount; i++)
       {
         var entry = menu.Entries[i];
-        ((ushort)entry.ItemID).CopyTo(ref pos, expectedData);
-        ((ushort)entry.Hue).CopyTo(ref pos, expectedData);
-        (entry.Name?.Trim() ?? "").CopySmallASCIITo(ref pos, expectedData);
+        expectedData.Write(ref pos, (ushort)entry.ItemID);
+        expectedData.Write(ref pos, (ushort)entry.Hue);
+        string name = entry.Name?.Trim() ?? "";
+        expectedData.Write(ref pos, (byte)Math.Min(255, name.Length));
+        expectedData.WriteAscii(ref pos, name, 255);
       }
 
       AssertThat.Equal(data, expectedData);
@@ -81,27 +93,43 @@ namespace Server.Tests.Network.Packets
         }
       );
 
-      string question = menu.Question?.Trim() ?? "";
-      int questionLength = Math.Min(255, question.Length);
-
-      int length = 11 + questionLength + menu.Answers.Sum(answer => 5 + answer?.Trim().Length ?? 0);
-
       Span<byte> data = new DisplayQuestionMenu(menu).Compile();
+
+      string question = menu.Question;
+      int questionLength = Math.Min(255, question.Length);
+      int answersCount = 0;
+      int length = 11 + questionLength;
+
+      foreach (var answer in menu.Answers)
+      {
+        length += 5 + answer.Length;
+        if (answersCount == 255)
+          break;
+
+        answersCount++;
+      }
 
       Span<byte> expectedData = stackalloc byte[length];
 
       int pos = 0;
 
-      ((byte)0x7C).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)length).CopyTo(ref pos, expectedData);
-      menu.Serial.CopyTo(ref pos, expectedData);
-      ((ushort)0x00).CopyTo(ref pos, expectedData);
-      question.CopySmallASCIITo(ref pos, expectedData);
-      ((byte)menu.Answers.Length).CopyTo(ref pos, expectedData);
-      for (int i = 0; i < menu.Answers.Length; i++)
+      expectedData.Write(ref pos, (byte)0x7C); // Packet ID
+      expectedData.Write(ref pos, (ushort)length);
+      expectedData.Write(ref pos, menu.Serial);
+      expectedData.Write(ref pos, (ushort)0x00);
+      expectedData.Write(ref pos, (byte)question.Length);
+      expectedData.WriteAscii(ref pos, question, 255);
+      expectedData.Write(ref pos, (byte)answersCount);
+      for (int i = 0; i < answersCount; i++)
       {
-        0x0.CopyTo(ref pos, expectedData);
-        (menu.Answers[i]?.Trim() ?? "").CopySmallASCIITo(ref pos, expectedData);
+        var answer = menu.Answers[i];
+#if NO_LOCAL_INIT
+        expectedData.Write(ref pos, 0);
+#else
+        pos += 4;
+#endif
+        expectedData.Write(ref pos, (byte)Math.Min(255, answer.Length));
+        expectedData.WriteAscii(ref pos, answer, 255);
       }
 
       AssertThat.Equal(data, expectedData);
@@ -123,20 +151,20 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[length];
 
       int pos = 0;
-      ((byte)0xBF).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)length).CopyTo(ref pos, expectedData); // Length
-      ((ushort)0x14).CopyTo(ref pos, expectedData); // Command
-      ((ushort)0x02).CopyTo(ref pos, expectedData); // Subcommand
-      menu.Target.Serial.CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)0xBF); // Packet ID
+      expectedData.Write(ref pos, (ushort)length); // Length
+      expectedData.Write(ref pos, (ushort)0x14); // Command
+      expectedData.Write(ref pos, (ushort)0x02); // Subcommand
+      expectedData.Write(ref pos, menu.Target.Serial);
       var entries = menu.Entries;
 
-      ((byte)entries.Length).CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)entries.Length);
 
       for (int i = 0; i < entries.Length; i++)
       {
         var entry = entries[i];
-        entry.Number.CopyTo(ref pos, expectedData);
-        ((ushort)i).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, entry.Number);
+        expectedData.Write(ref pos, (ushort)i);
 
         var flags = entry.Flags;
 
@@ -148,7 +176,7 @@ namespace Server.Tests.Network.Packets
         if (!(entry.Enabled && menu.From.InRange(item.GetWorldLocation(), range)))
           flags |= CMEFlags.Disabled;
 
-        ((ushort)flags).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, (ushort)flags);
       }
 
       AssertThat.Equal(data, expectedData);
@@ -170,20 +198,20 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[length];
 
       int pos = 0;
-      ((byte)0xBF).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)length).CopyTo(ref pos, expectedData); // Length
-      ((ushort)0x14).CopyTo(ref pos, expectedData); // Command
-      ((ushort)0x01).CopyTo(ref pos, expectedData); // Subcommand
-      menu.Target.Serial.CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)0xBF); // Packet ID
+      expectedData.Write(ref pos, (ushort)length); // Length
+      expectedData.Write(ref pos, (ushort)0x14); // Command
+      expectedData.Write(ref pos, (ushort)0x01); // Subcommand
+      expectedData.Write(ref pos, menu.Target.Serial);
       var entries = menu.Entries;
 
-      ((byte)entries.Length).CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)entries.Length);
 
       for (int i = 0; i < entries.Length; i++)
       {
         var entry = entries[i];
-        ((ushort)i).CopyTo(ref pos, expectedData);
-        ((ushort)(entry.Number - 3000000)).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, (ushort)i);
+        expectedData.Write(ref pos, (ushort)(entry.Number - 3000000));
 
         var flags = entry.Flags;
 
@@ -200,10 +228,10 @@ namespace Server.Tests.Network.Packets
         if (!(entry.Enabled && menu.From.InRange(item.GetWorldLocation(), range)))
           flags |= CMEFlags.Disabled;
 
-        ((ushort)flags).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, (ushort)flags);
 
         if ((flags & CMEFlags.Colored) != 0)
-          ((ushort)color).CopyTo(ref pos, expectedData);
+          expectedData.Write(ref pos, (ushort)color);
       }
 
       AssertThat.Equal(data, expectedData);

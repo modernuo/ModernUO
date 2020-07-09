@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Server.Network;
 using Server.Prompts;
 using Xunit;
@@ -17,19 +18,18 @@ namespace Server.Tests.Network.Packets
       var prompt = new TestPrompt();
       Span<byte> data = new UnicodePrompt(prompt).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xC2, // Packet ID
-        0x00, 0x15, // Length
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, 0x00, 0x00, // Prompt Serial
-        0x00, 0x00, 0x00, 0x00, // Unused
-        0x00, 0x00, 0x00, 0x00, // Unused
-        0x00, 0x00 // Unused
-      };
+      Span<byte> expectedData = stackalloc byte[21];
+      int pos = 0;
 
-      prompt.Serial.CopyTo(expectedData.Slice(3, 4));
-      prompt.Serial.CopyTo(expectedData.Slice(7, 4));
+      expectedData.Write(ref pos, (byte)0xC2); // Packet ID
+      expectedData.Write(ref pos, (ushort)0x15); // Length
+      expectedData.Write(ref pos, prompt.Serial);
+      expectedData.Write(ref pos, prompt.Serial);
+
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (ulong)0);
+      expectedData.Write(ref pos, (ushort)0);
+#endif
 
       AssertThat.Equal(data, expectedData);
     }

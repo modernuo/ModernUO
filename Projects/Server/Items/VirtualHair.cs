@@ -76,7 +76,7 @@ namespace Server
     {
     }
 
-    // TOOD: Can we make this higher for newer clients?
+    // TODO: Can we make this higher for newer clients?
     public static uint FakeSerial(Mobile parent) => 0x7FFFFFFF - 0x400 - parent.Serial * 4;
   }
 

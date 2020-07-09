@@ -26,7 +26,7 @@ namespace Server.Menus.ItemLists
   {
     public ItemListEntry(string name, int itemID, int hue = 0)
     {
-      Name = name;
+      Name = name?.Trim() ?? "";
       ItemID = itemID;
       Hue = hue;
     }
@@ -44,7 +44,7 @@ namespace Server.Menus.ItemLists
 
     public ItemListMenu(string question, ItemListEntry[] entries)
     {
-      Question = question;
+      Question = question.Trim();
       Entries = entries;
 
       do
