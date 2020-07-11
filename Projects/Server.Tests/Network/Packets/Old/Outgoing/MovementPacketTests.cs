@@ -94,7 +94,7 @@ namespace Server.Tests.Network.Packets
       int pos = 0;
 
       expectedData.Write(ref pos, (byte)0xBF); // Packet ID
-      expectedData.Write(ref pos, (ushort)28); // Length
+      expectedData.Write(ref pos, (ushort)29); // Length
       expectedData.Write(ref pos, (short)0x1); // Sub-packet
 
 #if NO_LOCAL_INIT
