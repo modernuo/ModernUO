@@ -90,7 +90,7 @@ namespace Server.Tests.Network.Packets
     {
       Span<byte> data = new NullFastwalkStack().Compile();
 
-      Span<byte> expectedData = stackalloc byte[28];
+      Span<byte> expectedData = stackalloc byte[29];
       int pos = 0;
 
       expectedData.Write(ref pos, (byte)0xBF); // Packet ID
