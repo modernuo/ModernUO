@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Items;
@@ -27,23 +28,22 @@ namespace Server.Tests.Network.Packets
 
       int pos = 0;
 
-      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
-      ((ushort)buyStates.Count).CopyTo(ref pos, expectedData); // Count
+      expectedData.Write(ref pos, (byte)0x3C); // Packet ID
+      expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
+      expectedData.Write(ref pos, (ushort)buyStates.Count); // Count
 
       for (int i = buyStates.Count - 1; i >= 0; i--)
       {
         BuyItemState buyState = buyStates[i];
 
-        buyState.MySerial.CopyTo(ref pos, expectedData);
-        ((ushort)buyState.ItemID).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, buyState.MySerial);
+        expectedData.Write(ref pos, (ushort)buyState.ItemID);
         pos++; // ItemID Offset
-        ((ushort)buyState.Amount).CopyTo(ref pos, expectedData);
-        ((ushort)(i + 1)).CopyTo(ref pos, expectedData); // X
-        ((byte)0).CopyTo(ref pos, expectedData);
-        ((byte)1).CopyTo(ref pos, expectedData); // Y
-        buyState.ContainerSerial.CopyTo(ref pos, expectedData);
-        ((ushort)buyState.Hue).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, (ushort)buyState.Amount);
+        expectedData.Write(ref pos, (ushort)(i + 1)); // X
+        expectedData.Write(ref pos, (ushort)1); // Y
+        expectedData.Write(ref pos, buyState.ContainerSerial);
+        expectedData.Write(ref pos, (ushort)buyState.Hue);
       }
 
       AssertThat.Equal(data, expectedData);
@@ -67,24 +67,27 @@ namespace Server.Tests.Network.Packets
 
       int pos = 0;
 
-      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
-      ((ushort)buyStates.Count).CopyTo(ref pos, expectedData); // Count
+      expectedData.Write(ref pos, (byte)0x3C); // Packet ID
+      expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
+      expectedData.Write(ref pos, (ushort)buyStates.Count); // Count
 
       for (int i = buyStates.Count - 1; i >= 0; i--)
       {
         BuyItemState buyState = buyStates[i];
 
-        buyState.MySerial.CopyTo(ref pos, expectedData);
-        ((ushort)buyState.ItemID).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, buyState.MySerial);
+        expectedData.Write(ref pos, (ushort)buyState.ItemID);
         pos++; // ItemID Offset
-        ((ushort)buyState.Amount).CopyTo(ref pos, expectedData);
-        ((ushort)(i + 1)).CopyTo(ref pos, expectedData); // X
-        ((byte)0).CopyTo(ref pos, expectedData);
-        ((byte)1).CopyTo(ref pos, expectedData); // Y
-        ((byte)0).CopyTo(ref pos, expectedData); // Grid Location
-        buyState.ContainerSerial.CopyTo(ref pos, expectedData);
-        ((ushort)buyState.Hue).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, (ushort)buyState.Amount);
+        expectedData.Write(ref pos, (ushort)(i + 1)); // X
+        expectedData.Write(ref pos, (ushort)1); // Y
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // Grid Location?
+#else
+        pos++;
+#endif
+        expectedData.Write(ref pos, buyState.ContainerSerial);
+        expectedData.Write(ref pos, (ushort)buyState.Hue);
       }
 
       AssertThat.Equal(data, expectedData);
@@ -98,14 +101,12 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new DisplayBuyList(vendor).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x24, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Vendor Serial
-        0x00, 0x30 // Buy Window Gump Id
-      };
+      Span<byte> expectedData = stackalloc byte[7];
+      int pos = 0;
 
-      vendor.Serial.CopyTo(expectedData.Slice(1, 4));
+      expectedData.Write(ref pos, (byte)0x24); // Packet ID
+      expectedData.Write(ref pos, vendor.Serial);
+      expectedData.Write(ref pos, (ushort)0x30); // Buy gump
 
       AssertThat.Equal(data, expectedData);
     }
@@ -118,15 +119,16 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new DisplayBuyListHS(vendor).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x24, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Vendor Serial
-        0x00, 0x30, // Buy Window Gump Id
-        0x00, 0x00
-      };
+      Span<byte> expectedData = stackalloc byte[9];
+      int pos = 0;
 
-      vendor.Serial.CopyTo(expectedData.Slice(1, 4));
+      expectedData.Write(ref pos, (byte)0x24); // Packet ID
+      expectedData.Write(ref pos, vendor.Serial);
+      expectedData.Write(ref pos, (ushort)0x30); // Buy gump
+
+#if NO_LOCAL_INIT
+    expectedData.Write(ref pos, (ushort)0);
+#endif
 
       AssertThat.Equal(data, expectedData);
     }
@@ -154,16 +156,18 @@ namespace Server.Tests.Network.Packets
 
       int pos = 0;
 
-      ((byte)0x74).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
-      Serial.MinusOne.CopyTo(ref pos, expectedData); // Vendor Buy Pack Serial or -1
-      ((byte)buyStates.Count).CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)0x74); // Packet ID
+      expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
+      expectedData.Write(ref pos, Serial.MinusOne); // Vendor Buy Pack Serial or -1
+      expectedData.Write(ref pos, (byte)buyStates.Count);
 
       for (int i = 0; i < buyStates.Count; i++)
       {
         BuyItemState state = buyStates[i];
-        state.Price.CopyTo(ref pos, expectedData);
-        (state.Description ?? "").CopySmallASCIINullTo(ref pos, expectedData);
+        expectedData.Write(ref pos, state.Price);
+        var description = state.Description ?? "";
+        expectedData.Write(ref pos, (byte)Math.Min(255, description.Length + 1));
+        expectedData.WriteAsciiNull(ref pos, description, 255);
       }
 
       AssertThat.Equal(data, expectedData);
@@ -177,15 +181,16 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new EndVendorBuy(vendor).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x3B, // Packet ID
-        0x00, 0x08, // Length
-        0x00, 0x00, 0x00, 0x00, // Vendor Serial
-        0x00
-      };
+      Span<byte> expectedData = stackalloc byte[8];
+      int pos = 0;
 
-      vendor.Serial.CopyTo(expectedData.Slice(3, 4));
+      expectedData.Write(ref pos, (byte)0x3B); // Packet ID
+      expectedData.Write(ref pos, (ushort)0x8); // Length
+      expectedData.Write(ref pos, vendor.Serial);
+
+#if NO_LOCAL_INIT
+    expectedData.Write(ref pos, (byte)-);
+#endif
 
       AssertThat.Equal(data, expectedData);
     }

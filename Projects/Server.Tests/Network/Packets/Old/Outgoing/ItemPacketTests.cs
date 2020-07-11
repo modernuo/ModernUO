@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Server.Items;
 using Server.Network;
 using Xunit;
@@ -32,21 +33,21 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[20]; // Max size
       int pos = 0;
 
-      ((byte)0x1A).CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)0x1A);
       pos += 2; // Length
 
       if (item.Amount != 0)
-        (serial | 0x80000000).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, serial | 0x80000000);
       else
-        (serial & 0x7FFFFFFF).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, serial & 0x7FFFFFFF);
 
       if (item is BaseMulti)
-        ((ushort)(item.ItemID | 0x4000)).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, (ushort)(item.ItemID | 0x4000));
       else
-        ((ushort)item.ItemID).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, (ushort)item.ItemID);
 
       if (item.Amount != 0)
-        ((ushort)item.Amount).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, (ushort)item.Amount);
 
       byte direction = (byte)item.Direction;
       ushort x = (ushort)(item.X & 0x7FFF);
@@ -54,7 +55,7 @@ namespace Server.Tests.Network.Packets
       if (direction != 0)
         x |= 0x8000;
 
-      x.CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, x);
 
       int hue = item.Hue;
       int flags = item.GetPacketFlags();
@@ -63,21 +64,21 @@ namespace Server.Tests.Network.Packets
       if (hue != 0) y |= 0x8000;
       if (flags != 0) y |= 0x4000;
 
-      y.CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, y);
 
       if (direction != 0)
-        direction.CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, direction);
 
-      ((byte)item.Z).CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)item.Z);
 
       if (hue != 0)
-        ((ushort)hue).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, (ushort)hue);
 
       if (flags != 0)
-        ((byte)flags).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, (byte)flags);
 
       // Length
-      ((ushort)pos).CopyTo(expectedData.Slice(1, 2));
+      expectedData.Slice(1, 2).Write((ushort)pos);
 
       // Slice the data to match in size
       data = data.Slice(0, pos);
@@ -109,34 +110,29 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new WorldItemSA(item).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xF3, // Packet ID
-        0x00, 0x01,
-        (byte)(isMulti ? 0x02 : 0x00), // Item Type (Regular, or Multi)
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Item ID
-        0x00,
-        0x00, 0x00, // Amount (min?)
-        0x00, 0x00, // Amount (max?)
-        0x00, 0x00, // X
-        0x00, 0x00, // Y
-        (byte)loc.Z, // Z
-        (byte)item.Light, // Light
-        0x00, 0x00, // Hue
-        (byte)item.GetPacketFlags() // Flags
-      };
+      Span<byte> expectedData = stackalloc byte[24];
+      int pos = 0;
 
-      serial.CopyTo(expectedData.Slice(4, 4));
-      ((ushort)(itemId & (isMulti ? 0x3FFF : 0xFFFF))).CopyTo(expectedData.Slice(8, 2));
+      expectedData.Write(ref pos, (byte)0xF3); // Packet ID
+      expectedData.Write(ref pos, (ushort)0x1);
+      expectedData.Write(ref pos, (byte)(isMulti ? 0x2 : 0x00)); // Item Type (Regular, or Multi)
+      expectedData.Write(ref pos, item.Serial);
+      expectedData.Write(ref pos, (ushort)(item.ItemID & (isMulti ? 0x3FFF : 0xFFFF)));
 
-      ushort amount = (ushort)item.Amount;
-      amount.CopyTo(expectedData.Slice(11, 2));
-      amount.CopyTo(expectedData.Slice(13, 2));
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0)
+#else
+      pos++;
+#endif
 
-      ((ushort)loc.X).CopyTo(expectedData.Slice(15, 2));
-      ((ushort)loc.Y).CopyTo(expectedData.Slice(17, 2));
-      ((ushort)item.Hue).CopyTo(expectedData.Slice(21, 2));
+      expectedData.Write(ref pos, (ushort)item.Amount); // Amount (min?)
+      expectedData.Write(ref pos, (ushort)item.Amount); // Amount (max?)
+      expectedData.Write(ref pos, (ushort)loc.X); // X
+      expectedData.Write(ref pos, (ushort)loc.Y); // Y
+      expectedData.Write(ref pos, (byte)loc.Z); // Z
+      expectedData.Write(ref pos, (byte)item.Light); // Light
+      expectedData.Write(ref pos, (ushort)item.Hue); // Hue
+      expectedData.Write(ref pos, (byte)item.GetPacketFlags()); // Flags
 
       AssertThat.Equal(data, expectedData);
     }
@@ -165,35 +161,33 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new WorldItemHS(item).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xF3, // Packet ID
-        0x00, 0x01,
-        (byte)(isMulti ? 0x02 : 0x00), // Item Type (Regular, or Multi)
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Item ID
-        0x00,
-        0x00, 0x00, // Amount (min?)
-        0x00, 0x00, // Amount (max?)
-        0x00, 0x00, // X
-        0x00, 0x00, // Y
-        (byte)loc.Z, // Z
-        (byte)item.Light, // Light
-        0x00, 0x00, // Hue
-        (byte)item.GetPacketFlags(), // Flags
-        00, 00 // ???
-      };
+      Span<byte> expectedData = stackalloc byte[26];
+      int pos = 0;
 
-      serial.CopyTo(expectedData.Slice(4, 4));
-      ((ushort)(itemId & (isMulti ? 0x3FFF : 0xFFFF))).CopyTo(expectedData.Slice(8, 2));
+      expectedData.Write(ref pos, (byte)0xF3); // Packet ID
+      expectedData.Write(ref pos, (ushort)0x1);
+      expectedData.Write(ref pos, (byte)(isMulti ? 0x2 : 0x00)); // Item Type (Regular, or Multi)
+      expectedData.Write(ref pos, item.Serial);
+      expectedData.Write(ref pos, (ushort)(item.ItemID & (isMulti ? 0x3FFF : 0xFFFF)));
 
-      ushort amount = (ushort)item.Amount;
-      amount.CopyTo(expectedData.Slice(11, 2));
-      amount.CopyTo(expectedData.Slice(13, 2));
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0);
+#else
+      pos++;
+#endif
 
-      ((ushort)loc.X).CopyTo(expectedData.Slice(15, 2));
-      ((ushort)loc.Y).CopyTo(expectedData.Slice(17, 2));
-      ((ushort)item.Hue).CopyTo(expectedData.Slice(21, 2));
+      expectedData.Write(ref pos, (ushort)item.Amount); // Amount (min?)
+      expectedData.Write(ref pos, (ushort)item.Amount); // Amount (max?)
+      expectedData.Write(ref pos, (ushort)loc.X); // X
+      expectedData.Write(ref pos, (ushort)loc.Y); // Y
+      expectedData.Write(ref pos, (byte)loc.Z); // Z
+      expectedData.Write(ref pos, (byte)item.Light); // Light
+      expectedData.Write(ref pos, (ushort)item.Hue); // Hue
+      expectedData.Write(ref pos, (byte)item.GetPacketFlags()); // Flags
+
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (ushort)0); // ??
+#endif
 
       AssertThat.Equal(data, expectedData);
     }
@@ -206,15 +200,12 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new ContainerDisplay(serial, gumpId).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x24, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00 // Gump ID
-      };
+      Span<byte> expectedData = stackalloc byte[7];
+      int pos = 0;
 
-      serial.CopyTo(expectedData.Slice(1, 4));
-      gumpId.CopyTo(expectedData.Slice(5, 2));
+      expectedData.Write(ref pos, (byte)0x24); // Packet ID
+      expectedData.Write(ref pos, serial);
+      expectedData.Write(ref pos, gumpId);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -227,16 +218,13 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new ContainerDisplayHS(serial, gumpId).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x24, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Gump ID
-        0x00, 0x7D // Max Items?
-      };
+      Span<byte> expectedData = stackalloc byte[9];
+      int pos = 0;
 
-      serial.CopyTo(expectedData.Slice(1, 4));
-      gumpId.CopyTo(expectedData.Slice(5, 2));
+      expectedData.Write(ref pos, (byte)0x24); // Packet ID
+      expectedData.Write(ref pos, serial);
+      expectedData.Write(ref pos, gumpId);
+      expectedData.Write(ref pos, (ushort)0x7D); // Max Items?
 
       AssertThat.Equal(data, expectedData);
     }
@@ -248,14 +236,12 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new DisplaySpellbook(serial).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x24, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0xFF, 0xFF // Gump ID
-      };
+      Span<byte> expectedData = stackalloc byte[7];
+      int pos = 0;
 
-      serial.CopyTo(expectedData.Slice(1, 4));
+      expectedData.Write(ref pos, (byte)0x24); // Packet ID
+      expectedData.Write(ref pos, serial);
+      expectedData.Write(ref pos, (ushort)0xFFFF); // Gump ID
 
       AssertThat.Equal(data, expectedData);
     }
@@ -267,15 +253,13 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new DisplaySpellbookHS(serial).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x24, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0xFF, 0xFF, // Gump ID
-        0x00, 0x7D // Max Items?
-      };
+      Span<byte> expectedData = stackalloc byte[9];
+      int pos = 0;
 
-      serial.CopyTo(expectedData.Slice(1, 4));
+      expectedData.Write(ref pos, (byte)0x24); // Packet ID
+      expectedData.Write(ref pos, serial);
+      expectedData.Write(ref pos, (ushort)0xFFFF); // Gump ID
+      expectedData.Write(ref pos, (ushort)0x7D); // Max Items?
 
       AssertThat.Equal(data, expectedData);
     }
@@ -290,23 +274,17 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new NewSpellbookContent(serial, graphic, offset, content).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xBF, // Packet ID
-        0x00, 0x17, // Length
-        0x00, 0x1B, // Sub-packet
-        0x00, 0x01,
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Graphic
-        0x00, 0x00, // Offset
-        0x00, 0x00, 0x00, 0x00, // Content
-        0x00, 0x00, 0x00, 0x00 // Content
-      };
+      Span<byte> expectedData = stackalloc byte[23];
+      int pos = 0;
 
-      serial.CopyTo(expectedData.Slice(7, 4));
-      graphic.CopyTo(expectedData.Slice(11, 2));
-      offset.CopyTo(expectedData.Slice(13, 2));
-      content.CopyToLE(expectedData.Slice(15, 8));
+      expectedData.Write(ref pos, (byte)0xBF); // Packet ID
+      expectedData.Write(ref pos, (ushort)0x17); // Length
+      expectedData.Write(ref pos, (ushort)0x1B); // Sub-packet
+      expectedData.Write(ref pos, (ushort)0x1); // Command
+      expectedData.Write(ref pos, serial);
+      expectedData.Write(ref pos, graphic);
+      expectedData.Write(ref pos, offset);
+      expectedData.WriteLE(ref pos, content);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -323,7 +301,7 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[5 + 64 * 19]; // Max size
       int pos = 0;
 
-      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
+      expectedData.Write(ref pos, (byte)0x3C); // Packet ID
       pos += 4; // Length + spell count
 
       ushort count = 0;
@@ -331,17 +309,30 @@ namespace Server.Tests.Network.Packets
       for (var i = 0; i < 64; i++)
         if ((content & (1ul << i)) != 0)
         {
-          (0x7FFFFFFF - i).CopyTo(ref pos, expectedData);
-          expectedData.Clear(ref pos, 3);
-          ((ushort)(i + offset)).CopyTo(ref pos, expectedData);
-          expectedData.Clear(ref pos, 4); // X, Y
-          serial.CopyTo(ref pos, expectedData);
-          expectedData.Clear(ref pos, 2);
+          expectedData.Write(ref pos, 0x7FFFFFFF - i);
+#if NO_LOCAL_INIT
+          expectedData.Write(ref pos, (ushort)0);
+          expectedData.Write(ref pos, (byte)0);
+#else
+          pos += 3;
+#endif
+          expectedData.Write(ref pos, (ushort)(i + offset));
+#if NO_LOCAL_INIT
+          expectedData.Write(ref pos, 0); // X. Y
+#else
+          pos += 4;
+#endif
+          expectedData.Write(ref pos, serial);
+#if NO_LOCAL_INIT
+          expectedData.Write(ref pos, (ushort)0);
+#else
+          pos += 2;
+#endif
           count++;
         }
 
-      ((ushort)pos).CopyTo(expectedData.Slice(1, 2));
-      count.CopyTo(expectedData.Slice(3, 2));
+      expectedData.Slice(1, 2).Write((ushort)pos); // Length
+      expectedData.Slice(3, 2).Write(count); // Count
 
       expectedData = expectedData.Slice(0, pos);
 
@@ -357,10 +348,10 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new SpellbookContent6017(serial, offset, content).Compile();
 
-      Span<byte> expectedData = stackalloc byte[5 + 64 * 19]; // Max size
+      Span<byte> expectedData = stackalloc byte[5 + 64 * 20]; // Max size
       int pos = 0;
 
-      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
+      expectedData.Write(ref pos, (byte)0x3C); // Packet ID
       pos += 4; // Length + spell count
 
       ushort count = 0;
@@ -368,17 +359,31 @@ namespace Server.Tests.Network.Packets
       for (var i = 0; i < 64; i++)
         if ((content & (1ul << i)) != 0)
         {
-          (0x7FFFFFFF - i).CopyTo(ref pos, expectedData);
-          expectedData.Clear(ref pos, 3);
-          ((ushort)(i + offset)).CopyTo(ref pos, expectedData);
-          expectedData.Clear(ref pos, 5); // X, Y, Grid Location
-          serial.CopyTo(ref pos, expectedData);
-          expectedData.Clear(ref pos, 2);
+          expectedData.Write(ref pos, 0x7FFFFFFF - i);
+#if NO_LOCAL_INIT
+          expectedData.Write(ref pos, (ushort)0);
+          expectedData.Write(ref pos, (byte)0);
+#else
+          pos += 3;
+#endif
+          expectedData.Write(ref pos, (ushort)(i + offset));
+#if NO_LOCAL_INIT
+          expectedData.Write(ref pos, 0); // X. Y
+          expectedData.Write(ref pos, (byte)0); // Grid Location
+#else
+          pos += 5;
+#endif
+          expectedData.Write(ref pos, serial);
+#if NO_LOCAL_INIT
+          expectedData.Write(ref pos, (ushort)0);
+#else
+          pos += 2;
+#endif
           count++;
         }
 
-      ((ushort)pos).CopyTo(expectedData.Slice(1, 2));
-      count.CopyTo(expectedData.Slice(3, 2));
+      expectedData.Slice(1, 2).Write((ushort)pos); // Length
+      expectedData.Slice(3, 2).Write(count); // Count
 
       expectedData = expectedData.Slice(0, pos);
 
@@ -396,15 +401,19 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[20];
       int pos = 0;
 
-      ((byte)0x25).CopyTo(ref pos, expectedData); // Packet ID
-      item.Serial.CopyTo(ref pos, expectedData);
-      ((ushort)item.ItemID).CopyTo(ref pos, expectedData);
-      ((byte)0).CopyTo(ref pos, expectedData); // signed, itemID offset
-      ((ushort)Math.Min(item.Amount, ushort.MaxValue)).CopyTo(ref pos, expectedData);
-      ((ushort)item.X).CopyTo(ref pos, expectedData);
-      ((ushort)item.Y).CopyTo(ref pos, expectedData);
-      (item.Parent?.Serial ?? Serial.Zero).CopyTo(ref pos, expectedData);
-      ((ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue)).CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)0x25); // Packet ID
+      expectedData.Write(ref pos, item.Serial);
+      expectedData.Write(ref pos, (ushort)item.ItemID);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // ItemID offset
+#else
+      pos++;
+#endif
+      expectedData.Write(ref pos, (ushort)Math.Min(item.Amount, ushort.MaxValue));
+      expectedData.Write(ref pos, (ushort)item.X);
+      expectedData.Write(ref pos, (ushort)item.Y);
+      expectedData.Write(ref pos, item.Parent?.Serial ?? Serial.Zero);
+      expectedData.Write(ref pos, (ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -420,16 +429,24 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[21];
       int pos = 0;
 
-      ((byte)0x25).CopyTo(ref pos, expectedData); // Packet ID
-      item.Serial.CopyTo(ref pos, expectedData);
-      ((ushort)item.ItemID).CopyTo(ref pos, expectedData);
-      ((byte)0).CopyTo(ref pos, expectedData); // signed, itemID offset
-      ((ushort)Math.Min(item.Amount, ushort.MaxValue)).CopyTo(ref pos, expectedData);
-      ((ushort)item.X).CopyTo(ref pos, expectedData);
-      ((ushort)item.Y).CopyTo(ref pos, expectedData);
-      ((byte)0).CopyTo(ref pos, expectedData); // Grid Location?
-      (item.Parent?.Serial ?? Serial.Zero).CopyTo(ref pos, expectedData);
-      ((ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue)).CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)0x25); // Packet ID
+      expectedData.Write(ref pos, item.Serial);
+      expectedData.Write(ref pos, (ushort)item.ItemID);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // ItemID offset
+#else
+      pos++;
+#endif
+      expectedData.Write(ref pos, (ushort)Math.Min(item.Amount, ushort.MaxValue));
+      expectedData.Write(ref pos, (ushort)item.X);
+      expectedData.Write(ref pos, (ushort)item.Y);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // Grid Location?
+#else
+      pos++;
+#endif
+      expectedData.Write(ref pos, item.Parent?.Serial ?? Serial.Zero);
+      expectedData.Write(ref pos, (ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -445,36 +462,39 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new ContainerContent(m, cont).Compile();
 
-      int count = cont.Items.Count;
-
       Span<byte> expectedData = stackalloc byte[5 + cont.Items.Count * 19]; // Max Size
       int pos = 0;
 
-      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
+      expectedData.Write(ref pos, (byte)0x3C); // Packet ID
       pos += 4; // Length + Count
 
-      ushort written = 0;
+      ushort count = 0;
 
-      for (var i = 0; i < count; i++)
+      int itemCount = cont.Items.Count;
+      for (var i = 0; i < itemCount; i++)
       {
         var child = cont.Items[i];
         if (child.Deleted || !m.CanSee(child))
           continue;
 
-        child.Serial.CopyTo(ref pos, expectedData);
-        ((ushort)child.ItemID).CopyTo(ref pos, expectedData);
-        ((byte)0).CopyTo(ref pos, expectedData); // signed, itemID offset
-        ((ushort)Math.Min(child.Amount, ushort.MaxValue)).CopyTo(ref pos, expectedData);
-        ((ushort)child.X).CopyTo(ref pos, expectedData);
-        ((ushort)child.Y).CopyTo(ref pos, expectedData);
-        cont.Serial.CopyTo(ref pos, expectedData);
-        ((ushort)(child.QuestItem ? Item.QuestItemHue : child.Hue)).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, child.Serial);
+        expectedData.Write(ref pos, (ushort)child.ItemID);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // ItemID offset
+#else
+        pos++;
+#endif
+        expectedData.Write(ref pos, (ushort)Math.Min(child.Amount, ushort.MaxValue));
+        expectedData.Write(ref pos, (ushort)child.X);
+        expectedData.Write(ref pos, (ushort)child.Y);
+        expectedData.Write(ref pos, cont.Serial);
+        expectedData.Write(ref pos, (ushort)(child.QuestItem ? Item.QuestItemHue : child.Hue));
 
-        written++;
+        count++;
       }
 
-      ((ushort)pos).CopyTo(expectedData.Slice(1, 2));
-      written.CopyTo(expectedData.Slice(3, 2));
+      expectedData.Slice(1, 2).Write((ushort)pos); // Length
+      expectedData.Slice(3, 2).Write(count); // Count
 
       expectedData = expectedData.Slice(0, pos);
 
@@ -492,37 +512,44 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new ContainerContent6017(m, cont).Compile();
 
-      int count = cont.Items.Count;
-
       Span<byte> expectedData = stackalloc byte[5 + cont.Items.Count * 20];
       int pos = 0;
 
-      ((byte)0x3C).CopyTo(ref pos, expectedData); // Packet ID
+      expectedData.Write(ref pos, (byte)0x3C); // Packet ID
       pos += 4; // Length + Count
 
-      ushort written = 0;
+      ushort count = 0;
 
-      for (var i = 0; i < count; i++)
+      int itemCount = cont.Items.Count;
+      for (var i = 0; i < itemCount; i++)
       {
         var child = cont.Items[i];
         if (child.Deleted || !m.CanSee(child))
           continue;
 
-        child.Serial.CopyTo(ref pos, expectedData);
-        ((ushort)child.ItemID).CopyTo(ref pos, expectedData);
-        ((byte)0).CopyTo(ref pos, expectedData); // signed, itemID offset
-        ((ushort)Math.Min(child.Amount, ushort.MaxValue)).CopyTo(ref pos, expectedData);
-        ((ushort)child.X).CopyTo(ref pos, expectedData);
-        ((ushort)child.Y).CopyTo(ref pos, expectedData);
-        ((byte)0).CopyTo(ref pos, expectedData); // Grid Location?
-        cont.Serial.CopyTo(ref pos, expectedData);
-        ((ushort)(child.QuestItem ? Item.QuestItemHue : child.Hue)).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, child.Serial);
+        expectedData.Write(ref pos, (ushort)child.ItemID);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // ItemID offset
+#else
+        pos++;
+#endif
+        expectedData.Write(ref pos, (ushort)Math.Min(child.Amount, ushort.MaxValue));
+        expectedData.Write(ref pos, (ushort)child.X);
+        expectedData.Write(ref pos, (ushort)child.Y);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // Grid Location?
+#else
+        pos++;
+#endif
+        expectedData.Write(ref pos, cont.Serial);
+        expectedData.Write(ref pos, (ushort)(child.QuestItem ? Item.QuestItemHue : child.Hue));
 
-        written++;
+        count++;
       }
 
-      ((ushort)pos).CopyTo(expectedData.Slice(1, 2));
-      written.CopyTo(expectedData.Slice(3, 2));
+      expectedData.Slice(1, 2).Write((ushort)pos); // Length
+      expectedData.Slice(3, 2).Write(count); // Count
 
       expectedData = expectedData.Slice(0, pos);
 

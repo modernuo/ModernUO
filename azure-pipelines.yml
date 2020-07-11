@@ -14,32 +14,14 @@ jobs:
     vmImage: 'windows-latest'
 
   steps:
-  - task: NuGetToolInstaller@1
-    inputs:
-      versionSpec: '5.x'
-    displayName: 'Install latest NuGet'
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'custom'
-      custom: 'restore'
-      arguments: '--force-evaluate'
+  - task: NuGetAuthenticate@0
+  - script: dotnet restore --force-evaluate
     displayName: 'Restore NuGet Packages'
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'build'
-      arguments: '-c $(buildConfiguration) --no-restore'
-      projects: '**/Projects/Server/Server.csproj'
+  - script: dotnet build -c $(buildConfiguration) --no-restore Projects/Server/Server.csproj
     displayName: 'Build Server'
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'build'
-      arguments: '-c $(buildConfiguration) --no-restore'
-      projects: '**/Projects/UOContent/UOContent.csproj'
+  - script: dotnet build -c $(buildConfiguration) --no-restore Projects/UOContent/UOContent.csproj
     displayName: 'Build UO Content'
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'test'
-      arguments: '--no-restore'
+  - script: dotnet test --no-restore
     displayName: 'Test'
 
 - job: BuildLinux
@@ -60,26 +42,12 @@ jobs:
   container: $[ variables['containerImage'] ]
 
   steps:
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'custom'
-      custom: 'restore'
-      arguments: '--force-evaluate'
+  - task: NuGetAuthenticate@0
+  - script: dotnet restore --force-evaluate
     displayName: 'Restore NuGet Packages'
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'build'
-      arguments: '-c $(buildConfiguration) --no-restore'
-      projects: '**/Projects/Server/Server.csproj'
+  - script: dotnet build -c $(buildConfiguration) --no-restore Projects/Server/Server.csproj
     displayName: 'Build Server'
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'build'
-      arguments: '-c $(buildConfiguration) --no-restore'
-      projects: '**/Projects/UOContent/UOContent.csproj'
+  - script: dotnet build -c $(buildConfiguration) --no-restore Projects/UOContent/UOContent.csproj
     displayName: 'Build UO Content'
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'test'
-      arguments: '--no-restore'
+  - script: dotnet test --no-restore
     displayName: 'Test'

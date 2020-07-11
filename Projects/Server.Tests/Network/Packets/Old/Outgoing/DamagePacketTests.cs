@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Server.Network;
 using Xunit;
 
@@ -17,17 +18,16 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new DamagePacketOld(m.Serial, inputAmount).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xBF, // Packet ID
-        0x00, 0x0B, // Length
-        0x00, 0x22, // Sub-packet
-        0x01, // Command
-        0x00, 0x00, 0x00, 0x00, // Mobile Serial
-        expectedAmount // Amount
-      };
+      Span<byte> expectedData = stackalloc byte[11];
+      int pos = 0;
 
-      m.Serial.CopyTo(expectedData.Slice(6, 4));
+      expectedData.Write(ref pos, (byte)0xBF); // Packet ID
+      expectedData.Write(ref pos, (ushort)11); // Length
+      expectedData.Write(ref pos, (ushort)0x22); // Sub-packet
+      expectedData.Write(ref pos, (byte)0x01); // Command
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.Write(ref pos, expectedAmount);
+
       AssertThat.Equal(data, expectedData);
     }
 
@@ -43,15 +43,12 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new DamagePacket(m.Serial, inputAmount).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x0B, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Mobile Serial
-        0x00, 0x00 // Amount
-      };
+      Span<byte> expectedData = stackalloc byte[7];
+      int pos = 0;
 
-      m.Serial.CopyTo(expectedData.Slice(1, 4));
-      expectedAmount.CopyTo(expectedData.Slice(5, 2));
+      expectedData.Write(ref pos, (byte)0x0B); // Packet ID
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.Write(ref pos, expectedAmount);
 
       AssertThat.Equal(data, expectedData);
     }

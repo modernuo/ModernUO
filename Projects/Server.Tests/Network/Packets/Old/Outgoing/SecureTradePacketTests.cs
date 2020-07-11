@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Server.Items;
 using Server.Network;
 using Xunit;
@@ -20,26 +21,20 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new DisplaySecureTrade(m, firstCont, secondCont, name).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x6F, // Packet ID
-        0x00, 0x2F, // Length
-        (byte)TradeFlag.Display, // Command
-        0x00, 0x00, 0x00, 0x00, // Mobile Serial
-        0x00, 0x00, 0x00, 0x00, // First Container Serial
-        0x00, 0x00, 0x00, 0x00, // Second Container Serial
-        0x01, // true if has name
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // Name
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-      };
+      bool hasName = name.Length > 0;
 
-      int pos = 4;
-      m.Serial.CopyTo(ref pos, expectedData);
-      firstCont.Serial.CopyTo(ref pos, expectedData);
-      secondCont.Serial.CopyTo(ref pos, expectedData);
-      pos++;
-      name.CopyASCIIFixedTo(ref pos, 30, expectedData);
+      Span<byte> expectedData = stackalloc byte[17 + (hasName ? 30 : 0)];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x6F); // Packet ID
+      expectedData.Write(ref pos, (ushort)0x2F); // Length
+      expectedData.Write(ref pos, (byte)TradeFlag.Display); // Command
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.Write(ref pos, firstCont.Serial);
+      expectedData.Write(ref pos, secondCont.Serial);
+      expectedData.Write(ref pos, hasName);
+      if (hasName)
+        expectedData.WriteAsciiFixed(ref pos, name, 30);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -51,15 +46,13 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new CloseSecureTrade(cont).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x6F, // Packet ID
-        0x00, 0x8, // Length
-        (byte)TradeFlag.Close, // Command
-        0x00, 0x00, 0x00, 0x00 // Container Serial
-      };
+      Span<byte> expectedData = stackalloc byte[8];
+      int pos = 0;
 
-      cont.Serial.CopyTo(expectedData.Slice(4, 4));
+      expectedData.Write(ref pos, (byte)0x6F); // Packet ID
+      expectedData.Write(ref pos, (ushort)0x8); // Length
+      expectedData.Write(ref pos, (byte)TradeFlag.Close); // Command
+      expectedData.Write(ref pos, cont.Serial);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -75,17 +68,15 @@ namespace Server.Tests.Network.Packets
       Container cont = first ? firstCont : secondCont;
       Span<byte> data = new UpdateSecureTrade(cont, first, second).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x6F, // Packet ID
-        0x00, 0x10, // Length
-        (byte)TradeFlag.Update, // Command
-        0x00, 0x00, 0x00, 0x00, // Container Serial
-        0x00, 0x00, 0x00, first ? (byte)0x01 : (byte)0x00, // (int)1 if first
-        0x00, 0x00, 0x00, second ? (byte)0x01 : (byte)0x00 // (int)1 if second
-      };
+      Span<byte> expectedData = stackalloc byte[16];
+      int pos = 0;
 
-      cont.Serial.CopyTo(expectedData.Slice(4, 4));
+      expectedData.Write(ref pos, (byte)0x6F); // Packet ID
+      expectedData.Write(ref pos, (ushort)0x10); // Length
+      expectedData.Write(ref pos, (byte)TradeFlag.Update); // Command
+      expectedData.Write(ref pos, cont.Serial);
+      expectedData.Write(ref pos, first ? 1 : 0); // true if first
+      expectedData.Write(ref pos, second ? 1 : 0); // true if second
 
       AssertThat.Equal(data, expectedData);
     }
@@ -97,20 +88,16 @@ namespace Server.Tests.Network.Packets
     {
       var cont = new Container(Serial.LastItem + 1);
       Span<byte> data = new UpdateSecureTrade(cont, flag, gold, plat).Compile();
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x6F, // Packet ID
-        0x00, 0x10, // Length
-        (byte)flag, // Command
-        0x00, 0x00, 0x00, 0x00, // Container Serial
-        0x00, 0x00, 0x00, 0x00, // Gold
-        0x00, 0x00, 0x00, 0x00 // Platinum
-      };
 
-      int pos = 4;
-      cont.Serial.CopyTo(ref pos, expectedData);
-      gold.CopyTo(ref pos, expectedData);
-      plat.CopyTo(ref pos, expectedData);
+      Span<byte> expectedData = stackalloc byte[16];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x6F); // Packet ID
+      expectedData.Write(ref pos, (ushort)0x10); // Length
+      expectedData.Write(ref pos, (byte)flag); // Command
+      expectedData.Write(ref pos, cont.Serial);
+      expectedData.Write(ref pos, gold);
+      expectedData.Write(ref pos, plat);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -125,28 +112,22 @@ namespace Server.Tests.Network.Packets
       var itemInCont = new Item(Serial.LastItem + 2) { Parent = cont };
 
       Span<byte> data = new SecureTradeEquip(itemInCont, m).Compile();
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x25, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Item Serial
-        0x00, 0x00, // Item ItemID
-        0x00,
-        0x00, 0x00, // Item Amount
-        0x00, 0x00, // X
-        0x00, 0x00, // Y
-        0x00, 0x00, 0x00, 0x00, // Mobile Serial
-        0x00, 0x00 // Item Hue
-      };
+      Span<byte> expectedData = stackalloc byte[20];
+      int pos = 0;
 
-      int pos = 1;
-      itemInCont.Serial.CopyTo(ref pos, expectedData);
-      ((short)itemInCont.ItemID).CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)0x25); // Packet ID
+      expectedData.Write(ref pos, itemInCont.Serial);
+      expectedData.Write(ref pos, (short)itemInCont.ItemID);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0);
+#else
       pos++;
-      ((short)itemInCont.Amount).CopyTo(ref pos, expectedData);
-      ((short)itemInCont.X).CopyTo(ref pos, expectedData);
-      ((short)itemInCont.Y).CopyTo(ref pos, expectedData);
-      m.Serial.CopyTo(ref pos, expectedData);
-      ((short)itemInCont.Hue).CopyTo(ref pos, expectedData);
+#endif
+      expectedData.Write(ref pos, (short)itemInCont.Amount);
+      expectedData.Write(ref pos, (short)itemInCont.X);
+      expectedData.Write(ref pos, (short)itemInCont.Y);
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.Write(ref pos, (short)itemInCont.Hue);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -161,30 +142,28 @@ namespace Server.Tests.Network.Packets
       var itemInCont = new Item(Serial.LastItem + 2) { Parent = cont };
 
       Span<byte> data = new SecureTradeEquip6017(itemInCont, m).Compile();
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x25, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Item Serial
-        0x00, 0x00, // Item ItemID
-        0x00, // Unknown
-        0x00, 0x00, // Item Amount
-        0x00, 0x00, // X
-        0x00, 0x00, // Y
-        0x00, // Grid Location
-        0x00, 0x00, 0x00, 0x00, // Mobile Serial
-        0x00, 0x00 // Item Hue
-      };
 
-      int pos = 1;
-      itemInCont.Serial.CopyTo(ref pos, expectedData);
-      ((short)itemInCont.ItemID).CopyTo(ref pos, expectedData);
+      Span<byte> expectedData = stackalloc byte[21];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x25); // Packet ID
+      expectedData.Write(ref pos, itemInCont.Serial);
+      expectedData.Write(ref pos, (short)itemInCont.ItemID);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0);
+#else
       pos++;
-      ((short)itemInCont.Amount).CopyTo(ref pos, expectedData);
-      ((short)itemInCont.X).CopyTo(ref pos, expectedData);
-      ((short)itemInCont.Y).CopyTo(ref pos, expectedData);
+#endif
+      expectedData.Write(ref pos, (short)itemInCont.Amount);
+      expectedData.Write(ref pos, (short)itemInCont.X);
+      expectedData.Write(ref pos, (short)itemInCont.Y);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0);
+#else
       pos++;
-      m.Serial.CopyTo(ref pos, expectedData);
-      ((short)itemInCont.Hue).CopyTo(ref pos, expectedData);
+#endif
+      expectedData.Write(ref pos, m.Serial);
+      expectedData.Write(ref pos, (short)itemInCont.Hue);
 
       AssertThat.Equal(data, expectedData);
     }

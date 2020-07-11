@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Server.Network;
 using Xunit;
 
@@ -39,30 +40,34 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[49];
 
       int pos = 0;
-      ((byte)0xC7).CopyTo(ref pos, expectedData); // Packet ID
-      ((byte)effectType).CopyTo(ref pos, expectedData);
-      from.CopyTo(ref pos, expectedData);
-      to.CopyTo(ref pos, expectedData);
-      ((ushort)itemId).CopyTo(ref pos, expectedData);
-      ((ushort)fromPoint.X).CopyTo(ref pos, expectedData);
-      ((ushort)fromPoint.Y).CopyTo(ref pos, expectedData);
-      ((byte)fromPoint.Z).CopyTo(ref pos, expectedData);
-      ((ushort)toPoint.X).CopyTo(ref pos, expectedData);
-      ((ushort)toPoint.Y).CopyTo(ref pos, expectedData);
-      ((byte)toPoint.Z).CopyTo(ref pos, expectedData);
-      speed.CopyTo(ref pos, expectedData);
-      duration.CopyTo(ref pos, expectedData);
-      expectedData.Clear(ref pos, 2);
-      direction.CopyTo(ref pos, expectedData);
-      explode.CopyTo(ref pos, expectedData);
-      hue.CopyTo(ref pos, expectedData);
-      renderMode.CopyTo(ref pos, expectedData);
-      effect.CopyTo(ref pos, expectedData);
-      explodeEffect.CopyTo(ref pos, expectedData);
-      explodeSound.CopyTo(ref pos, expectedData);
-      serial.CopyTo(ref pos, expectedData);
-      layer.CopyTo(ref pos, expectedData);
-      unknown.CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)0xC7); // Packet ID
+      expectedData.Write(ref pos, (byte)effectType);
+      expectedData.Write(ref pos, from);
+      expectedData.Write(ref pos, to);
+      expectedData.Write(ref pos, (ushort)itemId);
+      expectedData.Write(ref pos, (ushort)fromPoint.X);
+      expectedData.Write(ref pos, (ushort)fromPoint.Y);
+      expectedData.Write(ref pos, (byte)fromPoint.Z);
+      expectedData.Write(ref pos, (ushort)toPoint.X);
+      expectedData.Write(ref pos, (ushort)toPoint.Y);
+      expectedData.Write(ref pos, (byte)toPoint.Z);
+      expectedData.Write(ref pos, speed);
+      expectedData.Write(ref pos, duration);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (ushort)0);
+#else
+      pos += 2;
+#endif
+      expectedData.Write(ref pos, direction);
+      expectedData.Write(ref pos, explode);
+      expectedData.Write(ref pos, hue);
+      expectedData.Write(ref pos, renderMode);
+      expectedData.Write(ref pos, effect);
+      expectedData.Write(ref pos, explodeEffect);
+      expectedData.Write(ref pos, explodeSound);
+      expectedData.Write(ref pos, serial);
+      expectedData.Write(ref pos, layer);
+      expectedData.Write(ref pos, unknown);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -93,24 +98,28 @@ namespace Server.Tests.Network.Packets
       Span<byte> expectedData = stackalloc byte[36];
 
       int pos = 0;
-      ((byte)0xC0).CopyTo(ref pos, expectedData); // Packet ID
-      ((byte)effectType).CopyTo(ref pos, expectedData);
-      from.CopyTo(ref pos, expectedData);
-      to.CopyTo(ref pos, expectedData);
-      ((ushort)itemId).CopyTo(ref pos, expectedData);
-      ((ushort)fromPoint.X).CopyTo(ref pos, expectedData);
-      ((ushort)fromPoint.Y).CopyTo(ref pos, expectedData);
-      ((byte)fromPoint.Z).CopyTo(ref pos, expectedData);
-      ((ushort)toPoint.X).CopyTo(ref pos, expectedData);
-      ((ushort)toPoint.Y).CopyTo(ref pos, expectedData);
-      ((byte)toPoint.Z).CopyTo(ref pos, expectedData);
-      speed.CopyTo(ref pos, expectedData);
-      duration.CopyTo(ref pos, expectedData);
-      expectedData.Clear(ref pos, 2);
-      direction.CopyTo(ref pos, expectedData);
-      explode.CopyTo(ref pos, expectedData);
-      hue.CopyTo(ref pos, expectedData);
-      renderMode.CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)0xC0); // Packet ID
+      expectedData.Write(ref pos, (byte)effectType);
+      expectedData.Write(ref pos, from);
+      expectedData.Write(ref pos, to);
+      expectedData.Write(ref pos, (ushort)itemId);
+      expectedData.Write(ref pos, (ushort)fromPoint.X);
+      expectedData.Write(ref pos, (ushort)fromPoint.Y);
+      expectedData.Write(ref pos, (byte)fromPoint.Z);
+      expectedData.Write(ref pos, (ushort)toPoint.X);
+      expectedData.Write(ref pos, (ushort)toPoint.Y);
+      expectedData.Write(ref pos, (byte)toPoint.Z);
+      expectedData.Write(ref pos, speed);
+      expectedData.Write(ref pos, duration);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (ushort)0);
+#else
+      pos += 2;
+#endif
+      expectedData.Write(ref pos, direction);
+      expectedData.Write(ref pos, explode);
+      expectedData.Write(ref pos, hue);
+      expectedData.Write(ref pos, renderMode);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -121,20 +130,26 @@ namespace Server.Tests.Network.Packets
       var type = ScreenEffectType.FadeOut;
       Span<byte> data = new ScreenEffect(type).Compile();
 
-      Span<byte> expectedData = stackalloc byte[28]
-      {
-        0x70, // Packet ID
-        0x04,
-        0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, // Screen Effect Type
-        0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00
-      };
+      Span<byte> expectedData = stackalloc byte[28];
+      int pos = 0;
 
-      ((ushort)type).CopyTo(expectedData.Slice(10, 2));
+      expectedData.Write(ref pos, (byte)0x70); // Packet ID
+      expectedData.Write(ref pos, (byte)0x04); // Effect
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, 0);
+      expectedData.Write(ref pos, 0);
+#else
+      pos += 8;
+#endif
+
+      expectedData.Write(ref pos, (ushort)type); // Screen Effect Type
+
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, 0);
+      expectedData.Write(ref pos, 0);
+      expectedData.Write(ref pos, 0);
+      expectedData.Write(ref pos, 0);
+#endif
 
       AssertThat.Equal(data, expectedData);
     }
@@ -146,31 +161,32 @@ namespace Server.Tests.Network.Packets
       var hue = 0x1024;
       Span<byte> data = new BoltEffect(entity, hue).Compile();
 
-      Span<byte> expectedData = stackalloc byte[36]
-      {
-        0xC0, // Packet ID
-        0x01, // Effect
-        0x00, 0x00, 0x00, 0x00, // From Serial
-        0x00, 0x00, 0x00, 0x00, // To Serial
-        0x00, 0x00, // Item ID
-        0x00, 0x00, 0x00, 0x00, 0x00, // From Point
-        0x00, 0x00, 0x00, 0x00, 0x00, // To Point
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, // Hue
-        0x00, 0x00, 0x00, 0x00
-      };
+      Span<byte> expectedData = stackalloc byte[36];
+      int pos = 0;
+      expectedData.Write(ref pos, (byte)0xC0); // Packet ID
+      expectedData.Write(ref pos, (byte)0x01); // Effect
 
-      int pos = 2;
-      entity.Serial.CopyTo(ref pos, expectedData);
+
+      expectedData.Write(ref pos, entity.Serial);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, 0);
+      expectedData.Write(ref pos, (ushort)0);
+#else
       pos += 6;
-      ((ushort)entity.X).CopyTo(ref pos, expectedData);
-      ((ushort)entity.Y).CopyTo(ref pos, expectedData);
-      ((byte)entity.Z).CopyTo(ref pos, expectedData);
-      ((ushort)entity.X).CopyTo(ref pos, expectedData);
-      ((ushort)entity.Y).CopyTo(ref pos, expectedData);
-      ((byte)entity.Z).CopyTo(ref pos, expectedData);
+#endif
+      expectedData.Write(ref pos, (ushort)entity.X);
+      expectedData.Write(ref pos, (ushort)entity.Y);
+      expectedData.Write(ref pos, (byte)entity.Z);
+      expectedData.Write(ref pos, (ushort)entity.X);
+      expectedData.Write(ref pos, (ushort)entity.Y);
+      expectedData.Write(ref pos, (byte)entity.Z);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, 0);
+      expectedData.Write(ref pos, (ushort)0);
+#else
       pos += 6;
-      hue.CopyTo(ref pos, expectedData);
+#endif
+      expectedData.Write(ref pos, hue);
 
       AssertThat.Equal(data, expectedData);
     }

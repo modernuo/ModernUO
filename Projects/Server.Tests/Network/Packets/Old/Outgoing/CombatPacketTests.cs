@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Server.Network;
 using Xunit;
 
@@ -14,16 +15,18 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new Swing(attacker, defender).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x2F, // Packet ID
-        0x00, // Unknown
-        0x00, 0x00, 0x00, 0x00, // Attacker
-        0x00, 0x00, 0x00, 0x00, // Defender
-      };
+      Span<byte> expectedData = stackalloc byte[10];
+      int pos = 0;
 
-      attacker.CopyTo(expectedData.Slice(2, 4));
-      defender.CopyTo(expectedData.Slice(6, 4));
+      expectedData.Write(ref pos, (byte)0x2F); // Packet ID
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0);
+#else
+      pos++;
+#endif
+
+      expectedData.Write(ref pos, attacker);
+      expectedData.Write(ref pos, defender);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -35,12 +38,25 @@ namespace Server.Tests.Network.Packets
     {
       Span<byte> data = new SetWarMode(warmode).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x72, // Packet ID
-        warmode ? (byte)0x01 : (byte)0x00, // Mode
-        0x00, 0x32, 0x00 // Unknown
-      };
+      Span<byte> expectedData = stackalloc byte[5];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x72); // Packet ID
+      expectedData.Write(ref pos, warmode);
+
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0);
+#else
+      pos++;
+#endif
+
+      expectedData.Write(ref pos, (byte)0x32);
+
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0);
+#else
+      pos++;
+#endif
 
       AssertThat.Equal(data, expectedData);
     }
@@ -52,13 +68,11 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new ChangeCombatant(combatant).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xAA, // Packet ID
-        0x00, 0x00, 0x00, 0x00 // Combatant
-      };
+      Span<byte> expectedData = stackalloc byte[5];
+      int pos = 0;
 
-      combatant.CopyTo(expectedData.Slice(1, 4));
+      expectedData.Write(ref pos, (byte)0xAA); // Packet ID
+      expectedData.Write(ref pos, combatant);
 
       AssertThat.Equal(data, expectedData);
     }

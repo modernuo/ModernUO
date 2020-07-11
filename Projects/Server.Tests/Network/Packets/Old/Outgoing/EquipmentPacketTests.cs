@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Server.Network;
 using Xunit;
 
@@ -37,28 +38,29 @@ namespace Server.Tests.Network.Packets
 
       int pos = 0;
 
-      ((byte)0xBF).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)length).CopyTo(ref pos, expectedData); // Length
-      ((ushort)0x10).CopyTo(ref pos, expectedData); // Subcommand
-      item.Serial.CopyTo(ref pos, expectedData);
-      info.Number.CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (byte)0xBF); // Packet ID
+      expectedData.Write(ref pos, (ushort)length); // Length
+      expectedData.Write(ref pos, (ushort)0x10); // Subcommand
+      expectedData.Write(ref pos, item.Serial);
+      expectedData.Write(ref pos, info.Number);
       if (info.Crafter != null)
       {
         var name = info.Crafter.Name ?? "";
-        (-3).CopyTo(ref pos, expectedData);
-        name.CopyASCIITo(ref pos, expectedData);
+        expectedData.Write(ref pos, -3);
+        expectedData.Write(ref pos, (ushort)name.Length);
+        expectedData.WriteAscii(ref pos, name);
       }
 
-      if (info.Unidentified) (-4).CopyTo(ref pos, expectedData);
+      if (info.Unidentified) expectedData.Write(ref pos, -4);
 
       for (var i = 0; i < attrs.Length; i++)
       {
         var attr = attrs[i];
-        attr.Number.CopyTo(ref pos, expectedData);
-        ((ushort)attr.Charges).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, attr.Number);
+        expectedData.Write(ref pos, (ushort)attr.Charges);
       }
 
-      (-1).CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, (-1));
 
       AssertThat.Equal(data, expectedData);
     }
@@ -73,20 +75,21 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new EquipUpdate(item).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x2E, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        0x00, 0x00, // Item ID
-        0x00, (byte)item.Layer,
-        0x00, 0x00, 0x00, 0x00, // Parent Serial
-        0x00, 0x00, // Hue
-      };
+      Span<byte> expectedData = stackalloc byte[15];
+      int pos = 0;
+      expectedData.Write(ref pos, (byte)0x2E); // Packet ID
+      expectedData.Write(ref pos, item.Serial);
+      expectedData.Write(ref pos, (ushort)item.ItemID);
 
-      item.Serial.CopyTo(expectedData.Slice(1, 4));
-      ((ushort)item.ItemID).CopyTo(expectedData.Slice(5, 2));
-      item.Parent.Serial.CopyTo(expectedData.Slice(9, 4));
-      ((ushort)item.Hue).CopyTo(expectedData.Slice(13, 2));
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0);
+#else
+      pos++;
+#endif
+
+      expectedData.Write(ref pos, (byte)item.Layer);
+      expectedData.Write(ref pos, item.Parent.Serial);
+      expectedData.Write(ref pos, (ushort)item.Hue);
 
       AssertThat.Equal(data, expectedData);
     }

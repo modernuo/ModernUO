@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Network;
@@ -32,23 +33,24 @@ namespace Server.Tests.Network.Packets
       );
 
       Span<byte> expectedData = stackalloc byte[length];
-
       int pos = 0;
-      ((byte)0x9E).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)length).CopyTo(ref pos, expectedData);
-      vendor.Serial.CopyTo(ref pos, expectedData);
-      ((ushort)sellStates.Count).CopyTo(ref pos, expectedData);
+
+      expectedData.Write(ref pos, (byte)0x9E); // Packet ID
+      expectedData.Write(ref pos, (ushort)length);
+      expectedData.Write(ref pos, vendor.Serial);
+      expectedData.Write(ref pos, (ushort)sellStates.Count);
 
       for (int i = 0; i < sellStates.Count; i++)
       {
         SellItemState state = sellStates[i];
-        state.Item.Serial.CopyTo(ref pos, expectedData);
-        ((ushort)state.Item.ItemID).CopyTo(ref pos, expectedData);
-        ((ushort)state.Item.Hue).CopyTo(ref pos, expectedData);
-        ((ushort)state.Item.Amount).CopyTo(ref pos, expectedData);
-        ((ushort)state.Price).CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, state.Item.Serial);
+        expectedData.Write(ref pos, (ushort)state.Item.ItemID);
+        expectedData.Write(ref pos, (ushort)state.Item.Hue);
+        expectedData.Write(ref pos, (ushort)state.Item.Amount);
+        expectedData.Write(ref pos, (ushort)state.Price);
         string name = string.IsNullOrWhiteSpace(state.Item.Name) ? state.Name ?? "" : state.Item.Name.Trim();
-        name.CopyASCIITo(ref pos, expectedData);
+        expectedData.Write(ref pos, (ushort)name.Length);
+        expectedData.WriteAscii(ref pos, name);
       }
 
       AssertThat.Equal(data, expectedData);
@@ -62,15 +64,16 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new EndVendorBuy(vendor).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x3B, // Packet ID
-        0x00, 0x08, // Length
-        0x00, 0x00, 0x00, 0x00, // Vendor Serial
-        0x00
-      };
+      Span<byte> expectedData = stackalloc byte[8];
+      int pos = 0;
 
-      vendor.Serial.CopyTo(expectedData.Slice(3, 4));
+      expectedData.Write(ref pos, (byte)0x3B); // Packet ID
+      expectedData.Write(ref pos, (ushort)0x08); // Length
+      expectedData.Write(ref pos, vendor.Serial);
+
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0);
+#endif
 
       AssertThat.Equal(data, expectedData);
     }

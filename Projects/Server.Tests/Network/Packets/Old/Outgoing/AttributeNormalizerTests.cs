@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Server.Network;
 using Xunit;
 
@@ -14,19 +15,15 @@ namespace Server.Tests.Network.Packets
 
       PacketWriter stream = new PacketWriter(4);
 
-      const short cur = 50;
-      const short max = 100;
+      const ushort cur = 50;
+      const ushort max = 100;
 
       AttributeNormalizer.Write(stream, cur, max);
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x00, 0x00, // Maximum Normalized
-        0x00, 0x00 // Current Normalized
-      };
-
-      ((short)AttributeNormalizer.Maximum).CopyTo(expectedData.Slice(0, 2));
-      ((short)(cur * 25 / max)).CopyTo(expectedData.Slice(2, 2));
+      Span<byte> expectedData = stackalloc byte[4];
+      int pos = 0;
+      expectedData.Write(ref pos, (ushort)AttributeNormalizer.Maximum);
+      expectedData.Write(ref pos, (ushort)(cur * 25 / max));
 
       AssertThat.Equal(stream.ToArray(), expectedData);
     }
@@ -39,19 +36,15 @@ namespace Server.Tests.Network.Packets
 
       PacketWriter stream = new PacketWriter(4);
 
-      const short cur = 50;
-      const short max = 100;
+      const ushort cur = 50;
+      const ushort max = 100;
 
       AttributeNormalizer.WriteReverse(stream, cur, max);
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x00, 0x00, // Current Normalized
-        0x00, 0x00 // Maximum Normalized
-      };
-
-      ((short)AttributeNormalizer.Maximum).CopyTo(expectedData.Slice(2, 2));
-      ((short)(cur * 25 / max)).CopyTo(expectedData.Slice(0, 2));
+      Span<byte> expectedData = stackalloc byte[4];
+      int pos = 0;
+      expectedData.Write(ref pos, (ushort)(cur * 25 / max));
+      expectedData.Write(ref pos, (ushort)AttributeNormalizer.Maximum);
 
       AssertThat.Equal(stream.ToArray(), expectedData);
     }
@@ -63,19 +56,15 @@ namespace Server.Tests.Network.Packets
 
       PacketWriter stream = new PacketWriter(4);
 
-      const short cur = 50;
-      const short max = 100;
+      const ushort cur = 50;
+      const ushort max = 100;
 
       AttributeNormalizer.Write(stream, cur, max);
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x00, 0x00, // Maximum
-        0x00, 0x00 // Current
-      };
-
-      max.CopyTo(expectedData.Slice(0, 2));
-      cur.CopyTo(expectedData.Slice(2, 2));
+      Span<byte> expectedData = stackalloc byte[4];
+      int pos = 0;
+      expectedData.Write(ref pos, max);
+      expectedData.Write(ref pos, cur);
 
       AssertThat.Equal(stream.ToArray(), expectedData);
     }
@@ -87,19 +76,15 @@ namespace Server.Tests.Network.Packets
 
       PacketWriter stream = new PacketWriter(4);
 
-      const short cur = 50;
-      const short max = 100;
+      const ushort cur = 50;
+      const ushort max = 100;
 
       AttributeNormalizer.WriteReverse(stream, cur, max);
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x00, 0x00, // Current
-        0x00, 0x00 // Maximum
-      };
-
-      max.CopyTo(expectedData.Slice(2, 2));
-      cur.CopyTo(expectedData.Slice(0, 2));
+      Span<byte> expectedData = stackalloc byte[4];
+      int pos = 0;
+      expectedData.Write(ref pos, cur);
+      expectedData.Write(ref pos, max);
 
       AssertThat.Equal(stream.ToArray(), expectedData);
     }

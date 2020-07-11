@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Xunit;
 using Server.Network;
 
@@ -31,18 +32,20 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> expectedData = stackalloc byte[50 + args.Length * 2];
       int pos = 0;
-      ((byte)0xC1).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
+      expectedData.Write(ref pos, (byte)0xC1); // Packet ID
+      expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
 
-      serial.CopyTo(ref pos, expectedData);
-      ((ushort)graphic).CopyTo(ref pos, expectedData);
-      ((byte)messageType).CopyTo(ref pos, expectedData);
-      ((ushort)hue).CopyTo(ref pos, expectedData);
-      ((ushort)font).CopyTo(ref pos, expectedData);
-      number.CopyTo(ref pos, expectedData);
-      name.CopyASCIIFixedTo(ref pos, 30, expectedData);
-      args.CopyRawUnicodeLittleEndianTo(ref pos, expectedData);
-      expectedData.Clear(ref pos, 2); // Terminator
+      expectedData.Write(ref pos, serial);
+      expectedData.Write(ref pos, (ushort)graphic);
+      expectedData.Write(ref pos, (byte)messageType);
+      expectedData.Write(ref pos, (ushort)hue);
+      expectedData.Write(ref pos, (ushort)font);
+      expectedData.Write(ref pos, number);
+      expectedData.WriteAsciiFixed(ref pos, name, 30);
+      expectedData.WriteLittleUni(ref pos, args);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (ushort)0); // Terminator
+#endif
 
       AssertThat.Equal(data, expectedData);
     }
@@ -76,21 +79,27 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> expectedData = stackalloc byte[52 + affix.Length + args.Length * 2];
       int pos = 0;
-      ((byte)0xCC).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
+      expectedData.Write(ref pos, (byte)0xCC); // Packet ID
+      expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
 
-      serial.CopyTo(ref pos, expectedData);
-      ((ushort)graphic).CopyTo(ref pos, expectedData);
-      ((byte)messageType).CopyTo(ref pos, expectedData);
-      ((ushort)hue).CopyTo(ref pos, expectedData);
-      ((ushort)font).CopyTo(ref pos, expectedData);
-      number.CopyTo(ref pos, expectedData);
-      ((byte)affixType).CopyTo(ref pos, expectedData);
-      name.CopyASCIIFixedTo(ref pos, 30, expectedData);
-      affix.CopyRawASCIITo(ref pos, expectedData);
-      expectedData.Clear(ref pos, 2); // Terminator
-      args.CopyRawUnicodeLittleEndianTo(ref pos, expectedData);
-      expectedData.Clear(ref pos, 1); // Terminator
+      expectedData.Write(ref pos, serial);
+      expectedData.Write(ref pos, (ushort)graphic);
+      expectedData.Write(ref pos, (byte)messageType);
+      expectedData.Write(ref pos, (ushort)hue);
+      expectedData.Write(ref pos, (ushort)font);
+      expectedData.Write(ref pos, number);
+      expectedData.Write(ref pos, (byte)affixType);
+      expectedData.WriteAsciiFixed(ref pos, name, 30);
+      expectedData.WriteAscii(ref pos, affix);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (ushort)0); // Terminator
+#else
+      pos += 2;
+#endif
+      expectedData.WriteLittleUni(ref pos, args);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // Terminator
+#endif
 
       AssertThat.Equal(data, expectedData);
     }
@@ -118,17 +127,19 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> expectedData = stackalloc byte[45 + text.Length];
       int pos = 0;
-      ((byte)0x1C).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
+      expectedData.Write(ref pos, (byte)0x1C); // Packet ID
+      expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
 
-      serial.CopyTo(ref pos, expectedData);
-      ((ushort)graphic).CopyTo(ref pos, expectedData);
-      ((byte)messageType).CopyTo(ref pos, expectedData);
-      ((ushort)hue).CopyTo(ref pos, expectedData);
-      ((ushort)font).CopyTo(ref pos, expectedData);
-      name.CopyASCIIFixedTo(ref pos, 30, expectedData);
-      text.CopyRawASCIITo(ref pos, expectedData);
-      expectedData.Clear(ref pos, 1); // Terminator
+      expectedData.Write(ref pos, serial);
+      expectedData.Write(ref pos, (ushort)graphic);
+      expectedData.Write(ref pos, (byte)messageType);
+      expectedData.Write(ref pos, (ushort)hue);
+      expectedData.Write(ref pos, (ushort)font);
+      expectedData.WriteAsciiFixed(ref pos, name, 30);
+      expectedData.WriteAscii(ref pos, text);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // Terminator
+#endif
 
       AssertThat.Equal(data, expectedData);
     }
@@ -158,18 +169,20 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> expectedData = stackalloc byte[50 + text.Length * 2];
       int pos = 0;
-      ((byte)0xAE).CopyTo(ref pos, expectedData); // Packet ID
-      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData); // Length
+      expectedData.Write(ref pos, (byte)0xAE); // Packet ID
+      expectedData.Write(ref pos, (ushort)expectedData.Length); // Length
 
-      serial.CopyTo(ref pos, expectedData);
-      ((ushort)graphic).CopyTo(ref pos, expectedData);
-      ((byte)messageType).CopyTo(ref pos, expectedData);
-      ((ushort)hue).CopyTo(ref pos, expectedData);
-      ((ushort)font).CopyTo(ref pos, expectedData);
-      lang.CopyASCIIFixedTo(ref pos, 4, expectedData);
-      name.CopyASCIIFixedTo(ref pos, 30, expectedData);
-      text.CopyRawUnicodeBigEndianTo(ref pos, expectedData);
-      expectedData.Clear(ref pos, 2); // Terminator
+      expectedData.Write(ref pos, serial);
+      expectedData.Write(ref pos, (ushort)graphic);
+      expectedData.Write(ref pos, (byte)messageType);
+      expectedData.Write(ref pos, (ushort)hue);
+      expectedData.Write(ref pos, (ushort)font);
+      expectedData.WriteAsciiFixed(ref pos, lang, 4);
+      expectedData.WriteAsciiFixed(ref pos, name, 30);
+      expectedData.WriteBigUni(ref pos, text);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // Terminator
+#endif
 
       AssertThat.Equal(data, expectedData);
     }
@@ -182,15 +195,12 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new FollowMessage(serial, serial2).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x15, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Follower
-        0x00, 0x00, 0x00, 0x00, // Followee
-      };
+      Span<byte> expectedData = stackalloc byte[9];
+      int pos = 0;
 
-      serial.CopyTo(expectedData.Slice(1, 4));
-      serial2.CopyTo(expectedData.Slice(5, 4));
+      expectedData.Write(ref pos, (byte)0x15); // Packet ID
+      expectedData.Write(ref pos, serial);
+      expectedData.Write(ref pos, serial2);
 
       AssertThat.Equal(data, expectedData);
     }

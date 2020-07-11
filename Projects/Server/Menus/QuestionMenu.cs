@@ -28,7 +28,7 @@ namespace Server.Menus.Questions
 
     public QuestionMenu(string question, string[] answers)
     {
-      Question = question;
+      Question = question?.Trim() ?? "";
       Answers = answers;
 
       do
@@ -38,7 +38,7 @@ namespace Server.Menus.Questions
       } while (Serial == 0);
     }
 
-    public string Question { get; set; }
+    public string Question { get; }
 
     public string[] Answers { get; }
 

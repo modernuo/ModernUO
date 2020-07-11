@@ -449,9 +449,9 @@ namespace Server.Network
       EnsureCapacity(12);
 
       Stream.Write(m.Serial);
-      Stream.Write((short)1);
+      Stream.Write((short)1); // Show Bar?
 
-      Stream.Write((short)1);
+      Stream.Write((short)1); // Poison Bar
 
       var p = m.Poison;
 
@@ -527,7 +527,7 @@ namespace Server.Network
 
   public sealed class MobileIncoming : Packet
   {
-    private static readonly ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => { return new int[256]; });
+    private static readonly ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => new int[256]);
     private static readonly ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
 
     public MobileIncoming(Mobile beholder, Mobile beheld) : base(0x78)
@@ -636,7 +636,7 @@ namespace Server.Network
 
   public sealed class MobileIncomingSA : Packet
   {
-    private static readonly ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => { return new int[256]; });
+    private static readonly ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => new int[256]);
     private static readonly ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
 
     public MobileIncomingSA(Mobile beholder, Mobile beheld) : base(0x78)
@@ -754,7 +754,7 @@ namespace Server.Network
   // Pre-7.0.0.0 Mobile Incoming
   public sealed class MobileIncomingOld : Packet
   {
-    private static readonly ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => { return new int[256]; });
+    private static readonly ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => new int[256]);
     private static readonly ThreadLocal<int> m_VersionTL = new ThreadLocal<int>();
 
     public MobileIncomingOld(Mobile beholder, Mobile beheld) : base(0x78)

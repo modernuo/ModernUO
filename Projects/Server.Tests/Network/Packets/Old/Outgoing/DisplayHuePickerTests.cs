@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Server.HuePickers;
 using Server.Network;
 using Xunit;
@@ -15,16 +16,17 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new DisplayHuePicker(huePicker).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x95, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Hue Picker Serial
-        0x00, 0x00, // Nothing
-        0x00, 0x00 // Item ID
-      };
+      Span<byte> expectedData = stackalloc byte[9];
+      int pos = 0;
 
-      huePicker.Serial.CopyTo(expectedData.Slice(1, 4));
-      itemID.CopyTo(expectedData.Slice(7, 2));
+      expectedData.Write(ref pos, (byte)0x95);
+      expectedData.Write(ref pos, huePicker.Serial);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (ushort)0);
+#else
+      pos += 2;
+#endif
+      expectedData.Write(ref pos, itemID);
 
       AssertThat.Equal(data, expectedData);
     }

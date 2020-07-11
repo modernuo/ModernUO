@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Server.Network;
 using Xunit;
 
@@ -12,11 +13,11 @@ namespace Server.Tests.Network.Packets
       byte lightLevel = 5;
       Span<byte> data = new GlobalLightLevel(lightLevel).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x4F, // Packet ID
-        lightLevel
-      };
+      Span<byte> expectedData = stackalloc byte[2];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x4F); // Packet ID
+      expectedData.Write(ref pos, lightLevel);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -28,14 +29,12 @@ namespace Server.Tests.Network.Packets
       byte lightLevel = 5;
       Span<byte> data = new PersonalLightLevel(serial, lightLevel).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0x4E, // Packet ID
-        0x00, 0x00, 0x00, 0x00, // Serial
-        lightLevel
-      };
+      Span<byte> expectedData = stackalloc byte[6];
+      int pos = 0;
 
-      serial.CopyTo(expectedData.Slice(1, 4));
+      expectedData.Write(ref pos, (byte)0x4E); // Packet ID
+      expectedData.Write(ref pos, serial);
+      expectedData.Write(ref pos, lightLevel);
 
       AssertThat.Equal(data, expectedData);
     }

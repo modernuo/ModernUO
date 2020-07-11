@@ -19,17 +19,14 @@ namespace Server.Tests.Network.Packets
 
       Span<byte> data = new CloseGump(typeId, buttonId).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xBF, // Packet ID
-        0x00, 0xD, // Length
-        0x00, 0x04, // Close
-        0x00, 0x00, 0x00, 0x00, // Type Id
-        0x00, 0x00, 0x00, 0x00, // Button Id
-      };
+      Span<byte> expectedData = stackalloc byte[13];
+      int pos = 0;
 
-      typeId.CopyTo(expectedData.Slice(5, 4));
-      buttonId.CopyTo(expectedData.Slice(9, 4));
+      expectedData.Write(ref pos, (byte)0xBF); // Packet ID
+      expectedData.Write(ref pos, (ushort)0xD); // Length
+      expectedData.Write(ref pos, (ushort)0x4); // Close Gump
+      expectedData.Write(ref pos, typeId);
+      expectedData.Write(ref pos, buttonId);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -45,14 +42,16 @@ namespace Server.Tests.Network.Packets
       Span<byte> data = new DisplaySignGump(gumpSerial, gumpId, unknownString, caption).Compile();
 
       Span<byte> expectedData = stackalloc byte[15 + unknownString.Length + caption.Length];
-
       int pos = 0;
-      ((byte)0x8B).CopyTo(ref pos, expectedData);
-      ((ushort)expectedData.Length).CopyTo(ref pos, expectedData);
-      gumpSerial.CopyTo(ref pos, expectedData);
-      ((ushort)gumpId).CopyTo(ref pos, expectedData);
-      unknownString.CopyASCIINullTo(ref pos, expectedData);
-      caption.CopyASCIINullTo(ref pos, expectedData);
+
+      expectedData.Write(ref pos, (byte)0x8B);
+      expectedData.Write(ref pos, (ushort)expectedData.Length);
+      expectedData.Write(ref pos, gumpSerial);
+      expectedData.Write(ref pos, (ushort)gumpId);
+      expectedData.Write(ref pos, (ushort)(unknownString.Length + 1));
+      expectedData.WriteAsciiNull(ref pos, unknownString);
+      expectedData.Write(ref pos, (ushort)(caption.Length + 1));
+      expectedData.WriteAsciiNull(ref pos, caption);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -76,52 +75,52 @@ namespace Server.Tests.Network.Packets
       expectedData[pos++] = 0xB0; // Packet ID
       pos += 2; // Length
 
-      gump.Serial.CopyTo(ref pos, expectedData);
-      gump.TypeID.CopyTo(ref pos, expectedData);
-      gump.X.CopyTo(ref pos, expectedData);
-      gump.Y.CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, gump.Serial);
+      expectedData.Write(ref pos, gump.TypeID);
+      expectedData.Write(ref pos, gump.X);
+      expectedData.Write(ref pos, gump.Y);
       pos += 2; // Layout Length
 
       int layoutLength = 0;
 
       if (!gump.Draggable)
       {
-        GumpUtilities.NoMoveBuffer.CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, GumpUtilities.NoMoveBuffer);
         layoutLength += GumpUtilities.NoMove.Length;
       }
 
       if (!gump.Closable)
       {
-        GumpUtilities.NoCloseBuffer.CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, GumpUtilities.NoCloseBuffer);
         layoutLength += GumpUtilities.NoClose.Length;
       }
 
       if (!gump.Disposable)
       {
-        GumpUtilities.NoDisposeBuffer.CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, GumpUtilities.NoDisposeBuffer);
         layoutLength += GumpUtilities.NoDispose.Length;
       }
 
       if (!gump.Resizable)
       {
-        GumpUtilities.NoResizeBuffer.CopyTo(ref pos, expectedData);
+        expectedData.Write(ref pos, GumpUtilities.NoResizeBuffer);
         layoutLength += GumpUtilities.NoResize.Length;
       }
 
       foreach (var entry in gump.Entries)
       {
         var str = entry.Compile(ns);
-        str.CopyRawASCIITo(ref pos, expectedData);
+        expectedData.WriteAscii(ref pos, str);
         layoutLength += str.Length; // ASCII so 1:1
       }
 
-      ((ushort)layoutLength).CopyTo(expectedData.Slice(19, 2));
-      ((ushort)gump.Strings.Count).CopyTo(ref pos, expectedData);
+      expectedData.Slice(19, 2).Write((ushort)layoutLength);
+      expectedData.Write(ref pos, (ushort)gump.Strings.Count);
 
       for (var i = 0; i < gump.Strings.Count; ++i)
-        (gump.Strings[i] ?? "").CopyUnicodeBigEndianTo(ref pos, expectedData);
+        expectedData.WriteBigUni(ref pos, gump.Strings[i] ?? "");
 
-      ((ushort)pos).CopyTo(expectedData.Slice(1, 2));
+      expectedData.Slice(1, 2).Write((ushort)pos); // Length
 
       expectedData = expectedData.Slice(0, pos);
 
@@ -134,9 +133,10 @@ namespace Server.Tests.Network.Packets
       NetState ns = new NetState(new AccountPacketTests.TestConnectionContext
       {
         RemoteEndPoint = IPEndPoint.Parse("127.0.0.1"),
-      });
-
-      ns.ProtocolChanges = ProtocolChanges.Unpack;
+      })
+      {
+        ProtocolChanges = ProtocolChanges.Unpack
+      };
 
       var gump = new ResurrectGump(2);
 
@@ -149,10 +149,10 @@ namespace Server.Tests.Network.Packets
       expectedData[pos++] = 0xDD; // Packet ID
       pos += 2; // Length
 
-      gump.Serial.CopyTo(ref pos, expectedData);
-      gump.TypeID.CopyTo(ref pos, expectedData);
-      gump.X.CopyTo(ref pos, expectedData);
-      gump.Y.CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, gump.Serial);
+      expectedData.Write(ref pos, gump.TypeID);
+      expectedData.Write(ref pos, gump.X);
+      expectedData.Write(ref pos, gump.Y);
 
       var layoutList = new List<string>();
       int bufferLength = 1; // Null terminated
@@ -194,24 +194,30 @@ namespace Server.Tests.Network.Packets
       int bufferPos = 0;
 
       foreach (var layout in layoutList)
-        layout.CopyRawASCIITo(ref bufferPos, buffer);
+        buffer.WriteAscii(ref bufferPos, layout);
 
-      pos += GumpUtilities.WritePacked(buffer.Slice(0, bufferPos + 1), expectedData.Slice(pos));
+#if NO_LOCAL_INIT
+      buffer.Write(ref bufferPos, (byte)0); // Layout terminator
+#else
+      bufferPos++;
+#endif
+
+      expectedData.WritePacked(ref pos, buffer.Slice(0, bufferPos));
       memOwner.Dispose();
 
-      gump.Strings.Count.CopyTo(ref pos, expectedData);
+      expectedData.Write(ref pos, gump.Strings.Count);
       bufferLength = gump.Strings.Sum(str => 2 + str.Length * 2);
       memOwner = SlabMemoryPool.Shared.Rent(bufferLength);
       buffer = memOwner.Memory.Span;
       bufferPos = 0;
 
       foreach (var str in gump.Strings)
-        str.CopyUnicodeBigEndianTo(ref bufferPos, buffer);
+        buffer.WriteBigUni(ref bufferPos, str);
 
-      pos += GumpUtilities.WritePacked(buffer.Slice(0, bufferPos), expectedData.Slice(pos));
+      expectedData.WritePacked(ref pos, buffer.Slice(0, bufferPos));
 
       // Length
-      ((ushort)pos).CopyTo(expectedData.Slice(1, 2));
+      expectedData.Slice(1, 2).Write((ushort)pos);
       expectedData = expectedData.Slice(0, pos);
 
       AssertThat.Equal(data, expectedData);

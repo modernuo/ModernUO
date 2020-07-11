@@ -53,7 +53,7 @@ namespace Server.Tests.Network.Packets
         0xBF, // Packet ID
         0x00, 0x06, // Length
         0x00, 0x08, // Sub-packet
-        0x00, // Felucca
+        0x00 // Felucca
       };
 
       AssertThat.Equal(data, expectedData);

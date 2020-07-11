@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Server.Network;
 using Xunit;
 
@@ -11,13 +12,12 @@ namespace Server.Tests.Network.Packets
     {
       Span<byte> data = new CancelArrow().Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xBA, // Packet ID
-        0x00, // Command
-        0xFF, 0xFF, // X
-        0xFF, 0xFF // Y
-      };
+      Span<byte> expectedData = stackalloc byte[6];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0xBA); // Packet ID
+      expectedData.Write(ref pos, (byte)0); // Command
+      expectedData.Write(ref pos, 0xFFFFFFFF); // X, Y
 
       AssertThat.Equal(data, expectedData);
     }
@@ -30,16 +30,13 @@ namespace Server.Tests.Network.Packets
     {
       Span<byte> data = new SetArrow(x, y).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xBA, // Packet ID
-        0x01, // Command
-        0x00, 0x00, // X
-        0x00, 0x00 // Y
-      };
+      Span<byte> expectedData = stackalloc byte[6];
+      int pos = 0;
 
-      ((ushort)x).CopyTo(expectedData.Slice(2, 2));
-      ((ushort)y).CopyTo(expectedData.Slice(4, 2));
+      expectedData.Write(ref pos, (byte)0xBA); // Packet ID
+      expectedData.Write(ref pos, (byte)0x01); // Command
+      expectedData.Write(ref pos, (ushort)x);
+      expectedData.Write(ref pos, (ushort)y);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -50,19 +47,21 @@ namespace Server.Tests.Network.Packets
     [InlineData(100000, 100000)]
     public void TestCancelArrowHS(int x, int y)
     {
-      Span<byte> data = new CancelArrowHS(x, y, 0x1).Compile();
+      Serial serial = 0x01;
+      Span<byte> data = new CancelArrowHS(x, y, serial).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xBA, // Packet ID
-        0x00, // Command
-        0x00, 0x00, // X
-        0x00, 0x00, // Y
-        0x00, 0x00, 0x00, 0x01 // Serial
-      };
+      Span<byte> expectedData = stackalloc byte[10];
+      int pos = 0;
 
-      ((ushort)x).CopyTo(expectedData.Slice(2, 2));
-      ((ushort)y).CopyTo(expectedData.Slice(4, 2));
+      expectedData.Write(ref pos, (byte)0xBA); // Packet ID
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // Command
+#else
+      pos++;
+#endif
+      expectedData.Write(ref pos, (ushort)x);
+      expectedData.Write(ref pos, (ushort)y);
+      expectedData.Write(ref pos, serial);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -73,19 +72,17 @@ namespace Server.Tests.Network.Packets
     [InlineData(100000, 100000)]
     public void TestSetArrowHS(int x, int y)
     {
-      Span<byte> data = new SetArrowHS(x, y, 0x1).Compile();
+      Serial serial = 0x01;
+      Span<byte> data = new SetArrowHS(x, y, serial).Compile();
 
-      Span<byte> expectedData = stackalloc byte[]
-      {
-        0xBA, // Packet ID
-        0x01, // Command
-        0x00, 0x00, // X
-        0x00, 0x00, // Y
-        0x00, 0x00, 0x00, 0x01 // Serial
-      };
+      Span<byte> expectedData = stackalloc byte[10];
+      int pos = 0;
 
-      ((ushort)x).CopyTo(expectedData.Slice(2, 2));
-      ((ushort)y).CopyTo(expectedData.Slice(4, 2));
+      expectedData.Write(ref pos, (byte)0xBA); // Packet ID
+      expectedData.Write(ref pos, (byte)0x01); // Command
+      expectedData.Write(ref pos, (ushort)x);
+      expectedData.Write(ref pos, (ushort)y);
+      expectedData.Write(ref pos, serial);
 
       AssertThat.Equal(data, expectedData);
     }
