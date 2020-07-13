@@ -136,7 +136,11 @@ namespace System.Buffers
     {
       int length = value.Length;
       pos += Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
+#if NO_LOCAL_INIT
       span[pos++] = 0; // Null terminator
+#else
+      pos++;
+#endif
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -145,7 +149,11 @@ namespace System.Buffers
       var length = value.Length < max ? value.Length : max - 1;
 
       pos += Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
+#if NO_LOCAL_INIT
       span[pos++] = 0; // Null terminator
+#else
+      pos++;
+#endif
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -154,22 +162,6 @@ namespace System.Buffers
       var length = value.Length <= amount ? value.Length : amount;
 #if NO_LOCAL_INIT
       int bytesWritten = Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
-
-      if (bytesWritten < amount)
-        span.Slice(pos + bytesWritten, amount - bytesWritten).Clear();
-#else
-      Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
-#endif
-
-      pos += amount;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WriteAsciiFixedNull(this Span<byte> span, ref int pos, string value, int amount)
-    {
-      var length = value.Length < amount ? value.Length : amount - 1;
-#if NO_LOCAL_INIT
-      int bytesWritten = Encoding.ASCII.GetBytes(value.AsSpan(0, amount), span.Slice(pos, amount));
 
       if (bytesWritten < amount)
         span.Slice(pos + bytesWritten, amount - bytesWritten).Clear();
@@ -190,6 +182,26 @@ namespace System.Buffers
     public static void WriteLittleUni(this Span<byte> span, ref int pos, string value)
     {
       pos += Encoding.Unicode.GetBytes(value, span.Slice(pos));
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteBigUniNull(this Span<byte> span, ref int pos, string value)
+    {
+      pos += Encoding.BigEndianUnicode.GetBytes(value, span.Slice(pos));
+#if NO_LOCAL_INIT
+      BinaryPrimitives.WriteUInt16BigEndian(span.Slice(pos, 2), 0); // Null terminator
+#endif
+      pos += 2;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteLittleUniNull(this Span<byte> span, ref int pos, string value)
+    {
+      pos += Encoding.Unicode.GetBytes(value, span.Slice(pos));
+#if NO_LOCAL_INIT
+      BinaryPrimitives.WriteUInt16BigEndian(span.Slice(pos, 2), 0); // Null terminator
+#endif
+      pos += 2;
     }
   }
 }

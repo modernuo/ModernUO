@@ -42,10 +42,7 @@ namespace Server.Tests.Network.Packets
       expectedData.Write(ref pos, (ushort)font);
       expectedData.Write(ref pos, number);
       expectedData.WriteAsciiFixed(ref pos, name, 30);
-      expectedData.WriteLittleUni(ref pos, args);
-#if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (ushort)0); // Terminator
-#endif
+      expectedData.WriteLittleUniNull(ref pos, args);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -90,16 +87,8 @@ namespace Server.Tests.Network.Packets
       expectedData.Write(ref pos, number);
       expectedData.Write(ref pos, (byte)affixType);
       expectedData.WriteAsciiFixed(ref pos, name, 30);
-      expectedData.WriteAscii(ref pos, affix);
-#if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (ushort)0); // Terminator
-#else
-      pos += 2;
-#endif
-      expectedData.WriteLittleUni(ref pos, args);
-#if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // Terminator
-#endif
+      expectedData.WriteAsciiNull(ref pos, affix);
+      expectedData.WriteBigUniNull(ref pos, args);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -136,10 +125,7 @@ namespace Server.Tests.Network.Packets
       expectedData.Write(ref pos, (ushort)hue);
       expectedData.Write(ref pos, (ushort)font);
       expectedData.WriteAsciiFixed(ref pos, name, 30);
-      expectedData.WriteAscii(ref pos, text);
-#if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // Terminator
-#endif
+      expectedData.WriteAsciiNull(ref pos, text);
 
       AssertThat.Equal(data, expectedData);
     }
@@ -179,10 +165,7 @@ namespace Server.Tests.Network.Packets
       expectedData.Write(ref pos, (ushort)font);
       expectedData.WriteAsciiFixed(ref pos, lang, 4);
       expectedData.WriteAsciiFixed(ref pos, name, 30);
-      expectedData.WriteBigUni(ref pos, text);
-#if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (byte)0); // Terminator
-#endif
+      expectedData.WriteBigUniNull(ref pos, text);
 
       AssertThat.Equal(data, expectedData);
     }

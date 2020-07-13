@@ -101,7 +101,7 @@ namespace Server.Network
 
   public sealed class DisplayProfile : Packet
   {
-    public DisplayProfile(bool realSerial, Mobile m, string header, string body, string footer) : base(0xB8)
+    public DisplayProfile(Serial m, string header, string body, string footer) : base(0xB8)
     {
       header ??= "";
       body ??= "";
@@ -109,7 +109,7 @@ namespace Server.Network
 
       EnsureCapacity(12 + header.Length + footer.Length * 2 + body.Length * 2);
 
-      Stream.Write(realSerial ? m.Serial : Serial.Zero);
+      Stream.Write(m);
       Stream.WriteAsciiNull(header);
       Stream.WriteBigUniNull(footer);
       Stream.WriteBigUniNull(body);

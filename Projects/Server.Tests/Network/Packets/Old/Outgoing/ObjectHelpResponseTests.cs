@@ -23,11 +23,7 @@ namespace Server.Tests.Network.Packets
       expectedData.Write(ref pos, (byte)0xB7); // Packet ID
       expectedData.Write(ref pos, (ushort)length); // Length
       expectedData.Write(ref pos, s);
-      expectedData.WriteBigUni(ref pos, text);
-
-#if NO_LOCAL_INIT
-      expectedData.Write(ref pos, (ushort)0); // Terminator
-#endif
+      expectedData.WriteBigUniNull(ref pos, text);
 
       AssertThat.Equal(data, expectedData);
     }
