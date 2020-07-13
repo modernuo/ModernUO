@@ -144,9 +144,9 @@ namespace Server.Network
 
   public sealed class RemoveEntity : Packet
   {
-    public RemoveEntity(IEntity entity) : base(0x1D, 5)
+    public RemoveEntity(Serial entity) : base(0x1D, 5)
     {
-      Stream.Write(entity.Serial);
+      Stream.Write(entity);
     }
   }
 

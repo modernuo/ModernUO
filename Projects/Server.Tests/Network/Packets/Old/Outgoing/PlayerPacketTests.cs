@@ -109,5 +109,68 @@ namespace Server.Tests.Network.Packets
 
       AssertThat.Equal(data, expectedData);
     }
+
+    [Theory]
+    [InlineData(LRReason.CannotLift)]
+    [InlineData(LRReason.TryToSteal)]
+    public void TestLiftRej(LRReason reason)
+    {
+      Span<byte> data = new LiftRej(reason).Compile();
+
+      Span<byte> expectedData = stackalloc byte[2];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x27); // Packet ID
+      expectedData.Write(ref pos, (byte)reason);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestLogoutAck()
+    {
+      Span<byte> data = new LogoutAck().Compile();
+
+      Span<byte> expectedData = stackalloc byte[2];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0xD1); // Packet ID
+      expectedData.Write(ref pos, (byte)0x1); // 1 - Ack
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Theory]
+    [InlineData(1, 2, 3)]
+    [InlineData(4, 5, 6)]
+    public void TestWeather(int type, int density, int temp)
+    {
+      Span<byte> data = new Weather(type, density, temp).Compile();
+
+      Span<byte> expectedData = stackalloc byte[4];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x65); // Packet ID
+      expectedData.Write(ref pos, (byte)type);
+      expectedData.Write(ref pos, (byte)density);
+      expectedData.Write(ref pos, (byte)temp);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestRemoveEntity()
+    {
+      Serial e = 0x1000;
+      Span<byte> data = new RemoveEntity(e).Compile();
+
+      Span<byte> expectedData = stackalloc byte[5];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x1D); // Packet ID
+      expectedData.Write(ref pos, e);
+
+      AssertThat.Equal(data, expectedData);
+    }
   }
 }
