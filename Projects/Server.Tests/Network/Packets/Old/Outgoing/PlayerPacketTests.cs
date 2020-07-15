@@ -172,5 +172,140 @@ namespace Server.Tests.Network.Packets
 
       AssertThat.Equal(data, expectedData);
     }
+
+    [Fact]
+    public void TestServerChange()
+    {
+      Point3D p = new Point3D(100, 1000, 1);
+      Map map = Map.Felucca;
+      Span<byte> data = new ServerChange(p, map).Compile();
+
+      Span<byte> expectedData = stackalloc byte[16];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x76); // Packet ID
+      expectedData.Write(ref pos, (ushort)p.X);
+      expectedData.Write(ref pos, (ushort)p.Y);
+      expectedData.Write(ref pos, (ushort)p.Z);
+#if NO_LOCAL_INIT
+      expectedData.Write(ref pos, (byte)0); // Unknown
+      expectedData.Write(ref pos, 0); // ?? 2 x ushort Unknown
+#else
+      pos += 5;
+#endif
+      expectedData.Write(ref pos, (ushort)map.Width);
+      expectedData.Write(ref pos, (ushort)map.Height);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Fact]
+    public void TestSkillUpdate()
+    {
+      Mobile m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      Skills skills = m.Skills;
+      m.Skills[SkillName.Alchemy].BaseFixedPoint = 1000; // GM Alchemy
+
+      Span<byte> data = new SkillUpdate(skills).Compile();
+
+      int length = 6 + skills.Length * 9;
+      Span<byte> expectedData = stackalloc byte[length];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x3A); // Packet ID
+      expectedData.Write(ref pos, (ushort)length); // Length
+      expectedData.Write(ref pos, (byte)0x02); // type: absolute, capped
+
+      for (int i = 0; i < skills.Length; i++)
+      {
+        var s = skills[i];
+
+        var v = s.NonRacialValue;
+        var uv = Utility.Coerce((int)(v * 10), 0, 0xFFFF);
+
+        expectedData.Write(ref pos, (ushort)(s.Info.SkillID + 1));
+        expectedData.Write(ref pos, (ushort)uv);
+        expectedData.Write(ref pos, (ushort)s.BaseFixedPoint);
+        expectedData.Write(ref pos, (byte)s.Lock);
+        expectedData.Write(ref pos, (ushort)s.CapFixedPoint);
+      }
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(10)]
+    [InlineData(255)]
+    public void TestSequence(byte num)
+    {
+      Span<byte> data = new Sequence(num).Compile();
+
+      Span<byte> expectedData = stackalloc byte[2];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x7B); // Packet ID
+      expectedData.Write(ref pos, num);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Theory]
+    [InlineData(SkillName.Alchemy, 0, 1)]
+    [InlineData(SkillName.Archery, 10, 1000)]
+    [InlineData(SkillName.Begging, 100000, 1000)]
+    public void TestSkillChange(SkillName skillName, int baseFixedPoint, int capFixedPoint)
+    {
+      // TODO: Eliminate all of this and just create a Skill directly
+      Mobile m = new Mobile(0x1);
+      m.DefaultMobileInit();
+
+      Skill skill = m.Skills[skillName];
+      skill.BaseFixedPoint = baseFixedPoint;
+      skill.CapFixedPoint = capFixedPoint;
+
+      Span<byte> data = new SkillChange(skill).Compile();
+
+      Span<byte> expectedData = stackalloc byte[13];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0x3A); // Packet ID
+      expectedData.Write(ref pos, (ushort)13); // Length
+      expectedData.Write(ref pos, (byte)0xDF); // type: delta, capped
+
+      var v = skill.NonRacialValue;
+      var uv = Utility.Coerce((int)(v * 10), 0, 0xFFFF);
+
+      expectedData.Write(ref pos, (ushort)skill.Info.SkillID);
+      expectedData.Write(ref pos, (ushort)uv);
+      expectedData.Write(ref pos, (ushort)skill.BaseFixedPoint);
+      expectedData.Write(ref pos, (byte)skill.Lock);
+      expectedData.Write(ref pos, (ushort)skill.CapFixedPoint);
+
+      AssertThat.Equal(data, expectedData);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("This is a URL, I promise")]
+    public void TestLaunchBrowser(string url)
+    {
+      Span<byte> data = new LaunchBrowser(url).Compile();
+
+      url ??= "";
+
+      int length = 4 + url.Length;
+      Span<byte> expectedData = stackalloc byte[length];
+      int pos = 0;
+
+      expectedData.Write(ref pos, (byte)0xA5); // Packet ID
+      expectedData.Write(ref pos, (ushort)length); // Length
+      expectedData.WriteAsciiNull(ref pos, url); // Note: use punycode for unicode URLs
+
+      AssertThat.Equal(data, expectedData);
+    }
   }
 }

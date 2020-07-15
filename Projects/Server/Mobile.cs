@@ -1040,7 +1040,7 @@ namespace Server
 
     public static bool FwdEnabled { get; set; } = true;
 
-    public static bool FwdUOTDOverride { get; set; } = false;
+    public static bool FwdUOTDOverride { get; set; }
 
     public static int FwdMaxSteps { get; set; } = 4;
 
@@ -2079,7 +2079,7 @@ namespace Server
           if (ns != null)
           {
             if (m_Map != null)
-              ns.Send(new ServerChange(this, m_Map));
+              ns.Send(new ServerChange(m_Location, m_Map));
 
             ns.Sequence = 0;
             ClearFastwalkStack();
@@ -2210,7 +2210,7 @@ namespace Server
       if (ns != null)
       {
         if (m_Map != null)
-          Send(new ServerChange(this, m_Map));
+          Send(new ServerChange(m_Location, m_Map));
 
         ns.Sequence = 0;
         ClearFastwalkStack();

@@ -137,10 +137,9 @@ namespace System.Buffers
       int length = value.Length;
       pos += Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
 #if NO_LOCAL_INIT
-      span[pos++] = 0; // Null terminator
-#else
-      pos++;
+      span[pos] = 0; // Null terminator
 #endif
+      pos++;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -150,10 +149,9 @@ namespace System.Buffers
 
       pos += Encoding.ASCII.GetBytes(value.AsSpan(0, length), span.Slice(pos, length));
 #if NO_LOCAL_INIT
-      span[pos++] = 0; // Null terminator
-#else
-      pos++;
+      span[pos] = 0; // Null terminator
 #endif
+      pos++;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -202,6 +200,15 @@ namespace System.Buffers
       BinaryPrimitives.WriteUInt16BigEndian(span.Slice(pos, 2), 0); // Null terminator
 #endif
       pos += 2;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Write(this Span<byte> span, ref int pos, Point3D p)
+    {
+      BinaryPrimitives.WriteUInt16BigEndian(span.Slice(pos, 2), (ushort)p.X);
+      BinaryPrimitives.WriteUInt16BigEndian(span.Slice(pos + 2, 2), (ushort)p.Y);
+      span[pos + 4] = (byte)p.Z;
+      pos += 5;
     }
   }
 }

@@ -72,9 +72,7 @@ namespace Server.Tests.Network.Packets
       expectedData.Write(ref pos, (byte)0x77); // Packet ID
       expectedData.Write(ref pos, m.Serial);
       expectedData.Write(ref pos, (ushort)m.Body);
-      expectedData.Write(ref pos, (ushort)m.X);
-      expectedData.Write(ref pos, (ushort)m.Y);
-      expectedData.Write(ref pos, (byte)m.Z);
+      expectedData.Write(ref pos, m.Location);
       expectedData.Write(ref pos, (byte)m.Direction);
       expectedData.Write(ref pos, (ushort)m.Hue);
       expectedData.Write(ref pos, (byte)m.GetPacketFlags());
@@ -99,9 +97,7 @@ namespace Server.Tests.Network.Packets
       expectedData.Write(ref pos, (byte)0x77); // Packet ID
       expectedData.Write(ref pos, m.Serial);
       expectedData.Write(ref pos, (ushort)m.Body);
-      expectedData.Write(ref pos, (ushort)m.X);
-      expectedData.Write(ref pos, (ushort)m.Y);
-      expectedData.Write(ref pos, (byte)m.Z);
+      expectedData.Write(ref pos, m.Location);
       expectedData.Write(ref pos, (byte)m.Direction);
       expectedData.Write(ref pos, (ushort)m.Hue);
       expectedData.Write(ref pos, (byte)m.GetOldPacketFlags());

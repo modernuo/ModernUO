@@ -152,11 +152,11 @@ namespace Server.Network
 
   public sealed class ServerChange : Packet
   {
-    public ServerChange(Mobile m, Map map) : base(0x76, 16)
+    public ServerChange(Point3D p, Map map) : base(0x76, 16)
     {
-      Stream.Write((short)m.X);
-      Stream.Write((short)m.Y);
-      Stream.Write((short)m.Z);
+      Stream.Write((short)p.X);
+      Stream.Write((short)p.Y);
+      Stream.Write((short)p.Z);
       Stream.Write((byte)0);
       Stream.Write((short)0);
       Stream.Write((short)0);
