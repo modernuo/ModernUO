@@ -359,10 +359,10 @@ namespace Server.Tests.Network.Packets
     }
 
     [Theory]
-    [InlineData(0x1024u, "Test Title", true, true)]
-    [InlineData(0x1024u, "Test Title", false, true)]
-    [InlineData(0x1024u, "Test Title", true, false)]
-    public void TestDisplayPaperdoll(Serial m, string title, bool warmode, bool canLift)
+    [InlineData(0x1024, "Test Title", true, true)]
+    [InlineData(0x1024, "Test Title", false, true)]
+    [InlineData(0x1024, "Test Title", true, false)]
+    public void TestDisplayPaperdoll(uint m, string title, bool warmode, bool canLift)
     {
       Span<byte> data = new DisplayPaperdoll(m, title, warmode, canLift).Compile();
 
