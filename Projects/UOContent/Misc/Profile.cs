@@ -44,8 +44,9 @@ namespace Server.Misc
         footer = GetAccountDuration(beheld);
 
       string body = beheld.Profile ?? "";
+      Serial serial = beholder != beheld || !beheld.ProfileLocked ? beheld.Serial : Serial.Zero;
 
-      beholder.Send(new DisplayProfile(beholder != beheld || !beheld.ProfileLocked, beheld, header, body, footer));
+      beholder.Send(new DisplayProfile(serial, header, body, footer));
     }
 
     private static string GetAccountDuration(Mobile m)

@@ -62,7 +62,7 @@ namespace Server.Network
     {
       return RemoveEntityPackets.GetOrAdd(entity, value =>
       {
-        var packet = new RemoveEntity(value);
+        var packet = new RemoveEntity(value.Serial);
         packet.SetStatic();
         return packet;
       });

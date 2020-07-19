@@ -127,9 +127,7 @@ namespace Server.Tests.Network.Packets
 
       expectedData.Write(ref pos, (ushort)item.Amount); // Amount (min?)
       expectedData.Write(ref pos, (ushort)item.Amount); // Amount (max?)
-      expectedData.Write(ref pos, (ushort)loc.X); // X
-      expectedData.Write(ref pos, (ushort)loc.Y); // Y
-      expectedData.Write(ref pos, (byte)loc.Z); // Z
+      expectedData.Write(ref pos, loc); // X, Y, Z
       expectedData.Write(ref pos, (byte)item.Light); // Light
       expectedData.Write(ref pos, (ushort)item.Hue); // Hue
       expectedData.Write(ref pos, (byte)item.GetPacketFlags()); // Flags
@@ -178,9 +176,7 @@ namespace Server.Tests.Network.Packets
 
       expectedData.Write(ref pos, (ushort)item.Amount); // Amount (min?)
       expectedData.Write(ref pos, (ushort)item.Amount); // Amount (max?)
-      expectedData.Write(ref pos, (ushort)loc.X); // X
-      expectedData.Write(ref pos, (ushort)loc.Y); // Y
-      expectedData.Write(ref pos, (byte)loc.Z); // Z
+      expectedData.Write(ref pos, loc); // X, Y, Z
       expectedData.Write(ref pos, (byte)item.Light); // Light
       expectedData.Write(ref pos, (ushort)item.Hue); // Hue
       expectedData.Write(ref pos, (byte)item.GetPacketFlags()); // Flags

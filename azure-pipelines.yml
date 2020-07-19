@@ -15,7 +15,7 @@ jobs:
 
   steps:
   - task: NuGetAuthenticate@0
-  - script: dotnet restore --force-evaluate
+  - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
   - script: dotnet build -c $(buildConfiguration) --no-restore Projects/Server/Server.csproj
     displayName: 'Build Server'
@@ -43,7 +43,7 @@ jobs:
 
   steps:
   - task: NuGetAuthenticate@0
-  - script: dotnet restore --force-evaluate
+  - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
   - script: dotnet build -c $(buildConfiguration) --no-restore Projects/Server/Server.csproj
     displayName: 'Build Server'

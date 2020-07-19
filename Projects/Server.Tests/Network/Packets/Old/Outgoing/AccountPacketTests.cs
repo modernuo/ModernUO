@@ -263,7 +263,7 @@ namespace Server.Tests.Network.Packets
       expectedData.Write(ref pos, (ushort)m.Body);
       expectedData.Write(ref pos, (ushort)m.X);
       expectedData.Write(ref pos, (ushort)m.Y);
-      expectedData.Write(ref pos, (ushort)m.Z);
+      expectedData.Write(ref pos, (short)m.Z);
       expectedData.Write(ref pos, (byte)m.Direction);
 #if NO_LOCAL_INIT
       expectedData.Write(ref pos, (byte)0);

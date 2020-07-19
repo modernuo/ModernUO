@@ -45,12 +45,8 @@ namespace Server.Tests.Network.Packets
       expectedData.Write(ref pos, from);
       expectedData.Write(ref pos, to);
       expectedData.Write(ref pos, (ushort)itemId);
-      expectedData.Write(ref pos, (ushort)fromPoint.X);
-      expectedData.Write(ref pos, (ushort)fromPoint.Y);
-      expectedData.Write(ref pos, (byte)fromPoint.Z);
-      expectedData.Write(ref pos, (ushort)toPoint.X);
-      expectedData.Write(ref pos, (ushort)toPoint.Y);
-      expectedData.Write(ref pos, (byte)toPoint.Z);
+      expectedData.Write(ref pos, fromPoint);
+      expectedData.Write(ref pos, toPoint);
       expectedData.Write(ref pos, speed);
       expectedData.Write(ref pos, duration);
 #if NO_LOCAL_INIT
@@ -103,12 +99,8 @@ namespace Server.Tests.Network.Packets
       expectedData.Write(ref pos, from);
       expectedData.Write(ref pos, to);
       expectedData.Write(ref pos, (ushort)itemId);
-      expectedData.Write(ref pos, (ushort)fromPoint.X);
-      expectedData.Write(ref pos, (ushort)fromPoint.Y);
-      expectedData.Write(ref pos, (byte)fromPoint.Z);
-      expectedData.Write(ref pos, (ushort)toPoint.X);
-      expectedData.Write(ref pos, (ushort)toPoint.Y);
-      expectedData.Write(ref pos, (byte)toPoint.Z);
+      expectedData.Write(ref pos, fromPoint);
+      expectedData.Write(ref pos, toPoint);
       expectedData.Write(ref pos, speed);
       expectedData.Write(ref pos, duration);
 #if NO_LOCAL_INIT
@@ -174,12 +166,8 @@ namespace Server.Tests.Network.Packets
 #else
       pos += 6;
 #endif
-      expectedData.Write(ref pos, (ushort)entity.X);
-      expectedData.Write(ref pos, (ushort)entity.Y);
-      expectedData.Write(ref pos, (byte)entity.Z);
-      expectedData.Write(ref pos, (ushort)entity.X);
-      expectedData.Write(ref pos, (ushort)entity.Y);
-      expectedData.Write(ref pos, (byte)entity.Z);
+      expectedData.Write(ref pos, entity.Location);
+      expectedData.Write(ref pos, entity.Location);
 #if NO_LOCAL_INIT
       expectedData.Write(ref pos, 0);
       expectedData.Write(ref pos, (ushort)0);
