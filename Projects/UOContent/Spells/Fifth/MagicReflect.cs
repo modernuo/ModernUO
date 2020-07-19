@@ -55,7 +55,19 @@ namespace Server.Spells.Fifth
         {
           Mobile targ = Caster;
 
-          if (!m_Table.TryGetValue(targ, out ResistanceMod[] mods))
+          if (m_Table.TryGetValue(targ, out ResistanceMod[] mods))
+          {
+            targ.PlaySound(0x1ED);
+            targ.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
+
+            m_Table.Remove(targ);
+
+            for (int i = 0; i < mods.Length; ++i)
+              targ.RemoveResistanceMod(mods[i]);
+
+            BuffInfo.RemoveBuff(targ, BuffIcon.MagicReflection);
+          }
+          else
           {
             targ.PlaySound(0x1E9);
             targ.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
@@ -80,18 +92,6 @@ namespace Server.Spells.Fifth
             string buffFormat = $"{physiMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}";
 
             BuffInfo.AddBuff(targ, new BuffInfo(BuffIcon.MagicReflection, 1075817, buffFormat, true));
-          }
-          else
-          {
-            targ.PlaySound(0x1ED);
-            targ.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
-
-            m_Table.Remove(targ);
-
-            for (int i = 0; i < mods.Length; ++i)
-              targ.RemoveResistanceMod(mods[i]);
-
-            BuffInfo.RemoveBuff(targ, BuffIcon.MagicReflection);
           }
         }
 
