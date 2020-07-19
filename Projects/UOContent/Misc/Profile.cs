@@ -65,7 +65,10 @@ namespace Server.Misc
       if (Format(ts.TotalMinutes, "This account is {0} minute{1} old.", out v))
         return v;
 
-      return Format(ts.TotalSeconds, "This account is {0} second{1} old.", out v) ? v : "";
+      if (Format(ts.TotalSeconds, "This account is {0} second{1} old.", out v))
+        return v;
+
+      return "";
     }
 
     public static bool Format(double value, string format, out string op)
