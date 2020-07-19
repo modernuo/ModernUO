@@ -56,7 +56,19 @@ namespace Server.Spells.First
         {
           Mobile targ = Caster;
 
-          if (!m_Table.TryGetValue(targ, out ResistanceMod[] mods))
+          if (m_Table.TryGetValue(targ, out ResistanceMod[] mods))
+          {
+            targ.PlaySound(0x1ED);
+            targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
+
+            m_Table.Remove(targ);
+
+            for (int i = 0; i < mods.Length; ++i)
+              targ.RemoveResistanceMod(mods[i]);
+
+            BuffInfo.RemoveBuff(Caster, BuffIcon.ReactiveArmor);
+          }
+          else
           {
             targ.PlaySound(0x1E9);
             targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
@@ -80,18 +92,6 @@ namespace Server.Spells.First
             string args = $"{physresist}\t{5}\t{5}\t{5}\t{5}";
 
             BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.ReactiveArmor, 1075812, 1075813, args));
-          }
-          else
-          {
-            targ.PlaySound(0x1ED);
-            targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
-
-            m_Table.Remove(targ);
-
-            for (int i = 0; i < mods.Length; ++i)
-              targ.RemoveResistanceMod(mods[i]);
-
-            BuffInfo.RemoveBuff(Caster, BuffIcon.ReactiveArmor);
           }
         }
 

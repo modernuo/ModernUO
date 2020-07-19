@@ -54,6 +54,19 @@ namespace Server.Spells.Second
 
       if (m_Table.TryGetValue(target, out Tuple<ResistanceMod, DefaultSkillMod> mods))
       {
+        target.PlaySound(0x1ED);
+        target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
+
+        m_Table.Remove(target);
+        Registry.Remove(target);
+
+        target.RemoveResistanceMod(mods.Item1);
+        target.RemoveSkillMod(mods.Item2);
+
+        BuffInfo.RemoveBuff(target, BuffIcon.Protection);
+      }
+      else
+      {
         target.PlaySound(0x1E9);
         target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
 
@@ -73,19 +86,6 @@ namespace Server.Spells.Second
         int resistloss = -35 + (int)(caster.Skills.Inscribe.Value / 20);
         string args = $"{physloss}\t{resistloss}";
         BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Protection, 1075814, 1075815, args));
-      }
-      else
-      {
-        target.PlaySound(0x1ED);
-        target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
-
-        m_Table.Remove(target);
-        Registry.Remove(target);
-
-        target.RemoveResistanceMod(mods.Item1);
-        target.RemoveSkillMod(mods.Item2);
-
-        BuffInfo.RemoveBuff(target, BuffIcon.Protection);
       }
     }
 
