@@ -289,18 +289,18 @@ namespace Server.Network
 
   public sealed class DisplayPaperdoll : Packet
   {
-    public DisplayPaperdoll(Mobile m, string text, bool canLift) : base(0x88, 66)
+    public DisplayPaperdoll(Serial m, string title, bool warmode, bool canLift) : base(0x88, 66)
     {
       byte flags = 0x00;
 
-      if (m.Warmode)
+      if (warmode)
         flags |= 0x01;
 
       if (canLift)
         flags |= 0x02;
 
-      Stream.Write(m.Serial);
-      Stream.WriteAsciiFixed(text, 60);
+      Stream.Write(m);
+      Stream.WriteAsciiFixed(title, 60);
       Stream.Write(flags);
     }
   }
@@ -370,19 +370,21 @@ namespace Server.Network
 
   public sealed class CurrentTime : Packet
   {
-    public CurrentTime() : base(0x5B, 4)
+    public CurrentTime() : this(DateTime.Now)
     {
-      var now = DateTime.UtcNow;
+    }
 
-      Stream.Write((byte)now.Hour);
-      Stream.Write((byte)now.Minute);
-      Stream.Write((byte)now.Second);
+    public CurrentTime(DateTime date) : base(0x5B, 4)
+    {
+      Stream.Write((byte)date.Hour);
+      Stream.Write((byte)date.Minute);
+      Stream.Write((byte)date.Second);
     }
   }
 
   public sealed class PathfindMessage : Packet
   {
-    public PathfindMessage(IPoint3D p) : base(0x38, 7)
+    public PathfindMessage(Point3D p) : base(0x38, 7)
     {
       Stream.Write((short)p.X);
       Stream.Write((short)p.Y);

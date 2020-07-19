@@ -474,10 +474,10 @@ namespace Server.Tests.Network.Packets
     }
 
     [Theory]
-    [InlineData("None", 0)]
-    [InlineData("Lesser", 1)]
-    [InlineData("Lethal", 5)]
-    public void TestHealthbarPoison(string pName, int level)
+    [InlineData("None")]
+    [InlineData("Lesser")]
+    [InlineData("Lethal")]
+    public void TestHealthbarPoison(string pName)
     {
       var p = Poison.GetPoison(pName);
       Mobile m = new Mobile(0x1);

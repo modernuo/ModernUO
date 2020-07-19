@@ -12,8 +12,8 @@ namespace Server.Misc
 
     public static void EventSink_PaperdollRequest(Mobile beholder, Mobile beheld)
     {
-      beholder.Send(new DisplayPaperdoll(beheld, Titles.ComputeTitle(beholder, beheld),
-        beheld.AllowEquipFrom(beholder)));
+      beholder.Send(new DisplayPaperdoll(beheld.Serial, Titles.ComputeTitle(beholder, beheld),
+        beheld.Warmode, beheld.AllowEquipFrom(beholder)));
 
       if (ObjectPropertyList.Enabled)
       {
