@@ -28,6 +28,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
+using Server.Random;
 
 namespace Server
 {
@@ -854,7 +855,7 @@ namespace Server
       var total = 0;
 
       for (var i = 0; i < amount; ++i)
-        total += (int)RandomProviders.Provider.Next(sides) + 1;
+        total += (int)RandomSources.Source.Next(1, sides);
 
       return total + bonus;
     }
@@ -864,19 +865,23 @@ namespace Server
       var count = list.Count;
       for (var i = count - 1; i > 0; i--)
       {
-        var r = (int)RandomProviders.Provider.Next((uint)count);
+        var r = RandomSources.Source.Next(count);
         var swap = list[r];
         list[r] = list[i];
         list[i] = swap;
       }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int RandomList(params int[] list) => RandomList<int>(list);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T RandomList<T>(IList<T> list) => list[Random(list.Count)];
 
-    public static bool RandomBool() => RandomProviders.Provider.NextBool();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool RandomBool() => RandomSources.Source.NextBool();
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int RandomMinMax(int min, int max)
     {
       if (min > max)
@@ -890,27 +895,23 @@ namespace Server
         return min;
       }
 
-      return min + (int)RandomProviders.Provider.Next((uint)(max - min + 1));
+      return min + (int)RandomSources.Source.Next((uint)(max - min + 1));
     }
 
-    public static int Random(int from, int count)
-    {
-      if (count == 0) return from;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Random(int from, int count) => RandomSources.Source.Next(from, count);
 
-      if (count > 0) return (int)(from + RandomProviders.Provider.Next((uint)count));
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Random(int count) => RandomSources.Source.Next(count);
 
-      return (int)(from - RandomProviders.Provider.Next((uint)-count));
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static uint Random(uint count) => RandomSources.Source.Next(count);
 
-    public static int Random(int count) => (int)RandomProviders.Provider.Next((uint)count);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void RandomBytes(Span<byte> buffer) => RandomSources.Source.NextBytes(buffer);
 
-    public static uint Random(uint count) => RandomProviders.Provider.Next(count);
-
-    public static void RandomBytes(byte[] buffer) => RandomProviders.Provider.GetBytes(buffer);
-
-    public static void RandomBytes(Span<byte> buffer) => RandomProviders.Provider.GetBytes(buffer);
-
-    public static double RandomDouble() => RandomProviders.Provider.NextDouble();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double RandomDouble() => RandomSources.Source.NextDouble();
 
     /// <summary>
     ///   Random pink, blue, green, orange, red or yellow hue
@@ -989,13 +990,7 @@ namespace Server
     /// </summary>
     public static int RandomMetalHue() => Random(2401, 30);
 
-    public static int ClipDyedHue(int hue)
-    {
-      if (hue < 2)
-        return 2;
-
-      return hue > 1001 ? 1001 : hue;
-    }
+    public static int ClipDyedHue(int hue) => hue < 2 ? 2 : hue > 1001 ? 1001 : hue;
 
     /// <summary>
     ///   Random hue in the range 2-1001
