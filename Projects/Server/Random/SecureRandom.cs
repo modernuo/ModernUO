@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: Random.cs - Created: 2019/12/30 - Updated: 2020/05/23           *
+ * File: SecureRandom.cs - Created: 2020/01/09 - Updated: 2020/07/25     *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -19,24 +19,28 @@
  *************************************************************************/
 
 using System;
+using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Server.Random;
 
 namespace Server
 {
-  public class SecureRandom : RandomNumberGenerator, IRandomProvider
+  public class SecureRandom : BaseRandomSource
   {
-    private readonly RandomNumberGenerator m_Random = new RNGCryptoServiceProvider();
+    private RandomNumberGenerator m_Random;
 
-    public override void GetBytes(byte[] data) => m_Random.GetBytes(data);
+    public RandomNumberGenerator Generator => m_Random ??= new RNGCryptoServiceProvider();
 
-    public override void GetBytes(Span<byte> data) => m_Random.GetBytes(data);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override ulong NextULong()
+    {
+      Span<byte> buffer = stackalloc byte[sizeof(ulong)];
+      Generator.GetBytes(buffer);
+      return BinaryPrimitives.ReadUInt64BigEndian(buffer);
+    }
 
-    public ulong Next(ulong c) => throw new NotImplementedException();
-
-    public uint Next(uint c) => throw new NotImplementedException();
-
-    public bool NextBool() => throw new NotImplementedException();
-
-    public double NextDouble() => throw new NotImplementedException();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override void NextBytes(Span<byte> buffer) => Generator.GetBytes(buffer);
   }
 }

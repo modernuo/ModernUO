@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Server.Random;
 
 namespace Server.Engines.Harvest
 {
@@ -116,7 +117,7 @@ namespace Server.Engines.Harvest
       if (RandomizeVeins) return GetVeinFrom(Utility.Random(1000u));
 
       // TODO: Introduce pulling primes from a config and writing them if they don't exist to the config
-      using Xoshiro256PlusPlus random = new Xoshiro256PlusPlus((ulong)(x * 17 + y * 11 + map.MapID * 3));
+      var random = new Xoshiro256PlusPlus((ulong)(x * 17 + y * 11 + map.MapID * 3));
       return GetVeinFrom(random.Next(VeinWeights));
     }
 

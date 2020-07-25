@@ -3,7 +3,7 @@
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: Xoshiro256PlusPlus.cs                                           *
- * Created: 2019/12/29 - Updated: 2020/05/24                             *
+ * Created: 2020/01/09 - Updated: 2020/07/25                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -21,12 +21,10 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using Server.Utilities;
 
-namespace Server
+namespace Server.Random
 {
-  public class Xoshiro256PlusPlus : RandomNumberGenerator, IRandomProvider
+  public class Xoshiro256PlusPlus : BaseRandomSource
   {
     private ulong _s0, _s1, _s2, _s3;
 
@@ -54,29 +52,7 @@ namespace Server
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public uint Next(uint max)
-    {
-      if (max <= 1u << 12)
-      {
-        if (max == 0) throw new ArgumentOutOfRangeException(nameof(max));
-        return (uint)(((ulong)NextUInt32() * max) >> 32);
-      }
-
-      uint r, v, limit = (uint)-(int)max;
-      do
-      {
-        r = NextUInt32();
-        v = r % max;
-      } while (r - v > limit);
-
-      return v;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public uint NextUInt32() => (uint)NextUInt64();
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ulong NextUInt64()
+    public override ulong NextULong()
     {
       var r1 = (_s1 << 2) + _s1;
       var r2 = (r1 << 7) | (r1 >> 57);
@@ -97,32 +73,7 @@ namespace Server
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ulong Next(ulong max)
-    {
-      if (max <= uint.MaxValue) return Next((uint)max);
-
-      if (max <= 1ul << 38) return (((NextUInt32() * max) >> 32) + (NextUInt32() & ((1u << 26) - 1)) * max) >> 26;
-
-      ulong r, v, limit = (ulong)-(long)max;
-      do
-      {
-        r = NextUInt64();
-        v = r % max;
-      } while (r - v > limit);
-
-      return v;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool NextBool() => NextUInt64() < 1ul << 63;
-
-    public override void GetBytes(byte[] data)
-    {
-      if (data == null) throw new ArgumentNullException(nameof(data));
-      GetBytes(new Span<byte>(data));
-    }
-
-    public override unsafe void GetBytes(Span<byte> b)
+    public override unsafe void NextBytes(Span<byte> b)
     {
       if (b.Length == 0) return;
 
@@ -187,8 +138,6 @@ namespace Server
       _s3 = s3;
     }
 
-    public double NextDouble() => (NextUInt64() >> 11) * (1.0 / (1ul << 53));
-
     private static readonly ulong[] JUMP =
       { 0x180ec6d33cfd0aba, 0xd5a61266f0c9392c, 0xa9582618e03fc9aa, 0x39abdc4529b1661c };
 
@@ -217,7 +166,7 @@ namespace Server
             s3 ^= _s3;
           }
 
-          NextUInt64();
+          NextULong();
         }
 
       _s0 = s0;

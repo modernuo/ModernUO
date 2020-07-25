@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: RandomProviders.cs - Created: 2020/05/24 - Updated: 2020/05/24  *
+ * File: IRandomSource.cs - Created: 2020/07/25 - Updated: 2020/07/25    *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -20,23 +20,27 @@
 
 using System;
 
-namespace Server
+namespace Server.Random
 {
-  public interface IRandomProvider
+  public interface IRandomSource
   {
-    public ulong Next(ulong max);
-    public uint Next(uint max);
-    public bool NextBool();
-    public void GetBytes(Span<byte> b);
-    public double NextDouble();
-  }
-
-  public static class RandomProviders
-  {
-    private static IRandomProvider m_Provider;
-    private static IRandomProvider m_SecureProvider;
-
-    public static IRandomProvider Provider => m_Provider ??= new Xoshiro256PlusPlus();
-    public static IRandomProvider SecureProvider => m_SecureProvider ??= new SecureRandom();
+    int Next();
+    int Next(int maxValue);
+    int Next(int minValue, int count);
+    uint Next(uint maxValue);
+    uint Next(uint minValue, uint count);
+    long Next(long maxValue);
+    long Next(long minValue, long count);
+    double NextDouble();
+    void NextBytes(Span<byte> buffer);
+    int NextInt();
+    uint NextUInt();
+    ulong NextULong();
+    bool NextBool();
+    byte NextByte();
+    float NextFloat();
+    float NextFloatNonZero();
+    double NextDoubleNonZero();
+    double NextDoubleHighRes();
   }
 }
