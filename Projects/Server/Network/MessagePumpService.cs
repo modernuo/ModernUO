@@ -26,7 +26,7 @@ namespace Server.Network
 {
   public interface IMessagePumpService
   {
-    void QueueWork(NetState ns, IMemoryOwner<byte> memOwner, OnPacketReceive onReceive);
+    void QueueWork(NetState ns, IMemoryOwner<byte> memOwner, int length, OnPacketReceive onReceive);
     void DoWork();
   }
 
@@ -34,9 +34,9 @@ namespace Server.Network
   {
     private readonly ConcurrentQueue<Work> m_WorkQueue = new ConcurrentQueue<Work>();
 
-    public void QueueWork(NetState ns, IMemoryOwner<byte> memOwner, OnPacketReceive onReceive)
+    public void QueueWork(NetState ns, IMemoryOwner<byte> memOwner, int length, OnPacketReceive onReceive)
     {
-      m_WorkQueue.Enqueue(new Work(ns, memOwner, onReceive));
+      m_WorkQueue.Enqueue(new Work(ns, memOwner, length, onReceive));
       Core.Set();
     }
 
@@ -48,7 +48,8 @@ namespace Server.Network
         if (!m_WorkQueue.TryDequeue(out var work))
           break;
 
-        work.OnReceive(work.State, new PacketReader(new ReadOnlySequence<byte>(work.MemoryOwner.Memory)));
+        var seq = new ReadOnlySequence<byte>(work.MemoryOwner.Memory.Slice(0, work.Length));
+        work.OnReceive(work.State, new PacketReader(seq));
         work.MemoryOwner.Dispose();
       }
     }
@@ -56,16 +57,16 @@ namespace Server.Network
     private class Work
     {
       public readonly NetState State;
-
-      // TODO: Force dispose?
       public readonly IMemoryOwner<byte> MemoryOwner;
+      public readonly int Length;
       public readonly OnPacketReceive OnReceive;
 
-      public Work(NetState ns, IMemoryOwner<byte> memOwner, OnPacketReceive onReceive)
+      public Work(NetState ns, IMemoryOwner<byte> memOwner, int length, OnPacketReceive onReceive)
       {
         State = ns;
         MemoryOwner = memOwner;
         OnReceive = onReceive;
+        Length = length;
       }
     }
   }

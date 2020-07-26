@@ -341,18 +341,19 @@ namespace Server.Network
         return -1;
       }
 
-      var throttler = handler.ThrottleCallback;
       var throttled = handler.ThrottleCallback?.Invoke(ns) ?? TimeSpan.Zero;
 
       if (throttled > TimeSpan.Zero)
         ns.ThrottledUntil = DateTime.UtcNow + throttled;
 
       var packet = seq.Slice(r.Position);
-      var memOwner = _memoryPool.Rent((int)packet.Length);
+      int length = (int)packet.Length;
+      var memOwner = _memoryPool.Rent(length);
 
+      // TODO: This is slow, find another way
       packet.CopyTo(memOwner.Memory.Span);
 
-      pump.QueueWork(ns, memOwner, handler.OnReceive);
+      pump.QueueWork(ns, memOwner, length, handler.OnReceive);
 
       return packetLength;
     }
@@ -497,9 +498,6 @@ namespace Server.Network
 
     public static void VendorBuyReply(NetState state, PacketReader pvSrc)
     {
-      pvSrc.Seek(1, SeekOrigin.Begin);
-
-      int msgSize = pvSrc.ReadUInt16();
       var vendor = World.FindMobile(pvSrc.ReadUInt32());
       var flag = pvSrc.ReadByte();
 
@@ -514,7 +512,7 @@ namespace Server.Network
 
       if (flag == 0x02)
       {
-        msgSize -= 1 + 2 + 4 + 1;
+        int msgSize = (int)pvSrc.Remaining;
 
         if (msgSize / 7 > 100)
           return;
@@ -554,22 +552,22 @@ namespace Server.Network
 
       int count = pvSrc.ReadUInt16();
 
-      if (count < 100 && pvSrc.Length == 4 + 2 + count * 6)
+      if (count >= 100 || pvSrc.Remaining != count * 6)
+        return;
+
+      var sellList = new List<SellItemResponse>(count);
+
+      for (var i = 0; i < count; i++)
       {
-        var sellList = new List<SellItemResponse>(count);
+        var item = World.FindItem(pvSrc.ReadUInt32());
+        int amount = pvSrc.ReadInt16();
 
-        for (var i = 0; i < count; i++)
-        {
-          var item = World.FindItem(pvSrc.ReadUInt32());
-          int amount = pvSrc.ReadInt16();
-
-          if (item != null && amount > 0)
-            sellList.Add(new SellItemResponse(item, amount));
-        }
-
-        if (sellList.Count > 0 && vendor is IVendor v && v.OnSellItems(state.Mobile, sellList))
-          state.Send(new EndVendorSell(vendor));
+        if (item != null && amount > 0)
+          sellList.Add(new SellItemResponse(item, amount));
       }
+
+      if (sellList.Count > 0 && vendor is IVendor v && v.OnSellItems(state.Mobile, sellList))
+        state.Send(new EndVendorSell(vendor));
     }
 
     public static void DeleteCharacter(NetState state, PacketReader pvSrc)
@@ -1553,14 +1551,12 @@ namespace Server.Network
 
       var from = state.Mobile;
 
-      var length = pvSrc.Length;
+      var length = pvSrc.Remaining;
 
-      if (length < 0 || length % 4 != 0)
+      if (length % 4 != 0)
         return;
 
-      var count = length / 4;
-
-      for (var i = 0; i < count; ++i)
+      while (pvSrc.Remaining > 0)
       {
         Serial s = pvSrc.ReadUInt32();
 
