@@ -42,8 +42,16 @@ namespace Server.Engines.Spawners
       {
         var file = files[i];
         from.SendMessage("GenerateSpawners: Generating spawners for {0}...", file.Name);
-        List<DynamicJson> spawners = JsonConfig.Deserialize<List<DynamicJson>>(file.FullName);
-        ParseSpawnerList(from, spawners, options);
+
+        try
+        {
+          var spawners = JsonConfig.Deserialize<List<DynamicJson>>(file.FullName);
+          ParseSpawnerList(from, spawners, options);
+        }
+        catch (JsonException)
+        {
+          from.SendMessage("GenerateSpawners: Exception parsing {0}, file may not be in the correct format.", file.FullName);
+        }
       }
     }
 
