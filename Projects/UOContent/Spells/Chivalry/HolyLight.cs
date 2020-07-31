@@ -45,13 +45,7 @@ namespace Server.Spells.Chivalry
 
         foreach (Mobile m in targets)
         {
-          int damage = ComputePowerValue(10) + Utility.RandomMinMax(0, 2);
-
-          // TODO: Should caps be applied?
-          if (damage < 8)
-            damage = 8;
-          else if (damage > 24)
-            damage = 24;
+          int damage = Math.Clamp(ComputePowerValue(10) + Utility.RandomMinMax(0, 2), 8, 24);
 
           Caster.DoHarmful(m);
           SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 100);

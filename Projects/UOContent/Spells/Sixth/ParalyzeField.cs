@@ -169,14 +169,11 @@ namespace Server.Spells.Sixth
 
           if (Core.AOS)
           {
-            duration = 2.0 + ((int)(m_Caster.Skills.EvalInt.Value / 10) -
-                              (int)(m.Skills.MagicResist.Value / 10));
+            duration = Math.Max(
+              2.0 + ((int)(m_Caster.Skills.EvalInt.Value / 10) - (int)(m.Skills.MagicResist.Value / 10)), 0.0);
 
             if (!m.Player)
               duration *= 3.0;
-
-            if (duration < 0.0)
-              duration = 0.0;
           }
           else
           {

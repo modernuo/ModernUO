@@ -79,15 +79,8 @@ namespace Server.Spells
 
     public virtual double GetResistPercent(Mobile target) => GetResistPercentForCircle(target, Circle);
 
-    public override TimeSpan GetCastDelay()
-    {
-      if (!Core.ML && Scroll is BaseWand)
-        return TimeSpan.Zero;
-
-      if (!Core.AOS)
-        return TimeSpan.FromSeconds(0.5 + 0.25 * (int)Circle);
-
-      return base.GetCastDelay();
-    }
+    public override TimeSpan GetCastDelay() =>
+      !Core.ML && Scroll is BaseWand ? TimeSpan.Zero :
+      !Core.AOS ? TimeSpan.FromSeconds(0.5 + 0.25 * (int)Circle) : base.GetCastDelay();
   }
 }

@@ -41,16 +41,7 @@ namespace Server.Spells.Necromancy
       max = Scroll != null ? min : RequiredSkill + 40.0;
     }
 
-    public override bool ConsumeReagents()
-    {
-      if (base.ConsumeReagents())
-        return true;
-
-      if (ArcaneGem.ConsumeCharges(Caster, 1))
-        return true;
-
-      return false;
-    }
+    public override bool ConsumeReagents() => base.ConsumeReagents() || ArcaneGem.ConsumeCharges(Caster, 1);
 
     public override int GetMana() => RequiredMana;
   }

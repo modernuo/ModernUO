@@ -148,13 +148,8 @@ namespace Server.Spells
 
     public static bool DisableSkillCheck { get; set; }
 
-    public static TimeSpan GetDamageDelayForSpell(Spell sp)
-    {
-      if (!sp.DelayedDamage)
-        return TimeSpan.Zero;
-
-      return Core.AOS ? AosDamageDelay : OldDamageDelay;
-    }
+    public static TimeSpan GetDamageDelayForSpell(Spell sp) =>
+      !sp.DelayedDamage ? TimeSpan.Zero : Core.AOS ? AosDamageDelay : OldDamageDelay;
 
     public static bool CheckMulti(Point3D p, Map map, bool houses = true, int housingrange = 0)
     {
@@ -169,7 +164,7 @@ namespace Server.Spells
 
         if (multi is BaseHouse bh)
         {
-          if ((houses && bh.IsInside(p, 16)) || (housingrange > 0 && bh.InRange(p, housingrange)))
+          if (houses && bh.IsInside(p, 16) || housingrange > 0 && bh.InRange(p, housingrange))
             return true;
         }
         else if (multi.Contains(p))
@@ -260,15 +255,10 @@ namespace Server.Spells
       }
     }
 
-    public static bool AddStatOffset(Mobile m, StatType type, int offset, TimeSpan duration)
-    {
-      if (offset > 0)
-        return AddStatBonus(m, m, type, offset, duration);
-      if (offset < 0)
-        return AddStatCurse(m, m, type, -offset, duration);
-
-      return true;
-    }
+    public static bool AddStatOffset(Mobile m, StatType type, int offset, TimeSpan duration) =>
+      offset > 0
+        ? AddStatBonus(m, m, type, offset, duration)
+        : offset >= 0 || AddStatCurse(m, m, type, -offset, duration);
 
     public static bool AddStatBonus(Mobile caster, Mobile target, StatType type) => AddStatBonus(caster, target, type, GetOffset(caster, target, type, false), GetDuration(caster, target));
 
@@ -318,13 +308,8 @@ namespace Server.Spells
       return false;
     }
 
-    public static TimeSpan GetDuration(Mobile caster, Mobile target)
-    {
-      if (Core.AOS)
-        return TimeSpan.FromSeconds(6 * caster.Skills.EvalInt.Fixed / 50 + 1);
-
-      return TimeSpan.FromSeconds(caster.Skills.Magery.Value * 1.2);
-    }
+    public static TimeSpan GetDuration(Mobile caster, Mobile target) =>
+      Core.AOS ? TimeSpan.FromSeconds(6 * caster.Skills.EvalInt.Fixed / 50 + 1) : TimeSpan.FromSeconds(caster.Skills.Magery.Value * 1.2);
 
     public static double GetOffsetScalar(Mobile caster, Mobile target, bool curse)
     {
@@ -337,10 +322,7 @@ namespace Server.Spells
 
       percent *= 0.01;
 
-      if (percent < 0)
-        percent = 0;
-
-      return percent;
+      return Math.Max(percent, 0);
     }
 
     public static int GetOffset(Mobile caster, Mobile target, StatType type, bool curse)
@@ -453,7 +435,7 @@ namespace Server.Spells
           return false;
       }
 
-      return (bcTarg?.Controlled == false && bcTarg.InitialInnocent) ||
+      return bcTarg?.Controlled == false && bcTarg.InitialInnocent ||
              Notoriety.Compute(from, to) != Notoriety.Innocent || from.Kills >= 5;
     }
 
@@ -672,10 +654,10 @@ namespace Server.Spells
 
       int x = loc.X, y = loc.Y;
 
-      return (x >= 1182 && y >= 437 && x < 1211 && y < 470)
-             || (x >= 1156 && y >= 470 && x < 1211 && y < 503)
-             || (x >= 1176 && y >= 503 && x < 1208 && y < 509)
-             || (x >= 1188 && y >= 509 && x < 1201 && y < 513);
+      return x >= 1182 && y >= 437 && x < 1211 && y < 470
+             || x >= 1156 && y >= 470 && x < 1211 && y < 503
+             || x >= 1176 && y >= 503 && x < 1208 && y < 509
+             || x >= 1188 && y >= 509 && x < 1201 && y < 513;
     }
 
     public static bool IsSafeZone(Map map, Point3D loc) =>
@@ -694,13 +676,7 @@ namespace Server.Spells
 
       int x = loc.X, y = loc.Y;
 
-      if (x >= 426 && y >= 314 && x <= 430 && y <= 331)
-        return true;
-
-      if (x >= 406 && y >= 247 && x <= 410 && y <= 264)
-        return true;
-
-      return false;
+      return x >= 426 && y >= 314 && x <= 430 && y <= 331 || x >= 406 && y >= 247 && x <= 410 && y <= 264;
     }
 
     public static bool IsTokunoDungeon(Map map, Point3D loc)
@@ -1132,7 +1108,7 @@ namespace Server.Spells
       {
         caster.SendLocalizedMessage(1061091); // You cannot cast that spell in this form.
       }
-      else if (!caster.CanBeginAction<IncognitoSpell>() || (caster.IsBodyMod && GetContext(caster) == null))
+      else if (!caster.CanBeginAction<IncognitoSpell>() || caster.IsBodyMod && GetContext(caster) == null)
       {
         spell.DoFizzle();
       }

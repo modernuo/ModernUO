@@ -3070,17 +3070,11 @@ namespace Server
         if (checkTop == checkZ && !id.Surface)
           ++checkTop;
 
-        var zStart = checkZ - z;
-        var zEnd = checkTop - z;
+        var zStart = Math.Max(checkZ - z, 0);
+        var zEnd = Math.Min(checkTop - z, 19);
 
         if (zStart >= 20 || zEnd < 0)
           continue;
-
-        if (zStart < 0)
-          zStart = 0;
-
-        if (zEnd > 19)
-          zEnd = 19;
 
         var bitCount = zEnd - zStart;
 
@@ -3098,17 +3092,11 @@ namespace Server
         if (checkTop == checkZ && !id.Surface)
           ++checkTop;
 
-        var zStart = checkZ - z;
-        var zEnd = checkTop - z;
+        var zStart = Math.Max(checkZ - z, 0);
+        var zEnd = Math.Min(checkTop - z, 19);
 
         if (zStart >= 20 || zEnd < 0)
           continue;
-
-        if (zStart < 0)
-          zStart = 0;
-
-        if (zEnd > 19)
-          zEnd = 19;
 
         var bitCount = zEnd - zStart;
 

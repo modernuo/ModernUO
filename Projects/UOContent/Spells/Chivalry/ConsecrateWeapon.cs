@@ -66,13 +66,7 @@ namespace Server.Spells.Chivalry
         Effects.SendMovingParticles(from, to, itemID, 1, 0, false, false, 33, 3, 9501, 1, 0, EffectLayer.Head,
           0x100);
 
-        double seconds = ComputePowerValue(20);
-
-        // TODO: Should caps be applied?
-        if (seconds < 3.0)
-          seconds = 3.0;
-        else if (seconds > 11.0)
-          seconds = 11.0;
+        double seconds = Math.Clamp(ComputePowerValue(20), 3.0, 11.0);
 
         TimeSpan duration = TimeSpan.FromSeconds(seconds);
 

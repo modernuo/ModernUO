@@ -42,7 +42,7 @@ namespace Server.Spells.Bushido
 
       if (Caster.Skills[CastSkill].Value < RequiredSkill)
       {
-        string args = $"{RequiredSkill.ToString("F1")}\t{CastSkill.ToString()}\t ";
+        string args = $"{RequiredSkill:F1}\t{CastSkill.ToString()}\t ";
         Caster.SendLocalizedMessage(1063013,
           args); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
         return false;
