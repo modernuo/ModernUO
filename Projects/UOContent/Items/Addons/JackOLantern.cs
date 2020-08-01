@@ -1,5 +1,3 @@
-using System;
-
 namespace Server.Items
 {
   public class JackOLantern : BaseAddon
@@ -15,18 +13,18 @@ namespace Server.Items
     {
       AddComponent(new AddonComponent(5703), 0, 0, +0);
 
-      int hue = 1161;
+      const int hue = 1161;
       // ( 1 > Utility.Random( 5 ) ? 2118 : 1161 );
 
       if (!south)
       {
-        AddComponent(GetComponent(3178, 0000), 0, 0, -1);
+        AddComponent(GetComponent(3178, 0), 0, 0, -1);
         AddComponent(GetComponent(3883, hue), 0, 0, +1);
         AddComponent(GetComponent(3862, hue), 0, 0, +0);
       }
       else
       {
-        AddComponent(GetComponent(3179, 0000), 0, 0, +0);
+        AddComponent(GetComponent(3179, 0), 0, 0, +0);
         AddComponent(GetComponent(3885, hue), 0, 0, -1);
         AddComponent(GetComponent(3871, hue), 0, 0, +0);
       }
