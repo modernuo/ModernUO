@@ -66,7 +66,7 @@ namespace Server.Items
           ConsumeUse(weapon);
 
           if (CombatCheck(from, target))
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => OnHit(from, target, weapon));
+            Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnHit, from, target, weapon);
 
           Timer.DelayCall(TimeSpan.FromSeconds(2.5), ResetUsing, from);
         }

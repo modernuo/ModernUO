@@ -170,7 +170,7 @@ namespace Server.Items
           }
       }
 
-      Timer.DelayCall(TimeSpan.Zero, ValidatePlacement);
+      Timer.DelayCall(ValidatePlacement);
     }
 
     public void ValidatePlacement()

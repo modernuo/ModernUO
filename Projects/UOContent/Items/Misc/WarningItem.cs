@@ -105,10 +105,10 @@ namespace Server.Items
           list[i].Broadcast(triggerer);
       }
 
-      Timer.DelayCall(TimeSpan.Zero, InternalCallback);
+      Timer.DelayCall(StopBroadcasting);
     }
 
-    private void InternalCallback()
+    private void StopBroadcasting()
     {
       m_Broadcasting = false;
     }

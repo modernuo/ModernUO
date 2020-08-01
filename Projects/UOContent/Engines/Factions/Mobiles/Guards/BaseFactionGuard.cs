@@ -437,7 +437,7 @@ namespace Server.Factions
       m_Town = Town.ReadReference(reader);
       Orders = new Orders(this, reader);
 
-      Timer.DelayCall(TimeSpan.Zero, Register);
+      Timer.DelayCall(Register);
     }
   }
 

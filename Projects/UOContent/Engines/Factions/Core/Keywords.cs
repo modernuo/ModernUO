@@ -139,7 +139,7 @@ namespace Server.Factions
               PlayerState pl = PlayerState.Find(from);
 
               if (pl != null)
-                Timer.DelayCall(TimeSpan.Zero, ShowScore_Sandbox, pl);
+                Timer.DelayCall(ShowScore_Sandbox, pl);
 
               break;
             }

@@ -199,7 +199,7 @@ namespace Server.SkillHandlers
           creature.Direction = creature.GetDirectionTo(from);
 
           if (creature.BardPacified && Utility.RandomDouble() > .24)
-            Timer.DelayCall(TimeSpan.FromSeconds(2.0), () => creature.BardPacified = true);
+            Timer.DelayCall(TimeSpan.FromSeconds(2.0), Pacify, creature);
           else
             creature.BardEndTime = DateTime.UtcNow;
 
@@ -226,6 +226,8 @@ namespace Server.SkillHandlers
           m_SetSkillTime = false;
         }
       }
+
+      private static void Pacify(BaseCreature bc) => bc.BardPacified = true; // Should use bc.Pacify with an end time?
 
       private class InternalTimer : Timer
       {

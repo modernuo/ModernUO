@@ -131,6 +131,19 @@ namespace Server.Items
       Effects.PlaySound(loc, map, 0x225);
     }
 
+    private void SummonCreatureToWorld(BaseCreature bc, Point3D spawnLoc, Map map)
+    {
+      bc.Home = Location;
+      bc.RangeHome = SpawnRange;
+      bc.FightMode = FightMode.Closest;
+
+      bc.MoveToWorld(spawnLoc, map);
+
+      DoEffect(spawnLoc, map);
+
+      bc.ForceReacquire();
+    }
+
     public override void OnDoubleClick(Mobile from)
     {
       if (Utility.InRange(from.Location, Location, 2))
@@ -146,18 +159,7 @@ namespace Server.Items
 
             DoEffect(spawnLoc, map);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(1), () =>
-            {
-              bc.Home = Location;
-              bc.RangeHome = SpawnRange;
-              bc.FightMode = FightMode.Closest;
-
-              bc.MoveToWorld(spawnLoc, map);
-
-              DoEffect(spawnLoc, map);
-
-              bc.ForceReacquire();
-            });
+            Timer.DelayCall(TimeSpan.FromSeconds(1), SummonCreatureToWorld, bc, spawnLoc, map);
 
             NextSpawn = DateTime.UtcNow + NextSpawnDelay;
           }

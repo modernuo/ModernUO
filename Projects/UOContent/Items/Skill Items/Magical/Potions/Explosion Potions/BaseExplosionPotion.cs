@@ -256,7 +256,7 @@ namespace Server.Items
         if (Potion.Amount > 1) Mobile.LiftItemDupe(Potion, 1);
 
         Potion.Internalize();
-        Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => Potion.Reposition_OnTick(from, new Point3D(p), map));
+        Timer.DelayCall(TimeSpan.FromSeconds(1.0), Potion.Reposition_OnTick, from, new Point3D(p), map);
       }
     }
   }

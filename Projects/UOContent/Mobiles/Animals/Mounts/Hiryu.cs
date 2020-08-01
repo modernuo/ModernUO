@@ -167,14 +167,8 @@ namespace Server.Mobiles
       base.Deserialize(reader);
       int version = reader.ReadInt();
 
-      if (version == 0)
-        Timer.DelayCall(TimeSpan.Zero, () => { Hue = GetHue(); });
-
       if (version <= 1)
-        Timer.DelayCall(TimeSpan.Zero, () =>
-        {
-          if (InternalItem != null) InternalItem.Hue = Hue;
-        });
+        Timer.DelayCall(Fix, version);
 
       if (version < 2)
         for (int i = 0; i < Skills.Length; ++i)
@@ -183,6 +177,23 @@ namespace Server.Mobiles
 
           if (Skills[i].Base > Skills[i].Cap) Skills[i].Base = Skills[i].Cap;
         }
+    }
+
+    private void Fix(int version)
+    {
+      switch (version)
+      {
+        case 1:
+        {
+          if (InternalItem != null) InternalItem.Hue = Hue;
+          goto case 0;
+        }
+        case 0:
+        {
+          Hue = GetHue();
+          break;
+        }
+      }
     }
 
     private class ExpireTimer : Timer

@@ -271,7 +271,7 @@ namespace Server.Engines.ConPVP
         Timer.DelayCall(TimeSpan.FromSeconds(2.0), Evict);
 
       if (m_Tournament != null)
-        Timer.DelayCall(TimeSpan.Zero, AttachToTournament_Sandbox);
+        Timer.DelayCall(AttachToTournament_Sandbox);
     }
 
     [CommandProperty(AccessLevel.GameMaster)]

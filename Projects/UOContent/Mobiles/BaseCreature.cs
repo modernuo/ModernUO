@@ -2140,7 +2140,7 @@ namespace Server.Mobiles
         Timer.DelayCall(TimeSpan.FromSeconds(5.0), ReleaseGuardLock);
 
         m_NoDupeGuards = m;
-        Timer.DelayCall(TimeSpan.Zero, ReleaseGuardDupeLock);
+        Timer.DelayCall(ReleaseGuardDupeLock);
       }
     }
 

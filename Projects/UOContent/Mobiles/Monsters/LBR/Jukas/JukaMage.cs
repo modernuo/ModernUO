@@ -147,7 +147,11 @@ namespace Server.Mobiles
             toBuff.FixedParticles(0x375A, 10, 15, 5017, EffectLayer.Waist);
             toBuff.PlaySound(0x1EE);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(20.0), () => Unbuff(toBuff, toBuff.HitsMaxSeed, toBuff.RawStr, toBuff.RawDex));
+            Timer.DelayCall(
+              TimeSpan.FromSeconds(20.0),
+              Unbuff,
+              toBuff, toBuff.HitsMaxSeed, toBuff.RawStr, toBuff.RawDex
+            );
           }
         }
         else

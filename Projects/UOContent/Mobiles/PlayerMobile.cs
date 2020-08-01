@@ -531,7 +531,7 @@ namespace Server.Mobiles
       EventSink.EquipMacro += EquipMacro;
       EventSink.UnequipMacro += UnequipMacro;
 
-      if (Core.SE) Timer.DelayCall(TimeSpan.Zero, CheckPets);
+      if (Core.SE) Timer.DelayCall(CheckPets);
     }
 
     private static void TargetedSkillUse(Mobile from, IEntity target, int skillId)
@@ -733,7 +733,8 @@ namespace Server.Mobiles
             notice =
               "The server is currently under lockdown. You do not have sufficient access level to connect.";
 
-          Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => from.NetState?.Dispose());
+          if (from.NetState != null)
+            Timer.DelayCall(TimeSpan.FromSeconds(1.0), from.NetState.Dispose);
         }
         else if (from.AccessLevel >= AccessLevel.Administrator)
         {
@@ -762,7 +763,7 @@ namespace Server.Mobiles
         return;
 
       m_NoDeltaRecursion = true;
-      Timer.DelayCall(TimeSpan.Zero, ValidateEquipment_Sandbox);
+      Timer.DelayCall(ValidateEquipment_Sandbox);
     }
 
     private void ValidateEquipment_Sandbox()
@@ -981,7 +982,7 @@ namespace Server.Mobiles
 
       DisguiseTimers.StartTimer(m);
 
-      Timer.DelayCall(TimeSpan.Zero, SpecialMove.ClearAllMoves, m);
+      Timer.DelayCall(SpecialMove.ClearAllMoves, m);
     }
 
     private static void EventSink_Disconnected(Mobile from)
@@ -2739,7 +2740,7 @@ namespace Server.Mobiles
             if (pet.Map != Map)
             {
               pet.PlaySound(pet.GetAngerSound());
-              Timer.DelayCall(TimeSpan.Zero, pet.Delete);
+              Timer.DelayCall(pet.Delete);
             }
 
             continue;

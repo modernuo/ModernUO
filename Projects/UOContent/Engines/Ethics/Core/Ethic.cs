@@ -203,7 +203,7 @@ namespace Server.Ethics
               Player pl = new Player(this, reader);
 
               if (pl.Mobile != null)
-                Timer.DelayCall(TimeSpan.Zero, pl.CheckAttach);
+                Timer.DelayCall(pl.CheckAttach);
             }
 
             break;

@@ -167,7 +167,7 @@ namespace Server.Items
 
       Effects.SendMovingEffect(from, to, ItemID, 7, 0, false, false, Hue);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => FirebombReposition_OnTick(p, Map));
+      Timer.DelayCall(TimeSpan.FromSeconds(1.0), FirebombReposition_OnTick, p, Map);
       Internalize();
     }
 

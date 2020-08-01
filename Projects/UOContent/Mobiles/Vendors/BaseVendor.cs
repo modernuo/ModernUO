@@ -1188,7 +1188,7 @@ namespace Server.Mobiles
       if (IsParagon)
         IsParagon = false;
 
-      Timer.DelayCall(TimeSpan.Zero, CheckMorph);
+      Timer.DelayCall(CheckMorph);
     }
 
     public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)

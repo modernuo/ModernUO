@@ -112,7 +112,7 @@ namespace Server.Factions
               {
                 FactionItem factionItem = new FactionItem(reader, m_Faction);
 
-                Timer.DelayCall(TimeSpan.Zero, factionItem.CheckAttach); // sandbox attachment
+                Timer.DelayCall(factionItem.CheckAttach); // sandbox attachment
               }
             }
 

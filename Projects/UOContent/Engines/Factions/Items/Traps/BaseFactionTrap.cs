@@ -177,7 +177,7 @@ namespace Server.Factions
 
       if (TimeOfPlacement + decayPeriod < DateTime.UtcNow)
       {
-        Timer.DelayCall(TimeSpan.Zero, Delete);
+        Timer.DelayCall(Delete);
         return true;
       }
 

@@ -15,7 +15,7 @@ namespace Server.Items
       Movable = false;
       Visible = itemID <= 1;
 
-      Timer.DelayCall(TimeSpan.Zero, Initialize);
+      Timer.DelayCall(Initialize);
     }
 
     public PlagueBeastOrgan(Serial serial) : base(serial)

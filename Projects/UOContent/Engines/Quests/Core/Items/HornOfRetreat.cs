@@ -74,7 +74,7 @@ namespace Server.Engines.Quests
 
           --Charges;
 
-          m_PlayTimer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => PlayTimer_Callback(from));
+          m_PlayTimer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), PlayTimer_Callback, from);
         }
         else
         {

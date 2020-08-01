@@ -516,7 +516,7 @@ namespace Server.Engines.ConPVP
 
     public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
     {
-      Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
+      Timer.DelayCall(ts, DelayBounce_Callback, mob, corpse);
     }
 
     private void DelayBounce_Callback(Mobile mob, Container corpse)
@@ -846,7 +846,6 @@ namespace Server.Engines.ConPVP
       {
         m_CapStage = 0;
         m_CaptureTimer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1.0), CaptureTick);
-        m_CaptureTimer.Start();
       }
     }
 

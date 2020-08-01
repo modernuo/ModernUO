@@ -1486,7 +1486,7 @@ namespace Server
                   AddToBackpack(item.Items[j]);
                 }
 
-              Timer.DelayCall(TimeSpan.Zero, item.Delete);
+              Timer.DelayCall(item.Delete);
             }
           }
 

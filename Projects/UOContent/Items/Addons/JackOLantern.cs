@@ -39,15 +39,12 @@ namespace Server.Items
 
     public override bool ShareHue => false;
 
-    private AddonComponent GetComponent(int itemID, int hue)
-    {
-      AddonComponent ac = new AddonComponent(itemID);
-
-      ac.Hue = hue;
-      ac.Name = "jack-o-lantern";
-
-      return ac;
-    }
+    private static AddonComponent GetComponent(int itemID, int hue) =>
+      new AddonComponent(itemID)
+      {
+        Hue = hue,
+        Name = "jack-o-lantern"
+      };
 
     public override void Serialize(IGenericWriter writer)
     {
@@ -62,21 +59,31 @@ namespace Server.Items
 
       int version = reader.ReadByte();
 
-      if (version == 0)
-        Timer.DelayCall(TimeSpan.Zero, () =>
-        {
-          for (int i = 0; i < Components.Count; ++i)
-            if (Components[i] is AddonComponent ac && ac.Hue == 2118)
-              ac.Hue = 1161;
-        });
 
       if (version <= 1)
-        Timer.DelayCall(TimeSpan.Zero, () =>
+        Timer.DelayCall(Fix, version);
+    }
+
+    private void Fix(int version)
+    {
+      for (int i = 0; i < Components.Count; ++i)
+      {
+        var ac = Components[i];
+        switch (version)
         {
-          for (int i = 0; i < Components.Count; ++i)
-            if (Components[i] is AddonComponent ac)
-              ac.Name = "jack-o-lantern";
-        });
+          case 1:
+          {
+            ac.Name = "jack-o-lantern";
+            goto case 0;
+          }
+          case 0:
+          {
+            if (ac.Hue == 2118)
+              ac.Hue = 1161;
+            break;
+          }
+        }
+      }
     }
   }
 }

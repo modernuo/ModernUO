@@ -26,7 +26,7 @@ namespace Server.Items
           from.Location = Location;
           c.ItemID = 0x124A;
 
-          Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 3, () => Activate(c, from));
+          Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 3, Activate, c, from);
         }
         else
         {
@@ -82,16 +82,18 @@ namespace Server.Items
         blood.MoveToWorld(new Point3D(x, y, z), c.Map);
       }
 
-      if (from.Female)
-        from.PlaySound(Utility.RandomMinMax(0x150, 0x153));
-      else
-        from.PlaySound(Utility.RandomMinMax(0x15A, 0x15D));
+      from.PlaySound(from.Female ? Utility.RandomMinMax(0x150, 0x153) : Utility.RandomMinMax(0x15A, 0x15D));
 
       from.LocalOverheadMessage(MessageType.Regular, 0,
         501777); // Hmm... you suspect that if you used this again, it might hurt.
       SpellHelper.Damage(TimeSpan.Zero, from, Utility.Dice(2, 10, 5));
 
-      Timer.DelayCall(TimeSpan.FromSeconds(1), () => c.ItemID = 0x1249);
+      Timer.DelayCall(TimeSpan.FromSeconds(1), Deactivate, c);
+    }
+
+    private void Deactivate(AddonComponent c)
+    {
+      c.ItemID = 0x1249;
     }
   }
 

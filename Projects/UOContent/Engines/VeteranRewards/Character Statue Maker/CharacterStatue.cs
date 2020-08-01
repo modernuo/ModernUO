@@ -230,7 +230,7 @@ namespace Server.Mobiles
       Frozen = true;
 
       if (m_SculptedBy == null || Map == Map.Internal) // Remove preview statues
-        Timer.DelayCall(TimeSpan.Zero, Delete);
+        Timer.DelayCall(Delete);
     }
 
     public void Sculpt(Mobile by)

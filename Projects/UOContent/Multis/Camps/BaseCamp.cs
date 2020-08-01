@@ -20,7 +20,7 @@ namespace Server.Multis
       m_DecayDelay = TimeSpan.FromMinutes(30.0);
       RefreshDecay(true);
 
-      Timer.DelayCall(TimeSpan.Zero, CheckAddComponents);
+      Timer.DelayCall(CheckAddComponents);
     }
 
     public BaseCamp(Serial serial) : base(serial)

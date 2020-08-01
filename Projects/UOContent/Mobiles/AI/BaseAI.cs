@@ -2377,17 +2377,11 @@ namespace Server.Mobiles
 
         var spawner = m_Mobile.Spawner;
 
-        if (spawner?.ReturnOnDeactivate == true && !m_Mobile.Controlled)
-        {
-          if (spawner.HomeLocation == Point3D.Zero)
-          {
-            if (!m_Mobile.Region.AcceptsSpawnsFrom(spawner.Region)) Timer.DelayCall(TimeSpan.Zero, ReturnToHome);
-          }
-          else if (!m_Mobile.InRange(spawner.HomeLocation, spawner.HomeRange))
-          {
-            Timer.DelayCall(TimeSpan.Zero, ReturnToHome);
-          }
-        }
+        if (spawner?.ReturnOnDeactivate == true && !m_Mobile.Controlled && (
+          spawner.HomeLocation == Point3D.Zero && !m_Mobile.Region.AcceptsSpawnsFrom(spawner.Region) ||
+          !m_Mobile.InRange(spawner.HomeLocation, spawner.HomeRange)
+        ))
+          Timer.DelayCall(ReturnToHome);
       }
     }
 

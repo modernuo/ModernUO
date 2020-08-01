@@ -2550,7 +2550,7 @@ namespace Server
       }
 
       if (HeldBy != null)
-        Timer.DelayCall(TimeSpan.Zero, FixHolding_Sandbox);
+        Timer.DelayCall(FixHolding_Sandbox);
 
       // if (version < 9)
       VerifyCompactInfo();
