@@ -12,7 +12,7 @@ namespace Server.Spells.Ninjitsu
 
     public override bool Validate(Mobile from)
     {
-      if (from.FindItemOnLayer(Layer.TwoHanded) as BaseShield != null)
+      if (from.FindItemOnLayer(Layer.TwoHanded) is BaseShield)
       {
         from.SendLocalizedMessage(1063096); // You cannot use this ability while holding a shield.
         return false;

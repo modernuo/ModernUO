@@ -55,7 +55,7 @@ namespace Server.Engines.Quests.Doom
 
         Effects.PlaySound(GetWorldLocation(), Map, 0x100);
 
-        Timer.DelayCall(TimeSpan.FromSeconds(8.0), () => EndSummon(from));
+        Timer.DelayCall(TimeSpan.FromSeconds(8.0), EndSummon, from);
       }
     }
 

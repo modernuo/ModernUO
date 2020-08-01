@@ -271,7 +271,7 @@ namespace Server.Engines.ConPVP
         Timer.DelayCall(TimeSpan.FromSeconds(2.0), Evict);
 
       if (m_Tournament != null)
-        Timer.DelayCall(TimeSpan.Zero, AttachToTournament_Sandbox);
+        Timer.DelayCall(AttachToTournament_Sandbox);
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -345,21 +345,7 @@ namespace Server.Engines.ConPVP
       set => m_Bounds = value;
     }
 
-    public int Spectators
-    {
-      get
-      {
-        if (m_Region == null)
-          return 0;
-
-        int specs = m_Region.GetPlayerCount() - Players.Count;
-
-        if (specs < 0)
-          specs = 0;
-
-        return specs;
-      }
-    }
+    public int Spectators => m_Region == null ? 0 : Math.Max(m_Region.GetPlayerCount() - Players.Count, 0);
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Rectangle2D Zone
@@ -476,22 +462,13 @@ namespace Server.Engines.ConPVP
 
     public override string ToString() => "...";
 
-    public Point3D GetBaseStartPoint(int index)
-    {
-      if (index < 0)
-        index = 0;
-
-      return Points.Points[index % Points.Points.Length];
-    }
+    public Point3D GetBaseStartPoint(int index) => Points.Points[Math.Max(index, 0) % Points.Points.Length];
 
     public void MoveInside(DuelPlayer[] players, int index)
     {
-      if (index < 0)
-        index = 0;
-      else
-        index %= Points.Points.Length;
+      index = Math.Min(index, 0) % Points.Points.Length;
 
-      Point3D start = GetBaseStartPoint(index);
+      Point3D start = Points.Points[index];
 
       int offset = 0;
 
@@ -512,7 +489,7 @@ namespace Server.Engines.ConPVP
         if (offset < offsets.Length)
           p = offsets[offset++];
         else
-          p = offsets[offsets.Length - 1];
+          p = offsets[^1];
 
         p.X = p.X * matrix[0, 0] + p.Y * matrix[0, 1];
         p.Y = p.X * matrix[1, 0] + p.Y * matrix[1, 1];

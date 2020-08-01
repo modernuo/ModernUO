@@ -53,7 +53,7 @@ namespace Server.Engines.CannedEvil
 
       m_DamageEntries = new Dictionary<Mobile, int>();
 
-      Timer.DelayCall(TimeSpan.Zero, SetInitialSpawnArea);
+      Timer.DelayCall(SetInitialSpawnArea);
     }
 
     public ChampionSpawn(Serial serial) : base(serial)
@@ -1130,7 +1130,7 @@ namespace Server.Engines.CannedEvil
           }
       }
 
-      Timer.DelayCall(TimeSpan.Zero, UpdateRegion);
+      Timer.DelayCall(UpdateRegion);
     }
   }
 

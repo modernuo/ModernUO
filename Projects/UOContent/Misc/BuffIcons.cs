@@ -19,7 +19,7 @@ namespace Server
     public static void ResendBuffsOnClientVersionReceived(NetState ns, ClientVersion cv)
     {
       if (ns.Mobile is PlayerMobile pm)
-        Timer.DelayCall(TimeSpan.Zero, pm.ResendBuffs);
+        Timer.DelayCall(pm.ResendBuffs);
     }
 
     public BuffIcon ID { get; }
@@ -62,13 +62,7 @@ namespace Server
       TimeLength = length;
       TimeStart = DateTime.UtcNow;
 
-      Timer = Timer.DelayCall(length, () =>
-      {
-        if (!(m is PlayerMobile pm))
-          return;
-
-        pm.RemoveBuff(this);
-      });
+      Timer = Timer.DelayCall(length, RemoveBuff, m, this);
     }
 
     public BuffInfo(BuffIcon iconID, int titleCliloc, TextDefinition args)

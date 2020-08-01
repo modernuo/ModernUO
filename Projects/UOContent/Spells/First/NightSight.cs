@@ -1,3 +1,4 @@
+using System;
 using Server.Targeting;
 
 namespace Server.Spells.First
@@ -37,15 +38,13 @@ namespace Server.Spells.First
           if (targ.BeginAction<LightCycle>())
           {
             new LightCycle.NightSightTimer(targ).Start();
-            int level = (int)(LightCycle.DungeonLevel *
-                              ((Core.AOS
-                                 ? targ.Skills.Magery.Value
-                                 : from.Skills.Magery.Value) / 100));
+            int level =
+              (int)(LightCycle.DungeonLevel *
+                    ((Core.AOS
+                      ? targ.Skills.Magery.Value
+                      : from.Skills.Magery.Value) / 100));
 
-            if (level < 0)
-              level = 0;
-
-            targ.LightLevel = level;
+            targ.LightLevel = Math.Max(level, 0);
 
             targ.FixedParticles(0x376A, 9, 32, 5007, EffectLayer.Waist);
             targ.PlaySound(0x1E3);

@@ -66,7 +66,7 @@ namespace Server.Items
           ConsumeUse(weapon);
 
           if (CombatCheck(from, target))
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => OnHit(from, target, weapon));
+            Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnHit, from, target, weapon);
 
           Timer.DelayCall(TimeSpan.FromSeconds(2.5), ResetUsing, from);
         }
@@ -86,12 +86,15 @@ namespace Server.Items
     {
       if (weapon.UsesRemaining > 0)
       {
-        INinjaAmmo ammo = ActivatorUtil.CreateInstance(weapon.AmmoType, weapon.UsesRemaining) as INinjaAmmo;
+        Item ammo = ActivatorUtil.CreateInstance(weapon.AmmoType, weapon.UsesRemaining) as Item;
 
-        ammo.Poison = weapon.Poison;
-        ammo.PoisonCharges = weapon.PoisonCharges;
+        if (ammo is INinjaAmmo ninaAmmo)
+        {
+          ninaAmmo.Poison = weapon.Poison;
+          ninaAmmo.PoisonCharges = weapon.PoisonCharges;
+        }
 
-        from.AddToBackpack((Item)ammo);
+        from.AddToBackpack(ammo);
 
         weapon.UsesRemaining = 0;
         weapon.PoisonCharges = 0;
@@ -254,9 +257,7 @@ namespace Server.Items
 
     private static void OnTarget(Mobile from, object targeted, INinjaWeapon weapon)
     {
-      PlayerMobile player = from as PlayerMobile;
-
-      if (WeaponIsValid(weapon, from))
+      if (from is PlayerMobile player && WeaponIsValid(weapon, from))
       {
         if (targeted is Mobile mobile)
           Shoot(player, mobile, weapon);
@@ -267,12 +268,8 @@ namespace Server.Items
       }
     }
 
-    private static bool WeaponIsValid(INinjaWeapon weapon, Mobile from)
-    {
-      Item item = weapon as Item;
-
-      return !item.Deleted && item.RootParent == from;
-    }
+    private static bool WeaponIsValid(INinjaWeapon weapon, Mobile from) =>
+      weapon is Item item && !item.Deleted && item.RootParent == from;
 
     public class LoadEntry : ContextMenuEntry
     {

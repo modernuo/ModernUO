@@ -37,13 +37,7 @@ namespace Server.Spells.Chivalry
         m_Table.TryGetValue(Caster, out Timer timer);
         timer?.Stop();
 
-        double delay = (double)ComputePowerValue(1) / 60;
-
-        // TODO: Should caps be applied?
-        if (delay < 1.5)
-          delay = 1.5;
-        else if (delay > 3.5)
-          delay = 3.5;
+        double delay = Math.Clamp(ComputePowerValue(1) / 60.0, 1.5, 3.5);
 
         m_Table[Caster] = Timer.DelayCall(TimeSpan.FromMinutes(delay), Expire_Callback, Caster);
 

@@ -65,7 +65,7 @@ namespace Server.Spells.Chivalry
          */
 
         // TODO: Should caps be applied?
-        int toHeal = Math.Min(Math.Max(ComputePowerValue(6) + Utility.RandomMinMax(0, 2), 7), 39);
+        int toHeal = Math.Clamp(ComputePowerValue(6) + Utility.RandomMinMax(0, 2), 7, 39);
 
         if (m.Hits + toHeal > m.HitsMax)
           toHeal = m.HitsMax - m.Hits;

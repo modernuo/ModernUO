@@ -73,10 +73,10 @@ namespace Server.Items
       Effects.SendMovingEffect(new Entity(Serial.Zero, startLoc, map), new Entity(Serial.Zero, endLoc, map),
         0x36E4, 5, 0, false, false);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => FinishLaunch(endLoc, map));
+      Timer.DelayCall(TimeSpan.FromSeconds(1.0), FinishLaunch, endLoc, map);
     }
 
-    private void FinishLaunch(Point3D endLoc, Map map)
+    private static void FinishLaunch(Point3D endLoc, Map map)
     {
       int hue = Utility.Random(40);
 

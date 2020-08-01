@@ -38,13 +38,7 @@ namespace Server.Spells.Chivalry
         m_Table.TryGetValue(Caster, out Timer timer);
         timer?.Stop();
 
-        int delay = ComputePowerValue(10);
-
-        // TODO: Should caps be applied?
-        if (delay < 7)
-          delay = 7;
-        else if (delay > 24)
-          delay = 24;
+        int delay = Math.Clamp(ComputePowerValue(10), 7, 24);
 
         m_Table[Caster] = Timer.DelayCall(TimeSpan.FromSeconds(delay), Expire_Callback, Caster);
         Caster.Delta(MobileDelta.WeaponDamage);

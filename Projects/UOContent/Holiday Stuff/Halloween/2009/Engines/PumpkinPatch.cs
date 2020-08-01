@@ -25,8 +25,8 @@ namespace Server.Engines.Events
     {
       DateTime now = DateTime.UtcNow;
 
-      if (DateTime.UtcNow >= HolidaySettings.StartHalloween && DateTime.UtcNow <= HolidaySettings.FinishHalloween)
-        m_Timer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMinutes(.50), 0, PumpkinPatchSpawnerCallback);
+      if (now >= HolidaySettings.StartHalloween && now <= HolidaySettings.FinishHalloween)
+        m_Timer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(30), 0, PumpkinPatchSpawnerCallback);
     }
 
     protected static void PumpkinPatchSpawnerCallback()

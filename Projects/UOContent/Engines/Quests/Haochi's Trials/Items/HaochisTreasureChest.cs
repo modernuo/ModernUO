@@ -88,7 +88,7 @@ namespace Server.Engines.Quests.Samurai
 
       int version = reader.ReadEncodedInt();
 
-      Timer.DelayCall(TimeSpan.Zero, GenerateTreasure);
+      Timer.DelayCall(GenerateTreasure);
     }
   }
 }

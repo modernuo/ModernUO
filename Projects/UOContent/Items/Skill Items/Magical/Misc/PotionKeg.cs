@@ -91,7 +91,7 @@ namespace Server.Items
       }
 
       if (version < 1)
-        Timer.DelayCall(TimeSpan.Zero, UpdateWeight);
+        Timer.DelayCall(UpdateWeight);
     }
 
     public override void GetProperties(ObjectPropertyList list)

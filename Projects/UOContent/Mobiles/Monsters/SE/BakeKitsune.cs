@@ -143,7 +143,7 @@ namespace Server.Mobiles
         SetResistance(ResistanceType.Energy, 40, 60);
       }
 
-      Timer.DelayCall(TimeSpan.Zero, RemoveDisguise);
+      Timer.DelayCall(RemoveDisguise);
     }
 
     private class ExpireTimer : Timer

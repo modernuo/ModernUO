@@ -401,7 +401,7 @@ namespace Server.Items
             m.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, m_MessageNumber, null,
               ""));
 
-          Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => m.EndAction(this));
+          Timer.DelayCall(TimeSpan.FromSeconds(5.0), m.EndAction, this);
         }
 
         return false;

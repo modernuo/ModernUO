@@ -475,13 +475,13 @@ namespace Server.Items
         SkillBonuses.Serialize(writer);
 
       if (GetSaveFlag(flags, SaveFlag.Protection))
-        m_Protection.Serialize(writer);
+        Protection.Serialize(writer);
 
       if (GetSaveFlag(flags, SaveFlag.Killer))
-        m_Killer.Serialize(writer);
+        Killer.Serialize(writer);
 
       if (GetSaveFlag(flags, SaveFlag.Summoner))
-        m_Summoner.Serialize(writer);
+        Summoner.Serialize(writer);
 
       if (GetSaveFlag(flags, SaveFlag.Removal))
         writer.WriteEncodedInt((int)m_Removal);

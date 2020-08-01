@@ -59,7 +59,7 @@ namespace Server.Engines.Quests.Hag
       // * You see a strange imp stealing a scrap of paper from the bloodied corpse *
       Corpse.SendLocalizedMessageTo(player, 1055049);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(3.0), () => DeleteImp(imp));
+      Timer.DelayCall(TimeSpan.FromSeconds(3.0), DeleteImp, imp);
     }
 
     private void DeleteImp(Mobile m)
@@ -212,7 +212,7 @@ namespace Server.Engines.Quests.Hag
 
       imp.Direction = imp.GetDirectionTo(from);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(3.0), () => DeleteImp(imp));
+      Timer.DelayCall(TimeSpan.FromSeconds(3.0), DeleteImp, imp);
     }
 
     private void DeleteImp(object imp)
@@ -266,7 +266,7 @@ namespace Server.Engines.Quests.Hag
         for (int i = 0; i < oldIngredients.Length; i++)
           Ingredients[i] = oldIngredients[i];
 
-        Ingredients[Ingredients.Length - 1] = IngredientInfo.RandomIngredient(oldIngredients);
+        Ingredients[^1] = IngredientInfo.RandomIngredient(oldIngredients);
       }
       else
       {
@@ -324,7 +324,7 @@ namespace Server.Engines.Quests.Hag
 
     public Ingredient[] Ingredients { get; private set; }
 
-    public Ingredient Ingredient => Ingredients[Ingredients.Length - 1];
+    public Ingredient Ingredient => Ingredients[^1];
     public int Step => Ingredients.Length;
     public bool BlackheartMet { get; private set; }
 

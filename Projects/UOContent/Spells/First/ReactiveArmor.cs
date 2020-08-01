@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Server.Spells.First
@@ -111,14 +112,10 @@ namespace Server.Spells.First
         {
           if (Caster.BeginAction<DefensiveSpell>())
           {
-            int value = (int)(Caster.Skills.Magery.Value + Caster.Skills.Meditation.Value +
-                              Caster.Skills.Inscribe.Value);
-            value /= 3;
-
-            if (value < 0)
-              value = 1;
-            else if (value > 75)
-              value = 75;
+            int value = Math.Clamp(
+              (int)(Caster.Skills.Magery.Value + Caster.Skills.Meditation.Value +
+                    Caster.Skills.Inscribe.Value) / 3, 1, 75
+            );
 
             Caster.MeleeDamageAbsorb = value;
 

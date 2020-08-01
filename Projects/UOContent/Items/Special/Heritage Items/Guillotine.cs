@@ -54,7 +54,7 @@ namespace Server.Items
         {
           from.Location = Location;
 
-          Timer.DelayCall(TimeSpan.FromSeconds(0.5), () => Activate(c, from));
+          Timer.DelayCall(TimeSpan.FromSeconds(0.5), Activate, c, from);
         }
         else
         {

@@ -163,8 +163,8 @@ namespace Server.Spells.Necromancy
         if (c.Owner != null) type = c.Owner.GetType();
 
         if (c.ItemID != 0x2006 || c.Animated || type == typeof(PlayerMobile) || type == null ||
-            (c.Owner != null && c.Owner.Fame < 100) ||
-            (c.Owner is BaseCreature creature && (creature.Summoned || creature.IsBonded)))
+            c.Owner != null && c.Owner.Fame < 100 ||
+            c.Owner is BaseCreature creature && (creature.Summoned || creature.IsBonded))
         {
           Caster.SendLocalizedMessage(1061085); // There's not enough life force there to animate.
         }
@@ -236,7 +236,7 @@ namespace Server.Spells.Necromancy
       list.Add(summoned);
 
       if (list.Count > 3)
-        Timer.DelayCall(TimeSpan.Zero, list[0].Kill);
+        Timer.DelayCall(list[0].Kill);
 
       Timer.DelayCall(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0), Summoned_Damage, summoned);
     }
@@ -262,18 +262,8 @@ namespace Server.Spells.Necromancy
       double necromancy = caster.Skills.Necromancy.Value;
       double spiritSpeak = caster.Skills.SpiritSpeak.Value;
 
-      int casterAbility = 0;
-
-      casterAbility += (int)(necromancy * 30);
-      casterAbility += (int)(spiritSpeak * 70);
-      casterAbility /= 10;
-      casterAbility *= 18;
-
-      if (casterAbility > owner.Fame)
-        casterAbility = owner.Fame;
-
-      if (casterAbility < 0)
-        casterAbility = 0;
+      int casterAbility = (int)(necromancy * 30) + (int)(spiritSpeak * 70);
+      casterAbility = Math.Clamp(casterAbility / 10 * 18, 0, owner.Fame);
 
       Type toSummon = null;
       SummonEntry[] entries = group.m_Entries;
@@ -287,8 +277,7 @@ namespace Server.Spells.Necromancy
 
         Type[] animates = entry.m_ToSummon;
 
-        if (animates.Length >= 0)
-          toSummon = animates[Utility.Random(animates.Length)];
+        toSummon = animates[Utility.Random(animates.Length)];
       }
 
       if (toSummon == null)

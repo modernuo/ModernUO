@@ -34,7 +34,7 @@ namespace Server.Diagnostics
 
     public long TotalLength { get; private set; }
 
-    public double AverageLength => (double)TotalLength / Math.Max(1, Count);
+    public double AverageLength => (double)TotalLength / Math.Max(Count, 1);
 
     public void Finish(long length)
     {

@@ -1,4 +1,3 @@
-using System;
 using Server.Factions;
 using Server.Guilds;
 using Server.Gumps;
@@ -143,7 +142,7 @@ namespace Server.Items
         m_BeforeChangeover = true;
 
       if (Guild.NewGuildSystem && m_BeforeChangeover)
-        Timer.DelayCall(TimeSpan.Zero, AddToHouse);
+        Timer.DelayCall(AddToHouse);
 
       if (!Guild.NewGuildSystem && Guild == null)
         Delete();

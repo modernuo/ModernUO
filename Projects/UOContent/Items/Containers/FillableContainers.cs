@@ -307,7 +307,7 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
 
       if (version == 0 && m_Content == null)
-        Timer.DelayCall(TimeSpan.Zero, AcquireContent);
+        Timer.DelayCall(AcquireContent);
     }
   }
 

@@ -81,8 +81,13 @@ namespace Server.Mobiles
 
         m_CanTalk = false;
 
-        Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(20, 30)), () => { m_CanTalk = true; });
+        Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(20, 30)), ResetCanTalk);
       }
+    }
+
+    private void ResetCanTalk()
+    {
+      m_CanTalk = true;
     }
 
     public override void Serialize(IGenericWriter writer)

@@ -655,34 +655,14 @@ namespace Server
 
     public void Bound(int x, int y, out int newX, out int newY)
     {
-      if (x < 0)
-        newX = 0;
-      else if (x >= Width)
-        newX = Width - 1;
-      else
-        newX = x;
-
-      if (y < 0)
-        newY = 0;
-      else if (y >= Height)
-        newY = Height - 1;
-      else
-        newY = y;
+      newX = Math.Clamp(x, 0, Width - 1);
+      newY = Math.Clamp(y, 0, Height - 1);
     }
 
     public Point2D Bound(Point2D p)
     {
-      int x = p.m_X, y = p.m_Y;
-
-      if (x < 0)
-        x = 0;
-      else if (x >= Width)
-        x = Width - 1;
-
-      if (y < 0)
-        y = 0;
-      else if (y >= Height)
-        y = Height - 1;
+      int x = Math.Clamp(p.m_X, 0, Width - 1);
+      int y = Math.Clamp(p.m_Y, 0, Height - 1);
 
       return new Point2D(x, y);
     }

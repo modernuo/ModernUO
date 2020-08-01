@@ -39,11 +39,7 @@ namespace Server
     OneMinute
   }
 
-  public delegate void TimerCallback();
-
-  public delegate void TimerStateCallback<in T>(T state);
-
-  public class Timer
+  public partial class Timer
   {
     private static readonly Queue<Timer> m_Queue = new Queue<Timer>();
 
@@ -462,90 +458,6 @@ namespace Server
           return e;
         }
       }
-    }
-
-    public static Timer DelayCall(TimerCallback callback) => DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback);
-
-    public static Timer DelayCall(TimeSpan delay, TimerCallback callback) => DelayCall(delay, TimeSpan.Zero, 1, callback);
-
-    public static Timer DelayCall(TimeSpan delay, TimeSpan interval, TimerCallback callback) =>
-      DelayCall(delay, interval, 0, callback);
-
-    public static Timer DelayCall(TimeSpan delay, TimeSpan interval, int count, TimerCallback callback)
-    {
-      Timer t = new DelayCallTimer(delay, interval, count, callback);
-
-      t.Priority = ComputePriority(count == 1 ? delay : interval);
-      t.Start();
-
-      return t;
-    }
-
-    public static Timer DelayCall<T>(TimerStateCallback<T> callback, T state) =>
-      DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, state);
-
-    public static Timer DelayCall<T>(TimeSpan delay, TimerStateCallback<T> callback, T state) =>
-      DelayCall(delay, TimeSpan.Zero, 1, callback, state);
-
-    public static Timer DelayCall<T>(TimeSpan delay, TimeSpan interval, TimerStateCallback<T> callback, T state) =>
-      DelayCall(delay, interval, 0, callback, state);
-
-    public static Timer DelayCall<T>(TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T> callback,
-      T state)
-    {
-      Timer t = new DelayStateCallTimer<T>(delay, interval, count, callback, state);
-
-      t.Priority = ComputePriority(count == 1 ? delay : interval);
-
-      t.Start();
-
-      return t;
-    }
-
-    private class DelayCallTimer : Timer
-    {
-      public DelayCallTimer(TimeSpan delay, TimeSpan interval, int count, TimerCallback callback) : base(delay,
-        interval, count)
-      {
-        Callback = callback;
-        RegCreation();
-      }
-
-      public TimerCallback Callback { get; }
-
-      public override bool DefRegCreation => false;
-
-      protected override void OnTick()
-      {
-        Callback?.Invoke();
-      }
-
-      public override string ToString() => $"DelayCallTimer[{FormatDelegate(Callback)}]";
-    }
-
-    private class DelayStateCallTimer<T> : Timer
-    {
-      private readonly T m_State;
-
-      public DelayStateCallTimer(TimeSpan delay, TimeSpan interval, int count, TimerStateCallback<T> callback, T state)
-        : base(delay, interval, count)
-      {
-        Callback = callback;
-        m_State = state;
-
-        RegCreation();
-      }
-
-      public TimerStateCallback<T> Callback { get; }
-
-      public override bool DefRegCreation => false;
-
-      protected override void OnTick()
-      {
-        Callback?.Invoke(m_State);
-      }
-
-      public override string ToString() => $"DelayStateCall[{FormatDelegate(Callback)}]";
     }
 
     private class DelayTaskTimer : Timer

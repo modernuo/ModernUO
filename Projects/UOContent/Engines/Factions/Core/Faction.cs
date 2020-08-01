@@ -1169,8 +1169,10 @@ namespace Server.Factions
         }
       }
 
-      context.m_Timer = Timer.DelayCall(SkillLossPeriod, () => ClearSkillLoss(mob));
+      context.m_Timer = Timer.DelayCall(SkillLossPeriod, ClearSkillLoss_Event, mob);
     }
+
+    private static void ClearSkillLoss_Event(Mobile mob) => ClearSkillLoss(mob);
 
     public static bool ClearSkillLoss(Mobile mob)
     {

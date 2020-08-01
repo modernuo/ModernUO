@@ -99,9 +99,7 @@ namespace Server.Spells.Fourth
       {
         _Table.Remove(m);
         m.EndAction<ArchProtectionSpell>();
-        m.VirtualArmorMod -= v;
-        if (m.VirtualArmorMod < 0)
-          m.VirtualArmorMod = 0;
+        m.VirtualArmorMod -= Math.Min(v, m.VirtualArmorMod);
       }
     }
 

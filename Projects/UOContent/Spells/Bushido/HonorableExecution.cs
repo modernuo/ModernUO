@@ -42,7 +42,7 @@ namespace Server.Spells.Bushido
 
         attacker.Hits += 20 + (int)(bushido * bushido / 480.0);
 
-        int swingBonus = Math.Max(1, (int)(bushido * bushido / 720.0));
+        int swingBonus = Math.Max((int)(bushido * bushido / 720.0), 1);
 
         info = new HonorableExecutionInfo(attacker, swingBonus);
         info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(20.0), RemovePenalty, info.m_Mobile);

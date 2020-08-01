@@ -108,14 +108,7 @@ namespace Server.Misc
         state.Mobile.SendMessage(0x22, kickMessage);
         state.Mobile.SendMessage(0x22, "You will be disconnected in {0} seconds.", KickDelay.TotalSeconds);
 
-        Timer.DelayCall(KickDelay, () =>
-        {
-          if (state.Connection != null)
-          {
-            Console.WriteLine("Client: {0}: Disconnecting, bad version", state);
-            state.Dispose();
-          }
-        });
+        Timer.DelayCall(KickDelay, OnKick, state);
       }
       else if (Required != null && version < Required)
       {
@@ -138,6 +131,15 @@ namespace Server.Misc
       }
     }
 
+    private static void OnKick(NetState ns)
+    {
+      if (ns.Connection != null)
+      {
+        Console.WriteLine("Client: {0}: Disconnecting, bad version", ns);
+        ns.Dispose();
+      }
+    }
+
     private static void KickMessage(Mobile from, bool okay)
     {
       from.SendMessage("You will be reminded of this again.");
@@ -147,7 +149,7 @@ namespace Server.Misc
           "Old clients will be kicked after {0} days of character age and {1} hours of play time",
           m_AgeLeniency, m_GameTimeLeniency);
 
-      Timer.DelayCall(TimeSpan.FromMinutes(Utility.Random(5, 15)), () => SendAnnoyGump(from));
+      Timer.DelayCall(TimeSpan.FromMinutes(Utility.Random(5, 15)), SendAnnoyGump, from);
     }
 
     private static void SendAnnoyGump(Mobile m)

@@ -1,4 +1,3 @@
-using System;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Multis;
@@ -86,7 +85,8 @@ namespace Server.Items
 
       m_Statue = reader.ReadMobile() as CharacterStatue;
 
-      if (m_Statue?.SculptedBy == null || Map == Map.Internal) Timer.DelayCall(TimeSpan.Zero, Delete);
+      if (m_Statue?.SculptedBy == null || Map == Map.Internal)
+        Timer.DelayCall(Delete);
     }
 
     public void InvalidateHue()

@@ -23,8 +23,8 @@ namespace Server.Engines.Craft
       MaxCraftEffect = maxCraftEffect;
       Delay = delay;
 
-      CraftItems = new CraftItemCol();
-      CraftGroups = new CraftGroupCol();
+      CraftItems = new List<CraftItem>();
+      CraftGroups = new List<CraftGroup>();
       CraftSubRes = new CraftSubResCol();
       CraftSubRes2 = new CraftSubResCol();
 
@@ -40,9 +40,9 @@ namespace Server.Engines.Craft
 
     public double Delay { get; }
 
-    public CraftItemCol CraftItems { get; }
+    public List<CraftItem> CraftItems { get; }
 
-    public CraftGroupCol CraftGroups { get; }
+    public List<CraftGroup> CraftGroups { get; }
 
     public CraftSubResCol CraftSubRes { get; }
 
@@ -134,7 +134,8 @@ namespace Server.Engines.Craft
       craftItem.AddSkill(skillToMake, minSkill, maxSkill);
 
       DoGroup(group, craftItem);
-      return CraftItems.Add(craftItem);
+      CraftItems.Add(craftItem);
+      return CraftItems.Count - 1;
     }
 
     private void DoGroup(TextDefinition groupName, CraftItem craftItem)
@@ -149,68 +150,58 @@ namespace Server.Engines.Craft
       }
       else
       {
-        CraftGroups.GetAt(index).AddCraftItem(craftItem);
+        CraftGroups[index].AddCraftItem(craftItem);
       }
     }
 
     public void SetItemHue(int index, int hue)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.ItemHue = hue;
+      CraftItems[index].ItemHue = hue;
     }
 
     public void SetManaReq(int index, int mana)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.Mana = mana;
+      CraftItems[index].Mana = mana;
     }
 
     public void SetStamReq(int index, int stam)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.Stam = stam;
+      CraftItems[index].Stam = stam;
     }
 
     public void SetHitsReq(int index, int hits)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.Hits = hits;
+      CraftItems[index].Hits = hits;
     }
 
     public void SetUseAllRes(int index, bool useAll)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.UseAllRes = useAll;
+      CraftItems[index].UseAllRes = useAll;
     }
 
     public void SetNeedHeat(int index, bool needHeat)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.NeedHeat = needHeat;
+      CraftItems[index].NeedHeat = needHeat;
     }
 
     public void SetNeedOven(int index, bool needOven)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.NeedOven = needOven;
+      CraftItems[index].NeedOven = needOven;
     }
 
     public void SetBeverageType(int index, BeverageType requiredBeverage)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.RequiredBeverage = requiredBeverage;
+      CraftItems[index].RequiredBeverage = requiredBeverage;
     }
 
     public void SetNeedMill(int index, bool needMill)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.NeedMill = needMill;
+      CraftItems[index].NeedMill = needMill;
     }
 
     public void SetNeededExpansion(int index, Expansion expansion)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.RequiredExpansion = expansion;
+      CraftItems[index].RequiredExpansion = expansion;
     }
 
     public void AddRes(int index, Type type, TextDefinition name, int amount)
@@ -220,26 +211,22 @@ namespace Server.Engines.Craft
 
     public void AddRes(int index, Type type, TextDefinition name, int amount, TextDefinition message)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.AddRes(type, name, amount, message);
+      CraftItems[index].AddRes(type, name, amount, message);
     }
 
     public void AddSkill(int index, SkillName skillToMake, double minSkill, double maxSkill)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.AddSkill(skillToMake, minSkill, maxSkill);
+      CraftItems[index].AddSkill(skillToMake, minSkill, maxSkill);
     }
 
     public void SetUseSubRes2(int index, bool val)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.UseSubRes2 = val;
+      CraftItems[index].UseSubRes2 = val;
     }
 
     private void AddRecipeBase(int index, int id)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.AddRecipe(id, this);
+      CraftItems[index].AddRecipe(id, this);
     }
 
     public void AddRecipe(int index, int id)
@@ -261,8 +248,7 @@ namespace Server.Engines.Craft
 
     public void ForceNonExceptional(int index)
     {
-      CraftItem craftItem = CraftItems.GetAt(index);
-      craftItem.ForceNonExceptional = true;
+      CraftItems[index].ForceNonExceptional = true;
     }
 
     public void SetSubRes(Type type, string name)

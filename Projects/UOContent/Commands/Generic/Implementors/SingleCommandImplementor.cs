@@ -38,7 +38,7 @@ namespace Server.Commands.Generic
     {
       if (command.ValidateArgs(this, new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args)))
         from.BeginTarget(-1, command.ObjectTypes == ObjectTypes.All, TargetFlags.None,
-          (m, targeted) => OnTarget(m, targeted, command, args));
+          (m, targeted, a) => OnTarget(m, targeted, command, a), args);
     }
 
     public void OnTarget(Mobile from, object targeted, BaseCommand command, string[] args)

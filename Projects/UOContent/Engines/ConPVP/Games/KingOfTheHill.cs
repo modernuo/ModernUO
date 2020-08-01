@@ -883,7 +883,7 @@ namespace Server.Engines.ConPVP
 
     public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
     {
-      Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
+      Timer.DelayCall(ts, DelayBounce_Callback, mob, corpse);
     }
 
     private void DelayBounce_Callback(Mobile mob, Container corpse)

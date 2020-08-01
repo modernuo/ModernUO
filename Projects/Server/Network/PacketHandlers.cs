@@ -501,8 +501,7 @@ namespace Server.Network
       var vendor = World.FindMobile(pvSrc.ReadUInt32());
       var flag = pvSrc.ReadByte();
 
-      if (vendor == null)
-        return;
+      if (vendor == null) return;
 
       if (vendor.Deleted || !Utility.RangeCheck(vendor.Location, state.Mobile.Location, 10))
       {
@@ -840,8 +839,7 @@ namespace Server.Network
       var beholder = state.Mobile;
       var beheld = World.FindMobile(serial);
 
-      if (beheld == null)
-        return;
+      if (beheld == null) return;
 
       switch (type)
       {
@@ -1014,8 +1012,7 @@ namespace Server.Network
 
       var t = from.Target;
 
-      if (t == null)
-        return;
+      if (t == null) return;
 
       var prof = TargetProfile.Acquire(t.GetType());
       prof?.Start();
@@ -1640,45 +1637,41 @@ namespace Server.Network
 
     public static void PartyMessage_AddMember(NetState state, PacketReader pvSrc)
     {
-      if (PartyCommands.Handler != null)
-        PartyCommands.Handler.OnAdd(state.Mobile);
+      PartyCommands.Handler?.OnAdd(state.Mobile);
     }
 
     public static void PartyMessage_RemoveMember(NetState state, PacketReader pvSrc)
     {
-      if (PartyCommands.Handler != null)
-        PartyCommands.Handler.OnRemove(state.Mobile, World.FindMobile(pvSrc.ReadUInt32()));
+      PartyCommands.Handler?.OnRemove(state.Mobile, World.FindMobile(pvSrc.ReadUInt32()));
     }
 
     public static void PartyMessage_PrivateMessage(NetState state, PacketReader pvSrc)
     {
-      if (PartyCommands.Handler != null)
-        PartyCommands.Handler.OnPrivateMessage(state.Mobile, World.FindMobile(pvSrc.ReadUInt32()),
-          pvSrc.ReadUnicodeStringSafe());
+      PartyCommands.Handler?.OnPrivateMessage(
+        state.Mobile,
+        World.FindMobile(pvSrc.ReadUInt32()),
+        pvSrc.ReadUnicodeStringSafe()
+      );
     }
 
     public static void PartyMessage_PublicMessage(NetState state, PacketReader pvSrc)
     {
-      if (PartyCommands.Handler != null)
-        PartyCommands.Handler.OnPublicMessage(state.Mobile, pvSrc.ReadUnicodeStringSafe());
+      PartyCommands.Handler?.OnPublicMessage(state.Mobile, pvSrc.ReadUnicodeStringSafe());
     }
 
     public static void PartyMessage_SetCanLoot(NetState state, PacketReader pvSrc)
     {
-      if (PartyCommands.Handler != null)
-        PartyCommands.Handler.OnSetCanLoot(state.Mobile, pvSrc.ReadBoolean());
+      PartyCommands.Handler?.OnSetCanLoot(state.Mobile, pvSrc.ReadBoolean());
     }
 
     public static void PartyMessage_Accept(NetState state, PacketReader pvSrc)
     {
-      if (PartyCommands.Handler != null)
-        PartyCommands.Handler.OnAccept(state.Mobile, World.FindMobile(pvSrc.ReadUInt32()));
+      PartyCommands.Handler?.OnAccept(state.Mobile, World.FindMobile(pvSrc.ReadUInt32()));
     }
 
     public static void PartyMessage_Decline(NetState state, PacketReader pvSrc)
     {
-      if (PartyCommands.Handler != null)
-        PartyCommands.Handler.OnDecline(state.Mobile, World.FindMobile(pvSrc.ReadUInt32()));
+      PartyCommands.Handler?.OnDecline(state.Mobile, World.FindMobile(pvSrc.ReadUInt32()));
     }
 
     public static void StunRequest(NetState state, PacketReader pvSrc)
@@ -1725,41 +1718,40 @@ namespace Server.Network
     {
       var from = state.Mobile;
 
-      if (from != null)
+      if (from == null) return;
+
+      var menu = from.ContextMenu;
+
+      from.ContextMenu = null;
+
+      if (menu != null && from == menu.From)
       {
-        var menu = from.ContextMenu;
+        var entity = World.FindEntity(pvSrc.ReadUInt32());
 
-        from.ContextMenu = null;
-
-        if (menu != null && from == menu.From)
+        if (entity != null && entity == menu.Target && from.CanSee(entity))
         {
-          var entity = World.FindEntity(pvSrc.ReadUInt32());
+          Point3D p;
 
-          if (entity != null && entity == menu.Target && from.CanSee(entity))
+          if (entity is Mobile)
+            p = entity.Location;
+          else if (entity is Item item)
+            p = item.GetWorldLocation();
+          else
+            return;
+
+          int index = pvSrc.ReadUInt16();
+
+          if (index >= 0 && index < menu.Entries.Length)
           {
-            Point3D p;
+            var e = menu.Entries[index];
 
-            if (entity is Mobile)
-              p = entity.Location;
-            else if (entity is Item item)
-              p = item.GetWorldLocation();
-            else
-              return;
+            var range = e.Range;
 
-            int index = pvSrc.ReadUInt16();
+            if (range == -1)
+              range = 18;
 
-            if (index >= 0 && index < menu.Entries.Length)
-            {
-              var e = menu.Entries[index];
-
-              var range = e.Range;
-
-              if (range == -1)
-                range = 18;
-
-              if (e.Enabled && from.InRange(p, range))
-                e.OnClick();
-            }
+            if (e.Enabled && from.InRange(p, range))
+              e.OnClick();
           }
         }
       }

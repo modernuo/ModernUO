@@ -68,7 +68,7 @@ namespace Server.Engines.ConPVP
           }
       }
 
-      Timer.DelayCall(TimeSpan.Zero, Delete).Start(); // delete this after the world loads
+      Timer.DelayCall(Delete); // delete this after the world loads
     }
 
     public override void Serialize(IGenericWriter writer)
@@ -202,7 +202,7 @@ namespace Server.Engines.ConPVP
       m_Path.Clear();
       m_PathIdx = 0;
 
-      Timer.DelayCall(TimeSpan.FromSeconds(0.05), ContinueFlight).Start();
+      Timer.DelayCall(TimeSpan.FromSeconds(0.05), ContinueFlight);
     }
 
     private bool CheckCatch(Mobile m, Point3D myLoc)
@@ -292,7 +292,7 @@ namespace Server.Engines.ConPVP
 
         if (list.Count > 0)
         {
-          Point3D p = list[list.Count - 1];
+          Point3D p = list[^1];
 
           if (p.X != ix || p.Y != iy || p.Z != iz)
             list.Add(new Point3D(ix, iy, iz));
@@ -307,7 +307,7 @@ namespace Server.Engines.ConPVP
         z += zslp;
       }
 
-      if (list.Count > 0 && list[list.Count - 1] != dest)
+      if (list.Count > 0 && list[^1] != dest)
         list.Add(dest);
 
       /*if (dist3d > 4 && ( dest.X != org.X || dest.Y != org.Y ))
@@ -540,7 +540,7 @@ namespace Server.Engines.ConPVP
         if (m_PathIdx > 0 && m_PathIdx - 1 < m_Path.Count)
           DoAnim(GetWorldLocation(), m_Path[m_PathIdx - 1], Map);
 
-        Timer.DelayCall(TimeSpan.FromSeconds(0.1), ContinueFlight).Start();
+        Timer.DelayCall(TimeSpan.FromSeconds(0.1), ContinueFlight);
       }
       else
       {
@@ -734,7 +734,7 @@ namespace Server.Engines.ConPVP
 
         // has to be delayed in case some other target canceled us...
         if (m_Resend)
-          Timer.DelayCall(TimeSpan.Zero, ResendBombTarget).Start();
+          Timer.DelayCall(ResendBombTarget);
       }
 
       private void ResendBombTarget()
@@ -1499,7 +1499,7 @@ namespace Server.Engines.ConPVP
 
     public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
     {
-      Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
+      Timer.DelayCall(ts, DelayBounce_Callback, mob, corpse);
     }
 
     private void DelayBounce_Callback(Mobile mob, Container corpse)

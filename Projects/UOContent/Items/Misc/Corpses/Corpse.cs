@@ -391,7 +391,7 @@ namespace Server.Items
           }
 
           if (remainder == 0)
-            m_InstancedItems.Add(item, new InstancedItemInfo(item, attackers[attackers.Count - 1]));
+            m_InstancedItems.Add(item, new InstancedItemInfo(item, attackers[^1]));
           else
             m_Unstackables.Add(item);
         }

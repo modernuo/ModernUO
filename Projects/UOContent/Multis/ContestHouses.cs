@@ -71,9 +71,9 @@ namespace Server.Multis
     {
       base.OnLocationChange(oldLocation);
 
-      int x = this.Location.X - oldLocation.X;
-      int y = this.Location.Y - oldLocation.Y;
-      int z = this.Location.Z - oldLocation.Z;
+      int x = Location.X - oldLocation.X;
+      int y = Location.Y - oldLocation.Y;
+      int z = Location.Z - oldLocation.Z;
 
       if (Fixtures == null) return;
 

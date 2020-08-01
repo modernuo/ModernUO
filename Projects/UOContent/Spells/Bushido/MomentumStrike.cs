@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Server.Items;
 
 namespace Server.Spells.Bushido
 {
@@ -19,7 +18,7 @@ namespace Server.Spells.Bushido
 
       ClearCurrentMove(attacker);
 
-      BaseWeapon weapon = attacker.Weapon as BaseWeapon;
+      IWeapon weapon = attacker.Weapon;
 
       List<Mobile> targets = attacker.GetMobilesInRange(weapon.MaxRange)
         .Where(m => m != defender).Where(m => m.Combatant == attacker).ToList();

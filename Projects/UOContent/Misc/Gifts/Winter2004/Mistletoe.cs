@@ -1,4 +1,3 @@
-using System;
 using Server.Gumps;
 using Server.Multis;
 using Server.Network;
@@ -71,7 +70,7 @@ namespace Server.Items
 
       int version = reader.ReadInt();
 
-      Timer.DelayCall(TimeSpan.Zero, FixMovingCrate);
+      Timer.DelayCall(FixMovingCrate);
     }
 
     private void FixMovingCrate()

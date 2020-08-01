@@ -13,7 +13,7 @@ namespace Server.Engines.Craft
     NoSkill
   }
 
-  public class Resmelt
+  public static class Resmelt
   {
     public static void Do(Mobile from, CraftSystem craftSystem, BaseTool tool)
     {
@@ -61,7 +61,7 @@ namespace Server.Engines.Craft
           if (craftItem == null || craftItem.Resources.Count == 0)
             return SmeltResult.Invalid;
 
-          CraftRes craftResource = craftItem.Resources.GetAt(0);
+          CraftRes craftResource = craftItem.Resources[0];
 
           if (craftResource.Amount < 2)
             return SmeltResult.Invalid; // Not enough metal to resmelt
@@ -85,9 +85,9 @@ namespace Server.Engines.Craft
           Type resourceType = info.ResourceTypes[0];
           Item ingot = (Item)ActivatorUtil.CreateInstance(resourceType);
 
-          if (item is DragonBardingDeed || (item is BaseArmor armor && armor.PlayerConstructed) ||
-              (item is BaseWeapon weapon && weapon.PlayerConstructed) ||
-              (item is BaseClothing clothing && clothing.PlayerConstructed))
+          if (item is DragonBardingDeed || item is BaseArmor armor && armor.PlayerConstructed ||
+              item is BaseWeapon weapon && weapon.PlayerConstructed ||
+              item is BaseClothing clothing && clothing.PlayerConstructed)
             ingot.Amount = craftResource.Amount / 2;
           else
             ingot.Amount = 1;
@@ -144,7 +144,6 @@ namespace Server.Engines.Craft
           else if (targeted is DragonBardingDeed deed)
           {
             result = Resmelt(from, deed, deed.Resource);
-            isStoreBought = false;
           }
 
           message = result switch

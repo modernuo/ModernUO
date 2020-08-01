@@ -88,13 +88,7 @@ namespace Server.Spells.Chivalry
         Caster.PlaySound(0x208);
         Caster.FixedParticles(0x3709, 1, 30, 9934, 0, 7, EffectLayer.Waist);
 
-        int damage = 50 - ComputePowerValue(4);
-
-        // TODO: Should caps be applied?
-        if (damage < 13)
-          damage = 13;
-        else if (damage > 55)
-          damage = 55;
+        int damage = Math.Clamp(50 - ComputePowerValue(4), 13, 55);
 
         AOS.Damage(Caster, Caster, damage, 0, 100, 0, 0, 0, true);
       }

@@ -19,7 +19,7 @@ namespace Server.Items
       if (Deleted || !from.CanSee(this))
         return false;
 
-      this.ScissorHelper(from, new Bone(), Utility.RandomMinMax(10, 15));
+      ScissorHelper(from, new Bone(), Utility.RandomMinMax(10, 15));
 
       return true;
     }

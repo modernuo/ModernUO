@@ -33,7 +33,7 @@ namespace Server.Items
     {
       if (Deleted || !from.CanSee(this)) return false;
 
-      this.ScissorHelper(from, new Cloth(), 50);
+      ScissorHelper(from, new Cloth(), 50);
 
       return true;
     }

@@ -65,7 +65,7 @@ namespace Server.Items
         Point3D p = new Point3D(Location);
 
         if (SpellHelper.FindValidSpawnLocation(Map, ref p, true))
-          Timer.DelayCall(TimeSpan.FromSeconds(0), () => m.MoveToWorld(p, m.Map));
+          Timer.DelayCall(TimeSpan.FromSeconds(0), m.MoveToWorld, p, m.Map);
 
         action = 21 + Utility.Random(2);
         sound = m.Female ? 0x317 : 0x426;
@@ -77,7 +77,7 @@ namespace Server.Items
       }
 
       if (action > 0)
-        Timer.DelayCall(TimeSpan.FromSeconds(0.4), from => BeginFall_Callback(from, action, sound), m);
+        Timer.DelayCall(TimeSpan.FromSeconds(0.4), BeginFall_Callback, m, action, sound);
     }
 
     private static void BeginFall_Callback(Mobile m, int action, int sound)

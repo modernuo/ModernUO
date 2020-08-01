@@ -151,10 +151,12 @@ namespace Server.Items
 
       DateTime next = reader.ReadDateTime();
 
-      if (next < DateTime.UtcNow)
-        m_Timer = Timer.DelayCall(TimeSpan.Zero, RechargeTime, Recharge);
+      var now = DateTime.UtcNow;
+
+      if (next < now)
+        m_Timer = Timer.DelayCall(RechargeTime, Recharge);
       else
-        m_Timer = Timer.DelayCall(next - DateTime.UtcNow, RechargeTime, Recharge);
+        m_Timer = Timer.DelayCall(next - now, RechargeTime, Recharge);
     }
 
     public void Recharge()

@@ -217,11 +217,11 @@ namespace Server.Multis
       if (House != null)
       {
         House.MovingCrate = this;
-        Timer.DelayCall(TimeSpan.Zero, Hide);
+        Timer.DelayCall(Hide);
       }
       else
       {
-        Timer.DelayCall(TimeSpan.Zero, Delete);
+        Timer.DelayCall(Delete);
       }
 
       if (version == 0)

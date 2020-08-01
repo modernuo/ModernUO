@@ -433,7 +433,7 @@ namespace Server.Engines.ConPVP
             if (Pyramid.Levels.Count < 1)
               break;
 
-            PyramidLevel top = Pyramid.Levels[Pyramid.Levels.Count - 1];
+            PyramidLevel top = Pyramid.Levels[^1];
 
             if (top.FreeAdvance != null || top.Matches.Count != 1)
               break;
@@ -451,7 +451,7 @@ namespace Server.Engines.ConPVP
             if (Pyramid.Levels.Count < 2)
               break;
 
-            PyramidLevel top = Pyramid.Levels[Pyramid.Levels.Count - 1];
+            PyramidLevel top = Pyramid.Levels[^1];
 
             if (top.FreeAdvance != null || top.Matches.Count != 1)
               break;
@@ -471,7 +471,7 @@ namespace Server.Engines.ConPVP
                 GiveAwards(part.Players, TrophyRank.Silver, cash / 2);
             }
 
-            PyramidLevel next = Pyramid.Levels[Pyramid.Levels.Count - 2];
+            PyramidLevel next = Pyramid.Levels[^2];
 
             if (next.Matches.Count > 2)
               break;
@@ -739,7 +739,7 @@ namespace Server.Engines.ConPVP
         }
         else if (Pyramid.Levels.Count > 0)
         {
-          PyramidLevel activeLevel = Pyramid.Levels[Pyramid.Levels.Count - 1];
+          PyramidLevel activeLevel = Pyramid.Levels[^1];
           bool stillGoing = false;
 
           for (int i = 0; i < activeLevel.Matches.Count; ++i)

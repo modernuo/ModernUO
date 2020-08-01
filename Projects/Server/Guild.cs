@@ -39,10 +39,10 @@ namespace Server.Guilds
 
     protected BaseGuild(uint id) // serialization ctor
     {
-      this.Serial = id;
-      List.Add(this.Serial, this);
-      if (this.Serial + 1 > m_NextID)
-        m_NextID = this.Serial + 1;
+      Serial = id;
+      List.Add(Serial, this);
+      if (Serial + 1 > m_NextID)
+        m_NextID = Serial + 1;
       m_SaveBuffer = new BufferWriter(true);
     }
 

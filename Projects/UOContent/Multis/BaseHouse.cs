@@ -494,7 +494,7 @@ namespace Server.Multis
     {
       if (!Deleted && DecayLevel == DecayLevel.Collapsed)
       {
-        Timer.DelayCall(TimeSpan.Zero, Decay_Sandbox);
+        Timer.DelayCall(Decay_Sandbox);
         return true;
       }
 
@@ -601,16 +601,10 @@ namespace Server.Multis
       return (int)(hpe.Vendors * BonusStorageScalar);
     }
 
-    public virtual bool CanPlaceNewVendor()
-    {
-      if (!IsAosRules)
-        return true;
-
-      if (!NewVendorSystem)
-        return CheckAosLockdowns(10);
-
-      return PlayerVendors.Count + VendorRentalContracts.Count < GetNewVendorSystemMaxVendors();
-    }
+    public virtual bool CanPlaceNewVendor() =>
+      !IsAosRules || (!NewVendorSystem
+        ? CheckAosLockdowns(10)
+        : PlayerVendors.Count + VendorRentalContracts.Count < GetNewVendorSystemMaxVendors());
 
     public virtual bool CanPlaceNewBarkeep() => PlayerBarkeepers.Count < MaximumBarkeepCount;
 
@@ -1261,9 +1255,9 @@ namespace Server.Multis
       if (LockDowns == null)
         return;
 
-      int x = this.Location.X - oldLocation.X;
-      int y = this.Location.Y - oldLocation.Y;
-      int z = this.Location.Z - oldLocation.Z;
+      int x = Location.X - oldLocation.X;
+      int y = Location.Y - oldLocation.Y;
+      int z = Location.Z - oldLocation.Z;
 
       if (Sign?.Deleted == false)
         Sign.Location = new Point3D(Sign.X + x, Sign.Y + y, Sign.Z + z);
@@ -2497,7 +2491,7 @@ namespace Server.Multis
 
             if (child.Decays && !child.IsLockedDown && !child.IsSecure &&
                 child.LastMoved + child.DecayTime <= DateTime.UtcNow)
-              Timer.DelayCall(TimeSpan.Zero, child.Delete);
+              Timer.DelayCall(child.Delete);
           }
         }
       }
@@ -2701,7 +2695,7 @@ namespace Server.Multis
       if (version <= 1)
         ChangeSignType(0xBD2); // private house, plain brass sign
 
-      if (version < 10) Timer.DelayCall(TimeSpan.Zero, FixLockdowns_Sandbox);
+      if (version < 10) Timer.DelayCall(FixLockdowns_Sandbox);
 
       if (version < 11)
         LastRefreshed = DateTime.UtcNow + TimeSpan.FromHours(24 * Utility.RandomDouble());
@@ -2719,7 +2713,7 @@ namespace Server.Multis
       if (!CheckDecay())
       {
         if (RelocatedEntities.Count > 0)
-          Timer.DelayCall(TimeSpan.Zero, RestoreRelocatedEntities);
+          Timer.DelayCall(RestoreRelocatedEntities);
 
         if (m_Owner == null && Friends.Count == 0 && CoOwners.Count == 0)
           Timer.DelayCall(TimeSpan.FromSeconds(10.0), Delete);
@@ -2757,7 +2751,7 @@ namespace Server.Multis
         BaseHouse house = houses[i];
 
         if (trans == null && house.CoOwners.Count == 0)
-          Timer.DelayCall(TimeSpan.Zero, house.Delete);
+          Timer.DelayCall(house.Delete);
         else
           house.Owner = trans;
       }

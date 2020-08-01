@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 
 namespace Server.Items
@@ -118,7 +117,7 @@ namespace Server.Items
           }
       }
 
-      Timer.DelayCall(TimeSpan.Zero, Refresh);
+      Timer.DelayCall(Refresh);
     }
   }
 }

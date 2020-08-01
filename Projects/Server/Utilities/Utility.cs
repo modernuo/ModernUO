@@ -493,19 +493,8 @@ namespace Server
       return dy > 0 ? Direction.Left : Direction.Up;
     }
 
-    public static object GetArrayCap(Array array, int index, object emptyValue = null)
-    {
-      if (array.Length > 0)
-      {
-        if (index < 0)
-          index = 0;
-        else if (index >= array.Length) index = array.Length - 1;
-
-        return array.GetValue(index);
-      }
-
-      return emptyValue;
-    }
+    public static object GetArrayCap(Array array, int index, object emptyValue = null) =>
+      array.Length > 0 ? array.GetValue(Math.Clamp(index, 0, array.Length - 1)) : emptyValue;
 
     public static SkillName RandomSkill() =>
       m_AllSkills[Random(m_AllSkills.Length - (Core.ML ? 0 : Core.SE ? 1 : Core.AOS ? 3 : 6))];
@@ -1002,5 +991,12 @@ namespace Server
     /// </summary>
     public static int RandomBrightHue() =>
       RandomDouble() < 0.1 ? RandomList(0x62, 0x71) : RandomList(0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T> =>
+      val.CompareTo(min) < 0 ? min : val.CompareTo(max) > 0 ? max : val;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TimeSpan Max(this TimeSpan val, TimeSpan max) => val > max ? max : val;
   }
 }

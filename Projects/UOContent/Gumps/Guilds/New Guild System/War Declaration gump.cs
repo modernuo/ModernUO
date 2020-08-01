@@ -83,11 +83,9 @@ namespace Server.Guilds
                 TextRelay tWarLength = info.GetTextEntry(10);
 
                 int maxKills = tKills == null
-                  ? 0
-                  : Math.Max(Math.Min(Utility.ToInt32(info.GetTextEntry(11).Text), 0xFFFF), 0);
-                TimeSpan warLength = TimeSpan.FromHours(tWarLength == null
-                  ? 0
-                  : Math.Max(Math.Min(Utility.ToInt32(info.GetTextEntry(10).Text), 0xFFFF), 0));
+                  ? 0 : Math.Clamp(Utility.ToInt32(info.GetTextEntry(11).Text), 0, 0xFFFF);
+                TimeSpan warLength = TimeSpan.FromHours(tWarLength == null ? 0
+                  : Math.Clamp(Utility.ToInt32(info.GetTextEntry(10).Text), 0, 0xFFFF));
 
                 if (war != null)
                 {

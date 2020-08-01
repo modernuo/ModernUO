@@ -49,7 +49,7 @@ namespace Server.Guilds
       }
 
       m_List.Sort(m_Comparer);
-      m_StartNumber = Math.Max(Math.Min(m_StartNumber, m_List.Count - 1), 0);
+      m_StartNumber = Math.Clamp(m_StartNumber, 0, m_List.Count - 1);
 
       AddBackground(130, 75, 385, 30, 0xBB8);
       AddTextEntry(135, 80, 375, 30, 0x481, 1, m_Filter);

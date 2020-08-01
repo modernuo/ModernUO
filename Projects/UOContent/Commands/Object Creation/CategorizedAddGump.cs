@@ -91,12 +91,7 @@ namespace Server.Gumps
 
       CAGNode[] nodes = m_Category.Nodes;
 
-      int count = nodes.Length - page * EntryCount;
-
-      if (count < 0)
-        count = 0;
-      else if (count > EntryCount)
-        count = EntryCount;
+      int count = Math.Clamp(nodes.Length - page * EntryCount, 0, EntryCount);
 
       int totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
 

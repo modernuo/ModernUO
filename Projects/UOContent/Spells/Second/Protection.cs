@@ -131,12 +131,7 @@ namespace Server.Spells.Second
                                  Caster.Skills.Inscribe.Value);
             value /= 4;
 
-            if (value < 0)
-              value = 0;
-            else if (value > 75)
-              value = 75.0;
-
-            Registry.Add(Caster, value);
+            Registry.Add(Caster, Math.Clamp(value, 0.0, 75.0));
             new InternalTimer(Caster).Start();
 
             Caster.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
@@ -158,11 +153,7 @@ namespace Server.Spells.Second
 
       public InternalTimer(Mobile caster) : base(TimeSpan.FromSeconds(0))
       {
-        double val = caster.Skills.Magery.Value * 2.0;
-        if (val < 15)
-          val = 15;
-        else if (val > 240)
-          val = 240;
+        double val = Math.Clamp(caster.Skills.Magery.Value * 2.0, 15, 240);
 
         m_Caster = caster;
         Delay = TimeSpan.FromSeconds(val);

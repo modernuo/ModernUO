@@ -164,11 +164,10 @@ namespace Server.Spells
     public virtual int GetNewAosDamage(int bonus, uint dice, uint sides, bool playerVsPlayer, double scalar)
     {
       int damage = Utility.Dice(dice, sides, bonus) * 100;
-      int damageBonus = 0;
 
       int inscribeSkill = GetInscribeFixed(Caster);
       int inscribeBonus = (inscribeSkill + 1000 * (inscribeSkill / 1000)) / 200;
-      damageBonus += inscribeBonus;
+      int damageBonus = inscribeBonus;
 
       int intBonus = Caster.Int / 10;
       damageBonus += intBonus;
@@ -197,27 +196,10 @@ namespace Server.Spells
       return damage / 100;
     }
 
-    public virtual bool ConsumeReagents()
-    {
-      if (Scroll != null || !Caster.Player)
-        return true;
-
-      if (AosAttributes.GetValue(Caster, AosAttribute.LowerRegCost) > Utility.Random(100))
-        return true;
-
-      if (DuelContext.IsFreeConsume(Caster))
-        return true;
-
-      Container pack = Caster.Backpack;
-
-      if (pack == null)
-        return false;
-
-      if (pack.ConsumeTotal(Info.Reagents, Info.Amounts) == -1)
-        return true;
-
-      return false;
-    }
+    public virtual bool ConsumeReagents() =>
+      Scroll != null || !Caster.Player ||
+      AosAttributes.GetValue(Caster, AosAttribute.LowerRegCost) > Utility.Random(100) ||
+      DuelContext.IsFreeConsume(Caster) || Caster.Backpack?.ConsumeTotal(Info.Reagents, Info.Amounts) == -1;
 
     public virtual double GetInscribeSkill(Mobile m) => m.Skills.Inscribe.Value;
 
@@ -541,10 +523,7 @@ namespace Server.Spells
       if (Core.AOS)
         return TimeSpan.Zero;
 
-      double delay = 1.0 - Math.Sqrt((Core.TickCount - StartCastTime) / 1000.0 / GetCastDelay().TotalSeconds);
-
-      if (delay < 0.2)
-        delay = 0.2;
+      double delay = Math.Max(1.0 - Math.Sqrt((Core.TickCount - StartCastTime) / 1000.0 / GetCastDelay().TotalSeconds), 0.2);
 
       return TimeSpan.FromSeconds(delay);
     }
@@ -554,9 +533,7 @@ namespace Server.Spells
       if (!Core.AOS)
         return NextSpellDelay;
 
-      int fcr = AosAttributes.GetValue(Caster, AosAttribute.CastRecovery);
-
-      fcr -= ThunderstormSpell.GetCastRecoveryMalus(Caster);
+      int fcr = AosAttributes.GetValue(Caster, AosAttribute.CastRecovery) - ThunderstormSpell.GetCastRecoveryMalus(Caster);
 
       int fcrDelay = -(CastRecoveryFastScalar * fcr);
 
@@ -585,13 +562,10 @@ namespace Server.Spells
       int fcMax = 4;
 
       if (CastSkill == SkillName.Magery || CastSkill == SkillName.Necromancy ||
-          (CastSkill == SkillName.Chivalry && Caster.Skills.Magery.Value >= 70.0))
+          CastSkill == SkillName.Chivalry && Caster.Skills.Magery.Value >= 70.0)
         fcMax = 2;
 
-      int fc = AosAttributes.GetValue(Caster, AosAttribute.CastSpeed);
-
-      if (fc > fcMax)
-        fc = fcMax;
+      int fc = Math.Min(AosAttributes.GetValue(Caster, AosAttribute.CastSpeed), fcMax);
 
       if (ProtectionSpell.Registry.ContainsKey(Caster))
         fc -= 2;
@@ -599,18 +573,9 @@ namespace Server.Spells
       if (EssenceOfWindSpell.IsDebuffed(Caster))
         fc -= EssenceOfWindSpell.GetFCMalus(Caster);
 
-      TimeSpan baseDelay = CastDelayBase;
-
       TimeSpan fcDelay = TimeSpan.FromSeconds(-(CastDelayFastScalar * fc * CastDelaySecondsPerTick));
 
-      // int delay = CastDelayBase + circleDelay + fcDelay;
-      TimeSpan delay = baseDelay + fcDelay;
-
-      if (delay < CastDelayMinimum)
-        delay = CastDelayMinimum;
-
-      // return TimeSpan.FromSeconds( (double)delay / CastDelayPerSecond );
-      return delay;
+      return (CastDelayBase + fcDelay).Max(CastDelayMinimum);
     }
 
     public virtual void FinishSequence()
@@ -632,8 +597,8 @@ namespace Server.Spells
         DoFizzle();
       }
       else if (Scroll != null && !(Scroll is Runebook) &&
-               (Scroll.Amount <= 0 || Scroll.Deleted || Scroll.RootParent != Caster || (Scroll is BaseWand baseWand &&
-                (baseWand.Charges <= 0 || baseWand.Parent != Caster))))
+               (Scroll.Amount <= 0 || Scroll.Deleted || Scroll.RootParent != Caster || Scroll is BaseWand baseWand &&
+                 (baseWand.Charges <= 0 || baseWand.Parent != Caster)))
       {
         DoFizzle();
       }

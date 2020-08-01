@@ -59,12 +59,7 @@ namespace Server.Spells.Fourth
 
         if (Core.AOS)
         {
-          int toDrain = 40 + (int)(GetDamageSkill(Caster) - GetResistSkill(m));
-
-          if (toDrain < 0)
-            toDrain = 0;
-          else if (toDrain > m.Mana)
-            toDrain = m.Mana;
+          int toDrain = Math.Clamp(40 + (int)(GetDamageSkill(Caster) - GetResistSkill(m)), 0, m.Mana);
 
           if (m_Table.Contains(m))
             toDrain = 0;
@@ -77,7 +72,7 @@ namespace Server.Spells.Fourth
             m.Mana -= toDrain;
 
             m_Table.Add(m);
-            Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => AosDelay_Callback(m, toDrain));
+            Timer.DelayCall(TimeSpan.FromSeconds(5.0), AosDelay_Callback, m, toDrain);
           }
         }
         else

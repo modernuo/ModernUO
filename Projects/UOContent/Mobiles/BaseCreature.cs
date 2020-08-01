@@ -411,7 +411,7 @@ namespace Server.Mobiles
     public int Loyalty
     {
       get => m_Loyalty;
-      set => m_Loyalty = Math.Min(Math.Max(value, 0), MaxLoyalty);
+      set => m_Loyalty = Math.Clamp(value, 0, MaxLoyalty);
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -871,10 +871,12 @@ namespace Server.Mobiles
         int SkillBonus = taming - (int)(dMinTameSkill * 10);
         int LoreBonus = lore - (int)(dMinTameSkill * 10);
 
-        int SkillMod = 6, LoreMod = 6;
+        int SkillMod = 6;
+        int LoreMod = 6;
 
         if (SkillBonus < 0)
           SkillMod = 28;
+
         if (LoreBonus < 0)
           LoreMod = 14;
 
@@ -2045,7 +2047,7 @@ namespace Server.Mobiles
     public virtual void CheckedAnimate(int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
     {
       if (!Mounted)
-        this.Animate(action, frameCount, repeatCount, forward, repeat, delay);
+        Animate(action, frameCount, repeatCount, forward, repeat, delay);
     }
 
     private void CheckAIActive()
@@ -2138,7 +2140,7 @@ namespace Server.Mobiles
         Timer.DelayCall(TimeSpan.FromSeconds(5.0), ReleaseGuardLock);
 
         m_NoDupeGuards = m;
-        Timer.DelayCall(TimeSpan.Zero, ReleaseGuardDupeLock);
+        Timer.DelayCall(ReleaseGuardDupeLock);
       }
     }
 
@@ -3297,7 +3299,7 @@ namespace Server.Mobiles
         if (Owners == null || Owners.Count == 0)
           return null;
 
-        return Owners[Owners.Count - 1];
+        return Owners[^1];
       }
     }
 
@@ -4026,11 +4028,8 @@ namespace Server.Mobiles
       if (theirSkill.Lock != SkillLock.Up)
         return TeachResult.SkillNotRaisable;
 
-      int freePoints = m.Skills.Cap - m.Skills.Total;
+      int freePoints = Math.Max(m.Skills.Cap - m.Skills.Total, 0);
       int freeablePoints = 0;
-
-      if (freePoints < 0)
-        freePoints = 0;
 
       for (int i = 0; freePoints + freeablePoints < pointsToLearn && i < m.Skills.Length; ++i)
       {

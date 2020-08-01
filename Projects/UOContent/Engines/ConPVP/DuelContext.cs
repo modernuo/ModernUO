@@ -114,7 +114,7 @@ namespace Server.Engines.ConPVP
 
     public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
     {
-      Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
+      Timer.DelayCall(ts, DelayBounce_Callback, mob, corpse);
     }
 
     public static bool AllowSpecialMove(Mobile from, string name, SpecialMove move) => (from as PlayerMobile)?.DuelContext?.InstAllowSpecialMove(from, name, move) != false;

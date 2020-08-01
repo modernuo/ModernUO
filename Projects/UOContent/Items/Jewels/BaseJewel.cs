@@ -129,7 +129,7 @@ namespace Server.Items
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
     {
-      Type resourceType = typeRes ?? craftItem.Resources.GetAt(0).ItemType;
+      Type resourceType = typeRes ?? craftItem.Resources[0].ItemType;
 
       Resource = CraftResources.GetFromType(resourceType);
 
@@ -140,7 +140,7 @@ namespace Server.Items
 
       if (craftItem.Resources.Count > 1)
       {
-        resourceType = craftItem.Resources.GetAt(1).ItemType;
+        resourceType = craftItem.Resources[1].ItemType;
 
         if (resourceType == typeof(StarSapphire))
           GemType = GemType.StarSapphire;
@@ -302,7 +302,7 @@ namespace Server.Items
       if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
         list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
 
-      this.AddResistanceProperties(list);
+      AddResistanceProperties(list);
 
       if (m_HitPoints >= 0 && m_MaxHitPoints > 0)
         list.Add(1060639, "{0}\t{1}", m_HitPoints, m_MaxHitPoints); // durability ~1_val~ / ~2_val~

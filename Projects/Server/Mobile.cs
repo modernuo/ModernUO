@@ -1486,7 +1486,7 @@ namespace Server
                   AddToBackpack(item.Items[j]);
                 }
 
-              Timer.DelayCall(TimeSpan.Zero, item.Delete);
+              Timer.DelayCall(item.Delete);
             }
           }
 
@@ -1811,10 +1811,7 @@ namespace Server
 
         if (m_Kills != value)
         {
-          m_Kills = value;
-
-          if (m_Kills < 0)
-            m_Kills = 0;
+          m_Kills = Math.Max(value, 0);
 
           if (oldValue >= 5 != m_Kills >= 5)
           {
@@ -1834,12 +1831,7 @@ namespace Server
       set
       {
         if (m_ShortTermMurders != value)
-        {
-          m_ShortTermMurders = value;
-
-          if (m_ShortTermMurders < 0)
-            m_ShortTermMurders = 0;
-        }
+          m_ShortTermMurders = Math.Max(value, 0);
       }
     }
 
@@ -5250,9 +5242,8 @@ namespace Server
 
         OnDamage(amount, from, newHits < 0);
 
-        var m = Mount;
-        if (m != null && informMount)
-          m.OnRiderDamaged(amount, from, newHits < 0);
+        if (informMount)
+          Mount?.OnRiderDamaged(amount, from, newHits < 0);
 
         if (newHits < 0)
         {

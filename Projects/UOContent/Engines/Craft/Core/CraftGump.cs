@@ -186,7 +186,7 @@ namespace Server.Engines.Craft
       {
         int index = i % 10;
 
-        CraftSubRes subResource = res.GetAt(i);
+        CraftSubRes subResource = res[i];
 
         if (index == 0)
         {
@@ -279,15 +279,14 @@ namespace Server.Engines.Craft
         return;
       }
 
-      CraftGroupCol craftGroupCol = m_CraftSystem.CraftGroups;
-      CraftGroup craftGroup = craftGroupCol.GetAt(selectedGroup);
-      CraftItemCol craftItemCol = craftGroup.CraftItems;
+      CraftGroup craftGroup = m_CraftSystem.CraftGroups[selectedGroup];
+      List<CraftItem> craftItemCol = craftGroup.CraftItems;
 
       for (int i = 0; i < craftItemCol.Count; ++i)
       {
         int index = i % 10;
 
-        CraftItem craftItem = craftItemCol.GetAt(i);
+        CraftItem craftItem = craftItemCol[i];
 
         if (index == 0)
         {
@@ -319,14 +318,14 @@ namespace Server.Engines.Craft
 
     public int CreateGroupList()
     {
-      CraftGroupCol craftGroupCol = m_CraftSystem.CraftGroups;
+      List<CraftGroup> craftGroupCol = m_CraftSystem.CraftGroups;
 
       AddButton(15, 60, 4005, 4007, GetButtonID(6, 3));
       AddHtmlLocalized(50, 63, 150, 18, 1044014, LabelColor); // LAST TEN
 
       for (int i = 0; i < craftGroupCol.Count; i++)
       {
-        CraftGroup craftGroup = craftGroupCol.GetAt(i);
+        CraftGroup craftGroup = craftGroupCol[i];
 
         AddButton(15, 80 + i * 20, 4005, 4007, GetButtonID(0, i));
 
@@ -378,7 +377,7 @@ namespace Server.Engines.Craft
       int index = buttonID / 7;
 
       CraftSystem system = m_CraftSystem;
-      CraftGroupCol groups = system.CraftGroups;
+      List<CraftGroup> groups = system.CraftGroups;
       CraftContext context = system.GetContext(m_From);
 
       switch (type)
@@ -405,10 +404,10 @@ namespace Server.Engines.Craft
 
             if (groupIndex >= 0 && groupIndex < groups.Count)
             {
-              CraftGroup group = groups.GetAt(groupIndex);
+              CraftGroup group = groups[groupIndex];
 
               if (index >= 0 && index < group.CraftItems.Count)
-                CraftItem(group.CraftItems.GetAt(index));
+                CraftItem(group.CraftItems[index]);
             }
 
             break;
@@ -422,10 +421,10 @@ namespace Server.Engines.Craft
 
             if (groupIndex >= 0 && groupIndex < groups.Count)
             {
-              CraftGroup group = groups.GetAt(groupIndex);
+              CraftGroup group = groups[groupIndex];
 
               if (index >= 0 && index < group.CraftItems.Count)
-                m_From.SendGump(new CraftGumpItem(m_From, system, group.CraftItems.GetAt(index), m_Tool));
+                m_From.SendGump(new CraftGumpItem(m_From, system, group.CraftItems[index], m_Tool));
             }
 
             break;

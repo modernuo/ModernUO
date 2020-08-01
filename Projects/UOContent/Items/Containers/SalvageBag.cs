@@ -57,7 +57,7 @@ namespace Server.Items
         if (craftItem == null || craftItem.Resources.Count == 0)
           return false;
 
-        CraftRes craftResource = craftItem.Resources.GetAt(0);
+        CraftRes craftResource = craftItem.Resources[0];
 
         if (craftResource.Amount < 2)
           return false; // Not enough metal to resmelt

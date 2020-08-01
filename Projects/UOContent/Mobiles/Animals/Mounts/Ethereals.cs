@@ -141,10 +141,7 @@ namespace Server.Mobiles
     public void RemoveFollowers()
     {
       if (m_Rider != null)
-        m_Rider.Followers -= FollowerSlots;
-
-      if (m_Rider?.Followers < 0)
-        m_Rider.Followers = 0;
+        m_Rider.Followers -= Math.Min(m_Rider.Followers, FollowerSlots);
     }
 
     public void AddFollowers()
@@ -161,7 +158,7 @@ namespace Server.Mobiles
         return false;
       }
 
-      if ((IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this)) || !BaseMount.CheckMountAllowed(from))
+      if (IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this) || !BaseMount.CheckMountAllowed(from))
         return false;
 
       if (from.Mounted)

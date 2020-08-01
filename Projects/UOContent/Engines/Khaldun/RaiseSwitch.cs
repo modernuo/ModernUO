@@ -193,7 +193,7 @@ namespace Server.Items
 
       int version = reader.ReadEncodedInt();
 
-      Timer.DelayCall(TimeSpan.Zero, Refresh);
+      Timer.DelayCall(Refresh);
     }
   }
 }

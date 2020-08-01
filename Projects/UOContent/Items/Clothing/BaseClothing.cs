@@ -151,7 +151,7 @@ namespace Server.Items
 
       if (DefaultResource != CraftResource.None)
       {
-        Type resourceType = typeRes ?? craftItem.Resources.GetAt(0).ItemType;
+        Type resourceType = typeRes ?? craftItem.Resources[0].ItemType;
 
         Resource = CraftResources.GetFromType(resourceType);
       }
@@ -200,16 +200,16 @@ namespace Server.Items
 
       CraftItem item = system.CraftItems.SearchFor(GetType());
 
-      if (item?.Resources.Count == 1 && item.Resources.GetAt(0).Amount >= 2)
+      if (item?.Resources.Count == 1 && item.Resources[0].Amount >= 2)
         try
         {
           CraftResourceInfo info = CraftResources.GetInfo(m_Resource);
 
-          Type resourceType = info.ResourceTypes?[0] ?? item.Resources.GetAt(0).ItemType;
+          Type resourceType = info.ResourceTypes?[0] ?? item.Resources[0].ItemType;
 
           Item res = (Item)ActivatorUtil.CreateInstance(resourceType);
 
-          ScissorHelper(from, res, PlayerConstructed ? item.Resources.GetAt(0).Amount / 2 : 1);
+          ScissorHelper(from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
 
           res.LootType = LootType.Regular;
 
@@ -262,12 +262,10 @@ namespace Server.Items
 
     public virtual int OnHit(BaseWeapon weapon, int damageTaken)
     {
-      int Absorbed = Utility.RandomMinMax(1, 4);
+      int absorbed = Utility.RandomMinMax(1, 4);
 
-      damageTaken -= Absorbed;
-
-      if (damageTaken < 0)
-        damageTaken = 0;
+      // Don't go below zero
+      damageTaken = Math.Min(absorbed, damageTaken);
 
       if (Utility.Random(100) < 25) // 25% chance to lower durability
       {
@@ -280,7 +278,7 @@ namespace Server.Items
           int wear;
 
           if (weapon.Type == WeaponType.Bashing)
-            wear = Absorbed / 2;
+            wear = absorbed / 2;
           else
             wear = Utility.Random(2);
 
@@ -338,13 +336,8 @@ namespace Server.Items
       InvalidateProperties();
     }
 
-    public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
-    {
-      if (!Ethic.CheckTrade(from, to, newOwner, this))
-        return false;
-
-      return base.AllowSecureTrade(from, to, newOwner, accepted);
-    }
+    public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted) =>
+      Ethic.CheckTrade(from, to, newOwner, this) && base.AllowSecureTrade(from, to, newOwner, accepted);
 
     public override bool CanEquip(Mobile from)
     {
@@ -406,14 +399,13 @@ namespace Server.Items
       return AOS.Scale(v, 100 - GetLowerStatReq());
     }
 
-    public int ComputeStatBonus(StatType type)
-    {
-      if (type == StatType.Str)
-        return BaseStrBonus + Attributes.BonusStr;
-      if (type == StatType.Dex)
-        return BaseDexBonus + Attributes.BonusDex;
-      return BaseIntBonus + Attributes.BonusInt;
-    }
+    public int ComputeStatBonus(StatType type) =>
+      type switch
+      {
+        StatType.Str => BaseStrBonus + Attributes.BonusStr,
+        StatType.Dex => BaseDexBonus + Attributes.BonusDex,
+        _ => BaseIntBonus + Attributes.BonusInt
+      };
 
     public virtual void AddStatBonuses(Mobile parent)
     {
@@ -533,26 +525,19 @@ namespace Server.Items
       clothing.ClothingAttributes = new AosArmorAttributes(newItem, ClothingAttributes);
     }
 
-    public override bool AllowEquippedCast(Mobile from)
-    {
-      if (base.AllowEquippedCast(from))
-        return true;
-
-      return Attributes.SpellChanneling != 0;
-    }
+    public override bool AllowEquippedCast(Mobile from) => base.AllowEquippedCast(from) || Attributes.SpellChanneling != 0;
 
     public override bool CheckPropertyConflict(Mobile m)
     {
       if (base.CheckPropertyConflict(m))
         return true;
 
-      if (Layer == Layer.Pants)
-        return m.FindItemOnLayer(Layer.InnerLegs) != null;
-
-      if (Layer == Layer.Shirt)
-        return m.FindItemOnLayer(Layer.InnerTorso) != null;
-
-      return false;
+      return Layer switch
+      {
+        Layer.Pants => m.FindItemOnLayer(Layer.InnerLegs) != null,
+        Layer.Shirt => m.FindItemOnLayer(Layer.InnerTorso) != null,
+        _ => false
+      };
     }
 
     private string GetNameString() => Name ?? $"#{LabelNumber}";
@@ -693,7 +678,7 @@ namespace Server.Items
       if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
         list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
 
-      this.AddResistanceProperties(list);
+      AddResistanceProperties(list);
 
       if ((prop = ClothingAttributes.DurabilityBonus) > 0)
         list.Add(1060410, prop.ToString()); // durability ~1_val~%

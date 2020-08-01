@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Server.Ethics.Evil;
 using Server.Ethics.Hero;
@@ -203,7 +202,7 @@ namespace Server.Ethics
               Player pl = new Player(this, reader);
 
               if (pl.Mobile != null)
-                Timer.DelayCall(TimeSpan.Zero, pl.CheckAttach);
+                Timer.DelayCall(pl.CheckAttach);
             }
 
             break;

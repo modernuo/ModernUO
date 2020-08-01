@@ -354,7 +354,7 @@ namespace Server.Items
       }
 
       if (m_UsesRemaining != oldUses)
-        Timer.DelayCall(TimeSpan.Zero, InvalidateProperties);
+        Timer.DelayCall(InvalidateProperties);
     }
 
     public override void OnSingleClick(Mobile from)
