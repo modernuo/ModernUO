@@ -633,7 +633,7 @@ namespace Server.Items
                   fish = new StrippedFlakeFish();
                   break;
                 }
-              case 5:
+              default: // 5
                 {
                   message = 1074365; // A new creature has hatched overnight in the tank.
                   fish = new StrippedSosarianSwill();

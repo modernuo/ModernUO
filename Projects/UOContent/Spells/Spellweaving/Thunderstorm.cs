@@ -33,14 +33,9 @@ namespace Server.Spells.Spellweaving
 
         int sdiBonus = AosAttributes.GetValue(Caster, AosAttribute.SpellDamage);
 
-        int pvmDamage = damage * (100 + sdiBonus);
-        pvmDamage /= 100;
+        int pvmDamage = damage * (100 + sdiBonus) / 100;
 
-        if (sdiBonus > 15)
-          sdiBonus = 15;
-
-        int pvpDamage = damage * (100 + sdiBonus);
-        pvpDamage /= 100;
+        int pvpDamage = damage * (100 + Math.Min(sdiBonus, 15)) / 100;
 
         int range = 2 + FocusLevel;
         TimeSpan duration = TimeSpan.FromSeconds(5 + FocusLevel);

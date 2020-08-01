@@ -1,9 +1,9 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Engines.Craft
 {
-  public class CraftSubResCol : CollectionBase
+  public class CraftSubResCol : List<CraftSubRes>
   {
     public CraftSubResCol() => Init = false;
 
@@ -15,29 +15,13 @@ namespace Server.Engines.Craft
 
     public int NameNumber { get; set; }
 
-    public void Add(CraftSubRes craftSubRes)
-    {
-      List.Add(craftSubRes);
-    }
-
-    public void Remove(int index)
-    {
-      if (index > Count - 1 || index < 0)
-      {
-      }
-      else
-      {
-        List.RemoveAt(index);
-      }
-    }
-
-    public CraftSubRes GetAt(int index) => (CraftSubRes)List[index];
+    public CraftSubRes GetAt(int index) => this[index];
 
     public CraftSubRes SearchFor(Type type)
     {
-      for (int i = 0; i < List.Count; i++)
+      for (int i = 0; i < Count; i++)
       {
-        CraftSubRes craftSubRes = (CraftSubRes)List[i];
+        CraftSubRes craftSubRes = this[i];
         if (craftSubRes.ItemType == type) return craftSubRes;
       }
 

@@ -493,19 +493,8 @@ namespace Server
       return dy > 0 ? Direction.Left : Direction.Up;
     }
 
-    public static object GetArrayCap(Array array, int index, object emptyValue = null)
-    {
-      if (array.Length > 0)
-      {
-        if (index < 0)
-          index = 0;
-        else if (index >= array.Length) index = array.Length - 1;
-
-        return array.GetValue(index);
-      }
-
-      return emptyValue;
-    }
+    public static object GetArrayCap(Array array, int index, object emptyValue = null) =>
+      array.Length > 0 ? array.GetValue(Math.Clamp(index, 0, array.Length - 1)) : emptyValue;
 
     public static SkillName RandomSkill() =>
       m_AllSkills[Random(m_AllSkills.Length - (Core.ML ? 0 : Core.SE ? 1 : Core.AOS ? 3 : 6))];

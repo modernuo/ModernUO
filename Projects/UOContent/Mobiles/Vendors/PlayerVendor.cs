@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
 using Server.Ethics;
@@ -326,16 +327,10 @@ namespace Server.Mobiles
       {
         if (BaseHouse.NewVendorSystem) return ChargePerRealWorldDay / 12;
 
-        long total = 0;
-        foreach (VendorItem vi in m_SellItems.Values)
-          total += vi.Price;
+        long total = m_SellItems.Values.Aggregate<VendorItem, long>(0, (current, vi) =>
+          current + vi.Price) - 500;
 
-        total -= 500;
-
-        if (total < 0)
-          total = 0;
-
-        return (int)(20 + total / 500);
+        return (int)(20 + Math.Max(total, 0) / 500);
       }
     }
 
@@ -345,9 +340,7 @@ namespace Server.Mobiles
       {
         if (BaseHouse.NewVendorSystem)
         {
-          long total = 0;
-          foreach (VendorItem vi in m_SellItems.Values)
-            total += vi.Price;
+          long total = m_SellItems.Values.Aggregate<VendorItem, long>(0, (current, vi) => current + vi.Price);
 
           return (int)(60 + total / 500 * 3);
         }

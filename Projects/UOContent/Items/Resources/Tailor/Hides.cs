@@ -121,7 +121,7 @@ namespace Server.Items
         return false;
       }
 
-      this.ScissorHelper(from, new Leather(), 1);
+      ScissorHelper(from, new Leather(), 1);
 
       return true;
     }
@@ -163,7 +163,7 @@ namespace Server.Items
         return false;
       }
 
-      this.ScissorHelper(from, new SpinedLeather(), 1);
+      ScissorHelper(from, new SpinedLeather(), 1);
 
       return true;
     }
@@ -205,7 +205,7 @@ namespace Server.Items
         return false;
       }
 
-      this.ScissorHelper(from, new HornedLeather(), 1);
+      ScissorHelper(from, new HornedLeather(), 1);
 
       return true;
     }
@@ -247,7 +247,7 @@ namespace Server.Items
         return false;
       }
 
-      this.ScissorHelper(from, new BarbedLeather(), 1);
+      ScissorHelper(from, new BarbedLeather(), 1);
 
       return true;
     }

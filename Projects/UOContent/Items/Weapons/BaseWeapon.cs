@@ -105,7 +105,7 @@ namespace Server.Items
 
       PlayerConstructed = true;
 
-      Type resourceType = typeRes ?? craftItem.Resources.GetAt(0).ItemType;
+      Type resourceType = typeRes ?? craftItem.Resources[0].ItemType;
 
       if (Core.AOS)
       {
@@ -824,10 +824,7 @@ namespace Server.Items
       if (shield != null)
       {
         // As per OSI, no genitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
-        chance = (parry - bushidoNonRacial) / 400.0;
-
-        if (chance < 0) // chance shouldn't go below 0
-          chance = 0;
+        chance = Math.Max((parry - bushidoNonRacial) / 400.0, 0);
 
         // Parry/Bushido over 100 grants a 5% bonus.
         if (parry >= 100.0 || bushido >= 100.0)
@@ -2067,7 +2064,7 @@ namespace Server.Items
           list.Add(entry.Title);
       }
 
-      this.AddResistanceProperties(list);
+      AddResistanceProperties(list);
 
       int prop;
 

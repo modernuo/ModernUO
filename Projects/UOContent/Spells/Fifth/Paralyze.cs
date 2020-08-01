@@ -56,10 +56,7 @@ namespace Server.Spells.Fifth
           if (!m.Player)
             secs *= 3;
 
-          if (secs < 0)
-            secs = 0;
-
-          duration = secs;
+          duration = Math.Max(secs, 0);
         }
         else
         {

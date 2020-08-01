@@ -262,16 +262,8 @@ namespace Server.Spells.Necromancy
       double necromancy = caster.Skills.Necromancy.Value;
       double spiritSpeak = caster.Skills.SpiritSpeak.Value;
 
-      int casterAbility = (int)(necromancy * 30);
-      casterAbility += (int)(spiritSpeak * 70);
-      casterAbility /= 10;
-      casterAbility *= 18;
-
-      if (casterAbility > owner.Fame)
-        casterAbility = owner.Fame;
-
-      if (casterAbility < 0)
-        casterAbility = 0;
+      int casterAbility = (int)(necromancy * 30) + (int)(spiritSpeak * 70);
+      casterAbility = Math.Clamp(casterAbility / 10 * 18, 0, owner.Fame);
 
       Type toSummon = null;
       SummonEntry[] entries = group.m_Entries;

@@ -114,7 +114,7 @@ namespace Server.Spells.Ninjitsu
         double baseDamage = ninjitsu / divisor * 10;
 
         int maxDamage = info.m_Steps >= 5 ? 62 : 22;
-        damage = Math.Max(0, Math.Min(maxDamage, (int)(baseDamage + stalkingBonus))) + info.m_DamageBonus;
+        damage = Math.Clamp((int)(baseDamage + stalkingBonus), 0, maxDamage) + info.m_DamageBonus;
       }
 
       if (Core.ML)

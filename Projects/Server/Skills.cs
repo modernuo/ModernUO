@@ -183,12 +183,7 @@ namespace Server
       get => m_Base;
       set
       {
-        if (value < 0)
-          value = 0;
-        else if (value >= 0x10000)
-          value = 0xFFFF;
-
-        var sv = (ushort)value;
+        var sv = (ushort)Math.Clamp(value, 0, 0xFFFF);
 
         int oldBase = m_Base;
 
@@ -219,12 +214,7 @@ namespace Server
       get => m_Cap;
       set
       {
-        if (value < 0)
-          value = 0;
-        else if (value >= 0x10000)
-          value = 0xFFFF;
-
-        var sv = (ushort)value;
+        var sv = (ushort)Math.Clamp(value, 0, 0xFFFF);
 
         if (m_Cap != sv)
         {

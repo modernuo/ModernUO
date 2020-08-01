@@ -1831,7 +1831,7 @@ namespace Server
       set
       {
         if (m_ShortTermMurders != value)
-          m_ShortTermMurders = Math.Min(value, 0);
+          m_ShortTermMurders = Math.Max(value, 0);
       }
     }
 

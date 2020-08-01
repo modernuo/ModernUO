@@ -17,7 +17,7 @@ namespace Server.Commands.Generic
     {
       if (command.ValidateArgs(this, new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args)))
         from.BeginTarget(-1, command.ObjectTypes == ObjectTypes.All, TargetFlags.None,
-          (m, targeted) => OnTarget(m, targeted, command, args));
+          (m, targeted, a) => OnTarget(m, targeted, command, a), args);
     }
 
     public void OnTarget(Mobile from, object targeted, BaseCommand command, string[] args)
@@ -26,7 +26,7 @@ namespace Server.Commands.Generic
       {
         from.SendLocalizedMessage(500447); // That is not accessible.
         from.BeginTarget(-1, command.ObjectTypes == ObjectTypes.All, TargetFlags.None,
-          (m, t) => OnTarget(m, t, command, args));
+          (m, t, a) => OnTarget(m, t, command, a), args);
         return;
       }
 
@@ -67,7 +67,7 @@ namespace Server.Commands.Generic
       RunCommand(from, targeted, command, args);
 
       from.BeginTarget(-1, command.ObjectTypes == ObjectTypes.All, TargetFlags.None,
-        (m, t) => OnTarget(m, t, command, args));
+        (m, t, a) => OnTarget(m, t, command, a), args);
     }
   }
 }

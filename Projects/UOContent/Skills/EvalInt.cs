@@ -51,14 +51,8 @@ namespace Server.SkillHandlers
           int mana = targ.Mana * 100 / Math.Max(targ.ManaMax, 1) +
                      Utility.RandomMinMax(-marginOfError, +marginOfError);
 
-          int intMod = intel / 10;
-          int mnMod = mana / 10;
-
-          if (intMod > 10) intMod = 10;
-          else if (intMod < 0) intMod = 0;
-
-          if (mnMod > 10) mnMod = 10;
-          else if (mnMod < 0) mnMod = 0;
+          int intMod = Math.Clamp(intel / 10, 0, 10);
+          int mnMod = Math.Clamp(mana / 10, 0, 10);
 
           int body;
 

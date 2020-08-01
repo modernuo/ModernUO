@@ -1,3 +1,4 @@
+using System;
 using Server.Network;
 
 namespace Server.Gumps
@@ -107,12 +108,7 @@ namespace Server.Gumps
       int x = BorderSize + OffsetSize;
       int y = BorderSize + OffsetSize;
 
-      int count = node.Categories.Length + node.Locations.Length - page * EntryCount;
-
-      if (count < 0)
-        count = 0;
-      else if (count > EntryCount)
-        count = EntryCount;
+      int count = Math.Clamp(node.Categories.Length + node.Locations.Length - page * EntryCount, 0, EntryCount);
 
       int totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
 

@@ -601,16 +601,10 @@ namespace Server.Multis
       return (int)(hpe.Vendors * BonusStorageScalar);
     }
 
-    public virtual bool CanPlaceNewVendor()
-    {
-      if (!IsAosRules)
-        return true;
-
-      if (!NewVendorSystem)
-        return CheckAosLockdowns(10);
-
-      return PlayerVendors.Count + VendorRentalContracts.Count < GetNewVendorSystemMaxVendors();
-    }
+    public virtual bool CanPlaceNewVendor() =>
+      !IsAosRules || (!NewVendorSystem
+        ? CheckAosLockdowns(10)
+        : PlayerVendors.Count + VendorRentalContracts.Count < GetNewVendorSystemMaxVendors());
 
     public virtual bool CanPlaceNewBarkeep() => PlayerBarkeepers.Count < MaximumBarkeepCount;
 
@@ -1261,9 +1255,9 @@ namespace Server.Multis
       if (LockDowns == null)
         return;
 
-      int x = this.Location.X - oldLocation.X;
-      int y = this.Location.Y - oldLocation.Y;
-      int z = this.Location.Z - oldLocation.Z;
+      int x = Location.X - oldLocation.X;
+      int y = Location.Y - oldLocation.Y;
+      int z = Location.Z - oldLocation.Z;
 
       if (Sign?.Deleted == false)
         Sign.Location = new Point3D(Sign.X + x, Sign.Y + y, Sign.Z + z);

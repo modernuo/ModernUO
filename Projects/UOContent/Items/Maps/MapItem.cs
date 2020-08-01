@@ -160,15 +160,8 @@ namespace Server.Items
 
     public virtual void Validate(ref int x, ref int y)
     {
-      if (x < 0)
-        x = 0;
-      else if (x >= Width)
-        x = Width - 1;
-
-      if (y < 0)
-        y = 0;
-      else if (y >= Height)
-        y = Height - 1;
+      x = Math.Clamp(x, 0, Width - 1);
+      y = Math.Clamp(y, 0, Height - 1);
     }
 
     public virtual bool ValidateEdit(Mobile from) => m_Editable && Validate(from);

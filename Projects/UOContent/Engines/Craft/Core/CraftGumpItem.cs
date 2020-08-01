@@ -136,7 +136,7 @@ namespace Server.Engines.Craft
     {
       for (int i = 0; i < m_CraftItem.Skills.Count; i++)
       {
-        CraftSkill skill = m_CraftItem.Skills.GetAt(i);
+        CraftSkill skill = m_CraftItem.Skills[i];
         double minSkill = skill.MinSkill;
 
         if (minSkill < 0)
@@ -191,7 +191,7 @@ namespace Server.Engines.Craft
         resIndex = m_CraftItem.UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
 
       bool cropScroll = m_CraftItem.Resources.Count > 1
-                        && m_CraftItem.Resources.GetAt(m_CraftItem.Resources.Count - 1).ItemType == typeofBlankScroll
+                        && m_CraftItem.Resources[^1].ItemType == typeofBlankScroll
                         && typeofSpellScroll.IsAssignableFrom(m_CraftItem.ItemType);
 
       for (int i = 0; i < m_CraftItem.Resources.Count - (cropScroll ? 1 : 0) && i < 4; i++)
@@ -200,7 +200,7 @@ namespace Server.Engines.Craft
         string nameString;
         int nameNumber;
 
-        CraftRes craftResource = m_CraftItem.Resources.GetAt(i);
+        CraftRes craftResource = m_CraftItem.Resources[i];
 
         type = craftResource.ItemType;
         nameString = craftResource.NameString;

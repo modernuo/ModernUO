@@ -40,7 +40,7 @@ namespace Server.Diagnostics
 
     public long Count { get; private set; }
 
-    public TimeSpan AverageTime => TimeSpan.FromTicks(TotalTime.Ticks / Math.Max(1, Count));
+    public TimeSpan AverageTime => TimeSpan.FromTicks(TotalTime.Ticks / Math.Max(Count, 1));
 
     public TimeSpan PeakTime { get; private set; }
 

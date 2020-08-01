@@ -292,7 +292,7 @@ namespace Server.Engines.ConPVP
 
         if (list.Count > 0)
         {
-          Point3D p = list[list.Count - 1];
+          Point3D p = list[^1];
 
           if (p.X != ix || p.Y != iy || p.Z != iz)
             list.Add(new Point3D(ix, iy, iz));
@@ -307,7 +307,7 @@ namespace Server.Engines.ConPVP
         z += zslp;
       }
 
-      if (list.Count > 0 && list[list.Count - 1] != dest)
+      if (list.Count > 0 && list[^1] != dest)
         list.Add(dest);
 
       /*if (dist3d > 4 && ( dest.X != org.X || dest.Y != org.Y ))

@@ -43,7 +43,7 @@ namespace Server
 
   public delegate void TimerStateCallback<in T>(T state);
 
-  public class Timer
+  public partial class Timer
   {
     private static readonly Queue<Timer> m_Queue = new Queue<Timer>();
 

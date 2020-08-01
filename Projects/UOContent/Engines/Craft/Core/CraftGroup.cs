@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Server.Engines.Craft
 {
   public class CraftGroup
@@ -6,10 +8,10 @@ namespace Server.Engines.Craft
     {
       NameNumber = groupName;
       NameString = groupName;
-      CraftItems = new CraftItemCol();
+      CraftItems = new List<CraftItem>();
     }
 
-    public CraftItemCol CraftItems { get; }
+    public List<CraftItem> CraftItems { get; }
 
     public string NameString { get; }
 

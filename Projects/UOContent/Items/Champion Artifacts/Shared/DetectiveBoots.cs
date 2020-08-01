@@ -30,7 +30,7 @@ namespace Server.Items
       get => m_Level;
       set
       {
-        m_Level = Math.Max(Math.Min(2, value), 0);
+        m_Level = Math.Clamp(value, 0, 2);
         Attributes.BonusInt = 2 + m_Level;
         InvalidateProperties();
       }

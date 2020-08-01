@@ -33,7 +33,7 @@ namespace Server.Items
 
     public void Carve(Mobile from, Item item)
     {
-      this.ScissorHelper(from, new RawFishSteak(), Math.Max(16, (int)Weight) / 4, false);
+      ScissorHelper(from, new RawFishSteak(), Math.Max(16, (int)Weight) / 4, false);
     }
 
     public override void GetProperties(ObjectPropertyList list)

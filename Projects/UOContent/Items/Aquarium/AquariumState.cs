@@ -1,3 +1,5 @@
+using System;
+
 namespace Server.Items
 {
   public enum WaterState
@@ -27,16 +29,7 @@ namespace Server.Items
     public int State
     {
       get => m_State;
-      set
-      {
-        m_State = value;
-
-        if (m_State < 0)
-          m_State = 0;
-
-        if (m_State > 4)
-          m_State = 4;
-      }
+      set => m_State = Math.Clamp(value, 0, 4);
     }
 
     [CommandProperty(AccessLevel.GameMaster)]

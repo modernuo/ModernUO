@@ -30,8 +30,8 @@ namespace Server.Gumps
       ArtID = art;
       BodyID = body;
       LocNumber = locNum;
-      this.X = x;
-      this.Y = y;
+      X = x;
+      Y = y;
     }
 
     public int ArtID { get; }

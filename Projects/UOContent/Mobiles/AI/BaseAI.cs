@@ -1126,32 +1126,31 @@ namespace Server.Mobiles
 
       double distance = m_Mobile.GetDistanceToSqrt(target);
 
-      if (distance < 1 || distance > 15)
+      if (!(distance < 1 || distance > 15))
       {
-        if (distance < 1 && target.X == 1076 && target.Y == 450 && m_Mobile is HordeMinionFamiliar)
-          if (m_Mobile.ControlMaster is PlayerMobile pm)
-          {
-            QuestSystem qs = pm.Quest;
-
-            if (qs is DarkTidesQuest)
-            {
-              QuestObjective obj = qs.FindObjective<FetchAbraxusScrollObjective>();
-
-              if (obj?.Completed == false)
-              {
-                m_Mobile.AddToBackpack(new ScrollOfAbraxus());
-                obj.Complete();
-              }
-            }
-          }
-
-        m_Mobile.TargetLocation = null;
-        return false; // At the target or too far away
+        DoMove(m_Mobile.GetDirectionTo(target));
+        return true;
       }
 
-      DoMove(m_Mobile.GetDirectionTo(target));
+      if (distance < 1 && target.X == 1076 && target.Y == 450 && m_Mobile is HordeMinionFamiliar)
+        if (m_Mobile.ControlMaster is PlayerMobile pm)
+        {
+          QuestSystem qs = pm.Quest;
 
-      return true;
+          if (qs is DarkTidesQuest)
+          {
+            QuestObjective obj = qs.FindObjective<FetchAbraxusScrollObjective>();
+
+            if (obj?.Completed == false)
+            {
+              m_Mobile.AddToBackpack(new ScrollOfAbraxus());
+              obj.Complete();
+            }
+          }
+        }
+
+      m_Mobile.TargetLocation = null;
+      return false; // At the target or too far away
     }
 
     public virtual bool DoOrderFollow()
@@ -2099,8 +2098,7 @@ namespace Server.Mobiles
 
             if (!DoMove(dirTo, true) && needCloser)
             {
-              m_Path = new PathFollower(m_Mobile, m);
-              m_Path.Mover = DoMoveImpl;
+              m_Path = new PathFollower(m_Mobile, m) {Mover = DoMoveImpl};
 
               if (m_Path.Follow(bRun, 1))
                 m_Path = null;

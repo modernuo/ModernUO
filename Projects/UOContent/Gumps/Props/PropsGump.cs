@@ -180,12 +180,7 @@ namespace Server.Gumps
     {
       m_Page = page;
 
-      int count = m_List.Count - page * EntryCount;
-
-      if (count < 0)
-        count = 0;
-      else if (count > EntryCount)
-        count = EntryCount;
+      int count = Math.Clamp(m_List.Count - page * EntryCount, 0, EntryCount);
 
       int lastIndex = page * EntryCount + count - 1;
 

@@ -423,12 +423,7 @@ namespace Server.Factions
       int factorKillPts = 100 + kp * 2;
       int factorGameTime = 50 + (int)(gameTime.Ticks * 100 / TimeSpan.TicksPerDay);
 
-      int totalFactor = factorSkills * factorKillPts * Math.Max(factorGameTime, 100) / 10000;
-
-      if (totalFactor > 100)
-        totalFactor = 100;
-      else if (totalFactor < 0)
-        totalFactor = 0;
+      int totalFactor = Math.Clamp(factorSkills * factorKillPts * Math.Max(factorGameTime, 100) / 10000, 0, 100);
 
       return new object[] { From, Address, Time, totalFactor };
     }

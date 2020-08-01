@@ -259,7 +259,7 @@ namespace Server.Engines.Quests
 
         From.SendGump(new QuestObjectivesGump(Objectives));
 
-        QuestObjective last = Objectives[Objectives.Count - 1];
+        QuestObjective last = Objectives[^1];
 
         if (last.Info != null)
           From.SendGump(new QuestItemInfoGump(last.Info));
@@ -276,7 +276,7 @@ namespace Server.Engines.Quests
 
         From.SendGump(new QuestConversationsGump(Conversations));
 
-        QuestConversation last = Conversations[Conversations.Count - 1];
+        QuestConversation last = Conversations[^1];
 
         if (last.Info != null)
           From.SendGump(new QuestItemInfoGump(last.Info));

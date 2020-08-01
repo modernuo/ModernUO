@@ -358,7 +358,7 @@ namespace Server.Items
           hues[n.X, n.Y] = NodeHue.Blue;
         }
 
-        Node lastNode = path[path.Length - 1];
+        Node lastNode = path[^1];
         hues[lastNode.X, lastNode.Y] = NodeHue.Red;
 
         for (int i = 0; i < sideLength; i++)

@@ -22,73 +22,76 @@ namespace Server
 
     public override bool Use(Mobile user)
     {
-      if (Movable)
-        user.BeginTarget(12, true, TargetFlags.None, (from, obj) =>
-        {
-          if (Movable && !Deleted)
-            if (obj is IPoint3D pt)
-            {
-              SpellHelper.GetSurfaceTop(ref pt);
+      if (!Movable) return false;
 
-              Point3D origin = new Point3D(pt);
-              Map facet = from.Map;
+      user.BeginTarget(12, true, TargetFlags.None, (from, obj, stormsEye) =>
+      {
+        if (!stormsEye.Movable || stormsEye.Deleted || !(obj is IPoint3D pt)) return;
 
-              if (facet?.CanFit(pt.X, pt.Y, pt.Z, 16, false, false) != true)
-                return;
+        SpellHelper.GetSurfaceTop(ref pt);
 
-              Movable = false;
+        Point3D origin = new Point3D(pt);
+        Map facet = from.Map;
 
-              Effects.SendMovingEffect(
-                from, new Entity(Serial.Zero, origin, facet),
-                ItemID & 0x3FFF, 7, 0, false, false, Hue - 1);
+        if (facet?.CanFit(pt.X, pt.Y, pt.Z, 16, false, false) != true)
+          return;
 
-              Timer.DelayCall(TimeSpan.FromSeconds(0.5), () =>
-              {
-                Delete();
+        stormsEye.Movable = false;
 
-                Effects.PlaySound(origin, facet, 530);
-                Effects.PlaySound(origin, facet, 263);
+        Effects.SendMovingEffect(
+          from, new Entity(Serial.Zero, origin, facet),
+          ItemID & 0x3FFF, 7, 0, false, false, Hue - 1);
 
-                Effects.SendLocationEffect(
-                  origin, facet,
-                  14284, 96, 1, 0, 2);
-
-                Timer.DelayCall(TimeSpan.FromSeconds(1.0), () =>
-                {
-                  List<Mobile> targets = facet.GetMobilesInRange(origin, 12).Where(mob =>
-                    from.CanBeHarmful(mob, false) && mob.InLOS(new Point3D(origin, origin.Z + 1)) &&
-                    Faction.Find(mob) != null).ToList();
-
-                  foreach (Mobile mob in targets)
-                  {
-                    int damage = mob.Hits * 6 / 10;
-
-                    if (!mob.Player && damage < 10)
-                      damage = 10;
-                    else if (damage > 75)
-                      damage = 75;
-
-                    Effects.SendMovingEffect(
-                      new Entity(Serial.Zero, new Point3D(origin, origin.Z + 4), facet), mob,
-                      14068, 1, 32, false, false, 1111, 2);
-
-                    from.DoHarmful(mob);
-
-                    SpellHelper.Damage(TimeSpan.FromSeconds(0.50), mob, from, damage / 3.0, 0, 0, 0, 0,
-                      100);
-                    SpellHelper.Damage(TimeSpan.FromSeconds(0.70), mob, from, damage / 3.0, 0, 0, 0, 0,
-                      100);
-                    SpellHelper.Damage(TimeSpan.FromSeconds(1.00), mob, from, damage / 3.0, 0, 0, 0, 0,
-                      100);
-
-                    Timer.DelayCall(TimeSpan.FromSeconds(0.50), mob.PlaySound, 0x1FB);
-                  }
-                });
-              });
-            }
-        });
+        Timer.DelayCall(TimeSpan.FromSeconds(0.5), OnDelay, from, stormsEye, origin, facet);
+      }, this);
 
       return false;
+    }
+
+    private static void OnDelay(Mobile from, StormsEye stormsEye, Point3D origin, Map facet)
+    {
+      stormsEye.Delete();
+
+      Effects.PlaySound(origin, facet, 530);
+      Effects.PlaySound(origin, facet, 263);
+
+      Effects.SendLocationEffect(
+        origin, facet,
+        14284, 96, 1, 0, 2);
+
+      Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnHit, from, origin, facet);
+    }
+
+    private static void OnHit(Mobile from, Point3D origin, Map facet)
+    {
+      List<Mobile> targets = facet.GetMobilesInRange(origin, 12).Where(mob =>
+        from.CanBeHarmful(mob, false) && mob.InLOS(new Point3D(origin, origin.Z + 1)) &&
+        Faction.Find(mob) != null).ToList();
+
+      foreach (Mobile mob in targets)
+      {
+        int damage = mob.Hits * 6 / 10;
+
+        if (!mob.Player && damage < 10)
+          damage = 10;
+        else if (damage > 75)
+          damage = 75;
+
+        Effects.SendMovingEffect(
+          new Entity(Serial.Zero, new Point3D(origin, origin.Z + 4), facet), mob,
+          14068, 1, 32, false, false, 1111, 2);
+
+        from.DoHarmful(mob);
+
+        SpellHelper.Damage(TimeSpan.FromSeconds(0.50), mob, from, damage / 3.0, 0, 0, 0, 0,
+          100);
+        SpellHelper.Damage(TimeSpan.FromSeconds(0.70), mob, from, damage / 3.0, 0, 0, 0, 0,
+          100);
+        SpellHelper.Damage(TimeSpan.FromSeconds(1.00), mob, from, damage / 3.0, 0, 0, 0, 0,
+          100);
+
+        Timer.DelayCall(TimeSpan.FromSeconds(0.50), mob.PlaySound, 0x1FB);
+      }
     }
 
     public override void Serialize(IGenericWriter writer)

@@ -1,3 +1,5 @@
+using System;
+
 namespace Server.Items
 {
   /// <summary>
@@ -44,8 +46,7 @@ namespace Server.Items
       --weapon.PoisonCharges;
 
       // Infectious strike special move now uses poisoning skill to help determine potency
-      int maxLevel = attacker.Skills.Poisoning.Fixed / 200;
-      if (maxLevel < 0) maxLevel = 0;
+      int maxLevel = Math.Max(attacker.Skills.Poisoning.Fixed / 200, 0);
       if (p.Level > maxLevel) p = Poison.GetPoison(maxLevel);
 
       if (attacker.Skills.Poisoning.Value / 100.0 > Utility.RandomDouble())

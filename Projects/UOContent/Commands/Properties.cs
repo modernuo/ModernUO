@@ -196,7 +196,7 @@ namespace Server.Commands
         }
       }
 
-      return chain[chain.Length - 1];
+      return chain[^1];
     }
 
     public static string GetValue(Mobile from, object o, string name)
@@ -328,7 +328,7 @@ namespace Server.Commands
         concat[i * 2 + 1] = i < chain.Length - 1 ? "." : " = ";
       }
 
-      concat[concat.Length - 1] = toString;
+      concat[^1] = toString;
 
       return string.Concat(concat);
     }
@@ -654,7 +654,7 @@ namespace Server
         if (!IsBound)
           throw new NotYetBoundException(this);
 
-        return m_Chain[m_Chain.Length - 1].PropertyType;
+        return m_Chain[^1].PropertyType;
       }
     }
 

@@ -479,7 +479,7 @@ namespace Server.Items
       if (makersMark)
         Crafter = from;
 
-      Type resourceType = typeRes ?? craftItem.Resources.GetAt(0).ItemType;
+      Type resourceType = typeRes ?? craftItem.Resources[0].ItemType;
 
       Resource = CraftResources.GetFromType(resourceType);
       PlayerConstructed = true;
@@ -547,12 +547,12 @@ namespace Server.Items
 
       CraftItem item = system.CraftItems.SearchFor(GetType());
 
-      if (item?.Resources.Count == 1 && item.Resources.GetAt(0).Amount >= 2)
+      if (item?.Resources.Count == 1 && item.Resources[0].Amount >= 2)
         try
         {
           Item res = (Item)ActivatorUtil.CreateInstance(CraftResources.GetInfo(m_Resource).ResourceTypes[0]);
 
-          ScissorHelper(from, res, PlayerConstructed ? item.Resources.GetAt(0).Amount / 2 : 1);
+          ScissorHelper(from, res, PlayerConstructed ? item.Resources[0].Amount / 2 : 1);
           return true;
         }
         catch
@@ -623,9 +623,8 @@ namespace Server.Items
       double halfar = ArmorRating / 2.0;
       int absorbed = (int)(halfar + halfar * Utility.RandomDouble());
 
-      damageTaken -= absorbed;
-      if (damageTaken < 0)
-        damageTaken = 0;
+      // Don't go below zero
+      damageTaken = Math.Min(absorbed, damageTaken);
 
       if (absorbed < 2)
         absorbed = 2;
@@ -1584,7 +1583,7 @@ namespace Server.Items
       if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
         list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
 
-      this.AddResistanceProperties(list);
+      AddResistanceProperties(list);
 
       if ((prop = GetDurabilityBonus()) > 0)
         list.Add(1060410, prop.ToString()); // durability ~1_val~%

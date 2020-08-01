@@ -37,7 +37,7 @@ namespace Server
       fileStream = FileOperations.OpenSequentialStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
 
       fileQueue = new FileQueue(
-        Math.Max(1, FileOperations.Concurrency),
+        Math.Max(FileOperations.Concurrency, 1),
         FileCallback);
     }
 

@@ -65,7 +65,7 @@ namespace Server.Items
       get => m_SkillLevel;
       set
       {
-        m_SkillLevel = Math.Max(Math.Min(value, 120.0), 0);
+        m_SkillLevel = Math.Clamp(value, 0, 120.0);
         InvalidateProperties();
       }
     }

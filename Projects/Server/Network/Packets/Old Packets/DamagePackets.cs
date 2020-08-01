@@ -18,6 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+
 namespace Server.Network
 {
   public sealed class DamagePacketOld : Packet
@@ -30,12 +32,7 @@ namespace Server.Network
       Stream.Write((byte)1);
       Stream.Write(mobile);
 
-      if (amount > 255)
-        amount = 255;
-      else if (amount < 0)
-        amount = 0;
-
-      Stream.Write((byte)amount);
+      Stream.Write((byte)Math.Clamp(amount, 0, 255));
     }
   }
 
@@ -45,12 +42,7 @@ namespace Server.Network
     {
       Stream.Write(mobile);
 
-      if (amount > 0xFFFF)
-        amount = 0xFFFF;
-      else if (amount < 0)
-        amount = 0;
-
-      Stream.Write((ushort)amount);
+      Stream.Write((ushort)Math.Clamp(amount, 0, 0xFFFF));
     }
   }
 }

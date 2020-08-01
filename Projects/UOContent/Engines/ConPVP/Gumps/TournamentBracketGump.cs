@@ -657,7 +657,7 @@ namespace Server.Engines.ConPVP
       m_PerPage = perPage;
 
       index = Math.Max(m_Page * perPage, 0);
-      count = Math.Max(Math.Min(m_List.Count - index, perPage), 0);
+      count = Math.Clamp(m_List.Count - index, 0, perPage);
 
       y = 53 + (12 - perPage) * 18;
 

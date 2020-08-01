@@ -54,11 +54,11 @@ namespace Server.Engines.Craft
           foreach (KeyValuePair<int, Recipe> kvp in Recipes)
             mobile.AcquireRecipe(kvp.Key);
 
-          m.SendMessage("You teach them all of the recipes.");
+          from.SendMessage("You teach them all of the recipes.");
         }
         else
         {
-          m.SendMessage("That is not a player!");
+          from.SendMessage("That is not a player!");
         }
       });
     }
@@ -70,17 +70,17 @@ namespace Server.Engines.Craft
       Mobile m = e.Mobile;
       m.SendMessage("Target a player to have them forget all of the recipes they've learned.");
 
-      m.BeginTarget(-1, false, TargetFlags.None, delegate(Mobile from, object targeted)
+      m.BeginTarget(-1, false, TargetFlags.None, (from, targeted) =>
       {
         if (targeted is PlayerMobile mobile)
         {
           mobile.ResetRecipes();
 
-          m.SendMessage("They forget all their recipes.");
+          from.SendMessage("They forget all their recipes.");
         }
         else
         {
-          m.SendMessage("That is not a player!");
+          from.SendMessage("That is not a player!");
         }
       });
     }

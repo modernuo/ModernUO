@@ -1,3 +1,4 @@
+using System;
 using Server.Targeting;
 
 namespace Server.Spells.Seventh
@@ -49,11 +50,6 @@ namespace Server.Spells.Seventh
 
           if (!m.Player)
             toDrain /= 2;
-
-          if (toDrain < 0)
-            toDrain = 0;
-          else if (toDrain > m.Mana)
-            toDrain = m.Mana;
         }
         else
         {
@@ -63,10 +59,7 @@ namespace Server.Spells.Seventh
             toDrain = m.Mana;
         }
 
-        if (toDrain > Caster.ManaMax - Caster.Mana)
-          toDrain = Caster.ManaMax - Caster.Mana;
-
-        m.Mana -= toDrain;
+        m.Mana -= Math.Clamp(toDrain, 0, Math.Min(m.Mana, Caster.ManaMax - Caster.Mana));
         Caster.Mana += toDrain;
 
         if (Core.AOS)

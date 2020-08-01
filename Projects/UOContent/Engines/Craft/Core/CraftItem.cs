@@ -32,8 +32,8 @@ namespace Server.Engines.Craft
 
     public CraftItem(Type type, TextDefinition groupName, TextDefinition name)
     {
-      Resources = new CraftResCol();
-      Skills = new CraftSkillCol();
+      Resources = new List<CraftRes>();
+      Skills = new List<CraftSkill>();
 
       ItemType = type;
 
@@ -82,9 +82,9 @@ namespace Server.Engines.Craft
 
     public int NameNumber { get; }
 
-    public CraftResCol Resources { get; }
+    public List<CraftRes> Resources { get; }
 
-    public CraftSkillCol Skills { get; }
+    public List<CraftSkill> Skills { get; }
 
     public void AddRecipe(int id, CraftSystem system)
     {
@@ -452,7 +452,7 @@ namespace Server.Engines.Craft
       CraftRes res;
       for (int i = 0; i < types.Length; ++i)
       {
-        CraftRes craftRes = Resources.GetAt(i);
+        CraftRes craftRes = Resources[i];
         Type baseType = craftRes.ItemType;
 
         // Resource Mutation
@@ -490,7 +490,7 @@ namespace Server.Engines.Craft
 
             if (maxAmount == 0)
             {
-              res = Resources.GetAt(i);
+              res = Resources[i];
 
               if (res.MessageNumber > 0)
                 message = res.MessageNumber;
@@ -599,7 +599,7 @@ namespace Server.Engines.Craft
         return true;
       }
 
-      res = Resources.GetAt(index);
+      res = Resources[index];
 
       if (res.MessageNumber > 0)
         message = res.MessageNumber;
@@ -692,7 +692,7 @@ namespace Server.Engines.Craft
 
       for (int i = 0; i < Skills.Count; i++)
       {
-        CraftSkill craftSkill = Skills.GetAt(i);
+        CraftSkill craftSkill = Skills[i];
 
         double minSkill = craftSkill.MinSkill;
         double maxSkill = craftSkill.MaxSkill;

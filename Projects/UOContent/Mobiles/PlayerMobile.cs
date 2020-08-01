@@ -685,7 +685,7 @@ namespace Server.Mobiles
       m_LastPersonalLight = personal;
 
       ns.Send(GlobalLightLevel.Instantiate(global));
-      ns.Send(new PersonalLightLevel(this.Serial, personal));
+      ns.Send(new PersonalLightLevel(Serial, personal));
     }
 
     public override int GetMinResistance(ResistanceType type)
@@ -2592,7 +2592,7 @@ namespace Server.Mobiles
     public virtual void CheckedAnimate(int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
     {
       if (!Mounted)
-        this.Animate(action, frameCount, repeatCount, forward, repeat, delay);
+        Animate(action, frameCount, repeatCount, forward, repeat, delay);
     }
 
     public override bool CanSee(Item item) => DesignContext?.Foundation.IsHiddenToCustomizer(item) != true && base.CanSee(item);
@@ -4351,15 +4351,12 @@ namespace Server.Mobiles
       {
         m_Values ??= new TitleInfo[ChampionSpawnInfo.Table.Length];
 
-        if (value < 0)
-          value = 0;
-
         if (index < 0 || index >= m_Values.Length)
           return;
 
         m_Values[index] ??= new TitleInfo();
 
-        m_Values[index].Value = value;
+        m_Values[index].Value = Math.Max(value, 0);
       }
 
       public void Award(int index, int value)
@@ -4385,10 +4382,7 @@ namespace Server.Mobiles
 
         int before = m_Values[index].Value;
 
-        if (m_Values[index].Value - value < 0)
-          m_Values[index].Value = 0;
-        else
-          m_Values[index].Value -= value;
+        m_Values[index].Value -= Math.Min(value, m_Values[index].Value);
 
         if (before != m_Values[index].Value)
           m_Values[index].LastDecay = DateTime.UtcNow;
