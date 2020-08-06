@@ -211,7 +211,7 @@ namespace Server.Engines.Help
 
       bool isStaffOnline = false;
 
-      foreach (NetState ns in TcpServer.Instances)
+      foreach (NetState ns in TcpServer.ConnectedClients)
       {
         Mobile m = ns.Mobile;
 

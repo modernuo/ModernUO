@@ -17,19 +17,10 @@
     <Delete Files="..\..\Distribution\Assemblies\Argon2.Bindings.dll" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\BouncyCastle.Crypto.dll" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\MailKit.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Assemblies\Microsoft.AspNetCore.Connections.Abstractions.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Assemblies\Microsoft.AspNetCore.Http.Features.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Assemblies\Microsoft.Extensions.Configuration.Abstractions.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Assemblies\Microsoft.Extensions.DependencyInjection.Abstractions.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Assemblies\Microsoft.Extensions.FileProviders.Abstractions.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Assemblies\Microsoft.Extensions.Hosting.Abstractions.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Assemblies\Microsoft.Extensions.Logging.Abstractions.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Assemblies\Microsoft.Extensions.Primitives.dll" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\MimeKit.dll" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).dll" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).deps.json" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).pdb" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Assemblies\System.IO.Pipelines.dll" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\libargon2.dll" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\libargon2.dylib" ContinueOnError="true" />
     <Delete Files="..\..\Distribution\Assemblies\libargon2.so" ContinueOnError="true" />
@@ -61,12 +52,6 @@
     <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
       <IncludeInPackage>false</IncludeInPackage>
     </ProjectReference>
-    <!-- Transient package version resolution -->
-    <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.5" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
-    <!-- Direct packages -->
     <PackageReference Include="MailKit" Version="2.7.0" />
     <PackageReference Include="Zlib.Bindings" Version="1.1.0" />
     <PackageReference Include="Argon2.Bindings" Version="1.5.1" />

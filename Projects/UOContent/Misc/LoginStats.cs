@@ -12,7 +12,7 @@ namespace Server.Misc
 
     private static void EventSink_Login(Mobile m)
     {
-      int userCount = TcpServer.Instances.Count;
+      int userCount = TcpServer.ConnectedClients.Count;
       int itemCount = World.Items.Count;
       int mobileCount = World.Mobiles.Count;
 

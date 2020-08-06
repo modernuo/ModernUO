@@ -3,7 +3,7 @@
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
  * File: TcpServer.cs                                                    *
- * Created: 2020/04/12 - Updated: 2020/04/12                             *
+ * Created: 2020/04/12 - Updated: 2020/08/06                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -21,64 +21,102 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Connections;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+using System.Net.Sockets;
 
 namespace Server.Network
 {
   public static class TcpServer
   {
-    // Make this thread safe
-    public static List<NetState> Instances { get; } = new List<NetState>();
+    public static IPEndPoint[] ListeningAddresses { get; private set; }
+    public static TcpListener[] Listeners { get; private set; }
+    public static List<NetState> ConnectedClients { get; } = new List<NetState>(128);
 
-    private static IPAddress[] m_ListeningAddresses;
-
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args = null) =>
-      WebHost.CreateDefaultBuilder(args)
-        .UseSetting(WebHostDefaults.SuppressStatusMessagesKey, "True")
-        .ConfigureServices(services => { services.AddSingleton<IMessagePumpService>(new MessagePumpService()); })
-        .UseKestrel(options =>
-        {
-          foreach (var ipep in ServerConfiguration.Listeners)
-          {
-            options.Listen(ipep, builder => { builder.UseConnectionHandler<ServerConnectionHandler>(); });
-            m_ListeningAddresses = GetListeningAddresses(ipep);
-            DisplayListener(ipep);
-          }
-
-          // Webservices here
-        })
-        .UseLibuv()
-        .UseStartup<ServerStartup>();
-
-    public static IPAddress[] GetListeningAddresses(IPEndPoint ipep)
+    public static void Start()
     {
-      if (m_ListeningAddresses != null)
-        return m_ListeningAddresses;
+      HashSet<IPEndPoint> listeningAddresses = new HashSet<IPEndPoint>();
+      List<TcpListener> listeners = new List<TcpListener>();
 
-      var list = new List<IPAddress>();
-      foreach (var adapter in NetworkInterface.GetAllNetworkInterfaces())
+      foreach (var ipep in ServerConfiguration.Listeners)
       {
-        var properties = adapter.GetIPProperties();
-        foreach (var unicast in properties.UnicastAddresses)
-          if (ipep.AddressFamily == unicast.Address.AddressFamily)
-            list.Add(unicast.Address);
+        var listener = StartListening(ipep);
+        if (listener == null) continue;
+
+        listeners.Add(listener);
+
+        if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
+        {
+          foreach (var ip in GetListeningAddresses(ipep))
+            if (listeningAddresses.Add(ip))
+              Console.WriteLine("Listening: {0}:{1}", ip.Address, ip.Port);
+        }
+        else
+        {
+          listeningAddresses.Add(ipep);
+          Console.WriteLine("Listening: {0}:{1}", ipep.Address, ipep.Port);
+        }
+
+        AcceptSockets(listener);
       }
 
-      return list.ToArray();
+      ListeningAddresses = listeningAddresses.ToArray();
+      Listeners = listeners.ToArray();
     }
 
-    private static void DisplayListener(IPEndPoint ipep)
+    public static IEnumerable<IPEndPoint> GetListeningAddresses(IPEndPoint ipep) =>
+      NetworkInterface.GetAllNetworkInterfaces().SelectMany(adapter =>
+        adapter.GetIPProperties().UnicastAddresses
+          .Where(uip => ipep.AddressFamily == uip.Address.AddressFamily)
+          .Select(uip => new IPEndPoint(uip.Address, ipep.Port))
+      );
+
+    public static TcpListener StartListening(IPEndPoint ipep)
     {
-      if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
-        foreach (var ip in m_ListeningAddresses)
-          Console.WriteLine("Listening: {0}:{1}", ip, ipep.Port);
-      else
-        Console.WriteLine("Listening: {0}:{1}", ipep.Address, ipep.Port);
+      var listener = new TcpListener(ipep);
+      listener.Server.ExclusiveAddressUse = false;
+
+      try
+      {
+        listener.Start(8);
+        return listener;
+      }
+      catch (SocketException se)
+      {
+        // WSAEADDRINUSE
+        if (se.ErrorCode == 10048)
+        {
+          Console.WriteLine("Listener Failed: {0}:{1} (In Use)", ipep.Address, ipep.Port);
+        }
+        // WSAEADDRNOTAVAIL
+        else if (se.ErrorCode == 10049)
+        {
+          Console.WriteLine("Listener Failed: {0}:{1} (Unavailable)", ipep.Address, ipep.Port);
+        }
+        else
+        {
+          Console.WriteLine("Listener Exception:");
+          Console.WriteLine(se);
+        }
+      }
+
+      return null;
+    }
+
+    private static async void AcceptSockets(TcpListener listener)
+    {
+      while (true)
+      {
+        var socket = await listener.AcceptSocketAsync();
+
+        NetState ns = new NetState(socket);
+        ConnectedClients.Add(ns);
+        ns.Start();
+
+        if (ns.Running)
+          Console.WriteLine("Client: {0}: Connected. [{1} Online]", ns, ConnectedClients.Count);
+      }
     }
   }
 }

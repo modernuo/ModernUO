@@ -213,49 +213,52 @@ namespace Server.Mobiles
       AddButton(300 - 8 - 30, 8, 0xFAB, 0xFAD, 1);
 
       if (count == 0)
+      {
         AddHtml(8, 30, 284, 20, "<basefont color=#FFFFFF>The crier has no news.</basefont>");
-      else
-        for (int i = 0; i < entries.Count; ++i)
+        return;
+      }
+
+      for (int i = 0; i < entries!.Count; ++i)
+      {
+        TownCrierEntry tce = entries[i];
+
+        TimeSpan toExpire = tce.ExpireTime - DateTime.UtcNow;
+
+        if (toExpire < TimeSpan.Zero)
+          toExpire = TimeSpan.Zero;
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.Append("[Expires: ");
+
+        if (toExpire.TotalHours >= 1)
         {
-          TownCrierEntry tce = entries[i];
-
-          TimeSpan toExpire = tce.ExpireTime - DateTime.UtcNow;
-
-          if (toExpire < TimeSpan.Zero)
-            toExpire = TimeSpan.Zero;
-
-          StringBuilder sb = new StringBuilder();
-
-          sb.Append("[Expires: ");
-
-          if (toExpire.TotalHours >= 1)
-          {
-            sb.Append((int)toExpire.TotalHours);
-            sb.Append(':');
-            sb.Append(toExpire.Minutes.ToString("D2"));
-          }
-          else
-          {
-            sb.Append(toExpire.Minutes);
-          }
-
+          sb.Append((int)toExpire.TotalHours);
           sb.Append(':');
-          sb.Append(toExpire.Seconds.ToString("D2"));
-
-          sb.Append("] ");
-
-          for (int j = 0; j < tce.Lines.Length; ++j)
-          {
-            if (j > 0)
-              sb.Append("<br>");
-
-            sb.Append(tce.Lines[j]);
-          }
-
-          AddHtml(8, 35 + i * 85, 254, 80, sb.ToString(), true, true);
-
-          AddButton(300 - 8 - 26, 35 + i * 85, 0x15E1, 0x15E5, 2 + i);
+          sb.Append(toExpire.Minutes.ToString("D2"));
         }
+        else
+        {
+          sb.Append(toExpire.Minutes);
+        }
+
+        sb.Append(':');
+        sb.Append(toExpire.Seconds.ToString("D2"));
+
+        sb.Append("] ");
+
+        for (int j = 0; j < tce.Lines.Length; ++j)
+        {
+          if (j > 0)
+            sb.Append("<br>");
+
+          sb.Append(tce.Lines[j]);
+        }
+
+        AddHtml(8, 35 + i * 85, 254, 80, sb.ToString(), true, true);
+
+        AddButton(300 - 8 - 26, 35 + i * 85, 0x15E1, 0x15E5, 2 + i);
+      }
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

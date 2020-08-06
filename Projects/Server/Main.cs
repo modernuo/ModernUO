@@ -394,11 +394,7 @@ namespace Server
       EventSink.InvokeServerStarted();
 
       // Start net socket server
-      var host = TcpServer.CreateWebHostBuilder().Build();
-      var life = host.Services.GetRequiredService<IHostApplicationLifetime>();
-      life.ApplicationStopping.Register(() => { Kill(); });
-
-      host.Run();
+      // Run loop
     }
 
     public static void RunEventLoop(IMessagePumpService messagePumpService)

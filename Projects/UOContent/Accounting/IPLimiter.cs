@@ -30,7 +30,7 @@ namespace Server.Misc
       if (!Enabled || IsExempt(ourAddress))
         return true;
 
-      List<NetState> netStates = TcpServer.Instances;
+      List<NetState> netStates = TcpServer.ConnectedClients;
 
       int count = 0;
 

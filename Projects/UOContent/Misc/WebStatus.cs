@@ -115,7 +115,7 @@ namespace Server.Misc
 
         int index = 0;
 
-        foreach (Mobile m in TcpServer.Instances.Where(state => state.Mobile != null).Select(state => state.Mobile))
+        foreach (Mobile m in TcpServer.ConnectedClients.Where(state => state.Mobile != null).Select(state => state.Mobile))
         {
           ++index;
 

@@ -133,7 +133,7 @@ namespace Server.Gumps
             AddLabel(150, 170, LabelHue, Firewall.List.Count.ToString());
 
             AddLabel(20, 190, LabelHue, "Clients:");
-            AddLabel(150, 190, LabelHue, TcpServer.Instances.Count.ToString());
+            AddLabel(150, 190, LabelHue, TcpServer.ConnectedClients.Count.ToString());
 
             AddLabel(20, 210, LabelHue, "Mobiles:");
             AddLabel(150, 210, LabelHue, World.Mobiles.Count.ToString());
@@ -380,7 +380,7 @@ namespace Server.Gumps
           {
             if (m_List == null)
             {
-              List<NetState> states = TcpServer.Instances;
+              List<NetState> states = TcpServer.ConnectedClients;
               states.Sort(NetStateComparer.Instance);
 
               m_List = states.ToList<object>();
@@ -1931,7 +1931,7 @@ namespace Server.Gumps
 
                   if (level > AccessLevel.Player)
                   {
-                    List<NetState> clients = TcpServer.Instances;
+                    List<NetState> clients = TcpServer.ConnectedClients;
                     int count = 0;
 
                     for (int i = 0; i < clients.Count; ++i)
@@ -2019,7 +2019,7 @@ namespace Server.Gumps
                   }
                   else
                   {
-                    List<NetState> instances = TcpServer.Instances;
+                    List<NetState> instances = TcpServer.ConnectedClients;
 
                     for (int i = 0; i < instances.Count; ++i)
                     {

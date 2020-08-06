@@ -266,7 +266,7 @@ namespace Server.Network
 
     public bool Seeded { get; set; }
 
-    public ConnectionContext Connection { get; private set; }
+    public Socket Connection { get; private set; }
 
     public bool CompressionEnabled { get; set; }
 
@@ -400,7 +400,7 @@ namespace Server.Network
 
     public override string ToString() => m_ToString;
 
-    public NetState(ConnectionContext connection)
+    public NetState(Socket connection)
     {
       Connection = connection;
       Seeded = false;
@@ -422,12 +422,6 @@ namespace Server.Network
       }
 
       ConnectedOn = DateTime.UtcNow;
-
-      connection.ConnectionClosed.Register(() =>
-      {
-        TcpServer.Instances.Remove(this);
-        Dispose();
-      });
 
       CreatedCallback?.Invoke(this);
     }
@@ -616,9 +610,9 @@ namespace Server.Network
         ns.CityInfo = null;
 
         if (a != null)
-          ns.WriteConsole("Disconnected. [{0} Online] [{1}]", TcpServer.Instances.Count, a);
+          ns.WriteConsole("Disconnected. [{0} Online] [{1}]", TcpServer.ConnectedClients.Count, a);
         else
-          ns.WriteConsole("Disconnected. [{0} Online]", TcpServer.Instances.Count);
+          ns.WriteConsole("Disconnected. [{0} Online]", TcpServer.ConnectedClients.Count);
       }
     }
 

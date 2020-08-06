@@ -36,7 +36,7 @@ namespace Server.Commands.Generic
         List<object> list = new List<object>();
         List<IPAddress> addresses = new List<IPAddress>();
 
-        List<NetState> states = TcpServer.Instances;
+        List<NetState> states = TcpServer.ConnectedClients;
 
         for (int i = 0; i < states.Count; ++i)
         {

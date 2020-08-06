@@ -113,7 +113,7 @@ namespace Server.Gumps
       string filter = string.IsNullOrWhiteSpace(rawFilter) ? null : rawFilter.Trim().ToLower();
 
       List<Mobile> list = new List<Mobile>();
-      List<NetState> states = TcpServer.Instances;
+      List<NetState> states = TcpServer.ConnectedClients;
 
       for (int i = 0; i < states.Count; ++i)
       {
