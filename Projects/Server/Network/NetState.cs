@@ -26,7 +26,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Connections;
 using Server.Accounting;
 using Server.Gumps;
 using Server.HuePickers;
@@ -268,6 +267,10 @@ namespace Server.Network
 
     public Socket Connection { get; private set; }
 
+    public Pipe IncomingPipe { get; private set; }
+
+    public Pipe OutgoingPipe { get; private set; }
+
     public bool CompressionEnabled { get; set; }
 
     public int Sequence { get; set; }
@@ -400,9 +403,14 @@ namespace Server.Network
 
     public override string ToString() => m_ToString;
 
+    // TODO: Make this configurable
+    private const int pipeBufferSize = 0x20000;
+
     public NetState(Socket connection)
     {
       Connection = connection;
+      IncomingPipe = new Pipe(new byte[pipeBufferSize]);
+      OutgoingPipe = new Pipe(new byte[pipeBufferSize]);
       Seeded = false;
       Gumps = new List<Gump>();
       HuePickers = new List<HuePicker>();
@@ -436,7 +444,7 @@ namespace Server.Network
       m_AsyncState = Interlocked.Exchange(ref m_AsyncState, m_ResumeState);
     }
 
-    public virtual async void Send(Packet p)
+    public virtual void Send(Packet p)
     {
       if (Connection == null || BlockAllPackets)
       {
@@ -444,18 +452,16 @@ namespace Server.Network
         return;
       }
 
-      var outPipe = Connection.Transport.Output;
-
       try
       {
-        // TODO: Rented memory
         ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out var length);
 
         if (buffer.Length > 0 && length > 0)
         {
-          var result = await outPipe.WriteAsync(buffer.Slice(0, length));
+          var pr = OutgoingPipe.Writer.GetBytes();
+          pr.CopyFrom(buffer.Slice(0, length).Span);
 
-          if (result.IsCanceled || result.IsCompleted)
+          if (pr.IsCanceled || pr.IsCompleted)
           {
             Dispose();
             return;
@@ -477,9 +483,10 @@ namespace Server.Network
       }
     }
 
-    public async Task ProcessIncoming(IMessagePumpService messagePumpService)
+    public async void Recv()
     {
-      var inPipe = Connection.Transport.Input;
+      var writer = IncomingPipe.Writer;
+      var connection = Connection;
 
       try
       {
@@ -488,21 +495,18 @@ namespace Server.Network
           if (AsyncState.Paused)
             continue;
 
-          var result = await inPipe.ReadAsync();
-          if (result.IsCanceled || result.IsCompleted)
-            return;
+          // TODO: Guard against receiving too much data and getting an OOM from the pipe
+          // One option might be to stop receiving from the socket until pressure is relieved
+          uint bytesRead = (uint)await connection.ReceiveAsync(writer.GetBytes().Buffer, SocketFlags.None);
 
-          var seq = result.Buffer;
-
-          if (seq.IsEmpty)
+          if (bytesRead == 0)
+          {
+            writer.Complete();
             break;
+          }
 
-          var pos = PacketHandlers.ProcessPacket(messagePumpService, this, seq);
-
-          if (pos <= 0)
-            break;
-
-          inPipe.AdvanceTo(seq.Slice(0, pos).End);
+          writer.Advance(bytesRead);
+          writer.Flush();
         }
       }
       catch (SocketException ex)
@@ -517,6 +521,26 @@ namespace Server.Network
       finally
       {
         Dispose();
+      }
+    }
+
+    public void ProcessIncoming()
+    {
+      var reader = IncomingPipe.Reader;
+
+      while (true)
+      {
+        var buffer = reader.GetBytes().Buffer;
+
+        if (buffer.Length == 0)
+          break;
+
+        var pos = PacketHandlers.ProcessPacket(this, buffer);
+
+        if (pos <= 0)
+          break;
+
+        reader.Advance((uint)pos);
       }
     }
 

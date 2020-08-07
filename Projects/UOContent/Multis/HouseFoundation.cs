@@ -1612,7 +1612,7 @@ namespace Server.Multis
       context.Foundation.SendInfoTo(state);
     }
 
-    public static void QueryDesignDetails(NetState state, PacketReader pvSrc)
+    public static void QueryDesignDetails(NetState state, BufferReader pvSrc)
     {
       Mobile from = state.Mobile;
 

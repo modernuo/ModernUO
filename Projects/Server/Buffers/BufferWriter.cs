@@ -1,3 +1,25 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Email: hi@modernuo.com                                                *
+ * File: BufferWriter.cs                                                 *
+ * Created: 2020/08/05 - Updated: 2020/08/07                             *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * This program is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ * GNU General Public License for more details.                          *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
+
 using System.Buffers.Binary;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -5,13 +27,22 @@ using System.Text;
 
 namespace System.Buffers
 {
-  public ref struct PipeBufferWriter
+  public ref struct BufferWriter
   {
-    public Span<byte> First;
-    public Span<byte> Second;
+    private readonly Span<byte> m_First;
+    private readonly Span<byte> m_Second;
+    private readonly int m_Length;
+
+    public BufferWriter(Span<byte> first, Span<byte> second)
+    {
+      m_First = first;
+      m_Second = second;
+      Position = 0;
+      m_Length = first.Length + second.Length;
+    }
 
     /// <summary>
-    /// Gets or sets the current stream position.
+    /// Gets or sets the current stream m_Position.
     /// </summary>
     public int Position { get; private set; }
 
@@ -21,11 +52,11 @@ namespace System.Buffers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(byte value)
     {
-      if (Position < First.Length)
-        First[Position++] = value;
-      else if (Position < Length)
+      if (Position < m_First.Length)
+        m_First[Position++] = value;
+      else if (Position < m_Length)
       {
-        Second[Position - First.Length] = value;
+        m_Second[Position - m_First.Length] = value;
         Position++;
       }
       else
@@ -38,7 +69,10 @@ namespace System.Buffers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(bool value)
     {
-      Write((byte)(value ? 1 : 0));
+      if (value)
+        Write((byte)1);
+      else
+        Write((byte)0);
     }
 
     /// <summary>
@@ -56,9 +90,9 @@ namespace System.Buffers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(short value)
     {
-      if (Position < First.Length)
+      if (Position < m_First.Length)
       {
-        if (!BinaryPrimitives.TryWriteInt16BigEndian(First.Slice(Position), value))
+        if (!BinaryPrimitives.TryWriteInt16BigEndian(m_First.Slice(Position), value))
         {
           // Not enough space. Split the spans
           Write((byte)(value >> 8));
@@ -67,7 +101,7 @@ namespace System.Buffers
         else
           Position += 2;
       }
-      else if (BinaryPrimitives.TryWriteInt16BigEndian(Second.Slice(Position - First.Length), value))
+      else if (BinaryPrimitives.TryWriteInt16BigEndian(m_Second.Slice(Position - m_First.Length), value))
         Position += 2;
       else
         throw new OutOfMemoryException();
@@ -79,9 +113,9 @@ namespace System.Buffers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(ushort value)
     {
-      if (Position < First.Length)
+      if (Position < m_First.Length)
       {
-        if (!BinaryPrimitives.TryWriteUInt16BigEndian(First.Slice(Position), value))
+        if (!BinaryPrimitives.TryWriteUInt16BigEndian(m_First.Slice(Position), value))
         {
           // Not enough space. Split the spans
           Write((byte)(value >> 8));
@@ -90,7 +124,7 @@ namespace System.Buffers
         else
           Position += 2;
       }
-      else if (BinaryPrimitives.TryWriteUInt16BigEndian(Second.Slice(Position - First.Length), value))
+      else if (BinaryPrimitives.TryWriteUInt16BigEndian(m_Second.Slice(Position - m_First.Length), value))
         Position += 2;
       else
         throw new OutOfMemoryException();
@@ -102,9 +136,9 @@ namespace System.Buffers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(int value)
     {
-      if (Position < First.Length)
+      if (Position < m_First.Length)
       {
-        if (!BinaryPrimitives.TryWriteInt32BigEndian(First.Slice(Position), value))
+        if (!BinaryPrimitives.TryWriteInt32BigEndian(m_First.Slice(Position), value))
         {
           // Not enough space. Split the spans
           Write((byte)(value >> 24));
@@ -115,7 +149,7 @@ namespace System.Buffers
         else
           Position += 4;
       }
-      else if (BinaryPrimitives.TryWriteInt32BigEndian(Second.Slice(Position - First.Length), value))
+      else if (BinaryPrimitives.TryWriteInt32BigEndian(m_Second.Slice(Position - m_First.Length), value))
         Position += 4;
       else
         throw new OutOfMemoryException();
@@ -127,9 +161,9 @@ namespace System.Buffers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(uint value)
     {
-      if (Position < First.Length)
+      if (Position < m_First.Length)
       {
-        if (!BinaryPrimitives.TryWriteUInt32BigEndian(First.Slice(Position), value))
+        if (!BinaryPrimitives.TryWriteUInt32BigEndian(m_First.Slice(Position), value))
         {
           // Not enough space. Split the spans
           Write((byte)(value >> 24));
@@ -140,7 +174,7 @@ namespace System.Buffers
         else
           Position += 4;
       }
-      else if (BinaryPrimitives.TryWriteUInt32BigEndian(Second.Slice(Position - First.Length), value))
+      else if (BinaryPrimitives.TryWriteUInt32BigEndian(m_Second.Slice(Position - m_First.Length), value))
         Position += 4;
       else
         throw new OutOfMemoryException();
@@ -152,16 +186,16 @@ namespace System.Buffers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(Span<byte> buffer)
     {
-      if (Position < First.Length)
+      if (Position < m_First.Length)
       {
-        var sz = Math.Min(buffer.Length, First.Length - Position);
-        buffer.CopyTo(First.Slice(Position));
-        buffer.Slice(sz).CopyTo(Second);
+        var sz = Math.Min(buffer.Length, m_First.Length - Position);
+        buffer.CopyTo(m_First.Slice(Position));
+        buffer.Slice(sz).CopyTo(m_Second);
         Position += buffer.Length;
       }
-      else if (Position < Length)
+      else if (Position < m_Length)
       {
-        buffer.CopyTo(Second.Slice(Position - First.Length));
+        buffer.CopyTo(m_Second.Slice(Position - m_First.Length));
       }
       else
         throw new OutOfMemoryException();
@@ -177,20 +211,20 @@ namespace System.Buffers
 
       var src = value.AsSpan(0, Math.Min(size, value.Length));
 
-      if (Position + size > Length)
+      if (Position + size > m_Length)
         throw new OutOfMemoryException();
 
       int sz;
 
-      if (Position < First.Length)
+      if (Position < m_First.Length)
       {
-        sz = Math.Min(Encoding.ASCII.GetByteCount(src), First.Length - Position);
+        sz = Math.Min(Encoding.ASCII.GetByteCount(src), m_First.Length - Position);
 
-        size -= Encoding.ASCII.GetBytes(src.Slice(0, sz), First.Slice(Position));
+        size -= Encoding.ASCII.GetBytes(src.Slice(0, sz), m_First.Slice(Position));
         if (size > 0)
         {
           Position += src.Length;
-          First.Slice(Position, size).Clear();
+          m_First.Slice(Position, size).Clear();
           return;
         }
 
@@ -201,13 +235,13 @@ namespace System.Buffers
         sz = 0;
       }
 
-      size -= Encoding.ASCII.GetBytes(src.Slice(sz), Second.Slice(Position - First.Length));
+      size -= Encoding.ASCII.GetBytes(src.Slice(sz), m_Second.Slice(Position - m_First.Length));
       Position += src.Length - sz;
-      Second.Slice(Position - First.Length, size).Clear();
+      m_Second.Slice(Position - m_First.Length, size).Clear();
     }
 
     /// <summary>
-    /// Writes a dynamic-length ASCII-encoded string value to the underlying stream, followed by a 1-byte null character.
+    /// Writes a dynamic-Length ASCII-encoded string value to the underlying stream, followed by a 1-byte null character.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteAsciiNull(string value)
@@ -217,18 +251,18 @@ namespace System.Buffers
       var src = value.AsSpan();
       var byteCount = Encoding.ASCII.GetByteCount(src);
 
-      if (Position + byteCount + 1 > Length)
+      if (Position + byteCount + 1 > m_Length)
         throw new OutOfMemoryException();
 
-      if (Position < First.Length)
+      if (Position < m_First.Length)
       {
-        var sz = Math.Min(byteCount, First.Length - Position);
+        var sz = Math.Min(byteCount, m_First.Length - Position);
 
-        Position += Encoding.ASCII.GetBytes(src.Slice(0, sz), First.Slice(Position));
-        Position += Encoding.ASCII.GetBytes(src.Slice(sz), Second);
+        Position += Encoding.ASCII.GetBytes(src.Slice(0, sz), m_First.Slice(Position));
+        Position += Encoding.ASCII.GetBytes(src.Slice(sz), m_Second);
       }
       else
-        Position += Encoding.ASCII.GetBytes(src, Second.Slice(Position - First.Length));
+        Position += Encoding.ASCII.GetBytes(src, m_Second.Slice(Position - m_First.Length));
 
       Write((byte)0);
     }
@@ -244,35 +278,35 @@ namespace System.Buffers
       var src = value.AsSpan();
       var byteCount = Encoding.Unicode.GetByteCount(value);
 
-      if (Position + byteCount + 2 > Length)
+      if (Position + byteCount + 2 > m_Length)
         throw new OutOfMemoryException();
 
-      if (Position < First.Length)
+      if (Position < m_First.Length)
       {
-        if (Position + byteCount > First.Length)
+        if (Position + byteCount > m_First.Length)
         {
-          var remaining = First.Length - Position;
+          var remaining = m_First.Length - Position;
           var sz = Math.DivRem(remaining, 2, out int offset);
-          Position += encoding.GetBytes(src.Slice(0, sz), First.Slice(Position));
+          Position += encoding.GetBytes(src.Slice(0, sz), m_First.Slice(Position));
 
           if (offset == 0)
           {
             Span<byte> chr = stackalloc byte[2];
             encoding.GetBytes(src.Slice(sz++, 1), chr);
-            First[Position] = chr[0];
-            Second[0] = chr[1];
+            m_First[Position] = chr[0];
+            m_Second[0] = chr[1];
             Position += 2;
           }
 
-          Position += encoding.GetBytes(src.Slice(sz), Second.Slice(offset));
+          Position += encoding.GetBytes(src.Slice(sz), m_Second.Slice(offset));
         }
         else
         {
-          Position += encoding.GetBytes(src, First.Slice(Position));
+          Position += encoding.GetBytes(src, m_First.Slice(Position));
         }
       }
       else
-        Position += encoding.GetBytes(src, Second.Slice(Position - First.Length));
+        Position += encoding.GetBytes(src, m_Second.Slice(Position - m_First.Length));
 
       Write((ushort)0);
     }
@@ -289,40 +323,40 @@ namespace System.Buffers
 
       var byteCount = encoding.GetByteCount(value);
 
-      if (Position + size * 2 > Length)
+      if (Position + size * 2 > m_Length)
         throw new OutOfMemoryException();
 
       int offset;
       int sz;
 
-      if (Position < First.Length)
+      if (Position < m_First.Length)
       {
-        if (Position + byteCount > First.Length)
+        if (Position + byteCount > m_First.Length)
         {
-          var remaining = First.Length - Position;
+          var remaining = m_First.Length - Position;
           sz = Math.DivRem(remaining, 2, out offset);
-          Position += encoding.GetBytes(src.Slice(0, sz), First.Slice(Position));
+          Position += encoding.GetBytes(src.Slice(0, sz), m_First.Slice(Position));
           size -= sz;
 
           if (offset == 0)
           {
             Span<byte> chr = stackalloc byte[2];
             encoding.GetBytes(src.Slice(sz++, 1), chr);
-            First[Position] = chr[0];
-            Second[0] = chr[1];
+            m_First[Position] = chr[0];
+            m_Second[0] = chr[1];
             Position += 2;
             size--;
           }
         }
         else
         {
-          Position += encoding.GetBytes(src, First.Slice(Position));
+          Position += encoding.GetBytes(src, m_First.Slice(Position));
           size -= src.Length;
 
           if (size > 0)
           {
             Position += src.Length;
-            First.Slice(Position, size).Clear();
+            m_First.Slice(Position, size).Clear();
           }
 
           return;
@@ -330,13 +364,13 @@ namespace System.Buffers
       }
       else
       {
-        offset = Position - First.Length;
+        offset = Position - m_First.Length;
         sz = 0;
       }
 
-      size -= Encoding.ASCII.GetBytes(src.Slice(sz), Second.Slice(offset));
+      size -= Encoding.ASCII.GetBytes(src.Slice(sz), m_Second.Slice(offset));
       Position += src.Length - sz;
-      Second.Slice(Position - First.Length, size).Clear();
+      m_Second.Slice(Position - m_First.Length, size).Clear();
     }
 
     /// <summary>
@@ -376,55 +410,50 @@ namespace System.Buffers
     }
 
     /// <summary>
-    /// Fills the stream from the current position up to (capacity) with 0x00's
+    /// Fills the stream from the current m_Position up to (capacity) with 0x00's
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Fill()
     {
-      if (Position < First.Length)
+      if (Position < m_First.Length)
       {
-        First.Slice(Position).Fill(0);
-        Second.Fill(0);
+        m_First.Slice(Position).Fill(0);
+        m_Second.Fill(0);
       }
       else
-        Second.Slice(Position - First.Length).Fill(0);
+        m_Second.Slice(Position - m_First.Length).Fill(0);
 
-      Position = Length;
+      Position = m_Length;
     }
 
     /// <summary>
     /// Writes a number of 0x00 byte values to the underlying stream.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Fill(int length)
+    public void Fill(int amount)
     {
-      if (Position < First.Length)
+      if (Position < m_First.Length)
       {
-        var sz = Math.Min(length, First.Length - Position);
+        var sz = Math.Min(amount, m_First.Length - Position);
 
-        First.Slice(Position, sz).Fill(0);
-        Second.Slice(0, length - sz).Fill(0);
+        m_First.Slice(Position, sz).Fill(0);
+        m_Second.Slice(0, m_Length - sz).Fill(0);
       }
       else
-        Second.Slice(Position - First.Length, length).Fill(0);
+        m_Second.Slice(Position - m_First.Length, amount).Fill(0);
 
-      Position += length;
+      Position += amount;
     }
 
     /// <summary>
-    /// Gets the total stream length.
-    /// </summary>
-    public int Length => First.Length + Second.Length;
-
-    /// <summary>
-    /// Offsets the current position from an origin.
+    /// Offsets the current m_Position from an origin.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Seek(int offset, SeekOrigin origin) =>
       Position = origin switch
       {
         SeekOrigin.Begin => offset,
-        SeekOrigin.End => Length - offset,
+        SeekOrigin.End => m_Length - offset,
         _ => Position + offset // Current
       };
   }

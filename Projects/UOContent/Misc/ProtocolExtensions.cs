@@ -25,7 +25,7 @@ namespace Server.Misc
       return null;
     }
 
-    public static void DecodeBundledPacket(NetState state, PacketReader pvSrc)
+    public static void DecodeBundledPacket(NetState state, BufferReader pvSrc)
     {
       int packetID = pvSrc.ReadByte();
 

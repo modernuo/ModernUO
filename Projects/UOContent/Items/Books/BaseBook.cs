@@ -313,7 +313,7 @@ namespace Server.Items
       PacketHandlers.Register(0x93, 99, true, OldHeaderChange);
     }
 
-    public static void OldHeaderChange(NetState state, PacketReader pvSrc)
+    public static void OldHeaderChange(NetState state, BufferReader pvSrc)
     {
       Mobile from = state.Mobile;
 
@@ -330,7 +330,7 @@ namespace Server.Items
       book.Author = Utility.FixHtml(author);
     }
 
-    public static void HeaderChange(NetState state, PacketReader pvSrc)
+    public static void HeaderChange(NetState state, BufferReader pvSrc)
     {
       Mobile from = state.Mobile;
 
@@ -358,7 +358,7 @@ namespace Server.Items
       book.Author = Utility.FixHtml(author);
     }
 
-    public static void ContentChange(NetState state, PacketReader pvSrc)
+    public static void ContentChange(NetState state, BufferReader pvSrc)
     {
       Mobile from = state.Mobile;
 

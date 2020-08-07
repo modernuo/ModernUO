@@ -393,11 +393,11 @@ namespace Server
 
       EventSink.InvokeServerStarted();
 
-      // Start net socket server
-      // Run loop
+      TcpServer.Start();
+      RunEventLoop();
     }
 
-    public static void RunEventLoop(IMessagePumpService messagePumpService)
+    public static void RunEventLoop()
     {
       try
       {
@@ -414,11 +414,12 @@ namespace Server
 
           Task.WaitAll(
             Task.Run(Mobile.ProcessDeltaQueue),
-            Task.Run(Item.ProcessDeltaQueue));
+            Task.Run(Item.ProcessDeltaQueue)
+          );
 
           Timer.Slice();
-          messagePumpService.DoWork();
 
+          // TODO: Send Packets
           NetState.ProcessDisposedQueue();
 
           if (sample++ % sampleInterval != 0)

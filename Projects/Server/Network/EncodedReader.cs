@@ -22,9 +22,9 @@ namespace Server.Network
 {
   public ref struct EncodedReader
   {
-    private PacketReader m_Reader;
+    private BufferReader m_Reader;
 
-    public EncodedReader(PacketReader reader) => m_Reader = reader;
+    public EncodedReader(BufferReader reader) => m_Reader = reader;
 
     public void Trace(NetState state)
     {

@@ -204,7 +204,7 @@ namespace Server.Items
       PacketHandlers.Register(0x71, 0, true, BBClientRequest);
     }
 
-    public static void BBClientRequest(NetState state, PacketReader pvSrc)
+    public static void BBClientRequest(NetState state, BufferReader pvSrc)
     {
       Mobile from = state.Mobile;
 
@@ -230,7 +230,7 @@ namespace Server.Items
       }
     }
 
-    public static void BBRequestContent(Mobile from, BaseBulletinBoard board, PacketReader pvSrc)
+    public static void BBRequestContent(Mobile from, BaseBulletinBoard board, BufferReader pvSrc)
     {
       if (!(World.FindItem(pvSrc.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
         return;
@@ -238,7 +238,7 @@ namespace Server.Items
       from.Send(new BBMessageContent(board, msg));
     }
 
-    public static void BBRequestHeader(Mobile from, BaseBulletinBoard board, PacketReader pvSrc)
+    public static void BBRequestHeader(Mobile from, BaseBulletinBoard board, BufferReader pvSrc)
     {
       if (!(World.FindItem(pvSrc.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
         return;
@@ -246,7 +246,7 @@ namespace Server.Items
       from.Send(new BBMessageHeader(board, msg));
     }
 
-    public static void BBPostMessage(Mobile from, BaseBulletinBoard board, PacketReader pvSrc)
+    public static void BBPostMessage(Mobile from, BaseBulletinBoard board, BufferReader pvSrc)
     {
       BulletinMessage thread = World.FindItem(pvSrc.ReadUInt32()) as BulletinMessage;
 
@@ -287,7 +287,7 @@ namespace Server.Items
       board.PostMessage(from, thread, subject, lines);
     }
 
-    public static void BBRemoveMessage(Mobile from, BaseBulletinBoard board, PacketReader pvSrc)
+    public static void BBRemoveMessage(Mobile from, BaseBulletinBoard board, BufferReader pvSrc)
     {
       if (!(World.FindItem(pvSrc.ReadUInt32()) is BulletinMessage msg) || msg.Parent != board)
         return;

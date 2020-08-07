@@ -22,7 +22,7 @@ using System;
 
 namespace Server.Network
 {
-  public delegate void OnPacketReceive(NetState state, PacketReader pvSrc);
+  public delegate void OnPacketReceive(NetState state, BufferReader pvSrc);
 
   public delegate TimeSpan ThrottlePacketCallback(NetState state);
 

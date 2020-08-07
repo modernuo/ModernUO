@@ -275,7 +275,7 @@ namespace Server.Items
       PacketHandlers.Register(0x56, 11, true, OnMapCommand);
     }
 
-    private static void OnMapCommand(NetState state, PacketReader pvSrc)
+    private static void OnMapCommand(NetState state, BufferReader pvSrc)
     {
       Mobile from = state.Mobile;
 

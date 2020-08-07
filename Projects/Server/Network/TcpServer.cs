@@ -41,25 +41,20 @@ namespace Server.Network
 
       foreach (var ipep in ServerConfiguration.Listeners)
       {
-        var listener = StartListening(ipep);
+        var listener = CreateListener(ipep);
         if (listener == null) continue;
 
-        listeners.Add(listener);
-
         if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
-        {
-          foreach (var ip in GetListeningAddresses(ipep))
-            if (listeningAddresses.Add(ip))
-              Console.WriteLine("Listening: {0}:{1}", ip.Address, ip.Port);
-        }
+          listeningAddresses.UnionWith(GetListeningAddresses(ipep));
         else
-        {
           listeningAddresses.Add(ipep);
-          Console.WriteLine("Listening: {0}:{1}", ipep.Address, ipep.Port);
-        }
 
-        AcceptSockets(listener);
+        listeners.Add(listener);
+        listener.BeginAcceptingSockets();
       }
+
+      foreach (var ipep in listeningAddresses)
+        Console.WriteLine("Listening: {0}:{1}", ipep.Address, ipep.Port);
 
       ListeningAddresses = listeningAddresses.ToArray();
       Listeners = listeners.ToArray();
@@ -72,7 +67,7 @@ namespace Server.Network
           .Select(uip => new IPEndPoint(uip.Address, ipep.Port))
       );
 
-    public static TcpListener StartListening(IPEndPoint ipep)
+    public static TcpListener CreateListener(IPEndPoint ipep)
     {
       var listener = new TcpListener(ipep);
       listener.Server.ExclusiveAddressUse = false;
@@ -104,7 +99,7 @@ namespace Server.Network
       return null;
     }
 
-    private static async void AcceptSockets(TcpListener listener)
+    private static async void BeginAcceptingSockets(this TcpListener listener)
     {
       while (true)
       {
