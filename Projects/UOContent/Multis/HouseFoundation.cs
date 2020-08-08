@@ -318,7 +318,7 @@ namespace Server.Multis
         }
         else
         {
-          BaseDoor door = null;
+          BaseDoor door;
 
           if (itemID >= 0x675 && itemID < 0x6F5)
           {
@@ -335,7 +335,7 @@ namespace Server.Multis
               5 => new GenericHouseDoor(facing, 0x6C5, 0xEC, 0xF3),
               6 => new GenericHouseDoor(facing, 0x6D5, 0xEA, 0xF1),
               7 => new GenericHouseDoor(facing, 0x6E5, 0xEA, 0xF1),
-              _ => door
+              _ => null
             };
           }
           else if (itemID >= 0x314 && itemID < 0x364)
@@ -442,7 +442,7 @@ namespace Server.Multis
             {
               0 => new GenericHouseDoor(facing, 0x367B, 0xED, 0xF4),
               1 => new GenericHouseDoor(facing, 0x368B, 0xEC, 0x3E7),
-              _ => door
+              _ => null
             };
           }
           else if (itemID >= 0x409B && itemID < 0x40A3)
@@ -491,6 +491,7 @@ namespace Server.Multis
           {
             door = new GenericHouseDoor(GetSADoorFacing(itemID - 0x5142), itemID, 0xF0, 0xEF, false);
           }
+          else return;
 
           if (door != null)
           {
@@ -929,7 +930,7 @@ namespace Server.Multis
       }
     }
 
-    public static void Designer_Sync(NetState state, IEntity e, EncodedReader pvSrc)
+    public static void Designer_Sync(NetState state, IEntity e, EncodedReader reader)
     {
       Mobile from = state.Mobile;
 
@@ -941,7 +942,7 @@ namespace Server.Multis
       DesignContext.Find(from)?.Foundation.DesignState.SendDetailedInfoTo(state);
     }
 
-    public static void Designer_Clear(NetState state, IEntity e, EncodedReader pvSrc)
+    public static void Designer_Clear(NetState state, IEntity e, EncodedReader reader)
     {
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
@@ -971,7 +972,7 @@ namespace Server.Multis
       newDesign.SendDetailedInfoTo(state);
     }
 
-    public static void Designer_Restore(NetState state, IEntity e, EncodedReader pvSrc)
+    public static void Designer_Restore(NetState state, IEntity e, EncodedReader reader)
     {
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
@@ -1001,7 +1002,7 @@ namespace Server.Multis
       backupDesign.SendDetailedInfoTo(state);
     }
 
-    public static void Designer_Backup(NetState state, IEntity e, EncodedReader pvSrc)
+    public static void Designer_Backup(NetState state, IEntity e, EncodedReader reader)
     {
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
@@ -1021,7 +1022,7 @@ namespace Server.Multis
       context.Foundation.BackupState = copyState;
     }
 
-    public static void Designer_Revert(NetState state, IEntity e, EncodedReader pvSrc)
+    public static void Designer_Revert(NetState state, IEntity e, EncodedReader reader)
     {
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
@@ -1163,7 +1164,7 @@ namespace Server.Multis
       RestoreRelocatedEntities();
     }
 
-    public static void Designer_Commit(NetState state, IEntity e, EncodedReader pvSrc)
+    public static void Designer_Commit(NetState state, IEntity e, EncodedReader reader)
     {
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
@@ -1345,7 +1346,7 @@ namespace Server.Multis
       return true;
     }
 
-    public static void Designer_Delete(NetState state, IEntity e, EncodedReader pvSrc)
+    public static void Designer_Delete(NetState state, IEntity e, EncodedReader reader)
     {
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
@@ -1362,10 +1363,10 @@ namespace Server.Multis
          */
 
       // Read data detailing which component to delete
-      int itemID = pvSrc.ReadInt32();
-      int x = pvSrc.ReadInt32();
-      int y = pvSrc.ReadInt32();
-      int z = pvSrc.ReadInt32();
+      int itemID = reader.ReadInt32();
+      int x = reader.ReadInt32();
+      int y = reader.ReadInt32();
+      int z = reader.ReadInt32();
 
       // Verify component is deletable
       DesignState design = context.Foundation.DesignState;
@@ -1422,7 +1423,7 @@ namespace Server.Multis
         design.SendDetailedInfoTo(state);
     }
 
-    public static void Designer_Stairs(NetState state, IEntity e, EncodedReader pvSrc)
+    public static void Designer_Stairs(NetState state, IEntity e, EncodedReader reader)
     {
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
@@ -1440,9 +1441,9 @@ namespace Server.Multis
          */
 
       // Read data detailing stair type and location
-      int itemID = pvSrc.ReadInt32();
-      int x = pvSrc.ReadInt32();
-      int y = pvSrc.ReadInt32();
+      int itemID = reader.ReadInt32();
+      int x = reader.ReadInt32();
+      int y = reader.ReadInt32();
 
       // Validate stair multi ID
       DesignState design = context.Foundation.DesignState;
@@ -1493,7 +1494,7 @@ namespace Server.Multis
       }
     }
 
-    public static void Designer_Build(NetState state, IEntity e, EncodedReader pvSrc)
+    public static void Designer_Build(NetState state, IEntity e, EncodedReader reader)
     {
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
@@ -1508,9 +1509,9 @@ namespace Server.Multis
          */
 
       // Read data detailing component graphic and location
-      int itemID = pvSrc.ReadInt32();
-      int x = pvSrc.ReadInt32();
-      int y = pvSrc.ReadInt32();
+      int itemID = reader.ReadInt32();
+      int x = reader.ReadInt32();
+      int y = reader.ReadInt32();
 
       // Add component
       DesignState design = context.Foundation.DesignState;
@@ -1535,7 +1536,7 @@ namespace Server.Multis
       design.OnRevised();
     }
 
-    public static void Designer_Close(NetState state, IEntity e, EncodedReader pvSrc)
+    public static void Designer_Close(NetState state, IEntity e, EncodedReader reader)
     {
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
@@ -1578,7 +1579,7 @@ namespace Server.Multis
       context.Foundation.RestoreRelocatedEntities();
     }
 
-    public static void Designer_Level(NetState state, IEntity e, EncodedReader pvSrc)
+    public static void Designer_Level(NetState state, IEntity e, EncodedReader reader)
     {
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
@@ -1596,7 +1597,7 @@ namespace Server.Multis
          */
 
       // Read data detailing the target level
-      int newLevel = pvSrc.ReadInt32();
+      int newLevel = reader.ReadInt32();
 
       // Validate target level
       if (newLevel < 1 || newLevel > context.MaxLevels)
@@ -1612,11 +1613,11 @@ namespace Server.Multis
       context.Foundation.SendInfoTo(state);
     }
 
-    public static void QueryDesignDetails(NetState state, BufferReader pvSrc)
+    public static void QueryDesignDetails(NetState state, BufferReader reader)
     {
       Mobile from = state.Mobile;
 
-      if (World.FindItem(pvSrc.ReadUInt32()) is HouseFoundation foundation && from.Map == foundation.Map && from.InRange(foundation.GetWorldLocation(), 24) &&
+      if (World.FindItem(reader.ReadUInt32()) is HouseFoundation foundation && from.Map == foundation.Map && from.InRange(foundation.GetWorldLocation(), 24) &&
           from.CanSee(foundation))
       {
         DesignState stateToSend = DesignContext.Find(from)?.Foundation == foundation ? foundation.DesignState : foundation.CurrentState;
@@ -1624,7 +1625,7 @@ namespace Server.Multis
       }
     }
 
-    public static void Designer_Roof(NetState state, IEntity e, EncodedReader pvSrc)
+    public static void Designer_Roof(NetState state, IEntity e, EncodedReader reader)
     {
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
@@ -1633,10 +1634,10 @@ namespace Server.Multis
         return;
 
       // Read data detailing component graphic and location
-      int itemID = pvSrc.ReadInt32();
-      int x = pvSrc.ReadInt32();
-      int y = pvSrc.ReadInt32();
-      int z = pvSrc.ReadInt32();
+      int itemID = reader.ReadInt32();
+      int x = reader.ReadInt32();
+      int y = reader.ReadInt32();
+      int z = reader.ReadInt32();
 
       // Add component
       DesignState design = context.Foundation.DesignState;
@@ -1671,7 +1672,7 @@ namespace Server.Multis
       design.OnRevised();
     }
 
-    public static void Designer_RoofDelete(NetState state, IEntity e, EncodedReader pvSrc)
+    public static void Designer_RoofDelete(NetState state, IEntity e, EncodedReader reader)
     {
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
@@ -1681,10 +1682,10 @@ namespace Server.Multis
         return;
 
       // Read data detailing which component to delete
-      int itemID = pvSrc.ReadInt32();
-      int x = pvSrc.ReadInt32();
-      int y = pvSrc.ReadInt32();
-      int z = pvSrc.ReadInt32();
+      int itemID = reader.ReadInt32();
+      int x = reader.ReadInt32();
+      int y = reader.ReadInt32();
+      int z = reader.ReadInt32();
 
       // Verify component is deletable
       DesignState design = context.Foundation.DesignState;

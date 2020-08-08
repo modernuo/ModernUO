@@ -537,8 +537,12 @@ namespace Server.Network
 
         var pos = PacketHandlers.ProcessPacket(this, buffer);
 
+        // We had data, but processed nothing. They sent us garbage.
         if (pos <= 0)
+        {
+          Dispose();
           break;
+        }
 
         reader.Advance((uint)pos);
       }
@@ -590,12 +594,21 @@ namespace Server.Network
       if (disposing == 1)
         return;
 
+      OutgoingPipe.Writer.Complete();
+      IncomingPipe.Writer.Complete();
+
       try
       {
-        Connection.Transport.Input.Complete();
-        Connection.Transport.Output.Complete();
-        Connection.Abort();
-        Task.Run(Connection.DisposeAsync).Wait();
+        Connection.Shutdown(SocketShutdown.Both);
+      }
+      catch (Exception ex)
+      {
+        TraceException(ex);
+      }
+
+      try
+      {
+        Connection.Close();
       }
       catch (Exception ex)
       {

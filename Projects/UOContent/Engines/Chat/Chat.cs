@@ -21,7 +21,7 @@ namespace Server.Engines.Chat
       to?.Send(new ChatMessagePacket(null, (int)type + 20, param1, param2));
     }
 
-    public static void OpenChatWindowRequest(NetState state, BufferReader pvSrc)
+    public static void OpenChatWindowRequest(NetState state, BufferReader reader)
     {
       Mobile from = state.Mobile;
 
@@ -31,8 +31,8 @@ namespace Server.Engines.Chat
         return;
       }
 
-      pvSrc.Seek(2, SeekOrigin.Begin);
-      string chatName = pvSrc.ReadUnicodeStringSafe(0x40 - 2 >> 1).Trim();
+      reader.Seek(2, SeekOrigin.Begin);
+      string chatName = reader.ReadBigUniSafe(0x40 - 2 >> 1).Trim();
 
       Account acct = state.Account as Account;
 
@@ -104,7 +104,7 @@ namespace Server.Engines.Chat
       return user;
     }
 
-    public static void ChatAction(NetState state, BufferReader pvSrc)
+    public static void ChatAction(NetState state, BufferReader reader)
     {
       if (!Enabled)
         return;
@@ -117,9 +117,9 @@ namespace Server.Engines.Chat
         if (user == null)
           return;
 
-        string lang = pvSrc.ReadStringSafe(4);
-        int actionID = pvSrc.ReadInt16();
-        string param = pvSrc.ReadUnicodeString();
+        string lang = reader.ReadAsciiSafe(4);
+        int actionID = reader.ReadInt16();
+        string param = reader.ReadBigUni();
 
         ChatActionHandler handler = ChatActionHandlers.GetHandler(actionID);
 

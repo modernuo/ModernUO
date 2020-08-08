@@ -275,18 +275,18 @@ namespace Server.Items
       PacketHandlers.Register(0x56, 11, true, OnMapCommand);
     }
 
-    private static void OnMapCommand(NetState state, BufferReader pvSrc)
+    private static void OnMapCommand(NetState state, BufferReader reader)
     {
       Mobile from = state.Mobile;
 
-      if (!(World.FindItem(pvSrc.ReadUInt32()) is MapItem map))
+      if (!(World.FindItem(reader.ReadUInt32()) is MapItem map))
         return;
 
-      int command = pvSrc.ReadByte();
-      int number = pvSrc.ReadByte();
+      int command = reader.ReadByte();
+      int number = reader.ReadByte();
 
-      int x = pvSrc.ReadInt16();
-      int y = pvSrc.ReadInt16();
+      int x = reader.ReadInt16();
+      int y = reader.ReadInt16();
 
       switch (command)
       {

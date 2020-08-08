@@ -25,29 +25,28 @@ namespace Server.Misc
       return null;
     }
 
-    public static void DecodeBundledPacket(NetState state, BufferReader pvSrc)
+    public static void DecodeBundledPacket(NetState state, BufferReader reader)
     {
-      int packetID = pvSrc.ReadByte();
+      int packetID = reader.ReadByte();
 
       PacketHandler ph = GetHandler(packetID);
 
-      if (ph != null)
+      if (ph == null) return;
+
+      if (ph.Ingame && state.Mobile == null)
       {
-        if (ph.Ingame && state.Mobile == null)
-        {
-          Console.WriteLine(
-            "Client: {0}: Sent ingame packet (0xF0x{1:X2}) before having been attached to a mobile", state,
-            packetID);
-          state.Dispose();
-        }
-        else if (ph.Ingame && state.Mobile.Deleted)
-        {
-          state.Dispose();
-        }
-        else
-        {
-          ph.OnReceive(state, pvSrc);
-        }
+        Console.WriteLine(
+          "Client: {0}: Sent ingame packet (0xF0x{1:X2}) before having been attached to a mobile", state,
+          packetID);
+        state.Dispose();
+      }
+      else if (ph.Ingame && state.Mobile.Deleted)
+      {
+        state.Dispose();
+      }
+      else
+      {
+        ph.OnReceive(state, reader);
       }
     }
   }

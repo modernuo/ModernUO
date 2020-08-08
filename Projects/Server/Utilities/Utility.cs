@@ -34,7 +34,7 @@ namespace Server
 {
   public static class Utility
   {
-    private static Encoding m_UTF8, m_UTF8WithEncoding;
+    private static Encoding m_UTF8, m_UTF8WithEncoding, m_Unicode, m_UnicodeLE;
 
     private static Dictionary<IPAddress, IPAddress> _ipAddressTable;
 
@@ -123,6 +123,10 @@ namespace Server
 
     public static Encoding UTF8 => m_UTF8 ??= new UTF8Encoding(false, false);
     public static Encoding UTF8WithEncoding => m_UTF8WithEncoding ??= new UTF8Encoding(true, false);
+
+    public static Encoding Unicode => m_Unicode ??= new UnicodeEncoding(true, false, false);
+    public static Encoding UnicodeLE => m_UnicodeLE ??= new UnicodeEncoding(false, false, false);
+
 
     public static void Separate(StringBuilder sb, string value, string separator)
     {

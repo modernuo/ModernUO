@@ -131,39 +131,39 @@ namespace Server
       }
     }
 
-    public static void OnReceive(NetState state, BufferReader pvSrc)
+    public static void OnReceive(NetState state, BufferReader reader)
     {
-      pvSrc.ReadByte(); // 1: <4.0.1a, 2>=4.0.1a
+      reader.ReadByte(); // 1: <4.0.1a, 2>=4.0.1a
 
-      HardwareInfo info = new HardwareInfo();
-
-      info.InstanceID = pvSrc.ReadInt32();
-      info.OSMajor = pvSrc.ReadInt32();
-      info.OSMinor = pvSrc.ReadInt32();
-      info.OSRevision = pvSrc.ReadInt32();
-      info.CpuManufacturer = pvSrc.ReadByte();
-      info.CpuFamily = pvSrc.ReadInt32();
-      info.CpuModel = pvSrc.ReadInt32();
-      info.CpuClockSpeed = pvSrc.ReadInt32();
-      info.CpuQuantity = pvSrc.ReadByte();
-      info.PhysicalMemory = pvSrc.ReadInt32();
-      info.ScreenWidth = pvSrc.ReadInt32();
-      info.ScreenHeight = pvSrc.ReadInt32();
-      info.ScreenDepth = pvSrc.ReadInt32();
-      info.DXMajor = pvSrc.ReadInt16();
-      info.DXMinor = pvSrc.ReadInt16();
-      info.VCDescription = pvSrc.ReadUnicodeStringLESafe(64);
-      info.VCVendorID = pvSrc.ReadInt32();
-      info.VCDeviceID = pvSrc.ReadInt32();
-      info.VCMemory = pvSrc.ReadInt32();
-      info.Distribution = pvSrc.ReadByte();
-      info.ClientsRunning = pvSrc.ReadByte();
-      info.ClientsInstalled = pvSrc.ReadByte();
-      info.PartialInstalled = pvSrc.ReadByte();
-      info.Language = pvSrc.ReadUnicodeStringLESafe(4);
-      info.Unknown = pvSrc.ReadStringSafe(64);
-
-      info.TimeReceived = DateTime.UtcNow;
+      HardwareInfo info = new HardwareInfo
+      {
+        InstanceID = reader.ReadInt32(),
+        OSMajor = reader.ReadInt32(),
+        OSMinor = reader.ReadInt32(),
+        OSRevision = reader.ReadInt32(),
+        CpuManufacturer = reader.ReadByte(),
+        CpuFamily = reader.ReadInt32(),
+        CpuModel = reader.ReadInt32(),
+        CpuClockSpeed = reader.ReadInt32(),
+        CpuQuantity = reader.ReadByte(),
+        PhysicalMemory = reader.ReadInt32(),
+        ScreenWidth = reader.ReadInt32(),
+        ScreenHeight = reader.ReadInt32(),
+        ScreenDepth = reader.ReadInt32(),
+        DXMajor = reader.ReadInt16(),
+        DXMinor = reader.ReadInt16(),
+        VCDescription = reader.ReadLittleUniSafe(64),
+        VCVendorID = reader.ReadInt32(),
+        VCDeviceID = reader.ReadInt32(),
+        VCMemory = reader.ReadInt32(),
+        Distribution = reader.ReadByte(),
+        ClientsRunning = reader.ReadByte(),
+        ClientsInstalled = reader.ReadByte(),
+        PartialInstalled = reader.ReadByte(),
+        Language = reader.ReadLittleUniSafe(4),
+        Unknown = reader.ReadAsciiSafe(64),
+        TimeReceived = DateTime.UtcNow
+      };
 
       if (state.Account is Account acct)
         acct.HardwareInfo = info;

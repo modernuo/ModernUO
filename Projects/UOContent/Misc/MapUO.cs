@@ -16,7 +16,7 @@ namespace Server.Misc
         ProtocolExtensions.Register(0x01, true, OnGuildTrack);
     }
 
-    private static void OnPartyTrack(NetState state, BufferReader pvSrc)
+    private static void OnPartyTrack(NetState state, BufferReader reader)
     {
       Mobile from = state.Mobile;
       Party party = Party.Get(from);
@@ -30,13 +30,13 @@ namespace Server.Misc
       }
     }
 
-    private static void OnGuildTrack(NetState state, BufferReader pvSrc)
+    private static void OnGuildTrack(NetState state, BufferReader reader)
     {
       Mobile from = state.Mobile;
 
       if (from.Guild is Guild guild)
       {
-        bool locations = pvSrc.ReadByte() != 0;
+        bool locations = reader.ReadByte() != 0;
 
         Packets.GuildTrack packet = new Packets.GuildTrack(from, guild, locations);
 

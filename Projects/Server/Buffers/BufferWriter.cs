@@ -19,7 +19,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-
 using System.Buffers.Binary;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -55,10 +54,7 @@ namespace System.Buffers
       if (Position < m_First.Length)
         m_First[Position++] = value;
       else if (Position < m_Length)
-      {
-        m_Second[Position - m_First.Length] = value;
-        Position++;
-      }
+        m_Second[Position++ - m_First.Length] = value;
       else
         throw new OutOfMemoryException();
     }
@@ -271,7 +267,7 @@ namespace System.Buffers
     /// Writes a variable-length unicode string followed by a 2-byte null character.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe void WriteVariableLengthUnicode(string value, Encoding encoding)
+    public void WriteVariableLengthUnicode(string value, Encoding encoding)
     {
       value ??= string.Empty;
 
