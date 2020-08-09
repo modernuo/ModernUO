@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Server.Accounting;
@@ -45,6 +46,7 @@ namespace Server.Network
   [Flags]
   public enum ProtocolChanges
   {
+    None = 0x00000000,
     NewSpellbook = 0x00000001,
     DamagePacket = 0x00000002,
     Unpack = 0x00000004,
@@ -80,12 +82,6 @@ namespace Server.Network
     Version70610 = Version70500 | EndlessJourney
   }
 
-  public class AsyncState
-  {
-    public bool Paused { get; set; }
-    public AsyncState(bool paused) => Paused = paused;
-  }
-
   public class NetState : IComparable<NetState>
   {
     private readonly string m_ToString;
@@ -102,11 +98,7 @@ namespace Server.Network
 
     public IPAddress Address { get; }
 
-    private static readonly AsyncState m_PauseState = new AsyncState(true);
-    private static readonly AsyncState m_ResumeState = new AsyncState(false);
-
-    private static AsyncState m_AsyncState = m_ResumeState;
-    public static AsyncState AsyncState => m_AsyncState;
+    private static NetworkState m_NetworkState = NetworkState.ResumeState;
 
     public IPacketEncoder PacketEncoder { get; set; }
 
@@ -121,42 +113,27 @@ namespace Server.Network
     public ClientVersion Version
     {
       get => m_Version;
-      set
-      {
-        m_Version = value;
-
-        if (value >= m_Version70610)
-          ProtocolChanges = ProtocolChanges.Version70610;
-        if (value >= m_Version70500)
-          ProtocolChanges = ProtocolChanges.Version70500;
-        if (value >= m_Version704565)
-          ProtocolChanges = ProtocolChanges.Version704565;
-        else if (value >= m_Version70331)
-          ProtocolChanges = ProtocolChanges.Version70331;
-        else if (value >= m_Version70300)
-          ProtocolChanges = ProtocolChanges.Version70300;
-        else if (value >= m_Version70160)
-          ProtocolChanges = ProtocolChanges.Version70160;
-        else if (value >= m_Version70130)
-          ProtocolChanges = ProtocolChanges.Version70130;
-        else if (value >= m_Version7090)
-          ProtocolChanges = ProtocolChanges.Version7090;
-        else if (value >= m_Version7000)
-          ProtocolChanges = ProtocolChanges.Version7000;
-        else if (value >= m_Version60142)
-          ProtocolChanges = ProtocolChanges.Version60142;
-        else if (value >= m_Version6017)
-          ProtocolChanges = ProtocolChanges.Version6017;
-        else if (value >= m_Version6000)
-          ProtocolChanges = ProtocolChanges.Version6000;
-        else if (value >= m_Version502b)
-          ProtocolChanges = ProtocolChanges.Version502b;
-        else if (value >= m_Version500a)
-          ProtocolChanges = ProtocolChanges.Version500a;
-        else if (value >= m_Version407a)
-          ProtocolChanges = ProtocolChanges.Version407a;
-        else if (value >= m_Version400a) ProtocolChanges = ProtocolChanges.Version400a;
-      }
+      set =>
+        ProtocolChanges = (m_Version = value) switch
+        {
+          var v when v >= m_Version70610 => ProtocolChanges.Version70610,
+          var v when v >= m_Version70500 => ProtocolChanges.Version70500,
+          var v when v >= m_Version704565 => ProtocolChanges.Version704565,
+          var v when v >= m_Version70331 => ProtocolChanges.Version70331,
+          var v when v >= m_Version70300 => ProtocolChanges.Version70300,
+          var v when v >= m_Version70160 => ProtocolChanges.Version70160,
+          var v when v >= m_Version70130 => ProtocolChanges.Version70130,
+          var v when v >= m_Version7090 => ProtocolChanges.Version7090,
+          var v when v >= m_Version7000 => ProtocolChanges.Version7000,
+          var v when v >= m_Version60142 => ProtocolChanges.Version60142,
+          var v when v >= m_Version6017 => ProtocolChanges.Version6017,
+          var v when v >= m_Version6000 => ProtocolChanges.Version6000,
+          var v when v >= m_Version502b => ProtocolChanges.Version502b,
+          var v when v >= m_Version500a => ProtocolChanges.Version500a,
+          var v when v >= m_Version407a => ProtocolChanges.Version407a,
+          var v when v >= m_Version400a => ProtocolChanges.Version407a,
+          _ => ProtocolChanges.None
+        };
     }
 
     private static readonly ClientVersion m_Version400a = new ClientVersion("4.0.0a");
@@ -436,12 +413,16 @@ namespace Server.Network
 
     public static void Pause()
     {
-      m_AsyncState = Interlocked.Exchange(ref m_AsyncState, m_PauseState);
+      NetworkState.Pause(ref m_NetworkState);
     }
 
     public static void Resume()
     {
-      m_AsyncState = Interlocked.Exchange(ref m_AsyncState, m_ResumeState);
+      if (!NetworkState.Resume(ref m_NetworkState)) return;
+
+      lock (TcpServer.ConnectedClients)
+        foreach (var ns in TcpServer.ConnectedClients)
+          ns.StartReceiving();
     }
 
     public virtual void Send(Packet p)
@@ -458,6 +439,8 @@ namespace Server.Network
 
         if (buffer.Length > 0 && length > 0)
         {
+          RefreshActivityDelay();
+
           var pr = OutgoingPipe.Writer.GetBytes();
           pr.CopyFrom(buffer.Slice(0, length).Span);
 
@@ -483,17 +466,24 @@ namespace Server.Network
       }
     }
 
-    public async void Recv()
+    public void Start()
+    {
+      if (!m_NetworkState.Paused)
+        StartReceiving();
+    }
+
+    private async void StartReceiving()
     {
       var writer = IncomingPipe.Writer;
       var connection = Connection;
+
+      RefreshActivityDelay();
 
       try
       {
         while (true)
         {
-          if (AsyncState.Paused)
-            continue;
+          if (m_NetworkState.Paused) return;
 
           // TODO: Guard against receiving too much data and getting an OOM from the pipe
           // One option might be to stop receiving from the socket until pressure is relieved
@@ -504,6 +494,8 @@ namespace Server.Network
             writer.Complete();
             break;
           }
+
+          RefreshActivityDelay();
 
           writer.Advance(bytesRead);
           writer.Flush();
@@ -524,27 +516,76 @@ namespace Server.Network
       }
     }
 
-    public void ProcessIncoming()
+    internal static void ProcessAllIncoming()
     {
-      var reader = IncomingPipe.Reader;
+      var clients = TcpServer.ConnectedClients;
+      for (int i = 0; i < clients.Count; i++)
+        ProcessIncoming(clients[i]);
+    }
+
+    private static void ProcessIncoming(NetState ns)
+    {
+      var reader = ns.IncomingPipe.Reader;
 
       while (true)
       {
         var buffer = reader.GetBytes().Buffer;
+        var buffer1 = buffer[0];
+        var buffer2 = buffer[1];
 
-        if (buffer.Length == 0)
+        Span<byte> first = buffer1.AsSpan(buffer1.Offset, buffer1.Count);
+        Span<byte> second = buffer2.AsSpan(buffer2.Offset, buffer2.Count);
+
+        if (first.IsEmpty && second.IsEmpty)
           break;
 
-        var pos = PacketHandlers.ProcessPacket(this, buffer);
+        ns.RefreshActivityDelay();
 
-        // We had data, but processed nothing. They sent us garbage.
+        var bufferReader = new BufferReader(first, second);
+        var pos = PacketHandlers.ProcessPacket(ns, bufferReader);
+
+        // Either garbage or incomplete data
         if (pos <= 0)
         {
-          Dispose();
+          // We had data, but processed nothing. We received garbage.
+          if (pos < 0)
+            ns.Dispose();
+
           break;
         }
 
         reader.Advance((uint)pos);
+      }
+    }
+
+    internal static void ProcessAllOutgoing()
+    {
+      var clients = TcpServer.ConnectedClients;
+
+      for (int i = 0; i < clients.Count; i++)
+        ProcessOutgoing(clients[i]);
+    }
+
+    private static async void ProcessOutgoing(NetState ns)
+    {
+      var reader = ns.OutgoingPipe.Reader;
+
+      while (true)
+      {
+        var buffers = reader.GetBytes().Buffer;
+        var buffer1 = buffers[0];
+        var buffer2 = buffers[1];
+
+        var length = buffer1.Count - buffer1.Offset + (buffer2.Count - buffer2.Offset);
+
+        if (length <= 0)
+          break;
+
+        ns.RefreshActivityDelay();
+
+        await ns.Connection.SendAsync(buffers, SocketFlags.None);
+
+        reader.Advance((uint)length);
       }
     }
 
@@ -563,6 +604,17 @@ namespace Server.Network
 
     public PacketHandler GetHandler(int packetID) =>
       ContainerGridLines ? PacketHandlers.Get6017Handler(packetID) : PacketHandlers.GetHandler(packetID);
+
+    private long m_NextCheckActivity;
+
+    public void CheckAlive(long curTicks)
+    {
+      if (Connection == null || m_NextCheckActivity - curTicks >= 0) return;
+
+      Console.WriteLine("Client: {0}: Disconnecting due to inactivity...", this);
+
+      Dispose();
+    }
 
     public static void TraceException(Exception ex)
     {
@@ -619,6 +671,35 @@ namespace Server.Network
       m_Disposed.Enqueue(this);
     }
 
+    private const long NextActivityCheckDelay = 90 * TimeSpan.TicksPerMillisecond;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void RefreshActivityDelay()
+    {
+      m_NextCheckActivity = Core.TickCount + NextActivityCheckDelay;
+    }
+
+    public static void Initialize()
+    {
+      Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.5), CheckAllAlive);
+    }
+
+    public static void CheckAllAlive()
+    {
+      long curTicks = Core.TickCount;
+      var clients = TcpServer.ConnectedClients;
+
+      try {
+        if (clients.Count >= 1024)
+          Parallel.ForEach(clients, ns => ns.CheckAlive(curTicks));
+        else
+          for (int i = 0; i < clients.Count; ++i)
+            clients[i].CheckAlive(curTicks);
+      } catch ( Exception ex ) {
+        TraceException( ex );
+      }
+    }
+
     private static readonly ConcurrentQueue<NetState> m_Disposed = new ConcurrentQueue<NetState>();
 
     public static void ProcessDisposedQueue()
@@ -627,8 +708,7 @@ namespace Server.Network
 
       while (breakout++ < 200)
       {
-        if (!m_Disposed.TryDequeue(out var ns))
-          break;
+        if (!m_Disposed.TryDequeue(out var ns)) break;
 
         var m = ns.Mobile;
         var a = ns.Account;
@@ -645,6 +725,8 @@ namespace Server.Network
         ns.Account = null;
         ns.ServerInfo = null;
         ns.CityInfo = null;
+
+        TcpServer.ConnectedClients.Remove(ns);
 
         if (a != null)
           ns.WriteConsole("Disconnected. [{0} Online] [{1}]", TcpServer.ConnectedClients.Count, a);

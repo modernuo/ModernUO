@@ -20,6 +20,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -30,9 +31,24 @@ namespace Server.Network
 {
   public static class TcpServer
   {
+    private static NetworkState m_NetworkState = NetworkState.ResumeState;
+
+    // Sanity. 256 * 1024 * 5000 = ~1.3GB of ram
+    public static int MaxConnections { get; set; } = 5000;
+
+    // AccountLoginReject BadComm
+    private static readonly byte[] socketRejected = { 0x82, 0xFF };
+
     public static IPEndPoint[] ListeningAddresses { get; private set; }
     public static TcpListener[] Listeners { get; private set; }
     public static List<NetState> ConnectedClients { get; } = new List<NetState>(128);
+
+    public static ConcurrentQueue<NetState> m_ConnectedQueue = new ConcurrentQueue<NetState>();
+
+    public static void Configure()
+    {
+      MaxConnections = ServerConfiguration.GetOrUpdateSetting("tcpServer.maxConnections", MaxConnections);
+    }
 
     public static void Start()
     {
@@ -99,19 +115,82 @@ namespace Server.Network
       return null;
     }
 
+    /**
+     * Pauses the TcpServer and stops accepting new sockets.
+     * This is thread-safe without using locks.
+     */
+    public static void Pause()
+    {
+      NetworkState.Pause(ref m_NetworkState);
+    }
+
+    /**
+     * Resumes accepting sockets on the TcpServer.
+     * This is thread-safe using a lock on the listeners
+     */
+    public static void Resume()
+    {
+      if (!NetworkState.Resume(ref m_NetworkState)) return;
+
+      lock (Listeners)
+        foreach (var listener in Listeners)
+          listener.BeginAcceptingSockets();
+    }
+
+    public static void Slice()
+    {
+      int count = 0;
+
+      while (count++ < 200)
+      {
+        if (!m_ConnectedQueue.TryDequeue(out var ns))
+          break;
+
+        ConnectedClients.Add(ns);
+        ns.Start();
+
+        Console.WriteLine("Client: {0}: Connected. [{1} Online]", ns, ConnectedClients.Count);
+      }
+    }
+
     private static async void BeginAcceptingSockets(this TcpListener listener)
     {
       while (true)
       {
-        var socket = await listener.AcceptSocketAsync();
+        if (m_NetworkState.Paused) return;
 
-        NetState ns = new NetState(socket);
-        ConnectedClients.Add(ns);
-        ns.Start();
+        Socket socket = null;
 
-        if (ns.Running)
-          Console.WriteLine("Client: {0}: Connected. [{1} Online]", ns, ConnectedClients.Count);
+        try
+        {
+          socket = await listener.AcceptSocketAsync();
+          if (ConnectedClients.Count >= MaxConnections)
+          {
+            socket.Send(socketRejected, SocketFlags.None);
+            socket.Shutdown(SocketShutdown.Both);
+            socket.Close();
+            throw new MaxConnectionsException();
+          }
+        }
+        catch (MaxConnectionsException ex)
+        {
+          var ipep = (IPEndPoint)socket!.RemoteEndPoint;
+          Console.WriteLine("Listener Failed: {2} ({0}:{1})", ipep.Address, ipep.Port, ex.Message);
+        }
+        catch
+        {
+          // ignored
+        }
+
+        m_ConnectedQueue.Enqueue(new NetState(socket));
       }
+    }
+  }
+
+  internal class MaxConnectionsException : Exception
+  {
+    public MaxConnectionsException() : base("Maximum connections exceeded")
+    {
     }
   }
 }

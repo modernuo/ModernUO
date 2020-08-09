@@ -29,9 +29,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Server.Json;
 using Server.Network;
 
@@ -94,16 +91,8 @@ namespace Server
       }
     }
 
-    public static TimeSpan ProfileTime
-    {
-      get
-      {
-        if (m_ProfileStart > DateTime.MinValue)
-          return m_ProfileTime + (DateTime.UtcNow - m_ProfileStart);
-
-        return m_ProfileTime;
-      }
-    }
+    public static TimeSpan ProfileTime =>
+      m_ProfileStart > DateTime.MinValue ? m_ProfileTime + (DateTime.UtcNow - m_ProfileStart) : m_ProfileTime;
 
     internal static bool HaltOnWarning { get; private set; }
 
@@ -125,11 +114,11 @@ namespace Server
 
     public static int ProcessorCount { get; private set; }
 
-    public static bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-    public static bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-    public static bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
-    public static bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
-    public static bool Unix = IsDarwin || IsFreeBSD || IsLinux;
+    public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+    public static readonly bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+    public static readonly bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
+    public static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
+    public static readonly bool Unix = IsDarwin || IsFreeBSD || IsLinux;
 
     public static string ExePath => m_ExePath ??= Assembly.Location;
 
@@ -412,6 +401,12 @@ namespace Server
         {
           m_Signal.WaitOne();
 
+          // Processing the incoming sockets
+          TcpServer.Slice();
+
+          // Process incoming packets
+          NetState.ProcessAllIncoming();
+
           Task.WaitAll(
             Task.Run(Mobile.ProcessDeltaQueue),
             Task.Run(Item.ProcessDeltaQueue)
@@ -419,7 +414,10 @@ namespace Server
 
           Timer.Slice();
 
-          // TODO: Send Packets
+          // Process outgoing packets
+          NetState.ProcessAllOutgoing();
+
+          // Dispose dead sockets
           NetState.ProcessDisposedQueue();
 
           if (sample++ % sampleInterval != 0)

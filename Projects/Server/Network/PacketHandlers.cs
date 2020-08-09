@@ -255,10 +255,8 @@ namespace Server.Network
         ph.ThrottleCallback = t;
     }
 
-    public static int ProcessPacket(NetState ns, in ArraySegment<byte>[] seq)
+    public static int ProcessPacket(NetState ns, BufferReader reader)
     {
-      var reader = new BufferReader(seq[0], seq[1]);
-
       int packetId;
 
       try

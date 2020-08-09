@@ -585,12 +585,7 @@ namespace Server
       idxWriter.Close();
     }
 
-    public static void Save()
-    {
-      Save(true, false);
-    }
-
-    public static void Save(bool message, bool permitBackgroundWrite)
+    public static void Save(bool message = true, bool permitBackgroundWrite = false)
     {
       if (Saving)
         return;

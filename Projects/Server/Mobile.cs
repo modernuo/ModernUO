@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -480,7 +481,7 @@ namespace Server
     };
 
     private static readonly Queue<Mobile> m_DeltaQueue = new Queue<Mobile>();
-    private static readonly Queue<Mobile> m_DeltaQueueR = new Queue<Mobile>();
+    private static readonly ConcurrentQueue<Mobile> m_DeltaQueueR = new ConcurrentQueue<Mobile>();
 
     private static bool _processing;
 
@@ -2950,7 +2951,7 @@ namespace Server
 
       list.Add(1050045, "{0} \t{1}\t {2}", prefix, name, suffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
-      if (guild != null && (m_DisplayGuildTitle || (m_Player && guild.Type != GuildType.Regular)))
+      if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
       {
         string type;
 
@@ -2990,7 +2991,7 @@ namespace Server
 
     private void UpdateAggrExpire()
     {
-      if (Deleted || (Aggressors.Count == 0 && Aggressed.Count == 0))
+      if (Deleted || Aggressors.Count == 0 && Aggressed.Count == 0)
       {
         StopAggrExpire();
       }
@@ -3171,7 +3172,7 @@ namespace Server
 
     public bool InLOS(object target) =>
       !Deleted && m_Map != null &&
-      (target == this || m_AccessLevel > AccessLevel.Player || (target is Item item && item.RootParent == this)
+      (target == this || m_AccessLevel > AccessLevel.Player || target is Item item && item.RootParent == this
        || m_Map.LineOfSight(this, target));
 
     public bool InLOS(Point3D target) =>
@@ -3708,7 +3709,7 @@ namespace Server
                 var item = oldSector.Items[i];
 
                 if (item.AtWorldPoint(oldX, oldY) &&
-                    (item.Z == oldZ || (item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z)) &&
+                    (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
                     !item.OnMoveOff(this))
                   return false;
               }
@@ -3726,7 +3727,7 @@ namespace Server
                 var item = newSector.Items[i];
 
                 if (item.AtWorldPoint(x, y) &&
-                    (item.Z == newZ || (item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z)) &&
+                    (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
                     !item.OnMoveOver(this))
                   return false;
               }
@@ -3749,11 +3750,11 @@ namespace Server
                 var item = oldSector.Items[i];
 
                 if (item.AtWorldPoint(oldX, oldY) &&
-                    (item.Z == oldZ || (item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z)) &&
+                    (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
                     !item.OnMoveOff(this))
                   return false;
                 if (item.AtWorldPoint(x, y) &&
-                    (item.Z == newZ || (item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z)) &&
+                    (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
                     !item.OnMoveOver(this))
                   return false;
               }
@@ -4837,7 +4838,7 @@ namespace Server
     }
 
     public virtual bool CheckHearsMutatedSpeech(Mobile m, object context) =>
-      context != m_GhostMutateContext || (m.Alive && !m.CanHearGhosts);
+      context != m_GhostMutateContext || m.Alive && !m.CanHearGhosts;
 
     private void AddSpeechItemsFrom(List<IEntity> list, Container cont)
     {
@@ -4921,7 +4922,7 @@ namespace Server
         foreach (var o in eable)
           if (o is Mobile heard)
           {
-            if (!heard.CanSee(this) || (!NoSpeechLOS && heard.Player && !heard.InLOS(this)))
+            if (!heard.CanSee(this) || !NoSpeechLOS && heard.Player && !heard.InLOS(this))
               continue;
 
             if (heard.m_NetState != null)
@@ -6408,11 +6409,11 @@ namespace Server
       if (Deleted || m.Deleted || m_Map == Map.Internal || m.m_Map == Map.Internal)
         return false;
 
-      return this == m || (m.m_Map == m_Map &&
-        (!m.Hidden || (m_AccessLevel != AccessLevel.Player &&
-          (m_AccessLevel >= m.AccessLevel || m_AccessLevel >= AccessLevel.Administrator))) &&
-        (m.Alive || (Core.SE && Skills.SpiritSpeak.Value >= 100.0) || !Alive ||
-         m_AccessLevel > AccessLevel.Player || m.Warmode));
+      return this == m || m.m_Map == m_Map &&
+        (!m.Hidden || m_AccessLevel != AccessLevel.Player &&
+          (m_AccessLevel >= m.AccessLevel || m_AccessLevel >= AccessLevel.Administrator)) &&
+        (m.Alive || Core.SE && Skills.SpiritSpeak.Value >= 100.0 || !Alive ||
+         m_AccessLevel > AccessLevel.Player || m.Warmode);
     }
 
     public virtual bool CanBeRenamedBy(Mobile from) =>
@@ -6561,7 +6562,7 @@ namespace Server
               var inOldRange = Utility.InUpdateRange(oldLocation, m.m_Location);
 
               if (m.m_NetState != null &&
-                  ((isTeleport && (!m.m_NetState.HighSeas || !NoMoveHS)) || !inOldRange) && m.CanSee(this))
+                  (isTeleport && (!m.m_NetState.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
               {
                 m.m_NetState.Send(MobileIncoming.Create(m.m_NetState, m, this));
 
@@ -6608,7 +6609,7 @@ namespace Server
 
           // We're not attached to a client, so simply send an Incoming
           foreach (var ns in eable)
-            if (((isTeleport && (!ns.HighSeas || !NoMoveHS)) ||
+            if ((isTeleport && (!ns.HighSeas || !NoMoveHS) ||
                  !Utility.InUpdateRange(oldLocation, ns.Mobile.Location)) && ns.Mobile.CanSee(this))
             {
               ns.Send(MobileIncoming.Create(ns, ns.Mobile, this));
@@ -6735,7 +6736,7 @@ namespace Server
     public virtual bool CheckLift(Mobile from, Item item, ref LRReason reject) => true;
 
     public virtual bool CheckNonlocalLift(Mobile from, Item item) =>
-      from == this || (from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster);
+      from == this || @from.AccessLevel > AccessLevel && @from.AccessLevel >= AccessLevel.GameMaster;
 
     public virtual bool CheckTrade(Mobile to, Item item, SecureTradeContainer cont, bool message, bool checkItems,
       int plusItems, int plusWeight) =>
@@ -6878,7 +6879,7 @@ namespace Server
     }
 
     public virtual bool CheckNonlocalDrop(Mobile from, Item item, Item target) =>
-      from == this || (from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster);
+      from == this || @from.AccessLevel > AccessLevel && @from.AccessLevel >= AccessLevel.GameMaster;
 
     public virtual bool CheckItemUse(Mobile from, Item item) => true;
 
@@ -6894,7 +6895,7 @@ namespace Server
     public virtual bool AllowItemUse(Item item) => true;
 
     public virtual bool AllowEquipFrom(Mobile mob) =>
-      mob == this || (mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > AccessLevel);
+      mob == this || mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > AccessLevel;
 
     public virtual bool EquipItem(Item item)
     {
@@ -6948,24 +6949,22 @@ namespace Server
         m_InDeltaQueue = true;
 
         if (_processing)
-          lock (m_DeltaQueueR)
-          {
-            m_DeltaQueueR.Enqueue(this);
+        {
+          m_DeltaQueueR.Enqueue(this);
 
-            try
-            {
-              using (var op = new StreamWriter("delta-recursion.log", true))
-              {
-                op.WriteLine("# {0}", DateTime.UtcNow);
-                op.WriteLine(new StackTrace());
-                op.WriteLine();
-              }
-            }
-            catch
-            {
-              // ignored
-            }
+          try
+          {
+            Console.WriteLine("WARNING: Delta recursion on {0} (0x{1:X})", GetType().Name, Serial);
+            using var op = new StreamWriter("delta-recursion.log", true);
+            op.WriteLine("# {0}", DateTime.UtcNow);
+            op.WriteLine(new StackTrace());
+            op.WriteLine();
           }
+          catch
+          {
+            // ignored
+          }
+        }
         else
           m_DeltaQueue.Enqueue(this);
       }
@@ -7079,14 +7078,14 @@ namespace Server
     public virtual void OnSingleClick(Mobile from)
     {
       if (Deleted ||
-          (AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this))
+          AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && @from == this)
         return;
 
       if (GuildClickMessage)
       {
         var guild = m_Guild;
 
-        if (guild != null && (m_DisplayGuildTitle || (m_Player && guild.Type != GuildType.Regular)))
+        if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
         {
           var title = GuildTitle?.Trim() ?? "";
           string type;
@@ -7631,7 +7630,7 @@ namespace Server
 
       protected override void OnTick()
       {
-        if (m_Mobile.Deleted || (m_Mobile.Aggressors.Count == 0 && m_Mobile.Aggressed.Count == 0))
+        if (m_Mobile.Deleted || m_Mobile.Aggressors.Count == 0 && m_Mobile.Aggressed.Count == 0)
           m_Mobile.StopAggrExpire();
         else
           m_Mobile.CheckAggrExpire();
@@ -8019,7 +8018,7 @@ namespace Server
         return false;
 
       if (Deleted || target.Deleted || !Alive || IsDeadBondedPet ||
-          (!allowDead && (!target.Alive || target.IsDeadBondedPet)))
+          !allowDead && (!target.Alive || target.IsDeadBondedPet))
       {
         if (message)
           SendLocalizedMessage(1001017); // You can not perform beneficial acts on your target.
@@ -8095,7 +8094,7 @@ namespace Server
       if (target == null)
         return false;
 
-      if (Deleted || (!ignoreOurBlessedness && m_Blessed) || target.Deleted || target.m_Blessed || !Alive ||
+      if (Deleted || !ignoreOurBlessedness && m_Blessed || target.Deleted || target.m_Blessed || !Alive ||
           IsDeadBondedPet || !target.Alive || target.IsDeadBondedPet)
       {
         if (message)
