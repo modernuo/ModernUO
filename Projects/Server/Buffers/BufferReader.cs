@@ -39,6 +39,14 @@ namespace Server.Network
     public int Position { get; private set; }
     public int Remaining => Length - Position;
 
+    public BufferReader(ArraySegment<byte>[] buffers)
+    {
+      m_First = buffers[0];
+      m_Second = buffers[1];
+      Position = 0;
+      Length = m_First.Length + m_Second.Length;
+    }
+
     public BufferReader(Span<byte> first, Span<byte> second)
     {
       m_First = first;

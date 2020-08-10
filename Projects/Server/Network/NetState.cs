@@ -396,8 +396,8 @@ namespace Server.Network
 
       try
       {
-        Address = Utility.Intern(((IPEndPoint)Connection.RemoteEndPoint).Address);
-        m_ToString = Address.ToString();
+        Address = Connection != null ? Utility.Intern(((IPEndPoint)Connection.RemoteEndPoint).Address) : null;
+        m_ToString = Address?.ToString() ?? "(error)";
       }
       catch (Exception ex)
       {
@@ -422,7 +422,7 @@ namespace Server.Network
 
       lock (TcpServer.ConnectedClients)
         foreach (var ns in TcpServer.ConnectedClients)
-          ns.StartReceiving();
+          ns.Start();
     }
 
     public virtual void Send(Packet p)
@@ -468,7 +468,7 @@ namespace Server.Network
 
     public void Start()
     {
-      if (!m_NetworkState.Paused)
+      if (Connection == null || !m_NetworkState.Paused)
         StartReceiving();
     }
 
@@ -498,7 +498,9 @@ namespace Server.Network
           RefreshActivityDelay();
 
           writer.Advance(bytesRead);
-          writer.Flush();
+
+          // The reader polls, so no need to flush
+          // writer.Flush();
         }
       }
       catch (SocketException ex)
@@ -526,64 +528,52 @@ namespace Server.Network
     private static void ProcessIncoming(NetState ns)
     {
       var reader = ns.IncomingPipe.Reader;
+      PipeResult result;
+      bool refresh = true;
 
-      while (true)
+      do
       {
-        var buffer = reader.GetBytes().Buffer;
-        var buffer1 = buffer[0];
-        var buffer2 = buffer[1];
+        if (reader.BytesAvailable() <= 0) return;
 
-        Span<byte> first = buffer1.AsSpan(buffer1.Offset, buffer1.Count);
-        Span<byte> second = buffer2.AsSpan(buffer2.Offset, buffer2.Count);
+        result = reader.TryGetBytes();
 
-        if (first.IsEmpty && second.IsEmpty)
-          break;
+        if (refresh)
+        {
+          ns.RefreshActivityDelay();
+          refresh = false;
+        }
 
-        ns.RefreshActivityDelay();
-
-        var bufferReader = new BufferReader(first, second);
-        var pos = PacketHandlers.ProcessPacket(ns, bufferReader);
+        var pos = PacketHandlers.ProcessPacket(ns, new BufferReader(result.Buffer));
 
         // Either garbage or incomplete data
         if (pos <= 0)
         {
-          // We had data, but processed nothing. We received garbage.
+          // We received garbage.
           if (pos < 0)
             ns.Dispose();
 
-          break;
+          return;
         }
 
         reader.Advance((uint)pos);
-      }
+      } while (result.Length > 0);
     }
 
-    internal static void ProcessAllOutgoing()
-    {
-      var clients = TcpServer.ConnectedClients;
-
-      for (int i = 0; i < clients.Count; i++)
-        ProcessOutgoing(clients[i]);
-    }
-
-    private static async void ProcessOutgoing(NetState ns)
+    private static async void StartSending(NetState ns)
     {
       var reader = ns.OutgoingPipe.Reader;
 
       while (true)
       {
-        var buffers = reader.GetBytes().Buffer;
-        var buffer1 = buffers[0];
-        var buffer2 = buffers[1];
-
-        var length = buffer1.Count - buffer1.Offset + (buffer2.Count - buffer2.Offset);
+        var result = await reader;
+        var length = result.Length;
 
         if (length <= 0)
           break;
 
         ns.RefreshActivityDelay();
 
-        await ns.Connection.SendAsync(buffers, SocketFlags.None);
+        await ns.Connection.SendAsync(result.Buffer, SocketFlags.None);
 
         reader.Advance((uint)length);
       }

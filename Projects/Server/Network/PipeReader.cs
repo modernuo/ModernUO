@@ -56,28 +56,25 @@ namespace Server.Network
       var read = m_Pipe.m_ReadIdx;
       var write = m_Pipe.m_WriteIdx;
 
-      if (read <= write) return write - read;
-
-      return write + m_Pipe.Size - read;
+      return (read <= write ? write : write + m_Pipe.Size) - read;
     }
 
-    public PipeResult GetBytes()
+    public PipeResult TryGetBytes()
     {
       if (BytesAvailable() > 0) UpdateBufferReader();
 
       return _result;
     }
 
-    // The PipeReader itself is awaitable
-    // public PipeReader GetBytes()
-    // {
-    //   if (BytesAvailable() > 0) UpdateBufferReader();
-    //
-    //   if (m_Pipe.m_AwaitBeginning)
-    //     throw new Exception("Double await on reader");
-    //
-    //   return this;
-    // }
+    public PipeResult GetBytes()
+    {
+      if (BytesAvailable() > 0) UpdateBufferReader();
+
+      if (m_Pipe.m_AwaitBeginning)
+        throw new Exception("Double await on PipeReader");
+
+      return _result;
+    }
 
     public void Advance(uint bytes)
     {
@@ -110,7 +107,6 @@ namespace Server.Network
     }
 
     #region Awaitable
-
     // The following makes it possible to await the reader. Do not use any of this directly.
 
     public PipeReader GetAwaiter() => this;
@@ -137,7 +133,6 @@ namespace Server.Network
     }
 
     public void OnCompleted(Action continuation) => m_Pipe.m_ReaderContinuation = state => continuation();
-
     #endregion
   }
 }

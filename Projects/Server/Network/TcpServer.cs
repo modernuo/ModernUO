@@ -141,7 +141,7 @@ namespace Server.Network
     {
       int count = 0;
 
-      while (count++ < 200)
+      while (count++ < 250)
       {
         if (!m_ConnectedQueue.TryDequeue(out var ns))
           break;

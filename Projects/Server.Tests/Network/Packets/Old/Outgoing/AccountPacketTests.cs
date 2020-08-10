@@ -1,11 +1,7 @@
 using System;
 using System.Buffers;
-using System.Collections.Generic;
-using System.IO.Pipelines;
 using System.Linq;
 using System.Net;
-using Microsoft.AspNetCore.Connections;
-using Microsoft.AspNetCore.Http.Features;
 using Server.Accounting;
 using Server.Network;
 using Xunit;
@@ -91,14 +87,6 @@ namespace Server.Tests.Network.Packets
         Count = mobiles.Count(t => t != null);
         Limit = mobiles.Length;
       }
-    }
-
-    internal class TestConnectionContext : ConnectionContext
-    {
-      public override string ConnectionId { get; set; }
-      public override IFeatureCollection Features { get; }
-      public override IDictionary<object, object> Items { get; set; }
-      public override IDuplexPipe Transport { get; set; }
     }
 
     [Fact]
@@ -198,10 +186,7 @@ namespace Server.Tests.Network.Packets
 
       var account = new TestAccount(new[] {firstMobile, null, null, null, null});
 
-      NetState ns = new NetState(new TestConnectionContext
-      {
-        RemoteEndPoint = IPEndPoint.Parse("127.0.0.1")
-      })
+      NetState ns = new NetState(null)
       {
         Account = account,
         ProtocolChanges = protocolChanges

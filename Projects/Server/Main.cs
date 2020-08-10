@@ -414,9 +414,6 @@ namespace Server
 
           Timer.Slice();
 
-          // Process outgoing packets
-          NetState.ProcessAllOutgoing();
-
           // Dispose dead sockets
           NetState.ProcessDisposedQueue();
 

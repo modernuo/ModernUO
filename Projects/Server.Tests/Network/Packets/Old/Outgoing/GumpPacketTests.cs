@@ -59,10 +59,7 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestFastGumpPacket()
     {
-      NetState ns = new NetState(new AccountPacketTests.TestConnectionContext
-      {
-        RemoteEndPoint = IPEndPoint.Parse("127.0.0.1"),
-      });
+      NetState ns = new NetState(null);
 
       var gump = new ResurrectGump(2);
 
@@ -130,10 +127,7 @@ namespace Server.Tests.Network.Packets
     [Fact]
     public void TestPackedGumpPacket()
     {
-      NetState ns = new NetState(new AccountPacketTests.TestConnectionContext
-      {
-        RemoteEndPoint = IPEndPoint.Parse("127.0.0.1"),
-      })
+      NetState ns = new NetState(null)
       {
         ProtocolChanges = ProtocolChanges.Unpack
       };
