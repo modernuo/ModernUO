@@ -591,19 +591,22 @@ namespace Server.Mobiles
         Container pack = pm.Backpack;
         List<Item> eq = m.Items;
 
-        foreach (var item in eq)
+        for (var i = eq.Count - 1; i >= 0; i--)
+        {
+          var item = eq[i];
           if (layers.Contains(item.Layer))
             pack.TryDropItem(pm, item, false);
+        }
       }
     }
 
     private static void CheckPets()
     {
       foreach (Mobile m in World.Mobiles.Values)
-        if (m is PlayerMobile pm)
-          if (((!pm.Mounted || pm.Mount is EtherealMount) && pm.AllFollowers.Count > pm.AutoStabled.Count) ||
-              (pm.Mounted && pm.AllFollowers.Count > pm.AutoStabled.Count + 1))
-            pm.AutoStablePets(); /* autostable checks summons, et al: no need here */
+        if (m is PlayerMobile pm &&
+            ((!pm.Mounted || pm.Mount is EtherealMount) && pm.AllFollowers.Count > pm.AutoStabled.Count ||
+             pm.Mounted && pm.AllFollowers.Count > pm.AutoStabled.Count + 1))
+          pm.AutoStablePets(); /* autostable checks summons, et al: no need here */
     }
 
     private static bool CheckBlock(MountBlock block) => block?.m_Timer.Running == true;
@@ -614,7 +617,8 @@ namespace Server.Mobiles
       {
         if (Mount != null)
           Mount.Rider = null;
-        else if (AnimalForm.UnderTransformation(this)) AnimalForm.RemoveContext(this, true);
+        else if (AnimalForm.UnderTransformation(this))
+          AnimalForm.RemoveContext(this, true);
       }
 
       if (m_MountBlock?.m_Timer.Running != true || m_MountBlock.m_Timer.Next < DateTime.UtcNow + duration) m_MountBlock = new MountBlock(duration, type, this);
@@ -1068,10 +1072,10 @@ namespace Server.Mobiles
 
     public override bool CanBeHarmful(Mobile target, bool message, bool ignoreOurBlessedness)
     {
-      if (DesignContext != null || (target is PlayerMobile mobile && mobile.DesignContext != null))
+      if (DesignContext != null || target is PlayerMobile mobile && mobile.DesignContext != null)
         return false;
 
-      if ((target is BaseCreature creature && creature.IsInvulnerable) || target is PlayerVendor || target is TownCrier)
+      if (target is BaseCreature creature && creature.IsInvulnerable || target is PlayerVendor || target is TownCrier)
       {
         if (message)
         {
@@ -1089,7 +1093,7 @@ namespace Server.Mobiles
 
     public override bool CanBeBeneficial(Mobile target, bool message, bool allowDead)
     {
-      if (DesignContext != null || (target is PlayerMobile mobile && mobile.DesignContext != null))
+      if (DesignContext != null || target is PlayerMobile mobile && mobile.DesignContext != null)
         return false;
 
       return base.CanBeBeneficial(target, message, allowDead);
@@ -1612,7 +1616,7 @@ namespace Server.Mobiles
     {
       if (m is BaseCreature creature && !creature.Controlled)
         return !Alive || !creature.Alive || IsDeadBondedPet || creature.IsDeadBondedPet ||
-               (Hidden && AccessLevel > AccessLevel.Player);
+               Hidden && AccessLevel > AccessLevel.Player;
 
       if (Region.IsPartOf<SafeZone>() && m is PlayerMobile pm)
         if (pm.DuelContext == null || pm.DuelPlayer == null || !pm.DuelContext.Started || pm.DuelContext.Finished ||
@@ -1632,7 +1636,7 @@ namespace Server.Mobiles
 
     protected override void OnMapChange(Map oldMap)
     {
-      if ((Map != Faction.Facet && oldMap == Faction.Facet) || (Map == Faction.Facet && oldMap != Faction.Facet))
+      if (Map != Faction.Facet && oldMap == Faction.Facet || Map == Faction.Facet && oldMap != Faction.Facet)
         InvalidateProperties();
 
       DuelContext?.OnMapChanged(this);
@@ -3190,7 +3194,7 @@ namespace Server.Mobiles
 
     private bool CanInsure(Item item)
     {
-      if ((item is Container && !(item is BaseQuiver)) || item is BagOfSending || item is KeyRing || item is PotionKeg ||
+      if (item is Container && !(item is BaseQuiver) || item is BagOfSending || item is KeyRing || item is PotionKeg ||
           item is Sigil)
         return false;
 
