@@ -32,6 +32,14 @@ namespace System.Buffers
     private readonly Span<byte> m_Second;
     private readonly int m_Length;
 
+    public BufferWriter(ArraySegment<byte>[] buffers)
+    {
+      m_First = buffers[0];
+      m_Second = buffers[1];
+      Position = 0;
+      m_Length = m_First.Length + m_Second.Length;
+    }
+
     public BufferWriter(Span<byte> first, Span<byte> second)
     {
       m_First = first;

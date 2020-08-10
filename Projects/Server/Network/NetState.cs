@@ -244,10 +244,6 @@ namespace Server.Network
 
     public Socket Connection { get; private set; }
 
-    public Pipe IncomingPipe { get; private set; }
-
-    public Pipe OutgoingPipe { get; private set; }
-
     public bool CompressionEnabled { get; set; }
 
     public int Sequence { get; set; }
@@ -383,11 +379,19 @@ namespace Server.Network
     // TODO: Make this configurable
     private const int pipeBufferSize = 0x20000;
 
+    private byte[] m_IncomingBuffer;
+    private Pipe m_IncomingPipe;
+
+    private byte[] m_OutgoingBuffer;
+    private Pipe m_OutgoingPipe;
+
     public NetState(Socket connection)
     {
       Connection = connection;
-      IncomingPipe = new Pipe(new byte[pipeBufferSize]);
-      OutgoingPipe = new Pipe(new byte[pipeBufferSize]);
+      m_IncomingBuffer = new byte[pipeBufferSize];
+      m_OutgoingBuffer = new byte[pipeBufferSize];
+      m_IncomingPipe = new Pipe(m_IncomingBuffer);
+      m_OutgoingPipe = new Pipe(m_OutgoingBuffer);
       Seeded = false;
       Gumps = new List<Gump>();
       HuePickers = new List<HuePicker>();
@@ -422,7 +426,7 @@ namespace Server.Network
 
       lock (TcpServer.ConnectedClients)
         foreach (var ns in TcpServer.ConnectedClients)
-          ns.Start();
+          ns.StartReceiving();
     }
 
     public virtual void Send(Packet p)
@@ -441,7 +445,7 @@ namespace Server.Network
         {
           RefreshActivityDelay();
 
-          var pr = OutgoingPipe.Writer.GetBytes();
+          var pr = m_OutgoingPipe.Writer.GetBytes();
           pr.CopyFrom(buffer.Slice(0, length).Span);
 
           if (pr.IsCanceled || pr.IsCompleted)
@@ -470,11 +474,13 @@ namespace Server.Network
     {
       if (Connection == null || !m_NetworkState.Paused)
         StartReceiving();
+
+      StartSending();
     }
 
     private async void StartReceiving()
     {
-      var writer = IncomingPipe.Writer;
+      var writer = m_IncomingPipe.Writer;
       var connection = Connection;
 
       RefreshActivityDelay();
@@ -527,7 +533,7 @@ namespace Server.Network
 
     private static void ProcessIncoming(NetState ns)
     {
-      var reader = ns.IncomingPipe.Reader;
+      var reader = ns.m_IncomingPipe.Reader;
       PipeResult result;
       bool refresh = true;
 
@@ -559,9 +565,9 @@ namespace Server.Network
       } while (result.Length > 0);
     }
 
-    private static async void StartSending(NetState ns)
+    private async void StartSending()
     {
-      var reader = ns.OutgoingPipe.Reader;
+      var reader = m_OutgoingPipe.Reader;
 
       while (true)
       {
@@ -571,9 +577,9 @@ namespace Server.Network
         if (length <= 0)
           break;
 
-        ns.RefreshActivityDelay();
+        RefreshActivityDelay();
 
-        await ns.Connection.SendAsync(result.Buffer, SocketFlags.None);
+        await Connection.SendAsync(result.Buffer, SocketFlags.None);
 
         reader.Advance((uint)length);
       }
@@ -636,8 +642,8 @@ namespace Server.Network
       if (disposing == 1)
         return;
 
-      OutgoingPipe.Writer.Complete();
-      IncomingPipe.Writer.Complete();
+      m_OutgoingPipe.Writer.Complete();
+      m_IncomingPipe.Writer.Complete();
 
       try
       {
@@ -657,6 +663,10 @@ namespace Server.Network
         TraceException(ex);
       }
 
+      m_OutgoingPipe = null;
+      m_IncomingPipe = null;
+      m_OutgoingBuffer = null;
+      m_IncomingBuffer = null;
       Connection = null;
       m_Disposed.Enqueue(this);
     }
