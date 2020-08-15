@@ -15,10 +15,10 @@ jobs:
 
   steps:
   - task: UseDotNet@2
-      displayName: 'Install .NET Core'
-      inputs:
-        packageType: sdk
-        version: '3.1.401'
+    displayName: 'Install .NET Core'
+    inputs:
+      packageType: sdk
+      version: '3.1.401'
   - task: NuGetAuthenticate@0
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
@@ -48,10 +48,10 @@ jobs:
 
   steps:
   - task: UseDotNet@2
-      displayName: 'Install .NET Core'
-      inputs:
-        packageType: sdk
-        version: '3.1.401'
+    displayName: 'Install .NET Core'
+    inputs:
+      packageType: sdk
+      version: '3.1.401'
   - task: NuGetAuthenticate@0
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
