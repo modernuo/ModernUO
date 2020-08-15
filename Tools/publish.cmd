@@ -6,6 +6,15 @@ dotnet restore --force-evaluate
 GOTO :CMDSCRIPT
 
 ::SHELLSCRIPT
+if [[ $(uname) = "Darwin" ]]
+then
+  r="-r osx-x64"
+if [[ -f /etc/os-release ]]
+then
+  . /etc/os-release
+  r="-r ${NAME,,}.$VERSION_ID-x64"
+fi
+
 if [[ -z $2 ]] || [[ ${2,,} = "core" ]]
 then
   f="-f netcoreapp3.1"
@@ -18,19 +27,6 @@ then
   c="-c Release"
 else
   c="-c ${3^}"
-fi
-
-if [[ $1 ]]
-then
-  runtime=${1,,}
-  r="-r $runtime-x64"
-else
-  if [[ $(uname) = "Darwin" ]]
-  then
-    r="-r osx-x64"
-  else
-    r="-r linux-x64"
-  fi
 fi
 
 echo dotnet publish ${c} ${r} ${f} --no-restore --self-contained=false -o Distribution Projects/Server/Server.csproj
