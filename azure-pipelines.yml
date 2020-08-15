@@ -32,8 +32,6 @@ jobs:
 - job: BuildLinux
   strategy:
     matrix:
-      'Debian 9':
-        containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-stretch
       'Debian 10':
         containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
       'Ubuntu 18':
