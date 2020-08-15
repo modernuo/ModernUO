@@ -22,7 +22,7 @@ jobs:
   - task: NuGetAuthenticate@0
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
-  - script: dotnet build -c $(buildConfiguration) -f netcoreapp3.1--no-restore Projects/Server/Server.csproj
+  - script: dotnet build -c $(buildConfiguration) -f netcoreapp3.1 --no-restore Projects/Server/Server.csproj
     displayName: 'Build Server'
   - script: dotnet build -c $(buildConfiguration) -f netcoreapp3.1 --no-restore Projects/UOContent/UOContent.csproj
     displayName: 'Build UO Content'
