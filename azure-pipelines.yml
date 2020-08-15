@@ -31,8 +31,8 @@ jobs:
         containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
       'Ubuntu 18':
         containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-bionic
-      # 'Ubuntu 20':
-      #   containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-focal
+      'Ubuntu 20':
+        containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-focal
 
   displayName: Linux
 
