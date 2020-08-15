@@ -14,14 +14,19 @@ jobs:
     vmImage: 'windows-latest'
 
   steps:
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core'
+    inputs:
+      packageType: sdk
+      version: '3.1.401'
   - task: NuGetAuthenticate@0
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
-  - script: dotnet build -c $(buildConfiguration) --no-restore Projects/Server/Server.csproj
+  - script: dotnet build -c $(buildConfiguration) -f netcoreapp3.1 --no-restore Projects/Server/Server.csproj
     displayName: 'Build Server'
-  - script: dotnet build -c $(buildConfiguration) --no-restore Projects/UOContent/UOContent.csproj
+  - script: dotnet build -c $(buildConfiguration) -f netcoreapp3.1 --no-restore Projects/UOContent/UOContent.csproj
     displayName: 'Build UO Content'
-  - script: dotnet test --no-restore
+  - script: dotnet test --no-restore -f netcoreapp3.1
     displayName: 'Test'
 
 - job: BuildLinux
@@ -31,8 +36,8 @@ jobs:
         containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-buster
       'Ubuntu 18':
         containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-bionic
-      # 'Ubuntu 20':
-      #   containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-focal
+      'Ubuntu 20':
+        containerImage: mcr.microsoft.com/dotnet/core/sdk:3.1-focal
 
   displayName: Linux
 
@@ -42,12 +47,17 @@ jobs:
   container: $[ variables['containerImage'] ]
 
   steps:
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core'
+    inputs:
+      packageType: sdk
+      version: '3.1.401'
   - task: NuGetAuthenticate@0
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'
-  - script: dotnet build -c $(buildConfiguration) --no-restore Projects/Server/Server.csproj
+  - script: dotnet build -c $(buildConfiguration) -f netcoreapp3.1 --no-restore Projects/Server/Server.csproj
     displayName: 'Build Server'
-  - script: dotnet build -c $(buildConfiguration) --no-restore Projects/UOContent/UOContent.csproj
+  - script: dotnet build -c $(buildConfiguration) -f netcoreapp3.1 --no-restore Projects/UOContent/UOContent.csproj
     displayName: 'Build UO Content'
-  - script: dotnet test --no-restore
+  - script: dotnet test --no-restore -f netcoreapp3.1
     displayName: 'Test'
