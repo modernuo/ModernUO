@@ -20,7 +20,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.301
+        dotnet-version: 3.1.401
     - name: Restore NuGet Packages
       run: dotnet restore --force-evaluate
     - name: Build Server
