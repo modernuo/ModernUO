@@ -4,17 +4,17 @@
     ".NETCoreApp,Version=v3.1": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "MailKit": {
         "type": "Direct",
-        "requested": "[2.7.0, )",
-        "resolved": "2.7.0",
-        "contentHash": "AaUb45NBpKSjl1bTOAwB7nGQm2cLg6yjz4L+2KgU9dhTN3VTmXnJo+enKTjN0LHX3PV4k7DE12IhZqmXnP3v6w==",
+        "requested": "[2.8.0, )",
+        "resolved": "2.8.0",
+        "contentHash": "oAbRyAfzymGSxOZRyDAeYwjZubWgj9b9e2CUp2bzMDMQ/2DRdvWkzSXIuVxLpR6QKA5MMixYkowyo1RSV16Atw==",
         "dependencies": {
-          "MimeKit": "2.8.0",
+          "MimeKit": "2.9.1",
           "System.Net.NameResolution": "4.3.0",
           "System.Net.Security": "4.3.2",
           "System.Runtime.Serialization.Primitives": "4.3.0"
@@ -56,9 +56,9 @@
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -140,12 +140,11 @@
       },
       "MimeKit": {
         "type": "Transitive",
-        "resolved": "2.8.0",
-        "contentHash": "XUWdwag5dcdwJAzMpBLNx+24xgpigk/bhIJBs/sITciX8CIYS2cfc4VkGwQjtuTsrbaJEBl3ZSOtGSOOc2k/pg==",
+        "resolved": "2.9.1",
+        "contentHash": "0XUFf9DEZiLROC7cWvCOqn2uXekNIWztZdpBsaJcvPrndqWpap32jLgQ2kribNj+rhRqK8vpDy9Uvg714v6KBg==",
         "dependencies": {
           "Portable.BouncyCastle": "1.8.5",
           "System.Reflection.TypeExtensions": "4.4.0",
-          "System.Security.Cryptography.Cng": "4.4.0",
           "System.Text.Encoding.CodePages": "4.4.0"
         }
       },
@@ -599,10 +598,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -792,22 +801,22 @@
           "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv": "3.1.5",
           "Microsoft.Extensions.Hosting.Abstractions": "3.1.5",
           "System.IO.Pipelines": "4.7.2",
-          "Zlib.Bindings": "1.1.0"
+          "Zlib.Bindings": "1.2.0"
         }
       }
     },
     ".NETCoreApp,Version=v3.1/centos.7-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -1374,10 +1383,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -1547,15 +1566,15 @@
     ".NETCoreApp,Version=v3.1/centos.8-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -2077,10 +2096,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -2250,15 +2279,15 @@
     ".NETCoreApp,Version=v3.1/debian.10-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -2780,10 +2809,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -2953,15 +2992,15 @@
     ".NETCoreApp,Version=v3.1/debian.9-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -3483,10 +3522,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -3656,15 +3705,15 @@
     ".NETCoreApp,Version=v3.1/osx-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -4186,10 +4235,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -4359,15 +4418,15 @@
     ".NETCoreApp,Version=v3.1/ubuntu.16.04-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -4934,10 +4993,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -5107,15 +5176,15 @@
     ".NETCoreApp,Version=v3.1/ubuntu.18.04-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -5637,10 +5706,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -5810,15 +5889,15 @@
     ".NETCoreApp,Version=v3.1/ubuntu.20.04-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -6340,10 +6419,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -6513,15 +6602,15 @@
     ".NETCoreApp,Version=v3.1/win-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -7027,10 +7116,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -7211,17 +7310,17 @@
     ".NETCoreApp,Version=v5.0": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "MailKit": {
         "type": "Direct",
-        "requested": "[2.7.0, )",
-        "resolved": "2.7.0",
-        "contentHash": "AaUb45NBpKSjl1bTOAwB7nGQm2cLg6yjz4L+2KgU9dhTN3VTmXnJo+enKTjN0LHX3PV4k7DE12IhZqmXnP3v6w==",
+        "requested": "[2.8.0, )",
+        "resolved": "2.8.0",
+        "contentHash": "oAbRyAfzymGSxOZRyDAeYwjZubWgj9b9e2CUp2bzMDMQ/2DRdvWkzSXIuVxLpR6QKA5MMixYkowyo1RSV16Atw==",
         "dependencies": {
-          "MimeKit": "2.8.0",
+          "MimeKit": "2.9.1",
           "System.Net.NameResolution": "4.3.0",
           "System.Net.Security": "4.3.2",
           "System.Runtime.Serialization.Primitives": "4.3.0"
@@ -7263,9 +7362,9 @@
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -7347,12 +7446,11 @@
       },
       "MimeKit": {
         "type": "Transitive",
-        "resolved": "2.8.0",
-        "contentHash": "XUWdwag5dcdwJAzMpBLNx+24xgpigk/bhIJBs/sITciX8CIYS2cfc4VkGwQjtuTsrbaJEBl3ZSOtGSOOc2k/pg==",
+        "resolved": "2.9.1",
+        "contentHash": "0XUFf9DEZiLROC7cWvCOqn2uXekNIWztZdpBsaJcvPrndqWpap32jLgQ2kribNj+rhRqK8vpDy9Uvg714v6KBg==",
         "dependencies": {
           "Portable.BouncyCastle": "1.8.5",
           "System.Reflection.TypeExtensions": "4.4.0",
-          "System.Security.Cryptography.Cng": "4.4.0",
           "System.Text.Encoding.CodePages": "4.4.0"
         }
       },
@@ -7806,10 +7904,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -7999,22 +8107,22 @@
           "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv": "3.1.5",
           "Microsoft.Extensions.Hosting.Abstractions": "3.1.5",
           "System.IO.Pipelines": "4.7.2",
-          "Zlib.Bindings": "1.1.0"
+          "Zlib.Bindings": "1.2.0"
         }
       }
     },
     ".NETCoreApp,Version=v5.0/centos.7-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -8581,10 +8689,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -8754,15 +8872,15 @@
     ".NETCoreApp,Version=v5.0/centos.8-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -9284,10 +9402,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -9457,15 +9585,15 @@
     ".NETCoreApp,Version=v5.0/debian.10-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -9987,10 +10115,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -10160,15 +10298,15 @@
     ".NETCoreApp,Version=v5.0/debian.9-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -10690,10 +10828,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -10863,15 +11011,15 @@
     ".NETCoreApp,Version=v5.0/osx-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -11393,10 +11541,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -11566,15 +11724,15 @@
     ".NETCoreApp,Version=v5.0/ubuntu.16.04-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -12141,10 +12299,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -12314,15 +12482,15 @@
     ".NETCoreApp,Version=v5.0/ubuntu.18.04-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -12844,10 +13012,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -13017,15 +13195,15 @@
     ".NETCoreApp,Version=v5.0/ubuntu.20.04-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -13547,10 +13725,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {
@@ -13720,15 +13908,15 @@
     ".NETCoreApp,Version=v5.0/win-x64": {
       "Argon2.Bindings": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "jDYl4mX5NwKmyFb2tEe5XGHj+RH8s+kKKft9/tPbYbjxk+DKbcnkWoFnT2D58K6bFwjP+w1nR8H0FuR2U8gc8g=="
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -14234,10 +14422,20 @@
       },
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "3d/d+7sdNpfYfqJFzuE/o6Pl/reaMbH7rlUMNvtm4+XVYHY32tdFa45yjB3vhb6q0YY+IV8GUuiBPRsBFP3yaw==",
+        "resolved": "4.3.0",
+        "contentHash": "03idZOqFlsKRL4W+LuCpJ6dBYDUWReug6lZjBa3uJWnk5sPCUXckocevTaUA8iT/MFSrY/2HXkOt753xQ/cf8g==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "2.0.0"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Handles": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0",
+          "System.Security.Cryptography.Algorithms": "4.3.0",
+          "System.Security.Cryptography.Encoding": "4.3.0",
+          "System.Security.Cryptography.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0"
         }
       },
       "System.Security.Cryptography.Csp": {

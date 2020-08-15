@@ -44,9 +44,9 @@
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -114,9 +114,9 @@
     ".NETCoreApp,Version=v3.1/centos.7-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -130,9 +130,9 @@
     ".NETCoreApp,Version=v3.1/centos.8-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -146,9 +146,9 @@
     ".NETCoreApp,Version=v3.1/debian.10-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -162,9 +162,9 @@
     ".NETCoreApp,Version=v3.1/debian.9-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -178,9 +178,9 @@
     ".NETCoreApp,Version=v3.1/osx-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -194,9 +194,9 @@
     ".NETCoreApp,Version=v3.1/ubuntu.16.04-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -210,9 +210,9 @@
     ".NETCoreApp,Version=v3.1/ubuntu.18.04-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -226,9 +226,9 @@
     ".NETCoreApp,Version=v3.1/ubuntu.20.04-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -242,9 +242,9 @@
     ".NETCoreApp,Version=v3.1/win-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -298,9 +298,9 @@
       },
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -368,9 +368,9 @@
     ".NETCoreApp,Version=v5.0/centos.7-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -384,9 +384,9 @@
     ".NETCoreApp,Version=v5.0/centos.8-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -400,9 +400,9 @@
     ".NETCoreApp,Version=v5.0/debian.10-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -416,9 +416,9 @@
     ".NETCoreApp,Version=v5.0/debian.9-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -432,9 +432,9 @@
     ".NETCoreApp,Version=v5.0/osx-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -448,9 +448,9 @@
     ".NETCoreApp,Version=v5.0/ubuntu.16.04-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -464,9 +464,9 @@
     ".NETCoreApp,Version=v5.0/ubuntu.18.04-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -480,9 +480,9 @@
     ".NETCoreApp,Version=v5.0/ubuntu.20.04-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
@@ -496,9 +496,9 @@
     ".NETCoreApp,Version=v5.0/win-x64": {
       "Zlib.Bindings": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "hLmHUTlZR3rnJ95FboiyJdLR8MJbfHdmapnRZHWLvkxB48jDgRBBJG1w5NYRiNBteVY4uksacXM7/V8nu1byBw=="
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
       "Libuv": {
         "type": "Transitive",
