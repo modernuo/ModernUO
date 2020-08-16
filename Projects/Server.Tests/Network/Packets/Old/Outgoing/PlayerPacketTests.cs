@@ -223,7 +223,7 @@ namespace Server.Tests.Network.Packets
         var s = skills[i];
 
         var v = s.NonRacialValue;
-        var uv = Utility.Coerce((int)(v * 10), 0, 0xFFFF);
+        var uv = Math.Clamp((int)(v * 10), 0, 0xFFFF);
 
         expectedData.Write(ref pos, (ushort)(s.Info.SkillID + 1));
         expectedData.Write(ref pos, (ushort)uv);
@@ -276,7 +276,7 @@ namespace Server.Tests.Network.Packets
       expectedData.Write(ref pos, (byte)0xDF); // type: delta, capped
 
       var v = skill.NonRacialValue;
-      var uv = Utility.Coerce((int)(v * 10), 0, 0xFFFF);
+      var uv = Math.Clamp((int)(v * 10), 0, 0xFFFF);
 
       expectedData.Write(ref pos, (ushort)skill.Info.SkillID);
       expectedData.Write(ref pos, (ushort)uv);

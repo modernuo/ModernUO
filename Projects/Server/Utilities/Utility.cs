@@ -838,9 +838,6 @@ namespace Server
       && p1.Y >= p2.Y - 18
       && p1.Y <= p2.Y + 18;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Coerce(int number, int min, int max) => number < min ? min : number > max ? max : number;
-
     // 4d6+8 would be: Utility.Dice( 4, 6, 8 )
     public static int Dice(uint amount, uint sides, int bonus)
     {
