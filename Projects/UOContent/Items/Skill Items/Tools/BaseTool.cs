@@ -156,16 +156,11 @@ namespace Server.Items
 
         int num = system.CanCraft(from, this, null);
 
-        if (num > 0 && (num != 1044267 || !Core.SE)) // Blacksmithing shows the gump regardless of proximity of an anvil and forge after SE
-        {
+        // Blacksmithing shows the gump regardless of proximity of an anvil and forge after SE
+        if (num > 0 && (num != 1044267 || !Core.SE))
           from.SendLocalizedMessage(num);
-        }
         else
-        {
-          // CraftContext context = system.GetContext(from);
-
           from.SendGump(new CraftGump(from, system, this, null));
-        }
       }
       else
       {

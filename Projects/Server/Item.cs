@@ -1950,7 +1950,7 @@ namespace Server
 
     public virtual bool OnDragDrop(Mobile from, Item dropped)
     {
-      var success = Parent is Container container && container.OnStackAttempt(@from, this, dropped) ||
+      var success = Parent is Container container && container.OnStackAttempt(from, this, dropped) ||
                     StackWith(from, dropped);
 
       if (success && Spawner != null)
@@ -3282,8 +3282,8 @@ namespace Server
     public virtual bool CheckTarget(Mobile from, Target targ, object targeted) =>
       m_Parent switch
       {
-        Item item => item.CheckTarget(@from, targ, targeted),
-        Mobile mobile => mobile.CheckTarget(@from, targ, targeted),
+        Item item => item.CheckTarget(from, targ, targeted),
+        Mobile mobile => mobile.CheckTarget(from, targ, targeted),
         _ => true
       };
 
@@ -3343,8 +3343,8 @@ namespace Server
     public virtual bool CheckItemUse(Mobile from, Item item) =>
       m_Parent switch
       {
-        Item parentItem => parentItem.CheckItemUse(@from, item),
-        Mobile parentMobile => parentMobile.CheckItemUse(@from, item),
+        Item parentItem => parentItem.CheckItemUse(from, item),
+        Mobile parentMobile => parentMobile.CheckItemUse(from, item),
         _ => true
       };
 
@@ -3366,15 +3366,15 @@ namespace Server
     public virtual bool CheckLift(Mobile from, Item item, ref LRReason reject) =>
       m_Parent switch
       {
-        Item parentItem => parentItem.CheckLift(@from, item, ref reject),
-        Mobile parentMobile => parentMobile.CheckLift(@from, item, ref reject),
+        Item parentItem => parentItem.CheckLift(from, item, ref reject),
+        Mobile parentMobile => parentMobile.CheckLift(from, item, ref reject),
         _ => true
       };
 
     public virtual void OnSingleClickContained(Mobile from, Item item)
     {
-      if (m_Parent is Item item1)
-        item1.OnSingleClickContained(from, item);
+      if (m_Parent is Item parentItem)
+        parentItem.OnSingleClickContained(from, item);
     }
 
     public virtual void OnAosSingleClick(Mobile from)

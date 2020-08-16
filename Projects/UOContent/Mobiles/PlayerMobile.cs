@@ -3682,7 +3682,7 @@ namespace Server.Mobiles
     }
 
     public override bool CheckPoisonImmunity(Mobile from, Poison poison) =>
-      Young && (DuelContext?.Started != true || DuelContext.Finished) || base.CheckPoisonImmunity(@from, poison);
+      Young && (DuelContext?.Started != true || DuelContext.Finished) || base.CheckPoisonImmunity(from, poison);
 
     public override void OnPoisonImmunity(Mobile from, Poison poison)
     {
