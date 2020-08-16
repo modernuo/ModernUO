@@ -170,10 +170,8 @@ namespace Server.Engines.ConPVP
         return 50;
       if (xp >= 2500)
         return 10 + (xp - 2500) / 500;
-      if (xp < 0)
-        xp = 0;
 
-      return m_ShortLevels[xp / 100];
+      return m_ShortLevels[Math.Max(xp, 0) / 100];
     }
 
     public static void GetLevelInfo(int level, out int xpBase, out int xpAdvance)
