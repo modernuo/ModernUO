@@ -110,7 +110,7 @@ namespace Server.Gumps
 
     public static List<Mobile> BuildList(Mobile owner, string rawFilter)
     {
-      string filter = string.IsNullOrWhiteSpace(rawFilter) ? null : rawFilter.Trim().ToLower();
+      string filter = rawFilter.Trim().ToLower().IsNullOrDefault(null);
 
       List<Mobile> list = new List<Mobile>();
       List<NetState> states = TcpServer.Instances;
@@ -137,12 +137,7 @@ namespace Server.Gumps
     {
       m_Page = page;
 
-      int count = m_Mobiles.Count - page * EntryCount;
-
-      if (count < 0)
-        count = 0;
-      else if (count > EntryCount)
-        count = EntryCount;
+      int count = Math.Clamp(m_Mobiles.Count - page * EntryCount, 0, EntryCount);
 
       int totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
 

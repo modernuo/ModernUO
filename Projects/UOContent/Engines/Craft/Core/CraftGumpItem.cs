@@ -137,10 +137,7 @@ namespace Server.Engines.Craft
       for (int i = 0; i < m_CraftItem.Skills.Count; i++)
       {
         CraftSkill skill = m_CraftItem.Skills[i];
-        double minSkill = skill.MinSkill;
-
-        if (minSkill < 0)
-          minSkill = 0;
+        double minSkill = Math.Max(skill.MinSkill, 0);
 
         AddHtmlLocalized(170, 132 + i * 20, 200, 18, AosSkillBonuses.GetLabel(skill.SkillToMake), LabelColor);
         AddLabel(430, 132 + i * 20, LabelHue, $"{minSkill:F1}");
@@ -156,25 +153,16 @@ namespace Server.Engines.Craft
 
       double chance = m_CraftItem.GetSuccessChance(m_From, resIndex > -1 ? res.GetAt(resIndex).ItemType : null,
         m_CraftSystem, false, out _);
-      double excepChance = m_CraftItem.GetExceptionalChance(m_CraftSystem, chance, m_From);
-
-      if (chance < 0.0)
-        chance = 0.0;
-      else if (chance > 1.0)
-        chance = 1.0;
 
       AddHtmlLocalized(170, 80, 250, 18, 1044057, LabelColor); // Success Chance:
-      AddLabel(430, 80, LabelHue, $"{chance * 100:F1}%");
+      AddLabel(430, 80, LabelHue, $"{Math.Clamp(chance, 0, 1) * 100:F1}%");
 
       if (m_ShowExceptionalChance)
       {
-        if (excepChance < 0.0)
-          excepChance = 0.0;
-        else if (excepChance > 1.0)
-          excepChance = 1.0;
+        double exceptChance = Math.Clamp(m_CraftItem.GetExceptionalChance(m_CraftSystem, chance, m_From), 0, 1.0);
 
         AddHtmlLocalized(170, 100, 250, 18, 1044058, 32767); // Exceptional Chance:
-        AddLabel(430, 100, LabelHue, $"{excepChance * 100:F1}%");
+        AddLabel(430, 100, LabelHue, $"{exceptChance * 100:F1}%");
       }
     }
 

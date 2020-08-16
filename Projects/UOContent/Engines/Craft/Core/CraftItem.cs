@@ -647,23 +647,11 @@ namespace Server.Engines.Craft
           chance = chance * 0.5 - 0.1;
           break;
         case CraftECA.ChanceMinusSixtyToFourtyFive:
-          {
-            double offset = 0.60 - (from.Skills[system.MainSkill].Value - 95.0) * 0.03;
-
-            if (offset < 0.45)
-              offset = 0.45;
-            else if (offset > 0.60)
-              offset = 0.60;
-
-            chance -= offset;
-            break;
-          }
+          chance -= Math.Clamp(0.60 - (from.Skills[system.MainSkill].Value - 95.0) * 0.03, 0.45, 0.60);
+          break;
       }
 
-      if (chance > 0)
-        return chance + bonus;
-
-      return chance;
+      return chance > 0 ? chance + bonus : chance;
     }
 
     public bool CheckSkills(Mobile from, Type typeRes, CraftSystem craftSystem, ref int quality,

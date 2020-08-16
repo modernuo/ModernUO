@@ -606,12 +606,7 @@ namespace Server.Multis
         return;
       }
 
-      newName = newName.Trim();
-
-      if (newName.Length == 0)
-        newName = null;
-
-      Rename(newName);
+      Rename(newName.Trim().IsNullOrDefault(null));
     }
 
     public DryDockResult CheckDryDock(Mobile from)
@@ -723,14 +718,7 @@ namespace Server.Multis
       }
 
       if (e.Speech.Length > 8)
-      {
-        string newName = e.Speech.Substring(8).Trim();
-
-        if (newName.Length == 0)
-          newName = null;
-
-        Rename(newName);
-      }
+        Rename(e.Speech.Substring(8).Trim().IsNullOrDefault(null));
     }
 
     public void Rename(string newName)
@@ -1234,8 +1222,8 @@ namespace Server.Multis
         int x = item.X - p.X + newComponents.Min.X;
         int y = item.Y - p.Y + newComponents.Min.Y;
 
-        return (x >= 0 && x < newComponents.Width && y >= 0 && y < newComponents.Height &&
-               newComponents.Tiles[x][y].Length == 0) || Contains(item);
+        return x >= 0 && x < newComponents.Width && y >= 0 && y < newComponents.Height &&
+          newComponents.Tiles[x][y].Length == 0 || Contains(item);
       });
 
       eable.Free();

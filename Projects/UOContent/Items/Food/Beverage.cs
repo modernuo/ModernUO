@@ -606,12 +606,7 @@ namespace Server.Items
       get => m_Quantity;
       set
       {
-        if (value < 0)
-          value = 0;
-        else if (value > MaxQuantity)
-          value = MaxQuantity;
-
-        m_Quantity = value;
+        m_Quantity = Math.Clamp(value, 0, MaxQuantity);
 
         InvalidateProperties();
 

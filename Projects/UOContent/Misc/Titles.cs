@@ -114,20 +114,14 @@ namespace Server.Misc
         if (m.Fame >= MaxFame)
           return;
 
-        offset -= m.Fame / 100;
-
-        if (offset < 0)
-          offset = 0;
+        offset = Math.Max(offset - m.Fame / 100, 0);
       }
       else if (offset < 0)
       {
         if (m.Fame <= MinFame)
           return;
 
-        offset -= m.Fame / 100;
-
-        if (offset > 0)
-          offset = 0;
+        offset = Math.Min(offset - m.Fame / 100, 0);
       }
 
       if (m.Fame + offset > MaxFame)
@@ -170,20 +164,14 @@ namespace Server.Misc
         if (m.Karma >= MaxKarma)
           return;
 
-        offset -= m.Karma / 100;
-
-        if (offset < 0)
-          offset = 0;
+        offset = Math.Max(offset - m.Karma / 100, 0);
       }
       else if (offset < 0)
       {
         if (m.Karma <= MinKarma)
           return;
 
-        offset -= m.Karma / 100;
-
-        if (offset > 0)
-          offset = 0;
+        offset = Math.Min(offset - m.Karma / 100, 0);
       }
 
       if (m.Karma + offset > MaxKarma)

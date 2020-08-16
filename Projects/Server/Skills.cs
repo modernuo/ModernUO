@@ -601,10 +601,7 @@ namespace Server
             }
           }
 
-          if (highest == null && m_Skills.Length > 0)
-            highest = this[0];
-
-          m_Highest = highest;
+          m_Highest = highest == null && m_Skills.Length > 0 ? this[0] : highest;
         }
 
         return m_Highest;

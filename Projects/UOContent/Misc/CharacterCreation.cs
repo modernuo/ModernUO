@@ -830,12 +830,7 @@ namespace Server.Misc
 
     private static void FixStat(ref int stat, int diff, int max)
     {
-      stat += diff;
-
-      if (stat < 0)
-        stat = 0;
-      else if (stat > max)
-        stat = max;
+      stat = Math.Clamp(stat + diff, 0, max);
     }
 
     private static void SetStats(Mobile m, NetState state, int str, int dex, int intel)

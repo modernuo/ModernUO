@@ -74,10 +74,7 @@ namespace Server.Engines.ConPVP
           sb.Append(mob.Name);
         }
 
-        if (sb.Length == 0)
-          return "Empty";
-
-        return sb.ToString();
+        return sb.Length == 0 ? "Empty" : sb.ToString();
       }
     }
 

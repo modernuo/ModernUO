@@ -1,3 +1,4 @@
+using System;
 using Server.Items;
 using Server.Network;
 
@@ -12,10 +13,7 @@ namespace Server.Gumps
     {
       int totalGold = from.TotalGold;
 
-      if (offer > totalGold)
-        offer = totalGold;
-      else if (offer < 0)
-        offer = 0;
+      offer = Math.Clamp(offer, 0, totalGold);
 
       m_From = from;
       m_Offer = offer;
@@ -82,10 +80,7 @@ namespace Server.Gumps
           {
             int totalGold = m_From.TotalGold;
 
-            if (m_Offer > totalGold)
-              m_Offer = totalGold;
-            else if (m_Offer < 0)
-              m_Offer = 0;
+            m_Offer = Math.Clamp(m_Offer, 0, totalGold);
 
             if (m_From.TithingPoints + m_Offer > 100000) // TODO: What's the maximum?
               m_Offer = 100000 - m_From.TithingPoints;

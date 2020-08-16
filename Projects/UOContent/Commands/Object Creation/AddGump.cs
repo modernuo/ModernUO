@@ -204,7 +204,7 @@ namespace Server.Gumps
 
     private class TypeNameComparer : IComparer<Type>
     {
-      public int Compare(Type x, Type y) => x.Name.CompareTo(y.Name);
+      public int Compare(Type x, Type y) => x?.Name.CompareTo(y?.Name) ?? 1;
     }
 
     public class InternalTarget : Target
@@ -227,10 +227,12 @@ namespace Server.Gumps
       {
         if (o is IPoint3D p)
         {
-          if (p is Item item)
-            p = item.GetWorldTop();
-          else if (p is Mobile m)
-            p = m.Location;
+          p = p switch
+          {
+            Item item => item.GetWorldTop(),
+            Mobile m => m.Location,
+            _ => p
+          };
 
           Commands.Add.Invoke(from, new Point3D(p), new Point3D(p), new[] { m_Type.Name });
 

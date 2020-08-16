@@ -23,13 +23,7 @@ namespace Server.Items
     public int Fruits
     {
       get => m_Fruits;
-      set
-      {
-        if (value < 0)
-          m_Fruits = 0;
-        else
-          m_Fruits = value;
-      }
+      set => m_Fruits = Math.Max(value, 0);
     }
 
     public override void OnComponentUsed(AddonComponent c, Mobile from)

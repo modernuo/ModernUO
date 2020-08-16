@@ -82,11 +82,7 @@ namespace Server.Mobiles
     public int Amount
     {
       get => m_Amount;
-      set
-      {
-        if (value < 0) value = 0;
-        m_Amount = value;
-      }
+      set => m_Amount = Math.Max(value, 0);
     }
 
     public int MaxAmount { get; set; }

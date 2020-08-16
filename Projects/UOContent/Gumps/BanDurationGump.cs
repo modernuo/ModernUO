@@ -207,15 +207,7 @@ namespace Server.Gumps
 
       if (shouldSet)
       {
-        string comment = null;
-
-        if (c != null)
-        {
-          comment = c.Text.Trim();
-
-          if (comment.Length == 0)
-            comment = null;
-        }
+        string comment = c?.Text.Trim().IsNullOrDefault(null);
 
         for (int i = 0; i < m_List.Count; ++i)
         {

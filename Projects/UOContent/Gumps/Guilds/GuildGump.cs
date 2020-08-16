@@ -25,19 +25,11 @@ namespace Server.Gumps
 
       if (leader != null)
       {
-        string leadTitle;
+        string leadTitle = leader.GuildTitle?.Trim();
+        string leadName = leader.Name?.Trim().IsNullOrDefault("(empty)");
+        string text = leadTitle?.Length > 0 ? $"{leadTitle}: {leadName}" : leadName;
 
-        if ((leadTitle = leader.GuildTitle) != null && (leadTitle = leadTitle.Trim()).Length > 0)
-          leadTitle += ": ";
-        else
-          leadTitle = "";
-
-        string leadName;
-
-        if ((leadName = leader.Name) == null || (leadName = leadName.Trim()).Length <= 0)
-          leadName = "(empty)";
-
-        AddHtml(220, 15, 250, 35, leadTitle + leadName);
+        AddHtml(220, 15, 250, 35, text);
       }
 
       AddButton(20, 50, 4005, 4007, 1);
@@ -50,9 +42,7 @@ namespace Server.Gumps
 
       fealty ??= beholder;
 
-      string fealtyName = fealty.Name?.Trim();
-      if (string.IsNullOrWhiteSpace(fealtyName))
-        fealtyName = "(empty)";
+      string fealtyName = fealty.Name?.Trim().IsNullOrDefault("(empty)");
 
       if (beholder == fealty)
         AddHtmlLocalized(55, 70, 470, 20, 1018002); // yourself
