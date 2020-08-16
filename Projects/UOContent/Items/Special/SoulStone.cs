@@ -138,7 +138,7 @@ namespace Server.Items
 
     protected virtual bool CheckUse(Mobile from)
     {
-      DateTime now = DateTime.UtcNow;
+      // DateTime now = DateTime.UtcNow;
 
       PlayerMobile pm = from as PlayerMobile;
 

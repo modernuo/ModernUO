@@ -1612,27 +1612,17 @@ namespace Server.Mobiles
       m_NoRecursion = false;
     }
 
-    public override bool OnMoveOver(Mobile m)
-    {
-      if (m is BaseCreature creature && !creature.Controlled)
-        return !Alive || !creature.Alive || IsDeadBondedPet || creature.IsDeadBondedPet ||
-               Hidden && AccessLevel > AccessLevel.Player;
+    public override bool OnMoveOver(Mobile m) =>
+      m is BaseCreature creature && !creature.Controlled
+        ? !Alive || !creature.Alive || IsDeadBondedPet || creature.IsDeadBondedPet ||
+          Hidden && AccessLevel > AccessLevel.Player
+        : Region.IsPartOf<SafeZone>() && m is PlayerMobile pm &&
+        (pm.DuelContext == null || pm.DuelPlayer == null || !pm.DuelContext.Started || pm.DuelContext.Finished ||
+         pm.DuelPlayer.Eliminated) || base.OnMoveOver(m);
 
-      if (Region.IsPartOf<SafeZone>() && m is PlayerMobile pm)
-        if (pm.DuelContext == null || pm.DuelPlayer == null || !pm.DuelContext.Started || pm.DuelContext.Finished ||
-            pm.DuelPlayer.Eliminated)
-          return true;
-
-      return base.OnMoveOver(m);
-    }
-
-    public override bool CheckShove(Mobile shoved)
-    {
-      if (m_IgnoreMobiles || TransformationSpellHelper.UnderTransformation(shoved, typeof(WraithFormSpell)))
-        return true;
-
-      return base.CheckShove(shoved);
-    }
+    public override bool CheckShove(Mobile shoved) =>
+      m_IgnoreMobiles || TransformationSpellHelper.UnderTransformation(shoved, typeof(WraithFormSpell)) ||
+      base.CheckShove(shoved);
 
     protected override void OnMapChange(Map oldMap)
     {
@@ -3210,10 +3200,7 @@ namespace Server.Mobiles
       if (item.Layer == Layer.Mount)
         return false;
 
-      if (item.LootType == LootType.Blessed || item.LootType == LootType.Newbied || item.BlessedFor == this)
-        return false;
-
-      return true;
+      return item.LootType != LootType.Blessed && item.LootType != LootType.Newbied && item.BlessedFor != this;
     }
 
     private void ToggleItemInsurance_Callback(Mobile from, object obj)
@@ -3694,13 +3681,8 @@ namespace Server.Mobiles
       return result;
     }
 
-    public override bool CheckPoisonImmunity(Mobile from, Poison poison)
-    {
-      if (Young && (DuelContext?.Started != true || DuelContext.Finished))
-        return true;
-
-      return base.CheckPoisonImmunity(from, poison);
-    }
+    public override bool CheckPoisonImmunity(Mobile from, Poison poison) =>
+      Young && (DuelContext?.Started != true || DuelContext.Finished) || base.CheckPoisonImmunity(@from, poison);
 
     public override void OnPoisonImmunity(Mobile from, Poison poison)
     {

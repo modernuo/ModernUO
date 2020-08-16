@@ -138,10 +138,7 @@ namespace Server.Items
 
       check = m.FindItemOnLayer(Layer.TwoHanded);
 
-      if (check is BaseTool && check != tool && !(check is AncientSmithyHammer))
-        return false;
-
-      return true;
+      return !(check is BaseTool) || check == tool || check is AncientSmithyHammer;
     }
 
     public override void OnSingleClick(Mobile from)
@@ -165,7 +162,7 @@ namespace Server.Items
         }
         else
         {
-          CraftContext context = system.GetContext(from);
+          // CraftContext context = system.GetContext(from);
 
           from.SendGump(new CraftGump(from, system, this, null));
         }
