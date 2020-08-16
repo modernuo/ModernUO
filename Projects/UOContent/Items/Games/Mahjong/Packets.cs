@@ -136,7 +136,7 @@ namespace Server.Engines.Mahjong
           int hand = tile.Dimensions.GetHandArea();
 
           if (hand < 0 || players.IsPublic(hand) || players.GetPlayer(hand) == to ||
-              (game.SpectatorVision && players.IsSpectator(to)))
+              game.SpectatorVision && players.IsSpectator(to))
             Stream.Write((byte)tile.Value);
           else
             Stream.Write((byte)0);
@@ -176,7 +176,7 @@ namespace Server.Engines.Mahjong
         int hand = tile.Dimensions.GetHandArea();
 
         if (hand < 0 || players.IsPublic(hand) || players.GetPlayer(hand) == to ||
-            (game.SpectatorVision && players.IsSpectator(to)))
+            game.SpectatorVision && players.IsSpectator(to))
           Stream.Write((byte)tile.Value);
         else
           Stream.Write((byte)0);

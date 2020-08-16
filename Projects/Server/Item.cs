@@ -1260,7 +1260,7 @@ namespace Server
 
       /* begin last moved time optimization */
       var ticks = LastMoved.Ticks;
-      var now = Core.TickCount;
+      var now = DateTime.UtcNow.Ticks;
 
       var minutes = new TimeSpan(now - ticks).TotalMinutes;
 

@@ -171,10 +171,7 @@ namespace Server.Misc
         if (from.Meditating)
           rate *= 0.5;
 
-        if (rate < 0.5)
-          rate = 0.5;
-        else if (rate > 7.0)
-          rate = 7.0;
+        rate = Math.Clamp(rate, 0.5, 7.0);
       }
 
       return TimeSpan.FromSeconds(rate);
