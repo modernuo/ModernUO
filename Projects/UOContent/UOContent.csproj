@@ -53,8 +53,8 @@
       <IncludeInPackage>false</IncludeInPackage>
     </ProjectReference>
     <PackageReference Include="MailKit" Version="2.8.0" />
-    <PackageReference Include="Zlib.Bindings" Version="1.1.0" />
-    <PackageReference Include="Argon2.Bindings" Version="1.5.1" />
+    <PackageReference Include="Zlib.Bindings" Version="1.2.0" />
+    <PackageReference Include="Argon2.Bindings" Version="1.6.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'=='Analyze'">
     <PackageReference Include="StyleCop.Analyzers">

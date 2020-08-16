@@ -20,12 +20,12 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.301
+        dotnet-version: 3.1.401
     - name: Restore NuGet Packages
       run: dotnet restore --force-evaluate
     - name: Build Server
-      run: dotnet build -c Release --no-restore Projects/Server/Server.csproj
+      run: dotnet build -c Release -f netcoreapp3.1 --no-restore Projects/Server/Server.csproj
     - name: Build UO Content
-      run: dotnet build -c Release --no-restore Projects/UOContent/UOContent.csproj
+      run: dotnet build -c Release -f netcoreapp3.1 --no-restore Projects/UOContent/UOContent.csproj
     - name: Test
-      run: dotnet test --no-restore
+      run: dotnet test --no-restore -f netcoreapp3.1

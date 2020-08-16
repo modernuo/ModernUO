@@ -51,7 +51,11 @@
     <AdditionalFiles Include="..\..\stylecop.json">
       <Link>stylecop.json</Link>
     </AdditionalFiles>
-    <PackageReference Include="Zlib.Bindings" Version="1.1.0" />
+    <PackageReference Include="Zlib.Bindings" Version="1.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.5" />
+    <PackageReference Include="System.IO.Pipelines" Version="4.7.2" />
+    <PackageReference Include="Zlib.Bindings" Version="1.2.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'=='Analyze'">
     <PackageReference Include="StyleCop.Analyzers">
