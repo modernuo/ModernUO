@@ -2958,16 +2958,16 @@ namespace Server
 
         var title = GuildTitle?.Trim() ?? "";
 
-        if (NewGuildDisplay && title.Length > 0)
+        if (title.Length > 0)
         {
-          list.Add("{0}, {1}", Utility.FixHtml(title), Utility.FixHtml(guild.Name));
+          if (NewGuildDisplay)
+            list.Add("{0}, {1}", Utility.FixHtml(title), Utility.FixHtml(guild.Name));
+          else
+            list.Add("{0}, {1} Guild{2}", Utility.FixHtml(title), Utility.FixHtml(guild.Name), type);
         }
         else
         {
-          if (title.Length > 0)
-            list.Add("{0}, {1} Guild{2}", Utility.FixHtml(title), Utility.FixHtml(guild.Name), type);
-          else
-            list.Add(Utility.FixHtml(guild.Name));
+          list.Add(Utility.FixHtml(guild.Name));
         }
       }
     }
