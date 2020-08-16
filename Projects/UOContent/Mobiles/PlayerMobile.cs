@@ -3973,13 +3973,7 @@ namespace Server.Mobiles
 
     public override string ApplyNameSuffix(string suffix)
     {
-      if (Young)
-      {
-        if (suffix.Length == 0)
-          suffix = "(Young)";
-        else
-          suffix = $"{suffix} (Young)";
-      }
+      if (Young) suffix = suffix.Length == 0 ? "(Young)" : $"{suffix} (Young)";
 
       if (EthicPlayer != null)
       {
@@ -3996,10 +3990,7 @@ namespace Server.Mobiles
         if (faction != null)
         {
           string adjunct = $"[{faction.Definition.Abbreviation}]";
-          if (suffix.Length == 0)
-            suffix = adjunct;
-          else
-            suffix = $"{suffix} {adjunct}";
+          suffix = suffix.Length == 0 ? adjunct : $"{suffix} {adjunct}";
         }
       }
 
