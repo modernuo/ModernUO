@@ -121,8 +121,8 @@ namespace Server
 
     private static readonly Stack<ConsoleColor> m_ConsoleColors = new Stack<ConsoleColor>();
 
-    public static Encoding UTF8 => m_UTF8 ?? (m_UTF8 = new UTF8Encoding(false, false));
-    public static Encoding UTF8WithEncoding => m_UTF8WithEncoding ?? (m_UTF8WithEncoding = new UTF8Encoding(true, false));
+    public static Encoding UTF8 => m_UTF8 ??= new UTF8Encoding(false, false);
+    public static Encoding UTF8WithEncoding => m_UTF8WithEncoding ??= new UTF8Encoding(true, false);
 
     public static void Separate(StringBuilder sb, string value, string separator)
     {
@@ -138,6 +138,9 @@ namespace Server
     {
       str = Intern(str);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string IsNullOrDefault(this string value, string def) => value?.Length > 0 ? value : def;
 
     public static IPAddress Intern(IPAddress ipAddress)
     {

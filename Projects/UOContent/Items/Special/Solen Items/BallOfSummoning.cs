@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Server.ContextMenus;
 using Server.Engines.ConPVP;
 using Server.Mobiles;
@@ -88,13 +89,13 @@ namespace Server.Items
     public override void AddNameProperty(ObjectPropertyList list)
     {
       list.Add(1054131,
-        $"{m_Charges}{(PetName.Length == 0 ? "\t " : $"\t{PetName}")}"); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
+        $"{m_Charges}\t{PetName.IsNullOrDefault(" ")}"); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
     }
 
     public override void OnSingleClick(Mobile from)
     {
       LabelTo(from, 1054131,
-        $"{m_Charges}{(PetName.Length == 0 ? "\t " : $"\t{PetName}")}"); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
+        $"{m_Charges}\t{PetName.IsNullOrDefault(" ")}"); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
     }
 
     public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)

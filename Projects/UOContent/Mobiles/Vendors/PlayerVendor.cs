@@ -838,23 +838,14 @@ namespace Server.Mobiles
       if (vi == null)
         return;
 
-      string name;
-      if (!string.IsNullOrEmpty(item.Name))
-        name = item.Name;
-      else
-        name = $"#{item.LabelNumber}";
+      string name = item.Name.IsNullOrDefault($"#{item.LabelNumber}");
 
       from.SendLocalizedMessage(1043303, name); // Type in a price and description for ~1_ITEM~ (ESC=not for sale)
       from.Prompt = new VendorPricePrompt(this, vi);
     }
 
-    public override bool AllowEquipFrom(Mobile from)
-    {
-      if (BaseHouse.NewVendorSystem && IsOwner(from))
-        return true;
-
-      return base.AllowEquipFrom(from);
-    }
+    public override bool AllowEquipFrom(Mobile from) =>
+      BaseHouse.NewVendorSystem && IsOwner(from) || base.AllowEquipFrom(from);
 
     public override bool CheckNonlocalLift(Mobile from, Item item)
     {

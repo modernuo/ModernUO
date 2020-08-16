@@ -65,7 +65,7 @@ namespace Server.Spells
     {
       if (m.Skills[MoveSkill].Value < RequiredSkill)
       {
-        string args = $"{RequiredSkill.ToString("F1")}\t{MoveSkill.ToString()}\t ";
+        string args = $"{RequiredSkill:F1}\t{MoveSkill.ToString()}\t ";
         m.SendLocalizedMessage(1063013,
           args); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
         return false;
