@@ -6,24 +6,20 @@ dotnet restore --force-evaluate
 GOTO :CMDSCRIPT
 
 ::SHELLSCRIPT
-if [[ $(uname) = "Darwin" ]]
-then
+if [[ $(uname) = "Darwin" ]]; then
   r="-r osx-x64"
-if [[ -f /etc/os-release ]]
-then
+elif [[ -f /etc/os-release ]]; then
   . /etc/os-release
   r="-r ${NAME,,}.$VERSION_ID-x64"
 fi
 
-if [[ -z $2 ]] || [[ ${2,,} = "core" ]]
-then
+if [[ -z $2 ]] || [[ ${2,,} = "core" ]]; then
   f="-f netcoreapp3.1"
 else
   f="-f net5.0"
 fi
 
-if [[ -z $3 ]]
-then
+if [[ -z $3 ]]; then
   c="-c Release"
 else
   c="-c ${3^}"
@@ -38,10 +34,12 @@ exit $?
 :CMDSCRIPT
 IF "%~2" == "" (
   SET f=-f netcoreapp3.1
-) ELSE IF "%~2" == "core" (
-  SET f=-f netcoreapp3.1
 ) ELSE (
-  SET f=-f net5.0
+  IF "%~2" == "core" (
+    SET f=-f netcoreapp3.1
+  ) ELSE (
+    SET f=-f net5.0
+  )
 )
 
 IF "%~3" == "" or "%~3" == "release" (
