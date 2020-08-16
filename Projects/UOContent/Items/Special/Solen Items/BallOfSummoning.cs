@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Server.ContextMenus;
 using Server.Engines.ConPVP;
 using Server.Mobiles;
@@ -61,13 +62,7 @@ namespace Server.Items
       get => m_Charges;
       set
       {
-        if (value > MaxCharges)
-          m_Charges = MaxCharges;
-        else if (value < 0)
-          m_Charges = 0;
-        else
-          m_Charges = value;
-
+        m_Charges = Math.Clamp(value, 0, MaxCharges);
         InvalidateProperties();
       }
     }
@@ -78,13 +73,7 @@ namespace Server.Items
       get => m_Recharges;
       set
       {
-        if (value > MaxRecharges)
-          m_Recharges = MaxRecharges;
-        else if (value < 0)
-          m_Recharges = 0;
-        else
-          m_Recharges = value;
-
+        m_Recharges = Math.Clamp(value, 0, MaxRecharges);
         InvalidateProperties();
       }
     }
@@ -100,17 +89,13 @@ namespace Server.Items
     public override void AddNameProperty(ObjectPropertyList list)
     {
       list.Add(1054131,
-        m_Charges + (PetName.Length == 0
-          ? "\t "
-          : $"\t{PetName}")); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
+        $"{m_Charges}\t{PetName.IsNullOrDefault(" ")}"); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
     }
 
     public override void OnSingleClick(Mobile from)
     {
       LabelTo(from, 1054131,
-        m_Charges + (PetName.Length == 0
-          ? "\t "
-          : $"\t{PetName}")); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
+        $"{m_Charges}\t{PetName.IsNullOrDefault(" ")}"); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
     }
 
     public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
@@ -415,13 +400,8 @@ namespace Server.Items
         Disturb(DisturbType.Hurt, false);
       }
 
-      public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable)
-      {
-        if (type == DisturbType.EquipRequest || type == DisturbType.UseRequest /* || type == DisturbType.Hurt*/)
-          return false;
-
-        return true;
-      }
+      public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable) =>
+        type != DisturbType.EquipRequest && type != DisturbType.UseRequest;
 
       public override void DoHurtFizzle()
       {

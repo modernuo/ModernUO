@@ -251,12 +251,7 @@ namespace Server.SkillHandlers
           {
             if (toSteal.Stackable && toSteal.Amount > 1)
             {
-              int maxAmount = (int)(m_Thief.Skills.Stealing.Value / 10.0 / toSteal.Weight);
-
-              if (maxAmount < 1)
-                maxAmount = 1;
-              else if (maxAmount > toSteal.Amount)
-                maxAmount = toSteal.Amount;
+              int maxAmount = Math.Clamp((int)(m_Thief.Skills.Stealing.Value / 10.0 / toSteal.Weight), 1, toSteal.Amount);
 
               int amount = Utility.RandomMinMax(1, maxAmount);
 

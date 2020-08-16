@@ -52,7 +52,7 @@ namespace Server.Spells.Mysticism
       if (Caster.Skills[CastSkill].Value < RequiredSkill)
       {
         Caster.SendLocalizedMessage(1063013,
-          $"{RequiredSkill.ToString("F1")}\t{CastSkill.ToString()}\t "); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+          $"{RequiredSkill:F1}\t{CastSkill.ToString()}\t "); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
         return false;
       }
 

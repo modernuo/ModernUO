@@ -8545,14 +8545,10 @@ namespace Server
         if (Deleted)
           return;
 
-        if (value < 0)
-        {
-          value = 0;
-        }
-        else if (value >= HitsMax)
-        {
-          value = HitsMax;
+        value = Math.Clamp(value, 0, HitsMax);
 
+        if (value == HitsMax)
+        {
           m_HitsTimer?.Stop();
 
           for (var i = 0; i < Aggressors.Count; i++) // reset reports on full HP
@@ -8561,8 +8557,7 @@ namespace Server
           if (DamageEntries.Count > 0)
             DamageEntries.Clear(); // reset damage entries on full HP
         }
-
-        if (value < HitsMax)
+        else
         {
           if (CanRegenHits)
           {
@@ -8604,18 +8599,13 @@ namespace Server
         if (Deleted)
           return;
 
-        if (value < 0)
-        {
-          value = 0;
-        }
-        else if (value >= StamMax)
-        {
-          value = StamMax;
+        value = Math.Clamp(value, 0, StamMax);
 
+        if (value == StamMax)
+        {
           m_StamTimer?.Stop();
         }
-
-        if (value < StamMax)
+        else
         {
           if (CanRegenStam)
           {
@@ -8660,14 +8650,10 @@ namespace Server
         if (Deleted)
           return;
 
-        if (value < 0)
-        {
-          value = 0;
-        }
-        else if (value >= ManaMax)
-        {
-          value = ManaMax;
+        value = Math.Clamp(value, 0, ManaMax);
 
+        if (value == ManaMax)
+        {
           m_ManaTimer?.Stop();
 
           if (Meditating)
@@ -8676,8 +8662,7 @@ namespace Server
             SendLocalizedMessage(501846); // You are at peace.
           }
         }
-
-        if (value < ManaMax)
+        else
         {
           if (CanRegenMana)
           {

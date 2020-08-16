@@ -63,13 +63,7 @@ namespace Server.Items
       get => m_Charges;
       set
       {
-        if (value > MaxCharges)
-          m_Charges = MaxCharges;
-        else if (value < 0)
-          m_Charges = 0;
-        else
-          m_Charges = value;
-
+        m_Charges = Math.Clamp(value, 0, MaxCharges);
         InvalidateProperties();
       }
     }
@@ -80,13 +74,7 @@ namespace Server.Items
       get => m_Recharges;
       set
       {
-        if (value > MaxRecharges)
-          m_Recharges = MaxRecharges;
-        else if (value < 0)
-          m_Recharges = 0;
-        else
-          m_Recharges = value;
-
+        m_Recharges = Math.Clamp(value, 0, MaxRecharges);
         InvalidateProperties();
       }
     }
@@ -102,17 +90,13 @@ namespace Server.Items
     public override void AddNameProperty(ObjectPropertyList list)
     {
       list.Add(1054000,
-        m_Charges + (m_Inscription.Length == 0
-          ? "\t "
-          : $" :\t{m_Inscription}")); // a bracelet of binding : ~1_val~ ~2_val~
+        $"{m_Charges}\t{m_Inscription.IsNullOrDefault(" ")}"); // a bracelet of binding : ~1_val~ ~2_val~
     }
 
     public override void OnSingleClick(Mobile from)
     {
       LabelTo(from, 1054000,
-        m_Charges + (m_Inscription.Length == 0
-          ? "\t "
-          : $" :\t{m_Inscription}")); // a bracelet of binding : ~1_val~ ~2_val~
+        $"{m_Charges}\t{m_Inscription.IsNullOrDefault(" ")}"); // a bracelet of binding : ~1_val~ ~2_val~
     }
 
     public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)

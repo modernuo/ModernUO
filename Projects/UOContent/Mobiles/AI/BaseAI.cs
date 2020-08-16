@@ -1553,7 +1553,7 @@ namespace Server.Mobiles
         else if (TransferItem.IsInCombat(m_Mobile))
         {
           from.SendMessage("You may not transfer a pet that has recently been in combat.");
-          to.SendMessage("The pet may not be transfered to you because it has recently been in combat.");
+          to.SendMessage("The pet may not be transferred to you because it has recently been in combat.");
         }
         else
         {
@@ -2596,7 +2596,7 @@ namespace Server.Mobiles
         else if (accepted && IsInCombat(m_Creature))
         {
           from.SendMessage("You may not transfer a pet that has recently been in combat.");
-          to.SendMessage("The pet may not be transfered to you because it has recently been in combat.");
+          to.SendMessage("The pet may not be transferred to you because it has recently been in combat.");
 
           return false;
         }

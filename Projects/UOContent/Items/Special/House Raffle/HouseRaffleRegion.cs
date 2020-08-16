@@ -31,10 +31,7 @@ namespace Server.Regions
 
       BankBox bank = from.FindBankNoCreate();
 
-      if (bank != null && ContainsDeed(bank))
-        return true;
-
-      return false;
+      return bank != null && ContainsDeed(bank);
     }
 
     private bool ContainsDeed(Container cont)

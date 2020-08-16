@@ -545,10 +545,7 @@ namespace Server.Items
         toKill.RemoveAt(kill);
 
         amount -= 1;
-        LiveCreatures -= 1;
-
-        if (LiveCreatures < 0)
-          LiveCreatures = 0;
+        LiveCreatures = Math.Max(LiveCreatures - 1, 0);
 
         Events.Add(1074366); // An unfortunate accident has left a creature floating upside-down.  It is starting to smell.
       }
@@ -598,8 +595,8 @@ namespace Server.Items
         if (OptimalState && LiveCreatures < MaxLiveCreatures)
           if (Utility.RandomDouble() < 0.005 * LiveCreatures)
           {
-            BaseFish fish = null;
-            int message = 0;
+            BaseFish fish;
+            int message;
 
             switch (Utility.Random(6))
             {
@@ -745,7 +742,7 @@ namespace Server.Items
 
     public virtual bool RemoveItem(Mobile from, int at)
     {
-      if (at < 0 && at >= Items.Count)
+      if (at < 0 || at >= Items.Count)
         return false;
 
       Item item = Items[at];

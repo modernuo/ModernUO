@@ -178,7 +178,7 @@ namespace Server.Network
         var s = skills[i];
 
         var v = s.NonRacialValue;
-        var uv = Utility.Coerce((int)(v * 10), 0, 0xFFFF);
+        var uv = Math.Clamp((int)(v * 10), 0, 0xFFFF);
 
         Stream.Write((ushort)(s.Info.SkillID + 1));
         Stream.Write((ushort)uv);
@@ -206,7 +206,7 @@ namespace Server.Network
       EnsureCapacity(13);
 
       var v = skill.NonRacialValue;
-      var uv = Utility.Coerce((int)(v * 10), 0, 0xFFFF);
+      var uv = Math.Clamp((int)(v * 10), 0, 0xFFFF);
 
       Stream.Write((byte)0xDF); // type: delta, capped
       Stream.Write((ushort)skill.Info.SkillID);

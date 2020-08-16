@@ -239,11 +239,8 @@ namespace Server.Engines.ConPVP
 
         if (m_Counter >= m_Hill.ScoreInterval)
         {
-          string hill = m_Hill.Name;
+          string hill = m_Hill.Name.IsNullOrDefault("the hill");
           string king = m_Hill.King.Name ?? "";
-
-          if (string.IsNullOrEmpty(hill))
-            hill = "the hill";
 
           m_Hill.Game.Alert("{0} ({1}) is king of {2}!", king, ti.Name, hill);
 
