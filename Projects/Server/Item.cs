@@ -935,8 +935,8 @@ namespace Server
 
           m_Map = value;
 
-          if (m_Map != null && m_Parent == null)
-            m_Map.OnEnter(this);
+          if (m_Parent == null)
+            m_Map?.OnEnter(this);
 
           Delta(ItemDelta.Update);
 
@@ -2125,39 +2125,24 @@ namespace Server
     {
       var map = m_Map;
 
-      if (map == null)
-        return Map.NullEnumerable<Item>.Instance;
-
-      if (m_Parent == null)
-        return map.GetItemsInRange(m_Location, range);
-
-      return map.GetItemsInRange(GetWorldLocation(), range);
+      return map?.GetItemsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range)
+             ?? Map.NullEnumerable<Item>.Instance;
     }
 
     public IPooledEnumerable<Mobile> GetMobilesInRange(int range)
     {
       var map = m_Map;
 
-      if (map == null)
-        return Map.NullEnumerable<Mobile>.Instance;
-
-      if (m_Parent == null)
-        return map.GetMobilesInRange(m_Location, range);
-
-      return map.GetMobilesInRange(GetWorldLocation(), range);
+      return map?.GetMobilesInRange(m_Parent == null ? m_Location : GetWorldLocation(), range)
+             ?? Map.NullEnumerable<Mobile>.Instance;
     }
 
     public IPooledEnumerable<NetState> GetClientsInRange(int range)
     {
       var map = m_Map;
 
-      if (map == null)
-        return Map.NullEnumerable<NetState>.Instance;
-
-      if (m_Parent == null)
-        return map.GetClientsInRange(m_Location, range);
-
-      return map.GetClientsInRange(GetWorldLocation(), range);
+      return map.GetClientsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range)
+             ?? Map.NullEnumerable<NetState>.Instance;
     }
 
     public bool GetTempFlag(int flag) => ((LookupCompactInfo()?.m_TempFlags ?? 0) & flag) != 0;
