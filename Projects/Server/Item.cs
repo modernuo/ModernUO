@@ -3422,10 +3422,8 @@ namespace Server
 
     public virtual void ScissorHelper(Mobile from, Item newItem, int amountPerOldItem, bool carryHue)
     {
-      var amount = Amount;
-
-      if (amount > 60000 / amountPerOldItem) // let's not go over 60000
-        amount = 60000 / amountPerOldItem;
+      // let's not go over 60000
+      var amount = Math.Min(Amount, 60000 / amountPerOldItem);
 
       Amount -= amount;
 

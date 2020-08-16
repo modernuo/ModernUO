@@ -2929,7 +2929,7 @@ namespace Server
     {
       var name = Name ?? string.Empty;
 
-      var prefix;
+      string prefix;
 
       if (ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000)
         prefix = m_Female ? "Lady" : "Lord";
@@ -8319,10 +8319,7 @@ namespace Server
       get => m_Str;
       set
       {
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
+        value = Math.Clamp(value, 1, 65000);
 
         if (m_Str != value)
         {
@@ -8358,17 +8355,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual int Str
     {
-      get
-      {
-        var value = m_Str + GetStatOffset(StatType.Str);
-
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
-
-        return value;
-      }
+      get => Math.Clamp(m_Str + GetStatOffset(StatType.Str), 1, 65000);
       set
       {
         if (StatMods.Count == 0)
@@ -8389,10 +8376,7 @@ namespace Server
       get => m_Dex;
       set
       {
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
+        value = Math.Clamp(value, 1, 65000);
 
         if (m_Dex != value)
         {
@@ -8428,17 +8412,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual int Dex
     {
-      get
-      {
-        var value = m_Dex + GetStatOffset(StatType.Dex);
-
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
-
-        return value;
-      }
+      get => Math.Clamp(m_Dex + GetStatOffset(StatType.Dex), 0, 65000);
       set
       {
         if (StatMods.Count == 0)
@@ -8459,10 +8433,7 @@ namespace Server
       get => m_Int;
       set
       {
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
+        value = Math.Clamp(value, 1, 65000);
 
         if (m_Int != value)
         {
@@ -8498,17 +8469,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual int Int
     {
-      get
-      {
-        var value = m_Int + GetStatOffset(StatType.Int);
-
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
-
-        return value;
-      }
+      get => Math.Clamp(m_Int + GetStatOffset(StatType.Int), 0, 65000);
       set
       {
         if (StatMods.Count == 0)

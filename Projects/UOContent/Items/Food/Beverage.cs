@@ -849,10 +849,7 @@ namespace Server.Items
             _ => 0
           };
 
-          from.BAC += bac;
-
-          if (from.BAC > 60)
-            from.BAC = 60;
+          from.BAC = Math.Min(from.BAC + bac, 60);
 
           CheckHeaveTimer(from);
         }
@@ -1048,7 +1045,6 @@ namespace Server.Items
 
     public static void CheckHeaveTimer(Mobile from)
     {
-      Timer t;
       if (from.BAC > 0 && from.Map != Map.Internal && !from.Deleted)
       {
         if (m_Table.ContainsKey(from))
@@ -1057,12 +1053,12 @@ namespace Server.Items
         if (from.BAC > 60)
           from.BAC = 60;
 
-        t = new HeaveTimer(from);
+        Timer t = new HeaveTimer(from);
         t.Start();
 
         m_Table[from] = t;
       }
-      else if (m_Table.TryGetValue(from, out t))
+      else if (m_Table.TryGetValue(from, out var t))
       {
         t.Stop();
         m_Table.Remove(from);

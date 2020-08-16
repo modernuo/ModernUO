@@ -85,12 +85,7 @@ namespace Server.SkillHandlers
         else if (m.CheckSkill(SkillName.Stealth, -20.0 + armorRating * 2,
           (Core.AOS ? 60.0 : 80.0) + armorRating * 2))
         {
-          int steps = (int)(m.Skills.Stealth.Value / (Core.AOS ? 5.0 : 10.0));
-
-          if (steps < 1)
-            steps = 1;
-
-          m.AllowedStealthSteps = steps;
+          m.AllowedStealthSteps = Math.Max((int)(m.Skills.Stealth.Value / (Core.AOS ? 5.0 : 10.0)), 1);
 
           if (m is PlayerMobile pm)
             pm.IsStealthing = true;

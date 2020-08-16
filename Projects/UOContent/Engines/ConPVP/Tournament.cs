@@ -149,24 +149,14 @@ namespace Server.Engines.ConPVP
     public int ParticipantsPerMatch
     {
       get => m_ParticipantsPerMatch;
-      set
-      {
-        if (value < 2) value = 2;
-        else if (value > 10) value = 10;
-        m_ParticipantsPerMatch = value;
-      }
+      set => m_ParticipantsPerMatch = Math.Clamp(value, 2, 10);
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int PlayersPerParticipant
     {
       get => m_PlayersPerParticipant;
-      set
-      {
-        if (value < 1) value = 1;
-        else if (value > 10) value = 10;
-        m_PlayersPerParticipant = value;
-      }
+      set => m_PlayersPerParticipant = Math.Clamp(value, 1, 10);
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
