@@ -96,13 +96,7 @@ namespace Server.Engines.ConPVP
 
     public Tournament Tournament => m_Tournament;
 
-    private bool CantDoAnything(Mobile mob)
-    {
-      if (m_EventGame != null)
-        return m_EventGame.CantDoAnything(mob);
-
-      return false;
-    }
+    private bool CantDoAnything(Mobile mob) => m_EventGame?.CantDoAnything(mob) == true;
 
     public static bool IsFreeConsume(Mobile mob)
     {

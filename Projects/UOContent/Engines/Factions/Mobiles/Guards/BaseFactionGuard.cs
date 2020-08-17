@@ -138,8 +138,7 @@ namespace Server.Factions
           2 => "You are bold, {0}, for one of the meager {1}. Leave now, lest you be taught the taste of dirt.",
           3 => "Your presence here is an insult, {0}. Be gone now, knave.",
           4 => "Dost thou wish to be hung by your toes, {0}? Nay? Then come no closer.",
-          5 => "Hey, {0}. Yeah, you. Get out of here before I beat you with a stick.",
-          _ => null
+          _ => "Hey, {0}. Yeah, you. Get out of here before I beat you with a stick." // 5
         };
 
         Faction faction = Faction.Find(m);
@@ -177,8 +176,7 @@ namespace Server.Factions
         {
           ReactionType.Ignore => faction.Definition.GuardIgnore,
           ReactionType.Warn => faction.Definition.GuardWarn,
-          ReactionType.Attack => faction.Definition.GuardAttack,
-          _ => null
+          _ => faction.Definition.GuardAttack // ReactionType.Attack
         };
 
         if (def != null && def.Number > 0)
