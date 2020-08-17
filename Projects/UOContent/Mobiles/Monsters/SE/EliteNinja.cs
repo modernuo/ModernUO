@@ -61,33 +61,19 @@ namespace Server.Mobiles
       if (Utility.RandomDouble() < 0.33)
         AddItem(new SmokeBomb());
 
-      switch (Utility.Random(8))
-      {
-        case 0:
-          AddItem(new Tessen());
-          break;
-        case 1:
-          AddItem(new Wakizashi());
-          break;
-        case 2:
-          AddItem(new Nunchaku());
-          break;
-        case 3:
-          AddItem(new Daisho());
-          break;
-        case 4:
-          AddItem(new Sai());
-          break;
-        case 5:
-          AddItem(new Tekagi());
-          break;
-        case 6:
-          AddItem(new Kama());
-          break;
-        case 7:
-          AddItem(new Katana());
-          break;
-      }
+      AddItem(
+        Utility.Random(8) switch
+        {
+          0 => new Tessen(),
+          1 => new Wakizashi(),
+          2 => new Nunchaku(),
+          3 => new Daisho(),
+          4 => new Sai(),
+          5 => new Tekagi(),
+          6 => new Kama(),
+          _ => new Katana() // 7
+        }
+      );
 
       Utility.AssignRandomHair(this);
     }

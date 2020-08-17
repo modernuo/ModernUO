@@ -39,31 +39,25 @@ namespace Server.Mobiles
       PackItem(new GreenGourd());
       PackItem(new ExecutionersAxe());
 
-      switch (Utility.Random(3))
-      {
-        case 0:
-          PackItem(new LongPants());
-          break;
-        case 1:
-          PackItem(new ShortPants());
-          break;
-      }
+      PackItem(
+        Utility.Random(3) switch
+        {
+          0 => new LongPants(),
+          1 => new ShortPants(),
+          _ => null // 2 (30%)
+        }
+      );
 
-      switch (Utility.Random(6))
-      {
-        case 0:
-          PackItem(new Shoes());
-          break;
-        case 1:
-          PackItem(new Sandals());
-          break;
-        case 2:
-          PackItem(new Boots());
-          break;
-        case 3:
-          PackItem(new ThighBoots());
-          break;
-      }
+      PackItem(
+        Utility.Random(6) switch
+        {
+          0 => new Shoes(),
+          1 => new Sandals(),
+          2 => new Boots(),
+          3 => new ThighBoots(),
+          _ => null // 4-5 (30%)
+        }
+      );
 
       if (Utility.RandomDouble() < .25)
         PackItem(Seed.RandomBonsaiSeed());

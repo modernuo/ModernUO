@@ -56,22 +56,17 @@ namespace Server.Mobiles
       if (item != null && !EquipItem(item))
       {
         item.Delete();
-        item = null;
-      }
 
-      switch (Utility.Random(3))
-      {
-        case 0:
-        case 1:
-          AddItem(new JesterHat(Utility.RandomBrightHue()));
-          break;
-        case 2:
-          AddItem(new Bandana(Utility.RandomBrightHue()));
-          break;
-      }
-
-      if (item == null)
         AddItem(new FullApron(Utility.RandomBrightHue()));
+      }
+
+      AddItem(
+        Utility.Random(3) switch
+        {
+          0 => new Bandana(Utility.RandomBrightHue()),
+          _ => new JesterHat(Utility.RandomBrightHue()), // 1-2
+        }
+      );
 
       AddItem(new Bascinet());
       AddItem(new SmithHammer());

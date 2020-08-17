@@ -34,15 +34,9 @@ namespace Server.Mobiles
       if (Utility.RandomBool())
         AddItem(new Cloak(Utility.RandomBrightHue()));
 
-      switch (Utility.Random(2))
-      {
-        case 0:
-          AddItem(new SkullCap(Utility.RandomNeutralHue()));
-          break;
-        case 1:
-          AddItem(new Bandana(Utility.RandomNeutralHue()));
-          break;
-      }
+      AddItem(
+        Utility.RandomBool() ? (Item)new SkullCap(Utility.RandomNeutralHue()) : new Bandana(Utility.RandomNeutralHue())
+      );
 
       Utility.AssignRandomHair(this);
       Utility.AssignRandomFacialHair(this, HairHue);

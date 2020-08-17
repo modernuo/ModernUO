@@ -363,7 +363,7 @@ namespace Server.Gumps
       {
         string val = values[i];
 
-        string v = current.Length == 0 ? val : $"{current}{' '}{val}";
+        string v = current.Length == 0 ? val : $"{current} {val}";
 
         if (v.Length < 10)
         {

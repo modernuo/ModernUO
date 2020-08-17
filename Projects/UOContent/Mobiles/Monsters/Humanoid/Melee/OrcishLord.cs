@@ -35,24 +35,16 @@ namespace Server.Mobiles
       Fame = 2500;
       Karma = -2500;
 
-      switch (Utility.Random(5))
-      {
-        case 0:
-          PackItem(new Lockpick());
-          break;
-        case 1:
-          PackItem(new MortarPestle());
-          break;
-        case 2:
-          PackItem(new Bottle());
-          break;
-        case 3:
-          PackItem(new RawRibs());
-          break;
-        case 4:
-          PackItem(new Shovel());
-          break;
-      }
+      PackItem(
+        Utility.Random(5) switch
+        {
+          0 => new Lockpick(),
+          1 => new MortarPestle(),
+          2 => new Bottle(),
+          3 => new RawRibs(),
+          _ => new Shovel() // 4
+        }
+      );
 
       PackItem(new RingmailChest());
 

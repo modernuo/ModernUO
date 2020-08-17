@@ -35,44 +35,33 @@ namespace Server.Engines.Quests.Samurai
       AddItem(new LeatherHiroSode());
       AddItem(new SamuraiTabi(Utility.RandomNondyedHue()));
 
-      switch (Utility.Random(3))
-      {
-        case 0:
-          AddItem(new StuddedHaidate());
-          break;
-        case 1:
-          AddItem(new PlateSuneate());
-          break;
-        default:
-          AddItem(new LeatherSuneate());
-          break;
-      }
+      AddItem(
+        Utility.Random(3) switch
+        {
+          0 => new StuddedHaidate(),
+          1 => new PlateSuneate(),
+          _ => new LeatherSuneate()
+        }
+      );
 
-      switch (Utility.Random(4))
-      {
-        case 0:
-          AddItem(new DecorativePlateKabuto());
-          break;
-        case 1:
-          AddItem(new ChainHatsuburi());
-          break;
-        case 2:
-          AddItem(new LightPlateJingasa());
-          break;
-        default:
-          AddItem(new LeatherJingasa());
-          break;
-      }
+      AddItem(
+        Utility.Random(4) switch
+        {
+          0 => new DecorativePlateKabuto(),
+          1 => new ChainHatsuburi(),
+          2 => new LightPlateJingasa(),
+          _ => new LeatherJingasa()
+        }
+      );
 
-      var weapon = Utility.Random(3) switch
-      {
-        0 => (Item)new NoDachi(),
-        1 => new Lajatang(),
-        _ => new Wakizashi()
-      };
-
-      weapon.Movable = false;
-      AddItem(weapon);
+      AddItem(
+        Utility.Random(3) switch
+        {
+          0 => new NoDachi{Movable = false},
+          1 => new Lajatang{Movable = false},
+          _ => new Wakizashi{Movable = false}
+        }
+      );
     }
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)

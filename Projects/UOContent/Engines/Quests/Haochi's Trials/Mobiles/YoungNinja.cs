@@ -24,18 +24,14 @@ namespace Server.Engines.Quests.Samurai
 
       AddItem(new Bandana(Utility.RandomNondyedHue()));
 
-      switch (Utility.Random(3))
-      {
-        case 0:
-          AddItem(new Tessen());
-          break;
-        case 1:
-          AddItem(new Kama());
-          break;
-        default:
-          AddItem(new Lajatang());
-          break;
-      }
+      AddItem(
+        Utility.Random(3) switch
+        {
+          0 => new Tessen(),
+          1 => new Kama(),
+          _ => new Lajatang()
+        }
+      );
 
       SetSkill(SkillName.Swords, 50.0);
       SetSkill(SkillName.Tactics, 50.0);

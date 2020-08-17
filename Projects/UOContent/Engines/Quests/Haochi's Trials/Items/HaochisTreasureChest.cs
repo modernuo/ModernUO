@@ -27,18 +27,14 @@ namespace Server.Engines.Quests.Samurai
         Items[i].Delete();
 
       for (int i = 0; i < 75; i++)
-        switch (Utility.Random(3))
-        {
-          case 0:
-            DropItem(new GoldBracelet());
-            break;
-          case 1:
-            DropItem(new GoldRing());
-            break;
-          case 2:
-            DropItem(Loot.RandomGem());
-            break;
-        }
+        DropItem(
+          Utility.Random(10) switch
+          {
+            0 => new GoldBracelet(),
+            1 => new GoldRing(),
+            _ => Loot.RandomGem() // 2
+          }
+        );
     }
 
     public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight) => false;

@@ -57,13 +57,10 @@ namespace Server.Spells.Fifth
 
           SpellHelper.CheckReflect((int)Circle, ref from, ref target);
 
-          int damage = (int)((Caster.Skills.Magery.Value + Caster.Int) / 5);
-
-          if (damage > 60)
-            damage = 60;
+          int damage = Math.Min((int)((Caster.Skills.Magery.Value + Caster.Int) / 5), 60);
 
           Timer.DelayCall(TimeSpan.FromSeconds(1.0),
-            () => AosDelay_Callback(Caster, target, m, damage));
+            AosDelay_Callback, Caster, target, m, damage);
         }
       }
       else if (CheckHSequence(m))
@@ -96,10 +93,7 @@ namespace Server.Spells.Fifth
         if (lowestStat > 150)
           lowestStat = 150;
 
-        double damage = GetDamageScalar(m) * (highestStat - lowestStat) / 2; // Many users prefer 3 or 4
-
-        if (damage > 45)
-          damage = 45;
+        double damage = Math.Min(GetDamageScalar(m) * (highestStat - lowestStat) / 2, 45); // Many users prefer 3 or 4
 
         if (CheckResisted(target))
         {

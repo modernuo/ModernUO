@@ -21,11 +21,7 @@ namespace Server.Misc
     {
       int sideA, sideB;
 
-      if (angle < 0)
-        angle = 0;
-
-      if (angle > 90)
-        angle = 90;
+      angle = Math.Clamp(angle, 0, 90);
 
       sideA = (int)Math.Round(radius * Math.Sin(DegreesToRadians(angle)));
       sideB = (int)Math.Round(radius * Math.Cos(DegreesToRadians(angle)));

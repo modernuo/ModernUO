@@ -78,7 +78,7 @@ namespace Server.Guilds
     {
       base.OnResponse(sender, info);
 
-      PlayerMobile pm = sender.Mobile as PlayerMobile;
+      PlayerMobile pm = (PlayerMobile)sender.Mobile;
 
       if (!IsMember(pm, guild))
         return;

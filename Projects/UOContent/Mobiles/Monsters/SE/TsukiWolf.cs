@@ -46,39 +46,18 @@ namespace Server.Mobiles
       if (Core.ML && Utility.RandomDouble() < .33)
         PackItem(Seed.RandomPeculiarSeed(1));
 
-      switch (Utility.Random(10))
-      {
-        case 0:
-          PackItem(new LeftArm());
-          break;
-        case 1:
-          PackItem(new RightArm());
-          break;
-        case 2:
-          PackItem(new Torso());
-          break;
-        case 3:
-          PackItem(new Bone());
-          break;
-        case 4:
-          PackItem(new RibCage());
-          break;
-        case 5:
-          PackItem(new RibCage());
-          break;
-        case 6:
-          PackItem(new BonePile());
-          break;
-        case 7:
-          PackItem(new BonePile());
-          break;
-        case 8:
-          PackItem(new BonePile());
-          break;
-        case 9:
-          PackItem(new BonePile());
-          break;
-      }
+      PackItem(
+        Utility.Random(10) switch
+        {
+          0 => new LeftArm(),
+          1 => new RightArm(),
+          2 => new Torso(),
+          3 => new Bone(),
+          4 => new RibCage(),
+          5 => new RibCage(),
+          _ => new BonePile() // 6-9
+        }
+      );
     }
 
     public TsukiWolf(Serial serial)

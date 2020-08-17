@@ -215,14 +215,7 @@ namespace Server.Engines.ConPVP
 
       int zdiff = myLoc.Z - m.Z;
 
-      if (zdiff < 0)
-        return false;
-      if (zdiff < 12)
-        return true;
-      if (zdiff < 16)
-        return Utility.RandomBool(); // 50% chance
-
-      return false;
+      return zdiff >= 0 && (zdiff < 12 || zdiff < 16 && Utility.RandomBool());
     }
 
     private void DoAnim(Point3D start, Point3D end, Map map)
@@ -1648,12 +1641,12 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < teams.Count; ++i)
       {
-        TrophyRank rank = TrophyRank.Bronze;
-
-        if (i == 0)
-          rank = TrophyRank.Gold;
-        else if (i == 1)
-          rank = TrophyRank.Silver;
+        TrophyRank rank = i switch
+        {
+          0 => TrophyRank.Gold,
+          1 => TrophyRank.Silver,
+          _ => TrophyRank.Bronze
+        };
 
         BRPlayerInfo leader = teams[i].Leader;
 
@@ -1747,7 +1740,8 @@ namespace Server.Engines.ConPVP
               p.Players[j].Eliminated = true;
       }
 
-      m_Context.Finish(m_Context.Participants[winner.TeamID]);
+      if (winner != null)
+        m_Context.Finish(m_Context.Participants[winner.TeamID]);
     }
 
     public override void OnStop()

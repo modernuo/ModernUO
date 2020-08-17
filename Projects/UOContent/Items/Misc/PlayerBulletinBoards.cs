@@ -565,10 +565,7 @@ namespace Server.Items
         AddHtml(255, 180, 150, 20, message.Time.ToString("yyyy-MM-dd HH:mm:ss"));
 
         Mobile poster = message.Poster;
-        string name = poster?.Name;
-
-        if (name == null || (name = name.Trim()).Length == 0)
-          name = "Someone";
+        string name = poster?.Name?.Trim().IsNullOrDefault("Someone");
 
         AddHtml(255, 200, 150, 20, name);
 

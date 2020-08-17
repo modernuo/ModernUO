@@ -168,13 +168,7 @@ namespace Server.Items
         {
           HouseSign sign = m_House.Sign;
 
-          if (sign != null)
-            m_Description = sign.Name;
-          else
-            m_Description = null;
-
-          if (m_Description == null || (m_Description = m_Description.Trim()).Length == 0)
-            m_Description = "an unnamed house";
+          m_Description = sign?.Name?.Trim().IsNullOrDefault("an unnamed house");
 
           setDesc = true;
 
@@ -233,10 +227,7 @@ namespace Server.Items
     {
       if (m_Marked)
       {
-        string desc;
-
-        if ((desc = m_Description) == null || (desc = desc.Trim()).Length == 0)
-          desc = "an unknown location";
+        string desc = m_Description?.Trim().IsNullOrDefault("an unknown location");
 
         if (m_TargetMap == Map.Tokuno)
           LabelTo(from, House != null ? 1063260 : 1063259,

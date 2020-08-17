@@ -39,7 +39,7 @@ namespace Server.Mobiles
       Fame = 8000;
       Karma = -8000;
 
-      CraftResource res = CraftResource.None;
+      CraftResource res;
 
       res = Utility.Random(6) switch
       {
@@ -48,76 +48,42 @@ namespace Server.Mobiles
         2 => CraftResource.BlueScales,
         3 => CraftResource.YellowScales,
         4 => CraftResource.GreenScales,
-        5 => CraftResource.WhiteScales,
-        _ => res
+        _ => CraftResource.WhiteScales // 5
       };
 
       var melee = Utility.Random(3) switch
       {
         0 => (BaseWeapon)new Kryss(),
         1 => new Broadsword(),
-        2 => new Katana(),
-        _ => null
+        _ => new Katana() // 2
       };
 
       melee.Movable = false;
       AddItem(melee);
 
-      DragonChest Tunic = new DragonChest();
-      Tunic.Resource = res;
-      Tunic.Movable = false;
-      AddItem(Tunic);
-
-      DragonLegs Legs = new DragonLegs();
-      Legs.Resource = res;
-      Legs.Movable = false;
-      AddItem(Legs);
-
-      DragonArms Arms = new DragonArms();
-      Arms.Resource = res;
-      Arms.Movable = false;
-      AddItem(Arms);
-
-      DragonGloves Gloves = new DragonGloves();
-      Gloves.Resource = res;
-      Gloves.Movable = false;
-      AddItem(Gloves);
-
-      DragonHelm Helm = new DragonHelm();
-      Helm.Resource = res;
-      Helm.Movable = false;
-      AddItem(Helm);
-
-      ChaosShield shield = new ChaosShield();
-      shield.Movable = false;
-      AddItem(shield);
+      AddItem(new DragonChest {Resource = res, Movable = false});
+      AddItem(new DragonLegs {Resource = res, Movable = false});
+      AddItem(new DragonArms {Resource = res, Movable = false});
+      AddItem(new DragonGloves {Resource = res, Movable = false});
+      AddItem(new DragonHelm {Resource = res, Movable = false});
+      AddItem(new ChaosShield {Movable = false});
 
       AddItem(new Boots(0x455));
       AddItem(new Shirt(Utility.RandomMetalHue()));
 
       int amount = Utility.RandomMinMax(1, 3);
 
-      switch (res)
-      {
-        case CraftResource.BlackScales:
-          AddItem(new BlackScales(amount));
-          break;
-        case CraftResource.RedScales:
-          AddItem(new RedScales(amount));
-          break;
-        case CraftResource.BlueScales:
-          AddItem(new BlueScales(amount));
-          break;
-        case CraftResource.YellowScales:
-          AddItem(new YellowScales(amount));
-          break;
-        case CraftResource.GreenScales:
-          AddItem(new GreenScales(amount));
-          break;
-        case CraftResource.WhiteScales:
-          AddItem(new WhiteScales(amount));
-          break;
-      }
+      AddItem(
+        res switch
+        {
+          CraftResource.BlackScales => new BlackScales(amount),
+          CraftResource.RedScales => new RedScales(amount),
+          CraftResource.BlueScales => new BlueScales(amount),
+          CraftResource.YellowScales => new YellowScales(amount),
+          CraftResource.GreenScales => new GreenScales(amount),
+          _ => new WhiteScales(amount) // CraftResource.WhiteScales
+        }
+      );
 
       res = Utility.Random(9) switch
       {
@@ -129,13 +95,10 @@ namespace Server.Mobiles
         5 => CraftResource.Agapite,
         6 => CraftResource.Verite,
         7 => CraftResource.Valorite,
-        8 => CraftResource.Iron,
-        _ => res
+        _ => CraftResource.Iron // 8
       };
 
-      SwampDragon mt = new SwampDragon();
-      mt.HasBarding = true;
-      mt.BardingResource = res;
+      SwampDragon mt = new SwampDragon {HasBarding = true, BardingResource = res};
       mt.BardingHP = mt.BardingMaxHP;
       mt.Rider = this;
     }

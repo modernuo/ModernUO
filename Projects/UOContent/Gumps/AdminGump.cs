@@ -2387,14 +2387,13 @@ namespace Server.Gumps
 
                   var newLevel = index switch
                   {
-                    20 => AccessLevel.Player,
                     21 => AccessLevel.Counselor,
                     22 => AccessLevel.GameMaster,
                     23 => AccessLevel.Seer,
                     24 => AccessLevel.Administrator,
                     33 => AccessLevel.Developer,
                     34 => AccessLevel.Owner,
-                    _ => AccessLevel.Player
+                    _ => AccessLevel.Player // 20
                   };
 
                   if (newLevel < from.AccessLevel || from.AccessLevel == AccessLevel.Owner)
@@ -2628,7 +2627,7 @@ namespace Server.Gumps
                     {
                       string check = Firewall.List[i].ToString();
 
-                      if (check.IndexOf(match) >= 0)
+                      if (check?.IndexOf(match) >= 0)
                         results.Add(Firewall.List[i]);
                     }
 

@@ -445,67 +445,19 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public override int HitsMax
-    {
-      get
-      {
-        if (HitsMaxSeed <= 0)
-          return Str;
-
-        int value = HitsMaxSeed + GetStatOffset(StatType.Str);
-
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
-
-        return value;
-      }
-    }
+    public override int HitsMax => HitsMaxSeed <= 0 ? Str : Math.Clamp(HitsMaxSeed + GetStatOffset(StatType.Str), 1, 65000);
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int HitsMaxSeed { get; set; } = -1;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public override int StamMax
-    {
-      get
-      {
-        if (StamMaxSeed <= 0)
-          return Dex;
-
-        int value = StamMaxSeed + GetStatOffset(StatType.Dex);
-
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
-
-        return value;
-      }
-    }
+    public override int StamMax => StamMaxSeed <= 0 ? Dex : Math.Clamp(StamMaxSeed + GetStatOffset(StatType.Dex), 1, 65000);
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int StamMaxSeed { get; set; } = -1;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public override int ManaMax
-    {
-      get
-      {
-        if (ManaMaxSeed <= 0)
-          return Int;
-
-        int value = ManaMaxSeed + GetStatOffset(StatType.Int);
-
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
-
-        return value;
-      }
-    }
+    public override int ManaMax => ManaMaxSeed <= 0 ? Int : Math.Clamp((ManaMaxSeed + GetStatOffset(StatType.Int)), 1, 65000);
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int ManaMaxSeed { get; set; } = -1;
@@ -4764,9 +4716,11 @@ namespace Server.Mobiles
 
     public void PackItem(Item item)
     {
-      if (Summoned || item == null)
+      if (item == null) return;
+
+      if (Summoned)
       {
-        item?.Delete();
+        item.Delete();
         return;
       }
 

@@ -481,10 +481,7 @@ namespace Server.Gumps
     {
       Mobile m = m_House.Owner;
 
-      if (m?.Deleted != false)
-        return "(unowned)";
-
-      return string.IsNullOrWhiteSpace(m.Name) ? "(no name)" : m.Name.Trim();
+      return m?.Deleted != false ? "(unowned)" : m.Name.Trim().IsNullOrDefault("(no name)");
     }
 
     private string GetDateTime(DateTime val) => val == DateTime.MinValue ? "" : val.ToString("yyyy'-'MM'-'dd HH':'mm':'ss");

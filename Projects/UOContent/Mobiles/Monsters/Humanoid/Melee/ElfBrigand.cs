@@ -51,48 +51,30 @@ namespace Server.Mobiles
       Fame = 1000;
       Karma = -1000;
 
-      switch (Utility.Random(4))
-      {
-        case 0:
-          AddItem(new Boots());
-          break;
-        case 1:
-          AddItem(new ThighBoots());
-          break;
-        case 2:
-          AddItem(new Sandals());
-          break;
-        case 3:
-          AddItem(new Shoes());
-          break;
-      }
+      AddItem(
+        Utility.Random(4) switch
+        {
+          0 => new Boots(),
+          1 => new ThighBoots(),
+          2 => new Sandals(),
+          _ => new Shoes() // 3
+        }
+      );
 
       AddItem(new Shirt(Utility.RandomNondyedHue()));
 
-      switch (Utility.Random(7))
-      {
-        case 0:
-          AddItem(new Longsword());
-          break;
-        case 1:
-          AddItem(new Cutlass());
-          break;
-        case 2:
-          AddItem(new Broadsword());
-          break;
-        case 3:
-          AddItem(new Axe());
-          break;
-        case 4:
-          AddItem(new Club());
-          break;
-        case 5:
-          AddItem(new Dagger());
-          break;
-        case 6:
-          AddItem(new Spear());
-          break;
-      }
+      AddItem(
+        Utility.Random(7) switch
+        {
+          0 => new Longsword(),
+          1 => new Cutlass(),
+          2 => new Broadsword(),
+          3 => new Axe(),
+          4 => new Club(),
+          5 => new Dagger(),
+          _ => new Spear() // 6
+        }
+      );
 
       Utility.AssignRandomHair(this);
     }

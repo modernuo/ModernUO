@@ -254,12 +254,7 @@ namespace Server.Engines.Doom
       if (playerCount == 0 && Region != null)
         playerCount = Region.GetPlayerCount();
 
-      int count = (playerCount + PlayersPerSpawn - 1) / PlayersPerSpawn;
-
-      if (count < 1)
-        count = 1;
-
-      return count;
+      return Math.Max((playerCount + PlayersPerSpawn - 1) / PlayersPerSpawn, 1);
     }
 
     public virtual void ClearCreatures()

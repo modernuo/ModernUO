@@ -10,18 +10,9 @@ namespace Server.Mobiles
       Body = 637;
       Hue = 0x8026;
 
-      Buckler buckler = new Buckler();
-      ChainCoif coif = new ChainCoif();
-      PlateGloves gloves = new PlateGloves();
-
-      buckler.Hue = 0x835;
-      buckler.Movable = false;
-      coif.Hue = 0x835;
-      gloves.Hue = 0x835;
-
-      AddItem(buckler);
-      AddItem(coif);
-      AddItem(gloves);
+      AddItem(new Buckler{Movable = false, Hue = 0x835});
+      AddItem(new ChainCoif{Hue = 0x835});
+      AddItem(new PlateGloves{Hue = 0x835});
 
       SetStr(101, 110);
       SetDex(101, 110);

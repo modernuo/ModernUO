@@ -203,8 +203,8 @@ namespace Server.Mobiles
     public void OnFailedMove()
     {
       if (!m_Mobile.DisallowAllMoves && (SmartAI
-            ? Utility.Random(4) == 0
-            : ScaleBySkill(TeleportChance, SkillName.Magery) > Utility.RandomDouble()))
+        ? Utility.Random(4) == 0
+        : ScaleBySkill(TeleportChance, SkillName.Magery) > Utility.RandomDouble()))
       {
         m_Mobile.Target?.Cancel(m_Mobile, TargetCancelType.Canceled);
 
@@ -275,16 +275,11 @@ namespace Server.Mobiles
 
     public virtual Spell GetRandomDamageSpellMage()
     {
-      int maxCircle = (int)((m_Mobile.Skills.Magery.Value + 20.0) / (100.0 / 7.0));
-
-      if (maxCircle < 1)
-        maxCircle = 1;
-      else if (maxCircle > 8)
-        maxCircle = 8;
+      int maxCircle = Math.Clamp((int)((m_Mobile.Skills.Magery.Value + 20.0) / (100.0 / 7.0)), 1, 8);
 
       return Utility.Random(maxCircle * 2) switch
       {
-        0 => (Spell)new MagicArrowSpell(m_Mobile),
+        0 => new MagicArrowSpell(m_Mobile),
         1 => new MagicArrowSpell(m_Mobile),
         2 => new HarmSpell(m_Mobile),
         3 => new HarmSpell(m_Mobile),
@@ -328,7 +323,7 @@ namespace Server.Mobiles
 
       return Utility.Random(3) switch
       {
-        0 => (Spell)new WeakenSpell(m_Mobile),
+        0 => new WeakenSpell(m_Mobile),
         1 => new ClumsySpell(m_Mobile),
         _ => new FeeblemindSpell(m_Mobile)
       };
@@ -664,7 +659,7 @@ namespace Server.Mobiles
         {
           // We are low on health, should we flee?
 
-          bool flee = false;
+          bool flee;
 
           if (m_Mobile.Hits < c.Hits)
           {
@@ -692,7 +687,7 @@ namespace Server.Mobiles
       {
         // We are ready to cast a spell
 
-        Spell spell = null;
+        Spell spell;
         Mobile toDispel = FindDispelTarget(true);
 
         if (m_Mobile.Poisoned) // Top cast priority is cure
@@ -800,7 +795,7 @@ namespace Server.Mobiles
 
     public override bool DoActionFlee()
     {
-      Mobile c = m_Mobile.Combatant;
+      // Mobile c = m_Mobile.Combatant;
 
       if ((m_Mobile.Mana > 20 || m_Mobile.Mana == m_Mobile.ManaMax) && m_Mobile.Hits > m_Mobile.HitsMax / 2)
       {
@@ -1014,74 +1009,64 @@ namespace Server.Mobiles
       {
         targ.Invoke(m_Mobile, m_RevealTarget);
       }
-      else if (isTeleport && toTarget != null)
+      else
       {
         Map map = m_Mobile.Map;
 
-        if (map == null)
+        if (map != null && isTeleport && toTarget != null)
         {
-          targ.Cancel(m_Mobile, TargetCancelType.Canceled);
-          return true;
-        }
+          int teleRange = targ.Range >= 0 ? targ.Range : Core.ML ? 11 : 12;
 
-        int px, py;
+          int px, py;
 
-        if (teleportAway)
-        {
-          int rx = m_Mobile.X - toTarget.X;
-          int ry = m_Mobile.Y - toTarget.Y;
-
-          double d = m_Mobile.GetDistanceToSqrt(toTarget);
-
-          px = toTarget.X + (int)(rx * (10 / d));
-          py = toTarget.Y + (int)(ry * (10 / d));
-        }
-        else
-        {
-          px = toTarget.X;
-          py = toTarget.Y;
-        }
-
-        for (int i = 0; i < m_Offsets.Length; i += 2)
-        {
-          int x = m_Offsets[i], y = m_Offsets[i + 1];
-
-          Point3D p = new Point3D(px + x, py + y, 0);
-
-          LandTarget lt = new LandTarget(p, map);
-
-          if ((targ.Range == -1 || m_Mobile.InRange(p, targ.Range)) && m_Mobile.InLOS(lt) &&
-              map.CanSpawnMobile(px + x, py + y, lt.Z) && !SpellHelper.CheckMulti(p, map))
+          if (teleportAway)
           {
-            targ.Invoke(m_Mobile, lt);
-            return true;
+            int rx = m_Mobile.X - toTarget.X;
+            int ry = m_Mobile.Y - toTarget.Y;
+
+            double d = m_Mobile.GetDistanceToSqrt(toTarget);
+
+            px = toTarget.X + (int)(rx * (10 / d));
+            py = toTarget.Y + (int)(ry * (10 / d));
+          }
+          else
+          {
+            px = toTarget.X;
+            py = toTarget.Y;
+          }
+
+          for (int i = 0; i < m_Offsets.Length; i += 2)
+          {
+            int x = m_Offsets[i], y = m_Offsets[i + 1];
+
+            Point3D p = new Point3D(px + x, py + y, 0);
+
+            LandTarget lt = new LandTarget(p, map);
+
+            if ((targ.Range == -1 || m_Mobile.InRange(p, targ.Range)) && m_Mobile.InLOS(lt) &&
+                map.CanSpawnMobile(px + x, py + y, lt.Z) && !SpellHelper.CheckMulti(p, map))
+            {
+              targ.Invoke(m_Mobile, lt);
+              return true;
+            }
+          }
+
+          for (int i = 0; i < 10; ++i)
+          {
+            Point3D randomPoint = new Point3D(m_Mobile.X - teleRange + Utility.Random(teleRange * 2 + 1),
+              m_Mobile.Y - teleRange + Utility.Random(teleRange * 2 + 1), 0);
+
+            LandTarget lt = new LandTarget(randomPoint, map);
+
+            if (m_Mobile.InLOS(lt) && map.CanSpawnMobile(lt.X, lt.Y, lt.Z) &&
+                !SpellHelper.CheckMulti(randomPoint, map))
+            {
+              targ.Invoke(m_Mobile, new LandTarget(randomPoint, map));
+              return true;
+            }
           }
         }
 
-        int teleRange = targ.Range;
-
-        if (teleRange < 0)
-          teleRange = Core.ML ? 11 : 12;
-
-        for (int i = 0; i < 10; ++i)
-        {
-          Point3D randomPoint = new Point3D(m_Mobile.X - teleRange + Utility.Random(teleRange * 2 + 1),
-            m_Mobile.Y - teleRange + Utility.Random(teleRange * 2 + 1), 0);
-
-          LandTarget lt = new LandTarget(randomPoint, map);
-
-          if (m_Mobile.InLOS(lt) && map.CanSpawnMobile(lt.X, lt.Y, lt.Z) &&
-              !SpellHelper.CheckMulti(randomPoint, map))
-          {
-            targ.Invoke(m_Mobile, new LandTarget(randomPoint, map));
-            return true;
-          }
-        }
-
-        targ.Cancel(m_Mobile, TargetCancelType.Canceled);
-      }
-      else
-      {
         targ.Cancel(m_Mobile, TargetCancelType.Canceled);
       }
 

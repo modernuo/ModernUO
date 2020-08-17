@@ -163,12 +163,12 @@ namespace Server.Misc
 
         using (StreamWriter op = new StreamWriter(filePath))
         {
-          Version ver = Core.Assembly.GetName().Version;
+          Version ver = Core.Assembly.GetName().Version ?? new Version("0.0.0.0");
 
           op.WriteLine("Server Crash Report");
           op.WriteLine("===================");
           op.WriteLine();
-          op.WriteLine("ModernUO Version {0}.{1}, Build {2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
+          op.WriteLine($"ModernUO Version {ver.Major}.{ver.Minor}, Build {ver.Build}.{ver.Revision}");
           op.WriteLine("Operating System: {0}", Environment.OSVersion);
           op.WriteLine(".NET Framework: {0}", Environment.Version);
           op.WriteLine("Time: {0}", DateTime.UtcNow);

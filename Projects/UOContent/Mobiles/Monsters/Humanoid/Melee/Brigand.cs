@@ -44,30 +44,18 @@ namespace Server.Mobiles
       AddItem(new FancyShirt());
       AddItem(new Bandana());
 
-      switch (Utility.Random(7))
-      {
-        case 0:
-          AddItem(new Longsword());
-          break;
-        case 1:
-          AddItem(new Cutlass());
-          break;
-        case 2:
-          AddItem(new Broadsword());
-          break;
-        case 3:
-          AddItem(new Axe());
-          break;
-        case 4:
-          AddItem(new Club());
-          break;
-        case 5:
-          AddItem(new Dagger());
-          break;
-        case 6:
-          AddItem(new Spear());
-          break;
-      }
+      AddItem(
+        Utility.Random(7) switch
+        {
+          0 => new Longsword(),
+          1 => new Cutlass(),
+          2 => new Broadsword(),
+          3 => new Axe(),
+          4 => new Club(),
+          5 => new Dagger(),
+          _ => new Spear() // 6
+        }
+      );
 
       Utility.AssignRandomHair(this);
     }

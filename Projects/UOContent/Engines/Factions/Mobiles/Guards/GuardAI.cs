@@ -206,14 +206,11 @@ namespace Server.Factions
 
     public Spell RandomOffenseSpell()
     {
-      int maxCircle = (int)((m_Guard.Skills.Magery.Value + 20.0) / (100.0 / 7.0));
-
-      if (maxCircle < 1)
-        maxCircle = 1;
+      int maxCircle = Math.Max((int)((m_Guard.Skills.Magery.Value + 20.0) / (100.0 / 7.0)), 1);
 
       return Utility.Random(maxCircle * 2) switch
       {
-        0 => (Spell)new MagicArrowSpell(m_Guard),
+        0 => new MagicArrowSpell(m_Guard),
         1 => new MagicArrowSpell(m_Guard),
         2 => new HarmSpell(m_Guard),
         3 => new HarmSpell(m_Guard),

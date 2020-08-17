@@ -2929,10 +2929,12 @@ namespace Server
     {
       var name = Name ?? string.Empty;
 
-      var prefix = "";
+      string prefix;
 
       if (ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000)
         prefix = m_Female ? "Lady" : "Lord";
+      else
+        prefix = "";
 
       var suffix = "";
 
@@ -2950,27 +2952,22 @@ namespace Server
 
       list.Add(1050045, "{0} \t{1}\t {2}", prefix, name, suffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
-      if (guild != null && (m_DisplayGuildTitle || (m_Player && guild.Type != GuildType.Regular)))
+      if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
       {
-        string type;
-
-        if (guild.Type >= 0 && (int)guild.Type < m_GuildTypes.Length)
-          type = m_GuildTypes[(int)guild.Type];
-        else
-          type = "";
+        var type = guild.Type >= 0 && (int)guild.Type < m_GuildTypes.Length ? m_GuildTypes[(int)guild.Type] : "";
 
         var title = GuildTitle?.Trim() ?? "";
 
-        if (NewGuildDisplay && title.Length > 0)
+        if (title.Length > 0)
         {
-          list.Add("{0}, {1}", Utility.FixHtml(title), Utility.FixHtml(guild.Name));
+          if (NewGuildDisplay)
+            list.Add("{0}, {1}", Utility.FixHtml(title), Utility.FixHtml(guild.Name));
+          else
+            list.Add("{0}, {1} Guild{2}", Utility.FixHtml(title), Utility.FixHtml(guild.Name), type);
         }
         else
         {
-          if (title.Length > 0)
-            list.Add("{0}, {1} Guild{2}", Utility.FixHtml(title), Utility.FixHtml(guild.Name), type);
-          else
-            list.Add(Utility.FixHtml(guild.Name));
+          list.Add(Utility.FixHtml(guild.Name));
         }
       }
     }
@@ -2990,7 +2987,7 @@ namespace Server
 
     private void UpdateAggrExpire()
     {
-      if (Deleted || (Aggressors.Count == 0 && Aggressed.Count == 0))
+      if (Deleted || Aggressors.Count == 0 && Aggressed.Count == 0)
       {
         StopAggrExpire();
       }
@@ -3171,7 +3168,7 @@ namespace Server
 
     public bool InLOS(object target) =>
       !Deleted && m_Map != null &&
-      (target == this || m_AccessLevel > AccessLevel.Player || (target is Item item && item.RootParent == this)
+      (target == this || m_AccessLevel > AccessLevel.Player || target is Item item && item.RootParent == this
        || m_Map.LineOfSight(this, target));
 
     public bool InLOS(Point3D target) =>
@@ -3708,7 +3705,7 @@ namespace Server
                 var item = oldSector.Items[i];
 
                 if (item.AtWorldPoint(oldX, oldY) &&
-                    (item.Z == oldZ || (item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z)) &&
+                    (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
                     !item.OnMoveOff(this))
                   return false;
               }
@@ -3726,7 +3723,7 @@ namespace Server
                 var item = newSector.Items[i];
 
                 if (item.AtWorldPoint(x, y) &&
-                    (item.Z == newZ || (item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z)) &&
+                    (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
                     !item.OnMoveOver(this))
                   return false;
               }
@@ -3749,11 +3746,11 @@ namespace Server
                 var item = oldSector.Items[i];
 
                 if (item.AtWorldPoint(oldX, oldY) &&
-                    (item.Z == oldZ || (item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z)) &&
+                    (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
                     !item.OnMoveOff(this))
                   return false;
                 if (item.AtWorldPoint(x, y) &&
-                    (item.Z == newZ || (item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z)) &&
+                    (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
                     !item.OnMoveOver(this))
                   return false;
               }
@@ -4837,7 +4834,7 @@ namespace Server
     }
 
     public virtual bool CheckHearsMutatedSpeech(Mobile m, object context) =>
-      context != m_GhostMutateContext || (m.Alive && !m.CanHearGhosts);
+      context != m_GhostMutateContext || m.Alive && !m.CanHearGhosts;
 
     private void AddSpeechItemsFrom(List<IEntity> list, Container cont)
     {
@@ -4921,7 +4918,7 @@ namespace Server
         foreach (var o in eable)
           if (o is Mobile heard)
           {
-            if (!heard.CanSee(this) || (!NoSpeechLOS && heard.Player && !heard.InLOS(this)))
+            if (!heard.CanSee(this) || !NoSpeechLOS && heard.Player && !heard.InLOS(this))
               continue;
 
             if (heard.m_NetState != null)
@@ -6408,11 +6405,11 @@ namespace Server
       if (Deleted || m.Deleted || m_Map == Map.Internal || m.m_Map == Map.Internal)
         return false;
 
-      return this == m || (m.m_Map == m_Map &&
-        (!m.Hidden || (m_AccessLevel != AccessLevel.Player &&
-          (m_AccessLevel >= m.AccessLevel || m_AccessLevel >= AccessLevel.Administrator))) &&
-        (m.Alive || (Core.SE && Skills.SpiritSpeak.Value >= 100.0) || !Alive ||
-         m_AccessLevel > AccessLevel.Player || m.Warmode));
+      return this == m || m.m_Map == m_Map &&
+        (!m.Hidden || m_AccessLevel != AccessLevel.Player &&
+          (m_AccessLevel >= m.AccessLevel || m_AccessLevel >= AccessLevel.Administrator)) &&
+        (m.Alive || Core.SE && Skills.SpiritSpeak.Value >= 100.0 || !Alive ||
+         m_AccessLevel > AccessLevel.Player || m.Warmode);
     }
 
     public virtual bool CanBeRenamedBy(Mobile from) =>
@@ -6561,7 +6558,7 @@ namespace Server
               var inOldRange = Utility.InUpdateRange(oldLocation, m.m_Location);
 
               if (m.m_NetState != null &&
-                  ((isTeleport && (!m.m_NetState.HighSeas || !NoMoveHS)) || !inOldRange) && m.CanSee(this))
+                  (isTeleport && (!m.m_NetState.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
               {
                 m.m_NetState.Send(MobileIncoming.Create(m.m_NetState, m, this));
 
@@ -6608,7 +6605,7 @@ namespace Server
 
           // We're not attached to a client, so simply send an Incoming
           foreach (var ns in eable)
-            if (((isTeleport && (!ns.HighSeas || !NoMoveHS)) ||
+            if ((isTeleport && (!ns.HighSeas || !NoMoveHS) ||
                  !Utility.InUpdateRange(oldLocation, ns.Mobile.Location)) && ns.Mobile.CanSee(this))
             {
               ns.Send(MobileIncoming.Create(ns, ns.Mobile, this));
@@ -6735,7 +6732,7 @@ namespace Server
     public virtual bool CheckLift(Mobile from, Item item, ref LRReason reject) => true;
 
     public virtual bool CheckNonlocalLift(Mobile from, Item item) =>
-      from == this || (from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster);
+      from == this || @from.AccessLevel > AccessLevel && @from.AccessLevel >= AccessLevel.GameMaster;
 
     public virtual bool CheckTrade(Mobile to, Item item, SecureTradeContainer cont, bool message, bool checkItems,
       int plusItems, int plusWeight) =>
@@ -6878,7 +6875,7 @@ namespace Server
     }
 
     public virtual bool CheckNonlocalDrop(Mobile from, Item item, Item target) =>
-      from == this || (from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster);
+      from == this || @from.AccessLevel > AccessLevel && @from.AccessLevel >= AccessLevel.GameMaster;
 
     public virtual bool CheckItemUse(Mobile from, Item item) => true;
 
@@ -6894,7 +6891,7 @@ namespace Server
     public virtual bool AllowItemUse(Item item) => true;
 
     public virtual bool AllowEquipFrom(Mobile mob) =>
-      mob == this || (mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > AccessLevel);
+      mob == this || mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > AccessLevel;
 
     public virtual bool EquipItem(Item item)
     {
@@ -7079,14 +7076,14 @@ namespace Server
     public virtual void OnSingleClick(Mobile from)
     {
       if (Deleted ||
-          (AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this))
+          AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && @from == this)
         return;
 
       if (GuildClickMessage)
       {
         var guild = m_Guild;
 
-        if (guild != null && (m_DisplayGuildTitle || (m_Player && guild.Type != GuildType.Regular)))
+        if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
         {
           var title = GuildTitle?.Trim() ?? "";
           string type;
@@ -7631,7 +7628,7 @@ namespace Server
 
       protected override void OnTick()
       {
-        if (m_Mobile.Deleted || (m_Mobile.Aggressors.Count == 0 && m_Mobile.Aggressed.Count == 0))
+        if (m_Mobile.Deleted || m_Mobile.Aggressors.Count == 0 && m_Mobile.Aggressed.Count == 0)
           m_Mobile.StopAggrExpire();
         else
           m_Mobile.CheckAggrExpire();
@@ -8019,7 +8016,7 @@ namespace Server
         return false;
 
       if (Deleted || target.Deleted || !Alive || IsDeadBondedPet ||
-          (!allowDead && (!target.Alive || target.IsDeadBondedPet)))
+          !allowDead && (!target.Alive || target.IsDeadBondedPet))
       {
         if (message)
           SendLocalizedMessage(1001017); // You can not perform beneficial acts on your target.
@@ -8095,7 +8092,7 @@ namespace Server
       if (target == null)
         return false;
 
-      if (Deleted || (!ignoreOurBlessedness && m_Blessed) || target.Deleted || target.m_Blessed || !Alive ||
+      if (Deleted || !ignoreOurBlessedness && m_Blessed || target.Deleted || target.m_Blessed || !Alive ||
           IsDeadBondedPet || !target.Alive || target.IsDeadBondedPet)
       {
         if (message)
@@ -8322,10 +8319,7 @@ namespace Server
       get => m_Str;
       set
       {
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
+        value = Math.Clamp(value, 1, 65000);
 
         if (m_Str != value)
         {
@@ -8361,17 +8355,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual int Str
     {
-      get
-      {
-        var value = m_Str + GetStatOffset(StatType.Str);
-
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
-
-        return value;
-      }
+      get => Math.Clamp(m_Str + GetStatOffset(StatType.Str), 1, 65000);
       set
       {
         if (StatMods.Count == 0)
@@ -8392,10 +8376,7 @@ namespace Server
       get => m_Dex;
       set
       {
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
+        value = Math.Clamp(value, 1, 65000);
 
         if (m_Dex != value)
         {
@@ -8431,17 +8412,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual int Dex
     {
-      get
-      {
-        var value = m_Dex + GetStatOffset(StatType.Dex);
-
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
-
-        return value;
-      }
+      get => Math.Clamp(m_Dex + GetStatOffset(StatType.Dex), 0, 65000);
       set
       {
         if (StatMods.Count == 0)
@@ -8462,10 +8433,7 @@ namespace Server
       get => m_Int;
       set
       {
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
+        value = Math.Clamp(value, 1, 65000);
 
         if (m_Int != value)
         {
@@ -8501,17 +8469,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual int Int
     {
-      get
-      {
-        var value = m_Int + GetStatOffset(StatType.Int);
-
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
-
-        return value;
-      }
+      get => Math.Clamp(m_Int + GetStatOffset(StatType.Int), 0, 65000);
       set
       {
         if (StatMods.Count == 0)

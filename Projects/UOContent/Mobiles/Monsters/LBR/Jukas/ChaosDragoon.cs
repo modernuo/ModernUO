@@ -47,76 +47,42 @@ namespace Server.Mobiles
         2 => CraftResource.BlueScales,
         3 => CraftResource.YellowScales,
         4 => CraftResource.GreenScales,
-        5 => CraftResource.WhiteScales,
-        _ => CraftResource.None
+        _ => CraftResource.WhiteScales // 5
       };
 
       var melee = Utility.Random(3) switch
       {
         0 => (BaseWeapon)new Kryss(),
         1 => new Broadsword(),
-        2 => new Katana(),
-        _ => null
+        _ => new Katana() // 2
       };
 
       melee.Movable = false;
       AddItem(melee);
 
-      DragonHelm helm = new DragonHelm();
-      helm.Resource = res;
-      helm.Movable = false;
-      AddItem(helm);
-
-      DragonChest chest = new DragonChest();
-      chest.Resource = res;
-      chest.Movable = false;
-      AddItem(chest);
-
-      DragonArms arms = new DragonArms();
-      arms.Resource = res;
-      arms.Movable = false;
-      AddItem(arms);
-
-      DragonGloves gloves = new DragonGloves();
-      gloves.Resource = res;
-      gloves.Movable = false;
-      AddItem(gloves);
-
-      DragonLegs legs = new DragonLegs();
-      legs.Resource = res;
-      legs.Movable = false;
-      AddItem(legs);
-
-      ChaosShield shield = new ChaosShield();
-      shield.Movable = false;
-      AddItem(shield);
+      AddItem(new DragonHelm {Resource = res, Movable = false});
+      AddItem(new DragonChest {Resource = res, Movable = false});
+      AddItem(new DragonArms {Resource = res, Movable = false});
+      AddItem(new DragonGloves {Resource = res, Movable = false});
+      AddItem(new DragonLegs {Resource = res, Movable = false});
+      AddItem(new ChaosShield {Movable = false});
 
       AddItem(new Shirt());
       AddItem(new Boots());
 
       int amount = Utility.RandomMinMax(1, 3);
 
-      switch (res)
-      {
-        case CraftResource.BlackScales:
-          AddItem(new BlackScales(amount));
-          break;
-        case CraftResource.RedScales:
-          AddItem(new RedScales(amount));
-          break;
-        case CraftResource.BlueScales:
-          AddItem(new BlueScales(amount));
-          break;
-        case CraftResource.YellowScales:
-          AddItem(new YellowScales(amount));
-          break;
-        case CraftResource.GreenScales:
-          AddItem(new GreenScales(amount));
-          break;
-        case CraftResource.WhiteScales:
-          AddItem(new WhiteScales(amount));
-          break;
-      }
+      AddItem(
+        res switch
+        {
+          CraftResource.BlackScales => new BlackScales(amount),
+          CraftResource.RedScales => new RedScales(amount),
+          CraftResource.BlueScales => new BlueScales(amount),
+          CraftResource.YellowScales => new YellowScales(amount),
+          CraftResource.GreenScales => new GreenScales(amount),
+          _ => new WhiteScales(amount) // CraftResource.WhiteScales
+        }
+      );
 
       new SwampDragon().Rider = this;
     }

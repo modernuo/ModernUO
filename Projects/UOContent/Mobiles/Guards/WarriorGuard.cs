@@ -24,34 +24,18 @@ namespace Server.Mobiles
         Body = 0x191;
         Name = NameList.RandomName("female");
 
-        switch (Utility.Random(2))
-        {
-          case 0:
-            AddItem(new LeatherSkirt());
-            break;
-          case 1:
-            AddItem(new LeatherShorts());
-            break;
-        }
+        AddItem(Utility.RandomBool() ? (Item)new LeatherSkirt() : new LeatherShorts());
 
-        switch (Utility.Random(5))
-        {
-          case 0:
-            AddItem(new FemaleLeatherChest());
-            break;
-          case 1:
-            AddItem(new FemaleStuddedChest());
-            break;
-          case 2:
-            AddItem(new LeatherBustierArms());
-            break;
-          case 3:
-            AddItem(new StuddedBustierArms());
-            break;
-          case 4:
-            AddItem(new FemalePlateChest());
-            break;
-        }
+        AddItem(
+          Utility.Random(5) switch
+          {
+            0 => new FemaleLeatherChest(),
+            1 => new FemaleStuddedChest(),
+            2 => new LeatherBustierArms(),
+            3 => new StuddedBustierArms(),
+            _ => new FemalePlateChest(), // 4
+          }
+        );
       }
       else
       {
@@ -62,18 +46,14 @@ namespace Server.Mobiles
         AddItem(new PlateArms());
         AddItem(new PlateLegs());
 
-        switch (Utility.Random(3))
-        {
-          case 0:
-            AddItem(new Doublet(Utility.RandomNondyedHue()));
-            break;
-          case 1:
-            AddItem(new Tunic(Utility.RandomNondyedHue()));
-            break;
-          case 2:
-            AddItem(new BodySash(Utility.RandomNondyedHue()));
-            break;
-        }
+        AddItem(
+          Utility.Random(3) switch
+          {
+            0 => new Doublet(Utility.RandomNondyedHue()),
+            1 => new Tunic(Utility.RandomNondyedHue()),
+            _ => new BodySash(Utility.RandomNondyedHue()) // 3
+          }
+        );
       }
 
       Utility.AssignRandomHair(this);

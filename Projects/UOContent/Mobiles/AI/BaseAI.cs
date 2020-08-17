@@ -2731,10 +2731,7 @@ namespace Server.Mobiles
           m_Owner.DetectHidden();
 
           // Not exactly OSI style, approximation.
-          int delay = 15000 / m_Owner.m_Mobile.Int;
-
-          if (delay > 60)
-            delay = 60;
+          int delay = Math.Min(15000 / m_Owner.m_Mobile.Int, 60);
 
           int min = delay * (9 / 10); // 13s at 1000 int, 33s at 400 int, 54s at <250 int
           int max = delay * (10 / 9); // 16s at 1000 int, 41s at 400 int, 66s at <250 int
