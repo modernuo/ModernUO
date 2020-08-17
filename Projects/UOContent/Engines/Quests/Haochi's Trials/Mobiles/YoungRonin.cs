@@ -21,33 +21,25 @@ namespace Server.Engines.Quests.Samurai
       AddItem(new LeatherHiroSode());
       AddItem(new SamuraiTabi());
 
-      switch (Utility.Random(3))
-      {
-        case 0:
-          AddItem(new StuddedHaidate());
-          break;
-        case 1:
-          AddItem(new PlateSuneate());
-          break;
-        default:
-          AddItem(new LeatherSuneate());
-          break;
-      }
+      AddItem(
+        Utility.Random(3) switch
+        {
+          0 => new StuddedHaidate(),
+          1 => new PlateSuneate(),
+          _ => new LeatherSuneate()
+        }
+      );
 
       AddItem(new Bandana(Utility.RandomNondyedHue()));
 
-      switch (Utility.Random(3))
-      {
-        case 0:
-          AddItem(new NoDachi());
-          break;
-        case 1:
-          AddItem(new Lajatang());
-          break;
-        default:
-          AddItem(new Wakizashi());
-          break;
-      }
+      AddItem(
+        Utility.Random(3) switch
+        {
+          0 => new NoDachi(),
+          1 => new Lajatang(),
+          _ => new Wakizashi()
+        }
+      );
 
       SetSkill(SkillName.Swords, 50.0);
       SetSkill(SkillName.Tactics, 50.0);

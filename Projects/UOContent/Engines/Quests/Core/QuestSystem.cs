@@ -431,7 +431,7 @@ namespace Server.Engines.Quests
               return false;
             }
 
-            doneQuests.RemoveAt(i--);
+            doneQuests.RemoveAt(i);
             return true;
           }
         }
@@ -444,18 +444,7 @@ namespace Server.Engines.Quests
       if (Utility.RandomBool())
         who.Animate(17, 7, 1, true, false, 0);
       else
-        switch (Utility.Random(3))
-        {
-          case 0:
-            who.Animate(32, 7, 1, true, false, 0);
-            break;
-          case 1:
-            who.Animate(33, 7, 1, true, false, 0);
-            break;
-          case 2:
-            who.Animate(34, 7, 1, true, false, 0);
-            break;
-        }
+        who.Animate(32 + Utility.Random(3), 7, 1, true, false, 0);
 
       who.Direction = who.GetDirectionTo(to);
     }
