@@ -510,8 +510,7 @@ namespace Server.Mobiles
         1 => Utility.RandomGreenHue(),
         2 => Utility.RandomRedHue(),
         3 => Utility.RandomYellowHue(),
-        4 => Utility.RandomNeutralHue(),
-        _ => Utility.RandomBlueHue()
+        _ => Utility.RandomNeutralHue() // 4
       };
     }
 
@@ -664,34 +663,24 @@ namespace Server.Mobiles
 
     public virtual void InitOutfit()
     {
-      switch (Utility.Random(3))
-      {
-        case 0:
-          AddItem(new FancyShirt(GetRandomHue()));
-          break;
-        case 1:
-          AddItem(new Doublet(GetRandomHue()));
-          break;
-        case 2:
-          AddItem(new Shirt(GetRandomHue()));
-          break;
-      }
+      AddItem(
+        Utility.Random(3) switch
+        {
+          0 => new FancyShirt(GetRandomHue()),
+          1 => new Doublet(GetRandomHue()),
+          _ => new Shirt(GetRandomHue()) // 2
+        }
+      );
 
-      switch (ShoeType)
-      {
-        case VendorShoeType.Shoes:
-          AddItem(new Shoes(GetShoeHue()));
-          break;
-        case VendorShoeType.Boots:
-          AddItem(new Boots(GetShoeHue()));
-          break;
-        case VendorShoeType.Sandals:
-          AddItem(new Sandals(GetShoeHue()));
-          break;
-        case VendorShoeType.ThighBoots:
-          AddItem(new ThighBoots(GetShoeHue()));
-          break;
-      }
+      AddItem(
+        ShoeType switch
+        {
+          VendorShoeType.Shoes => new Shoes(GetShoeHue()),
+          VendorShoeType.Boots => new Boots(GetShoeHue()),
+          VendorShoeType.Sandals => new Sandals(GetShoeHue()),
+          _ => new ThighBoots(GetShoeHue()) // ThighBoots
+        }
+      );
 
       int hairHue = GetHairHue();
 
@@ -699,31 +688,17 @@ namespace Server.Mobiles
       Utility.AssignRandomFacialHair(this, hairHue);
 
       if (Female)
-        switch (Utility.Random(6))
-        {
-          case 0:
-            AddItem(new ShortPants(GetRandomHue()));
-            break;
-          case 1:
-          case 2:
-            AddItem(new Kilt(GetRandomHue()));
-            break;
-          case 3:
-          case 4:
-          case 5:
-            AddItem(new Skirt(GetRandomHue()));
-            break;
-        }
+        AddItem(
+          Utility.Random(6) switch
+          {
+            0 => new ShortPants(GetRandomHue()),
+            1 => new Kilt(GetRandomHue()),
+            2 => new Kilt(GetRandomHue()),
+            _ => new Skirt(GetRandomHue()) // 3-5
+          }
+        );
       else
-        switch (Utility.Random(2))
-        {
-          case 0:
-            AddItem(new LongPants(GetRandomHue()));
-            break;
-          case 1:
-            AddItem(new ShortPants(GetRandomHue()));
-            break;
-        }
+        AddItem(Utility.RandomBool() ? (Item)new LongPants(GetRandomHue()) : new ShortPants(GetRandomHue()));
 
       PackGold(100, 200);
     }

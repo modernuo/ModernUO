@@ -35,52 +35,30 @@ namespace Server.Mobiles
       AddItem(new StuddedGorget());
       AddItem(new PlateLegs());
 
-      switch (Utility.Random(4))
-      {
-        case 0:
-          AddItem(new PlateHelm());
-          break;
-        case 1:
-          AddItem(new NorseHelm());
-          break;
-        case 2:
-          AddItem(new CloseHelm());
-          break;
-        case 3:
-          AddItem(new Helmet());
-          break;
-      }
+      AddItem(
+        Utility.Random(4) switch
+        {
+          0 => new PlateHelm(),
+          1 => new NorseHelm(),
+          2 => new CloseHelm(),
+          _ => new Helmet() // 3
+        }
+      );
 
-      switch (Utility.Random(3))
-      {
-        case 0:
-          AddItem(new BodySash(0x482));
-          break;
-        case 1:
-          AddItem(new Doublet(0x482));
-          break;
-        case 2:
-          AddItem(new Tunic(0x482));
-          break;
-      }
+      AddItem(
+        Utility.Random(3) switch
+        {
+          0 => new BodySash(0x482),
+          1 => new Doublet(0x482),
+          _ => new Tunic(0x482)  // 2
+        }
+      );
 
       AddItem(new Broadsword());
 
-      Item shield = new MetalKiteShield();
+      AddItem(new MetalKiteShield{Hue = Utility.RandomNondyedHue()});
 
-      shield.Hue = Utility.RandomNondyedHue();
-
-      AddItem(shield);
-
-      switch (Utility.Random(2))
-      {
-        case 0:
-          AddItem(new Boots());
-          break;
-        case 1:
-          AddItem(new ThighBoots());
-          break;
-      }
+      AddItem(Utility.RandomBool() ? (Item)new Boots() : new ThighBoots());
 
       PackGold(100, 200);
     }

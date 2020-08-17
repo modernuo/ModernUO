@@ -38,30 +38,18 @@ namespace Server.Mobiles
       VirtualArmor = 34;
 
       // TODO: Skull?
-      switch (Utility.Random(7))
-      {
-        case 0:
-          PackItem(new Arrow());
-          break;
-        case 1:
-          PackItem(new Lockpick());
-          break;
-        case 2:
-          PackItem(new Shaft());
-          break;
-        case 3:
-          PackItem(new Ribs());
-          break;
-        case 4:
-          PackItem(new Bandage());
-          break;
-        case 5:
-          PackItem(new BeverageBottle(BeverageType.Wine));
-          break;
-        case 6:
-          PackItem(new Jug(BeverageType.Cider));
-          break;
-      }
+      PackItem(
+        Utility.Random(7) switch
+        {
+          0 => new Arrow(),
+          1 => new Lockpick(),
+          2 => new Shaft(),
+          3 => new Ribs(),
+          4 => new Bandage(),
+          5 => new BeverageBottle(BeverageType.Wine),
+          _ => new Jug(BeverageType.Cider) // 6
+        }
+      );
 
       if (Core.AOS)
         PackItem(Loot.RandomNecromancyReagent());

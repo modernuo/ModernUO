@@ -19,18 +19,15 @@ namespace Server.Mobiles
     {
       base.InitOutfit();
 
-      switch (Utility.Random(4))
-      {
-        case 0:
-          AddItem(new JesterHat(Utility.RandomBrightHue()));
-          break;
-        case 1:
-          AddItem(new Bandana(Utility.RandomBrightHue()));
-          break;
-        case 2:
-          AddItem(new SkullCap(Utility.RandomBrightHue()));
-          break;
-      }
+      AddItem(
+        Utility.Random(4) switch
+        {
+          0 => new JesterHat(Utility.RandomBrightHue()),
+          1 => new Bandana(Utility.RandomBrightHue()),
+          2 => new SkullCap(Utility.RandomBrightHue()),
+          _ => null // 3
+        }
+      );
 
       Item item = FindItemOnLayer(Layer.Pants);
 

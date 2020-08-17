@@ -4716,9 +4716,11 @@ namespace Server.Mobiles
 
     public void PackItem(Item item)
     {
-      if (Summoned || item == null)
+      if (item == null) return;
+
+      if (Summoned)
       {
-        item?.Delete();
+        item.Delete();
         return;
       }
 
