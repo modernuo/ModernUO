@@ -68,13 +68,7 @@ namespace Server.Items
       get => m_Charges;
       set
       {
-        if (value > MaxCharges)
-          m_Charges = MaxCharges;
-        else if (value < 0)
-          m_Charges = 0;
-        else
-          m_Charges = value;
-
+        m_Charges = Math.Clamp(value, 0, MaxCharges);
         InvalidateProperties();
       }
     }
@@ -85,13 +79,7 @@ namespace Server.Items
       get => m_Recharges;
       set
       {
-        if (value > MaxRecharges)
-          m_Recharges = MaxRecharges;
-        else if (value < 0)
-          m_Recharges = 0;
-        else
-          m_Recharges = value;
-
+        m_Recharges = Math.Clamp(value, 0, MaxRecharges);
         InvalidateProperties();
       }
     }

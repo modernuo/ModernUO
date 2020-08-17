@@ -113,13 +113,7 @@ namespace Server.Engines.Plants
       get => m_Water;
       set
       {
-        if (value < 0)
-          m_Water = 0;
-        else if (value > 4)
-          m_Water = 4;
-        else
-          m_Water = value;
-
+        m_Water = Math.Clamp(value, 0, 4);
         Plant.InvalidateProperties();
       }
     }
@@ -132,12 +126,7 @@ namespace Server.Engines.Plants
         if (m_Hits == value)
           return;
 
-        if (value < 0)
-          m_Hits = 0;
-        else if (value > MaxHits)
-          m_Hits = MaxHits;
-        else
-          m_Hits = value;
+        m_Hits = Math.Clamp(value, 0, MaxHits);
 
         if (m_Hits == 0)
           Plant.Die();
@@ -158,66 +147,32 @@ namespace Server.Engines.Plants
           return PlantHealth.Dying;
         if (perc < 66)
           return PlantHealth.Wilted;
-        if (perc < 100)
-          return PlantHealth.Healthy;
-        return PlantHealth.Vibrant;
+        return perc < 100 ? PlantHealth.Healthy : PlantHealth.Vibrant;
       }
     }
 
     public int Infestation
     {
       get => m_Infestation;
-      set
-      {
-        if (value < 0)
-          m_Infestation = 0;
-        else if (value > 2)
-          m_Infestation = 2;
-        else
-          m_Infestation = value;
-      }
+      set => m_Infestation = Math.Clamp(value, 0, 2);
     }
 
     public int Fungus
     {
       get => m_Fungus;
-      set
-      {
-        if (value < 0)
-          m_Fungus = 0;
-        else if (value > 2)
-          m_Fungus = 2;
-        else
-          m_Fungus = value;
-      }
+      set => m_Fungus = Math.Clamp(value, 0, 2);
     }
 
     public int Poison
     {
       get => m_Poison;
-      set
-      {
-        if (value < 0)
-          m_Poison = 0;
-        else if (value > 2)
-          m_Poison = 2;
-        else
-          m_Poison = value;
-      }
+      set => m_Poison = Math.Clamp(value, 0, 2);
     }
 
     public int Disease
     {
       get => m_Disease;
-      set
-      {
-        if (value < 0)
-          m_Disease = 0;
-        else if (value > 2)
-          m_Disease = 2;
-        else
-          m_Disease = value;
-      }
+      set => m_Disease = Math.Clamp(value, 0, 2);
     }
 
     public bool IsFullPoisonPotion => m_PoisonPotion >= 2;
@@ -225,15 +180,7 @@ namespace Server.Engines.Plants
     public int PoisonPotion
     {
       get => m_PoisonPotion;
-      set
-      {
-        if (value < 0)
-          m_PoisonPotion = 0;
-        else if (value > 2)
-          m_PoisonPotion = 2;
-        else
-          m_PoisonPotion = value;
-      }
+      set => m_PoisonPotion = Math.Clamp(value, 0, 2);
     }
 
     public bool IsFullCurePotion => m_CurePotion >= 2;
@@ -241,15 +188,7 @@ namespace Server.Engines.Plants
     public int CurePotion
     {
       get => m_CurePotion;
-      set
-      {
-        if (value < 0)
-          m_CurePotion = 0;
-        else if (value > 2)
-          m_CurePotion = 2;
-        else
-          m_CurePotion = value;
-      }
+      set => m_CurePotion = Math.Clamp(value, 0, 2);
     }
 
     public bool IsFullHealPotion => m_HealPotion >= 2;
@@ -257,15 +196,7 @@ namespace Server.Engines.Plants
     public int HealPotion
     {
       get => m_HealPotion;
-      set
-      {
-        if (value < 0)
-          m_HealPotion = 0;
-        else if (value > 2)
-          m_HealPotion = 2;
-        else
-          m_HealPotion = value;
-      }
+      set => m_HealPotion = Math.Clamp(value, 0, 2);
     }
 
     public bool IsFullStrengthPotion => m_StrengthPotion >= 2;
@@ -273,15 +204,7 @@ namespace Server.Engines.Plants
     public int StrengthPotion
     {
       get => m_StrengthPotion;
-      set
-      {
-        if (value < 0)
-          m_StrengthPotion = 0;
-        else if (value > 2)
-          m_StrengthPotion = 2;
-        else
-          m_StrengthPotion = value;
-      }
+      set => m_StrengthPotion = Math.Clamp(value, 0, 2);
     }
 
     public bool HasMaladies => Infestation > 0 || Fungus > 0 || Poison > 0 || Disease > 0 || Water != 2;
@@ -292,23 +215,13 @@ namespace Server.Engines.Plants
 
     public PlantType SeedType
     {
-      get
-      {
-        if (Pollinated)
-          return m_SeedType;
-        return Plant.PlantType;
-      }
+      get => Pollinated ? m_SeedType : Plant.PlantType;
       set => m_SeedType = value;
     }
 
     public PlantHue SeedHue
     {
-      get
-      {
-        if (Pollinated)
-          return m_SeedHue;
-        return Plant.PlantHue;
-      }
+      get => Pollinated ? m_SeedHue : Plant.PlantHue;
       set => m_SeedHue = value;
     }
 

@@ -33,11 +33,10 @@ namespace Server
     {
       int v = from.Virtues.GetValue((int)virtue);
       int vl;
-      int vmax = GetMaxAmount(virtue);
 
       if (v < 4000)
         vl = 0;
-      else if (v >= vmax)
+      else if (v >= GetMaxAmount(virtue))
         vl = 3;
       else
         vl = (v + 9999) / 10000;
@@ -45,16 +44,13 @@ namespace Server
       return (VirtueLevel)vl;
     }
 
-    public static int GetMaxAmount(VirtueName virtue)
-    {
-      if (virtue == VirtueName.Honor)
-        return 20000;
-
-      if (virtue == VirtueName.Sacrifice)
-        return 22000;
-
-      return 21000;
-    }
+    public static int GetMaxAmount(VirtueName virtue) =>
+      virtue switch
+      {
+        VirtueName.Honor => 20000,
+        VirtueName.Sacrifice => 22000,
+        _ => 21000
+      };
 
     public static bool Award(Mobile from, VirtueName virtue, int amount, ref bool gainedPath)
     {

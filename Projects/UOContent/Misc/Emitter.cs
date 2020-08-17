@@ -607,16 +607,11 @@ namespace Server
 
     public void BeginCall(MethodInfo method)
     {
-      Type type;
-
-      if ((method.CallingConvention & CallingConventions.HasThis) != 0)
-        type = m_Stack.Peek();
-      else
-        type = method.DeclaringType;
+      var type = (method.CallingConvention & CallingConventions.HasThis) != 0 ? m_Stack.Peek() : method.DeclaringType;
 
       m_Calls.Push(new CallInfo(type, method));
 
-      if (type.IsValueType)
+      if (type!.IsValueType)
       {
         LocalBuilder temp = AcquireTemp(type);
 

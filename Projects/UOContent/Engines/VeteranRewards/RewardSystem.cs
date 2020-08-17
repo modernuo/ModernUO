@@ -95,12 +95,7 @@ namespace Server.Engines.VeteranRewards
     {
       TimeSpan totalTime = DateTime.UtcNow - acct.Created;
 
-      int level = (int)(totalTime.TotalDays / RewardInterval.TotalDays);
-
-      if (level < 0)
-        level = 0;
-
-      return level;
+      return Math.Max((int)(totalTime.TotalDays / RewardInterval.TotalDays), 0);
     }
 
     public static bool HasHalfLevel(Mobile mob)
@@ -473,10 +468,7 @@ namespace Server.Engines.VeteranRewards
       if (m.SkillsCap == 7000 || m.SkillsCap == 7050 || m.SkillsCap == 7100 ||
           m.SkillsCap == 7150 || m.SkillsCap == 7200)
       {
-        if (level > 4)
-          level = 4;
-        else if (level < 0)
-          level = 0;
+        level = Math.Clamp(level, 0, 4);
 
         if (SkillCapRewards)
           m.SkillsCap = 7000 + level * 50;

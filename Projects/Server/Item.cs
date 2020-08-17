@@ -1262,26 +1262,9 @@ namespace Server
       var ticks = LastMoved.Ticks;
       var now = DateTime.UtcNow.Ticks;
 
-      TimeSpan d;
+      var minutes = new TimeSpan(now - ticks).TotalMinutes;
 
-      try
-      {
-        d = new TimeSpan(ticks - now);
-      }
-      catch
-      {
-        if (ticks < now) d = TimeSpan.MaxValue;
-        else d = TimeSpan.MaxValue;
-      }
-
-      var minutes = -d.TotalMinutes;
-
-      if (minutes < int.MinValue)
-        minutes = int.MinValue;
-      else if (minutes > int.MaxValue)
-        minutes = int.MaxValue;
-
-      writer.WriteEncodedInt((int)minutes);
+      writer.WriteEncodedInt((int)Math.Clamp(minutes, int.MinValue, int.MaxValue));
       /* end */
 
       if (GetSaveFlag(flags, SaveFlag.Direction))
@@ -1967,7 +1950,7 @@ namespace Server
 
     public virtual bool OnDragDrop(Mobile from, Item dropped)
     {
-      var success = (Parent is Container container && container.OnStackAttempt(from, this, dropped)) ||
+      var success = Parent is Container container && container.OnStackAttempt(from, this, dropped) ||
                     StackWith(from, dropped);
 
       if (success && Spawner != null)
@@ -2250,10 +2233,7 @@ namespace Server
             if (GetSaveFlag(flags, SaveFlag.Hue))
               m_Hue = reader.ReadEncodedInt();
 
-            if (GetSaveFlag(flags, SaveFlag.Amount))
-              m_Amount = reader.ReadEncodedInt();
-            else
-              m_Amount = 1;
+            m_Amount = GetSaveFlag(flags, SaveFlag.Amount) ? reader.ReadEncodedInt() : 1;
 
             if (GetSaveFlag(flags, SaveFlag.Layer))
               m_Layer = (Layer)reader.ReadByte();
@@ -2362,10 +2342,7 @@ namespace Server
             if (GetSaveFlag(flags, SaveFlag.Hue))
               m_Hue = reader.ReadInt();
 
-            if (GetSaveFlag(flags, SaveFlag.Amount))
-              m_Amount = reader.ReadInt();
-            else
-              m_Amount = 1;
+            m_Amount = GetSaveFlag(flags, SaveFlag.Amount) ? reader.ReadInt() : 1;
 
             if (GetSaveFlag(flags, SaveFlag.Layer))
               m_Layer = (Layer)reader.ReadByte();
@@ -2422,15 +2399,8 @@ namespace Server
             else
               m_Map = Map.Internal;
 
-            if (GetSaveFlag(flags, SaveFlag.Visible))
-              SetFlag(ImplFlag.Visible, reader.ReadBool());
-            else
-              SetFlag(ImplFlag.Visible, true);
-
-            if (GetSaveFlag(flags, SaveFlag.Movable))
-              SetFlag(ImplFlag.Movable, reader.ReadBool());
-            else
-              SetFlag(ImplFlag.Movable, true);
+            SetFlag(ImplFlag.Visible, !GetSaveFlag(flags, SaveFlag.Visible) || reader.ReadBool());
+            SetFlag(ImplFlag.Movable, !GetSaveFlag(flags, SaveFlag.Movable) || reader.ReadBool());
 
             if (GetSaveFlag(flags, SaveFlag.Stackable))
               SetFlag(ImplFlag.Stackable, reader.ReadBool());
@@ -3309,15 +3279,13 @@ namespace Server
         parentMobile.OnSubItemBounceCleared(item);
     }
 
-    public virtual bool CheckTarget(Mobile from, Target targ, object targeted)
-    {
-      if (m_Parent is Item item)
-        return item.CheckTarget(from, targ, targeted);
-      if (m_Parent is Mobile mobile)
-        return mobile.CheckTarget(from, targ, targeted);
-
-      return true;
-    }
+    public virtual bool CheckTarget(Mobile from, Target targ, object targeted) =>
+      m_Parent switch
+      {
+        Item item => item.CheckTarget(from, targ, targeted),
+        Mobile mobile => mobile.CheckTarget(from, targ, targeted),
+        _ => true
+      };
 
     public virtual bool IsAccessibleTo(Mobile check)
     {
@@ -3372,14 +3340,13 @@ namespace Server
 
     public bool CheckItemUse(Mobile from) => CheckItemUse(from, this);
 
-    public virtual bool CheckItemUse(Mobile from, Item item)
-    {
-      if (m_Parent is Item parentItem)
-        return parentItem.CheckItemUse(from, item);
-      if (m_Parent is Mobile parentMobile)
-        return parentMobile.CheckItemUse(from, item);
-      return true;
-    }
+    public virtual bool CheckItemUse(Mobile from, Item item) =>
+      m_Parent switch
+      {
+        Item parentItem => parentItem.CheckItemUse(from, item),
+        Mobile parentMobile => parentMobile.CheckItemUse(from, item),
+        _ => true
+      };
 
     public virtual void OnItemLifted(Mobile from, Item item)
     {
@@ -3396,21 +3363,18 @@ namespace Server
       return CheckLift(from, this, ref reject);
     }
 
-    public virtual bool CheckLift(Mobile from, Item item, ref LRReason reject)
-    {
-      if (m_Parent is Item parentItem)
-        return parentItem.CheckLift(from, item, ref reject);
-
-      if (m_Parent is Mobile parentMobile)
-        return parentMobile.CheckLift(from, item, ref reject);
-
-      return true;
-    }
+    public virtual bool CheckLift(Mobile from, Item item, ref LRReason reject) =>
+      m_Parent switch
+      {
+        Item parentItem => parentItem.CheckLift(from, item, ref reject),
+        Mobile parentMobile => parentMobile.CheckLift(from, item, ref reject),
+        _ => true
+      };
 
     public virtual void OnSingleClickContained(Mobile from, Item item)
     {
-      if (m_Parent is Item item1)
-        item1.OnSingleClickContained(from, item);
+      if (m_Parent is Item parentItem)
+        parentItem.OnSingleClickContained(from, item);
     }
 
     public virtual void OnAosSingleClick(Mobile from)
@@ -3458,10 +3422,8 @@ namespace Server
 
     public virtual void ScissorHelper(Mobile from, Item newItem, int amountPerOldItem, bool carryHue)
     {
-      var amount = Amount;
-
-      if (amount > 60000 / amountPerOldItem) // let's not go over 60000
-        amount = 60000 / amountPerOldItem;
+      // let's not go over 60000
+      var amount = Math.Min(Amount, 60000 / amountPerOldItem);
 
       Amount -= amount;
 
@@ -3514,26 +3476,13 @@ namespace Server
       Delete();
     }
 
-    public virtual bool CheckBlessed(Mobile m)
-    {
-      if (m_LootType == LootType.Blessed || (Mobile.InsuranceEnabled && Insured))
-        return true;
-
-      return m != null && m == BlessedFor;
-    }
+    public virtual bool CheckBlessed(Mobile m) =>
+      m_LootType == LootType.Blessed || Mobile.InsuranceEnabled && Insured || m != null && m == BlessedFor;
 
     public virtual bool CheckNewbied() => m_LootType == LootType.Newbied;
 
-    public virtual bool IsStandardLoot()
-    {
-      if (Mobile.InsuranceEnabled && Insured)
-        return false;
-
-      if (BlessedFor != null)
-        return false;
-
-      return m_LootType == LootType.Regular;
-    }
+    public virtual bool IsStandardLoot() =>
+      (!Mobile.InsuranceEnabled || !Insured) && BlessedFor == null && m_LootType == LootType.Regular;
 
     public override string ToString() => $"0x{Serial.Value:X} \"{GetType().Name}\"";
 

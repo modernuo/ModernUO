@@ -54,17 +54,14 @@ namespace Server.Guilds
 
       AddImageTiled(65, 196, 480, 4, 0x238D);
 
-      string s = guild.Charter;
-      if (string.IsNullOrEmpty(s))
-        s = "The guild leader has not yet set the guild charter.";
+      string s = guild.Charter.IsNullOrDefault("The guild leader has not yet set the guild charter.");
 
       AddHtml(65, 216, 480, 80, s, true, true);
       if (isLeader)
         AddButton(40, 251, 0x4B9, 0x4BA, 4); // Charter Edit button
 
-      s = guild.Website;
-      if (string.IsNullOrEmpty(s))
-        s = "Guild website not yet set.";
+      s = guild.Website.IsNullOrDefault("Guild website not yet set.");
+
       AddHtml(65, 306, 480, 30, s, true);
       if (isLeader)
         AddButton(40, 313, 0x4B9, 0x4BA, 5); // Website Edit button
@@ -81,7 +78,7 @@ namespace Server.Guilds
     {
       base.OnResponse(sender, info);
 
-      PlayerMobile pm = sender.Mobile as PlayerMobile;
+      PlayerMobile pm = (PlayerMobile)sender.Mobile;
 
       if (!IsMember(pm, guild))
         return;

@@ -128,11 +128,11 @@ namespace Server.Engines.MLQuests.Items
           case 1:
             AddRecipe(DefAlchemy.CraftSystem);
             break;
-            // TODO
-            // case 2: AddNonArtifactRecipe( DefTailoring.CraftSystem ); break;
-            // case 3: AddNonArtifactRecipe( DefBlacksmithy.CraftSystem ); break;
-            // case 4: AddNonArtifactRecipe( DefCarpentry.CraftSystem ); break;
-            // case 5: AddNonArtifactRecipe( DefBowFletching.CraftSystem ); break;
+          // TODO
+          // case 2: AddNonArtifactRecipe( DefTailoring.CraftSystem ); break;
+          // case 3: AddNonArtifactRecipe( DefBlacksmithy.CraftSystem ); break;
+          // case 4: AddNonArtifactRecipe( DefCarpentry.CraftSystem ); break;
+          // case 5: AddNonArtifactRecipe( DefBowFletching.CraftSystem ); break;
         }
     }
 

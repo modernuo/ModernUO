@@ -37,42 +37,29 @@ namespace Server.Mobiles
 
       VirtualArmor = 28;
 
-      switch (Utility.Random(20))
-      {
-        case 0:
-          PackItem(new Scimitar());
-          break;
-        case 1:
-          PackItem(new Katana());
-          break;
-        case 2:
-          PackItem(new WarMace());
-          break;
-        case 3:
-          PackItem(new WarHammer());
-          break;
-        case 4:
-          PackItem(new Kryss());
-          break;
-        case 5:
-          PackItem(new Pitchfork());
-          break;
-      }
+      PackItem(
+        Utility.Random(20) switch
+        {
+          0 => new Scimitar(),
+          1 => new Katana(),
+          2 => new WarMace(),
+          3 => new WarHammer(),
+          4 => new Kryss(),
+          5 => new Pitchfork(),
+          _ => null // 6-19
+        }
+      );
 
       PackItem(new ThighBoots());
 
-      switch (Utility.Random(3))
-      {
-        case 0:
-          PackItem(new Ribs());
-          break;
-        case 1:
-          PackItem(new Shaft());
-          break;
-        case 2:
-          PackItem(new Candle());
-          break;
-      }
+      PackItem(
+        Utility.Random(3) switch
+        {
+          0 => new Ribs(),
+          1 => new Shaft(),
+          _ => new Candle() // 2
+        }
+      );
 
       if (Utility.RandomDouble() < 0.2)
         PackItem(new BolaBall());

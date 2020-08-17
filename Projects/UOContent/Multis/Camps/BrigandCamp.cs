@@ -22,9 +22,6 @@ namespace Server.Multis
 
     public override void AddComponents()
     {
-      BaseCreature bc;
-      // BaseEscortable be;
-
       Visible = false;
       DecayDelay = TimeSpan.FromMinutes(5.0);
 
@@ -55,18 +52,15 @@ namespace Server.Multis
 
       for (int i = 0; i < 4; i++) AddMobile(Brigands, 6, Utility.RandomMinMax(-7, 7), Utility.RandomMinMax(-7, 7), 0);
 
-      m_Prisoner = Utility.Random(2) switch
+      BaseCreature bc = Utility.Random(2) switch
       {
-        0 => (Mobile)new Noble(),
+        0 => new Noble(),
         _ => new SeekerOfAdventure()
       };
 
-      // be = (BaseEscortable)m_Prisoner;
-      // be.m_Captive = true;
-
-      bc = (BaseCreature)m_Prisoner;
       bc.IsPrisoner = true;
       bc.CantWalk = true;
+      m_Prisoner = bc;
 
       m_Prisoner.YellHue = Utility.RandomList(0x57, 0x67, 0x77, 0x87, 0x117);
       AddMobile(m_Prisoner, 2, Utility.RandomMinMax(-2, 2), Utility.RandomMinMax(-2, 2), 0);
@@ -74,9 +68,9 @@ namespace Server.Multis
 
     private void AddCampChests()
     {
-      var chest = Utility.Random(3) switch
+      LockableContainer chest = Utility.Random(3) switch
       {
-        0 => (LockableContainer)new MetalChest(),
+        0 => new MetalChest(),
         1 => new MetalGoldenChest(),
         _ => new WoodenChest()
       };
@@ -87,9 +81,9 @@ namespace Server.Multis
 
       AddItem(chest, -2, -2, 0);
 
-      var crates = Utility.Random(4) switch
+      LockableContainer crates = Utility.Random(4) switch
       {
-        0 => (LockableContainer)new SmallCrate(),
+        0 => new SmallCrate(),
         1 => new MediumCrate(),
         2 => new LargeCrate(),
         _ => new LockableBarrel()
@@ -110,22 +104,16 @@ namespace Server.Multis
 
       crates.LiftOverride = true;
 
-      if (Utility.RandomDouble() < 0.8)
-        switch (Utility.Random(4))
+      crates.DropItem(
+        Utility.Random(5) switch
         {
-          case 0:
-            crates.DropItem(new LesserCurePotion());
-            break;
-          case 1:
-            crates.DropItem(new LesserExplosionPotion());
-            break;
-          case 2:
-            crates.DropItem(new LesserHealPotion());
-            break;
-          default:
-            crates.DropItem(new LesserPoisonPotion());
-            break;
+          0 => new LesserCurePotion(),
+          1 => new LesserExplosionPotion(),
+          2 => new LesserHealPotion(),
+          3 => new LesserPoisonPotion(),
+          _ => null // 4
         }
+      );
 
       AddItem(crates, 2, 2, 0);
     }

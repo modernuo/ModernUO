@@ -2930,10 +2930,12 @@ namespace Server
     {
       var name = Name ?? string.Empty;
 
-      var prefix = "";
+      string prefix;
 
       if (ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000)
         prefix = m_Female ? "Lady" : "Lord";
+      else
+        prefix = "";
 
       var suffix = "";
 
@@ -2953,25 +2955,20 @@ namespace Server
 
       if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
       {
-        string type;
-
-        if (guild.Type >= 0 && (int)guild.Type < m_GuildTypes.Length)
-          type = m_GuildTypes[(int)guild.Type];
-        else
-          type = "";
+        var type = guild.Type >= 0 && (int)guild.Type < m_GuildTypes.Length ? m_GuildTypes[(int)guild.Type] : "";
 
         var title = GuildTitle?.Trim() ?? "";
 
-        if (NewGuildDisplay && title.Length > 0)
+        if (title.Length > 0)
         {
-          list.Add("{0}, {1}", Utility.FixHtml(title), Utility.FixHtml(guild.Name));
+          if (NewGuildDisplay)
+            list.Add("{0}, {1}", Utility.FixHtml(title), Utility.FixHtml(guild.Name));
+          else
+            list.Add("{0}, {1} Guild{2}", Utility.FixHtml(title), Utility.FixHtml(guild.Name), type);
         }
         else
         {
-          if (title.Length > 0)
-            list.Add("{0}, {1} Guild{2}", Utility.FixHtml(title), Utility.FixHtml(guild.Name), type);
-          else
-            list.Add(Utility.FixHtml(guild.Name));
+          list.Add(Utility.FixHtml(guild.Name));
         }
       }
     }
@@ -8321,10 +8318,7 @@ namespace Server
       get => m_Str;
       set
       {
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
+        value = Math.Clamp(value, 1, 65000);
 
         if (m_Str != value)
         {
@@ -8360,17 +8354,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual int Str
     {
-      get
-      {
-        var value = m_Str + GetStatOffset(StatType.Str);
-
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
-
-        return value;
-      }
+      get => Math.Clamp(m_Str + GetStatOffset(StatType.Str), 1, 65000);
       set
       {
         if (StatMods.Count == 0)
@@ -8391,10 +8375,7 @@ namespace Server
       get => m_Dex;
       set
       {
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
+        value = Math.Clamp(value, 1, 65000);
 
         if (m_Dex != value)
         {
@@ -8430,17 +8411,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual int Dex
     {
-      get
-      {
-        var value = m_Dex + GetStatOffset(StatType.Dex);
-
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
-
-        return value;
-      }
+      get => Math.Clamp(m_Dex + GetStatOffset(StatType.Dex), 0, 65000);
       set
       {
         if (StatMods.Count == 0)
@@ -8461,10 +8432,7 @@ namespace Server
       get => m_Int;
       set
       {
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
+        value = Math.Clamp(value, 1, 65000);
 
         if (m_Int != value)
         {
@@ -8500,17 +8468,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual int Int
     {
-      get
-      {
-        var value = m_Int + GetStatOffset(StatType.Int);
-
-        if (value < 1)
-          value = 1;
-        else if (value > 65000)
-          value = 65000;
-
-        return value;
-      }
+      get => Math.Clamp(m_Int + GetStatOffset(StatType.Int), 0, 65000);
       set
       {
         if (StatMods.Count == 0)
@@ -8544,14 +8502,10 @@ namespace Server
         if (Deleted)
           return;
 
-        if (value < 0)
-        {
-          value = 0;
-        }
-        else if (value >= HitsMax)
-        {
-          value = HitsMax;
+        value = Math.Clamp(value, 0, HitsMax);
 
+        if (value == HitsMax)
+        {
           m_HitsTimer?.Stop();
 
           for (var i = 0; i < Aggressors.Count; i++) // reset reports on full HP
@@ -8560,8 +8514,7 @@ namespace Server
           if (DamageEntries.Count > 0)
             DamageEntries.Clear(); // reset damage entries on full HP
         }
-
-        if (value < HitsMax)
+        else
         {
           if (CanRegenHits)
           {
@@ -8603,18 +8556,13 @@ namespace Server
         if (Deleted)
           return;
 
-        if (value < 0)
-        {
-          value = 0;
-        }
-        else if (value >= StamMax)
-        {
-          value = StamMax;
+        value = Math.Clamp(value, 0, StamMax);
 
+        if (value == StamMax)
+        {
           m_StamTimer?.Stop();
         }
-
-        if (value < StamMax)
+        else
         {
           if (CanRegenStam)
           {
@@ -8659,14 +8607,10 @@ namespace Server
         if (Deleted)
           return;
 
-        if (value < 0)
-        {
-          value = 0;
-        }
-        else if (value >= ManaMax)
-        {
-          value = ManaMax;
+        value = Math.Clamp(value, 0, ManaMax);
 
+        if (value == ManaMax)
+        {
           m_ManaTimer?.Stop();
 
           if (Meditating)
@@ -8675,8 +8619,7 @@ namespace Server
             SendLocalizedMessage(501846); // You are at peace.
           }
         }
-
-        if (value < ManaMax)
+        else
         {
           if (CanRegenMana)
           {

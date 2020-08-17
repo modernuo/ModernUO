@@ -90,7 +90,7 @@ namespace Server.Items
           {
             Target = reader.ReadItem();
 
-            if (version < 0)
+            if (version < 1)
               Level = SecureLevel.Anyone;
 
             break;

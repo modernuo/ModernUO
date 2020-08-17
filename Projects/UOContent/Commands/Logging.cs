@@ -103,10 +103,7 @@ namespace Server.Commands
       if (ip == null)
         return "null";
 
-      ip = ip.Trim();
-
-      if (ip.Length == 0)
-        return "empty";
+      ip = ip.Trim().IsNullOrDefault("empty");
 
       bool isSafe = true;
 

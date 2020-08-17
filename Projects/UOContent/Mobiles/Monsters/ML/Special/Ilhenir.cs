@@ -98,27 +98,17 @@ namespace Server.Mobiles
     public virtual void PackResources(int amount)
     {
       for (int i = 0; i < amount; i++)
-        switch (Utility.Random(6))
-        {
-          case 0:
-            PackItem(new Blight());
-            break;
-          case 1:
-            PackItem(new Scourge());
-            break;
-          case 2:
-            PackItem(new Taint());
-            break;
-          case 3:
-            PackItem(new Putrefication());
-            break;
-          case 4:
-            PackItem(new Corruption());
-            break;
-          case 5:
-            PackItem(new Muculent());
-            break;
-        }
+        PackItem(
+          Utility.Random(6) switch
+          {
+            0 => new Blight(),
+            1 => new Scourge(),
+            2 => new Taint(),
+            3 => new Putrefication(),
+            4 => new Corruption(),
+            _ => new Muculent() // 5
+          }
+        );
     }
 
     public virtual void PackItems(Item item, int amount)

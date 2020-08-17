@@ -368,12 +368,7 @@ namespace Server.Items
 
             from.Send(new PlaySound(0x42, GetWorldLocation()));
 
-            string desc = rune.Description;
-
-            if (desc == null || (desc = desc.Trim()).Length == 0)
-              desc = "(indescript)";
-
-            from.SendMessage(desc);
+            from.SendMessage(rune.Description?.Trim().IsNullOrDefault("(indescript)"));
 
             return true;
           }

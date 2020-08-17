@@ -24,8 +24,7 @@ namespace Server.Engines.MLQuests.Items
           1 => Loot.RandomArmor(false, true),
           2 => Loot.RandomRangedWeapon(false, true),
           3 => Loot.RandomJewelry(),
-          4 => Loot.RandomHat(false),
-          _ => null
+          _ => Loot.RandomHat(false) // 4
         };
 
         if (loot == null)

@@ -143,6 +143,9 @@ namespace Server
       str = Intern(str);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string IsNullOrDefault(this string value, string def) => value?.Length > 0 ? value : def;
+
     public static IPAddress Intern(IPAddress ipAddress)
     {
       _ipAddressTable ??= new Dictionary<IPAddress, IPAddress>();
@@ -854,9 +857,6 @@ namespace Server
       && p1.X <= p2.X + 18
       && p1.Y >= p2.Y - 18
       && p1.Y <= p2.Y + 18;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Coerce(int number, int min, int max) => number < min ? min : number > max ? max : number;
 
     // 4d6+8 would be: Utility.Dice( 4, 6, 8 )
     public static int Dice(uint amount, uint sides, int bonus)

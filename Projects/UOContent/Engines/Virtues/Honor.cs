@@ -342,14 +342,12 @@ namespace Server
         targetFame / 100.0 * (m_HonorDamage / m_TotalDamage); // Initial honor gain is 100th of the monsters honor
 
       if (m_HonorDamage == m_TotalDamage && m_FirstHit == FirstHit.Granted)
-        dGain = dGain * 1.5; // honor gain is increased alot more if the combat was fully honorable
+        dGain *= 1.5; // honor gain is increased alot more if the combat was fully honorable
       else
-        dGain = dGain * 0.9;
+        dGain *= 0.9;
 
-      int gain = Math.Min((int)dGain, 200);
-
-      if (gain < 1)
-        gain = 1; // Minimum gain of 1 honor when the honor is under the monsters fame
+      // Minimum gain of 1 honor when the honor is under the monsters fame
+      int gain = Math.Clamp((int)dGain, 1, 200);
 
       if (VirtueHelper.IsHighestPath(Source, VirtueName.Honor))
       {

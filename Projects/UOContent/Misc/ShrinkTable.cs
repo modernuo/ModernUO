@@ -21,7 +21,7 @@ namespace Server
 
       int val = 0;
 
-      if (body >= 0 && body < m_Table.Length)
+      if (body >= 0 && body < m_Table!.Length)
         val = m_Table[body];
 
       if (val == 0)
