@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: BufferWriter.cs                                                 *
+ * File: FileBufferWriter.cs                                             *
  * Created: 2019/12/30 - Updated: 2020/01/18                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
@@ -27,7 +27,7 @@ using Server.Guilds;
 
 namespace Server
 {
-  public class BufferWriter : IGenericWriter
+  public class FileBufferWriter : IGenericWriter
   {
     private const int LargeByteBufferSize = 256;
 
@@ -43,7 +43,7 @@ namespace Server
     private readonly char[] m_SingleCharBuffer = new char[1];
     private readonly bool m_PrefixStrings;
 
-    public BufferWriter(bool prefixStr)
+    public FileBufferWriter(bool prefixStr)
     {
       m_PrefixStrings = prefixStr;
       m_Encoding = Utility.UTF8;

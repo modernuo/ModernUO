@@ -438,8 +438,8 @@ namespace Server
   /// </summary>
   public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable, IPropertyListObject
   {
-    private readonly BufferWriter m_SaveBuffer;
-    public BufferWriter SaveBuffer => m_SaveBuffer;
+    private readonly FileBufferWriter m_SaveFileBuffer;
+    public FileBufferWriter SaveBuffer => m_SaveFileBuffer;
 
     private const int
       WarmodeCatchCount = 4; // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
@@ -556,7 +556,7 @@ namespace Server
         TypeRef = World.m_MobileTypes.Count - 1;
       }
 
-      m_SaveBuffer = new BufferWriter(true);
+      m_SaveFileBuffer = new FileBufferWriter(true);
     }
 
     public Mobile()
@@ -577,7 +577,7 @@ namespace Server
         TypeRef = World.m_MobileTypes.Count - 1;
       }
 
-      m_SaveBuffer = new BufferWriter(true);
+      m_SaveFileBuffer = new FileBufferWriter(true);
     }
 
     public static bool DragEffects { get; set; } = true;

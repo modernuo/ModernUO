@@ -32,8 +32,8 @@ namespace Server.Guilds
 
   public abstract class BaseGuild : ISerializable
   {
-    private readonly BufferWriter m_SaveBuffer;
-    public BufferWriter SaveBuffer => m_SaveBuffer;
+    private readonly FileBufferWriter m_SaveFileBuffer;
+    public FileBufferWriter SaveBuffer => m_SaveFileBuffer;
 
     private static Serial m_NextID = 1;
 
@@ -43,14 +43,14 @@ namespace Server.Guilds
       List.Add(Serial, this);
       if (Serial + 1 > m_NextID)
         m_NextID = Serial + 1;
-      m_SaveBuffer = new BufferWriter(true);
+      m_SaveFileBuffer = new FileBufferWriter(true);
     }
 
     protected BaseGuild()
     {
       Serial = m_NextID++;
       List.Add(Serial, this);
-      m_SaveBuffer = new BufferWriter(true);
+      m_SaveFileBuffer = new FileBufferWriter(true);
     }
 
     [CommandProperty(AccessLevel.Counselor)]

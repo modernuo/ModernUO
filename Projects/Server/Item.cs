@@ -202,8 +202,8 @@ namespace Server
 
   public class Item : IHued, IComparable<Item>, ISerializable, ISpawnable, IPropertyListObject
   {
-    private readonly BufferWriter m_SaveBuffer;
-    public BufferWriter SaveBuffer => m_SaveBuffer;
+    private readonly FileBufferWriter m_SaveFileBuffer;
+    public FileBufferWriter SaveBuffer => m_SaveFileBuffer;
 
     public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
     public static readonly List<Item> EmptyItems = new List<Item>();
@@ -244,7 +244,7 @@ namespace Server
         TypeRef = World.m_ItemTypes.Count - 1;
       }
 
-      m_SaveBuffer = new BufferWriter(true);
+      m_SaveFileBuffer = new FileBufferWriter(true);
     }
 
     public Item(Serial serial)
@@ -260,7 +260,7 @@ namespace Server
         TypeRef = World.m_ItemTypes.Count - 1;
       }
 
-      m_SaveBuffer = new BufferWriter(true);
+      m_SaveFileBuffer = new FileBufferWriter(true);
     }
 
     public int TempFlags
