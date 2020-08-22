@@ -98,9 +98,7 @@ namespace Server.Engines.Quests.Hag
           ingredients[n++] = currIngredient;
       }
 
-      int index = Utility.Random(ingredients.Length);
-
-      return ingredients[index];
+      return ingredients.RandomElement();
     }
   }
 }

@@ -154,7 +154,7 @@ namespace Server.Misc
         try
         {
           i = ActivatorUtil.CreateInstance(
-              m_LesserArtifacts[(int)DropEra - 1][Utility.Random(m_LesserArtifacts[(int)DropEra - 1].Length)])
+              m_LesserArtifacts[(int)DropEra - 1].RandomElement())
             as
             Item;
         }

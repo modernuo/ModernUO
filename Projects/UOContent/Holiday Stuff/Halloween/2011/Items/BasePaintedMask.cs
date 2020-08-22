@@ -18,13 +18,11 @@ namespace Server.Items.Holiday
 
     private string m_Staffer;
 
-    public BasePaintedMask(int itemid)
-      : this(m_Staffers[Utility.Random(m_Staffers.Length)], itemid)
+    public BasePaintedMask(int itemid) : this(m_Staffers.RandomElement(), itemid)
     {
     }
 
-    public BasePaintedMask(string staffer, int itemid)
-      : base(itemid + Utility.Random(2))
+    public BasePaintedMask(string staffer, int itemid) : base(itemid + Utility.Random(2))
     {
       m_Staffer = staffer;
 

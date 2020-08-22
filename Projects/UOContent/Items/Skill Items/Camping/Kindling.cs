@@ -82,8 +82,7 @@ namespace Server.Items
       if (list.Count == 0)
         return Point3D.Zero;
 
-      int idx = Utility.Random(list.Count);
-      return list[idx];
+      return list.RandomElement();
     }
 
     private void AddOffsetLocation(Mobile from, int offsetX, int offsetY, List<Point3D> list)

@@ -538,11 +538,9 @@ namespace Server.Items
 
       while (amount > 0 && toKill.Count > 0)
       {
-        int kill = Utility.Random(toKill.Count);
-
-        toKill[kill].Kill();
-
-        toKill.RemoveAt(kill);
+        var kill = toKill.RandomElement();
+        kill.Kill();
+        toKill.Remove(kill);
 
         amount -= 1;
         LiveCreatures = Math.Max(LiveCreatures - 1, 0);
@@ -639,7 +637,7 @@ namespace Server.Items
             }
 
             if (Utility.RandomDouble() < 0.05)
-              fish.Hue = FishHues[Utility.Random(FishHues.Length)];
+              fish.Hue = FishHues.RandomElement();
             else if (Utility.RandomDouble() < 0.5)
               fish.Hue = Utility.RandomMinMax(0x100, 0x3E5);
 

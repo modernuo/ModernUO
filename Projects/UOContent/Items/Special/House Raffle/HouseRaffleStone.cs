@@ -479,9 +479,7 @@ namespace Server.Items
 
       if (m_Region != null && Entries.Count != 0)
       {
-        int winner = Utility.Random(Entries.Count);
-
-        m_Winner = Entries[winner].From;
+        m_Winner = Entries.RandomElement().From;
 
         if (m_Winner != null)
         {

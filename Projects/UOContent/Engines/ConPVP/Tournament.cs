@@ -284,7 +284,7 @@ namespace Server.Engines.ConPVP
           }
         case TieType.Random:
           {
-            TourneyParticipant advanced = remaining[Utility.Random(remaining.Count)];
+            TourneyParticipant advanced = remaining.RandomElement();
 
             for (int i = 0; i < remaining.Count; ++i)
               if (remaining[i] != advanced)

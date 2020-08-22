@@ -38,7 +38,7 @@
 
     [Constructible]
     public HolidayBell()
-      : this(m_StaffNames[Utility.Random(m_StaffNames.Length)])
+      : this(m_StaffNames.RandomElement())
     {
     }
 
@@ -49,7 +49,7 @@
       m_Maker = maker;
 
       LootType = LootType.Blessed;
-      Hue = m_Hues[Utility.Random(m_Hues.Length)];
+      Hue = m_Hues.RandomElement();
       SoundID = 0x0F5 + Utility.Random(14);
     }
 

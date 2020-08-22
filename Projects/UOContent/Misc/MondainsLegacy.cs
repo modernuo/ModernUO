@@ -27,7 +27,7 @@ namespace Server
 
     public static void GiveArtifactTo(Mobile m)
     {
-      if (!(ActivatorUtil.CreateInstance(Artifacts[Utility.Random(Artifacts.Length)]) is Item item))
+      if (!(ActivatorUtil.CreateInstance(Artifacts.RandomElement()) is Item item))
         return;
 
       if (m.AddToBackpack(item))

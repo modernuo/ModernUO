@@ -12,7 +12,7 @@ namespace Server.Mobiles
     [Constructible]
     public OphidianArchmage() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
-      Name = m_Names[Utility.Random(m_Names.Length)];
+      Name = m_Names.RandomElement();
       Body = 85;
       BaseSoundID = 639;
 

@@ -38,8 +38,8 @@
       0x448
     };
 
-    public static int RandomGiftBoxHue => m_NormalHues[Utility.Random(m_NormalHues.Length)];
-    public static int RandomNeonBoxHue => m_NeonHues[Utility.Random(m_NeonHues.Length)];
+    public static int RandomGiftBoxHue => m_NormalHues.RandomElement();
+    public static int RandomNeonBoxHue => m_NeonHues.RandomElement();
   }
 
   [Flippable(0x46A5, 0x46A6)]

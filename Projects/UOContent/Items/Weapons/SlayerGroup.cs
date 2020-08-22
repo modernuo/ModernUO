@@ -201,10 +201,7 @@ namespace Server.Items
         {
           int index = Utility.Random(1 + group.Entries.Length);
 
-          if (index == 0)
-            return group.Super.Name;
-
-          return group.Entries[index - 1].Name;
+          return index == 0 ? group.Super.Name : group.Entries[index - 1].Name;
         }
       }
 

@@ -439,8 +439,8 @@ namespace Server.Items
       if (randomizeOrder)
         for (int i = 0; i < attrs.Length; i++)
         {
-          int rand = Utility.Random(attrs.Length);
           AosElementAttribute temp = attrs[i];
+          int rand = Utility.Random(attrs.Length);
 
           attrs[i] = attrs[rand];
           attrs[rand] = temp;
@@ -501,7 +501,7 @@ namespace Server.Items
         if (entries.Length == 0)
           return SlayerName.None;
 
-        entry = entries[Utility.Random(entries.Length)];
+        entry = entries.RandomElement();
       }
 
       return entry.Name;

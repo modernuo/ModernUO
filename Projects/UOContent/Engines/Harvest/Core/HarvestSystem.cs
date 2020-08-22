@@ -267,8 +267,7 @@ namespace Server.Engines.Harvest
       from.Region.GetResource(type);
 
     public virtual Type GetResourceType(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
-      HarvestResource resource) =>
-      resource.Types.Length > 0 ? resource.Types[Utility.Random(resource.Types.Length)] : null;
+      HarvestResource resource) => resource.Types.RandomElement();
 
     public virtual HarvestResource MutateResource(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
       HarvestVein vein, HarvestResource primary, HarvestResource fallback)

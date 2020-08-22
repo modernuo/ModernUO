@@ -184,7 +184,7 @@ namespace Server.Misc
         return m_SkinHues[0];
       }
 
-      public override int RandomSkinHue() => m_SkinHues[Utility.Random(m_SkinHues.Length)] | 0x8000;
+      public override int RandomSkinHue() => m_SkinHues.RandomElement() | 0x8000;
 
       public override int ClipHairHue(int hue)
       {
@@ -195,7 +195,7 @@ namespace Server.Misc
         return m_HairHues[0];
       }
 
-      public override int RandomHairHue() => m_HairHues[Utility.Random(m_HairHues.Length)];
+      public override int RandomHairHue() => m_HairHues.RandomElement();
     }
 
     private class Gargoyle : Race
@@ -258,7 +258,7 @@ namespace Server.Misc
 
       public override int ClipSkinHue(int hue) => hue;
 
-      public override int RandomSkinHue() => m_BodyHues[Utility.Random(m_BodyHues.Length)] | 0x8000;
+      public override int RandomSkinHue() => m_BodyHues.RandomElement() | 0x8000;
 
       public override int ClipHairHue(int hue)
       {
@@ -269,7 +269,7 @@ namespace Server.Misc
         return m_HornHues[0];
       }
 
-      public override int RandomHairHue() => m_HornHues[Utility.Random(m_HornHues.Length)];
+      public override int RandomHairHue() => m_HornHues.RandomElement();
     }
   }
 }

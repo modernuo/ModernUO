@@ -6,7 +6,7 @@
 
     [Constructible]
     public SnowPileDeco()
-      : this(m_Types[Utility.Random(m_Types.Length)])
+      : this(m_Types.RandomElement())
     {
     }
 

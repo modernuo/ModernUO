@@ -74,7 +74,7 @@ namespace Server.Mobiles
         if (to != null)
           QuestSystem.FocusTo(this, to);
 
-        Say(m_Vocabulary[Utility.Random(m_Vocabulary.Length)]);
+        Say(m_Vocabulary.RandomElement());
 
         if (to != null && Utility.RandomBool())
           Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(5, 8)), to.Talk);

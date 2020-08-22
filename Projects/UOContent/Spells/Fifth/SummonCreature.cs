@@ -63,7 +63,7 @@ namespace Server.Spells.Fifth
       if (CheckSequence())
         try
         {
-          BaseCreature creature = (BaseCreature)ActivatorUtil.CreateInstance(m_Types[Utility.Random(m_Types.Length)]);
+          BaseCreature creature = (BaseCreature)ActivatorUtil.CreateInstance(m_Types.RandomElement());
 
           // creature.ControlSlots = 2;
 

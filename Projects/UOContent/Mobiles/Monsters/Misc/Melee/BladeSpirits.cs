@@ -79,9 +79,9 @@ namespace Server.Mobiles
 
         while (spiritsOrVortexes.Count > 6)
         {
-          int index = Utility.Random(spiritsOrVortexes.Count);
-          Dispel(spiritsOrVortexes[index]);
-          spiritsOrVortexes.RemoveAt(index);
+          var random = spiritsOrVortexes.RandomElement();
+          Dispel(random);
+          spiritsOrVortexes.Remove(random);
         }
       }
 

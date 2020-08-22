@@ -682,7 +682,7 @@ namespace Server.Engines.CannedEvil
     {
       try
       {
-        return ActivatorUtil.CreateInstance(types[Utility.Random(types.Length)]) as Mobile;
+        return ActivatorUtil.CreateInstance(types.RandomElement()) as Mobile;
       }
       catch
       {

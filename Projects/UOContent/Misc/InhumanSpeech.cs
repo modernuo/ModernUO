@@ -300,7 +300,7 @@ namespace Server.Misc
 
     public IHSFlags Flags { get; set; }
 
-    public string GetRandomSyllable() => Syllables[Utility.Random(Syllables.Length)];
+    public string GetRandomSyllable() => Syllables.RandomElement();
 
     public string ConstructWord(int syllableCount)
     {
@@ -367,17 +367,14 @@ namespace Server.Misc
     public void SayRandomTranslate(Mobile mob, params string[] sentancesInEnglish)
     {
       SaySentance(mob, Utility.RandomMinMax(2, 3));
-      mob.Say(sentancesInEnglish[Utility.Random(sentancesInEnglish.Length)]);
+      mob.Say(sentancesInEnglish.RandomElement());
     }
 
     private string GetRandomResponseWord(List<string> keywordsFound)
     {
       int random = Utility.Random(keywordsFound.Count + Responses.Length);
 
-      if (random < keywordsFound.Count)
-        return keywordsFound[random];
-
-      return Responses[random - keywordsFound.Count];
+      return random < keywordsFound.Count ? keywordsFound[random] : Responses[random - keywordsFound.Count];
     }
 
     public bool OnSpeech(Mobile mob, Mobile speaker, string text)
@@ -411,7 +408,7 @@ namespace Server.Misc
         if (Utility.RandomBool())
           responseWord = GetRandomResponseWord(keywordsFound);
         else
-          responseWord = keywordsFound[Utility.Random(keywordsFound.Count)];
+          responseWord = keywordsFound.RandomElement();
 
         string secondResponseWord = GetRandomResponseWord(keywordsFound);
 

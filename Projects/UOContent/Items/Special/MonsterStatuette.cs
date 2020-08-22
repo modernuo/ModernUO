@@ -200,7 +200,7 @@ namespace Server.Items
         int[] sounds = MonsterStatuetteInfo.GetInfo(m_Type).Sounds;
 
         if (sounds.Length > 0)
-          Effects.PlaySound(Location, Map, sounds[Utility.Random(sounds.Length)]);
+          Effects.PlaySound(Location, Map, sounds.RandomElement());
       }
 
       base.OnMovement(m, oldLocation);

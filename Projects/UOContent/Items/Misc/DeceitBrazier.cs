@@ -153,7 +153,7 @@ namespace Server.Items
           {
             Map map = Map;
             BaseCreature bc =
-              (BaseCreature)ActivatorUtil.CreateInstance(Creatures[Utility.Random(Creatures.Length)]);
+              (BaseCreature)ActivatorUtil.CreateInstance(Creatures.RandomElement());
 
             Point3D spawnLoc = GetSpawnPosition();
 

@@ -22,9 +22,8 @@ namespace Server.Engines.Mahjong
 
     public MahjongTileType Next()
     {
-      int random = Utility.Random(LeftTileTypes.Count);
-      MahjongTileType next = LeftTileTypes[random];
-      LeftTileTypes.RemoveAt(random);
+      MahjongTileType next = LeftTileTypes.RandomElement();
+      LeftTileTypes.Remove(next);
 
       return next;
     }

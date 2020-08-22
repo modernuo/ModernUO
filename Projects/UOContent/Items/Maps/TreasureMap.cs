@@ -163,10 +163,7 @@ namespace Server.Items
       if (m_Locations == null)
         LoadLocations();
 
-      if (m_Locations.Length > 0)
-        return m_Locations[Utility.Random(m_Locations.Length)];
-
-      return Point2D.Zero;
+      return m_Locations?.RandomElement() ?? Point2D.Zero;
     }
 
     public static Point2D GetRandomHavenLocation()
@@ -174,10 +171,7 @@ namespace Server.Items
       if (m_HavenLocations == null)
         LoadLocations();
 
-      if (m_HavenLocations.Length > 0)
-        return m_HavenLocations[Utility.Random(m_HavenLocations.Length)];
-
-      return Point2D.Zero;
+      return m_HavenLocations?.RandomElement() ?? Point2D.Zero;
     }
 
     private static void LoadLocations()
@@ -225,8 +219,7 @@ namespace Server.Items
 
         try
         {
-          bc = (BaseCreature)ActivatorUtil.CreateInstance(
-            m_SpawnTypes[level][Utility.Random(m_SpawnTypes[level].Length)]);
+          bc = (BaseCreature)ActivatorUtil.CreateInstance(m_SpawnTypes[level].RandomElement());
         }
         catch
         {

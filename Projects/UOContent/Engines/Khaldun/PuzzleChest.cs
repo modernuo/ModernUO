@@ -234,9 +234,9 @@ namespace Server.Items
 
       for (int i = 0; i < Hints.Length; i++)
       {
-        int pos = Utility.Random(list.Count);
-        Hints[i] = list[pos];
-        list.RemoveAt(pos);
+        var random = list.RandomElement();
+        Hints[i] = random;
+        list.Remove(random);
       }
     }
 

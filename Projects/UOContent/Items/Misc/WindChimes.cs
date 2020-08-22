@@ -35,7 +35,7 @@ namespace Server.Items
     {
       if (m_TurnedOn && IsLockedDown && (!m.Hidden || m.AccessLevel == AccessLevel.Player) &&
           Utility.InRange(m.Location, Location, 2) && !Utility.InRange(oldLocation, Location, 2))
-        Effects.PlaySound(Location, Map, Sounds[Utility.Random(Sounds.Length)]);
+        Effects.PlaySound(Location, Map, Sounds.RandomElement());
 
       base.OnMovement(m, oldLocation);
     }

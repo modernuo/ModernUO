@@ -143,10 +143,7 @@ namespace Server.Mobiles
           rights.RemoveAt(i);
       }
 
-      if (rights.Count > 0)
-        return rights[Utility.Random(rights.Count)].m_Mobile;
-
-      return null;
+      return rights.RandomElement()?.m_Mobile;
     }
 
     public static void DistributeArtifact(BaseCreature creature)

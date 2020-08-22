@@ -146,7 +146,7 @@ namespace Server.Engines.Harvest
           double chance = (skillValue - entry.m_MinSkill) / (entry.m_MaxSkill - entry.m_MinSkill);
 
           if (chance > Utility.RandomDouble())
-            return entry.m_Types[Utility.Random(entry.m_Types.Length)];
+            return entry.m_Types.RandomElement();
         }
       }
 

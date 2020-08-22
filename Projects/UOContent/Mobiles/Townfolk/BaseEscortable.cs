@@ -586,7 +586,7 @@ namespace Server.Mobiles
 
       while (picked == null)
       {
-        picked = possible[Utility.Random(possible.Length)];
+        picked = possible.RandomElement();
         EDI test = EDI.Find(picked);
 
         if (test.Contains(Location))

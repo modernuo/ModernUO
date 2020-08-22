@@ -692,7 +692,7 @@ namespace Server.Engines.ConPVP
         rn -= ae.Value;
       }
 
-      return arenas[Utility.Random(arenas.Count)].m_Arena;
+      return arenas.RandomElement().m_Arena;
     }
 
     public static Arena FindArena()

@@ -263,8 +263,7 @@ namespace Server.Menus.Questions
             return;
           }
 
-          int idx = Utility.Random(m_Destination.Locations.Length);
-          Point3D dest = m_Destination.Locations[idx];
+          Point3D dest = m_Destination.Locations.RandomElement();
 
           Map destMap;
           if (m_Mobile.Map == Map.Trammel)

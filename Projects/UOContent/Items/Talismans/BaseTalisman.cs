@@ -955,7 +955,7 @@ namespace Server.Items
       1023817 // clean bandage
     };
 
-    public static Type GetRandomSummonType() => m_Summons[Utility.Random(m_Summons.Length)];
+    public static Type GetRandomSummonType() => m_Summons.RandomElement();
 
     public static TalismanAttribute GetRandomSummoner()
     {
@@ -1049,7 +1049,7 @@ namespace Server.Items
       SkillName.Tinkering
     };
 
-    public static SkillName GetRandomSkill() => m_Skills[Utility.Random(m_Skills.Length)];
+    public static SkillName GetRandomSkill() => m_Skills.RandomElement();
 
     public static int GetRandomExceptional()
     {
