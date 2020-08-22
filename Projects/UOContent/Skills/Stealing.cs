@@ -324,10 +324,8 @@ namespace Server.SkillHandlers
 
           if (pack?.Items.Count > 0)
           {
-            int randomIndex = Utility.Random(pack.Items.Count);
-
             root = mobile;
-            stolen = TryStealItem(pack.Items[randomIndex], ref caught);
+            stolen = TryStealItem(pack.Items.RandomElement(), ref caught);
           }
         }
         else

@@ -247,7 +247,7 @@ namespace Server.Mobiles
         }
 
         if (toGive.Count > 0)
-          toGive[Utility.Random(toGive.Count)].AddToBackpack(new ChampionSkull(SkullType));
+          toGive.RandomElement().AddToBackpack(new ChampionSkull(SkullType));
         else
           c.DropItem(new ChampionSkull(SkullType));
       }

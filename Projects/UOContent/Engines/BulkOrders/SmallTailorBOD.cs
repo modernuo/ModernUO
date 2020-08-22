@@ -147,7 +147,7 @@ namespace Server.Engines.BulkOrders
 
         if (validEntries.Count > 0)
         {
-          SmallBulkEntry entry = validEntries[Utility.Random(validEntries.Count)];
+          SmallBulkEntry entry = validEntries.RandomElement();
           return new SmallTailorBOD(entry, material, amountMax, reqExceptional);
         }
       }

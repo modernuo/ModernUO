@@ -80,7 +80,7 @@ namespace Server.Engines.BulkOrders
 
       List<RewardItem> rewards = ComputeRewards(false);
 
-      reward = rewards.Count <= 0 ? null : rewards[Utility.Random(rewards.Count)].Construct();
+      reward = rewards.RandomElement()?.Construct();
     }
 
     public virtual List<RewardItem> ComputeRewards(bool full)

@@ -408,7 +408,7 @@ namespace Server.Misc
         if (Utility.RandomBool())
           responseWord = GetRandomResponseWord(keywordsFound);
         else
-          responseWord = keywordsFound[Utility.Random(keywordsFound.Count)];
+          responseWord = keywordsFound.RandomElement();
 
         string secondResponseWord = GetRandomResponseWord(keywordsFound);
 

@@ -224,12 +224,10 @@ namespace Server.Factions
 
         while (Silver + flow < 0 && toDelete.Count > 0)
         {
-          int index = Utility.Random(toDelete.Count);
-          Mobile mob = toDelete[index];
-
+          Mobile mob = toDelete.RandomElement();
           mob.Delete();
 
-          toDelete.RemoveAt(index);
+          toDelete.Remove(mob);
           flow = NetCashFlow;
         }
       }

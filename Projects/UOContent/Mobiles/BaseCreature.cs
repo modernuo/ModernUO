@@ -2108,20 +2108,14 @@ namespace Server.Mobiles
 
     public Spell GetAttackSpellRandom()
     {
-      if (m_SpellAttack.Count == 0)
-        return null;
-
-      Type type = m_SpellAttack[Utility.Random(m_SpellAttack.Count)];
-      return ActivatorUtil.CreateInstance(type, this, null) as Spell;
+      Type type = m_SpellAttack.RandomElement();
+      return type == null ? null : ActivatorUtil.CreateInstance(type, this, null) as Spell;
     }
 
     public Spell GetDefenseSpellRandom()
     {
-      if (m_SpellDefense.Count == 0)
-        return null;
-
-      Type type = m_SpellDefense[Utility.Random(m_SpellDefense.Count)];
-      return ActivatorUtil.CreateInstance(type, this, null) as Spell;
+      Type type = m_SpellDefense.RandomElement();
+      return type == null ? null : ActivatorUtil.CreateInstance(type, this, null) as Spell;
     }
 
     public Spell GetSpellSpecific(Type type)
@@ -2853,7 +2847,7 @@ namespace Server.Mobiles
 
       for (int i = 0; i < items.Count; ++i)
       {
-        Item item = items[Utility.Random(items.Count)];
+        Item item = items.RandomElement();
 
         Lift(item, item.Amount, out bool rejected, out LRReason _);
 

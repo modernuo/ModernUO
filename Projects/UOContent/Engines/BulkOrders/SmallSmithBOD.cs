@@ -151,7 +151,7 @@ namespace Server.Engines.BulkOrders
       if (validEntries.Count <= 0)
         return null;
 
-      SmallBulkEntry entry = validEntries[Utility.Random(validEntries.Count)];
+      SmallBulkEntry entry = validEntries.RandomElement();
       return new SmallSmithBOD(entry, material, amountMax, reqExceptional);
     }
 

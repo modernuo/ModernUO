@@ -569,7 +569,7 @@ namespace Server.Engines.MLQuests
           m_EligiblePool.Add(quest);
       }
 
-      return m_EligiblePool.Count == 0 ? fallback : m_EligiblePool[Utility.Random(m_EligiblePool.Count)];
+      return m_EligiblePool.Count == 0 ? fallback : m_EligiblePool.RandomElement();
     }
 
     public static void TurnToFace(IQuestGiver quester, Mobile mob)

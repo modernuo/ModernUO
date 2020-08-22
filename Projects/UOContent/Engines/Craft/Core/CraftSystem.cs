@@ -103,7 +103,7 @@ namespace Server.Engines.Craft
       if (m_Recipes.Count == 0)
         return -1;
 
-      return m_Recipes[Utility.Random(m_Recipes.Count)];
+      return m_Recipes.RandomElement();
     }
 
     public int RandomRareRecipe()
@@ -111,7 +111,7 @@ namespace Server.Engines.Craft
       if (m_RareRecipes.Count == 0)
         return -1;
 
-      return m_RareRecipes[Utility.Random(m_RareRecipes.Count)];
+      return m_RareRecipes.RandomElement();
     }
 
     public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, double minSkill, double maxSkill,

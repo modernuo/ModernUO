@@ -134,7 +134,7 @@ namespace Server.Guilds
 
     public void CalculateAllianceLeader()
     {
-      m_Leader = m_Members.Count >= 2 ? m_Members[Utility.Random(m_Members.Count)] : null;
+      m_Leader = m_Members.Count >= 2 ? m_Members.RandomElement() : null;
     }
 
     public void CheckLeader()

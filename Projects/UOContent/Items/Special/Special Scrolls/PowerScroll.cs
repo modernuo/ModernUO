@@ -135,7 +135,7 @@ namespace Server.Items
       min /= 5;
       max /= 5;
 
-      return new PowerScroll(Skills[Utility.Random(Skills.Count)], 100 + Utility.RandomMinMax(min, max) * 5);
+      return new PowerScroll(Skills.RandomElement(), 100 + Utility.RandomMinMax(min, max) * 5);
     }
 
     public static PowerScroll CreateRandomNoCraft(int min, int max)
@@ -147,7 +147,7 @@ namespace Server.Items
 
       do
       {
-        skillName = Skills[Utility.Random(Skills.Count)];
+        skillName = Skills.RandomElement();
       } while (skillName == SkillName.Blacksmith || skillName == SkillName.Tailoring);
 
       return new PowerScroll(skillName, 100 + Utility.RandomMinMax(min, max) * 5);

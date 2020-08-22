@@ -131,13 +131,13 @@ namespace Server.Engines.ConPVP
               if (toAdvance.Count == 0)
                 toAdvance = copy; // sanity
 
-              int idx = Utility.Random(toAdvance.Count);
+              var random = toAdvance.RandomElement();
 
-              toAdvance[idx].AddLog(
+              random.AddLog(
                 "Advanced automatically due to an odd number of challengers.");
-              level.FreeAdvance = toAdvance[idx];
+              level.FreeAdvance = random;
               ++level.FreeAdvance.FreeAdvances;
-              copy.Remove(toAdvance[idx]);
+              copy.Remove(random);
             }
 
             while (copy.Count >= partsPerMatch)

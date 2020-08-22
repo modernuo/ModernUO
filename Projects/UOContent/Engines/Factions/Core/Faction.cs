@@ -153,7 +153,7 @@ namespace Server.Factions
         return;
 
       for (int i = 0; i < distrib; ++i)
-        activePlayers[Utility.Random(activePlayers.Count)].KillPoints++;
+        activePlayers.RandomElement().KillPoints++;
     }
 
     public static void DistributePoints(int distrib)
@@ -167,7 +167,7 @@ namespace Server.Factions
 
       if (activePlayers.Count > 0)
         for (int i = 0; i < distrib; ++i)
-          activePlayers[Utility.Random(activePlayers.Count)].KillPoints++;
+          activePlayers.RandomElement().KillPoints++;
     }
 
     public void BeginHonorLeadership(Mobile from)

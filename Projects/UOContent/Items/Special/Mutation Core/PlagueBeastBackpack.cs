@@ -99,10 +99,9 @@ namespace Server.Items
 
       for (int i = 0; i < m_BrainHues.Length; i++)
       {
-        int random = Utility.Random(organs.Count);
-        organ = organs[random];
+        organ = organs.RandomElement();
         organ.BrainHue = m_BrainHues[i];
-        organs.RemoveAt(random);
+        organs.RemoveAt(organ);
       }
 
       organs.Clear();

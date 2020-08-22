@@ -42,10 +42,7 @@ namespace Server.Mobiles
           RemoveEntry(tce);
       }
 
-      if (Entries == null || Entries.Count == 0)
-        return null;
-
-      return Entries[Utility.Random(Entries.Count)];
+      return Entries.RandomElement();
     }
 
     public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)
@@ -372,10 +369,7 @@ namespace Server.Mobiles
 
       TownCrierEntry entry = GlobalTownCrierEntryList.Instance.GetRandomEntry();
 
-      if (entry == null || Utility.RandomBool())
-        entry = Entries[Utility.Random(Entries.Count)];
-
-      return entry;
+      return entry ?? (Utility.RandomBool() ? Entries.RandomElement() : null);
     }
 
     public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)

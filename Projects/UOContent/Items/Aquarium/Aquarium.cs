@@ -538,11 +538,9 @@ namespace Server.Items
 
       while (amount > 0 && toKill.Count > 0)
       {
-        int kill = Utility.Random(toKill.Count);
-
-        toKill[kill].Kill();
-
-        toKill.RemoveAt(kill);
+        var kill = toKill.RandomElement();
+        kill.Kill();
+        toKill.Remove(kill);
 
         amount -= 1;
         LiveCreatures = Math.Max(LiveCreatures - 1, 0);

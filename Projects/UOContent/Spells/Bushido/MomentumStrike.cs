@@ -32,7 +32,7 @@ namespace Server.Spells.Bushido
       if (!CheckMana(attacker, true))
         return;
 
-      Mobile target = targets[Utility.Random(targets.Count)];
+      Mobile target = targets.RandomElement();
 
       double damageBonus = attacker.Skills.Bushido.Value / 100.0;
 
