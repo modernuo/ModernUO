@@ -1077,7 +1077,7 @@ namespace Server
           surface = id.Surface;
           impassable = id.Impassable;
 
-          if ((surface || impassable || (checkBlocksFit && item.BlocksFit)) && item.Z + id.CalcHeight > z &&
+          if ((surface || impassable || checkBlocksFit && item.BlocksFit) && item.Z + id.CalcHeight > z &&
               z + height > item.Z)
             return false;
 
@@ -1148,7 +1148,7 @@ namespace Server
 
       var end = dest;
 
-      if (org.X > dest.X || (org.X == dest.X && org.Y > dest.Y) || (org.X == dest.X && org.Y == dest.Y && org.Z > dest.Z))
+      if (org.X > dest.X || org.X == dest.X && org.Y > dest.Y || org.X == dest.X && org.Y == dest.Y && org.Z > dest.Z)
       {
         var swap = org;
         org = dest;

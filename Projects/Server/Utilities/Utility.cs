@@ -849,23 +849,80 @@ namespace Server
       return total + bonus;
     }
 
-    public static void Shuffle<T>(IList<T> list)
+    public static void Shuffle<T>(this IList<T> list)
     {
       var count = list.Count;
-      for (var i = count - 1; i > 0; i--)
+      for (var i = 0; i < count; i++)
       {
-        var r = RandomSources.Source.Next(count);
+        var r = RandomMinMax(i, count - 1);
         var swap = list[r];
         list[r] = list[i];
         list[i] = swap;
       }
     }
 
+    public static void Shuffle<T>(this Span<T> list)
+    {
+      var count = list.Length;
+      for (var i = 0; i < count; i++)
+      {
+        var r = RandomMinMax(i, count - 1);
+        var swap = list[r];
+        list[r] = list[i];
+        list[i] = swap;
+      }
+    }
+
+    /**
+     * Gets a random sample from the source list.
+     * Not meant for unbounded lists. Does not shuffle or modify source.
+     */
+    public static T[] RandomSample<T>(this T[] source, int count)
+    {
+      if (count <= 0) return Array.Empty<T>();
+
+      var length = source.Length;
+      Span<bool> list = stackalloc bool[length];
+      var sampleList = new T[count];
+
+      int i = 0;
+      do
+      {
+        var rand = Random(length);
+        if (!(list[rand] && (list[rand] = true)))
+          sampleList[i++] = source[rand];
+      } while (i < count);
+
+      return sampleList;
+    }
+
+    public static List<T> RandomSample<T>(this List<T> source, int count)
+    {
+      if (count <= 0) return new List<T>();
+
+      var length = source.Count;
+      Span<bool> list = stackalloc bool[length];
+      var sampleList = new List<T>(count);
+
+      int i = 0;
+      do
+      {
+        var rand = Random(length);
+        if (!(list[rand] && (list[rand] = true)))
+          sampleList[i++] = source[rand];
+      } while (i < count);
+
+      return sampleList;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T RandomList<T>(params T[] list) => list.RandomElement();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T RandomElement<T>(this IList<T> list) => list.Count == 0 ? default : list[Random(list.Count)];
+    public static T RandomElement<T>(this IList<T> list) => list.RandomElement(default);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T RandomElement<T>(this IList<T> list, T valueIfZero) => list.Count == 0 ? valueIfZero : list[Random(list.Count)];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool RandomBool() => RandomSources.Source.NextBool();

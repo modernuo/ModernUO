@@ -43,7 +43,7 @@ namespace Server.Items
       Weight = 1.0;
 
       if (Utility.RandomDouble() < 0.01)
-        Hue = Utility.RandomList(m_Hues);
+        Hue = m_Hues.RandomElement();
       else
         Hue = 0x8A0;
     }

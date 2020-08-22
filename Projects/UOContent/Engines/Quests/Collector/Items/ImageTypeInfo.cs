@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Server.Mobiles;
 
 namespace Server.Engines.Quests.Collector
@@ -56,8 +55,6 @@ namespace Server.Engines.Quests.Collector
       new ImageTypeInfo(9746, typeof(Juggernaut), 55, 38)
     };
 
-    private static ImageType[] m_ImageTypeList;
-
     public ImageTypeInfo(int figurine, Type type, int x, int y)
     {
       Figurine = figurine;
@@ -65,6 +62,8 @@ namespace Server.Engines.Quests.Collector
       X = x;
       Y = y;
     }
+
+    public ImageType Image { get;  }
 
     public int Figurine { get; }
 
@@ -82,16 +81,21 @@ namespace Server.Engines.Quests.Collector
 
     public static ImageType[] RandomList(int count)
     {
-      if (m_ImageTypeList == null)
-      {
-        m_ImageTypeList = new ImageType[m_Table.Length];
-        for (int i = 0; i < m_Table.Length; i++)
-          m_ImageTypeList[i] = (ImageType)i;
-      }
+      if (count <= 0) return Array.Empty<ImageType>();
 
-      ImageType[] array = m_ImageTypeList.ToArray();
-      Utility.Shuffle(array);
-      return array.Take(count).ToArray();
+      var length = m_Table.Length;
+      Span<bool> list = stackalloc bool[length];
+      var imageTypes = new ImageType[count];
+
+      int i = 0;
+      do
+      {
+        var rand = Utility.Random(length);
+        if (!(list[rand] && (list[rand] = true)))
+          imageTypes[i++] = (ImageType)rand;
+      } while (i < count);
+
+      return imageTypes;
     }
   }
 }

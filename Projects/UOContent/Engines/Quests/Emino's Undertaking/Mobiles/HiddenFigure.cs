@@ -13,7 +13,7 @@ namespace Server.Engines.Quests.Ninja
     };
 
     [Constructible]
-    public HiddenFigure() => Message = Utility.RandomList(Messages);
+    public HiddenFigure() => Message = Messages.RandomElement();
 
     public HiddenFigure(Serial serial) : base(serial)
     {

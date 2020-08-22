@@ -11,7 +11,7 @@ namespace Server.Items
     };
 
     [Constructible]
-    public ShimmeringCrystals() : base(Utility.RandomList(m_ItemIDs))
+    public ShimmeringCrystals() : base(m_ItemIDs.RandomElement())
     {
     }
 

@@ -346,34 +346,26 @@ namespace Server.Engines.Doom
       ResetLevers();
     }
 
-    public virtual void GenKey() /* Shuffle & build key */
+    public virtual void GenKey()
     {
-      ushort[] CA = { 1, 2, 4, 8 };
-      for (int i = 0; i < 4; i++)
-      {
-        int n = (n = Utility.Random(0, 3)) == i ? n & ~i : n;
-        ushort tmp = CA[i];
-        CA[i] = CA[n];
-        CA[n] = tmp;
-      }
+      Span<ushort> ca = stackalloc ushort[]{ 1, 2, 4, 8 };
+      ca.Shuffle();
 
-      for (int i = 0; i < 4; MyKey = (ushort)(CA[i++] | (MyKey <<= 4)))
-      {
-      }
+      for (int i = 0; i < 4; i++) MyKey = (ushort)(ca[i] | (MyKey <<= 4));
     }
 
     private static bool IsValidDamagable(Mobile m) =>
       m?.Deleted == false &&
-      ((m.Player && m.Alive) ||
-       (m is BaseCreature bc && (bc.Controlled || bc.Summoned) && !bc.IsDeadBondedPet));
+      (m.Player && m.Alive ||
+       m is BaseCreature bc && (bc.Controlled || bc.Summoned) && !bc.IsDeadBondedPet);
 
     public static void MoveMobileOut(Mobile m)
     {
       if (m != null)
       {
-        if (m is PlayerMobile && !m.Alive)
-          if (m.Corpse?.Deleted == false)
-            m.Corpse.MoveToWorld(lr_Exit, Map.Malas);
+        if (m is PlayerMobile && !m.Alive && m.Corpse?.Deleted == false)
+          m.Corpse.MoveToWorld(lr_Exit, Map.Malas);
+
         BaseCreature.TeleportPets(m, lr_Exit, Map.Malas);
         m.Location = lr_Exit;
         m.ProcessDelta();

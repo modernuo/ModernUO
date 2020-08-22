@@ -903,7 +903,7 @@ namespace Server.Items
       0x2F58, 0x2F59, 0x2F5A, 0x2F5B
     };
 
-    public static int GetRandomItemID() => Utility.RandomList(m_ItemIDs);
+    public static int GetRandomItemID() => m_ItemIDs.RandomElement();
 
     private static readonly Type[] m_Summons =
     {

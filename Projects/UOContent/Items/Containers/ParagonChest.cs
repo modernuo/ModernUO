@@ -17,10 +17,10 @@ namespace Server.Items
     private string m_Name;
 
     [Constructible]
-    public ParagonChest(string name, int level) : base(Utility.RandomList(m_ItemIDs))
+    public ParagonChest(string name, int level) : base(m_ItemIDs.RandomElement())
     {
       m_Name = name;
-      Hue = Utility.RandomList(m_Hues);
+      Hue = m_Hues.RandomElement();
       Fill(level);
     }
 

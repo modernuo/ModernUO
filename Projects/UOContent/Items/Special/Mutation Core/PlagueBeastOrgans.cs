@@ -227,7 +227,7 @@ namespace Server.Items
 
     public override void Initialize()
     {
-      Hue = Utility.RandomList(m_Hues);
+      Hue = m_Hues.RandomElement();
 
       AddComponent(new PlagueBeastComponent(0x3BB, Hue), 0, 0);
       AddComponent(new PlagueBeastComponent(0x3BA, Hue), 4, 6);
@@ -264,13 +264,13 @@ namespace Server.Items
       Opened = true;
     }
 
-    private static int RandomHue(int exculde)
+    private static int RandomHue(int exclude)
     {
       for (int i = 0; i < 20; i++)
       {
-        int hue = Utility.RandomList(m_Hues);
+        int hue = m_Hues.RandomElement();
 
-        if (hue != exculde)
+        if (hue != exclude)
           return hue;
       }
 

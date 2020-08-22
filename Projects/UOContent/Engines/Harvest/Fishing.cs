@@ -205,7 +205,7 @@ namespace Server.Engines.Harvest
                     0x1CE2, 0x1CEC // leg
                   };
 
-                  preLoot = new ShipwreckedItem(Utility.RandomList(list));
+                  preLoot = new ShipwreckedItem(list.RandomElement());
                   break;
                 }
               case 1: // Bone parts
@@ -217,7 +217,7 @@ namespace Server.Engines.Harvest
                     0x1B15, 0x1B16 // pelvis bones
                   };
 
-                  preLoot = new ShipwreckedItem(Utility.RandomList(list));
+                  preLoot = new ShipwreckedItem(list.RandomElement());
                   break;
                 }
               case 2: // Paintings and portraits
@@ -258,7 +258,7 @@ namespace Server.Engines.Harvest
                   if (Utility.Random(list.Length + 1) == 0)
                     preLoot = new Candelabra();
                   else
-                    preLoot = new ShipwreckedItem(Utility.RandomList(list));
+                    preLoot = new ShipwreckedItem(list.RandomElement());
 
                   break;
                 }

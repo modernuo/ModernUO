@@ -17,7 +17,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public RewardBrazier() : this(Utility.RandomList(m_Art))
+    public RewardBrazier() : this(m_Art.RandomElement())
     {
     }
 
