@@ -852,9 +852,9 @@ namespace Server
     public static void Shuffle<T>(this IList<T> list)
     {
       var count = list.Count;
-      for (var i = count - 1; i > 0; i--)
+      for (var i = 0; i < count; i++)
       {
-        var r = RandomSources.Source.Next(count);
+        var r = RandomMinMax(i, count - 1);
         var swap = list[r];
         list[r] = list[i];
         list[i] = swap;
@@ -864,9 +864,9 @@ namespace Server
     public static void Shuffle<T>(this Span<T> list)
     {
       var count = list.Length;
-      for (var i = count - 1; i > 0; i--)
+      for (var i = 0; i < count; i++)
       {
-        var r = RandomSources.Source.Next(count);
+        var r = RandomMinMax(i, count - 1);
         var swap = list[r];
         list[r] = list[i];
         list[i] = swap;
