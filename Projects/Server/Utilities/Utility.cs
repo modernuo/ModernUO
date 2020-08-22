@@ -849,7 +849,7 @@ namespace Server
       return total + bonus;
     }
 
-    public static void Shuffle<T>(IList<T> list)
+    public static void Shuffle<T>(this IList<T> list)
     {
       var count = list.Count;
       for (var i = count - 1; i > 0; i--)
@@ -859,6 +859,60 @@ namespace Server
         list[r] = list[i];
         list[i] = swap;
       }
+    }
+
+    public static void Shuffle<T>(this Span<T> list)
+    {
+      var count = list.Length;
+      for (var i = count - 1; i > 0; i--)
+      {
+        var r = RandomSources.Source.Next(count);
+        var swap = list[r];
+        list[r] = list[i];
+        list[i] = swap;
+      }
+    }
+
+    /**
+     * Gets a random sample from the source list.
+     * Not meant for unbounded lists. Does not shuffle or modify source.
+     */
+    public static T[] RandomSample<T>(this T[] source, int count)
+    {
+      if (count <= 0) return Array.Empty<T>();
+
+      var length = source.Length;
+      Span<bool> list = stackalloc bool[length];
+      var sampleList = new T[count];
+
+      int i = 0;
+      do
+      {
+        var rand = Random(length);
+        if (!(list[rand] && (list[rand] = true)))
+          sampleList[i++] = source[rand];
+      } while (i < count);
+
+      return sampleList;
+    }
+
+    public static List<T> RandomSample<T>(this List<T> source, int count)
+    {
+      if (count <= 0) return new List<T>();
+
+      var length = source.Count;
+      Span<bool> list = stackalloc bool[length];
+      var sampleList = new List<T>(count);
+
+      int i = 0;
+      do
+      {
+        var rand = Random(length);
+        if (!(list[rand] && (list[rand] = true)))
+          sampleList[i++] = source[rand];
+      } while (i < count);
+
+      return sampleList;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

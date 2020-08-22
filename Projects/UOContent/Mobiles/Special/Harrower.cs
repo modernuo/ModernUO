@@ -248,14 +248,7 @@ namespace Server.Mobiles
       if (toGive.Count == 0)
         return;
 
-      // Randomize
-      for (int i = 0; i < toGive.Count; ++i)
-      {
-        int rand = Utility.Random(toGive.Count);
-        Mobile hold = toGive[i];
-        toGive[i] = toGive[rand];
-        toGive[rand] = hold;
-      }
+      toGive.Shuffle();
 
       for (int i = 0; i < 16; ++i)
       {
