@@ -83,7 +83,7 @@ namespace Server.Items
 
         organ = random switch
         {
-          0 => (PlagueBeastOrgan)new PlagueBeastRockOrgan(),
+          0 => new PlagueBeastRockOrgan(),
           1 => new PlagueBeastMaidenOrgan(),
           2 => new PlagueBeastRubbleOrgan(),
           _ => new PlagueBeastRockOrgan()
@@ -101,7 +101,7 @@ namespace Server.Items
       {
         organ = organs.RandomElement();
         organ.BrainHue = m_BrainHues[i];
-        organs.RemoveAt(organ);
+        organs.Remove(organ);
       }
 
       organs.Clear();
