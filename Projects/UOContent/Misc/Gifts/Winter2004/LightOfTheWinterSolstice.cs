@@ -26,7 +26,7 @@ namespace Server.Items
     [Constructible]
     public LightOfTheWinterSolstice(string dipper = null) : base(0x236E)
     {
-      Dipper = dipper ?? m_StaffNames[Utility.Random(m_StaffNames.Length)];
+      Dipper = dipper ?? m_StaffNames.RandomElement();
 
       Weight = 1.0;
       LootType = LootType.Blessed;
@@ -81,7 +81,7 @@ namespace Server.Items
           }
         case 0:
           {
-            Dipper = m_StaffNames[Utility.Random(m_StaffNames.Length)];
+            Dipper = m_StaffNames.RandomElement();
             break;
           }
       }

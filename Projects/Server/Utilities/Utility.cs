@@ -502,9 +502,9 @@ namespace Server
     public static SkillName RandomSkill() =>
       m_AllSkills[Random(m_AllSkills.Length - (Core.ML ? 0 : Core.SE ? 1 : Core.AOS ? 3 : 6))];
 
-    public static SkillName RandomCombatSkill() => m_CombatSkills[Random(m_CombatSkills.Length)];
+    public static SkillName RandomCombatSkill() => m_CombatSkills.RandomElement();
 
-    public static SkillName RandomCraftSkill() => m_CraftSkills[Random(m_CraftSkills.Length)];
+    public static SkillName RandomCraftSkill() => m_CraftSkills.RandomElement();
 
     public static void FixPoints(ref Point3D top, ref Point3D bottom)
     {
@@ -862,10 +862,10 @@ namespace Server
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int RandomList(params int[] list) => RandomList<int>(list);
+    public static T RandomList<T>(params T[] list) => list.RandomElement();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T RandomList<T>(IList<T> list) => list[Random(list.Count)];
+    public static T RandomElement<T>(this IList<T> list) => list.Count == 0 ? default : list[Random(list.Count)];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool RandomBool() => RandomSources.Source.NextBool();

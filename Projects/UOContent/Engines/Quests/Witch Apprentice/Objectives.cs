@@ -31,12 +31,7 @@ namespace Server.Engines.Quests.Hag
 
     public Corpse Corpse { get; private set; }
 
-    private static Point3D RandomCorpseLocation()
-    {
-      int index = Utility.Random(m_CorpseLocations.Length);
-
-      return m_CorpseLocations[index];
-    }
+    private static Point3D RandomCorpseLocation() => m_CorpseLocations.RandomElement();
 
     public override void CheckProgress()
     {

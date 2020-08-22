@@ -17,8 +17,7 @@ namespace Server.Items
     {
       ItemID = 0x13B1;
       Hue = 0x48F;
-      SkillBonuses.SetValues(0, m_PossibleBonusSkills[Utility.Random(m_PossibleBonusSkills.Length)],
-        Utility.Random(4) == 0 ? 10.0 : 5.0);
+      SkillBonuses.SetValues(0, m_PossibleBonusSkills.RandomElement(), Utility.Random(4) == 0 ? 10.0 : 5.0);
       WeaponAttributes.SelfRepair = 5;
       Attributes.WeaponSpeed = 50;
       Attributes.WeaponDamage = 35;
@@ -49,8 +48,7 @@ namespace Server.Items
       int version = reader.ReadInt();
 
       if (version < 1)
-        SkillBonuses.SetValues(0, m_PossibleBonusSkills[Utility.Random(m_PossibleBonusSkills.Length)],
-          Utility.Random(4) == 0 ? 10.0 : 5.0);
+        SkillBonuses.SetValues(0, m_PossibleBonusSkills.RandomElement(), Utility.Random(4) == 0 ? 10.0 : 5.0);
     }
   }
 }

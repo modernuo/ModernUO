@@ -302,7 +302,7 @@ namespace Server.Items
         _ => m_CommonTracks
       };
 
-      return list[Utility.Random(list.Length)];
+      return list.RandomElement();
     }
   }
 }

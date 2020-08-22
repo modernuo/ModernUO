@@ -136,7 +136,7 @@ namespace Server.Items
 
     public override bool Eat(Mobile from)
     {
-      int message = m_Messages[Utility.Random(m_Messages.Length)];
+      int message = m_Messages.RandomElement();
 
       if (message != 0)
       {

@@ -277,7 +277,7 @@ namespace Server.Spells.Necromancy
 
         Type[] animates = entry.m_ToSummon;
 
-        toSummon = animates[Utility.Random(animates.Length)];
+        toSummon = animates.RandomElement();
       }
 
       if (toSummon == null)

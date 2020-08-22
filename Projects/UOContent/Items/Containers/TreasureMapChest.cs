@@ -287,7 +287,7 @@ namespace Server.Items
       }
 
       if (level == 6 && Core.AOS)
-        cont.DropItem((Item)ActivatorUtil.CreateInstance(Artifacts[Utility.Random(Artifacts.Length)]));
+        cont.DropItem((Item)ActivatorUtil.CreateInstance(Artifacts.RandomElement()));
     }
 
     public override bool CheckLocked(Mobile from)

@@ -23,7 +23,7 @@ namespace Server
       return false;
     }
 
-    public string GetRandomName() => List.Length > 0 ? List[Utility.Random(List.Length)] : "";
+    public string GetRandomName() => List.RandomElement() ?? "";
 
     public static NameList GetNameList(string type)
     {

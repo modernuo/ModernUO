@@ -639,7 +639,7 @@ namespace Server.Items
             }
 
             if (Utility.RandomDouble() < 0.05)
-              fish.Hue = FishHues[Utility.Random(FishHues.Length)];
+              fish.Hue = FishHues.RandomElement();
             else if (Utility.RandomDouble() < 0.5)
               fish.Hue = Utility.RandomMinMax(0x100, 0x3E5);
 

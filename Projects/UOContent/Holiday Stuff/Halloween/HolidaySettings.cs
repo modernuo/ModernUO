@@ -36,8 +36,8 @@ namespace Server.Events.Halloween
     public static DateTime FinishHalloween => new DateTime(2012, 11, 15);
 
     public static Item RandomGMBeggerItem =>
-      (Item)ActivatorUtil.CreateInstance(m_GMBeggarTreats[Utility.Random(m_GMBeggarTreats.Length)]);
+      (Item)ActivatorUtil.CreateInstance(m_GMBeggarTreats.RandomElement());
 
-    public static Item RandomTreat => (Item)ActivatorUtil.CreateInstance(m_Treats[Utility.Random(m_Treats.Length)]);
+    public static Item RandomTreat => (Item)ActivatorUtil.CreateInstance(m_Treats.RandomElement());
   }
 }

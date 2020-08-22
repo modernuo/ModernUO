@@ -4798,7 +4798,7 @@ namespace Server
       var sb = new StringBuilder(text.Length, text.Length);
 
       for (var i = 0; i < text.Length; ++i)
-        sb.Append(text[i] != ' ' ? GhostChars[Utility.Random(GhostChars.Length)] : ' ');
+        sb.Append(text[i] != ' ' ? GhostChars.RandomElement() : ' ');
 
       text = sb.ToString();
       context = m_GhostMutateContext;

@@ -55,7 +55,7 @@ namespace Server.Items
 
     private void AssignRandomName()
     {
-      Name = $"{m_Staff[Utility.Random(m_Staff.Length)]}'s Jack-O-Lantern";
+      Name = $"{m_Staff.RandomElement()}'s Jack-O-Lantern";
     }
 
     public override bool OnDragLift(Mobile from)

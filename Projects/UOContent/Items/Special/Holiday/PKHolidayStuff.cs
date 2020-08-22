@@ -31,11 +31,12 @@ namespace Server.Items
 
   public class BadCard : Item
   {
+    private static readonly int[] m_CardHues = { 0x45, 0x27, 0x3d0 };
+
     [Constructible]
     public BadCard() : base(0x14ef)
     {
-      int[] m_CardHues = { 0x45, 0x27, 0x3d0 };
-      Hue = m_CardHues[Utility.Random(m_CardHues.Length)];
+      Hue = m_CardHues.RandomElement();
       Stackable = false;
       LootType = LootType.Blessed;
       Movable = true;

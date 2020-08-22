@@ -17,7 +17,7 @@ namespace Server.Engines.MLQuests.Items
 
     protected void AddBaseLoot(params Type[][] lootSets)
     {
-      Item loot = Loot.Construct(lootSets[Utility.Random(lootSets.Length)]);
+      Item loot = Loot.Construct(lootSets.RandomElement());
 
       if (loot == null)
         return;

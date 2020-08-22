@@ -187,7 +187,7 @@ namespace Server.Items
 
       for (int i = 0; i < 50; ++i)
       {
-        Rectangle2D reg = regions[Utility.Random(regions.Length)];
+        Rectangle2D reg = regions.RandomElement();
         int x = Utility.Random(reg.X, reg.Width);
         int y = Utility.Random(reg.Y, reg.Height);
 

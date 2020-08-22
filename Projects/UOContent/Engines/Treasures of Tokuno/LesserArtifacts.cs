@@ -628,7 +628,7 @@ namespace Server.Items
     private string m_UrnName;
 
     [Constructible]
-    public AncientUrn() : this(Names[Utility.Random(Names.Length)])
+    public AncientUrn() : this(Names.RandomElement())
     {
     }
 
@@ -725,7 +725,7 @@ namespace Server.Items
     private string m_SwordsName;
 
     [Constructible]
-    public HonorableSwords() : this(AncientUrn.Names[Utility.Random(AncientUrn.Names.Length)])
+    public HonorableSwords() : this(AncientUrn.Names.RandomElement())
     {
     }
 
@@ -869,7 +869,7 @@ namespace Server.Items
     public FluteOfRenewal()
     {
       Slayer = SlayerGroup.Groups[Utility.Random(SlayerGroup.Groups.Length - 1)].Super
-        .Name; // -1 to exclude Fey slayer.  Try to confrim no fey slayer on this on OSI
+        .Name; // -1 to exclude Fey slayer.  Try to confirm no fey slayer on this on OSI
 
       ReplenishesCharges = true;
     }

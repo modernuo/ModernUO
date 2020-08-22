@@ -43,7 +43,7 @@ namespace Server.Engines.BulkOrders
 
       bool reqExceptional = Utility.RandomBool() || material == BulkMaterialType.None;
 
-      SmallBulkEntry entry = entries[Utility.Random(entries.Length)];
+      SmallBulkEntry entry = entries.RandomElement();
 
       Hue = hue;
       AmountMax = amountMax;

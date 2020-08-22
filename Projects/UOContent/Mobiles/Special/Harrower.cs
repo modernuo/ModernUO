@@ -116,7 +116,7 @@ namespace Server.Mobiles
       if (Instances.Count > 0)
         return null;
 
-      SpawnEntry entry = m_Entries[Utility.Random(m_Entries.Length)];
+      SpawnEntry entry = m_Entries.RandomElement();
 
       Harrower harrower = new Harrower();
 
@@ -454,17 +454,7 @@ namespace Server.Mobiles
       return null;
     }
 
-    public Item CreateArtifact(Type[] list)
-    {
-      if (list.Length == 0)
-        return null;
-
-      int random = Utility.Random(list.Length);
-
-      Type type = list[random];
-
-      return Loot.Construct(type);
-    }
+    public Item CreateArtifact(Type[] list) => Loot.Construct(list.RandomElement());
 
     private class SpawnEntry
     {

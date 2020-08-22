@@ -38,7 +38,7 @@ namespace Server.Spells.First
     {
       if (CheckSequence())
       {
-        FoodInfo foodInfo = m_Food[Utility.Random(m_Food.Length)];
+        FoodInfo foodInfo = m_Food.RandomElement();
         Item food = foodInfo.Create();
 
         if (food != null)

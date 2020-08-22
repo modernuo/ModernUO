@@ -539,13 +539,7 @@ namespace Server
 
     public static Item RandomNecromancyReagent() => Construct(NecroRegTypes);
 
-    public static Item RandomPossibleReagent()
-    {
-      if (Core.AOS)
-        return Construct(RegTypes, NecroRegTypes);
-
-      return Construct(RegTypes);
-    }
+    public static Item RandomPossibleReagent() => Core.AOS ? Construct(RegTypes, NecroRegTypes) : Construct(RegTypes);
 
     public static Item RandomPotion() => Construct(PotionTypes);
 
@@ -621,6 +615,8 @@ namespace Server
 
     public static Item Construct(Type type)
     {
+      if (type == null) return null;
+
       try
       {
         return ActivatorUtil.CreateInstance(type) as Item;
@@ -631,13 +627,7 @@ namespace Server
       }
     }
 
-    public static Item Construct(Type[] types)
-    {
-      if (types.Length > 0)
-        return Construct(types, Utility.Random(types.Length));
-
-      return null;
-    }
+    public static Item Construct(Type[] types) => Construct(types.RandomElement());
 
     public static Item Construct(Type[] types, int index)
     {

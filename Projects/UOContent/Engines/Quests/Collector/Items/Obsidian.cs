@@ -127,13 +127,7 @@ namespace Server.Engines.Quests.Collector
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
-    public static string RandomName(Mobile from)
-    {
-      int index = Utility.Random(m_Names.Length);
-      if (m_Names[index] == null)
-        return from.Name;
-      return m_Names[index];
-    }
+    public static string RandomName(Mobile from) => m_Names.RandomElement() ?? from.Name;
 
     public override void AddNameProperty(ObjectPropertyList list)
     {

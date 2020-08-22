@@ -204,7 +204,7 @@ namespace Server.Items
           maxIntensity = 15;
         }
 
-        int propertyCount = propertyCounts[Utility.Random(propertyCounts.Length)];
+        int propertyCount = propertyCounts.RandomElement();
 
         BaseRunicTool.ApplyAttributesTo(this, true, 0, propertyCount, minIntensity, maxIntensity);
       }

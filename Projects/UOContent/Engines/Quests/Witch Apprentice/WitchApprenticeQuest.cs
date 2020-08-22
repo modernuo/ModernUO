@@ -82,11 +82,6 @@ namespace Server.Engines.Quests.Hag
       AddConversation(new AcceptConversation());
     }
 
-    public static Point3D RandomZeefzorpulLocation()
-    {
-      int index = Utility.Random(m_ZeefzorpulLocations.Length);
-
-      return m_ZeefzorpulLocations[index];
-    }
+    public static Point3D RandomZeefzorpulLocation() => m_ZeefzorpulLocations.RandomElement();
   }
 }
