@@ -865,7 +865,10 @@ namespace Server
     public static T RandomList<T>(params T[] list) => list.RandomElement();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T RandomElement<T>(this IList<T> list) => list.Count == 0 ? default : list[Random(list.Count)];
+    public static T RandomElement<T>(this IList<T> list) => list.RandomElement(default);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T RandomElement<T>(this IList<T> list, T valueIfZero) => list.Count == 0 ? valueIfZero : list[Random(list.Count)];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool RandomBool() => RandomSources.Source.NextBool();

@@ -22,7 +22,7 @@ namespace Server.Engines.Harvest
       m_Definition = def;
       m_ToHarvest = toHarvest;
       m_Locked = locked;
-      m_Count = Utility.RandomList(def.EffectCounts);
+      m_Count = def.EffectCounts.RandomElement();
     }
 
     protected override void OnTick()

@@ -599,8 +599,7 @@ namespace Server.Items
       Item item = Loot.Construct(m_Types);
 
       if (item is Key key)
-        key.ItemID = Utility.RandomList((int)KeyType.Copper, (int)KeyType.Gold, (int)KeyType.Iron,
-          (int)KeyType.Rusty);
+        key.ItemID = Utility.RandomList((int)KeyType.Copper, (int)KeyType.Gold, (int)KeyType.Iron, (int)KeyType.Rusty);
       else if (item is Arrow || item is Bolt)
         item.Amount = Utility.RandomMinMax(2, 6);
       else if (item is Bandage || item is Lockpick)

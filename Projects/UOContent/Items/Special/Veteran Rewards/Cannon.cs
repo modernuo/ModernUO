@@ -208,14 +208,13 @@ namespace Server.Items
         return;
 
       Effects.PlaySound(target, map, Utility.RandomList(0x11B, 0x11C, 0x11D));
-      Effects.SendLocationEffect(target, map, Utility.RandomList(m_Effects), 16, 1);
+      Effects.SendLocationEffect(target, map, m_Effects.RandomElement(), 16, 1);
 
       for (int count = Utility.Random(3); count > 0; count--)
       {
         IPoint3D location = new Point3D(target.X + Utility.RandomMinMax(-1, 1),
           target.Y + Utility.RandomMinMax(-1, 1), target.Z);
-        int effect = Utility.RandomList(m_Effects);
-        Effects.SendLocationEffect(location, map, effect, 16, 1);
+        Effects.SendLocationEffect(location, map, m_Effects.RandomElement(), 16, 1);
       }
 
       Charges -= 1;
