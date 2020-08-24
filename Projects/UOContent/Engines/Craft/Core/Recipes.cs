@@ -5,84 +5,85 @@ using Server.Targeting;
 
 namespace Server.Engines.Craft
 {
-  public class Recipe
-  {
-    private TextDefinition m_TD;
-
-    public Recipe(int id, CraftSystem system, CraftItem item)
+    public class Recipe
     {
-      ID = id;
-      CraftSystem = system;
-      CraftItem = item;
+        private TextDefinition m_TD;
 
-      if (Recipes.ContainsKey(id))
-        throw new Exception("Attempting to create recipe with preexisting ID.");
-
-      Recipes.Add(id, this);
-      LargestRecipeID = Math.Max(id, LargestRecipeID);
-    }
-
-    public static Dictionary<int, Recipe> Recipes { get; } = new Dictionary<int, Recipe>();
-
-    public static int LargestRecipeID { get; private set; }
-
-    public CraftSystem CraftSystem { get; set; }
-
-    public CraftItem CraftItem { get; set; }
-
-    public int ID { get; }
-
-    public TextDefinition TextDefinition => m_TD ?? (m_TD = new TextDefinition(CraftItem.NameNumber, CraftItem.NameString));
-
-    public static void Initialize()
-    {
-      CommandSystem.Register("LearnAllRecipes", AccessLevel.GameMaster, LearnAllRecipes_OnCommand);
-      CommandSystem.Register("ForgetAllRecipes", AccessLevel.GameMaster, ForgetAllRecipes_OnCommand);
-    }
-
-    [Usage("LearnAllRecipes")]
-    [Description("Teaches a player all available recipes.")]
-    private static void LearnAllRecipes_OnCommand(CommandEventArgs e)
-    {
-      Mobile m = e.Mobile;
-      m.SendMessage("Target a player to teach them all of the recipes.");
-
-      m.BeginTarget(-1, false, TargetFlags.None,  (from, targeted) =>
-      {
-        if (targeted is PlayerMobile mobile)
+        public Recipe(int id, CraftSystem system, CraftItem item)
         {
-          foreach (KeyValuePair<int, Recipe> kvp in Recipes)
-            mobile.AcquireRecipe(kvp.Key);
+            ID = id;
+            CraftSystem = system;
+            CraftItem = item;
 
-          from.SendMessage("You teach them all of the recipes.");
+            if (Recipes.ContainsKey(id))
+                throw new Exception("Attempting to create recipe with preexisting ID.");
+
+            Recipes.Add(id, this);
+            LargestRecipeID = Math.Max(id, LargestRecipeID);
         }
-        else
+
+        public static Dictionary<int, Recipe> Recipes { get; } = new Dictionary<int, Recipe>();
+
+        public static int LargestRecipeID { get; private set; }
+
+        public CraftSystem CraftSystem { get; set; }
+
+        public CraftItem CraftItem { get; set; }
+
+        public int ID { get; }
+
+        public TextDefinition TextDefinition =>
+            m_TD ?? (m_TD = new TextDefinition(CraftItem.NameNumber, CraftItem.NameString));
+
+        public static void Initialize()
         {
-          from.SendMessage("That is not a player!");
+            CommandSystem.Register("LearnAllRecipes", AccessLevel.GameMaster, LearnAllRecipes_OnCommand);
+            CommandSystem.Register("ForgetAllRecipes", AccessLevel.GameMaster, ForgetAllRecipes_OnCommand);
         }
-      });
+
+        [Usage("LearnAllRecipes")]
+        [Description("Teaches a player all available recipes.")]
+        private static void LearnAllRecipes_OnCommand(CommandEventArgs e)
+        {
+            Mobile m = e.Mobile;
+            m.SendMessage("Target a player to teach them all of the recipes.");
+
+            m.BeginTarget(-1, false, TargetFlags.None, (from, targeted) =>
+            {
+                if (targeted is PlayerMobile mobile)
+                {
+                    foreach (KeyValuePair<int, Recipe> kvp in Recipes)
+                        mobile.AcquireRecipe(kvp.Key);
+
+                    from.SendMessage("You teach them all of the recipes.");
+                }
+                else
+                {
+                    from.SendMessage("That is not a player!");
+                }
+            });
+        }
+
+        [Usage("ForgetAllRecipes")]
+        [Description("Makes a player forget all the recipes they've learned.")]
+        private static void ForgetAllRecipes_OnCommand(CommandEventArgs e)
+        {
+            Mobile m = e.Mobile;
+            m.SendMessage("Target a player to have them forget all of the recipes they've learned.");
+
+            m.BeginTarget(-1, false, TargetFlags.None, (from, targeted) =>
+            {
+                if (targeted is PlayerMobile mobile)
+                {
+                    mobile.ResetRecipes();
+
+                    from.SendMessage("They forget all their recipes.");
+                }
+                else
+                {
+                    from.SendMessage("That is not a player!");
+                }
+            });
+        }
     }
-
-    [Usage("ForgetAllRecipes")]
-    [Description("Makes a player forget all the recipes they've learned.")]
-    private static void ForgetAllRecipes_OnCommand(CommandEventArgs e)
-    {
-      Mobile m = e.Mobile;
-      m.SendMessage("Target a player to have them forget all of the recipes they've learned.");
-
-      m.BeginTarget(-1, false, TargetFlags.None, (from, targeted) =>
-      {
-        if (targeted is PlayerMobile mobile)
-        {
-          mobile.ResetRecipes();
-
-          from.SendMessage("They forget all their recipes.");
-        }
-        else
-        {
-          from.SendMessage("That is not a player!");
-        }
-      });
-    }
-  }
 }

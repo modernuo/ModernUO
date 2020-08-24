@@ -24,29 +24,29 @@ using Server.Network;
 
 namespace Server
 {
-  public class GameLoginEventArgs : EventArgs
-  {
-    public GameLoginEventArgs(NetState state, string un, string pw)
+    public class GameLoginEventArgs : EventArgs
     {
-      State = state;
-      Username = un;
-      Password = pw;
+        public GameLoginEventArgs(NetState state, string un, string pw)
+        {
+            State = state;
+            Username = un;
+            Password = pw;
+        }
+
+        public NetState State { get; }
+
+        public string Username { get; }
+
+        public string Password { get; }
+
+        public bool Accepted { get; set; }
+
+        public CityInfo[] CityInfo { get; set; }
     }
 
-    public NetState State { get; }
-
-    public string Username { get; }
-
-    public string Password { get; }
-
-    public bool Accepted { get; set; }
-
-    public CityInfo[] CityInfo { get; set; }
-  }
-
-  public static partial class EventSink
-  {
-    public static event Action<GameLoginEventArgs> GameLogin;
-    public static void InvokeGameLogin(GameLoginEventArgs e) => GameLogin?.Invoke(e);
-  }
+    public static partial class EventSink
+    {
+        public static event Action<GameLoginEventArgs> GameLogin;
+        public static void InvokeGameLogin(GameLoginEventArgs e) => GameLogin?.Invoke(e);
+    }
 }

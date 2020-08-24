@@ -1,46 +1,46 @@
 namespace Server.Items
 {
-  /// <summary>
-  ///   The highly skilled warrior can use this special attack to make two quick swings in succession.
-  ///   Landing both blows would be devastating!
-  /// </summary>
-  public class DoubleStrike : WeaponAbility
-  {
-    public override int BaseMana => 30;
-    public override double DamageScalar => 0.9;
-
-    public override void OnHit(Mobile attacker, Mobile defender, int damage)
+    /// <summary>
+    ///   The highly skilled warrior can use this special attack to make two quick swings in succession.
+    ///   Landing both blows would be devastating!
+    /// </summary>
+    public class DoubleStrike : WeaponAbility
     {
-      if (!Validate(attacker) || !CheckMana(attacker, true))
-        return;
+        public override int BaseMana => 30;
+        public override double DamageScalar => 0.9;
 
-      ClearCurrentAbility(attacker);
+        public override void OnHit(Mobile attacker, Mobile defender, int damage)
+        {
+            if (!Validate(attacker) || !CheckMana(attacker, true))
+                return;
 
-      attacker.SendLocalizedMessage(1060084); // You attack with lightning speed!
-      defender.SendLocalizedMessage(1060085); // Your attacker strikes with lightning speed!
+            ClearCurrentAbility(attacker);
 
-      defender.PlaySound(0x3BB);
-      defender.FixedEffect(0x37B9, 244, 25);
+            attacker.SendLocalizedMessage(1060084); // You attack with lightning speed!
+            defender.SendLocalizedMessage(1060085); // Your attacker strikes with lightning speed!
 
-      // Swing again:
+            defender.PlaySound(0x3BB);
+            defender.FixedEffect(0x37B9, 244, 25);
 
-      // If no combatant, wrong map, one of us is a ghost, or cannot see, or deleted, then stop combat
-      if (defender.Deleted || attacker.Deleted || defender.Map != attacker.Map ||
-          !defender.Alive || !attacker.Alive || !attacker.CanSee(defender))
-      {
-        attacker.Combatant = null;
-        return;
-      }
+            // Swing again:
 
-      IWeapon weapon = attacker.Weapon;
+            // If no combatant, wrong map, one of us is a ghost, or cannot see, or deleted, then stop combat
+            if (defender.Deleted || attacker.Deleted || defender.Map != attacker.Map ||
+                !defender.Alive || !attacker.Alive || !attacker.CanSee(defender))
+            {
+                attacker.Combatant = null;
+                return;
+            }
 
-      if (!(weapon != null && attacker.InRange(defender, weapon.MaxRange) && attacker.InLOS(defender)))
-        return;
+            IWeapon weapon = attacker.Weapon;
 
-      BaseWeapon.InDoubleStrike = true;
-      attacker.RevealingAction();
-      attacker.NextCombatTime = Core.TickCount + (int)weapon.OnSwing(attacker, defender).TotalMilliseconds;
-      BaseWeapon.InDoubleStrike = false;
+            if (!(weapon != null && attacker.InRange(defender, weapon.MaxRange) && attacker.InLOS(defender)))
+                return;
+
+            BaseWeapon.InDoubleStrike = true;
+            attacker.RevealingAction();
+            attacker.NextCombatTime = Core.TickCount + (int)weapon.OnSwing(attacker, defender).TotalMilliseconds;
+            BaseWeapon.InDoubleStrike = false;
+        }
     }
-  }
 }

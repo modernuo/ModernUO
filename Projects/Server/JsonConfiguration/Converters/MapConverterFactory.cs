@@ -25,10 +25,11 @@ using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-  public class MapConverterFactory : JsonConverterFactory
-  {
-    public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(Map);
+    public class MapConverterFactory : JsonConverterFactory
+    {
+        public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(Map);
 
-    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) => new MapConverter();
-  }
+        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+            new MapConverter();
+    }
 }

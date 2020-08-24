@@ -5,105 +5,105 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests
 {
-  public class TalkEntry : ContextMenuEntry
-  {
-    private readonly BaseQuester m_Quester;
-
-    public TalkEntry(BaseQuester quester) : base(quester.TalkNumber) => m_Quester = quester;
-
-    public override void OnClick()
+    public class TalkEntry : ContextMenuEntry
     {
-      Mobile from = Owner.From;
+        private readonly BaseQuester m_Quester;
 
-      if (from.CheckAlive() && from is PlayerMobile mobile && m_Quester.CanTalkTo(mobile))
-        m_Quester.OnTalk(mobile, true);
-    }
-  }
+        public TalkEntry(BaseQuester quester) : base(quester.TalkNumber) => m_Quester = quester;
 
-  public abstract class BaseQuester : BaseVendor
-  {
-    protected List<SBInfo> m_SBInfos = new List<SBInfo>();
+        public override void OnClick()
+        {
+            Mobile from = Owner.From;
 
-    public BaseQuester(string title = null) : base(title)
-    {
+            if (from.CheckAlive() && from is PlayerMobile mobile && m_Quester.CanTalkTo(mobile))
+                m_Quester.OnTalk(mobile, true);
+        }
     }
 
-    public BaseQuester(Serial serial) : base(serial)
+    public abstract class BaseQuester : BaseVendor
     {
+        protected List<SBInfo> m_SBInfos = new List<SBInfo>();
+
+        public BaseQuester(string title = null) : base(title)
+        {
+        }
+
+        public BaseQuester(Serial serial) : base(serial)
+        {
+        }
+
+        protected override List<SBInfo> SBInfos => m_SBInfos;
+
+        public override bool IsActiveVendor => false;
+        public override bool IsInvulnerable => true;
+        public override bool DisallowAllMoves => true;
+        public override bool ClickTitle => false;
+        public override bool CanTeach => false;
+
+        public virtual int TalkNumber // Talk
+            => 6146;
+
+        public override void InitSBInfo()
+        {
+        }
+
+        public abstract void OnTalk(PlayerMobile player, bool contextMenu);
+
+        public virtual bool CanTalkTo(PlayerMobile to) => true;
+
+        public virtual int GetAutoTalkRange(PlayerMobile m) => -1;
+
+        public override bool CanBeDamaged() => false;
+
+        protected Item SetHue(Item item, int hue)
+        {
+            item.Hue = hue;
+            return item;
+        }
+
+        public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
+        {
+            base.AddCustomContextEntries(from, list);
+
+            if (from.Alive && from is PlayerMobile mobile && TalkNumber > 0 && CanTalkTo(mobile))
+                list.Add(new TalkEntry(this));
+        }
+
+        public override void OnMovement(Mobile m, Point3D oldLocation)
+        {
+            if (m.Alive && m is PlayerMobile pm)
+            {
+                int range = GetAutoTalkRange(pm);
+
+                if (pm.Alive && range >= 0 && InRange(m, range) && !InRange(oldLocation, range) && CanTalkTo(pm))
+                    OnTalk(pm, false);
+            }
+        }
+
+        public void FocusTo(Mobile to)
+        {
+            QuestSystem.FocusTo(this, to);
+        }
+
+        public static Container GetNewContainer()
+        {
+            Bag bag = new Bag();
+            bag.Hue = QuestSystem.RandomBrightHue();
+            return bag;
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+        }
     }
-
-    protected override List<SBInfo> SBInfos => m_SBInfos;
-
-    public override bool IsActiveVendor => false;
-    public override bool IsInvulnerable => true;
-    public override bool DisallowAllMoves => true;
-    public override bool ClickTitle => false;
-    public override bool CanTeach => false;
-
-    public virtual int TalkNumber // Talk
-      => 6146;
-
-    public override void InitSBInfo()
-    {
-    }
-
-    public abstract void OnTalk(PlayerMobile player, bool contextMenu);
-
-    public virtual bool CanTalkTo(PlayerMobile to) => true;
-
-    public virtual int GetAutoTalkRange(PlayerMobile m) => -1;
-
-    public override bool CanBeDamaged() => false;
-
-    protected Item SetHue(Item item, int hue)
-    {
-      item.Hue = hue;
-      return item;
-    }
-
-    public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
-    {
-      base.AddCustomContextEntries(from, list);
-
-      if (from.Alive && from is PlayerMobile mobile && TalkNumber > 0 && CanTalkTo(mobile))
-        list.Add(new TalkEntry(this));
-    }
-
-    public override void OnMovement(Mobile m, Point3D oldLocation)
-    {
-      if (m.Alive && m is PlayerMobile pm)
-      {
-        int range = GetAutoTalkRange(pm);
-
-        if (pm.Alive && range >= 0 && InRange(m, range) && !InRange(oldLocation, range) && CanTalkTo(pm))
-          OnTalk(pm, false);
-      }
-    }
-
-    public void FocusTo(Mobile to)
-    {
-      QuestSystem.FocusTo(this, to);
-    }
-
-    public static Container GetNewContainer()
-    {
-      Bag bag = new Bag();
-      bag.Hue = QuestSystem.RandomBrightHue();
-      return bag;
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
 }

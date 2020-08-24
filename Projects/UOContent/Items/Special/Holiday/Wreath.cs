@@ -5,311 +5,311 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-  public class WreathAddon : Item, IDyable, IAddon
-  {
-    [Constructible]
-    public WreathAddon() : this(Utility.RandomDyedHue())
+    public class WreathAddon : Item, IDyable, IAddon
     {
-    }
-
-    [Constructible]
-    public WreathAddon(int hue) : base(0x232C)
-    {
-      Hue = hue;
-      Movable = false;
-    }
-
-    public WreathAddon(Serial serial) : base(serial)
-    {
-    }
-
-    public bool CouldFit(IPoint3D p, Map map)
-    {
-      if (!map.CanFit(p.X, p.Y, p.Z, ItemData.Height))
-        return false;
-
-      if (ItemID == 0x232C)
-        return BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map); // North wall
-      return BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map); // West wall
-    }
-
-    public Item Deed => new WreathDeed(Hue);
-
-    public virtual bool Dye(Mobile from, DyeTub sender)
-    {
-      if (Deleted)
-        return false;
-
-      BaseHouse house = BaseHouse.FindHouseAt(this);
-
-      if (house?.IsCoOwner(from) == true)
-      {
-        if (from.InRange(GetWorldLocation(), 1))
+        [Constructible]
+        public WreathAddon() : this(Utility.RandomDyedHue())
         {
-          Hue = sender.DyedHue;
-          return true;
         }
 
-        from.SendLocalizedMessage(500295); // You are too far away to do that.
-        return false;
-      }
-
-      return false;
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-
-      Timer.DelayCall(FixMovingCrate);
-    }
-
-    private void FixMovingCrate()
-    {
-      if (Deleted)
-        return;
-
-      if (Movable || IsLockedDown)
-      {
-        Item deed = Deed;
-
-        if (Parent is Item item)
+        [Constructible]
+        public WreathAddon(int hue) : base(0x232C)
         {
-          item.AddItem(deed);
-          deed.Location = Location;
-        }
-        else
-        {
-          deed.MoveToWorld(Location, Map);
+            Hue = hue;
+            Movable = false;
         }
 
-        Delete();
-      }
-    }
-
-    public override void OnDoubleClick(Mobile from)
-    {
-      BaseHouse house = BaseHouse.FindHouseAt(this);
-
-      if (house?.IsCoOwner(from) == true)
-      {
-        if (from.InRange(GetWorldLocation(), 3))
+        public WreathAddon(Serial serial) : base(serial)
         {
-          from.CloseGump<WreathAddonGump>();
-          from.SendGump(new WreathAddonGump(from, this));
         }
-        else
+
+        public bool CouldFit(IPoint3D p, Map map)
         {
-          from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            if (!map.CanFit(p.X, p.Y, p.Z, ItemData.Height))
+                return false;
+
+            if (ItemID == 0x232C)
+                return BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map); // North wall
+            return BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map); // West wall
         }
-      }
-    }
 
-    private class WreathAddonGump : Gump
-    {
-      private readonly WreathAddon m_Addon;
-      private readonly Mobile m_From;
+        public Item Deed => new WreathDeed(Hue);
 
-      public WreathAddonGump(Mobile from, WreathAddon addon) : base(150, 50)
-      {
-        m_From = from;
-        m_Addon = addon;
-
-        AddPage(0);
-
-        AddBackground(0, 0, 220, 170, 0x13BE);
-        AddBackground(10, 10, 200, 150, 0xBB8);
-        AddHtmlLocalized(20, 30, 180, 60, 1062839); // Do you wish to re-deed this decoration?
-        AddHtmlLocalized(55, 100, 160, 25, 1011011); // CONTINUE
-        AddButton(20, 100, 0xFA5, 0xFA7, 1);
-        AddHtmlLocalized(55, 125, 160, 25, 1011012); // CANCEL
-        AddButton(20, 125, 0xFA5, 0xFA7, 0);
-      }
-
-      public override void OnResponse(NetState sender, RelayInfo info)
-      {
-        if (m_Addon.Deleted)
-          return;
-
-        if (info.ButtonID == 1)
+        public virtual bool Dye(Mobile from, DyeTub sender)
         {
-          if (m_From.InRange(m_Addon.GetWorldLocation(), 3))
-          {
-            m_From.AddToBackpack(m_Addon.Deed);
-            m_Addon.Delete();
-          }
-          else
-          {
-            m_From.SendLocalizedMessage(500295); // You are too far away to do that.
-          }
+            if (Deleted)
+                return false;
+
+            BaseHouse house = BaseHouse.FindHouseAt(this);
+
+            if (house?.IsCoOwner(from) == true)
+            {
+                if (from.InRange(GetWorldLocation(), 1))
+                {
+                    Hue = sender.DyedHue;
+                    return true;
+                }
+
+                from.SendLocalizedMessage(500295); // You are too far away to do that.
+                return false;
+            }
+
+            return false;
         }
-      }
-    }
-  }
 
-  [Flippable(0x14F0, 0x14EF)]
-  public class WreathDeed : Item
-  {
-    [Constructible]
-    public WreathDeed() : this(Utility.RandomDyedHue())
-    {
-    }
-
-    [Constructible]
-    public WreathDeed(int hue) : base(0x14F0)
-    {
-      Weight = 1.0;
-      Hue = hue;
-      LootType = LootType.Blessed;
-    }
-
-    public WreathDeed(Serial serial) : base(serial)
-    {
-    }
-
-    public override int LabelNumber => 1062837; // holiday wreath deed
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-
-    public override void OnDoubleClick(Mobile from)
-    {
-      if (IsChildOf(from.Backpack))
-      {
-        BaseHouse house = BaseHouse.FindHouseAt(from);
-
-        if (house?.IsCoOwner(from) == true)
+        public override void Serialize(IGenericWriter writer)
         {
-          from.SendLocalizedMessage(1062838); // Where would you like to place this decoration?
-          from.BeginTarget(-1, true, TargetFlags.None, Placement_OnTarget);
+            base.Serialize(writer);
+
+            writer.Write(0); // version
         }
-        else
+
+        public override void Deserialize(IGenericReader reader)
         {
-          from.SendLocalizedMessage(502092); // You must be in your house to do this.
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+
+            Timer.DelayCall(FixMovingCrate);
         }
-      }
-      else
-      {
-        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
-      }
-    }
 
-    public void Placement_OnTarget(Mobile from, object targeted)
-    {
-      if (!(targeted is IPoint3D p))
-        return;
-
-      Point3D loc = new Point3D(p);
-
-      BaseHouse house = BaseHouse.FindHouseAt(loc, from.Map, 16);
-
-      if (house?.IsCoOwner(from) == true)
-      {
-        bool northWall = BaseAddon.IsWall(loc.X, loc.Y - 1, loc.Z, from.Map);
-        bool westWall = BaseAddon.IsWall(loc.X - 1, loc.Y, loc.Z, from.Map);
-
-        if (northWall && westWall)
-          from.SendGump(new WreathDeedGump(from, loc, this));
-        else
-          PlaceAddon(from, loc, northWall, westWall);
-      }
-      else
-      {
-        from.SendLocalizedMessage(1042036); // That location is not in your house.
-      }
-    }
-
-    private void PlaceAddon(Mobile from, Point3D loc, bool northWall, bool westWall)
-    {
-      if (Deleted)
-        return;
-
-      BaseHouse house = BaseHouse.FindHouseAt(loc, from.Map, 16);
-
-      if (house?.IsCoOwner(from) != true)
-      {
-        from.SendLocalizedMessage(1042036); // That location is not in your house.
-        return;
-      }
-
-      int itemID = 0;
-
-      if (northWall)
-        itemID = 0x232C;
-      else if (westWall)
-        itemID = 0x232D;
-      else
-        from.SendLocalizedMessage(1062840); // The decoration must be placed next to a wall.
-
-      if (itemID > 0)
-      {
-        Item addon = new WreathAddon(Hue);
-
-        addon.ItemID = itemID;
-        addon.MoveToWorld(loc, from.Map);
-
-        house.Addons.Add(addon);
-        Delete();
-      }
-    }
-
-    private class WreathDeedGump : Gump
-    {
-      private readonly WreathDeed m_Deed;
-      private readonly Mobile m_From;
-      private readonly Point3D m_Loc;
-
-      public WreathDeedGump(Mobile from, Point3D loc, WreathDeed deed) : base(150, 50)
-      {
-        m_From = from;
-        m_Loc = loc;
-        m_Deed = deed;
-
-        AddBackground(0, 0, 300, 150, 0xA28);
-
-        AddPage(0);
-
-        AddItem(90, 30, 0x232D);
-        AddItem(180, 30, 0x232C);
-        AddButton(50, 35, 0x868, 0x869, 1);
-        AddButton(145, 35, 0x868, 0x869, 2);
-      }
-
-      public override void OnResponse(NetState sender, RelayInfo info)
-      {
-        if (m_Deed.Deleted)
-          return;
-
-        switch (info.ButtonID)
+        private void FixMovingCrate()
         {
-          case 1:
-            m_Deed.PlaceAddon(m_From, m_Loc, false, true);
-            break;
-          case 2:
-            m_Deed.PlaceAddon(m_From, m_Loc, true, false);
-            break;
+            if (Deleted)
+                return;
+
+            if (Movable || IsLockedDown)
+            {
+                Item deed = Deed;
+
+                if (Parent is Item item)
+                {
+                    item.AddItem(deed);
+                    deed.Location = Location;
+                }
+                else
+                {
+                    deed.MoveToWorld(Location, Map);
+                }
+
+                Delete();
+            }
         }
-      }
+
+        public override void OnDoubleClick(Mobile from)
+        {
+            BaseHouse house = BaseHouse.FindHouseAt(this);
+
+            if (house?.IsCoOwner(from) == true)
+            {
+                if (from.InRange(GetWorldLocation(), 3))
+                {
+                    from.CloseGump<WreathAddonGump>();
+                    from.SendGump(new WreathAddonGump(from, this));
+                }
+                else
+                {
+                    from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                }
+            }
+        }
+
+        private class WreathAddonGump : Gump
+        {
+            private readonly WreathAddon m_Addon;
+            private readonly Mobile m_From;
+
+            public WreathAddonGump(Mobile from, WreathAddon addon) : base(150, 50)
+            {
+                m_From = from;
+                m_Addon = addon;
+
+                AddPage(0);
+
+                AddBackground(0, 0, 220, 170, 0x13BE);
+                AddBackground(10, 10, 200, 150, 0xBB8);
+                AddHtmlLocalized(20, 30, 180, 60, 1062839); // Do you wish to re-deed this decoration?
+                AddHtmlLocalized(55, 100, 160, 25, 1011011); // CONTINUE
+                AddButton(20, 100, 0xFA5, 0xFA7, 1);
+                AddHtmlLocalized(55, 125, 160, 25, 1011012); // CANCEL
+                AddButton(20, 125, 0xFA5, 0xFA7, 0);
+            }
+
+            public override void OnResponse(NetState sender, RelayInfo info)
+            {
+                if (m_Addon.Deleted)
+                    return;
+
+                if (info.ButtonID == 1)
+                {
+                    if (m_From.InRange(m_Addon.GetWorldLocation(), 3))
+                    {
+                        m_From.AddToBackpack(m_Addon.Deed);
+                        m_Addon.Delete();
+                    }
+                    else
+                    {
+                        m_From.SendLocalizedMessage(500295); // You are too far away to do that.
+                    }
+                }
+            }
+        }
     }
-  }
+
+    [Flippable(0x14F0, 0x14EF)]
+    public class WreathDeed : Item
+    {
+        [Constructible]
+        public WreathDeed() : this(Utility.RandomDyedHue())
+        {
+        }
+
+        [Constructible]
+        public WreathDeed(int hue) : base(0x14F0)
+        {
+            Weight = 1.0;
+            Hue = hue;
+            LootType = LootType.Blessed;
+        }
+
+        public WreathDeed(Serial serial) : base(serial)
+        {
+        }
+
+        public override int LabelNumber => 1062837; // holiday wreath deed
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+        }
+
+        public override void OnDoubleClick(Mobile from)
+        {
+            if (IsChildOf(from.Backpack))
+            {
+                BaseHouse house = BaseHouse.FindHouseAt(from);
+
+                if (house?.IsCoOwner(from) == true)
+                {
+                    from.SendLocalizedMessage(1062838); // Where would you like to place this decoration?
+                    from.BeginTarget(-1, true, TargetFlags.None, Placement_OnTarget);
+                }
+                else
+                {
+                    from.SendLocalizedMessage(502092); // You must be in your house to do this.
+                }
+            }
+            else
+            {
+                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            }
+        }
+
+        public void Placement_OnTarget(Mobile from, object targeted)
+        {
+            if (!(targeted is IPoint3D p))
+                return;
+
+            Point3D loc = new Point3D(p);
+
+            BaseHouse house = BaseHouse.FindHouseAt(loc, from.Map, 16);
+
+            if (house?.IsCoOwner(from) == true)
+            {
+                bool northWall = BaseAddon.IsWall(loc.X, loc.Y - 1, loc.Z, from.Map);
+                bool westWall = BaseAddon.IsWall(loc.X - 1, loc.Y, loc.Z, from.Map);
+
+                if (northWall && westWall)
+                    from.SendGump(new WreathDeedGump(from, loc, this));
+                else
+                    PlaceAddon(from, loc, northWall, westWall);
+            }
+            else
+            {
+                from.SendLocalizedMessage(1042036); // That location is not in your house.
+            }
+        }
+
+        private void PlaceAddon(Mobile from, Point3D loc, bool northWall, bool westWall)
+        {
+            if (Deleted)
+                return;
+
+            BaseHouse house = BaseHouse.FindHouseAt(loc, from.Map, 16);
+
+            if (house?.IsCoOwner(from) != true)
+            {
+                from.SendLocalizedMessage(1042036); // That location is not in your house.
+                return;
+            }
+
+            int itemID = 0;
+
+            if (northWall)
+                itemID = 0x232C;
+            else if (westWall)
+                itemID = 0x232D;
+            else
+                from.SendLocalizedMessage(1062840); // The decoration must be placed next to a wall.
+
+            if (itemID > 0)
+            {
+                Item addon = new WreathAddon(Hue);
+
+                addon.ItemID = itemID;
+                addon.MoveToWorld(loc, from.Map);
+
+                house.Addons.Add(addon);
+                Delete();
+            }
+        }
+
+        private class WreathDeedGump : Gump
+        {
+            private readonly WreathDeed m_Deed;
+            private readonly Mobile m_From;
+            private readonly Point3D m_Loc;
+
+            public WreathDeedGump(Mobile from, Point3D loc, WreathDeed deed) : base(150, 50)
+            {
+                m_From = from;
+                m_Loc = loc;
+                m_Deed = deed;
+
+                AddBackground(0, 0, 300, 150, 0xA28);
+
+                AddPage(0);
+
+                AddItem(90, 30, 0x232D);
+                AddItem(180, 30, 0x232C);
+                AddButton(50, 35, 0x868, 0x869, 1);
+                AddButton(145, 35, 0x868, 0x869, 2);
+            }
+
+            public override void OnResponse(NetState sender, RelayInfo info)
+            {
+                if (m_Deed.Deleted)
+                    return;
+
+                switch (info.ButtonID)
+                {
+                    case 1:
+                        m_Deed.PlaceAddon(m_From, m_Loc, false, true);
+                        break;
+                    case 2:
+                        m_Deed.PlaceAddon(m_From, m_Loc, true, false);
+                        break;
+                }
+            }
+        }
+    }
 }

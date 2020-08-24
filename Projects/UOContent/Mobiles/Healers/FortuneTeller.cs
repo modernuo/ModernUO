@@ -2,79 +2,79 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-  public class FortuneTeller : BaseHealer
-  {
-    [Constructible]
-    public FortuneTeller()
+    public class FortuneTeller : BaseHealer
     {
-      Title = "the fortune teller";
+        [Constructible]
+        public FortuneTeller()
+        {
+            Title = "the fortune teller";
 
-      SetSkill(SkillName.Anatomy, 85.0, 100.0);
-      SetSkill(SkillName.Healing, 90.0, 100.0);
-      SetSkill(SkillName.Forensics, 75.0, 98.0);
-      SetSkill(SkillName.SpiritSpeak, 65.0, 88.0);
+            SetSkill(SkillName.Anatomy, 85.0, 100.0);
+            SetSkill(SkillName.Healing, 90.0, 100.0);
+            SetSkill(SkillName.Forensics, 75.0, 98.0);
+            SetSkill(SkillName.SpiritSpeak, 65.0, 88.0);
+        }
+
+        public FortuneTeller(Serial serial) : base(serial)
+        {
+        }
+
+        public override bool CanTeach => true;
+
+        public override bool IsActiveVendor => true;
+        public override bool IsInvulnerable => true;
+
+        public override bool CheckTeach(SkillName skill, Mobile from)
+        {
+            if (!base.CheckTeach(skill, from))
+                return false;
+
+            return skill == SkillName.Anatomy
+                   || skill == SkillName.Healing
+                   || skill == SkillName.Forensics
+                   || skill == SkillName.SpiritSpeak;
+        }
+
+        public override void InitSBInfo()
+        {
+            SBInfos.Add(new SBMage());
+            SBInfos.Add(new SBFortuneTeller());
+        }
+
+        public override int GetRobeColor() => Utility.RandomBrightHue();
+
+        public override void InitOutfit()
+        {
+            base.InitOutfit();
+
+            switch (Utility.Random(3))
+            {
+                case 0:
+                    AddItem(new SkullCap(Utility.RandomBrightHue()));
+                    break;
+                case 1:
+                    AddItem(new WizardsHat(Utility.RandomBrightHue()));
+                    break;
+                case 2:
+                    AddItem(new Bandana(Utility.RandomBrightHue()));
+                    break;
+            }
+
+            AddItem(new Spellbook());
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+        }
     }
-
-    public FortuneTeller(Serial serial) : base(serial)
-    {
-    }
-
-    public override bool CanTeach => true;
-
-    public override bool IsActiveVendor => true;
-    public override bool IsInvulnerable => true;
-
-    public override bool CheckTeach(SkillName skill, Mobile from)
-    {
-      if (!base.CheckTeach(skill, from))
-        return false;
-
-      return skill == SkillName.Anatomy
-             || skill == SkillName.Healing
-             || skill == SkillName.Forensics
-             || skill == SkillName.SpiritSpeak;
-    }
-
-    public override void InitSBInfo()
-    {
-      SBInfos.Add(new SBMage());
-      SBInfos.Add(new SBFortuneTeller());
-    }
-
-    public override int GetRobeColor() => Utility.RandomBrightHue();
-
-    public override void InitOutfit()
-    {
-      base.InitOutfit();
-
-      switch (Utility.Random(3))
-      {
-        case 0:
-          AddItem(new SkullCap(Utility.RandomBrightHue()));
-          break;
-        case 1:
-          AddItem(new WizardsHat(Utility.RandomBrightHue()));
-          break;
-        case 2:
-          AddItem(new Bandana(Utility.RandomBrightHue()));
-          break;
-      }
-
-      AddItem(new Spellbook());
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
 }

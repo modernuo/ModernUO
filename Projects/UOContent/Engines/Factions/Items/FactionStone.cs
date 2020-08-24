@@ -3,97 +3,97 @@ using Server.Network;
 
 namespace Server.Factions
 {
-  public class FactionStone : BaseSystemController
-  {
-    private Faction m_Faction;
-
-    [Constructible]
-    public FactionStone(Faction faction = null) : base(0xEDC)
+    public class FactionStone : BaseSystemController
     {
-      Movable = false;
-      Faction = faction;
-    }
+        private Faction m_Faction;
 
-    public FactionStone(Serial serial) : base(serial)
-    {
-    }
-
-    [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
-    public Faction Faction
-    {
-      get => m_Faction;
-      set
-      {
-        m_Faction = value;
-
-        AssignName(m_Faction?.Definition.FactionStoneName);
-      }
-    }
-
-    public override string DefaultName => "faction stone";
-
-    public override void OnDoubleClick(Mobile from)
-    {
-      if (m_Faction == null)
-        return;
-
-      if (!from.InRange(GetWorldLocation(), 2))
-      {
-        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-      }
-      else if (FactionGump.Exists(from))
-      {
-        from.SendLocalizedMessage(1042160); // You already have a faction menu open.
-      }
-      else if (from is PlayerMobile mobile)
-      {
-        Faction existingFaction = Faction.Find(mobile);
-
-        if (existingFaction == m_Faction || mobile.AccessLevel >= AccessLevel.GameMaster)
+        [Constructible]
+        public FactionStone(Faction faction = null) : base(0xEDC)
         {
-          PlayerState pl = PlayerState.Find(mobile);
-
-          if (pl?.IsLeaving == true)
-            mobile.SendLocalizedMessage(
-              1005051); // You cannot use the faction stone until you have finished quitting your current faction
-          else
-            mobile.SendGump(new FactionStoneGump(mobile, m_Faction));
+            Movable = false;
+            Faction = faction;
         }
-        else if (existingFaction != null)
+
+        public FactionStone(Serial serial) : base(serial)
         {
-          // TODO: Validate
-          mobile.SendLocalizedMessage(1005053); // This is not your faction stone!
         }
-        else
+
+        [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
+        public Faction Faction
         {
-          mobile.SendGump(new JoinStoneGump(mobile, m_Faction));
+            get => m_Faction;
+            set
+            {
+                m_Faction = value;
+
+                AssignName(m_Faction?.Definition.FactionStoneName);
+            }
         }
-      }
+
+        public override string DefaultName => "faction stone";
+
+        public override void OnDoubleClick(Mobile from)
+        {
+            if (m_Faction == null)
+                return;
+
+            if (!from.InRange(GetWorldLocation(), 2))
+            {
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            }
+            else if (FactionGump.Exists(from))
+            {
+                from.SendLocalizedMessage(1042160); // You already have a faction menu open.
+            }
+            else if (from is PlayerMobile mobile)
+            {
+                Faction existingFaction = Faction.Find(mobile);
+
+                if (existingFaction == m_Faction || mobile.AccessLevel >= AccessLevel.GameMaster)
+                {
+                    PlayerState pl = PlayerState.Find(mobile);
+
+                    if (pl?.IsLeaving == true)
+                        mobile.SendLocalizedMessage(
+                            1005051); // You cannot use the faction stone until you have finished quitting your current faction
+                    else
+                        mobile.SendGump(new FactionStoneGump(mobile, m_Faction));
+                }
+                else if (existingFaction != null)
+                {
+                    // TODO: Validate
+                    mobile.SendLocalizedMessage(1005053); // This is not your faction stone!
+                }
+                else
+                {
+                    mobile.SendGump(new JoinStoneGump(mobile, m_Faction));
+                }
+            }
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+
+            Faction.WriteReference(writer, m_Faction);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+
+            switch (version)
+            {
+                case 0:
+                    {
+                        Faction = Faction.ReadReference(reader);
+                        break;
+                    }
+            }
+        }
     }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-
-      Faction.WriteReference(writer, m_Faction);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-
-      switch (version)
-      {
-        case 0:
-          {
-            Faction = Faction.ReadReference(reader);
-            break;
-          }
-      }
-    }
-  }
 }

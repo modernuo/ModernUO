@@ -1,7 +1,7 @@
 namespace Server
 {
-  public interface IChoppable
-  {
-    void OnChop(Mobile from);
-  }
+    public interface IChoppable
+    {
+        void OnChop(Mobile from);
+    }
 }

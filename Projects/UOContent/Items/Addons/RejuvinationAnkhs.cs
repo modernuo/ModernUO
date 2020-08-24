@@ -2,170 +2,170 @@ using System;
 
 namespace Server.Items
 {
-  public class RejuvinationAddonComponent : AddonComponent
-  {
-    public RejuvinationAddonComponent(int itemID) : base(itemID)
+    public class RejuvinationAddonComponent : AddonComponent
     {
-    }
-
-    public RejuvinationAddonComponent(Serial serial) : base(serial)
-    {
-    }
-
-    public override void OnDoubleClick(Mobile from)
-    {
-      if (from.BeginAction<RejuvinationAddonComponent>())
-      {
-        from.FixedEffect(0x373A, 1, 16);
-
-        int random = Utility.Random(1, 4);
-
-        if (random == 1 || random == 4)
+        public RejuvinationAddonComponent(int itemID) : base(itemID)
         {
-          from.Hits = from.HitsMax;
-          SendLocalizedMessageTo(from, 500801); // A sense of warmth fills your body!
         }
 
-        if (random == 2 || random == 4)
+        public RejuvinationAddonComponent(Serial serial) : base(serial)
         {
-          from.Mana = from.ManaMax;
-          SendLocalizedMessageTo(from, 500802); // A feeling of power surges through your veins!
         }
 
-        if (random == 3 || random == 4)
+        public override void OnDoubleClick(Mobile from)
         {
-          from.Stam = from.StamMax;
-          SendLocalizedMessageTo(from, 500803); // You feel as though you've slept for days!
+            if (from.BeginAction<RejuvinationAddonComponent>())
+            {
+                from.FixedEffect(0x373A, 1, 16);
+
+                int random = Utility.Random(1, 4);
+
+                if (random == 1 || random == 4)
+                {
+                    from.Hits = from.HitsMax;
+                    SendLocalizedMessageTo(from, 500801); // A sense of warmth fills your body!
+                }
+
+                if (random == 2 || random == 4)
+                {
+                    from.Mana = from.ManaMax;
+                    SendLocalizedMessageTo(from, 500802); // A feeling of power surges through your veins!
+                }
+
+                if (random == 3 || random == 4)
+                {
+                    from.Stam = from.StamMax;
+                    SendLocalizedMessageTo(from, 500803); // You feel as though you've slept for days!
+                }
+
+                Timer.DelayCall(TimeSpan.FromHours(2.0), ReleaseUseLock_Callback, from, random);
+            }
         }
 
-        Timer.DelayCall(TimeSpan.FromHours(2.0), ReleaseUseLock_Callback, from, random);
-      }
-    }
-
-    public virtual void ReleaseUseLock_Callback(Mobile from, int random)
-    {
-      from.EndAction<RejuvinationAddonComponent>();
-
-      if (random == 4)
-      {
-        from.Hits = from.HitsMax;
-        from.Mana = from.ManaMax;
-        from.Stam = from.StamMax;
-        SendLocalizedMessageTo(from, 500807); // You feel completely rejuvinated!
-      }
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  public abstract class BaseRejuvinationAnkh : BaseAddon
-  {
-    private DateTime m_NextMessage;
-
-    public BaseRejuvinationAnkh()
-    {
-    }
-
-    public BaseRejuvinationAnkh(Serial serial) : base(serial)
-    {
-    }
-
-    public override bool HandlesOnMovement => true;
-
-    public override void OnMovement(Mobile m, Point3D oldLocation)
-    {
-      base.OnMovement(m, oldLocation);
-
-      if (m.Player && Utility.InRange(Location, m.Location, 3) && !Utility.InRange(Location, oldLocation, 3))
-        if (DateTime.UtcNow >= m_NextMessage)
+        public virtual void ReleaseUseLock_Callback(Mobile from, int random)
         {
-          if (Components.Count > 0)
-            Components[0].SendLocalizedMessageTo(m, 1010061); // An overwhelming sense of peace fills you.
+            from.EndAction<RejuvinationAddonComponent>();
 
-          m_NextMessage = DateTime.UtcNow + TimeSpan.FromSeconds(25.0);
+            if (random == 4)
+            {
+                from.Hits = from.HitsMax;
+                from.Mana = from.ManaMax;
+                from.Stam = from.StamMax;
+                SendLocalizedMessageTo(from, 500807); // You feel completely rejuvinated!
+            }
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
         }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public abstract class BaseRejuvinationAnkh : BaseAddon
     {
-      base.Serialize(writer);
+        private DateTime m_NextMessage;
 
-      writer.Write(0);
+        public BaseRejuvinationAnkh()
+        {
+        }
+
+        public BaseRejuvinationAnkh(Serial serial) : base(serial)
+        {
+        }
+
+        public override bool HandlesOnMovement => true;
+
+        public override void OnMovement(Mobile m, Point3D oldLocation)
+        {
+            base.OnMovement(m, oldLocation);
+
+            if (m.Player && Utility.InRange(Location, m.Location, 3) && !Utility.InRange(Location, oldLocation, 3))
+                if (DateTime.UtcNow >= m_NextMessage)
+                {
+                    if (Components.Count > 0)
+                        Components[0].SendLocalizedMessageTo(m, 1010061); // An overwhelming sense of peace fills you.
+
+                    m_NextMessage = DateTime.UtcNow + TimeSpan.FromSeconds(25.0);
+                }
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+        }
     }
 
-    public override void Deserialize(IGenericReader reader)
+    public class RejuvinationAnkhWest : BaseRejuvinationAnkh
     {
-      base.Deserialize(reader);
+        [Constructible]
+        public RejuvinationAnkhWest()
+        {
+            AddComponent(new RejuvinationAddonComponent(0x3), 0, 0, 0);
+            AddComponent(new RejuvinationAddonComponent(0x2), 0, 1, 0);
+        }
 
-      int version = reader.ReadInt();
-    }
-  }
+        public RejuvinationAnkhWest(Serial serial) : base(serial)
+        {
+        }
 
-  public class RejuvinationAnkhWest : BaseRejuvinationAnkh
-  {
-    [Constructible]
-    public RejuvinationAnkhWest()
-    {
-      AddComponent(new RejuvinationAddonComponent(0x3), 0, 0, 0);
-      AddComponent(new RejuvinationAddonComponent(0x2), 0, 1, 0);
-    }
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-    public RejuvinationAnkhWest(Serial serial) : base(serial)
-    {
-    }
+            writer.Write(0);
+        }
 
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
 
-      writer.Write(0);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class RejuvinationAnkhNorth : BaseRejuvinationAnkh
-  {
-    [Constructible]
-    public RejuvinationAnkhNorth()
-    {
-      AddComponent(new RejuvinationAddonComponent(0x4), 0, 0, 0);
-      AddComponent(new RejuvinationAddonComponent(0x5), 1, 0, 0);
+            int version = reader.ReadInt();
+        }
     }
 
-    public RejuvinationAnkhNorth(Serial serial) : base(serial)
+    public class RejuvinationAnkhNorth : BaseRejuvinationAnkh
     {
+        [Constructible]
+        public RejuvinationAnkhNorth()
+        {
+            AddComponent(new RejuvinationAddonComponent(0x4), 0, 0, 0);
+            AddComponent(new RejuvinationAddonComponent(0x5), 1, 0, 0);
+        }
+
+        public RejuvinationAnkhNorth(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+        }
     }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
 }

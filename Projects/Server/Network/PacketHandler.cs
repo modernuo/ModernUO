@@ -22,28 +22,28 @@ using System;
 
 namespace Server.Network
 {
-  public delegate void OnPacketReceive(NetState state, PacketReader pvSrc);
+    public delegate void OnPacketReceive(NetState state, PacketReader pvSrc);
 
-  public delegate TimeSpan ThrottlePacketCallback(NetState state);
+    public delegate TimeSpan ThrottlePacketCallback(NetState state);
 
-  public class PacketHandler
-  {
-    public PacketHandler(int packetID, int length, bool ingame, OnPacketReceive onReceive)
+    public class PacketHandler
     {
-      PacketID = packetID;
-      Length = length;
-      Ingame = ingame;
-      OnReceive = onReceive;
+        public PacketHandler(int packetID, int length, bool ingame, OnPacketReceive onReceive)
+        {
+            PacketID = packetID;
+            Length = length;
+            Ingame = ingame;
+            OnReceive = onReceive;
+        }
+
+        public int PacketID { get; }
+
+        public int Length { get; }
+
+        public OnPacketReceive OnReceive { get; }
+
+        public ThrottlePacketCallback ThrottleCallback { get; set; }
+
+        public bool Ingame { get; }
     }
-
-    public int PacketID { get; }
-
-    public int Length { get; }
-
-    public OnPacketReceive OnReceive { get; }
-
-    public ThrottlePacketCallback ThrottleCallback { get; set; }
-
-    public bool Ingame { get; }
-  }
 }

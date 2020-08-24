@@ -24,17 +24,18 @@ using Server.Random;
 
 namespace Server.Accounting.Security
 {
-  public class Argon2PasswordProtection : IPasswordProtection
-  {
-    public static IPasswordProtection Instance = new Argon2PasswordProtection();
-    private Argon2PasswordHasher m_PasswordHasher = new Argon2PasswordHasher(
-      rng: (RandomSources.SecureSource as SecureRandom)?.Generator
-    );
+    public class Argon2PasswordProtection : IPasswordProtection
+    {
+        public static IPasswordProtection Instance = new Argon2PasswordProtection();
 
-    public string EncryptPassword(string plainPassword) =>
-      m_PasswordHasher.Hash(plainPassword);
+        private Argon2PasswordHasher m_PasswordHasher = new Argon2PasswordHasher(
+            rng: (RandomSources.SecureSource as SecureRandom)?.Generator
+        );
 
-    public bool ValidatePassword(string encryptedPassword, string plainPassword) =>
-      m_PasswordHasher.Verify(encryptedPassword, plainPassword);
-  }
+        public string EncryptPassword(string plainPassword) =>
+            m_PasswordHasher.Hash(plainPassword);
+
+        public bool ValidatePassword(string encryptedPassword, string plainPassword) =>
+            m_PasswordHasher.Verify(encryptedPassword, plainPassword);
+    }
 }

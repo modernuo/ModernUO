@@ -6,94 +6,94 @@ using Server.Utilities;
 
 namespace Server.Engines.MLQuests.Rewards
 {
-  public class ItemReward : BaseReward
-  {
-    public static readonly ItemReward
-      SmallBagOfTrinkets = new ItemReward(1072268, typeof(SmallBagOfTrinkets)); // A small bag of trinkets.
-
-    public static readonly ItemReward
-      BagOfTrinkets = new ItemReward(1072341, typeof(BagOfTrinkets)); // A bag of trinkets.
-
-    public static readonly ItemReward
-      BagOfTreasure = new ItemReward(1072583, typeof(BagOfTreasure)); // A bag of treasure.
-
-    public static readonly ItemReward
-      LargeBagOfTreasure = new ItemReward(1072706, typeof(LargeBagOfTreasure)); // A large bag of treasure.
-
-    public static readonly ItemReward Strongbox = new ItemReward(1072584, typeof(RewardStrongbox)); // A strongbox.
-
-    public static readonly ItemReward
-      TailorSatchel = new ItemReward(1074282, typeof(TailorSatchel)); // Craftsman's Satchel
-
-    public static readonly ItemReward
-      BlacksmithSatchel = new ItemReward(1074282, typeof(BlacksmithSatchel)); // Craftsman's Satchel
-
-    public static readonly ItemReward
-      FletchingSatchel = new ItemReward(1074282, typeof(FletchingSatchel)); // Craftsman's Satchel
-
-    public static readonly ItemReward
-      CarpentrySatchel = new ItemReward(1074282, typeof(CarpentrySatchel)); // Craftsman's Satchel
-
-    public static readonly ItemReward
-      TinkerSatchel = new ItemReward(1074282, typeof(TinkerSatchel)); // Craftsman's Satchel
-
-    private readonly int m_Amount;
-
-    private readonly Type m_Type;
-
-    public ItemReward(TextDefinition name = null, Type type = null, int amount = 1)
-      : base(name)
+    public class ItemReward : BaseReward
     {
-      m_Type = type;
-      m_Amount = amount;
-    }
+        public static readonly ItemReward
+            SmallBagOfTrinkets = new ItemReward(1072268, typeof(SmallBagOfTrinkets)); // A small bag of trinkets.
 
-    public virtual Item CreateItem()
-    {
-      Item spawnedItem = null;
+        public static readonly ItemReward
+            BagOfTrinkets = new ItemReward(1072341, typeof(BagOfTrinkets)); // A bag of trinkets.
 
-      try
-      {
-        spawnedItem = ActivatorUtil.CreateInstance(m_Type) as Item;
-      }
-      catch (Exception e)
-      {
-        if (MLQuestSystem.Debug)
-          Console.WriteLine("WARNING: ItemReward.CreateItem failed for {0}: {1}", m_Type, e);
-      }
+        public static readonly ItemReward
+            BagOfTreasure = new ItemReward(1072583, typeof(BagOfTreasure)); // A bag of treasure.
 
-      return spawnedItem;
-    }
+        public static readonly ItemReward
+            LargeBagOfTreasure = new ItemReward(1072706, typeof(LargeBagOfTreasure)); // A large bag of treasure.
 
-    public override void AddRewardItems(PlayerMobile pm, List<Item> rewards)
-    {
-      Item reward = CreateItem();
+        public static readonly ItemReward Strongbox = new ItemReward(1072584, typeof(RewardStrongbox)); // A strongbox.
 
-      if (reward == null)
-        return;
+        public static readonly ItemReward
+            TailorSatchel = new ItemReward(1074282, typeof(TailorSatchel)); // Craftsman's Satchel
 
-      if (reward.Stackable)
-      {
-        if (m_Amount > 1)
-          reward.Amount = m_Amount;
+        public static readonly ItemReward
+            BlacksmithSatchel = new ItemReward(1074282, typeof(BlacksmithSatchel)); // Craftsman's Satchel
 
-        rewards.Add(reward);
-      }
-      else
-      {
-        for (int i = 0; i < m_Amount; ++i)
+        public static readonly ItemReward
+            FletchingSatchel = new ItemReward(1074282, typeof(FletchingSatchel)); // Craftsman's Satchel
+
+        public static readonly ItemReward
+            CarpentrySatchel = new ItemReward(1074282, typeof(CarpentrySatchel)); // Craftsman's Satchel
+
+        public static readonly ItemReward
+            TinkerSatchel = new ItemReward(1074282, typeof(TinkerSatchel)); // Craftsman's Satchel
+
+        private readonly int m_Amount;
+
+        private readonly Type m_Type;
+
+        public ItemReward(TextDefinition name = null, Type type = null, int amount = 1)
+            : base(name)
         {
-          rewards.Add(reward);
+            m_Type = type;
+            m_Amount = amount;
+        }
 
-          if (i < m_Amount - 1)
-          {
-            reward = CreateItem();
+        public virtual Item CreateItem()
+        {
+            Item spawnedItem = null;
+
+            try
+            {
+                spawnedItem = ActivatorUtil.CreateInstance(m_Type) as Item;
+            }
+            catch (Exception e)
+            {
+                if (MLQuestSystem.Debug)
+                    Console.WriteLine("WARNING: ItemReward.CreateItem failed for {0}: {1}", m_Type, e);
+            }
+
+            return spawnedItem;
+        }
+
+        public override void AddRewardItems(PlayerMobile pm, List<Item> rewards)
+        {
+            Item reward = CreateItem();
 
             if (reward == null)
-              return;
-          }
+                return;
+
+            if (reward.Stackable)
+            {
+                if (m_Amount > 1)
+                    reward.Amount = m_Amount;
+
+                rewards.Add(reward);
+            }
+            else
+            {
+                for (int i = 0; i < m_Amount; ++i)
+                {
+                    rewards.Add(reward);
+
+                    if (i < m_Amount - 1)
+                    {
+                        reward = CreateItem();
+
+                        if (reward == null)
+                            return;
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }

@@ -25,11 +25,11 @@ using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-  public class TextDefinitionConverterFactory : JsonConverterFactory
-  {
-    public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(TextDefinition);
+    public class TextDefinitionConverterFactory : JsonConverterFactory
+    {
+        public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(TextDefinition);
 
-    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
-      new TextDefinitionConverter();
-  }
+        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+            new TextDefinitionConverter();
+    }
 }

@@ -24,29 +24,29 @@ using Server.Network;
 
 namespace Server
 {
-  public class AccountLoginEventArgs : EventArgs
-  {
-    public AccountLoginEventArgs(NetState state, string username, string password)
+    public class AccountLoginEventArgs : EventArgs
     {
-      State = state;
-      Username = username;
-      Password = password;
+        public AccountLoginEventArgs(NetState state, string username, string password)
+        {
+            State = state;
+            Username = username;
+            Password = password;
+        }
+
+        public NetState State { get; }
+
+        public string Username { get; }
+
+        public string Password { get; }
+
+        public bool Accepted { get; set; }
+
+        public ALRReason RejectReason { get; set; }
     }
 
-    public NetState State { get; }
-
-    public string Username { get; }
-
-    public string Password { get; }
-
-    public bool Accepted { get; set; }
-
-    public ALRReason RejectReason { get; set; }
-  }
-
-  public static partial class EventSink
-  {
-    public static event Action<AccountLoginEventArgs> AccountLogin;
-    public static void InvokeAccountLogin(AccountLoginEventArgs e) => AccountLogin?.Invoke(e);
-  }
+    public static partial class EventSink
+    {
+        public static event Action<AccountLoginEventArgs> AccountLogin;
+        public static void InvokeAccountLogin(AccountLoginEventArgs e) => AccountLogin?.Invoke(e);
+    }
 }

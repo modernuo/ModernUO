@@ -25,19 +25,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Server.Network
 {
-  public class ServerStartup
-  {
-    private readonly IMessagePumpService _messagePumpService;
-    public ServerStartup(IMessagePumpService messagePumpService) => _messagePumpService = messagePumpService;
-
-    public void ConfigureServices(IServiceCollection services)
+    public class ServerStartup
     {
-    }
+        private readonly IMessagePumpService _messagePumpService;
+        public ServerStartup(IMessagePumpService messagePumpService) => _messagePumpService = messagePumpService;
 
-    public void Configure(IApplicationBuilder app)
-    {
-      // Run async?
-      Task.Run(() => Core.RunEventLoop(_messagePumpService));
+        public void ConfigureServices(IServiceCollection services)
+        {
+        }
+
+        public void Configure(IApplicationBuilder app)
+        {
+            // Run async?
+            Task.Run(() => Core.RunEventLoop(_messagePumpService));
+        }
     }
-  }
 }

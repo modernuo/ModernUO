@@ -22,17 +22,17 @@ using Server.Prompts;
 
 namespace Server.Network
 {
-  public sealed class UnicodePrompt : Packet
-  {
-    public UnicodePrompt(Prompt prompt) : base(0xC2)
+    public sealed class UnicodePrompt : Packet
     {
-      EnsureCapacity(21);
+        public UnicodePrompt(Prompt prompt) : base(0xC2)
+        {
+            EnsureCapacity(21);
 
-      Stream.Write(prompt.Serial); // TODO: Does this value even matter?
-      Stream.Write(prompt.Serial);
-      Stream.Write(0);
-      Stream.Write(0);
-      Stream.Write((short)0);
+            Stream.Write(prompt.Serial); // TODO: Does this value even matter?
+            Stream.Write(prompt.Serial);
+            Stream.Write(0);
+            Stream.Write(0);
+            Stream.Write((short)0);
+        }
     }
-  }
 }

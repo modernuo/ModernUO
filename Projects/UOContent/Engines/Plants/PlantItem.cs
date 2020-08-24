@@ -7,545 +7,545 @@ using Server.Network;
 
 namespace Server.Engines.Plants
 {
-  public enum PlantStatus
-  {
-    BowlOfDirt = 0,
-    Seed = 1,
-    Sapling = 2,
-    Plant = 4,
-    FullGrownPlant = 7,
-    DecorativePlant = 10,
-    DeadTwigs = 11,
-
-    Stage1 = 1,
-    Stage2 = 2,
-    Stage3 = 3,
-    Stage4 = 4,
-    Stage5 = 5,
-    Stage6 = 6,
-    Stage7 = 7,
-    Stage8 = 8,
-    Stage9 = 9
-  }
-
-  public class PlantItem : Item, ISecurable
-  {
-    /*
-     * Clients 7.0.12.0+ expect a container type in the plant label.
-     * To support older (and only older) clients, change this to false.
-     */
-    private static readonly bool ShowContainerType = true;
-    private PlantHue m_PlantHue;
-
-    private PlantStatus m_PlantStatus;
-    private PlantType m_PlantType;
-    private bool m_ShowType;
-
-    [Constructible]
-    public PlantItem(bool fertileDirt = false) : base(0x1602)
+    public enum PlantStatus
     {
-      Weight = 1.0;
+        BowlOfDirt = 0,
+        Seed = 1,
+        Sapling = 2,
+        Plant = 4,
+        FullGrownPlant = 7,
+        DecorativePlant = 10,
+        DeadTwigs = 11,
 
-      m_PlantStatus = PlantStatus.BowlOfDirt;
-      PlantSystem = new PlantSystem(this, fertileDirt);
-      Level = SecureLevel.Owner;
-
-      Plants.Add(this);
+        Stage1 = 1,
+        Stage2 = 2,
+        Stage3 = 3,
+        Stage4 = 4,
+        Stage5 = 5,
+        Stage6 = 6,
+        Stage7 = 7,
+        Stage8 = 8,
+        Stage9 = 9
     }
 
-    public PlantItem(Serial serial) : base(serial)
+    public class PlantItem : Item, ISecurable
     {
-    }
+        /*
+         * Clients 7.0.12.0+ expect a container type in the plant label.
+         * To support older (and only older) clients, change this to false.
+         */
+        private static readonly bool ShowContainerType = true;
+        private PlantHue m_PlantHue;
 
-    public PlantSystem PlantSystem { get; private set; }
+        private PlantStatus m_PlantStatus;
+        private PlantType m_PlantType;
+        private bool m_ShowType;
 
-    public override bool ForceShowProperties => ObjectPropertyList.Enabled;
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public PlantStatus PlantStatus
-    {
-      get => m_PlantStatus;
-      set
-      {
-        if (m_PlantStatus == value || value < PlantStatus.BowlOfDirt || value > PlantStatus.DeadTwigs)
-          return;
-
-        double ratio;
-        if (PlantSystem != null)
-          ratio = (double)PlantSystem.Hits / PlantSystem.MaxHits;
-        else
-          ratio = 1.0;
-
-        m_PlantStatus = value;
-
-        if (m_PlantStatus >= PlantStatus.DecorativePlant)
+        [Constructible]
+        public PlantItem(bool fertileDirt = false) : base(0x1602)
         {
-          PlantSystem = null;
-        }
-        else
-        {
-          PlantSystem ??= new PlantSystem(this, false);
+            Weight = 1.0;
 
-          int hits = (int)(PlantSystem.MaxHits * ratio);
+            m_PlantStatus = PlantStatus.BowlOfDirt;
+            PlantSystem = new PlantSystem(this, fertileDirt);
+            Level = SecureLevel.Owner;
 
-          if (hits == 0 && m_PlantStatus > PlantStatus.BowlOfDirt)
-            PlantSystem.Hits = hits + 1;
-          else
-            PlantSystem.Hits = hits;
+            Plants.Add(this);
         }
 
-        Update();
-      }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public PlantType PlantType
-    {
-      get => m_PlantType;
-      set
-      {
-        m_PlantType = value;
-        Update();
-      }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public PlantHue PlantHue
-    {
-      get => m_PlantHue;
-      set
-      {
-        m_PlantHue = value;
-        Update();
-      }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool ShowType
-    {
-      get => m_ShowType;
-      set
-      {
-        m_ShowType = value;
-        InvalidateProperties();
-      }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool ValidGrowthLocation
-    {
-      get
-      {
-        if (IsLockedDown && RootParent == null)
-          return true;
-
-        if (!(RootParent is Mobile owner))
-          return false;
-
-        return IsChildOf(owner.Backpack) || IsChildOf(owner.FindBankNoCreate());
-      }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsGrowable => m_PlantStatus >= PlantStatus.BowlOfDirt && m_PlantStatus <= PlantStatus.Stage9;
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsCrossable => PlantHueInfo.IsCrossable(PlantHue) && PlantTypeInfo.IsCrossable(PlantType);
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool Reproduces => PlantHueInfo.CanReproduce(PlantHue) && PlantTypeInfo.CanReproduce(PlantType);
-
-    public static List<PlantItem> Plants { get; } = new List<PlantItem>();
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public SecureLevel Level { get; set; }
-
-    public override void OnSingleClick(Mobile from)
-    {
-      if (m_PlantStatus >= PlantStatus.DeadTwigs)
-        LabelTo(from, LabelNumber);
-      else if (m_PlantStatus >= PlantStatus.DecorativePlant)
-        LabelTo(from, 1061924); // a decorative plant
-      else if (m_PlantStatus >= PlantStatus.FullGrownPlant)
-        LabelTo(from, PlantTypeInfo.GetInfo(m_PlantType).Name);
-      else
-        LabelTo(from, 1029913); // plant bowl
-    }
-
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
-    {
-      base.GetContextMenuEntries(from, list);
-      SetSecureLevelEntry.AddTo(from, this, list);
-    }
-
-    public int GetLocalizedPlantStatus()
-    {
-      if (m_PlantStatus >= PlantStatus.Plant)
-        return 1060812; // plant
-      if (m_PlantStatus >= PlantStatus.Sapling)
-        return 1023305; // sapling
-      if (m_PlantStatus >= PlantStatus.Seed)
-        return 1060810; // seed
-      return 1026951; // dirt
-    }
-
-    public int GetLocalizedContainerType() => 1150435;
-
-    private void Update()
-    {
-      if (m_PlantStatus >= PlantStatus.DeadTwigs)
-      {
-        ItemID = 0x1B9D;
-        Hue = PlantHueInfo.GetInfo(m_PlantHue).Hue;
-      }
-      else if (m_PlantStatus >= PlantStatus.FullGrownPlant)
-      {
-        ItemID = PlantTypeInfo.GetInfo(m_PlantType).ItemID;
-        Hue = PlantHueInfo.GetInfo(m_PlantHue).Hue;
-      }
-      else if (m_PlantStatus >= PlantStatus.Plant)
-      {
-        ItemID = 0x1600;
-        Hue = 0;
-      }
-      else
-      {
-        ItemID = 0x1602;
-        Hue = 0;
-      }
-
-      InvalidateProperties();
-    }
-
-    public override void AddNameProperty(ObjectPropertyList list)
-    {
-      if (m_PlantStatus >= PlantStatus.DeadTwigs)
-      {
-        base.AddNameProperty(list);
-      }
-      else if (m_PlantStatus < PlantStatus.Seed)
-      {
-        string args;
-
-        if (ShowContainerType)
-          args = $"#{GetLocalizedContainerType()}\t#{PlantSystem.GetLocalizedDirtStatus()}";
-        else
-          args = $"#{PlantSystem.GetLocalizedDirtStatus()}";
-
-        list.Add(1060830, args); // a ~1_val~ of ~2_val~ dirt
-      }
-      else
-      {
-        PlantTypeInfo typeInfo = PlantTypeInfo.GetInfo(m_PlantType);
-        PlantHueInfo hueInfo = PlantHueInfo.GetInfo(m_PlantHue);
-
-        if (m_PlantStatus >= PlantStatus.DecorativePlant)
+        public PlantItem(Serial serial) : base(serial)
         {
-          list.Add(typeInfo.GetPlantLabelDecorative(hueInfo), $"#{hueInfo.Name}\t#{typeInfo.Name}");
         }
-        else if (m_PlantStatus >= PlantStatus.FullGrownPlant)
+
+        public PlantSystem PlantSystem { get; private set; }
+
+        public override bool ForceShowProperties => ObjectPropertyList.Enabled;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public PlantStatus PlantStatus
         {
-          list.Add(typeInfo.GetPlantLabelFullGrown(hueInfo),
-            $"#{PlantSystem.GetLocalizedHealth()}\t#{hueInfo.Name}\t#{typeInfo.Name}");
+            get => m_PlantStatus;
+            set
+            {
+                if (m_PlantStatus == value || value < PlantStatus.BowlOfDirt || value > PlantStatus.DeadTwigs)
+                    return;
+
+                double ratio;
+                if (PlantSystem != null)
+                    ratio = (double)PlantSystem.Hits / PlantSystem.MaxHits;
+                else
+                    ratio = 1.0;
+
+                m_PlantStatus = value;
+
+                if (m_PlantStatus >= PlantStatus.DecorativePlant)
+                {
+                    PlantSystem = null;
+                }
+                else
+                {
+                    PlantSystem ??= new PlantSystem(this, false);
+
+                    int hits = (int)(PlantSystem.MaxHits * ratio);
+
+                    if (hits == 0 && m_PlantStatus > PlantStatus.BowlOfDirt)
+                        PlantSystem.Hits = hits + 1;
+                    else
+                        PlantSystem.Hits = hits;
+                }
+
+                Update();
+            }
         }
-        else
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public PlantType PlantType
         {
-          string args;
+            get => m_PlantType;
+            set
+            {
+                m_PlantType = value;
+                Update();
+            }
+        }
 
-          if (ShowContainerType)
-            args =
-              $"#{GetLocalizedContainerType()}\t#{PlantSystem.GetLocalizedDirtStatus()}\t#{PlantSystem.GetLocalizedHealth()}";
-          else
-            args = $"#{PlantSystem.GetLocalizedDirtStatus()}\t#{PlantSystem.GetLocalizedHealth()}";
+        [CommandProperty(AccessLevel.GameMaster)]
+        public PlantHue PlantHue
+        {
+            get => m_PlantHue;
+            set
+            {
+                m_PlantHue = value;
+                Update();
+            }
+        }
 
-          if (m_ShowType)
-          {
-            args += $"\t#{hueInfo.Name}\t#{typeInfo.Name}\t#{GetLocalizedPlantStatus()}";
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool ShowType
+        {
+            get => m_ShowType;
+            set
+            {
+                m_ShowType = value;
+                InvalidateProperties();
+            }
+        }
 
-            if (m_PlantStatus == PlantStatus.Plant)
-              list.Add(typeInfo.GetPlantLabelPlant(hueInfo), args);
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool ValidGrowthLocation
+        {
+            get
+            {
+                if (IsLockedDown && RootParent == null)
+                    return true;
+
+                if (!(RootParent is Mobile owner))
+                    return false;
+
+                return IsChildOf(owner.Backpack) || IsChildOf(owner.FindBankNoCreate());
+            }
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool IsGrowable => m_PlantStatus >= PlantStatus.BowlOfDirt && m_PlantStatus <= PlantStatus.Stage9;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool IsCrossable => PlantHueInfo.IsCrossable(PlantHue) && PlantTypeInfo.IsCrossable(PlantType);
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool Reproduces => PlantHueInfo.CanReproduce(PlantHue) && PlantTypeInfo.CanReproduce(PlantType);
+
+        public static List<PlantItem> Plants { get; } = new List<PlantItem>();
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public SecureLevel Level { get; set; }
+
+        public override void OnSingleClick(Mobile from)
+        {
+            if (m_PlantStatus >= PlantStatus.DeadTwigs)
+                LabelTo(from, LabelNumber);
+            else if (m_PlantStatus >= PlantStatus.DecorativePlant)
+                LabelTo(from, 1061924); // a decorative plant
+            else if (m_PlantStatus >= PlantStatus.FullGrownPlant)
+                LabelTo(from, PlantTypeInfo.GetInfo(m_PlantType).Name);
             else
-              list.Add(typeInfo.GetPlantLabelSeed(hueInfo), args);
-          }
-          else
-          {
-            args +=
-              $"\t#{(typeInfo.PlantCategory == PlantCategory.Default ? hueInfo.Name : (int)typeInfo.PlantCategory)}\t#{GetLocalizedPlantStatus()}";
-
-            list.Add(hueInfo.IsBright() ? 1060832 : 1060831,
-              args); // a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~
-          }
+                LabelTo(from, 1029913); // plant bowl
         }
-      }
-    }
 
-    public bool IsUsableBy(Mobile from) =>
-      IsChildOf(from.Backpack) || IsChildOf(from.FindBankNoCreate()) || (IsLockedDown && IsAccessibleTo(from)) ||
-      (RootParent is Item root && root.IsSecure && root.IsAccessibleTo(from));
-
-    public override void OnDoubleClick(Mobile from)
-    {
-      if (m_PlantStatus >= PlantStatus.DecorativePlant)
-        return;
-
-      Point3D loc = GetWorldLocation();
-
-      if (!from.InLOS(loc) || !from.InRange(loc, 2))
-      {
-        from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that.
-        return;
-      }
-
-      if (!IsUsableBy(from))
-      {
-        LabelTo(from, 1061856); // You must have the item in your backpack or locked down in order to use it.
-        return;
-      }
-
-      from.SendGump(new MainPlantGump(this));
-    }
-
-    public void PlantSeed(Mobile from, Seed seed)
-    {
-      if (m_PlantStatus >= PlantStatus.FullGrownPlant)
-      {
-        LabelTo(from, 1061919); // You must use a seed on some prepared soil!
-      }
-      else if (!IsUsableBy(from))
-      {
-        LabelTo(from, 1061921); // The bowl of dirt must be in your pack, or you must lock it down.
-      }
-      else if (m_PlantStatus != PlantStatus.BowlOfDirt)
-      {
-        from.SendLocalizedMessage(1080389,
-          $"#{GetLocalizedPlantStatus()}"); // This bowl of dirt already has a ~1_val~ in it!
-      }
-      else if (PlantSystem.Water < 2)
-      {
-        LabelTo(from, 1061920); // The dirt needs to be softened first.
-      }
-      else
-      {
-        m_PlantType = seed.PlantType;
-        m_PlantHue = seed.PlantHue;
-        m_ShowType = seed.ShowType;
-
-        seed.Consume();
-
-        PlantStatus = PlantStatus.Seed;
-
-        PlantSystem.Reset(false);
-
-        LabelTo(from, 1061922); // You plant the seed in the bowl of dirt.
-      }
-    }
-
-    public void Die()
-    {
-      if (m_PlantStatus >= PlantStatus.FullGrownPlant)
-      {
-        PlantStatus = PlantStatus.DeadTwigs;
-      }
-      else
-      {
-        PlantStatus = PlantStatus.BowlOfDirt;
-        PlantSystem.Reset(true);
-      }
-    }
-
-    public void Pour(Mobile from, Item item)
-    {
-      if (m_PlantStatus >= PlantStatus.DeadTwigs)
-        return;
-
-      if (m_PlantStatus == PlantStatus.DecorativePlant)
-      {
-        LabelTo(from, 1053049); // This is a decorative plant, it does not need watering!
-        return;
-      }
-
-      if (!IsUsableBy(from))
-      {
-        LabelTo(from, 1061856); // You must have the item in your backpack or locked down in order to use it.
-        return;
-      }
-
-      if (item is BaseBeverage beverage)
-      {
-        if (beverage.IsEmpty || !beverage.Pourable || beverage.Content != BeverageType.Water)
+        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
         {
-          LabelTo(from, 1053069); // You can't use that on a plant!
-          return;
+            base.GetContextMenuEntries(from, list);
+            SetSecureLevelEntry.AddTo(from, this, list);
         }
 
-        if (!beverage.ValidateUse(from, true))
-          return;
-
-        beverage.Quantity--;
-        PlantSystem.Water++;
-
-        from.PlaySound(0x4E);
-        LabelTo(from, 1061858); // You soften the dirt with water.
-      }
-      else if (item is BasePotion potion)
-      {
-        if (ApplyPotion(potion.PotionEffect, false, out int message))
+        public int GetLocalizedPlantStatus()
         {
-          potion.Consume();
-          from.PlaySound(0x240);
-          from.AddToBackpack(new Bottle());
+            if (m_PlantStatus >= PlantStatus.Plant)
+                return 1060812; // plant
+            if (m_PlantStatus >= PlantStatus.Sapling)
+                return 1023305; // sapling
+            if (m_PlantStatus >= PlantStatus.Seed)
+                return 1060810; // seed
+            return 1026951; // dirt
         }
 
-        LabelTo(from, message);
-      }
-      else if (item is PotionKeg keg)
-      {
-        if (keg.Held <= 0)
+        public int GetLocalizedContainerType() => 1150435;
+
+        private void Update()
         {
-          LabelTo(from, 1053069); // You can't use that on a plant!
-          return;
+            if (m_PlantStatus >= PlantStatus.DeadTwigs)
+            {
+                ItemID = 0x1B9D;
+                Hue = PlantHueInfo.GetInfo(m_PlantHue).Hue;
+            }
+            else if (m_PlantStatus >= PlantStatus.FullGrownPlant)
+            {
+                ItemID = PlantTypeInfo.GetInfo(m_PlantType).ItemID;
+                Hue = PlantHueInfo.GetInfo(m_PlantHue).Hue;
+            }
+            else if (m_PlantStatus >= PlantStatus.Plant)
+            {
+                ItemID = 0x1600;
+                Hue = 0;
+            }
+            else
+            {
+                ItemID = 0x1602;
+                Hue = 0;
+            }
+
+            InvalidateProperties();
         }
 
-        if (ApplyPotion(keg.Type, false, out int message))
+        public override void AddNameProperty(ObjectPropertyList list)
         {
-          keg.Held--;
-          from.PlaySound(0x240);
+            if (m_PlantStatus >= PlantStatus.DeadTwigs)
+            {
+                base.AddNameProperty(list);
+            }
+            else if (m_PlantStatus < PlantStatus.Seed)
+            {
+                string args;
+
+                if (ShowContainerType)
+                    args = $"#{GetLocalizedContainerType()}\t#{PlantSystem.GetLocalizedDirtStatus()}";
+                else
+                    args = $"#{PlantSystem.GetLocalizedDirtStatus()}";
+
+                list.Add(1060830, args); // a ~1_val~ of ~2_val~ dirt
+            }
+            else
+            {
+                PlantTypeInfo typeInfo = PlantTypeInfo.GetInfo(m_PlantType);
+                PlantHueInfo hueInfo = PlantHueInfo.GetInfo(m_PlantHue);
+
+                if (m_PlantStatus >= PlantStatus.DecorativePlant)
+                {
+                    list.Add(typeInfo.GetPlantLabelDecorative(hueInfo), $"#{hueInfo.Name}\t#{typeInfo.Name}");
+                }
+                else if (m_PlantStatus >= PlantStatus.FullGrownPlant)
+                {
+                    list.Add(typeInfo.GetPlantLabelFullGrown(hueInfo),
+                        $"#{PlantSystem.GetLocalizedHealth()}\t#{hueInfo.Name}\t#{typeInfo.Name}");
+                }
+                else
+                {
+                    string args;
+
+                    if (ShowContainerType)
+                        args =
+                            $"#{GetLocalizedContainerType()}\t#{PlantSystem.GetLocalizedDirtStatus()}\t#{PlantSystem.GetLocalizedHealth()}";
+                    else
+                        args = $"#{PlantSystem.GetLocalizedDirtStatus()}\t#{PlantSystem.GetLocalizedHealth()}";
+
+                    if (m_ShowType)
+                    {
+                        args += $"\t#{hueInfo.Name}\t#{typeInfo.Name}\t#{GetLocalizedPlantStatus()}";
+
+                        if (m_PlantStatus == PlantStatus.Plant)
+                            list.Add(typeInfo.GetPlantLabelPlant(hueInfo), args);
+                        else
+                            list.Add(typeInfo.GetPlantLabelSeed(hueInfo), args);
+                    }
+                    else
+                    {
+                        args +=
+                            $"\t#{(typeInfo.PlantCategory == PlantCategory.Default ? hueInfo.Name : (int)typeInfo.PlantCategory)}\t#{GetLocalizedPlantStatus()}";
+
+                        list.Add(hueInfo.IsBright() ? 1060832 : 1060831,
+                            args); // a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~
+                    }
+                }
+            }
         }
 
-        LabelTo(from, message);
-      }
-      else
-      {
-        LabelTo(from, 1053069); // You can't use that on a plant!
-      }
-    }
+        public bool IsUsableBy(Mobile from) =>
+            IsChildOf(from.Backpack) || IsChildOf(from.FindBankNoCreate()) || (IsLockedDown && IsAccessibleTo(from)) ||
+            (RootParent is Item root && root.IsSecure && root.IsAccessibleTo(from));
 
-    public bool ApplyPotion(PotionEffect effect, bool testOnly, out int message)
-    {
-      if (m_PlantStatus >= PlantStatus.DecorativePlant)
-      {
-        message = 1053049; // This is a decorative plant, it does not need watering!
-        return false;
-      }
+        public override void OnDoubleClick(Mobile from)
+        {
+            if (m_PlantStatus >= PlantStatus.DecorativePlant)
+                return;
 
-      if (m_PlantStatus == PlantStatus.BowlOfDirt)
-      {
-        message = 1053066; // You should only pour potions on a plant or seed!
-        return false;
-      }
+            Point3D loc = GetWorldLocation();
 
-      bool full = false;
+            if (!from.InLOS(loc) || !from.InRange(loc, 2))
+            {
+                from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that.
+                return;
+            }
 
-      if (effect == PotionEffect.PoisonGreater || effect == PotionEffect.PoisonDeadly)
-      {
-        if (PlantSystem.IsFullPoisonPotion)
-          full = true;
-        else if (!testOnly)
-          PlantSystem.PoisonPotion++;
-      }
-      else if (effect == PotionEffect.CureGreater)
-      {
-        if (PlantSystem.IsFullCurePotion)
-          full = true;
-        else if (!testOnly)
-          PlantSystem.CurePotion++;
-      }
-      else if (effect == PotionEffect.HealGreater)
-      {
-        if (PlantSystem.IsFullHealPotion)
-          full = true;
-        else if (!testOnly)
-          PlantSystem.HealPotion++;
-      }
-      else if (effect == PotionEffect.StrengthGreater)
-      {
-        if (PlantSystem.IsFullStrengthPotion)
-          full = true;
-        else if (!testOnly)
-          PlantSystem.StrengthPotion++;
-      }
-      else if (effect == PotionEffect.PoisonLesser || effect == PotionEffect.Poison ||
-               effect == PotionEffect.CureLesser || effect == PotionEffect.Cure ||
-               effect == PotionEffect.HealLesser || effect == PotionEffect.Heal || effect == PotionEffect.Strength)
-      {
-        message = 1053068; // This potion is not powerful enough to use on a plant!
-        return false;
-      }
-      else
-      {
-        message = 1053069; // You can't use that on a plant!
-        return false;
-      }
+            if (!IsUsableBy(from))
+            {
+                LabelTo(from, 1061856); // You must have the item in your backpack or locked down in order to use it.
+                return;
+            }
 
-      if (full)
-      {
-        message = 1053065; // The plant is already soaked with this type of potion!
-        return false;
-      }
+            from.SendGump(new MainPlantGump(this));
+        }
 
-      message = 1053067; // You pour the potion over the plant.
-      return true;
-    }
+        public void PlantSeed(Mobile from, Seed seed)
+        {
+            if (m_PlantStatus >= PlantStatus.FullGrownPlant)
+            {
+                LabelTo(from, 1061919); // You must use a seed on some prepared soil!
+            }
+            else if (!IsUsableBy(from))
+            {
+                LabelTo(from, 1061921); // The bowl of dirt must be in your pack, or you must lock it down.
+            }
+            else if (m_PlantStatus != PlantStatus.BowlOfDirt)
+            {
+                from.SendLocalizedMessage(1080389,
+                    $"#{GetLocalizedPlantStatus()}"); // This bowl of dirt already has a ~1_val~ in it!
+            }
+            else if (PlantSystem.Water < 2)
+            {
+                LabelTo(from, 1061920); // The dirt needs to be softened first.
+            }
+            else
+            {
+                m_PlantType = seed.PlantType;
+                m_PlantHue = seed.PlantHue;
+                m_ShowType = seed.ShowType;
 
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
+                seed.Consume();
 
-      writer.Write(2); // version
+                PlantStatus = PlantStatus.Seed;
 
-      writer.Write((int)Level);
+                PlantSystem.Reset(false);
 
-      writer.Write((int)m_PlantStatus);
-      writer.Write((int)m_PlantType);
-      writer.Write((int)m_PlantHue);
-      writer.Write(m_ShowType);
+                LabelTo(from, 1061922); // You plant the seed in the bowl of dirt.
+            }
+        }
 
-      if (m_PlantStatus < PlantStatus.DecorativePlant)
-        PlantSystem.Save(writer);
-    }
+        public void Die()
+        {
+            if (m_PlantStatus >= PlantStatus.FullGrownPlant)
+            {
+                PlantStatus = PlantStatus.DeadTwigs;
+            }
+            else
+            {
+                PlantStatus = PlantStatus.BowlOfDirt;
+                PlantSystem.Reset(true);
+            }
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public void Pour(Mobile from, Item item)
+        {
+            if (m_PlantStatus >= PlantStatus.DeadTwigs)
+                return;
 
-      int version = reader.ReadInt();
+            if (m_PlantStatus == PlantStatus.DecorativePlant)
+            {
+                LabelTo(from, 1053049); // This is a decorative plant, it does not need watering!
+                return;
+            }
 
-      switch (version)
-      {
-        case 2:
-        case 1:
-          {
-            Level = (SecureLevel)reader.ReadInt();
-            goto case 0;
-          }
-        case 0:
-          {
-            if (version < 1)
-              Level = SecureLevel.CoOwners;
+            if (!IsUsableBy(from))
+            {
+                LabelTo(from, 1061856); // You must have the item in your backpack or locked down in order to use it.
+                return;
+            }
 
-            m_PlantStatus = (PlantStatus)reader.ReadInt();
-            m_PlantType = (PlantType)reader.ReadInt();
-            m_PlantHue = (PlantHue)reader.ReadInt();
-            m_ShowType = reader.ReadBool();
+            if (item is BaseBeverage beverage)
+            {
+                if (beverage.IsEmpty || !beverage.Pourable || beverage.Content != BeverageType.Water)
+                {
+                    LabelTo(from, 1053069); // You can't use that on a plant!
+                    return;
+                }
+
+                if (!beverage.ValidateUse(from, true))
+                    return;
+
+                beverage.Quantity--;
+                PlantSystem.Water++;
+
+                from.PlaySound(0x4E);
+                LabelTo(from, 1061858); // You soften the dirt with water.
+            }
+            else if (item is BasePotion potion)
+            {
+                if (ApplyPotion(potion.PotionEffect, false, out int message))
+                {
+                    potion.Consume();
+                    from.PlaySound(0x240);
+                    from.AddToBackpack(new Bottle());
+                }
+
+                LabelTo(from, message);
+            }
+            else if (item is PotionKeg keg)
+            {
+                if (keg.Held <= 0)
+                {
+                    LabelTo(from, 1053069); // You can't use that on a plant!
+                    return;
+                }
+
+                if (ApplyPotion(keg.Type, false, out int message))
+                {
+                    keg.Held--;
+                    from.PlaySound(0x240);
+                }
+
+                LabelTo(from, message);
+            }
+            else
+            {
+                LabelTo(from, 1053069); // You can't use that on a plant!
+            }
+        }
+
+        public bool ApplyPotion(PotionEffect effect, bool testOnly, out int message)
+        {
+            if (m_PlantStatus >= PlantStatus.DecorativePlant)
+            {
+                message = 1053049; // This is a decorative plant, it does not need watering!
+                return false;
+            }
+
+            if (m_PlantStatus == PlantStatus.BowlOfDirt)
+            {
+                message = 1053066; // You should only pour potions on a plant or seed!
+                return false;
+            }
+
+            bool full = false;
+
+            if (effect == PotionEffect.PoisonGreater || effect == PotionEffect.PoisonDeadly)
+            {
+                if (PlantSystem.IsFullPoisonPotion)
+                    full = true;
+                else if (!testOnly)
+                    PlantSystem.PoisonPotion++;
+            }
+            else if (effect == PotionEffect.CureGreater)
+            {
+                if (PlantSystem.IsFullCurePotion)
+                    full = true;
+                else if (!testOnly)
+                    PlantSystem.CurePotion++;
+            }
+            else if (effect == PotionEffect.HealGreater)
+            {
+                if (PlantSystem.IsFullHealPotion)
+                    full = true;
+                else if (!testOnly)
+                    PlantSystem.HealPotion++;
+            }
+            else if (effect == PotionEffect.StrengthGreater)
+            {
+                if (PlantSystem.IsFullStrengthPotion)
+                    full = true;
+                else if (!testOnly)
+                    PlantSystem.StrengthPotion++;
+            }
+            else if (effect == PotionEffect.PoisonLesser || effect == PotionEffect.Poison ||
+                     effect == PotionEffect.CureLesser || effect == PotionEffect.Cure ||
+                     effect == PotionEffect.HealLesser || effect == PotionEffect.Heal || effect == PotionEffect.Strength)
+            {
+                message = 1053068; // This potion is not powerful enough to use on a plant!
+                return false;
+            }
+            else
+            {
+                message = 1053069; // You can't use that on a plant!
+                return false;
+            }
+
+            if (full)
+            {
+                message = 1053065; // The plant is already soaked with this type of potion!
+                return false;
+            }
+
+            message = 1053067; // You pour the potion over the plant.
+            return true;
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(2); // version
+
+            writer.Write((int)Level);
+
+            writer.Write((int)m_PlantStatus);
+            writer.Write((int)m_PlantType);
+            writer.Write((int)m_PlantHue);
+            writer.Write(m_ShowType);
 
             if (m_PlantStatus < PlantStatus.DecorativePlant)
-              PlantSystem = new PlantSystem(this, reader);
+                PlantSystem.Save(writer);
+        }
 
-            if (version < 2 && PlantHueInfo.IsCrossable(m_PlantHue))
-              m_PlantHue |= PlantHue.Reproduces;
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
 
-            break;
-          }
-      }
+            int version = reader.ReadInt();
 
-      Plants.Add(this);
+            switch (version)
+            {
+                case 2:
+                case 1:
+                    {
+                        Level = (SecureLevel)reader.ReadInt();
+                        goto case 0;
+                    }
+                case 0:
+                    {
+                        if (version < 1)
+                            Level = SecureLevel.CoOwners;
+
+                        m_PlantStatus = (PlantStatus)reader.ReadInt();
+                        m_PlantType = (PlantType)reader.ReadInt();
+                        m_PlantHue = (PlantHue)reader.ReadInt();
+                        m_ShowType = reader.ReadBool();
+
+                        if (m_PlantStatus < PlantStatus.DecorativePlant)
+                            PlantSystem = new PlantSystem(this, reader);
+
+                        if (version < 2 && PlantHueInfo.IsCrossable(m_PlantHue))
+                            m_PlantHue |= PlantHue.Reproduces;
+
+                        break;
+                    }
+            }
+
+            Plants.Add(this);
+        }
+
+        public override void OnAfterDelete()
+        {
+            base.OnAfterDelete();
+
+            Plants.Remove(this);
+        }
     }
-
-    public override void OnAfterDelete()
-    {
-      base.OnAfterDelete();
-
-      Plants.Remove(this);
-    }
-  }
 }

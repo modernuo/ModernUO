@@ -56,7 +56,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='Analyze'">
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
-    <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
+<!--    <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>-->
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\Rules.ruleset">

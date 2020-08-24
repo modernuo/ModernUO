@@ -1,28 +1,28 @@
 using System;
+
 // using Server.Misc;
 
 namespace Server.Tests
 {
-  public class ServerFixture : IDisposable
-  {
-
-    // Global setup
-    static ServerFixture()
+    public class ServerFixture : IDisposable
     {
-      Core.Expansion = Expansion.EJ;
+        // Global setup
+        static ServerFixture()
+        {
+            Core.Expansion = Expansion.EJ;
 
-      // Load Configurations
-      ServerConfiguration.Load(true);
+            // Load Configurations
+            ServerConfiguration.Load(true);
 
-      // Configure / Initialize
-      TestMapDefinitions.ConfigureTestMapDefinitions();
+            // Configure / Initialize
+            TestMapDefinitions.ConfigureTestMapDefinitions();
 
-      // Load the world
-      World.Load();
+            // Load the world
+            World.Load();
+        }
+
+        public void Dispose()
+        {
+        }
     }
-
-    public void Dispose()
-    {
-    }
-  }
 }

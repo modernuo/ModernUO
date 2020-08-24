@@ -4,185 +4,185 @@ using Server.Network;
 
 namespace Server.Gumps
 {
-  public class GuildmasterGump : Gump
-  {
-    private readonly Guild m_Guild;
-    private readonly Mobile m_Mobile;
-
-    public GuildmasterGump(Mobile from, Guild guild) : base(20, 30)
+    public class GuildmasterGump : Gump
     {
-      m_Mobile = from;
-      m_Guild = guild;
+        private readonly Guild m_Guild;
+        private readonly Mobile m_Mobile;
 
-      Draggable = false;
-
-      AddPage(0);
-      AddBackground(0, 0, 550, 400, 5054);
-      AddBackground(10, 10, 530, 380, 3000);
-
-      AddHtmlLocalized(20, 15, 510, 35, 1011121); // <center>GUILDMASTER FUNCTIONS</center>
-
-      AddButton(20, 40, 4005, 4007, 2);
-      AddHtmlLocalized(55, 40, 470, 30, 1011107); // Set the guild name.
-
-      AddButton(20, 70, 4005, 4007, 3);
-      AddHtmlLocalized(55, 70, 470, 30, 1011109); // Set the guild's abbreviation.
-
-      if (Guild.OrderChaos)
-      {
-        AddButton(20, 100, 4005, 4007, 4);
-
-        switch (m_Guild.Type)
+        public GuildmasterGump(Mobile from, Guild guild) : base(20, 30)
         {
-          case GuildType.Regular:
-            AddHtmlLocalized(55, 100, 470, 30, 1013059); // Change guild type: Currently Standard
-            break;
-          case GuildType.Order:
-            AddHtmlLocalized(55, 100, 470, 30, 1013057); // Change guild type: Currently Order
-            break;
-          case GuildType.Chaos:
-            AddHtmlLocalized(55, 100, 470, 30, 1013058); // Change guild type: Currently Chaos
-            break;
-        }
-      }
+            m_Mobile = from;
+            m_Guild = guild;
 
-      AddButton(20, 130, 4005, 4007, 5);
-      AddHtmlLocalized(55, 130, 470, 30, 1011112); // Set the guild's charter.
+            Draggable = false;
 
-      AddButton(20, 160, 4005, 4007, 6);
-      AddHtmlLocalized(55, 160, 470, 30, 1011113); // Dismiss a member.
+            AddPage(0);
+            AddBackground(0, 0, 550, 400, 5054);
+            AddBackground(10, 10, 530, 380, 3000);
 
-      AddButton(20, 190, 4005, 4007, 7);
-      AddHtmlLocalized(55, 190, 470, 30, 1011114); // Go to the WAR menu.
+            AddHtmlLocalized(20, 15, 510, 35, 1011121); // <center>GUILDMASTER FUNCTIONS</center>
 
-      if (m_Guild.Candidates.Count > 0)
-      {
-        AddButton(20, 220, 4005, 4007, 8);
-        AddHtmlLocalized(55, 220, 470, 30, 1013056); // Administer the list of candidates
-      }
-      else
-      {
-        AddImage(20, 220, 4020);
-        AddHtmlLocalized(55, 220, 470, 30, 1013031); // There are currently no candidates for membership.
-      }
+            AddButton(20, 40, 4005, 4007, 2);
+            AddHtmlLocalized(55, 40, 470, 30, 1011107); // Set the guild name.
 
-      AddButton(20, 250, 4005, 4007, 9);
-      AddHtmlLocalized(55, 250, 470, 30, 1011117); // Set the guildmaster's title.
+            AddButton(20, 70, 4005, 4007, 3);
+            AddHtmlLocalized(55, 70, 470, 30, 1011109); // Set the guild's abbreviation.
 
-      AddButton(20, 280, 4005, 4007, 10);
-      AddHtmlLocalized(55, 280, 470, 30, 1011118); // Grant a title to another member.
-
-      AddButton(20, 310, 4005, 4007, 11);
-      AddHtmlLocalized(55, 310, 470, 30, 1011119); // Move this guildstone.
-
-      AddButton(20, 360, 4005, 4007, 1);
-      AddHtmlLocalized(55, 360, 245, 30, 1011120); // Return to the main menu.
-
-      AddButton(300, 360, 4005, 4007, 0);
-      AddHtmlLocalized(335, 360, 100, 30, 1011441); // EXIT
-    }
-
-    public override void OnResponse(NetState state, RelayInfo info)
-    {
-      if (GuildGump.BadLeader(m_Mobile, m_Guild))
-        return;
-
-      switch (info.ButtonID)
-      {
-        case 1: // Main menu
-          {
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildGump(m_Mobile, m_Guild));
-
-            break;
-          }
-        case 2: // Set guild name
-          {
-            m_Mobile.SendLocalizedMessage(1013060); // Enter new guild name (40 characters max):
-            m_Mobile.Prompt = new GuildNamePrompt(m_Mobile, m_Guild);
-
-            break;
-          }
-        case 3: // Set guild abbreviation
-          {
-            m_Mobile.SendLocalizedMessage(1013061); // Enter new guild abbreviation (3 characters max):
-            m_Mobile.Prompt = new GuildAbbrvPrompt(m_Mobile, m_Guild);
-
-            break;
-          }
-        case 4: // Change guild type
-          {
-            if (!Guild.OrderChaos)
-              return;
-
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildChangeTypeGump(m_Mobile, m_Guild));
-
-            break;
-          }
-        case 5: // Set charter
-          {
-            m_Mobile.SendLocalizedMessage(1013071); // Enter the new guild charter (50 characters max):
-            m_Mobile.Prompt = new GuildCharterPrompt(m_Mobile, m_Guild);
-
-            break;
-          }
-        case 6: // Dismiss member
-          {
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildDismissGump(m_Mobile, m_Guild));
-
-            break;
-          }
-        case 7: // War menu
-          {
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildWarAdminGump(m_Mobile, m_Guild));
-
-            break;
-          }
-        case 8: // Administer candidates
-          {
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildAdminCandidatesGump(m_Mobile, m_Guild));
-
-            break;
-          }
-        case 9: // Set guildmaster's title
-          {
-            m_Mobile.SendLocalizedMessage(1013073); // Enter new guildmaster title (20 characters max):
-            m_Mobile.Prompt = new GuildTitlePrompt(m_Mobile, m_Mobile, m_Guild);
-
-            break;
-          }
-        case 10: // Grant title
-          {
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GrantGuildTitleGump(m_Mobile, m_Guild));
-
-            break;
-          }
-        case 11: // Move guildstone
-          {
-            if (m_Guild.Guildstone != null)
+            if (Guild.OrderChaos)
             {
-              GuildTeleporter item = new GuildTeleporter(m_Guild.Guildstone);
+                AddButton(20, 100, 4005, 4007, 4);
 
-              m_Guild.Teleporter?.Delete();
-
-              m_Mobile.SendLocalizedMessage(
-                501133); // Use the teleporting object placed in your backpack to move this guildstone.
-
-              m_Mobile.AddToBackpack(item);
-              m_Guild.Teleporter = item;
+                switch (m_Guild.Type)
+                {
+                    case GuildType.Regular:
+                        AddHtmlLocalized(55, 100, 470, 30, 1013059); // Change guild type: Currently Standard
+                        break;
+                    case GuildType.Order:
+                        AddHtmlLocalized(55, 100, 470, 30, 1013057); // Change guild type: Currently Order
+                        break;
+                    case GuildType.Chaos:
+                        AddHtmlLocalized(55, 100, 470, 30, 1013058); // Change guild type: Currently Chaos
+                        break;
+                }
             }
 
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+            AddButton(20, 130, 4005, 4007, 5);
+            AddHtmlLocalized(55, 130, 470, 30, 1011112); // Set the guild's charter.
 
-            break;
-          }
-      }
+            AddButton(20, 160, 4005, 4007, 6);
+            AddHtmlLocalized(55, 160, 470, 30, 1011113); // Dismiss a member.
+
+            AddButton(20, 190, 4005, 4007, 7);
+            AddHtmlLocalized(55, 190, 470, 30, 1011114); // Go to the WAR menu.
+
+            if (m_Guild.Candidates.Count > 0)
+            {
+                AddButton(20, 220, 4005, 4007, 8);
+                AddHtmlLocalized(55, 220, 470, 30, 1013056); // Administer the list of candidates
+            }
+            else
+            {
+                AddImage(20, 220, 4020);
+                AddHtmlLocalized(55, 220, 470, 30, 1013031); // There are currently no candidates for membership.
+            }
+
+            AddButton(20, 250, 4005, 4007, 9);
+            AddHtmlLocalized(55, 250, 470, 30, 1011117); // Set the guildmaster's title.
+
+            AddButton(20, 280, 4005, 4007, 10);
+            AddHtmlLocalized(55, 280, 470, 30, 1011118); // Grant a title to another member.
+
+            AddButton(20, 310, 4005, 4007, 11);
+            AddHtmlLocalized(55, 310, 470, 30, 1011119); // Move this guildstone.
+
+            AddButton(20, 360, 4005, 4007, 1);
+            AddHtmlLocalized(55, 360, 245, 30, 1011120); // Return to the main menu.
+
+            AddButton(300, 360, 4005, 4007, 0);
+            AddHtmlLocalized(335, 360, 100, 30, 1011441); // EXIT
+        }
+
+        public override void OnResponse(NetState state, RelayInfo info)
+        {
+            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+                return;
+
+            switch (info.ButtonID)
+            {
+                case 1: // Main menu
+                    {
+                        GuildGump.EnsureClosed(m_Mobile);
+                        m_Mobile.SendGump(new GuildGump(m_Mobile, m_Guild));
+
+                        break;
+                    }
+                case 2: // Set guild name
+                    {
+                        m_Mobile.SendLocalizedMessage(1013060); // Enter new guild name (40 characters max):
+                        m_Mobile.Prompt = new GuildNamePrompt(m_Mobile, m_Guild);
+
+                        break;
+                    }
+                case 3: // Set guild abbreviation
+                    {
+                        m_Mobile.SendLocalizedMessage(1013061); // Enter new guild abbreviation (3 characters max):
+                        m_Mobile.Prompt = new GuildAbbrvPrompt(m_Mobile, m_Guild);
+
+                        break;
+                    }
+                case 4: // Change guild type
+                    {
+                        if (!Guild.OrderChaos)
+                            return;
+
+                        GuildGump.EnsureClosed(m_Mobile);
+                        m_Mobile.SendGump(new GuildChangeTypeGump(m_Mobile, m_Guild));
+
+                        break;
+                    }
+                case 5: // Set charter
+                    {
+                        m_Mobile.SendLocalizedMessage(1013071); // Enter the new guild charter (50 characters max):
+                        m_Mobile.Prompt = new GuildCharterPrompt(m_Mobile, m_Guild);
+
+                        break;
+                    }
+                case 6: // Dismiss member
+                    {
+                        GuildGump.EnsureClosed(m_Mobile);
+                        m_Mobile.SendGump(new GuildDismissGump(m_Mobile, m_Guild));
+
+                        break;
+                    }
+                case 7: // War menu
+                    {
+                        GuildGump.EnsureClosed(m_Mobile);
+                        m_Mobile.SendGump(new GuildWarAdminGump(m_Mobile, m_Guild));
+
+                        break;
+                    }
+                case 8: // Administer candidates
+                    {
+                        GuildGump.EnsureClosed(m_Mobile);
+                        m_Mobile.SendGump(new GuildAdminCandidatesGump(m_Mobile, m_Guild));
+
+                        break;
+                    }
+                case 9: // Set guildmaster's title
+                    {
+                        m_Mobile.SendLocalizedMessage(1013073); // Enter new guildmaster title (20 characters max):
+                        m_Mobile.Prompt = new GuildTitlePrompt(m_Mobile, m_Mobile, m_Guild);
+
+                        break;
+                    }
+                case 10: // Grant title
+                    {
+                        GuildGump.EnsureClosed(m_Mobile);
+                        m_Mobile.SendGump(new GrantGuildTitleGump(m_Mobile, m_Guild));
+
+                        break;
+                    }
+                case 11: // Move guildstone
+                    {
+                        if (m_Guild.Guildstone != null)
+                        {
+                            GuildTeleporter item = new GuildTeleporter(m_Guild.Guildstone);
+
+                            m_Guild.Teleporter?.Delete();
+
+                            m_Mobile.SendLocalizedMessage(
+                                501133); // Use the teleporting object placed in your backpack to move this guildstone.
+
+                            m_Mobile.AddToBackpack(item);
+                            m_Guild.Teleporter = item;
+                        }
+
+                        GuildGump.EnsureClosed(m_Mobile);
+                        m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+
+                        break;
+                    }
+            }
+        }
     }
-  }
 }

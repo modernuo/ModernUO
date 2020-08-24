@@ -8,173 +8,173 @@ using Server.Network;
 
 namespace Server.Misc
 {
-  public class StatusPage : Timer
-  {
-    public static readonly bool Enabled = false;
-
-    private static HttpListener _Listener;
-
-    private static string _StatusPage = string.Empty;
-    private static byte[] _StatusBuffer = Array.Empty<byte>();
-
-    private static readonly object _StatusLock = new object();
-
-    public StatusPage()
-      : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(60.0)) =>
-      Priority = TimerPriority.FiveSeconds;
-
-    public static void Initialize()
+    public class StatusPage : Timer
     {
-      if (!Enabled) return;
+        public static readonly bool Enabled = false;
 
-      new StatusPage().Start();
+        private static HttpListener _Listener;
 
-      Listen();
-    }
+        private static string _StatusPage = string.Empty;
+        private static byte[] _StatusBuffer = Array.Empty<byte>();
 
-    private static void Listen()
-    {
-      if (!HttpListener.IsSupported) return;
+        private static readonly object _StatusLock = new object();
 
-      if (_Listener == null)
-      {
-        _Listener = new HttpListener();
-        _Listener.Prefixes.Add("http://*:80/status/");
-        _Listener.Start();
-      }
-      else if (!_Listener.IsListening)
-      {
-        _Listener.Start();
-      }
+        public StatusPage()
+            : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(60.0)) =>
+            Priority = TimerPriority.FiveSeconds;
 
-      if (_Listener.IsListening) _Listener.BeginGetContext(ListenerCallback, null);
-    }
-
-    private static void ListenerCallback(IAsyncResult result)
-    {
-      try
-      {
-        HttpListenerContext context = _Listener.EndGetContext(result);
-
-        byte[] buffer;
-
-        lock (_StatusLock)
+        public static void Initialize()
         {
-          buffer = _StatusBuffer;
+            if (!Enabled) return;
+
+            new StatusPage().Start();
+
+            Listen();
         }
 
-        context.Response.ContentLength64 = buffer.Length;
-        context.Response.OutputStream.Write(buffer, 0, buffer.Length);
-        context.Response.OutputStream.Close();
-      }
-      catch
-      {
-        // ignored
-      }
-
-      Listen();
-    }
-
-    private static string Encode(string input)
-    {
-      StringBuilder sb = new StringBuilder(input);
-
-      sb.Replace("&", "&amp;");
-      sb.Replace("<", "&lt;");
-      sb.Replace(">", "&gt;");
-      sb.Replace("\"", "&quot;");
-      sb.Replace("'", "&apos;");
-
-      return sb.ToString();
-    }
-
-    protected override void OnTick()
-    {
-      if (!Directory.Exists("web")) Directory.CreateDirectory("web");
-
-      using (StreamWriter op = new StreamWriter("web/status.html"))
-      {
-        op.WriteLine("<!DOCTYPE html>");
-        op.WriteLine("<html>");
-        op.WriteLine("   <head>");
-        op.WriteLine($"      <title>{ServerList.ServerName} Server Status</title>");
-        op.WriteLine("   </head>");
-        op.WriteLine("   <style type=\"text/css\">");
-        op.WriteLine("   body { background: #999; }");
-        op.WriteLine("   table { width: 100%; }");
-        op.WriteLine("   tr.ruo-header td { background: #000; color: #FFF; }");
-        op.WriteLine("   tr.odd td { background: #222; color: #DDD; }");
-        op.WriteLine("   tr.even td { background: #DDD; color: #222; }");
-        op.WriteLine("   </style>");
-        op.WriteLine("   <body>");
-        op.WriteLine("      <h1>RunUO Server Status</h1>");
-        op.WriteLine("      <h3>Online clients</h3>");
-        op.WriteLine("      <table cellpadding=\"0\" cellspacing=\"0\">");
-        op.WriteLine(
-          "         <tr class=\"ruo-header\"><td>Name</td><td>Location</td><td>Kills</td><td>Karma/Fame</td></tr>");
-
-        int index = 0;
-
-        foreach (Mobile m in TcpServer.Instances.Where(state => state.Mobile != null).Select(state => state.Mobile))
+        private static void Listen()
         {
-          ++index;
+            if (!HttpListener.IsSupported) return;
 
-          Guild g = m.Guild as Guild;
-
-          op.Write($"         <tr class=\"ruo-result {(index % 2 == 0 ? "even" : "odd")}\"><td>");
-
-          if (g != null)
-          {
-            op.Write(Encode(m.Name));
-            op.Write(" [");
-
-            string title = m.GuildTitle;
-
-            title = title?.Trim() ?? string.Empty;
-
-            if (title.Length > 0)
+            if (_Listener == null)
             {
-              op.Write(Encode(title));
-              op.Write(", ");
+                _Listener = new HttpListener();
+                _Listener.Prefixes.Add("http://*:80/status/");
+                _Listener.Start();
+            }
+            else if (!_Listener.IsListening)
+            {
+                _Listener.Start();
             }
 
-            op.Write(Encode(g.Abbreviation));
-
-            op.Write(']');
-          }
-          else
-          {
-            op.Write(Encode(m.Name));
-          }
-
-          op.Write("</td><td>");
-          op.Write(m.X);
-          op.Write(", ");
-          op.Write(m.Y);
-          op.Write(", ");
-          op.Write(m.Z);
-          op.Write(" (");
-          op.Write(m.Map);
-          op.Write(")</td><td>");
-          op.Write(m.Kills);
-          op.Write("</td><td>");
-          op.Write(m.Karma);
-          op.Write(" / ");
-          op.Write(m.Fame);
-          op.WriteLine("</td></tr>");
+            if (_Listener.IsListening) _Listener.BeginGetContext(ListenerCallback, null);
         }
 
-        op.WriteLine("         <tr>");
-        op.WriteLine("      </table>");
-        op.WriteLine("   </body>");
-        op.WriteLine("</html>");
-      }
+        private static void ListenerCallback(IAsyncResult result)
+        {
+            try
+            {
+                HttpListenerContext context = _Listener.EndGetContext(result);
 
-      lock (_StatusLock)
-      {
-        _StatusPage = File.ReadAllText("web/status.html");
-        _StatusBuffer = Encoding.UTF8.GetBytes(_StatusPage);
-      }
+                byte[] buffer;
+
+                lock (_StatusLock)
+                {
+                    buffer = _StatusBuffer;
+                }
+
+                context.Response.ContentLength64 = buffer.Length;
+                context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                context.Response.OutputStream.Close();
+            }
+            catch
+            {
+                // ignored
+            }
+
+            Listen();
+        }
+
+        private static string Encode(string input)
+        {
+            StringBuilder sb = new StringBuilder(input);
+
+            sb.Replace("&", "&amp;");
+            sb.Replace("<", "&lt;");
+            sb.Replace(">", "&gt;");
+            sb.Replace("\"", "&quot;");
+            sb.Replace("'", "&apos;");
+
+            return sb.ToString();
+        }
+
+        protected override void OnTick()
+        {
+            if (!Directory.Exists("web")) Directory.CreateDirectory("web");
+
+            using (StreamWriter op = new StreamWriter("web/status.html"))
+            {
+                op.WriteLine("<!DOCTYPE html>");
+                op.WriteLine("<html>");
+                op.WriteLine("   <head>");
+                op.WriteLine($"      <title>{ServerList.ServerName} Server Status</title>");
+                op.WriteLine("   </head>");
+                op.WriteLine("   <style type=\"text/css\">");
+                op.WriteLine("   body { background: #999; }");
+                op.WriteLine("   table { width: 100%; }");
+                op.WriteLine("   tr.ruo-header td { background: #000; color: #FFF; }");
+                op.WriteLine("   tr.odd td { background: #222; color: #DDD; }");
+                op.WriteLine("   tr.even td { background: #DDD; color: #222; }");
+                op.WriteLine("   </style>");
+                op.WriteLine("   <body>");
+                op.WriteLine("      <h1>RunUO Server Status</h1>");
+                op.WriteLine("      <h3>Online clients</h3>");
+                op.WriteLine("      <table cellpadding=\"0\" cellspacing=\"0\">");
+                op.WriteLine(
+                    "         <tr class=\"ruo-header\"><td>Name</td><td>Location</td><td>Kills</td><td>Karma/Fame</td></tr>");
+
+                int index = 0;
+
+                foreach (Mobile m in TcpServer.Instances.Where(state => state.Mobile != null).Select(state => state.Mobile))
+                {
+                    ++index;
+
+                    Guild g = m.Guild as Guild;
+
+                    op.Write($"         <tr class=\"ruo-result {(index % 2 == 0 ? "even" : "odd")}\"><td>");
+
+                    if (g != null)
+                    {
+                        op.Write(Encode(m.Name));
+                        op.Write(" [");
+
+                        string title = m.GuildTitle;
+
+                        title = title?.Trim() ?? string.Empty;
+
+                        if (title.Length > 0)
+                        {
+                            op.Write(Encode(title));
+                            op.Write(", ");
+                        }
+
+                        op.Write(Encode(g.Abbreviation));
+
+                        op.Write(']');
+                    }
+                    else
+                    {
+                        op.Write(Encode(m.Name));
+                    }
+
+                    op.Write("</td><td>");
+                    op.Write(m.X);
+                    op.Write(", ");
+                    op.Write(m.Y);
+                    op.Write(", ");
+                    op.Write(m.Z);
+                    op.Write(" (");
+                    op.Write(m.Map);
+                    op.Write(")</td><td>");
+                    op.Write(m.Kills);
+                    op.Write("</td><td>");
+                    op.Write(m.Karma);
+                    op.Write(" / ");
+                    op.Write(m.Fame);
+                    op.WriteLine("</td></tr>");
+                }
+
+                op.WriteLine("         <tr>");
+                op.WriteLine("      </table>");
+                op.WriteLine("   </body>");
+                op.WriteLine("</html>");
+            }
+
+            lock (_StatusLock)
+            {
+                _StatusPage = File.ReadAllText("web/status.html");
+                _StatusBuffer = Encoding.UTF8.GetBytes(_StatusPage);
+            }
+        }
     }
-  }
 }

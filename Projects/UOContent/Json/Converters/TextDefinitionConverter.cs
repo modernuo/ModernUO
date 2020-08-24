@@ -25,22 +25,22 @@ using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-  public class TextDefinitionConverter : JsonConverter<TextDefinition>
-  {
-    public override TextDefinition Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-      reader.TokenType switch
-      {
-        JsonTokenType.String => new TextDefinition(reader.GetString()),
-        JsonTokenType.Number => new TextDefinition(reader.GetInt32()),
-        _ => throw new JsonException("TextDefinition value must be an integer or string")
-      };
-
-    public override void Write(Utf8JsonWriter writer, TextDefinition value, JsonSerializerOptions options)
+    public class TextDefinitionConverter : JsonConverter<TextDefinition>
     {
-      if (value.Number > 0)
-        writer.WriteNumberValue(value.Number);
-      else
-        writer.WriteStringValue(value.String);
+        public override TextDefinition Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+            reader.TokenType switch
+            {
+                JsonTokenType.String => new TextDefinition(reader.GetString()),
+                JsonTokenType.Number => new TextDefinition(reader.GetInt32()),
+                _ => throw new JsonException("TextDefinition value must be an integer or string")
+            };
+
+        public override void Write(Utf8JsonWriter writer, TextDefinition value, JsonSerializerOptions options)
+        {
+            if (value.Number > 0)
+                writer.WriteNumberValue(value.Number);
+            else
+                writer.WriteStringValue(value.String);
+        }
     }
-  }
 }

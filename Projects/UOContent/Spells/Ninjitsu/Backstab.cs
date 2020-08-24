@@ -3,69 +3,69 @@ using Server.SkillHandlers;
 
 namespace Server.Spells.Ninjitsu
 {
-  public class Backstab : NinjaMove
-  {
-    public override int BaseMana => 30;
-    public override double RequiredSkill => Core.ML ? 40.0 : 20.0;
-
-    public override TextDefinition AbilityMessage =>
-      new TextDefinition(1063089); // You prepare to Backstab your opponent.
-
-    public override bool ValidatesDuringHit => false;
-
-    public override double GetDamageScalar(Mobile attacker, Mobile defender)
+    public class Backstab : NinjaMove
     {
-      double ninjitsu = attacker.Skills.Ninjitsu.Value;
+        public override int BaseMana => 30;
+        public override double RequiredSkill => Core.ML ? 40.0 : 20.0;
 
-      return 1.0 + ninjitsu / 360 + Tracking.GetStalkingBonus(attacker, defender) / 100;
+        public override TextDefinition AbilityMessage =>
+            new TextDefinition(1063089); // You prepare to Backstab your opponent.
+
+        public override bool ValidatesDuringHit => false;
+
+        public override double GetDamageScalar(Mobile attacker, Mobile defender)
+        {
+            double ninjitsu = attacker.Skills.Ninjitsu.Value;
+
+            return 1.0 + ninjitsu / 360 + Tracking.GetStalkingBonus(attacker, defender) / 100;
+        }
+
+        public override bool Validate(Mobile from)
+        {
+            if (!from.Hidden || from.AllowedStealthSteps <= 0)
+            {
+                from.SendLocalizedMessage(1063087); // You must be in stealth mode to use this ability.
+                return false;
+            }
+
+            return base.Validate(from);
+        }
+
+        public override bool OnBeforeSwing(Mobile attacker, Mobile defender)
+        {
+            bool valid = Validate(attacker) && CheckMana(attacker, true);
+
+            if (valid)
+            {
+                attacker.BeginAction<Stealth>();
+                Timer.DelayCall(TimeSpan.FromSeconds(5.0), attacker.EndAction<Stealth>);
+            }
+
+            return valid;
+        }
+
+        public override void OnHit(Mobile attacker, Mobile defender, int damage)
+        {
+            // Validates before swing
+
+            ClearCurrentMove(attacker);
+
+            attacker.SendLocalizedMessage(1063090); // You quickly stab your opponent as you come out of hiding!
+
+            defender.FixedParticles(0x37B9, 1, 5, 0x251D, 0x651, 0, EffectLayer.Waist);
+
+            attacker.RevealingAction();
+
+            CheckGain(attacker);
+        }
+
+        public override void OnMiss(Mobile attacker, Mobile defender)
+        {
+            ClearCurrentMove(attacker);
+
+            attacker.SendLocalizedMessage(1063161); // You failed to properly use the element of surprise.
+
+            attacker.RevealingAction();
+        }
     }
-
-    public override bool Validate(Mobile from)
-    {
-      if (!from.Hidden || from.AllowedStealthSteps <= 0)
-      {
-        from.SendLocalizedMessage(1063087); // You must be in stealth mode to use this ability.
-        return false;
-      }
-
-      return base.Validate(from);
-    }
-
-    public override bool OnBeforeSwing(Mobile attacker, Mobile defender)
-    {
-      bool valid = Validate(attacker) && CheckMana(attacker, true);
-
-      if (valid)
-      {
-        attacker.BeginAction<Stealth>();
-        Timer.DelayCall(TimeSpan.FromSeconds(5.0), attacker.EndAction<Stealth>);
-      }
-
-      return valid;
-    }
-
-    public override void OnHit(Mobile attacker, Mobile defender, int damage)
-    {
-      // Validates before swing
-
-      ClearCurrentMove(attacker);
-
-      attacker.SendLocalizedMessage(1063090); // You quickly stab your opponent as you come out of hiding!
-
-      defender.FixedParticles(0x37B9, 1, 5, 0x251D, 0x651, 0, EffectLayer.Waist);
-
-      attacker.RevealingAction();
-
-      CheckGain(attacker);
-    }
-
-    public override void OnMiss(Mobile attacker, Mobile defender)
-    {
-      ClearCurrentMove(attacker);
-
-      attacker.SendLocalizedMessage(1063161); // You failed to properly use the element of surprise.
-
-      attacker.RevealingAction();
-    }
-  }
 }

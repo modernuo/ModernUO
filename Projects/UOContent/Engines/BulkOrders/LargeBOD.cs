@@ -2,169 +2,175 @@ using Server.Mobiles;
 
 namespace Server.Engines.BulkOrders
 {
-  public abstract class LargeBOD : BaseBOD
-  {
-    private LargeBulkEntry[] m_Entries;
-
-    public LargeBulkEntry[] Entries
+    public abstract class LargeBOD : BaseBOD
     {
-      get => m_Entries;
-      set { m_Entries = value; InvalidateProperties(); }
-    }
+        private LargeBulkEntry[] m_Entries;
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    public override bool Complete
-    {
-      get
-      {
-        for (int i = 0; i < m_Entries.Length; ++i)
-          if (m_Entries[i].Amount < AmountMax)
-            return false;
-
-        return true;
-      }
-    }
-
-    public override int LabelNumber => 1045151; // a bulk order deed
-
-    public LargeBOD(int hue, int amountMax, bool requireExeptional, BulkMaterialType material, LargeBulkEntry[] entries) : base(hue, amountMax, requireExeptional, material) =>
-      m_Entries = entries;
-
-    public LargeBOD()
-    {
-    }
-
-    public override void GetProperties(ObjectPropertyList list)
-    {
-      base.GetProperties(list);
-
-      list.Add(1060655); // large bulk order
-
-      if (RequireExceptional)
-        list.Add(1045141); // All items must be exceptional.
-
-      if (Material != BulkMaterialType.None)
-        list.Add(LargeBODGump.GetMaterialNumberFor(Material)); // All items must be made with x material.
-
-      list.Add(1060656, AmountMax.ToString()); // amount to make: ~1_val~
-
-      for (int i = 0; i < m_Entries.Length; ++i)
-        list.Add(1060658 + i, "#{0}\t{1}", m_Entries[i].Details.Number, m_Entries[i].Amount); // ~1_val~: ~2_val~
-    }
-
-    public override void OnDoubleClickNotAccessible(Mobile from)
-    {
-      OnDoubleClick(from);
-    }
-
-    public override void OnDoubleClickSecureTrade(Mobile from)
-    {
-      OnDoubleClick(from);
-    }
-
-    public override void OnDoubleClick(Mobile from)
-    {
-      if (IsChildOf(from.Backpack) || InSecureTrade || RootParent is PlayerVendor)
-        from.SendGump(new LargeBODGump(from, this));
-      else
-        from.SendLocalizedMessage(1045156); // You must have the deed in your backpack to use it.
-    }
-
-    public override void EndCombine(Mobile from, Item item)
-    {
-      if (!(item is SmallBOD small))
-      {
-        from.SendLocalizedMessage(1045159); // That is not a bulk order.
-        return;
-      }
-
-      LargeBulkEntry entry = null;
-
-      for (int i = 0; i < m_Entries.Length; ++i)
-        if (m_Entries[i].Details.Type == small.Type)
+        public LargeBulkEntry[] Entries
         {
-          entry = m_Entries[i];
-          break;
+            get => m_Entries;
+            set
+            {
+                m_Entries = value;
+                InvalidateProperties();
+            }
         }
 
-      if (entry == null)
-      {
-        from.SendLocalizedMessage(1045160); // That is not a bulk order for this large request.
-      }
-      else if (RequireExceptional && !small.RequireExceptional)
-      {
-        from.SendLocalizedMessage(1045161); // Both orders must be of exceptional quality.
-      }
-      else if (Material >= BulkMaterialType.DullCopper && Material <= BulkMaterialType.Valorite &&
-               small.Material != Material)
-      {
-        from.SendLocalizedMessage(1045162); // Both orders must use the same ore type.
-      }
-      else if (Material >= BulkMaterialType.Spined && Material <= BulkMaterialType.Barbed &&
-               small.Material != Material)
-      {
-        from.SendLocalizedMessage(1049351); // Both orders must use the same leather type.
-      }
-      else if (AmountMax != small.AmountMax)
-      {
-        from.SendLocalizedMessage(1045163); // The two orders have different requested amounts and cannot be combined.
-      }
-      else if (small.AmountCur < small.AmountMax)
-      {
-        from.SendLocalizedMessage(1045164); // The order to combine with is not completed.
-      }
-      else if (entry.Amount >= AmountMax)
-      {
-        from.SendLocalizedMessage(
-          1045166); // The maximum amount of requested items have already been combined to this deed.
-      }
-      else
-      {
-        entry.Amount += small.AmountCur;
-        small.Delete();
+        [CommandProperty(AccessLevel.GameMaster)]
+        public override bool Complete
+        {
+            get
+            {
+                for (int i = 0; i < m_Entries.Length; ++i)
+                    if (m_Entries[i].Amount < AmountMax)
+                        return false;
 
-        from.SendLocalizedMessage(1045165); // The orders have been combined.
-        from.SendGump(new LargeBODGump(from, this));
+                return true;
+            }
+        }
 
-        if (!Complete)
-          BeginCombine(from);
-      }
-    }
+        public override int LabelNumber => 1045151; // a bulk order deed
 
-    public LargeBOD(Serial serial) : base(serial)
-    {
-    }
+        public LargeBOD(int hue, int amountMax, bool requireExeptional, BulkMaterialType material, LargeBulkEntry[] entries)
+            : base(hue, amountMax, requireExeptional, material) =>
+            m_Entries = entries;
 
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
+        public LargeBOD()
+        {
+        }
 
-      writer.WriteEncodedInt(0); // version
+        public override void GetProperties(ObjectPropertyList list)
+        {
+            base.GetProperties(list);
 
-      writer.Write(m_Entries.Length);
+            list.Add(1060655); // large bulk order
 
-      for (int i = 0; i < m_Entries.Length; ++i)
-        m_Entries[i].Serialize(writer);
-    }
+            if (RequireExceptional)
+                list.Add(1045141); // All items must be exceptional.
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+            if (Material != BulkMaterialType.None)
+                list.Add(LargeBODGump.GetMaterialNumberFor(Material)); // All items must be made with x material.
 
-      int version = reader.ReadEncodedInt();
-
-      switch (version)
-      {
-        case 0:
-          {
-            m_Entries = new LargeBulkEntry[reader.ReadInt()];
+            list.Add(1060656, AmountMax.ToString()); // amount to make: ~1_val~
 
             for (int i = 0; i < m_Entries.Length; ++i)
-              m_Entries[i] = new LargeBulkEntry(this, reader);
+                list.Add(1060658 + i, "#{0}\t{1}", m_Entries[i].Details.Number, m_Entries[i].Amount); // ~1_val~: ~2_val~
+        }
 
-            break;
-          }
-      }
+        public override void OnDoubleClickNotAccessible(Mobile from)
+        {
+            OnDoubleClick(from);
+        }
+
+        public override void OnDoubleClickSecureTrade(Mobile from)
+        {
+            OnDoubleClick(from);
+        }
+
+        public override void OnDoubleClick(Mobile from)
+        {
+            if (IsChildOf(from.Backpack) || InSecureTrade || RootParent is PlayerVendor)
+                from.SendGump(new LargeBODGump(from, this));
+            else
+                from.SendLocalizedMessage(1045156); // You must have the deed in your backpack to use it.
+        }
+
+        public override void EndCombine(Mobile from, Item item)
+        {
+            if (!(item is SmallBOD small))
+            {
+                from.SendLocalizedMessage(1045159); // That is not a bulk order.
+                return;
+            }
+
+            LargeBulkEntry entry = null;
+
+            for (int i = 0; i < m_Entries.Length; ++i)
+                if (m_Entries[i].Details.Type == small.Type)
+                {
+                    entry = m_Entries[i];
+                    break;
+                }
+
+            if (entry == null)
+            {
+                from.SendLocalizedMessage(1045160); // That is not a bulk order for this large request.
+            }
+            else if (RequireExceptional && !small.RequireExceptional)
+            {
+                from.SendLocalizedMessage(1045161); // Both orders must be of exceptional quality.
+            }
+            else if (Material >= BulkMaterialType.DullCopper && Material <= BulkMaterialType.Valorite &&
+                     small.Material != Material)
+            {
+                from.SendLocalizedMessage(1045162); // Both orders must use the same ore type.
+            }
+            else if (Material >= BulkMaterialType.Spined && Material <= BulkMaterialType.Barbed &&
+                     small.Material != Material)
+            {
+                from.SendLocalizedMessage(1049351); // Both orders must use the same leather type.
+            }
+            else if (AmountMax != small.AmountMax)
+            {
+                from.SendLocalizedMessage(
+                    1045163); // The two orders have different requested amounts and cannot be combined.
+            }
+            else if (small.AmountCur < small.AmountMax)
+            {
+                from.SendLocalizedMessage(1045164); // The order to combine with is not completed.
+            }
+            else if (entry.Amount >= AmountMax)
+            {
+                from.SendLocalizedMessage(
+                    1045166); // The maximum amount of requested items have already been combined to this deed.
+            }
+            else
+            {
+                entry.Amount += small.AmountCur;
+                small.Delete();
+
+                from.SendLocalizedMessage(1045165); // The orders have been combined.
+                from.SendGump(new LargeBODGump(from, this));
+
+                if (!Complete)
+                    BeginCombine(from);
+            }
+        }
+
+        public LargeBOD(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.WriteEncodedInt(0); // version
+
+            writer.Write(m_Entries.Length);
+
+            for (int i = 0; i < m_Entries.Length; ++i)
+                m_Entries[i].Serialize(writer);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadEncodedInt();
+
+            switch (version)
+            {
+                case 0:
+                    {
+                        m_Entries = new LargeBulkEntry[reader.ReadInt()];
+
+                        for (int i = 0; i < m_Entries.Length; ++i)
+                            m_Entries[i] = new LargeBulkEntry(this, reader);
+
+                        break;
+                    }
+            }
+        }
     }
-  }
 }

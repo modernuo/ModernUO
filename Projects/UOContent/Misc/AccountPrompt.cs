@@ -3,37 +3,37 @@ using Server.Accounting;
 
 namespace Server.Misc
 {
-  public class AccountPrompt
-  {
-    public static void Initialize()
+    public class AccountPrompt
     {
-      if (Accounts.Count == 0)
-      {
-        Console.WriteLine("This server has no accounts.");
-        Console.Write("Do you want to create the owner account now? (y/n)");
-
-        if (Console.ReadKey(true).Key == ConsoleKey.Y)
+        public static void Initialize()
         {
-          Console.WriteLine();
+            if (Accounts.Count == 0)
+            {
+                Console.WriteLine("This server has no accounts.");
+                Console.Write("Do you want to create the owner account now? (y/n)");
 
-          Console.Write("Username: ");
-          string username = Console.ReadLine();
+                if (Console.ReadKey(true).Key == ConsoleKey.Y)
+                {
+                    Console.WriteLine();
 
-          Console.Write("Password: ");
-          string password = Console.ReadLine();
+                    Console.Write("Username: ");
+                    string username = Console.ReadLine();
 
-          Account a = new Account(username, password);
-          a.AccessLevel = AccessLevel.Owner;
+                    Console.Write("Password: ");
+                    string password = Console.ReadLine();
 
-          Console.WriteLine("Account created.");
+                    Account a = new Account(username, password);
+                    a.AccessLevel = AccessLevel.Owner;
+
+                    Console.WriteLine("Account created.");
+                }
+                else
+                {
+                    Console.WriteLine();
+
+                    Console.WriteLine("Account not created.");
+                }
+            }
         }
-        else
-        {
-          Console.WriteLine();
-
-          Console.WriteLine("Account not created.");
-        }
-      }
     }
-  }
 }

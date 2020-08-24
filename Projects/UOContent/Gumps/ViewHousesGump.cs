@@ -7,270 +7,270 @@ using Server.Targeting;
 
 namespace Server.Gumps
 {
-  public class ViewHousesGump : Gump
-  {
-    private const int White16 = 0x7FFF;
-    private const int White = 0xFFFFFF;
-
-    private readonly Mobile m_From;
-    private readonly List<BaseHouse> m_List;
-    private readonly BaseHouse m_Selection;
-
-    public ViewHousesGump(Mobile from, List<BaseHouse> list, BaseHouse sel) : base(50, 40)
+    public class ViewHousesGump : Gump
     {
-      m_From = from;
-      m_List = list;
-      m_Selection = sel;
+        private const int White16 = 0x7FFF;
+        private const int White = 0xFFFFFF;
 
-      from.CloseGump<ViewHousesGump>();
+        private readonly Mobile m_From;
+        private readonly List<BaseHouse> m_List;
+        private readonly BaseHouse m_Selection;
 
-      AddPage(0);
-
-      AddBackground(0, 0, 240, 360, 5054);
-      AddBlackAlpha(10, 10, 220, 340);
-
-      if (sel?.Deleted != false)
-      {
-        m_Selection = null;
-
-        AddHtml(35, 15, 120, 20, Color("House Type", White));
-
-        if (list.Count == 0)
-          AddHtml(35, 40, 160, 40, Color("There were no houses found for that player.", White));
-
-        AddImage(190, 17, 0x25EA);
-        AddImage(207, 17, 0x25E6);
-
-        int page = 0;
-
-        for (int i = 0; i < list.Count; ++i)
+        public ViewHousesGump(Mobile from, List<BaseHouse> list, BaseHouse sel) : base(50, 40)
         {
-          if (i % 15 == 0)
-          {
-            if (page > 0)
-              AddButton(207, 17, 0x15E1, 0x15E5, 0, GumpButtonType.Page, page + 1);
+            m_From = from;
+            m_List = list;
+            m_Selection = sel;
 
-            AddPage(++page);
+            from.CloseGump<ViewHousesGump>();
 
-            if (page > 1)
-              AddButton(190, 17, 0x15E3, 0x15E7, 0, GumpButtonType.Page, page - 1);
-          }
+            AddPage(0);
 
-          TextDefinition name = FindHouseName(list[i]);
+            AddBackground(0, 0, 240, 360, 5054);
+            AddBlackAlpha(10, 10, 220, 340);
 
-          AddHtml(15, 40 + i % 15 * 20, 20, 20, Color($"{i + 1}.", White));
+            if (sel?.Deleted != false)
+            {
+                m_Selection = null;
 
-          if (name.Number > 0)
-            AddHtmlLocalized(35, 40 + i % 15 * 20, 160, 20, name, White16);
-          else
-            AddHtml(35, 40 + i % 15 * 20, 160, 20, Color(name, White));
+                AddHtml(35, 15, 120, 20, Color("House Type", White));
 
-          AddButton(198, 39 + i % 15 * 20, 4005, 4007, i + 1);
-        }
-      }
-      else
-      {
-        string location;
-        Map map = sel.Map;
+                if (list.Count == 0)
+                    AddHtml(35, 40, 160, 40, Color("There were no houses found for that player.", White));
 
-        string houseName = sel.Sign == null ? "An Unnamed House" : sel.Sign.GetName();
-        string owner = sel.Owner == null ? "nobody" : sel.Owner.Name;
+                AddImage(190, 17, 0x25EA);
+                AddImage(207, 17, 0x25E6);
 
-        int xLong = 0, yLat = 0, xMins = 0, yMins = 0;
-        bool xEast = false, ySouth = false;
+                int page = 0;
 
-        bool valid = Sextant.Format(sel.Location, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast,
-          ref ySouth);
+                for (int i = 0; i < list.Count; ++i)
+                {
+                    if (i % 15 == 0)
+                    {
+                        if (page > 0)
+                            AddButton(207, 17, 0x15E1, 0x15E5, 0, GumpButtonType.Page, page + 1);
 
-        if (valid)
-          location = $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}° {xMins}'{(xEast ? "E" : "W")}";
-        else
-          location = "unknown";
+                        AddPage(++page);
 
-        AddHtml(10, 15, 220, 20, Color(Center("House Properties"), White));
+                        if (page > 1)
+                            AddButton(190, 17, 0x15E3, 0x15E7, 0, GumpButtonType.Page, page - 1);
+                    }
 
-        AddHtml(15, 40, 210, 20, Color("Facet:", White));
-        AddHtml(15, 40, 210, 20, Color(Right(map == null ? "(null)" : map.Name), White));
+                    TextDefinition name = FindHouseName(list[i]);
 
-        AddHtml(15, 60, 210, 20, Color("Location:", White));
-        AddHtml(15, 60, 210, 20, Color(Right(sel.Location.ToString()), White));
+                    AddHtml(15, 40 + i % 15 * 20, 20, 20, Color($"{i + 1}.", White));
 
-        AddHtml(15, 80, 210, 20, Color("Sextant:", White));
-        AddHtml(15, 80, 210, 20, Color(Right(location), White));
+                    if (name.Number > 0)
+                        AddHtmlLocalized(35, 40 + i % 15 * 20, 160, 20, name, White16);
+                    else
+                        AddHtml(35, 40 + i % 15 * 20, 160, 20, Color(name, White));
 
-        AddHtml(15, 100, 210, 20, Color("Owner:", White));
-        AddHtml(15, 100, 210, 20, Color(Right(owner), White));
+                    AddButton(198, 39 + i % 15 * 20, 4005, 4007, i + 1);
+                }
+            }
+            else
+            {
+                string location;
+                Map map = sel.Map;
 
-        AddHtml(15, 120, 210, 20, Color("Name:", White));
-        AddHtml(15, 120, 210, 20, Color(Right(houseName), White));
+                string houseName = sel.Sign == null ? "An Unnamed House" : sel.Sign.GetName();
+                string owner = sel.Owner == null ? "nobody" : sel.Owner.Name;
 
-        AddHtml(15, 140, 210, 20, Color("Friends:", White));
-        AddHtml(15, 140, 210, 20, Color(Right(sel.Friends.Count.ToString()), White));
+                int xLong = 0, yLat = 0, xMins = 0, yMins = 0;
+                bool xEast = false, ySouth = false;
 
-        AddHtml(15, 160, 210, 20, Color("Co-Owners:", White));
-        AddHtml(15, 160, 210, 20, Color(Right(sel.CoOwners.Count.ToString()), White));
+                bool valid = Sextant.Format(sel.Location, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast,
+                    ref ySouth);
 
-        AddHtml(15, 180, 210, 20, Color("Bans:", White));
-        AddHtml(15, 180, 210, 20, Color(Right(sel.Bans.Count.ToString()), White));
+                if (valid)
+                    location = $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}° {xMins}'{(xEast ? "E" : "W")}";
+                else
+                    location = "unknown";
 
-        AddHtml(15, 200, 210, 20, Color("Decays:", White));
-        AddHtml(15, 200, 210, 20, Color(Right(sel.CanDecay ? "Yes" : "No"), White));
+                AddHtml(10, 15, 220, 20, Color(Center("House Properties"), White));
 
-        AddHtml(15, 220, 210, 20, Color("Decay Level:", White));
-        AddHtml(15, 220, 210, 20, Color(Right(sel.DecayLevel.ToString()), White));
+                AddHtml(15, 40, 210, 20, Color("Facet:", White));
+                AddHtml(15, 40, 210, 20, Color(Right(map == null ? "(null)" : map.Name), White));
 
-        AddButton(15, 245, 4005, 4007, 1);
-        AddHtml(50, 245, 120, 20, Color("Go to house", White));
+                AddHtml(15, 60, 210, 20, Color("Location:", White));
+                AddHtml(15, 60, 210, 20, Color(Right(sel.Location.ToString()), White));
 
-        AddButton(15, 265, 4005, 4007, 2);
-        AddHtml(50, 265, 120, 20, Color("Open house menu", White));
+                AddHtml(15, 80, 210, 20, Color("Sextant:", White));
+                AddHtml(15, 80, 210, 20, Color(Right(location), White));
 
-        AddButton(15, 285, 4005, 4007, 3);
-        AddHtml(50, 285, 120, 20, Color("Demolish house", White));
+                AddHtml(15, 100, 210, 20, Color("Owner:", White));
+                AddHtml(15, 100, 210, 20, Color(Right(owner), White));
 
-        AddButton(15, 305, 4005, 4007, 4);
-        AddHtml(50, 305, 120, 20, Color("Refresh house", White));
-      }
-    }
+                AddHtml(15, 120, 210, 20, Color("Name:", White));
+                AddHtml(15, 120, 210, 20, Color(Right(houseName), White));
 
-    public static void Initialize()
-    {
-      CommandSystem.Register("ViewHouses", AccessLevel.GameMaster, ViewHouses_OnCommand);
-    }
+                AddHtml(15, 140, 210, 20, Color("Friends:", White));
+                AddHtml(15, 140, 210, 20, Color(Right(sel.Friends.Count.ToString()), White));
 
-    [Usage("ViewHouses")]
-    [Description(
-      "Displays a menu listing all houses of a targeted player. The menu also contains specific house details, and options to: go to house, open house menu, and demolish house.")]
-    public static void ViewHouses_OnCommand(CommandEventArgs e)
-    {
-      e.Mobile.BeginTarget(-1, false, TargetFlags.None, ViewHouses_OnTarget);
-    }
+                AddHtml(15, 160, 210, 20, Color("Co-Owners:", White));
+                AddHtml(15, 160, 210, 20, Color(Right(sel.CoOwners.Count.ToString()), White));
 
-    public static void ViewHouses_OnTarget(Mobile from, object targeted)
-    {
-      if (targeted is Mobile mobile)
-        from.SendGump(new ViewHousesGump(from, GetHouses(mobile), null));
-    }
+                AddHtml(15, 180, 210, 20, Color("Bans:", White));
+                AddHtml(15, 180, 210, 20, Color(Right(sel.Bans.Count.ToString()), White));
 
-    public static List<BaseHouse> GetHouses(Mobile owner)
-    {
-      List<BaseHouse> list = new List<BaseHouse>();
+                AddHtml(15, 200, 210, 20, Color("Decays:", White));
+                AddHtml(15, 200, 210, 20, Color(Right(sel.CanDecay ? "Yes" : "No"), White));
 
-      if (!(owner.Account is Account acct))
-        list.AddRange(BaseHouse.GetHouses(owner));
-      else
-        for (int i = 0; i < acct.Length; ++i)
-        {
-          Mobile mob = acct[i];
+                AddHtml(15, 220, 210, 20, Color("Decay Level:", White));
+                AddHtml(15, 220, 210, 20, Color(Right(sel.DecayLevel.ToString()), White));
 
-          if (mob != null)
-            list.AddRange(BaseHouse.GetHouses(mob));
+                AddButton(15, 245, 4005, 4007, 1);
+                AddHtml(50, 245, 120, 20, Color("Go to house", White));
+
+                AddButton(15, 265, 4005, 4007, 2);
+                AddHtml(50, 265, 120, 20, Color("Open house menu", White));
+
+                AddButton(15, 285, 4005, 4007, 3);
+                AddHtml(50, 285, 120, 20, Color("Demolish house", White));
+
+                AddButton(15, 305, 4005, 4007, 4);
+                AddHtml(50, 305, 120, 20, Color("Refresh house", White));
+            }
         }
 
-      list.Sort(HouseComparer.Instance);
-
-      return list;
-    }
-
-    public override void OnResponse(NetState sender, RelayInfo info)
-    {
-      if (m_Selection == null)
-      {
-        int v = info.ButtonID - 1;
-
-        if (v >= 0 && v < m_List.Count)
-          m_From.SendGump(new ViewHousesGump(m_From, m_List, m_List[v]));
-      }
-      else if (!m_Selection.Deleted)
-      {
-        switch (info.ButtonID)
+        public static void Initialize()
         {
-          case 0:
+            CommandSystem.Register("ViewHouses", AccessLevel.GameMaster, ViewHouses_OnCommand);
+        }
+
+        [Usage("ViewHouses")]
+        [Description(
+            "Displays a menu listing all houses of a targeted player. The menu also contains specific house details, and options to: go to house, open house menu, and demolish house.")]
+        public static void ViewHouses_OnCommand(CommandEventArgs e)
+        {
+            e.Mobile.BeginTarget(-1, false, TargetFlags.None, ViewHouses_OnTarget);
+        }
+
+        public static void ViewHouses_OnTarget(Mobile from, object targeted)
+        {
+            if (targeted is Mobile mobile)
+                from.SendGump(new ViewHousesGump(from, GetHouses(mobile), null));
+        }
+
+        public static List<BaseHouse> GetHouses(Mobile owner)
+        {
+            List<BaseHouse> list = new List<BaseHouse>();
+
+            if (!(owner.Account is Account acct))
+                list.AddRange(BaseHouse.GetHouses(owner));
+            else
+                for (int i = 0; i < acct.Length; ++i)
+                {
+                    Mobile mob = acct[i];
+
+                    if (mob != null)
+                        list.AddRange(BaseHouse.GetHouses(mob));
+                }
+
+            list.Sort(HouseComparer.Instance);
+
+            return list;
+        }
+
+        public override void OnResponse(NetState sender, RelayInfo info)
+        {
+            if (m_Selection == null)
             {
-              m_From.SendGump(new ViewHousesGump(m_From, m_List, null));
-              break;
+                int v = info.ButtonID - 1;
+
+                if (v >= 0 && v < m_List.Count)
+                    m_From.SendGump(new ViewHousesGump(m_From, m_List, m_List[v]));
             }
-          case 1:
+            else if (!m_Selection.Deleted)
             {
-              Map map = m_Selection.Map;
+                switch (info.ButtonID)
+                {
+                    case 0:
+                        {
+                            m_From.SendGump(new ViewHousesGump(m_From, m_List, null));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Map map = m_Selection.Map;
 
-              if (map != null && map != Map.Internal)
-                m_From.MoveToWorld(m_Selection.BanLocation, map);
+                            if (map != null && map != Map.Internal)
+                                m_From.MoveToWorld(m_Selection.BanLocation, map);
 
-              m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
+                            m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
 
-              break;
-            }
-          case 2:
-            {
-              m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
+                            break;
+                        }
+                    case 2:
+                        {
+                            m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
 
-              HouseSign sign = m_Selection.Sign;
+                            HouseSign sign = m_Selection.Sign;
 
-              if (sign?.Deleted == false)
-                sign.OnDoubleClick(m_From);
+                            if (sign?.Deleted == false)
+                                sign.OnDoubleClick(m_From);
 
-              break;
-            }
-          case 3:
-            {
-              m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
-              m_From.SendGump(new HouseDemolishGump(m_From, m_Selection));
+                            break;
+                        }
+                    case 3:
+                        {
+                            m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
+                            m_From.SendGump(new HouseDemolishGump(m_From, m_Selection));
 
-              break;
-            }
-          case 4:
-            {
-              m_Selection.RefreshDecay();
-              m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
+                            break;
+                        }
+                    case 4:
+                        {
+                            m_Selection.RefreshDecay();
+                            m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
 
-              break;
+                            break;
+                        }
+                }
             }
         }
-      }
+
+        public static TextDefinition FindHouseName(BaseHouse house)
+        {
+            int multiID = house.ItemID;
+            HousePlacementEntry[] entries = HousePlacementEntry.ClassicHouses;
+
+            for (int i = 0; i < entries.Length; ++i)
+                if (entries[i].MultiID == multiID)
+                    return entries[i].Description;
+
+            entries = HousePlacementEntry.TwoStoryFoundations;
+
+            for (int i = 0; i < entries.Length; ++i)
+                if (entries[i].MultiID == multiID)
+                    return entries[i].Description;
+
+            entries = HousePlacementEntry.ThreeStoryFoundations;
+
+            for (int i = 0; i < entries.Length; ++i)
+                if (entries[i].MultiID == multiID)
+                    return entries[i].Description;
+
+            return house.GetType().Name;
+        }
+
+        public string Right(string text) => $"<div align=right>{text}</div>";
+
+        public string Center(string text) => $"<CENTER>{text}</CENTER>";
+
+        public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
+
+        public void AddBlackAlpha(int x, int y, int width, int height)
+        {
+            AddImageTiled(x, y, width, height, 2624);
+            AddAlphaRegion(x, y, width, height);
+        }
+
+        private class HouseComparer : IComparer<BaseHouse>
+        {
+            public static readonly IComparer<BaseHouse> Instance = new HouseComparer();
+
+            public int Compare(BaseHouse x, BaseHouse y) => x?.BuiltOn.CompareTo(y?.BuiltOn) ?? 0;
+        }
     }
-
-    public static TextDefinition FindHouseName(BaseHouse house)
-    {
-      int multiID = house.ItemID;
-      HousePlacementEntry[] entries = HousePlacementEntry.ClassicHouses;
-
-      for (int i = 0; i < entries.Length; ++i)
-        if (entries[i].MultiID == multiID)
-          return entries[i].Description;
-
-      entries = HousePlacementEntry.TwoStoryFoundations;
-
-      for (int i = 0; i < entries.Length; ++i)
-        if (entries[i].MultiID == multiID)
-          return entries[i].Description;
-
-      entries = HousePlacementEntry.ThreeStoryFoundations;
-
-      for (int i = 0; i < entries.Length; ++i)
-        if (entries[i].MultiID == multiID)
-          return entries[i].Description;
-
-      return house.GetType().Name;
-    }
-
-    public string Right(string text) => $"<div align=right>{text}</div>";
-
-    public string Center(string text) => $"<CENTER>{text}</CENTER>";
-
-    public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-
-    public void AddBlackAlpha(int x, int y, int width, int height)
-    {
-      AddImageTiled(x, y, width, height, 2624);
-      AddAlphaRegion(x, y, width, height);
-    }
-
-    private class HouseComparer : IComparer<BaseHouse>
-    {
-      public static readonly IComparer<BaseHouse> Instance = new HouseComparer();
-
-      public int Compare(BaseHouse x, BaseHouse y) => x?.BuiltOn.CompareTo(y?.BuiltOn) ?? 0;
-    }
-  }
 }

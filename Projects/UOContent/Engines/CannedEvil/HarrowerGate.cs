@@ -1,56 +1,56 @@
 namespace Server.Items
 {
-  public class HarrowerGate : Moongate
-  {
-    private Mobile m_Harrower;
-
-    public HarrowerGate(Mobile harrower, Point3D loc, Map map, Point3D targLoc, Map targMap) : base(targLoc, targMap)
+    public class HarrowerGate : Moongate
     {
-      m_Harrower = harrower;
+        private Mobile m_Harrower;
 
-      Dispellable = false;
-      ItemID = 0x1FD4;
-      Light = LightType.Circle300;
+        public HarrowerGate(Mobile harrower, Point3D loc, Map map, Point3D targLoc, Map targMap) : base(targLoc, targMap)
+        {
+            m_Harrower = harrower;
 
-      MoveToWorld(loc, map);
+            Dispellable = false;
+            ItemID = 0x1FD4;
+            Light = LightType.Circle300;
+
+            MoveToWorld(loc, map);
+        }
+
+        public HarrowerGate(Serial serial) : base(serial)
+        {
+        }
+
+        public override int LabelNumber => 1049498; // dark moongate
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+
+            writer.Write(m_Harrower);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+
+            switch (version)
+            {
+                case 0:
+                    {
+                        m_Harrower = reader.ReadMobile();
+
+                        if (m_Harrower == null)
+                            Delete();
+
+                        break;
+                    }
+            }
+
+            if (Light != LightType.Circle300)
+                Light = LightType.Circle300;
+        }
     }
-
-    public HarrowerGate(Serial serial) : base(serial)
-    {
-    }
-
-    public override int LabelNumber => 1049498; // dark moongate
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-
-      writer.Write(m_Harrower);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-
-      switch (version)
-      {
-        case 0:
-          {
-            m_Harrower = reader.ReadMobile();
-
-            if (m_Harrower == null)
-              Delete();
-
-            break;
-          }
-      }
-
-      if (Light != LightType.Circle300)
-        Light = LightType.Circle300;
-    }
-  }
 }

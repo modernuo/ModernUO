@@ -7,6 +7,21 @@ on:
     branches: [ master ]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.401
+      - name: Install DotNet Format
+        run: dotnet tool install -g dotnet-format
+      - name: Restore NuGet Packages
+        run: dotnet restore --force-evaluate
+      - name: Lint
+        run: dotnet format --check
+
   build:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -14,7 +29,6 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core

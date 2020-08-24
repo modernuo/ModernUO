@@ -6,45 +6,45 @@ using Server.Network;
 
 namespace Server.Gumps
 {
-  public class SetCustomEnumGump : SetListOptionGump
-  {
-    private readonly string[] m_Names;
-
-    public SetCustomEnumGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int propspage,
-      List<object> list, string[] names) : base(prop, mobile, o, stack, propspage, list, names, null) =>
-      m_Names = names;
-
-    public override void OnResponse(NetState sender, RelayInfo relayInfo)
+    public class SetCustomEnumGump : SetListOptionGump
     {
-      int index = relayInfo.ButtonID - 1;
+        private readonly string[] m_Names;
 
-      if (index >= 0 && index < m_Names.Length)
-        try
+        public SetCustomEnumGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int propspage,
+            List<object> list, string[] names) : base(prop, mobile, o, stack, propspage, list, names, null) =>
+            m_Names = names;
+
+        public override void OnResponse(NetState sender, RelayInfo relayInfo)
         {
-          MethodInfo info = m_Property.PropertyType.GetMethod("Parse", new[] { typeof(string) });
+            int index = relayInfo.ButtonID - 1;
 
-          string result;
+            if (index >= 0 && index < m_Names.Length)
+                try
+                {
+                    MethodInfo info = m_Property.PropertyType.GetMethod("Parse", new[] { typeof(string) });
 
-          if (info != null)
-            result = Properties.SetDirect(m_Mobile, m_Object, m_Object, m_Property, m_Property.Name,
-              info.Invoke(null, new object[] { m_Names[index] }), true);
-          else if (m_Property.PropertyType == typeof(Enum) || m_Property.PropertyType.IsSubclassOf(typeof(Enum)))
-            result = Properties.SetDirect(m_Mobile, m_Object, m_Object, m_Property, m_Property.Name,
-              Enum.Parse(m_Property.PropertyType, m_Names[index], false), true);
-          else
-            result = "";
+                    string result;
 
-          m_Mobile.SendMessage(result);
+                    if (info != null)
+                        result = Properties.SetDirect(m_Mobile, m_Object, m_Object, m_Property, m_Property.Name,
+                            info.Invoke(null, new object[] { m_Names[index] }), true);
+                    else if (m_Property.PropertyType == typeof(Enum) || m_Property.PropertyType.IsSubclassOf(typeof(Enum)))
+                        result = Properties.SetDirect(m_Mobile, m_Object, m_Object, m_Property, m_Property.Name,
+                            Enum.Parse(m_Property.PropertyType, m_Names[index], false), true);
+                    else
+                        result = "";
 
-          if (result == "Property has been set.")
-            PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+                    m_Mobile.SendMessage(result);
+
+                    if (result == "Property has been set.")
+                        PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+                }
+                catch
+                {
+                    m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
+                }
+
+            m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
         }
-        catch
-        {
-          m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
-        }
-
-      m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
     }
-  }
 }

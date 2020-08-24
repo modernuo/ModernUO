@@ -26,10 +26,11 @@ using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-  public class IPEndPointConverterFactory : JsonConverterFactory
-  {
-    public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(IPEndPoint);
+    public class IPEndPointConverterFactory : JsonConverterFactory
+    {
+        public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(IPEndPoint);
 
-    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) => new IPEndPointConverter();
-  }
+        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+            new IPEndPointConverter();
+    }
 }

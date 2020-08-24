@@ -4,35 +4,35 @@ using Server.Network;
 
 namespace Server.Engines.MLQuests.Gumps
 {
-  public class QuestReportBackGump : BaseQuestGump
-  {
-    private readonly MLQuestInstance m_Instance;
-
-    public QuestReportBackGump(MLQuestInstance instance)
-      : base(3006156) // Quest Conversation
+    public class QuestReportBackGump : BaseQuestGump
     {
-      m_Instance = instance;
+        private readonly MLQuestInstance m_Instance;
 
-      MLQuest quest = instance.Quest;
-      PlayerMobile pm = instance.Player;
+        public QuestReportBackGump(MLQuestInstance instance)
+            : base(3006156) // Quest Conversation
+        {
+            m_Instance = instance;
 
-      // TODO: Check close sequence
-      CloseOtherGumps(pm);
+            MLQuest quest = instance.Quest;
+            PlayerMobile pm = instance.Player;
 
-      SetTitle(quest.Title);
-      RegisterButton(ButtonPosition.Left, ButtonGraphic.Continue, 4);
-      RegisterButton(ButtonPosition.Right, ButtonGraphic.Close, 3);
+            // TODO: Check close sequence
+            CloseOtherGumps(pm);
 
-      SetPageCount(1);
+            SetTitle(quest.Title);
+            RegisterButton(ButtonPosition.Left, ButtonGraphic.Continue, 4);
+            RegisterButton(ButtonPosition.Right, ButtonGraphic.Close, 3);
 
-      BuildPage();
-      AddConversation(quest.CompletionMessage);
+            SetPageCount(1);
+
+            BuildPage();
+            AddConversation(quest.CompletionMessage);
+        }
+
+        public override void OnResponse(NetState sender, RelayInfo info)
+        {
+            if (info.ButtonID == 4)
+                m_Instance.ContinueReportBack(true);
+        }
     }
-
-    public override void OnResponse(NetState sender, RelayInfo info)
-    {
-      if (info.ButtonID == 4)
-        m_Instance.ContinueReportBack(true);
-    }
-  }
 }

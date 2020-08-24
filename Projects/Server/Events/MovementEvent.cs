@@ -24,51 +24,51 @@ using System.Collections.Generic;
 
 namespace Server
 {
-  public class MovementEventArgs : EventArgs
-  {
-    private static readonly Queue<MovementEventArgs> m_Pool = new Queue<MovementEventArgs>();
-
-    public MovementEventArgs(Mobile mobile, Direction dir)
+    public class MovementEventArgs : EventArgs
     {
-      Mobile = mobile;
-      Direction = dir;
+        private static readonly Queue<MovementEventArgs> m_Pool = new Queue<MovementEventArgs>();
+
+        public MovementEventArgs(Mobile mobile, Direction dir)
+        {
+            Mobile = mobile;
+            Direction = dir;
+        }
+
+        public Mobile Mobile { get; private set; }
+
+        public Direction Direction { get; private set; }
+
+        public bool Blocked { get; set; }
+
+        public static MovementEventArgs Create(Mobile mobile, Direction dir)
+        {
+            MovementEventArgs args;
+
+            if (m_Pool.Count > 0)
+            {
+                args = m_Pool.Dequeue();
+
+                args.Mobile = mobile;
+                args.Direction = dir;
+                args.Blocked = false;
+            }
+            else
+            {
+                args = new MovementEventArgs(mobile, dir);
+            }
+
+            return args;
+        }
+
+        public void Free()
+        {
+            m_Pool.Enqueue(this);
+        }
     }
 
-    public Mobile Mobile { get; private set; }
-
-    public Direction Direction { get; private set; }
-
-    public bool Blocked { get; set; }
-
-    public static MovementEventArgs Create(Mobile mobile, Direction dir)
+    public static partial class EventSink
     {
-      MovementEventArgs args;
-
-      if (m_Pool.Count > 0)
-      {
-        args = m_Pool.Dequeue();
-
-        args.Mobile = mobile;
-        args.Direction = dir;
-        args.Blocked = false;
-      }
-      else
-      {
-        args = new MovementEventArgs(mobile, dir);
-      }
-
-      return args;
+        public static event Action<MovementEventArgs> Movement;
+        public static void InvokeMovement(MovementEventArgs e) => Movement?.Invoke(e);
     }
-
-    public void Free()
-    {
-      m_Pool.Enqueue(this);
-    }
-  }
-
-  public static partial class EventSink
-  {
-    public static event Action<MovementEventArgs> Movement;
-    public static void InvokeMovement(MovementEventArgs e) => Movement?.Invoke(e);
-  }
 }

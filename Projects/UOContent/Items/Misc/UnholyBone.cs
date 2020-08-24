@@ -3,109 +3,109 @@ using Server.Mobiles;
 
 namespace Server.Items
 {
-  public class UnholyBone : Item, ICarvable
-  {
-    private SpawnTimer m_Timer;
-
-    [Constructible]
-    public UnholyBone() : base(0xF7E)
+    public class UnholyBone : Item, ICarvable
     {
-      Movable = false;
-      Hue = 0x497;
+        private SpawnTimer m_Timer;
 
-      m_Timer = new SpawnTimer(this);
-      m_Timer.Start();
-    }
-
-    public UnholyBone(Serial serial) : base(serial)
-    {
-    }
-
-    public override string DefaultName => "unholy bone";
-
-    public void Carve(Mobile from, Item item)
-    {
-      Effects.PlaySound(GetWorldLocation(), Map, 0x48F);
-      Effects.SendLocationEffect(GetWorldLocation(), Map, 0x3728, 10, 10, 0, 0);
-
-      if (Utility.RandomDouble() < 0.3)
-      {
-        if (ItemID == 0xF7E)
-          from.SendMessage("You destroy the bone.");
-        else
-          from.SendMessage("You destroy the bone pile.");
-
-        Gold gold = new Gold(25, 100);
-
-        gold.MoveToWorld(GetWorldLocation(), Map);
-
-        Delete();
-
-        m_Timer.Stop();
-      }
-      else
-      {
-        if (ItemID == 0xF7E)
-          from.SendMessage("You damage the bone.");
-        else
-          from.SendMessage("You damage the bone pile.");
-      }
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-
-      m_Timer = new SpawnTimer(this);
-      m_Timer.Start();
-    }
-
-    private class SpawnTimer : Timer
-    {
-      private readonly Item m_Item;
-
-      public SpawnTimer(Item item) : base(TimeSpan.FromSeconds(Utility.RandomMinMax(5, 10)))
-      {
-        Priority = TimerPriority.FiftyMS;
-
-        m_Item = item;
-      }
-
-      protected override void OnTick()
-      {
-        if (m_Item.Deleted)
-          return;
-
-        var spawn = Utility.Random(12) switch
+        [Constructible]
+        public UnholyBone() : base(0xF7E)
         {
-          0 => (Mobile)new Skeleton(),
-          1 => new Zombie(),
-          2 => new Wraith(),
-          3 => new Spectre(),
-          4 => new Ghoul(),
-          5 => new Mummy(),
-          6 => new Bogle(),
-          7 => new RottingCorpse(),
-          8 => new BoneKnight(),
-          9 => new SkeletalKnight(),
-          10 => new Lich(),
-          11 => new LichLord(),
-          _ => new Skeleton()
-        };
+            Movable = false;
+            Hue = 0x497;
 
-        spawn.MoveToWorld(m_Item.Location, m_Item.Map);
+            m_Timer = new SpawnTimer(this);
+            m_Timer.Start();
+        }
 
-        m_Item.Delete();
-      }
+        public UnholyBone(Serial serial) : base(serial)
+        {
+        }
+
+        public override string DefaultName => "unholy bone";
+
+        public void Carve(Mobile from, Item item)
+        {
+            Effects.PlaySound(GetWorldLocation(), Map, 0x48F);
+            Effects.SendLocationEffect(GetWorldLocation(), Map, 0x3728, 10, 10, 0, 0);
+
+            if (Utility.RandomDouble() < 0.3)
+            {
+                if (ItemID == 0xF7E)
+                    from.SendMessage("You destroy the bone.");
+                else
+                    from.SendMessage("You destroy the bone pile.");
+
+                Gold gold = new Gold(25, 100);
+
+                gold.MoveToWorld(GetWorldLocation(), Map);
+
+                Delete();
+
+                m_Timer.Stop();
+            }
+            else
+            {
+                if (ItemID == 0xF7E)
+                    from.SendMessage("You damage the bone.");
+                else
+                    from.SendMessage("You damage the bone pile.");
+            }
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+
+            m_Timer = new SpawnTimer(this);
+            m_Timer.Start();
+        }
+
+        private class SpawnTimer : Timer
+        {
+            private readonly Item m_Item;
+
+            public SpawnTimer(Item item) : base(TimeSpan.FromSeconds(Utility.RandomMinMax(5, 10)))
+            {
+                Priority = TimerPriority.FiftyMS;
+
+                m_Item = item;
+            }
+
+            protected override void OnTick()
+            {
+                if (m_Item.Deleted)
+                    return;
+
+                var spawn = Utility.Random(12) switch
+                {
+                    0 => (Mobile)new Skeleton(),
+                    1 => new Zombie(),
+                    2 => new Wraith(),
+                    3 => new Spectre(),
+                    4 => new Ghoul(),
+                    5 => new Mummy(),
+                    6 => new Bogle(),
+                    7 => new RottingCorpse(),
+                    8 => new BoneKnight(),
+                    9 => new SkeletalKnight(),
+                    10 => new Lich(),
+                    11 => new LichLord(),
+                    _ => new Skeleton()
+                };
+
+                spawn.MoveToWorld(m_Item.Location, m_Item.Map);
+
+                m_Item.Delete();
+            }
+        }
     }
-  }
 }

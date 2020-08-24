@@ -3,57 +3,57 @@ using System.Linq;
 
 namespace Server.Spells.Bushido
 {
-  public class MomentumStrike : SamuraiMove
-  {
-    public override int BaseMana => 10;
-    public override double RequiredSkill => 70.0;
-
-    public override TextDefinition AbilityMessage =>
-      new TextDefinition(1070757); // You prepare to strike two enemies with one blow.
-
-    public override void OnHit(Mobile attacker, Mobile defender, int damage)
+    public class MomentumStrike : SamuraiMove
     {
-      if (!Validate(attacker) || !CheckMana(attacker, false))
-        return;
+        public override int BaseMana => 10;
+        public override double RequiredSkill => 70.0;
 
-      ClearCurrentMove(attacker);
+        public override TextDefinition AbilityMessage =>
+            new TextDefinition(1070757); // You prepare to strike two enemies with one blow.
 
-      IWeapon weapon = attacker.Weapon;
+        public override void OnHit(Mobile attacker, Mobile defender, int damage)
+        {
+            if (!Validate(attacker) || !CheckMana(attacker, false))
+                return;
 
-      List<Mobile> targets = attacker.GetMobilesInRange(weapon.MaxRange)
-        .Where(m => m != defender).Where(m => m.Combatant == attacker).ToList();
+            ClearCurrentMove(attacker);
 
-      if (targets.Count <= 0)
-      {
-        attacker.SendLocalizedMessage(1063123); // There are no valid targets to attack!
-        return;
-      }
+            IWeapon weapon = attacker.Weapon;
 
-      if (!CheckMana(attacker, true))
-        return;
+            List<Mobile> targets = attacker.GetMobilesInRange(weapon.MaxRange)
+                .Where(m => m != defender).Where(m => m.Combatant == attacker).ToList();
 
-      Mobile target = targets.RandomElement();
+            if (targets.Count <= 0)
+            {
+                attacker.SendLocalizedMessage(1063123); // There are no valid targets to attack!
+                return;
+            }
 
-      double damageBonus = attacker.Skills.Bushido.Value / 100.0;
+            if (!CheckMana(attacker, true))
+                return;
 
-      if (!defender.Alive)
-        damageBonus *= 1.5;
+            Mobile target = targets.RandomElement();
 
-      attacker.SendLocalizedMessage(1063171); // You transfer the momentum of your weapon into another enemy!
-      target.SendLocalizedMessage(1063172); // You were hit by the momentum of a Samurai's weapon!
+            double damageBonus = attacker.Skills.Bushido.Value / 100.0;
 
-      target.FixedParticles(0x37B9, 1, 4, 0x251D, 0, 0, EffectLayer.Waist);
+            if (!defender.Alive)
+                damageBonus *= 1.5;
 
-      attacker.PlaySound(0x510);
+            attacker.SendLocalizedMessage(1063171); // You transfer the momentum of your weapon into another enemy!
+            target.SendLocalizedMessage(1063172); // You were hit by the momentum of a Samurai's weapon!
 
-      weapon.OnSwing(attacker, target, damageBonus);
+            target.FixedParticles(0x37B9, 1, 4, 0x251D, 0, 0, EffectLayer.Waist);
 
-      CheckGain(attacker);
+            attacker.PlaySound(0x510);
+
+            weapon.OnSwing(attacker, target, damageBonus);
+
+            CheckGain(attacker);
+        }
+
+        public override void CheckGain(Mobile m)
+        {
+            m.CheckSkill(MoveSkill, RequiredSkill, 120.0);
+        }
     }
-
-    public override void CheckGain(Mobile m)
-    {
-      m.CheckSkill(MoveSkill, RequiredSkill, 120.0);
-    }
-  }
 }

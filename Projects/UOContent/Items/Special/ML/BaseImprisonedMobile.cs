@@ -3,43 +3,43 @@ using Server.Mobiles;
 
 namespace Server.Items
 {
-  public abstract class BaseImprisonedMobile : Item
-  {
-    [Constructible]
-    public BaseImprisonedMobile(int itemID) : base(itemID)
+    public abstract class BaseImprisonedMobile : Item
     {
+        [Constructible]
+        public BaseImprisonedMobile(int itemID) : base(itemID)
+        {
+        }
+
+        public BaseImprisonedMobile(Serial serial) : base(serial)
+        {
+        }
+
+        public abstract BaseCreature Summon { get; }
+
+        public override void OnDoubleClick(Mobile from)
+        {
+            if (IsChildOf(from.Backpack))
+                from.SendGump(new ConfirmBreakCrystalGump(this));
+            else
+                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+        }
+
+        public virtual void Release(Mobile from, BaseCreature summon)
+        {
+        }
     }
-
-    public BaseImprisonedMobile(Serial serial) : base(serial)
-    {
-    }
-
-    public abstract BaseCreature Summon { get; }
-
-    public override void OnDoubleClick(Mobile from)
-    {
-      if (IsChildOf(from.Backpack))
-        from.SendGump(new ConfirmBreakCrystalGump(this));
-      else
-        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-
-    public virtual void Release(Mobile from, BaseCreature summon)
-    {
-    }
-  }
 }

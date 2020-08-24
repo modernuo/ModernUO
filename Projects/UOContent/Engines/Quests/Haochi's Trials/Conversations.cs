@@ -1,359 +1,359 @@
 namespace Server.Engines.Quests.Samurai
 {
-  public class AcceptConversation : QuestConversation
-  {
-    public override object Message => 1049092;
-
-    public override void OnRead()
+    public class AcceptConversation : QuestConversation
     {
-      System.AddObjective(new FindHaochiObjective());
-    }
-  }
+        public override object Message => 1049092;
 
-  public class RadarConversation : QuestConversation
-  {
-    public override object Message => 1063033;
-
-    public override bool Logged => false;
-  }
-
-  public class FirstTrialIntroConversation : QuestConversation
-  {
-    public override object Message => 1063029;
-
-    public override void OnRead()
-    {
-      System.AddObjective(new FirstTrialIntroObjective());
-    }
-  }
-
-  public class FirstTrialKillConversation : QuestConversation
-  {
-    public override object Message => 1063031;
-
-    public override void OnRead()
-    {
-      System.AddObjective(new FirstTrialKillObjective());
-    }
-  }
-
-  public class GainKarmaConversation : QuestConversation
-  {
-    private bool m_CursedSoul;
-
-    public GainKarmaConversation(bool cursedSoul) => m_CursedSoul = cursedSoul;
-
-    public GainKarmaConversation()
-    {
+        public override void OnRead()
+        {
+            System.AddObjective(new FindHaochiObjective());
+        }
     }
 
-    public override object Message
+    public class RadarConversation : QuestConversation
     {
-      get
-      {
-        if (m_CursedSoul) return 1063040;
+        public override object Message => 1063033;
 
-        // You have just gained some <a href="?ForceTopic45">Karma</a> for killing a Young Ronin.
-        return 1063041;
-      }
+        public override bool Logged => false;
     }
 
-    public override bool Logged => false;
-
-    public override void ChildDeserialize(IGenericReader reader)
+    public class FirstTrialIntroConversation : QuestConversation
     {
-      int version = reader.ReadEncodedInt();
+        public override object Message => 1063029;
 
-      m_CursedSoul = reader.ReadBool();
+        public override void OnRead()
+        {
+            System.AddObjective(new FirstTrialIntroObjective());
+        }
     }
 
-    public override void ChildSerialize(IGenericWriter writer)
+    public class FirstTrialKillConversation : QuestConversation
     {
-      writer.WriteEncodedInt(0); // version
+        public override object Message => 1063031;
 
-      writer.Write(m_CursedSoul);
-    }
-  }
-
-  public class SecondTrialIntroConversation : QuestConversation
-  {
-    private bool m_CursedSoul;
-
-    public SecondTrialIntroConversation(bool cursedSoul) => m_CursedSoul = cursedSoul;
-
-    public SecondTrialIntroConversation()
-    {
+        public override void OnRead()
+        {
+            System.AddObjective(new FirstTrialKillObjective());
+        }
     }
 
-    public override object Message
+    public class GainKarmaConversation : QuestConversation
     {
-      get
-      {
-        if (m_CursedSoul) return 1063045;
+        private bool m_CursedSoul;
 
-        /* It is good that you rid the land of those dishonorable Samurai.
-           * Perhaps they will learn a greater lesson in death.<BR><BR>
-           *
-           * I have placed a reward in your pack.<BR><BR>
-           *
-           * The second trial will test your courage. You only have to follow
-           * the yellow path to see what awaits you.
-           */
-        return 1063046;
-      }
+        public GainKarmaConversation(bool cursedSoul) => m_CursedSoul = cursedSoul;
+
+        public GainKarmaConversation()
+        {
+        }
+
+        public override object Message
+        {
+            get
+            {
+                if (m_CursedSoul) return 1063040;
+
+                // You have just gained some <a href="?ForceTopic45">Karma</a> for killing a Young Ronin.
+                return 1063041;
+            }
+        }
+
+        public override bool Logged => false;
+
+        public override void ChildDeserialize(IGenericReader reader)
+        {
+            int version = reader.ReadEncodedInt();
+
+            m_CursedSoul = reader.ReadBool();
+        }
+
+        public override void ChildSerialize(IGenericWriter writer)
+        {
+            writer.WriteEncodedInt(0); // version
+
+            writer.Write(m_CursedSoul);
+        }
     }
 
-    public override void OnRead()
+    public class SecondTrialIntroConversation : QuestConversation
     {
-      System.AddObjective(new SecondTrialIntroObjective());
+        private bool m_CursedSoul;
+
+        public SecondTrialIntroConversation(bool cursedSoul) => m_CursedSoul = cursedSoul;
+
+        public SecondTrialIntroConversation()
+        {
+        }
+
+        public override object Message
+        {
+            get
+            {
+                if (m_CursedSoul) return 1063045;
+
+                /* It is good that you rid the land of those dishonorable Samurai.
+                   * Perhaps they will learn a greater lesson in death.<BR><BR>
+                   *
+                   * I have placed a reward in your pack.<BR><BR>
+                   *
+                   * The second trial will test your courage. You only have to follow
+                   * the yellow path to see what awaits you.
+                   */
+                return 1063046;
+            }
+        }
+
+        public override void OnRead()
+        {
+            System.AddObjective(new SecondTrialIntroObjective());
+        }
+
+        public override void ChildDeserialize(IGenericReader reader)
+        {
+            int version = reader.ReadEncodedInt();
+
+            m_CursedSoul = reader.ReadBool();
+        }
+
+        public override void ChildSerialize(IGenericWriter writer)
+        {
+            writer.WriteEncodedInt(0); // version
+
+            writer.Write(m_CursedSoul);
+        }
     }
 
-    public override void ChildDeserialize(IGenericReader reader)
+    public class SecondTrialAttackConversation : QuestConversation
     {
-      int version = reader.ReadEncodedInt();
+        public override object Message => 1063057;
 
-      m_CursedSoul = reader.ReadBool();
+        public override void OnRead()
+        {
+            System.AddObjective(new SecondTrialAttackObjective());
+        }
     }
 
-    public override void ChildSerialize(IGenericWriter writer)
+    public class ThirdTrialIntroConversation : QuestConversation
     {
-      writer.WriteEncodedInt(0); // version
+        private bool m_Dragon;
 
-      writer.Write(m_CursedSoul);
-    }
-  }
+        public ThirdTrialIntroConversation(bool dragon) => m_Dragon = dragon;
 
-  public class SecondTrialAttackConversation : QuestConversation
-  {
-    public override object Message => 1063057;
+        public ThirdTrialIntroConversation()
+        {
+        }
 
-    public override void OnRead()
-    {
-      System.AddObjective(new SecondTrialAttackObjective());
-    }
-  }
+        public override object Message
+        {
+            get
+            {
+                if (m_Dragon) return 1063060;
 
-  public class ThirdTrialIntroConversation : QuestConversation
-  {
-    private bool m_Dragon;
+                /* Fear remains in your eyes but you have learned that not all is
+                   * what it appears to be. <BR><BR>
+                   *
+                   * You must have known the dragon would slay you instantly.
+                   * You elected the weaker opponent though the imp did not come
+                   * here to destroy. You have much to learn. <BR><BR>
+                   *
+                   * In these lands, death is not forever. The shrines can make you whole
+                   * again as can a helpful mage or healer. <BR><BR>
+                   *
+                   * Seek them out when you have been mortally wounded. <BR><BR>
+                   *
+                   * The next trial will test your benevolence. You only have to walk the blue path.
+                   */
+                return 1063059;
+            }
+        }
 
-    public ThirdTrialIntroConversation(bool dragon) => m_Dragon = dragon;
+        public override void OnRead()
+        {
+            System.AddObjective(new ThirdTrialIntroObjective());
+        }
 
-    public ThirdTrialIntroConversation()
-    {
-    }
+        public override void ChildDeserialize(IGenericReader reader)
+        {
+            int version = reader.ReadEncodedInt();
 
-    public override object Message
-    {
-      get
-      {
-        if (m_Dragon) return 1063060;
+            m_Dragon = reader.ReadBool();
+        }
 
-        /* Fear remains in your eyes but you have learned that not all is
-           * what it appears to be. <BR><BR>
-           *
-           * You must have known the dragon would slay you instantly.
-           * You elected the weaker opponent though the imp did not come
-           * here to destroy. You have much to learn. <BR><BR>
-           *
-           * In these lands, death is not forever. The shrines can make you whole
-           * again as can a helpful mage or healer. <BR><BR>
-           *
-           * Seek them out when you have been mortally wounded. <BR><BR>
-           *
-           * The next trial will test your benevolence. You only have to walk the blue path.
-           */
-        return 1063059;
-      }
-    }
+        public override void ChildSerialize(IGenericWriter writer)
+        {
+            writer.WriteEncodedInt(0); // version
 
-    public override void OnRead()
-    {
-      System.AddObjective(new ThirdTrialIntroObjective());
+            writer.Write(m_Dragon);
+        }
     }
 
-    public override void ChildDeserialize(IGenericReader reader)
+    public class ThirdTrialKillConversation : QuestConversation
     {
-      int version = reader.ReadEncodedInt();
+        public override object Message => 1063062;
 
-      m_Dragon = reader.ReadBool();
+        public override void OnRead()
+        {
+            System.AddObjective(new ThirdTrialKillObjective());
+        }
     }
 
-    public override void ChildSerialize(IGenericWriter writer)
+    public class FourthTrialIntroConversation : QuestConversation
     {
-      writer.WriteEncodedInt(0); // version
+        public override object Message => 1063065;
 
-      writer.Write(m_Dragon);
-    }
-  }
-
-  public class ThirdTrialKillConversation : QuestConversation
-  {
-    public override object Message => 1063062;
-
-    public override void OnRead()
-    {
-      System.AddObjective(new ThirdTrialKillObjective());
-    }
-  }
-
-  public class FourthTrialIntroConversation : QuestConversation
-  {
-    public override object Message => 1063065;
-
-    public override void OnRead()
-    {
-      System.AddObjective(new FourthTrialIntroObjective());
-    }
-  }
-
-  public class FourthTrialCatsConversation : QuestConversation
-  {
-    public override object Message => 1063067;
-
-    public override void OnRead()
-    {
-      System.AddObjective(new FourthTrialCatsObjective());
-    }
-  }
-
-  public class FifthTrialIntroConversation : QuestConversation
-  {
-    private bool m_KilledCat;
-
-    public FifthTrialIntroConversation(bool killedCat) => m_KilledCat = killedCat;
-
-    public FifthTrialIntroConversation()
-    {
+        public override void OnRead()
+        {
+            System.AddObjective(new FourthTrialIntroObjective());
+        }
     }
 
-    public override object Message
+    public class FourthTrialCatsConversation : QuestConversation
     {
-      get
-      {
-        if (m_KilledCat) return 1063071;
+        public override object Message => 1063067;
 
-        /* You showed respect by helping another out while allowing the gypsy
-           * what little dignity she has left. <BR><BR>
-           *
-           * Now she will be able to feed herself and gain enough energy to walk
-           * to her camp. <BR><BR>
-           *
-           * The cats are her family members� cursed by an evil mage. <BR><BR>
-           *
-           * Once she has enough strength to walk back to the camp, she will be
-           * able to undo the spell. <BR><BR>
-           *
-           * You have been rewarded for completing your trial. And now you must
-           * prove yourself again. <BR><BR>Please retrieve my katana from the
-           * treasure room and return it to me.
-           */
-        return 1063070;
-      }
+        public override void OnRead()
+        {
+            System.AddObjective(new FourthTrialCatsObjective());
+        }
     }
 
-    public override void OnRead()
+    public class FifthTrialIntroConversation : QuestConversation
     {
-      System.AddObjective(new FifthTrialIntroObjective());
+        private bool m_KilledCat;
+
+        public FifthTrialIntroConversation(bool killedCat) => m_KilledCat = killedCat;
+
+        public FifthTrialIntroConversation()
+        {
+        }
+
+        public override object Message
+        {
+            get
+            {
+                if (m_KilledCat) return 1063071;
+
+                /* You showed respect by helping another out while allowing the gypsy
+                   * what little dignity she has left. <BR><BR>
+                   *
+                   * Now she will be able to feed herself and gain enough energy to walk
+                   * to her camp. <BR><BR>
+                   *
+                   * The cats are her family members� cursed by an evil mage. <BR><BR>
+                   *
+                   * Once she has enough strength to walk back to the camp, she will be
+                   * able to undo the spell. <BR><BR>
+                   *
+                   * You have been rewarded for completing your trial. And now you must
+                   * prove yourself again. <BR><BR>Please retrieve my katana from the
+                   * treasure room and return it to me.
+                   */
+                return 1063070;
+            }
+        }
+
+        public override void OnRead()
+        {
+            System.AddObjective(new FifthTrialIntroObjective());
+        }
+
+        public override void ChildDeserialize(IGenericReader reader)
+        {
+            int version = reader.ReadEncodedInt();
+
+            m_KilledCat = reader.ReadBool();
+        }
+
+        public override void ChildSerialize(IGenericWriter writer)
+        {
+            writer.WriteEncodedInt(0); // version
+
+            writer.Write(m_KilledCat);
+        }
     }
 
-    public override void ChildDeserialize(IGenericReader reader)
+    public class FifthTrialReturnConversation : QuestConversation
     {
-      int version = reader.ReadEncodedInt();
+        public override object Message => 1063248;
 
-      m_KilledCat = reader.ReadBool();
+        public override void OnRead()
+        {
+            System.AddObjective(new FifthTrialReturnObjective());
+        }
     }
 
-    public override void ChildSerialize(IGenericWriter writer)
+    public class LostSwordConversation : QuestConversation
     {
-      writer.WriteEncodedInt(0); // version
+        public override object Message => 1063074;
 
-      writer.Write(m_KilledCat);
-    }
-  }
-
-  public class FifthTrialReturnConversation : QuestConversation
-  {
-    public override object Message => 1063248;
-
-    public override void OnRead()
-    {
-      System.AddObjective(new FifthTrialReturnObjective());
-    }
-  }
-
-  public class LostSwordConversation : QuestConversation
-  {
-    public override object Message => 1063074;
-
-    public override bool Logged => false;
-  }
-
-  public class SixthTrialIntroConversation : QuestConversation
-  {
-    private bool m_StolenTreasure;
-
-    public SixthTrialIntroConversation(bool stolenTreasure) => m_StolenTreasure = stolenTreasure;
-
-    public SixthTrialIntroConversation()
-    {
+        public override bool Logged => false;
     }
 
-    public override object Message
+    public class SixthTrialIntroConversation : QuestConversation
     {
-      get
-      {
-        if (m_StolenTreasure) return 1063077;
+        private bool m_StolenTreasure;
 
-        /* Thank you for returning this sword to me and leaving the remaining
-           * treasure alone. <BR><BR>
-           *
-           * Your training is nearly complete. Before you have your final trial,
-           * you should pay homage to Samurai who came before you.  <BR><BR>
-           *
-           * Go into the Altar Room and light a candle for them. Afterwards, return to me.
-           */
-        return 1063076;
-      }
+        public SixthTrialIntroConversation(bool stolenTreasure) => m_StolenTreasure = stolenTreasure;
+
+        public SixthTrialIntroConversation()
+        {
+        }
+
+        public override object Message
+        {
+            get
+            {
+                if (m_StolenTreasure) return 1063077;
+
+                /* Thank you for returning this sword to me and leaving the remaining
+                   * treasure alone. <BR><BR>
+                   *
+                   * Your training is nearly complete. Before you have your final trial,
+                   * you should pay homage to Samurai who came before you.  <BR><BR>
+                   *
+                   * Go into the Altar Room and light a candle for them. Afterwards, return to me.
+                   */
+                return 1063076;
+            }
+        }
+
+        public override void OnRead()
+        {
+            System.AddObjective(new SixthTrialIntroObjective());
+        }
+
+        public override void ChildDeserialize(IGenericReader reader)
+        {
+            int version = reader.ReadEncodedInt();
+
+            m_StolenTreasure = reader.ReadBool();
+        }
+
+        public override void ChildSerialize(IGenericWriter writer)
+        {
+            writer.WriteEncodedInt(0); // version
+
+            writer.Write(m_StolenTreasure);
+        }
     }
 
-    public override void OnRead()
+    public class SeventhTrialIntroConversation : QuestConversation
     {
-      System.AddObjective(new SixthTrialIntroObjective());
+        public override object Message => 1063079;
+
+        public override void OnRead()
+        {
+            System.AddObjective(new SeventhTrialIntroObjective());
+        }
     }
 
-    public override void ChildDeserialize(IGenericReader reader)
+    public class EndConversation : QuestConversation
     {
-      int version = reader.ReadEncodedInt();
+        public override object Message => 1063125;
 
-      m_StolenTreasure = reader.ReadBool();
+        public override void OnRead()
+        {
+            System.Complete();
+        }
     }
-
-    public override void ChildSerialize(IGenericWriter writer)
-    {
-      writer.WriteEncodedInt(0); // version
-
-      writer.Write(m_StolenTreasure);
-    }
-  }
-
-  public class SeventhTrialIntroConversation : QuestConversation
-  {
-    public override object Message => 1063079;
-
-    public override void OnRead()
-    {
-      System.AddObjective(new SeventhTrialIntroObjective());
-    }
-  }
-
-  public class EndConversation : QuestConversation
-  {
-    public override object Message => 1063125;
-
-    public override void OnRead()
-    {
-      System.Complete();
-    }
-  }
 }

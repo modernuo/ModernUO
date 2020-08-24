@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using System.IO;
+
 #if WINDOWS
 using System;
 using System.Runtime.InteropServices;
@@ -27,30 +28,30 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Server
 {
-  public static class FileOperations
-  {
-    public const int KB = 1024;
-    public const int MB = 1024 * KB;
+    public static class FileOperations
+    {
+        public const int KB = 1024;
+        public const int MB = 1024 * KB;
 
-    public static int BufferSize { get; set; } = 1 * MB;
+        public static int BufferSize { get; set; } = 1 * MB;
 
-    public static int Concurrency { get; set; } = 1;
+        public static int Concurrency { get; set; } = 1;
 
 #if WINDOWS
     public static bool Unbuffered { get; set; } = true;
 #endif
 
-    public static bool AreSynchronous => Concurrency < 1;
+        public static bool AreSynchronous => Concurrency < 1;
 
-    public static FileStream OpenSequentialStream(string path, FileMode mode, FileAccess access, FileShare share)
-    {
-      var options = FileOptions.SequentialScan;
+        public static FileStream OpenSequentialStream(string path, FileMode mode, FileAccess access, FileShare share)
+        {
+            var options = FileOptions.SequentialScan;
 
-      if (Concurrency > 0)
-        options |= FileOptions.Asynchronous;
+            if (Concurrency > 0)
+                options |= FileOptions.Asynchronous;
 
 #if !WINDOWS
-      return new FileStream( path, mode, access, share, BufferSize, options );
+            return new FileStream(path, mode, access, share, BufferSize, options);
 #else
       if (Unbuffered)
         options |= NoBuffering;
@@ -64,7 +65,7 @@ namespace Server
 
       return new UnbufferedFileStream(fileHandle, access, BufferSize, Concurrency > 0);
 #endif
-    }
+        }
 
 #if WINDOWS
     private class UnbufferedFileStream : FileStream
@@ -103,5 +104,5 @@ namespace Server
         IntPtr securityAttrs, FileMode dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile);
     }
 #endif
-  }
+    }
 }

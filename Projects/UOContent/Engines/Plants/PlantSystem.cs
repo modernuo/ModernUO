@@ -4,591 +4,591 @@ using Server.Misc;
 
 namespace Server.Engines.Plants
 {
-  public enum PlantHealth
-  {
-    Dying,
-    Wilted,
-    Healthy,
-    Vibrant
-  }
-
-  public enum PlantGrowthIndicator
-  {
-    None,
-    InvalidLocation,
-    NotHealthy,
-    Delay,
-    Grown,
-    DoubleGrown
-  }
-
-  public class PlantSystem
-  {
-    public static readonly TimeSpan CheckDelay = TimeSpan.FromHours(23.0);
-
-    private int m_AvailableResources;
-    private int m_AvailableSeeds;
-    private int m_CurePotion;
-    private int m_Disease;
-    private int m_Fungus;
-    private int m_HealPotion;
-
-    private int m_Hits;
-    private int m_Infestation;
-    private int m_LeftResources;
-    private int m_LeftSeeds;
-    private int m_Poison;
-    private int m_PoisonPotion;
-    private PlantHue m_SeedHue;
-
-    private PlantType m_SeedType;
-    private int m_StrengthPotion;
-
-    private int m_Water;
-
-    public PlantSystem(PlantItem plant, bool fertileDirt)
+    public enum PlantHealth
     {
-      Plant = plant;
-      FertileDirt = fertileDirt;
-
-      NextGrowth = DateTime.UtcNow + CheckDelay;
-      GrowthIndicator = PlantGrowthIndicator.None;
-      m_Hits = MaxHits;
-      m_LeftSeeds = 8;
-      m_LeftResources = 8;
+        Dying,
+        Wilted,
+        Healthy,
+        Vibrant
     }
 
-    public PlantSystem(PlantItem plant, IGenericReader reader)
+    public enum PlantGrowthIndicator
     {
-      Plant = plant;
-
-      int version = reader.ReadInt();
-
-      FertileDirt = reader.ReadBool();
-
-      if (version >= 1)
-        NextGrowth = reader.ReadDateTime();
-      else
-        NextGrowth = reader.ReadDeltaTime();
-
-      GrowthIndicator = (PlantGrowthIndicator)reader.ReadInt();
-
-      m_Water = reader.ReadInt();
-
-      m_Hits = reader.ReadInt();
-      m_Infestation = reader.ReadInt();
-      m_Fungus = reader.ReadInt();
-      m_Poison = reader.ReadInt();
-      m_Disease = reader.ReadInt();
-      m_PoisonPotion = reader.ReadInt();
-      m_CurePotion = reader.ReadInt();
-      m_HealPotion = reader.ReadInt();
-      m_StrengthPotion = reader.ReadInt();
-
-      Pollinated = reader.ReadBool();
-      m_SeedType = (PlantType)reader.ReadInt();
-      m_SeedHue = (PlantHue)reader.ReadInt();
-      m_AvailableSeeds = reader.ReadInt();
-      m_LeftSeeds = reader.ReadInt();
-
-      m_AvailableResources = reader.ReadInt();
-      m_LeftResources = reader.ReadInt();
-
-      if (version < 2 && PlantHueInfo.IsCrossable(m_SeedHue))
-        m_SeedHue |= PlantHue.Reproduces;
+        None,
+        InvalidLocation,
+        NotHealthy,
+        Delay,
+        Grown,
+        DoubleGrown
     }
 
-    public PlantItem Plant { get; }
-
-    public bool FertileDirt { get; set; }
-
-    public DateTime NextGrowth { get; private set; }
-
-    public PlantGrowthIndicator GrowthIndicator { get; private set; }
-
-    public bool IsFullWater => m_Water >= 4;
-
-    public int Water
+    public class PlantSystem
     {
-      get => m_Water;
-      set
-      {
-        m_Water = Math.Clamp(value, 0, 4);
-        Plant.InvalidateProperties();
-      }
-    }
-
-    public int Hits
-    {
-      get => m_Hits;
-      set
-      {
-        if (m_Hits == value)
-          return;
-
-        m_Hits = Math.Clamp(value, 0, MaxHits);
-
-        if (m_Hits == 0)
-          Plant.Die();
-
-        Plant.InvalidateProperties();
-      }
-    }
-
-    public int MaxHits => 10 + (int)Plant.PlantStatus * 2;
-
-    public PlantHealth Health
-    {
-      get
-      {
-        int perc = m_Hits * 100 / MaxHits;
-
-        if (perc < 33)
-          return PlantHealth.Dying;
-        if (perc < 66)
-          return PlantHealth.Wilted;
-        return perc < 100 ? PlantHealth.Healthy : PlantHealth.Vibrant;
-      }
-    }
-
-    public int Infestation
-    {
-      get => m_Infestation;
-      set => m_Infestation = Math.Clamp(value, 0, 2);
-    }
-
-    public int Fungus
-    {
-      get => m_Fungus;
-      set => m_Fungus = Math.Clamp(value, 0, 2);
-    }
-
-    public int Poison
-    {
-      get => m_Poison;
-      set => m_Poison = Math.Clamp(value, 0, 2);
-    }
-
-    public int Disease
-    {
-      get => m_Disease;
-      set => m_Disease = Math.Clamp(value, 0, 2);
-    }
-
-    public bool IsFullPoisonPotion => m_PoisonPotion >= 2;
-
-    public int PoisonPotion
-    {
-      get => m_PoisonPotion;
-      set => m_PoisonPotion = Math.Clamp(value, 0, 2);
-    }
-
-    public bool IsFullCurePotion => m_CurePotion >= 2;
-
-    public int CurePotion
-    {
-      get => m_CurePotion;
-      set => m_CurePotion = Math.Clamp(value, 0, 2);
-    }
-
-    public bool IsFullHealPotion => m_HealPotion >= 2;
-
-    public int HealPotion
-    {
-      get => m_HealPotion;
-      set => m_HealPotion = Math.Clamp(value, 0, 2);
-    }
-
-    public bool IsFullStrengthPotion => m_StrengthPotion >= 2;
-
-    public int StrengthPotion
-    {
-      get => m_StrengthPotion;
-      set => m_StrengthPotion = Math.Clamp(value, 0, 2);
-    }
-
-    public bool HasMaladies => Infestation > 0 || Fungus > 0 || Poison > 0 || Disease > 0 || Water != 2;
-
-    public bool PollenProducing => Plant.IsCrossable && Plant.PlantStatus >= PlantStatus.FullGrownPlant;
-
-    public bool Pollinated { get; set; }
-
-    public PlantType SeedType
-    {
-      get => Pollinated ? m_SeedType : Plant.PlantType;
-      set => m_SeedType = value;
-    }
-
-    public PlantHue SeedHue
-    {
-      get => Pollinated ? m_SeedHue : Plant.PlantHue;
-      set => m_SeedHue = value;
-    }
-
-    public int AvailableSeeds
-    {
-      get => m_AvailableSeeds;
-      set
-      {
-        if (value >= 0) m_AvailableSeeds = value;
-      }
-    }
-
-    public int LeftSeeds
-    {
-      get => m_LeftSeeds;
-      set
-      {
-        if (value >= 0) m_LeftSeeds = value;
-      }
-    }
-
-    public int AvailableResources
-    {
-      get => m_AvailableResources;
-      set
-      {
-        if (value >= 0) m_AvailableResources = value;
-      }
-    }
-
-    public int LeftResources
-    {
-      get => m_LeftResources;
-      set
-      {
-        if (value >= 0) m_LeftResources = value;
-      }
-    }
-
-    public void Reset(bool potions)
-    {
-      NextGrowth = DateTime.UtcNow + CheckDelay;
-      GrowthIndicator = PlantGrowthIndicator.None;
-
-      Hits = MaxHits;
-      m_Infestation = 0;
-      m_Fungus = 0;
-      m_Poison = 0;
-      m_Disease = 0;
-
-      if (potions)
-      {
-        m_PoisonPotion = 0;
-        m_CurePotion = 0;
-        m_HealPotion = 0;
-        m_StrengthPotion = 0;
-      }
-
-      Pollinated = false;
-      m_AvailableSeeds = 0;
-      m_LeftSeeds = 8;
-
-      m_AvailableResources = 0;
-      m_LeftResources = 8;
-    }
-
-    public int GetLocalizedDirtStatus()
-    {
-      if (Water <= 1)
-        return 1060826; // hard
-      if (Water <= 2)
-        return 1060827; // soft
-      if (Water <= 3)
-        return 1060828; // squishy
-      return 1060829; // sopping wet
-    }
-
-    public int GetLocalizedHealth()
-    {
-      return Health switch
-      {
-        PlantHealth.Dying => 1060825, // dying
-        PlantHealth.Wilted => 1060824, // wilted
-        PlantHealth.Healthy => 1060823, // healthy
-        _ => 1060822
-      };
-    }
-
-    public static void Configure()
-    {
-      EventSink.WorldLoad += EventSink_WorldLoad;
-
-      if (!AutoRestart.Enabled)
-        EventSink.WorldSave += EventSink_WorldSave;
-
-      EventSink.Login += EventSink_Login;
-    }
-
-    private static void EventSink_Login(Mobile from)
-    {
-      from.Backpack?.FindItemsByType<PlantItem>().ForEach(plant =>
-      {
-        if (plant.IsGrowable)
-          plant.PlantSystem.DoGrowthCheck();
-      });
-
-      from.FindBankNoCreate()?.FindItemsByType<PlantItem>().ForEach(plant =>
-      {
-        if (plant.IsGrowable)
-          plant.PlantSystem.DoGrowthCheck();
-      });
-    }
-
-    public static void GrowAll()
-    {
-      List<PlantItem> plants = PlantItem.Plants;
-      DateTime now = DateTime.UtcNow;
-
-      for (int i = plants.Count - 1; i >= 0; --i)
-      {
-        PlantItem plant = plants[i];
-
-        if (plant.IsGrowable && !(plant.RootParent is Mobile) && now >= plant.PlantSystem.NextGrowth)
-          plant.PlantSystem.DoGrowthCheck();
-      }
-    }
-
-    private static void EventSink_WorldLoad()
-    {
-      GrowAll();
-    }
-
-    private static void EventSink_WorldSave(bool message)
-    {
-      GrowAll();
-    }
-
-    public void DoGrowthCheck()
-    {
-      if (!Plant.IsGrowable)
-        return;
-
-      if (DateTime.UtcNow < NextGrowth)
-      {
-        GrowthIndicator = PlantGrowthIndicator.Delay;
-        return;
-      }
-
-      NextGrowth = DateTime.UtcNow + CheckDelay;
-
-      if (!Plant.ValidGrowthLocation)
-      {
-        GrowthIndicator = PlantGrowthIndicator.InvalidLocation;
-        return;
-      }
-
-      if (Plant.PlantStatus == PlantStatus.BowlOfDirt)
-      {
-        if (Water > 2 || Utility.RandomDouble() < 0.9)
-          Water--;
-        return;
-      }
-
-      ApplyBeneficialEffects();
-
-      if (!ApplyMaladiesEffects()) // Dead
-        return;
-
-      Grow();
-
-      UpdateMaladies();
-    }
-
-    private void ApplyBeneficialEffects()
-    {
-      if (PoisonPotion >= Infestation)
-      {
-        PoisonPotion -= Infestation;
-        Infestation = 0;
-      }
-      else
-      {
-        Infestation -= PoisonPotion;
-        PoisonPotion = 0;
-      }
-
-      if (CurePotion >= Fungus)
-      {
-        CurePotion -= Fungus;
-        Fungus = 0;
-      }
-      else
-      {
-        Fungus -= CurePotion;
-        CurePotion = 0;
-      }
-
-      if (HealPotion >= Poison)
-      {
-        HealPotion -= Poison;
-        Poison = 0;
-      }
-      else
-      {
-        Poison -= HealPotion;
-        HealPotion = 0;
-      }
-
-      if (HealPotion >= Disease)
-      {
-        HealPotion -= Disease;
-        Disease = 0;
-      }
-      else
-      {
-        Disease -= HealPotion;
-        HealPotion = 0;
-      }
-
-      if (!HasMaladies)
-      {
-        if (HealPotion > 0)
-          Hits += HealPotion * 7;
-        else
-          Hits += 2;
-      }
-
-      HealPotion = 0;
-    }
-
-    private bool ApplyMaladiesEffects()
-    {
-      int damage = 0;
-
-      if (Infestation > 0)
-        damage += Infestation * Utility.RandomMinMax(3, 6);
-
-      if (Fungus > 0)
-        damage += Fungus * Utility.RandomMinMax(3, 6);
-
-      if (Poison > 0)
-        damage += Poison * Utility.RandomMinMax(3, 6);
-
-      if (Disease > 0)
-        damage += Disease * Utility.RandomMinMax(3, 6);
-
-      if (Water > 2)
-        damage += (Water - 2) * Utility.RandomMinMax(3, 6);
-      else if (Water < 2)
-        damage += (2 - Water) * Utility.RandomMinMax(3, 6);
-
-      Hits -= damage;
-
-      return Plant.IsGrowable && Plant.PlantStatus != PlantStatus.BowlOfDirt;
-    }
-
-    private void Grow()
-    {
-      if (Health < PlantHealth.Healthy)
-      {
-        GrowthIndicator = PlantGrowthIndicator.NotHealthy;
-      }
-      else if (FertileDirt && Plant.PlantStatus <= PlantStatus.Stage5 && Utility.RandomDouble() < 0.1)
-      {
-        int curStage = (int)Plant.PlantStatus;
-        Plant.PlantStatus = (PlantStatus)(curStage + 2);
-
-        GrowthIndicator = PlantGrowthIndicator.DoubleGrown;
-      }
-      else if (Plant.PlantStatus < PlantStatus.Stage9)
-      {
-        int curStage = (int)Plant.PlantStatus;
-        Plant.PlantStatus = (PlantStatus)(curStage + 1);
-
-        GrowthIndicator = PlantGrowthIndicator.Grown;
-      }
-      else
-      {
-        if (Pollinated && LeftSeeds > 0 && Plant.Reproduces)
+        public static readonly TimeSpan CheckDelay = TimeSpan.FromHours(23.0);
+
+        private int m_AvailableResources;
+        private int m_AvailableSeeds;
+        private int m_CurePotion;
+        private int m_Disease;
+        private int m_Fungus;
+        private int m_HealPotion;
+
+        private int m_Hits;
+        private int m_Infestation;
+        private int m_LeftResources;
+        private int m_LeftSeeds;
+        private int m_Poison;
+        private int m_PoisonPotion;
+        private PlantHue m_SeedHue;
+
+        private PlantType m_SeedType;
+        private int m_StrengthPotion;
+
+        private int m_Water;
+
+        public PlantSystem(PlantItem plant, bool fertileDirt)
         {
-          LeftSeeds--;
-          AvailableSeeds++;
+            Plant = plant;
+            FertileDirt = fertileDirt;
+
+            NextGrowth = DateTime.UtcNow + CheckDelay;
+            GrowthIndicator = PlantGrowthIndicator.None;
+            m_Hits = MaxHits;
+            m_LeftSeeds = 8;
+            m_LeftResources = 8;
         }
 
-        if (LeftResources > 0 && PlantResourceInfo.GetInfo(Plant.PlantType, Plant.PlantHue) != null)
+        public PlantSystem(PlantItem plant, IGenericReader reader)
         {
-          LeftResources--;
-          AvailableResources++;
+            Plant = plant;
+
+            int version = reader.ReadInt();
+
+            FertileDirt = reader.ReadBool();
+
+            if (version >= 1)
+                NextGrowth = reader.ReadDateTime();
+            else
+                NextGrowth = reader.ReadDeltaTime();
+
+            GrowthIndicator = (PlantGrowthIndicator)reader.ReadInt();
+
+            m_Water = reader.ReadInt();
+
+            m_Hits = reader.ReadInt();
+            m_Infestation = reader.ReadInt();
+            m_Fungus = reader.ReadInt();
+            m_Poison = reader.ReadInt();
+            m_Disease = reader.ReadInt();
+            m_PoisonPotion = reader.ReadInt();
+            m_CurePotion = reader.ReadInt();
+            m_HealPotion = reader.ReadInt();
+            m_StrengthPotion = reader.ReadInt();
+
+            Pollinated = reader.ReadBool();
+            m_SeedType = (PlantType)reader.ReadInt();
+            m_SeedHue = (PlantHue)reader.ReadInt();
+            m_AvailableSeeds = reader.ReadInt();
+            m_LeftSeeds = reader.ReadInt();
+
+            m_AvailableResources = reader.ReadInt();
+            m_LeftResources = reader.ReadInt();
+
+            if (version < 2 && PlantHueInfo.IsCrossable(m_SeedHue))
+                m_SeedHue |= PlantHue.Reproduces;
         }
 
-        GrowthIndicator = PlantGrowthIndicator.Grown;
-      }
+        public PlantItem Plant { get; }
 
-      if (Plant.PlantStatus >= PlantStatus.Stage9 && !Pollinated)
-      {
-        Pollinated = true;
-        SeedType = Plant.PlantType;
-        SeedHue = Plant.PlantHue;
-      }
+        public bool FertileDirt { get; set; }
+
+        public DateTime NextGrowth { get; private set; }
+
+        public PlantGrowthIndicator GrowthIndicator { get; private set; }
+
+        public bool IsFullWater => m_Water >= 4;
+
+        public int Water
+        {
+            get => m_Water;
+            set
+            {
+                m_Water = Math.Clamp(value, 0, 4);
+                Plant.InvalidateProperties();
+            }
+        }
+
+        public int Hits
+        {
+            get => m_Hits;
+            set
+            {
+                if (m_Hits == value)
+                    return;
+
+                m_Hits = Math.Clamp(value, 0, MaxHits);
+
+                if (m_Hits == 0)
+                    Plant.Die();
+
+                Plant.InvalidateProperties();
+            }
+        }
+
+        public int MaxHits => 10 + (int)Plant.PlantStatus * 2;
+
+        public PlantHealth Health
+        {
+            get
+            {
+                int perc = m_Hits * 100 / MaxHits;
+
+                if (perc < 33)
+                    return PlantHealth.Dying;
+                if (perc < 66)
+                    return PlantHealth.Wilted;
+                return perc < 100 ? PlantHealth.Healthy : PlantHealth.Vibrant;
+            }
+        }
+
+        public int Infestation
+        {
+            get => m_Infestation;
+            set => m_Infestation = Math.Clamp(value, 0, 2);
+        }
+
+        public int Fungus
+        {
+            get => m_Fungus;
+            set => m_Fungus = Math.Clamp(value, 0, 2);
+        }
+
+        public int Poison
+        {
+            get => m_Poison;
+            set => m_Poison = Math.Clamp(value, 0, 2);
+        }
+
+        public int Disease
+        {
+            get => m_Disease;
+            set => m_Disease = Math.Clamp(value, 0, 2);
+        }
+
+        public bool IsFullPoisonPotion => m_PoisonPotion >= 2;
+
+        public int PoisonPotion
+        {
+            get => m_PoisonPotion;
+            set => m_PoisonPotion = Math.Clamp(value, 0, 2);
+        }
+
+        public bool IsFullCurePotion => m_CurePotion >= 2;
+
+        public int CurePotion
+        {
+            get => m_CurePotion;
+            set => m_CurePotion = Math.Clamp(value, 0, 2);
+        }
+
+        public bool IsFullHealPotion => m_HealPotion >= 2;
+
+        public int HealPotion
+        {
+            get => m_HealPotion;
+            set => m_HealPotion = Math.Clamp(value, 0, 2);
+        }
+
+        public bool IsFullStrengthPotion => m_StrengthPotion >= 2;
+
+        public int StrengthPotion
+        {
+            get => m_StrengthPotion;
+            set => m_StrengthPotion = Math.Clamp(value, 0, 2);
+        }
+
+        public bool HasMaladies => Infestation > 0 || Fungus > 0 || Poison > 0 || Disease > 0 || Water != 2;
+
+        public bool PollenProducing => Plant.IsCrossable && Plant.PlantStatus >= PlantStatus.FullGrownPlant;
+
+        public bool Pollinated { get; set; }
+
+        public PlantType SeedType
+        {
+            get => Pollinated ? m_SeedType : Plant.PlantType;
+            set => m_SeedType = value;
+        }
+
+        public PlantHue SeedHue
+        {
+            get => Pollinated ? m_SeedHue : Plant.PlantHue;
+            set => m_SeedHue = value;
+        }
+
+        public int AvailableSeeds
+        {
+            get => m_AvailableSeeds;
+            set
+            {
+                if (value >= 0) m_AvailableSeeds = value;
+            }
+        }
+
+        public int LeftSeeds
+        {
+            get => m_LeftSeeds;
+            set
+            {
+                if (value >= 0) m_LeftSeeds = value;
+            }
+        }
+
+        public int AvailableResources
+        {
+            get => m_AvailableResources;
+            set
+            {
+                if (value >= 0) m_AvailableResources = value;
+            }
+        }
+
+        public int LeftResources
+        {
+            get => m_LeftResources;
+            set
+            {
+                if (value >= 0) m_LeftResources = value;
+            }
+        }
+
+        public void Reset(bool potions)
+        {
+            NextGrowth = DateTime.UtcNow + CheckDelay;
+            GrowthIndicator = PlantGrowthIndicator.None;
+
+            Hits = MaxHits;
+            m_Infestation = 0;
+            m_Fungus = 0;
+            m_Poison = 0;
+            m_Disease = 0;
+
+            if (potions)
+            {
+                m_PoisonPotion = 0;
+                m_CurePotion = 0;
+                m_HealPotion = 0;
+                m_StrengthPotion = 0;
+            }
+
+            Pollinated = false;
+            m_AvailableSeeds = 0;
+            m_LeftSeeds = 8;
+
+            m_AvailableResources = 0;
+            m_LeftResources = 8;
+        }
+
+        public int GetLocalizedDirtStatus()
+        {
+            if (Water <= 1)
+                return 1060826; // hard
+            if (Water <= 2)
+                return 1060827; // soft
+            if (Water <= 3)
+                return 1060828; // squishy
+            return 1060829; // sopping wet
+        }
+
+        public int GetLocalizedHealth()
+        {
+            return Health switch
+            {
+                PlantHealth.Dying => 1060825, // dying
+                PlantHealth.Wilted => 1060824, // wilted
+                PlantHealth.Healthy => 1060823, // healthy
+                _ => 1060822
+            };
+        }
+
+        public static void Configure()
+        {
+            EventSink.WorldLoad += EventSink_WorldLoad;
+
+            if (!AutoRestart.Enabled)
+                EventSink.WorldSave += EventSink_WorldSave;
+
+            EventSink.Login += EventSink_Login;
+        }
+
+        private static void EventSink_Login(Mobile from)
+        {
+            from.Backpack?.FindItemsByType<PlantItem>().ForEach(plant =>
+            {
+                if (plant.IsGrowable)
+                    plant.PlantSystem.DoGrowthCheck();
+            });
+
+            from.FindBankNoCreate()?.FindItemsByType<PlantItem>().ForEach(plant =>
+            {
+                if (plant.IsGrowable)
+                    plant.PlantSystem.DoGrowthCheck();
+            });
+        }
+
+        public static void GrowAll()
+        {
+            List<PlantItem> plants = PlantItem.Plants;
+            DateTime now = DateTime.UtcNow;
+
+            for (int i = plants.Count - 1; i >= 0; --i)
+            {
+                PlantItem plant = plants[i];
+
+                if (plant.IsGrowable && !(plant.RootParent is Mobile) && now >= plant.PlantSystem.NextGrowth)
+                    plant.PlantSystem.DoGrowthCheck();
+            }
+        }
+
+        private static void EventSink_WorldLoad()
+        {
+            GrowAll();
+        }
+
+        private static void EventSink_WorldSave(bool message)
+        {
+            GrowAll();
+        }
+
+        public void DoGrowthCheck()
+        {
+            if (!Plant.IsGrowable)
+                return;
+
+            if (DateTime.UtcNow < NextGrowth)
+            {
+                GrowthIndicator = PlantGrowthIndicator.Delay;
+                return;
+            }
+
+            NextGrowth = DateTime.UtcNow + CheckDelay;
+
+            if (!Plant.ValidGrowthLocation)
+            {
+                GrowthIndicator = PlantGrowthIndicator.InvalidLocation;
+                return;
+            }
+
+            if (Plant.PlantStatus == PlantStatus.BowlOfDirt)
+            {
+                if (Water > 2 || Utility.RandomDouble() < 0.9)
+                    Water--;
+                return;
+            }
+
+            ApplyBeneficialEffects();
+
+            if (!ApplyMaladiesEffects()) // Dead
+                return;
+
+            Grow();
+
+            UpdateMaladies();
+        }
+
+        private void ApplyBeneficialEffects()
+        {
+            if (PoisonPotion >= Infestation)
+            {
+                PoisonPotion -= Infestation;
+                Infestation = 0;
+            }
+            else
+            {
+                Infestation -= PoisonPotion;
+                PoisonPotion = 0;
+            }
+
+            if (CurePotion >= Fungus)
+            {
+                CurePotion -= Fungus;
+                Fungus = 0;
+            }
+            else
+            {
+                Fungus -= CurePotion;
+                CurePotion = 0;
+            }
+
+            if (HealPotion >= Poison)
+            {
+                HealPotion -= Poison;
+                Poison = 0;
+            }
+            else
+            {
+                Poison -= HealPotion;
+                HealPotion = 0;
+            }
+
+            if (HealPotion >= Disease)
+            {
+                HealPotion -= Disease;
+                Disease = 0;
+            }
+            else
+            {
+                Disease -= HealPotion;
+                HealPotion = 0;
+            }
+
+            if (!HasMaladies)
+            {
+                if (HealPotion > 0)
+                    Hits += HealPotion * 7;
+                else
+                    Hits += 2;
+            }
+
+            HealPotion = 0;
+        }
+
+        private bool ApplyMaladiesEffects()
+        {
+            int damage = 0;
+
+            if (Infestation > 0)
+                damage += Infestation * Utility.RandomMinMax(3, 6);
+
+            if (Fungus > 0)
+                damage += Fungus * Utility.RandomMinMax(3, 6);
+
+            if (Poison > 0)
+                damage += Poison * Utility.RandomMinMax(3, 6);
+
+            if (Disease > 0)
+                damage += Disease * Utility.RandomMinMax(3, 6);
+
+            if (Water > 2)
+                damage += (Water - 2) * Utility.RandomMinMax(3, 6);
+            else if (Water < 2)
+                damage += (2 - Water) * Utility.RandomMinMax(3, 6);
+
+            Hits -= damage;
+
+            return Plant.IsGrowable && Plant.PlantStatus != PlantStatus.BowlOfDirt;
+        }
+
+        private void Grow()
+        {
+            if (Health < PlantHealth.Healthy)
+            {
+                GrowthIndicator = PlantGrowthIndicator.NotHealthy;
+            }
+            else if (FertileDirt && Plant.PlantStatus <= PlantStatus.Stage5 && Utility.RandomDouble() < 0.1)
+            {
+                int curStage = (int)Plant.PlantStatus;
+                Plant.PlantStatus = (PlantStatus)(curStage + 2);
+
+                GrowthIndicator = PlantGrowthIndicator.DoubleGrown;
+            }
+            else if (Plant.PlantStatus < PlantStatus.Stage9)
+            {
+                int curStage = (int)Plant.PlantStatus;
+                Plant.PlantStatus = (PlantStatus)(curStage + 1);
+
+                GrowthIndicator = PlantGrowthIndicator.Grown;
+            }
+            else
+            {
+                if (Pollinated && LeftSeeds > 0 && Plant.Reproduces)
+                {
+                    LeftSeeds--;
+                    AvailableSeeds++;
+                }
+
+                if (LeftResources > 0 && PlantResourceInfo.GetInfo(Plant.PlantType, Plant.PlantHue) != null)
+                {
+                    LeftResources--;
+                    AvailableResources++;
+                }
+
+                GrowthIndicator = PlantGrowthIndicator.Grown;
+            }
+
+            if (Plant.PlantStatus >= PlantStatus.Stage9 && !Pollinated)
+            {
+                Pollinated = true;
+                SeedType = Plant.PlantType;
+                SeedHue = Plant.PlantHue;
+            }
+        }
+
+        private void UpdateMaladies()
+        {
+            double infestationChance = 0.30 - StrengthPotion * 0.075 + (Water - 2) * 0.10;
+
+            PlantTypeInfo typeInfo = PlantTypeInfo.GetInfo(Plant.PlantType);
+            if (typeInfo.Flowery)
+                infestationChance += 0.10;
+
+            if (PlantHueInfo.IsBright(Plant.PlantHue))
+                infestationChance += 0.10;
+
+            if (Utility.RandomDouble() < infestationChance)
+                Infestation++;
+
+            double fungusChance = 0.15 - StrengthPotion * 0.075 + (Water - 2) * 0.10;
+
+            if (Utility.RandomDouble() < fungusChance)
+                Fungus++;
+
+            if (Water > 2 || Utility.RandomDouble() < 0.9)
+                Water--;
+
+            if (PoisonPotion > 0)
+            {
+                Poison += PoisonPotion;
+                PoisonPotion = 0;
+            }
+
+            if (CurePotion > 0)
+            {
+                Disease += CurePotion;
+                CurePotion = 0;
+            }
+
+            StrengthPotion = 0;
+        }
+
+        public void Save(IGenericWriter writer)
+        {
+            writer.Write(2); // version
+
+            writer.Write(FertileDirt);
+
+            writer.Write(NextGrowth);
+            writer.Write((int)GrowthIndicator);
+
+            writer.Write(m_Water);
+
+            writer.Write(m_Hits);
+            writer.Write(m_Infestation);
+            writer.Write(m_Fungus);
+            writer.Write(m_Poison);
+            writer.Write(m_Disease);
+            writer.Write(m_PoisonPotion);
+            writer.Write(m_CurePotion);
+            writer.Write(m_HealPotion);
+            writer.Write(m_StrengthPotion);
+
+            writer.Write(Pollinated);
+            writer.Write((int)m_SeedType);
+            writer.Write((int)m_SeedHue);
+            writer.Write(m_AvailableSeeds);
+            writer.Write(m_LeftSeeds);
+
+            writer.Write(m_AvailableResources);
+            writer.Write(m_LeftResources);
+        }
     }
-
-    private void UpdateMaladies()
-    {
-      double infestationChance = 0.30 - StrengthPotion * 0.075 + (Water - 2) * 0.10;
-
-      PlantTypeInfo typeInfo = PlantTypeInfo.GetInfo(Plant.PlantType);
-      if (typeInfo.Flowery)
-        infestationChance += 0.10;
-
-      if (PlantHueInfo.IsBright(Plant.PlantHue))
-        infestationChance += 0.10;
-
-      if (Utility.RandomDouble() < infestationChance)
-        Infestation++;
-
-      double fungusChance = 0.15 - StrengthPotion * 0.075 + (Water - 2) * 0.10;
-
-      if (Utility.RandomDouble() < fungusChance)
-        Fungus++;
-
-      if (Water > 2 || Utility.RandomDouble() < 0.9)
-        Water--;
-
-      if (PoisonPotion > 0)
-      {
-        Poison += PoisonPotion;
-        PoisonPotion = 0;
-      }
-
-      if (CurePotion > 0)
-      {
-        Disease += CurePotion;
-        CurePotion = 0;
-      }
-
-      StrengthPotion = 0;
-    }
-
-    public void Save(IGenericWriter writer)
-    {
-      writer.Write(2); // version
-
-      writer.Write(FertileDirt);
-
-      writer.Write(NextGrowth);
-      writer.Write((int)GrowthIndicator);
-
-      writer.Write(m_Water);
-
-      writer.Write(m_Hits);
-      writer.Write(m_Infestation);
-      writer.Write(m_Fungus);
-      writer.Write(m_Poison);
-      writer.Write(m_Disease);
-      writer.Write(m_PoisonPotion);
-      writer.Write(m_CurePotion);
-      writer.Write(m_HealPotion);
-      writer.Write(m_StrengthPotion);
-
-      writer.Write(Pollinated);
-      writer.Write((int)m_SeedType);
-      writer.Write((int)m_SeedHue);
-      writer.Write(m_AvailableSeeds);
-      writer.Write(m_LeftSeeds);
-
-      writer.Write(m_AvailableResources);
-      writer.Write(m_LeftResources);
-    }
-  }
 }

@@ -16,292 +16,293 @@ using Server.Utilities;
 
 namespace Server.Items
 {
-  public interface INinjaAmmo : IUsesRemaining
-  {
-    int PoisonCharges { get; set; }
-    Poison Poison { get; set; }
-  }
-
-  public interface INinjaWeapon : IUsesRemaining
-  {
-    int NoFreeHandMessage { get; }
-    int EmptyWeaponMessage { get; }
-    int RecentlyUsedMessage { get; }
-    int FullWeaponMessage { get; }
-    int WrongAmmoMessage { get; }
-    Type AmmoType { get; }
-    int PoisonCharges { get; set; }
-    Poison Poison { get; set; }
-    int WeaponDamage { get; }
-    int WeaponMinRange { get; }
-    int WeaponMaxRange { get; }
-
-    void AttackAnimation(Mobile from, Mobile to);
-  }
-
-  public class NinjaWeapon
-  {
-    private const int MaxUses = 10;
-
-    public static void AttemptShoot(PlayerMobile from, INinjaWeapon weapon)
+    public interface INinjaAmmo : IUsesRemaining
     {
-      if (CanUseWeapon(from, weapon))
-        from.BeginTarget(weapon.WeaponMaxRange, false, TargetFlags.Harmful, OnTarget, weapon);
+        int PoisonCharges { get; set; }
+        Poison Poison { get; set; }
     }
 
-    private static void Shoot(PlayerMobile from, Mobile target, INinjaWeapon weapon)
+    public interface INinjaWeapon : IUsesRemaining
     {
-      if (from != target && CanUseWeapon(from, weapon) && from.CanBeHarmful(target))
-      {
-        if (weapon.WeaponMinRange == 0 || !from.InRange(target, weapon.WeaponMinRange))
-        {
-          from.NinjaWepCooldown = true;
+        int NoFreeHandMessage { get; }
+        int EmptyWeaponMessage { get; }
+        int RecentlyUsedMessage { get; }
+        int FullWeaponMessage { get; }
+        int WrongAmmoMessage { get; }
+        Type AmmoType { get; }
+        int PoisonCharges { get; set; }
+        Poison Poison { get; set; }
+        int WeaponDamage { get; }
+        int WeaponMinRange { get; }
+        int WeaponMaxRange { get; }
 
-          from.Direction = from.GetDirectionTo(target);
-
-          from.RevealingAction();
-
-          weapon.AttackAnimation(from, target);
-
-          ConsumeUse(weapon);
-
-          if (CombatCheck(from, target))
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnHit, from, target, weapon);
-
-          Timer.DelayCall(TimeSpan.FromSeconds(2.5), ResetUsing, from);
-        }
-        else
-        {
-          from.SendLocalizedMessage(1063303); // Your target is too close!
-        }
-      }
+        void AttackAnimation(Mobile from, Mobile to);
     }
 
-    private static void ResetUsing(PlayerMobile from)
+    public class NinjaWeapon
     {
-      from.NinjaWepCooldown = false;
-    }
+        private const int MaxUses = 10;
 
-    private static void Unload(Mobile from, INinjaWeapon weapon)
-    {
-      if (weapon.UsesRemaining > 0)
-      {
-        Item ammo = ActivatorUtil.CreateInstance(weapon.AmmoType, weapon.UsesRemaining) as Item;
-
-        if (ammo is INinjaAmmo ninaAmmo)
+        public static void AttemptShoot(PlayerMobile from, INinjaWeapon weapon)
         {
-          ninaAmmo.Poison = weapon.Poison;
-          ninaAmmo.PoisonCharges = weapon.PoisonCharges;
+            if (CanUseWeapon(from, weapon))
+                from.BeginTarget(weapon.WeaponMaxRange, false, TargetFlags.Harmful, OnTarget, weapon);
         }
 
-        from.AddToBackpack(ammo);
-
-        weapon.UsesRemaining = 0;
-        weapon.PoisonCharges = 0;
-        weapon.Poison = null;
-      }
-    }
-
-    private static void Reload(PlayerMobile from, INinjaWeapon weapon, INinjaAmmo ammo)
-    {
-      if (weapon.UsesRemaining < MaxUses)
-      {
-        int need = Math.Min(MaxUses - weapon.UsesRemaining, ammo.UsesRemaining);
-
-        if (need > 0)
+        private static void Shoot(PlayerMobile from, Mobile target, INinjaWeapon weapon)
         {
-          if (weapon.Poison != null && (ammo.Poison == null || weapon.Poison.Level > ammo.Poison.Level))
-          {
-            from.SendLocalizedMessage(1070767); // Loaded projectile is stronger, unload it first
-          }
-          else
-          {
+            if (from != target && CanUseWeapon(from, weapon) && from.CanBeHarmful(target))
+            {
+                if (weapon.WeaponMinRange == 0 || !from.InRange(target, weapon.WeaponMinRange))
+                {
+                    from.NinjaWepCooldown = true;
+
+                    from.Direction = from.GetDirectionTo(target);
+
+                    from.RevealingAction();
+
+                    weapon.AttackAnimation(from, target);
+
+                    ConsumeUse(weapon);
+
+                    if (CombatCheck(from, target))
+                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnHit, from, target, weapon);
+
+                    Timer.DelayCall(TimeSpan.FromSeconds(2.5), ResetUsing, from);
+                }
+                else
+                {
+                    from.SendLocalizedMessage(1063303); // Your target is too close!
+                }
+            }
+        }
+
+        private static void ResetUsing(PlayerMobile from)
+        {
+            from.NinjaWepCooldown = false;
+        }
+
+        private static void Unload(Mobile from, INinjaWeapon weapon)
+        {
             if (weapon.UsesRemaining > 0)
-              if ((weapon.Poison == null && ammo.Poison != null)
-                  || (weapon.Poison != null && ammo.Poison != null && weapon.Poison.Level != ammo.Poison.Level))
-              {
-                Unload(from, weapon);
-                need = Math.Min(MaxUses, ammo.UsesRemaining);
-              }
+            {
+                Item ammo = ActivatorUtil.CreateInstance(weapon.AmmoType, weapon.UsesRemaining) as Item;
 
-            int poisonneeded = Math.Min(MaxUses - weapon.PoisonCharges, ammo.PoisonCharges);
+                if (ammo is INinjaAmmo ninaAmmo)
+                {
+                    ninaAmmo.Poison = weapon.Poison;
+                    ninaAmmo.PoisonCharges = weapon.PoisonCharges;
+                }
 
-            weapon.UsesRemaining += need;
-            weapon.PoisonCharges += poisonneeded;
+                from.AddToBackpack(ammo);
 
-            if (weapon.PoisonCharges > 0) weapon.Poison = ammo.Poison;
-
-            ammo.PoisonCharges -= poisonneeded;
-            ammo.UsesRemaining -= need;
-
-            if (ammo.UsesRemaining < 1)
-              ((Item)ammo).Delete();
-            else if (ammo.PoisonCharges < 1) ammo.Poison = null;
-          }
-        } // "else" here would mean they targeted "ammo" with 0 uses.  undefined behavior.
-      }
-      else
-      {
-        from.SendLocalizedMessage(weapon.FullWeaponMessage);
-      }
-    }
-
-    private static void ConsumeUse(INinjaWeapon weapon)
-    {
-      if (weapon.UsesRemaining > 0)
-      {
-        weapon.UsesRemaining--;
-
-        if (weapon.UsesRemaining < 1)
-        {
-          weapon.PoisonCharges = 0;
-          weapon.Poison = null;
+                weapon.UsesRemaining = 0;
+                weapon.PoisonCharges = 0;
+                weapon.Poison = null;
+            }
         }
-      }
-    }
 
-    private static bool CanUseWeapon(PlayerMobile from, INinjaWeapon weapon)
-    {
-      if (WeaponIsValid(weapon, from))
-      {
-        if (weapon.UsesRemaining > 0)
+        private static void Reload(PlayerMobile from, INinjaWeapon weapon, INinjaAmmo ammo)
         {
-          if (!from.NinjaWepCooldown)
-          {
-            if (BasePotion.HasFreeHand(from)) return true;
+            if (weapon.UsesRemaining < MaxUses)
+            {
+                int need = Math.Min(MaxUses - weapon.UsesRemaining, ammo.UsesRemaining);
 
-            from.SendLocalizedMessage(weapon.NoFreeHandMessage);
-          }
-          else
-          {
-            from.SendLocalizedMessage(weapon.RecentlyUsedMessage);
-          }
+                if (need > 0)
+                {
+                    if (weapon.Poison != null && (ammo.Poison == null || weapon.Poison.Level > ammo.Poison.Level))
+                    {
+                        from.SendLocalizedMessage(1070767); // Loaded projectile is stronger, unload it first
+                    }
+                    else
+                    {
+                        if (weapon.UsesRemaining > 0)
+                            if ((weapon.Poison == null && ammo.Poison != null)
+                                || (weapon.Poison != null && ammo.Poison != null &&
+                                    weapon.Poison.Level != ammo.Poison.Level))
+                            {
+                                Unload(from, weapon);
+                                need = Math.Min(MaxUses, ammo.UsesRemaining);
+                            }
+
+                        int poisonneeded = Math.Min(MaxUses - weapon.PoisonCharges, ammo.PoisonCharges);
+
+                        weapon.UsesRemaining += need;
+                        weapon.PoisonCharges += poisonneeded;
+
+                        if (weapon.PoisonCharges > 0) weapon.Poison = ammo.Poison;
+
+                        ammo.PoisonCharges -= poisonneeded;
+                        ammo.UsesRemaining -= need;
+
+                        if (ammo.UsesRemaining < 1)
+                            ((Item)ammo).Delete();
+                        else if (ammo.PoisonCharges < 1) ammo.Poison = null;
+                    }
+                } // "else" here would mean they targeted "ammo" with 0 uses.  undefined behavior.
+            }
+            else
+            {
+                from.SendLocalizedMessage(weapon.FullWeaponMessage);
+            }
         }
-        else
+
+        private static void ConsumeUse(INinjaWeapon weapon)
         {
-          from.SendLocalizedMessage(weapon.EmptyWeaponMessage);
+            if (weapon.UsesRemaining > 0)
+            {
+                weapon.UsesRemaining--;
+
+                if (weapon.UsesRemaining < 1)
+                {
+                    weapon.PoisonCharges = 0;
+                    weapon.Poison = null;
+                }
+            }
         }
-      }
 
-      return false;
+        private static bool CanUseWeapon(PlayerMobile from, INinjaWeapon weapon)
+        {
+            if (WeaponIsValid(weapon, from))
+            {
+                if (weapon.UsesRemaining > 0)
+                {
+                    if (!from.NinjaWepCooldown)
+                    {
+                        if (BasePotion.HasFreeHand(from)) return true;
+
+                        from.SendLocalizedMessage(weapon.NoFreeHandMessage);
+                    }
+                    else
+                    {
+                        from.SendLocalizedMessage(weapon.RecentlyUsedMessage);
+                    }
+                }
+                else
+                {
+                    from.SendLocalizedMessage(weapon.EmptyWeaponMessage);
+                }
+            }
+
+            return false;
+        }
+
+        private static bool CombatCheck(Mobile attacker, Mobile defender) /* mod'd from baseweapon */
+        {
+            BaseWeapon defWeapon = defender.Weapon as BaseWeapon;
+
+            Skill atkSkill = defender.Skills.Ninjitsu;
+            // Skill defSkill = defender.Skills[defWeapon.Skill];
+
+            double atSkillValue = attacker.Skills.Ninjitsu.Value;
+            double defSkillValue = defWeapon?.GetDefendSkillValue(attacker, defender) ?? 0.0;
+
+            if (defSkillValue <= -20.0) defSkillValue = -19.9;
+
+            double attackValue = AosAttributes.GetValue(attacker, AosAttribute.AttackChance);
+
+            if (DivineFurySpell.UnderEffect(attacker)) attackValue += 10;
+
+            if (AnimalForm.UnderTransformation(attacker, typeof(GreyWolf)) ||
+                AnimalForm.UnderTransformation(attacker, typeof(BakeKitsune))) attackValue += 20;
+
+            if (HitLower.IsUnderAttackEffect(attacker)) attackValue -= 25;
+
+            if (attackValue > 45) attackValue = 45;
+
+            attackValue = (atSkillValue + 20.0) * (100 + attackValue);
+
+            double defenseValue = AosAttributes.GetValue(defender, AosAttribute.DefendChance);
+
+            if (DivineFurySpell.UnderEffect(defender)) defenseValue -= 20;
+
+            if (HitLower.IsUnderDefenseEffect(defender)) defenseValue -= 25;
+
+            int refBonus = 0;
+
+            if (Block.GetBonus(defender, ref refBonus)) defenseValue += refBonus;
+
+            if (Discordance.GetEffect(attacker, ref refBonus)) defenseValue -= refBonus;
+
+            if (defenseValue > 45) defenseValue = 45;
+
+            defenseValue = (defSkillValue + 20.0) * (100 + defenseValue);
+
+            double chance = attackValue / (defenseValue * 2.0);
+
+            if (chance < 0.02) chance = 0.02;
+
+            return attacker.CheckSkill(atkSkill.SkillName, chance);
+        }
+
+        private static void OnHit(Mobile from, Mobile target, INinjaWeapon weapon)
+        {
+            if (!from.CanBeHarmful(target))
+                return;
+            from.DoHarmful(target);
+
+            AOS.Damage(target, from, weapon.WeaponDamage, 100, 0, 0, 0, 0);
+
+            if (weapon.Poison != null && weapon.PoisonCharges > 0)
+            {
+                if (EvilOmenSpell.TryEndEffect(target))
+                    target.ApplyPoison(from, Poison.GetPoison(weapon.Poison.Level + 1));
+                else
+                    target.ApplyPoison(from, weapon.Poison);
+
+                weapon.PoisonCharges--;
+
+                if (weapon.PoisonCharges < 1) weapon.Poison = null;
+            }
+        }
+
+        private static void OnTarget(Mobile from, object targeted, INinjaWeapon weapon)
+        {
+            if (from is PlayerMobile player && WeaponIsValid(weapon, from))
+            {
+                if (targeted is Mobile mobile)
+                    Shoot(player, mobile, weapon);
+                else if (targeted.GetType() == weapon.AmmoType)
+                    Reload(player, weapon, (INinjaAmmo)targeted);
+                else
+                    player.SendLocalizedMessage(weapon.WrongAmmoMessage);
+            }
+        }
+
+        private static bool WeaponIsValid(INinjaWeapon weapon, Mobile from) =>
+            weapon is Item item && !item.Deleted && item.RootParent == from;
+
+        public class LoadEntry : ContextMenuEntry
+        {
+            private readonly INinjaWeapon weapon;
+
+            public LoadEntry(INinjaWeapon wep, int entry)
+                : base(entry, 0) =>
+                weapon = wep;
+
+            public override void OnClick()
+            {
+                if (WeaponIsValid(weapon, Owner.From))
+                    Owner.From.BeginTarget(10, false, TargetFlags.Harmful, OnTarget, weapon);
+            }
+        }
+
+        public class UnloadEntry : ContextMenuEntry
+        {
+            private readonly INinjaWeapon weapon;
+
+            public UnloadEntry(INinjaWeapon wep, int entry)
+                : base(entry, 0)
+            {
+                weapon = wep;
+
+                Enabled = weapon.UsesRemaining > 0;
+            }
+
+            public override void OnClick()
+            {
+                if (WeaponIsValid(weapon, Owner.From)) Unload(Owner.From, weapon);
+            }
+        }
     }
-
-    private static bool CombatCheck(Mobile attacker, Mobile defender) /* mod'd from baseweapon */
-    {
-      BaseWeapon defWeapon = defender.Weapon as BaseWeapon;
-
-      Skill atkSkill = defender.Skills.Ninjitsu;
-      // Skill defSkill = defender.Skills[defWeapon.Skill];
-
-      double atSkillValue = attacker.Skills.Ninjitsu.Value;
-      double defSkillValue = defWeapon?.GetDefendSkillValue(attacker, defender) ?? 0.0;
-
-      if (defSkillValue <= -20.0) defSkillValue = -19.9;
-
-      double attackValue = AosAttributes.GetValue(attacker, AosAttribute.AttackChance);
-
-      if (DivineFurySpell.UnderEffect(attacker)) attackValue += 10;
-
-      if (AnimalForm.UnderTransformation(attacker, typeof(GreyWolf)) ||
-          AnimalForm.UnderTransformation(attacker, typeof(BakeKitsune))) attackValue += 20;
-
-      if (HitLower.IsUnderAttackEffect(attacker)) attackValue -= 25;
-
-      if (attackValue > 45) attackValue = 45;
-
-      attackValue = (atSkillValue + 20.0) * (100 + attackValue);
-
-      double defenseValue = AosAttributes.GetValue(defender, AosAttribute.DefendChance);
-
-      if (DivineFurySpell.UnderEffect(defender)) defenseValue -= 20;
-
-      if (HitLower.IsUnderDefenseEffect(defender)) defenseValue -= 25;
-
-      int refBonus = 0;
-
-      if (Block.GetBonus(defender, ref refBonus)) defenseValue += refBonus;
-
-      if (Discordance.GetEffect(attacker, ref refBonus)) defenseValue -= refBonus;
-
-      if (defenseValue > 45) defenseValue = 45;
-
-      defenseValue = (defSkillValue + 20.0) * (100 + defenseValue);
-
-      double chance = attackValue / (defenseValue * 2.0);
-
-      if (chance < 0.02) chance = 0.02;
-
-      return attacker.CheckSkill(atkSkill.SkillName, chance);
-    }
-
-    private static void OnHit(Mobile from, Mobile target, INinjaWeapon weapon)
-    {
-      if (!from.CanBeHarmful(target))
-        return;
-      from.DoHarmful(target);
-
-      AOS.Damage(target, from, weapon.WeaponDamage, 100, 0, 0, 0, 0);
-
-      if (weapon.Poison != null && weapon.PoisonCharges > 0)
-      {
-        if (EvilOmenSpell.TryEndEffect(target))
-          target.ApplyPoison(from, Poison.GetPoison(weapon.Poison.Level + 1));
-        else
-          target.ApplyPoison(from, weapon.Poison);
-
-        weapon.PoisonCharges--;
-
-        if (weapon.PoisonCharges < 1) weapon.Poison = null;
-      }
-    }
-
-    private static void OnTarget(Mobile from, object targeted, INinjaWeapon weapon)
-    {
-      if (from is PlayerMobile player && WeaponIsValid(weapon, from))
-      {
-        if (targeted is Mobile mobile)
-          Shoot(player, mobile, weapon);
-        else if (targeted.GetType() == weapon.AmmoType)
-          Reload(player, weapon, (INinjaAmmo)targeted);
-        else
-          player.SendLocalizedMessage(weapon.WrongAmmoMessage);
-      }
-    }
-
-    private static bool WeaponIsValid(INinjaWeapon weapon, Mobile from) =>
-      weapon is Item item && !item.Deleted && item.RootParent == from;
-
-    public class LoadEntry : ContextMenuEntry
-    {
-      private readonly INinjaWeapon weapon;
-
-      public LoadEntry(INinjaWeapon wep, int entry)
-        : base(entry, 0) =>
-        weapon = wep;
-
-      public override void OnClick()
-      {
-        if (WeaponIsValid(weapon, Owner.From))
-          Owner.From.BeginTarget(10, false, TargetFlags.Harmful, OnTarget, weapon);
-      }
-    }
-
-    public class UnloadEntry : ContextMenuEntry
-    {
-      private readonly INinjaWeapon weapon;
-
-      public UnloadEntry(INinjaWeapon wep, int entry)
-        : base(entry, 0)
-      {
-        weapon = wep;
-
-        Enabled = weapon.UsesRemaining > 0;
-      }
-
-      public override void OnClick()
-      {
-        if (WeaponIsValid(weapon, Owner.From)) Unload(Owner.From, weapon);
-      }
-    }
-  }
 }

@@ -7,244 +7,245 @@ using Server.Targeting;
 
 namespace Server.Gumps
 {
-  public class AddGump : Gump
-  {
-    private static readonly Type typeofItem = typeof(Item);
-    private static readonly Type typeofMobile = typeof(Mobile);
-    private readonly int m_Page;
-    private readonly Type[] m_SearchResults;
-    private readonly string m_SearchString;
-
-    public AddGump(Mobile from, string searchString, int page, Type[] searchResults, bool explicitSearch) : base(50, 50)
+    public class AddGump : Gump
     {
-      m_SearchString = searchString;
-      m_SearchResults = searchResults;
-      m_Page = page;
+        private static readonly Type typeofItem = typeof(Item);
+        private static readonly Type typeofMobile = typeof(Mobile);
+        private readonly int m_Page;
+        private readonly Type[] m_SearchResults;
+        private readonly string m_SearchString;
 
-      from.CloseGump<AddGump>();
-
-      AddPage(0);
-
-      AddBackground(0, 0, 420, 280, 5054);
-
-      AddImageTiled(10, 10, 400, 20, 2624);
-      AddAlphaRegion(10, 10, 400, 20);
-      AddImageTiled(41, 11, 184, 18, 0xBBC);
-      AddImageTiled(42, 12, 182, 16, 2624);
-      AddAlphaRegion(42, 12, 182, 16);
-
-      AddButton(10, 9, 4011, 4013, 1);
-      AddTextEntry(44, 10, 180, 20, 0x480, 0, searchString);
-
-      AddHtmlLocalized(230, 10, 100, 20, 3010005, 0x7FFF);
-
-      AddImageTiled(10, 40, 400, 200, 2624);
-      AddAlphaRegion(10, 40, 400, 200);
-
-      if (searchResults.Length > 0)
-        for (int i = page * 10; i < (page + 1) * 10 && i < searchResults.Length; ++i)
+        public AddGump(Mobile from, string searchString, int page, Type[] searchResults, bool explicitSearch) : base(50, 50)
         {
-          int index = i % 10;
+            m_SearchString = searchString;
+            m_SearchResults = searchResults;
+            m_Page = page;
 
-          AddLabel(44, 39 + index * 20, 0x480, searchResults[i].Name);
-          AddButton(10, 39 + index * 20, 4023, 4025, 4 + i);
+            from.CloseGump<AddGump>();
+
+            AddPage(0);
+
+            AddBackground(0, 0, 420, 280, 5054);
+
+            AddImageTiled(10, 10, 400, 20, 2624);
+            AddAlphaRegion(10, 10, 400, 20);
+            AddImageTiled(41, 11, 184, 18, 0xBBC);
+            AddImageTiled(42, 12, 182, 16, 2624);
+            AddAlphaRegion(42, 12, 182, 16);
+
+            AddButton(10, 9, 4011, 4013, 1);
+            AddTextEntry(44, 10, 180, 20, 0x480, 0, searchString);
+
+            AddHtmlLocalized(230, 10, 100, 20, 3010005, 0x7FFF);
+
+            AddImageTiled(10, 40, 400, 200, 2624);
+            AddAlphaRegion(10, 40, 400, 200);
+
+            if (searchResults.Length > 0)
+                for (int i = page * 10; i < (page + 1) * 10 && i < searchResults.Length; ++i)
+                {
+                    int index = i % 10;
+
+                    AddLabel(44, 39 + index * 20, 0x480, searchResults[i].Name);
+                    AddButton(10, 39 + index * 20, 4023, 4025, 4 + i);
+                }
+            else
+                AddLabel(15, 44, 0x480, explicitSearch ? "Nothing matched your search terms." : "No results to display.");
+
+            AddImageTiled(10, 250, 400, 20, 2624);
+            AddAlphaRegion(10, 250, 400, 20);
+
+            if (m_Page > 0)
+                AddButton(10, 249, 4014, 4016, 2);
+            else
+                AddImage(10, 249, 4014);
+
+            AddHtmlLocalized(44, 250, 170, 20, 1061028, m_Page > 0 ? 0x7FFF : 0x5EF7); // Previous page
+
+            if ((m_Page + 1) * 10 < searchResults.Length)
+                AddButton(210, 249, 4005, 4007, 3);
+            else
+                AddImage(210, 249, 4005);
+
+            AddHtmlLocalized(244, 250, 170, 20, 1061027,
+                (m_Page + 1) * 10 < searchResults.Length ? 0x7FFF : 0x5EF7); // Next page
         }
-      else
-        AddLabel(15, 44, 0x480, explicitSearch ? "Nothing matched your search terms." : "No results to display.");
 
-      AddImageTiled(10, 250, 400, 20, 2624);
-      AddAlphaRegion(10, 250, 400, 20);
-
-      if (m_Page > 0)
-        AddButton(10, 249, 4014, 4016, 2);
-      else
-        AddImage(10, 249, 4014);
-
-      AddHtmlLocalized(44, 250, 170, 20, 1061028, m_Page > 0 ? 0x7FFF : 0x5EF7); // Previous page
-
-      if ((m_Page + 1) * 10 < searchResults.Length)
-        AddButton(210, 249, 4005, 4007, 3);
-      else
-        AddImage(210, 249, 4005);
-
-      AddHtmlLocalized(244, 250, 170, 20, 1061027, (m_Page + 1) * 10 < searchResults.Length ? 0x7FFF : 0x5EF7); // Next page
-    }
-
-    public static void Initialize()
-    {
-      CommandSystem.Register("AddMenu", AccessLevel.GameMaster, AddMenu_OnCommand);
-    }
-
-    [Usage("AddMenu [searchString]")]
-    [Description(
-      "Opens an add menu, with an optional initial search string. This menu allows you to search for Items or Mobiles and add them interactively.")]
-    private static void AddMenu_OnCommand(CommandEventArgs e)
-    {
-      string val = e.ArgString.Trim();
-      Type[] types;
-      bool explicitSearch = false;
-
-      if (val.Length == 0)
-      {
-        types = Type.EmptyTypes;
-      }
-      else if (val.Length < 3)
-      {
-        e.Mobile.SendMessage("Invalid search string.");
-        types = Type.EmptyTypes;
-      }
-      else
-      {
-        types = Match(val).ToArray();
-        explicitSearch = true;
-      }
-
-      e.Mobile.SendGump(new AddGump(e.Mobile, val, 0, types, explicitSearch));
-    }
-
-    private static void Match(string match, Type[] types, List<Type> results)
-    {
-      if (match.Length == 0)
-        return;
-
-      match = match.ToLower();
-
-      for (int i = 0; i < types.Length; ++i)
-      {
-        Type t = types[i];
-
-        if ((typeofMobile.IsAssignableFrom(t) || typeofItem.IsAssignableFrom(t)) &&
-            t.Name.ToLower().IndexOf(match) >= 0 && !results.Contains(t))
+        public static void Initialize()
         {
-          ConstructorInfo[] ctors = t.GetConstructors();
+            CommandSystem.Register("AddMenu", AccessLevel.GameMaster, AddMenu_OnCommand);
+        }
 
-          for (int j = 0; j < ctors.Length; ++j)
-            if (ctors[j].GetParameters().Length == 0 &&
-                ctors[j].IsDefined(typeof(ConstructibleAttribute), false))
+        [Usage("AddMenu [searchString]")]
+        [Description(
+            "Opens an add menu, with an optional initial search string. This menu allows you to search for Items or Mobiles and add them interactively.")]
+        private static void AddMenu_OnCommand(CommandEventArgs e)
+        {
+            string val = e.ArgString.Trim();
+            Type[] types;
+            bool explicitSearch = false;
+
+            if (val.Length == 0)
             {
-              results.Add(t);
-              break;
+                types = Type.EmptyTypes;
             }
-        }
-      }
-    }
-
-    public static List<Type> Match(string match)
-    {
-      List<Type> results = new List<Type>();
-      Type[] types;
-
-      Assembly[] asms = AssemblyHandler.Assemblies;
-
-      for (int i = 0; i < asms.Length; ++i)
-      {
-        types = AssemblyHandler.GetTypeCache(asms[i]).Types.ToArray();
-        Match(match, types, results);
-      }
-
-      types = AssemblyHandler.GetTypeCache(Core.Assembly).Types.ToArray();
-      Match(match, types, results);
-
-      results.Sort(new TypeNameComparer());
-
-      return results;
-    }
-
-    public override void OnResponse(NetState sender, RelayInfo info)
-    {
-      Mobile from = sender.Mobile;
-
-      switch (info.ButtonID)
-      {
-        case 1: // Search
-          {
-            TextRelay te = info.GetTextEntry(0);
-            string match = te?.Text.Trim() ?? "";
-
-            if (match.Length < 3)
+            else if (val.Length < 3)
             {
-              from.SendMessage("Invalid search string.");
-              from.SendGump(new AddGump(from, match, m_Page, m_SearchResults, false));
+                e.Mobile.SendMessage("Invalid search string.");
+                types = Type.EmptyTypes;
             }
             else
             {
-              from.SendGump(new AddGump(from, match, 0, Match(match).ToArray(), true));
+                types = Match(val).ToArray();
+                explicitSearch = true;
             }
 
-            break;
-          }
-        case 2: // Previous page
-          {
-            if (m_Page > 0)
-              from.SendGump(new AddGump(from, m_SearchString, m_Page - 1, m_SearchResults, true));
-
-            break;
-          }
-        case 3: // Next page
-          {
-            if ((m_Page + 1) * 10 < m_SearchResults.Length)
-              from.SendGump(new AddGump(from, m_SearchString, m_Page + 1, m_SearchResults, true));
-
-            break;
-          }
-        default:
-          {
-            int index = info.ButtonID - 4;
-
-            if (index >= 0 && index < m_SearchResults.Length)
-            {
-              from.SendMessage("Where do you wish to place this object? <ESC> to cancel.");
-              from.Target = new InternalTarget(m_SearchResults[index], m_SearchResults, m_SearchString, m_Page);
-            }
-
-            break;
-          }
-      }
-    }
-
-    private class TypeNameComparer : IComparer<Type>
-    {
-      public int Compare(Type x, Type y) => x?.Name.CompareTo(y?.Name) ?? 1;
-    }
-
-    public class InternalTarget : Target
-    {
-      private readonly int m_Page;
-      private readonly Type[] m_SearchResults;
-      private readonly string m_SearchString;
-      private readonly Type m_Type;
-
-      public InternalTarget(Type type, Type[] searchResults, string searchString, int page) : base(-1, true,
-        TargetFlags.None)
-      {
-        m_Type = type;
-        m_SearchResults = searchResults;
-        m_SearchString = searchString;
-        m_Page = page;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-        {
-          p = p switch
-          {
-            Item item => item.GetWorldTop(),
-            Mobile m => m.Location,
-            _ => p
-          };
-
-          Commands.Add.Invoke(from, new Point3D(p), new Point3D(p), new[] { m_Type.Name });
-
-          from.Target = new InternalTarget(m_Type, m_SearchResults, m_SearchString, m_Page);
+            e.Mobile.SendGump(new AddGump(e.Mobile, val, 0, types, explicitSearch));
         }
-      }
 
-      protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
-      {
-        if (cancelType == TargetCancelType.Canceled)
-          from.SendGump(new AddGump(from, m_SearchString, m_Page, m_SearchResults, true));
-      }
+        private static void Match(string match, Type[] types, List<Type> results)
+        {
+            if (match.Length == 0)
+                return;
+
+            match = match.ToLower();
+
+            for (int i = 0; i < types.Length; ++i)
+            {
+                Type t = types[i];
+
+                if ((typeofMobile.IsAssignableFrom(t) || typeofItem.IsAssignableFrom(t)) &&
+                    t.Name.ToLower().IndexOf(match) >= 0 && !results.Contains(t))
+                {
+                    ConstructorInfo[] ctors = t.GetConstructors();
+
+                    for (int j = 0; j < ctors.Length; ++j)
+                        if (ctors[j].GetParameters().Length == 0 &&
+                            ctors[j].IsDefined(typeof(ConstructibleAttribute), false))
+                        {
+                            results.Add(t);
+                            break;
+                        }
+                }
+            }
+        }
+
+        public static List<Type> Match(string match)
+        {
+            List<Type> results = new List<Type>();
+            Type[] types;
+
+            Assembly[] asms = AssemblyHandler.Assemblies;
+
+            for (int i = 0; i < asms.Length; ++i)
+            {
+                types = AssemblyHandler.GetTypeCache(asms[i]).Types.ToArray();
+                Match(match, types, results);
+            }
+
+            types = AssemblyHandler.GetTypeCache(Core.Assembly).Types.ToArray();
+            Match(match, types, results);
+
+            results.Sort(new TypeNameComparer());
+
+            return results;
+        }
+
+        public override void OnResponse(NetState sender, RelayInfo info)
+        {
+            Mobile from = sender.Mobile;
+
+            switch (info.ButtonID)
+            {
+                case 1: // Search
+                    {
+                        TextRelay te = info.GetTextEntry(0);
+                        string match = te?.Text.Trim() ?? "";
+
+                        if (match.Length < 3)
+                        {
+                            from.SendMessage("Invalid search string.");
+                            from.SendGump(new AddGump(from, match, m_Page, m_SearchResults, false));
+                        }
+                        else
+                        {
+                            from.SendGump(new AddGump(from, match, 0, Match(match).ToArray(), true));
+                        }
+
+                        break;
+                    }
+                case 2: // Previous page
+                    {
+                        if (m_Page > 0)
+                            from.SendGump(new AddGump(from, m_SearchString, m_Page - 1, m_SearchResults, true));
+
+                        break;
+                    }
+                case 3: // Next page
+                    {
+                        if ((m_Page + 1) * 10 < m_SearchResults.Length)
+                            from.SendGump(new AddGump(from, m_SearchString, m_Page + 1, m_SearchResults, true));
+
+                        break;
+                    }
+                default:
+                    {
+                        int index = info.ButtonID - 4;
+
+                        if (index >= 0 && index < m_SearchResults.Length)
+                        {
+                            from.SendMessage("Where do you wish to place this object? <ESC> to cancel.");
+                            from.Target = new InternalTarget(m_SearchResults[index], m_SearchResults, m_SearchString, m_Page);
+                        }
+
+                        break;
+                    }
+            }
+        }
+
+        private class TypeNameComparer : IComparer<Type>
+        {
+            public int Compare(Type x, Type y) => x?.Name.CompareTo(y?.Name) ?? 1;
+        }
+
+        public class InternalTarget : Target
+        {
+            private readonly int m_Page;
+            private readonly Type[] m_SearchResults;
+            private readonly string m_SearchString;
+            private readonly Type m_Type;
+
+            public InternalTarget(Type type, Type[] searchResults, string searchString, int page) : base(-1, true,
+                TargetFlags.None)
+            {
+                m_Type = type;
+                m_SearchResults = searchResults;
+                m_SearchString = searchString;
+                m_Page = page;
+            }
+
+            protected override void OnTarget(Mobile from, object o)
+            {
+                if (o is IPoint3D p)
+                {
+                    p = p switch
+                    {
+                        Item item => item.GetWorldTop(),
+                        Mobile m => m.Location,
+                        _ => p
+                    };
+
+                    Commands.Add.Invoke(from, new Point3D(p), new Point3D(p), new[] { m_Type.Name });
+
+                    from.Target = new InternalTarget(m_Type, m_SearchResults, m_SearchString, m_Page);
+                }
+            }
+
+            protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
+            {
+                if (cancelType == TargetCancelType.Canceled)
+                    from.SendGump(new AddGump(from, m_SearchString, m_Page, m_SearchResults, true));
+            }
+        }
     }
-  }
 }

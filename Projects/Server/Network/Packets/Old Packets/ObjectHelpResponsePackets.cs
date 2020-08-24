@@ -21,14 +21,14 @@
 
 namespace Server.Network
 {
-  public sealed class ObjectHelpResponse : Packet
-  {
-    public ObjectHelpResponse(Serial e, string text) : base(0xB7)
+    public sealed class ObjectHelpResponse : Packet
     {
-      EnsureCapacity(9 + text.Length * 2);
+        public ObjectHelpResponse(Serial e, string text) : base(0xB7)
+        {
+            EnsureCapacity(9 + text.Length * 2);
 
-      Stream.Write(e);
-      Stream.WriteBigUniNull(text);
+            Stream.Write(e);
+            Stream.WriteBigUniNull(text);
+        }
     }
-  }
 }

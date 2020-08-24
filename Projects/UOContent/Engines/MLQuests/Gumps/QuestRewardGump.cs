@@ -4,33 +4,33 @@ using Server.Network;
 
 namespace Server.Engines.MLQuests.Gumps
 {
-  public class QuestRewardGump : BaseQuestGump
-  {
-    private readonly MLQuestInstance m_Instance;
-
-    public QuestRewardGump(MLQuestInstance instance)
-      : base(1072201) // Reward
+    public class QuestRewardGump : BaseQuestGump
     {
-      m_Instance = instance;
+        private readonly MLQuestInstance m_Instance;
 
-      MLQuest quest = instance.Quest;
-      PlayerMobile pm = instance.Player;
+        public QuestRewardGump(MLQuestInstance instance)
+            : base(1072201) // Reward
+        {
+            m_Instance = instance;
 
-      CloseOtherGumps(pm);
+            MLQuest quest = instance.Quest;
+            PlayerMobile pm = instance.Player;
 
-      SetTitle(quest.Title);
-      RegisterButton(ButtonPosition.Left, ButtonGraphic.Accept, 1);
+            CloseOtherGumps(pm);
 
-      SetPageCount(1);
+            SetTitle(quest.Title);
+            RegisterButton(ButtonPosition.Left, ButtonGraphic.Accept, 1);
 
-      BuildPage();
-      AddRewards(quest);
+            SetPageCount(1);
+
+            BuildPage();
+            AddRewards(quest);
+        }
+
+        public override void OnResponse(NetState sender, RelayInfo info)
+        {
+            if (info.ButtonID == 1)
+                m_Instance.ClaimRewards();
+        }
     }
-
-    public override void OnResponse(NetState sender, RelayInfo info)
-    {
-      if (info.ButtonID == 1)
-        m_Instance.ClaimRewards();
-    }
-  }
 }

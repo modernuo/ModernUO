@@ -23,49 +23,50 @@ using System;
 
 namespace Server.Accounting.Security
 {
-  public enum PasswordProtectionAlgorithm
-  {
-    // Obsolete algorithms from RunUO. These are not secure!
-    // They are included for password upgrades only.
-    None,
-    MD5,
-    SHA1,
-
-    // Supported algorithms
-    SHA2, // ServUO compatibility
-    PBKDF2,
-    Argon2 // Recommended algorithm for real security.
-  }
-
-  public static class AccountSecurity
-  {
-    public static PasswordProtectionAlgorithm CurrentAlgorithm { get; set; }
-
-    public static IPasswordProtection CurrentPasswordProtection => GetPasswordProtection(CurrentAlgorithm);
-
-    public static void Configure()
+    public enum PasswordProtectionAlgorithm
     {
-      CurrentAlgorithm =
-        ServerConfiguration.GetOrUpdateSetting("accountSecurity.encryptionAlgorithm", PasswordProtectionAlgorithm.Argon2);
+        // Obsolete algorithms from RunUO. These are not secure!
+        // They are included for password upgrades only.
+        None,
+        MD5,
+        SHA1,
 
-      if (CurrentAlgorithm < PasswordProtectionAlgorithm.SHA2)
-        throw new Exception($"Security: {CurrentAlgorithm} is obsolete and not secure. Do not use it.");
+        // Supported algorithms
+        SHA2, // ServUO compatibility
+        PBKDF2,
+        Argon2 // Recommended algorithm for real security.
     }
 
-    public static IPasswordProtection GetPasswordProtection(PasswordProtectionAlgorithm algorithm)
+    public static class AccountSecurity
     {
-      var passwordProtection = algorithm switch
-      {
-        PasswordProtectionAlgorithm.MD5 => MD5PasswordProtection.Instance,
-        PasswordProtectionAlgorithm.SHA1 => SHA1PasswordProtection.Instance,
-        PasswordProtectionAlgorithm.SHA2 => SHA2PasswordProtection.Instance,
-        PasswordProtectionAlgorithm.PBKDF2 => PBKDF2PasswordProtection.Instance,
-        PasswordProtectionAlgorithm.Argon2 => Argon2PasswordProtection.Instance,
-        PasswordProtectionAlgorithm.None => throw new Exception("Do not use PasswordProtectionAlgorithm.None"),
-        _ => throw new Exception("No algorithm")
-      };
+        public static PasswordProtectionAlgorithm CurrentAlgorithm { get; set; }
 
-      return passwordProtection;
+        public static IPasswordProtection CurrentPasswordProtection => GetPasswordProtection(CurrentAlgorithm);
+
+        public static void Configure()
+        {
+            CurrentAlgorithm =
+                ServerConfiguration.GetOrUpdateSetting("accountSecurity.encryptionAlgorithm",
+                    PasswordProtectionAlgorithm.Argon2);
+
+            if (CurrentAlgorithm < PasswordProtectionAlgorithm.SHA2)
+                throw new Exception($"Security: {CurrentAlgorithm} is obsolete and not secure. Do not use it.");
+        }
+
+        public static IPasswordProtection GetPasswordProtection(PasswordProtectionAlgorithm algorithm)
+        {
+            var passwordProtection = algorithm switch
+            {
+                PasswordProtectionAlgorithm.MD5 => MD5PasswordProtection.Instance,
+                PasswordProtectionAlgorithm.SHA1 => SHA1PasswordProtection.Instance,
+                PasswordProtectionAlgorithm.SHA2 => SHA2PasswordProtection.Instance,
+                PasswordProtectionAlgorithm.PBKDF2 => PBKDF2PasswordProtection.Instance,
+                PasswordProtectionAlgorithm.Argon2 => Argon2PasswordProtection.Instance,
+                PasswordProtectionAlgorithm.None => throw new Exception("Do not use PasswordProtectionAlgorithm.None"),
+                _ => throw new Exception("No algorithm")
+            };
+
+            return passwordProtection;
+        }
     }
-  }
 }

@@ -2,74 +2,74 @@ using System.IO;
 
 namespace Server
 {
-  public class ShrinkTable
-  {
-    public const int DefaultItemID = 0x1870; // Yellow virtue stone
-
-    private static int[] m_Table;
-
-    public static int Lookup(Mobile m) => Lookup(m.Body.BodyID, DefaultItemID);
-
-    public static int Lookup(int body) => Lookup(body, DefaultItemID);
-
-    public static int Lookup(Mobile m, int defaultValue) => Lookup(m.Body.BodyID, defaultValue);
-
-    public static int Lookup(int body, int defaultValue)
+    public class ShrinkTable
     {
-      if (m_Table == null)
-        Load();
+        public const int DefaultItemID = 0x1870; // Yellow virtue stone
 
-      int val = 0;
+        private static int[] m_Table;
 
-      if (body >= 0 && body < m_Table!.Length)
-        val = m_Table[body];
+        public static int Lookup(Mobile m) => Lookup(m.Body.BodyID, DefaultItemID);
 
-      if (val == 0)
-        val = defaultValue;
+        public static int Lookup(int body) => Lookup(body, DefaultItemID);
 
-      return val;
-    }
+        public static int Lookup(Mobile m, int defaultValue) => Lookup(m.Body.BodyID, defaultValue);
 
-    private static void Load()
-    {
-      string path = Path.Combine(Core.BaseDirectory, "Data/shrink.cfg");
-
-      if (!File.Exists(path))
-      {
-        m_Table = System.Array.Empty<int>();
-        return;
-      }
-
-      m_Table = new int[1000];
-
-      using StreamReader ip = new StreamReader(path);
-      string line;
-
-      while ((line = ip.ReadLine()) != null)
-      {
-        line = line.Trim();
-
-        if (line.Length == 0 || line.StartsWith("#"))
-          continue;
-
-        try
+        public static int Lookup(int body, int defaultValue)
         {
-          string[] split = line.Split('\t');
+            if (m_Table == null)
+                Load();
 
-          if (split.Length >= 2)
-          {
-            int body = Utility.ToInt32(split[0]);
-            int item = Utility.ToInt32(split[1]);
+            int val = 0;
 
-            if (body >= 0 && body < m_Table.Length)
-              m_Table[body] = item;
-          }
+            if (body >= 0 && body < m_Table!.Length)
+                val = m_Table[body];
+
+            if (val == 0)
+                val = defaultValue;
+
+            return val;
         }
-        catch
+
+        private static void Load()
         {
-          // ignored
+            string path = Path.Combine(Core.BaseDirectory, "Data/shrink.cfg");
+
+            if (!File.Exists(path))
+            {
+                m_Table = System.Array.Empty<int>();
+                return;
+            }
+
+            m_Table = new int[1000];
+
+            using StreamReader ip = new StreamReader(path);
+            string line;
+
+            while ((line = ip.ReadLine()) != null)
+            {
+                line = line.Trim();
+
+                if (line.Length == 0 || line.StartsWith("#"))
+                    continue;
+
+                try
+                {
+                    string[] split = line.Split('\t');
+
+                    if (split.Length >= 2)
+                    {
+                        int body = Utility.ToInt32(split[0]);
+                        int item = Utility.ToInt32(split[1]);
+
+                        if (body >= 0 && body < m_Table.Length)
+                            m_Table[body] = item;
+                    }
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
         }
-      }
     }
-  }
 }

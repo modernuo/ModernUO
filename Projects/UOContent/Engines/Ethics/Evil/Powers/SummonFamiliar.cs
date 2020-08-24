@@ -4,40 +4,40 @@ using Server.Network;
 
 namespace Server.Ethics.Evil
 {
-  public sealed class SummonFamiliar : Power
-  {
-    public SummonFamiliar() =>
-      m_Definition = new PowerDefinition(
-        5,
-        "Summon Familiar",
-        "Trubechs Vingir",
-        "");
-
-    public override void BeginInvoke(Player from)
+    public sealed class SummonFamiliar : Power
     {
-      if (from.Familiar?.Deleted == true)
-        from.Familiar = null;
+        public SummonFamiliar() =>
+            m_Definition = new PowerDefinition(
+                5,
+                "Summon Familiar",
+                "Trubechs Vingir",
+                "");
 
-      if (from.Familiar != null)
-      {
-        from.Mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You already have an unholy familiar.");
-        return;
-      }
+        public override void BeginInvoke(Player from)
+        {
+            if (from.Familiar?.Deleted == true)
+                from.Familiar = null;
 
-      if (from.Mobile.Followers + 1 > from.Mobile.FollowersMax)
-      {
-        from.Mobile.SendLocalizedMessage(1049645); // You have too many followers to summon that creature.
-        return;
-      }
+            if (from.Familiar != null)
+            {
+                from.Mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You already have an unholy familiar.");
+                return;
+            }
 
-      UnholyFamiliar familiar = new UnholyFamiliar();
+            if (from.Mobile.Followers + 1 > from.Mobile.FollowersMax)
+            {
+                from.Mobile.SendLocalizedMessage(1049645); // You have too many followers to summon that creature.
+                return;
+            }
 
-      if (BaseCreature.Summon(familiar, from.Mobile, from.Mobile.Location, 0x217, TimeSpan.FromHours(1.0)))
-      {
-        from.Familiar = familiar;
+            UnholyFamiliar familiar = new UnholyFamiliar();
 
-        FinishInvoke(from);
-      }
+            if (BaseCreature.Summon(familiar, from.Mobile, from.Mobile.Location, 0x217, TimeSpan.FromHours(1.0)))
+            {
+                from.Familiar = familiar;
+
+                FinishInvoke(from);
+            }
+        }
     }
-  }
 }

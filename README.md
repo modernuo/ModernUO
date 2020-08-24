@@ -27,8 +27,8 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 <br />or
 - [.NET 5.0 (Preview) SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
 
-#### Publishing Builds
-- Using terminal or powershell: `./Tools/publish.cmd [os] [framework] [release|debug (default: release)]`
+#### Building
+- Using terminal or powershell: `./publish.cmd [os] [framework] [release|debug (default: release)]`
   - Supported `os`:
     - `win` for Windows 8/10/2019
     - `osx` for MacOS
@@ -62,7 +62,6 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 
 ## Troubleshooting / FAQ
 - See [FAQ](./FAQ.md)
-
 
 </br></br>
 <p align=center>Development Tools provided with &hearts; by <br><a href="https://www.jetbrains.com/?from=ModernUO"><img src="https://user-images.githubusercontent.com/3953314/86882249-cfb2ea00-c0a4-11ea-9cec-bf3f3bcc6f28.png" width="100px" /></a></p>

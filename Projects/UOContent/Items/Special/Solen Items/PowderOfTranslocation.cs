@@ -3,105 +3,105 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-  public interface TranslocationItem
-  {
-    int Charges { get; set; }
-    int Recharges { get; set; }
-    int MaxCharges { get; }
-    int MaxRecharges { get; }
-    string TranslocationItemName { get; }
-  }
-
-  public class PowderOfTranslocation : Item
-  {
-    [Constructible]
-    public PowderOfTranslocation(int amount = 1) : base(0x26B8)
+    public interface TranslocationItem
     {
-      Stackable = true;
-      Weight = 0.1;
-      Amount = amount;
+        int Charges { get; set; }
+        int Recharges { get; set; }
+        int MaxCharges { get; }
+        int MaxRecharges { get; }
+        string TranslocationItemName { get; }
     }
 
-    public PowderOfTranslocation(Serial serial) : base(serial)
+    public class PowderOfTranslocation : Item
     {
-    }
-
-    public override void OnDoubleClick(Mobile from)
-    {
-      if (from.InRange(GetWorldLocation(), 2))
-        from.Target = new InternalTarget(this);
-      else
-        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadEncodedInt();
-    }
-
-    private class InternalTarget : Target
-    {
-      private readonly PowderOfTranslocation m_Powder;
-
-      public InternalTarget(PowderOfTranslocation powder) : base(-1, false, TargetFlags.None) => m_Powder = powder;
-
-      protected override void OnTarget(Mobile from, object targeted)
-      {
-        if (m_Powder.Deleted)
-          return;
-
-        if (!from.InRange(m_Powder.GetWorldLocation(), 2))
+        [Constructible]
+        public PowderOfTranslocation(int amount = 1) : base(0x26B8)
         {
-          from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            Stackable = true;
+            Weight = 0.1;
+            Amount = amount;
         }
-        else if (targeted is TranslocationItem transItem)
-        {
-          if (transItem.Charges >= transItem.MaxCharges)
-          {
-            MessageHelper.SendLocalizedMessageTo(m_Powder, from, 1054137,
-              0x59); // This item cannot absorb any more powder of translocation.
-          }
-          else if (transItem.Recharges >= transItem.MaxRecharges)
-          {
-            MessageHelper.SendLocalizedMessageTo(m_Powder, from, 1054138,
-              0x59); // This item has been oversaturated with powder of translocation and can no longer be recharged.
-          }
-          else
-          {
-            if (transItem.Charges + m_Powder.Amount > transItem.MaxCharges)
-            {
-              int delta = transItem.MaxCharges - transItem.Charges;
 
-              m_Powder.Amount -= delta;
-              transItem.Charges = transItem.MaxCharges;
-              transItem.Recharges += delta;
-            }
+        public PowderOfTranslocation(Serial serial) : base(serial)
+        {
+        }
+
+        public override void OnDoubleClick(Mobile from)
+        {
+            if (from.InRange(GetWorldLocation(), 2))
+                from.Target = new InternalTarget(this);
             else
-            {
-              transItem.Charges += m_Powder.Amount;
-              transItem.Recharges += m_Powder.Amount;
-              m_Powder.Delete();
-            }
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+        }
 
-            if (transItem is Item item)
-              MessageHelper.SendLocalizedMessageTo(item, from, 1054139, transItem.TranslocationItemName, 0x43);
-          }
-        }
-        else
+        public override void Serialize(IGenericWriter writer)
         {
-          MessageHelper.SendLocalizedMessageTo(m_Powder, from, 1054140,
-            0x59); // Powder of translocation has no effect on this item.
+            base.Serialize(writer);
+
+            writer.WriteEncodedInt(0); // version
         }
-      }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadEncodedInt();
+        }
+
+        private class InternalTarget : Target
+        {
+            private readonly PowderOfTranslocation m_Powder;
+
+            public InternalTarget(PowderOfTranslocation powder) : base(-1, false, TargetFlags.None) => m_Powder = powder;
+
+            protected override void OnTarget(Mobile from, object targeted)
+            {
+                if (m_Powder.Deleted)
+                    return;
+
+                if (!from.InRange(m_Powder.GetWorldLocation(), 2))
+                {
+                    from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                }
+                else if (targeted is TranslocationItem transItem)
+                {
+                    if (transItem.Charges >= transItem.MaxCharges)
+                    {
+                        MessageHelper.SendLocalizedMessageTo(m_Powder, from, 1054137,
+                            0x59); // This item cannot absorb any more powder of translocation.
+                    }
+                    else if (transItem.Recharges >= transItem.MaxRecharges)
+                    {
+                        MessageHelper.SendLocalizedMessageTo(m_Powder, from, 1054138,
+                            0x59); // This item has been oversaturated with powder of translocation and can no longer be recharged.
+                    }
+                    else
+                    {
+                        if (transItem.Charges + m_Powder.Amount > transItem.MaxCharges)
+                        {
+                            int delta = transItem.MaxCharges - transItem.Charges;
+
+                            m_Powder.Amount -= delta;
+                            transItem.Charges = transItem.MaxCharges;
+                            transItem.Recharges += delta;
+                        }
+                        else
+                        {
+                            transItem.Charges += m_Powder.Amount;
+                            transItem.Recharges += m_Powder.Amount;
+                            m_Powder.Delete();
+                        }
+
+                        if (transItem is Item item)
+                            MessageHelper.SendLocalizedMessageTo(item, from, 1054139, transItem.TranslocationItemName, 0x43);
+                    }
+                }
+                else
+                {
+                    MessageHelper.SendLocalizedMessageTo(m_Powder, from, 1054140,
+                        0x59); // Powder of translocation has no effect on this item.
+                }
+            }
+        }
     }
-  }
 }

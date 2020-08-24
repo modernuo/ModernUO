@@ -1,40 +1,40 @@
 namespace Server.Items
 {
-  public class OfficialSealingWax : Item
-  {
-    [Constructible]
-    public OfficialSealingWax() : base(0x1426)
+    public class OfficialSealingWax : Item
     {
-      LootType = LootType.Blessed;
-      Hue = 0x84;
+        [Constructible]
+        public OfficialSealingWax() : base(0x1426)
+        {
+            LootType = LootType.Blessed;
+            Hue = 0x84;
+        }
+
+        public OfficialSealingWax(Serial serial) : base(serial)
+        {
+        }
+
+        public override int LabelNumber => 1072744; // Official Sealing Wax
+
+        public override bool Nontransferable => true;
+
+        public override void AddNameProperties(ObjectPropertyList list)
+        {
+            base.AddNameProperties(list);
+            AddQuestItemProperty(list);
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // Version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+        }
     }
-
-    public OfficialSealingWax(Serial serial) : base(serial)
-    {
-    }
-
-    public override int LabelNumber => 1072744; // Official Sealing Wax
-
-    public override bool Nontransferable => true;
-
-    public override void AddNameProperties(ObjectPropertyList list)
-    {
-      base.AddNameProperties(list);
-      AddQuestItemProperty(list);
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // Version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
 }

@@ -1,18 +1,18 @@
-﻿namespace Server.Engines.MLQuests.Definitions
+namespace Server.Engines.MLQuests.Definitions
 {
-  // Base class for escorts providing the AwardHumanInNeed option
-  public class BaseEscort : MLQuest
-  {
-    public BaseEscort() => CompletionNotice = CompletionNoticeShort;
-
-    public virtual bool AwardHumanInNeed => true;
-
-    public override void GetRewards(MLQuestInstance instance)
+    // Base class for escorts providing the AwardHumanInNeed option
+    public class BaseEscort : MLQuest
     {
-      if (AwardHumanInNeed)
-        HumanInNeed.AwardTo(instance.Player);
+        public BaseEscort() => CompletionNotice = CompletionNoticeShort;
 
-      base.GetRewards(instance);
+        public virtual bool AwardHumanInNeed => true;
+
+        public override void GetRewards(MLQuestInstance instance)
+        {
+            if (AwardHumanInNeed)
+                HumanInNeed.AwardTo(instance.Player);
+
+            base.GetRewards(instance);
+        }
     }
-  }
 }

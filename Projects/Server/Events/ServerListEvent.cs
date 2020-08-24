@@ -27,37 +27,37 @@ using Server.Network;
 
 namespace Server
 {
-  public class ServerListEventArgs : EventArgs
-  {
-    public ServerListEventArgs(NetState state, IAccount account)
+    public class ServerListEventArgs : EventArgs
     {
-      State = state;
-      Account = account;
-      Servers = new List<ServerInfo>();
+        public ServerListEventArgs(NetState state, IAccount account)
+        {
+            State = state;
+            Account = account;
+            Servers = new List<ServerInfo>();
+        }
+
+        public NetState State { get; }
+
+        public IAccount Account { get; }
+
+        public bool Rejected { get; set; }
+
+        public List<ServerInfo> Servers { get; }
+
+        public void AddServer(string name, IPEndPoint address)
+        {
+            AddServer(name, 0, TimeZoneInfo.Local, address);
+        }
+
+        public void AddServer(string name, int fullPercent, TimeZoneInfo tz, IPEndPoint address)
+        {
+            Servers.Add(new ServerInfo(name, fullPercent, tz, address));
+        }
     }
 
-    public NetState State { get; }
-
-    public IAccount Account { get; }
-
-    public bool Rejected { get; set; }
-
-    public List<ServerInfo> Servers { get; }
-
-    public void AddServer(string name, IPEndPoint address)
+    public static partial class EventSink
     {
-      AddServer(name, 0, TimeZoneInfo.Local, address);
+        public static event Action<ServerListEventArgs> ServerList;
+        public static void InvokeServerList(ServerListEventArgs e) => ServerList?.Invoke(e);
     }
-
-    public void AddServer(string name, int fullPercent, TimeZoneInfo tz, IPEndPoint address)
-    {
-      Servers.Add(new ServerInfo(name, fullPercent, tz, address));
-    }
-  }
-
-  public static partial class EventSink
-  {
-    public static event Action<ServerListEventArgs> ServerList;
-    public static void InvokeServerList(ServerListEventArgs e) => ServerList?.Invoke(e);
-  }
 }

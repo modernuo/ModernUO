@@ -2,15 +2,15 @@ using Server.Prompts;
 
 namespace Server.Multis
 {
-  public class RenameBoatPrompt : Prompt
-  {
-    private readonly BaseBoat m_Boat;
-
-    public RenameBoatPrompt(BaseBoat boat) => m_Boat = boat;
-
-    public override void OnResponse(Mobile from, string text)
+    public class RenameBoatPrompt : Prompt
     {
-      m_Boat.EndRename(from, text);
+        private readonly BaseBoat m_Boat;
+
+        public RenameBoatPrompt(BaseBoat boat) => m_Boat = boat;
+
+        public override void OnResponse(Mobile from, string text)
+        {
+            m_Boat.EndRename(from, text);
+        }
     }
-  }
 }

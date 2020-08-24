@@ -1,14 +1,14 @@
 namespace Server.Spells
 {
-  public enum SpellCircle
-  {
-    First,
-    Second,
-    Third,
-    Fourth,
-    Fifth,
-    Sixth,
-    Seventh,
-    Eighth
-  }
+    public enum SpellCircle
+    {
+        First,
+        Second,
+        Third,
+        Fourth,
+        Fifth,
+        Sixth,
+        Seventh,
+        Eighth
+    }
 }

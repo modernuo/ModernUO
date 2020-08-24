@@ -2,63 +2,63 @@ using System.Linq;
 
 namespace Server.Engines.Quests.Naturalist
 {
-  public class NestArea
-  {
-    private static readonly NestArea[] m_Areas =
+    public class NestArea
     {
-      new NestArea(false, new Rectangle2D(5861, 1787, 26, 25)),
+        private static readonly NestArea[] m_Areas =
+        {
+            new NestArea(false, new Rectangle2D(5861, 1787, 26, 25)),
 
-      new NestArea(false, new Rectangle2D(5734, 1788, 14, 50),
-        new Rectangle2D(5748, 1800, 3, 34),
-        new Rectangle2D(5751, 1808, 2, 20)),
+            new NestArea(false, new Rectangle2D(5734, 1788, 14, 50),
+                new Rectangle2D(5748, 1800, 3, 34),
+                new Rectangle2D(5751, 1808, 2, 20)),
 
-      new NestArea(false, new Rectangle2D(5907, 1908, 19, 43)),
+            new NestArea(false, new Rectangle2D(5907, 1908, 19, 43)),
 
-      new NestArea(false, new Rectangle2D(5721, 1926, 24, 29),
-        new Rectangle2D(5745, 1935, 7, 22)),
+            new NestArea(false, new Rectangle2D(5721, 1926, 24, 29),
+                new Rectangle2D(5745, 1935, 7, 22)),
 
-      new NestArea(true, new Rectangle2D(5651, 1853, 21, 32),
-        new Rectangle2D(5672, 1857, 6, 20))
-    };
+            new NestArea(true, new Rectangle2D(5651, 1853, 21, 32),
+                new Rectangle2D(5672, 1857, 6, 20))
+        };
 
-    private readonly Rectangle2D[] m_Rects;
+        private readonly Rectangle2D[] m_Rects;
 
-    private NestArea(bool special, params Rectangle2D[] rects)
-    {
-      Special = special;
-      m_Rects = rects;
+        private NestArea(bool special, params Rectangle2D[] rects)
+        {
+            Special = special;
+            m_Rects = rects;
+        }
+
+        public static int NonSpecialCount => m_Areas.Count(area => !area.Special);
+
+        public bool Special { get; }
+
+        public int ID
+        {
+            get
+            {
+                for (int i = 0; i < m_Areas.Length; i++)
+                    if (m_Areas[i] == this)
+                        return i;
+                return 0;
+            }
+        }
+
+        public static NestArea Find(IPoint2D p)
+        {
+            return m_Areas.FirstOrDefault(area => area.Contains(p));
+        }
+
+        public static NestArea GetByID(int id)
+        {
+            if (id >= 0 && id < m_Areas.Length)
+                return m_Areas[id];
+            return null;
+        }
+
+        public bool Contains(IPoint2D p)
+        {
+            return m_Rects.Any(rect => rect.Contains(p));
+        }
     }
-
-    public static int NonSpecialCount => m_Areas.Count(area => !area.Special);
-
-    public bool Special { get; }
-
-    public int ID
-    {
-      get
-      {
-        for (int i = 0; i < m_Areas.Length; i++)
-          if (m_Areas[i] == this)
-            return i;
-        return 0;
-      }
-    }
-
-    public static NestArea Find(IPoint2D p)
-    {
-      return m_Areas.FirstOrDefault(area => area.Contains(p));
-    }
-
-    public static NestArea GetByID(int id)
-    {
-      if (id >= 0 && id < m_Areas.Length)
-        return m_Areas[id];
-      return null;
-    }
-
-    public bool Contains(IPoint2D p)
-    {
-      return m_Rects.Any(rect => rect.Contains(p));
-    }
-  }
 }

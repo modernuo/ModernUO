@@ -23,20 +23,20 @@ using Server.Network;
 
 namespace Server.Gumps
 {
-  public class GumpMasterGump : GumpEntry
-  {
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("mastergump");
-
-    public GumpMasterGump(int gumpID) => GumpID = gumpID;
-
-    public int GumpID { get; set; }
-
-    public override string Compile(NetState ns) => $"{{ mastergump {GumpID} }}";
-
-    public override void AppendTo(NetState ns, IGumpWriter disp)
+    public class GumpMasterGump : GumpEntry
     {
-      disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(GumpID);
+        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("mastergump");
+
+        public GumpMasterGump(int gumpID) => GumpID = gumpID;
+
+        public int GumpID { get; set; }
+
+        public override string Compile(NetState ns) => $"{{ mastergump {GumpID} }}";
+
+        public override void AppendTo(NetState ns, IGumpWriter disp)
+        {
+            disp.AppendLayout(m_LayoutName);
+            disp.AppendLayout(GumpID);
+        }
     }
-  }
 }
