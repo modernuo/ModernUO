@@ -7,10 +7,6 @@ insert_final_newline=true
 indent_style=space
 indent_size=4
 
-[*.yml]
-end_of_line=lf
-indent_size=2
-
-[*.json]
+[*.{yml,json,md}]
 end_of_line=lf
 indent_size=2
