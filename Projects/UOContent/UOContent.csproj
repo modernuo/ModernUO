@@ -5,7 +5,6 @@
     <AssemblyName>UOContent</AssemblyName>
     <Product>ModernUO Content</Product>
     <PublishDir>..\..\Distribution\Assemblies</PublishDir>
-    <Configurations>Debug;Release;Analyze</Configurations>
     <UseNETCoreGenerator>true</UseNETCoreGenerator>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
@@ -45,19 +44,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <Optimize>true</Optimize>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Analyze'">
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
-    <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <ItemGroup>
-    <Content Include="SpecialSystems\README.TXT" />
-    <AdditionalFiles Include="..\..\Rules.ruleset">
-      <Link>Rules.rulest</Link>
-    </AdditionalFiles>
-    <AdditionalFiles Include="..\..\stylecop.json">
-      <Link>stylecop.json</Link>
-    </AdditionalFiles>
     <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
       <IncludeInPackage>false</IncludeInPackage>
     </ProjectReference>
@@ -72,10 +59,6 @@
     <PackageReference Include="Argon2.Bindings" Version="1.6.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'=='Analyze'">
-    <PackageReference Include="StyleCop.Analyzers">
-      <Version>1.1.118</Version>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
       <Version>3.0.0</Version>
       <PrivateAssets>all</PrivateAssets>

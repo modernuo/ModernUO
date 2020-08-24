@@ -1,85 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <ApplicationIcon>MUO.ico</ApplicationIcon>
-    <StartupObject>Server.Core</StartupObject>
-    <AssemblyName>ModernUO</AssemblyName>
-    <Win32Resource />
-    <Version>0.5.0</Version>
-    <Product>ModernUO Server</Product>
-    <PublishDir>..\..\Distribution</PublishDir>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Configurations>Debug;Release;Analyze</Configurations>
-    <UseNETCoreGenerator>true</UseNETCoreGenerator>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-  </PropertyGroup>
-  <Target Name="CleanPub" AfterTargets="Clean">
-    <Message Text="Removing distribution files..." />
-    <Delete Files="..\..\Distribution\libuv.dylib" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\libuv.so" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\libuv.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\zlib.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\libz.dylib" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\libz.so" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\ZLib.Bindings.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Microsoft.AspNetCore.Connections.Abstractions.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Microsoft.AspNetCore.Http.Features.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Microsoft.Extensions.Configuration.Abstractions.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Microsoft.Extensions.DependencyInjection.Abstractions.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Microsoft.Extensions.FileProviders.Abstractions.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Microsoft.Extensions.Hosting.Abstractions.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Microsoft.Extensions.Logging.Abstractions.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Microsoft.Extensions.Options.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\Microsoft.Extensions.Primitives.dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\$(AssemblyName)" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\$(AssemblyName).dll" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\$(AssemblyName).dll.config" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\$(AssemblyName).exe" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\$(AssemblyName).pdb" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
-    <Delete Files="..\..\Distribution\System.IO.Pipelines.dll" ContinueOnError="true" />
-  </Target>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <Optimize>true</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Analyze'">
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
-    <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\Rules.ruleset">
-      <Link>Rules.rulest</Link>
-    </AdditionalFiles>
-    <AdditionalFiles Include="..\..\stylecop.json">
-      <Link>stylecop.json</Link>
-    </AdditionalFiles>
-    <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv" Version="3.1.5" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.5" />
-    <PackageReference Include="System.IO.Pipelines" Version="4.7.2" />
-    <PackageReference Include="Zlib.Bindings" Version="1.2.0" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)'=='Analyze'">
-    <PackageReference Include="StyleCop.Analyzers">
-      <Version>1.1.118</Version>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
-      <Version>3.0.0</Version>
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <ApplicationIcon>MUO.ico</ApplicationIcon>
+        <StartupObject>Server.Core</StartupObject>
+        <AssemblyName>ModernUO</AssemblyName>
+        <Win32Resource />
+        <Version>0.5.0</Version>
+        <Product>ModernUO Server</Product>
+        <PublishDir>..\..\Distribution</PublishDir>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <UseNETCoreGenerator>true</UseNETCoreGenerator>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsAsErrors />
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <RunCodeAnalysis>true</RunCodeAnalysis>
+        <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+    </PropertyGroup>
+    <Target Name="CleanPub" AfterTargets="Clean">
+        <Message Text="Removing distribution files..." />
+        <Delete Files="..\..\Distribution\libuv.dylib" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\libuv.so" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\libuv.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\zlib.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\libz.dylib" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\libz.so" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\ZLib.Bindings.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Microsoft.AspNetCore.Connections.Abstractions.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Microsoft.AspNetCore.Http.Features.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Microsoft.Extensions.Configuration.Abstractions.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Microsoft.Extensions.DependencyInjection.Abstractions.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Microsoft.Extensions.FileProviders.Abstractions.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Microsoft.Extensions.Hosting.Abstractions.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Microsoft.Extensions.Logging.Abstractions.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Microsoft.Extensions.Options.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Microsoft.Extensions.Primitives.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName)" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).dll.config" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).exe" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).pdb" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\System.IO.Pipelines.dll" ContinueOnError="true" />
+    </Target>
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+        <DefineConstants>TRACE;DEBUG</DefineConstants>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <Optimize>true</Optimize>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.5" />
+        <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv" Version="3.1.5" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.5" />
+        <PackageReference Include="System.IO.Pipelines" Version="4.7.2" />
+        <PackageReference Include="Zlib.Bindings" Version="1.2.0" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)'=='Analyze'">
+        <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
+            <Version>3.0.0</Version>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 </Project>
