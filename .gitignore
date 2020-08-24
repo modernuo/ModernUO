@@ -47,3 +47,4 @@
 .DS_Store
 
 /packages/*
+*.binlog
