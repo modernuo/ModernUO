@@ -25,87 +25,89 @@ using Server.Network;
 
 namespace Server
 {
-  public class CharacterCreatedEventArgs : EventArgs
-  {
-    public CharacterCreatedEventArgs(NetState state, IAccount a, string name, bool female, int hue, int str, int dex,
-      int intel, CityInfo city, SkillNameValue[] skills, int shirtHue, int pantsHue, int hairID, int hairHue,
-      int beardID, int beardHue, int profession, Race race)
+    public class CharacterCreatedEventArgs : EventArgs
     {
-      State = state;
-      Account = a;
-      Name = name;
-      Female = female;
-      Hue = hue;
-      Str = str;
-      Dex = dex;
-      Int = intel;
-      City = city;
-      Skills = skills;
-      ShirtHue = shirtHue;
-      PantsHue = pantsHue;
-      HairID = hairID;
-      HairHue = hairHue;
-      BeardID = beardID;
-      BeardHue = beardHue;
-      Profession = profession;
-      Race = race;
+        public CharacterCreatedEventArgs(
+            NetState state, IAccount a, string name, bool female, int hue, int str, int dex,
+            int intel, CityInfo city, SkillNameValue[] skills, int shirtHue, int pantsHue, int hairID, int hairHue,
+            int beardID, int beardHue, int profession, Race race
+        )
+        {
+            State = state;
+            Account = a;
+            Name = name;
+            Female = female;
+            Hue = hue;
+            Str = str;
+            Dex = dex;
+            Int = intel;
+            City = city;
+            Skills = skills;
+            ShirtHue = shirtHue;
+            PantsHue = pantsHue;
+            HairID = hairID;
+            HairHue = hairHue;
+            BeardID = beardID;
+            BeardHue = beardHue;
+            Profession = profession;
+            Race = race;
+        }
+
+        public NetState State { get; }
+
+        public IAccount Account { get; }
+
+        public Mobile Mobile { get; set; }
+
+        public string Name { get; }
+
+        public bool Female { get; }
+
+        public int Hue { get; }
+
+        public int Str { get; }
+
+        public int Dex { get; }
+
+        public int Int { get; }
+
+        public CityInfo City { get; }
+
+        public SkillNameValue[] Skills { get; }
+
+        public int ShirtHue { get; }
+
+        public int PantsHue { get; }
+
+        public int HairID { get; }
+
+        public int HairHue { get; }
+
+        public int BeardID { get; }
+
+        public int BeardHue { get; }
+
+        public int Profession { get; set; }
+
+        public Race Race { get; }
     }
 
-    public NetState State { get; }
-
-    public IAccount Account { get; }
-
-    public Mobile Mobile { get; set; }
-
-    public string Name { get; }
-
-    public bool Female { get; }
-
-    public int Hue { get; }
-
-    public int Str { get; }
-
-    public int Dex { get; }
-
-    public int Int { get; }
-
-    public CityInfo City { get; }
-
-    public SkillNameValue[] Skills { get; }
-
-    public int ShirtHue { get; }
-
-    public int PantsHue { get; }
-
-    public int HairID { get; }
-
-    public int HairHue { get; }
-
-    public int BeardID { get; }
-
-    public int BeardHue { get; }
-
-    public int Profession { get; set; }
-
-    public Race Race { get; }
-  }
-
-  public struct SkillNameValue
-  {
-    public SkillName Name { get; }
-
-    public int Value { get; }
-
-    public SkillNameValue(SkillName name, int value)
+    public struct SkillNameValue
     {
-      Name = name;
-      Value = value;
-    }
-  }
+        public SkillName Name { get; }
 
-  public static partial class EventSink
-  {
-    public static event Action<CharacterCreatedEventArgs> CharacterCreated;
-    public static void InvokeCharacterCreated(CharacterCreatedEventArgs e) => CharacterCreated?.Invoke(e);
-  }
+        public int Value { get; }
+
+        public SkillNameValue(SkillName name, int value)
+        {
+            Name = name;
+            Value = value;
+        }
+    }
+
+    public static partial class EventSink
+    {
+        public static event Action<CharacterCreatedEventArgs> CharacterCreated;
+        public static void InvokeCharacterCreated(CharacterCreatedEventArgs e) => CharacterCreated?.Invoke(e);
+    }
 }

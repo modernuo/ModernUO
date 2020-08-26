@@ -25,33 +25,31 @@ using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-  public class DynamicJson
-  {
-    [JsonPropertyName("type")]
-    public string Type { get; set; }
-
-    [JsonExtensionData]
-    public Dictionary<string, JsonElement> data { get; set; }
-
-    public bool GetProperty<T>(string key, JsonSerializerOptions options, out T t)
+    public class DynamicJson
     {
-      if (data.TryGetValue(key, out var el))
-      {
-        t = el.ToObject<T>(options);
-        return true;
-      }
+        [JsonPropertyName("type")] public string Type { get; set; }
 
-      t = default;
-      return false;
+        [JsonExtensionData] public Dictionary<string, JsonElement> data { get; set; }
+
+        public bool GetProperty<T>(string key, JsonSerializerOptions options, out T t)
+        {
+            if (data.TryGetValue(key, out var el))
+            {
+                t = el.ToObject<T>(options);
+                return true;
+            }
+
+            t = default;
+            return false;
+        }
+
+        public bool GetEnumProperty<T>(string key, JsonSerializerOptions options, out T t) where T : struct, Enum
+        {
+            if (data.TryGetValue(key, out var el))
+                return Enum.TryParse(el.ToObject<string>(options), out t);
+
+            t = default;
+            return false;
+        }
     }
-
-    public bool GetEnumProperty<T>(string key, JsonSerializerOptions options, out T t) where T : struct, Enum
-    {
-      if (data.TryGetValue(key, out var el))
-        return Enum.TryParse(el.ToObject<string>(options), out t);
-
-      t = default;
-      return false;
-    }
-  }
 }

@@ -25,11 +25,11 @@ using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-  public class Rectangle3DConverterFactory : JsonConverterFactory
-  {
-    public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(Rectangle3D);
+    public class Rectangle3DConverterFactory : JsonConverterFactory
+    {
+        public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(Rectangle3D);
 
-    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
-      new Rectangle3DConverter();
-  }
+        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+            new Rectangle3DConverter();
+    }
 }

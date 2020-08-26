@@ -23,15 +23,14 @@ using Server.Network;
 
 namespace Server.Gumps
 {
-  public class GumpECHandleInput : GumpEntry
-  {
-    public override string Compile(NetState ns) => "{ echandleinput }";
-
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("echandleinput");
-
-    public override void AppendTo(NetState ns, IGumpWriter disp)
+    public class GumpECHandleInput : GumpEntry
     {
-      disp.AppendLayout(m_LayoutName);
+        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("echandleinput");
+        public override string Compile(NetState ns) => "{ echandleinput }";
+
+        public override void AppendTo(NetState ns, IGumpWriter disp)
+        {
+            disp.AppendLayout(m_LayoutName);
+        }
     }
-  }
 }

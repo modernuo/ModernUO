@@ -23,13 +23,13 @@ using Server.HuePickers;
 
 namespace Server.Network
 {
-  public sealed class DisplayHuePicker : Packet
-  {
-    public DisplayHuePicker(HuePicker huePicker) : base(0x95, 9)
+    public sealed class DisplayHuePicker : Packet
     {
-      Stream.Write(huePicker.Serial);
-      Stream.Write((short)0);
-      Stream.Write((short)huePicker.ItemID);
+        public DisplayHuePicker(HuePicker huePicker) : base(0x95, 9)
+        {
+            Stream.Write(huePicker.Serial);
+            Stream.Write((short)0);
+            Stream.Write((short)huePicker.ItemID);
+        }
     }
-  }
 }

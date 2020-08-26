@@ -25,83 +25,83 @@ using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-  public class Point3DConverter : JsonConverter<Point3D>
-  {
-    private Point3D DeserializeArray(ref Utf8JsonReader reader)
+    public class Point3DConverter : JsonConverter<Point3D>
     {
-      Span<int> data = stackalloc int[3];
-      var count = 0;
-
-      while (true)
-      {
-        reader.Read();
-        if (reader.TokenType == JsonTokenType.EndArray)
-          break;
-
-        if (reader.TokenType == JsonTokenType.Number)
+        private Point3D DeserializeArray(ref Utf8JsonReader reader)
         {
-          if (count < 3)
-            data[count] = reader.GetInt32();
+            Span<int> data = stackalloc int[3];
+            var count = 0;
 
-          count++;
+            while (true)
+            {
+                reader.Read();
+                if (reader.TokenType == JsonTokenType.EndArray)
+                    break;
+
+                if (reader.TokenType == JsonTokenType.Number)
+                {
+                    if (count < 3)
+                        data[count] = reader.GetInt32();
+
+                    count++;
+                }
+            }
+
+            if (count > 3)
+                throw new JsonException("Point3D must be an array of x, y, z");
+
+            return new Point3D(data[0], data[1], data[2]);
         }
-      }
 
-      if (count > 3)
-        throw new JsonException("Point3D must be an array of x, y, z");
-
-      return new Point3D(data[0], data[1], data[2]);
-    }
-
-    private Point3D DeserializeObj(ref Utf8JsonReader reader)
-    {
-      Span<int> data = stackalloc int[3];
-
-      while (true)
-      {
-        reader.Read();
-        if (reader.TokenType == JsonTokenType.EndObject)
-          break;
-
-        if (reader.TokenType != JsonTokenType.PropertyName)
-          throw new JsonException("Invalid json structure for Point3D object");
-
-        var key = reader.GetString();
-
-        var i = key switch
+        private Point3D DeserializeObj(ref Utf8JsonReader reader)
         {
-          "x" => 0,
-          "y" => 1,
-          "z" => 2,
-          _ => throw new JsonException($"Invalid property {key} for Point3D")
-        };
+            Span<int> data = stackalloc int[3];
 
-        reader.Read();
+            while (true)
+            {
+                reader.Read();
+                if (reader.TokenType == JsonTokenType.EndObject)
+                    break;
 
-        if (reader.TokenType != JsonTokenType.Number)
-          throw new JsonException($"Value for {key} must be a number");
+                if (reader.TokenType != JsonTokenType.PropertyName)
+                    throw new JsonException("Invalid json structure for Point3D object");
 
-        data[i] = reader.GetInt32();
-      }
+                var key = reader.GetString();
 
-      return new Point3D(data[0], data[1], data[2]);
+                var i = key switch
+                {
+                    "x" => 0,
+                    "y" => 1,
+                    "z" => 2,
+                    _   => throw new JsonException($"Invalid property {key} for Point3D")
+                };
+
+                reader.Read();
+
+                if (reader.TokenType != JsonTokenType.Number)
+                    throw new JsonException($"Value for {key} must be a number");
+
+                data[i] = reader.GetInt32();
+            }
+
+            return new Point3D(data[0], data[1], data[2]);
+        }
+
+        public override Point3D Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+            reader.TokenType switch
+            {
+                JsonTokenType.StartArray  => DeserializeArray(ref reader),
+                JsonTokenType.StartObject => DeserializeObj(ref reader),
+                _                         => throw new JsonException("Invalid Json for Point3D")
+            };
+
+        public override void Write(Utf8JsonWriter writer, Point3D value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.X);
+            writer.WriteNumberValue(value.Y);
+            writer.WriteNumberValue(value.Z);
+            writer.WriteEndArray();
+        }
     }
-
-    public override Point3D Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-      reader.TokenType switch
-      {
-        JsonTokenType.StartArray => DeserializeArray(ref reader),
-        JsonTokenType.StartObject => DeserializeObj(ref reader),
-        _ => throw new JsonException("Invalid Json for Point3D")
-      };
-
-    public override void Write(Utf8JsonWriter writer, Point3D value, JsonSerializerOptions options)
-    {
-      writer.WriteStartArray();
-      writer.WriteNumberValue(value.X);
-      writer.WriteNumberValue(value.Y);
-      writer.WriteNumberValue(value.Z);
-      writer.WriteEndArray();
-    }
-  }
 }

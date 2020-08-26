@@ -22,25 +22,25 @@ using System;
 
 namespace Server.Random
 {
-  public interface IRandomSource
-  {
-    int Next();
-    int Next(int maxValue);
-    int Next(int minValue, int count);
-    uint Next(uint maxValue);
-    uint Next(uint minValue, uint count);
-    long Next(long maxValue);
-    long Next(long minValue, long count);
-    double NextDouble();
-    void NextBytes(Span<byte> buffer);
-    int NextInt();
-    uint NextUInt();
-    ulong NextULong();
-    bool NextBool();
-    byte NextByte();
-    float NextFloat();
-    float NextFloatNonZero();
-    double NextDoubleNonZero();
-    double NextDoubleHighRes();
-  }
+    public interface IRandomSource
+    {
+        int Next();
+        int Next(int maxValue);
+        int Next(int minValue, int count);
+        uint Next(uint maxValue);
+        uint Next(uint minValue, uint count);
+        long Next(long maxValue);
+        long Next(long minValue, long count);
+        double NextDouble();
+        void NextBytes(Span<byte> buffer);
+        int NextInt();
+        uint NextUInt();
+        ulong NextULong();
+        bool NextBool();
+        byte NextByte();
+        float NextFloat();
+        float NextFloatNonZero();
+        double NextDoubleNonZero();
+        double NextDoubleHighRes();
+    }
 }

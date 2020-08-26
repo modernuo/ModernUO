@@ -24,22 +24,22 @@ using Server.Network;
 
 namespace Server
 {
-  public class FastWalkEventArgs : EventArgs
-  {
-    public FastWalkEventArgs(NetState state)
+    public class FastWalkEventArgs : EventArgs
     {
-      NetState = state;
-      Blocked = false;
+        public FastWalkEventArgs(NetState state)
+        {
+            NetState = state;
+            Blocked = false;
+        }
+
+        public NetState NetState { get; }
+
+        public bool Blocked { get; set; }
     }
 
-    public NetState NetState { get; }
-
-    public bool Blocked { get; set; }
-  }
-
-  public static partial class EventSink
-  {
-    public static event Action<FastWalkEventArgs> FastWalk;
-    public static void InvokeFastWalk(FastWalkEventArgs e) => FastWalk?.Invoke(e);
-  }
+    public static partial class EventSink
+    {
+        public static event Action<FastWalkEventArgs> FastWalk;
+        public static void InvokeFastWalk(FastWalkEventArgs e) => FastWalk?.Invoke(e);
+    }
 }

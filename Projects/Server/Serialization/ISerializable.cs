@@ -21,12 +21,12 @@
 
 namespace Server
 {
-  public interface ISerializable
-  {
-    BufferWriter SaveBuffer { get; }
-    int TypeRef { get; }
-    Serial Serial { get; }
-    void Serialize();
-    void Serialize(IGenericWriter writer);
-  }
+    public interface ISerializable
+    {
+        BufferWriter SaveBuffer { get; }
+        int TypeRef { get; }
+        Serial Serial { get; }
+        void Serialize();
+        void Serialize(IGenericWriter writer);
+    }
 }

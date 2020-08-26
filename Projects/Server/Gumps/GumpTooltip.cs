@@ -22,27 +22,27 @@ using Server.Network;
 
 namespace Server.Gumps
 {
-  public class GumpTooltip : GumpEntry
-  {
-    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("tooltip");
-
-    public GumpTooltip(int number, string args)
+    public class GumpTooltip : GumpEntry
     {
-      Number = number;
-      Args = args;
+        private static readonly byte[] m_LayoutName = Gump.StringToBuffer("tooltip");
+
+        public GumpTooltip(int number, string args)
+        {
+            Number = number;
+            Args = args;
+        }
+
+        public int Number { get; set; }
+
+        public string Args { get; set; }
+
+        public override string Compile(NetState ns) => $"{{ tooltip {Number} @{Args}@ }}";
+
+        public override void AppendTo(NetState ns, IGumpWriter disp)
+        {
+            disp.AppendLayout(m_LayoutName);
+            disp.AppendLayout(Number);
+            disp.AppendLayout(Args);
+        }
     }
-
-    public int Number { get; set; }
-
-    public string Args { get; set; }
-
-    public override string Compile(NetState ns) => $"{{ tooltip {Number} @{Args}@ }}";
-
-    public override void AppendTo(NetState ns, IGumpWriter disp)
-    {
-      disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(Number);
-      disp.AppendLayout(Args);
-    }
-  }
 }

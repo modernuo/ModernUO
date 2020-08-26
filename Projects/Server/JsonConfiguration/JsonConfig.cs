@@ -26,62 +26,65 @@ using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-  public static class JsonConfig
-  {
-    public static readonly JsonSerializerOptions DefaultOptions = GetOptions();
-
-    public static JsonSerializerOptions GetOptions(params JsonConverterFactory[] converters)
+    public static class JsonConfig
     {
-      // In the future this should be optimized by cloning DefaultOptions
-      var options = new JsonSerializerOptions
-      {
-        ReadCommentHandling = JsonCommentHandling.Skip,
-        WriteIndented = true,
-        AllowTrailingCommas = true,
-        IgnoreNullValues = true
-      };
+        public static readonly JsonSerializerOptions DefaultOptions = GetOptions();
 
-      options.Converters.Add(new MapConverterFactory());
-      options.Converters.Add(new Point3DConverterFactory());
-      options.Converters.Add(new Rectangle3DConverterFactory());
-      options.Converters.Add(new TimeSpanConverterFactory());
-      options.Converters.Add(new IPEndPointConverterFactory());
+        public static JsonSerializerOptions GetOptions(params JsonConverterFactory[] converters)
+        {
+            // In the future this should be optimized by cloning DefaultOptions
+            var options = new JsonSerializerOptions
+            {
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                WriteIndented = true,
+                AllowTrailingCommas = true,
+                IgnoreNullValues = true
+            };
 
-      for (int i = 0; i < converters.Length; i++) options.Converters.Add(converters[i]);
+            options.Converters.Add(new MapConverterFactory());
+            options.Converters.Add(new Point3DConverterFactory());
+            options.Converters.Add(new Rectangle3DConverterFactory());
+            options.Converters.Add(new TimeSpanConverterFactory());
+            options.Converters.Add(new IPEndPointConverterFactory());
 
-      return options;
+            for (var i = 0; i < converters.Length; i++) options.Converters.Add(converters[i]);
+
+            return options;
+        }
+
+        public static T Deserialize<T>(string filePath, JsonSerializerOptions options = null)
+        {
+            if (!File.Exists(filePath)) return default;
+            var text = File.ReadAllText(filePath, Utility.UTF8);
+            return JsonSerializer.Deserialize<T>(text, options ?? DefaultOptions);
+        }
+
+        public static void Serialize(string filePath, object value, JsonSerializerOptions options = null)
+        {
+            if (File.Exists(filePath)) File.Delete(filePath);
+
+            File.WriteAllText(filePath, JsonSerializer.Serialize(value, options ?? DefaultOptions));
+        }
+
+        public static T ToObject<T>(this ref Utf8JsonReader reader, JsonSerializerOptions options = null) =>
+            JsonSerializer.Deserialize<T>(ref reader, options);
+
+        public static T ToObject<T>(this JsonElement element, JsonSerializerOptions options = null)
+        {
+            var bufferWriter = new ArrayBufferWriter<byte>();
+            using (var writer = new Utf8JsonWriter(bufferWriter))
+            {
+                element.WriteTo(writer);
+            }
+
+            return JsonSerializer.Deserialize<T>(bufferWriter.WrittenSpan, options);
+        }
+
+        public static T ToObject<T>(this JsonDocument document, JsonSerializerOptions options = null)
+        {
+            if (document == null)
+                throw new ArgumentNullException(nameof(document));
+            return document.RootElement.ToObject<T>(options);
+        }
     }
-
-    public static T Deserialize<T>(string filePath, JsonSerializerOptions options = null)
-    {
-      if (!File.Exists(filePath)) return default;
-      string text = File.ReadAllText(filePath, Utility.UTF8);
-      return JsonSerializer.Deserialize<T>(text, options ?? DefaultOptions);
-    }
-
-    public static void Serialize(string filePath, object value, JsonSerializerOptions options = null)
-    {
-      if (File.Exists(filePath)) File.Delete(filePath);
-
-      File.WriteAllText(filePath, JsonSerializer.Serialize(value, options ?? DefaultOptions));
-    }
-
-    public static T ToObject<T>(this ref Utf8JsonReader reader, JsonSerializerOptions options = null) =>
-      JsonSerializer.Deserialize<T>(ref reader, options);
-
-    public static T ToObject<T>(this JsonElement element, JsonSerializerOptions options = null)
-    {
-      var bufferWriter = new ArrayBufferWriter<byte>();
-      using (var writer = new Utf8JsonWriter(bufferWriter))
-        element.WriteTo(writer);
-      return JsonSerializer.Deserialize<T>(bufferWriter.WrittenSpan, options);
-    }
-
-    public static T ToObject<T>(this JsonDocument document, JsonSerializerOptions options = null)
-    {
-      if (document == null)
-        throw new ArgumentNullException(nameof(document));
-      return document.RootElement.ToObject<T>(options);
-    }
-  }
 }

@@ -23,18 +23,18 @@ using System;
 
 namespace Server
 {
-  public class ServerCrashedEventArgs : EventArgs
-  {
-    public ServerCrashedEventArgs(Exception e) => Exception = e;
+    public class ServerCrashedEventArgs : EventArgs
+    {
+        public ServerCrashedEventArgs(Exception e) => Exception = e;
 
-    public Exception Exception { get; }
+        public Exception Exception { get; }
 
-    public bool Close { get; set; }
-  }
+        public bool Close { get; set; }
+    }
 
-  public static partial class EventSink
-  {
-    public static event Action<ServerCrashedEventArgs> ServerCrashed;
-    public static void InvokeServerCrashed(ServerCrashedEventArgs e) => ServerCrashed?.Invoke(e);
-  }
+    public static partial class EventSink
+    {
+        public static event Action<ServerCrashedEventArgs> ServerCrashed;
+        public static void InvokeServerCrashed(ServerCrashedEventArgs e) => ServerCrashed?.Invoke(e);
+    }
 }

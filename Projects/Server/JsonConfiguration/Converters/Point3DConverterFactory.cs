@@ -25,10 +25,12 @@ using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-  public class Point3DConverterFactory : JsonConverterFactory
-  {
-    public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(Point3D) || typeToConvert == typeof(IPoint3D);
+    public class Point3DConverterFactory : JsonConverterFactory
+    {
+        public override bool CanConvert(Type typeToConvert) =>
+            typeToConvert == typeof(Point3D) || typeToConvert == typeof(IPoint3D);
 
-    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) => new Point3DConverter();
-  }
+        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+            new Point3DConverter();
+    }
 }
