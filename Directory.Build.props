@@ -19,12 +19,14 @@
         <Configurations>Debug;Release;Analyze</Configurations>
         <RunCodeAnalysis>true</RunCodeAnalysis>
         <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
-        <CodeAnalysisRuleSet>.\Rules.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
-    <ItemGroup Condition="'$(RunCodeAnalysis)' == 'true'">
+    <ItemGroup Condition="'$(Configuration)'=='Analyze'">
         <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.205" PrivateAssets="all" />
-    </ItemGroup>
-    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
+            <Version>3.0.0</Version>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <AdditionalFiles Include=".\stylecop.json" />
         <AdditionalFiles Include=".\Rules.ruleset" />
     </ItemGroup>

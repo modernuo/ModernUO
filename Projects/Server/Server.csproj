@@ -54,6 +54,9 @@
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <Optimize>true</Optimize>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Analyze'">
+        <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.5" />
         <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv" Version="3.1.5" />
@@ -62,10 +65,7 @@
         <PackageReference Include="Zlib.Bindings" Version="1.2.0" />
     </ItemGroup>
     <ItemGroup Condition="'$(Configuration)'=='Analyze'">
-        <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
-            <Version>3.0.0</Version>
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        <AdditionalFiles Include="..\..\stylecop.json" />
+        <AdditionalFiles Include="..\..\Rules.ruleset" />
     </ItemGroup>
 </Project>
