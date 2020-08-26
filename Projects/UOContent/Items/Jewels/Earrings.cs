@@ -1,77 +1,77 @@
 namespace Server.Items
 {
-  public abstract class BaseEarrings : BaseJewel
-  {
-    public BaseEarrings(int itemID) : base(itemID, Layer.Earrings)
+    public abstract class BaseEarrings : BaseJewel
     {
+        public BaseEarrings(int itemID) : base(itemID, Layer.Earrings)
+        {
+        }
+
+        public BaseEarrings(Serial serial) : base(serial)
+        {
+        }
+
+        public override int BaseGemTypeNumber => 1044203; // star sapphire earrings
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public BaseEarrings(Serial serial) : base(serial)
+    public class GoldEarrings : BaseEarrings
     {
+        [Constructible]
+        public GoldEarrings() : base(0x1087) => Weight = 0.1;
+
+        public GoldEarrings(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override int BaseGemTypeNumber => 1044203; // star sapphire earrings
-
-    public override void Serialize(IGenericWriter writer)
+    public class SilverEarrings : BaseEarrings
     {
-      base.Serialize(writer);
+        [Constructible]
+        public SilverEarrings() : base(0x1F07) => Weight = 0.1;
 
-      writer.Write(0); // version
+        public SilverEarrings(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class GoldEarrings : BaseEarrings
-  {
-    [Constructible]
-    public GoldEarrings() : base(0x1087) => Weight = 0.1;
-
-    public GoldEarrings(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class SilverEarrings : BaseEarrings
-  {
-    [Constructible]
-    public SilverEarrings() : base(0x1F07) => Weight = 0.1;
-
-    public SilverEarrings(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
 }

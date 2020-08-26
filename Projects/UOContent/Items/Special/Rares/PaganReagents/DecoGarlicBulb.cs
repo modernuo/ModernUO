@@ -1,30 +1,30 @@
 namespace Server.Items
 {
-  public class DecoGarlicBulb : Item
-  {
-    [Constructible]
-    public DecoGarlicBulb() : base(0x18E3)
+    public class DecoGarlicBulb : Item
     {
-      Movable = true;
-      Stackable = false;
+        [Constructible]
+        public DecoGarlicBulb() : base(0x18E3)
+        {
+            Movable = true;
+            Stackable = false;
+        }
+
+        public DecoGarlicBulb(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
-
-    public DecoGarlicBulb(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
 }

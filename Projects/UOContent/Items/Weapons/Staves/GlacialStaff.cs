@@ -1,36 +1,36 @@
 namespace Server.Items
 {
-  public class GlacialStaff : BlackStaff
-  {
-    [Constructible]
-    public GlacialStaff()
+    public class GlacialStaff : BlackStaff
     {
-      Hue = 0x480;
-      WeaponAttributes.HitHarm = 5 * Utility.RandomMinMax(1, 5);
-      WeaponAttributes.MageWeapon = Utility.RandomMinMax(5, 10);
+        [Constructible]
+        public GlacialStaff()
+        {
+            Hue = 0x480;
+            WeaponAttributes.HitHarm = 5 * Utility.RandomMinMax(1, 5);
+            WeaponAttributes.MageWeapon = Utility.RandomMinMax(5, 10);
 
-      AosElementDamages[AosElementAttribute.Cold] = 20 + 5 * Utility.RandomMinMax(0, 6);
+            AosElementDamages[AosElementAttribute.Cold] = 20 + 5 * Utility.RandomMinMax(0, 6);
+        }
+
+        public GlacialStaff(Serial serial) : base(serial)
+        {
+        }
+
+        // TODO: Pre-AoS stuff
+        public override int LabelNumber => 1017413; // Glacial Staff
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
-
-    public GlacialStaff(Serial serial) : base(serial)
-    {
-    }
-
-    // TODO: Pre-AoS stuff
-    public override int LabelNumber => 1017413; // Glacial Staff
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
 }

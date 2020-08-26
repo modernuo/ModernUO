@@ -1,176 +1,176 @@
 namespace Server.Items
 {
-  public class LargePainting : Item
-  {
-    [Constructible]
-    public LargePainting() : base(0x0EA0) => Movable = false;
-
-    public LargePainting(Serial serial) : base(serial)
+    public class LargePainting : Item
     {
+        [Constructible]
+        public LargePainting() : base(0x0EA0) => Movable = false;
+
+        public LargePainting(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    [Flippable(0x0E9F, 0x0EC8)]
+    public class WomanPortrait1 : Item
     {
-      base.Serialize(writer);
+        [Constructible]
+        public WomanPortrait1() : base(0x0E9F) => Movable = false;
 
-      writer.Write(0); // version
+        public WomanPortrait1(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Deserialize(IGenericReader reader)
+    [Flippable(0x0EE7, 0x0EC9)]
+    public class WomanPortrait2 : Item
     {
-      base.Deserialize(reader);
+        [Constructible]
+        public WomanPortrait2() : base(0x0EE7) => Movable = false;
 
-      int version = reader.ReadInt();
-    }
-  }
+        public WomanPortrait2(Serial serial) : base(serial)
+        {
+        }
 
-  [Flippable(0x0E9F, 0x0EC8)]
-  public class WomanPortrait1 : Item
-  {
-    [Constructible]
-    public WomanPortrait1() : base(0x0E9F) => Movable = false;
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-    public WomanPortrait1(Serial serial) : base(serial)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
 
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  [Flippable(0x0EE7, 0x0EC9)]
-  public class WomanPortrait2 : Item
-  {
-    [Constructible]
-    public WomanPortrait2() : base(0x0EE7) => Movable = false;
-
-    public WomanPortrait2(Serial serial) : base(serial)
-    {
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    [Flippable(0x0EA2, 0x0EA1)]
+    public class ManPortrait1 : Item
     {
-      base.Serialize(writer);
+        [Constructible]
+        public ManPortrait1() : base(0x0EA2) => Movable = false;
 
-      writer.Write(0); // version
+        public ManPortrait1(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Deserialize(IGenericReader reader)
+    [Flippable(0x0EA3, 0x0EA4)]
+    public class ManPortrait2 : Item
     {
-      base.Deserialize(reader);
+        [Constructible]
+        public ManPortrait2() : base(0x0EA3) => Movable = false;
 
-      int version = reader.ReadInt();
-    }
-  }
+        public ManPortrait2(Serial serial) : base(serial)
+        {
+        }
 
-  [Flippable(0x0EA2, 0x0EA1)]
-  public class ManPortrait1 : Item
-  {
-    [Constructible]
-    public ManPortrait1() : base(0x0EA2) => Movable = false;
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-    public ManPortrait1(Serial serial) : base(serial)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
 
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  [Flippable(0x0EA3, 0x0EA4)]
-  public class ManPortrait2 : Item
-  {
-    [Constructible]
-    public ManPortrait2() : base(0x0EA3) => Movable = false;
-
-    public ManPortrait2(Serial serial) : base(serial)
-    {
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    [Flippable(0x0EA6, 0x0EA5)]
+    public class LadyPortrait1 : Item
     {
-      base.Serialize(writer);
+        [Constructible]
+        public LadyPortrait1() : base(0x0EA6) => Movable = false;
 
-      writer.Write(0); // version
+        public LadyPortrait1(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Deserialize(IGenericReader reader)
+    [Flippable(0x0EA7, 0x0EA8)]
+    public class LadyPortrait2 : Item
     {
-      base.Deserialize(reader);
+        [Constructible]
+        public LadyPortrait2() : base(0x0EA7) => Movable = false;
 
-      int version = reader.ReadInt();
+        public LadyPortrait2(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
-  }
-
-  [Flippable(0x0EA6, 0x0EA5)]
-  public class LadyPortrait1 : Item
-  {
-    [Constructible]
-    public LadyPortrait1() : base(0x0EA6) => Movable = false;
-
-    public LadyPortrait1(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  [Flippable(0x0EA7, 0x0EA8)]
-  public class LadyPortrait2 : Item
-  {
-    [Constructible]
-    public LadyPortrait2() : base(0x0EA7) => Movable = false;
-
-    public LadyPortrait2(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
 }

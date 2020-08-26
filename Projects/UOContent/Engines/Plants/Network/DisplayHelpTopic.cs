@@ -1,15 +1,15 @@
 namespace Server.Network
 {
-  public class DisplayHelpTopic : Packet
-  {
-    public DisplayHelpTopic(int topicID, bool display) : base(0xBF)
+    public class DisplayHelpTopic : Packet
     {
-      EnsureCapacity(11);
+        public DisplayHelpTopic(int topicID, bool display) : base(0xBF)
+        {
+            EnsureCapacity(11);
 
-      Stream.Write((short)0x17);
-      Stream.Write((byte)1);
-      Stream.Write(topicID);
-      Stream.Write(display);
+            Stream.Write((short)0x17);
+            Stream.Write((byte)1);
+            Stream.Write(topicID);
+            Stream.Write(display);
+        }
     }
-  }
 }

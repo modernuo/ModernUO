@@ -1,44 +1,46 @@
 namespace Server.Items
 {
-  public class LuminousRuneBlade : RuneBlade
-  {
-    [Constructible]
-    public LuminousRuneBlade()
+    public class LuminousRuneBlade : RuneBlade
     {
-      WeaponAttributes.HitLightning = 40;
-      WeaponAttributes.SelfRepair = 5;
-      Attributes.NightSight = 1;
-      Attributes.WeaponSpeed = 25;
-      Attributes.WeaponDamage = 55;
+        [Constructible]
+        public LuminousRuneBlade()
+        {
+            WeaponAttributes.HitLightning = 40;
+            WeaponAttributes.SelfRepair = 5;
+            Attributes.NightSight = 1;
+            Attributes.WeaponSpeed = 25;
+            Attributes.WeaponDamage = 55;
 
-      Hue = GetElementalDamageHue();
+            Hue = GetElementalDamageHue();
+        }
+
+        public LuminousRuneBlade(Serial serial) : base(serial)
+        {
+        }
+
+        public override int LabelNumber => 1072922; // Luminous Rune Blade
+
+        public override void GetDamageTypes(
+            Mobile wielder, out int phys, out int fire, out int cold, out int pois,
+            out int nrgy, out int chaos, out int direct
+        )
+        {
+            phys = fire = cold = pois = chaos = direct = 0;
+            nrgy = 100;
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.WriteEncodedInt(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadEncodedInt();
+        }
     }
-
-    public LuminousRuneBlade(Serial serial) : base(serial)
-    {
-    }
-
-    public override int LabelNumber => 1072922; // Luminous Rune Blade
-
-    public override void GetDamageTypes(Mobile wielder, out int phys, out int fire, out int cold, out int pois,
-      out int nrgy, out int chaos, out int direct)
-    {
-      phys = fire = cold = pois = chaos = direct = 0;
-      nrgy = 100;
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadEncodedInt();
-    }
-  }
 }

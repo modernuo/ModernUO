@@ -1,57 +1,57 @@
 namespace Server.Items
 {
-  public enum ThinStoneWallTypes
-  {
-    Corner,
-    EastWall,
-    SouthWall,
-    CornerPost,
-    EastDoorFrame,
-    SouthDoorFrame,
-    NorthDoorFrame,
-    WestDoorFrame,
-    SouthWindow,
-    EastWindow,
-    CornerMedium,
-    SouthWallMedium,
-    EastWallMedium,
-    CornerPostMedium,
-    CornerArch,
-    EastArch,
-    SouthArch,
-    NorthArch,
-    WestArch,
-    CornerShort,
-    EastWallShort,
-    SouthWallShort,
-    CornerPostShort,
-    SouthWallShort2,
-    EastWallShort2
-  }
-
-  public class ThinStoneWall : BaseWall
-  {
-    [Constructible]
-    public ThinStoneWall(ThinStoneWallTypes type) : base(0x001A + (int)type)
+    public enum ThinStoneWallTypes
     {
+        Corner,
+        EastWall,
+        SouthWall,
+        CornerPost,
+        EastDoorFrame,
+        SouthDoorFrame,
+        NorthDoorFrame,
+        WestDoorFrame,
+        SouthWindow,
+        EastWindow,
+        CornerMedium,
+        SouthWallMedium,
+        EastWallMedium,
+        CornerPostMedium,
+        CornerArch,
+        EastArch,
+        SouthArch,
+        NorthArch,
+        WestArch,
+        CornerShort,
+        EastWallShort,
+        SouthWallShort,
+        CornerPostShort,
+        SouthWallShort2,
+        EastWallShort2
     }
 
-    public ThinStoneWall(Serial serial) : base(serial)
+    public class ThinStoneWall : BaseWall
     {
+        [Constructible]
+        public ThinStoneWall(ThinStoneWallTypes type) : base(0x001A + (int)type)
+        {
+        }
+
+        public ThinStoneWall(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
 }

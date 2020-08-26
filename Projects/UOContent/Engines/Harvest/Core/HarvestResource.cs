@@ -2,33 +2,33 @@ using System;
 
 namespace Server.Engines.Harvest
 {
-  public class HarvestResource
-  {
-    public HarvestResource(double reqSkill, double minSkill, double maxSkill, object message, params Type[] types)
+    public class HarvestResource
     {
-      ReqSkill = reqSkill;
-      MinSkill = minSkill;
-      MaxSkill = maxSkill;
-      Types = types;
-      SuccessMessage = message;
+        public HarvestResource(double reqSkill, double minSkill, double maxSkill, object message, params Type[] types)
+        {
+            ReqSkill = reqSkill;
+            MinSkill = minSkill;
+            MaxSkill = maxSkill;
+            Types = types;
+            SuccessMessage = message;
+        }
+
+        public Type[] Types { get; set; }
+
+        public double ReqSkill { get; set; }
+
+        public double MinSkill { get; set; }
+
+        public double MaxSkill { get; set; }
+
+        public object SuccessMessage { get; }
+
+        public void SendSuccessTo(Mobile m)
+        {
+            if (SuccessMessage is int messageInt)
+                m.SendLocalizedMessage(messageInt);
+            else
+                m.SendMessage(SuccessMessage.ToString());
+        }
     }
-
-    public Type[] Types { get; set; }
-
-    public double ReqSkill { get; set; }
-
-    public double MinSkill { get; set; }
-
-    public double MaxSkill { get; set; }
-
-    public object SuccessMessage { get; }
-
-    public void SendSuccessTo(Mobile m)
-    {
-      if (SuccessMessage is int messageInt)
-        m.SendLocalizedMessage(messageInt);
-      else
-        m.SendMessage(SuccessMessage.ToString());
-    }
-  }
 }

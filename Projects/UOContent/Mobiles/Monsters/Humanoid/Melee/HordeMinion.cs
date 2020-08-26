@@ -2,69 +2,69 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-  public class HordeMinion : BaseCreature
-  {
-    [Constructible]
-    public HordeMinion() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    public class HordeMinion : BaseCreature
     {
-      Body = 776;
-      BaseSoundID = 357;
+        [Constructible]
+        public HordeMinion() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+        {
+            Body = 776;
+            BaseSoundID = 357;
 
-      SetStr(16, 40);
-      SetDex(31, 60);
-      SetInt(11, 25);
+            SetStr(16, 40);
+            SetDex(31, 60);
+            SetInt(11, 25);
 
-      SetHits(10, 24);
+            SetHits(10, 24);
 
-      SetDamage(5, 10);
+            SetDamage(5, 10);
 
-      SetDamageType(ResistanceType.Physical, 100);
+            SetDamageType(ResistanceType.Physical, 100);
 
-      SetResistance(ResistanceType.Physical, 15, 20);
-      SetResistance(ResistanceType.Fire, 5, 10);
+            SetResistance(ResistanceType.Physical, 15, 20);
+            SetResistance(ResistanceType.Fire, 5, 10);
 
-      SetSkill(SkillName.MagicResist, 10.0);
-      SetSkill(SkillName.Tactics, 0.1, 15.0);
-      SetSkill(SkillName.Wrestling, 25.1, 40.0);
+            SetSkill(SkillName.MagicResist, 10.0);
+            SetSkill(SkillName.Tactics, 0.1, 15.0);
+            SetSkill(SkillName.Wrestling, 25.1, 40.0);
 
-      Fame = 500;
-      Karma = -500;
+            Fame = 500;
+            Karma = -500;
 
-      VirtualArmor = 18;
+            VirtualArmor = 18;
 
-      AddItem(new LightSource());
+            AddItem(new LightSource());
 
-      PackItem(new Bone(3));
-      // TODO: Body parts
+            PackItem(new Bone(3));
+            // TODO: Body parts
+        }
+
+        public HordeMinion(Serial serial) : base(serial)
+        {
+        }
+
+        public override string CorpseName => "a horde minion corpse";
+        public override string DefaultName => "a horde minion";
+
+        public override int GetIdleSound() => 338;
+
+        public override int GetAngerSound() => 338;
+
+        public override int GetDeathSound() => 338;
+
+        public override int GetAttackSound() => 406;
+
+        public override int GetHurtSound() => 194;
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write(0);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+            var version = reader.ReadInt();
+        }
     }
-
-    public HordeMinion(Serial serial) : base(serial)
-    {
-    }
-
-    public override string CorpseName => "a horde minion corpse";
-    public override string DefaultName => "a horde minion";
-
-    public override int GetIdleSound() => 338;
-
-    public override int GetAngerSound() => 338;
-
-    public override int GetDeathSound() => 338;
-
-    public override int GetAttackSound() => 406;
-
-    public override int GetHurtSound() => 194;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-      writer.Write(0);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-      int version = reader.ReadInt();
-    }
-  }
 }
