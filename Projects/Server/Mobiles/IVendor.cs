@@ -25,9 +25,9 @@ using Server;
 
 public interface IVendor
 {
-  DateTime LastRestock { get; set; }
-  TimeSpan RestockDelay { get; }
-  bool OnBuyItems(Mobile from, List<BuyItemResponse> list);
-  bool OnSellItems(Mobile from, List<SellItemResponse> list);
-  void Restock();
+    DateTime LastRestock { get; set; }
+    TimeSpan RestockDelay { get; }
+    bool OnBuyItems(Mobile from, List<BuyItemResponse> list);
+    bool OnSellItems(Mobile from, List<SellItemResponse> list);
+    void Restock();
 }

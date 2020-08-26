@@ -26,71 +26,72 @@ using Microsoft.Extensions.Logging;
 
 namespace Server.Network
 {
-  public class ServerConnectionHandler : ConnectionHandler
-  {
-    private readonly IMessagePumpService _messagePumpService;
-    private readonly ILogger<ServerConnectionHandler> _logger;
-
-    public ServerConnectionHandler(
-      IMessagePumpService messagePumpService,
-      ILogger<ServerConnectionHandler> logger)
+    public class ServerConnectionHandler : ConnectionHandler
     {
-      _messagePumpService = messagePumpService;
-      _logger = logger;
+        private readonly ILogger<ServerConnectionHandler> _logger;
+        private readonly IMessagePumpService _messagePumpService;
+
+        public ServerConnectionHandler(
+            IMessagePumpService messagePumpService,
+            ILogger<ServerConnectionHandler> logger
+        )
+        {
+            _messagePumpService = messagePumpService;
+            _logger = logger;
+        }
+
+        public override async Task OnConnectedAsync(ConnectionContext connection)
+        {
+            if (!VerifySocket(connection))
+            {
+                Release(connection);
+                return;
+            }
+
+            var ns = new NetState(connection);
+            TcpServer.Instances.Add(ns);
+            Console.WriteLine($"Client: {ns}: Connected. [{TcpServer.Instances.Count} Online]");
+
+            await ns.ProcessIncoming(_messagePumpService).ConfigureAwait(false);
+        }
+
+        private static bool VerifySocket(ConnectionContext connection)
+        {
+            try
+            {
+                var args = new SocketConnectEventArgs(connection);
+
+                EventSink.InvokeSocketConnect(args);
+
+                return args.AllowConnection;
+            }
+            catch (Exception ex)
+            {
+                NetState.TraceException(ex);
+                return false;
+            }
+        }
+
+        private static void Release(ConnectionContext connection)
+        {
+            try
+            {
+                connection.Abort(new ConnectionAbortedException("Failed socket verification."));
+            }
+            catch (Exception ex)
+            {
+                NetState.TraceException(ex);
+            }
+
+            try
+            {
+                // TODO: Is this needed?
+                connection.DisposeAsync();
+            }
+            catch (Exception ex)
+            {
+                NetState.TraceException(ex);
+            }
+        }
     }
-
-    public override async Task OnConnectedAsync(ConnectionContext connection)
-    {
-      if (!VerifySocket(connection))
-      {
-        Release(connection);
-        return;
-      }
-
-      var ns = new NetState(connection);
-      TcpServer.Instances.Add(ns);
-      Console.WriteLine($"Client: {ns}: Connected. [{TcpServer.Instances.Count} Online]");
-
-      await ns.ProcessIncoming(_messagePumpService).ConfigureAwait(false);
-    }
-
-    private static bool VerifySocket(ConnectionContext connection)
-    {
-      try
-      {
-        var args = new SocketConnectEventArgs(connection);
-
-        EventSink.InvokeSocketConnect(args);
-
-        return args.AllowConnection;
-      }
-      catch (Exception ex)
-      {
-        NetState.TraceException(ex);
-        return false;
-      }
-    }
-
-    private static void Release(ConnectionContext connection)
-    {
-      try
-      {
-        connection.Abort(new ConnectionAbortedException("Failed socket verification."));
-      }
-      catch (Exception ex)
-      {
-        NetState.TraceException(ex);
-      }
-
-      try
-      {
-        // TODO: Is this needed?
-        connection.DisposeAsync();
-      }
-      catch (Exception ex)
-      {
-        NetState.TraceException(ex);
-      }
-    }
-  }
 }

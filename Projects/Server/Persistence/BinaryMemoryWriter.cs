@@ -22,59 +22,61 @@ using System.IO;
 
 namespace Server
 {
-  public sealed class BinaryMemoryWriter : BinaryFileWriter
-  {
-    private static byte[] indexBuffer;
-    private readonly MemoryStream stream;
-
-    public BinaryMemoryWriter()
-      : base(new MemoryStream(512), true) =>
-      stream = UnderlyingStream as MemoryStream;
-
-    protected override int BufferSize => 512;
-
-    public int CommitTo(SequentialFileWriterStream dataFile, SequentialFileWriterStream indexFile, int typeCode, uint serial)
+    public sealed class BinaryMemoryWriter : BinaryFileWriter
     {
-      Flush();
+        private static byte[] indexBuffer;
+        private readonly MemoryStream stream;
 
-      var buffer = stream.GetBuffer();
-      var length = (int)stream.Length;
+        public BinaryMemoryWriter()
+            : base(new MemoryStream(512), true) =>
+            stream = UnderlyingStream as MemoryStream;
 
-      var position = dataFile.Position;
+        protected override int BufferSize => 512;
 
-      dataFile.Write(buffer, 0, length);
+        public int CommitTo(
+            SequentialFileWriterStream dataFile, SequentialFileWriterStream indexFile, int typeCode, uint serial
+        )
+        {
+            Flush();
 
-      indexBuffer ??= new byte[20];
+            var buffer = stream.GetBuffer();
+            var length = (int)stream.Length;
 
-      indexBuffer[0] = (byte)typeCode;
-      indexBuffer[1] = (byte)(typeCode >> 8);
-      indexBuffer[2] = (byte)(typeCode >> 16);
-      indexBuffer[3] = (byte)(typeCode >> 24);
+            var position = dataFile.Position;
 
-      indexBuffer[4] = (byte)serial;
-      indexBuffer[5] = (byte)(serial >> 8);
-      indexBuffer[6] = (byte)(serial >> 16);
-      indexBuffer[7] = (byte)(serial >> 24);
+            dataFile.Write(buffer, 0, length);
 
-      indexBuffer[8] = (byte)position;
-      indexBuffer[9] = (byte)(position >> 8);
-      indexBuffer[10] = (byte)(position >> 16);
-      indexBuffer[11] = (byte)(position >> 24);
-      indexBuffer[12] = (byte)(position >> 32);
-      indexBuffer[13] = (byte)(position >> 40);
-      indexBuffer[14] = (byte)(position >> 48);
-      indexBuffer[15] = (byte)(position >> 56);
+            indexBuffer ??= new byte[20];
 
-      indexBuffer[16] = (byte)length;
-      indexBuffer[17] = (byte)(length >> 8);
-      indexBuffer[18] = (byte)(length >> 16);
-      indexBuffer[19] = (byte)(length >> 24);
+            indexBuffer[0] = (byte)typeCode;
+            indexBuffer[1] = (byte)(typeCode >> 8);
+            indexBuffer[2] = (byte)(typeCode >> 16);
+            indexBuffer[3] = (byte)(typeCode >> 24);
 
-      indexFile.Write(indexBuffer, 0, indexBuffer.Length);
+            indexBuffer[4] = (byte)serial;
+            indexBuffer[5] = (byte)(serial >> 8);
+            indexBuffer[6] = (byte)(serial >> 16);
+            indexBuffer[7] = (byte)(serial >> 24);
 
-      stream.SetLength(0);
+            indexBuffer[8] = (byte)position;
+            indexBuffer[9] = (byte)(position >> 8);
+            indexBuffer[10] = (byte)(position >> 16);
+            indexBuffer[11] = (byte)(position >> 24);
+            indexBuffer[12] = (byte)(position >> 32);
+            indexBuffer[13] = (byte)(position >> 40);
+            indexBuffer[14] = (byte)(position >> 48);
+            indexBuffer[15] = (byte)(position >> 56);
 
-      return length;
+            indexBuffer[16] = (byte)length;
+            indexBuffer[17] = (byte)(length >> 8);
+            indexBuffer[18] = (byte)(length >> 16);
+            indexBuffer[19] = (byte)(length >> 24);
+
+            indexFile.Write(indexBuffer, 0, indexBuffer.Length);
+
+            stream.SetLength(0);
+
+            return length;
+        }
     }
-  }
 }

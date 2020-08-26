@@ -20,26 +20,26 @@
 
 namespace Server.Prompts
 {
-  public abstract class Prompt
-  {
-    private static int m_Serials;
-
-    protected Prompt()
+    public abstract class Prompt
     {
-      do
-      {
-        Serial = ++m_Serials;
-      } while (Serial == 0);
-    }
+        private static int m_Serials;
 
-    public int Serial { get; }
+        protected Prompt()
+        {
+            do
+            {
+                Serial = ++m_Serials;
+            } while (Serial == 0);
+        }
 
-    public virtual void OnCancel(Mobile from)
-    {
-    }
+        public int Serial { get; }
 
-    public virtual void OnResponse(Mobile from, string text)
-    {
+        public virtual void OnCancel(Mobile from)
+        {
+        }
+
+        public virtual void OnResponse(Mobile from, string text)
+        {
+        }
     }
-  }
 }

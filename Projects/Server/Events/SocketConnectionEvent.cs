@@ -24,22 +24,22 @@ using Microsoft.AspNetCore.Connections;
 
 namespace Server
 {
-  public class SocketConnectEventArgs : EventArgs
-  {
-    public SocketConnectEventArgs(ConnectionContext c)
+    public class SocketConnectEventArgs : EventArgs
     {
-      Context = c;
-      AllowConnection = true;
+        public SocketConnectEventArgs(ConnectionContext c)
+        {
+            Context = c;
+            AllowConnection = true;
+        }
+
+        public ConnectionContext Context { get; }
+
+        public bool AllowConnection { get; set; }
     }
 
-    public ConnectionContext Context { get; }
-
-    public bool AllowConnection { get; set; }
-  }
-
-  public static partial class EventSink
-  {
-    public static event Action<SocketConnectEventArgs> SocketConnect;
-    public static void InvokeSocketConnect(SocketConnectEventArgs e) => SocketConnect?.Invoke(e);
-  }
+    public static partial class EventSink
+    {
+        public static event Action<SocketConnectEventArgs> SocketConnect;
+        public static void InvokeSocketConnect(SocketConnectEventArgs e) => SocketConnect?.Invoke(e);
+    }
 }

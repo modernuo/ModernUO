@@ -3,9 +3,9 @@
 
 namespace System.Buffers
 {
-  public static class SlabMemoryPoolFactory
-  {
-    public static MemoryPool<byte> Create() => CreateSlabMemoryPool();
-    public static MemoryPool<byte> CreateSlabMemoryPool() => new SlabMemoryPool();
-  }
+    public static class SlabMemoryPoolFactory
+    {
+        public static MemoryPool<byte> Create() => CreateSlabMemoryPool();
+        public static MemoryPool<byte> CreateSlabMemoryPool() => new SlabMemoryPool();
+    }
 }

@@ -24,50 +24,50 @@ using System.Collections.Concurrent;
 
 namespace Server.Network
 {
-  public interface IMessagePumpService
-  {
-    void QueueWork(NetState ns, IMemoryOwner<byte> memOwner, int length, OnPacketReceive onReceive);
-    void DoWork();
-  }
-
-  public class MessagePumpService : IMessagePumpService
-  {
-    private readonly ConcurrentQueue<Work> m_WorkQueue = new ConcurrentQueue<Work>();
-
-    public void QueueWork(NetState ns, IMemoryOwner<byte> memOwner, int length, OnPacketReceive onReceive)
+    public interface IMessagePumpService
     {
-      m_WorkQueue.Enqueue(new Work(ns, memOwner, length, onReceive));
-      Core.Set();
+        void QueueWork(NetState ns, IMemoryOwner<byte> memOwner, int length, OnPacketReceive onReceive);
+        void DoWork();
     }
 
-    public void DoWork()
+    public class MessagePumpService : IMessagePumpService
     {
-      var count = 0;
-      while (!m_WorkQueue.IsEmpty && count++ < 250)
-      {
-        if (!m_WorkQueue.TryDequeue(out var work))
-          break;
+        private readonly ConcurrentQueue<Work> m_WorkQueue = new ConcurrentQueue<Work>();
 
-        var seq = new ReadOnlySequence<byte>(work.MemoryOwner.Memory.Slice(0, work.Length));
-        work.OnReceive(work.State, new PacketReader(seq));
-        work.MemoryOwner.Dispose();
-      }
+        public void QueueWork(NetState ns, IMemoryOwner<byte> memOwner, int length, OnPacketReceive onReceive)
+        {
+            m_WorkQueue.Enqueue(new Work(ns, memOwner, length, onReceive));
+            Core.Set();
+        }
+
+        public void DoWork()
+        {
+            var count = 0;
+            while (!m_WorkQueue.IsEmpty && count++ < 250)
+            {
+                if (!m_WorkQueue.TryDequeue(out var work))
+                    break;
+
+                var seq = new ReadOnlySequence<byte>(work.MemoryOwner.Memory.Slice(0, work.Length));
+                work.OnReceive(work.State, new PacketReader(seq));
+                work.MemoryOwner.Dispose();
+            }
+        }
+
+        private class Work
+        {
+            public readonly int Length;
+            public readonly IMemoryOwner<byte> MemoryOwner;
+            public readonly OnPacketReceive OnReceive;
+            public readonly NetState State;
+
+            public Work(NetState ns, IMemoryOwner<byte> memOwner, int length, OnPacketReceive onReceive)
+            {
+                State = ns;
+                MemoryOwner = memOwner;
+                OnReceive = onReceive;
+                Length = length;
+            }
+        }
     }
-
-    private class Work
-    {
-      public readonly NetState State;
-      public readonly IMemoryOwner<byte> MemoryOwner;
-      public readonly int Length;
-      public readonly OnPacketReceive OnReceive;
-
-      public Work(NetState ns, IMemoryOwner<byte> memOwner, int length, OnPacketReceive onReceive)
-      {
-        State = ns;
-        MemoryOwner = memOwner;
-        OnReceive = onReceive;
-        Length = length;
-      }
-    }
-  }
 }

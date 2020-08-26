@@ -26,21 +26,21 @@ using Server.Random;
 
 namespace Server
 {
-  public class SecureRandom : BaseRandomSource
-  {
-    private RandomNumberGenerator m_Random;
-
-    public RandomNumberGenerator Generator => m_Random ??= new RNGCryptoServiceProvider();
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public override ulong NextULong()
+    public class SecureRandom : BaseRandomSource
     {
-      Span<byte> buffer = stackalloc byte[sizeof(ulong)];
-      Generator.GetBytes(buffer);
-      return BinaryPrimitives.ReadUInt64BigEndian(buffer);
-    }
+        private RandomNumberGenerator m_Random;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public override void NextBytes(Span<byte> buffer) => Generator.GetBytes(buffer);
-  }
+        public RandomNumberGenerator Generator => m_Random ??= new RNGCryptoServiceProvider();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override ulong NextULong()
+        {
+            Span<byte> buffer = stackalloc byte[sizeof(ulong)];
+            Generator.GetBytes(buffer);
+            return BinaryPrimitives.ReadUInt64BigEndian(buffer);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override void NextBytes(Span<byte> buffer) => Generator.GetBytes(buffer);
+    }
 }

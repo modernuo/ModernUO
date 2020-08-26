@@ -26,17 +26,17 @@ using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-  public class IPEndPointConverter : JsonConverter<IPEndPoint>
-  {
-    public override IPEndPoint Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public class IPEndPointConverter : JsonConverter<IPEndPoint>
     {
-      if (IPEndPoint.TryParse(reader.GetString(), out var ipep))
-        return ipep;
+        public override IPEndPoint Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (IPEndPoint.TryParse(reader.GetString(), out var ipep))
+                return ipep;
 
-      throw new JsonException("IPEndPoint must be in the correct format");
+            throw new JsonException("IPEndPoint must be in the correct format");
+        }
+
+        public override void Write(Utf8JsonWriter writer, IPEndPoint value, JsonSerializerOptions options)
+            => writer.WriteStringValue(value.ToString());
     }
-
-    public override void Write(Utf8JsonWriter writer, IPEndPoint value, JsonSerializerOptions options)
-      => writer.WriteStringValue(value.ToString());
-  }
 }

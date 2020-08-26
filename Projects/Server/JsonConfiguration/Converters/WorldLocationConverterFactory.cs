@@ -25,10 +25,11 @@ using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-  public class WorldLocationConverterFactory : JsonConverterFactory
-  {
-    public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(WorldLocation);
+    public class WorldLocationConverterFactory : JsonConverterFactory
+    {
+        public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(WorldLocation);
 
-    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) => new WorldLocationConverter();
-  }
+        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+            new WorldLocationConverter();
+    }
 }

@@ -20,122 +20,122 @@
 
 namespace Server
 {
-  [NoSort]
-  [Parsable]
-  [PropertyObject]
-  public struct Rectangle2D
-  {
-    private Point2D m_Start;
-    private Point2D m_End;
-
-    public Rectangle2D(IPoint2D start, IPoint2D end)
+    [NoSort]
+    [Parsable]
+    [PropertyObject]
+    public struct Rectangle2D
     {
-      m_Start = new Point2D(start);
-      m_End = new Point2D(end);
+        private Point2D m_Start;
+        private Point2D m_End;
+
+        public Rectangle2D(IPoint2D start, IPoint2D end)
+        {
+            m_Start = new Point2D(start);
+            m_End = new Point2D(end);
+        }
+
+        public Rectangle2D(int x, int y, int width, int height)
+        {
+            m_Start = new Point2D(x, y);
+            m_End = new Point2D(x + width, y + height);
+        }
+
+        public void Set(int x, int y, int width, int height)
+        {
+            m_Start = new Point2D(x, y);
+            m_End = new Point2D(x + width, y + height);
+        }
+
+        public static Rectangle2D Parse(string value)
+        {
+            var start = value.IndexOf('(');
+            var end = value.IndexOf(',', start + 1);
+
+            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var x);
+
+            start = end;
+            end = value.IndexOf(',', start + 1);
+
+            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var y);
+
+            start = end;
+            end = value.IndexOf(',', start + 1);
+
+            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var w);
+
+            start = end;
+            end = value.IndexOf(')', start + 1);
+
+            Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out var h);
+
+            return new Rectangle2D(x, y, w, h);
+        }
+
+        [CommandProperty(AccessLevel.Counselor)]
+        public Point2D Start
+        {
+            get => m_Start;
+            set => m_Start = value;
+        }
+
+        [CommandProperty(AccessLevel.Counselor)]
+        public Point2D End
+        {
+            get => m_End;
+            set => m_End = value;
+        }
+
+        [CommandProperty(AccessLevel.Counselor)]
+        public int X
+        {
+            get => m_Start.m_X;
+            set => m_Start.m_X = value;
+        }
+
+        [CommandProperty(AccessLevel.Counselor)]
+        public int Y
+        {
+            get => m_Start.m_Y;
+            set => m_Start.m_Y = value;
+        }
+
+        [CommandProperty(AccessLevel.Counselor)]
+        public int Width
+        {
+            get => m_End.m_X - m_Start.m_X;
+            set => m_End.m_X = m_Start.m_X + value;
+        }
+
+        [CommandProperty(AccessLevel.Counselor)]
+        public int Height
+        {
+            get => m_End.m_Y - m_Start.m_Y;
+            set => m_End.m_Y = m_Start.m_Y + value;
+        }
+
+        public void MakeHold(Rectangle2D r)
+        {
+            if (r.m_Start.m_X < m_Start.m_X)
+                m_Start.m_X = r.m_Start.m_X;
+
+            if (r.m_Start.m_Y < m_Start.m_Y)
+                m_Start.m_Y = r.m_Start.m_Y;
+
+            if (r.m_End.m_X > m_End.m_X)
+                m_End.m_X = r.m_End.m_X;
+
+            if (r.m_End.m_Y > m_End.m_Y)
+                m_End.m_Y = r.m_End.m_Y;
+        }
+
+        public bool Contains(Point3D p) =>
+            m_Start.m_X <= p.m_X && m_Start.m_Y <= p.m_Y && m_End.m_X > p.m_X && m_End.m_Y > p.m_Y;
+
+        public bool Contains(Point2D p) =>
+            m_Start.m_X <= p.m_X && m_Start.m_Y <= p.m_Y && m_End.m_X > p.m_X && m_End.m_Y > p.m_Y;
+
+        public bool Contains(IPoint2D p) => m_Start <= p && m_End > p;
+
+        public override string ToString() => $"({X}, {Y})+({Width}, {Height})";
     }
-
-    public Rectangle2D(int x, int y, int width, int height)
-    {
-      m_Start = new Point2D(x, y);
-      m_End = new Point2D(x + width, y + height);
-    }
-
-    public void Set(int x, int y, int width, int height)
-    {
-      m_Start = new Point2D(x, y);
-      m_End = new Point2D(x + width, y + height);
-    }
-
-    public static Rectangle2D Parse(string value)
-    {
-      var start = value.IndexOf('(');
-      var end = value.IndexOf(',', start + 1);
-
-      Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out int x);
-
-      start = end;
-      end = value.IndexOf(',', start + 1);
-
-      Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out int y);
-
-      start = end;
-      end = value.IndexOf(',', start + 1);
-
-      Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out int w);
-
-      start = end;
-      end = value.IndexOf(')', start + 1);
-
-      Utility.ToInt32(value.Substring(start + 1, end - (start + 1)).Trim(), out int h);
-
-      return new Rectangle2D(x, y, w, h);
-    }
-
-    [CommandProperty(AccessLevel.Counselor)]
-    public Point2D Start
-    {
-      get => m_Start;
-      set => m_Start = value;
-    }
-
-    [CommandProperty(AccessLevel.Counselor)]
-    public Point2D End
-    {
-      get => m_End;
-      set => m_End = value;
-    }
-
-    [CommandProperty(AccessLevel.Counselor)]
-    public int X
-    {
-      get => m_Start.m_X;
-      set => m_Start.m_X = value;
-    }
-
-    [CommandProperty(AccessLevel.Counselor)]
-    public int Y
-    {
-      get => m_Start.m_Y;
-      set => m_Start.m_Y = value;
-    }
-
-    [CommandProperty(AccessLevel.Counselor)]
-    public int Width
-    {
-      get => m_End.m_X - m_Start.m_X;
-      set => m_End.m_X = m_Start.m_X + value;
-    }
-
-    [CommandProperty(AccessLevel.Counselor)]
-    public int Height
-    {
-      get => m_End.m_Y - m_Start.m_Y;
-      set => m_End.m_Y = m_Start.m_Y + value;
-    }
-
-    public void MakeHold(Rectangle2D r)
-    {
-      if (r.m_Start.m_X < m_Start.m_X)
-        m_Start.m_X = r.m_Start.m_X;
-
-      if (r.m_Start.m_Y < m_Start.m_Y)
-        m_Start.m_Y = r.m_Start.m_Y;
-
-      if (r.m_End.m_X > m_End.m_X)
-        m_End.m_X = r.m_End.m_X;
-
-      if (r.m_End.m_Y > m_End.m_Y)
-        m_End.m_Y = r.m_End.m_Y;
-    }
-
-    public bool Contains(Point3D p) =>
-      m_Start.m_X <= p.m_X && m_Start.m_Y <= p.m_Y && m_End.m_X > p.m_X && m_End.m_Y > p.m_Y;
-
-    public bool Contains(Point2D p) =>
-      m_Start.m_X <= p.m_X && m_Start.m_Y <= p.m_Y && m_End.m_X > p.m_X && m_End.m_Y > p.m_Y;
-
-    public bool Contains(IPoint2D p) => m_Start <= p && m_End > p;
-
-    public override string ToString() => $"({X}, {Y})+({Width}, {Height})";
-  }
 }

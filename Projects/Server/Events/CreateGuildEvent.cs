@@ -24,18 +24,18 @@ using Server.Guilds;
 
 namespace Server
 {
-  public class CreateGuildEventArgs : EventArgs
-  {
-    public CreateGuildEventArgs(uint id) => Id = id;
+    public class CreateGuildEventArgs : EventArgs
+    {
+        public CreateGuildEventArgs(uint id) => Id = id;
 
-    public uint Id { get; set; }
+        public uint Id { get; set; }
 
-    public BaseGuild Guild { get; set; }
-  }
+        public BaseGuild Guild { get; set; }
+    }
 
-  public static partial class EventSink
-  {
-    public static event Action<CreateGuildEventArgs> CreateGuild;
-    public static void InvokeCreateGuild(CreateGuildEventArgs e) => CreateGuild?.Invoke(e);
-  }
+    public static partial class EventSink
+    {
+        public static event Action<CreateGuildEventArgs> CreateGuild;
+        public static void InvokeCreateGuild(CreateGuildEventArgs e) => CreateGuild?.Invoke(e);
+    }
 }

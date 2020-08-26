@@ -30,55 +30,57 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Server.Network
 {
-  public static class TcpServer
-  {
-    // Make this thread safe
-    public static List<NetState> Instances { get; } = new List<NetState>();
+    public static class TcpServer
+    {
+        private static IPAddress[] m_ListeningAddresses;
 
-    private static IPAddress[] m_ListeningAddresses;
+        // Make this thread safe
+        public static List<NetState> Instances { get; } = new List<NetState>();
 
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args = null) =>
-      WebHost.CreateDefaultBuilder(args)
-        .UseSetting(WebHostDefaults.SuppressStatusMessagesKey, "True")
-        .ConfigureServices(services => { services.AddSingleton<IMessagePumpService>(new MessagePumpService()); })
-        .UseKestrel(options =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args = null) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseSetting(WebHostDefaults.SuppressStatusMessagesKey, "True")
+                .ConfigureServices(services => { services.AddSingleton<IMessagePumpService>(new MessagePumpService()); })
+                .UseKestrel(
+                    options =>
+                    {
+                        foreach (var ipep in ServerConfiguration.Listeners)
+                        {
+                            options.Listen(ipep, builder => { builder.UseConnectionHandler<ServerConnectionHandler>(); });
+                            m_ListeningAddresses = GetListeningAddresses(ipep);
+                            DisplayListener(ipep);
+                        }
+
+                        // Webservices here
+                    }
+                )
+                .UseLibuv()
+                .UseStartup<ServerStartup>();
+
+        public static IPAddress[] GetListeningAddresses(IPEndPoint ipep)
         {
-          foreach (var ipep in ServerConfiguration.Listeners)
-          {
-            options.Listen(ipep, builder => { builder.UseConnectionHandler<ServerConnectionHandler>(); });
-            m_ListeningAddresses = GetListeningAddresses(ipep);
-            DisplayListener(ipep);
-          }
+            if (m_ListeningAddresses != null)
+                return m_ListeningAddresses;
 
-          // Webservices here
-        })
-        .UseLibuv()
-        .UseStartup<ServerStartup>();
+            var list = new List<IPAddress>();
+            foreach (var adapter in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                var properties = adapter.GetIPProperties();
+                foreach (var unicast in properties.UnicastAddresses)
+                    if (ipep.AddressFamily == unicast.Address.AddressFamily)
+                        list.Add(unicast.Address);
+            }
 
-    public static IPAddress[] GetListeningAddresses(IPEndPoint ipep)
-    {
-      if (m_ListeningAddresses != null)
-        return m_ListeningAddresses;
+            return list.ToArray();
+        }
 
-      var list = new List<IPAddress>();
-      foreach (var adapter in NetworkInterface.GetAllNetworkInterfaces())
-      {
-        var properties = adapter.GetIPProperties();
-        foreach (var unicast in properties.UnicastAddresses)
-          if (ipep.AddressFamily == unicast.Address.AddressFamily)
-            list.Add(unicast.Address);
-      }
-
-      return list.ToArray();
+        private static void DisplayListener(IPEndPoint ipep)
+        {
+            if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
+                foreach (var ip in m_ListeningAddresses)
+                    Console.WriteLine("Listening: {0}:{1}", ip, ipep.Port);
+            else
+                Console.WriteLine("Listening: {0}:{1}", ipep.Address, ipep.Port);
+        }
     }
-
-    private static void DisplayListener(IPEndPoint ipep)
-    {
-      if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
-        foreach (var ip in m_ListeningAddresses)
-          Console.WriteLine("Listening: {0}:{1}", ip, ipep.Port);
-      else
-        Console.WriteLine("Listening: {0}:{1}", ipep.Address, ipep.Port);
-    }
-  }
 }

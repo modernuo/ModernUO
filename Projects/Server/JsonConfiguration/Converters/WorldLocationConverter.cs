@@ -25,136 +25,136 @@ using System.Text.Json.Serialization;
 
 namespace Server.Json
 {
-  public class WorldLocationConverter : JsonConverter<WorldLocation>
-  {
-    private WorldLocation DeserializeArray(ref Utf8JsonReader reader)
+    public class WorldLocationConverter : JsonConverter<WorldLocation>
     {
-      Span<int> data = stackalloc int[3];
-      var count = 0;
-      bool hasMap = false;
-      Map map = null;
-
-      while (true)
-      {
-        reader.Read();
-        if (reader.TokenType == JsonTokenType.EndArray)
-          break;
-
-        if (reader.TokenType == JsonTokenType.Number)
+        private WorldLocation DeserializeArray(ref Utf8JsonReader reader)
         {
-          if (count < 3)
-            data[count] = reader.GetInt32();
-          else if (count == 3)
-            map = Map.Maps[reader.GetInt32()];
+            Span<int> data = stackalloc int[3];
+            var count = 0;
+            var hasMap = false;
+            Map map = null;
 
-          count++;
+            while (true)
+            {
+                reader.Read();
+                if (reader.TokenType == JsonTokenType.EndArray)
+                    break;
+
+                if (reader.TokenType == JsonTokenType.Number)
+                {
+                    if (count < 3)
+                        data[count] = reader.GetInt32();
+                    else if (count == 3)
+                        map = Map.Maps[reader.GetInt32()];
+
+                    count++;
+                }
+
+                if (reader.TokenType == JsonTokenType.String)
+                {
+                    map = Map.Parse(reader.GetString());
+                    break;
+                }
+            }
+
+            if (!hasMap || count < 3 || count > 4)
+                throw new JsonException("WorldLocation must be an array of x, y, z, and map");
+
+            return new WorldLocation(data[0], data[1], data[2], map);
         }
 
-        if (reader.TokenType == JsonTokenType.String)
+        private WorldLocation DeserializeObj(ref Utf8JsonReader reader, JsonSerializerOptions options)
         {
-          map = Map.Parse(reader.GetString());
-          break;
+            Span<int> data = stackalloc int[3];
+            var count = 0;
+            var hasLoc = false;
+            var hasXYZ = false;
+            var hasMap = false;
+            Map map = null;
+
+            while (true)
+            {
+                reader.Read();
+                if (reader.TokenType == JsonTokenType.EndObject)
+                    break;
+
+                if (reader.TokenType != JsonTokenType.PropertyName)
+                    throw new JsonException("Invalid Json structure for WorldLocation object");
+
+                var key = reader.GetString();
+
+                var i = key switch
+                {
+                    "x"   => 0,
+                    "y"   => 1,
+                    "z"   => 2,
+                    "loc" => 3,
+                    "map" => 4,
+                    _     => 5
+                };
+
+                if (i == 5)
+                    continue;
+
+                reader.Read();
+
+                if (i < 3)
+                {
+                    if (hasLoc)
+                        throw new JsonException("WorldLocation must have loc or x, y, z, but not both");
+
+                    if (reader.TokenType != JsonTokenType.Number)
+                        throw new JsonException($"Value for {key} must be a number");
+
+                    hasXYZ = true;
+                    data[i] = reader.GetInt32();
+                    continue;
+                }
+
+                if (i == 3)
+                {
+                    if (hasXYZ)
+                        throw new JsonException("WorldLocation must have loc or x, y, z, but not both");
+
+                    hasLoc = true;
+                    var loc = new Point3DConverter().Read(ref reader, typeof(Point3D), options);
+                    data[0] = loc.X;
+                    data[1] = loc.Y;
+                    data[2] = loc.Z;
+                    count = 3;
+                    continue;
+                }
+
+                map = reader.TokenType switch
+                {
+                    JsonTokenType.String => Map.Parse(reader.GetString()),
+                    JsonTokenType.Number => Map.Maps[reader.GetInt32()],
+                    _                    => throw new JsonException($"Value for {key} must be a number or string")
+                };
+            }
+
+            if (!hasMap || count < 2)
+                throw new JsonException("WorldLocation must have an x, y, z, and map properties");
+
+            return new WorldLocation(data[0], data[1], data[2], map);
         }
-      }
 
-      if (!hasMap || count < 3 || count > 4)
-        throw new JsonException("WorldLocation must be an array of x, y, z, and map");
+        public override WorldLocation Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+            reader.TokenType switch
+            {
+                JsonTokenType.StartArray  => DeserializeArray(ref reader),
+                JsonTokenType.StartObject => DeserializeObj(ref reader, options),
+                _                         => throw new JsonException("Invalid Json for Point3D")
+            };
 
-      return new WorldLocation(data[0], data[1], data[2], map);
+        public override void Write(Utf8JsonWriter writer, WorldLocation value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.X);
+            writer.WriteNumberValue(value.Y);
+            writer.WriteNumberValue(value.Z);
+            writer.WriteStringValue(value.Map.ToString());
+            writer.WriteEndArray();
+        }
     }
-
-    private WorldLocation DeserializeObj(ref Utf8JsonReader reader, JsonSerializerOptions options)
-    {
-      Span<int> data = stackalloc int[3];
-      int count = 0;
-      bool hasLoc = false;
-      bool hasXYZ = false;
-      bool hasMap = false;
-      Map map = null;
-
-      while (true)
-      {
-        reader.Read();
-        if (reader.TokenType == JsonTokenType.EndObject)
-          break;
-
-        if (reader.TokenType != JsonTokenType.PropertyName)
-          throw new JsonException("Invalid Json structure for WorldLocation object");
-
-        var key = reader.GetString();
-
-        var i = key switch
-        {
-          "x" => 0,
-          "y" => 1,
-          "z" => 2,
-          "loc" => 3,
-          "map" => 4,
-          _ => 5
-        };
-
-        if (i == 5)
-          continue;
-
-        reader.Read();
-
-        if (i < 3)
-        {
-          if (hasLoc)
-            throw new JsonException("WorldLocation must have loc or x, y, z, but not both");
-
-          if (reader.TokenType != JsonTokenType.Number)
-            throw new JsonException($"Value for {key} must be a number");
-
-          hasXYZ = true;
-          data[i] = reader.GetInt32();
-          continue;
-        }
-
-        if (i == 3)
-        {
-          if (hasXYZ)
-            throw new JsonException("WorldLocation must have loc or x, y, z, but not both");
-
-          hasLoc = true;
-          Point3D loc = new Point3DConverter().Read(ref reader, typeof(Point3D), options);
-          data[0] = loc.X;
-          data[1] = loc.Y;
-          data[2] = loc.Z;
-          count = 3;
-          continue;
-        }
-
-        map = reader.TokenType switch
-        {
-          JsonTokenType.String => Map.Parse(reader.GetString()),
-          JsonTokenType.Number => Map.Maps[reader.GetInt32()],
-          _ => throw new JsonException($"Value for {key} must be a number or string")
-        };
-      }
-
-      if (!hasMap || count < 2)
-        throw new JsonException("WorldLocation must have an x, y, z, and map properties");
-
-      return new WorldLocation(data[0], data[1], data[2], map);
-    }
-
-    public override WorldLocation Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-      reader.TokenType switch
-      {
-        JsonTokenType.StartArray => DeserializeArray(ref reader),
-        JsonTokenType.StartObject => DeserializeObj(ref reader, options),
-        _ => throw new JsonException("Invalid Json for Point3D")
-      };
-
-    public override void Write(Utf8JsonWriter writer, WorldLocation value, JsonSerializerOptions options)
-    {
-      writer.WriteStartArray();
-      writer.WriteNumberValue(value.X);
-      writer.WriteNumberValue(value.Y);
-      writer.WriteNumberValue(value.Z);
-      writer.WriteStringValue(value.Map.ToString());
-      writer.WriteEndArray();
-    }
-  }
 }
