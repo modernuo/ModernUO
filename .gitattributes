@@ -4,3 +4,5 @@
 *.sln       text eol=crlf
 *.csproj    text eol=crlf
 *.bat       text eol=crlf
+*.sh        text eol=lf
+publish.cmd text eol=lf
