@@ -28,7 +28,7 @@ ModernUO [![Discord](https://img.shields.io/discord/458277173208547350?logo=disc
 - [.NET 5.0 (Preview) SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
 
 #### Publishing Builds
-- Using terminal or powershell: `./Tools/publish.cmd [os] [framework] [release|debug (default: release)]`
+- Using terminal or powershell: `./publish.cmd [os] [framework] [release|debug (default: release)]`
   - Supported `os`:
     - `win` for Windows 8/10/2019
     - `osx` for MacOS

@@ -1,0 +1,8 @@
+*           text=auto
+*.cs        text diff=csharp
+*.json      text diff=json
+*.sln       text eol=crlf
+*.csproj    text eol=crlf
+*.bat       text eol=crlf
+*.sh        text eol=lf
+publish.cmd text eol=lf

@@ -25,8 +25,7 @@ using System.IO;
 
 namespace Server
 {
-  public class AggressorInfo
-  {
+  public class AggressorInfo {
     private static readonly Queue<AggressorInfo> m_Pool = new Queue<AggressorInfo>();
     private Mobile m_Attacker, m_Defender;
     private bool m_CanReportMurder;
