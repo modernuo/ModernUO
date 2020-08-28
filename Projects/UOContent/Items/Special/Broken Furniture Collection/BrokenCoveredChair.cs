@@ -1,86 +1,86 @@
 namespace Server.Items
 {
-  [Flippable(0xC17, 0xC18)]
-  public class BrokenCoveredChairComponent : AddonComponent
-  {
-    public BrokenCoveredChairComponent() : base(0xC17)
+    [Flippable(0xC17, 0xC18)]
+    public class BrokenCoveredChairComponent : AddonComponent
     {
+        public BrokenCoveredChairComponent() : base(0xC17)
+        {
+        }
+
+        public BrokenCoveredChairComponent(Serial serial) : base(serial)
+        {
+        }
+
+        public override int LabelNumber => 1076257; // Broken Covered Chair
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.WriteEncodedInt(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadEncodedInt();
+        }
     }
 
-    public BrokenCoveredChairComponent(Serial serial) : base(serial)
+    public class BrokenCoveredChairAddon : BaseAddon
     {
+        [Constructible]
+        public BrokenCoveredChairAddon()
+        {
+            AddComponent(new BrokenCoveredChairComponent(), 0, 0, 0);
+        }
+
+        public BrokenCoveredChairAddon(Serial serial) : base(serial)
+        {
+        }
+
+        public override BaseAddonDeed Deed => new BrokenCoveredChairDeed();
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.WriteEncodedInt(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadEncodedInt();
+        }
     }
 
-    public override int LabelNumber => 1076257; // Broken Covered Chair
-
-    public override void Serialize(IGenericWriter writer)
+    public class BrokenCoveredChairDeed : BaseAddonDeed
     {
-      base.Serialize(writer);
+        [Constructible]
+        public BrokenCoveredChairDeed() => LootType = LootType.Blessed;
 
-      writer.WriteEncodedInt(0); // version
+        public BrokenCoveredChairDeed(Serial serial) : base(serial)
+        {
+        }
+
+        public override BaseAddon Addon => new BrokenCoveredChairAddon();
+        public override int LabelNumber => 1076257; // Broken Covered Chair
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.WriteEncodedInt(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadEncodedInt();
+        }
     }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadEncodedInt();
-    }
-  }
-
-  public class BrokenCoveredChairAddon : BaseAddon
-  {
-    [Constructible]
-    public BrokenCoveredChairAddon()
-    {
-      AddComponent(new BrokenCoveredChairComponent(), 0, 0, 0);
-    }
-
-    public BrokenCoveredChairAddon(Serial serial) : base(serial)
-    {
-    }
-
-    public override BaseAddonDeed Deed => new BrokenCoveredChairDeed();
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadEncodedInt();
-    }
-  }
-
-  public class BrokenCoveredChairDeed : BaseAddonDeed
-  {
-    [Constructible]
-    public BrokenCoveredChairDeed() => LootType = LootType.Blessed;
-
-    public BrokenCoveredChairDeed(Serial serial) : base(serial)
-    {
-    }
-
-    public override BaseAddon Addon => new BrokenCoveredChairAddon();
-    public override int LabelNumber => 1076257; // Broken Covered Chair
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadEncodedInt();
-    }
-  }
 }

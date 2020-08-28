@@ -1,67 +1,67 @@
 namespace Server.Mobiles
 {
-  public class ElderGazer : BaseCreature
-  {
-    [Constructible]
-    public ElderGazer() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+    public class ElderGazer : BaseCreature
     {
-      Body = 22;
-      BaseSoundID = 377;
+        [Constructible]
+        public ElderGazer() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        {
+            Body = 22;
+            BaseSoundID = 377;
 
-      SetStr(296, 325);
-      SetDex(86, 105);
-      SetInt(291, 385);
+            SetStr(296, 325);
+            SetDex(86, 105);
+            SetInt(291, 385);
 
-      SetHits(178, 195);
+            SetHits(178, 195);
 
-      SetDamage(8, 19);
+            SetDamage(8, 19);
 
-      SetDamageType(ResistanceType.Physical, 50);
-      SetDamageType(ResistanceType.Energy, 50);
+            SetDamageType(ResistanceType.Physical, 50);
+            SetDamageType(ResistanceType.Energy, 50);
 
-      SetResistance(ResistanceType.Physical, 45, 55);
-      SetResistance(ResistanceType.Fire, 60, 70);
-      SetResistance(ResistanceType.Cold, 40, 50);
-      SetResistance(ResistanceType.Poison, 40, 50);
-      SetResistance(ResistanceType.Energy, 40, 50);
+            SetResistance(ResistanceType.Physical, 45, 55);
+            SetResistance(ResistanceType.Fire, 60, 70);
+            SetResistance(ResistanceType.Cold, 40, 50);
+            SetResistance(ResistanceType.Poison, 40, 50);
+            SetResistance(ResistanceType.Energy, 40, 50);
 
-      SetSkill(SkillName.Anatomy, 62.0, 100.0);
-      SetSkill(SkillName.EvalInt, 90.1, 100.0);
-      SetSkill(SkillName.Magery, 90.1, 100.0);
-      SetSkill(SkillName.MagicResist, 115.1, 130.0);
-      SetSkill(SkillName.Tactics, 80.1, 100.0);
-      SetSkill(SkillName.Wrestling, 80.1, 100.0);
+            SetSkill(SkillName.Anatomy, 62.0, 100.0);
+            SetSkill(SkillName.EvalInt, 90.1, 100.0);
+            SetSkill(SkillName.Magery, 90.1, 100.0);
+            SetSkill(SkillName.MagicResist, 115.1, 130.0);
+            SetSkill(SkillName.Tactics, 80.1, 100.0);
+            SetSkill(SkillName.Wrestling, 80.1, 100.0);
 
-      Fame = 12500;
-      Karma = -12500;
+            Fame = 12500;
+            Karma = -12500;
 
-      VirtualArmor = 50;
+            VirtualArmor = 50;
+        }
+
+        public ElderGazer(Serial serial) : base(serial)
+        {
+        }
+
+        public override string CorpseName => "an elder gazer corpse";
+        public override string DefaultName => "an elder gazer";
+
+        public override int TreasureMapLevel => Core.AOS ? 4 : 0;
+
+        public override void GenerateLoot()
+        {
+            AddLoot(LootPack.FilthyRich);
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write(0);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+            var version = reader.ReadInt();
+        }
     }
-
-    public ElderGazer(Serial serial) : base(serial)
-    {
-    }
-
-    public override string CorpseName => "an elder gazer corpse";
-    public override string DefaultName => "an elder gazer";
-
-    public override int TreasureMapLevel => Core.AOS ? 4 : 0;
-
-    public override void GenerateLoot()
-    {
-      AddLoot(LootPack.FilthyRich);
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-      writer.Write(0);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-      int version = reader.ReadInt();
-    }
-  }
 }

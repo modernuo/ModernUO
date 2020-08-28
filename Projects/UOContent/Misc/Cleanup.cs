@@ -1,158 +1,161 @@
 using System;
 using System.Collections.Generic;
 using Server.Items;
-using Server.Mobiles;
 using Server.Multis;
 
 namespace Server.Misc
 {
-  public class Cleanup
-  {
-    public static void Initialize()
+    public class Cleanup
     {
-      Timer.DelayCall(TimeSpan.FromSeconds(2.5), Run);
-    }
-
-    public static void Run()
-    {
-      List<Item> items = new List<Item>();
-      List<Item> validItems = new List<Item>();
-      List<Mobile> hairCleanup = new List<Mobile>();
-
-      int boxes = 0;
-
-      foreach (Item item in World.Items.Values)
-      {
-        if (item.Map == null)
+        public static void Initialize()
         {
-          items.Add(item);
-          continue;
+            Timer.DelayCall(TimeSpan.FromSeconds(2.5), Run);
         }
 
-        if (item is CommodityDeed deed)
+        public static void Run()
         {
-          if (deed.Commodity != null)
-            validItems.Add(deed.Commodity);
+            var items = new List<Item>();
+            var validItems = new List<Item>();
+            var hairCleanup = new List<Mobile>();
 
-          continue;
-        }
+            var boxes = 0;
 
-        if (item is BaseHouse house)
-        {
-          foreach (RelocatedEntity relEntity in house.RelocatedEntities)
-            if (relEntity.Entity is Item item1)
-              validItems.Add(item1);
-
-          foreach (VendorInventory inventory in house.VendorInventories)
-            foreach (Item subItem in inventory.Items)
-              validItems.Add(subItem);
-        }
-        else if (item is BankBox box)
-        {
-          Mobile owner = box.Owner;
-
-          if (owner == null)
-          {
-            items.Add(box);
-            ++boxes;
-          }
-          else if (box.Items.Count == 0)
-          {
-            items.Add(box);
-            ++boxes;
-          }
-
-          continue;
-        }
-        else if (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair)
-        {
-          if (item.RootParent is Mobile rootMobile)
-          {
-            if (item.Parent != rootMobile && rootMobile.AccessLevel == AccessLevel.Player)
+            foreach (var item in World.Items.Values)
             {
-              items.Add(item);
-              continue;
+                if (item.Map == null)
+                {
+                    items.Add(item);
+                    continue;
+                }
+
+                if (item is CommodityDeed deed)
+                {
+                    if (deed.Commodity != null)
+                        validItems.Add(deed.Commodity);
+
+                    continue;
+                }
+
+                if (item is BaseHouse house)
+                {
+                    foreach (var relEntity in house.RelocatedEntities)
+                        if (relEntity.Entity is Item item1)
+                            validItems.Add(item1);
+
+                    foreach (var inventory in house.VendorInventories)
+                        foreach (var subItem in inventory.Items)
+                            validItems.Add(subItem);
+                }
+                else if (item is BankBox box)
+                {
+                    var owner = box.Owner;
+
+                    if (owner == null)
+                    {
+                        items.Add(box);
+                        ++boxes;
+                    }
+                    else if (box.Items.Count == 0)
+                    {
+                        items.Add(box);
+                        ++boxes;
+                    }
+
+                    continue;
+                }
+                else if (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair)
+                {
+                    if (item.RootParent is Mobile rootMobile)
+                    {
+                        if (item.Parent != rootMobile && rootMobile.AccessLevel == AccessLevel.Player)
+                        {
+                            items.Add(item);
+                            continue;
+                        }
+
+                        if (item.Parent == rootMobile)
+                        {
+                            hairCleanup.Add(rootMobile);
+                            continue;
+                        }
+                    }
+                }
+
+                if (item.Parent != null || item.Map != Map.Internal || item.HeldBy != null)
+                    continue;
+
+                if (item.Location != Point3D.Zero)
+                    continue;
+
+                if (!IsBuggable(item))
+                    continue;
+
+                items.Add(item);
             }
 
-            if (item.Parent == rootMobile)
+            for (var i = 0; i < validItems.Count; ++i)
+                items.Remove(validItems[i]);
+
+            if (items.Count > 0)
             {
-              hairCleanup.Add(rootMobile);
-              continue;
+                if (boxes > 0)
+                    Console.WriteLine(
+                        "Cleanup: Detected {0} inaccessible items, including {1} bank boxes, removing..",
+                        items.Count,
+                        boxes
+                    );
+                else
+                    Console.WriteLine("Cleanup: Detected {0} inaccessible items, removing..", items.Count);
+
+                for (var i = 0; i < items.Count; ++i)
+                    items[i].Delete();
             }
-          }
+
+            if (hairCleanup.Count > 0)
+            {
+                Console.WriteLine(
+                    "Cleanup: Detected {0} hair and facial hair items being worn, converting to their virtual counterparts..",
+                    hairCleanup.Count
+                );
+
+                for (var i = 0; i < hairCleanup.Count; i++)
+                    hairCleanup[i].ConvertHair();
+            }
         }
 
-        if (item.Parent != null || item.Map != Map.Internal || item.HeldBy != null)
-          continue;
+        public static bool IsBuggable(Item item)
+        {
+            if (item is Fists)
+                return false;
 
-        if (item.Location != Point3D.Zero)
-          continue;
+            if (item is ICommodity || item is BaseBoat
+                                   || item is Fish || item is BigFish || item is Food || item is CookableFood
+                                   || item is SpecialFishingNet || item is BaseMagicFish
+                                   || item is Shoes || item is Sandals
+                                   || item is Boots || item is ThighBoots
+                                   || item is TreasureMap || item is MessageInABottle
+                                   || item is BaseArmor || item is BaseWeapon
+                                   || item is BaseClothing
+                                   || item is BaseJewel && Core.AOS || item is SkullPole
+                                   || item is EvilIdolSkull
+                                   || item is MonsterStatuette
+                                   || item is Pier
+                                   || item is ArtifactLargeVase
+                                   || item is ArtifactVase
+                                   || item is MinotaurStatueDeed
+                                   || item is SwampTile
+                                   || item is WallBlood
+                                   || item is TatteredAncientMummyWrapping
+                                   || item is LavaTile
+                                   || item is DemonSkull
+                                   || item is Web
+                                   || item is WaterTile
+                                   || item is WindSpirit
+                                   || item is DirtPatch
+                                   || item is Futon)
+                return true;
 
-        if (!IsBuggable(item))
-          continue;
-
-        items.Add(item);
-      }
-
-      for (int i = 0; i < validItems.Count; ++i)
-        items.Remove(validItems[i]);
-
-      if (items.Count > 0)
-      {
-        if (boxes > 0)
-          Console.WriteLine("Cleanup: Detected {0} inaccessible items, including {1} bank boxes, removing..",
-            items.Count, boxes);
-        else
-          Console.WriteLine("Cleanup: Detected {0} inaccessible items, removing..", items.Count);
-
-        for (int i = 0; i < items.Count; ++i)
-          items[i].Delete();
-      }
-
-      if (hairCleanup.Count > 0)
-      {
-        Console.WriteLine(
-          "Cleanup: Detected {0} hair and facial hair items being worn, converting to their virtual counterparts..",
-          hairCleanup.Count);
-
-        for (int i = 0; i < hairCleanup.Count; i++)
-          hairCleanup[i].ConvertHair();
-      }
+            return false;
+        }
     }
-
-    public static bool IsBuggable(Item item)
-    {
-      if (item is Fists)
-        return false;
-
-      if (item is ICommodity || item is BaseBoat
-                             || item is Fish || item is BigFish || item is Food || item is CookableFood
-                             || item is SpecialFishingNet || item is BaseMagicFish
-                             || item is Shoes || item is Sandals
-                             || item is Boots || item is ThighBoots
-                             || item is TreasureMap || item is MessageInABottle
-                             || item is BaseArmor || item is BaseWeapon
-                             || item is BaseClothing
-                             || (item is BaseJewel && Core.AOS) || item is SkullPole
-                             || item is EvilIdolSkull
-                             || item is MonsterStatuette
-                             || item is Pier
-                             || item is ArtifactLargeVase
-                             || item is ArtifactVase
-                             || item is MinotaurStatueDeed
-                             || item is SwampTile
-                             || item is WallBlood
-                             || item is TatteredAncientMummyWrapping
-                             || item is LavaTile
-                             || item is DemonSkull
-                             || item is Web
-                             || item is WaterTile
-                             || item is WindSpirit
-                             || item is DirtPatch
-                             || item is Futon)
-        return true;
-
-      return false;
-    }
-  }
 }

@@ -1,72 +1,71 @@
 using System;
-using System.Collections.Generic;
 
 namespace Server.Items
 {
-  public class DisguisePersistance : Item
-  {
-    public DisguisePersistance() : base(1)
+    public class DisguisePersistance : Item
     {
-      Movable = false;
+        public DisguisePersistance() : base(1)
+        {
+            Movable = false;
 
-      if (Instance?.Deleted != false)
-        Instance = this;
-      else
-        base.Delete();
-    }
+            if (Instance?.Deleted != false)
+                Instance = this;
+            else
+                base.Delete();
+        }
 
-    public DisguisePersistance(Serial serial) : base(serial) => Instance = this;
+        public DisguisePersistance(Serial serial) : base(serial) => Instance = this;
 
-    public static DisguisePersistance Instance { get; private set; }
+        public static DisguisePersistance Instance { get; private set; }
 
-    public override string DefaultName => "Disguise Persistance - Internal";
+        public override string DefaultName => "Disguise Persistance - Internal";
 
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      writer.Write(0); // version
+            writer.Write(0); // version
 
-      int timerCount = DisguiseTimers.Timers.Count;
+            var timerCount = DisguiseTimers.Timers.Count;
 
-      writer.Write(timerCount);
+            writer.Write(timerCount);
 
-      foreach (KeyValuePair<Mobile, Timer> entry in DisguiseTimers.Timers)
-      {
-        Mobile m = entry.Key;
-
-        writer.Write(m);
-        writer.Write(entry.Value.Next - DateTime.UtcNow);
-        writer.Write(m.NameMod);
-      }
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-
-      switch (version)
-      {
-        case 0:
-          {
-            int count = reader.ReadInt();
-
-            for (int i = 0; i < count; ++i)
+            foreach (var entry in DisguiseTimers.Timers)
             {
-              Mobile m = reader.ReadMobile();
-              DisguiseTimers.CreateTimer(m, reader.ReadTimeSpan());
-              m.NameMod = reader.ReadString();
+                var m = entry.Key;
+
+                writer.Write(m);
+                writer.Write(entry.Value.Next - DateTime.UtcNow);
+                writer.Write(m.NameMod);
             }
+        }
 
-            break;
-          }
-      }
-    }
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
 
-    public override void Delete()
-    {
+            var version = reader.ReadInt();
+
+            switch (version)
+            {
+                case 0:
+                    {
+                        var count = reader.ReadInt();
+
+                        for (var i = 0; i < count; ++i)
+                        {
+                            var m = reader.ReadMobile();
+                            DisguiseTimers.CreateTimer(m, reader.ReadTimeSpan());
+                            m.NameMod = reader.ReadString();
+                        }
+
+                        break;
+                    }
+            }
+        }
+
+        public override void Delete()
+        {
+        }
     }
-  }
 }

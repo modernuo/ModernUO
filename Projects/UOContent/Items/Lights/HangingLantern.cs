@@ -2,35 +2,35 @@ using System;
 
 namespace Server.Items
 {
-  public class HangingLantern : BaseLight
-  {
-    [Constructible]
-    public HangingLantern() : base(0xA1D)
+    public class HangingLantern : BaseLight
     {
-      Movable = false;
-      Duration = TimeSpan.Zero; // Never burnt out
-      Burning = false;
-      Light = LightType.Circle300;
-      Weight = 40.0;
-    }
+        [Constructible]
+        public HangingLantern() : base(0xA1D)
+        {
+            Movable = false;
+            Duration = TimeSpan.Zero; // Never burnt out
+            Burning = false;
+            Light = LightType.Circle300;
+            Weight = 40.0;
+        }
 
-    public HangingLantern(Serial serial) : base(serial)
-    {
-    }
+        public HangingLantern(Serial serial) : base(serial)
+        {
+        }
 
-    public override int LitItemID => 0xA1A;
-    public override int UnlitItemID => 0xA1D;
+        public override int LitItemID => 0xA1A;
+        public override int UnlitItemID => 0xA1D;
 
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-      writer.Write(0);
-    }
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write(0);
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-      int version = reader.ReadInt();
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+            var version = reader.ReadInt();
+        }
     }
-  }
 }

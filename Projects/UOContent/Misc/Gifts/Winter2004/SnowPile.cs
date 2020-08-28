@@ -4,132 +4,134 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-  public class SnowPile : Item
-  {
-    [Constructible]
-    public SnowPile() : base(0x913)
+    public class SnowPile : Item
     {
-      Hue = 0x481;
-      Weight = 1.0;
-      LootType = LootType.Blessed;
-    }
-
-    public SnowPile(Serial serial) : base(serial)
-    {
-    }
-
-    public override int LabelNumber => 1005578; // a pile of snow
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(1); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-
-      if (version == 0)
-      {
-        Weight = 1.0;
-        LootType = LootType.Blessed;
-      }
-    }
-
-    public override void OnDoubleClick(Mobile from)
-    {
-      if (!IsChildOf(from.Backpack))
-      {
-        from.SendLocalizedMessage(1042010); // You must have the object in your backpack to use it.
-      }
-      else if (from.Mounted)
-      {
-        from.SendLocalizedMessage(1010097); // You cannot use this while mounted.
-      }
-      else if (from.CanBeginAction<SnowPile>())
-      {
-        from.SendLocalizedMessage(1005575); // You carefully pack the snow into a ball...
-        from.Target = new SnowTarget(from, this);
-      }
-      else
-      {
-        from.SendLocalizedMessage(1005574); // The snow is not ready to be packed yet.  Keep trying.
-      }
-    }
-
-    private class InternalTimer : Timer
-    {
-      private readonly Mobile m_From;
-
-      public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(5.0)) => m_From = from;
-
-      protected override void OnTick()
-      {
-        m_From.EndAction<SnowPile>();
-      }
-    }
-
-    private class SnowTarget : Target
-    {
-      private Item m_Snow;
-      private Mobile m_Thrower;
-
-      public SnowTarget(Mobile thrower, Item snow) : base(10, false, TargetFlags.None)
-      {
-        m_Thrower = thrower;
-        m_Snow = snow;
-      }
-
-      protected override void OnTarget(Mobile from, object target)
-      {
-        if (target == from)
+        [Constructible]
+        public SnowPile() : base(0x913)
         {
-          from.SendLocalizedMessage(1005576); // You can't throw this at yourself.
+            Hue = 0x481;
+            Weight = 1.0;
+            LootType = LootType.Blessed;
         }
-        else if (target is Mobile targ)
+
+        public SnowPile(Serial serial) : base(serial)
         {
-          Container pack = targ.Backpack;
+        }
 
-          if (from.Region.IsPartOf<SafeZone>() || targ.Region.IsPartOf<SafeZone>())
-          {
-            from.SendMessage("You may not throw snow here.");
-          }
-          else if (pack?.FindItemByType(new[] { typeof(SnowPile), typeof(PileOfGlacialSnow) }) != null)
-          {
-            if (from.BeginAction<SnowPile>())
+        public override int LabelNumber => 1005578; // a pile of snow
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(1); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+
+            if (version == 0)
             {
-              new InternalTimer(from).Start();
+                Weight = 1.0;
+                LootType = LootType.Blessed;
+            }
+        }
 
-              from.PlaySound(0x145);
-
-              from.Animate(9, 1, 1, true, false, 0);
-
-              targ.SendLocalizedMessage(1010572); // You have just been hit by a snowball!
-              from.SendLocalizedMessage(1010573); // You throw the snowball and hit the target!
-
-              Effects.SendMovingEffect(from, targ, 0x36E4, 7, 0, false, true, 0x480);
+        public override void OnDoubleClick(Mobile from)
+        {
+            if (!IsChildOf(from.Backpack))
+            {
+                from.SendLocalizedMessage(1042010); // You must have the object in your backpack to use it.
+            }
+            else if (from.Mounted)
+            {
+                from.SendLocalizedMessage(1010097); // You cannot use this while mounted.
+            }
+            else if (from.CanBeginAction<SnowPile>())
+            {
+                from.SendLocalizedMessage(1005575); // You carefully pack the snow into a ball...
+                from.Target = new SnowTarget(from, this);
             }
             else
             {
-              from.SendLocalizedMessage(1005574); // The snow is not ready to be packed yet.  Keep trying.
+                from.SendLocalizedMessage(1005574); // The snow is not ready to be packed yet.  Keep trying.
             }
-          }
-          else
-          {
-            from.SendLocalizedMessage(
-              1005577); // You can only throw a snowball at something that can throw one back.
-          }
         }
-        else
+
+        private class InternalTimer : Timer
         {
-          from.SendLocalizedMessage(
-            1005577); // You can only throw a snowball at something that can throw one back.
+            private readonly Mobile m_From;
+
+            public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(5.0)) => m_From = from;
+
+            protected override void OnTick()
+            {
+                m_From.EndAction<SnowPile>();
+            }
         }
-      }
+
+        private class SnowTarget : Target
+        {
+            private Item m_Snow;
+            private Mobile m_Thrower;
+
+            public SnowTarget(Mobile thrower, Item snow) : base(10, false, TargetFlags.None)
+            {
+                m_Thrower = thrower;
+                m_Snow = snow;
+            }
+
+            protected override void OnTarget(Mobile from, object target)
+            {
+                if (target == from)
+                {
+                    from.SendLocalizedMessage(1005576); // You can't throw this at yourself.
+                }
+                else if (target is Mobile targ)
+                {
+                    var pack = targ.Backpack;
+
+                    if (from.Region.IsPartOf<SafeZone>() || targ.Region.IsPartOf<SafeZone>())
+                    {
+                        from.SendMessage("You may not throw snow here.");
+                    }
+                    else if (pack?.FindItemByType(new[] { typeof(SnowPile), typeof(PileOfGlacialSnow) }) != null)
+                    {
+                        if (from.BeginAction<SnowPile>())
+                        {
+                            new InternalTimer(from).Start();
+
+                            from.PlaySound(0x145);
+
+                            from.Animate(9, 1, 1, true, false, 0);
+
+                            targ.SendLocalizedMessage(1010572); // You have just been hit by a snowball!
+                            from.SendLocalizedMessage(1010573); // You throw the snowball and hit the target!
+
+                            Effects.SendMovingEffect(from, targ, 0x36E4, 7, 0, false, true, 0x480);
+                        }
+                        else
+                        {
+                            from.SendLocalizedMessage(1005574); // The snow is not ready to be packed yet.  Keep trying.
+                        }
+                    }
+                    else
+                    {
+                        from.SendLocalizedMessage(
+                            1005577
+                        ); // You can only throw a snowball at something that can throw one back.
+                    }
+                }
+                else
+                {
+                    from.SendLocalizedMessage(
+                        1005577
+                    ); // You can only throw a snowball at something that can throw one back.
+                }
+            }
+        }
     }
-  }
 }

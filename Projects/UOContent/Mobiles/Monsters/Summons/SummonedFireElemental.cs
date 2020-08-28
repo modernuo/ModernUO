@@ -2,60 +2,60 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-  public class SummonedFireElemental : BaseCreature
-  {
-    [Constructible]
-    public SummonedFireElemental() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+    public class SummonedFireElemental : BaseCreature
     {
-      Body = 15;
-      BaseSoundID = 838;
+        [Constructible]
+        public SummonedFireElemental() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+        {
+            Body = 15;
+            BaseSoundID = 838;
 
-      SetStr(200);
-      SetDex(200);
-      SetInt(100);
+            SetStr(200);
+            SetDex(200);
+            SetInt(100);
 
-      SetDamage(9, 14);
+            SetDamage(9, 14);
 
-      SetDamageType(ResistanceType.Physical, 0);
-      SetDamageType(ResistanceType.Fire, 100);
+            SetDamageType(ResistanceType.Physical, 0);
+            SetDamageType(ResistanceType.Fire, 100);
 
-      SetResistance(ResistanceType.Physical, 50, 60);
-      SetResistance(ResistanceType.Fire, 70, 80);
-      SetResistance(ResistanceType.Cold, 0, 10);
-      SetResistance(ResistanceType.Poison, 50, 60);
-      SetResistance(ResistanceType.Energy, 50, 60);
+            SetResistance(ResistanceType.Physical, 50, 60);
+            SetResistance(ResistanceType.Fire, 70, 80);
+            SetResistance(ResistanceType.Cold, 0, 10);
+            SetResistance(ResistanceType.Poison, 50, 60);
+            SetResistance(ResistanceType.Energy, 50, 60);
 
-      SetSkill(SkillName.EvalInt, 90.0);
-      SetSkill(SkillName.Magery, 90.0);
-      SetSkill(SkillName.MagicResist, 85.0);
-      SetSkill(SkillName.Tactics, 100.0);
-      SetSkill(SkillName.Wrestling, 92.0);
+            SetSkill(SkillName.EvalInt, 90.0);
+            SetSkill(SkillName.Magery, 90.0);
+            SetSkill(SkillName.MagicResist, 85.0);
+            SetSkill(SkillName.Tactics, 100.0);
+            SetSkill(SkillName.Wrestling, 92.0);
 
-      VirtualArmor = 40;
-      ControlSlots = 4;
+            VirtualArmor = 40;
+            ControlSlots = 4;
 
-      AddItem(new LightSource());
+            AddItem(new LightSource());
+        }
+
+        public SummonedFireElemental(Serial serial) : base(serial)
+        {
+        }
+
+        public override string CorpseName => "a fire elemental corpse";
+        public override double DispelDifficulty => 117.5;
+        public override double DispelFocus => 45.0;
+        public override string DefaultName => "a fire elemental";
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+            writer.Write(0);
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+            var version = reader.ReadInt();
+        }
     }
-
-    public SummonedFireElemental(Serial serial) : base(serial)
-    {
-    }
-
-    public override string CorpseName => "a fire elemental corpse";
-    public override double DispelDifficulty => 117.5;
-    public override double DispelFocus => 45.0;
-    public override string DefaultName => "a fire elemental";
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-      writer.Write(0);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-      int version = reader.ReadInt();
-    }
-  }
 }

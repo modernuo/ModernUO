@@ -2,30 +2,39 @@ using Server.Network;
 
 namespace Server.Ethics.Hero
 {
-  public sealed class HolyShield : Power
-  {
-    public HolyShield() =>
-      m_Definition = new PowerDefinition(
-        20,
-        "Holy Shield",
-        "Erstok K'blac",
-        "");
-
-    public override void BeginInvoke(Player from)
+    public sealed class HolyShield : Power
     {
-      if (from.IsShielded)
-      {
-        from.Mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, false,
-          "You are already under the protection of a holy shield.");
-        return;
-      }
+        public HolyShield() =>
+            m_Definition = new PowerDefinition(
+                20,
+                "Holy Shield",
+                "Erstok K'blac",
+                ""
+            );
 
-      from.BeginShield();
+        public override void BeginInvoke(Player from)
+        {
+            if (from.IsShielded)
+            {
+                from.Mobile.LocalOverheadMessage(
+                    MessageType.Regular,
+                    0x3B2,
+                    false,
+                    "You are already under the protection of a holy shield."
+                );
+                return;
+            }
 
-      from.Mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, false,
-        "You are now under the protection of a holy shield.");
+            from.BeginShield();
 
-      FinishInvoke(from);
+            from.Mobile.LocalOverheadMessage(
+                MessageType.Regular,
+                0x3B2,
+                false,
+                "You are now under the protection of a holy shield."
+            );
+
+            FinishInvoke(from);
+        }
     }
-  }
 }

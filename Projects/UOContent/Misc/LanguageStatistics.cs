@@ -21,7 +21,7 @@ namespace Server.Misc
    **/
   public class LanguageStatistics
   {
-    private static readonly InternationalCode[] InternationalCodes =
+      private static readonly InternationalCode[] InternationalCodes =
     {
       new InternationalCode("ARA", "Arabic", "Saudi Arabia", "العربية", "السعودية"),
       new InternationalCode("ARI", "Arabic", "Iraq", "العربية", "العراق"),
@@ -160,48 +160,48 @@ namespace Server.Misc
       new InternationalCode("KOK", "Konkani", "India", "कोंकणी", "भारत")
     };
 
-    private static readonly bool DefaultLocalNames = false;
-    private static readonly bool ShowAlternatives = true;
-    private static readonly bool CountAccounts = true; // will consider only first character's valid language
+      private static readonly bool DefaultLocalNames = false;
+      private static readonly bool ShowAlternatives = true;
+      private static readonly bool CountAccounts = true; // will consider only first character's valid language
 
-    private static string GetFormattedInfo(string code)
+      private static string GetFormattedInfo(string code)
     {
       if (code == null || code.Length != 3)
         return $"Unknown code {code}";
 
-      for (int i = 0; i < InternationalCodes.Length; i++)
+      for (var i = 0; i < InternationalCodes.Length; i++)
         if (code == InternationalCodes[i].Code)
           return $"{InternationalCodes[i].GetName()}";
 
       return $"Unknown code {code}";
     }
 
-    public static void Initialize()
+      public static void Initialize()
     {
       CommandSystem.Register("LanguageStatistics", AccessLevel.Administrator, LanguageStatistics_OnCommand);
     }
 
-    [Usage("LanguageStatistics")]
+      [Usage("LanguageStatistics")]
     [Description("Generate a file containing the list of languages for each PlayerMobile.")]
     public static void LanguageStatistics_OnCommand(CommandEventArgs e)
     {
-      Dictionary<string, InternationalCodeCounter> ht = new Dictionary<string, InternationalCodeCounter>();
+      var ht = new Dictionary<string, InternationalCodeCounter>();
 
-      using StreamWriter writer = new StreamWriter("languages.txt");
+      using var writer = new StreamWriter("languages.txt");
       if (CountAccounts)
         foreach (Account acc in Accounts.GetAccounts())
-          for (int i = 0; i < acc.Length; i++)
+          for (var i = 0; i < acc.Length; i++)
           {
-            Mobile mob = acc[i];
+            var mob = acc[i];
 
-            string lang = mob?.Language;
+            var lang = mob?.Language;
 
             if (lang == null)
               continue;
 
             lang = lang.ToUpper();
 
-            if (ht.TryGetValue(lang, out InternationalCodeCounter codes))
+            if (ht.TryGetValue(lang, out var codes))
               codes.Increase();
             else
               ht[lang] = new InternationalCodeCounter(lang);
@@ -209,17 +209,17 @@ namespace Server.Misc
             break;
           }
       else
-        foreach (Mobile mob in World.Mobiles.Values)
+        foreach (var mob in World.Mobiles.Values)
           if (mob.Player)
           {
-            string lang = mob.Language;
+            var lang = mob.Language;
 
             if (lang == null)
               continue;
 
             lang = lang.ToUpper();
 
-            if (ht.TryGetValue(lang, out InternationalCodeCounter codes))
+            if (ht.TryGetValue(lang, out var codes))
               codes.Increase();
             else
               ht[lang] = new InternationalCodeCounter(lang);
@@ -232,10 +232,10 @@ namespace Server.Misc
       writer.WriteLine();
 
       // sort the list
-      List<InternationalCodeCounter> list = new List<InternationalCodeCounter>(ht.Values);
+      var list = new List<InternationalCodeCounter>(ht.Values);
       list.Sort(InternationalCodeComparer.Instance);
 
-      foreach (InternationalCodeCounter c in list)
+      foreach (var c in list)
         writer.WriteLine($"{GetFormattedInfo(c.Code)}‎ : {c.Count}");
 
       e.Mobile.SendMessage("Languages list generated.");
@@ -294,17 +294,17 @@ namespace Server.Misc
 
     private class InternationalCodeCounter
     {
-      public InternationalCodeCounter(string code)
+        public InternationalCodeCounter(string code)
       {
         Code = code;
         Count = 1;
       }
 
-      public string Code { get; }
+        public string Code { get; }
 
-      public int Count { get; private set; }
+        public int Count { get; private set; }
 
-      public void Increase()
+        public void Increase()
       {
         Count++;
       }
@@ -312,9 +312,9 @@ namespace Server.Misc
 
     private class InternationalCodeComparer : IComparer<InternationalCodeCounter>
     {
-      public static readonly InternationalCodeComparer Instance = new InternationalCodeComparer();
+        public static readonly InternationalCodeComparer Instance = new InternationalCodeComparer();
 
-      public int Compare(InternationalCodeCounter x, InternationalCodeCounter y)
+        public int Compare(InternationalCodeCounter x, InternationalCodeCounter y)
       {
         string a = null, b = null;
         int ca = 0, cb = 0;

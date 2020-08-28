@@ -1,623 +1,623 @@
 namespace Server.Items
 {
-  public abstract class BaseFloor : Item
-  {
-    public BaseFloor(int itemID, int count) : base(Utility.Random(itemID, count)) => Movable = false;
-
-    public BaseFloor(Serial serial) : base(serial)
+    public abstract class BaseFloor : Item
     {
-    }
+        public BaseFloor(int itemID, int count) : base(Utility.Random(itemID, count)) => Movable = false;
 
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
+        public BaseFloor(Serial serial) : base(serial)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+            writer.Write(0); // version
+        }
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class StonePaversLight : BaseFloor
-  {
-    [Constructible]
-    public StonePaversLight() : base(0x519, 4)
-    {
-    }
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
 
-    public StonePaversLight(Serial serial) : base(serial)
-    {
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class StonePaversLight : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public StonePaversLight() : base(0x519, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public StonePaversLight(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class StonePaversMedium : BaseFloor
-  {
-    [Constructible]
-    public StonePaversMedium() : base(0x51D, 4)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public StonePaversMedium(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class StonePaversMedium : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public StonePaversMedium() : base(0x51D, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public StonePaversMedium(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class StonePaversDark : BaseFloor
-  {
-    [Constructible]
-    public StonePaversDark() : base(0x521, 4)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public StonePaversDark(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class StonePaversDark : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public StonePaversDark() : base(0x521, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public StonePaversDark(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class GreyFlagstones : BaseFloor
-  {
-    [Constructible]
-    public GreyFlagstones() : base(0x4FC, 4)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public GreyFlagstones(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class GreyFlagstones : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public GreyFlagstones() : base(0x4FC, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public GreyFlagstones(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class SandFlagstones : BaseFloor
-  {
-    [Constructible]
-    public SandFlagstones() : base(0x500, 4)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public SandFlagstones(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class SandFlagstones : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public SandFlagstones() : base(0x500, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public SandFlagstones(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class MarbleFloor : BaseFloor
-  {
-    [Constructible]
-    public MarbleFloor() : base(0x50D, 2)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public MarbleFloor(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class MarbleFloor : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public MarbleFloor() : base(0x50D, 2)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public MarbleFloor(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class GreenMarbleFloor : BaseFloor
-  {
-    [Constructible]
-    public GreenMarbleFloor() : base(0x50F, 2)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public GreenMarbleFloor(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class GreenMarbleFloor : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public GreenMarbleFloor() : base(0x50F, 2)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public GreenMarbleFloor(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class GreyMarbleFloor : BaseFloor
-  {
-    [Constructible]
-    public GreyMarbleFloor() : base(0x511, 4)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public GreyMarbleFloor(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class GreyMarbleFloor : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public GreyMarbleFloor() : base(0x511, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public GreyMarbleFloor(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class CobblestonesFloor : BaseFloor
-  {
-    [Constructible]
-    public CobblestonesFloor() : base(0x515, 4)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public CobblestonesFloor(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class CobblestonesFloor : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public CobblestonesFloor() : base(0x515, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public CobblestonesFloor(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class SandstoneFloorN : BaseFloor
-  {
-    [Constructible]
-    public SandstoneFloorN() : base(0x525, 4)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public SandstoneFloorN(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class SandstoneFloorN : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public SandstoneFloorN() : base(0x525, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public SandstoneFloorN(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class SandstoneFloorW : BaseFloor
-  {
-    [Constructible]
-    public SandstoneFloorW() : base(0x529, 4)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public SandstoneFloorW(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class SandstoneFloorW : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public SandstoneFloorW() : base(0x529, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public SandstoneFloorW(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class DarkSandstoneFloorN : BaseFloor
-  {
-    [Constructible]
-    public DarkSandstoneFloorN() : base(0x52F, 4)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public DarkSandstoneFloorN(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class DarkSandstoneFloorN : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public DarkSandstoneFloorN() : base(0x52F, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public DarkSandstoneFloorN(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class DarkSandstoneFloorW : BaseFloor
-  {
-    [Constructible]
-    public DarkSandstoneFloorW() : base(0x533, 4)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public DarkSandstoneFloorW(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class DarkSandstoneFloorW : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public DarkSandstoneFloorW() : base(0x533, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public DarkSandstoneFloorW(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class BricksFloor1 : BaseFloor
-  {
-    [Constructible]
-    public BricksFloor1() : base(0x4E2, 8)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public BricksFloor1(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class BricksFloor1 : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public BricksFloor1() : base(0x4E2, 8)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public BricksFloor1(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class BricksFloor2 : BaseFloor
-  {
-    [Constructible]
-    public BricksFloor2() : base(0x537, 4)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public BricksFloor2(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class BricksFloor2 : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public BricksFloor2() : base(0x537, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public BricksFloor2(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class CaveFloorCenter : BaseFloor
-  {
-    [Constructible]
-    public CaveFloorCenter() : base(0x53B, 4)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public CaveFloorCenter(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class CaveFloorCenter : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public CaveFloorCenter() : base(0x53B, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public CaveFloorCenter(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class CaveFloorSouth : BaseFloor
-  {
-    [Constructible]
-    public CaveFloorSouth() : base(0x541, 3)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public CaveFloorSouth(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class CaveFloorSouth : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public CaveFloorSouth() : base(0x541, 3)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public CaveFloorSouth(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class CaveFloorEast : BaseFloor
-  {
-    [Constructible]
-    public CaveFloorEast() : base(0x544, 3)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public CaveFloorEast(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class CaveFloorEast : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public CaveFloorEast() : base(0x544, 3)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public CaveFloorEast(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class CaveFloorWest : BaseFloor
-  {
-    [Constructible]
-    public CaveFloorWest() : base(0x54A, 3)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public CaveFloorWest(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class CaveFloorWest : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public CaveFloorWest() : base(0x54A, 3)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public CaveFloorWest(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class CaveFloorNorth : BaseFloor
-  {
-    [Constructible]
-    public CaveFloorNorth() : base(0x54D, 3)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public CaveFloorNorth(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class CaveFloorNorth : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public CaveFloorNorth() : base(0x54D, 3)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public CaveFloorNorth(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class MarblePavers : BaseFloor
-  {
-    [Constructible]
-    public MarblePavers() : base(0x495, 4)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public MarblePavers(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class MarblePavers : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public MarblePavers() : base(0x495, 4)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public MarblePavers(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class BlueSlateFloorCenter : BaseFloor
-  {
-    [Constructible]
-    public BlueSlateFloorCenter() : base(0x49B, 1)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public BlueSlateFloorCenter(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class BlueSlateFloorCenter : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public BlueSlateFloorCenter() : base(0x49B, 1)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public BlueSlateFloorCenter(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class GreySlateFloor : BaseFloor
-  {
-    [Constructible]
-    public GreySlateFloor() : base(0x49C, 1)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public GreySlateFloor(Serial serial) : base(serial)
-    {
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class GreySlateFloor : BaseFloor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public GreySlateFloor() : base(0x49C, 1)
+        {
+        }
 
-      writer.Write(0); // version
-    }
+        public GreySlateFloor(Serial serial) : base(serial)
+        {
+        }
 
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
 
-      int version = reader.ReadInt();
+            var version = reader.ReadInt();
+        }
     }
-  }
 }

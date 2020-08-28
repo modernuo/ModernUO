@@ -1,371 +1,436 @@
 namespace Server.Items
 {
-  public enum DoorFacing
-  {
-    WestCW,
-    EastCCW,
-    WestCCW,
-    EastCW,
-    SouthCW,
-    NorthCCW,
-    SouthCCW,
-    NorthCW,
-
-    // Sliding Doors
-    SouthSW,
-    SouthSE,
-    WestSS,
-    WestSN
-  }
-
-  public class IronGateShort : BaseDoor
-  {
-    [Constructible]
-    public IronGateShort(DoorFacing facing) : base(0x84c + 2 * (int)facing, 0x84d + 2 * (int)facing, 0xEC, 0xF3,
-      GetOffset(facing))
+    public enum DoorFacing
     {
+        WestCW,
+        EastCCW,
+        WestCCW,
+        EastCW,
+        SouthCW,
+        NorthCCW,
+        SouthCCW,
+        NorthCW,
+
+        // Sliding Doors
+        SouthSW,
+        SouthSE,
+        WestSS,
+        WestSN
     }
 
-    public IronGateShort(Serial serial) : base(serial)
+    public class IronGateShort : BaseDoor
     {
+        [Constructible]
+        public IronGateShort(DoorFacing facing) : base(
+            0x84c + 2 * (int)facing,
+            0x84d + 2 * (int)facing,
+            0xEC,
+            0xF3,
+            GetOffset(facing)
+        )
+        {
+        }
+
+        public IronGateShort(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer) // Default Serialize method
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader) // Default Deserialize method
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
+    public class IronGate : BaseDoor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public IronGate(DoorFacing facing) : base(
+            0x824 + 2 * (int)facing,
+            0x825 + 2 * (int)facing,
+            0xEC,
+            0xF3,
+            GetOffset(facing)
+        )
+        {
+        }
 
-      writer.Write(0); // version
+        public IronGate(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer) // Default Serialize method
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader) // Default Deserialize method
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
+    public class LightWoodGate : BaseDoor
     {
-      base.Deserialize(reader);
+        [Constructible]
+        public LightWoodGate(DoorFacing facing) : base(
+            0x839 + 2 * (int)facing,
+            0x83A + 2 * (int)facing,
+            0xEB,
+            0xF2,
+            GetOffset(facing)
+        )
+        {
+        }
 
-      int version = reader.ReadInt();
-    }
-  }
+        public LightWoodGate(Serial serial) : base(serial)
+        {
+        }
 
-  public class IronGate : BaseDoor
-  {
-    [Constructible]
-    public IronGate(DoorFacing facing) : base(0x824 + 2 * (int)facing, 0x825 + 2 * (int)facing, 0xEC, 0xF3,
-      GetOffset(facing))
-    {
-    }
+        public override void Serialize(IGenericWriter writer) // Default Serialize method
+        {
+            base.Serialize(writer);
 
-    public IronGate(Serial serial) : base(serial)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-      base.Serialize(writer);
+        public override void Deserialize(IGenericReader reader) // Default Deserialize method
+        {
+            base.Deserialize(reader);
 
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class LightWoodGate : BaseDoor
-  {
-    [Constructible]
-    public LightWoodGate(DoorFacing facing) : base(0x839 + 2 * (int)facing, 0x83A + 2 * (int)facing, 0xEB, 0xF2,
-      GetOffset(facing))
-    {
+            var version = reader.ReadInt();
+        }
     }
 
-    public LightWoodGate(Serial serial) : base(serial)
+    public class DarkWoodGate : BaseDoor
     {
+        [Constructible]
+        public DarkWoodGate(DoorFacing facing) : base(
+            0x866 + 2 * (int)facing,
+            0x867 + 2 * (int)facing,
+            0xEB,
+            0xF2,
+            GetOffset(facing)
+        )
+        {
+        }
+
+        public DarkWoodGate(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer) // Default Serialize method
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader) // Default Deserialize method
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
+    public class MetalDoor : BaseDoor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public MetalDoor(DoorFacing facing) : base(
+            0x675 + 2 * (int)facing,
+            0x676 + 2 * (int)facing,
+            0xEC,
+            0xF3,
+            GetOffset(facing)
+        )
+        {
+        }
 
-      writer.Write(0); // version
+        public MetalDoor(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer) // Default Serialize method
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader) // Default Deserialize method
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
+    public class BarredMetalDoor : BaseDoor
     {
-      base.Deserialize(reader);
+        [Constructible]
+        public BarredMetalDoor(DoorFacing facing) : base(
+            0x685 + 2 * (int)facing,
+            0x686 + 2 * (int)facing,
+            0xEC,
+            0xF3,
+            GetOffset(facing)
+        )
+        {
+        }
 
-      int version = reader.ReadInt();
-    }
-  }
+        public BarredMetalDoor(Serial serial) : base(serial)
+        {
+        }
 
-  public class DarkWoodGate : BaseDoor
-  {
-    [Constructible]
-    public DarkWoodGate(DoorFacing facing) : base(0x866 + 2 * (int)facing, 0x867 + 2 * (int)facing, 0xEB, 0xF2,
-      GetOffset(facing))
-    {
-    }
+        public override void Serialize(IGenericWriter writer) // Default Serialize method
+        {
+            base.Serialize(writer);
 
-    public DarkWoodGate(Serial serial) : base(serial)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-      base.Serialize(writer);
+        public override void Deserialize(IGenericReader reader) // Default Deserialize method
+        {
+            base.Deserialize(reader);
 
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class MetalDoor : BaseDoor
-  {
-    [Constructible]
-    public MetalDoor(DoorFacing facing) : base(0x675 + 2 * (int)facing, 0x676 + 2 * (int)facing, 0xEC, 0xF3,
-      GetOffset(facing))
-    {
+            var version = reader.ReadInt();
+        }
     }
 
-    public MetalDoor(Serial serial) : base(serial)
+    public class BarredMetalDoor2 : BaseDoor
     {
+        [Constructible]
+        public BarredMetalDoor2(DoorFacing facing) : base(
+            0x1FED + 2 * (int)facing,
+            0x1FEE + 2 * (int)facing,
+            0xEC,
+            0xF3,
+            GetOffset(facing)
+        )
+        {
+        }
+
+        public BarredMetalDoor2(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer) // Default Serialize method
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader) // Default Deserialize method
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
+    public class RattanDoor : BaseDoor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public RattanDoor(DoorFacing facing) : base(
+            0x695 + 2 * (int)facing,
+            0x696 + 2 * (int)facing,
+            0xEB,
+            0xF2,
+            GetOffset(facing)
+        )
+        {
+        }
 
-      writer.Write(0); // version
+        public RattanDoor(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer) // Default Serialize method
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader) // Default Deserialize method
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
+    public class DarkWoodDoor : BaseDoor
     {
-      base.Deserialize(reader);
+        [Constructible]
+        public DarkWoodDoor(DoorFacing facing) : base(
+            0x6A5 + 2 * (int)facing,
+            0x6A6 + 2 * (int)facing,
+            0xEA,
+            0xF1,
+            GetOffset(facing)
+        )
+        {
+        }
 
-      int version = reader.ReadInt();
-    }
-  }
+        public DarkWoodDoor(Serial serial) : base(serial)
+        {
+        }
 
-  public class BarredMetalDoor : BaseDoor
-  {
-    [Constructible]
-    public BarredMetalDoor(DoorFacing facing) : base(0x685 + 2 * (int)facing, 0x686 + 2 * (int)facing, 0xEC, 0xF3,
-      GetOffset(facing))
-    {
-    }
+        public override void Serialize(IGenericWriter writer) // Default Serialize method
+        {
+            base.Serialize(writer);
 
-    public BarredMetalDoor(Serial serial) : base(serial)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-      base.Serialize(writer);
+        public override void Deserialize(IGenericReader reader) // Default Deserialize method
+        {
+            base.Deserialize(reader);
 
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class BarredMetalDoor2 : BaseDoor
-  {
-    [Constructible]
-    public BarredMetalDoor2(DoorFacing facing) : base(0x1FED + 2 * (int)facing, 0x1FEE + 2 * (int)facing, 0xEC, 0xF3,
-      GetOffset(facing))
-    {
+            var version = reader.ReadInt();
+        }
     }
 
-    public BarredMetalDoor2(Serial serial) : base(serial)
+    public class MediumWoodDoor : BaseDoor
     {
+        [Constructible]
+        public MediumWoodDoor(DoorFacing facing) : base(
+            0x6B5 + 2 * (int)facing,
+            0x6B6 + 2 * (int)facing,
+            0xEA,
+            0xF1,
+            GetOffset(facing)
+        )
+        {
+        }
+
+        public MediumWoodDoor(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer) // Default Serialize method
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader) // Default Deserialize method
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
+    public class MetalDoor2 : BaseDoor
     {
-      base.Serialize(writer);
+        [Constructible]
+        public MetalDoor2(DoorFacing facing) : base(
+            0x6C5 + 2 * (int)facing,
+            0x6C6 + 2 * (int)facing,
+            0xEC,
+            0xF3,
+            GetOffset(facing)
+        )
+        {
+        }
 
-      writer.Write(0); // version
+        public MetalDoor2(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer) // Default Serialize method
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader) // Default Deserialize method
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
+    public class LightWoodDoor : BaseDoor
     {
-      base.Deserialize(reader);
+        [Constructible]
+        public LightWoodDoor(DoorFacing facing) : base(
+            0x6D5 + 2 * (int)facing,
+            0x6D6 + 2 * (int)facing,
+            0xEA,
+            0xF1,
+            GetOffset(facing)
+        )
+        {
+        }
 
-      int version = reader.ReadInt();
-    }
-  }
+        public LightWoodDoor(Serial serial) : base(serial)
+        {
+        }
 
-  public class RattanDoor : BaseDoor
-  {
-    [Constructible]
-    public RattanDoor(DoorFacing facing) : base(0x695 + 2 * (int)facing, 0x696 + 2 * (int)facing, 0xEB, 0xF2,
-      GetOffset(facing))
-    {
-    }
+        public override void Serialize(IGenericWriter writer) // Default Serialize method
+        {
+            base.Serialize(writer);
 
-    public RattanDoor(Serial serial) : base(serial)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-      base.Serialize(writer);
+        public override void Deserialize(IGenericReader reader) // Default Deserialize method
+        {
+            base.Deserialize(reader);
 
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class DarkWoodDoor : BaseDoor
-  {
-    [Constructible]
-    public DarkWoodDoor(DoorFacing facing) : base(0x6A5 + 2 * (int)facing, 0x6A6 + 2 * (int)facing, 0xEA, 0xF1,
-      GetOffset(facing))
-    {
+            var version = reader.ReadInt();
+        }
     }
 
-    public DarkWoodDoor(Serial serial) : base(serial)
+    public class StrongWoodDoor : BaseDoor
     {
+        [Constructible]
+        public StrongWoodDoor(DoorFacing facing) : base(
+            0x6E5 + 2 * (int)facing,
+            0x6E6 + 2 * (int)facing,
+            0xEA,
+            0xF1,
+            GetOffset(facing)
+        )
+        {
+        }
+
+        public StrongWoodDoor(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer) // Default Serialize method
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader) // Default Deserialize method
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
-
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class MediumWoodDoor : BaseDoor
-  {
-    [Constructible]
-    public MediumWoodDoor(DoorFacing facing) : base(0x6B5 + 2 * (int)facing, 0x6B6 + 2 * (int)facing, 0xEA, 0xF1,
-      GetOffset(facing))
-    {
-    }
-
-    public MediumWoodDoor(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class MetalDoor2 : BaseDoor
-  {
-    [Constructible]
-    public MetalDoor2(DoorFacing facing) : base(0x6C5 + 2 * (int)facing, 0x6C6 + 2 * (int)facing, 0xEC, 0xF3,
-      GetOffset(facing))
-    {
-    }
-
-    public MetalDoor2(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class LightWoodDoor : BaseDoor
-  {
-    [Constructible]
-    public LightWoodDoor(DoorFacing facing) : base(0x6D5 + 2 * (int)facing, 0x6D6 + 2 * (int)facing, 0xEA, 0xF1,
-      GetOffset(facing))
-    {
-    }
-
-    public LightWoodDoor(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  public class StrongWoodDoor : BaseDoor
-  {
-    [Constructible]
-    public StrongWoodDoor(DoorFacing facing) : base(0x6E5 + 2 * (int)facing, 0x6E6 + 2 * (int)facing, 0xEA, 0xF1,
-      GetOffset(facing))
-    {
-    }
-
-    public StrongWoodDoor(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer) // Default Serialize method
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader) // Default Deserialize method
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
 }

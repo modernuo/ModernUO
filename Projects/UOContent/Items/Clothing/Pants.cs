@@ -1,129 +1,129 @@
 namespace Server.Items
 {
-  public abstract class BasePants : BaseClothing
-  {
-    public BasePants(int itemID, int hue = 0) : base(itemID, Layer.Pants, hue)
+    public abstract class BasePants : BaseClothing
     {
+        public BasePants(int itemID, int hue = 0) : base(itemID, Layer.Pants, hue)
+        {
+        }
+
+        public BasePants(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public BasePants(Serial serial) : base(serial)
+    [Flippable(0x152e, 0x152f)]
+    public class ShortPants : BasePants
     {
+        [Constructible]
+        public ShortPants(int hue = 0) : base(0x152E, hue) => Weight = 2.0;
+
+        public ShortPants(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    [Flippable(0x1539, 0x153a)]
+    public class LongPants : BasePants
     {
-      base.Serialize(writer);
+        [Constructible]
+        public LongPants(int hue = 0) : base(0x1539, hue) => Weight = 2.0;
 
-      writer.Write(0); // version
+        public LongPants(Serial serial) : base(serial)
+        {
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Deserialize(IGenericReader reader)
+    [Flippable(0x279B, 0x27E6)]
+    public class TattsukeHakama : BasePants
     {
-      base.Deserialize(reader);
+        [Constructible]
+        public TattsukeHakama(int hue = 0) : base(0x279B, hue) => Weight = 2.0;
 
-      int version = reader.ReadInt();
-    }
-  }
+        public TattsukeHakama(Serial serial) : base(serial)
+        {
+        }
 
-  [Flippable(0x152e, 0x152f)]
-  public class ShortPants : BasePants
-  {
-    [Constructible]
-    public ShortPants(int hue = 0) : base(0x152E, hue) => Weight = 2.0;
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
 
-    public ShortPants(Serial serial) : base(serial)
-    {
-    }
+            writer.Write(0); // version
+        }
 
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
 
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  [Flippable(0x1539, 0x153a)]
-  public class LongPants : BasePants
-  {
-    [Constructible]
-    public LongPants(int hue = 0) : base(0x1539, hue) => Weight = 2.0;
-
-    public LongPants(Serial serial) : base(serial)
-    {
+            var version = reader.ReadInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    [Flippable(0x2FC3, 0x3179)]
+    public class ElvenPants : BasePants
     {
-      base.Serialize(writer);
+        [Constructible]
+        public ElvenPants(int hue = 0) : base(0x2FC3, hue) => Weight = 2.0;
 
-      writer.Write(0); // version
+        public ElvenPants(Serial serial) : base(serial)
+        {
+        }
+
+        public override Race RequiredRace => Race.Elf;
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.WriteEncodedInt(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadEncodedInt();
+        }
     }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  [Flippable(0x279B, 0x27E6)]
-  public class TattsukeHakama : BasePants
-  {
-    [Constructible]
-    public TattsukeHakama(int hue = 0) : base(0x279B, hue) => Weight = 2.0;
-
-    public TattsukeHakama(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-    }
-  }
-
-  [Flippable(0x2FC3, 0x3179)]
-  public class ElvenPants : BasePants
-  {
-    [Constructible]
-    public ElvenPants(int hue = 0) : base(0x2FC3, hue) => Weight = 2.0;
-
-    public ElvenPants(Serial serial) : base(serial)
-    {
-    }
-
-    public override Race RequiredRace => Race.Elf;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadEncodedInt();
-    }
-  }
 }

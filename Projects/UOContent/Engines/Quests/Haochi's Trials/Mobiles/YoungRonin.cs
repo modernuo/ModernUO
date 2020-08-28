@@ -3,69 +3,69 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests.Samurai
 {
-  public class YoungRonin : BaseCreature
-  {
-    [Constructible]
-    public YoungRonin() : base(AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    public class YoungRonin : BaseCreature
     {
-      InitStats(45, 30, 5);
-      SetHits(10, 20);
-
-      Hue = Race.Human.RandomSkinHue();
-      Body = 0x190;
-
-      Utility.AssignRandomHair(this);
-      Utility.AssignRandomFacialHair(this);
-
-      AddItem(new LeatherDo());
-      AddItem(new LeatherHiroSode());
-      AddItem(new SamuraiTabi());
-
-      AddItem(
-        Utility.Random(3) switch
+        [Constructible]
+        public YoungRonin() : base(AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
         {
-          0 => new StuddedHaidate(),
-          1 => new PlateSuneate(),
-          _ => new LeatherSuneate()
+            InitStats(45, 30, 5);
+            SetHits(10, 20);
+
+            Hue = Race.Human.RandomSkinHue();
+            Body = 0x190;
+
+            Utility.AssignRandomHair(this);
+            Utility.AssignRandomFacialHair(this);
+
+            AddItem(new LeatherDo());
+            AddItem(new LeatherHiroSode());
+            AddItem(new SamuraiTabi());
+
+            AddItem(
+                Utility.Random(3) switch
+                {
+                    0 => new StuddedHaidate(),
+                    1 => new PlateSuneate(),
+                    _ => new LeatherSuneate()
+                }
+            );
+
+            AddItem(new Bandana(Utility.RandomNondyedHue()));
+
+            AddItem(
+                Utility.Random(3) switch
+                {
+                    0 => new NoDachi(),
+                    1 => new Lajatang(),
+                    _ => new Wakizashi()
+                }
+            );
+
+            SetSkill(SkillName.Swords, 50.0);
+            SetSkill(SkillName.Tactics, 50.0);
         }
-      );
 
-      AddItem(new Bandana(Utility.RandomNondyedHue()));
-
-      AddItem(
-        Utility.Random(3) switch
+        public YoungRonin(Serial serial) : base(serial)
         {
-          0 => new NoDachi(),
-          1 => new Lajatang(),
-          _ => new Wakizashi()
         }
-      );
 
-      SetSkill(SkillName.Swords, 50.0);
-      SetSkill(SkillName.Tactics, 50.0);
+        public override string CorpseName => "a young ronin's corpse";
+        public override string DefaultName => "a young ronin";
+
+        public override bool AlwaysMurderer => true;
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.WriteEncodedInt(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadEncodedInt();
+        }
     }
-
-    public YoungRonin(Serial serial) : base(serial)
-    {
-    }
-
-    public override string CorpseName => "a young ronin's corpse";
-    public override string DefaultName => "a young ronin";
-
-    public override bool AlwaysMurderer => true;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadEncodedInt();
-    }
-  }
 }

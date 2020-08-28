@@ -2,107 +2,107 @@ using Server.Network;
 
 namespace Server.Items
 {
-  [Flippable(0x3D98, 0x3D94)]
-  public class WallTorchComponent : AddonComponent
-  {
-    public WallTorchComponent() : base(0x3D98)
+    [Flippable(0x3D98, 0x3D94)]
+    public class WallTorchComponent : AddonComponent
     {
-    }
-
-    public WallTorchComponent(Serial serial) : base(serial)
-    {
-    }
-
-    public override int LabelNumber => 1076282; // Wall Torch
-
-    public override void OnDoubleClick(Mobile from)
-    {
-      if (from.InRange(Location, 2))
-      {
-        ItemID = ItemID switch
+        public WallTorchComponent() : base(0x3D98)
         {
-          0x3D98 => 0x3D9B,
-          0x3D9B => 0x3D98,
-          0x3D94 => 0x3D97,
-          0x3D97 => 0x3D94,
-          _ => ItemID
-        };
+        }
 
-        Effects.PlaySound(Location, Map, 0x3BE);
-      }
-      else
-      {
-        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-      }
+        public WallTorchComponent(Serial serial) : base(serial)
+        {
+        }
+
+        public override int LabelNumber => 1076282; // Wall Torch
+
+        public override void OnDoubleClick(Mobile from)
+        {
+            if (from.InRange(Location, 2))
+            {
+                ItemID = ItemID switch
+                {
+                    0x3D98 => 0x3D9B,
+                    0x3D9B => 0x3D98,
+                    0x3D94 => 0x3D97,
+                    0x3D97 => 0x3D94,
+                    _      => ItemID
+                };
+
+                Effects.PlaySound(Location, Map, 0x3BE);
+            }
+            else
+            {
+                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            }
+        }
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.WriteEncodedInt(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadEncodedInt();
+        }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    public class WallTorchAddon : BaseAddon
     {
-      base.Serialize(writer);
+        public WallTorchAddon()
+        {
+            AddComponent(new WallTorchComponent(), 0, 0, 0);
+        }
 
-      writer.WriteEncodedInt(0); // version
+        public WallTorchAddon(Serial serial) : base(serial)
+        {
+        }
+
+        public override BaseAddonDeed Deed => new WallTorchDeed();
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.WriteEncodedInt(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadEncodedInt();
+        }
     }
 
-    public override void Deserialize(IGenericReader reader)
+    public class WallTorchDeed : BaseAddonDeed
     {
-      base.Deserialize(reader);
+        [Constructible]
+        public WallTorchDeed() => LootType = LootType.Blessed;
 
-      int version = reader.ReadEncodedInt();
+        public WallTorchDeed(Serial serial) : base(serial)
+        {
+        }
+
+        public override BaseAddon Addon => new WallTorchAddon();
+        public override int LabelNumber => 1076282; // Wall Torch
+
+        public override void Serialize(IGenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.WriteEncodedInt(0); // version
+        }
+
+        public override void Deserialize(IGenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            var version = reader.ReadEncodedInt();
+        }
     }
-  }
-
-  public class WallTorchAddon : BaseAddon
-  {
-    public WallTorchAddon()
-    {
-      AddComponent(new WallTorchComponent(), 0, 0, 0);
-    }
-
-    public WallTorchAddon(Serial serial) : base(serial)
-    {
-    }
-
-    public override BaseAddonDeed Deed => new WallTorchDeed();
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadEncodedInt();
-    }
-  }
-
-  public class WallTorchDeed : BaseAddonDeed
-  {
-    [Constructible]
-    public WallTorchDeed() => LootType = LootType.Blessed;
-
-    public WallTorchDeed(Serial serial) : base(serial)
-    {
-    }
-
-    public override BaseAddon Addon => new WallTorchAddon();
-    public override int LabelNumber => 1076282; // Wall Torch
-
-    public override void Serialize(IGenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadEncodedInt();
-    }
-  }
 }
