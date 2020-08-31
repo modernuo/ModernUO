@@ -253,7 +253,7 @@ namespace Server
                 TypeRef = World.m_ItemTypes.Count - 1;
             }
 
-            SaveBuffer = new BufferWriter(true);
+            SaveBuffer = new BufferedFileWriter(true);
         }
 
         public Item(Serial serial)
@@ -269,7 +269,7 @@ namespace Server
                 TypeRef = World.m_ItemTypes.Count - 1;
             }
 
-            SaveBuffer = new BufferWriter(true);
+            SaveBuffer = new BufferedFileWriter(true);
         }
 
         public int TempFlags
@@ -794,7 +794,7 @@ namespace Server
             AddNameProperties(list);
         }
 
-        public BufferWriter SaveBuffer { get; }
+        public BufferedFileWriter SaveBuffer { get; }
 
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }

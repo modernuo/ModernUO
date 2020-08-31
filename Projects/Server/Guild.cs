@@ -40,14 +40,14 @@ namespace Server.Guilds
             List.Add(Serial, this);
             if (Serial + 1 > m_NextID)
                 m_NextID = Serial + 1;
-            SaveBuffer = new BufferWriter(true);
+            SaveBuffer = new BufferedFileWriter(true);
         }
 
         protected BaseGuild()
         {
             Serial = m_NextID++;
             List.Add(Serial, this);
-            SaveBuffer = new BufferWriter(true);
+            SaveBuffer = new BufferedFileWriter(true);
         }
 
         public abstract string Abbreviation { get; set; }
@@ -56,7 +56,7 @@ namespace Server.Guilds
         public abstract bool Disbanded { get; }
 
         public static Dictionary<uint, BaseGuild> List { get; } = new Dictionary<uint, BaseGuild>();
-        public BufferWriter SaveBuffer { get; }
+        public BufferedFileWriter SaveBuffer { get; }
 
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
