@@ -19,7 +19,7 @@ jobs:
       id: get-version
       uses: mavrosxristoforos/get-xml-info@1.0
       with:
-        xml-file: 'Directory.Build.Props'
+        xml-file: 'Directory.Build.props'
         xpath: '//Project/PropertyGroup/Version'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
