@@ -1,0 +1,65 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    if: "contains(github.event.head_commit.message, 'Release')"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.401
+    - name: Get Project Version
+      id: get-version
+      uses: mavrosxristoforos/get-xml-info@1.0
+      with:
+        xml-file: 'Directory.Build.Props'
+        xpath: '//Project/PropertyGroup/Version'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get-version.output.info }}
+        release_name: ${{ steps.get-version.output.info }}
+        draft: false
+        prerelease: false
+    - name: Build Windows
+      run: ./publish.cmd win core Release
+    - name: Create Windows Artifact
+      run: rm -rf ./Projects/*/bin && rm -rf ./Projects/*/obj && zip -r modernuo-win-x64-${{ steps.get-version.output.info }}.zip ./*
+    - name: Upload Windows Build
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./modernuo-win-x64-${{ steps.get-version.output.info }}.zip
+        asset_name: modernuo-win-x64-${{ steps.get-version.output.info }}.zip
+        asset_content_type: application/zip
+    - name: Clean Windows Build
+      run: rm modernuo-win-x64-${{ steps.get-version.output.info }}.zip
+    - name: Build Ubuntu 18 LTS
+      run: ./publish.cmd ubuntu.18.04 core Release
+    - name: Create Ubuntu 18 LTS Artifact
+      run: rm -rf ./Projects/*/bin && rm -rf ./Projects/*/obj && zip -r ubuntu.18.04-x64-${{ steps.get-version.output.info }}.zip ./*
+    - name: Upload Ubuntu 18 LTS Build
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./modernuo-ubuntu.18.04-x64-${{ steps.get-version.output.info }}.zip
+        asset_name: modernuo-ubuntu.18.04-x64-${{ steps.get-version.output.info }}.zip
+        asset_content_type: application/zip
+    - name: Clean Ubuntu 18 LTS Build
+      run: rm modernuo-ubuntu.18.04-x64-${{ steps.get-version.output.info }}.zip
