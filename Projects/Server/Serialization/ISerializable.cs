@@ -23,7 +23,7 @@ namespace Server
 {
     public interface ISerializable
     {
-        BufferWriter SaveBuffer { get; }
+        BufferedFileWriter SaveBuffer { get; }
         int TypeRef { get; }
         Serial Serial { get; }
         void Serialize();

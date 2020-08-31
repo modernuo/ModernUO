@@ -616,7 +616,7 @@ namespace Server
                 TypeRef = World.m_MobileTypes.Count - 1;
             }
 
-            SaveBuffer = new BufferWriter(true);
+            SaveBuffer = new BufferedFileWriter(true);
         }
 
         public Mobile()
@@ -637,7 +637,7 @@ namespace Server
                 TypeRef = World.m_MobileTypes.Count - 1;
             }
 
-            SaveBuffer = new BufferWriter(true);
+            SaveBuffer = new BufferedFileWriter(true);
         }
 
         public static bool DragEffects { get; set; } = true;
@@ -2528,7 +2528,7 @@ namespace Server
             AddNameProperties(list);
         }
 
-        public BufferWriter SaveBuffer { get; }
+        public BufferedFileWriter SaveBuffer { get; }
 
         [CommandProperty(AccessLevel.Counselor)]
         public Serial Serial { get; }
