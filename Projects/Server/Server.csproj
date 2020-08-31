@@ -61,6 +61,10 @@
         <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.5" />
         <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv" Version="3.1.5" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.5" />
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.2.31">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="System.IO.Pipelines" Version="4.7.2" />
         <PackageReference Include="Zlib.Bindings" Version="1.2.0" />
     </ItemGroup>

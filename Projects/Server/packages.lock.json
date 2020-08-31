@@ -36,6 +36,12 @@
           "Microsoft.Extensions.Logging.Abstractions": "3.1.5"
         }
       },
+      "Nerdbank.GitVersioning": {
+        "type": "Direct",
+        "requested": "[3.2.31, )",
+        "resolved": "3.2.31",
+        "contentHash": "19grBnpqHLxViOt1cwE+cI+brQ2swdm4gfM97P+9KbbgWGfXtdy4EmpVAkUZ3MgntFYYbUvfldM4pUOmks5q0w=="
+      },
       "System.IO.Pipelines": {
         "type": "Direct",
         "requested": "[4.7.2, )",

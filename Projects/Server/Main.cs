@@ -119,7 +119,10 @@ namespace Server
 
         public static Assembly Assembly { get; set; }
 
-        public static Version Version => Assembly.GetName().Version;
+        public static Version Version => Version.Parse(
+            FileVersionInfo.GetVersionInfo(Assembly.Location).FileVersion
+        );
+
         public static Process Process { get; private set; }
 
         public static Thread Thread { get; private set; }
@@ -354,16 +357,14 @@ namespace Server
             if (BaseDirectory.Length > 0)
                 Directory.SetCurrentDirectory(BaseDirectory);
 
-            var ver = Assembly.GetName().Version ?? new Version();
-
             Utility.PushColor(ConsoleColor.Green);
             // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
             Console.WriteLine(
                 "ModernUO - [https://github.com/modernuo/modernuo] Version {0}.{1}.{2}.{3}",
-                ver.Major,
-                ver.Minor,
-                ver.Build,
-                ver.Revision
+                Version.Major,
+                Version.Minor,
+                Version.Build,
+                Version.Revision
             );
             Console.WriteLine("Core: Running on {0}\n", RuntimeInformation.FrameworkDescription);
             Utility.PopColor();
