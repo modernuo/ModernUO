@@ -66,7 +66,7 @@ jobs:
         value=`cat release_url/release_url.txt`
         echo ::set-output name=upload_url::$value
     - name: Publish Distribution
-      run: ./publish.cmd win core Release
+      run: ./publish.cmd ${{ matrix.os }} core Release
     - name: Create Artifact
       run: rm -rf ./Projects/*/bin && rm -rf ./Projects/*/obj && zip -9 -r modernuo-asset.zip ./*
     - name: Upload Release
