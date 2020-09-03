@@ -65,6 +65,7 @@ jobs:
       run: |
         value=`cat release_url/release_url.txt`
         echo ::set-output name=upload_url::$value
+        rm -rf ./release_url
     - name: Publish Distribution
       run: ./publish.cmd ${{ matrix.os }} core Release
     - name: Create Artifact
