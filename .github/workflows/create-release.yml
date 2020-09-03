@@ -10,15 +10,15 @@ jobs:
     if: "contains(github.event.head_commit.message, 'Release')"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@
+      with:
+        fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.401
     - uses: dotnet/nbgv@master
       id: nbgv
-      with:
-        fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
