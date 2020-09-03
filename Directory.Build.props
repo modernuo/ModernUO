@@ -7,8 +7,8 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <Platforms>x64</Platforms>
         <PlatformTarget>x64</PlatformTarget>
-        <Version>0.6.1</Version>
         <LangVersion>8.0</LangVersion>
+        <PublicRelease>true</PublicRelease>
         <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('win'))">WINDOWS</DefineConstants>
         <DefineConstants Condition="$(RuntimeIdentifier.StartsWith(`win`)) != true">UNIX</DefineConstants>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
