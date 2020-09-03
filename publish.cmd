@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 dotnet restore --force-evaluate
 
 :<<"::SHELLSCRIPT"
@@ -6,25 +5,31 @@ dotnet restore --force-evaluate
 GOTO :CMDSCRIPT
 
 ::SHELLSCRIPT
-if [[ $1 ]]; then
-  r="-r $1-x64"
+os=$1
+
+if [[ $os ]]; then
+  r="-r $os-x64"
 elif [[ $(uname) = "Darwin" ]]; then
   r="-r osx-x64"
 elif [[ -f /etc/os-release ]]; then
   . /etc/os-release
-  r="-r ${NAME,,}.$VERSION_ID-x64"
+  NAME="$(tr '[:upper:]' '[:lower:]' <<< $NAME)"
+  r="-r $NAME.$VERSION_ID-x64"
 fi
 
-if [[ -z $2 ]] || [[ ${2,,} = "core" ]]; then
-  f="-f netcoreapp3.1"
-else
+framework="$(tr '[:upper:]' '[:lower:]' <<< $2)"
+
+if [[ $framework = "net" ]]; then
   f="-f net5.0"
+else
+  f="-f netcoreapp3.1"
 fi
 
 if [[ -z $3 ]]; then
   c="-c Release"
 else
-  c="-c ${3^}"
+  config="$(tr '[:lower:]' '[:upper:]' <<< ${3:0:1})${3:1}"
+  c="-c $config"
 fi
 
 echo dotnet publish ${c} ${r} ${f} --no-restore --self-contained=false -o Distribution Projects/Server/Server.csproj
