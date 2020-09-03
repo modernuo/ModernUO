@@ -119,6 +119,7 @@ namespace Server
 
         public static Assembly Assembly { get; set; }
 
+        // Assembly file version
         public static Version Version => Version.Parse(
             FileVersionInfo.GetVersionInfo(Assembly.Location).FileVersion
         );
