@@ -6,14 +6,10 @@ on:
       - master
 
 jobs:
-  build:
+  release:
+    name: Create Release
     if: "contains(github.event.head_commit.message, 'Release')"
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        os: [win, ubuntu.16.04, ubuntu.18.04, ubuntu.20.04, debian.9, debian.10, centos.7, centos.8, osx]
-
     steps:
     - uses: actions/checkout@v2
       with:
@@ -34,15 +30,50 @@ jobs:
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Build Windows
+    - name: Output Release URL File
+      run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
+    - name: Save Release URL file
+      uses: actions/upload-artifact@v1
+      with:
+        name: release_url
+        path: release_url.txt
+
+  publish:
+    name: Publish Release Asset
+    if: "contains(github.event.head_commit.message, 'Release')"
+    needs: [release]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [win, ubuntu.16.04, ubuntu.18.04, ubuntu.20.04, debian.9, debian.10, centos.7, centos.8, osx]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.401
+    - uses: dotnet/nbgv@master
+      id: nbgv
+    - name: Load Release URL File from release job
+      uses: actions/download-artifact@v1
+      with:
+        name: release_url
+    - name: Get Release File Name & Upload URL
+      id: get_release_info
+      run: |
+        value=`cat release_url/release_url.txt`
+        echo ::set-output name=upload_url::$value
+    - name: Publish Distribution
       run: ./publish.cmd win core Release
-    - name: Create Artifact (${{ matrix.os }})
-      run: rm -rf ./Projects/*/bin && rm -rf ./Projects/*/obj && zip -9 -r modernuo-${{ matrix.os }}-x64-${{ steps.nbgv.outputs.Version }}.zip ./*
-    - name: Upload Build (${{ matrix.os }})
+    - name: Create Artifact
+      run: rm -rf ./Projects/*/bin && rm -rf ./Projects/*/obj && zip -9 -r modernuo-asset.zip ./*
+    - name: Upload Release
       uses: actions/upload-release-asset@v1
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./modernuo-${{ matrix.os }}-x64-${{ steps.nbgv.outputs.Version }}.zip
+        upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+        asset_path: ./modernuo-asset.zip
         asset_name: modernuo-${{ matrix.os }}-x64-${{ steps.nbgv.outputs.Version }}.zip
         asset_content_type: application/zip
       env:
