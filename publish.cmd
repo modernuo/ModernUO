@@ -6,7 +6,9 @@ dotnet restore --force-evaluate
 GOTO :CMDSCRIPT
 
 ::SHELLSCRIPT
-if [[ $(uname) = "Darwin" ]]; then
+if [[ $1 ]]; then
+  r="-r $1-x64"
+elif [[ $(uname) = "Darwin" ]]; then
   r="-r osx-x64"
 elif [[ -f /etc/os-release ]]; then
   . /etc/os-release
