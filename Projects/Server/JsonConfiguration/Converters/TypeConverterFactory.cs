@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: CAGCategory.cs                                                  *
+ * File: TypeConverterFactory.cs                                         *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,31 +13,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using Server.Gumps;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace Server.Commands
+namespace Server.Json
 {
-    public class CAGCategory : CAGNode
+    public class TypeConverterFactory : JsonConverterFactory
     {
-        private static CAGCategory m_Root;
+        public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(Type);
 
-        public CAGCategory(string title, CAGCategory parent = null)
-        {
-            Title = title;
-            Parent = parent;
-        }
-
-        public override string Title { get; }
-
-        public CAGNode[] Nodes { get; set; }
-
-        public CAGCategory Parent { get; }
-
-        public static CAGCategory Root => m_Root ??= CAGLoader.Load();
-
-        public override void OnClick(Mobile from, int page)
-        {
-            from.SendGump(new CategorizedAddGump(from, this));
-        }
+        public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+            new TypeConverter();
     }
 }

@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright (C) 2019-2020 - ModernUO Development Team                   *
  * Email: hi@modernuo.com                                                *
- * File: CAGCategory.cs                                                  *
+ * File: TypeConverter.cs                                                *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,31 +13,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using Server.Gumps;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace Server.Commands
+namespace Server.Json
 {
-    public class CAGCategory : CAGNode
+    public class TypeConverter : JsonConverter<Type>
     {
-        private static CAGCategory m_Root;
-
-        public CAGCategory(string title, CAGCategory parent = null)
+        public override Type Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Title = title;
-            Parent = parent;
+            if (reader.TokenType != JsonTokenType.String)
+                throw new JsonException("The JSON value could not be converted to System.Type");
+
+            return AssemblyHandler.FindFirstTypeForName(reader.GetString());
         }
 
-        public override string Title { get; }
-
-        public CAGNode[] Nodes { get; set; }
-
-        public CAGCategory Parent { get; }
-
-        public static CAGCategory Root => m_Root ??= CAGLoader.Load();
-
-        public override void OnClick(Mobile from, int page)
-        {
-            from.SendGump(new CategorizedAddGump(from, this));
-        }
+        public override void Write(Utf8JsonWriter writer, Type value, JsonSerializerOptions options) =>
+            writer.WriteStringValue(value.FullName);
     }
 }
