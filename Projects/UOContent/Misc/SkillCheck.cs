@@ -80,7 +80,10 @@ namespace Server.Misc
             true,  // Chivalry = 51
             true,  // Bushido = 52
             true,  // Ninjitsu = 53
-            true   // Spellweaving
+            true,   // Spellweaving
+            true,   // Mysticism = 55
+            true,   // Imbuing = 56
+            false,   // Throwing = 57
         };
 
         private static readonly TimeSpan m_StatGainDelay = TimeSpan.FromMinutes(Core.ML ? 0.05 : 15);
