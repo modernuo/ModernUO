@@ -163,7 +163,9 @@ namespace Server.Gumps
                 x = BorderSize + OffsetSize;
                 y += EntryHeight + OffsetSize;
 
-                var name = index >= node.Categories.Length ? node.Locations[index].Name : node.Categories[index].Name;
+                var name = index >= node.Categories.Length
+                    ? node.Locations[index - node.Categories.Length].Name
+                    : node.Categories[index].Name;
 
                 AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
                 AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, name);
