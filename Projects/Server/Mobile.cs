@@ -6869,16 +6869,6 @@ namespace Server
 
             var newRegion = Region.Find(m_Location, m_Map);
 
-            var sector = m_Map.GetSector(m_Location);
-            var list = sector.RegionRects;
-
-            for (var i = 0; i < list.Count; ++i)
-            {
-                var regRect = list[i];
-
-                if (regRect.Contains(m_Location)) newRegion = regRect.Region;
-            }
-
             if (newRegion != m_Region)
             {
                 Region.OnRegionChange(this, m_Region, newRegion);
