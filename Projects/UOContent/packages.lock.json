@@ -2,12 +2,6 @@
   "version": 1,
   "dependencies": {
     ".NETCoreApp,Version=v3.1": {
-      "Argon2.Bindings": {
-        "type": "Direct",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "MailKit": {
         "type": "Direct",
         "requested": "[2.8.0, )",
@@ -812,12 +806,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/centos.7-x64": {
-      "Argon2.Bindings": {
-        "type": "Direct",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Zlib.Bindings": {
         "type": "Direct",
         "requested": "[1.2.0, )",
@@ -1570,12 +1558,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/centos.8-x64": {
-      "Argon2.Bindings": {
-        "type": "Direct",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Zlib.Bindings": {
         "type": "Direct",
         "requested": "[1.2.0, )",
@@ -2283,12 +2265,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/debian.10-x64": {
-      "Argon2.Bindings": {
-        "type": "Direct",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Zlib.Bindings": {
         "type": "Direct",
         "requested": "[1.2.0, )",
@@ -2996,12 +2972,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/debian.9-x64": {
-      "Argon2.Bindings": {
-        "type": "Direct",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Zlib.Bindings": {
         "type": "Direct",
         "requested": "[1.2.0, )",
@@ -3709,12 +3679,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/osx-x64": {
-      "Argon2.Bindings": {
-        "type": "Direct",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Zlib.Bindings": {
         "type": "Direct",
         "requested": "[1.2.0, )",
@@ -4422,12 +4386,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/ubuntu.16.04-x64": {
-      "Argon2.Bindings": {
-        "type": "Direct",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Zlib.Bindings": {
         "type": "Direct",
         "requested": "[1.2.0, )",
@@ -5180,12 +5138,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/ubuntu.18.04-x64": {
-      "Argon2.Bindings": {
-        "type": "Direct",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Zlib.Bindings": {
         "type": "Direct",
         "requested": "[1.2.0, )",
@@ -5893,12 +5845,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/ubuntu.20.04-x64": {
-      "Argon2.Bindings": {
-        "type": "Direct",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Zlib.Bindings": {
         "type": "Direct",
         "requested": "[1.2.0, )",
@@ -6606,12 +6552,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/win-x64": {
-      "Argon2.Bindings": {
-        "type": "Direct",
-        "requested": "[1.6.0, )",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Zlib.Bindings": {
         "type": "Direct",
         "requested": "[1.2.0, )",

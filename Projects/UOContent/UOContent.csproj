@@ -13,7 +13,6 @@
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Removing distribution assemblies..." />
-        <Delete Files="..\..\Distribution\Assemblies\Argon2.Bindings.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\BouncyCastle.Crypto.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\MailKit.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\Microsoft.AspNetCore.Connections.Abstractions.dll" ContinueOnError="true" />
@@ -31,7 +30,6 @@
         <Delete Files="..\..\Distribution\Assemblies\System.IO.Pipelines.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\libargon2.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\libargon2.dylib" ContinueOnError="true" />
-        <Delete Files="..\..\Distribution\Assemblies\libargon2.so" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\zlib.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\libz.dylib" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\libz.so" ContinueOnError="true" />
@@ -63,7 +61,6 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Zlib.Bindings" Version="1.2.0" />
-        <PackageReference Include="Argon2.Bindings" Version="1.6.0" />
     </ItemGroup>
     <ItemGroup Condition="'$(Configuration)'=='Analyze'">
         <AdditionalFiles Include="..\..\stylecop.json" />

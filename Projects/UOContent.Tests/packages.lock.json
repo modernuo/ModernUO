@@ -35,11 +35,6 @@
         "resolved": "2.4.3",
         "contentHash": "kZZSmOmKA8OBlAJaquPXnJJLM9RwQ27H7BMVqfMLUcTi9xHinWGJiWksa3D4NEtz0wZ/nxd2mogObvBgJKCRhQ=="
       },
-      "Argon2.Bindings": {
-        "type": "Transitive",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Libuv": {
         "type": "Transitive",
         "resolved": "1.10.0",
@@ -1351,7 +1346,6 @@
       "uocontent": {
         "type": "Project",
         "dependencies": {
-          "Argon2.Bindings": "1.6.0",
           "MailKit": "2.8.0",
           "Microsoft.AspNetCore.Connections.Abstractions": "3.1.5",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.5",
@@ -1362,11 +1356,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/centos.7-x64": {
-      "Argon2.Bindings": {
-        "type": "Transitive",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Libuv": {
         "type": "Transitive",
         "resolved": "1.10.0",
@@ -2322,11 +2311,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/centos.8-x64": {
-      "Argon2.Bindings": {
-        "type": "Transitive",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Libuv": {
         "type": "Transitive",
         "resolved": "1.10.0",
@@ -3222,11 +3206,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/debian.10-x64": {
-      "Argon2.Bindings": {
-        "type": "Transitive",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Libuv": {
         "type": "Transitive",
         "resolved": "1.10.0",
@@ -4122,11 +4101,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/debian.9-x64": {
-      "Argon2.Bindings": {
-        "type": "Transitive",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Libuv": {
         "type": "Transitive",
         "resolved": "1.10.0",
@@ -5022,11 +4996,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/osx-x64": {
-      "Argon2.Bindings": {
-        "type": "Transitive",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Libuv": {
         "type": "Transitive",
         "resolved": "1.10.0",
@@ -5922,11 +5891,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/ubuntu.16.04-x64": {
-      "Argon2.Bindings": {
-        "type": "Transitive",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Libuv": {
         "type": "Transitive",
         "resolved": "1.10.0",
@@ -6882,11 +6846,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/ubuntu.18.04-x64": {
-      "Argon2.Bindings": {
-        "type": "Transitive",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Libuv": {
         "type": "Transitive",
         "resolved": "1.10.0",
@@ -7782,11 +7741,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/ubuntu.20.04-x64": {
-      "Argon2.Bindings": {
-        "type": "Transitive",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Libuv": {
         "type": "Transitive",
         "resolved": "1.10.0",
@@ -8682,11 +8636,6 @@
       }
     },
     ".NETCoreApp,Version=v3.1/win-x64": {
-      "Argon2.Bindings": {
-        "type": "Transitive",
-        "resolved": "1.6.0",
-        "contentHash": "fj3n8L2UHJnQOfDy6phuJvu01u80TNEOx0Nkbtj7/G7pDmfRe0InLwHaQMmT59/8TOSDVLEDoi54D/yM8o7qZA=="
-      },
       "Libuv": {
         "type": "Transitive",
         "resolved": "1.10.0",
