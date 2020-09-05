@@ -4880,10 +4880,10 @@ namespace Server
             var c = CreateCorpseHandler?.Invoke(this, hair, facialhair, content, equip);
 
             /*m_Corpse = c;
-      
+
             for ( int i = 0; c != null && i < content.Count; ++i )
               c.DropItem( (Item)content[i] );
-      
+
             if (c != null)
               c.MoveToWorld( this.Location, this.Map );*/
 
@@ -7465,7 +7465,7 @@ namespace Server
         ///       SendMessage( "That is too heavy for you to lift." );
         ///       return false;
         ///     }
-        /// 
+        ///
         ///     return base.OnDragLift( item );
         ///   }</code>
         /// </example>
