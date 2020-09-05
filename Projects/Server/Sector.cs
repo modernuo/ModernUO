@@ -88,7 +88,7 @@ namespace Server
 
         public int Y { get; }
 
-        private void Add<T>(ref List<T> list, T value)
+        private static void Add<T>(ref List<T> list, T value)
         {
             list ??= new List<T>();
 

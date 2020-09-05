@@ -4880,10 +4880,10 @@ namespace Server
             var c = CreateCorpseHandler?.Invoke(this, hair, facialhair, content, equip);
 
             /*m_Corpse = c;
-      
+
             for ( int i = 0; c != null && i < content.Count; ++i )
               c.DropItem( (Item)content[i] );
-      
+
             if (c != null)
               c.MoveToWorld( this.Location, this.Map );*/
 
@@ -6869,6 +6869,16 @@ namespace Server
 
             var newRegion = Region.Find(m_Location, m_Map);
 
+            var sector = m_Map.GetSector(m_Location);
+            var list = sector.RegionRects;
+
+            for (var i = 0; i < list.Count; ++i)
+            {
+                var regRect = list[i];
+
+                if (regRect.Contains(m_Location)) newRegion = regRect.Region;
+            }
+
             if (newRegion != m_Region)
             {
                 Region.OnRegionChange(this, m_Region, newRegion);
@@ -7465,7 +7475,7 @@ namespace Server
         ///       SendMessage( "That is too heavy for you to lift." );
         ///       return false;
         ///     }
-        /// 
+        ///
         ///     return base.OnDragLift( item );
         ///   }</code>
         /// </example>

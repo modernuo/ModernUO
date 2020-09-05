@@ -53,6 +53,7 @@ namespace Server.Json
 
             // 0 - xyzwhd, 1 - x1y1z1x2y2z2, 2 - start/end
             var objType = -1;
+            var hasZ = false;
 
             while (true)
             {
@@ -78,7 +79,8 @@ namespace Server.Json
                     var offset = key == "end" ? 3 : 0;
                     data[0 + offset] = point3D.X;
                     data[1 + offset] = point3D.Y;
-                    data[1 + offset] = point3D.Z;
+                    // We can't do implicit z-level. Abandon using Point3D deserialization?
+                    data[2 + offset] = point3D.Z;
                     continue;
                 }
 
@@ -109,6 +111,7 @@ namespace Server.Json
 
                     objType = 0;
                     data[i] = reader.GetInt32();
+                    if (i == 2) hasZ = true;
                     continue;
                 }
 
@@ -117,6 +120,14 @@ namespace Server.Json
 
                 objType = 1;
                 data[i - 10] = reader.GetInt32();
+                if (i == 12 || i == 15) hasZ = true;
+            }
+
+            if (!hasZ)
+            {
+                // Bottom to top?
+                data[2] = -128;
+                data[5] = 127;
             }
 
             return objType == 0
