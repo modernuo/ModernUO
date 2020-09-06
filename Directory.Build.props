@@ -9,8 +9,6 @@
         <PlatformTarget>x64</PlatformTarget>
         <LangVersion>8.0</LangVersion>
         <PublicRelease>true</PublicRelease>
-        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('win'))">WINDOWS</DefineConstants>
-        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith(`win`)) != true">UNIX</DefineConstants>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <NoWarn>NU1603</NoWarn>
         <RuntimeIdentifiers>win-x64;debian.10-x64;debian.9-x64;ubuntu.16.04-x64;ubuntu.18.04-x64;ubuntu.20.04-x64;centos.7-x64;centos.8-x64;osx-x64</RuntimeIdentifiers>
@@ -23,6 +21,10 @@
         <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
         <IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX>
         <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
+        <DefineConstants Condition="'$(IsWindows)'=='true'">WINDOWS</DefineConstants>
+        <DefineConstants Condition="'$(IsOSX)'=='true'">OSX</DefineConstants>
+        <DefineConstants Condition="'$(IsLinux)'=='true'">LINUX</DefineConstants>
+        <DefineConstants Condition="'$(IsOSX)'=='true' OR '$(IsLinux)'=='true'">UNIX</DefineConstants>
     </PropertyGroup>
     <PropertyGroup  Condition="'$(RuntimeIdentifier)'==''">
         <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>

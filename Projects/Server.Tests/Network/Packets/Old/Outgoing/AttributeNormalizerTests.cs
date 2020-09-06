@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Server.Tests.Network.Packets
 {
+    [Collection("Sequential Tests")]
     public class AttributeNormalizerTests
     {
         [Fact]
