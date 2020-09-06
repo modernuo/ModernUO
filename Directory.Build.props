@@ -12,14 +12,31 @@
         <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('win'))">WINDOWS</DefineConstants>
         <DefineConstants Condition="$(RuntimeIdentifier.StartsWith(`win`)) != true">UNIX</DefineConstants>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <RestoreLockedMode>true</RestoreLockedMode>
         <NoWarn>NU1603</NoWarn>
-        <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
         <RuntimeIdentifiers>win-x64;debian.10-x64;debian.9-x64;ubuntu.16.04-x64;ubuntu.18.04-x64;ubuntu.20.04-x64;centos.7-x64;centos.8-x64;osx-x64</RuntimeIdentifiers>
         <Configurations>Debug;Release;Analyze</Configurations>
-        <RunCodeAnalysis>true</RunCodeAnalysis>
-        <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <UseNETCoreGenerator>true</UseNETCoreGenerator>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsAsErrors />
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
+        <IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX>
+        <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
+    </PropertyGroup>
+    <PropertyGroup  Condition="'$(RuntimeIdentifier)'==''">
+        <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+        <SelfContained>false</SelfContained>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
+    <PropertyGroup  Condition="'$(IsWindows)'=='true' AND '$(RuntimeIdentifier)'==''">
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    </PropertyGroup>
+    <PropertyGroup  Condition="'$(IsOSX)'=='true' AND '$(RuntimeIdentifier)'==''">
+        <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+    </PropertyGroup>
+    <PropertyGroup  Condition="'$(IsLinux)'=='true' AND '$(RuntimeIdentifier)'==''">
+        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     </PropertyGroup>
     <ItemGroup Condition="'$(Configuration)'=='Analyze'">
         <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.205" PrivateAssets="all" />

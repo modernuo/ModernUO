@@ -5,11 +5,7 @@
         <AssemblyName>UOContent</AssemblyName>
         <Product>ModernUO Content</Product>
         <PublishDir>..\..\Distribution\Assemblies</PublishDir>
-        <UseNETCoreGenerator>true</UseNETCoreGenerator>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <WarningsAsErrors />
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <OutDir>..\..\Distribution\Assemblies</OutDir>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Removing distribution assemblies..." />
