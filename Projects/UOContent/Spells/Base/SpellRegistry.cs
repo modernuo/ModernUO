@@ -126,7 +126,7 @@ namespace Server.Spells
                 {
                     return (Spell)ActivatorUtil.CreateInstance(t, m_Params);
                 }
-                catch
+                catch (Exception e)
                 {
                     // ignored
                 }
@@ -137,9 +137,13 @@ namespace Server.Spells
 
         public static Spell NewSpell(string name, Mobile caster, Item scroll)
         {
+            name = name.Replace(" ", "");
+
             for (var i = 0; i < m_CircleNames.Length; ++i)
             {
-                var t = AssemblyHandler.FindFirstTypeForName($"Server.Spells.{m_CircleNames[i]}.{name}");
+                var t =
+                    AssemblyHandler.FindFirstTypeForName($"Server.Spells.{m_CircleNames[i]}.{name}", true) ??
+                    AssemblyHandler.FindFirstTypeForName($"Server.Spells.{m_CircleNames[i]}.{name}Spell", true);
 
                 if (t?.IsSubclassOf(typeof(SpecialMove)) == false)
                 {
