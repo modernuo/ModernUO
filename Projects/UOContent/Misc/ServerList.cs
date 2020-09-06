@@ -45,7 +45,7 @@ namespace Server.Misc
 
         public static void Initialize()
         {
-            Address = ServerConfiguration.GetOrUpdateSetting("serverListing.address", "(-null-)");
+            Address = ServerConfiguration.GetOrUpdateSetting("serverListing.address", null);
             AutoDetect = ServerConfiguration.GetOrUpdateSetting("serverListing.autoDetect", true);
             ServerName = ServerConfiguration.GetOrUpdateSetting("serverListing.serverName", "ModernUO");
 

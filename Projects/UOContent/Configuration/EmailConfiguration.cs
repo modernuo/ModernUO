@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.IO;
 using System.Text.Json.Serialization;
 using MimeKit;
@@ -22,29 +23,50 @@ namespace Server.Configurations
 {
     public static class EmailConfiguration
     {
-        public static readonly bool EmailEnabled;
-        public static readonly MailboxAddress FromAddress;
-        public static readonly MailboxAddress CrashAddress;
-        public static readonly MailboxAddress SpeechLogPageAddress;
-        public static readonly string EmailServer;
-        public static readonly int EmailPort;
-        public static readonly string EmailServerUsername;
-        public static readonly string EmailServerPassword;
-        public static readonly int EmailSendRetryCount = 5; // seconds
-        public static readonly int EmailSendRetryDelay = 2; // seconds
+        private const string m_RelPath = "Configuration/email-settings.json";
 
-        static EmailConfiguration()
+        public static bool EmailEnabled { get; private set; }
+        public static MailboxAddress FromAddress { get; private set; }
+        public static MailboxAddress CrashAddress { get; private set; }
+        public static MailboxAddress SpeechLogPageAddress { get; private set; }
+        public static string EmailServer { get; private set; }
+        public static int EmailPort { get; private set; }
+        public static string EmailServerUsername { get; private set; }
+        public static string EmailServerPassword { get; private set; }
+        public static int EmailSendRetryCount { get; private set; } // seconds
+        public static int EmailSendRetryDelay { get; private set; } // seconds
+
+        public static void Configure()
         {
-            var filePath = Path.Join(Core.BaseDirectory, "Configuration/email-settings.json");
-            var settings = JsonConfig.Deserialize<Settings>(filePath) ?? new Settings();
+            var path = Path.Join(Core.BaseDirectory, m_RelPath);
 
-            if (settings.emailServer == null || settings.fromAddress == null)
+            Settings settings;
+
+            if (File.Exists(path))
             {
-                JsonConfig.Serialize(filePath, settings);
-                return;
+                Console.Write($"Core: Reading email configuration from {m_RelPath}...");
+                settings = JsonConfig.Deserialize<Settings>(path);
+
+                if (settings == null)
+                {
+                    Utility.PushColor(ConsoleColor.Red);
+                    Console.WriteLine("failed");
+                    Utility.PopColor();
+                    throw new Exception("Core: Email configuration failed to deserialize.");
+                }
+
+                Console.WriteLine("done");
+            }
+            else
+            {
+                settings = new Settings();
+                JsonConfig.Serialize(path, settings);
+                Utility.PushColor(ConsoleColor.Green);
+                Console.WriteLine($"Core: Email Configuration saved to {m_RelPath}.");
+                Utility.PopColor();
             }
 
-            EmailEnabled = true;
+            EmailEnabled = settings.enabled;
             FromAddress = new MailboxAddress(settings.fromName, settings.fromAddress);
             CrashAddress = new MailboxAddress(settings.crashName, settings.crashAddress);
             SpeechLogPageAddress = new MailboxAddress(settings.speechLogPageName, settings.speechLogPageAddress);
@@ -52,31 +74,50 @@ namespace Server.Configurations
             EmailPort = settings.emailPort;
             EmailServerUsername = settings.emailUsername;
             EmailServerPassword = settings.emailPassword;
+            EmailSendRetryCount = settings.emailSendRetryCount;
+            EmailSendRetryDelay = settings.emailSendRetryDelay;
         }
 
-        internal class Settings
+        public class Settings
         {
-            [JsonPropertyName("fromAddress")] internal string fromAddress { get; set; }
+            [JsonPropertyName("enabled")]
+            public bool enabled { get; set; } = false;
 
-            [JsonPropertyName("fromName")] internal string fromName { get; set; }
+            [JsonPropertyName("fromAddress")]
+            public string fromAddress { get; set; } = "support@modernuo.com";
 
-            [JsonPropertyName("crashAddress")] internal string crashAddress { get; set; }
+            [JsonPropertyName("fromName")]
+            public string fromName { get; set; } = "ModernUO Team";
 
-            [JsonPropertyName("crashName")] internal string crashName { get; set; }
+            [JsonPropertyName("crashAddress")]
+            public string crashAddress { get; set; } = "crashes@modernuo.com";
+
+            [JsonPropertyName("crashName")]
+            public string crashName { get; set; } = "Crash Log";
 
             [JsonPropertyName("speechLogPageAddress")]
-            internal string speechLogPageAddress { get; set; }
+            public string speechLogPageAddress { get; set; } = "support@modernuo.com";
 
             [JsonPropertyName("speechLogPageName")]
-            internal string speechLogPageName { get; set; }
+            public string speechLogPageName { get; set; } = "GM Support Conversation";
 
-            [JsonPropertyName("emailServer")] internal string emailServer { get; set; }
+            [JsonPropertyName("emailServer")]
+            public string emailServer { get; set; } = "smtp.gmail.com";
 
-            [JsonPropertyName("emailPort")] internal int emailPort { get; set; }
+            [JsonPropertyName("emailPort")]
+            public int emailPort { get; set; } = 465;
 
-            [JsonPropertyName("emailUsername")] internal string emailUsername { get; set; }
+            [JsonPropertyName("emailUsername")]
+            public string emailUsername { get; set; } = "support@modernuo.com";
 
-            [JsonPropertyName("emailPassword")] internal string emailPassword { get; set; }
+            [JsonPropertyName("emailPassword")]
+            public string emailPassword { get; set; } = "Some Password 123";
+
+            [JsonPropertyName("emailSendRetryCount")]
+            public int emailSendRetryCount { get; set; } = 5;
+
+            [JsonPropertyName("emailSendRetryDelay")]
+            public int emailSendRetryDelay { get; set; } = 3;
         }
     }
 }

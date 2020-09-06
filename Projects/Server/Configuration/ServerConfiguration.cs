@@ -36,7 +36,7 @@ namespace Server
         public static string GetSetting(string key, string defaultValue)
         {
             m_Settings.settings.TryGetValue(key, out var value);
-            return value == "(-null-)" ? null : value ?? defaultValue;
+            return value ?? defaultValue;
         }
 
         public static int GetSetting(string key, int defaultValue)
@@ -139,7 +139,7 @@ namespace Server
 
             if (File.Exists(m_FilePath))
             {
-                Console.Write($"Core: Reading configuration from {m_RelPath}...");
+                Console.Write($"Core: Reading server configuration from {m_RelPath}...");
                 m_Settings = JsonConfig.Deserialize<ServerSettings>(m_FilePath);
 
                 if (m_Settings == null)
@@ -183,7 +183,7 @@ namespace Server
             {
                 Save();
                 Utility.PushColor(ConsoleColor.Green);
-                Console.WriteLine($"Core: Configuration saved to {m_RelPath}.");
+                Console.WriteLine($"Core: Server configuration saved to {m_RelPath}.");
                 Utility.PopColor();
             }
         }
