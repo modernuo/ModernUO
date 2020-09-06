@@ -52,6 +52,10 @@ jobs:
     inputs:
       packageType: sdk
       version: '3.1.401'
+  - script: |
+      sudo apt-get update
+      sudo apt-get install -y libargon2-0-dev libz-dev
+    displayName: 'Install the dependency packages'
   - task: NuGetAuthenticate@0
   - script: dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
     displayName: 'Restore NuGet Packages'

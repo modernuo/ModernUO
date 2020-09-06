@@ -5,11 +5,8 @@
         <AssemblyName>UOContent</AssemblyName>
         <Product>ModernUO Content</Product>
         <PublishDir>..\..\Distribution\Assemblies</PublishDir>
-        <UseNETCoreGenerator>true</UseNETCoreGenerator>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <WarningsAsErrors />
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <OutDir>..\..\Distribution\Assemblies</OutDir>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Removing distribution assemblies..." />
@@ -46,6 +43,14 @@
         <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
     <ItemGroup>
+        <Content Include="runtimes\win-x64\native\libargon2.dll" Condition="'$(IsWindowsBuild)' == 'true'">
+            <Link>libargon2.dll</Link>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="runtimes\osx-x64\native\libargon2.dylib" Condition="'$(IsOSXBuild)' == 'true'">
+            <Link>libargon2.dylib</Link>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
         <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>

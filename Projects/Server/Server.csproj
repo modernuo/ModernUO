@@ -9,14 +9,7 @@
         <Version>0.5.0</Version>
         <Product>ModernUO Server</Product>
         <PublishDir>..\..\Distribution</PublishDir>
-        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-        <UseNETCoreGenerator>true</UseNETCoreGenerator>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <WarningsAsErrors />
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-        <RunCodeAnalysis>true</RunCodeAnalysis>
-        <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+        <OutDir>..\..\Distribution</OutDir>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Removing distribution files..." />
