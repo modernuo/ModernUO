@@ -800,7 +800,7 @@
           "System.Runtime.Handles": "4.3.0"
         }
       },
-      "ModernUO": {
+      "core": {
         "type": "Project",
         "dependencies": {
           "Microsoft.AspNetCore.Connections.Abstractions": "3.1.5",

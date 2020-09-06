@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <ApplicationIcon>MUO.ico</ApplicationIcon>
+        <StartupObject>Server.Application</StartupObject>
+        <AssemblyName>ModernUO</AssemblyName>
+        <Win32Resource />
+        <RootNamespace>Server</RootNamespace>
+        <PublishDir>..\..\Distribution</PublishDir>
+        <OutDir>..\..\Distribution</OutDir>
+    </PropertyGroup>
+    <Target Name="Clean" AfterTargets="Clean">
+        <Message Text="Removing distribution files..." />
+        <Delete Files="..\..\Distribution\$(AssemblyName)" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).dll.config" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).exe" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).deps.json" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).pdb" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.dev.json" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\$(AssemblyName).runtimeconfig.json" ContinueOnError="true" />
+    </Target>
+    <ItemGroup>
+        <ProjectReference Include="..\Core\Core.csproj">
+            <Private>false</Private>
+        </ProjectReference>
+        <ProjectReference Include="..\UOContent\UOContent.csproj">
+            <Private>false</Private>
+        </ProjectReference>
+    </ItemGroup>
+</Project>

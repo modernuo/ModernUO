@@ -44,9 +44,11 @@
         <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
-            <IncludeInPackage>false</IncludeInPackage>
+        <ProjectReference Include="..\Core\Core.csproj">
+            <IncludeAssets>none</IncludeAssets>
+            <Private>false</Private>
         </ProjectReference>
+
         <!-- Transient package version resolution -->
         <PackageReference Include="Microsoft.AspNetCore.Connections.Abstractions" Version="3.1.5" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />

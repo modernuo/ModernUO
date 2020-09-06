@@ -334,7 +334,7 @@ namespace Server
             m_Signal.Set();
         }
 
-        public static void Main(string[] args)
+        public static void Setup(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
@@ -369,12 +369,6 @@ namespace Server
             );
             Console.WriteLine("Core: Running on {0}\n", RuntimeInformation.FrameworkDescription);
             Utility.PopColor();
-
-            var ttObj = new Timer.TimerThread();
-            timerThread = new Thread(ttObj.TimerMain)
-            {
-                Name = "Timer Thread"
-            };
 
             var s = Arguments;
 
@@ -422,12 +416,20 @@ namespace Server
 
             AssemblyHandler.Invoke("Initialize");
 
-            timerThread.Start();
-
             foreach (var m in Map.AllMaps)
                 m.Tiles.Force();
 
             EventSink.InvokeServerStarted();
+        }
+
+        public static void Run()
+        {
+            var ttObj = new Timer.TimerThread();
+            timerThread = new Thread(ttObj.TimerMain)
+            {
+                Name = "Timer Thread"
+            };
+            timerThread.Start();
 
             // Start net socket server
             var host = TcpServer.CreateWebHostBuilder().Build();

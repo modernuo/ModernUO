@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <ApplicationIcon>MUO.ico</ApplicationIcon>
-        <StartupObject>Server.Core</StartupObject>
-        <AssemblyName>ModernUO</AssemblyName>
-        <Win32Resource />
-        <Product>ModernUO Server</Product>
+        <AssemblyName>Core</AssemblyName>
+        <Product>ModernUO Core</Product>
         <PublishDir>..\..\Distribution</PublishDir>
         <OutDir>..\..\Distribution</OutDir>
+        <RootNamespace>Server</RootNamespace>
     </PropertyGroup>
-    <Target Name="CleanPub" AfterTargets="Clean">
+    <Target Name="Clean" AfterTargets="Clean">
         <Message Text="Removing distribution files..." />
         <Delete Files="..\..\Distribution\libuv.dylib" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\libuv.so" ContinueOnError="true" />

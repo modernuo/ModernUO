@@ -1338,7 +1338,7 @@
         "resolved": "1.2.0",
         "contentHash": "z1/D7sNbpq3E6B+YLvV99vx9fa6cnOtxVLKMBVFJ8i/dGZG/y8bE+7lyOwLaDmQlTendwidPvjKfUKhLYgBryg=="
       },
-      "ModernUO": {
+      "core": {
         "type": "Project",
         "dependencies": {
           "Microsoft.AspNetCore.Connections.Abstractions": "3.1.5",
@@ -1352,6 +1352,7 @@
         "type": "Project",
         "dependencies": {
           "Argon2.Bindings": "1.6.0",
+          "Core": "1.0.0",
           "MailKit": "2.8.0",
           "Microsoft.AspNetCore.Connections.Abstractions": "3.1.5",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.5",
