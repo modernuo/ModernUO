@@ -12,6 +12,42 @@ namespace Server.Items
 {
     public abstract class WeaponAbility
     {
+        public static WeaponAbility[] Abilities { get; } =
+        {
+            null,
+            new ArmorIgnore(),
+            new BleedAttack(),
+            new ConcussionBlow(),
+            new CrushingBlow(),
+            new Disarm(),
+            new Dismount(),
+            new DoubleStrike(),
+            new InfectiousStrike(),
+            new MortalStrike(),
+            new MovingShot(),
+            new ParalyzingBlow(),
+            new ShadowStrike(),
+            new WhirlwindAttack(),
+
+            new RidingSwipe(),
+            new FrenziedWhirlwind(),
+            new Block(),
+            new DefenseMastery(),
+            new NerveStrike(),
+            new TalonStrike(),
+            new Feint(),
+            new DualWield(),
+            new DoubleShot(),
+            new ArmorPierce(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            new Disrobe()
+        };
+
         public static readonly WeaponAbility ArmorIgnore = Abilities[1];
         public static readonly WeaponAbility BleedAttack = Abilities[2];
         public static readonly WeaponAbility ConcussionBlow = Abilities[3];
@@ -48,42 +84,6 @@ namespace Server.Items
 
         private static readonly Dictionary<Mobile, WeaponAbilityContext> m_PlayersTable =
             new Dictionary<Mobile, WeaponAbilityContext>();
-
-        public static WeaponAbility[] Abilities { get; } =
-        {
-            null,
-            new ArmorIgnore(),
-            new BleedAttack(),
-            new ConcussionBlow(),
-            new CrushingBlow(),
-            new Disarm(),
-            new Dismount(),
-            new DoubleStrike(),
-            new InfectiousStrike(),
-            new MortalStrike(),
-            new MovingShot(),
-            new ParalyzingBlow(),
-            new ShadowStrike(),
-            new WhirlwindAttack(),
-
-            new RidingSwipe(),
-            new FrenziedWhirlwind(),
-            new Block(),
-            new DefenseMastery(),
-            new NerveStrike(),
-            new TalonStrike(),
-            new Feint(),
-            new DualWield(),
-            new DoubleShot(),
-            new ArmorPierce(),
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            new Disrobe()
-        };
 
         public virtual int BaseMana => 0;
 
