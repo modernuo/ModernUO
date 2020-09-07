@@ -274,7 +274,7 @@ namespace Server
 
         public void Write(byte[] value, int length)
         {
-            if (m_Index + length > Data.Length)
+            while (m_Index + length > Data.Length)
                 Expand();
 
             Buffer.BlockCopy(value, 0, Data, m_Index, length);
