@@ -1,0 +1,50 @@
+:root {
+  /* default */
+  --md-default-fg-color:      #2e3438;
+  --md-default-bg-color:      #f2f0e6;
+
+  /* primary */
+  --md-primary-fg-color:      #2e3438;
+  --md-primary-bg-color:      #f2f0e6;
+
+  /* accent */
+  --md-accent-fg-color:       #6c7a84;
+}
+
+:root > * {
+  --md-code-bg-color:         #6c7a84;
+  --md-code-fg-color:         #f2f0e6;
+
+  --md-footer-fg-color:       #f2f0e6;
+  --md-footer-bg-color:       #2e3438;
+  --md-footer-bg-color--dark: #2e3438;
+}
+
+html, body { min-height: 100% }
+body {
+  background-blend-mode: darken;
+  background: rgba(0, 0, 0, 0.80) url("../../assets/images/dragon2-bg.jpg") no-repeat center center fixed;
+  backdrop-filter: sepia(0.5);
+  background-size: cover;
+}
+
+.md-header {
+  background: transparent;
+}
+
+.md-tabs {
+  background: transparent;
+}
+
+.md-main {
+  background: var(--md-default-bg-color);
+  opacity: 0.95
+}
+
+.md-footer {
+  background: transparent;
+}
+
+.md-footer-meta {
+  background: transparent;
+}

@@ -241,7 +241,7 @@ resharper_wrong_indent_size_highlighting=warning
 [*.{sln,csproj,bat}]
 end_of_line=crlf
 
-[*.{yml,json,md,sh}]
+[*.{yml,json,md,sh,css,html}]
 end_of_line=lf
 indent_size=2
 tab_width=2

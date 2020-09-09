@@ -1,0 +1,99 @@
+{% extends "main.html" %}
+
+<!-- Render hero under tabs -->
+{% block tabs %}
+{{ super() }}
+
+<style>
+  html, body { min-height: 100% }
+  body {
+    background-blend-mode: darken;
+    background: rgba(0, 0, 0, 0.80) url("assets/images/dragon2-bg.jpg") no-repeat center center fixed;
+    backdrop-filter: sepia(0.5);
+    background-size: cover;
+  }
+
+  /* Application header should be static for the landing page */
+  .md-header {
+    position: initial;
+    background: transparent;
+  }
+
+  .md-tabs {
+    background: transparent;
+  }
+
+  /* Remove spacing, as we cannot hide it completely */
+  .md-main__inner {
+    margin: 0;
+  }
+
+  /* Hide main content for now */
+  .md-content {
+    display: none;
+  }
+
+  /* Hide table of contents */
+  @media screen and (min-width: 60em) {
+    .md-sidebar--secondary {
+      display: none;
+    }
+  }
+
+  /* Hide navigation */
+  @media screen and (min-width: 76.25em) {
+    .md-sidebar--primary {
+      display: none;
+    }
+  }
+
+  .md-main {
+    background: transparent;
+  }
+
+  .md-typeset h1 {
+    color: var(--md-default-bg-color--light);
+  }
+
+  .tx-container {
+    padding-top: 1rem;
+  }
+
+  .tx-hero {
+    margin: 0 0.8rem;
+  }
+</style>
+
+<!-- Hero for landing page -->
+<section class="tx-container">
+  <div class="md-grid md-typeset">
+    <div class="tx-hero">
+
+      <!-- Hero content -->
+      <div class="tx-hero__content">
+        <h1>{{ config.site_description }}</h1>
+        <a
+          href="{{ page.next_page.url | url }}"
+          title="{{ page.next_page.title | striptags }}"
+          class="md-button md-button--primary"
+        >
+          Get started
+        </a>
+        <a
+          href="{{ config.repo_url }}"
+          title="{{ lang.t('source.link.title') }}"
+          class="md-button"
+        >
+          Go to GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+<!-- Content -->
+{% block content %}{% endblock %}
+
+<!-- Application footer -->
+{% block footer %}{% endblock %}
