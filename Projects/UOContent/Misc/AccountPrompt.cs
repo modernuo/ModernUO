@@ -10,9 +10,10 @@ namespace Server.Misc
             if (Accounts.Count == 0)
             {
                 Console.WriteLine("This server has no accounts.");
-                Console.Write("Do you want to create the owner account now? (y/n)");
+                Console.Write("Do you want to create the owner account now? (y/n): ");
 
-                if (Console.ReadKey(true).Key == ConsoleKey.Y)
+                var answer = Console.ReadLine();
+                if (answer == "y" || answer == "Y")
                 {
                     Console.WriteLine();
 
@@ -30,7 +31,6 @@ namespace Server.Misc
                 else
                 {
                     Console.WriteLine();
-
                     Console.WriteLine("Account not created.");
                 }
             }
