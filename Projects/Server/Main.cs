@@ -105,16 +105,10 @@ namespace Server
             }
         }
 
-        public static TimeSpan ProfileTime
-        {
-            get
-            {
-                if (m_ProfileStart > DateTime.MinValue)
-                    return m_ProfileTime + (DateTime.UtcNow - m_ProfileStart);
-
-                return m_ProfileTime;
-            }
-        }
+        public static TimeSpan ProfileTime =>
+            m_ProfileStart > DateTime.MinValue
+                ? m_ProfileTime + (DateTime.UtcNow - m_ProfileStart)
+                : m_ProfileTime;
 
         internal static bool HaltOnWarning { get; private set; }
 
