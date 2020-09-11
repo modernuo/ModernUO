@@ -73,11 +73,11 @@ namespace Server
 
         private static readonly Type[] m_SerialTypeArray = { typeof(Serial) };
 
-        public static bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        public static bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-        public static bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
-        public static bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
-        public static bool Unix = IsDarwin || IsFreeBSD || IsLinux;
+        public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        public static readonly bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+        public static readonly bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
+        public static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
+        public static readonly bool Unix = IsDarwin || IsFreeBSD || IsLinux;
 
         private static readonly string assembliesConfiguration = "Configuration/assemblies.json";
 
