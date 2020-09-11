@@ -16,7 +16,7 @@ namespace Server.Misc
 
         public static void Initialize()
         {
-            if (Enabled) // If enabled, register our crash event handler
+            if (Enabled)
             {
                 EventSink.ServerCrashed += CrashGuard_OnCrash;
             }
