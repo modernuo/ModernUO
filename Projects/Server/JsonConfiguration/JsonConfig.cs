@@ -44,21 +44,33 @@ namespace Server.Json
             options.Converters.Add(new NullableStructSerializerFactory());
             options.Converters.Add(new TypeConverterFactory());
 
-            for (var i = 0; i < converters.Length; i++) options.Converters.Add(converters[i]);
+            for (var i = 0; i < converters.Length; i++)
+            {
+                options.Converters.Add(converters[i]);
+            }
 
             return options;
         }
 
         public static T Deserialize<T>(string filePath, JsonSerializerOptions options = null)
         {
-            if (!File.Exists(filePath)) return default;
+            if (!File.Exists(filePath))
+            {
+                return default;
+            }
+
             var text = File.ReadAllText(filePath, Utility.UTF8);
             return JsonSerializer.Deserialize<T>(text, options ?? DefaultOptions);
         }
 
         public static void Serialize(string filePath, object value, JsonSerializerOptions options = null)
         {
-            if (File.Exists(filePath)) File.Delete(filePath);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
             File.WriteAllText(filePath, JsonSerializer.Serialize(value, options ?? DefaultOptions));
         }
@@ -80,7 +92,10 @@ namespace Server.Json
         public static T ToObject<T>(this JsonDocument document, JsonSerializerOptions options = null)
         {
             if (document == null)
+            {
                 throw new ArgumentNullException(nameof(document));
+            }
+
             return document.RootElement.ToObject<T>(options);
         }
     }
