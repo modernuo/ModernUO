@@ -506,22 +506,15 @@ namespace Server
                     warningSb.AppendLine("       - No serialization constructor");
                 }
 
-                if (
-                    t.GetMethod(
-                        "Serialize",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly
-                    ) ==
-                    null)
+                const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic |
+                                                  BindingFlags.Instance | BindingFlags.DeclaredOnly;
+                if (t.GetMethod("Serialize", bindingFlags) == null)
                 {
                     warningSb ??= new StringBuilder();
                     warningSb.AppendLine("       - No Serialize() method");
                 }
 
-                if (t.GetMethod(
-                        "Deserialize",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly
-                    ) ==
-                    null)
+                if (t.GetMethod("Deserialize", bindingFlags) == null)
                 {
                     warningSb ??= new StringBuilder();
                     warningSb.AppendLine("       - No Deserialize() method");
