@@ -524,24 +524,24 @@ namespace Server
             m_ItemCount = 0;
             m_MobileCount = 0;
 
-            var ca = Assembly.GetCallingAssembly();
+            var callingAssembly = Assembly.GetCallingAssembly();
 
-            VerifySerialization(ca);
+            VerifySerialization(callingAssembly);
 
-            foreach (var a in AssemblyHandler.Assemblies)
+            foreach (var assembly in AssemblyHandler.Assemblies)
             {
-                if (a != ca)
+                if (assembly != callingAssembly)
                 {
-                    VerifySerialization(a);
+                    VerifySerialization(assembly);
                 }
             }
         }
 
-        private static void VerifyType(Type t)
+        private static void VerifyType(Type type)
         {
-            var isItem = t.IsSubclassOf(typeof(Item));
+            var isItem = type.IsSubclassOf(typeof(Item));
 
-            if (!isItem && !t.IsSubclassOf(typeof(Mobile))) return;
+            if (!isItem && !type.IsSubclassOf(typeof(Mobile))) return;
 
             if (isItem)
             {
@@ -556,7 +556,7 @@ namespace Server
 
             try
             {
-                if (t.GetConstructor(m_SerialTypeArray) == null)
+                if (type.GetConstructor(m_SerialTypeArray) == null)
                 {
                     warningSb = new StringBuilder();
                     warningSb.AppendLine("       - No serialization constructor");
@@ -564,13 +564,13 @@ namespace Server
 
                 const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic |
                                                   BindingFlags.Instance | BindingFlags.DeclaredOnly;
-                if (t.GetMethod("Serialize", bindingFlags) == null)
+                if (type.GetMethod("Serialize", bindingFlags) == null)
                 {
                     warningSb ??= new StringBuilder();
                     warningSb.AppendLine("       - No Serialize() method");
                 }
 
-                if (t.GetMethod("Deserialize", bindingFlags) == null)
+                if (type.GetMethod("Deserialize", bindingFlags) == null)
                 {
                     warningSb ??= new StringBuilder();
                     warningSb.AppendLine("       - No Deserialize() method");
@@ -578,20 +578,20 @@ namespace Server
 
                 if (warningSb?.Length > 0)
                 {
-                    Console.WriteLine("Warning: {0}\n{1}", t, warningSb);
+                    Console.WriteLine("Warning: {0}\n{1}", type, warningSb);
                 }
             }
             catch
             {
-                Console.WriteLine("Warning: Exception in serialization verification of type {0}", t);
+                Console.WriteLine("Warning: Exception in serialization verification of type {0}", type);
             }
         }
 
-        private static void VerifySerialization(Assembly a)
+        private static void VerifySerialization(Assembly assembly)
         {
-            if (a != null)
+            if (assembly != null)
             {
-                Parallel.ForEach(a.GetTypes(), VerifyType);
+                Parallel.ForEach(assembly.GetTypes(), VerifyType);
             }
         }
 
