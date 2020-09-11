@@ -556,7 +556,7 @@ namespace Server
 
         internal delegate bool ConsoleEventHandler(ConsoleEventType type);
 
-        internal class UnsafeNativeMethods
+        internal static class UnsafeNativeMethods
         {
             [DllImport("Kernel32")]
             internal static extern bool SetConsoleCtrlHandler(ConsoleEventHandler callback, bool add);
