@@ -80,7 +80,7 @@ namespace Server
         public static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
         public static readonly bool Unix = IsDarwin || IsFreeBSD || IsLinux;
 
-        private static readonly string assembliesConfiguration = "Configuration/assemblies.json";
+        private const string assembliesConfiguration = "Data/assemblies.json";
 
         public static bool IsRunningFromXUnit =>
             m_IsRunningFromXUnit ??= AppDomain.CurrentDomain.GetAssemblies()
@@ -444,12 +444,13 @@ namespace Server
 
             ServerConfiguration.Load();
 
+            var assemblyPath = Path.Join(BaseDirectory, assembliesConfiguration);
+
             // Load UOContent.dll
-            var assemblyFiles = JsonConfig.Deserialize<List<string>>(
-                    Path.Join(BaseDirectory, assembliesConfiguration)
-                )
+            var assemblyFiles = JsonConfig.Deserialize<List<string>>(assemblyPath)
                 .Select(t => Path.Join(BaseDirectory, "Assemblies", t))
                 .ToArray();
+
             AssemblyHandler.LoadScripts(assemblyFiles);
 
             VerifySerialization();
