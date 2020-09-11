@@ -322,11 +322,6 @@ namespace Server
 
         private static void HandleClosed()
         {
-            if (Closing)
-            {
-                return;
-            }
-
             ClosingTokenSource.Cancel();
 
             Console.Write("Exiting...");
@@ -422,6 +417,7 @@ namespace Server
             }
 
             Console.CancelKeyPress += Console_CancelKeyPressed;
+            ClosingTokenSource.Token.Register(() => Kill());
 
             if (GCSettings.IsServerGC)
             {
@@ -465,7 +461,7 @@ namespace Server
             // Start net socket server
             var host = TcpServer.CreateWebHostBuilder().Build();
             var life = host.Services.GetRequiredService<IHostApplicationLifetime>();
-            life.ApplicationStopping.Register(() => { Kill(); });
+            life.ApplicationStopping.Register(ClosingTokenSource.Cancel);
 
             host.Run();
         }
