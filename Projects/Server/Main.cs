@@ -69,15 +69,16 @@ namespace Server
 
         private static readonly AutoResetEvent m_Signal = new AutoResetEvent(true);
 
-        private static int m_ItemCount, m_MobileCount;
+        private static int m_ItemCount;
+        private static int m_MobileCount;
 
         private static readonly Type[] m_SerialTypeArray = { typeof(Serial) };
 
-        public static bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        public static bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-        public static bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
-        public static bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
-        public static bool Unix = IsDarwin || IsFreeBSD || IsLinux;
+        public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        public static readonly bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+        public static readonly bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
+        public static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
+        public static readonly bool Unix = IsDarwin || IsFreeBSD || IsLinux;
 
         private static readonly string assembliesConfiguration = "Configuration/assemblies.json";
 
@@ -93,27 +94,25 @@ namespace Server
             set
             {
                 if (m_Profiling == value)
+                {
                     return;
+                }
 
                 m_Profiling = value;
 
                 if (m_ProfileStart > DateTime.MinValue)
+                {
                     m_ProfileTime += DateTime.UtcNow - m_ProfileStart;
+                }
 
                 m_ProfileStart = m_Profiling ? DateTime.UtcNow : DateTime.MinValue;
             }
         }
 
-        public static TimeSpan ProfileTime
-        {
-            get
-            {
-                if (m_ProfileStart > DateTime.MinValue)
-                    return m_ProfileTime + (DateTime.UtcNow - m_ProfileStart);
-
-                return m_ProfileTime;
-            }
-        }
+        public static TimeSpan ProfileTime =>
+            m_ProfileStart > DateTime.MinValue
+                ? m_ProfileTime + (DateTime.UtcNow - m_ProfileStart)
+                : m_ProfileTime;
 
         internal static bool HaltOnWarning { get; private set; }
 
@@ -146,17 +145,21 @@ namespace Server
             get
             {
                 if (m_BaseDirectory == null)
+                {
                     try
                     {
                         m_BaseDirectory = ExePath;
 
                         if (m_BaseDirectory.Length > 0)
+                        {
                             m_BaseDirectory = Path.GetDirectoryName(m_BaseDirectory);
+                        }
                     }
                     catch
                     {
                         m_BaseDirectory = "";
                     }
+                }
 
                 return m_BaseDirectory;
             }
@@ -175,10 +178,14 @@ namespace Server
                 var sb = new StringBuilder();
 
                 if (m_Profiling)
+                {
                     Utility.Separate(sb, "-profile", " ");
+                }
 
                 if (HaltOnWarning)
+                {
                     Utility.Separate(sb, "-haltonwarning", " ");
+                }
 
                 return sb.ToString();
             }
@@ -224,7 +231,9 @@ namespace Server
                 fullPath = Path.Combine(p, path);
 
                 if (File.Exists(fullPath))
+                {
                     break;
+                }
 
                 fullPath = null;
             }
@@ -236,7 +245,9 @@ namespace Server
                 Console.WriteLine("Make sure modernuo.json is properly configured");
                 Utility.PopColor();
                 if (throwNotFound)
+                {
                     throw new FileNotFoundException($"Data: {path} was not found");
+                }
             }
 
             return fullPath;
@@ -288,7 +299,9 @@ namespace Server
         private static bool OnConsoleEvent(ConsoleEventType type)
         {
             if (World.Saving || type == ConsoleEventType.CTRL_LOGOFF_EVENT)
+            {
                 return true;
+            }
 
             Kill(); // Kill -> HandleClosed will handle waiting for the completion of flushing to disk
 
@@ -305,7 +318,9 @@ namespace Server
             HandleClosed();
 
             if (restart)
+            {
                 Process.Start(ExePath, Arguments);
+            }
 
             Process.Kill();
         }
@@ -313,7 +328,9 @@ namespace Server
         private static void HandleClosed()
         {
             if (Closing)
+            {
                 return;
+            }
 
             Closing = true;
 
@@ -322,7 +339,9 @@ namespace Server
             World.WaitForWriteCompletion();
 
             if (!m_Crashed)
+            {
                 EventSink.InvokeShutdown();
+            }
 
             Timer.TimerThread.Set();
 
@@ -340,23 +359,35 @@ namespace Server
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
             foreach (var a in args)
+            {
                 if (Insensitive.Equals(a, "-profile"))
+                {
                     Profiling = true;
+                }
                 else if (Insensitive.Equals(a, "-haltonwarning"))
+                {
                     HaltOnWarning = true;
+                }
+            }
 
             Thread = Thread.CurrentThread;
             Process = Process.GetCurrentProcess();
             Assembly = Assembly.GetEntryAssembly();
 
             if (Assembly == null)
+            {
                 throw new Exception("Core: Assembly entry is missing.");
+            }
 
             if (Thread != null)
+            {
                 Thread.Name = "Core Thread";
+            }
 
             if (BaseDirectory.Length > 0)
+            {
                 Directory.SetCurrentDirectory(BaseDirectory);
+            }
 
             Utility.PushColor(ConsoleColor.Green);
             // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
@@ -379,15 +410,21 @@ namespace Server
             var s = Arguments;
 
             if (s.Length > 0)
+            {
                 Console.WriteLine("Core: Running with arguments: {0}", s);
+            }
 
             ProcessorCount = Environment.ProcessorCount;
 
             if (ProcessorCount > 1)
+            {
                 MultiProcessor = true;
+            }
 
             if (MultiProcessor)
+            {
                 Console.WriteLine("Core: Optimizing for {0} processor{1}", ProcessorCount, ProcessorCount == 1 ? "" : "s");
+            }
 
             if (IsWindows)
             {
@@ -396,7 +433,9 @@ namespace Server
             }
 
             if (GCSettings.IsServerGC)
+            {
                 Console.WriteLine("Core: Server garbage collection mode enabled");
+            }
 
             Console.WriteLine(
                 "Core: High resolution timing ({0})",
@@ -425,7 +464,9 @@ namespace Server
             timerThread.Start();
 
             foreach (var m in Map.AllMaps)
+            {
                 m.Tiles.Force();
+            }
 
             EventSink.InvokeServerStarted();
 
@@ -463,7 +504,9 @@ namespace Server
                     NetState.ProcessDisposedQueue();
 
                     if (sample++ % sampleInterval != 0)
+                    {
                         continue;
+                    }
 
                     var now = TickCount;
                     m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
@@ -481,68 +524,75 @@ namespace Server
             m_ItemCount = 0;
             m_MobileCount = 0;
 
-            var ca = Assembly.GetCallingAssembly();
+            var callingAssembly = Assembly.GetCallingAssembly();
 
-            VerifySerialization(ca);
+            VerifySerialization(callingAssembly);
 
-            foreach (var a in AssemblyHandler.Assemblies)
-                if (a != ca)
-                    VerifySerialization(a);
+            foreach (var assembly in AssemblyHandler.Assemblies)
+            {
+                if (assembly != callingAssembly)
+                {
+                    VerifySerialization(assembly);
+                }
+            }
         }
 
-        private static void VerifyType(Type t)
+        private static void VerifyType(Type type)
         {
-            var isItem = t.IsSubclassOf(typeof(Item));
+            var isItem = type.IsSubclassOf(typeof(Item));
 
-            if (!isItem && !t.IsSubclassOf(typeof(Mobile))) return;
+            if (!isItem && !type.IsSubclassOf(typeof(Mobile))) return;
 
             if (isItem)
+            {
                 Interlocked.Increment(ref m_ItemCount);
+            }
             else
+            {
                 Interlocked.Increment(ref m_MobileCount);
+            }
 
             StringBuilder warningSb = null;
 
             try
             {
-                if (t.GetConstructor(m_SerialTypeArray) == null)
+                if (type.GetConstructor(m_SerialTypeArray) == null)
                 {
                     warningSb = new StringBuilder();
                     warningSb.AppendLine("       - No serialization constructor");
                 }
 
-                if (
-                    t.GetMethod(
-                        "Serialize",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly
-                    ) ==
-                    null)
+                const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic |
+                                                  BindingFlags.Instance | BindingFlags.DeclaredOnly;
+                if (type.GetMethod("Serialize", bindingFlags) == null)
                 {
                     warningSb ??= new StringBuilder();
                     warningSb.AppendLine("       - No Serialize() method");
                 }
 
-                if (t.GetMethod(
-                        "Deserialize",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly
-                    ) ==
-                    null)
+                if (type.GetMethod("Deserialize", bindingFlags) == null)
                 {
                     warningSb ??= new StringBuilder();
                     warningSb.AppendLine("       - No Deserialize() method");
                 }
 
-                if (warningSb?.Length > 0) Console.WriteLine("Warning: {0}\n{1}", t, warningSb);
+                if (warningSb?.Length > 0)
+                {
+                    Console.WriteLine("Warning: {0}\n{1}", type, warningSb);
+                }
             }
             catch
             {
-                Console.WriteLine("Warning: Exception in serialization verification of type {0}", t);
+                Console.WriteLine("Warning: Exception in serialization verification of type {0}", type);
             }
         }
 
-        private static void VerifySerialization(Assembly a)
+        private static void VerifySerialization(Assembly assembly)
         {
-            if (a != null) Parallel.ForEach(a.GetTypes(), VerifyType);
+            if (assembly != null)
+            {
+                Parallel.ForEach(assembly.GetTypes(), VerifyType);
+            }
         }
 
         internal enum ConsoleEventType
@@ -556,7 +606,7 @@ namespace Server
 
         internal delegate bool ConsoleEventHandler(ConsoleEventType type);
 
-        internal class UnsafeNativeMethods
+        internal static class UnsafeNativeMethods
         {
             [DllImport("Kernel32")]
             internal static extern bool SetConsoleCtrlHandler(ConsoleEventHandler callback, bool add);
