@@ -8,32 +8,38 @@ namespace Server.Misc
 {
     public static class CrashGuard
     {
-        private static readonly bool Enabled = true;
-        private static readonly bool SaveBackup = true;
-        private static readonly bool RestartServer = true;
-        private static readonly bool GenerateReport = true;
+        // TODO: Make this configurable
+        private const bool Enabled = true;
+        private const bool SaveBackup = true;
+        private const bool RestartServer = true;
+        private const bool GenerateReport = true;
 
         public static void Initialize()
         {
             if (Enabled) // If enabled, register our crash event handler
+            {
                 EventSink.ServerCrashed += CrashGuard_OnCrash;
+            }
         }
 
         public static void CrashGuard_OnCrash(ServerCrashedEventArgs e)
         {
             if (GenerateReport)
+            {
                 GenerateCrashReport(e);
+            }
 
             World.WaitForWriteCompletion();
 
             if (SaveBackup)
+            {
                 Backup();
+            }
 
-            /*if (Core.Service)
-              e.Close = true;
-            else */
             if (RestartServer)
+            {
                 Restart(e);
+            }
         }
 
         private static void SendEmail(string filePath)
@@ -43,29 +49,13 @@ namespace Server.Misc
             Email.SendCrashEmail(filePath);
         }
 
-        private static string GetRoot()
-        {
-            try
-            {
-                return Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
-            }
-            catch
-            {
-                return "";
-            }
-        }
-
-        private static string Combine(string path1, string path2) => path1.Length == 0 ? path2 : Path.Combine(path1, path2);
-
         private static void Restart(ServerCrashedEventArgs e)
         {
-            var root = GetRoot();
-
             Console.Write("Crash: Restarting...");
 
             try
             {
-                Process.Start(Core.ExePath, Core.Arguments);
+                Process.Start(Core.Assembly.Location, Core.Arguments);
                 Console.WriteLine("done");
 
                 e.Close = true;
@@ -76,26 +66,20 @@ namespace Server.Misc
             }
         }
 
-        private static void CreateDirectory(string path)
-        {
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-        }
-
-        private static void CreateDirectory(string path1, string path2)
-        {
-            CreateDirectory(Combine(path1, path2));
-        }
-
         private static void CopyFile(string rootOrigin, string rootBackup, string path)
         {
-            var originPath = Combine(rootOrigin, path);
-            var backupPath = Combine(rootBackup, path);
+            var originPath = Path.Combine(rootOrigin, path);
+            if (!File.Exists(originPath))
+            {
+                return;
+            }
+
+            var backupPath = Path.Combine(rootBackup, path);
+            Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
 
             try
             {
-                if (File.Exists(originPath))
-                    File.Copy(originPath, backupPath);
+                File.Copy(originPath, backupPath);
             }
             catch
             {
@@ -111,17 +95,9 @@ namespace Server.Misc
             {
                 var timeStamp = GetTimeStamp();
 
-                var root = GetRoot();
-                var rootBackup = Combine(root, $"Backups/Crashed/{timeStamp}/");
-                var rootOrigin = Combine(root, "Saves/");
-
-                // Create new directories
-                CreateDirectory(rootBackup);
-                CreateDirectory(rootBackup, "Accounts/");
-                CreateDirectory(rootBackup, "Items/");
-                CreateDirectory(rootBackup, "Mobiles/");
-                CreateDirectory(rootBackup, "Guilds/");
-                CreateDirectory(rootBackup, "Regions/");
+                var root = Core.BaseDirectory;
+                var rootBackup = Path.Combine(root, $"Backups/Crashed/{timeStamp}/");
+                var rootOrigin = Path.Combine(root, "Saves/");
 
                 // Copy files
                 CopyFile(rootOrigin, rootBackup, "Accounts/Accounts.xml");
@@ -157,12 +133,12 @@ namespace Server.Misc
                 var timeStamp = GetTimeStamp();
                 var fileName = $"Crash {timeStamp}.log";
 
-                var root = GetRoot();
-                var filePath = Combine(root, fileName);
+                var root = Core.BaseDirectory;
+                var filePath = Path.Combine(root, fileName);
 
                 using (var op = new StreamWriter(filePath))
                 {
-                    var ver = Core.Assembly.GetName().Version ?? new Version("0.0.0.0");
+                    var ver = Core.Version;
 
                     op.WriteLine("Server Crash Report");
                     op.WriteLine("===================");
@@ -170,7 +146,7 @@ namespace Server.Misc
                     op.WriteLine($"ModernUO Version {ver.Major}.{ver.Minor}, Build {ver.Build}.{ver.Revision}");
                     op.WriteLine("Operating System: {0}", Environment.OSVersion);
                     op.WriteLine(".NET Framework: {0}", Environment.Version);
-                    op.WriteLine("Time: {0}", DateTime.UtcNow);
+                    op.WriteLine("Time: {0}", timeStamp);
 
                     try
                     {
@@ -209,12 +185,16 @@ namespace Server.Misc
                             op.Write("+ {0}:", state);
 
                             if (state.Account is Account a)
+                            {
                                 op.Write(" (account = {0})", a.Username);
+                            }
 
                             var m = state.Mobile;
 
                             if (m != null)
+                            {
                                 op.Write(" (mobile = 0x{0:X} '{1}')", m.Serial.Value, m.Name);
+                            }
 
                             op.WriteLine();
                         }

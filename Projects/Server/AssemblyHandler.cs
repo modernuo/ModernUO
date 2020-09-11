@@ -111,9 +111,7 @@ namespace Server
         public static string EnsureDirectory(string dir)
         {
             var path = Path.Combine(Core.BaseDirectory, dir);
-
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
+            Directory.CreateDirectory(path);
 
             return path;
         }

@@ -1,22 +1,17 @@
-/***************************************************************************
- *                                  Main.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Email: hi@modernuo.com                                                *
+ * File: Main.cs                                                         *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
 
 using System;
 using System.Collections.Generic;
@@ -42,7 +37,6 @@ namespace Server
         private static bool m_Crashed;
         private static Thread timerThread;
         private static string m_BaseDirectory;
-        private static string m_ExePath;
 
         private static bool m_Profiling;
         private static DateTime m_ProfileStart;
@@ -138,8 +132,6 @@ namespace Server
 
         public static int ProcessorCount { get; private set; }
 
-        public static string ExePath => m_ExePath ??= Assembly.Location;
-
         public static string BaseDirectory
         {
             get
@@ -148,7 +140,7 @@ namespace Server
                 {
                     try
                     {
-                        m_BaseDirectory = ExePath;
+                        m_BaseDirectory = Assembly.Location;
 
                         if (m_BaseDirectory.Length > 0)
                         {
@@ -319,7 +311,18 @@ namespace Server
 
             if (restart)
             {
-                Process.Start(ExePath, Arguments);
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "dotnet",
+                        Arguments = Assembly.Location,
+                        UseShellExecute = true
+                    }
+                };
+
+                process.Start();
+                process.WaitForExit();
             }
 
             Process.Kill();
