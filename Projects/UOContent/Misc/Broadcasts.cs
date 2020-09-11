@@ -22,14 +22,14 @@ namespace Server.Misc
 
         public static void EventSink_Shutdown()
         {
-            /*      try
-                  {
-                    World.Broadcast(0x35, true, "The server has shut down.");
-                  }
-                  catch
-                  {
-                    // ignored
-                  }*/
+            try
+            {
+                World.Broadcast(0x35, true, "The server has shut down.");
+            }
+            catch
+            {
+                // ignored
+            }
         }
     }
 }

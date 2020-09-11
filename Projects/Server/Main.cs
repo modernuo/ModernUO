@@ -56,8 +56,6 @@ namespace Server
         private static readonly double m_HighFrequency = 1000.0 / Stopwatch.Frequency;
         private static readonly double m_LowFrequency = 1000.0 / TimeSpan.TicksPerSecond;
 
-        internal static ConsoleEventHandler m_ConsoleEventHandler;
-
         private static int m_CycleIndex = 1;
         private static readonly float[] m_CyclesPerSecond = new float[100];
 
@@ -157,7 +155,9 @@ namespace Server
             }
         }
 
-        public static bool Closing { get; private set; }
+        public static CancellationTokenSource ClosingTokenSource { get; } = new CancellationTokenSource();
+
+        public static bool Closing => ClosingTokenSource.IsCancellationRequested;
 
         public static float CyclesPerSecond => m_CyclesPerSecond[(m_CycleIndex - 1) % m_CyclesPerSecond.Length];
 
@@ -271,15 +271,6 @@ namespace Server
 
                 if (!close)
                 {
-                    try
-                    {
-                        // Close all listeners
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
                     Console.WriteLine("This exception is fatal, press return to exit");
                     Console.ReadLine();
                 }
@@ -288,21 +279,22 @@ namespace Server
             }
         }
 
-        private static bool OnConsoleEvent(ConsoleEventType type)
-        {
-            if (World.Saving || type == ConsoleEventType.CTRL_LOGOFF_EVENT)
-            {
-                return true;
-            }
-
-            Kill(); // Kill -> HandleClosed will handle waiting for the completion of flushing to disk
-
-            return true;
-        }
-
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
         {
             HandleClosed();
+        }
+
+        private static void Console_CancelKeyPressed(object sender, ConsoleCancelEventArgs e)
+        {
+            var keypress = e.SpecialKey switch
+            {
+                ConsoleSpecialKey.ControlBreak => "CTRL+BREAK",
+                _ => "CTRL+C"
+            };
+
+            Console.WriteLine("Core: Detected {0} pressed.", keypress);
+            e.Cancel = true;
+            ClosingTokenSource.Cancel();
         }
 
         public static void Kill(bool restart = false)
@@ -335,7 +327,7 @@ namespace Server
                 return;
             }
 
-            Closing = true;
+            ClosingTokenSource.Cancel();
 
             Console.Write("Exiting...");
 
@@ -429,11 +421,7 @@ namespace Server
                 Console.WriteLine("Core: Optimizing for {0} processor{1}", ProcessorCount, ProcessorCount == 1 ? "" : "s");
             }
 
-            if (IsWindows)
-            {
-                m_ConsoleEventHandler = OnConsoleEvent;
-                UnsafeNativeMethods.SetConsoleCtrlHandler(m_ConsoleEventHandler, true);
-            }
+            Console.CancelKeyPress += Console_CancelKeyPressed;
 
             if (GCSettings.IsServerGC)
             {
