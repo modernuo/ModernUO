@@ -69,7 +69,8 @@ namespace Server
 
         private static readonly AutoResetEvent m_Signal = new AutoResetEvent(true);
 
-        private static int m_ItemCount, m_MobileCount;
+        private static int m_ItemCount;
+        private static int m_MobileCount;
 
         private static readonly Type[] m_SerialTypeArray = { typeof(Serial) };
 
