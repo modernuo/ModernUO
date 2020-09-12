@@ -5,7 +5,7 @@ using Server.Engines.Spawners;
 
 namespace Server
 {
-    public class VendorGenerator
+    public static class VendorGenerator
     {
         private static readonly Rectangle2D[] m_BritRegions =
         {
