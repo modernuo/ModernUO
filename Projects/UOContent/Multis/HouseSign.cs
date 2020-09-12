@@ -127,7 +127,7 @@ namespace Server.Multis
         {
             if (okay && Owner != null && Owner.Owner == null && Owner.DecayLevel != DecayLevel.DemolitionPending)
             {
-                var canClaim = Owner.CoOwners?.Count > 0 && Owner.IsCoOwner(@from) || Owner.IsFriend(from);
+                var canClaim = Owner.CoOwners?.Count > 0 && Owner.IsCoOwner(from) || Owner.IsFriend(from);
 
                 if (canClaim && !BaseHouse.HasAccountHouse(from))
                 {

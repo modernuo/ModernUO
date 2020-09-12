@@ -43,7 +43,9 @@ namespace Server.Engines.MLQuests
                 while ((line = sr.ReadLine()) != null)
                 {
                     if (line.Length == 0 || line.StartsWith("#"))
+                    {
                         continue;
+                    }
 
                     var split = line.Split('\t');
 
@@ -52,11 +54,13 @@ namespace Server.Engines.MLQuests
                     if (type == null || !baseQuestType.IsAssignableFrom(type))
                     {
                         if (Debug)
+                        {
                             Console.WriteLine(
                                 "Warning: {1} quest type '{0}'",
                                 split[0],
                                 type == null ? "Unknown" : "Invalid"
                             );
+                        }
 
                         continue;
                     }
@@ -73,7 +77,9 @@ namespace Server.Engines.MLQuests
                     }
 
                     if (quest == null)
+                    {
                         continue;
+                    }
 
                     Register(type, quest);
 
@@ -84,11 +90,13 @@ namespace Server.Engines.MLQuests
                         if (questerType == null || !baseQuesterType.IsAssignableFrom(questerType))
                         {
                             if (Debug)
+                            {
                                 Console.WriteLine(
                                     "Warning: {1} quester type '{0}'",
                                     split[i],
                                     questerType == null ? "Unknown" : "Invalid"
                                 );
+                            }
 
                             continue;
                         }
@@ -115,7 +123,9 @@ namespace Server.Engines.MLQuests
         private static void RegisterQuestGiver(MLQuest quest, Type questerType)
         {
             if (!QuestGivers.TryGetValue(questerType, out var questList))
+            {
                 QuestGivers[questerType] = questList = new List<MLQuest>();
+            }
 
             questList.Add(quest);
         }
@@ -125,20 +135,33 @@ namespace Server.Engines.MLQuests
             Register(quest.GetType(), quest);
 
             foreach (var questerType in questerTypes)
+            {
                 RegisterQuestGiver(quest, questerType);
+            }
+        }
+
+        public static void Configure()
+        {
+            Enabled = ServerConfiguration.GetOrUpdateSetting("questSystem.enableMLQuests", Core.ML);
         }
 
         public static void Initialize()
         {
-            Enabled = ServerConfiguration.GetOrUpdateSetting("questSystem.enableMLQuests", Core.ML);
-
             if (!Enabled)
+            {
                 return;
+            }
 
             if (AutoGenerateNew)
+            {
                 foreach (var quest in Quests.Values)
+                {
                     if (quest?.Deserialized == false)
+                    {
                         quest.Generate();
+                    }
+                }
+            }
 
             MLQuestPersistence.EnsureExistence();
 
@@ -205,9 +228,11 @@ namespace Server.Engines.MLQuests
             m.SendMessage("Serialization for quest {0} is now {1}.", quest.GetType().Name, enable ? "enabled" : "disabled");
 
             if (AutoGenerateNew && !enable)
+            {
                 m.SendMessage(
                     "Please note that automatic generation of new quests is ON. This quest will be regenerated on the next server start."
                 );
+            }
         }
 
         [Usage("SaveAllQuests [saveEnabled=true]")]
@@ -225,14 +250,18 @@ namespace Server.Engines.MLQuests
             var enable = e.Length == 1 ? e.GetBoolean(0) : true;
 
             foreach (var quest in Quests.Values)
+            {
                 quest.SaveEnabled = enable;
+            }
 
             m.SendMessage("Serialization for all quests is now {0}.", enable ? "enabled" : "disabled");
 
             if (AutoGenerateNew && !enable)
+            {
                 m.SendMessage(
                     "Please note that automatic generation of new quests is ON. All quests will be regenerated on the next server start."
                 );
+            }
         }
 
         [Usage("InvalidQuestItems")]
@@ -244,19 +273,29 @@ namespace Server.Engines.MLQuests
             var found = new List<object>();
 
             foreach (var item in World.Items.Values)
+            {
                 if (item.QuestItem)
                 {
                     if (item.Parent is Backpack pack)
+                    {
                         if (pack.Parent is PlayerMobile player && player.Backpack == pack)
+                        {
                             continue;
+                        }
+                    }
 
                     found.Add(item);
                 }
+            }
 
             if (found.Count == 0)
+            {
                 m.SendMessage("No matching objects found.");
+            }
             else
+            {
                 m.SendGump(new InterfaceGump(m, new[] { "Object" }, found, 0, null));
+            }
         }
 
         private static bool FindQuest(
@@ -272,6 +311,7 @@ namespace Server.Engines.MLQuests
 
             // 1. Check quests in progress with this NPC (overriding deliveries is intended)
             if (context != null)
+            {
                 foreach (var questEntry in quests)
                 {
                     var instance = context.FindInstance(questEntry);
@@ -284,6 +324,7 @@ namespace Server.Engines.MLQuests
                         return true;
                     }
                 }
+            }
 
             // 2. Check deliveries (overriding chain offers is intended)
             if ((entry = HandleDelivery(pm, quester, questerType)) != null)
@@ -294,12 +335,16 @@ namespace Server.Engines.MLQuests
 
             // 3. Check chain quest offers
             if (context != null)
+            {
                 foreach (var questEntry in quests)
+                {
                     if (questEntry.IsChainTriggered && context.ChainOffers.Contains(questEntry))
                     {
                         quest = questEntry;
                         return true;
                     }
+                }
+            }
 
             // 4. Random quest
             quest = RandomStarterQuest(quester, pm, context);
@@ -310,7 +355,9 @@ namespace Server.Engines.MLQuests
         public static void OnDoubleClick(IQuestGiver quester, PlayerMobile pm)
         {
             if (quester.Deleted || !pm.Alive)
+            {
                 return;
+            }
 
             var context = GetContext(pm);
 
@@ -325,13 +372,22 @@ namespace Server.Engines.MLQuests
                 TurnToFace(quester, pm);
 
                 if (entry.Failed)
+                {
                     return; // Note: OSI sends no gump at all for failed quests, they have to be cancelled in the quest overview
+                }
+
                 if (entry.ClaimReward)
+                {
                     entry.SendRewardOffer();
+                }
                 else if (entry.IsCompleted())
+                {
                     entry.SendReportBackGump();
+                }
                 else
+                {
                     entry.SendProgressGump();
+                }
             }
             else if (quest.CanOffer(quester, pm, context, true))
             {
@@ -346,9 +402,15 @@ namespace Server.Engines.MLQuests
             var context = GetContext(pm);
 
             if (context != null)
+            {
                 foreach (var quest in context.QuestInstances)
+                {
                     if (!quest.ClaimReward && quest.AllowsQuestItem(item, type))
+                    {
                         return true;
+                    }
+                }
+            }
 
             return false;
         }
@@ -358,7 +420,9 @@ namespace Server.Engines.MLQuests
             var context = GetContext(pm);
 
             if (context == null)
+            {
                 return;
+            }
 
             var instances = context.QuestInstances;
 
@@ -368,14 +432,18 @@ namespace Server.Engines.MLQuests
                 var instance = instances[i];
 
                 if (instance.ClaimReward)
+                {
                     continue;
+                }
 
                 foreach (var objective in instance.Objectives)
+                {
                     if (!objective.Expired && objective.AllowsQuestItem(item, type))
                     {
                         objective.CheckComplete(); // yes, this can happen multiple times (for multiple quests)
                         break;
                     }
+                }
             }
         }
 
@@ -399,7 +467,9 @@ namespace Server.Engines.MLQuests
             var context = GetContext(pm);
 
             if (context == null)
+            {
                 return;
+            }
 
             var instances = context.QuestInstances;
 
@@ -408,15 +478,19 @@ namespace Server.Engines.MLQuests
                 var instance = instances[i];
 
                 if (instance.ClaimReward)
+                {
                     continue;
+                }
 
                 foreach (var objective in instance.Objectives)
+                {
                     if (!objective.Expired && objective is GainSkillObjectiveInstance objectiveInstance &&
                         objectiveInstance.Handles(skill))
                     {
                         objectiveInstance.CheckComplete();
                         break;
                     }
+                }
             }
         }
 
@@ -425,7 +499,9 @@ namespace Server.Engines.MLQuests
             var context = GetContext(pm);
 
             if (context == null)
+            {
                 return;
+            }
 
             var instances = context.QuestInstances;
 
@@ -436,13 +512,16 @@ namespace Server.Engines.MLQuests
                 var instance = instances[i];
 
                 if (instance.ClaimReward)
+                {
                     continue;
+                }
 
                 /* A kill only counts for a single objective within a quest,
                  * but it can count for multiple quests. This is something not
                  * currently observable on OSI, so it is assumed behavior.
                  */
                 foreach (var objective in instance.Objectives)
+                {
                     if (!objective.Expired && objective is KillObjectiveInstance kill)
                     {
                         type ??= mob.GetType();
@@ -453,6 +532,7 @@ namespace Server.Engines.MLQuests
                             break;
                         }
                     }
+                }
             }
         }
 
@@ -461,7 +541,9 @@ namespace Server.Engines.MLQuests
             var context = GetContext(pm);
 
             if (context == null)
+            {
                 return null;
+            }
 
             var instances = context.QuestInstances;
             MLQuestInstance deliverInstance = null;
@@ -476,6 +558,7 @@ namespace Server.Engines.MLQuests
 
                 foreach (var objective in instance.Objectives)
                     // Note: On OSI, expired deliveries can still be completed. Bug?
+                {
                     if (!objective.Expired && objective is DeliverObjectiveInstance deliver &&
                         deliver.IsDestination(quester, questerType))
                     {
@@ -492,6 +575,7 @@ namespace Server.Engines.MLQuests
 
                         break; // don't return, we may have to complete more deliveries
                     }
+                }
             }
 
             return deliverInstance;
@@ -507,7 +591,9 @@ namespace Server.Engines.MLQuests
         public static MLQuestContext GetOrCreateContext(PlayerMobile pm)
         {
             if (!Contexts.TryGetValue(pm, out var context))
+            {
                 Contexts[pm] = context = new MLQuestContext(pm);
+            }
 
             return context;
         }
@@ -541,7 +627,9 @@ namespace Server.Engines.MLQuests
                     var instance = instances[i];
 
                     if (instance.Quester == quester)
+                    {
                         instance.OnQuesterDeleted();
+                    }
                 }
             }
         }
@@ -549,7 +637,9 @@ namespace Server.Engines.MLQuests
         public static void EventSink_QuestGumpRequest(Mobile m)
         {
             if (!Enabled || !(m is PlayerMobile pm))
+            {
                 return;
+            }
 
             pm.SendGump(new QuestLogGump(pm));
         }
@@ -559,7 +649,9 @@ namespace Server.Engines.MLQuests
             var quests = quester.MLQuests;
 
             if (quests.Count == 0)
+            {
                 return null;
+            }
 
             m_EligiblePool.Clear();
             MLQuest fallback = null;
@@ -567,7 +659,9 @@ namespace Server.Engines.MLQuests
             foreach (var quest in quests)
             {
                 if (quest.IsChainTriggered || context?.IsDoingQuest(quest) == true)
+                {
                     continue;
+                }
 
                 /*
                  * Save first quest that reaches the CanOffer call.
@@ -576,7 +670,9 @@ namespace Server.Engines.MLQuests
                 fallback ??= quest;
 
                 if (quest.CanOffer(quester, pm, context, false))
+                {
                     m_EligiblePool.Add(quest);
+                }
             }
 
             return m_EligiblePool.Count == 0 ? fallback : m_EligiblePool.RandomElement();
@@ -585,7 +681,9 @@ namespace Server.Engines.MLQuests
         public static void TurnToFace(IQuestGiver quester, Mobile mob)
         {
             if (quester is Mobile m)
+            {
                 m.Direction = m.GetDirectionTo(mob);
+            }
         }
 
         public static void Tell(IQuestGiver quester, PlayerMobile pm, int cliloc)
@@ -593,11 +691,17 @@ namespace Server.Engines.MLQuests
             TurnToFace(quester, pm);
 
             if (quester is Mobile mobile)
+            {
                 mobile.PrivateOverheadMessage(MessageType.Regular, SpeechColor, cliloc, pm.NetState);
+            }
             else if (quester is Item item)
+            {
                 MessageHelper.SendLocalizedMessageTo(item, pm, cliloc, SpeechColor);
+            }
             else
+            {
                 pm.SendLocalizedMessage(cliloc);
+            }
         }
 
         public static void Tell(IQuestGiver quester, PlayerMobile pm, int cliloc, string args)
@@ -605,11 +709,17 @@ namespace Server.Engines.MLQuests
             TurnToFace(quester, pm);
 
             if (quester is Mobile mobile)
+            {
                 mobile.PrivateOverheadMessage(MessageType.Regular, SpeechColor, cliloc, args, pm.NetState);
+            }
             else if (quester is Item item)
+            {
                 MessageHelper.SendLocalizedMessageTo(item, pm, cliloc, args, SpeechColor);
+            }
             else
+            {
                 pm.SendLocalizedMessage(cliloc, args);
+            }
         }
 
         public static void Tell(IQuestGiver quester, PlayerMobile pm, string message)
@@ -617,22 +727,34 @@ namespace Server.Engines.MLQuests
             TurnToFace(quester, pm);
 
             if (quester is Mobile mobile)
+            {
                 mobile.PrivateOverheadMessage(MessageType.Regular, SpeechColor, false, message, pm.NetState);
+            }
             else if (quester is Item item)
+            {
                 MessageHelper.SendMessageTo(item, pm, message, SpeechColor);
+            }
             else
+            {
                 pm.SendMessage(SpeechColor, message);
+            }
         }
 
         public static void TellDef(IQuestGiver quester, PlayerMobile pm, TextDefinition def)
         {
             if (def == null)
+            {
                 return;
+            }
 
             if (def.Number > 0)
+            {
                 Tell(quester, pm, def.Number);
+            }
             else if (def.String != null)
+            {
                 Tell(quester, pm, def.String);
+            }
         }
 
         public static void WriteQuestRef(IGenericWriter writer, MLQuest quest)
@@ -645,12 +767,16 @@ namespace Server.Engines.MLQuests
             var typeName = reader.ReadString();
 
             if (typeName == null)
+            {
                 return null; // not serialized
+            }
 
             var questType = AssemblyHandler.FindFirstTypeForName(typeName);
 
             if (questType == null)
+            {
                 return null; // no longer a type
+            }
 
             return FindQuest(questType);
         }
@@ -713,9 +839,13 @@ namespace Server.Engines.MLQuests
             public override void Execute(CommandEventArgs e, object obj)
             {
                 if (!(obj is PlayerMobile pm))
+                {
                     LogFailure("They have no ML quest context.");
+                }
                 else
+                {
                     e.Mobile.SendGump(new PropertiesGump(e.Mobile, GetOrCreateContext(pm)));
+                }
             }
         }
     }

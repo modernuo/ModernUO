@@ -71,7 +71,7 @@ namespace Server.Items
             var contains = false;
 
             if (house == null && m_BeforeChangeover ||
-                house?.IsOwner(@from) == true && (contains = house.Addons.Contains(this)))
+                house?.IsOwner(from) == true && (contains = house.Addons.Contains(this)))
             {
                 Effects.PlaySound(GetWorldLocation(), Map, 0x3B3);
                 from.SendLocalizedMessage(500461); // You destroy the item.

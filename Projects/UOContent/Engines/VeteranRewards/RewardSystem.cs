@@ -22,7 +22,9 @@ namespace Server.Engines.VeteranRewards
             get
             {
                 if (m_Categories == null)
+                {
                     SetupRewardTables();
+                }
 
                 return m_Categories;
             }
@@ -33,7 +35,9 @@ namespace Server.Engines.VeteranRewards
             get
             {
                 if (m_Lists == null)
+                {
                     SetupRewardTables();
+                }
 
                 return m_Lists;
             }
@@ -45,15 +49,22 @@ namespace Server.Engines.VeteranRewards
 
             for (var j = 0; j < entries.Count; ++j)
                 // RewardEntry entry = entries[j];
+            {
                 if (HasAccess(mob, entries[j]))
+                {
                     return true;
+                }
+            }
+
             return false;
         }
 
         public static bool HasAccess(Mobile mob, RewardEntry entry)
         {
             if (Core.Expansion < entry.RequiredExpansion)
+            {
                 return false;
+            }
 
             return HasAccess(mob, entry.List, out var _);
         }
@@ -77,7 +88,9 @@ namespace Server.Engines.VeteranRewards
             ts = list.Age - totalTime;
 
             if (ts <= TimeSpan.Zero)
+            {
                 return true;
+            }
 
             return false;
         }
@@ -85,7 +98,9 @@ namespace Server.Engines.VeteranRewards
         public static int GetRewardLevel(Mobile mob)
         {
             if (!(mob.Account is Account acct))
+            {
                 return 0;
+            }
 
             return GetRewardLevel(acct);
         }
@@ -100,7 +115,9 @@ namespace Server.Engines.VeteranRewards
         public static bool HasHalfLevel(Mobile mob)
         {
             if (!(mob.Account is Account acct))
+            {
                 return false;
+            }
 
             return HasHalfLevel(acct);
         }
@@ -119,10 +136,14 @@ namespace Server.Engines.VeteranRewards
             ComputeRewardInfo(mob, out var cur, out var max);
 
             if (cur >= max)
+            {
                 return false;
+            }
 
             if (!(mob.Account is Account acct))
+            {
                 return false;
+            }
 
             // if (mob.AccessLevel < AccessLevel.GameMaster)
             acct.SetTag("numRewardsChosen", (cur + 1).ToString());
@@ -154,14 +175,22 @@ namespace Server.Engines.VeteranRewards
             var tag = acct.GetTag("numRewardsChosen");
 
             if (string.IsNullOrEmpty(tag))
+            {
                 cur = 0;
+            }
             else
+            {
                 cur = Utility.ToInt32(tag);
+            }
 
             if (level >= 6)
+            {
                 max = 9 + (level - 6) * 2;
+            }
             else
+            {
                 max = 2 + level;
+            }
         }
 
         public static bool CheckIsUsableBy(Mobile from, Item item, object[] args = null)
@@ -178,12 +207,16 @@ namespace Server.Engines.VeteranRewards
                 for (var j = 0; j < entries.Length; ++j)
                 {
                     if (entries[j].ItemType != type)
+                    {
                         continue;
+                    }
 
                     if (args == null && entries[j].Args.Length == 0)
                     {
                         if (isRelaxedRules && i <= 0 || HasAccess(from, list, out var ts))
+                        {
                             return true;
+                        }
 
                         from.SendLocalizedMessage(
                             1008126,
@@ -195,17 +228,23 @@ namespace Server.Engines.VeteranRewards
                     }
 
                     if (args?.Length != entries[j].Args.Length)
+                    {
                         continue;
+                    }
 
                     var match = true;
 
                     for (var k = 0; match && k < args.Length; ++k)
+                    {
                         match = args[k].Equals(entries[j].Args[k]);
+                    }
 
                     if (match)
                     {
                         if (isRelaxedRules && i <= 0 || HasAccess(from, list, out var ts))
+                        {
                             return true;
+                        }
 
                         from.SendLocalizedMessage(
                             1008126,
@@ -240,22 +279,30 @@ namespace Server.Engines.VeteranRewards
                 var entries = list.Entries;
 
                 for (var j = 0; j < entries.Length; ++j)
+                {
                     if (entries[j].ItemType == type)
                     {
                         if (args == null && entries[j].Args.Length == 0)
+                        {
                             return i + 1;
+                        }
 
                         if (args?.Length == entries[j].Args.Length)
                         {
                             var match = true;
 
                             for (var k = 0; match && k < args.Length; ++k)
+                            {
                                 match = args[k].Equals(entries[j].Args[k]);
+                            }
 
                             if (match)
+                            {
                                 return i + 1;
+                            }
                         }
                     }
+                }
             }
 
             // no entry?
@@ -532,20 +579,27 @@ namespace Server.Engines.VeteranRewards
             };
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             Enabled = ServerConfiguration.GetOrUpdateSetting("vetRewards.enable", true);
             SkillCapRewards = ServerConfiguration.GetOrUpdateSetting("vetRewards.skillCapRewards", true);
             RewardInterval = ServerConfiguration.GetOrUpdateSetting("vetRewards.rewardInterval", TimeSpan.FromDays(30.0));
+        }
 
+        public static void Initialize()
+        {
             if (Enabled)
+            {
                 EventSink.Login += EventSink_Login;
+            }
         }
 
         private static void EventSink_Login(Mobile m)
         {
             if (!m.Alive)
+            {
                 return;
+            }
 
             ComputeRewardInfo(m, out var cur, out var max, out var level);
 
@@ -555,9 +609,13 @@ namespace Server.Engines.VeteranRewards
                 level = Math.Clamp(level, 0, 4);
 
                 if (SkillCapRewards)
+                {
                     m.SkillsCap = 7000 + level * 50;
+                }
                 else
+                {
                     m.SkillsCap = 7000;
+                }
             }
 
             if (Core.ML && m is PlayerMobile pm && !pm.HasStatReward && HasHalfLevel(pm))
@@ -567,7 +625,9 @@ namespace Server.Engines.VeteranRewards
             }
 
             if (cur < max)
+            {
                 m.SendGump(new RewardNoticeGump(m));
+            }
         }
     }
 

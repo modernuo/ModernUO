@@ -8,11 +8,18 @@ namespace Server.Misc
 {
     public static class CrashGuard
     {
-        // TODO: Make this configurable
-        private const bool Enabled = true;
-        private const bool SaveBackup = true;
-        private const bool RestartServer = true;
-        private const bool GenerateReport = true;
+        private static bool Enabled;
+        private static bool SaveBackup;
+        private static bool RestartServer; // Disable this if using a daemon/service
+        private static bool GenerateReport;
+
+        public static void Configure()
+        {
+            Enabled = ServerConfiguration.GetOrUpdateSetting("crashGuard.enabled", true);
+            SaveBackup = ServerConfiguration.GetOrUpdateSetting("crashGuard.saveBackup", true);
+            RestartServer = ServerConfiguration.GetOrUpdateSetting("crashGuard.restartServer", true);
+            GenerateReport = ServerConfiguration.GetOrUpdateSetting("crashGuard.generateReport", true);
+        }
 
         public static void Initialize()
         {

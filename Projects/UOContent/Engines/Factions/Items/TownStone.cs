@@ -41,7 +41,7 @@ namespace Server.Factions
             if (faction == null && from.AccessLevel < AccessLevel.GameMaster)
                 return; // TODO: Message?
 
-            if (m_Town.Owner == null || @from.AccessLevel < AccessLevel.GameMaster && faction != m_Town.Owner)
+            if (m_Town.Owner == null || from.AccessLevel < AccessLevel.GameMaster && faction != m_Town.Owner)
                 from.SendLocalizedMessage(1010332); // Your faction does not control this town
             else if (!m_Town.Owner.IsCommander(from))
                 from.SendLocalizedMessage(1005242); // Only faction Leaders can use townstones

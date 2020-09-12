@@ -111,7 +111,7 @@ namespace Server.Items
                         return;
                     }
 
-                    if ((item.IsChildOf(from.Backpack) || Core.ML && item.Parent == @from) &&
+                    if ((item.IsChildOf(from.Backpack) || Core.ML && item.Parent == from) &&
                         m_Powder.IsChildOf(from.Backpack))
                     {
                         var origMaxHP = wearable.MaxHitPoints;

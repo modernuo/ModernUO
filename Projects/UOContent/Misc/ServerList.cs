@@ -43,16 +43,21 @@ namespace Server.Misc
 
         public static bool AutoDetect { get; private set; }
 
-        public static void Initialize()
+        public static void Configure()
         {
             Address = ServerConfiguration.GetOrUpdateSetting("serverListing.address", null);
             AutoDetect = ServerConfiguration.GetOrUpdateSetting("serverListing.autoDetect", true);
             ServerName = ServerConfiguration.GetOrUpdateSetting("serverListing.serverName", "ModernUO");
+        }
 
+        public static void Initialize()
+        {
             if (Address == null)
             {
                 if (AutoDetect)
+                {
                     AutoDetection();
+                }
             }
             else
             {
@@ -77,7 +82,9 @@ namespace Server.Misc
                 {
                     ipep = (IPEndPoint)ns.Connection.RemoteEndPoint;
                     if (!IsPrivateNetwork(ipep.Address) && m_PublicAddress != null)
+                    {
                         localAddress = m_PublicAddress;
+                    }
                 }
 
                 e.AddServer(ServerName, new IPEndPoint(localAddress, localPort));
@@ -97,23 +104,31 @@ namespace Server.Misc
                 m_PublicAddress = FindPublicAddress();
 
                 if (m_PublicAddress != null)
+                {
                     Console.WriteLine("done ({0})", m_PublicAddress);
+                }
                 else
+                {
                     Console.WriteLine("failed");
+                }
             }
         }
 
         private static void Resolve(string addr, out IPAddress outValue)
         {
             if (IPAddress.TryParse(addr, out outValue))
+            {
                 return;
+            }
 
             try
             {
                 var iphe = Dns.GetHostEntry(addr);
 
                 if (iphe.AddressList.Length > 0)
+                {
                     outValue = iphe.AddressList[^1];
+                }
             }
             catch
             {

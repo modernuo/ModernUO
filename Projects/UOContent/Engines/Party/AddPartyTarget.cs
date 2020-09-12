@@ -18,38 +18,38 @@ namespace Server.Engines.PartySystem
 
                 if (from == m)
                 {
-                    @from.SendLocalizedMessage(1005439); // You cannot add yourself to a party.
+                    from.SendLocalizedMessage(1005439); // You cannot add yourself to a party.
                 }
                 else if (p != null && p.Leader != from)
                 {
-                    @from.SendLocalizedMessage(1005453); // You may only add members to the party if you are the leader.
+                    from.SendLocalizedMessage(1005453); // You may only add members to the party if you are the leader.
                 }
                 else if (m.Party is Mobile)
                 {
                 }
                 else if (p != null && p.Members.Count + p.Candidates.Count >= Party.Capacity)
                 {
-                    @from.SendLocalizedMessage(1008095); // You may only have 10 in your party (this includes candidates).
+                    from.SendLocalizedMessage(1008095); // You may only have 10 in your party (this includes candidates).
                 }
                 else if (!m.Player && m.Body.IsHuman)
                 {
-                    m.SayTo(@from, 1005443); // Nay, I would rather stay here and watch a nail rust.
+                    m.SayTo(from, 1005443); // Nay, I would rather stay here and watch a nail rust.
                 }
                 else if (!m.Player)
                 {
-                    @from.SendLocalizedMessage(1005444); // The creature ignores your offer.
+                    from.SendLocalizedMessage(1005444); // The creature ignores your offer.
                 }
                 else if (mp != null && mp == p)
                 {
-                    @from.SendLocalizedMessage(1005440); // This person is already in your party!
+                    from.SendLocalizedMessage(1005440); // This person is already in your party!
                 }
                 else if (mp != null)
                 {
-                    @from.SendLocalizedMessage(1005441); // This person is already in a party!
+                    from.SendLocalizedMessage(1005441); // This person is already in a party!
                 }
                 else
                 {
-                    Party.Invite(@from, m);
+                    Party.Invite(from, m);
                 }
             }
             else
