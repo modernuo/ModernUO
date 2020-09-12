@@ -85,7 +85,6 @@ namespace Server.Tests.Network.Packets
         public void TestHuedEffect()
         {
             var effectType = EffectType.Moving;
-            Serial serial = 0x4000;
             Serial from = 0x1000;
             Serial to = 0x2000;
             var itemId = 0x100;
