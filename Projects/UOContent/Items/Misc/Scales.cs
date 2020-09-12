@@ -49,7 +49,7 @@ namespace Server.Items
                 {
                     var root = item.RootParent;
 
-                    if (root != null && root != @from || item.Parent == from)
+                    if (root != null && root != from || item.Parent == from)
                     {
                         message = "You decide that item's current location is too awkward to get an accurate result.";
                     }

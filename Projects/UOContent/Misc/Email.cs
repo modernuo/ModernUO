@@ -18,7 +18,10 @@ namespace Server.Misc
         /// <param name="pageType"></param>
         public static void SendQueueEmail(PageEntry entry, string pageType)
         {
-            if (!EmailConfiguration.EmailEnabled) return;
+            if (!EmailConfiguration.EmailEnabled)
+            {
+                return;
+            }
 
             var sender = entry.Sender;
             var time = DateTime.UtcNow;
@@ -75,7 +78,10 @@ namespace Server.Misc
         /// <param name="filePath"></param>
         public static void SendCrashEmail(string filePath)
         {
-            if (EmailConfiguration.EmailEnabled) return;
+            if (EmailConfiguration.EmailEnabled)
+            {
+                return;
+            }
 
             var message = new MimeMessage();
             message.From.Add(EmailConfiguration.FromAddress);
@@ -96,7 +102,10 @@ namespace Server.Misc
         /// <param name="message"></param>
         private static async void SendAsync(MimeMessage message)
         {
-            if (!EmailConfiguration.EmailEnabled) return;
+            if (!EmailConfiguration.EmailEnabled)
+            {
+                return;
+            }
 
             var now = DateTime.UtcNow;
             var messageID = $"<{now:yyyyMMdd}.{now:HHmmssff}@{EmailConfiguration.EmailServer}>";
@@ -106,6 +115,7 @@ namespace Server.Misc
             var delay = EmailConfiguration.EmailSendRetryDelay;
 
             for (var i = 0; i < EmailConfiguration.EmailSendRetryCount; i++)
+            {
                 try
                 {
                     using var client = new SmtpClient();
@@ -130,6 +140,7 @@ namespace Server.Misc
 
                     await Task.Delay(delay * 1000);
                 }
+            }
         }
     }
 }

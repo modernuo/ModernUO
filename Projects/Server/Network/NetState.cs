@@ -387,7 +387,7 @@ namespace Server.Network
 
                 if (from.Mobile == Mobile && to.Mobile == m)
                 {
-                    return @from.Container;
+                    return from.Container;
                 }
 
                 if (from.Mobile == m && to.Mobile == Mobile)

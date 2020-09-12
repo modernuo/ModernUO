@@ -1087,7 +1087,7 @@ namespace Server.Mobiles
 
         public virtual bool CheckVendorAccess(Mobile from) =>
             Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false ||
-            Region != @from.Region && @from.Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, @from) != false;
+            Region != from.Region && from.Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false;
 
         public override void Serialize(IGenericWriter writer)
         {

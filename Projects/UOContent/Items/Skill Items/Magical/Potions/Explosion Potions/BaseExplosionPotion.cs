@@ -188,8 +188,8 @@ namespace Server.Items
             var toExplode = eable.Where(
                     o =>
                     {
-                        if (!(o is Mobile mobile) || @from != null &&
-                            (!SpellHelper.ValidIndirectTarget(@from, mobile) || !@from.CanBeHarmful(mobile, false)))
+                        if (!(o is Mobile mobile) || from != null &&
+                            (!SpellHelper.ValidIndirectTarget(from, mobile) || !from.CanBeHarmful(mobile, false)))
                             return o is BaseExplosionPotion && o != this;
 
                         ++toDamage;

@@ -52,7 +52,7 @@ namespace Server.Misc
         {
           if (from == GuildStatus.Waring && target == GuildStatus.Waring)
             return true;
-    
+
           return false;
         }*/
 
@@ -193,7 +193,7 @@ namespace Server.Misc
                 (fromGuild == targetGuild || fromGuild.IsAlly(targetGuild) || fromGuild.IsEnemy(targetGuild)))
                 return true; // Guild allies or enemies can be harmful
 
-            if (bcTarg?.Controlled == true || bcTarg?.Summoned == true && bcTarg?.SummonMaster != @from)
+            if (bcTarg?.Controlled == true || bcTarg?.Summoned == true && bcTarg?.SummonMaster != from)
                 return false; // Cannot harm other controlled mobiles
 
             if (target.Player)

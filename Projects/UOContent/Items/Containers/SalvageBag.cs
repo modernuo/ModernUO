@@ -180,8 +180,8 @@ namespace Server.Items
                 if (item?.Deleted != false)
                     continue;
 
-                if (item is BaseArmor armor && Resmelt(@from, armor, armor.Resource) ||
-                    item is BaseWeapon weapon && Resmelt(@from, weapon, weapon.Resource) ||
+                if (item is BaseArmor armor && Resmelt(from, armor, armor.Resource) ||
+                    item is BaseWeapon weapon && Resmelt(from, weapon, weapon.Resource) ||
                     item is DragonBardingDeed)
                     salvaged++;
                 else

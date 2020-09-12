@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using Server.Engines.Spawners;
 
-// Version 0.8
-
 namespace Server
 {
     public class UOAMVendorGenerator

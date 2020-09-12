@@ -156,7 +156,7 @@ namespace Server.Misc
             if (from is BaseCreature creature && creature.Controlled)
                 gc *= 2;
 
-            if (from.Alive && (gc >= Utility.RandomDouble() && AllowGain(@from, skill, amObj) || skill.Base < 10.0))
+            if (from.Alive && (gc >= Utility.RandomDouble() && AllowGain(from, skill, amObj) || skill.Base < 10.0))
                 Gain(from, skill);
 
             return success;

@@ -157,8 +157,8 @@ namespace Server.Items
 
         public virtual void BeginConfirmation(Mobile from)
         {
-            if (IsInTown(@from.Location, @from.Map) && !IsInTown(Target, TargetMap) ||
-                @from.Map != Map.Felucca && TargetMap == Map.Felucca && ShowFeluccaWarning)
+            if (IsInTown(from.Location, from.Map) && !IsInTown(Target, TargetMap) ||
+                from.Map != Map.Felucca && TargetMap == Map.Felucca && ShowFeluccaWarning)
             {
                 if (from.AccessLevel == AccessLevel.Player || !from.Hidden)
                     from.Send(new PlaySound(0x20E, from.Location));
