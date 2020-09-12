@@ -281,7 +281,10 @@ namespace Server
 
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
         {
-            HandleClosed();
+            if (!Closing)
+            {
+                HandleClosed();
+            }
         }
 
         private static void Console_CancelKeyPressed(object sender, ConsoleCancelEventArgs e)
@@ -294,27 +297,38 @@ namespace Server
 
             Console.WriteLine("Core: Detected {0} pressed.", keypress);
             e.Cancel = true;
-            ClosingTokenSource.Cancel();
+            Kill();
         }
 
         public static void Kill(bool restart = false)
         {
+            if (Closing)
+            {
+                return;
+            }
+
             HandleClosed();
 
             if (restart)
             {
-                var process = new Process
+                if (IsWindows)
                 {
-                    StartInfo = new ProcessStartInfo
+                    Process.Start("dotnet", Assembly.Location);
+                }
+                else
+                {
+                    var process = new Process
                     {
-                        FileName = "dotnet",
-                        Arguments = Assembly.Location,
-                        UseShellExecute = true
-                    }
-                };
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = "dotnet",
+                            Arguments = Assembly.Location,
+                            UseShellExecute = true
+                        }
+                    };
 
-                process.Start();
-                process.WaitForExit();
+                    process.Start();
+                }
             }
 
             Process.Kill();
@@ -324,7 +338,7 @@ namespace Server
         {
             ClosingTokenSource.Cancel();
 
-            Console.Write("Exiting...");
+            Console.Write("Core: Shutting down...");
 
             World.WaitForWriteCompletion();
 
@@ -417,7 +431,6 @@ namespace Server
             }
 
             Console.CancelKeyPress += Console_CancelKeyPressed;
-            ClosingTokenSource.Token.Register(() => Kill());
 
             if (GCSettings.IsServerGC)
             {
@@ -459,12 +472,13 @@ namespace Server
             EventSink.InvokeServerStarted();
 
             // Start net socket server
-            var host = TcpServer.CreateWebHostBuilder().Build();
-            var life = host.Services.GetRequiredService<IHostApplicationLifetime>();
-            life.ApplicationStopping.Register(ClosingTokenSource.Cancel);
+            _tcpHost = TcpServer.CreateWebHostBuilder().Build();
 
-            host.Run();
+            // Run indefinitely and block
+            _tcpHost.RunAsync(ClosingTokenSource.Token).Wait();
         }
+
+        private static IWebHost _tcpHost;
 
         public static void RunEventLoop(IMessagePumpService messagePumpService)
         {
@@ -529,7 +543,10 @@ namespace Server
         {
             var isItem = type.IsSubclassOf(typeof(Item));
 
-            if (!isItem && !type.IsSubclassOf(typeof(Mobile))) return;
+            if (!isItem && !type.IsSubclassOf(typeof(Mobile)))
+            {
+                return;
+            }
 
             if (isItem)
             {
@@ -581,23 +598,6 @@ namespace Server
             {
                 Parallel.ForEach(assembly.GetTypes(), VerifyType);
             }
-        }
-
-        internal enum ConsoleEventType
-        {
-            CTRL_C_EVENT,
-            CTRL_BREAK_EVENT,
-            CTRL_CLOSE_EVENT,
-            CTRL_LOGOFF_EVENT = 5,
-            CTRL_SHUTDOWN_EVENT
-        }
-
-        internal delegate bool ConsoleEventHandler(ConsoleEventType type);
-
-        internal static class UnsafeNativeMethods
-        {
-            [DllImport("Kernel32")]
-            internal static extern bool SetConsoleCtrlHandler(ConsoleEventHandler callback, bool add);
         }
     }
 }

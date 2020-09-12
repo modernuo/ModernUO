@@ -40,7 +40,9 @@ namespace Server.Network
             while (!m_WorkQueue.IsEmpty && count++ < 250)
             {
                 if (!m_WorkQueue.TryDequeue(out var work))
+                {
                     break;
+                }
 
                 var seq = new ReadOnlySequence<byte>(work.MemoryOwner.Memory.Slice(0, work.Length));
                 work.OnReceive(work.State, new PacketReader(seq));

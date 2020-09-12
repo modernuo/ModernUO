@@ -24,7 +24,9 @@ namespace Server.Misc
             m_RestartTime = DateTime.UtcNow.Date + RestartTime;
 
             if (m_RestartTime < DateTime.UtcNow)
+            {
                 m_RestartTime += TimeSpan.FromDays(1.0);
+            }
         }
 
         public static bool Restarting { get; private set; }
@@ -49,12 +51,12 @@ namespace Server.Misc
             }
         }
 
-        private void Warning_Callback()
+        private static void Warning_Callback()
         {
             World.Broadcast(0x22, true, "The server is going down shortly.");
         }
 
-        private void Restart_Callback()
+        private static void Restart_Callback()
         {
             Core.Kill(true);
         }
@@ -62,10 +64,14 @@ namespace Server.Misc
         protected override void OnTick()
         {
             if (Restarting || !Enabled)
+            {
                 return;
+            }
 
             if (DateTime.UtcNow < m_RestartTime)
+            {
                 return;
+            }
 
             if (WarningDelay > TimeSpan.Zero)
             {
