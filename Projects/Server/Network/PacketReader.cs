@@ -1,23 +1,3 @@
-/***************************************************************************
- *                              PacketReader.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Buffers;
 using System.IO;
@@ -46,7 +26,9 @@ namespace Server.Network
                 var buffer = m_Reader.Sequence.ToArray();
 
                 if (buffer.Length > 0)
+                {
                     sw.WriteLine("Client: {0}: Unhandled packet 0x{1:X2}", state, buffer[0]);
+                }
 
                 using (var ms = new MemoryStream(buffer))
                 {
@@ -68,22 +50,37 @@ namespace Server.Network
             {
                 case SeekOrigin.Begin:
                     if (offset < m_Reader.Consumed)
+                    {
                         m_Reader.Rewind(m_Reader.Consumed - Math.Max(offset, 0L));
+                    }
                     else
+                    {
                         m_Reader.Advance(offset - m_Reader.Consumed);
+                    }
+
                     break;
                 case SeekOrigin.Current:
                     if (offset < 0)
+                    {
                         m_Reader.Rewind(Math.Min(m_Reader.Consumed, offset * -1));
+                    }
                     else
+                    {
                         m_Reader.Advance(Math.Min(m_Reader.Remaining, offset));
+                    }
+
                     break;
                 case SeekOrigin.End:
                     var count = m_Reader.Remaining - offset;
                     if (count < 0)
+                    {
                         m_Reader.Rewind(count * -1);
+                    }
                     else if (count > 0)
+                    {
                         m_Reader.Advance(count);
+                    }
+
                     break;
             }
 
@@ -111,7 +108,9 @@ namespace Server.Network
             var sb = new StringBuilder();
 
             while (m_Reader.TryReadLittleEndian(out short c) && c != 0)
+            {
                 sb.Append((char)c);
+            }
 
             return sb.ToString();
         }
@@ -121,10 +120,14 @@ namespace Server.Network
             var sb = new StringBuilder();
 
             while (fixedLength-- > 0 && m_Reader.TryReadLittleEndian(out short c) && c != 0)
+            {
                 sb.Append((char)c);
+            }
 
             if (fixedLength > 0)
+            {
                 m_Reader.Advance(fixedLength);
+            }
 
             return sb.ToString();
         }
@@ -134,11 +137,17 @@ namespace Server.Network
             var sb = new StringBuilder();
 
             while (fixedLength-- > 0 && m_Reader.TryReadLittleEndian(out short c) && c != 0)
+            {
                 if (IsSafeChar(c))
+                {
                     sb.Append((char)c);
+                }
+            }
 
             if (fixedLength > 0)
+            {
                 m_Reader.Advance(fixedLength * 2);
+            }
 
             return sb.ToString();
         }
@@ -148,8 +157,12 @@ namespace Server.Network
             var sb = new StringBuilder();
 
             while (m_Reader.TryReadLittleEndian(out short c) && c != 0)
+            {
                 if (IsSafeChar(c))
+                {
                     sb.Append((char)c);
+                }
+            }
 
             return sb.ToString();
         }
@@ -159,8 +172,12 @@ namespace Server.Network
             var sb = new StringBuilder();
 
             while (m_Reader.TryReadBigEndian(out short c) && c != 0)
+            {
                 if (IsSafeChar(c))
+                {
                     sb.Append((char)c);
+                }
+            }
 
             return sb.ToString();
         }
@@ -170,7 +187,9 @@ namespace Server.Network
             var sb = new StringBuilder();
 
             while (m_Reader.TryReadBigEndian(out short c) && c != 0)
+            {
                 sb.Append((char)c);
+            }
 
             return sb.ToString();
         }
@@ -195,8 +214,12 @@ namespace Server.Network
             var sb = new StringBuilder(s.Length);
 
             for (var i = 0; i < s.Length; ++i)
+            {
                 if (IsSafeChar(s[i]))
+                {
                     sb.Append(s[i]);
+                }
+            }
 
             return sb.ToString();
         }
@@ -218,8 +241,12 @@ namespace Server.Network
             var sb = new StringBuilder(s.Length);
 
             for (var i = 0; i < s.Length; ++i)
+            {
                 if (IsSafeChar(s[i]))
+                {
                     sb.Append(s[i]);
+                }
+            }
 
             return sb.ToString();
         }
@@ -236,7 +263,9 @@ namespace Server.Network
             var sb = new StringBuilder();
 
             while (m_Reader.TryRead(out var c))
+            {
                 sb.Append((char)c);
+            }
 
             return sb.ToString();
         }
@@ -246,8 +275,12 @@ namespace Server.Network
             var sb = new StringBuilder();
 
             while (m_Reader.TryRead(out var c))
+            {
                 if (IsSafeChar(c))
+                {
                     sb.Append((char)c);
+                }
+            }
 
             return sb.ToString();
         }
@@ -257,11 +290,17 @@ namespace Server.Network
             var sb = new StringBuilder();
 
             while (fixedLength-- > 0 && m_Reader.TryReadBigEndian(out short c) && c != 0)
+            {
                 if (IsSafeChar(c))
+                {
                     sb.Append((char)c);
+                }
+            }
 
             if (fixedLength > 0)
+            {
                 m_Reader.Advance(fixedLength * 2);
+            }
 
             return sb.ToString();
         }
@@ -271,10 +310,14 @@ namespace Server.Network
             var sb = new StringBuilder();
 
             while (fixedLength-- > 0 && m_Reader.TryReadBigEndian(out short c) && c != 0)
+            {
                 sb.Append((char)c);
+            }
 
             if (fixedLength > 0)
+            {
                 m_Reader.Advance(fixedLength * 2);
+            }
 
             return sb.ToString();
         }
@@ -284,11 +327,17 @@ namespace Server.Network
             var sb = new StringBuilder();
 
             while (fixedLength-- > 0 && m_Reader.TryRead(out var c) && c != 0)
+            {
                 if (IsSafeChar(c))
+                {
                     sb.Append((char)c);
+                }
+            }
 
             if (fixedLength > 0)
+            {
                 m_Reader.Advance(fixedLength);
+            }
 
             return sb.ToString();
         }
@@ -298,10 +347,14 @@ namespace Server.Network
             var sb = new StringBuilder();
 
             while (fixedLength-- > 0 && m_Reader.TryRead(out var c) && c != 0)
+            {
                 sb.Append((char)c);
+            }
 
             if (fixedLength > 0)
+            {
                 m_Reader.Advance(fixedLength);
+            }
 
             return sb.ToString();
         }

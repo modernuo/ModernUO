@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                BaseMulti.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 
 namespace Server.Items
@@ -60,7 +40,10 @@ namespace Server.Items
                     int id = mcl.List[0].ItemId;
 
                     if (id < 0x4000)
+                    {
                         return 1020000 + id;
+                    }
+
                     return 1078872 + id;
                 }
 
@@ -129,8 +112,12 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0)
+            {
                 if (ItemID >= 0x4000)
+                {
                     ItemID -= 0x4000;
+                }
+            }
         }
     }
 }

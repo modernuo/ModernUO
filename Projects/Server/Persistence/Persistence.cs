@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Persistence.cs                                                  *
  *                                                                       *
@@ -30,9 +30,14 @@ namespace Server
             file.Refresh();
 
             if (file.Directory?.Exists == false)
+            {
                 file.Directory.Create();
+            }
 
-            if (!file.Exists) file.Create().Close();
+            if (!file.Exists)
+            {
+                file.Create().Close();
+            }
 
             file.Refresh();
 
@@ -72,7 +77,9 @@ namespace Server
             if (file.Directory?.Exists == false)
             {
                 if (!ensure)
+                {
                     throw new DirectoryNotFoundException();
+                }
 
                 file.Directory.Create();
             }
@@ -80,10 +87,12 @@ namespace Server
             if (!file.Exists)
             {
                 if (!ensure)
+                {
                     throw new FileNotFoundException
                     {
                         Source = file.FullName
                     };
+                }
 
                 file.Create().Close();
             }
@@ -99,7 +108,10 @@ namespace Server
             }
             catch (EndOfStreamException eos)
             {
-                if (file.Length > 0) Console.WriteLine("[Persistence]: {0}", eos);
+                if (file.Length > 0)
+                {
+                    Console.WriteLine("[Persistence]: {0}", eos);
+                }
             }
             catch (Exception e)
             {

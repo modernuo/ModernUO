@@ -1,23 +1,3 @@
-/***************************************************************************
- *                               Point3DList.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 
 namespace Server
@@ -52,7 +32,9 @@ namespace Server
                 m_List = new Point3D[old.Length * 2];
 
                 for (var i = 0; i < old.Length; ++i)
+                {
                     m_List[i] = old[i];
+                }
             }
 
             m_List[Count].m_X = x;
@@ -69,7 +51,9 @@ namespace Server
                 m_List = new Point3D[old.Length * 2];
 
                 for (var i = 0; i < old.Length; ++i)
+                {
                     m_List[i] = old[i];
+                }
             }
 
             m_List[Count].m_X = p.m_X;
@@ -81,12 +65,16 @@ namespace Server
         public Point3D[] ToArray()
         {
             if (Count == 0)
+            {
                 return m_EmptyList;
+            }
 
             var list = new Point3D[Count];
 
             for (var i = 0; i < Count; ++i)
+            {
                 list[i] = m_List[i];
+            }
 
             Count = 0;
 

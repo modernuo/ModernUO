@@ -1,23 +1,3 @@
-/***************************************************************************
- *                               Compression.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 
 namespace Server.Network
@@ -84,15 +64,32 @@ namespace Server.Network
             ReadOnlySpan<byte> input, int offset, int count, Span<byte> output, out int length
         )
         {
-            if (input == null) throw new ArgumentNullException(nameof(input));
+            if (input == null)
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
 
-            if (offset < 0 || offset >= input.Length) throw new ArgumentOutOfRangeException(nameof(offset));
-            if (count < 0 || count > input.Length) throw new ArgumentOutOfRangeException(nameof(count));
-            if (input.Length - offset < count) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (offset < 0 || offset >= input.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset));
+            }
+
+            if (count < 0 || count > input.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+
+            if (input.Length - offset < count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset));
+            }
 
             length = 0;
 
-            if (count > DefiniteOverflow) return;
+            if (count > DefiniteOverflow)
+            {
+                return;
+            }
 
             var bitCount = 0;
             var bitValue = 0;

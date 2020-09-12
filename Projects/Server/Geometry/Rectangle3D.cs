@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Rectangle3D.cs                                                  *
  *                                                                       *
@@ -81,22 +81,34 @@ namespace Server
         public void MakeHold(Rectangle3D r)
         {
             if (r.m_Start.m_X < m_Start.m_X)
+            {
                 m_Start.m_X = r.m_Start.m_X;
+            }
 
             if (r.m_Start.m_Y < m_Start.m_Y)
+            {
                 m_Start.m_Y = r.m_Start.m_Y;
+            }
 
             if (r.m_Start.m_Z < m_Start.m_Z)
+            {
                 m_Start.m_Z = r.m_Start.m_Z;
+            }
 
             if (r.m_End.m_X > m_End.m_X)
+            {
                 m_End.m_X = r.m_End.m_X;
+            }
 
             if (r.m_End.m_Y > m_End.m_Y)
+            {
                 m_End.m_Y = r.m_End.m_Y;
+            }
 
             if (r.m_End.m_Z < m_End.m_Z)
+            {
                 m_End.m_Z = r.m_End.m_Z;
+            }
         }
 
         public bool Contains(Point3D p) =>

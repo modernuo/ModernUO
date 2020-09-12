@@ -1,23 +1,3 @@
-/***************************************************************************
- *                          SecureTradeContainer.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using Server.Accounting;
 using Server.Network;
 
@@ -40,7 +20,10 @@ namespace Server.Items
 
         public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
         {
-            if (item == Trade.From.VirtualCheck || item == Trade.To.VirtualCheck) return true;
+            if (item == Trade.From.VirtualCheck || item == Trade.To.VirtualCheck)
+            {
+                return true;
+            }
 
             var to = Trade.From.Container != this ? Trade.From.Mobile : Trade.To.Mobile;
 
@@ -59,37 +42,51 @@ namespace Server.Items
         public override void OnItemAdded(Item item)
         {
             if (!(item is VirtualCheck))
+            {
                 ClearChecks();
+            }
         }
 
         public override void OnItemRemoved(Item item)
         {
             if (!(item is VirtualCheck))
+            {
                 ClearChecks();
+            }
         }
 
         public override void OnSubItemAdded(Item item)
         {
             if (!(item is VirtualCheck))
+            {
                 ClearChecks();
+            }
         }
 
         public override void OnSubItemRemoved(Item item)
         {
             if (!(item is VirtualCheck))
+            {
                 ClearChecks();
+            }
         }
 
         public void ClearChecks()
         {
             if (Trade == null)
+            {
                 return;
+            }
 
             if (Trade.From?.IsDisposed == false)
+            {
                 Trade.From.Accepted = false;
+            }
 
             if (Trade.To?.IsDisposed == false)
+            {
                 Trade.To.Accepted = false;
+            }
 
             Trade.Update();
         }

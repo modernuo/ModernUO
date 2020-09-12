@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Point3DConverter.cs                                             *
  *                                                                       *
@@ -30,19 +30,25 @@ namespace Server.Json
             {
                 reader.Read();
                 if (reader.TokenType == JsonTokenType.EndArray)
+                {
                     break;
+                }
 
                 if (reader.TokenType == JsonTokenType.Number)
                 {
                     if (count < 3)
+                    {
                         data[count] = reader.GetInt32();
+                    }
 
                     count++;
                 }
             }
 
             if (count > 3)
+            {
                 throw new JsonException("Point3D must be an array of x, y, z");
+            }
 
             return new Point3D(data[0], data[1], data[2]);
         }
@@ -55,10 +61,14 @@ namespace Server.Json
             {
                 reader.Read();
                 if (reader.TokenType == JsonTokenType.EndObject)
+                {
                     break;
+                }
 
                 if (reader.TokenType != JsonTokenType.PropertyName)
+                {
                     throw new JsonException("Invalid json structure for Point3D object");
+                }
 
                 var key = reader.GetString();
 
@@ -73,7 +83,9 @@ namespace Server.Json
                 reader.Read();
 
                 if (reader.TokenType != JsonTokenType.Number)
+                {
                     throw new JsonException($"Value for {key} must be a number");
+                }
 
                 data[i] = reader.GetInt32();
             }

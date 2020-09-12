@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                Utility.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -127,7 +107,9 @@ namespace Server
         public static void Separate(StringBuilder sb, string value, string separator)
         {
             if (sb.Length > 0)
+            {
                 sb.Append(separator);
+            }
 
             sb.Append(value);
         }
@@ -172,25 +154,35 @@ namespace Server
         public static string FixHtml(string str)
         {
             if (str == null)
+            {
                 return "";
+            }
 
             var hasOpen = str.IndexOf('<') >= 0;
             var hasClose = str.IndexOf('>') >= 0;
             var hasPound = str.IndexOf('#') >= 0;
 
             if (!hasOpen && !hasClose && !hasPound)
+            {
                 return str;
+            }
 
             var sb = new StringBuilder(str);
 
             if (hasOpen)
+            {
                 sb.Replace('<', '(');
+            }
 
             if (hasClose)
+            {
                 sb.Replace('>', ')');
+            }
 
             if (hasPound)
+            {
                 sb.Replace('#', '-');
+            }
 
             return sb.ToString();
         }
@@ -198,7 +190,9 @@ namespace Server
         public static bool IPMatchCIDR(string cidr, IPAddress ip)
         {
             if (ip == null || ip.AddressFamily == AddressFamily.InterNetworkV6)
+            {
                 return false; // Just worry about IPv4 for now
+            }
 
             var bytes = new byte[4];
             var split = cidr.Split('.');
@@ -269,7 +263,9 @@ namespace Server
                     else if (c == '/')
                     {
                         if (cidrBits || i != 3) // If there's two '/' or the '/' isn't in the last byte
+                        {
                             return false;
+                        }
 
                         partBase = 10;
                         cidrBits = true;
@@ -290,7 +286,9 @@ namespace Server
         {
             // Ignore IPv6 for now
             if (cidrPrefix == null || ip == null || cidrPrefix.AddressFamily == AddressFamily.InterNetworkV6)
+            {
                 return false;
+            }
 
             var cidrValue = SwapUnsignedInt((uint)GetLongAddressValue(cidrPrefix));
             var ipValue = SwapUnsignedInt((uint)GetLongAddressValue(ip));
@@ -301,7 +299,9 @@ namespace Server
         public static bool IPMatchCIDR(uint cidrPrefixValue, IPAddress ip, int cidrLength)
         {
             if (ip == null || ip.AddressFamily == AddressFamily.InterNetworkV6)
+            {
                 return false;
+            }
 
             var ipValue = SwapUnsignedInt((uint)GetLongAddressValue(ip));
 
@@ -311,7 +311,9 @@ namespace Server
         public static bool IPMatchCIDR(uint cidrPrefixValue, uint ipValue, int cidrLength)
         {
             if (cidrLength <= 0 || cidrLength >= 32) // if invalid cidr Length, just compare IPs
+            {
                 return cidrPrefixValue == ipValue;
+            }
 
             var mask = uint.MaxValue << (32 - cidrLength);
 
@@ -321,7 +323,9 @@ namespace Server
         private static uint OrderedAddressValue(byte[] bytes)
         {
             if (bytes.Length != 4)
+            {
                 return 0;
+            }
 
             return (uint)((bytes[0] << 0x18) | (bytes[1] << 0x10) | (bytes[2] << 8) | bytes[3]) & 0xffffffff;
         }
@@ -335,21 +339,32 @@ namespace Server
         public static bool TryConvertIPv6toIPv4(ref IPAddress address)
         {
             if (!Socket.OSSupportsIPv6 || address.AddressFamily == AddressFamily.InterNetwork)
+            {
                 return true;
+            }
 
             var addr = address.GetAddressBytes();
             if (addr.Length == 16) // sanity 0 - 15 //10 11 //12 13 14 15
             {
                 if (addr[10] != 0xFF || addr[11] != 0xFF)
+                {
                     return false;
+                }
 
                 for (var i = 0; i < 10; i++)
+                {
                     if (addr[i] != 0)
+                    {
                         return false;
+                    }
+                }
 
                 var v4Addr = new byte[4];
 
-                for (var i = 0; i < 4; i++) v4Addr[i] = addr[12 + i];
+                for (var i = 0; i < 4; i++)
+                {
+                    v4Addr[i] = addr[12 + i];
+                }
 
                 address = new IPAddress(v4Addr);
                 return true;
@@ -466,7 +481,9 @@ namespace Server
                 int b = (byte)(GetAddressValue(ip) >> (i * 8));
 
                 if (b < lowPart || b > highPart)
+                {
                     return false;
+                }
             }
 
             return true;
@@ -487,11 +504,20 @@ namespace Server
             var adx = Math.Abs(dx);
             var ady = Math.Abs(dy);
 
-            if (adx >= ady * 3) return dx > 0 ? Direction.East : Direction.West;
+            if (adx >= ady * 3)
+            {
+                return dx > 0 ? Direction.East : Direction.West;
+            }
 
-            if (ady >= adx * 3) return dy > 0 ? Direction.South : Direction.North;
+            if (ady >= adx * 3)
+            {
+                return dy > 0 ? Direction.South : Direction.North;
+            }
 
-            if (dx > 0) return dy > 0 ? Direction.Down : Direction.Right;
+            if (dx > 0)
+            {
+                return dy > 0 ? Direction.Down : Direction.Right;
+            }
 
             return dy > 0 ? Direction.Left : Direction.Up;
         }
@@ -562,14 +588,22 @@ namespace Server
                     bytes.Append(c.ToString("X2"));
 
                     if (j != 7)
+                    {
                         bytes.Append(' ');
+                    }
                     else
+                    {
                         bytes.Append("  ");
+                    }
 
                     if (c >= 0x20 && c < 0x7F)
+                    {
                         chars.Append((char)c);
+                    }
                     else
+                    {
                         chars.Append('.');
+                    }
                 }
 
                 output.Write(byteIndex.ToString("X4"));
@@ -585,6 +619,7 @@ namespace Server
                 var chars = new StringBuilder(rem);
 
                 for (var j = 0; j < 16; ++j)
+                {
                     if (j < rem)
                     {
                         var c = input.ReadByte();
@@ -592,19 +627,28 @@ namespace Server
                         bytes.Append(c.ToString("X2"));
 
                         if (j != 7)
+                        {
                             bytes.Append(' ');
+                        }
                         else
+                        {
                             bytes.Append("  ");
+                        }
 
                         if (c >= 0x20 && c < 0x7F)
+                        {
                             chars.Append((char)c);
+                        }
                         else
+                        {
                             chars.Append('.');
+                        }
                     }
                     else
                     {
                         bytes.Append("   ");
                     }
+                }
 
                 output.Write(byteIndex.ToString("X4"));
                 output.Write("   ");
@@ -662,7 +706,9 @@ namespace Server
             m.HairItemID = m.Race.RandomHair(m);
 
             if (randomHue)
+            {
                 m.HairHue = m.Race.RandomHairHue();
+            }
         }
 
         public static void AssignRandomFacialHair(Mobile m, int hue)
@@ -676,7 +722,9 @@ namespace Server
             m.FacialHairItemID = m.Race.RandomFacialHair(m);
 
             if (randomHue)
+            {
                 m.FacialHairHue = m.Race.RandomHairHue();
+            }
         }
 
         public static List<TOutput> CastListContravariant<TInput, TOutput>(List<TInput> list) where TInput : TOutput =>
@@ -688,7 +736,9 @@ namespace Server
         public static List<TOutput> SafeConvertList<TInput, TOutput>(List<TInput> list) where TOutput : class
         {
             if ((list?.Capacity ?? 0) == 0)
+            {
                 return new List<TOutput>();
+            }
 
             var output = new List<TOutput>(list.Capacity);
             output.AddRange(list.OfType<TOutput>());
@@ -729,9 +779,13 @@ namespace Server
 
 #pragma warning disable CA1806 // Do not ignore method results
             if (value.StartsWith("0x"))
+            {
                 int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
+            }
             else
+            {
                 int.TryParse(value, out i);
+            }
 #pragma warning restore CA1806 // Do not ignore method results
 
             return i;
@@ -743,9 +797,13 @@ namespace Server
 
 #pragma warning disable CA1806 // Do not ignore method results
             if (value.StartsWith("0x"))
+            {
                 uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
+            }
             else
+            {
                 uint.TryParse(value, out i);
+            }
 #pragma warning restore CA1806 // Do not ignore method results
 
             return i;
@@ -848,7 +906,9 @@ namespace Server
             var total = 0;
 
             for (var i = 0; i < amount; ++i)
+            {
                 total += (int)RandomSources.Source.Next(1, sides);
+            }
 
             return total + bonus;
         }
@@ -883,7 +943,10 @@ namespace Server
      */
         public static T[] RandomSample<T>(this T[] source, int count)
         {
-            if (count <= 0) return Array.Empty<T>();
+            if (count <= 0)
+            {
+                return Array.Empty<T>();
+            }
 
             var length = source.Length;
             Span<bool> list = stackalloc bool[length];
@@ -894,7 +957,9 @@ namespace Server
             {
                 var rand = Random(length);
                 if (!(list[rand] && (list[rand] = true)))
+                {
                     sampleList[i++] = source[rand];
+                }
             } while (i < count);
 
             return sampleList;
@@ -902,7 +967,10 @@ namespace Server
 
         public static List<T> RandomSample<T>(this List<T> source, int count)
         {
-            if (count <= 0) return new List<T>();
+            if (count <= 0)
+            {
+                return new List<T>();
+            }
 
             var length = source.Count;
             Span<bool> list = stackalloc bool[length];
@@ -913,7 +981,9 @@ namespace Server
             {
                 var rand = Random(length);
                 if (!(list[rand] && (list[rand] = true)))
+                {
                     sampleList[i++] = source[rand];
+                }
             } while (i < count);
 
             return sampleList;
@@ -1064,5 +1134,27 @@ namespace Server
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TimeSpan Max(this TimeSpan val, TimeSpan max) => val > max ? max : val;
+
+        public static string TrimMultiline(this string str, string lineSeparator = "\n")
+        {
+            var parts = str.Split(lineSeparator);
+            for (var i = 0; i < parts.Length; i++)
+            {
+                parts[i] = parts[i].Trim();
+            }
+
+            return string.Join(lineSeparator, parts);
+        }
+
+        public static string IndentMultiline(this string str, string indent = "\t", string lineSeparator = "\n")
+        {
+            var parts = str.Split(lineSeparator);
+            for (var i = 0; i < parts.Length; i++)
+            {
+                parts[i] = $"{indent}{parts[i]}";
+            }
+
+            return string.Join(lineSeparator, parts);
+        }
     }
 }

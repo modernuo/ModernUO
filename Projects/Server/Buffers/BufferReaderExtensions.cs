@@ -14,7 +14,10 @@ namespace System.Buffers
             where T : unmanaged
         {
             var span = reader.UnreadSpan;
-            if (span.Length < sizeof(T)) return TryReadMultisegment(ref reader, out value);
+            if (span.Length < sizeof(T))
+            {
+                return TryReadMultisegment(ref reader, out value);
+            }
 
             value = Unsafe.ReadUnaligned<T>(ref MemoryMarshal.GetReference(span));
             reader.Advance(sizeof(T));

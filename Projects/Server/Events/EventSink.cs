@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: EventSink.cs                                                    *
  *                                                                       *
@@ -137,7 +137,9 @@ namespace Server
         public static void InvokeEquipMacro(Mobile m, List<Serial> list)
         {
             if (list?.Count > 0)
+            {
                 EquipMacro?.Invoke(m, list);
+            }
         }
 
         public static event Action<Mobile, List<Layer>> UnequipMacro;
@@ -145,7 +147,9 @@ namespace Server
         public static void InvokeUnequipMacro(Mobile m, List<Layer> layers)
         {
             if (layers?.Count > 0)
+            {
                 UnequipMacro?.Invoke(m, layers);
+            }
         }
 
         public static event Action<Mobile, IEntity, int> TargetedSpell;

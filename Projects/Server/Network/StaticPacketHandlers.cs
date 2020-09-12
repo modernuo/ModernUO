@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: StaticPacketHandlers.cs                                         *
  *                                                                       *
@@ -50,7 +50,9 @@ namespace Server.Network
         public static OPLInfo FreeOPLInfoPacket(IPropertyListObject obj)
         {
             if (OPLInfoPackets.TryRemove(obj, out var p))
+            {
                 Packet.Release(p);
+            }
 
             return p;
         }
@@ -71,7 +73,9 @@ namespace Server.Network
         public static void FreeRemoveItemPacket(IEntity entity)
         {
             if (RemoveEntityPackets.TryRemove(entity, out var p))
+            {
                 Packet.Release(p);
+            }
         }
 
         public static WorldItem GetWorldItemPacket(Item item)
@@ -116,13 +120,19 @@ namespace Server.Network
         public static void FreeWorldItemPackets(Item item)
         {
             if (WorldItemPackets.TryRemove(item, out var wi))
+            {
                 Packet.Release(wi);
+            }
 
             if (WorldItemSAPackets.TryRemove(item, out var wisa))
+            {
                 Packet.Release(wisa);
+            }
 
             if (WorldItemHSPackets.TryRemove(item, out var wihs))
+            {
                 Packet.Release(wihs);
+            }
         }
     }
 }

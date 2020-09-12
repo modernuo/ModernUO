@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: MenuPackets.cs                                                  *
  *                                                                       *
@@ -166,11 +166,15 @@ namespace Server.Network
                 var range = e.Range;
 
                 if (range == -1)
+                {
                     range = 18;
+                }
 
                 var flags = e.Flags;
                 if (!(e.Enabled && menu.From.InRange(p, range)))
+                {
                     flags |= CMEFlags.Disabled;
+                }
 
                 Stream.Write((short)flags);
             }
@@ -213,21 +217,29 @@ namespace Server.Network
                 var range = e.Range;
 
                 if (range == -1)
+                {
                     range = 18;
+                }
 
                 var flags = e.Flags;
                 if (!(e.Enabled && menu.From.InRange(p, range)))
+                {
                     flags |= CMEFlags.Disabled;
+                }
 
                 var color = e.Color & 0xFFFF;
 
                 if (color != 0xFFFF)
+                {
                     flags |= CMEFlags.Colored;
+                }
 
                 Stream.Write((short)flags);
 
                 if ((flags & CMEFlags.Colored) != 0)
+                {
                     Stream.Write((short)color);
+                }
             }
         }
     }

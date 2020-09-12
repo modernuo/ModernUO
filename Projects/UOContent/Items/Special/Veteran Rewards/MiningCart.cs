@@ -185,9 +185,9 @@ namespace Server.Items
                     case MiningCartType.GemEast:
                         if (Gems > 0)
                         {
-                            var gems = Utility.Random(15) switch
+                            Item gems = Utility.Random(15) switch
                             {
-                                0 => (Item)new Amber(),
+                                0 => new Amber(),
                                 1 => new Amethyst(),
                                 2 => new Citrine(),
                                 3 => new Diamond(),
@@ -196,14 +196,14 @@ namespace Server.Items
                                 6 => new Sapphire(),
                                 7 => new StarSapphire(),
                                 8 => new Tourmaline(),
+
                                 // Mondain's Legacy gems
                                 9  => new PerfectEmerald(),
                                 10 => new DarkSapphire(),
                                 11 => new Turquoise(),
                                 12 => new EcruCitrine(),
                                 13 => new FireRuby(),
-                                14 => new BlueDiamond(),
-                                _  => null
+                                _ => new BlueDiamond() // 14
                             };
 
                             var amount = Math.Min(5, Gems);

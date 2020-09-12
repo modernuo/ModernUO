@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Rectangle3DConverter.cs                                         *
  *                                                                       *
@@ -30,19 +30,25 @@ namespace Server.Json
             {
                 reader.Read();
                 if (reader.TokenType == JsonTokenType.EndArray)
+                {
                     break;
+                }
 
                 if (reader.TokenType == JsonTokenType.Number)
                 {
                     if (count < 6)
+                    {
                         data[count] = reader.GetInt32();
+                    }
 
                     count++;
                 }
             }
 
             if (count > 6)
+            {
                 throw new JsonException("Rectangle3D must be an array of x, y, z, h, w, d");
+            }
 
             return new Rectangle3D(data[0], data[1], data[2], data[3], data[4], data[5]);
         }
@@ -59,10 +65,14 @@ namespace Server.Json
             {
                 reader.Read();
                 if (reader.TokenType == JsonTokenType.EndObject)
+                {
                     break;
+                }
 
                 if (reader.TokenType != JsonTokenType.PropertyName)
+                {
                     throw new JsonException("Invalid json structure for Rectangle3D object");
+                }
 
                 var key = reader.GetString();
 
@@ -71,7 +81,9 @@ namespace Server.Json
                 if (key == "start" || key == "end")
                 {
                     if (objType > -1 && objType != 2)
+                    {
                         throw new JsonException("Rectangle3D must have a start/end, or x/y/z/w/h/d, but not both.");
+                    }
 
                     objType = 2;
 
@@ -107,20 +119,31 @@ namespace Server.Json
                 if (i < 10)
                 {
                     if (objType > -1 && objType != 0)
+                    {
                         throw new JsonException("Rectangle3D must have a start/end, or x/y/z/w/h/d, but not both.");
+                    }
 
                     objType = 0;
                     data[i] = reader.GetInt32();
-                    if (i == 2) hasZ = true;
+                    if (i == 2)
+                    {
+                        hasZ = true;
+                    }
+
                     continue;
                 }
 
                 if (objType > -1 && objType != 1)
+                {
                     throw new JsonException("Rectangle3D must have a start/end, or x/y/z/w/h/d, but not both.");
+                }
 
                 objType = 1;
                 data[i - 10] = reader.GetInt32();
-                if (i == 12 || i == 15) hasZ = true;
+                if (i == 12 || i == 15)
+                {
+                    hasZ = true;
+                }
             }
 
             if (!hasZ)

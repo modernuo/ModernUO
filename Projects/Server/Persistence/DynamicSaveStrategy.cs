@@ -1,24 +1,4 @@
-﻿/***************************************************************************
- *                          DynamicSaveStrategy.cs
- *                            -------------------
- *   begin                : December 16, 2010
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -137,7 +117,10 @@ namespace Server
                     writer.QueueForIndex(item, size);
 
                     if (item.Decays && item.Parent == null && item.Map != Map.Internal &&
-                        DateTime.UtcNow > item.LastMoved + item.DecayTime) _decayBag.Add(item);
+                        DateTime.UtcNow > item.LastMoved + item.DecayTime)
+                    {
+                        _decayBag.Add(item);
+                    }
 
                     return writer;
                 },
@@ -230,8 +213,12 @@ namespace Server
         public override void ProcessDecay()
         {
             while (_decayBag.TryTake(out var item))
+            {
                 if (item.OnDecay())
+                {
                     item.Delete();
+                }
+            }
         }
 
         private void OpenFiles()
@@ -287,7 +274,10 @@ namespace Server
 
             bfw.Write(types.Count);
 
-            foreach (var type in types) bfw.Write(type.FullName);
+            foreach (var type in types)
+            {
+                bfw.Write(type.FullName);
+            }
 
             bfw.Flush();
 

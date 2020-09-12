@@ -74,7 +74,9 @@ namespace System.Buffers
             {
                 if (length < 0)
                     // Cast-away readonly to initialize lazy field
+                {
                     Volatile.Write(ref Unsafe.AsRef(length), sequence.Length);
+                }
 
                 return length;
             }
@@ -109,9 +111,13 @@ namespace System.Buffers
             if (CurrentSpanIndex >= CurrentSpan.Length)
             {
                 if (usingSequence)
+                {
                     GetNextSpan();
+                }
                 else
+                {
                     moreData = false;
+                }
             }
 
             return true;
@@ -120,7 +126,10 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Rewind(long count)
         {
-            if ((ulong)count > (ulong)Consumed) throw new ArgumentOutOfRangeException(nameof(count));
+            if ((ulong)count > (ulong)Consumed)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
 
             Consumed -= count;
 
@@ -232,7 +241,10 @@ namespace System.Buffers
 
         private void AdvanceToNextSpan(long count)
         {
-            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (count < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
 
             Consumed += count;
             while (moreData)
@@ -253,7 +265,10 @@ namespace System.Buffers
 
                 GetNextSpan();
 
-                if (count == 0) break;
+                if (count == 0)
+                {
+                    break;
+                }
             }
 
             if (count != 0)
@@ -286,7 +301,9 @@ namespace System.Buffers
         {
             // If we don't have enough to fill the requested buffer, return false
             if (Remaining < destination.Length)
+            {
                 return false;
+            }
 
             var firstSpan = UnreadSpan;
             firstSpan.CopyTo(destination);
@@ -294,14 +311,19 @@ namespace System.Buffers
 
             var next = nextPosition;
             while (sequence.TryGet(ref next, out var nextSegment))
+            {
                 if (nextSegment.Length > 0)
                 {
                     var nextSpan = nextSegment.Span;
                     var toCopy = Math.Min(nextSpan.Length, destination.Length - copied);
                     nextSpan.Slice(0, toCopy).CopyTo(destination.Slice(copied));
                     copied += toCopy;
-                    if (copied >= destination.Length) break;
+                    if (copied >= destination.Length)
+                    {
+                        break;
+                    }
                 }
+            }
 
             return true;
         }

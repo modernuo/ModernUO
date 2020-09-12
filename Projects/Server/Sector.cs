@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                 Sector.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using Server.Items;
@@ -101,7 +81,10 @@ namespace Server
             {
                 list.Remove(value);
 
-                if (list.Count == 0) list = null;
+                if (list.Count == 0)
+                {
+                    list = null;
+                }
             }
         }
 
@@ -112,9 +95,13 @@ namespace Server
                 var index = list?.IndexOf(oldValue) ?? -1;
 
                 if (index >= 0)
+                {
                     list[index] = newValue;
+                }
                 else
+                {
                     Add(ref list, newValue);
+                }
             }
             else if (oldValue != null)
             {
@@ -145,11 +132,17 @@ namespace Server
         {
             Add(ref m_Mobiles, mob);
 
-            if (mob.NetState != null) Add(ref m_Clients, mob.NetState);
+            if (mob.NetState != null)
+            {
+                Add(ref m_Clients, mob.NetState);
+            }
 
             if (mob.Player)
             {
-                if (m_Players == null) Owner.ActivateSectors(X, Y);
+                if (m_Players == null)
+                {
+                    Owner.ActivateSectors(X, Y);
+                }
 
                 Add(ref m_Players, mob);
             }
@@ -159,13 +152,19 @@ namespace Server
         {
             Remove(ref m_Mobiles, mob);
 
-            if (mob.NetState != null) Remove(ref m_Clients, mob.NetState);
+            if (mob.NetState != null)
+            {
+                Remove(ref m_Clients, mob.NetState);
+            }
 
             if (mob.Player && m_Players != null)
             {
                 Remove(ref m_Players, mob);
 
-                if (m_Players == null) Owner.DeactivateSectors(X, Y);
+                if (m_Players == null)
+                {
+                    Owner.DeactivateSectors(X, Y);
+                }
             }
         }
 
@@ -186,10 +185,16 @@ namespace Server
                 {
                     var regRect = m_RegionRects[i];
 
-                    if (regRect.Region == region) m_RegionRects.RemoveAt(i);
+                    if (regRect.Region == region)
+                    {
+                        m_RegionRects.RemoveAt(i);
+                    }
                 }
 
-                if (m_RegionRects.Count == 0) m_RegionRects = null;
+                if (m_RegionRects.Count == 0)
+                {
+                    m_RegionRects = null;
+                }
             }
 
             UpdateMobileRegions();
@@ -201,7 +206,10 @@ namespace Server
             {
                 var sandbox = new List<Mobile>(m_Mobiles);
 
-                foreach (var mob in sandbox) mob.UpdateRegion();
+                foreach (var mob in sandbox)
+                {
+                    mob.UpdateRegion();
+                }
             }
         }
 
@@ -220,12 +228,20 @@ namespace Server
             if (!Active && Owner != Map.Internal)
             {
                 if (m_Items != null)
+                {
                     foreach (var item in m_Items)
+                    {
                         item.OnSectorActivate();
+                    }
+                }
 
                 if (m_Mobiles != null)
+                {
                     foreach (var mob in m_Mobiles)
+                    {
                         mob.OnSectorActivate();
+                    }
+                }
 
                 m_Active = true;
             }
@@ -236,12 +252,20 @@ namespace Server
             if (Active)
             {
                 if (m_Items != null)
+                {
                     foreach (var item in m_Items)
+                    {
                         item.OnSectorDeactivate();
+                    }
+                }
 
                 if (m_Mobiles != null)
+                {
                     foreach (var mob in m_Mobiles)
+                    {
                         mob.OnSectorDeactivate();
+                    }
+                }
 
                 m_Active = false;
             }

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: TypeConverter.cs                                                *
  *                                                                       *
@@ -24,7 +24,9 @@ namespace Server.Json
         public override Type Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.String)
+            {
                 throw new JsonException("The JSON value could not be converted to System.Type");
+            }
 
             return AssemblyHandler.FindFirstTypeForName(reader.GetString());
         }

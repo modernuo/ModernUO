@@ -1,23 +1,3 @@
-/***************************************************************************
- *                             PacketHandlers.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -209,15 +189,21 @@ namespace Server.Network
         public static void RegisterExtended(int packetID, bool ingame, OnPacketReceive onReceive)
         {
             if (packetID >= 0 && packetID < 0x100)
+            {
                 m_ExtendedHandlersLow[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
+            }
             else
+            {
                 m_ExtendedHandlersHigh[packetID] = new PacketHandler(packetID, 0, ingame, onReceive);
+            }
         }
 
         public static PacketHandler GetExtendedHandler(int packetID)
         {
             if (packetID >= 0 && packetID < 0x100)
+            {
                 return m_ExtendedHandlersLow[packetID];
+            }
 
             m_ExtendedHandlersHigh.TryGetValue(packetID, out var handler);
             return handler;
@@ -226,23 +212,33 @@ namespace Server.Network
         public static void RemoveExtendedHandler(int packetID)
         {
             if (packetID >= 0 && packetID < 0x100)
+            {
                 m_ExtendedHandlersLow[packetID] = null;
+            }
             else
+            {
                 m_ExtendedHandlersHigh.Remove(packetID);
+            }
         }
 
         public static void RegisterEncoded(int packetID, bool ingame, OnEncodedPacketReceive onReceive)
         {
             if (packetID >= 0 && packetID < 0x100)
+            {
                 m_EncodedHandlersLow[packetID] = new EncodedPacketHandler(packetID, ingame, onReceive);
+            }
             else
+            {
                 m_EncodedHandlersHigh[packetID] = new EncodedPacketHandler(packetID, ingame, onReceive);
+            }
         }
 
         public static EncodedPacketHandler GetEncodedHandler(int packetID)
         {
             if (packetID >= 0 && packetID < 0x100)
+            {
                 return m_EncodedHandlersLow[packetID];
+            }
 
             m_EncodedHandlersHigh.TryGetValue(packetID, out var handler);
             return handler;
@@ -251,9 +247,13 @@ namespace Server.Network
         public static void RemoveEncodedHandler(int packetID)
         {
             if (packetID >= 0 && packetID < 0x100)
+            {
                 m_EncodedHandlersLow[packetID] = null;
+            }
             else
+            {
                 m_EncodedHandlersHigh.Remove(packetID);
+            }
         }
 
         public static void RegisterThrottler(int packetID, ThrottlePacketCallback t)
@@ -261,12 +261,16 @@ namespace Server.Network
             var ph = GetHandler(packetID);
 
             if (ph != null)
+            {
                 ph.ThrottleCallback = t;
+            }
 
             ph = Get6017Handler(packetID);
 
             if (ph != null)
+            {
                 ph.ThrottleCallback = t;
+            }
         }
 
         public static int ProcessPacket(IMessagePumpService pump, NetState ns, in ReadOnlySequence<byte> seq)
@@ -332,7 +336,9 @@ namespace Server.Network
             }
 
             if (r.Length < packetLength)
+            {
                 return 0;
+            }
 
             if (handler.Ingame && ns.Mobile?.Deleted != false)
             {
@@ -348,7 +354,9 @@ namespace Server.Network
             var throttled = handler.ThrottleCallback?.Invoke(ns) ?? TimeSpan.Zero;
 
             if (throttled > TimeSpan.Zero)
+            {
                 ns.ThrottledUntil = DateTime.UtcNow + throttled;
+            }
 
             var packet = seq.Slice(r.Position);
             var length = (int)packet.Length;
@@ -424,7 +432,9 @@ namespace Server.Network
             var targ = World.FindMobile(pvSrc.ReadUInt32());
 
             if (targ != null)
-                EventSink.InvokeRenameRequest(from, targ, pvSrc.ReadStringSafe());
+            {
+                EventSink.InvokeRenameRequest(@from, targ, pvSrc.ReadStringSafe());
+            }
         }
 
         public static void ChatRequest(NetState state, PacketReader pvSrc)
@@ -442,7 +452,9 @@ namespace Server.Network
 
                         if (World.FindItem(serial) is SecureTradeContainer cont && cont.Trade != null &&
                             (cont.Trade.From.Mobile == state.Mobile || cont.Trade.To.Mobile == state.Mobile))
+                        {
                             cont.Trade.Cancel();
+                        }
 
                         break;
                     }
@@ -507,7 +519,10 @@ namespace Server.Network
             var vendor = World.FindMobile(pvSrc.ReadUInt32());
             var flag = pvSrc.ReadByte();
 
-            if (vendor == null) return;
+            if (vendor == null)
+            {
+                return;
+            }
 
             if (vendor.Deleted || !Utility.RangeCheck(vendor.Location, state.Mobile.Location, 10))
             {
@@ -520,7 +535,9 @@ namespace Server.Network
                 var msgSize = (int)pvSrc.Remaining;
 
                 if (msgSize / 7 > 100)
+                {
                     return;
+                }
 
                 var buyList = new List<BuyItemResponse>(msgSize / 7);
                 while (msgSize > 0)
@@ -534,7 +551,9 @@ namespace Server.Network
                 }
 
                 if (buyList.Count > 0 && vendor is IVendor v && v.OnBuyItems(state.Mobile, buyList))
+                {
                     state.Send(new EndVendorBuy(vendor));
+                }
             }
             else
             {
@@ -547,7 +566,10 @@ namespace Server.Network
             Serial serial = pvSrc.ReadUInt32();
             var vendor = World.FindMobile(serial);
 
-            if (vendor == null) return;
+            if (vendor == null)
+            {
+                return;
+            }
 
             if (vendor.Deleted || !Utility.RangeCheck(vendor.Location, state.Mobile.Location, 10))
             {
@@ -558,7 +580,9 @@ namespace Server.Network
             int count = pvSrc.ReadUInt16();
 
             if (count >= 100 || pvSrc.Remaining != count * 6)
+            {
                 return;
+            }
 
             var sellList = new List<SellItemResponse>(count);
 
@@ -568,11 +592,15 @@ namespace Server.Network
                 int amount = pvSrc.ReadInt16();
 
                 if (item != null && amount > 0)
+                {
                     sellList.Add(new SellItemResponse(item, amount));
+                }
             }
 
             if (sellList.Count > 0 && vendor is IVendor v && v.OnSellItems(state.Mobile, sellList))
+            {
                 state.Send(new EndVendorSell(vendor));
+            }
         }
 
         public static void DeleteCharacter(NetState state, PacketReader pvSrc)
@@ -602,14 +630,18 @@ namespace Server.Network
 
                 if (item != null && from.Map == item.Map && Utility.InUpdateRange(item.GetWorldLocation(), from.Location) &&
                     from.CanSee(item))
-                    item.OnHelpRequest(from);
+                {
+                    item.OnHelpRequest(@from);
+                }
             }
             else if (serial.IsMobile)
             {
                 var m = World.FindMobile(serial);
 
                 if (m != null && from.Map == m.Map && Utility.InUpdateRange(m.Location, from.Location) && from.CanSee(m))
+                {
                     m.OnHelpRequest(m);
+                }
             }
         }
 
@@ -618,7 +650,9 @@ namespace Server.Network
             var m = World.FindMobile(pvSrc.ReadUInt32());
 
             if (m != null && Utility.InUpdateRange(state.Mobile, m) && state.Mobile.CanSee(m))
+            {
                 state.Send(new MobileName(m));
+            }
         }
 
         public static void RequestScrollWindow(NetState state, PacketReader pvSrc)
@@ -633,7 +667,9 @@ namespace Server.Network
             var m = World.FindMobile(pvSrc.ReadUInt32());
 
             if (m != null)
-                from.Attack(m);
+            {
+                @from.Attack(m);
+            }
         }
 
         public static void HuePickerResponse(NetState state, PacketReader pvSrc)
@@ -645,6 +681,7 @@ namespace Server.Network
             hue = Utility.ClipDyedHue(hue);
 
             foreach (var huePicker in state.HuePickers)
+            {
                 if (huePicker.Serial == serial)
                 {
                     state.RemoveHuePicker(huePicker);
@@ -653,6 +690,7 @@ namespace Server.Network
 
                     break;
                 }
+            }
         }
 
         public static void SystemInfo(NetState state, PacketReader pvSrc)
@@ -693,7 +731,9 @@ namespace Server.Network
                 case 0x24: // Use skill
                     {
                         if (!int.TryParse(command.Split(' ')[0], out var skillIndex))
+                        {
                             break;
+                        }
 
                         Skills.UseSkill(m, skillIndex);
 
@@ -702,7 +742,9 @@ namespace Server.Network
                 case 0x43: // Open spellbook
                     {
                         if (!int.TryParse(command, out var booktype))
+                        {
                             booktype = 1;
+                        }
 
                         EventSink.InvokeOpenSpellbookRequest(m, booktype);
 
@@ -772,7 +814,9 @@ namespace Server.Network
             var text = pvSrc.ReadStringSafe();
 
             if (text.Length > 128)
+            {
                 return;
+            }
 
             var from = state.Mobile;
             var p = from.Prompt;
@@ -782,9 +826,13 @@ namespace Server.Network
                 from.Prompt = null;
 
                 if (type == 0)
-                    p.OnCancel(from);
+                {
+                    p.OnCancel(@from);
+                }
                 else
-                    p.OnResponse(from, text);
+                {
+                    p.OnResponse(@from, text);
+                }
             }
         }
 
@@ -797,7 +845,9 @@ namespace Server.Network
             var text = pvSrc.ReadUnicodeStringLESafe();
 
             if (text.Length > 128)
+            {
                 return;
+            }
 
             var from = state.Mobile;
             var p = from.Prompt;
@@ -807,9 +857,13 @@ namespace Server.Network
                 from.Prompt = null;
 
                 if (type == 0)
-                    p.OnCancel(from);
+                {
+                    p.OnCancel(@from);
+                }
                 else
-                    p.OnResponse(from, text);
+                {
+                    p.OnResponse(@from, text);
+                }
             }
         }
 
@@ -824,17 +878,23 @@ namespace Server.Network
             index -= 1; // convert from 1-based to 0-based
 
             foreach (var menu in state.Menus)
+            {
                 if (menu.Serial == serial)
                 {
                     state.RemoveMenu(menu);
 
                     if (index >= 0 && index < menu.EntryLength)
+                    {
                         menu.OnResponse(state, index);
+                    }
                     else
+                    {
                         menu.OnCancel(state);
+                    }
 
                     break;
                 }
+            }
         }
 
         public static void ProfileReq(NetState state, PacketReader pvSrc)
@@ -845,7 +905,10 @@ namespace Server.Network
             var beholder = state.Mobile;
             var beheld = World.FindMobile(serial);
 
-            if (beheld == null) return;
+            if (beheld == null)
+            {
+                return;
+            }
 
             switch (type)
             {
@@ -861,7 +924,9 @@ namespace Server.Network
                         int length = pvSrc.ReadUInt16();
 
                         if (length > 511)
+                        {
                             return;
+                        }
 
                         var text = pvSrc.ReadUnicodeString(length);
 
@@ -895,13 +960,18 @@ namespace Server.Network
 
             from.Holding = null;
 
-            if (!valid) return;
+            if (!valid)
+            {
+                return;
+            }
 
             pvSrc.Seek(5, SeekOrigin.Current);
             var to = World.FindMobile(pvSrc.ReadUInt32()) ?? from;
 
             if (!to.AllowEquipFrom(from) || !to.EquipItem(item))
-                item.Bounce(from);
+            {
+                item.Bounce(@from);
+            }
 
             item.ClearBounce();
         }
@@ -1012,13 +1082,18 @@ namespace Server.Network
             int graphic = pvSrc.ReadUInt16();
 
             if (targetID == unchecked((int)0xDEADBEEF))
+            {
                 return;
+            }
 
             var from = state.Mobile;
 
             var t = from.Target;
 
-            if (t == null) return;
+            if (t == null)
+            {
+                return;
+            }
 
             var prof = TargetProfile.Acquire(t.GetType());
             prof?.Start();
@@ -1062,12 +1137,19 @@ namespace Server.Network
                                 if (state.HighSeas)
                                 {
                                     var id = TileData.ItemTable[graphic & TileData.MaxItemValue];
-                                    if (id.Surface) z -= id.Height;
+                                    if (id.Surface)
+                                    {
+                                        z -= id.Height;
+                                    }
                                 }
 
                                 for (var i = 0; !valid && i < tiles.Length; ++i)
+                                {
                                     if (tiles[i].Z == z && tiles[i].ID == graphic)
+                                    {
                                         valid = true;
+                                    }
+                                }
 
                                 if (!valid)
                                 {
@@ -1113,10 +1195,14 @@ namespace Server.Network
             foreach (var gump in state.Gumps)
             {
                 if (gump.Serial != serial || gump.TypeID != typeID)
+                {
                     continue;
+                }
+
                 var buttonExists = buttonID == 0; // 0 is always 'close'
 
                 if (!buttonExists)
+                {
                     foreach (var e in gump.Entries)
                     {
                         if (e is GumpButton button && button.ButtonID == buttonID)
@@ -1131,6 +1217,7 @@ namespace Server.Network
                             break;
                         }
                     }
+                }
 
                 if (!buttonExists)
                 {
@@ -1151,7 +1238,9 @@ namespace Server.Network
                 var switches = new int[switchCount];
 
                 for (var j = 0; j < switches.Length; ++j)
+                {
                     switches[j] = pvSrc.ReadInt32();
+                }
 
                 var textCount = pvSrc.ReadInt32();
 
@@ -1203,14 +1292,18 @@ namespace Server.Network
                     var beheld = World.FindMobile(pvSrc.ReadUInt32());
 
                     if (beheld != null)
+                    {
                         EventSink.InvokeVirtueGumpRequest(state.Mobile, beheld);
+                    }
                 }
                 else
                 {
                     var beheld = World.FindMobile(serial);
 
                     if (beheld != null)
+                    {
                         EventSink.InvokeVirtueItemRequest(state.Mobile, beheld, buttonID);
+                    }
                 }
             }
         }
@@ -1225,9 +1318,13 @@ namespace Server.Network
             var m = state.Mobile;
 
             if (state.StygianAbyss)
+            {
                 state.Send(new MobileUpdate(m));
+            }
             else
+            {
                 state.Send(new MobileUpdateOld(m));
+            }
 
             state.Send(MobileIncoming.Create(state, m, m));
 
@@ -1248,10 +1345,14 @@ namespace Server.Network
             var text = pvSrc.ReadStringSafe().Trim();
 
             if (text.Length <= 0 || text.Length > 128)
+            {
                 return;
+            }
 
             if (!Enum.IsDefined(typeof(MessageType), type))
+            {
                 type = MessageType.Regular;
+            }
 
             from.DoSpeech(text, m_EmptyInts, type, Utility.ClipDyedHue(hue));
         }
@@ -1276,7 +1377,9 @@ namespace Server.Network
                 var hold = value & 0xF;
 
                 if (count < 0 || count > 50)
+                {
                     return;
+                }
 
                 var keyList = m_KeywordList;
 
@@ -1299,7 +1402,9 @@ namespace Server.Network
                     }
 
                     if (!keyList.Contains(speechID))
+                    {
                         keyList.Add(speechID);
+                    }
                 }
 
                 text = pvSrc.ReadUTF8StringSafe();
@@ -1316,12 +1421,16 @@ namespace Server.Network
             text = text.Trim();
 
             if (text.Length <= 0 || text.Length > 128)
+            {
                 return;
+            }
 
             type &= ~MessageType.Encoded;
 
             if (!Enum.IsDefined(typeof(MessageType), type))
+            {
                 type = MessageType.Regular;
+            }
 
             from.Language = lang;
             from.DoSpeech(text, keywords, type, Utility.ClipDyedHue(hue));
@@ -1348,14 +1457,18 @@ namespace Server.Network
                         var m = World.FindMobile(s);
 
                         if (m?.Deleted == false)
-                            from.Use(m);
+                        {
+                            @from.Use(m);
+                        }
                     }
                     else if (s.IsItem)
                     {
                         var item = World.FindItem(s);
 
                         if (item?.Deleted == false)
-                            from.Use(item);
+                        {
+                            @from.Use(item);
+                        }
                     }
                 }
 
@@ -1386,7 +1499,9 @@ namespace Server.Network
                     else
                     {
                         if (from.Region.OnSingleClick(from, m))
-                            m.OnSingleClick(from);
+                        {
+                            m.OnSingleClick(@from);
+                        }
                     }
                 }
             }
@@ -1404,7 +1519,9 @@ namespace Server.Network
                     else if (from.Region.OnSingleClick(from, item))
                     {
                         if (item.Parent is Item parentItem)
-                            parentItem.OnSingleClickContained(from, item);
+                        {
+                            parentItem.OnSingleClickContained(@from, item);
+                        }
 
                         item.OnSingleClick(from);
                     }
@@ -1442,7 +1559,9 @@ namespace Server.Network
                 ++seq;
 
                 if (seq == 256)
+                {
                     seq = 1;
+                }
 
                 state.Sequence = seq;
             }
@@ -1456,10 +1575,14 @@ namespace Server.Network
             var ok = false;
 
             for (var i = 0; !ok && i < ValidAnimations.Length; ++i)
+            {
                 ok = action == ValidAnimations[i];
+            }
 
             if (from != null && ok && from.Alive && from.Body.IsHuman && !from.Mounted)
-                from.Animate(action, 7, 1, true, false, 0);
+            {
+                @from.Animate(action, 7, 1, true, false, 0);
+            }
         }
 
         public static void QuestArrow(NetState state, PacketReader pvSrc)
@@ -1485,11 +1608,14 @@ namespace Server.Network
             if (ph.Ingame && state.Mobile?.Deleted != false)
             {
                 if (state.Mobile == null)
+                {
                     Console.WriteLine(
                         "Client: {0}: Sent in-game packet (0xBFx{1:X2}) before having been attached to a mobile",
                         state,
                         packetID
                     );
+                }
+
                 state.Dispose();
             }
             else
@@ -1503,12 +1629,16 @@ namespace Server.Network
             var from = state.Mobile;
 
             if (from == null)
+            {
                 return;
+            }
 
             Item spellbook = null;
 
             if (pvSrc.ReadInt16() == 1)
+            {
                 spellbook = World.FindItem(pvSrc.ReadUInt32());
+            }
 
             var spellID = pvSrc.ReadInt16() - 1;
 
@@ -1520,19 +1650,25 @@ namespace Server.Network
             var from = state.Mobile;
 
             if (from == null)
+            {
                 return;
+            }
 
             if (from.AccessLevel >= AccessLevel.Counselor || Core.TickCount - from.NextActionTime >= 0)
             {
                 var bandage = World.FindItem(pvSrc.ReadUInt32());
 
                 if (bandage == null)
+                {
                     return;
+                }
 
                 var target = World.FindMobile(pvSrc.ReadUInt32());
 
                 if (target == null)
+                {
                     return;
+                }
 
                 EventSink.InvokeBandageTargetRequest(from, bandage, target);
 
@@ -1552,14 +1688,18 @@ namespace Server.Network
         public static void BatchQueryProperties(NetState state, PacketReader pvSrc)
         {
             if (!ObjectPropertyList.Enabled)
+            {
                 return;
+            }
 
             var from = state.Mobile;
 
             var length = pvSrc.Remaining;
 
             if (length % 4 != 0)
+            {
                 return;
+            }
 
             while (pvSrc.Remaining > 0)
             {
@@ -1570,7 +1710,9 @@ namespace Server.Network
                     var m = World.FindMobile(s);
 
                     if (m != null && from.CanSee(m) && Utility.InUpdateRange(from, m))
-                        m.SendPropertiesTo(from);
+                    {
+                        m.SendPropertiesTo(@from);
+                    }
                 }
                 else if (s.IsItem)
                 {
@@ -1578,7 +1720,9 @@ namespace Server.Network
 
                     if (item?.Deleted == false && from.CanSee(item) &&
                         Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
-                        item.SendPropertiesTo(from);
+                    {
+                        item.SendPropertiesTo(@from);
+                    }
                 }
             }
         }
@@ -1586,7 +1730,9 @@ namespace Server.Network
         public static void QueryProperties(NetState state, PacketReader pvSrc)
         {
             if (!ObjectPropertyList.Enabled)
+            {
                 return;
+            }
 
             var from = state.Mobile;
 
@@ -1597,7 +1743,9 @@ namespace Server.Network
                 var m = World.FindMobile(s);
 
                 if (m != null && from.CanSee(m) && Utility.InUpdateRange(from, m))
-                    m.SendPropertiesTo(from);
+                {
+                    m.SendPropertiesTo(@from);
+                }
             }
             else if (s.IsItem)
             {
@@ -1605,14 +1753,18 @@ namespace Server.Network
 
                 if (item?.Deleted == false && from.CanSee(item) &&
                     Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
-                    item.SendPropertiesTo(from);
+                {
+                    item.SendPropertiesTo(@from);
+                }
             }
         }
 
         public static void PartyMessage(NetState state, PacketReader pvSrc)
         {
             if (state.Mobile == null)
+            {
                 return;
+            }
 
             switch (pvSrc.ReadByte())
             {
@@ -1697,11 +1849,15 @@ namespace Server.Network
             int stat = pvSrc.ReadByte();
             int lockValue = pvSrc.ReadByte();
 
-            if (lockValue > 2) lockValue = 0;
+            if (lockValue > 2)
+            {
+                lockValue = 0;
+            }
 
             var m = state.Mobile;
 
             if (m != null)
+            {
                 switch (stat)
                 {
                     case 0:
@@ -1714,6 +1870,7 @@ namespace Server.Network
                         m.IntLock = (StatLockType)lockValue;
                         break;
                 }
+            }
         }
 
         public static void ScreenSize(NetState state, PacketReader pvSrc)
@@ -1726,7 +1883,10 @@ namespace Server.Network
         {
             var from = state.Mobile;
 
-            if (from == null) return;
+            if (from == null)
+            {
+                return;
+            }
 
             var menu = from.ContextMenu;
 
@@ -1741,11 +1901,17 @@ namespace Server.Network
                     Point3D p;
 
                     if (entity is Mobile)
+                    {
                         p = entity.Location;
+                    }
                     else if (entity is Item item)
+                    {
                         p = item.GetWorldLocation();
+                    }
                     else
+                    {
                         return;
+                    }
 
                     int index = pvSrc.ReadUInt16();
 
@@ -1756,10 +1922,14 @@ namespace Server.Network
                         var range = e.Range;
 
                         if (range == -1)
+                        {
                             range = 18;
+                        }
 
                         if (e.Enabled && from.InRange(p, range))
+                        {
                             e.OnClick();
+                        }
                     }
                 }
             }
@@ -1773,24 +1943,36 @@ namespace Server.Network
             if (from != null && target != null && from.Map == target.Map && from.CanSee(target))
             {
                 if (target is Mobile && !Utility.InUpdateRange(from.Location, target.Location))
+                {
                     return;
+                }
 
                 var item = target as Item;
 
                 if (item != null && !Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
+                {
                     return;
+                }
 
                 if (!from.CheckContextMenuDisplay(target))
+                {
                     return;
+                }
 
                 var c = new ContextMenu(from, target);
 
                 if (c.Entries.Length > 0)
                 {
                     if (item?.RootParent is Mobile mobile && mobile != from && mobile.AccessLevel >= from.AccessLevel)
+                    {
                         for (var i = 0; i < c.Entries.Length; ++i)
+                        {
                             if (!c.Entries[i].NonLocalUse)
+                            {
                                 c.Entries[i].Enabled = false;
+                            }
+                        }
+                    }
 
                     from.ContextMenu = c;
                 }
@@ -1807,7 +1989,9 @@ namespace Server.Network
             var lang = pvSrc.ReadString(4);
 
             if (state.Mobile != null)
+            {
                 state.Mobile.Language = lang;
+            }
         }
 
         public static void AssistVersion(NetState state, PacketReader pvSrc)
@@ -1842,16 +2026,17 @@ namespace Server.Network
             var m = World.FindMobile(pvSrc.ReadUInt32());
 
             if (m != null)
+            {
                 switch (type)
                 {
                     case 0x04: // Stats
                         {
-                            m.OnStatsQuery(from);
+                            m.OnStatsQuery(@from);
                             break;
                         }
                     case 0x05:
                         {
-                            m.OnSkillsQuery(from);
+                            m.OnSkillsQuery(@from);
                             break;
                         }
                     default:
@@ -1860,6 +2045,7 @@ namespace Server.Network
                             break;
                         }
                 }
+            }
         }
 
         public static void PlayCharacter(NetState state, PacketReader pvSrc)
@@ -1934,10 +2120,14 @@ namespace Server.Network
             state.Send(new LoginConfirm(m));
 
             if (m.Map != null)
+            {
                 state.Send(new MapChange(m.Map));
+            }
 
             if (!Core.SE && state.ProtocolChanges < ProtocolChanges.Version6000)
+            {
                 state.Send(new MapPatches());
+            }
 
             state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
 
@@ -2019,7 +2209,9 @@ namespace Server.Network
             state.Send(new CurrentTime());
             state.Send(SeasonChange.Instantiate(m.GetSeason(), true));
             if (m.Map != null)
+            {
                 state.Send(new MapChange(m.Map));
+            }
 
             EventSink.InvokeLogin(m);
 
@@ -2066,7 +2258,7 @@ namespace Server.Network
             Pre-7.0.0.0:
             0x00, 0x01 -> Human Male, Human Female
             0x02, 0x03 -> Elf Male, Elf Female
-      
+
             Post-7.0.0.0:
             0x00, 0x01
             0x02, 0x03 -> Human Male, Human Female
@@ -2296,11 +2488,13 @@ namespace Server.Network
                 var oldest = DateTime.MaxValue;
 
                 foreach (var kvp in m_AuthIDWindow)
+                {
                     if (kvp.Value.Age < oldest)
                     {
                         oldestID = kvp.Key;
                         oldest = kvp.Value.Age;
                     }
+                }
 
                 m_AuthIDWindow.Remove(oldestID);
             }
@@ -2312,7 +2506,9 @@ namespace Server.Network
                 authID = Utility.Random(1, int.MaxValue - 1);
 
                 if (Utility.RandomBool())
+                {
                     authID |= 1 << 31;
+                }
             } while (m_AuthIDWindow.ContainsKey(authID));
 
             m_AuthIDWindow[authID] = new AuthIDPersistence(state.Version);
@@ -2374,9 +2570,13 @@ namespace Server.Network
                 state.Send(SupportedFeatures.Instantiate(state));
 
                 if (state.NewCharacterList)
+                {
                     state.Send(new CharacterList(state.Account, state.CityInfo));
+                }
                 else
+                {
                     state.Send(new CharacterListOld(state.Account, state.CityInfo));
+                }
             }
             else
             {
@@ -2477,9 +2677,13 @@ namespace Server.Network
             EventSink.InvokeAccountLogin(e);
 
             if (e.Accepted)
+            {
                 AccountLogin_ReplyAck(state);
+            }
             else
+            {
                 AccountLogin_ReplyRej(state, e.RejectReason);
+            }
         }
 
         public static void AccountLogin_ReplyAck(NetState state)
@@ -2514,7 +2718,9 @@ namespace Server.Network
             int count = pvSrc.ReadByte();
             var serialList = new List<Serial>(count);
             for (var i = 0; i < count; ++i)
+            {
                 serialList.Add(pvSrc.ReadUInt32());
+            }
 
             EventSink.InvokeEquipMacro(ns.Mobile, serialList);
         }
@@ -2524,7 +2730,9 @@ namespace Server.Network
             int count = pvSrc.ReadByte();
             var layers = new List<Layer>(count);
             for (var i = 0; i < count; ++i)
+            {
                 layers.Add((Layer)pvSrc.ReadUInt16());
+            }
 
             EventSink.InvokeUnequipMacro(ns.Mobile, layers);
         }
@@ -2547,7 +2755,10 @@ namespace Server.Network
         {
             Serial serial = pvSrc.ReadUInt32();
 
-            if (serial.IsItem) EventSink.InvokeTargetByResourceMacro(ns.Mobile, World.FindItem(serial), pvSrc.ReadInt16());
+            if (serial.IsItem)
+            {
+                EventSink.InvokeTargetByResourceMacro(ns.Mobile, World.FindItem(serial), pvSrc.ReadInt16());
+            }
         }
 
         private class LoginTimer : Timer

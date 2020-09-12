@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ActivatorUtil.cs                                                *
  *                                                                       *
@@ -25,7 +25,10 @@ namespace Server.Utilities
         {
             var emptyCtor = type.GetConstructor(Type.EmptyTypes);
 
-            if (emptyCtor != null && predicate?.Invoke(emptyCtor) != false) return emptyCtor;
+            if (emptyCtor != null && predicate?.Invoke(emptyCtor) != false)
+            {
+                return emptyCtor;
+            }
 
             var optionalCtor = type.GetConstructors()
                 .SingleOrDefault(
@@ -33,7 +36,10 @@ namespace Server.Utilities
                         predicate?.Invoke(info) != false && info.GetParameters().All(x => x.IsOptional)
                 );
 
-            if (optionalCtor != null) return optionalCtor;
+            if (optionalCtor != null)
+            {
+                return optionalCtor;
+            }
 
             throw new TypeInitializationException(
                 type.ToString(),
@@ -51,7 +57,10 @@ namespace Server.Utilities
                 {
                     ctor = type.GetConstructor(args);
 
-                    if (ctor != null && predicate?.Invoke(ctor) != false) return ctor;
+                    if (ctor != null && predicate?.Invoke(ctor) != false)
+                    {
+                        return ctor;
+                    }
                 }
                 else
                 {
@@ -59,20 +68,30 @@ namespace Server.Utilities
                         .SingleOrDefault(
                             info =>
                             {
-                                if (predicate?.Invoke(info) == false) return false;
+                                if (predicate?.Invoke(info) == false)
+                                {
+                                    return false;
+                                }
 
                                 var paramList = info.GetParameters().ToList();
 
                                 // If more args are given than parameters, skip.
-                                if (args.Length > paramList.Count) return false;
+                                if (args.Length > paramList.Count)
+                                {
+                                    return false;
+                                }
 
                                 // check all given args map to params.
                                 for (var i = 0; i < args.Length; i++)
                                     // if a null reference is passed, but the type is not nullable
+                                {
                                     if (args[i] == null && paramList[i].ParameterType.IsValueType
                                         // or if an arg is not null and is not assignable to the parameter type, skip.
                                         || !(args[i] == null || paramList[i].ParameterType.IsAssignableFrom(args[i])))
+                                    {
                                         return false;
+                                    }
+                                }
 
                                 // If there are more parameters, check if they any are not optional, if any are not, skip.
                                 // Otherwise all checks have passed. We have found a match
@@ -82,7 +101,10 @@ namespace Server.Utilities
                             }
                         );
 
-                    if (ctor != null) return ctor;
+                    if (ctor != null)
+                    {
+                        return ctor;
+                    }
                 }
 
                 throw new Exception($"There is no empty/default constructor for {type} that matches predicate.");
@@ -99,7 +121,10 @@ namespace Server.Utilities
             var cctor = GetConstructor(type, constructorPredicate);
             var args = cctor.GetParameters();
 
-            if (args.Length == 0) return cctor.Invoke(Type.EmptyTypes);
+            if (args.Length == 0)
+            {
+                return cctor.Invoke(Type.EmptyTypes);
+            }
 
             var argList = new object[args.Length];
             Array.Fill(argList, Type.Missing);
@@ -111,7 +136,10 @@ namespace Server.Utilities
             params object[] args
         )
         {
-            if (args == null || args.Length == 0) return CreateInstance(type, constructorPredicate);
+            if (args == null || args.Length == 0)
+            {
+                return CreateInstance(type, constructorPredicate);
+            }
 
             var cctor = GetConstructor(type, constructorPredicate, args.Select(x => x?.GetType()).ToArray());
             return cctor.Invoke(args);

@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                  Race.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections.Generic;
 
@@ -93,12 +73,18 @@ namespace Server
             CheckNamesAndValues();
 
             for (var i = 0; i < m_RaceNames.Length; ++i)
+            {
                 if (Insensitive.Equals(m_RaceNames[i], value))
+                {
                     return m_RaceValues[i];
+                }
+            }
 
             if (int.TryParse(value, out var index) && index >= 0 && index < Races.Length &&
                 Races[index] != null)
+            {
                 return Races[index];
+            }
 
             throw new ArgumentException("Invalid race name");
         }
@@ -106,7 +92,9 @@ namespace Server
         private static void CheckNamesAndValues()
         {
             if (m_RaceNames?.Length == AllRaces.Count)
+            {
                 return;
+            }
 
             m_RaceNames = new string[AllRaces.Count];
             m_RaceValues = new Race[AllRaces.Count];

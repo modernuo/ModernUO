@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Point3D.cs                                                      *
  *                                                                       *
@@ -128,18 +128,34 @@ namespace Server
         public int CompareTo(Point3D other)
         {
             var xComparison = m_X.CompareTo(other.m_X);
-            if (xComparison != 0) return xComparison;
+            if (xComparison != 0)
+            {
+                return xComparison;
+            }
+
             var yComparison = m_Y.CompareTo(other.m_Y);
-            if (yComparison != 0) return yComparison;
+            if (yComparison != 0)
+            {
+                return yComparison;
+            }
+
             return m_Z.CompareTo(other.m_Z);
         }
 
         public int CompareTo(IPoint3D other)
         {
             var xComparison = m_X.CompareTo(other.X);
-            if (xComparison != 0) return xComparison;
+            if (xComparison != 0)
+            {
+                return xComparison;
+            }
+
             var yComparison = m_Y.CompareTo(other.Y);
-            if (yComparison != 0) return yComparison;
+            if (yComparison != 0)
+            {
+                return yComparison;
+            }
+
             return m_Z.CompareTo(other.Z);
         }
     }
