@@ -31,9 +31,13 @@ namespace Server
         static NativeReader()
         {
             if (Core.Unix)
+            {
                 m_NativeReader = new NativeReaderUnix();
+            }
             else
+            {
                 m_NativeReader = new NativeReaderWin32();
+            }
         }
 
         public static unsafe void Read(IntPtr p, void* buffer, int length)

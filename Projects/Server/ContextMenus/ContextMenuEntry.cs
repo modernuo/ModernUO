@@ -44,9 +44,13 @@ namespace Server.ContextMenus
         public ContextMenuEntry(int number, int range = -1)
         {
             if (number <= 0x7FFF) // Legacy code support
+            {
                 Number = 3000000 + number;
+            }
             else
+            {
                 Number = number;
+            }
 
             Range = range;
             Enabled = true;

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IPEndPointConverter.cs                                          *
  *                                                                       *
@@ -25,7 +25,9 @@ namespace Server.Json
         public override IPEndPoint Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (IPEndPoint.TryParse(reader.GetString(), out var ipep))
+            {
                 return ipep;
+            }
 
             throw new JsonException("IPEndPoint must be in the correct format");
         }

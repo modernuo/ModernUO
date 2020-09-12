@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: AccountPackets.cs                                               *
  *                                                                       *
@@ -56,21 +56,30 @@ namespace Server.Network
             var count = 0;
 
             for (var i = 0; i < a.Length; ++i)
+            {
                 if (a[i] != null)
+                {
                     ++count;
+                }
+            }
 
             Stream.Write((byte)count);
             Stream.Write((byte)0);
 
             for (var i = 0; i < a.Length; ++i)
+            {
                 if (a[i] != null)
                 {
                     var name = a[i].Name;
 
                     if (name == null)
+                    {
                         name = "-null-";
+                    }
                     else if ((name = name.Trim()).Length == 0)
+                    {
                         name = "-empty-";
+                    }
 
                     Stream.WriteAsciiFixed(name, 30);
                     Stream.Fill(30); // password
@@ -79,6 +88,7 @@ namespace Server.Network
                 {
                     Stream.Fill(60);
                 }
+            }
         }
     }
 
@@ -123,15 +133,23 @@ namespace Server.Network
                 flags &= ~FeatureFlags.UOTD;
 
                 if (ns.Account.Limit > 6)
+                {
                     flags |= FeatureFlags.SeventhCharacterSlot;
+                }
                 else
+                {
                     flags |= FeatureFlags.SixthCharacterSlot;
+                }
             }
 
             if (ns.ExtendedSupportedFeatures)
+            {
                 Stream.Write((uint)flags);
+            }
             else
+            {
                 Stream.Write((ushort)flags);
+            }
         }
 
         public static FeatureFlags Value { get; set; }
@@ -156,7 +174,9 @@ namespace Server.Network
             var map = m.Map;
 
             if (map == null || map == Map.Internal)
+            {
                 map = m.LogoutMap;
+            }
 
             Stream.Write((short)0);
             Stream.Write((short)0);
@@ -185,8 +205,12 @@ namespace Server.Network
             var highSlot = -1;
 
             for (var i = 0; i < a.Length; ++i)
+            {
                 if (a[i] != null)
+                {
                     highSlot = i;
+                }
+            }
 
             var count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
 
@@ -218,14 +242,19 @@ namespace Server.Network
             var highSlot = -1;
 
             for (var i = 0; i < a.Length; ++i)
+            {
                 if (a[i] != null)
+                {
                     highSlot = i;
+                }
+            }
 
             var count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
 
             Stream.Write((byte)count);
 
             for (var i = 0; i < count; ++i)
+            {
                 if (a[i] != null)
                 {
                     Stream.WriteAsciiFixed(a[i].Name, 30);
@@ -235,6 +264,7 @@ namespace Server.Network
                 {
                     Stream.Fill(60);
                 }
+            }
 
             Stream.Write((byte)info.Length);
 
@@ -256,13 +286,19 @@ namespace Server.Network
             var flags = ExpansionInfo.CoreExpansion.CharacterListFlags;
 
             if (count > 6)
+            {
                 flags |= CharacterListFlags.SeventhCharacterSlot |
                          CharacterListFlags.SixthCharacterSlot; // 7th Character Slot - TODO: Is SixthCharacterSlot Required?
+            }
             else if (count == 6)
+            {
                 flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
+            }
             else if (a.Limit == 1)
+            {
                 flags |= CharacterListFlags.SlotLimit &
                          CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
+            }
 
             Stream.Write((int)(flags | AdditionalFlags)); // Additional Flags
 
@@ -281,14 +317,19 @@ namespace Server.Network
             var highSlot = -1;
 
             for (var i = 0; i < a.Length; ++i)
+            {
                 if (a[i] != null)
+                {
                     highSlot = i;
+                }
+            }
 
             var count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
 
             Stream.Write((byte)count);
 
             for (var i = 0; i < count; ++i)
+            {
                 if (a[i] != null)
                 {
                     Stream.WriteAsciiFixed(a[i].Name, 30);
@@ -298,6 +339,7 @@ namespace Server.Network
                 {
                     Stream.Fill(60);
                 }
+            }
 
             Stream.Write((byte)info.Length);
 
@@ -313,13 +355,19 @@ namespace Server.Network
             var flags = ExpansionInfo.CoreExpansion.CharacterListFlags;
 
             if (count > 6)
+            {
                 flags |= CharacterListFlags.SeventhCharacterSlot |
                          CharacterListFlags.SixthCharacterSlot; // 7th Character Slot - TODO: Is SixthCharacterSlot Required?
+            }
             else if (count == 6)
+            {
                 flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
+            }
             else if (a.Limit == 1)
+            {
                 flags |= CharacterListFlags.SlotLimit &
                          CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
+            }
 
             Stream.Write((int)(flags | CharacterList.AdditionalFlags)); // Additional Flags
         }

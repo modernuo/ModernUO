@@ -67,7 +67,10 @@ namespace Server
 
         public static void NotifyDiskWriteComplete()
         {
-            if (m_DiskWriteHandle.Set()) Console.WriteLine("Closing Save Files. ");
+            if (m_DiskWriteHandle.Set())
+            {
+                Console.WriteLine("Closing Save Files. ");
+            }
         }
 
         public static void WaitForWriteCompletion()
@@ -79,7 +82,10 @@ namespace Server
         {
             if (Saving || Loading)
             {
-                if (Saving) AppendSafetyLog("delete", entity);
+                if (Saving)
+                {
+                    AppendSafetyLog("delete", entity);
+                }
 
                 _deleteQueue.Enqueue(entity);
 
@@ -94,17 +100,25 @@ namespace Server
             Packet p;
 
             if (ascii)
+            {
                 p = new AsciiMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text);
+            }
             else
+            {
                 p = new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text);
+            }
 
             var list = TcpServer.Instances;
 
             p.Acquire();
 
             for (var i = 0; i < list.Count; ++i)
+            {
                 if (list[i].Mobile != null)
+                {
                     list[i].Send(p);
+                }
+            }
 
             p.Release();
         }
@@ -147,9 +161,13 @@ namespace Server
                 var ctor = t.GetConstructor(m_SerialTypeArray);
 
                 if (ctor != null)
+                {
                     types.Add(new Tuple<ConstructorInfo, string>(ctor, typeName));
+                }
                 else
+                {
                     throw new Exception($"Type '{t}' does not have a serialization constructor");
+                }
             }
 
             return types;
@@ -158,7 +176,9 @@ namespace Server
         public static void Load()
         {
             if (Loaded)
+            {
                 return;
+            }
 
             Loaded = true;
             LoadingType = null;
@@ -202,7 +222,9 @@ namespace Server
                     var objs = types[typeID];
 
                     if (objs == null)
+                    {
                         continue;
+                    }
 
                     Mobile m = null;
                     var ctor = objs.Item1;
@@ -257,7 +279,9 @@ namespace Server
                     var objs = types[typeID];
 
                     if (objs == null)
+                    {
                         continue;
+                    }
 
                     Item item = null;
                     var ctor = objs.Item1;
@@ -307,7 +331,9 @@ namespace Server
                     EventSink.InvokeCreateGuild(createEventArgs);
                     var guild = createEventArgs.Guild;
                     if (guild != null)
+                    {
                         guilds.Add(new GuildEntry(guild, pos, length));
+                    }
                 }
 
                 idxReader.Close();
@@ -339,7 +365,9 @@ namespace Server
                             m.Deserialize(reader);
 
                             if (reader.Position != entry.Position + entry.Length)
+                            {
                                 throw new Exception($"***** Bad serialize on {m.GetType()} *****");
+                            }
                         }
                         catch (Exception e)
                         {
@@ -379,7 +407,9 @@ namespace Server
                             item.Deserialize(reader);
 
                             if (reader.Position != entry.Position + entry.Length)
+                            {
                                 throw new Exception($"***** Bad serialize on {item.GetType()} *****");
+                            }
                         }
                         catch (Exception e)
                         {
@@ -420,7 +450,9 @@ namespace Server
                             g.Deserialize(reader);
 
                             if (reader.Position != entry.Position + entry.Length)
+                            {
                                 throw new Exception($"***** Bad serialize on Guild {g.Serial} *****");
+                            }
                         }
                         catch (Exception e)
                         {
@@ -458,17 +490,33 @@ namespace Server
                         if (Console.ReadKey(true).Key == ConsoleKey.Y)
                         {
                             if (failedMobiles)
+                            {
                                 for (var i = 0; i < mobiles.Count;)
+                                {
                                     if (mobiles[i].TypeID == failedTypeID)
+                                    {
                                         mobiles.RemoveAt(i);
+                                    }
                                     else
+                                    {
                                         ++i;
+                                    }
+                                }
+                            }
                             else if (failedItems)
+                            {
                                 for (var i = 0; i < items.Count;)
+                                {
                                     if (items[i].TypeID == failedTypeID)
+                                    {
                                         items.RemoveAt(i);
+                                    }
                                     else
+                                    {
                                         ++i;
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -495,7 +543,9 @@ namespace Server
             foreach (var item in Items.Values)
             {
                 if (item.Parent == null)
+                {
                     item.UpdateTotals();
+                }
 
                 item.ClearProperties();
             }
@@ -525,9 +575,13 @@ namespace Server
                 var entity = _addQueue.Dequeue();
 
                 if (entity is Item item)
+                {
                     AddItem(item);
+                }
                 else if (entity is Mobile mob)
+                {
                     AddMobile(mob);
+                }
             }
 
             while (_deleteQueue.Count > 0)
@@ -535,9 +589,13 @@ namespace Server
                 var entity = _deleteQueue.Dequeue();
 
                 if (entity is Item item)
+                {
                     item.Delete();
+                }
                 else if (entity is Mobile mob)
+                {
                     mob.Delete();
+                }
             }
         }
 
@@ -564,13 +622,19 @@ namespace Server
         private static void SaveIndex<T>(List<T> list, string path) where T : IEntityEntry
         {
             if (!Directory.Exists("Saves/Mobiles/"))
+            {
                 Directory.CreateDirectory("Saves/Mobiles/");
+            }
 
             if (!Directory.Exists("Saves/Items/"))
+            {
                 Directory.CreateDirectory("Saves/Items/");
+            }
 
             if (!Directory.Exists("Saves/Guilds/"))
+            {
                 Directory.CreateDirectory("Saves/Guilds/");
+            }
 
             using var idx = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
             var idxWriter = new BinaryWriter(idx);
@@ -598,7 +662,9 @@ namespace Server
         public static void Save(bool message, bool permitBackgroundWrite)
         {
             if (Saving)
+            {
                 return;
+            }
 
             ++m_Saves;
 
@@ -611,7 +677,9 @@ namespace Server
             m_DiskWriteHandle.Reset();
 
             if (message)
+            {
                 Broadcast(0x35, true, "The world is saving, please wait.");
+            }
 
             var strategy = SaveStrategy.Acquire();
             Console.WriteLine("Core: Using {0} save strategy", strategy.Name.ToLower());
@@ -621,11 +689,19 @@ namespace Server
             var watch = Stopwatch.StartNew();
 
             if (!Directory.Exists("Saves/Mobiles/"))
+            {
                 Directory.CreateDirectory("Saves/Mobiles/");
+            }
+
             if (!Directory.Exists("Saves/Items/"))
+            {
                 Directory.CreateDirectory("Saves/Items/");
+            }
+
             if (!Directory.Exists("Saves/Guilds/"))
+            {
                 Directory.CreateDirectory("Saves/Guilds/");
+            }
 
             strategy.Save(permitBackgroundWrite);
 
@@ -643,7 +719,9 @@ namespace Server
             Saving = false;
 
             if (!permitBackgroundWrite)
+            {
                 NotifyDiskWriteComplete(); // Sets the DiskWriteHandle.  If we allow background writes, we leave this upto the individual save strategies.
+            }
 
             ProcessSafetyQueues();
 
@@ -652,12 +730,14 @@ namespace Server
             Console.WriteLine("Save done in {0:F2} seconds.", watch.Elapsed.TotalSeconds);
 
             if (message)
+            {
                 Broadcast(
                     0x35,
                     true,
                     "World save complete. The entire process took {0:F1} seconds.",
                     watch.Elapsed.TotalSeconds
                 );
+            }
 
             NetState.Resume();
         }
@@ -665,9 +745,14 @@ namespace Server
         public static IEntity FindEntity(Serial serial)
         {
             if (serial.IsItem)
+            {
                 return FindItem(serial);
+            }
+
             if (serial.IsMobile)
+            {
                 return FindMobile(serial);
+            }
 
             return null;
         }

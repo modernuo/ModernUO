@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: MobilePackets.cs                                                *
  *                                                                       *
@@ -49,7 +49,9 @@ namespace Server.Network
             var hue = m.Hue;
 
             if (m.SolidHueOverride >= 0)
+            {
                 hue = m.SolidHueOverride;
+            }
 
             Stream.Write(m.Serial);
             Stream.Write((short)m.Body);
@@ -72,7 +74,9 @@ namespace Server.Network
             var hue = m.Hue;
 
             if (m.SolidHueOverride >= 0)
+            {
                 hue = m.SolidHueOverride;
+            }
 
             Stream.Write(m.Serial);
             Stream.Write((short)m.Body);
@@ -319,8 +323,12 @@ namespace Server.Network
             }
 
             if (type >= 6)
+            {
                 for (var i = 0; i < 15; ++i)
+                {
                     Stream.Write((short)m.GetAOSStatus(i));
+                }
+            }
         }
     }
 
@@ -362,16 +370,22 @@ namespace Server.Network
             Stream.WriteAsciiFixed(name, 30);
 
             if (beholder == beheld)
+            {
                 WriteAttr(beheld.Hits, beheld.HitsMax);
+            }
             else
+            {
                 WriteAttrNorm(beheld.Hits, beheld.HitsMax);
+            }
 
             Stream.Write(beheld.CanBeRenamedBy(beholder));
 
             Stream.Write((byte)type);
 
             if (type <= 0)
+            {
                 return;
+            }
 
             Stream.Write(beheld.Female);
 
@@ -423,8 +437,12 @@ namespace Server.Network
             }
 
             if (type >= 6)
+            {
                 for (var i = 0; i < 15; ++i)
+                {
                     Stream.Write((short)beheld.GetAOSStatus(i));
+                }
+            }
         }
 
         private void WriteAttr(int current, int maximum)
@@ -453,9 +471,13 @@ namespace Server.Network
             var p = m.Poison;
 
             if (p != null)
+            {
                 Stream.Write((byte)(p.Level + 1));
+            }
             else
+            {
                 Stream.Write((byte)0);
+            }
         }
     }
 
@@ -471,9 +493,13 @@ namespace Server.Network
             Stream.Write((short)2);
 
             if (m.Blessed || m.YellowHealthbar)
+            {
                 Stream.Write((byte)1);
+            }
             else
+            {
                 Stream.Write((byte)0);
+            }
         }
     }
 
@@ -484,7 +510,9 @@ namespace Server.Network
             var hue = m.Hue;
 
             if (m.SolidHueOverride >= 0)
+            {
                 hue = m.SolidHueOverride;
+            }
 
             Stream.Write(m.Serial);
             Stream.Write((short)m.Body);
@@ -507,7 +535,9 @@ namespace Server.Network
             var hue = m.Hue;
 
             if (m.SolidHueOverride >= 0)
+            {
                 hue = m.SolidHueOverride;
+            }
 
             Stream.Write(m.Serial);
             Stream.Write((short)m.Body);
@@ -536,16 +566,23 @@ namespace Server.Network
             var count = eq.Count;
 
             if (beheld.HairItemID > 0)
+            {
                 count++;
+            }
+
             if (beheld.FacialHairItemID > 0)
+            {
                 count++;
+            }
 
             EnsureCapacity(23 + count * 9);
 
             var hue = beheld.Hue;
 
             if (beheld.SolidHueOverride >= 0)
+            {
                 hue = beheld.SolidHueOverride;
+            }
 
             Stream.Write(beheld.Serial);
             Stream.Write((short)beheld.Body);
@@ -570,7 +607,9 @@ namespace Server.Network
                     hue = item.Hue;
 
                     if (beheld.SolidHueOverride >= 0)
+                    {
                         hue = beheld.SolidHueOverride;
+                    }
 
                     var itemID = item.ItemID & 0xFFFF;
 
@@ -583,13 +622,16 @@ namespace Server.Network
             }
 
             if (beheld.HairItemID > 0)
+            {
                 if (m_DupedLayers[(int)Layer.Hair] != m_Version)
                 {
                     m_DupedLayers[(int)Layer.Hair] = m_Version;
                     hue = beheld.HairHue;
 
                     if (beheld.SolidHueOverride >= 0)
+                    {
                         hue = beheld.SolidHueOverride;
+                    }
 
                     var itemID = beheld.HairItemID & 0xFFFF;
 
@@ -599,15 +641,19 @@ namespace Server.Network
 
                     Stream.Write((short)hue);
                 }
+            }
 
             if (beheld.FacialHairItemID > 0)
+            {
                 if (m_DupedLayers[(int)Layer.FacialHair] != m_Version)
                 {
                     m_DupedLayers[(int)Layer.FacialHair] = m_Version;
                     hue = beheld.FacialHairHue;
 
                     if (beheld.SolidHueOverride >= 0)
+                    {
                         hue = beheld.SolidHueOverride;
+                    }
 
                     var itemID = beheld.FacialHairItemID & 0xFFFF;
 
@@ -617,6 +663,7 @@ namespace Server.Network
 
                     Stream.Write((short)hue);
                 }
+            }
 
             Stream.Write(0); // terminate
         }
@@ -624,9 +671,15 @@ namespace Server.Network
         public static Packet Create(NetState ns, Mobile beholder, Mobile beheld)
         {
             if (ns.NewMobileIncoming)
+            {
                 return new MobileIncoming(beholder, beheld);
+            }
+
             if (ns.StygianAbyss)
+            {
                 return new MobileIncomingSA(beholder, beheld);
+            }
+
             return new MobileIncomingOld(beholder, beheld);
         }
     }
@@ -645,16 +698,23 @@ namespace Server.Network
             var count = eq.Count;
 
             if (beheld.HairItemID > 0)
+            {
                 count++;
+            }
+
             if (beheld.FacialHairItemID > 0)
+            {
                 count++;
+            }
 
             EnsureCapacity(23 + count * 9);
 
             var hue = beheld.Hue;
 
             if (beheld.SolidHueOverride >= 0)
+            {
                 hue = beheld.SolidHueOverride;
+            }
 
             Stream.Write(beheld.Serial);
             Stream.Write((short)beheld.Body);
@@ -679,70 +739,92 @@ namespace Server.Network
                     hue = item.Hue;
 
                     if (beheld.SolidHueOverride >= 0)
+                    {
                         hue = beheld.SolidHueOverride;
+                    }
 
                     var itemID = item.ItemID & 0x7FFF;
                     var writeHue = hue != 0;
 
                     if (writeHue)
+                    {
                         itemID |= 0x8000;
+                    }
 
                     Stream.Write(item.Serial);
                     Stream.Write((ushort)itemID);
                     Stream.Write(layer);
 
                     if (writeHue)
+                    {
                         Stream.Write((short)hue);
+                    }
                 }
             }
 
             if (beheld.HairItemID > 0)
+            {
                 if (m_DupedLayers[(int)Layer.Hair] != m_Version)
                 {
                     m_DupedLayers[(int)Layer.Hair] = m_Version;
                     hue = beheld.HairHue;
 
                     if (beheld.SolidHueOverride >= 0)
+                    {
                         hue = beheld.SolidHueOverride;
+                    }
 
                     var itemID = beheld.HairItemID & 0x7FFF;
 
                     var writeHue = hue != 0;
 
                     if (writeHue)
+                    {
                         itemID |= 0x8000;
+                    }
 
                     Stream.Write(HairInfo.FakeSerial(beheld));
                     Stream.Write((ushort)itemID);
                     Stream.Write((byte)Layer.Hair);
 
                     if (writeHue)
+                    {
                         Stream.Write((short)hue);
+                    }
                 }
+            }
 
             if (beheld.FacialHairItemID > 0)
+            {
                 if (m_DupedLayers[(int)Layer.FacialHair] != m_Version)
                 {
                     m_DupedLayers[(int)Layer.FacialHair] = m_Version;
                     hue = beheld.FacialHairHue;
 
                     if (beheld.SolidHueOverride >= 0)
+                    {
                         hue = beheld.SolidHueOverride;
+                    }
 
                     var itemID = beheld.FacialHairItemID & 0x7FFF;
 
                     var writeHue = hue != 0;
 
                     if (writeHue)
+                    {
                         itemID |= 0x8000;
+                    }
 
                     Stream.Write(FacialHairInfo.FakeSerial(beheld));
                     Stream.Write((ushort)itemID);
                     Stream.Write((byte)Layer.FacialHair);
 
                     if (writeHue)
+                    {
                         Stream.Write((short)hue);
+                    }
                 }
+            }
 
             Stream.Write(0); // terminate
         }
@@ -763,16 +845,23 @@ namespace Server.Network
             var count = eq.Count;
 
             if (beheld.HairItemID > 0)
+            {
                 count++;
+            }
+
             if (beheld.FacialHairItemID > 0)
+            {
                 count++;
+            }
 
             EnsureCapacity(23 + count * 9);
 
             var hue = beheld.Hue;
 
             if (beheld.SolidHueOverride >= 0)
+            {
                 hue = beheld.SolidHueOverride;
+            }
 
             Stream.Write(beheld.Serial);
             Stream.Write((short)beheld.Body);
@@ -797,70 +886,92 @@ namespace Server.Network
                     hue = item.Hue;
 
                     if (beheld.SolidHueOverride >= 0)
+                    {
                         hue = beheld.SolidHueOverride;
+                    }
 
                     var itemID = item.ItemID & 0x7FFF;
                     var writeHue = hue != 0;
 
                     if (writeHue)
+                    {
                         itemID |= 0x8000;
+                    }
 
                     Stream.Write(item.Serial);
                     Stream.Write((ushort)itemID);
                     Stream.Write(layer);
 
                     if (writeHue)
+                    {
                         Stream.Write((short)hue);
+                    }
                 }
             }
 
             if (beheld.HairItemID > 0)
+            {
                 if (m_DupedLayers[(int)Layer.Hair] != m_Version)
                 {
                     m_DupedLayers[(int)Layer.Hair] = m_Version;
                     hue = beheld.HairHue;
 
                     if (beheld.SolidHueOverride >= 0)
+                    {
                         hue = beheld.SolidHueOverride;
+                    }
 
                     var itemID = beheld.HairItemID & 0x7FFF;
 
                     var writeHue = hue != 0;
 
                     if (writeHue)
+                    {
                         itemID |= 0x8000;
+                    }
 
                     Stream.Write(HairInfo.FakeSerial(beheld));
                     Stream.Write((ushort)itemID);
                     Stream.Write((byte)Layer.Hair);
 
                     if (writeHue)
+                    {
                         Stream.Write((short)hue);
+                    }
                 }
+            }
 
             if (beheld.FacialHairItemID > 0)
+            {
                 if (m_DupedLayers[(int)Layer.FacialHair] != m_Version)
                 {
                     m_DupedLayers[(int)Layer.FacialHair] = m_Version;
                     hue = beheld.FacialHairHue;
 
                     if (beheld.SolidHueOverride >= 0)
+                    {
                         hue = beheld.SolidHueOverride;
+                    }
 
                     var itemID = beheld.FacialHairItemID & 0x7FFF;
 
                     var writeHue = hue != 0;
 
                     if (writeHue)
+                    {
                         itemID |= 0x8000;
+                    }
 
                     Stream.Write(FacialHairInfo.FakeSerial(beheld));
                     Stream.Write((ushort)itemID);
                     Stream.Write((byte)Layer.FacialHair);
 
                     if (writeHue)
+                    {
                         Stream.Write((short)hue);
+                    }
                 }
+            }
 
             Stream.Write(0); // terminate
         }

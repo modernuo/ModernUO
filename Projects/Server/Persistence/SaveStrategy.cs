@@ -31,8 +31,10 @@ namespace Server
                 var processorCount = Core.ProcessorCount;
 
                 if (processorCount > 2)
+                {
                     return
                         new DualSaveStrategy(); // return new DynamicSaveStrategy(); (4.0 or return new ParallelSaveStrategy(processorCount); (2.0)
+                }
 
                 return new DualSaveStrategy();
             }

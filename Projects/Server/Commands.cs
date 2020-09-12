@@ -49,7 +49,9 @@ namespace Server
         public string GetString(int index)
         {
             if (index < 0 || index >= Arguments.Length)
+            {
                 return "";
+            }
 
             return Arguments[index];
         }
@@ -57,7 +59,9 @@ namespace Server
         public int GetInt32(int index)
         {
             if (index < 0 || index >= Arguments.Length)
+            {
                 return 0;
+            }
 
             return Utility.ToInt32(Arguments[index]);
         }
@@ -65,7 +69,9 @@ namespace Server
         public uint GetUInt32(int index)
         {
             if (index < 0 || index >= Arguments.Length)
+            {
                 return 0;
+            }
 
             return Utility.ToUInt32(Arguments[index]);
         }
@@ -73,7 +79,9 @@ namespace Server
         public bool GetBoolean(int index)
         {
             if (index < 0 || index >= Arguments.Length)
+            {
                 return false;
+            }
 
             return Utility.ToBoolean(Arguments[index]);
         }
@@ -81,7 +89,9 @@ namespace Server
         public double GetDouble(int index)
         {
             if (index < 0 || index >= Arguments.Length)
+            {
                 return 0.0;
+            }
 
             return Utility.ToDouble(Arguments[index]);
         }
@@ -89,7 +99,9 @@ namespace Server
         public TimeSpan GetTimeSpan(int index)
         {
             if (index < 0 || index >= Arguments.Length)
+            {
                 return TimeSpan.Zero;
+            }
 
             return Utility.ToTimeSpan(Arguments[index]);
         }
@@ -145,10 +157,16 @@ namespace Server
                     var end = start;
 
                     while (end < array.Length)
+                    {
                         if (array[end] != '"' || array[end - 1] == '\\')
+                        {
                             ++end;
+                        }
                         else
+                        {
                             break;
+                        }
+                    }
 
                     list.Add(value.Substring(start, end - start));
 
@@ -159,10 +177,16 @@ namespace Server
                     var end = start;
 
                     while (end < array.Length)
+                    {
                         if (array[end] != ' ')
+                        {
                             ++end;
+                        }
                         else
+                        {
                             break;
+                        }
+                    }
 
                     list.Add(value.Substring(start, end - start));
 
@@ -185,10 +209,14 @@ namespace Server
         public static bool Handle(Mobile from, string text, MessageType type = MessageType.Regular)
         {
             if (!text.StartsWith(Prefix) && type != MessageType.Command)
+            {
                 return false;
+            }
 
             if (type != MessageType.Command)
+            {
                 text = text.Substring(Prefix.Length);
+            }
 
             var indexOf = text.IndexOf(' ');
 
@@ -226,7 +254,9 @@ namespace Server
                 else
                 {
                     if (from.AccessLevel <= BadCommandIgnoreLevel)
+                    {
                         return false;
+                    }
 
                     from.SendMessage("You do not have access to that command.");
                 }
@@ -234,7 +264,9 @@ namespace Server
             else
             {
                 if (from.AccessLevel <= BadCommandIgnoreLevel)
+                {
                     return false;
+                }
 
                 from.SendMessage("That is not a valid command.");
             }

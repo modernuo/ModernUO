@@ -27,7 +27,9 @@ namespace Server.Movement
         public static bool CheckMovement(Mobile m, Direction d, out int newZ)
         {
             if (Impl != null)
+            {
                 return Impl.CheckMovement(m, d, out newZ);
+            }
 
             newZ = m.Z;
             return false;
@@ -36,7 +38,9 @@ namespace Server.Movement
         public static bool CheckMovement(Mobile m, Map map, Point3D loc, Direction d, out int newZ)
         {
             if (Impl != null)
+            {
                 return Impl.CheckMovement(m, map, loc, d, out newZ);
+            }
 
             newZ = m.Z;
             return false;

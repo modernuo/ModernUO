@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Main.cs                                                         *
  *                                                                       *
@@ -104,8 +104,6 @@ namespace Server
                 ? m_ProfileTime + (DateTime.UtcNow - m_ProfileStart)
                 : m_ProfileTime;
 
-        internal static bool HaltOnWarning { get; private set; }
-
         public static Assembly Assembly { get; set; }
 
         // Assembly file version
@@ -170,11 +168,6 @@ namespace Server
                 if (m_Profiling)
                 {
                     Utility.Separate(sb, "-profile", " ");
-                }
-
-                if (HaltOnWarning)
-                {
-                    Utility.Separate(sb, "-haltonwarning", " ");
                 }
 
                 return sb.ToString();
@@ -366,10 +359,6 @@ namespace Server
                 {
                     Profiling = true;
                 }
-                else if (Insensitive.Equals(a, "-haltonwarning"))
-                {
-                    HaltOnWarning = true;
-                }
             }
 
             Thread = Thread.CurrentThread;
@@ -392,7 +381,6 @@ namespace Server
             }
 
             Utility.PushColor(ConsoleColor.Green);
-            // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
             Console.WriteLine(
                 "ModernUO - [https://github.com/modernuo/modernuo] Version {0}.{1}.{2}.{3}",
                 Version.Major,
@@ -400,8 +388,19 @@ namespace Server
                 Version.Build,
                 Version.Revision
             );
-            Console.WriteLine("Core: Running on {0}\n", RuntimeInformation.FrameworkDescription);
             Utility.PopColor();
+
+            Utility.PushColor(ConsoleColor.DarkGray);
+            Console.WriteLine(@"Copyright 2019-2020 ModernUO Development Team
+                This program comes with ABSOLUTELY NO WARRANTY;
+                This is free software, and you are welcome to redistribute it under certain conditions.
+
+                You should have received a copy of the GNU General Public License
+                along with this program. If not, see <https://www.gnu.org/licenses/>.
+            ".TrimMultiline());
+            Utility.PopColor();
+
+            Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
 
             var ttObj = new Timer.TimerThread();
             timerThread = new Thread(ttObj.TimerMain)

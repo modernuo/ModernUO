@@ -48,7 +48,9 @@ namespace Server
             var options = FileOptions.SequentialScan;
 
             if (Concurrency > 0)
+            {
                 options |= FileOptions.Asynchronous;
+            }
 
 #if !WINDOWS
             return new FileStream(path, mode, access, share, BufferSize, options);

@@ -52,7 +52,9 @@ namespace Server
                 m_List = new Point3D[old.Length * 2];
 
                 for (var i = 0; i < old.Length; ++i)
+                {
                     m_List[i] = old[i];
+                }
             }
 
             m_List[Count].m_X = x;
@@ -69,7 +71,9 @@ namespace Server
                 m_List = new Point3D[old.Length * 2];
 
                 for (var i = 0; i < old.Length; ++i)
+                {
                     m_List[i] = old[i];
+                }
             }
 
             m_List[Count].m_X = p.m_X;
@@ -81,12 +85,16 @@ namespace Server
         public Point3D[] ToArray()
         {
             if (Count == 0)
+            {
                 return m_EmptyList;
+            }
 
             var list = new Point3D[Count];
 
             for (var i = 0; i < Count; ++i)
+            {
                 list[i] = m_List[i];
+            }
 
             Count = 0;
 

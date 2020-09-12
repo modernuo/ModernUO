@@ -141,11 +141,17 @@ namespace Server
                 Serial serial = reader.ReadUInt();
 
                 if (serial.IsItem)
+                {
                     parent = World.FindItem(serial);
+                }
                 else if (serial.IsMobile)
+                {
                     parent = World.FindMobile(serial);
+                }
                 else
+                {
                     parent = null;
+                }
 
                 return new BounceInfo(map, loc, worldLoc, parent);
             }
@@ -168,11 +174,17 @@ namespace Server
                 writer.Write(info.WorldLoc);
 
                 if (info.Parent is Mobile mobile)
+                {
                     writer.Write(mobile);
+                }
                 else if (info.Parent is Item item)
+                {
                     writer.Write(item);
+                }
                 else
+                {
                     writer.Write((Serial)0);
+                }
             }
         }
     }
@@ -282,7 +294,9 @@ namespace Server
                 info.m_TempFlags = value;
 
                 if (info.m_TempFlags == 0)
+                {
                     VerifyCompactInfo();
+                }
             }
         }
 
@@ -296,7 +310,9 @@ namespace Server
                 info.m_SavedFlags = value;
 
                 if (info.m_SavedFlags == 0)
+                {
                     VerifyCompactInfo();
+                }
             }
         }
 
@@ -313,7 +329,9 @@ namespace Server
                 info.m_HeldBy = value;
 
                 if (info.m_HeldBy == null)
+                {
                     VerifyCompactInfo();
+                }
             }
         }
 
@@ -333,7 +351,9 @@ namespace Server
                     m_LootType = value;
 
                     if (DisplayLootType)
+                    {
                         InvalidateProperties();
+                    }
                 }
             }
         }
@@ -390,7 +410,9 @@ namespace Server
                             var m = state.Mobile;
 
                             if (!m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
+                            {
                                 state.Send(RemovePacket);
+                            }
                         }
 
                         eable.Free();
@@ -451,7 +473,9 @@ namespace Server
             get
             {
                 if (m_ItemID < 0x4000)
+                {
                     return 1020000 + m_ItemID;
+                }
 
                 return 1078872 + m_ItemID;
             }
@@ -471,12 +495,16 @@ namespace Server
             get
             {
                 if (m_ItemID < 0 || m_ItemID > TileData.MaxItemValue || this is BaseMulti)
+                {
                     return 0;
+                }
 
                 var weight = TileData.ItemTable[m_ItemID].Weight;
 
                 if (weight == 255 || weight == 0)
+                {
                     weight = 1;
+                }
 
                 return weight;
             }
@@ -502,7 +530,9 @@ namespace Server
                     info.m_Weight = value;
 
                     if (info.m_Weight == -1)
+                    {
                         VerifyCompactInfo();
+                    }
 
                     var newPileWeight = PileWeight;
 
@@ -561,7 +591,10 @@ namespace Server
 
                 while (p is Item item)
                 {
-                    if (item.m_Parent == null) break;
+                    if (item.m_Parent == null)
+                    {
+                        break;
+                    }
 
                     p = item.m_Parent;
                 }
@@ -616,7 +649,9 @@ namespace Server
                     info.m_Name = value;
 
                     if (info.m_Name == null)
+                    {
                         VerifyCompactInfo();
+                    }
 
                     InvalidateProperties();
                 }
@@ -630,7 +665,9 @@ namespace Server
             set
             {
                 if (m_Parent == value)
+                {
                     return;
+                }
 
                 var oldParent = m_Parent;
 
@@ -639,9 +676,13 @@ namespace Server
                 if (m_Map != null)
                 {
                     if (oldParent != null && m_Parent == null)
+                    {
                         m_Map.OnEnter(this);
+                    }
                     else if (m_Parent != null)
+                    {
                         m_Map.OnLeave(this);
+                    }
                 }
             }
         }
@@ -702,15 +743,19 @@ namespace Server
                     Delta(ItemDelta.Update);
 
                     if (oldValue > 1 || value > 1)
+                    {
                         InvalidateProperties();
+                    }
 
                     if (!Stackable && m_Amount > 1)
+                    {
                         Console.WriteLine(
                             "Warning: 0x{0:X}: Amount changed for non-stackable item '{2}'. ({1})",
                             Serial.Value,
                             m_Amount,
                             GetType().Name
                         );
+                    }
                 }
             }
         }
@@ -770,7 +815,9 @@ namespace Server
                 info.m_BlessedFor = value;
 
                 if (info.m_BlessedFor == null)
+                {
                     VerifyCompactInfo();
+                }
 
                 InvalidateProperties();
             }
@@ -823,13 +870,19 @@ namespace Server
                     if (x != 0 || y != 0)
                     {
                         if (x >= byte.MinValue && x <= byte.MaxValue && y >= byte.MinValue && y <= byte.MaxValue)
+                        {
                             flags |= SaveFlag.LocationByteXY;
+                        }
                         else
+                        {
                             flags |= SaveFlag.LocationShortXY;
+                        }
                     }
 
                     if (z != 0)
+                    {
                         flags |= SaveFlag.LocationSByteZ;
+                    }
                 }
                 else
                 {
@@ -841,38 +894,78 @@ namespace Server
             var items = LookupItems();
 
             if (m_Direction != Direction.North)
+            {
                 flags |= SaveFlag.Direction;
+            }
+
             if (info?.m_Bounce != null)
+            {
                 flags |= SaveFlag.Bounce;
+            }
+
             if (m_LootType != LootType.Regular)
+            {
                 flags |= SaveFlag.LootType;
+            }
+
             if (m_ItemID != 0)
+            {
                 flags |= SaveFlag.ItemID;
+            }
+
             if (m_Hue != 0)
+            {
                 flags |= SaveFlag.Hue;
+            }
+
             if (m_Amount != 1)
+            {
                 flags |= SaveFlag.Amount;
+            }
+
             if (m_Layer != Layer.Invalid)
+            {
                 flags |= SaveFlag.Layer;
+            }
+
             if (info?.m_Name != null)
+            {
                 flags |= SaveFlag.Name;
+            }
+
             if (m_Parent != null)
+            {
                 flags |= SaveFlag.Parent;
+            }
+
             if (items != null && items.Count > 0)
+            {
                 flags |= SaveFlag.Items;
+            }
+
             if (m_Map != Map.Internal)
+            {
                 flags |= SaveFlag.Map;
+            }
             // if (m_InsuredFor != null && !m_InsuredFor.Deleted)
             // flags |= SaveFlag.InsuredFor;
 
             if (info != null)
             {
                 if (info.m_BlessedFor?.Deleted == false)
+                {
                     flags |= SaveFlag.BlessedFor;
+                }
+
                 if (info.m_HeldBy?.Deleted == false)
+                {
                     flags |= SaveFlag.HeldBy;
+                }
+
                 if (info.m_SavedFlags != 0)
+                {
                     flags |= SaveFlag.SavedFlags;
+                }
             }
 
             if (info == null || info.m_Weight == -1.0)
@@ -888,9 +981,13 @@ namespace Server
                 else if (info.m_Weight != 1.0)
                 {
                     if (info.m_Weight == (int)info.m_Weight)
+                    {
                         flags |= SaveFlag.IntWeight;
+                    }
                     else
+                    {
                         flags |= SaveFlag.WeightNot1or0;
+                    }
                 }
             }
 
@@ -898,7 +995,9 @@ namespace Server
                                        ImplFlag.PaidInsurance | ImplFlag.QuestItem);
 
             if (implFlags != (ImplFlag.Visible | ImplFlag.Movable))
+            {
                 flags |= SaveFlag.ImplFlags;
+            }
 
             writer.Write((int)flags);
 
@@ -912,13 +1011,19 @@ namespace Server
             /* end */
 
             if (GetSaveFlag(flags, SaveFlag.Direction))
+            {
                 writer.Write((byte)m_Direction);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Bounce))
+            {
                 BounceInfo.Serialize(info?.m_Bounce, writer);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.LootType))
+            {
                 writer.Write((byte)m_LootType);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.LocationFull))
             {
@@ -940,57 +1045,91 @@ namespace Server
                 }
 
                 if (GetSaveFlag(flags, SaveFlag.LocationSByteZ))
+                {
                     writer.Write((sbyte)z);
+                }
             }
 
             if (GetSaveFlag(flags, SaveFlag.ItemID))
+            {
                 writer.WriteEncodedInt(m_ItemID);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Hue))
+            {
                 writer.WriteEncodedInt(m_Hue);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Amount))
+            {
                 writer.WriteEncodedInt(m_Amount);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Layer))
+            {
                 writer.Write((byte)m_Layer);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Name))
+            {
                 writer.Write(info.m_Name);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Parent))
             {
                 if (m_Parent?.Deleted == false)
+                {
                     writer.Write(m_Parent.Serial);
+                }
                 else
+                {
                     writer.Write(Serial.MinusOne);
+                }
             }
 
             if (GetSaveFlag(flags, SaveFlag.Items))
+            {
                 writer.Write(items, false);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.IntWeight))
+            {
                 writer.WriteEncodedInt((int)info.m_Weight);
+            }
             else if (GetSaveFlag(flags, SaveFlag.WeightNot1or0))
+            {
                 writer.Write(info.m_Weight);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Map))
+            {
                 writer.Write(m_Map);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.ImplFlags))
+            {
                 writer.WriteEncodedInt((int)implFlags);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.InsuredFor))
+            {
                 writer.Write((Mobile)null);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.BlessedFor))
+            {
                 writer.Write(info.m_BlessedFor);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.HeldBy))
+            {
                 writer.Write(info.m_HeldBy);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.SavedFlags))
+            {
                 writer.WriteEncodedInt(info.m_SavedFlags);
+            }
         }
 
         int IComparable<IEntity>.CompareTo(IEntity other) => other == null ? -1 : Serial.CompareTo(other.Serial);
@@ -1001,7 +1140,9 @@ namespace Server
         public void MoveToWorld(Point3D location, Map map)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             var oldLocation = GetWorldLocation();
             var oldRealLocation = m_Location;
@@ -1009,9 +1150,13 @@ namespace Server
             SetLastMoved();
 
             if (Parent is Mobile mobile)
+            {
                 mobile.RemoveItem(this);
+            }
             else if (Parent is Item item)
+            {
                 item.RemoveItem(this);
+            }
 
             if (m_Map != map)
             {
@@ -1030,7 +1175,9 @@ namespace Server
                             var m = state.Mobile;
 
                             if (m.InRange(oldLocation, GetUpdateRange(m)))
+                            {
                                 state.Send(RemovePacket);
+                            }
                         }
 
                         eable.Free();
@@ -1045,8 +1192,12 @@ namespace Server
                 var items = LookupItems();
 
                 if (items != null)
+                {
                     for (var i = 0; i < items.Count; ++i)
+                    {
                         items[i].Map = map;
+                    }
+                }
 
                 m_Map = map;
                 m_Map?.OnEnter(this);
@@ -1062,7 +1213,9 @@ namespace Server
                         var m = state.Mobile;
 
                         if (m.CanSee(this) && m.InRange(m_Location, GetUpdateRange(m)))
+                        {
                             SendInfoTo(state);
+                        }
                     }
 
                     eable.Free();
@@ -1071,7 +1224,9 @@ namespace Server
                 RemDelta(ItemDelta.Update);
 
                 if (old == null || old == Map.Internal)
+                {
                     InvalidateProperties();
+                }
             }
             else if (m_Map != null)
             {
@@ -1085,7 +1240,10 @@ namespace Server
                     {
                         var m = state.Mobile;
 
-                        if (!m.InRange(location, GetUpdateRange(m))) state.Send(RemovePacket);
+                        if (!m.InRange(location, GetUpdateRange(m)))
+                        {
+                            state.Send(RemovePacket);
+                        }
                     }
 
                     eable.Free();
@@ -1105,7 +1263,9 @@ namespace Server
                     var m = state.Mobile;
 
                     if (m.CanSee(this) && m.InRange(m_Location, GetUpdateRange(m)))
+                    {
                         SendInfoTo(state);
+                    }
                 }
 
                 eable.Free();
@@ -1145,20 +1305,28 @@ namespace Server
                     var items = LookupItems();
 
                     if (items != null)
+                    {
                         for (var i = 0; i < items.Count; ++i)
+                        {
                             items[i].Map = value;
+                        }
+                    }
 
                     m_Map = value;
 
                     if (m_Parent == null)
+                    {
                         m_Map?.OnEnter(this);
+                    }
 
                     Delta(ItemDelta.Update);
 
                     OnMapChange();
 
                     if (old == null || old == Map.Internal)
+                    {
                         InvalidateProperties();
+                    }
                 }
             }
         }
@@ -1173,7 +1341,9 @@ namespace Server
             var map = m_Map;
 
             if (map == null || Deleted)
+            {
                 return;
+            }
 
             var worldLoc = GetWorldLocation();
             var update = (flags & ItemDelta.Update) != 0;
@@ -1190,12 +1360,18 @@ namespace Server
                     if (ns != null && rootParent.CanSee(this) && rootParent.InRange(worldLoc, GetUpdateRange(rootParent)))
                     {
                         if (ns.ContainerGridLines)
+                        {
                             ns.Send(new ContainerContentUpdate6017(this));
+                        }
                         else
+                        {
                             ns.Send(new ContainerContentUpdate(this));
+                        }
 
                         if (ObjectPropertyList.Enabled)
+                        {
                             ns.Send(OPLPacket);
+                        }
                     }
                 }
 
@@ -1206,30 +1382,41 @@ namespace Server
                     var test = st.From.Mobile;
 
                     if (test != null && test != rootParent)
+                    {
                         tradeRecip = test;
+                    }
 
                     test = st.To.Mobile;
 
                     if (test != null && test != rootParent)
+                    {
                         tradeRecip = test;
+                    }
 
                     var ns = tradeRecip?.NetState;
 
                     if (ns != null && tradeRecip.CanSee(this) && tradeRecip.InRange(worldLoc, GetUpdateRange(tradeRecip)))
                     {
                         if (ns.ContainerGridLines)
+                        {
                             ns.Send(new ContainerContentUpdate6017(this));
+                        }
                         else
+                        {
                             ns.Send(new ContainerContentUpdate(this));
+                        }
 
                         if (ObjectPropertyList.Enabled)
+                        {
                             ns.Send(OPLPacket);
+                        }
                     }
                 }
 
                 var openers = contParent.Openers;
 
                 if (openers != null)
+                {
                     lock (openers)
                     {
                         for (var i = 0; i < openers.Count; ++i)
@@ -1245,26 +1432,37 @@ namespace Server
                             else
                             {
                                 if (mob == rootParent || mob == tradeRecip)
+                                {
                                     continue;
+                                }
 
                                 var ns = mob.NetState;
 
                                 if (ns != null && mob.CanSee(this))
                                 {
                                     if (ns.ContainerGridLines)
+                                    {
                                         ns.Send(new ContainerContentUpdate6017(this));
+                                    }
                                     else
+                                    {
                                         ns.Send(new ContainerContentUpdate(this));
+                                    }
 
                                     if (ObjectPropertyList.Enabled)
+                                    {
                                         ns.Send(OPLPacket);
+                                    }
                                 }
                             }
                         }
 
                         if (openers.Count == 0)
+                        {
                             contParent.Openers = null;
+                        }
                     }
+                }
 
                 return;
             }
@@ -1277,7 +1475,10 @@ namespace Server
             {
                 var m = state.Mobile;
 
-                if (!m.CanSee(this) || !m.InRange(worldLoc, GetUpdateRange(m))) continue;
+                if (!m.CanSee(this) || !m.InRange(worldLoc, GetUpdateRange(m)))
+                {
+                    continue;
+                }
 
                 if (update)
                 {
@@ -1294,9 +1495,13 @@ namespace Server
                         else if (m_Parent is Item)
                         {
                             if (state.ContainerGridLines)
+                            {
                                 state.Send(new ContainerContentUpdate6017(this));
+                            }
                             else
+                            {
                                 state.Send(new ContainerContentUpdate(this));
+                            }
                         }
                         else if (m_Parent is Mobile)
                         {
@@ -1307,7 +1512,9 @@ namespace Server
                         }
 
                         if (ObjectPropertyList.Enabled)
+                        {
                             state.Send(OPLPacket);
+                        }
                     }
                 }
                 else if ((flags & ItemDelta.EquipOnly) != 0 && m_Parent is Mobile)
@@ -1315,7 +1522,9 @@ namespace Server
                     state.Send(p ??= Packet.Acquire(new EquipUpdate(this)));
 
                     if (ObjectPropertyList.Enabled)
+                    {
                         state.Send(OPLPacket);
+                    }
                 }
                 else if (ObjectPropertyList.Enabled && (flags & ItemDelta.Properties) != 0)
                 {
@@ -1330,32 +1539,47 @@ namespace Server
         public virtual void Delete()
         {
             if (Deleted || !World.OnDelete(this))
+            {
                 return;
+            }
 
             OnDelete();
 
             var items = LookupItems();
 
             if (items != null)
+            {
                 for (var i = items.Count - 1; i >= 0; --i)
+                {
                     if (i < items.Count)
+                    {
                         items[i].OnParentDeleted(this);
+                    }
+                }
+            }
 
             SendRemovePacket();
 
             SetFlag(ImplFlag.Deleted, true);
 
             if (Parent is Mobile mobile)
+            {
                 mobile.RemoveItem(this);
+            }
             else if (Parent is Item item)
+            {
                 item.RemoveItem(this);
+            }
 
             ClearBounce();
 
             if (m_Map != null)
             {
                 if (m_Parent == null)
+                {
                     m_Map.OnLeave(this);
+                }
+
                 m_Map = null;
             }
 
@@ -1376,7 +1600,9 @@ namespace Server
                 info.m_Spawner = value;
 
                 if (info.m_Spawner == null)
+                {
                     VerifyCompactInfo();
+                }
             }
         }
 
@@ -1397,7 +1623,10 @@ namespace Server
                 var oldLocation = m_Location;
 
                 if (oldLocation == value)
+                {
                     return;
+                }
+
                 if (m_Map != null)
                 {
                     if (m_Parent == null)
@@ -1412,7 +1641,10 @@ namespace Server
                             {
                                 var m = state.Mobile;
 
-                                if (!m.InRange(value, GetUpdateRange(m))) state.Send(RemovePacket);
+                                if (!m.InRange(value, GetUpdateRange(m)))
+                                {
+                                    state.Send(RemovePacket);
+                                }
                             }
 
                             eable.Free();
@@ -1433,7 +1665,9 @@ namespace Server
                             if (m.CanSee(this) && m.InRange(m_Location, GetUpdateRange(m)) &&
                                 (!state.HighSeas || !NoMoveHS || (m_DeltaFlags & ItemDelta.Update) != 0 ||
                                  !m.InRange(oldLoc, GetUpdateRange(m))))
+                            {
                                 SendInfoTo(state);
+                            }
                         }
 
                         eable.Free();
@@ -1454,7 +1688,9 @@ namespace Server
                     }
 
                     if (m_Parent == null)
+                    {
                         m_Map.OnMove(oldLocation, this);
+                    }
                 }
                 else
                 {
@@ -1508,7 +1744,9 @@ namespace Server
         public void ReleaseOPLPacket()
         {
             if (m_PropertyList == null)
+            {
                 return;
+            }
 
             Packet.Release(m_PropertyList);
             m_PropertyList = null;
@@ -1523,31 +1761,49 @@ namespace Server
             if (info != null)
             {
                 if (info.m_BlessedFor != null)
+                {
                     flags |= ExpandFlag.Blessed;
+                }
 
                 if (info.m_Bounce != null)
+                {
                     flags |= ExpandFlag.Bounce;
+                }
 
                 if (info.m_HeldBy != null)
+                {
                     flags |= ExpandFlag.Holder;
+                }
 
                 if (info.m_Items != null)
+                {
                     flags |= ExpandFlag.Items;
+                }
 
                 if (info.m_Name != null)
+                {
                     flags |= ExpandFlag.Name;
+                }
 
                 if (info.m_Spawner != null)
+                {
                     flags |= ExpandFlag.Spawner;
+                }
 
                 if (info.m_SavedFlags != 0)
+                {
                     flags |= ExpandFlag.SaveFlag;
+                }
 
                 if (info.m_TempFlags != 0)
+                {
                     flags |= ExpandFlag.TempFlag;
+                }
 
                 if (info.m_Weight != -1)
+                {
                     flags |= ExpandFlag.Weight;
+                }
             }
 
             return flags;
@@ -1567,7 +1823,9 @@ namespace Server
             var info = m_CompactInfo;
 
             if (info == null)
+            {
                 return;
+            }
 
             var isValid = info.m_Name != null
                           || info.m_Items != null
@@ -1580,13 +1838,17 @@ namespace Server
                           || info.m_Weight != -1;
 
             if (!isValid)
+            {
                 ReleaseCompactInfo();
+            }
         }
 
         public List<Item> LookupItems()
         {
             if (this is Container container)
+            {
                 return container.m_Items;
+            }
 
             return LookupCompactInfo()?.m_Items;
         }
@@ -1594,7 +1856,9 @@ namespace Server
         public List<Item> AcquireItems()
         {
             if (this is Container cont)
+            {
                 return cont.m_Items ?? (cont.m_Items = new List<Item>());
+            }
 
             var info = AcquireCompactInfo();
             return info.m_Items ?? (info.m_Items = new List<Item>());
@@ -1603,9 +1867,13 @@ namespace Server
         private void SetFlag(ImplFlag flag, bool value)
         {
             if (value)
+            {
                 m_Flags |= flag;
+            }
             else
+            {
                 m_Flags &= ~flag;
+            }
         }
 
         private bool GetFlag(ImplFlag flag) => (m_Flags & flag) != 0;
@@ -1624,19 +1892,25 @@ namespace Server
             var bounce = info?.m_Bounce;
 
             if (bounce == null)
+            {
                 return;
+            }
 
             info.m_Bounce = null;
 
             if (bounce.Parent is Item parentItem)
             {
                 if (!parentItem.Deleted)
+                {
                     parentItem.OnItemBounceCleared(this);
+                }
             }
             else if (bounce.Parent is Mobile parentMobile)
             {
                 if (!parentMobile.Deleted)
+                {
                     parentMobile.OnItemBounceCleared(this);
+                }
             }
 
             VerifyCompactInfo();
@@ -1703,16 +1977,24 @@ namespace Server
             if (name == null)
             {
                 if (m_Amount <= 1)
+                {
                     list.Add(LabelNumber);
+                }
                 else
+                {
                     list.Add(1050039, "{0}\t#{1}", m_Amount, LabelNumber); // ~1_NUMBER~ ~2_ITEMNAME~
+                }
             }
             else
             {
                 if (m_Amount <= 1)
+                {
                     list.Add(name);
+                }
                 else
+                {
                     list.Add(1050039, "{0}\t{1}", m_Amount, Name); // ~1_NUMBER~ ~2_ITEMNAME~
+                }
             }
         }
 
@@ -1723,11 +2005,17 @@ namespace Server
         public virtual void AddLootTypeProperty(ObjectPropertyList list)
         {
             if (m_LootType == LootType.Blessed)
+            {
                 list.Add(1038021); // blessed
+            }
             else if (m_LootType == LootType.Cursed)
+            {
                 list.Add(1049643); // cursed
+            }
             else if (Insured)
+            {
                 list.Add(1061682); // <b>insured</b>
+            }
         }
 
         /// <summary>
@@ -1738,27 +2026,37 @@ namespace Server
             var v = PhysicalResistance;
 
             if (v != 0)
+            {
                 list.Add(1060448, v.ToString()); // physical resist ~1_val~%
+            }
 
             v = FireResistance;
 
             if (v != 0)
+            {
                 list.Add(1060447, v.ToString()); // fire resist ~1_val~%
+            }
 
             v = ColdResistance;
 
             if (v != 0)
+            {
                 list.Add(1060445, v.ToString()); // cold resist ~1_val~%
+            }
 
             v = PoisonResistance;
 
             if (v != 0)
+            {
                 list.Add(1060449, v.ToString()); // poison resist ~1_val~%
+            }
 
             v = EnergyResistance;
 
             if (v != 0)
+            {
                 list.Add(1060446, v.ToString()); // energy resist ~1_val~%
+            }
         }
 
         /// <summary>
@@ -1769,9 +2067,13 @@ namespace Server
             var weight = PileWeight + TotalWeight;
 
             if (weight == 1)
+            {
                 list.Add(1072788, weight.ToString()); // Weight: ~1_WEIGHT~ stone
+            }
             else
+            {
                 list.Add(1072789, weight.ToString()); // Weight: ~1_WEIGHT~ stones
+            }
         }
 
         /// <summary>
@@ -1784,23 +2086,35 @@ namespace Server
             AddNameProperty(list);
 
             if (IsSecure)
+            {
                 AddSecureProperty(list);
+            }
             else if (IsLockedDown)
+            {
                 AddLockedDownProperty(list);
+            }
 
             var blessedFor = BlessedFor;
 
             if (blessedFor?.Deleted == false)
+            {
                 AddBlessedForProperty(list, blessedFor);
+            }
 
             if (DisplayLootType)
+            {
                 AddLootTypeProperty(list);
+            }
 
             if (DisplayWeight)
+            {
                 AddWeightProperty(list);
+            }
 
             if (QuestItem)
+            {
                 AddQuestItemProperty(list);
+            }
 
             AppendChildNameProperties(list);
         }
@@ -1845,9 +2159,13 @@ namespace Server
         public virtual void GetChildProperties(ObjectPropertyList list, Item item)
         {
             if (m_Parent is Item parentItem)
+            {
                 parentItem.GetChildProperties(list, item);
+            }
             else if (m_Parent is Mobile parentMobile)
+            {
                 parentMobile.GetChildProperties(list, item);
+            }
         }
 
         /// <summary>
@@ -1859,9 +2177,13 @@ namespace Server
         public virtual void GetChildNameProperties(ObjectPropertyList list, Item item)
         {
             if (m_Parent is Item parentItem)
+            {
                 parentItem.GetChildNameProperties(list, item);
+            }
             else if (m_Parent is Mobile parentMobile)
+            {
                 parentMobile.GetChildNameProperties(list, item);
+            }
         }
 
         public virtual bool IsChildVisibleTo(Mobile m, Item child) => true;
@@ -1869,9 +2191,13 @@ namespace Server
         public void Bounce(Mobile from)
         {
             if (m_Parent is Item item)
+            {
                 item.RemoveItem(this);
+            }
             else if (m_Parent is Mobile mobile)
+            {
                 mobile.RemoveItem(this);
+            }
 
             m_Parent = null;
 
@@ -1903,7 +2229,9 @@ namespace Server
                 else if (parent is Mobile parentMobile)
                 {
                     if (!parentMobile.EquipItem(this))
+                    {
                         MoveToWorld(bounce.WorldLoc, bounce.Map);
+                    }
                 }
                 else
                 {
@@ -1930,7 +2258,7 @@ namespace Server
         ///   {
         ///     if (from.Int &gt;= 100)
         ///       return true;
-        /// 
+        ///
         ///     return base.AllowEquippedCast( from );
         ///   }</code>
         ///     When placed in an Item script, the item may be cast when equipped if the <paramref name="from" /> has 100 or more
@@ -1945,17 +2273,25 @@ namespace Server
         public virtual void GetChildContextMenuEntries(Mobile from, List<ContextMenuEntry> list, Item item)
         {
             if (m_Parent is Item parentItem)
-                parentItem.GetChildContextMenuEntries(from, list, item);
+            {
+                parentItem.GetChildContextMenuEntries(@from, list, item);
+            }
             else if (m_Parent is Mobile parentMobile)
-                parentMobile.GetChildContextMenuEntries(from, list, item);
+            {
+                parentMobile.GetChildContextMenuEntries(@from, list, item);
+            }
         }
 
         public virtual void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
         {
             if (m_Parent is Item item)
-                item.GetChildContextMenuEntries(from, list, this);
+            {
+                item.GetChildContextMenuEntries(@from, list, this);
+            }
             else if (m_Parent is Mobile mobile)
-                mobile.GetChildContextMenuEntries(from, list, this);
+            {
+                mobile.GetChildContextMenuEntries(@from, list, this);
+            }
         }
 
         public virtual bool VerifyMove(Mobile from) => Movable;
@@ -1963,15 +2299,29 @@ namespace Server
         public virtual DeathMoveResult OnParentDeath(Mobile parent)
         {
             if (!Movable)
+            {
                 return DeathMoveResult.RemainEquipped;
+            }
+
             if (parent.KeepsItemsOnDeath)
+            {
                 return DeathMoveResult.MoveToBackpack;
+            }
+
             if (CheckBlessed(parent))
+            {
                 return DeathMoveResult.MoveToBackpack;
+            }
+
             if (CheckNewbied() && parent.Kills < 5)
+            {
                 return DeathMoveResult.MoveToBackpack;
+            }
+
             if (parent.Player && Nontransferable)
+            {
                 return DeathMoveResult.MoveToBackpack;
+            }
 
             return DeathMoveResult.MoveToCorpse;
         }
@@ -1979,15 +2329,29 @@ namespace Server
         public virtual DeathMoveResult OnInventoryDeath(Mobile parent)
         {
             if (!Movable)
+            {
                 return DeathMoveResult.MoveToBackpack;
+            }
+
             if (parent.KeepsItemsOnDeath)
+            {
                 return DeathMoveResult.MoveToBackpack;
+            }
+
             if (CheckBlessed(parent))
+            {
                 return DeathMoveResult.MoveToBackpack;
+            }
+
             if (CheckNewbied() && parent.Kills < 5)
+            {
                 return DeathMoveResult.MoveToBackpack;
+            }
+
             if (parent.Player && Nontransferable)
+            {
                 return DeathMoveResult.MoveToBackpack;
+            }
 
             return DeathMoveResult.MoveToCorpse;
         }
@@ -2033,9 +2397,13 @@ namespace Server
         public virtual void LabelLootTypeTo(Mobile to)
         {
             if (m_LootType == LootType.Blessed)
+            {
                 LabelTo(to, 1041362); // (blessed)
+            }
             else if (m_LootType == LootType.Cursed)
+            {
                 LabelTo(to, "(cursed)");
+            }
         }
 
         public bool AtWorldPoint(int x, int y) => m_Parent == null && m_Location.m_X == x && m_Location.m_Y == y;
@@ -2061,7 +2429,9 @@ namespace Server
             if (CanStackWith(dropped))
             {
                 if (m_LootType != dropped.m_LootType)
+                {
                     m_LootType = LootType.Regular;
+                }
 
                 Amount += dropped.Amount;
                 dropped.Delete();
@@ -2071,7 +2441,9 @@ namespace Server
                     var soundID = GetDropSound();
 
                     if (soundID == -1)
+                    {
                         soundID = 0x42;
+                    }
 
                     from.SendSound(soundID, GetWorldLocation());
                 }
@@ -2110,16 +2482,25 @@ namespace Server
                 doubled = false;
 
                 if (m_Amount <= 1)
+                {
                     itemID = coinBase;
+                }
                 else if (m_Amount <= 5)
+                {
                     itemID = coinBase + 1;
+                }
                 else // m_Amount > 5
+                {
                     itemID = coinBase + 2;
+                }
             }
 
             var bounds = ItemBounds.Table[itemID & 0x3FFF];
 
-            if (doubled) bounds.Set(bounds.X, bounds.Y, bounds.Width + 5, bounds.Height + 5);
+            if (doubled)
+            {
+                bounds.Set(bounds.X, bounds.Y, bounds.Width + 5, bounds.Height + 5);
+            }
 
             return bounds;
         }
@@ -2127,17 +2508,25 @@ namespace Server
         public virtual void AppendChildProperties(ObjectPropertyList list)
         {
             if (m_Parent is Item item)
+            {
                 item.GetChildProperties(list, this);
+            }
             else if (m_Parent is Mobile mobile)
+            {
                 mobile.GetChildProperties(list, this);
+            }
         }
 
         public virtual void AppendChildNameProperties(ObjectPropertyList list)
         {
             if (m_Parent is Item item)
+            {
                 item.GetChildNameProperties(list, this);
+            }
             else if (m_Parent is Mobile mobile)
+            {
                 mobile.GetChildNameProperties(list, this);
+            }
         }
 
         public ObjectPropertyList NewObjectPropertyList()
@@ -2161,7 +2550,9 @@ namespace Server
         public void InvalidateProperties()
         {
             if (!ObjectPropertyList.Enabled)
+            {
                 return;
+            }
 
             if (m_Map != null && m_Map != Map.Internal && !World.Loading)
             {
@@ -2190,10 +2581,14 @@ namespace Server
             var flags = 0;
 
             if (!Visible)
+            {
                 flags |= 0x80;
+            }
 
             if (Movable || ForceShowProperties)
+            {
                 flags |= 0x20;
+            }
 
             return flags;
         }
@@ -2226,7 +2621,9 @@ namespace Server
         private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
         {
             if (setIf)
+            {
                 flags |= toSet;
+            }
         }
 
         private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
@@ -2271,12 +2668,18 @@ namespace Server
             var info = AcquireCompactInfo();
 
             if (value)
+            {
                 info.m_TempFlags |= flag;
+            }
             else
+            {
                 info.m_TempFlags &= ~flag;
+            }
 
             if (info.m_TempFlags == 0)
+            {
                 VerifyCompactInfo();
+            }
         }
 
         public bool GetSavedFlag(int flag) => ((LookupCompactInfo()?.m_SavedFlags ?? 0) & flag) != 0;
@@ -2286,12 +2689,18 @@ namespace Server
             var info = AcquireCompactInfo();
 
             if (value)
+            {
                 info.m_SavedFlags |= flag;
+            }
             else
+            {
                 info.m_SavedFlags &= ~flag;
+            }
 
             if (info.m_SavedFlags == 0)
+            {
                 VerifyCompactInfo();
+            }
         }
 
         public virtual void Deserialize(IGenericReader reader)
@@ -2328,13 +2737,19 @@ namespace Server
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.Direction))
+                        {
                             m_Direction = (Direction)reader.ReadByte();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.Bounce))
+                        {
                             AcquireCompactInfo().m_Bounce = BounceInfo.Deserialize(reader);
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.LootType))
+                        {
                             m_LootType = (LootType)reader.ReadByte();
+                        }
 
                         int x = 0, y = 0, z = 0;
 
@@ -2358,28 +2773,38 @@ namespace Server
                             }
 
                             if (GetSaveFlag(flags, SaveFlag.LocationSByteZ))
+                            {
                                 z = reader.ReadSByte();
+                            }
                         }
 
                         m_Location = new Point3D(x, y, z);
 
                         if (GetSaveFlag(flags, SaveFlag.ItemID))
+                        {
                             m_ItemID = reader.ReadEncodedInt();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.Hue))
+                        {
                             m_Hue = reader.ReadEncodedInt();
+                        }
 
                         m_Amount = GetSaveFlag(flags, SaveFlag.Amount) ? reader.ReadEncodedInt() : 1;
 
                         if (GetSaveFlag(flags, SaveFlag.Layer))
+                        {
                             m_Layer = (Layer)reader.ReadByte();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.Name))
                         {
                             var name = reader.ReadString();
 
                             if (name != DefaultName)
+                            {
                                 AcquireCompactInfo().m_Name = name;
+                            }
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.Parent))
@@ -2387,14 +2812,22 @@ namespace Server
                             Serial parent = reader.ReadUInt();
 
                             if (parent.IsMobile)
+                            {
                                 m_Parent = World.FindMobile(parent);
+                            }
                             else if (parent.IsItem)
+                            {
                                 m_Parent = World.FindItem(parent);
+                            }
                             else
+                            {
                                 m_Parent = null;
+                            }
 
                             if (m_Parent == null && (parent.IsMobile || parent.IsItem))
+                            {
                                 Delete();
+                            }
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.Items))
@@ -2402,9 +2835,13 @@ namespace Server
                             var items = reader.ReadStrongItemList();
 
                             if (this is Container)
+                            {
                                 (this as Container).m_Items = items;
+                            }
                             else
+                            {
                                 AcquireCompactInfo().m_Items = items;
+                            }
                         }
 
                         if (version < 8 || !GetSaveFlag(flags, SaveFlag.NullWeight))
@@ -2412,16 +2849,26 @@ namespace Server
                             double weight;
 
                             if (GetSaveFlag(flags, SaveFlag.IntWeight))
+                            {
                                 weight = reader.ReadEncodedInt();
+                            }
                             else if (GetSaveFlag(flags, SaveFlag.WeightNot1or0))
+                            {
                                 weight = reader.ReadDouble();
+                            }
                             else if (GetSaveFlag(flags, SaveFlag.WeightIs0))
+                            {
                                 weight = 0.0;
+                            }
                             else
+                            {
                                 weight = 1.0;
+                            }
 
                             if (weight != DefaultWeight)
+                            {
                                 AcquireCompactInfo().m_Weight = weight;
+                            }
                         }
 
                         m_Map = GetSaveFlag(flags, SaveFlag.Map) ? reader.ReadMap() : Map.Internal;
@@ -2431,26 +2878,40 @@ namespace Server
                         SetFlag(ImplFlag.Movable, !GetSaveFlag(flags, SaveFlag.Movable) || reader.ReadBool());
 
                         if (GetSaveFlag(flags, SaveFlag.Stackable))
+                        {
                             SetFlag(ImplFlag.Stackable, reader.ReadBool());
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.ImplFlags))
+                        {
                             m_Flags = (ImplFlag)reader.ReadEncodedInt();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.InsuredFor))
                             /*m_InsuredFor = */
+                        {
                             reader.ReadMobile();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.BlessedFor))
+                        {
                             AcquireCompactInfo().m_BlessedFor = reader.ReadMobile();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.HeldBy))
+                        {
                             AcquireCompactInfo().m_HeldBy = reader.ReadMobile();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.SavedFlags))
+                        {
                             AcquireCompactInfo().m_SavedFlags = reader.ReadEncodedInt();
+                        }
 
                         if (m_Map != null && m_Parent == null)
+                        {
                             m_Map.OnEnter(this);
+                        }
 
                         break;
                     }
@@ -2461,34 +2922,50 @@ namespace Server
                         LastMoved = reader.ReadDeltaTime();
 
                         if (GetSaveFlag(flags, SaveFlag.Direction))
+                        {
                             m_Direction = (Direction)reader.ReadByte();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.Bounce))
+                        {
                             AcquireCompactInfo().m_Bounce = BounceInfo.Deserialize(reader);
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.LootType))
+                        {
                             m_LootType = (LootType)reader.ReadByte();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.LocationFull))
+                        {
                             m_Location = reader.ReadPoint3D();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.ItemID))
+                        {
                             m_ItemID = reader.ReadInt();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.Hue))
+                        {
                             m_Hue = reader.ReadInt();
+                        }
 
                         m_Amount = GetSaveFlag(flags, SaveFlag.Amount) ? reader.ReadInt() : 1;
 
                         if (GetSaveFlag(flags, SaveFlag.Layer))
+                        {
                             m_Layer = (Layer)reader.ReadByte();
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.Name))
                         {
                             var name = reader.ReadString();
 
                             if (name != DefaultName)
+                            {
                                 AcquireCompactInfo().m_Name = name;
+                            }
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.Parent))
@@ -2496,14 +2973,22 @@ namespace Server
                             Serial parent = reader.ReadUInt();
 
                             if (parent.IsMobile)
+                            {
                                 m_Parent = World.FindMobile(parent);
+                            }
                             else if (parent.IsItem)
+                            {
                                 m_Parent = World.FindItem(parent);
+                            }
                             else
+                            {
                                 m_Parent = null;
+                            }
 
                             if (m_Parent == null && (parent.IsMobile || parent.IsItem))
+                            {
                                 Delete();
+                            }
                         }
 
                         if (GetSaveFlag(flags, SaveFlag.Items))
@@ -2511,38 +2996,60 @@ namespace Server
                             var items = reader.ReadStrongItemList();
 
                             if (this is Container cont)
+                            {
                                 cont.m_Items = items;
+                            }
                             else
+                            {
                                 AcquireCompactInfo().m_Items = items;
+                            }
                         }
 
                         double weight;
 
                         if (GetSaveFlag(flags, SaveFlag.IntWeight))
+                        {
                             weight = reader.ReadEncodedInt();
+                        }
                         else if (GetSaveFlag(flags, SaveFlag.WeightNot1or0))
+                        {
                             weight = reader.ReadDouble();
+                        }
                         else if (GetSaveFlag(flags, SaveFlag.WeightIs0))
+                        {
                             weight = 0.0;
+                        }
                         else
+                        {
                             weight = 1.0;
+                        }
 
                         if (weight != DefaultWeight)
+                        {
                             AcquireCompactInfo().m_Weight = weight;
+                        }
 
                         if (GetSaveFlag(flags, SaveFlag.Map))
+                        {
                             m_Map = reader.ReadMap();
+                        }
                         else
+                        {
                             m_Map = Map.Internal;
+                        }
 
                         SetFlag(ImplFlag.Visible, !GetSaveFlag(flags, SaveFlag.Visible) || reader.ReadBool());
                         SetFlag(ImplFlag.Movable, !GetSaveFlag(flags, SaveFlag.Movable) || reader.ReadBool());
 
                         if (GetSaveFlag(flags, SaveFlag.Stackable))
+                        {
                             SetFlag(ImplFlag.Stackable, reader.ReadBool());
+                        }
 
                         if (m_Map != null && m_Parent == null)
+                        {
                             m_Map.OnEnter(this);
+                        }
 
                         break;
                     }
@@ -2577,19 +3084,29 @@ namespace Server
                         var name = reader.ReadString();
 
                         if (name != DefaultName)
+                        {
                             AcquireCompactInfo().m_Name = name;
+                        }
 
                         Serial parent = reader.ReadUInt();
 
                         if (parent.IsMobile)
+                        {
                             m_Parent = World.FindMobile(parent);
+                        }
                         else if (parent.IsItem)
+                        {
                             m_Parent = World.FindItem(parent);
+                        }
                         else
+                        {
                             m_Parent = null;
+                        }
 
                         if (m_Parent == null && (parent.IsMobile || parent.IsItem))
+                        {
                             Delete();
+                        }
 
                         var count = reader.ReadInt();
 
@@ -2602,19 +3119,27 @@ namespace Server
                                 var item = reader.ReadItem();
 
                                 if (item != null)
+                                {
                                     items.Add(item);
+                                }
                             }
 
                             if (this is Container cont)
+                            {
                                 cont.m_Items = items;
+                            }
                             else
+                            {
                                 AcquireCompactInfo().m_Items = items;
+                            }
                         }
 
                         var weight = reader.ReadDouble();
 
                         if (weight != DefaultWeight)
+                        {
                             AcquireCompactInfo().m_Weight = weight;
+                        }
 
                         if (version <= 3)
                         {
@@ -2629,19 +3154,25 @@ namespace Server
 
                         if (version <= 3)
                             /*m_Deleted =*/
+                        {
                             reader.ReadBool();
+                        }
 
                         Stackable = reader.ReadBool();
 
                         if (m_Map != null && m_Parent == null)
+                        {
                             m_Map.OnEnter(this);
+                        }
 
                         break;
                     }
             }
 
             if (HeldBy != null)
+            {
                 Timer.DelayCall(FixHolding_Sandbox);
+            }
 
             // if (version < 9)
             VerifyCompactInfo();
@@ -2679,15 +3210,24 @@ namespace Server
         {
             state.Send(GetWorldPacketFor(state));
 
-            if (sendOplPacket) state.Send(OPLPacket);
+            if (sendOplPacket)
+            {
+                state.Send(OPLPacket);
+            }
         }
 
         protected virtual Packet GetWorldPacketFor(NetState state)
         {
             if (state.HighSeas)
+            {
                 return WorldPacketHS;
+            }
+
             if (state.StygianAbyss)
+            {
                 return WorldPacketSA;
+            }
+
             return WorldPacket;
         }
 
@@ -2698,11 +3238,17 @@ namespace Server
             if (!IsVirtualItem)
             {
                 if (m_Parent is Item item)
+                {
                     item.UpdateTotal(sender, type, delta);
+                }
                 else if (m_Parent is Mobile mobile)
+                {
                     mobile.UpdateTotal(sender, type, delta);
+                }
                 else
+                {
                     HeldBy?.UpdateTotal(sender, type, delta);
+                }
             }
         }
 
@@ -2714,9 +3260,11 @@ namespace Server
         {
             // OSI sends 1074769, bug!
             if (QuestItem)
-                from.SendLocalizedMessage(
+            {
+                @from.SendLocalizedMessage(
                     1049343
                 ); // You can only drop quest items into the top-most level of your backpack while you still need them for your quest.
+            }
         }
 
         public bool ParentsContain<T>() where T : Item
@@ -2726,9 +3274,14 @@ namespace Server
             while (p is Item item)
             {
                 if (item is T)
+                {
                     return true;
+                }
 
-                if (item.m_Parent == null) break;
+                if (item.m_Parent == null)
+                {
+                    break;
+                }
 
                 p = item.m_Parent;
             }
@@ -2738,7 +3291,10 @@ namespace Server
 
         public virtual void AddItem(Item item)
         {
-            if (item?.Deleted != false || item.m_Parent == this) return;
+            if (item?.Deleted != false || item.m_Parent == this)
+            {
+                return;
+            }
 
             if (item == this)
             {
@@ -2767,11 +3323,17 @@ namespace Server
             }
 
             if (item.m_Parent is Mobile parentMobile)
+            {
                 parentMobile.RemoveItem(item);
+            }
             else if (item.m_Parent is Item parentItem)
+            {
                 parentItem.RemoveItem(item);
+            }
             else
+            {
                 item.SendRemovePacket();
+            }
 
             item.Parent = this;
             item.Map = m_Map;
@@ -2796,7 +3358,9 @@ namespace Server
         public void Delta(ItemDelta flags)
         {
             if (m_Map == null || m_Map == Map.Internal)
+            {
                 return;
+            }
 
             m_DeltaFlags |= flags;
 
@@ -2805,6 +3369,7 @@ namespace Server
                 SetFlag(ImplFlag.InQueue, true);
 
                 if (_processing)
+                {
                     try
                     {
                         using var op = new StreamWriter("delta-recursion.log", true);
@@ -2816,8 +3381,11 @@ namespace Server
                     {
                         // ignored
                     }
+                }
                 else
+                {
                     m_DeltaQueue.Add(this);
+                }
             }
 
             Core.Set();
@@ -2832,6 +3400,7 @@ namespace Server
                 SetFlag(ImplFlag.InQueue, false);
 
                 if (_processing)
+                {
                     try
                     {
                         using var op = new StreamWriter("delta-recursion.log", true);
@@ -2843,8 +3412,11 @@ namespace Server
                     {
                         // ignored
                     }
+                }
                 else
+                {
                     m_DeltaQueue.Remove(this);
+                }
             }
         }
 
@@ -2853,10 +3425,16 @@ namespace Server
             _processing = true;
 
             if (m_DeltaQueue.Count >= 512)
+            {
                 Parallel.ForEach(m_DeltaQueue, i => i.ProcessDelta());
+            }
             else
+            {
                 for (var i = 0; i < m_DeltaQueue.Count; i++)
+                {
                     m_DeltaQueue[i].ProcessDelta();
+                }
+            }
 
             m_DeltaQueue.Clear();
 
@@ -2888,7 +3466,9 @@ namespace Server
         public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text)
         {
             if (m_Map == null)
+            {
                 return;
+            }
 
             Packet p = null;
             var worldLoc = GetWorldLocation();
@@ -2904,9 +3484,13 @@ namespace Server
                     if (p == null)
                     {
                         if (ascii)
+                        {
                             p = new AsciiMessage(Serial, m_ItemID, type, hue, 3, Name, text);
+                        }
                         else
+                        {
                             p = new UnicodeMessage(Serial, m_ItemID, type, hue, 3, "ENU", Name, text);
+                        }
 
                         p.Acquire();
                     }
@@ -2928,7 +3512,9 @@ namespace Server
         public void PublicOverheadMessage(MessageType type, int hue, int number, string args)
         {
             if (m_Map == null)
+            {
                 return;
+            }
 
             Packet p = null;
             var worldLoc = GetWorldLocation();
@@ -3016,7 +3602,9 @@ namespace Server
         public virtual bool OnDroppedInto(Mobile from, Container target, Point3D p)
         {
             if (!from.OnDroppedItemInto(this, target, p))
+            {
                 return false;
+            }
 
             if (Nontransferable && from.Player && target != from.Backpack)
             {
@@ -3031,15 +3619,30 @@ namespace Server
         {
             if (Deleted || from.Deleted || target.Deleted || from.Map != target.Map || from.Map == null ||
                 target.Map == null)
+            {
                 return false;
+            }
+
             if (from.AccessLevel < AccessLevel.GameMaster && !from.InRange(target.GetWorldLocation(), 2))
+            {
                 return false;
+            }
+
             if (!from.CanSee(target) || !from.InLOS(target))
+            {
                 return false;
+            }
+
             if (!target.IsAccessibleTo(from))
+            {
                 return false;
+            }
+
             if (!from.OnDroppedItemOnto(this, target))
+            {
                 return false;
+            }
+
             if (Nontransferable && from.Player && target != from.Backpack)
             {
                 HandleInvalidTransfer(from);
@@ -3053,20 +3656,39 @@ namespace Server
         {
             if (Deleted || from.Deleted || target.Deleted || from.Map != target.Map || from.Map == null ||
                 target.Map == null)
+            {
                 return false;
+            }
 
             if (from.AccessLevel < AccessLevel.GameMaster && !from.InRange(target.GetWorldLocation(), 2))
+            {
                 return false;
+            }
+
             if (!from.CanSee(target) || !from.InLOS(target))
+            {
                 return false;
+            }
+
             if (!target.IsAccessibleTo(from))
+            {
                 return false;
+            }
+
             if (target.RootParent is Mobile mobile && !mobile.CheckNonlocalDrop(from, this, target))
+            {
                 return false;
+            }
+
             if (!from.OnDroppedItemToItem(this, target, p))
+            {
                 return false;
+            }
+
             if (target is Container container && p.m_X != -1 && p.m_Y != -1)
-                return OnDroppedInto(from, container, p);
+            {
+                return OnDroppedInto(@from, container, p);
+            }
 
             return OnDroppedOnto(from, target);
         }
@@ -3087,15 +3709,21 @@ namespace Server
         public virtual bool DropToWorld(Mobile from, Point3D p)
         {
             if (Deleted || from.Deleted || from.Map == null)
+            {
                 return false;
+            }
 
             if (!from.InRange(p, 2))
+            {
                 return false;
+            }
 
             var map = from.Map;
 
             if (map == null)
+            {
                 return false;
+            }
 
             int x = p.m_X, y = p.m_Y;
             var z = int.MinValue;
@@ -3109,8 +3737,12 @@ namespace Server
             map.GetAverageZ(x, y, ref landZ, ref landAvg, ref landTop);
 
             if (!landTile.Ignored && (landFlags & TileFlag.Impassable) == 0)
+            {
                 if (landAvg <= maxZ)
+                {
                     z = landAvg;
+                }
+            }
 
             var tiles = map.Tiles.GetStaticTiles(x, y, true);
 
@@ -3120,12 +3752,16 @@ namespace Server
                 var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
 
                 if (!id.Surface)
+                {
                     continue;
+                }
 
                 var top = tile.Z + id.CalcHeight;
 
                 if (top > maxZ || top < z)
+                {
                     continue;
+                }
 
                 z = top;
             }
@@ -3136,7 +3772,9 @@ namespace Server
                     item =>
                     {
                         if (item is BaseMulti || item.ItemID > TileData.MaxItemValue)
+                        {
                             return false;
+                        }
 
                         var id = item.ItemData;
 
@@ -3144,7 +3782,9 @@ namespace Server
                         {
                             var top = item.Z + id.CalcHeight;
                             if (top <= maxZ && top >= z)
+                            {
                                 z = top;
+                            }
                         }
 
                         return true;
@@ -3155,10 +3795,14 @@ namespace Server
             eable.Free();
 
             if (z == int.MinValue)
+            {
                 return false;
+            }
 
             if (z > maxZ)
+            {
                 return false;
+            }
 
             m_OpenSlots = (1 << 20) - 1;
 
@@ -3173,13 +3817,17 @@ namespace Server
                 var checkTop = checkZ + id.CalcHeight;
 
                 if (checkTop == checkZ && !id.Surface)
+                {
                     ++checkTop;
+                }
 
                 var zStart = Math.Max(checkZ - z, 0);
                 var zEnd = Math.Min(checkTop - z, 19);
 
                 if (zStart >= 20 || zEnd < 0)
+                {
                     continue;
+                }
 
                 var bitCount = zEnd - zStart;
 
@@ -3195,13 +3843,17 @@ namespace Server
                 var checkTop = checkZ + id.CalcHeight;
 
                 if (checkTop == checkZ && !id.Surface)
+                {
                     ++checkTop;
+                }
 
                 var zStart = Math.Max(checkZ - z, 0);
                 var zEnd = Math.Min(checkTop - z, 19);
 
                 if (zStart >= 20 || zEnd < 0)
+                {
                     continue;
+                }
 
                 var bitCount = zEnd - zStart;
 
@@ -3211,10 +3863,14 @@ namespace Server
             var height = ItemData.Height;
 
             if (height == 0)
+            {
                 ++height;
+            }
 
             if (height > 30)
+            {
                 height = 30;
+            }
 
             var match = (1 << height) - 1;
             var okay = false;
@@ -3222,7 +3878,9 @@ namespace Server
             for (var i = 0; i < 20; ++i)
             {
                 if (i + height > 20)
+                {
                     match >>= 1;
+                }
 
                 okay = ((m_OpenSlots >> i) & match) == match;
 
@@ -3234,18 +3892,26 @@ namespace Server
             }
 
             if (!okay)
+            {
                 return false;
+            }
 
             height = ItemData.Height;
 
             if (height == 0)
+            {
                 ++height;
+            }
 
             if (landAvg > z && z + height > landZ)
+            {
                 return false;
+            }
 
             if ((landFlags & TileFlag.Impassable) != 0 && landAvg > surfaceZ && z + height > landZ)
+            {
                 return false;
+            }
 
             for (var i = 0; i < tiles.Length; ++i)
             {
@@ -3256,10 +3922,14 @@ namespace Server
                 var checkTop = checkZ + id.CalcHeight;
 
                 if (checkTop > z && z + height > checkZ)
+                {
                     return false;
+                }
 
                 if ((id.Surface || id.Impassable) && checkTop > surfaceZ && z + height > checkZ)
+                {
                     return false;
+                }
             }
 
             for (var i = 0; i < items.Count; ++i)
@@ -3271,17 +3941,27 @@ namespace Server
                 // int checkTop = checkZ + id.CalcHeight;
 
                 if (item.Z + id.CalcHeight > z && z + height > item.Z)
+                {
                     return false;
+                }
             }
 
             p = new Point3D(x, y, z);
 
             if (!from.InLOS(new Point3D(x, y, z + 1)))
+            {
                 return false;
+            }
+
             if (!from.OnDroppedItemToWorld(this, p))
+            {
                 return false;
+            }
+
             if (!OnDroppedToWorld(from, p))
+            {
                 return false;
+            }
 
             var soundID = GetDropSound();
 
@@ -3295,7 +3975,10 @@ namespace Server
         public void SendRemovePacket()
         {
             if (Deleted || m_Map == null)
+            {
                 return;
+            }
+
             var worldLoc = GetWorldLocation();
 
             var eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
@@ -3304,7 +3987,10 @@ namespace Server
             {
                 var m = state.Mobile;
 
-                if (m.InRange(worldLoc, GetUpdateRange(m))) state.Send(RemovePacket);
+                if (m.InRange(worldLoc, GetUpdateRange(m)))
+                {
+                    state.Send(RemovePacket);
+                }
             }
 
             eable.Free();
@@ -3317,7 +4003,10 @@ namespace Server
             var root = RootParent;
 
             if (root == null)
+            {
                 return m_Location;
+            }
+
             return root.Location;
 
             // return root == null ? m_Location : new Point3D( (IPoint3D) root );
@@ -3328,11 +4017,13 @@ namespace Server
             var root = RootParent;
 
             if (root == null)
+            {
                 return new Point3D(
                     m_Location.m_X,
                     m_Location.m_Y,
                     m_Location.m_Z + (ItemData.Surface ? ItemData.CalcHeight : 0)
                 );
+            }
 
             return root.Location;
         }
@@ -3343,7 +4034,9 @@ namespace Server
         public void SendLocalizedMessageTo(Mobile to, int number)
         {
             if (Deleted || !to.CanSee(this))
+            {
                 return;
+            }
 
             to.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", ""));
         }
@@ -3351,7 +4044,9 @@ namespace Server
         public void SendLocalizedMessageTo(Mobile to, int number, string args)
         {
             if (Deleted || !to.CanSee(this))
+            {
                 return;
+            }
 
             to.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", args));
         }
@@ -3359,7 +4054,9 @@ namespace Server
         public void SendLocalizedMessageTo(Mobile to, int number, AffixType affixType, string affix, string args)
         {
             if (Deleted || !to.CanSee(this))
+            {
                 return;
+            }
 
             to.Send(
                 new MessageLocalizedAffix(
@@ -3388,7 +4085,9 @@ namespace Server
             while (p is Item item)
             {
                 if (item is SecureTradeContainer container)
+                {
                     return container;
+                }
 
                 p = item.m_Parent;
             }
@@ -3399,49 +4098,73 @@ namespace Server
         public virtual void OnItemAdded(Item item)
         {
             if (m_Parent is Item parentItem)
+            {
                 parentItem.OnSubItemAdded(item);
+            }
             else if (m_Parent is Mobile parentMobile)
+            {
                 parentMobile.OnSubItemAdded(item);
+            }
         }
 
         public virtual void OnItemRemoved(Item item)
         {
             if (m_Parent is Item parentItem)
+            {
                 parentItem.OnSubItemRemoved(item);
+            }
             else if (m_Parent is Mobile parentMobile)
+            {
                 parentMobile.OnSubItemRemoved(item);
+            }
         }
 
         public virtual void OnSubItemAdded(Item item)
         {
             if (m_Parent is Item parentItem)
+            {
                 parentItem.OnSubItemAdded(item);
+            }
             else if (m_Parent is Mobile parentMobile)
+            {
                 parentMobile.OnSubItemAdded(item);
+            }
         }
 
         public virtual void OnSubItemRemoved(Item item)
         {
             if (m_Parent is Item parentItem)
+            {
                 parentItem.OnSubItemRemoved(item);
+            }
             else if (m_Parent is Mobile parentMobile)
+            {
                 parentMobile.OnSubItemRemoved(item);
+            }
         }
 
         public virtual void OnItemBounceCleared(Item item)
         {
             if (m_Parent is Item parentItem)
+            {
                 parentItem.OnSubItemBounceCleared(item);
+            }
             else if (m_Parent is Mobile parentMobile)
+            {
                 parentMobile.OnSubItemBounceCleared(item);
+            }
         }
 
         public virtual void OnSubItemBounceCleared(Item item)
         {
             if (m_Parent is Item parentItem)
+            {
                 parentItem.OnSubItemBounceCleared(item);
+            }
             else if (m_Parent is Mobile parentMobile)
+            {
                 parentMobile.OnSubItemBounceCleared(item);
+            }
         }
 
         public virtual bool CheckTarget(Mobile from, Target targ, object targeted) =>
@@ -3455,17 +4178,19 @@ namespace Server
         public virtual bool IsAccessibleTo(Mobile check)
         {
             if (m_Parent is Item item)
+            {
                 return item.IsAccessibleTo(check);
+            }
 
             var reg = Region.Find(GetWorldLocation(), m_Map);
 
             return reg.CheckAccessibility(this, check);
 
             /*SecureTradeContainer cont = GetSecureTradeCont();
-      
+
             if (cont != null && !cont.IsChildOf( check ))
               return false;
-      
+
             return true;*/
         }
 
@@ -3476,20 +4201,28 @@ namespace Server
             var p = m_Parent;
 
             if ((p == null || o == null) && !allowNull)
+            {
                 return false;
+            }
 
             if (p == o)
+            {
                 return true;
+            }
 
             while (p is Item item)
             {
                 if (item.m_Parent == null)
+                {
                     break;
+                }
 
                 p = item.m_Parent;
 
                 if (p == o)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -3498,9 +4231,13 @@ namespace Server
         public virtual void OnItemUsed(Mobile from, Item item)
         {
             if (m_Parent is Item parentItem)
-                parentItem.OnItemUsed(from, item);
+            {
+                parentItem.OnItemUsed(@from, item);
+            }
             else if (m_Parent is Mobile parentMobile)
-                parentMobile.OnItemUsed(from, item);
+            {
+                parentMobile.OnItemUsed(@from, item);
+            }
         }
 
         public bool CheckItemUse(Mobile from) => CheckItemUse(from, this);
@@ -3516,9 +4253,13 @@ namespace Server
         public virtual void OnItemLifted(Mobile from, Item item)
         {
             if (m_Parent is Item parentItem)
-                parentItem.OnItemLifted(from, item);
+            {
+                parentItem.OnItemLifted(@from, item);
+            }
             else if (m_Parent is Mobile parentMobile)
-                parentMobile.OnItemLifted(from, item);
+            {
+                parentMobile.OnItemLifted(@from, item);
+            }
         }
 
         public bool CheckLift(Mobile from)
@@ -3539,7 +4280,9 @@ namespace Server
         public virtual void OnSingleClickContained(Mobile from, Item item)
         {
             if (m_Parent is Item parentItem)
-                parentItem.OnSingleClickContained(from, item);
+            {
+                parentItem.OnSingleClickContained(@from, item);
+            }
         }
 
         public virtual void OnAosSingleClick(Mobile from)
@@ -3547,7 +4290,8 @@ namespace Server
             var opl = PropertyList;
 
             if (opl.Header > 0)
-                from.Send(
+            {
+                @from.Send(
                     new MessageLocalized(
                         Serial,
                         m_ItemID,
@@ -3559,26 +4303,36 @@ namespace Server
                         opl.HeaderArgs
                     )
                 );
+            }
         }
 
         public virtual void OnSingleClick(Mobile from)
         {
             if (Deleted || !from.CanSee(this))
+            {
                 return;
+            }
 
             if (DisplayLootType)
-                LabelLootTypeTo(from);
+            {
+                LabelLootTypeTo(@from);
+            }
 
             var ns = from.NetState;
 
             if (ns == null)
+            {
                 return;
+            }
 
             if (Name == null)
             {
                 if (m_Amount <= 1)
+                {
                     ns.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", ""));
+                }
                 else
+                {
                     ns.Send(
                         new MessageLocalizedAffix(
                             Serial,
@@ -3593,6 +4347,7 @@ namespace Server
                             ""
                         )
                     );
+                }
             }
             else
             {
@@ -3630,18 +4385,26 @@ namespace Server
             var type = LootType;
 
             if (Amount == 0)
+            {
                 Delete();
+            }
 
             newItem.Amount = amount * amountPerOldItem;
 
             if (carryHue)
+            {
                 newItem.Hue = ourHue;
+            }
 
             if (ScissorCopyLootType)
+            {
                 newItem.LootType = type;
+            }
 
             if ((thisParent as Container)?.TryDropItem(from, newItem, false) != true)
+            {
                 newItem.MoveToWorld(worldLoc, thisMap);
+            }
         }
 
         public virtual void Consume()
@@ -3654,7 +4417,9 @@ namespace Server
             Amount -= amount;
 
             if (Amount <= 0)
+            {
                 Delete();
+            }
         }
 
         public virtual void ReplaceWith(Item newItem)

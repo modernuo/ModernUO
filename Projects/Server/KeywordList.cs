@@ -40,7 +40,9 @@ namespace Server
             var contains = false;
 
             for (var i = 0; !contains && i < Count; ++i)
+            {
                 contains = keyword == m_Keywords[i];
+            }
 
             return contains;
         }
@@ -53,7 +55,9 @@ namespace Server
                 m_Keywords = new int[old.Length * 2];
 
                 for (var i = 0; i < old.Length; ++i)
+                {
                     m_Keywords[i] = old[i];
+                }
             }
 
             m_Keywords[Count++] = keyword;
@@ -62,12 +66,16 @@ namespace Server
         public int[] ToArray()
         {
             if (Count == 0)
+            {
                 return m_EmptyInts;
+            }
 
             var keywords = new int[Count];
 
             for (var i = 0; i < Count; ++i)
+            {
                 keywords[i] = m_Keywords[i];
+            }
 
             Count = 0;
 

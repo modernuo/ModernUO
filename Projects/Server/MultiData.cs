@@ -55,7 +55,10 @@ namespace Server
 
             var vdPath = Core.FindDataFile("verdata.mul", false);
 
-            if (!File.Exists(vdPath)) return;
+            if (!File.Exists(vdPath))
+            {
+                return;
+            }
 
             using var fs = new FileStream(vdPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             var bin = new BinaryReader(fs);
@@ -92,11 +95,17 @@ namespace Server
             multiID &= 0x3FFF;
 
             if (Components.ContainsKey(multiID))
+            {
                 mcl = Components[multiID];
+            }
             else if (!UsingUOPFormat)
+            {
                 Components[multiID] = mcl = Load(multiID);
+            }
             else
+            {
                 mcl = MultiComponentList.Empty;
+            }
 
             return mcl;
         }
@@ -108,10 +117,14 @@ namespace Server
 
             // Head Information Start
             if (streamReader.ReadInt32() != 0x0050594D) // Not a UOP Files
+            {
                 return;
+            }
 
             if (streamReader.ReadInt32() > 5) // Bad Version
+            {
                 return;
+            }
 
             // Multi ID List Array Start
             UOPHash.BuildChunkIDs(out var chunkIds);
@@ -149,7 +162,9 @@ namespace Server
                     index++;
 
                     if (offset == 0 || decompressedSize == 0 || filehash == 0x126D1E99DDEDEE0A) // Exclude housing.bin
+                    {
                         continue;
+                    }
 
                     chunkIds.TryGetValue(filehash, out var chunkID);
 
@@ -160,7 +175,9 @@ namespace Server
                     Span<byte> sourceData = new byte[compressedSize];
 
                     if (stream.Read(sourceData) != compressedSize)
+                    {
                         continue;
+                    }
 
                     Span<byte> data;
 
@@ -221,7 +238,9 @@ namespace Server
                 var length = m_IndexReader.ReadInt32();
 
                 if (lookup < 0 || length <= 0)
+                {
                     return MultiComponentList.Empty;
+                }
 
                 m_StreamReader.BaseStream.Seek(lookup, SeekOrigin.Begin);
 
@@ -279,14 +298,18 @@ namespace Server
                     Tiles[x][y] = new StaticTile[toCopy.Tiles[x][y].Length];
 
                     for (var i = 0; i < Tiles[x][y].Length; ++i)
+                    {
                         Tiles[x][y][i] = toCopy.Tiles[x][y][i];
+                    }
                 }
             }
 
             List = new MultiTileEntry[toCopy.List.Length];
 
             for (var i = 0; i < List.Length; ++i)
+            {
                 List[i] = toCopy.List[i];
+            }
         }
 
         public MultiComponentList(IGenericReader reader)
@@ -304,11 +327,14 @@ namespace Server
             var allTiles = List = new MultiTileEntry[length];
 
             if (version == 0)
+            {
                 for (var i = 0; i < length; ++i)
                 {
                     int id = reader.ReadShort();
                     if (id >= 0x4000)
+                    {
                         id -= 0x4000;
+                    }
 
                     allTiles[i].ItemId = (ushort)id;
                     allTiles[i].OffsetX = reader.ReadShort();
@@ -316,7 +342,9 @@ namespace Server
                     allTiles[i].OffsetZ = reader.ReadShort();
                     allTiles[i].Flags = (TileFlag)reader.ReadInt();
                 }
+            }
             else
+            {
                 for (var i = 0; i < length; ++i)
                 {
                     allTiles[i].ItemId = reader.ReadUShort();
@@ -325,6 +353,7 @@ namespace Server
                     allTiles[i].OffsetZ = reader.ReadShort();
                     allTiles[i].Flags = (TileFlag)reader.ReadInt();
                 }
+            }
 
             var tiles = new TileList[Width][];
             Tiles = new StaticTile[Width][][];
@@ -335,10 +364,13 @@ namespace Server
                 Tiles[x] = new StaticTile[Height][];
 
                 for (var y = 0; y < Height; ++y)
+                {
                     tiles[x][y] = new TileList();
+                }
             }
 
             for (var i = 0; i < allTiles.Length; ++i)
+            {
                 if (i == 0 || allTiles[i].Flags != 0)
                 {
                     var xOffset = allTiles[i].OffsetX + Center.m_X;
@@ -346,10 +378,15 @@ namespace Server
 
                     tiles[xOffset][yOffset].Add(allTiles[i].ItemId, (sbyte)allTiles[i].OffsetZ);
                 }
+            }
 
             for (var x = 0; x < Width; ++x)
+            {
                 for (var y = 0; y < Height; ++y)
+                {
                     Tiles[x][y] = tiles[x][y].ToArray();
+                }
+            }
         }
 
         public MultiComponentList(BinaryReader reader, int count)
@@ -364,25 +401,37 @@ namespace Server
                 allTiles[i].OffsetZ = reader.ReadInt16();
 
                 if (PostHSFormat)
+                {
                     allTiles[i].Flags = (TileFlag)reader.ReadUInt64();
+                }
                 else
+                {
                     allTiles[i].Flags = (TileFlag)reader.ReadUInt32();
+                }
 
                 var e = allTiles[i];
 
                 if (i == 0 || e.Flags != 0)
                 {
                     if (e.OffsetX < m_Min.m_X)
+                    {
                         m_Min.m_X = e.OffsetX;
+                    }
 
                     if (e.OffsetY < m_Min.m_Y)
+                    {
                         m_Min.m_Y = e.OffsetY;
+                    }
 
                     if (e.OffsetX > m_Max.m_X)
+                    {
                         m_Max.m_X = e.OffsetX;
+                    }
 
                     if (e.OffsetY > m_Max.m_Y)
+                    {
                         m_Max.m_Y = e.OffsetY;
+                    }
                 }
             }
 
@@ -399,10 +448,13 @@ namespace Server
                 Tiles[x] = new StaticTile[Height][];
 
                 for (var y = 0; y < Height; ++y)
+                {
                     tiles[x][y] = new TileList();
+                }
             }
 
             for (var i = 0; i < allTiles.Length; ++i)
+            {
                 if (i == 0 || allTiles[i].Flags != 0)
                 {
                     var xOffset = allTiles[i].OffsetX + Center.m_X;
@@ -410,10 +462,15 @@ namespace Server
 
                     tiles[xOffset][yOffset].Add(allTiles[i].ItemId, (sbyte)allTiles[i].OffsetZ);
                 }
+            }
 
             for (var x = 0; x < Width; ++x)
+            {
                 for (var y = 0; y < Height; ++y)
+                {
                     Tiles[x][y] = tiles[x][y].ToArray();
+                }
+            }
         }
 
         public MultiComponentList(List<MultiTileEntry> list)
@@ -433,13 +490,25 @@ namespace Server
 
                 if (i == 0 || e.Flags != 0)
                 {
-                    if (e.OffsetX < m_Min.m_X) m_Min.m_X = e.OffsetX;
+                    if (e.OffsetX < m_Min.m_X)
+                    {
+                        m_Min.m_X = e.OffsetX;
+                    }
 
-                    if (e.OffsetY < m_Min.m_Y) m_Min.m_Y = e.OffsetY;
+                    if (e.OffsetY < m_Min.m_Y)
+                    {
+                        m_Min.m_Y = e.OffsetY;
+                    }
 
-                    if (e.OffsetX > m_Max.m_X) m_Max.m_X = e.OffsetX;
+                    if (e.OffsetX > m_Max.m_X)
+                    {
+                        m_Max.m_X = e.OffsetX;
+                    }
 
-                    if (e.OffsetY > m_Max.m_Y) m_Max.m_Y = e.OffsetY;
+                    if (e.OffsetY > m_Max.m_Y)
+                    {
+                        m_Max.m_Y = e.OffsetY;
+                    }
                 }
             }
 
@@ -455,10 +524,14 @@ namespace Server
                 tiles[x] = new TileList[Height];
                 Tiles[x] = new StaticTile[Height][];
 
-                for (var y = 0; y < Height; ++y) tiles[x][y] = new TileList();
+                for (var y = 0; y < Height; ++y)
+                {
+                    tiles[x][y] = new TileList();
+                }
             }
 
             for (var i = 0; i < allTiles.Length; ++i)
+            {
                 if (i == 0 || allTiles[i].Flags != 0)
                 {
                     var xOffset = allTiles[i].OffsetX + Center.m_X;
@@ -467,10 +540,15 @@ namespace Server
 
                     tiles[xOffset][yOffset].Add((ushort)itemID, (sbyte)allTiles[i].OffsetZ);
                 }
+            }
 
             for (var x = 0; x < Width; ++x)
+            {
                 for (var y = 0; y < Height; ++y)
+                {
                     Tiles[x][y] = tiles[x][y].ToArray();
+                }
+            }
         }
 
         private MultiComponentList()
@@ -514,7 +592,9 @@ namespace Server
                             (TileData.ItemTable[oldTiles[i].ID & TileData.MaxItemValue].Flags & TileFlag.Roof) != 0;
 
                         if (newIsRoof == oldIsRoof)
+                        {
                             Remove(oldTiles[i].ID, x, y, z);
+                        }
                     }
                 }
 
@@ -523,7 +603,9 @@ namespace Server
                 var newTiles = new StaticTile[oldTiles.Length + 1];
 
                 for (var i = 0; i < oldTiles.Length; ++i)
+                {
                     newTiles[i] = oldTiles[i];
+                }
 
                 newTiles[oldTiles.Length] = new StaticTile((ushort)itemID, (sbyte)z);
 
@@ -533,7 +615,9 @@ namespace Server
                 var newList = new MultiTileEntry[oldList.Length + 1];
 
                 for (var i = 0; i < oldList.Length; ++i)
+                {
                     newList[i] = oldList[i];
+                }
 
                 newList[oldList.Length] = new MultiTileEntry(
                     (ushort)itemID,
@@ -546,16 +630,24 @@ namespace Server
                 List = newList;
 
                 if (x < m_Min.m_X)
+                {
                     m_Min.m_X = x;
+                }
 
                 if (y < m_Min.m_Y)
+                {
                     m_Min.m_Y = y;
+                }
 
                 if (x > m_Max.m_X)
+                {
                     m_Max.m_X = x;
+                }
 
                 if (y > m_Max.m_Y)
+                {
                     m_Max.m_Y = y;
+                }
             }
         }
 
@@ -577,10 +669,14 @@ namespace Server
                         var newTiles = new StaticTile[oldTiles.Length - 1];
 
                         for (var j = 0; j < i; ++j)
+                        {
                             newTiles[j] = oldTiles[j];
+                        }
 
                         for (var j = i + 1; j < oldTiles.Length; ++j)
+                        {
                             newTiles[j - 1] = oldTiles[j];
+                        }
 
                         Tiles[vx][vy] = newTiles;
 
@@ -600,10 +696,14 @@ namespace Server
                         var newList = new MultiTileEntry[oldList.Length - 1];
 
                         for (var j = 0; j < i; ++j)
+                        {
                             newList[j] = oldList[j];
+                        }
 
                         for (var j = i + 1; j < oldList.Length; ++j)
+                        {
                             newList[j - 1] = oldList[j];
+                        }
 
                         List = newList;
 
@@ -631,10 +731,14 @@ namespace Server
                         var newTiles = new StaticTile[oldTiles.Length - 1];
 
                         for (var j = 0; j < i; ++j)
+                        {
                             newTiles[j] = oldTiles[j];
+                        }
 
                         for (var j = i + 1; j < oldTiles.Length; ++j)
+                        {
                             newTiles[j - 1] = oldTiles[j];
+                        }
 
                         Tiles[vx][vy] = newTiles;
 
@@ -654,10 +758,14 @@ namespace Server
                         var newList = new MultiTileEntry[oldList.Length - 1];
 
                         for (var j = 0; j < i; ++j)
+                        {
                             newList[j] = oldList[j];
+                        }
 
                         for (var j = i + 1; j < oldList.Length; ++j)
+                        {
                             newList[j - 1] = oldList[j];
+                        }
 
                         List = newList;
 
@@ -683,9 +791,13 @@ namespace Server
                 for (var y = 0; y < newHeight; ++y)
                 {
                     if (x < oldWidth && y < oldHeight)
+                    {
                         newTiles[x][y] = oldTiles[x][y];
+                    }
                     else
+                    {
                         newTiles[x][y] = Array.Empty<StaticTile>();
+                    }
 
                     totalLength += newTiles[x][y].Length;
                 }
@@ -702,6 +814,7 @@ namespace Server
             var index = 0;
 
             for (var x = 0; x < newWidth; ++x)
+            {
                 for (var y = 0; y < newHeight; ++y)
                 {
                     var tiles = newTiles[x][y];
@@ -714,16 +827,24 @@ namespace Server
                         var vy = y - Center.Y;
 
                         if (vx < m_Min.m_X)
+                        {
                             m_Min.m_X = vx;
+                        }
 
                         if (vy < m_Min.m_Y)
+                        {
                             m_Min.m_Y = vy;
+                        }
 
                         if (vx > m_Max.m_X)
+                        {
                             m_Max.m_X = vx;
+                        }
 
                         if (vy > m_Max.m_Y)
+                        {
                             m_Max.m_Y = vy;
+                        }
 
                         List[index++] = new MultiTileEntry(
                             (ushort)tile.ID,
@@ -734,6 +855,7 @@ namespace Server
                         );
                     }
                 }
+            }
         }
 
         public void Serialize(IGenericWriter writer)
@@ -771,7 +893,9 @@ namespace Server
             chunkIds = new Dictionary<ulong, int>();
 
             for (var i = 0; i < maxId; ++i)
+            {
                 chunkIds[HashLittle2($"build/multicollection/{i:000000}.bin")] = i;
+            }
         }
 
         private static ulong HashLittle2(string s)

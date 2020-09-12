@@ -61,7 +61,10 @@ namespace Server.Diagnostics
 
         public virtual void Start()
         {
-            if (_stopwatch.IsRunning) _stopwatch.Reset();
+            if (_stopwatch.IsRunning)
+            {
+                _stopwatch.Reset();
+            }
 
             _stopwatch.Start();
         }
@@ -72,7 +75,10 @@ namespace Server.Diagnostics
 
             TotalTime += elapsed;
 
-            if (elapsed > PeakTime) PeakTime = elapsed;
+            if (elapsed > PeakTime)
+            {
+                PeakTime = elapsed;
+            }
 
             Count++;
 

@@ -60,7 +60,10 @@ namespace Server.Items
                     int id = mcl.List[0].ItemId;
 
                     if (id < 0x4000)
+                    {
                         return 1020000 + id;
+                    }
+
                     return 1078872 + id;
                 }
 
@@ -129,8 +132,12 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0)
+            {
                 if (ItemID >= 0x4000)
+                {
                     ItemID -= 0x4000;
+                }
+            }
         }
     }
 }

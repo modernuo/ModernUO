@@ -91,8 +91,11 @@ namespace Server.Gumps
         public override string Compile(NetState ns)
         {
             if (LocalizedTooltip > 0)
+            {
                 return
                     $"{{ buttontileart {X} {Y} {NormalID} {PressedID} {(int)m_Type} {Param} {ButtonID} {ItemID} {Hue} {Width} {Height} }}{{ tooltip {LocalizedTooltip} }}";
+            }
+
             return
                 $"{{ buttontileart {X} {Y} {NormalID} {PressedID} {(int)m_Type} {Param} {ButtonID} {ItemID} {Hue} {Width} {Height} }}";
         }

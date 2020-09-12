@@ -43,8 +43,12 @@ namespace Server
                             Values = new int[8];
 
                             for (var i = 0; i < 8; ++i)
+                            {
                                 if ((mask & (1 << i)) != 0)
+                                {
                                     Values[i] = reader.ReadInt();
+                                }
+                            }
                         }
 
                         break;
@@ -144,14 +148,22 @@ namespace Server
                 var mask = 0;
 
                 for (var i = 0; i < 8; ++i)
+                {
                     if (info.Values[i] != 0)
+                    {
                         mask |= 1 << i;
+                    }
+                }
 
                 writer.Write((byte)mask);
 
                 for (var i = 0; i < 8; ++i)
+                {
                     if (info.Values[i] != 0)
+                    {
                         writer.Write(info.Values[i]);
+                    }
+                }
             }
         }
     }

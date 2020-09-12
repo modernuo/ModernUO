@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: BaseRandomSource.cs                                             *
  *                                                                       *
@@ -42,8 +42,15 @@ namespace Server.Random
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Next(int count)
         {
-            if (count == 0) throw new ArgumentOutOfRangeException(nameof(count), count, "count must not be 0");
-            if (count == 1 || count == -1) return 0;
+            if (count == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), count, "count must not be 0");
+            }
+
+            if (count == 1 || count == -1)
+            {
+                return 0;
+            }
 
             var negative = count < 0;
 
@@ -66,8 +73,15 @@ namespace Server.Random
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Next(uint count)
         {
-            if (count == 0) throw new ArgumentOutOfRangeException(nameof(count), count, "count must not be 0");
-            if (count == 1) return 0;
+            if (count == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), count, "count must not be 0");
+            }
+
+            if (count == 1)
+            {
+                return 0;
+            }
 
             var bits = Log2(count);
 
@@ -86,8 +100,15 @@ namespace Server.Random
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long Next(long count)
         {
-            if (count == 0) throw new ArgumentOutOfRangeException(nameof(count), count, "count must not be 0");
-            if (count == 1 || count == -1) return 0;
+            if (count == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), count, "count must not be 0");
+            }
+
+            if (count == 1 || count == -1)
+            {
+                return 0;
+            }
 
             var negative = count < 0;
 
@@ -143,7 +164,9 @@ namespace Server.Random
                 exponent -= 64;
 
                 if (exponent < -1074)
+                {
                     return 0;
+                }
             }
 
             shift = BitOperations.LeadingZeroCount(significand);

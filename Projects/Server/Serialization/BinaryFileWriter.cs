@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: BinaryFileWriter.cs                                             *
  *                                                                       *
@@ -64,7 +64,9 @@ namespace Server
             get
             {
                 if (m_Index > 0)
+                {
                     Flush();
+                }
 
                 return m_File;
             }
@@ -75,7 +77,9 @@ namespace Server
         public void Close()
         {
             if (m_Index > 0)
+            {
                 Flush();
+            }
 
             m_File.Close();
         }
@@ -87,14 +91,18 @@ namespace Server
             while (v >= 0x80)
             {
                 if (m_Index + 1 > m_Buffer.Length)
+                {
                     Flush();
+                }
 
                 m_Buffer[m_Index++] = (byte)(v | 0x80);
                 v >>= 7;
             }
 
             if (m_Index + 1 > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             m_Buffer[m_Index++] = (byte)v;
         }
@@ -106,14 +114,18 @@ namespace Server
                 if (value == null)
                 {
                     if (m_Index + 1 > m_Buffer.Length)
+                    {
                         Flush();
+                    }
 
                     m_Buffer[m_Index++] = 0;
                 }
                 else
                 {
                     if (m_Index + 1 > m_Buffer.Length)
+                    {
                         Flush();
+                    }
 
                     m_Buffer[m_Index++] = 1;
 
@@ -171,13 +183,17 @@ namespace Server
             var bits = decimal.GetBits(value);
 
             for (var i = 0; i < bits.Length; ++i)
+            {
                 Write(bits[i]);
+            }
         }
 
         public void Write(long value)
         {
             if (m_Index + 8 > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             m_Buffer[m_Index] = (byte)value;
             m_Buffer[m_Index + 1] = (byte)(value >> 8);
@@ -193,7 +209,9 @@ namespace Server
         public void Write(ulong value)
         {
             if (m_Index + 8 > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             m_Buffer[m_Index] = (byte)value;
             m_Buffer[m_Index + 1] = (byte)(value >> 8);
@@ -209,7 +227,9 @@ namespace Server
         public void Write(int value)
         {
             if (m_Index + 4 > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             m_Buffer[m_Index] = (byte)value;
             m_Buffer[m_Index + 1] = (byte)(value >> 8);
@@ -221,7 +241,9 @@ namespace Server
         public void Write(uint value)
         {
             if (m_Index + 4 > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             m_Buffer[m_Index] = (byte)value;
             m_Buffer[m_Index + 1] = (byte)(value >> 8);
@@ -233,7 +255,9 @@ namespace Server
         public void Write(short value)
         {
             if (m_Index + 2 > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             m_Buffer[m_Index] = (byte)value;
             m_Buffer[m_Index + 1] = (byte)(value >> 8);
@@ -243,7 +267,9 @@ namespace Server
         public void Write(ushort value)
         {
             if (m_Index + 2 > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             m_Buffer[m_Index] = (byte)value;
             m_Buffer[m_Index + 1] = (byte)(value >> 8);
@@ -253,7 +279,9 @@ namespace Server
         public unsafe void Write(double value)
         {
             if (m_Index + 8 > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             fixed (byte* pBuffer = m_Buffer)
             {
@@ -266,7 +294,9 @@ namespace Server
         public unsafe void Write(float value)
         {
             if (m_Index + 4 > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             fixed (byte* pBuffer = m_Buffer)
             {
@@ -279,7 +309,9 @@ namespace Server
         public void Write(char value)
         {
             if (m_Index + 8 > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             m_SingleCharBuffer[0] = value;
 
@@ -290,7 +322,9 @@ namespace Server
         public void Write(byte value)
         {
             if (m_Index + 1 > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             m_Buffer[m_Index++] = value;
         }
@@ -303,7 +337,9 @@ namespace Server
         public void Write(byte[] value, int length)
         {
             if (m_Index + length > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             Buffer.BlockCopy(value, 0, m_Buffer, m_Index, length);
             m_Index += length;
@@ -312,7 +348,9 @@ namespace Server
         public void Write(sbyte value)
         {
             if (m_Index + 1 > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             m_Buffer[m_Index++] = (byte)value;
         }
@@ -320,7 +358,9 @@ namespace Server
         public void Write(bool value)
         {
             if (m_Index + 1 > m_Buffer.Length)
+            {
                 Flush();
+            }
 
             m_Buffer[m_Index++] = (byte)(value ? 1 : 0);
         }
@@ -353,49 +393,73 @@ namespace Server
         public void Write(Map value)
         {
             if (value != null)
+            {
                 Write((byte)value.MapIndex);
+            }
             else
+            {
                 Write((byte)0xFF);
+            }
         }
 
         public void Write(Race value)
         {
             if (value != null)
+            {
                 Write((byte)value.RaceIndex);
+            }
             else
+            {
                 Write((byte)0xFF);
+            }
         }
 
         public void WriteEntity(IEntity value)
         {
             if (value?.Deleted != false)
+            {
                 Write(Serial.MinusOne);
+            }
             else
+            {
                 Write(value.Serial);
+            }
         }
 
         public void Write(Item value)
         {
             if (value?.Deleted != false)
+            {
                 Write(Serial.MinusOne);
+            }
             else
+            {
                 Write(value.Serial);
+            }
         }
 
         public void Write(Mobile value)
         {
             if (value?.Deleted != false)
+            {
                 Write(Serial.MinusOne);
+            }
             else
+            {
                 Write(value.Serial);
+            }
         }
 
         public void Write(BaseGuild value)
         {
             if (value == null)
+            {
                 Write(0);
+            }
             else
+            {
                 Write(value.Serial);
+            }
         }
 
         public void WriteItem<T>(T value) where T : Item
@@ -431,16 +495,26 @@ namespace Server
         public void WriteItemList<T>(List<T> list, bool tidy) where T : Item
         {
             if (tidy)
+            {
                 for (var i = 0; i < list.Count;)
+                {
                     if (list[i]?.Deleted != false)
+                    {
                         list.RemoveAt(i);
+                    }
                     else
+                    {
                         ++i;
+                    }
+                }
+            }
 
             Write(list.Count);
 
             for (var i = 0; i < list.Count; ++i)
+            {
                 Write(list[i]);
+            }
         }
 
         public void Write(HashSet<Item> set)
@@ -450,11 +524,17 @@ namespace Server
 
         public void Write(HashSet<Item> set, bool tidy)
         {
-            if (tidy) set.RemoveWhere(item => item.Deleted);
+            if (tidy)
+            {
+                set.RemoveWhere(item => item.Deleted);
+            }
 
             Write(set.Count);
 
-            foreach (var item in set) Write(item);
+            foreach (var item in set)
+            {
+                Write(item);
+            }
         }
 
         public void WriteItemSet<T>(HashSet<T> set) where T : Item
@@ -464,11 +544,17 @@ namespace Server
 
         public void WriteItemSet<T>(HashSet<T> set, bool tidy) where T : Item
         {
-            if (tidy) set.RemoveWhere(item => item.Deleted);
+            if (tidy)
+            {
+                set.RemoveWhere(item => item.Deleted);
+            }
 
             Write(set.Count);
 
-            foreach (var item in set) Write(item);
+            foreach (var item in set)
+            {
+                Write(item);
+            }
         }
 
         public void Write(List<Mobile> list)
@@ -479,16 +565,26 @@ namespace Server
         public void Write(List<Mobile> list, bool tidy)
         {
             if (tidy)
+            {
                 for (var i = 0; i < list.Count;)
+                {
                     if (list[i].Deleted)
+                    {
                         list.RemoveAt(i);
+                    }
                     else
+                    {
                         ++i;
+                    }
+                }
+            }
 
             Write(list.Count);
 
             for (var i = 0; i < list.Count; ++i)
+            {
                 Write(list[i]);
+            }
         }
 
         public void WriteMobileList<T>(List<T> list) where T : Mobile
@@ -499,16 +595,26 @@ namespace Server
         public void WriteMobileList<T>(List<T> list, bool tidy) where T : Mobile
         {
             if (tidy)
+            {
                 for (var i = 0; i < list.Count;)
+                {
                     if (list[i].Deleted)
+                    {
                         list.RemoveAt(i);
+                    }
                     else
+                    {
                         ++i;
+                    }
+                }
+            }
 
             Write(list.Count);
 
             for (var i = 0; i < list.Count; ++i)
+            {
                 Write(list[i]);
+            }
         }
 
         public void Write(HashSet<Mobile> set)
@@ -518,11 +624,17 @@ namespace Server
 
         public void Write(HashSet<Mobile> set, bool tidy)
         {
-            if (tidy) set.RemoveWhere(mobile => mobile.Deleted);
+            if (tidy)
+            {
+                set.RemoveWhere(mobile => mobile.Deleted);
+            }
 
             Write(set.Count);
 
-            foreach (var mob in set) Write(mob);
+            foreach (var mob in set)
+            {
+                Write(mob);
+            }
         }
 
         public void WriteMobileSet<T>(HashSet<T> set) where T : Mobile
@@ -532,11 +644,17 @@ namespace Server
 
         public void WriteMobileSet<T>(HashSet<T> set, bool tidy) where T : Mobile
         {
-            if (tidy) set.RemoveWhere(mob => mob.Deleted);
+            if (tidy)
+            {
+                set.RemoveWhere(mob => mob.Deleted);
+            }
 
             Write(set.Count);
 
-            foreach (var mob in set) Write(mob);
+            foreach (var mob in set)
+            {
+                Write(mob);
+            }
         }
 
         public void Write(List<BaseGuild> list)
@@ -547,16 +665,26 @@ namespace Server
         public void Write(List<BaseGuild> list, bool tidy)
         {
             if (tidy)
+            {
                 for (var i = 0; i < list.Count;)
+                {
                     if (list[i].Disbanded)
+                    {
                         list.RemoveAt(i);
+                    }
                     else
+                    {
                         ++i;
+                    }
+                }
+            }
 
             Write(list.Count);
 
             for (var i = 0; i < list.Count; ++i)
+            {
                 Write(list[i]);
+            }
         }
 
         public void WriteGuildList<T>(List<T> list) where T : BaseGuild
@@ -567,16 +695,26 @@ namespace Server
         public void WriteGuildList<T>(List<T> list, bool tidy) where T : BaseGuild
         {
             if (tidy)
+            {
                 for (var i = 0; i < list.Count;)
+                {
                     if (list[i].Disbanded)
+                    {
                         list.RemoveAt(i);
+                    }
                     else
+                    {
                         ++i;
+                    }
+                }
+            }
 
             Write(list.Count);
 
             for (var i = 0; i < list.Count; ++i)
+            {
                 Write(list[i]);
+            }
         }
 
         public void Write(HashSet<BaseGuild> set)
@@ -586,11 +724,17 @@ namespace Server
 
         public void Write(HashSet<BaseGuild> set, bool tidy)
         {
-            if (tidy) set.RemoveWhere(guild => guild.Disbanded);
+            if (tidy)
+            {
+                set.RemoveWhere(guild => guild.Disbanded);
+            }
 
             Write(set.Count);
 
-            foreach (var guild in set) Write(guild);
+            foreach (var guild in set)
+            {
+                Write(guild);
+            }
         }
 
         public void WriteGuildSet<T>(HashSet<T> set) where T : BaseGuild
@@ -600,11 +744,17 @@ namespace Server
 
         public void WriteGuildSet<T>(HashSet<T> set, bool tidy) where T : BaseGuild
         {
-            if (tidy) set.RemoveWhere(guild => guild.Disbanded);
+            if (tidy)
+            {
+                set.RemoveWhere(guild => guild.Disbanded);
+            }
 
             Write(set.Count);
 
-            foreach (var guild in set) Write(guild);
+            foreach (var guild in set)
+            {
+                Write(guild);
+            }
         }
 
         public void Flush()
@@ -641,7 +791,9 @@ namespace Server
                     var byteLength = m_Encoding.GetBytes(value, current, charCount, m_CharacterBuffer, 0);
 
                     if (m_Index + byteLength > m_Buffer.Length)
+                    {
                         Flush();
+                    }
 
                     Buffer.BlockCopy(m_CharacterBuffer, 0, m_Buffer, m_Index, byteLength);
                     m_Index += byteLength;
@@ -655,7 +807,9 @@ namespace Server
                 var byteLength = m_Encoding.GetBytes(value, 0, value.Length, m_CharacterBuffer, 0);
 
                 if (m_Index + byteLength > m_Buffer.Length)
+                {
                     Flush();
+                }
 
                 Buffer.BlockCopy(m_CharacterBuffer, 0, m_Buffer, m_Index, byteLength);
                 m_Index += byteLength;

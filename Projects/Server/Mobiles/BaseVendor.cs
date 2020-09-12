@@ -26,9 +26,20 @@ namespace Server
     {
         public int Compare(BuyItemState l, BuyItemState r)
         {
-            if (l == null && r == null) return 0;
-            if (l == null) return -1;
-            if (r == null) return 1;
+            if (l == null && r == null)
+            {
+                return 0;
+            }
+
+            if (l == null)
+            {
+                return -1;
+            }
+
+            if (r == null)
+            {
+                return 1;
+            }
 
             return l.MySerial.CompareTo(r.MySerial);
         }

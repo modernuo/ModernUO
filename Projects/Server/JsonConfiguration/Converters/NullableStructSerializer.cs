@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: NullableStructSerializer.cs                                     *
  *                                                                       *
@@ -25,9 +25,13 @@ namespace System.Text.Json.Serialization
         public override void Write(Utf8JsonWriter writer, TStruct? value, JsonSerializerOptions options)
         {
             if (value == null)
+            {
                 writer.WriteNullValue();
+            }
             else
+            {
                 JsonSerializer.Serialize(writer, value.Value, options);
+            }
         }
     }
 }

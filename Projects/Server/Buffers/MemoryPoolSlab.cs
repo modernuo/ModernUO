@@ -58,14 +58,20 @@ namespace System.Buffers
 
         protected void Dispose(bool disposing)
         {
-            if (_isDisposed) return;
+            if (_isDisposed)
+            {
+                return;
+            }
 
             _isDisposed = true;
 
             Array = null;
             NativePointer = IntPtr.Zero;
 
-            if (_gcHandle.IsAllocated) _gcHandle.Free();
+            if (_gcHandle.IsAllocated)
+            {
+                _gcHandle.Free();
+            }
         }
 
         ~MemoryPoolSlab()

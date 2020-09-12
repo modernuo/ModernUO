@@ -73,7 +73,9 @@ namespace Server
         public void Add(int number)
         {
             if (number == 0)
+            {
                 return;
+            }
 
             AddHash(number);
 
@@ -104,7 +106,9 @@ namespace Server
         public void Add(int number, string arguments)
         {
             if (number == 0)
+            {
                 return;
+            }
 
             arguments ??= "";
 
@@ -122,7 +126,9 @@ namespace Server
             var byteCount = m_Encoding.GetByteCount(arguments);
 
             if (byteCount > m_Buffer.Length)
+            {
                 m_Buffer = new byte[byteCount];
+            }
 
             byteCount = m_Encoding.GetBytes(arguments, 0, arguments.Length, m_Buffer, 0);
 

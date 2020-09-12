@@ -66,9 +66,13 @@ namespace Server
             set
             {
                 if (value)
+                {
                     Flags |= TileFlag.Bridge;
+                }
                 else
+                {
                     Flags &= ~TileFlag.Bridge;
+                }
             }
         }
 
@@ -78,9 +82,13 @@ namespace Server
             set
             {
                 if (value)
+                {
                     Flags |= TileFlag.Impassable;
+                }
                 else
+                {
                     Flags &= ~TileFlag.Impassable;
+                }
             }
         }
 
@@ -90,9 +98,13 @@ namespace Server
             set
             {
                 if (value)
+                {
                     Flags |= TileFlag.Surface;
+                }
                 else
+                {
                     Flags &= ~TileFlag.Surface;
+                }
             }
         }
 
@@ -131,7 +143,10 @@ namespace Server
             get
             {
                 if ((Flags & TileFlag.Bridge) != 0)
+                {
                     return m_Height / 2;
+                }
+
                 return m_Height;
             }
         }
@@ -184,7 +199,10 @@ namespace Server
             ItemTable = new ItemData[0x10000];
             LandTable = new LandData[0x4000];
 
-            if (Core.IsRunningFromXUnit) return;
+            if (Core.IsRunningFromXUnit)
+            {
+                return;
+            }
 
             var filePath = Core.FindDataFile("tiledata.mul");
 
@@ -200,7 +218,9 @@ namespace Server
                 if (is7090)
                 {
                     if (i == 1 || i > 0 && (i & 0x1F) == 0)
+                    {
                         bin.ReadInt32();
+                    }
                 }
                 else if ((i & 0x1F) == 0)
                 {
@@ -218,7 +238,10 @@ namespace Server
 
             for (var i = 0; i < length; i++)
             {
-                if ((i & 0x1F) == 0) bin.ReadInt32(); // header
+                if ((i & 0x1F) == 0)
+                {
+                    bin.ReadInt32(); // header
+                }
 
                 var flags = (TileFlag)(is7090 ? bin.ReadInt64() : bin.ReadInt32());
                 int weight = bin.ReadByte();
@@ -263,7 +286,9 @@ namespace Server
             while (count < 20)
             {
                 if (m_StringBuffer[count] == 0)
+                {
                     break;
+                }
 
                 count++;
             }

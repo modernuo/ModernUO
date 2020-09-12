@@ -44,49 +44,68 @@ namespace Server
             from.Send(new UpdateSecureTrade(From.Container, false, false));
 
             if (from6017)
-                from.Send(new SecureTradeEquip6017(To.Container, to));
+            {
+                @from.Send(new SecureTradeEquip6017(To.Container, to));
+            }
             else
-                from.Send(new SecureTradeEquip(To.Container, to));
+            {
+                @from.Send(new SecureTradeEquip(To.Container, to));
+            }
 
             from.Send(new UpdateSecureTrade(From.Container, false, false));
 
             if (from6017)
-                from.Send(new SecureTradeEquip6017(From.Container, from));
+            {
+                @from.Send(new SecureTradeEquip6017(From.Container, @from));
+            }
             else
-                from.Send(new SecureTradeEquip(From.Container, from));
+            {
+                @from.Send(new SecureTradeEquip(From.Container, @from));
+            }
 
             from.Send(new DisplaySecureTrade(to, From.Container, To.Container, to.Name));
             from.Send(new UpdateSecureTrade(From.Container, false, false));
 
             if (from.Account != null && from704565)
-                from.Send(
+            {
+                @from.Send(
                     new UpdateSecureTrade(
                         From.Container,
                         TradeFlag.UpdateLedger,
-                        from.Account.TotalGold,
-                        from.Account.TotalPlat
+                        @from.Account.TotalGold,
+                        @from.Account.TotalPlat
                     )
                 );
+            }
 
             to.Send(new MobileStatus(to, from));
             to.Send(new UpdateSecureTrade(To.Container, false, false));
 
             if (to6017)
-                to.Send(new SecureTradeEquip6017(From.Container, from));
+            {
+                to.Send(new SecureTradeEquip6017(From.Container, @from));
+            }
             else
-                to.Send(new SecureTradeEquip(From.Container, from));
+            {
+                to.Send(new SecureTradeEquip(From.Container, @from));
+            }
 
             to.Send(new UpdateSecureTrade(To.Container, false, false));
 
             if (to6017)
+            {
                 to.Send(new SecureTradeEquip6017(To.Container, to));
+            }
             else
+            {
                 to.Send(new SecureTradeEquip(To.Container, to));
+            }
 
             to.Send(new DisplaySecureTrade(from, To.Container, From.Container, from.Name));
             to.Send(new UpdateSecureTrade(To.Container, false, false));
 
             if (to.Account != null && to704565)
+            {
                 to.Send(
                     new UpdateSecureTrade(
                         To.Container,
@@ -95,6 +114,7 @@ namespace Server
                         to.Account.TotalPlat
                     )
                 );
+            }
         }
 
         public SecureTradeInfo From { get; }
@@ -105,42 +125,64 @@ namespace Server
 
         public void Cancel()
         {
-            if (!Valid) return;
+            if (!Valid)
+            {
+                return;
+            }
 
             var list = From.Container.Items;
 
             for (var i = list.Count - 1; i >= 0; --i)
+            {
                 if (i < list.Count)
                 {
                     var item = list[i];
 
-                    if (item == From.VirtualCheck) continue;
+                    if (item == From.VirtualCheck)
+                    {
+                        continue;
+                    }
 
                     item.OnSecureTrade(From.Mobile, To.Mobile, From.Mobile, false);
 
-                    if (!item.Deleted) From.Mobile.AddToBackpack(item);
+                    if (!item.Deleted)
+                    {
+                        From.Mobile.AddToBackpack(item);
+                    }
                 }
+            }
 
             list = To.Container.Items;
 
             for (var i = list.Count - 1; i >= 0; --i)
+            {
                 if (i < list.Count)
                 {
                     var item = list[i];
 
-                    if (item == To.VirtualCheck) continue;
+                    if (item == To.VirtualCheck)
+                    {
+                        continue;
+                    }
 
                     item.OnSecureTrade(To.Mobile, From.Mobile, To.Mobile, false);
 
-                    if (!item.Deleted) To.Mobile.AddToBackpack(item);
+                    if (!item.Deleted)
+                    {
+                        To.Mobile.AddToBackpack(item);
+                    }
                 }
+            }
 
             Close();
         }
 
         public void Close()
         {
-            if (!Valid) return;
+            if (!Valid)
+            {
+                return;
+            }
 
             From.Mobile.Send(new CloseSecureTrade(From.Container));
             To.Mobile.Send(new CloseSecureTrade(To.Container));
@@ -180,12 +222,17 @@ namespace Server
             }
 
             if (right.Mobile.NetState?.NewSecureTrading == true)
+            {
                 right.Mobile.Send(new UpdateSecureTrade(right.Container, TradeFlag.UpdateGold, left.Gold, left.Plat));
+            }
         }
 
         public void Update()
         {
-            if (!Valid) return;
+            if (!Valid)
+            {
+                return;
+            }
 
             if (!From.IsDisposed && From.Accepted && !To.IsDisposed && To.Accepted)
             {
@@ -194,26 +241,42 @@ namespace Server
                 var allowed = true;
 
                 for (var i = list.Count - 1; allowed && i >= 0; --i)
+                {
                     if (i < list.Count)
                     {
                         var item = list[i];
 
-                        if (item == From.VirtualCheck) continue;
+                        if (item == From.VirtualCheck)
+                        {
+                            continue;
+                        }
 
-                        if (!item.AllowSecureTrade(From.Mobile, To.Mobile, To.Mobile, true)) allowed = false;
+                        if (!item.AllowSecureTrade(From.Mobile, To.Mobile, To.Mobile, true))
+                        {
+                            allowed = false;
+                        }
                     }
+                }
 
                 list = To.Container.Items;
 
                 for (var i = list.Count - 1; allowed && i >= 0; --i)
+                {
                     if (i < list.Count)
                     {
                         var item = list[i];
 
-                        if (item == To.VirtualCheck) continue;
+                        if (item == To.VirtualCheck)
+                        {
+                            continue;
+                        }
 
-                        if (!item.AllowSecureTrade(To.Mobile, From.Mobile, From.Mobile, true)) allowed = false;
+                        if (!item.AllowSecureTrade(To.Mobile, From.Mobile, From.Mobile, true))
+                        {
+                            allowed = false;
+                        }
                     }
+                }
 
                 if (AccountGold.Enabled)
                 {
@@ -254,35 +317,53 @@ namespace Server
                 }
 
                 if (AccountGold.Enabled && From.Mobile.Account != null && To.Mobile.Account != null)
+                {
                     HandleAccountGoldTrade();
+                }
 
                 list = From.Container.Items;
 
                 for (var i = list.Count - 1; i >= 0; --i)
+                {
                     if (i < list.Count)
                     {
                         var item = list[i];
 
-                        if (item == From.VirtualCheck) continue;
+                        if (item == From.VirtualCheck)
+                        {
+                            continue;
+                        }
 
                         item.OnSecureTrade(From.Mobile, To.Mobile, To.Mobile, true);
 
-                        if (!item.Deleted) To.Mobile.AddToBackpack(item);
+                        if (!item.Deleted)
+                        {
+                            To.Mobile.AddToBackpack(item);
+                        }
                     }
+                }
 
                 list = To.Container.Items;
 
                 for (var i = list.Count - 1; i >= 0; --i)
+                {
                     if (i < list.Count)
                     {
                         var item = list[i];
 
-                        if (item == To.VirtualCheck) continue;
+                        if (item == To.VirtualCheck)
+                        {
+                            continue;
+                        }
 
                         item.OnSecureTrade(To.Mobile, From.Mobile, From.Mobile, true);
 
-                        if (!item.Deleted) From.Mobile.AddToBackpack(item);
+                        if (!item.Deleted)
+                        {
+                            From.Mobile.AddToBackpack(item);
+                        }
                     }
+                }
 
                 Close();
             }
@@ -302,28 +383,40 @@ namespace Server
             {
                 fromPlatSend = From.Plat;
 
-                if (To.Mobile.Account.DepositPlat(From.Plat)) toPlatRecv = fromPlatSend;
+                if (To.Mobile.Account.DepositPlat(From.Plat))
+                {
+                    toPlatRecv = fromPlatSend;
+                }
             }
 
             if ((From.Gold > 0) & From.Mobile.Account.WithdrawGold(From.Gold))
             {
                 fromGoldSend = From.Gold;
 
-                if (To.Mobile.Account.DepositGold(From.Gold)) toGoldRecv = fromGoldSend;
+                if (To.Mobile.Account.DepositGold(From.Gold))
+                {
+                    toGoldRecv = fromGoldSend;
+                }
             }
 
             if ((To.Plat > 0) & To.Mobile.Account.WithdrawPlat(To.Plat))
             {
                 toPlatSend = To.Plat;
 
-                if (From.Mobile.Account.DepositPlat(To.Plat)) fromPlatRecv = toPlatSend;
+                if (From.Mobile.Account.DepositPlat(To.Plat))
+                {
+                    fromPlatRecv = toPlatSend;
+                }
             }
 
             if ((To.Gold > 0) & To.Mobile.Account.WithdrawGold(To.Gold))
             {
                 toGoldSend = To.Gold;
 
-                if (From.Mobile.Account.DepositGold(To.Gold)) fromGoldRecv = toGoldSend;
+                if (From.Mobile.Account.DepositGold(To.Gold))
+                {
+                    fromGoldRecv = toGoldSend;
+                }
             }
 
             HandleAccountGoldTrade(From.Mobile, To.Mobile, fromPlatSend, fromGoldSend, fromPlatRecv, fromGoldRecv);
@@ -342,29 +435,43 @@ namespace Server
             if (platSend > 0 || goldSend > 0)
             {
                 if (platSend > 0 && goldSend > 0)
+                {
                     left.SendMessage(
                         "You traded {0:#,0} platinum and {1:#,0} gold to {2}.",
                         platSend,
                         goldSend,
                         right.RawName
                     );
+                }
                 else if (platSend > 0)
+                {
                     left.SendMessage("You traded {0:#,0} platinum to {1}.", platSend, right.RawName);
-                else if (goldSend > 0) left.SendMessage("You traded {0:#,0} gold to {1}.", goldSend, right.RawName);
+                }
+                else if (goldSend > 0)
+                {
+                    left.SendMessage("You traded {0:#,0} gold to {1}.", goldSend, right.RawName);
+                }
             }
 
             if (platRecv > 0 || goldRecv > 0)
             {
                 if (platRecv > 0 && goldRecv > 0)
+                {
                     left.SendMessage(
                         "You received {0:#,0} platinum and {1:#,0} gold from {2}.",
                         platRecv,
                         goldRecv,
                         right.RawName
                     );
+                }
                 else if (platRecv > 0)
+                {
                     left.SendMessage("You received {0:#,0} platinum from {1}.", platRecv, right.RawName);
-                else if (goldRecv > 0) left.SendMessage("You received {0:#,0} gold from {1}.", goldRecv, right.RawName);
+                }
+                else if (goldRecv > 0)
+                {
+                    left.SendMessage("You received {0:#,0} gold from {1}.", goldRecv, right.RawName);
+                }
             }
         }
     }

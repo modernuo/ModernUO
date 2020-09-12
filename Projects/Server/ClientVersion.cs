@@ -58,7 +58,9 @@ namespace Server
 
                 var br3 = br2 + 1;
                 while (br3 < fmt.Length && char.IsDigit(fmt, br3))
+                {
                     br3++;
+                }
 
                 Major = Utility.ToInt32(fmt.Substring(0, br1));
                 Minor = Utility.ToInt32(fmt.Substring(br1 + 1, br2 - br1 - 1));
@@ -69,7 +71,9 @@ namespace Server
                     if (Major <= 5 && Minor <= 0 && Revision <= 6) // Anything before 5.0.7
                     {
                         if (!char.IsWhiteSpace(fmt, br3))
+                        {
                             Patch = fmt[br3] - 'a' + 1;
+                        }
                     }
                     else
                     {
@@ -78,12 +82,18 @@ namespace Server
                 }
 
                 if (fmt.IndexOf("god") >= 0 || fmt.IndexOf("gq") >= 0)
+                {
                     Type = ClientType.God;
+                }
                 else if (fmt.IndexOf("third dawn") >= 0 || fmt.IndexOf("uo:td") >= 0 || fmt.IndexOf("uotd") >= 0 ||
                          fmt.IndexOf("uo3d") >= 0 || fmt.IndexOf("uo:3d") >= 0)
+                {
                     Type = ClientType.UOTD;
+                }
                 else
+                {
                     Type = ClientType.Regular;
+                }
             }
             catch
             {
@@ -110,24 +120,50 @@ namespace Server
         public int CompareTo(ClientVersion o)
         {
             if (o == null)
+            {
                 return 1;
+            }
 
             if (Major > o.Major)
+            {
                 return 1;
+            }
+
             if (Major < o.Major)
+            {
                 return -1;
+            }
+
             if (Minor > o.Minor)
+            {
                 return 1;
+            }
+
             if (Minor < o.Minor)
+            {
                 return -1;
+            }
+
             if (Revision > o.Revision)
+            {
                 return 1;
+            }
+
             if (Revision < o.Revision)
+            {
                 return -1;
+            }
+
             if (Patch > o.Patch)
+            {
                 return 1;
+            }
+
             if (Patch < o.Patch)
+            {
                 return -1;
+            }
+
             return 0;
         }
 
@@ -171,7 +207,9 @@ namespace Server
             if (Major <= 5 && Minor <= 0 && Revision <= 6) // Anything before 5.0.7
             {
                 if (Patch > 0)
+                {
                     builder.Append((char)('a' + (Patch - 1)));
+                }
             }
             else
             {
@@ -195,11 +233,19 @@ namespace Server
         public static int Compare(ClientVersion a, ClientVersion b)
         {
             if (IsNull(a) && IsNull(b))
+            {
                 return 0;
+            }
+
             if (IsNull(a))
+            {
                 return -1;
+            }
+
             if (IsNull(b))
+            {
                 return 1;
+            }
 
             return a.CompareTo(b);
         }

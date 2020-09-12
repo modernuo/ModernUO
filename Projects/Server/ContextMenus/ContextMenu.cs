@@ -50,14 +50,20 @@ namespace Server.ContextMenus
             var list = new List<ContextMenuEntry>();
 
             if (target is Mobile mobile)
-                mobile.GetContextMenuEntries(from, list);
+            {
+                mobile.GetContextMenuEntries(@from, list);
+            }
             else if (target is Item item)
-                item.GetContextMenuEntries(from, list);
+            {
+                item.GetContextMenuEntries(@from, list);
+            }
 
             Entries = list.ToArray();
 
             for (var i = 0; i < Entries.Length; ++i)
+            {
                 Entries[i].Owner = this;
+            }
         }
 
         /// <summary>

@@ -317,7 +317,10 @@ namespace Server
         {
             var info = GetInfo(ex);
 
-            if (info != null) return info.SupportedFeatures;
+            if (info != null)
+            {
+                return info.SupportedFeatures;
+            }
 
             return ex switch
             {
@@ -343,7 +346,10 @@ namespace Server
         {
             var v = ex;
 
-            if (v < 0 || v >= Table.Length) v = 0;
+            if (v < 0 || v >= Table.Length)
+            {
+                v = 0;
+            }
 
             return Table[v];
         }

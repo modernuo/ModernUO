@@ -49,7 +49,9 @@ namespace Server
                 while ((line = ip.ReadLine()) != null)
                 {
                     if (line.Length == 0 || line.StartsWith("#"))
+                    {
                         continue;
+                    }
 
                     var split = line.Split('\t');
 

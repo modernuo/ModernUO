@@ -51,9 +51,14 @@ namespace Server
             for (var i = 0; i < Poisons.Count; i++)
             {
                 if (reg.Level == Poisons[i].Level)
+                {
                     throw new Exception("A poison with that level already exists.");
+                }
+
                 if (regName == Poisons[i].Name.ToLower())
+                {
                     throw new Exception("A poison with that name already exists.");
+                }
             }
 
             Poisons.Add(reg);
@@ -69,7 +74,9 @@ namespace Server
                 var p = Poisons[i];
 
                 if (p.Level == level)
+                {
                     return p;
+                }
             }
 
             return null;
@@ -82,7 +89,9 @@ namespace Server
                 var p = Poisons[i];
 
                 if (Utility.InsensitiveCompare(p.Name, name) == 0)
+                {
                     return p;
+                }
             }
 
             return null;

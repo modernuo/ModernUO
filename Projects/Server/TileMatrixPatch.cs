@@ -33,20 +33,26 @@ namespace Server
         public TileMatrixPatch(TileMatrix matrix, int index)
         {
             if (!Enabled)
+            {
                 return;
+            }
 
             var mapDataPath = Core.FindDataFile($"mapdif{index}.mul", false);
             var mapIndexPath = Core.FindDataFile($"mapdifl{index}.mul", false);
 
             if (File.Exists(mapDataPath) && File.Exists(mapIndexPath))
+            {
                 m_LandBlocks = PatchLand(matrix, mapDataPath, mapIndexPath);
+            }
 
             var staDataPath = Core.FindDataFile($"stadif{index}.mul", false);
             var staIndexPath = Core.FindDataFile($"stadifl{index}.mul", false);
             var staLookupPath = Core.FindDataFile($"stadifi{index}.mul", false);
 
             if (File.Exists(staDataPath) && File.Exists(staIndexPath) && File.Exists(staLookupPath))
+            {
                 m_StaticBlocks = PatchStatics(matrix, staDataPath, staIndexPath, staLookupPath);
+            }
         }
 
         public static bool Enabled { get; set; } = true;
@@ -123,7 +129,9 @@ namespace Server
                 lists[x] = new TileList[8];
 
                 for (var y = 0; y < 8; ++y)
+                {
                     lists[x][y] = new TileList();
+                }
             }
 
             for (var i = 0; i < count; ++i)
@@ -147,7 +155,9 @@ namespace Server
                 var tileCount = length / 7;
 
                 if (m_TileBuffer.Length < tileCount)
+                {
                     m_TileBuffer = new StaticTile[tileCount];
+                }
 
                 var staTiles = m_TileBuffer;
 
@@ -169,7 +179,9 @@ namespace Server
                         tiles[x] = new StaticTile[8][];
 
                         for (var y = 0; y < 8; ++y)
+                        {
                             tiles[x][y] = lists[x][y].ToArray();
+                        }
                     }
 
                     matrix.SetStaticBlock(blockX, blockY, tiles);

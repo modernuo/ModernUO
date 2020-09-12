@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: WorldLocation.cs                                                *
  *                                                                       *
@@ -104,7 +104,11 @@ namespace Server
         public int CompareTo(WorldLocation other)
         {
             var locComparison = m_Loc.CompareTo(other.m_Loc);
-            if (locComparison != 0) return locComparison;
+            if (locComparison != 0)
+            {
+                return locComparison;
+            }
+
             return Comparer<Map>.Default.Compare(m_Map, other.m_Map);
         }
 

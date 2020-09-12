@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Point2DConverter.cs                                             *
  *                                                                       *
@@ -30,19 +30,25 @@ namespace Server.Json
             {
                 reader.Read();
                 if (reader.TokenType == JsonTokenType.EndArray)
+                {
                     break;
+                }
 
                 if (reader.TokenType == JsonTokenType.Number)
                 {
                     if (count < 2)
+                    {
                         data[count] = reader.GetInt32();
+                    }
 
                     count++;
                 }
             }
 
             if (count > 2)
+            {
                 throw new JsonException("Point2D must be an array of x, y");
+            }
 
             return new Point2D(data[0], data[1]);
         }
@@ -55,10 +61,14 @@ namespace Server.Json
             {
                 reader.Read();
                 if (reader.TokenType == JsonTokenType.EndObject)
+                {
                     break;
+                }
 
                 if (reader.TokenType != JsonTokenType.PropertyName)
+                {
                     throw new JsonException("Invalid json structure for Point2D object");
+                }
 
                 var key = reader.GetString();
 
@@ -72,7 +82,9 @@ namespace Server.Json
                 reader.Read();
 
                 if (reader.TokenType != JsonTokenType.Number)
+                {
                     throw new JsonException($"Value for {key} must be a number");
+                }
 
                 data[i] = reader.GetInt32();
             }

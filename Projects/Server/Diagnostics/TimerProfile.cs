@@ -43,10 +43,14 @@ namespace Server.Diagnostics
         public static TimerProfile Acquire(string name)
         {
             if (!Core.Profiling)
+            {
                 return null;
+            }
 
             if (!_profiles.TryGetValue(name, out var prof))
+            {
                 _profiles.Add(name, prof = new TimerProfile(name));
+            }
 
             return prof;
         }

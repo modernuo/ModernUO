@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: BinaryFileReader.cs                                             *
  *                                                                       *
@@ -37,9 +37,14 @@ namespace Server
             var now = DateTime.UtcNow.Ticks;
 
             if (ticks > 0 && ticks + now < 0)
+            {
                 return DateTime.MaxValue;
+            }
+
             if (ticks < 0 && ticks + now < 0)
+            {
                 return DateTime.MinValue;
+            }
 
             try
             {
@@ -145,8 +150,12 @@ namespace Server
                 var list = new List<T>(count);
 
                 for (var i = 0; i < count; ++i)
+                {
                     if (ReadItem() is T item)
+                    {
                         list.Add(item);
+                    }
+                }
 
                 return list;
             }
@@ -165,8 +174,12 @@ namespace Server
                 var set = new HashSet<T>();
 
                 for (var i = 0; i < count; ++i)
+                {
                     if (ReadItem() is T item)
+                    {
                         set.Add(item);
+                    }
+                }
 
                 return set;
             }
@@ -185,8 +198,12 @@ namespace Server
                 var list = new List<T>(count);
 
                 for (var i = 0; i < count; ++i)
+                {
                     if (ReadMobile() is T m)
+                    {
                         list.Add(m);
+                    }
+                }
 
                 return list;
             }
@@ -205,8 +222,12 @@ namespace Server
                 var set = new HashSet<T>();
 
                 for (var i = 0; i < count; ++i)
+                {
                     if (ReadMobile() is T item)
+                    {
                         set.Add(item);
+                    }
+                }
 
                 return set;
             }
@@ -225,8 +246,12 @@ namespace Server
                 var list = new List<T>(count);
 
                 for (var i = 0; i < count; ++i)
+                {
                     if (ReadGuild() is T g)
+                    {
                         list.Add(g);
+                    }
+                }
 
                 return list;
             }
@@ -245,8 +270,12 @@ namespace Server
                 var set = new HashSet<T>();
 
                 for (var i = 0; i < count; ++i)
+                {
                     if (ReadGuild() is T item)
+                    {
                         set.Add(item);
+                    }
+                }
 
                 return set;
             }

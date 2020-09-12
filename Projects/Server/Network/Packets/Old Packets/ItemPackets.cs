@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ItemPackets.cs                                                  *
  *                                                                       *
@@ -41,43 +41,69 @@ namespace Server.Network
             var direction = (int)item.Direction;
 
             if (amount != 0)
+            {
                 serial |= 0x80000000;
+            }
             else
+            {
                 serial &= 0x7FFFFFFF;
+            }
 
             Stream.Write(serial);
 
             if (item is BaseMulti)
+            {
                 Stream.Write((short)(itemID | 0x4000));
+            }
             else
+            {
                 Stream.Write((short)itemID);
+            }
 
-            if (amount != 0) Stream.Write((short)amount);
+            if (amount != 0)
+            {
+                Stream.Write((short)amount);
+            }
 
             x &= 0x7FFF;
 
-            if (direction != 0) x |= 0x8000;
+            if (direction != 0)
+            {
+                x |= 0x8000;
+            }
 
             Stream.Write((short)x);
 
             y &= 0x3FFF;
 
-            if (hue != 0) y |= 0x8000;
+            if (hue != 0)
+            {
+                y |= 0x8000;
+            }
 
-            if (flags != 0) y |= 0x4000;
+            if (flags != 0)
+            {
+                y |= 0x4000;
+            }
 
             Stream.Write((short)y);
 
             if (direction != 0)
+            {
                 Stream.Write((byte)direction);
+            }
 
             Stream.Write((sbyte)loc.m_Z);
 
             if (hue != 0)
+            {
                 Stream.Write((ushort)hue);
+            }
 
             if (flags != 0)
+            {
                 Stream.Write((byte)flags);
+            }
         }
     }
 
@@ -212,7 +238,9 @@ namespace Server.Network
             Stream.Write((short)offset);
 
             for (var i = 0; i < 8; ++i)
+            {
                 Stream.Write((byte)(content >> (i * 8)));
+            }
         }
     }
 
@@ -229,6 +257,7 @@ namespace Server.Network
             ulong mask = 1;
 
             for (var i = 0; i < 64; ++i, mask <<= 1)
+            {
                 if ((content & mask) != 0)
                 {
                     Stream.Write(0x7FFFFFFF - i);
@@ -242,6 +271,7 @@ namespace Server.Network
 
                     ++written;
                 }
+            }
 
             Stream.Seek(3, SeekOrigin.Begin);
             Stream.Write((ushort)written);
@@ -261,6 +291,7 @@ namespace Server.Network
             ulong mask = 1;
 
             for (var i = 0; i < 64; ++i, mask <<= 1)
+            {
                 if ((content & mask) != 0)
                 {
                     Stream.Write(0x7FFFFFFF - i);
@@ -275,6 +306,7 @@ namespace Server.Network
 
                     ++written;
                 }
+            }
 
             Stream.Seek(3, SeekOrigin.Begin);
             Stream.Write((ushort)written);

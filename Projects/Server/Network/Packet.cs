@@ -112,16 +112,22 @@ namespace Server.Network
             Core.Set(); // Is this still needed if this is done async?
 
             if ((m_State & (State.Acquired | State.Static)) == 0)
+            {
                 Free();
+            }
         }
 
         private void Free()
         {
             if (m_CompiledBuffer == null)
+            {
                 return;
+            }
 
             if ((m_State & State.Buffered) != 0)
+            {
                 ArrayPool<byte>.Shared.Return(m_CompiledBuffer);
+            }
 
             m_State &= ~(State.Static | State.Acquired | State.Buffered);
 
@@ -131,7 +137,9 @@ namespace Server.Network
         public void Release()
         {
             if ((m_State & State.Acquired) != 0)
+            {
                 Free();
+            }
         }
 
         public byte[] Compile(bool compress, out int length)

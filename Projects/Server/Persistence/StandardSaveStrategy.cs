@@ -60,7 +60,9 @@ namespace Server
 
             if (permitBackgroundWrite && UseSequentialWriters
             ) // If we're permitted to write in the background, but we don't anyways, then notify.
+            {
                 World.NotifyDiskWriteComplete();
+            }
         }
 
         protected void SaveMobiles()
@@ -90,7 +92,9 @@ namespace Server
                     tdb.Write(World.m_MobileTypes.Count);
 
                     for (var i = 0; i < World.m_MobileTypes.Count; ++i)
+                    {
                         tdb.Write(World.m_MobileTypes[i].FullName);
+                    }
 
                     tdb.Close();
                 }
@@ -151,7 +155,9 @@ namespace Server
                     tdb.Write(World.m_ItemTypes.Count);
 
                     for (var i = 0; i < World.m_ItemTypes.Count; ++i)
+                    {
                         tdb.Write(World.m_ItemTypes[i].FullName);
+                    }
 
                     tdb.Close();
                 }
@@ -243,7 +249,9 @@ namespace Server
                 var item = _decayQueue.Dequeue();
 
                 if (item.OnDecay())
+                {
                     item.Delete();
+                }
             }
         }
     }

@@ -88,14 +88,18 @@ namespace Server.Items
                         Opened = reader.ReadBool();
 
                         if (Owner == null)
+                        {
                             Delete();
+                        }
 
                         break;
                     }
             }
 
             if (ItemID == 0xE41)
+            {
                 ItemID = 0xE7C;
+            }
         }
 
         public void Close()
@@ -103,7 +107,9 @@ namespace Server.Items
             Opened = false;
 
             if (SendDeleteOnClose)
+            {
                 Owner?.Send(RemovePacket);
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -129,7 +135,9 @@ namespace Server.Items
         public override int GetTotal(TotalType type)
         {
             if (AccountGold.Enabled && Owner?.Account != null && type == TotalType.Gold)
+            {
                 return Owner.Account.TotalGold;
+            }
 
             return base.GetTotal(type);
         }

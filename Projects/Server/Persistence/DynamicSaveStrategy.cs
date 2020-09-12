@@ -137,7 +137,10 @@ namespace Server
                     writer.QueueForIndex(item, size);
 
                     if (item.Decays && item.Parent == null && item.Map != Map.Internal &&
-                        DateTime.UtcNow > item.LastMoved + item.DecayTime) _decayBag.Add(item);
+                        DateTime.UtcNow > item.LastMoved + item.DecayTime)
+                    {
+                        _decayBag.Add(item);
+                    }
 
                     return writer;
                 },
@@ -230,8 +233,12 @@ namespace Server
         public override void ProcessDecay()
         {
             while (_decayBag.TryTake(out var item))
+            {
                 if (item.OnDecay())
+                {
                     item.Delete();
+                }
+            }
         }
 
         private void OpenFiles()
@@ -287,7 +294,10 @@ namespace Server
 
             bfw.Write(types.Count);
 
-            foreach (var type in types) bfw.Write(type.FullName);
+            foreach (var type in types)
+            {
+                bfw.Write(type.FullName);
+            }
 
             bfw.Flush();
 

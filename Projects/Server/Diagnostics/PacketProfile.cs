@@ -67,7 +67,9 @@ namespace Server.Diagnostics
         public static PacketSendProfile Acquire(Type type)
         {
             if (!_profiles.TryGetValue(type, out var prof))
+            {
                 _profiles.Add(type, prof = new PacketSendProfile(type));
+            }
 
             return prof;
         }
@@ -101,7 +103,9 @@ namespace Server.Diagnostics
         public static PacketReceiveProfile Acquire(int packetId)
         {
             if (!_profiles.TryGetValue(packetId, out var prof))
+            {
                 _profiles.Add(packetId, prof = new PacketReceiveProfile(packetId));
+            }
 
             return prof;
         }

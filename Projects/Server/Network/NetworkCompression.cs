@@ -84,15 +84,32 @@ namespace Server.Network
             ReadOnlySpan<byte> input, int offset, int count, Span<byte> output, out int length
         )
         {
-            if (input == null) throw new ArgumentNullException(nameof(input));
+            if (input == null)
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
 
-            if (offset < 0 || offset >= input.Length) throw new ArgumentOutOfRangeException(nameof(offset));
-            if (count < 0 || count > input.Length) throw new ArgumentOutOfRangeException(nameof(count));
-            if (input.Length - offset < count) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (offset < 0 || offset >= input.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset));
+            }
+
+            if (count < 0 || count > input.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+
+            if (input.Length - offset < count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset));
+            }
 
             length = 0;
 
-            if (count > DefiniteOverflow) return;
+            if (count > DefiniteOverflow)
+            {
+                return;
+            }
 
             var bitCount = 0;
             var bitValue = 0;

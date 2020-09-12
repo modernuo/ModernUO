@@ -51,8 +51,12 @@ namespace Server.Gumps
         public bool IsSwitched(int switchID)
         {
             for (var i = 0; i < Switches.Length; ++i)
+            {
                 if (Switches[i] == switchID)
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -60,8 +64,12 @@ namespace Server.Gumps
         public TextRelay GetTextEntry(int entryID)
         {
             for (var i = 0; i < TextEntries.Length; ++i)
+            {
                 if (TextEntries[i].EntryID == entryID)
+                {
                     return TextEntries[i];
+                }
+            }
 
             return null;
         }

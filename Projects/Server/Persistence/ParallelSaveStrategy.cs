@@ -77,14 +77,23 @@ namespace Server
 
             consumers = new Consumer[GetThreadCount()];
 
-            for (var i = 0; i < consumers.Length; ++i) consumers[i] = new Consumer(this, 256);
+            for (var i = 0; i < consumers.Length; ++i)
+            {
+                consumers[i] = new Consumer(this, 256);
+            }
 
             IEnumerable<ISerializable> collection = new Producer();
 
             foreach (var value in collection)
+            {
                 while (!Enqueue(value))
+                {
                     if (!Commit())
+                    {
                         Thread.Sleep(0);
+                    }
+                }
+            }
 
             finished = true;
 
@@ -108,7 +117,10 @@ namespace Server
             {
                 var item = _decayQueue.Dequeue();
 
-                if (item.OnDecay()) item.Delete();
+                if (item.OnDecay())
+                {
+                    item.Delete();
+                }
             }
         }
 
@@ -124,7 +136,10 @@ namespace Server
 
             bfw.Write(types.Count);
 
-            foreach (var type in types) bfw.Write(type.FullName);
+            foreach (var type in types)
+            {
+                bfw.Write(type.FullName);
+            }
 
             bfw.Flush();
 
@@ -179,11 +194,17 @@ namespace Server
             var writer = entry.writer;
 
             if (value is Item item)
+            {
                 Save(item, writer);
+            }
             else if (value is Mobile mob)
+            {
                 Save(mob, writer);
+            }
             else if (value is BaseGuild guild)
+            {
                 Save(guild, writer);
+            }
         }
 
         private void Save(Item item, BinaryMemoryWriter writer)
@@ -191,7 +212,10 @@ namespace Server
             writer.CommitTo(itemData, itemIndex, item.TypeRef, item.Serial);
 
             if (item.Decays && item.Parent == null && item.Map != Map.Internal &&
-                DateTime.UtcNow > item.LastMoved + item.DecayTime) _decayQueue.Enqueue(item);
+                DateTime.UtcNow > item.LastMoved + item.DecayTime)
+            {
+                _decayQueue.Enqueue(item);
+            }
         }
 
         private void Save(Mobile mob, BinaryMemoryWriter writer)
@@ -273,11 +297,20 @@ namespace Server
 
             public IEnumerator<ISerializable> GetEnumerator()
             {
-                foreach (var item in items) yield return item;
+                foreach (var item in items)
+                {
+                    yield return item;
+                }
 
-                foreach (var mob in mobiles) yield return mob;
+                foreach (var mob in mobiles)
+                {
+                    yield return mob;
+                }
 
-                foreach (var guild in guilds) yield return guild;
+                foreach (var guild in guilds)
+                {
+                    yield return guild;
+                }
             }
 
             IEnumerator IEnumerable.GetEnumerator() => throw new NotImplementedException();
@@ -305,7 +338,10 @@ namespace Server
 
                 buffer = new ConsumableEntry[bufferSize];
 
-                for (var i = 0; i < buffer.Length; ++i) buffer[i].writer = new BinaryMemoryWriter();
+                for (var i = 0; i < buffer.Length; ++i)
+                {
+                    buffer[i].writer = new BinaryMemoryWriter();
+                }
 
                 completionEvent = new ManualResetEvent(false);
 

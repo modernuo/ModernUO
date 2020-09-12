@@ -232,15 +232,21 @@ namespace Server.Gumps
         public void Add(GumpEntry g)
         {
             if (g.Parent != this)
+            {
                 g.Parent = this;
+            }
             else if (!Entries.Contains(g))
+            {
                 Entries.Add(g);
+            }
         }
 
         public void Remove(GumpEntry g)
         {
             if (g == null || !Entries.Contains(g))
+            {
                 return;
+            }
 
             Entries.Remove(g);
             g.Parent = null;
@@ -250,7 +256,10 @@ namespace Server.Gumps
         {
             var indexOf = Strings.IndexOf(value);
 
-            if (indexOf >= 0) return indexOf;
+            if (indexOf >= 0)
+            {
+                return indexOf;
+            }
 
             Strings.Add(value);
             return Strings.Count - 1;
@@ -269,21 +278,33 @@ namespace Server.Gumps
             IGumpWriter disp;
 
             if (ns?.Unpack == true)
+            {
                 disp = new DisplayGumpPacked(this);
+            }
             else
+            {
                 disp = new DisplayGumpFast(this);
+            }
 
             if (!Draggable)
+            {
                 disp.AppendLayout(m_NoMove);
+            }
 
             if (!Closable)
+            {
                 disp.AppendLayout(m_NoClose);
+            }
 
             if (!Disposable)
+            {
                 disp.AppendLayout(m_NoDispose);
+            }
 
             if (!Resizable)
+            {
                 disp.AppendLayout(m_NoResize);
+            }
 
             var count = Entries.Count;
 

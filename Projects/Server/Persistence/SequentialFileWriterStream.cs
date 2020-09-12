@@ -32,7 +32,10 @@ namespace Server
 
         public SequentialFileWriterStream(string path)
         {
-            if (path == null) throw new ArgumentNullException(nameof(path));
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
 
             fileStream = FileOperations.OpenSequentialStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
 

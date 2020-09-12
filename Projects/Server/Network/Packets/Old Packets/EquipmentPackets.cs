@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: EquipmentPackets.cs                                             *
  *                                                                       *
@@ -83,7 +83,10 @@ namespace Server.Network
                 }
             }
 
-            if (info.Unidentified) Stream.Write(-4);
+            if (info.Unidentified)
+            {
+                Stream.Write(-4);
+            }
 
             for (var i = 0; i < attrs.Length; ++i)
             {
@@ -109,7 +112,9 @@ namespace Server.Network
                 parentSerial = parent.Serial;
 
                 if (parent.SolidHueOverride >= 0)
+                {
                     hue = parent.SolidHueOverride;
+                }
             }
             else
             {

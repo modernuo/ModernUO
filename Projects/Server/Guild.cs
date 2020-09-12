@@ -39,7 +39,10 @@ namespace Server.Guilds
             Serial = id;
             List.Add(Serial, this);
             if (Serial + 1 > m_NextID)
+            {
                 m_NextID = Serial + 1;
+            }
+
             SaveBuffer = new BufferedFileWriter(true);
         }
 
@@ -95,7 +98,9 @@ namespace Server.Guilds
                 var name = g.Name.ToLower();
 
                 if (words.All(t => name.IndexOf(t) != -1))
+                {
                     results.Add(g);
+                }
             }
 
             return results;

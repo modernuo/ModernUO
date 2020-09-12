@@ -73,7 +73,9 @@ namespace Server
             }
 
             if (DefRegCreation)
+            {
                 RegCreation();
+            }
         }
 
         public TimerPriority Priority
@@ -82,14 +84,18 @@ namespace Server
             set
             {
                 if (!m_PrioritySet)
+                {
                     m_PrioritySet = true;
+                }
 
                 if (m_Priority != value)
                 {
                     m_Priority = value;
 
                     if (m_Running)
+                    {
                         TimerThread.PriorityChange(this, (int)m_Priority);
+                    }
                 }
             }
         }
@@ -114,9 +120,13 @@ namespace Server
             set
             {
                 if (value)
+                {
                     Start();
+                }
                 else
+                {
                     Stop();
+                }
             }
         }
 
@@ -134,7 +144,10 @@ namespace Server
 
         public TimerProfile GetProfile()
         {
-            if (!Core.Profiling) return null;
+            if (!Core.Profiling)
+            {
+                return null;
+            }
 
             var name = ToString();
 
@@ -169,7 +182,10 @@ namespace Server
         {
             var prof = GetProfile();
 
-            if (prof != null) prof.Created++;
+            if (prof != null)
+            {
+                prof.Created++;
+            }
         }
 
         public override string ToString() => GetType().FullName ?? "";
@@ -177,22 +193,34 @@ namespace Server
         public static TimerPriority ComputePriority(TimeSpan ts)
         {
             if (ts >= TimeSpan.FromMinutes(1.0))
+            {
                 return TimerPriority.FiveSeconds;
+            }
 
             if (ts >= TimeSpan.FromSeconds(10.0))
+            {
                 return TimerPriority.OneSecond;
+            }
 
             if (ts >= TimeSpan.FromSeconds(5.0))
+            {
                 return TimerPriority.TwoFiftyMS;
+            }
 
             if (ts >= TimeSpan.FromSeconds(2.5))
+            {
                 return TimerPriority.FiftyMS;
+            }
 
             if (ts >= TimeSpan.FromSeconds(1.0))
+            {
                 return TimerPriority.TwentyFiveMS;
+            }
 
             if (ts >= TimeSpan.FromSeconds(0.5))
+            {
                 return TimerPriority.TenMS;
+            }
 
             return TimerPriority.EveryTick;
         }
@@ -206,7 +234,10 @@ namespace Server
 
                 var prof = GetProfile();
 
-                if (prof != null) prof.Started++;
+                if (prof != null)
+                {
+                    prof.Started++;
+                }
             }
         }
 
@@ -219,7 +250,10 @@ namespace Server
 
                 var prof = GetProfile();
 
-                if (prof != null) prof.Stopped++;
+                if (prof != null)
+                {
+                    prof.Stopped++;
+                }
             }
         }
 
@@ -285,7 +319,9 @@ namespace Server
                         var key = t.ToString();
 
                         if (!hash.TryGetValue(key, out var list))
+                        {
                             hash[key] = list = new List<Timer>();
+                        }
 
                         list.Add(t);
                     }
@@ -392,7 +428,9 @@ namespace Server
                     {
                         var now = Core.TickCount;
                         if (now < m_NextPriorities[i])
+                        {
                             break;
+                        }
 
                         m_NextPriorities[i] = now + m_PriorityDelays[i];
 
@@ -412,15 +450,21 @@ namespace Server
                                 loaded = true;
 
                                 if (t.m_Count != 0 && ++t.m_Index >= t.m_Count)
+                                {
                                     t.Stop();
+                                }
                                 else
+                                {
                                     t.m_Next = now + t.m_Interval;
+                                }
                             }
                         }
                     }
 
                     if (loaded)
+                    {
                         Core.Set();
+                    }
 
                     m_Signal.WaitOne(1, false);
                 }
@@ -445,7 +489,9 @@ namespace Server
                     lock (m_InstancePool)
                     {
                         if (m_InstancePool.Count < 200) // Arbitrary
+                        {
                             m_InstancePool.Enqueue(this);
+                        }
                     }
                 }
 
@@ -455,7 +501,10 @@ namespace Server
 
                     lock (m_InstancePool)
                     {
-                        if (m_InstancePool.Count > 0) e = m_InstancePool.Dequeue();
+                        if (m_InstancePool.Count > 0)
+                        {
+                            e = m_InstancePool.Dequeue();
+                        }
                     }
 
                     if (e != null)

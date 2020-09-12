@@ -54,7 +54,9 @@ namespace Server.Gumps
             disp.AppendLayout(ItemID);
 
             if (Hue != 0)
+            {
                 disp.AppendLayout(Hue);
+            }
         }
     }
 }

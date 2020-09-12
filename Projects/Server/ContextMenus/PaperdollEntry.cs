@@ -29,7 +29,9 @@ namespace Server.ContextMenus
         public override void OnClick()
         {
             if (m_Mobile.CanPaperdollBeOpenedBy(Owner.From))
+            {
                 m_Mobile.DisplayPaperdollTo(Owner.From);
+            }
         }
     }
 }

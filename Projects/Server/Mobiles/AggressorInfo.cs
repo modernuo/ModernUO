@@ -54,7 +54,9 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_Attacker.Deleted || m_Defender.Deleted || DateTime.UtcNow >= m_LastCombatTime + ExpireDelay;
             }
@@ -65,14 +67,18 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_CriminalAggression;
             }
             set
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 m_CriminalAggression = value;
             }
@@ -83,7 +89,9 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_Attacker;
             }
@@ -94,7 +102,9 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_Defender;
             }
@@ -105,7 +115,9 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_LastCombatTime;
             }
@@ -116,14 +128,18 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_Reported;
             }
             set
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 m_Reported = value;
             }
@@ -134,14 +150,18 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_CanReportMurder;
             }
             set
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 m_CanReportMurder = value;
             }
@@ -176,7 +196,9 @@ namespace Server
         public void Free()
         {
             if (m_Queued)
+            {
                 return;
+            }
 
             m_Queued = true;
             m_Pool.Enqueue(this);
@@ -194,7 +216,9 @@ namespace Server
         public void Refresh()
         {
             if (m_Queued)
+            {
                 DumpAccess();
+            }
 
             m_LastCombatTime = DateTime.UtcNow;
             m_Reported = false;

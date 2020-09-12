@@ -37,10 +37,14 @@ namespace Server.Diagnostics
         public static TargetProfile Acquire(Type type)
         {
             if (!Core.Profiling)
+            {
                 return null;
+            }
 
             if (!_profiles.TryGetValue(type, out var prof))
+            {
                 _profiles.Add(type, prof = new TargetProfile(type));
+            }
 
             return prof;
         }

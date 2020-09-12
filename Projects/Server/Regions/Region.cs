@@ -174,7 +174,9 @@ namespace Server
                 : Array.Empty<Rectangle3D>();
 
             if (Area.Length == 0)
+            {
                 Console.WriteLine("Empty area for region '{0}'", this);
+            }
 
             if (json.GetProperty("go", options, out Point3D go))
             {
@@ -232,13 +234,17 @@ namespace Server
         public int CompareTo(Region reg)
         {
             if (reg == null)
+            {
                 return 1;
+            }
 
             // Dynamic regions go first
             if (Dynamic)
             {
                 if (!reg.Dynamic)
+                {
                     return -1;
+                }
             }
             else if (reg.Dynamic)
             {
@@ -249,7 +255,9 @@ namespace Server
             var regPriority = reg.Priority;
 
             if (thisPriority != regPriority)
+            {
                 return regPriority - thisPriority;
+            }
 
             return reg.ChildLevel - ChildLevel;
         }
@@ -258,20 +266,28 @@ namespace Server
         public static Region Find(string name, Map map, bool insensitive = false)
         {
             if (insensitive)
+            {
                 name = name.ToLower();
+            }
 
             for (var i = 0; i < Regions.Count; i++)
             {
                 var region = Regions[i];
                 if (region.Map != map)
+                {
                     continue;
+                }
 
                 var rName = region.Name;
                 if (insensitive)
+                {
                     rName = rName.ToLower();
+                }
 
                 if (rName == name)
+                {
                     return region;
+                }
             }
 
             return null;
@@ -280,7 +296,9 @@ namespace Server
         public static Region Find(Point3D p, Map map)
         {
             if (map == null)
+            {
                 return Map.Internal.DefaultRegion;
+            }
 
             var sector = map.GetSector(p);
             var list = sector.RegionRects;
@@ -290,7 +308,9 @@ namespace Server
                 var regRect = list[i];
 
                 if (regRect.Contains(p))
+                {
                     return regRect.Region;
+                }
             }
 
             return map.DefaultRegion;
@@ -303,7 +323,10 @@ namespace Server
         {
             var ret = new Rectangle3D[rects.Length];
 
-            for (var i = 0; i < ret.Length; i++) ret[i] = ConvertTo3D(rects[i]);
+            for (var i = 0; i < ret.Length; i++)
+            {
+                ret[i] = ConvertTo3D(rects[i]);
+            }
 
             return ret;
         }
@@ -311,7 +334,9 @@ namespace Server
         public void Register()
         {
             if (Registered)
+            {
                 return;
+            }
 
             OnRegister();
 
@@ -340,6 +365,7 @@ namespace Server
                 var endSector = Map.GetSector(end);
 
                 for (var x = startSector.X; x <= endSector.X; x++)
+                {
                     for (var y = startSector.Y; y <= endSector.Y; y++)
                     {
                         var sector = Map.GetRealSector(x, y);
@@ -347,8 +373,11 @@ namespace Server
                         sector.OnEnter(this, rect);
 
                         if (!sectors.Contains(sector))
+                        {
                             sectors.Add(sector);
+                        }
                     }
+                }
             }
 
             Sectors = sectors.ToArray();
@@ -357,14 +386,18 @@ namespace Server
         public void Unregister()
         {
             if (!Registered)
+            {
                 return;
+            }
 
             OnUnregister();
 
             Registered = false;
 
             if (Children.Count > 0)
+            {
                 Console.WriteLine("Warning: Unregistering region '{0}' with children", this);
+            }
 
             if (Parent != null)
             {
@@ -377,8 +410,12 @@ namespace Server
             Map.UnregisterRegion(this);
 
             if (Sectors != null)
+            {
                 for (var i = 0; i < Sectors.Length; i++)
+                {
                     Sectors[i].OnLeave(this);
+                }
+            }
 
             Sectors = null;
         }
@@ -390,7 +427,9 @@ namespace Server
                 var rect = Area[i];
 
                 if (rect.Contains(p))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -400,14 +439,18 @@ namespace Server
         public bool IsChildOf(Region region)
         {
             if (region == null)
+            {
                 return false;
+            }
 
             var p = Parent;
 
             while (p != null)
             {
                 if (p == region)
+                {
                     return true;
+                }
 
                 p = p.Parent;
             }
@@ -423,7 +466,9 @@ namespace Server
             do
             {
                 if (r is T tr)
+                {
                     return tr;
+                }
 
                 r = r.Parent;
             } while (r != null);
@@ -434,14 +479,18 @@ namespace Server
         public Region GetRegion(Type regionType)
         {
             if (regionType == null)
+            {
                 return null;
+            }
 
             var r = this;
 
             do
             {
                 if (regionType.IsInstanceOfType(r))
+                {
                     return r;
+                }
 
                 r = r.Parent;
             } while (r != null);
@@ -452,14 +501,18 @@ namespace Server
         public Region GetRegion(string regionName)
         {
             if (regionName == null)
+            {
                 return null;
+            }
 
             var r = this;
 
             do
             {
                 if (r.Name == regionName)
+                {
                     return r;
+                }
 
                 r = r.Parent;
             } while (r != null);
@@ -485,8 +538,12 @@ namespace Server
                 var sector = Sectors[i];
 
                 foreach (var player in sector.Players)
+                {
                     if (player.Region.IsPartOf(this))
+                    {
                         list.Add(player);
+                    }
+                }
             }
 
             return list;
@@ -501,8 +558,12 @@ namespace Server
                 var sector = Sectors[i];
 
                 foreach (var player in sector.Players)
+                {
                     if (player.Region.IsPartOf(this))
+                    {
                         count++;
+                    }
+                }
             }
 
             return count;
@@ -517,8 +578,12 @@ namespace Server
                 var sector = Sectors[i];
 
                 foreach (var mobile in sector.Mobiles)
+                {
                     if (mobile.Region.IsPartOf(this))
+                    {
                         list.Add(mobile);
+                    }
+                }
             }
 
             return list;
@@ -533,8 +598,12 @@ namespace Server
                 var sector = Sectors[i];
 
                 foreach (var mobile in sector.Mobiles)
+                {
                     if (mobile.Region.IsPartOf(this))
+                    {
                         count++;
+                    }
+                }
             }
 
             return count;
@@ -618,9 +687,13 @@ namespace Server
         public virtual void OnCriminalAction(Mobile m, bool message)
         {
             if (Parent != null)
+            {
                 Parent.OnCriminalAction(m, message);
+            }
             else if (message)
+            {
                 m.SendLocalizedMessage(1005040); // You've committed a criminal act!!
+            }
         }
 
         public virtual bool AllowBeneficial(Mobile from, Mobile target) =>
@@ -683,7 +756,9 @@ namespace Server
         public virtual TimeSpan GetLogoutDelay(Mobile m)
         {
             if (Parent != null)
+            {
                 return Parent.GetLogoutDelay(m);
+            }
 
             return m.AccessLevel > AccessLevel.Player ? StaffLogoutDelay : DefaultLogoutDelay;
         }
@@ -696,10 +771,14 @@ namespace Server
             while (oldRegion != newRegion)
             {
                 if (!newRegion.OnMoveInto(m, d, newLocation, oldLocation))
+                {
                     return false;
+                }
 
                 if (newRegion.Parent == null)
+                {
                     return true;
+                }
 
                 newRegion = newRegion.Parent;
             }
@@ -713,7 +792,10 @@ namespace Server
             {
                 m.CheckLightLevels(false);
 
-                if (oldRegion == null || oldRegion.Music != newRegion.Music) m.Send(PlayMusic.GetInstance(newRegion.Music));
+                if (oldRegion == null || oldRegion.Music != newRegion.Music)
+                {
+                    m.Send(PlayMusic.GetInstance(newRegion.Music));
+                }
             }
 
             var oldR = oldRegion;

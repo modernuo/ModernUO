@@ -51,7 +51,9 @@ namespace Server
         public static void PlaySound(IPoint3D p, Map map, int soundID)
         {
             if (soundID <= -1)
+            {
                 return;
+            }
 
             if (map != null)
             {
@@ -89,7 +91,9 @@ namespace Server
             var map = e.Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             e.ProcessDelta();
 
@@ -98,6 +102,7 @@ namespace Server
             var eable = map.GetClientsInRange(e.Location);
 
             foreach (var state in eable)
+            {
                 if (state.Mobile.CanSee(e))
                 {
                     if (SendParticlesTo(state))
@@ -118,6 +123,7 @@ namespace Server
                         state.Send(playSound);
                     }
                 }
+            }
 
             Packet.Release(preEffect);
             Packet.Release(boltEffect);
@@ -220,7 +226,9 @@ namespace Server
         public static void SendTargetEffect(IEntity target, int itemID, int speed, int duration, int hue, int renderMode)
         {
             if (target is Mobile mobile)
+            {
                 mobile.ProcessDelta();
+            }
 
             SendPacket(target.Location, target.Map, new TargetEffect(target, itemID, speed, duration, hue, renderMode));
         }
@@ -247,7 +255,9 @@ namespace Server
         )
         {
             if (target is Mobile mobile)
+            {
                 mobile.ProcessDelta();
+            }
 
             var map = target.Map;
 
@@ -302,10 +312,14 @@ namespace Server
         )
         {
             if (from is Mobile mobile)
+            {
                 mobile.ProcessDelta();
+            }
 
             if (to is Mobile mobile1)
+            {
                 mobile1.ProcessDelta();
+            }
 
             SendPacket(
                 from.Location,
@@ -389,10 +403,14 @@ namespace Server
         )
         {
             if (from is Mobile fromMob)
+            {
                 fromMob.ProcessDelta();
+            }
 
             if (to is Mobile toMob)
+            {
                 toMob.ProcessDelta();
+            }
 
             var map = from.Map;
 
@@ -461,7 +479,9 @@ namespace Server
         public static void SendPacket(Point3D origin, Map map, Packet p)
         {
             if (map == null)
+            {
                 return;
+            }
 
             var eable = map.GetClientsInRange(origin);
 
@@ -481,7 +501,9 @@ namespace Server
         public static void SendPacket(IPoint3D origin, Map map, Packet p)
         {
             if (map == null)
+            {
                 return;
+            }
 
             var eable = map.GetClientsInRange(new Point3D(origin));
 
