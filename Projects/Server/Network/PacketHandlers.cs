@@ -1,23 +1,3 @@
-/***************************************************************************
- *                             PacketHandlers.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -2278,7 +2258,7 @@ namespace Server.Network
             Pre-7.0.0.0:
             0x00, 0x01 -> Human Male, Human Female
             0x02, 0x03 -> Elf Male, Elf Female
-      
+
             Post-7.0.0.0:
             0x00, 0x01
             0x02, 0x03 -> Human Male, Human Female

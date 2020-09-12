@@ -395,7 +395,9 @@ namespace Server.Items
             ResourceTypes = resourceTypes;
 
             for (var i = 0; i < resourceTypes.Length; ++i)
+            {
                 CraftResources.RegisterType(resourceTypes[i], resource);
+            }
         }
 
         public int Hue { get; }
@@ -723,7 +725,9 @@ namespace Server.Items
         public static void RegisterType(Type resourceType, CraftResource resource)
         {
             if (m_TypeTable == null)
+            {
                 m_TypeTable = new Dictionary<Type, CraftResource>();
+            }
 
             m_TypeTable[resourceType] = resource;
         }
@@ -735,7 +739,9 @@ namespace Server.Items
         public static CraftResource GetFromType(Type resourceType)
         {
             if (m_TypeTable == null)
+            {
                 return CraftResource.None;
+            }
 
             return m_TypeTable.TryGetValue(resourceType, out var res) ? res : CraftResource.None;
         }
@@ -760,7 +766,9 @@ namespace Server.Items
                 var index = GetIndex(resource);
 
                 if (index >= 0 && index < list.Length)
+                {
                     return list[index];
+                }
             }
 
             return null;
@@ -772,16 +780,24 @@ namespace Server.Items
         public static CraftResourceType GetType(CraftResource resource)
         {
             if (resource >= CraftResource.Iron && resource <= CraftResource.Valorite)
+            {
                 return CraftResourceType.Metal;
+            }
 
             if (resource >= CraftResource.RegularLeather && resource <= CraftResource.BarbedLeather)
+            {
                 return CraftResourceType.Leather;
+            }
 
             if (resource >= CraftResource.RedScales && resource <= CraftResource.BlueScales)
+            {
                 return CraftResourceType.Scales;
+            }
 
             if (resource >= CraftResource.RegularWood && resource <= CraftResource.Frostwood)
+            {
                 return CraftResourceType.Wood;
+            }
 
             return CraftResourceType.None;
         }
@@ -810,7 +826,9 @@ namespace Server.Items
             var start = GetStart(resource);
 
             if (start == CraftResource.None)
+            {
                 return 0;
+            }
 
             return resource - start;
         }
@@ -855,32 +873,69 @@ namespace Server.Items
         public static CraftResource GetFromOreInfo(OreInfo info)
         {
             if (info.Name.IndexOf("Spined") >= 0)
+            {
                 return CraftResource.SpinedLeather;
+            }
+
             if (info.Name.IndexOf("Horned") >= 0)
+            {
                 return CraftResource.HornedLeather;
+            }
+
             if (info.Name.IndexOf("Barbed") >= 0)
+            {
                 return CraftResource.BarbedLeather;
+            }
+
             if (info.Name.IndexOf("Leather") >= 0)
+            {
                 return CraftResource.RegularLeather;
+            }
 
             if (info.Level == 0)
+            {
                 return CraftResource.Iron;
+            }
+
             if (info.Level == 1)
+            {
                 return CraftResource.DullCopper;
+            }
+
             if (info.Level == 2)
+            {
                 return CraftResource.ShadowIron;
+            }
+
             if (info.Level == 3)
+            {
                 return CraftResource.Copper;
+            }
+
             if (info.Level == 4)
+            {
                 return CraftResource.Bronze;
+            }
+
             if (info.Level == 5)
+            {
                 return CraftResource.Gold;
+            }
+
             if (info.Level == 6)
+            {
                 return CraftResource.Agapite;
+            }
+
             if (info.Level == 7)
+            {
                 return CraftResource.Verite;
+            }
+
             if (info.Level == 8)
+            {
                 return CraftResource.Valorite;
+            }
 
             return CraftResource.None;
         }
@@ -896,13 +951,24 @@ namespace Server.Items
                 material == ArmorMaterialType.Horned || material == ArmorMaterialType.Barbed)
             {
                 if (info.Level == 0)
+                {
                     return CraftResource.RegularLeather;
+                }
+
                 if (info.Level == 1)
+                {
                     return CraftResource.SpinedLeather;
+                }
+
                 if (info.Level == 2)
+                {
                     return CraftResource.HornedLeather;
+                }
+
                 if (info.Level == 3)
+                {
                     return CraftResource.BarbedLeather;
+                }
 
                 return CraftResource.None;
             }
@@ -911,7 +977,7 @@ namespace Server.Items
         }
     }
 
-    // NOTE: This class is only for compatability with very old RunUO versions.
+    // NOTE: This class is only for compatibility with very old RunUO versions.
     // No changes to it should be required for custom resources.
     public class OreInfo
     {

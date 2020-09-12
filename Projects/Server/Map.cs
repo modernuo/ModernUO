@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                  Map.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -632,25 +612,25 @@ namespace Server
         public List<Tile> GetTilesAt( Point2D p, bool items, bool land, bool statics )
         {
           List<Tile> list = new List<Tile>();
-    
+
           if (this == Internal)
             return list;
-    
+
           if (land)
             list.Add( Tiles.GetLandTile( p.m_X, p.m_Y ) );
-    
+
           if (statics)
             list.AddRange( Tiles.GetStaticTiles( p.m_X, p.m_Y, true ) );
-    
+
           if (items)
           {
             Sector sector = GetSector( p );
-    
+
             foreach ( Item item in sector.Items )
               if (item.AtWorldPoint( p.m_X, p.m_Y ))
                 list.Add( new StaticTile( (ushort)item.ItemID, (sbyte) item.Z ) );
           }
-    
+
           return list;
         }
         */
@@ -1451,7 +1431,7 @@ namespace Server
                 return false;
 
                 /*if ((flags & (TileFlag.Impassable | TileFlag.Surface | TileFlag.Roof)) != 0)
-        
+
                 //flags = TileData.ItemTable[i.ItemID&TileData.MaxItemValue].Flags;
                 //if ((flags&TileFlag.Window)==0 && (flags&TileFlag.NoShoot)!=0 && ( (flags&TileFlag.Wall)!=0 || (flags&TileFlag.Roof)!=0 || (((flags&TileFlag.Surface)!=0 && zd != 0)) ))
                 {

@@ -1,23 +1,3 @@
-/***************************************************************************
- *                               FileQueue.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -121,15 +101,15 @@ namespace Server
               if (pending.Count > 0 ) {
                 idle.Reset();
               }
-      
+
               for ( int slot = 0; slot < active.Length && pending.Count > 0; ++slot ) {
                 if (active[slot] == null ) {
                   Page page = pending.Dequeue();
-      
+
                   active[slot] = new Chunk( this, slot, page.buffer, 0, page.length );
-      
+
                   ++activeCount;
-      
+
                   callback( active[slot] );
                 }
               }
