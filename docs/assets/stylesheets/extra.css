@@ -1,0 +1,52 @@
+:root {
+  --muo-gold:                     #d5bf74;
+  --muo-gold-a-link:              #947a40;
+
+  /* default */
+  --md-default-fg-color:          #212121;
+  --md-default-bg-color:          #ffffff;
+
+  /* primary */
+  --md-primary-fg-color:          #212121;
+  --md-primary-bg-color:          #ffffff;
+  --md-primary-fg-color--dark:    #212121;
+
+  /* accent */
+  --md-accent-fg-color:           var(--muo-gold);
+}
+
+:root > * {
+  --md-code-bg-color:             #6d6d6d;
+  --md-code-fg-color:             #ffffff;
+
+  --md-typeset-a-color:           var(--muo-gold-a-link);
+
+  --md-footer-fg-color:           #ffffff;
+  --md-footer-bg-color:           #212121;
+  --md-footer-bg-color--dark:     #212121;
+}
+
+.md-tabs__link--active,
+.md-tabs__link:focus,
+.md-tabs__link:hover,
+.md-footer-nav__link:focus,
+.md-footer-nav__link:hover,
+.md-header-nav__button:focus,
+.md-header-nav__button:hover,
+.md-source:hover,
+html .md-footer-meta.md-typeset a:focus,
+html .md-footer-meta.md-typeset a:hover {
+  color: var(--muo-gold);
+  opacity: 1;
+}
+
+@media screen and (max-width: 76.1875em) {
+  .md-nav--primary .md-nav__title[for=__drawer] .md-nav__button {
+    left: 3.75rem;
+  }
+
+  .md-nav--primary .md-nav__title {
+    padding: 3rem 3.75rem 0.2rem
+  }
+}
+

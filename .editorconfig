@@ -253,7 +253,7 @@ resharper_enforce_while_statement_braces_highlighting=hint
 [*.{sln,csproj,bat}]
 end_of_line=crlf
 
-[*.{yml,json,md,sh}]
+[*.{yml,json,md,sh,css,html}]
 end_of_line=lf
 indent_size=2
 tab_width=2

@@ -1,0 +1,64 @@
+
+# Project
+site_name: ModernUO
+site_author: Kamron Batman
+site_url: https://modernuo.com
+
+# Repository
+repo_name: modernuo/modernuo
+repo_url: https://github.com/modernuo/modernuo
+site_description: The Ultima Online Server Emulator for the modern era!
+copyright: Copyright 2019-2020 ModernUO Development Team
+theme:
+  name: material
+  favicon: branding/favicon.png
+  icon:
+    logo: modernuo/logo
+  custom_dir: docs/overrides
+  features:
+    - tabs
+    - instant
+extra_css:
+  - assets/stylesheets/extra.css
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/modernuo/modernuo
+      name: ModernUO on Github
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/DHkNUsq
+      name: ModernUO on Discord
+    - icon: fontawesome/brands/patreon
+      link: https://patreon.com/modernuo
+      name: Sponsor ModernUO on Patreon
+    - icon: fontawesome/brands/reddit
+      link: https://reddit.com/r/modernuo
+      name: /r/modernuo
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/modernuo
+      name: "@modernuo"
+markdown_extensions:
+  - footnotes
+  - meta
+  - markdown.extensions.toc:
+      permalink: true
+  - attr_list
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.snippets
+  - pymdownx.tabbed
+  - pymdownx.tilde
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+      options:
+        custom_icons:
+          - overrides/.icons
+
+# Pages
+nav:
+  - Home: 'index.md'
+  - Get Started:
+    - Installation: getting-started.md
