@@ -5,26 +5,6 @@
 {{ super() }}
 
 <style>
-  html, body { min-height: 100% }
-  body {
-    /*background-blend-mode: darken;*/
-    /*background: rgba(0, 0, 0, 0.80) url("assets/images/dragon-sorceress.jpg") no-repeat center center fixed;*/
-    /*backdrop-filter: sepia(0.5);*/
-    /*background-size: cover;*/
-
-    background: url("assets/images/logo.svg") no-repeat center center fixed;
-  }
-
-  /* Application header should be static for the landing page */
-  /*.md-header {*/
-  /*  position: initial;*/
-  /*  background: transparent;*/
-  /*}*/
-
-  /*.md-tabs {*/
-  /*  background: transparent;*/
-  /*}*/
-
   /* Remove spacing, as we cannot hide it completely */
   .md-main__inner {
     margin: 0;
@@ -50,7 +30,7 @@
   }
 
   .md-main {
-    background: transparent;
+    background: var(--md-default-fg-color);
   }
 
   .md-typeset h1 {
@@ -58,11 +38,73 @@
   }
 
   .tx-container {
+    background: var(--md-default-fg-color);
     padding-top: 1rem;
   }
 
   .tx-hero {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 400px;
     margin: 0 0.8rem;
+  }
+
+  .tx-hero div {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .tx-hero__image {
+    text-align: center;
+  }
+
+  .tx-hero__content {
+    text-align: center;
+  }
+
+  .tx-hero__content .md-button {
+    background-color: transparent;
+    color: var(--md-primary-bg-color--light);
+    border-color: var(--md-primary-bg-color--light);
+  }
+
+  .tx-hero__content .md-button--primary {
+    background-color: var(--muo-gold);
+    color: var(--md-primary-fg-color);
+    border-color: transparent;
+  }
+
+  .tx-hero__content .md-button:hover {
+    border-color: transparent;
+    color: var(--md-primary-fg-color);
+    background-color: var(--md-primary-bg-color);
+  }
+
+  .tx-hero__content .md-button--primary:hover {
+    border-color: var(--md-primary-bg-color--light);
+  }
+
+  /*@media screen and (max-width: 60em)*/
+  /*{*/
+  /*  .tx-hero__image img {*/
+  /*    max-width: 64px;*/
+  /*  }*/
+  /*}*/
+
+  @media screen and (max-width: 60em)
+  {
+    .tx-hero__image img {
+      max-width: 128px;
+    }
+  }
+
+  @media screen and (min-width: 60em)
+  {
+    .tx-hero__image img {
+      max-width: 200px;
+    }
   }
 </style>
 
@@ -70,10 +112,17 @@
 <section class="tx-container">
   <div class="md-grid md-typeset">
     <div class="tx-hero">
+      <div class="tx-hero__image">
+        <img
+          src="/branding/logo.svg"
+          alt=""
+          draggable="false"
+        >
+      </div>
 
       <!-- Hero content -->
       <div class="tx-hero__content">
-        <h1>{{ config.site_description }}</h1>
+        <h1>Ultima Online Server Emulator for the modern era!</h1>
         <a
           href="{{ page.next_page.url | url }}"
           title="{{ page.next_page.title | striptags }}"
@@ -98,4 +147,6 @@
 {% block content %}{% endblock %}
 
 <!-- Application footer -->
-{% block footer %}{% endblock %}
+{% block footer %}
+{% include "partials/footer.html" %}
+{% endblock %}

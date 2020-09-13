@@ -1,4 +1,7 @@
 :root {
+  --muo-gold:                     #d5bf74;
+  --muo-gold-a-link:              #947a40;
+
   /* default */
   --md-default-fg-color:          #212121;
   --md-default-bg-color:          #ffffff;
@@ -9,14 +12,14 @@
   --md-primary-fg-color--dark:    #212121;
 
   /* accent */
-  --md-accent-fg-color:           #d5bf74;
+  --md-accent-fg-color:           var(--muo-gold);
 }
 
 :root > * {
   --md-code-bg-color:             #6d6d6d;
   --md-code-fg-color:             #ffffff;
 
-  --md-typeset-a-color:           #947a40;
+  --md-typeset-a-color:           var(--muo-gold-a-link);
 
   --md-footer-fg-color:           #ffffff;
   --md-footer-bg-color:           #212121;
@@ -33,7 +36,7 @@
 .md-source:hover,
 html .md-footer-meta.md-typeset a:focus,
 html .md-footer-meta.md-typeset a:hover {
-  color: #d5bf74;
+  color: var(--muo-gold);
   opacity: 1;
 }
 
