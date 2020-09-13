@@ -8,7 +8,7 @@ site_url: https://modernuo.com
 repo_name: modernuo/modernuo
 repo_url: https://github.com/modernuo/modernuo
 site_description: Ultima Online for the modern era!
-copyright: Copyright &copy; 2020 ModernUO Dev Team
+copyright: Copyright 2019-2020 ModernUO Dev Team
 theme:
   name: material
   icon:

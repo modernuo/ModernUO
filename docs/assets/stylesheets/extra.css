@@ -1,50 +1,49 @@
 :root {
   /* default */
-  --md-default-fg-color:      #2e3438;
-  --md-default-bg-color:      #f2f0e6;
+  --md-default-fg-color:          #212121;
+  --md-default-bg-color:          #ffffff;
 
   /* primary */
-  --md-primary-fg-color:      #2e3438;
-  --md-primary-bg-color:      #f2f0e6;
+  --md-primary-fg-color:          #212121;
+  --md-primary-bg-color:          #ffffff;
+  --md-primary-fg-color--dark:    #212121;
 
   /* accent */
-  --md-accent-fg-color:       #6c7a84;
+  --md-accent-fg-color:           #d5bf74;
 }
 
 :root > * {
-  --md-code-bg-color:         #6c7a84;
-  --md-code-fg-color:         #f2f0e6;
+  --md-code-bg-color:             #6d6d6d;
+  --md-code-fg-color:             #ffffff;
 
-  --md-footer-fg-color:       #f2f0e6;
-  --md-footer-bg-color:       #2e3438;
-  --md-footer-bg-color--dark: #2e3438;
+  --md-typeset-a-color:           #947a40;
+
+  --md-footer-fg-color:           #ffffff;
+  --md-footer-bg-color:           #212121;
+  --md-footer-bg-color--dark:     #212121;
 }
 
-html, body { min-height: 100% }
-body {
-  background-blend-mode: darken;
-  background: rgba(0, 0, 0, 0.80) url("../../assets/images/dragon2-bg.jpg") no-repeat center center fixed;
-  backdrop-filter: sepia(0.5);
-  background-size: cover;
+.md-tabs__link--active,
+.md-tabs__link:focus,
+.md-tabs__link:hover,
+.md-footer-nav__link:focus,
+.md-footer-nav__link:hover,
+.md-header-nav__button:focus,
+.md-header-nav__button:hover,
+.md-source:hover,
+html .md-footer-meta.md-typeset a:focus,
+html .md-footer-meta.md-typeset a:hover {
+  color: #d5bf74;
+  opacity: 1;
 }
 
-.md-header {
-  background: transparent;
+@media screen and (max-width: 76.1875em) {
+  .md-nav--primary .md-nav__title[for=__drawer] .md-nav__button {
+    left: 3.75rem;
+  }
+
+  .md-nav--primary .md-nav__title {
+    padding: 3rem 3.75rem 0.2rem
+  }
 }
 
-.md-tabs {
-  background: transparent;
-}
-
-.md-main {
-  background: var(--md-default-bg-color);
-  opacity: 0.95
-}
-
-.md-footer {
-  background: transparent;
-}
-
-.md-footer-meta {
-  background: transparent;
-}
