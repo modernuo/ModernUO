@@ -1,23 +1,3 @@
-/***************************************************************************
- *                               GumpImageTileButton.cs
- *                            -------------------
- *   begin                : April 26, 2005
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using Server.Network;
 
 namespace Server.Gumps
@@ -91,8 +71,11 @@ namespace Server.Gumps
         public override string Compile(NetState ns)
         {
             if (LocalizedTooltip > 0)
+            {
                 return
                     $"{{ buttontileart {X} {Y} {NormalID} {PressedID} {(int)m_Type} {Param} {ButtonID} {ItemID} {Hue} {Width} {Height} }}{{ tooltip {LocalizedTooltip} }}";
+            }
+
             return
                 $"{{ buttontileart {X} {Y} {NormalID} {PressedID} {(int)m_Type} {Param} {ButtonID} {ItemID} {Hue} {Width} {Height} }}";
         }

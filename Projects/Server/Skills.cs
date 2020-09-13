@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                 Skills.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -133,15 +113,23 @@ namespace Server
                         if ((version & 0xC0) == 0x00)
                         {
                             if ((version & 0x1) != 0)
+                            {
                                 m_Base = reader.ReadUShort();
+                            }
 
                             if ((version & 0x2) != 0)
+                            {
                                 m_Cap = reader.ReadUShort();
+                            }
                             else
+                            {
                                 m_Cap = 1000;
+                            }
 
                             if ((version & 0x4) != 0)
+                            {
                                 Lock = (SkillLock)reader.ReadByte();
+                            }
                         }
 
                         break;
@@ -247,7 +235,9 @@ namespace Server
                 var raceBonus = Owner.Owner.RacialSkillBonus;
 
                 if (raceBonus > value)
+                {
                     value = raceBonus;
+                }
 
                 return value;
             }
@@ -261,7 +251,10 @@ namespace Server
                 var baseValue = Base;
                 var inv = 100.0 - baseValue;
 
-                if (inv < 0.0) inv = 0.0;
+                if (inv < 0.0)
+                {
+                    inv = 0.0;
+                }
 
                 inv /= 100.0;
 
@@ -273,7 +266,9 @@ namespace Server
                 statsOffset *= inv;
 
                 if (statsOffset > statTotal)
+                {
                     statsOffset = statTotal;
+                }
 
                 var value = baseValue + statsOffset;
 
@@ -292,9 +287,13 @@ namespace Server
                         if (mod.Relative)
                         {
                             if (mod.ObeyCap)
+                            {
                                 bonusObey += mod.Value;
+                            }
                             else
+                            {
                                 bonusNotObey += mod.Value;
+                            }
                         }
                         else
                         {
@@ -312,7 +311,9 @@ namespace Server
                     value += bonusObey;
 
                     if (value > Cap)
+                    {
                         value = Cap;
+                    }
                 }
 
                 return value;
@@ -324,7 +325,9 @@ namespace Server
         public void SetLockNoRelay(SkillLock skillLock)
         {
             if (skillLock < SkillLock.Up || skillLock > SkillLock.Locked)
+            {
                 return;
+            }
 
             Lock = skillLock;
         }
@@ -340,24 +343,36 @@ namespace Server
                 var flags = 0x0;
 
                 if (m_Base != 0)
+                {
                     flags |= 0x1;
+                }
 
                 if (m_Cap != 1000)
+                {
                     flags |= 0x2;
+                }
 
                 if (Lock != SkillLock.Up)
+                {
                     flags |= 0x4;
+                }
 
                 writer.Write((byte)flags); // version
 
                 if (m_Base != 0)
+                {
                     writer.Write((short)m_Base);
+                }
 
                 if (m_Cap != 1000)
+                {
                     writer.Write((short)m_Cap);
+                }
 
                 if (Lock != SkillLock.Up)
+                {
                     writer.Write((byte)Lock);
+                }
             }
         }
 
@@ -513,11 +528,15 @@ namespace Server
                 case 1:
                     {
                         if (version < 2)
+                        {
                             Cap = 7000;
+                        }
 
                         if (version < 3)
                             /*m_Total =*/
+                        {
                             reader.ReadInt();
+                        }
 
                         var info = SkillInfo.Table;
 
@@ -526,6 +545,7 @@ namespace Server
                         var count = reader.ReadInt();
 
                         for (var i = 0; i < count; ++i)
+                        {
                             if (i < info.Length)
                             {
                                 var sk = new Skill(this, info[i], reader);
@@ -541,6 +561,7 @@ namespace Server
                                 // Will be discarded
                                 _ = new Skill(this, null, reader);
                             }
+                        }
 
                         // for ( int i = count; i < info.Length; ++i )
                         // m_Skills[i] = new Skill( this, info[i], 0, 1000, SkillLock.Up );
@@ -572,12 +593,16 @@ namespace Server
             get
             {
                 if (skillID < 0 || skillID >= m_Skills.Length)
+                {
                     return null;
+                }
 
                 var sk = m_Skills[skillID];
 
                 if (sk == null)
+                {
                     m_Skills[skillID] = sk = new Skill(this, SkillInfo.Table[skillID], 0, 1000, SkillLock.Up);
+                }
 
                 return sk;
             }
@@ -801,11 +826,19 @@ namespace Server
         public static bool UseSkill(Mobile from, int skillID)
         {
             if (!from.CheckAlive())
+            {
                 return false;
+            }
+
             if (!from.Region.OnSkillUse(from, skillID))
+            {
                 return false;
+            }
+
             if (!from.AllowSkillUse((SkillName)skillID))
+            {
                 return false;
+            }
 
             if (skillID >= 0 && skillID < SkillInfo.Table.Length)
             {
@@ -861,9 +894,13 @@ namespace Server
         public void OnSkillChange(Skill skill)
         {
             if (skill == m_Highest) // could be downgrading the skill, force a recalc
+            {
                 m_Highest = null;
+            }
             else if (m_Highest != null && skill.BaseFixedPoint > m_Highest.BaseFixedPoint)
+            {
                 m_Highest = skill;
+            }
 
             Owner.OnSkillInvalidated(skill);
             Owner.NetState?.Send(new SkillChange(skill));

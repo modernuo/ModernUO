@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: MessagePackets.cs                                               *
  *                                                                       *
@@ -40,7 +40,9 @@ namespace Server.Network
             args ??= "";
 
             if (hue == 0)
+            {
                 hue = 0x3B2;
+            }
 
             EnsureCapacity(50 + args.Length * 2);
 
@@ -117,7 +119,9 @@ namespace Server.Network
             args ??= "";
 
             if (hue == 0)
+            {
                 hue = 0x3B2;
+            }
 
             EnsureCapacity(52 + affix.Length + args.Length * 2);
 
@@ -144,7 +148,9 @@ namespace Server.Network
             text ??= "";
 
             if (hue == 0)
+            {
                 hue = 0x3B2;
+            }
 
             EnsureCapacity(45 + text.Length);
 
@@ -165,12 +171,18 @@ namespace Server.Network
             string text
         ) : base(0xAE)
         {
-            if (string.IsNullOrEmpty(lang)) lang = "ENU";
+            if (string.IsNullOrEmpty(lang))
+            {
+                lang = "ENU";
+            }
+
             name ??= "";
             text ??= "";
 
             if (hue == 0)
+            {
                 hue = 0x3B2;
+            }
 
             EnsureCapacity(50 + text.Length * 2);
 

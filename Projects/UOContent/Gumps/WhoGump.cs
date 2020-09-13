@@ -273,7 +273,7 @@ namespace Server.Gumps
                                 from.SendGump(new WhoGump(from, m_Mobiles, m_Page));
                             }
                             else if (m == from || !m.Hidden || from.AccessLevel >= m.AccessLevel ||
-                                     m is PlayerMobile mobile && mobile.VisibilityList.Contains(@from))
+                                     m is PlayerMobile mobile && mobile.VisibilityList.Contains(from))
                             {
                                 from.SendGump(new ClientGump(from, m.NetState));
                             }

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: MessagePumpService.cs                                           *
  *                                                                       *
@@ -40,7 +40,9 @@ namespace Server.Network
             while (!m_WorkQueue.IsEmpty && count++ < 250)
             {
                 if (!m_WorkQueue.TryDequeue(out var work))
+                {
                     break;
+                }
 
                 var seq = new ReadOnlySequence<byte>(work.MemoryOwner.Memory.Slice(0, work.Length));
                 work.OnReceive(work.State, new PacketReader(seq));

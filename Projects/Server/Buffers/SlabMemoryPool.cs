@@ -72,7 +72,10 @@ namespace System.Buffers
 
         public override IMemoryOwner<byte> Rent(int size = AnySize)
         {
-            if (size > _blockSize) MemoryPoolThrowHelper.ThrowArgumentOutOfRangeException_BufferRequestTooLarge(_blockSize);
+            if (size > _blockSize)
+            {
+                MemoryPoolThrowHelper.ThrowArgumentOutOfRangeException_BufferRequestTooLarge(_blockSize);
+            }
 
             var block = Lease();
             return block;
@@ -85,7 +88,9 @@ namespace System.Buffers
         private MemoryPoolBlock Lease()
         {
             if (_isDisposed)
+            {
                 MemoryPoolThrowHelper.ThrowObjectDisposedException(MemoryPoolThrowHelper.ExceptionArgument.MemoryPool);
+            }
 
             if (_blocks.TryDequeue(out var block))
             {
@@ -127,7 +132,9 @@ namespace System.Buffers
                 block = new MemoryPoolBlock(this, slab, offset, _blockSize);
 
                 if (i != blockCount - 1) // last block
+                {
                     Return(block);
+                }
 
                 offset += _blockSize;
             }
@@ -148,9 +155,13 @@ namespace System.Buffers
         internal void Return(MemoryPoolBlock block)
         {
             if (!_isDisposed)
+            {
                 _blocks.Enqueue(block);
+            }
             else
+            {
                 GC.SuppressFinalize(block);
+            }
         }
 
         // This method can ONLY be called from the finalizer of MemoryPoolBlock
@@ -162,25 +173,37 @@ namespace System.Buffers
                     // Need to make a new object because this one is being finalized
                     // Note, this must be called within the _disposeSync lock because the block
                     // could be disposed at the same time as the finalizer.
+                {
                     Return(new MemoryPoolBlock(this, slab, offset, length));
+                }
             }
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (_isDisposed) return;
+            if (_isDisposed)
+            {
+                return;
+            }
 
             lock (_disposeSync)
             {
                 _isDisposed = true;
 
                 if (disposing)
+                {
                     while (_slabs.TryPop(out var slab))
                         // dispose managed state (managed objects).
+                    {
                         slab.Dispose();
+                    }
+                }
 
                 // Discard blocks in pool
-                while (_blocks.TryDequeue(out var block)) GC.SuppressFinalize(block);
+                while (_blocks.TryDequeue(out var block))
+                {
+                    GC.SuppressFinalize(block);
+                }
             }
         }
     }

@@ -82,7 +82,7 @@ namespace Server.Misc
 
             var points = (int)(from.Skills.Focus.Value * 0.1);
 
-            if (@from is BaseCreature creature && creature.IsParagon || from is Leviathan)
+            if (from is BaseCreature creature && creature.IsParagon || from is Leviathan)
                 points += 40;
 
             var cappedPoints = AosAttributes.GetValue(from, AosAttribute.RegenStam);
@@ -130,7 +130,7 @@ namespace Server.Misc
 
                 var totalPoints = focusPoints + medPoints + (from.Meditating ? medPoints > 13.0 ? 13.0 : medPoints : 0.0);
 
-                if (@from is BaseCreature creature && creature.IsParagon || from is Leviathan)
+                if (from is BaseCreature creature && creature.IsParagon || from is Leviathan)
                     totalPoints += 40;
 
                 var cappedPoints = AosAttributes.GetValue(from, AosAttribute.RegenMana);

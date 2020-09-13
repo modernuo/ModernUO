@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ArraySet.cs                                                     *
  *                                                                       *
@@ -57,7 +57,10 @@ namespace Server.Collections
         {
             var indexOf = m_List.IndexOf(item);
 
-            if (indexOf >= 0) return indexOf;
+            if (indexOf >= 0)
+            {
+                return indexOf;
+            }
 
             m_List.Add(item);
             return m_List.Count - 1;

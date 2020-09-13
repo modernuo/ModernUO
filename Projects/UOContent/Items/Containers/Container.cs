@@ -234,7 +234,7 @@ namespace Server.Items
             base.CheckHold(m, item, false, checkItems, plusItems, plusWeight);
 
         public override bool CheckContentDisplay(Mobile from) =>
-            RootParent is BaseCreature creature && creature.Controlled && creature.ControlMaster == @from ||
+            RootParent is BaseCreature creature && creature.Controlled && creature.ControlMaster == from ||
             base.CheckContentDisplay(from);
 
         public override void Serialize(IGenericWriter writer)

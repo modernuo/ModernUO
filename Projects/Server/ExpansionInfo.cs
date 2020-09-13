@@ -1,23 +1,3 @@
-/***************************************************************************
- *                          ExpansionInfo.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 
 namespace Server
@@ -317,7 +297,10 @@ namespace Server
         {
             var info = GetInfo(ex);
 
-            if (info != null) return info.SupportedFeatures;
+            if (info != null)
+            {
+                return info.SupportedFeatures;
+            }
 
             return ex switch
             {
@@ -343,7 +326,10 @@ namespace Server
         {
             var v = ex;
 
-            if (v < 0 || v >= Table.Length) v = 0;
+            if (v < 0 || v >= Table.Length)
+            {
+                v = 0;
+            }
 
             return Table[v];
         }

@@ -1,23 +1,3 @@
-/***************************************************************************
- *                              AggressorInfo.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -54,7 +34,9 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_Attacker.Deleted || m_Defender.Deleted || DateTime.UtcNow >= m_LastCombatTime + ExpireDelay;
             }
@@ -65,14 +47,18 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_CriminalAggression;
             }
             set
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 m_CriminalAggression = value;
             }
@@ -83,7 +69,9 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_Attacker;
             }
@@ -94,7 +82,9 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_Defender;
             }
@@ -105,7 +95,9 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_LastCombatTime;
             }
@@ -116,14 +108,18 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_Reported;
             }
             set
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 m_Reported = value;
             }
@@ -134,14 +130,18 @@ namespace Server
             get
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 return m_CanReportMurder;
             }
             set
             {
                 if (m_Queued)
+                {
                     DumpAccess();
+                }
 
                 m_CanReportMurder = value;
             }
@@ -176,7 +176,9 @@ namespace Server
         public void Free()
         {
             if (m_Queued)
+            {
                 return;
+            }
 
             m_Queued = true;
             m_Pool.Enqueue(this);
@@ -194,7 +196,9 @@ namespace Server
         public void Refresh()
         {
             if (m_Queued)
+            {
                 DumpAccess();
+            }
 
             m_LastCombatTime = DateTime.UtcNow;
             m_Reported = false;

@@ -1,23 +1,3 @@
-/***************************************************************************
- *                               Containers.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using Server.Accounting;
 using Server.Network;
 
@@ -88,14 +68,18 @@ namespace Server.Items
                         Opened = reader.ReadBool();
 
                         if (Owner == null)
+                        {
                             Delete();
+                        }
 
                         break;
                     }
             }
 
             if (ItemID == 0xE41)
+            {
                 ItemID = 0xE7C;
+            }
         }
 
         public void Close()
@@ -103,7 +87,9 @@ namespace Server.Items
             Opened = false;
 
             if (SendDeleteOnClose)
+            {
                 Owner?.Send(RemovePacket);
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -129,7 +115,9 @@ namespace Server.Items
         public override int GetTotal(TotalType type)
         {
             if (AccountGold.Enabled && Owner?.Account != null && type == TotalType.Gold)
+            {
                 return Owner.Account.TotalGold;
+            }
 
             return base.GetTotal(type);
         }

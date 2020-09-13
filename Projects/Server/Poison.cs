@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                 Poison.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections.Generic;
 
@@ -51,9 +31,14 @@ namespace Server
             for (var i = 0; i < Poisons.Count; i++)
             {
                 if (reg.Level == Poisons[i].Level)
+                {
                     throw new Exception("A poison with that level already exists.");
+                }
+
                 if (regName == Poisons[i].Name.ToLower())
+                {
                     throw new Exception("A poison with that name already exists.");
+                }
             }
 
             Poisons.Add(reg);
@@ -69,7 +54,9 @@ namespace Server
                 var p = Poisons[i];
 
                 if (p.Level == level)
+                {
                     return p;
+                }
             }
 
             return null;
@@ -82,7 +69,9 @@ namespace Server
                 var p = Poisons[i];
 
                 if (Utility.InsensitiveCompare(p.Name, name) == 0)
+                {
                     return p;
+                }
             }
 
             return null;

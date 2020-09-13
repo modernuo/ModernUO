@@ -1,23 +1,3 @@
-/***************************************************************************
- *                           ObjectPropertyList.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System.IO;
 using System.Text;
 using Server.Network;
@@ -73,7 +53,9 @@ namespace Server
         public void Add(int number)
         {
             if (number == 0)
+            {
                 return;
+            }
 
             AddHash(number);
 
@@ -104,7 +86,9 @@ namespace Server
         public void Add(int number, string arguments)
         {
             if (number == 0)
+            {
                 return;
+            }
 
             arguments ??= "";
 
@@ -122,7 +106,9 @@ namespace Server
             var byteCount = m_Encoding.GetByteCount(arguments);
 
             if (byteCount > m_Buffer.Length)
+            {
                 m_Buffer = new byte[byteCount];
+            }
 
             byteCount = m_Encoding.GetBytes(arguments, 0, arguments.Length, m_Buffer, 0);
 
@@ -183,7 +169,7 @@ namespace Server
         /*public OPLInfo( ObjectPropertyList list ) : base( 0xBF )
         {
           EnsureCapacity( 13 );
-    
+
           m_Stream.Write( (short) 0x10 );
           m_Stream.Write( (int) list.Entity.Serial );
           m_Stream.Write( (int) list.Hash );

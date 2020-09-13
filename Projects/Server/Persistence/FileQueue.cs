@@ -1,23 +1,3 @@
-/***************************************************************************
- *                               FileQueue.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -47,11 +27,16 @@ namespace Server
 
         public FileQueue(int concurrentWrites, FileCommitCallback callback)
         {
-            if (concurrentWrites < 1) throw new ArgumentOutOfRangeException(nameof(concurrentWrites));
+            if (concurrentWrites < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(concurrentWrites));
+            }
 
             if (bufferSize < 1)
 #pragma warning disable CA2208 // Instantiate argument exceptions correctly
+            {
                 throw new ArgumentOutOfRangeException(nameof(FileOperations.BufferSize));
+            }
 #pragma warning restore CA2208 // Instantiate argument exceptions correctly
 
             syncRoot = new object();
@@ -79,11 +64,15 @@ namespace Server
         {
             lock (syncRoot)
             {
-                if (activeCount == 0) idle.Reset();
+                if (activeCount == 0)
+                {
+                    idle.Reset();
+                }
 
                 ++activeCount;
 
                 for (var slot = 0; slot < active.Length; ++slot)
+                {
                     if (active[slot] == null)
                     {
                         active[slot] = new Chunk(this, slot, page.buffer, 0, page.length);
@@ -92,6 +81,7 @@ namespace Server
 
                         return;
                     }
+                }
 
                 pending.Enqueue(page);
             }
@@ -111,15 +101,15 @@ namespace Server
               if (pending.Count > 0 ) {
                 idle.Reset();
               }
-      
+
               for ( int slot = 0; slot < active.Length && pending.Count > 0; ++slot ) {
                 if (active[slot] == null ) {
                   Page page = pending.Dequeue();
-      
+
                   active[slot] = new Chunk( this, slot, page.buffer, 0, page.length );
-      
+
                   ++activeCount;
-      
+
                   callback( active[slot] );
                 }
               }
@@ -130,11 +120,17 @@ namespace Server
 
         private void Commit(Chunk chunk, int slot)
         {
-            if (slot < 0 || slot >= active.Length) throw new ArgumentOutOfRangeException(nameof(slot));
+            if (slot < 0 || slot >= active.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(slot));
+            }
 
             lock (syncRoot)
             {
-                if (active[slot] != chunk) throw new ArgumentException("active slot is not the current chunk");
+                if (active[slot] != chunk)
+                {
+                    throw new ArgumentException("active slot is not the current chunk");
+                }
 
                 ArrayPool<byte>.Shared.Return(chunk.Buffer);
 
@@ -153,17 +149,34 @@ namespace Server
 
                 --activeCount;
 
-                if (activeCount == 0) idle.Set();
+                if (activeCount == 0)
+                {
+                    idle.Set();
+                }
             }
         }
 
         public void Enqueue(byte[] buffer, int offset, int size)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (buffer == null)
+            {
+                throw new ArgumentNullException(nameof(buffer));
+            }
 
-            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
-            if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
-            if (buffer.Length - offset < size) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (offset < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset));
+            }
+
+            if (size < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(size));
+            }
+
+            if (buffer.Length - offset < size)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset));
+            }
 
             Position += size;
 

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: TcpServer.cs                                                    *
  *                                                                       *
@@ -54,15 +54,21 @@ namespace Server.Network
         public static IPAddress[] GetListeningAddresses(IPEndPoint ipep)
         {
             if (m_ListeningAddresses != null)
+            {
                 return m_ListeningAddresses;
+            }
 
             var list = new List<IPAddress>();
             foreach (var adapter in NetworkInterface.GetAllNetworkInterfaces())
             {
                 var properties = adapter.GetIPProperties();
                 foreach (var unicast in properties.UnicastAddresses)
+                {
                     if (ipep.AddressFamily == unicast.Address.AddressFamily)
+                    {
                         list.Add(unicast.Address);
+                    }
+                }
             }
 
             return list.ToArray();
@@ -71,10 +77,16 @@ namespace Server.Network
         private static void DisplayListener(IPEndPoint ipep)
         {
             if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
+            {
                 foreach (var ip in m_ListeningAddresses)
+                {
                     Console.WriteLine("Listening: {0}:{1}", ip, ipep.Port);
+                }
+            }
             else
+            {
                 Console.WriteLine("Listening: {0}:{1}", ipep.Address, ipep.Port);
+            }
         }
     }
 }

@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                Mobile.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -129,7 +109,9 @@ namespace Server
                     m_Owner = value;
 
                     if (m_Owner != value)
+                    {
                         m_Owner.AddSkillMod(this);
+                    }
                 }
             }
         }
@@ -270,7 +252,9 @@ namespace Server
         public bool HasElapsed()
         {
             if (m_Duration == TimeSpan.Zero)
+            {
                 return false;
+            }
 
             return DateTime.UtcNow - m_Added >= m_Duration;
         }
@@ -732,7 +716,9 @@ namespace Server
             set
             {
                 if (Skills != null)
+                {
                     Skills.Cap = value;
+                }
             }
         }
 
@@ -785,11 +771,15 @@ namespace Server
                         UpdateTotal(m_Holding, TotalType.Weight, -(m_Holding.TotalWeight + m_Holding.PileWeight));
 
                         if (m_Holding.HeldBy == this)
+                        {
                             m_Holding.HeldBy = null;
+                        }
                     }
 
                     if (value != null && m_Holding != null)
+                    {
                         DropHolding();
+                    }
 
                     m_Holding = value;
 
@@ -940,7 +930,9 @@ namespace Server
             set
             {
                 if (Deleted)
+                {
                     return;
+                }
 
                 if (m_Combatant != value && value != this)
                 {
@@ -1053,17 +1045,23 @@ namespace Server
                 var newTarget = value;
 
                 if (oldTarget == newTarget)
+                {
                     return;
+                }
 
                 m_Target = null;
 
                 if (oldTarget != null && newTarget != null)
+                {
                     oldTarget.Cancel(this, TargetCancelType.Overridden);
+                }
 
                 m_Target = newTarget;
 
                 if (newTarget != null && m_NetState != null && !TargetLocked)
+                {
                     m_NetState.Send(newTarget.GetPacketFor(m_NetState));
+                }
 
                 OnTargetChange();
             }
@@ -1080,9 +1078,13 @@ namespace Server
                 {
                     // Old packet is preferred until assistants catch up
                     if (m_NetState.NewHaven && m_ContextMenu.RequiresNewPacket)
+                    {
                         Send(new DisplayContextMenu(m_ContextMenu));
+                    }
                     else
+                    {
                         Send(new DisplayContextMenuOld(m_ContextMenu));
+                    }
                 }
             }
         }
@@ -1113,7 +1115,9 @@ namespace Server
             set
             {
                 if (m_Spell != null && value != null)
+                {
                     Console.WriteLine("Warning: Spell has been overwritten");
+                }
 
                 m_Spell = value;
             }
@@ -1223,9 +1227,13 @@ namespace Server
                 InvalidateProperties();
 
                 if (!m_Player && m_Dex <= 100 && m_CombatTimer != null)
+                {
                     m_CombatTimer.Priority = TimerPriority.FiftyMS;
+                }
                 else if (m_CombatTimer != null)
+                {
                     m_CombatTimer.Priority = TimerPriority.EveryTick;
+                }
 
                 CheckStatTimers();
             }
@@ -1288,7 +1296,9 @@ namespace Server
                     m_Fame = value;
 
                     if (ShowFameTitle && (m_Player || m_Body.IsHuman) && oldValue >= 10000 != value >= 10000)
+                    {
                         InvalidateProperties();
+                    }
 
                     OnFameChange(oldValue);
                 }
@@ -1350,7 +1360,9 @@ namespace Server
             get
             {
                 if (m_HueMod != -1)
+                {
                     return m_HueMod;
+                }
 
                 return m_Hue;
             }
@@ -1419,7 +1431,9 @@ namespace Server
             set
             {
                 if (Deleted)
+                {
                     return;
+                }
 
                 if (m_Warmode != value)
                 {
@@ -1433,17 +1447,25 @@ namespace Server
                     Delta(MobileDelta.Flags);
 
                     if (m_NetState != null)
+                    {
                         Send(SetWarMode.Instantiate(value));
+                    }
 
                     if (!m_Warmode)
+                    {
                         Combatant = null;
+                    }
 
                     if (!Alive)
                     {
                         if (value)
+                        {
                             Delta(MobileDelta.GhostUpdate);
+                        }
                         else
+                        {
                             SendRemovePacket(false);
+                        }
                     }
 
                     OnWarmodeChanged();
@@ -1491,7 +1513,9 @@ namespace Server
                     var box = FindBankNoCreate();
 
                     if (box?.Opened == true)
+                    {
                         box.Close();
+                    }
 
                     // REMOVED:
                     // m_Actions.Clear();
@@ -1506,9 +1530,13 @@ namespace Server
                         // Disconnected, start the logout timer
 
                         if (m_LogoutTimer == null)
+                        {
                             m_LogoutTimer = new LogoutTimer(this);
+                        }
                         else
+                        {
                             m_LogoutTimer.Stop();
+                        }
 
                         m_LogoutTimer.Delay = GetLogoutDelay();
                         m_LogoutTimer.Start();
@@ -1534,18 +1562,22 @@ namespace Server
                     for (var i = Items.Count - 1; i >= 0; --i)
                     {
                         if (i >= Items.Count)
+                        {
                             continue;
+                        }
 
                         var item = Items[i];
 
                         if (item is SecureTradeContainer)
                         {
                             for (var j = item.Items.Count - 1; j >= 0; --j)
+                            {
                                 if (j < item.Items.Count)
                                 {
                                     item.Items[j].OnSecureTrade(this, this, this, false);
                                     AddToBackpack(item.Items[j]);
                                 }
+                            }
 
                             Timer.DelayCall(item.Delete);
                         }
@@ -1589,7 +1621,9 @@ namespace Server
                     m_GuildTitle = value;
 
                     if (m_Guild?.Disbanded == false && m_GuildTitle != null)
+                    {
                         SendLocalizedMessage(1018026, true, m_GuildTitle); // Your guild title has changed :
+                    }
 
                     InvalidateProperties();
 
@@ -1678,10 +1712,14 @@ namespace Server
                 var d = LastStrGain;
 
                 if (LastIntGain > d)
+                {
                     d = LastIntGain;
+                }
 
                 if (LastDexGain > d)
+                {
                     d = LastDexGain;
+                }
 
                 return d;
             }
@@ -1703,7 +1741,9 @@ namespace Server
                 if (old != value)
                 {
                     if (value == null)
+                    {
                         GuildTitle = null;
+                    }
 
                     m_Guild = value;
 
@@ -1748,7 +1788,9 @@ namespace Server
             get
             {
                 if (IsBodyMod)
+                {
                     return m_BodyMod;
+                }
 
                 return m_Body;
             }
@@ -1790,7 +1832,11 @@ namespace Server
             get => m_SolidHueOverride;
             set
             {
-                if (m_SolidHueOverride == value) return;
+                if (m_SolidHueOverride == value)
+                {
+                    return;
+                }
+
                 m_SolidHueOverride = value;
                 Delta(MobileDelta.Hue | MobileDelta.Body);
             }
@@ -1802,14 +1848,18 @@ namespace Server
             get
             {
                 if (m_Weapon is Item item && !item.Deleted && item.Parent == this && CanSee(item))
+                {
                     return m_Weapon;
+                }
 
                 m_Weapon = null;
 
                 item = FindItemOnLayer(Layer.OneHanded) ?? FindItemOnLayer(Layer.TwoHanded);
 
                 if (item is IWeapon weapon)
+                {
                     return m_Weapon = weapon;
+                }
 
                 return GetDefaultWeapon();
             }
@@ -1821,12 +1871,16 @@ namespace Server
             get
             {
                 if (m_BankBox?.Deleted == false && m_BankBox.Parent == this)
+                {
                     return m_BankBox;
+                }
 
                 m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox;
 
                 if (m_BankBox == null)
+                {
                     AddItem(m_BankBox = new BankBox(this));
+                }
 
                 return m_BankBox;
             }
@@ -1838,7 +1892,9 @@ namespace Server
             get
             {
                 if (m_Backpack?.Deleted != false || m_Backpack.Parent != this)
+                {
                     m_Backpack = FindItemOnLayer(Layer.Backpack) as Container;
+                }
 
                 return m_Backpack;
             }
@@ -1880,7 +1936,9 @@ namespace Server
             set
             {
                 if (m_ShortTermMurders != value)
+                {
                     m_ShortTermMurders = Math.Max(value, 0);
+                }
             }
         }
 
@@ -1900,9 +1958,13 @@ namespace Server
                 if (m_Criminal)
                 {
                     if (m_ExpireCriminal == null)
+                    {
                         m_ExpireCriminal = new ExpireCriminalTimer(this);
+                    }
                     else
+                    {
                         m_ExpireCriminal.Stop();
+                    }
 
                     m_ExpireCriminal.Start();
                 }
@@ -1926,12 +1988,16 @@ namespace Server
                 Item item = null;
 
                 if (m_MountItem?.Deleted == false && m_MountItem.Parent == this)
+                {
                     item = m_MountItem;
+                }
 
                 item ??= FindItemOnLayer(Layer.Mount);
 
                 if (!(item is IMountItem mountItem))
+                {
                     return null;
+                }
 
                 m_MountItem = item;
                 return mountItem.Mount;
@@ -2047,17 +2113,23 @@ namespace Server
                 var newPrompt = value;
 
                 if (oldPrompt == newPrompt)
+                {
                     return;
+                }
 
                 m_Prompt = null;
 
                 if (newPrompt != null)
+                {
                     oldPrompt?.OnCancel(this);
+                }
 
                 m_Prompt = newPrompt;
 
                 if (newPrompt != null)
+                {
                     Send(new UnicodePrompt(newPrompt));
+                }
             }
         }
 
@@ -2119,7 +2191,9 @@ namespace Server
             set
             {
                 if (StatMods.Count == 0)
+                {
                     RawStr = value;
+                }
             }
         }
 
@@ -2176,7 +2250,9 @@ namespace Server
             set
             {
                 if (StatMods.Count == 0)
+                {
                     RawDex = value;
+                }
             }
         }
 
@@ -2233,7 +2309,9 @@ namespace Server
             set
             {
                 if (StatMods.Count == 0)
+                {
                     RawInt = value;
+                }
             }
         }
 
@@ -2250,7 +2328,9 @@ namespace Server
             set
             {
                 if (Deleted)
+                {
                     return;
+                }
 
                 value = Math.Clamp(value, 0, HitsMax);
 
@@ -2259,10 +2339,14 @@ namespace Server
                     m_HitsTimer?.Stop();
 
                     for (var i = 0; i < Aggressors.Count; i++) // reset reports on full HP
+                    {
                         Aggressors[i].CanReportMurder = false;
+                    }
 
                     if (DamageEntries.Count > 0)
+                    {
                         DamageEntries.Clear(); // reset damage entries on full HP
+                    }
                 }
                 else
                 {
@@ -2304,7 +2388,9 @@ namespace Server
             set
             {
                 if (Deleted)
+                {
                     return;
+                }
 
                 value = Math.Clamp(value, 0, StamMax);
 
@@ -2355,7 +2441,9 @@ namespace Server
             set
             {
                 if (Deleted)
+                {
                     return;
+                }
 
                 value = Math.Clamp(value, 0, ManaMax);
 
@@ -2440,11 +2528,17 @@ namespace Server
             set
             {
                 if (m_Hair == null && value > 0)
+                {
                     m_Hair = new HairInfo(value);
+                }
                 else if (value <= 0)
+                {
                     m_Hair = null;
+                }
                 else if (m_Hair != null)
+                {
                     m_Hair.ItemID = value;
+                }
 
                 Delta(MobileDelta.Hair);
             }
@@ -2460,11 +2554,17 @@ namespace Server
             set
             {
                 if (m_FacialHair == null && value > 0)
+                {
                     m_FacialHair = new FacialHairInfo(value);
+                }
                 else if (value <= 0)
+                {
                     m_FacialHair = null;
+                }
                 else if (m_FacialHair != null)
+                {
                     m_FacialHair.ItemID = value;
+                }
 
                 Delta(MobileDelta.FacialHair);
             }
@@ -2552,16 +2652,26 @@ namespace Server
             byte hairflag = 0x00;
 
             if (m_Hair != null)
+            {
                 hairflag |= 0x01;
+            }
+
             if (m_FacialHair != null)
+            {
                 hairflag |= 0x02;
+            }
 
             writer.Write(hairflag);
 
             if ((hairflag & 0x01) != 0)
+            {
                 m_Hair?.Serialize(writer);
+            }
+
             if ((hairflag & 0x02) != 0)
+            {
                 m_FacialHair?.Serialize(writer);
+            }
 
             writer.Write(Race);
 
@@ -2668,10 +2778,14 @@ namespace Server
         public virtual void Delete()
         {
             if (Deleted)
+            {
                 return;
+            }
 
             if (!World.OnDelete(this))
+            {
                 return;
+            }
 
             if (m_NetState != null)
             {
@@ -2691,11 +2805,17 @@ namespace Server
             OnDelete();
 
             for (var i = Items.Count - 1; i >= 0; --i)
+            {
                 if (i < Items.Count)
+                {
                     Items[i].OnParentDeleted(this);
+                }
+            }
 
             for (var i = 0; i < Stabled.Count; i++)
+            {
                 Stabled[i].Delete();
+            }
 
             SendRemovePacket();
 
@@ -2724,7 +2844,9 @@ namespace Server
             set
             {
                 if (Deleted)
+                {
                     return;
+                }
 
                 if (m_Map != value)
                 {
@@ -2741,7 +2863,9 @@ namespace Server
                     }
 
                     for (var i = 0; i < Items.Count; ++i)
+                    {
                         Items[i].Map = value;
+                    }
 
                     m_Map = value;
 
@@ -2755,17 +2879,25 @@ namespace Server
                     {
                         ns.Sequence = 0;
                         if (Map != null)
+                        {
                             ns.Send(new MapChange(Map));
+                        }
 
                         if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
+                        {
                             ns.Send(new MapPatches());
+                        }
 
                         ns.Send(SeasonChange.Instantiate(GetSeason(), true));
 
                         if (ns.StygianAbyss)
+                        {
                             ns.Send(new MobileUpdate(this));
+                        }
                         else
+                        {
                             ns.Send(new MobileUpdateOld(this));
+                        }
 
                         ClearFastwalkStack();
                     }
@@ -2773,7 +2905,9 @@ namespace Server
                     if (ns != null)
                     {
                         if (m_Map != null)
+                        {
                             ns.Send(new ServerChange(m_Location, m_Map));
+                        }
 
                         ns.Sequence = 0;
                         ClearFastwalkStack();
@@ -2833,7 +2967,9 @@ namespace Server
         public virtual void MoveToWorld(Point3D newLocation, Map map)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             if (m_Map == map)
             {
@@ -2844,7 +2980,9 @@ namespace Server
             var box = FindBankNoCreate();
 
             if (box?.Opened == true)
+            {
                 box.Close();
+            }
 
             var oldLocation = m_Location;
             var oldMap = m_Map;
@@ -2860,7 +2998,9 @@ namespace Server
             }
 
             for (var i = 0; i < Items.Count; ++i)
+            {
                 Items[i].Map = map;
+            }
 
             m_Map = map;
 
@@ -2878,17 +3018,25 @@ namespace Server
                 {
                     ns.Sequence = 0;
                     if (Map != null)
+                    {
                         ns.Send(new MapChange(Map));
+                    }
 
                     if (!Core.SE && ns.ProtocolChanges < ProtocolChanges.Version6000)
+                    {
                         ns.Send(new MapPatches());
+                    }
 
                     ns.Send(SeasonChange.Instantiate(GetSeason(), true));
 
                     if (ns.StygianAbyss)
+                    {
                         ns.Send(new MobileUpdate(this));
+                    }
                     else
+                    {
                         ns.Send(new MobileUpdateOld(this));
+                    }
 
                     ClearFastwalkStack();
                 }
@@ -2901,7 +3049,9 @@ namespace Server
             if (ns != null)
             {
                 if (m_Map != null)
+                {
                     Send(new ServerChange(m_Location, m_Map));
+                }
 
                 ns.Sequence = 0;
                 ClearFastwalkStack();
@@ -2979,7 +3129,9 @@ namespace Server
             var delta = m.m_DeltaFlags;
 
             if (delta == MobileDelta.None)
+            {
                 return;
+            }
 
             var attrs = delta & MobileDelta.Attributes;
 
@@ -3013,7 +3165,10 @@ namespace Server
                 }
             }
 
-            if ((delta & MobileDelta.GhostUpdate) != 0) sendNonlocalIncoming = true;
+            if ((delta & MobileDelta.GhostUpdate) != 0)
+            {
+                sendNonlocalIncoming = true;
+            }
 
             if ((delta & MobileDelta.Hue) != 0)
             {
@@ -3045,11 +3200,20 @@ namespace Server
                 sendUpdate = true;
               }
               else*/
-            if ((delta & (MobileDelta.Flags | MobileDelta.Noto)) != 0) sendMoving = true;
+            if ((delta & (MobileDelta.Flags | MobileDelta.Noto)) != 0)
+            {
+                sendMoving = true;
+            }
 
-            if ((delta & MobileDelta.HealthbarPoison) != 0) sendHealthbarPoison = true;
+            if ((delta & MobileDelta.HealthbarPoison) != 0)
+            {
+                sendHealthbarPoison = true;
+            }
 
-            if ((delta & MobileDelta.HealthbarYellow) != 0) sendHealthbarYellow = true;
+            if ((delta & MobileDelta.HealthbarYellow) != 0)
+            {
+                sendHealthbarYellow = true;
+            }
 
             if ((delta & MobileDelta.Name) != 0)
             {
@@ -3062,12 +3226,16 @@ namespace Server
             if ((delta & (MobileDelta.WeaponDamage | MobileDelta.Resistances | MobileDelta.Stat |
                           MobileDelta.Weight | MobileDelta.Gold | MobileDelta.Armor | MobileDelta.StatCap |
                           MobileDelta.Followers | MobileDelta.TithingPoints | MobileDelta.Race)) != 0)
+            {
                 sendPrivateStats = true;
+            }
 
             if ((delta & MobileDelta.Hair) != 0)
             {
                 if (m.HairItemID <= 0)
+                {
                     removeHair = true;
+                }
 
                 sendHair = true;
             }
@@ -3075,7 +3243,9 @@ namespace Server
             if ((delta & MobileDelta.FacialHair) != 0)
             {
                 if (m.FacialHairItemID <= 0)
+                {
                     removeFacialHair = true;
+                }
 
                 sendFacialHair = true;
             }
@@ -3091,15 +3261,21 @@ namespace Server
                     ourState.Sequence = 0;
 
                     if (ourState.StygianAbyss)
+                    {
                         ourState.Send(new MobileUpdate(m));
+                    }
                     else
+                    {
                         ourState.Send(new MobileUpdateOld(m));
+                    }
 
                     ClearFastwalkStack();
                 }
 
                 if (sendIncoming)
+                {
                     ourState.Send(MobileIncoming.Create(ourState, m, m));
+                }
 
                 if (ourState.StygianAbyss)
                 {
@@ -3110,10 +3286,14 @@ namespace Server
                     }
 
                     if (sendHealthbarPoison)
+                    {
                         ourState.Send(new HealthbarPoison(m));
+                    }
 
                     if (sendHealthbarYellow)
+                    {
                         ourState.Send(new HealthbarYellow(m));
+                    }
                 }
                 else
                 {
@@ -3135,43 +3315,65 @@ namespace Server
                 else if (sendAny)
                 {
                     if (sendHits)
+                    {
                         ourState.Send(new MobileHits(m));
+                    }
 
                     if (sendStam)
+                    {
                         ourState.Send(new MobileStam(m));
+                    }
 
                     if (sendMana)
+                    {
                         ourState.Send(new MobileMana(m));
+                    }
                 }
 
                 if (sendStam || sendMana)
+                {
                     if (Party is IParty ip)
                     {
                         if (sendStam)
+                        {
                             ip.OnStamChanged(this);
+                        }
 
                         if (sendMana)
+                        {
                             ip.OnManaChanged(this);
+                        }
                     }
+                }
 
                 if (sendHair)
                 {
                     if (removeHair)
+                    {
                         ourState.Send(new RemoveHair(m));
+                    }
                     else
+                    {
                         ourState.Send(new HairEquipUpdate(m));
+                    }
                 }
 
                 if (sendFacialHair)
                 {
                     if (removeFacialHair)
+                    {
                         ourState.Send(new RemoveFacialHair(m));
+                    }
                     else
+                    {
                         ourState.Send(new FacialHairEquipUpdate(m));
+                    }
                 }
 
                 if (sendOPLUpdate)
+                {
                     ourState.Send(OPLPacket);
+                }
             }
 
             sendMoving = sendMoving || sendNonlocalMoving;
@@ -3202,7 +3404,9 @@ namespace Server
                     if (beholder != m && beholder.CanSee(m))
                     {
                         if (sendRemove)
+                        {
                             state.Send(RemovePacket);
+                        }
 
                         if (sendIncoming)
                         {
@@ -3225,7 +3429,9 @@ namespace Server
                                 var p = cache[0][noto];
 
                                 if (p == null)
+                                {
                                     cache[0][noto] = p = Packet.Acquire(new MobileMoving(m, noto));
+                                }
 
                                 state.Send(p);
                             }
@@ -3253,7 +3459,9 @@ namespace Server
                                 var p = cache[1][noto];
 
                                 if (p == null)
+                                {
                                     cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(m, noto));
+                                }
 
                                 state.Send(p);
                             }
@@ -3300,7 +3508,9 @@ namespace Server
                         }
 
                         if (sendOPLUpdate)
+                        {
                             state.Send(OPLPacket);
+                        }
                     }
                 }
 
@@ -3317,9 +3527,15 @@ namespace Server
             }
 
             if (sendMoving || sendNonlocalMoving || sendHealthbarPoison || sendHealthbarYellow)
+            {
                 for (var i = 0; i < cache.Length; ++i)
+                {
                     for (var j = 0; j < cache[i].Length; ++j)
+                    {
                         Packet.Release(ref cache[i][j]);
+                    }
+                }
+            }
         }
 
         public ISpawner Spawner { get; set; }
@@ -3355,7 +3571,9 @@ namespace Server
         public void ReleaseOPLPacket()
         {
             if (m_PropertyList == null)
+            {
                 return;
+            }
 
             Packet.Release(m_PropertyList);
             m_PropertyList = null;
@@ -3389,14 +3607,18 @@ namespace Server
             var delta = false;
 
             for (var i = 0; i < Resistances.Length; ++i)
+            {
                 if (Resistances[i] != int.MinValue)
                 {
                     Resistances[i] = int.MinValue;
                     delta = true;
                 }
+            }
 
             if (delta)
+            {
                 Delta(MobileDelta.Resistances);
+            }
         }
 
         public virtual int GetResistance(ResistanceType type)
@@ -3406,7 +3628,9 @@ namespace Server
             var v = (int)type;
 
             if (v < 0 || v >= Resistances.Length)
+            {
                 return 0;
+            }
 
             var res = Resistances[v];
 
@@ -3434,7 +3658,9 @@ namespace Server
                 ResistanceMods.Remove(toRemove);
 
                 if (ResistanceMods.Count == 0)
+                {
                     ResistanceMods = null;
+                }
             }
 
             UpdateResistances();
@@ -3445,7 +3671,9 @@ namespace Server
             Resistances ??= new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
 
             for (var i = 0; i < Resistances.Length; ++i)
+            {
                 Resistances[i] = 0;
+            }
 
             Resistances[0] += BasePhysicalResistance;
             Resistances[1] += BaseFireResistance;
@@ -3459,7 +3687,9 @@ namespace Server
                 var v = (int)mod.Type;
 
                 if (v >= 0 && v < Resistances.Length)
+                {
                     Resistances[v] += mod.Offset;
+                }
             }
 
             for (var i = 0; i < Items.Count; ++i)
@@ -3467,7 +3697,9 @@ namespace Server
                 var item = Items[i];
 
                 if (item.CheckPropertyConflict(this))
+                {
                     continue;
+                }
 
                 Resistances[0] += item.PhysicalResistance;
                 Resistances[1] += item.FireResistance;
@@ -3482,12 +3714,18 @@ namespace Server
                 var max = GetMaxResistance((ResistanceType)i);
 
                 if (max < min)
+                {
                     max = min;
+                }
 
                 if (Resistances[i] > max)
+                {
                     Resistances[i] = max;
+                }
                 else if (Resistances[i] < min)
+                {
                     Resistances[i] = min;
+                }
             }
         }
 
@@ -3511,11 +3749,17 @@ namespace Server
                 int hue;
 
                 if (NameHue != -1)
+                {
                     hue = NameHue;
+                }
                 else if (m_AccessLevel > AccessLevel.Player)
+                {
                     hue = 11;
+                }
                 else
-                    hue = Notoriety.GetHue(Notoriety.Compute(from, this));
+                {
+                    hue = Notoriety.GetHue(Notoriety.Compute(@from, this));
+                }
 
                 from.Send(new MessageLocalized(Serial, Body, MessageType.Label, hue, 3, opl.Header, Name, opl.HeaderArgs));
             }
@@ -3530,21 +3774,29 @@ namespace Server
             string prefix;
 
             if (ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000)
+            {
                 prefix = m_Female ? "Lady" : "Lord";
+            }
             else
+            {
                 prefix = "";
+            }
 
             var suffix = "";
 
             if (PropertyTitle && !string.IsNullOrEmpty(Title))
+            {
                 suffix = Title;
+            }
 
             var guild = m_Guild;
 
             if (guild != null && (m_Player || m_DisplayGuildTitle))
+            {
                 suffix = suffix.Length > 0
                     ? $"{suffix} [{Utility.FixHtml(guild.Abbreviation)}]"
                     : $"[{Utility.FixHtml(guild.Abbreviation)}]";
+            }
 
             suffix = ApplyNameSuffix(suffix);
 
@@ -3559,9 +3811,13 @@ namespace Server
                 if (title.Length > 0)
                 {
                     if (NewGuildDisplay)
+                    {
                         list.Add("{0}, {1}", Utility.FixHtml(title), Utility.FixHtml(guild.Name));
+                    }
                     else
+                    {
                         list.Add("{0}, {1} Guild{2}", Utility.FixHtml(title), Utility.FixHtml(guild.Name), type);
+                    }
                 }
                 else
                 {
@@ -3603,7 +3859,9 @@ namespace Server
             for (var i = Aggressors.Count - 1; i >= 0; --i)
             {
                 if (i >= Aggressors.Count)
+                {
                     continue;
+                }
 
                 var info = Aggressors[i];
 
@@ -3616,14 +3874,18 @@ namespace Server
                     info.Free();
 
                     if (m_NetState != null && CanSee(attacker) && Utility.InUpdateRange(m_Location, attacker.m_Location))
+                    {
                         m_NetState.Send(MobileIncoming.Create(m_NetState, this, attacker));
+                    }
                 }
             }
 
             for (var i = Aggressed.Count - 1; i >= 0; --i)
             {
                 if (i >= Aggressed.Count)
+                {
                     continue;
+                }
 
                 var info = Aggressed[i];
 
@@ -3636,7 +3898,9 @@ namespace Server
                     info.Free();
 
                     if (m_NetState != null && CanSee(defender) && Utility.InUpdateRange(m_Location, defender.m_Location))
+                    {
                         m_NetState.Send(MobileIncoming.Create(m_NetState, this, defender));
+                    }
                 }
             }
 
@@ -3669,16 +3933,22 @@ namespace Server
                 var mod = SkillMods[i];
 
                 if (mod.CheckCondition())
+                {
                     ++i;
+                }
                 else
+                {
                     InternalRemoveSkillMod(mod);
+                }
             }
         }
 
         public virtual void AddSkillMod(SkillMod mod)
         {
             if (mod == null)
+            {
                 return;
+            }
 
             ValidateSkillMods();
 
@@ -3695,7 +3965,9 @@ namespace Server
         public virtual void RemoveSkillMod(SkillMod mod)
         {
             if (mod == null)
+            {
                 return;
+            }
 
             ValidateSkillMods();
 
@@ -3731,7 +4003,9 @@ namespace Server
             }
 
             if (m_Warmode == value)
+            {
                 return;
+            }
 
             DateTime now = DateTime.UtcNow, next = m_NextWarmodeChange;
 
@@ -3798,7 +4072,10 @@ namespace Server
             {
                 _actions.Remove(toLock);
 
-                if (_actions.Count == 0) _actions = null;
+                if (_actions.Count == 0)
+                {
+                    _actions = null;
+                }
             }
         }
 
@@ -3831,7 +4108,9 @@ namespace Server
         public virtual void SendSkillMessage()
         {
             if (NextActionMessage - Core.TickCount >= 0)
+            {
                 return;
+            }
 
             NextActionMessage = Core.TickCount + ActionMessageDelay;
 
@@ -3841,7 +4120,9 @@ namespace Server
         public virtual void SendActionMessage()
         {
             if (NextActionMessage - Core.TickCount >= 0)
+            {
                 return;
+            }
 
             NextActionMessage = Core.TickCount + ActionMessageDelay;
 
@@ -3861,16 +4142,22 @@ namespace Server
                 var pack = Backpack;
 
                 if (pack == null)
+                {
                     AddToBackpack(item);
+                }
                 else
+                {
                     pack.DropItem(item);
+                }
             }
         }
 
         public virtual void Attack(Mobile m)
         {
             if (CheckAttack(m))
+            {
                 Combatant = m;
+            }
         }
 
         public virtual bool CheckAttack(Mobile m) => Utility.InUpdateRange(this, m) && CanSee(m) && InLOS(m);
@@ -3912,7 +4199,9 @@ namespace Server
         public virtual void AggressiveAction(Mobile aggressor, bool criminal)
         {
             if (aggressor == this)
+            {
                 return;
+            }
 
             var args = AggressiveActionEventArgs.Create(this, aggressor, criminal);
 
@@ -3923,9 +4212,13 @@ namespace Server
             if (Combatant == aggressor)
             {
                 if (m_ExpireCombatant == null)
+                {
                     m_ExpireCombatant = new ExpireCombatantTimer(this);
+                }
                 else
+                {
                     m_ExpireCombatant.Stop();
+                }
 
                 m_ExpireCombatant.Start();
             }
@@ -4006,10 +4299,15 @@ namespace Server
                     )
                 ); // new AggressorInfo( aggressor, this, criminal, true ) );
 
-                if (CanSee(aggressor)) m_NetState?.Send(MobileIncoming.Create(m_NetState, this, aggressor));
+                if (CanSee(aggressor))
+                {
+                    m_NetState?.Send(MobileIncoming.Create(m_NetState, this, aggressor));
+                }
 
                 if (Combatant == null)
+                {
                     setCombatant = true;
+                }
 
                 UpdateAggrExpire();
             }
@@ -4024,16 +4322,23 @@ namespace Server
                     )
                 ); // new AggressorInfo( aggressor, this, criminal, false ) );
 
-                if (CanSee(aggressor)) m_NetState?.Send(MobileIncoming.Create(m_NetState, this, aggressor));
+                if (CanSee(aggressor))
+                {
+                    m_NetState?.Send(MobileIncoming.Create(m_NetState, this, aggressor));
+                }
 
                 if (Combatant == null)
+                {
                     setCombatant = true;
+                }
 
                 UpdateAggrExpire();
             }
 
             if (setCombatant)
+            {
                 Combatant = aggressor;
+            }
 
             Region.OnAggressed(aggressor, this, criminal);
         }
@@ -4041,7 +4346,9 @@ namespace Server
         public void RemoveAggressed(Mobile aggressed)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             var list = Aggressed;
 
@@ -4055,7 +4362,9 @@ namespace Server
                     info.Free();
 
                     if (m_NetState != null && CanSee(aggressed))
+                    {
                         m_NetState.Send(MobileIncoming.Create(m_NetState, this, aggressed));
+                    }
 
                     break;
                 }
@@ -4067,7 +4376,9 @@ namespace Server
         public void RemoveAggressor(Mobile aggressor)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             var list = Aggressors;
 
@@ -4081,7 +4392,9 @@ namespace Server
                     info.Free();
 
                     if (m_NetState != null && CanSee(aggressor))
+                    {
                         m_NetState.Send(MobileIncoming.Create(m_NetState, this, aggressor));
+                    }
 
                     break;
                 }
@@ -4102,7 +4415,9 @@ namespace Server
         public virtual void UpdateTotal(Item sender, TotalType type, int delta)
         {
             if (delta == 0 || sender.IsVirtualItem)
+            {
                 return;
+            }
 
             switch (type)
             {
@@ -4126,7 +4441,9 @@ namespace Server
         public virtual void UpdateTotals()
         {
             if (Items == null)
+            {
                 return;
+            }
 
             var oldWeight = m_TotalWeight;
 
@@ -4141,7 +4458,9 @@ namespace Server
                 item.UpdateTotals();
 
                 if (item.IsVirtualItem)
+                {
                     continue;
+                }
 
                 m_TotalGold += item.TotalGold;
                 m_TotalItems += item.TotalItems + 1;
@@ -4149,10 +4468,14 @@ namespace Server
             }
 
             if (m_Holding != null)
+            {
                 m_TotalWeight += m_Holding.TotalWeight + m_Holding.PileWeight;
+            }
 
             if (m_TotalWeight != oldWeight)
+            {
                 OnWeightChange(oldWeight);
+            }
         }
 
         public void ClearQuestArrow() => m_QuestArrow = null;
@@ -4180,7 +4503,9 @@ namespace Server
         private bool InternalOnMove(Direction d)
         {
             if (!OnMove(d))
+            {
                 return false;
+            }
 
             var e = MovementEventArgs.Create(this, d);
 
@@ -4200,8 +4525,12 @@ namespace Server
         protected virtual bool OnMove(Direction d)
         {
             if (m_Hidden && m_AccessLevel == AccessLevel.Player)
+            {
                 if (AllowedStealthSteps-- <= 0 || (d & Direction.Running) != 0 || Mounted)
+                {
                     RevealingAction();
+                }
+            }
 
             return true;
         }
@@ -4209,7 +4538,9 @@ namespace Server
         public virtual void ClearFastwalkStack()
         {
             if (m_MoveRecords != null && m_MoveRecords.Count > 0)
+            {
                 m_MoveRecords.Clear();
+            }
 
             m_EndQueue = Core.TickCount;
         }
@@ -4219,12 +4550,16 @@ namespace Server
         public virtual bool Move(Direction d)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             var box = FindBankNoCreate();
 
             if (box?.Opened == true)
+            {
                 box.Close();
+            }
 
             var newLocation = m_Location;
             var oldLocation = newLocation;
@@ -4234,7 +4569,9 @@ namespace Server
                 // We are actually moving (not just a direction change)
 
                 if (m_Spell?.OnCasterMoving(d) == false)
+                {
                     return false;
+                }
 
                 if (m_Paralyzed || m_Frozen)
                 {
@@ -4302,7 +4639,9 @@ namespace Server
 
                                 if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z &&
                                     !m.OnMoveOff(this))
+                                {
                                     return false;
+                                }
                             }
 
                             for (var i = 0; i < oldSector.Items.Count; ++i)
@@ -4312,7 +4651,9 @@ namespace Server
                                 if (item.AtWorldPoint(oldX, oldY) &&
                                     (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
                                     !item.OnMoveOff(this))
+                                {
                                     return false;
+                                }
                             }
 
                             for (var i = 0; i < newSector.Mobiles.Count; ++i)
@@ -4320,7 +4661,9 @@ namespace Server
                                 var m = newSector.Mobiles[i];
 
                                 if (m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z && !m.OnMoveOver(this))
+                                {
                                     return false;
+                                }
                             }
 
                             for (var i = 0; i < newSector.Items.Count; ++i)
@@ -4330,7 +4673,9 @@ namespace Server
                                 if (item.AtWorldPoint(x, y) &&
                                     (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
                                     !item.OnMoveOver(this))
+                                {
                                     return false;
+                                }
                             }
                         }
                         else
@@ -4341,9 +4686,14 @@ namespace Server
 
                                 if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z &&
                                     !m.OnMoveOff(this))
+                                {
                                     return false;
+                                }
+
                                 if (m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z && !m.OnMoveOver(this))
+                                {
                                     return false;
+                                }
                             }
 
                             for (var i = 0; i < oldSector.Items.Count; ++i)
@@ -4353,16 +4703,23 @@ namespace Server
                                 if (item.AtWorldPoint(oldX, oldY) &&
                                     (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
                                     !item.OnMoveOff(this))
+                                {
                                     return false;
+                                }
+
                                 if (item.AtWorldPoint(x, y) &&
                                     (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
                                     !item.OnMoveOver(this))
+                                {
                                     return false;
+                                }
                             }
                         }
 
                         if (!Region.CanMove(this, d, newLocation, oldLocation, m_Map))
+                        {
                             return false;
+                        }
                     }
                     else
                     {
@@ -4370,7 +4727,9 @@ namespace Server
                     }
 
                     if (!InternalOnMove(d))
+                    {
                         return false;
+                    }
 
                     if (FwdEnabled && m_NetState != null && m_AccessLevel < FwdAccessOverride &&
                         (!FwdUOTDOverride || !m_NetState.IsUOTDClient))
@@ -4382,9 +4741,13 @@ namespace Server
                             var r = m_MoveRecords.Peek();
 
                             if (r.Expired())
+                            {
                                 m_MoveRecords.Dequeue();
+                            }
                             else
+                            {
                                 break;
+                            }
                         }
 
                         if (m_MoveRecords.Count >= FwdMaxSteps)
@@ -4393,7 +4756,9 @@ namespace Server
                             EventSink.InvokeFastWalk(fw);
 
                             if (fw.Blocked)
+                            {
                                 return false;
+                            }
                         }
 
                         var delay = ComputeMovementSpeed(d);
@@ -4401,9 +4766,13 @@ namespace Server
                         long end;
 
                         if (m_MoveRecords.Count > 0)
+                        {
                             end = m_EndQueue + delay;
+                        }
                         else
+                        {
                             end = Core.TickCount + delay;
+                        }
 
                         m_MoveRecords.Enqueue(MovementRecord.NewInstance(end));
 
@@ -4437,12 +4806,17 @@ namespace Server
                 foreach (var o in eable)
                 {
                     if (o == this)
+                    {
                         continue;
+                    }
 
                     if (o is Mobile mob)
                     {
                         if (mob.NetState != null)
+                        {
                             m_MoveClientList.Add(mob);
+                        }
+
                         m_MoveList.Add(mob);
                     }
                     else if (o is Item item && item.HandlesOnMovement)
@@ -4471,7 +4845,9 @@ namespace Server
                             var p = cache[0][noto];
 
                             if (p == null)
+                            {
                                 cache[0][noto] = p = Packet.Acquire(new MobileMoving(this, noto));
+                            }
 
                             ns.Send(p);
                         }
@@ -4481,7 +4857,9 @@ namespace Server
                             var p = cache[1][noto];
 
                             if (p == null)
+                            {
                                 cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(this, noto));
+                            }
 
                             ns.Send(p);
                         }
@@ -4489,23 +4867,36 @@ namespace Server
                 }
 
                 for (var i = 0; i < cache.Length; ++i)
+                {
                     for (var j = 0; j < cache[i].Length; ++j)
+                    {
                         Packet.Release(ref cache[i][j]);
+                    }
+                }
 
                 for (var i = 0; i < m_MoveList.Count; ++i)
                 {
                     var o = m_MoveList[i];
 
                     if (o is Mobile mobile)
+                    {
                         mobile.OnMovement(this, oldLocation);
-                    else if (o is Item item) item.OnMovement(this, oldLocation);
+                    }
+                    else if (o is Item item)
+                    {
+                        item.OnMovement(this, oldLocation);
+                    }
                 }
 
                 if (m_MoveList.Count > 0)
+                {
                     m_MoveList.Clear();
+                }
 
                 if (m_MoveClientList.Count > 0)
+                {
                     m_MoveClientList.Clear();
+                }
             }
 
             OnAfterMove(oldLocation);
@@ -4525,9 +4916,13 @@ namespace Server
             int delay;
 
             if (Mounted)
+            {
                 delay = (dir & Direction.Running) != 0 ? RunMount : WalkMount;
+            }
             else
+            {
                 delay = (dir & Direction.Running) != 0 ? RunFoot : WalkFoot;
+            }
 
             return delay;
         }
@@ -4549,9 +4944,14 @@ namespace Server
             if ((m_Map.Rules & MapRules.FreeMovement) == 0)
             {
                 if (!shoved.Alive || !Alive || shoved.IsDeadBondedPet || IsDeadBondedPet)
+                {
                     return true;
+                }
+
                 if (shoved.m_Hidden && shoved.m_AccessLevel > AccessLevel.Player)
+                {
                     return true;
+                }
 
                 if (!Pushing)
                 {
@@ -4595,7 +4995,9 @@ namespace Server
         public virtual void CriminalAction(bool message)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             Criminal = true;
 
@@ -4631,17 +5033,23 @@ namespace Server
             if (!Alive)
             {
                 if (!Region.OnResurrect(this))
+                {
                     return;
+                }
 
                 if (!CheckResurrect())
+                {
                     return;
+                }
 
                 OnBeforeResurrect();
 
                 var box = FindBankNoCreate();
 
                 if (box?.Opened == true)
+                {
                     box.Close();
+                }
 
                 Poison = null;
 
@@ -4659,12 +5067,16 @@ namespace Server
                 for (var i = Items.Count - 1; i >= 0; --i)
                 {
                     if (i >= Items.Count)
+                    {
                         continue;
+                    }
 
                     var item = Items[i];
 
                     if (item.ItemID == 0x204E)
+                    {
                         item.Delete();
+                    }
                 }
 
                 SendIncomingPacket();
@@ -4683,7 +5095,9 @@ namespace Server
             if (holding != null)
             {
                 if (!holding.Deleted && holding.HeldBy == this && holding.Map == Map.Internal)
+                {
                     AddToBackpack(holding);
+                }
 
                 Holding = null;
                 holding.ClearBounce();
@@ -4760,20 +5174,36 @@ namespace Server
         public virtual void Kill()
         {
             if (!CanBeDamaged())
+            {
                 return;
+            }
+
             if (!Alive || IsDeadBondedPet)
+            {
                 return;
+            }
+
             if (Deleted)
+            {
                 return;
+            }
+
             if (!Region.OnBeforeDeath(this))
+            {
                 return;
+            }
+
             if (!OnBeforeDeath())
+            {
                 return;
+            }
 
             var box = FindBankNoCreate();
 
             if (box?.Opened == true)
+            {
                 box.Close();
+            }
 
             m_NetState?.CancelAllTrades();
 
@@ -4822,7 +5252,9 @@ namespace Server
                 var item = itemsCopy[i];
 
                 if (item == pack)
+                {
                     continue;
+                }
 
                 var res = GetParentMoveResultFor(item);
 
@@ -4853,9 +5285,13 @@ namespace Server
                     var res = GetInventoryMoveResultFor(item);
 
                     if (res == DeathMoveResult.MoveToCorpse)
+                    {
                         content.Add(item);
+                    }
                     else
+                    {
                         moveToPack.Add(item);
+                    }
                 }
 
                 for (var i = 0; i < moveToPack.Count; ++i)
@@ -4863,7 +5299,9 @@ namespace Server
                     var item = moveToPack[i];
 
                     if (RetainPackLocsOnDeath && item.Parent == pack)
+                    {
                         continue;
+                    }
 
                     pack.DropItem(item);
                 }
@@ -4871,11 +5309,15 @@ namespace Server
 
             HairInfo hair = null;
             if (m_Hair != null)
+            {
                 hair = new HairInfo(m_Hair.ItemID, m_Hair.Hue);
+            }
 
             FacialHairInfo facialhair = null;
             if (m_FacialHair != null)
+            {
                 facialhair = new FacialHairInfo(m_FacialHair.ItemID, m_FacialHair.Hue);
+            }
 
             var c = CreateCorpseHandler?.Invoke(this, hair, facialhair, content, equip);
 
@@ -4895,14 +5337,19 @@ namespace Server
                 var corpseSerial = c?.Serial ?? Serial.Zero;
 
                 foreach (var state in eable)
+                {
                     if (state != m_NetState)
                     {
                         animPacket ??= Packet.Acquire(new DeathAnimation(Serial, corpseSerial));
 
                         state.Send(animPacket);
 
-                        if (!state.Mobile.CanSee(this)) state.Send(RemovePacket);
+                        if (!state.Mobile.CanSee(this))
+                        {
+                            state.Send(RemovePacket);
+                        }
                     }
+                }
 
                 Packet.Release(animPacket);
 
@@ -4932,7 +5379,9 @@ namespace Server
             var sound = GetDeathSound();
 
             if (sound >= 0)
+            {
                 Effects.PlaySound(this, Map, sound);
+            }
 
             if (!m_Player)
             {
@@ -4977,12 +5426,16 @@ namespace Server
         public virtual void Use(Item item)
         {
             if (item?.Deleted != false || item.QuestItem || Deleted)
+            {
                 return;
+            }
 
             DisruptiveAction();
 
             if (m_Spell?.OnCasterUsingObject(item) == false)
+            {
                 return;
+            }
 
             var root = item.RootParent;
             var okay = false;
@@ -5000,7 +5453,9 @@ namespace Server
                 var reg = Region.Find(item.GetWorldLocation(), item.Map);
 
                 if (reg?.SendInaccessibleMessage(item, this) != true)
+                {
                     item.OnDoubleClickNotAccessible(this);
+                }
             }
             else if (!CheckAlive(false))
             {
@@ -5029,32 +5484,48 @@ namespace Server
             {
                 // TODO: Is this correct?
                 if (!item.Deleted)
+                {
                     item.OnItemUsed(this, item);
+                }
 
                 // TODO: Is this correct?
                 if (!item.Deleted)
+                {
                     item.OnDoubleClick(this);
+                }
             }
         }
 
         public virtual void Use(Mobile m)
         {
             if (m?.Deleted != false || Deleted)
+            {
                 return;
+            }
 
             DisruptiveAction();
 
             if (m_Spell?.OnCasterUsingObject(m) == false)
+            {
                 return;
+            }
 
             if (!Utility.InUpdateRange(this, m))
+            {
                 m.OnDoubleClickOutOfRange(this);
+            }
             else if (!CanSee(m))
+            {
                 m.OnDoubleClickCantSee(this);
+            }
             else if (!CheckAlive(false))
+            {
                 m.OnDoubleClickDead(this);
+            }
             else if (Region.OnDoubleClick(this, m) && !m.Deleted)
+            {
                 m.OnDoubleClick(this);
+            }
         }
 
         public virtual void Lift(Item item, int amount, out bool rejected, out LRReason reject)
@@ -5063,7 +5534,9 @@ namespace Server
             reject = LRReason.Inspecific;
 
             if (item == null)
+            {
                 return;
+            }
 
             var from = this;
             var state = m_NetState;
@@ -5097,7 +5570,9 @@ namespace Server
                     else if (item.Nontransferable && amount != item.Amount)
                     {
                         if (item.QuestItem)
-                            from.SendLocalizedMessage(1074868); // Stacks of quest items cannot be unstacked.
+                        {
+                            @from.SendLocalizedMessage(1074868); // Stacks of quest items cannot be unstacked.
+                        }
 
                         reject = LRReason.CannotLift;
                     }
@@ -5131,16 +5606,22 @@ namespace Server
                             }
 
                             if (amount == 0)
+                            {
                                 amount = 1;
+                            }
 
                             if (amount > item.Amount)
+                            {
                                 amount = item.Amount;
+                            }
 
                             var oldAmount = item.Amount;
                             // item.Amount = amount; //Set in LiftItemDupe
 
                             if (amount < oldAmount)
+                            {
                                 LiftItemDupe(item, amount);
+                            }
                             // item.Dupe( oldAmount - amount );
 
                             var map = from.Map;
@@ -5152,7 +5633,8 @@ namespace Server
                                 var rootItem = root as Item;
 
                                 foreach (var ns in eable)
-                                    if (ns.Mobile != from && ns.Mobile.CanSee(from) && ns.Mobile.InLOS(from) &&
+                                {
+                                    if (ns.Mobile != @from && ns.Mobile.CanSee(@from) && ns.Mobile.InLOS(@from) &&
                                         ns.Mobile.CanSee(root))
                                     {
                                         if (p == null)
@@ -5163,11 +5645,12 @@ namespace Server
                                                 map
                                             );
 
-                                            p = Packet.Acquire(new DragEffect(src, from, item.ItemID, item.Hue, amount));
+                                            p = Packet.Acquire(new DragEffect(src, @from, item.ItemID, item.Hue, amount));
                                         }
 
                                         ns.Send(p);
                                     }
+                                }
 
                                 Packet.Release(p);
 
@@ -5187,12 +5670,16 @@ namespace Server
                             var liftSound = item.GetLiftSound(from);
 
                             if (liftSound != -1)
-                                from.Send(new PlaySound(liftSound, from));
+                            {
+                                @from.Send(new PlaySound(liftSound, @from));
+                            }
 
                             from.NextActionTime = Core.TickCount + ActionDelay;
 
                             if (fixMap != null && shouldFix)
+                            {
                                 fixMap.FixColumn(fixLoc.m_X, fixLoc.m_Y);
+                            }
 
                             reject = LRReason.Inspecific;
                             rejected = false;
@@ -5215,14 +5702,20 @@ namespace Server
                 state.Send(new LiftRej(reject));
 
                 if (item.Deleted)
+                {
                     return;
+                }
 
                 if (item.Parent is Item)
                 {
                     if (state.ContainerGridLines)
+                    {
                         state.Send(new ContainerContentUpdate6017(item));
+                    }
                     else
+                    {
                         state.Send(new ContainerContentUpdate(item));
+                    }
                 }
                 else if (item.Parent is Mobile)
                 {
@@ -5234,7 +5727,9 @@ namespace Server
                 }
 
                 if (ObjectPropertyList.Enabled && item.Parent != null)
+                {
                     state.Send(item.OPLPacket);
+                }
             }
         }
 
@@ -5273,8 +5768,13 @@ namespace Server
             oldItem.OnAfterDuped(item);
 
             if (oldItem.Parent is Mobile parentMobile)
+            {
                 parentMobile.AddItem(item);
-            else if (oldItem.Parent is Item parentItem) parentItem.AddItem(item);
+            }
+            else if (oldItem.Parent is Item parentItem)
+            {
+                parentItem.AddItem(item);
+            }
 
             item.Delta(ItemDelta.Update);
 
@@ -5297,7 +5797,9 @@ namespace Server
                     foreach (var ns in eable)
                     {
                         if (ns.StygianAbyss)
+                        {
                             continue;
+                        }
 
                         if (ns.Mobile != this && ns.Mobile.CanSee(this) && ns.Mobile.InLOS(this) && ns.Mobile.CanSee(root))
                         {
@@ -5332,21 +5834,30 @@ namespace Server
 
             from.Holding = null;
 
-            if (!valid) return false;
+            if (!valid)
+            {
+                return false;
+            }
 
             var bounced = true;
 
             item.SetLastMoved();
 
             if (to == null || !item.DropToItem(from, to, loc))
-                item.Bounce(from);
+            {
+                item.Bounce(@from);
+            }
             else
+            {
                 bounced = false;
+            }
 
             item.ClearBounce();
 
             if (!bounced)
+            {
                 SendDropEffect(item);
+            }
 
             return !bounced;
         }
@@ -5360,21 +5871,30 @@ namespace Server
 
             from.Holding = null;
 
-            if (!valid) return false;
+            if (!valid)
+            {
+                return false;
+            }
 
             var bounced = true;
 
             item.SetLastMoved();
 
             if (!item.DropToWorld(from, loc))
-                item.Bounce(from);
+            {
+                item.Bounce(@from);
+            }
             else
+            {
                 bounced = false;
+            }
 
             item.ClearBounce();
 
             if (!bounced)
+            {
                 SendDropEffect(item);
+            }
 
             return !bounced;
         }
@@ -5388,21 +5908,30 @@ namespace Server
 
             from.Holding = null;
 
-            if (!valid) return false;
+            if (!valid)
+            {
+                return false;
+            }
 
             var bounced = true;
 
             item.SetLastMoved();
 
             if (to == null || !item.DropToMobile(from, to, loc))
-                item.Bounce(from);
+            {
+                item.Bounce(@from);
+            }
             else
+            {
                 bounced = false;
+            }
 
             item.ClearBounce();
 
             if (!bounced)
+            {
                 SendDropEffect(item);
+            }
 
             return !bounced;
         }
@@ -5410,12 +5939,16 @@ namespace Server
         public virtual bool MutateSpeech(List<Mobile> hears, ref string text, ref object context)
         {
             if (Alive)
+            {
                 return false;
+            }
 
             var sb = new StringBuilder(text.Length, text.Length);
 
             for (var i = 0; i < text.Length; ++i)
+            {
                 sb.Append(text[i] != ' ' ? GhostChars.RandomElement() : ' ');
+            }
 
             text = sb.ToString();
             context = m_GhostMutateContext;
@@ -5427,9 +5960,13 @@ namespace Server
             Warmode = true;
 
             if (m_AutoManifestTimer == null)
+            {
                 m_AutoManifestTimer = new AutoManifestTimer(this, delay);
+            }
             else
+            {
                 m_AutoManifestTimer.Stop();
+            }
 
             m_AutoManifestTimer.Start();
         }
@@ -5437,7 +5974,9 @@ namespace Server
         public virtual bool CheckSpeechManifest()
         {
             if (Alive)
+            {
                 return false;
+            }
 
             var delay = AutoManifestTimeout;
 
@@ -5460,17 +5999,23 @@ namespace Server
                 var item = cont.Items[i];
 
                 if (item.HandlesOnSpeech)
+                {
                     list.Add(item);
+                }
 
                 if (item is Container container)
+                {
                     AddSpeechItemsFrom(list, container);
+                }
             }
         }
 
         public virtual void DoSpeech(string text, int[] keywords, MessageType type, int hue)
         {
             if (Deleted || CommandSystem.Handle(this, text, type))
+            {
                 return;
+            }
 
             var range = 15;
 
@@ -5518,12 +6063,16 @@ namespace Server
             OnSaid(regArgs);
 
             if (regArgs.Blocked)
+            {
                 return;
+            }
 
             text = regArgs.Speech;
 
             if (string.IsNullOrEmpty(text))
+            {
                 return;
+            }
 
             var hears = m_Hears;
             var onSpeech = m_OnSpeech;
@@ -5533,36 +6082,52 @@ namespace Server
                 var eable = m_Map.GetObjectsInRange(m_Location, range);
 
                 foreach (var o in eable)
+                {
                     if (o is Mobile heard)
                     {
                         if (!heard.CanSee(this) || !NoSpeechLOS && heard.Player && !heard.InLOS(this))
+                        {
                             continue;
+                        }
 
                         if (heard.m_NetState != null)
+                        {
                             hears.Add(heard);
+                        }
 
                         if (heard.HandlesOnSpeech(this))
+                        {
                             onSpeech.Add(heard);
+                        }
 
                         for (var i = 0; i < heard.Items.Count; ++i)
                         {
                             var item = heard.Items[i];
 
                             if (item.HandlesOnSpeech)
+                            {
                                 onSpeech.Add(item);
+                            }
 
                             if (item is Container container)
+                            {
                                 AddSpeechItemsFrom(onSpeech, container);
+                            }
                         }
                     }
                     else if (o is Item item)
                     {
                         if (item.HandlesOnSpeech)
+                        {
                             onSpeech.Add(item);
+                        }
 
                         if (item is Container container)
+                        {
                             AddSpeechItemsFrom(onSpeech, container);
+                        }
                     }
+                }
 
                 eable.Free();
 
@@ -5571,7 +6136,9 @@ namespace Server
                 SpeechEventArgs mutatedArgs = null;
 
                 if (MutateSpeech(hears, ref mutatedText, ref mutateContext))
+                {
                     mutatedArgs = new SpeechEventArgs(this, mutatedText, type, hue, Array.Empty<int>());
+                }
 
                 CheckSpeechManifest();
 
@@ -5620,7 +6187,9 @@ namespace Server
                 Packet.Release(mutp);
 
                 if (onSpeech.Count > 1)
+                {
                     onSpeech.Sort(LocationComparer.GetInstance(this));
+                }
 
                 for (var i = 0; i < onSpeech.Count; ++i)
                 {
@@ -5629,9 +6198,13 @@ namespace Server
                     if (obj is Mobile heard)
                     {
                         if (mutatedArgs == null || !CheckHearsMutatedSpeech(heard, mutateContext))
+                        {
                             heard.OnSpeech(regArgs);
+                        }
                         else
+                        {
                             heard.OnSpeech(mutatedArgs);
+                        }
                     }
                     else
                     {
@@ -5640,10 +6213,14 @@ namespace Server
                 }
 
                 if (m_Hears.Count > 0)
+                {
                     m_Hears.Clear();
+                }
 
                 if (m_OnSpeech.Count > 0)
+                {
                     m_OnSpeech.Clear();
+                }
             }
         }
 
@@ -5656,14 +6233,20 @@ namespace Server
             for (var i = DamageEntries.Count - 1; i >= 0; --i)
             {
                 if (i >= DamageEntries.Count)
+                {
                     continue;
+                }
 
                 var de = DamageEntries[i];
 
                 if (de.HasExpired)
+                {
                     DamageEntries.RemoveAt(i);
+                }
                 else if (allowSelf || de.Damager != this)
+                {
                     return de;
+                }
             }
 
             return null;
@@ -5676,7 +6259,9 @@ namespace Server
             for (var i = 0; i < DamageEntries.Count; ++i)
             {
                 if (i < 0)
+                {
                     continue;
+                }
 
                 var de = DamageEntries[i];
 
@@ -5703,14 +6288,20 @@ namespace Server
             for (var i = DamageEntries.Count - 1; i >= 0; --i)
             {
                 if (i >= DamageEntries.Count)
+                {
                     continue;
+                }
 
                 var de = DamageEntries[i];
 
                 if (de.HasExpired)
+                {
                     DamageEntries.RemoveAt(i);
+                }
                 else if ((allowSelf || de.Damager != this) && (mostTotal == null || de.DamageGiven > mostTotal.DamageGiven))
+                {
                     mostTotal = de;
+                }
             }
 
             return mostTotal;
@@ -5725,14 +6316,20 @@ namespace Server
             for (var i = DamageEntries.Count - 1; i >= 0; --i)
             {
                 if (i >= DamageEntries.Count)
+                {
                     continue;
+                }
 
                 var de = DamageEntries[i];
 
                 if (de.HasExpired)
+                {
                     DamageEntries.RemoveAt(i);
+                }
                 else if ((allowSelf || de.Damager != this) && (mostTotal == null || de.DamageGiven < mostTotal.DamageGiven))
+                {
                     mostTotal = de;
+                }
             }
 
             return mostTotal;
@@ -5743,14 +6340,20 @@ namespace Server
             for (var i = DamageEntries.Count - 1; i >= 0; --i)
             {
                 if (i >= DamageEntries.Count)
+                {
                     continue;
+                }
 
                 var de = DamageEntries[i];
 
                 if (de.HasExpired)
+                {
                     DamageEntries.RemoveAt(i);
+                }
                 else if (de.Damager == m)
+                {
                     return de;
+                }
             }
 
             return null;
@@ -5775,12 +6378,16 @@ namespace Server
                 var list = de.Responsible;
 
                 if (list == null)
+                {
                     de.Responsible = list = new List<DamageEntry>();
+                }
 
                 var resp = list.FirstOrDefault(check => check.Damager == master);
 
                 if (resp == null)
+                {
                     list.Add(resp = new DamageEntry(master));
+                }
 
                 resp.DamageGiven += amount;
                 resp.LastDamage = DateTime.UtcNow;
@@ -5815,10 +6422,14 @@ namespace Server
         public virtual void Damage(int amount, Mobile from, bool informMount)
         {
             if (!CanBeDamaged() || Deleted)
+            {
                 return;
+            }
 
             if (!Region.OnDamage(this, ref amount))
+            {
                 return;
+            }
 
             if (amount > 0)
             {
@@ -5831,7 +6442,9 @@ namespace Server
                 // m_Spell.Disturb( DisturbType.Hurt, false, true );
 
                 if (from != null)
-                    RegisterDamage(amount, from);
+                {
+                    RegisterDamage(amount, @from);
+                }
 
                 DisruptiveAction();
 
@@ -5859,7 +6472,9 @@ namespace Server
                 OnDamage(amount, from, newHits < 0);
 
                 if (informMount)
-                    Mount?.OnRiderDamaged(amount, from, newHits < 0);
+                {
+                    Mount?.OnRiderDamaged(amount, @from, newHits < 0);
+                }
 
                 if (newHits < 0)
                 {
@@ -5868,7 +6483,9 @@ namespace Server
                     Hits = 0;
 
                     if (oldHits >= 0)
+                    {
                         Kill();
+                    }
                 }
                 else
                 {
@@ -5886,7 +6503,9 @@ namespace Server
                 var master = GetDamageMaster(from);
 
                 if (master != null)
+                {
                     ourState = master.m_NetState;
+                }
             }
 
             if (theirState == null && from != null)
@@ -5894,7 +6513,9 @@ namespace Server
                 var master = from.GetDamageMaster(this);
 
                 if (master != null)
+                {
                     theirState = master.m_NetState;
+                }
             }
 
             if (amount > 0 && (ourState != null || theirState != null))
@@ -5935,12 +6556,16 @@ namespace Server
         public void SendVisibleDamageEveryone(int amount)
         {
             if (amount < 0)
+            {
                 return;
+            }
 
             var map = m_Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             var eable = map.GetClientsInRange(m_Location);
 
@@ -5948,6 +6573,7 @@ namespace Server
             Packet pOld = null;
 
             foreach (var ns in eable)
+            {
                 if (ns.Mobile.CanSee(this))
                 {
                     if (ns.DamagePacket)
@@ -5963,6 +6589,7 @@ namespace Server
                         ns.Send(pOld);
                     }
                 }
+            }
 
             Packet.Release(pNew);
             Packet.Release(pOld);
@@ -5989,7 +6616,9 @@ namespace Server
             }
 
             if (!damaged.ShowVisibleDamage)
+            {
                 return;
+            }
 
             if (theirState == null && from != null)
             {
@@ -6007,17 +6636,25 @@ namespace Server
                 if (damaged.CanSeeVisibleDamage && ourState != null)
                 {
                     if (ourState.DamagePacket)
+                    {
                         ourState.Send(new DamagePacket(Serial, amount));
+                    }
                     else
+                    {
                         ourState.Send(new DamagePacketOld(Serial, amount));
+                    }
                 }
 
                 if (theirState != null && theirState != ourState && damager.CanSeeVisibleDamage)
                 {
                     if (theirState.DamagePacket)
+                    {
                         theirState.Send(new DamagePacket(Serial, amount));
+                    }
                     else
+                    {
                         theirState.Send(new DamagePacketOld(Serial, amount));
+                    }
                 }
             }
         }
@@ -6035,18 +6672,26 @@ namespace Server
         public void Heal(int amount, Mobile from, bool message)
         {
             if (!Alive || IsDeadBondedPet)
+            {
                 return;
+            }
 
             if (!Region.OnHeal(this, ref amount))
+            {
                 return;
+            }
 
             OnHeal(ref amount, from);
 
-            if (Hits + amount > HitsMax) amount = HitsMax - Hits;
+            if (Hits + amount > HitsMax)
+            {
+                amount = HitsMax - Hits;
+            }
 
             Hits += amount;
 
             if (message && amount > 0)
+            {
                 m_NetState?.Send(
                     new MessageLocalizedAffix(
                         Serial.MinusOne,
@@ -6061,6 +6706,7 @@ namespace Server
                         ""
                     )
                 );
+            }
         }
 
         public virtual void OnHeal(ref int amount, Mobile from)
@@ -6091,9 +6737,14 @@ namespace Server
                         var hairflag = reader.ReadByte();
 
                         if ((hairflag & 0x01) != 0)
+                        {
                             m_Hair = new HairInfo(reader);
+                        }
+
                         if ((hairflag & 0x02) != 0)
+                        {
                             m_FacialHair = new FacialHairInfo(reader);
+                        }
 
                         goto case 29;
                     }
@@ -6105,7 +6756,9 @@ namespace Server
                 case 28:
                     {
                         if (version <= 30)
+                        {
                             LastStatGain = reader.ReadDeltaTime();
+                        }
 
                         goto case 27;
                     }
@@ -6171,7 +6824,9 @@ namespace Server
                 case 15:
                     {
                         if (version < 22)
+                        {
                             reader.ReadInt(); // followers
+                        }
 
                         m_FollowersMax = reader.ReadInt();
 
@@ -6240,7 +6895,10 @@ namespace Server
                     }
                 case 4:
                     {
-                        if (version <= 25) Poison.Deserialize(reader);
+                        if (version <= 25)
+                        {
+                            Poison.Deserialize(reader);
+                        }
 
                         goto case 3;
                     }
@@ -6265,16 +6923,24 @@ namespace Server
                 case 0:
                     {
                         if (version < 21)
+                        {
                             Stabled = new List<Mobile>();
+                        }
 
                         if (version < 18)
+                        {
                             Virtues = new VirtueInfo();
+                        }
 
                         if (version < 11)
+                        {
                             m_DisplayGuildTitle = true;
+                        }
 
                         if (version < 3)
+                        {
                             m_StatCap = 225;
+                        }
 
                         if (version < 15)
                         {
@@ -6339,11 +7005,16 @@ namespace Server
                         SkillMods = new List<SkillMod>();
 
                         if (version < 32)
+                        {
                             if (reader.ReadBool())
                             {
                                 var count = reader.ReadInt();
-                                for (var i = 0; i < count; ++i) reader.ReadDateTime();
+                                for (var i = 0; i < count; ++i)
+                                {
+                                    reader.ReadDateTime();
+                                }
                             }
+                        }
 
                         if (m_Player && m_Map != Map.Internal)
                         {
@@ -6363,12 +7034,18 @@ namespace Server
                         }
 
                         if (ShouldCheckStatTimers)
+                        {
                             CheckStatTimers();
+                        }
 
                         if (!m_Player && m_Dex <= 100 && m_CombatTimer != null)
+                        {
                             m_CombatTimer.Priority = TimerPriority.FiftyMS;
+                        }
                         else if (m_CombatTimer != null)
+                        {
                             m_CombatTimer.Priority = TimerPriority.EveryTick;
+                        }
 
                         UpdateRegion();
 
@@ -6379,7 +7056,9 @@ namespace Server
             }
 
             if (!m_Player)
+            {
                 Utility.Intern(ref m_Name);
+            }
 
             Utility.Intern(ref m_Title);
             Utility.Intern(ref m_Language);
@@ -6407,7 +7086,9 @@ namespace Server
         public virtual void CheckStatTimers()
         {
             if (Deleted)
+            {
                 return;
+            }
 
             if (Hits < HitsMax)
             {
@@ -6475,13 +7156,19 @@ namespace Server
         public virtual void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             if (CanPaperdollBeOpenedBy(from))
+            {
                 list.Add(new PaperdollEntry(this));
+            }
 
             if (from == this && Backpack != null && CanSee(Backpack) && CheckAlive(false))
+            {
                 list.Add(new OpenBackpackEntry(this));
+            }
         }
 
         public void Internalize()
@@ -6542,16 +7229,27 @@ namespace Server
         public void AddItem(Item item)
         {
             if (item?.Deleted != false)
+            {
                 return;
+            }
 
             if (item.Parent == this)
+            {
                 return;
+            }
+
             if (item.Parent is Mobile parentMobile)
+            {
                 parentMobile.RemoveItem(item);
+            }
             else if (item.Parent is Item parentItem)
+            {
                 parentItem.RemoveItem(item);
+            }
             else
+            {
                 item.SendRemovePacket();
+            }
 
             item.Parent = this;
             item.Map = m_Map;
@@ -6572,13 +7270,17 @@ namespace Server
 
             if (item.PhysicalResistance != 0 || item.FireResistance != 0 || item.ColdResistance != 0 ||
                 item.PoisonResistance != 0 || item.EnergyResistance != 0)
+            {
                 UpdateResistances();
+            }
         }
 
         public void RemoveItem(Item item)
         {
             if (item == null || Items == null)
+            {
                 return;
+            }
 
             if (Items.Contains(item))
             {
@@ -6602,7 +7304,9 @@ namespace Server
 
                 if (item.PhysicalResistance != 0 || item.FireResistance != 0 || item.ColdResistance != 0 ||
                     item.PoisonResistance != 0 || item.EnergyResistance != 0)
+                {
                     UpdateResistances();
+                }
             }
         }
 
@@ -6611,7 +7315,10 @@ namespace Server
             var map = m_Map;
 
             if (map == null)
+            {
                 return;
+            }
+
             ProcessDelta();
 
             Packet p = null;
@@ -6620,6 +7327,7 @@ namespace Server
             var eable = map.GetClientsInRange(m_Location);
 
             foreach (var state in eable)
+            {
                 if (state.Mobile.CanSee(this))
                 {
                     state.Mobile.ProcessDelta();
@@ -6639,24 +7347,44 @@ namespace Server
                             if (Flying)
                             {
                                 if (action >= 9 && action <= 11)
+                                {
                                     action = 71;
+                                }
                                 else if (action >= 12 && action <= 14)
+                                {
                                     action = 72;
+                                }
                                 else if (action == 20)
+                                {
                                     action = 77;
+                                }
                                 else if (action == 31)
+                                {
                                     action = 71;
+                                }
                                 else if (action == 34)
+                                {
                                     action = 78;
+                                }
                                 else if (action >= 200 && action <= 259)
+                                {
                                     action = 75;
-                                else if (action >= 260 && action <= 270) action = 75;
+                                }
+                                else if (action >= 260 && action <= 270)
+                                {
+                                    action = 75;
+                                }
                             }
                             else
                             {
                                 if (action >= 200 && action <= 259)
+                                {
                                     action = 17;
-                                else if (action >= 260 && action <= 270) action = 16;
+                                }
+                                else if (action >= 260 && action <= 270)
+                                {
+                                    action = 16;
+                                }
                             }
                         }
 
@@ -6676,6 +7404,7 @@ namespace Server
                     state.Send(p);
                     // }
                 }
+            }
 
             Packet.Release(p);
             // Packet.Release( pNew );
@@ -6686,27 +7415,37 @@ namespace Server
         public void SendSound(int soundID)
         {
             if (soundID != -1 && m_NetState != null)
+            {
                 Send(new PlaySound(soundID, this));
+            }
         }
 
         public void SendSound(int soundID, IPoint3D p)
         {
             if (soundID != -1 && m_NetState != null)
+            {
                 Send(new PlaySound(soundID, p));
+            }
         }
 
         public void PlaySound(int soundID)
         {
             if (soundID == -1 || m_Map == null)
+            {
                 return;
+            }
 
             var p = Packet.Acquire(new PlaySound(soundID, this));
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
             foreach (var state in eable)
+            {
                 if (state.Mobile.CanSee(this))
+                {
                     state.Send(p);
+                }
+            }
 
             Packet.Release(p);
 
@@ -6729,7 +7468,9 @@ namespace Server
         public virtual void RevealingAction()
         {
             if (m_Hidden && m_AccessLevel == AccessLevel.Player)
+            {
                 Hidden = false;
+            }
 
             DisruptiveAction(); // Anything that unhides you will also distrupt meditation
         }
@@ -6742,13 +7483,19 @@ namespace Server
         public void SendRemovePacket(bool everyone)
         {
             if (m_Map == null)
+            {
                 return;
+            }
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
             foreach (var state in eable)
+            {
                 if (state != m_NetState && (everyone || !state.Mobile.CanSee(this)))
+                {
                     state.Send(RemovePacket);
+                }
+            }
 
             eable.Free();
         }
@@ -6756,21 +7503,29 @@ namespace Server
         public void ClearScreen()
         {
             if (m_Map == null || m_NetState == null)
+            {
                 return;
+            }
 
             var eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
 
             foreach (var o in eable)
+            {
                 if (o is Mobile m)
                 {
                     if (m != this && Utility.InUpdateRange(m_Location, m.m_Location))
+                    {
                         m_NetState.Send(m.RemovePacket);
+                    }
                 }
                 else if (o is Item item)
                 {
                     if (InRange(item.Location, item.GetUpdateRange(this)))
+                    {
                         m_NetState.Send(item.RemovePacket);
+                    }
                 }
+            }
 
             eable.Free();
         }
@@ -6786,7 +7541,9 @@ namespace Server
             }
 
             if (throwOnOffline)
+            {
                 throw new MobileNotConnectedException(this, "Packet could not be sent.");
+            }
 
             return false;
         }
@@ -6800,15 +7557,21 @@ namespace Server
             if (Squelched)
             {
                 if (Core.ML)
+                {
                     SendLocalizedMessage(500168); // You can not say anything, you have been muted.
+                }
                 else
+                {
                     SendMessage("You can not say anything, you have been squelched."); // Cliloc ITSELF changed during ML.
+                }
 
                 e.Blocked = true;
             }
 
             if (!e.Blocked)
+            {
                 RevealingAction();
+            }
         }
 
         public virtual bool HandlesOnSpeech(Mobile from) => false;
@@ -6831,10 +7594,13 @@ namespace Server
                 var eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
 
                 foreach (var o in eable)
+                {
                     if (o is Item item)
                     {
                         if (CanSee(item) && InRange(item.Location, item.GetUpdateRange(this)))
+                        {
                             item.SendInfoTo(ns);
+                        }
                     }
                     else if (o is Mobile m)
                     {
@@ -6845,18 +7611,28 @@ namespace Server
                             if (ns.StygianAbyss)
                             {
                                 if (m.Poisoned)
+                                {
                                     ns.Send(new HealthbarPoison(m));
+                                }
 
                                 if (m.Blessed || m.YellowHealthbar)
+                                {
                                     ns.Send(new HealthbarYellow(m));
+                                }
                             }
 
                             if (m.IsDeadBondedPet)
+                            {
                                 ns.Send(new BondedStatus(m.Serial, true));
+                            }
 
-                            if (ObjectPropertyList.Enabled) ns.Send(m.OPLPacket);
+                            if (ObjectPropertyList.Enabled)
+                            {
+                                ns.Send(m.OPLPacket);
+                            }
                         }
                     }
+                }
 
                 eable.Free();
             }
@@ -6865,7 +7641,9 @@ namespace Server
         public void UpdateRegion()
         {
             if (Deleted)
+            {
                 return;
+            }
 
             var newRegion = Region.Find(m_Location, m_Map);
 
@@ -6897,22 +7675,34 @@ namespace Server
             var flags = 0x0;
 
             if (m_Paralyzed || m_Frozen)
+            {
                 flags |= 0x01;
+            }
 
             if (m_Female)
+            {
                 flags |= 0x02;
+            }
 
             if (m_Flying)
+            {
                 flags |= 0x04;
+            }
 
             if (m_Blessed || m_YellowHealthbar)
+            {
                 flags |= 0x08;
+            }
 
             if (m_Warmode)
+            {
                 flags |= 0x40;
+            }
 
             if (m_Hidden)
+            {
                 flags |= 0x80;
+            }
 
             return flags;
         }
@@ -6923,22 +7713,34 @@ namespace Server
             var flags = 0x0;
 
             if (m_Paralyzed || m_Frozen)
+            {
                 flags |= 0x01;
+            }
 
             if (m_Female)
+            {
                 flags |= 0x02;
+            }
 
             if (m_Poison != null)
+            {
                 flags |= 0x04;
+            }
 
             if (m_Blessed || m_YellowHealthbar)
+            {
                 flags |= 0x08;
+            }
 
             if (m_Warmode)
+            {
                 flags |= 0x40;
+            }
 
             if (m_Hidden)
+            {
                 flags |= 0x80;
+            }
 
             return flags;
         }
@@ -6963,11 +7765,14 @@ namespace Server
             AllowedStealthSteps = 0;
 
             if (m_Map == null)
+            {
                 return;
+            }
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
             foreach (var state in eable)
+            {
                 if (!state.Mobile.CanSee(this))
                 {
                     state.Send(RemovePacket);
@@ -6977,10 +7782,16 @@ namespace Server
                     state.Send(MobileIncoming.Create(state, state.Mobile, this));
 
                     if (IsDeadBondedPet)
+                    {
                         state.Send(new BondedStatus(Serial, true));
+                    }
 
-                    if (ObjectPropertyList.Enabled) state.Send(OPLPacket);
+                    if (ObjectPropertyList.Enabled)
+                    {
+                        state.Send(OPLPacket);
+                    }
                 }
+            }
 
             eable.Free();
         }
@@ -7000,10 +7811,14 @@ namespace Server
         public virtual bool CanSee(object o)
         {
             if (o is Item item)
+            {
                 return CanSee(item);
+            }
 
             if (o is Mobile mobile)
+            {
                 return CanSee(mobile);
+            }
 
             return true;
         }
@@ -7011,33 +7826,46 @@ namespace Server
         public virtual bool CanSee(Item item)
         {
             if (m_Map == Map.Internal)
+            {
                 return false;
+            }
+
             if (item.Map == Map.Internal)
+            {
                 return false;
+            }
 
             if (item.Parent != null)
             {
                 if (item.Parent is Item parent)
                 {
                     if (!(CanSee(parent) && parent.IsChildVisibleTo(this, item)))
+                    {
                         return false;
+                    }
                 }
                 else if (item.Parent is Mobile mobile)
                 {
                     if (!CanSee(mobile))
+                    {
                         return false;
+                    }
                 }
             }
 
             if (item is BankBox box && m_AccessLevel <= AccessLevel.Counselor && (box.Owner != this || !box.Opened))
+            {
                 return false;
+            }
 
             if (item is SecureTradeContainer container)
             {
                 var trade = container.Trade;
 
                 if (trade != null && trade.From.Mobile != this && trade.To.Mobile != this)
+                {
                     return false;
+                }
             }
 
             return !item.Deleted && item.Map == m_Map && (item.Visible || m_AccessLevel > AccessLevel.Counselor);
@@ -7046,7 +7874,9 @@ namespace Server
         public virtual bool CanSee(Mobile m)
         {
             if (Deleted || m.Deleted || m_Map == Map.Internal || m.m_Map == Map.Internal)
+            {
                 return false;
+            }
 
             return this == m || m.m_Map == m_Map &&
                 (!m.Hidden || m_AccessLevel != AccessLevel.Player &&
@@ -7075,7 +7905,9 @@ namespace Server
             var delta = -1;
 
             for (var i = 0; delta < 0 && i < m_InvalidBodies.Length; ++i)
+            {
                 delta = m_InvalidBodies[i] - body;
+            }
 
             return delta != 0 ? body : 0;
         }
@@ -7107,7 +7939,9 @@ namespace Server
         public void InvalidateProperties()
         {
             if (!ObjectPropertyList.Enabled)
+            {
                 return;
+            }
 
             if (m_Map != null && m_Map != Map.Internal && !World.Loading)
             {
@@ -7129,12 +7963,16 @@ namespace Server
         public virtual void SetLocation(Point3D newLocation, bool isTeleport)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             var oldLocation = m_Location;
 
             if (oldLocation == newLocation)
+            {
                 return;
+            }
 
             m_Location = newLocation;
             UpdateRegion();
@@ -7142,7 +7980,9 @@ namespace Server
             var box = FindBankNoCreate();
 
             if (box?.Opened == true)
+            {
                 box.Close();
+            }
 
             m_NetState?.ValidateAllTrades();
 
@@ -7153,9 +7993,13 @@ namespace Server
                 m_NetState.Sequence = 0;
 
                 if (m_NetState.StygianAbyss)
+                {
                     m_NetState.Send(new MobileUpdate(this));
+                }
                 else
+                {
                     m_NetState.Send(new MobileUpdateOld(this));
+                }
 
                 ClearFastwalkStack();
             }
@@ -7169,8 +8013,12 @@ namespace Server
                 var eable = map.GetClientsInRange(oldLocation);
 
                 foreach (var ns in eable)
+                {
                     if (ns != m_NetState && !Utility.InUpdateRange(newLocation, ns.Mobile.Location))
+                    {
                         ns.Send(RemovePacket);
+                    }
+                }
 
                 eable.Free();
 
@@ -7184,6 +8032,7 @@ namespace Server
                     // We are attached to a client, so it's a bit more complex. We need to send new items and people to ourself, and ourself to other clients
 
                     foreach (var o in eeable)
+                    {
                         if (o is Item item)
                         {
                             var range = item.GetUpdateRange(this);
@@ -7191,12 +8040,16 @@ namespace Server
 
                             if (!Utility.InRange(oldLocation, loc, range) && Utility.InRange(newLocation, loc, range) &&
                                 CanSee(item))
+                            {
                                 item.SendInfoTo(ourState);
+                            }
                         }
                         else if (o != this && o is Mobile m)
                         {
                             if (!Utility.InUpdateRange(newLocation, m.m_Location))
+                            {
                                 continue;
+                            }
 
                             var inOldRange = Utility.InUpdateRange(oldLocation, m.m_Location);
 
@@ -7215,13 +8068,20 @@ namespace Server
                                 }
 
                                 if (IsDeadBondedPet)
+                                {
                                     m.m_NetState.Send(new BondedStatus(Serial, true));
+                                }
 
-                                if (ObjectPropertyList.Enabled) m.m_NetState.Send(OPLPacket);
+                                if (ObjectPropertyList.Enabled)
+                                {
+                                    m.m_NetState.Send(OPLPacket);
+                                }
                             }
 
                             if (inOldRange || !CanSee(m))
+                            {
                                 continue;
+                            }
 
                             ourState.Send(MobileIncoming.Create(ourState, this, m));
 
@@ -7235,10 +8095,16 @@ namespace Server
                             }
 
                             if (m.IsDeadBondedPet)
+                            {
                                 ourState.Send(new BondedStatus(m.Serial, true));
+                            }
 
-                            if (ObjectPropertyList.Enabled) ourState.Send(m.OPLPacket);
+                            if (ObjectPropertyList.Enabled)
+                            {
+                                ourState.Send(m.OPLPacket);
+                            }
                         }
+                    }
 
                     eeable.Free();
                 }
@@ -7248,6 +8114,7 @@ namespace Server
 
                     // We're not attached to a client, so simply send an Incoming
                     foreach (var ns in eable)
+                    {
                         if ((isTeleport && (!ns.HighSeas || !NoMoveHS) ||
                              !Utility.InUpdateRange(oldLocation, ns.Mobile.Location)) && ns.Mobile.CanSee(this))
                         {
@@ -7263,10 +8130,16 @@ namespace Server
                             }
 
                             if (IsDeadBondedPet)
+                            {
                                 ns.Send(new BondedStatus(Serial, true));
+                            }
 
-                            if (ObjectPropertyList.Enabled) ns.Send(OPLPacket);
+                            if (ObjectPropertyList.Enabled)
+                            {
+                                ns.Send(OPLPacket);
+                            }
                         }
+                    }
 
                     eable.Free();
                 }
@@ -7291,7 +8164,9 @@ namespace Server
         public BankBox FindBankNoCreate()
         {
             if (m_BankBox?.Deleted != false || m_BankBox.Parent != this)
+            {
                 m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox;
+            }
 
             return m_BankBox;
         }
@@ -7305,7 +8180,10 @@ namespace Server
             {
                 var item = eq[i];
 
-                if (!item.Deleted && item.Layer == layer) return item;
+                if (!item.Deleted && item.Layer == layer)
+                {
+                    return item;
+                }
             }
 
             return null;
@@ -7314,11 +8192,14 @@ namespace Server
         public void SendIncomingPacket()
         {
             if (m_Map == null)
+            {
                 return;
+            }
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
             foreach (var state in eable)
+            {
                 if (state.Mobile.CanSee(this))
                 {
                     state.Send(MobileIncoming.Create(state, state.Mobile, this));
@@ -7326,17 +8207,27 @@ namespace Server
                     if (state.StygianAbyss)
                     {
                         if (m_Poison != null)
+                        {
                             state.Send(new HealthbarPoison(this));
+                        }
 
                         if (m_Blessed || m_YellowHealthbar)
+                        {
                             state.Send(new HealthbarYellow(this));
+                        }
                     }
 
                     if (IsDeadBondedPet)
+                    {
                         state.Send(new BondedStatus(Serial, true));
+                    }
 
-                    if (ObjectPropertyList.Enabled) state.Send(OPLPacket);
+                    if (ObjectPropertyList.Enabled)
+                    {
+                        state.Send(OPLPacket);
+                    }
                 }
+            }
 
             eable.Free();
         }
@@ -7344,7 +8235,9 @@ namespace Server
         public bool PlaceInBackpack(Item item)
         {
             if (item.Deleted)
+            {
                 return false;
+            }
 
             return Backpack?.TryDropItem(this, item, false) == true;
         }
@@ -7352,7 +8245,9 @@ namespace Server
         public bool AddToBackpack(Item item)
         {
             if (item.Deleted)
+            {
                 return false;
+            }
 
             if (!PlaceInBackpack(item))
             {
@@ -7385,20 +8280,32 @@ namespace Server
 
         public virtual bool OpenTrade(Mobile from, Item offer = null)
         {
-            if (!from.Player || !Player || !from.Alive || !Alive) return false;
+            if (!from.Player || !Player || !from.Alive || !Alive)
+            {
+                return false;
+            }
 
             var ourState = m_NetState;
             var theirState = from.m_NetState;
 
-            if (ourState == null || theirState == null) return false;
+            if (ourState == null || theirState == null)
+            {
+                return false;
+            }
 
             var cont = theirState.FindTradeContainer(this);
 
-            if (!from.CheckTrade(this, offer, cont, true, true, 0, 0)) return false;
+            if (!from.CheckTrade(this, offer, cont, true, true, 0, 0))
+            {
+                return false;
+            }
 
             cont ??= theirState.AddTrade(ourState);
 
-            if (offer != null) cont.DropItem(offer);
+            if (offer != null)
+            {
+                cont.DropItem(offer);
+            }
 
             return true;
         }
@@ -7424,9 +8331,13 @@ namespace Server
         public virtual bool CheckEquip(Item item)
         {
             for (var i = 0; i < Items.Count; ++i)
+            {
                 if (Items[i].CheckConflictingLayer(this, item, item.Layer) ||
                     item.CheckConflictingLayer(this, Items[i], Items[i].Layer))
+                {
                     return false;
+                }
+            }
 
             return true;
         }
@@ -7543,12 +8454,16 @@ namespace Server
         public virtual bool EquipItem(Item item)
         {
             if (item?.Deleted != false || !item.CanEquip(this))
+            {
                 return false;
+            }
 
             if (CheckEquip(item) && OnEquip(item) && item.OnEquip(this))
             {
                 if (m_Spell?.OnCasterEquipping(item) == false)
+                {
                     return false;
+                }
 
                 // if (m_Spell != null && m_Spell.State == SpellState.Casting)
                 // m_Spell.Disturb( DisturbType.EquipRequest );
@@ -7583,7 +8498,9 @@ namespace Server
         public virtual void Delta(MobileDelta flag)
         {
             if (m_Map == null || m_Map == Map.Internal || Deleted)
+            {
                 return;
+            }
 
             m_DeltaFlags |= flag;
 
@@ -7592,6 +8509,7 @@ namespace Server
                 m_InDeltaQueue = true;
 
                 if (_processing)
+                {
                     lock (m_DeltaQueueR)
                     {
                         m_DeltaQueueR.Enqueue(this);
@@ -7610,8 +8528,11 @@ namespace Server
                             // ignored
                         }
                     }
+                }
                 else
+                {
                     m_DeltaQueue.Enqueue(this);
+                }
             }
 
             Core.Set();
@@ -7629,13 +8550,17 @@ namespace Server
             else
             {
                 while (m_DeltaQueue.TryDequeue(out var m))
+                {
                     m.ProcessDelta();
+                }
             }
 
             _processing = false;
 
             while (m_DeltaQueueR.TryDequeue(out var m))
+            {
                 m.ProcessDelta();
+            }
         }
 
         public virtual void OnKillsChange(int oldValue)
@@ -7645,10 +8570,14 @@ namespace Server
         public bool CheckAlive(bool message = true)
         {
             if (Alive)
+            {
                 return true;
+            }
 
             if (message)
+            {
                 LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019048); // I am dead and cannot do that.
+            }
 
             return false;
         }
@@ -7682,7 +8611,9 @@ namespace Server
         public virtual void OnPaperdollRequest()
         {
             if (CanPaperdollBeOpenedBy(this))
+            {
                 DisplayPaperdollTo(this);
+            }
         }
 
         /// <summary>
@@ -7692,13 +8623,19 @@ namespace Server
         public virtual void OnStatsQuery(Mobile from)
         {
             if (from.Map == Map && Utility.InUpdateRange(this, from) && from.CanSee(this))
-                from.Send(new MobileStatus(from, this, m_NetState));
+            {
+                @from.Send(new MobileStatus(@from, this, m_NetState));
+            }
 
             if (from == this)
+            {
                 Send(new StatLockInfo(this));
+            }
 
             if (Party is IParty ip)
-                ip.OnStatsQuery(from, this);
+            {
+                ip.OnStatsQuery(@from, this);
+            }
         }
 
         /// <summary>
@@ -7707,7 +8644,9 @@ namespace Server
         public virtual void OnSkillsQuery(Mobile from)
         {
             if (from == this)
+            {
                 Send(new SkillUpdate(Skills));
+            }
         }
 
         /// <summary>
@@ -7724,7 +8663,9 @@ namespace Server
         {
             if (Deleted ||
                 AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this)
+            {
                 return;
+            }
 
             if (GuildClickMessage)
             {
@@ -7736,9 +8677,13 @@ namespace Server
                     string type;
 
                     if (guild.Type >= 0 && (int)guild.Type < m_GuildTypes.Length)
+                    {
                         type = m_GuildTypes[(int)guild.Type];
+                    }
                     else
+                    {
                         type = "";
+                    }
 
                     var text = string.Format(
                         title.Length <= 0 ? "[{1}]{2}" : "[{0}, {1}]{2}",
@@ -7754,36 +8699,54 @@ namespace Server
             int hue;
 
             if (NameHue != -1)
+            {
                 hue = NameHue;
+            }
             else if (AccessLevel > AccessLevel.Player)
+            {
                 hue = 11;
+            }
             else
-                hue = Notoriety.GetHue(Notoriety.Compute(from, this));
+            {
+                hue = Notoriety.GetHue(Notoriety.Compute(@from, this));
+            }
 
             var name = Name ?? string.Empty;
 
             var prefix = "";
 
             if (ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000)
+            {
                 prefix = m_Female ? "Lady" : "Lord";
+            }
 
             var suffix = "";
 
             if (ClickTitle && !string.IsNullOrEmpty(Title))
+            {
                 suffix = Title;
+            }
 
             suffix = ApplyNameSuffix(suffix);
 
             string val;
 
             if (prefix.Length > 0 && suffix.Length > 0)
+            {
                 val = $"{prefix} {name} {suffix}";
+            }
             else if (prefix.Length > 0)
+            {
                 val = $"{prefix} {name}";
+            }
             else if (suffix.Length > 0)
+            {
                 val = $"{name} {suffix}";
+            }
             else
+            {
                 val = name;
+            }
 
             PrivateOverheadMessage(MessageType.Label, hue, AsciiClickMessage, val, from.NetState);
         }
@@ -7827,21 +8790,30 @@ namespace Server
         public static TimeSpan GetHitsRegenRate(Mobile m)
         {
             if (HitsRegenRateHandler == null)
+            {
                 return DefaultHitsRate;
+            }
+
             return HitsRegenRateHandler(m);
         }
 
         public static TimeSpan GetStamRegenRate(Mobile m)
         {
             if (StamRegenRateHandler == null)
+            {
                 return DefaultStamRate;
+            }
+
             return StamRegenRateHandler(m);
         }
 
         public static TimeSpan GetManaRegenRate(Mobile m)
         {
             if (ManaRegenRateHandler == null)
+            {
                 return DefaultManaRate;
+            }
+
             return ManaRegenRateHandler(m);
         }
 
@@ -7867,7 +8839,9 @@ namespace Server
         public virtual int GetAngerSound()
         {
             if (BaseSoundID != 0)
+            {
                 return BaseSoundID;
+            }
 
             return -1;
         }
@@ -7875,7 +8849,9 @@ namespace Server
         public virtual int GetIdleSound()
         {
             if (BaseSoundID != 0)
+            {
                 return BaseSoundID + 1;
+            }
 
             return -1;
         }
@@ -7883,7 +8859,9 @@ namespace Server
         public virtual int GetAttackSound()
         {
             if (BaseSoundID != 0)
+            {
                 return BaseSoundID + 2;
+            }
 
             return -1;
         }
@@ -7891,16 +8869,25 @@ namespace Server
         public virtual int GetHurtSound()
         {
             if (BaseSoundID != 0)
+            {
                 return BaseSoundID + 3;
+            }
 
             return -1;
         }
 
         public virtual int GetDeathSound()
         {
-            if (BaseSoundID != 0) return BaseSoundID + 4;
+            if (BaseSoundID != 0)
+            {
+                return BaseSoundID + 4;
+            }
 
-            if (m_Body.IsHuman) return Utility.Random(m_Female ? 0x314 : 0x423, m_Female ? 4 : 5);
+            if (m_Body.IsHuman)
+            {
+                return Utility.Random(m_Female ? 0x314 : 0x423, m_Female ? 4 : 5);
+            }
+
             return -1;
         }
 
@@ -7911,7 +8898,9 @@ namespace Server
             var map = m_Map;
 
             if (map == null)
+            {
                 return Map.NullEnumerable<T>.Instance;
+            }
 
             return map.GetItemsInRange<T>(m_Location, range);
         }
@@ -7921,7 +8910,9 @@ namespace Server
             var map = m_Map;
 
             if (map == null)
+            {
                 return Map.NullEnumerable<IEntity>.Instance;
+            }
 
             return map.GetObjectsInRange(m_Location, range);
         }
@@ -7933,7 +8924,9 @@ namespace Server
             var map = m_Map;
 
             if (map == null)
+            {
                 return Map.NullEnumerable<T>.Instance;
+            }
 
             return map.GetMobilesInRange<T>(m_Location, range);
         }
@@ -7943,7 +8936,9 @@ namespace Server
             var map = m_Map;
 
             if (map == null)
+            {
                 return Map.NullEnumerable<NetState>.Instance;
+            }
 
             return map.GetClientsInRange(m_Location, range);
         }
@@ -8056,7 +9051,10 @@ namespace Server
                 return true;
             }
 
-            if (throwOnOffline) throw new MobileNotConnectedException(this, "Hue picker could not be sent.");
+            if (throwOnOffline)
+            {
+                throw new MobileNotConnectedException(this, "Hue picker could not be sent.");
+            }
 
             return false;
         }
@@ -8069,7 +9067,9 @@ namespace Server
         public bool CloseGump<T>() where T : Gump
         {
             if (m_NetState == null)
+            {
                 return false;
+            }
 
             var gump = FindGump<T>();
 
@@ -8089,7 +9089,9 @@ namespace Server
             var ns = m_NetState;
 
             if (ns == null)
+            {
                 return false;
+            }
 
             var gumps = new List<Gump>(ns.Gumps);
 
@@ -8110,7 +9112,9 @@ namespace Server
         public bool SendGump(Gump g)
         {
             if (m_NetState == null)
+            {
                 return false;
+            }
 
             g.SendTo(m_NetState);
             return true;
@@ -8119,7 +9123,9 @@ namespace Server
         public bool SendMenu(IMenu m)
         {
             if (m_NetState == null)
+            {
                 return false;
+            }
 
             m.SendTo(m_NetState);
             return true;
@@ -8132,19 +9138,25 @@ namespace Server
         public virtual bool CanBeBeneficial(Mobile target, bool message, bool allowDead)
         {
             if (target == null)
+            {
                 return false;
+            }
 
             if (Deleted || target.Deleted || !Alive || IsDeadBondedPet ||
                 !allowDead && (!target.Alive || target.IsDeadBondedPet))
             {
                 if (message)
+                {
                     SendLocalizedMessage(1001017); // You can not perform beneficial acts on your target.
+                }
 
                 return false;
             }
 
             if (target == this)
+            {
                 return true;
+            }
 
             if ( /*m_Player &&*/!Region.AllowBeneficial(this, target))
             {
@@ -8152,7 +9164,9 @@ namespace Server
                 // if (!(target.m_Player || target.Body.IsHuman || target.Body.IsAnimal))
                 // {
                 if (message)
+                {
                     SendLocalizedMessage(1001017); // You can not perform beneficial acts on your target.
+                }
 
                 return false;
                 // }
@@ -8164,7 +9178,9 @@ namespace Server
         public virtual bool IsBeneficialCriminal(Mobile target)
         {
             if (this == target)
+            {
                 return false;
+            }
 
             var n = Notoriety.Compute(this, target);
 
@@ -8177,13 +9193,17 @@ namespace Server
         public virtual void OnBeneficialAction(Mobile target, bool isCriminal)
         {
             if (isCriminal)
+            {
                 CriminalAction(false);
+            }
         }
 
         public virtual void DoBeneficial(Mobile target)
         {
             if (target == null)
+            {
                 return;
+            }
 
             OnBeneficialAction(target, IsBeneficialCriminal(target));
 
@@ -8209,19 +9229,25 @@ namespace Server
         public virtual bool CanBeHarmful(Mobile target, bool message, bool ignoreOurBlessedness)
         {
             if (target == null)
+            {
                 return false;
+            }
 
             if (Deleted || !ignoreOurBlessedness && m_Blessed || target.Deleted || target.m_Blessed || !Alive ||
                 IsDeadBondedPet || !target.Alive || target.IsDeadBondedPet)
             {
                 if (message)
+                {
                     SendLocalizedMessage(1001018); // You can not perform negative acts on your target.
+                }
 
                 return false;
             }
 
             if (target == this)
+            {
                 return true;
+            }
 
             // TODO: Pets
             if ( /*m_Player &&*/
@@ -8229,7 +9255,9 @@ namespace Server
             ) // (target.m_Player || target.Body.IsHuman) && !Region.AllowHarmful( this, target )  )
             {
                 if (message)
+                {
                     SendLocalizedMessage(1001018); // You can not perform negative acts on your target.
+                }
 
                 return false;
             }
@@ -8246,7 +9274,9 @@ namespace Server
         public virtual void OnHarmfulAction(Mobile target, bool isCriminal)
         {
             if (isCriminal)
+            {
                 CriminalAction(false);
+            }
         }
 
         public virtual void DoHarmful(Mobile target)
@@ -8257,7 +9287,9 @@ namespace Server
         public virtual void DoHarmful(Mobile target, bool indirect)
         {
             if (target == null || Deleted)
+            {
                 return;
+            }
 
             var isCriminal = IsHarmfulCriminal(target);
 
@@ -8268,12 +9300,18 @@ namespace Server
             target.Region.OnGotHarmful(this, target);
 
             if (!indirect)
+            {
                 Combatant = target;
+            }
 
             if (m_ExpireCombatant == null)
+            {
                 m_ExpireCombatant = new ExpireCombatantTimer(this);
+            }
             else
+            {
                 m_ExpireCombatant.Stop();
+            }
 
             m_ExpireCombatant.Start();
         }
@@ -8314,7 +9352,9 @@ namespace Server
                 var check = StatMods[i];
 
                 if (check.Name == name)
+                {
                     return check;
+                }
             }
 
             return null;
@@ -8344,13 +9384,19 @@ namespace Server
             MobileDelta delta = 0;
 
             if ((type & StatType.Str) != 0)
+            {
                 delta |= MobileDelta.Hits;
+            }
 
             if ((type & StatType.Dex) != 0)
+            {
                 delta |= MobileDelta.Stam;
+            }
 
             if ((type & StatType.Int) != 0)
+            {
                 delta |= MobileDelta.Mana;
+            }
 
             return delta;
         }
@@ -8763,17 +9809,29 @@ namespace Server
             Direction ret;
 
             if ((ay >> 1) - ax >= 0)
+            {
                 ret = ry > 0 ? Direction.Up : Direction.Down;
+            }
             else if ((ax >> 1) - ay >= 0)
+            {
                 ret = rx > 0 ? Direction.Left : Direction.Right;
+            }
             else if (rx >= 0 && ry >= 0)
+            {
                 ret = Direction.West;
+            }
             else if (rx >= 0 && ry < 0)
+            {
                 ret = Direction.South;
+            }
             else if (rx < 0 && ry < 0)
+            {
                 ret = Direction.East;
+            }
             else
+            {
                 ret = Direction.North;
+            }
 
             return ret;
         }
@@ -8785,7 +9843,9 @@ namespace Server
         public Direction GetDirectionTo(IPoint2D p)
         {
             if (p == null)
+            {
                 return Direction.North;
+            }
 
             return GetDirectionTo(p.X, p.Y);
         }
@@ -8793,7 +9853,9 @@ namespace Server
         public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text, bool noLineOfSight = true)
         {
             if (m_Map == null)
+            {
                 return;
+            }
 
             var p = ascii
                 ? (Packet)new AsciiMessage(Serial, Body, type, hue, 3, Name, text)
@@ -8804,8 +9866,12 @@ namespace Server
             var eable = m_Map.GetClientsInRange(m_Location);
 
             foreach (var state in eable)
+            {
                 if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+                {
                     state.Send(p);
+                }
+            }
 
             Packet.Release(p);
 
@@ -8815,15 +9881,21 @@ namespace Server
         public void PublicOverheadMessage(MessageType type, int hue, int number, string args = "", bool noLineOfSight = true)
         {
             if (m_Map == null)
+            {
                 return;
+            }
 
             var p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
             foreach (var state in eable)
+            {
                 if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+                {
                     state.Send(p);
+                }
+            }
 
             Packet.Release(p);
 
@@ -8836,7 +9908,9 @@ namespace Server
         )
         {
             if (m_Map == null)
+            {
                 return;
+            }
 
             var p = Packet.Acquire(
                 new MessageLocalizedAffix(
@@ -8856,8 +9930,12 @@ namespace Server
             var eable = m_Map.GetClientsInRange(m_Location);
 
             foreach (var state in eable)
+            {
                 if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+                {
                     state.Send(p);
+                }
+            }
 
             Packet.Release(p);
 
@@ -8867,12 +9945,18 @@ namespace Server
         public void PrivateOverheadMessage(MessageType type, int hue, bool ascii, string text, NetState state)
         {
             if (state == null)
+            {
                 return;
+            }
 
             if (ascii)
+            {
                 state.Send(new AsciiMessage(Serial, Body, type, hue, 3, Name, text));
+            }
             else
+            {
                 state.Send(new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text));
+            }
         }
 
         public void PrivateOverheadMessage(MessageType type, int hue, int number, NetState state)
@@ -8890,12 +9974,18 @@ namespace Server
             var ns = m_NetState;
 
             if (ns == null)
+            {
                 return;
+            }
 
             if (ascii)
+            {
                 ns.Send(new AsciiMessage(Serial, Body, type, hue, 3, Name, text));
+            }
             else
+            {
                 ns.Send(new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text));
+            }
         }
 
         public void LocalOverheadMessage(MessageType type, int hue, int number, string args = "")
@@ -8906,15 +9996,21 @@ namespace Server
         public void NonlocalOverheadMessage(MessageType type, int hue, int number, string args = "")
         {
             if (m_Map == null)
+            {
                 return;
+            }
 
             var p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
 
             var eable = m_Map.GetClientsInRange(m_Location);
 
             foreach (var state in eable)
+            {
                 if (state != m_NetState && state.Mobile.CanSee(this))
+                {
                     state.Send(p);
+                }
+            }
 
             Packet.Release(p);
 
@@ -8924,7 +10020,9 @@ namespace Server
         public void NonlocalOverheadMessage(MessageType type, int hue, bool ascii, string text)
         {
             if (m_Map == null)
+            {
                 return;
+            }
 
             var p = ascii
                 ? (Packet)new AsciiMessage(Serial, Body, type, hue, 3, Name, text)
@@ -8935,8 +10033,12 @@ namespace Server
             var eable = m_Map.GetClientsInRange(m_Location);
 
             foreach (var state in eable)
+            {
                 if (state != m_NetState && state.Mobile.CanSee(this))
+                {
                     state.Send(p);
+                }
+            }
 
             Packet.Release(p);
 
@@ -8951,11 +10053,15 @@ namespace Server
         public void SendLocalizedMessage(int number, string args, int hue = 0x3B2)
         {
             if (hue == 0x3B2 && string.IsNullOrEmpty(args))
+            {
                 m_NetState?.Send(MessageLocalized.InstantiateGeneric(number));
+            }
             else
+            {
                 m_NetState?.Send(
                     new MessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args)
                 );
+            }
         }
 
         public void SendLocalizedMessage(int number, bool append, string affix, string args = "", int hue = 0x3B2)
@@ -9036,7 +10142,9 @@ namespace Server
             }
 
             if (CanPaperdollBeOpenedBy(from))
-                DisplayPaperdollTo(from);
+            {
+                DisplayPaperdollTo(@from);
+            }
         }
 
         /// <summary>
@@ -9066,7 +10174,9 @@ namespace Server
         public virtual void OnDoubleClickDead(Mobile from)
         {
             if (CanPaperdollBeOpenedBy(from))
-                DisplayPaperdollTo(from);
+            {
+                DisplayPaperdollTo(@from);
+            }
         }
 
         private class MovementRecord
@@ -9099,7 +10209,9 @@ namespace Server
                 var v = Core.TickCount - m_End >= 0;
 
                 if (v)
+                {
                     m_InstancePool.Enqueue(this);
+                }
 
                 return v;
             }
@@ -9173,7 +10285,9 @@ namespace Server
             protected override void OnTick()
             {
                 if (!m_Mobile.Alive)
+                {
                     m_Mobile.Warmode = false;
+                }
             }
         }
 
@@ -9190,9 +10304,13 @@ namespace Server
             public static LocationComparer GetInstance(IEntity relativeTo)
             {
                 if (m_Instance == null)
+                {
                     m_Instance = new LocationComparer(relativeTo);
+                }
                 else
+                {
                     m_Instance.RelativeTo = relativeTo;
+                }
 
                 return m_Instance;
             }
@@ -9224,7 +10342,9 @@ namespace Server
             protected override void OnTick()
             {
                 if (m_Owner.CanRegenMana)
+                {
                     m_Owner.Mana++;
+                }
 
                 Delay = Interval = GetManaRegenRate(m_Owner);
             }
@@ -9244,7 +10364,9 @@ namespace Server
             protected override void OnTick()
             {
                 if (m_Owner.CanRegenHits)
+                {
                     m_Owner.Hits++;
+                }
 
                 Delay = Interval = GetHitsRegenRate(m_Owner);
             }
@@ -9264,7 +10386,9 @@ namespace Server
             protected override void OnTick()
             {
                 if (m_Owner.CanRegenStam)
+                {
                     m_Owner.Stam++;
+                }
 
                 Delay = Interval = GetStamRegenRate(m_Owner);
             }
@@ -9338,13 +10462,17 @@ namespace Server
                 m_Mobile = m;
 
                 if (!m_Mobile.m_Player && m_Mobile.m_Dex <= 100)
+                {
                     Priority = TimerPriority.FiftyMS;
+                }
             }
 
             protected override void OnTick()
             {
                 if (Core.TickCount - m_Mobile.NextCombatTime < 0)
+                {
                     return;
+                }
 
                 var combatant = m_Mobile.Combatant;
 
@@ -9360,7 +10488,9 @@ namespace Server
                 var weapon = m_Mobile.Weapon;
 
                 if (!m_Mobile.InRange(combatant, weapon.MaxRange))
+                {
                     return;
+                }
 
                 if (m_Mobile.InLOS(combatant))
                 {
@@ -9423,9 +10553,13 @@ namespace Server
             protected override void OnTick()
             {
                 if (m_Mobile.Deleted || m_Mobile.Aggressors.Count == 0 && m_Mobile.Aggressed.Count == 0)
+                {
                     m_Mobile.StopAggrExpire();
+                }
                 else
+                {
                     m_Mobile.CheckAggrExpire();
+                }
             }
         }
 
@@ -9455,9 +10589,13 @@ namespace Server
             public override void OnCancel(Mobile from)
             {
                 if (m_CallbackHandlesCancel && m_Callback != null)
-                    m_Callback(from, "");
+                {
+                    m_Callback(@from, "");
+                }
                 else
-                    m_CancelCallback?.Invoke(from, "");
+                {
+                    m_CancelCallback?.Invoke(@from, "");
+                }
             }
         }
 

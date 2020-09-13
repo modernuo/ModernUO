@@ -104,7 +104,7 @@ namespace Server.Items
                     m =>
                     {
                         if (from == m || !SpellHelper.ValidIndirectTarget(from, m) || !from.CanBeHarmful(m, false)
-                            || Core.AOS && !@from.InLOS(m))
+                            || Core.AOS && !from.InLOS(m))
                             return false;
 
                         if (m.Player)

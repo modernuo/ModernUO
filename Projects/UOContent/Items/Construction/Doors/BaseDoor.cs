@@ -117,7 +117,6 @@ namespace Server.Items
             Use(from);
         }
 
-        // Called by RunUO
         public static void Initialize()
         {
             EventSink.OpenDoorMacroUsed += EventSink_OpenDoorMacroUsed;

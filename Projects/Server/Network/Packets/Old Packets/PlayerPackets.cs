@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: PlayerPackets.cs                                                *
  *                                                                       *
@@ -290,10 +290,14 @@ namespace Server.Network
             byte flags = 0x00;
 
             if (warmode)
+            {
                 flags |= 0x01;
+            }
 
             if (canLift)
+            {
                 flags |= 0x02;
+            }
 
             Stream.Write(m);
             Stream.WriteAsciiFixed(title, 60);
@@ -328,7 +332,9 @@ namespace Server.Network
         public static Packet GetInstance(MusicName name)
         {
             if (name == MusicName.Invalid)
+            {
                 return InvalidInstance;
+            }
 
             var v = (int)name;
             Packet p;
@@ -338,7 +344,9 @@ namespace Server.Network
                 p = m_Instances[v];
 
                 if (p == null)
+                {
                     m_Instances[v] = p = SetStatic(new PlayMusic(name));
+                }
             }
             else
             {

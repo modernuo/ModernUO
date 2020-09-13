@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: WorldLocationConverter.cs                                       *
  *                                                                       *
@@ -32,14 +32,20 @@ namespace Server.Json
             {
                 reader.Read();
                 if (reader.TokenType == JsonTokenType.EndArray)
+                {
                     break;
+                }
 
                 if (reader.TokenType == JsonTokenType.Number)
                 {
                     if (count < 3)
+                    {
                         data[count] = reader.GetInt32();
+                    }
                     else if (count == 3)
+                    {
                         map = Map.Maps[reader.GetInt32()];
+                    }
 
                     count++;
                 }
@@ -52,7 +58,9 @@ namespace Server.Json
             }
 
             if (!hasMap || count < 3 || count > 4)
+            {
                 throw new JsonException("WorldLocation must be an array of x, y, z, and map");
+            }
 
             return new WorldLocation(data[0], data[1], data[2], map);
         }
@@ -70,10 +78,14 @@ namespace Server.Json
             {
                 reader.Read();
                 if (reader.TokenType == JsonTokenType.EndObject)
+                {
                     break;
+                }
 
                 if (reader.TokenType != JsonTokenType.PropertyName)
+                {
                     throw new JsonException("Invalid Json structure for WorldLocation object");
+                }
 
                 var key = reader.GetString();
 
@@ -88,17 +100,23 @@ namespace Server.Json
                 };
 
                 if (i == 5)
+                {
                     continue;
+                }
 
                 reader.Read();
 
                 if (i < 3)
                 {
                     if (hasLoc)
+                    {
                         throw new JsonException("WorldLocation must have loc or x, y, z, but not both");
+                    }
 
                     if (reader.TokenType != JsonTokenType.Number)
+                    {
                         throw new JsonException($"Value for {key} must be a number");
+                    }
 
                     hasXYZ = true;
                     data[i] = reader.GetInt32();
@@ -108,7 +126,9 @@ namespace Server.Json
                 if (i == 3)
                 {
                     if (hasXYZ)
+                    {
                         throw new JsonException("WorldLocation must have loc or x, y, z, but not both");
+                    }
 
                     hasLoc = true;
                     var loc = new Point3DConverter().Read(ref reader, typeof(Point3D), options);
@@ -128,7 +148,9 @@ namespace Server.Json
             }
 
             if (!hasMap || count < 2)
+            {
                 throw new JsonException("WorldLocation must have an x, y, z, and map properties");
+            }
 
             return new WorldLocation(data[0], data[1], data[2], map);
         }

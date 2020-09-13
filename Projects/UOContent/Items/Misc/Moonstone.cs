@@ -69,7 +69,7 @@ namespace Server.Items
             {
                 from.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
             }
-            else if (from.Map == GetTargetMap() || @from.Map != Map.Trammel && @from.Map != Map.Felucca)
+            else if (from.Map == GetTargetMap() || from.Map != Map.Trammel && from.Map != Map.Felucca)
             {
                 from.SendLocalizedMessage(1005401); // You cannot bury the stone here.
             }

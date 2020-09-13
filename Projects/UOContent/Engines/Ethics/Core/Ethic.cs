@@ -33,7 +33,9 @@ namespace Server.Ethics
             if ((item.SavedFlags & 0x100) != 0)
             {
                 if (item.Hue == Hero.Definition.PrimaryHue)
+                {
                     return Hero;
+                }
 
                 item.SavedFlags &= ~0x100;
             }
@@ -41,7 +43,9 @@ namespace Server.Ethics
             if ((item.SavedFlags & 0x200) != 0)
             {
                 if (item.Hue == Evil.Definition.PrimaryHue)
+                {
                     return Evil;
+                }
 
                 item.SavedFlags &= ~0x200;
             }
@@ -54,12 +58,18 @@ namespace Server.Ethics
             var itemEthic = Find(item);
 
             if (itemEthic == null || Find(newOwner) == itemEthic)
+            {
                 return true;
+            }
 
             if (itemEthic == Hero)
+            {
                 (from == newOwner ? to : from).SendMessage("Only heros may receive this item.");
+            }
             else if (itemEthic == Evil)
+            {
                 (from == newOwner ? to : from).SendMessage("Only the evil may receive this item.");
+            }
 
             return false;
         }
@@ -69,12 +79,18 @@ namespace Server.Ethics
             var itemEthic = Find(item);
 
             if (itemEthic == null || Find(from) == itemEthic)
+            {
                 return true;
+            }
 
             if (itemEthic == Hero)
+            {
                 from.SendMessage("Only heros may wear this item.");
+            }
             else if (itemEthic == Evil)
+            {
                 from.SendMessage("Only the evil may wear this item.");
+            }
 
             return false;
         }
@@ -84,28 +100,43 @@ namespace Server.Ethics
         public static bool IsImbued(Item item, bool recurse)
         {
             if (Find(item) != null)
+            {
                 return true;
+            }
 
             if (recurse)
+            {
                 foreach (var child in item.Items)
+                {
                     if (IsImbued(child, true))
+                    {
                         return true;
+                    }
+                }
+            }
 
             return false;
         }
 
-        public static void Initialize()
+        public static void Configure()
         {
             Enabled = ServerConfiguration.GetOrUpdateSetting("ethics.enable", false);
+        }
 
+        public static void Initialize()
+        {
             if (Enabled)
+            {
                 EventSink.Speech += EventSink_Speech;
+            }
         }
 
         public static void EventSink_Speech(SpeechEventArgs e)
         {
             if (e.Blocked || e.Handled)
+            {
                 return;
+            }
 
             var pl = Player.Find(e.Mobile);
 
@@ -116,13 +147,19 @@ namespace Server.Ethics
                     var ethic = Ethics[i];
 
                     if (!ethic.IsEligible(e.Mobile))
+                    {
                         continue;
+                    }
 
                     if (!Insensitive.Equals(ethic.Definition.JoinPhrase.String, e.Speech))
+                    {
                         continue;
+                    }
 
                     if (!e.Mobile.GetItemsInRange(2).Any(item => item is AnkhNorth || item is AnkhWest))
+                    {
                         continue;
+                    }
 
                     pl = new Player(ethic, e.Mobile);
 
@@ -138,7 +175,9 @@ namespace Server.Ethics
             else
             {
                 if (e.Mobile is PlayerMobile mobile && mobile.DuelContext != null)
+                {
                     return;
+                }
 
                 var ethic = pl.Ethic;
 
@@ -147,10 +186,14 @@ namespace Server.Ethics
                     var power = ethic.Definition.Powers[i];
 
                     if (!Insensitive.Equals(power.Definition.Phrase.String, e.Speech))
+                    {
                         continue;
+                    }
 
                     if (!power.CheckInvoke(pl))
+                    {
                         continue;
+                    }
 
                     power.BeginInvoke(pl);
                     e.Handled = true;
@@ -169,16 +212,26 @@ namespace Server.Ethics
             var pl = Player.Find(mob);
 
             if (pl != null)
+            {
                 return pl.Ethic;
+            }
 
             if (inherit && mob is BaseCreature bc)
             {
                 if (bc.Controlled)
+                {
                     return Find(bc.ControlMaster, false);
+                }
+
                 if (bc.Summoned)
+                {
                     return Find(bc.SummonMaster, false);
+                }
+
                 if (allegiance)
+                {
                     return bc.EthicAllegiance;
+                }
             }
 
             return null;
@@ -201,7 +254,9 @@ namespace Server.Ethics
                             var pl = new Player(this, reader);
 
                             if (pl.Mobile != null)
+                            {
                                 Timer.DelayCall(pl.CheckAttach);
+                            }
                         }
 
                         break;
@@ -216,7 +271,9 @@ namespace Server.Ethics
             writer.WriteEncodedInt(m_Players.Count);
 
             for (var i = 0; i < m_Players.Count; ++i)
+            {
                 m_Players[i].Serialize(writer);
+            }
         }
     }
 }

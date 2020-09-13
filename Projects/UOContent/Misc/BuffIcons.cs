@@ -108,36 +108,49 @@ namespace Server
 
         public TextDefinition Args { get; }
 
-        public static void Initialize()
+        public static void Configure()
         {
             Enabled = ServerConfiguration.GetOrUpdateSetting("buffIcons.enable", Core.ML);
+        }
 
+        public static void Initialize()
+        {
             if (Enabled)
+            {
                 EventSink.ClientVersionReceived += ResendBuffsOnClientVersionReceived;
+            }
         }
 
         public static void ResendBuffsOnClientVersionReceived(NetState ns, ClientVersion cv)
         {
             if (ns.Mobile is PlayerMobile pm)
+            {
                 Timer.DelayCall(pm.ResendBuffs);
+            }
         }
 
         public static void AddBuff(Mobile m, BuffInfo b)
         {
             if (m is PlayerMobile pm)
+            {
                 pm.AddBuff(b);
+            }
         }
 
         public static void RemoveBuff(Mobile m, BuffInfo b)
         {
             if (m is PlayerMobile pm)
+            {
                 pm.RemoveBuff(b);
+            }
         }
 
         public static void RemoveBuff(Mobile m, BuffIcon b)
         {
             if (m is PlayerMobile pm)
+            {
                 pm.RemoveBuff(b);
+            }
         }
     }
 
@@ -235,7 +248,9 @@ namespace Server
             Stream.Fill(4);
 
             if (length < TimeSpan.Zero)
+            {
                 length = TimeSpan.Zero;
+            }
 
             Stream.Write((short)length.TotalSeconds); // Time in seconds
 

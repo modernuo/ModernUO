@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: AssemblyHandler.cs                                              *
  *                                                                       *
@@ -33,7 +33,9 @@ namespace Server
             var assemblies = new Assembly[files.Length];
 
             for (var i = 0; i < files.Length; i++)
+            {
                 assemblies[i] = AssemblyLoadContext.Default.LoadFromAssemblyPath(files[i]);
+            }
 
             Assemblies = assemblies;
         }
@@ -43,42 +45,61 @@ namespace Server
             var invoke = new List<MethodInfo>();
 
             for (var a = 0; a < Assemblies.Length; ++a)
+            {
                 invoke.AddRange(
                     Assemblies[a]
                         .GetTypes()
                         .Select(t => t.GetMethod(method, BindingFlags.Static | BindingFlags.Public))
                         .Where(m => m != null)
                 );
+            }
 
             invoke.Sort(new CallPriorityComparer());
 
             for (var i = 0; i < invoke.Count; ++i)
+            {
                 invoke[i].Invoke(null, null);
+            }
         }
 
         public static TypeCache GetTypeCache(Assembly asm)
         {
             if (asm == null)
+            {
                 return m_NullCache ??= new TypeCache(null);
+            }
 
             if (m_TypeCaches.TryGetValue(asm, out var c))
+            {
                 return c;
+            }
 
             return m_TypeCaches[asm] = new TypeCache(asm);
         }
 
         public static Type FindFirstTypeForName(string name, bool ignoreCase = false, Func<Type, bool> predicate = null)
         {
-            if (string.IsNullOrWhiteSpace(name)) return null;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return null;
+            }
 
             var types = FindTypesByName(name, ignoreCase).ToList();
             if (types.Count == 0)
+            {
                 return null;
+            }
 
             if (predicate != null)
+            {
                 return types.FirstOrDefault(predicate);
+            }
+
             if (types.Count == 1)
+            {
                 return types[0];
+            }
+
             // Try to find the closest match if there is no predicate.
             // Check for exact match of the FullName or Name
             // Then check for case-insensitive match of FullName or Name
@@ -97,13 +118,19 @@ namespace Server
             var types = new List<Type>();
 
             if (ignoreCase)
+            {
                 name = name.ToLower();
+            }
 
             for (var i = 0; i < Assemblies.Length; i++)
+            {
                 types.AddRange(GetTypeCache(Assemblies[i])[name]);
+            }
 
             if (types.Count == 0)
+            {
                 types.AddRange(GetTypeCache(Core.Assembly)[name]);
+            }
 
             return types;
         }
@@ -111,9 +138,7 @@ namespace Server
         public static string EnsureDirectory(string dir)
         {
             var path = Path.Combine(Core.BaseDirectory, dir);
-
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
+            Directory.CreateDirectory(path);
 
             return path;
         }
@@ -152,15 +177,19 @@ namespace Server
                 addToRefs(i, current.FullName);
                 addToRefs(i, current.FullName?.ToLower());
                 if (current.GetCustomAttribute(aliasType, false) is TypeAliasAttribute alias)
+                {
                     for (var j = 0; j < alias.Aliases.Length; j++)
                     {
                         addToRefs(i, alias.Aliases[j]);
                         addToRefs(i, alias.Aliases[j].ToLower());
                     }
+                }
             }
 
             foreach (var (key, value) in nameMap)
+            {
                 m_NameMap[key] = value.ToArray();
+            }
         }
 
         public IEnumerable<Type> Types => m_Types;

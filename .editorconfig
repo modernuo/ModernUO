@@ -12,6 +12,7 @@ max_line_length=125
 # Microsoft .NET properties
 csharp_new_line_before_members_in_object_initializers=false
 csharp_preferred_modifier_order=public, private, protected, internal, new, abstract, virtual, sealed, override, static, readonly, extern, unsafe, volatile, async:suggestion
+csharp_prefer_braces=true:suggestion
 csharp_space_after_cast=false
 dotnet_diagnostic.bc42024.severity=suggestion
 dotnet_diagnostic.cs0078.severity=none
@@ -137,6 +138,7 @@ dotnet_style_require_accessibility_modifiers=for_non_interface_members:suggestio
 
 # ReSharper properties
 resharper_apply_auto_detected_rules=false
+resharper_braces_redundant=true
 resharper_case_block_braces=next_line_shifted_2
 resharper_constructor_or_destructor_body=expression_body
 resharper_csharp_int_align_comments=true
@@ -237,6 +239,16 @@ resharper_web_config_module_not_resolved_highlighting=warning
 resharper_web_config_type_not_resolved_highlighting=warning
 resharper_web_config_wrong_module_highlighting=warning
 resharper_wrong_indent_size_highlighting=warning
+
+# ReSharper inspection severities
+resharper_enforce_do_while_statement_braces_highlighting=hint
+resharper_enforce_fixed_statement_braces_highlighting=hint
+resharper_enforce_foreach_statement_braces_highlighting=hint
+resharper_enforce_for_statement_braces_highlighting=hint
+resharper_enforce_if_statement_braces_highlighting=hint
+resharper_enforce_lock_statement_braces_highlighting=hint
+resharper_enforce_using_statement_braces_highlighting=hint
+resharper_enforce_while_statement_braces_highlighting=hint
 
 [*.{sln,csproj,bat}]
 end_of_line=crlf

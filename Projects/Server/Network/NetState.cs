@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                NetState.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -181,36 +161,71 @@ namespace Server.Network
                 m_Version = value;
 
                 if (value >= m_Version70610)
+                {
                     ProtocolChanges = ProtocolChanges.Version70610;
+                }
+
                 if (value >= m_Version70500)
+                {
                     ProtocolChanges = ProtocolChanges.Version70500;
+                }
+
                 if (value >= m_Version704565)
+                {
                     ProtocolChanges = ProtocolChanges.Version704565;
+                }
                 else if (value >= m_Version70331)
+                {
                     ProtocolChanges = ProtocolChanges.Version70331;
+                }
                 else if (value >= m_Version70300)
+                {
                     ProtocolChanges = ProtocolChanges.Version70300;
+                }
                 else if (value >= m_Version70160)
+                {
                     ProtocolChanges = ProtocolChanges.Version70160;
+                }
                 else if (value >= m_Version70130)
+                {
                     ProtocolChanges = ProtocolChanges.Version70130;
+                }
                 else if (value >= m_Version7090)
+                {
                     ProtocolChanges = ProtocolChanges.Version7090;
+                }
                 else if (value >= m_Version7000)
+                {
                     ProtocolChanges = ProtocolChanges.Version7000;
+                }
                 else if (value >= m_Version60142)
+                {
                     ProtocolChanges = ProtocolChanges.Version60142;
+                }
                 else if (value >= m_Version6017)
+                {
                     ProtocolChanges = ProtocolChanges.Version6017;
+                }
                 else if (value >= m_Version6000)
+                {
                     ProtocolChanges = ProtocolChanges.Version6000;
+                }
                 else if (value >= m_Version502b)
+                {
                     ProtocolChanges = ProtocolChanges.Version502b;
+                }
                 else if (value >= m_Version500a)
+                {
                     ProtocolChanges = ProtocolChanges.Version500a;
+                }
                 else if (value >= m_Version407a)
+                {
                     ProtocolChanges = ProtocolChanges.Version407a;
-                else if (value >= m_Version400a) ProtocolChanges = ProtocolChanges.Version400a;
+                }
+                else if (value >= m_Version400a)
+                {
+                    ProtocolChanges = ProtocolChanges.Version400a;
+                }
             }
         }
 
@@ -275,7 +290,9 @@ namespace Server.Network
                     var info = ExpansionInfo.Table[i];
 
                     if (info.RequiredClient != null && Version >= info.RequiredClient || (Flags & info.ClientFlags) != 0)
+                    {
                         return info;
+                    }
                 }
 
                 return ExpansionInfo.GetInfo(Expansion.None);
@@ -292,21 +309,31 @@ namespace Server.Network
         {
             for (var i = Trades.Count - 1; i >= 0; --i)
             {
-                if (i >= Trades.Count) continue;
+                if (i >= Trades.Count)
+                {
+                    continue;
+                }
 
                 var trade = Trades[i];
 
                 if (trade.From.Mobile.Deleted || trade.To.Mobile.Deleted || !trade.From.Mobile.Alive ||
                     !trade.To.Mobile.Alive || !trade.From.Mobile.InRange(trade.To.Mobile, 2) ||
-                    trade.From.Mobile.Map != trade.To.Mobile.Map) trade.Cancel();
+                    trade.From.Mobile.Map != trade.To.Mobile.Map)
+                {
+                    trade.Cancel();
+                }
             }
         }
 
         public void CancelAllTrades()
         {
             for (var i = Trades.Count - 1; i >= 0; --i)
+            {
                 if (i < Trades.Count)
+                {
                     Trades[i].Cancel();
+                }
+            }
         }
 
         public void RemoveTrade(SecureTrade trade)
@@ -320,7 +347,10 @@ namespace Server.Network
             {
                 var trade = Trades[i];
 
-                if (trade.From.Mobile == m || trade.To.Mobile == m) return trade;
+                if (trade.From.Mobile == m || trade.To.Mobile == m)
+                {
+                    return trade;
+                }
             }
 
             return null;
@@ -335,9 +365,15 @@ namespace Server.Network
                 var from = trade.From;
                 var to = trade.To;
 
-                if (from.Mobile == Mobile && to.Mobile == m) return from.Container;
+                if (from.Mobile == Mobile && to.Mobile == m)
+                {
+                    return from.Container;
+                }
 
-                if (from.Mobile == m && to.Mobile == Mobile) return to.Container;
+                if (from.Mobile == m && to.Mobile == Mobile)
+                {
+                    return to.Container;
+                }
             }
 
             return null;
@@ -521,21 +557,29 @@ namespace Server.Network
                 while (true)
                 {
                     if (AsyncState.Paused)
+                    {
                         continue;
+                    }
 
                     var result = await inPipe.ReadAsync();
                     if (result.IsCanceled || result.IsCompleted)
+                    {
                         return;
+                    }
 
                     var seq = result.Buffer;
 
                     if (seq.IsEmpty)
+                    {
                         break;
+                    }
 
                     var pos = PacketHandlers.ProcessPacket(messagePumpService, this, seq);
 
                     if (pos <= 0)
+                    {
                         break;
+                    }
 
                     inPipe.AdvanceTo(seq.Slice(0, pos).End);
                 }
@@ -545,9 +589,9 @@ namespace Server.Network
                 Console.WriteLine(ex);
                 TraceException(ex);
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex);
+                // Console.WriteLine(ex);
             }
             finally
             {
@@ -595,7 +639,9 @@ namespace Server.Network
         {
             var disposing = Interlocked.Exchange(ref m_Disposing, 1);
             if (disposing == 1)
+            {
                 return;
+            }
 
             try
             {
@@ -620,7 +666,9 @@ namespace Server.Network
             while (breakout++ < 200)
             {
                 if (!m_Disposed.TryDequeue(out var ns))
+                {
                     break;
+                }
 
                 var m = ns.Mobile;
                 var a = ns.Account;
@@ -639,9 +687,13 @@ namespace Server.Network
                 ns.CityInfo = null;
 
                 if (a != null)
+                {
                     ns.WriteConsole("Disconnected. [{0} Online] [{1}]", TcpServer.Instances.Count, a);
+                }
                 else
+                {
                     ns.WriteConsole("Disconnected. [{0} Online]", TcpServer.Instances.Count);
+                }
             }
         }
 

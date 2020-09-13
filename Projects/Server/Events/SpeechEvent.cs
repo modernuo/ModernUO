@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: SpeechEvent.cs                                                  *
  *                                                                       *
@@ -46,8 +46,12 @@ namespace Server
         public bool HasKeyword(int keyword)
         {
             for (var i = 0; i < Keywords.Length; ++i)
+            {
                 if (Keywords[i] == keyword)
+                {
                     return true;
+                }
+            }
 
             return false;
         }

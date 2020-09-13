@@ -7,7 +7,7 @@ using Server.Network;
 
 namespace Server.Misc
 {
-    public class ClientVerification
+    public static class ClientVerification
     {
         private static bool m_DetectClientRequirement;
         private static OldClientResponse m_OldClientResponse;
@@ -25,7 +25,7 @@ namespace Server.Misc
 
         public static TimeSpan KickDelay { get; set; }
 
-        public static void Initialize()
+        public static void Configure()
         {
             m_DetectClientRequirement = ServerConfiguration.GetOrUpdateSetting("clientVerification.enable", true);
             m_OldClientResponse =
@@ -36,7 +36,10 @@ namespace Server.Misc
                 TimeSpan.FromHours(25)
             );
             KickDelay = ServerConfiguration.GetOrUpdateSetting("clientVerification.kickDelay", TimeSpan.FromSeconds(20.0));
+        }
 
+        public static void Initialize()
+        {
             EventSink.ClientVersionReceived += EventSink_ClientVersionReceived;
 
             if (m_DetectClientRequirement)
@@ -49,12 +52,14 @@ namespace Server.Misc
 
                     if (info.FileMajorPart != 0 || info.FileMinorPart != 0 || info.FileBuildPart != 0 ||
                         info.FilePrivatePart != 0)
+                    {
                         Required = new ClientVersion(
                             info.FileMajorPart,
                             info.FileMinorPart,
                             info.FileBuildPart,
                             info.FilePrivatePart
                         );
+                    }
                 }
             }
 
@@ -75,7 +80,9 @@ namespace Server.Misc
             string kickMessage = null;
 
             if (state.Mobile?.AccessLevel != AccessLevel.Player)
+            {
                 return;
+            }
 
             if (Required != null && version < Required && (m_OldClientResponse == OldClientResponse.Kick ||
                                                            m_OldClientResponse == OldClientResponse.LenientKick &&
@@ -88,11 +95,17 @@ namespace Server.Misc
             else if (!AllowGod || !AllowRegular || !AllowUOTD)
             {
                 if (!AllowGod && version.Type == ClientType.God)
+                {
                     kickMessage = "This server does not allow god clients to connect.";
+                }
                 else if (!AllowRegular && version.Type == ClientType.Regular)
+                {
                     kickMessage = "This server does not allow regular clients to connect.";
+                }
                 else if (!AllowUOTD && state.IsUOTDClient)
+                {
                     kickMessage = "This server does not allow UO:TD clients to connect.";
+                }
 
                 if (!AllowGod && !AllowRegular && !AllowUOTD)
                 {
@@ -105,11 +118,17 @@ namespace Server.Misc
                 else if (kickMessage != null)
                 {
                     if (AllowRegular && AllowUOTD)
+                    {
                         kickMessage += " You can use regular or UO:TD clients.";
+                    }
                     else if (AllowRegular)
+                    {
                         kickMessage += " You can use regular clients.";
+                    }
                     else if (AllowUOTD)
+                    {
                         kickMessage += " You can use UO:TD clients.";
+                    }
                 }
             }
 
@@ -162,11 +181,13 @@ namespace Server.Misc
             from.SendMessage("You will be reminded of this again.");
 
             if (m_OldClientResponse == OldClientResponse.LenientKick)
+            {
                 from.SendMessage(
                     "Old clients will be kicked after {0} days of character age and {1} hours of play time",
                     m_AgeLeniency,
                     m_GameTimeLeniency
                 );
+            }
 
             Timer.DelayCall(TimeSpan.FromMinutes(Utility.Random(5, 15)), SendAnnoyGump, from);
         }

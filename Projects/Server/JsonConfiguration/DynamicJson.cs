@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: DynamicJson.cs                                                  *
  *                                                                       *
@@ -41,7 +41,9 @@ namespace Server.Json
         public bool GetEnumProperty<T>(string key, JsonSerializerOptions options, out T t) where T : struct, Enum
         {
             if (data.TryGetValue(key, out var el))
+            {
                 return Enum.TryParse(el.ToObject<string>(options), out t);
+            }
 
             t = default;
             return false;

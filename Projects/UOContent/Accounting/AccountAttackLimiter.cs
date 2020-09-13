@@ -6,7 +6,7 @@ using Server.Network;
 
 namespace Server.Accounting
 {
-    public class AccountAttackLimiter
+    public static class AccountAttackLimiter
     {
         public static bool Enabled;
 
@@ -20,7 +20,9 @@ namespace Server.Accounting
         public static void Initialize()
         {
             if (!Enabled)
+            {
                 return;
+            }
 
             PacketHandlers.RegisterThrottler(0x80, Throttle_Callback);
             PacketHandlers.RegisterThrottler(0x91, Throttle_Callback);
@@ -32,7 +34,9 @@ namespace Server.Accounting
             var accessLog = FindAccessLog(ns);
 
             if (accessLog == null)
+            {
                 return TimeSpan.Zero;
+            }
 
             var date = DateTime.UtcNow;
             var access = accessLog.LastAccessTime + ComputeThrottle(accessLog.Counts);
@@ -42,7 +46,9 @@ namespace Server.Accounting
         public static InvalidAccountAccessLog FindAccessLog(NetState ns)
         {
             if (ns == null)
+            {
                 return null;
+            }
 
             var ipAddress = ns.Address;
 
@@ -51,9 +57,13 @@ namespace Server.Accounting
                 var accessLog = m_List[i];
 
                 if (accessLog.HasExpired)
+                {
                     m_List.RemoveAt(i--);
+                }
                 else if (accessLog.Address.Equals(ipAddress))
+                {
                     return accessLog;
+                }
             }
 
             return null;
@@ -62,17 +72,22 @@ namespace Server.Accounting
         public static void RegisterInvalidAccess(NetState ns)
         {
             if (ns == null || !Enabled)
+            {
                 return;
+            }
 
             var accessLog = FindAccessLog(ns);
 
             if (accessLog == null)
+            {
                 m_List.Add(accessLog = new InvalidAccountAccessLog(ns.Address));
+            }
 
             accessLog.Counts += 1;
             accessLog.RefreshAccessTime();
 
             if (accessLog.Counts >= 3)
+            {
                 try
                 {
                     using var op = new StreamWriter("throttle.log", true);
@@ -87,24 +102,35 @@ namespace Server.Accounting
                 {
                     // ignored
                 }
+            }
         }
 
         public static TimeSpan ComputeThrottle(int counts)
         {
             if (counts >= 15)
+            {
                 return TimeSpan.FromMinutes(5.0);
+            }
 
             if (counts >= 10)
+            {
                 return TimeSpan.FromMinutes(1.0);
+            }
 
             if (counts >= 5)
+            {
                 return TimeSpan.FromSeconds(20.0);
+            }
 
             if (counts >= 3)
+            {
                 return TimeSpan.FromSeconds(10.0);
+            }
 
             if (counts >= 1)
+            {
                 return TimeSpan.FromSeconds(2.0);
+            }
 
             return TimeSpan.Zero;
         }

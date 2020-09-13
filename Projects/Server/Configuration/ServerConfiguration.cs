@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ServerConfiguration.cs                                          *
  *                                                                       *
@@ -60,7 +60,9 @@ namespace Server
         public static string GetOrUpdateSetting(string key, string defaultValue)
         {
             if (m_Settings.settings.TryGetValue(key, out var value))
+            {
                 return value;
+            }
 
             SetSetting(key, value = defaultValue);
             return value;
@@ -71,9 +73,13 @@ namespace Server
             int value;
 
             if (m_Settings.settings.TryGetValue(key, out var strValue))
+            {
                 value = int.TryParse(strValue, out value) ? value : defaultValue;
+            }
             else
+            {
                 SetSetting(key, (value = defaultValue).ToString());
+            }
 
             return value;
         }
@@ -83,9 +89,13 @@ namespace Server
             bool value;
 
             if (m_Settings.settings.TryGetValue(key, out var strValue))
+            {
                 value = bool.TryParse(strValue, out value) ? value : defaultValue;
+            }
             else
+            {
                 SetSetting(key, (value = defaultValue).ToString());
+            }
 
             return value;
         }
@@ -95,9 +105,13 @@ namespace Server
             TimeSpan value;
 
             if (m_Settings.settings.TryGetValue(key, out var strValue))
+            {
                 value = TimeSpan.TryParse(strValue, out value) ? value : defaultValue;
+            }
             else
+            {
                 SetSetting(key, (value = defaultValue).ToString());
+            }
 
             return value;
         }
@@ -107,9 +121,13 @@ namespace Server
             T value;
 
             if (m_Settings.settings.TryGetValue(key, out var strValue))
+            {
                 value = Enum.TryParse(strValue, out value) ? value : defaultValue;
+            }
             else
+            {
                 SetSetting(key, (value = defaultValue).ToString());
+            }
 
             return value;
         }
@@ -159,7 +177,9 @@ namespace Server
             }
 
             if (mocked)
+            {
                 return;
+            }
 
             if (m_Settings.dataDirectories.Count == 0)
             {
@@ -198,7 +218,10 @@ namespace Server
             {
                 Console.Write("{0}> ", directories.Count > 0 ? "[finish] " : " ");
                 var directory = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(directory)) break;
+                if (string.IsNullOrWhiteSpace(directory))
+                {
+                    break;
+                }
 
                 if (Directory.Exists(directory))
                 {
@@ -227,10 +250,15 @@ namespace Server
                 // IP:Port?
                 Console.Write("[{0}]> ", ips.Count > 0 ? "finish" : "0.0.0.0:2593");
                 var ipStr = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(ipStr)) break;
+                if (string.IsNullOrWhiteSpace(ipStr))
+                {
+                    break;
+                }
 
                 if (ipStr.IndexOf(":", StringComparison.Ordinal) == -1)
+                {
                     ipStr += ":2593";
+                }
 
                 if (IPEndPoint.TryParse(ipStr, out var ip))
                 {
@@ -244,14 +272,19 @@ namespace Server
             } while (true);
 
             if (ips.Count == 0)
+            {
                 ips.Add(new IPEndPoint(IPAddress.Any, 2593));
+            }
 
             return ips;
         }
 
         public static void Save()
         {
-            if (m_Mocked) return;
+            if (m_Mocked)
+            {
+                return;
+            }
 
             JsonConfig.Serialize(m_FilePath, m_Settings);
         }

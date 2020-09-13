@@ -1,23 +1,3 @@
-/***************************************************************************
- *                          StandardSaveStrategy.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -60,7 +40,9 @@ namespace Server
 
             if (permitBackgroundWrite && UseSequentialWriters
             ) // If we're permitted to write in the background, but we don't anyways, then notify.
+            {
                 World.NotifyDiskWriteComplete();
+            }
         }
 
         protected void SaveMobiles()
@@ -90,7 +72,9 @@ namespace Server
                     tdb.Write(World.m_MobileTypes.Count);
 
                     for (var i = 0; i < World.m_MobileTypes.Count; ++i)
+                    {
                         tdb.Write(World.m_MobileTypes[i].FullName);
+                    }
 
                     tdb.Close();
                 }
@@ -151,7 +135,9 @@ namespace Server
                     tdb.Write(World.m_ItemTypes.Count);
 
                     for (var i = 0; i < World.m_ItemTypes.Count; ++i)
+                    {
                         tdb.Write(World.m_ItemTypes[i].FullName);
+                    }
 
                     tdb.Close();
                 }
@@ -243,7 +229,9 @@ namespace Server
                 var item = _decayQueue.Dequeue();
 
                 if (item.OnDecay())
+                {
                     item.Delete();
+                }
             }
         }
     }

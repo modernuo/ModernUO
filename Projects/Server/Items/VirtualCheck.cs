@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: VirtualCheck.cs                                                 *
  *                                                                       *
@@ -78,7 +78,10 @@ namespace Server.Items
         {
             var c = GetSecureTradeCont();
 
-            if (check == null || c == null) return base.IsAccessibleTo(check);
+            if (check == null || c == null)
+            {
+                return base.IsAccessibleTo(check);
+            }
 
             return c.RootParent == check && IsChildOf(c);
         }
@@ -125,11 +128,19 @@ namespace Server.Items
         {
             var c = GetSecureTradeCont();
 
-            if (c?.Trade == null) return;
+            if (c?.Trade == null)
+            {
+                return;
+            }
 
             if (user == c.Trade.From.Mobile)
+            {
                 c.Trade.UpdateFromCurrency();
-            else if (user == c.Trade.To.Mobile) c.Trade.UpdateToCurrency();
+            }
+            else if (user == c.Trade.To.Mobile)
+            {
+                c.Trade.UpdateToCurrency();
+            }
 
             c.ClearChecks();
         }
@@ -194,7 +205,9 @@ namespace Server.Items
                 base.OnServerClose(owner);
 
                 if (Check?.Deleted == false)
+                {
                     Check.UpdateTrade(User);
+                }
             }
 
             public void Close()
@@ -202,17 +215,25 @@ namespace Server.Items
                 User.CloseGump<EditGump>();
 
                 if (Check?.Deleted == false)
+                {
                     Check.UpdateTrade(User);
+                }
                 else
+                {
                     Check = null;
+                }
             }
 
             public void Send()
             {
                 if (Check?.Deleted == false)
+                {
                     User.SendGump(this);
+                }
                 else
+                {
                     Close();
+                }
             }
 
             public void Refresh(bool recompile)
@@ -224,7 +245,9 @@ namespace Server.Items
                 }
 
                 if (recompile)
+                {
                     CompileLayout();
+                }
 
                 Close();
                 Send();
@@ -233,7 +256,9 @@ namespace Server.Items
             private void CompileLayout()
             {
                 if (Check?.Deleted != false)
+                {
                     return;
+                }
 
                 Entries.ForEach(e => e.Parent = null);
                 Entries.Clear();
@@ -353,7 +378,9 @@ namespace Server.Items
                 }
 
                 if (updated)
+                {
                     User.SendMessage("Your offer has been updated.");
+                }
 
                 if (refresh && Check?.Deleted == false)
                 {

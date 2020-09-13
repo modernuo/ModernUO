@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: RefPool.cs                                                      *
  *                                                                       *
@@ -71,14 +71,23 @@ namespace Server.Utilities
         public RefPool(Generator generator, int preGenerateCount = 0, int maxRefrenceRetention = DEFAULT_RESOURCE_RETENTION)
         {
             if (generator == null)
+            {
                 throw new ArgumentNullException(nameof(generator));
+            }
+
             if (preGenerateCount > maxRefrenceRetention)
+            {
                 throw new IndexOutOfRangeException(
                     $"{nameof(preGenerateCount)} greater than {nameof(maxRefrenceRetention)}"
                 );
+            }
+
             m_Generator = generator;
             m_MaxRefrenceRetention = maxRefrenceRetention;
-            while (--preGenerateCount >= 0) m_Resources.Push(generator(this));
+            while (--preGenerateCount >= 0)
+            {
+                m_Resources.Push(generator(this));
+            }
         }
 
         /// <summary>
@@ -90,7 +99,10 @@ namespace Server.Utilities
             set
             {
                 m_MaxRefrenceRetention = value;
-                while (m_Resources.Count > value) m_Resources.Pop();
+                while (m_Resources.Count > value)
+                {
+                    m_Resources.Pop();
+                }
             }
         }
 
@@ -109,7 +121,9 @@ namespace Server.Utilities
         public void Return(TRef queueRef)
         {
             if (m_Resources.Count < MaxRefrenceRetention)
+            {
                 m_Resources.Push(queueRef);
+            }
         }
     }
 

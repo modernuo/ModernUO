@@ -232,8 +232,8 @@ namespace Server.Mobiles
             if (from.InRange(this, 1))
             {
                 var canAccess = from.AccessLevel >= AccessLevel.GameMaster
-                                || Controlled && ControlMaster == @from
-                                || Summoned && SummonMaster == @from;
+                                || Controlled && ControlMaster == from
+                                || Summoned && SummonMaster == from;
 
                 if (canAccess)
                 {

@@ -24,7 +24,7 @@ namespace Server
 
         public IPoint3D Goal { get; }
 
-        public static void Initialize()
+        public static void Configure()
         {
             Enabled = ServerConfiguration.GetOrUpdateSetting("pathfinding.enable", true);
         }

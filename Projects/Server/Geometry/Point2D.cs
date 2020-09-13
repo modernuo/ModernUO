@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Point2D.cs                                                      *
  *                                                                       *
@@ -104,14 +104,22 @@ namespace Server
         public int CompareTo(Point2D other)
         {
             var xComparison = m_X.CompareTo(other.m_X);
-            if (xComparison != 0) return xComparison;
+            if (xComparison != 0)
+            {
+                return xComparison;
+            }
+
             return m_Y.CompareTo(other.m_Y);
         }
 
         public int CompareTo(IPoint2D other)
         {
             var xComparison = m_X.CompareTo(other.X);
-            if (xComparison != 0) return xComparison;
+            if (xComparison != 0)
+            {
+                return xComparison;
+            }
+
             return m_Y.CompareTo(other.Y);
         }
     }

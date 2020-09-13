@@ -1,23 +1,3 @@
-/***************************************************************************
- *                                Packet.cs
- *                            -------------------
- *   begin                : August 2, 2019
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
 using System;
 using System.Buffers;
 using System.Diagnostics;
@@ -112,16 +92,22 @@ namespace Server.Network
             Core.Set(); // Is this still needed if this is done async?
 
             if ((m_State & (State.Acquired | State.Static)) == 0)
+            {
                 Free();
+            }
         }
 
         private void Free()
         {
             if (m_CompiledBuffer == null)
+            {
                 return;
+            }
 
             if ((m_State & State.Buffered) != 0)
+            {
                 ArrayPool<byte>.Shared.Return(m_CompiledBuffer);
+            }
 
             m_State &= ~(State.Static | State.Acquired | State.Buffered);
 
@@ -131,7 +117,9 @@ namespace Server.Network
         public void Release()
         {
             if ((m_State & State.Acquired) != 0)
+            {
                 Free();
+            }
         }
 
         public byte[] Compile(bool compress, out int length)

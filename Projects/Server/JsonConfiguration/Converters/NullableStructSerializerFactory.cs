@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright (C) 2019-2020 - ModernUO Development Team                   *
+ * Copyright 2019-2020 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: NullableStructSerializerFactory.cs                              *
  *                                                                       *
@@ -20,7 +20,9 @@ namespace System.Text.Json.Serialization
         public override bool CanConvert(Type typeToConvert)
         {
             if (!typeToConvert.IsGenericType || typeToConvert.GetGenericTypeDefinition() != typeof(Nullable<>))
+            {
                 return false;
+            }
 
             var structType = typeToConvert.GenericTypeArguments[0];
             return !structType.IsPrimitive && structType.Namespace?.StartsWith(nameof(System)) != true && !structType.IsEnum;

@@ -110,7 +110,10 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Ensure(int count = 1)
         {
-            if (_span.Length < count) EnsureMore(count);
+            if (_span.Length < count)
+            {
+                EnsureMore(count);
+            }
         }
 
         /// <summary>
@@ -120,7 +123,10 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void EnsureMore(int count = 0)
         {
-            if (_buffered > 0) Commit();
+            if (_buffered > 0)
+            {
+                Commit();
+            }
 
             _span = _output.GetSpan(count);
         }
@@ -133,7 +139,10 @@ namespace System.Buffers
         {
             while (source.Length > 0)
             {
-                if (_span.Length == 0) EnsureMore();
+                if (_span.Length == 0)
+                {
+                    EnsureMore();
+                }
 
                 var writable = Math.Min(source.Length, _span.Length);
                 source.Slice(0, writable).CopyTo(_span);
