@@ -62,7 +62,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 ## Thanks
 - RunUO Team & Community
 - ServUO Team & Community
-- [Jaedan](https://github.com/jaedan) and the ClassicUO Community
+- [Karasho](https://github.com/andreakarasho), [Jaedan](https://github.com/jaedan) and the ClassicUO Community
 
 ## Troubleshooting / FAQ
 - See [FAQ](./FAQ.md)
