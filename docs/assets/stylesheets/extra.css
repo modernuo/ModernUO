@@ -50,3 +50,22 @@ html .md-footer-meta.md-typeset a:hover {
   }
 }
 
+.windows {
+  color: #00adef;
+}
+
+.apple {
+  color: #000000;
+}
+
+.ubuntu {
+  color: #e95420;
+}
+
+.debian {
+  color: #d70a53;
+}
+
+.centos {
+  color: #212078;
+}

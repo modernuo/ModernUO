@@ -14,7 +14,7 @@ theme:
   favicon: branding/favicon.png
   icon:
     logo: modernuo/logo
-  custom_dir: docs/overrides
+  custom_dir: docs/overrides/
   features:
     - tabs
     - instant
@@ -38,11 +38,13 @@ extra:
       link: https://twitter.com/modernuo
       name: "@modernuo"
 markdown_extensions:
+  - admonition
   - footnotes
   - meta
   - markdown.extensions.toc:
       permalink: true
   - attr_list
+  - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.superfences
   - pymdownx.snippets
@@ -55,10 +57,11 @@ markdown_extensions:
       emoji_generator: !!python/name:materialx.emoji.to_svg
       options:
         custom_icons:
-          - overrides/.icons
+          - docs/overrides/.icons
 
 # Pages
 nav:
   - Home: 'index.md'
   - Get Started:
-    - Installation: getting-started.md
+    - Installation: installation.md
+    - Building the Server: building-server.md
