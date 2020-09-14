@@ -433,7 +433,7 @@ namespace Server.Network
 
             if (targ != null)
             {
-                EventSink.InvokeRenameRequest(@from, targ, pvSrc.ReadStringSafe());
+                EventSink.InvokeRenameRequest(from, targ, pvSrc.ReadStringSafe());
             }
         }
 
@@ -631,7 +631,7 @@ namespace Server.Network
                 if (item != null && from.Map == item.Map && Utility.InUpdateRange(item.GetWorldLocation(), from.Location) &&
                     from.CanSee(item))
                 {
-                    item.OnHelpRequest(@from);
+                    item.OnHelpRequest(from);
                 }
             }
             else if (serial.IsMobile)
@@ -668,7 +668,7 @@ namespace Server.Network
 
             if (m != null)
             {
-                @from.Attack(m);
+                from.Attack(m);
             }
         }
 
@@ -827,11 +827,11 @@ namespace Server.Network
 
                 if (type == 0)
                 {
-                    p.OnCancel(@from);
+                    p.OnCancel(from);
                 }
                 else
                 {
-                    p.OnResponse(@from, text);
+                    p.OnResponse(from, text);
                 }
             }
         }
@@ -858,11 +858,11 @@ namespace Server.Network
 
                 if (type == 0)
                 {
-                    p.OnCancel(@from);
+                    p.OnCancel(from);
                 }
                 else
                 {
-                    p.OnResponse(@from, text);
+                    p.OnResponse(from, text);
                 }
             }
         }
@@ -970,7 +970,7 @@ namespace Server.Network
 
             if (!to.AllowEquipFrom(from) || !to.EquipItem(item))
             {
-                item.Bounce(@from);
+                item.Bounce(from);
             }
 
             item.ClearBounce();
@@ -1458,7 +1458,7 @@ namespace Server.Network
 
                         if (m?.Deleted == false)
                         {
-                            @from.Use(m);
+                            from.Use(m);
                         }
                     }
                     else if (s.IsItem)
@@ -1467,7 +1467,7 @@ namespace Server.Network
 
                         if (item?.Deleted == false)
                         {
-                            @from.Use(item);
+                            from.Use(item);
                         }
                     }
                 }
@@ -1500,7 +1500,7 @@ namespace Server.Network
                     {
                         if (from.Region.OnSingleClick(from, m))
                         {
-                            m.OnSingleClick(@from);
+                            m.OnSingleClick(from);
                         }
                     }
                 }
@@ -1520,7 +1520,7 @@ namespace Server.Network
                     {
                         if (item.Parent is Item parentItem)
                         {
-                            parentItem.OnSingleClickContained(@from, item);
+                            parentItem.OnSingleClickContained(from, item);
                         }
 
                         item.OnSingleClick(from);
@@ -1581,7 +1581,7 @@ namespace Server.Network
 
             if (from != null && ok && from.Alive && from.Body.IsHuman && !from.Mounted)
             {
-                @from.Animate(action, 7, 1, true, false, 0);
+                from.Animate(action, 7, 1, true, false, 0);
             }
         }
 
@@ -1711,7 +1711,7 @@ namespace Server.Network
 
                     if (m != null && from.CanSee(m) && Utility.InUpdateRange(from, m))
                     {
-                        m.SendPropertiesTo(@from);
+                        m.SendPropertiesTo(from);
                     }
                 }
                 else if (s.IsItem)
@@ -1721,7 +1721,7 @@ namespace Server.Network
                     if (item?.Deleted == false && from.CanSee(item) &&
                         Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
                     {
-                        item.SendPropertiesTo(@from);
+                        item.SendPropertiesTo(from);
                     }
                 }
             }
@@ -1744,7 +1744,7 @@ namespace Server.Network
 
                 if (m != null && from.CanSee(m) && Utility.InUpdateRange(from, m))
                 {
-                    m.SendPropertiesTo(@from);
+                    m.SendPropertiesTo(from);
                 }
             }
             else if (s.IsItem)
@@ -1754,7 +1754,7 @@ namespace Server.Network
                 if (item?.Deleted == false && from.CanSee(item) &&
                     Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
                 {
-                    item.SendPropertiesTo(@from);
+                    item.SendPropertiesTo(from);
                 }
             }
         }
@@ -2031,12 +2031,12 @@ namespace Server.Network
                 {
                     case 0x04: // Stats
                         {
-                            m.OnStatsQuery(@from);
+                            m.OnStatsQuery(from);
                             break;
                         }
                     case 0x05:
                         {
-                            m.OnSkillsQuery(@from);
+                            m.OnSkillsQuery(from);
                             break;
                         }
                     default:

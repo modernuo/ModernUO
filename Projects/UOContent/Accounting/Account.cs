@@ -63,7 +63,9 @@ namespace Server.Accounting
 
                 // Automatically upgrade plain passwords to current algorithm.
                 if (!upgraded)
+                {
                     SetPassword(Utility.GetText(node["password"], null));
+                }
             }
             else
             {
@@ -85,19 +87,31 @@ namespace Server.Accounting
             IPRestrictions = LoadAccessCheck(node);
 
             for (var i = 0; i < m_Mobiles.Length; ++i)
+            {
                 if (m_Mobiles[i] != null)
+                {
                     m_Mobiles[i].Account = this;
+                }
+            }
 
             var totalGameTime = Utility.GetXMLTimeSpan(Utility.GetText(node["totalGameTime"], null), TimeSpan.Zero);
             if (totalGameTime == TimeSpan.Zero)
+            {
                 for (var i = 0; i < m_Mobiles.Length; i++)
+                {
                     if (m_Mobiles[i] is PlayerMobile m)
+                    {
                         totalGameTime += m.GameTime;
+                    }
+                }
+            }
 
             m_TotalGameTime = totalGameTime;
 
             if (Young)
+            {
                 CheckYoung();
+            }
 
             Accounts.Add(this);
         }
@@ -148,15 +162,19 @@ namespace Server.Accounting
                 var isBanned = GetFlag(0);
 
                 if (!isBanned)
+                {
                     return false;
+                }
 
                 if (GetBanTags(out var banTime, out var banDuration))
+                {
                     if (banDuration != TimeSpan.MaxValue && DateTime.UtcNow >= banTime + banDuration)
                     {
                         SetUnspecifiedBan(null); // clear
                         Banned = false;
                         return false;
                     }
+                }
 
                 return true;
             }
@@ -197,7 +215,9 @@ namespace Server.Accounting
             get
             {
                 if (AccessLevel != AccessLevel.Player)
+                {
                     return false;
+                }
 
                 var inactiveLength = DateTime.UtcNow - LastLogin;
 
@@ -214,8 +234,12 @@ namespace Server.Accounting
             get
             {
                 for (var i = 0; i < m_Mobiles.Length; i++)
+                {
                     if (m_Mobiles[i] is PlayerMobile m && m.NetState != null)
+                    {
                         return m_TotalGameTime + (DateTime.UtcNow - m.SessionStart);
+                    }
+                }
 
                 return m_TotalGameTime;
             }
@@ -231,12 +255,16 @@ namespace Server.Accounting
                 var m = this[i];
 
                 if (m == null)
+                {
                     continue;
+                }
 
                 var list = BaseHouse.GetHouses(m);
 
                 for (var j = 0; j < list.Count; ++j)
+                {
                     list[j].Delete();
+                }
 
                 m.Delete();
 
@@ -245,7 +273,9 @@ namespace Server.Accounting
             }
 
             if (LoginIPs.Length != 0 && AccountHandler.IPTable.ContainsKey(LoginIPs[0]))
+            {
                 --AccountHandler.IPTable[LoginIPs[0]];
+            }
 
             Accounts.Remove(Username);
         }
@@ -283,11 +313,15 @@ namespace Server.Accounting
 
             var ok = AccountSecurity.GetPasswordProtection(m_PasswordAlgorithm).ValidatePassword(Password, phrase);
             if (!ok)
+            {
                 return false;
+            }
 
             // Upgrade the password protection in case we change the algorithm
             if (m_PasswordAlgorithm != AccountSecurity.CurrentAlgorithm)
+            {
                 SetPassword(plainPassword);
+            }
 
             return true;
         }
@@ -302,8 +336,12 @@ namespace Server.Accounting
                 var count = 0;
 
                 for (var i = 0; i < Length; i++)
+                {
                     if (this[i] != null)
+                    {
                         count++;
+                    }
+                }
 
                 return count;
             }
@@ -334,7 +372,9 @@ namespace Server.Accounting
                     var m = m_Mobiles[index];
 
                     if (m?.Deleted != true)
+                    {
                         return m;
+                    }
 
                     // This is the only place that clears a mobile for garbage collection
                     // outside of an entire account deletion.
@@ -349,12 +389,16 @@ namespace Server.Accounting
                 if (index >= 0 && index < m_Mobiles.Length)
                 {
                     if (m_Mobiles[index] != null)
+                    {
                         m_Mobiles[index].Account = null;
+                    }
 
                     m_Mobiles[index] = value;
 
                     if (m_Mobiles[index] != null)
+                    {
                         m_Mobiles[index].Account = this;
+                    }
                 }
             }
         }
@@ -387,7 +431,10 @@ namespace Server.Accounting
         /// <returns>True if successful, false if amount given is less than or equal to zero.</returns>
         public bool DepositGold(int amount)
         {
-            if (amount <= 0) return false;
+            if (amount <= 0)
+            {
+                return false;
+            }
 
             var plat = Math.DivRem(amount, AccountGold.CurrencyThreshold, out var gold);
             TotalPlat += plat;
@@ -403,7 +450,10 @@ namespace Server.Accounting
         /// <returns>True if successful, false if amount given is less than or equal to zero.</returns>
         public bool DepositPlat(int amount)
         {
-            if (amount <= 0) return false;
+            if (amount <= 0)
+            {
+                return false;
+            }
 
             TotalPlat += amount;
             return true;
@@ -418,8 +468,15 @@ namespace Server.Accounting
         /// <returns>True if successful, false if balance was too low.</returns>
         public bool WithdrawGold(int amount)
         {
-            if (amount <= 0) return true;
-            if (amount > TotalGold) return false;
+            if (amount <= 0)
+            {
+                return true;
+            }
+
+            if (amount > TotalGold)
+            {
+                return false;
+            }
 
             TotalGold -= amount;
 
@@ -433,8 +490,15 @@ namespace Server.Accounting
         /// <returns>True if successful, false if balance was too low.</returns>
         public bool WithdrawPlat(int amount)
         {
-            if (amount <= 0) return true;
-            if (amount > TotalPlat) return false;
+            if (amount <= 0)
+            {
+                return true;
+            }
+
+            if (amount > TotalPlat)
+            {
+                return false;
+            }
 
             TotalPlat -= amount;
 
@@ -464,9 +528,13 @@ namespace Server.Accounting
         public void SetFlag(int index, bool value)
         {
             if (value)
+            {
                 Flags |= 1 << index;
+            }
             else
+            {
                 Flags &= ~(1 << index);
+            }
         }
 
         /// <summary>
@@ -488,12 +556,16 @@ namespace Server.Accounting
             for (var i = Tags.Count - 1; i >= 0; --i)
             {
                 if (i >= Tags.Count)
+                {
                     continue;
+                }
 
                 var tag = Tags[i];
 
                 if (tag.Name == name)
+                {
                     Tags.RemoveAt(i);
+                }
             }
         }
 
@@ -529,7 +601,9 @@ namespace Server.Accounting
                 var tag = Tags[i];
 
                 if (tag.Name == name)
+                {
                     return tag.Value;
+                }
             }
 
             return null;
@@ -543,19 +617,31 @@ namespace Server.Accounting
         public void SetBanTags(Mobile from, DateTime banTime, TimeSpan banDuration)
         {
             if (from == null)
+            {
                 RemoveTag("BanDealer");
+            }
             else
+            {
                 SetTag("BanDealer", from.ToString());
+            }
 
             if (banTime == DateTime.MinValue)
+            {
                 RemoveTag("BanTime");
+            }
             else
+            {
                 SetTag("BanTime", XmlConvert.ToString(banTime, XmlDateTimeSerializationMode.Utc));
+            }
 
             if (banDuration == TimeSpan.Zero)
+            {
                 RemoveTag("BanDuration");
+            }
             else
+            {
                 SetTag("BanDuration", banDuration.ToString());
+            }
         }
 
         public bool GetBanTags(out DateTime banTime, out TimeSpan banDuration)
@@ -565,11 +651,17 @@ namespace Server.Accounting
             banTime = Utility.GetXMLDateTime(GetTag("BanTime"), DateTime.MinValue);
 
             if (tagDuration == "Infinite")
+            {
                 banDuration = TimeSpan.MaxValue;
+            }
             else if (tagDuration != null)
+            {
                 banDuration = Utility.ToTimeSpan(tagDuration);
+            }
             else
+            {
                 banDuration = TimeSpan.Zero;
+            }
 
             return banTime != DateTime.MinValue && banDuration != TimeSpan.Zero;
         }
@@ -584,7 +676,9 @@ namespace Server.Accounting
         private static void EventSink_Connected(Mobile m)
         {
             if (!(m.Account is Account acc))
+            {
                 return;
+            }
 
             if (acc.Young && acc.m_YoungTimer == null)
             {
@@ -596,7 +690,9 @@ namespace Server.Accounting
         private static void EventSink_Disconnected(Mobile m)
         {
             if (!(m.Account is Account acc))
+            {
                 return;
+            }
 
             if (acc.m_YoungTimer != null)
             {
@@ -605,7 +701,9 @@ namespace Server.Accounting
             }
 
             if (!(m is PlayerMobile pm))
+            {
                 return;
+            }
 
             acc.m_TotalGameTime += DateTime.UtcNow - pm.SessionStart;
         }
@@ -613,10 +711,14 @@ namespace Server.Accounting
         private static void EventSink_Login(Mobile m)
         {
             if (!(m is PlayerMobile pm))
+            {
                 return;
+            }
 
             if (!(m.Account is Account acc))
+            {
                 return;
+            }
 
             if (pm.Young && acc.Young)
             {
@@ -636,6 +738,7 @@ namespace Server.Accounting
             Young = false;
 
             for (var i = 0; i < m_Mobiles.Length; i++)
+            {
                 if (m_Mobiles[i] is PlayerMobile m && m.Young)
                 {
                     m.Young = false;
@@ -643,26 +746,34 @@ namespace Server.Accounting
                     if (m.NetState != null)
                     {
                         if (message > 0)
+                        {
                             m.SendLocalizedMessage(message);
+                        }
 
                         m.SendLocalizedMessage(
                             1019039
                         ); // You are no longer considered a young player of Ultima Online, and are no longer subject to the limitations and benefits of being in that caste.
                     }
                 }
+            }
         }
 
         public void CheckYoung()
         {
             if (TotalGameTime >= YoungDuration)
+            {
                 RemoveYoungStatus(
                     1019038
                 ); // You are old enough to be considered an adult, and have outgrown your status as a young player!
+            }
         }
 
         private bool UpgradePassword(string password, PasswordProtectionAlgorithm algorithm)
         {
-            if (password == null || algorithm < m_PasswordAlgorithm) return false;
+            if (password == null || algorithm < m_PasswordAlgorithm)
+            {
+                return false;
+            }
 
             m_PasswordAlgorithm = algorithm;
             Password = password?.Replace("-", string.Empty);
@@ -688,7 +799,9 @@ namespace Server.Accounting
                     var text = Utility.GetText(ip, null);
 
                     if (text != null)
+                    {
                         list.Add(text);
+                    }
                 }
 
                 stringList = list.ToArray();
@@ -720,12 +833,16 @@ namespace Server.Accounting
                 count = 0;
 
                 foreach (XmlElement ip in addressList.GetElementsByTagName("ip"))
+                {
                     if (count < list.Length)
+                    {
                         if (IPAddress.TryParse(Utility.GetText(ip, null), out var address))
                         {
                             list[count] = Utility.Intern(address);
                             count++;
                         }
+                    }
+                }
 
                 if (count != list.Length)
                 {
@@ -733,7 +850,9 @@ namespace Server.Accounting
                     list = new IPAddress[count];
 
                     for (var i = 0; i < count && i < old.Length; ++i)
+                    {
                         list[i] = old[i];
+                    }
                 }
             }
             else
@@ -759,19 +878,25 @@ namespace Server.Accounting
             // Above is legacy, no longer used
 
             if (chars != null)
+            {
                 foreach (XmlElement ele in chars.GetElementsByTagName("char"))
+                {
                     try
                     {
                         var index = Utility.GetXMLInt32(Utility.GetAttribute(ele, "index", "0"), 0);
                         var serial = Utility.GetXMLUInt32(Utility.GetText(ele, "0"), 0);
 
                         if (index >= 0 && index < list.Length)
+                        {
                             list[index] = World.FindMobile(serial);
+                        }
                     }
                     catch
                     {
                         // ignored
                     }
+                }
+            }
 
             return list;
         }
@@ -791,6 +916,7 @@ namespace Server.Accounting
                 list = new List<AccountComment>();
 
                 foreach (XmlElement comment in comments.GetElementsByTagName("comment"))
+                {
                     try
                     {
                         list.Add(new AccountComment(comment));
@@ -799,6 +925,7 @@ namespace Server.Accounting
                     {
                         // ignored
                     }
+                }
             }
 
             return list;
@@ -819,6 +946,7 @@ namespace Server.Accounting
                 list = new List<AccountTag>();
 
                 foreach (XmlElement tag in tags.GetElementsByTagName("tag"))
+                {
                     try
                     {
                         list.Add(new AccountTag(tag));
@@ -827,6 +955,7 @@ namespace Server.Accounting
                     {
                         // ignored
                     }
+                }
             }
 
             return list;
@@ -848,26 +977,36 @@ namespace Server.Accounting
                 var hasAccess = false;
 
                 if (m_AccessLevel >= level)
+                {
                     hasAccess = true;
+                }
                 else
+                {
                     for (var i = 0; !hasAccess && i < Length; ++i)
                     {
                         var m = this[i];
 
                         if (m?.AccessLevel >= level)
+                        {
                             hasAccess = true;
+                        }
                     }
+                }
 
                 Console.WriteLine("{0} {1}", hasAccess ? "yes" : "no", m_AccessLevel);
 
                 if (!hasAccess)
+                {
                     return false;
+                }
             }
 
             var accessAllowed = IPRestrictions.Length == 0 || IPLimiter.IsExempt(ipAddress);
 
             for (var i = 0; !accessAllowed && i < IPRestrictions.Length; ++i)
+            {
                 accessAllowed = Utility.IPMatch(IPRestrictions[i], ipAddress);
+            }
 
             return accessAllowed;
         }
@@ -878,35 +1017,44 @@ namespace Server.Accounting
         /// <param name="ns">NetState instance to record.</param>
         public void LogAccess(NetState ns)
         {
-            if (ns != null) LogAccess(ns.Address);
+            if (ns != null)
+            {
+                LogAccess(ns.Address);
+            }
         }
 
         public void LogAccess(IPAddress ipAddress)
         {
             if (IPLimiter.IsExempt(ipAddress))
+            {
                 return;
+            }
 
             if (LoginIPs.Length == 0)
             {
-                if (AccountHandler.IPTable.ContainsKey(ipAddress))
-                    AccountHandler.IPTable[ipAddress]++;
-                else
-                    AccountHandler.IPTable[ipAddress] = 1;
+                AccountHandler.IPTable.TryGetValue(ipAddress, out var result);
+                AccountHandler.IPTable[ipAddress] = result + 1;
             }
 
             var contains = false;
 
             for (var i = 0; !contains && i < LoginIPs.Length; ++i)
+            {
                 contains = LoginIPs[i].Equals(ipAddress);
+            }
 
             if (contains)
+            {
                 return;
+            }
 
             var old = LoginIPs;
             LoginIPs = new IPAddress[old.Length + 1];
 
             for (var i = 0; i < old.Length; ++i)
+            {
                 LoginIPs[i] = old[i];
+            }
 
             LoginIPs[old.Length] = ipAddress;
         }
@@ -924,7 +1072,9 @@ namespace Server.Accounting
             var hasAccess = HasAccess(ipAddress);
 
             if (hasAccess)
+            {
                 LogAccess(ipAddress);
+            }
 
             return hasAccess;
         }
@@ -997,7 +1147,9 @@ namespace Server.Accounting
                 xml.WriteStartElement("comments");
 
                 for (var i = 0; i < m_Comments.Count; ++i)
+                {
                     m_Comments[i].Save(xml);
+                }
 
                 xml.WriteEndElement();
             }
@@ -1007,7 +1159,9 @@ namespace Server.Accounting
                 xml.WriteStartElement("tags");
 
                 for (var i = 0; i < m_Tags.Count; ++i)
+                {
                     m_Tags[i].Save(xml);
+                }
 
                 xml.WriteEndElement();
             }

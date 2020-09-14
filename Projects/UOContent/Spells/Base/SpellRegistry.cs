@@ -75,8 +75,7 @@ namespace Server.Spells
 
             m_Types[spellID] = type;
 
-            if (!m_IDsFromTypes.ContainsKey(type))
-                m_IDsFromTypes.Add(type, spellID);
+            m_IDsFromTypes.TryAdd(type, spellID);
 
             if (type.IsSubclassOf(typeof(SpecialMove)))
             {

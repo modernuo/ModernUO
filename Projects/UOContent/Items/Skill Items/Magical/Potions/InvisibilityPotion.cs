@@ -66,12 +66,14 @@ namespace Server.Items
 
         public static void RemoveTimer(Mobile m, bool interrupted = false)
         {
-            if (m_Table.TryGetValue(m, out var timer))
+            if (m_Table.Remove(m, out var timer))
             {
                 if (interrupted)
+                {
                     m.SendLocalizedMessage(1073187); // The invisibility effect is interrupted.
+                }
+
                 timer.Stop();
-                m_Table.Remove(m);
             }
         }
 

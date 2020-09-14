@@ -570,7 +570,7 @@ namespace Server.Items
 
                 for (var i = 0; i < stackItems.Count; i++)
                 {
-                    stackItems[i].m_StackItem.StackWith(@from, stackItems[i].m_DropItem, false);
+                    stackItems[i].m_StackItem.StackWith(from, stackItems[i].m_DropItem, false);
                 }
 
                 return true;
@@ -674,7 +674,7 @@ namespace Server.Items
 
             if (CheckContentDisplay(from))
             {
-                LabelTo(@from, "({0} item{2}, {1} stones)", TotalItems, TotalWeight, TotalItems != 1 ? "s" : string.Empty);
+                LabelTo(from, "({0} item{2}, {1} stones)", TotalItems, TotalWeight, TotalItems != 1 ? "s" : string.Empty);
             }
 
             // LabelTo( from, 1050044, String.Format( "{0}\t{1}", TotalItems.ToString(), TotalWeight.ToString() ) );
@@ -824,11 +824,11 @@ namespace Server.Items
         {
             if (from.AccessLevel > AccessLevel.Player || from.InRange(GetWorldLocation(), 2))
             {
-                DisplayTo(@from);
+                DisplayTo(from);
             }
             else
             {
-                @from.SendLocalizedMessage(500446); // That is too far away.
+                from.SendLocalizedMessage(500446); // That is too far away.
             }
         }
 

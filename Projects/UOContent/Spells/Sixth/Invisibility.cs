@@ -93,11 +93,10 @@ namespace Server.Spells.Sixth
 
         public static void RemoveTimer(Mobile m)
         {
-            if (!m_Table.TryGetValue(m, out var t))
-                return;
-
-            t.Stop();
-            m_Table.Remove(m);
+            if (m_Table.Remove(m, out var t))
+            {
+                t.Stop();
+            }
         }
 
         private class InternalTimer : Timer

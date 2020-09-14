@@ -34,33 +34,37 @@ namespace Server.Misc
             m_MoveHistory = new Dictionary<Mobile, LocationInfo>();
 
             if (Enabled)
+            {
                 EventSink.Login += OnLogin;
+            }
         }
 
         public static void OnLogin(Mobile from)
         {
             if (from == null || from.AccessLevel < AccessLevel.Counselor)
+            {
                 return;
+            }
 
             if (HasDisconnected(from))
             {
                 if (!m_MoveHistory.ContainsKey(from))
+                {
                     m_MoveHistory[from] = new LocationInfo(from.Location, from.Map);
+                }
 
                 var dest = GetRandomDestination();
 
                 from.Location = dest.Location;
                 from.Map = dest.Map;
             }
-            else if (m_MoveHistory.TryGetValue(from, out var orig))
+            else if (m_MoveHistory.Remove(from, out var orig))
             {
                 from.SendMessage(
                     "Your character was moved from {0} ({1}) due to a detected client crash.",
                     orig.Location,
                     orig.Map
                 );
-
-                m_MoveHistory.Remove(from);
             }
         }
 

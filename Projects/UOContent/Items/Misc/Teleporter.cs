@@ -652,11 +652,10 @@ namespace Server.Items
 
         public static void EventSink_Logout(Mobile from)
         {
-            if (from == null || !m_Table.TryGetValue(from, out var info))
-                return;
-
-            info.Timer.Stop();
-            m_Table.Remove(from);
+            if (from != null && m_Table.Remove(from, out var info))
+            {
+                info.Timer.Stop();
+            }
         }
 
         public static string FormatTime(TimeSpan ts)
@@ -802,10 +801,9 @@ namespace Server.Items
 
         public void StopTimer(Mobile m)
         {
-            if (m_Teleporting.TryGetValue(m, out var t))
+            if (m_Teleporting.Remove(m, out var t))
             {
                 t.Stop();
-                m_Teleporting.Remove(m);
             }
         }
 

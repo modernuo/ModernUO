@@ -147,7 +147,9 @@ namespace Server.Items
                 }
 
                 if (!isBaseCreature && !info.CriminalAggression)
+                {
                     Aggressors.Add(info.Attacker);
+                }
             }
 
             for (var i = 0; i < owner.Aggressed.Count; ++i)
@@ -161,7 +163,9 @@ namespace Server.Items
                 }
 
                 if (!isBaseCreature)
+                {
                     Aggressors.Add(info.Defender);
+                }
             }
 
             if (isBaseCreature)
@@ -170,7 +174,9 @@ namespace Server.Items
 
                 var master = bc.GetMaster();
                 if (master != null)
+                {
                     Aggressors.Add(master);
+                }
 
                 var rights = BaseCreature.GetLootingRights(bc.DamageEntries, bc.HitsMax);
                 for (var i = 0; i < rights.Count; ++i)
@@ -178,7 +184,9 @@ namespace Server.Items
                     var ds = rights[i];
 
                     if (ds.m_HasRight)
+                    {
                         Aggressors.Add(ds.m_Mobile);
+                    }
                 }
             }
 
@@ -282,9 +290,13 @@ namespace Server.Items
             if (IsCriminalAction(from) && (Map?.Rules & MapRules.HarmfulRestrictions) != 0)
             {
                 if (Owner?.Player != true)
+                {
                     from.SendLocalizedMessage(1005035); // You did not earn the right to loot this creature!
+                }
                 else
+                {
                     from.SendLocalizedMessage(1010049); // You may not loot this corpse.
+                }
 
                 return;
             }
@@ -315,7 +327,9 @@ namespace Server.Items
                 ProcessDelta();
 
                 if (IsCriminalAction(from))
+                {
                     from.CriminalAction(true);
+                }
             }
             else if (dead is BaseCreature creature)
             {
@@ -335,7 +349,9 @@ namespace Server.Items
         private void AssignInstancedLoot()
         {
             if (Aggressors.Count == 0 || Items.Count == 0)
+            {
                 return;
+            }
 
             m_InstancedItems ??= new Dictionary<Item, InstancedItemInfo>();
 
@@ -349,9 +365,13 @@ namespace Server.Items
                 if (item.LootType != LootType.Cursed) // Don't have cursed items take up someone's item spot.. (?)
                 {
                     if (item.Stackable)
+                    {
                         m_Stackables.Add(item);
+                    }
                     else
+                    {
                         m_Unstackables.Add(item);
+                    }
                 }
             }
 
@@ -392,9 +412,13 @@ namespace Server.Items
                     }
 
                     if (remainder == 0)
+                    {
                         m_InstancedItems.Add(item, new InstancedItemInfo(item, attackers[^1]));
+                    }
                     else
+                    {
                         m_Unstackables.Add(item);
+                    }
                 }
                 else
                 {
@@ -427,7 +451,9 @@ namespace Server.Items
         public void TurnToBones()
         {
             if (Deleted)
+            {
                 return;
+            }
 
             ProcessDelta();
             SendRemovePacket();
@@ -481,18 +507,28 @@ namespace Server.Items
                 var item = initialContent[i];
 
                 if (Core.AOS && owner.Player && item.Parent == owner.Backpack)
+                {
                     c.AddItem(item);
+                }
                 else
+                {
                     c.DropItem(item);
+                }
 
                 if (owner.Player && Core.AOS)
+                {
                     c.SetRestoreInfo(item, item.Location);
+                }
             }
 
             if (Core.SE && !owner.Player)
+            {
                 c.AssignInstancedLoot();
+            }
             else if (Core.AOS && owner is PlayerMobile pm)
+            {
                 c.RestoreEquip = pm.EquipSnapshot;
+            }
 
             var loc = owner.Location;
             var map = owner.Map;
@@ -539,6 +575,7 @@ namespace Server.Items
             writer.Write(count);
 
             if (m_RestoreTable != null)
+            {
                 foreach (var (item, loc) in m_RestoreTable)
                 {
                     writer.Write(item);
@@ -553,11 +590,14 @@ namespace Server.Items
                         writer.Write(loc);
                     }
                 }
+            }
 
             writer.Write(m_DecayTimer != null);
 
             if (m_DecayTimer != null)
+            {
                 writer.WriteDeltaTime(m_DecayTime);
+            }
 
             writer.Write(Looters);
             writer.Write(Killer);
@@ -586,7 +626,9 @@ namespace Server.Items
                 case 12:
                     {
                         if (reader.ReadBool())
+                        {
                             RestoreEquip = reader.ReadStrongItemList();
+                        }
 
                         goto case 11;
                     }
@@ -604,13 +646,19 @@ namespace Server.Items
                             var item = reader.ReadItem();
 
                             if (reader.ReadBool())
+                            {
                                 SetRestoreInfo(item, reader.ReadPoint3D());
+                            }
                             else if (item != null)
+                            {
                                 SetRestoreInfo(item, item.Location);
+                            }
                         }
 
                         if (reader.ReadBool())
+                        {
                             BeginDecay(reader.ReadDeltaTime() - DateTime.UtcNow);
+                        }
 
                         Looters = reader.ReadStrongMobileList();
                         Killer = reader.ReadMobile();
@@ -642,9 +690,13 @@ namespace Server.Items
                             var item = reader.ReadItem();
 
                             if (reader.ReadBool())
+                            {
                                 SetRestoreInfo(item, reader.ReadPoint3D());
+                            }
                             else if (item != null)
+                            {
                                 SetRestoreInfo(item, item.Location);
+                            }
                         }
 
                         goto case 8;
@@ -658,7 +710,9 @@ namespace Server.Items
                 case 7:
                     {
                         if (reader.ReadBool())
+                        {
                             BeginDecay(reader.ReadDeltaTime() - DateTime.UtcNow);
+                        }
 
                         goto case 6;
                     }
@@ -702,16 +756,24 @@ namespace Server.Items
                 case 0:
                     {
                         if (version < 10)
+                        {
                             TimeOfDeath = DateTime.UtcNow;
+                        }
 
                         if (version < 7)
+                        {
                             BeginDecay(m_DefaultDecayTime);
+                        }
 
                         if (version < 6)
+                        {
                             Looters = new List<Mobile>();
+                        }
 
                         if (version < 4)
+                        {
                             Aggressors = new List<Mobile>();
+                        }
 
                         AccessLevel = (AccessLevel)reader.ReadInt();
                         reader.ReadInt(); // guild reserve
@@ -729,7 +791,9 @@ namespace Server.Items
         {
             if (Devoured || Deleted || Killer?.Deleted != false || !Killer.Alive || !(Killer is IDevourer devourer) ||
                 Owner?.Deleted != false)
+            {
                 return false;
+            }
 
             m_Devourer = devourer;          // Set the devourer the killer
             return m_Devourer.Devour(this); // Devour the corpse if it hasn't
@@ -740,12 +804,18 @@ namespace Server.Items
             base.SendInfoTo(state, sendOplPacket);
 
             if (!(((Body)Amount).IsHuman && ItemID == 0x2006))
+            {
                 return;
+            }
 
             if (state.ContainerGridLines)
+            {
                 state.Send(new CorpseContent6017(state.Mobile, this));
+            }
             else
+            {
                 state.Send(new CorpseContent(state.Mobile, this));
+            }
 
             state.Send(new CorpseEquip(state.Mobile, this));
         }
@@ -753,7 +823,9 @@ namespace Server.Items
         public bool IsCriminalAction(Mobile from)
         {
             if (from == Owner || from.AccessLevel >= AccessLevel.GameMaster)
+            {
                 return false;
+            }
 
             var p = Party.Get(Owner);
 
@@ -762,7 +834,9 @@ namespace Server.Items
                 var pmi = p[Owner];
 
                 if (pmi?.CanLoot == true)
+                {
                     return false;
+                }
             }
 
             return NotorietyHandlers.CorpseNotoriety(from, this) == Notoriety.Innocent;
@@ -779,16 +853,22 @@ namespace Server.Items
             base.OnItemUsed(from, item);
 
             if (item is Food)
+            {
                 from.RevealingAction();
+            }
 
             if (item != this && IsCriminalAction(from))
+            {
                 from.CriminalAction(true);
+            }
 
             if (!Looters.Contains(from))
+            {
                 Looters.Add(from);
+            }
 
-            if (m_InstancedItems?.ContainsKey(item) == true)
-                m_InstancedItems.Remove(item);
+            m_InstancedItems?.Remove(item);
+
         }
 
         public override void OnItemLifted(Mobile from, Item item)
@@ -796,16 +876,21 @@ namespace Server.Items
             base.OnItemLifted(from, item);
 
             if (item != this && from != Owner)
+            {
                 from.RevealingAction();
+            }
 
             if (item != this && IsCriminalAction(from))
+            {
                 from.CriminalAction(true);
+            }
 
             if (!Looters.Contains(from))
+            {
                 Looters.Add(from);
+            }
 
-            if (m_InstancedItems?.ContainsKey(item) == true)
-                m_InstancedItems.Remove(item);
+            m_InstancedItems?.Remove(item);
         }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
@@ -813,7 +898,9 @@ namespace Server.Items
             base.GetContextMenuEntries(from, list);
 
             if (Core.AOS && Owner == from && from.Alive)
+            {
                 list.Add(new OpenCorpseEntry());
+            }
         }
 
         public bool GetRestoreInfo(Item item, ref Point3D loc) =>
@@ -822,7 +909,9 @@ namespace Server.Items
         public void SetRestoreInfo(Item item, Point3D loc)
         {
             if (item == null)
+            {
                 return;
+            }
 
             m_RestoreTable ??= new Dictionary<Item, Point3D>();
 
@@ -832,12 +921,16 @@ namespace Server.Items
         public void ClearRestoreInfo(Item item)
         {
             if (m_RestoreTable == null || item == null)
+            {
                 return;
+            }
 
             m_RestoreTable.Remove(item);
 
             if (m_RestoreTable.Count == 0)
+            {
                 m_RestoreTable = null;
+            }
         }
 
         public bool CanLoot(Mobile from, Item item) =>
@@ -848,9 +941,13 @@ namespace Server.Items
             if (!CanLoot(from, item))
             {
                 if (Owner?.Player != true)
+                {
                     from.SendLocalizedMessage(1005035); // You did not earn the right to loot this creature!
+                }
                 else
+                {
                     from.SendLocalizedMessage(1010049); // You may not loot this corpse.
+                }
 
                 return false;
             }
@@ -858,9 +955,13 @@ namespace Server.Items
             if (IsCriminalAction(from))
             {
                 if (Owner?.Player != true)
+                {
                     from.SendLocalizedMessage(1005036); // Looting this monster corpse will be a criminal act!
+                }
                 else
+                {
                     from.SendLocalizedMessage(1005038); // Looting this corpse will be a criminal act!
+                }
             }
 
             return true;
@@ -898,7 +999,9 @@ namespace Server.Items
                         var packItem = packItems[i];
 
                         if (RestoreEquip.Contains(packItem) && packItem.Movable)
+                        {
                             from.EquipItem(packItem);
+                        }
                     }
                 }
 
@@ -913,7 +1016,9 @@ namespace Server.Items
 
                     if (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair || !item.Movable ||
                         !GetRestoreInfo(item, ref loc))
+                    {
                         continue;
+                    }
 
                     if (pack?.CheckHold(from, item, false, true) == true)
                     {
@@ -921,7 +1026,9 @@ namespace Server.Items
                         pack.AddItem(item);
 
                         if (RestoreEquip?.Contains(item) == true)
+                        {
                             from.EquipItem(item);
+                        }
                     }
                     else
                     {
@@ -955,9 +1062,14 @@ namespace Server.Items
             }
 
             if (!CheckLoot(from, null))
+            {
                 return;
+            }
 
-            if (!(from is PlayerMobile player)) return;
+            if (!(from is PlayerMobile player))
+            {
+                return;
+            }
 
             var qs = player.Quest;
 
@@ -978,7 +1090,9 @@ namespace Server.Items
                         ); // You rummage through the bones and find a Daemon Bone!  You quickly place the item in your pack.
 
                         if (!obj.Completed)
+                        {
                             obj.Complete();
+                        }
                     }
                     else
                     {
@@ -1033,9 +1147,13 @@ namespace Server.Items
             if (ItemID == 0x2006) // Corpse form
             {
                 if (m_CorpseName != null)
+                {
                     list.Add(m_CorpseName);
+                }
                 else
+                {
                     list.Add(1046414, Name); // the remains of ~1_NAME~
+                }
             }
             else // Bone form
             {
@@ -1049,7 +1167,9 @@ namespace Server.Items
             var opl = PropertyList;
 
             if (opl.Header > 0)
+            {
                 from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, opl.Header, Name, opl.HeaderArgs));
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -1059,9 +1179,13 @@ namespace Server.Items
             if (ItemID == 0x2006) // Corpse form
             {
                 if (m_CorpseName != null)
+                {
                     from.Send(new AsciiMessage(Serial, ItemID, MessageType.Label, hue, 3, "", m_CorpseName));
+                }
                 else
+                {
                     from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1046414, "", Name));
+                }
             }
             else // Bone form
             {
@@ -1085,13 +1209,19 @@ namespace Server.Items
             public bool IsOwner(Mobile m)
             {
                 if (m_Item.LootType == LootType.Cursed) // Cursed Items are part of everyone's instanced corpse... (?)
+                {
                     return true;
+                }
 
                 if (m == null)
+                {
                     return false; // sanity
+                }
 
                 if (m_Mobile == m)
+                {
                     return true;
+                }
 
                 var myParty = Party.Get(m_Mobile);
 
@@ -1112,9 +1242,13 @@ namespace Server.Items
             protected override void OnTick()
             {
                 if (!m_Corpse.GetFlag(CorpseFlag.NoBones))
+                {
                     m_Corpse.TurnToBones();
+                }
                 else
+                {
                     m_Corpse.Delete();
+                }
             }
         }
 
@@ -1127,7 +1261,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (Owner.Target is Corpse corpse && Owner.From.CheckAlive())
+                {
                     corpse.Open(Owner.From, false);
+                }
             }
         }
     }

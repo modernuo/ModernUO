@@ -16,7 +16,9 @@ namespace Server.Engines.Craft
             CraftItem = item;
 
             if (Recipes.ContainsKey(id))
+            {
                 throw new Exception("Attempting to create recipe with preexisting ID.");
+            }
 
             Recipes.Add(id, this);
             LargestRecipeID = Math.Max(id, LargestRecipeID);

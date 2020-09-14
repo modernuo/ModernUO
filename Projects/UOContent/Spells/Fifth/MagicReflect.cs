@@ -25,7 +25,9 @@ namespace Server.Spells.Fifth
         public override bool CheckCast()
         {
             if (Core.AOS)
+            {
                 return true;
+            }
 
             if (Caster.MagicDamageAbsorb > 0)
             {
@@ -57,15 +59,15 @@ namespace Server.Spells.Fifth
                 {
                     var targ = Caster;
 
-                    if (m_Table.TryGetValue(targ, out var mods))
+                    if (m_Table.Remove(targ, out var mods))
                     {
                         targ.PlaySound(0x1ED);
                         targ.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
 
-                        m_Table.Remove(targ);
-
                         for (var i = 0; i < mods.Length; ++i)
+                        {
                             targ.RemoveResistanceMod(mods[i]);
+                        }
 
                         BuffInfo.RemoveBuff(targ, BuffIcon.MagicReflection);
                     }
@@ -89,7 +91,9 @@ namespace Server.Spells.Fifth
                         m_Table[targ] = mods;
 
                         for (var i = 0; i < mods.Length; ++i)
+                        {
                             targ.AddResistanceMod(mods[i]);
+                        }
 
                         var buffFormat = $"{physiMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}";
 
@@ -133,13 +137,16 @@ namespace Server.Spells.Fifth
 
         public static void EndReflect(Mobile m)
         {
-            if (!m_Table.TryGetValue(m, out var mods))
+            if (!m_Table.Remove(m, out var mods))
+            {
                 return;
+            }
 
             for (var i = 0; i < mods?.Length; ++i)
+            {
                 m.RemoveResistanceMod(mods[i]);
+            }
 
-            m_Table.Remove(m);
             BuffInfo.RemoveBuff(m, BuffIcon.MagicReflection);
         }
     }

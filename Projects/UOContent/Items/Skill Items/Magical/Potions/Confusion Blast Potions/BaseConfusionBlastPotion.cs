@@ -123,10 +123,9 @@ namespace Server.Items
 
         public static void EndDelay(Mobile m)
         {
-            if (m_Delay.TryGetValue(m, out var timer))
+            if (m_Delay.Remove(m, out var timer))
             {
                 timer.Stop();
-                m_Delay.Remove(m);
             }
         }
 

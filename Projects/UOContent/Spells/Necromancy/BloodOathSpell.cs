@@ -45,9 +45,13 @@ namespace Server.Spells.Necromancy
             else if (m_OathTable.ContainsKey(m))
             {
                 if (m.Player)
+                {
                     Caster.SendLocalizedMessage(1061608); // That player is already bonded in a Blood Oath.
+                }
                 else
+                {
                     Caster.SendLocalizedMessage(1061609); // That creature is already bonded in a Blood Oath.
+                }
             }
             else if (CheckHSequence(m))
             {
@@ -128,21 +132,22 @@ namespace Server.Spells.Necromancy
             protected override void OnTick()
             {
                 if (m_Caster.Deleted || m_Target.Deleted || !m_Caster.Alive || !m_Target.Alive ||
-                    DateTime.UtcNow >= m_End) DoExpire();
+                    DateTime.UtcNow >= m_End)
+                {
+                    DoExpire();
+                }
             }
 
             public void DoExpire()
             {
-                if (m_OathTable.ContainsKey(m_Caster))
+                if (m_OathTable.Remove(m_Caster))
                 {
                     m_Caster.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
-                    m_OathTable.Remove(m_Caster);
                 }
 
-                if (m_OathTable.ContainsKey(m_Target))
+                if (m_OathTable.Remove(m_Target))
                 {
                     m_Target.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
-                    m_OathTable.Remove(m_Target);
                 }
 
                 Stop();

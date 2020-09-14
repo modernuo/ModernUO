@@ -151,7 +151,10 @@ namespace Server.Spells.Necromancy
             {
                 Type type = null;
 
-                if (c.Owner != null) type = c.Owner.GetType();
+                if (c.Owner != null)
+                {
+                    type = c.Owner.GetType();
+                }
 
                 if (c.ItemID != 0x2006 || c.Animated || type == typeof(PlayerMobile) || type == null ||
                     c.Owner != null && c.Owner.Fame < 100 ||
@@ -217,10 +220,14 @@ namespace Server.Spells.Necromancy
                 var contains = types.Length == 0;
 
                 for (var j = 0; !contains && j < types.Length; ++j)
+                {
                     contains = types[j].IsAssignableFrom(type);
+                }
 
                 if (contains)
-                    return group;
+                {
+                    return @group;
+                }
             }
 
             return null;
@@ -228,41 +235,52 @@ namespace Server.Spells.Necromancy
 
         public static void Unregister(Mobile master, Mobile summoned)
         {
-            if (master == null)
+            if (master == null || !m_Table.TryGetValue(master, out var list))
+            {
                 return;
-
-            if (!m_Table.TryGetValue(master, out var list))
-                return;
+            }
 
             list.Remove(summoned);
 
             if (list.Count == 0)
+            {
                 m_Table.Remove(master);
+            }
         }
 
         public static void Register(Mobile master, Mobile summoned)
         {
             if (master == null)
+            {
                 return;
+            }
 
             if (!m_Table.TryGetValue(master, out var list))
+            {
                 m_Table[master] = list = new List<Mobile>();
+            }
 
             for (var i = list.Count - 1; i >= 0; --i)
             {
                 if (i >= list.Count)
+                {
                     continue;
+                }
 
                 var mob = list[i];
 
                 if (mob.Deleted)
+                {
                     list.RemoveAt(i--);
+                }
             }
 
             list.Add(summoned);
 
             if (list.Count > 3)
+            {
                 Timer.DelayCall(list[0].Kill);
+            }
 
             Timer.DelayCall(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0), Summoned_Damage, summoned);
         }
@@ -270,20 +288,28 @@ namespace Server.Spells.Necromancy
         private static void Summoned_Damage(Mobile mob)
         {
             if (mob.Hits > 0)
+            {
                 --mob.Hits;
+            }
             else
+            {
                 mob.Kill();
+            }
         }
 
         private static void SummonDelay_Callback(Mobile caster, Corpse corpse, Point3D loc, Map map, CreatureGroup group)
         {
             if (corpse.Animated)
+            {
                 return;
+            }
 
             var owner = corpse.Owner;
 
             if (owner == null)
+            {
                 return;
+            }
 
             var necromancy = caster.Skills.Necromancy.Value;
             var spiritSpeak = caster.Skills.SpiritSpeak.Value;
@@ -299,7 +325,9 @@ namespace Server.Spells.Necromancy
                 var entry = entries[i];
 
                 if (casterAbility < entry.m_Requirement)
+                {
                     continue;
+                }
 
                 var animates = entry.m_ToSummon;
 
@@ -307,7 +335,9 @@ namespace Server.Spells.Necromancy
             }
 
             if (toSummon == null)
+            {
                 return;
+            }
 
             Mobile summoned = null;
 
@@ -321,7 +351,9 @@ namespace Server.Spells.Necromancy
             }
 
             if (summoned == null)
+            {
                 return;
+            }
 
             if (summoned is BaseCreature bc)
             {
@@ -336,7 +368,9 @@ namespace Server.Spells.Necromancy
             }
 
             if (summoned is SkeletalDragon dragon)
+            {
                 Scale(dragon, 50); // lose 50% hp and strength
+            }
 
             summoned.Fame = 0;
             summoned.Karma = -1500;
@@ -357,7 +391,9 @@ namespace Server.Spells.Necromancy
             toScale = bc.HitsMaxSeed;
 
             if (toScale > 0)
+            {
                 bc.HitsMaxSeed = AOS.Scale(toScale, scalar);
+            }
 
             bc.Hits = bc.Hits; // refresh hits
         }

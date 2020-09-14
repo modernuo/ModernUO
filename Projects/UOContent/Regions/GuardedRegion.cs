@@ -311,10 +311,9 @@ namespace Server.Regions
                 if (IsGuardCandidate(m) &&
                     (!AllowReds && m.Kills >= 5 && m.Region.IsPartOf(this) || m_GuardCandidates.ContainsKey(m)))
                 {
-                    if (m_GuardCandidates.TryGetValue(m, out var timer))
+                    if (m_GuardCandidates.Remove(m, out var timer))
                     {
                         timer.Stop();
-                        m_GuardCandidates.Remove(m);
                     }
 
                     MakeGuard(m);

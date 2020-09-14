@@ -29,7 +29,9 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
@@ -49,7 +51,9 @@ namespace Server.Items
         public static bool GetBonus(Mobile targ, ref int bonus)
         {
             if (!m_Table.TryGetValue(targ, out var info))
+            {
                 return false;
+            }
 
             bonus = info.m_Bonus;
             return true;
@@ -63,11 +67,10 @@ namespace Server.Items
 
         public static void EndBlock(Mobile m)
         {
-            if (!m_Table.TryGetValue(m, out var info))
-                return;
-
-            info.m_Timer?.Stop();
-            m_Table.Remove(m);
+            if (m_Table.Remove(m, out var info))
+            {
+                info.m_Timer?.Stop();
+            }
         }
 
         private class BlockInfo

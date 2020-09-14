@@ -97,9 +97,8 @@ namespace Server.Spells.Fourth
 
         public static void RemoveEntry(Mobile m)
         {
-            if (_Table.TryGetValue(m, out var v))
+            if (_Table.Remove(m, out var v))
             {
-                _Table.Remove(m);
                 m.EndAction<ArchProtectionSpell>();
                 m.VirtualArmorMod -= Math.Min(v, m.VirtualArmorMod);
             }

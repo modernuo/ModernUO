@@ -283,10 +283,9 @@ namespace Server.Items
 
         public static void RemoveTimer(Mobile m)
         {
-            if (Timers.TryGetValue(m, out var t))
+            if (Timers.Remove(m, out var t))
             {
                 t.Stop();
-                Timers.Remove(m);
             }
         }
 

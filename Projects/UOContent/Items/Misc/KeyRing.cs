@@ -62,7 +62,10 @@ namespace Server.Items
         {
             base.OnDelete();
 
-            foreach (var key in Keys) key.Delete();
+            foreach (var key in Keys)
+            {
+                key.Delete();
+            }
 
             Keys.Clear();
         }
@@ -78,14 +81,18 @@ namespace Server.Items
         public void Open(Mobile from)
         {
             if (!(Parent is Container cont))
+            {
                 return;
+            }
 
             for (var i = Keys.Count - 1; i >= 0; i--)
             {
                 var key = Keys[i];
 
                 if (!key.Deleted && !cont.TryDropItem(from, key, true))
+                {
                     break;
+                }
 
                 Keys.RemoveAt(i);
             }
@@ -112,8 +119,12 @@ namespace Server.Items
         public bool ContainsKey(uint keyValue)
         {
             foreach (var key in Keys)
+            {
                 if (key.KeyValue == keyValue)
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -121,13 +132,21 @@ namespace Server.Items
         private void UpdateItemID()
         {
             if (Keys.Count < 1)
+            {
                 ItemID = 0x1011;
+            }
             else if (Keys.Count < 3)
+            {
                 ItemID = 0x1769;
+            }
             else if (Keys.Count < 5)
+            {
                 ItemID = 0x176A;
+            }
             else
+            {
                 ItemID = 0x176B;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -170,8 +189,12 @@ namespace Server.Items
                 else if (targeted is ILockable o)
                 {
                     foreach (var key in m_KeyRing.Keys)
+                    {
                         if (key.UseOn(from, o))
+                        {
                             return;
+                        }
+                    }
 
                     from.SendLocalizedMessage(1008140); // You do not have a key for that.
                 }

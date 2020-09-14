@@ -31,11 +31,11 @@ namespace Server.ContextMenus
 
             if (target is Mobile mobile)
             {
-                mobile.GetContextMenuEntries(@from, list);
+                mobile.GetContextMenuEntries(from, list);
             }
             else if (target is Item item)
             {
-                item.GetContextMenuEntries(@from, list);
+                item.GetContextMenuEntries(from, list);
             }
 
             Entries = list.ToArray();

@@ -21,7 +21,9 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
@@ -73,7 +75,9 @@ namespace Server.Items
                 var damage = Utility.RandomMinMax(level, level * 2);
 
                 if (!m.Player)
+                {
                     damage *= 2;
+                }
 
                 m.PlaySound(0x133);
                 m.Damage(damage, from);
@@ -89,14 +93,17 @@ namespace Server.Items
 
         public static void EndBleed(Mobile m, bool message)
         {
-            if (!m_Table.TryGetValue(m, out var t))
+            if (!m_Table.Remove(m, out var t))
+            {
                 return;
+            }
 
             t.Stop();
-            m_Table.Remove(m);
 
             if (message)
+            {
                 m.SendLocalizedMessage(1060167); // The bleeding wounds have healed, you are no longer bleeding!
+            }
         }
 
         private class InternalTimer : Timer
@@ -117,7 +124,9 @@ namespace Server.Items
                 DoBleed(m_Mobile, m_From, 5 - m_Count);
 
                 if (++m_Count == 5)
+                {
                     EndBleed(m_Mobile, true);
+                }
             }
         }
     }

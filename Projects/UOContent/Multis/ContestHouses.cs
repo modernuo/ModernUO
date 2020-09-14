@@ -68,10 +68,15 @@ namespace Server.Multis
         {
             base.OnAfterDelete();
 
-            if (Fixtures == null) return;
+            if (Fixtures == null)
+            {
+                return;
+            }
 
             foreach (var item in Fixtures)
+            {
                 item.Delete();
+            }
         }
 
         public override void OnLocationChange(Point3D oldLocation)
@@ -82,20 +87,30 @@ namespace Server.Multis
             var y = Location.Y - oldLocation.Y;
             var z = Location.Z - oldLocation.Z;
 
-            if (Fixtures == null) return;
+            if (Fixtures == null)
+            {
+                return;
+            }
 
             foreach (var item in Fixtures)
+            {
                 item.Location = new Point3D(item.X + x, item.Y + y, item.Z + z);
+            }
         }
 
         public override void OnMapChange()
         {
             base.OnMapChange();
 
-            if (Fixtures == null) return;
+            if (Fixtures == null)
+            {
+                return;
+            }
 
             foreach (var item in Fixtures)
+            {
                 item.Map = Map;
+            }
         }
 
         public void AddTeleporters(int id, Point3D offset1, Point3D offset2)
@@ -131,12 +146,17 @@ namespace Server.Multis
 
             foreach (var entry in components.List.Where(e => e.Flags == 0))
                 // Teleporters
+            {
                 if (entry.ItemId >= 0x181D && entry.ItemId <= 0x1828)
                 {
-                    if (teleporters.ContainsKey(entry.ItemId))
-                        teleporters[entry.ItemId].Add(entry);
+                    if (teleporters.TryGetValue(entry.ItemId, out var result))
+                    {
+                        result.Add(entry);
+                    }
                     else
-                        teleporters[entry.ItemId] = new List<MultiTileEntry> { entry };
+                    {
+                        teleporters.Add(entry.ItemId, new List<MultiTileEntry> { entry });
+                    }
                 }
                 else
                 {
@@ -155,14 +175,19 @@ namespace Server.Multis
                         AddFixture(st);
                     }
                 }
+            }
 
             foreach (var door in Doors)
+            {
                 foreach (var check in Doors.Where(d => d != door))
+                {
                     if (door.InRange(check.Location, 1))
                     {
                         door.Link = check;
                         check.Link = door;
                     }
+                }
+            }
 
             foreach (var (key, value) in teleporters)
             {
@@ -195,9 +220,13 @@ namespace Server.Multis
             writer.Write((int)HouseType);
 
             if (Fixtures != null)
+            {
                 writer.WriteItemList(Fixtures, true);
+            }
             else
+            {
                 writer.Write(0);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -210,7 +239,9 @@ namespace Server.Multis
             var count = reader.ReadInt();
 
             for (var i = 0; i < count; i++)
+            {
                 AddFixture(reader.ReadItem());
+            }
         }
     }
 

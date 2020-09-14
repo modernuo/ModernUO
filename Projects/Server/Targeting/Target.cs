@@ -168,31 +168,31 @@ namespace Server.Targeting
             {
                 if (!from.CanSee(targeted))
                 {
-                    OnCantSeeTarget(@from, targeted);
+                    OnCantSeeTarget(from, targeted);
                 }
                 else if (CheckLOS && !from.InLOS(targeted))
                 {
-                    OnTargetOutOfLOS(@from, targeted);
+                    OnTargetOutOfLOS(from, targeted);
                 }
                 else if (item?.InSecureTrade == true)
                 {
-                    OnTargetInSecureTrade(@from, targeted);
+                    OnTargetInSecureTrade(from, targeted);
                 }
                 else if (item?.IsAccessibleTo(from) == false)
                 {
-                    OnTargetNotAccessible(@from, targeted);
+                    OnTargetNotAccessible(from, targeted);
                 }
                 else if (item?.CheckTarget(from, this, targeted) == false)
                 {
-                    OnTargetUntargetable(@from, targeted);
+                    OnTargetUntargetable(from, targeted);
                 }
                 else if (mobile?.CheckTarget(from, this, mobile) == false)
                 {
-                    OnTargetUntargetable(@from, mobile);
+                    OnTargetUntargetable(from, mobile);
                 }
                 else if (from.Region.OnTarget(from, this, targeted))
                 {
-                    OnTarget(@from, targeted);
+                    OnTarget(from, targeted);
                 }
             }
 
