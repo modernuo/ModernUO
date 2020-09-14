@@ -15,7 +15,9 @@ namespace Server.Items
         public WarningItem(int itemID, int range, int warning) : base(itemID)
         {
             if (range > 18)
+            {
                 range = 18;
+            }
 
             Movable = false;
 
@@ -27,7 +29,9 @@ namespace Server.Items
         public WarningItem(int itemID, int range, string warning) : base(itemID)
         {
             if (range > 18)
+            {
                 range = 18;
+            }
 
             Movable = false;
 
@@ -51,7 +55,11 @@ namespace Server.Items
             get => m_Range;
             set
             {
-                if (value > 18) value = 18;
+                if (value > 18)
+                {
+                    value = 18;
+                }
+
                 m_Range = value;
             }
         }
@@ -69,23 +77,33 @@ namespace Server.Items
             if (onlyToTriggerer)
             {
                 if (messageString != null)
+                {
                     triggerer.SendMessage(messageString);
+                }
                 else
+                {
                     triggerer.SendLocalizedMessage(messageNumber);
+                }
             }
             else
             {
                 if (messageString != null)
+                {
                     PublicOverheadMessage(MessageType.Regular, 0x3B2, false, messageString);
+                }
                 else
+                {
                     PublicOverheadMessage(MessageType.Regular, 0x3B2, messageNumber);
+                }
             }
         }
 
         public virtual void Broadcast(Mobile triggerer)
         {
             if (m_Broadcasting || DateTime.UtcNow < m_LastBroadcast + ResetDelay)
+            {
                 return;
+            }
 
             m_LastBroadcast = DateTime.UtcNow;
 
@@ -98,11 +116,17 @@ namespace Server.Items
                 var list = new List<WarningItem>();
 
                 foreach (var item in GetItemsInRange(NeighborRange))
+                {
                     if (item != this && item is WarningItem warningItem)
+                    {
                         list.Add(warningItem);
+                    }
+                }
 
                 for (var i = 0; i < list.Count; i++)
+                {
                     list[i].Broadcast(triggerer);
+                }
             }
 
             Timer.DelayCall(StopBroadcasting);
@@ -117,7 +141,9 @@ namespace Server.Items
         {
             if (m.Player && Utility.InRange(m.Location, Location, m_Range) &&
                 !Utility.InRange(oldLocation, Location, m_Range))
+            {
                 Broadcast(m);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

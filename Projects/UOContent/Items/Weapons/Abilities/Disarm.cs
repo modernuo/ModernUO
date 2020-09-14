@@ -34,7 +34,9 @@ namespace Server.Items
         public override bool RequiresTactics(Mobile from)
         {
             if (!(from.Weapon is BaseWeapon weapon))
+            {
                 return false;
+            }
 
             return weapon.Skill != SkillName.Wrestling;
         }
@@ -42,14 +44,18 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
             var toDisarm = defender.FindItemOnLayer(Layer.OneHanded);
 
             if (toDisarm?.Movable == false)
+            {
                 toDisarm = defender.FindItemOnLayer(Layer.TwoHanded);
+            }
 
             var pack = defender.Backpack;
 

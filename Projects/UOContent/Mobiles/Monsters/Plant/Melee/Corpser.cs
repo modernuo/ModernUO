@@ -37,9 +37,13 @@ namespace Server.Mobiles
             VirtualArmor = 18;
 
             if (Utility.RandomDouble() < 0.25)
+            {
                 PackItem(new Board(10));
+            }
             else
+            {
                 PackItem(new Log(10));
+            }
 
             PackItem(new MandrakeRoot(3));
         }
@@ -71,7 +75,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (BaseSoundID == 352)
+            {
                 BaseSoundID = 684;
+            }
         }
     }
 }

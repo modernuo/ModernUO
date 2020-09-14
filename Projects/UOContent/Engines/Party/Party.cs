@@ -37,8 +37,12 @@ namespace Server.Engines.PartySystem
             get
             {
                 for (var i = 0; i < Members.Count; ++i)
+                {
                     if (Members[i].Mobile == m)
+                    {
                         return Members[i];
+                    }
+                }
 
                 return null;
             }
@@ -55,7 +59,9 @@ namespace Server.Engines.PartySystem
                 if (c != m && m.Map == c.Map && Utility.InUpdateRange(c, m) && c.CanSee(m))
                 {
                     if (p == null)
+                    {
                         p = Packet.Acquire(new MobileStamN(m));
+                    }
 
                     c.Send(p);
                 }
@@ -75,7 +81,9 @@ namespace Server.Engines.PartySystem
                 if (c != m && m.Map == c.Map && Utility.InUpdateRange(c, m) && c.CanSee(m))
                 {
                     if (p == null)
+                    {
                         p = Packet.Acquire(new MobileManaN(m));
+                    }
 
                     c.Send(p);
                 }
@@ -90,7 +98,9 @@ namespace Server.Engines.PartySystem
                 Utility.InUpdateRange(beholder, beheld))
             {
                 if (!beholder.CanSee(beheld))
+                {
                     beholder.Send(new MobileStatusCompact(beheld.CanBeRenamedBy(beholder), beheld));
+                }
 
                 beholder.Send(new MobileAttributesN(beheld));
             }
@@ -143,11 +153,17 @@ namespace Server.Engines.PartySystem
                 var m = from.LastKiller;
 
                 if (m == from)
-                    p.SendPublicMessage(from, "I killed myself !!");
+                {
+                    p.SendPublicMessage(@from, "I killed myself !!");
+                }
                 else if (m == null)
-                    p.SendPublicMessage(from, "I was killed !!");
+                {
+                    p.SendPublicMessage(@from, "I was killed !!");
+                }
                 else
-                    p.SendPublicMessage(from, $"I was killed by {m.Name} !!");
+                {
+                    p.SendPublicMessage(@from, $"I was killed by {m.Name} !!");
+                }
             }
         }
 
@@ -156,9 +172,13 @@ namespace Server.Engines.PartySystem
             var p = Get(from);
 
             if (p != null)
-                new RejoinTimer(from).Start();
+            {
+                new RejoinTimer(@from).Start();
+            }
             else
-                from.Party = null;
+            {
+                @from.Party = null;
+            }
         }
 
         public static void EventSink_Logout(Mobile from)
@@ -215,7 +235,9 @@ namespace Server.Engines.PartySystem
             var theirFaction = Faction.Find(from);
 
             if (!force && ourFaction != null && theirFaction != null && ourFaction != theirFaction)
+            {
                 return;
+            }
 
             // : joined the party.
             SendToAll(
@@ -270,6 +292,7 @@ namespace Server.Engines.PartySystem
             else
             {
                 for (var i = 0; i < Members.Count; ++i)
+                {
                     if (Members[i].Mobile == m)
                     {
                         Members.RemoveAt(i);
@@ -284,6 +307,7 @@ namespace Server.Engines.PartySystem
 
                         break;
                     }
+                }
 
                 if (Members.Count == 1)
                 {
@@ -323,10 +347,14 @@ namespace Server.Engines.PartySystem
             var p = Get(from);
 
             if (p == null)
-                from.Party = p = new Party(from);
+            {
+                @from.Party = p = new Party(@from);
+            }
 
             if (!p.Candidates.Contains(target))
+            {
                 p.Candidates.Add(target);
+            }
 
             // : You are invited to join the party. Type /accept to join or /decline to decline the offer.
             target.Send(
@@ -376,7 +404,9 @@ namespace Server.Engines.PartySystem
                 var mob = m_Listeners[i];
 
                 if (mob.Party != this)
-                    m_Listeners[i].SendMessage("[{0}]: {1}", from.Name, text);
+                {
+                    m_Listeners[i].SendMessage("[{0}]: {1}", @from.Name, text);
+                }
             }
 
             SendToStaffMessage(from, "[Party]: {0}", text);
@@ -391,7 +421,9 @@ namespace Server.Engines.PartySystem
                 var mob = m_Listeners[i];
 
                 if (mob.Party != this)
-                    m_Listeners[i].SendMessage("[{0}]->[{1}]: {2}", from.Name, to.Name, text);
+                {
+                    m_Listeners[i].SendMessage("[{0}]->[{1}]: {2}", @from.Name, to.Name, text);
+                }
             }
 
             SendToStaffMessage(from, "[Party]->[{0}]: {1}", to.Name, text);
@@ -409,18 +441,20 @@ namespace Server.Engines.PartySystem
                     mob.Party != this && !m_Listeners.Contains(mob))
                 {
                     if (p == null)
+                    {
                         p = Packet.Acquire(
                             new UnicodeMessage(
-                                from.Serial,
-                                from.Body,
+                                @from.Serial,
+                                @from.Body,
                                 MessageType.Regular,
-                                from.SpeechHue,
+                                @from.SpeechHue,
                                 3,
-                                from.Language,
-                                from.Name,
+                                @from.Language,
+                                @from.Name,
                                 text
                             )
                         );
+                    }
 
                     ns.Send(p);
                 }
@@ -439,16 +473,22 @@ namespace Server.Engines.PartySystem
             p.Acquire();
 
             for (var i = 0; i < Members.Count; ++i)
+            {
                 Members[i].Mobile.Send(p);
+            }
 
             if (p is MessageLocalized || p is MessageLocalizedAffix || p is UnicodeMessage || p is AsciiMessage)
+            {
                 for (var i = 0; i < m_Listeners.Count; ++i)
                 {
                     var mob = m_Listeners[i];
 
                     if (mob.Party != this)
+                    {
                         mob.Send(p);
+                    }
                 }
+            }
 
             p.Release();
         }
@@ -464,7 +504,9 @@ namespace Server.Engines.PartySystem
                 var p = Get(m_Mobile);
 
                 if (p == null)
+                {
                     return;
+                }
 
                 m_Mobile.SendLocalizedMessage(1005437); // You have rejoined the party.
                 m_Mobile.Send(new PartyMemberList(p));

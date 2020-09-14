@@ -69,7 +69,10 @@ namespace Server.Mobiles
 
             var version = reader.ReadInt();
 
-            if (version < 1) Timer.DelayCall(TimeSpan.FromSeconds(0), OnAfterDeserialize_Callback);
+            if (version < 1)
+            {
+                Timer.DelayCall(TimeSpan.FromSeconds(0), OnAfterDeserialize_Callback);
+            }
         }
     }
 }

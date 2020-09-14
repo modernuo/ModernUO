@@ -22,9 +22,13 @@ namespace Server.Items
                 MaxCharges = Utility.RandomMinMax(10, 50);
 
                 if (Summoner.IsItem)
+                {
                     MaxChargeTime = 60;
+                }
                 else
+                {
                     MaxChargeTime = 1800;
+                }
             }
 
             Blessed = GetRandomBlessed();

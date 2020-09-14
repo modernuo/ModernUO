@@ -59,14 +59,18 @@ namespace Server.Engines.Doom
             get
             {
                 if (Creatures.Count == 0)
+                {
                     return false;
+                }
 
                 for (var i = 0; i < Creatures.Count; ++i)
                 {
                     var mob = Creatures[i];
 
                     if (!mob.Deleted)
+                    {
                         return false;
+                    }
                 }
 
                 return true;
@@ -83,7 +87,9 @@ namespace Server.Engines.Doom
             set
             {
                 if (m_State == value)
+                {
                     return;
+                }
 
                 m_State = value;
 
@@ -123,7 +129,9 @@ namespace Server.Engines.Doom
                 }
 
                 if (Addon != null)
+                {
                     Addon.Hue = hue;
+                }
 
                 if (m_State == GauntletSpawnerState.InProgress)
                 {
@@ -156,12 +164,16 @@ namespace Server.Engines.Doom
         public virtual void CreateRegion()
         {
             if (Region != null)
+            {
                 return;
+            }
 
             var map = Map;
 
             if (map == null || map == Map.Internal)
+            {
                 return;
+            }
 
             Region = new GauntletRegion(this, map);
         }
@@ -183,7 +195,9 @@ namespace Server.Engines.Doom
         public virtual void ClearTraps()
         {
             for (var i = 0; i < Traps.Count; ++i)
+            {
                 Traps[i].Delete();
+            }
 
             Traps.Clear();
         }
@@ -193,25 +207,39 @@ namespace Server.Engines.Doom
             var map = Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             BaseTrap trap;
 
             var random = Utility.Random(100);
 
             if (random < 22)
+            {
                 trap = new SawTrap(Utility.RandomBool() ? SawTrapType.WestFloor : SawTrapType.NorthFloor);
+            }
             else if (random < 44)
+            {
                 trap = new SpikeTrap(Utility.RandomBool() ? SpikeTrapType.WestFloor : SpikeTrapType.NorthFloor);
+            }
             else if (random < 66)
+            {
                 trap = new GasTrap(Utility.RandomBool() ? GasTrapType.NorthWall : GasTrapType.WestWall);
+            }
             else if (random < 88)
+            {
                 trap = new FireColumnTrap();
+            }
             else
+            {
                 trap = new MushroomTrap();
+            }
 
             if (trap is FireColumnTrap || trap is MushroomTrap)
+            {
                 trap.Hue = 0x451;
+            }
 
             // try 10 times to find a valid location
             for (var i = 0; i < 10; ++i)
@@ -221,10 +249,14 @@ namespace Server.Engines.Doom
                 var z = Z;
 
                 if (!map.CanFit(x, y, z, 16, false, false))
+                {
                     z = map.GetAverageZ(x, y);
+                }
 
                 if (!map.CanFit(x, y, z, 16, false, false))
+                {
                     continue;
+                }
 
                 trap.MoveToWorld(new Point3D(x, y, z), map);
                 Traps.Add(trap);
@@ -248,11 +280,15 @@ namespace Server.Engines.Doom
                 var reg = Region.Find(loc, map).GetRegion("Doom Gauntlet");
 
                 if (reg != null)
+                {
                     playerCount = reg.GetPlayerCount();
+                }
             }
 
             if (playerCount == 0 && Region != null)
+            {
                 playerCount = Region.GetPlayerCount();
+            }
 
             return Math.Max((playerCount + PlayersPerSpawn - 1) / PlayersPerSpawn, 1);
         }
@@ -260,7 +296,9 @@ namespace Server.Engines.Doom
         public virtual void ClearCreatures()
         {
             for (var i = 0; i < Creatures.Count; ++i)
+            {
                 Creatures[i].Delete();
+            }
 
             Creatures.Clear();
         }
@@ -272,14 +310,18 @@ namespace Server.Engines.Doom
             var count = ComputeSpawnCount();
 
             for (var i = 0; i < count; ++i)
+            {
                 Spawn();
+            }
 
             ClearTraps();
 
             count = ComputeTrapCount();
 
             for (var i = 0; i < count; ++i)
+            {
                 SpawnTrap();
+            }
         }
 
         public virtual void Spawn()
@@ -287,12 +329,16 @@ namespace Server.Engines.Doom
             try
             {
                 if (TypeName == null)
+                {
                     return;
+                }
 
                 var type = AssemblyHandler.FindFirstTypeForName(TypeName, true);
 
                 if (type == null)
+                {
                     return;
+                }
 
                 var obj = ActivatorUtil.CreateInstance(type);
 
@@ -320,19 +366,25 @@ namespace Server.Engines.Doom
                 State = GauntletSpawnerState.InSequence;
 
                 if (Sequence?.Deleted == false)
+                {
                     Sequence.RecurseReset();
+                }
             }
         }
 
         public virtual void Slice()
         {
             if (m_State != GauntletSpawnerState.InProgress)
+            {
                 return;
+            }
 
             var count = ComputeSpawnCount();
 
             for (var i = Creatures.Count; i < count; ++i)
+            {
                 Spawn();
+            }
 
             if (HasCompleted)
             {
@@ -341,7 +393,9 @@ namespace Server.Engines.Doom
                 if (Sequence?.Deleted == false)
                 {
                     if (Sequence.State == GauntletSpawnerState.Completed)
+                    {
                         RecurseReset();
+                    }
 
                     Sequence.State = GauntletSpawnerState.InProgress;
                 }
@@ -455,7 +509,9 @@ namespace Server.Engines.Doom
             spawner.MoveToWorld(new Point3D(xSpawner, ySpawner, -1), Map.Malas);
 
             if (xDoor > 0 && yDoor > 0)
+            {
                 spawner.Door = CreateDoorSet(xDoor, yDoor, doorEastToWest, 0);
+            }
 
             spawner.RegionBounds = new Rectangle2D(xStart, yStart, xWidth, yHeight);
 
@@ -508,7 +564,9 @@ namespace Server.Engines.Doom
                 var item = items[i];
 
                 if (item.Layer != Layer.ShopBuy && item.Layer != Layer.ShopResale && item.Layer != Layer.ShopSell)
+                {
                     item.Delete();
+                }
             }
 
             dealer.HairItemID = 0x2049; // Pig Tails
@@ -556,6 +614,7 @@ namespace Server.Engines.Doom
             CreateVarietyDealer(492, 369);
 
             for (var x = 434; x <= 478; ++x)
+            {
                 for (var y = 371; y <= 372; ++y)
                 {
                     var item = new Static(0x524);
@@ -563,6 +622,7 @@ namespace Server.Engines.Doom
                     item.Hue = 1;
                     item.MoveToWorld(new Point3D(x, y, -1), Map.Malas);
                 }
+            }
             /* End supply room */
 
             /* Begin gauntlet cycle */

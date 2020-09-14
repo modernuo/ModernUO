@@ -28,7 +28,9 @@ namespace Server.Spells.Necromancy
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (Caster == m)
             {
@@ -56,7 +58,9 @@ namespace Server.Spells.Necromancy
                     0x81,
                     TimeSpan.FromSeconds(duration.TotalSeconds + 2.0)
                 ))
+                {
                     rev.FixedParticles(0x373A, 1, 15, 9909, EffectLayer.Waist);
+                }
             }
 
             FinishSequence();
@@ -70,7 +74,9 @@ namespace Server.Spells.Necromancy
         public override bool CheckCast()
         {
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             if (Caster.Followers + 3 > Caster.FollowersMax)
             {

@@ -58,7 +58,9 @@ namespace Server.Items
         public virtual int GetUsesScalar()
         {
             if (Quality == WeaponQuality.Exceptional)
+            {
                 return 200;
+            }
 
             return 100;
         }
@@ -86,7 +88,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (HarvestSystem == null || Deleted)
+            {
                 return;
+            }
 
             var loc = GetWorldLocation();
 
@@ -103,7 +107,9 @@ namespace Server.Items
             }
 
             if (!(HarvestSystem is Mining))
-                from.SendLocalizedMessage(1010018); // What do you want to use this item on?
+            {
+                @from.SendLocalizedMessage(1010018); // What do you want to use this item on?
+            }
 
             HarvestSystem.BeginHarvesting(from, this);
         }
@@ -113,7 +119,9 @@ namespace Server.Items
             base.GetContextMenuEntries(from, list);
 
             if (HarvestSystem != null)
-                BaseHarvestTool.AddContextMenuEntries(from, this, list, HarvestSystem);
+            {
+                BaseHarvestTool.AddContextMenuEntries(@from, this, list, HarvestSystem);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -148,7 +156,9 @@ namespace Server.Items
                 case 0:
                     {
                         if (m_UsesRemaining < 1)
+                        {
                             m_UsesRemaining = 150;
+                        }
 
                         break;
                     }

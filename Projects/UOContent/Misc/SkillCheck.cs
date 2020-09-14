@@ -103,14 +103,21 @@ namespace Server.Misc
             var skill = from.Skills[skillName];
 
             if (skill == null)
+            {
                 return false;
+            }
 
             var value = skill.Value;
 
             if (value < minSkill)
+            {
                 return false; // Too difficult
+            }
+
             if (value >= maxSkill)
+            {
                 return true; // No challenge
+            }
 
             var chance = (value - minSkill) / (maxSkill - minSkill);
 
@@ -123,12 +130,19 @@ namespace Server.Misc
             var skill = from.Skills[skillName];
 
             if (skill == null)
+            {
                 return false;
+            }
 
             if (chance < 0.0)
+            {
                 return false; // Too difficult
+            }
+
             if (chance >= 1.0)
+            {
                 return true; // No challenge
+            }
 
             var loc = new Point2D(from.Location.X / LocationSize, from.Location.Y / LocationSize);
             return CheckSkill(from, skill, loc, chance);
@@ -137,7 +151,9 @@ namespace Server.Misc
         public static bool CheckSkill(Mobile from, Skill skill, object amObj, double chance)
         {
             if (from.Skills.Cap == 0)
+            {
                 return false;
+            }
 
             var success = chance >= Utility.RandomDouble();
             var gc = (double)(from.Skills.Cap - from.Skills.Total) / from.Skills.Cap;
@@ -151,13 +167,19 @@ namespace Server.Misc
             gc *= skill.Info.GainFactor;
 
             if (gc < 0.01)
+            {
                 gc = 0.01;
+            }
 
             if (from is BaseCreature creature && creature.Controlled)
+            {
                 gc *= 2;
+            }
 
             if (from.Alive && (gc >= Utility.RandomDouble() && AllowGain(from, skill, amObj) || skill.Base < 10.0))
-                Gain(from, skill);
+            {
+                Gain(@from, skill);
+            }
 
             return success;
         }
@@ -170,14 +192,21 @@ namespace Server.Misc
             var skill = from.Skills[skillName];
 
             if (skill == null)
+            {
                 return false;
+            }
 
             var value = skill.Value;
 
             if (value < minSkill)
+            {
                 return false; // Too difficult
+            }
+
             if (value >= maxSkill)
+            {
                 return true; // No challenge
+            }
 
             var chance = (value - minSkill) / (maxSkill - minSkill);
 
@@ -189,12 +218,19 @@ namespace Server.Misc
             var skill = from.Skills[skillName];
 
             if (skill == null)
+            {
                 return false;
+            }
 
             if (chance < 0.0)
+            {
                 return false; // Too difficult
+            }
+
             if (chance >= 1.0)
+            {
                 return true; // No challenge
+            }
 
             return CheckSkill(from, skill, target, chance);
         }
@@ -202,10 +238,14 @@ namespace Server.Misc
         private static bool AllowGain(Mobile from, Skill skill, object obj)
         {
             if (Core.AOS && Faction.InSkillLoss(from)) // Changed some time between the introduction of AoS and SE.
+            {
                 return false;
+            }
 
             if (AntiMacroCode && from is PlayerMobile mobile && UseAntiMacro[skill.Info.SkillID])
+            {
                 return mobile.AntiMacroCheck(skill, obj);
+            }
 
             return true;
         }
@@ -213,24 +253,33 @@ namespace Server.Misc
         public static void Gain(Mobile from, Skill skill)
         {
             if (from.Region.IsPartOf<JailRegion>())
+            {
                 return;
+            }
 
             if (from is BaseCreature creature && creature.IsDeadPet)
+            {
                 return;
+            }
 
             if (skill.SkillName == SkillName.Focus && from is BaseCreature)
+            {
                 return;
+            }
 
             if (skill.Base < skill.Cap && skill.Lock == SkillLock.Up)
             {
                 var toGain = 1;
 
                 if (skill.Base <= 10.0)
+                {
                     toGain = Utility.Random(4) + 1;
+                }
 
                 var skills = from.Skills;
 
                 if (from.Player && skills.Total / skills.Cap >= Utility.RandomDouble())
+                {
                     for (var i = 0; i < skills.Length; ++i)
                     {
                         var toLower = skills[i];
@@ -241,12 +290,18 @@ namespace Server.Misc
                             break;
                         }
                     }
+                }
 
                 if (from is PlayerMobile pm && skill.SkillName == pm.AcceleratedSkill &&
                     pm.AcceleratedStart > DateTime.UtcNow)
+                {
                     toGain *= Utility.RandomMinMax(2, 5);
+                }
 
-                if (!from.Player || skills.Total + toGain <= skills.Cap) skill.BaseFixedPoint += toGain;
+                if (!from.Player || skills.Total + toGain <= skills.Cap)
+                {
+                    skill.BaseFixedPoint += toGain;
+                }
             }
 
             if (skill.Lock == SkillLock.Up)
@@ -254,11 +309,17 @@ namespace Server.Misc
                 var info = skill.Info;
 
                 if (from.StrLock == StatLockType.Up && info.StrGain / 33.3 > Utility.RandomDouble())
-                    GainStat(from, Stat.Str);
+                {
+                    GainStat(@from, Stat.Str);
+                }
                 else if (from.DexLock == StatLockType.Up && info.DexGain / 33.3 > Utility.RandomDouble())
-                    GainStat(from, Stat.Dex);
+                {
+                    GainStat(@from, Stat.Dex);
+                }
                 else if (from.IntLock == StatLockType.Up && info.IntGain / 33.3 > Utility.RandomDouble())
-                    GainStat(from, Stat.Int);
+                {
+                    GainStat(@from, Stat.Int);
+                }
             }
         }
 
@@ -276,8 +337,12 @@ namespace Server.Misc
         public static bool CanRaise(Mobile from, Stat stat)
         {
             if (!(from is BaseCreature creature && creature.Controlled))
-                if (from.RawStatTotal >= from.StatCap)
+            {
+                if (@from.RawStatTotal >= @from.StatCap)
+                {
                     return false;
+                }
+            }
 
             return stat switch
             {
@@ -299,13 +364,19 @@ namespace Server.Misc
                         if (atrophy)
                         {
                             if (CanLower(from, Stat.Dex) && (from.RawDex < from.RawInt || !CanLower(from, Stat.Int)))
-                                --from.RawDex;
+                            {
+                                --@from.RawDex;
+                            }
                             else if (CanLower(from, Stat.Int))
-                                --from.RawInt;
+                            {
+                                --@from.RawInt;
+                            }
                         }
 
                         if (CanRaise(from, Stat.Str))
-                            ++from.RawStr;
+                        {
+                            ++@from.RawStr;
+                        }
 
                         break;
                     }
@@ -314,13 +385,19 @@ namespace Server.Misc
                         if (atrophy)
                         {
                             if (CanLower(from, Stat.Str) && (from.RawStr < from.RawInt || !CanLower(from, Stat.Int)))
-                                --from.RawStr;
+                            {
+                                --@from.RawStr;
+                            }
                             else if (CanLower(from, Stat.Int))
-                                --from.RawInt;
+                            {
+                                --@from.RawInt;
+                            }
                         }
 
                         if (CanRaise(from, Stat.Dex))
-                            ++from.RawDex;
+                        {
+                            ++@from.RawDex;
+                        }
 
                         break;
                     }
@@ -329,13 +406,19 @@ namespace Server.Misc
                         if (atrophy)
                         {
                             if (CanLower(from, Stat.Str) && (from.RawStr < from.RawDex || !CanLower(from, Stat.Dex)))
-                                --from.RawStr;
+                            {
+                                --@from.RawStr;
+                            }
                             else if (CanLower(from, Stat.Dex))
-                                --from.RawDex;
+                            {
+                                --@from.RawDex;
+                            }
                         }
 
                         if (CanRaise(from, Stat.Int))
-                            ++from.RawInt;
+                        {
+                            ++@from.RawInt;
+                        }
 
                         break;
                     }
@@ -351,7 +434,9 @@ namespace Server.Misc
                         if (from is BaseCreature creature && creature.Controlled)
                         {
                             if (creature.LastStrGain + m_PetStatGainDelay >= DateTime.UtcNow)
+                            {
                                 return;
+                            }
                         }
                         else if (from.LastStrGain + m_StatGainDelay >= DateTime.UtcNow)
                         {
@@ -366,7 +451,9 @@ namespace Server.Misc
                         if (from is BaseCreature creature && creature.Controlled)
                         {
                             if (creature.LastDexGain + m_PetStatGainDelay >= DateTime.UtcNow)
+                            {
                                 return;
+                            }
                         }
                         else if (from.LastDexGain + m_StatGainDelay >= DateTime.UtcNow)
                         {
@@ -381,7 +468,9 @@ namespace Server.Misc
                         if (from is BaseCreature creature && creature.Controlled)
                         {
                             if (creature.LastIntGain + m_PetStatGainDelay >= DateTime.UtcNow)
+                            {
                                 return;
+                            }
                         }
                         else if (from.LastIntGain + m_StatGainDelay >= DateTime.UtcNow)
                         {

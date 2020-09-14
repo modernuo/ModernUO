@@ -60,9 +60,13 @@ namespace Server.Guilds
             var name = $"{pm.Name}{(player.GuildFealty == pm && player.GuildFealty != guild.Leader ? " *" : "")}";
 
             if (pm == player)
+            {
                 name = Color(name, 0x006600);
+            }
             else if (pm.NetState != null)
+            {
                 name = Color(name, 0x000066);
+            }
 
             defs[0] = name;
             defs[1] = pm.GuildRank.Name;
@@ -77,7 +81,9 @@ namespace Server.Guilds
         protected override bool IsFiltered(PlayerMobile pm, string filter)
         {
             if (pm == null)
+            {
                 return true;
+            }
 
             return !Insensitive.Contains(pm.Name, filter);
         }
@@ -96,7 +102,9 @@ namespace Server.Guilds
             base.OnResponse(sender, info);
 
             if (!(sender.Mobile is PlayerMobile pm) || !IsMember(pm, guild))
+            {
                 return;
+            }
 
             if (info.ButtonID == 8)
             {
@@ -155,11 +163,17 @@ namespace Server.Guilds
             else if (guildFaction != targetFaction)
             {
                 if (guildFaction == null)
+                {
                     pm.SendLocalizedMessage(1013027); // That player cannot join a non-faction guild.
+                }
                 else if (targetFaction == null)
+                {
                     pm.SendLocalizedMessage(1013026); // That player must be in a faction before joining this guild.
+                }
                 else
+                {
                     pm.SendLocalizedMessage(1013028); // That person has a different faction affiliation.
+                }
             }
             else if (targetState?.IsLeaving == true)
             {
@@ -180,11 +194,19 @@ namespace Server.Guilds
             public int Compare(PlayerMobile x, PlayerMobile y)
             {
                 if (x == null && y == null)
+                {
                     return 0;
+                }
+
                 if (x == null)
+                {
                     return -1;
+                }
+
                 if (y == null)
+                {
                     return 1;
+                }
 
                 return Insensitive.Compare(x.Name, y.Name);
             }
@@ -197,21 +219,38 @@ namespace Server.Guilds
             public int Compare(PlayerMobile x, PlayerMobile y)
             {
                 if (x == null && y == null)
+                {
                     return 0;
+                }
+
                 if (x == null)
+                {
                     return -1;
+                }
+
                 if (y == null)
+                {
                     return 1;
+                }
 
                 var aState = x.NetState;
                 var bState = y.NetState;
 
                 if (aState == null && bState == null)
+                {
                     return x.LastOnline.CompareTo(y.LastOnline);
+                }
+
                 if (aState == null)
+                {
                     return -1;
+                }
+
                 if (bState == null)
+                {
                     return 1;
+                }
+
                 return 0;
             }
         }
@@ -223,11 +262,19 @@ namespace Server.Guilds
             public int Compare(PlayerMobile x, PlayerMobile y)
             {
                 if (x == null && y == null)
+                {
                     return 0;
+                }
+
                 if (x == null)
+                {
                     return -1;
+                }
+
                 if (y == null)
+                {
                     return 1;
+                }
 
                 return Insensitive.Compare(x.GuildTitle, y.GuildTitle);
             }
@@ -240,11 +287,19 @@ namespace Server.Guilds
             public int Compare(PlayerMobile x, PlayerMobile y)
             {
                 if (x == null && y == null)
+                {
                     return 0;
+                }
+
                 if (x == null)
+                {
                     return -1;
+                }
+
                 if (y == null)
+                {
                     return 1;
+                }
 
                 return x.GuildRank.Rank.CompareTo(y.GuildRank.Rank);
             }

@@ -45,7 +45,9 @@ namespace Server.Factions
                             var cd = new Candidate(reader);
 
                             if (cd.Mobile != null)
+                            {
                                 Candidates.Add(cd);
+                            }
                         }
 
                         break;
@@ -90,7 +92,9 @@ namespace Server.Factions
                 var until = LastStateTime + period - DateTime.UtcNow;
 
                 if (until < TimeSpan.Zero)
+                {
                     until = TimeSpan.Zero;
+                }
 
                 return until;
             }
@@ -125,13 +129,17 @@ namespace Server.Factions
             writer.WriteEncodedInt(Candidates.Count);
 
             for (var i = 0; i < Candidates.Count; ++i)
+            {
                 Candidates[i].Serialize(writer);
+            }
         }
 
         public void AddCandidate(Mobile mob)
         {
             if (IsCandidate(mob))
+            {
                 return;
+            }
 
             Candidates.Add(new Candidate(mob));
             mob.SendLocalizedMessage(1010117); // You are now running for office.
@@ -140,6 +148,7 @@ namespace Server.Factions
         public void RemoveVoter(Mobile mob)
         {
             if (CurrentState == ElectionState.Election)
+            {
                 for (var i = 0; i < Candidates.Count; ++i)
                 {
                     var voters = Candidates[i].Voters;
@@ -149,9 +158,12 @@ namespace Server.Factions
                         var voter = voters[j];
 
                         if (voter.From == mob)
+                        {
                             voters.RemoveAt(j--);
+                        }
                     }
                 }
+            }
         }
 
         public void RemoveCandidate(Mobile mob)
@@ -159,7 +171,9 @@ namespace Server.Factions
             var cd = FindCandidate(mob);
 
             if (cd == null)
+            {
                 return;
+            }
 
             Candidates.Remove(cd);
             mob.SendLocalizedMessage(1038031);
@@ -211,8 +225,12 @@ namespace Server.Factions
         public Candidate FindCandidate(Mobile mob)
         {
             for (var i = 0; i < Candidates.Count; ++i)
+            {
                 if (Candidates[i].Mobile == mob)
+                {
                     return Candidates[i];
+                }
+            }
 
             return null;
         }
@@ -228,7 +246,9 @@ namespace Server.Factions
                     var voter = voters[j];
 
                     if (voter.From == mob)
+                    {
                         return Candidates[i];
+                    }
                 }
             }
 
@@ -238,13 +258,19 @@ namespace Server.Factions
         public bool CanBeCandidate(Mobile mob)
         {
             if (IsCandidate(mob))
+            {
                 return false;
+            }
 
             if (Candidates.Count >= MaxCandidates)
+            {
                 return false;
+            }
 
             if (CurrentState != ElectionState.Campaign)
+            {
                 return false; // sanity..
+            }
 
             var pl = PlayerState.Find(mob);
 
@@ -267,7 +293,9 @@ namespace Server.Factions
                 case ElectionState.Pending:
                     {
                         if (LastStateTime + PendingPeriod > DateTime.UtcNow)
+                        {
                             break;
+                        }
 
                         Faction.Broadcast(1038023); // Campaigning for the Faction Commander election has begun.
 
@@ -279,7 +307,9 @@ namespace Server.Factions
                 case ElectionState.Campaign:
                     {
                         if (LastStateTime + CampaignPeriod > DateTime.UtcNow)
+                        {
                             break;
+                        }
 
                         if (Candidates.Count == 0)
                         {
@@ -319,7 +349,9 @@ namespace Server.Factions
                 case ElectionState.Election:
                     {
                         if (LastStateTime + VotingPeriod > DateTime.UtcNow)
+                        {
                             break;
+                        }
 
                         Faction.Broadcast(1038024); // The results for the Faction Commander election are in
 
@@ -332,12 +364,16 @@ namespace Server.Factions
                             var pl = PlayerState.Find(cd.Mobile);
 
                             if (pl == null || pl.Faction != Faction)
+                            {
                                 continue;
+                            }
 
                             // cd.CleanMuleVotes();
 
                             if (winner == null || cd.Votes > winner.Votes)
+                            {
                                 winner = cd;
+                            }
                         }
 
                         if (winner == null)
@@ -371,9 +407,13 @@ namespace Server.Factions
             Candidate = candidate;
 
             if (From.NetState != null)
+            {
                 Address = From.NetState.Address;
+            }
             else
+            {
                 Address = IPAddress.None;
+            }
 
             Time = DateTime.UtcNow;
         }
@@ -410,14 +450,18 @@ namespace Server.Factions
             var gameTime = TimeSpan.Zero;
 
             if (From is PlayerMobile mobile)
+            {
                 gameTime = mobile.GameTime;
+            }
 
             var kp = 0;
 
             var pl = PlayerState.Find(From);
 
             if (pl != null)
+            {
                 kp = pl.KillPoints;
+            }
 
             var sk = From.Skills.Total;
 
@@ -466,7 +510,9 @@ namespace Server.Factions
                             var voter = new Voter(reader, Mobile);
 
                             if (voter.From != null)
+                            {
                                 Voters.Add(voter);
+                            }
                         }
 
                         break;
@@ -479,7 +525,9 @@ namespace Server.Factions
                         Voters = new List<Voter>(mobs.Count);
 
                         for (var i = 0; i < mobs.Count; ++i)
+                        {
                             Voters.Add(new Voter(mobs[i], Mobile));
+                        }
 
                         break;
                     }
@@ -499,7 +547,9 @@ namespace Server.Factions
                 var voter = Voters[i];
 
                 if ((int)voter.AcquireFields()[3] < 90)
+                {
                     Voters.RemoveAt(i--);
+                }
             }
         }
 
@@ -512,7 +562,9 @@ namespace Server.Factions
             writer.WriteEncodedInt(Voters.Count);
 
             for (var i = 0; i < Voters.Count; ++i)
+            {
                 Voters[i].Serialize(writer);
+            }
         }
     }
 

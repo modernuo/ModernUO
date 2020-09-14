@@ -93,27 +93,37 @@ namespace Server.Mobiles
         public void Polymorph(Mobile m)
         {
             if (!m.CanBeginAction<PolymorphSpell>() || !m.CanBeginAction<IncognitoSpell>() || m.IsBodyMod)
+            {
                 return;
+            }
 
             var mount = m.Mount;
 
             if (mount != null)
+            {
                 mount.Rider = null;
+            }
 
             if (m.Mounted)
+            {
                 return;
+            }
 
             if (m.BeginAction<PolymorphSpell>())
             {
                 var disarm = m.FindItemOnLayer(Layer.OneHanded);
 
                 if (disarm?.Movable == true)
+                {
                     m.AddToBackpack(disarm);
+                }
 
                 disarm = m.FindItemOnLayer(Layer.TwoHanded);
 
                 if (disarm?.Movable == true)
+                {
                     m.AddToBackpack(disarm);
+                }
 
                 m.BodyMod = 42;
                 m.HueMod = 0;
@@ -127,14 +137,18 @@ namespace Server.Mobiles
             var map = Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             var eable = GetMobilesInRange<BaseCreature>(10);
             var rats = eable.Aggregate(0, (c, m) => c + (m is Ratman || m is RatmanArcher || m is RatmanMage ? 1 : 0));
             eable.Free();
 
             if (rats >= 16)
+            {
                 return;
+            }
 
             PlaySound(0x3D);
 
@@ -159,16 +173,24 @@ namespace Server.Mobiles
         public void DoSpecialAbility(Mobile target)
         {
             if (target?.Deleted != false) // sanity
+            {
                 return;
+            }
 
             if (Utility.RandomDouble() <= 0.6) // 60% chance to polymorph attacker into a ratman
+            {
                 Polymorph(target);
+            }
 
             if (Utility.RandomDouble() <= 0.2) // 20% chance to more ratmen
+            {
                 SpawnRatmen(target);
+            }
 
             if (Hits < 500 && !IsBodyMod) // Baracoon is low on life, polymorph into a ratman
+            {
                 Polymorph(this);
+            }
         }
 
         public override void OnGotMeleeAttack(Mobile attacker)

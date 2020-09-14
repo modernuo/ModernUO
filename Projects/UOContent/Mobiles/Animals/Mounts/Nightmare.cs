@@ -101,7 +101,9 @@ namespace Server.Mobiles
         public override int GetAngerSound()
         {
             if (!Controlled)
+            {
                 return 0x16A;
+            }
 
             return base.GetAngerSound();
         }
@@ -120,9 +122,13 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Core.AOS && BaseSoundID == 0x16A)
+            {
                 BaseSoundID = 0xA8;
+            }
             else if (!Core.AOS && BaseSoundID == 0xA8)
+            {
                 BaseSoundID = 0x16A;
+            }
         }
     }
 }

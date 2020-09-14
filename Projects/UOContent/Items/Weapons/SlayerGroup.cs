@@ -430,7 +430,9 @@ namespace Server.Items
             var v = (int)name;
 
             if (v >= 0 && v < TotalEntries.Length)
+            {
                 return TotalEntries[v];
+            }
 
             return null;
         }
@@ -445,7 +447,9 @@ namespace Server.Items
                 var inGroup = false;
 
                 for (var j = 0; foundOn != null && !inGroup && j < foundOn.Length; ++j)
+                {
                     inGroup = foundOn[j] == type;
+                }
 
                 if (inGroup)
                 {
@@ -483,8 +487,12 @@ namespace Server.Items
         public bool OppositionSuperSlays(Mobile m)
         {
             for (var i = 0; i < Opposition.Length; i++)
+            {
                 if (Opposition[i].Super.Slays(m))
+                {
                     return true;
+                }
+            }
 
             return false;
         }

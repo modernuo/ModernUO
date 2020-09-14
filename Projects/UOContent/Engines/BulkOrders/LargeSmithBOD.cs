@@ -37,7 +37,9 @@ namespace Server.Engines.BulkOrders
             };
 
             if (rand > 2 && rand < 8)
+            {
                 useMaterials = false;
+            }
 
             var hue = 0x44E;
             var amountMax = Utility.RandomList(10, 15, 20, 20);

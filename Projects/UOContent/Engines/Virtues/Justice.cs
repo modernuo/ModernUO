@@ -21,7 +21,9 @@ namespace Server
             var map = first.Map;
 
             if (second.Map != map)
+            {
                 return false;
+            }
 
             return GetMapRegion(map, first.Location) == GetMapRegion(map, second.Location);
         }
@@ -29,13 +31,19 @@ namespace Server
         public static int GetMapRegion(Map map, Point3D loc)
         {
             if (map == null || map.MapID >= 2)
+            {
                 return 0;
+            }
 
             if (loc.X < 5120)
+            {
                 return 0;
+            }
 
             if (loc.Y < 2304)
+            {
                 return 1;
+            }
 
             return 2;
         }
@@ -43,10 +51,14 @@ namespace Server
         public static void OnVirtueUsed(Mobile from)
         {
             if (!from.CheckAlive())
+            {
                 return;
+            }
 
             if (!(from is PlayerMobile protector))
+            {
                 return;
+            }
 
             if (!VirtueHelper.IsSeeker(protector, VirtueName.Justice))
             {
@@ -77,28 +89,50 @@ namespace Server
             var pm = obj as PlayerMobile;
 
             if (protector == null)
+            {
                 return;
+            }
 
             if (!VirtueHelper.IsSeeker(protector, VirtueName.Justice))
+            {
                 protector.SendLocalizedMessage(1049610); // You must reach the first path in this virtue to invoke it.
+            }
             else if (!protector.CanBeginAction<JusticeVirtue>())
+            {
                 protector.SendLocalizedMessage(1049370); // You must wait a while before offering your protection again.
+            }
             else if (protector.JusticeProtectors.Count > 0)
+            {
                 protector.SendLocalizedMessage(1049542); // You cannot protect someone while being protected.
+            }
             else if (protector.Map != Map.Felucca)
+            {
                 protector.SendLocalizedMessage(1049372); // You cannot use this ability here.
+            }
             else if (pm == null)
+            {
                 protector.SendLocalizedMessage(1049678); // Only players can be protected.
+            }
             else if (pm.Map != Map.Felucca)
+            {
                 protector.SendLocalizedMessage(1049372); // You cannot use this ability here.
+            }
             else if (pm == protector || pm.Criminal || pm.Kills >= 5)
+            {
                 protector.SendLocalizedMessage(1049436); // That player cannot be protected.
+            }
             else if (pm.JusticeProtectors.Count > 0)
+            {
                 protector.SendLocalizedMessage(1049369); // You cannot protect that player right now.
+            }
             else if (pm.HasGump<AcceptProtectorGump>())
+            {
                 protector.SendLocalizedMessage(1049369); // You cannot protect that player right now.
+            }
             else
+            {
                 pm.SendGump(new AcceptProtectorGump(protector, pm));
+            }
         }
 
         public static void OnVirtueAccepted(PlayerMobile protector, PlayerMobile protectee)
@@ -150,20 +184,26 @@ namespace Server
             protector.SendLocalizedMessage(1049454, args); // ~2_NAME~ has declined your protection.
 
             if (protector.BeginAction<JusticeVirtue>())
+            {
                 Timer.DelayCall(TimeSpan.FromMinutes(15.0), protector.EndAction<JusticeVirtue>);
+            }
         }
 
         public static void CheckAtrophy(Mobile from)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return;
+            }
 
             try
             {
                 if (pm.LastJusticeLoss + LossDelay < DateTime.UtcNow)
                 {
                     if (VirtueHelper.Atrophy(from, VirtueName.Justice, LossAmount))
-                        from.SendLocalizedMessage(1049373); // You have lost some Justice.
+                    {
+                        @from.SendLocalizedMessage(1049373); // You have lost some Justice.
+                    }
 
                     pm.LastJusticeLoss = DateTime.UtcNow;
                 }
@@ -235,9 +275,13 @@ namespace Server
                 var okay = info.IsSwitched(1);
 
                 if (okay)
+                {
                     JusticeVirtue.OnVirtueAccepted(m_Protector, m_Protectee);
+                }
                 else
+                {
                     JusticeVirtue.OnVirtueRejected(m_Protector, m_Protectee);
+                }
             }
         }
     }

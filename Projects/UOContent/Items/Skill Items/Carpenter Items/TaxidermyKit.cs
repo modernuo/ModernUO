@@ -87,7 +87,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Kit.Deleted)
+                {
                     return;
+                }
 
                 var corpse = targeted as Corpse;
 
@@ -114,7 +116,9 @@ namespace Server.Items
                     foreach (var t in m_Table)
                     {
                         if (t.CreatureType != obj.GetType())
+                        {
                             continue;
+                        }
 
                         var pack = from.Backpack;
 
@@ -139,7 +143,9 @@ namespace Server.Items
                             from.AddToBackpack(new TrophyDeed(t, hunter, weight));
 
                             if (corpse != null)
+                            {
                                 corpse.VisitedByTaxidermist = true;
+                            }
 
                             m_Kit.Delete();
                             return;
@@ -233,10 +239,15 @@ namespace Server.Items
         public bool CouldFit(IPoint3D p, Map map)
         {
             if (!map.CanFit(p.X, p.Y, p.Z, ItemData.Height))
+            {
                 return false;
+            }
 
             if (ItemID == NorthID)
+            {
                 return BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map); // North wall
+            }
+
             return BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map);     // West wall
         }
 
@@ -249,7 +260,9 @@ namespace Server.Items
             if (m_AnimalWeight >= 20)
             {
                 if (m_Hunter != null)
+                {
                     list.Add(1070857, m_Hunter.Name); // Caught by ~1_fisherman~
+                }
 
                 list.Add(1070858, m_AnimalWeight.ToString()); // ~1_weight~ stones
             }
@@ -300,7 +313,9 @@ namespace Server.Items
         private void FixMovingCrate()
         {
             if (Deleted)
+            {
                 return;
+            }
 
             if (Movable || IsLockedDown)
             {
@@ -420,7 +435,9 @@ namespace Server.Items
             if (m_AnimalWeight >= 20)
             {
                 if (m_Hunter != null)
+                {
                     list.Add(1070857, m_Hunter.Name); // Caught by ~1_fisherman~
+                }
 
                 list.Add(1070858, m_AnimalWeight.ToString()); // ~1_weight~ stones
             }
@@ -478,7 +495,8 @@ namespace Server.Items
                     var westWall = BaseAddon.IsWall(from.X - 1, from.Y, from.Z, from.Map);
 
                     if (northWall && westWall)
-                        switch (from.Direction & Direction.Mask)
+                    {
+                        switch (@from.Direction & Direction.Mask)
                         {
                             case Direction.North:
                             case Direction.South:
@@ -491,18 +509,25 @@ namespace Server.Items
                                 break;
 
                             default:
-                                from.SendMessage("Turn to face the wall on which to hang this trophy.");
+                                @from.SendMessage("Turn to face the wall on which to hang this trophy.");
                                 return;
                         }
+                    }
 
                     var itemID = 0;
 
                     if (northWall)
+                    {
                         itemID = NorthID;
+                    }
                     else if (westWall)
+                    {
                         itemID = WestID;
+                    }
                     else
-                        from.SendLocalizedMessage(1042626); // The trophy must be placed next to a wall.
+                    {
+                        @from.SendLocalizedMessage(1042626); // The trophy must be placed next to a wall.
+                    }
 
                     if (itemID > 0)
                     {

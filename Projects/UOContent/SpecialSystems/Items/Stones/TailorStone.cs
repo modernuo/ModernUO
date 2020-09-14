@@ -20,7 +20,9 @@ namespace Server.Items
             var tailorBag = new TailorBag();
 
             if (!from.AddToBackpack(tailorBag))
+            {
                 tailorBag.Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

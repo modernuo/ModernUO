@@ -41,9 +41,13 @@ namespace Server.Mobiles
             PackItem(new ExecutionersAxe());
 
             if (Utility.RandomBool())
+            {
                 PackItem(new LongPants());
+            }
             else
+            {
                 PackItem(new ShortPants());
+            }
 
             switch (Utility.Random(4))
             {
@@ -62,7 +66,9 @@ namespace Server.Mobiles
             }
 
             if (Utility.RandomDouble() < .25)
+            {
                 PackItem(Seed.RandomBonsaiSeed());
+            }
         }
 
         public YomotsuWarrior(Serial serial) : base(serial)

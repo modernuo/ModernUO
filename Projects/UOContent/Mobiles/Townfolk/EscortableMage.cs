@@ -45,9 +45,13 @@ namespace Server.Mobiles
             AddItem(new ShortPants(lowHue));
 
             if (Female)
+            {
                 AddItem(new ThighBoots(lowHue));
+            }
             else
+            {
                 AddItem(new Boots(lowHue));
+            }
 
             Utility.AssignRandomHair(this);
 

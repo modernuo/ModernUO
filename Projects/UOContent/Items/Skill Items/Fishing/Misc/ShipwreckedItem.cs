@@ -12,7 +12,9 @@ namespace Server.Items
             var weight = ItemData.Weight;
 
             if (weight >= 255)
+            {
                 weight = 1;
+            }
 
             Weight = weight;
         }
@@ -24,7 +26,9 @@ namespace Server.Items
         public bool Dye(Mobile from, DyeTub sender)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             if (ItemID >= 0x13A4 && ItemID <= 0x13AE)
             {

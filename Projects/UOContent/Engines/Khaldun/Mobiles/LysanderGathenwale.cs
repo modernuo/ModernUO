@@ -87,7 +87,9 @@ namespace Server.Mobiles
         public override bool OnBeforeDeath()
         {
             if (!base.OnBeforeDeath())
+            {
                 return false;
+            }
 
             Backpack?.Destroy();
 

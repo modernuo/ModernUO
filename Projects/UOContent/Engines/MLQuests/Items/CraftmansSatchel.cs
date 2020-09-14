@@ -20,7 +20,9 @@ namespace Server.Engines.MLQuests.Items
             var loot = Loot.Construct(lootSets.RandomElement());
 
             if (loot == null)
+            {
                 return;
+            }
 
             RewardBag.Enhance(loot);
             DropItem(loot);
@@ -32,7 +34,9 @@ namespace Server.Engines.MLQuests.Items
             var recipeID = system.RandomRecipe();
 
             if (recipeID != -1)
+            {
                 DropItem(new RecipeScroll(recipeID));
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -58,7 +62,9 @@ namespace Server.Engines.MLQuests.Items
             AddBaseLoot(Loot.MLArmorTypes, Loot.JewelryTypes, m_TalismanType);
 
             if (Utility.RandomDouble() < 0.50)
+            {
                 AddRecipe(DefTailoring.CraftSystem);
+            }
         }
 
         public TailorSatchel(Serial serial)
@@ -89,7 +95,9 @@ namespace Server.Engines.MLQuests.Items
             AddBaseLoot(Loot.MLWeaponTypes, Loot.JewelryTypes, m_TalismanType);
 
             if (Utility.RandomDouble() < 0.50)
+            {
                 AddRecipe(DefBlacksmithy.CraftSystem);
+            }
         }
 
         public BlacksmithSatchel(Serial serial)
@@ -120,6 +128,7 @@ namespace Server.Engines.MLQuests.Items
             AddBaseLoot(Loot.MLArmorTypes, Loot.MLWeaponTypes, Loot.MLRangedWeaponTypes, Loot.JewelryTypes, m_TalismanType);
 
             if (Utility.RandomDouble() < 0.50)
+            {
                 switch (Utility.Random(6))
                 {
                     case 0:
@@ -134,6 +143,7 @@ namespace Server.Engines.MLQuests.Items
                     // case 4: AddNonArtifactRecipe( DefCarpentry.CraftSystem ); break;
                     // case 5: AddNonArtifactRecipe( DefBowFletching.CraftSystem ); break;
                 }
+            }
         }
 
         public TinkerSatchel(Serial serial)
@@ -164,7 +174,9 @@ namespace Server.Engines.MLQuests.Items
             AddBaseLoot(Loot.MLRangedWeaponTypes, Loot.JewelryTypes, m_TalismanType);
 
             if (Utility.RandomDouble() < 0.50)
+            {
                 AddRecipe(DefBowFletching.CraftSystem);
+            }
 
             // TODO: runic fletching kit
         }
@@ -197,7 +209,9 @@ namespace Server.Engines.MLQuests.Items
             AddBaseLoot(Loot.MLArmorTypes, Loot.MLWeaponTypes, Loot.MLRangedWeaponTypes, Loot.JewelryTypes, m_TalismanType);
 
             if (Utility.RandomDouble() < 0.50)
+            {
                 AddRecipe(DefCarpentry.CraftSystem);
+            }
 
             // TODO: Add runic dovetail saw
         }

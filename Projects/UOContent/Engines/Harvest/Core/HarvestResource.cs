@@ -26,9 +26,13 @@ namespace Server.Engines.Harvest
         public void SendSuccessTo(Mobile m)
         {
             if (SuccessMessage is int messageInt)
+            {
                 m.SendLocalizedMessage(messageInt);
+            }
             else
+            {
                 m.SendMessage(SuccessMessage.ToString());
+            }
         }
     }
 }

@@ -35,9 +35,13 @@ namespace Server.Mobiles.Townfolk
             }
 
             if (Utility.RandomBool())
+            {
                 AddItem(new Boots());
+            }
             else
+            {
                 AddItem(new ThighBoots());
+            }
 
             Utility.AssignRandomHair(this);
             Utility.AssignRandomFacialHair(this, HairHue);
@@ -62,7 +66,9 @@ namespace Server.Mobiles.Townfolk
             base.OnMovement(m, oldLocation);
 
             if (CantWalk && InRange(m, 1) && !InRange(oldLocation, 1) && (!m.Hidden || m.AccessLevel == AccessLevel.Player))
+            {
                 Say(502268); // Quickly, I beg thee! Unlock my chains! If thou dost look at me close thou canst see them.
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

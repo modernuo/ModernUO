@@ -87,7 +87,9 @@ namespace Server.Mobiles
             set
             {
                 if (value == this)
+                {
                     value = null;
+                }
 
                 if (m_MorphedInto != value)
                 {
@@ -133,7 +135,9 @@ namespace Server.Mobiles
                 }
 
                 if (Combatant.Player && m_MorphedInto != Combatant && Utility.RandomDouble() < 0.05)
+                {
                     MorphedInto = Combatant;
+                }
             }
         }
 
@@ -142,7 +146,9 @@ namespace Server.Mobiles
             var idle = base.CheckIdle();
 
             if (idle && m_MorphedInto != null && DateTime.UtcNow - m_LastMorph > TimeSpan.FromSeconds(30))
+            {
                 MorphedInto = null;
+            }
 
             return idle;
         }
@@ -157,7 +163,9 @@ namespace Server.Mobiles
                 p.Y += offsets[i + 1];
 
                 if (SpellHelper.AdjustField(ref p, Map, 12, false))
+                {
                     Effects.SendLocationEffect(p, Map, itemID, 50);
+                }
             }
         }
 
@@ -184,8 +192,12 @@ namespace Server.Mobiles
             // TODO: Skills?
 
             foreach (var item in m.Items)
+            {
                 if (item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank)
+                {
                     AddItem(new ClonedItem(item)); // TODO: Clone weapon/armor attributes
+                }
+            }
 
             PlaySound(0x511);
             FixedParticles(0x376A, 1, 14, 5045, EffectLayer.Waist);
@@ -218,17 +230,23 @@ namespace Server.Mobiles
                 var item = Items[i];
 
                 if (item is ClonedItem)
+                {
                     item.Delete();
+                }
             }
 
             if (Backpack != null)
+            {
                 for (var i = Backpack.Items.Count - 1; i >= 0; --i)
                 {
                     var item = Backpack.Items[i];
 
                     if (item is ClonedItem)
+                    {
                         item.Delete();
+                    }
                 }
+            }
         }
 
         public override void OnAfterDelete()
@@ -257,7 +275,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (reader.ReadBool())
+            {
                 ValidationQueue<Changeling>.Add(this);
+            }
         }
 
         public void Validate()

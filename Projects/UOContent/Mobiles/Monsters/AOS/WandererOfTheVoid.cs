@@ -43,7 +43,9 @@ namespace Server.Mobiles
             var count = Utility.RandomMinMax(2, 3);
 
             for (var i = 0; i < count; ++i)
+            {
                 PackItem(new TreasureMap(3, Map.Trammel));
+            }
         }
 
         public WandererOfTheVoid(Serial serial) : base(serial)

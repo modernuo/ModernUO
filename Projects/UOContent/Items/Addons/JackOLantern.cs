@@ -59,7 +59,9 @@ namespace Server.Items
 
 
             if (version <= 1)
+            {
                 Timer.DelayCall(Fix, version);
+            }
         }
 
         private void Fix(int version)
@@ -77,7 +79,10 @@ namespace Server.Items
                     case 0:
                         {
                             if (ac.Hue == 2118)
+                            {
                                 ac.Hue = 1161;
+                            }
+
                             break;
                         }
                 }

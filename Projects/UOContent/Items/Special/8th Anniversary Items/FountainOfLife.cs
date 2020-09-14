@@ -92,7 +92,9 @@ namespace Server.Items
                 var allow = base.OnDragDrop(from, dropped);
 
                 if (allow)
-                    Enhance(from);
+                {
+                    Enhance(@from);
+                }
 
                 return allow;
             }
@@ -108,7 +110,9 @@ namespace Server.Items
                 var allow = base.OnDragDropInto(from, item, p);
 
                 if (allow)
-                    Enhance(from);
+                {
+                    Enhance(@from);
+                }
 
                 return allow;
             }
@@ -154,9 +158,13 @@ namespace Server.Items
             var now = DateTime.UtcNow;
 
             if (next < now)
+            {
                 m_Timer = Timer.DelayCall(RechargeTime, Recharge);
+            }
             else
+            {
                 m_Timer = Timer.DelayCall(next - now, RechargeTime, Recharge);
+            }
         }
 
         public void Recharge()
@@ -171,7 +179,9 @@ namespace Server.Items
             for (var i = Items.Count - 1; i >= 0 && m_Charges > 0; --i)
             {
                 if (Items[i] is EnhancedBandage)
+                {
                     continue;
+                }
 
                 if (Items[i] is Bandage bandage)
                 {
@@ -191,7 +201,9 @@ namespace Server.Items
                     }
 
                     if (from == null || !TryDropItem(from, enhanced, false)) // try stacking first
+                    {
                         DropItem(enhanced);
+                    }
                 }
             }
 

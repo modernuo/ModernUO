@@ -79,7 +79,9 @@ namespace Server.Items
                 var random = Utility.Random(3);
 
                 if (i == 5)
+                {
                     random = 0;
+                }
 
                 organ = random switch
                 {
@@ -112,7 +114,9 @@ namespace Server.Items
         public override bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage)
         {
             if (dropped is PlagueBeastInnard || dropped is PlagueBeastGland)
-                return base.TryDropItem(from, dropped, sendFullMessage);
+            {
+                return base.TryDropItem(@from, dropped, sendFullMessage);
+            }
 
             return false;
         }
@@ -127,6 +131,7 @@ namespace Server.Items
                 var cy = p.Y + ir.Y + ir.Height / 2;
 
                 for (var i = Items.Count - 1; i >= 0; i--)
+                {
                     if (Items[i] is PlagueBeastComponent innard)
                     {
                         var r = ItemBounds.Table[innard.ItemID];
@@ -136,10 +141,11 @@ namespace Server.Items
 
                         if (cx >= x && cx <= x + r.Width && cy >= y && cy <= y + r.Height)
                         {
-                            innard.OnDragDrop(from, item);
+                            innard.OnDragDrop(@from, item);
                             break;
                         }
                     }
+                }
 
                 return base.OnDragDropInto(from, item, p);
             }

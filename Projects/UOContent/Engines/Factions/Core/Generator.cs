@@ -17,12 +17,16 @@ namespace Server.Factions
             var factions = Faction.Factions;
 
             foreach (var faction in factions)
+            {
                 Generate(faction);
+            }
 
             var towns = Town.Towns;
 
             foreach (var town in towns)
+            {
                 Generate(town);
+            }
         }
 
         public static void Generate(Town town)
@@ -39,7 +43,9 @@ namespace Server.Factions
             }
 
             if (!CheckExistance(def.TownStone, facet, typeof(TownStone)))
+            {
                 new TownStone(town).MoveToWorld(def.TownStone, facet);
+            }
         }
 
         public static void Generate(Faction faction)
@@ -51,17 +57,23 @@ namespace Server.Factions
             var stronghold = faction.Definition.Stronghold;
 
             if (!CheckExistance(stronghold.JoinStone, facet, typeof(JoinStone)))
+            {
                 new JoinStone(faction).MoveToWorld(stronghold.JoinStone, facet);
+            }
 
             if (!CheckExistance(stronghold.FactionStone, facet, typeof(FactionStone)))
+            {
                 new FactionStone(faction).MoveToWorld(stronghold.FactionStone, facet);
+            }
 
             for (var i = 0; i < stronghold.Monoliths.Length; ++i)
             {
                 var monolith = stronghold.Monoliths[i];
 
                 if (!CheckExistance(monolith, facet, typeof(StrongholdMonolith)))
+                {
                     new StrongholdMonolith(towns[i], faction).MoveToWorld(monolith, facet);
+                }
             }
         }
 

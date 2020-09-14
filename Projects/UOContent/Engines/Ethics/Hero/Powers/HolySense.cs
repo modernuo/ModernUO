@@ -29,13 +29,19 @@ namespace Server.Ethics.Hero
                 var mob = pl.Mobile;
 
                 if (mob == null || mob.Map != from.Mobile.Map || !mob.Alive)
+                {
                     continue;
+                }
 
                 if (!mob.InRange(from.Mobile, Math.Max(18, maxRange - pl.Power)))
+                {
                     continue;
+                }
 
                 if (primary == null || pl.Power > primary.Power)
+                {
                     primary = pl;
+                }
 
                 ++enemyCount;
             }

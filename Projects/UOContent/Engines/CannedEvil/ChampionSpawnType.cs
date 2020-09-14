@@ -166,7 +166,9 @@ namespace Server.Engines.CannedEvil
             var v = (int)type;
 
             if (v < 0 || v >= Table.Length)
+            {
                 v = 0;
+            }
 
             return Table[v];
         }

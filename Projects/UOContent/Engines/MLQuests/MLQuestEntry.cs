@@ -43,13 +43,17 @@ namespace Server.Engines.MLQuests
                 Objectives[i] = obj = quest.Objectives[i].CreateInstance(this);
 
                 if (obj.IsTimed)
+                {
                     timed = true;
+                }
             }
 
             Register();
 
             if (timed)
+            {
                 m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), Slice);
+            }
         }
 
         public MLQuest Quest { get; set; }
@@ -99,7 +103,9 @@ namespace Server.Engines.MLQuests
             Quest?.Instances?.Add(this);
 
             if (Player != null)
+            {
                 PlayerContext.QuestInstances.Add(this);
+            }
         }
 
         private void Unregister()
@@ -107,7 +113,9 @@ namespace Server.Engines.MLQuests
             Quest?.Instances?.Remove(this);
 
             if (Player != null)
+            {
                 PlayerContext.QuestInstances.Remove(this);
+            }
 
             Removed = true;
         }
@@ -115,8 +123,12 @@ namespace Server.Engines.MLQuests
         public bool AllowsQuestItem(Item item, Type type)
         {
             foreach (var objective in Objectives)
+            {
                 if (!objective.Expired && objective.AllowsQuestItem(item, type))
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -130,9 +142,14 @@ namespace Server.Engines.MLQuests
                 var complete = obj.IsCompleted();
 
                 if (complete && !requiresAll)
+                {
                     return true;
+                }
+
                 if (!complete && requiresAll)
+                {
                     return false;
+                }
             }
 
             return requiresAll;
@@ -145,7 +162,9 @@ namespace Server.Engines.MLQuests
                 Player.PlaySound(0x5B5); // public sound
 
                 foreach (var obj in Objectives)
+                {
                     obj.OnQuestCompleted();
+                }
 
                 TextDefinition.SendMessageTo(Player, Quest.CompletionNotice, 0x23);
 
@@ -159,7 +178,9 @@ namespace Server.Engines.MLQuests
                  */
                 if (!Removed && SkipReportBack && !Quest.RequiresCollection
                 ) // An OnQuestCompleted can potentially have removed this instance already
+                {
                     ContinueReportBack(false);
+                }
             }
         }
 
@@ -180,6 +201,7 @@ namespace Server.Engines.MLQuests
             var hasAnyLeft = false;
 
             foreach (var obj in Objectives)
+            {
                 if (!obj.Expired)
                 {
                     if (obj.IsTimed && obj.EndTime <= DateTime.UtcNow)
@@ -196,12 +218,17 @@ namespace Server.Engines.MLQuests
                         hasAnyLeft = true;
                     }
                 }
+            }
 
             if (Quest.ObjectiveType == ObjectiveType.All && hasAnyFails || !hasAnyLeft)
+            {
                 Fail();
+            }
 
             if (!hasAnyLeft)
+            {
                 StopTimer();
+            }
         }
 
         public void SendProgressGump()
@@ -239,9 +266,13 @@ namespace Server.Engines.MLQuests
         public void SendReportBackGump()
         {
             if (SkipReportBack)
+            {
                 ContinueReportBack(true); // skip ahead
+            }
             else
+            {
                 Player.SendGump(new QuestReportBackGump(this));
+            }
         }
 
         public void ContinueReportBack(bool sendRewardGump)
@@ -252,15 +283,25 @@ namespace Server.Engines.MLQuests
             {
                 // TODO: 1115877 - You no longer have the required items to complete this quest.
                 foreach (var objective in Objectives)
+                {
                     if (!objective.IsCompleted())
+                    {
                         return;
+                    }
+                }
 
                 foreach (var objective in Objectives)
+                {
                     if (!objective.OnBeforeClaimReward())
+                    {
                         return;
+                    }
+                }
 
                 foreach (var objective in Objectives)
+                {
                     objective.OnClaimReward();
+                }
             }
             else
             {
@@ -271,6 +312,7 @@ namespace Server.Engines.MLQuests
                 var complete = false;
 
                 foreach (var objective in Objectives)
+                {
                     if (objective.IsCompleted())
                     {
                         if (objective.OnBeforeClaimReward())
@@ -281,33 +323,46 @@ namespace Server.Engines.MLQuests
 
                         break;
                     }
+                }
 
                 if (!complete)
+                {
                     return;
+                }
             }
 
             ClaimReward = true;
 
             if (Quest.HasRestartDelay)
+            {
                 PlayerContext.SetDoneQuest(Quest, DateTime.UtcNow + Quest.GetRestartDelay());
+            }
 
             // This is correct for ObjectiveType.Any as well
             foreach (var objective in Objectives)
+            {
                 objective.OnAfterClaimReward();
+            }
 
             if (sendRewardGump)
+            {
                 SendRewardOffer();
+            }
         }
 
         public void ClaimRewards()
         {
             if (Quest == null || Player?.Deleted != false || !ClaimReward || Removed)
+            {
                 return;
+            }
 
             var rewards = new List<Item>();
 
             foreach (var reward in Quest.Rewards)
+            {
                 reward.AddRewardItems(Player, rewards);
+            }
 
             if (rewards.Count != 0)
             {
@@ -316,16 +371,20 @@ namespace Server.Engines.MLQuests
                 var canFit = true;
 
                 foreach (var rewardItem in rewards)
+                {
                     if (!Player.AddToBackpack(rewardItem))
                     {
                         canFit = false;
                         break;
                     }
+                }
 
                 if (!canFit)
                 {
                     foreach (var rewardItem in rewards)
+                    {
                         rewardItem.Delete();
+                    }
 
                     Player.SendLocalizedMessage(
                         1078524
@@ -338,27 +397,37 @@ namespace Server.Engines.MLQuests
                     var rewardName = rewardItem.Name ?? $"#{rewardItem.LabelNumber}";
 
                     if (rewardItem.Stackable)
+                    {
                         Player.SendLocalizedMessage(
                             1115917,
                             $"{rewardItem.Amount}\t{rewardName}"
                         ); // You receive a reward: ~1_QUANTITY~ ~2_ITEM~
+                    }
                     else
+                    {
                         Player.SendLocalizedMessage(1074360, rewardName); // You receive a reward: ~1_REWARD~
+                    }
                 }
             }
 
             foreach (var objective in Objectives)
+            {
                 objective.OnRewardClaimed();
+            }
 
             Quest.OnRewardClaimed(this);
 
             var context = PlayerContext;
 
             if (Quest.RecordCompletion && !Quest.HasRestartDelay) // Quests with restart delays are logged earlier as per OSI
+            {
                 context.SetDoneQuest(Quest);
+            }
 
             if (Quest.IsChainTriggered)
+            {
                 context.ChainOffers.Remove(Quest);
+            }
 
             var nextQuestType = Quest.NextQuest;
 
@@ -367,7 +436,9 @@ namespace Server.Engines.MLQuests
                 var nextQuest = MLQuestSystem.FindQuest(nextQuestType);
 
                 if (nextQuest != null && !context.ChainOffers.Contains(nextQuest))
+                {
                     context.ChainOffers.Add(nextQuest);
+                }
             }
 
             Remove();
@@ -385,12 +456,16 @@ namespace Server.Engines.MLQuests
             Player.SendSound(0x5B3); // private sound
 
             foreach (var obj in Objectives)
+            {
                 obj.OnQuestCancelled();
+            }
 
             Quest.OnCancel(this);
 
             if (removeChain)
+            {
                 PlayerContext.ChainOffers.Remove(Quest);
+            }
         }
 
         public void Remove()
@@ -402,7 +477,10 @@ namespace Server.Engines.MLQuests
         private void StopTimer()
         {
             if (m_Timer == null)
+            {
                 return;
+            }
+
             m_Timer.Stop();
             m_Timer = null;
         }
@@ -410,7 +488,9 @@ namespace Server.Engines.MLQuests
         public void OnQuesterDeleted()
         {
             foreach (var obj in Objectives)
+            {
                 obj.OnQuesterDeleted();
+            }
 
             Quest.OnQuesterDeleted(this);
         }
@@ -418,7 +498,9 @@ namespace Server.Engines.MLQuests
         public void OnPlayerDeath()
         {
             foreach (var obj in Objectives)
+            {
                 obj.OnPlayerDeath();
+            }
 
             Quest.OnPlayerDeath(this);
         }
@@ -428,9 +510,13 @@ namespace Server.Engines.MLQuests
         private void SetFlag(MLQuestInstanceFlags flag, bool value)
         {
             if (value)
+            {
                 m_Flags |= flag;
+            }
             else
+            {
                 m_Flags &= ~flag;
+            }
         }
 
         public void Serialize(IGenericWriter writer)
@@ -445,7 +531,9 @@ namespace Server.Engines.MLQuests
             writer.Write(Objectives.Length);
 
             foreach (var objInstance in Objectives)
+            {
                 objInstance.Serialize(writer);
+            }
         }
 
         public static MLQuestInstance Deserialize(IGenericReader reader, int version, PlayerMobile pm)
@@ -471,11 +559,13 @@ namespace Server.Engines.MLQuests
             }
 
             for (var i = 0; i < objectives; ++i)
+            {
                 BaseObjectiveInstance.Deserialize(
                     reader,
                     version,
                     instance != null && i < instance.Objectives.Length ? instance.Objectives[i] : null
                 );
+            }
 
             instance?.Slice();
 

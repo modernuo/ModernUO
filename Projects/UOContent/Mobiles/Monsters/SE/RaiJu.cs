@@ -61,7 +61,9 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomDouble() >= 0.1 || m_Table.Contains(defender))
+            {
                 return;
+            }
 
             /* Lightning Fist
              * Cliloc: 1070839

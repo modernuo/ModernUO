@@ -25,7 +25,9 @@ namespace Server.Commands.Generic
                 var ext = Extensions.Parse(from, ref args);
 
                 if (!CheckObjectTypes(from, command, ext, out var _, out var mobiles))
+                {
                     return;
+                }
 
                 if (!mobiles) // sanity check
                 {

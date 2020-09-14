@@ -45,7 +45,9 @@ namespace Server.Gumps
         {
             if (Guild.NewGuildSystem && !BaseGuildGump.IsLeader(m_Mobile, m_Guild) ||
                 !Guild.NewGuildSystem && GuildGump.BadLeader(m_Mobile, m_Guild))
+            {
                 return;
+            }
 
             var newType = info.ButtonID switch
             {
@@ -78,7 +80,9 @@ namespace Server.Gumps
             if (Guild.NewGuildSystem)
             {
                 if (m_Mobile is PlayerMobile mobile)
+                {
                     mobile.SendGump(new GuildInfoGump(mobile, m_Guild));
+                }
 
                 return;
             }

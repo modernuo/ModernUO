@@ -31,19 +31,29 @@ namespace Server.Spells.Spellweaving
         public static void RemoveTransformationOnAggressiveAction(AggressiveActionEventArgs e)
         {
             if (TransformationSpellHelper.UnderTransformation(e.Aggressor, typeof(EtherealVoyageSpell)))
+            {
                 TransformationSpellHelper.RemoveContext(e.Aggressor, true);
+            }
         }
 
         public override bool CheckCast()
         {
             if (TransformationSpellHelper.UnderTransformation(Caster, typeof(EtherealVoyageSpell)))
+            {
                 Caster.SendLocalizedMessage(501775); // This spell is already in effect.
+            }
             else if (!Caster.CanBeginAction<EtherealVoyageSpell>())
+            {
                 Caster.SendLocalizedMessage(1075124); // You must wait before casting that spell again.
+            }
             else if (Caster.Combatant != null)
+            {
                 Caster.SendLocalizedMessage(1072586); // You cannot cast Ethereal Voyage while you are in combat.
+            }
             else
+            {
                 return base.CheckCast();
+            }
 
             return false;
         }

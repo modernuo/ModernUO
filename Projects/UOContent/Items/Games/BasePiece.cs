@@ -35,7 +35,9 @@ namespace Server.Items
                         Board = (BaseBoard)reader.ReadItem();
 
                         if (Board == null || Parent == null)
+                        {
                             Delete();
+                        }
 
                         break;
                     }
@@ -45,11 +47,17 @@ namespace Server.Items
         public override void OnSingleClick(Mobile from)
         {
             if (Board?.Deleted != false)
+            {
                 Delete();
+            }
             else if (!IsChildOf(Board))
+            {
                 Board.DropItem(this);
+            }
             else
-                base.OnSingleClick(from);
+            {
+                base.OnSingleClick(@from);
+            }
         }
 
         public override bool OnDragLift(Mobile from)

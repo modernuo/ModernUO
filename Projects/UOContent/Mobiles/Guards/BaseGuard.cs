@@ -30,9 +30,12 @@ namespace Server.Mobiles
         public static void Spawn(Mobile caller, Mobile target, int amount = 1, bool onlyAdditional = false)
         {
             if (target?.Deleted != false)
+            {
                 return;
+            }
 
             foreach (var m in target.GetMobilesInRange(15))
+            {
                 if (m is BaseGuard g)
                 {
                     if (g.Focus == null) // idling
@@ -46,9 +49,12 @@ namespace Server.Mobiles
                         --amount;
                     }
                 }
+            }
 
             while (amount-- > 0)
+            {
                 caller.Region.MakeGuard(target);
+            }
         }
 
         public override bool OnBeforeDeath()

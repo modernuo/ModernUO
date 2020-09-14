@@ -24,7 +24,10 @@ namespace Server.Items
             get
             {
                 if (ItemID == 0x9FB)
+                {
                     return 0x9FD;
+                }
+
                 return 0xA02;
             }
         }
@@ -34,7 +37,10 @@ namespace Server.Items
             get
             {
                 if (ItemID == 0x9FD)
+                {
                     return 0x9FB;
+                }
+
                 return 0xA00;
             }
         }
@@ -42,9 +48,13 @@ namespace Server.Items
         public void Flip()
         {
             if (Light == LightType.WestBig)
+            {
                 Light = LightType.NorthBig;
+            }
             else if (Light == LightType.NorthBig)
+            {
                 Light = LightType.WestBig;
+            }
 
             ItemID = ItemID switch
             {

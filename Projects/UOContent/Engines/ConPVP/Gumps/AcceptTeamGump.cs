@@ -46,7 +46,9 @@ namespace Server.Engines.ConPVP
                 defs = new BitArray(basedef.Options);
 
                 for (var i = 0; i < ruleset.Flavors.Count; ++i)
+                {
                     defs.Or(ruleset.Flavors[i].Options);
+                }
 
                 height += ruleset.Flavors.Count * 18;
             }
@@ -58,8 +60,12 @@ namespace Server.Engines.ConPVP
             var opts = ruleset.Options;
 
             for (var i = 0; i < opts.Length; ++i)
+            {
                 if (defs[i] != opts[i])
+                {
                     ++changes;
+                }
+            }
 
             height += changes * 22;
 
@@ -101,14 +107,18 @@ namespace Server.Engines.ConPVP
                 for (var i = 0; i < tourney.ParticipantsPerMatch; ++i)
                 {
                     if (sb.Length > 0)
+                    {
                         sb.Append('v');
+                    }
 
                     sb.Append(tourney.PlayersPerParticipant);
                 }
             }
 
             if (tourney.EventController != null)
+            {
                 sb.Append(' ').Append(tourney.EventController.Title);
+            }
 
             sb.Append(" Tournament Invitation");
 
@@ -160,9 +170,13 @@ namespace Server.Engines.ConPVP
                 sdText = $"{(int)tourney.SuddenDeath.TotalMinutes}:{tourney.SuddenDeath.Seconds:D2}";
 
                 if (tourney.SuddenDeathRounds > 0)
+                {
                     sdText = $"{sdText} (first {tourney.SuddenDeathRounds} rounds)";
+                }
                 else
+                {
                     sdText = $"{sdText} (all rounds)";
+                }
             }
 
             AddBorderedText(35, y, 240, 20, $"Sudden Death: {sdText}", LabelColor32, BlackColor32);
@@ -177,7 +191,9 @@ namespace Server.Engines.ConPVP
             y += 20;
 
             for (var i = 0; i < ruleset.Flavors.Count; ++i, y += 18)
+            {
                 AddBorderedText(35, y, 190, 20, $" + {ruleset.Flavors[i].Title}", LabelColor32, BlackColor32);
+            }
 
             y += 4;
 
@@ -187,6 +203,7 @@ namespace Server.Engines.ConPVP
                 y += 20;
 
                 for (var i = 0; i < opts.Length; ++i)
+                {
                     if (defs[i] != opts[i])
                     {
                         var name = ruleset.Layout.FindByIndex(i);
@@ -199,6 +216,7 @@ namespace Server.Engines.ConPVP
 
                         y += 22;
                     }
+                }
             }
             else
             {
@@ -245,15 +263,21 @@ namespace Server.Engines.ConPVP
         private void AddColoredText(int x, int y, int width, int height, string text, int color)
         {
             if (color == 0)
+            {
                 AddHtml(x, y, width, height, text);
+            }
             else
+            {
                 AddHtml(x, y, width, height, Color(text, color));
+            }
         }
 
         public void AutoReject()
         {
             if (!m_Active)
+            {
                 return;
+            }
 
             m_Active = false;
 
@@ -286,14 +310,18 @@ namespace Server.Engines.ConPVP
             var mob = m_Requested;
 
             if (info.ButtonID != 1 || !m_Active)
+            {
                 return;
+            }
 
             m_Active = false;
 
             if (info.IsSwitched(1))
             {
                 if (!(mob is PlayerMobile pm))
+                {
                     return;
+                }
 
                 if (AcceptDuelGump.IsIgnored(mob, from) || mob.Blessed)
                 {
@@ -384,7 +412,9 @@ namespace Server.Engines.ConPVP
             else
             {
                 if (info.IsSwitched(3))
+                {
                     AcceptDuelGump.BeginIgnore(m_Requested, m_From);
+                }
 
                 m_From.SendGump(new ConfirmSignupGump(m_From, m_Registrar, m_Tournament, m_Players));
 

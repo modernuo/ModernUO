@@ -94,13 +94,17 @@ namespace Server.Spells.Spellweaving
         public static void HandleDeath(Mobile m)
         {
             if (m_Table.ContainsKey(m))
+            {
                 Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(2, 4)), HandleDeath_OnCallback, m);
+            }
         }
 
         private static void HandleDeath_OnCallback(Mobile m)
         {
             if (!m_Table.TryGetValue(m, out var timer))
+            {
                 return;
+            }
 
             var hitsScalar = timer.Spell.HitsScalar;
 
@@ -143,7 +147,9 @@ namespace Server.Spells.Spellweaving
         public static void OnLogin(Mobile m)
         {
             if (m?.Alive != false || m_Table[m] == null)
+            {
                 return;
+            }
 
             HandleDeath_OnCallback(m);
         }

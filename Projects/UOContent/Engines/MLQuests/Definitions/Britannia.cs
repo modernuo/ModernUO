@@ -141,9 +141,13 @@ namespace Server.Engines.MLQuests.Definitions
             AddItem(new Sandals(Utility.RandomPinkHue()));
 
             if (Utility.RandomBool())
+            {
                 AddItem(new Kilt(Utility.RandomPinkHue()));
+            }
             else
+            {
                 AddItem(new Skirt(Utility.RandomPinkHue()));
+            }
 
             AddItem(new FancyShirt(Utility.RandomRedHue()));
         }

@@ -69,7 +69,9 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             if (!Summoned && !NoKillAwards && DemonKnight.CheckArtifactChance(this))
+            {
                 DemonKnight.DistributeArtifact(this);
+            }
         }
 
         public override int GetAttackSound() => 0x34C;
@@ -94,7 +96,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (BaseSoundID == 660)
+            {
                 BaseSoundID = -1;
+            }
         }
     }
 }

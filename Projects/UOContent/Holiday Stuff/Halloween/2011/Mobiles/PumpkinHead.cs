@@ -62,6 +62,7 @@ namespace Server.Mobiles
         public override void GenerateLoot()
         {
             if (Utility.RandomDouble() < .05)
+            {
                 switch (Utility.Random(5))
                 {
                     case 0:
@@ -80,6 +81,7 @@ namespace Server.Mobiles
                         PackItem(new PaintedPorcelainMask());
                         break;
                 }
+            }
 
             PackItem(new WrappedCandy());
             AddLoot(LootPack.UltraRich, 2);
@@ -108,8 +110,12 @@ namespace Server.Mobiles
         public override void OnDamage(int amount, Mobile from, bool willKill)
         {
             if (Utility.RandomBool())
-                if (from?.Map != null && Map != Map.Internal && Map == from.Map && from.InRange(this, 12))
-                    SpillAcid(willKill ? this : from, willKill ? 3 : 1);
+            {
+                if (@from?.Map != null && Map != Map.Internal && Map == @from.Map && @from.InRange(this, 12))
+                {
+                    SpillAcid(willKill ? this : @from, willKill ? 3 : 1);
+                }
+            }
 
             base.OnDamage(amount, from, willKill);
         }

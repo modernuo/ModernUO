@@ -42,12 +42,16 @@ namespace Server.Items
             }
 
             if (from.Target is ThrowTarget targ && targ.Potion == this)
+            {
                 return;
+            }
 
             from.RevealingAction();
 
             if (!m_Users.Contains(from))
-                m_Users.Add(from);
+            {
+                m_Users.Add(@from);
+            }
 
             from.Target = new ThrowTarget(this);
         }
@@ -69,14 +73,20 @@ namespace Server.Items
         public virtual void Explode(Mobile from, Point3D loc, Map map)
         {
             if (Deleted || map == null)
+            {
                 return;
+            }
 
             Consume();
 
             // Check if any other players are using this potion
             for (var i = 0; i < m_Users.Count; i++)
+            {
                 if (m_Users[i].Target is ThrowTarget targ && targ.Potion == this)
-                    Target.Cancel(from);
+                {
+                    Target.Cancel(@from);
+                }
+            }
 
             // Effects
             Effects.PlaySound(loc, map, 0x207);
@@ -86,19 +96,25 @@ namespace Server.Items
             Timer.DelayCall(TimeSpan.FromSeconds(0.3), CircleEffect2, loc, map);
 
             foreach (var mobile in map.GetMobilesInRange(loc, Radius))
+            {
                 if (mobile is BaseCreature mon)
                 {
                     if (mon.Controlled || mon.Summoned)
+                    {
                         continue;
+                    }
 
-                    mon.Pacify(from, DateTime.UtcNow + TimeSpan.FromSeconds(5.0)); // TODO check
+                    mon.Pacify(@from, DateTime.UtcNow + TimeSpan.FromSeconds(5.0)); // TODO check
                 }
+            }
         }
 
         public virtual void BlastEffect(Point3D p, Map map)
         {
             if (map.CanFit(p, 12, true, false))
+            {
                 Effects.SendLocationEffect(p, map, 0x376A, 4, 9);
+            }
         }
 
         public void CircleEffect2(Point3D p, Map m)
@@ -116,7 +132,9 @@ namespace Server.Items
         public static int GetDelay(Mobile m)
         {
             if (m_Delay.TryGetValue(m, out var timer) && timer.Next > DateTime.UtcNow)
+            {
                 return (int)(timer.Next - DateTime.UtcNow).TotalSeconds;
+            }
 
             return 0;
         }
@@ -138,10 +156,14 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (Potion.Deleted || Potion.Map == Map.Internal)
+                {
                     return;
+                }
 
                 if (!(targeted is IPoint3D p) || from.Map == null)
+                {
                     return;
+                }
 
                 // Add delay
                 AddDelay(from);
@@ -153,9 +175,13 @@ namespace Server.Items
                 IEntity to;
 
                 if (p is Mobile mobile)
+                {
                     to = mobile;
+                }
                 else
-                    to = new Entity(Serial.Zero, new Point3D(p), from.Map);
+                {
+                    to = new Entity(Serial.Zero, new Point3D(p), @from.Map);
+                }
 
                 Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue);
                 Timer.DelayCall(TimeSpan.FromSeconds(1.0), Potion.Explode, from, new Point3D(p), from.Map);

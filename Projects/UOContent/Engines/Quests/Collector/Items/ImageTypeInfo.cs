@@ -81,7 +81,10 @@ namespace Server.Engines.Quests.Collector
 
         public static ImageType[] RandomList(int count)
         {
-            if (count <= 0) return Array.Empty<ImageType>();
+            if (count <= 0)
+            {
+                return Array.Empty<ImageType>();
+            }
 
             var length = m_Table.Length;
             Span<bool> list = stackalloc bool[length];
@@ -92,7 +95,9 @@ namespace Server.Engines.Quests.Collector
             {
                 var rand = Utility.Random(length);
                 if (!(list[rand] && (list[rand] = true)))
+                {
                     imageTypes[i++] = (ImageType)rand;
+                }
             } while (i < count);
 
             return imageTypes;

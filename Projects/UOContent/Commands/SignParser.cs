@@ -74,7 +74,9 @@ namespace Server.Commands
                     };
 
                     for (var j = 0; maps?.Length > j; ++j)
+                    {
                         Add_Static(e.m_ItemID, e.m_Location, maps[j], e.m_Text);
+                    }
                 }
 
                 from.SendMessage("Sign generating complete.");
@@ -90,13 +92,19 @@ namespace Server.Commands
             var eable = map.GetItemsInRange(location, 0);
 
             foreach (var item in eable)
+            {
                 if (item is Sign && item.Z == location.Z && item.ItemID == itemID)
+                {
                     m_ToDelete.Enqueue(item);
+                }
+            }
 
             eable.Free();
 
             while (m_ToDelete.Count > 0)
+            {
                 m_ToDelete.Dequeue().Delete();
+            }
 
             Item sign;
 
@@ -113,9 +121,13 @@ namespace Server.Commands
             if (map == Map.Malas)
             {
                 if (location.X >= 965 && location.Y >= 502 && location.X <= 1012 && location.Y <= 537)
+                {
                     sign.Hue = 0x47E;
+                }
                 else if (location.X >= 1960 && location.Y >= 1278 && location.X < 2106 && location.Y < 1413)
+                {
                     sign.Hue = 0x44E;
+                }
             }
 
             sign.MoveToWorld(location, map);

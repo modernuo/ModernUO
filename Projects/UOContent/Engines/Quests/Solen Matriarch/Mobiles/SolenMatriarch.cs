@@ -14,7 +14,9 @@ namespace Server.Engines.Quests.Matriarch
             Body = 0x328;
 
             if (!RedSolen)
+            {
                 Hue = 0x44E;
+            }
 
             SpeechHue = 0;
         }
@@ -32,7 +34,9 @@ namespace Server.Engines.Quests.Matriarch
         public override bool CanTalkTo(PlayerMobile to)
         {
             if (SolenMatriarchQuest.IsFriend(to, RedSolen))
+            {
                 return true;
+            }
 
             return to.Quest is SolenMatriarchQuest qs && qs.RedSolen == RedSolen;
         }
@@ -78,9 +82,13 @@ namespace Server.Engines.Quests.Matriarch
                             if (obj?.Completed == false)
                             {
                                 if (SolenMatriarchQuest.GiveRewardTo(player))
+                                {
                                     obj.Complete();
+                                }
                                 else
+                                {
                                     qs.AddConversation(new FullBackpackConversation(false));
+                                }
                             }
                         }
                     }
@@ -91,9 +99,13 @@ namespace Server.Engines.Quests.Matriarch
                 QuestSystem newQuest = new SolenMatriarchQuest(player, RedSolen);
 
                 if (player.Quest == null && QuestSystem.CanOfferQuest(player, typeof(SolenMatriarchQuest)))
+                {
                     newQuest.SendOffer();
+                }
                 else
+                {
                     newQuest.AddConversation(new DontOfferConversation(true));
+                }
             }
         }
 
@@ -112,11 +124,15 @@ namespace Server.Engines.Quests.Matriarch
                         QuestSystem newQuest = new SolenMatriarchQuest(player, RedSolen);
 
                         if (player.Quest == null && QuestSystem.CanOfferQuest(player, typeof(SolenMatriarchQuest)))
+                        {
                             newQuest.SendOffer();
+                        }
                         else
+                        {
                             newQuest.AddConversation(
                                 new DontOfferConversation(SolenMatriarchQuest.IsFriend(player, RedSolen))
                             );
+                        }
                     }
 
                     dropped.Delete();
@@ -139,10 +155,18 @@ namespace Server.Engines.Quests.Matriarch
             base.GetContextMenuEntries(from, list);
 
             if (from.Alive)
-                if (from is PlayerMobile pm)
+            {
+                if (@from is PlayerMobile pm)
+                {
                     if (pm.Quest is SolenMatriarchQuest qs && qs.RedSolen == RedSolen)
+                    {
                         if (qs.IsObjectiveInProgress(typeof(ProcessFungiObjective)))
+                        {
                             list.Add(new ProcessZoogiFungusEntry(this, pm));
+                        }
+                    }
+                }
+            }
         }
 
         public void OnGivenFungi(PlayerMobile player, ZoogiFungus fungi)
@@ -158,14 +182,20 @@ namespace Server.Engines.Quests.Matriarch
                     var amount = fungi.Amount / 2;
 
                     if (amount > 100)
+                    {
                         amount = 100;
+                    }
 
                     if (amount > 0)
                     {
                         if (amount * 2 >= fungi.Amount)
+                        {
                             fungi.Delete();
+                        }
                         else
+                        {
                             fungi.Amount -= amount * 2;
+                        }
 
                         var powder = new PowderOfTranslocation(amount);
                         player.AddToBackpack(powder);
@@ -206,7 +236,9 @@ namespace Server.Engines.Quests.Matriarch
             public override void OnClick()
             {
                 if (m_From.Alive)
+                {
                     m_From.Target = new ProcessFungiTarget(m_Matriarch, m_From);
+                }
             }
         }
 
@@ -231,9 +263,13 @@ namespace Server.Engines.Quests.Matriarch
                 if (targeted is ZoogiFungus fungus)
                 {
                     if (fungus.IsChildOf(m_From.Backpack))
+                    {
                         m_Matriarch.OnGivenFungi(m_From, fungus);
+                    }
                     else
+                    {
                         m_From.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+                    }
                 }
             }
         }

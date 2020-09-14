@@ -46,7 +46,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_Command != DecorateCommand.None)
+            {
                 list.Add(1018322 + (int)m_Command); // Turn/Up/Down
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -66,13 +68,19 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (!CheckUse(this, from))
+            {
                 return;
+            }
 
             if (!from.HasGump<InternalGump>())
-                from.SendGump(new InternalGump(this));
+            {
+                @from.SendGump(new InternalGump(this));
+            }
 
             if (m_Command != DecorateCommand.None)
-                from.Target = new InternalTarget(this);
+            {
+                @from.Target = new InternalTarget(this);
+            }
         }
 
         public static bool InHouse(Mobile from)
@@ -88,9 +96,13 @@ namespace Server.Items
               from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
             else*/
             if (!InHouse(from))
-                from.SendLocalizedMessage(502092); // You must be in your house to do this.
+            {
+                @from.SendLocalizedMessage(502092); // You must be in your house to do this.
+            }
             else
+            {
                 return true;
+            }
 
             return false;
         }
@@ -183,7 +195,9 @@ namespace Server.Items
                     if (addon != null)
                     {
                         if (count == 1 && Core.SE)
+                        {
                             isDecorableComponent = true;
+                        }
 
                         if (m_Decorator.Command == DecorateCommand.Turn)
                         {
@@ -192,7 +206,9 @@ namespace Server.Items
                                     .GetCustomAttributes(typeof(FlippableAddonAttribute), false);
 
                             if (attributes.Length > 0)
+                            {
                                 isDecorableComponent = true;
+                            }
                         }
                     }
 
@@ -207,11 +223,17 @@ namespace Server.Items
                     else if (!house.HasLockedDownItem(item) && !house.HasSecureItem(item) && !isDecorableComponent)
                     {
                         if (item is AddonComponent && m_Decorator.Command == DecorateCommand.Up)
-                            from.SendLocalizedMessage(1042274); // You cannot raise it up any higher.
+                        {
+                            @from.SendLocalizedMessage(1042274); // You cannot raise it up any higher.
+                        }
                         else if (item is AddonComponent && m_Decorator.Command == DecorateCommand.Down)
-                            from.SendLocalizedMessage(1042275); // You cannot lower it down any further.
+                        {
+                            @from.SendLocalizedMessage(1042275); // You cannot lower it down any further.
+                        }
                         else
-                            from.SendLocalizedMessage(1042271); // That is not locked down.
+                        {
+                            @from.SendLocalizedMessage(1042271); // That is not locked down.
+                        }
                     }
                     else if (item is VendorRentalContract)
                     {
@@ -244,7 +266,9 @@ namespace Server.Items
             protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
             {
                 if (cancelType == TargetCancelType.Canceled)
-                    from.CloseGump<InternalGump>();
+                {
+                    @from.CloseGump<InternalGump>();
+                }
             }
 
             private static void Turn(Item item, Mobile from)
@@ -252,11 +276,17 @@ namespace Server.Items
                 object addon = null;
 
                 if (item is AddonComponent component)
+                {
                     addon = component.Addon;
+                }
                 else if (item is AddonContainerComponent containerComponent)
+                {
                     addon = containerComponent.Addon;
+                }
                 else if (item is BaseAddonContainer container)
+                {
                     addon = container;
+                }
 
                 if (addon != null)
                 {
@@ -275,9 +305,13 @@ namespace Server.Items
                     (FlippableAttribute[])item.GetType().GetCustomAttributes(typeof(FlippableAttribute), false);
 
                 if (attributes.Length > 0)
+                {
                     attributes[0].Flip(item);
+                }
                 else
-                    from.SendLocalizedMessage(1042273); // You cannot turn that.
+                {
+                    @from.SendLocalizedMessage(1042273); // You cannot turn that.
+                }
             }
 
             private static void Up(Item item, Mobile from)
@@ -285,9 +319,13 @@ namespace Server.Items
                 var floorZ = GetFloorZ(item);
 
                 if (floorZ > int.MinValue && item.Z < floorZ + 15) // Confirmed : no height checks here
+                {
                     item.Location = new Point3D(item.Location, item.Z + 1);
+                }
                 else
-                    from.SendLocalizedMessage(1042274); // You cannot raise it up any higher.
+                {
+                    @from.SendLocalizedMessage(1042274); // You cannot raise it up any higher.
+                }
             }
 
             private static void Down(Item item, Mobile from)
@@ -295,9 +333,13 @@ namespace Server.Items
                 var floorZ = GetFloorZ(item);
 
                 if (floorZ > int.MinValue && item.Z > GetFloorZ(item))
+                {
                     item.Location = new Point3D(item.Location, item.Z - 1);
+                }
                 else
-                    from.SendLocalizedMessage(1042275); // You cannot lower it down any further.
+                {
+                    @from.SendLocalizedMessage(1042275); // You cannot lower it down any further.
+                }
             }
 
             private static int GetFloorZ(Item item)
@@ -305,7 +347,9 @@ namespace Server.Items
                 var map = item.Map;
 
                 if (map == null)
+                {
                     return int.MinValue;
+                }
 
                 var tiles = map.Tiles.GetStaticTiles(item.X, item.Y, true);
 
@@ -319,7 +363,9 @@ namespace Server.Items
                     var top = tile.Z; // Confirmed : no height checks here
 
                     if (id.Surface && !id.Impassable && top > z && top <= item.Z)
+                    {
                         z = top;
+                    }
                 }
 
                 return z;

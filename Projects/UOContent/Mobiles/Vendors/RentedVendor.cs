@@ -33,8 +33,12 @@ namespace Server.Mobiles
             get
             {
                 for (var i = 0; i < Instances.Length; i++)
+                {
                     if (Instances[i] == this)
+                    {
                         return i;
+                    }
+                }
 
                 return 0;
             }
@@ -154,7 +158,9 @@ namespace Server.Mobiles
                 else if (IsLandlord(from))
                 {
                     if (RentalGold > 0)
+                    {
                         list.Add(new CollectRentEntry(this));
+                    }
 
                     list.Add(new TerminateContractEntry(this));
                     list.Add(new ContractOptionsEntry(this));
@@ -190,9 +196,13 @@ namespace Server.Mobiles
 
             var durationID = reader.ReadEncodedInt();
             if (durationID < VendorRentalDuration.Instances.Length)
+            {
                 RentalDuration = VendorRentalDuration.Instances[durationID];
+            }
             else
+            {
                 RentalDuration = VendorRentalDuration.Instances[0];
+            }
 
             RentalPrice = reader.ReadInt();
             LandlordRenew = reader.ReadBool();
@@ -219,7 +229,9 @@ namespace Server.Mobiles
                 var from = Owner.From;
 
                 if (m_Vendor.Deleted || !from.CheckAlive())
+                {
                     return;
+                }
 
                 if (m_Vendor.IsOwner(from))
                 {
@@ -249,7 +261,9 @@ namespace Server.Mobiles
                 var from = Owner.From;
 
                 if (m_Vendor.Deleted || !from.CheckAlive() || !m_Vendor.IsLandlord(from))
+                {
                     return;
+                }
 
                 if (m_Vendor.RentalGold > 0)
                 {
@@ -257,13 +271,17 @@ namespace Server.Mobiles
                     m_Vendor.RentalGold -= depositedGold;
 
                     if (depositedGold > 0)
-                        from.SendLocalizedMessage(
+                    {
+                        @from.SendLocalizedMessage(
                             1060397,
                             depositedGold.ToString()
                         ); // ~1_AMOUNT~ gold has been deposited into your bank box.
+                    }
 
                     if (m_Vendor.RentalGold > 0)
-                        from.SendLocalizedMessage(500390); // Your bank box is full.
+                    {
+                        @from.SendLocalizedMessage(500390); // Your bank box is full.
+                    }
                 }
             }
         }
@@ -279,7 +297,9 @@ namespace Server.Mobiles
                 var from = Owner.From;
 
                 if (m_Vendor.Deleted || !from.CheckAlive() || !m_Vendor.IsLandlord(from))
+                {
                     return;
+                }
 
                 from.SendLocalizedMessage(
                     1062503
@@ -297,16 +317,22 @@ namespace Server.Mobiles
             public override void OnResponse(Mobile from, string text)
             {
                 if (!m_Vendor.CanInteractWith(from, false) || !m_Vendor.IsLandlord(from))
+                {
                     return;
+                }
 
                 text = text.Trim();
 
                 if (!int.TryParse(text, out var amount))
+                {
                     amount = -1;
+                }
 
                 var owner = m_Vendor.Owner;
                 if (owner == null)
+                {
                     return;
+                }
 
                 if (amount < 0)
                 {

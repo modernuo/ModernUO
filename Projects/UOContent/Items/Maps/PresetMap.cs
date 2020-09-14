@@ -10,7 +10,9 @@ namespace Server.Items
             var v = (int)type;
 
             if (v >= 0 && v < PresetMapEntry.Table.Length)
+            {
                 InitEntry(PresetMapEntry.Table[v]);
+            }
         }
 
         public PresetMap(PresetMapEntry entry)

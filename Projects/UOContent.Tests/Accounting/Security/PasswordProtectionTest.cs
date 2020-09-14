@@ -19,7 +19,9 @@ namespace Server.Tests.Accounting.Security
         {
             var passwordProtection = Activator.CreateInstance(protectionType) as IPasswordProtection;
             if (passwordProtection == null)
+            {
                 Assert.False(true, $"{protectionType.Name} is not an IPasswordProtection.");
+            }
 
             var encryptedPassword = passwordProtection.EncryptPassword(plainPassword);
 
@@ -36,7 +38,9 @@ namespace Server.Tests.Accounting.Security
         {
             var passwordProtection = Activator.CreateInstance(protectionType) as IPasswordProtection;
             if (passwordProtection == null)
+            {
                 Assert.False(true, $"{protectionType.Name} is not an IPasswordProtection.");
+            }
 
             var encryptedPassword = passwordProtection.EncryptPassword(plainPassword);
 

@@ -13,7 +13,9 @@ namespace Server.Mobiles
             if (m_Mobile.Combatant != null)
             {
                 if (m_Mobile.Debug)
+                {
                     m_Mobile.DebugSay("{0} is attacking me", m_Mobile.Combatant.Name);
+                }
 
                 m_Mobile.Say(Utility.RandomList(1005305, 501603));
 
@@ -24,7 +26,9 @@ namespace Server.Mobiles
                 if (m_Mobile.FocusMob != null)
                 {
                     if (m_Mobile.Debug)
+                    {
                         m_Mobile.DebugSay("{0} has talked to me", m_Mobile.FocusMob.Name);
+                    }
 
                     Action = ActionType.Interact;
                 }
@@ -46,7 +50,9 @@ namespace Server.Mobiles
             if (m_Mobile.Combatant != null)
             {
                 if (m_Mobile.Debug)
+                {
                     m_Mobile.DebugSay("{0} is attacking me", m_Mobile.Combatant.Name);
+                }
 
                 m_Mobile.Say(Utility.RandomList(1005305, 501603));
 
@@ -67,14 +73,18 @@ namespace Server.Mobiles
                 if (customer.InRange(m_Mobile, m_Mobile.RangeFight))
                 {
                     if (m_Mobile.Debug)
+                    {
                         m_Mobile.DebugSay("I am with {0}", customer.Name);
+                    }
 
                     m_Mobile.Direction = m_Mobile.GetDirectionTo(customer);
                 }
                 else
                 {
                     if (m_Mobile.Debug)
+                    {
                         m_Mobile.DebugSay("{0} is gone", customer.Name);
+                    }
 
                     m_Mobile.FocusMob = null;
 
@@ -94,7 +104,9 @@ namespace Server.Mobiles
         public override bool HandlesOnSpeech(Mobile from)
         {
             if (from.InRange(m_Mobile, 4))
+            {
                 return true;
+            }
 
             return base.HandlesOnSpeech(from);
         }

@@ -39,7 +39,9 @@ namespace Server.Items
             if (version < 1)
             {
                 if (Hue == 0x55A)
+                {
                     Hue = 0x4F6;
+                }
 
                 PoisonBonus = 0;
             }

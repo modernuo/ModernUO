@@ -38,7 +38,9 @@ namespace Server.Engines.Quests.Samurai
             if (creature is CursedSoul)
             {
                 if (m_CursedSoulsKilled == 0)
+                {
                     System.AddConversation(new GainKarmaConversation(true));
+                }
 
                 m_CursedSoulsKilled++;
 
@@ -48,7 +50,9 @@ namespace Server.Engines.Quests.Samurai
             else if (creature is YoungRonin)
             {
                 if (m_YoungRoninKilled == 0)
+                {
                     System.AddConversation(new GainKarmaConversation(false));
+                }
 
                 m_YoungRoninKilled++;
 
@@ -177,7 +181,9 @@ namespace Server.Engines.Quests.Samurai
         public override void OnKill(BaseCreature creature, Container corpse)
         {
             if (creature is InjuredWolf)
+            {
                 Complete();
+            }
         }
 
         public override void OnComplete()
@@ -312,7 +318,9 @@ namespace Server.Engines.Quests.Samurai
         public override void OnKill(BaseCreature creature, Container corpse)
         {
             if (creature is YoungNinja)
+            {
                 CurProgress++;
+            }
         }
 
         public override void OnComplete()

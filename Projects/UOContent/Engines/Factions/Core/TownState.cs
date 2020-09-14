@@ -63,7 +63,9 @@ namespace Server.Factions
                     var pl = PlayerState.Find(m_Sheriff);
 
                     if (pl != null)
+                    {
                         pl.Sheriff = null;
+                    }
                 }
 
                 m_Sheriff = value;
@@ -73,7 +75,9 @@ namespace Server.Factions
                     var pl = PlayerState.Find(m_Sheriff);
 
                     if (pl != null)
+                    {
                         pl.Sheriff = Town;
+                    }
                 }
             }
         }
@@ -88,7 +92,9 @@ namespace Server.Factions
                     var pl = PlayerState.Find(m_Finance);
 
                     if (pl != null)
+                    {
                         pl.Finance = null;
+                    }
                 }
 
                 m_Finance = value;
@@ -98,7 +104,9 @@ namespace Server.Factions
                     var pl = PlayerState.Find(m_Finance);
 
                     if (pl != null)
+                    {
                         pl.Finance = Town;
+                    }
                 }
             }
         }

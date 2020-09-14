@@ -14,7 +14,9 @@ namespace Server.Items
         public override bool OnBeforeDamage(Mobile attacker, Mobile defender)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return false;
+            }
 
             ClearCurrentAbility(attacker);
 
@@ -50,7 +52,9 @@ namespace Server.Items
                 double manaPercent = 0;
 
                 if (defender.ManaMax > 0)
+                {
                     manaPercent = defender.Mana / (double)defender.ManaMax * 100.0;
+                }
 
                 damage += Math.Min((int)(Math.Abs(hitsPercent - manaPercent) / 4), 20);
             }

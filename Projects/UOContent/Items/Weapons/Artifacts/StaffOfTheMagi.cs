@@ -45,10 +45,14 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (WeaponAttributes.MageWeapon == 0)
+            {
                 WeaponAttributes.MageWeapon = 30;
+            }
 
             if (ItemID == 0xDF1)
+            {
                 ItemID = 0xDF0;
+            }
         }
     }
 }

@@ -26,7 +26,9 @@ namespace Server.Spells.Fourth
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (!Caster.CanSee(m))
             {

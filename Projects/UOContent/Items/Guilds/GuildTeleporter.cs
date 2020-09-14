@@ -51,13 +51,17 @@ namespace Server.Items
             }
 
             if (Weight == 0.0)
+            {
                 Weight = 1.0;
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (Guild.NewGuildSystem)
+            {
                 return;
+            }
 
             var stone = m_Stone as Guildstone;
 

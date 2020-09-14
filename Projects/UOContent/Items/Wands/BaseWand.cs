@@ -94,7 +94,9 @@ namespace Server.Items
             --Charges;
 
             if (Charges == 0)
-                from.SendLocalizedMessage(1019073); // This item is out of charges.
+            {
+                @from.SendLocalizedMessage(1019073); // This item is out of charges.
+            }
 
             ApplyDelayTo(from);
         }
@@ -121,9 +123,13 @@ namespace Server.Items
             if (Parent == from)
             {
                 if (Charges > 0)
-                    OnWandUse(from);
+                {
+                    OnWandUse(@from);
+                }
                 else
-                    from.SendLocalizedMessage(1019073); // This item is out of charges.
+                {
+                    @from.SendLocalizedMessage(1019073); // This item is out of charges.
+                }
             }
             else
             {
@@ -208,9 +214,13 @@ namespace Server.Items
             if (DisplayLootType)
             {
                 if (LootType == LootType.Blessed)
+                {
                     attrs.Add(new EquipInfoAttribute(1038021)); // blessed
+                }
                 else if (LootType == LootType.Cursed)
+                {
                     attrs.Add(new EquipInfoAttribute(1049643)); // cursed
+                }
             }
 
             if (!Identified)
@@ -236,7 +246,9 @@ namespace Server.Items
                 };
 
                 if (num > 0)
+                {
                     attrs.Add(new EquipInfoAttribute(num, m_Charges));
+                }
             }
 
             int number;
@@ -252,7 +264,9 @@ namespace Server.Items
             }
 
             if (attrs.Count == 0 && Crafter == null && Name != null)
+            {
                 return;
+            }
 
             var eqInfo = new EquipmentInfo(
                 number,
@@ -281,10 +295,14 @@ namespace Server.Items
         public virtual void DoWandTarget(Mobile from, object o)
         {
             if (Deleted || Charges <= 0 || Parent != from || o is StaticTarget || o is LandTarget)
+            {
                 return;
+            }
 
             if (OnWandTarget(from, o))
-                ConsumeCharge(from);
+            {
+                ConsumeCharge(@from);
+            }
         }
 
         public virtual bool OnWandTarget(Mobile from, object o) => true;

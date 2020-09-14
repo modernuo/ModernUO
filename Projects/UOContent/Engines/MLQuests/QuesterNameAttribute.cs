@@ -16,10 +16,14 @@ namespace Server.Engines.MLQuests
         public static string GetQuesterNameFor(Type t)
         {
             if (t == null)
+            {
                 return "";
+            }
 
             if (m_Cache.TryGetValue(t, out var result))
+            {
                 return result;
+            }
 
             var attributes = t.GetCustomAttributes(m_Type, false);
 

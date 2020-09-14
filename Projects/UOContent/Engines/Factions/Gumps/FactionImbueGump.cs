@@ -73,11 +73,17 @@ namespace Server.Factions
                         int hue;
 
                         if (m_Item is SpellScroll)
+                        {
                             hue = 0;
+                        }
                         else if (info.IsSwitched(1))
+                        {
                             hue = m_Faction.Definition.HuePrimary;
+                        }
                         else
+                        {
                             hue = m_Faction.Definition.HueSecondary;
+                        }
 
                         FactionItem.Imbue(m_Item, m_Faction, true, hue);
                     }
@@ -89,11 +95,17 @@ namespace Server.Factions
             }
 
             if (m_Tool?.Deleted == false && m_Tool.UsesRemaining > 0)
+            {
                 m_Mobile.SendGump(new CraftGump(m_Mobile, m_CraftSystem, m_Tool, m_Notice));
+            }
             else if (m_Notice is string s)
+            {
                 m_Mobile.SendMessage(s);
+            }
             else if (m_Notice is int i && i > 0)
+            {
                 m_Mobile.SendLocalizedMessage(i);
+            }
         }
     }
 }

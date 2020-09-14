@@ -170,19 +170,29 @@ namespace Server.Multis
                 var start = TimeOfDecay - BoatDecayDelay;
 
                 if (DateTime.UtcNow - start < TimeSpan.FromHours(1.0))
+                {
                     return 1043010; // This structure is like new.
+                }
 
                 if (DateTime.UtcNow - start < TimeSpan.FromDays(2.0))
+                {
                     return 1043011; // This structure is slightly worn.
+                }
 
                 if (DateTime.UtcNow - start < TimeSpan.FromDays(3.0))
+                {
                     return 1043012; // This structure is somewhat worn.
+                }
 
                 if (DateTime.UtcNow - start < TimeSpan.FromDays(4.0))
+                {
                     return 1043013; // This structure is fairly worn.
+                }
 
                 if (DateTime.UtcNow - start < TimeSpan.FromDays(5.0))
+                {
                     return 1043014; // This structure is greatly worn.
+                }
 
                 return 1043015; // This structure is in danger of collapsing.
             }
@@ -233,8 +243,12 @@ namespace Server.Multis
             var sector = map.GetSector(loc);
 
             for (var i = 0; i < sector.Multis.Count; i++)
+            {
                 if (sector.Multis[i] is BaseBoat boat && boat.Contains(loc.X, loc.Y))
+                {
                     return boat;
+                }
+            }
 
             return null;
         }
@@ -335,18 +349,28 @@ namespace Server.Multis
                 case 0:
                     {
                         if (version < 3)
+                        {
                             NextNavPoint = -1;
+                        }
 
                         if (version < 2)
                         {
                             if (ItemID == NorthID)
+                            {
                                 m_Facing = Direction.North;
+                            }
                             else if (ItemID == SouthID)
+                            {
                                 m_Facing = Direction.South;
+                            }
                             else if (ItemID == EastID)
+                            {
                                 m_Facing = Direction.East;
+                            }
                             else if (ItemID == WestID)
+                            {
                                 m_Facing = Direction.West;
+                            }
                         }
 
                         Owner = reader.ReadMobile();
@@ -358,7 +382,9 @@ namespace Server.Multis
                         m_ShipName = reader.ReadString();
 
                         if (version < 1)
+                        {
                             Refresh();
+                        }
 
                         break;
                     }
@@ -372,10 +398,14 @@ namespace Server.Multis
             uint keyValue = 0;
 
             if (PPlank != null)
+            {
                 keyValue = PPlank.KeyValue;
+            }
 
             if (keyValue == 0 && SPlank != null)
+            {
                 keyValue = SPlank.KeyValue;
+            }
 
             Key.RemoveKeys(m, keyValue);
         }
@@ -396,14 +426,22 @@ namespace Server.Multis
             var box = m.BankBox;
 
             if (!box.TryDropItem(m, bankKey, false))
+            {
                 bankKey.Delete();
+            }
             else
+            {
                 m.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502484); // A ship's key is now in my safety deposit box.
+            }
 
             if (m.AddToBackpack(packKey))
+            {
                 m.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502485); // A ship's key is now in my backpack.
+            }
             else
+            {
                 m.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502483); // A ship's key is now at my feet.
+            }
 
             return value;
         }
@@ -428,35 +466,51 @@ namespace Server.Multis
         public override void OnLocationChange(Point3D old)
         {
             if (TillerMan != null)
+            {
                 TillerMan.Location = new Point3D(
                     X + (TillerMan.X - old.X),
                     Y + (TillerMan.Y - old.Y),
                     Z + (TillerMan.Z - old.Z)
                 );
+            }
 
             if (Hold != null)
+            {
                 Hold.Location = new Point3D(X + (Hold.X - old.X), Y + (Hold.Y - old.Y), Z + (Hold.Z - old.Z));
+            }
 
             if (PPlank != null)
+            {
                 PPlank.Location = new Point3D(X + (PPlank.X - old.X), Y + (PPlank.Y - old.Y), Z + (PPlank.Z - old.Z));
+            }
 
             if (SPlank != null)
+            {
                 SPlank.Location = new Point3D(X + (SPlank.X - old.X), Y + (SPlank.Y - old.Y), Z + (SPlank.Z - old.Z));
+            }
         }
 
         public override void OnMapChange()
         {
             if (TillerMan != null)
+            {
                 TillerMan.Map = Map;
+            }
 
             if (Hold != null)
+            {
                 Hold.Map = Map;
+            }
 
             if (PPlank != null)
+            {
                 PPlank.Map = Map;
+            }
 
             if (SPlank != null)
+            {
                 SPlank.Map = Map;
+            }
         }
 
         public bool CanCommand(Mobile m) => true;
@@ -480,7 +534,9 @@ namespace Server.Multis
         public bool CheckDecay()
         {
             if (m_Decaying)
+            {
                 return true;
+            }
 
             if (!IsMoving && DateTime.UtcNow >= m_DecayTime)
             {
@@ -497,12 +553,16 @@ namespace Server.Multis
         public bool LowerAnchor(bool message)
         {
             if (CheckDecay())
+            {
                 return false;
+            }
 
             if (Anchored)
             {
                 if (message)
+                {
                     TillerMan?.Say(501445); // Ar, the anchor was already dropped sir.
+                }
 
                 return false;
             }
@@ -512,7 +572,9 @@ namespace Server.Multis
             Anchored = true;
 
             if (message)
+            {
                 TillerMan?.Say(501444); // Ar, anchor dropped sir.
+            }
 
             return true;
         }
@@ -520,12 +582,16 @@ namespace Server.Multis
         public bool RaiseAnchor(bool message)
         {
             if (CheckDecay())
+            {
                 return false;
+            }
 
             if (!Anchored)
             {
                 if (message)
+                {
                     TillerMan?.Say(501447); // Ar, the anchor has not been dropped sir.
+                }
 
                 return false;
             }
@@ -533,7 +599,9 @@ namespace Server.Multis
             Anchored = false;
 
             if (message)
+            {
                 TillerMan?.Say(501446); // Ar, anchor raised sir.
+            }
 
             return true;
         }
@@ -541,7 +609,9 @@ namespace Server.Multis
         public bool StartMove(Direction dir, bool fast)
         {
             if (CheckDecay())
+            {
                 return false;
+            }
 
             var drift = dir != Forward && dir != ForwardLeft && dir != ForwardRight;
             var interval = fast ? drift ? FastDriftInterval : FastInterval :
@@ -563,7 +633,9 @@ namespace Server.Multis
         public bool OneMove(Direction dir)
         {
             if (CheckDecay())
+            {
                 return false;
+            }
 
             var drift = dir != Forward;
             var interval = drift ? FastDriftInterval : FastInterval;
@@ -582,7 +654,9 @@ namespace Server.Multis
         public void BeginRename(Mobile from)
         {
             if (CheckDecay())
+            {
                 return;
+            }
 
             if (from.AccessLevel < AccessLevel.GameMaster && from != Owner)
             {
@@ -604,7 +678,9 @@ namespace Server.Multis
         public void EndRename(Mobile from, string newName)
         {
             if (Deleted || CheckDecay())
+            {
                 return;
+            }
 
             if (from.AccessLevel < AccessLevel.GameMaster && from != Owner)
             {
@@ -626,31 +702,45 @@ namespace Server.Multis
         public DryDockResult CheckDryDock(Mobile from)
         {
             if (CheckDecay())
+            {
                 return DryDockResult.Decaying;
+            }
 
             if (!from.Alive)
+            {
                 return DryDockResult.Dead;
+            }
 
             var pack = from.Backpack;
             if ((SPlank == null || !Key.ContainsKey(pack, SPlank.KeyValue)) &&
                 (PPlank == null || !Key.ContainsKey(pack, PPlank.KeyValue)))
+            {
                 return DryDockResult.NoKey;
+            }
 
             if (!Anchored)
+            {
                 return DryDockResult.NotAnchored;
+            }
 
             if (Hold != null && Hold.Items.Count > 0)
+            {
                 return DryDockResult.Hold;
+            }
 
             var map = Map;
 
             if (map == null || map == Map.Internal)
+            {
                 return DryDockResult.Items;
+            }
 
             var ents = GetMovingEntities();
 
             if (ents.Count >= 1)
+            {
                 return ents[0] is Mobile ? DryDockResult.Mobiles : DryDockResult.Items;
+            }
 
             return DryDockResult.Valid;
         }
@@ -658,53 +748,87 @@ namespace Server.Multis
         public void BeginDryDock(Mobile from)
         {
             if (CheckDecay())
+            {
                 return;
+            }
 
             var result = CheckDryDock(from);
 
             if (result == DryDockResult.Dead)
-                from.SendLocalizedMessage(502493); // You appear to be dead.
+            {
+                @from.SendLocalizedMessage(502493); // You appear to be dead.
+            }
             else if (result == DryDockResult.NoKey)
-                from.SendLocalizedMessage(502494); // You must have a key to the ship to dock the boat.
+            {
+                @from.SendLocalizedMessage(502494); // You must have a key to the ship to dock the boat.
+            }
             else if (result == DryDockResult.NotAnchored)
-                from.SendLocalizedMessage(1010570); // You must lower the anchor to dock the boat.
+            {
+                @from.SendLocalizedMessage(1010570); // You must lower the anchor to dock the boat.
+            }
             else if (result == DryDockResult.Mobiles)
-                from.SendLocalizedMessage(502495); // You cannot dock the ship with beings on board!
+            {
+                @from.SendLocalizedMessage(502495); // You cannot dock the ship with beings on board!
+            }
             else if (result == DryDockResult.Items)
-                from.SendLocalizedMessage(502496); // You cannot dock the ship with a cluttered deck.
+            {
+                @from.SendLocalizedMessage(502496); // You cannot dock the ship with a cluttered deck.
+            }
             else if (result == DryDockResult.Hold)
-                from.SendLocalizedMessage(502497); // Make sure your hold is empty, and try again!
+            {
+                @from.SendLocalizedMessage(502497); // Make sure your hold is empty, and try again!
+            }
             else if (result == DryDockResult.Valid)
-                from.SendGump(new ConfirmDryDockGump(from, this));
+            {
+                @from.SendGump(new ConfirmDryDockGump(@from, this));
+            }
         }
 
         public void EndDryDock(Mobile from)
         {
             if (Deleted || CheckDecay())
+            {
                 return;
+            }
 
             var result = CheckDryDock(from);
 
             if (result == DryDockResult.Dead)
-                from.SendLocalizedMessage(502493); // You appear to be dead.
+            {
+                @from.SendLocalizedMessage(502493); // You appear to be dead.
+            }
             else if (result == DryDockResult.NoKey)
-                from.SendLocalizedMessage(502494); // You must have a key to the ship to dock the boat.
+            {
+                @from.SendLocalizedMessage(502494); // You must have a key to the ship to dock the boat.
+            }
             else if (result == DryDockResult.NotAnchored)
-                from.SendLocalizedMessage(1010570); // You must lower the anchor to dock the boat.
+            {
+                @from.SendLocalizedMessage(1010570); // You must lower the anchor to dock the boat.
+            }
             else if (result == DryDockResult.Mobiles)
-                from.SendLocalizedMessage(502495); // You cannot dock the ship with beings on board!
+            {
+                @from.SendLocalizedMessage(502495); // You cannot dock the ship with beings on board!
+            }
             else if (result == DryDockResult.Items)
-                from.SendLocalizedMessage(502496); // You cannot dock the ship with a cluttered deck.
+            {
+                @from.SendLocalizedMessage(502496); // You cannot dock the ship with a cluttered deck.
+            }
             else if (result == DryDockResult.Hold)
-                from.SendLocalizedMessage(502497); // Make sure your hold is empty, and try again!
+            {
+                @from.SendLocalizedMessage(502497); // Make sure your hold is empty, and try again!
+            }
 
             if (result != DryDockResult.Valid)
+            {
                 return;
+            }
 
             var boat = DockedBoat;
 
             if (boat == null)
+            {
                 return;
+            }
 
             RemoveKeys(from);
 
@@ -715,7 +839,9 @@ namespace Server.Multis
         public void SetName(SpeechEventArgs e)
         {
             if (CheckDecay())
+            {
                 return;
+            }
 
             if (e.Mobile.AccessLevel < AccessLevel.GameMaster && e.Mobile != Owner)
             {
@@ -732,16 +858,22 @@ namespace Server.Multis
             }
 
             if (e.Speech.Length > 8)
+            {
                 Rename(e.Speech.Substring(8).Trim().IsNullOrDefault(null));
+            }
         }
 
         public void Rename(string newName)
         {
             if (CheckDecay())
+            {
                 return;
+            }
 
             if (newName?.Length > 40)
+            {
                 newName = newName.Substring(0, 40);
+            }
 
             if (m_ShipName == newName)
             {
@@ -753,15 +885,21 @@ namespace Server.Multis
             ShipName = newName;
 
             if (TillerMan != null && m_ShipName != null)
+            {
                 TillerMan.Say(1042885, m_ShipName); // This ship is now called the ~1_NEW_SHIP_NAME~.
+            }
             else
+            {
                 TillerMan?.Say(502534); // This ship now has no name.
+            }
         }
 
         public void RemoveName(Mobile m)
         {
             if (CheckDecay())
+            {
                 return;
+            }
 
             if (m.AccessLevel < AccessLevel.GameMaster && m != Owner)
             {
@@ -792,32 +930,46 @@ namespace Server.Multis
         public void GiveName(Mobile m)
         {
             if (TillerMan == null || CheckDecay())
+            {
                 return;
+            }
 
             if (m_ShipName == null)
+            {
                 TillerMan.Say(502526); // Ar, this ship has no name.
+            }
             else
+            {
                 TillerMan.Say(1042881, m_ShipName); // This is the ~1_BOAT_NAME~.
+            }
         }
 
         public void GiveNavPoint()
         {
             if (TillerMan == null || CheckDecay())
+            {
                 return;
+            }
 
             if (NextNavPoint < 0)
+            {
                 TillerMan.Say(1042882); // I have no current nav point.
+            }
             else
+            {
                 TillerMan.Say(
                     1042883,
                     (NextNavPoint + 1).ToString()
                 ); // My current destination navpoint is nav ~1_NAV_POINT_NUM~.
+            }
         }
 
         public void AssociateMap(MapItem map)
         {
             if (CheckDecay())
+            {
                 return;
+            }
 
             if (map is BlankMap)
             {
@@ -844,31 +996,40 @@ namespace Server.Multis
 
             var start = -1;
             for (var i = 0; i < navPoint.Length; i++)
+            {
                 if (char.IsDigit(navPoint[i]))
                 {
                     start = i;
                     break;
                 }
+            }
 
             if (start != -1)
             {
                 var sNumber = navPoint.Substring(start);
 
                 if (!int.TryParse(sNumber, out number))
+                {
                     number = -1;
+                }
 
                 if (number != -1)
                 {
                     number--;
 
-                    if (MapItem == null || number < 0 || number >= MapItem.Pins.Count) number = -1;
+                    if (MapItem == null || number < 0 || number >= MapItem.Pins.Count)
+                    {
+                        number = -1;
+                    }
                 }
             }
 
             if (number == -1)
             {
                 if (message)
+                {
                     TillerMan?.Say(1042551); // I don't see that navpoint, sir.
+                }
 
                 return false;
             }
@@ -880,12 +1041,16 @@ namespace Server.Multis
         public bool StartCourse(bool single, bool message)
         {
             if (CheckDecay())
+            {
                 return false;
+            }
 
             if (Anchored)
             {
                 if (message)
+                {
                     TillerMan?.Say(501419); // Ar, the anchor is down sir!
+                }
 
                 return false;
             }
@@ -893,7 +1058,9 @@ namespace Server.Multis
             if (MapItem?.Deleted != false)
             {
                 if (message)
+                {
                     TillerMan?.Say(502513); // I have seen no map, sir.
+                }
 
                 return false;
             }
@@ -901,7 +1068,9 @@ namespace Server.Multis
             if (Map != MapItem.Map || !Contains(MapItem.GetWorldLocation()))
             {
                 if (message)
+                {
                     TillerMan?.Say(502514); // The map is too far away from me, sir.
+                }
 
                 return false;
             }
@@ -909,7 +1078,9 @@ namespace Server.Multis
             if (Map != Map.Trammel && Map != Map.Felucca || NextNavPoint < 0 || NextNavPoint >= MapItem.Pins.Count)
             {
                 if (message)
+                {
                     TillerMan?.Say(1042551); // I don't see that navpoint, sir.
+                }
 
                 return false;
             }
@@ -923,7 +1094,9 @@ namespace Server.Multis
             m_MoveTimer.Start();
 
             if (message)
+            {
                 TillerMan?.Say(501429); // Aye aye sir.
+            }
 
             return true;
         }
@@ -931,11 +1104,14 @@ namespace Server.Multis
         public override void OnSpeech(SpeechEventArgs e)
         {
             if (CheckDecay())
+            {
                 return;
+            }
 
             var from = e.Mobile;
 
             if (CanCommand(from) && Contains(from))
+            {
                 for (var i = 0; i < e.Keywords.Length; ++i)
                 {
                     var keyword = e.Keywords[i];
@@ -1072,17 +1248,22 @@ namespace Server.Multis
                         break;
                     }
                 }
+            }
         }
 
         public bool StartTurn(int offset, bool message)
         {
             if (CheckDecay())
+            {
                 return false;
+            }
 
             if (Anchored)
             {
                 if (message)
+                {
                     TillerMan.Say(501419); // Ar, the anchor is down sir!
+                }
 
                 return false;
             }
@@ -1099,7 +1280,9 @@ namespace Server.Multis
             m_TurnTimer.Start();
 
             if (message)
+            {
                 TillerMan?.Say(501429); // Aye aye sir.
+            }
 
             return true;
         }
@@ -1113,19 +1296,29 @@ namespace Server.Multis
             }
 
             if (CheckDecay())
+            {
                 return false;
+            }
 
             if (Anchored)
             {
                 if (message)
+                {
                     TillerMan.Say(501419); // Ar, the anchor is down sir!
+                }
 
                 return false;
             }
 
-            if (SetFacing((Direction)(((int)m_Facing + offset) & 0x7))) return true;
+            if (SetFacing((Direction)(((int)m_Facing + offset) & 0x7)))
+            {
+                return true;
+            }
+
             if (message)
+            {
                 TillerMan.Say(501423); // Ar, can't turn sir.
+            }
 
             return false;
         }
@@ -1133,12 +1326,16 @@ namespace Server.Multis
         public bool StartMove(Direction dir, int speed, int clientSpeed, TimeSpan interval, bool single, bool message)
         {
             if (CheckDecay())
+            {
                 return false;
+            }
 
             if (Anchored)
             {
                 if (message)
+                {
                     TillerMan?.Say(501419); // Ar, the anchor is down sir!
+                }
 
                 return false;
             }
@@ -1159,12 +1356,16 @@ namespace Server.Multis
         public bool StopMove(bool message)
         {
             if (CheckDecay())
+            {
                 return false;
+            }
 
             if (m_MoveTimer == null)
             {
                 if (message)
+                {
                     TillerMan?.Say(501443); // Er, the ship is not moving sir.
+                }
 
                 return false;
             }
@@ -1176,7 +1377,9 @@ namespace Server.Multis
             m_MoveTimer = null;
 
             if (message)
+            {
                 TillerMan?.Say(501429); // Aye aye sir.
+            }
 
             return true;
         }
@@ -1184,18 +1387,23 @@ namespace Server.Multis
         public bool CanFit(Point3D p, Map map, int itemID)
         {
             if (map == null || map == Map.Internal || Deleted || CheckDecay())
+            {
                 return false;
+            }
 
             var newComponents = MultiData.GetComponents(itemID);
 
             for (var x = 0; x < newComponents.Width; ++x)
+            {
                 for (var y = 0; y < newComponents.Height; ++y)
                 {
                     var tx = p.X + newComponents.Min.X + x;
                     var ty = p.Y + newComponents.Min.Y + y;
 
                     if (newComponents.Tiles[x][y].Length == 0 || Contains(tx, ty))
+                    {
                         continue;
+                    }
 
                     var landTile = map.Tiles.GetLandTile(tx, ty);
                     var tiles = map.Tiles.GetStaticTiles(tx, ty, true);
@@ -1218,14 +1426,21 @@ namespace Server.Multis
                         var isWater = tile.ID >= 0x1796 && tile.ID <= 0x17B2;
 
                         if (tile.Z == p.Z && isWater)
+                        {
                             hasWater = true;
+                        }
                         else if (tile.Z >= p.Z && !isWater)
+                        {
                             return false;
+                        }
                     }
 
                     if (!hasWater)
+                    {
                         return false;
+                    }
                 }
+            }
 
             var eable = map.GetItemsInBounds(
                 new Rectangle2D(
@@ -1240,7 +1455,9 @@ namespace Server.Multis
                 item =>
                 {
                     if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || item.Z < p.Z || !item.Visible)
+                    {
                         return true;
+                    }
 
                     var x = item.X - p.X + newComponents.Min.X;
                     var y = item.Y - p.Y + newComponents.Min.Y;
@@ -1281,8 +1498,12 @@ namespace Server.Multis
             var wrap = GetWrapFor(map);
 
             for (var i = 0; i < wrap.Length; ++i)
+            {
                 if (wrap[i].Contains(p))
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -1303,9 +1524,13 @@ namespace Server.Multis
 
             // Compute the maximum distance we can travel without going too far away
             if (iDir % 2 == 0) // North, East, South and West
+            {
                 maxSpeed = Math.Abs(adx - ady);
+            }
             else // Right, Down, Left and Up
+            {
                 maxSpeed = Math.Min(adx, ady);
+            }
 
             return (Direction)((iDir - (int)Facing) & 0x7);
         }
@@ -1324,21 +1549,27 @@ namespace Server.Multis
             else if (MapItem?.Deleted != false)
             {
                 if (message)
+                {
                     TillerMan?.Say(502513); // I have seen no map, sir.
+                }
 
                 return false;
             }
             else if (Map != MapItem.Map || !Contains(MapItem.GetWorldLocation()))
             {
                 if (message)
+                {
                     TillerMan?.Say(502514); // The map is too far away from me, sir.
+                }
 
                 return false;
             }
             else if (Map != Map.Trammel && Map != Map.Felucca || NextNavPoint < 0 || NextNavPoint >= MapItem.Pins.Count)
             {
                 if (message)
+                {
                     TillerMan?.Say(1042551); // I don't see that navpoint, sir.
+                }
 
                 return false;
             }
@@ -1353,10 +1584,12 @@ namespace Server.Multis
                 if (maxSpeed == 0)
                 {
                     if (message && Order == BoatOrder.Single)
+                    {
                         TillerMan?.Say(
                             1042874,
                             (NextNavPoint + 1).ToString()
                         ); // We have arrived at nav point ~1_POINT_NUM~ , sir.
+                    }
 
                     if (NextNavPoint + 1 < MapItem.Pins.Count)
                     {
@@ -1365,10 +1598,12 @@ namespace Server.Multis
                         if (Order == BoatOrder.Course)
                         {
                             if (message)
+                            {
                                 TillerMan?.Say(
                                     1042875,
                                     (NextNavPoint + 1).ToString()
                                 ); // Heading to nav point ~1_POINT_NUM~, sir.
+                            }
 
                             return true;
                         }
@@ -1379,15 +1614,22 @@ namespace Server.Multis
                     NextNavPoint = -1;
 
                     if (message && Order == BoatOrder.Course)
+                    {
                         TillerMan?.Say(502515); // The course is completed, sir.
+                    }
 
                     return false;
                 }
 
                 if (dir == Left || dir == BackwardLeft || dir == Backward)
+                {
                     return Turn(-2, true);
+                }
+
                 if (dir == Right || dir == BackwardRight)
+                {
                     return Turn(2, true);
+                }
 
                 speed = Math.Min(Speed, maxSpeed);
                 clientSpeed = 0x4;
@@ -1401,12 +1643,16 @@ namespace Server.Multis
             var map = Map;
 
             if (map == null || Deleted || CheckDecay())
+            {
                 return false;
+            }
 
             if (Anchored)
             {
                 if (message)
+                {
                     TillerMan?.Say(501419); // Ar, the anchor is down sir!
+                }
 
                 return false;
             }
@@ -1416,12 +1662,15 @@ namespace Server.Multis
             Movement.Movement.Offset(d, ref rx, ref ry);
 
             for (var i = 1; i <= speed; ++i)
+            {
                 if (!CanFit(new Point3D(X + i * rx, Y + i * ry, Z), Map, ItemID))
                 {
                     if (i == 1)
                     {
                         if (message)
+                        {
                             TillerMan?.Say(501424); // Ar, we've stopped sir.
+                        }
 
                         return false;
                     }
@@ -1429,6 +1678,7 @@ namespace Server.Multis
                     speed = i - 1;
                     break;
                 }
+            }
 
             var xOffset = speed * rx;
             var yOffset = speed * ry;
@@ -1445,23 +1695,35 @@ namespace Server.Multis
                 if (rect.Contains(new Point2D(X, Y)) && !rect.Contains(new Point2D(newX, newY)))
                 {
                     if (newX < rect.X)
+                    {
                         newX = rect.X + rect.Width - 1;
+                    }
                     else if (newX >= rect.X + rect.Width)
+                    {
                         newX = rect.X;
+                    }
 
                     if (newY < rect.Y)
+                    {
                         newY = rect.Y + rect.Height - 1;
+                    }
                     else if (newY >= rect.Y + rect.Height)
+                    {
                         newY = rect.Y;
+                    }
 
                     for (var j = 1; j <= speed; ++j)
+                    {
                         if (!CanFit(new Point3D(newX + j * rx, newY + j * ry, Z), Map, ItemID))
                         {
                             if (message)
+                            {
                                 TillerMan?.Say(501424); // Ar, we've stopped sir.
+                            }
 
                             return false;
                         }
+                    }
 
                     xOffset = newX - X;
                     yOffset = newY - Y;
@@ -1487,31 +1749,43 @@ namespace Server.Multis
                     var m = ns.Mobile;
 
                     if (ns.HighSeas && m.CanSee(this) && m.InRange(Location, GetUpdateRange(m)))
+                    {
                         ns.Send(new MoveBoatHS(m, this, d, clientSpeed, toMove, xOffset, yOffset));
+                    }
                 }
 
                 foreach (var e in toMove)
+                {
                     if (e is Item item)
                     {
                         item.NoMoveHS = true;
 
                         if (!(item is TillerMan || item is Hold || item is Plank))
+                        {
                             item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z);
+                        }
                     }
                     else if (e is Mobile m)
                     {
                         m.NoMoveHS = true;
                         m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z);
                     }
+                }
 
                 NoMoveHS = true;
                 Location = new Point3D(X + xOffset, Y + yOffset, Z);
 
                 foreach (var e in toMove)
+                {
                     if (e is Item item)
+                    {
                         item.NoMoveHS = false;
+                    }
                     else if (e is Mobile mobile)
+                    {
                         mobile.NoMoveHS = false;
+                    }
+                }
 
                 NoMoveHS = false;
             }
@@ -1522,7 +1796,9 @@ namespace Server.Multis
         private static void SafeAdd(Item item, List<IEntity> toMove)
         {
             if (item != null)
+            {
                 toMove.Add(item);
+            }
         }
 
         public void Teleport(int xOffset, int yOffset, int zOffset)
@@ -1534,8 +1810,13 @@ namespace Server.Multis
                 var e = toMove[i];
 
                 if (e is Item item)
+                {
                     item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z + zOffset);
-                else if (e is Mobile m) m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z + zOffset);
+                }
+                else if (e is Mobile m)
+                {
+                    m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z + zOffset);
+                }
             }
 
             Location = new Point3D(X + xOffset, Y + yOffset, Z + zOffset);
@@ -1548,24 +1829,32 @@ namespace Server.Multis
             var map = Map;
 
             if (map == null || map == Map.Internal)
+            {
                 return list;
+            }
 
             var mcl = Components;
 
             foreach (var o in map.GetObjectsInBounds(new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height)))
             {
                 if (o == this || o is TillerMan || o is Hold || o is Plank)
+                {
                     continue;
+                }
 
                 if (o is Item item)
                 {
                     if (Contains(item) && item.Visible && item.Z >= Z)
+                    {
                         list.Add(item);
+                    }
                 }
                 else if (o is Mobile m)
                 {
                     if (Contains(m))
+                    {
                         list.Add(m);
+                    }
                 }
             }
 
@@ -1575,27 +1864,49 @@ namespace Server.Multis
         public bool SetFacing(Direction facing)
         {
             if (Parent != null || Map == null)
+            {
                 return false;
+            }
 
             if (CheckDecay())
+            {
                 return false;
+            }
 
             if (Map != Map.Internal)
+            {
                 switch (facing)
                 {
                     case Direction.North:
-                        if (!CanFit(Location, Map, NorthID)) return false;
+                        if (!CanFit(Location, Map, NorthID))
+                        {
+                            return false;
+                        }
+
                         break;
                     case Direction.East:
-                        if (!CanFit(Location, Map, EastID)) return false;
+                        if (!CanFit(Location, Map, EastID))
+                        {
+                            return false;
+                        }
+
                         break;
                     case Direction.South:
-                        if (!CanFit(Location, Map, SouthID)) return false;
+                        if (!CanFit(Location, Map, SouthID))
+                        {
+                            return false;
+                        }
+
                         break;
                     case Direction.West:
-                        if (!CanFit(Location, Map, WestID)) return false;
+                        if (!CanFit(Location, Map, WestID))
+                        {
+                            return false;
+                        }
+
                         break;
                 }
+            }
 
             var old = m_Facing;
 
@@ -1618,14 +1929,18 @@ namespace Server.Multis
             Movement.Movement.Offset(facing, ref xOffset, ref yOffset);
 
             if (TillerMan != null)
+            {
                 TillerMan.Location = new Point3D(
                     X + xOffset * TillerManDistance + (facing == Direction.North ? 1 : 0),
                     Y + yOffset * TillerManDistance,
                     TillerMan.Z
                 );
+            }
 
             if (Hold != null)
+            {
                 Hold.Location = new Point3D(X + xOffset * HoldDistance, Y + yOffset * HoldDistance, Hold.Z);
+            }
 
             var count = (m_Facing - old) & 0x7;
             count /= 2;
@@ -1660,7 +1975,9 @@ namespace Server.Multis
         public static void UpdateAllComponents()
         {
             for (var i = Boats.Count - 1; i >= 0; --i)
+            {
                 Boats[i].UpdateComponents();
+            }
         }
 
         public static void Initialize()
@@ -1720,7 +2037,9 @@ namespace Server.Multis
             protected override void OnTick()
             {
                 if (!m_Boat.Deleted)
+                {
                     m_Boat.Turn(m_Offset, true);
+                }
             }
         }
 
@@ -1737,7 +2056,9 @@ namespace Server.Multis
             protected override void OnTick()
             {
                 if (!m_Boat.DoMovement(true))
+                {
                     m_Boat.StopMove(false);
+                }
             }
         }
 
@@ -1793,7 +2114,9 @@ namespace Server.Multis
                 foreach (var ent in ents)
                 {
                     if (!beholder.CanSee(ent))
+                    {
                         continue;
+                    }
 
                     Stream.Write(ent.Serial);
                     Stream.Write((short)(ent.X + xOffset));
@@ -1830,7 +2153,9 @@ namespace Server.Multis
                 foreach (var ent in ents)
                 {
                     if (!beholder.CanSee(ent))
+                    {
                         continue;
+                    }
 
                     // Embedded WorldItemHS packets
                     Stream.Write((byte)0xF3);

@@ -44,9 +44,14 @@ namespace Server.Engines.Craft
         public override int CanCraft(Mobile from, BaseTool tool, Type typeItem)
         {
             if (tool?.Deleted != false || tool.UsesRemaining < 0)
+            {
                 return 1044038; // You have worn out your tool!
+            }
+
             if (!BaseTool.CheckAccessible(tool, from))
+            {
                 return 1044263; // The tool must be on your person to use.
+            }
 
             if (typeItem != null)
             {
@@ -61,7 +66,10 @@ namespace Server.Engines.Craft
                     return hasSpell ? 0 : 1042404; // null : You don't have that spell!
                 }
 
-                if (o is Item item) item.Delete();
+                if (o is Item item)
+                {
+                    item.Delete();
+                }
             }
 
             return 0;
@@ -78,28 +86,45 @@ namespace Server.Engines.Craft
         )
         {
             if (toolBroken)
-                from.SendLocalizedMessage(1044038); // You have worn out your tool
+            {
+                @from.SendLocalizedMessage(1044038); // You have worn out your tool
+            }
 
             if (!typeofSpellScroll.IsAssignableFrom(item.ItemType)) // not a scroll
             {
                 if (failed)
                 {
                     if (lostMaterial)
+                    {
                         return 1044043; // You failed to create the item, and some of your materials are lost.
+                    }
+
                     return 1044157;     // You failed to create the item, but no materials were lost.
                 }
 
                 if (quality == 0)
+                {
                     return 502785; // You were barely able to make this item.  It's quality is below average.
+                }
+
                 if (makersMark && quality == 2)
+                {
                     return 1044156; // You create an exceptional quality item and affix your maker's mark.
+                }
+
                 if (quality == 2)
+                {
                     return 1044155; // You create an exceptional quality item.
+                }
+
                 return 1044154;     // You create the item.
             }
 
             if (failed)
+            {
                 return 501630; // You fail to inscribe the scroll, and the scroll is ruined.
+            }
+
             return 501629;     // You inscribe the spell and put the scroll in your backpack.
         }
 
@@ -156,7 +181,9 @@ namespace Server.Engines.Craft
             );
 
             for (var i = 1; i < regs.Length; ++i)
+            {
                 AddRes(index, m_RegTypes[(int)regs[i]], 1044353 + (int)regs[i], 1, 1044361 + (int)regs[i]);
+            }
 
             AddRes(index, typeof(BlankScroll), 1044377, 1, 1044378);
 
@@ -178,7 +205,9 @@ namespace Server.Engines.Craft
             ); // Yes, on OSI it's only 1.0 skill diff'.  Don't blame me, blame OSI.
 
             for (var i = 1; i < regs.Length; ++i)
+            {
                 AddRes(index, regs[i], CraftItem.LabelNumber(regs[0]), 1, 501627);
+            }
 
             AddRes(index, typeof(BlankScroll), 1044377, 1, 1044378);
             SetManaReq(index, mana);
@@ -199,7 +228,9 @@ namespace Server.Engines.Craft
             );
 
             for (var i = 1; i < regs.Length; ++i)
+            {
                 AddRes(index, regs[i], CraftItem.LabelNumber(regs[i]), 1, 501627);
+            }
 
             AddRes(index, typeof(BlankScroll), 1044377, 1, 1044378);
             SetManaReq(index, mana);
@@ -391,9 +422,14 @@ namespace Server.Engines.Craft
             AddRes(index, typeof(GateTravelScroll), 1044446, 1, 1044253);
 
             if (Core.AOS)
+            {
                 AddCraft(typeof(BulkOrderBook), 1044294, 1028793, 65.0, 115.0, typeof(BlankScroll), 1044377, 10, 1044378);
+            }
 
-            if (Core.SE) AddCraft(typeof(Spellbook), 1044294, 1023834, 50.0, 126, typeof(BlankScroll), 1044377, 10, 1044378);
+            if (Core.SE)
+            {
+                AddCraft(typeof(Spellbook), 1044294, 1023834, 50.0, 126, typeof(BlankScroll), 1044377, 10, 1044378);
+            }
 
             /* TODO
             if (Core.ML)

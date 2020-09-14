@@ -27,11 +27,14 @@ namespace Server.Engines.Harvest
                 // grave
                 if (itemID == 0xED3 || itemID == 0xEDF || itemID == 0xEE0 || itemID == 0xEE1 || itemID == 0xEE2 ||
                     itemID == 0xEE8)
-                    if (from is PlayerMobile player)
+                {
+                    if (@from is PlayerMobile player)
                     {
                         var qs = player.Quest;
                         if (!(qs is WitchApprenticeQuest))
+                        {
                             return;
+                        }
 
                         var obj = qs.FindObjective<FindIngredientObjective>();
 
@@ -45,6 +48,7 @@ namespace Server.Engines.Harvest
                             return;
                         }
                     }
+                }
             }
 
             if (m_System is Lumberjacking && targeted is IChoppable chopable)
@@ -56,9 +60,13 @@ namespace Server.Engines.Harvest
                 var item = (Item)obj;
 
                 if (!item.IsChildOf(from.Backpack))
-                    from.SendLocalizedMessage(1062334); // This item must be in your backpack to be used.
+                {
+                    @from.SendLocalizedMessage(1062334); // This item must be in your backpack to be used.
+                }
                 else if (obj.Axe(from, axe))
-                    from.PlaySound(0x13E);
+                {
+                    @from.PlaySound(0x13E);
+                }
             }
             else if (m_System is Lumberjacking && targeted is ICarvable carvable)
             {
@@ -98,7 +106,9 @@ namespace Server.Engines.Harvest
             if (item is Container container)
             {
                 if (container is TrappableContainer trappableContainer)
-                    trappableContainer.ExecuteTrap(from);
+                {
+                    trappableContainer.ExecuteTrap(@from);
+                }
 
                 container.Destroy();
             }

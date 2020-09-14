@@ -38,7 +38,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version < 1)
+            {
                 EnergyBonus = 0;
+            }
         }
     }
 }

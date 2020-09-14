@@ -19,7 +19,9 @@ namespace Server.Spells
         protected override void OnTarget(Mobile from, object o)
         {
             if (o is Item item)
+            {
                 m_Spell.Target(item);
+            }
         }
 
         protected override void OnTargetFinish(Mobile from)

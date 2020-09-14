@@ -36,22 +36,30 @@ namespace Server.Items
                 base.Hue = value;
 
                 if (Addon?.ShareHue == true)
+                {
                     Addon.Hue = value;
+                }
             }
         }
 
         public virtual void OnChop(Mobile from)
         {
             if (Addon != null && from.InRange(GetWorldLocation(), 3))
-                Addon.OnChop(from);
+            {
+                Addon.OnChop(@from);
+            }
             else
-                from.SendLocalizedMessage(500446); // That is too far away.
+            {
+                @from.SendLocalizedMessage(500446); // That is too far away.
+            }
         }
 
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
             if (Addon != null)
-                return Addon.OnDragDrop(from, dropped);
+            {
+                return Addon.OnDragDrop(@from, dropped);
+            }
 
             return false;
         }
@@ -64,7 +72,9 @@ namespace Server.Items
         public override void OnLocationChange(Point3D old)
         {
             if (Addon != null)
+            {
                 Addon.Location = new Point3D(X - Offset.X, Y - Offset.Y, Z - Offset.Z);
+            }
         }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
@@ -75,7 +85,9 @@ namespace Server.Items
         public override void OnMapChange()
         {
             if (Addon != null)
+            {
                 Addon.Map = Map;
+            }
         }
 
         public override void OnAfterDelete()
@@ -125,7 +137,9 @@ namespace Server.Items
             get
             {
                 if (m_LabelNumber > 0)
+                {
                     return m_LabelNumber;
+                }
 
                 return base.LabelNumber;
             }

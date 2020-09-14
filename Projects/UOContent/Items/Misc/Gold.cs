@@ -26,9 +26,15 @@ namespace Server.Items
         public override int GetDropSound()
         {
             if (Amount <= 1)
+            {
                 return 0x2E4;
+            }
+
             if (Amount <= 5)
+            {
                 return 0x2E5;
+            }
+
             return 0x2E6;
         }
 
@@ -43,7 +49,10 @@ namespace Server.Items
         {
             base.OnAdded(parent);
 
-            if (!AccountGold.Enabled) return;
+            if (!AccountGold.Enabled)
+            {
+                return;
+            }
 
             Mobile owner = null;
             SecureTradeInfo tradeInfo = null;
@@ -51,7 +60,9 @@ namespace Server.Items
             var root = parent as Container;
 
             while (root?.Parent is Container container)
+            {
                 root = container;
+            }
 
             parent = root ?? parent;
 
@@ -73,7 +84,10 @@ namespace Server.Items
                 owner = box.Owner;
             }
 
-            if (owner?.Account?.DepositGold(Amount) != true) return;
+            if (owner?.Account?.DepositGold(Amount) != true)
+            {
+                return;
+            }
 
             if (tradeInfo != null)
             {
@@ -100,7 +114,9 @@ namespace Server.Items
             var baseTotal = base.GetTotal(type);
 
             if (type == TotalType.Gold)
+            {
                 baseTotal += Amount;
+            }
 
             return baseTotal;
         }

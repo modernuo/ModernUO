@@ -120,7 +120,9 @@ namespace Server.Engines.Quests.Hag
         {
             var obj = System.FindObjective<FindIngredientObjective>();
             if (obj != null)
+            {
                 System.AddObjective(new FindIngredientObjective(obj.Ingredients, true));
+            }
         }
     }
 
@@ -145,7 +147,10 @@ namespace Server.Engines.Quests.Hag
             {
                 if (m_Tricorne)
                 {
-                    if (m_Drunken) return 1055059;
+                    if (m_Drunken)
+                    {
+                        return 1055059;
+                    }
 
                     /* <I>Captain Blackheart looks up from polishing his cutlass, glaring at
                        * you with red-rimmed eyes.</I><BR><BR>
@@ -170,7 +175,10 @@ namespace Server.Engines.Quests.Hag
                     return 1055057;
                 }
 
-                if (m_Drunken) return 1055056;
+                if (m_Drunken)
+                {
+                    return 1055056;
+                }
 
                 /* <I>Captain Blackheart looks up from his drink, almost tipping over
                      * his chair as he looks you up and down.</I><BR><BR>
@@ -222,7 +230,10 @@ namespace Server.Engines.Quests.Hag
         {
             get
             {
-                if (m_FirstMet) return 1055054;
+                if (m_FirstMet)
+                {
+                    return 1055054;
+                }
 
                 /* <I>The drunken pirate, Captain Blackheart, looks up from his bottle
                    * of whiskey with a pleased expression.</I><BR><BR>

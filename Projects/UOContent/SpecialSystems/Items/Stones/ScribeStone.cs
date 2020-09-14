@@ -20,7 +20,9 @@ namespace Server.Items
             var scribeBag = new ScribeBag();
 
             if (!from.AddToBackpack(scribeBag))
+            {
                 scribeBag.Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

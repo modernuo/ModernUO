@@ -62,9 +62,13 @@ namespace Server.Items
                         var weight = item.Weight;
 
                         if (weight <= 0.0)
+                        {
                             message += "It is lighter than a feather.";
+                        }
                         else
+                        {
                             message += $"It weighs {weight} stones.";
+                        }
                     }
                     else
                     {

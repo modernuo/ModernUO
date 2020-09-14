@@ -35,7 +35,9 @@ namespace Server.Items
                     var fruit = Fruit;
 
                     if (fruit == null)
+                    {
                         return;
+                    }
 
                     if (!from.PlaceInBackpack(fruit))
                     {
@@ -45,7 +47,9 @@ namespace Server.Items
                     else
                     {
                         if (--m_Fruits == 0)
+                        {
                             Timer.DelayCall(TimeSpan.FromMinutes(30), Respawn);
+                        }
 
                         from.SendLocalizedMessage(501016); // You pick some fruit and put it in your backpack.
                     }
@@ -84,7 +88,9 @@ namespace Server.Items
             m_Fruits = reader.ReadInt();
 
             if (m_Fruits == 0)
+            {
                 Respawn();
+            }
         }
     }
 

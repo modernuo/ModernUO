@@ -36,10 +36,14 @@ namespace Server.Spells.Chivalry
                 foreach (var m in Caster.GetMobilesInRange(3)) // TODO: Validate range
                 {
                     if (m is BaseCreature creature && creature.IsAnimatedDead)
+                    {
                         continue;
+                    }
 
                     if (Caster != m && m.InLOS(Caster) && Caster.CanBeBeneficial(m, false, true) && !(m is Golem))
+                    {
                         targets.Add(m);
+                    }
                 }
 
                 Caster.PlaySound(0x244);
@@ -86,7 +90,9 @@ namespace Server.Spells.Chivalry
                             Caster.DoBeneficial(m);
 
                             if (Caster != m)
+                            {
                                 Caster.SendLocalizedMessage(1010058); // You have cured the target of all poisons!
+                            }
 
                             m.SendLocalizedMessage(1010059); // You have been cured of all poisons.
                             sendEffect = true;
@@ -132,13 +138,19 @@ namespace Server.Spells.Chivalry
                         }
 
                         if (EvilOmenSpell.TryEndEffect(m))
+                        {
                             sendEffect = true;
+                        }
 
                         if (StrangleSpell.RemoveCurse(m))
+                        {
                             sendEffect = true;
+                        }
 
                         if (CorpseSkinSpell.RemoveCurse(m))
+                        {
                             sendEffect = true;
+                        }
 
                         // TODO: Should this remove blood oath? Pain spike?
 

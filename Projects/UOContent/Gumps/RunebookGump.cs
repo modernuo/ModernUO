@@ -24,10 +24,14 @@ namespace Server.Gumps
                 AddButton(125, 14, 2205, 2205, 0, GumpButtonType.Page, 1 + page);
 
                 if (page < 7)
+                {
                     AddButton(393, 14, 2206, 2206, 0, GumpButtonType.Page, 3 + page);
+                }
 
                 for (var half = 0; half < 2; ++half)
+                {
                     AddDetails(page * 2 + half, half);
+                }
             }
         }
 
@@ -36,15 +40,29 @@ namespace Server.Gumps
         public int GetMapHue(Map map)
         {
             if (map == Map.Trammel)
+            {
                 return 10;
+            }
+
             if (map == Map.Felucca)
+            {
                 return 81;
+            }
+
             if (map == Map.Ilshenar)
+            {
                 return 1102;
+            }
+
             if (map == Map.Malas)
+            {
                 return 1102;
+            }
+
             if (map == Map.Tokuno)
+            {
                 return 1154;
+            }
 
             return 0;
         }
@@ -52,7 +70,9 @@ namespace Server.Gumps
         public string GetName(string name)
         {
             if (name == null || (name = name.Trim()).Length <= 0)
+            {
                 return "(indescript)";
+            }
 
             return name;
         }
@@ -73,18 +93,24 @@ namespace Server.Gumps
                 xOffset += 20;
 
                 for (var j = 0; j < 6; ++j, xOffset += 15)
+                {
                     AddImage(xOffset, 50, 58);
+                }
 
                 AddImage(xOffset - 5, 50, 59);
             }
 
             // First four page buttons
             for (int i = 0, xOffset = 130, gumpID = 2225; i < 4; ++i, xOffset += 35, ++gumpID)
+            {
                 AddButton(xOffset, 187, gumpID, gumpID, 0, GumpButtonType.Page, 2 + i);
+            }
 
             // Next four page buttons
             for (int i = 0, xOffset = 300, gumpID = 2229; i < 4; ++i, xOffset += 35, ++gumpID)
+            {
                 AddButton(xOffset, 187, gumpID, gumpID, 0, GumpButtonType.Page, 6 + i);
+            }
 
             // Charges
             AddHtmlLocalized(140, 40, 80, 18, 1011296); // Charges:
@@ -288,7 +314,9 @@ namespace Server.Gumps
 
                                     from.CloseGump<RunebookGump>();
                                     if (!Core.ML)
-                                        from.SendGump(new RunebookGump(from, Book));
+                                    {
+                                        @from.SendGump(new RunebookGump(@from, Book));
+                                    }
                                 }
                                 else
                                 {
@@ -446,7 +474,9 @@ namespace Server.Gumps
             public override void OnResponse(Mobile from, string text)
             {
                 if (m_Book.Deleted || !from.InRange(m_Book.GetWorldLocation(), Core.ML ? 3 : 1))
+                {
                     return;
+                }
 
                 if (m_Book.CheckAccess(from))
                 {

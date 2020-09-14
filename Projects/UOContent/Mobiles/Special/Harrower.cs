@@ -114,7 +114,9 @@ namespace Server.Mobiles
         public static Harrower Spawn(Point3D platLoc, Map platMap)
         {
             if (Instances.Count > 0)
+            {
                 return null;
+            }
 
             var entry = m_Entries.RandomElement();
 
@@ -136,7 +138,9 @@ namespace Server.Mobiles
         public void Morph()
         {
             if (m_TrueForm)
+            {
                 return;
+            }
 
             m_TrueForm = true;
 
@@ -155,6 +159,7 @@ namespace Server.Mobiles
             var map = Map;
 
             if (map != null)
+            {
                 for (var i = 0; i < m_Offsets.Length; i += 2)
                 {
                     var rx = m_Offsets[i];
@@ -173,16 +178,24 @@ namespace Server.Mobiles
                         z = map.GetAverageZ(x, y);
 
                         if (!(ok = map.CanFit(x, y, Z, 16, false, false)))
+                        {
                             ok = map.CanFit(x, y, z, 16, false, false);
+                        }
 
                         if (dist >= 0)
+                        {
                             dist = -(dist + 1);
+                        }
                         else
+                        {
                             dist = -(dist - 1);
+                        }
                     }
 
                     if (!ok)
+                    {
                         continue;
+                    }
 
                     var spawn = new HarrowerTentacles(this) { Team = Team };
 
@@ -190,6 +203,7 @@ namespace Server.Mobiles
 
                     m_Tentacles.Add(spawn);
                 }
+            }
         }
 
         public override void OnAfterDelete()
@@ -242,11 +256,15 @@ namespace Server.Mobiles
                 var ds = rights[i];
 
                 if (ds.m_HasRight)
+                {
                     toGive.Add(ds.m_Mobile);
+                }
             }
 
             if (toGive.Count == 0)
+            {
                 return;
+            }
 
             toGive.Shuffle();
 
@@ -256,15 +274,25 @@ namespace Server.Mobiles
                 var random = Utility.RandomDouble();
 
                 if (random <= 0.1)
+                {
                     level = 25;
+                }
                 else if (random <= 0.25)
+                {
                     level = 20;
+                }
                 else if (random <= 0.45)
+                {
                     level = 15;
+                }
                 else if (random <= 0.70)
+                {
                     level = 10;
+                }
                 else
+                {
                     level = 5;
+                }
 
                 var m = toGive[i % toGive.Count];
 
@@ -272,13 +300,16 @@ namespace Server.Mobiles
                 m.AddToBackpack(new StatCapScroll(225 + level));
 
                 if (m is PlayerMobile pm)
+                {
                     for (var j = 0; j < pm.JusticeProtectors.Count; ++j)
                     {
                         var prot = pm.JusticeProtectors[j];
 
                         if (prot.Map != pm.Map || prot.Kills >= 5 || prot.Criminal ||
                             !JusticeVirtue.CheckMapRegion(pm, prot))
+                        {
                             continue;
+                        }
 
                         var chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
                         {
@@ -294,6 +325,7 @@ namespace Server.Mobiles
                             prot.AddToBackpack(new StatCapScroll(225 + level));
                         }
                     }
+                }
             }
         }
 
@@ -308,7 +340,9 @@ namespace Server.Mobiles
                     var ds = rights[i];
 
                     if (ds.m_HasRight && ds.m_Mobile is PlayerMobile mobile)
+                    {
                         PlayerMobile.ChampionTitleInfo.AwardHarrowerTitle(mobile);
+                    }
                 }
 
                 if (!NoKillAwards)
@@ -318,14 +352,20 @@ namespace Server.Mobiles
                     var map = Map;
 
                     if (map != null)
+                    {
                         for (var x = -16; x <= 16; ++x)
+                        {
                             for (var y = -16; y <= 16; ++y)
                             {
                                 var dist = Math.Sqrt(x * x + y * y);
 
                                 if (dist <= 16)
+                                {
                                     new GoodiesTimer(map, X + x, Y + y).Start();
+                                }
                             }
+                        }
+                    }
 
                     m_DamageEntries = new Dictionary<Mobile, int>();
 
@@ -334,7 +374,9 @@ namespace Server.Mobiles
                         Mobile m = m_Tentacles[i];
 
                         if (!m.Deleted)
+                        {
                             m.Kill();
+                        }
 
                         RegisterDamageTo(m);
                     }
@@ -357,7 +399,9 @@ namespace Server.Mobiles
         public virtual void RegisterDamageTo(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             foreach (var de in m.DamageEntries)
             {
@@ -366,7 +410,9 @@ namespace Server.Mobiles
                 var master = damager.GetDamageMaster(m);
 
                 if (master != null)
+                {
                     damager = master;
+                }
 
                 RegisterDamage(damager, de.DamageGiven);
             }
@@ -375,7 +421,9 @@ namespace Server.Mobiles
         public void RegisterDamage(Mobile from, int amount)
         {
             if (from?.Player != true)
+            {
                 return;
+            }
 
             m_DamageEntries[from] = amount + (m_DamageEntries.TryGetValue(from, out var value) ? value : 0);
 
@@ -385,18 +433,22 @@ namespace Server.Mobiles
         public void AwardArtifact(Item artifact)
         {
             if (artifact == null)
+            {
                 return;
+            }
 
             var totalDamage = 0;
 
             var validEntries = new Dictionary<Mobile, int>();
 
             foreach (var kvp in m_DamageEntries)
+            {
                 if (IsEligible(kvp.Key, artifact))
                 {
                     validEntries.Add(kvp.Key, kvp.Value);
                     totalDamage += kvp.Value;
                 }
+            }
 
             var randomDamage = Utility.RandomMinMax(1, totalDamage);
 
@@ -419,16 +471,22 @@ namespace Server.Mobiles
         public void GiveArtifact(Mobile to, Item artifact)
         {
             if (to == null || artifact == null)
+            {
                 return;
+            }
 
             var pack = to.Backpack;
 
             if (pack?.TryDropItem(to, artifact, false) != true)
+            {
                 artifact.Delete();
+            }
             else
+            {
                 to.SendLocalizedMessage(
                     1062317
                 ); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
+            }
         }
 
         public bool IsEligible(Mobile m, Item artifact) =>
@@ -439,11 +497,19 @@ namespace Server.Mobiles
         {
             var random = Utility.RandomDouble();
             if (random <= 0.05)
+            {
                 return CreateArtifact(UniqueList);
+            }
+
             if (random <= 0.15)
+            {
                 return CreateArtifact(SharedList);
+            }
+
             if (random <= 0.30)
+            {
                 return CreateArtifact(DecorativeList);
+            }
 
             return null;
         }
@@ -496,16 +562,22 @@ namespace Server.Mobiles
                 var map = m_Owner.Map;
 
                 if (map == null)
+                {
                     return;
+                }
 
                 if (Utility.RandomDouble() > 0.25)
+                {
                     return;
+                }
 
                 var toTeleport = m_Owner.GetMobilesInRange(16)
                     .FirstOrDefault(mob => mob != m_Owner && mob.Player && m_Owner.CanBeHarmful(mob) && m_Owner.CanSee(mob));
 
                 if (toTeleport == null)
+                {
                     return;
+                }
 
                 var offset = Utility.Random(8) * 2;
 
@@ -588,17 +660,22 @@ namespace Server.Mobiles
                     canFit = m_Map.CanFit(m_X, m_Y, z + i, 6, false, false);
 
                     if (canFit)
+                    {
                         z += i;
+                    }
                 }
 
                 if (!canFit)
+                {
                     return;
+                }
 
                 var g = new Gold(750, 1250);
 
                 g.MoveToWorld(new Point3D(m_X, m_Y, z), m_Map);
 
                 if (Utility.RandomDouble() <= 0.5)
+                {
                     switch (Utility.Random(3))
                     {
                         case 0: // Fire column
@@ -640,6 +717,7 @@ namespace Server.Mobiles
                                 break;
                             }
                     }
+                }
             }
         }
     }

@@ -11,7 +11,9 @@ namespace Server.Items
         protected override void OnTarget(Mobile from, object target) // Override the protected OnTarget() for our feature
         {
             if (m_Deed.Deleted || m_Deed.RootParent != from)
+            {
                 return;
+            }
 
             if (target is BaseClothing item)
             {

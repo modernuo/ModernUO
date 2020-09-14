@@ -33,9 +33,13 @@ namespace Server.Items
             var map = Map;
 
             if (map?.GetSector(GetWorldLocation()).Active == true)
+            {
                 StartTimer();
+            }
             else
+            {
                 StopTimer();
+            }
         }
 
         public override void OnLocationChange(Point3D oldLocation)
@@ -76,7 +80,9 @@ namespace Server.Items
         public virtual void Refresh()
         {
             if (Deleted)
+            {
                 return;
+            }
 
             var foundPlayer = GetMobilesInRange(3)
                 .Where(mob => mob.Player && mob.Alive && mob.AccessLevel <= AccessLevel.Player)
@@ -99,10 +105,14 @@ namespace Server.Items
         public override bool OnMoveOver(Mobile m)
         {
             if (m.AccessLevel > AccessLevel.Player)
+            {
                 return true;
+            }
 
             if (!(m.Player && m.Alive))
+            {
                 return false;
+            }
 
             CheckTimer();
 
@@ -118,7 +128,9 @@ namespace Server.Items
 
             if (m.Location == oldLocation || !m.Player || !m.Alive || m.AccessLevel > AccessLevel.Player
                 || !CheckRange(m.Location, oldLocation, 1))
+            {
                 return;
+            }
 
             CheckTimer();
 
@@ -126,7 +138,9 @@ namespace Server.Items
             m.PlaySound(m.Female ? 0x327 : 0x437);
 
             if (m.Body.IsHuman)
+            {
                 m.Animate(20, 1, 1, true, false, 0);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

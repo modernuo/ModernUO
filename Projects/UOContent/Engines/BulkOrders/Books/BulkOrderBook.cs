@@ -52,11 +52,17 @@ namespace Server.Engines.BulkOrders
         public override void OnDoubleClick(Mobile from)
         {
             if (!from.InRange(GetWorldLocation(), 2))
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            {
+                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            }
             else if (Entries.Count == 0)
-                from.SendLocalizedMessage(1062381); // The book is empty.
+            {
+                @from.SendLocalizedMessage(1062381); // The book is empty.
+            }
             else if (from is PlayerMobile mobile)
+            {
                 mobile.SendGump(new BOBGump(mobile, this));
+            }
         }
 
         public override void OnDoubleClickSecureTrade(Mobile from)
@@ -76,9 +82,13 @@ namespace Server.Engines.BulkOrders
                 var trade = GetSecureTradeCont()?.Trade;
 
                 if (trade?.From.Mobile == from)
+                {
                     trade.To.Mobile.SendGump(new BOBGump((PlayerMobile)trade.To.Mobile, this));
+                }
                 else if (trade?.To.Mobile == from)
+                {
                     trade.From.Mobile.SendGump(new BOBGump((PlayerMobile)trade.From.Mobile, this));
+                }
             }
         }
 
@@ -93,13 +103,20 @@ namespace Server.Engines.BulkOrders
                 }
 
                 if (!from.Backpack.CheckHold(from, dropped, true, true))
+                {
                     return false;
+                }
+
                 if (Entries.Count < 500)
                 {
                     if (dropped is LargeBOD bod)
+                    {
                         Entries.Add(new BOBLargeEntry(bod));
+                    }
                     else
+                    {
                         Entries.Add(new BOBSmallEntry((SmallBOD)dropped));
+                    }
 
                     InvalidateProperties();
 
@@ -113,7 +130,9 @@ namespace Server.Engines.BulkOrders
                     from.SendLocalizedMessage(1062386); // Deed added to book.
 
                     if (from is PlayerMobile pm)
+                    {
                         pm.SendGump(new BOBGump(pm, this));
+                    }
 
                     dropped.Delete();
 
@@ -133,7 +152,9 @@ namespace Server.Engines.BulkOrders
             var total = base.GetTotal(type);
 
             if (type == TotalType.Items)
+            {
                 total = ItemCount;
+            }
 
             return total;
         }
@@ -244,7 +265,9 @@ namespace Server.Engines.BulkOrders
             list.Add(1062344, Entries.Count.ToString()); // Deeds in book: ~1_val~
 
             if (!string.IsNullOrEmpty(m_BookName))
+            {
                 list.Add(1062481, m_BookName); // Book Name: ~1_val~
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -254,7 +277,9 @@ namespace Server.Engines.BulkOrders
             LabelTo(from, 1062344, Entries.Count.ToString()); // Deeds in book: ~1_val~
 
             if (!string.IsNullOrEmpty(m_BookName))
-                LabelTo(from, 1062481, m_BookName);
+            {
+                LabelTo(@from, 1062481, m_BookName);
+            }
         }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
@@ -262,7 +287,9 @@ namespace Server.Engines.BulkOrders
             base.GetContextMenuEntries(from, list);
 
             if (from.CheckAlive() && IsChildOf(from.Backpack))
-                list.Add(new NameBookEntry(from, this));
+            {
+                list.Add(new NameBookEntry(@from, this));
+            }
 
             SetSecureLevelEntry.AddTo(from, this, list);
         }
@@ -297,7 +324,9 @@ namespace Server.Engines.BulkOrders
             public override void OnResponse(Mobile from, string text)
             {
                 if (text.Length > 40)
+                {
                     text = text.Substring(0, 40);
+                }
 
                 if (from.CheckAlive() && m_Book.IsChildOf(from.Backpack))
                 {

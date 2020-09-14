@@ -89,6 +89,7 @@ namespace Server.Mobiles
         public virtual void PackResources(int amount)
         {
             for (var i = 0; i < amount; i++)
+            {
                 PackItem(
                     Utility.Random(6) switch
                     {
@@ -100,6 +101,7 @@ namespace Server.Mobiles
                         _ => new Muculent() // 5
                     }
                 );
+            }
         }
 
         public virtual void PackTalismans(int amount)
@@ -107,7 +109,9 @@ namespace Server.Mobiles
             var count = Utility.Random(amount);
 
             for (var i = 0; i < count; i++)
+            {
                 PackItem(new RandomTalisman());
+            }
         }
 
         public override void OnDeath(Container c)
@@ -115,7 +119,9 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             if (!Core.ML)
+            {
                 return;
+            }
 
             c.DropItem(new MalletAndChisel());
 
@@ -129,16 +135,22 @@ namespace Server.Mobiles
             );
 
             if (Utility.RandomBool())
+            {
                 c.DropItem(new TormentedChains());
+            }
 
             if (Utility.RandomDouble() < 0.025)
+            {
                 c.DropItem(new CrimsonCincture());
+            }
         }
 
         public override void GenerateLoot()
         {
             if (Core.ML)
+            {
                 AddLoot(LootPack.AosSuperBoss, 5); // Need to verify
+            }
         }
 
         public override int GetAngerSound() => 0x597;
@@ -156,7 +168,9 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomDouble() <= 0.2)
+            {
                 Earthquake();
+            }
         }
 
         public void Earthquake()
@@ -167,20 +181,31 @@ namespace Server.Mobiles
             {
                 if (m == this || !CanBeHarmful(m) || m.Deleted || !m.Player &&
                     !(m is BaseCreature creature && (creature.Controlled || creature.Summoned || creature.Team != Team)))
+                {
                     continue;
+                }
 
                 if (m is PlayerMobile pm && pm.Mounted)
+                {
                     pm.Mount.Rider = null;
+                }
 
                 var damage = (int)(m.Hits * 0.6);
                 if (damage < 10)
+                {
                     damage = 10;
+                }
                 else if (damage > 75)
+                {
                     damage = 75;
+                }
+
                 DoHarmful(m);
                 AOS.Damage(m, this, damage, 100, 0, 0, 0, 0);
                 if (m.Alive && m.Body.IsHuman && !m.Mounted)
+                {
                     m.Animate(20, 7, 1, true, false, 0); // take hit
+                }
             }
 
             eable.Free();

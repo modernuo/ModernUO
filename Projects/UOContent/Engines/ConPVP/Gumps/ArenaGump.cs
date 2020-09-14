@@ -54,7 +54,9 @@ namespace Server.Engines.ConPVP
             from.SendGump(new ArenaGump(from, this));
 
             if (!from.Hidden || from.AccessLevel == AccessLevel.Player)
-                Effects.PlaySound(from.Location, from.Map, 0x20E);
+            {
+                Effects.PlaySound(@from.Location, @from.Map, 0x20E);
+            }
 
             return true;
         }
@@ -62,9 +64,13 @@ namespace Server.Engines.ConPVP
         public override void OnDoubleClick(Mobile from)
         {
             if (from.InRange(GetWorldLocation(), 1))
-                UseGate(from);
+            {
+                UseGate(@from);
+            }
             else
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that
+            {
+                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that
+            }
         }
 
         public override bool OnMoveOver(Mobile m) => !m.Player || UseGate(m);
@@ -93,7 +99,9 @@ namespace Server.Engines.ConPVP
             var list = m_Arenas;
 
             for (var i = 1; i < list.Count; i += 2)
+            {
                 AddImageTiled(12, 32 + i * 31, 475 + 40, 30, 0x2430);
+            }
 
             AddAlphaRegion(10, 10, 479 + 40, height - 20);
 
@@ -127,7 +135,9 @@ namespace Server.Engines.ConPVP
                     var ladder = Ladder.Instance;
 
                     if (ladder == null)
+                    {
                         continue;
+                    }
 
                     LadderEntry p1 = null, p2 = null, p3 = null, p4 = null;
 
@@ -166,7 +176,9 @@ namespace Server.Engines.ConPVP
                     Append(sb, p4);
 
                     if (ar.Players.Count > 4)
+                    {
                         sb.Append(", ...");
+                    }
                 }
                 else
                 {
@@ -183,10 +195,14 @@ namespace Server.Engines.ConPVP
         private void Append(StringBuilder sb, LadderEntry le)
         {
             if (le == null)
+            {
                 return;
+            }
 
             if (sb.Length > 0)
+            {
                 sb.Append(", ");
+            }
 
             sb.Append(le.Mobile.Name);
         }
@@ -194,17 +210,23 @@ namespace Server.Engines.ConPVP
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID != 1)
+            {
                 return;
+            }
 
             var switches = info.Switches;
 
             if (switches.Length == 0)
+            {
                 return;
+            }
 
             var opt = switches[0];
 
             if (opt < 0 || opt >= m_Arenas.Count)
+            {
                 return;
+            }
 
             var arena = m_Arenas[opt];
 
@@ -259,9 +281,13 @@ namespace Server.Engines.ConPVP
         private void AddColoredText(int x, int y, int width, string text, int color)
         {
             if (color == 0)
+            {
                 AddHtml(x, y, width, 20, text);
+            }
             else
+            {
                 AddHtml(x, y, width, 20, Color(text, color));
+            }
         }
 
         private void AddColumnHeader(int width, string name)
@@ -270,7 +296,9 @@ namespace Server.Engines.ConPVP
             AddImageTiled(m_ColumnX + 2, 14, width - 4, 16, 0x2430);
 
             if (name != null)
+            {
                 AddBorderedText(m_ColumnX, 13, width, Center(name), 0xFFFFFF, 0);
+            }
 
             m_ColumnX += width;
         }

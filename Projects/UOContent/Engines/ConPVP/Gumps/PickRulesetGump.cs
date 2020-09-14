@@ -37,11 +37,17 @@ namespace Server.Engines.ConPVP
                 AddHtml(35 + 14, y, 176, 20, cur.Title);
 
                 if (ruleset.Base == cur && !ruleset.Changed)
+                {
                     AddImage(35, y + 4, 0x939);
+                }
                 else if (ruleset.Base == cur)
+                {
                     AddButton(35, y + 4, 0x93A, 0x939, 2 + i);
+                }
                 else
+                {
                     AddButton(35, y + 4, 0x938, 0x939, 2 + i);
+                }
 
                 y += 22;
             }
@@ -62,9 +68,13 @@ namespace Server.Engines.ConPVP
                 AddHtml(35 + 14, y, 176, 20, cur.Title);
 
                 if (ruleset.Flavors.Contains(cur))
+                {
                     AddButton(35, y + 4, 0x939, 0x938, 2 + m_Defaults.Length + i);
+                }
                 else
+                {
                     AddButton(35, y + 4, 0x938, 0x939, 2 + m_Defaults.Length + i);
+                }
 
                 y += 22;
             }
@@ -75,14 +85,18 @@ namespace Server.Engines.ConPVP
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_Context?.Registered == false)
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {
                 case 0: // closed
                     {
                         if (m_Context != null)
+                        {
                             m_From.SendGump(new DuelContextGump(m_From, m_Context));
+                        }
 
                         break;
                     }
@@ -107,9 +121,13 @@ namespace Server.Engines.ConPVP
                             if (idx >= 0 && idx < m_Flavors.Length)
                             {
                                 if (m_Ruleset.Flavors.Contains(m_Flavors[idx]))
+                                {
                                     m_Ruleset.RemoveFlavor(m_Flavors[idx]);
+                                }
                                 else
+                                {
                                     m_Ruleset.AddFlavor(m_Flavors[idx]);
+                                }
 
                                 m_From.SendGump(new PickRulesetGump(m_From, m_Context, m_Ruleset));
                             }

@@ -74,10 +74,14 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomDouble() >= 0.1)
+            {
                 return;
+            }
 
             if (m_Table.TryGetValue(defender, out var timer))
+            {
                 timer.DoExpire();
+            }
 
             defender.FixedParticles(0x3709, 10, 30, 5052, EffectLayer.LeftFoot);
             defender.PlaySound(0x208);

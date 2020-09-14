@@ -43,9 +43,13 @@ namespace Server.Mobiles
             Karma = -28000;
 
             if (Utility.RandomBool())
+            {
                 PackNecroScroll(Utility.RandomMinMax(5, 9));
+            }
             else
+            {
                 PackScroll(4, 7);
+            }
         }
 
         public RedDeath(Serial serial)

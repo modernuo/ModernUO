@@ -148,10 +148,14 @@ namespace Server.Mobiles
                 foreach (var m in eable)
                 {
                     if (m == m_Owner || !(m_Owner.CanBeHarmful(m) || m.Player && m.Alive))
+                    {
                         continue;
+                    }
 
                     if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != m_Owner.Team))
+                    {
                         continue;
+                    }
 
                     m_Owner.DoHarmful(m);
 
@@ -163,7 +167,9 @@ namespace Server.Mobiles
                     m_Owner.Hits += drain;
 
                     if (m_Owner.Harrower != null)
+                    {
                         m_Owner.Harrower.Hits += drain;
+                    }
 
                     m.Damage(drain, m_Owner);
                 }

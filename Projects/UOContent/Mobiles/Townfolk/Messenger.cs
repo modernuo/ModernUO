@@ -30,18 +30,26 @@ namespace Server.Mobiles
         public override void InitOutfit()
         {
             if (Female)
+            {
                 AddItem(new PlainDress());
+            }
             else
+            {
                 AddItem(new Shirt(GetRandomHue()));
+            }
 
             var lowHue = GetRandomHue();
 
             AddItem(new ShortPants(lowHue));
 
             if (Female)
+            {
                 AddItem(new Boots(lowHue));
+            }
             else
+            {
                 AddItem(new Shoes(lowHue));
+            }
 
             var randomHair = Utility.Random(4);
             HairItemID = randomHair == 4 ? 0x203B : 0x2048 + randomHair;

@@ -87,7 +87,9 @@ namespace Server.Spells.Fourth
                 BaseCreature.TeleportPets(Caster, loc, map, true);
 
                 if (m_Book != null)
+                {
                     --m_Book.CurCharges;
+                }
 
                 Caster.PlaySound(0x1FC);
                 Caster.MoveToWorld(loc, map);
@@ -100,19 +102,29 @@ namespace Server.Spells.Fourth
         public override void GetCastSkills(out double min, out double max)
         {
             if (TransformationSpellHelper.UnderTransformation(Caster, typeof(WraithFormSpell)))
+            {
                 min = max = 0;
+            }
             else if (Core.SE && m_Book != null) // recall using Runebook charge
+            {
                 min = max = 0;
+            }
             else
+            {
                 base.GetCastSkills(out min, out max);
+            }
         }
 
         public override void OnCast()
         {
             if (m_Entry == null)
+            {
                 Caster.Target = new RecallSpellTarget(this);
+            }
             else
+            {
                 Effect(m_Entry.Location, m_Entry.Map, true);
+            }
         }
 
         public override bool CheckCast()

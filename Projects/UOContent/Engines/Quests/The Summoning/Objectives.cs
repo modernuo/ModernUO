@@ -45,6 +45,7 @@ namespace Server.Engines.Quests.Doom
         public override void RenderMessage(BaseQuestGump gump)
         {
             if (CurProgress > 0 && CurProgress < MaxProgress)
+            {
                 gump.AddHtmlObject(
                     70,
                     130,
@@ -55,8 +56,11 @@ namespace Server.Engines.Quests.Doom
                     false,
                     false
                 ); // Victoria has accepted the Daemon bones, but the requirement is not yet met.
+            }
             else
+            {
                 base.RenderMessage(gump);
+            }
         }
 
         public override void RenderProgress(BaseQuestGump gump)
@@ -103,7 +107,9 @@ namespace Server.Engines.Quests.Doom
         public override void CheckProgress()
         {
             if (m_Daemon?.Alive != true)
+            {
                 Complete();
+            }
         }
 
         public override void OnComplete()
@@ -156,7 +162,9 @@ namespace Server.Engines.Quests.Doom
                     from.SendLocalizedMessage(1050035); // The devourer lies dead.  Search his corpse to claim your prize!
 
                     if (m_Daemon != null)
+                    {
                         CorpseWithSkull = m_Daemon.Corpse as Corpse;
+                    }
                 }
             }
         }

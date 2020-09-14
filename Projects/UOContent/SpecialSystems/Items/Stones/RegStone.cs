@@ -20,7 +20,9 @@ namespace Server.Items
             var regBag = new BagOfReagents();
 
             if (!from.AddToBackpack(regBag))
+            {
                 regBag.Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

@@ -22,10 +22,14 @@ namespace Server.Factions
         public override bool OnMoveInto(Mobile m, Direction d, Point3D newLocation, Point3D oldLocation)
         {
             if (!base.OnMoveInto(m, d, newLocation, oldLocation))
+            {
                 return false;
+            }
 
             if (m.AccessLevel >= AccessLevel.Counselor || Contains(oldLocation))
+            {
                 return true;
+            }
 
             if (m is PlayerMobile pm && pm.DuelContext != null)
             {

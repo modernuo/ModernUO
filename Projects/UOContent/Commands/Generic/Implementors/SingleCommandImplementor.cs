@@ -19,7 +19,9 @@ namespace Server.Commands.Generic
             base.Register(command);
 
             for (var i = 0; i < command.Commands.Length; ++i)
+            {
                 CommandSystem.Register(command.Commands[i], command.AccessLevel, Redirect);
+            }
         }
 
         public void Redirect(CommandEventArgs e)
@@ -27,23 +29,31 @@ namespace Server.Commands.Generic
             Commands.TryGetValue(e.Command, out var command);
 
             if (command == null)
+            {
                 e.Mobile.SendMessage("That is either an invalid command name or one that does not support this modifier.");
+            }
             else if (e.Mobile.AccessLevel < command.AccessLevel)
+            {
                 e.Mobile.SendMessage("You do not have access to that command.");
+            }
             else if (command.ValidateArgs(this, e))
+            {
                 Process(e.Mobile, command, e.Arguments);
+            }
         }
 
         public override void Process(Mobile from, BaseCommand command, string[] args)
         {
             if (command.ValidateArgs(this, new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args)))
-                from.BeginTarget(
+            {
+                @from.BeginTarget(
                     -1,
                     command.ObjectTypes == ObjectTypes.All,
                     TargetFlags.None,
                     (m, targeted, a) => OnTarget(m, targeted, command, a),
                     args
                 );
+            }
         }
 
         public void OnTarget(Mobile from, object targeted, BaseCommand command, string[] args)

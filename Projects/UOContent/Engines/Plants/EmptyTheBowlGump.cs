@@ -43,7 +43,9 @@ namespace Server.Engines.Plants
             AddItem(160, 100, 0x15FD);
 
             if (m_Plant.PlantStatus != PlantStatus.BowlOfDirt && m_Plant.PlantStatus < PlantStatus.Plant)
+            {
                 AddItem(156, 130, 0xDCF); // Seed
+            }
         }
 
         public override void OnResponse(NetState sender, RelayInfo info)
@@ -51,7 +53,9 @@ namespace Server.Engines.Plants
             var from = sender.Mobile;
 
             if (info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus >= PlantStatus.DecorativePlant)
+            {
                 return;
+            }
 
             if (info.ButtonID == 3 && !from.InRange(m_Plant.GetWorldLocation(), 3))
             {

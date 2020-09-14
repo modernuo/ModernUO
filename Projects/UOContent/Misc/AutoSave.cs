@@ -44,7 +44,9 @@ namespace Server.Misc
         protected override void OnTick()
         {
             if (!SavesEnabled || AutoRestart.Restarting)
+            {
                 return;
+            }
 
             if (m_Warning == TimeSpan.Zero)
             {
@@ -57,6 +59,7 @@ namespace Server.Misc
                 s %= 60;
 
                 if (m > 0 && s > 0)
+                {
                     World.Broadcast(
                         0x35,
                         true,
@@ -66,10 +69,15 @@ namespace Server.Misc
                         s,
                         s != 1 ? "s" : ""
                     );
+                }
                 else if (m > 0)
+                {
                     World.Broadcast(0x35, true, "The world will save in {0} minute{1}.", m, m != 1 ? "s" : "");
+                }
                 else
+                {
                     World.Broadcast(0x35, true, "The world will save in {0} second{1}.", s, s != 1 ? "s" : "");
+                }
 
                 DelayCall(m_Warning, Save);
             }
@@ -83,7 +91,9 @@ namespace Server.Misc
         public static void Save(bool permitBackgroundWrite)
         {
             if (AutoRestart.Restarting)
+            {
                 return;
+            }
 
             World.WaitForWriteCompletion();
 
@@ -102,12 +112,16 @@ namespace Server.Misc
         private static void Backup()
         {
             if (m_Backups.Length == 0)
+            {
                 return;
+            }
 
             var root = Path.Combine(Core.BaseDirectory, "Backups/Automatic");
 
             if (!Directory.Exists(root))
+            {
                 Directory.CreateDirectory(root);
+            }
 
             var existing = Directory.GetDirectories(root);
 
@@ -116,13 +130,16 @@ namespace Server.Misc
                 var dir = Match(existing, m_Backups[i]);
 
                 if (dir == null)
+                {
                     continue;
+                }
 
                 if (i > 0)
                 {
                     var timeStamp = FindTimeStamp(dir.Name);
 
                     if (timeStamp != null)
+                    {
                         try
                         {
                             dir.MoveTo(FormatDirectory(root, m_Backups[i - 1], timeStamp));
@@ -131,6 +148,7 @@ namespace Server.Misc
                         {
                             // ignored
                         }
+                    }
                 }
                 else
                 {
@@ -148,7 +166,9 @@ namespace Server.Misc
             var saves = Path.Combine(Core.BaseDirectory, "Saves");
 
             if (Directory.Exists(saves))
+            {
                 Directory.Move(saves, FormatDirectory(root, m_Backups[^1], GetTimeStamp()));
+            }
         }
 
         private static DirectoryInfo Match(string[] paths, string match)
@@ -158,7 +178,9 @@ namespace Server.Misc
                 var info = new DirectoryInfo(paths[i]);
 
                 if (info.Name.StartsWith(match))
+                {
                     return info;
+                }
             }
 
             return null;
@@ -176,7 +198,9 @@ namespace Server.Misc
                 var end = input.IndexOf(')', ++start);
 
                 if (end >= start)
+                {
                     return input.Substring(start, end - start);
+                }
             }
 
             return null;

@@ -56,7 +56,9 @@ namespace Server.Engines.Quests.Necro
         public override bool IsHarmfulCriminal(Mobile target)
         {
             if (target == m_Necromancer)
+            {
                 return false;
+            }
 
             return base.IsHarmfulCriminal(target);
         }
@@ -72,14 +74,18 @@ namespace Server.Engines.Quests.Necro
                 }
 
                 if (Combatant != m_Necromancer)
+                {
                     Combatant = m_Necromancer;
+                }
 
                 if (!m_Necromancer.Alive)
                 {
                     var qs = m_Necromancer.Quest;
 
                     if (qs is DarkTidesQuest && qs.FindObjective<FindMardothEndObjective>() == null)
+                    {
                         qs.AddObjective(new FindMardothEndObjective(false));
+                    }
 
                     Say(1060139, m_Necromancer.Name); // You have made my work easy for me, ~1_NAME~.  My task here is done.
 
@@ -123,7 +129,9 @@ namespace Server.Engines.Quests.Necro
             var qs = m_Necromancer.Quest;
 
             if (qs is DarkTidesQuest && qs.FindObjective<FindMardothEndObjective>() == null)
+            {
                 qs.AddObjective(new FindMardothEndObjective(true));
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -146,7 +154,9 @@ namespace Server.Engines.Quests.Necro
             m_ToDelete = reader.ReadBool();
 
             if (m_ToDelete)
+            {
                 Delete();
+            }
         }
 
         public static void BeginSummon(PlayerMobile player)
@@ -172,13 +182,17 @@ namespace Server.Engines.Quests.Necro
                 if (m_Player.Deleted)
                 {
                     if (m_Step > 0)
+                    {
                         m_Paladin.Delete();
+                    }
 
                     return;
                 }
 
                 if (m_Step > 0 && m_Paladin.Deleted)
+                {
                     return;
+                }
 
                 if (m_Step == 0)
                 {

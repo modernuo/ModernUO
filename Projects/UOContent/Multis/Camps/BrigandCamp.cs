@@ -50,7 +50,10 @@ namespace Server.Multis
 
             AddCampChests();
 
-            for (var i = 0; i < 4; i++) AddMobile(Brigands, 6, Utility.RandomMinMax(-7, 7), Utility.RandomMinMax(-7, 7), 0);
+            for (var i = 0; i < 4; i++)
+            {
+                AddMobile(Brigands, 6, Utility.RandomMinMax(-7, 7), Utility.RandomMinMax(-7, 7), 0);
+            }
 
             BaseCreature bc = Utility.Random(2) switch
             {
@@ -147,7 +150,9 @@ namespace Server.Multis
         public override void AddItem(Item item, int xOffset, int yOffset, int zOffset)
         {
             if (item != null)
+            {
                 item.Movable = false;
+            }
 
             base.AddItem(item, xOffset, yOffset, zOffset);
         }

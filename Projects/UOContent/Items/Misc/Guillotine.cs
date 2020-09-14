@@ -59,7 +59,9 @@ namespace Server.Items
             var f = Map;
 
             if (f == null)
+            {
                 return;
+            }
 
             new Blood(4650).MoveToWorld(p, f);
 
@@ -74,7 +76,9 @@ namespace Server.Items
                     z = f.GetAverageZ(x, y);
 
                     if (!f.CanFit(x, y, z, 1, false, false))
+                    {
                         continue;
+                    }
                 }
 
                 var loc = f.GetRandomNearbyLocation(p, 2, -2, 4, 1);
@@ -86,9 +90,13 @@ namespace Server.Items
         private void BackUp()
         {
             if (ItemID == 4678 || ItemID == 4679)
+            {
                 ItemID = 4656;
+            }
             else if (ItemID == 4712 || ItemID == 4713)
+            {
                 ItemID = 4702;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -105,9 +113,13 @@ namespace Server.Items
             int version = reader.ReadByte();
 
             if (ItemID == 4678 || ItemID == 4679)
+            {
                 ItemID = 4656;
+            }
             else if (ItemID == 4712 || ItemID == 4713)
+            {
                 ItemID = 4702;
+            }
         }
     }
 }

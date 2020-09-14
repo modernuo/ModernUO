@@ -42,7 +42,9 @@ namespace Server.Factions
                             var time = reader.ReadDateTime();
 
                             if (i < m_LastBroadcasts.Length)
+                            {
                                 m_LastBroadcasts[i] = time;
+                            }
                         }
 
                         goto case 3;
@@ -62,14 +64,18 @@ namespace Server.Factions
                         m_Commander = reader.ReadMobile();
 
                         if (version < 5)
+                        {
                             LastAtrophy = DateTime.UtcNow;
+                        }
 
                         if (version < 4)
                         {
                             var time = reader.ReadDateTime();
 
                             if (m_LastBroadcasts.Length > 0)
+                            {
                                 m_LastBroadcasts[0] = time;
+                            }
                         }
 
                         Tithe = reader.ReadEncodedInt();
@@ -84,7 +90,9 @@ namespace Server.Factions
                             var pl = new PlayerState(reader, m_Faction, Members);
 
                             if (pl.Mobile != null)
+                            {
                                 Members.Add(pl);
+                            }
                         }
 
                         m_Faction.State = this;
@@ -97,9 +105,13 @@ namespace Server.Factions
                             var player = Members[i];
 
                             if (player.KillPoints <= 0)
+                            {
                                 m_Faction.ZeroRankOffset = i;
+                            }
                             else
+                            {
                                 player.RankIndex = i;
+                            }
                         }
 
                         FactionItems = new List<FactionItem>();
@@ -123,8 +135,12 @@ namespace Server.Factions
                             var factionTrapCount = reader.ReadEncodedInt();
 
                             for (var i = 0; i < factionTrapCount; ++i)
+                            {
                                 if (reader.ReadItem() is BaseFactionTrap trap && !trap.CheckDecay())
+                                {
                                     Traps.Add(trap);
+                                }
+                            }
                         }
 
                         break;
@@ -132,7 +148,9 @@ namespace Server.Factions
             }
 
             if (version < 1)
+            {
                 Election = new Election(m_Faction);
+            }
         }
 
         public DateTime LastAtrophy { get; set; }
@@ -142,8 +160,12 @@ namespace Server.Factions
             get
             {
                 for (var i = 0; i < m_LastBroadcasts.Length; ++i)
+                {
                     if (DateTime.UtcNow >= m_LastBroadcasts[i] + BroadcastPeriod)
+                    {
                         return true;
+                    }
+                }
 
                 return false;
             }
@@ -175,10 +197,14 @@ namespace Server.Factions
                     var pl = PlayerState.Find(m_Commander);
 
                     if (pl?.Finance != null)
+                    {
                         pl.Finance.Finance = null;
+                    }
 
                     if (pl?.Sheriff != null)
+                    {
                         pl.Sheriff.Sheriff = null;
+                    }
                 }
             }
         }
@@ -192,7 +218,9 @@ namespace Server.Factions
         public int CheckAtrophy()
         {
             if (DateTime.UtcNow < LastAtrophy + TimeSpan.FromHours(47.0))
+            {
                 return 0;
+            }
 
             var distrib = 0;
             LastAtrophy = DateTime.UtcNow;
@@ -223,11 +251,13 @@ namespace Server.Factions
         public void RegisterBroadcast()
         {
             for (var i = 0; i < m_LastBroadcasts.Length; ++i)
+            {
                 if (DateTime.UtcNow >= m_LastBroadcasts[i] + BroadcastPeriod)
                 {
                     m_LastBroadcasts[i] = DateTime.UtcNow;
                     break;
                 }
+            }
         }
 
         public void Serialize(IGenericWriter writer)
@@ -239,7 +269,9 @@ namespace Server.Factions
             writer.WriteEncodedInt(m_LastBroadcasts.Length);
 
             for (var i = 0; i < m_LastBroadcasts.Length; ++i)
+            {
                 writer.Write(m_LastBroadcasts[i]);
+            }
 
             Election.Serialize(writer);
 
@@ -262,12 +294,16 @@ namespace Server.Factions
             writer.WriteEncodedInt(FactionItems.Count);
 
             for (var i = 0; i < FactionItems.Count; ++i)
+            {
                 FactionItems[i].Serialize(writer);
+            }
 
             writer.WriteEncodedInt(Traps.Count);
 
             for (var i = 0; i < Traps.Count; ++i)
+            {
                 writer.Write(Traps[i]);
+            }
         }
     }
 }

@@ -70,12 +70,18 @@ namespace Server
         public static void AddTo(ObjectPropertyList list, TextDefinition def)
         {
             if (def == null)
+            {
                 return;
+            }
 
             if (def.Number > 0)
+            {
                 list.Add(def.Number);
+            }
             else if (def.String != null)
+            {
                 list.Add(def.String);
+            }
         }
 
         public static implicit operator TextDefinition(int v) => new TextDefinition(v);
@@ -92,18 +98,25 @@ namespace Server
         )
         {
             if (def == null)
+            {
                 return;
+            }
 
             if (def.Number > 0)
             {
                 if (numberColor >= 0) // 5 bits per RGB component (15 bit RGB)
+                {
                     g.AddHtmlLocalized(x, y, width, height, def.Number, numberColor, back, scroll);
+                }
                 else
+                {
                     g.AddHtmlLocalized(x, y, width, height, def.Number, back, scroll);
+                }
             }
             else if (def.String != null)
             {
                 if (stringColor >= 0) // 8 bits per RGB component (24 bit RGB)
+                {
                     g.AddHtml(
                         x,
                         y,
@@ -113,8 +126,11 @@ namespace Server
                         back,
                         scroll
                     );
+                }
                 else
+                {
                     g.AddHtml(x, y, width, height, def.String, back, scroll);
+                }
             }
         }
 
@@ -129,40 +145,60 @@ namespace Server
         public static void SendMessageTo(Mobile m, TextDefinition def)
         {
             if (def == null)
+            {
                 return;
+            }
 
             if (def.Number > 0)
+            {
                 m.SendLocalizedMessage(def.Number);
+            }
             else if (def.String != null)
+            {
                 m.SendMessage(def.String);
+            }
         }
 
         public static void SendMessageTo(Mobile m, TextDefinition def, int hue)
         {
             if (def == null)
+            {
                 return;
+            }
 
             if (def.Number > 0)
+            {
                 m.SendLocalizedMessage(def.Number, "", hue);
+            }
             else if (def.String != null)
+            {
                 m.SendMessage(hue, def.String);
+            }
         }
 
         public static void PublicOverheadMessage(Mobile m, MessageType messageType, int hue, TextDefinition def)
         {
             if (def == null)
+            {
                 return;
+            }
 
             if (def.Number > 0)
+            {
                 m.PublicOverheadMessage(messageType, hue, def.Number);
+            }
             else if (def.String != null)
+            {
                 m.PublicOverheadMessage(messageType, hue, false, def.String);
+            }
         }
 
         public static TextDefinition Parse(string value)
         {
             if (value == null)
+            {
                 return null;
+            }
 
             int i;
             bool isInteger;

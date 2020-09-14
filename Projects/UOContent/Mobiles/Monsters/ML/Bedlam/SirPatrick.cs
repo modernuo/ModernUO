@@ -71,7 +71,9 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomDouble() < 0.1)
+            {
                 DrainLife();
+            }
         }
 
         public override void OnGotMeleeAttack(Mobile attacker)
@@ -79,7 +81,9 @@ namespace Server.Mobiles
             base.OnGotMeleeAttack(attacker);
 
             if (Utility.RandomDouble() < 0.1)
+            {
                 DrainLife();
+            }
         }
 
         public virtual void DrainLife()
@@ -89,12 +93,16 @@ namespace Server.Mobiles
             foreach (var m in GetMobilesInRange(2))
             {
                 if (m == this || !CanBeHarmful(m, false) || Core.AOS && !InLOS(m))
+                {
                     continue;
+                }
 
                 if (m is BaseCreature bc)
                 {
                     if (bc.Controlled || bc.Summoned || bc.Team != Team)
+                    {
                         list.Add(bc);
+                    }
                 }
                 else if (m.Player)
                 {

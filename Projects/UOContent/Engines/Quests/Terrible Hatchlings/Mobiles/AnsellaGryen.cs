@@ -41,7 +41,10 @@ namespace Server.Engines.Quests.Zento
         public override int GetAutoTalkRange(PlayerMobile m)
         {
             if (m.Quest == null)
+            {
                 return 3;
+            }
+
             return -1;
         }
 
@@ -108,10 +111,12 @@ namespace Server.Engines.Quests.Zento
                 if (qs != null)
                 {
                     if (contextMenu)
+                    {
                         SayTo(
                             player,
                             1063322
                         ); // Before you can help me with the Terrible Hatchlings, you'll need to finish the quest you've already taken!
+                    }
                 }
                 else if (QuestSystem.CanOfferQuest(player, typeof(TerribleHatchlingsQuest), out var inRestartPeriod))
                 {

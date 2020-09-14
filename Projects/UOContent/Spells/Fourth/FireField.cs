@@ -46,13 +46,21 @@ namespace Server.Spells.Fourth
                 bool eastToWest;
 
                 if (rx >= 0 && ry >= 0)
+                {
                     eastToWest = false;
+                }
                 else if (rx >= 0)
+                {
                     eastToWest = true;
+                }
                 else if (ry >= 0)
+                {
                     eastToWest = true;
+                }
                 else
+                {
                     eastToWest = false;
+                }
 
                 Effects.PlaySound(p, Caster.Map, 0x20C);
 
@@ -61,9 +69,13 @@ namespace Server.Spells.Fourth
                 TimeSpan duration;
 
                 if (Core.AOS)
+                {
                     duration = TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5.0) / 4.0);
+                }
                 else
+                {
                     duration = TimeSpan.FromSeconds(4.0 + Caster.Skills.Magery.Value * 0.5);
+                }
 
                 for (var i = -2; i <= 2; ++i)
                 {
@@ -167,7 +179,9 @@ namespace Server.Spells.Fourth
                 }
 
                 if (version < 2)
+                {
                     m_Damage = 2;
+                }
             }
 
             public override bool OnMoveOver(Mobile m)
@@ -176,7 +190,9 @@ namespace Server.Spells.Fourth
                     SpellHelper.ValidIndirectTarget(m_Caster, m) && m_Caster.CanBeHarmful(m, false))
                 {
                     if (SpellHelper.CanRevealCaster(m))
+                    {
                         m_Caster.RevealingAction();
+                    }
 
                     m_Caster.DoHarmful(m);
 
@@ -220,14 +236,20 @@ namespace Server.Spells.Fourth
                 protected override void OnTick()
                 {
                     if (m_Item.Deleted)
+                    {
                         return;
+                    }
 
                     if (!m_Item.Visible)
                     {
                         if (m_InLOS && m_CanFit)
+                        {
                             m_Item.Visible = true;
+                        }
                         else
+                        {
                             m_Item.Delete();
+                        }
 
                         if (!m_Item.Deleted)
                         {
@@ -252,19 +274,27 @@ namespace Server.Spells.Fourth
                         var caster = m_Item.m_Caster;
 
                         if (map == null || caster == null)
+                        {
                             return;
+                        }
 
                         foreach (var m in m_Item.GetMobilesInRange(0))
+                        {
                             if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
                                 SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))
+                            {
                                 m_Queue.Enqueue(m);
+                            }
+                        }
 
                         while (m_Queue.Count > 0)
                         {
                             var m = (Mobile)m_Queue.Dequeue();
 
                             if (SpellHelper.CanRevealCaster(m))
+                            {
                                 caster.RevealingAction();
+                            }
 
                             caster.DoHarmful(m);
 

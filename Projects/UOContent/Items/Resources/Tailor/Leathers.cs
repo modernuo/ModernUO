@@ -34,7 +34,9 @@ namespace Server.Items
             get
             {
                 if (m_Resource >= CraftResource.SpinedLeather && m_Resource <= CraftResource.BarbedLeather)
+                {
                     return 1049684 + (m_Resource - CraftResource.SpinedLeather);
+                }
 
                 return 1047022;
             }
@@ -78,9 +80,13 @@ namespace Server.Items
         public override void AddNameProperty(ObjectPropertyList list)
         {
             if (Amount > 1)
+            {
                 list.Add(1050039, "{0}\t#{1}", Amount, 1024199); // ~1_NUMBER~ ~2_ITEMNAME~
+            }
             else
+            {
                 list.Add(1024199); // cut leather
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -92,9 +98,13 @@ namespace Server.Items
                 var num = CraftResources.GetLocalizationNumber(m_Resource);
 
                 if (num > 0)
+                {
                     list.Add(num);
+                }
                 else
+                {
                     list.Add(CraftResources.GetName(m_Resource));
+                }
             }
         }
     }

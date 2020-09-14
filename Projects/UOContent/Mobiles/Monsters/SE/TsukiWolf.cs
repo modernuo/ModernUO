@@ -44,7 +44,9 @@ namespace Server.Mobiles
             Karma = -8500;
 
             if (Core.ML && Utility.RandomDouble() < .33)
+            {
                 PackItem(Seed.RandomPeculiarSeed(1));
+            }
 
             PackItem(
                 Utility.Random(10) switch
@@ -82,7 +84,9 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomDouble() >= 0.1)
+            {
                 return;
+            }
 
             /* Blood Bath
                * Start cliloc 1070826
@@ -154,9 +158,13 @@ namespace Server.Mobiles
             public void DrainLife()
             {
                 if (m_Mobile.Alive)
+                {
                     m_Mobile.Damage(2, m_From);
+                }
                 else
+                {
                     DoExpire();
+                }
             }
 
             protected override void OnTick()

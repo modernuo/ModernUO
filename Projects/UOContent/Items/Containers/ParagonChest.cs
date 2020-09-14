@@ -112,16 +112,22 @@ namespace Server.Items
             DropItem(new Gold(level * 200));
 
             for (var i = 0; i < level; ++i)
+            {
                 DropItem(Loot.RandomScroll(0, 63, SpellbookType.Regular));
+            }
 
             for (var i = 0; i < level * 2; ++i)
             {
                 Item item;
 
                 if (Core.AOS)
+                {
                     item = Loot.RandomArmorOrShieldOrWeaponOrJewelry();
+                }
                 else
+                {
                     item = Loot.RandomArmorOrShieldOrWeapon();
+                }
 
                 if (item is BaseWeapon weapon)
                 {

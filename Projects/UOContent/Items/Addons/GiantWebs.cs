@@ -9,12 +9,14 @@ namespace Server.Items
             var count = 5;
 
             for (var i = 0; i < count; ++i)
+            {
                 AddComponent(
                     new AddonComponent(itemID++),
                     count - 1 - i,
                     -(count - 1 - i),
                     0
                 );
+            }
         }
 
         public GiantWeb1(Serial serial)
@@ -46,12 +48,14 @@ namespace Server.Items
             var count = 5;
 
             for (var i = 0; i < count; ++i)
+            {
                 AddComponent(
                     new AddonComponent(itemID++),
                     i,
                     -i,
                     0
                 );
+            }
         }
 
         public GiantWeb2(Serial serial)
@@ -83,12 +87,14 @@ namespace Server.Items
             var count = 4;
 
             for (var i = 0; i < count; ++i)
+            {
                 AddComponent(
                     new AddonComponent(itemID++),
                     i,
                     -i,
                     0
                 );
+            }
         }
 
         public GiantWeb3(Serial serial)
@@ -120,12 +126,14 @@ namespace Server.Items
             var count = 4;
 
             for (var i = 0; i < count; ++i)
+            {
                 AddComponent(
                     new AddonComponent(itemID++),
                     count - 1 - i,
                     -(count - 1 - i),
                     0
                 );
+            }
         }
 
         public GiantWeb4(Serial serial)
@@ -157,12 +165,14 @@ namespace Server.Items
             var count = 4;
 
             for (var i = 0; i < count; ++i)
+            {
                 AddComponent(
                     new AddonComponent(itemID++),
                     i,
                     -i,
                     0
                 );
+            }
         }
 
         public GiantWeb5(Serial serial)
@@ -194,12 +204,14 @@ namespace Server.Items
             var count = 4;
 
             for (var i = 0; i < count; ++i)
+            {
                 AddComponent(
                     new AddonComponent(itemID++),
                     count - 1 - i,
                     -(count - 1 - i),
                     0
                 );
+            }
         }
 
         public GiantWeb6(Serial serial)

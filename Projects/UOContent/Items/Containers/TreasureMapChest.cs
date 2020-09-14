@@ -152,7 +152,9 @@ namespace Server.Items
                 cont.DropItem(new Gold(Utility.RandomMinMax(50, 100)));
 
                 if (Utility.RandomDouble() < 0.75)
+                {
                     cont.DropItem(new TreasureMap(0, Map.Trammel));
+                }
             }
             else
             {
@@ -181,9 +183,12 @@ namespace Server.Items
                 cont.DropItem(new Gold(level * 1000));
 
                 for (var i = 0; i < level * 5; ++i)
+                {
                     cont.DropItem(Loot.RandomScroll(0, 63, SpellbookType.Regular));
+                }
 
                 if (Core.SE)
+                {
                     numberItems = level switch
                     {
                         1 => 5,
@@ -194,17 +199,24 @@ namespace Server.Items
                         6 => 60,
                         _ => 0
                     };
+                }
                 else
+                {
                     numberItems = level * 6;
+                }
 
                 for (var i = 0; i < numberItems; ++i)
                 {
                     Item item;
 
                     if (Core.AOS)
+                    {
                         item = Loot.RandomArmorOrShieldOrWeaponOrJewelry();
+                    }
                     else
+                    {
                         item = Loot.RandomArmorOrShieldOrWeapon();
+                    }
 
                     if (item is BaseWeapon weapon)
                     {
@@ -259,9 +271,13 @@ namespace Server.Items
 
             int reagents;
             if (level == 0)
+            {
                 reagents = 12;
+            }
             else
+            {
                 reagents = level * 3;
+            }
 
             for (var i = 0; i < reagents; i++)
             {
@@ -272,9 +288,13 @@ namespace Server.Items
 
             int gems;
             if (level == 0)
+            {
                 gems = 2;
+            }
             else
+            {
                 gems = level * 3;
+            }
 
             for (var i = 0; i < gems; i++)
             {
@@ -283,24 +303,30 @@ namespace Server.Items
             }
 
             if (level == 6 && Core.AOS)
+            {
                 cont.DropItem((Item)ActivatorUtil.CreateInstance(Artifacts.RandomElement()));
+            }
         }
 
         public override bool CheckLocked(Mobile from)
         {
             if (!Locked)
+            {
                 return false;
+            }
 
             if (Level == 0 && from.AccessLevel < AccessLevel.GameMaster)
             {
                 foreach (var m in Guardians)
+                {
                     if (m.Alive)
                     {
-                        from.SendLocalizedMessage(
+                        @from.SendLocalizedMessage(
                             1046448
                         ); // You must first kill the guardians before you may open this chest.
                         return true;
                     }
+                }
 
                 LockPick(from);
                 return false;
@@ -312,22 +338,32 @@ namespace Server.Items
         private bool CheckLoot(Mobile m, bool criminalAction)
         {
             if (Temporary)
+            {
                 return false;
+            }
 
             if (m.AccessLevel >= AccessLevel.GameMaster || Owner == null || m == Owner)
+            {
                 return true;
+            }
 
             if (Party.Get(Owner)?.Contains(m) == true)
+            {
                 return true;
+            }
 
             var map = Map;
 
             if ((map?.Rules & MapRules.HarmfulRestrictions) == 0)
             {
                 if (criminalAction)
+                {
                     m.CriminalAction(true);
+                }
                 else
+                {
                     m.SendLocalizedMessage(1010630); // Taking someone else's treasure is a criminal offense!
+                }
 
                 return true;
             }
@@ -353,7 +389,9 @@ namespace Server.Items
                 m_Lifted.Add(item);
 
                 if (Utility.RandomDouble() <= 0.1) // 10% chance to spawn a new monster
-                    TreasureMap.Spawn(Level, GetWorldLocation(), Map, from, false);
+                {
+                    TreasureMap.Spawn(Level, GetWorldLocation(), Map, @from, false);
+                }
             }
 
             base.OnItemLifted(from, item);
@@ -414,7 +452,9 @@ namespace Server.Items
                         m_Lifted = reader.ReadStrongItemList();
 
                         if (version < 2)
+                        {
                             Guardians = new List<Mobile>();
+                        }
 
                         break;
                     }
@@ -445,13 +485,17 @@ namespace Server.Items
             base.GetContextMenuEntries(from, list);
 
             if (from.Alive)
-                list.Add(new RemoveEntry(from, this));
+            {
+                list.Add(new RemoveEntry(@from, this));
+            }
         }
 
         public void BeginRemove(Mobile from)
         {
             if (!from.Alive)
+            {
                 return;
+            }
 
             from.CloseGump<RemoveGump>();
             from.SendGump(new RemoveGump(from, this));
@@ -460,7 +504,9 @@ namespace Server.Items
         public void EndRemove(Mobile from)
         {
             if (Deleted || from != Owner || !from.InRange(GetWorldLocation(), 3))
+            {
                 return;
+            }
 
             from.SendLocalizedMessage(1048124, "", 0x8A5); // The old, rusted chest crumbles when you hit it.
             Delete();
@@ -503,7 +549,9 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (info.ButtonID == 1)
+                {
                     m_Chest.EndRemove(m_From);
+                }
             }
         }
 
@@ -523,7 +571,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (m_Chest.Deleted || m_From != m_Chest.Owner || !m_From.CheckAlive())
+                {
                     return;
+                }
 
                 m_Chest.BeginRemove(m_From);
             }

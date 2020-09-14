@@ -39,17 +39,23 @@ namespace Server.Gumps
 
             if (info.ButtonID == 0 || !m_House.IsActive || !m_House.IsInside(from) || !m_House.IsOwner(from) ||
                 !from.CheckAlive())
+            {
                 return;
+            }
 
             var index = info.ButtonID - 1;
 
             if (index < 0 || index >= m_Vendors.Count)
+            {
                 return;
+            }
 
             var mob = m_Vendors[index];
 
             if (!m_House.InternalizedVendors.Contains(mob))
+            {
                 return;
+            }
 
             if (mob.Deleted)
             {

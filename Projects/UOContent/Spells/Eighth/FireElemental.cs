@@ -26,7 +26,9 @@ namespace Server.Spells.Eighth
         public override bool CheckCast()
         {
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             if (Caster.Followers + 4 > Caster.FollowersMax)
             {
@@ -44,9 +46,13 @@ namespace Server.Spells.Eighth
                 var duration = TimeSpan.FromSeconds(2 * Caster.Skills.Magery.Fixed / 5);
 
                 if (Core.AOS)
+                {
                     SpellHelper.Summon(new SummonedFireElemental(), Caster, 0x217, duration, false, false);
+                }
                 else
+                {
                     SpellHelper.Summon(new FireElemental(), Caster, 0x217, duration, false, false);
+                }
             }
 
             FinishSequence();

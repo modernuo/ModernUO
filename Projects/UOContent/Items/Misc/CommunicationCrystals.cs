@@ -32,8 +32,12 @@ namespace Server.Items
         public static CrystalRechargeInfo Get(Type type)
         {
             foreach (var info in Table)
+            {
                 if (info.Type == type)
+                {
                     return info;
+                }
+            }
 
             return null;
         }
@@ -96,7 +100,9 @@ namespace Server.Items
             list.Add(1060741, Charges.ToString()); // charges: ~1_val~
 
             if (Receivers.Count > 0)
+            {
                 list.Add(1060746, Receivers.Count.ToString()); // links: ~1_val~
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -108,28 +114,35 @@ namespace Server.Items
             LabelTo(from, 1060741, Charges.ToString()); // charges: ~1_val~
 
             if (Receivers.Count > 0)
-                LabelTo(from, 1060746, Receivers.Count.ToString()); // links: ~1_val~
+            {
+                LabelTo(@from, 1060746, Receivers.Count.ToString()); // links: ~1_val~
+            }
         }
 
         public override void OnSpeech(SpeechEventArgs e)
         {
             if (!Active || Receivers.Count == 0 || RootParent != null && !(RootParent is Mobile))
+            {
                 return;
+            }
 
             if (e.Type == MessageType.Emote)
+            {
                 return;
+            }
 
             var from = e.Mobile;
             var speech = e.Speech;
 
             foreach (var receiver in new List<ReceiverCrystal>(Receivers))
+            {
                 if (receiver.Deleted)
                 {
                     Receivers.Remove(receiver);
                 }
                 else if (Charges > 0)
                 {
-                    receiver.TransmitMessage(from, speech);
+                    receiver.TransmitMessage(@from, speech);
                     Charges--;
                 }
                 else
@@ -137,6 +150,7 @@ namespace Server.Items
                     Active = false;
                     break;
                 }
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -179,7 +193,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (!m_Crystal.IsAccessibleTo(from))
+                {
                     return;
+                }
 
                 if (from.Map != m_Crystal.Map || !from.InRange(m_Crystal.GetWorldLocation(), 2))
                 {
@@ -231,7 +247,10 @@ namespace Server.Items
                 }
                 else if (targeted == from)
                 {
-                    foreach (var rc in new List<ReceiverCrystal>(m_Crystal.Receivers)) rc.Sender = null;
+                    foreach (var rc in new List<ReceiverCrystal>(m_Crystal.Receivers))
+                    {
+                        rc.Sender = null;
+                    }
 
                     from.SendLocalizedMessage(1010046); // You unlink the broadcast crystal from all of its receivers.
                 }
@@ -338,16 +357,24 @@ namespace Server.Items
         public void TransmitMessage(Mobile from, string message)
         {
             if (!Active)
+            {
                 return;
+            }
 
             var text = $"{from.Name} says {message}";
 
             if (RootParent is Mobile mobile)
+            {
                 mobile.SendMessage(0x2B2, $"Crystal: {text}");
+            }
             else if (RootParent is Item item)
+            {
                 item.PublicOverheadMessage(MessageType.Regular, 0x2B2, false, $"Crystal: {text}");
+            }
             else
+            {
                 PublicOverheadMessage(MessageType.Regular, 0x2B2, false, text);
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -388,7 +415,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (!m_Crystal.IsAccessibleTo(from))
+                {
                     return;
+                }
 
                 if (from.Map != m_Crystal.Map || !from.InRange(m_Crystal.GetWorldLocation(), 2))
                 {

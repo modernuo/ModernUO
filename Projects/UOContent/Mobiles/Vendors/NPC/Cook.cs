@@ -27,7 +27,9 @@ namespace Server.Mobiles
             m_SBInfos.Add(new SBCook());
 
             if (IsTokunoVendor)
+            {
                 m_SBInfos.Add(new SBSECook());
+            }
         }
 
         public override void InitOutfit()

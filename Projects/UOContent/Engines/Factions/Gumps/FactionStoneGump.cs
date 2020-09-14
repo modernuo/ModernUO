@@ -28,9 +28,13 @@ namespace Server.Factions
 
             AddHtmlLocalized(20, 80, 100, 20, 1011457); // Tithe rate :
             if (faction.Tithe >= 0 && faction.Tithe <= 100 && faction.Tithe % 10 == 0)
+            {
                 AddHtmlLocalized(125, 80, 350, 20, 1011480 + faction.Tithe / 10);
+            }
             else
+            {
                 AddHtml(125, 80, 350, 20, $"{faction.Tithe}%");
+            }
 
             AddHtmlLocalized(20, 100, 100, 20, 1011458); // Traps placed :
             AddHtml(125, 100, 50, 20, faction.Traps.Count.ToString());
@@ -66,9 +70,13 @@ namespace Server.Factions
 
             AddHtmlLocalized(55, 250, 300, 20, 1011461); // COMMANDER OPTIONS
             if (faction.IsCommander(from))
+            {
                 AddButton(20, 250, 4005, 4007, 0, GumpButtonType.Page, 6);
+            }
             else
+            {
                 AddImage(20, 250, 4020);
+            }
 
             AddHtmlLocalized(55, 275, 300, 20, 1011426); // LEAVE THIS FACTION
             AddButton(20, 275, 4005, 4007, ToButtonID(0, 1));
@@ -142,9 +150,13 @@ namespace Server.Factions
                     var info = infos[i];
 
                     if (MerchantTitles.IsQualified(from, info))
+                    {
                         AddButton(20, 100 + i * 30, 4005, 4007, ToButtonID(1, i + 1));
+                    }
                     else
+                    {
                         AddImage(20, 100 + i * 30, 4020);
+                    }
 
                     AddHtmlText(55, 100 + i * 30, 200, 20, info.Label, false, false);
                 }
@@ -161,9 +173,13 @@ namespace Server.Factions
 
                 AddHtmlLocalized(20, 70, 120, 20, 1011457); // Tithe rate :
                 if (faction.Tithe >= 0 && faction.Tithe <= 100 && faction.Tithe % 10 == 0)
+                {
                     AddHtmlLocalized(140, 70, 250, 20, 1011480 + faction.Tithe / 10);
+                }
                 else
+                {
                     AddHtml(140, 70, 250, 20, $"{faction.Tithe}%");
+                }
 
                 AddHtmlLocalized(20, 100, 120, 20, 1011474);              // Silver available :
                 AddHtml(140, 100, 50, 20, faction.Silver.ToString("N0")); // NOTE: Added 'N0' formatting
@@ -173,9 +189,13 @@ namespace Server.Factions
 
                 AddHtmlLocalized(55, 160, 200, 20, 1018301); // TRANSFER SILVER
                 if (faction.Silver >= 10000)
+                {
                     AddButton(20, 160, 4005, 4007, 0, GumpButtonType.Page, 7);
+                }
                 else
+                {
                     AddImage(20, 160, 4020);
+                }
 
                 AddHtmlLocalized(55, 310, 100, 20, 1011447); // BACK
                 AddButton(20, 310, 4005, 4007, 0, GumpButtonType.Page, 1);
@@ -195,9 +215,13 @@ namespace Server.Factions
                         AddHtmlText(55, 75 + i * 30, 200, 20, town.Definition.TownName, false, false);
 
                         if (town.Owner == faction)
+                        {
                             AddButton(20, 75 + i * 30, 4005, 4007, ToButtonID(2, i));
+                        }
                         else
+                        {
                             AddImage(20, 75 + i * 30, 4020);
+                        }
                     }
 
                     AddHtmlLocalized(55, 310, 100, 20, 1011447); // BACK
@@ -213,7 +237,9 @@ namespace Server.Factions
                 for (var i = 0; i <= 10; ++i)
                 {
                     if (i == 5)
+                    {
                         y += 5;
+                    }
 
                     AddHtmlLocalized(55, y, 300, 20, 1011480 + i);
                     AddButton(20, y, 4005, 4007, ToButtonID(3, i));
@@ -221,7 +247,9 @@ namespace Server.Factions
                     y += 20;
 
                     if (i == 5)
+                    {
                         y += 5;
+                    }
                 }
 
                 AddHtmlLocalized(55, 310, 300, 20, 1011447); // BACK
@@ -234,7 +262,9 @@ namespace Server.Factions
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (!FromButtonID(info.ButtonID, out var type, out var index))
+            {
                 return;
+            }
 
             switch (type)
             {
@@ -270,14 +300,18 @@ namespace Server.Factions
                                 m_From.SendLocalizedMessage(1010120); // Your merchant title has been removed
 
                                 if (pl != null)
+                                {
                                     pl.MerchantTitle = newTitle;
+                                }
                             }
                             else if (MerchantTitles.IsQualified(m_From, mti))
                             {
                                 m_From.SendLocalizedMessage(mti.Assigned);
 
                                 if (pl != null)
+                                {
                                     pl.MerchantTitle = newTitle;
+                                }
                             }
                         }
 
@@ -286,7 +320,9 @@ namespace Server.Factions
                 case 2: // transfer silver
                     {
                         if (!m_Faction.IsCommander(m_From))
+                        {
                             return;
+                        }
 
                         var towns = Town.Towns;
 
@@ -295,6 +331,7 @@ namespace Server.Factions
                             var town = towns[index];
 
                             if (town.Owner == m_Faction)
+                            {
                                 if (m_Faction.Silver >= 10000)
                                 {
                                     m_Faction.Silver -= 10000;
@@ -303,6 +340,7 @@ namespace Server.Factions
                                     // 10k in silver has been received by:
                                     m_From.SendLocalizedMessage(1042726, true, $" {town.Definition.FriendlyName}");
                                 }
+                            }
                         }
 
                         break;
@@ -310,10 +348,14 @@ namespace Server.Factions
                 case 3: // change tithe
                     {
                         if (!m_Faction.IsCommander(m_From))
+                        {
                             return;
+                        }
 
                         if (index >= 0 && index <= 10)
+                        {
                             m_Faction.Tithe = index * 10;
+                        }
 
                         break;
                     }

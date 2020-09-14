@@ -24,7 +24,9 @@ namespace Server.Items
             if (Addon is CannonAddon addon)
             {
                 if (addon.IsRewardItem)
+                {
                     list.Add(1076223); // 7th Year Veteran Reward
+                }
 
                 list.Add(1076207, addon.Charges.ToString()); // Remaining Charges: ~1_val~
             }
@@ -125,7 +127,9 @@ namespace Server.Items
                 m_Charges = value;
 
                 foreach (var c in Components)
+                {
                     c.InvalidateProperties();
+                }
             }
         }
 
@@ -138,7 +142,9 @@ namespace Server.Items
                 m_IsRewardItem = value;
 
                 foreach (var c in Components)
+                {
                     c.InvalidateProperties();
+                }
             }
         }
 
@@ -157,11 +163,15 @@ namespace Server.Items
                         var keg = from.Backpack.FindItemByType<PotionKeg>();
 
                         if (Validate(keg) > 0)
-                            from.SendGump(new InternalGump(this, keg));
+                        {
+                            @from.SendGump(new InternalGump(this, keg));
+                        }
                         else
-                            from.SendLocalizedMessage(
+                        {
+                            @from.SendLocalizedMessage(
                                 1076198
                             ); // You do not have a full keg of explosion potions needed to recharge the cannon.
+                        }
                     }
                 }
             }
@@ -174,7 +184,9 @@ namespace Server.Items
         public int Validate(PotionKeg keg)
         {
             if (keg?.Deleted != false || keg.Held != 100)
+            {
                 return 0;
+            }
 
             return keg.Type switch
             {
@@ -207,7 +219,9 @@ namespace Server.Items
             var map = Map;
 
             if (target == null || map == null)
+            {
                 return;
+            }
 
             Effects.PlaySound(target, map, Utility.RandomList(0x11B, 0x11C, 0x11D));
             Effects.SendLocationEffect(target, map, m_Effects.RandomElement(), 16, 1);
@@ -256,10 +270,14 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Cannon?.Deleted != false)
+                {
                     return;
+                }
 
                 if (!(targeted is IPoint3D p))
+                {
                     return;
+                }
 
                 if (from.InLOS(new Point3D(p)))
                 {
@@ -274,30 +292,42 @@ namespace Server.Items
                         {
                             case CannonDirection.North:
                                 if (y < 0 && Math.Abs(x) <= -y / 3)
+                                {
                                     allow = true;
+                                }
 
                                 break;
                             case CannonDirection.East:
                                 if (x > 0 && Math.Abs(y) <= x / 3)
+                                {
                                     allow = true;
+                                }
 
                                 break;
                             case CannonDirection.South:
                                 if (y > 0 && Math.Abs(x) <= y / 3)
+                                {
                                     allow = true;
+                                }
 
                                 break;
                             case CannonDirection.West:
                                 if (x < 0 && Math.Abs(y) <= -x / 3)
+                                {
                                     allow = true;
+                                }
 
                                 break;
                         }
 
                         if (allow && Utility.InRange(new Point3D(p), m_Cannon.Location, 14))
+                        {
                             m_Cannon.DoFireEffect(p);
+                        }
                         else
-                            from.SendLocalizedMessage(1076203); // Target out of range.
+                        {
+                            @from.SendLocalizedMessage(1076203); // Target out of range.
+                        }
                     }
                     else
                     {
@@ -356,7 +386,9 @@ namespace Server.Items
             public override void OnResponse(NetState state, RelayInfo info)
             {
                 if (m_Cannon?.Deleted == false && info.ButtonID == (int)Buttons.Recharge)
+                {
                     m_Cannon.Fill(state.Mobile, m_Keg);
+                }
             }
 
             private enum Buttons
@@ -424,7 +456,9 @@ namespace Server.Items
             m_Direction = (CannonDirection)option;
 
             if (!Deleted)
-                base.OnDoubleClick(from);
+            {
+                base.OnDoubleClick(@from);
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -432,7 +466,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076223); // 7th Year Veteran Reward
+            }
 
             list.Add(1076207, m_Charges.ToString()); // Remaining Charges: ~1_val~
         }
@@ -440,7 +476,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             if (IsChildOf(from.Backpack))
             {

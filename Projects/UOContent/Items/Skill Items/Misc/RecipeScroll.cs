@@ -49,7 +49,9 @@ namespace Server.Items
             var r = Recipe;
 
             if (r != null)
+            {
                 list.Add(1049644, r.TextDefinition.ToString()); // [~1_stuff~]
+            }
         }
 
         public override void OnDoubleClick(Mobile from)

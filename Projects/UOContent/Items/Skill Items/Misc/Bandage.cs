@@ -28,7 +28,9 @@ namespace Server.Items
         public virtual bool Dye(Mobile from, DyeTub sender)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             Hue = sender.DyedHue;
 
@@ -73,7 +75,9 @@ namespace Server.Items
         private static void EventSink_BandageTargetRequest(Mobile from, Item item, Mobile target)
         {
             if (!(item is Bandage b) || b.Deleted)
+            {
                 return;
+            }
 
             if (!from.InRange(b.GetWorldLocation(), Range))
             {
@@ -103,14 +107,18 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Bandage.Deleted)
+                {
                     return;
+                }
 
                 if (targeted is Mobile mobile)
                 {
                     if (from.InRange(m_Bandage.GetWorldLocation(), Bandage.Range))
                     {
                         if (!(BandageContext.BeginHeal(from, mobile) == null || DuelContext.IsFreeConsume(from)))
+                        {
                             m_Bandage.Consume();
+                        }
                     }
                     else
                     {
@@ -120,7 +128,9 @@ namespace Server.Items
                 else if (targeted is PlagueBeastInnard innard)
                 {
                     if (innard.OnBandage(from))
+                    {
                         m_Bandage.Consume();
+                    }
                 }
                 else
                 {
@@ -133,7 +143,9 @@ namespace Server.Items
                 if (targeted is PlagueBeastInnard innard)
                 {
                     if (innard.OnBandage(from))
+                    {
                         m_Bandage.Consume();
+                    }
                 }
                 else
                 {
@@ -186,14 +198,20 @@ namespace Server.Items
         public static SkillName GetPrimarySkill(Mobile m)
         {
             if (!m.Player && (m.Body.IsMonster || m.Body.IsAnimal))
+            {
                 return SkillName.Veterinary;
+            }
+
             return SkillName.Healing;
         }
 
         public static SkillName GetSecondarySkill(Mobile m)
         {
             if (!m.Player && (m.Body.IsMonster || m.Body.IsAnimal))
+            {
                 return SkillName.AnimalLore;
+            }
+
             return SkillName.Anatomy;
         }
 
@@ -259,7 +277,10 @@ namespace Server.Items
                             {
                                 petPatient.ResurrectPet();
 
-                                for (var i = 0; i < petPatient.Skills.Length; ++i) petPatient.Skills[i].Base -= 0.1;
+                                for (var i = 0; i < petPatient.Skills.Length; ++i)
+                                {
+                                    petPatient.Skills[i].Base -= 0.1;
+                                }
                             }
                             else if (master?.InRange(petPatient, 3) == true)
                             {
@@ -291,7 +312,9 @@ namespace Server.Items
                                 }
 
                                 if (!found)
+                                {
                                     healerNumber = 1049670; // The pet's owner must be nearby to attempt resurrection.
+                                }
                             }
                         }
                         else
@@ -304,9 +327,13 @@ namespace Server.Items
                 else
                 {
                     if (petPatient?.IsDeadPet == true)
+                    {
                         healerNumber = 503256; // You fail to resurrect the creature.
+                    }
                     else
+                    {
                         healerNumber = 500966; // You are unable to resurrect your patient.
+                    }
 
                     patientNumber = -1;
                 }
@@ -385,12 +412,18 @@ namespace Server.Items
                     var toHeal = min + Utility.RandomDouble() * (max - min);
 
                     if (Patient.Body.IsMonster || Patient.Body.IsAnimal)
+                    {
                         toHeal += Patient.HitsMax / 100.0;
+                    }
 
                     if (Core.AOS)
+                    {
                         toHeal -= toHeal * Slips * 0.35; // TODO: Verify algorithm
+                    }
                     else
+                    {
                         toHeal -= Slips * 4;
+                    }
 
                     if (toHeal < 1)
                     {
@@ -408,13 +441,19 @@ namespace Server.Items
             }
 
             if (healerNumber != -1)
+            {
                 Healer.SendLocalizedMessage(healerNumber);
+            }
 
             if (patientNumber != -1)
+            {
                 Patient.SendLocalizedMessage(patientNumber);
+            }
 
             if (playSound)
+            {
                 Patient.PlaySound(0x57);
+            }
 
             if (checkSkills)
             {
@@ -457,9 +496,13 @@ namespace Server.Items
                 if (onSelf)
                 {
                     if (Core.AOS)
+                    {
                         seconds = 5.0 + 0.5 * ((double)(120 - dex) / 10); // TODO: Verify algorithm
+                    }
                     else
+                    {
                         seconds = 9.4 + 0.6 * ((double)(120 - dex) / 10);
+                    }
                 }
                 else
                 {
@@ -470,18 +513,28 @@ namespace Server.Items
                     else if (Core.AOS)
                     {
                         if (dex < 204)
+                        {
                             seconds = 3.2 - Math.Sin((double)dex / 130) * 2.5 + resDelay;
+                        }
                         else
+                        {
                             seconds = 0.7 + resDelay;
+                        }
                     }
                     else
                     {
                         if (dex >= 100)
+                        {
                             seconds = 3.0 + resDelay;
+                        }
                         else if (dex >= 40)
+                        {
                             seconds = 4.0 + resDelay;
+                        }
                         else
+                        {
                             seconds = 5.0 + resDelay;
+                        }
                     }
                 }
 
@@ -495,7 +548,9 @@ namespace Server.Items
                 m_Table[healer] = context;
 
                 if (!onSelf)
+                {
                     patient.SendLocalizedMessage(1008078, false, healer.Name); // : Attempting to heal you.
+                }
 
                 healer.SendLocalizedMessage(500956); // You begin applying the bandages.
                 return context;

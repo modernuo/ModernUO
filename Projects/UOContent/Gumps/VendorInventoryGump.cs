@@ -32,7 +32,9 @@ namespace Server.Gumps
                 var y = 40 + 20 * i;
 
                 if (inventory.Owner == from)
+                {
                     AddButton(10, y, 0xFA5, 0xFA7, i + 1);
+                }
 
                 AddLabel(45, y, 0x481, $"{inventory.ShopName} ({inventory.VendorName})");
 
@@ -47,13 +49,17 @@ namespace Server.Gumps
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID == 0)
+            {
                 return;
+            }
 
             var from = sender.Mobile;
             var sign = m_House.Sign;
 
             if (m_House.Deleted || sign?.Deleted != false || !from.CheckAlive())
+            {
                 return;
+            }
 
             if (from.Map != sign.Map || !from.InRange(sign, 5))
             {
@@ -63,12 +69,16 @@ namespace Server.Gumps
 
             var index = info.ButtonID - 1;
             if (index < 0 || index >= m_Inventories.Count)
+            {
                 return;
+            }
 
             var inventory = m_Inventories[index];
 
             if (inventory.Owner != from || !m_House.VendorInventories.Contains(inventory))
+            {
                 return;
+            }
 
             var totalItems = 0;
             var givenToBackpack = 0;

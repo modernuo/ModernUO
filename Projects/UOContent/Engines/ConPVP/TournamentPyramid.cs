@@ -17,7 +17,9 @@ namespace Server.Engines.ConPVP
             var copy = new List<TourneyParticipant>(participants);
 
             if (groupType == GroupingType.Nearest || groupType == GroupingType.HighVsLow)
+            {
                 copy.Sort();
+            }
 
             var level = new PyramidLevel();
 
@@ -28,7 +30,9 @@ namespace Server.Engines.ConPVP
                         var parts = new TourneyParticipant[2];
 
                         for (var i = 0; i < parts.Length; ++i)
+                        {
                             parts[i] = new TourneyParticipant(new List<Mobile>());
+                        }
 
                         for (var i = 0; i < copy.Count; ++i)
                         {
@@ -39,9 +43,13 @@ namespace Server.Engines.ConPVP
                                 var mob = players[j];
 
                                 if (mob.Kills >= 5)
+                                {
                                     parts[0].Players.Add(mob);
+                                }
                                 else
+                                {
                                     parts[1].Players.Add(mob);
+                                }
                             }
                         }
 
@@ -53,7 +61,9 @@ namespace Server.Engines.ConPVP
                         var parts = new TourneyParticipant[partsPerMatch];
 
                         for (var i = 0; i < parts.Length; ++i)
+                        {
                             parts[i] = new TourneyParticipant(new List<Mobile>());
+                        }
 
                         for (var i = 0; i < copy.Count; ++i)
                         {
@@ -70,16 +80,26 @@ namespace Server.Engines.ConPVP
                                     var fac = Faction.Find(mob);
 
                                     if (fac != null)
+                                    {
                                         index = fac.Definition.Sort;
+                                    }
                                 }
                                 else if (partsPerMatch == 2)
                                 {
                                     if (Ethic.Evil.IsEligible(mob))
+                                    {
                                         index = 0;
-                                    else if (Ethic.Hero.IsEligible(mob)) index = 1;
+                                    }
+                                    else if (Ethic.Hero.IsEligible(mob))
+                                    {
+                                        index = 1;
+                                    }
                                 }
 
-                                if (index < 0 || index >= partsPerMatch) index = i % partsPerMatch;
+                                if (index < 0 || index >= partsPerMatch)
+                                {
+                                    index = i % partsPerMatch;
+                                }
 
                                 parts[index].Players.Add(mob);
                             }
@@ -93,10 +113,14 @@ namespace Server.Engines.ConPVP
                         var parts = new TourneyParticipant[partsPerMatch];
 
                         for (var i = 0; i < partsPerMatch; ++i)
+                        {
                             parts[i] = new TourneyParticipant(new List<Mobile>());
+                        }
 
                         for (var i = 0; i < copy.Count; ++i)
+                        {
                             parts[i % parts.Length].Players.AddRange(copy[i].Players);
+                        }
 
                         level.Matches.Add(new TourneyMatch(new List<TourneyParticipant>(parts)));
                         break;
@@ -117,7 +141,9 @@ namespace Server.Engines.ConPVP
                                 var p = participants[i];
 
                                 if (p.FreeAdvances < lowAdvances)
+                                {
                                     lowAdvances = p.FreeAdvances;
+                                }
                             }
 
                             var toAdvance = new List<TourneyParticipant>();
@@ -127,11 +153,15 @@ namespace Server.Engines.ConPVP
                                 var p = participants[i];
 
                                 if (p.FreeAdvances == lowAdvances)
+                                {
                                     toAdvance.Add(p);
+                                }
                             }
 
                             if (toAdvance.Count == 0)
+                            {
                                 toAdvance = copy; // sanity
+                            }
 
                             var random = toAdvance.RandomElement();
 
@@ -165,7 +195,9 @@ namespace Server.Engines.ConPVP
                         }
 
                         if (copy.Count > 1)
+                        {
                             level.Matches.Add(new TourneyMatch(copy));
+                        }
 
                         break;
                     }

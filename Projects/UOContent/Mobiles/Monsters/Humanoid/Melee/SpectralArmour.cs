@@ -58,7 +58,9 @@ namespace Server.Mobiles
         public override bool OnBeforeDeath()
         {
             if (!base.OnBeforeDeath())
+            {
                 return false;
+            }
 
             var gold = new Gold(Utility.RandomMinMax(240, 375));
             gold.MoveToWorld(Location, Map);

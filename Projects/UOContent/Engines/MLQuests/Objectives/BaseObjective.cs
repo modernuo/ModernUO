@@ -31,7 +31,9 @@ namespace Server.Engines.MLQuests.Objectives
             Instance = instance;
 
             if (obj.IsTimed)
+            {
                 EndTime = DateTime.UtcNow + obj.Duration;
+            }
         }
 
         public MLQuestInstance Instance { get; }
@@ -47,7 +49,9 @@ namespace Server.Engines.MLQuests.Objectives
         public virtual void WriteToGump(Gump g, ref int y)
         {
             if (IsTimed)
+            {
                 WriteTimeRemaining(g, ref y, EndTime > DateTime.UtcNow ? EndTime - DateTime.UtcNow : TimeSpan.Zero);
+            }
         }
 
         public static void WriteTimeRemaining(Gump g, ref int y, TimeSpan timeRemaining)
@@ -134,7 +138,9 @@ namespace Server.Engines.MLQuests.Objectives
                 var endTime = reader.ReadDeltaTime();
 
                 if (objInstance != null)
+                {
                     objInstance.EndTime = endTime;
+                }
             }
 
             var extraDataType = (DataType)reader.ReadByte();
@@ -146,7 +152,9 @@ namespace Server.Engines.MLQuests.Objectives
                         var completed = reader.ReadBool();
 
                         if (objInstance is EscortObjectiveInstance instance)
+                        {
                             instance.HasCompleted = completed;
+                        }
 
                         break;
                     }
@@ -155,7 +163,9 @@ namespace Server.Engines.MLQuests.Objectives
                         var slain = reader.ReadInt();
 
                         if (objInstance is KillObjectiveInstance instance)
+                        {
                             instance.Slain = slain;
+                        }
 
                         break;
                     }
@@ -164,7 +174,9 @@ namespace Server.Engines.MLQuests.Objectives
                         var completed = reader.ReadBool();
 
                         if (objInstance is DeliverObjectiveInstance instance)
+                        {
                             instance.HasCompleted = completed;
+                        }
 
                         break;
                     }

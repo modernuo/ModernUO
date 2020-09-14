@@ -92,9 +92,13 @@ namespace Server.Spells.Seventh
         public override void OnCast()
         {
             if (m_Entry == null)
+            {
                 Caster.Target = new RecallSpellTarget(this, false);
+            }
             else
+            {
                 Effect(m_Entry.Location, m_Entry.Map, true);
+            }
         }
 
         public override bool CheckCast()
@@ -137,7 +141,9 @@ namespace Server.Spells.Seventh
                 Map = map;
 
                 if (ShowFeluccaWarning && map == Map.Felucca)
+                {
                     ItemID = 0xDDA;
+                }
 
                 Dispellable = true;
 

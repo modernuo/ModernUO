@@ -33,9 +33,13 @@ namespace Server.Items
                 var num = CraftResources.GetLocalizationNumber(Resource);
 
                 if (num > 0)
+                {
                     v = $"#{num}";
+                }
                 else
+                {
                     v = CraftResources.GetName(Resource);
+                }
             }
 
             list.Add(1061119, v); // ~1_LEATHER_TYPE~ runic sewing kit
@@ -50,9 +54,13 @@ namespace Server.Items
                 var num = CraftResources.GetLocalizationNumber(Resource);
 
                 if (num > 0)
+                {
                     v = $"#{num}";
+                }
                 else
+                {
                     v = CraftResources.GetName(Resource);
+                }
             }
 
             LabelTo(from, 1061119, v); // ~1_LEATHER_TYPE~ runic sewing kit
@@ -72,7 +80,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (ItemID == 0x13E4 || ItemID == 0x13E3)
+            {
                 ItemID = 0xF9D;
+            }
         }
     }
 }

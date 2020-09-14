@@ -14,7 +14,9 @@ namespace Server.Commands.Generic
         public override void Compile(Mobile from, BaseCommand command, ref string[] args, ref object obj)
         {
             if (command.ObjectTypes == ObjectTypes.Items)
+            {
                 return; // sanity check
+            }
 
             obj = from;
         }

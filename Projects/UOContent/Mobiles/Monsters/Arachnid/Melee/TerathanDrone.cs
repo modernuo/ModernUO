@@ -69,7 +69,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (BaseSoundID == 589)
+            {
                 BaseSoundID = 594;
+            }
         }
     }
 }

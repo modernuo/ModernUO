@@ -170,9 +170,13 @@ namespace Server.Mobiles
             protected override void OnTick()
             {
                 if (m_Mod.Type == ResistanceType.Physical)
+                {
                     m_Mobile.SendLocalizedMessage(1070852); // Your resistance to physical attacks has returned.
+                }
                 else
+                {
                     m_Mobile.SendLocalizedMessage(1070829); // Your resistance to energy attacks has returned.
+                }
 
                 DoExpire();
             }

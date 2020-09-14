@@ -25,14 +25,20 @@ namespace Server.Targets
         public void AddAI(BaseAI ai)
         {
             if (!m_List.Contains(ai))
+            {
                 m_List.Add(ai);
+            }
         }
 
         protected override void OnTarget(Mobile from, object o)
         {
             if (o is Mobile m)
+            {
                 for (var i = 0; i < m_List.Count; ++i)
-                    m_List[i].EndPickTarget(from, m, Order);
+                {
+                    m_List[i].EndPickTarget(@from, m, Order);
+                }
+            }
         }
     }
 }

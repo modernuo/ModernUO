@@ -49,7 +49,9 @@ namespace Server.Items
                 m_ActiveItemID = value;
 
                 if (!IsEmpty)
+                {
                     ItemID = m_ActiveItemID;
+                }
             }
         }
 
@@ -62,7 +64,9 @@ namespace Server.Items
                 m_InactiveItemID = value;
 
                 if (IsEmpty)
+                {
                     ItemID = m_InactiveItemID;
+                }
             }
         }
 
@@ -100,9 +104,13 @@ namespace Server.Items
                 m_SkillValue = value;
 
                 if (!IsEmpty)
+                {
                     ItemID = m_ActiveItemID;
+                }
                 else
+                {
                     ItemID = m_InactiveItemID;
+                }
 
                 InvalidateProperties();
             }
@@ -119,12 +127,14 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (!IsEmpty)
+            {
                 list.Add(
                     1070721,
                     "#{0}\t{1:0.0}",
                     AosSkillBonuses.GetLabel(Skill),
                     SkillValue
                 ); // Skill stored: ~1_skillname~ ~2_skillamount~
+            }
 
             list.Add(1041602, "{0}", LastUserName ?? $"#{1074235}"); // Owner: ~1_val~
         }
@@ -136,7 +146,9 @@ namespace Server.Items
                 var info = m.Aggressed[i];
 
                 if (DateTime.UtcNow - info.LastCombatTime < time)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -148,7 +160,10 @@ namespace Server.Items
 
             var pm = from as PlayerMobile;
 
-            if (Deleted || !IsAccessibleTo(from)) return false;
+            if (Deleted || !IsAccessibleTo(from))
+            {
+                return false;
+            }
 
             if (from.Map != Map || !from.InRange(GetWorldLocation(), 2))
             {
@@ -234,7 +249,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (!CheckUse(from))
+            {
                 return;
+            }
 
             from.CloseGump<SelectSkillGump>();
             from.CloseGump<ConfirmSkillGump>();
@@ -243,9 +260,13 @@ namespace Server.Items
             from.CloseGump<ErrorGump>();
 
             if (IsEmpty)
-                from.SendGump(new SelectSkillGump(this, from));
+            {
+                @from.SendGump(new SelectSkillGump(this, @from));
+            }
             else
-                from.SendGump(new ConfirmTransferGump(this, from));
+            {
+                @from.SendGump(new ConfirmTransferGump(this, @from));
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -377,20 +398,28 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (info.ButtonID == 0 || !m_Stone.IsEmpty)
+                {
                     return;
+                }
 
                 var from = sender.Mobile;
 
                 var iSkill = info.ButtonID - 1;
                 if (iSkill < 0 || iSkill >= from.Skills.Length)
+                {
                     return;
+                }
 
                 var skill = from.Skills[iSkill];
                 if (skill.Base <= 0.0)
+                {
                     return;
+                }
 
                 if (!m_Stone.CheckUse(from))
+                {
                     return;
+                }
 
                 from.SendGump(new ConfirmSkillGump(m_Stone, skill));
             }
@@ -465,12 +494,16 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (info.ButtonID == 0 || !m_Stone.IsEmpty)
+                {
                     return;
+                }
 
                 var from = sender.Mobile;
 
                 if (!m_Stone.CheckUse(from))
+                {
                     return;
+                }
 
                 if (info.ButtonID == 1) // Is asking for another selection
                 {
@@ -479,7 +512,9 @@ namespace Server.Items
                 }
 
                 if (m_Skill.Base <= 0.0)
+                {
                     return;
+                }
 
                 if (m_Skill.Lock != SkillLock.Down)
                 {
@@ -616,12 +651,16 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (info.ButtonID == 0 || m_Stone.IsEmpty)
+                {
                     return;
+                }
 
                 var from = sender.Mobile;
 
                 if (!m_Stone.CheckUse(from))
+                {
                     return;
+                }
 
                 if (info.ButtonID == 1) // Remove skill points
                 {
@@ -652,13 +691,17 @@ namespace Server.Items
                     for (var i = 0; i < from.Skills.Length; ++i)
                     {
                         if (from.Skills[i].Lock != SkillLock.Down)
+                        {
                             continue;
+                        }
 
                         available += from.Skills[i].BaseFixedPoint;
                     }
 
                     if (requiredAmount > available)
+                    {
                         cannotAbsorb = true;
+                    }
                 }
 
                 if (cannotAbsorb)
@@ -719,22 +762,26 @@ namespace Server.Items
                 }
 
                 if (requiredAmount > 0)
-                    for (var i = 0; i < from.Skills.Length; ++i)
+                {
+                    for (var i = 0; i < @from.Skills.Length; ++i)
                     {
-                        if (from.Skills[i].Lock != SkillLock.Down)
-                            continue;
-
-                        if (requiredAmount >= from.Skills[i].BaseFixedPoint)
+                        if (@from.Skills[i].Lock != SkillLock.Down)
                         {
-                            requiredAmount -= from.Skills[i].BaseFixedPoint;
-                            from.Skills[i].Base = 0.0;
+                            continue;
+                        }
+
+                        if (requiredAmount >= @from.Skills[i].BaseFixedPoint)
+                        {
+                            requiredAmount -= @from.Skills[i].BaseFixedPoint;
+                            @from.Skills[i].Base = 0.0;
                         }
                         else
                         {
-                            from.Skills[i].BaseFixedPoint -= requiredAmount;
+                            @from.Skills[i].BaseFixedPoint -= requiredAmount;
                             break;
                         }
                     }
+                }
 
                 fromSkill.Base = skillValue;
                 m_Stone.SkillValue = 0.0;
@@ -775,8 +822,12 @@ namespace Server.Items
                 Effects.SendTargetParticles(from, 0x375A, 35, 90, 0x00, 0x00, 9502, (EffectLayer)255, 0x100);
 
                 if (m_Stone is SoulstoneFragment frag)
+                {
                     if (--frag.UsesRemaining <= 0)
-                        from.SendLocalizedMessage(1070974); // You have used up your soulstone fragment.
+                    {
+                        @from.SendLocalizedMessage(1070974); // You have used up your soulstone fragment.
+                    }
+                }
             }
         }
 
@@ -817,12 +868,16 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (info.ButtonID == 0 || m_Stone.IsEmpty)
+                {
                     return;
+                }
 
                 var from = sender.Mobile;
 
                 if (!m_Stone.CheckUse(from))
+                {
                     return;
+                }
 
                 m_Stone.SkillValue = 0.0;
                 from.SendLocalizedMessage(1070726); // You have successfully deleted the Soulstone's skill points.
@@ -859,17 +914,25 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (info.ButtonID == 0)
+                {
                     return;
+                }
 
                 var from = sender.Mobile;
 
                 if (!m_Stone.CheckUse(from))
+                {
                     return;
+                }
 
                 if (m_Stone.IsEmpty)
-                    from.SendGump(new SelectSkillGump(m_Stone, from));
+                {
+                    @from.SendGump(new SelectSkillGump(m_Stone, @from));
+                }
                 else
-                    from.SendGump(new ConfirmTransferGump(m_Stone, from));
+                {
+                    @from.SendGump(new ConfirmTransferGump(m_Stone, @from));
+                }
             }
         }
     }
@@ -937,15 +1000,21 @@ namespace Server.Items
             if (version <= 1)
             {
                 if (ItemID == 0x2A93 || ItemID == 0x2A94)
+                {
                     ActiveItemID = Utility.Random(0x2AA1, 9);
+                }
                 else
+                {
                     ActiveItemID = ItemID;
+                }
 
                 InactiveItemID = ActiveItemID;
             }
 
             if (version == 0 && Weight == 1)
+            {
                 Weight = -1;
+            }
         }
 
         protected override bool CheckUse(Mobile from)
@@ -953,11 +1022,13 @@ namespace Server.Items
             var canUse = base.CheckUse(from);
 
             if (canUse)
+            {
                 if (m_UsesRemaining <= 0)
                 {
-                    from.SendLocalizedMessage(1070975); // That soulstone fragment has no more uses.
+                    @from.SendLocalizedMessage(1070975); // That soulstone fragment has no more uses.
                     return false;
                 }
+            }
 
             return canUse;
         }
@@ -1035,7 +1106,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076217); // 1st Year Veteran Reward
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

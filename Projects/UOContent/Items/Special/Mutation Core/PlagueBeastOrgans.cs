@@ -37,7 +37,9 @@ namespace Server.Items
         public void AddComponent(PlagueBeastComponent c, int x, int y)
         {
             if (Parent is Container pack)
+            {
                 pack.DropItem(c);
+            }
 
             c.Organ = this;
             c.Location = new Point3D(X + x, Y + y, Z);
@@ -66,7 +68,9 @@ namespace Server.Items
         public override void OnAfterDelete()
         {
             if (m_Timer?.Running == true)
+            {
                 m_Timer.Stop();
+            }
         }
 
         public virtual bool OnLifted(Mobile from, PlagueBeastComponent c) => c.IsGland || c.IsBrain;
@@ -116,7 +120,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (!Opened)
-                FinishOpening(from);
+            {
+                FinishOpening(@from);
+            }
         }
 
         public override void FinishOpening(Mobile from)
@@ -130,7 +136,9 @@ namespace Server.Items
             AddComponent(new PlagueBeastComponent(0x1DA3, 0x21), 26, 46);
 
             if (BrainHue > 0)
+            {
                 AddComponent(new PlagueBeastComponent(0x1CF0, BrainHue, true), 22, 29);
+            }
 
             Opened = true;
         }
@@ -165,11 +173,13 @@ namespace Server.Items
         public override void Carve(Mobile from, Item with)
         {
             if (IsAccessibleTo(from))
+            {
                 with.PublicOverheadMessage(
                     MessageType.Regular,
                     0x3B2,
                     1071896
                 ); // This is too crude an implement for such a procedure.
+            }
         }
 
         public override bool OnLifted(Mobile from, PlagueBeastComponent c)
@@ -193,9 +203,13 @@ namespace Server.Items
             AddComponent(new PlagueBeastComponent(0x1777, 0x1), 10, 14);
 
             if (BrainHue > 0)
+            {
                 AddComponent(new PlagueBeastComponent(0x1CF0, BrainHue, true), 1, 24); // 22, 29
+            }
             else
+            {
                 AddComponent(new PlagueBeastBlood(), -7, 24);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -260,9 +274,13 @@ namespace Server.Items
             AddComponent(new PlagueBeastComponent(0x1777, 0x1), 5, 14);
 
             if (BrainHue > 0)
+            {
                 AddComponent(new PlagueBeastComponent(0x1CF0, BrainHue, true), -5, 22);
+            }
             else
+            {
                 AddComponent(new PlagueBeastBlood(), -13, 25);
+            }
 
             Opened = true;
         }
@@ -274,7 +292,9 @@ namespace Server.Items
                 var hue = m_Hues.RandomElement();
 
                 if (hue != exclude)
+                {
                     return hue;
+                }
             }
 
             return 0xD;
@@ -285,7 +305,9 @@ namespace Server.Items
             if (vein.Hue != Hue)
             {
                 if (!Opened && m_Veins > 0 && --m_Veins == 0)
-                    FinishOpening(from);
+                {
+                    FinishOpening(@from);
+                }
             }
             else
             {
@@ -354,11 +376,13 @@ namespace Server.Items
         public override void Carve(Mobile from, Item with)
         {
             if (IsAccessibleTo(from))
+            {
                 with.PublicOverheadMessage(
                     MessageType.Regular,
                     0x3B2,
                     1071896
                 ); // This is too crude an implement for such a procedure.
+            }
         }
 
         public override bool OnLifted(Mobile from, PlagueBeastComponent c)
@@ -409,7 +433,9 @@ namespace Server.Items
         public void FinishHealing()
         {
             for (var i = 0; i < 7 && i < Components.Count; i++)
+            {
                 Components[i].Hue = 0x6;
+            }
 
             m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(2), OpenOrgan);
         }
@@ -420,7 +446,9 @@ namespace Server.Items
             AddComponent(new PlagueBeastComponent(0x1366, 0x1), 57, 66);
 
             if (BrainHue > 0)
+            {
                 AddComponent(new PlagueBeastComponent(0x1CF0, BrainHue, true), 55, 69);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -482,7 +510,9 @@ namespace Server.Items
         public override bool OnLifted(Mobile from, PlagueBeastComponent c)
         {
             if (c.IsBrain)
+            {
                 m_Brains--;
+            }
 
             return true;
         }
@@ -515,7 +545,9 @@ namespace Server.Items
                 }
 
                 if (m_Brains == 4)
-                    FinishOpening(from);
+                {
+                    FinishOpening(@from);
+                }
 
                 return true;
             }

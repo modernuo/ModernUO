@@ -108,7 +108,9 @@ namespace Server.Items
         public override void OnAfterDelete()
         {
             for (var i = 0; i < m_Components.Count; ++i)
+            {
                 m_Components[i].Delete();
+            }
         }
 
         private void AddOrnament(int x, int y, int z, int itemID)
@@ -134,7 +136,9 @@ namespace Server.Items
             writer.Write(m_Components.Count);
 
             for (var i = 0; i < m_Components.Count; ++i)
+            {
                 writer.Write(m_Components[i]);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -162,7 +166,9 @@ namespace Server.Items
                             var item = reader.ReadItem();
 
                             if (item != null)
+                            {
                                 m_Components.Add(item);
+                            }
                         }
 
                         break;
@@ -195,7 +201,9 @@ namespace Server.Items
                     var house = BaseHouse.FindHouseAt(this);
 
                     if (house?.Addons.Contains(this) == true)
+                    {
                         house.Addons.Remove(this);
+                    }
 
                     from.SendLocalizedMessage(503393); // A deed for the tree has been placed in your backpack.
                 }
@@ -256,7 +264,9 @@ namespace Server.Items
             public override void OnDoubleClick(Mobile from)
             {
                 if (m_Tree?.Deleted == false)
-                    m_Tree.OnDoubleClick(from);
+                {
+                    m_Tree.OnDoubleClick(@from);
+                }
             }
 
             public override void Serialize(IGenericWriter writer)
@@ -281,7 +291,9 @@ namespace Server.Items
                             m_Tree = reader.ReadItem() as HolidayTree;
 
                             if (m_Tree == null)
+                            {
                                 Delete();
+                            }
 
                             break;
                         }

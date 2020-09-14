@@ -25,10 +25,14 @@ namespace Server.Engines.MLQuests.Objectives
             m_Flags = GainSkillObjectiveFlags.None;
 
             if (useReal)
+            {
                 m_Flags |= GainSkillObjectiveFlags.UseReal;
+            }
 
             if (accelerate)
+            {
                 m_Flags |= GainSkillObjectiveFlags.Accelerate;
+            }
         }
 
         public SkillName Skill { get; set; }
@@ -54,7 +58,9 @@ namespace Server.Engines.MLQuests.Objectives
             if ((UseReal ? skill.Fixed : skill.BaseFixedPoint) >= ThresholdFixed)
             {
                 if (message)
+                {
                     MLQuestSystem.Tell(quester, pm, 1077772); // I cannot teach you, for you know all I can teach!
+                }
 
                 return false;
             }
@@ -83,9 +89,13 @@ namespace Server.Engines.MLQuests.Objectives
         private void SetFlag(GainSkillObjectiveFlags flag, bool value)
         {
             if (value)
+            {
                 m_Flags |= flag;
+            }
             else
+            {
                 m_Flags &= ~flag;
+            }
         }
     }
 
@@ -116,7 +126,9 @@ namespace Server.Engines.MLQuests.Objectives
         public override void OnQuestAccepted()
         {
             if (!Objective.Accelerate)
+            {
                 return;
+            }
 
             var pm = Instance.Player;
 
@@ -127,7 +139,9 @@ namespace Server.Engines.MLQuests.Objectives
         public override void OnQuestCancelled()
         {
             if (!Objective.Accelerate)
+            {
                 return;
+            }
 
             var pm = Instance.Player;
 

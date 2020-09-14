@@ -14,7 +14,10 @@ namespace Server.Engines.Quests.Matriarch
         {
             get
             {
-                if (m_Friend) return 1054081;
+                if (m_Friend)
+                {
+                    return 1054081;
+                }
 
                 /* <I>The Solen Matriarch smiles as she eats the seed you offered.</I><BR><BR>
                    *
@@ -93,7 +96,10 @@ namespace Server.Engines.Quests.Matriarch
         {
             get
             {
-                if (m_Friend) return 1054097;
+                if (m_Friend)
+                {
+                    return 1054097;
+                }
 
                 /* <I>The Solen Matriarch listens as you report the completion of your
                    * tasks to her.</I><BR><BR>
@@ -155,7 +161,9 @@ namespace Server.Engines.Quests.Matriarch
         public override void OnRead()
         {
             if (m_Logged)
+            {
                 System.AddObjective(new GetRewardObjective());
+            }
         }
     }
 

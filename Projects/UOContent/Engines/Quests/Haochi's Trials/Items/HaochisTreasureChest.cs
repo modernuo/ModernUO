@@ -24,9 +24,12 @@ namespace Server.Engines.Quests.Samurai
         private void GenerateTreasure()
         {
             for (var i = Items.Count - 1; i >= 0; i--)
+            {
                 Items[i].Delete();
+            }
 
             for (var i = 0; i < 75; i++)
+            {
                 DropItem(
                     Utility.Random(10) switch
                     {
@@ -35,6 +38,7 @@ namespace Server.Engines.Quests.Samurai
                         _ => Loot.RandomGem() // 2
                     }
                 );
+            }
         }
 
         public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight) =>
@@ -45,17 +49,23 @@ namespace Server.Engines.Quests.Samurai
         public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
         {
             if (from.AccessLevel >= AccessLevel.GameMaster)
+            {
                 return true;
+            }
 
             if (from is PlayerMobile player && player.Quest is HaochisTrialsQuest)
             {
                 var obj = player.Quest.FindObjective<FifthTrialIntroObjective>();
                 if (obj?.StolenTreasure == true)
-                    from.SendLocalizedMessage(
+                {
+                    @from.SendLocalizedMessage(
                         1063247
                     ); // The guard is watching you carefully!  It would be unwise to remove another item from here.
+                }
                 else
+                {
                     return true;
+                }
             }
 
             return false;
@@ -67,7 +77,9 @@ namespace Server.Engines.Quests.Samurai
             {
                 var obj = player.Quest.FindObjective<FifthTrialIntroObjective>();
                 if (obj != null)
+                {
                     obj.StolenTreasure = true;
+                }
             }
 
             Timer.DelayCall(TimeSpan.FromMinutes(2.0), GenerateTreasure);

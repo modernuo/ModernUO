@@ -36,7 +36,9 @@ namespace Server.Items
                         Hue = value;
 
                         foreach (var c in Components)
+                        {
                             c.Hue = value;
+                        }
                     }
                 }
             }
@@ -89,13 +91,17 @@ namespace Server.Items
                     var hue = 0;
 
                     if (RetainDeedHue)
+                    {
                         for (var i = 0; hue == 0 && i < Components.Count; ++i)
                         {
                             var c = Components[i];
 
                             if (c.Hue != 0)
+                            {
                                 hue = c.Hue;
+                            }
                         }
+                    }
 
                     DropItemsToGround();
 
@@ -110,7 +116,9 @@ namespace Server.Items
                         deed.Resource = Resource;
 
                         if (RetainDeedHue)
+                        {
                             deed.Hue = hue;
+                        }
 
                         from.AddToBackpack(deed);
                     }
@@ -127,10 +135,14 @@ namespace Server.Items
             base.OnLocationChange(oldLoc);
 
             if (Deleted)
+            {
                 return;
+            }
 
             foreach (var c in Components)
+            {
                 c.Location = new Point3D(X + c.Offset.X, Y + c.Offset.Y, Z + c.Offset.Z);
+            }
         }
 
         public override void OnMapChange()
@@ -138,10 +150,14 @@ namespace Server.Items
             base.OnMapChange();
 
             if (Deleted)
+            {
                 return;
+            }
 
             foreach (var c in Components)
+            {
                 c.Map = Map;
+            }
         }
 
         public override void OnDelete()
@@ -158,7 +174,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (!CraftResources.IsStandard(m_Resource))
+            {
                 list.Add(CraftResources.GetLocalizationNumber(m_Resource));
+            }
         }
 
         public override void OnAfterDelete()
@@ -166,7 +184,9 @@ namespace Server.Items
             base.OnAfterDelete();
 
             foreach (var c in Components)
+            {
                 c.Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -194,13 +214,17 @@ namespace Server.Items
         public virtual void DropItemsToGround()
         {
             for (var i = Items.Count - 1; i >= 0; i--)
+            {
                 Items[i].MoveToWorld(Location);
+            }
         }
 
         public void AddComponent(AddonContainerComponent c, int x, int y, int z)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             Components.Add(c);
 
@@ -212,39 +236,55 @@ namespace Server.Items
         public AddonFitResult CouldFit(IPoint3D p, Map map, Mobile from, ref BaseHouse house)
         {
             if (Deleted)
+            {
                 return AddonFitResult.Blocked;
+            }
 
             foreach (var c in Components)
             {
                 var p3D = new Point3D(p.X + c.Offset.X, p.Y + c.Offset.Y, p.Z + c.Offset.Z);
 
                 if (!map.CanFit(p3D.X, p3D.Y, p3D.Z, c.ItemData.Height, false, true, c.Z == 0))
+                {
                     return AddonFitResult.Blocked;
+                }
+
                 if (!BaseAddon.CheckHouse(from, p3D, map, c.ItemData.Height, ref house))
+                {
                     return AddonFitResult.NotInHouse;
+                }
 
                 if (c.NeedsWall)
                 {
                     var wall = c.WallPosition;
 
                     if (!BaseAddon.IsWall(p3D.X + wall.X, p3D.Y + wall.Y, p3D.Z + wall.Z, map))
+                    {
                         return AddonFitResult.NoWall;
+                    }
                 }
             }
 
             var p3 = new Point3D(p.X, p.Y, p.Z);
 
             if (!map.CanFit(p3.X, p3.Y, p3.Z, ItemData.Height, false, true, Z == 0))
+            {
                 return AddonFitResult.Blocked;
+            }
+
             if (!BaseAddon.CheckHouse(from, p3, map, ItemData.Height, ref house))
+            {
                 return AddonFitResult.NotInHouse;
+            }
 
             if (NeedsWall)
             {
                 var wall = WallPosition;
 
                 if (!BaseAddon.IsWall(p3.X + wall.X, p3.Y + wall.Y, p3.Z + wall.Z, map))
+                {
                     return AddonFitResult.NoWall;
+                }
             }
 
             if (house != null)
@@ -256,7 +296,9 @@ namespace Server.Items
                     var door = doors[i];
 
                     if (door?.Open == true)
+                    {
                         return AddonFitResult.DoorsNotClosed;
+                    }
 
                     var doorLoc = door.GetWorldLocation();
                     var doorHeight = door.ItemData.CalcHeight;
@@ -270,7 +312,9 @@ namespace Server.Items
                         if (Utility.InRange(doorLoc, addonLoc, 1) &&
                             (addonLoc.Z == doorLoc.Z ||
                              addonLoc.Z + addonHeight > doorLoc.Z && doorLoc.Z + doorHeight > addonLoc.Z))
+                        {
                             return AddonFitResult.DoorTooClose;
+                        }
                     }
 
                     var addonLo = new Point3D(p.X, p.Y, p.Z);
@@ -279,7 +323,9 @@ namespace Server.Items
                     if (Utility.InRange(doorLoc, addonLo, 1) &&
                         (addonLo.Z == doorLoc.Z ||
                          addonLo.Z + addonHeight > doorLoc.Z && doorLoc.Z + doorHeight > addonLo.Z))
+                    {
                         return AddonFitResult.DoorTooClose;
+                    }
                 }
             }
 

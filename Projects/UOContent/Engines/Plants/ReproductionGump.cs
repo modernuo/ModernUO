@@ -69,11 +69,17 @@ namespace Server.Engines.Plants
             var system = m_Plant.PlantSystem;
 
             if (!system.PollenProducing)
+            {
                 AddLabel(x, y, 0x35, "-");
+            }
             else if (!system.Pollinated)
+            {
                 AddLabel(x, y, 0x21, "!");
+            }
             else
+            {
                 AddLabel(x, y, 0x3F, "+");
+            }
         }
 
         private void AddResourcesState(int x, int y)
@@ -84,14 +90,18 @@ namespace Server.Engines.Plants
             var totalResources = system.AvailableResources + system.LeftResources;
 
             if (resInfo == null || totalResources == 0)
+            {
                 AddLabel(x + 5, y, 0x21, "X");
+            }
             else
+            {
                 AddLabel(
                     x,
                     y,
                     PlantHueInfo.GetInfo(m_Plant.PlantHue).GumpHue,
                     $"{system.AvailableResources}/{totalResources}"
                 );
+            }
         }
 
         private void AddSeedsState(int x, int y)
@@ -100,14 +110,18 @@ namespace Server.Engines.Plants
             var totalSeeds = system.AvailableSeeds + system.LeftSeeds;
 
             if (!m_Plant.Reproduces || totalSeeds == 0)
+            {
                 AddLabel(x + 5, y, 0x21, "X");
+            }
             else
+            {
                 AddLabel(
                     x,
                     y,
                     PlantHueInfo.GetInfo(system.SeedHue).GumpHue,
                     $"{system.AvailableSeeds}/{totalSeeds}"
                 );
+            }
         }
 
         public override void OnResponse(NetState sender, RelayInfo info)
@@ -116,7 +130,9 @@ namespace Server.Engines.Plants
 
             if (info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus >= PlantStatus.DecorativePlant ||
                 m_Plant.PlantStatus == PlantStatus.BowlOfDirt)
+            {
                 return;
+            }
 
             if (info.ButtonID >= 6 && info.ButtonID <= 8 && !from.InRange(m_Plant.GetWorldLocation(), 3))
             {
@@ -140,7 +156,10 @@ namespace Server.Engines.Plants
                     }
                 case 2: // Set to decorative
                     {
-                        if (m_Plant.PlantStatus == PlantStatus.Stage9) from.SendGump(new SetToDecorativeGump(m_Plant));
+                        if (m_Plant.PlantStatus == PlantStatus.Stage9)
+                        {
+                            @from.SendGump(new SetToDecorativeGump(m_Plant));
+                        }
 
                         break;
                     }
@@ -205,9 +224,13 @@ namespace Server.Engines.Plants
                         if (resInfo == null)
                         {
                             if (m_Plant.IsCrossable)
-                                m_Plant.LabelTo(from, 1053056); // This plant has no resources to gather!
+                            {
+                                m_Plant.LabelTo(@from, 1053056); // This plant has no resources to gather!
+                            }
                             else
-                                m_Plant.LabelTo(from, 1053055); // Mutated plants do not produce resources!
+                            {
+                                m_Plant.LabelTo(@from, 1053055); // Mutated plants do not produce resources!
+                            }
                         }
                         else if (system.AvailableResources == 0)
                         {

@@ -39,7 +39,9 @@ namespace Server.Guilds
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (guild.Disbanded || player.Guild != null)
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {

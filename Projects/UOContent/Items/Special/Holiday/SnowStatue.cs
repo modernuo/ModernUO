@@ -204,7 +204,9 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_Deed?.Deleted != false)
+                {
                     return;
+                }
 
                 var from = sender.Mobile;
 

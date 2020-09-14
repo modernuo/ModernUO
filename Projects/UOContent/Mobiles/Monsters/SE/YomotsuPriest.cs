@@ -67,7 +67,10 @@ namespace Server.Mobiles
                     break;
             }
 
-            if (Utility.RandomDouble() < .25) PackItem(Seed.RandomBonsaiSeed());
+            if (Utility.RandomDouble() < .25)
+            {
+                PackItem(Seed.RandomBonsaiSeed());
+            }
         }
 
         public YomotsuPriest(Serial serial) : base(serial)

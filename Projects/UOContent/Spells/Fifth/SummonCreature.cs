@@ -49,7 +49,9 @@ namespace Server.Spells.Fifth
         public override bool CheckCast()
         {
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             if (Caster.Followers + 2 > Caster.FollowersMax)
             {
@@ -63,6 +65,7 @@ namespace Server.Spells.Fifth
         public override void OnCast()
         {
             if (CheckSequence())
+            {
                 try
                 {
                     var creature = (BaseCreature)ActivatorUtil.CreateInstance(m_Types.RandomElement());
@@ -72,9 +75,13 @@ namespace Server.Spells.Fifth
                     TimeSpan duration;
 
                     if (Core.AOS)
+                    {
                         duration = TimeSpan.FromSeconds(2 * Caster.Skills.Magery.Fixed / 5.0);
+                    }
                     else
+                    {
                         duration = TimeSpan.FromSeconds(4.0 * Caster.Skills.Magery.Value);
+                    }
 
                     SpellHelper.Summon(creature, Caster, 0x215, duration, false, false);
                 }
@@ -82,6 +89,7 @@ namespace Server.Spells.Fifth
                 {
                     // ignored
                 }
+            }
 
             FinishSequence();
         }
@@ -89,7 +97,9 @@ namespace Server.Spells.Fifth
         public override TimeSpan GetCastDelay()
         {
             if (Core.AOS)
+            {
                 return TimeSpan.FromTicks(base.GetCastDelay().Ticks * 5);
+            }
 
             return base.GetCastDelay() + TimeSpan.FromSeconds(6.0);
         }

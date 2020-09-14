@@ -158,15 +158,23 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_Active)
+            {
                 list.Add(1060742); // active
+            }
             else
+            {
                 list.Add(1060743); // inactive
+            }
 
             if (m_MapDest != null)
+            {
                 list.Add(1060658, "Map\t{0}", m_MapDest);
+            }
 
             if (m_PointDest != Point3D.Zero)
+            {
                 list.Add(1060659, "Coords\t{0}", m_PointDest);
+            }
 
             list.Add(1060660, "Creatures\t{0}", m_Creatures ? "Yes" : "No");
         }
@@ -178,11 +186,17 @@ namespace Server.Items
             if (m_Active)
             {
                 if (m_MapDest != null && m_PointDest != Point3D.Zero)
-                    LabelTo(from, "{0} [{1}]", m_PointDest, m_MapDest);
+                {
+                    LabelTo(@from, "{0} [{1}]", m_PointDest, m_MapDest);
+                }
                 else if (m_MapDest != null)
-                    LabelTo(from, "[{0}]", m_MapDest);
+                {
+                    LabelTo(@from, "[{0}]", m_MapDest);
+                }
                 else if (m_PointDest != Point3D.Zero)
-                    LabelTo(from, m_PointDest.ToString());
+                {
+                    LabelTo(@from, m_PointDest.ToString());
+                }
             }
             else
             {
@@ -192,7 +206,10 @@ namespace Server.Items
 
         public virtual bool CanTeleport(Mobile m)
         {
-            if (!m_Creatures && !m.Player) return false;
+            if (!m_Creatures && !m.Player)
+            {
+                return false;
+            }
 
             if (m_CriminalCheck && m.Criminal)
             {
@@ -212,9 +229,13 @@ namespace Server.Items
         public virtual void StartTeleport(Mobile m)
         {
             if (m_Delay == TimeSpan.Zero)
+            {
                 DoTeleport(m);
+            }
             else
+            {
                 Timer.DelayCall(m_Delay, DoTeleport, m);
+            }
         }
 
         public virtual void DoTeleport(Mobile m)
@@ -222,27 +243,37 @@ namespace Server.Items
             var map = m_MapDest;
 
             if (map == null || map == Map.Internal)
+            {
                 map = m.Map;
+            }
 
             var p = m_PointDest;
 
             if (p == Point3D.Zero)
+            {
                 p = m.Location;
+            }
 
             BaseCreature.TeleportPets(m, p, map);
 
             var sendEffect = !m.Hidden || m.AccessLevel == AccessLevel.Player;
 
             if (m_SourceEffect && sendEffect)
+            {
                 Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10, 10);
+            }
 
             m.MoveToWorld(p, map);
 
             if (m_DestEffect && sendEffect)
+            {
                 Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10, 10);
+            }
 
             if (m_SoundID > 0 && sendEffect)
+            {
                 Effects.PlaySound(m.Location, m.Map, m_SoundID);
+            }
         }
 
         public override bool OnMoveOver(Mobile m)
@@ -386,7 +417,9 @@ namespace Server.Items
         public override bool CanTeleport(Mobile m)
         {
             if (!base.CanTeleport(m))
+            {
                 return false;
+            }
 
             var sk = m.Skills[m_Skill];
 
@@ -395,6 +428,7 @@ namespace Server.Items
                 if (m.BeginAction(this))
                 {
                     if (m_MessageString != null)
+                    {
                         m.Send(
                             new UnicodeMessage(
                                 Serial,
@@ -407,7 +441,9 @@ namespace Server.Items
                                 m_MessageString
                             )
                         );
+                    }
                     else if (m_MessageNumber != 0)
+                    {
                         m.Send(
                             new MessageLocalized(
                                 Serial,
@@ -420,6 +456,7 @@ namespace Server.Items
                                 ""
                             )
                         );
+                    }
 
                     Timer.DelayCall(TimeSpan.FromSeconds(5.0), m.EndAction, this);
                 }
@@ -438,16 +475,24 @@ namespace Server.Items
             string skillName;
 
             if (skillIndex >= 0 && skillIndex < SkillInfo.Table.Length)
+            {
                 skillName = SkillInfo.Table[skillIndex].Name;
+            }
             else
+            {
                 skillName = "(Invalid)";
+            }
 
             list.Add(1060661, "{0}\t{1:F1}", skillName, m_Required);
 
             if (m_MessageString != null)
+            {
                 list.Add(1060662, "Message\t{0}", m_MessageString);
+            }
             else if (m_MessageNumber != 0)
+            {
                 list.Add(1060662, "Message\t#{0}", m_MessageNumber);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -543,17 +588,25 @@ namespace Server.Items
                 var m = e.Mobile;
 
                 if (!m.InRange(GetWorldLocation(), m_Range))
+                {
                     return;
+                }
 
                 var isMatch = false;
 
                 if (m_Keyword >= 0 && e.HasKeyword(m_Keyword))
+                {
                     isMatch = true;
+                }
                 else if (m_Substring != null && e.Speech.ToLower().IndexOf(m_Substring.ToLower()) >= 0)
+                {
                     isMatch = true;
+                }
 
                 if (!isMatch || !CanTeleport(m))
+                {
                     return;
+                }
 
                 e.Handled = true;
                 StartTeleport(m);
@@ -563,7 +616,9 @@ namespace Server.Items
         public override void DoTeleport(Mobile m)
         {
             if (!m.InRange(GetWorldLocation(), m_Range) || m.Map != Map)
+            {
                 return;
+            }
 
             base.DoTeleport(m);
         }
@@ -577,10 +632,14 @@ namespace Server.Items
             list.Add(1060661, "Range\t{0}", m_Range);
 
             if (m_Keyword >= 0)
+            {
                 list.Add(1060662, "Keyword\t{0}", m_Keyword);
+            }
 
             if (m_Substring != null)
+            {
                 list.Add(1060663, "Substring\t{0}", m_Substring);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -690,12 +749,18 @@ namespace Server.Items
                     if (m.BeginAction(this))
                     {
                         if (ProgressMessage != null)
+                        {
                             m.SendMessage(ProgressMessage);
+                        }
                         else if (ProgressNumber != 0)
+                        {
                             m.SendLocalizedMessage(ProgressNumber);
+                        }
 
                         if (ShowTimeRemaining)
+                        {
                             m.SendMessage("Time remaining: {0}", FormatTime(info.Timer.Next - DateTime.UtcNow));
+                        }
 
                         Timer.DelayCall(TimeSpan.FromSeconds(5), EndLock, m);
                     }
@@ -707,14 +772,22 @@ namespace Server.Items
             }
 
             if (StartMessage != null)
+            {
                 m.SendMessage(StartMessage);
+            }
             else if (StartNumber != 0)
+            {
                 m.SendLocalizedMessage(StartNumber);
+            }
 
             if (Delay == TimeSpan.Zero)
+            {
                 DoTeleport(m);
+            }
             else
+            {
                 m_Table[m] = new TeleportingInfo(this, Timer.DelayCall(Delay, DoTeleport, m));
+            }
         }
 
         public override void DoTeleport(Mobile m)
@@ -794,7 +867,9 @@ namespace Server.Items
         private void StartTimer(Mobile m, TimeSpan delay)
         {
             if (m_Teleporting.TryGetValue(m, out var t))
+            {
                 t.Stop();
+            }
 
             m_Teleporting[m] = Timer.DelayCall(delay, StartTeleport, m);
         }
@@ -819,7 +894,9 @@ namespace Server.Items
             if (Active)
             {
                 if (!CanTeleport(m))
+                {
                     return false;
+                }
 
                 StartTimer(m);
             }
@@ -1028,10 +1105,14 @@ namespace Server.Items
         public override bool CanTeleport(Mobile m)
         {
             if (!base.CanTeleport(m))
+            {
                 return false;
+            }
 
             if (GetFlag(ConditionFlag.StaffOnly) && m.AccessLevel < AccessLevel.Counselor)
+            {
                 return false;
+            }
 
             if (GetFlag(ConditionFlag.DenyMounted) && m.Mounted)
             {
@@ -1071,7 +1152,9 @@ namespace Server.Items
             }
 
             if (GetFlag(ConditionFlag.DenyEquipment))
+            {
                 foreach (var item in m.Items)
+                {
                     switch (item.Layer)
                     {
                         case Layer.Hair:
@@ -1088,6 +1171,8 @@ namespace Server.Items
                                 return false;
                             }
                     }
+                }
+            }
 
             if (GetFlag(ConditionFlag.DenyTransformed) && m.IsBodyMod)
             {
@@ -1111,31 +1196,49 @@ namespace Server.Items
             var props = new StringBuilder();
 
             if (GetFlag(ConditionFlag.DenyMounted))
+            {
                 props.Append("<BR>Deny Mounted");
+            }
 
             if (GetFlag(ConditionFlag.DenyFollowers))
+            {
                 props.Append("<BR>Deny Followers");
+            }
 
             if (GetFlag(ConditionFlag.DenyPackContents))
+            {
                 props.Append("<BR>Deny Pack Contents");
+            }
 
             if (GetFlag(ConditionFlag.DenyPackEthereals))
+            {
                 props.Append("<BR>Deny Pack Ethereals");
+            }
 
             if (GetFlag(ConditionFlag.DenyHolding))
+            {
                 props.Append("<BR>Deny Holding");
+            }
 
             if (GetFlag(ConditionFlag.DenyEquipment))
+            {
                 props.Append("<BR>Deny Equipment");
+            }
 
             if (GetFlag(ConditionFlag.DenyTransformed))
+            {
                 props.Append("<BR>Deny Transformed");
+            }
 
             if (GetFlag(ConditionFlag.StaffOnly))
+            {
                 props.Append("<BR>Staff Only");
+            }
 
             if (GetFlag(ConditionFlag.DeadOnly))
+            {
                 props.Append("<BR>Dead Only");
+            }
 
             if (props.Length != 0)
             {
@@ -1167,9 +1270,13 @@ namespace Server.Items
         protected void SetFlag(ConditionFlag flag, bool value)
         {
             if (value)
+            {
                 m_Flags |= flag;
+            }
             else
+            {
                 m_Flags &= ~flag;
+            }
         }
 
         [Flags]

@@ -22,9 +22,16 @@ namespace Server.Engines.Quests
 
             if (ret && !Accepted && Parent != from.Backpack)
             {
-                if (from.AccessLevel > AccessLevel.Player) return true;
+                if (from.AccessLevel > AccessLevel.Player)
+                {
+                    return true;
+                }
 
-                if (!(from is PlayerMobile) || CanDrop((PlayerMobile)from)) return true;
+                if (!(from is PlayerMobile) || CanDrop((PlayerMobile)from))
+                {
+                    return true;
+                }
+
                 from.SendLocalizedMessage(
                     1049343
                 ); // You can only drop quest items into the top-most level of your backpack while you still need them for your quest.
@@ -40,9 +47,16 @@ namespace Server.Engines.Quests
 
             if (ret && !Accepted && Parent != from.Backpack)
             {
-                if (from.AccessLevel > AccessLevel.Player) return true;
+                if (from.AccessLevel > AccessLevel.Player)
+                {
+                    return true;
+                }
 
-                if (!(from is PlayerMobile) || CanDrop((PlayerMobile)from)) return true;
+                if (!(from is PlayerMobile) || CanDrop((PlayerMobile)from))
+                {
+                    return true;
+                }
+
                 from.SendLocalizedMessage(
                     1049344
                 ); // You decide against trading the item.  You still need it for your quest.
@@ -58,9 +72,16 @@ namespace Server.Engines.Quests
 
             if (ret && !Accepted && Parent != from.Backpack)
             {
-                if (from.AccessLevel > AccessLevel.Player) return true;
+                if (from.AccessLevel > AccessLevel.Player)
+                {
+                    return true;
+                }
 
-                if (!(from is PlayerMobile) || CanDrop((PlayerMobile)from)) return true;
+                if (!(from is PlayerMobile) || CanDrop((PlayerMobile)from))
+                {
+                    return true;
+                }
+
                 from.SendLocalizedMessage(
                     1049343
                 ); // You can only drop quest items into the top-most level of your backpack while you still need them for your quest.
@@ -73,7 +94,9 @@ namespace Server.Engines.Quests
         public override DeathMoveResult OnParentDeath(Mobile parent)
         {
             if (parent is PlayerMobile mobile && !CanDrop(mobile))
+            {
                 return DeathMoveResult.MoveToBackpack;
+            }
 
             return base.OnParentDeath(parent);
         }

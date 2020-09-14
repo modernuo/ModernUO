@@ -51,7 +51,9 @@ namespace Server.Items
             base.AddNameProperties(list);
 
             if (IsShipwreckedItem)
+            {
                 list.Add(1041645); // recovered from a shipwreck
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -59,7 +61,9 @@ namespace Server.Items
             base.OnSingleClick(from);
 
             if (IsShipwreckedItem)
-                LabelTo(from, 1041645); // recovered from a shipwreck
+            {
+                LabelTo(@from, 1041645); // recovered from a shipwreck
+            }
         }
     }
 }

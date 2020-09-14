@@ -18,12 +18,18 @@ namespace Server.ContextMenus
             var p = Party.Get(m_From);
 
             if (p == null || p.Leader != m_From || !p.Contains(m_Target))
+            {
                 return;
+            }
 
             if (m_From == m_Target)
+            {
                 m_From.SendLocalizedMessage(1005446); // You may only remove yourself from a party if you are not the leader.
+            }
             else
+            {
                 p.Remove(m_Target);
+            }
         }
     }
 }

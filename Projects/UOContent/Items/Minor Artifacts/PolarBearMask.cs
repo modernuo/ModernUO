@@ -45,7 +45,9 @@ namespace Server.Items
             }
 
             if (Attributes.NightSight == 0)
+            {
                 Attributes.NightSight = 1;
+            }
         }
     }
 }

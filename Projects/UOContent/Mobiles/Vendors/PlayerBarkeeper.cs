@@ -28,7 +28,9 @@ namespace Server.Mobiles
         public override void OnResponse(Mobile from, string text)
         {
             if (text.Length > 130)
+            {
                 text = text.Substring(0, 130);
+            }
 
             m_Barkeeper.EndChangeRumor(from, m_RumorIndex, text);
         }
@@ -53,7 +55,9 @@ namespace Server.Mobiles
         public override void OnResponse(Mobile from, string text)
         {
             if (text.Length > 130)
+            {
                 text = text.Substring(0, 130);
+            }
 
             m_Barkeeper.EndChangeKeyword(from, m_RumorIndex, text);
         }
@@ -73,7 +77,9 @@ namespace Server.Mobiles
         public override void OnResponse(Mobile from, string text)
         {
             if (text.Length > 130)
+            {
                 text = text.Substring(0, 130);
+            }
 
             m_Barkeeper.EndChangeTip(from, text);
         }
@@ -94,7 +100,9 @@ namespace Server.Mobiles
         public static BarkeeperRumor Deserialize(IGenericReader reader)
         {
             if (!reader.ReadBool())
+            {
                 return null;
+            }
 
             return new BarkeeperRumor(reader.ReadString(), reader.ReadString());
         }
@@ -199,9 +207,13 @@ namespace Server.Mobiles
             base.InitBody();
 
             if (BodyValue == 0x340 || BodyValue == 0x402)
+            {
                 Hue = 0;
+            }
             else
+            {
                 Hue = 0x83F4; // hue is not random
+            }
 
             var pack = Backpack;
 
@@ -233,12 +245,16 @@ namespace Server.Mobiles
         public override bool OnBeforeDeath()
         {
             if (!base.OnBeforeDeath())
+            {
                 return false;
+            }
 
             var shoes = FindItemOnLayer(Layer.Shoes);
 
             if (shoes is Sandals)
+            {
                 shoes.Hue = 0;
+            }
 
             return true;
         }
@@ -277,14 +293,18 @@ namespace Server.Mobiles
                     var keyword = rumor?.Keyword;
 
                     if (keyword == null || (keyword = keyword.Trim()).Length == 0)
+                    {
                         continue;
+                    }
 
                     if (Insensitive.Equals(keyword, e.Speech))
                     {
                         var message = rumor.Message;
 
                         if (message == null || (message = message.Trim()).Length == 0)
+                        {
                             continue;
+                        }
 
                         PublicOverheadMessage(MessageType.Regular, 0x3B2, false, message);
                     }
@@ -295,7 +315,9 @@ namespace Server.Mobiles
         public override bool CheckGold(Mobile from, Item dropped)
         {
             if (!(dropped is Gold g))
+            {
                 return false;
+            }
 
             if (g.Amount > 50)
             {
@@ -337,10 +359,14 @@ namespace Server.Mobiles
         public bool IsOwner(Mobile from)
         {
             if (from?.Deleted != false || Deleted)
+            {
                 return false;
+            }
 
             if (from.AccessLevel > AccessLevel.GameMaster)
+            {
                 return true;
+            }
 
             return Owner == from;
         }
@@ -350,13 +376,17 @@ namespace Server.Mobiles
             base.GetContextMenuEntries(from, list);
 
             if (IsOwner(from) && from.InLOS(this))
-                list.Add(new ManageBarkeeperEntry(from, this));
+            {
+                list.Add(new ManageBarkeeperEntry(@from, this));
+            }
         }
 
         public void BeginManagement(Mobile from)
         {
             if (!IsOwner(from))
+            {
                 return;
+            }
 
             from.SendGump(new BarkeeperGump(from, this));
         }
@@ -369,7 +399,9 @@ namespace Server.Mobiles
         public void BeginChangeRumor(Mobile from, int index)
         {
             if (index < 0 || index >= Rumors.Length)
+            {
                 return;
+            }
 
             from.Prompt = new ChangeRumorMessagePrompt(this, index);
             PrivateOverheadMessage(
@@ -384,12 +416,18 @@ namespace Server.Mobiles
         public void EndChangeRumor(Mobile from, int index, string text)
         {
             if (index < 0 || index >= Rumors.Length)
+            {
                 return;
+            }
 
             if (Rumors[index] == null)
+            {
                 Rumors[index] = new BarkeeperRumor(text, null);
+            }
             else
+            {
                 Rumors[index].Message = text;
+            }
 
             from.Prompt = new ChangeRumorKeywordPrompt(this, index);
             PrivateOverheadMessage(
@@ -404,12 +442,18 @@ namespace Server.Mobiles
         public void EndChangeKeyword(Mobile from, int index, string text)
         {
             if (index < 0 || index >= Rumors.Length)
+            {
                 return;
+            }
 
             if (Rumors[index] == null)
+            {
                 Rumors[index] = new BarkeeperRumor(null, text);
+            }
             else
+            {
                 Rumors[index].Keyword = text;
+            }
 
             PrivateOverheadMessage(MessageType.Regular, 0x3B2, false, "I'll pass on the message.", from.NetState);
         }
@@ -417,7 +461,9 @@ namespace Server.Mobiles
         public void RemoveRumor(Mobile from, int index)
         {
             if (index < 0 || index >= Rumors.Length)
+            {
                 return;
+            }
 
             Rumors[index] = null;
         }
@@ -498,7 +544,9 @@ namespace Server.Mobiles
                 Title == "the chef")
             {
                 if (m_SBInfos.Count == 0)
+                {
                     m_SBInfos.Add(new SBPlayerBarkeeper());
+                }
             }
             else
             {
@@ -519,7 +567,9 @@ namespace Server.Mobiles
             writer.WriteEncodedInt(Rumors.Length);
 
             for (var i = 0; i < Rumors.Length; ++i)
+            {
                 BarkeeperRumor.Serialize(writer, Rumors[i]);
+            }
 
             writer.Write(TipMessage);
         }
@@ -545,7 +595,9 @@ namespace Server.Mobiles
                         Rumors = new BarkeeperRumor[reader.ReadEncodedInt()];
 
                         for (var i = 0; i < Rumors.Length; ++i)
+                        {
                             Rumors[i] = BarkeeperRumor.Deserialize(reader);
+                        }
 
                         TipMessage = reader.ReadString();
 
@@ -554,7 +606,9 @@ namespace Server.Mobiles
             }
 
             if (version < 1)
+            {
                 Timer.DelayCall(UpgradeFromVersion0);
+            }
         }
 
         private void UpgradeFromVersion0()
@@ -647,7 +701,9 @@ namespace Server.Mobiles
             var pageCount = (entries.Length + 19) / 20;
 
             for (var i = 0; i < pageCount; ++i)
+            {
                 RenderPage(entries, i);
+            }
         }
 
         private void RenderBackground()
@@ -745,7 +801,9 @@ namespace Server.Mobiles
                     --buttonID;
 
                     if (buttonID >= 0 && buttonID < m_Entries.Length)
+                    {
                         m_Barkeeper.EndChangeTitle(m_From, m_Entries[buttonID].m_Title, m_Entries[buttonID].m_Vendor);
+                    }
                 }
                 else
                 {
@@ -1009,12 +1067,16 @@ namespace Server.Mobiles
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (!m_Barkeeper.IsOwner(m_From))
+            {
                 return;
+            }
 
             var index = info.ButtonID - 1;
 
             if (index < 0)
+            {
                 return;
+            }
 
             var type = index % 6;
             index /= 6;

@@ -42,7 +42,9 @@ namespace Server.Engines.Quests.Collector
             QuestSystem qs = to.Quest as CollectorQuest;
 
             if (qs == null)
+            {
                 return false;
+            }
 
             return qs.IsObjectiveInProgress(typeof(FindSheetMusicObjective));
         }
@@ -52,7 +54,9 @@ namespace Server.Engines.Quests.Collector
             var qs = player.Quest;
 
             if (!(qs is CollectorQuest))
+            {
                 return;
+            }
 
             var obj = qs.FindObjective<FindSheetMusicObjective>();
 
@@ -140,17 +144,22 @@ namespace Server.Engines.Quests.Collector
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID == 1 && info.IsSwitched(1))
+            {
                 if (sender.Mobile is PlayerMobile player)
                 {
                     var qs = player.Quest;
 
                     if (!(qs is CollectorQuest))
+                    {
                         return;
+                    }
 
                     var obj = qs.FindObjective<FindSheetMusicObjective>();
 
                     if (obj?.Completed != false)
+                    {
                         return;
+                    }
 
                     if (player.Backpack?.ConsumeTotal(typeof(Gold), 10) == true)
                     {
@@ -159,13 +168,18 @@ namespace Server.Engines.Quests.Collector
                     else
                     {
                         if (player.FindBankNoCreate()?.ConsumeTotal(typeof(Gold), 10) == true)
+                        {
                             obj.Complete();
+                        }
                         else
+                        {
                             player.SendLocalizedMessage(
                                 1055108
                             ); // You don't have enough gold to buy the sheet music.
+                        }
                     }
                 }
+            }
         }
     }
 }

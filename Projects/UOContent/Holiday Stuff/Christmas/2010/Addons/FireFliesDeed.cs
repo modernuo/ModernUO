@@ -28,7 +28,9 @@ namespace Server.Items
             get
             {
                 if (ItemID == 0x2336)
+                {
                     return true;
+                }
 
                 return false;
             }
@@ -47,10 +49,15 @@ namespace Server.Items
         public bool CouldFit(IPoint3D p, Map map)
         {
             if (map?.CanFit(p.X, p.Y, p.Z, ItemData.Height) != true)
+            {
                 return false;
+            }
 
             if (FacingSouth)
+            {
                 return BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map); // north wall
+            }
+
             return BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map);     // west wall
         }
 
@@ -121,7 +128,9 @@ namespace Server.Items
                     from.CloseGump<FacingGump>();
 
                     if (!from.SendGump(new FacingGump(this, from)))
-                        from.SendLocalizedMessage(1150062); // You fail to re-deed the holiday fireflies.
+                    {
+                        @from.SendLocalizedMessage(1150062); // You fail to re-deed the holiday fireflies.
+                    }
                 }
                 else
                 {
@@ -216,7 +225,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_FirefliesDeed?.Deleted != false)
+                {
                     return;
+                }
 
                 if (m_FirefliesDeed.IsChildOf(from.Backpack))
                 {
@@ -228,7 +239,9 @@ namespace Server.Items
                         var map = from.Map;
 
                         if (p == null || map == null || map == Map.Internal)
+                        {
                             return;
+                        }
 
                         var p3d = new Point3D(p);
                         var id = TileData.ItemTable[m_ItemID & TileData.MaxItemValue];

@@ -62,11 +62,17 @@ namespace Server.Items
                 var toDamage = new List<Mobile>();
 
                 foreach (var m in GetMobilesInRange(0))
+                {
                     if (m.Alive && !m.IsDeadBondedPet && (!(m is BaseCreature bc) || bc.Controlled || bc.Summoned))
+                    {
                         toDamage.Add(m);
+                    }
+                }
 
                 for (var i = 0; i < toDamage.Count; i++)
+                {
                     Damage(toDamage[i]);
+                }
             }
         }
 
@@ -80,9 +86,13 @@ namespace Server.Items
         {
             var damage = Utility.RandomMinMax(m_MinDamage, m_MaxDamage);
             if (Core.AOS)
+            {
                 AOS.Damage(m, damage, 0, 0, 0, 100, 0);
+            }
             else
+            {
                 m.Damage(damage);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

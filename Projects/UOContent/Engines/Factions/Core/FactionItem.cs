@@ -45,7 +45,9 @@ namespace Server.Factions
             get
             {
                 if (Item?.Deleted != false)
+                {
                     return true;
+                }
 
                 return Expiration != DateTime.MinValue && DateTime.UtcNow >= Expiration;
             }
@@ -59,15 +61,21 @@ namespace Server.Factions
         public void CheckAttach()
         {
             if (!HasExpired)
+            {
                 Attach();
+            }
             else
+            {
                 Detach();
+            }
         }
 
         public void Attach()
         {
             if (Item is IFactionItem item)
+            {
                 item.FactionItemState = this;
+            }
 
             Faction?.State.FactionItems.Add(this);
         }
@@ -75,10 +83,14 @@ namespace Server.Factions
         public void Detach()
         {
             if (Item is IFactionItem item)
+            {
                 item.FactionItemState = null;
+            }
 
             if (Faction?.State.FactionItems.Contains(this) == true)
+            {
                 Faction.State.FactionItems.Remove(this);
+            }
         }
 
         public void Serialize(IGenericWriter writer)
@@ -118,7 +130,9 @@ namespace Server.Factions
         public static Item Imbue(Item item, Faction faction, bool expire, int hue)
         {
             if (!(item is IFactionItem))
+            {
                 return item;
+            }
 
             var state = Find(item);
 
@@ -129,7 +143,9 @@ namespace Server.Factions
             }
 
             if (expire)
+            {
                 state.StartExpiration();
+            }
 
             item.Hue = hue;
             return item;

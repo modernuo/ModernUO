@@ -39,9 +39,13 @@ namespace Server.Items
         ) : base(0x14F0)
         {
             if (normalizeLevel)
+            {
                 SkillLevel = (int)(level / 10) * 10;
+            }
             else
+            {
                 SkillLevel = level;
+            }
 
             m_Skill = skill;
             m_Crafter = crafter;
@@ -101,7 +105,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_Crafter != null)
+            {
                 list.Add(1050043, m_Crafter.Name); // crafted by ~1_NAME~
+            }
 
             // On OSI it says it's exceptional.  Intentional difference.
         }
@@ -109,7 +115,9 @@ namespace Server.Items
         public override void OnSingleClick(Mobile from)
         {
             if (Deleted || !from.CanSee(this))
+            {
                 return;
+            }
 
             LabelTo(
                 from,
@@ -118,7 +126,9 @@ namespace Server.Items
             ); // A repair service contract from ~1_SKILL_TITLE~ ~2_SKILL_NAME~.
 
             if (m_Crafter != null)
-                LabelTo(from, 1050043, m_Crafter.Name); // crafted by ~1_NAME~
+            {
+                LabelTo(@from, 1050043, m_Crafter.Name); // crafted by ~1_NAME~
+            }
         }
 
         private static TextDefinition GetSkillTitle(double skillLevel)
@@ -126,9 +136,14 @@ namespace Server.Items
             var skill = (int)(skillLevel / 10);
 
             if (skill >= 11)
+            {
                 return 1062008 + skill - 11;
+            }
+
             if (skill >= 5)
+            {
                 return 1061123 + skill - 5;
+            }
 
             return skill switch
             {
@@ -141,8 +156,12 @@ namespace Server.Items
         public static RepairSkillType GetTypeFor(CraftSystem s)
         {
             for (var i = 0; i < RepairSkillInfo.Table.Length; i++)
+            {
                 if (RepairSkillInfo.Table[i].System == s)
+                {
                     return (RepairSkillType)i;
+                }
+            }
 
             return RepairSkillType.Smithing;
         }
@@ -150,17 +169,25 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (Check(from))
-                Repair.Do(from, RepairSkillInfo.GetInfo(m_Skill).System, this);
+            {
+                Repair.Do(@from, RepairSkillInfo.GetInfo(m_Skill).System, this);
+            }
         }
 
         public bool Check(Mobile from)
         {
             if (!IsChildOf(from.Backpack))
-                from.SendLocalizedMessage(1047012); // The contract must be in your backpack to use it.
+            {
+                @from.SendLocalizedMessage(1047012); // The contract must be in your backpack to use it.
+            }
             else if (!VerifyRegion(from))
-                TextDefinition.SendMessageTo(from, RepairSkillInfo.GetInfo(m_Skill).NotNearbyMessage);
+            {
+                TextDefinition.SendMessageTo(@from, RepairSkillInfo.GetInfo(m_Skill).NotNearbyMessage);
+            }
             else
+            {
                 return true;
+            }
 
             return false;
         }
@@ -238,7 +265,9 @@ namespace Server.Items
                 var v = (int)type;
 
                 if (v < 0 || v >= Table.Length)
+                {
                     v = 0;
+                }
 
                 return Table[v];
             }

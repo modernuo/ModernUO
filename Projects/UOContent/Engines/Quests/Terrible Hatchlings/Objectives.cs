@@ -27,7 +27,9 @@ namespace Server.Engines.Quests.Zento
         public override void OnKill(BaseCreature creature, Container corpse)
         {
             if (creature is DeathwatchBeetleHatchling)
+            {
                 Complete();
+            }
         }
 
         public override void OnComplete()
@@ -108,7 +110,9 @@ namespace Server.Engines.Quests.Zento
         public override void OnKill(BaseCreature creature, Container corpse)
         {
             if (creature is DeathwatchBeetleHatchling)
+            {
                 CurProgress++;
+            }
         }
 
         public override void OnComplete()

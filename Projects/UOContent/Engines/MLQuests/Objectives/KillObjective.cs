@@ -31,9 +31,13 @@ namespace Server.Engines.MLQuests.Objectives
             g.AddLabel(133, y, 0x481, amount);
 
             if (Name.Number > 0)
+            {
                 g.AddHtmlLocalized(133 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF);
+            }
             else if (Name.String != null)
+            {
                 g.AddLabel(133 + amount.Length * 15, y, 0x481, Name.String);
+            }
 
             y += 16;
 
@@ -42,9 +46,13 @@ namespace Server.Engines.MLQuests.Objectives
                 g.AddHtmlLocalized(103, y, 312, 20, 1018327, 0x15F90); // Location
 
                 if (Area.Name.Number > 0)
+                {
                     g.AddHtmlLocalized(223, y, 312, 20, Area.Name.Number, 0xFFFFFF);
+                }
                 else if (Area.Name.String != null)
+                {
                     g.AddLabel(223, y, 0x481, Area.Name.String);
+                }
 
                 y += 16;
             }
@@ -84,23 +92,31 @@ namespace Server.Engines.MLQuests.Objectives
             var desired = Objective.DesiredAmount;
 
             foreach (var acceptedType in Objective.AcceptedTypes)
+            {
                 if (acceptedType.IsAssignableFrom(type))
                 {
                     if (Objective.Area?.Contains(mob) == false)
+                    {
                         return false;
+                    }
 
                     var pm = Instance.Player;
 
                     if (++Slain >= desired)
+                    {
                         pm.SendLocalizedMessage(1075050); // You have killed all the required quest creatures of this type.
+                    }
                     else
+                    {
                         pm.SendLocalizedMessage(
                             1075051,
                             (desired - Slain).ToString()
                         ); // You have killed a quest creature. ~1_val~ more left.
+                    }
 
                     return true;
                 }
+            }
 
             return false;
         }

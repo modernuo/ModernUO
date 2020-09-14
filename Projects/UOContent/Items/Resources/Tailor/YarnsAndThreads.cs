@@ -18,7 +18,9 @@ namespace Server.Items
         public bool Dye(Mobile from, DyeTub sender)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             Hue = sender.DyedHue;
 
@@ -61,12 +63,16 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Material.Deleted)
+                {
                     return;
+                }
 
                 var loom = targeted as ILoom;
 
                 if (loom == null && targeted is AddonComponent component)
+                {
                     loom = component.Addon as ILoom;
+                }
 
                 if (loom != null)
                 {
@@ -79,7 +85,9 @@ namespace Server.Items
                         m_Material.Consume();
 
                         if (targeted is Item item)
-                            item.SendLocalizedMessageTo(from, 1010001 + loom.Phase++);
+                        {
+                            item.SendLocalizedMessageTo(@from, 1010001 + loom.Phase++);
+                        }
                     }
                     else
                     {

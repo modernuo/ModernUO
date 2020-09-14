@@ -106,7 +106,9 @@ namespace Server.Items
         public bool Dye(Mobile from, DyeTub sender)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             Hue = sender.DyedHue;
 
@@ -120,7 +122,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_Title != null)
+            {
                 list.Add(1062841, m_Title); // ~1_NAME~ the Snowman
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

@@ -98,7 +98,9 @@ namespace Server.Guilds
             get
             {
                 if (m_Display == GuildDisplayType.All)
+                {
                     return base.WillFilter;
+                }
 
                 return true;
             }
@@ -123,9 +125,13 @@ namespace Server.Guilds
             if (guild.IsAlly(g))
             {
                 if (guild.Alliance.Leader == g)
+                {
                     defs[2] = 1063237; // Alliance Leader
+                }
                 else
+                {
                     defs[2] = 1062964; // Ally
+                }
             }
             else if (guild.IsWar(g))
             {
@@ -138,10 +144,14 @@ namespace Server.Guilds
         public override bool HasRelationship(Guild g)
         {
             if (g == guild)
+            {
                 return false;
+            }
 
             if (guild.FindPendingWar(g) != null)
+            {
                 return true;
+            }
 
             var alliance = guild.Alliance;
 
@@ -152,7 +162,9 @@ namespace Server.Guilds
                 if (leader != null)
                 {
                     if (guild == leader && alliance.IsPendingMember(g) || g == leader && alliance.IsPendingMember(guild))
+                    {
                         return true;
+                    }
                 }
                 else if (alliance.IsPendingMember(g))
                 {
@@ -169,9 +181,13 @@ namespace Server.Guilds
             // AddHtmlText( 66, 153 + itemNumber * 28, 280, 26, m_LowerText, false, false );
 
             if (m_LowerText?.Number > 0)
+            {
                 AddHtmlLocalized(66, 153 + itemNumber * 28, 280, 26, m_LowerText.Number, 0xF);
+            }
             else if (m_LowerText?.String != null)
+            {
                 AddHtml(66, 153 + itemNumber * 28, 280, 26, Color(m_LowerText.String, 0x99));
+            }
 
             if (AllowAdvancedSearch)
             {
@@ -184,7 +200,9 @@ namespace Server.Guilds
         protected override bool IsFiltered(Guild g, string filter)
         {
             if (g == null)
+            {
                 return true;
+            }
 
             switch (m_Display)
             {
@@ -194,7 +212,9 @@ namespace Server.Guilds
 
                         if (!(guild.FindActiveWar(g) != null || guild.IsAlly(g))
                         ) // As per OSI, only the guild leader wars show up under the sorting by relation
+                        {
                             return true;
+                        }
 
                         return false;
                     }
@@ -216,7 +236,9 @@ namespace Server.Guilds
         public override Gump GetObjectInfoGump(PlayerMobile pm, Guild g, Guild o)
         {
             if (guild == o)
+            {
                 return new GuildInfoGump(pm, g);
+            }
 
             return new OtherGuildInfo(pm, g, o);
         }
@@ -226,10 +248,14 @@ namespace Server.Guilds
             base.OnResponse(sender, info);
 
             if (!(sender.Mobile is PlayerMobile pm) || !IsMember(pm, guild))
+            {
                 return;
+            }
 
             if (AllowAdvancedSearch && info.ButtonID == 8)
+            {
                 pm.SendGump(new GuildAdvancedSearchGump(pm, guild, m_Display, AdvancedSearch_Callback));
+            }
         }
 
         public void AdvancedSearch_Callback(GuildDisplayType display)
@@ -245,11 +271,19 @@ namespace Server.Guilds
             public int Compare(Guild x, Guild y)
             {
                 if (x == null && y == null)
+                {
                     return 0;
+                }
+
                 if (x == null)
+                {
                     return -1;
+                }
+
                 if (y == null)
+                {
                     return 1;
+                }
 
                 return Insensitive.Compare(x.Name, y.Name);
             }
@@ -264,24 +298,40 @@ namespace Server.Guilds
             public int Compare(Guild x, Guild y)
             {
                 if (x == null && y == null)
+                {
                     return 0;
+                }
+
                 if (x == null)
+                {
                     return -1;
+                }
+
                 if (y == null)
+                {
                     return 1;
+                }
 
                 var aStatus = GuildCompareStatus.Peace;
                 var bStatus = GuildCompareStatus.Peace;
 
                 if (m_Guild.IsAlly(x))
+                {
                     aStatus = GuildCompareStatus.Ally;
+                }
                 else if (m_Guild.IsWar(x))
+                {
                     aStatus = GuildCompareStatus.War;
+                }
 
                 if (m_Guild.IsAlly(y))
+                {
                     bStatus = GuildCompareStatus.Ally;
+                }
                 else if (m_Guild.IsWar(y))
+                {
                     bStatus = GuildCompareStatus.War;
+                }
 
                 return ((int)aStatus).CompareTo((int)bStatus);
             }
@@ -301,11 +351,19 @@ namespace Server.Guilds
             public int Compare(Guild x, Guild y)
             {
                 if (x == null && y == null)
+                {
                     return 0;
+                }
+
                 if (x == null)
+                {
                     return -1;
+                }
+
                 if (y == null)
+                {
                     return 1;
+                }
 
                 return Insensitive.Compare(x.Abbreviation, y.Abbreviation);
             }

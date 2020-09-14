@@ -21,12 +21,16 @@ namespace Server.Spells.Ninjitsu
             Item handOne = from.FindItemOnLayer(Layer.OneHanded) as BaseWeapon;
 
             if (handOne != null && !(handOne is BaseRanged))
-                return base.Validate(from);
+            {
+                return base.Validate(@from);
+            }
 
             Item handTwo = from.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon;
 
             if (handTwo != null && !(handTwo is BaseRanged))
-                return base.Validate(from);
+            {
+                return base.Validate(@from);
+            }
 
             from.SendLocalizedMessage(1063097); // You must be wielding a melee weapon without a shield to use this ability.
             return false;

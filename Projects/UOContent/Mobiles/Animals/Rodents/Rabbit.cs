@@ -8,7 +8,9 @@ namespace Server.Mobiles
             Body = 205;
 
             if (Utility.RandomBool())
+            {
                 Hue = Utility.RandomAnimalHue();
+            }
 
             SetStr(6, 10);
             SetDex(26, 38);

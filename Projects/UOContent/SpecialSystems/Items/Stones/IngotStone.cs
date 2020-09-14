@@ -20,7 +20,9 @@ namespace Server.Items
             var ingotBag = new BagOfingots();
 
             if (!from.AddToBackpack(ingotBag))
+            {
                 ingotBag.Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

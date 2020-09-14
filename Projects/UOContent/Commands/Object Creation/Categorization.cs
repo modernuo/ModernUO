@@ -22,7 +22,9 @@ namespace Server.Commands
             get
             {
                 if (m_RootItems == null)
+                {
                     Load();
+                }
 
                 return m_RootItems;
             }
@@ -33,7 +35,9 @@ namespace Server.Commands
             get
             {
                 if (m_RootMobiles == null)
+                {
                     Load();
+                }
 
                 return m_RootMobiles;
             }
@@ -62,7 +66,9 @@ namespace Server.Commands
         {
             var list = new List<CAGJson>();
             foreach (var ce in ceList)
+            {
                 RecurseExport(list, ce, null);
+            }
 
             JsonConfig.Serialize(fileName, list);
         }
@@ -72,6 +78,7 @@ namespace Server.Commands
             category = string.IsNullOrWhiteSpace(category) ? ce.Title : $"{category}{ce.Title}";
 
             if (ce.Matched.Count > 0)
+            {
                 list.Add(
                     new CAGJson
                     {
@@ -84,15 +91,21 @@ namespace Server.Commands
                                         var itemID = item.ItemID;
 
                                         if (item is BaseAddon addon && addon.Components.Count == 1)
+                                        {
                                             itemID = addon.Components[0].ItemID;
+                                        }
 
                                         if (itemID > TileData.MaxItemValue)
+                                        {
                                             itemID = 1;
+                                        }
 
                                         int? hue = item.Hue & 0x7FFF;
 
                                         if ((hue & 0x4000) != 0)
+                                        {
                                             hue = 0;
+                                        }
 
                                         return new CAGObject
                                         {
@@ -109,7 +122,9 @@ namespace Server.Commands
                                         int? hue = m.Hue & 0x7FFF;
 
                                         if ((hue & 0x4000) != 0)
+                                        {
                                             hue = 0;
+                                        }
 
                                         return new CAGObject
                                         {
@@ -127,6 +142,7 @@ namespace Server.Commands
                             .ToArray()
                     }
                 );
+            }
 
             var subCats = new List<CategoryEntry>(ce.SubCategories);
 
@@ -146,7 +162,9 @@ namespace Server.Commands
             AddTypes(Core.Assembly, types);
 
             for (var i = 0; i < AssemblyHandler.Assemblies.Length; ++i)
+            {
                 AddTypes(AssemblyHandler.Assemblies[i], types);
+            }
 
             m_RootItems = Load(types, "Data/items.cfg");
             m_RootMobiles = Load(types, "Data/mobiles.cfg");
@@ -156,7 +174,10 @@ namespace Server.Commands
         {
             var lines = CategoryLine.Load(config);
 
-            if (lines.Length <= 0) return new CategoryEntry();
+            if (lines.Length <= 0)
+            {
+                return new CategoryEntry();
+            }
 
             var index = 0;
             var root = new CategoryEntry(null, lines, ref index);
@@ -169,7 +190,9 @@ namespace Server.Commands
         private static bool IsConstructible(Type type)
         {
             if (!type.IsSubclassOf(typeofItem) && !type.IsSubclassOf(typeofMobile))
+            {
                 return false;
+            }
 
             var ctor = type.GetConstructor(Type.EmptyTypes);
 
@@ -185,10 +208,14 @@ namespace Server.Commands
                 var type = allTypes[i];
 
                 if (type.IsAbstract)
+                {
                     continue;
+                }
 
                 if (IsConstructible(type))
+                {
                     types.Add(type);
+                }
             }
         }
 
@@ -200,7 +227,9 @@ namespace Server.Commands
                 var match = GetDeepestMatch(root, type);
 
                 if (match == null)
+                {
                     continue;
+                }
 
                 try
                 {
@@ -216,14 +245,18 @@ namespace Server.Commands
         private static CategoryEntry GetDeepestMatch(CategoryEntry root, Type type)
         {
             if (!root.IsMatch(type))
+            {
                 return null;
+            }
 
             for (var i = 0; i < root.SubCategories.Length; ++i)
             {
                 var check = GetDeepestMatch(root.SubCategories[i], type);
 
                 if (check != null)
+                {
                     return check;
+                }
             }
 
             return root;
@@ -295,14 +328,18 @@ namespace Server.Commands
             var start = text.IndexOf('(');
 
             if (start < 0)
+            {
                 throw new FormatException($"Input string not correctly formatted ('{text}')");
+            }
 
             Title = text.Substring(0, start).Trim();
 
             var end = text.IndexOf(')', ++start);
 
             if (end < start)
+            {
                 throw new FormatException($"Input string not correctly formatted ('{text}')");
+            }
 
             text = text.Substring(start, end - start);
             var split = text.Split(';');
@@ -314,9 +351,13 @@ namespace Server.Commands
                 var type = AssemblyHandler.FindFirstTypeForName(split[i].Trim());
 
                 if (type == null)
+                {
                     Console.WriteLine("Match type not found ('{0}')", split[i].Trim());
+                }
                 else
+                {
                     list.Add(type);
+                }
             }
 
             Matches = list.ToArray();
@@ -329,7 +370,9 @@ namespace Server.Commands
             var entryList = new List<CategoryEntry>();
 
             while (index < lines.Length && lines[index].Indentation > ourIndentation)
+            {
                 entryList.Add(new CategoryEntry(this, lines, ref index));
+            }
 
             SubCategories = entryList.ToArray();
             entryList.Clear();
@@ -352,7 +395,9 @@ namespace Server.Commands
             var isMatch = false;
 
             for (var i = 0; !isMatch && i < Matches.Length; ++i)
+            {
                 isMatch = type == Matches[i] || type.IsSubclassOf(Matches[i]);
+            }
 
             return isMatch;
         }
@@ -365,11 +410,17 @@ namespace Server.Commands
             int index;
 
             for (index = 0; index < input.Length; ++index)
+            {
                 if (char.IsLetter(input, index))
+                {
                     break;
+                }
+            }
 
             if (index >= input.Length)
+            {
                 throw new FormatException($"Input string not correctly formatted ('{input}')");
+            }
 
             Indentation = index;
             Text = input.Substring(index);
@@ -389,7 +440,9 @@ namespace Server.Commands
                 string line;
 
                 while ((line = ip.ReadLine()) != null)
+                {
                     list.Add(new CategoryLine(line));
+                }
             }
 
             return list.ToArray();

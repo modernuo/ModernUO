@@ -16,13 +16,15 @@ namespace Server.Commands.Generic
         public override void Process(Mobile from, BaseCommand command, string[] args)
         {
             if (command.ValidateArgs(this, new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args)))
-                from.BeginTarget(
+            {
+                @from.BeginTarget(
                     -1,
                     command.ObjectTypes == ObjectTypes.All,
                     TargetFlags.None,
                     (m, targeted, a) => OnTarget(m, targeted, command, a),
                     args
                 );
+            }
         }
 
         public void OnTarget(Mobile from, object targeted, BaseCommand command, string[] args)

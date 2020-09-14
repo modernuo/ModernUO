@@ -49,7 +49,9 @@ namespace Server.Mobiles
             base.OnThink();
 
             if (DateTime.UtcNow < m_NextFlare)
+            {
                 return;
+            }
 
             m_NextFlare = DateTime.UtcNow + TimeSpan.FromSeconds(5.0 + 25.0 * Utility.RandomDouble());
 
@@ -64,7 +66,9 @@ namespace Server.Mobiles
             var caster = ControlMaster ?? SummonMaster;
 
             if (caster == null)
+            {
                 return;
+            }
 
             var list = GetMobilesInRange(5)
                 .Where(
@@ -79,10 +83,14 @@ namespace Server.Mobiles
                 var friendly = true;
 
                 for (var j = 0; friendly && j < caster.Aggressors.Count; ++j)
+                {
                     friendly = caster.Aggressors[j].Attacker != m;
+                }
 
                 for (var j = 0; friendly && j < caster.Aggressed.Count; ++j)
+                {
                     friendly = caster.Aggressed[j].Defender != m;
+                }
 
                 if (friendly)
                 {

@@ -39,7 +39,9 @@ namespace Server.Spells.Mysticism
                 SpellHelper.Turn(Caster, p);
 
                 if (p is Item item)
+                {
                     p = item.GetWorldLocation();
+                }
 
                 var targets = new List<Mobile>();
 
@@ -54,17 +56,23 @@ namespace Server.Spells.Mysticism
                     foreach (var m in map.GetMobilesInRange(new Point3D(p), 2))
                     {
                         if (m == Caster)
+                        {
                             continue;
+                        }
 
                         if (SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) && Caster.CanSee(m))
                         {
                             if (!Caster.InLOS(m))
+                            {
                                 continue;
+                            }
 
                             targets.Add(m);
 
                             if (m.Player)
+                            {
                                 pvp = true;
+                            }
                         }
                     }
                 }

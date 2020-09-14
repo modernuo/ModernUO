@@ -47,7 +47,9 @@ namespace Server.Commands.Generic
                         var args = new string[oldArgs.Length - 2];
 
                         for (var i = 0; i < args.Length; ++i)
+                        {
                             args[i] = oldArgs[i + 2];
+                        }
 
                         Process(range, e.Mobile, command, args);
                     }
@@ -64,12 +66,16 @@ namespace Server.Commands.Generic
             var impl = AreaCommandImplementor.Instance;
 
             if (impl == null)
+            {
                 return;
+            }
 
             var map = from.Map;
 
             if (map == null || map == Map.Internal)
+            {
                 return;
+            }
 
             var start = new Point3D(from.X - range, from.Y - range, from.Z);
             var end = new Point3D(from.X + range, from.Y + range, from.Z);

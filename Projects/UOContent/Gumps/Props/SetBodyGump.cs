@@ -91,10 +91,14 @@ namespace Server.Gumps
                 }
 
                 if (ourPage > 0)
+                {
                     AddButton(480, 12, 0x15E3, 0x15E7, 5);
+                }
 
                 if ((ourPage + 1) * 12 < ourList.Count)
+                {
                     AddButton(497, 12, 0x15E1, 0x15E5, 6);
+                }
             }
         }
 
@@ -121,7 +125,9 @@ namespace Server.Gumps
             else if (index >= 0 && index < 4)
             {
                 if (m_Monster == null)
+                {
                     LoadLists();
+                }
 
                 ModelBodyType type;
                 List<InternalEntry> list;
@@ -236,7 +242,9 @@ namespace Server.Gumps
                 var bodyID = oldEntry.Body.BodyID;
 
                 if (((Body)bodyID).IsEmpty)
+                {
                     continue;
+                }
 
                 List<InternalEntry> list;
 
@@ -260,7 +268,9 @@ namespace Server.Gumps
                 var itemID = ShrinkTable.Lookup(bodyID, -1);
 
                 if (itemID != -1)
+                {
                     list.Add(new InternalEntry(bodyID, itemID, oldEntry.Name));
+                }
             }
 
             m_Monster.Sort();
@@ -299,11 +309,13 @@ namespace Server.Gumps
                 DisplayName = name.ToLower();
 
                 for (var i = 0; i < m_GroupNames.Length; ++i)
+                {
                     if (DisplayName.StartsWith(m_GroupNames[i]))
                     {
                         DisplayName = DisplayName.Substring(m_GroupNames[i].Length);
                         break;
                     }
+                }
 
                 DisplayName = DisplayName.Replace('_', ' ');
             }
@@ -319,7 +331,9 @@ namespace Server.Gumps
             public int CompareTo(InternalEntry comp)
             {
                 if (Name == null && comp.Name == null)
+                {
                     return 0;
+                }
 
                 var v = Name?.CompareTo(comp.Name) ?? 1;
 

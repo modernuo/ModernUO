@@ -15,7 +15,10 @@ namespace Server.Engines.Mahjong
 
         public static OnMahjongPacketReceive GetSubCommandDelegate(int cmd)
         {
-            if (cmd >= 0 && cmd < 0x100) return m_SubCommandDelegates[cmd];
+            if (cmd >= 0 && cmd < 0x100)
+            {
+                return m_SubCommandDelegates[cmd];
+            }
 
             return null;
         }
@@ -51,9 +54,13 @@ namespace Server.Engines.Mahjong
             var onReceive = GetSubCommandDelegate(cmd);
 
             if (onReceive != null)
+            {
                 onReceive(game, state, pvSrc);
+            }
             else
+            {
                 pvSrc.Trace(state);
+            }
         }
 
         private static MahjongPieceDirection GetDirection(int value)
@@ -81,7 +88,9 @@ namespace Server.Engines.Mahjong
         public static void ExitGame(MahjongGame game, NetState state, PacketReader pvSrc)
         {
             if (game == null)
+            {
                 return;
+            }
 
             var from = state.Mobile;
 
@@ -91,7 +100,9 @@ namespace Server.Engines.Mahjong
         public static void GivePoints(MahjongGame game, NetState state, PacketReader pvSrc)
         {
             if (game?.Players.IsInGamePlayer(state.Mobile) != true)
+            {
                 return;
+            }
 
             int to = pvSrc.ReadByte();
             var amount = pvSrc.ReadInt32();
@@ -102,7 +113,9 @@ namespace Server.Engines.Mahjong
         public static void RollDice(MahjongGame game, NetState state, PacketReader pvSrc)
         {
             if (game?.Players.IsInGamePlayer(state.Mobile) != true)
+            {
                 return;
+            }
 
             game.Dices.RollDices(state.Mobile);
         }
@@ -110,7 +123,9 @@ namespace Server.Engines.Mahjong
         public static void BuildWalls(MahjongGame game, NetState state, PacketReader pvSrc)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
+            {
                 return;
+            }
 
             game.ResetWalls(state.Mobile);
         }
@@ -118,7 +133,9 @@ namespace Server.Engines.Mahjong
         public static void ResetScores(MahjongGame game, NetState state, PacketReader pvSrc)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
+            {
                 return;
+            }
 
             game.Players.ResetScores(MahjongGame.BaseScore);
         }
@@ -126,7 +143,9 @@ namespace Server.Engines.Mahjong
         public static void AssignDealer(MahjongGame game, NetState state, PacketReader pvSrc)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
+            {
                 return;
+            }
 
             int position = pvSrc.ReadByte();
 
@@ -136,12 +155,16 @@ namespace Server.Engines.Mahjong
         public static void OpenSeat(MahjongGame game, NetState state, PacketReader pvSrc)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
+            {
                 return;
+            }
 
             int position = pvSrc.ReadByte();
 
             if (game.Players.GetPlayer(position) == state.Mobile)
+            {
                 return;
+            }
 
             game.Players.OpenSeat(position);
         }
@@ -149,7 +172,9 @@ namespace Server.Engines.Mahjong
         public static void ChangeOption(MahjongGame game, NetState state, PacketReader pvSrc)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
+            {
                 return;
+            }
 
             pvSrc.ReadInt16();
             pvSrc.ReadByte();
@@ -163,7 +188,9 @@ namespace Server.Engines.Mahjong
         public static void MoveWallBreakIndicator(MahjongGame game, NetState state, PacketReader pvSrc)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
+            {
                 return;
+            }
 
             int y = pvSrc.ReadInt16();
             int x = pvSrc.ReadInt16();
@@ -174,7 +201,9 @@ namespace Server.Engines.Mahjong
         public static void TogglePublicHand(MahjongGame game, NetState state, PacketReader pvSrc)
         {
             if (game?.Players.IsInGamePlayer(state.Mobile) != true)
+            {
                 return;
+            }
 
             pvSrc.ReadInt16();
             pvSrc.ReadByte();
@@ -187,12 +216,16 @@ namespace Server.Engines.Mahjong
         public static void MoveTile(MahjongGame game, NetState state, PacketReader pvSrc)
         {
             if (game?.Players.IsInGamePlayer(state.Mobile) != true)
+            {
                 return;
+            }
 
             int number = pvSrc.ReadByte();
 
             if (number < 0 || number >= game.Tiles.Length)
+            {
                 return;
+            }
 
             pvSrc.ReadByte(); // Current direction
 
@@ -218,7 +251,9 @@ namespace Server.Engines.Mahjong
         public static void MoveDealerIndicator(MahjongGame game, NetState state, PacketReader pvSrc)
         {
             if (game?.Players.IsInGameDealer(state.Mobile) != true)
+            {
                 return;
+            }
 
             var direction = GetDirection(pvSrc.ReadByte());
 

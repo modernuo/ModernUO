@@ -60,7 +60,9 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             if (Utility.RandomDouble() < 0.1)
+            {
                 c.DropItem(new PrimitiveFetish());
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

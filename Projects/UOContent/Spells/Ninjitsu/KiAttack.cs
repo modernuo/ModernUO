@@ -17,7 +17,9 @@ namespace Server.Spells.Ninjitsu
         public override void OnUse(Mobile from)
         {
             if (!Validate(from))
+            {
                 return;
+            }
 
             var info = new KiAttackInfo(from);
             info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(2.0), EndKiAttack, info);
@@ -45,7 +47,9 @@ namespace Server.Spells.Ninjitsu
         public override double GetDamageScalar(Mobile attacker, Mobile defender)
         {
             if (attacker.Hidden)
+            {
                 return 1.0;
+            }
 
             /*
              * Pub40 changed pvp damage max to 55%
@@ -57,7 +61,9 @@ namespace Server.Spells.Ninjitsu
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             if (GetBonus(attacker) == 0.0)
             {
@@ -90,7 +96,9 @@ namespace Server.Spells.Ninjitsu
         public static double GetBonus(Mobile from)
         {
             if (!m_Table.TryGetValue(from, out var info))
+            {
                 return 0;
+            }
 
             var xDelta = info.m_Location.X - from.X;
             var yDelta = info.m_Location.Y - from.Y;
@@ -98,7 +106,9 @@ namespace Server.Spells.Ninjitsu
             var bonus = Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
 
             if (bonus > 20.0)
+            {
                 bonus = 20.0;
+            }
 
             return bonus;
         }

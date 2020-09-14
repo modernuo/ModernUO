@@ -47,7 +47,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (ItemID == 0x1401)
+            {
                 ItemID = 0x1400;
+            }
         }
     }
 }

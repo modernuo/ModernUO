@@ -43,9 +43,13 @@ namespace Server.Items
             Weight = 1.0;
 
             if (Utility.RandomDouble() < 0.01)
+            {
                 Hue = m_Hues.RandomElement();
+            }
             else
+            {
                 Hue = 0x8A0;
+            }
         }
 
         public SpecialFishingNet(Serial serial) : base(serial)
@@ -94,7 +98,9 @@ namespace Server.Items
                         InUse = reader.ReadBool();
 
                         if (InUse)
+                        {
                             Delete();
+                        }
 
                         break;
                     }
@@ -123,15 +129,21 @@ namespace Server.Items
         public void OnTarget(Mobile from, object obj)
         {
             if (Deleted || InUse)
+            {
                 return;
+            }
 
             if (!(obj is IPoint3D p3D))
+            {
                 return;
+            }
 
             var map = from.Map;
 
             if (map == null || map == Map.Internal)
+            {
                 return;
+            }
 
             int x = p3D.X, y = p3D.Y, z = map.GetAverageZ(x, y); // OSI just takes the targeted Z
 
@@ -150,8 +162,12 @@ namespace Server.Items
                 var p = new Point3D(x, y, z);
 
                 if (GetType() == typeof(SpecialFishingNet))
+                {
                     for (var i = 1; i < Amount; ++i) // these were stackable before, doh
-                        from.AddToBackpack(new SpecialFishingNet());
+                    {
+                        @from.AddToBackpack(new SpecialFishingNet());
+                    }
+                }
 
                 InUse = true;
                 Movable = false;
@@ -191,7 +207,9 @@ namespace Server.Items
         private void DoEffect(Mobile from, Point3D p, int index)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             if (index == 1)
             {
@@ -201,6 +219,7 @@ namespace Server.Items
             else if (index <= 7 || index == 14)
             {
                 if (RequireDeepWater)
+                {
                     for (var i = 0; i < 3; ++i)
                     {
                         int x, y;
@@ -244,16 +263,25 @@ namespace Server.Items
 
                         Effects.SendLocationEffect(new Point3D(p.X + x, p.Y + y, p.Z), Map, 0x352D, 16, 4);
                     }
+                }
                 else
+                {
                     Effects.SendLocationEffect(p, Map, 0x352D, 16, 4);
+                }
 
                 if (Utility.RandomBool())
+                {
                     Effects.PlaySound(p, Map, 0x364);
+                }
 
                 if (index == 14)
-                    FinishEffect(p, Map, from);
+                {
+                    FinishEffect(p, Map, @from);
+                }
                 else
+                {
                     Z -= 1;
+                }
             }
         }
 
@@ -262,7 +290,9 @@ namespace Server.Items
             var count = Utility.RandomMinMax(1, 3);
 
             if (Hue != 0x8A0)
+            {
                 count += Utility.RandomMinMax(1, 2);
+            }
 
             return count;
         }
@@ -296,7 +326,9 @@ namespace Server.Items
             spawn.MoveToWorld(new Point3D(x, y, p.Z), map);
 
             if (spawn is Kraken && Utility.RandomDouble() < 0.2)
+            {
                 spawn.PackItem(new MessageInABottle(map == Map.Felucca ? Map.Felucca : Map.Trammel));
+            }
         }
 
         protected virtual void FinishEffect(Point3D p, Map map, Mobile from)
@@ -329,14 +361,24 @@ namespace Server.Items
             var valid = ValidateDeepWater(map, x, y);
 
             for (int j = 1, offset = 5; valid && j <= 5; ++j, offset += 5)
+            {
                 if (!ValidateDeepWater(map, x + offset, y + offset))
+                {
                     valid = false;
+                }
                 else if (!ValidateDeepWater(map, x + offset, y - offset))
+                {
                     valid = false;
+                }
                 else if (!ValidateDeepWater(map, x - offset, y + offset))
+                {
                     valid = false;
+                }
                 else if (!ValidateDeepWater(map, x - offset, y - offset))
+                {
                     valid = false;
+                }
+            }
 
             return valid;
         }
@@ -347,7 +389,9 @@ namespace Server.Items
             var water = false;
 
             for (var i = 0; !water && i < m_WaterTiles.Length; i += 2)
+            {
                 water = tileID >= m_WaterTiles[i] && tileID <= m_WaterTiles[i + 1];
+            }
 
             return water;
         }
@@ -355,21 +399,27 @@ namespace Server.Items
         private static bool ValidateUndeepWater(Map map, object obj, ref int z)
         {
             if (!(obj is StaticTarget))
+            {
                 return false;
+            }
 
             var target = (StaticTarget)obj;
 
             if (BaseHouse.FindHouseAt(target.Location, map, 0) != null)
+            {
                 return false;
+            }
 
             var itemID = target.ItemID;
 
             for (var i = 0; i < m_UndeepWaterTiles.Length; i += 2)
+            {
                 if (itemID >= m_UndeepWaterTiles[i] && itemID <= m_UndeepWaterTiles[i + 1])
                 {
                     z = target.Z;
                     return true;
                 }
+            }
 
             return false;
         }

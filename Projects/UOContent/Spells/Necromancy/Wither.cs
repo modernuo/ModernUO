@@ -48,6 +48,7 @@ namespace Server.Spells.Necromancy
                     var isMonster = cbc?.Controlled == false && !cbc.Summoned;
 
                     foreach (var m in Caster.GetMobilesInRange(Core.ML ? 4 : 5))
+                    {
                         if (Caster != m && Caster.InLOS(m) && (isMonster || SpellHelper.ValidIndirectTarget(Caster, m)) &&
                             Caster.CanBeHarmful(m, false))
                         {
@@ -56,7 +57,9 @@ namespace Server.Spells.Necromancy
                                 if (m is BaseCreature bc)
                                 {
                                     if (!bc.Controlled && !bc.Summoned && bc.Team == cbc.Team)
+                                    {
                                         continue;
+                                    }
                                 }
                                 else if (!m.Player)
                                 {
@@ -66,6 +69,7 @@ namespace Server.Spells.Necromancy
 
                             targets.Add(m);
                         }
+                    }
 
                     Effects.PlaySound(Caster.Location, map, 0x1FB);
                     Effects.PlaySound(Caster.Location, map, 0x10B);
@@ -96,7 +100,9 @@ namespace Server.Spells.Necromancy
 
                         // PvP spell damage increase cap of 15% from an item�s magic property in Publish 33(SE)
                         if (Core.SE && m.Player && Caster.Player && sdiBonus > 15)
+                        {
                             sdiBonus = 15;
+                        }
 
                         damage *= 100 + sdiBonus;
                         damage /= 100;

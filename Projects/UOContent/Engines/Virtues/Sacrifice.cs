@@ -22,9 +22,13 @@ namespace Server
             if (!from.Hidden)
             {
                 if (from.Alive)
-                    from.Target = new InternalTarget();
+                {
+                    @from.Target = new InternalTarget();
+                }
                 else
-                    Resurrect(from);
+                {
+                    Resurrect(@from);
+                }
             }
             else
             {
@@ -35,14 +39,18 @@ namespace Server
         public static void CheckAtrophy(Mobile from)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return;
+            }
 
             try
             {
                 if (pm.LastSacrificeLoss + LossDelay < DateTime.UtcNow)
                 {
                     if (VirtueHelper.Atrophy(from, VirtueName.Sacrifice, LossAmount))
-                        from.SendLocalizedMessage(1052041); // You have lost some Sacrifice.
+                    {
+                        @from.SendLocalizedMessage(1052041); // You have lost some Sacrifice.
+                    }
 
                     var level = VirtueHelper.GetLevel(from, VirtueName.Sacrifice);
 
@@ -59,10 +67,14 @@ namespace Server
         public static void Resurrect(Mobile from)
         {
             if (from.Alive)
+            {
                 return;
+            }
 
             if (!(from is PlayerMobile pm))
+            {
                 return;
+            }
 
             if (from.Criminal)
             {
@@ -90,13 +102,19 @@ namespace Server
         public static void Sacrifice(Mobile from, object targeted)
         {
             if (!from.CheckAlive())
+            {
                 return;
+            }
 
             if (!(from is PlayerMobile pm))
+            {
                 return;
+            }
 
             if (!(targeted is Mobile targ))
+            {
                 return;
+            }
 
             if (!ValidateCreature(targ))
             {
@@ -127,11 +145,17 @@ namespace Server
                 int toGain;
 
                 if (from.Fame < 5000)
+                {
                     toGain = 500;
+                }
                 else if (from.Fame < 10000)
+                {
                     toGain = 1000;
+                }
                 else
+                {
                     toGain = 2000;
+                }
 
                 from.Fame = 0;
 
@@ -153,7 +177,9 @@ namespace Server
                         from.SendLocalizedMessage(1052008); // You have gained a path in Sacrifice!
 
                         if (pm.AvailableResurrects < 3)
+                        {
                             ++pm.AvailableResurrects;
+                        }
                     }
                     else
                     {
@@ -168,7 +194,9 @@ namespace Server
         public static bool ValidateCreature(Mobile m)
         {
             if (m is BaseCreature creature && (creature.Controlled || creature.Summoned))
+            {
                 return false;
+            }
 
             return m is Lich || m is Succubus || m is Daemon || m is EvilMage || m is EnslavedGargoyle ||
                    m is GargoyleEnforcer;

@@ -20,7 +20,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (GuildGump.BadMember(m_Mobile, m_Guild))
+            {
                 return;
+            }
 
             if (info.ButtonID == 1)
             {

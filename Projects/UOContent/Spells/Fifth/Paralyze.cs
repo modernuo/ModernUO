@@ -26,7 +26,9 @@ namespace Server.Spells.Fifth
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (!Caster.CanSee(m))
             {
@@ -50,10 +52,14 @@ namespace Server.Spells.Fifth
                     var secs = (int)(GetDamageSkill(Caster) / 10 - GetResistSkill(m) / 10);
 
                     if (!Core.SE)
+                    {
                         secs += 2;
+                    }
 
                     if (!m.Player)
+                    {
                         secs *= 3;
+                    }
 
                     duration = Math.Max(secs, 0);
                 }
@@ -64,7 +70,9 @@ namespace Server.Spells.Fifth
                     duration = 7.0 + Caster.Skills.Magery.Value * 0.2;
 
                     if (CheckResisted(m))
+                    {
                         duration *= 0.75;
+                    }
                 }
 
                 if (m is PlagueBeastLord lord)

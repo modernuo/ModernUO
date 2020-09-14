@@ -38,7 +38,9 @@ namespace Server.Engines.Help
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID != 1)
+            {
                 m_From.SendGump(new MessageSentGump(m_From, m_Name, m_Text));
+            }
         }
     }
 }

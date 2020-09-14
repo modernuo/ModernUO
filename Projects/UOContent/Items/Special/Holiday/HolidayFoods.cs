@@ -27,7 +27,9 @@ namespace Server.Items
         private static CandyCaneTimer EnsureTimer(Mobile from)
         {
             if (!m_ToothAches.TryGetValue(from, out var timer))
-                m_ToothAches[from] = timer = new CandyCaneTimer(from);
+            {
+                m_ToothAches[@from] = timer = new CandyCaneTimer(@from);
+            }
 
             return timer;
         }
@@ -96,7 +98,9 @@ namespace Server.Items
                          */
 
                         if (Utility.RandomBool() && Eater.Body.IsHuman && !Eater.Mounted)
+                        {
                             Eater.Animate(32, 5, 1, true, false, 0);
+                        }
                     }
                     else if (Eaten == 60)
                     {

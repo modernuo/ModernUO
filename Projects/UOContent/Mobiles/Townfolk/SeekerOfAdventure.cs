@@ -29,7 +29,10 @@ namespace Server.Mobiles
         public override string[] GetPossibleDestinations()
         {
             if (Core.ML)
+            {
                 return m_MLDestinations;
+            }
+
             return m_Dungeons;
         }
 
@@ -50,21 +53,31 @@ namespace Server.Mobiles
         public override void InitOutfit()
         {
             if (Female)
+            {
                 AddItem(new FancyDress(GetRandomHue()));
+            }
             else
+            {
                 AddItem(new FancyShirt(GetRandomHue()));
+            }
 
             var lowHue = GetRandomHue();
 
             AddItem(new ShortPants(lowHue));
 
             if (Female)
+            {
                 AddItem(new ThighBoots(lowHue));
+            }
             else
+            {
                 AddItem(new Boots(lowHue));
+            }
 
             if (!Female)
+            {
                 AddItem(new BodySash(lowHue));
+            }
 
             AddItem(new Cloak(GetRandomHue()));
 

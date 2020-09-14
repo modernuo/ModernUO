@@ -36,7 +36,9 @@ namespace Server.SkillHandlers
             protected override void OnTargetFinish(Mobile from)
             {
                 if (m_SetSkillTime)
-                    from.NextSkillTime = Core.TickCount;
+                {
+                    @from.NextSkillTime = Core.TickCount;
+                }
             }
 
             protected override void OnTarget(Mobile from, object targeted)
@@ -58,9 +60,13 @@ namespace Server.SkillHandlers
                     else if (!from.InRange(targ, 2))
                     {
                         if (!targ.Female)
+                        {
                             number = 500401; // You are too far away to beg from him.
+                        }
                         else
+                        {
                             number = 500402; // You are too far away to beg from her.
+                        }
                     }
                     else if (!Core.ML && from.Mounted
                     ) // If we're on a mount, who would give us money? TODO: guessed it's removed since ML
@@ -86,7 +92,9 @@ namespace Server.SkillHandlers
                 }
 
                 if (number != -1)
-                    from.SendLocalizedMessage(number);
+                {
+                    @from.SendLocalizedMessage(number);
+                }
             }
 
             private class InternalTimer : Timer
@@ -125,12 +133,18 @@ namespace Server.SkillHandlers
                         var max = 10 + m_From.Fame / 2500;
 
                         if (max > 14)
+                        {
                             max = 14;
+                        }
                         else if (max < 10)
+                        {
                             max = 10;
+                        }
 
                         if (toConsume > max)
+                        {
                             toConsume = max;
+                        }
 
                         if (toConsume > 0)
                         {
@@ -154,7 +168,9 @@ namespace Server.SkillHandlers
                                     var toLose = m_From.Karma + 3000;
 
                                     if (toLose > 40)
+                                    {
                                         toLose = 40;
+                                    }
 
                                     Titles.AwardKarma(m_From, -toLose, true);
                                 }

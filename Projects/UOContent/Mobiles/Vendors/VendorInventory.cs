@@ -73,7 +73,10 @@ namespace Server.Mobiles
 
         public void Delete()
         {
-            foreach (var item in Items) item.Delete();
+            foreach (var item in Items)
+            {
+                item.Delete();
+            }
 
             Items.Clear();
             Gold = 0;
@@ -122,8 +125,12 @@ namespace Server.Mobiles
                     }
 
                     foreach (var item in m_Inventory.Items)
+                    {
                         if (!item.Deleted)
+                        {
                             house.DropToMovingCrate(item);
+                        }
+                    }
 
                     m_Inventory.Gold = 0;
                     m_Inventory.Items.Clear();

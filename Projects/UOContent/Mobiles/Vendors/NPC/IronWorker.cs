@@ -74,32 +74,44 @@ namespace Server.Mobiles
             item = FindItemOnLayer(Layer.Pants);
 
             if (item != null)
+            {
                 item.Hue = Utility.RandomBrightHue();
+            }
 
             item = FindItemOnLayer(Layer.OuterLegs);
 
             if (item != null)
+            {
                 item.Hue = Utility.RandomBrightHue();
+            }
 
             item = FindItemOnLayer(Layer.InnerLegs);
 
             if (item != null)
+            {
                 item.Hue = Utility.RandomBrightHue();
+            }
 
             item = FindItemOnLayer(Layer.OuterTorso);
 
             if (item != null)
+            {
                 item.Hue = Utility.RandomBrightHue();
+            }
 
             item = FindItemOnLayer(Layer.InnerTorso);
 
             if (item != null)
+            {
                 item.Hue = Utility.RandomBrightHue();
+            }
 
             item = FindItemOnLayer(Layer.Shirt);
 
             if (item != null)
+            {
                 item.Hue = Utility.RandomBrightHue();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

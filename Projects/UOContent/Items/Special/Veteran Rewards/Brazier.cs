@@ -83,9 +83,13 @@ namespace Server.Items
                 if (house?.IsCoOwner(from) == true)
                 {
                     if (m_Fire != null)
+                    {
                         TurnOff();
+                    }
                     else
+                    {
                         TurnOn();
+                    }
                 }
                 else
                 {
@@ -108,7 +112,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076222); // 6th Year Veteran Reward
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -163,7 +169,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             if (IsChildOf(from.Backpack))
             {
@@ -181,7 +189,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076222); // 6th Year Veteran Reward
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -231,12 +241,16 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_Brazier?.Deleted != false)
+                {
                     return;
+                }
 
                 var m = sender.Mobile;
 
                 if (info.ButtonID != 0x19AA && info.ButtonID != 0x19BB)
+                {
                     return;
+                }
 
                 var brazier = new RewardBrazier(info.ButtonID) { IsRewardItem = m_Brazier.IsRewardItem };
 

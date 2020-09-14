@@ -85,7 +85,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {
@@ -113,7 +115,9 @@ namespace Server.Gumps
                 case 4: // Change guild type
                     {
                         if (!Guild.OrderChaos)
+                        {
                             return;
+                        }
 
                         GuildGump.EnsureClosed(m_Mobile);
                         m_Mobile.SendGump(new GuildChangeTypeGump(m_Mobile, m_Guild));

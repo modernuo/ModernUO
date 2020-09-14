@@ -66,10 +66,14 @@ namespace Server.Mobiles
                 var item = Loot.RandomReagent();
 
                 if (item == null)
+                {
                     continue;
+                }
 
                 if (!bag.TryDropItem(this, item, false))
+                {
                     item.Delete();
+                }
             }
 
             pack.DropItem(bag);
@@ -122,7 +126,9 @@ namespace Server.Mobiles
                 {
                     if (!(m is MeerWarrior) || !IsFriend(m) || !CanBeBeneficial(m) || m.Hits >= m.HitsMax || m.Poisoned ||
                         MortalStrike.IsWounded(m))
+                    {
                         continue;
+                    }
 
                     DoBeneficial(m);
 

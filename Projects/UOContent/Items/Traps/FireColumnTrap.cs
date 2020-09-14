@@ -53,10 +53,14 @@ namespace Server.Items
         public override void OnTrigger(Mobile from)
         {
             if (from.AccessLevel > AccessLevel.Player)
+            {
                 return;
+            }
 
             if (WarningFlame)
+            {
                 DoEffect();
+            }
 
             if (from.Alive && CheckRange(from.Location, 0))
             {
@@ -73,7 +77,9 @@ namespace Server.Items
                 );
 
                 if (!WarningFlame)
+                {
                     DoEffect();
+                }
             }
         }
 

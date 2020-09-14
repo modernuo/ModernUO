@@ -44,14 +44,18 @@ namespace Server.Gumps
                 }
 
                 if (radio)
+                {
                     AddRadio(20, 35 + i % 11 * 30, 208, 209, false, i);
+                }
 
                 var g = m_List[i];
 
                 string name;
 
                 if ((name = g.Name) != null && (name = name.Trim()).Length <= 0)
+                {
                     name = "(empty)";
+                }
 
                 AddLabel(radio ? 55 : 20, 35 + i % 11 * 30, 0, name);
             }

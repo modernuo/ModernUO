@@ -74,7 +74,9 @@ namespace Server.Engines.Quests.Necro
         public override bool IgnoreYoungProtection(Mobile from)
         {
             if (from is SummonedPaladin)
+            {
                 return true;
+            }
 
             return base.IgnoreYoungProtection(from);
         }
@@ -82,15 +84,21 @@ namespace Server.Engines.Quests.Necro
         public static bool HasLostCallingScroll(Mobile from)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return false;
+            }
 
             var qs = pm.Quest;
 
             if (qs is DarkTidesQuest)
+            {
                 if (qs.IsObjectiveInProgress(typeof(FindMardothAboutKronusObjective)) ||
                     qs.IsObjectiveInProgress(typeof(FindWellOfTearsObjective)) ||
                     qs.IsObjectiveInProgress(typeof(UseCallingScrollObjective)))
-                    return from.Backpack?.FindItemByType<KronusScroll>() == null;
+                {
+                    return @from.Backpack?.FindItemByType<KronusScroll>() == null;
+                }
+            }
 
             return false;
         }

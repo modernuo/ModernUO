@@ -66,7 +66,9 @@ namespace Server.Items
                 var name = RandomTrack(DawnsMusicRarity.Common);
 
                 if (!Tracks.Contains(name))
+                {
                     Tracks.Add(name);
+                }
             }
         }
 
@@ -84,7 +86,9 @@ namespace Server.Items
         public override void OnAfterDuped(Item newItem)
         {
             if (!(newItem is DawnsMusicBox box))
+            {
                 return;
+            }
 
             box.Tracks = new List<MusicName>();
             box.Tracks.AddRange(Tracks);
@@ -117,11 +121,19 @@ namespace Server.Items
             }
 
             if (commonSongs > 0)
+            {
                 list.Add(1075234, commonSongs.ToString()); // ~1_NUMBER~ Common Tracks
+            }
+
             if (uncommonSongs > 0)
+            {
                 list.Add(1075235, uncommonSongs.ToString()); // ~1_NUMBER~ Uncommon Tracks
+            }
+
             if (rareSongs > 0)
+            {
                 list.Add(1075236, rareSongs.ToString()); // ~1_NUMBER~ Rare Tracks
+            }
         }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
@@ -156,9 +168,13 @@ namespace Server.Items
         public void PlayMusic(Mobile m, MusicName music)
         {
             if (m_Timer?.Running == true)
+            {
                 EndMusic(m);
+            }
             else
+            {
                 m_ItemID = ItemID;
+            }
 
             m.Send(new PlayMusic(music));
             m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 4, Animate);
@@ -167,12 +183,16 @@ namespace Server.Items
         public void EndMusic(Mobile m)
         {
             if (m_Timer?.Running == true)
+            {
                 m_Timer.Stop();
+            }
 
             m.Send(StopMusic.Instance);
 
             if (m_Count > 0)
+            {
                 ItemID = m_ItemID;
+            }
 
             m_Count = 0;
         }
@@ -201,7 +221,9 @@ namespace Server.Items
             writer.Write(Tracks.Count);
 
             for (var i = 0; i < Tracks.Count; i++)
+            {
                 writer.Write((int)Tracks[i]);
+            }
 
             writer.Write((int)Level);
             writer.Write(m_ItemID);
@@ -217,7 +239,9 @@ namespace Server.Items
             Tracks = new List<MusicName>();
 
             for (var i = 0; i < count; i++)
+            {
                 Tracks.Add((MusicName)reader.ReadInt());
+            }
 
             Level = (SecureLevel)reader.ReadInt();
             m_ItemID = reader.ReadInt();
@@ -288,7 +312,9 @@ namespace Server.Items
         public static DawnsMusicInfo GetInfo(MusicName name)
         {
             if (m_Info == null) // sanity
+            {
                 return null;
+            }
 
             m_Info.TryGetValue(name, out var info);
             return info;

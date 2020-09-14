@@ -74,6 +74,7 @@ namespace Server.Engines.MLQuests.Gumps
             AddPage(++m_Page);
 
             if (m_Page > 1)
+            {
                 AddButton(
                     130,
                     430,
@@ -83,8 +84,10 @@ namespace Server.Engines.MLQuests.Gumps
                     GumpButtonType.Page,
                     m_Page - 1
                 );
+            }
 
             if (m_Page < m_MaxPages)
+            {
                 AddButton(
                     275,
                     430,
@@ -94,8 +97,10 @@ namespace Server.Engines.MLQuests.Gumps
                     GumpButtonType.Page,
                     m_Page + 1
                 );
+            }
 
             foreach (var button in m_Buttons)
+            {
                 AddButton(
                     button.Position == ButtonPosition.Left ? 95 : 313,
                     455,
@@ -103,9 +108,12 @@ namespace Server.Engines.MLQuests.Gumps
                     (int)button.Graphic + 2,
                     button.ButtonID
                 );
+            }
 
             if (m_Title != null)
+            {
                 AddHtmlLocalized(130, 68, 220, 48, 1114513, m_Title, 0x2710); // <DIV ALIGN=CENTER>~1_TOKEN~</DIV>
+            }
         }
 
         public void SetPageCount(int maxPages)
@@ -116,9 +124,13 @@ namespace Server.Engines.MLQuests.Gumps
         public void SetTitle(TextDefinition def)
         {
             if (def.Number > 0)
+            {
                 m_Title = $"#{def.Number}"; // OSI does "@@#{0}" instead, why? KR client related?
+            }
             else
+            {
                 m_Title = def.String;
+            }
         }
 
         public void RegisterButton(ButtonPosition position, ButtonGraphic graphic, int buttonID)
@@ -160,7 +172,9 @@ namespace Server.Engines.MLQuests.Gumps
                 if (objective.IsTimed)
                 {
                     if (objective is CollectObjective)
+                    {
                         y -= 16;
+                    }
 
                     BaseObjectiveInstance.WriteTimeRemaining(this, ref y, objective.Duration);
                 }
@@ -184,7 +198,9 @@ namespace Server.Engines.MLQuests.Gumps
             var y = 172;
 
             foreach (var objInstance in instance.Objectives)
+            {
                 objInstance.WriteToGump(this, ref y);
+            }
         }
 
         public void AddRewardsPage(MLQuest quest) // For the quest log/offer gumps

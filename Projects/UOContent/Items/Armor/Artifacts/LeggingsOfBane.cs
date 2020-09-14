@@ -39,16 +39,24 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version <= 1)
+            {
                 if (HitPoints > 255 || MaxHitPoints > 255)
+                {
                     HitPoints = MaxHitPoints = 255;
+                }
+            }
 
             if (version < 1)
             {
                 if (Hue == 0x559)
+                {
                     Hue = 0x4F5;
+                }
 
                 if (ArmorAttributes.DurabilityBonus == 0)
+                {
                     ArmorAttributes.DurabilityBonus = 100;
+                }
 
                 PoisonBonus = 0;
             }

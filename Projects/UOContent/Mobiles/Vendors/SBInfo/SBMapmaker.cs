@@ -18,7 +18,9 @@ namespace Server.Mobiles
                 Add(new GenericBuyInfo(typeof(BlankScroll), 12, 40, 0xEF3, 0));
 
                 for (var i = 0; i < PresetMapEntry.Table.Length; ++i)
+                {
                     Add(new PresetMapBuyInfo(PresetMapEntry.Table[i], Utility.RandomMinMax(7, 10), 20));
+                }
             }
         }
 

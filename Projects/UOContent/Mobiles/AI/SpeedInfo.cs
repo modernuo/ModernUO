@@ -174,10 +174,14 @@ namespace Server
         public static bool Contains(object obj)
         {
             if (!Enabled)
+            {
                 return false;
+            }
 
             if (m_Table == null)
+            {
                 LoadTable();
+            }
 
             return m_Table!.ContainsKey(obj.GetType());
         }
@@ -185,13 +189,19 @@ namespace Server
         public static bool GetSpeeds(object obj, ref double activeSpeed, ref double passiveSpeed)
         {
             if (!Enabled)
+            {
                 return false;
+            }
 
             if (m_Table == null)
+            {
                 LoadTable();
+            }
 
             if (!m_Table!.TryGetValue(obj.GetType(), out var sp))
+            {
                 return false;
+            }
 
             activeSpeed = sp.ActiveSpeed;
             passiveSpeed = sp.PassiveSpeed;
@@ -209,7 +219,9 @@ namespace Server
                 var types = info.Types;
 
                 for (var j = 0; j < types.Length; ++j)
+                {
                     m_Table[types[j]] = info;
+                }
             }
         }
     }

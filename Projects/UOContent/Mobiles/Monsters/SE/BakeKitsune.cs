@@ -47,7 +47,9 @@ namespace Server.Mobiles
             MinTameSkill = 80.7;
 
             if (Utility.RandomDouble() < .25)
+            {
                 PackItem(Seed.RandomBonsaiSeed());
+            }
         }
 
         public BakeKitsune(Serial serial) : base(serial)
@@ -75,7 +77,9 @@ namespace Server.Mobiles
         public override void OnCombatantChange()
         {
             if (Combatant == null && !IsBodyMod && !Controlled && m_DisguiseTimer == null && Utility.RandomBool())
+            {
                 m_DisguiseTimer = Timer.DelayCall(TimeSpan.FromSeconds(Utility.RandomMinMax(15, 30)), Disguise);
+            }
         }
 
         public override bool OnBeforeDeath()
@@ -90,7 +94,9 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomDouble() >= 0.1)
+            {
                 return;
+            }
 
             /* Blood Bath
                * Start cliloc 1070826
@@ -151,7 +157,9 @@ namespace Server.Mobiles
         public void Disguise()
         {
             if (Combatant != null || IsBodyMod || Controlled)
+            {
                 return;
+            }
 
             FixedEffect(0x376A, 8, 32);
             PlaySound(0x1FE);
@@ -200,7 +208,9 @@ namespace Server.Mobiles
         public void RemoveDisguise()
         {
             if (!IsBodyMod)
+            {
                 return;
+            }
 
             Name = null;
             Title = null;
@@ -244,9 +254,13 @@ namespace Server.Mobiles
             public void DrainLife()
             {
                 if (m_Mobile.Alive)
+                {
                     m_Mobile.Damage(2, m_From);
+                }
                 else
+                {
                     DoExpire();
+                }
             }
 
             protected override void OnTick()

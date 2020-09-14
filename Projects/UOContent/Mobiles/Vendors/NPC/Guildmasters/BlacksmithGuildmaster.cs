@@ -43,7 +43,9 @@ namespace Server.Mobiles
             }
 
             if (item == null)
+            {
                 AddItem(new FullApron());
+            }
 
             AddItem(new Bascinet());
             AddItem(new SmithHammer());

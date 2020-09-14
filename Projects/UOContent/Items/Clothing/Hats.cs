@@ -49,7 +49,9 @@ namespace Server.Items
             base.AddEquipInfoAttributes(from, attrs);
 
             if (IsShipwreckedItem)
+            {
                 attrs.Add(new EquipInfoAttribute(1041645)); // recovered from a shipwreck
+            }
         }
 
         public override void AddNameProperties(ObjectPropertyList list)
@@ -57,7 +59,9 @@ namespace Server.Items
             base.AddNameProperties(list);
 
             if (IsShipwreckedItem)
+            {
                 list.Add(1041645); // recovered from a shipwreck
+            }
         }
 
         public override int OnCraft(
@@ -68,10 +72,12 @@ namespace Server.Items
             Quality = (ClothingQuality)quality;
 
             if (Quality == ClothingQuality.Exceptional)
+            {
                 DistributeBonuses(
                     tool is BaseRunicTool ? 6 :
                     Core.SE ? 15 : 14
                 ); // BLAME OSI. (We can't confirm it's an OSI bug yet.)
+            }
 
             return base.OnCraft(quality, makersMark, from, craftSystem, typeRes, tool, craftItem, resHue);
         }
@@ -595,7 +601,9 @@ namespace Server.Items
         public override bool CanEquip(Mobile m)
         {
             if (!base.CanEquip(m))
+            {
                 return false;
+            }
 
             if (m.BodyMod == 183 || m.BodyMod == 184)
             {
@@ -611,7 +619,9 @@ namespace Server.Items
             base.OnAdded(parent);
 
             if (parent is Mobile mobile)
+            {
                 Titles.AwardKarma(mobile, -20, true);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -660,7 +670,9 @@ namespace Server.Items
             var v = Utility.RandomBirdHue();
 
             if (v == 2101)
+            {
                 v = 0;
+            }
 
             return v;
         }

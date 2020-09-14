@@ -25,12 +25,16 @@ namespace Server.Engines.MLQuests
             writer.Write(MLQuestSystem.Contexts.Count);
 
             foreach (var context in MLQuestSystem.Contexts.Values)
+            {
                 context.Serialize(writer);
+            }
 
             writer.Write(MLQuestSystem.Quests.Count);
 
             foreach (var quest in MLQuestSystem.Quests.Values)
+            {
                 MLQuest.Serialize(writer, quest);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -45,13 +49,17 @@ namespace Server.Engines.MLQuests
                 var context = new MLQuestContext(reader, version);
 
                 if (context.Owner != null)
+                {
                     MLQuestSystem.Contexts[context.Owner] = context;
+                }
             }
 
             var quests = reader.ReadInt();
 
             for (var i = 0; i < quests; ++i)
+            {
                 MLQuest.Deserialize(reader, version);
+            }
         }
     }
 }

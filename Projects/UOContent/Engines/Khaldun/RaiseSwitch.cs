@@ -27,12 +27,16 @@ namespace Server.Items
             }
 
             if (RaisableItem?.Deleted == true)
+            {
                 RaisableItem = null;
+            }
 
             Flip();
 
             if (RaisableItem == null)
+            {
                 return;
+            }
 
             if (RaisableItem.IsRaisable)
             {
@@ -95,7 +99,9 @@ namespace Server.Items
         protected virtual void Reset()
         {
             if (ItemID != 0x1093)
+            {
                 Flip();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -132,7 +138,9 @@ namespace Server.Items
             protected override void OnTick()
             {
                 if (m_RaiseSwitch.Deleted)
+                {
                     return;
+                }
 
                 m_RaiseSwitch.m_ResetTimer = null;
 
@@ -167,19 +175,25 @@ namespace Server.Items
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
             if (Utility.InRange(m.Location, Location, CurrentRange) || Utility.InRange(oldLocation, Location, CurrentRange))
+            {
                 Refresh();
+            }
         }
 
         public override void OnMapChange()
         {
             if (!Deleted)
+            {
                 Refresh();
+            }
         }
 
         public override void OnLocationChange(Point3D oldLoc)
         {
             if (!Deleted)
+            {
                 Refresh();
+            }
         }
 
         public void Refresh()
@@ -190,7 +204,9 @@ namespace Server.Items
         public override void Serialize(IGenericWriter writer)
         {
             if (RaisableItem?.Deleted == true)
+            {
                 RaisableItem = null;
+            }
 
             base.Serialize(writer);
 

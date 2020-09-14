@@ -22,10 +22,14 @@ namespace Server.Items
         public bool Dye(Mobile from, DyeTub sender)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             if (Addon != null)
+            {
                 Addon.Hue = sender.DyedHue;
+            }
 
             return true;
         }
@@ -303,13 +307,17 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076225); // 9th Year Veteran Reward
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             if (IsChildOf(from.Backpack))
             {
@@ -496,7 +504,9 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_WallBanner?.Deleted != false || info.ButtonID <= 0 || info.ButtonID >= 31)
+                {
                     return;
+                }
 
                 m_WallBanner.Use(sender.Mobile, info.ButtonID);
             }

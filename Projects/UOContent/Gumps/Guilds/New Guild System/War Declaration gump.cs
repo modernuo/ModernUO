@@ -41,7 +41,9 @@ namespace Server.Guilds
             var pm = sender.Mobile as PlayerMobile;
 
             if (!IsMember(pm, guild))
+            {
                 return;
+            }
 
             var playerRank = pm.GuildRank;
 
@@ -123,14 +125,18 @@ namespace Server.Guilds
                                 }
 
                                 if (war != null)
+                                {
                                     pm.SendLocalizedMessage(1070752); // The proposal has been updated.
+                                }
                                 else
+                                {
                                     m_Other.GuildMessage(
                                         1070781,
                                         guild.Alliance != null
                                             ? guild.Alliance.Name
                                             : guild.Name
                                     ); // ~1_val~ has proposed a war.
+                                }
 
                                 pm.SendLocalizedMessage(
                                     1070751,

@@ -74,7 +74,9 @@ namespace Server.Mobiles
         public override bool HandlesOnSpeech(Mobile from)
         {
             if (from.InRange(Location, 2))
+            {
                 return true;
+            }
 
             return base.HandlesOnSpeech(from);
         }
@@ -88,13 +90,21 @@ namespace Server.Mobiles
                 if (e.HasKeyword(0x0004)) // *join* | *member*
                 {
                     if (pm.NpcGuild == NpcGuild)
+                    {
                         SayTo(pm, 501047); // Thou art already a member of our guild.
+                    }
                     else if (pm.NpcGuild != NpcGuild.None)
+                    {
                         SayTo(pm, 501046); // Thou must resign from thy other guild first.
+                    }
                     else if (pm.GameTime < JoinGameAge || pm.CreationTime + JoinAge > DateTime.UtcNow)
+                    {
                         SayTo(pm, 501048); // You are too young to join my guild...
+                    }
                     else if (CheckCustomReqs(pm))
+                    {
                         SayPriceTo(pm);
+                    }
 
                     e.Handled = true;
                 }

@@ -14,7 +14,9 @@ namespace Server.Engines.Quests.Hag
             Direction = Direction.South;
 
             foreach (var item in EquipItems)
+            {
                 DropItem(item);
+            }
         }
 
         public HagApprenticeCorpse(Serial serial) : base(serial)
@@ -52,7 +54,9 @@ namespace Server.Engines.Quests.Hag
         public override void Open(Mobile from, bool checkSelfLoot)
         {
             if (!from.InRange(GetWorldLocation(), 2))
+            {
                 return;
+            }
 
             if (from is PlayerMobile player)
             {

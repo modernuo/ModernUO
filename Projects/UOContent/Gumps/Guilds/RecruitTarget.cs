@@ -18,7 +18,9 @@ namespace Server.Gumps
         protected override void OnTarget(Mobile from, object targeted)
         {
             if (GuildGump.BadMember(m_Mobile, m_Guild))
+            {
                 return;
+            }
 
             if (targeted is Mobile m)
             {
@@ -57,13 +59,19 @@ namespace Server.Gumps
                 else if (guildFaction != targetFaction)
                 {
                     if (guildFaction == null)
+                    {
                         m_Mobile.SendLocalizedMessage(1013027); // That player cannot join a non-faction guild.
+                    }
                     else if (targetFaction == null)
+                    {
                         m_Mobile.SendLocalizedMessage(
                             1013026
                         ); // That player must be in a faction before joining this guild.
+                    }
                     else
+                    {
                         m_Mobile.SendLocalizedMessage(1013028); // That person has a different faction affiliation.
+                    }
                 }
                 else if (targetState?.IsLeaving == true)
                 {
@@ -84,7 +92,9 @@ namespace Server.Gumps
         protected override void OnTargetFinish(Mobile from)
         {
             if (GuildGump.BadMember(m_Mobile, m_Guild))
+            {
                 return;
+            }
 
             GuildGump.EnsureClosed(m_Mobile);
             m_Mobile.SendGump(new GuildGump(m_Mobile, m_Guild));

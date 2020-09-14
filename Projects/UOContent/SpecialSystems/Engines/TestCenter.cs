@@ -19,13 +19,17 @@ namespace Server.Misc
         {
             // Register our speech handler
             if (Enabled)
+            {
                 EventSink.Speech += EventSink_Speech;
+            }
         }
 
         private static void EventSink_Speech(SpeechEventArgs args)
         {
             if (args.Handled)
+            {
                 return;
+            }
 
             if (Insensitive.StartsWith(args.Speech, "set"))
             {
@@ -34,24 +38,34 @@ namespace Server.Misc
                 var split = args.Speech.Split(' ');
 
                 if (split.Length == 3)
+                {
                     try
                     {
                         var name = split[1];
                         var value = Convert.ToDouble(split[2]);
 
                         if (Insensitive.Equals(name, "str"))
-                            ChangeStrength(from, (int)value);
+                        {
+                            ChangeStrength(@from, (int)value);
+                        }
                         else if (Insensitive.Equals(name, "dex"))
-                            ChangeDexterity(from, (int)value);
+                        {
+                            ChangeDexterity(@from, (int)value);
+                        }
                         else if (Insensitive.Equals(name, "int"))
-                            ChangeIntelligence(from, (int)value);
+                        {
+                            ChangeIntelligence(@from, (int)value);
+                        }
                         else
-                            ChangeSkill(from, name, value);
+                        {
+                            ChangeSkill(@from, name, value);
+                        }
                     }
                     catch
                     {
                         // ignored
                     }
+                }
             }
             else if (Insensitive.Equals(args.Speech, "help"))
             {
@@ -149,9 +163,13 @@ namespace Server.Misc
                     var oldFixedPoint = skill.BaseFixedPoint;
 
                     if (skill.Owner.Total - oldFixedPoint + newFixedPoint > skill.Owner.Cap)
-                        from.SendMessage("You can not exceed the skill cap.  Try setting another skill lower first.");
+                    {
+                        @from.SendMessage("You can not exceed the skill cap.  Try setting another skill lower first.");
+                    }
                     else
+                    {
                         skill.BaseFixedPoint = newFixedPoint;
+                    }
                 }
             }
             else
@@ -198,7 +216,9 @@ namespace Server.Misc
                             var sb = new StringBuilder();
 
                             if (strings.Length > 0)
+                            {
                                 sb.Append(strings[0]);
+                            }
 
                             for (var i = 1; i < strings.Length; ++i)
                             {
@@ -228,6 +248,7 @@ namespace Server.Misc
                             }
 
                             if (sb.Length > 0)
+                            {
                                 sender.Send(
                                     new AsciiMessage(
                                         Server.Serial.MinusOne,
@@ -239,6 +260,7 @@ namespace Server.Misc
                                         sb.ToString()
                                     )
                                 );
+                            }
 
                             break;
                         }

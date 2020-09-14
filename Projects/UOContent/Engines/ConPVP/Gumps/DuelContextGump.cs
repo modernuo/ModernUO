@@ -17,7 +17,9 @@ namespace Server.Engines.ConPVP
             var count = context.Participants.Count;
 
             if (count < 3)
+            {
                 count = 3;
+            }
 
             var height = 35 + 10 + 22 + 30 + 22 + 22 + 2 + count * 22 + 2 + 30;
 
@@ -82,7 +84,9 @@ namespace Server.Engines.ConPVP
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (!Context.Registered)
+            {
                 return;
+            }
 
             var index = info.ButtonID;
 
@@ -124,9 +128,13 @@ namespace Server.Engines.ConPVP
                 case 3: // New Participant
                     {
                         if (Context.Participants.Count < 10)
+                        {
                             Context.Participants.Add(new Participant(Context, 1));
+                        }
                         else
+                        {
                             From.SendMessage("The number of participating parties may not be increased further.");
+                        }
 
                         From.SendGump(new DuelContextGump(From, Context));
 
@@ -137,7 +145,9 @@ namespace Server.Engines.ConPVP
                         index -= 4;
 
                         if (index >= 0 && index < Context.Participants.Count)
+                        {
                             From.SendGump(new ParticipantGump(From, Context, Context.Participants[index]));
+                        }
 
                         break;
                     }

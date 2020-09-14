@@ -72,7 +72,9 @@ namespace Server.Mobiles
         public override bool DoMountAbility(int damage, Mobile attacker)
         {
             if (Rider == null || attacker == null) // sanity
+            {
                 return false;
+            }
 
             if (Rider.Hits - damage < 30 && Rider.Map == attacker.Map && Rider.InRange(attacker, 18)
             ) // Range and map checked here instead of other base fuction because of abiliites that don't need to check this
@@ -110,7 +112,9 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             if (Utility.RandomDouble() < 0.35)
+            {
                 c.DropItem(new KirinBrains());
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -127,7 +131,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (version == 0)
+            {
                 AI = AIType.AI_Mage;
+            }
         }
     }
 }

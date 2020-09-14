@@ -8,7 +8,9 @@ namespace Server.Items
         public OrderShield() : base(0x1BC4)
         {
             if (!Core.AOS)
+            {
                 LootType = LootType.Newbied;
+            }
 
             Weight = 7.0;
         }
@@ -37,7 +39,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 6.0)
+            {
                 Weight = 7.0;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -52,13 +56,17 @@ namespace Server.Items
         public override void OnSingleClick(Mobile from)
         {
             if (Validate(Parent as Mobile))
-                base.OnSingleClick(from);
+            {
+                base.OnSingleClick(@from);
+            }
         }
 
         public virtual bool Validate(Mobile m)
         {
             if (Core.AOS || m?.Player != true || m.AccessLevel != AccessLevel.Player)
+            {
                 return true;
+            }
 
             if (!(m.Guild is Guild g) || g.Type != GuildType.Order)
             {

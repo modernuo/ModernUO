@@ -84,9 +84,13 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (IsChildOf(from.Backpack))
-                from.Target = new InternalTarget(this);
+            {
+                @from.Target = new InternalTarget(this);
+            }
             else
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            {
+                @from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            }
         }
 
         private class InternalTarget : Target
@@ -128,15 +132,24 @@ namespace Server.Items
                                 var bonus = initMaxHP - wearable.MaxHitPoints;
 
                                 if (bonus > 10)
+                                {
                                     bonus = 10;
+                                }
 
                                 wearable.MaxHitPoints += bonus;
                                 wearable.HitPoints += bonus;
 
                                 wearable.ScaleDurability();
 
-                                if (wearable.MaxHitPoints > 255) wearable.MaxHitPoints = 255;
-                                if (wearable.HitPoints > 255) wearable.HitPoints = 255;
+                                if (wearable.MaxHitPoints > 255)
+                                {
+                                    wearable.MaxHitPoints = 255;
+                                }
+
+                                if (wearable.HitPoints > 255)
+                                {
+                                    wearable.HitPoints = 255;
+                                }
 
                                 if (wearable.MaxHitPoints > origMaxHP)
                                 {

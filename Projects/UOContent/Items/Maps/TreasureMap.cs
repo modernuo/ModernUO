@@ -42,9 +42,13 @@ namespace Server.Items
             m_Map = map;
 
             if (level == 0)
+            {
                 ChestLocation = GetRandomHavenLocation();
+            }
             else
+            {
                 ChestLocation = GetRandomLocation();
+            }
 
             Width = 300;
             Height = 300;
@@ -56,19 +60,27 @@ namespace Server.Items
             var y1 = ChestLocation.Y - Utility.RandomMinMax(height / 4, height / 4 * 3);
 
             if (x1 < 0)
+            {
                 x1 = 0;
+            }
 
             if (y1 < 0)
+            {
                 y1 = 0;
+            }
 
             var x2 = x1 + width;
             var y2 = y1 + height;
 
             if (x2 >= 5120)
+            {
                 x2 = 5119;
+            }
 
             if (y2 >= 4096)
+            {
                 y2 = 4095;
+            }
 
             x1 = x2 - width;
             y1 = y2 - height;
@@ -148,12 +160,18 @@ namespace Server.Items
                 if (m_Decoder != null)
                 {
                     if (m_Level == 6)
+                    {
                         return 1063453;
+                    }
+
                     return 1041516 + m_Level;
                 }
 
                 if (m_Level == 6)
+                {
                     return 1063452;
+                }
+
                 return 1041510 + m_Level;
             }
         }
@@ -161,7 +179,9 @@ namespace Server.Items
         public static Point2D GetRandomLocation()
         {
             if (m_Locations == null)
+            {
                 LoadLocations();
+            }
 
             return m_Locations?.RandomElement() ?? Point2D.Zero;
         }
@@ -169,7 +189,9 @@ namespace Server.Items
         public static Point2D GetRandomHavenLocation()
         {
             if (m_HavenLocations == null)
+            {
                 LoadLocations();
+            }
 
             return m_HavenLocations?.RandomElement() ?? Point2D.Zero;
         }
@@ -187,6 +209,7 @@ namespace Server.Items
                 string line;
 
                 while ((line = ip.ReadLine()) != null)
+                {
                     try
                     {
                         var split = line.Split(' ');
@@ -197,12 +220,15 @@ namespace Server.Items
                         list.Add(loc);
 
                         if (IsInHavenIsland(loc))
+                        {
                             havenList.Add(loc);
+                        }
                     }
                     catch
                     {
                         // ignored
                     }
+                }
             }
 
             m_Locations = list.ToArray();
@@ -244,7 +270,9 @@ namespace Server.Items
         public static BaseCreature Spawn(int level, Point3D p, Map map, Mobile target, bool guardian)
         {
             if (map == null)
+            {
                 return null;
+            }
 
             var c = Spawn(level, p, guardian);
 
@@ -281,7 +309,9 @@ namespace Server.Items
                 }
 
                 if (target != null)
+                {
                     c.Combatant = target;
+                }
 
                 return c;
             }
@@ -340,18 +370,26 @@ namespace Server.Items
             }
 
             if (!m_Completed && m_Decoder == null)
-                Decode(from);
+            {
+                Decode(@from);
+            }
             else
-                DisplayTo(from);
+            {
+                DisplayTo(@from);
+            }
         }
 
         private bool CheckYoung(Mobile from)
         {
             if (from.AccessLevel >= AccessLevel.GameMaster)
+            {
                 return true;
+            }
 
             if (from is PlayerMobile mobile && mobile.Young)
+            {
                 return true;
+            }
 
             if (from == Decoder)
             {
@@ -382,7 +420,9 @@ namespace Server.Items
         public void Decode(Mobile from)
         {
             if (m_Completed || m_Decoder != null)
+            {
                 return;
+            }
 
             if (m_Level == 0)
             {
@@ -397,7 +437,9 @@ namespace Server.Items
                 var minSkill = GetMinSkillLevel();
 
                 if (from.Skills.Cartography.Value < minSkill)
-                    from.SendLocalizedMessage(503013); // The map is too difficult to attempt to decode.
+                {
+                    @from.SendLocalizedMessage(503013); // The map is too difficult to attempt to decode.
+                }
 
                 var maxSkill = minSkill + 60.0;
 
@@ -412,7 +454,9 @@ namespace Server.Items
             Decoder = from;
 
             if (Core.AOS)
+            {
                 LootType = LootType.Blessed;
+            }
 
             DisplayTo(from);
         }
@@ -474,7 +518,9 @@ namespace Server.Items
             list.Add(m_Map == Map.Felucca ? 1041502 : 1041503); // for somewhere in Felucca : for somewhere in Trammel
 
             if (m_Completed)
+            {
                 list.Add(1041507, m_CompletedBy == null ? "someone" : m_CompletedBy.Name); // completed by ~1_val~
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -499,16 +545,24 @@ namespace Server.Items
             else if (m_Decoder != null)
             {
                 if (m_Level == 6)
-                    LabelTo(from, 1063453);
+                {
+                    LabelTo(@from, 1063453);
+                }
                 else
-                    LabelTo(from, 1041516 + m_Level);
+                {
+                    LabelTo(@from, 1041516 + m_Level);
+                }
             }
             else
             {
                 if (m_Level == 6)
-                    LabelTo(from, 1041522, $"#{1063452}\t \t#{(m_Map == Map.Felucca ? 1041502 : 1041503)}");
+                {
+                    LabelTo(@from, 1041522, $"#{1063452}\t \t#{(m_Map == Map.Felucca ? 1041502 : 1041503)}");
+                }
                 else
-                    LabelTo(from, 1041522, $"#{1041510 + m_Level}\t \t#{(m_Map == Map.Felucca ? 1041502 : 1041503)}");
+                {
+                    LabelTo(@from, 1041522, $"#{1041510 + m_Level}\t \t#{(m_Map == Map.Felucca ? 1041502 : 1041503)}");
+                }
             }
         }
 
@@ -550,14 +604,18 @@ namespace Server.Items
                         ChestLocation = reader.ReadPoint2D();
 
                         if (version == 0 && m_Completed)
+                        {
                             m_CompletedBy = m_Decoder;
+                        }
 
                         break;
                     }
             }
 
             if (Core.AOS && m_Decoder != null && LootType == LootType.Regular)
+            {
                 LootType = LootType.Blessed;
+            }
         }
 
         private class DigTarget : Target
@@ -569,7 +627,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Map.Deleted)
+                {
                     return;
+                }
 
                 var map = m_Map.m_Map;
 
@@ -611,13 +671,21 @@ namespace Server.Items
                     var skillValue = from.Skills.Mining.Value;
 
                     if (skillValue >= 100.0)
+                    {
                         maxRange = 4;
+                    }
                     else if (skillValue >= 81.0)
+                    {
                         maxRange = 3;
+                    }
                     else if (skillValue >= 51.0)
+                    {
                         maxRange = 2;
+                    }
                     else
+                    {
                         maxRange = 1;
+                    }
 
                     var loc = m_Map.ChestLocation;
                     int x = loc.X, y = loc.Y;
@@ -637,21 +705,31 @@ namespace Server.Items
                             var z = map.GetAverageZ(x, y);
 
                             if (!map.CanFit(x, y, z, 16, true))
-                                from.SendLocalizedMessage(
+                            {
+                                @from.SendLocalizedMessage(
                                     503021
                                 ); // You have found the treasure chest but something is keeping it from being dug up.
+                            }
                             else if (from.BeginAction<TreasureMap>())
-                                new DigTimer(from, m_Map, new Point3D(x, y, z), map).Start();
+                            {
+                                new DigTimer(@from, m_Map, new Point3D(x, y, z), map).Start();
+                            }
                             else
-                                from.SendLocalizedMessage(503020); // You are already digging treasure.
+                            {
+                                @from.SendLocalizedMessage(503020); // You are already digging treasure.
+                            }
                         }
                     }
                     else if (m_Map.Level > 0)
                     {
                         if (Utility.InRange(targ3D, chest3D0, 8)) // We're close, but not quite
-                            from.SendLocalizedMessage(503032);    // You dig and dig but no treasure seems to be here.
+                        {
+                            @from.SendLocalizedMessage(503032); // You dig and dig but no treasure seems to be here.
+                        }
                         else
-                            from.SendLocalizedMessage(503035); // You dig and dig but fail to find any treasure.
+                        {
+                            @from.SendLocalizedMessage(503035); // You dig and dig but fail to find any treasure.
+                        }
                     }
                     else
                     {
@@ -756,9 +834,13 @@ namespace Server.Items
                 var height = 16;
 
                 if (z > m_Location.Z)
+                {
                     height -= z - m_Location.Z;
+                }
                 else
+                {
                     z = m_Location.Z;
+                }
 
                 if (!m_Map.CanFit(m_Location.X, m_Location.Y, z, height, true, true, false))
                 {
@@ -828,13 +910,17 @@ namespace Server.Items
                         var bc = Spawn(m_TreasureMap.Level, m_Chest.Location, m_Chest.Map, null, true);
 
                         if (bc != null)
+                        {
                             m_Chest.Guardians.Add(bc);
+                        }
                     }
                 }
                 else
                 {
                     if (m_From.Body.IsHuman && !m_From.Mounted)
+                    {
                         m_From.Animate(11, 5, 1, true, false, 0);
+                    }
 
                     new SoundTimer(m_From, 0x125 + m_Count % 2).Start();
                 }
@@ -869,7 +955,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (!m_Map.Deleted)
+                {
                     m_Map.Decode(Owner.From);
+                }
             }
         }
 
@@ -882,7 +970,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (!m_Map.Deleted)
+                {
                     m_Map.DisplayTo(Owner.From);
+                }
             }
         }
 
@@ -895,20 +985,28 @@ namespace Server.Items
                 m_Map = map;
 
                 if (!enabled)
+                {
                     Flags |= CMEFlags.Disabled;
+                }
             }
 
             public override void OnClick()
             {
                 if (m_Map.Deleted)
+                {
                     return;
+                }
 
                 var from = Owner.From;
 
                 if (HasDiggingTool(from))
-                    m_Map.OnBeginDig(from);
+                {
+                    m_Map.OnBeginDig(@from);
+                }
                 else
-                    from.SendMessage("You must have a digging tool to dig for treasure.");
+                {
+                    @from.SendMessage("You must have a digging tool to dig for treasure.");
+                }
             }
         }
     }

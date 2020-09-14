@@ -61,7 +61,9 @@ namespace Server.Engines.BulkOrders
             var price = 0;
 
             if (pv.GetVendorItem(m_Book)?.IsForSale == false)
+            {
                 price = m_Entry.Price;
+            }
 
             if (price != m_Price)
             {
@@ -116,9 +118,13 @@ namespace Server.Engines.BulkOrders
                     }
 
                     if (m_Book.Entries.Count > 0)
+                    {
                         m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));
+                    }
                     else
+                    {
                         m_From.SendLocalizedMessage(1062381); // The book is empty.
+                    }
                 }
                 else
                 {

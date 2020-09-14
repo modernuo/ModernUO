@@ -43,9 +43,12 @@ namespace Server.Engines.BulkOrders
                 AddHtmlLocalized(40, 144, 210, 20, 1045140, 0x7FFF); // Special requirements to meet:
 
                 if (deed.RequireExceptional)
+                {
                     AddHtmlLocalized(40, 168, 350, 20, 1045141, 0x7FFF); // All items must be exceptional.
+                }
 
                 if (deed.Material != BulkMaterialType.None)
+                {
                     AddHtmlLocalized(
                         40,
                         deed.RequireExceptional ? 192 : 168,
@@ -54,6 +57,7 @@ namespace Server.Engines.BulkOrders
                         GetMaterialNumberFor(deed.Material),
                         0x7FFF
                     ); // All items must be made with x material.
+                }
             }
 
             AddHtmlLocalized(40, 216, 350, 20, 1045139, 0x7FFF); // Do you want to accept this order?
@@ -88,15 +92,22 @@ namespace Server.Engines.BulkOrders
         public override void OnServerClose(NetState owner)
         {
             if (m_Deed?.Deleted == false)
+            {
                 m_Deed.Delete();
+            }
         }
 
         public static int GetMaterialNumberFor(BulkMaterialType material)
         {
             if (material >= BulkMaterialType.DullCopper && material <= BulkMaterialType.Valorite)
+            {
                 return 1045142 + (material - BulkMaterialType.DullCopper);
+            }
+
             if (material >= BulkMaterialType.Spined && material <= BulkMaterialType.Barbed)
+            {
                 return 1049348 + (material - BulkMaterialType.Spined);
+            }
 
             return 0;
         }

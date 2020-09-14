@@ -294,15 +294,24 @@ namespace Server.Engines.Help
 
         private static void EventSink_HelpRequest(Mobile m)
         {
-            if (m.NetState.Gumps.OfType<HelpGump>().Any()) return;
+            if (m.NetState.Gumps.OfType<HelpGump>().Any())
+            {
+                return;
+            }
 
             if (!PageQueue.CheckAllowedToPage(m))
+            {
                 return;
+            }
 
             if (PageQueue.Contains(m))
+            {
                 m.SendMenu(new ContainedMenu(m));
+            }
             else
+            {
                 m.SendGump(new HelpGump(m));
+            }
         }
 
         private static bool IsYoung(Mobile m) => m is PlayerMobile mobile && mobile.Young;
@@ -314,7 +323,9 @@ namespace Server.Engines.Help
                 var info = m.Aggressed[i];
 
                 if (DateTime.UtcNow - info.LastCombatTime < TimeSpan.FromSeconds(30.0))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -407,15 +418,21 @@ namespace Server.Engines.Help
                         if (IsYoung(from))
                         {
                             if (from.Region.IsPartOf<JailRegion>())
-                                from.SendLocalizedMessage(
+                            {
+                                @from.SendLocalizedMessage(
                                     1114345,
                                     "",
                                     0x35
                                 ); // You'll need a better jailbreak plan than that!
+                            }
                             else if (from.Region.IsPartOf("Haven Island"))
-                                from.SendLocalizedMessage(1041529); // You're already in Haven
+                            {
+                                @from.SendLocalizedMessage(1041529); // You're already in Haven
+                            }
                             else
-                                from.MoveToWorld(new Point3D(3503, 2574, 14), Map.Trammel);
+                            {
+                                @from.MoveToWorld(new Point3D(3503, 2574, 14), Map.Trammel);
+                            }
                         }
 
                         break;
@@ -423,7 +440,9 @@ namespace Server.Engines.Help
             }
 
             if (type != (PageType)(-1) && PageQueue.CheckAllowedToPage(from))
-                from.SendGump(new PagePromptGump(from, type));
+            {
+                @from.SendGump(new PagePromptGump(@from, type));
+            }
         }
     }
 }

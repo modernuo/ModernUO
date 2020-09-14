@@ -39,17 +39,24 @@ namespace Server.Items
         public bool CouldFit(IPoint3D p, Map map)
         {
             if (map?.CanFit(p.X, p.Y, p.Z, ItemData.Height) != true)
+            {
                 return false;
+            }
 
             if (FacingSouth)
+            {
                 return BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map); // north wall
+            }
+
             return BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map);     // west wall
         }
 
         public bool Dye(Mobile from, DyeTub sender)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             Hue = sender.DyedHue;
 
@@ -72,7 +79,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (Core.ML && m_IsRewardItem)
+            {
                 list.Add(1076218); // 2nd Year Veteran Reward
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -151,13 +160,17 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076218); // 2nd Year Veteran Reward
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             if (IsChildOf(from.Backpack))
             {
@@ -231,21 +244,30 @@ namespace Server.Items
                     }
 
                     if (i > 1)
+                    {
                         AddButton(75, 198, 0x8AF, 0x8AF, 0, GumpButtonType.Page, i - 1);
+                    }
 
                     if (i < 4)
+                    {
                         AddButton(475, 198, 0x8B0, 0x8B0, 0, GumpButtonType.Page, i + 1);
+                    }
                 }
             }
 
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_Banner?.Deleted != false)
+                {
                     return;
+                }
 
                 var m = sender.Mobile;
 
-                if (info.ButtonID < Start || info.ButtonID > End || (info.ButtonID & 0x1) != 0) return;
+                if (info.ButtonID < Start || info.ButtonID > End || (info.ButtonID & 0x1) != 0)
+                {
+                    return;
+                }
 
                 m.SendLocalizedMessage(1042037); // Where would you like to place this banner?
                 m.Target = new InternalTarget(m_Banner, info.ButtonID);
@@ -266,7 +288,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Banner?.Deleted != false)
+                {
                     return;
+                }
 
                 if (m_Banner.IsChildOf(from.Backpack))
                 {
@@ -278,7 +302,9 @@ namespace Server.Items
                         var map = from.Map;
 
                         if (p == null || map == null)
+                        {
                             return;
+                        }
 
                         var p3d = new Point3D(p);
                         var id = TileData.ItemTable[m_ItemID & TileData.MaxItemValue];
@@ -367,14 +393,20 @@ namespace Server.Items
                 public override void OnResponse(NetState sender, RelayInfo info)
                 {
                     if (m_Banner?.Deleted != false || m_House == null)
+                    {
                         return;
+                    }
 
                     Banner banner = null;
 
                     if (info.ButtonID == (int)Buttons.East)
+                    {
                         banner = new Banner(m_ItemID + 1);
+                    }
                     else if (info.ButtonID == (int)Buttons.South)
+                    {
                         banner = new Banner(m_ItemID);
+                    }
 
                     if (banner != null)
                     {

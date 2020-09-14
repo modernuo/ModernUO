@@ -52,11 +52,16 @@ namespace Server.Engines.Harvest
         public void CheckRespawn()
         {
             if (m_Current == m_Maximum || m_NextRespawn > DateTime.UtcNow)
+            {
                 return;
+            }
 
             m_Current = m_Maximum;
 
-            if (Definition.RandomizeVeins) m_DefaultVein = Definition.GetVeinFrom(Utility.Random(Definition.VeinWeights));
+            if (Definition.RandomizeVeins)
+            {
+                m_DefaultVein = Definition.GetVeinFrom(Utility.Random(Definition.VeinWeights));
+            }
 
             m_Vein = m_DefaultVein;
         }
@@ -75,7 +80,9 @@ namespace Server.Engines.Harvest
 
                 var minutes = min + rnd * (max - min);
                 if (Definition.RaceBonus && from.Race == Race.Elf) // def.RaceBonus = Core.ML
-                    minutes *= .75;                                // 25% off the time.
+                {
+                    minutes *= .75; // 25% off the time.
+                }
 
                 m_NextRespawn = DateTime.UtcNow + TimeSpan.FromMinutes(minutes);
             }
@@ -85,7 +92,9 @@ namespace Server.Engines.Harvest
             }
 
             if (m_Current < 0)
+            {
                 m_Current = 0;
+            }
         }
     }
 }

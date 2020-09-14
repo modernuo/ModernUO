@@ -135,12 +135,16 @@ namespace Server.Mobiles
             {
                 if (m_SculptedBy.ShowFameTitle && (m_SculptedBy.Player || m_SculptedBy.Body.IsHuman) &&
                     m_SculptedBy.Fame >= 10000)
+                {
                     list.Add(
                         1076202,
                         $"{(m_SculptedBy.Female ? "Lady" : "Lord")} {m_SculptedBy.Name}"
                     ); // Sculpted by ~1_Name~
+                }
                 else
+                {
                     list.Add(1076202, m_SculptedBy.Name); // Sculpted by ~1_Name~
+                }
             }
         }
 
@@ -153,7 +157,9 @@ namespace Server.Mobiles
                 var house = BaseHouse.FindHouseAt(this);
 
                 if (house?.IsCoOwner(from) == true || from.AccessLevel > AccessLevel.Counselor)
+                {
                     list.Add(new DemolishEntry(this));
+                }
             }
         }
 
@@ -162,7 +168,9 @@ namespace Server.Mobiles
             base.OnAfterDelete();
 
             if (Plinth?.Deleted == false)
+            {
                 Plinth.Delete();
+            }
         }
 
         protected override void OnMapChange(Map oldMap)
@@ -170,7 +178,9 @@ namespace Server.Mobiles
             InvalidatePose();
 
             if (Plinth != null)
+            {
                 Plinth.Map = Map;
+            }
         }
 
         protected override void OnLocationChange(Point3D oldLocation)
@@ -178,7 +188,9 @@ namespace Server.Mobiles
             InvalidatePose();
 
             if (Plinth != null)
+            {
                 Plinth.Location = new Point3D(X, Y, Z - 5);
+            }
         }
 
         public override bool CanBeRenamedBy(Mobile from) => false;
@@ -232,7 +244,9 @@ namespace Server.Mobiles
             Frozen = true;
 
             if (m_SculptedBy == null || Map == Map.Internal) // Remove preview statues
+            {
                 Timer.DelayCall(Delete);
+            }
         }
 
         public void Sculpt(Mobile by)
@@ -292,14 +306,18 @@ namespace Server.Mobiles
         public void CloneClothes(Mobile from)
         {
             for (var i = Items.Count - 1; i >= 0; i--)
+            {
                 Items[i].Delete();
+            }
 
             for (var i = from.Items.Count - 1; i >= 0; i--)
             {
                 var item = from.Items[i];
 
                 if (item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank)
+                {
                     AddItem(CloneItem(item));
+                }
             }
         }
 
@@ -324,10 +342,14 @@ namespace Server.Mobiles
             HairHue = Hue;
 
             if (FacialHairItemID > 0)
+            {
                 FacialHairHue = Hue;
+            }
 
             for (var i = Items.Count - 1; i >= 0; i--)
+            {
                 Items[i].Hue = Hue;
+            }
 
             Plinth?.InvalidateHue();
         }
@@ -394,7 +416,9 @@ namespace Server.Mobiles
             public override void OnClick()
             {
                 if (m_Statue.Deleted)
+                {
                     return;
+                }
 
                 m_Statue.Demolish(Owner.From);
             }
@@ -431,7 +455,10 @@ namespace Server.Mobiles
             {
                 var t = m_Type;
 
-                if (Statue != null) t = Statue.StatueType;
+                if (Statue != null)
+                {
+                    t = Statue.StatueType;
+                }
 
                 return t switch
                 {
@@ -452,7 +479,9 @@ namespace Server.Mobiles
             get
             {
                 if (Statue != null)
+                {
                     return Statue.StatueType;
+                }
 
                 return m_Type;
             }
@@ -475,10 +504,14 @@ namespace Server.Mobiles
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076222); // 6th Year Veteran Reward
+            }
 
             if (Statue != null)
+            {
                 list.Add(1076231, Statue.Name); // Statue of ~1_Name~
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -543,7 +576,10 @@ namespace Server.Mobiles
 
             var version = reader.ReadEncodedInt();
 
-            if (version >= 1) m_Type = (StatueType)reader.ReadInt();
+            if (version >= 1)
+            {
+                m_Type = (StatueType)reader.ReadInt();
+            }
 
             Statue = reader.ReadMobile() as CharacterStatue;
             m_IsRewardItem = reader.ReadBool();
@@ -567,7 +603,9 @@ namespace Server.Mobiles
             var map = from.Map;
 
             if (p == null || map == null || m_Maker?.Deleted != false)
+            {
                 return;
+            }
 
             if (m_Maker.IsChildOf(from.Backpack))
             {
@@ -597,7 +635,9 @@ namespace Server.Mobiles
                     house.Addons.Add(plinth);
 
                     if (m_Maker is IRewardItem rewardItem)
+                    {
                         statue.IsRewardItem = rewardItem.IsRewardItem;
+                    }
 
                     statue.Plinth = plinth;
                     plinth.MoveToWorld(loc, map);
@@ -638,9 +678,14 @@ namespace Server.Mobiles
         public static AddonFitResult CouldFit(Point3D p, Map map, Mobile from, ref BaseHouse house)
         {
             if (!map.CanFit(p.X, p.Y, p.Z, 20, true))
+            {
                 return AddonFitResult.Blocked;
+            }
+
             if (!BaseAddon.CheckHouse(from, p, map, 20, ref house))
+            {
                 return AddonFitResult.NotInHouse;
+            }
 
             return CheckDoors(p, 20, house);
         }
@@ -658,7 +703,9 @@ namespace Server.Mobiles
 
                 if (Utility.InRange(doorLoc, p, 1) &&
                     (p.Z == doorLoc.Z || p.Z + height > doorLoc.Z && doorLoc.Z + doorHeight > p.Z))
+                {
                     return AddonFitResult.DoorTooClose;
+                }
             }
 
             return AddonFitResult.Valid;

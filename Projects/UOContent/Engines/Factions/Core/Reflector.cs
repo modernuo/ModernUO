@@ -16,7 +16,9 @@ namespace Server.Factions
             get
             {
                 if (m_Towns == null)
+                {
                     ProcessTypes();
+                }
 
                 return m_Towns;
             }
@@ -27,7 +29,9 @@ namespace Server.Factions
             get
             {
                 if (m_Factions == null)
+                {
                     ProcessTypes();
+                }
 
                 return m_Factions;
             }
@@ -65,12 +69,16 @@ namespace Server.Factions
                     if (type.IsSubclassOf(typeof(Faction)))
                     {
                         if (Construct(type) is Faction faction)
+                        {
                             Faction.Factions.Add(faction);
+                        }
                     }
                     else if (type.IsSubclassOf(typeof(Town)))
                     {
                         if (Construct(type) is Town town)
+                        {
                             Town.Towns.Add(town);
+                        }
                     }
                 }
             }

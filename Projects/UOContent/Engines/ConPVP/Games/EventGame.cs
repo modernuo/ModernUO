@@ -39,7 +39,9 @@ namespace Server.Engines.ConPVP
         public override void OnDoubleClick(Mobile from)
         {
             if (from.AccessLevel >= AccessLevel.GameMaster)
-                from.SendGump(new PropertiesGump(from, this));
+            {
+                @from.SendGump(new PropertiesGump(@from, this));
+            }
         }
     }
 

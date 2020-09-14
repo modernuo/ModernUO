@@ -102,10 +102,16 @@ namespace Server.Items
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
             if (NextSpawn < DateTime.UtcNow) // means we haven't spawned anything if the next spawn is below
+            {
                 if (Utility.InRange(m.Location, Location, 1) && !Utility.InRange(oldLocation, Location, 1) && m.Player &&
                     !(m.AccessLevel > AccessLevel.Player || m.Hidden))
+                {
                     if (m_Timer?.Running != true)
+                    {
                         m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(2), HeedWarning);
+                    }
+                }
+            }
 
             base.OnMovement(m, oldLocation);
         }
@@ -115,7 +121,9 @@ namespace Server.Items
             var map = Map;
 
             if (map == null)
+            {
                 return Location;
+            }
 
             // Try 10 times to find a Spawnable location.
             for (var i = 0; i < 10; i++)
@@ -125,9 +133,14 @@ namespace Server.Items
                 var z = Map.GetAverageZ(x, y);
 
                 if (Map.CanSpawnMobile(new Point2D(x, y), Z))
+                {
                     return new Point3D(x, y, Z);
+                }
+
                 if (Map.CanSpawnMobile(new Point2D(x, y), z))
+                {
                     return new Point3D(x, y, z);
+                }
             }
 
             return Location;
@@ -155,6 +168,7 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (Utility.InRange(from.Location, Location, 2))
+            {
                 try
                 {
                     if (NextSpawn < DateTime.UtcNow)
@@ -184,8 +198,11 @@ namespace Server.Items
                 {
                     // ignored
                 }
+            }
             else
-                from.SendLocalizedMessage(500446); // That is too far away.
+            {
+                @from.SendLocalizedMessage(500446); // That is too far away.
+            }
         }
     }
 }

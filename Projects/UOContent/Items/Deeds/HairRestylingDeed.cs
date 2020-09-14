@@ -35,9 +35,13 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (!IsChildOf(from.Backpack))
-                from.SendLocalizedMessage(1042001); // That must be in your pack...
+            {
+                @from.SendLocalizedMessage(1042001); // That must be in your pack...
+            }
             else
-                from.SendGump(new InternalGump(from, this));
+            {
+                @from.SendGump(new InternalGump(@from, this));
+            }
         }
 
         private class InternalGump : Gump
@@ -133,13 +137,19 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_From?.Alive != true)
+                {
                     return;
+                }
 
                 if (m_Deed.Deleted)
+                {
                     return;
+                }
 
                 if (info.ButtonID < 1 || info.ButtonID > 10)
+                {
                     return;
+                }
 
                 var RacialData = m_From.Race == Race.Human ? HumanArray : ElvenArray;
 

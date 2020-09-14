@@ -59,9 +59,13 @@ namespace Server.Mobiles
         public override string ApplyNameSuffix(string suffix)
         {
             if (suffix.Length == 0)
+            {
                 suffix = Ethic.Evil.Definition.Adjunct.String;
+            }
             else
+            {
                 suffix = $"{suffix} {Ethic.Evil.Definition.Adjunct.String}";
+            }
 
             return base.ApplyNameSuffix(suffix);
         }

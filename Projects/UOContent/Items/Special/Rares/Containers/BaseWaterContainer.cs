@@ -45,7 +45,9 @@
                         var rootParent = RootParent;
 
                         if (rootParent?.Map != null && rootParent.Map != Map.Internal)
+                        {
                             MoveToWorld(rootParent.Location, rootParent.Map);
+                        }
                     }
 
                     InvalidateProperties();
@@ -55,7 +57,10 @@
 
         public override void OnDoubleClick(Mobile from)
         {
-            if (IsEmpty) base.OnDoubleClick(from);
+            if (IsEmpty)
+            {
+                base.OnDoubleClick(@from);
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -67,9 +72,13 @@
             else
             {
                 if (Name == null)
-                    LabelTo(from, LabelNumber);
+                {
+                    LabelTo(@from, LabelNumber);
+                }
                 else
-                    LabelTo(from, Name);
+                {
+                    LabelTo(@from, Name);
+                }
             }
         }
 
@@ -82,20 +91,30 @@
             else
             {
                 if (Name == null)
-                    LabelTo(from, LabelNumber);
+                {
+                    LabelTo(@from, LabelNumber);
+                }
                 else
-                    LabelTo(from, Name);
+                {
+                    LabelTo(@from, Name);
+                }
             }
         }
 
         public override void GetProperties(ObjectPropertyList list)
         {
-            if (IsEmpty) base.GetProperties(list);
+            if (IsEmpty)
+            {
+                base.GetProperties(list);
+            }
         }
 
         public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
         {
-            if (!IsEmpty) return false;
+            if (!IsEmpty)
+            {
+                return false;
+            }
 
             return base.OnDragDropInto(from, item, p);
         }

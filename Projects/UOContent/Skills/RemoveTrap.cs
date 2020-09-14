@@ -109,13 +109,15 @@ namespace Server.SkillHandlers
                                 var silver = faction.AwardSilver(from, trap.SilverFromDisarm);
 
                                 if (silver > 0)
-                                    from.SendLocalizedMessage(
+                                {
+                                    @from.SendLocalizedMessage(
                                         1008113,
                                         true,
                                         silver.ToString(
                                             "N0"
                                         )
                                     ); // You have been granted faction silver for removing the enemy trap :
+                                }
                             }
 
                             trap.Delete();
@@ -126,7 +128,9 @@ namespace Server.SkillHandlers
                         }
 
                         if (!isOwner)
-                            kit.ConsumeCharge(from);
+                        {
+                            kit.ConsumeCharge(@from);
+                        }
                     }
                 }
                 else

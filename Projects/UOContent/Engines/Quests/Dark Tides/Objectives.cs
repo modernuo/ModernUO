@@ -48,7 +48,9 @@ namespace Server.Engines.Quests.Necro
         public override void CheckProgress()
         {
             if (System.From.Map == Map.Malas && System.From.InRange(new Point3D(2024, 1240, -90), 3))
+            {
                 Complete();
+            }
         }
 
         public override void OnComplete()
@@ -64,7 +66,9 @@ namespace Server.Engines.Quests.Necro
         public override void CheckProgress()
         {
             if (System.From.Map == Map.Malas && System.From.InRange(new Point3D(2024, 1223, -90), 3))
+            {
                 Complete();
+            }
         }
 
         public override void OnComplete()
@@ -80,7 +84,9 @@ namespace Server.Engines.Quests.Necro
         public override void CheckProgress()
         {
             if (System.From.Map == Map.Malas && System.From.InRange(new Point3D(1076, 519, -90), 5))
+            {
                 Complete();
+            }
         }
 
         public override void OnComplete()
@@ -103,7 +109,9 @@ namespace Server.Engines.Quests.Necro
         public override void CheckProgress()
         {
             if (System.From.Map == Map.Malas && System.From.InRange(new Point3D(1072, 455, -90), 1))
+            {
                 Complete();
+            }
         }
 
         public override void OnComplete()
@@ -121,7 +129,9 @@ namespace Server.Engines.Quests.Necro
             if (System.From.Map != Map.Malas || !System.From.InRange(new Point3D(1076, 450, -84), 5) ||
                 !SummonFamiliarSpell.Table.TryGetValue(System.From, out var bc) || !(bc is HordeMinionFamiliar hmf) ||
                 !hmf.InRange(System.From, 5) || hmf.TargetLocation != null)
+            {
                 return;
+            }
 
             System.From.SendLocalizedMessage(
                 1060113
@@ -272,7 +282,9 @@ namespace Server.Engines.Quests.Necro
                 if (DarkTidesQuest.HasLostCallingScroll(System.From))
                 {
                     if (!m_Inside)
+                    {
                         System.AddConversation(new LostCallingScrollConversation(false));
+                    }
                 }
                 else
                 {
@@ -313,7 +325,10 @@ namespace Server.Engines.Quests.Necro
         {
             get
             {
-                if (m_Victory) return 1060131;
+                if (m_Victory)
+                {
+                    return 1060131;
+                }
 
                 /* Although you were slain by the cowardly paladin,
                    * you managed to complete the rite of calling as
@@ -350,7 +365,9 @@ namespace Server.Engines.Quests.Necro
         public override void CheckProgress()
         {
             if (System.From.Map == Map.Malas && System.From.InRange(new Point3D(2048, 1345, -84), 5))
+            {
                 Complete();
+            }
         }
 
         public override void OnComplete()

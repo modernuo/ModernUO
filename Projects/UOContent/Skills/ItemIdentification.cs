@@ -31,12 +31,18 @@ namespace Server.Items
                     if (from.CheckTargetSkill(SkillName.ItemID, item, 0, 100))
                     {
                         if (item is BaseWeapon weapon)
+                        {
                             weapon.Identified = true;
+                        }
                         else if (item is BaseArmor armor)
+                        {
                             armor.Identified = true;
+                        }
 
                         if (!Core.AOS)
-                            item.OnSingleClick(from);
+                        {
+                            item.OnSingleClick(@from);
+                        }
                     }
                     else
                     {

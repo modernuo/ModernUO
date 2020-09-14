@@ -29,13 +29,17 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 0.0)
+            {
                 Weight = 1.0;
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (Guild.NewGuildSystem)
+            {
                 return;
+            }
 
             if (!IsChildOf(from.Backpack))
             {
@@ -78,7 +82,9 @@ namespace Server.Items
             public override void OnResponse(Mobile from, string text)
             {
                 if (m_Deed.Deleted)
+                {
                     return;
+                }
 
                 if (!m_Deed.IsChildOf(from.Backpack))
                 {
@@ -109,7 +115,9 @@ namespace Server.Items
                         m_Deed.Delete();
 
                         if (text.Length > 40)
+                        {
                             text = text.Substring(0, 40);
+                        }
 
                         var guild = new Guild(from, text, "none");
 

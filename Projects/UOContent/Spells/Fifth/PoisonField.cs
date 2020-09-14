@@ -46,13 +46,21 @@ namespace Server.Spells.Fifth
                 bool eastToWest;
 
                 if (rx >= 0 && ry >= 0)
+                {
                     eastToWest = false;
+                }
                 else if (rx >= 0)
+                {
                     eastToWest = true;
+                }
                 else if (ry >= 0)
+                {
                     eastToWest = true;
+                }
                 else
+                {
                     eastToWest = false;
+                }
 
                 Effects.PlaySound(p, Caster.Map, 0x20B);
 
@@ -153,7 +161,9 @@ namespace Server.Spells.Fifth
             public void ApplyPoisonTo(Mobile m)
             {
                 if (m_Caster == null)
+                {
                     return;
+                }
 
                 Poison p;
 
@@ -162,13 +172,21 @@ namespace Server.Spells.Fifth
                     var total = (m_Caster.Skills.Magery.Fixed + m_Caster.Skills.Poisoning.Fixed) / 2;
 
                     if (total >= 1000)
+                    {
                         p = Poison.Deadly;
+                    }
                     else if (total > 850)
+                    {
                         p = Poison.Greater;
+                    }
                     else if (total > 650)
+                    {
                         p = Poison.Regular;
+                    }
                     else
+                    {
                         p = Poison.Lesser;
+                    }
                 }
                 else
                 {
@@ -176,8 +194,12 @@ namespace Server.Spells.Fifth
                 }
 
                 if (m.ApplyPoison(m_Caster, p) == ApplyPoisonResult.Poisoned)
+                {
                     if (SpellHelper.CanRevealCaster(m))
+                    {
                         m_Caster.RevealingAction();
+                    }
+                }
 
                 (m as BaseCreature)?.OnHarmfulSpell(m_Caster);
             }
@@ -218,14 +240,20 @@ namespace Server.Spells.Fifth
                 protected override void OnTick()
                 {
                     if (m_Item.Deleted)
+                    {
                         return;
+                    }
 
                     if (!m_Item.Visible)
                     {
                         if (m_InLOS && m_CanFit)
+                        {
                             m_Item.Visible = true;
+                        }
                         else
+                        {
                             m_Item.Delete();
+                        }
 
                         if (!m_Item.Deleted)
                         {
@@ -262,9 +290,13 @@ namespace Server.Spells.Fifth
                             );
 
                             foreach (var m in eable)
+                            {
                                 if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
                                     SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))
+                                {
                                     m_Queue.Enqueue(m);
+                                }
+                            }
 
                             eable.Free();
 

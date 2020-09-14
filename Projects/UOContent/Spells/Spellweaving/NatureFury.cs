@@ -30,10 +30,14 @@ namespace Server.Spells.Spellweaving
             var map = Caster.Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             if (Region.Find(p, map).GetRegion<HouseRegion>()?.House?.IsFriend(Caster) == false)
+            {
                 return;
+            }
 
             if (!map.CanSpawnMobile(p.X, p.Y, p.Z))
             {
@@ -55,7 +59,9 @@ namespace Server.Spells.Spellweaving
         public override bool CheckCast()
         {
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             if (Caster.Followers + 1 > Caster.FollowersMax)
             {

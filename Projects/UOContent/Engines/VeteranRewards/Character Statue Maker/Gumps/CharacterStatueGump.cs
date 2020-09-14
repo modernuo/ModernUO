@@ -16,7 +16,9 @@ namespace Server.Gumps
             m_Owner = owner;
 
             if (m_Statue == null)
+            {
                 return;
+            }
 
             Closable = true;
             Disposable = true;
@@ -83,7 +85,9 @@ namespace Server.Gumps
                 case StatueMaterial.Dark:
 
                     if (type == StatueType.Marble)
+                    {
                         return 1076183;
+                    }
 
                     return 1076182;
                 case StatueMaterial.Medium: return 1076184;
@@ -111,7 +115,9 @@ namespace Server.Gumps
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (m_Statue?.Deleted != false)
+            {
                 return;
+            }
 
             var sendGump = false;
 
@@ -167,7 +173,9 @@ namespace Server.Gumps
                     var backup = deed.Statue;
 
                     if (backup != null)
+                    {
                         m_Statue.Restore(backup);
+                    }
                 }
 
                 sendGump = true;
@@ -178,7 +186,9 @@ namespace Server.Gumps
             }
 
             if (sendGump)
+            {
                 state.Mobile.SendGump(new CharacterStatueGump(m_Maker, m_Statue, m_Owner));
+            }
         }
 
         private enum Buttons

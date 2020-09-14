@@ -30,14 +30,18 @@ namespace Server.Engines.Chat
             get
             {
                 if (Mobile.Account is Account acct)
+                {
                     return acct.GetTag("ChatName");
+                }
 
                 return null;
             }
             set
             {
                 if (Mobile.Account is Account acct)
+                {
                     acct.SetTag("ChatName", value);
+                }
             }
         }
 
@@ -58,7 +62,9 @@ namespace Server.Engines.Chat
         public bool CheckOnline()
         {
             if (IsOnline)
+            {
                 return true;
+            }
 
             RemoveChatUser(this);
             return false;
@@ -67,13 +73,17 @@ namespace Server.Engines.Chat
         public void SendMessage(int number, string param1 = null, string param2 = null)
         {
             if (Mobile.NetState != null)
+            {
                 Mobile.Send(new ChatMessagePacket(Mobile, number, param1, param2));
+            }
         }
 
         public void SendMessage(int number, Mobile from, string param1, string param2)
         {
             if (Mobile.NetState != null)
-                Mobile.Send(new ChatMessagePacket(from, number, param1, param2));
+            {
+                Mobile.Send(new ChatMessagePacket(@from, number, param1, param2));
+            }
         }
 
         public bool IsIgnored(ChatUser check) => Ignored.Contains(check);
@@ -103,7 +113,9 @@ namespace Server.Engines.Chat
                 SendMessage(24, user.Username); // You are no longer ignoring %1.
 
                 if (Ignored.Count == 0)
+                {
                     SendMessage(26); // You are no longer ignoring anyone.
+                }
             }
             else
             {
@@ -116,7 +128,9 @@ namespace Server.Engines.Chat
             var user = GetChatUser(from);
 
             if (user != null)
+            {
                 return user;
+            }
 
             user = new ChatUser(from);
 
@@ -132,7 +146,9 @@ namespace Server.Engines.Chat
                 var c = list[i];
 
                 if (c.AddUser(user))
+                {
                     break;
+                }
             }
 
             // ChatSystem.SendCommandTo( user.m_Mobile, ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username );
@@ -143,10 +159,14 @@ namespace Server.Engines.Chat
         public static void RemoveChatUser(ChatUser user)
         {
             if (user == null)
+            {
                 return;
+            }
 
             for (var i = 0; i < user.Ignoring.Count; ++i)
+            {
                 user.Ignoring[i].RemoveIgnored(user);
+            }
 
             if (m_Users.Contains(user))
             {
@@ -179,7 +199,9 @@ namespace Server.Engines.Chat
                 var user = m_Users[i];
 
                 if (user.Username == username)
+                {
                     return user;
+                }
             }
 
             return null;
@@ -199,10 +221,14 @@ namespace Server.Engines.Chat
                 var user = m_Users[i];
 
                 if (user == initiator)
+                {
                     continue;
+                }
 
                 if (user.CheckOnline())
+                {
                     ChatSystem.SendCommandTo(user.Mobile, command, param1, param2);
+                }
             }
         }
     }

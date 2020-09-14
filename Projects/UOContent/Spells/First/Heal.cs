@@ -27,7 +27,9 @@ namespace Server.Spells.First
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (!Caster.CanSee(m))
             {
@@ -61,7 +63,9 @@ namespace Server.Spells.First
                     toHeal += Utility.RandomMinMax(1, 4);
 
                     if (Core.SE && Caster != m)
+                    {
                         toHeal = (int)(toHeal * 1.5);
+                    }
                 }
                 else
                 {

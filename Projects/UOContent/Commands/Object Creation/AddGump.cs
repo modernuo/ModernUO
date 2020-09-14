@@ -41,6 +41,7 @@ namespace Server.Gumps
             AddAlphaRegion(10, 40, 400, 200);
 
             if (searchResults.Length > 0)
+            {
                 for (var i = page * 10; i < (page + 1) * 10 && i < searchResults.Length; ++i)
                 {
                     var index = i % 10;
@@ -48,23 +49,34 @@ namespace Server.Gumps
                     AddLabel(44, 39 + index * 20, 0x480, searchResults[i].Name);
                     AddButton(10, 39 + index * 20, 4023, 4025, 4 + i);
                 }
+            }
             else
+            {
                 AddLabel(15, 44, 0x480, explicitSearch ? "Nothing matched your search terms." : "No results to display.");
+            }
 
             AddImageTiled(10, 250, 400, 20, 2624);
             AddAlphaRegion(10, 250, 400, 20);
 
             if (m_Page > 0)
+            {
                 AddButton(10, 249, 4014, 4016, 2);
+            }
             else
+            {
                 AddImage(10, 249, 4014);
+            }
 
             AddHtmlLocalized(44, 250, 170, 20, 1061028, m_Page > 0 ? 0x7FFF : 0x5EF7); // Previous page
 
             if ((m_Page + 1) * 10 < searchResults.Length)
+            {
                 AddButton(210, 249, 4005, 4007, 3);
+            }
             else
+            {
                 AddImage(210, 249, 4005);
+            }
 
             AddHtmlLocalized(
                 244,
@@ -112,7 +124,9 @@ namespace Server.Gumps
         private static void Match(string match, Type[] types, List<Type> results)
         {
             if (match.Length == 0)
+            {
                 return;
+            }
 
             match = match.ToLower();
 
@@ -126,12 +140,14 @@ namespace Server.Gumps
                     var ctors = t.GetConstructors();
 
                     for (var j = 0; j < ctors.Length; ++j)
+                    {
                         if (ctors[j].GetParameters().Length == 0 &&
                             ctors[j].IsDefined(typeof(ConstructibleAttribute), false))
                         {
                             results.Add(t);
                             break;
                         }
+                    }
                 }
             }
         }
@@ -183,14 +199,18 @@ namespace Server.Gumps
                 case 2: // Previous page
                     {
                         if (m_Page > 0)
-                            from.SendGump(new AddGump(from, m_SearchString, m_Page - 1, m_SearchResults, true));
+                        {
+                            @from.SendGump(new AddGump(@from, m_SearchString, m_Page - 1, m_SearchResults, true));
+                        }
 
                         break;
                     }
                 case 3: // Next page
                     {
                         if ((m_Page + 1) * 10 < m_SearchResults.Length)
-                            from.SendGump(new AddGump(from, m_SearchString, m_Page + 1, m_SearchResults, true));
+                        {
+                            @from.SendGump(new AddGump(@from, m_SearchString, m_Page + 1, m_SearchResults, true));
+                        }
 
                         break;
                     }
@@ -258,7 +278,9 @@ namespace Server.Gumps
             protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
             {
                 if (cancelType == TargetCancelType.Canceled)
-                    from.SendGump(new AddGump(from, m_SearchString, m_Page, m_SearchResults, true));
+                {
+                    @from.SendGump(new AddGump(@from, m_SearchString, m_Page, m_SearchResults, true));
+                }
             }
         }
     }

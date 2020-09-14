@@ -43,7 +43,9 @@ namespace Server.Engines.MLQuests
                 var instance = MLQuestInstance.Deserialize(reader, version, Owner);
 
                 if (instance != null)
+                {
                     QuestInstances.Add(instance);
+                }
             }
 
             var doneQuests = reader.ReadInt();
@@ -53,7 +55,9 @@ namespace Server.Engines.MLQuests
                 var info = MLDoneQuestInfo.Deserialize(reader, version);
 
                 if (info != null)
+                {
                     m_DoneQuests.Add(info);
+                }
             }
 
             var chainOffers = reader.ReadInt();
@@ -63,7 +67,9 @@ namespace Server.Engines.MLQuests
                 var quest = MLQuestSystem.ReadQuestRef(reader);
 
                 if (quest?.IsChainTriggered == true)
+                {
                     ChainOffers.Add(quest);
+                }
             }
 
             m_Flags = (MLQuestFlag)reader.ReadEncodedInt();
@@ -116,8 +122,12 @@ namespace Server.Engines.MLQuests
         public bool HasDoneQuest(MLQuest quest)
         {
             foreach (var info in m_DoneQuests)
+            {
                 if (info.m_Quest == quest)
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -127,11 +137,13 @@ namespace Server.Engines.MLQuests
             nextAvailable = DateTime.MinValue;
 
             foreach (var info in m_DoneQuests)
+            {
                 if (info.m_Quest == quest)
                 {
                     nextAvailable = info.m_NextAvailable;
                     return true;
                 }
+            }
 
             return false;
         }
@@ -144,11 +156,13 @@ namespace Server.Engines.MLQuests
         public void SetDoneQuest(MLQuest quest, DateTime nextAvailable)
         {
             foreach (var info in m_DoneQuests)
+            {
                 if (info.m_Quest == quest)
                 {
                     info.m_NextAvailable = nextAvailable;
                     return;
                 }
+            }
 
             m_DoneQuests.Add(new MLDoneQuestInfo(quest, nextAvailable));
         }
@@ -160,20 +174,26 @@ namespace Server.Engines.MLQuests
                 var info = m_DoneQuests[i];
 
                 if (info.m_Quest == quest)
+                {
                     m_DoneQuests.RemoveAt(i);
+                }
             }
         }
 
         public void HandleDeath()
         {
             for (var i = QuestInstances.Count - 1; i >= 0; --i)
+            {
                 QuestInstances[i].OnPlayerDeath();
+            }
         }
 
         public void HandleDeletion()
         {
             for (var i = QuestInstances.Count - 1; i >= 0; --i)
+            {
                 QuestInstances[i].Remove();
+            }
         }
 
         public MLQuestInstance FindInstance(Type questType)
@@ -181,7 +201,9 @@ namespace Server.Engines.MLQuests
             var quest = MLQuestSystem.FindQuest(questType);
 
             if (quest == null)
+            {
                 return null;
+            }
 
             return FindInstance(quest);
         }
@@ -189,8 +211,12 @@ namespace Server.Engines.MLQuests
         public MLQuestInstance FindInstance(MLQuest quest)
         {
             foreach (var instance in QuestInstances)
+            {
                 if (instance.Quest == quest)
+                {
                     return instance;
+                }
+            }
 
             return null;
         }
@@ -212,17 +238,23 @@ namespace Server.Engines.MLQuests
             writer.Write(QuestInstances.Count);
 
             foreach (var instance in QuestInstances)
+            {
                 instance.Serialize(writer);
+            }
 
             writer.Write(m_DoneQuests.Count);
 
             foreach (var info in m_DoneQuests)
+            {
                 info.Serialize(writer);
+            }
 
             writer.Write(ChainOffers.Count);
 
             foreach (var quest in ChainOffers)
+            {
                 MLQuestSystem.WriteQuestRef(writer, quest);
+            }
 
             writer.WriteEncodedInt((int)m_Flags);
         }
@@ -232,9 +264,13 @@ namespace Server.Engines.MLQuests
         public void SetFlag(MLQuestFlag flag, bool value)
         {
             if (value)
+            {
                 m_Flags |= flag;
+            }
             else
+            {
                 m_Flags &= ~flag;
+            }
         }
 
         private class MLDoneQuestInfo
@@ -260,7 +296,9 @@ namespace Server.Engines.MLQuests
                 var nextAvailable = reader.ReadDateTime();
 
                 if (quest?.RecordCompletion != true)
+                {
                     return null; // forget about this record
+                }
 
                 return new MLDoneQuestInfo(quest, nextAvailable);
             }

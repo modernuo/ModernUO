@@ -43,23 +43,35 @@ namespace Server.Tests.Network.Packets
             pos += 2; // Length
 
             if (item.Amount != 0)
+            {
                 expectedData.Write(ref pos, serial | 0x80000000);
+            }
             else
+            {
                 expectedData.Write(ref pos, serial & 0x7FFFFFFF);
+            }
 
             if (item is BaseMulti)
+            {
                 expectedData.Write(ref pos, (ushort)(item.ItemID | 0x4000));
+            }
             else
+            {
                 expectedData.Write(ref pos, (ushort)item.ItemID);
+            }
 
             if (item.Amount != 0)
+            {
                 expectedData.Write(ref pos, (ushort)item.Amount);
+            }
 
             var direction = (byte)item.Direction;
             var x = (ushort)(item.X & 0x7FFF);
 
             if (direction != 0)
+            {
                 x |= 0x8000;
+            }
 
             expectedData.Write(ref pos, x);
 
@@ -67,21 +79,34 @@ namespace Server.Tests.Network.Packets
             var flags = item.GetPacketFlags();
             var y = (ushort)(item.Y & 0x3FFF);
 
-            if (hue != 0) y |= 0x8000;
-            if (flags != 0) y |= 0x4000;
+            if (hue != 0)
+            {
+                y |= 0x8000;
+            }
+
+            if (flags != 0)
+            {
+                y |= 0x4000;
+            }
 
             expectedData.Write(ref pos, y);
 
             if (direction != 0)
+            {
                 expectedData.Write(ref pos, direction);
+            }
 
             expectedData.Write(ref pos, (byte)item.Z);
 
             if (hue != 0)
+            {
                 expectedData.Write(ref pos, (ushort)hue);
+            }
 
             if (flags != 0)
+            {
                 expectedData.Write(ref pos, (byte)flags);
+            }
 
             // Length
             expectedData.Slice(1, 2).Write((ushort)pos);
@@ -321,6 +346,7 @@ namespace Server.Tests.Network.Packets
             ushort count = 0;
 
             for (var i = 0; i < 64; i++)
+            {
                 if ((content & (1ul << i)) != 0)
                 {
                     expectedData.Write(ref pos, 0x7FFFFFFF - i);
@@ -344,6 +370,7 @@ namespace Server.Tests.Network.Packets
 #endif
                     count++;
                 }
+            }
 
             expectedData.Slice(1, 2).Write((ushort)pos); // Length
             expectedData.Slice(3, 2).Write(count);       // Count
@@ -371,6 +398,7 @@ namespace Server.Tests.Network.Packets
             ushort count = 0;
 
             for (var i = 0; i < 64; i++)
+            {
                 if ((content & (1ul << i)) != 0)
                 {
                     expectedData.Write(ref pos, 0x7FFFFFFF - i);
@@ -395,6 +423,7 @@ namespace Server.Tests.Network.Packets
 #endif
                     count++;
                 }
+            }
 
             expectedData.Slice(1, 2).Write((ushort)pos); // Length
             expectedData.Slice(3, 2).Write(count);       // Count
@@ -489,7 +518,9 @@ namespace Server.Tests.Network.Packets
             {
                 var child = cont.Items[i];
                 if (child.Deleted || !m.CanSee(child))
+                {
                     continue;
+                }
 
                 expectedData.Write(ref pos, child.Serial);
                 expectedData.Write(ref pos, (ushort)child.ItemID);
@@ -539,7 +570,9 @@ namespace Server.Tests.Network.Packets
             {
                 var child = cont.Items[i];
                 if (child.Deleted || !m.CanSee(child))
+                {
                     continue;
+                }
 
                 expectedData.Write(ref pos, child.Serial);
                 expectedData.Write(ref pos, (ushort)child.ItemID);

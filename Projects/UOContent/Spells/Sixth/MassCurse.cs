@@ -44,7 +44,9 @@ namespace Server.Spells.Sixth
                     {
                         if (Core.AOS && (m == Caster || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanSee(m) ||
                                          !Caster.CanBeHarmful(m, false)))
+                        {
                             continue;
+                        }
 
                         Caster.DoHarmful(m);
 

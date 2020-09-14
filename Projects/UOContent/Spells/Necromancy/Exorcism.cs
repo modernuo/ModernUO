@@ -99,7 +99,9 @@ namespace Server.Spells.Necromancy
 
                     foreach (var m in targets)
                         // Surprisingly, no sparkle type effects
+                    {
                         m.Location = GetNearestShrine(m);
+                    }
                 }
             }
 
@@ -109,7 +111,9 @@ namespace Server.Spells.Necromancy
         private bool IsValidTarget(Mobile m)
         {
             if (!m.Player || m.Alive)
+            {
                 return false;
+            }
 
             var c = m.Corpse as Corpse;
             var map = m.Map;
@@ -117,16 +121,22 @@ namespace Server.Spells.Necromancy
             if (c?.Deleted == false && map != null && c.Map == map)
             {
                 if (SpellHelper.IsAnyT2A(map, c.Location) && SpellHelper.IsAnyT2A(map, m.Location))
+                {
                     return false; // Same Map, both in T2A, ie, same 'sub server'.
+                }
 
                 if (m.Region.IsPartOf<DungeonRegion>() == Region.Find(c.Location, map).IsPartOf<DungeonRegion>())
+                {
                     return false; // Same Map, both in Dungeon region OR They're both NOT in a dungeon region.
+                }
 
                 // Just an approximation cause RunUO doesn't divide up the world the same way OSI does ;p
             }
 
             if (Party.Get(m)?.Contains(Caster) == true)
+            {
                 return false;
+            }
 
             if (m.Guild != null && Caster.Guild != null)
             {
@@ -134,7 +144,9 @@ namespace Server.Spells.Necromancy
                 var cGuild = Caster.Guild as Guild;
 
                 if (mGuild?.IsAlly(cGuild) == true || mGuild == cGuild)
+                {
                     return false;
+                }
             }
 
             var f = Faction.Find(m);
@@ -149,15 +161,25 @@ namespace Server.Spells.Necromancy
             Point3D[] locList;
 
             if (map == Map.Felucca || map == Map.Trammel)
+            {
                 locList = m_BritanniaLocs;
+            }
             else if (map == Map.Ilshenar)
+            {
                 locList = m_IllshLocs;
+            }
             else if (map == Map.Tokuno)
+            {
                 locList = m_TokunoLocs;
+            }
             else if (map == Map.Malas)
+            {
                 locList = m_MalasLocs;
+            }
             else
+            {
                 locList = Array.Empty<Point3D>();
+            }
 
             var closest = Point3D.Zero;
             var minDist = double.MaxValue;

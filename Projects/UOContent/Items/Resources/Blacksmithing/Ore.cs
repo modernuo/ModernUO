@@ -37,7 +37,9 @@ namespace Server.Items
             get
             {
                 if (m_Resource >= CraftResource.DullCopper && m_Resource <= CraftResource.Valorite)
+                {
                     return 1042845 + (m_Resource - CraftResource.DullCopper);
+                }
 
                 return 1042853; // iron ore;
             }
@@ -94,11 +96,20 @@ namespace Server.Items
             var rand = Utility.RandomDouble();
 
             if (rand < 0.12)
+            {
                 return 0x19B7;
+            }
+
             if (rand < 0.18)
+            {
                 return 0x19B8;
+            }
+
             if (rand < 0.25)
+            {
                 return 0x19BA;
+            }
+
             return 0x19B9;
         }
 
@@ -109,9 +120,13 @@ namespace Server.Items
         public override void AddNameProperty(ObjectPropertyList list)
         {
             if (Amount > 1)
+            {
                 list.Add(1050039, "{0}\t#{1}", Amount, 1026583); // ~1_NUMBER~ ~2_ITEMNAME~
+            }
             else
+            {
                 list.Add(1026583); // ore
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -123,16 +138,22 @@ namespace Server.Items
                 var num = CraftResources.GetLocalizationNumber(m_Resource);
 
                 if (num > 0)
+                {
                     list.Add(num);
+                }
                 else
+                {
                     list.Add(CraftResources.GetName(m_Resource));
+                }
             }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (!Movable)
+            {
                 return;
+            }
 
             if (RootParent is BaseCreature)
             {
@@ -160,17 +181,25 @@ namespace Server.Items
             private bool IsForge(object obj)
             {
                 if (Core.ML && obj is Mobile mobile && mobile.IsDeadBondedPet)
+                {
                     return false;
+                }
 
                 if (obj.GetType().IsDefined(typeof(ForgeAttribute), false))
+                {
                     return true;
+                }
 
                 var itemID = 0;
 
                 if (obj is Item item)
+                {
                     itemID = item.ItemID;
+                }
                 else if (obj is StaticTarget target)
+                {
                     itemID = target.ItemID;
+                }
 
                 return itemID == 4017 || itemID >= 6522 && itemID <= 6569;
             }
@@ -178,7 +207,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Ore.Deleted)
+                {
                     return;
+                }
 
                 if (!from.InRange(m_Ore.GetWorldLocation(), 2))
                 {
@@ -188,7 +219,11 @@ namespace Server.Items
 
                 if (targeted is BaseOre ore)
                 {
-                    if (!ore.Movable) return;
+                    if (!ore.Movable)
+                    {
+                        return;
+                    }
+
                     if (m_Ore == ore)
                     {
                         from.SendLocalizedMessage(501972); // Select another pile or ore with which to combine this.
@@ -205,20 +240,32 @@ namespace Server.Items
                     var worth = ore.Amount;
 
                     if (ore.ItemID == 0x19B9)
+                    {
                         worth *= 8;
+                    }
                     else if (ore.ItemID == 0x19B7)
+                    {
                         worth *= 2;
+                    }
                     else
+                    {
                         worth *= 4;
+                    }
 
                     var sourceWorth = m_Ore.Amount;
 
                     if (m_Ore.ItemID == 0x19B9)
+                    {
                         sourceWorth *= 8;
+                    }
                     else if (m_Ore.ItemID == 0x19B7)
+                    {
                         sourceWorth *= 2;
+                    }
                     else
+                    {
                         sourceWorth *= 4;
+                    }
 
                     worth += sourceWorth;
 
@@ -260,11 +307,17 @@ namespace Server.Items
                     ore.ItemID = newID;
 
                     if (ore.ItemID == 0x19B9)
+                    {
                         ore.Amount = worth / 8;
+                    }
                     else if (ore.ItemID == 0x19B7)
+                    {
                         ore.Amount = worth / 2;
+                    }
                     else
+                    {
                         ore.Amount = worth / 4;
+                    }
 
                     m_Ore.Delete();
                     return;
@@ -315,7 +368,9 @@ namespace Server.Items
                         else
                         {
                             if (toConsume > 30000)
+                            {
                                 toConsume = 30000;
+                            }
 
                             int ingotAmount;
 
@@ -324,7 +379,9 @@ namespace Server.Items
                                 ingotAmount = toConsume / 2;
 
                                 if (toConsume % 2 != 0)
+                                {
                                     --toConsume;
+                                }
                             }
                             else if (m_Ore.ItemID == 0x19B9)
                             {
@@ -352,9 +409,13 @@ namespace Server.Items
                         if (m_Ore.Amount < 2)
                         {
                             if (m_Ore.ItemID == 0x19B9)
+                            {
                                 m_Ore.ItemID = 0x19B8;
+                            }
                             else
+                            {
                                 m_Ore.ItemID = 0x19B7;
+                            }
                         }
                         else
                         {
@@ -380,7 +441,9 @@ namespace Server.Items
         public IronOre(bool fixedSize) : this()
         {
             if (fixedSize)
+            {
                 ItemID = 0x19B8;
+            }
         }
 
         public IronOre(Serial serial) : base(serial)

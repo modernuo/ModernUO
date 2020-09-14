@@ -98,19 +98,27 @@ namespace Server
         public static int GetLuckChance(Mobile killer, Mobile victim)
         {
             if (!Core.AOS)
+            {
                 return 0;
+            }
 
             var luck = killer.Luck;
 
             if (killer is PlayerMobile pmKiller && pmKiller.SentHonorContext != null &&
                 pmKiller.SentHonorContext.Target == victim)
+            {
                 luck += pmKiller.SentHonorContext.PerfectionLuckBonus;
+            }
 
             if (luck < 0)
+            {
                 return 0;
+            }
 
             if (!Core.SE && luck > 1200)
+            {
                 luck = 1200;
+            }
 
             return (int)(Math.Pow(luck, 1 / 1.8) * 100);
         }
@@ -126,11 +134,15 @@ namespace Server
                 var ds = list[i];
 
                 if (ds.m_HasRight && (highest == null || ds.m_Damage > highest.m_Damage))
+                {
                     highest = ds;
+                }
             }
 
             if (highest == null)
+            {
                 return 0;
+            }
 
             return GetLuckChance(highest.m_Mobile, dead);
         }
@@ -140,7 +152,9 @@ namespace Server
         public void Generate(Mobile from, Container cont, bool spawning, int luckChance)
         {
             if (cont == null)
+            {
                 return;
+            }
 
             var checkLuck = Core.AOS;
 
@@ -155,17 +169,25 @@ namespace Server
                     checkLuck = false;
 
                     if (CheckLuck(luckChance))
+                    {
                         shouldAdd = entry.Chance > Utility.Random(10000);
+                    }
                 }
 
                 if (!shouldAdd)
+                {
                     continue;
+                }
 
                 var item = entry.Construct(from, luckChance, spawning);
 
                 if (item != null)
-                    if (!item.Stackable || !cont.TryDropItem(from, item, false))
+                {
+                    if (!item.Stackable || !cont.TryDropItem(@from, item, false))
+                    {
                         cont.DropItem(item);
+                    }
+                }
             }
         }
 
@@ -639,10 +661,14 @@ namespace Server
         private static bool IsInTokuno(Mobile m)
         {
             if (m.Region.IsPartOf("Fan Dancer's Dojo"))
+            {
                 return true;
+            }
 
             if (m.Region.IsPartOf("Yomotsu Mines"))
+            {
                 return true;
+            }
 
             return m.Map == Map.Tokuno;
         }
@@ -652,12 +678,16 @@ namespace Server
         public Item Construct(Mobile from, int luckChance, bool spawning)
         {
             if (m_AtSpawnTime != spawning)
+            {
                 return null;
+            }
 
             var totalChance = 0;
 
             for (var i = 0; i < Items.Length; ++i)
+            {
                 totalChance += Items[i].Chance;
+            }
 
             var rnd = Utility.Random(totalChance);
 
@@ -666,7 +696,9 @@ namespace Server
                 var item = Items[i];
 
                 if (rnd < item.Chance)
-                    return Mutate(from, luckChance, item.Construct(IsInTokuno(from), IsMondain(from)));
+                {
+                    return Mutate(@from, luckChance, item.Construct(IsInTokuno(@from), IsMondain(@from)));
+                }
 
                 rnd -= item.Chance;
             }
@@ -679,19 +711,30 @@ namespace Server
             var rnd = Utility.RandomMinMax(MinIntensity, MaxIntensity);
 
             if (rnd < 50)
+            {
                 return 1;
+            }
+
             rnd -= 50;
 
             if (rnd < 25)
+            {
                 return 2;
+            }
+
             rnd -= 25;
 
             if (rnd < 14)
+            {
                 return 3;
+            }
+
             rnd -= 14;
 
             if (rnd < 8)
+            {
                 return 4;
+            }
 
             return 5;
         }
@@ -716,21 +759,32 @@ namespace Server
                         var max = MaxIntensity;
 
                         if (bonusProps < MaxProps && LootPack.CheckLuck(luckChance))
+                        {
                             ++bonusProps;
+                        }
 
                         var props = 1 + bonusProps;
 
                         // Make sure we're not spawning items with 6 properties.
                         if (props > MaxProps)
+                        {
                             props = MaxProps;
+                        }
 
                         if (item is BaseWeapon weapon)
+                        {
                             BaseRunicTool.ApplyAttributesTo(weapon, false, luckChance, props, MinIntensity, MaxIntensity);
+                        }
                         else if (item is BaseArmor armor)
+                        {
                             BaseRunicTool.ApplyAttributesTo(armor, false, luckChance, props, MinIntensity, MaxIntensity);
+                        }
                         else if (item is BaseJewel jewel)
+                        {
                             BaseRunicTool.ApplyAttributesTo(jewel, false, luckChance, props, MinIntensity, MaxIntensity);
+                        }
                         else
+                        {
                             BaseRunicTool.ApplyAttributesTo(
                                 (BaseHat)item,
                                 false,
@@ -739,34 +793,49 @@ namespace Server
                                 MinIntensity,
                                 MaxIntensity
                             );
+                        }
                     }
                     else // not aos
                     {
                         if (item is BaseWeapon weapon)
                         {
                             if (Utility.Random(100) < 80)
+                            {
                                 weapon.AccuracyLevel = (WeaponAccuracyLevel)GetRandomOldBonus();
+                            }
 
                             if (Utility.Random(100) < 60)
+                            {
                                 weapon.DamageLevel = (WeaponDamageLevel)GetRandomOldBonus();
+                            }
 
                             if (Utility.Random(100) < 40)
+                            {
                                 weapon.DurabilityLevel = (WeaponDurabilityLevel)GetRandomOldBonus();
+                            }
 
                             if (Utility.Random(100) < 5)
+                            {
                                 weapon.Slayer = SlayerName.Silver;
+                            }
 
                             if (from != null && weapon.AccuracyLevel == 0 && weapon.DamageLevel == 0 &&
                                 weapon.DurabilityLevel == 0 && weapon.Slayer == SlayerName.None && Utility.Random(100) < 5)
-                                weapon.Slayer = SlayerGroup.GetLootSlayerType(from.GetType());
+                            {
+                                weapon.Slayer = SlayerGroup.GetLootSlayerType(@from.GetType());
+                            }
                         }
                         else if (item is BaseArmor armor)
                         {
                             if (Utility.Random(100) < 80)
+                            {
                                 armor.ProtectionLevel = (ArmorProtectionLevel)GetRandomOldBonus();
+                            }
 
                             if (Utility.Random(100) < 40)
+                            {
                                 armor.Durability = (ArmorDurabilityLevel)GetRandomOldBonus();
+                            }
                         }
                     }
                 }
@@ -775,9 +844,13 @@ namespace Server
                     var slayer = SlayerName.None;
 
                     if (Core.AOS)
+                    {
                         slayer = BaseRunicTool.GetRandomSlayer();
+                    }
                     else
-                        slayer = SlayerGroup.GetLootSlayerType(from.GetType());
+                    {
+                        slayer = SlayerGroup.GetLootSlayerType(@from.GetType());
+                    }
 
                     if (slayer == SlayerName.None)
                     {
@@ -790,7 +863,9 @@ namespace Server
                 }
 
                 if (item.Stackable)
+                {
                     item.Amount = Quantity.Roll();
+                }
             }
 
             return item;
@@ -839,22 +914,30 @@ namespace Server
             var rnd = Utility.Random(pc);
 
             if (rnd < p5)
+            {
                 return 5;
+            }
 
             rnd -= p5;
 
             if (rnd < p4)
+            {
                 return 4;
+            }
 
             rnd -= p4;
 
             if (rnd < p3)
+            {
                 return 3;
+            }
 
             rnd -= p3;
 
             if (rnd < p2)
+            {
                 return 2;
+            }
 
             return rnd - p2 < p1 ? 1 : 0;
         }
@@ -906,20 +989,31 @@ namespace Server
             var scrollCount = (maxCircle - minCircle + 1) * 8;
 
             if (index == 0)
+            {
                 scrollCount += m_BlankTypes.Length;
+            }
 
             if (Core.AOS)
+            {
                 scrollCount += m_NecroTypes[index].Length;
+            }
 
             var rnd = Utility.Random(scrollCount);
 
             if (index == 0 && rnd < m_BlankTypes.Length)
+            {
                 return Loot.Construct(m_BlankTypes);
+            }
+
             if (index == 0)
+            {
                 rnd -= m_BlankTypes.Length;
+            }
 
             if (Core.AOS && rnd < m_NecroTypes.Length)
+            {
                 return Loot.Construct(m_NecroTypes[index]);
+            }
 
             return Loot.RandomScroll(minCircle * 8, maxCircle * 8 + 7, SpellbookType.Regular);
         }
@@ -931,27 +1025,49 @@ namespace Server
                 Item item;
 
                 if (Type == typeof(BaseRanged))
+                {
                     item = Loot.RandomRangedWeapon(inTokuno, isMondain);
+                }
                 else if (Type == typeof(BaseWeapon))
+                {
                     item = Loot.RandomWeapon(inTokuno, isMondain);
+                }
                 else if (Type == typeof(BaseArmor))
+                {
                     item = Loot.RandomArmorOrHat(inTokuno, isMondain);
+                }
                 else if (Type == typeof(BaseShield))
+                {
                     item = Loot.RandomShield();
+                }
                 else if (Type == typeof(BaseJewel))
+                {
                     item = Core.AOS ? Loot.RandomJewelry() : Loot.RandomArmorOrShieldOrWeapon();
+                }
                 else if (Type == typeof(BaseInstrument))
+                {
                     item = Loot.RandomInstrument();
+                }
                 else if (Type == typeof(Amber)) // gem
+                {
                     item = Loot.RandomGem();
+                }
                 else if (Type == typeof(ClumsyScroll)) // low scroll
+                {
                     item = RandomScroll(0, 1, 3);
+                }
                 else if (Type == typeof(ArchCureScroll)) // med scroll
+                {
                     item = RandomScroll(1, 4, 7);
+                }
                 else if (Type == typeof(SummonAirElementalScroll)) // high scroll
+                {
                     item = RandomScroll(2, 8, 8);
+                }
                 else
+                {
                     item = ActivatorUtil.CreateInstance(Type) as Item;
+                }
 
                 return item;
             }
@@ -972,7 +1088,9 @@ namespace Server
             var index = str.IndexOf('d', start);
 
             if (index < start)
+            {
                 return;
+            }
 
             Count = Utility.ToInt32(str.Substring(start, index - start));
 
@@ -982,15 +1100,21 @@ namespace Server
             var negative = index < start;
 
             if (negative)
+            {
                 index = str.IndexOf('-', start);
+            }
 
             if (index < start)
+            {
                 index = str.Length;
+            }
 
             Sides = Utility.ToInt32(str.Substring(start, index - start));
 
             if (index == str.Length)
+            {
                 return;
+            }
 
             start = index + 1;
             index = str.Length;
@@ -998,7 +1122,9 @@ namespace Server
             Bonus = Utility.ToInt32(str.Substring(start, index - start));
 
             if (negative)
+            {
                 Bonus *= -1;
+            }
         }
 
         public LootPackDice(int count, int sides, int bonus)
@@ -1019,7 +1145,9 @@ namespace Server
             var v = Bonus;
 
             for (var i = 0; i < Count; ++i)
+            {
                 v += Utility.Random(1, Sides);
+            }
 
             return v;
         }

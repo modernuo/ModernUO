@@ -43,7 +43,9 @@ namespace Server.Items
             get
             {
                 if (m_Resource >= CraftResource.OakWood && m_Resource <= CraftResource.YewWood)
+                {
                     return 1075052 + ((int)m_Resource - (int)CraftResource.OakWood);
+                }
 
                 return m_Resource switch
                 {
@@ -66,9 +68,13 @@ namespace Server.Items
                 var num = CraftResources.GetLocalizationNumber(m_Resource);
 
                 if (num > 0)
+                {
                     list.Add(num);
+                }
                 else
+                {
                     list.Add(CraftResources.GetName(m_Resource));
+                }
             }
         }
 
@@ -98,10 +104,14 @@ namespace Server.Items
             }
 
             if (version == 0 && Weight == 0.1 || version <= 2 && Weight == 2)
+            {
                 Weight = -1;
+            }
 
             if (version <= 1)
+            {
                 m_Resource = CraftResource.RegularWood;
+            }
         }
     }
 

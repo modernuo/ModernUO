@@ -52,10 +52,14 @@ namespace Server.Mobiles
                 var item = Loot.RandomReagent();
 
                 if (item == null)
+                {
                     continue;
+                }
 
                 if (!bag.TryDropItem(this, item, false))
+                {
                     item.Delete();
+                }
             }
 
             PackItem(bag);
@@ -63,7 +67,9 @@ namespace Server.Mobiles
             PackItem(new ArcaneGem());
 
             if (Core.ML && Utility.RandomDouble() < .33)
+            {
                 PackItem(Seed.RandomPeculiarSeed(4));
+            }
 
             m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(2, 5));
         }
@@ -100,12 +106,14 @@ namespace Server.Mobiles
                 JukaLord toBuff = null;
 
                 foreach (var m in GetMobilesInRange(8))
+                {
                     if (m is JukaLord lord && IsFriend(lord) && lord.Combatant != null && CanBeBeneficial(lord) &&
                         lord.CanBeginAction<JukaMage>() && InLOS(lord))
                     {
                         toBuff = lord;
                         break;
                     }
+                }
 
                 if (toBuff != null)
                 {
@@ -131,7 +139,9 @@ namespace Server.Mobiles
                         toScale = toBuff.RawStr;
 
                         if (toScale > 0)
+                        {
                             toBuff.RawStr += AOS.Scale(toScale, 50);
+                        }
 
                         toScale = toBuff.RawDex;
 
@@ -171,7 +181,9 @@ namespace Server.Mobiles
             toDebuff.EndAction<JukaMage>();
 
             if (toDebuff.Deleted)
+            {
                 return;
+            }
 
             toDebuff.HitsMaxSeed = hitsMaxSeed;
             toDebuff.RawStr = rawStr;

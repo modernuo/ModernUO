@@ -8,7 +8,9 @@ namespace Server.Items
             ItemID = 0xDC8;
 
             if (Hue == 0x8A0)
+            {
                 Hue = 0x240;
+            }
         }
 
         public AquariumFishNet(Serial serial) : base(serial)
@@ -66,9 +68,13 @@ namespace Server.Items
             if (!from.PlaceInBackpack(this))
             {
                 if (from.Map == null || from.Map == Map.Internal)
+                {
                     Delete();
+                }
                 else
-                    MoveToWorld(from.Location, from.Map);
+                {
+                    MoveToWorld(@from.Location, @from.Map);
+                }
             }
         }
 
@@ -81,7 +87,9 @@ namespace Server.Items
                 var max = (int)skill / 5;
 
                 if (max > 20)
+                {
                     max = 20;
+                }
 
                 return Utility.Random(max) switch
                 {

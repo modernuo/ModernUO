@@ -68,10 +68,14 @@ namespace Server.Engines.BulkOrders
             list.Add(1060654); // small bulk order
 
             if (RequireExceptional)
+            {
                 list.Add(1045141); // All items must be exceptional.
+            }
 
             if (Material != BulkMaterialType.None)
+            {
                 list.Add(SmallBODGump.GetMaterialNumberFor(Material)); // All items must be made with x material.
+            }
 
             list.Add(1060656, AmountMax.ToString());               // amount to make: ~1_val~
             list.Add(1060658, "#{0}\t{1}", m_Number, m_AmountCur); // ~1_val~: ~2_val~
@@ -80,9 +84,13 @@ namespace Server.Engines.BulkOrders
         public override void OnDoubleClick(Mobile from)
         {
             if (IsChildOf(from.Backpack) || InSecureTrade || RootParent is PlayerVendor)
-                from.SendGump(new SmallBODGump(from, this));
+            {
+                @from.SendGump(new SmallBODGump(@from, this));
+            }
             else
-                from.SendLocalizedMessage(1045156); // You must have the deed in your backpack to use it.
+            {
+                @from.SendLocalizedMessage(1045156); // You must have the deed in your backpack to use it.
+            }
         }
 
         public override void OnDoubleClickNotAccessible(Mobile from)
@@ -151,11 +159,17 @@ namespace Server.Engines.BulkOrders
                     bool isExceptional;
 
                     if (item is BaseWeapon weapon)
+                    {
                         isExceptional = weapon.Quality == WeaponQuality.Exceptional;
+                    }
                     else if (armor != null)
+                    {
                         isExceptional = armor.Quality == ArmorQuality.Exceptional;
+                    }
                     else
+                    {
                         isExceptional = clothing.Quality == ClothingQuality.Exceptional;
+                    }
 
                     if (RequireExceptional && !isExceptional)
                     {
@@ -170,7 +184,9 @@ namespace Server.Engines.BulkOrders
                         from.SendGump(new SmallBODGump(from, this));
 
                         if (m_AmountCur < AmountMax)
-                            BeginCombine(from);
+                        {
+                            BeginCombine(@from);
+                        }
                     }
                 }
             }
@@ -203,7 +219,9 @@ namespace Server.Engines.BulkOrders
                         var type = reader.ReadString();
 
                         if (type != null)
+                        {
                             Type = AssemblyHandler.FindFirstTypeForName(type);
+                        }
 
                         m_Number = reader.ReadInt();
                         Graphic = reader.ReadInt();

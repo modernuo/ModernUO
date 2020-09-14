@@ -81,8 +81,13 @@
         public override void OnDoubleClick(Mobile from)
         {
             if (!from.InRange(GetWorldLocation(), 2))
-                from.SendLocalizedMessage(500446); // That is too far away.
-            else from.PlaySound(m_SoundID);
+            {
+                @from.SendLocalizedMessage(500446); // That is too far away.
+            }
+            else
+            {
+                @from.PlaySound(m_SoundID);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

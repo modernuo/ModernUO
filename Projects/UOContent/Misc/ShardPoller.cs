@@ -52,14 +52,18 @@ namespace Server.Misc
             get
             {
                 if (StartTime == DateTime.MinValue || !m_Active)
+                {
                     return TimeSpan.Zero;
+                }
 
                 try
                 {
                     var ts = StartTime + Duration - DateTime.UtcNow;
 
                     if (ts < TimeSpan.Zero)
+                    {
                         return TimeSpan.Zero;
+                    }
 
                     return ts;
                 }
@@ -77,7 +81,9 @@ namespace Server.Misc
             set
             {
                 if (m_Active == value)
+                {
                     return;
+                }
 
                 m_Active = value;
 
@@ -98,8 +104,12 @@ namespace Server.Misc
         public bool HasAlreadyVoted(NetState ns)
         {
             for (var i = 0; i < Options.Length; ++i)
+            {
                 if (Options[i].HasAlreadyVoted(ns))
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -114,16 +124,22 @@ namespace Server.Misc
             var index = Array.IndexOf(Options, option);
 
             if (index < 0)
+            {
                 return;
+            }
 
             var old = Options;
             Options = new ShardPollOption[old.Length - 1];
 
             for (var i = 0; i < index; ++i)
+            {
                 Options[i] = old[i];
+            }
 
             for (var i = index; i < Options.Length; ++i)
+            {
                 Options[i] = old[i + 1];
+            }
         }
 
         public void AddOption(ShardPollOption option)
@@ -132,7 +148,9 @@ namespace Server.Misc
             Options = new ShardPollOption[old.Length + 1];
 
             for (var i = 0; i < old.Length; ++i)
+            {
                 Options[i] = old[i];
+            }
 
             Options[old.Length] = option;
         }
@@ -145,7 +163,9 @@ namespace Server.Misc
         private static void EventSink_Login(Mobile m)
         {
             if (m_ActivePollers.Count == 0)
+            {
                 return;
+            }
 
             Timer.DelayCall(TimeSpan.FromSeconds(1.0), EventSink_Login_Callback, m);
         }
@@ -155,7 +175,9 @@ namespace Server.Misc
             var ns = from.NetState;
 
             if (ns == null)
+            {
                 return;
+            }
 
             ShardPollGump spg = null;
 
@@ -164,12 +186,16 @@ namespace Server.Misc
                 var poller = m_ActivePollers[i];
 
                 if (poller.Deleted || !poller.Active)
+                {
                     continue;
+                }
 
                 if (poller.TimeRemaining > TimeSpan.Zero)
                 {
                     if (poller.HasAlreadyVoted(ns))
+                    {
                         continue;
+                    }
 
                     if (spg == null)
                     {
@@ -191,7 +217,9 @@ namespace Server.Misc
         public override void OnDoubleClick(Mobile from)
         {
             if (from.AccessLevel >= AccessLevel.Administrator)
-                from.SendGump(new ShardPollGump(from, this, true, null));
+            {
+                @from.SendGump(new ShardPollGump(@from, this, true, null));
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -208,7 +236,9 @@ namespace Server.Misc
             writer.Write(Options.Length);
 
             for (var i = 0; i < Options.Length; ++i)
+            {
                 Options[i].Serialize(writer);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -229,10 +259,14 @@ namespace Server.Misc
                         Options = new ShardPollOption[reader.ReadInt()];
 
                         for (var i = 0; i < Options.Length; ++i)
+                        {
                             Options[i] = new ShardPollOption(reader);
+                        }
 
                         if (m_Active)
+                        {
                             m_ActivePollers.Add(this);
+                        }
 
                         break;
                     }
@@ -272,7 +306,9 @@ namespace Server.Misc
                         Voters = new IPAddress[reader.ReadInt()];
 
                         for (var i = 0; i < Voters.Length; ++i)
+                        {
                             Voters[i] = Utility.Intern(reader.ReadIPAddress());
+                        }
 
                         break;
                     }
@@ -297,13 +333,19 @@ namespace Server.Misc
         public bool HasAlreadyVoted(NetState ns)
         {
             if (ns == null)
+            {
                 return false;
+            }
 
             var ipAddress = ns.Address;
 
             for (var i = 0; i < Voters.Length; ++i)
+            {
                 if (Utility.IPMatchClassC(Voters[i], ipAddress))
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -311,13 +353,17 @@ namespace Server.Misc
         public void AddVote(NetState ns)
         {
             if (ns == null)
+            {
                 return;
+            }
 
             var old = Voters;
             Voters = new IPAddress[old.Length + 1];
 
             for (var i = 0; i < old.Length; ++i)
+            {
                 Voters[i] = old[i];
+            }
 
             Voters[old.Length] = ns.Address;
         }
@@ -327,7 +373,9 @@ namespace Server.Misc
             var height = LineBreaks * 18;
 
             if (height > 30)
+            {
                 return height;
+            }
 
             return 30;
         }
@@ -335,7 +383,9 @@ namespace Server.Misc
         public int GetBreaks(string title)
         {
             if (title == null)
+            {
                 return 1;
+            }
 
             var count = 0;
             var index = -1;
@@ -358,7 +408,9 @@ namespace Server.Misc
             writer.Write(Voters.Length);
 
             for (var i = 0; i < Voters.Length; ++i)
+            {
                 writer.Write(Voters[i]);
+            }
         }
     }
 
@@ -393,7 +445,9 @@ namespace Server.Misc
             var isCompleted = totalVotes > 0 && !poller.Active;
 
             if (editing && !isViewingResults)
+            {
                 totalOptionHeight += 35;
+            }
 
             var height = 115 + totalOptionHeight;
 
@@ -405,9 +459,13 @@ namespace Server.Misc
             string title;
 
             if (editing)
+            {
                 title = isCompleted ? "Poll Completed" : "Poll Editor";
+            }
             else
+            {
                 title = "Shard Poll";
+            }
 
             AddHtml(22, 22, 294, 20, Color(Center(title), LabelColor32));
 
@@ -441,9 +499,13 @@ namespace Server.Misc
                 y += optHeight / 2;
 
                 if (isViewingResults)
+                {
                     AddImage(24, y - 15, 0x25FE);
+                }
                 else
+                {
                     AddRadio(24, y - 15, 0x25F9, 0x25FC, false, 1 + i);
+                }
 
                 AddHtml(60, y - 9 * option.LineBreaks, 250, 18 * option.LineBreaks, Color(text, LabelColor32));
 
@@ -481,6 +543,7 @@ namespace Server.Misc
                 var shardPoller = m_Polls.Dequeue();
 
                 if (shardPoller != null)
+                {
                     Timer.DelayCall(
                         TimeSpan.FromSeconds(1.0),
                         data =>
@@ -490,6 +553,7 @@ namespace Server.Misc
                         },
                         (m_From, shardPoller, m_Polls)
                     );
+                }
             }
 
             if (info.ButtonID == 1)
@@ -497,16 +561,22 @@ namespace Server.Misc
                 var switches = info.Switches;
 
                 if (switches.Length == 0)
+                {
                     return;
+                }
 
                 var switched = switches[0] - 1;
                 ShardPollOption opt = null;
 
                 if (switched >= 0 && switched < m_Poller.Options.Length)
+                {
                     opt = m_Poller.Options[switched];
+                }
 
                 if (opt == null && !Editing)
+                {
                     return;
+                }
 
                 if (Editing)
                 {
@@ -527,11 +597,17 @@ namespace Server.Misc
                 else
                 {
                     if (!m_Poller.Active)
+                    {
                         m_From.SendMessage("The poll has been deactivated.");
+                    }
                     else if (m_Poller.HasAlreadyVoted(sender))
+                    {
                         m_From.SendMessage("You have already voted on this poll.");
+                    }
                     else
+                    {
                         m_Poller.AddVote(sender, opt);
+                    }
                 }
             }
             else if (info.ButtonID == 2 && Editing)
@@ -566,7 +642,9 @@ namespace Server.Misc
             if (m.Groups[1].Success)
             {
                 if (m.Groups[2].Success)
+                {
                     return $"<a href=\"{m.Groups[1].Value}\">{m.Groups[2].Value}</a>";
+                }
             }
             else if (m.Groups[2].Success)
             {
@@ -579,7 +657,9 @@ namespace Server.Misc
         public static string UrlToHref(string text)
         {
             if (text == null)
+            {
                 return null;
+            }
 
             return m_UrlRegex.Replace(text, UrlRegex_Match);
         }
@@ -593,16 +673,22 @@ namespace Server.Misc
             else if (text == "DEL")
             {
                 if (m_Option != null)
+                {
                     m_Poller.RemoveOption(m_Option);
+                }
             }
             else
             {
                 text = UrlToHref(text);
 
                 if (m_Option == null)
+                {
                     m_Poller.AddOption(new ShardPollOption(text));
+                }
                 else
+                {
                     m_Option.Title = text;
+                }
             }
 
             from.SendGump(new ShardPollGump(from, m_Poller, true, null));

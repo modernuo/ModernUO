@@ -14,7 +14,9 @@ namespace Server.Items
             Visible = false;
             // this.Movable = false;
             if (prev != null)
+            {
                 prev.NextPoint = this;
+            }
         }
 
         public WayPoint(Serial serial) : base(serial)
@@ -30,7 +32,9 @@ namespace Server.Items
             set
             {
                 if (m_Next != this)
+                {
                     m_Next = value;
+                }
             }
         }
 
@@ -60,9 +64,13 @@ namespace Server.Items
             base.OnSingleClick(from);
 
             if (m_Next == null)
-                LabelTo(from, "(Unlinked)");
+            {
+                LabelTo(@from, "(Unlinked)");
+            }
             else
-                LabelTo(from, "(Linked: {0})", m_Next.Location);
+            {
+                LabelTo(@from, "(Linked: {0})", m_Next.Location);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -100,9 +108,13 @@ namespace Server.Items
         protected override void OnTarget(Mobile from, object target)
         {
             if (target is WayPoint point && m_Point != null)
+            {
                 m_Point.NextPoint = point;
+            }
             else
-                from.SendMessage("Target a way point.");
+            {
+                @from.SendMessage("Target a way point.");
+            }
         }
     }
 
@@ -117,7 +129,9 @@ namespace Server.Items
             if (targeted is WayPoint wayPoint)
             {
                 if (m_Last != null)
+                {
                     m_Last.NextPoint = wayPoint;
+                }
             }
             else if (targeted is IPoint3D d)
             {

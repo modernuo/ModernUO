@@ -32,9 +32,13 @@ namespace Server.Json
         public override void Write(Utf8JsonWriter writer, TextDefinition value, JsonSerializerOptions options)
         {
             if (value.Number > 0)
+            {
                 writer.WriteNumberValue(value.Number);
+            }
             else
+            {
                 writer.WriteStringValue(value.String);
+            }
         }
     }
 }

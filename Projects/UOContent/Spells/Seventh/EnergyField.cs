@@ -46,25 +46,37 @@ namespace Server.Spells.Seventh
                 bool eastToWest;
 
                 if (rx >= 0 && ry >= 0)
+                {
                     eastToWest = false;
+                }
                 else if (rx >= 0)
+                {
                     eastToWest = true;
+                }
                 else if (ry >= 0)
+                {
                     eastToWest = true;
+                }
                 else
+                {
                     eastToWest = false;
+                }
 
                 Effects.PlaySound(p, Caster.Map, 0x20B);
 
                 TimeSpan duration;
 
                 if (Core.AOS)
+                {
                     duration = TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5) / 7.0);
+                }
                 else
+                {
                     duration = TimeSpan.FromSeconds(
                         Caster.Skills.Magery.Value * 0.28 +
                         2.0
                     ); // (28% of magery) + 2.0 seconds
+                }
 
                 var itemID = eastToWest ? 0x3946 : 0x3956;
 
@@ -74,7 +86,9 @@ namespace Server.Spells.Seventh
                     var canFit = SpellHelper.AdjustField(ref loc, Caster.Map, 12, false);
 
                     if (!canFit)
+                    {
                         continue;
+                    }
 
                     Item item = new InternalItem(loc, Caster.Map, duration, itemID, Caster);
                     item.ProcessDelta();
@@ -114,12 +128,18 @@ namespace Server.Spells.Seventh
                 m_Caster = caster;
 
                 if (caster.InLOS(this))
+                {
                     Visible = true;
+                }
                 else
+                {
                     Delete();
+                }
 
                 if (Deleted)
+                {
                     return;
+                }
 
                 m_Timer = new InternalTimer(this, duration);
                 m_Timer.Start();
@@ -150,7 +170,9 @@ namespace Server.Spells.Seventh
             public override bool OnMoveOver(Mobile m)
             {
                 if (!(m is PlayerMobile))
+                {
                     return base.OnMoveOver(m);
+                }
 
                 var noto = Notoriety.Compute(m_Caster, m);
                 return noto != Notoriety.Enemy && noto != Notoriety.Ally && base.OnMoveOver(m);

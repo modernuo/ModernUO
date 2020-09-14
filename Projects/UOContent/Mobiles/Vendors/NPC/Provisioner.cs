@@ -24,7 +24,9 @@ namespace Server.Mobiles
             m_SBInfos.Add(new SBProvisioner());
 
             if (IsTokunoVendor)
+            {
                 m_SBInfos.Add(new SBSEHats());
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

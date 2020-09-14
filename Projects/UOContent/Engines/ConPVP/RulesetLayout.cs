@@ -50,7 +50,9 @@ namespace Server.Engines.ConPVP
             Options = options;
 
             for (var i = 0; i < children.Length; ++i)
+            {
                 children[i].Parent = this;
+            }
         }
 
         public static RulesetLayout Root
@@ -58,7 +60,9 @@ namespace Server.Engines.ConPVP
             get
             {
                 if (m_Root != null)
+                {
                     return m_Root;
+                }
 
                 var entries = new List<RulesetLayout>
                 {
@@ -228,6 +232,7 @@ namespace Server.Engines.ConPVP
                         );
 
                         if (Core.ML)
+                        {
                             entries.Add(
                                 new RulesetLayout(
                                     "Spellweaving",
@@ -252,12 +257,14 @@ namespace Server.Engines.ConPVP
                                     }
                                 )
                             );
+                        }
                     }
                 }
 
                 if (Core.AOS)
                 {
                     if (Core.SE)
+                    {
                         entries.Add(
                             new RulesetLayout(
                                 "Combat Abilities",
@@ -291,7 +298,9 @@ namespace Server.Engines.ConPVP
                                 }
                             )
                         );
+                    }
                     else
+                    {
                         entries.Add(
                             new RulesetLayout(
                                 "Combat Abilities",
@@ -315,6 +324,7 @@ namespace Server.Engines.ConPVP
                                 }
                             )
                         );
+                    }
                 }
                 else
                 {
@@ -409,6 +419,7 @@ namespace Server.Engines.ConPVP
                 }
 
                 if (Core.SE)
+                {
                     entries.Add(
                         new RulesetLayout(
                             "Items",
@@ -443,7 +454,9 @@ namespace Server.Engines.ConPVP
                             }
                         )
                     );
+                }
                 else
+                {
                     entries.Add(
                         new RulesetLayout(
                             "Items",
@@ -476,6 +489,7 @@ namespace Server.Engines.ConPVP
                             }
                         )
                     );
+                }
 
                 m_Root = new RulesetLayout("Rules", entries.ToArray());
                 m_Root.ComputeOffsets();
@@ -794,14 +808,18 @@ namespace Server.Engines.ConPVP
         public RulesetLayout FindByTitle(string title)
         {
             if (Title == title)
+            {
                 return this;
+            }
 
             for (var i = 0; i < Children.Length; ++i)
             {
                 var layout = Children[i].FindByTitle(title);
 
                 if (layout != null)
+                {
                     return layout;
+                }
             }
 
             return null;
@@ -810,14 +828,18 @@ namespace Server.Engines.ConPVP
         public string FindByIndex(int index)
         {
             if (index >= Offset && index < Offset + Options.Length)
+            {
                 return $"{Description}: {Options[index - Offset]}";
+            }
 
             for (var i = 0; i < Children.Length; ++i)
             {
                 var opt = Children[i].FindByIndex(index);
 
                 if (opt != null)
+                {
                     return opt;
+                }
             }
 
             return null;
@@ -830,7 +852,9 @@ namespace Server.Engines.ConPVP
                 index = GetOptionIndex(option);
 
                 if (index >= 0)
+                {
                     return this;
+                }
 
                 title = null;
             }
@@ -840,7 +864,9 @@ namespace Server.Engines.ConPVP
                 var layout = Children[i].FindByOption(title, option, ref index);
 
                 if (layout != null)
+                {
                     return layout;
+                }
             }
 
             return null;
@@ -863,7 +889,9 @@ namespace Server.Engines.ConPVP
             TotalLength += Options.Length;
 
             for (var i = 0; i < Children.Length; ++i)
+            {
                 TotalLength += Children[i].RecurseComputeOffsets(ref offset);
+            }
 
             return TotalLength;
         }

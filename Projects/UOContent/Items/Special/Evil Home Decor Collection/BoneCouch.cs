@@ -17,7 +17,9 @@ namespace Server.Items
             var allow = base.OnMoveOver(m);
 
             if (allow && m.Alive && m.Player && (m.AccessLevel == AccessLevel.Player || !m.Hidden))
+            {
                 Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x547, 0x54A));
+            }
 
             return allow;
         }

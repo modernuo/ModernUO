@@ -18,7 +18,9 @@ namespace Server.ContextMenus
         public override void OnClick()
         {
             if (!m_From.Alive || m_TargetHouse.Deleted || !m_TargetHouse.IsFriend(m_From))
+            {
                 return;
+            }
 
             m_TargetHouse.Kick(m_From, m_Target);
         }

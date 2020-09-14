@@ -25,12 +25,14 @@ namespace Server.Engines.ConPVP
             var tourney = Tournament?.Tournament;
 
             if (tourney?.Stage == TournamentStage.Signup)
+            {
                 PublicOverheadMessage(
                     MessageType.Regular,
                     0x35,
                     false,
                     "Come one, come all! Do you aspire to be a fighter of great renown? Join this tournament and show the world your abilities."
                 );
+            }
         }
 
         public override void OnMovement(Mobile m, Point3D oldLocation)
@@ -47,12 +49,19 @@ namespace Server.Engines.ConPVP
                 var entry = ladder?.Find(m);
 
                 if (entry != null && Ladder.GetLevel(entry.Experience) < tourney.LevelRequirement)
+                {
                     return;
+                }
 
-                if (tourney.IsFactionRestricted && Faction.Find(m) == null) return;
+                if (tourney.IsFactionRestricted && Faction.Find(m) == null)
+                {
+                    return;
+                }
 
                 if (tourney.HasParticipant(m))
+                {
                     return;
+                }
 
                 PrivateOverheadMessage(
                     MessageType.Regular,

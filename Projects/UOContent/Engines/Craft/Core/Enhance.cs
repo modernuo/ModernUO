@@ -26,19 +26,29 @@ namespace Server.Engines.Craft
         )
         {
             if (item == null)
+            {
                 return EnhanceResult.BadItem;
+            }
 
             if (!item.IsChildOf(from.Backpack))
+            {
                 return EnhanceResult.NotInBackpack;
+            }
 
             if (!(item is BaseArmor) && !(item is BaseWeapon))
+            {
                 return EnhanceResult.BadItem;
+            }
 
             if (item is IArcaneEquip eq && eq.IsArcane)
+            {
                 return EnhanceResult.BadItem;
+            }
 
             if (CraftResources.IsStandard(resource))
+            {
                 return EnhanceResult.BadResource;
+            }
 
             var num = craftSystem.CanCraft(from, tool, item.GetType());
 
@@ -51,20 +61,28 @@ namespace Server.Engines.Craft
             var craftItem = craftSystem.CraftItems.SearchFor(item.GetType());
 
             if (craftItem == null || craftItem.Resources.Count == 0)
+            {
                 return EnhanceResult.BadItem;
+            }
 
             if (craftItem.GetSuccessChance(from, resType, craftSystem, false, out _) <= 0.0)
+            {
                 return EnhanceResult.NoSkill;
+            }
 
             var info = CraftResources.GetInfo(resource);
 
             if (info == null || info.ResourceTypes.Length == 0)
+            {
                 return EnhanceResult.BadResource;
+            }
 
             var attributes = info.AttributeInfo;
 
             if (attributes == null)
+            {
                 return EnhanceResult.BadResource;
+            }
 
             int resHue = 0, maxAmount = 0;
 
@@ -77,15 +95,21 @@ namespace Server.Engines.Craft
                 ConsumeType.None,
                 ref resMessage
             ))
+            {
                 return EnhanceResult.NoResources;
+            }
 
             if (craftSystem is DefBlacksmithy)
-                if (from.FindItemOnLayer(Layer.OneHanded) is AncientSmithyHammer hammer)
+            {
+                if (@from.FindItemOnLayer(Layer.OneHanded) is AncientSmithyHammer hammer)
                 {
                     hammer.UsesRemaining--;
                     if (hammer.UsesRemaining < 1)
+                    {
                         hammer.Delete();
+                    }
                 }
+            }
 
             int phys = 0, fire = 0, cold = 0, pois = 0, nrgy = 0;
             int dura, luck, lreq, dinc = 0;
@@ -104,7 +128,9 @@ namespace Server.Engines.Craft
             if (item is BaseWeapon weapon)
             {
                 if (!CraftResources.IsStandard(weapon.Resource))
+                {
                     return EnhanceResult.AlreadyEnhanced;
+                }
 
                 baseChance = 20;
 
@@ -128,7 +154,9 @@ namespace Server.Engines.Craft
                 var armor = (BaseArmor)item;
 
                 if (!CraftResources.IsStandard(armor.Resource))
+                {
                     return EnhanceResult.AlreadyEnhanced;
+                }
 
                 baseChance = 20;
 
@@ -157,36 +185,56 @@ namespace Server.Engines.Craft
             var skill = from.Skills[craftSystem.MainSkill].Fixed / 10;
 
             if (skill >= 100)
+            {
                 baseChance -= (skill - 90) / 10;
+            }
 
             var res = EnhanceResult.Success;
 
             if (physBonus)
+            {
                 CheckResult(ref res, baseChance + phys);
+            }
 
             if (fireBonus)
+            {
                 CheckResult(ref res, baseChance + fire);
+            }
 
             if (coldBonus)
+            {
                 CheckResult(ref res, baseChance + cold);
+            }
 
             if (nrgyBonus)
+            {
                 CheckResult(ref res, baseChance + nrgy);
+            }
 
             if (poisBonus)
+            {
                 CheckResult(ref res, baseChance + pois);
+            }
 
             if (duraBonus)
+            {
                 CheckResult(ref res, baseChance + dura / 40);
+            }
 
             if (luckBonus)
+            {
                 CheckResult(ref res, baseChance + 10 + luck / 2);
+            }
 
             if (lreqBonus)
+            {
                 CheckResult(ref res, baseChance + lreq / 4);
+            }
 
             if (dincBonus)
+            {
                 CheckResult(ref res, baseChance + dinc / 4);
+            }
 
             switch (res)
             {
@@ -201,7 +249,9 @@ namespace Server.Engines.Craft
                             ConsumeType.Half,
                             ref resMessage
                         ))
+                        {
                             return EnhanceResult.NoResources;
+                        }
 
                         item.Delete();
                         break;
@@ -217,7 +267,9 @@ namespace Server.Engines.Craft
                             ConsumeType.All,
                             ref resMessage
                         ))
+                        {
                             return EnhanceResult.NoResources;
+                        }
 
                         if (item is BaseWeapon w)
                         {
@@ -225,7 +277,9 @@ namespace Server.Engines.Craft
 
                             var hue = w.GetElementalDamageHue();
                             if (hue > 0)
+                            {
                                 w.Hue = hue;
+                            }
                         }
                         else
                         {
@@ -245,7 +299,9 @@ namespace Server.Engines.Craft
                             ConsumeType.Half,
                             ref resMessage
                         ))
+                        {
                             return EnhanceResult.NoResources;
+                        }
 
                         break;
                     }
@@ -257,14 +313,20 @@ namespace Server.Engines.Craft
         public static void CheckResult(ref EnhanceResult res, int chance)
         {
             if (res != EnhanceResult.Success)
+            {
                 return; // we've already failed..
+            }
 
             var random = Utility.Random(100);
 
             if (random < 10)
+            {
                 res = EnhanceResult.Failure;
+            }
             else if (chance > random)
+            {
                 res = EnhanceResult.Broken;
+            }
         }
 
         public static void BeginTarget(Mobile from, CraftSystem craftSystem, BaseTool tool)
@@ -272,7 +334,9 @@ namespace Server.Engines.Craft
             var context = craftSystem.GetContext(from);
 
             if (context == null)
+            {
                 return;
+            }
 
             var lastRes = context.LastResourceIndex;
             var subRes = craftSystem.CraftSubRes;

@@ -9,9 +9,13 @@ namespace Server.Ethics
             Movable = false;
 
             if (Instance?.Deleted != false)
+            {
                 Instance = this;
+            }
             else
+            {
                 base.Delete();
+            }
         }
 
         public EthicsPersistance(Serial serial)
@@ -29,7 +33,9 @@ namespace Server.Ethics
             writer.Write(0); // version
 
             for (var i = 0; i < Ethic.Ethics.Length; ++i)
+            {
                 Ethic.Ethics[i].Serialize(writer);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -43,7 +49,9 @@ namespace Server.Ethics
                 case 0:
                     {
                         for (var i = 0; i < Ethic.Ethics.Length; ++i)
+                        {
                             Ethic.Ethics[i].Deserialize(reader);
+                        }
 
                         break;
                     }

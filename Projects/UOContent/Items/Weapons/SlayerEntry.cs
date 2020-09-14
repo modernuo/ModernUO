@@ -93,8 +93,12 @@ namespace Server.Items
             var t = m.GetType();
 
             for (var i = 0; i < Types.Length; ++i)
+            {
                 if (Types[i].IsAssignableFrom(t))
+                {
                     return true;
+                }
+            }
 
             return false;
         }

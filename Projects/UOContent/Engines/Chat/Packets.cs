@@ -14,9 +14,13 @@ namespace Server.Engines.Chat
             Stream.Write((ushort)(number - 20));
 
             if (who != null)
+            {
                 Stream.WriteAsciiFixed(who.Language, 4);
+            }
             else
+            {
                 Stream.Write(0);
+            }
 
             Stream.WriteBigUniNull(param1);
             Stream.WriteBigUniNull(param2);

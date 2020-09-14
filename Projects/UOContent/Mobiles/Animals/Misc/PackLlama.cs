@@ -80,7 +80,9 @@ namespace Server.Mobiles
         public override bool OnBeforeDeath()
         {
             if (!base.OnBeforeDeath())
+            {
                 return false;
+            }
 
             PackAnimal.CombineBackpacks(this);
 
@@ -92,7 +94,9 @@ namespace Server.Mobiles
         public override bool IsSnoop(Mobile from)
         {
             if (PackAnimal.CheckAccess(this, from))
+            {
                 return false;
+            }
 
             return base.IsSnoop(from);
         }
@@ -100,7 +104,9 @@ namespace Server.Mobiles
         public override bool OnDragDrop(Mobile from, Item item)
         {
             if (CheckFeed(from, item))
+            {
                 return true;
+            }
 
             if (PackAnimal.CheckAccess(this, from))
             {

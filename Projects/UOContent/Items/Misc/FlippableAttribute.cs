@@ -29,14 +29,19 @@ namespace Server.Items
                 if (targeted is Item item)
                 {
                     if (item.Movable == false && from.AccessLevel == AccessLevel.Player)
+                    {
                         return;
+                    }
 
                     var type = item.GetType();
 
                     var AttributeArray =
                         (FlippableAttribute[])type.GetCustomAttributes(typeof(FlippableAttribute), false);
 
-                    if (AttributeArray.Length == 0) return;
+                    if (AttributeArray.Length == 0)
+                    {
+                        return;
+                    }
 
                     var fa = AttributeArray[0];
 
@@ -75,14 +80,18 @@ namespace Server.Items
             {
                 var index = 0;
                 for (var i = 0; i < ItemIDs.Length; i++)
+                {
                     if (item.ItemID == ItemIDs[i])
                     {
                         index = i + 1;
                         break;
                     }
+                }
 
                 if (index > ItemIDs.Length - 1)
+                {
                     index = 0;
+                }
 
                 item.ItemID = ItemIDs[index];
             }

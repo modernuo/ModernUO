@@ -377,7 +377,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version <= 0 && ItemID == 0x318F)
+            {
                 ItemID = 0x318C;
+            }
         }
     }
 

@@ -55,7 +55,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_RedLeaves.Deleted)
+                {
                     return;
+                }
 
                 if (!m_RedLeaves.IsChildOf(from.Backpack))
                 {

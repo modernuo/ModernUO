@@ -113,31 +113,45 @@ namespace Server.Engines.Plants
         public static PlantHue Cross(PlantHue first, PlantHue second)
         {
             if (!IsCrossable(first) || !IsCrossable(second))
+            {
                 return PlantHue.None;
+            }
 
             if (Utility.RandomDouble() < 0.01)
+            {
                 return Utility.RandomBool() ? PlantHue.Black : PlantHue.White;
+            }
 
             if (first == PlantHue.Plain || second == PlantHue.Plain)
+            {
                 return PlantHue.Plain;
+            }
 
             var notBrightFirst = GetNotBright(first);
             var notBrightSecond = GetNotBright(second);
 
             if (notBrightFirst == notBrightSecond)
+            {
                 return first | PlantHue.Bright;
+            }
 
             var firstPrimary = IsPrimary(notBrightFirst);
             var secondPrimary = IsPrimary(notBrightSecond);
 
             if (firstPrimary && secondPrimary)
+            {
                 return notBrightFirst | notBrightSecond;
+            }
 
             if (firstPrimary)
+            {
                 return notBrightFirst;
+            }
 
             if (secondPrimary)
+            {
                 return notBrightSecond;
+            }
 
             return notBrightFirst & notBrightSecond;
         }

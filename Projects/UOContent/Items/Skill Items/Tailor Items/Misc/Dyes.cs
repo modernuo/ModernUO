@@ -37,7 +37,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 0.0)
+            {
                 Weight = 3.0;
+            }
 
             /* m_UsesRemaining = ( version == 0 ) ? 25 : reader.ReadInt(); */
         }
@@ -66,11 +68,17 @@ namespace Server.Items
                     if (tub.Redyable)
                     {
                         if (tub.MetallicHues) /* OSI has three metallic tubs now */
-                            from.SendGump(new MetallicHuePicker<DyeTub>(from, SetTubHue, tub));
+                        {
+                            @from.SendGump(new MetallicHuePicker<DyeTub>(@from, SetTubHue, tub));
+                        }
                         else if (tub.CustomHuePicker != null)
-                            from.SendGump(new CustomHuePickerGump<DyeTub>(from, tub.CustomHuePicker, SetTubHue, tub));
+                        {
+                            @from.SendGump(new CustomHuePickerGump<DyeTub>(@from, tub.CustomHuePicker, SetTubHue, tub));
+                        }
                         else
-                            from.SendHuePicker(new InternalPicker(tub));
+                        {
+                            @from.SendHuePicker(new InternalPicker(tub));
+                        }
                     }
                     else if (tub is BlackDyeTub)
                     {

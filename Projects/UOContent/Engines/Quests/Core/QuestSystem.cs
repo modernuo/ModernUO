@@ -70,7 +70,9 @@ namespace Server.Engines.Quests
         public virtual void StartTimer()
         {
             if (m_Timer != null)
+            {
                 return;
+            }
 
             m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), Slice);
         }
@@ -89,7 +91,9 @@ namespace Server.Engines.Quests
                 var obj = Objectives[i];
 
                 if (obj.GetTimerEvent())
+                {
                     obj.CheckProgress();
+                }
             }
         }
 
@@ -100,7 +104,9 @@ namespace Server.Engines.Quests
                 var obj = Objectives[i];
 
                 if (obj.GetKillEvent(creature, corpse))
+                {
                     obj.OnKill(creature, corpse);
+                }
             }
         }
 
@@ -111,7 +117,9 @@ namespace Server.Engines.Quests
                 var obj = Objectives[i];
 
                 if (obj.IgnoreYoungProtection(from))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -178,12 +186,16 @@ namespace Server.Engines.Quests
             writer.WriteEncodedInt(Objectives.Count);
 
             for (var i = 0; i < Objectives.Count; ++i)
+            {
                 QuestSerializer.Serialize(referenceTable, Objectives[i], writer);
+            }
 
             writer.WriteEncodedInt(Conversations.Count);
 
             for (var i = 0; i < Conversations.Count; ++i)
+            {
                 QuestSerializer.Serialize(referenceTable, Conversations[i], writer);
+            }
 
             ChildSerialize(writer);
         }
@@ -207,7 +219,9 @@ namespace Server.Engines.Quests
                 var obj = Objectives[i];
 
                 if (obj is T t)
+                {
                     return t;
+                }
             }
 
             return null;
@@ -220,7 +234,9 @@ namespace Server.Engines.Quests
                 var obj = Objectives[i];
 
                 if (obj.GetType() == type)
+                {
                     return obj;
+                }
             }
 
             return null;
@@ -234,10 +250,14 @@ namespace Server.Engines.Quests
         public virtual void GetContextMenuEntries(List<ContextMenuEntry> list)
         {
             if (Objectives.Count > 0)
+            {
                 list.Add(new QuestCallbackEntry(6154, ShowQuestLog)); // View Quest Log
+            }
 
             if (Conversations.Count > 0)
+            {
                 list.Add(new QuestCallbackEntry(6156, ShowQuestConversation)); // Quest Conversation
+            }
 
             list.Add(new QuestCallbackEntry(6155, BeginCancelQuest)); // Cancel Quest
         }
@@ -262,7 +282,9 @@ namespace Server.Engines.Quests
                 var last = Objectives[^1];
 
                 if (last.Info != null)
+                {
                     From.SendGump(new QuestItemInfoGump(last.Info));
+                }
             }
         }
 
@@ -279,7 +301,9 @@ namespace Server.Engines.Quests
                 var last = Conversations[^1];
 
                 if (last.Info != null)
+                {
                     From.SendGump(new QuestItemInfoGump(last.Info));
+                }
             }
         }
 
@@ -291,7 +315,9 @@ namespace Server.Engines.Quests
         public virtual void EndCancelQuest(bool shouldCancel)
         {
             if (From.Quest != this)
+            {
                 return;
+            }
 
             if (shouldCancel)
             {
@@ -345,7 +371,9 @@ namespace Server.Engines.Quests
                     }
 
                     if (!found)
+                    {
                         From.DoneQuests.Add(new QuestRestartInfo(ourQuestType, restartDelay));
+                    }
                 }
             }
         }
@@ -355,7 +383,9 @@ namespace Server.Engines.Quests
             conv.System = this;
 
             if (conv.Logged)
+            {
                 Conversations.Add(conv);
+            }
 
             From.CloseGump<QuestItemInfoGump>();
             From.CloseGump<QuestObjectivesGump>();
@@ -363,7 +393,9 @@ namespace Server.Engines.Quests
             From.SendGump(conv.Logged ? new QuestConversationsGump(Conversations) : new QuestConversationsGump(conv));
 
             if (conv.Info != null)
+            {
                 From.SendGump(new QuestItemInfoGump(conv.Info));
+            }
         }
 
         public virtual void AddObjective(QuestObjective obj)
@@ -377,7 +409,9 @@ namespace Server.Engines.Quests
         public virtual void Accept()
         {
             if (From.Quest != null)
+            {
                 return;
+            }
 
             From.Quest = this;
             From.SendLocalizedMessage(1049019); // You have accepted the Quest.
@@ -397,27 +431,40 @@ namespace Server.Engines.Quests
             inRestartPeriod = false;
 
             if (!(check is PlayerMobile pm))
+            {
                 return false;
+            }
 
             if (pm.HasGump<QuestOfferGump>())
+            {
                 return false;
+            }
 
             if (questType == typeof(DarkTidesQuest) && pm.Profession != 4) // necromancer
+            {
                 return false;
+            }
 
             if (questType == typeof(UzeraanTurmoilQuest) && pm.Profession != 1 && pm.Profession != 2 && pm.Profession != 5
             ) // warrior / magician / paladin
+            {
                 return false;
+            }
 
             if (questType == typeof(HaochisTrialsQuest) && pm.Profession != 6) // samurai
+            {
                 return false;
+            }
 
             if (questType == typeof(EminosUndertakingQuest) && pm.Profession != 7) // ninja
+            {
                 return false;
+            }
 
             var doneQuests = pm.DoneQuests;
 
             if (doneQuests != null)
+            {
                 for (var i = 0; i < doneQuests.Count; ++i)
                 {
                     var restartInfo = doneQuests[i];
@@ -436,6 +483,7 @@ namespace Server.Engines.Quests
                         return true;
                     }
                 }
+            }
 
             return true;
         }
@@ -443,9 +491,13 @@ namespace Server.Engines.Quests
         public static void FocusTo(Mobile who, Mobile to)
         {
             if (Utility.RandomBool())
+            {
                 who.Animate(17, 7, 1, true, false, 0);
+            }
             else
+            {
                 who.Animate(32 + Utility.Random(3), 7, 1, true, false, 0);
+            }
 
             who.Direction = who.GetDirectionTo(to);
         }
@@ -453,7 +505,9 @@ namespace Server.Engines.Quests
         public static int RandomBrightHue()
         {
             if (Utility.RandomDouble() < 0.1)
+            {
                 return Utility.RandomList(0x62, 0x71);
+            }
 
             return Utility.RandomList(0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59);
         }
@@ -539,7 +593,9 @@ namespace Server.Engines.Quests
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID == 1)
+            {
                 m_System.EndCancelQuest(info.IsSwitched(1));
+            }
         }
     }
 
@@ -602,9 +658,13 @@ namespace Server.Engines.Quests
             if (info.ButtonID == 1)
             {
                 if (info.IsSwitched(1))
+                {
                     m_System.Accept();
+                }
                 else
+                {
                     m_System.Decline();
+                }
             }
         }
     }
@@ -650,9 +710,13 @@ namespace Server.Engines.Quests
         public void AddHtmlObject(int x, int y, int width, int height, object message, int color, bool back, bool scroll)
         {
             if (message is int html)
+            {
                 AddHtmlLocalized(x, y, width, height, html, C16216(color), back, scroll);
+            }
             else
+            {
                 AddHtml(x, y, width, height, Color(message.ToString(), C16232(color)), back, scroll);
+            }
         }
     }
 }

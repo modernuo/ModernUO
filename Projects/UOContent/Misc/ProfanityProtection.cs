@@ -78,7 +78,9 @@ namespace Server.Misc
         public static void Initialize()
         {
             if (Enabled)
+            {
                 EventSink.Speech += EventSink_Speech;
+            }
         }
 
         private static bool OnProfanityDetected(Mobile from, string speech)
@@ -112,7 +114,9 @@ namespace Server.Misc
             var from = e.Mobile;
 
             if (from.AccessLevel > AccessLevel.Player)
+            {
                 return;
+            }
 
             if (!NameVerification.Validate(
                 e.Speech,
@@ -126,7 +130,9 @@ namespace Server.Misc
                 Disallowed,
                 StartDisallowed
             ))
-                e.Blocked = !OnProfanityDetected(from, e.Speech);
+            {
+                e.Blocked = !OnProfanityDetected(@from, e.Speech);
+            }
         }
     }
 }

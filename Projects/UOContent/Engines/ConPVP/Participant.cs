@@ -28,8 +28,12 @@ namespace Server.Engines.ConPVP
                 var count = 0;
 
                 for (var i = 0; i < Players.Length; ++i)
+                {
                     if (Players[i] != null)
+                    {
                         ++count;
+                    }
+                }
 
                 return count;
             }
@@ -40,8 +44,12 @@ namespace Server.Engines.ConPVP
             get
             {
                 for (var i = 0; i < Players.Length; ++i)
+                {
                     if (Players[i] == null)
+                    {
                         return true;
+                    }
+                }
 
                 return false;
             }
@@ -52,8 +60,12 @@ namespace Server.Engines.ConPVP
             get
             {
                 for (var i = 0; i < Players.Length; ++i)
+                {
                     if (Players[i]?.Eliminated == false)
+                    {
                         return false;
+                    }
+                }
 
                 return true;
             }
@@ -68,12 +80,16 @@ namespace Server.Engines.ConPVP
                 for (var i = 0; i < Players.Length; ++i)
                 {
                     if (Players[i] == null)
+                    {
                         continue;
+                    }
 
                     var mob = Players[i].Mobile;
 
                     if (sb.Length > 0)
+                    {
                         sb.Append(", ");
+                    }
 
                     sb.Append(mob.Name);
                 }
@@ -87,14 +103,20 @@ namespace Server.Engines.ConPVP
             if (mob is PlayerMobile pm)
             {
                 if (pm.DuelContext == Context && pm.DuelPlayer.Participant == this)
+                {
                     return pm.DuelPlayer;
+                }
 
                 return null;
             }
 
             for (var i = 0; i < Players.Length; ++i)
+            {
                 if (Players[i]?.Mobile == mob)
+                {
                     return Players[i];
+                }
+            }
 
             return null;
         }
@@ -104,12 +126,16 @@ namespace Server.Engines.ConPVP
         public void Broadcast(int hue, string message, string nonLocalOverhead, string localOverhead)
         {
             for (var i = 0; i < Players.Length; ++i)
+            {
                 if (Players[i] != null)
                 {
                     if (message != null)
+                    {
                         Players[i].Mobile.SendMessage(hue, message);
+                    }
 
                     if (nonLocalOverhead != null)
+                    {
                         Players[i]
                             .Mobile.NonlocalOverheadMessage(
                                 MessageType.Regular,
@@ -121,21 +147,29 @@ namespace Server.Engines.ConPVP
                                     Players[i].Mobile.Female ? "her" : "his"
                                 )
                             );
+                    }
 
                     if (localOverhead != null)
+                    {
                         Players[i].Mobile.LocalOverheadMessage(MessageType.Regular, hue, false, localOverhead);
+                    }
                 }
+            }
         }
 
         public void Nullify(DuelPlayer player)
         {
             if (player == null)
+            {
                 return;
+            }
 
             var index = Array.IndexOf(Players, player);
 
             if (index == -1)
+            {
                 return;
+            }
 
             Players[index] = null;
         }
@@ -143,21 +177,29 @@ namespace Server.Engines.ConPVP
         public void Remove(DuelPlayer player)
         {
             if (player == null)
+            {
                 return;
+            }
 
             var index = Array.IndexOf(Players, player);
 
             if (index == -1)
+            {
                 return;
+            }
 
             var old = Players;
             Players = new DuelPlayer[old.Length - 1];
 
             for (var i = 0; i < index; ++i)
+            {
                 Players[i] = old[i];
+            }
 
             for (var i = index + 1; i < old.Length; ++i)
+            {
                 Players[i - 1] = old[i];
+            }
         }
 
         public void Remove(Mobile player)
@@ -168,14 +210,18 @@ namespace Server.Engines.ConPVP
         public void Add(Mobile player)
         {
             if (Contains(player))
+            {
                 return;
+            }
 
             for (var i = 0; i < Players.Length; ++i)
+            {
                 if (Players[i] == null)
                 {
                     Players[i] = new DuelPlayer(player, this);
                     return;
                 }
+            }
 
             Resize(Players.Length + 1);
             Players[^1] = new DuelPlayer(player, this);
@@ -191,8 +237,12 @@ namespace Server.Engines.ConPVP
                 var ct = 0;
 
                 for (var i = 0; i < old.Length; ++i)
+                {
                     if (old[i] != null && ct < count)
+                    {
                         Players[ct++] = old[i];
+                    }
+                }
             }
         }
     }
@@ -207,7 +257,9 @@ namespace Server.Engines.ConPVP
             Participant = p;
 
             if (mob is PlayerMobile mobile)
+            {
                 mobile.DuelPlayer = this;
+            }
         }
 
         public Mobile Mobile { get; }

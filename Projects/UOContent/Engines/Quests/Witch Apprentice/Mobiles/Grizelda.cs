@@ -136,9 +136,13 @@ namespace Server.Engines.Quests.Hag
                                         item = Loot.RandomArmorOrShieldOrJewelry();
 
                                         if (item is BaseArmor armor)
+                                        {
                                             BaseRunicTool.ApplyAttributesTo(armor, 2, 20, 30);
+                                        }
                                         else if (item is BaseJewel jewel)
+                                        {
                                             BaseRunicTool.ApplyAttributesTo(jewel, 2, 20, 30);
+                                        }
                                     }
                                     else
                                     {
@@ -153,7 +157,9 @@ namespace Server.Engines.Quests.Hag
                                 }
 
                                 if (player.BAC > 0)
+                                {
                                     cont.DropItem(new HangoverCure());
+                                }
 
                                 if (player.PlaceInBackpack(cont))
                                 {
@@ -165,7 +171,9 @@ namespace Server.Engines.Quests.Hag
                                         250,
                                         ref gainedPath
                                     ))                                        // TODO: Check amount on OSI.
+                                    {
                                         player.SendLocalizedMessage(1054160); // You have gained in sacrifice.
+                                    }
 
                                     PlaySound(0x253);
                                     PlaySound(0x20);

@@ -30,7 +30,9 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (m_Table.Contains(defender) || !Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
@@ -83,7 +85,9 @@ namespace Server.Items
                 m_DamageToDo += DamagePerTick;
 
                 if (m_DamageRemaining <= 0 && m_DamageToDo < 1)
+                {
                     m_DamageToDo = 1.0; // Confirm this 'round up' at the end
+                }
 
                 var damage = (int)m_DamageToDo;
 

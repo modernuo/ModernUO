@@ -47,7 +47,9 @@ namespace Server.Mobiles
             PackItem(new Necklace());
 
             if (Utility.RandomDouble() < 0.25)
+            {
                 PackItem(Seed.RandomBonsaiSeed());
+            }
         }
 
         public LadyOfTheSnow(Serial serial)
@@ -77,7 +79,9 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomDouble() >= 0.1)
+            {
                 return;
+            }
 
             /* Cold Wind
              * Graphics: Message - Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x37B9" ItemIdName: "glow" FromLocation: "(928 164, 34)" ToLocation: "(928 164, 34)" Speed: "10" Duration: "5" FixedDirection: "True" Explode: "False"
@@ -139,9 +143,13 @@ namespace Server.Mobiles
             public void DrainLife()
             {
                 if (m_Mobile.Alive)
+                {
                     m_Mobile.Damage(2, m_From);
+                }
                 else
+                {
                     DoExpire();
+                }
             }
 
             protected override void OnTick()

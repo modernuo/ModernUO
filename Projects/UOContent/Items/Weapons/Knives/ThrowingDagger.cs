@@ -54,24 +54,30 @@ namespace Server.Items
 
             protected override void OnTarget(Mobile from, object targeted)
             {
-                if (m_Dagger.Deleted) return;
+                if (m_Dagger.Deleted)
+                {
+                    return;
+                }
 
                 if (!from.Items.Contains(m_Dagger))
-                    from.SendMessage("You must be holding that weapon to use it.");
+                {
+                    @from.SendMessage("You must be holding that weapon to use it.");
+                }
                 else if (targeted is Mobile m)
-                    if (m != from && from.HarmfulCheck(m))
+                {
+                    if (m != @from && @from.HarmfulCheck(m))
                     {
-                        var to = from.GetDirectionTo(m);
+                        var to = @from.GetDirectionTo(m);
 
-                        from.Direction = to;
+                        @from.Direction = to;
 
-                        from.Animate(from.Mounted ? 26 : 9, 7, 1, true, false, 0);
+                        @from.Animate(@from.Mounted ? 26 : 9, 7, 1, true, false, 0);
 
                         if (Utility.RandomDouble() >= Math.Sqrt(m.Dex / 100.0) * 0.8)
                         {
-                            from.MovingEffect(m, 0x1BFE, 7, 1, false, false, 0x481, 0);
+                            @from.MovingEffect(m, 0x1BFE, 7, 1, false, false, 0x481, 0);
 
-                            AOS.Damage(m, from, Utility.Random(5, from.Str / 10), 100, 0, 0, 0, 0);
+                            AOS.Damage(m, @from, Utility.Random(5, @from.Str / 10), 100, 0, 0, 0, 0);
 
                             m_Dagger.MoveToWorld(m.Location, m.Map);
                         }
@@ -119,11 +125,12 @@ namespace Server.Items
 
                             m_Dagger.MoveToWorld(new Point3D(x, y, m.Z), m.Map);
 
-                            from.MovingEffect(m_Dagger, 0x1BFE, 7, 1, false, false, 0x481, 0);
+                            @from.MovingEffect(m_Dagger, 0x1BFE, 7, 1, false, false, 0x481, 0);
 
-                            from.SendMessage("You miss.");
+                            @from.SendMessage("You miss.");
                         }
                     }
+                }
             }
         }
     }

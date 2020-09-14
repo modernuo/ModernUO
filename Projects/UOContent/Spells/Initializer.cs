@@ -121,7 +121,9 @@ namespace Server.Spells
                 Register(115, typeof(WraithFormSpell));
 
                 if (Core.SE)
+                {
                     Register(116, typeof(ExorcismSpell));
+                }
 
                 // Paladin abilities
                 Register(200, typeof(CleanseByFireSpell));

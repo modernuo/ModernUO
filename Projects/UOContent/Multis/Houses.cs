@@ -539,7 +539,9 @@ namespace Server.Multis
             door.KeyValue = keyValue;
 
             if (door is BaseHouseDoor houseDoor)
+            {
                 houseDoor.Facing = DoorFacing.EastCCW;
+            }
 
             AddDoor(door, -2, 0, id == 0xA2 ? 24 : 27);
 

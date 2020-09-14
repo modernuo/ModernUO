@@ -33,7 +33,9 @@ namespace Server.Items
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
             if (!base.OnDragDrop(from, dropped))
+            {
                 return false;
+            }
 
             PublicOverheadMessage(MessageType.Regular, 0x3B2, Utility.Random(1042891, 8));
             dropped.Delete();
@@ -44,7 +46,9 @@ namespace Server.Items
         public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
         {
             if (!base.OnDragDropInto(from, item, p))
+            {
                 return false;
+            }
 
             PublicOverheadMessage(MessageType.Regular, 0x3B2, Utility.Random(1042891, 8));
             item.Delete();

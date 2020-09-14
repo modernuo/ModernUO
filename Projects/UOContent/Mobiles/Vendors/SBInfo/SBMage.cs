@@ -16,7 +16,9 @@ namespace Server.Mobiles
                 Add(new GenericBuyInfo(typeof(Spellbook), 18, 10, 0xEFA, 0));
 
                 if (Core.AOS)
+                {
                     Add(new GenericBuyInfo(typeof(NecromancerSpellbook), 115, 10, 0x2253, 0));
+                }
 
                 Add(new GenericBuyInfo(typeof(ScribesPen), 8, 10, 0xFBF, 0));
 
@@ -62,9 +64,13 @@ namespace Server.Mobiles
                     var itemID = 0x1F2E + i;
 
                     if (i == 6)
+                    {
                         itemID = 0x1F2D;
+                    }
                     else if (i > 6)
+                    {
                         --itemID;
+                    }
 
                     Add(new GenericBuyInfo(types[i], 12 + i / 8 * 10, 20, itemID, 0));
                 }
@@ -100,7 +106,9 @@ namespace Server.Mobiles
                 var types = Loot.RegularScrollTypes;
 
                 for (var i = 0; i < types.Length; ++i)
+                {
                     Add(types[i], (i / 8 + 2) * 2);
+                }
 
                 if (Core.SE)
                 {

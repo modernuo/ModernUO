@@ -64,7 +64,9 @@ namespace Server.Items
             Quality = (ToolQuality)quality;
 
             if (makersMark)
-                Crafter = from;
+            {
+                Crafter = @from;
+            }
 
             return quality;
         }
@@ -100,7 +102,9 @@ namespace Server.Items
         public int GetUsesScalar()
         {
             if (m_Quality == ToolQuality.Exceptional)
+            {
                 return 200;
+            }
 
             return 100;
         }
@@ -114,7 +118,9 @@ namespace Server.Items
             // list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
 
             if (m_Quality == ToolQuality.Exceptional)
+            {
                 list.Add(1060636); // exceptional
+            }
 
             list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
         }
@@ -134,9 +140,13 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (IsChildOf(from.Backpack) || Parent == from)
-                HarvestSystem.BeginHarvesting(from, this);
+            {
+                HarvestSystem.BeginHarvesting(@from, this);
+            }
             else
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            {
+                @from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            }
         }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
@@ -149,13 +159,19 @@ namespace Server.Items
         public static void AddContextMenuEntries(Mobile from, Item item, List<ContextMenuEntry> list, HarvestSystem system)
         {
             if (system != Mining.System)
+            {
                 return;
+            }
 
             if (!item.IsChildOf(from.Backpack) && item.Parent != from)
+            {
                 return;
+            }
 
             if (!(from is PlayerMobile pm))
+            {
                 return;
+            }
 
             var miningEntry = new ContextMenuEntry(pm.ToggleMiningStone ? 6179 : 6178);
             miningEntry.Color = 0x421F;
@@ -212,7 +228,9 @@ namespace Server.Items
                 var stoneMining = mobile.StoneMining && mobile.Skills.Mining.Base >= 100.0;
 
                 if (mobile.ToggleMiningStone == value || value && !stoneMining)
+                {
                     Flags |= CMEFlags.Disabled;
+                }
             }
 
             public override void OnClick()

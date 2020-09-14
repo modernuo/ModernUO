@@ -44,7 +44,9 @@ namespace Server.Items
             writer.Write(0);
 
             if (Weight == 1.0)
+            {
                 Weight = 2.0;
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -54,7 +56,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (ArmorAttributes.SelfRepair == 0)
+            {
                 ArmorAttributes.SelfRepair = 1;
+            }
         }
     }
 }

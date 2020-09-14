@@ -142,9 +142,13 @@ namespace Server.Items
             AddBackground(10, 10, 430, 430, 3000);
 
             if (m_Definition.TitleString != null)
+            {
                 AddHtml(20, 30, 400, 25, m_Definition.TitleString);
+            }
             else if (m_Definition.Title > 0)
+            {
                 AddHtmlLocalized(20, 30, 400, 25, m_Definition.Title);
+            }
 
             AddButton(20, 400, 4005, 4007, 1);
             AddHtmlLocalized(55, 400, 200, 25, 1011036); // OKAY
@@ -165,9 +169,13 @@ namespace Server.Items
                 AddButton(30, 85 + i * 25, 5224, 5224, 0, GumpButtonType.Page, 1 + i);
 
                 if (groups[i].NameString != null)
+                {
                     AddHtml(55, 85 + i * 25, 200, 25, groups[i].NameString);
+                }
                 else
+                {
                     AddHtmlLocalized(55, 85 + i * 25, 200, 25, groups[i].Name);
+                }
             }
 
             for (var i = 0; i < groups.Length; ++i)
@@ -204,7 +212,9 @@ namespace Server.Items
                                 var hues = m_Definition.Groups[group].Hues;
 
                                 if (index >= 0 && index < hues.Length)
+                                {
                                     m_Callback(m_From, m_State, hues[index]);
+                                }
                             }
                         }
 
@@ -213,7 +223,9 @@ namespace Server.Items
                 case 2: // Default
                     {
                         if (m_Definition.DefaultSupported)
+                        {
                             m_Callback(m_From, m_State, 0);
+                        }
 
                         break;
                     }

@@ -18,7 +18,9 @@ namespace Server.Spells
         protected override void OnTick()
         {
             if (!m_Creature.Deleted)
+            {
                 m_Creature.Delete();
+            }
         }
     }
 }

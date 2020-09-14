@@ -28,19 +28,27 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (!from.Player)
+            {
                 return;
+            }
 
             if (from.InRange(GetWorldLocation(), 1))
-                UseGate(from);
+            {
+                UseGate(@from);
+            }
             else
-                from.SendLocalizedMessage(500446); // That is too far away.
+            {
+                @from.SendLocalizedMessage(500446); // That is too far away.
+            }
         }
 
         public override bool OnMoveOver(Mobile m)
         {
             // Changed so criminals are not blocked by it.
             if (m.Player)
+            {
                 UseGate(m);
+            }
 
             return true;
         }
@@ -48,8 +56,12 @@ namespace Server.Items
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
             if (m is PlayerMobile)
+            {
                 if (!Utility.InRange(m.Location, Location, 1) && Utility.InRange(oldLocation, Location, 1))
+                {
                     m.CloseGump<MoongateGump>();
+                }
+            }
         }
 
         public bool UseGate(Mobile m)
@@ -76,7 +88,9 @@ namespace Server.Items
             m.SendGump(new MoongateGump(m, this));
 
             if (!m.Hidden || m.AccessLevel == AccessLevel.Player)
+            {
                 Effects.PlaySound(m.Location, m.Map, 0x20E);
+            }
 
             return true;
         }
@@ -122,14 +136,22 @@ namespace Server.Items
             var list = new List<Item>();
 
             foreach (var item in World.Items.Values)
+            {
                 if (item is PublicMoongate)
+                {
                     list.Add(item);
+                }
+            }
 
             foreach (var item in list)
+            {
                 item.Delete();
+            }
 
             if (list.Count > 0)
+            {
                 World.Broadcast(0x35, true, "{0} moongates removed.", list.Count);
+            }
         }
 
         private static int MoonGen(PMList list)
@@ -141,7 +163,9 @@ namespace Server.Items
                 item.MoveToWorld(entry.Location, list.Map);
 
                 if (entry.Number == 1060642) // Umbra
+                {
                     item.Hue = 0x497;
+                }
             }
 
             return list.Entries.Length;
@@ -304,13 +328,21 @@ namespace Server.Items
                     var young = mobile is PlayerMobile playerMobile && playerMobile.Young;
 
                     if (Core.SE && (flags & ClientFlags.Tokuno) != 0)
+                    {
                         checkLists = young ? PMList.SEListsYoung : PMList.SELists;
+                    }
                     else if (Core.AOS && (flags & ClientFlags.Malas) != 0)
+                    {
                         checkLists = young ? PMList.AOSListsYoung : PMList.AOSLists;
+                    }
                     else if ((flags & ClientFlags.Ilshenar) != 0)
+                    {
                         checkLists = young ? PMList.LBRListsYoung : PMList.LBRLists;
+                    }
                     else
+                    {
                         checkLists = young ? PMList.UORListsYoung : PMList.UORLists;
+                    }
                 }
             }
             else
@@ -321,9 +353,12 @@ namespace Server.Items
             m_Lists = new PMList[checkLists.Length];
 
             for (var i = 0; i < m_Lists.Length; ++i)
+            {
                 m_Lists[i] = checkLists[i];
+            }
 
             for (var i = 0; i < m_Lists.Length; ++i)
+            {
                 if (m_Lists[i].Map == mobile.Map)
                 {
                     var temp = m_Lists[i];
@@ -333,6 +368,7 @@ namespace Server.Items
 
                     break;
                 }
+            }
 
             AddPage(0);
 
@@ -353,7 +389,9 @@ namespace Server.Items
             }
 
             for (var i = 0; i < m_Lists.Length; ++i)
+            {
                 RenderPage(i, Array.IndexOf(checkLists, m_Lists[i]));
+            }
         }
 
         private void RenderPage(int index, int offset)
@@ -377,26 +415,37 @@ namespace Server.Items
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (info.ButtonID == 0) // Cancel
+            {
                 return;
+            }
+
             if (m_Mobile.Deleted || m_Moongate.Deleted || m_Mobile.Map == null)
+            {
                 return;
+            }
 
             var switches = info.Switches;
 
             if (switches.Length == 0)
+            {
                 return;
+            }
 
             var switchID = switches[0];
             var listIndex = switchID / 100;
             var listEntry = switchID % 100;
 
             if (listIndex < 0 || listIndex >= m_Lists.Length)
+            {
                 return;
+            }
 
             var list = m_Lists[listIndex];
 
             if (listEntry < 0 || listEntry >= list.Entries.Length)
+            {
                 return;
+            }
 
             var entry = list.Entries[listEntry];
 

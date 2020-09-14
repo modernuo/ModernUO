@@ -102,16 +102,22 @@ namespace Server.Mobiles
             var buyInfo = GetBuyInfo();
 
             foreach (var bii in buyInfo)
+            {
                 bii.OnRestock();
+            }
         }
 
         public virtual bool OnBuyItems(Mobile buyer, List<BuyItemResponse> list)
         {
             if (!IsActiveSeller)
+            {
                 return false;
+            }
 
             if (!buyer.CheckAlive())
+            {
                 return false;
+            }
 
             if (!CheckVendorAccess(buyer))
             {
@@ -140,7 +146,9 @@ namespace Server.Mobiles
                     var item = World.FindItem(ser);
 
                     if (item == null)
+                    {
                         continue;
+                    }
 
                     var gbi = LookupDisplayObject(item);
 
@@ -151,19 +159,27 @@ namespace Server.Mobiles
                     else if (item != BuyPack && item.IsChildOf(BuyPack))
                     {
                         if (amount > item.Amount)
+                        {
                             amount = item.Amount;
+                        }
 
                         if (amount <= 0)
+                        {
                             continue;
+                        }
 
                         foreach (var ssi in info)
+                        {
                             if (ssi.IsSellable(item))
+                            {
                                 if (ssi.IsResellable(item))
                                 {
                                     totalCost += ssi.GetBuyPriceFor(item) * amount;
                                     validBuy.Add(buy);
                                     break;
                                 }
+                            }
+                        }
                     }
                 }
                 else if (ser.IsMobile)
@@ -171,22 +187,32 @@ namespace Server.Mobiles
                     var mob = World.FindMobile(ser);
 
                     if (mob == null)
+                    {
                         continue;
+                    }
 
                     var gbi = LookupDisplayObject(mob);
 
                     if (gbi != null)
+                    {
                         ProcessSinglePurchase(buy, gbi, validBuy, ref controlSlots, ref fullPurchase, ref totalCost);
+                    }
                 }
             } // foreach
 
             if (fullPurchase && validBuy.Count == 0)
+            {
                 SayTo(buyer, 500190); // Thou hast bought nothing!
+            }
             else if (validBuy.Count == 0)
+            {
                 SayTo(buyer, 500187); // Your order cannot be fulfilled, please try again.
+            }
 
             if (validBuy.Count == 0)
+            {
                 return false;
+            }
 
             bought = buyer.AccessLevel >= AccessLevel.GameMaster;
 
@@ -194,9 +220,13 @@ namespace Server.Mobiles
             if (!bought && cont != null)
             {
                 if (cont.ConsumeTotal(typeof(Gold), totalCost))
+                {
                     bought = true;
+                }
                 else if (totalCost < 2000)
+                {
                     SayTo(buyer, 500192); // Begging thy pardon, but thou canst not afford that.
+                }
             }
 
             if (!bought && totalCost >= 2000)
@@ -214,7 +244,9 @@ namespace Server.Mobiles
             }
 
             if (!bought)
+            {
                 return false;
+            }
 
             buyer.PlaySound(0x32);
 
@@ -226,14 +258,18 @@ namespace Server.Mobiles
                 var amount = buy.Amount;
 
                 if (amount < 1)
+                {
                     continue;
+                }
 
                 if (ser.IsItem)
                 {
                     var item = World.FindItem(ser);
 
                     if (item == null)
+                    {
                         continue;
+                    }
 
                     var gbi = LookupDisplayObject(item);
 
@@ -244,23 +280,35 @@ namespace Server.Mobiles
                     else
                     {
                         if (amount > item.Amount)
+                        {
                             amount = item.Amount;
+                        }
 
                         foreach (var ssi in info)
+                        {
                             if (ssi.IsSellable(item))
+                            {
                                 if (ssi.IsResellable(item))
                                 {
                                     Item buyItem;
                                     if (amount >= item.Amount)
+                                    {
                                         buyItem = item;
+                                    }
                                     else
+                                    {
                                         buyItem = LiftItemDupe(item, item.Amount - amount) ?? item;
+                                    }
 
                                     if (cont?.TryDropItem(buyer, buyItem, false) != true)
+                                    {
                                         buyItem.MoveToWorld(buyer.Location, buyer.Map);
+                                    }
 
                                     break;
                                 }
+                            }
+                        }
                     }
                 }
                 else if (ser.IsMobile)
@@ -268,55 +316,71 @@ namespace Server.Mobiles
                     var mob = World.FindMobile(ser);
 
                     if (mob == null)
+                    {
                         continue;
+                    }
 
                     var gbi = LookupDisplayObject(mob);
 
                     if (gbi != null)
+                    {
                         ProcessValidPurchase(amount, gbi, buyer, cont);
+                    }
                 }
             } // foreach
 
             if (fullPurchase)
             {
                 if (buyer.AccessLevel >= AccessLevel.GameMaster)
+                {
                     SayTo(buyer, true, "I would not presume to charge thee anything.  Here are the goods you requested.");
+                }
                 else if (fromBank)
+                {
                     SayTo(
                         buyer,
                         1151638,
                         totalCost
                             .ToString()
                     ); // The total of your purchase is ~1_val~ gold, which has been drawn from your bank account.  My thanks for the patronage.
+                }
                 else
+                {
                     SayTo(
                         buyer,
                         1151639,
                         totalCost.ToString()
                     ); // The total of your purchase is ~1_val~ gold.  My thanks for the patronage.
+                }
             }
             else
             {
                 if (buyer.AccessLevel >= AccessLevel.GameMaster)
+                {
                     SayTo(
                         buyer,
                         true,
                         "I would not presume to charge thee anything.  Unfortunately, I could not sell you all the goods you requested."
                     );
+                }
                 else if (fromBank)
+                {
                     SayTo(
                         buyer,
                         true,
                         "The total of thy purchase is {0} gold, which has been withdrawn from your bank account.  My thanks for the patronage.  Unfortunately, I could not sell you all the goods you requested.",
                         totalCost
                     );
+                }
                 else
+                {
                     SayTo(
                         buyer,
                         true,
                         "The total of thy purchase is {0} gold.  My thanks for the patronage.  Unfortunately, I could not sell you all the goods you requested.",
                         totalCost
                     );
+                }
             }
 
             return true;
@@ -325,10 +389,14 @@ namespace Server.Mobiles
         public virtual bool OnSellItems(Mobile seller, List<SellItemResponse> list)
         {
             if (!IsActiveBuyer)
+            {
                 return false;
+            }
 
             if (!seller.CheckAlive())
+            {
                 return false;
+            }
 
             if (!CheckVendorAccess(seller))
             {
@@ -347,14 +415,18 @@ namespace Server.Mobiles
             {
                 if (resp.Item.RootParent != seller || resp.Amount <= 0 || !resp.Item.IsStandardLoot() ||
                     !resp.Item.Movable || resp.Item is Container container && container.Items.Count != 0)
+                {
                     continue;
+                }
 
                 foreach (var ssi in info)
+                {
                     if (ssi.IsSellable(resp.Item))
                     {
                         Sold++;
                         break;
                     }
+                }
             }
 
             if (Sold > MaxSell)
@@ -363,27 +435,36 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (Sold == 0) return true;
+            if (Sold == 0)
+            {
+                return true;
+            }
 
             foreach (var resp in list)
             {
                 if (resp.Item.RootParent != seller || resp.Amount <= 0 || !resp.Item.IsStandardLoot() ||
                     !resp.Item.Movable || resp.Item is Container container && container.Items.Count != 0)
+                {
                     continue;
+                }
 
                 foreach (var ssi in info)
+                {
                     if (ssi.IsSellable(resp.Item))
                     {
                         var amount = resp.Amount;
 
                         if (amount > resp.Item.Amount)
+                        {
                             amount = resp.Item.Amount;
+                        }
 
                         if (ssi.IsResellable(resp.Item))
                         {
                             var found = false;
 
                             foreach (var bii in buyInfo)
+                            {
                                 if (bii.Restock(resp.Item, amount))
                                 {
                                     resp.Item.Consume(amount);
@@ -391,6 +472,7 @@ namespace Server.Mobiles
 
                                     break;
                                 }
+                            }
 
                             if (!found)
                             {
@@ -421,14 +503,19 @@ namespace Server.Mobiles
                         else
                         {
                             if (amount < resp.Item.Amount)
+                            {
                                 resp.Item.Amount -= amount;
+                            }
                             else
+                            {
                                 resp.Item.Delete();
+                            }
                         }
 
                         GiveGold += ssi.GetSellPriceFor(resp.Item) * amount;
                         break;
                     }
+                }
             }
 
             if (GiveGold > 0)
@@ -448,9 +535,13 @@ namespace Server.Mobiles
                     var bulkOrder = CreateBulkOrder(seller, false);
 
                     if (bulkOrder is LargeBOD largeBod)
+                    {
                         seller.SendGump(new LargeBODAcceptGump(seller, largeBod));
+                    }
                     else if (bulkOrder is SmallBOD smallBod)
+                    {
                         seller.SendGump(new SmallBODAcceptGump(seller, smallBod));
+                    }
                 }
             }
             // no cliloc for this?
@@ -478,8 +569,12 @@ namespace Server.Mobiles
             LastRestock = DateTime.UtcNow;
 
             for (var i = 0; i < m_ArmorBuyInfo.Count; ++i)
+            {
                 if (m_ArmorBuyInfo[i] is GenericBuyInfo buy)
+                {
                     buy.DeleteDisplayEntity();
+                }
+            }
 
             SBInfos.Clear();
 
@@ -534,10 +629,14 @@ namespace Server.Mobiles
         public virtual void CheckMorph()
         {
             if (CheckGargoyle())
+            {
                 return;
+            }
 
             if (CheckNecromancer())
+            {
                 return;
+            }
 
             CheckTokuno();
         }
@@ -545,12 +644,16 @@ namespace Server.Mobiles
         public virtual bool CheckTokuno()
         {
             if (Map != Map.Tokuno)
+            {
                 return false;
+            }
 
             var n = NameList.GetNameList(Female ? "tokuno female" : "tokuno male");
 
             if (!n.ContainsName(Name))
+            {
                 TurnToTokuno();
+            }
 
             return true;
         }
@@ -565,13 +668,19 @@ namespace Server.Mobiles
             var map = Map;
 
             if (map != Map.Ilshenar)
+            {
                 return false;
+            }
 
             if (!Region.IsPartOf("Gargoyle City"))
+            {
                 return false;
+            }
 
             if (Body != 0x2F6 || (Hue & 0x8000) == 0)
+            {
                 TurnToGargoyle();
+            }
 
             return true;
         }
@@ -581,13 +690,19 @@ namespace Server.Mobiles
             var map = Map;
 
             if (map != Map.Malas)
+            {
                 return false;
+            }
 
             if (!Region.IsPartOf("Umbra"))
+            {
                 return false;
+            }
 
             if (Hue != 0x83E8)
+            {
                 TurnToNecromancer();
+            }
 
             return true;
         }
@@ -622,7 +737,9 @@ namespace Server.Mobiles
             {
                 var item = Items[i];
                 if (item is BaseClothing || item is BaseWeapon || item is BaseArmor || item is BaseTool)
+                {
                     item.Hue = GetRandomNecromancerHue();
+                }
             }
 
             HairHue = 0;
@@ -638,7 +755,9 @@ namespace Server.Mobiles
                 var item = Items[i];
 
                 if (item is BaseClothing)
+                {
                     item.Delete();
+                }
             }
 
             HairItemID = 0;
@@ -656,19 +775,27 @@ namespace Server.Mobiles
             var title = Title;
 
             if (title == null)
+            {
                 return;
+            }
 
             var split = title.Split(' ');
 
             for (var i = 0; i < split.Length; ++i)
             {
                 if (Insensitive.Equals(split[i], "the"))
+                {
                     continue;
+                }
 
                 if (split[i].Length > 1)
+                {
                     split[i] = char.ToUpper(split[i][0]) + split[i].Substring(1);
+                }
                 else if (split[i].Length > 0)
+                {
                     split[i] = char.ToUpper(split[i][0]).ToString();
+                }
             }
 
             Title = string.Join(" ", split);
@@ -703,6 +830,7 @@ namespace Server.Mobiles
             Utility.AssignRandomFacialHair(this, hairHue);
 
             if (Female)
+            {
                 AddItem(
                     Utility.Random(6) switch
                     {
@@ -712,8 +840,11 @@ namespace Server.Mobiles
                         _ => new Skirt(GetRandomHue()) // 3-5
                     }
                 );
+            }
             else
+            {
                 AddItem(Utility.RandomBool() ? (Item)new LongPants(GetRandomHue()) : new ShortPants(GetRandomHue()));
+            }
 
             PackGold(100, 200);
         }
@@ -721,10 +852,14 @@ namespace Server.Mobiles
         public virtual void VendorBuy(Mobile from)
         {
             if (!IsActiveSeller)
+            {
                 return;
+            }
 
             if (!from.CheckAlive())
+            {
                 return;
+            }
 
             if (!CheckVendorAccess(from))
             {
@@ -733,7 +868,9 @@ namespace Server.Mobiles
             }
 
             if (DateTime.UtcNow - LastRestock > RestockDelay)
+            {
                 Restock();
+            }
 
             UpdateBuyInfo();
 
@@ -750,10 +887,14 @@ namespace Server.Mobiles
                 var buyItem = buyInfo[idx];
 
                 if (buyItem.Amount <= 0 || list.Count >= 250)
+                {
                     continue;
+                }
 
                 if (!(buyItem is GenericBuyInfo gbi))
+                {
                     return;
+                }
 
                 var disp = gbi.GetDisplayEntity();
 
@@ -770,9 +911,13 @@ namespace Server.Mobiles
                 );
 
                 if (disp is Item item)
+                {
                     opls.Add(item.PropertyList);
+                }
                 else if (disp is Mobile mobile)
+                {
                     opls.Add(mobile.PropertyList);
+                }
             }
 
             var playerItems = cont.Items;
@@ -780,12 +925,16 @@ namespace Server.Mobiles
             for (var i = playerItems.Count - 1; i >= 0; --i)
             {
                 if (i >= playerItems.Count)
+                {
                     continue;
+                }
 
                 var item = playerItems[i];
 
                 if (item.LastMoved + InventoryDecayTime <= DateTime.UtcNow)
+                {
                     item.Delete();
+                }
             }
 
             for (var i = 0; i < playerItems.Count; ++i)
@@ -796,12 +945,14 @@ namespace Server.Mobiles
                 string name = null;
 
                 foreach (var ssi in sellInfo)
+                {
                     if (ssi.IsSellable(item))
                     {
                         price = ssi.GetBuyPriceFor(item);
                         name = ssi.GetNameFor(item);
                         break;
                     }
+                }
 
                 if (name != null && list.Count < 250)
                 {
@@ -815,7 +966,9 @@ namespace Server.Mobiles
             // Console.WriteLine( "Vendor Warning: Vendor {0} has more than 255 buy items, may cause client errors!", this );
 
             if (list.Count <= 0)
+            {
                 return;
+            }
 
             list.Sort(new BuyItemStateComparer());
 
@@ -824,24 +977,36 @@ namespace Server.Mobiles
             var ns = from.NetState;
 
             if (ns == null)
+            {
                 return;
+            }
 
             if (ns.ContainerGridLines)
-                from.Send(new VendorBuyContent6017(list));
+            {
+                @from.Send(new VendorBuyContent6017(list));
+            }
             else
-                from.Send(new VendorBuyContent(list));
+            {
+                @from.Send(new VendorBuyContent(list));
+            }
 
             from.Send(new VendorBuyList(this, list));
 
             if (ns.HighSeas)
-                from.Send(new DisplayBuyListHS(this));
+            {
+                @from.Send(new DisplayBuyListHS(this));
+            }
             else
-                from.Send(new DisplayBuyList(this));
+            {
+                @from.Send(new DisplayBuyList(this));
+            }
 
             from.Send(new MobileStatusExtended(from)); // make sure their gold amount is sent
 
             for (var i = 0; i < opls.Count; ++i)
-                from.Send(opls[i]);
+            {
+                @from.Send(opls[i]);
+            }
 
             SayTo(from, 500186); // Greetings.  Have a look around.
         }
@@ -861,7 +1026,9 @@ namespace Server.Mobiles
             pack = FindItemOnLayer(Layer.ShopSell);
 
             if (pack != null)
-                from.Send(new EquipUpdate(pack));
+            {
+                @from.Send(new EquipUpdate(pack));
+            }
 
             pack = FindItemOnLayer(Layer.ShopResale);
 
@@ -877,10 +1044,14 @@ namespace Server.Mobiles
         public virtual void VendorSell(Mobile from)
         {
             if (!IsActiveBuyer)
+            {
                 return;
+            }
 
             if (!from.CheckAlive())
+            {
                 return;
+            }
 
             if (!CheckVendorAccess(from))
             {
@@ -891,21 +1062,29 @@ namespace Server.Mobiles
             var pack = from.Backpack;
 
             if (pack == null)
+            {
                 return;
+            }
 
             var info = GetSellInfo();
 
             var list = new List<SellItemState>();
 
             foreach (var ssi in info)
+            {
                 foreach (var item in pack.FindItemsByType(ssi.Types))
                 {
                     if (item is Container container && container.Items.Count != 0)
+                    {
                         continue;
+                    }
 
                     if (item.IsStandardLoot() && item.Movable && ssi.IsSellable(item))
+                    {
                         list.Add(new SellItemState(item, ssi.GetSellPriceFor(item), ssi.GetNameFor(item)));
+                    }
                 }
+            }
 
             if (list.Count > 0)
             {
@@ -927,7 +1106,9 @@ namespace Server.Mobiles
             var largeBod = dropped as LargeBOD;
 
             if (!(smallBod != null || largeBod != null))
-                return base.OnDragDrop(from, dropped);
+            {
+                return base.OnDragDrop(@from, dropped);
+            }
 
             var pm = from as PlayerMobile;
 
@@ -953,28 +1134,40 @@ namespace Server.Mobiles
             int gold, fame;
 
             if (smallBod != null)
+            {
                 smallBod.GetRewards(out reward, out gold, out fame);
+            }
             else
+            {
                 largeBod.GetRewards(out reward, out gold, out fame);
+            }
 
             from.SendSound(0x3D);
 
             SayTo(from, 1045132); // Thank you so much!  Here is a reward for your effort.
 
             if (reward != null)
-                from.AddToBackpack(reward);
+            {
+                @from.AddToBackpack(reward);
+            }
 
             if (gold > 1000)
-                from.AddToBackpack(new BankCheck(gold));
+            {
+                @from.AddToBackpack(new BankCheck(gold));
+            }
             else if (gold > 0)
-                from.AddToBackpack(new Gold(gold));
+            {
+                @from.AddToBackpack(new Gold(gold));
+            }
 
             Titles.AwardFame(from, fame, true);
 
             OnSuccessfulBulkOrderReceive(from);
 
             if (Core.ML && pm != null)
+            {
                 pm.NextBODTurnInTime = DateTime.UtcNow + TimeSpan.FromSeconds(10.0);
+            }
 
             dropped.Delete();
             return true;
@@ -985,8 +1178,12 @@ namespace Server.Mobiles
             var buyInfo = GetBuyInfo();
 
             for (var i = 0; i < buyInfo.Length; ++i)
+            {
                 if (buyInfo[i] is GenericBuyInfo gbi && gbi.GetDisplayEntity() == obj)
+                {
                     return gbi;
+                }
+            }
 
             return null;
         }
@@ -999,10 +1196,14 @@ namespace Server.Mobiles
             var amount = buy.Amount;
 
             if (amount > bii.Amount)
+            {
                 amount = bii.Amount;
+            }
 
             if (amount <= 0)
+            {
                 return;
+            }
 
             var slots = bii.ControlSlots * amount;
 
@@ -1023,10 +1224,14 @@ namespace Server.Mobiles
         private void ProcessValidPurchase(int amount, IBuyItemInfo bii, Mobile buyer, Container cont)
         {
             if (amount > bii.Amount)
+            {
                 amount = bii.Amount;
+            }
 
             if (amount < 1)
+            {
                 return;
+            }
 
             bii.Amount -= amount;
 
@@ -1039,23 +1244,31 @@ namespace Server.Mobiles
                     item.Amount = amount;
 
                     if (cont?.TryDropItem(buyer, item, false) != true)
+                    {
                         item.MoveToWorld(buyer.Location, buyer.Map);
+                    }
                 }
                 else
                 {
                     item.Amount = 1;
 
                     if (cont?.TryDropItem(buyer, item, false) != true)
+                    {
                         item.MoveToWorld(buyer.Location, buyer.Map);
+                    }
 
                     for (var i = 1; i < amount; i++)
+                    {
                         if (bii.GetEntity() is Item newItem)
                         {
                             newItem.Amount = 1;
 
                             if (cont?.TryDropItem(buyer, newItem, false) != true)
+                            {
                                 newItem.MoveToWorld(buyer.Location, buyer.Map);
+                            }
                         }
+                    }
                 }
             }
             else if (o is Mobile m)
@@ -1071,6 +1284,7 @@ namespace Server.Mobiles
                 }
 
                 for (var i = 1; i < amount; ++i)
+                {
                     if (bii.GetEntity() is Mobile newMobile)
                     {
                         newMobile.Direction = (Direction)Utility.Random(8);
@@ -1082,6 +1296,7 @@ namespace Server.Mobiles
                             newBc.ControlOrder = OrderType.Stop;
                         }
                     }
+                }
             }
         }
 
@@ -1187,7 +1402,9 @@ namespace Server.Mobiles
             }
 
             if (IsParagon)
+            {
                 IsParagon = false;
+            }
 
             Timer.DelayCall(CheckMorph);
         }
@@ -1197,13 +1414,19 @@ namespace Server.Mobiles
             if (from.Alive && IsActiveVendor)
             {
                 if (SupportsBulkOrders(from))
-                    list.Add(new BulkOrderInfoEntry(from, this));
+                {
+                    list.Add(new BulkOrderInfoEntry(@from, this));
+                }
 
                 if (IsActiveSeller)
-                    list.Add(new VendorBuyEntry(from, this));
+                {
+                    list.Add(new VendorBuyEntry(@from, this));
+                }
 
                 if (IsActiveBuyer)
-                    list.Add(new VendorSellEntry(from, this));
+                {
+                    list.Add(new VendorSellEntry(@from, this));
+                }
             }
 
             base.AddCustomContextEntries(from, list);
@@ -1220,7 +1443,9 @@ namespace Server.Mobiles
             var priceScalar = GetPriceScalar();
 
             foreach (var info in m_ArmorBuyInfo.ToArray())
+            {
                 info.PriceScalar = priceScalar;
+            }
         }
 
         private class BulkOrderInfoEntry : ContextMenuEntry
@@ -1254,9 +1479,13 @@ namespace Server.Mobiles
                             var bulkOrder = m_Vendor.CreateBulkOrder(m_From, true);
 
                             if (bulkOrder is LargeBOD bod)
+                            {
                                 m_From.SendGump(new LargeBODAcceptGump(m_From, bod));
+                            }
                             else if (bulkOrder is SmallBOD smallBod)
+                            {
                                 m_From.SendGump(new SmallBODAcceptGump(m_From, smallBod));
+                            }
                         }
                     }
                     else
@@ -1265,17 +1494,21 @@ namespace Server.Mobiles
                         m_Vendor.SpeechHue = 0x3B2;
 
                         if (Core.SE)
+                        {
                             m_Vendor.SayTo(
                                 m_From,
                                 1072058,
                                 totalMinutes.ToString()
                             ); // An offer may be available in about ~1_minutes~ minutes.
+                        }
                         else
+                        {
                             m_Vendor.SayTo(
                                 m_From,
                                 1049039,
                                 totalHours.ToString()
                             ); // An offer may be available in about ~1_hours~ hours.
+                        }
 
                         m_Vendor.SpeechHue = oldSpeechHue;
                     }

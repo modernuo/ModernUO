@@ -27,7 +27,9 @@ namespace Server.Multis
             set
             {
                 if (Owner != null)
+                {
                     Owner.RestrictDecay = value;
+                }
             }
         }
 
@@ -45,7 +47,9 @@ namespace Server.Multis
             base.OnAfterDelete();
 
             if (Owner?.Deleted == false)
+            {
                 Owner.Delete();
+            }
         }
 
         public override void AddNameProperty(ObjectPropertyList list)
@@ -75,7 +79,9 @@ namespace Server.Multis
                 else if (level != DecayLevel.Ageless)
                 {
                     if (level == DecayLevel.Collapsed)
+                    {
                         level = DecayLevel.IDOC;
+                    }
 
                     list.Add(1062028, $"#{1043009 + (int)level}"); // Condition: This structure is ...
                 }
@@ -110,16 +116,24 @@ namespace Server.Multis
                 if (Owner.IsFriend(m) && m.AccessLevel < AccessLevel.GameMaster)
                 {
                     if (Core.ML && Owner.IsOwner(m) || !Core.ML)
+                    {
                         Owner.RefreshDecay();
+                    }
 
                     if (!Core.AOS)
+                    {
                         m.SendLocalizedMessage(501293); // Welcome back to the house, friend!
+                    }
                 }
 
                 if (Owner.IsAosRules)
+                {
                     m.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Information, m, Owner));
+                }
                 else
+                {
                     m.SendGump(new HouseGump(m, Owner));
+                }
             }
         }
 
@@ -142,7 +156,9 @@ namespace Server.Multis
         public override void OnDoubleClick(Mobile m)
         {
             if (Owner == null)
+            {
                 return;
+            }
 
             if (m.AccessLevel < AccessLevel.GameMaster && Owner.Owner == null &&
                 Owner.DecayLevel != DecayLevel.DemolitionPending)
@@ -150,9 +166,11 @@ namespace Server.Multis
                 var canClaim = Owner?.CoOwners.Count > 0 && Owner.IsCoOwner(m) || Owner.IsFriend(m);
 
                 if (canClaim && !BaseHouse.HasAccountHouse(m))
+                {
                     m.SendGump(
                         new WarningGump(501036, 32512, 1049719, 32512, 420, 280, okay => ClaimGump_Callback(m, okay))
                     );
+                }
             }
 
             ShowSign(m);
@@ -163,13 +181,19 @@ namespace Server.Multis
             base.GetContextMenuEntries(from, list);
 
             if (!BaseHouse.NewVendorSystem || !from.Alive || Owner?.IsAosRules != true)
+            {
                 return;
+            }
 
             if (Owner.AreThereAvailableVendorsFor(from))
+            {
                 list.Add(new VendorsEntry(this));
+            }
 
             if (Owner.VendorInventories.Count > 0)
+            {
                 list.Add(new ReclaimVendorInventoryEntry(this));
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -200,7 +224,9 @@ namespace Server.Multis
             }
 
             if (Name == "a house sign")
+            {
                 Name = null;
+            }
         }
 
         private class VendorsEntry : ContextMenuEntry
@@ -214,14 +240,20 @@ namespace Server.Multis
                 var from = Owner.From;
 
                 if (!from.CheckAlive() || m_Sign.Deleted || m_Sign.Owner?.AreThereAvailableVendorsFor(from) != true)
+                {
                     return;
+                }
 
                 if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))
-                    from.SendLocalizedMessage(
+                {
+                    @from.SendLocalizedMessage(
                         1062429
                     ); // You must be within five paces of the house sign to use this option.
+                }
                 else
-                    from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Vendors, from, m_Sign.Owner));
+                {
+                    @from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Vendors, @from, m_Sign.Owner));
+                }
             }
         }
 
@@ -237,7 +269,9 @@ namespace Server.Multis
 
                 if (m_Sign.Deleted || m_Sign.Owner == null || m_Sign.Owner.VendorInventories.Count == 0 ||
                     !from.CheckAlive())
+                {
                     return;
+                }
 
                 if (from.Map != m_Sign.Map || !from.InRange(m_Sign, 5))
                 {

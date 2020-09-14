@@ -137,15 +137,23 @@ namespace Server.Tests.Network.Packets
                 flags &= ~FeatureFlags.UOTD;
 
                 if (ns.Account.Limit > 6)
+                {
                     flags |= FeatureFlags.SeventhCharacterSlot;
+                }
                 else
+                {
                     flags |= FeatureFlags.SixthCharacterSlot;
+                }
             }
 
             if (ns.ExtendedSupportedFeatures)
+            {
                 expectedData.Write(ref pos, (uint)flags);
+            }
             else
+            {
                 expectedData.Write(ref pos, (ushort)flags);
+            }
 
             AssertThat.Equal(data, expectedData);
         }
@@ -194,7 +202,9 @@ namespace Server.Tests.Network.Packets
             var map = m.Map;
 
             if (map == null || map == Map.Internal)
+            {
                 map = m.LogoutMap;
+            }
 
             expectedData.Write(ref pos, (ushort)(map?.Width ?? Map.Felucca.Width));
             expectedData.Write(ref pos, (ushort)(map?.Height ?? Map.Felucca.Height));
@@ -234,11 +244,13 @@ namespace Server.Tests.Network.Packets
 
             var highSlot = -1;
             for (var i = account.Length - 1; i >= 0; i--)
+            {
                 if (account[i] != null)
                 {
                     highSlot = i;
                     break;
                 }
+            }
 
             var count = Math.Max(Math.Max(highSlot + 1, account.Limit), 5);
             expectedData.Write(ref pos, (byte)count);
@@ -303,11 +315,13 @@ namespace Server.Tests.Network.Packets
 
             var highSlot = -1;
             for (var i = account.Length - 1; i >= 0; i--)
+            {
                 if (account[i] != null)
                 {
                     highSlot = i;
                     break;
                 }
+            }
 
             var count = Math.Max(Math.Max(highSlot + 1, account.Limit), 5);
             expectedData.Write(ref pos, (byte)count);
@@ -367,13 +381,19 @@ namespace Server.Tests.Network.Packets
 
             var flags = ExpansionInfo.GetInfo(Expansion.EJ).CharacterListFlags;
             if (count > 6)
+            {
                 flags |= CharacterListFlags.SeventhCharacterSlot |
                          CharacterListFlags.SixthCharacterSlot; // 7th Character Slot
+            }
             else if (count == 6)
+            {
                 flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
+            }
             else if (account.Limit == 1)
+            {
                 flags |= CharacterListFlags.SlotLimit &
                          CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
+            }
 
             expectedData.Write(ref pos, (int)flags);
             expectedData.Write(ref pos, (short)-1);
@@ -404,11 +424,13 @@ namespace Server.Tests.Network.Packets
 
             var highSlot = -1;
             for (var i = account.Length - 1; i >= 0; i--)
+            {
                 if (account[i] != null)
                 {
                     highSlot = i;
                     break;
                 }
+            }
 
             var count = Math.Max(Math.Max(highSlot + 1, account.Limit), 5);
             expectedData.Write(ref pos, (byte)count);
@@ -458,13 +480,19 @@ namespace Server.Tests.Network.Packets
 
             var flags = ExpansionInfo.GetInfo(Expansion.EJ).CharacterListFlags;
             if (count > 6)
+            {
                 flags |= CharacterListFlags.SeventhCharacterSlot |
                          CharacterListFlags.SixthCharacterSlot; // 7th Character Slot
+            }
             else if (count == 6)
+            {
                 flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
+            }
             else if (account.Limit == 1)
+            {
                 flags |= CharacterListFlags.SlotLimit &
                          CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
+            }
 
             expectedData.Write(ref pos, (int)flags);
 
@@ -546,8 +574,12 @@ namespace Server.Tests.Network.Packets
             {
                 m_Mobiles = mobiles;
                 foreach (var mobile in mobiles)
+                {
                     if (mobile != null)
+                    {
                         mobile.Account = this;
+                    }
+                }
 
                 Length = mobiles.Length;
                 Count = mobiles.Count(t => t != null);
@@ -571,7 +603,10 @@ namespace Server.Tests.Network.Packets
 
             public bool WithdrawGold(int amount)
             {
-                if (TotalGold - amount < 0) return false;
+                if (TotalGold - amount < 0)
+                {
+                    return false;
+                }
 
                 TotalGold -= amount;
                 return true;
@@ -579,7 +614,10 @@ namespace Server.Tests.Network.Packets
 
             public bool WithdrawPlat(int amount)
             {
-                if (TotalPlat - amount < 0) return false;
+                if (TotalPlat - amount < 0)
+                {
+                    return false;
+                }
 
                 TotalPlat -= amount;
                 return true;

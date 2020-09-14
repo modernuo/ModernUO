@@ -48,7 +48,9 @@ namespace Server.Items
             get
             {
                 if (IsAncient)
+                {
                     return 1063450; // an ancient SOS
+                }
 
                 return 1041081; // a waterstained SOS
             }
@@ -81,9 +83,13 @@ namespace Server.Items
         public void UpdateHue()
         {
             if (IsAncient)
+            {
                 Hue = 0x481;
+            }
             else
+            {
                 Hue = 0;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -127,7 +133,9 @@ namespace Server.Items
                         TargetMap = Map;
 
                         if (TargetMap == null || TargetMap == Map.Internal)
+                        {
                             TargetMap = Map.Trammel;
+                        }
 
                         TargetLocation = FindLocation(TargetMap);
                         MessageIndex = Utility.Random(MessageEntry.Entries.Length);
@@ -137,13 +145,19 @@ namespace Server.Items
             }
 
             if (version < 2)
+            {
                 m_Level = MessageInABottle.GetRandomLevel();
+            }
 
             if (version < 3)
+            {
                 UpdateHue();
+            }
 
             if (version < 4 && TargetMap == Map.Tokuno)
+            {
                 TargetMap = Map.Trammel;
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -153,9 +167,13 @@ namespace Server.Items
                 MessageEntry entry;
 
                 if (MessageIndex >= 0 && MessageIndex < MessageEntry.Entries.Length)
+                {
                     entry = MessageEntry.Entries[MessageIndex];
+                }
                 else
+                {
                     entry = MessageEntry.Entries[MessageIndex = Utility.Random(MessageEntry.Entries.Length)];
+                }
 
                 // from.CloseGump( typeof( MessageGump ) );
                 from.SendGump(new MessageGump(entry, TargetMap, TargetLocation));
@@ -169,21 +187,33 @@ namespace Server.Items
         public static Point3D FindLocation(Map map)
         {
             if (map == null || map == Map.Internal)
+            {
                 return Point3D.Zero;
+            }
 
             Rectangle2D[] regions;
 
             if (map == Map.Felucca || map == Map.Trammel)
+            {
                 regions = m_BritRegions;
+            }
             else if (map == Map.Ilshenar)
+            {
                 regions = m_IlshRegions;
+            }
             else if (map == Map.Malas)
+            {
                 regions = m_MalasRegions;
+            }
             else
+            {
                 regions = new[] { new Rectangle2D(0, 0, map.Width, map.Height) };
+            }
 
             if (regions.Length == 0)
+            {
                 return Point3D.Zero;
+            }
 
             for (var i = 0; i < 50; ++i)
             {
@@ -192,22 +222,36 @@ namespace Server.Items
                 var y = Utility.Random(reg.Y, reg.Height);
 
                 if (!ValidateDeepWater(map, x, y))
+                {
                     continue;
+                }
 
                 var valid = true;
 
                 for (int j = 1, offset = 5; valid && j <= 5; ++j, offset += 5)
+                {
                     if (!ValidateDeepWater(map, x + offset, y + offset))
+                    {
                         valid = false;
+                    }
                     else if (!ValidateDeepWater(map, x + offset, y - offset))
+                    {
                         valid = false;
+                    }
                     else if (!ValidateDeepWater(map, x - offset, y + offset))
+                    {
                         valid = false;
+                    }
                     else if (!ValidateDeepWater(map, x - offset, y - offset))
+                    {
                         valid = false;
+                    }
+                }
 
                 if (valid)
+                {
                     return new Point3D(x, y, 0);
+                }
             }
 
             return Point3D.Zero;
@@ -219,7 +263,9 @@ namespace Server.Items
             var water = false;
 
             for (var i = 0; !water && i < m_WaterTiles.Length; i += 2)
+            {
                 water = tileID >= m_WaterTiles[i] && tileID <= m_WaterTiles[i + 1];
+            }
 
             return water;
         }
@@ -234,9 +280,13 @@ namespace Server.Items
                 string fmt;
 
                 if (Sextant.Format(loc, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth))
+                {
                     fmt = $"{yLat}°{yMins}'{(ySouth ? "S" : "N")},{xLong}°{xMins}'{(xEast ? "E" : "W")}";
+                }
                 else
+                {
                     fmt = "?????";
+                }
 
                 AddPage(0);
 

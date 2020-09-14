@@ -35,7 +35,9 @@ namespace Server.Engines.Quests.Haven
                             ); // You take a vial of blood from the chest and put it in your pack.
 
                             if (obj?.Completed == false)
+                            {
                                 obj.Complete();
+                            }
                         }
                         else
                         {

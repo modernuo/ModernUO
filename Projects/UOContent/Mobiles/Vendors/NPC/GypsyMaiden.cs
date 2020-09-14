@@ -40,22 +40,30 @@ namespace Server.Mobiles
             );
 
             if (Utility.RandomBool())
+            {
                 AddItem(new HalfApron(Utility.RandomBrightHue()));
+            }
 
             var item = FindItemOnLayer(Layer.Pants);
 
             if (item != null)
+            {
                 item.Hue = Utility.RandomBrightHue();
+            }
 
             item = FindItemOnLayer(Layer.OuterLegs);
 
             if (item != null)
+            {
                 item.Hue = Utility.RandomBrightHue();
+            }
 
             item = FindItemOnLayer(Layer.InnerLegs);
 
             if (item != null)
+            {
                 item.Hue = Utility.RandomBrightHue();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

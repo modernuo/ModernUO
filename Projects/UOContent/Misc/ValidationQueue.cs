@@ -39,8 +39,12 @@ namespace Server
             var m = type.GetMethod("Validate", BindingFlags.Instance | BindingFlags.Public);
 
             if (m != null)
+            {
                 for (var i = 0; i < m_Queue.Count; ++i)
+                {
                     m.Invoke(m_Queue[i], null);
+                }
+            }
 
             m_Queue.Clear();
             m_Queue = null;

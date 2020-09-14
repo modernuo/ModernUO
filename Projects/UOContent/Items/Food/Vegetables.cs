@@ -146,10 +146,14 @@ namespace Server.Items
             if (version < 1)
             {
                 if (FillFactor == 4)
+                {
                     FillFactor = 8;
+                }
 
                 if (Weight == 5.0)
+                {
                     Weight = 1.0;
+                }
             }
         }
     }

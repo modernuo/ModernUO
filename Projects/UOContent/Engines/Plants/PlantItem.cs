@@ -68,13 +68,19 @@ namespace Server.Engines.Plants
             set
             {
                 if (m_PlantStatus == value || value < PlantStatus.BowlOfDirt || value > PlantStatus.DeadTwigs)
+                {
                     return;
+                }
 
                 double ratio;
                 if (PlantSystem != null)
+                {
                     ratio = (double)PlantSystem.Hits / PlantSystem.MaxHits;
+                }
                 else
+                {
                     ratio = 1.0;
+                }
 
                 m_PlantStatus = value;
 
@@ -89,9 +95,13 @@ namespace Server.Engines.Plants
                     var hits = (int)(PlantSystem.MaxHits * ratio);
 
                     if (hits == 0 && m_PlantStatus > PlantStatus.BowlOfDirt)
+                    {
                         PlantSystem.Hits = hits + 1;
+                    }
                     else
+                    {
                         PlantSystem.Hits = hits;
+                    }
                 }
 
                 Update();
@@ -137,10 +147,14 @@ namespace Server.Engines.Plants
             get
             {
                 if (IsLockedDown && RootParent == null)
+                {
                     return true;
+                }
 
                 if (!(RootParent is Mobile owner))
+                {
                     return false;
+                }
 
                 return IsChildOf(owner.Backpack) || IsChildOf(owner.FindBankNoCreate());
             }
@@ -163,13 +177,21 @@ namespace Server.Engines.Plants
         public override void OnSingleClick(Mobile from)
         {
             if (m_PlantStatus >= PlantStatus.DeadTwigs)
-                LabelTo(from, LabelNumber);
+            {
+                LabelTo(@from, LabelNumber);
+            }
             else if (m_PlantStatus >= PlantStatus.DecorativePlant)
-                LabelTo(from, 1061924); // a decorative plant
+            {
+                LabelTo(@from, 1061924); // a decorative plant
+            }
             else if (m_PlantStatus >= PlantStatus.FullGrownPlant)
-                LabelTo(from, PlantTypeInfo.GetInfo(m_PlantType).Name);
+            {
+                LabelTo(@from, PlantTypeInfo.GetInfo(m_PlantType).Name);
+            }
             else
-                LabelTo(from, 1029913); // plant bowl
+            {
+                LabelTo(@from, 1029913); // plant bowl
+            }
         }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
@@ -181,11 +203,20 @@ namespace Server.Engines.Plants
         public int GetLocalizedPlantStatus()
         {
             if (m_PlantStatus >= PlantStatus.Plant)
+            {
                 return 1060812; // plant
+            }
+
             if (m_PlantStatus >= PlantStatus.Sapling)
+            {
                 return 1023305; // sapling
+            }
+
             if (m_PlantStatus >= PlantStatus.Seed)
+            {
                 return 1060810; // seed
+            }
+
             return 1026951;     // dirt
         }
 
@@ -228,9 +259,13 @@ namespace Server.Engines.Plants
                 string args;
 
                 if (ShowContainerType)
+                {
                     args = $"#{GetLocalizedContainerType()}\t#{PlantSystem.GetLocalizedDirtStatus()}";
+                }
                 else
+                {
                     args = $"#{PlantSystem.GetLocalizedDirtStatus()}";
+                }
 
                 list.Add(1060830, args); // a ~1_val~ of ~2_val~ dirt
             }
@@ -255,19 +290,27 @@ namespace Server.Engines.Plants
                     string args;
 
                     if (ShowContainerType)
+                    {
                         args =
                             $"#{GetLocalizedContainerType()}\t#{PlantSystem.GetLocalizedDirtStatus()}\t#{PlantSystem.GetLocalizedHealth()}";
+                    }
                     else
+                    {
                         args = $"#{PlantSystem.GetLocalizedDirtStatus()}\t#{PlantSystem.GetLocalizedHealth()}";
+                    }
 
                     if (m_ShowType)
                     {
                         args += $"\t#{hueInfo.Name}\t#{typeInfo.Name}\t#{GetLocalizedPlantStatus()}";
 
                         if (m_PlantStatus == PlantStatus.Plant)
+                        {
                             list.Add(typeInfo.GetPlantLabelPlant(hueInfo), args);
+                        }
                         else
+                        {
                             list.Add(typeInfo.GetPlantLabelSeed(hueInfo), args);
+                        }
                     }
                     else
                     {
@@ -290,7 +333,9 @@ namespace Server.Engines.Plants
         public override void OnDoubleClick(Mobile from)
         {
             if (m_PlantStatus >= PlantStatus.DecorativePlant)
+            {
                 return;
+            }
 
             var loc = GetWorldLocation();
 
@@ -362,7 +407,9 @@ namespace Server.Engines.Plants
         public void Pour(Mobile from, Item item)
         {
             if (m_PlantStatus >= PlantStatus.DeadTwigs)
+            {
                 return;
+            }
 
             if (m_PlantStatus == PlantStatus.DecorativePlant)
             {
@@ -385,7 +432,9 @@ namespace Server.Engines.Plants
                 }
 
                 if (!beverage.ValidateUse(from, true))
+                {
                     return;
+                }
 
                 beverage.Quantity--;
                 PlantSystem.Water++;
@@ -445,30 +494,46 @@ namespace Server.Engines.Plants
             if (effect == PotionEffect.PoisonGreater || effect == PotionEffect.PoisonDeadly)
             {
                 if (PlantSystem.IsFullPoisonPotion)
+                {
                     full = true;
+                }
                 else if (!testOnly)
+                {
                     PlantSystem.PoisonPotion++;
+                }
             }
             else if (effect == PotionEffect.CureGreater)
             {
                 if (PlantSystem.IsFullCurePotion)
+                {
                     full = true;
+                }
                 else if (!testOnly)
+                {
                     PlantSystem.CurePotion++;
+                }
             }
             else if (effect == PotionEffect.HealGreater)
             {
                 if (PlantSystem.IsFullHealPotion)
+                {
                     full = true;
+                }
                 else if (!testOnly)
+                {
                     PlantSystem.HealPotion++;
+                }
             }
             else if (effect == PotionEffect.StrengthGreater)
             {
                 if (PlantSystem.IsFullStrengthPotion)
+                {
                     full = true;
+                }
                 else if (!testOnly)
+                {
                     PlantSystem.StrengthPotion++;
+                }
             }
             else if (effect == PotionEffect.PoisonLesser || effect == PotionEffect.Poison ||
                      effect == PotionEffect.CureLesser || effect == PotionEffect.Cure ||
@@ -507,7 +572,9 @@ namespace Server.Engines.Plants
             writer.Write(m_ShowType);
 
             if (m_PlantStatus < PlantStatus.DecorativePlant)
+            {
                 PlantSystem.Save(writer);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -527,7 +594,9 @@ namespace Server.Engines.Plants
                 case 0:
                     {
                         if (version < 1)
+                        {
                             Level = SecureLevel.CoOwners;
+                        }
 
                         m_PlantStatus = (PlantStatus)reader.ReadInt();
                         m_PlantType = (PlantType)reader.ReadInt();
@@ -535,10 +604,14 @@ namespace Server.Engines.Plants
                         m_ShowType = reader.ReadBool();
 
                         if (m_PlantStatus < PlantStatus.DecorativePlant)
+                        {
                             PlantSystem = new PlantSystem(this, reader);
+                        }
 
                         if (version < 2 && PlantHueInfo.IsCrossable(m_PlantHue))
+                        {
                             m_PlantHue |= PlantHue.Reproduces;
+                        }
 
                         break;
                     }

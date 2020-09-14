@@ -24,7 +24,9 @@ namespace Server.Spells.Second
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (!Caster.CanSee(m))
             {
@@ -57,9 +59,13 @@ namespace Server.Spells.Second
                 }
 
                 if (!m.InRange(Caster, 2))
+                {
                     damage *= 0.25; // 1/4 damage at > 2 tile range
+                }
                 else if (!m.InRange(Caster, 1))
+                {
                     damage *= 0.50; // 1/2 damage at 2 tile range
+                }
 
                 if (Core.AOS)
                 {

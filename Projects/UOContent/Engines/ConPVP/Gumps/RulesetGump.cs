@@ -30,7 +30,9 @@ namespace Server.Engines.ConPVP
             var depthCounter = page;
 
             while (depthCounter != null)
+            {
                 depthCounter = depthCounter.Parent;
+            }
 
             var count = page.Children.Length + page.Options.Length;
 
@@ -59,9 +61,13 @@ namespace Server.Engines.ConPVP
                 var enabled = ruleset.Options[page.Offset + i];
 
                 if (readOnly)
+                {
                     AddImage(x, y, enabled ? 0xD3 : 0xD2);
+                }
                 else
+                {
                     AddCheck(x, y, 0xD2, 0xD3, enabled, i);
+                }
 
                 AddHtml(x + 25, y, 250, 22, page.Options[i]);
 
@@ -80,7 +86,9 @@ namespace Server.Engines.ConPVP
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_DuelContext?.Registered == false)
+            {
                 return;
+            }
 
             if (!m_ReadOnly)
             {
@@ -91,15 +99,19 @@ namespace Server.Engines.ConPVP
                     var sid = info.Switches[i];
 
                     if (sid >= 0 && sid < m_Page.Options.Length)
+                    {
                         opts[sid] = true;
+                    }
                 }
 
                 for (var i = 0; i < opts.Length; ++i)
+                {
                     if (m_Ruleset.Options[m_Page.Offset + i] != opts[i])
                     {
                         m_Ruleset.Options[m_Page.Offset + i] = opts[i];
                         m_Ruleset.Changed = true;
                     }
+                }
             }
 
             var bid = info.ButtonID;
@@ -107,16 +119,22 @@ namespace Server.Engines.ConPVP
             if (bid == 0)
             {
                 if (m_Page.Parent != null)
+                {
                     m_From.SendGump(new RulesetGump(m_From, m_Ruleset, m_Page.Parent, m_DuelContext, m_ReadOnly));
+                }
                 else if (!m_ReadOnly)
+                {
                     m_From.SendGump(new PickRulesetGump(m_From, m_DuelContext, m_Ruleset));
+                }
             }
             else
             {
                 bid -= 1;
 
                 if (bid >= 0 && bid < m_Page.Children.Length)
+                {
                     m_From.SendGump(new RulesetGump(m_From, m_Ruleset, m_Page.Children[bid], m_DuelContext, m_ReadOnly));
+                }
             }
         }
     }

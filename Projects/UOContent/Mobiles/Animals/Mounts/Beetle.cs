@@ -81,13 +81,17 @@ namespace Server.Mobiles
         public override void OnHarmfulSpell(Mobile from)
         {
             if (!Controlled && ControlMaster == null)
+            {
                 CurrentSpeed = BoostedSpeed;
+            }
         }
 
         public override void OnCombatantChange()
         {
             if (Combatant == null && !Controlled && ControlMaster == null)
+            {
                 CurrentSpeed = PassiveSpeed;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -107,7 +111,9 @@ namespace Server.Mobiles
         public override bool OnBeforeDeath()
         {
             if (!base.OnBeforeDeath())
+            {
                 return false;
+            }
 
             PackAnimal.CombineBackpacks(this);
 
@@ -119,7 +125,9 @@ namespace Server.Mobiles
         public override bool IsSnoop(Mobile from)
         {
             if (PackAnimal.CheckAccess(this, from))
+            {
                 return false;
+            }
 
             return base.IsSnoop(from);
         }
@@ -127,7 +135,9 @@ namespace Server.Mobiles
         public override bool OnDragDrop(Mobile from, Item item)
         {
             if (CheckFeed(from, item))
+            {
                 return true;
+            }
 
             if (PackAnimal.CheckAccess(this, from))
             {

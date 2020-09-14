@@ -56,9 +56,13 @@ namespace Server.Mobiles
         public override string ApplyNameSuffix(string suffix)
         {
             if (suffix.Length == 0)
+            {
                 suffix = Ethic.Evil.Definition.Adjunct.String;
+            }
             else
+            {
                 suffix = $"{suffix} {Ethic.Evil.Definition.Adjunct.String}";
+            }
 
             return base.ApplyNameSuffix(suffix);
         }
@@ -66,9 +70,13 @@ namespace Server.Mobiles
         public override void OnDoubleClick(Mobile from)
         {
             if (Ethic.Find(from) != Ethic.Evil)
-                from.SendMessage("You may not ride this steed.");
+            {
+                @from.SendMessage("You may not ride this steed.");
+            }
             else
-                base.OnDoubleClick(from);
+            {
+                base.OnDoubleClick(@from);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

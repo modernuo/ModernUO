@@ -47,11 +47,15 @@ namespace Server.Mobiles
                 m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
 
                 if (m_toDisarm?.IsChildOf(m_Mobile.Backpack) != false)
+                {
                     m_toDisarm = combatant.FindItemOnLayer(Layer.OneHanded) ?? combatant.FindItemOnLayer(Layer.TwoHanded);
+                }
 
                 if (!Core.AOS && !m_Mobile.DisarmReady && m_Mobile.Skills.Wrestling.Value >= 80.0 &&
                     m_Mobile.Skills.ArmsLore.Value >= 80.0 && m_toDisarm != null)
+                {
                     EventSink.InvokeDisarmRequest(m_Mobile);
+                }
 
                 if (m_toDisarm?.IsChildOf(combatant.Backpack) == true &&
                     Core.TickCount - m_Mobile.NextSkillTime >= 0 && m_toDisarm.LootType != LootType.Blessed &&
@@ -113,7 +117,9 @@ namespace Server.Mobiles
             }
 
             if (m_Mobile.Hits >= m_Mobile.HitsMax * 20 / 100 || !m_Mobile.CanFlee)
+            {
                 return true;
+            }
             // We are low on health, should we flee?
 
             bool flee;

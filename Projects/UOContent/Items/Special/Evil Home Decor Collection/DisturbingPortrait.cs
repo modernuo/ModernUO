@@ -23,9 +23,13 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (Utility.InRange(Location, from.Location, 2))
+            {
                 Effects.PlaySound(Location, Map, Utility.RandomMinMax(0x567, 0x568));
+            }
             else
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            {
+                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            }
         }
 
         public override void OnAfterDelete()
@@ -33,7 +37,9 @@ namespace Server.Items
             base.OnAfterDelete();
 
             if (m_Timer?.Running == true)
+            {
                 m_Timer.Stop();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -55,9 +61,13 @@ namespace Server.Items
         private void Change()
         {
             if (ItemID < 0x2A61)
+            {
                 ItemID = Utility.RandomMinMax(0x2A5D, 0x2A60);
+            }
             else
+            {
                 ItemID = Utility.RandomMinMax(0x2A61, 0x2A64);
+            }
         }
     }
 

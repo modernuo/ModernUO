@@ -24,7 +24,10 @@ namespace Server.Items
 
         public PuzzleChestSolution()
         {
-            for (var i = 0; i < Cylinders.Length; i++) Cylinders[i] = RandomCylinder();
+            for (var i = 0; i < Cylinders.Length; i++)
+            {
+                Cylinders[i] = RandomCylinder();
+            }
         }
 
         public PuzzleChestSolution(
@@ -41,7 +44,10 @@ namespace Server.Items
 
         public PuzzleChestSolution(PuzzleChestSolution solution)
         {
-            for (var i = 0; i < Cylinders.Length; i++) Cylinders[i] = solution.Cylinders[i];
+            for (var i = 0; i < Cylinders.Length; i++)
+            {
+                Cylinders[i] = solution.Cylinders[i];
+            }
         }
 
         public PuzzleChestSolution(IGenericReader reader)
@@ -50,12 +56,15 @@ namespace Server.Items
 
             var length = reader.ReadEncodedInt();
             for (var i = 0;; i++)
+            {
                 if (i < length)
                 {
                     var cylinder = (PuzzleChestCylinder)reader.ReadInt();
 
                     if (i < Cylinders.Length)
+                    {
                         Cylinders[i] = cylinder;
+                    }
                 }
                 else if (i < Cylinders.Length)
                 {
@@ -65,6 +74,7 @@ namespace Server.Items
                 {
                     break;
                 }
+            }
         }
 
         public PuzzleChestCylinder[] Cylinders { get; } = new PuzzleChestCylinder[Length];
@@ -123,6 +133,7 @@ namespace Server.Items
             var matchesDst = new bool[solution.Cylinders.Length];
 
             for (var i = 0; i < Cylinders.Length; i++)
+            {
                 if (Cylinders[i] == solution.Cylinders[i])
                 {
                     cylinders++;
@@ -130,16 +141,23 @@ namespace Server.Items
                     matchesSrc[i] = true;
                     matchesDst[i] = true;
                 }
+            }
 
             for (var i = 0; i < Cylinders.Length; i++)
+            {
                 if (!matchesSrc[i])
+                {
                     for (var j = 0; j < solution.Cylinders.Length; j++)
+                    {
                         if (Cylinders[i] == solution.Cylinders[j] && !matchesDst[j])
                         {
                             colors++;
 
                             matchesDst[j] = true;
                         }
+                    }
+                }
+            }
 
             return cylinders == Cylinders.Length;
         }
@@ -149,7 +167,10 @@ namespace Server.Items
             writer.WriteEncodedInt(0); // version
 
             writer.WriteEncodedInt(Cylinders.Length);
-            for (var i = 0; i < Cylinders.Length; i++) writer.Write((int)Cylinders[i]);
+            for (var i = 0; i < Cylinders.Length; i++)
+            {
+                writer.Write((int)Cylinders[i]);
+            }
         }
     }
 
@@ -230,7 +251,9 @@ namespace Server.Items
         {
             var list = new List<PuzzleChestCylinder>(Solution.Cylinders.Length - 1);
             for (var i = 1; i < Solution.Cylinders.Length; i++)
+            {
                 list.Add(Solution.Cylinders[i]);
+            }
 
             Hints = new PuzzleChestCylinder[HintsCount];
 
@@ -253,8 +276,11 @@ namespace Server.Items
             {
                 PuzzleChestSolution solution = GetLastGuess(from);
                 if (solution != null)
+                {
                     solution = new PuzzleChestSolution(solution);
+                }
                 else
+                {
                     solution = new PuzzleChestSolution(
                         PuzzleChestCylinder.None,
                         PuzzleChestCylinder.None,
@@ -262,6 +288,7 @@ namespace Server.Items
                         PuzzleChestCylinder.None,
                         PuzzleChestCylinder.None
                     );
+                }
 
                 from.CloseGump<PuzzleGump>();
                 from.CloseGump<StatusGump>();
@@ -400,31 +427,43 @@ namespace Server.Items
                 var gemType = gem.GetType();
 
                 foreach (var listGem in gems)
+                {
                     if (listGem.GetType() == gemType)
                     {
                         listGem.Amount++;
                         gem.Delete();
                         break;
                     }
+                }
 
                 if (!gem.Deleted)
+                {
                     gems.Add(gem);
+                }
             }
 
             foreach (var gem in gems)
+            {
                 DropItem(gem);
+            }
 
             if (Utility.RandomDouble() < 0.2)
+            {
                 DropItem(new BagOfReagents());
+            }
 
             for (var i = 0; i < 2; i++)
             {
                 Item item;
 
                 if (Core.AOS)
+                {
                     item = Loot.RandomArmorOrShieldOrWeaponOrJewelry();
+                }
                 else
+                {
                     item = Loot.RandomArmorOrShieldOrWeapon();
+                }
 
                 if (item is BaseWeapon weapon)
                 {
@@ -488,11 +527,17 @@ namespace Server.Items
             var toDelete = new List<Mobile>();
 
             foreach (var kvp in m_Guesses)
+            {
                 if (DateTime.UtcNow - kvp.Value.When > CleanupTime)
+                {
                     toDelete.Add(kvp.Key);
+                }
+            }
 
             foreach (var m in toDelete)
+            {
                 m_Guesses.Remove(m);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -506,7 +551,10 @@ namespace Server.Items
             m_Solution.Serialize(writer);
 
             writer.WriteEncodedInt(Hints.Length);
-            for (var i = 0; i < Hints.Length; i++) writer.Write((int)Hints[i]);
+            for (var i = 0; i < Hints.Length; i++)
+            {
+                writer.Write((int)Hints[i]);
+            }
 
             writer.WriteEncodedInt(m_Guesses.Count);
             foreach (var kvp in m_Guesses)
@@ -530,11 +578,15 @@ namespace Server.Items
                 var cylinder = (PuzzleChestCylinder)reader.ReadInt();
 
                 if (length == Hints.Length)
+                {
                     Hints[i] = cylinder;
+                }
             }
 
             if (length != Hints.Length)
+            {
                 InitHints();
+            }
 
             var guesses = reader.ReadEncodedInt();
             for (var i = 0; i < guesses; i++)
@@ -597,10 +649,14 @@ namespace Server.Items
                         AddCylinder(350, 200, chest.FirstHint);
 
                         if (lockpicking >= 90.0)
+                        {
                             AddCylinder(350, 212, chest.SecondHint);
+                        }
 
                         if (lockpicking >= 100.0)
+                        {
                             AddCylinder(350, 224, chest.ThirdHint);
+                        }
                     }
                     else
                     {
@@ -608,7 +664,9 @@ namespace Server.Items
                         AddCylinder(350, 160, chest.FirstHint);
 
                         if (lockpicking >= 70.0)
+                        {
                             AddCylinder(350, 172, chest.SecondHint);
+                        }
                     }
                 }
 
@@ -672,15 +730,21 @@ namespace Server.Items
             private void AddCylinder(int x, int y, PuzzleChestCylinder cylinder)
             {
                 if (cylinder != PuzzleChestCylinder.None)
+                {
                     AddItem(x, y, (int)cylinder);
+                }
                 else
+                {
                     AddItem(x + 9, y, (int)cylinder);
+                }
             }
 
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_Chest.Deleted || info.ButtonID == 0 || !m_From.CheckAlive())
+                {
                     return;
+                }
 
                 if (m_From.AccessLevel == AccessLevel.Player &&
                     (m_From.Map != m_Chest.Map || !m_From.InRange(m_Chest.GetWorldLocation(), 2)))
@@ -696,11 +760,15 @@ namespace Server.Items
                 else
                 {
                     if (info.Switches.Length == 0)
+                    {
                         return;
+                    }
 
                     var pedestal = info.Switches[0];
                     if (pedestal < 0 || pedestal >= m_Solution.Cylinders.Length)
+                    {
                         return;
+                    }
 
                     PuzzleChestCylinder cylinder;
                     switch (info.ButtonID)

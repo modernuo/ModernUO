@@ -54,7 +54,10 @@ namespace Server.Regions
             get
             {
                 if (Map == Map.Ilshenar || Map == Map.Malas)
+                {
                     return typeof(ArcherGuard);
+                }
+
                 return typeof(WarriorGuard);
             }
         }
@@ -76,11 +79,17 @@ namespace Server.Regions
             var reg = from.Region.GetRegion<GuardedRegion>();
 
             if (reg == null)
-                from.SendMessage("You are not in a guardable region.");
+            {
+                @from.SendMessage("You are not in a guardable region.");
+            }
             else if (reg.Disabled)
-                from.SendMessage("The guards in this region have been disabled.");
+            {
+                @from.SendMessage("The guards in this region have been disabled.");
+            }
             else
-                from.SendMessage("This region is actively guarded.");
+            {
+                @from.SendMessage("This region is actively guarded.");
+            }
         }
 
         [Usage("SetGuarded <true|false>")]
@@ -188,10 +197,14 @@ namespace Server.Regions
         public override void OnEnter(Mobile m)
         {
             if (IsDisabled())
+            {
                 return;
+            }
 
             if (!AllowReds && m.Kills >= 5)
+            {
                 CheckGuardCandidate(m);
+            }
         }
 
         public override void OnExit(Mobile m)
@@ -203,10 +216,14 @@ namespace Server.Regions
             base.OnSpeech(args);
 
             if (IsDisabled())
+            {
                 return;
+            }
 
             if (args.Mobile.Alive && args.HasKeyword(0x0007)) // *guards*
+            {
                 CallGuards(args.Mobile.Location);
+            }
         }
 
         public override void OnAggressed(Mobile aggressor, Mobile aggressed, bool criminal)
@@ -214,7 +231,9 @@ namespace Server.Regions
             base.OnAggressed(aggressor, aggressed, criminal);
 
             if (!IsDisabled() && aggressor != aggressed && criminal)
+            {
                 CheckGuardCandidate(aggressor);
+            }
         }
 
         public override void OnGotBeneficialAction(Mobile helper, Mobile helped)
@@ -222,12 +241,16 @@ namespace Server.Regions
             base.OnGotBeneficialAction(helper, helped);
 
             if (IsDisabled())
+            {
                 return;
+            }
 
             var noto = Notoriety.Compute(helper, helped);
 
             if (helper != helped && (noto == Notoriety.Criminal || noto == Notoriety.Murderer))
+            {
                 CheckGuardCandidate(helper);
+            }
         }
 
         public override void OnCriminalAction(Mobile m, bool message)
@@ -235,13 +258,17 @@ namespace Server.Regions
             base.OnCriminalAction(m, message);
 
             if (!IsDisabled())
+            {
                 CheckGuardCandidate(m);
+            }
         }
 
         public void CheckGuardCandidate(Mobile m)
         {
             if (IsDisabled() || !IsGuardCandidate(m))
+            {
                 return;
+            }
 
             if (!m_GuardCandidates.TryGetValue(m, out var timer))
             {
@@ -254,12 +281,15 @@ namespace Server.Regions
                 var map = m.Map;
 
                 if (map == null)
+                {
                     return;
+                }
 
                 Mobile fakeCall = null;
                 var prio = 0.0;
 
                 foreach (var v in m.GetMobilesInRange(8))
+                {
                     if (!v.Player && v != m && !IsGuardCandidate(v) &&
                         ((v as BaseCreature)?.IsHumanInTown() ?? v.Body.IsHuman && v.Region.IsPartOf(this)))
                     {
@@ -271,6 +301,7 @@ namespace Server.Regions
                             prio = dist;
                         }
                     }
+                }
 
                 if (fakeCall != null)
                 {
@@ -303,11 +334,14 @@ namespace Server.Regions
         public void CallGuards(Point3D p)
         {
             if (IsDisabled())
+            {
                 return;
+            }
 
             var eable = Map.GetMobilesInRange(p, 14);
 
             foreach (var m in eable)
+            {
                 if (IsGuardCandidate(m) &&
                     (!AllowReds && m.Kills >= 5 && m.Region.IsPartOf(this) || m_GuardCandidates.ContainsKey(m)))
                 {
@@ -320,6 +354,7 @@ namespace Server.Regions
                     m.SendLocalizedMessage(502276); // Guards can no longer be called on you.
                     break;
                 }
+            }
 
             eable.Free();
         }
@@ -345,7 +380,9 @@ namespace Server.Regions
             protected override void OnTick()
             {
                 if (m_Table.Remove(m_Mobile))
+                {
                     m_Mobile.SendLocalizedMessage(502276); // Guards can no longer be called on you.
+                }
             }
         }
     }

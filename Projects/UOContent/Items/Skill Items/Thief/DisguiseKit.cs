@@ -41,23 +41,41 @@ namespace Server.Items
             var pm = from as PlayerMobile;
 
             if (!IsChildOf(from.Backpack))
-                from.SendLocalizedMessage(1042001);
+            {
+                @from.SendLocalizedMessage(1042001);
+            }
             else if (pm == null || pm.NpcGuild != NpcGuild.ThievesGuild)
-                from.SendLocalizedMessage(501702);
+            {
+                @from.SendLocalizedMessage(501702);
+            }
             else if (Stealing.SuspendOnMurder && pm.Kills > 0)
-                from.SendLocalizedMessage(501703);
+            {
+                @from.SendLocalizedMessage(501703);
+            }
             else if (!from.CanBeginAction<IncognitoSpell>())
-                from.SendLocalizedMessage(501704);
+            {
+                @from.SendLocalizedMessage(501704);
+            }
             else if (Sigil.ExistsOn(from))
-                from.SendLocalizedMessage(1010465); // You cannot disguise yourself while holding a sigil
+            {
+                @from.SendLocalizedMessage(1010465); // You cannot disguise yourself while holding a sigil
+            }
             else if (TransformationSpellHelper.UnderTransformation(from))
-                from.SendLocalizedMessage(1061634);
+            {
+                @from.SendLocalizedMessage(1061634);
+            }
             else if (from.BodyMod == 183 || from.BodyMod == 184)
-                from.SendLocalizedMessage(1040002);
+            {
+                @from.SendLocalizedMessage(1040002);
+            }
             else if (!from.CanBeginAction<PolymorphSpell>() || from.IsBodyMod)
-                from.SendLocalizedMessage(501705);
+            {
+                @from.SendLocalizedMessage(501705);
+            }
             else
+            {
                 return true;
+            }
 
             return false;
         }
@@ -65,7 +83,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (ValidateUse(from))
-                from.SendGump(new DisguiseGump(from, this, true, false));
+            {
+                @from.SendGump(new DisguiseGump(@from, this, true, false));
+            }
         }
     }
 
@@ -153,7 +173,9 @@ namespace Server.Items
                 var entry = entries[i];
 
                 if (entry == null)
+                {
                     continue;
+                }
 
                 var x = i % 2 * 205;
                 var y = i / 2 * 55;
@@ -174,9 +196,13 @@ namespace Server.Items
             if (info.ButtonID == 0)
             {
                 if (m_Used)
+                {
                     m_From.SendLocalizedMessage(501706); // Disguises wear off after 2 hours.
+                }
                 else
+                {
                     m_From.SendLocalizedMessage(501707); // You're looking good.
+                }
 
                 return;
             }
@@ -184,7 +210,9 @@ namespace Server.Items
             var switches = info.Switches;
 
             if (switches.Length == 0)
+            {
                 return;
+            }
 
             var switched = switches[0];
             var type = switched % 2;
@@ -199,22 +227,32 @@ namespace Server.Items
                 var entry = entries[index];
 
                 if (entry == null)
+                {
                     return;
+                }
 
                 if (!m_Kit.ValidateUse(m_From))
+                {
                     return;
+                }
 
                 if (!hair && (m_From.Female || m_From.Body.IsFemale))
+                {
                     return;
+                }
 
                 m_From.NameMod = NameList.RandomName(m_From.Female ? "female" : "male");
 
                 if (m_From is PlayerMobile pm)
                 {
                     if (hair)
+                    {
                         pm.SetHairMods(entry.m_ItemID, -2);
+                    }
                     else
+                    {
                         pm.SetHairMods(-2, entry.m_ItemID);
+                    }
                 }
 
                 m_From.SendGump(new DisguiseGump(m_From, m_Kit, hair, true));
@@ -257,7 +295,9 @@ namespace Server.Items
         public static void CreateTimer(Mobile m, TimeSpan delay)
         {
             if (m != null && !IsDisguised(m))
+            {
                 Timers[m] = new InternalTimer(m, delay);
+            }
         }
 
         public static void StartTimer(Mobile m)
@@ -271,11 +311,15 @@ namespace Server.Items
         public static void StopTimer(Mobile m)
         {
             if (!Timers.TryGetValue(m, out var t))
+            {
                 return;
+            }
 
             var ts = t.Next - DateTime.UtcNow;
             if (ts < TimeSpan.Zero)
+            {
                 ts = TimeSpan.Zero;
+            }
 
             t.Delay = ts;
             t.Stop();
@@ -307,7 +351,9 @@ namespace Server.Items
                 m_Player.NameMod = null;
 
                 if (m_Player is PlayerMobile mobile)
+                {
                     mobile.SetHairMods(-1, -1);
+                }
 
                 RemoveTimer(m_Player);
             }

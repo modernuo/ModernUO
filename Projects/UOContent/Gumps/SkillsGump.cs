@@ -86,7 +86,9 @@ namespace Server.Gumps
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
 
             x = BorderSize + OffsetSize;
             y += EntryHeight + OffsetSize;
@@ -96,7 +98,9 @@ namespace Server.Gumps
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
 
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1);
         }
@@ -104,6 +108,7 @@ namespace Server.Gumps
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID == 1)
+            {
                 try
                 {
                     if (m_From.AccessLevel >= AccessLevel.GameMaster)
@@ -128,8 +133,11 @@ namespace Server.Gumps
                     m_From.SendMessage("Bad format. ###.# expected.");
                     m_From.SendGump(new EditSkillGump(m_From, m_Target, m_Skill, m_Selected));
                 }
+            }
             else
+            {
                 m_From.SendGump(new SkillsGump(m_From, m_Target, m_Selected));
+            }
         }
     }
 
@@ -214,7 +222,9 @@ namespace Server.Gumps
             var count = m_Groups.Length;
 
             if (selected != null)
+            {
                 count += selected.Skills.Length;
+            }
 
             var totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
 
@@ -235,13 +245,18 @@ namespace Server.Gumps
             var emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4 - (OldStyle ? SetWidth + OffsetSize : 0);
 
             if (OldStyle)
+            {
                 AddImageTiled(x, y, TotalWidth - OffsetSize * 3 - SetWidth, EntryHeight, HeaderGumpID);
+            }
             else
+            {
                 AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
+            }
 
             x += PrevWidth + OffsetSize;
 
             if (!OldStyle)
+            {
                 AddImageTiled(
                     x - (OldStyle ? OffsetSize : 0),
                     y,
@@ -249,11 +264,14 @@ namespace Server.Gumps
                     EntryHeight,
                     HeaderGumpID
                 );
+            }
 
             x += emptyWidth + OffsetSize;
 
             if (!OldStyle)
+            {
                 AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
+            }
 
             for (var i = 0; i < m_Groups.Length; ++i)
             {
@@ -265,9 +283,13 @@ namespace Server.Gumps
                 AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
 
                 if (group == selected)
+                {
                     AddButton(x + PrevOffsetX, y + PrevOffsetY, 0x15E2, 0x15E6, GetButtonID(0, i));
+                }
                 else
+                {
                     AddButton(x + PrevOffsetX, y + PrevOffsetY, 0x15E1, 0x15E5, GetButtonID(0, i));
+                }
 
                 x += PrevWidth + OffsetSize;
 
@@ -280,7 +302,9 @@ namespace Server.Gumps
                 x += OffsetSize;
 
                 if (SetGumpID != 0)
+                {
                     AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+                }
 
                 if (group == selected)
                 {
@@ -318,7 +342,9 @@ namespace Server.Gumps
                         x += OffsetSize;
 
                         if (SetGumpID != 0)
+                        {
                             AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+                        }
 
                         if (sk != null)
                         {
@@ -401,9 +427,13 @@ namespace Server.Gumps
                             var newSelection = m_Groups[index];
 
                             if (m_Selected != newSelection)
+                            {
                                 m_From.SendGump(new SkillsGump(m_From, m_Target, newSelection));
+                            }
                             else
+                            {
                                 m_From.SendGump(new SkillsGump(m_From, m_Target));
+                            }
                         }
 
                         break;
@@ -443,6 +473,7 @@ namespace Server.Gumps
                             if (sk != null)
                             {
                                 if (m_From.AccessLevel >= AccessLevel.GameMaster)
+                                {
                                     switch (sk.Lock)
                                     {
                                         case SkillLock.Up:
@@ -458,8 +489,11 @@ namespace Server.Gumps
                                             sk.Update();
                                             break;
                                     }
+                                }
                                 else
+                                {
                                     m_From.SendMessage("You may not change that.");
+                                }
 
                                 m_From.SendGump(new SkillsGump(m_From, m_Target, m_Selected));
                             }

@@ -201,7 +201,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_Bonus != 0)
+            {
                 list.Add(1062005, m_Bonus.ToString()); // mining bonus +~1_val~
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

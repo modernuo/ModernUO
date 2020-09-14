@@ -36,7 +36,9 @@ namespace Server.Engines.ConPVP
 
                     if (controller?.Deleted == false && controller.Tournament != null &&
                         controller.Tournament.Stage != TournamentStage.Inactive)
+                    {
                         return true;
+                    }
                 }
 
                 return false;
@@ -54,7 +56,9 @@ namespace Server.Engines.ConPVP
                 list.Add(new EditEntry(Tournament));
 
                 if (Tournament.CurrentStage == TournamentStage.Inactive)
+                {
                     list.Add(new StartEntry(Tournament));
+                }
             }
         }
 

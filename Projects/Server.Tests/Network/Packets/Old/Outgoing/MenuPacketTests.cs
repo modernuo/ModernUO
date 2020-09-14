@@ -52,7 +52,9 @@ namespace Server.Tests.Network.Packets
             {
                 length += 5 + entry.Name.Length;
                 if (entriesCount == 255)
+                {
                     break;
+                }
 
                 entriesCount++;
             }
@@ -104,7 +106,9 @@ namespace Server.Tests.Network.Packets
             {
                 length += 5 + answer.Length;
                 if (answersCount == 255)
+                {
                     break;
+                }
 
                 answersCount++;
             }
@@ -171,10 +175,14 @@ namespace Server.Tests.Network.Packets
                 var range = entry.Range;
 
                 if (range == -1)
+                {
                     range = 18;
+                }
 
                 if (!(entry.Enabled && menu.From.InRange(item.GetWorldLocation(), range)))
+                {
                     flags |= CMEFlags.Disabled;
+                }
 
                 expectedData.Write(ref pos, (ushort)flags);
             }
@@ -218,20 +226,28 @@ namespace Server.Tests.Network.Packets
                 var color = entry.Color & 0xFFFF;
 
                 if (color != 0xFFFF)
+                {
                     flags |= CMEFlags.Colored;
+                }
 
                 var range = entry.Range;
 
                 if (range == -1)
+                {
                     range = 18;
+                }
 
                 if (!(entry.Enabled && menu.From.InRange(item.GetWorldLocation(), range)))
+                {
                     flags |= CMEFlags.Disabled;
+                }
 
                 expectedData.Write(ref pos, (ushort)flags);
 
                 if ((flags & CMEFlags.Colored) != 0)
+                {
                     expectedData.Write(ref pos, (ushort)color);
+                }
             }
 
             AssertThat.Equal(data, expectedData);

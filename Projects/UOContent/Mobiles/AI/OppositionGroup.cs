@@ -106,7 +106,9 @@ namespace Server
         public int IndexOf(object obj)
         {
             if (obj == null)
+            {
                 return -1;
+            }
 
             var type = obj.GetType();
 
@@ -117,10 +119,14 @@ namespace Server
                 var contains = false;
 
                 for (var j = 0; !contains && j < group.Length; ++j)
-                    contains = group[j].IsAssignableFrom(type);
+                {
+                    contains = @group[j].IsAssignableFrom(type);
+                }
 
                 if (contains)
+                {
                     return i;
+                }
             }
 
             return -1;

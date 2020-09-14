@@ -32,7 +32,9 @@ namespace Server.Spells.Necromancy
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (CheckHSequence(m))
             {
@@ -104,7 +106,9 @@ namespace Server.Spells.Necromancy
                 m_Table.Remove(m_Mobile);
 
                 if (m_Mobile.Alive && !m_Mobile.IsDeadBondedPet)
+                {
                     m_Mobile.Hits += m_ToRestore;
+                }
 
                 BuffInfo.RemoveBuff(m_Mobile, BuffIcon.PainSpike);
             }

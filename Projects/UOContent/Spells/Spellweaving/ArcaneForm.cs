@@ -32,7 +32,9 @@ namespace Server.Spells.Spellweaving
         public override bool CheckCast()
         {
             if (!TransformationSpellHelper.CheckCast(Caster, this))
+            {
                 return false;
+            }
 
             return base.CheckCast();
         }

@@ -26,12 +26,14 @@ namespace Server.Engines.Quests
             else
             {
                 for (var i = 0; i < referenceTable.Length; ++i)
+                {
                     if (referenceTable[i] == type)
                     {
                         writer.WriteEncodedInt(0x01);
                         writer.WriteEncodedInt(i);
                         return;
                     }
+                }
 
                 writer.WriteEncodedInt(0x02);
                 writer.Write(type.FullName);
@@ -53,7 +55,9 @@ namespace Server.Engines.Quests
                         var index = reader.ReadEncodedInt();
 
                         if (index >= 0 && index < referenceTable.Length)
+                        {
                             return referenceTable[index];
+                        }
 
                         return null;
                     }
@@ -62,7 +66,9 @@ namespace Server.Engines.Quests
                         var fullName = reader.ReadString();
 
                         if (fullName == null)
+                        {
                             return null;
+                        }
 
                         return AssemblyHandler.FindFirstTypeForName(fullName);
                     }

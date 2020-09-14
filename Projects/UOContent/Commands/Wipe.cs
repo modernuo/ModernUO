@@ -81,22 +81,34 @@ namespace Server.Commands
             IPooledEnumerable<IEntity> eable;
 
             if (!items && !multis || !mobiles)
+            {
                 return;
+            }
 
             eable = map.GetObjectsInBounds(rect);
 
             foreach (var obj in eable)
+            {
                 if (items && obj is Item && !(obj is BaseMulti || obj is HouseSign))
+                {
                     toDelete.Add(obj);
+                }
                 else if (multis && obj is BaseMulti)
+                {
                     toDelete.Add(obj);
+                }
                 else if (obj is Mobile mobile && !mobile.Player)
+                {
                     toDelete.Add(mobile);
+                }
+            }
 
             eable.Free();
 
             for (var i = 0; i < toDelete.Count; ++i)
+            {
                 toDelete[i].Delete();
+            }
         }
     }
 }

@@ -35,9 +35,13 @@ namespace Server.Mobiles
             VirtualArmor = 50;
 
             if (Utility.Random(2) == 0)
+            {
                 PackItem(new PowerCrystal());
+            }
             else
+            {
                 PackItem(new ArcaneGem());
+            }
 
             FieldActive = CanUseField;
         }
@@ -79,18 +83,25 @@ namespace Server.Mobiles
         public override void AlterMeleeDamageFrom(Mobile from, ref int damage)
         {
             if (FieldActive)
+            {
                 damage = 0; // no melee damage when the field is up
+            }
         }
 
         public override void AlterSpellDamageFrom(Mobile caster, ref int damage)
         {
             if (!FieldActive)
+            {
                 damage = 0; // no spell damage when the field is down
+            }
         }
 
         public override void OnDamagedBySpell(Mobile from)
         {
-            if (from?.Alive == true && Utility.RandomDouble() < 0.4) SendEBolt(from);
+            if (from?.Alive == true && Utility.RandomDouble() < 0.4)
+            {
+                SendEBolt(@from);
+            }
 
             if (!FieldActive)
             {
@@ -120,7 +131,9 @@ namespace Server.Mobiles
             }
 
             if (attacker?.Alive == true && attacker.Weapon is BaseRanged && Utility.RandomDouble() < 0.4)
+            {
                 SendEBolt(attacker);
+            }
         }
 
         public override void OnThink()
@@ -129,7 +142,9 @@ namespace Server.Mobiles
 
             // TODO: an OSI bug prevents to verify if the field can regenerate or not
             if (!FieldActive && !IsHurt())
+            {
                 FieldActive = true;
+            }
         }
 
         public override bool Move(Direction d)
@@ -137,7 +152,9 @@ namespace Server.Mobiles
             var move = base.Move(d);
 
             if (move && FieldActive && Combatant != null)
+            {
                 FixedParticles(0, 10, 0, 0x2530, EffectLayer.Waist);
+            }
 
             return move;
         }
@@ -164,7 +181,9 @@ namespace Server.Mobiles
             FieldActive = CanUseField;
 
             if (Name == "Exodus Overseer")
+            {
                 Name = null;
+            }
         }
     }
 }

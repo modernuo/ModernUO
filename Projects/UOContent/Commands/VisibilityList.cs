@@ -47,7 +47,9 @@ namespace Server.Commands
                     pm.SendMessage("You are visible to {0} mobile{1}:", list.Count, list.Count == 1 ? "" : "s");
 
                     for (var i = 0; i < list.Count; ++i)
+                    {
                         pm.SendMessage("#{0}: {1}", i + 1, list[i].Name);
+                    }
                 }
                 else
                 {
@@ -72,7 +74,9 @@ namespace Server.Commands
                     var m = list[i];
 
                     if (!m.CanSee(pm) && Utility.InUpdateRange(m, pm))
+                    {
                         m.Send(pm.RemovePacket);
+                    }
                 }
             }
         }
@@ -117,7 +121,9 @@ namespace Server.Commands
                                         ns.Send(pm.OPLPacket);
 
                                         foreach (var item in pm.Items)
+                                        {
                                             ns.Send(item.OPLPacket);
+                                        }
                                     }
                                 }
                                 else

@@ -53,7 +53,10 @@ namespace Server.Items
         {
             get
             {
-                if (m_Duration != TimeSpan.Zero && m_Burning) return m_End - DateTime.UtcNow;
+                if (m_Duration != TimeSpan.Zero && m_Burning)
+                {
+                    return m_End - DateTime.UtcNow;
+                }
 
                 return m_Duration;
             }
@@ -75,7 +78,9 @@ namespace Server.Items
             var sound = UnlitSound;
 
             if (BurntOut && BurntOutSound != 0)
+            {
                 sound = BurntOutSound;
+            }
 
             if (sound != 0)
             {
@@ -101,14 +106,22 @@ namespace Server.Items
             m_Burning = false;
 
             if (BurntOut && BurntOutItemID != 0)
+            {
                 ItemID = BurntOutItemID;
+            }
             else
+            {
                 ItemID = UnlitItemID;
+            }
 
             if (BurntOut)
+            {
                 m_Duration = TimeSpan.Zero;
+            }
             else if (m_Duration != TimeSpan.Zero)
+            {
                 m_Duration = m_End - DateTime.UtcNow;
+            }
 
             m_Timer?.Stop();
 
@@ -128,7 +141,9 @@ namespace Server.Items
             m_Timer?.Stop();
 
             if (delay == TimeSpan.Zero)
+            {
                 return;
+            }
 
             m_End = DateTime.UtcNow + delay;
 
@@ -139,18 +154,26 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (BurntOut)
+            {
                 return;
+            }
 
             if (Protected && from.AccessLevel == AccessLevel.Player)
+            {
                 return;
+            }
 
             if (!from.InRange(GetWorldLocation(), 2))
+            {
                 return;
+            }
 
             if (m_Burning)
             {
                 if (UnlitItemID != 0)
+                {
                     Douse();
+                }
             }
             else
             {
@@ -169,7 +192,9 @@ namespace Server.Items
             writer.Write(Protected);
 
             if (m_Burning && m_Duration != TimeSpan.Zero)
+            {
                 writer.WriteDeltaTime(m_End);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -188,7 +213,9 @@ namespace Server.Items
                         Protected = reader.ReadBool();
 
                         if (m_Burning && m_Duration != TimeSpan.Zero)
+                        {
                             DoTimer(reader.ReadDeltaTime() - DateTime.UtcNow);
+                        }
 
                         break;
                     }
@@ -208,7 +235,9 @@ namespace Server.Items
             protected override void OnTick()
             {
                 if (m_Light?.Deleted == false)
+                {
                     m_Light.Burn();
+                }
             }
         }
     }

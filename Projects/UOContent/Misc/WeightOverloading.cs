@@ -40,7 +40,9 @@ namespace Server.Misc
             }
 
             if (fatigue > 0)
+            {
                 m.Stam -= (int)fatigue;
+            }
         }
 
         public static int GetMaxWeight(Mobile m) => m.MaxWeight;
@@ -50,7 +52,9 @@ namespace Server.Misc
             var from = e.Mobile;
 
             if (!from.Alive || from.AccessLevel > AccessLevel.Player)
+            {
                 return;
+            }
 
             if (!from.Player)
             {
@@ -77,7 +81,9 @@ namespace Server.Misc
             }
 
             if (from.Stam * 100 / Math.Max(from.StamMax, 1) < 10)
-                --from.Stam;
+            {
+                --@from.Stam;
+            }
 
             if (from.Stam == 0)
             {
@@ -91,7 +97,9 @@ namespace Server.Misc
                 var amt = pm.Mounted ? 48 : 16;
 
                 if (++pm.StepsTaken % amt == 0)
+                {
                     --pm.Stam;
+                }
             }
 
             DeathStrike.AddStep(from);
@@ -102,10 +110,14 @@ namespace Server.Misc
             var loss = 5 + overWeight / 25;
 
             if (from.Mounted)
+            {
                 loss /= 3;
+            }
 
             if (running)
+            {
                 loss *= 2;
+            }
 
             return loss;
         }
@@ -113,7 +125,9 @@ namespace Server.Misc
         public static bool IsOverloaded(Mobile m)
         {
             if (!m.Player || !m.Alive || m.AccessLevel > AccessLevel.Player)
+            {
                 return false;
+            }
 
             return Mobile.BodyWeight + m.TotalWeight > GetMaxWeight(m) + OverloadAllowance;
         }

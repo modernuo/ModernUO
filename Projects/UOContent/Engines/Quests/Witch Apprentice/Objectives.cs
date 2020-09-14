@@ -20,7 +20,9 @@ namespace Server.Engines.Quests.Hag
         public FindApprenticeObjective(bool init)
         {
             if (init)
+            {
                 m_CorpseLocation = RandomCorpseLocation();
+            }
         }
 
         public FindApprenticeObjective()
@@ -40,7 +42,9 @@ namespace Server.Engines.Quests.Hag
 
             if (Corpse?.Deleted == false || map != Map.Trammel && map != Map.Felucca ||
                 !player.InRange(m_CorpseLocation, 8))
+            {
                 return;
+            }
 
             Corpse = new HagApprenticeCorpse();
             Corpse.MoveToWorld(m_CorpseLocation, map);
@@ -92,13 +96,17 @@ namespace Server.Engines.Quests.Hag
             }
 
             if (version == 0)
+            {
                 m_CorpseLocation = RandomCorpseLocation();
+            }
         }
 
         public override void ChildSerialize(IGenericWriter writer)
         {
             if (Corpse?.Deleted == true)
+            {
                 Corpse = null;
+            }
 
             writer.WriteEncodedInt(1); // version
 
@@ -124,7 +132,9 @@ namespace Server.Engines.Quests.Hag
         public KillImpsObjective(bool init)
         {
             if (init)
+            {
                 m_MaxProgress = Utility.RandomMinMax(1, 4);
+            }
         }
 
         public KillImpsObjective()
@@ -138,7 +148,9 @@ namespace Server.Engines.Quests.Hag
         public override bool IgnoreYoungProtection(Mobile from)
         {
             if (!Completed && from is Imp)
+            {
                 return true;
+            }
 
             return false;
         }
@@ -146,7 +158,9 @@ namespace Server.Engines.Quests.Hag
         public override void OnKill(BaseCreature creature, Container corpse)
         {
             if (creature is Imp)
+            {
                 CurProgress++;
+            }
         }
 
         public override void OnComplete()
@@ -259,7 +273,9 @@ namespace Server.Engines.Quests.Hag
                 Ingredients = new Ingredient[oldIngredients.Length + 1];
 
                 for (var i = 0; i < oldIngredients.Length; i++)
+                {
                     Ingredients[i] = oldIngredients[i];
+                }
 
                 Ingredients[^1] = IngredientInfo.RandomIngredient(oldIngredients);
             }
@@ -268,7 +284,9 @@ namespace Server.Engines.Quests.Hag
                 Ingredients = new Ingredient[oldIngredients.Length];
 
                 for (var i = 0; i < oldIngredients.Length; i++)
+                {
                     Ingredients[i] = oldIngredients[i];
+                }
             }
 
             BlackheartMet = blackheartMet;
@@ -283,6 +301,7 @@ namespace Server.Engines.Quests.Hag
             get
             {
                 if (!BlackheartMet)
+                {
                     return Step switch
                     {
                         1 =>
@@ -297,6 +316,7 @@ namespace Server.Engines.Quests.Hag
                             1055044,
                         _ => 1055045
                     };
+                }
 
                 /* You are still attempting to obtain a jug of Captain Blackheart's
                    * Whiskey, but the drunkard Captain refuses to share his unique brew.
@@ -343,14 +363,20 @@ namespace Server.Engines.Quests.Hag
         public override bool IgnoreYoungProtection(Mobile from)
         {
             if (Completed)
+            {
                 return false;
+            }
 
             var info = IngredientInfo.Get(Ingredient);
             var fromType = from.GetType();
 
             for (var i = 0; i < info.Creatures.Length; i++)
+            {
                 if (fromType == info.Creatures[i])
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -379,7 +405,10 @@ namespace Server.Engines.Quests.Hag
 
         public override void OnComplete()
         {
-            if (Ingredient != Ingredient.Whiskey) NextStep();
+            if (Ingredient != Ingredient.Whiskey)
+            {
+                NextStep();
+            }
         }
 
         public void NextStep()
@@ -389,9 +418,13 @@ namespace Server.Engines.Quests.Hag
             ); // You have completed your current task on the Hag's Magic Brew Recipe list.
 
             if (Step < 3)
+            {
                 System.AddObjective(new FindIngredientObjective(Ingredients));
+            }
             else
+            {
                 System.AddObjective(new ReturnIngredientsObjective());
+            }
         }
 
         public override void ChildDeserialize(IGenericReader reader)
@@ -400,7 +433,9 @@ namespace Server.Engines.Quests.Hag
 
             Ingredients = new Ingredient[reader.ReadEncodedInt()];
             for (var i = 0; i < Ingredients.Length; i++)
+            {
                 Ingredients[i] = (Ingredient)reader.ReadEncodedInt();
+            }
 
             BlackheartMet = reader.ReadBool();
         }
@@ -411,7 +446,9 @@ namespace Server.Engines.Quests.Hag
 
             writer.WriteEncodedInt(Ingredients.Length);
             for (var i = 0; i < Ingredients.Length; i++)
+            {
                 writer.WriteEncodedInt((int)Ingredients[i]);
+            }
 
             writer.Write(BlackheartMet);
         }

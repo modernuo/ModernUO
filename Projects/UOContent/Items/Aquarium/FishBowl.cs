@@ -28,7 +28,9 @@ namespace Server.Items
             get
             {
                 if (Empty)
+                {
                     return null;
+                }
 
                 return Items[0] as BaseFish;
             }
@@ -43,7 +45,9 @@ namespace Server.Items
         public override bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage)
         {
             if (!CheckHold(from, dropped, sendFullMessage, true))
+            {
                 return false;
+            }
 
             DropItem(dropped);
             return true;
@@ -77,7 +81,9 @@ namespace Server.Items
         public override bool CheckItemUse(Mobile from, Item item)
         {
             if (item != this)
+            {
                 return false;
+            }
 
             return base.CheckItemUse(from, item);
         }
@@ -102,7 +108,9 @@ namespace Server.Items
                 var fish = Fish;
 
                 if (fish != null)
+                {
                     list.Add(1074494, "#{0}", fish.LabelNumber); // Contains: ~1_CREATURE~
+                }
             }
         }
 
@@ -111,7 +119,9 @@ namespace Server.Items
             base.GetContextMenuEntries(from, list);
 
             if (!Empty && IsAccessibleTo(from))
+            {
                 list.Add(new RemoveCreature(this));
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -128,7 +138,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0)
+            {
                 Weight = DefaultWeight;
+            }
         }
 
         private class RemoveCreature : ContextMenuEntry
@@ -142,12 +154,16 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (m_Bowl?.Deleted != false || !m_Bowl.IsAccessibleTo(Owner.From))
+                {
                     return;
+                }
 
                 var fish = m_Bowl.Fish;
 
                 if (fish == null)
+                {
                     return;
+                }
 
                 if (fish.IsLockedDown) // for legacy fish bowls
                 {

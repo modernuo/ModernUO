@@ -82,7 +82,10 @@ namespace Server.Spells.Chivalry
                             var fleeChance = (100 - Math.Sqrt(m.Fame / 2.0)) * chiv * dispelSkill;
                             fleeChance /= 1000000;
 
-                            if (fleeChance > Utility.RandomDouble()) bc.BeginFlee(TimeSpan.FromSeconds(30.0));
+                            if (fleeChance > Utility.RandomDouble())
+                            {
+                                bc.BeginFlee(TimeSpan.FromSeconds(30.0));
+                            }
                         }
                     }
 

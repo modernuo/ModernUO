@@ -40,7 +40,9 @@ namespace Server.Mobiles
             VirtualArmor = 36;
 
             if (Core.ML && Utility.RandomDouble() < .33)
+            {
                 PackItem(Seed.RandomPeculiarSeed(2));
+            }
         }
 
         public SerpentineDragon(Serial serial) : base(serial)

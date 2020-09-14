@@ -12,7 +12,9 @@ namespace Server.Multis
             Weight = 1.0;
 
             if (!Core.AOS)
+            {
                 LootType = LootType.Newbied;
+            }
 
             MultiID = id;
             Offset = offset;
@@ -58,7 +60,9 @@ namespace Server.Multis
             }
 
             if (Weight == 0.0)
+            {
                 Weight = 1.0;
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -74,9 +78,13 @@ namespace Server.Multis
             else
             {
                 if (Core.SE)
-                    from.SendLocalizedMessage(502482); // Where do you wish to place the ship?
+                {
+                    @from.SendLocalizedMessage(502482); // Where do you wish to place the ship?
+                }
                 else
-                    from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502482); // Where do you wish to place the ship?
+                {
+                    @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502482); // Where do you wish to place the ship?
+                }
 
                 from.Target = new InternalTarget(this);
             }
@@ -84,7 +92,10 @@ namespace Server.Multis
 
         public void OnPlacement(Mobile from, Point3D p)
         {
-            if (Deleted) return;
+            if (Deleted)
+            {
+                return;
+            }
 
             if (!IsChildOf(from.Backpack))
             {
@@ -95,7 +106,9 @@ namespace Server.Multis
                 var map = from.Map;
 
                 if (map == null)
+                {
                     return;
+                }
 
                 if (from.AccessLevel < AccessLevel.GameMaster && (map == Map.Ilshenar || map == Map.Malas))
                 {
@@ -116,7 +129,9 @@ namespace Server.Multis
                 var boat = Boat;
 
                 if (boat == null)
+                {
                     return;
+                }
 
                 p = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
 
@@ -130,10 +145,14 @@ namespace Server.Multis
                     var keyValue = boat.CreateKeys(from);
 
                     if (boat.PPlank != null)
+                    {
                         boat.PPlank.KeyValue = keyValue;
+                    }
 
                     if (boat.SPlank != null)
+                    {
                         boat.SPlank.KeyValue = keyValue;
+                    }
 
                     boat.MoveToWorld(p, map);
                 }
@@ -156,18 +175,26 @@ namespace Server.Multis
                 if (o is IPoint3D ip)
                 {
                     if (ip is Item item)
+                    {
                         ip = item.GetWorldTop();
+                    }
 
                     var p = new Point3D(ip);
 
                     var region = Region.Find(p, from.Map);
 
                     if (region.IsPartOf<DungeonRegion>())
-                        from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
+                    {
+                        @from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
+                    }
                     else if (region.IsPartOf<HouseRegion>() || region.IsPartOf<ChampionSpawnRegion>())
-                        from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
+                    {
+                        @from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
+                    }
                     else
-                        m_Deed.OnPlacement(from, p);
+                    {
+                        m_Deed.OnPlacement(@from, p);
+                    }
                 }
             }
         }

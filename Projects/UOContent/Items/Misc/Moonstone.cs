@@ -191,7 +191,9 @@ namespace Server.Items
                         var hue = m_Stone.Hue;
 
                         if (hue == 0)
+                        {
                             hue = Utility.RandomBirdHue();
+                        }
 
                         new MoonstoneGate(m_Location, m_TargetMap, m_Map, m_Caster, hue);
                         new MoonstoneGate(m_Location, m_Map, m_TargetMap, m_Caster, hue);

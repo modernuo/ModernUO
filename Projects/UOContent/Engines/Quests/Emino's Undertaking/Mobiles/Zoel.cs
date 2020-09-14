@@ -59,7 +59,9 @@ namespace Server.Engines.Quests.Ninja
                 QuestObjective obj = qs.FindObjective<FindZoelObjective>();
 
                 if (obj?.Completed == false)
+                {
                     obj.Complete();
+                }
             }
         }
 
@@ -70,6 +72,7 @@ namespace Server.Engines.Quests.Ninja
                 var qs = player.Quest;
 
                 if (qs is EminosUndertakingQuest)
+                {
                     if (dropped is NoteForZoel)
                     {
                         QuestObjective obj = qs.FindObjective<GiveZoelNoteObjective>();
@@ -81,6 +84,7 @@ namespace Server.Engines.Quests.Ninja
                             return true;
                         }
                     }
+                }
             }
 
             return base.OnDragDrop(from, dropped);

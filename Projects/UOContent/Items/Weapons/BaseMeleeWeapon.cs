@@ -19,7 +19,9 @@ namespace Server.Items
             AttuneWeaponSpell.TryAbsorb(defender, ref damage);
 
             if (Core.AOS)
+            {
                 return damage;
+            }
 
             var absorb = defender.MeleeDamageAbsorb;
 
@@ -30,7 +32,9 @@ namespace Server.Items
                     var react = damage / 5;
 
                     if (react <= 0)
+                    {
                         react = 1;
+                    }
 
                     defender.MeleeDamageAbsorb -= damage;
                     damage = 0;

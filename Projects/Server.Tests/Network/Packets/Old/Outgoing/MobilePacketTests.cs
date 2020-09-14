@@ -261,10 +261,22 @@ namespace Server.Tests.Network.Packets
             int type;
             var notSelf = beholder != beheld;
 
-            if (notSelf) type = 0;
-            else if (Core.HS && ns.ExtendedStatus) type = 6;
-            else if (Core.ML && ns.SupportsExpansion(Expansion.ML)) type = 5;
-            else type = Core.AOS ? 4 : 3;
+            if (notSelf)
+            {
+                type = 0;
+            }
+            else if (Core.HS && ns.ExtendedStatus)
+            {
+                type = 6;
+            }
+            else if (Core.ML && ns.SupportsExpansion(Expansion.ML))
+            {
+                type = 5;
+            }
+            else
+            {
+                type = Core.AOS ? 4 : 3;
+            }
 
             expectedData.Write(ref pos, beheld.Serial);
             expectedData.WriteAsciiFixed(ref pos, beheld.Name, 30);
@@ -320,8 +332,12 @@ namespace Server.Tests.Network.Packets
                 expectedData.Write(ref pos, beheld.TithingPoints);
 
                 if (type >= 6)
+                {
                     for (var i = 0; i < 15; ++i)
+                    {
                         expectedData.Write(ref pos, (ushort)beheld.GetAOSStatus(i));
+                    }
+                }
             }
 
             expectedData.Slice(1, 2).Write((ushort)pos); // Length
@@ -502,9 +518,14 @@ namespace Server.Tests.Network.Packets
             var count = items.Count;
 
             if (beheld.HairItemID > 0)
+            {
                 count++;
+            }
+
             if (beheld.FacialHairItemID > 0)
+            {
                 count++;
+            }
 
             var length = 23 + count * 9; // Max Size
 
@@ -645,9 +666,14 @@ namespace Server.Tests.Network.Packets
             var count = items.Count;
 
             if (beheld.HairItemID > 0)
+            {
                 count++;
+            }
+
             if (beheld.FacialHairItemID > 0)
+            {
                 count++;
+            }
 
             var length = 23 + count * 9; // Max Size
 
@@ -686,7 +712,9 @@ namespace Server.Tests.Network.Packets
                     hue = isSolidHue ? beheld.SolidHueOverride : item.Hue;
 
                     if (hue != 0)
+                    {
                         itemId |= 0x8000;
+                    }
 
                     expectedData.Write(ref pos, item.Serial);
                     expectedData.Write(ref pos, (ushort)itemId);
@@ -703,7 +731,9 @@ namespace Server.Tests.Network.Packets
                 hue = isSolidHue ? beheld.SolidHueOverride : beheld.HairHue;
 
                 if (hue != 0)
+                {
                     itemId |= 0x8000;
+                }
 
                 expectedData.Write(ref pos, HairInfo.FakeSerial(beheld));
                 expectedData.Write(ref pos, (ushort)itemId);
@@ -719,7 +749,9 @@ namespace Server.Tests.Network.Packets
                 hue = isSolidHue ? beheld.SolidHueOverride : beheld.FacialHairHue;
 
                 if (hue != 0)
+                {
                     itemId |= 0x8000;
+                }
 
                 expectedData.Write(ref pos, FacialHairInfo.FakeSerial(beheld));
                 expectedData.Write(ref pos, (ushort)itemId);

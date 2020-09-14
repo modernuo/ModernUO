@@ -165,9 +165,14 @@ namespace Server.Mobiles
             */
 
             if (Str < Hits)
+            {
                 Str = Hits;
+            }
+
             if (Dex < Stam)
+            {
                 Dex = Stam;
+            }
 
             Karma = -1000;
             Tamable = false;
@@ -203,7 +208,9 @@ namespace Server.Mobiles
             else if (!Combat(SummonMaster))
             {
                 if (Combatant.Player || Combatant is BaseCreature bc && (bc.Controlled || bc.SummonMaster != null))
+                {
                     SummonMaster.Combatant = Combatant;
+                }
             }
             else
             {

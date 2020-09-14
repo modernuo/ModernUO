@@ -24,7 +24,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
+            {
                 return;
+            }
 
             base.OnDoubleClick(from);
         }
@@ -34,7 +36,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (Core.ML && IsRewardItem)
+            {
                 list.Add(1076218); // 2nd Year Veteran Reward
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

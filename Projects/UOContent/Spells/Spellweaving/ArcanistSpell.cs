@@ -39,7 +39,9 @@ namespace Server.Spells.Spellweaving
         public override bool CheckCast()
         {
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             var caster = Caster;
 
@@ -111,7 +113,9 @@ namespace Server.Spells.Spellweaving
             base.OnDisturb(type, message);
 
             if (message)
+            {
                 Caster.PlaySound(0x1D6);
+            }
         }
 
         public override void OnBeginCast()
@@ -134,10 +138,14 @@ namespace Server.Spells.Spellweaving
                 100; // TODO: According to the guide this is it.. but.. is it correct per OSI?
 
             if (percent <= 0)
+            {
                 return false;
+            }
 
             if (percent >= 1.0)
+            {
                 return true;
+            }
 
             return percent >= Utility.RandomDouble();
         }

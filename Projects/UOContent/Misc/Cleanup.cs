@@ -31,7 +31,9 @@ namespace Server.Misc
                 if (item is CommodityDeed deed)
                 {
                     if (deed.Commodity != null)
+                    {
                         validItems.Add(deed.Commodity);
+                    }
 
                     continue;
                 }
@@ -39,12 +41,20 @@ namespace Server.Misc
                 if (item is BaseHouse house)
                 {
                     foreach (var relEntity in house.RelocatedEntities)
+                    {
                         if (relEntity.Entity is Item item1)
+                        {
                             validItems.Add(item1);
+                        }
+                    }
 
                     foreach (var inventory in house.VendorInventories)
+                    {
                         foreach (var subItem in inventory.Items)
+                        {
                             validItems.Add(subItem);
+                        }
+                    }
                 }
                 else if (item is BankBox box)
                 {
@@ -82,33 +92,47 @@ namespace Server.Misc
                 }
 
                 if (item.Parent != null || item.Map != Map.Internal || item.HeldBy != null)
+                {
                     continue;
+                }
 
                 if (item.Location != Point3D.Zero)
+                {
                     continue;
+                }
 
                 if (!IsBuggable(item))
+                {
                     continue;
+                }
 
                 items.Add(item);
             }
 
             for (var i = 0; i < validItems.Count; ++i)
+            {
                 items.Remove(validItems[i]);
+            }
 
             if (items.Count > 0)
             {
                 if (boxes > 0)
+                {
                     Console.WriteLine(
                         "Cleanup: Detected {0} inaccessible items, including {1} bank boxes, removing..",
                         items.Count,
                         boxes
                     );
+                }
                 else
+                {
                     Console.WriteLine("Cleanup: Detected {0} inaccessible items, removing..", items.Count);
+                }
 
                 for (var i = 0; i < items.Count; ++i)
+                {
                     items[i].Delete();
+                }
             }
 
             if (hairCleanup.Count > 0)
@@ -119,14 +143,18 @@ namespace Server.Misc
                 );
 
                 for (var i = 0; i < hairCleanup.Count; i++)
+                {
                     hairCleanup[i].ConvertHair();
+                }
             }
         }
 
         public static bool IsBuggable(Item item)
         {
             if (item is Fists)
+            {
                 return false;
+            }
 
             if (item is ICommodity || item is BaseBoat
                                    || item is Fish || item is BigFish || item is Food || item is CookableFood
@@ -153,7 +181,9 @@ namespace Server.Misc
                                    || item is WindSpirit
                                    || item is DirtPatch
                                    || item is Futon)
+            {
                 return true;
+            }
 
             return false;
         }

@@ -34,7 +34,9 @@ namespace Server.Mobiles
             VirtualArmor = 35;
 
             if (Utility.RandomDouble() < 0.2)
+            {
                 PackItem(new GargoylesPickaxe());
+            }
         }
 
         public EnslavedGargoyle(Serial serial) : base(serial)

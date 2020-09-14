@@ -36,7 +36,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Attributes.AttackChance == 50)
+            {
                 Attributes.AttackChance = 10;
+            }
         }
     }
 }

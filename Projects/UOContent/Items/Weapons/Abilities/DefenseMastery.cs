@@ -31,7 +31,9 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker) || !CheckMana(attacker, true))
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
@@ -45,7 +47,9 @@ namespace Server.Items
                         50.0) / 70.0));
 
             if (m_Table.TryGetValue(attacker, out var info))
+            {
                 EndDefense(info);
+            }
 
             var mod = new ResistanceMod(ResistanceType.Physical, 50 + modifier);
             attacker.AddResistanceMod(mod);
@@ -61,7 +65,9 @@ namespace Server.Items
         public static bool GetMalus(Mobile targ, ref int damageMalus)
         {
             if (!m_Table.TryGetValue(targ, out var info))
+            {
                 return false;
+            }
 
             damageMalus = info.m_DamageMalus;
             return true;
@@ -70,7 +76,9 @@ namespace Server.Items
         private static void EndDefense(DefenseMasteryInfo info)
         {
             if (info.m_Mod != null)
+            {
                 info.m_From.RemoveResistanceMod(info.m_Mod);
+            }
 
             info.m_Timer?.Stop();
 

@@ -31,7 +31,9 @@ namespace Server.Engines.ConPVP
                 var ladder = Ladder.Instance;
 
                 if (ladder == null)
+                {
                     return 0;
+                }
 
                 var total = 0;
 
@@ -41,7 +43,9 @@ namespace Server.Engines.ConPVP
                     var entry = ladder.Find(mob);
 
                     if (entry != null)
+                    {
                         total += entry.Experience;
+                    }
                 }
 
                 return total;
@@ -57,18 +61,26 @@ namespace Server.Engines.ConPVP
                 for (var i = 0; i < Players.Count; ++i)
                 {
                     if (Players[i] == null)
+                    {
                         continue;
+                    }
 
                     var mob = Players[i];
 
                     if (sb.Length > 0)
                     {
                         if (Players.Count == 2)
+                        {
                             sb.Append(" and ");
+                        }
                         else if (i + 1 < Players.Count)
+                        {
                             sb.Append(", ");
+                        }
                         else
+                        {
                             sb.Append(", and ");
+                        }
                     }
 
                     sb.Append(mob.Name);

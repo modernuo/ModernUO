@@ -90,7 +90,9 @@ namespace Server.Gumps
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
 
             x = BorderSize + OffsetSize;
             y += EntryHeight + OffsetSize;
@@ -100,7 +102,10 @@ namespace Server.Gumps
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
+
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1);
 
             x = BorderSize + OffsetSize;
@@ -111,7 +116,10 @@ namespace Server.Gumps
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
+
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 2);
 
             x = BorderSize + OffsetSize;
@@ -133,7 +141,10 @@ namespace Server.Gumps
             x += CoordWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
+
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3);
         }
 
@@ -189,6 +200,7 @@ namespace Server.Gumps
             }
 
             if (shouldSet)
+            {
                 try
                 {
                     CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, toSet.ToString());
@@ -199,9 +211,12 @@ namespace Server.Gumps
                 {
                     m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
                 }
+            }
 
             if (shouldSend)
+            {
                 m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+            }
         }
 
         private class InternalTarget : Target
@@ -229,6 +244,7 @@ namespace Server.Gumps
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (targeted is IPoint3D p)
+                {
                     try
                     {
                         CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, new Point3D(p).ToString());
@@ -239,6 +255,7 @@ namespace Server.Gumps
                     {
                         m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
                     }
+                }
             }
 
             protected override void OnTargetFinish(Mobile from)

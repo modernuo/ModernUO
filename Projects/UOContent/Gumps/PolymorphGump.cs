@@ -130,11 +130,13 @@ namespace Server.Gumps
                 var ent = cnum >> 8;
 
                 if (cat >= 0 && cat < Categories.Length)
+                {
                     if (ent >= 0 && ent < Categories[cat].Entries.Length)
                     {
                         Spell spell = new PolymorphSpell(m_Caster, m_Scroll, Categories[cat].Entries[ent].BodyID);
                         spell.Cast();
                     }
+                }
             }
         }
 
@@ -234,7 +236,9 @@ namespace Server.Gumps
             var idx = info.ButtonID - 1;
 
             if (idx < 0 || idx >= m_Entries.Length)
+            {
                 return;
+            }
 
             Spell spell = new PolymorphSpell(m_Caster, m_Scroll, m_Entries[idx].BodyID);
             spell.Cast();

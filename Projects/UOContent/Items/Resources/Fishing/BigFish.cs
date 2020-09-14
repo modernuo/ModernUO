@@ -45,7 +45,9 @@ namespace Server.Items
             if (Weight >= 20)
             {
                 if (m_Fisher != null)
+                {
                     list.Add(1070857, m_Fisher.Name); // Caught by ~1_fisherman~
+                }
 
                 list.Add(1070858, ((int)Weight).ToString()); // ~1_weight~ stones
             }

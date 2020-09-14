@@ -20,7 +20,9 @@ namespace Server.Items
             var SmithBag = new SmithBag();
 
             if (!from.AddToBackpack(SmithBag))
+            {
                 SmithBag.Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

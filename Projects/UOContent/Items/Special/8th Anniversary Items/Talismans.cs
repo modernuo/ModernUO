@@ -50,19 +50,33 @@ namespace Server.Items
         {
             base.OnRemoved(parent);
 
-            if (parent is Mobile m) AnimalForm.RemoveContext(m, true);
+            if (parent is Mobile m)
+            {
+                AnimalForm.RemoveContext(m, true);
+            }
         }
 
         public static bool EntryEnabled(Mobile m, Type type)
         {
             if (type == typeof(Squirrel))
+            {
                 return m.Talisman is SquirrelFormTalisman;
+            }
+
             if (type == typeof(Ferret))
+            {
                 return m.Talisman is FerretFormTalisman;
+            }
+
             if (type == typeof(CuSidhe))
+            {
                 return m.Talisman is CuSidheFormTalisman;
+            }
+
             if (type == typeof(Reptalon))
+            {
                 return m.Talisman is ReptalonFormTalisman;
+            }
 
             return true;
         }

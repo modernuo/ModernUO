@@ -36,10 +36,14 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Attributes.CastSpeed == 3)
+            {
                 Attributes.CastRecovery = 3;
+            }
 
             if (Hue == 0x4B9)
+            {
                 Hue = 0x676;
+            }
         }
     }
 }

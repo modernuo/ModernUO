@@ -44,7 +44,9 @@ namespace Server.Spells.Seventh
                     foreach (var bc in eable)
                     {
                         if (!(bc.IsDispellable && Caster.CanBeHarmful(bc, false)))
+                        {
                             continue;
+                        }
 
                         var dispelChance =
                             (50.0 + 100 * (Caster.Skills.Magery.Value - bc.DispelDifficulty) / (bc.DispelFocus * 2)) / 100;

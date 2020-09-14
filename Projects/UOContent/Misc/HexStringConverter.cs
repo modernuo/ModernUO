@@ -13,9 +13,13 @@ namespace Server.Misc
             {
                 var s = i.ToString("X2");
                 if (BitConverter.IsLittleEndian)
+                {
                     result[i] = s[0] + ((uint)s[1] << 16);
+                }
                 else
+                {
                     result[i] = s[1] + ((uint)s[0] << 16);
+                }
             }
 
             return result;
@@ -28,7 +32,9 @@ namespace Server.Misc
             {
                 var resultP2 = (uint*)resultP;
                 for (var i = 0; i < bytes.Length; i++)
+                {
                     resultP2[i] = m_Lookup32Chars[bytes[i]];
+                }
             }
 
             return result;
@@ -45,9 +51,13 @@ namespace Server.Misc
                     int chr1 = strP[i++];
                     int chr2 = strP[i++];
                     if (BitConverter.IsLittleEndian)
+                    {
                         bytes[j++] = (byte)(((chr1 - (chr1 >= 65 ? 55 : 48)) << 4) | (chr2 - (chr2 >= 65 ? 55 : 48)));
+                    }
                     else
+                    {
                         bytes[j++] = (byte)((chr1 - (chr1 >= 65 ? 55 : 48)) | ((chr2 - (chr2 >= 65 ? 55 : 48)) << 4));
+                    }
                 }
             }
         }

@@ -37,7 +37,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Attributes.NightSight == 0)
+            {
                 Attributes.NightSight = 1;
+            }
         }
     }
 }

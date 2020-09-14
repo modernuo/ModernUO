@@ -94,7 +94,9 @@ namespace Server.Mobiles
             var map = Map;
 
             if (map == null)
+            {
                 return;
+            }
 
             Say(1042154); // You shall never defeat me as long as I have my queen!
 
@@ -122,7 +124,9 @@ namespace Server.Mobiles
         public void CheckQueen()
         {
             if (Map == null)
+            {
                 return;
+            }
 
             if (!m_SpawnedQueen)
             {
@@ -148,7 +152,9 @@ namespace Server.Mobiles
                 scalar *= 0.1;
 
                 if (Utility.RandomDouble() <= 0.1)
+                {
                     SpawnPixies(caster);
+                }
             }
         }
 
@@ -168,7 +174,9 @@ namespace Server.Mobiles
             CheckQueen();
 
             if (m_Queen != null && Utility.RandomDouble() <= 0.1)
+            {
                 SpawnPixies(attacker);
+            }
 
             attacker.Damage(Utility.Random(20, 10), this);
             attacker.Stam -= Utility.Random(20, 10);

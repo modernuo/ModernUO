@@ -70,10 +70,14 @@ namespace Server.Items
             if (version == 0)
             {
                 if (LootType != LootType.Cursed)
+                {
                     LootType = LootType.Cursed;
+                }
 
                 if (Insured)
+                {
                     Insured = false;
+                }
             }
         }
     }

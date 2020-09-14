@@ -62,9 +62,14 @@ namespace Server.Spells.Seventh
             if (!Caster.CanBeginAction<PolymorphSpell>())
             {
                 if (Core.ML)
+                {
                     EndPolymorph(Caster);
+                }
                 else
+                {
                     Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+                }
+
                 return false;
             }
 
@@ -93,9 +98,13 @@ namespace Server.Spells.Seventh
             else if (!Caster.CanBeginAction<PolymorphSpell>())
             {
                 if (Core.ML)
+                {
                     EndPolymorph(Caster);
+                }
                 else
+                {
                     Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+                }
             }
             else if (TransformationSpellHelper.UnderTransformation(Caster))
             {
@@ -124,15 +133,21 @@ namespace Server.Spells.Seventh
                             var mt = Caster.Mount;
 
                             if (mt != null)
+                            {
                                 mt.Rider = null;
+                            }
                         }
 
                         Caster.BodyMod = m_NewBody;
 
                         if (m_NewBody == 400 || m_NewBody == 401)
+                        {
                             Caster.HueMod = Caster.Race.RandomSkinHue();
+                        }
                         else
+                        {
                             Caster.HueMod = 0;
+                        }
 
                         BaseArmor.ValidateMobile(Caster);
                         BaseClothing.ValidateMobile(Caster);
@@ -161,7 +176,9 @@ namespace Server.Spells.Seventh
         public static void StopTimer(Mobile m)
         {
             if (!m_Timers.TryGetValue(m, out var timer))
+            {
                 return;
+            }
 
             timer?.Stop();
             m_Timers.Remove(m);
@@ -170,7 +187,9 @@ namespace Server.Spells.Seventh
         private static void EndPolymorph(Mobile m)
         {
             if (m.CanBeginAction<PolymorphSpell>())
+            {
                 return;
+            }
 
             m.BodyMod = 0;
             m.HueMod = -1;
@@ -191,7 +210,9 @@ namespace Server.Spells.Seventh
                 var val = (int)owner.Skills.Magery.Value;
 
                 if (val > 120)
+                {
                     val = 120;
+                }
 
                 Delay = TimeSpan.FromSeconds(val);
                 Priority = TimerPriority.OneSecond;

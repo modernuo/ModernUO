@@ -89,16 +89,22 @@ namespace Server.Misc
              */
 
             for (var i = 0; i < 15; ++i)
+            {
                 AddDynamicWeather(+15, 100, 5, 8, 400, 400, new Rectangle2D(0, 0, 5120, 4096));
+            }
         }
 
         public static List<Weather> GetWeatherList(Map facet)
         {
             if (facet == null)
+            {
                 return null;
+            }
 
             if (!m_WeatherByFacet.TryGetValue(facet, out var list))
+            {
                 m_WeatherByFacet[facet] = list = new List<Weather>();
+            }
 
             return list;
         }
@@ -123,14 +129,20 @@ namespace Server.Misc
                     );
 
                     if (!CheckWeatherConflict(m_Facets[i], null, area))
+                    {
                         isValid = true;
+                    }
 
                     if (isValid)
+                    {
                         break;
+                    }
                 }
 
                 if (!isValid)
+                {
                     continue;
+                }
 
                 new Weather(
                         m_Facets[i],
@@ -149,6 +161,7 @@ namespace Server.Misc
         )
         {
             for (var i = 0; i < m_Facets.Length; ++i)
+            {
                 new Weather(
                     m_Facets[i],
                     area,
@@ -157,6 +170,7 @@ namespace Server.Misc
                     chanceOfExtremeTemperature,
                     TimeSpan.FromSeconds(30.0)
                 );
+            }
         }
 
         public static bool CheckWeatherConflict(Map facet, Weather exclude, Rectangle2D area)
@@ -164,14 +178,18 @@ namespace Server.Misc
             var list = GetWeatherList(facet);
 
             if (list == null)
+            {
                 return false;
+            }
 
             for (var i = 0; i < list.Count; ++i)
             {
                 var w = list[i];
 
                 if (w != exclude && w.IntersectsWith(area))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -189,8 +207,12 @@ namespace Server.Misc
         public virtual bool IntersectsWith(Rectangle2D area)
         {
             for (var i = 0; i < Area.Length; ++i)
+            {
                 if (CheckIntersection(area, Area[i]))
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -198,7 +220,9 @@ namespace Server.Misc
         public virtual void Reposition()
         {
             if (Area.Length == 0)
+            {
                 return;
+            }
 
             var width = Area[0].Width;
             var height = Area[0].Height;
@@ -216,14 +240,20 @@ namespace Server.Misc
                 );
 
                 if (!CheckWeatherConflict(Facet, this, area))
+                {
                     isValid = true;
+                }
 
                 if (isValid)
+                {
                     break;
+                }
             }
 
             if (!isValid)
+            {
                 return;
+            }
 
             Area[0] = area;
         }
@@ -242,7 +272,9 @@ namespace Server.Misc
         public virtual void MoveForward()
         {
             if (Area.Length == 0)
+            {
                 return;
+            }
 
             for (var i = 0; i < 5; ++i) // try 5 times to find a valid spot
             {
@@ -279,13 +311,17 @@ namespace Server.Misc
             if (m_Active)
             {
                 if (m_Stage > 0 && MoveSpeed > 0)
+                {
                     MoveForward();
+                }
 
                 int type, density;
                 var temperature = Temperature;
 
                 if (m_ExtremeTemperature)
+                {
                     temperature *= -1;
+                }
 
                 if (m_Stage < 15)
                 {
@@ -296,17 +332,27 @@ namespace Server.Misc
                     density = 150 - m_Stage * 5;
 
                     if (density < 10)
+                    {
                         density = 10;
+                    }
                     else if (density > 70)
+                    {
                         density = 70;
+                    }
                 }
 
                 if (density == 0)
+                {
                     type = 0xFE;
+                }
                 else if (temperature > 0)
+                {
                     type = 0;
+                }
                 else
+                {
                     type = 2;
+                }
 
                 var states = TcpServer.Instances;
 
@@ -318,18 +364,26 @@ namespace Server.Misc
                     var mob = ns.Mobile;
 
                     if (mob == null || mob.Map != Facet)
+                    {
                         continue;
+                    }
 
                     var contains = Area.Length == 0;
 
                     for (var j = 0; !contains && j < Area.Length; ++j)
+                    {
                         contains = Area[j].Contains(mob.Location);
+                    }
 
                     if (!contains)
+                    {
                         continue;
+                    }
 
                     if (weatherPacket == null)
+                    {
                         weatherPacket = Packet.Acquire(new Network.Weather(type, density, temperature));
+                    }
 
                     ns.Send(weatherPacket);
                 }
@@ -361,7 +415,9 @@ namespace Server.Misc
             var facet = from.Map;
 
             if (facet == null)
+            {
                 return;
+            }
 
             var list = Weather.GetWeatherList(facet);
 
@@ -372,7 +428,9 @@ namespace Server.Misc
                 var w = list[i];
 
                 for (var j = 0; j < w.Area.Length; ++j)
+                {
                     AddWorldPin(w.Area[j].X + w.Area[j].Width / 2, w.Area[j].Y + w.Area[j].Height / 2);
+                }
             }
 
             base.OnDoubleClick(from);

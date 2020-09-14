@@ -38,9 +38,13 @@ namespace Server.Spells.Eighth
                 TimeSpan duration;
 
                 if (Core.AOS)
+                {
                     duration = TimeSpan.FromSeconds(90.0);
+                }
                 else
+                {
                     duration = TimeSpan.FromSeconds(Utility.Random(80, 40));
+                }
 
                 BaseCreature.Summon(new EnergyVortex(), false, Caster, new Point3D(p), 0x212, duration);
             }
@@ -51,7 +55,9 @@ namespace Server.Spells.Eighth
         public override bool CheckCast()
         {
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             if (Caster.Followers + (Core.SE ? 2 : 1) > Caster.FollowersMax)
             {

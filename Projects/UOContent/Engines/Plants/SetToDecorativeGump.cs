@@ -40,7 +40,9 @@ namespace Server.Engines.Plants
             var from = sender.Mobile;
 
             if (info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus != PlantStatus.Stage9)
+            {
                 return;
+            }
 
             if (info.ButtonID == 3 && !from.InRange(m_Plant.GetWorldLocation(), 3))
             {

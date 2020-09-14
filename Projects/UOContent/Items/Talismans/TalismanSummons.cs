@@ -24,7 +24,9 @@ namespace Server.Mobiles
         public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
         {
             if (from.Alive && ControlMaster == from)
+            {
                 list.Add(new TalismanReleaseEntry(this));
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -580,7 +582,9 @@ namespace Server.Mobiles
         public virtual void BeginTunnel()
         {
             if (Deleted)
+            {
                 return;
+            }
 
             new VorpalBunny.BunnyHole().MoveToWorld(Location, Map);
 

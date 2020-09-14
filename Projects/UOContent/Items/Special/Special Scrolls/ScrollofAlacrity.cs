@@ -39,19 +39,27 @@ namespace Server.Items
         public override bool CanUse(Mobile from)
         {
             if (!(base.CanUse(from) && from is PlayerMobile pm))
+            {
                 return false;
+            }
 
             var context = MLQuestSystem.GetContext(pm);
 
             if (context != null)
+            {
                 foreach (var instance in context.QuestInstances)
+                {
                     foreach (var objective in instance.Objectives)
+                    {
                         if (!objective.Expired && objective is GainSkillObjectiveInstance objectiveInstance &&
                             objectiveInstance.Handles(Skill))
                         {
-                            from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
+                            @from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
                             return false;
                         }
+                    }
+                }
+            }
 
             if (pm.AcceleratedStart > DateTime.UtcNow)
             {
@@ -65,7 +73,9 @@ namespace Server.Items
         public override void Use(Mobile from)
         {
             if (!(CanUse(from) && from is PlayerMobile pm))
+            {
                 return;
+            }
 
             var tskill = from.Skills[Skill].Base;
             var tcap = from.Skills[Skill].Cap;

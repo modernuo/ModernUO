@@ -44,7 +44,9 @@ namespace Server.Engines.Quests.Collector
             QuestSystem qs = to.Quest as CollectorQuest;
 
             if (qs == null)
+            {
                 return false;
+            }
 
             return qs.IsObjectiveInProgress(typeof(FindGabrielObjective))
                    || qs.IsObjectiveInProgress(typeof(FindSheetMusicObjective))
@@ -75,9 +77,13 @@ namespace Server.Engines.Quests.Collector
                     obj = qs.FindObjective<ReturnSheetMusicObjective>();
 
                     if (obj?.Completed == false)
+                    {
                         obj.Complete();
+                    }
                     else if (qs.IsObjectiveInProgress(typeof(ReturnAutographObjective)))
+                    {
                         qs.AddConversation(new GabrielIgnoreConversation());
+                    }
                 }
             }
         }

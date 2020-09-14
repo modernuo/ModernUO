@@ -120,7 +120,9 @@ namespace Server.Tests.Network.Packets
             expectedData.Write(ref pos, (ushort)gump.Strings.Count);
 
             for (var i = 0; i < gump.Strings.Count; ++i)
+            {
                 expectedData.WriteBigUni(ref pos, gump.Strings[i] ?? "");
+            }
 
             expectedData.Slice(1, 2).Write((ushort)pos); // Length
 
@@ -198,7 +200,9 @@ namespace Server.Tests.Network.Packets
             var bufferPos = 0;
 
             foreach (var layout in layoutList)
+            {
                 buffer.WriteAscii(ref bufferPos, layout);
+            }
 
 #if NO_LOCAL_INIT
       buffer.Write(ref bufferPos, (byte)0); // Layout terminator
@@ -216,7 +220,9 @@ namespace Server.Tests.Network.Packets
             bufferPos = 0;
 
             foreach (var str in gump.Strings)
+            {
                 buffer.WriteBigUni(ref bufferPos, str);
+            }
 
             expectedData.WritePacked(ref pos, buffer.Slice(0, bufferPos));
 

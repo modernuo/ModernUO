@@ -22,7 +22,9 @@ namespace Server.Items
             var applied = SpellHelper.AddStatOffset(from, Type, Bonus, TimeSpan.FromMinutes(1.0));
 
             if (!applied)
-                from.SendLocalizedMessage(502173); // You are already under a similar effect.
+            {
+                @from.SendLocalizedMessage(502173); // You are already under a similar effect.
+            }
 
             return applied;
         }
@@ -87,7 +89,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Hue == 151)
+            {
                 Hue = 51;
+            }
         }
     }
 
@@ -121,7 +125,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Hue == 286)
+            {
                 Hue = 86;
+            }
         }
     }
 
@@ -155,7 +161,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Hue == 376)
+            {
                 Hue = 76;
+            }
         }
     }
 
@@ -192,7 +200,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Hue == 266)
+            {
                 Hue = 66;
+            }
         }
     }
 }

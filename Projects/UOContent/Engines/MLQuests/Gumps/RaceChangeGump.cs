@@ -38,11 +38,17 @@ namespace Server.Engines.MLQuests.Gumps
             AddBackground(0, 0, 240, 135, 0x2422);
 
             if (targetRace == Race.Human)
+            {
                 AddHtmlLocalized(15, 15, 210, 75, 1073643, 0); // Are you sure you wish to embrace your humanity?
+            }
             else if (targetRace == Race.Elf)
+            {
                 AddHtmlLocalized(15, 15, 210, 75, 1073642, 0); // Are you sure you want to follow the elven ways?
+            }
             else
+            {
                 AddHtml(15, 15, 210, 75, $"Are you sure you want to change your race to {targetRace.Name}?");
+            }
 
             AddButton(160, 95, 0xF7, 0xF8, 1);
             AddButton(90, 95, 0xF2, 0xF1, 0);
@@ -61,7 +67,9 @@ namespace Server.Engines.MLQuests.Gumps
                 case 1: // Okay
                     {
                         if (m_Owner?.CheckComplete(m_From) != false)
+                        {
                             Offer(m_Owner, m_From, m_Race);
+                        }
 
                         break;
                     }
@@ -82,7 +90,9 @@ namespace Server.Engines.MLQuests.Gumps
             var ns = from.NetState;
 
             if (ns == null || !CanChange(from, targetRace))
+            {
                 return;
+            }
 
             CloseCurrent(ns);
 
@@ -113,6 +123,7 @@ namespace Server.Engines.MLQuests.Gumps
         public static bool IsWearingEquipment(Mobile from)
         {
             foreach (var item in from.Items)
+            {
                 switch (item.Layer)
                 {
                     case Layer.Hair:
@@ -128,6 +139,7 @@ namespace Server.Engines.MLQuests.Gumps
                             return true;
                         }
                 }
+            }
 
             return false;
         }
@@ -135,28 +147,48 @@ namespace Server.Engines.MLQuests.Gumps
         private static bool CanChange(PlayerMobile from, Race targetRace)
         {
             if (from.Deleted)
+            {
                 return false;
+            }
 
             if (from.Race == targetRace)
-                from.SendLocalizedMessage(1111918); // You are already that race.
+            {
+                @from.SendLocalizedMessage(1111918); // You are already that race.
+            }
             else if (!MondainsLegacy.CheckML(from, false))
-                from.SendLocalizedMessage(1073651); // You must have Mondain's Legacy before proceeding...
+            {
+                @from.SendLocalizedMessage(1073651); // You must have Mondain's Legacy before proceeding...
+            }
             else if (!from.Alive)
-                from.SendLocalizedMessage(1073646); // Only the living may proceed...
+            {
+                @from.SendLocalizedMessage(1073646); // Only the living may proceed...
+            }
             else if (from.Mounted)
-                from.SendLocalizedMessage(1073647); // You may not continue while mounted...
+            {
+                @from.SendLocalizedMessage(1073647); // You may not continue while mounted...
+            }
             else if (!from.CanBeginAction<PolymorphSpell>() || DisguiseTimers.IsDisguised(from) ||
                      AnimalForm.UnderTransformation(from) || !from.CanBeginAction<IncognitoSpell>() ||
                      from.IsBodyMod)                // TODO: Does this cover everything?
-                from.SendLocalizedMessage(1073648); // You may only proceed while in your original state...
+            {
+                @from.SendLocalizedMessage(1073648); // You may only proceed while in your original state...
+            }
             else if (from.Spell?.IsCasting == true)
-                from.SendLocalizedMessage(1073649); // One may not proceed while embracing magic...
+            {
+                @from.SendLocalizedMessage(1073649); // One may not proceed while embracing magic...
+            }
             else if (from.Poisoned)
-                from.SendLocalizedMessage(1073652); // You must be healthy to proceed...
+            {
+                @from.SendLocalizedMessage(1073652); // You must be healthy to proceed...
+            }
             else if (IsWearingEquipment(from))
-                from.SendLocalizedMessage(1073650); // To proceed you must be unburdened by equipment...
+            {
+                @from.SendLocalizedMessage(1073650); // To proceed you must be unburdened by equipment...
+            }
             else
+            {
                 return true;
+            }
 
             return false;
         }
@@ -164,12 +196,16 @@ namespace Server.Engines.MLQuests.Gumps
         private static void RaceChangeReply(NetState state, PacketReader pvSrc)
         {
             if (!m_Pending.TryGetValue(state, out var raceChangeState))
+            {
                 return;
+            }
 
             CloseCurrent(state);
 
             if (!(state.Mobile is PlayerMobile pm))
+            {
                 return;
+            }
 
             var owner = raceChangeState.m_Owner;
             var targetRace = raceChangeState.m_TargetRace;
@@ -182,7 +218,9 @@ namespace Server.Engines.MLQuests.Gumps
             }
 
             if (!CanChange(pm, targetRace) || owner?.CheckComplete(pm) == false)
+            {
                 return;
+            }
 
             int hue = pvSrc.ReadUInt16();
             int hairItemId = pvSrc.ReadUInt16();
@@ -214,11 +252,17 @@ namespace Server.Engines.MLQuests.Gumps
             }
 
             if (targetRace == Race.Human)
+            {
                 pm.SendLocalizedMessage(1073654); // You are now fully human.
+            }
             else if (targetRace == Race.Elf)
+            {
                 pm.SendLocalizedMessage(1073653); // You are now fully initiated into the Elven culture.
+            }
             else
+            {
                 pm.SendMessage("You have fully changed your race to {0}.", targetRace.Name);
+            }
 
             owner?.ConsumeNeeded(pm);
         }
@@ -285,7 +329,9 @@ namespace Server.Engines.MLQuests.Gumps
         public bool CheckComplete(PlayerMobile pm)
         {
             if (Deleted)
+            {
                 return false;
+            }
 
             if (!IsChildOf(pm.Backpack))
             {
@@ -308,10 +354,14 @@ namespace Server.Engines.MLQuests.Gumps
         public override void OnDoubleClick(Mobile from)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return;
+            }
 
             if (CheckComplete(pm))
+            {
                 pm.SendGump(new RaceChangeConfirmGump(this, pm, pm.Race == Race.Human ? Race.Elf : Race.Human));
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

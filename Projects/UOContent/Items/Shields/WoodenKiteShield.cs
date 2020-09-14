@@ -29,7 +29,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (Weight == 7.0)
+            {
                 Weight = 5.0;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

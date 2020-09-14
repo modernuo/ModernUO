@@ -32,16 +32,23 @@ namespace Server.Engines.Doom
         public override void OnEnter(Mobile m)
         {
             if (m == null || m is WandererOfTheVoid)
+            {
                 return;
+            }
 
             if (m.AccessLevel > AccessLevel.Player)
+            {
                 return;
+            }
 
             if (m_Controller.Successful != null)
             {
                 if (m is PlayerMobile)
                 {
-                    if (m == m_Controller.Successful) return;
+                    if (m == m_Controller.Successful)
+                    {
+                        return;
+                    }
                 }
                 else if (m is BaseCreature bc && (bc.Controlled && bc.ControlMaster == m_Controller.Successful ||
                                                   bc.Summoned))
@@ -57,13 +64,18 @@ namespace Server.Engines.Doom
         public override void OnExit(Mobile m)
         {
             if (m != null && m == m_Controller.Successful)
+            {
                 m_Controller.RemoveSuccessful();
+            }
         }
 
         public override void OnDeath(Mobile m)
         {
             if (m?.Deleted != false || m is WandererOfTheVoid)
+            {
                 return;
+            }
+
             Timer kick = new LeverPuzzleController.LampRoomKickTimer(m);
             kick.Start();
         }
@@ -88,13 +100,17 @@ namespace Server.Engines.Doom
         public override void OnEnter(Mobile m)
         {
             if (m != null && m_Occupant == null && m is PlayerMobile && m.Alive)
+            {
                 m_Occupant = m;
+            }
         }
 
         public override void OnExit(Mobile m)
         {
             if (m != null && m == m_Occupant)
+            {
                 m_Occupant = null;
+            }
         }
     }
 }

@@ -67,26 +67,38 @@ namespace Server.Engines.ConPVP
             var entries = new List<IRankedCTF>();
 
             if (section == null)
+            {
                 for (var i = 0; i < game.Context.Participants.Count; ++i)
                 {
                     var teamInfo = game.Controller.TeamInfo[i % 8];
 
                     if (teamInfo?.Flag == null)
+                    {
                         continue;
+                    }
 
                     entries.Add(teamInfo);
                 }
+            }
             else
+            {
                 foreach (var player in section.Players.Values)
+                {
                     if (player.Score > 0)
+                    {
                         entries.Add(player);
+                    }
+                }
+            }
 
             entries.Sort((a, b) => b.Score - a.Score);
 
             var height = 0;
 
             if (section == null)
+            {
                 height = 73 + entries.Count * 75 + 28;
+            }
 
             Closable = false;
 
@@ -97,7 +109,9 @@ namespace Server.Engines.ConPVP
             AddImageTiled(16, 15, 369, height - 29, 3604);
 
             for (var i = 0; i < entries.Count; i += 1)
+            {
                 AddImageTiled(22, 58 + i * 75, 357, 70, 0x2430);
+            }
 
             AddAlphaRegion(16, 15, 369, height - 29);
 
@@ -110,12 +124,15 @@ namespace Server.Engines.ConPVP
             AddImageTiled(42, 52, 264, 1, 9157);
 
             if (section == null)
+            {
                 for (var i = 0; i < entries.Count; ++i)
                 {
                     var teamInfo = entries[i] as CTFTeamInfo;
 
                     if (teamInfo == null)
+                    {
                         continue;
+                    }
 
                     AddImage(30, 70 + i * 75, 10152);
                     AddImage(30, 85 + i * 75, 10151);
@@ -191,8 +208,11 @@ namespace Server.Engines.ConPVP
                     AddBorderedText(235 + 10, 85 + i * 75, 250, 20, "Leader:", 0xFFC000, BlackColor32);
 
                     if (pl != null)
+                    {
                         AddBorderedText(235 + 15, 105 + i * 75, 250, 20, pl.Player.Name, 0xFFC000, BlackColor32);
+                    }
                 }
+            }
 
             AddButton(314, height - 42, 247, 248, 1);
         }
@@ -213,9 +233,13 @@ namespace Server.Engines.ConPVP
         private void AddColoredText(int x, int y, int width, int height, string text, int color)
         {
             if (color == 0)
+            {
                 AddHtml(x, y, width, height, text);
+            }
             else
+            {
                 AddHtml(x, y, width, height, Color(text, color));
+            }
         }
     }
 
@@ -251,7 +275,9 @@ namespace Server.Engines.ConPVP
                 var useTeam = m_TeamInfo.Game.GetTeamInfo(from);
 
                 if (ourTeam == null || useTeam == null)
+                {
                     return;
+                }
 
                 if (IsChildOf(from.Backpack))
                 {
@@ -283,7 +309,9 @@ namespace Server.Engines.ConPVP
                         var playerInfo = useTeam[from];
 
                         if (playerInfo != null)
+                        {
                             playerInfo.Score += 4; // return
+                        }
 
                         m_Returner = from;
                         m_ReturnTime = DateTime.UtcNow;
@@ -406,10 +434,14 @@ namespace Server.Engines.ConPVP
         private void Flag_OnTarget(Mobile from, object obj)
         {
             if (m_TeamInfo == null)
+            {
                 return;
+            }
 
             if (!IsChildOf(from.Backpack))
+            {
                 return;
+            }
 
             var ourTeam = m_TeamInfo;
             var useTeam = m_TeamInfo.Game.GetTeamInfo(from);
@@ -439,7 +471,9 @@ namespace Server.Engines.ConPVP
                             var assistInfo = useTeam[teamFlag.m_Fragger];
 
                             if (assistInfo != null)
+                            {
                                 assistInfo.Score += 6; // frag assist
+                            }
                         }
 
                         if (teamFlag.m_Returner != null &&
@@ -448,7 +482,9 @@ namespace Server.Engines.ConPVP
                             var assistInfo = useTeam[teamFlag.m_Returner];
 
                             if (assistInfo != null)
+                            {
                                 assistInfo.Score += 4; // return assist
+                            }
                         }
                     }
                 }
@@ -462,16 +498,22 @@ namespace Server.Engines.ConPVP
                 var passTeam = m_TeamInfo.Game.GetTeamInfo(passTo);
 
                 if (passTo == from)
-                    from.LocalOverheadMessage(MessageType.Regular, 0x26, false, "I can't pass to them.");
+                {
+                    @from.LocalOverheadMessage(MessageType.Regular, 0x26, false, "I can't pass to them.");
+                }
                 else if (passTeam == useTeam && passTo.PlaceInBackpack(this))
+                {
                     passTo.LocalOverheadMessage(
                         MessageType.Regular,
                         0x59,
                         false,
-                        $"{from.Name} has passed you the cookies!"
+                        $"{@from.Name} has passed you the cookies!"
                     );
+                }
                 else
-                    from.LocalOverheadMessage(MessageType.Regular, 0x26, false, "I can't pass to them.");
+                {
+                    @from.LocalOverheadMessage(MessageType.Regular, 0x26, false, "I can't pass to them.");
+                }
             }
         }
 
@@ -480,7 +522,9 @@ namespace Server.Engines.ConPVP
             StopCountdown();
 
             if (m_TeamInfo == null)
+            {
                 return;
+            }
 
             MoveToWorld(m_TeamInfo.Origin, m_TeamInfo.Game.Facet);
         }
@@ -488,10 +532,14 @@ namespace Server.Engines.ConPVP
         private Mobile FindOwner(IEntity parent)
         {
             if (parent is Item item)
+            {
                 return item.RootParent as Mobile;
+            }
 
             if (parent is Mobile mobile)
+            {
                 return mobile;
+            }
 
             return null;
         }
@@ -503,7 +551,9 @@ namespace Server.Engines.ConPVP
             var mob = FindOwner(parent);
 
             if (mob != null)
+            {
                 mob.SolidHueOverride = 0x4001;
+            }
         }
 
         public override void OnRemoved(IEntity parent)
@@ -513,7 +563,9 @@ namespace Server.Engines.ConPVP
             var mob = FindOwner(parent);
 
             if (mob != null)
+            {
                 mob.SolidHueOverride = m_TeamInfo?.Game.GetColor(mob) ?? -1;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -587,7 +639,9 @@ namespace Server.Engines.ConPVP
                 m_Score = value;
 
                 if (m_TeamInfo.Leader == null || m_Score > m_TeamInfo.Leader.Score)
+                {
                     m_TeamInfo.Leader = this;
+                }
             }
         }
     }
@@ -649,10 +703,14 @@ namespace Server.Engines.ConPVP
             get
             {
                 if (mob == null)
+                {
                     return null;
+                }
 
                 if (!Players.TryGetValue(mob, out var val))
+                {
                     Players[mob] = val = new CTFPlayerInfo(this, mob);
+                }
 
                 return val;
             }
@@ -697,7 +755,9 @@ namespace Server.Engines.ConPVP
             }
 
             if (Board != null)
+            {
                 Board.m_TeamInfo = this;
+            }
         }
 
         public void Serialize(IGenericWriter op)
@@ -730,7 +790,9 @@ namespace Server.Engines.ConPVP
             TeamInfo = new CTFTeamInfo[8];
 
             for (var i = 0; i < TeamInfo.Length; ++i)
+            {
                 TeamInfo[i] = new CTFTeamInfo(i);
+            }
         }
 
         public CTFController(Serial serial)
@@ -784,7 +846,9 @@ namespace Server.Engines.ConPVP
             writer.WriteEncodedInt(TeamInfo.Length);
 
             for (var i = 0; i < TeamInfo.Length; ++i)
+            {
                 TeamInfo[i].Serialize(writer);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -806,7 +870,9 @@ namespace Server.Engines.ConPVP
                         TeamInfo = new CTFTeamInfo[reader.ReadEncodedInt()];
 
                         for (var i = 0; i < TeamInfo.Length; ++i)
+                        {
                             TeamInfo[i] = new CTFTeamInfo(i, reader);
+                        }
 
                         break;
                     }
@@ -815,14 +881,18 @@ namespace Server.Engines.ConPVP
                         TeamInfo = new CTFTeamInfo[8];
 
                         for (var i = 0; i < TeamInfo.Length; ++i)
+                        {
                             TeamInfo[i] = new CTFTeamInfo(i);
+                        }
 
                         break;
                     }
             }
 
             if (version < 2)
+            {
                 Duration = TimeSpan.FromMinutes(30.0);
+            }
         }
     }
 
@@ -839,7 +909,9 @@ namespace Server.Engines.ConPVP
             get
             {
                 if (m_Context.Arena != null)
+                {
                     return m_Context.Arena.Facet;
+                }
 
                 return Controller.Map;
             }
@@ -848,7 +920,9 @@ namespace Server.Engines.ConPVP
         public static void Initialize()
         {
             for (var i = 0x7C9; i <= 0x7D0; ++i)
+            {
                 TileData.ItemTable[i].Flags |= TileFlag.NoShoot;
+            }
         }
 
         public void Alert(string text)
@@ -860,8 +934,12 @@ namespace Server.Engines.ConPVP
                 var p = m_Context.Participants[i];
 
                 for (var j = 0; j < p.Players.Length; ++j)
+                {
                     if (p.Players[j] != null)
+                    {
                         p.Players[j].Mobile.SendMessage(0x35, text);
+                    }
+                }
             }
         }
 
@@ -875,7 +953,9 @@ namespace Server.Engines.ConPVP
             var teamID = GetTeamID(mob);
 
             if (teamID >= 0)
+            {
                 return Controller.TeamInfo[teamID % Controller.TeamInfo.Length];
+            }
 
             return null;
         }
@@ -883,13 +963,19 @@ namespace Server.Engines.ConPVP
         public int GetTeamID(Mobile mob)
         {
             if (!(mob is PlayerMobile pm))
+            {
                 return -1;
+            }
 
             if (pm.DuelContext == null || pm.DuelContext != m_Context)
+            {
                 return -1;
+            }
 
             if (pm.DuelPlayer?.Eliminated != false)
+            {
                 return -1;
+            }
 
             return pm.DuelContext.Participants.IndexOf(pm.DuelPlayer.Participant);
         }
@@ -899,7 +985,9 @@ namespace Server.Engines.ConPVP
             var teamInfo = GetTeamInfo(mob);
 
             if (teamInfo != null)
+            {
                 return teamInfo.Color;
+            }
 
             return -1;
         }
@@ -907,8 +995,12 @@ namespace Server.Engines.ConPVP
         private void ApplyHues(Participant p, int hueOverride)
         {
             for (var i = 0; i < p.Players.Length; ++i)
+            {
                 if (p.Players[i] != null)
+                {
                     p.Players[i].Mobile.SolidHueOverride = hueOverride;
+                }
+            }
         }
 
         public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
@@ -923,9 +1015,13 @@ namespace Server.Engines.ConPVP
             m_Context.RemoveAggressions(mob);
 
             if (dp?.Eliminated == false)
+            {
                 mob.MoveToWorld(m_Context.Arena.GetBaseStartPoint(GetTeamID(mob)), Facet);
+            }
             else
+            {
                 m_Context.SendOutside(mob);
+            }
 
             m_Context.Refresh(mob, corpse);
             DuelContext.Debuff(mob);
@@ -972,30 +1068,42 @@ namespace Server.Engines.ConPVP
                         playerInfo.Score += 1; // base frag
 
                         if (hadFlag)
+                        {
                             playerInfo.Score += 4; // fragged flag carrier
+                        }
 
                         if (mob.InRange(teamInfo.Origin, 24) && mob.Map == Facet)
+                        {
                             playerInfo.Score += 1; // fragged in base -- guarding
+                        }
 
                         for (var i = 0; i < Controller.TeamInfo.Length; ++i)
                         {
                             if (Controller.TeamInfo[i] == teamInfo)
+                            {
                                 continue;
+                            }
 
                             Mobile ourFlagCarrier = null;
 
                             if (Controller.TeamInfo[i].Flag != null)
+                            {
                                 ourFlagCarrier = Controller.TeamInfo[i].Flag.RootParent as Mobile;
+                            }
 
                             if (ourFlagCarrier != null && GetTeamInfo(ourFlagCarrier) == teamInfo)
                             {
                                 if (ourFlagCarrier.Aggressors.Any(
                                     aggr => aggr.Defender == ourFlagCarrier && aggr.Attacker == mob
                                 ))
+                                {
                                     playerInfo.Score += 2; // helped defend guy capturing enemy flag
+                                }
 
                                 if (mob.Map == ourFlagCarrier.Map && ourFlagCarrier.InRange(mob, 12))
+                                {
                                     playerInfo.Score += 1; // helped defend guy capturing enemy flag
+                                }
                             }
                         }
                     }
@@ -1022,7 +1130,9 @@ namespace Server.Engines.ConPVP
             }
 
             for (var i = 0; i < m_Context.Participants.Count; ++i)
+            {
                 ApplyHues(m_Context.Participants[i], Controller.TeamInfo[i % 8].Color);
+            }
 
             m_FinishTimer?.Stop();
 
@@ -1038,7 +1148,9 @@ namespace Server.Engines.ConPVP
                 var teamInfo = Controller.TeamInfo[i % 8];
 
                 if (teamInfo?.Flag == null)
+                {
                     continue;
+                }
 
                 teams.Add(teamInfo);
             }
@@ -1075,7 +1187,9 @@ namespace Server.Engines.ConPVP
                     for (var i = 0; i < tourney.ParticipantsPerMatch; ++i)
                     {
                         if (sb.Length > 0)
+                        {
                             sb.Append('v');
+                        }
 
                         sb.Append(tourney.PlayersPerParticipant);
                     }
@@ -1083,7 +1197,9 @@ namespace Server.Engines.ConPVP
             }
 
             if (Controller != null)
+            {
                 sb.Append(' ').Append(Controller.Title);
+            }
 
             var title = sb.ToString();
 
@@ -1094,9 +1210,13 @@ namespace Server.Engines.ConPVP
                 var rank = TrophyRank.Bronze;
 
                 if (i == 0)
+                {
                     rank = TrophyRank.Gold;
+                }
                 else if (i == 1)
+                {
                     rank = TrophyRank.Silver;
+                }
 
                 var leader = teams[i].Leader;
 
@@ -1105,7 +1225,9 @@ namespace Server.Engines.ConPVP
                     var mob = pl.Player;
 
                     if (mob == null)
+                    {
                         continue;
+                    }
 
                     // "Red v Blue CTF Champion"
 
@@ -1114,7 +1236,9 @@ namespace Server.Engines.ConPVP
                     sb.Append(title);
 
                     if (pl == leader)
+                    {
                         sb.Append(" Leader");
+                    }
 
                     if (pl.Score > 0)
                     {
@@ -1141,12 +1265,16 @@ namespace Server.Engines.ConPVP
                     Item item = new Trophy(sb.ToString(), rank);
 
                     if (pl == leader)
+                    {
                         item.ItemID = 4810;
+                    }
 
                     item.Name = $"{item.Name}, {teams[i].Name.ToLower()} team";
 
                     if (!mob.PlaceInBackpack(item))
+                    {
                         mob.BankBox.DropItem(item);
+                    }
 
                     var cash = pl.Score * 250;
 
@@ -1155,7 +1283,9 @@ namespace Server.Engines.ConPVP
                         item = new BankCheck(cash);
 
                         if (!mob.PlaceInBackpack(item))
+                        {
                             mob.BankBox.DropItem(item);
+                        }
 
                         mob.SendMessage(
                             "You have been awarded a {0} trophy and {1:N0}gp for your participation in this tournament.",
@@ -1189,15 +1319,23 @@ namespace Server.Engines.ConPVP
                 }
 
                 if (i == winner?.TeamID)
+                {
                     continue;
+                }
 
                 for (var j = 0; j < p.Players.Length; ++j)
+                {
                     if (p.Players[j] != null)
+                    {
                         p.Players[j].Eliminated = true;
+                    }
+                }
             }
 
             if (winner != null)
+            {
                 m_Context.Finish(m_Context.Participants[winner.TeamID]);
+            }
         }
 
         public override void OnStop()
@@ -1213,13 +1351,17 @@ namespace Server.Engines.ConPVP
                 }
 
                 if (teamInfo.Board != null)
+                {
                     teamInfo.Board.m_TeamInfo = null;
+                }
 
                 teamInfo.Game = null;
             }
 
             for (var i = 0; i < m_Context.Participants.Count; ++i)
+            {
                 ApplyHues(m_Context.Participants[i], -1);
+            }
 
             m_FinishTimer?.Stop();
 

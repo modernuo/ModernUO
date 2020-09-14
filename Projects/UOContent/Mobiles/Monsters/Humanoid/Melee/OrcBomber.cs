@@ -49,7 +49,9 @@ namespace Server.Mobiles
             PackItem(new LesserExplosionPotion());
 
             if (Utility.RandomDouble() < 0.2)
+            {
                 PackItem(new BolaBall());
+            }
         }
 
         public OrcBomber(Serial serial) : base(serial)
@@ -74,7 +76,9 @@ namespace Server.Mobiles
         public override bool IsEnemy(Mobile m)
         {
             if (m.Player && m.FindItemOnLayer(Layer.Helm) is OrcishKinMask)
+            {
                 return false;
+            }
 
             return base.IsEnemy(m);
         }
@@ -100,7 +104,9 @@ namespace Server.Mobiles
 
             if (combatant?.Deleted != false || combatant.Map != Map || !InRange(combatant, 12) ||
                 !CanBeHarmful(combatant) || !InLOS(combatant))
+            {
                 return;
+            }
 
             if (DateTime.UtcNow >= m_NextBomb)
             {
@@ -109,9 +115,13 @@ namespace Server.Mobiles
                 m_Thrown++;
 
                 if (Utility.RandomDouble() <= 0.75 && m_Thrown % 2 == 1) // 75% chance to quickly throw another bomb
+                {
                     m_NextBomb = DateTime.UtcNow + TimeSpan.FromSeconds(3.0);
+                }
                 else
+                {
                     m_NextBomb = DateTime.UtcNow + TimeSpan.FromSeconds(5.0 + 10.0 * Utility.RandomDouble()); // 5-15 seconds
+                }
             }
         }
 

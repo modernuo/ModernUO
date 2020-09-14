@@ -31,7 +31,9 @@ namespace Server.Engines.Quests.Samurai
             if (!wasBurning && Burning)
             {
                 if (!(from is PlayerMobile player))
+                {
                     return;
+                }
 
                 var qs = player.Quest;
 
@@ -40,7 +42,9 @@ namespace Server.Engines.Quests.Samurai
                     QuestObjective obj = qs.FindObjective<SixthTrialIntroObjective>();
 
                     if (obj?.Completed == false)
+                    {
                         obj.Complete();
+                    }
 
                     SendLocalizedMessageTo(from, 1063251); // You light a candle in honor.
                 }

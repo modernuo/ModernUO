@@ -22,7 +22,9 @@ namespace Server.Items
             Lines = new string[length];
 
             for (var i = 0; i < Lines.Length; ++i)
+            {
                 Lines[i] = Utility.Intern(reader.ReadString());
+            }
         }
 
         public string[] Lines { get; set; }
@@ -32,7 +34,9 @@ namespace Server.Items
             writer.Write(Lines.Length);
 
             for (var i = 0; i < Lines.Length; ++i)
+            {
                 writer.Write(Lines[i]);
+            }
         }
     }
 
@@ -60,7 +64,9 @@ namespace Server.Items
                 Pages = new BookPageInfo[pageCount];
 
                 for (var i = 0; i < Pages.Length; ++i)
+                {
                     Pages[i] = new BookPageInfo();
+                }
             }
             else
             {
@@ -116,8 +122,12 @@ namespace Server.Items
                 var sb = new StringBuilder();
 
                 foreach (var bpi in Pages)
+                {
                     foreach (var line in bpi.Lines)
+                    {
                         sb.AppendLine(line);
+                    }
+                }
 
                 return sb.ToString();
             }
@@ -129,7 +139,10 @@ namespace Server.Items
             {
                 var lines = new List<string>();
 
-                foreach (var bpi in Pages) lines.AddRange(bpi.Lines);
+                foreach (var bpi in Pages)
+                {
+                    lines.AddRange(bpi.Lines);
+                }
 
                 return lines.ToArray();
             }
@@ -153,16 +166,24 @@ namespace Server.Items
             var flags = SaveFlags.None;
 
             if (m_Title != content?.Title)
+            {
                 flags |= SaveFlags.Title;
+            }
 
             if (m_Author != content?.Author)
+            {
                 flags |= SaveFlags.Author;
+            }
 
             if (Writable)
+            {
                 flags |= SaveFlags.Writable;
+            }
 
             if (content?.IsMatch(Pages) != true)
+            {
                 flags |= SaveFlags.Content;
+            }
 
             writer.Write(4); // version
 
@@ -171,17 +192,23 @@ namespace Server.Items
             writer.Write((byte)flags);
 
             if ((flags & SaveFlags.Title) != 0)
+            {
                 writer.Write(m_Title);
+            }
 
             if ((flags & SaveFlags.Author) != 0)
+            {
                 writer.Write(m_Author);
+            }
 
             if ((flags & SaveFlags.Content) != 0)
             {
                 writer.WriteEncodedInt(Pages.Length);
 
                 for (var i = 0; i < Pages.Length; ++i)
+                {
                     Pages[i].Serialize(writer);
+                }
             }
         }
 
@@ -206,14 +233,22 @@ namespace Server.Items
                         var flags = (SaveFlags)reader.ReadByte();
 
                         if ((flags & SaveFlags.Title) != 0)
+                        {
                             m_Title = Utility.Intern(reader.ReadString());
+                        }
                         else if (content != null)
+                        {
                             m_Title = content.Title;
+                        }
 
                         if ((flags & SaveFlags.Author) != 0)
+                        {
                             m_Author = reader.ReadString();
+                        }
                         else if (content != null)
+                        {
                             m_Author = content.Author;
+                        }
 
                         Writable = (flags & SaveFlags.Writable) != 0;
 
@@ -222,14 +257,20 @@ namespace Server.Items
                             Pages = new BookPageInfo[reader.ReadEncodedInt()];
 
                             for (var i = 0; i < Pages.Length; ++i)
+                            {
                                 Pages[i] = new BookPageInfo(reader);
+                            }
                         }
                         else
                         {
                             if (content != null)
+                            {
                                 Pages = content.Copy();
+                            }
                             else
+                            {
                                 Pages = Array.Empty<BookPageInfo>();
+                            }
                         }
 
                         break;
@@ -246,16 +287,22 @@ namespace Server.Items
                             Pages = new BookPageInfo[reader.ReadInt()];
 
                             for (var i = 0; i < Pages.Length; ++i)
+                            {
                                 Pages[i] = new BookPageInfo(reader);
+                            }
                         }
                         else
                         {
                             var content = DefaultContent;
 
                             if (content != null)
+                            {
                                 Pages = content.Copy();
+                            }
                             else
+                            {
                                 Pages = Array.Empty<BookPageInfo>();
+                            }
                         }
 
                         break;
@@ -263,15 +310,21 @@ namespace Server.Items
             }
 
             if (version < 3 && (Weight == 1 || Weight == 2))
+            {
                 Weight = -1;
+            }
         }
 
         public override void AddNameProperty(ObjectPropertyList list)
         {
             if (!string.IsNullOrEmpty(m_Title))
+            {
                 list.Add(m_Title);
+            }
             else
+            {
                 base.AddNameProperty(list);
+            }
         }
 
         /*public override void GetProperties( ObjectPropertyList list )
@@ -319,7 +372,9 @@ namespace Server.Items
 
             if (!(World.FindItem(pvSrc.ReadUInt32()) is BaseBook book) || !book.Writable ||
                 !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
+            {
                 return;
+            }
 
             pvSrc.Seek(4, SeekOrigin.Current); // Skip flags and page count
 
@@ -336,21 +391,27 @@ namespace Server.Items
 
             if (!(World.FindItem(pvSrc.ReadUInt32()) is BaseBook book) || !book.Writable ||
                 !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
+            {
                 return;
+            }
 
             pvSrc.Seek(4, SeekOrigin.Current); // Skip flags and page count
 
             int titleLength = pvSrc.ReadUInt16();
 
             if (titleLength > 60)
+            {
                 return;
+            }
 
             var title = pvSrc.ReadUTF8StringSafe(titleLength);
 
             int authorLength = pvSrc.ReadUInt16();
 
             if (authorLength > 30)
+            {
                 return;
+            }
 
             var author = pvSrc.ReadUTF8StringSafe(authorLength);
 
@@ -364,12 +425,16 @@ namespace Server.Items
 
             if (!(World.FindItem(pvSrc.ReadUInt32()) is BaseBook book) || !book.Writable ||
                 !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
+            {
                 return;
+            }
 
             int pageCount = pvSrc.ReadUInt16();
 
             if (pageCount > book.PagesCount)
+            {
                 return;
+            }
 
             for (var i = 0; i < pageCount; ++i)
             {
@@ -386,8 +451,12 @@ namespace Server.Items
                         var lines = new string[lineCount];
 
                         for (var j = 0; j < lineCount; ++j)
+                        {
                             if ((lines[j] = pvSrc.ReadUTF8StringSafe()).Length >= 80)
+                            {
                                 return;
+                            }
+                        }
 
                         book.Pages[index].Lines = lines;
                     }

@@ -38,7 +38,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Hue == 0)
+            {
                 Hue = 0x113;
+            }
         }
     }
 }

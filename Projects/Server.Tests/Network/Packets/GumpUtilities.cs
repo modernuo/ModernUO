@@ -33,7 +33,10 @@ namespace Server.Tests.Network.Packets
             var packLength = (ulong)dest.Length - 8;
 
             ZlibError ce = Zlib.Pack(dest.Slice(pos + 8), ref packLength, source, ZlibQuality.Default);
-            if (ce != ZlibError.Okay) Console.WriteLine("ZLib error: {0} (#{1})", ce, (int)ce);
+            if (ce != ZlibError.Okay)
+            {
+                Console.WriteLine("ZLib error: {0} (#{1})", ce, (int)ce);
+            }
 
             dest.Write(ref pos, (int)(4 + packLength));
             dest.Write(ref pos, length);

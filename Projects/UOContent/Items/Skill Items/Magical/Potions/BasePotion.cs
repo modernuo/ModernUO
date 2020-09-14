@@ -83,7 +83,9 @@ namespace Server.Items
                 if (pack != null)
                 {
                     if ((int)PotionEffect >= (int)PotionEffect.Invisibility)
+                    {
                         return 1;
+                    }
 
                     var kegs = pack.FindItemsByType<PotionKeg>();
 
@@ -96,10 +98,14 @@ namespace Server.Items
                         //              continue;
 
                         if (keg.Held <= 0 || keg.Held >= 100)
+                        {
                             continue;
+                        }
 
                         if (keg.Type != PotionEffect)
+                        {
                             continue;
+                        }
 
                         ++keg.Held;
 
@@ -120,10 +126,14 @@ namespace Server.Items
             var handTwo = m.FindItemOnLayer(Layer.TwoHanded);
 
             if (handTwo is BaseWeapon)
+            {
                 handOne = handTwo;
+            }
 
             if (handTwo is BaseRanged ranged && ranged.Balanced)
+            {
                 return true;
+            }
 
             return handOne == null || handTwo == null;
         }
@@ -131,7 +141,9 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (!Movable)
+            {
                 return;
+            }
 
             if (from.InRange(GetWorldLocation(), 1))
             {
@@ -144,9 +156,14 @@ namespace Server.Items
                         Amount--;
 
                         if (from.Backpack?.Deleted != false)
-                            from.Backpack.DropItem(pot);
+                        {
+                            @from.Backpack.DropItem(pot);
+                        }
                         else
-                            pot.MoveToWorld(from.Location, from.Map);
+                        {
+                            pot.MoveToWorld(@from.Location, @from.Map);
+                        }
+
                         pot.Drink(from);
                     }
                     else
@@ -191,7 +208,9 @@ namespace Server.Items
             }
 
             if (version == 0)
+            {
                 Stackable = Core.ML;
+            }
         }
 
         public abstract void Drink(Mobile from);
@@ -203,10 +222,14 @@ namespace Server.Items
             m.PlaySound(0x2D6);
 
             if (!DuelContext.IsFreeConsume(m))
+            {
                 m.AddToBackpack(new Bottle());
+            }
 
             if (m.Body.IsHuman && !m.Mounted)
+            {
                 m.Animate(34, 5, 1, true, false, 0);
+            }
         }
 
         public static int EnhancePotions(Mobile m)
@@ -215,7 +238,9 @@ namespace Server.Items
             var skillBonus = m.Skills.Alchemy.Fixed / 330 * 10;
 
             if (Core.ML && EP > 50 && m.AccessLevel <= AccessLevel.Player)
+            {
                 EP = 50;
+            }
 
             return EP + skillBonus;
         }
@@ -223,7 +248,9 @@ namespace Server.Items
         public static TimeSpan Scale(Mobile m, TimeSpan v)
         {
             if (!Core.AOS)
+            {
                 return v;
+            }
 
             var scalar = 1.0 + 0.01 * EnhancePotions(m);
 
@@ -233,7 +260,9 @@ namespace Server.Items
         public static double Scale(Mobile m, double v)
         {
             if (!Core.AOS)
+            {
                 return v;
+            }
 
             var scalar = 1.0 + 0.01 * EnhancePotions(m);
 
@@ -243,7 +272,9 @@ namespace Server.Items
         public static int Scale(Mobile m, int v)
         {
             if (!Core.AOS)
+            {
                 return v;
+            }
 
             return AOS.Scale(v, 100 + EnhancePotions(m));
         }

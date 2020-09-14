@@ -59,9 +59,13 @@ namespace Server.Engines.Craft
             AddHtmlLocalized(10, 362, 150, 22, 1044056, LabelColor); // <CENTER>OTHER</CENTER>
 
             if (craftSystem.GumpTitleNumber > 0)
+            {
                 AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitleNumber, LabelColor);
+            }
             else
+            {
                 AddHtml(10, 12, 510, 20, craftSystem.GumpTitleString);
+            }
 
             AddButton(15, 387, 4014, 4016, 0);
             AddHtmlLocalized(50, 390, 150, 18, 1044150, LabelColor); // BACK
@@ -81,11 +85,16 @@ namespace Server.Engines.Craft
             }
 
             if (craftItem.NameNumber > 0)
+            {
                 AddHtmlLocalized(330, 40, 180, 18, craftItem.NameNumber, LabelColor);
+            }
             else
+            {
                 AddLabel(330, 40, LabelHue, craftItem.NameString);
+            }
 
             if (craftItem.UseAllRes)
+            {
                 AddHtmlLocalized(
                     170,
                     302 + m_OtherCount++ * 20,
@@ -94,6 +103,7 @@ namespace Server.Engines.Craft
                     1048176,
                     LabelColor
                 ); // Makes as many as possible at once
+            }
 
             DrawItem();
             DrawSkill();
@@ -122,6 +132,7 @@ namespace Server.Engines.Craft
             }
 
             if (needsRecipe)
+            {
                 AddHtmlLocalized(
                     170,
                     302 + m_OtherCount++ * 20,
@@ -130,6 +141,7 @@ namespace Server.Engines.Craft
                     1073620,
                     RedLabelColor
                 ); // You have not learned this recipe.
+            }
         }
 
         private TextDefinition RequiredExpansionMessage(Expansion expansion)
@@ -179,7 +191,9 @@ namespace Server.Engines.Craft
             var context = m_CraftSystem.GetContext(m_From);
 
             if (context != null)
+            {
                 resIndex = m_CraftItem.UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
+            }
 
             var chance = m_CraftItem.GetSuccessChance(
                 m_From,
@@ -211,7 +225,9 @@ namespace Server.Engines.Craft
             var resIndex = -1;
 
             if (context != null)
+            {
                 resIndex = m_CraftItem.UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
+            }
 
             var cropScroll = m_CraftItem.Resources.Count > 1
                              && m_CraftItem.Resources[^1].ItemType == typeofBlankScroll
@@ -240,7 +256,9 @@ namespace Server.Engines.Craft
                     nameNumber = subResource.GenericNameNumber;
 
                     if (nameNumber <= 0)
+                    {
                         nameNumber = subResource.NameNumber;
+                    }
                 }
                 // ******************
 
@@ -259,9 +277,13 @@ namespace Server.Engines.Craft
                 }
 
                 if (nameNumber > 0)
+                {
                     AddHtmlLocalized(170, 219 + i * 20, 310, 18, nameNumber, LabelColor);
+                }
                 else
+                {
                     AddLabel(170, 219 + i * 20, LabelHue, nameString);
+                }
 
                 AddLabel(430, 219 + i * 20, LabelHue, craftResource.Amount.ToString());
             }
@@ -273,6 +295,7 @@ namespace Server.Engines.Craft
             }
 
             if (cropScroll)
+            {
                 AddHtmlLocalized(
                     170,
                     302 + m_OtherCount++ * 20,
@@ -281,6 +304,7 @@ namespace Server.Engines.Craft
                     1044379,
                     LabelColor
                 ); // Inscribing scrolls also requires a blank scroll and mana.
+            }
         }
 
         public override void OnResponse(NetState sender, RelayInfo info)
@@ -311,7 +335,9 @@ namespace Server.Engines.Craft
                         var resIndex = m_CraftItem.UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
 
                         if (resIndex > -1)
+                        {
                             type = res.GetAt(resIndex).ItemType;
+                        }
                     }
 
                     m_CraftSystem.CreateItem(m_From, m_CraftItem.ItemType, type, m_Tool, m_CraftItem);

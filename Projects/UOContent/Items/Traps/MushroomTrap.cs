@@ -23,7 +23,9 @@ namespace Server.Items
         public override void OnTrigger(Mobile from)
         {
             if (!from.Alive || ItemID != 0x1125 || from.AccessLevel > AccessLevel.Player)
+            {
                 return;
+            }
 
             ItemID = 0x1126;
             Effects.PlaySound(Location, Map, 0x306);
@@ -36,9 +38,13 @@ namespace Server.Items
         public virtual void OnMushroomReset()
         {
             if (Region.Find(Location, Map).IsPartOf<DungeonRegion>())
+            {
                 ItemID = 0x1125; // reset
+            }
             else
+            {
                 Delete();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -55,7 +61,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (ItemID == 0x1126)
+            {
                 OnMushroomReset();
+            }
         }
     }
 }

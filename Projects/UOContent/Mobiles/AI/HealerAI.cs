@@ -23,7 +23,9 @@ namespace Server.Mobiles
         public override bool Think()
         {
             if (m_Mobile.Deleted)
+            {
                 return false;
+            }
 
             var targ = m_Mobile.Target;
 
@@ -32,13 +34,21 @@ namespace Server.Mobiles
                 var spellTarg = targ as ISpellTarget;
 
                 if (spellTarg?.Spell is CureSpell)
+                {
                     ProcessTarget(targ, m_ACure);
+                }
                 else if (spellTarg?.Spell is GreaterHealSpell)
+                {
                     ProcessTarget(targ, m_AGHeal);
+                }
                 else if (spellTarg?.Spell is HealSpell)
+                {
                     ProcessTarget(targ, m_ALHeal);
+                }
                 else
+                {
                     targ.Cancel(m_Mobile, TargetCancelType.Canceled);
+                }
             }
             else
             {
@@ -49,23 +59,33 @@ namespace Server.Mobiles
                     if (NeedCure(toHelp))
                     {
                         if (m_Mobile.Debug)
+                        {
                             m_Mobile.DebugSay("{0} needs a cure", toHelp.Name);
+                        }
 
                         if (!new CureSpell(m_Mobile).Cast())
+                        {
                             new CureSpell(m_Mobile).Cast();
+                        }
                     }
                     else if (NeedGHeal(toHelp))
                     {
                         if (m_Mobile.Debug)
+                        {
                             m_Mobile.DebugSay("{0} needs a greater heal", toHelp.Name);
+                        }
 
                         if (!new GreaterHealSpell(m_Mobile).Cast())
+                        {
                             new HealSpell(m_Mobile).Cast();
+                        }
                     }
                     else if (NeedLHeal(toHelp))
                     {
                         if (m_Mobile.Debug)
+                        {
                             m_Mobile.DebugSay("{0} needs a lesser heal", toHelp.Name);
+                        }
 
                         new HealSpell(m_Mobile).Cast();
                     }
@@ -73,9 +93,13 @@ namespace Server.Mobiles
                 else
                 {
                     if (AcquireFocusMob(m_Mobile.RangePerception, FightMode.Weakest, false, true, false))
+                    {
                         WalkMobileRange(m_Mobile.FocusMob, 1, false, 4, 7);
+                    }
                     else
+                    {
                         WalkRandomInHome(3, 2, 1);
+                    }
                 }
             }
 
@@ -89,9 +113,13 @@ namespace Server.Mobiles
             if (toHelp != null)
             {
                 if (targ.Range != -1 && !m_Mobile.InRange(toHelp, targ.Range))
+                {
                     DoMove(m_Mobile.GetDirectionTo(toHelp) | Direction.Running);
+                }
                 else
+                {
                     targ.Invoke(m_Mobile, toHelp);
+                }
             }
             else
             {
@@ -102,7 +130,9 @@ namespace Server.Mobiles
         private Mobile Find(params NeedDelegate[] funcs)
         {
             if (m_Mobile.Deleted)
+            {
                 return null;
+            }
 
             var map = m_Mobile.Map;
 
@@ -114,9 +144,12 @@ namespace Server.Mobiles
                 foreach (var m in m_Mobile.GetMobilesInRange(m_Mobile.RangePerception))
                 {
                     if (!m_Mobile.CanSee(m) || !(m is BaseCreature) || ((BaseCreature)m).Team != m_Mobile.Team)
+                    {
                         continue;
+                    }
 
                     for (var i = 0; i < funcs.Length; ++i)
+                    {
                         if (funcs[i](m))
                         {
                             var val = -m_Mobile.GetDistanceToSqrt(m);
@@ -129,6 +162,7 @@ namespace Server.Mobiles
 
                             break;
                         }
+                    }
                 }
 
                 return found;

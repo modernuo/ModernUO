@@ -39,7 +39,9 @@ namespace Server.Items
         public override void OnAfterDelete()
         {
             if (m_Timer?.Running == true)
+            {
                 m_Timer.Stop();
+            }
         }
 
         private void CuttingDone(Mobile from)
@@ -47,14 +49,20 @@ namespace Server.Items
             Cut = true;
 
             if (ItemID == 0x1B1C)
+            {
                 ItemID = 0x1B1B;
+            }
             else
+            {
                 ItemID = 0x1B1C;
+            }
 
             Owner?.PlaySound(0x199);
 
             if (Organ is PlagueBeastRubbleOrgan organ)
-                organ.OnVeinCut(from, this);
+            {
+                organ.OnVeinCut(@from, this);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

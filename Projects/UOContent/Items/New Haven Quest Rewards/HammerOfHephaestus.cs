@@ -35,11 +35,17 @@ namespace Server.Items
         {
             if (!IsChildOf(from.Backpack) && Parent != from
             )                                       // TODO: These checks don't match EA, but they match BaseTool for now
-                from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            {
+                @from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            }
             else if (UsesRemaining <= 0)
-                from.SendLocalizedMessage(1072306); // You must wait a moment for it to recharge.
+            {
+                @from.SendLocalizedMessage(1072306); // You must wait a moment for it to recharge.
+            }
             else
-                base.OnDoubleClick(from);
+            {
+                base.OnDoubleClick(@from);
+            }
         }
 
         private void StartRechargeTimer()
@@ -52,7 +58,9 @@ namespace Server.Items
         {
             // TODO: Stop timer at 20? Count downtime? Something more generic so we can use it for JacobsPickaxe too (both are IUsesRemaining)?
             if (UsesRemaining < 20)
+            {
                 ++UsesRemaining;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

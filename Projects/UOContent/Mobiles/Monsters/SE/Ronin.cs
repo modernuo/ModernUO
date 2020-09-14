@@ -76,9 +76,13 @@ namespace Server.Mobiles
             }
 
             if (Utility.RandomDouble() > .2)
+            {
                 AddItem(new NoDachi());
+            }
             else
+            {
                 AddItem(new Halberd());
+            }
 
             PackItem(new Wakizashi());
             PackItem(new Longsword());

@@ -61,16 +61,24 @@ namespace Server.Items
             Height = h;
 
             if (x1 < 0)
+            {
                 x1 = 0;
+            }
 
             if (y1 < 0)
+            {
                 y1 = 0;
+            }
 
             if (x2 >= 5120)
+            {
                 x2 = 5119;
+            }
 
             if (y2 >= 4096)
+            {
                 y2 = 4095;
+            }
 
             Bounds = new Rectangle2D(x1, y1, x2 - x1, y2 - y1);
         }
@@ -78,9 +86,13 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (from.InRange(GetWorldLocation(), 2))
-                DisplayTo(from);
+            {
+                DisplayTo(@from);
+            }
             else
-                from.SendLocalizedMessage(500446); // That is too far away.
+            {
+                @from.SendLocalizedMessage(500446); // That is too far away.
+            }
         }
 
         public virtual void DisplayTo(Mobile from)
@@ -105,7 +117,9 @@ namespace Server.Items
             from.Send(new MapDisplay(this));
 
             for (var i = 0; i < Pins.Count; ++i)
-                from.Send(new MapAddPin(this, Pins[i]));
+            {
+                @from.Send(new MapAddPin(this, Pins[i]));
+            }
 
             from.Send(new MapSetEditable(this, ValidateEdit(from)));
         }
@@ -113,9 +127,14 @@ namespace Server.Items
         public virtual void OnAddPin(Mobile from, int x, int y)
         {
             if (!ValidateEdit(from))
+            {
                 return;
+            }
+
             if (Pins.Count >= MaxUserPins)
+            {
                 return;
+            }
 
             Validate(ref x, ref y);
             AddPin(x, y);
@@ -124,7 +143,9 @@ namespace Server.Items
         public virtual void OnRemovePin(Mobile from, int number)
         {
             if (!ValidateEdit(from))
+            {
                 return;
+            }
 
             RemovePin(number);
         }
@@ -132,7 +153,9 @@ namespace Server.Items
         public virtual void OnChangePin(Mobile from, int number, int x, int y)
         {
             if (!ValidateEdit(from))
+            {
                 return;
+            }
 
             Validate(ref x, ref y);
             ChangePin(number, x, y);
@@ -141,9 +164,14 @@ namespace Server.Items
         public virtual void OnInsertPin(Mobile from, int number, int x, int y)
         {
             if (!ValidateEdit(from))
+            {
                 return;
+            }
+
             if (Pins.Count >= MaxUserPins)
+            {
                 return;
+            }
 
             Validate(ref x, ref y);
             InsertPin(number, x, y);
@@ -152,7 +180,9 @@ namespace Server.Items
         public virtual void OnClearPins(Mobile from)
         {
             if (!ValidateEdit(from))
+            {
                 return;
+            }
 
             ClearPins();
         }
@@ -160,7 +190,9 @@ namespace Server.Items
         public virtual void OnToggleEditable(Mobile from)
         {
             if (Validate(from))
+            {
                 m_Editable = !m_Editable;
+            }
 
             from.Send(new MapSetEditable(this, Validate(from) && m_Editable));
         }
@@ -176,11 +208,19 @@ namespace Server.Items
         public virtual bool Validate(Mobile from)
         {
             if (!from.CanSee(this) || from.Map != Map || !from.Alive || InSecureTrade)
+            {
                 return false;
+            }
+
             if (from.AccessLevel >= AccessLevel.GameMaster)
+            {
                 return true;
+            }
+
             if (!Movable || Protected || !from.InRange(GetWorldLocation(), 2))
+            {
                 return false;
+            }
 
             return !(RootParent is Mobile && RootParent != from);
         }
@@ -211,21 +251,29 @@ namespace Server.Items
         public virtual void RemovePin(int index)
         {
             if (index > 0 && index < Pins.Count)
+            {
                 Pins.RemoveAt(index);
+            }
         }
 
         public virtual void InsertPin(int index, int x, int y)
         {
             if (index < 0 || index >= Pins.Count)
+            {
                 Pins.Add(new Point2D(x, y));
+            }
             else
+            {
                 Pins.Insert(index, new Point2D(x, y));
+            }
         }
 
         public virtual void ChangePin(int index, int x, int y)
         {
             if (index >= 0 && index < Pins.Count)
+            {
                 Pins[index] = new Point2D(x, y);
+            }
         }
 
         public virtual void ClearPins()
@@ -248,7 +296,9 @@ namespace Server.Items
 
             writer.Write(Pins.Count);
             for (var i = 0; i < Pins.Count; ++i)
+            {
                 writer.Write(Pins[i]);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -270,7 +320,9 @@ namespace Server.Items
 
                         var count = reader.ReadInt();
                         for (var i = 0; i < count; i++)
+                        {
                             Pins.Add(reader.ReadPoint2D());
+                        }
 
                         break;
                     }
@@ -287,7 +339,9 @@ namespace Server.Items
             var from = state.Mobile;
 
             if (!(World.FindItem(pvSrc.ReadUInt32()) is MapItem map))
+            {
                 return;
+            }
 
             int command = pvSrc.ReadByte();
             int number = pvSrc.ReadByte();

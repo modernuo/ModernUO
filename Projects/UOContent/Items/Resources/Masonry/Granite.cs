@@ -57,7 +57,9 @@ namespace Server.Items
             }
 
             if (version < 1)
+            {
                 Stackable = Core.ML;
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -69,9 +71,13 @@ namespace Server.Items
                 var num = CraftResources.GetLocalizationNumber(m_Resource);
 
                 if (num > 0)
+                {
                     list.Add(num);
+                }
                 else
+                {
                     list.Add(CraftResources.GetName(m_Resource));
+                }
             }
         }
     }

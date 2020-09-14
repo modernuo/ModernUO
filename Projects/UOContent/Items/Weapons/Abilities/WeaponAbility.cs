@@ -115,9 +115,14 @@ namespace Server.Items
             if (from.Weapon is BaseWeapon weapon)
             {
                 if (weapon.PrimaryAbility == this)
+                {
                     return 70.0;
+                }
+
                 if (weapon.SecondaryAbility == this)
+                {
                     return 90.0;
+                }
             }
 
             return 200.0;
@@ -138,13 +143,19 @@ namespace Server.Items
                                                               GetSkill(from, SkillName.Ninjitsu);
 
             if (skillTotal >= 300.0)
+            {
                 mana -= 10;
+            }
             else if (skillTotal >= 200.0)
+            {
                 mana -= 5;
+            }
 
             var scalar = 1.0;
             if (!MindRotSpell.GetMindRotScalar(from, ref scalar))
+            {
                 scalar = 1.0;
+            }
 
             // Lower Mana Cost = 40%
             var lmc = Math.Min(AosAttributes.GetValue(from, AosAttribute.LowerManaCost), 40);
@@ -154,7 +165,9 @@ namespace Server.Items
 
             // Using a special move within 3 seconds of the previous special move costs double mana
             if (GetContext(from) != null)
+            {
                 mana *= 2;
+            }
 
             return mana;
         }
@@ -162,7 +175,9 @@ namespace Server.Items
         public virtual bool CheckWeaponSkill(Mobile from)
         {
             if (!(from.Weapon is BaseWeapon weapon))
+            {
                 return false;
+            }
 
             var skill = from.Skills[weapon.Skill];
             var reqSkill = GetRequiredSkill(from);
@@ -178,25 +193,33 @@ namespace Server.Items
             }
 
             if (skill?.Base >= reqSkill)
+            {
                 return true;
+            }
 
             /* <UBWS> */
             if (weapon.WeaponAttributes.UseBestSkill > 0 && (from.Skills.Swords.Base >= reqSkill ||
                                                              from.Skills.Macing.Base >= reqSkill ||
                                                              from.Skills.Fencing.Base >= reqSkill))
+            {
                 return true;
+            }
             /* </UBWS> */
 
             if (reqTactics)
-                from.SendLocalizedMessage(
+            {
+                @from.SendLocalizedMessage(
                     1079308,
                     reqSkill.ToString()
                 ); // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
+            }
             else
-                from.SendLocalizedMessage(
+            {
+                @from.SendLocalizedMessage(
                     1060182,
                     reqSkill.ToString()
                 ); // You need ~1_SKILL_REQUIREMENT~ weapon skill to perform that attack
+            }
 
             return false;
         }
@@ -211,7 +234,10 @@ namespace Server.Items
 
             if (from.Mana < mana)
             {
-                if (from is BaseCreature creature && creature.HasManaOveride) return true;
+                if (from is BaseCreature creature && creature.HasManaOveride)
+                {
+                    return true;
+                }
 
                 from.SendLocalizedMessage(
                     1060181,
@@ -239,12 +265,16 @@ namespace Server.Items
         public virtual bool Validate(Mobile from)
         {
             if (!from.Player)
+            {
                 return true;
+            }
 
             var state = from.NetState;
 
             if (state == null)
+            {
                 return false;
+            }
 
             if (RequiresSE && !state.SupportsExpansion(Expansion.SE))
             {
@@ -267,54 +297,102 @@ namespace Server.Items
             string option = null;
 
             if (this is ArmorIgnore)
+            {
                 option = "Armor Ignore";
+            }
             else if (this is BleedAttack)
+            {
                 option = "Bleed Attack";
+            }
             else if (this is ConcussionBlow)
+            {
                 option = "Concussion Blow";
+            }
             else if (this is CrushingBlow)
+            {
                 option = "Crushing Blow";
+            }
             else if (this is Disarm)
+            {
                 option = "Disarm";
+            }
             else if (this is Dismount)
+            {
                 option = "Dismount";
+            }
             else if (this is DoubleStrike)
+            {
                 option = "Double Strike";
+            }
             else if (this is InfectiousStrike)
+            {
                 option = "Infectious Strike";
+            }
             else if (this is MortalStrike)
+            {
                 option = "Mortal Strike";
+            }
             else if (this is MovingShot)
+            {
                 option = "Moving Shot";
+            }
             else if (this is ParalyzingBlow)
+            {
                 option = "Paralyzing Blow";
+            }
             else if (this is ShadowStrike)
+            {
                 option = "Shadow Strike";
+            }
             else if (this is WhirlwindAttack)
+            {
                 option = "Whirlwind Attack";
+            }
             else if (this is RidingSwipe)
+            {
                 option = "Riding Swipe";
+            }
             else if (this is FrenziedWhirlwind)
+            {
                 option = "Frenzied Whirlwind";
+            }
             else if (this is Block)
+            {
                 option = "Block";
+            }
             else if (this is DefenseMastery)
+            {
                 option = "Defense Mastery";
+            }
             else if (this is NerveStrike)
+            {
                 option = "Nerve Strike";
+            }
             else if (this is TalonStrike)
+            {
                 option = "Talon Strike";
+            }
             else if (this is Feint)
+            {
                 option = "Feint";
+            }
             else if (this is DualWield)
+            {
                 option = "Dual Wield";
+            }
             else if (this is DoubleShot)
+            {
                 option = "Double Shot";
+            }
             else if (this is ArmorPierce)
+            {
                 option = "Armor Pierce";
+            }
 
             if (option != null && !DuelContext.AllowSpecialAbility(from, option, true))
+            {
                 return false;
+            }
 
             return CheckSkills(from) && CheckMana(from, false);
         }
@@ -386,7 +464,9 @@ namespace Server.Items
             Table.Remove(m);
 
             if (Core.AOS && m.NetState != null)
+            {
                 m.Send(ClearWeaponAbility.Instance);
+            }
         }
 
         public static void Initialize()
@@ -397,9 +477,13 @@ namespace Server.Items
         private static void EventSink_SetAbility(Mobile m, int index)
         {
             if (index == 0)
+            {
                 ClearCurrentAbility(m);
+            }
             else if (index >= 1 && index < Abilities.Length)
+            {
                 SetCurrentAbility(m, Abilities[index]);
+            }
         }
 
         private static void AddContext(Mobile m, WeaponAbilityContext context)
@@ -412,7 +496,9 @@ namespace Server.Items
             var context = GetContext(m);
 
             if (context != null)
+            {
                 RemoveContext(m, context);
+            }
         }
 
         private static void RemoveContext(Mobile m, WeaponAbilityContext context)

@@ -42,7 +42,9 @@ namespace Server.Multis
             base.OnLocationChange(oldLocation);
 
             if (m_Components == null)
+            {
                 return;
+            }
 
             var xOffset = X - oldLocation.X;
             var yOffset = Y - oldLocation.Y;
@@ -61,7 +63,9 @@ namespace Server.Multis
             base.OnMapChange();
 
             if (m_Components == null)
+            {
                 return;
+            }
 
             for (var i = 0; i < m_Components.Count; ++i)
             {
@@ -76,7 +80,9 @@ namespace Server.Multis
             base.OnDelete();
 
             if (m_Components == null)
+            {
                 return;
+            }
 
             for (var i = 0; i < m_Components.Count; ++i)
             {

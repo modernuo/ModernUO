@@ -67,18 +67,24 @@ namespace Server.Engines.MLQuests.Gumps
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (info.ButtonID < 6)
+            {
                 return;
+            }
 
             var context = MLQuestSystem.GetContext(m_Owner);
 
             if (context == null)
+            {
                 return;
+            }
 
             var instances = context.QuestInstances;
             var index = info.ButtonID - 6;
 
             if (index >= instances.Count)
+            {
                 return;
+            }
 
             sender.Mobile.SendGump(new QuestLogDetailedGump(instances[index], m_CloseGumps));
         }

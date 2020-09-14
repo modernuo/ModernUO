@@ -52,7 +52,9 @@ namespace Server.Spells.Eighth
                         damage = m.Hits / 2;
 
                         if (!m.Player)
+                        {
                             damage = Math.Clamp(damage, 15, 100);
+                        }
 
                         damage += Utility.RandomMinMax(0, 15);
                     }
@@ -61,9 +63,13 @@ namespace Server.Spells.Eighth
                         damage = m.Hits * 6 / 10;
 
                         if (!m.Player && damage < 10)
+                        {
                             damage = 10;
+                        }
                         else if (damage > 75)
+                        {
                             damage = 75;
+                        }
                     }
 
                     Caster.DoHarmful(m);

@@ -37,9 +37,13 @@ namespace Server.SkillHandlers
                     if (from.CheckTargetSkill(SkillName.TasteID, food, 0, 100))
                     {
                         if (food.Poison != null)
-                            food.SendLocalizedMessageTo(from, 1038284); // It appears to have poison smeared on it.
+                        {
+                            food.SendLocalizedMessageTo(@from, 1038284); // It appears to have poison smeared on it.
+                        }
                         else
-                            food.SendLocalizedMessageTo(from, 1010600); // You detect nothing unusual about this substance.
+                        {
+                            food.SendLocalizedMessageTo(@from, 1010600); // You detect nothing unusual about this substance.
+                        }
                     }
                     else
                     {

@@ -78,7 +78,10 @@ namespace Server.Items
 
         public void AttackAnimation(Mobile from, Mobile to)
         {
-            if (from.Body.IsHuman && !from.Mounted) from.Animate(33, 2, 1, true, true, 0);
+            if (from.Body.IsHuman && !from.Mounted)
+            {
+                @from.Animate(33, 2, 1, true, true, 0);
+            }
 
             from.PlaySound(0x223);
             from.MovingEffect(to, 0x2804, 5, 0, false, false);
@@ -91,7 +94,9 @@ namespace Server.Items
             list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
 
             if (m_Poison != null && m_PoisonCharges > 0)
+            {
                 list.Add(1062412 + m_Poison.Level, m_PoisonCharges.ToString());
+            }
         }
 
         public override void OnDoubleClick(Mobile from)

@@ -23,9 +23,13 @@ namespace Server.Items
             var loc = GetWorldLocation();
 
             if (!from.InLOS(loc) || !from.InRange(loc, 2))
-                from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that
+            {
+                @from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that
+            }
             else
-                Fishing.System.BeginHarvesting(from, this);
+            {
+                Fishing.System.BeginHarvesting(@from, this);
+            }
         }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
@@ -38,7 +42,9 @@ namespace Server.Items
         public override bool CheckConflictingLayer(Mobile m, Item item, Layer layer)
         {
             if (base.CheckConflictingLayer(m, item, layer))
+            {
                 return true;
+            }
 
             if (layer == Layer.OneHanded)
             {
@@ -63,7 +69,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version < 1 && Layer == Layer.OneHanded)
+            {
                 Layer = Layer.TwoHanded;
+            }
         }
     }
 }

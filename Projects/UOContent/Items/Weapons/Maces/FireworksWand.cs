@@ -47,7 +47,9 @@ namespace Server.Items
             var map = from.Map;
 
             if (map == null || map == Map.Internal)
+            {
                 return;
+            }
 
             if (useCharges)
             {
@@ -91,20 +93,34 @@ namespace Server.Items
             var hue = Utility.Random(40);
 
             if (hue < 8)
+            {
                 hue = 0x66D;
+            }
             else if (hue < 10)
+            {
                 hue = 0x482;
+            }
             else if (hue < 12)
+            {
                 hue = 0x47E;
+            }
             else if (hue < 16)
+            {
                 hue = 0x480;
+            }
             else if (hue < 20)
+            {
                 hue = 0x47F;
+            }
             else
+            {
                 hue = 0;
+            }
 
             if (Utility.RandomBool())
+            {
                 hue = Utility.RandomList(0x47E, 0x47F, 0x480, 0x482, 0x66D);
+            }
 
             var renderMode = Utility.RandomList(0, 2, 3, 4, 5, 7);
 

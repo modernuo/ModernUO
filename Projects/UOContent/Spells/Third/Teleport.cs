@@ -98,9 +98,13 @@ namespace Server.Spells.Third
                 var eable = m.GetItemsInRange(0);
 
                 foreach (var item in eable)
+                {
                     if (item is ParalyzeFieldSpell.InternalItem || item is PoisonFieldSpell.InternalItem ||
                         item is FireFieldSpell.FireFieldItem)
+                    {
                         item.OnMoveOver(m);
+                    }
+                }
 
                 eable.Free();
             }

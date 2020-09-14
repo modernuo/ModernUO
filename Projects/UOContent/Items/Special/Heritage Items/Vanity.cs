@@ -9,9 +9,13 @@ namespace Server.Items
         public VanityAddon(bool east) : base(east ? 0xA44 : 0xA3C)
         {
             if (east) // east
+            {
                 AddComponent(new AddonContainerComponent(0xA45), 0, -1, 0);
+            }
             else // south
+            {
                 AddComponent(new AddonContainerComponent(0xA3D), -1, 0, 0);
+            }
         }
 
         public VanityAddon(Serial serial) : base(serial)
@@ -114,7 +118,9 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (m_Deed?.Deleted != false || info.ButtonID == 0)
+                {
                     return;
+                }
 
                 m_Deed.m_East = info.ButtonID != 1;
                 m_Deed.SendTarget(sender.Mobile);

@@ -56,7 +56,9 @@ namespace Server.Items
                 var qs = player.Quest;
 
                 if (!(qs is WitchApprenticeQuest))
+                {
                     return;
+                }
 
                 var obj = qs.FindObjective<FindIngredientObjective>();
 

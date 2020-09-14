@@ -89,7 +89,9 @@ namespace Server.Items
                 from.PlaySound(0x1E0);
 
                 if (!DuelContext.IsFreeConsume(from))
+                {
                     Consume();
+                }
             }
             else
             {

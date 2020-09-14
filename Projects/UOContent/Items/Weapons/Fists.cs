@@ -50,14 +50,9 @@ namespace Server.Items
             var wresValue = defender.Skills.Wrestling.Value;
             var anatValue = defender.Skills.Anatomy.Value;
             var evalValue = defender.Skills.EvalInt.Value;
-            var incrValue = (anatValue + evalValue + 20.0) * 0.5;
+            var incrValue = Math.Min((anatValue + evalValue + 20.0) * 0.5, 120.0);
 
-            if (incrValue > 120.0)
-                incrValue = 120.0;
-
-            if (wresValue > incrValue)
-                return wresValue;
-            return incrValue;
+            return wresValue > incrValue ? wresValue : incrValue;
         }
 
         private void CheckPreAOSMoves(Mobile attacker, Mobile defender)
@@ -116,7 +111,9 @@ namespace Server.Items
                                 var toDisarm = defender.FindItemOnLayer(Layer.OneHanded);
 
                                 if (toDisarm?.Movable == false)
+                                {
                                     toDisarm = defender.FindItemOnLayer(Layer.TwoHanded);
+                                }
 
                                 var pack = defender.Backpack;
 
@@ -166,7 +163,9 @@ namespace Server.Items
         public override TimeSpan OnSwing(Mobile attacker, Mobile defender)
         {
             if (!Core.AOS)
+            {
                 CheckPreAOSMoves(attacker, defender);
+            }
 
             return base.OnSwing(attacker, defender);
         }
@@ -219,10 +218,14 @@ namespace Server.Items
         private static void EventSink_DisarmRequest(Mobile m)
         {
             if (Core.AOS)
+            {
                 return;
+            }
 
             if (!DuelContext.AllowSpecialAbility(m, "Disarm", true))
+            {
                 return;
+            }
 
             var armsValue = m.Skills.ArmsLore.Value;
             var wresValue = m.Skills.Wrestling.Value;
@@ -248,10 +251,14 @@ namespace Server.Items
         private static void EventSink_StunRequest(Mobile m)
         {
             if (Core.AOS)
+            {
                 return;
+            }
 
             if (!DuelContext.AllowSpecialAbility(m, "Stun", true))
+            {
                 return;
+            }
 
             var anatValue = m.Skills.Anatomy.Value;
             var wresValue = m.Skills.Wrestling.Value;

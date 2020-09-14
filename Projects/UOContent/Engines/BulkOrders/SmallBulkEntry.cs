@@ -32,13 +32,19 @@ namespace Server.Engines.BulkOrders
         public static SmallBulkEntry[] GetEntries(string type, string name)
         {
             if (m_Cache == null)
+            {
                 m_Cache = new Dictionary<string, Dictionary<string, SmallBulkEntry[]>>();
+            }
 
             if (!m_Cache.TryGetValue(type, out var table))
+            {
                 m_Cache[type] = table = new Dictionary<string, SmallBulkEntry[]>();
+            }
 
             if (!table.TryGetValue(name, out var entries))
+            {
                 table[name] = entries = LoadEntries(type, name);
+            }
 
             return entries;
         }
@@ -60,7 +66,9 @@ namespace Server.Engines.BulkOrders
                 while ((line = ip.ReadLine()) != null)
                 {
                     if (line.Length == 0 || line.StartsWith("#"))
+                    {
                         continue;
+                    }
 
                     try
                     {
@@ -72,6 +80,7 @@ namespace Server.Engines.BulkOrders
                             var graphic = Utility.ToInt32(split[^1]);
 
                             if (type != null && graphic > 0)
+                            {
                                 list.Add(
                                     new SmallBulkEntry(
                                         type,
@@ -79,6 +88,7 @@ namespace Server.Engines.BulkOrders
                                         graphic
                                     )
                                 );
+                            }
                         }
                     }
                     catch

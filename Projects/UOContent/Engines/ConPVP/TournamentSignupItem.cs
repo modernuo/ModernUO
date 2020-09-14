@@ -33,10 +33,14 @@ namespace Server.Engines.ConPVP
                 var tourney = Tournament?.Tournament;
 
                 if (tourney == null)
+                {
                     return;
+                }
 
                 if (Registrar != null)
+                {
                     Registrar.Direction = Registrar.GetDirectionTo(this);
+                }
 
                 switch (tourney.Stage)
                 {
@@ -45,21 +49,25 @@ namespace Server.Engines.ConPVP
                             if (Registrar != null)
                             {
                                 if (tourney.HasParticipant(from))
+                                {
                                     Registrar.PrivateOverheadMessage(
                                         MessageType.Regular,
                                         0x35,
                                         false,
                                         "Excuse me? You are already signed up.",
-                                        from.NetState
+                                        @from.NetState
                                     );
+                                }
                                 else
+                                {
                                     Registrar.PrivateOverheadMessage(
                                         MessageType.Regular,
                                         0x22,
                                         false,
                                         "The tournament has already begun. You are too late to signup now.",
-                                        from.NetState
+                                        @from.NetState
                                     );
+                                }
                             }
 
                             break;

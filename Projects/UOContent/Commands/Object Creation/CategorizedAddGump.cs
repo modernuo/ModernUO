@@ -110,16 +110,22 @@ namespace Server.Gumps
             var y = BorderSize + OffsetSize;
 
             if (OldStyle)
+            {
                 AddImageTiled(x, y, TotalWidth - OffsetSize * 3 - SetWidth, EntryHeight, HeaderGumpID);
+            }
             else
+            {
                 AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
+            }
 
             if (m_Category.Parent != null)
             {
                 AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1);
 
                 if (PrevLabel)
+                {
                     AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
+                }
             }
 
             x += PrevWidth + OffsetSize;
@@ -128,6 +134,7 @@ namespace Server.Gumps
                              (OldStyle ? SetWidth + OffsetSize : 0);
 
             if (!OldStyle)
+            {
                 AddImageTiled(
                     x - (OldStyle ? OffsetSize : 0),
                     y,
@@ -135,6 +142,7 @@ namespace Server.Gumps
                     EntryHeight,
                     EntryGumpID
                 );
+            }
 
             AddHtml(
                 x + TextOffsetX,
@@ -147,29 +155,39 @@ namespace Server.Gumps
             x += emptyWidth + OffsetSize;
 
             if (OldStyle)
+            {
                 AddImageTiled(x, y, TotalWidth - OffsetSize * 3 - SetWidth, EntryHeight, HeaderGumpID);
+            }
             else
+            {
                 AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
+            }
 
             if (page > 0)
             {
                 AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 2);
 
                 if (PrevLabel)
+                {
                     AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
+                }
             }
 
             x += PrevWidth + OffsetSize;
 
             if (!OldStyle)
+            {
                 AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
+            }
 
             if ((page + 1) * EntryCount < nodes.Length)
             {
                 AddButton(x + NextOffsetX, y + NextOffsetY, NextButtonID1, NextButtonID2, 3, GumpButtonType.Reply, 1);
 
                 if (NextLabel)
+                {
                     AddLabel(x + NextLabelOffsetX, y + NextLabelOffsetY, TextHue, "Next");
+                }
             }
 
             for (int i = 0, index = page * EntryCount; i < EntryCount && index < nodes.Length; ++i, ++index)
@@ -192,7 +210,9 @@ namespace Server.Gumps
                 x += EntryWidth + OffsetSize;
 
                 if (SetGumpID != 0)
+                {
                     AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+                }
 
                 AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 4);
 
@@ -205,17 +225,21 @@ namespace Server.Gumps
                     if (itemID != 1 && bounds.Height < EntryHeight * 2)
                     {
                         if (bounds.Height < EntryHeight)
+                        {
                             AddItem(
                                 x - OffsetSize - 22 - i % 2 * 44 - bounds.Width / 2 - bounds.X,
                                 y + EntryHeight / 2 - bounds.Height / 2 - bounds.Y,
                                 itemID
                             );
+                        }
                         else
+                        {
                             AddItem(
                                 x - OffsetSize - 22 - i % 2 * 44 - bounds.Width / 2 - bounds.X,
                                 y + EntryHeight - 1 - bounds.Height - bounds.Y,
                                 itemID
                             );
+                        }
                     }
                 }
             }
@@ -238,7 +262,9 @@ namespace Server.Gumps
                             var index = Array.IndexOf(m_Category.Parent.Nodes, m_Category) / EntryCount;
 
                             if (index < 0)
+                            {
                                 index = 0;
+                            }
 
                             from.SendGump(new CategorizedAddGump(from, m_Category.Parent, index));
                         }
@@ -248,14 +274,18 @@ namespace Server.Gumps
                 case 2: // Previous
                     {
                         if (m_Page > 0)
-                            from.SendGump(new CategorizedAddGump(from, m_Category, m_Page - 1));
+                        {
+                            @from.SendGump(new CategorizedAddGump(@from, m_Category, m_Page - 1));
+                        }
 
                         break;
                     }
                 case 3: // Next
                     {
                         if ((m_Page + 1) * EntryCount < m_Category.Nodes.Length)
-                            from.SendGump(new CategorizedAddGump(from, m_Category, m_Page + 1));
+                        {
+                            @from.SendGump(new CategorizedAddGump(@from, m_Category, m_Page + 1));
+                        }
 
                         break;
                     }
@@ -264,7 +294,9 @@ namespace Server.Gumps
                         var index = m_Page * EntryCount + (info.ButtonID - 4);
 
                         if (index >= 0 && index < m_Category.Nodes.Length)
-                            m_Category.Nodes[index].OnClick(from, m_Page);
+                        {
+                            m_Category.Nodes[index].OnClick(@from, m_Page);
+                        }
 
                         break;
                     }

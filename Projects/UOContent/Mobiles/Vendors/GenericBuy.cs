@@ -69,7 +69,9 @@ namespace Server.Mobiles
                         price /= 100;
 
                         if (price > int.MaxValue)
+                        {
                             price = int.MaxValue;
+                        }
 
                         return (int)price;
                     }
@@ -98,7 +100,9 @@ namespace Server.Mobiles
         public virtual IEntity GetEntity()
         {
             if (Args == null || Args.Length == 0)
+            {
                 return (IEntity)ActivatorUtil.CreateInstance(Type);
+            }
 
             return (IEntity)ActivatorUtil.CreateInstance(Type, Args);
             // return (Item)ActivatorUtil.CreateInstance( m_Type );
@@ -121,9 +125,13 @@ namespace Server.Mobiles
                 object Obj_Disp = GetDisplayEntity();
 
                 if (Core.ML && Obj_Disp is Item item && !item.Stackable)
+                {
                     MaxAmount = Math.Min(20, MaxAmount);
+                }
                 else
+                {
                     MaxAmount = Math.Min(999, MaxAmount * 2);
+                }
             }
             else
             {
@@ -136,12 +144,18 @@ namespace Server.Mobiles
                 var halfQuantity = MaxAmount;
 
                 if (halfQuantity >= 999)
+                {
                     halfQuantity = 640;
+                }
                 else if (halfQuantity > 20)
+                {
                     halfQuantity /= 2;
+                }
 
                 if (m_Amount >= halfQuantity)
+                {
                     MaxAmount = halfQuantity;
+                }
             }
 
             m_Amount = MaxAmount;
@@ -152,7 +166,9 @@ namespace Server.Mobiles
         public void DeleteDisplayEntity()
         {
             if (m_DisplayEntity == null)
+            {
                 return;
+            }
 
             m_DisplayEntity.Delete();
             m_DisplayEntity = null;
@@ -161,15 +177,21 @@ namespace Server.Mobiles
         public IEntity GetDisplayEntity()
         {
             if (m_DisplayEntity != null && !IsDeleted(m_DisplayEntity))
+            {
                 return m_DisplayEntity;
+            }
 
             var canCache = CanCacheDisplay;
 
             if (canCache)
+            {
                 m_DisplayEntity = DisplayCache.Cache.Lookup(Type);
+            }
 
             if (m_DisplayEntity == null || IsDeleted(m_DisplayEntity))
+            {
                 m_DisplayEntity = GetEntity();
+            }
 
             DisplayCache.Cache.Store(Type, m_DisplayEntity, canCache);
 
@@ -198,7 +220,9 @@ namespace Server.Mobiles
                 get
                 {
                     if (m_Cache?.Deleted != false)
+                    {
                         m_Cache = new DisplayCache();
+                    }
 
                     return m_Cache;
                 }
@@ -213,12 +237,18 @@ namespace Server.Mobiles
             public void Store(Type key, IEntity obj, bool cache)
             {
                 if (cache)
+                {
                     m_Table[key] = obj;
+                }
 
                 if (obj is Item item)
+                {
                     AddItem(item);
+                }
                 else if (obj is Mobile mobile)
+                {
                     m_Mobiles.Add(mobile);
+                }
             }
 
             public override void OnAfterDelete()
@@ -226,16 +256,24 @@ namespace Server.Mobiles
                 base.OnAfterDelete();
 
                 for (var i = 0; i < m_Mobiles.Count; ++i)
+                {
                     m_Mobiles[i].Delete();
+                }
 
                 m_Mobiles.Clear();
 
                 for (var i = Items.Count - 1; i >= 0; --i)
+                {
                     if (i < Items.Count)
+                    {
                         Items[i].Delete();
+                    }
+                }
 
                 if (m_Cache == this)
+                {
                     m_Cache = null;
+                }
             }
 
             public override void Serialize(IGenericWriter writer)
@@ -256,18 +294,28 @@ namespace Server.Mobiles
                 m_Mobiles = reader.ReadStrongMobileList();
 
                 for (var i = 0; i < m_Mobiles.Count; ++i)
+                {
                     m_Mobiles[i].Delete();
+                }
 
                 m_Mobiles.Clear();
 
                 for (var i = Items.Count - 1; i >= 0; --i)
+                {
                     if (i < Items.Count)
+                    {
                         Items[i].Delete();
+                    }
+                }
 
                 if (m_Cache == null)
+                {
                     m_Cache = this;
+                }
                 else
+                {
                     Delete();
+                }
 
                 m_Table = new Dictionary<Type, IEntity>();
             }

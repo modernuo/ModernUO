@@ -78,7 +78,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_Bonus != 0)
+            {
                 list.Add(1060451, "#1042354\t{0}", m_Bonus.ToString()); // ~1_skillname~ +~2_val~
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -114,7 +116,9 @@ namespace Server.Items
             }
 
             if (Hue == 0)
+            {
                 Hue = 0x482;
+            }
         }
     }
 }

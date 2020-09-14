@@ -86,7 +86,9 @@ namespace Server.Commands.Generic
         public virtual void Register(BaseCommand command)
         {
             for (var i = 0; i < command.Commands.Length; ++i)
+            {
                 Commands[command.Commands[i]] = command;
+            }
         }
 
         public bool CheckObjectTypes(Mobile from, BaseCommand command, Extensions ext, out bool items, out bool mobiles)
@@ -96,12 +98,14 @@ namespace Server.Commands.Generic
             var cond = ObjectConditional.Empty;
 
             foreach (var check in ext)
+            {
                 if (check is WhereExtension extension)
                 {
                     cond = extension.Conditional;
 
                     break;
                 }
+            }
 
             var condIsItem = cond.IsItem;
             var condIsMobile = cond.IsMobile;
@@ -112,10 +116,14 @@ namespace Server.Commands.Generic
                 case ObjectTypes.Both:
                     {
                         if (condIsItem)
+                        {
                             items = true;
+                        }
 
                         if (condIsMobile)
+                        {
                             mobiles = true;
+                        }
 
                         break;
                     }
@@ -171,7 +179,9 @@ namespace Server.Commands.Generic
         public string GenerateArgString(string[] args)
         {
             if (args.Length == 0)
+            {
                 return "";
+            }
 
             // NOTE: this does not preserve the case where quotation marks are used on a single word
 
@@ -180,7 +190,9 @@ namespace Server.Commands.Generic
             for (var i = 0; i < args.Length; ++i)
             {
                 if (i > 0)
+                {
                     sb.Append(' ');
+                }
 
                 if (args[i].IndexOf(' ') >= 0)
                 {
@@ -204,16 +216,22 @@ namespace Server.Commands.Generic
             var e = new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args);
 
             if (!command.ValidateArgs(this, e))
+            {
                 return;
+            }
 
             var flushToLog = false;
 
             if (obj is List<object> list)
             {
                 if (list.Count > 20)
+                {
                     CommandLogging.Enabled = false;
+                }
                 else if (list.Count == 0)
+                {
                     command.LogFailure("Nothing was found to use this command on.");
+                }
 
                 command.ExecuteList(e, list);
 
@@ -226,9 +244,13 @@ namespace Server.Commands.Generic
             else if (obj != null)
             {
                 if (command.ListOptimized)
+                {
                     command.ExecuteList(e, new List<object> { obj });
+                }
                 else
+                {
                     command.Execute(e, obj);
+                }
             }
 
             command.Flush(from, flushToLog);
@@ -264,7 +286,9 @@ namespace Server.Commands.Generic
                     var args = new string[oldArgs.Length - 1];
 
                     for (var i = 0; i < args.Length; ++i)
+                    {
                         args[i] = oldArgs[i + 1];
+                    }
 
                     Process(e.Mobile, command, args);
                 }
@@ -278,10 +302,14 @@ namespace Server.Commands.Generic
         public void Register()
         {
             if (Accessors == null)
+            {
                 return;
+            }
 
             for (var i = 0; i < Accessors.Length; ++i)
+            {
                 CommandSystem.Register(Accessors[i], AccessLevel, Execute);
+            }
         }
 
         public static void Register(BaseCommandImplementor impl)

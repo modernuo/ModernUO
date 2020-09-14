@@ -36,11 +36,17 @@ namespace Server
             int vl;
 
             if (v < 4000)
+            {
                 vl = 0;
+            }
             else if (v >= GetMaxAmount(virtue))
+            {
                 vl = 3;
+            }
             else
+            {
                 vl = (v + 9999) / 10000;
+            }
 
             return (VirtueLevel)vl;
         }
@@ -60,10 +66,14 @@ namespace Server
             var maxAmount = GetMaxAmount(virtue);
 
             if (current >= maxAmount)
+            {
                 return false;
+            }
 
             if (current + amount >= maxAmount)
+            {
                 amount = maxAmount - current;
+            }
 
             var oldLevel = GetLevel(from, virtue);
 
@@ -81,9 +91,13 @@ namespace Server
             var current = from.Virtues.GetValue((int)virtue);
 
             if (current - amount >= 0)
-                from.Virtues.SetValue((int)virtue, current - amount);
+            {
+                @from.Virtues.SetValue((int)virtue, current - amount);
+            }
             else
-                from.Virtues.SetValue((int)virtue, 0);
+            {
+                @from.Virtues.SetValue((int)virtue, 0);
+            }
 
             return current > 0;
         }
@@ -118,9 +132,13 @@ namespace Server
             {
                 // TODO: Localize?
                 if (gainedPath)
+                {
                     pm.SendMessage("You have gained a path in {0}!", virtueName);
+                }
                 else
+                {
                     pm.SendMessage("You have gained in {0}.", virtueName);
+                }
 
                 if (virtue == VirtueName.Compassion)
                 {
@@ -128,9 +146,11 @@ namespace Server
                     ++pm.CompassionGains;
 
                     if (pm.CompassionGains >= 5)
+                    {
                         pm.SendLocalizedMessage(
                             1053004
                         ); // You must wait about a day before you can gain in compassion again.
+                    }
                 }
             }
             else

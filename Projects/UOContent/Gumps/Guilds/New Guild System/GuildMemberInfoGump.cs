@@ -69,7 +69,9 @@ namespace Server.Guilds
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (!(sender.Mobile is PlayerMobile pm) || !IsMember(pm, guild) || !IsMember(m_Member, guild))
+            {
                 return;
+            }
 
             var playerRank = pm.GuildRank;
             var targetRank = m_Member.GuildRank;
@@ -130,9 +132,13 @@ namespace Server.Guilds
                             if (targetRank == RankDefinition.Lowest)
                             {
                                 if (RankDefinition.Lowest.Name.Number == 1062963)
+                                {
                                     pm.SendLocalizedMessage(1063333); // You can't demote a ronin.
+                                }
                                 else
+                                {
                                     pm.SendMessage("You can't demote a {0}.", RankDefinition.Lowest.Name);
+                                }
                             }
                             else
                             {
@@ -239,16 +245,22 @@ namespace Server.Guilds
         public void SetTitle_Callback(Mobile from, string text)
         {
             if (!(from is PlayerMobile pm) || m_Member == null)
+            {
                 return;
+            }
 
             if (!(m_Member.Guild is Guild g) || !IsMember(pm, g) ||
                 !(pm.GuildRank.GetFlag(RankFlags.CanSetGuildTitle) &&
                   (pm.GuildRank.Rank > m_Member.GuildRank.Rank || pm == m_Member)))
             {
                 if (m_Member.GuildTitle == null || m_Member.GuildTitle.Length <= 0)
+                {
                     pm.SendLocalizedMessage(1070746); // You don't have the permission to set that member's guild title.
+                }
                 else
+                {
                     pm.SendLocalizedMessage(1063148); // You don't have permission to change this member's guild title.
+                }
 
                 return;
             }
@@ -266,9 +278,13 @@ namespace Server.Guilds
             else
             {
                 if (Insensitive.Equals(title, "none"))
+                {
                     m_Member.GuildTitle = null;
+                }
                 else
+                {
                     m_Member.GuildTitle = title;
+                }
 
                 pm.SendLocalizedMessage(1063156, m_Member.Name); // The guild information for ~1_val~ has been updated.
             }

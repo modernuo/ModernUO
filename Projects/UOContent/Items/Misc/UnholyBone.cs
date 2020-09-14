@@ -31,9 +31,13 @@ namespace Server.Items
             if (Utility.RandomDouble() < 0.3)
             {
                 if (ItemID == 0xF7E)
-                    from.SendMessage("You destroy the bone.");
+                {
+                    @from.SendMessage("You destroy the bone.");
+                }
                 else
-                    from.SendMessage("You destroy the bone pile.");
+                {
+                    @from.SendMessage("You destroy the bone pile.");
+                }
 
                 var gold = new Gold(25, 100);
 
@@ -46,9 +50,13 @@ namespace Server.Items
             else
             {
                 if (ItemID == 0xF7E)
-                    from.SendMessage("You damage the bone.");
+                {
+                    @from.SendMessage("You damage the bone.");
+                }
                 else
-                    from.SendMessage("You damage the bone pile.");
+                {
+                    @from.SendMessage("You damage the bone pile.");
+                }
             }
         }
 
@@ -83,7 +91,9 @@ namespace Server.Items
             protected override void OnTick()
             {
                 if (m_Item.Deleted)
+                {
                     return;
+                }
 
                 var spawn = Utility.Random(12) switch
                 {

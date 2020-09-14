@@ -50,11 +50,15 @@ namespace Server.Engines.Chat
                 m_VoiceRestricted = value;
 
                 if (value)
+                {
                     SendMessage(
                         56
                     ); // From now on, only moderators will have speaking privileges in this conference by default.
+                }
                 else
+                {
                     SendMessage(55); // From now on, everyone in the conference will have speaking privileges by default.
+                }
             }
         }
 
@@ -88,7 +92,9 @@ namespace Server.Engines.Chat
         public bool ValidateAccess(ChatUser from, ChatUser target)
         {
             if (from == null || target == null || from.Mobile.AccessLevel >= target.Mobile.AccessLevel)
+            {
                 return true;
+            }
 
             from.Mobile.SendMessage("Your access level is too low to do this.");
             return false;
@@ -124,7 +130,9 @@ namespace Server.Engines.Chat
             user.CurrentChannel = this;
 
             if (user.Mobile.AccessLevel >= AccessLevel.GameMaster || !AlwaysAvailable && m_Users.Count == 1)
+            {
                 AddModerator(user);
+            }
 
             SendUsersTo(user);
 
@@ -139,26 +147,36 @@ namespace Server.Engines.Chat
                 user.CurrentChannel = null;
 
                 if (m_Moderators.Contains(user))
+                {
                     m_Moderators.Remove(user);
+                }
 
                 if (m_Voices.Contains(user))
+                {
                     m_Voices.Remove(user);
+                }
 
                 SendCommand(ChatCommand.RemoveUserFromChannel, user, user.Username);
                 ChatSystem.SendCommandTo(user.Mobile, ChatCommand.LeaveChannel);
 
                 if (m_Users.Count == 0 && !AlwaysAvailable)
+                {
                     RemoveChannel(this);
+                }
             }
         }
 
         public void AddBan(ChatUser user, ChatUser moderator = null)
         {
             if (!ValidateModerator(moderator) || !ValidateAccess(moderator, user))
+            {
                 return;
+            }
 
             if (!m_Banned.Contains(user))
+            {
                 m_Banned.Add(user);
+            }
 
             Kick(user, moderator, true);
         }
@@ -166,7 +184,9 @@ namespace Server.Engines.Chat
         public void RemoveBan(ChatUser user)
         {
             if (m_Banned.Contains(user))
+            {
                 m_Banned.Remove(user);
+            }
         }
 
         public void Kick(ChatUser user, ChatUser moderator = null)
@@ -177,22 +197,28 @@ namespace Server.Engines.Chat
         public void Kick(ChatUser user, ChatUser moderator, bool wasBanned)
         {
             if (!ValidateModerator(moderator) || !ValidateAccess(moderator, user))
+            {
                 return;
+            }
 
             if (Contains(user))
             {
                 if (moderator != null)
                 {
                     if (wasBanned)
+                    {
                         user.SendMessage(
                             63,
                             moderator.Username
                         ); // %1, a conference moderator, has banned you from the conference.
+                    }
                     else
+                    {
                         user.SendMessage(
                             45,
                             moderator.Username
                         ); // %1, a conference moderator, has kicked you out of the conference.
+                    }
                 }
 
                 RemoveUser(user);
@@ -206,24 +232,30 @@ namespace Server.Engines.Chat
             }
 
             if (wasBanned)
+            {
                 moderator?.SendMessage(62, user.Username); // You are banning %1 from this conference.
+            }
         }
 
         public void AddVoiced(ChatUser user, ChatUser moderator = null)
         {
             if (!ValidateModerator(moderator))
+            {
                 return;
+            }
 
             if (!IsBanned(user) && !IsModerator(user) && !IsVoiced(user))
             {
                 m_Voices.Add(user);
 
                 if (moderator != null)
+                {
                     user.SendMessage(
                         54,
                         moderator
                             .Username
                     ); // %1, a conference moderator, has granted you speaking privileges in this conference.
+                }
 
                 SendMessage(52, user, user.Username); // %1 now has speaking privileges in this conference.
                 SendCommand(ChatCommand.AddUserToChannel, user, user.GetColorCharacter() + user.Username);
@@ -233,18 +265,22 @@ namespace Server.Engines.Chat
         public void RemoveVoiced(ChatUser user, ChatUser moderator)
         {
             if (!ValidateModerator(moderator) || !ValidateAccess(moderator, user))
+            {
                 return;
+            }
 
             if (!IsModerator(user) && IsVoiced(user))
             {
                 m_Voices.Remove(user);
 
                 if (moderator != null)
+                {
                     user.SendMessage(
                         53,
                         moderator
                             .Username
                     ); // %1, a conference moderator, has removed your speaking privileges for this conference.
+                }
 
                 SendMessage(51, user, user.Username); // %1 no longer has speaking privileges in this conference.
                 SendCommand(ChatCommand.AddUserToChannel, user, user.GetColorCharacter() + user.Username);
@@ -254,18 +290,26 @@ namespace Server.Engines.Chat
         public void AddModerator(ChatUser user, ChatUser moderator = null)
         {
             if (!ValidateModerator(moderator))
+            {
                 return;
+            }
 
             if (IsBanned(user) || IsModerator(user))
+            {
                 return;
+            }
 
             if (IsVoiced(user))
+            {
                 m_Voices.Remove(user);
+            }
 
             m_Moderators.Add(user);
 
             if (moderator != null)
+            {
                 user.SendMessage(50, moderator.Username); // %1 has made you a conference moderator.
+            }
 
             SendMessage(48, user, user.Username); // %1 is now a conference moderator.
             SendCommand(ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username);
@@ -274,14 +318,18 @@ namespace Server.Engines.Chat
         public void RemoveModerator(ChatUser user, ChatUser moderator = null)
         {
             if (!ValidateModerator(moderator) || !ValidateAccess(moderator, user))
+            {
                 return;
+            }
 
             if (IsModerator(user))
             {
                 m_Moderators.Remove(user);
 
                 if (moderator != null)
+                {
                     user.SendMessage(49, moderator.Username); // %1 has removed you from the list of conference moderators.
+                }
 
                 SendMessage(47, user, user.Username); // %1 is no longer a conference moderator.
                 SendCommand(ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username);
@@ -300,12 +348,18 @@ namespace Server.Engines.Chat
                 var user = m_Users[i];
 
                 if (user == initiator)
+                {
                     continue;
+                }
 
                 if (user.CheckOnline())
+                {
                     user.SendMessage(number, param1, param2);
+                }
                 else if (!Contains(user))
+                {
                     --i;
+                }
             }
         }
 
@@ -316,12 +370,18 @@ namespace Server.Engines.Chat
                 var user = m_Users[i];
 
                 if (user.IsIgnored(from))
+                {
                     continue;
+                }
 
                 if (user.CheckOnline())
-                    user.SendMessage(number, from.Mobile, param1, param2);
+                {
+                    user.SendMessage(number, @from.Mobile, param1, param2);
+                }
                 else if (!Contains(user))
+                {
                     --i;
+                }
             }
         }
 
@@ -337,12 +397,18 @@ namespace Server.Engines.Chat
                 var user = m_Users[i];
 
                 if (user == initiator)
+                {
                     continue;
+                }
 
                 if (user.CheckOnline())
+                {
                     ChatSystem.SendCommandTo(user.Mobile, command, param1, param2);
+                }
                 else if (!Contains(user))
+                {
                     --i;
+                }
             }
         }
 
@@ -363,7 +429,9 @@ namespace Server.Engines.Chat
                 var channel = Channels[i];
 
                 if (!channel.IsBanned(user))
+                {
                     ChatSystem.SendCommandTo(user.Mobile, ChatCommand.AddChannel, channel.Name, "0");
+                }
             }
         }
 
@@ -390,7 +458,9 @@ namespace Server.Engines.Chat
         public static void RemoveChannel(Channel channel)
         {
             if (channel == null)
+            {
                 return;
+            }
 
             if (Channels.Contains(channel) && channel.m_Users.Count == 0)
             {
@@ -410,7 +480,9 @@ namespace Server.Engines.Chat
                 var channel = Channels[i];
 
                 if (channel.m_Name == name)
+                {
                     return channel;
+                }
             }
 
             return null;

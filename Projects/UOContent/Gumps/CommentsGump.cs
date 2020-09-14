@@ -20,7 +20,10 @@ namespace Server.Gumps
             var title = $"Comments for '{acct.Username}'";
             var x = 205 - title.Length / 2 * 7;
             if (x < 120)
+            {
                 x = 120;
+            }
+
             AddLabel(x, 12, 2100, title);
 
             AddPage(1);
@@ -29,6 +32,7 @@ namespace Server.Gumps
 
             var list = acct.Comments;
             if (list.Count > 0)
+            {
                 for (var i = 0; i < list.Count; ++i)
                 {
                     var comment = list[i];
@@ -46,8 +50,11 @@ namespace Server.Gumps
                         $"[Added By: {comment.AddedBy} on {comment.LastModified.ToString("H:mm M/d/yy")}]<br>{comment.Content}";
                     AddHtml(12, 44 + i % 5 * 80, 386, 70, html, true, true);
                 }
+            }
             else
+            {
                 AddLabel(12, 44, 2100, "There are no comments for this account.");
+            }
         }
 
         public static void Initialize()
@@ -72,9 +79,13 @@ namespace Server.Gumps
             }
 
             if (m.Account == null)
-                from.SendMessage("That player doesn't have an account loaded... weird.");
+            {
+                @from.SendMessage("That player doesn't have an account loaded... weird.");
+            }
             else
-                from.SendGump(new CommentsGump((Account)m.Account));
+            {
+                @from.SendGump(new CommentsGump((Account)m.Account));
+            }
         }
 
         public override void OnResponse(NetState state, RelayInfo info)

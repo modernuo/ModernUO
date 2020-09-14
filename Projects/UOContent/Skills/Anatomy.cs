@@ -68,14 +68,32 @@ namespace Server.SkillHandlers
                     var dexMod = dex / 10;
                     var stmMod = stm / 10;
 
-                    if (strMod < 0) strMod = 0;
-                    else if (strMod > 10) strMod = 10;
+                    if (strMod < 0)
+                    {
+                        strMod = 0;
+                    }
+                    else if (strMod > 10)
+                    {
+                        strMod = 10;
+                    }
 
-                    if (dexMod < 0) dexMod = 0;
-                    else if (dexMod > 10) dexMod = 10;
+                    if (dexMod < 0)
+                    {
+                        dexMod = 0;
+                    }
+                    else if (dexMod > 10)
+                    {
+                        dexMod = 10;
+                    }
 
-                    if (stmMod > 10) stmMod = 10;
-                    else if (stmMod < 0) stmMod = 0;
+                    if (stmMod > 10)
+                    {
+                        stmMod = 10;
+                    }
+                    else if (stmMod < 0)
+                    {
+                        stmMod = 0;
+                    }
 
                     if (from.CheckTargetSkill(SkillName.Anatomy, targ, 0, 100))
                     {
@@ -87,12 +105,14 @@ namespace Server.SkillHandlers
                         ); // That looks [strong] and [dexterous].
 
                         if (from.Skills.Anatomy.Base >= 65.0)
+                        {
                             targ.PrivateOverheadMessage(
                                 MessageType.Regular,
                                 0x3B2,
                                 1038303 + stmMod,
-                                from.NetState
+                                @from.NetState
                             ); // That being is at [10,20,...] percent endurance.
+                        }
                     }
                     else
                     {

@@ -48,9 +48,13 @@ namespace Server.Items
             Mobile m = null;
 
             if (parent is Item item)
+            {
                 m = item.RootParent as Mobile;
+            }
             else if (parent is Mobile mobile)
+            {
                 m = mobile;
+            }
 
             m?.CloseGump<PromotionalTokenGump>();
         }
@@ -98,7 +102,9 @@ namespace Server.Items
             public override void OnResponse(NetState sender, RelayInfo info)
             {
                 if (info.ButtonID != 1)
+                {
                     return;
+                }
 
                 var from = sender.Mobile;
 
@@ -141,7 +147,9 @@ namespace Server.Items
         public override Item CreateItemFor(Mobile from)
         {
             if (from?.Account != null)
-                return new SoulstoneFragment(from.Account.ToString());
+            {
+                return new SoulstoneFragment(@from.Account.ToString());
+            }
 
             return null;
         }

@@ -121,24 +121,34 @@ namespace Server.Items
             base.GetContextMenuEntries(from, list);
 
             if (from.Alive)
-                list.Add(new UseBagEntry(this, Charges > 0 && IsChildOf(from.Backpack)));
+            {
+                list.Add(new UseBagEntry(this, Charges > 0 && IsChildOf(@from.Backpack)));
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (from.Region.IsPartOf<JailRegion>())
-                from.SendMessage("You may not do that in jail.");
+            {
+                @from.SendMessage("You may not do that in jail.");
+            }
             else if (!IsChildOf(from.Backpack))
+            {
                 MessageHelper.SendLocalizedMessageTo(
                     this,
-                    from,
+                    @from,
                     1062334,
                     0x59
                 ); // The bag of sending must be in your backpack.
+            }
             else if (Charges == 0)
-                MessageHelper.SendLocalizedMessageTo(this, from, 1042544, 0x59); // This item is out of charges.
+            {
+                MessageHelper.SendLocalizedMessageTo(this, @from, 1042544, 0x59); // This item is out of charges.
+            }
             else
-                from.Target = new SendTarget(this);
+            {
+                @from.Target = new SendTarget(this);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -184,18 +194,24 @@ namespace Server.Items
                 m_Bag = bag;
 
                 if (!enabled)
+                {
                     Flags |= CMEFlags.Disabled;
+                }
             }
 
             public override void OnClick()
             {
                 if (m_Bag.Deleted)
+                {
                     return;
+                }
 
                 var from = Owner.From;
 
                 if (from.CheckAlive())
-                    m_Bag.OnDoubleClick(from);
+                {
+                    m_Bag.OnDoubleClick(@from);
+                }
             }
         }
 
@@ -208,7 +224,9 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Bag.Deleted)
+                {
                     return;
+                }
 
                 if (from.Region.IsPartOf<JailRegion>())
                 {

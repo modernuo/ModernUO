@@ -8,9 +8,13 @@ namespace Server.Items
         public Candle() : base(0xA28)
         {
             if (Burnout)
+            {
                 Duration = TimeSpan.FromMinutes(20);
+            }
             else
+            {
                 Duration = TimeSpan.Zero;
+            }
 
             Burning = false;
             Light = LightType.Circle150;

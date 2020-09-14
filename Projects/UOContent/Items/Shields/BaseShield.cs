@@ -22,7 +22,10 @@ namespace Server.Items
                 var ar = base.ArmorRating;
 
                 if (m != null)
+                {
                     return m.Skills.Parry.Value * ar / 200.0 + 1.0;
+                }
+
                 return ar;
             }
         }
@@ -43,7 +46,9 @@ namespace Server.Items
             if (version < 1)
             {
                 if (this is Aegis)
+                {
                     return;
+                }
 
                 // The 15 bonus points to resistances are not applied to shields on OSI.
                 PhysicalBonus = 0;
@@ -68,14 +73,20 @@ namespace Server.Items
                     var absorbed = (int)(halfArmor + halfArmor * Utility.RandomDouble());
 
                     if (absorbed < 2)
+                    {
                         absorbed = 2;
+                    }
 
                     int wear;
 
                     if (weapon.Type == WeaponType.Bashing)
+                    {
                         wear = absorbed / 2;
+                    }
                     else
+                    {
                         wear = Utility.Random(2);
+                    }
 
                     if (wear > 0 && MaxHitPoints > 0)
                     {
@@ -97,11 +108,13 @@ namespace Server.Items
                                 MaxHitPoints -= wear;
 
                                 if (Parent is Mobile mobile)
+                                {
                                     mobile.LocalOverheadMessage(
                                         MessageType.Regular,
                                         0x3B2,
                                         1061121
                                     ); // Your equipment is severely damaged.
+                                }
                             }
                             else
                             {
@@ -115,13 +128,18 @@ namespace Server.Items
             }
 
             if (!(Parent is Mobile owner))
+            {
                 return damage;
+            }
 
             var ar = ArmorRating;
             var chance = (owner.Skills.Parry.Value - ar * 2.0) / 100.0;
 
             if (chance < 0.01)
+            {
                 chance = 0.01;
+            }
+
             /*
             FORMULA: Displayed AR = ((Parrying Skill * Base AR of Shield) � 200) + 1
       
@@ -132,12 +150,18 @@ namespace Server.Items
             if (owner.CheckSkill(SkillName.Parry, chance))
             {
                 if (weapon.Skill == SkillName.Archery)
+                {
                     damage -= (int)ar;
+                }
                 else
+                {
                     damage -= (int)(ar / 2.0);
+                }
 
                 if (damage < 0)
+                {
                     damage = 0;
+                }
 
                 owner.FixedEffect(0x37B9, 10, 16);
 

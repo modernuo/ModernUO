@@ -93,7 +93,9 @@ namespace Server.Gumps
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
 
             x = BorderSize + OffsetSize;
             y += EntryHeight + OffsetSize;
@@ -103,7 +105,9 @@ namespace Server.Gumps
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
 
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1);
 
@@ -115,7 +119,9 @@ namespace Server.Gumps
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
 
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 2);
 
@@ -127,7 +133,9 @@ namespace Server.Gumps
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
 
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3);
 
@@ -139,7 +147,9 @@ namespace Server.Gumps
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
 
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 4);
         }
@@ -208,21 +218,31 @@ namespace Server.Gumps
                         var obj = m_Property.GetValue(m_Object, null);
 
                         if (obj == null)
+                        {
                             m_Mobile.SendMessage("The property is null and so you cannot view its properties.");
+                        }
                         else if (!BaseCommand.IsAccessible(m_Mobile, obj))
+                        {
                             m_Mobile.SendMessage("You may not view their properties.");
+                        }
                         else
+                        {
                             viewProps = obj;
+                        }
 
                         break;
                     }
             }
 
             if (shouldSend)
+            {
                 m_Mobile.SendGump(new SetObjectGump(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List));
+            }
 
             if (viewProps != null)
+            {
                 m_Mobile.SendGump(new PropertiesGump(m_Mobile, viewProps));
+            }
         }
 
         private class InternalPrompt : Prompt
@@ -263,13 +283,18 @@ namespace Server.Gumps
                     var toSet = World.FindEntity(serial);
 
                     if (toSet == null)
+                    {
                         m_Mobile.SendMessage("No object with that serial was found.");
+                    }
                     else if (!m_Type.IsInstanceOfType(toSet))
+                    {
                         m_Mobile.SendMessage(
                             "The object with that serial could not be assigned to a property of type : {0}",
                             m_Type.Name
                         );
+                    }
                     else
+                    {
                         try
                         {
                             CommandLogging.LogChangeProperty(
@@ -285,6 +310,7 @@ namespace Server.Gumps
                         {
                             m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
                         }
+                    }
                 }
                 catch
                 {

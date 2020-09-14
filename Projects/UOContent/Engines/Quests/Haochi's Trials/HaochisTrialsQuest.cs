@@ -103,13 +103,19 @@ namespace Server.Engines.Quests.Samurai
         public static bool HasLostHaochisKatana(Mobile from)
         {
             if (!(from is PlayerMobile pm))
+            {
                 return false;
+            }
 
             var qs = pm.Quest;
 
             if (qs is HaochisTrialsQuest)
+            {
                 if (qs.IsObjectiveInProgress(typeof(FifthTrialReturnObjective)))
-                    return from.Backpack?.FindItemByType<HaochisKatana>() == null;
+                {
+                    return @from.Backpack?.FindItemByType<HaochisKatana>() == null;
+                }
+            }
 
             return false;
         }

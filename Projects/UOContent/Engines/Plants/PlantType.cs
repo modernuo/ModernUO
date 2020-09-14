@@ -247,7 +247,10 @@ namespace Server.Engines.Plants
             var index = (int)plantType;
 
             if (index >= 0 && index < m_Table.Length)
+            {
                 return m_Table[index];
+            }
+
             return m_Table[0];
         }
 
@@ -339,19 +342,40 @@ namespace Server.Engines.Plants
             var rand = Utility.RandomDouble();
 
             if (rand < 0.5 / exp4)
+            {
                 return PlantType.CommonGreenBonsai;
+            }
+
             if (rand < 1.0 / exp4)
+            {
                 return PlantType.CommonPinkBonsai;
+            }
+
             if (rand < (k1 * 0.5 + 1.0) / exp4)
+            {
                 return PlantType.UncommonGreenBonsai;
+            }
+
             if (rand < exp1 / exp4)
+            {
                 return PlantType.UncommonPinkBonsai;
+            }
+
             if (rand < (k2 * 0.5 + exp1) / exp4)
+            {
                 return PlantType.RareGreenBonsai;
+            }
+
             if (rand < exp2 / exp4)
+            {
                 return PlantType.RarePinkBonsai;
+            }
+
             if (rand < exp3 / exp4)
+            {
                 return PlantType.ExceptionalBonsai;
+            }
+
             return PlantType.ExoticBonsai;
         }
 
@@ -360,13 +384,18 @@ namespace Server.Engines.Plants
         public static PlantType Cross(PlantType first, PlantType second)
         {
             if (!IsCrossable(first) || !IsCrossable(second))
+            {
                 return PlantType.CampionFlowers;
+            }
 
             var firstIndex = (int)first;
             var secondIndex = (int)second;
 
             if (firstIndex + 1 == secondIndex || firstIndex == secondIndex + 1)
+            {
                 return Utility.RandomBool() ? first : second;
+            }
+
             return (PlantType)((firstIndex + secondIndex) / 2);
         }
 
@@ -375,7 +404,9 @@ namespace Server.Engines.Plants
         public int GetPlantLabelSeed(PlantHueInfo hueInfo)
         {
             if (m_PlantLabelSeed != -1)
+            {
                 return m_PlantLabelSeed;
+            }
 
             return
                 hueInfo.IsBright()
@@ -386,13 +417,18 @@ namespace Server.Engines.Plants
         public int GetPlantLabelPlant(PlantHueInfo hueInfo)
         {
             if (m_PlantLabelPlant != -1)
+            {
                 return m_PlantLabelPlant;
+            }
 
             if (ContainsPlant)
+            {
                 return
                     hueInfo.IsBright()
                         ? 1060832
                         : 1060831; // a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~
+            }
+
             return
                 hueInfo.IsBright()
                     ? 1061887
@@ -402,17 +438,24 @@ namespace Server.Engines.Plants
         public int GetPlantLabelFullGrown(PlantHueInfo hueInfo)
         {
             if (m_PlantLabelFullGrown != -1)
+            {
                 return m_PlantLabelFullGrown;
+            }
 
             if (ContainsPlant)
+            {
                 return hueInfo.IsBright() ? 1061891 : 1061889; // a ~1_HEALTH~ [bright] ~2_COLOR~ ~3_NAME~
+            }
+
             return hueInfo.IsBright() ? 1061892 : 1061890;     // a ~1_HEALTH~ [bright] ~2_COLOR~ ~3_NAME~ plant
         }
 
         public int GetPlantLabelDecorative(PlantHueInfo hueInfo)
         {
             if (m_PlantLabelDecorative != -1)
+            {
                 return m_PlantLabelDecorative;
+            }
 
             return hueInfo.IsBright() ? 1074267 : 1070973; // a decorative [bright] ~1_COLOR~ ~2_TYPE~
         }
@@ -420,7 +463,9 @@ namespace Server.Engines.Plants
         public int GetSeedLabel(PlantHueInfo hueInfo)
         {
             if (m_SeedLabel != -1)
+            {
                 return m_SeedLabel;
+            }
 
             return hueInfo.IsBright() ? 1061918 : 1061917; // [bright] ~1_COLOR~ ~2_TYPE~ seed
         }
@@ -428,7 +473,9 @@ namespace Server.Engines.Plants
         public int GetSeedLabelPlural(PlantHueInfo hueInfo)
         {
             if (m_SeedLabelPlural != -1)
+            {
                 return m_SeedLabelPlural;
+            }
 
             return hueInfo.IsBright() ? 1113493 : 1113492; // ~1_amount~ [bright] ~2_color~ ~3_type~ seeds
         }

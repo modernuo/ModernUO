@@ -35,7 +35,9 @@ namespace Server.Items
             base.OnSingleClick(from);
 
             if (!string.IsNullOrEmpty(m_Subtext))
-                LabelTo(from, m_Subtext);
+            {
+                LabelTo(@from, m_Subtext);
+            }
         }
 
         public override void AddNameProperties(ObjectPropertyList list)
@@ -43,7 +45,9 @@ namespace Server.Items
             base.AddNameProperties(list);
 
             if (!string.IsNullOrEmpty(m_Subtext))
+            {
                 list.Add(m_Subtext);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

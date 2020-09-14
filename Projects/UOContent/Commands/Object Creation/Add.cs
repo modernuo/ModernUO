@@ -64,14 +64,20 @@ namespace Server.Commands
             sb.AppendFormat("{0} {1} building ", from.AccessLevel, CommandLogging.Format(from));
 
             if (start == end)
-                sb.AppendFormat("at {0} in {1}", start, from.Map);
+            {
+                sb.AppendFormat("at {0} in {1}", start, @from.Map);
+            }
             else
-                sb.AppendFormat("from {0} to {1} in {2}", start, end, from.Map);
+            {
+                sb.AppendFormat("from {0} to {1} in {2}", start, end, @from.Map);
+            }
 
             sb.Append(":");
 
             for (var i = 0; i < args.Length; ++i)
+            {
                 sb.AppendFormat(" \"{0}\"", args[i]);
+            }
 
             CommandLogging.WriteLine(from, sb.ToString());
 
@@ -82,6 +88,7 @@ namespace Server.Commands
             string[,] props = null;
 
             for (var i = 0; i < args.Length; ++i)
+            {
                 if (Insensitive.Equals(args[i], "set"))
                 {
                     var remains = args.Length - i - 1;
@@ -103,6 +110,7 @@ namespace Server.Commands
 
                     break;
                 }
+            }
 
             var type = AssemblyHandler.FindFirstTypeForName(name);
 
@@ -117,14 +125,18 @@ namespace Server.Commands
             var built = BuildObjects(from, type, start, end, args, props, packs, outline, mapAvg);
 
             if (built > 0)
-                from.SendMessage(
+            {
+                @from.SendMessage(
                     "{0} object{1} generated in {2:F1} seconds.",
                     built,
                     built != 1 ? "s" : "",
                     (DateTime.UtcNow - time).TotalSeconds
                 );
+            }
             else
-                SendUsage(type, from);
+            {
+                SendUsage(type, @from);
+            }
         }
 
         public static void FixSetString(ref string[] args, int index)
@@ -166,8 +178,12 @@ namespace Server.Commands
                     var propName = props[i, 0];
 
                     for (var j = 0; thisProp == null && j < allProps.Length; ++j)
+                    {
                         if (Insensitive.Equals(propName, allProps[j].Name))
+                        {
                             thisProp = allProps[j];
+                        }
+                    }
 
                     if (thisProp == null)
                     {
@@ -178,17 +194,25 @@ namespace Server.Commands
                         var attr = Properties.GetCPA(thisProp);
 
                         if (attr == null)
-                            from.SendMessage("Property ({0}) not found.", propName);
+                        {
+                            @from.SendMessage("Property ({0}) not found.", propName);
+                        }
                         else if (from.AccessLevel < attr.WriteLevel)
-                            from.SendMessage(
+                        {
+                            @from.SendMessage(
                                 "Setting this property ({0}) requires at least {1} access level.",
                                 propName,
                                 Mobile.GetAccessLevelName(attr.WriteLevel)
                             );
+                        }
                         else if (!thisProp.CanWrite || attr.ReadOnly)
-                            from.SendMessage("Property ({0}) is read only.", propName);
+                        {
+                            @from.SendMessage("Property ({0}) is read only.", propName);
+                        }
                         else
+                        {
                             realProps[i] = thisProp;
+                        }
                     }
                 }
             }
@@ -200,7 +224,9 @@ namespace Server.Commands
                 var ctor = ctors[i];
 
                 if (!IsConstructible(ctor, from.AccessLevel))
+                {
                     continue;
+                }
 
                 // Handle optional constructors
                 var paramList = ctor.GetParameters();
@@ -211,12 +237,16 @@ namespace Server.Commands
                     var paramValues = ParseValues(paramList, args);
 
                     if (paramValues == null)
+                    {
                         continue;
+                    }
 
                     var built = Build(from, start, end, ctor, paramValues, props, realProps, packs, outline, mapAvg);
 
                     if (built > 0)
+                    {
                         return built;
+                    }
                 }
             }
 
@@ -233,11 +263,17 @@ namespace Server.Commands
                 var value = ParseValue(param.ParameterType, a < args.Length ? args[a++] : null);
 
                 if (value != null)
+                {
                     values[i] = value;
+                }
                 else if (param.HasDefaultValue)
+                {
                     values[i] = Type.Missing;
+                }
                 else
+                {
                     return null;
+                }
             }
 
             return values;
@@ -247,23 +283,43 @@ namespace Server.Commands
         {
             try
             {
-                if (IsEnum(type)) return Enum.Parse(type, value, true);
-                if (IsType(type)) return AssemblyHandler.FindFirstTypeForName(value);
-                if (IsParsable(type)) return ParseParsable(type, value);
+                if (IsEnum(type))
+                {
+                    return Enum.Parse(type, value, true);
+                }
+
+                if (IsType(type))
+                {
+                    return AssemblyHandler.FindFirstTypeForName(value);
+                }
+
+                if (IsParsable(type))
+                {
+                    return ParseParsable(type, value);
+                }
+
                 object obj = value;
 
                 if (value?.StartsWith("0x") == true)
                 {
                     if (IsSignedNumeric(type))
+                    {
                         obj = Convert.ToInt64(value.Substring(2), 16);
+                    }
                     else if (IsUnsignedNumeric(type))
+                    {
                         obj = Convert.ToUInt64(value.Substring(2), 16);
+                    }
                     else
+                    {
                         obj = Convert.ToInt32(value.Substring(2), 16);
+                    }
                 }
 
                 if (obj == null && !type.IsValueType)
+                {
                     return null;
+                }
 
                 return Convert.ChangeType(obj, type);
             }
@@ -287,7 +343,9 @@ namespace Server.Commands
                 for (var i = 0; i < realProps.Length; ++i)
                 {
                     if (realProps[i] == null)
+                    {
                         continue;
+                    }
 
                     var result =
                         Properties.InternalSetValue(from, built, built, realProps[i], props[i, 1], props[i, 1], false);
@@ -295,14 +353,18 @@ namespace Server.Commands
                     if (result != "Property has been set.")
                     {
                         if (sendError)
-                            from.SendMessage(result);
+                        {
+                            @from.SendMessage(result);
+                        }
 
                         hadError = true;
                     }
                 }
 
                 if (hadError)
+                {
                     sendError = false;
+                }
             }
 
             return (IEntity)built;
@@ -321,19 +383,29 @@ namespace Server.Commands
                 var height = end.Y - start.Y + 1;
 
                 if (outline && (width < 3 || height < 3))
+                {
                     outline = false;
+                }
 
                 int objectCount;
 
                 if (packs != null)
+                {
                     objectCount = packs.Count;
+                }
                 else if (outline)
+                {
                     objectCount = (width + height - 2) * 2;
+                }
                 else
+                {
                     objectCount = width * height;
+                }
 
                 if (objectCount >= 20)
-                    from.SendMessage("Constructing {0} objects, please wait.", objectCount);
+                {
+                    @from.SendMessage("Constructing {0} objects, please wait.", objectCount);
+                }
 
                 var sendError = true;
 
@@ -349,9 +421,13 @@ namespace Server.Commands
                         sb.AppendFormat("0x{0:X}; ", built.Serial.Value);
 
                         if (built is Item item)
+                        {
                             packs[i].DropItem(item);
+                        }
                         else if (built is Mobile m)
+                        {
                             m.MoveToWorld(new Point3D(start.X, start.Y, start.Z), map);
+                        }
                     }
                 }
                 else
@@ -359,23 +435,33 @@ namespace Server.Commands
                     var z = start.Z;
 
                     for (var x = start.X; x <= end.X; ++x)
+                    {
                         for (var y = start.Y; y <= end.Y; ++y)
                         {
                             if (outline && x != start.X && x != end.X && y != start.Y && y != end.Y)
+                            {
                                 continue;
+                            }
 
                             if (mapAvg)
+                            {
                                 z = map.GetAverageZ(x, y);
+                            }
 
-                            var built = Build(from, ctor, values, props, realProps, ref sendError);
+                            var built = Build(@from, ctor, values, props, realProps, ref sendError);
 
                             sb.AppendFormat("0x{0:X}; ", built.Serial.Value);
 
                             if (built is Item item)
+                            {
                                 item.MoveToWorld(new Point3D(x, y, z), map);
+                            }
                             else if (built is Mobile m)
+                            {
                                 m.MoveToWorld(new Point3D(x, y, z), map);
+                            }
                         }
+                    }
                 }
 
                 CommandLogging.WriteLine(from, sb.ToString());
@@ -399,7 +485,9 @@ namespace Server.Commands
                 var ctor = ctors[i];
 
                 if (!IsConstructible(ctor, from.AccessLevel))
+                {
                     continue;
+                }
 
                 if (!foundCtor)
                 {
@@ -411,7 +499,9 @@ namespace Server.Commands
             }
 
             if (!foundCtor)
-                from.SendMessage("That type is not marked constructible.");
+            {
+                @from.SendMessage("That type is not marked constructible.");
+            }
         }
 
         public static void SendCtor(Type type, ConstructorInfo ctor, Mobile from)
@@ -425,7 +515,9 @@ namespace Server.Commands
             for (var i = 0; i < paramList.Length; ++i)
             {
                 if (i != 0)
+                {
                     sb.Append(',');
+                }
 
                 sb.Append(' ');
 
@@ -463,16 +555,20 @@ namespace Server.Commands
             var from = e.Mobile;
 
             if (e.Length >= 1)
+            {
                 BoundingBoxPicker.Begin(
-                    from,
+                    @from,
                     (map, start, end) =>
-                        TileBox_Callback(from, start, end, new TileState(TileZType.Start, 0, e.Arguments, outline))
+                        TileBox_Callback(@from, start, end, new TileState(TileZType.Start, 0, e.Arguments, outline))
                 );
+            }
             else
-                from.SendMessage(
+            {
+                @from.SendMessage(
                     "Format: {0} <type> [params] [set {{<propertyName> <value> ...}}]",
                     outline ? "Outline" : "Tile"
                 );
+            }
         }
 
         private static void InternalRXYZ_OnCommand(CommandEventArgs e, bool outline)
@@ -485,7 +581,9 @@ namespace Server.Commands
                 var subArgs = new string[e.Length - 5];
 
                 for (var i = 0; i < subArgs.Length; ++i)
+                {
                     subArgs[i] = e.Arguments[i + 5];
+                }
 
                 Invoke(e.Mobile, p, p2, subArgs, null, outline);
             }
@@ -508,7 +606,9 @@ namespace Server.Commands
                 var subArgs = new string[e.Length - 5];
 
                 for (var i = 0; i < subArgs.Length; ++i)
+                {
                     subArgs[i] = e.Arguments[i + 5];
+                }
 
                 Invoke(e.Mobile, p, p2, subArgs, null, outline);
             }
@@ -530,7 +630,9 @@ namespace Server.Commands
                 var subArgs = new string[e.Length - 1];
 
                 for (var i = 0; i < subArgs.Length; ++i)
+                {
                     subArgs[i] = e.Arguments[i + 1];
+                }
 
                 BoundingBoxPicker.Begin(
                     from,
@@ -552,16 +654,20 @@ namespace Server.Commands
             var from = e.Mobile;
 
             if (e.Length >= 1)
+            {
                 BoundingBoxPicker.Begin(
-                    from,
+                    @from,
                     (map, start, end) =>
-                        TileBox_Callback(from, start, end, new TileState(TileZType.MapAverage, 0, e.Arguments, outline))
+                        TileBox_Callback(@from, start, end, new TileState(TileZType.MapAverage, 0, e.Arguments, outline))
                 );
+            }
             else
-                from.SendMessage(
+            {
+                @from.SendMessage(
                     "Format: {0}Avg <type> [params] [set {{<propertyName> <value> ...}}]",
                     outline ? "Outline" : "Tile"
                 );
+            }
         }
 
         [Usage("Tile <name> [params] [set {<propertyName> <value> ...}]")]
@@ -681,8 +787,12 @@ namespace Server.Commands
         public static bool IsSignedNumeric(Type type)
         {
             for (var i = 0; i < m_SignedNumerics.Length; ++i)
+            {
                 if (type == m_SignedNumerics[i])
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -690,8 +800,12 @@ namespace Server.Commands
         public static bool IsUnsignedNumeric(Type type)
         {
             for (var i = 0; i < m_UnsignedNumerics.Length; ++i)
+            {
                 if (type == m_UnsignedNumerics[i])
+                {
                     return true;
+                }
+            }
 
             return false;
         }

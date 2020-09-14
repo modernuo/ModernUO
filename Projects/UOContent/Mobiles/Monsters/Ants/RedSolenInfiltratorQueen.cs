@@ -66,7 +66,10 @@ namespace Server.Mobiles
         public override bool IsEnemy(Mobile m)
         {
             if (SolenHelper.CheckRedFriendship(m))
+            {
                 return false;
+            }
+
             return base.IsEnemy(m);
         }
 

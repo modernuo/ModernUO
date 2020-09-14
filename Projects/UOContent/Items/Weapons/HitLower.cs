@@ -16,7 +16,9 @@ namespace Server.Items
         public static bool ApplyAttack(Mobile m)
         {
             if (IsUnderAttackEffect(m))
+            {
                 return false;
+            }
 
             m_AttackTable.Add(m);
             var timer = new AttackTimer(m);
@@ -36,7 +38,9 @@ namespace Server.Items
         public static bool ApplyDefense(Mobile m)
         {
             if (IsUnderDefenseEffect(m))
+            {
                 return false;
+            }
 
             m_DefenseTable.Add(m);
             var timer = new DefenseTimer(m);

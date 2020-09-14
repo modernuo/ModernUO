@@ -57,13 +57,17 @@ namespace Server.Items
             base.GetContextMenuEntries(from, list);
 
             if (from.Alive && Movable)
+            {
                 list.Add(new AddToSpellbookEntry());
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (!DesignContext.Check(from))
+            {
                 return; // They are customizing
+            }
 
             if (!IsChildOf(from.Backpack))
             {
@@ -74,9 +78,13 @@ namespace Server.Items
             var spell = SpellRegistry.NewSpell(SpellID, from, this);
 
             if (spell != null)
+            {
                 spell.Cast();
+            }
             else
-                from.SendLocalizedMessage(502345); // This spell has been temporarily disabled.
+            {
+                @from.SendLocalizedMessage(502345); // This spell has been temporarily disabled.
+            }
         }
     }
 }

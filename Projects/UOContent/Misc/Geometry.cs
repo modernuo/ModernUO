@@ -37,13 +37,19 @@ namespace Server.Misc
         public static void Circle2D(Point3D loc, Map map, int radius, DoEffect_Callback effect, int angleStart, int angleEnd)
         {
             if (angleStart < 0 || angleStart > 360)
+            {
                 angleStart = 0;
+            }
 
             if (angleEnd > 360 || angleEnd < 0)
+            {
                 angleEnd = 360;
+            }
 
             if (angleStart == angleEnd)
+            {
                 return;
+            }
 
             var opposite = angleStart > angleEnd;
 
@@ -95,22 +101,36 @@ namespace Server.Misc
             var quadrant = 2;
 
             if (x == 0 && start.Quadrant == 3)
+            {
                 quadrant = 3;
+            }
 
             if (WithinCircleBounds(quadrant == 3 ? pointB : pointA, quadrant, loc, start, end, opposite))
+            {
                 effect(new Point3D(loc.X + x, loc.Y + y, loc.Z), map);
+            }
 
             quadrant = 3;
 
             if (y == 0 && start.Quadrant == 0)
+            {
                 quadrant = 0;
+            }
 
             if (x != 0 && WithinCircleBounds(quadrant == 0 ? pointA : pointB, quadrant, loc, start, end, opposite))
+            {
                 effect(new Point3D(loc.X - x, loc.Y + y, loc.Z), map);
+            }
+
             if (y != 0 && WithinCircleBounds(pointB, 1, loc, start, end, opposite))
+            {
                 effect(new Point3D(loc.X + x, loc.Y - y, loc.Z), map);
+            }
+
             if (x != 0 && y != 0 && WithinCircleBounds(pointA, 0, loc, start, end, opposite))
+            {
                 effect(new Point3D(loc.X - x, loc.Y - y, loc.Z), map);
+            }
         }
 
         public static bool WithinCircleBounds(
@@ -119,7 +139,9 @@ namespace Server.Misc
         )
         {
             if (start.Angle == 0 && end.Angle == 360)
+            {
                 return true;
+            }
 
             var startX = start.Point.X;
             var startY = start.Point.Y;
@@ -130,21 +152,31 @@ namespace Server.Misc
             var y = pointLoc.Y;
 
             if (pointQuadrant < start.Quadrant || pointQuadrant > end.Quadrant)
+            {
                 return opposite;
+            }
 
             if (pointQuadrant > start.Quadrant && pointQuadrant < end.Quadrant)
+            {
                 return !opposite;
+            }
 
             var withinBounds = true;
 
             if (start.Quadrant == end.Quadrant)
             {
                 if (startX == endX && (x > startX || y > startY || y < endY))
+                {
                     withinBounds = false;
+                }
                 else if (startY == endY && (y < startY || x < startX || x > endX))
+                {
                     withinBounds = false;
+                }
                 else if (x < startX || x > endX || y > startY || y < endY)
+                {
                     withinBounds = false;
+                }
             }
             else if (pointQuadrant == start.Quadrant && (x < startX || y > startY))
             {
@@ -188,9 +220,13 @@ namespace Server.Misc
             for (var x = x0; x <= x1; x++)
             {
                 if (steep)
+                {
                     effect(new Point3D(y, x, start.Z), map);
+                }
                 else
+                {
                     effect(new Point3D(x, y, start.Z), map);
+                }
 
                 error -= deltay;
 

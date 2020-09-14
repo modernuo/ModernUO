@@ -37,7 +37,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_IsRewardItem)
+            {
                 list.Add(1076217); // 1st Year Veteran Reward
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -63,7 +65,9 @@ namespace Server.Items
             var parent = deed;
 
             while (parent != null && !(parent is CommodityDeedBox))
+            {
                 parent = parent.Parent as Item;
+            }
 
             return parent as CommodityDeedBox;
         }

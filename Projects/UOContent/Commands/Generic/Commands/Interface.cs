@@ -29,10 +29,14 @@ namespace Server.Commands.Generic
                     var offset = 0;
 
                     if (Insensitive.Equals(e.GetString(0), "view"))
+                    {
                         ++offset;
+                    }
 
                     while (offset < e.Length)
+                    {
                         columns.Add(e.GetString(offset++));
+                    }
                 }
 
                 e.Mobile.SendGump(new InterfaceGump(e.Mobile, columns.ToArray(), list, 0, null));
@@ -75,9 +79,13 @@ namespace Server.Commands.Generic
             AddNewPage();
 
             if (m_Page > 0)
+            {
                 AddEntryButton(20, ArrowLeftID1, ArrowLeftID2, 1, ArrowLeftWidth, ArrowLeftHeight);
+            }
             else
+            {
                 AddEntryHeader(20);
+            }
 
             AddEntryHtml(
                 40 + m_Columns.Length * 130 - 20 + (m_Columns.Length - 2) * OffsetSize,
@@ -87,9 +95,13 @@ namespace Server.Commands.Generic
             );
 
             if ((m_Page + 1) * EntriesPerPage < m_List.Count)
+            {
                 AddEntryButton(20, ArrowRightID1, ArrowRightID2, 2, ArrowRightWidth, ArrowRightHeight);
+            }
             else
+            {
                 AddEntryHeader(20);
+            }
 
             if (m_Columns.Length > 1)
             {
@@ -119,7 +131,9 @@ namespace Server.Commands.Generic
                                 for (var j = 0; j < chain.Length; ++j)
                                 {
                                     if (j > 0)
+                                    {
                                         m_Columns[i] += '.';
+                                    }
 
                                     m_Columns[i] += chain[j].Name;
                                 }
@@ -143,12 +157,16 @@ namespace Server.Commands.Generic
                 if (obj is Item item)
                 {
                     if (!(isDeleted = item.Deleted))
+                    {
                         AddEntryHtml(40 + 130, item.GetType().Name);
+                    }
                 }
                 else if (obj is Mobile mob)
                 {
                     if (!(isDeleted = mob.Deleted))
+                    {
                         AddEntryHtml(40 + 130, mob.Name);
+                    }
                 }
 
                 if (isDeleted)
@@ -156,7 +174,9 @@ namespace Server.Commands.Generic
                     AddEntryHtml(40 + 130, "(deleted)");
 
                     for (var j = 1; j < m_Columns.Length; ++j)
+                    {
                         AddEntryHtml(130, "---");
+                    }
 
                     AddEntryHeader(20);
                 }
@@ -186,9 +206,13 @@ namespace Server.Commands.Generic
                             var p = Properties.GetPropertyInfo(ref src, chain, ref failReason);
 
                             if (p == null)
+                            {
                                 value = "---";
+                            }
                             else
+                            {
                                 value = PropertiesGump.ValueToString(src, p);
+                            }
                         }
 
                         AddEntryHtml(130, value);
@@ -217,14 +241,18 @@ namespace Server.Commands.Generic
                 case 1:
                     {
                         if (m_Page > 0)
+                        {
                             m_From.SendGump(new InterfaceGump(m_From, m_Columns, m_List, m_Page - 1, m_Select));
+                        }
 
                         break;
                     }
                 case 2:
                     {
                         if ((m_Page + 1) * EntriesPerPage < m_List.Count)
+                        {
                             m_From.SendGump(new InterfaceGump(m_From, m_Columns, m_List, m_Page + 1, m_Select));
+                        }
 
                         break;
                     }
@@ -244,11 +272,17 @@ namespace Server.Commands.Generic
                             }
 
                             if (obj is Item item && !item.Deleted)
+                            {
                                 m_From.SendGump(new InterfaceItemGump(m_From, m_Columns, m_List, m_Page, item));
+                            }
                             else if (obj is Mobile mobile && !mobile.Deleted)
+                            {
                                 m_From.SendGump(new InterfaceMobileGump(m_From, m_Columns, m_List, m_Page, mobile));
+                            }
                             else
+                            {
                                 m_From.SendGump(new InterfaceGump(m_From, m_Columns, m_List, m_Page, m_Select));
+                            }
                         }
 
                         break;
@@ -561,7 +595,9 @@ namespace Server.Commands.Generic
                 case 7: // Kill
                     {
                         if (m_From == m_Mobile || m_From.AccessLevel > m_Mobile.AccessLevel)
+                        {
                             m_Mobile.Kill();
+                        }
 
                         m_From.SendGump(new InterfaceMobileGump(m_From, m_Columns, m_List, m_Page, m_Mobile));
 
@@ -586,7 +622,9 @@ namespace Server.Commands.Generic
                         m_From.SendGump(new InterfaceMobileGump(m_From, m_Columns, m_List, m_Page, m_Mobile));
 
                         if (m_Mobile.NetState != null)
+                        {
                             m_From.SendGump(new ClientGump(m_From, m_Mobile.NetState));
+                        }
 
                         break;
                     }

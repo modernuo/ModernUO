@@ -9,9 +9,13 @@ namespace Server.Items
             Movable = false;
 
             if (Instance?.Deleted != false)
+            {
                 Instance = this;
+            }
             else
+            {
                 base.Delete();
+            }
         }
 
         public DisguisePersistance(Serial serial) : base(serial) => Instance = this;

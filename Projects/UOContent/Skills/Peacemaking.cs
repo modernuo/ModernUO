@@ -45,7 +45,9 @@ namespace Server.SkillHandlers
             protected override void OnTargetFinish(Mobile from)
             {
                 if (m_SetSkillTime)
-                    from.NextSkillTime = Core.TickCount;
+                {
+                    @from.NextSkillTime = Core.TickCount;
+                }
             }
 
             protected override void OnTarget(Mobile from, object targeted)
@@ -110,7 +112,9 @@ namespace Server.SkillHandlers
                                     var bc = m as BaseCreature;
                                     if (bc?.Uncalmable == true || bc?.AreaPeaceImmune == true || m == from ||
                                         !from.CanBeHarmful(m, false))
+                                    {
                                         continue;
+                                    }
 
                                     calmed = true;
 
@@ -121,15 +125,21 @@ namespace Server.SkillHandlers
                                     m.Warmode = false;
 
                                     if (bc?.BardPacified == false)
-                                        bc.Pacify(from, DateTime.UtcNow + TimeSpan.FromSeconds(1.0));
+                                    {
+                                        bc.Pacify(@from, DateTime.UtcNow + TimeSpan.FromSeconds(1.0));
+                                    }
                                 }
 
                                 if (!calmed)
-                                    from.SendLocalizedMessage(
+                                {
+                                    @from.SendLocalizedMessage(
                                         1049648
                                     ); // You play hypnotic music, but there is nothing in range for you to calm.
+                                }
                                 else
-                                    from.SendLocalizedMessage(500615); // You play your hypnotic music, stopping the battle.
+                                {
+                                    @from.SendLocalizedMessage(500615); // You play your hypnotic music, stopping the battle.
+                                }
                             }
                         }
                     }
@@ -166,7 +176,9 @@ namespace Server.SkillHandlers
                             var music = from.Skills.Musicianship.Value;
 
                             if (music > 100.0)
+                            {
                                 diff -= (music - 100.0) * 0.5;
+                            }
 
                             if (!from.CheckTargetSkill(SkillName.Peacemaking, targ, diff - 25.0, diff + 25.0))
                             {
@@ -190,9 +202,13 @@ namespace Server.SkillHandlers
                                     var seconds = 100 - diff / 1.5;
 
                                     if (seconds > 120)
+                                    {
                                         seconds = 120;
+                                    }
                                     else if (seconds < 10)
+                                    {
                                         seconds = 10;
+                                    }
 
                                     bc.Pacify(from, DateTime.UtcNow + TimeSpan.FromSeconds(seconds));
                                 }

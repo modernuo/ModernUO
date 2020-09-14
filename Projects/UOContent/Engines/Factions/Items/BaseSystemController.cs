@@ -20,7 +20,9 @@ namespace Server.Factions
             get
             {
                 if (m_LabelNumber > 0)
+                {
                     return m_LabelNumber;
+                }
 
                 return DefaultLabelNumber;
             }

@@ -69,30 +69,50 @@ namespace Server.Commands.Generic
             else
             {
                 if (Value is int i)
+                {
                     method.Load(i);
+                }
                 else if (Value is long l)
+                {
                     method.Load(l);
+                }
                 else if (Value is float f)
+                {
                     method.Load(f);
+                }
                 else if (Value is double d)
+                {
                     method.Load(d);
+                }
                 else if (Value is char c)
+                {
                     method.Load(c);
+                }
                 else if (Value is bool b)
+                {
                     method.Load(b);
+                }
                 else if (Value is string s)
+                {
                     method.Load(s);
+                }
                 else if (Value is Enum e)
+                {
                     method.Load(e);
+                }
                 else
+                {
                     throw new InvalidOperationException("Unrecognized comparison value.");
+                }
             }
         }
 
         public void Acquire(TypeBuilder typeBuilder, ILGenerator il, string fieldName)
         {
             if (!(Value is string toParse))
+            {
                 return;
+            }
 
             if (!Type.IsValueType && toParse == "null")
             {
@@ -101,7 +121,9 @@ namespace Server.Commands.Generic
             else if (Type == typeof(string))
             {
                 if (toParse == @"@""null""")
+                {
                     toParse = "null";
+                }
 
                 Value = toParse;
             }
@@ -169,7 +191,9 @@ namespace Server.Commands.Generic
                         il.Emit(OpCodes.Ldstr, toParse);
 
                         if (parseArgs.Length == 2) // dirty evil hack :-(
+                        {
                             il.Emit(OpCodes.Ldc_I4, (int)parseArgs[1]);
+                        }
 
                         il.Emit(OpCodes.Call, parseMethod);
                         il.Emit(OpCodes.Stfld, Field);
@@ -330,7 +354,9 @@ namespace Server.Commands.Generic
             }
 
             if (m_Not != inverse)
+            {
                 emitter.LogicalNot();
+            }
         }
     }
 
@@ -437,7 +463,9 @@ namespace Server.Commands.Generic
             }
 
             if (m_Not != inverse)
+            {
                 emitter.LogicalNot();
+            }
         }
     }
 
@@ -464,7 +492,9 @@ namespace Server.Commands.Generic
                 il.Emit(OpCodes.Call, typeof(object).GetConstructor(Type.EmptyTypes));
 
                 for (var i = 0; i < conditions.Length; ++i)
+                {
                     conditions[i].Construct(typeBuilder, il, i);
+                }
 
                 // return;
                 il.Emit(OpCodes.Ret);

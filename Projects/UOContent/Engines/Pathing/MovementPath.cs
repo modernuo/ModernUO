@@ -20,17 +20,23 @@ namespace Server
             Goal = goal;
 
             if (map == null || map == Map.Internal)
+            {
                 return;
+            }
 
             if (Utility.InRange(start, goal, 1))
+            {
                 return;
+            }
 
             try
             {
                 var alg = OverrideAlgorithm ?? FastAStarAlgorithm.Instance;
 
                 if (alg?.CheckCondition(m, map, start, goal) == true)
+                {
                     Directions = alg.Find(m, map, start, goal);
+                }
             }
             catch (Exception e)
             {
@@ -94,7 +100,9 @@ namespace Server
         public static void Path_OnTarget(Mobile from, object targeted)
         {
             if (!(targeted is IPoint3D p))
+            {
                 return;
+            }
 
             SpellHelper.GetSurfaceTop(ref p);
 

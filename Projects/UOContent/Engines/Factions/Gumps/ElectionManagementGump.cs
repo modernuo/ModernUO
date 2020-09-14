@@ -44,14 +44,22 @@ namespace Server.Factions
                 AddHtml(14, 100, 420, 20, Color(Center("Voters"), LabelColor));
 
                 if (page > 0)
+                {
                     AddButton(397, 104, 0x15E3, 0x15E7, 2);
+                }
                 else
+                {
                     AddImage(397, 104, 0x25EA);
+                }
 
                 if ((page + 1) * 10 < candidate.Voters.Count)
+                {
                     AddButton(414, 104, 0x15E1, 0x15E5, 3);
+                }
                 else
+                {
                     AddImage(414, 104, 0x25E6);
+                }
 
                 AddHtml(14, 120, 30, 20, Color(Center("DEL"), LabelColor));
                 AddHtml(47, 120, 150, 20, Color("Name", LabelColor));
@@ -133,7 +141,9 @@ namespace Server.Factions
                     var mob = cd.Mobile;
 
                     if (mob == null)
+                    {
                         continue;
+                    }
 
                     AddButton(13, 118 + i * 20, 4005, 4007, 2 + i);
                     AddHtml(47, 120 + i * 20, 150, 20, Color(mob.Name, LabelColor));
@@ -169,7 +179,9 @@ namespace Server.Factions
                     bid -= 2;
 
                     if (bid >= 0 && bid < m_Election.Candidates.Count)
-                        from.SendGump(new ElectionManagementGump(m_Election, m_Election.Candidates[bid]));
+                    {
+                        @from.SendGump(new ElectionManagementGump(m_Election, m_Election.Candidates[bid]));
+                    }
                 }
             }
             else

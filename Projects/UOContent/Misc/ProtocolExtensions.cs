@@ -20,7 +20,9 @@ namespace Server.Misc
         public static PacketHandler GetHandler(int packetID)
         {
             if (packetID >= 0 && packetID < m_Handlers.Length)
+            {
                 return m_Handlers[packetID];
+            }
 
             return null;
         }

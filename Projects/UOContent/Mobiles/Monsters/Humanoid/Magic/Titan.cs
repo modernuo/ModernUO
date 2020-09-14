@@ -38,7 +38,9 @@ namespace Server.Mobiles
             VirtualArmor = 40;
 
             if (Core.ML && Utility.RandomDouble() < .33)
+            {
                 PackItem(Seed.RandomPeculiarSeed(1));
+            }
         }
 
         public Titan(Serial serial) : base(serial)

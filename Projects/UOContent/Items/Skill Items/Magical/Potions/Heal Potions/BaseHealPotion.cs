@@ -61,7 +61,9 @@ namespace Server.Items
                         PlayDrinkEffect(from);
 
                         if (!DuelContext.IsFreeConsume(from))
+                        {
                             Consume();
+                        }
 
                         Timer.DelayCall(TimeSpan.FromSeconds(Delay), from.EndAction<BaseHealPotion>);
                     }

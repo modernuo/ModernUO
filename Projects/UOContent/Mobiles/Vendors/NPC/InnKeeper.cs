@@ -24,7 +24,9 @@ namespace Server.Mobiles
             m_SBInfos.Add(new SBInnKeeper());
 
             if (IsTokunoVendor)
+            {
                 m_SBInfos.Add(new SBSEFood());
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

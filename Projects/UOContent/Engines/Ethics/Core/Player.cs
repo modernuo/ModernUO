@@ -69,10 +69,14 @@ namespace Server.Ethics
             get
             {
                 if (m_Shield == DateTime.MinValue)
+                {
                     return false;
+                }
 
                 if (DateTime.UtcNow < m_Shield + TimeSpan.FromHours(1.0))
+                {
                     return true;
+                }
 
                 FinishShield();
                 return false;
@@ -90,19 +94,27 @@ namespace Server.Ethics
                 if (inherit && mob is BaseCreature bc)
                 {
                     if (bc.Controlled)
+                    {
                         pm = bc.ControlMaster as PlayerMobile;
+                    }
                     else if (bc.Summoned)
+                    {
                         pm = bc.SummonMaster as PlayerMobile;
+                    }
                 }
 
                 if (pm == null)
+                {
                     return null;
+                }
             }
 
             var pl = pm.EthicPlayer;
 
             if (pl?.Ethic.IsEligible(pl.Mobile) == false)
+            {
                 pm.EthicPlayer = pl = null;
+            }
 
             return pl;
         }
@@ -120,13 +132,17 @@ namespace Server.Ethics
         public void CheckAttach()
         {
             if (Ethic.IsEligible(Mobile))
+            {
                 Attach();
+            }
         }
 
         public void Attach()
         {
             if (Mobile is PlayerMobile mobile)
+            {
                 mobile.EthicPlayer = this;
+            }
 
             Ethic.Players.Add(this);
         }
@@ -134,7 +150,9 @@ namespace Server.Ethics
         public void Detach()
         {
             if (Mobile is PlayerMobile mobile)
+            {
                 mobile.EthicPlayer = null;
+            }
 
             Ethic.Players.Remove(this);
         }

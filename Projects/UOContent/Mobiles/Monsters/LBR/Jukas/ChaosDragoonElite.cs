@@ -139,7 +139,9 @@ namespace Server.Mobiles
             if (mount != null)
             {
                 if (mount is SwampDragon dragon)
+                {
                     dragon.HasBarding = false;
+                }
 
                 mount.Rider = null;
             }
@@ -151,7 +153,9 @@ namespace Server.Mobiles
         {
             if (to is Dragon || to is WhiteWyrm || to is SwampDragon || to is Drake || to is Nightmare || to is Hiryu ||
                 to is LesserHiryu || to is Daemon)
+            {
                 damage *= 3;
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

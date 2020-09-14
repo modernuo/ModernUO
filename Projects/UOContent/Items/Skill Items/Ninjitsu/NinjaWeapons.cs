@@ -46,7 +46,9 @@ namespace Server.Items
         public static void AttemptShoot(PlayerMobile from, INinjaWeapon weapon)
         {
             if (CanUseWeapon(from, weapon))
-                from.BeginTarget(weapon.WeaponMaxRange, false, TargetFlags.Harmful, OnTarget, weapon);
+            {
+                @from.BeginTarget(weapon.WeaponMaxRange, false, TargetFlags.Harmful, OnTarget, weapon);
+            }
         }
 
         private static void Shoot(PlayerMobile from, Mobile target, INinjaWeapon weapon)
@@ -66,7 +68,9 @@ namespace Server.Items
                     ConsumeUse(weapon);
 
                     if (CombatCheck(from, target))
-                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnHit, from, target, weapon);
+                    {
+                        Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnHit, @from, target, weapon);
+                    }
 
                     Timer.DelayCall(TimeSpan.FromSeconds(2.5), ResetUsing, from);
                 }
@@ -117,26 +121,36 @@ namespace Server.Items
                     else
                     {
                         if (weapon.UsesRemaining > 0)
+                        {
                             if (weapon.Poison == null && ammo.Poison != null
                                 || weapon.Poison != null && ammo.Poison != null && weapon.Poison.Level != ammo.Poison.Level)
                             {
-                                Unload(from, weapon);
+                                Unload(@from, weapon);
                                 need = Math.Min(MaxUses, ammo.UsesRemaining);
                             }
+                        }
 
                         var poisonneeded = Math.Min(MaxUses - weapon.PoisonCharges, ammo.PoisonCharges);
 
                         weapon.UsesRemaining += need;
                         weapon.PoisonCharges += poisonneeded;
 
-                        if (weapon.PoisonCharges > 0) weapon.Poison = ammo.Poison;
+                        if (weapon.PoisonCharges > 0)
+                        {
+                            weapon.Poison = ammo.Poison;
+                        }
 
                         ammo.PoisonCharges -= poisonneeded;
                         ammo.UsesRemaining -= need;
 
                         if (ammo.UsesRemaining < 1)
+                        {
                             ((Item)ammo).Delete();
-                        else if (ammo.PoisonCharges < 1) ammo.Poison = null;
+                        }
+                        else if (ammo.PoisonCharges < 1)
+                        {
+                            ammo.Poison = null;
+                        }
                     }
                 } // "else" here would mean they targeted "ammo" with 0 uses.  undefined behavior.
             }
@@ -168,7 +182,10 @@ namespace Server.Items
                 {
                     if (!from.NinjaWepCooldown)
                     {
-                        if (BasePotion.HasFreeHand(from)) return true;
+                        if (BasePotion.HasFreeHand(from))
+                        {
+                            return true;
+                        }
 
                         from.SendLocalizedMessage(weapon.NoFreeHandMessage);
                     }
@@ -196,40 +213,73 @@ namespace Server.Items
             var atSkillValue = attacker.Skills.Ninjitsu.Value;
             var defSkillValue = defWeapon?.GetDefendSkillValue(attacker, defender) ?? 0.0;
 
-            if (defSkillValue <= -20.0) defSkillValue = -19.9;
+            if (defSkillValue <= -20.0)
+            {
+                defSkillValue = -19.9;
+            }
 
             double attackValue = AosAttributes.GetValue(attacker, AosAttribute.AttackChance);
 
-            if (DivineFurySpell.UnderEffect(attacker)) attackValue += 10;
+            if (DivineFurySpell.UnderEffect(attacker))
+            {
+                attackValue += 10;
+            }
 
             if (AnimalForm.UnderTransformation(attacker, typeof(GreyWolf)) ||
-                AnimalForm.UnderTransformation(attacker, typeof(BakeKitsune))) attackValue += 20;
+                AnimalForm.UnderTransformation(attacker, typeof(BakeKitsune)))
+            {
+                attackValue += 20;
+            }
 
-            if (HitLower.IsUnderAttackEffect(attacker)) attackValue -= 25;
+            if (HitLower.IsUnderAttackEffect(attacker))
+            {
+                attackValue -= 25;
+            }
 
-            if (attackValue > 45) attackValue = 45;
+            if (attackValue > 45)
+            {
+                attackValue = 45;
+            }
 
             attackValue = (atSkillValue + 20.0) * (100 + attackValue);
 
             double defenseValue = AosAttributes.GetValue(defender, AosAttribute.DefendChance);
 
-            if (DivineFurySpell.UnderEffect(defender)) defenseValue -= 20;
+            if (DivineFurySpell.UnderEffect(defender))
+            {
+                defenseValue -= 20;
+            }
 
-            if (HitLower.IsUnderDefenseEffect(defender)) defenseValue -= 25;
+            if (HitLower.IsUnderDefenseEffect(defender))
+            {
+                defenseValue -= 25;
+            }
 
             var refBonus = 0;
 
-            if (Block.GetBonus(defender, ref refBonus)) defenseValue += refBonus;
+            if (Block.GetBonus(defender, ref refBonus))
+            {
+                defenseValue += refBonus;
+            }
 
-            if (Discordance.GetEffect(attacker, ref refBonus)) defenseValue -= refBonus;
+            if (Discordance.GetEffect(attacker, ref refBonus))
+            {
+                defenseValue -= refBonus;
+            }
 
-            if (defenseValue > 45) defenseValue = 45;
+            if (defenseValue > 45)
+            {
+                defenseValue = 45;
+            }
 
             defenseValue = (defSkillValue + 20.0) * (100 + defenseValue);
 
             var chance = attackValue / (defenseValue * 2.0);
 
-            if (chance < 0.02) chance = 0.02;
+            if (chance < 0.02)
+            {
+                chance = 0.02;
+            }
 
             return attacker.CheckSkill(atkSkill.SkillName, chance);
         }
@@ -237,7 +287,10 @@ namespace Server.Items
         private static void OnHit(Mobile from, Mobile target, INinjaWeapon weapon)
         {
             if (!from.CanBeHarmful(target))
+            {
                 return;
+            }
+
             from.DoHarmful(target);
 
             AOS.Damage(target, from, weapon.WeaponDamage, 100, 0, 0, 0, 0);
@@ -245,13 +298,20 @@ namespace Server.Items
             if (weapon.Poison != null && weapon.PoisonCharges > 0)
             {
                 if (EvilOmenSpell.TryEndEffect(target))
-                    target.ApplyPoison(from, Poison.GetPoison(weapon.Poison.Level + 1));
+                {
+                    target.ApplyPoison(@from, Poison.GetPoison(weapon.Poison.Level + 1));
+                }
                 else
-                    target.ApplyPoison(from, weapon.Poison);
+                {
+                    target.ApplyPoison(@from, weapon.Poison);
+                }
 
                 weapon.PoisonCharges--;
 
-                if (weapon.PoisonCharges < 1) weapon.Poison = null;
+                if (weapon.PoisonCharges < 1)
+                {
+                    weapon.Poison = null;
+                }
             }
         }
 
@@ -260,11 +320,17 @@ namespace Server.Items
             if (from is PlayerMobile player && WeaponIsValid(weapon, from))
             {
                 if (targeted is Mobile mobile)
+                {
                     Shoot(player, mobile, weapon);
+                }
                 else if (targeted.GetType() == weapon.AmmoType)
+                {
                     Reload(player, weapon, (INinjaAmmo)targeted);
+                }
                 else
+                {
                     player.SendLocalizedMessage(weapon.WrongAmmoMessage);
+                }
             }
         }
 
@@ -282,7 +348,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (WeaponIsValid(weapon, Owner.From))
+                {
                     Owner.From.BeginTarget(10, false, TargetFlags.Harmful, OnTarget, weapon);
+                }
             }
         }
 
@@ -300,7 +368,10 @@ namespace Server.Items
 
             public override void OnClick()
             {
-                if (WeaponIsValid(weapon, Owner.From)) Unload(Owner.From, weapon);
+                if (WeaponIsValid(weapon, Owner.From))
+                {
+                    Unload(Owner.From, weapon);
+                }
             }
         }
     }

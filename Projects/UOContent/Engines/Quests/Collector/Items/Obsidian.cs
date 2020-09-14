@@ -97,18 +97,30 @@ namespace Server.Engines.Quests.Collector
             set
             {
                 if (value <= 1)
+                {
                     m_Quantity = 1;
+                }
                 else if (value >= m_Completed)
+                {
                     m_Quantity = m_Completed;
+                }
                 else
+                {
                     m_Quantity = value;
+                }
 
                 if (m_Quantity < m_Partial)
+                {
                     ItemID = 0x1EA7;
+                }
                 else if (m_Quantity < m_Completed)
+                {
                     ItemID = 0x1F13;
+                }
                 else
+                {
                     ItemID = 0x12CB;
+                }
 
                 InvalidateProperties();
             }
@@ -132,21 +144,33 @@ namespace Server.Engines.Quests.Collector
         public override void AddNameProperty(ObjectPropertyList list)
         {
             if (m_Quantity < m_Partial)
+            {
                 list.Add(1055137); // a section of an obsidian statue
+            }
             else if (m_Quantity < m_Completed)
+            {
                 list.Add(1055138); // a partially reconstructed obsidian statue
+            }
             else
+            {
                 list.Add(1055139, m_StatueName); // an obsidian statue of ~1_STATUE_NAME~
+            }
         }
 
         public override void OnSingleClick(Mobile from)
         {
             if (m_Quantity < m_Partial)
-                LabelTo(from, 1055137); // a section of an obsidian statue
+            {
+                LabelTo(@from, 1055137); // a section of an obsidian statue
+            }
             else if (m_Quantity < m_Completed)
-                LabelTo(from, 1055138); // a partially reconstructed obsidian statue
+            {
+                LabelTo(@from, 1055138); // a partially reconstructed obsidian statue
+            }
             else
-                LabelTo(from, 1055139, m_StatueName); // an obsidian statue of ~1_STATUE_NAME~
+            {
+                LabelTo(@from, 1055139, m_StatueName); // an obsidian statue of ~1_STATUE_NAME~
+            }
         }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
@@ -154,7 +178,9 @@ namespace Server.Engines.Quests.Collector
             base.GetContextMenuEntries(from, list);
 
             if (from.Alive && m_Quantity >= m_Partial && m_Quantity < m_Completed && IsChildOf(from.Backpack))
+            {
                 list.Add(new DisassembleEntry(this));
+            }
         }
 
         public override void OnDoubleClick(Mobile from)
@@ -162,7 +188,8 @@ namespace Server.Engines.Quests.Collector
             if (m_Quantity < m_Completed)
             {
                 if (!IsChildOf(from.Backpack))
-                    from.Send(
+                {
+                    @from.Send(
                         new MessageLocalized(
                             Serial,
                             ItemID,
@@ -174,8 +201,11 @@ namespace Server.Engines.Quests.Collector
                             ""
                         )
                     ); // Nothing Happens.
+                }
                 else
-                    from.Target = new InternalTarget(this);
+                {
+                    @from.Target = new InternalTarget(this);
+                }
             }
         }
 
@@ -212,7 +242,9 @@ namespace Server.Engines.Quests.Collector
                     m_Obsidian.IsChildOf(from.Backpack) && from.CheckAlive())
                 {
                     for (var i = 0; i < m_Obsidian.Quantity - 1; i++)
-                        from.AddToBackpack(new Obsidian());
+                    {
+                        @from.AddToBackpack(new Obsidian());
+                    }
 
                     m_Obsidian.Quantity = 1;
                 }
@@ -228,10 +260,13 @@ namespace Server.Engines.Quests.Collector
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (m_Obsidian.Deleted || m_Obsidian.Quantity >= m_Completed || !(targeted is Item targ))
+                {
                     return;
+                }
 
                 if (m_Obsidian.IsChildOf(from.Backpack) && targ.IsChildOf(from.Backpack) && targ is Obsidian targObsidian &&
                     targ != m_Obsidian)
+                {
                     if (targObsidian.Quantity < m_Completed)
                     {
                         if (targObsidian.Quantity + m_Obsidian.Quantity <= m_Completed)
@@ -247,9 +282,11 @@ namespace Server.Engines.Quests.Collector
                         }
 
                         if (targObsidian.Quantity >= m_Completed)
-                            targObsidian.StatueName = RandomName(from);
+                        {
+                            targObsidian.StatueName = RandomName(@from);
+                        }
 
-                        from.Send(
+                        @from.Send(
                             new AsciiMessage(
                                 targObsidian.Serial,
                                 targObsidian.ItemID,
@@ -263,6 +300,7 @@ namespace Server.Engines.Quests.Collector
 
                         return;
                     }
+                }
 
                 from.Send(
                     new MessageLocalized(

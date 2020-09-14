@@ -107,7 +107,9 @@ namespace Server.Items
             set
             {
                 if (value != m_ReplenishesCharges && value)
+                {
                     m_LastReplenished = DateTime.UtcNow;
+                }
 
                 m_ReplenishesCharges = value;
             }
@@ -121,7 +123,9 @@ namespace Server.Items
             Quality = (InstrumentQuality)quality;
 
             if (makersMark)
-                Crafter = from;
+            {
+                Crafter = @from;
+            }
 
             return quality;
         }
@@ -151,7 +155,9 @@ namespace Server.Items
         public void CheckReplenishUses(bool invalidate = true)
         {
             if (!m_ReplenishesCharges || m_UsesRemaining >= InitMaxUses)
+            {
                 return;
+            }
 
             if (m_LastReplenished + ChargeReplenishRate < DateTime.UtcNow)
             {
@@ -164,7 +170,9 @@ namespace Server.Items
                 m_LastReplenished = DateTime.UtcNow;
 
                 if (invalidate)
+                {
                     InvalidateProperties();
+                }
             }
         }
 
@@ -200,7 +208,9 @@ namespace Server.Items
         public static BaseInstrument GetInstrument(Mobile from)
         {
             if (m_Instruments.TryGetValue(from, out var instrument) && instrument.IsChildOf(from.Backpack))
+            {
                 return instrument;
+            }
 
             m_Instruments.Remove(from);
             return null;
@@ -255,31 +265,45 @@ namespace Server.Items
             val += targ.SkillsTotal / 10.0;
 
             if (val > 700)
+            {
                 val = 700 + (int)((val - 700) * (3.0 / 11));
+            }
 
             var bc = targ as BaseCreature;
 
             if (IsMageryCreature(bc))
+            {
                 val += 100;
+            }
 
             if (IsFireBreathingCreature(bc))
+            {
                 val += 100;
+            }
 
             if (IsPoisonImmune(bc))
+            {
                 val += 100;
+            }
 
             if (targ is VampireBat || targ is VampireBatFamiliar)
+            {
                 val += 100;
+            }
 
             val += GetPoisonLevel(bc) * 20;
 
             val /= 10;
 
             if (bc?.IsParagon == true)
+            {
                 val += 40.0;
+            }
 
             if (Core.SE && val > 160.0)
+            {
                 val = 160.0;
+            }
 
             return val;
         }
@@ -289,7 +313,9 @@ namespace Server.Items
             var val = GetBaseDifficulty(targ);
 
             if (m_Quality == InstrumentQuality.Exceptional)
+            {
                 val -= 5.0; // 10%
+            }
 
             if (m_Slayer != SlayerName.None)
             {
@@ -298,9 +324,13 @@ namespace Server.Items
                 if (entry != null)
                 {
                     if (entry.Slays(targ))
+                    {
                         val -= 10.0; // 20%
+                    }
                     else if (entry.Group.OppositionSuperSlays(targ))
+                    {
                         val += 10.0; // -20%
+                    }
                 }
             }
 
@@ -311,9 +341,13 @@ namespace Server.Items
                 if (entry != null)
                 {
                     if (entry.Slays(targ))
+                    {
                         val -= 10.0; // 20%
+                    }
                     else if (entry.Group.OppositionSuperSlays(targ))
+                    {
                         val += 10.0; // -20%
+                    }
                 }
             }
 
@@ -333,32 +367,44 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (m_Crafter != null)
+            {
                 list.Add(1050043, m_Crafter.Name); // crafted by ~1_NAME~
+            }
 
             if (m_Quality == InstrumentQuality.Exceptional)
+            {
                 list.Add(1060636); // exceptional
+            }
 
             list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
 
             if (m_ReplenishesCharges)
+            {
                 list.Add(1070928); // Replenish Charges
+            }
 
             if (m_Slayer != SlayerName.None)
             {
                 var entry = SlayerGroup.GetEntryByName(m_Slayer);
                 if (entry != null)
+                {
                     list.Add(entry.Title);
+                }
             }
 
             if (m_Slayer2 != SlayerName.None)
             {
                 var entry = SlayerGroup.GetEntryByName(m_Slayer2);
                 if (entry != null)
+                {
                     list.Add(entry.Title);
+                }
             }
 
             if (m_UsesRemaining != oldUses)
+            {
                 Timer.DelayCall(InvalidateProperties);
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -368,30 +414,42 @@ namespace Server.Items
             if (DisplayLootType)
             {
                 if (LootType == LootType.Blessed)
+                {
                     attrs.Add(new EquipInfoAttribute(1038021)); // blessed
+                }
                 else if (LootType == LootType.Cursed)
+                {
                     attrs.Add(new EquipInfoAttribute(1049643)); // cursed
+                }
             }
 
             if (m_Quality == InstrumentQuality.Exceptional)
+            {
                 attrs.Add(new EquipInfoAttribute(1018305 - (int)m_Quality));
+            }
 
             if (m_ReplenishesCharges)
+            {
                 attrs.Add(new EquipInfoAttribute(1070928)); // Replenish Charges
+            }
 
             // TODO: Must this support item identification?
             if (m_Slayer != SlayerName.None)
             {
                 var entry = SlayerGroup.GetEntryByName(m_Slayer);
                 if (entry != null)
+                {
                     attrs.Add(new EquipInfoAttribute(entry.Title));
+                }
             }
 
             if (m_Slayer2 != SlayerName.None)
             {
                 var entry = SlayerGroup.GetEntryByName(m_Slayer2);
                 if (entry != null)
+                {
                     attrs.Add(new EquipInfoAttribute(entry.Title));
+                }
             }
 
             int number;
@@ -407,7 +465,9 @@ namespace Server.Items
             }
 
             if (attrs.Count == 0 && Crafter == null && Name != null)
+            {
                 return;
+            }
 
             var eqInfo = new EquipmentInfo(
                 number,
@@ -427,7 +487,9 @@ namespace Server.Items
 
             writer.Write(m_ReplenishesCharges);
             if (m_ReplenishesCharges)
+            {
                 writer.Write(m_LastReplenished);
+            }
 
             writer.Write(m_Crafter);
 
@@ -454,7 +516,9 @@ namespace Server.Items
                         m_ReplenishesCharges = reader.ReadBool();
 
                         if (m_ReplenishesCharges)
+                        {
                             m_LastReplenished = reader.ReadDateTime();
+                        }
 
                         goto case 2;
                     }
@@ -514,9 +578,13 @@ namespace Server.Items
                 new InternalTimer(from).Start();
 
                 if (CheckMusicianship(from))
-                    PlayInstrumentWell(from);
+                {
+                    PlayInstrumentWell(@from);
+                }
                 else
-                    PlayInstrumentBadly(from);
+                {
+                    PlayInstrumentBadly(@from);
+                }
             }
             else
             {

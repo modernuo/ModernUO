@@ -43,15 +43,23 @@ namespace Server.Items
                 MaxLockLevel = level + 35;
 
                 if (LockLevel == 0)
+                {
                     LockLevel = -1;
+                }
                 else if (LockLevel > 95)
+                {
                     LockLevel = 95;
+                }
 
                 if (RequiredSkill > 95)
+                {
                     RequiredSkill = 95;
+                }
 
                 if (MaxLockLevel > 95)
+                {
                     MaxLockLevel = 95;
+                }
             }
             else
             {
@@ -70,7 +78,9 @@ namespace Server.Items
                 m_Locked = value;
 
                 if (m_Locked)
+                {
                     Picker = null;
+                }
 
                 InvalidateProperties();
             }
@@ -96,7 +106,10 @@ namespace Server.Items
             Locked = false;
             Picker = from;
 
-            if (TrapOnLockpick && ExecuteTrap(from)) TrapOnLockpick = false;
+            if (TrapOnLockpick && ExecuteTrap(from))
+            {
+                TrapOnLockpick = false;
+            }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -168,7 +181,9 @@ namespace Server.Items
                 case 0:
                     {
                         if (version < 3)
+                        {
                             MaxLockLevel = 100;
+                        }
 
                         if (version < 4)
                         {
@@ -218,10 +233,14 @@ namespace Server.Items
         public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
         {
             if (!base.CheckLift(from, item, ref reject))
+            {
                 return false;
+            }
 
             if (item != this && from.AccessLevel < AccessLevel.GameMaster && m_Locked)
+            {
                 return false;
+            }
 
             return true;
         }
@@ -229,7 +248,9 @@ namespace Server.Items
         public override bool CheckItemUse(Mobile from, Item item)
         {
             if (!base.CheckItemUse(from, item))
+            {
                 return false;
+            }
 
             if (item != this && from.AccessLevel < AccessLevel.GameMaster && m_Locked)
             {
@@ -285,7 +306,9 @@ namespace Server.Items
         public override void OnDoubleClickSecureTrade(Mobile from)
         {
             if (CheckLocked(from))
+            {
                 return;
+            }
 
             base.OnDoubleClickSecureTrade(from);
         }
@@ -293,7 +316,9 @@ namespace Server.Items
         public override void Open(Mobile from)
         {
             if (CheckLocked(from))
+            {
                 return;
+            }
 
             base.Open(from);
         }
@@ -301,7 +326,9 @@ namespace Server.Items
         public override void OnSnoop(Mobile from)
         {
             if (CheckLocked(from))
+            {
                 return;
+            }
 
             base.OnSnoop(from);
         }
@@ -311,7 +338,9 @@ namespace Server.Items
             base.AddNameProperties(list);
 
             if (IsShipwreckedItem)
+            {
                 list.Add(1041645); // recovered from a shipwreck
+            }
         }
 
         public override void OnSingleClick(Mobile from)
@@ -319,7 +348,9 @@ namespace Server.Items
             base.OnSingleClick(from);
 
             if (IsShipwreckedItem)
-                LabelTo(from, 1041645); // recovered from a shipwreck
+            {
+                LabelTo(@from, 1041645); // recovered from a shipwreck
+            }
         }
     }
 }

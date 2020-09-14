@@ -16,7 +16,9 @@ namespace Server.Items
             Weight = 1.0;
 
             if (!Core.AOS)
+            {
                 LootType = LootType.Newbied;
+            }
         }
 
         public BaseAddonContainerDeed(Serial serial) : base(serial)
@@ -53,7 +55,9 @@ namespace Server.Items
             var context = craftSystem.GetContext(from);
 
             if (context?.DoNotColor == true)
+            {
                 Hue = 0;
+            }
 
             return quality;
         }
@@ -84,9 +88,13 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (IsChildOf(from.Backpack))
-                from.Target = new InternalTarget(this);
+            {
+                @from.Target = new InternalTarget(this);
+            }
             else
-                from.SendLocalizedMessage(1062334); // This item must be in your backpack to be used.
+            {
+                @from.SendLocalizedMessage(1062334); // This item must be in your backpack to be used.
+            }
         }
 
         public override void GetProperties(ObjectPropertyList list)
@@ -94,7 +102,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (!CraftResources.IsStandard(m_Resource))
+            {
                 list.Add(CraftResources.GetLocalizationNumber(m_Resource));
+            }
         }
 
         private class InternalTarget : Target
@@ -114,7 +124,9 @@ namespace Server.Items
                 var map = from.Map;
 
                 if (p == null || map == null || m_Deed.Deleted)
+                {
                     return;
+                }
 
                 if (m_Deed.IsChildOf(from.Backpack))
                 {
@@ -128,17 +140,29 @@ namespace Server.Items
                     var res = addon.CouldFit(p, map, from, ref house);
 
                     if (res == AddonFitResult.Valid)
+                    {
                         addon.MoveToWorld(new Point3D(p), map);
+                    }
                     else if (res == AddonFitResult.Blocked)
-                        from.SendLocalizedMessage(500269); // You cannot build that there.
+                    {
+                        @from.SendLocalizedMessage(500269); // You cannot build that there.
+                    }
                     else if (res == AddonFitResult.NotInHouse)
-                        from.SendLocalizedMessage(500274); // You can only place this in a house that you own!
+                    {
+                        @from.SendLocalizedMessage(500274); // You can only place this in a house that you own!
+                    }
                     else if (res == AddonFitResult.DoorsNotClosed)
-                        from.SendMessage("You must close all house doors before placing this.");
+                    {
+                        @from.SendMessage("You must close all house doors before placing this.");
+                    }
                     else if (res == AddonFitResult.DoorTooClose)
-                        from.SendLocalizedMessage(500271); // You cannot build near the door.
+                    {
+                        @from.SendLocalizedMessage(500271); // You cannot build near the door.
+                    }
                     else if (res == AddonFitResult.NoWall)
-                        from.SendLocalizedMessage(500268); // This object needs to be mounted on something.
+                    {
+                        @from.SendLocalizedMessage(500268); // This object needs to be mounted on something.
+                    }
 
                     if (res == AddonFitResult.Valid)
                     {

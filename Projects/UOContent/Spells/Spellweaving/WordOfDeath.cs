@@ -19,7 +19,9 @@ namespace Server.Spells.Spellweaving
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (!Caster.CanSee(m))
             {
@@ -65,7 +67,10 @@ namespace Server.Spells.Spellweaving
                     damage = Utility.RandomMinMax(minDamage, maxDamage);
                     var damageBonus = AosAttributes.GetValue(Caster, AosAttribute.SpellDamage);
                     if (m.Player && damageBonus > 15)
+                    {
                         damageBonus = 15;
+                    }
+
                     damage *= damageBonus + 100;
                     damage /= 100;
                 }

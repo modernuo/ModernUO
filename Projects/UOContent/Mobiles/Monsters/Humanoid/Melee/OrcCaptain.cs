@@ -52,7 +52,9 @@ namespace Server.Mobiles
             );
 
             if (Core.AOS)
+            {
                 PackItem(Loot.RandomNecromancyReagent());
+            }
         }
 
         public OrcCaptain(Serial serial) : base(serial)
@@ -73,7 +75,9 @@ namespace Server.Mobiles
 
             // TODO: Check drop rate
             if (Utility.RandomDouble() < 0.05)
+            {
                 c.DropItem(new StoutWhip());
+            }
         }
 
         public override void GenerateLoot()
@@ -84,7 +88,9 @@ namespace Server.Mobiles
         public override bool IsEnemy(Mobile m)
         {
             if (m.Player && m.FindItemOnLayer(Layer.Helm) is OrcishKinMask)
+            {
                 return false;
+            }
 
             return base.IsEnemy(m);
         }

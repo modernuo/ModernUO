@@ -41,7 +41,9 @@ namespace Server.Mobiles
             PackReg(6);
 
             if (Utility.RandomDouble() < 0.02)
+            {
                 PackStatue();
+            }
         }
 
         public RatmanMage(Serial serial) : base(serial)

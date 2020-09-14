@@ -92,7 +92,9 @@ namespace Server.Items
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (m_Sender?.Deleted != false || info.ButtonID != 1 || m_Sender.RootParent != sender.Mobile)
+            {
                 return;
+            }
 
             var m = sender.Mobile;
             var nameEntry = info.GetTextEntry(0);

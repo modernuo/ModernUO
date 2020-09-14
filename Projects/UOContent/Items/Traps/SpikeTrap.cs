@@ -59,9 +59,13 @@ namespace Server.Items
             set
             {
                 if (value)
+                {
                     ItemID = GetExtendedID(Type);
+                }
                 else
+                {
                     ItemID = GetBaseID(Type);
+                }
             }
         }
 
@@ -99,14 +103,20 @@ namespace Server.Items
         public override void OnTrigger(Mobile from)
         {
             if (!from.Alive || from.AccessLevel > AccessLevel.Player)
+            {
                 return;
+            }
 
             Effects.SendLocationEffect(Location, Map, GetBaseID(Type) + 1, 18, 3, GetEffectHue(), 0);
             Effects.PlaySound(Location, Map, 0x22C);
 
             foreach (var mob in GetMobilesInRange(0))
+            {
                 if (mob.Alive && !mob.IsDeadBondedPet)
+                {
                     SpellHelper.Damage(TimeSpan.FromTicks(1), mob, mob, Utility.RandomMinMax(1, 6) * 6);
+                }
+            }
 
             Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnSpikeExtended);
 

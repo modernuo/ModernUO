@@ -27,7 +27,9 @@ namespace Server.Spells.Fourth
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (!Caster.CanSee(m))
             {
@@ -48,7 +50,9 @@ namespace Server.Spells.Fourth
                     var toDrain = Math.Clamp(40 + (int)(GetDamageSkill(Caster) - GetResistSkill(m)), 0, m.Mana);
 
                     if (m_Table.Contains(m))
+                    {
                         toDrain = 0;
+                    }
 
                     m.FixedParticles(0x3789, 10, 25, 5032, EffectLayer.Head);
                     m.PlaySound(0x1F8);
@@ -64,11 +68,17 @@ namespace Server.Spells.Fourth
                 else
                 {
                     if (CheckResisted(m))
+                    {
                         m.SendLocalizedMessage(501783); // You feel yourself resisting magical energy.
+                    }
                     else if (m.Mana >= 100)
+                    {
                         m.Mana -= Utility.Random(1, 100);
+                    }
                     else
+                    {
                         m.Mana -= Utility.Random(1, m.Mana);
+                    }
 
                     m.FixedParticles(0x374A, 10, 15, 5032, EffectLayer.Head);
                     m.PlaySound(0x1F8);

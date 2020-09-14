@@ -47,26 +47,52 @@ namespace Server.Items
             int itemID;
 
             if (targeted is Item item)
+            {
                 itemID = item.ItemID;
+            }
             else if (targeted is StaticTarget target)
+            {
                 itemID = target.ItemID;
+            }
             else
+            {
                 return false;
+            }
 
             if (itemID >= 0xDE3 && itemID <= 0xDE9)
+            {
                 return true; // Campfire
+            }
+
             if (itemID >= 0x461 && itemID <= 0x48E)
+            {
                 return true; // Sandstone oven/fireplace
+            }
+
             if (itemID >= 0x92B && itemID <= 0x96C)
+            {
                 return true; // Stone oven/fireplace
+            }
+
             if (itemID == 0xFAC)
+            {
                 return true; // Firepit
+            }
+
             if (itemID >= 0x184A && itemID <= 0x184C)
+            {
                 return true; // Heating stand (left)
+            }
+
             if (itemID >= 0x184E && itemID <= 0x1850)
+            {
                 return true; // Heating stand (right)
+            }
+
             if (itemID >= 0x398C && itemID <= 0x399F)
+            {
                 return true; // Fire field
+            }
 
             return false;
         }
@@ -79,7 +105,10 @@ namespace Server.Items
 
             protected override void OnTarget(Mobile from, object targeted)
             {
-                if (m_Item.Deleted) return;
+                if (m_Item.Deleted)
+                {
+                    return;
+                }
 
                 if (IsHeatSource(targeted))
                 {
@@ -131,7 +160,9 @@ namespace Server.Items
                         var cookedFood = m_CookableFood.Cook();
 
                         if (m_From.AddToBackpack(cookedFood))
+                        {
                             m_From.PlaySound(0x57);
+                        }
                     }
                     else
                     {
@@ -202,7 +233,9 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (version == 0 && Weight == 1)
+            {
                 Weight = -1;
+            }
         }
 
         public override Food Cook() => new LambLeg();
@@ -443,10 +476,14 @@ namespace Server.Items
             var version = reader.ReadInt();
 
             if (ItemID == 0x1040)
+            {
                 ItemID = 0x1083;
+            }
 
             if (Hue == 51)
+            {
                 Hue = 0;
+            }
         }
 
         public override Food Cook() => new CheesePizza();
@@ -543,7 +580,9 @@ namespace Server.Items
                 Stackable = true;
 
                 if (Weight == 0.5)
+                {
                     Weight = 1.0;
+                }
             }
         }
 

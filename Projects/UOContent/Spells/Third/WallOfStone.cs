@@ -43,13 +43,21 @@ namespace Server.Spells.Third
                 bool eastToWest;
 
                 if (rx >= 0 && ry >= 0)
+                {
                     eastToWest = false;
+                }
                 else if (rx >= 0)
+                {
                     eastToWest = true;
+                }
                 else if (ry >= 0)
+                {
                     eastToWest = true;
+                }
                 else
+                {
                     eastToWest = false;
+                }
 
                 Effects.PlaySound(p, Caster.Map, 0x1F6);
 
@@ -61,7 +69,9 @@ namespace Server.Spells.Third
                     // Effects.SendLocationParticles( EffectItem.Create( loc, Caster.Map, EffectItem.DefaultDuration ), 0x376A, 9, 10, 5025 );
 
                     if (!canFit)
+                    {
                         continue;
+                    }
 
                     Item item = new InternalItem(loc, Caster.Map, Caster);
 
@@ -96,12 +106,18 @@ namespace Server.Spells.Third
                 m_Caster = caster;
 
                 if (caster.InLOS(this))
+                {
                     Visible = true;
+                }
                 else
+                {
                     Delete();
+                }
 
                 if (Deleted)
+                {
                     return;
+                }
 
                 m_Timer = new InternalTimer(this, TimeSpan.FromSeconds(10.0));
                 m_Timer.Start();
@@ -161,7 +177,9 @@ namespace Server.Spells.Third
                 {
                     var noto = Notoriety.Compute(m_Caster, m);
                     if (noto == Notoriety.Enemy || noto == Notoriety.Ally)
+                    {
                         return false;
+                    }
                 }
 
                 return base.OnMoveOver(m);

@@ -36,7 +36,9 @@ namespace Server.Gumps
                 AddHtml(35, 15, 120, 20, Color("House Type", White));
 
                 if (list.Count == 0)
+                {
                     AddHtml(35, 40, 160, 40, Color("There were no houses found for that player.", White));
+                }
 
                 AddImage(190, 17, 0x25EA);
                 AddImage(207, 17, 0x25E6);
@@ -48,12 +50,16 @@ namespace Server.Gumps
                     if (i % 15 == 0)
                     {
                         if (page > 0)
+                        {
                             AddButton(207, 17, 0x15E1, 0x15E5, 0, GumpButtonType.Page, page + 1);
+                        }
 
                         AddPage(++page);
 
                         if (page > 1)
+                        {
                             AddButton(190, 17, 0x15E3, 0x15E7, 0, GumpButtonType.Page, page - 1);
+                        }
                     }
 
                     var name = FindHouseName(list[i]);
@@ -61,9 +67,13 @@ namespace Server.Gumps
                     AddHtml(15, 40 + i % 15 * 20, 20, 20, Color($"{i + 1}.", White));
 
                     if (name.Number > 0)
+                    {
                         AddHtmlLocalized(35, 40 + i % 15 * 20, 160, 20, name, White16);
+                    }
                     else
+                    {
                         AddHtml(35, 40 + i % 15 * 20, 160, 20, Color(name, White));
+                    }
 
                     AddButton(198, 39 + i % 15 * 20, 4005, 4007, i + 1);
                 }
@@ -91,9 +101,13 @@ namespace Server.Gumps
                 );
 
                 if (valid)
+                {
                     location = $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}° {xMins}'{(xEast ? "E" : "W")}";
+                }
                 else
+                {
                     location = "unknown";
+                }
 
                 AddHtml(10, 15, 220, 20, Color(Center("House Properties"), White));
 
@@ -158,7 +172,9 @@ namespace Server.Gumps
         public static void ViewHouses_OnTarget(Mobile from, object targeted)
         {
             if (targeted is Mobile mobile)
-                from.SendGump(new ViewHousesGump(from, GetHouses(mobile), null));
+            {
+                @from.SendGump(new ViewHousesGump(@from, GetHouses(mobile), null));
+            }
         }
 
         public static List<BaseHouse> GetHouses(Mobile owner)
@@ -166,15 +182,21 @@ namespace Server.Gumps
             var list = new List<BaseHouse>();
 
             if (!(owner.Account is Account acct))
+            {
                 list.AddRange(BaseHouse.GetHouses(owner));
+            }
             else
+            {
                 for (var i = 0; i < acct.Length; ++i)
                 {
                     var mob = acct[i];
 
                     if (mob != null)
+                    {
                         list.AddRange(BaseHouse.GetHouses(mob));
+                    }
                 }
+            }
 
             list.Sort(HouseComparer.Instance);
 
@@ -188,7 +210,9 @@ namespace Server.Gumps
                 var v = info.ButtonID - 1;
 
                 if (v >= 0 && v < m_List.Count)
+                {
                     m_From.SendGump(new ViewHousesGump(m_From, m_List, m_List[v]));
+                }
             }
             else if (!m_Selection.Deleted)
             {
@@ -204,7 +228,9 @@ namespace Server.Gumps
                             var map = m_Selection.Map;
 
                             if (map != null && map != Map.Internal)
+                            {
                                 m_From.MoveToWorld(m_Selection.BanLocation, map);
+                            }
 
                             m_From.SendGump(new ViewHousesGump(m_From, m_List, m_Selection));
 
@@ -217,7 +243,9 @@ namespace Server.Gumps
                             var sign = m_Selection.Sign;
 
                             if (sign?.Deleted == false)
+                            {
                                 sign.OnDoubleClick(m_From);
+                            }
 
                             break;
                         }
@@ -245,20 +273,32 @@ namespace Server.Gumps
             var entries = HousePlacementEntry.ClassicHouses;
 
             for (var i = 0; i < entries.Length; ++i)
+            {
                 if (entries[i].MultiID == multiID)
+                {
                     return entries[i].Description;
+                }
+            }
 
             entries = HousePlacementEntry.TwoStoryFoundations;
 
             for (var i = 0; i < entries.Length; ++i)
+            {
                 if (entries[i].MultiID == multiID)
+                {
                     return entries[i].Description;
+                }
+            }
 
             entries = HousePlacementEntry.ThreeStoryFoundations;
 
             for (var i = 0; i < entries.Length; ++i)
+            {
                 if (entries[i].MultiID == multiID)
+                {
                     return entries[i].Description;
+                }
+            }
 
             return house.GetType().Name;
         }

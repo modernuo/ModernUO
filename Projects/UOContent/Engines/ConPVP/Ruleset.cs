@@ -46,7 +46,9 @@ namespace Server.Engines.ConPVP
         public void AddFlavor(Ruleset flavor)
         {
             if (Flavors.Contains(flavor))
+            {
                 return;
+            }
 
             Flavors.Add(flavor);
             Options.Or(flavor.Options);
@@ -55,7 +57,9 @@ namespace Server.Engines.ConPVP
         public void RemoveFlavor(Ruleset flavor)
         {
             if (!Flavors.Contains(flavor))
+            {
                 return;
+            }
 
             Flavors.Remove(flavor);
             Options.And(flavor.Options.Not());
@@ -67,10 +71,14 @@ namespace Server.Engines.ConPVP
             var layout = Layout.FindByTitle(title);
 
             if (layout == null)
+            {
                 return;
+            }
 
             for (var i = 0; i < layout.TotalLength; ++i)
+            {
                 Options[i + layout.Offset] = value;
+            }
 
             Changed = true;
         }
@@ -81,7 +89,9 @@ namespace Server.Engines.ConPVP
             var layout = Layout.FindByOption(title, option, ref index);
 
             if (layout == null)
+            {
                 return true;
+            }
 
             return Options[layout.Offset + index];
         }
@@ -92,7 +102,9 @@ namespace Server.Engines.ConPVP
             var layout = Layout.FindByOption(title, option, ref index);
 
             if (layout == null)
+            {
                 return;
+            }
 
             Options[layout.Offset + index] = value;
 

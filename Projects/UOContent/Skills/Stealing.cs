@@ -29,10 +29,14 @@ namespace Server.SkillHandlers
         public static bool IsEmptyHanded(Mobile from)
         {
             if (from.FindItemOnLayer(Layer.OneHanded) != null)
+            {
                 return false;
+            }
 
             if (from.FindItemOnLayer(Layer.TwoHanded) != null)
+            {
                 return false;
+            }
 
             return true;
         }
@@ -77,7 +81,9 @@ namespace Server.SkillHandlers
 
                 StealableArtifactsSpawner.StealableInstance si = null;
                 if (toSteal.Parent == null || !toSteal.Movable)
+                {
                     si = StealableArtifactsSpawner.GetStealableInstance(toSteal);
+                }
 
                 if (!IsEmptyHanded(m_Thief))
                 {
@@ -178,7 +184,9 @@ namespace Server.SkillHandlers
                             else
                             {
                                 if (sig.IsBeingCorrupted)
+                                {
                                     sig.GraceStart = DateTime.UtcNow; // begin grace period
+                                }
 
                                 m_Thief.SendLocalizedMessage(1010586); // YOU STOLE THE SIGIL!!!   (woah, calm down now)
 
@@ -275,7 +283,9 @@ namespace Server.SkillHandlers
                                     pileWeight - 22.5,
                                     pileWeight + 27.5
                                 ))
+                                {
                                     stolen = toSteal;
+                                }
                             }
                             else
                             {
@@ -288,7 +298,9 @@ namespace Server.SkillHandlers
                                     pileWeight - 22.5,
                                     pileWeight + 27.5
                                 ))
+                                {
                                     stolen = Mobile.LiftItemDupe(toSteal, toSteal.Amount - amount) ?? toSteal;
+                                }
                             }
                         }
                         else
@@ -297,7 +309,9 @@ namespace Server.SkillHandlers
                             iw *= 10;
 
                             if (m_Thief.CheckTargetSkill(SkillName.Stealing, toSteal, iw - 22.5, iw + 27.5))
+                            {
                                 stolen = toSteal;
+                            }
                         }
 
                         if (stolen != null)
@@ -357,7 +371,9 @@ namespace Server.SkillHandlers
                     from.AddToBackpack(stolen);
 
                     if (!(stolen is Container || stolen.Stackable))
+                    {
                         StolenItem.Add(stolen, m_Thief, mobRoot);
+                    }
                 }
 
                 var corpse = root as Corpse;
@@ -371,13 +387,19 @@ namespace Server.SkillHandlers
                     else if (mobRoot != null)
                     {
                         if (!IsInGuild(mobRoot) && IsInnocentTo(m_Thief, mobRoot))
+                        {
                             m_Thief.CriminalAction(false);
+                        }
 
                         var message = $"You notice {m_Thief.Name} trying to steal from {mobRoot.Name}.";
 
                         foreach (var ns in m_Thief.GetClientsInRange(8))
+                        {
                             if (ns.Mobile != m_Thief)
+                            {
                                 ns.Mobile.SendMessage(message);
+                            }
+                        }
                     }
                 }
                 else if (corpse?.IsCriminalAction(m_Thief) == true)
@@ -439,11 +461,13 @@ namespace Server.SkillHandlers
             Clean();
 
             foreach (var si in m_Queue)
+            {
                 if (si.Stolen == item && !si.IsExpired)
                 {
                     victim = si.Victim;
                     return true;
                 }
+            }
 
             return false;
         }
@@ -453,15 +477,21 @@ namespace Server.SkillHandlers
             Clean();
 
             foreach (var si in m_Queue)
+            {
                 if (si.Stolen.RootParent == corpse && si.Victim != null && !si.IsExpired)
                 {
                     if (si.Victim.AddToBackpack(si.Stolen))
+                    {
                         si.Victim.SendLocalizedMessage(1010464); // the item that was stolen is returned to you.
+                    }
                     else
+                    {
                         si.Victim.SendLocalizedMessage(1010463); // the item that was stolen from you falls to the ground.
+                    }
 
                     si.Expires = DateTime.UtcNow; // such a hack
                 }
+            }
         }
 
         public static void Clean()
@@ -471,9 +501,13 @@ namespace Server.SkillHandlers
                 var si = m_Queue.Peek();
 
                 if (si.IsExpired)
+                {
                     m_Queue.Dequeue();
+                }
                 else
+                {
                     break;
+                }
             }
         }
     }

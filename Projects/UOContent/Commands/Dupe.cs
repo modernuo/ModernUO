@@ -19,7 +19,10 @@ namespace Server.Commands
         {
             var amount = 1;
             if (e.Length >= 1)
+            {
                 amount = e.GetInt32(0);
+            }
+
             e.Mobile.Target = new DupeTarget(false, amount > 0 ? amount : 1);
             e.Mobile.SendMessage("What do you wish to dupe?");
         }
@@ -30,7 +33,9 @@ namespace Server.Commands
         {
             var amount = 1;
             if (e.Length >= 1)
+            {
                 amount = e.GetInt32(0);
+            }
 
             e.Mobile.Target = new DupeTarget(true, amount > 0 ? amount : 1);
             e.Mobile.SendMessage("What do you wish to dupe?");
@@ -41,14 +46,19 @@ namespace Server.Commands
             var props = src.GetType().GetProperties();
 
             for (var i = 0; i < props.Length; i++)
+            {
                 try
                 {
-                    if (props[i].CanRead && props[i].CanWrite) props[i].SetValue(dest, props[i].GetValue(src, null), null);
+                    if (props[i].CanRead && props[i].CanWrite)
+                    {
+                        props[i].SetValue(dest, props[i].GetValue(src, null), null);
+                    }
                 }
                 catch
                 {
                     // Console.WriteLine( "Denied" );
                 }
+            }
         }
 
         private class DupeTarget : Target
@@ -88,9 +98,13 @@ namespace Server.Commands
                 if (m_InBag)
                 {
                     if (copy.Parent is Container cont)
+                    {
                         pack = cont;
+                    }
                     else if (copy.Parent is Mobile m)
+                    {
                         pack = m.Backpack;
+                    }
                 }
                 else
                 {
@@ -102,11 +116,16 @@ namespace Server.Commands
                 {
                     var paramList = c.GetParameters();
                     var args = paramList.Length == 0 ? null : new object[paramList.Length];
-                    if (args != null) Array.Fill(args, Type.Missing);
+                    if (args != null)
+                    {
+                        Array.Fill(args, Type.Missing);
+                    }
+
                     try
                     {
                         from.SendMessage("Duping {0}...", m_Amount);
                         for (var i = 0; i < m_Amount; i++)
+                        {
                             if (c.Invoke(args) is Item newItem)
                             {
                                 CopyProperties(newItem, copy); // copy.Dupe( item, copy.Amount );
@@ -114,21 +133,26 @@ namespace Server.Commands
                                 newItem.Parent = null;
 
                                 if (pack != null)
+                                {
                                     pack.DropItem(newItem);
+                                }
                                 else
-                                    newItem.MoveToWorld(from.Location, from.Map);
+                                {
+                                    newItem.MoveToWorld(@from.Location, @from.Map);
+                                }
 
                                 newItem.InvalidateProperties();
 
                                 CommandLogging.WriteLine(
-                                    from,
+                                    @from,
                                     "{0} {1} duped {2} creating {3}",
-                                    from.AccessLevel,
-                                    CommandLogging.Format(from),
+                                    @from.AccessLevel,
+                                    CommandLogging.Format(@from),
                                     CommandLogging.Format(targ),
                                     CommandLogging.Format(newItem)
                                 );
                             }
+                        }
 
                         from.SendMessage("Done");
                         done = true;
@@ -140,7 +164,10 @@ namespace Server.Commands
                     }
                 }
 
-                if (!done) from.SendMessage("Unable to dupe.  Item must have a 0 parameter constructor.");
+                if (!done)
+                {
+                    @from.SendMessage("Unable to dupe.  Item must have a 0 parameter constructor.");
+                }
             }
         }
     }

@@ -33,13 +33,19 @@ namespace Server.Items
             var flags = (SaveFlag)reader.ReadEncodedInt();
 
             if (GetSaveFlag(flags, SaveFlag.Type))
+            {
                 Type = AssemblyHandler.FindFirstTypeForName(reader.ReadString());
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Name))
+            {
                 Name = TextDefinition.Deserialize(reader);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Amount))
+            {
                 Amount = reader.ReadEncodedInt();
+            }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -62,7 +68,9 @@ namespace Server.Items
         private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
         {
             if (setIf)
+            {
                 flags |= toSet;
+            }
         }
 
         private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
@@ -80,13 +88,19 @@ namespace Server.Items
             writer.WriteEncodedInt((int)flags);
 
             if (GetSaveFlag(flags, SaveFlag.Type))
+            {
                 writer.Write(Type.FullName);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Name))
+            {
                 TextDefinition.Serialize(writer, Name);
+            }
 
             if (GetSaveFlag(flags, SaveFlag.Amount))
+            {
                 writer.WriteEncodedInt(Amount);
+            }
         }
 
         public int DamageBonus(Mobile to) => to?.GetType() == Type ? Amount : 0;

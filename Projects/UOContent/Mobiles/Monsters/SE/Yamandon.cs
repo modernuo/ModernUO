@@ -39,7 +39,9 @@ namespace Server.Mobiles
             Karma = -22000;
 
             if (Utility.RandomDouble() < .50)
+            {
                 PackItem(Seed.RandomBonsaiSeed());
+            }
 
             PackItem(new Eggs(2));
         }
@@ -83,10 +85,14 @@ namespace Server.Mobiles
         private void DoCounter(Mobile attacker)
         {
             if (Map == null)
+            {
                 return;
+            }
 
             if (attacker is BaseCreature creature && creature.BardProvoked)
+            {
                 return;
+            }
 
             if (Utility.RandomDouble() < 0.2)
             {
@@ -104,11 +110,15 @@ namespace Server.Mobiles
                     var m = baseCreature.GetMaster();
 
                     if (m != null)
+                    {
                         target = m;
+                    }
                 }
 
                 if (target?.InRange(this, 18) != true)
+                {
                     target = attacker;
+                }
 
                 Animate(10, 4, 1, true, false, 0);
 
@@ -117,10 +127,14 @@ namespace Server.Mobiles
                 foreach (var m in eable)
                 {
                     if (m == this || !(CanBeHarmful(m) || m.Player && m.Alive))
+                    {
                         continue;
+                    }
 
                     if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != Team))
+                    {
                         continue;
+                    }
 
                     DoHarmful(m);
 

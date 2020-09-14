@@ -73,7 +73,9 @@ namespace Server.Items
 
             // Magic Wand
             for (var i = Utility.Random(1, m_Level); i > 1; i--)
+            {
                 DropItem(Loot.RandomWand());
+            }
 
             // Equipment
             for (var i = Utility.Random(1, m_Level); i > 1; i--)
@@ -99,11 +101,15 @@ namespace Server.Items
 
             // Clothing
             for (var i = Utility.Random(1, 2); i > 1; i--)
+            {
                 DropItem(Loot.RandomClothing());
+            }
 
             // Jewelry
             for (var i = Utility.Random(1, 2); i > 1; i--)
+            {
                 DropItem(Loot.RandomJewelry());
+            }
         }
 
         public TreasureChestLevel3(Serial serial)

@@ -22,7 +22,10 @@ namespace Server.Engines.Craft
             for (var i = 0; i < Count; i++)
             {
                 var craftSubRes = this[i];
-                if (craftSubRes.ItemType == type) return craftSubRes;
+                if (craftSubRes.ItemType == type)
+                {
+                    return craftSubRes;
+                }
             }
 
             return null;

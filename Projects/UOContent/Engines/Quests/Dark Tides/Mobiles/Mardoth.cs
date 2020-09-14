@@ -32,18 +32,19 @@ namespace Server.Engines.Quests.Necro
                 var qs = player.Quest;
 
                 if (qs is DarkTidesQuest)
+                {
                     if (dropped is DarkTidesHorn horn)
                     {
                         if (player.Young)
                         {
                             if (horn.Charges < 10)
                             {
-                                SayTo(from, 1049384); // I have recharged the item for you.
+                                SayTo(@from, 1049384); // I have recharged the item for you.
                                 horn.Charges = 10;
                             }
                             else
                             {
-                                SayTo(from, 1049385); // That doesn't need recharging yet.
+                                SayTo(@from, 1049385); // That doesn't need recharging yet.
                             }
                         }
                         else
@@ -53,6 +54,7 @@ namespace Server.Engines.Quests.Necro
 
                         return false;
                     }
+                }
             }
 
             return base.OnDragDrop(from, dropped);
@@ -85,7 +87,9 @@ namespace Server.Engines.Quests.Necro
         public override bool CanTalkTo(PlayerMobile to)
         {
             if (!(to.Quest is DarkTidesQuest qs))
+            {
                 return to.Quest == null && QuestSystem.CanOfferQuest(to, typeof(DarkTidesQuest));
+            }
 
             return qs.FindObjective<FindMardothAboutVaultObjective>() != null;
         }

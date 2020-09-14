@@ -22,7 +22,9 @@ namespace Server.Spells.Third
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (!Caster.CanSee(m))
             {
@@ -53,13 +55,21 @@ namespace Server.Spells.Third
                             var total = (Caster.Skills.Magery.Fixed + Caster.Skills.Poisoning.Fixed) / 2;
 
                             if (total >= 1000)
+                            {
                                 level = 3;
+                            }
                             else if (total > 850)
+                            {
                                 level = 2;
+                            }
                             else if (total > 650)
+                            {
                                 level = 1;
+                            }
                             else
+                            {
                                 level = 0;
+                            }
                         }
                         else
                         {
@@ -76,7 +86,9 @@ namespace Server.Spells.Third
                         {
                             if (pm.DuelContext?.Started != true || pm.DuelContext.Finished ||
                                 pm.DuelContext.Ruleset.GetOption("Skills", "Poisoning"))
+                            {
                                 total += pm.Skills.Poisoning.Value;
+                            }
                         }
                         else
                         {
@@ -86,16 +98,26 @@ namespace Server.Spells.Third
                         var dist = Caster.GetDistanceToSqrt(m);
 
                         if (dist >= 3.0)
+                        {
                             total -= (dist - 3.0) * 10.0;
+                        }
 
                         if (total >= 200.0 && Utility.Random(10) < 1)
+                        {
                             level = 3;
+                        }
                         else if (total > (Core.AOS ? 170.1 : 170.0))
+                        {
                             level = 2;
+                        }
                         else if (total > (Core.AOS ? 130.1 : 130.0))
+                        {
                             level = 1;
+                        }
                         else
+                        {
                             level = 0;
+                        }
                     }
 
                     m.ApplyPoison(Caster, Poison.GetPoison(level));

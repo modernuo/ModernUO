@@ -25,7 +25,9 @@ namespace Server.Spells.Seventh
         public void Target(Mobile m)
         {
             if (m == null)
+            {
                 return;
+            }
 
             if (!Caster.CanSee(m))
             {
@@ -48,14 +50,20 @@ namespace Server.Spells.Seventh
                     toDrain = (int)(GetDamageSkill(Caster) - GetResistSkill(m));
 
                     if (!m.Player)
+                    {
                         toDrain /= 2;
+                    }
                 }
                 else
                 {
                     if (CheckResisted(m))
+                    {
                         m.SendLocalizedMessage(501783); // You feel yourself resisting magical energy.
+                    }
                     else
+                    {
                         toDrain = m.Mana;
+                    }
                 }
 
                 m.Mana -= Math.Clamp(toDrain, 0, Math.Min(m.Mana, Caster.ManaMax - Caster.Mana));

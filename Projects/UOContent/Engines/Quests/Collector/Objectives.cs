@@ -69,8 +69,13 @@ namespace Server.Engines.Quests.Collector
             if (pm.Map == m_StoolMap && pm.Location == m_StoolLocation)
             {
                 if (m_Begin == DateTime.MaxValue)
+                {
                     m_Begin = DateTime.UtcNow;
-                else if (DateTime.UtcNow - m_Begin > TimeSpan.FromSeconds(30.0)) Complete();
+                }
+                else if (DateTime.UtcNow - m_Begin > TimeSpan.FromSeconds(30.0))
+                {
+                    Complete();
+                }
             }
             else if (m_Begin != DateTime.MaxValue)
             {
@@ -123,7 +128,9 @@ namespace Server.Engines.Quests.Collector
         public FindSheetMusicObjective(bool init)
         {
             if (init)
+            {
                 InitTheater();
+            }
         }
 
         public FindSheetMusicObjective()
@@ -149,7 +156,9 @@ namespace Server.Engines.Quests.Collector
             var region = Region.Find(player.Location, player.Map);
 
             if (region == null)
+            {
                 return false;
+            }
 
             return m_Theater switch
             {
@@ -242,8 +251,12 @@ namespace Server.Engines.Quests.Collector
             get
             {
                 for (var i = 0; i < m_Done.Length; i++)
+                {
                     if (!m_Done[i])
+                    {
                         return false;
+                    }
+                }
 
                 return true;
             }
@@ -252,7 +265,9 @@ namespace Server.Engines.Quests.Collector
         public override bool IgnoreYoungProtection(Mobile from)
         {
             if (Completed)
+            {
                 return false;
+            }
 
             var fromType = from.GetType();
 
@@ -261,7 +276,9 @@ namespace Server.Engines.Quests.Collector
                 var info = ImageTypeInfo.Get(m_Images[i]);
 
                 if (info.Type == fromType)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -277,7 +294,10 @@ namespace Server.Engines.Quests.Collector
                 {
                     image = m_Images[i];
 
-                    if (m_Done[i]) return CaptureResponse.AlreadyDone;
+                    if (m_Done[i])
+                    {
+                        return CaptureResponse.AlreadyDone;
+                    }
 
                     m_Done[i] = true;
 
@@ -294,6 +314,7 @@ namespace Server.Engines.Quests.Collector
         public override void RenderProgress(BaseQuestGump gump)
         {
             if (!Completed)
+            {
                 for (var i = 0; i < m_Images.Length; i++)
                 {
                     var info = ImageTypeInfo.Get(m_Images[i]);
@@ -311,8 +332,11 @@ namespace Server.Engines.Quests.Collector
                         false
                     );
                 }
+            }
             else
+            {
                 base.RenderProgress(gump);
+            }
         }
 
         public override void OnComplete()

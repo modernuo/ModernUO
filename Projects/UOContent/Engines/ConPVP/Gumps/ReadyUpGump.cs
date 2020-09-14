@@ -45,7 +45,9 @@ namespace Server.Engines.ConPVP
                     height += 4;
 
                     if (p.Players.Length > 1)
+                    {
                         height += 22;
+                    }
 
                     height += p.Players.Length * 22;
                 }
@@ -111,7 +113,9 @@ namespace Server.Engines.ConPVP
                     defs = new BitArray(basedef.Options);
 
                     for (var i = 0; i < ruleset.Flavors.Count; ++i)
+                    {
                         defs.Or(ruleset.Flavors[i].Options);
+                    }
 
                     height += ruleset.Flavors.Count * 18;
                 }
@@ -123,8 +127,12 @@ namespace Server.Engines.ConPVP
                 var opts = ruleset.Options;
 
                 for (var i = 0; i < opts.Length; ++i)
+                {
                     if (defs[i] != opts[i])
+                    {
                         ++changes;
+                    }
+                }
 
                 height += changes * 22;
 
@@ -140,7 +148,9 @@ namespace Server.Engines.ConPVP
                 y = 70;
 
                 for (var i = 0; i < ruleset.Flavors.Count; ++i, y += 18)
+                {
                     AddHtml(35, y, 190, 20, $" + {ruleset.Flavors[i].Title}");
+                }
 
                 y += 4;
 
@@ -150,6 +160,7 @@ namespace Server.Engines.ConPVP
                     y += 20;
 
                     for (var i = 0; i < opts.Length; ++i)
+                    {
                         if (defs[i] != opts[i])
                         {
                             var name = ruleset.Layout.FindByIndex(i);
@@ -162,6 +173,7 @@ namespace Server.Engines.ConPVP
 
                             y += 22;
                         }
+                    }
                 }
                 else
                 {
@@ -191,14 +203,18 @@ namespace Server.Engines.ConPVP
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (!m_Context.Registered || !m_Context.ReadyWait)
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {
                 case 1: // okay
                     {
                         if (!(m_From is PlayerMobile pm))
+                        {
                             break;
+                        }
 
                         pm.DuelPlayer.Ready = true;
                         m_Context.SendReadyGump();

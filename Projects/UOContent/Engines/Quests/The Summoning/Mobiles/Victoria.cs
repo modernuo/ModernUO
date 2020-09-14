@@ -30,12 +30,16 @@ namespace Server.Engines.Quests.Doom
             {
                 if (m_Altar?.Deleted != false || m_Altar.Map != Map ||
                     !Utility.InRange(m_Altar.Location, Location, AltarRange))
+                {
                     foreach (var item in GetItemsInRange(AltarRange))
+                    {
                         if (item is SummoningAltar altar)
                         {
                             m_Altar = altar;
                             break;
                         }
+                    }
+                }
 
                 return m_Altar;
             }
@@ -74,6 +78,7 @@ namespace Server.Engines.Quests.Doom
                 var qs = player.Quest;
 
                 if (qs is TheSummoningQuest)
+                {
                     if (dropped is DaemonBone bones)
                     {
                         QuestObjective obj = qs.FindObjective<CollectBonesObjective>();
@@ -95,23 +100,26 @@ namespace Server.Engines.Quests.Doom
                                 bones.Consume(need);
 
                                 if (!bones.Deleted)
+                                {
                                     SayTo(
-                                        from,
+                                        @from,
                                         1050038
                                     ); // You have already given me all the Daemon bones necessary to weave the spell.  Keep these for a later time.
+                                }
                             }
                         }
                         else
                         {
                             // TODO: Accurate?
                             SayTo(
-                                from,
+                                @from,
                                 1050038
                             ); // You have already given me all the Daemon bones necessary to weave the spell.  Keep these for a later time.
                         }
 
                         return false;
                     }
+                }
             }
 
             return base.OnDragDrop(from, dropped);

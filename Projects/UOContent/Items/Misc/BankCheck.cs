@@ -76,9 +76,13 @@ namespace Server.Items
             string worth;
 
             if (Core.ML)
+            {
                 worth = m_Worth.ToString("N0", CultureInfo.GetCultureInfo("en-US"));
+            }
             else
+            {
                 worth = m_Worth.ToString();
+            }
 
             list.Add(1060738, worth); // value: ~1_val~
         }
@@ -87,7 +91,10 @@ namespace Server.Items
         {
             base.OnAdded(parent);
 
-            if (!AccountGold.Enabled) return;
+            if (!AccountGold.Enabled)
+            {
+                return;
+            }
 
             Mobile owner = null;
             SecureTradeInfo tradeInfo = null;
@@ -95,7 +102,9 @@ namespace Server.Items
             var root = parent as Container;
 
             while (root?.Parent is Container container)
+            {
                 root = container;
+            }
 
             parent = root ?? parent;
 
@@ -117,7 +126,10 @@ namespace Server.Items
                 owner = box.Owner;
             }
 
-            if (owner?.Account?.DepositGold(Worth) != true) return;
+            if (owner?.Account?.DepositGold(Worth) != true)
+            {
+                return;
+            }
 
             if (tradeInfo != null)
             {
@@ -234,14 +246,20 @@ namespace Server.Items
                 {
                     QuestObjective obj = qs.FindObjective<CashBankCheckObjective>();
 
-                    if (obj?.Completed == false) obj.Complete();
+                    if (obj?.Completed == false)
+                    {
+                        obj.Complete();
+                    }
                 }
 
                 if (qs is UzeraanTurmoilQuest)
                 {
                     var obj = qs.FindObjective(typeof(Engines.Quests.Haven.CashBankCheckObjective));
 
-                    if (obj?.Completed == false) obj.Complete();
+                    if (obj?.Completed == false)
+                    {
+                        obj.Complete();
+                    }
                 }
             }
         }

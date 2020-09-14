@@ -209,6 +209,7 @@ namespace Server.Engines.Harvest
             OreAndStone.Veins = veins;
 
             if (Core.ML)
+            {
                 OreAndStone.BonusResources = new[]
                 {
                     new BonusHarvestResource(0, 99.4, null, null), // Nothing
@@ -219,6 +220,7 @@ namespace Server.Engines.Harvest
                     new BonusHarvestResource(100, .1, 1072566, typeof(PerfectEmerald)),
                     new BonusHarvestResource(100, .1, 1072568, typeof(Turquoise))
                 };
+            }
 
             OreAndStone.RaceBonus = Core.ML;
             OreAndStone.RandomizeVeins = Core.ML;
@@ -280,11 +282,15 @@ namespace Server.Engines.Harvest
         )
         {
             if (def != OreAndStone)
-                return base.GetResourceType(from, tool, def, map, loc, resource);
+            {
+                return base.GetResourceType(@from, tool, def, map, loc, resource);
+            }
 
             if (from.Skills.Mining.Base >= 100.0 && from is PlayerMobile pm && pm.StoneMining && pm.ToggleMiningStone
                 && Utility.RandomDouble() < 0.1)
+            {
                 return resource.Types[1];
+            }
 
             return resource.Types[0];
         }
@@ -292,7 +298,9 @@ namespace Server.Engines.Harvest
         public override bool CheckHarvest(Mobile from, Item tool)
         {
             if (!base.CheckHarvest(from, tool))
+            {
                 return false;
+            }
 
             if (from.Mounted)
             {
@@ -312,15 +320,21 @@ namespace Server.Engines.Harvest
         public override void SendSuccessTo(Mobile from, Item item, HarvestResource resource)
         {
             if (item is BaseGranite)
-                from.SendLocalizedMessage(1044606); // You carefully extract some workable stone from the ore vein!
+            {
+                @from.SendLocalizedMessage(1044606); // You carefully extract some workable stone from the ore vein!
+            }
             else
-                base.SendSuccessTo(from, item, resource);
+            {
+                base.SendSuccessTo(@from, item, resource);
+            }
         }
 
         public override bool CheckHarvest(Mobile from, Item tool, HarvestDefinition def, object toHarvest)
         {
             if (!base.CheckHarvest(from, tool, def, toHarvest))
+            {
                 return false;
+            }
 
             if (def == Sand && !(from is PlayerMobile mobile && mobile.Skills.Mining.Base >= 100.0 &&
                                  mobile.SandMining))
@@ -354,7 +368,9 @@ namespace Server.Engines.Harvest
                 var veinIndex = Array.IndexOf(def.Veins, vein);
 
                 if (veinIndex >= 0 && veinIndex < def.Veins.Length - 1)
+                {
                     return def.Veins[veinIndex + 1];
+                }
             }
 
             return base.MutateVein(from, tool, def, bank, toHarvest, vein);
@@ -370,12 +386,15 @@ namespace Server.Engines.Harvest
                 var res = vein.PrimaryResource;
 
                 if (res == resource && res.Types.Length >= 3)
+                {
                     try
                     {
-                        var map = from.Map;
+                        var map = @from.Map;
 
                         if (map == null)
+                        {
                             return;
+                        }
 
                         if (ActivatorUtil.CreateInstance(res.Types[2], 25) is BaseCreature spawned)
                         {
@@ -383,44 +402,47 @@ namespace Server.Engines.Harvest
 
                             for (var i = 0; i < m_Offsets.Length; i += 2)
                             {
-                                var x = from.X + m_Offsets[(offset + i) % m_Offsets.Length];
-                                var y = from.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];
+                                var x = @from.X + m_Offsets[(offset + i) % m_Offsets.Length];
+                                var y = @from.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];
 
-                                if (map.CanSpawnMobile(x, y, from.Z))
+                                if (map.CanSpawnMobile(x, y, @from.Z))
                                 {
-                                    spawned.OnBeforeSpawn(new Point3D(x, y, from.Z), map);
-                                    spawned.MoveToWorld(new Point3D(x, y, from.Z), map);
-                                    spawned.Combatant = from;
+                                    spawned.OnBeforeSpawn(new Point3D(x, y, @from.Z), map);
+                                    spawned.MoveToWorld(new Point3D(x, y, @from.Z), map);
+                                    spawned.Combatant = @from;
                                     return;
                                 }
 
                                 var z = map.GetAverageZ(x, y);
 
-                                if (Math.Abs(z - from.Z) < 10 && map.CanSpawnMobile(x, y, z))
+                                if (Math.Abs(z - @from.Z) < 10 && map.CanSpawnMobile(x, y, z))
                                 {
                                     spawned.OnBeforeSpawn(new Point3D(x, y, z), map);
                                     spawned.MoveToWorld(new Point3D(x, y, z), map);
-                                    spawned.Combatant = from;
+                                    spawned.Combatant = @from;
                                     return;
                                 }
                             }
 
-                            spawned.OnBeforeSpawn(from.Location, from.Map);
-                            spawned.MoveToWorld(from.Location, from.Map);
-                            spawned.Combatant = from;
+                            spawned.OnBeforeSpawn(@from.Location, @from.Map);
+                            spawned.MoveToWorld(@from.Location, @from.Map);
+                            spawned.Combatant = @from;
                         }
                     }
                     catch
                     {
                         // ignored
                     }
+                }
             }
         }
 
         public override bool BeginHarvesting(Mobile from, Item tool)
         {
             if (!base.BeginHarvesting(from, tool))
+            {
                 return false;
+            }
 
             from.SendLocalizedMessage(503033); // Where do you wish to dig?
             return true;
@@ -431,15 +453,21 @@ namespace Server.Engines.Harvest
             base.OnHarvestStarted(from, tool, def, toHarvest);
 
             if (Core.ML)
-                from.RevealingAction();
+            {
+                @from.RevealingAction();
+            }
         }
 
         public override void OnBadHarvestTarget(Mobile from, Item tool, object toHarvest)
         {
             if (toHarvest is LandTarget)
-                from.SendLocalizedMessage(501862); // You can't mine there.
+            {
+                @from.SendLocalizedMessage(501862); // You can't mine there.
+            }
             else
-                from.SendLocalizedMessage(501863); // You can't mine that.
+            {
+                @from.SendLocalizedMessage(501863); // You can't mine that.
+            }
         }
     }
 }

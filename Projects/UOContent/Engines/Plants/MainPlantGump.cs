@@ -95,8 +95,16 @@ namespace Server.Engines.Plants
                 AddItem(120, 112, 0x914);
                 AddItem(135, 112, 0x914);
 
-                if (status >= PlantStatus.Stage2) AddItem(127, 112, 0xC62);
-                if (status == PlantStatus.Stage3 || status == PlantStatus.Stage4) AddItem(129, 85, 0xC7E);
+                if (status >= PlantStatus.Stage2)
+                {
+                    AddItem(127, 112, 0xC62);
+                }
+
+                if (status == PlantStatus.Stage3 || status == PlantStatus.Stage4)
+                {
+                    AddItem(129, 85, 0xC7E);
+                }
+
                 if (status >= PlantStatus.Stage4)
                 {
                     AddItem(121, 117, 0xC62);
@@ -126,9 +134,13 @@ namespace Server.Engines.Plants
 
                 // The large images for these trees trigger a client crash, so use a smaller, generic tree.
                 if (m_Plant.PlantType == PlantType.CypressTwisted || m_Plant.PlantType == PlantType.CypressStraight)
+                {
                     AddItem(130 + typeInfo.OffsetX, 96 + typeInfo.OffsetY, 0x0CCA, hueInfo.Hue);
+                }
                 else
+                {
                     AddItem(130 + typeInfo.OffsetX, 96 + typeInfo.OffsetY, typeInfo.ItemID, hueInfo.Hue);
+                }
             }
 
             if (status != PlantStatus.BowlOfDirt)
@@ -217,7 +229,9 @@ namespace Server.Engines.Plants
         private void AddGrowthIndicator(int x, int y)
         {
             if (!m_Plant.IsGrowable)
+            {
                 return;
+            }
 
             switch (m_Plant.PlantSystem.GrowthIndicator)
             {
@@ -244,7 +258,9 @@ namespace Server.Engines.Plants
             var from = sender.Mobile;
 
             if (info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus >= PlantStatus.DecorativePlant)
+            {
                 return;
+            }
 
             if ((info.ButtonID >= 6 && info.ButtonID <= 10 || info.ButtonID == 12) &&
                 !from.InRange(m_Plant.GetWorldLocation(), 3))
@@ -406,23 +422,31 @@ namespace Server.Engines.Plants
         public static Item GetPotion(Mobile from, PotionEffect[] effects)
         {
             if (from.Backpack == null)
+            {
                 return null;
+            }
 
             var items = from.Backpack.FindItemsByType(new[] { typeof(BasePotion), typeof(PotionKeg) });
 
             foreach (var item in items)
+            {
                 if (item is BasePotion potion)
                 {
                     if (Array.IndexOf(effects, potion.PotionEffect) >= 0)
+                    {
                         return potion;
+                    }
                 }
                 else
                 {
                     var keg = (PotionKeg)item;
 
                     if (keg.Held > 0 && Array.IndexOf(effects, keg.Type) >= 0)
+                    {
                         return keg;
+                    }
                 }
+            }
 
             return null;
         }

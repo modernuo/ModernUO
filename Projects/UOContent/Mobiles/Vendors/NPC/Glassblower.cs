@@ -42,7 +42,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (Body == 0x2F2)
+            {
                 Body = 0x2F6;
+            }
         }
     }
 }

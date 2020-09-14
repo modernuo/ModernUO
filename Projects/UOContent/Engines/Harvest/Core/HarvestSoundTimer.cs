@@ -29,7 +29,9 @@ namespace Server.Engines.Harvest
             m_System.DoHarvestingSound(m_From, m_Tool, m_Definition, m_ToHarvest);
 
             if (m_Last)
+            {
                 m_System.FinishHarvesting(m_From, m_Tool, m_Definition, m_ToHarvest, m_Locked);
+            }
         }
     }
 }

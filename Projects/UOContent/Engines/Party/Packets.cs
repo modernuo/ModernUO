@@ -26,7 +26,9 @@ namespace Server.Engines.PartySystem
             Stream.Write((byte)p.Count);
 
             for (var i = 0; i < p.Count; ++i)
+            {
                 Stream.Write(p[i].Mobile.Serial);
+            }
         }
     }
 
@@ -43,7 +45,9 @@ namespace Server.Engines.PartySystem
             Stream.Write(removed.Serial);
 
             for (var i = 0; i < p.Count; ++i)
+            {
                 Stream.Write(p[i].Mobile.Serial);
+            }
         }
     }
 
@@ -52,7 +56,9 @@ namespace Server.Engines.PartySystem
         public PartyTextMessage(bool toAll, Mobile from, string text) : base(0xBF)
         {
             if (text == null)
+            {
                 text = "";
+            }
 
             EnsureCapacity(12 + text.Length * 2);
 

@@ -19,7 +19,9 @@ namespace Server.Items
         public override bool Validate(Mobile from)
         {
             if (!base.Validate(from))
+            {
                 return false;
+            }
 
             if (from.Mounted && !(from.Weapon is Lance))
             {
@@ -33,14 +35,20 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, int damage)
         {
             if (!Validate(attacker))
+            {
                 return;
+            }
 
             if (defender is ChaosDragoon || defender is ChaosDragoonElite)
+            {
                 return;
+            }
 
             if (attacker.Mounted && (!(attacker.Weapon is Lance) || !(defender.Weapon is Lance))
             ) // TODO: Should there be a message here?
+            {
                 return;
+            }
 
             ClearCurrentAbility(attacker);
 
@@ -53,17 +61,25 @@ namespace Server.Items
             }
 
             if (!CheckMana(attacker, true))
+            {
                 return;
+            }
 
             if (Core.ML && attacker is LesserHiryu && Utility.RandomDouble() <= 0.8)
+            {
                 return; // Lesser Hiryu have an 80% chance of missing this attack
+            }
 
             attacker.SendLocalizedMessage(1060082); // The force of your attack has dislodged them from their mount!
 
             if (attacker.Mounted)
+            {
                 defender.SendLocalizedMessage(1062315); // You fall off your mount!
+            }
             else
+            {
                 defender.SendLocalizedMessage(1060083); // You fall off of your mount and take damage!
+            }
 
             defender.PlaySound(0x140);
             defender.FixedParticles(0x3728, 10, 15, 9955, EffectLayer.Waist);
@@ -71,8 +87,13 @@ namespace Server.Items
             if (defender is PlayerMobile mobile)
             {
                 if (AnimalForm.UnderTransformation(mobile))
-                    mobile.SendLocalizedMessage(1114066, attacker.Name);       // ~1_NAME~ knocked you out of animal form!
-                else if (mobile.Mounted) mobile.SendLocalizedMessage(1040023); // You have been knocked off of your mount!
+                {
+                    mobile.SendLocalizedMessage(1114066, attacker.Name); // ~1_NAME~ knocked you out of animal form!
+                }
+                else if (mobile.Mounted)
+                {
+                    mobile.SendLocalizedMessage(1040023); // You have been knocked off of your mount!
+                }
 
                 mobile.SetMountBlock(BlockMountType.Dazed, TimeSpan.FromSeconds(10), true);
             }
@@ -82,13 +103,21 @@ namespace Server.Items
             }
 
             if (attacker is PlayerMobile playerMobile)
+            {
                 playerMobile.SetMountBlock(BlockMountType.DismountRecovery, RemountDelay, true);
+            }
             else if (Core.ML && attacker is BaseCreature bc)
+            {
                 if (bc.ControlMaster is PlayerMobile pm)
+                {
                     pm.SetMountBlock(BlockMountType.DismountRecovery, RemountDelay, false);
+                }
+            }
 
             if (!attacker.Mounted)
+            {
                 AOS.Damage(defender, attacker, Utility.RandomMinMax(15, 25), 100, 0, 0, 0, 0);
+            }
         }
     }
 }

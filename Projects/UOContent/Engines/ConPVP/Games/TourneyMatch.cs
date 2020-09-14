@@ -20,21 +20,27 @@ namespace Server.Engines.ConPVP
                 sb.Append("Matched in a duel against ");
 
                 if (participants.Count > 2)
+                {
                     sb.AppendFormat(
                         "{0} other {1}: ",
                         participants.Count - 1,
                         part.Players.Count == 1 ? "players" : "teams"
                     );
+                }
 
                 var hasAppended = false;
 
                 for (var j = 0; j < participants.Count; ++j)
                 {
                     if (i == j)
+                    {
                         continue;
+                    }
 
                     if (hasAppended)
+                    {
                         sb.Append(", ");
+                    }
 
                     sb.Append(participants[j].NameList);
                     hasAppended = true;
@@ -71,17 +77,25 @@ namespace Server.Engines.ConPVP
                 };
 
                 for (var j = 0; j < tourneyPart.Players.Count; ++j)
+                {
                     duelPart.Add(tourneyPart.Players[j]);
+                }
 
                 for (var j = 0; j < duelPart.Players.Length; ++j)
+                {
                     if (duelPart.Players[j] != null)
+                    {
                         duelPart.Players[j].Ready = true;
+                    }
+                }
 
                 dc.Participants.Add(duelPart);
             }
 
             if (tourney.EventController != null)
+            {
                 dc.m_EventGame = tourney.EventController.Construct(dc);
+            }
 
             dc.m_Tournament = tourney;
             dc.m_Match = this;
@@ -90,7 +104,9 @@ namespace Server.Engines.ConPVP
 
             if (tourney.SuddenDeath > TimeSpan.Zero &&
                 (tourney.SuddenDeathRounds == 0 || tourney.Pyramid.Levels.Count <= tourney.SuddenDeathRounds))
+            {
                 dc.StartSuddenDeath(tourney.SuddenDeath);
+            }
 
             dc.SendReadyGump(0);
 
@@ -107,8 +123,12 @@ namespace Server.Engines.ConPVP
                         var mob = p.Players[j];
 
                         foreach (var view in mob.GetMobilesInRange(18))
+                        {
                             if (!mob.CanSee(view))
+                            {
                                 mob.Send(view.RemovePacket);
+                            }
+                        }
 
                         mob.LocalOverheadMessage(
                             MessageType.Emote,

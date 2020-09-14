@@ -24,16 +24,22 @@ namespace Server.Factions
             AddHtmlText(20, 20, 380, 20, election.Faction.Definition.Header, false, false);
 
             if (canVote)
+            {
                 AddHtmlLocalized(20, 60, 380, 20, 1011428); // VOTE FOR LEADERSHIP
+            }
             else
+            {
                 AddHtmlLocalized(20, 60, 380, 20, 1038032); // You have already voted in this election.
+            }
 
             for (var i = 0; i < election.Candidates.Count; ++i)
             {
                 var cd = election.Candidates[i];
 
                 if (canVote)
+                {
                     AddButton(20, 100 + i * 20, 4005, 4007, i + 1);
+                }
 
                 AddLabel(55, 100 + i * 20, 0, cd.Mobile.Name);
                 AddLabel(300, 100 + i * 20, 0, cd.Votes.ToString());
@@ -52,12 +58,16 @@ namespace Server.Factions
             else
             {
                 if (!m_Election.CanVote(m_From))
+                {
                     return;
+                }
 
                 var index = info.ButtonID - 1;
 
                 if (index >= 0 && index < m_Election.Candidates.Count)
+                {
                     m_Election.Candidates[index].Voters.Add(new Voter(m_From, m_Election.Candidates[index].Mobile));
+                }
 
                 m_From.SendGump(new VoteGump(m_From, m_Election));
             }

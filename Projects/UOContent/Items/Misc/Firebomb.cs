@@ -69,7 +69,9 @@ namespace Server.Items
             m_Users ??= new List<Mobile>();
 
             if (!m_Users.Contains(from))
-                m_Users.Add(from);
+            {
+                m_Users.Add(@from);
+            }
 
             from.Target = new ThrowTarget(this);
         }
@@ -83,7 +85,9 @@ namespace Server.Items
             }
 
             if (Map == Map.Internal && HeldBy == null)
+            {
                 return;
+            }
 
             switch (m_Ticks)
             {
@@ -94,11 +98,17 @@ namespace Server.Items
                         ++m_Ticks;
 
                         if (HeldBy != null)
+                        {
                             HeldBy.PublicOverheadMessage(MessageType.Regular, 957, false, m_Ticks.ToString());
+                        }
                         else if (RootParent == null)
+                        {
                             PublicOverheadMessage(MessageType.Regular, 957, false, m_Ticks.ToString());
+                        }
                         else if (RootParent is Mobile mobile)
+                        {
                             mobile.PublicOverheadMessage(MessageType.Regular, 957, false, m_Ticks.ToString());
+                        }
 
                         break;
                     }
@@ -109,8 +119,12 @@ namespace Server.Items
                         if (m_Users != null)
                         {
                             foreach (var m in m_Users)
+                            {
                                 if (m.Target is ThrowTarget targ && targ.Bomb == this)
+                                {
                                     Target.Cancel(m);
+                                }
+                            }
 
                             m_Users.Clear();
                             m_Users = null;
@@ -154,10 +168,14 @@ namespace Server.Items
         private void OnFirebombTarget(Mobile from, object obj)
         {
             if (Deleted || Map == Map.Internal || !IsChildOf(from.Backpack))
+            {
                 return;
+            }
 
             if (!(obj is IPoint3D p))
+            {
                 return;
+            }
 
             SpellHelper.GetSurfaceTop(ref p);
 
@@ -174,7 +192,9 @@ namespace Server.Items
         private void FirebombReposition_OnTick(IPoint3D p, Map map)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             MoveToWorld(new Point3D(p), map);
         }
@@ -234,7 +254,9 @@ namespace Server.Items
                 m.PlaySound(0x208);
 
                 if (!m_Burning.Contains(m))
+                {
                     m_Burning.Add(m);
+                }
             }
 
             return true;

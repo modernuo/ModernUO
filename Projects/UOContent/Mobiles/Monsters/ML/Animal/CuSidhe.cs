@@ -10,11 +10,17 @@ namespace Server.Mobiles
             var chance = Utility.RandomDouble() * 23301;
 
             if (chance <= 1)
+            {
                 Hue = 0x489;
+            }
             else if (chance < 50)
+            {
                 Hue = Utility.RandomList(0x657, 0x515, 0x4B1, 0x481, 0x482, 0x455);
+            }
             else if (chance < 500)
+            {
                 Hue = Utility.RandomList(0x97A, 0x978, 0x901, 0x8AC, 0x5A7, 0x527);
+            }
 
             SetStr(1200, 1225);
             SetDex(150, 170);
@@ -48,7 +54,9 @@ namespace Server.Mobiles
             MinTameSkill = 101.1;
 
             if (Utility.RandomDouble() < 0.2)
+            {
                 PackItem(new TreasureMap(5, Map.Trammel));
+            }
 
             // if (Utility.RandomDouble() < 0.1)
             // PackItem( new ParrotItem() );
@@ -124,7 +132,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (version < 1 && Name == "a Cu Sidhe")
+            {
                 Name = null;
+            }
         }
     }
 }

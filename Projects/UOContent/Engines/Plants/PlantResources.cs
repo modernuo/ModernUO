@@ -35,8 +35,12 @@ namespace Server.Engines.Plants
         public static PlantResourceInfo GetInfo(PlantType plantType, PlantHue plantHue)
         {
             foreach (var info in m_ResourceList)
+            {
                 if (info.PlantType == plantType && info.PlantHue == plantHue)
+                {
                     return info;
+                }
+            }
 
             return null;
         }

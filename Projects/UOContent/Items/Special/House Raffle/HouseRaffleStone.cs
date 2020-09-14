@@ -209,7 +209,9 @@ namespace Server.Items
             get
             {
                 if (m_State != HouseRaffleState.Completed)
+                {
                     return false;
+                }
 
                 return m_Started + m_Duration + ExpirationTime <= DateTime.UtcNow;
             }
@@ -238,7 +240,9 @@ namespace Server.Items
         public static void CheckEnd_OnTick()
         {
             for (var i = 0; i < m_AllStones.Count; i++)
+            {
                 m_AllStones[i].CheckEnd();
+            }
         }
 
         public static void Initialize()
@@ -248,6 +252,7 @@ namespace Server.Items
                 var stone = m_AllStones[i];
 
                 if (stone.IsExpired)
+                {
                     switch (stone.ExpireAction)
                     {
                         case HouseRaffleExpireAction.HideStone:
@@ -266,6 +271,7 @@ namespace Server.Items
                                 break;
                             }
                     }
+                }
             }
 
             Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckEnd_OnTick);
@@ -293,16 +299,22 @@ namespace Server.Items
         private bool HasEntered(Mobile from)
         {
             if (!(from.Account is Account acc))
+            {
                 return false;
+            }
 
             foreach (var entry in Entries)
+            {
                 if (entry.From != null)
                 {
                     var entryAcc = entry.From.Account as Account;
 
                     if (entryAcc == acc)
+                    {
                         return true;
+                    }
                 }
+            }
 
             return false;
         }
@@ -310,15 +322,23 @@ namespace Server.Items
         private bool IsAtIPLimit(Mobile from)
         {
             if (from.NetState == null)
+            {
                 return false;
+            }
 
             var address = from.NetState.Address;
             var tickets = 0;
 
             foreach (var entry in Entries)
+            {
                 if (Utility.IPMatchClassC(entry.Address, address))
+                {
                     if (++tickets >= EntryLimitPerIP)
+                    {
                         return true;
+                    }
+                }
+            }
 
             return false;
         }
@@ -332,6 +352,7 @@ namespace Server.Items
             bool xEast = false, ySouth = false;
 
             if (Sextant.Format(loc, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth))
+            {
                 result.AppendFormat(
                     "{0}°{1}'{2},{3}°{4}'{5}",
                     yLat,
@@ -341,11 +362,16 @@ namespace Server.Items
                     xMins,
                     xEast ? "E" : "W"
                 );
+            }
             else
+            {
                 result.AppendFormat("{0},{1}", loc.X, loc.Y);
+            }
 
             if (displayMap)
+            {
                 result.AppendFormat(" ({0})", map);
+            }
 
             return result.ToString();
         }
@@ -362,7 +388,9 @@ namespace Server.Items
         public string FormatLocation()
         {
             if (!ValidLocation())
+            {
                 return "no location set";
+            }
 
             return FormatLocation(GetPlotCenter(), m_Facet, true);
         }
@@ -374,7 +402,9 @@ namespace Server.Items
             base.GetProperties(list);
 
             if (ValidLocation())
+            {
                 list.Add(FormatLocation());
+            }
 
             switch (m_State)
             {
@@ -424,16 +454,22 @@ namespace Server.Items
                 list.Add(new EditEntry(from, this));
 
                 if (m_State == HouseRaffleState.Inactive)
-                    list.Add(new ActivateEntry(from, this));
+                {
+                    list.Add(new ActivateEntry(@from, this));
+                }
                 else
-                    list.Add(new ManagementEntry(from, this));
+                {
+                    list.Add(new ManagementEntry(@from, this));
+                }
             }
         }
 
         public override void OnDoubleClick(Mobile from)
         {
             if (m_State != HouseRaffleState.Active || !from.CheckAlive())
+            {
                 return;
+            }
 
             if (!from.InRange(GetWorldLocation(), 2))
             {
@@ -442,11 +478,16 @@ namespace Server.Items
             }
 
             if (HasEntered(from))
-                from.SendMessage(MessageHue, "You have already entered this plot's raffle.");
+            {
+                @from.SendMessage(MessageHue, "You have already entered this plot's raffle.");
+            }
             else if (IsAtIPLimit(from))
-                from.SendMessage(MessageHue, "You may not enter this plot's raffle.");
+            {
+                @from.SendMessage(MessageHue, "You may not enter this plot's raffle.");
+            }
             else
-                from.SendGump(
+            {
+                @from.SendGump(
                     new WarningGump(
                         1150470,
                         0x7F00,
@@ -454,18 +495,23 @@ namespace Server.Items
                         0xFFFFFF,
                         420,
                         280,
-                        okay => Purchase_Callback(from, okay)
+                        okay => Purchase_Callback(@from, okay)
                     )
                 ); // CONFIRM TICKET PURCHASE
+            }
         }
 
         public void Purchase_Callback(Mobile from, bool okay)
         {
             if (Deleted || m_State != HouseRaffleState.Active || !from.CheckAlive() || HasEntered(from) || IsAtIPLimit(from))
+            {
                 return;
+            }
 
             if (!(from.Account is Account))
+            {
                 return;
+            }
 
             if (okay)
             {
@@ -492,7 +538,9 @@ namespace Server.Items
         public void CheckEnd()
         {
             if (m_State != HouseRaffleState.Active || m_Started + m_Duration > DateTime.UtcNow)
+            {
                 return;
+            }
 
             m_State = HouseRaffleState.Completed;
 
@@ -565,7 +613,9 @@ namespace Server.Items
             writer.Write(Entries.Count);
 
             foreach (var entry in Entries)
+            {
                 entry.Serialize(writer);
+            }
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -615,7 +665,9 @@ namespace Server.Items
                             var entry = new RaffleEntry(reader, version);
 
                             if (entry.From == null)
+                            {
                                 continue; // Character was deleted
+                            }
 
                             Entries.Add(entry);
                         }
@@ -627,11 +679,17 @@ namespace Server.Items
                         if (version < 3)
                         {
                             if (oldActive)
+                            {
                                 m_State = HouseRaffleState.Active;
+                            }
                             else if (m_Winner != null)
+                            {
                                 m_State = HouseRaffleState.Completed;
+                            }
                             else
+                            {
                                 m_State = HouseRaffleState.Inactive;
+                            }
                         }
 
                         break;
@@ -662,7 +720,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (m_Stone.Deleted || m_From.AccessLevel < AccessLevel.Seer)
+                {
                     return;
+                }
 
                 m_From.SendGump(new PropertiesGump(m_From, m_Stone));
             }
@@ -674,13 +734,17 @@ namespace Server.Items
                 : base(from, stone, 5113) // Start
             {
                 if (!stone.ValidLocation())
+                {
                     Flags |= CMEFlags.Disabled;
+                }
             }
 
             public override void OnClick()
             {
                 if (m_Stone.Deleted || m_From.AccessLevel < AccessLevel.Seer || !m_Stone.ValidLocation())
+                {
                     return;
+                }
 
                 m_Stone.CurrentState = HouseRaffleState.Active;
             }
@@ -696,7 +760,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (m_Stone.Deleted || m_From.AccessLevel < AccessLevel.Seer)
+                {
                     return;
+                }
 
                 m_From.SendGump(new HouseRaffleManagementGump(m_Stone));
             }

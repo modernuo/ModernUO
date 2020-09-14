@@ -29,7 +29,9 @@ namespace Server.Engines.Quests.Necro
                     QuestObjective obj = qs.FindObjective<RetrieveAbraxusScrollObjective>();
 
                     if (obj?.Completed == false)
+                    {
                         obj.Complete();
+                    }
                 }
             }
         }
@@ -49,7 +51,9 @@ namespace Server.Engines.Quests.Necro
                         QuestObjective obj = qs.FindObjective<ReadAbraxusScrollObjective>();
 
                         if (obj?.Completed == false)
+                        {
                             obj.Complete();
+                        }
                     }
                 }
             }

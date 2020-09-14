@@ -62,7 +62,9 @@ namespace Server.Engines.Events
             var firstRun = new DateTime(now.Year, now.Month, now.Day, hour, min, 0);
 
             while (now > firstRun)
+            {
                 firstRun += interval;
+            }
 
             ScheduleEvent(
                 new EventScheduleEntry(e, firstRun, interval, TimeSpan.FromHours(hour) + TimeSpan.FromMinutes(min))
@@ -82,8 +84,12 @@ namespace Server.Engines.Events
         protected override void OnTick()
         {
             foreach (var entry in _schedule)
+            {
                 if (entry.NextOccurrence <= DateTime.UtcNow)
+                {
                     entry.Occur();
+                }
+            }
         }
     }
 }

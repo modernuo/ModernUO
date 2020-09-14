@@ -41,8 +41,12 @@ namespace Server.Commands.Generic
         public bool IsValid(object obj)
         {
             for (var i = 0; i < Count; ++i)
+            {
                 if (!this[i].IsValid(obj))
+                {
                     return false;
+                }
+            }
 
             return true;
         }
@@ -50,7 +54,9 @@ namespace Server.Commands.Generic
         public void Filter(List<object> list)
         {
             for (var i = 0; i < Count; ++i)
+            {
                 this[i].Filter(list);
+            }
         }
 
         public static Extensions Parse(Mobile from, ref string[] args)
@@ -64,17 +70,23 @@ namespace Server.Commands.Generic
             for (var i = args.Length - 1; i >= 0; --i)
             {
                 if (!ExtensionInfo.Table.TryGetValue(args[i], out var extInfo))
+                {
                     continue;
+                }
 
                 if (extInfo.IsFixedSize && i != size - extInfo.Size - 1)
+                {
                     throw new Exception("Invalid extended argument count.");
+                }
 
                 var ext = extInfo.Constructor();
 
                 ext.Parse(from, args, i + 1, size - i - 1);
 
                 if (ext is WhereExtension extension)
+                {
                     baseType = extension.Conditional.Type;
+                }
 
                 parsed.Add(ext);
 
@@ -86,7 +98,9 @@ namespace Server.Commands.Generic
             AssemblyEmitter emitter = null;
 
             foreach (var update in parsed)
-                update.Optimize(from, baseType, ref emitter);
+            {
+                update.Optimize(@from, baseType, ref emitter);
+            }
 
             if (size != args.Length)
             {
@@ -94,7 +108,9 @@ namespace Server.Commands.Generic
                 args = new string[size];
 
                 for (var i = 0; i < args.Length; ++i)
+                {
                     args[i] = old[i];
+                }
             }
 
             return parsed;

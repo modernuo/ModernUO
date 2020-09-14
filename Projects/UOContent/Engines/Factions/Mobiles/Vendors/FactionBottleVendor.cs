@@ -56,7 +56,9 @@ namespace Server.Factions
             public InternalBuyInfo()
             {
                 for (var i = 0; i < 5; ++i)
+                {
                     Add(new GenericBuyInfo(typeof(Bottle), 5, 20, 0xF0E, 0));
+                }
             }
         }
 

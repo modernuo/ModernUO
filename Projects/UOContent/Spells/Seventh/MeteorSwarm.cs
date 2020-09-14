@@ -37,7 +37,9 @@ namespace Server.Spells.Seventh
                 SpellHelper.Turn(Caster, p);
 
                 if (p is Item item)
+                {
                     p = item.GetWorldLocation();
+                }
 
                 List<Mobile> targets;
 
@@ -55,10 +57,14 @@ namespace Server.Spells.Seventh
                                 if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) ||
                                     !Caster.CanBeHarmful(m, false) ||
                                     Core.AOS && !Caster.InLOS(m))
+                                {
                                     return false;
+                                }
 
                                 if (m.Player)
+                                {
                                     playerVsPlayer = true;
+                                }
 
                                 return true;
                             }
@@ -83,9 +89,13 @@ namespace Server.Spells.Seventh
                     Effects.PlaySound(p, Caster.Map, 0x160);
 
                     if (Core.AOS && targets.Count > 2)
+                    {
                         damage = damage * 2 / targets.Count;
+                    }
                     else if (!Core.AOS)
+                    {
                         damage /= targets.Count;
+                    }
 
                     for (var i = 0; i < targets.Count; ++i)
                     {

@@ -11,7 +11,9 @@ namespace Server.Engines.MLQuests
             ForceMap = forceMap;
 
             if (MLQuestSystem.Debug)
+            {
                 ValidationQueue<QuestArea>.Add(this);
+            }
         }
 
         public TextDefinition Name { get; set; }
@@ -25,7 +27,9 @@ namespace Server.Engines.MLQuests
         public bool Contains(Region reg)
         {
             if (reg == null || ForceMap != null && reg.Map != ForceMap)
+            {
                 return false;
+            }
 
             return reg.IsPartOf(RegionName);
         }
@@ -36,18 +40,22 @@ namespace Server.Engines.MLQuests
             var found = false;
 
             foreach (var r in Region.Regions)
+            {
                 if (r.Name == RegionName && (ForceMap == null || r.Map == ForceMap))
                 {
                     found = true;
                     break;
                 }
+            }
 
             if (!found)
+            {
                 Console.WriteLine(
                     "Warning: QuestArea region '{0}' does not exist (ForceMap = {1})",
                     RegionName,
                     ForceMap?.ToString() ?? "-null-"
                 );
+            }
         }
     }
 }

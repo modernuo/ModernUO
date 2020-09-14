@@ -34,7 +34,9 @@ namespace Server.Items
         public override bool OnDragDrop(Mobile from, Item item)
         {
             if (m_Boat?.Contains(from) != true || m_Boat.IsMoving)
+            {
                 return false;
+            }
 
             return base.OnDragDrop(from, item);
         }
@@ -42,7 +44,9 @@ namespace Server.Items
         public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
         {
             if (m_Boat?.Contains(from) != true || m_Boat.IsMoving)
+            {
                 return false;
+            }
 
             return base.OnDragDropInto(from, item, p);
         }
@@ -50,7 +54,9 @@ namespace Server.Items
         public override bool CheckItemUse(Mobile from, Item item)
         {
             if (item != this && (m_Boat?.Contains(from) != true || m_Boat.IsMoving))
+            {
                 return false;
+            }
 
             return base.CheckItemUse(from, item);
         }
@@ -58,7 +64,9 @@ namespace Server.Items
         public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
         {
             if (m_Boat?.Contains(from) != true || m_Boat.IsMoving)
+            {
                 return false;
+            }
 
             return base.CheckLift(from, item, ref reject);
         }
@@ -71,11 +79,17 @@ namespace Server.Items
         public override void OnDoubleClick(Mobile from)
         {
             if (m_Boat?.Contains(from) != true)
+            {
                 m_Boat.TillerMan?.Say(502490); // You must be on the ship to open the hold.
+            }
             else if (m_Boat.IsMoving)
+            {
                 m_Boat.TillerMan?.Say(502491); // I can not open the hold while the ship is moving.
+            }
             else
-                base.OnDoubleClick(from);
+            {
+                base.OnDoubleClick(@from);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -100,7 +114,9 @@ namespace Server.Items
                         m_Boat = reader.ReadItem() as BaseBoat;
 
                         if (m_Boat == null || Parent != null)
+                        {
                             Delete();
+                        }
 
                         Movable = false;
 

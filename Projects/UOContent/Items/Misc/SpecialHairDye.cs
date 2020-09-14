@@ -96,7 +96,9 @@ namespace Server.Items
         public override void OnResponse(NetState from, RelayInfo info)
         {
             if (m_SpecialHairDye.Deleted)
+            {
                 return;
+            }
 
             var m = from.Mobile;
             var switches = info.Switches;

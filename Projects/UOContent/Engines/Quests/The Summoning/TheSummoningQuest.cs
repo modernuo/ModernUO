@@ -43,12 +43,14 @@ namespace Server.Engines.Quests.Doom
                 var altar = Victoria.Altar;
 
                 if (altar != null && altar.Daemon?.Alive != true)
+                {
                     if (From.Map == Victoria.Map && From.InRange(Victoria, 8))
                     {
                         WaitForSummon = false;
 
                         AddConversation(new VanquishDaemonConversation());
                     }
+                }
             }
 
             base.Slice();
@@ -57,14 +59,22 @@ namespace Server.Engines.Quests.Doom
         public static int GetDaemonBonesFor(BaseCreature creature)
         {
             if (creature?.Controlled != false || creature.Summoned)
+            {
                 return 0;
+            }
 
             var fame = creature.Fame;
 
             if (fame < 1500)
+            {
                 return Utility.Dice(2, 5, -1);
+            }
+
             if (fame < 20000)
+            {
                 return Utility.Dice(2, 4, 8);
+            }
+
             return 50;
         }
 

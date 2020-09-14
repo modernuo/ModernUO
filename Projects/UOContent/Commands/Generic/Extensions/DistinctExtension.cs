@@ -24,7 +24,9 @@ namespace Server.Commands.Generic
         public override void Optimize(Mobile from, Type baseType, ref AssemblyEmitter assembly)
         {
             if (baseType == null)
+            {
                 throw new Exception("Distinct extension may only be used in combination with an object conditional.");
+            }
 
             foreach (var prop in m_Properties)
             {
@@ -40,7 +42,9 @@ namespace Server.Commands.Generic
         public override void Parse(Mobile from, string[] arguments, int offset, int size)
         {
             if (size < 1)
+            {
                 throw new Exception("Invalid distinction syntax.");
+            }
 
             var end = offset + size;
 
@@ -55,7 +59,9 @@ namespace Server.Commands.Generic
         public override void Filter(List<object> list)
         {
             if (m_Comparer == null)
+            {
                 throw new InvalidOperationException("The extension must first be optimized.");
+            }
 
             var copy = new List<object>(list);
 

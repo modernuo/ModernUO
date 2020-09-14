@@ -10,7 +10,9 @@ namespace Server.Mobiles
             Price = price;
 
             if (!Core.AOS)
+            {
                 NameHue = 0x35;
+            }
         }
 
         public PricedHealer(Serial serial) : base(serial)

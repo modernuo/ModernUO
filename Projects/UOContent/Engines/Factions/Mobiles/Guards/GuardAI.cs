@@ -84,7 +84,9 @@ namespace Server.Factions
                 var entry = combo.Entries[index];
 
                 if (entry.Spell == typeof(PoisonSpell) && targ.Poisoned)
+                {
                     continue;
+                }
 
                 if (entry.Chance > Utility.Random(100))
                 {
@@ -122,10 +124,14 @@ namespace Server.Factions
             get
             {
                 if (m_Bandage != null && m_Bandage.Timer == null)
+                {
                     m_Bandage = null;
+                }
 
                 if (m_Bandage == null)
+                {
                     return TimeSpan.MaxValue;
+                }
 
                 var ts = m_BandageStart + m_Bandage.Timer.Delay - DateTime.UtcNow;
 
@@ -136,7 +142,9 @@ namespace Server.Factions
                 }
 
                 if (ts < TimeSpan.Zero)
+                {
                     ts = TimeSpan.Zero;
+                }
 
                 return ts;
             }
@@ -149,7 +157,9 @@ namespace Server.Factions
             var pack = m_Guard.Backpack;
 
             if (pack == null)
+            {
                 return false;
+            }
 
             if (m_Guard.Weapon is Item weapon && weapon.Parent == m_Guard && !(weapon is Fists))
             {
@@ -172,7 +182,9 @@ namespace Server.Factions
             m_Bandage = null;
 
             if (m_Guard.Backpack?.FindItemByType<Bandage>() == null)
+            {
                 return false;
+            }
 
             m_Bandage = BandageContext.BeginHeal(m_Guard, m_Guard);
             m_BandageStart = DateTime.UtcNow;
@@ -186,14 +198,18 @@ namespace Server.Factions
             var item = pack?.FindItemByType(type);
 
             if (item == null)
+            {
                 return false;
+            }
 
             var requip = DequipWeapon();
 
             item.OnDoubleClick(m_Guard);
 
             if (requip)
+            {
                 EquipWeapon();
+            }
 
             return true;
         }
@@ -203,7 +219,9 @@ namespace Server.Factions
             var mod = mob.GetStatMod($"[Magic] {type} Offset");
 
             if (mod == null)
+            {
                 return 0;
+            }
 
             return mod.Offset;
         }
@@ -233,7 +251,9 @@ namespace Server.Factions
         public Mobile FindDispelTarget(bool activeOnly)
         {
             if (m_Mobile.Deleted || m_Mobile.Int < 95 || CanDispel(m_Mobile) || m_Mobile.AutoDispel)
+            {
                 return null;
+            }
 
             if (activeOnly)
             {
@@ -252,7 +272,9 @@ namespace Server.Factions
                     activePrio = m_Mobile.GetDistanceToSqrt(comb);
 
                     if (activePrio <= 2)
+                    {
                         return active;
+                    }
                 }
 
                 for (var i = 0; i < aggressed.Count; ++i)
@@ -270,7 +292,9 @@ namespace Server.Factions
                             activePrio = prio;
 
                             if (activePrio <= 2)
+                            {
                                 return active;
+                            }
                         }
                     }
                 }
@@ -290,7 +314,9 @@ namespace Server.Factions
                             activePrio = prio;
 
                             if (activePrio <= 2)
+                            {
                                 return active;
+                            }
                         }
                     }
                 }
@@ -314,6 +340,7 @@ namespace Server.Factions
                 }
 
                 foreach (var m in m_Mobile.GetMobilesInRange(12))
+                {
                     if (m != m_Mobile && CanDispel(m))
                     {
                         var prio = m_Mobile.GetDistanceToSqrt(m);
@@ -330,6 +357,7 @@ namespace Server.Factions
                             actPrio = prio;
                         }
                     }
+                }
 
                 return active ?? inactive;
             }
@@ -355,7 +383,9 @@ namespace Server.Factions
             if (!m_Mobile.InRange(m, m_Mobile.RangeFight))
             {
                 if (!MoveTo(m, true, 1))
+                {
                     OnFailedMove();
+                }
             }
             else if (m_Mobile.InRange(m, m_Mobile.RangeFight - 1))
             {
@@ -385,7 +415,9 @@ namespace Server.Factions
             if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
             {
                 if (m_Mobile.Debug)
+                {
                     m_Mobile.DebugSay("My move is blocked, so I am going to attack {0}", m_Mobile.FocusMob.Name);
+                }
 
                 m_Mobile.Combatant = m_Mobile.FocusMob;
                 Action = ActionType.Combat;
@@ -400,18 +432,24 @@ namespace Server.Factions
         {
             if (m_Mobile.Spell?.IsCasting == true || m_Mobile.Paralyzed || m_Mobile.Frozen ||
                 m_Mobile.DisallowAllMoves)
+            {
                 return;
+            }
 
             m_Mobile.Direction = d | Direction.Running;
 
             if (!DoMove(m_Mobile.Direction, true))
+            {
                 OnFailedMove();
+            }
         }
 
         public override bool Think()
         {
             if (m_Mobile.Deleted)
+            {
                 return false;
+            }
 
             var combatant = m_Guard.Combatant;
 
@@ -448,7 +486,9 @@ namespace Server.Factions
             var dispelTarget = FindDispelTarget(true);
 
             if (m_Guard.Target != null && m_ReleaseTarget == DateTime.MinValue)
+            {
                 m_ReleaseTarget = DateTime.UtcNow + TimeSpan.FromSeconds(10.0);
+            }
 
             if (m_Guard.Target != null && DateTime.UtcNow > m_ReleaseTarget)
             {
@@ -460,9 +500,13 @@ namespace Server.Factions
                 {
                     if (m_Guard.Map == toHarm.Map && (targ.Range < 0 || m_Guard.InRange(toHarm, targ.Range)) &&
                         m_Guard.CanSee(toHarm) && m_Guard.InLOS(toHarm))
+                    {
                         targ.Invoke(m_Guard, toHarm);
+                    }
                     else if ((targ as ISpellTarget)?.Spell is DispelSpell)
+                    {
                         targ.Cancel(m_Guard, TargetCancelType.Canceled);
+                    }
                 }
                 else if ((targ.Flags & TargetFlags.Beneficial) != 0)
                 {
@@ -479,7 +523,9 @@ namespace Server.Factions
             if (dispelTarget != null)
             {
                 if (Action != ActionType.Combat)
+                {
                     Action = ActionType.Combat;
+                }
 
                 m_Guard.Warmode = true;
 
@@ -488,7 +534,9 @@ namespace Server.Factions
             else if (combatant != null)
             {
                 if (Action != ActionType.Combat)
+                {
                     Action = ActionType.Combat;
+                }
 
                 m_Guard.Warmode = true;
 
@@ -499,17 +547,23 @@ namespace Server.Factions
                 Mobile toFollow = null;
 
                 if (m_Guard.Town != null && m_Guard.Orders.Movement == MovementType.Follow)
+                {
                     toFollow = m_Guard.Orders.Follow ?? m_Guard.Town.Sheriff;
+                }
 
                 if (toFollow != null && toFollow.Map == m_Guard.Map &&
                     toFollow.InRange(m_Guard, m_Guard.RangePerception * 3) &&
                     Town.FromRegion(toFollow.Region) == m_Guard.Town)
                 {
                     if (Action != ActionType.Combat)
+                    {
                         Action = ActionType.Combat;
+                    }
 
                     if (m_Mobile.CurrentSpeed != m_Mobile.ActiveSpeed)
+                    {
                         m_Mobile.CurrentSpeed = m_Mobile.ActiveSpeed;
+                    }
 
                     m_Guard.Warmode = true;
 
@@ -518,10 +572,14 @@ namespace Server.Factions
                 else
                 {
                     if (Action != ActionType.Wander)
+                    {
                         Action = ActionType.Wander;
+                    }
 
                     if (m_Mobile.CurrentSpeed != m_Mobile.PassiveSpeed)
+                    {
                         m_Mobile.CurrentSpeed = m_Mobile.PassiveSpeed;
+                    }
 
                     m_Guard.Warmode = false;
 
@@ -531,7 +589,9 @@ namespace Server.Factions
             else
             {
                 if (Action != ActionType.Wander)
+                {
                     Action = ActionType.Wander;
+                }
 
                 m_Guard.Warmode = false;
             }
@@ -541,7 +601,9 @@ namespace Server.Factions
                 var ts = TimeUntilBandage;
 
                 if (ts == TimeSpan.MaxValue)
+                {
                     StartBandage();
+                }
             }
 
             var spell = m_Mobile.Spell as Spell;
@@ -560,9 +622,13 @@ namespace Server.Factions
                         m_Guard.HitsMax - m_Guard.Hits > Utility.Random(250))
                     {
                         if (IsAllowed(GuardAI.Bless))
+                        {
                             spell = new CureSpell(m_Guard);
+                        }
                         else
+                        {
                             UseItemByType(typeof(BaseCurePotion));
+                        }
                     }
                 }
                 else if (IsDamaged && m_Guard.HitsMax - m_Guard.Hits > Utility.Random(200))
@@ -579,10 +645,14 @@ namespace Server.Factions
                     else if (IsAllowed(GuardAI.Bless))
                     {
                         if (m_Guard.Mana >= 11 && m_Guard.Hits + 30 < m_Guard.HitsMax)
+                        {
                             spell = new GreaterHealSpell(m_Guard);
+                        }
                         else if (m_Guard.Hits + 10 < m_Guard.HitsMax &&
                                  (m_Guard.Mana < 11 || m_Guard.NextCombatTime - Core.TickCount > 2000))
+                        {
                             spell = new HealSpell(m_Guard);
+                        }
                     }
                     else if (m_Guard.CanBeginAction<BaseHealPotion>())
                     {
@@ -593,9 +663,13 @@ namespace Server.Factions
                          (IsAllowed(GuardAI.Magic) || IsAllowed(GuardAI.Bless) || IsAllowed(GuardAI.Curse)))
                 {
                     if (!dispelTarget.Paralyzed && m_Guard.Mana > ManaReserve + 20 && Utility.Random(100) < 40)
+                    {
                         spell = new ParalyzeSpell(m_Guard);
+                    }
                     else
+                    {
                         spell = new DispelSpell(m_Guard);
+                    }
                 }
 
                 if (combatant != null)
@@ -628,7 +702,9 @@ namespace Server.Factions
                                 m_Combo = null;
 
                                 if (m_Guard.Mana >= ManaReserve + 40)
+                                {
                                     spell = RandomOffenseSpell();
+                                }
                             }
                         }
                         else if (m_Guard.Mana >= ManaReserve + 40)
@@ -646,27 +722,41 @@ namespace Server.Factions
                         var types = new List<Type>();
 
                         if (strMod <= 0)
+                        {
                             types.Add(typeof(StrengthSpell));
+                        }
 
                         if (dexMod <= 0 && IsAllowed(GuardAI.Melee))
+                        {
                             types.Add(typeof(AgilitySpell));
+                        }
 
                         if (intMod <= 0 && IsAllowed(GuardAI.Magic))
+                        {
                             types.Add(typeof(CunningSpell));
+                        }
 
                         if (IsAllowed(GuardAI.Bless))
                         {
                             if (types.Count > 1)
+                            {
                                 spell = new BlessSpell(m_Guard);
+                            }
                             else if (types.Count == 1)
+                            {
                                 spell = ActivatorUtil.CreateInstance(types[0], m_Guard, null) as Spell;
+                            }
                         }
                         else if (types.Count > 0)
                         {
                             if (types[0] == typeof(StrengthSpell))
+                            {
                                 UseItemByType(typeof(BaseStrengthPotion));
+                            }
                             else if (types[0] == typeof(AgilitySpell))
+                            {
                                 UseItemByType(typeof(BaseAgilityPotion));
+                            }
                         }
                     }
 
@@ -686,18 +776,28 @@ namespace Server.Factions
                             var types = new List<Type>();
 
                             if (strMod >= 0)
+                            {
                                 types.Add(typeof(WeakenSpell));
+                            }
 
                             if (dexMod >= 0 && IsAllowed(GuardAI.Melee))
+                            {
                                 types.Add(typeof(ClumsySpell));
+                            }
 
                             if (intMod >= 0 && IsAllowed(GuardAI.Magic))
+                            {
                                 types.Add(typeof(FeeblemindSpell));
+                            }
 
                             if (types.Count > 1)
+                            {
                                 spell = new CurseSpell(m_Guard);
+                            }
                             else if (types.Count == 1)
+                            {
                                 spell = (Spell)ActivatorUtil.CreateInstance(types[0], m_Guard, null);
+                            }
                         }
                     }
                 }
@@ -707,23 +807,35 @@ namespace Server.Factions
                     Type type = null;
 
                     if (spell is GreaterHealSpell)
+                    {
                         type = typeof(BaseHealPotion);
+                    }
                     else if (spell is CureSpell)
+                    {
                         type = typeof(BaseCurePotion);
+                    }
                     else if (spell is StrengthSpell)
+                    {
                         type = typeof(BaseStrengthPotion);
+                    }
                     else if (spell is AgilitySpell)
+                    {
                         type = typeof(BaseAgilityPotion);
+                    }
 
                     if (type == typeof(BaseHealPotion) && !m_Guard.CanBeginAction(type))
+                    {
                         type = null;
+                    }
 
                     if (type != null && m_Guard.Target == null && UseItemByType(type))
                     {
                         if (spell is GreaterHealSpell)
                         {
                             if (m_Guard.Hits + 30 > m_Guard.HitsMax && m_Guard.Hits + 10 < m_Guard.HitsMax)
+                            {
                                 spell = new HealSpell(m_Guard);
+                            }
                         }
                         else
                         {
@@ -737,7 +849,9 @@ namespace Server.Factions
                 }
 
                 if (spell?.Cast() != true)
+                {
                     EquipWeapon();
+                }
             }
             else if (spell?.State == SpellState.Sequencing)
             {

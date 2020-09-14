@@ -32,7 +32,9 @@ namespace Server.Spells.Ninjitsu
             var mana = ScaleMana(RequiredMana);
 
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             if (!CheckExpansion(Caster))
             {
@@ -85,7 +87,9 @@ namespace Server.Spells.Ninjitsu
             }
 
             if (!base.CheckFizzle())
+            {
                 return false;
+            }
 
             Caster.Mana -= mana;
 

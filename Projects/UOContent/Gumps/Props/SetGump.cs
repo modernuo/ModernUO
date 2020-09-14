@@ -109,7 +109,9 @@ namespace Server.Gumps
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
 
             x = BorderSize + OffsetSize;
             y += EntryHeight + OffsetSize;
@@ -119,7 +121,9 @@ namespace Server.Gumps
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
 
             AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1);
 
@@ -133,7 +137,9 @@ namespace Server.Gumps
                 x += EntryWidth + OffsetSize;
 
                 if (SetGumpID != 0)
+                {
                     AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+                }
 
                 AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 2);
             }
@@ -148,7 +154,9 @@ namespace Server.Gumps
                 x += EntryWidth + OffsetSize;
 
                 if (SetGumpID != 0)
+                {
                     AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+                }
 
                 AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3);
             }
@@ -163,7 +171,9 @@ namespace Server.Gumps
                 x += EntryWidth + OffsetSize;
 
                 if (SetGumpID != 0)
+                {
                     AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+                }
 
                 AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 4);
             }
@@ -239,6 +249,7 @@ namespace Server.Gumps
             }
 
             if (shouldSet)
+            {
                 try
                 {
                     CommandLogging.LogChangeProperty(
@@ -254,9 +265,12 @@ namespace Server.Gumps
                 {
                     m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
                 }
+            }
 
             if (shouldSend)
+            {
                 m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+            }
         }
 
         private class InternalPicker : HuePicker

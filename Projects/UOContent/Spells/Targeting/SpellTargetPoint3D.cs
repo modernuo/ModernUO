@@ -26,13 +26,17 @@ namespace Server.Spells
         protected override void OnTarget(Mobile from, object o)
         {
             if (o is IPoint3D p)
+            {
                 m_Spell.Target(p);
+            }
         }
 
         protected override void OnTargetOutOfLOS(Mobile from, object o)
         {
             if (!m_CheckLOS)
+            {
                 return;
+            }
 
             from.SendLocalizedMessage(501943); // Target cannot be seen. Try again.
             from.Target = new SpellTargetPoint3D(m_Spell);

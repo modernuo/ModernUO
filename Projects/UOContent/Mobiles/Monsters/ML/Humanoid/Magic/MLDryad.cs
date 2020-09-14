@@ -45,7 +45,9 @@ namespace Server.Mobiles
             VirtualArmor = 28; // Don't know what it should be
 
             if (Core.ML && Utility.RandomDouble() < .60)
+            {
                 PackItem(Seed.RandomPeculiarSeed(1));
+            }
 
             PackArcanceScroll(0.05);
         }
@@ -93,7 +95,9 @@ namespace Server.Mobiles
         public void AreaPeace()
         {
             if (Combatant == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || Utility.RandomDouble() > 0.1)
+            {
                 return;
+            }
 
             var duration = TimeSpan.FromSeconds(Utility.RandomMinMax(20, 80));
 
@@ -121,9 +125,12 @@ namespace Server.Mobiles
         public void AreaUndress()
         {
             if (Combatant == null || Deleted || !Alive || m_NextUndress > DateTime.UtcNow || Utility.RandomDouble() > 0.005)
+            {
                 return;
+            }
 
             foreach (var m in GetMobilesInRange(RangePerception))
+            {
                 if (m?.Player == true && !m.Female && !m.Hidden && m.AccessLevel == AccessLevel.Player &&
                     CanBeHarmful(m))
                 {
@@ -137,6 +144,7 @@ namespace Server.Mobiles
                         1072197
                     ); // The dryad's beauty makes your blood race. Your clothing is too confining.
                 }
+            }
 
             m_NextUndress = DateTime.UtcNow + TimeSpan.FromMinutes(1);
         }
@@ -146,7 +154,9 @@ namespace Server.Mobiles
             var item = m.FindItemOnLayer(layer);
 
             if (item?.Movable == true)
+            {
                 m.PlaceInBackpack(item);
+            }
         }
     }
 }

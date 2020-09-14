@@ -42,7 +42,9 @@ namespace Server.Items
                 var boat = BaseBoat.FindBoatAt(from, from.Map);
 
                 if (boat == null)
+                {
                     return;
+                }
 
                 if (!Active)
                 {

@@ -16,7 +16,9 @@ namespace Server.Engines.Craft
 
                 if (nameNumber != 0 && nameNumber == groupName.Number ||
                     nameString != null && nameString == groupName.String)
+                {
                     return i;
+                }
             }
 
             return -1;
@@ -29,7 +31,9 @@ namespace Server.Engines.Craft
                 var craftItem = list[i];
 
                 if (craftItem.ItemType == type || type.IsSubclassOf(craftItem.ItemType))
+                {
                     return craftItem;
+                }
             }
 
             return null;
@@ -40,7 +44,10 @@ namespace Server.Engines.Craft
             for (var i = 0; i < list.Count; i++)
             {
                 var craftItem = list[i];
-                if (craftItem.ItemType == type) return craftItem;
+                if (craftItem.ItemType == type)
+                {
+                    return craftItem;
+                }
             }
 
             return null;

@@ -49,13 +49,19 @@ namespace Server.Items
         public virtual IEntity FindParent(Mobile from)
         {
             if (HeldBy?.Holding == this)
+            {
                 return HeldBy;
+            }
 
             if (RootParent != null)
+            {
                 return RootParent;
+            }
 
             if (Map == Map.Internal)
-                return from;
+            {
+                return @from;
+            }
 
             return this;
         }
@@ -72,14 +78,18 @@ namespace Server.Items
             Stackable = false; // Scavenged explosion potions won't stack with those ones in backpack, and still will explode.
 
             if (targ?.Potion == this)
+            {
                 return;
+            }
 
             from.RevealingAction();
 
             Users ??= new List<Mobile>();
 
             if (!Users.Contains(from))
-                Users.Add(from);
+            {
+                Users.Add(@from);
+            }
 
             from.Target = new ThrowTarget(this);
 
@@ -90,26 +100,32 @@ namespace Server.Items
                 var timer = 3;
 
                 if (Core.ML)
+                {
                     m_Timer = Timer.DelayCall(
                         TimeSpan.FromSeconds(1.0),
                         TimeSpan.FromSeconds(1.25),
                         5,
-                        () => Detonate_OnTick(from, timer--)
+                        () => Detonate_OnTick(@from, timer--)
                     ); // 3.6 seconds explosion delay
+                }
                 else
+                {
                     m_Timer = Timer.DelayCall(
                         TimeSpan.FromSeconds(0.75),
                         TimeSpan.FromSeconds(1.0),
                         4,
-                        () => Detonate_OnTick(from, timer--)
+                        () => Detonate_OnTick(@from, timer--)
                     ); // 2.6 seconds explosion delay
+                }
             }
         }
 
         private void Detonate_OnTick(Mobile from, int timer)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             var parent = FindParent(from);
 
@@ -139,27 +155,39 @@ namespace Server.Items
             else
             {
                 if (parent is Item item)
+                {
                     item.PublicOverheadMessage(MessageType.Regular, 0x22, false, timer.ToString());
+                }
                 else if (parent is Mobile mobile)
+                {
                     mobile.PublicOverheadMessage(MessageType.Regular, 0x22, false, timer.ToString());
+                }
             }
         }
 
         private void Reposition_OnTick(Mobile from, Point3D loc, Map map)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             if (InstantExplosion)
-                Explode(from, true, loc, map);
+            {
+                Explode(@from, true, loc, map);
+            }
             else
+            {
                 MoveToWorld(loc, map);
+            }
         }
 
         public void Explode(Mobile from, bool direct, Point3D loc, Map map)
         {
             if (Deleted)
+            {
                 return;
+            }
 
             Consume();
 
@@ -168,11 +196,15 @@ namespace Server.Items
                 var m = Users[i];
 
                 if (m.Target is ThrowTarget targ && targ.Potion == this)
+                {
                     Target.Cancel(m);
+                }
             }
 
             if (map == null)
+            {
                 return;
+            }
 
             Effects.PlaySound(loc, map, 0x307);
 
@@ -180,7 +212,9 @@ namespace Server.Items
             var alchemyBonus = 0;
 
             if (direct)
-                alchemyBonus = (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
+            {
+                alchemyBonus = (int)(@from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
+            }
 
             var eable = map.GetObjectsInRange(loc, ExplosionRange, LeveledExplosion);
             var toDamage = 0;
@@ -190,7 +224,9 @@ namespace Server.Items
                     {
                         if (!(o is Mobile mobile) || from != null &&
                             (!SpellHelper.ValidIndirectTarget(from, mobile) || !from.CanBeHarmful(mobile, false)))
+                        {
                             return o is BaseExplosionPotion && o != this;
+                        }
 
                         ++toDamage;
                         return true;
@@ -216,9 +252,13 @@ namespace Server.Items
                     damage += alchemyBonus;
 
                     if (!Core.AOS && damage > 40)
+                    {
                         damage = 40;
+                    }
                     else if (Core.AOS && toDamage > 2)
+                    {
                         damage /= toDamage - 1;
+                    }
 
                     AOS.Damage(m, from, damage, 0, 100, 0, 0, 0);
                 }
@@ -238,15 +278,21 @@ namespace Server.Items
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (Potion.Deleted || Potion.Map == Map.Internal)
+                {
                     return;
+                }
 
                 if (!(targeted is IPoint3D p))
+                {
                     return;
+                }
 
                 var map = from.Map;
 
                 if (map == null)
+                {
                     return;
+                }
 
                 SpellHelper.GetSurfaceTop(ref p);
 
@@ -257,14 +303,21 @@ namespace Server.Items
                 if (p is Mobile m)
                 {
                     if (!RelativeLocation) // explosion location = current mob location.
+                    {
                         p = m.Location;
+                    }
                     else
+                    {
                         to = m;
+                    }
                 }
 
                 Effects.SendMovingEffect(from, to, Potion.ItemID, 7, 0, false, false, Potion.Hue);
 
-                if (Potion.Amount > 1) Mobile.LiftItemDupe(Potion, 1);
+                if (Potion.Amount > 1)
+                {
+                    Mobile.LiftItemDupe(Potion, 1);
+                }
 
                 Potion.Internalize();
                 Timer.DelayCall(TimeSpan.FromSeconds(1.0), Potion.Reposition_OnTick, from, new Point3D(p), map);

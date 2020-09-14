@@ -50,7 +50,9 @@ namespace Server.Spells.Fourth
 
                     // You can target any living mobile directly, beneficial checks apply
                     if (directTarget != null && Caster.CanBeBeneficial(directTarget, false))
+                    {
                         targets.Add(directTarget);
+                    }
 
                     var eable = map.GetMobilesInRange(new Point3D(p), 2);
                     targets.AddRange(eable.Where(m => m != directTarget).Where(m => AreaCanTarget(m, feluccaRules)));
@@ -80,7 +82,9 @@ namespace Server.Spells.Fourth
                             chanceToCure -= 1;
 
                             if (chanceToCure > Utility.Random(100) && m.CurePoison(Caster))
+                            {
                                 ++cured;
+                            }
                         }
 
                         m.FixedParticles(0x373A, 10, 15, 5012, EffectLayer.Waist);
@@ -88,7 +92,9 @@ namespace Server.Spells.Fourth
                     }
 
                     if (cured > 0)
+                    {
                         Caster.SendLocalizedMessage(1010058); // You have cured the target of all poisons!
+                    }
                 }
             }
 
@@ -108,18 +114,26 @@ namespace Server.Spells.Fourth
              */
 
             if (!Caster.CanBeBeneficial(target, false))
+            {
                 return false;
+            }
 
             if (Core.AOS && target != Caster)
             {
                 if (IsAggressor(target) || IsAggressed(target))
+                {
                     return false;
+                }
 
                 if ((!IsInnocentTo(Caster, target) || !IsInnocentTo(target, Caster)) && !IsAllyTo(Caster, target))
+                {
                     return false;
+                }
 
                 if (feluccaRules && !(target is PlayerMobile))
+                {
                     return false;
+                }
             }
 
             return true;
@@ -128,8 +142,12 @@ namespace Server.Spells.Fourth
         private bool IsAggressor(Mobile m)
         {
             foreach (var info in Caster.Aggressors)
+            {
                 if (m == info.Attacker && !info.Expired)
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -137,8 +155,12 @@ namespace Server.Spells.Fourth
         private bool IsAggressed(Mobile m)
         {
             foreach (var info in Caster.Aggressed)
+            {
                 if (m == info.Defender && !info.Expired)
+                {
                     return true;
+                }
+            }
 
             return false;
         }

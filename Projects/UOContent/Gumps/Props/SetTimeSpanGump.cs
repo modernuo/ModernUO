@@ -99,15 +99,21 @@ namespace Server.Gumps
             AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, str);
 
             if (text != -1)
+            {
                 AddTextEntry(x + 16 + TextOffsetX, y, EntryWidth - TextOffsetX - 16, EntryHeight, TextHue, text, "");
+            }
 
             x += EntryWidth + OffsetSize;
 
             if (SetGumpID != 0)
+            {
                 AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
+            }
 
             if (button != 0)
+            {
                 AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, button);
+            }
         }
 
         public override void OnResponse(NetState sender, RelayInfo info)
@@ -133,9 +139,13 @@ namespace Server.Gumps
                     {
                         var successfulParse = false;
                         if (h != null && m != null && s != null)
+                        {
                             successfulParse = TimeSpan.TryParse($"{h.Text}:{m.Text}:{s.Text}", out toSet);
+                        }
                         else
+                        {
                             toSet = TimeSpan.Zero;
+                        }
 
                         shouldSet = shouldSend = successfulParse;
 
@@ -144,6 +154,7 @@ namespace Server.Gumps
                 case 3: // From H
                     {
                         if (h != null)
+                        {
                             try
                             {
                                 toSet = TimeSpan.FromHours(Utility.ToDouble(h.Text));
@@ -156,6 +167,7 @@ namespace Server.Gumps
                             {
                                 // ignored
                             }
+                        }
 
                         toSet = TimeSpan.Zero;
                         shouldSet = false;
@@ -166,6 +178,7 @@ namespace Server.Gumps
                 case 4: // From M
                     {
                         if (m != null)
+                        {
                             try
                             {
                                 toSet = TimeSpan.FromMinutes(Utility.ToDouble(m.Text));
@@ -178,6 +191,7 @@ namespace Server.Gumps
                             {
                                 // ignored
                             }
+                        }
 
                         toSet = TimeSpan.Zero;
                         shouldSet = false;
@@ -188,6 +202,7 @@ namespace Server.Gumps
                 case 5: // From S
                     {
                         if (s != null)
+                        {
                             try
                             {
                                 toSet = TimeSpan.FromSeconds(Utility.ToDouble(s.Text));
@@ -200,6 +215,7 @@ namespace Server.Gumps
                             {
                                 // ignored
                             }
+                        }
 
                         toSet = TimeSpan.Zero;
                         shouldSet = false;
@@ -218,6 +234,7 @@ namespace Server.Gumps
             }
 
             if (shouldSet)
+            {
                 try
                 {
                     CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, toSet.ToString());
@@ -228,9 +245,12 @@ namespace Server.Gumps
                 {
                     m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
                 }
+            }
 
             if (shouldSend)
+            {
                 m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+            }
         }
     }
 }

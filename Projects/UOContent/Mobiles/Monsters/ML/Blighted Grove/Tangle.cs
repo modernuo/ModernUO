@@ -57,7 +57,9 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             if (Utility.RandomDouble() < 0.3)
+            {
                 c.DropItem(new TaintedSeeds());
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

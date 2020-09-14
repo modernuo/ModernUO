@@ -82,7 +82,9 @@ namespace Server.Mobiles
             Utility.AssignRandomHair(this, hairHue);
 
             if (Utility.Random(7) != 0)
+            {
                 Utility.AssignRandomFacialHair(this, hairHue);
+            }
 
             PackGold(250, 300);
         }

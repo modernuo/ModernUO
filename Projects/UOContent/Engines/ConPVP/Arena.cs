@@ -44,7 +44,9 @@ namespace Server.Engines.ConPVP
         public override void OnDoubleClick(Mobile from)
         {
             if (from.AccessLevel >= AccessLevel.GameMaster)
-                from.SendGump(new PropertiesGump(from, Arena));
+            {
+                @from.SendGump(new PropertiesGump(@from, Arena));
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -93,7 +95,9 @@ namespace Server.Engines.ConPVP
             Points = new Point3D[reader.ReadEncodedInt()];
 
             for (var i = 0; i < Points.Length; ++i)
+            {
                 Points[i] = reader.ReadPoint3D();
+            }
         }
 
         public Point3D[] Points { get; }
@@ -161,7 +165,9 @@ namespace Server.Engines.ConPVP
             writer.WriteEncodedInt(Points.Length);
 
             for (var i = 0; i < Points.Length; ++i)
+            {
                 writer.Write(Points[i]);
+            }
         }
     }
 
@@ -321,13 +327,19 @@ namespace Server.Engines.ConPVP
             }
 
             if (m_Zone.Start != Point2D.Zero && m_Zone.End != Point2D.Zero && m_Facet != null)
+            {
                 m_Region = new SafeZone(m_Zone, Outside, m_Facet, m_IsGuarded);
+            }
 
             if (IsOccupied)
+            {
                 Timer.DelayCall(TimeSpan.FromSeconds(2.0), Evict);
+            }
 
             if (m_Tournament != null)
+            {
                 Timer.DelayCall(AttachToTournament_Sandbox);
+            }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -342,7 +354,9 @@ namespace Server.Engines.ConPVP
                 m_IsGuarded = value;
 
                 if (m_Region != null)
+                {
                     m_Region.Disabled = !m_IsGuarded;
+                }
             }
         }
 
@@ -370,7 +384,10 @@ namespace Server.Engines.ConPVP
             set
             {
                 m_Name = value;
-                if (m_Active) Arenas.Sort();
+                if (m_Active)
+                {
+                    Arenas.Sort();
+                }
             }
         }
 
@@ -383,14 +400,20 @@ namespace Server.Engines.ConPVP
                 m_Facet = value;
 
                 if (Teleporter != null)
+                {
                     Teleporter.Map = value;
+                }
 
                 m_Region?.Unregister();
 
                 if (m_Zone.Start != Point2D.Zero && m_Zone.End != Point2D.Zero && m_Facet != null)
+                {
                     m_Region = new SafeZone(m_Zone, Outside, m_Facet, m_IsGuarded);
+                }
                 else
+                {
                     m_Region = null;
+                }
             }
         }
 
@@ -440,7 +463,9 @@ namespace Server.Engines.ConPVP
             {
                 m_GateOut = value;
                 if (Teleporter != null)
+                {
                     Teleporter.Location = m_GateOut;
+                }
             }
         }
 
@@ -464,7 +489,9 @@ namespace Server.Engines.ConPVP
             set
             {
                 if (m_Active == value)
+                {
                     return;
+                }
 
                 m_Active = value;
 
@@ -486,7 +513,10 @@ namespace Server.Engines.ConPVP
             get => false;
             set
             {
-                if (value) Evict();
+                if (value)
+                {
+                    Evict();
+                }
             }
         }
 
@@ -498,11 +528,19 @@ namespace Server.Engines.ConPVP
             var b = c.m_Name;
 
             if (a == null && b == null)
+            {
                 return 0;
+            }
+
             if (a == null)
+            {
                 return -1;
+            }
+
             if (b == null)
+            {
                 return +1;
+            }
 
             return a.CompareTo(b);
         }
@@ -536,16 +574,22 @@ namespace Server.Engines.ConPVP
                 var pl = players[i];
 
                 if (pl == null)
+                {
                     continue;
+                }
 
                 var mob = pl.Mobile;
 
                 Point2D p;
 
                 if (offset < offsets.Length)
+                {
                     p = offsets[offset++];
+                }
                 else
+                {
                     p = offsets[^1];
+                }
 
                 p.X = p.X * matrix[0, 0] + p.Y * matrix[0, 1];
                 p.Y = p.X * matrix[1, 0] + p.Y * matrix[1, 1];
@@ -585,13 +629,17 @@ namespace Server.Engines.ConPVP
                 var mob = Players[i];
 
                 if (mob == null)
+                {
                     continue;
+                }
 
                 if (mob.Map == Map.Internal)
                 {
                     if ((m_Facet == null || mob.LogoutMap == m_Facet) &&
                         (!hasBounds || m_Bounds.Contains(mob.LogoutLocation)))
+                    {
                         mob.LogoutLocation = loc;
+                    }
                 }
                 else if ((m_Facet == null || mob.Map == m_Facet) && (!hasBounds || m_Bounds.Contains(mob.Location)))
                 {
@@ -609,9 +657,13 @@ namespace Server.Engines.ConPVP
                 var pets = new List<Mobile>();
 
                 foreach (var mob in facet.GetMobilesInBounds(m_Bounds))
+                {
                     if (mob is BaseCreature pet && pet.Controlled && pet.ControlMaster != null &&
                         Players.Contains(pet.ControlMaster))
+                    {
                         pets.Add(pet);
+                    }
+                }
 
                 foreach (var pet in pets)
                 {
@@ -660,10 +712,14 @@ namespace Server.Engines.ConPVP
             var prefs = Preferences.Instance;
 
             if (prefs == null)
+            {
                 return FindArena();
+            }
 
             if (Arenas.Count == 0)
+            {
                 return null;
+            }
 
             if (players.Count > 0)
             {
@@ -687,9 +743,13 @@ namespace Server.Engines.ConPVP
                             bool isNear;
 
                             if (house == null)
+                            {
                                 isNear = controller.Map == check.Map && check.InRange(controller, 24);
+                            }
                             else
+                            {
                                 isNear = BaseHouse.FindHouseAt(check) == house;
+                            }
 
                             if (!isNear)
                             {
@@ -699,7 +759,9 @@ namespace Server.Engines.ConPVP
                         }
 
                         if (allNear)
+                        {
                             return controller.Arena;
+                        }
                     }
                 }
             }
@@ -711,11 +773,15 @@ namespace Server.Engines.ConPVP
                 var arena = Arenas[i];
 
                 if (!arena.IsOccupied)
+                {
                     arenas.Add(new ArenaEntry(arena));
+                }
             }
 
             if (arenas.Count == 0)
+            {
                 return Arenas[0];
+            }
 
             var tc = 0;
 
@@ -728,9 +794,13 @@ namespace Server.Engines.ConPVP
                     var pe = prefs.Find(players[j]);
 
                     if (pe.Disliked.Contains(ae.m_Arena.Name))
+                    {
                         ++ae.m_VotesAgainst;
+                    }
                     else
+                    {
                         ++ae.m_VotesFor;
+                    }
                 }
 
                 tc += ae.Value;
@@ -743,7 +813,9 @@ namespace Server.Engines.ConPVP
                 var ae = arenas[i];
 
                 if (rn < ae.Value)
+                {
                     return ae.m_Arena;
+                }
 
                 rn -= ae.Value;
             }
@@ -754,7 +826,9 @@ namespace Server.Engines.ConPVP
         public static Arena FindArena()
         {
             if (Arenas.Count == 0)
+            {
                 return null;
+            }
 
             var offset = Utility.Random(Arenas.Count);
 
@@ -763,7 +837,9 @@ namespace Server.Engines.ConPVP
                 var arena = Arenas[(i + offset) % Arenas.Count];
 
                 if (!arena.IsOccupied)
+                {
                     return arena;
+                }
             }
 
             return Arenas[offset];

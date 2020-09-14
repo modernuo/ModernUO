@@ -17,7 +17,9 @@ namespace Server.Misc
             };
 
             if (action > 0 && from.Alive && !from.Mounted && from.Body.IsHuman)
-                from.Animate(action, 5, 1, true, false, 0);
+            {
+                @from.Animate(action, 5, 1, true, false, 0);
+            }
         }
     }
 }

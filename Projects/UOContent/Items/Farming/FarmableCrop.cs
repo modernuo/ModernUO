@@ -22,12 +22,18 @@ namespace Server.Items
             var loc = Location;
 
             if (Parent != null || Movable || IsLockedDown || IsSecure || map == null || map == Map.Internal)
+            {
                 return;
+            }
 
             if (!from.InRange(loc, 2) || !from.InLOS(this))
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            {
+                @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            }
             else if (!m_Picked)
-                OnPicked(from, loc, map);
+            {
+                OnPicked(@from, loc, map);
+            }
         }
 
         public virtual void OnPicked(Mobile from, Point3D loc, Map map)

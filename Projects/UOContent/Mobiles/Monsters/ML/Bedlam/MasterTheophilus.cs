@@ -44,10 +44,16 @@ namespace Server.Mobiles
             AddItem(new Robe(0x452));
 
             for (var i = 0; i < 2; ++i)
+            {
                 if (Utility.RandomBool())
+                {
                     PackNecroScroll(Utility.RandomMinMax(5, 9));
+                }
                 else
+                {
                     PackScroll(4, 7);
+                }
+            }
 
             PackReg(7);
             PackReg(7);

@@ -18,11 +18,15 @@ namespace Server.Engines.Quests.Ninja
         public override bool OnMoveOver(Mobile m)
         {
             if (m.AccessLevel > AccessLevel.Player)
+            {
                 return true;
+            }
 
             // If the mobile is to the north of the barrier, allow him to pass
             if (Y >= m.Y)
+            {
                 return true;
+            }
 
             if (m is BaseCreature creature)
             {
@@ -38,7 +42,9 @@ namespace Server.Engines.Quests.Ninja
                 if (obj != null)
                 {
                     if (m.Hidden)
+                    {
                         return true; // Hidden ninjas can pass
+                    }
 
                     if (!obj.TaughtHowToUseSkills)
                     {

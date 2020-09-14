@@ -51,13 +51,17 @@ namespace Server.Engines.Quests.Haven
         public override bool IsEnemy(Mobile m)
         {
             if (m.Player || m is BaseVendor)
+            {
                 return false;
+            }
 
             if (m is BaseCreature bc)
             {
                 var master = bc.GetMaster();
                 if (master != null)
+                {
                     return IsEnemy(master);
+                }
             }
 
             return m.Karma < 0;

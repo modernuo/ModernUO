@@ -71,11 +71,17 @@ namespace Server
             int usedPoints;
 
             if (pm.Virtues.Honor < 4399)
+            {
                 usedPoints = 400;
+            }
             else if (pm.Virtues.Honor < 10599)
+            {
                 usedPoints = 600;
+            }
             else
+            {
                 usedPoints = 1000;
+            }
 
             VirtueHelper.Atrophy(pm, VirtueName.Honor, usedPoints);
 
@@ -100,12 +106,16 @@ namespace Server
             var map = source.Map;
 
             if (honorTarget == null)
+            {
                 return;
+            }
 
             if (honorTarget.ReceivedHonorContext != null)
             {
                 if (honorTarget.ReceivedHonorContext.Source == source)
+                {
                     return;
+                }
 
                 if (honorTarget.ReceivedHonorContext.CheckDistance())
                 {
@@ -150,7 +160,9 @@ namespace Server
             source.Direction = source.GetDirectionTo(target);
 
             if (!source.Mounted)
+            {
                 source.Animate(32, 5, 1, true, true, 0);
+            }
         }
 
         private class InternalTarget : Target
@@ -160,12 +172,18 @@ namespace Server
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (!(from is PlayerMobile pm))
+                {
                     return;
+                }
 
                 if (targeted == pm)
+                {
                     EmbraceHonor(pm);
+                }
                 else if (targeted is Mobile mobile)
+                {
                     Honor(pm, mobile);
+                }
             }
 
             protected override void OnTargetOutOfRange(Mobile from, object targeted)
@@ -213,7 +231,10 @@ namespace Server
                 TimeSpan.FromMinutes(40),
                 () =>
                 {
-                    if (source.m_hontime < DateTime.UtcNow && source.SentHonorContext != null) Cancel();
+                    if (source.m_hontime < DateTime.UtcNow && source.SentHonorContext != null)
+                    {
+                        Cancel();
+                    }
                 }
             );
         }
@@ -229,10 +250,14 @@ namespace Server
         public void OnSourceDamaged(Mobile from, int amount)
         {
             if (from != Target)
+            {
                 return;
+            }
 
             if (m_FirstHit == FirstHit.NotDelivered)
+            {
                 m_FirstHit = FirstHit.Granted;
+            }
         }
 
         public void OnTargetPoisoned()
@@ -243,7 +268,9 @@ namespace Server
         public void OnTargetDamaged(Mobile from, int amount)
         {
             if (m_FirstHit == FirstHit.NotDelivered)
+            {
                 m_FirstHit = FirstHit.Delivered;
+            }
 
             if (m_Poisoned)
             {
@@ -260,9 +287,13 @@ namespace Server
                 if (Target.CanSee(Source) && Target.InLOS(Source) && (Source.InRange(Target, 1)
                                                                       || Source.Location == m_InitialLocation &&
                                                                       Source.Map == m_InitialMap))
+                {
                     m_HonorDamage += amount;
+                }
                 else
+                {
                     m_HonorDamage += amount * 0.8;
+                }
             }
             else if (from is BaseCreature creature && creature.GetMaster() == Source)
             {
@@ -273,11 +304,15 @@ namespace Server
         public void OnTargetHit(Mobile from)
         {
             if (from != Source || PerfectionDamageBonus == 100)
+            {
                 return;
+            }
 
             var bushido = (int)from.Skills.Bushido.Value;
             if (bushido < 50)
+            {
                 return;
+            }
 
             PerfectionDamageBonus += bushido / 10;
 
@@ -295,7 +330,9 @@ namespace Server
         public void OnTargetMissed(Mobile from)
         {
             if (from != Source || PerfectionDamageBonus == 0)
+            {
                 return;
+            }
 
             PerfectionDamageBonus -= 25;
 
@@ -313,7 +350,9 @@ namespace Server
         public void OnSourceBeneficialAction(Mobile to)
         {
             if (to != Target)
+            {
                 return;
+            }
 
             if (PerfectionDamageBonus >= 0)
             {
@@ -342,15 +381,21 @@ namespace Server
             }
 
             if (Source.Virtues.Honor > targetFame)
+            {
                 return;
+            }
 
             var dGain =
                 targetFame / 100.0 * (m_HonorDamage / m_TotalDamage); // Initial honor gain is 100th of the monsters honor
 
             if (m_HonorDamage == m_TotalDamage && m_FirstHit == FirstHit.Granted)
+            {
                 dGain *= 1.5; // honor gain is increased alot more if the combat was fully honorable
+            }
             else
+            {
                 dGain *= 0.9;
+            }
 
             // Minimum gain of 1 honor when the honor is under the monsters fame
             var gain = Math.Clamp((int)dGain, 1, 200);
@@ -365,9 +410,13 @@ namespace Server
             if (VirtueHelper.Award(Source, VirtueName.Honor, gain, ref gainedPath))
             {
                 if (gainedPath)
+                {
                     Source.SendLocalizedMessage(1063226); // You have gained a path in Honor!
+                }
                 else
+                {
                     Source.SendLocalizedMessage(1063225); // You have gained in Honor.
+                }
             }
         }
 

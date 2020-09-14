@@ -44,10 +44,14 @@ namespace Server.Items
             Movable = false;
 
             if (itemID == 0x3060)
+            {
                 AddComponent(new AddonContainerComponent(0x3061), -1, 0, 0);
+            }
 
             if (itemID == 0x3062)
+            {
                 AddComponent(new AddonContainerComponent(0x3063), 0, -1, 0);
+            }
 
             MaxItems = 30;
 
@@ -84,13 +88,17 @@ namespace Server.Items
                 var dead = 0;
 
                 for (var i = 0; i < Items.Count; i++)
+                {
                     if (Items[i] is BaseFish)
                     {
                         var fish = (BaseFish)Items[i];
 
                         if (fish.Dead)
+                        {
                             dead += 1;
+                        }
                     }
+                }
 
                 return dead;
             }
@@ -168,7 +176,10 @@ namespace Server.Items
             get
             {
                 if (ItemID == 0x3062)
+                {
                     return new AquariumEastDeed();
+                }
+
                 return new AquariumNorthDeed();
             }
         }
@@ -218,7 +229,9 @@ namespace Server.Items
             if (dropped is FishBowl bowl)
             {
                 if (bowl.Empty || !AddFish(from, bowl.Fish))
+                {
                     return false;
+                }
 
                 bowl.InvalidateProperties();
 
@@ -227,7 +240,9 @@ namespace Server.Items
             else if (dropped is BaseFish fish)
             {
                 if (!AddFish(from, fish))
+                {
                     return false;
+                }
             }
             else if (dropped is VacationWafer)
             {
@@ -272,7 +287,9 @@ namespace Server.Items
             InvalidateProperties();
 
             if (takeItem)
-                from.PlaySound(0x42);
+            {
+                @from.PlaySound(0x42);
+            }
 
             return takeItem;
         }
@@ -288,14 +305,18 @@ namespace Server.Items
                 item.MoveToWorld(loc, Map);
 
                 if (item is BaseFish fish && !fish.Dead)
+                {
                     fish.StartTimer();
+                }
             }
         }
 
         public override bool CheckItemUse(Mobile from, Item item)
         {
             if (item != this)
+            {
                 return false;
+            }
 
             return base.CheckItemUse(from, item);
         }
@@ -314,53 +335,77 @@ namespace Server.Items
         public override void OnSingleClick(Mobile from)
         {
             if (Deleted || !from.CanSee(this))
+            {
                 return;
+            }
 
             base.OnSingleClick(from);
 
             if (m_VacationLeft > 0)
-                LabelTo(from, 1074430, m_VacationLeft.ToString()); // Vacation days left: ~1_DAYS
+            {
+                LabelTo(@from, 1074430, m_VacationLeft.ToString()); // Vacation days left: ~1_DAYS
+            }
 
             if (Events.Count > 0)
-                LabelTo(from, 1074426, Events.Count.ToString()); // ~1_NUM~ event(s) to view!
+            {
+                LabelTo(@from, 1074426, Events.Count.ToString()); // ~1_NUM~ event(s) to view!
+            }
 
             if (m_RewardAvailable)
-                LabelTo(from, 1074362); // A reward is available!
+            {
+                LabelTo(@from, 1074362); // A reward is available!
+            }
 
             LabelTo(from, 1074247, $"{LiveCreatures}\t{MaxLiveCreatures}"); // Live Creatures: ~1_NUM~ / ~2_MAX~
 
             if (DeadCreatures > 0)
-                LabelTo(from, 1074248, DeadCreatures.ToString()); // Dead Creatures: ~1_NUM~
+            {
+                LabelTo(@from, 1074248, DeadCreatures.ToString()); // Dead Creatures: ~1_NUM~
+            }
 
             var decorations = Items.Count - LiveCreatures - DeadCreatures;
 
             if (decorations > 0)
-                LabelTo(from, 1074249, (Items.Count - LiveCreatures - DeadCreatures).ToString()); // Decorations: ~1_NUM~
+            {
+                LabelTo(@from, 1074249, (Items.Count - LiveCreatures - DeadCreatures).ToString()); // Decorations: ~1_NUM~
+            }
 
             LabelTo(from, 1074250, $"#{FoodNumber()}");  // Food state: ~1_STATE~
             LabelTo(from, 1074251, $"#{WaterNumber()}"); // Water state: ~1_STATE~
 
             if (m_Food.State == (int)FoodState.Dead)
-                LabelTo(from, 1074577, $"{m_Food.Added}\t{m_Food.Improve}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+            {
+                LabelTo(@from, 1074577, $"{m_Food.Added}\t{m_Food.Improve}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+            }
             else if (m_Food.State == (int)FoodState.Overfed)
-                LabelTo(from, 1074577, $"{m_Food.Added}\t{m_Food.Maintain}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+            {
+                LabelTo(@from, 1074577, $"{m_Food.Added}\t{m_Food.Maintain}"); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+            }
             else
+            {
                 LabelTo(
-                    from,
+                    @from,
                     1074253,
                     $"{m_Food.Added}\t{m_Food.Maintain}\t{m_Food.Improve}"
                 ); // Food Added: ~1_CUR~ Feed: ~2_NEED~ Improve: ~3_GROW~
+            }
 
             if (m_Water.State == (int)WaterState.Dead)
-                LabelTo(from, 1074578, $"{m_Water.Added}\t{m_Water.Improve}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+            {
+                LabelTo(@from, 1074578, $"{m_Water.Added}\t{m_Water.Improve}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+            }
             else if (m_Water.State == (int)WaterState.Strong)
-                LabelTo(from, 1074578, $"{m_Water.Added}\t{m_Water.Maintain}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+            {
+                LabelTo(@from, 1074578, $"{m_Water.Added}\t{m_Water.Maintain}"); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+            }
             else
+            {
                 LabelTo(
-                    from,
+                    @from,
                     1074254,
                     $"{m_Water.Added}\t{m_Water.Maintain}\t{m_Water.Improve}"
                 ); // Water Added: ~1_CUR~ Maintain: ~2_NEED~ Improve: ~3_GROW~
+            }
         }
 
         public override void AddNameProperties(ObjectPropertyList list)
@@ -368,34 +413,49 @@ namespace Server.Items
             base.AddNameProperties(list);
 
             if (m_VacationLeft > 0)
+            {
                 list.Add(1074430, m_VacationLeft.ToString()); // Vacation days left: ~1_DAYS
+            }
 
             if (Events.Count > 0)
+            {
                 list.Add(1074426, Events.Count.ToString()); // ~1_NUM~ event(s) to view!
+            }
 
             if (m_RewardAvailable)
+            {
                 list.Add(1074362); // A reward is available!
+            }
 
             list.Add(1074247, "{0}\t{1}", LiveCreatures, MaxLiveCreatures); // Live Creatures: ~1_NUM~ / ~2_MAX~
 
             var dead = DeadCreatures;
 
             if (dead > 0)
+            {
                 list.Add(1074248, dead.ToString()); // Dead Creatures: ~1_NUM~
+            }
 
             var decorations = Items.Count - LiveCreatures - dead;
 
             if (decorations > 0)
+            {
                 list.Add(1074249, decorations.ToString()); // Decorations: ~1_NUM~
+            }
 
             list.Add(1074250, "#{0}", FoodNumber());  // Food state: ~1_STATE~
             list.Add(1074251, "#{0}", WaterNumber()); // Water state: ~1_STATE~
 
             if (m_Food.State == (int)FoodState.Dead)
+            {
                 list.Add(1074577, "{0}\t{1}", m_Food.Added, m_Food.Improve); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+            }
             else if (m_Food.State == (int)FoodState.Overfed)
+            {
                 list.Add(1074577, "{0}\t{1}", m_Food.Added, m_Food.Maintain); // Food Added: ~1_CUR~ Needed: ~2_NEED~
+            }
             else
+            {
                 list.Add(
                     1074253,
                     "{0}\t{1}\t{2}",
@@ -403,12 +463,18 @@ namespace Server.Items
                     m_Food.Maintain,
                     m_Food.Improve
                 ); // Food Added: ~1_CUR~ Feed: ~2_NEED~ Improve: ~3_GROW~
+            }
 
             if (m_Water.State == (int)WaterState.Dead)
+            {
                 list.Add(1074578, "{0}\t{1}", m_Water.Added, m_Water.Improve); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+            }
             else if (m_Water.State == (int)WaterState.Strong)
+            {
                 list.Add(1074578, "{0}\t{1}", m_Water.Added, m_Water.Maintain); // Water Added: ~1_CUR~ Needed: ~2_NEED~
+            }
             else
+            {
                 list.Add(
                     1074254,
                     "{0}\t{1}\t{2}",
@@ -416,6 +482,7 @@ namespace Server.Items
                     m_Water.Maintain,
                     m_Water.Improve
                 ); // Water Added: ~1_CUR~ Maintain: ~2_NEED~ Improve: ~3_GROW~
+            }
         }
 
         public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
@@ -429,13 +496,19 @@ namespace Server.Items
                 if (HasAccess(from))
                 {
                     if (m_RewardAvailable)
+                    {
                         list.Add(new CollectRewardEntry(this));
+                    }
 
                     if (Events.Count > 0)
+                    {
                         list.Add(new ViewEventEntry(this));
+                    }
 
                     if (m_VacationLeft > 0)
+                    {
                         list.Add(new CancelVacationMode(this));
+                    }
                 }
             }
 
@@ -457,9 +530,13 @@ namespace Server.Items
 
             // version 1
             if (m_Timer != null)
+            {
                 writer.Write(m_Timer.Next);
+            }
             else
+            {
                 writer.Write(DateTime.UtcNow + EvaluationInterval);
+            }
 
             // version 0
             writer.Write(LiveCreatures);
@@ -471,7 +548,9 @@ namespace Server.Items
             writer.Write(Events.Count);
 
             for (var i = 0; i < Events.Count; i++)
+            {
                 writer.Write(Events[i]);
+            }
 
             writer.Write(m_RewardAvailable);
         }
@@ -491,7 +570,9 @@ namespace Server.Items
                         var next = reader.ReadDateTime();
 
                         if (next < DateTime.UtcNow)
+                        {
                             next = DateTime.UtcNow;
+                        }
 
                         m_Timer = Timer.DelayCall(next - DateTime.UtcNow, EvaluationInterval, Evaluate);
 
@@ -513,7 +594,9 @@ namespace Server.Items
                         var count = reader.ReadInt();
 
                         for (var i = 0; i < count; i++)
+                        {
                             Events.Add(reader.ReadInt());
+                        }
 
                         m_RewardAvailable = reader.ReadBool();
 
@@ -528,7 +611,9 @@ namespace Server.Items
             }
 
             if (version < 3)
+            {
                 ValidationQueue<Aquarium>.Add(this);
+            }
         }
 
         private void RecountLiveCreatures()
@@ -540,7 +625,9 @@ namespace Server.Items
                     fish =>
                     {
                         if (!fish.Dead)
+                        {
                             ++LiveCreatures;
+                        }
                     }
                 );
         }
@@ -553,10 +640,14 @@ namespace Server.Items
         public int FoodNumber()
         {
             if (m_Food.State == (int)FoodState.Full)
+            {
                 return 1074240;
+            }
 
             if (m_Food.State == (int)FoodState.Overfed)
+            {
                 return 1074239;
+            }
 
             return 1074236 + m_Food.State;
         }
@@ -568,13 +659,17 @@ namespace Server.Items
             var toKill = new List<BaseFish>();
 
             for (var i = 0; i < Items.Count; i++)
+            {
                 if (Items[i] is BaseFish)
                 {
                     var fish = (BaseFish)Items[i];
 
                     if (!fish.Dead)
+                    {
                         toKill.Add(fish);
+                    }
                 }
+            }
 
             while (amount > 0 && toKill.Count > 0)
             {
@@ -607,32 +702,43 @@ namespace Server.Items
                     m_Food.Added < m_Food.Maintain && m_Food.State != (int)FoodState.Overfed &&
                     m_Food.State != (int)FoodState.Dead ||
                     m_Food.Added >= m_Food.Improve && m_Food.State == (int)FoodState.Full)
+                {
                     Events.Add(1074368); // The tank looks worse than it did yesterday.
+                }
 
                 if (
                     m_Food.Added >= m_Food.Improve && m_Food.State != (int)FoodState.Full &&
                     m_Food.State != (int)FoodState.Overfed ||
                     m_Food.Added < m_Food.Maintain && m_Food.State == (int)FoodState.Overfed)
+                {
                     Events.Add(1074367); // The tank looks healthier today.
+                }
 
                 // water events
                 if (m_Water.Added < m_Water.Maintain && m_Water.State != (int)WaterState.Dead)
+                {
                     Events.Add(1074370); // This tank can use more water.
+                }
 
                 if (m_Water.Added >= m_Water.Improve && m_Water.State != (int)WaterState.Strong)
+                {
                     Events.Add(1074369); // The water looks clearer today.
+                }
 
                 UpdateFoodState();
                 UpdateWaterState();
 
                 // reward
                 if (LiveCreatures > 0)
+                {
                     m_RewardAvailable = true;
+                }
             }
             else
             {
                 // new fish
                 if (OptimalState && LiveCreatures < MaxLiveCreatures)
+                {
                     if (Utility.RandomDouble() < 0.005 * LiveCreatures)
                     {
                         BaseFish fish;
@@ -679,21 +785,32 @@ namespace Server.Items
                         }
 
                         if (Utility.RandomDouble() < 0.05)
+                        {
                             fish.Hue = FishHues.RandomElement();
+                        }
                         else if (Utility.RandomDouble() < 0.5)
+                        {
                             fish.Hue = Utility.RandomMinMax(0x100, 0x3E5);
+                        }
 
                         if (AddFish(fish))
+                        {
                             Events.Add(message);
+                        }
                         else
+                        {
                             fish.Delete();
+                        }
                     }
+                }
 
                 // kill fish *grins*
                 if (LiveCreatures < MaxLiveCreatures)
                 {
                     if (Utility.RandomDouble() < 0.01)
+                    {
                         KillFish(1);
+                    }
                 }
                 else
                 {
@@ -708,14 +825,18 @@ namespace Server.Items
         public virtual void GiveReward(Mobile to)
         {
             if (!m_RewardAvailable)
+            {
                 return;
+            }
 
             var max = (int)((double)LiveCreatures / 30 * m_Decorations.Length);
 
             var random = max <= 0 ? 0 : Utility.Random(max);
 
             if (random >= m_Decorations.Length)
+            {
                 random = m_Decorations.Length - 1;
+            }
 
             Item item;
 
@@ -729,7 +850,9 @@ namespace Server.Items
             }
 
             if (item == null)
+            {
                 return;
+            }
 
             if (!to.PlaceInBackpack(item))
             {
@@ -749,16 +872,24 @@ namespace Server.Items
         public virtual void UpdateFoodState()
         {
             if (m_Food.Added < m_Food.Maintain)
+            {
                 m_Food.State = m_Food.State <= 0 ? 0 : m_Food.State - 1;
+            }
             else if (m_Food.Added >= m_Food.Improve)
+            {
                 m_Food.State = m_Food.State >= (int)FoodState.Overfed ? (int)FoodState.Overfed : m_Food.State + 1;
+            }
 
             m_Food.Maintain = Utility.Random((int)FoodState.Overfed + 1 - m_Food.State, 2);
 
             if (m_Food.State == (int)FoodState.Overfed)
+            {
                 m_Food.Improve = 0;
+            }
             else
+            {
                 m_Food.Improve = m_Food.Maintain + 2;
+            }
 
             m_Food.Added = 0;
         }
@@ -766,16 +897,24 @@ namespace Server.Items
         public virtual void UpdateWaterState()
         {
             if (m_Water.Added < m_Water.Maintain)
+            {
                 m_Water.State = m_Water.State <= 0 ? 0 : m_Water.State - 1;
+            }
             else if (m_Water.Added >= m_Water.Improve)
+            {
                 m_Water.State = m_Water.State >= (int)WaterState.Strong ? (int)WaterState.Strong : m_Water.State + 1;
+            }
 
             m_Water.Maintain = Utility.Random((int)WaterState.Strong + 2 - m_Water.State, 2);
 
             if (m_Water.State == (int)WaterState.Strong)
+            {
                 m_Water.Improve = 0;
+            }
             else
+            {
                 m_Water.Improve = m_Water.Maintain + 2;
+            }
 
             m_Water.Added = 0;
         }
@@ -783,7 +922,9 @@ namespace Server.Items
         public virtual bool RemoveItem(Mobile from, int at)
         {
             if (at < 0 || at >= Items.Count)
+            {
                 return false;
+            }
 
             var item = Items[at];
 
@@ -815,7 +956,9 @@ namespace Server.Items
                 }
 
                 if (!fish.Dead)
+                {
                     LiveCreatures -= 1;
+                }
             }
             else
             {
@@ -851,7 +994,9 @@ namespace Server.Items
         public virtual bool AddFish(Mobile from, BaseFish fish)
         {
             if (fish == null)
+            {
                 return false;
+            }
 
             if (IsFull || LiveCreatures >= MaxLiveCreatures || fish.Dead)
             {
@@ -879,7 +1024,9 @@ namespace Server.Items
         public virtual bool AddDecoration(Mobile from, Item item)
         {
             if (item == null)
+            {
                 return false;
+            }
 
             if (IsFull)
             {
@@ -916,13 +1063,19 @@ namespace Server.Items
         public static bool Accepts(Item item)
         {
             if (item == null)
+            {
                 return false;
+            }
 
             var type = item.GetType();
 
             for (var i = 0; i < m_Decorations.Length; i++)
+            {
                 if (type == m_Decorations[i])
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -938,7 +1091,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (m_Aquarium.Deleted)
+                {
                     return;
+                }
 
                 m_Aquarium.ExamineAquarium(Owner.From);
             }
@@ -955,7 +1110,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (m_Aquarium.Deleted || !m_Aquarium.HasAccess(Owner.From))
+                {
                     return;
+                }
 
                 m_Aquarium.GiveReward(Owner.From);
             }
@@ -972,12 +1129,16 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (m_Aquarium.Deleted || !m_Aquarium.HasAccess(Owner.From) || m_Aquarium.Events.Count == 0)
+                {
                     return;
+                }
 
                 Owner.From.SendLocalizedMessage(m_Aquarium.Events[0]);
 
                 if (m_Aquarium.Events[0] == 1074366)
+                {
                     Owner.From.PlaySound(0x5A2);
+                }
 
                 m_Aquarium.Events.RemoveAt(0);
                 m_Aquarium.InvalidateProperties();
@@ -995,7 +1156,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (m_Aquarium.Deleted || !m_Aquarium.HasAccess(Owner.From))
+                {
                     return;
+                }
 
                 Owner.From.SendLocalizedMessage(1074429); // Vacation mode has been cancelled.
                 m_Aquarium.VacationLeft = 0;
@@ -1015,7 +1178,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (m_Aquarium.Deleted)
+                {
                     return;
+                }
 
                 m_Aquarium.Food.Added += 1;
                 m_Aquarium.InvalidateProperties();
@@ -1033,7 +1198,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (m_Aquarium.Deleted)
+                {
                     return;
+                }
 
                 m_Aquarium.Water.Added += 1;
                 m_Aquarium.InvalidateProperties();
@@ -1051,7 +1218,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (m_Aquarium.Deleted)
+                {
                     return;
+                }
 
                 m_Aquarium.Evaluate();
             }
@@ -1068,7 +1237,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (m_Aquarium.Deleted)
+                {
                     return;
+                }
 
                 Owner.From.SendGump(new AquariumGump(m_Aquarium, true));
             }
@@ -1085,7 +1256,9 @@ namespace Server.Items
             public override void OnClick()
             {
                 if (m_Aquarium.Deleted)
+                {
                     return;
+                }
 
                 m_Aquarium.Food.Added = m_Aquarium.Food.Maintain;
                 m_Aquarium.Water.Added = m_Aquarium.Water.Maintain;

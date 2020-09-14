@@ -42,9 +42,13 @@ namespace Server.Engines.Mahjong
                     Stream.Write((byte)i);
 
                     if (game.ShowScores || mobile == to)
+                    {
                         Stream.Write(players.GetScore(i));
+                    }
                     else
+                    {
                         Stream.Write(0);
+                    }
 
                     Stream.Write((short)0);
                     Stream.Write((byte)0);
@@ -137,9 +141,13 @@ namespace Server.Engines.Mahjong
 
                     if (hand < 0 || players.IsPublic(hand) || players.GetPlayer(hand) == to ||
                         game.SpectatorVision && players.IsSpectator(to))
+                    {
                         Stream.Write((byte)tile.Value);
+                    }
                     else
+                    {
                         Stream.Write((byte)0);
+                    }
                 }
                 else
                 {
@@ -177,9 +185,13 @@ namespace Server.Engines.Mahjong
 
                 if (hand < 0 || players.IsPublic(hand) || players.GetPlayer(hand) == to ||
                     game.SpectatorVision && players.IsSpectator(to))
+                {
                     Stream.Write((byte)tile.Value);
+                }
                 else
+                {
                     Stream.Write((byte)0);
+                }
             }
             else
             {

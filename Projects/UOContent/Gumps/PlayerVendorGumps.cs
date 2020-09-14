@@ -21,9 +21,13 @@ namespace Server.Gumps
             AddHtmlLocalized(125, 20, 250, 24, 1019070); // You have agreed to purchase:
 
             if (!string.IsNullOrEmpty(vi.Description))
+            {
                 AddLabel(125, 45, 0, vi.Description);
+            }
             else
+            {
                 AddHtmlLocalized(125, 45, 250, 24, 1019072); // an item without a description
+            }
 
             AddHtmlLocalized(125, 70, 250, 24, 1019071); // for the amount of:
             AddLabel(125, 95, 0, vi.Price.ToString());
@@ -40,7 +44,9 @@ namespace Server.Gumps
             var from = state.Mobile;
 
             if (!m_Vendor.CanInteractWith(from, false))
+            {
                 return;
+            }
 
             if (m_Vendor.IsOwner(from))
             {
@@ -61,7 +67,9 @@ namespace Server.Gumps
                 var totalGold = 0;
 
                 if (from.Backpack != null)
-                    totalGold += from.Backpack.GetAmount(typeof(Gold));
+                {
+                    totalGold += @from.Backpack.GetAmount(typeof(Gold));
+                }
 
                 totalGold += Banker.GetBalance(from);
 
@@ -78,10 +86,14 @@ namespace Server.Gumps
                     var leftPrice = m_VI.Price;
 
                     if (from.Backpack != null)
-                        leftPrice -= from.Backpack.ConsumeUpTo(typeof(Gold), leftPrice);
+                    {
+                        leftPrice -= @from.Backpack.ConsumeUpTo(typeof(Gold), leftPrice);
+                    }
 
                     if (leftPrice > 0)
-                        Banker.Withdraw(from, leftPrice);
+                    {
+                        Banker.Withdraw(@from, leftPrice);
+                    }
 
                     m_Vendor.HoldGold += m_VI.Price;
 
@@ -138,7 +150,9 @@ namespace Server.Gumps
             var from = state.Mobile;
 
             if (!m_Vendor.CanInteractWith(from, true))
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {
@@ -245,10 +259,14 @@ namespace Server.Gumps
             var from = sender.Mobile;
 
             if (info.ButtonID == 1 || info.ButtonID == 2) // See goods or Customize
-                m_Vendor.CheckTeleport(from);
+            {
+                m_Vendor.CheckTeleport(@from);
+            }
 
             if (!m_Vendor.CanInteractWith(from, true))
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {
@@ -517,7 +535,9 @@ namespace Server.Gumps
                     AddHtmlLocalized(x, y, 100, entry.LongText ? 36 : 18, entry.LocNumber);
 
                     if (entry.ArtNumber != 0)
+                    {
                         AddItem(x + 20, y + 25, entry.ArtNumber);
+                    }
 
                     AddRadio(x, y + (entry.LongText ? 40 : 20), 210, 211, false, (c << 8) + i);
                 }
@@ -536,15 +556,21 @@ namespace Server.Gumps
         public override void OnResponse(NetState state, RelayInfo info)
         {
             if (m_Vendor.Deleted)
+            {
                 return;
+            }
 
             var from = state.Mobile;
 
             if (m_Vendor is PlayerVendor vendor && !vendor.CanInteractWith(from, true))
+            {
                 return;
+            }
 
             if (m_Vendor is PlayerBarkeeper barkeeper && !barkeeper.IsOwner(from))
+            {
                 return;
+            }
 
             if (info.ButtonID == 0)
             {
@@ -577,8 +603,12 @@ namespace Server.Gumps
                             var type = checkitem.GetType();
 
                             for (var j = 0; item == null && j < Categories[cat].Entries.Length; ++j)
+                            {
                                 if (type == Categories[cat].Entries[j].Type)
+                                {
                                     item = checkitem;
+                                }
+                            }
                         }
 
                         item?.Delete();
@@ -619,7 +649,9 @@ namespace Server.Gumps
                                 item.Layer = Categories[cat].Layer;
 
                                 if (!m_Vendor.EquipItem(item))
+                                {
                                     item.Delete();
+                                }
                             }
                         }
 
@@ -656,12 +688,18 @@ namespace Server.Gumps
                                     var type = checkitem.GetType();
 
                                     for (var j = 0; item == null && j < category.Entries.Length; ++j)
+                                    {
                                         if (type == category.Entries[j].Type)
+                                        {
                                             item = checkitem;
+                                        }
+                                    }
                                 }
 
                                 if (item != null)
-                                    new PVHuePicker(item, m_Vendor, from).SendTo(state);
+                                {
+                                    new PVHuePicker(item, m_Vendor, @from).SendTo(state);
+                                }
                             }
                         }
                     }
@@ -693,8 +731,12 @@ namespace Server.Gumps
                                     var type = checkitem.GetType();
 
                                     for (var j = 0; item == null && j < category.Entries.Length; ++j)
+                                    {
                                         if (type == category.Entries[j].Type)
+                                        {
                                             item = checkitem;
+                                        }
+                                    }
                                 }
 
                                 item?.Delete();
@@ -739,7 +781,9 @@ namespace Server.Gumps
             public Item Create()
             {
                 if (Type == null)
+                {
                     return null;
+                }
 
                 Item i = null;
 
@@ -747,7 +791,9 @@ namespace Server.Gumps
                 {
                     var ctor = Type.GetConstructor(Array.Empty<Type>());
                     if (ctor != null)
+                    {
                         i = ctor.Invoke(null) as Item;
+                    }
                 }
                 catch
                 {
@@ -793,13 +839,19 @@ namespace Server.Gumps
             public override void OnResponse(int hue)
             {
                 if (m_Item.Deleted)
+                {
                     return;
+                }
 
                 if (m_Vendor is PlayerVendor vendor && !vendor.CanInteractWith(m_Mob, true))
+                {
                     return;
+                }
 
                 if (m_Vendor is PlayerBarkeeper barkeeper && !barkeeper.IsOwner(m_Mob))
+                {
                     return;
+                }
 
                 m_Item.Hue = hue;
                 m_Mob.SendGump(new PlayerVendorCustomizeGump(m_Vendor, m_Mob));
@@ -822,18 +874,28 @@ namespace Server.Gumps
             public override void OnResponse(int hue)
             {
                 if (m_Vendor.Deleted)
+                {
                     return;
+                }
 
                 if (m_Vendor is PlayerVendor vendor && !vendor.CanInteractWith(m_Mob, true))
+                {
                     return;
+                }
 
                 if (m_Vendor is PlayerBarkeeper barkeeper && !barkeeper.IsOwner(m_Mob))
+                {
                     return;
+                }
 
                 if (m_FacialHair)
+                {
                     m_Vendor.FacialHairHue = hue;
+                }
                 else
+                {
                     m_Vendor.HairHue = hue;
+                }
 
                 m_Mob.SendGump(new PlayerVendorCustomizeGump(m_Vendor, m_Mob));
             }
@@ -939,7 +1001,9 @@ namespace Server.Gumps
             var from = sender.Mobile;
 
             if (!m_Vendor.CanInteractWith(from, true))
+            {
                 return;
+            }
 
             switch (info.ButtonID)
             {
@@ -981,9 +1045,13 @@ namespace Server.Gumps
                 case 3: // Color hair
                     {
                         if (m_Vendor.HairItemID > 0)
-                            new PVHuePicker(m_Vendor, false, from).SendTo(from.NetState);
+                        {
+                            new PVHuePicker(m_Vendor, false, @from).SendTo(@from.NetState);
+                        }
                         else
-                            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                        {
+                            @from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                        }
 
                         break;
                     }
@@ -998,9 +1066,13 @@ namespace Server.Gumps
                 case 5: // Color beard
                     {
                         if (m_Vendor.FacialHairItemID > 0)
-                            new PVHuePicker(m_Vendor, true, from).SendTo(from.NetState);
+                        {
+                            new PVHuePicker(m_Vendor, true, @from).SendTo(@from.NetState);
+                        }
                         else
-                            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                        {
+                            @from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                        }
 
                         break;
                     }
@@ -1013,7 +1085,9 @@ namespace Server.Gumps
                             var index = info.ButtonID & 0xFF;
 
                             if (index >= m_HairStyles.Length)
+                            {
                                 return;
+                            }
 
                             var hairStyle = m_HairStyles[index];
 
@@ -1031,12 +1105,16 @@ namespace Server.Gumps
                         else if ((info.ButtonID & 0x200) != 0) // Beard style selected
                         {
                             if (m_Vendor.Female)
+                            {
                                 return;
+                            }
 
                             var index = info.ButtonID & 0xFF;
 
                             if (index >= m_BeardStyles.Length)
+                            {
                                 return;
+                            }
 
                             var beardStyle = m_BeardStyles[index];
 
@@ -1086,12 +1164,18 @@ namespace Server.Gumps
             public override void OnResponse(int hue)
             {
                 if (!m_Vendor.CanInteractWith(m_From, true))
+                {
                     return;
+                }
 
                 if (m_FacialHair)
+                {
                     m_Vendor.FacialHairHue = hue;
+                }
                 else
+                {
                     m_Vendor.HairHue = hue;
+                }
 
                 m_From.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
             }

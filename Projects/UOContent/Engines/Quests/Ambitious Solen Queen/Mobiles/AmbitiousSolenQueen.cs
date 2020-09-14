@@ -22,7 +22,9 @@ namespace Server.Engines.Quests.Ambitious
             Body = 0x30F;
 
             if (!RedSolen)
+            {
                 Hue = 0x453;
+            }
 
             SpeechHue = 0;
         }
@@ -68,8 +70,11 @@ namespace Server.Engines.Quests.Ambitious
                             lastObj.Gold = gold;
 
                             if (!bagOfSending && !powderOfTranslocation && !gold)
+                            {
                                 lastObj.Complete();
+                            }
                             else
+                            {
                                 qs.AddConversation(
                                     new FullBackpackConversation(
                                         false,
@@ -78,6 +83,7 @@ namespace Server.Engines.Quests.Ambitious
                                         lastObj.Gold
                                     )
                                 );
+                            }
                         }
                     }
                 }
@@ -87,9 +93,13 @@ namespace Server.Engines.Quests.Ambitious
                 QuestSystem newQuest = new AmbitiousQueenQuest(player, RedSolen);
 
                 if (player.Quest == null && QuestSystem.CanOfferQuest(player, typeof(AmbitiousQueenQuest)))
+                {
                     newQuest.SendOffer();
+                }
                 else
+                {
                     newQuest.AddConversation(new DontOfferConversation());
+                }
             }
         }
 
@@ -98,11 +108,13 @@ namespace Server.Engines.Quests.Ambitious
             Direction = GetDirectionTo(from);
 
             if (from is PlayerMobile player)
+            {
                 if (player.Quest is AmbitiousQueenQuest qs && qs.RedSolen == RedSolen)
                 {
                     QuestObjective obj = qs.FindObjective<GatherFungiObjective>();
 
                     if (obj?.Completed == false)
+                    {
                         if (dropped is ZoogiFungus fungi)
                         {
                             if (fungi.Amount >= 50)
@@ -126,7 +138,9 @@ namespace Server.Engines.Quests.Ambitious
                             ); // Our arrangement was for 50 of the zoogi fungus. Please return to me when you have that amount.
                             return false;
                         }
+                    }
                 }
+            }
 
             return base.OnDragDrop(from, dropped);
         }

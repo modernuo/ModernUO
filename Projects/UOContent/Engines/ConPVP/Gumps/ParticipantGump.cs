@@ -20,7 +20,9 @@ namespace Server.Engines.ConPVP
             var count = p.Players.Length;
 
             if (count < 4)
+            {
                 count = 4;
+            }
 
             AddPage(0);
 
@@ -81,7 +83,9 @@ namespace Server.Engines.ConPVP
         public override void OnResponse(NetState sender, RelayInfo info)
         {
             if (!Context.Registered)
+            {
                 return;
+            }
 
             var bid = info.ButtonID;
 
@@ -92,18 +96,26 @@ namespace Server.Engines.ConPVP
             else if (bid == 1)
             {
                 if (Participant.Count < 8)
+                {
                     Participant.Resize(Participant.Count + 1);
+                }
                 else
+                {
                     From.SendMessage("You may not raise the team size any further.");
+                }
 
                 From.SendGump(new ParticipantGump(From, Context, Participant));
             }
             else if (bid == 2)
             {
                 if (Participant.Count > 1 && Participant.Count > Participant.FilledSlots)
+                {
                     Participant.Resize(Participant.Count - 1);
+                }
                 else
+                {
                     From.SendMessage("You may not lower the team size any further.");
+                }
 
                 From.SendGump(new ParticipantGump(From, Context, Participant));
             }
@@ -166,7 +178,9 @@ namespace Server.Engines.ConPVP
                         Participant.Players[bid].Mobile.SendMessage("You have been removed from the duel.");
 
                         if (Participant.Players[bid].Mobile is PlayerMobile)
+                        {
                             ((PlayerMobile)Participant.Players[bid].Mobile).DuelPlayer = null;
+                        }
 
                         Participant.Players[bid] = null;
                         From.SendMessage("They have been removed from the duel.");
@@ -192,12 +206,16 @@ namespace Server.Engines.ConPVP
             protected override void OnTarget(Mobile from, object targeted)
             {
                 if (!m_Context.Registered)
+                {
                     return;
+                }
 
                 var index = m_Index;
 
                 if (index < 0 || index >= m_Participant.Players.Length)
+                {
                     return;
+                }
 
                 if (!(targeted is Mobile mob))
                 {
@@ -206,9 +224,13 @@ namespace Server.Engines.ConPVP
                 else if (!mob.Player)
                 {
                     if (mob.Body.IsHuman)
-                        mob.SayTo(from, 1005443); // Nay, I would rather stay here and watch a nail rust.
+                    {
+                        mob.SayTo(@from, 1005443); // Nay, I would rather stay here and watch a nail rust.
+                    }
                     else
-                        mob.SayTo(from, 1005444); // The creature ignores your offer.
+                    {
+                        mob.SayTo(@from, 1005444); // The creature ignores your offer.
+                    }
                 }
                 else if (AcceptDuelGump.IsIgnored(mob, from) || mob.Blessed)
                 {
@@ -217,7 +239,9 @@ namespace Server.Engines.ConPVP
                 else
                 {
                     if (!(mob is PlayerMobile pm))
+                    {
                         return;
+                    }
 
                     if (pm.DuelContext != null)
                     {

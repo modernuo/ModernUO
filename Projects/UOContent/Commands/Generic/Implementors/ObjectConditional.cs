@@ -35,13 +35,17 @@ namespace Server.Commands.Generic
             m_Conditionals = new IConditional[m_Conditions.Length];
 
             for (var i = 0; i < m_Conditionals.Length; ++i)
+            {
                 m_Conditionals[i] = ConditionalCompiler.Compile(emitter, Type, m_Conditions[i], i);
+            }
         }
 
         public bool CheckCondition(object obj)
         {
             if (Type == null)
+            {
                 return true; // null type means no condition
+            }
 
             if (!HasCompiled)
             {
@@ -51,8 +55,12 @@ namespace Server.Commands.Generic
             }
 
             for (var i = 0; i < m_Conditionals.Length; ++i)
+            {
                 if (m_Conditionals[i].Verify(obj))
+                {
                     return true;
+                }
+            }
 
             return false; // all conditions false
         }
@@ -62,6 +70,7 @@ namespace Server.Commands.Generic
             string[] conditionArgs = null;
 
             for (var i = 0; i < args.Length; ++i)
+            {
                 if (Insensitive.Equals(args[i], "where"))
                 {
                     var origArgs = args;
@@ -69,15 +78,20 @@ namespace Server.Commands.Generic
                     args = new string[i];
 
                     for (var j = 0; j < args.Length; ++j)
+                    {
                         args[j] = origArgs[j];
+                    }
 
                     conditionArgs = new string[origArgs.Length - i - 1];
 
                     for (var j = 0; j < conditionArgs.Length; ++j)
+                    {
                         conditionArgs[j] = origArgs[i + j + 1];
+                    }
 
                     break;
                 }
+            }
 
             return ParseDirect(from, conditionArgs, 0, conditionArgs?.Length ?? 0);
         }
@@ -85,14 +99,18 @@ namespace Server.Commands.Generic
         public static ObjectConditional ParseDirect(Mobile from, string[] args, int offset, int size)
         {
             if (args == null || size == 0)
+            {
                 return Empty;
+            }
 
             var index = 0;
 
             var objectType = AssemblyHandler.FindFirstTypeForName(args[offset + index], true);
 
             if (objectType == null)
+            {
                 throw new Exception($"No type with that name ({args[offset + index]}) was found.");
+            }
 
             ++index;
 
@@ -113,7 +131,9 @@ namespace Server.Commands.Generic
                     ++index;
 
                     if (index >= size)
+                    {
                         throw new Exception("Improperly formatted object conditional.");
+                    }
                 }
                 else if (Insensitive.Equals(cur, "or") || cur == "||")
                 {
@@ -134,13 +154,17 @@ namespace Server.Commands.Generic
                 index++;
 
                 if (index >= size)
+                {
                     throw new Exception("Improperly formatted object conditional.");
+                }
 
                 var oper = args[offset + index];
                 index++;
 
                 if (index >= size)
+                {
                     throw new Exception("Improperly formatted object conditional.");
+                }
 
                 var val = args[offset + index];
                 index++;
@@ -181,7 +205,9 @@ namespace Server.Commands.Generic
                 };
 
                 if (condition == null)
+                {
                     throw new InvalidOperationException($"Unrecognized operator (\"{oper}\").");
+                }
 
                 current.Add(condition);
             }

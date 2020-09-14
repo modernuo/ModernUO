@@ -26,7 +26,9 @@ namespace Server.Spells
             var circle = (int)Circle;
 
             if (Scroll != null)
+            {
                 circle -= 2;
+            }
 
             var avg = ChanceLength * circle;
 
@@ -42,7 +44,9 @@ namespace Server.Spells
             maxSkill += (1 + (int)Circle / 6) * 25;
 
             if (m.Skills.MagicResist.Value < maxSkill)
+            {
                 m.CheckSkill(SkillName.MagicResist, 0.0, m.Skills.MagicResist.Cap);
+            }
 
             return m.Skills.MagicResist.Value;
         }
@@ -54,16 +58,22 @@ namespace Server.Spells
             n /= 100.0;
 
             if (n <= 0.0)
+            {
                 return false;
+            }
 
             if (n >= 1.0)
+            {
                 return true;
+            }
 
             var maxSkill = (1 + (int)Circle) * 10;
             maxSkill += (1 + (int)Circle / 6) * 25;
 
             if (target.Skills.MagicResist.Value < maxSkill)
+            {
                 target.CheckSkill(SkillName.MagicResist, 0.0, target.Skills.MagicResist.Cap);
+            }
 
             return n >= Utility.RandomDouble();
         }

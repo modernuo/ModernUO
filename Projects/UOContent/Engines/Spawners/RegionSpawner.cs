@@ -73,14 +73,18 @@ namespace Server.Engines.Spawners
             base.GetSpawnerProperties(list);
 
             if (Running && m_SpawnRegion != null)
+            {
                 list.Add(1076228, "region:\t{0}", m_SpawnRegion.Name); // ~1_DUMMY~ ~2_DUMMY~
+            }
         }
 
         public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
         {
             if (m_SpawnRegion == null || map == null || map == Map.Internal || map != m_SpawnRegion.Map ||
                 m_SpawnRegion.TotalWeight <= 0)
+            {
                 return Location;
+            }
 
             bool waterMob, waterOnlyMob;
 
@@ -125,17 +129,27 @@ namespace Server.Engines.Spawners
                 if (waterMob)
                 {
                     if (IsValidWater(map, x, y, Z))
+                    {
                         return new Point3D(x, y, Z);
+                    }
+
                     if (IsValidWater(map, x, y, mapZ))
+                    {
                         return new Point3D(x, y, mapZ);
+                    }
                 }
 
                 if (!waterOnlyMob)
                 {
                     if (map.CanSpawnMobile(x, y, Z))
+                    {
                         return new Point3D(x, y, Z);
+                    }
+
                     if (map.CanSpawnMobile(x, y, mapZ))
+                    {
                         return new Point3D(x, y, mapZ);
+                    }
                 }
             }
 

@@ -18,8 +18,12 @@ namespace Server
         public bool ContainsName(string name)
         {
             for (var i = 0; i < List.Length; i++)
+            {
                 if (name == List[i])
+                {
                     return true;
+                }
+            }
 
             return false;
         }
@@ -50,7 +54,9 @@ namespace Server
         private void FixNames()
         {
             for (var i = 0; i < List.Length; i++)
+            {
                 List[i] = Utility.Intern(List[i].Trim());
+            }
         }
     }
 }

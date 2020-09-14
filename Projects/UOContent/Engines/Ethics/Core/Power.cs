@@ -11,7 +11,9 @@ namespace Server.Ethics
         public virtual bool CheckInvoke(Player from)
         {
             if (!from.Mobile.CheckAlive())
+            {
                 return false;
+            }
 
             if (from.Power < m_Definition.Power)
             {

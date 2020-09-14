@@ -54,7 +54,9 @@ namespace Server.Mobiles
                 Add(new GenericBuyInfo("a barkeep contract", typeof(BarkeepContract), 1252, 20, 0x14F0, 0));
 
                 if (BaseHouse.NewVendorSystem)
+                {
                     Add(new GenericBuyInfo("1062332", typeof(VendorRentalContract), 1252, 20, 0x14F0, 0x672));
+                }
 
                 /*if (Map == Tokuno)
                   {

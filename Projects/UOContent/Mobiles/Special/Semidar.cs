@@ -72,29 +72,39 @@ namespace Server.Mobiles
         public override void CheckReflect(Mobile caster, ref bool reflect)
         {
             if (caster.Body.IsMale)
+            {
                 reflect = true; // Always reflect if caster isn't female
+            }
         }
 
         public override void AlterDamageScalarFrom(Mobile caster, ref double scalar)
         {
             if (caster.Body.IsMale)
+            {
                 scalar = 20; // Male bodies always reflect.. damage scaled 20x
+            }
         }
 
         public void DrainLife()
         {
             if (Map == null)
+            {
                 return;
+            }
 
             var eable = GetMobilesInRange<Mobile>(2);
 
             foreach (var m in eable)
             {
                 if (m == this || !(CanBeHarmful(m) || m.Player && m.Alive))
+                {
                     continue;
+                }
 
                 if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != Team))
+                {
                     continue;
+                }
 
                 DoHarmful(m);
 
@@ -117,7 +127,9 @@ namespace Server.Mobiles
             base.OnGaveMeleeAttack(defender);
 
             if (Utility.RandomDouble() <= 0.25)
+            {
                 DrainLife();
+            }
         }
 
         public override void OnGotMeleeAttack(Mobile attacker)
@@ -125,7 +137,9 @@ namespace Server.Mobiles
             base.OnGotMeleeAttack(attacker);
 
             if (Utility.RandomDouble() <= 0.25)
+            {
                 DrainLife();
+            }
         }
 
         public override void Serialize(IGenericWriter writer)

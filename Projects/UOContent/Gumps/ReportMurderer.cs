@@ -34,22 +34,30 @@ namespace Server.Gumps
             foreach (var ai in m.Aggressors)
             {
                 if (ai.Attacker.Player && ai.CanReportMurder && !ai.Reported)
+                {
                     if (!Core.SE || !((PlayerMobile)m).RecentlyReported.Contains(ai.Attacker))
                     {
                         killers.Add(ai.Attacker);
                         ai.Reported = true;
                         ai.CanReportMurder = false;
                     }
+                }
 
                 if (ai.Attacker.Player && DateTime.UtcNow - ai.LastCombatTime < TimeSpan.FromSeconds(30.0) &&
                     !toGive.Contains(ai.Attacker))
+                {
                     toGive.Add(ai.Attacker);
+                }
             }
 
             foreach (var ai in m.Aggressed)
+            {
                 if (ai.Defender.Player && DateTime.UtcNow - ai.LastCombatTime < TimeSpan.FromSeconds(30.0) &&
                     !toGive.Contains(ai.Defender))
+                {
                     toGive.Add(ai.Defender);
+                }
+            }
 
             foreach (var g in toGive)
             {
@@ -63,19 +71,27 @@ namespace Server.Gumps
                 var karmaAward = 0;
 
                 if (innocent)
+                {
                     karmaAward = ourKarma > -2500 ? -850 : -110 - m.Karma / 100;
+                }
                 else if (criminal)
+                {
                     karmaAward = 50;
+                }
 
                 Titles.AwardFame(g, fameAward, false);
                 Titles.AwardKarma(g, karmaAward, true);
             }
 
             if (m is PlayerMobile mobile && mobile.NpcGuild == NpcGuild.ThievesGuild)
+            {
                 return;
+            }
 
             if (killers.Count > 0)
+            {
                 new GumpTimer(m, killers).Start();
+            }
         }
 
         private void BuildGump()
@@ -110,7 +126,9 @@ namespace Server.Gumps
         public static void ReportedListExpiry_Callback(PlayerMobile from, Mobile killer)
         {
             if (from.RecentlyReported.Contains(killer))
-                from.RecentlyReported.Remove(killer);
+            {
+                @from.RecentlyReported.Remove(killer);
+            }
         }
 
         public override void OnResponse(NetState state, RelayInfo info)
@@ -139,9 +157,13 @@ namespace Server.Gumps
                                 pk.SendLocalizedMessage(1049067); // You have been reported for murder!
 
                                 if (pk.Kills == 5)
+                                {
                                     pk.SendLocalizedMessage(502134); // You are now known as a murderer!
+                                }
                                 else if (Stealing.SuspendOnMurder && pk.Kills == 1 && pk.NpcGuild == NpcGuild.ThievesGuild)
+                                {
                                     pk.SendLocalizedMessage(501562); // You have been suspended by the Thieves Guild.
+                                }
                             }
                         }
 
@@ -155,7 +177,9 @@ namespace Server.Gumps
 
             m_Idx++;
             if (m_Idx < m_Killers.Count)
-                from.SendGump(new ReportMurdererGump(from, m_Killers, m_Idx));
+            {
+                @from.SendGump(new ReportMurdererGump(@from, m_Killers, m_Idx));
+            }
         }
 
         private class GumpTimer : Timer

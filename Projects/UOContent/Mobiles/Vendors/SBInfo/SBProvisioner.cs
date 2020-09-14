@@ -18,7 +18,9 @@ namespace Server.Mobiles
             public InternalBuyInfo()
             {
                 if (Core.ML)
+                {
                     Add(new GenericBuyInfo("1079931", typeof(SalvageBag), 1255, 20, 0xE76, Utility.RandomBlueHue()));
+                }
 
                 Add(new GenericBuyInfo("1060834", typeof(PlantBowl), 2, 20, 0x15FD, 0));
 
@@ -87,7 +89,10 @@ namespace Server.Mobiles
                 Add(new GenericBuyInfo("1016449", typeof(CheckerBoard), 2, 20, 0xFA6, 0));
                 Add(new GenericBuyInfo(typeof(Backgammon), 2, 20, 0xE1C, 0));
                 if (Core.AOS)
+                {
                     Add(new GenericBuyInfo(typeof(MahjongGame), 6, 20, 0xFAA, 0));
+                }
+
                 Add(new GenericBuyInfo(typeof(Dices), 2, 20, 0xFA7, 0));
 
                 if (Core.AOS)
@@ -97,7 +102,9 @@ namespace Server.Mobiles
                 }
 
                 if (!Guild.NewGuildSystem)
+                {
                     Add(new GenericBuyInfo("1041055", typeof(GuildDeed), 12450, 20, 0x14F0, 0));
+                }
             }
         }
 
@@ -162,7 +169,9 @@ namespace Server.Mobiles
                 Add(typeof(SilverEarrings), 10);
 
                 if (!Guild.NewGuildSystem)
+                {
                     Add(typeof(GuildDeed), 6225);
+                }
             }
         }
     }

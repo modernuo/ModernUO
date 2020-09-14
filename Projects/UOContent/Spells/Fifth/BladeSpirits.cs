@@ -37,9 +37,13 @@ namespace Server.Spells.Fifth
                 TimeSpan duration;
 
                 if (Core.AOS)
+                {
                     duration = TimeSpan.FromSeconds(120);
+                }
                 else
+                {
                     duration = TimeSpan.FromSeconds(Utility.Random(80, 40));
+                }
 
                 BaseCreature.Summon(new BladeSpirits(), false, Caster, new Point3D(p), 0x212, duration);
             }
@@ -50,7 +54,9 @@ namespace Server.Spells.Fifth
         public override TimeSpan GetCastDelay()
         {
             if (Core.AOS)
+            {
                 return TimeSpan.FromTicks(base.GetCastDelay().Ticks * (Core.SE ? 3 : 5));
+            }
 
             return base.GetCastDelay() + TimeSpan.FromSeconds(6.0);
         }
@@ -58,7 +64,9 @@ namespace Server.Spells.Fifth
         public override bool CheckCast()
         {
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             if (Caster.Followers + (Core.SE ? 2 : 1) > Caster.FollowersMax)
             {

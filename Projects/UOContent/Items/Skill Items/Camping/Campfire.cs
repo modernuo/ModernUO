@@ -55,7 +55,9 @@ namespace Server.Items
             set
             {
                 if (Status == value)
+                {
                     return;
+                }
 
                 switch (value)
                 {
@@ -96,16 +98,25 @@ namespace Server.Items
             var age = now - Created;
 
             if (age >= TimeSpan.FromSeconds(100.0))
+            {
                 Delete();
+            }
             else if (age >= TimeSpan.FromSeconds(90.0))
+            {
                 Status = CampfireStatus.Off;
+            }
             else if (age >= TimeSpan.FromSeconds(60.0))
+            {
                 Status = CampfireStatus.Extinguishing;
+            }
 
             if (Status == CampfireStatus.Off || Deleted)
+            {
                 return;
+            }
 
             foreach (var entry in m_Entries.ToList())
+            {
                 if (!entry.Valid || entry.Player.NetState == null)
                 {
                     RemoveEntry(entry);
@@ -115,10 +126,12 @@ namespace Server.Items
                     entry.Safe = true;
                     entry.Player.SendLocalizedMessage(500621); // The camp is now secure.
                 }
+            }
 
             var eable = GetClientsInRange(SecureRange);
 
             foreach (var state in eable)
+            {
                 if (state.Mobile is PlayerMobile pm && GetEntry(pm) == null)
                 {
                     var entry = new CampfireEntry(pm, this);
@@ -128,6 +141,7 @@ namespace Server.Items
 
                     pm.SendLocalizedMessage(500620); // You feel it would take a few moments to secure your camp.
                 }
+            }
 
             eable.Free();
         }
@@ -135,10 +149,14 @@ namespace Server.Items
         private void ClearEntries()
         {
             if (m_Entries == null)
+            {
                 return;
+            }
 
             foreach (var entry in m_Entries.ToList())
+            {
                 RemoveEntry(entry);
+            }
         }
 
         public override void OnAfterDelete()

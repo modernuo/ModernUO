@@ -36,17 +36,21 @@ namespace Server.Items
             var version = reader.ReadEncodedInt();
 
             if (version == 0)
+            {
                 ValidationQueue<ArcaneCircleAddon>.Add(this);
+            }
         }
 
         public void Validate()
         {
             foreach (var c in Components)
+            {
                 if (c.ItemID == 0x3083)
                 {
                     c.Offset = new Point3D(-1, -1, 0);
                     c.MoveToWorld(new Point3D(X + c.Offset.X, Y + c.Offset.Y, Z + c.Offset.Z), Map);
                 }
+            }
         }
     }
 

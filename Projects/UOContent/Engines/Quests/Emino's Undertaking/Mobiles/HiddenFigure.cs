@@ -53,9 +53,13 @@ namespace Server.Engines.Quests.Ninja
             AddItem(new HakamaShita(GetRandomHue()));
 
             if (Utility.RandomBool())
+            {
                 AddItem(new Shoes(GetShoeHue()));
+            }
             else
+            {
                 AddItem(new Sandals(GetShoeHue()));
+            }
         }
 
         public override int GetAutoTalkRange(PlayerMobile pm) => 3;

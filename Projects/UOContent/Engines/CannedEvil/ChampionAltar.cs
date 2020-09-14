@@ -41,7 +41,9 @@ namespace Server.Engines.CannedEvil
                         m_Spawn = reader.ReadItem() as ChampionSpawn;
 
                         if (m_Spawn == null)
+                        {
                             Delete();
+                        }
 
                         break;
                     }

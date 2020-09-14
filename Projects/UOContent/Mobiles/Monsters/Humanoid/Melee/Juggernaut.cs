@@ -42,10 +42,14 @@ namespace Server.Mobiles
             VirtualArmor = 70;
 
             if (Utility.RandomDouble() < 0.1)
+            {
                 PackItem(new PowerCrystal());
+            }
 
             if (Utility.RandomDouble() < 0.4)
+            {
                 PackItem(new ClockworkAssembly());
+            }
         }
 
         public Juggernaut(Serial serial) : base(serial)
@@ -72,9 +76,13 @@ namespace Server.Mobiles
                 if (!IsParagon)
                 {
                     if (Utility.RandomDouble() < 0.75)
+                    {
                         c.DropItem(DawnsMusicGear.RandomCommon);
+                    }
                     else
+                    {
                         c.DropItem(DawnsMusicGear.RandomUncommon);
+                    }
                 }
                 else
                 {
@@ -113,7 +121,9 @@ namespace Server.Mobiles
                 );
 
                 if (Weapon is BaseWeapon weapon)
+                {
                     weapon.OnHit(this, defender);
+                }
 
                 if (defender.Alive)
                 {

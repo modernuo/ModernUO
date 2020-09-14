@@ -38,7 +38,9 @@ namespace Server.Spells.Mysticism
         public override bool CheckCast()
         {
             if (!base.CheckCast())
+            {
                 return false;
+            }
 
             var mana = ScaleMana(RequiredMana);
 

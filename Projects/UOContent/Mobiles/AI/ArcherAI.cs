@@ -15,7 +15,9 @@ namespace Server.Mobiles
             if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
             {
                 if (m_Mobile.Debug)
+                {
                     m_Mobile.DebugSay("I have detected {0} and I will attack", m_Mobile.FocusMob.Name);
+                }
 
                 m_Mobile.Combatant = m_Mobile.FocusMob;
                 Action = ActionType.Combat;
@@ -50,12 +52,16 @@ namespace Server.Mobiles
                     if (m_Mobile.Combatant != null)
                     {
                         if (m_Mobile.Debug)
+                        {
                             m_Mobile.DebugSay("I am still not in range of {0}", m_Mobile.Combatant.Name);
+                        }
 
                         if ((int)m_Mobile.GetDistanceToSqrt(m_Mobile.Combatant) > m_Mobile.RangePerception + 1)
                         {
                             if (m_Mobile.Debug)
+                            {
                                 m_Mobile.DebugSay("I have lost {0}", m_Mobile.Combatant.Name);
+                            }
 
                             m_Mobile.Combatant = null;
                             Action = ActionType.Guard;
@@ -84,15 +90,22 @@ namespace Server.Mobiles
                     var iDiff = m_Mobile.Combatant.Hits - m_Mobile.Hits;
 
                     if (Utility.Random(0, 100) > 10 + iDiff) // 10% to flee + the diff of hits
+                    {
                         bFlee = true;
+                    }
                 }
                 else if (m_Mobile.Combatant != null && m_Mobile.Hits >= m_Mobile.Combatant.Hits)
                 {
                     if (Utility.Random(0, 100) > 10) // 10% to flee
+                    {
                         bFlee = true;
+                    }
                 }
 
-                if (bFlee) Action = ActionType.Flee;
+                if (bFlee)
+                {
+                    Action = ActionType.Flee;
+                }
             }
 
             return true;
@@ -103,7 +116,9 @@ namespace Server.Mobiles
             if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
             {
                 if (m_Mobile.Debug)
+                {
                     m_Mobile.DebugSay("I have detected {0}, attacking", m_Mobile.FocusMob.Name);
+                }
 
                 m_Mobile.Combatant = m_Mobile.FocusMob;
                 Action = ActionType.Combat;

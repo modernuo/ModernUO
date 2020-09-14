@@ -38,7 +38,9 @@ namespace Server.Mobiles
             VirtualArmor = 30;
 
             if (Core.ML && Utility.RandomDouble() < .33)
+            {
                 PackItem(Seed.RandomPeculiarSeed(3));
+            }
         }
 
         public TerathanWarrior(Serial serial) : base(serial)

@@ -17,7 +17,9 @@ namespace Server.Items
         public override bool Eat(Mobile from)
         {
             if (!base.Eat(from))
+            {
                 return false;
+            }
 
             from.AddToBackpack(new Basket());
             return true;
@@ -461,10 +463,14 @@ namespace Server.Items
             if (version < 1)
             {
                 if (FillFactor == 2)
+                {
                     FillFactor = 5;
+                }
 
                 if (Weight == 2.0)
+                {
                     Weight = 5.0;
+                }
             }
         }
     }

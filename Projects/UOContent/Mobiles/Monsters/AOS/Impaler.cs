@@ -70,7 +70,9 @@ namespace Server.Mobiles
             base.OnDeath(c);
 
             if (!Summoned && !NoKillAwards && DemonKnight.CheckArtifactChance(this))
+            {
                 DemonKnight.DistributeArtifact(this);
+            }
         }
 
         public override void Serialize(IGenericWriter writer)
@@ -85,7 +87,9 @@ namespace Server.Mobiles
             var version = reader.ReadInt();
 
             if (BaseSoundID == 1200)
+            {
                 BaseSoundID = 0x2A7;
+            }
         }
     }
 }
