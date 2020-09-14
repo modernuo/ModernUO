@@ -81,7 +81,7 @@ namespace Server.Spells.Ninjitsu
 
         public override void OnClearMove(Mobile from)
         {
-            if (m_Table.Remove(@from, out var info))
+            if (m_Table.Remove(from, out var info))
             {
                 info.m_Timer.Stop();
             }

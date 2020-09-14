@@ -539,7 +539,7 @@ namespace Server.Multis
                     {
                         if (keyValue == 0)
                         {
-                            keyValue = CreateKeys(@from);
+                            keyValue = CreateKeys(from);
                         }
 
                         door.Locked = true;
@@ -1190,7 +1190,7 @@ namespace Server.Multis
                     {
                         if (Banker.Deposit(from, -cost))
                         {
-                            @from.SendLocalizedMessage(
+                            from.SendLocalizedMessage(
                                 1060397,
                                 (-cost).ToString()
                             ); // ~1_AMOUNT~ gold has been deposited into your bank box.

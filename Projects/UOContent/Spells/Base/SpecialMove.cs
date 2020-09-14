@@ -118,7 +118,7 @@ namespace Server.Spells
             {
                 if (!DelayedContext)
                 {
-                    SetContext(@from);
+                    SetContext(from);
                 }
 
                 from.Mana -= mana;
@@ -131,12 +131,12 @@ namespace Server.Spells
         {
             if (GetContext(from) == null)
             {
-                if (DelayedContext || @from.Skills[MoveSkill].Value < 50.0)
+                if (DelayedContext || from.Skills[MoveSkill].Value < 50.0)
                 {
-                    Timer timer = new SpecialMoveTimer(@from);
+                    Timer timer = new SpecialMoveTimer(from);
                     timer.Start();
 
-                    AddContext(@from, new SpecialMoveContext(timer, GetType()));
+                    AddContext(from, new SpecialMoveContext(timer, GetType()));
                 }
             }
         }

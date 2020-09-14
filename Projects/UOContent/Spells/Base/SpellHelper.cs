@@ -24,7 +24,7 @@ namespace Server
         {
             if (!from.CanBeginAction<DefensiveSpell>())
             {
-                new InternalTimer(@from).Start();
+                new InternalTimer(from).Start();
             }
         }
 
@@ -194,7 +194,7 @@ namespace Server.Spells
             {
                 if (item.RootParent != from)
                 {
-                    @from.Direction = @from.GetDirectionTo(item.GetWorldLocation());
+                    from.Direction = from.GetDirectionTo(item.GetWorldLocation());
                 }
             }
             else if (from != target)
@@ -447,7 +447,7 @@ namespace Server.Spells
             }
             else
             {
-                pmFrom = @from as PlayerMobile;
+                pmFrom = from as PlayerMobile;
             }
 
             if (bcTarg?.Summoned == true)
@@ -1058,7 +1058,7 @@ namespace Server.Spells
 
                 if (from != null) // sanity check
                 {
-                    DoLeech(damageGiven, @from, target);
+                    DoLeech(damageGiven, from, target);
                 }
 
                 WeightOverloading.DFA = DFAlgorithm.Standard;

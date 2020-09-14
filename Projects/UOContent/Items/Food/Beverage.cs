@@ -716,7 +716,7 @@ namespace Server.Items
 
             if (ShowQuantity)
             {
-                LabelTo(@from, GetQuantityDescription());
+                LabelTo(from, GetQuantityDescription());
             }
         }
 
@@ -735,7 +735,7 @@ namespace Server.Items
                 {
                     if (message)
                     {
-                        @from.SendLocalizedMessage(502946, "", 0x59); // That belongs to someone else.
+                        from.SendLocalizedMessage(502946, "", 0x59); // That belongs to someone else.
                     }
 
                     return false;
@@ -746,7 +746,7 @@ namespace Server.Items
             {
                 if (message)
                 {
-                    @from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+                    from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
                 }
 
                 return false;
@@ -930,7 +930,7 @@ namespace Server.Items
             {
                 if (from.Thirst < 20)
                 {
-                    @from.Thirst += 1;
+                    from.Thirst += 1;
                 }
 
                 if (ContainsAlchohol)
@@ -953,7 +953,7 @@ namespace Server.Items
 
                 if (Poison != null)
                 {
-                    @from.ApplyPoison(Poisoner, Poison);
+                    from.ApplyPoison(Poisoner, Poison);
                 }
 
                 --Quantity;
@@ -1162,7 +1162,7 @@ namespace Server.Items
 
                 if (from.BAC > 60)
                 {
-                    @from.BAC = 60;
+                    from.BAC = 60;
                 }
 
                 Timer t = new HeaveTimer(from);

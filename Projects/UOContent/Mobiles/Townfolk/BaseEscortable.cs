@@ -631,12 +631,12 @@ namespace Server.Mobiles
                 {
                     if (escorter == null || escorter == from)
                     {
-                        list.Add(new AskDestinationEntry(this, @from));
+                        list.Add(new AskDestinationEntry(this, from));
                     }
 
                     if (escorter == null)
                     {
-                        list.Add(new AcceptEscortEntry(this, @from));
+                        list.Add(new AcceptEscortEntry(this, from));
                     }
                 }
 

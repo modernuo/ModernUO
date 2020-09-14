@@ -652,7 +652,7 @@ namespace Server.Items
 
         public static void EventSink_Logout(Mobile from)
         {
-            if (@from != null && m_Table.Remove(@from, out var info))
+            if (from != null && m_Table.Remove(from, out var info))
             {
                 info.Timer.Stop();
             }
